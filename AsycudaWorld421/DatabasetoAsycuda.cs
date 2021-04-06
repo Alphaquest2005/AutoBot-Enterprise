@@ -1,35 +1,28 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.ServiceModel;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using Core.Common.Business.Services;
 using Core.Common.Utils;
 using WaterNut.DataLayer;
-
-
 
 namespace Asycuda421
 {
     public partial class ASYCUDA
     {
-        //easier to do this so because of the deep layers rather than calling each one
-         WaterNutDBEntities db = new WaterNutDBEntities();
         private FileInfo _destinatonFile;
-        string DocSetPath;
+
+        //easier to do this so because of the deep layers rather than calling each one
+        private readonly WaterNutDBEntities db = new WaterNutDBEntities();
+        private string DocSetPath;
 
         public void LoadFromDataBase(string docSetPath, int ASYCUDA_Id, ASYCUDA a, FileInfo fileInfo)
         {
             _destinatonFile = fileInfo;
             DocSetPath = docSetPath;
             var doc = db.xcuda_ASYCUDA.FirstOrDefault(x => x.ASYCUDA_Id == ASYCUDA_Id);
-            LoadFromDataBase(doc,a);
-
+            LoadFromDataBase(doc, a);
         }
 
         public void LoadFromDataBase(xcuda_ASYCUDA da, ASYCUDA a)
@@ -47,23 +40,18 @@ namespace Asycuda421
                 SavePreviousItem(da, a);
                 SaveValuationItem(da, a);
 
-               // if (a.Valuation.Gs_Invoice.Amount_foreign_currency == null)
-                    a.Valuation.Gs_Invoice.Amount_foreign_currency = Math.Round(da.xcuda_Item.Where(i => i.xcuda_Valuation_item.xcuda_Item_Invoice != null 
-                                                                                                         && (i.xcuda_PreviousItem == null || !string.IsNullOrEmpty(i.xcuda_PreviousItem.Prev_reg_nbr)))
-                                                                        .Sum(i => i.xcuda_Valuation_item.xcuda_Item_Invoice.Amount_foreign_currency), 2).ToString();
+                // if (a.Valuation.Gs_Invoice.Amount_foreign_currency == null)
+                a.Valuation.Gs_Invoice.Amount_foreign_currency = Math.Round(da.xcuda_Item.Where(i =>
+                        i.xcuda_Valuation_item.xcuda_Item_Invoice != null
+                        && (i.xcuda_PreviousItem == null || !string.IsNullOrEmpty(i.xcuda_PreviousItem.Prev_reg_nbr)))
+                    .Sum(i => i.xcuda_Valuation_item.xcuda_Item_Invoice.Amount_foreign_currency), 2).ToString();
                 var totalPkgs = a.Item.Select(x => Convert.ToInt32(x.Packages.Number_of_packages)).Sum();
-                if (totalPkgs > 1)
-                {
-                    a.Property.Nbers.Total_number_of_packages = totalPkgs.ToString();
-                }
-
+                if (totalPkgs > 1) a.Property.Nbers.Total_number_of_packages = totalPkgs.ToString();
             }
             catch (Exception)
             {
                 throw;
             }
-
-
         }
 
         private void SaveContainer(xcuda_ASYCUDA da, ASYCUDA a)
@@ -78,26 +66,25 @@ namespace Asycuda421
 
                     a.Container = new ObservableCollection<ASYCUDAContainer>();
 
-                    
-                       ac = new ASYCUDAContainer();
-                        a.Container.Add(ac);
-                    
+
+                    ac = new ASYCUDAContainer();
+                    a.Container.Add(ac);
+
                     ac.Item_Number = cnt.Item_Number;
                     ac.Container_identity = cnt.Container_identity;
                     ac.Container_type = cnt.Container_type;
                     ac.Empty_full_indicator = cnt.Empty_full_indicator;
-                    if(ac.Gross_weight == null) ac.Gross_weight = new ASYCUDAContainerGross_weight();
+                    if (ac.Gross_weight == null) ac.Gross_weight = new ASYCUDAContainerGross_weight();
                     ac.Gross_weight.Text.Add(cnt.Gross_weight.ToString());
                     ac.Goods_description = cnt.Goods_description;
                     ac.Packages_number = cnt.Packages_number;
                     ac.Packages_type = cnt.Packages_type;
                     ac.Packages_weight = cnt.Packages_weight.ToString();
                 }
-               
             }
         }
 
-        private  void SaveProperty(ASYCUDA a, xcuda_ASYCUDA da)
+        private void SaveProperty(ASYCUDA a, xcuda_ASYCUDA da)
         {
             if (da.xcuda_Property != null)
             {
@@ -112,23 +99,28 @@ namespace Asycuda421
                 if (da.xcuda_Property.xcuda_Forms != null)
                 {
                     if (da.xcuda_Property.xcuda_Forms.Number_of_the_form != null)
-                        a.Property.Forms.Number_of_the_form = da.xcuda_Property.xcuda_Forms.Number_of_the_form.ToString();
+                        a.Property.Forms.Number_of_the_form =
+                            da.xcuda_Property.xcuda_Forms.Number_of_the_form.ToString();
                     if (da.xcuda_Property.xcuda_Forms.Total_number_of_forms != null)
-                        a.Property.Forms.Total_number_of_forms = da.xcuda_Property.xcuda_Forms.Total_number_of_forms.ToString();
+                        a.Property.Forms.Total_number_of_forms =
+                            da.xcuda_Property.xcuda_Forms.Total_number_of_forms.ToString();
                 }
+
                 if (da.xcuda_Property.xcuda_Nbers != null)
                 {
                     if (da.xcuda_Property.xcuda_Nbers.Number_of_loading_lists != null)
-                        a.Property.Nbers.Number_of_loading_lists = da.xcuda_Property.xcuda_Nbers.Number_of_loading_lists;
+                        a.Property.Nbers.Number_of_loading_lists =
+                            da.xcuda_Property.xcuda_Nbers.Number_of_loading_lists;
                     if (da.xcuda_Property.xcuda_Nbers.Total_number_of_items != null)
                         a.Property.Nbers.Total_number_of_items = da.xcuda_Property.xcuda_Nbers.Total_number_of_items;
                     // if(da.xcuda_Property.xcuda_Nbers.Total_number_of_packages != 0)
-                    a.Property.Nbers.Total_number_of_packages = da.xcuda_Property.xcuda_Nbers.Total_number_of_packages.ToString();
+                    a.Property.Nbers.Total_number_of_packages =
+                        da.xcuda_Property.xcuda_Nbers.Total_number_of_packages.ToString();
                 }
             }
         }
 
-        private  void SaveTraders(ASYCUDA a, xcuda_ASYCUDA da)
+        private void SaveTraders(ASYCUDA a, xcuda_ASYCUDA da)
         {
             if (da.xcuda_Traders != null)
             {
@@ -142,31 +134,31 @@ namespace Asycuda421
                         t.Consignee.Consignee_code.Text.Add(da.xcuda_Traders.xcuda_Consignee.Consignee_code);
                     if (da.xcuda_Traders.xcuda_Consignee.Consignee_name != null)
                         t.Consignee.Consignee_name.Text.Add(da.xcuda_Traders.xcuda_Consignee.Consignee_name);
-                    
                 }
+
                 if (da.xcuda_Traders.xcuda_Exporter != null)
                 {
-                    
                     if (da.xcuda_Traders.xcuda_Exporter.Exporter_code != null)
                         t.Exporter.Exporter_code.Text.Add(da.xcuda_Traders.xcuda_Exporter.Exporter_code);
                     if (da.xcuda_Traders.xcuda_Exporter.Exporter_name != null)
                         t.Exporter.Exporter_name.Text.Add(da.xcuda_Traders.xcuda_Exporter.Exporter_name);
                 }
 
-                if (da.xcuda_Traders.xcuda_Traders_Financial != null )
+                if (da.xcuda_Traders.xcuda_Traders_Financial != null)
                 {
                     if (da.xcuda_Traders.xcuda_Traders_Financial.Financial_code != null)
                         t.Financial.Financial_code.Text.Add(da.xcuda_Traders.xcuda_Traders_Financial.Financial_code);
                     if (da.xcuda_Traders.xcuda_Traders_Financial.Financial_name != null)
                         t.Financial.Financial_name.Text.Add(da.xcuda_Traders.xcuda_Traders_Financial.Financial_name);
                 }
+
                 a.Traders = t;
             }
         }
 
-        private  void SaveValuationItem(xcuda_ASYCUDA da, ASYCUDA a)
+        private void SaveValuationItem(xcuda_ASYCUDA da, ASYCUDA a)
         {
-            if (da.xcuda_Valuation != null)//&& da.xcuda_Valuation.xcuda_Gs_Invoice.Amount_foreign_currency != 0
+            if (da.xcuda_Valuation != null) //&& da.xcuda_Valuation.xcuda_Gs_Invoice.Amount_foreign_currency != 0
             {
                 var v = new ASYCUDAValuation();
                 if (da.xcuda_Valuation.Calculation_working_mode != null)
@@ -238,7 +230,7 @@ namespace Asycuda421
             }
         }
 
-        private  void SaveWeight(ASYCUDAValuation v, xcuda_Weight dw)
+        private void SaveWeight(ASYCUDAValuation v, xcuda_Weight dw)
         {
             if (dw != null)
             {
@@ -248,7 +240,7 @@ namespace Asycuda421
             }
         }
 
-        private  void SaveGSExternalFreight(ASYCUDAValuation v, xcuda_Gs_external_freight df)
+        private void SaveGSExternalFreight(ASYCUDAValuation v, xcuda_Gs_external_freight df)
         {
             if (df != null && df.Amount_foreign_currency != 0)
             {
@@ -257,15 +249,15 @@ namespace Asycuda421
                 f.Amount_national_currency = df.Amount_national_currency.ToString();
                 if (df.Currency_code != null)
                     f.Currency_code.Text.Add(df.Currency_code.Trim());
-                
-                    f.Currency_rate = df.Currency_rate.ToString();
+
+                f.Currency_rate = df.Currency_rate.ToString();
                 v.Gs_external_freight = f;
             }
         }
 
-        private  void SaveGSInvoice(ASYCUDAValuation v, xcuda_Gs_Invoice di)
+        private void SaveGSInvoice(ASYCUDAValuation v, xcuda_Gs_Invoice di)
         {
-            if (di != null)//&& di.Amount_foreign_currency != 0
+            if (di != null) //&& di.Amount_foreign_currency != 0
             {
                 var inv = new ASYCUDAValuationGs_Invoice();
                 if (di.Amount_foreign_currency != 0)
@@ -283,7 +275,7 @@ namespace Asycuda421
             }
         }
 
-        private  void SaveGeneralInformation(ASYCUDA a, xcuda_ASYCUDA da)
+        private void SaveGeneralInformation(ASYCUDA a, xcuda_ASYCUDA da)
         {
             if (da.xcuda_General_information != null && da.xcuda_General_information.xcuda_Country != null)
             {
@@ -293,11 +285,10 @@ namespace Asycuda421
                 gi.Value_details = da.xcuda_General_information.Value_details;
                 gi.Comments_free_text.Text.Add(da.xcuda_General_information.Comments_free_text);
                 a.General_information = gi;
-
             }
         }
 
-        private  void SaveCountry(ASYCUDAGeneral_information gi, xcuda_General_information dg)
+        private void SaveCountry(ASYCUDAGeneral_information gi, xcuda_General_information dg)
         {
             if (dg.xcuda_Country != null)
             {
@@ -308,26 +299,27 @@ namespace Asycuda421
                 c.Destination = new ASYCUDAGeneral_informationCountryDestination();
                 if (dg.xcuda_Country.xcuda_Destination != null)
                 {
-                    c.Destination.Destination_country_code.Text.Add(dg.xcuda_Country.xcuda_Destination.Destination_country_code);
-                    c.Destination.Destination_country_name.Text.Add(dg.xcuda_Country.xcuda_Destination.Destination_country_name);
+                    c.Destination.Destination_country_code.Text.Add(dg.xcuda_Country.xcuda_Destination
+                        .Destination_country_code);
+                    c.Destination.Destination_country_name.Text.Add(dg.xcuda_Country.xcuda_Destination
+                        .Destination_country_name);
                     //c.Destination.Destination_country_region.Text.Add(dg.xcuda_Country.xcuda_Destination.
                 }
 
                 if (dg.xcuda_Country.xcuda_Export != null)
                 {
-                    c.Export.Export_country_code.Text.Add(dg.xcuda_Country.xcuda_Export.Export_country_code); 
+                    c.Export.Export_country_code.Text.Add(dg.xcuda_Country.xcuda_Export.Export_country_code);
                     c.Export.Export_country_name.Text.Add(dg.xcuda_Country.xcuda_Export.Export_country_name);
                     c.Export.Export_country_region.Text.Add(dg.xcuda_Country.xcuda_Export.Export_country_region);
                 }
+
                 if (dg.xcuda_Country.Trading_country != null)
-                {
                     c.Trading_country.Text.Add(dg.xcuda_Country.Trading_country);
-                }
                 gi.Country = c;
             }
         }
 
-        private  void SavePreviousItem(xcuda_ASYCUDA da, ASYCUDA a)
+        private void SavePreviousItem(xcuda_ASYCUDA da, ASYCUDA a)
         {
             if (da.xcuda_PreviousItem != null)
             {
@@ -337,7 +329,7 @@ namespace Asycuda421
                     //if (item.Prev_decl_HS_spec.Length > 17) continue;
                     if (string.IsNullOrEmpty(item.Prev_reg_nbr)) continue;
                     lncounter += 1;
-                    var pi = new ASYCUDAPrev_decl();//ASYCUDAPreviousItem
+                    var pi = new ASYCUDAPrev_decl(); //ASYCUDAPreviousItem
                     pi.Prev_decl_office_code = item.Prev_reg_cuo;
                     pi.Prev_decl_reg_year = item.Prev_reg_dat;
                     pi.Prev_decl_reg_serial = item.Prev_reg_ser;
@@ -350,27 +342,30 @@ namespace Asycuda421
                     pi.Prev_decl_weight = item.Net_weight.ToString();
                     pi.Prev_decl_supp_quantity = item.Suplementary_Quantity.ToString();
                     pi.Prev_decl_ref_value = Math.Round(item.Current_value, 4).ToString();
-                    pi.Prev_decl_current_item = lncounter.ToString();//item.Current_item_number;
+                    pi.Prev_decl_current_item = lncounter.ToString(); //item.Current_item_number;
                     pi.Prev_decl_number_packages_written_off = item.Previous_Packages_number;
                     pi.Prev_decl_weight_written_off = item.Prev_net_weight.ToString();
                     pi.Prev_decl_supp_quantity_written_off = item.Preveious_suplementary_quantity.ToString();
                     pi.Prev_decl_ref_value_written_off = Math.Round(item.Previous_value, 4).ToString();
-                    pi.Prev_decl_HS_spec = item.Prev_decl_HS_spec.Length <= 20? item.Prev_decl_HS_spec:"";
+                    pi.Prev_decl_HS_spec = item.Prev_decl_HS_spec.Length <= 20 ? item.Prev_decl_HS_spec : "";
 
                     a.Prev_decl.Add(pi);
                 }
-                if (a.Prev_decl.Any() == true)
+
+                if (a.Prev_decl.Any())
                     a.Prev_decl[0].Prev_decl_number_packages = a.Item[0].Packages.Number_of_packages;
             }
         }
 
-        private  void SetupProperties(ASYCUDA a, xcuda_ASYCUDA da)
+        private void SetupProperties(ASYCUDA a, xcuda_ASYCUDA da)
         {
             ExportTemplate Exp = null;
-            if(da.xcuda_ASYCUDA_ExtendedProperties.Document_Type != null)
+            if (da.xcuda_ASYCUDA_ExtendedProperties.Document_Type != null)
                 Exp = db.ExportTemplate
-                    .Where(x => x.ApplicationSettingsId == da.xcuda_ASYCUDA_ExtendedProperties.AsycudaDocumentSet.ApplicationSettingsId)
-                    .FirstOrDefault(x =>  x.Description == da.xcuda_ASYCUDA_ExtendedProperties.Document_Type.DisplayName);
+                    .Where(x => x.ApplicationSettingsId ==
+                                da.xcuda_ASYCUDA_ExtendedProperties.AsycudaDocumentSet.ApplicationSettingsId)
+                    .FirstOrDefault(x =>
+                        x.Description == da.xcuda_ASYCUDA_ExtendedProperties.Document_Type.DisplayName);
 
             //if (Exp == null && da.xcuda_ASYCUDA_ExtendedProperties.AsycudaDocumentSet != null && da.xcuda_ASYCUDA_ExtendedProperties.AsycudaDocumentSet.ExportTemplate != null)
             //{
@@ -378,16 +373,16 @@ namespace Asycuda421
             //}
 
             if (Exp == null)
-            {
-                throw new ApplicationException($"Export Template is Null for {da.xcuda_ASYCUDA_ExtendedProperties.Document_Type.DisplayName}");
-            }
+                throw new ApplicationException(
+                    $"Export Template is Null for {da.xcuda_ASYCUDA_ExtendedProperties.Document_Type.DisplayName}");
             a.Financial = new ASYCUDAFinancial();
 
             if (Exp.Deffered_payment_reference != null)
                 a.Financial.Deffered_payment_reference.Text.Add(Exp.Deffered_payment_reference);
 
             a.Export_release = new ASYCUDAExport_release();
-            a.Identification.Office_segment.Customs_clearance_office_code.Text.Add(da.xcuda_ASYCUDA_ExtendedProperties.AsycudaDocumentSet.Office ?? Exp.Customs_clearance_office_code);
+            a.Identification.Office_segment.Customs_clearance_office_code.Text.Add(
+                da.xcuda_ASYCUDA_ExtendedProperties.AsycudaDocumentSet.Office ?? Exp.Customs_clearance_office_code);
 
             a.General_information = new ASYCUDAGeneral_information();
             //a.Property = new ASYCUDAProperty();
@@ -412,7 +407,7 @@ namespace Asycuda421
             if (Exp.Consignee_name != null)
                 a.Traders.Consignee.Consignee_name.Text.Add(Exp.Consignee_name);
             a.Transit = new ASYCUDATransit();
-            
+
             if (Exp.Country_first_destination != null)
                 a.General_information.Country.Country_first_destination.Text.Add(Exp.Country_first_destination);
 
@@ -420,19 +415,22 @@ namespace Asycuda421
                 a.General_information.Country.Trading_country.Text.Add(Exp.Trading_country);
 
             if (Exp.Export_country_code != null)
-                a.General_information.Country.Export.Export_country_code.Text.Add(Exp.Export_country_code); 
+                a.General_information.Country.Export.Export_country_code.Text.Add(Exp.Export_country_code);
 
             if (Exp.Destination_country_code != null)
-                a.General_information.Country.Destination.Destination_country_code.Text.Add(Exp.Destination_country_code);
+                a.General_information.Country.Destination.Destination_country_code.Text.Add(
+                    Exp.Destination_country_code);
 
             if (Exp.TransportName != null)
                 a.Transport.Means_of_transport.Departure_arrival_information.Identity.Text.Add(Exp.TransportName);
 
             if (Exp.TransportNationality != null)
-                a.Transport.Means_of_transport.Departure_arrival_information.Nationality.Text.Add(Exp.TransportNationality);
+                a.Transport.Means_of_transport.Departure_arrival_information.Nationality.Text.Add(
+                    Exp.TransportNationality);
 
             if (Exp.Location_of_goods != null)
-                a.Transport.Location_of_goods.Text.Add(da.xcuda_ASYCUDA_ExtendedProperties.AsycudaDocumentSet.LocationOfGoods??Exp.Location_of_goods);
+                a.Transport.Location_of_goods.Text.Add(
+                    da.xcuda_ASYCUDA_ExtendedProperties.AsycudaDocumentSet.LocationOfGoods ?? Exp.Location_of_goods);
 
             if (Exp.Border_information_Mode != null)
             {
@@ -453,57 +451,54 @@ namespace Asycuda421
                 a.Warehouse.Identification.Text.Add(Exp.Warehouse_Identification);
 
 
-
             a.Valuation = new ASYCUDAValuation();
 
             if (Exp.Gs_Invoice_Currency_code != null)
                 a.Valuation.Gs_Invoice.Currency_code.Text.Add(Exp.Gs_Invoice_Currency_code);
 
 
-            a.Valuation.Gs_Invoice.Amount_foreign_currency = Math.Round(da.xcuda_Item.Where(i => i.xcuda_Valuation_item.xcuda_Item_Invoice != null).Sum(i => i.xcuda_Valuation_item.xcuda_Item_Invoice.Amount_foreign_currency), 2).ToString();
-            a.Supplier_documents.Add(new ASYCUDASupplier_documents()
-                {
-                    Invoice_supplier_city = new ASYCUDASupplier_documentsInvoice_supplier_city() { @null = new object() },
-                    
-                    Invoice_supplier_country = new ASYCUDASupplier_documentsInvoice_supplier_country() { @null = new object() },
-                   
-                    Invoice_supplier_fax = new ASYCUDASupplier_documentsInvoice_supplier_fax() { @null = new object() },
-                    
-                    Invoice_supplier_name = new ASYCUDASupplier_documentsInvoice_supplier_name() { @null = new object() },
-                    Invoice_supplier_street = new ASYCUDASupplier_documentsInvoice_supplier_street() { @null = new object() },
-                    Invoice_supplier_telephone = new ASYCUDASupplier_documentsInvoice_supplier_telephone() { @null = new object() },
-                    
-                    Invoice_supplier_zip_code = new ASYCUDASupplier_documentsInvoice_supplier_zip_code() { @null = new object() },
-                    
-                });
+            a.Valuation.Gs_Invoice.Amount_foreign_currency = Math
+                .Round(
+                    da.xcuda_Item.Where(i => i.xcuda_Valuation_item.xcuda_Item_Invoice != null).Sum(i =>
+                        i.xcuda_Valuation_item.xcuda_Item_Invoice.Amount_foreign_currency), 2).ToString();
+            a.Supplier_documents.Add(new ASYCUDASupplier_documents
+            {
+                Invoice_supplier_city = new ASYCUDASupplier_documentsInvoice_supplier_city {@null = new object()},
 
+                Invoice_supplier_country = new ASYCUDASupplier_documentsInvoice_supplier_country {@null = new object()},
 
+                Invoice_supplier_fax = new ASYCUDASupplier_documentsInvoice_supplier_fax {@null = new object()},
 
+                Invoice_supplier_name = new ASYCUDASupplier_documentsInvoice_supplier_name {@null = new object()},
+                Invoice_supplier_street = new ASYCUDASupplier_documentsInvoice_supplier_street {@null = new object()},
+                Invoice_supplier_telephone =
+                    new ASYCUDASupplier_documentsInvoice_supplier_telephone {@null = new object()},
 
+                Invoice_supplier_zip_code =
+                    new ASYCUDASupplier_documentsInvoice_supplier_zip_code {@null = new object()}
+            });
         }
 
-        private  void SaveIdentification(xcuda_ASYCUDA da, ASYCUDA a)
+        private void SaveIdentification(xcuda_ASYCUDA da, ASYCUDA a)
         {
             if (da.xcuda_Identification != null)
             {
-
-
                 SaveOfficeSegment(da, a);
                 SaveManifestReferenceNumber(da, a);
                 SaveRegistration(da, a);
                 SaveType(da, a);
-
             }
         }
 
-        private  void SaveType(xcuda_ASYCUDA da, ASYCUDA a)
+        private void SaveType(xcuda_ASYCUDA da, ASYCUDA a)
         {
             if (da.xcuda_Identification.xcuda_Type != null)
             {
                 if (da.xcuda_Identification.xcuda_Type.Type_of_declaration != null)
                     a.Identification.Type.Type_of_declaration = da.xcuda_Identification.xcuda_Type.Type_of_declaration;
                 if (da.xcuda_Identification.xcuda_Type.Declaration_gen_procedure_code != null)
-                    a.Identification.Type.Declaration_gen_procedure_code = da.xcuda_Identification.xcuda_Type.Declaration_gen_procedure_code;
+                    a.Identification.Type.Declaration_gen_procedure_code =
+                        da.xcuda_Identification.xcuda_Type.Declaration_gen_procedure_code;
             }
         }
 
@@ -511,8 +506,6 @@ namespace Asycuda421
         {
             try
             {
-
-
                 if (da.xcuda_Item != null)
                 {
                     var lnCounter = 0;
@@ -537,12 +530,9 @@ namespace Asycuda421
                             ai.Free_text_2.Text.Add(item.Free_text_2);
 
 
-
                         SaveAttachedDocuments(item, ai);
                         if (item.xcuda_Tarification == null)
-                        {
                             throw new Exception("Null Tarification, for item number: " + item.ItemNumber);
-                        }
 
                         SaveTarification(item, ai);
                         SaveGoodsDescription(item, ai);
@@ -552,18 +542,14 @@ namespace Asycuda421
                         if (db.TariffCodes.FirstOrDefault(x =>
                                 x.TariffCode == item.xcuda_Tarification.xcuda_HScode.Commodity_code &&
                                 x.LicenseRequired == true) != null)
-                        {
                             ai.Quantity_deducted_from_licence =
                                 item.ItemQuantity.ToString(CultureInfo.InvariantCulture);
-                        }
 
                         a.Item.Add(ai);
                     }
 
                     if (a.Item.Count != 0 && a.Item[0].Packages.Number_of_packages == "0")
                         a.Item[0].Packages.Number_of_packages = "1";
-
-
                 }
             }
             catch (Exception e)
@@ -575,7 +561,6 @@ namespace Asycuda421
 
         private void SavePackages(xcuda_Item item, ASYCUDAItem ai, int lnCounter)
         {
-
             if (item.xcuda_Packages.Count > 0 && item.xcuda_Packages.First().Number_of_packages > 0)
             {
                 var pk = item.xcuda_Packages.First();
@@ -601,40 +586,36 @@ namespace Asycuda421
                 ai.Packages.Marks1_of_packages.Text.Add("No Marks");
                 ai.Packages.Kind_of_packages_code.Text.Clear();
                 ai.Packages.Kind_of_packages_code.Text.Add("PK");
-
             }
         }
 
 
-        private  void SavePreviousDoc(xcuda_Item item, ASYCUDAItem ai)
+        private void SavePreviousDoc(xcuda_Item item, ASYCUDAItem ai)
         {
             if (item.xcuda_Previous_doc != null)
             {
                 if (item.xcuda_Previous_doc.Summary_declaration != null)
                     ai.Previous_doc.Summary_declaration.Text.Add(item.xcuda_Previous_doc.Summary_declaration);
                 if (item.xcuda_Previous_doc.Previous_document_reference != null)
-                    ai.Previous_doc.Previous_document_reference.Text.Add(item.xcuda_Previous_doc.Previous_document_reference);
+                    ai.Previous_doc.Previous_document_reference.Text.Add(item.xcuda_Previous_doc
+                        .Previous_document_reference);
                 if (item.xcuda_Previous_doc.Previous_warehouse_code != null)
                     ai.Previous_doc.Previous_warehouse_code.Text.Add(item.xcuda_Previous_doc.Previous_warehouse_code);
             }
             else
             {
                 if (item.xcuda_ASYCUDA.xcuda_ASYCUDA_ExtendedProperties.AsycudaDocumentSet.BLNumber != null)
-                {
                     if (item.xcuda_ASYCUDA.xcuda_ASYCUDA_ExtendedProperties.AsycudaDocumentSet.BLNumber != null)
-                        ai.Previous_doc.Summary_declaration.Text.Add(item.xcuda_ASYCUDA.xcuda_ASYCUDA_ExtendedProperties.AsycudaDocumentSet.BLNumber);
-                }
+                        ai.Previous_doc.Summary_declaration.Text.Add(item.xcuda_ASYCUDA.xcuda_ASYCUDA_ExtendedProperties
+                            .AsycudaDocumentSet.BLNumber);
             }
-
         }
 
-        private  void SaveAttachedDocuments(xcuda_Item item, ASYCUDAItem ai)
+        private void SaveAttachedDocuments(xcuda_Item item, ASYCUDAItem ai)
         {
-            
             foreach (var doc in item.xcuda_Attached_documents)
             {
-               
-                var adoc =  new ASYCUDAItemAttached_documents();
+                var adoc = new ASYCUDAItemAttached_documents();
                 if (doc.Attached_document_code != null)
                     adoc.Attached_document_code.Text.Add(doc.Attached_document_code);
                 if (doc.Attached_document_date != null)
@@ -649,24 +630,26 @@ namespace Asycuda421
                 if (doc.xcuda_Attachments.Any(x => x.Attachments.Reference != "Info"))
                 {
                     var att = doc.xcuda_Attachments.FirstOrDefault(x => x.Attachments.Reference != "Info");
-                    if(att == null) continue;
+                    if (att == null) continue;
                     var filePath = att.Attachments.FilePath;
                     if (string.IsNullOrEmpty(filePath))
                     {
-                        File.AppendAllText(Path.Combine(_destinatonFile.DirectoryName, "Instructions.txt"), $"{doc.Attached_documents_Id}\tAttachment\tBlank File\r\n");
+                        File.AppendAllText(Path.Combine(_destinatonFile.DirectoryName, "Instructions.txt"),
+                            $"{doc.Attached_documents_Id}\tAttachment\tBlank File\r\n");
                     }
                     else
                     {
-                      var fileinfo = new FileInfo(filePath);
-                    if (fileinfo.Extension != ".pdf") fileinfo = Change2Pdf(fileinfo);
-                        var desFile = DocSetPath != _destinatonFile.DirectoryName && DocSetPath != null? fileinfo.FullName.Replace($"{DocSetPath}", _destinatonFile.DirectoryName): Path.Combine(_destinatonFile.DirectoryName, fileinfo.Name);
+                        var fileinfo = new FileInfo(filePath);
+                        if (fileinfo.Extension != ".pdf") fileinfo = Change2Pdf(fileinfo);
+                        var desFile = DocSetPath != _destinatonFile.DirectoryName && DocSetPath != null
+                            ? fileinfo.FullName.Replace($"{DocSetPath}", _destinatonFile.DirectoryName)
+                            : Path.Combine(_destinatonFile.DirectoryName, fileinfo.Name);
                         // var desFile = Path.Combine(desPath, fileinfo.Name);
                         if (!File.Exists(desFile)) desFile = fileinfo.FullName;
-                    File.AppendAllText(Path.Combine(_destinatonFile.DirectoryName, "Instructions.txt"), $"{doc.Attached_documents_Id}\tAttachment\t{desFile}\r\n");  
+                        File.AppendAllText(Path.Combine(_destinatonFile.DirectoryName, "Instructions.txt"),
+                            $"{doc.Attached_documents_Id}\tAttachment\t{desFile}\r\n");
                     }
-                    
                 }
-                    
             }
         }
 
@@ -684,13 +667,10 @@ namespace Asycuda421
                 Console.WriteLine(e);
                 throw;
             }
-
         }
 
-        private  ASYCUDAItem SetupItemProperties(xcuda_ASYCUDA da)
+        private ASYCUDAItem SetupItemProperties(xcuda_ASYCUDA da)
         {
-
-
             var ai = new ASYCUDAItem();
 
             ai.Suppliers_link.Suppliers_link_code = "1";
@@ -709,10 +689,13 @@ namespace Asycuda421
             if (da.xcuda_ASYCUDA_ExtendedProperties.Customs_Procedure != null)
             {
                 if (da.xcuda_ASYCUDA_ExtendedProperties.Customs_Procedure.Extended_customs_procedure != null)
-                    ai.Tarification.Extended_customs_procedure.Text.Add(da.xcuda_ASYCUDA_ExtendedProperties.Customs_Procedure.Extended_customs_procedure);
+                    ai.Tarification.Extended_customs_procedure.Text.Add(da.xcuda_ASYCUDA_ExtendedProperties
+                        .Customs_Procedure.Extended_customs_procedure);
                 if (da.xcuda_ASYCUDA_ExtendedProperties.Customs_Procedure.Extended_customs_procedure != null)
-                    ai.Tarification.National_customs_procedure.Text.Add(da.xcuda_ASYCUDA_ExtendedProperties.Customs_Procedure.National_customs_procedure);
+                    ai.Tarification.National_customs_procedure.Text.Add(da.xcuda_ASYCUDA_ExtendedProperties
+                        .Customs_Procedure.National_customs_procedure);
             }
+
             ai.Tarification.Supplementary_unit.Add(new ASYCUDAItemTarificationSupplementary_unit());
             ai.Tarification.Supplementary_unit.Add(new ASYCUDAItemTarificationSupplementary_unit());
 
@@ -736,25 +719,28 @@ namespace Asycuda421
             ai.Valuation_item.Market_valuer = new ASYCUDAItemValuation_itemMarket_valuer();
 
 
-
             return ai;
         }
 
-        private  void SaveValuationItem(xcuda_Item item, ASYCUDAItem ai)
+        private void SaveValuationItem(xcuda_Item item, ASYCUDAItem ai)
         {
-            if (item.xcuda_Valuation_item != null )
+            if (item.xcuda_Valuation_item != null)
             {
-                if(item.Statistical_value != 0) ai.Valuation_item.Statistical_value = item.Statistical_value.ToString();
+                if (item.Statistical_value != 0)
+                    ai.Valuation_item.Statistical_value = item.Statistical_value.ToString();
                 if (item.xcuda_Valuation_item.Total_CIF_itm != 0)
                     ai.Valuation_item.Total_CIF_itm = item.xcuda_Valuation_item.Total_CIF_itm.ToString();
                 if (item.xcuda_Valuation_item.Total_cost_itm != 0)
                     ai.Valuation_item.Total_cost_itm = item.xcuda_Valuation_item.Total_cost_itm.ToString();
-                if (item.xcuda_Valuation_item.xcuda_Item_Invoice != null && item.xcuda_Valuation_item.xcuda_Item_Invoice.Amount_foreign_currency != 0)
+                if (item.xcuda_Valuation_item.xcuda_Item_Invoice != null &&
+                    item.xcuda_Valuation_item.xcuda_Item_Invoice.Amount_foreign_currency != 0)
                 {
                     var ivc = item.xcuda_Valuation_item.xcuda_Item_Invoice;
 
                     var av = new ASYCUDAItemValuation_itemItem_Invoice();
-                    av.Amount_foreign_currency = Math.Round(ivc.Amount_foreign_currency, 2).ToString();//Convert.ToDecimal(ivc.Amount_foreign_currency);
+                    av.Amount_foreign_currency =
+                        Math.Round(ivc.Amount_foreign_currency, 2)
+                            .ToString(); //Convert.ToDecimal(ivc.Amount_foreign_currency);
                     if (ivc.Amount_national_currency != 0)
                         av.Amount_national_currency = ivc.Amount_national_currency.ToString();
                     if (ivc.Currency_code != null)
@@ -764,8 +750,9 @@ namespace Asycuda421
 
                     ai.Valuation_item.Item_Invoice = av;
                 }
+
                 if (item.xcuda_Valuation_item.xcuda_item_external_freight != null
-                                            && item.xcuda_Valuation_item.xcuda_item_external_freight.Amount_foreign_currency != 0)
+                    && item.xcuda_Valuation_item.xcuda_item_external_freight.Amount_foreign_currency != 0)
                 {
                     var ief = item.xcuda_Valuation_item.xcuda_item_external_freight;
 
@@ -781,7 +768,9 @@ namespace Asycuda421
 
                     ai.Valuation_item.item_external_freight = af;
                 }
-                if (item.xcuda_Valuation_item.xcuda_Weight_itm != null && item.xcuda_Valuation_item.xcuda_Weight_itm.Gross_weight_itm != 0)
+
+                if (item.xcuda_Valuation_item.xcuda_Weight_itm != null &&
+                    item.xcuda_Valuation_item.xcuda_Weight_itm.Gross_weight_itm != 0)
                 {
                     var wi = new ASYCUDAItemValuation_itemWeight_itm();
                     if (item.xcuda_Valuation_item.xcuda_Weight_itm.Gross_weight_itm != 0)
@@ -795,42 +784,46 @@ namespace Asycuda421
         }
 
 
-        private  void SaveGoodsDescription(xcuda_Item item, ASYCUDAItem ai)
+        private void SaveGoodsDescription(xcuda_Item item, ASYCUDAItem ai)
         {
             if (item.xcuda_Goods_description != null && item.xcuda_Goods_description.Country_of_origin_code != null)
             {
                 if (item.xcuda_Goods_description.Commercial_Description != null)
-                    ai.Goods_description.Commercial_Description.Text.Add(CleanText(item.xcuda_Goods_description.Commercial_Description)); 
+                    ai.Goods_description.Commercial_Description.Text.Add(CleanText(item.xcuda_Goods_description
+                        .Commercial_Description));
                 if (item.xcuda_Goods_description.Country_of_origin_code != null)
-                    ai.Goods_description.Country_of_origin_code.Text.Add(item.xcuda_Goods_description.Country_of_origin_code);
+                    ai.Goods_description.Country_of_origin_code.Text.Add(item.xcuda_Goods_description
+                        .Country_of_origin_code);
                 if (item.xcuda_Goods_description.Description_of_goods != null)
-                    ai.Goods_description.Description_of_goods.Text.Add(item.xcuda_Goods_description.Description_of_goods);
+                    ai.Goods_description.Description_of_goods.Text.Add(
+                        item.xcuda_Goods_description.Description_of_goods);
             }
         }
 
         private string CleanText(string p)
         {
-
-            var s =  p.Replace(",", "");
+            var s = p.Replace(",", "");
             var t = Regex.Replace(s, @"[\u0000-\u0008\u000B\u000C\u000E-\u001F]", "");
-            string re = @"[^\x09\x0A\x0D\x20-\xD7FF\xE000-\xFFFD\x10000-x10FFFF]"; 
-            return Regex.Replace(t, re, ""); 
+            var re = @"[^\x09\x0A\x0D\x20-\xD7FF\xE000-\xFFFD\x10000-x10FFFF]";
+            return Regex.Replace(t, re, "");
         }
 
-        private  void SaveTarification(xcuda_Item item, ASYCUDAItem ai)
+        private void SaveTarification(xcuda_Item item, ASYCUDAItem ai)
         {
             if (item.xcuda_Tarification != null)
             {
                 if (item.xcuda_Tarification.Extended_customs_procedure != null)
                 {
                     ai.Tarification.Extended_customs_procedure.Text.Clear();
-                    ai.Tarification.Extended_customs_procedure.Text.Add(item.xcuda_Tarification.Extended_customs_procedure);
+                    ai.Tarification.Extended_customs_procedure.Text.Add(item.xcuda_Tarification
+                        .Extended_customs_procedure);
                 }
 
                 if (item.xcuda_Tarification.National_customs_procedure != null)
                 {
                     ai.Tarification.National_customs_procedure.Text.Clear();
-                    ai.Tarification.National_customs_procedure.Text.Add(item.xcuda_Tarification.National_customs_procedure);
+                    ai.Tarification.National_customs_procedure.Text.Add(item.xcuda_Tarification
+                        .National_customs_procedure);
                 }
 
                 if (item.xcuda_Tarification.Item_price != 0)
@@ -840,19 +833,21 @@ namespace Asycuda421
             }
         }
 
-        private  void SaveHSCode(xcuda_Item item, ASYCUDAItem ai)
+        private void SaveHSCode(xcuda_Item item, ASYCUDAItem ai)
         {
             if (item.xcuda_Tarification.xcuda_HScode != null)
             {
                 if (item.xcuda_Tarification.xcuda_HScode.Commodity_code != null)
-                    ai.Tarification.HScode.Commodity_code.Text.Add(item.xcuda_Tarification.xcuda_HScode.Commodity_code); // item.xcuda_Tarification.xcuda_HScode.Commodity_code;
+                    ai.Tarification.HScode.Commodity_code.Text.Add(item.xcuda_Tarification.xcuda_HScode
+                        .Commodity_code); // item.xcuda_Tarification.xcuda_HScode.Commodity_code;
                 // ai.Tarification.HScode.Precision_1 = item.xcuda_Tarification.xcuda_HScode.Precision_1;
-                if (item.xcuda_Tarification.xcuda_HScode.Precision_4 != null && item.ItemNumber.Length <= 20)//
-                    ai.Tarification.HScode.Precision_4.Text.Add(item.xcuda_Tarification.xcuda_HScode.Precision_4.Trim().Truncate(20));
+                if (item.xcuda_Tarification.xcuda_HScode.Precision_4 != null && item.ItemNumber.Length <= 20) //
+                    ai.Tarification.HScode.Precision_4.Text.Add(item.xcuda_Tarification.xcuda_HScode.Precision_4.Trim()
+                        .Truncate(20));
             }
         }
 
-        private  void SaveSupplementaryUnit(xcuda_Item item, ASYCUDAItem ai)
+        private void SaveSupplementaryUnit(xcuda_Item item, ASYCUDAItem ai)
         {
             for (var i = 0; i < item.xcuda_Tarification.xcuda_Supplementary_unit.Count; i++)
             {
@@ -866,13 +861,14 @@ namespace Asycuda421
                     if (supp.Suppplementary_unit_name != null)
                         asupp.Suppplementary_unit_name.Text.Add(supp.Suppplementary_unit_name);
                     if (supp.Suppplementary_unit_quantity != null)
-                        asupp.Suppplementary_unit_quantity = supp.Suppplementary_unit_quantity.GetValueOrDefault().ToString();
+                        asupp.Suppplementary_unit_quantity =
+                            supp.Suppplementary_unit_quantity.GetValueOrDefault().ToString();
                     ai.Tarification.Supplementary_unit.Insert(i, asupp);
                 }
             }
         }
 
-        private  void SaveRegistration(xcuda_ASYCUDA da, ASYCUDA a)
+        private void SaveRegistration(xcuda_ASYCUDA da, ASYCUDA a)
         {
             if (da.xcuda_Identification.xcuda_Registration != null)
             {
@@ -883,27 +879,26 @@ namespace Asycuda421
             }
         }
 
-        private  void SaveManifestReferenceNumber(xcuda_ASYCUDA da, ASYCUDA a)
+        private void SaveManifestReferenceNumber(xcuda_ASYCUDA da, ASYCUDA a)
         {
             if (da.xcuda_Identification.Manifest_reference_number != null)
-            {
                 a.Identification.Manifest_reference_number.Text.Add(da.xcuda_Identification.Manifest_reference_number);
-            }
         }
 
-        private  void SaveOfficeSegment(xcuda_ASYCUDA da, ASYCUDA a)
+        private void SaveOfficeSegment(xcuda_ASYCUDA da, ASYCUDA a)
         {
             if (da.xcuda_Identification.xcuda_Office_segment != null)
             {
                 if (da.xcuda_Identification.xcuda_Office_segment.Customs_clearance_office_code != null)
-                    a.Identification.Office_segment.Customs_clearance_office_code.Text.Add(da.xcuda_Identification.xcuda_Office_segment.Customs_clearance_office_code);
+                    a.Identification.Office_segment.Customs_clearance_office_code.Text.Add(da.xcuda_Identification
+                        .xcuda_Office_segment.Customs_clearance_office_code);
                 if (da.xcuda_Identification.xcuda_Office_segment.Customs_Clearance_office_name != null)
-                    a.Identification.Office_segment.Customs_Clearance_office_name.Text.Add(da.xcuda_Identification.xcuda_Office_segment.Customs_Clearance_office_name);
-
+                    a.Identification.Office_segment.Customs_Clearance_office_name.Text.Add(da.xcuda_Identification
+                        .xcuda_Office_segment.Customs_Clearance_office_name);
             }
         }
 
-        private  void SaveDeclarant(xcuda_ASYCUDA da, ASYCUDA a)
+        private void SaveDeclarant(xcuda_ASYCUDA da, ASYCUDA a)
         {
             if (da.xcuda_Declarant != null)
             {
@@ -915,7 +910,6 @@ namespace Asycuda421
                     a.Declarant.Declarant_representative.Text.Add(da.xcuda_Declarant.Declarant_representative);
                 if (da.xcuda_Declarant.Number != null)
                     a.Declarant.Reference.Number.Text.Add(da.xcuda_Declarant.Number);
-
             }
         }
     }

@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-
 using Omu.ValueInjecter;
 using Omu.ValueInjecter.Injections;
 
@@ -23,17 +22,14 @@ namespace MRManager.Data.ValueInjector
 
         private static object GetClone(PropertyInfo sp, object val)
         {
-            if (sp.PropertyType.IsValueType || sp.PropertyType == typeof(string))
-            {
-                return val;
-            }
+            if (sp.PropertyType.IsValueType || sp.PropertyType == typeof(string)) return val;
 
             if (sp.PropertyType.IsArray)
             {
                 var arr = val as Array;
                 var arrClone = arr.Clone() as Array;
 
-                for (int index = 0; index < arr.Length; index++)
+                for (var index = 0; index < arr.Length; index++)
                 {
                     var a = arr.GetValue(index);
                     if (a.GetType().IsValueType || a is string) continue;
@@ -57,8 +53,10 @@ namespace MRManager.Data.ValueInjector
                     var addMethod = listType.GetMethod("Add");
                     foreach (var o in val as IEnumerable)
                     {
-                        var listItem = genericType.IsValueType || genericType == typeof(string) ? o : Activator.CreateInstance(genericType).InjectFrom<CloneInjection>(o);
-                        addMethod.Invoke(list, new[] { listItem });
+                        var listItem = genericType.IsValueType || genericType == typeof(string)
+                            ? o
+                            : Activator.CreateInstance(genericType).InjectFrom<CloneInjection>(o);
+                        addMethod.Invoke(list, new[] {listItem});
                     }
 
                     return list;
@@ -70,7 +68,7 @@ namespace MRManager.Data.ValueInjector
 
             //for simple object types create a new instace and apply the clone injection on it
             return Activator.CreateInstance(sp.PropertyType)
-                            .InjectFrom<CloneInjection>(val);
+                .InjectFrom<CloneInjection>(val);
         }
     }
 }

@@ -1,20 +1,17 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Reflection.Emit;
 using System.Reflection;
+using System.Reflection.Emit;
 
 namespace AttachedCommandBehavior
 {
     /// <summary>
-    /// Generates delegates according to the specified signature on runtime
+    ///     Generates delegates according to the specified signature on runtime
     /// </summary>
     public static class EventHandlerGenerator
     {
         /// <summary>
-        /// Generates a delegate with a matching signature of the supplied eventHandlerType
-        /// This method only supports Events that have a delegate of type void
+        ///     Generates a delegate with a matching signature of the supplied eventHandlerType
+        ///     This method only supports Events that have a delegate of type void
         /// </summary>
         /// <param name="eventInfo">The delegate type to wrap. Note that this must always be a void delegate</param>
         /// <param name="methodToInvoke">The method to invoke</param>
@@ -26,7 +23,8 @@ namespace AttachedCommandBehavior
             var eventHandlerInfo = eventHandlerType.GetMethod("Invoke");
             var returnType = eventHandlerInfo.ReturnParameter.ParameterType;
             if (returnType != typeof(void))
-                throw new ApplicationException("Delegate has a return type. This only supprts event handlers that are void");
+                throw new ApplicationException(
+                    "Delegate has a return type. This only supprts event handlers that are void");
 
             var delegateParameters = eventHandlerInfo.GetParameters();
             //Get the list of type of parameters. Please note that we do + 1 because we have to push the object where the method resides i.e methodInvoker parameter
@@ -69,6 +67,5 @@ namespace AttachedCommandBehavior
             //create a delegate from the dynamic method
             return handler.CreateDelegate(eventHandlerType, methodInvoker);
         }
-
     }
 }

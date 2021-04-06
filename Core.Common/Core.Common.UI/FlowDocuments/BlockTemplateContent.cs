@@ -5,25 +5,20 @@ namespace Core.Common.UI.FlowDocuments
 {
     public class BlockTemplateContent : Section
     {
-        private static readonly DependencyProperty TemplateProperty = DependencyProperty.Register("Template", typeof(DataTemplate), typeof(BlockTemplateContent), new PropertyMetadata(OnTemplateChanged));
-
-        public DataTemplate Template
-        {
-            get
-            {
-                return (DataTemplate)GetValue(TemplateProperty);
-            }
-            set
-            {
-                SetValue(TemplateProperty, value);
-            }
-        }
+        private static readonly DependencyProperty TemplateProperty = DependencyProperty.Register("Template",
+            typeof(DataTemplate), typeof(BlockTemplateContent), new PropertyMetadata(OnTemplateChanged));
 
 
         public BlockTemplateContent()
         {
             Helpers.FixupDataContext(this);
             Loaded += BlockTemplateContent_Loaded;
+        }
+
+        public DataTemplate Template
+        {
+            get => (DataTemplate) GetValue(TemplateProperty);
+            set => SetValue(TemplateProperty, value);
         }
 
 
@@ -38,8 +33,8 @@ namespace Core.Common.UI.FlowDocuments
             Blocks.Clear();
             if (template != null)
             {
-                FrameworkContentElement element = Helpers.LoadDataTemplate(template);
-                Blocks.Add((Block)element);
+                var element = Helpers.LoadDataTemplate(template);
+                Blocks.Add((Block) element);
             }
         }
 
@@ -51,7 +46,7 @@ namespace Core.Common.UI.FlowDocuments
 
         private static void OnTemplateChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            ((BlockTemplateContent)d).OnTemplateChanged((DataTemplate)e.NewValue);
+            ((BlockTemplateContent) d).OnTemplateChanged((DataTemplate) e.NewValue);
         }
     }
 }

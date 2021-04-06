@@ -4,48 +4,46 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
+using System;
+using System.Globalization;
+using System.Windows.Input;
+
 namespace Core.Common.UI
 {
-    using System;
-    using System.Globalization;
-    using System.Windows.Input;
     //using Microsoft.Kinect.Toolkit.Properties;
 
     /// <summary>
-    /// Command that executes a delegate that takes no parameters.
+    ///     Command that executes a delegate that takes no parameters.
     /// </summary>
     public class RelayCommand : ICommand
     {
         /// <summary>
-        /// Delegate to be executed 
+        ///     Predicate determining whether this command can currently execute
         /// </summary>
-        private Action executeDelegate;
-
-        /// <summary>
-        /// Predicate determining whether this command can currently execute
-        /// </summary>
-        private Func<bool> canExecuteDelegate;
+        private readonly Func<bool> canExecuteDelegate;
 
         private EventHandler canExecuteEventhandler;
 
         /// <summary>
-        /// Initializes a new instance of the RelayCommand class with the provided delegate and predicate
+        ///     Delegate to be executed
+        /// </summary>
+        private readonly Action executeDelegate;
+
+        /// <summary>
+        ///     Initializes a new instance of the RelayCommand class with the provided delegate and predicate
         /// </summary>
         /// <param name="executeDelegate">Delegate to be executed</param>
         /// <param name="canExecuteDelegate">Predicate determining whether this command can currently execute</param>
         public RelayCommand(Action executeDelegate, Func<bool> canExecuteDelegate)
         {
-            if (null == executeDelegate)
-            {
-                throw new ArgumentNullException("executeDelegate");
-            }
+            if (null == executeDelegate) throw new ArgumentNullException("executeDelegate");
 
             this.canExecuteDelegate = canExecuteDelegate;
             this.executeDelegate = executeDelegate;
         }
 
         /// <summary>
-        /// Initializes a new instance of the RelayCommand class with the provided delegate
+        ///     Initializes a new instance of the RelayCommand class with the provided delegate
         /// </summary>
         /// <param name="executeDelegate">Delegate to be executed</param>
         public RelayCommand(Action executeDelegate)
@@ -54,7 +52,7 @@ namespace Core.Common.UI
         }
 
         /// <summary>
-        /// Event signaling that the possibility of this command executing has changed
+        ///     Event signaling that the possibility of this command executing has changed
         /// </summary>
         public event EventHandler CanExecuteChanged
         {
@@ -72,22 +70,19 @@ namespace Core.Common.UI
         }
 
         /// <summary>
-        /// Evaluates whether the command can currently execute
+        ///     Evaluates whether the command can currently execute
         /// </summary>
         /// <param name="parameter">ICommand required parameter that is ignored</param>
         /// <returns>True if the command can currently execute, false otherwise</returns>
         public bool CanExecute(object parameter)
         {
-            if (null == canExecuteDelegate)
-            {
-                return true;
-            }
+            if (null == canExecuteDelegate) return true;
 
             return canExecuteDelegate.Invoke();
         }
 
         /// <summary>
-        /// Executes the associated delegate
+        ///     Executes the associated delegate
         /// </summary>
         /// <param name="parameter">ICommand required parameter that is ignored</param>
         public void Execute(object parameter)
@@ -96,17 +91,14 @@ namespace Core.Common.UI
         }
 
         /// <summary>
-        /// Raises the CanExecuteChanged event to signal that the possibility of execution has changed
+        ///     Raises the CanExecuteChanged event to signal that the possibility of execution has changed
         /// </summary>
         public void InvokeCanExecuteChanged()
         {
             if (null != canExecuteDelegate)
             {
                 var handler = canExecuteEventhandler;
-                if (null != handler)
-                {
-                    handler(this, EventArgs.Empty);
-                }
+                if (null != handler) handler(this, EventArgs.Empty);
             }
         }
     }
@@ -114,35 +106,32 @@ namespace Core.Common.UI
     public class RelayCommand<T> : ICommand where T : class
     {
         /// <summary>
-        /// Delegate to be executed 
+        ///     Predicate determining whether this command can currently execute
         /// </summary>
-        private Action<T> executeDelegate;
-
-        /// <summary>
-        /// Predicate determining whether this command can currently execute
-        /// </summary>
-        private Predicate<T> canExecuteDelegate;
+        private readonly Predicate<T> canExecuteDelegate;
 
         private EventHandler canExecuteEventhandler;
 
         /// <summary>
-        /// Initializes a new instance of the RelayCommand class with the provided delegate and predicate
+        ///     Delegate to be executed
+        /// </summary>
+        private readonly Action<T> executeDelegate;
+
+        /// <summary>
+        ///     Initializes a new instance of the RelayCommand class with the provided delegate and predicate
         /// </summary>
         /// <param name="executeDelegate">Delegate to be executed</param>
         /// <param name="canExecuteDelegate">Predicate determining whether this command can currently execute</param>
         public RelayCommand(Action<T> executeDelegate, Predicate<T> canExecuteDelegate)
         {
-            if (null == executeDelegate)
-            {
-                throw new ArgumentNullException("executeDelegate");
-            }
+            if (null == executeDelegate) throw new ArgumentNullException("executeDelegate");
 
             this.canExecuteDelegate = canExecuteDelegate;
             this.executeDelegate = executeDelegate;
         }
 
         /// <summary>
-        /// Initializes a new instance of the RelayCommand class with the provided delegate
+        ///     Initializes a new instance of the RelayCommand class with the provided delegate
         /// </summary>
         /// <param name="executeDelegate">Delegate to be executed</param>
         public RelayCommand(Action<T> executeDelegate)
@@ -151,7 +140,7 @@ namespace Core.Common.UI
         }
 
         /// <summary>
-        /// Event signaling that the possibility of this command executing has changed
+        ///     Event signaling that the possibility of this command executing has changed
         /// </summary>
         public event EventHandler CanExecuteChanged
         {
@@ -169,7 +158,7 @@ namespace Core.Common.UI
         }
 
         /// <summary>
-        /// Evaluates whether the command can currently execute
+        ///     Evaluates whether the command can currently execute
         /// </summary>
         /// <param name="parameter">Context of type T used for evaluating the current possibility of execution</param>
         /// <returns>True if the command can currently execute, false otherwise</returns>
@@ -181,52 +170,41 @@ namespace Core.Common.UI
                 throw new ArgumentNullException("parameter");
             }
 
-            if (null == canExecuteDelegate)
-            {
-                return true;
-            }
+            if (null == canExecuteDelegate) return true;
 
             var castParameter = parameter as T;
             if (null == castParameter)
-            {
-                throw new InvalidCastException(string.Format(CultureInfo.InvariantCulture, UIResources.DelegateCommandCastException, parameter.GetType().FullName, typeof(T).FullName));
-            }
+                throw new InvalidCastException(string.Format(CultureInfo.InvariantCulture,
+                    UIResources.DelegateCommandCastException, parameter.GetType().FullName, typeof(T).FullName));
 
             return canExecuteDelegate.Invoke(castParameter);
         }
 
         /// <summary>
-        /// Executes the associated delegate
+        ///     Executes the associated delegate
         /// </summary>
         /// <param name="parameter">Parameter of type T passed to the associated delegate</param>
         public void Execute(object parameter)
         {
-            if (null == parameter)
-            {
-                throw new ArgumentNullException("parameter");
-            }
+            if (null == parameter) throw new ArgumentNullException("parameter");
 
             var castParameter = parameter as T;
             if (null == castParameter)
-            {
-                throw new InvalidCastException(string.Format(CultureInfo.InvariantCulture, UIResources.DelegateCommandCastException, parameter.GetType().FullName, typeof(T).FullName));
-            }
+                throw new InvalidCastException(string.Format(CultureInfo.InvariantCulture,
+                    UIResources.DelegateCommandCastException, parameter.GetType().FullName, typeof(T).FullName));
 
             executeDelegate.Invoke(castParameter);
         }
 
         /// <summary>
-        /// Raises the CanExecuteChanged event to signal that the possibility of execution has changed
+        ///     Raises the CanExecuteChanged event to signal that the possibility of execution has changed
         /// </summary>
         public void InvokeCanExecuteChanged()
         {
             if (null != canExecuteDelegate)
             {
                 var handler = canExecuteEventhandler;
-                if (null != handler)
-                {
-                    handler(this, EventArgs.Empty);
-                }
+                if (null != handler) handler(this, EventArgs.Empty);
             }
         }
     }

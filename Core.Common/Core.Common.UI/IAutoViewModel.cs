@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.ObjectModel;
 using Core.Common.UI.DataVirtualization;
 
 namespace Core.Common.UI
@@ -14,6 +9,5 @@ namespace Core.Common.UI
         ObservableCollection<T> SelectedItems { get; set; }
         void ViewAll();
         void SelectAll();
-
     }
 }

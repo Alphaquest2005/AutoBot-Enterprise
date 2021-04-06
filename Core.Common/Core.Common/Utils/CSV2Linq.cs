@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+
 //using System.Text;
 //using System.Threading.Tasks;
 //using System.IO;
@@ -8,7 +9,6 @@ using System.Linq;
 
 namespace Core.Common.CSV
 {
-
     public class CsvParseException : Exception
     {
         public CsvParseException(string message)
@@ -19,16 +19,7 @@ namespace Core.Common.CSV
 
     public static class CSVExtensions
     {
-        private enum State
-        {
-            AtBeginningOfToken,
-            InNonQuotedToken,
-            InQuotedToken,
-            ExpectingComma,
-            InEscapedCharacter
-        };
-
-        public static string[] CsvSplit(this String source)
+        public static string[] CsvSplit(this string source)
         {
             var splitString = new List<string>();
             List<int> slashesToRemove = null;
@@ -37,7 +28,6 @@ namespace Core.Common.CSV
             var tokenStart = 0;
             var len = sourceCharArray.Length;
             for (var i = 0; i < len; ++i)
-            {
                 switch (state)
                 {
                     case State.AtBeginningOfToken:
@@ -47,12 +37,14 @@ namespace Core.Common.CSV
                             slashesToRemove = new List<int>();
                             continue;
                         }
+
                         if (sourceCharArray[i] == ',')
                         {
                             splitString.Add("");
                             tokenStart = i + 1;
                             continue;
                         }
+
                         state = State.InNonQuotedToken;
                         continue;
                     case State.InNonQuotedToken:
@@ -63,6 +55,7 @@ namespace Core.Common.CSV
                             state = State.AtBeginningOfToken;
                             tokenStart = i + 1;
                         }
+
                         continue;
                     case State.InQuotedToken:
                         if (sourceCharArray[i] == '"')
@@ -70,12 +63,13 @@ namespace Core.Common.CSV
                             state = State.ExpectingComma;
                             continue;
                         }
+
                         if (sourceCharArray[i] == '\\')
                         {
                             state = State.InEscapedCharacter;
                             slashesToRemove.Add(i - tokenStart);
-                            continue;
                         }
+
                         continue;
                     case State.ExpectingComma:
                         if (sourceCharArray[i] != ',')
@@ -84,12 +78,13 @@ namespace Core.Common.CSV
                             // throw new CsvParseException("Expecting comma");
                             continue;
                         }
+
                         var stringWithSlashes =
                             source.Substring(tokenStart, i - tokenStart);
                         foreach (var item in slashesToRemove.Reverse<int>())
                             stringWithSlashes =
                                 stringWithSlashes.Remove(item, 1);
-                        splitString.Add( stringWithSlashes.Substring(1,stringWithSlashes.Length - 2).Trim());
+                        splitString.Add(stringWithSlashes.Substring(1, stringWithSlashes.Length - 2).Trim());
                         state = State.AtBeginningOfToken;
                         tokenStart = i + 1;
                         continue;
@@ -97,7 +92,6 @@ namespace Core.Common.CSV
                         state = State.InQuotedToken;
                         continue;
                 }
-            }
             switch (state)
             {
                 case State.AtBeginningOfToken:
@@ -122,7 +116,17 @@ namespace Core.Common.CSV
                 case State.InEscapedCharacter:
                     throw new CsvParseException("Expecting escaped character");
             }
+
             throw new CsvParseException("Unexpected error");
+        }
+
+        private enum State
+        {
+            AtBeginningOfToken,
+            InNonQuotedToken,
+            InQuotedToken,
+            ExpectingComma,
+            InEscapedCharacter
         }
     }
 }

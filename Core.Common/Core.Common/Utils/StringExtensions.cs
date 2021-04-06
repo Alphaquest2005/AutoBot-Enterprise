@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Core.Common.Utils
 {
@@ -10,13 +6,13 @@ namespace Core.Common.Utils
     {
         public static string Truncate(this string value, int maxLength)
         {
-            if (String.IsNullOrEmpty(value)) return value;
+            if (string.IsNullOrEmpty(value)) return value;
             return value.Length <= maxLength ? value : value.Substring(0, maxLength);
         }
 
         public static string Right(this string value, int maxLength)
         {
-            if (String.IsNullOrEmpty(value)) return value;
+            if (string.IsNullOrEmpty(value)) return value;
             return value.Length <= maxLength ? value : value.Substring(value.Length - maxLength);
         }
 
@@ -24,28 +20,22 @@ namespace Core.Common.Utils
 
         {
             if (val == null) val = "";
-            int len = 0;
-            string retVal = String.Empty;
+            var len = 0;
+            var retVal = string.Empty;
             try
 
             {
                 len = val.Length;
                 retVal = val;
-                for (int i = 0; i < fixedLen - len - 1; i++)
-                {
-                
-                    retVal = retVal + " ";
-                }
-
+                for (var i = 0; i < fixedLen - len - 1; i++) retVal = retVal + " ";
             }
             catch (Exception)
 
             {
                 throw;
-
             }
-            return retVal;
 
+            return retVal;
         }
 
         public static string UpdateToCurrentUser(string dataFolder)

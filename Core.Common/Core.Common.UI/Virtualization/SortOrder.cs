@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Core.Common.UI.DataVirtualization
+﻿namespace Core.Common.UI.DataVirtualization
 {
     public enum SortOrder
     {

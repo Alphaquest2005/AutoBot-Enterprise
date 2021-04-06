@@ -3,35 +3,30 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Dynamic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Core.Common.Extensions
 {
     public class BetterExpando : DynamicObject, IDictionary<string, object>
     {
-        private Dictionary<string, object> _dict;
-        private bool _ignoreCase;
-        private bool _returnEmptyStringForMissingProperties;
+        private readonly Dictionary<string, object> _dict;
+        private readonly bool _ignoreCase;
+        private readonly bool _returnEmptyStringForMissingProperties;
 
         /// <summary>
-        /// Creates a BetterExpando object/
+        ///     Creates a BetterExpando object/
         /// </summary>
         /// <param name="ignoreCase">Don't be strict about property name casing.</param>
         /// <param name="returnEmptyStringForMissingProperties">If true, returns String.Empty for missing properties.</param>
         /// <param name="root">An ExpandoObject to consume and expose.</param>
         public BetterExpando(bool ignoreCase = false,
-          bool returnEmptyStringForMissingProperties = true,
-          ExpandoObject root = null)
+            bool returnEmptyStringForMissingProperties = true,
+            ExpandoObject root = null)
         {
             if (root == null) root = new ExpandoObject();
             _dict = new Dictionary<string, object>();
             _ignoreCase = ignoreCase;
             _returnEmptyStringForMissingProperties = returnEmptyStringForMissingProperties;
-            if (root != null)
-            {
-                Augment(root);
-            }
+            if (root != null) Augment(root);
         }
 
         public override bool TrySetMember(SetMemberBinder binder, object value)
@@ -48,10 +43,8 @@ namespace Core.Common.Extensions
                 UpdateDictionary(NormalisePropertyName(key), value);
                 return true;
             }
-            else
-            {
-                return base.TrySetIndex(binder, indexes, value);
-            }
+
+            return base.TrySetIndex(binder, indexes, value);
         }
 
         public override bool TryGetMember(GetMemberBinder binder, out object result)
@@ -62,34 +55,36 @@ namespace Core.Common.Extensions
                 result = _dict[key];
                 return true;
             }
+
             if (_returnEmptyStringForMissingProperties)
             {
                 result = null;
                 return true;
             }
+
             return base.TryGetMember(binder, out result);
         }
 
         /// <summary>
-        /// Combine two instances together to get a union.
+        ///     Combine two instances together to get a union.
         /// </summary>
         /// <returns>This instance but with additional properties</returns>
         /// <remarks>Existing properties are not overwritten.</remarks>
         public dynamic Augment(BetterExpando obj)
         {
             obj._dict
-              .Where(pair => !_dict.ContainsKey(NormalisePropertyName(pair.Key)))
-              .ToList()
-              .ForEach(pair => UpdateDictionary(pair.Key, pair.Value));
+                .Where(pair => !_dict.ContainsKey(NormalisePropertyName(pair.Key)))
+                .ToList()
+                .ForEach(pair => UpdateDictionary(pair.Key, pair.Value));
             return this;
         }
 
         public dynamic Augment(ExpandoObject obj)
         {
-            ((IDictionary<string, object>)obj)
-              .Where(pair => !_dict.ContainsKey(NormalisePropertyName(pair.Key)))
-              .ToList()
-              .ForEach(pair => UpdateDictionary(pair.Key, pair.Value));
+            obj
+                .Where(pair => !_dict.ContainsKey(NormalisePropertyName(pair.Key)))
+                .ToList()
+                .ForEach(pair => UpdateDictionary(pair.Key, pair.Value));
             return this;
         }
 
@@ -97,12 +92,12 @@ namespace Core.Common.Extensions
         {
             propertyName = NormalisePropertyName(propertyName);
             return _dict.ContainsKey(propertyName)
-              ? (T)_dict[propertyName]
-              : defaultValue;
+                ? (T) _dict[propertyName]
+                : defaultValue;
         }
 
         /// <summary>
-        /// Check if BetterExpando contains a property.
+        ///     Check if BetterExpando contains a property.
         /// </summary>
         /// <remarks>Respects the case sensitivity setting</remarks>
         public bool HasProperty(string name)
@@ -111,24 +106,20 @@ namespace Core.Common.Extensions
         }
 
         /// <summary>
-        /// Returns this object as comma-separated name-value pairs.
+        ///     Returns this object as comma-separated name-value pairs.
         /// </summary>
         public override string ToString()
         {
-            return String.Join(", ", _dict.Select(pair => pair.Key + " = " + pair.Value ?? "(null)").ToArray());
+            return string.Join(", ", _dict.Select(pair => pair.Key + " = " + pair.Value ?? "(null)").ToArray());
         }
 
         private void UpdateDictionary(string name, object value)
         {
             var key = NormalisePropertyName(name);
             if (_dict.ContainsKey(key))
-            {
                 _dict[key] = value;
-            }
             else
-            {
                 _dict.Add(key, value);
-            }
         }
 
         private string NormalisePropertyName(string propertyName)
@@ -138,6 +129,7 @@ namespace Core.Common.Extensions
 
 
         #region IDictionary<string,object> members
+
         IEnumerator<KeyValuePair<string, object>> IEnumerable<KeyValuePair<string, object>>.GetEnumerator()
         {
             return _dict.GetEnumerator();
@@ -145,12 +137,12 @@ namespace Core.Common.Extensions
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            return ((IEnumerable)_dict).GetEnumerator();
+            return ((IEnumerable) _dict).GetEnumerator();
         }
 
         void ICollection<KeyValuePair<string, object>>.Add(KeyValuePair<string, object> item)
         {
-            ((ICollection<KeyValuePair<string, object>>)_dict).Add(item);
+            ((ICollection<KeyValuePair<string, object>>) _dict).Add(item);
         }
 
         void ICollection<KeyValuePair<string, object>>.Clear()
@@ -160,28 +152,23 @@ namespace Core.Common.Extensions
 
         bool ICollection<KeyValuePair<string, object>>.Contains(KeyValuePair<string, object> item)
         {
-            return ((ICollection<KeyValuePair<string, object>>)_dict).Contains(item);
+            return ((ICollection<KeyValuePair<string, object>>) _dict).Contains(item);
         }
 
         void ICollection<KeyValuePair<string, object>>.CopyTo(KeyValuePair<string, object>[] array, int arrayIndex)
         {
-            ((ICollection<KeyValuePair<string, object>>)_dict).CopyTo(array, arrayIndex);
+            ((ICollection<KeyValuePair<string, object>>) _dict).CopyTo(array, arrayIndex);
         }
 
         bool ICollection<KeyValuePair<string, object>>.Remove(KeyValuePair<string, object> item)
         {
-            return ((ICollection<KeyValuePair<string, object>>)_dict).Remove(item);
+            return ((ICollection<KeyValuePair<string, object>>) _dict).Remove(item);
         }
 
-        int ICollection<KeyValuePair<string, object>>.Count
-        {
-            get { return _dict.Count; }
-        }
+        int ICollection<KeyValuePair<string, object>>.Count => _dict.Count;
 
-        bool ICollection<KeyValuePair<string, object>>.IsReadOnly
-        {
-            get { return ((ICollection<KeyValuePair<string, object>>)_dict).IsReadOnly; }
-        }
+        bool ICollection<KeyValuePair<string, object>>.IsReadOnly =>
+            ((ICollection<KeyValuePair<string, object>>) _dict).IsReadOnly;
 
         bool IDictionary<string, object>.ContainsKey(string key)
         {
@@ -209,8 +196,7 @@ namespace Core.Common.Extensions
             {
                 try
                 {
-                   
-                    return  _dict.ContainsKey(key)? _dict[key] : null;
+                    return _dict.ContainsKey(key) ? _dict[key] : null;
                 }
                 catch (Exception e)
                 {
@@ -222,12 +208,10 @@ namespace Core.Common.Extensions
             {
                 try
                 {
-                    if(_dict.ContainsKey(key))
-                    _dict[key] = value;
+                    if (_dict.ContainsKey(key))
+                        _dict[key] = value;
                     else
-                    {
                         _dict.Add(key, value);
-                    }
                 }
                 catch (Exception e)
                 {
@@ -237,17 +221,11 @@ namespace Core.Common.Extensions
             }
         }
 
-        ICollection<string> IDictionary<string, object>.Keys
-        {
-            get { return _dict.Keys; }
-        }
+        ICollection<string> IDictionary<string, object>.Keys => _dict.Keys;
 
-        ICollection<object> IDictionary<string, object>.Values
-        {
-            get { return _dict.Values; }
-        }
+        ICollection<object> IDictionary<string, object>.Values => _dict.Values;
+
         #endregion
-
     }
 
     //    1: /// <summary>

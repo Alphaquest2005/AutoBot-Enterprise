@@ -1,117 +1,119 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+<xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema">
   <xs:element name="Licence">
     <xs:complexType>
       <xs:sequence>
         <xs:element name="General_segment">
           <xs:complexType>
             <xs:sequence>
-              
+
               <xs:element minOccurs="0" name="Importer_code">
                 <xs:complexType mixed="true">
-                  <xs:sequence >
+                  <xs:sequence>
                     <xs:element minOccurs="0" name="null" />
                   </xs:sequence>
                 </xs:complexType>
               </xs:element>
               <xs:element minOccurs="0" name="Owner_code">
                 <xs:complexType mixed="true">
-                  <xs:sequence >
+                  <xs:sequence>
                     <xs:element minOccurs="0" name="null" />
                   </xs:sequence>
                 </xs:complexType>
               </xs:element>
               <xs:element minOccurs="0" name="Importer_name">
                 <xs:complexType mixed="true">
-                  <xs:sequence >
+                  <xs:sequence>
                     <xs:element minOccurs="0" name="null" />
                   </xs:sequence>
                 </xs:complexType>
               </xs:element>
               <xs:element minOccurs="0" name="Importer_contact">
                 <xs:complexType mixed="true">
-                  <xs:sequence >
+                  <xs:sequence>
                     <xs:element minOccurs="0" name="null" />
                   </xs:sequence>
                 </xs:complexType>
               </xs:element>
               <xs:element minOccurs="0" name="Importer_telephone">
                 <xs:complexType mixed="true">
-                  <xs:sequence >
+                  <xs:sequence>
                     <xs:element minOccurs="0" name="null" />
                   </xs:sequence>
                 </xs:complexType>
               </xs:element>
               <xs:element minOccurs="0" name="Importer_cellphone">
                 <xs:complexType mixed="true">
-                  <xs:sequence >
+                  <xs:sequence>
                     <xs:element minOccurs="0" name="null" />
                   </xs:sequence>
                 </xs:complexType>
               </xs:element>
               <xs:element minOccurs="0" name="Importer_email">
                 <xs:complexType mixed="true">
-                  <xs:sequence >
+                  <xs:sequence>
                     <xs:element minOccurs="0" name="null" />
                   </xs:sequence>
                 </xs:complexType>
               </xs:element>
               <xs:element minOccurs="0" name="Exporter_name">
                 <xs:complexType mixed="true">
-                  <xs:sequence >
+                  <xs:sequence>
                     <xs:element minOccurs="0" name="null" />
                   </xs:sequence>
                 </xs:complexType>
               </xs:element>
               <xs:element minOccurs="0" name="Exporter_address">
                 <xs:complexType mixed="true">
-                  <xs:sequence >
+                  <xs:sequence>
                     <xs:element minOccurs="0" name="null" />
                   </xs:sequence>
                 </xs:complexType>
               </xs:element>
               <xs:element minOccurs="0" name="Exporter_country_code">
                 <xs:complexType mixed="true">
-                  <xs:sequence >
+                  <xs:sequence>
                     <xs:element minOccurs="0" name="null" />
                   </xs:sequence>
                 </xs:complexType>
               </xs:element>
               <xs:element minOccurs="0" name="Exporter_country_name">
                 <xs:complexType mixed="true">
-                  <xs:sequence >
+                  <xs:sequence>
                     <xs:element minOccurs="0" name="null" />
                   </xs:sequence>
                 </xs:complexType>
               </xs:element>
               <xs:element minOccurs="0" name="Exporter_telephone">
                 <xs:complexType mixed="true">
-                  <xs:sequence >
+                  <xs:sequence>
                     <xs:element minOccurs="0" name="null" />
                   </xs:sequence>
                 </xs:complexType>
               </xs:element>
               <xs:element minOccurs="0" name="Exporter_cellphone">
                 <xs:complexType mixed="true">
-                  <xs:sequence >
+                  <xs:sequence>
                     <xs:element minOccurs="0" name="null" />
                   </xs:sequence>
                 </xs:complexType>
               </xs:element>
               <xs:element minOccurs="0" name="Exporter_email">
                 <xs:complexType mixed="true">
-                  <xs:sequence >
+                  <xs:sequence>
                     <xs:element minOccurs="0" name="null" />
                   </xs:sequence>
                 </xs:complexType>
               </xs:element>
-              
-              
+
+
               <xs:element name="Arrival_date" type="xs:string" />
               <xs:element name="Application_date" type="xs:string" />
               <xs:element minOccurs="0" name="Expiry_date">
                 <xs:complexType mixed="true">
-                  <xs:sequence >
+                  <xs:sequence>
                     <xs:element minOccurs="0" name="null" />
                   </xs:sequence>
                 </xs:complexType>

@@ -1,15 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 
 namespace Core.Common.Validation
 {
     public class NumberValidationAttribute : Attribute, IValidationRule
     {
-        public NumberValidationAttribute()
-        {
-
-        }
-
         public void Validate(object value, out bool isValid, out string errorMessage)
         {
             double result = 0;

@@ -2,19 +2,24 @@
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-
 
 namespace Core.Common.UI
 {
     public static class CBSelectedItem
     {
+        // Using a DependencyProperty as the backing store for SelectedIte.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty SelectedItemProperty =
+            DependencyProperty.RegisterAttached("SelectedItem", typeof(object), typeof(CBSelectedItem),
+                new UIPropertyMetadata(null, SelectedItemChanged));
+
+
+        private static readonly List<WeakReference> ComboBoxes = new List<WeakReference>();
+
         public static object GetSelectedItem(DependencyObject obj)
         {
-            return (object)obj.GetValue(SelectedItemProperty);
+            return obj.GetValue(SelectedItemProperty);
         }
 
         public static void SetSelectedItem(DependencyObject obj, object value)
@@ -22,15 +27,9 @@ namespace Core.Common.UI
             obj.SetValue(SelectedItemProperty, value);
         }
 
-        // Using a DependencyProperty as the backing store for SelectedIte.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty SelectedItemProperty =
-            DependencyProperty.RegisterAttached("SelectedItem", typeof(object), typeof(CBSelectedItem), new UIPropertyMetadata(null, SelectedItemChanged));
-
-
-        private static List<WeakReference> ComboBoxes = new List<WeakReference>();
         private static void SelectedItemChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            var cb = (ComboBox)d;
+            var cb = (ComboBox) d;
 
 
             // Set the selected item of the ComboBox since the value changed
@@ -46,10 +45,10 @@ namespace Core.Common.UI
                 ComboBoxes.Add(new WeakReference(cb));
 
                 // When the ItemsSource collection changes we set the SelectedItem to correct value (using Equals)
-                ((INotifyCollectionChanged)cb.ItemsSource).CollectionChanged +=
+                ((INotifyCollectionChanged) cb.ItemsSource).CollectionChanged +=
                     delegate(object sender, NotifyCollectionChangedEventArgs e2)
                     {
-                        var collection = (IEnumerable<object>)sender;
+                        var collection = (IEnumerable<object>) sender;
                         cb.SelectedItem = collection.SingleOrDefault(o => o.Equals(GetSelectedItem(cb)));
                     };
 
@@ -57,13 +56,9 @@ namespace Core.Common.UI
                 cb.SelectionChanged += delegate(object sender, SelectionChangedEventArgs e3)
                 {
                     // We only want to handle cases that actually change the selection
-                    if (e3.AddedItems.Count == 1)
-                    {
-                        SetSelectedItem((DependencyObject)sender, e3.AddedItems[0]);
-                    }
+                    if (e3.AddedItems.Count == 1) SetSelectedItem((DependencyObject) sender, e3.AddedItems[0]);
                 };
             }
-
         }
     }
 }

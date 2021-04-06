@@ -1,35 +1,25 @@
-﻿using Core.Common.Contracts;
-using System.ComponentModel.Composition.Hosting;
-
+﻿using System.ComponentModel.Composition.Hosting;
+using Core.Common.Contracts;
 
 namespace Core.Common
 {
     public static class ClientObjectBase
     {
-        static CompositionContainer container;
+        private static CompositionContainer container;
+
         public static CompositionContainer Container
         {
-            get
-            {
-                return container;
-            }
+            get => container;
             set
             {
                 if (value != container)
                 {
                     container = value;
-                    clientFactory = container.GetExportedValue<IClientServiceFactory>();
+                    ClientFactory = container.GetExportedValue<IClientServiceFactory>();
                 }
             }
         }
 
-        static IClientServiceFactory clientFactory;
-        public static IClientServiceFactory ClientFactory
-        {
-            get
-            {
-                return clientFactory;
-            }
-        }
+        public static IClientServiceFactory ClientFactory { get; private set; }
     }
 }

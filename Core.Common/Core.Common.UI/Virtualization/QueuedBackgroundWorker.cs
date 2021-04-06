@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Collections.Generic;
 using System.Threading;
 
@@ -9,7 +8,7 @@ namespace Core.Common.UI.DataVirtualization
     {
         Standby,
         Processing,
-        StoppedByError,
+        StoppedByError
     }
 
     /// <summary>Executes queued operations on a separate thread.</summary>
@@ -17,13 +16,12 @@ namespace Core.Common.UI.DataVirtualization
     /// <remarks>This class is thread safe.</remarks>
     public sealed class QueuedBackgroundWorker<T> : IDisposable
     {
-        readonly SynchronizationContext _synchronizationContext;
-        QueuedBackgroundWorkerState _currentState = QueuedBackgroundWorkerState.Standby;
-        AutoResetEvent _processingWaitSignal;
-        bool _flagClear;
-        Queue<T> _queue = new Queue<T>();
-        Action<T> _doWorkCallback;
-        Exception _lastError;
+        private readonly SynchronizationContext _synchronizationContext;
+        private QueuedBackgroundWorkerState _currentState = QueuedBackgroundWorkerState.Standby;
+        private readonly Action<T> _doWorkCallback;
+        private bool _flagClear;
+        private AutoResetEvent _processingWaitSignal;
+        private readonly Queue<T> _queue = new Queue<T>();
 
         public QueuedBackgroundWorker(Action<T> doWorkCallback)
             : this(doWorkCallback, SynchronizationContext.Current)
@@ -39,15 +37,9 @@ namespace Core.Common.UI.DataVirtualization
             _synchronizationContext = synchronizationContext;
         }
 
-        public void Dispose()
-        {
-            Clear();
-            GC.SuppressFinalize(this);
-        }
-
         public QueuedBackgroundWorkerState State
         {
-            get { return _currentState; }
+            get => _currentState;
             set
             {
                 if (_currentState == value)
@@ -58,7 +50,7 @@ namespace Core.Common.UI.DataVirtualization
                 {
                     _processingWaitSignal = new AutoResetEvent(false);
                     _flagClear = false;
-                    _lastError = null;
+                    LastError = null;
                     ThreadPool.QueueUserWorkItem(Process);
                 }
                 else
@@ -69,8 +61,17 @@ namespace Core.Common.UI.DataVirtualization
                         _processingWaitSignal = null;
                     }
                 }
+
                 OnStateChanged();
             }
+        }
+
+        public Exception LastError { get; private set; }
+
+        public void Dispose()
+        {
+            Clear();
+            GC.SuppressFinalize(this);
         }
 
         private void OnStateChanged()
@@ -81,18 +82,13 @@ namespace Core.Common.UI.DataVirtualization
                 _synchronizationContext.Post(RaiseStateChangedEvent, null);
         }
 
-        void RaiseStateChangedEvent(object args)
+        private void RaiseStateChangedEvent(object args)
         {
             if (StateChanged != null)
                 StateChanged(this, EventArgs.Empty);
         }
 
         public event EventHandler StateChanged;
-
-        public Exception LastError
-        {
-            get { return _lastError; }
-        }
 
         public void Add(T workItem)
         {
@@ -115,6 +111,7 @@ namespace Core.Common.UI.DataVirtualization
                 {
                     workItem = _queue.Peek();
                 }
+
                 try
                 {
                     _doWorkCallback(workItem);
@@ -123,9 +120,10 @@ namespace Core.Common.UI.DataVirtualization
                 {
                     lock (this)
                     {
-                        _lastError = ex;
+                        LastError = ex;
                         State = QueuedBackgroundWorkerState.StoppedByError;
                     }
+
                     return;
                 }
 
@@ -174,6 +172,6 @@ namespace Core.Common.UI.DataVirtualization
                 if (State == QueuedBackgroundWorkerState.StoppedByError)
                     State = QueuedBackgroundWorkerState.Processing;
             }
-        }    
+        }
     }
 }

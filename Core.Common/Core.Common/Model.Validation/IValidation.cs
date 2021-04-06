@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Core.Common.Validation
+﻿namespace Core.Common.Validation
 {
     public interface IValidationRule
     {

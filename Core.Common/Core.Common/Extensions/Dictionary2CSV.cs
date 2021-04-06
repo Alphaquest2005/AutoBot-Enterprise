@@ -1,17 +1,7 @@
-﻿using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Core.Common.Extensions
+﻿namespace Core.Common.Extensions
 {
     public static class Dictionary2CSV
     {
-       
-
         //public static void Dictionary2CSV(this List<IDictionary<string, object>> rawLst, string fileName)
         //{
         //    try
@@ -67,8 +57,6 @@ namespace Core.Common.Extensions
         //                    a.Append("\n");
         //                    table.GetOrAdd(Convert.ToInt32(row["LineNumber"]), a.ToString());
         //                });
-
-
 
 
         //            string output = Path.ChangeExtension(file.FullName, ".csv");

@@ -1,37 +1,49 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Windows.Markup;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Input;
 
 namespace AttachedCommandBehavior
 {
     /// <summary>
-    /// Defines the attached properties to create a CommandBehaviorBinding
+    ///     Defines the attached properties to create a CommandBehaviorBinding
     /// </summary>
     public class CommandBehavior
     {
+        #region Helpers
+
+        //tries to get a CommandBehaviorBinding from the element. Creates a new instance if there is not one attached
+        private static CommandBehaviorBinding FetchOrCreateBinding(DependencyObject d)
+        {
+            var binding = GetBehavior(d);
+            if (binding == null)
+            {
+                binding = new CommandBehaviorBinding();
+                SetBehavior(d, binding);
+            }
+
+            return binding;
+        }
+
+        #endregion
+
         #region Behavior
 
         /// <summary>
-        /// Behavior Attached Dependency Property
+        ///     Behavior Attached Dependency Property
         /// </summary>
         private static readonly DependencyProperty BehaviorProperty =
             DependencyProperty.RegisterAttached("Behavior", typeof(CommandBehaviorBinding), typeof(CommandBehavior),
-                new FrameworkPropertyMetadata((CommandBehaviorBinding)null));
+                new FrameworkPropertyMetadata((CommandBehaviorBinding) null));
 
         /// <summary>
-        /// Gets the Behavior property. 
+        ///     Gets the Behavior property.
         /// </summary>
         private static CommandBehaviorBinding GetBehavior(DependencyObject d)
         {
-            return (CommandBehaviorBinding)d.GetValue(BehaviorProperty);
+            return (CommandBehaviorBinding) d.GetValue(BehaviorProperty);
         }
 
         /// <summary>
-        /// Sets the Behavior property.  
+        ///     Sets the Behavior property.
         /// </summary>
         private static void SetBehavior(DependencyObject d, CommandBehaviorBinding value)
         {
@@ -43,23 +55,23 @@ namespace AttachedCommandBehavior
         #region Command
 
         /// <summary>
-        /// Command Attached Dependency Property
+        ///     Command Attached Dependency Property
         /// </summary>
         public static readonly DependencyProperty CommandProperty =
             DependencyProperty.RegisterAttached("Command", typeof(ICommand), typeof(CommandBehavior),
-                new FrameworkPropertyMetadata((ICommand)null,
-                    new PropertyChangedCallback(OnCommandChanged)));
+                new FrameworkPropertyMetadata(null,
+                    OnCommandChanged));
 
         /// <summary>
-        /// Gets the Command property.  
+        ///     Gets the Command property.
         /// </summary>
         public static ICommand GetCommand(DependencyObject d)
         {
-            return (ICommand)d.GetValue(CommandProperty);
+            return (ICommand) d.GetValue(CommandProperty);
         }
 
         /// <summary>
-        /// Sets the Command property. 
+        ///     Sets the Command property.
         /// </summary>
         public static void SetCommand(DependencyObject d, ICommand value)
         {
@@ -67,12 +79,12 @@ namespace AttachedCommandBehavior
         }
 
         /// <summary>
-        /// Handles changes to the Command property.
+        ///     Handles changes to the Command property.
         /// </summary>
         private static void OnCommandChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             var binding = FetchOrCreateBinding(d);
-            binding.Command = (ICommand)e.NewValue;
+            binding.Command = (ICommand) e.NewValue;
         }
 
         #endregion
@@ -80,23 +92,23 @@ namespace AttachedCommandBehavior
         #region CommandParameter
 
         /// <summary>
-        /// CommandParameter Attached Dependency Property
+        ///     CommandParameter Attached Dependency Property
         /// </summary>
         public static readonly DependencyProperty CommandParameterProperty =
             DependencyProperty.RegisterAttached("CommandParameter", typeof(object), typeof(CommandBehavior),
-                new FrameworkPropertyMetadata((object)null,
-                    new PropertyChangedCallback(OnCommandParameterChanged)));
+                new FrameworkPropertyMetadata(null,
+                    OnCommandParameterChanged));
 
         /// <summary>
-        /// Gets the CommandParameter property.  
+        ///     Gets the CommandParameter property.
         /// </summary>
         public static object GetCommandParameter(DependencyObject d)
         {
-            return (object)d.GetValue(CommandParameterProperty);
+            return d.GetValue(CommandParameterProperty);
         }
 
         /// <summary>
-        /// Sets the CommandParameter property. 
+        ///     Sets the CommandParameter property.
         /// </summary>
         public static void SetCommandParameter(DependencyObject d, object value)
         {
@@ -104,7 +116,7 @@ namespace AttachedCommandBehavior
         }
 
         /// <summary>
-        /// Handles changes to the CommandParameter property.
+        ///     Handles changes to the CommandParameter property.
         /// </summary>
         private static void OnCommandParameterChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
@@ -117,25 +129,25 @@ namespace AttachedCommandBehavior
         #region Event
 
         /// <summary>
-        /// Event Attached Dependency Property
+        ///     Event Attached Dependency Property
         /// </summary>
         public static readonly DependencyProperty EventProperty =
             DependencyProperty.RegisterAttached("Event", typeof(string), typeof(CommandBehavior),
-                new FrameworkPropertyMetadata((string)String.Empty,
-                    new PropertyChangedCallback(OnEventChanged)));
+                new FrameworkPropertyMetadata(string.Empty,
+                    OnEventChanged));
 
         /// <summary>
-        /// Gets the Event property.  This dependency property 
-        /// indicates ....
+        ///     Gets the Event property.  This dependency property
+        ///     indicates ....
         /// </summary>
         public static string GetEvent(DependencyObject d)
         {
-            return (string)d.GetValue(EventProperty);
+            return (string) d.GetValue(EventProperty);
         }
 
         /// <summary>
-        /// Sets the Event property.  This dependency property 
-        /// indicates ....
+        ///     Sets the Event property.  This dependency property
+        ///     indicates ....
         /// </summary>
         public static void SetEvent(DependencyObject d, string value)
         {
@@ -143,7 +155,7 @@ namespace AttachedCommandBehavior
         }
 
         /// <summary>
-        /// Handles changes to the Event property.
+        ///     Handles changes to the Event property.
         /// </summary>
         private static void OnEventChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
@@ -156,21 +168,5 @@ namespace AttachedCommandBehavior
         }
 
         #endregion
-
-        #region Helpers
-        //tries to get a CommandBehaviorBinding from the element. Creates a new instance if there is not one attached
-        private static CommandBehaviorBinding FetchOrCreateBinding(DependencyObject d)
-        {
-            var binding = GetBehavior(d);
-            if (binding == null)
-            {
-                binding = new CommandBehaviorBinding();
-                SetBehavior(d, binding);
-            }
-            return binding;
-        }
-        #endregion
-
     }
-
 }

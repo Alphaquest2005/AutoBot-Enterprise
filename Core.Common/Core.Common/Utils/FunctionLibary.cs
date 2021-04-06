@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Text;
 
 namespace Core.Common.Utils
 {
@@ -17,12 +13,13 @@ namespace Core.Common.Utils
             for (var i = 1; i < Text.Length; i++)
             {
                 if (char.IsUpper(Text[i]))
-                    if ((Text[i - 1] != ' ' && !char.IsUpper(Text[i - 1])) ||
-                        (preserveAcronyms && char.IsUpper(Text[i - 1]) &&
-                         i < Text.Length - 1 && !char.IsUpper(Text[i + 1])))
+                    if (Text[i - 1] != ' ' && !char.IsUpper(Text[i - 1]) ||
+                        preserveAcronyms && char.IsUpper(Text[i - 1]) &&
+                        i < Text.Length - 1 && !char.IsUpper(Text[i + 1]))
                         newText.Append(' ');
                 newText.Append(Text[i]);
             }
+
             return newText.ToString();
         }
     }

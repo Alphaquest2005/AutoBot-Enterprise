@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -14,31 +11,29 @@ namespace Core.Common.UI
 {
     public class SliderPanel : Panel, INotifyPropertyChanged
     {
-        public SliderPanel()
-        {
-            MouseLeftButtonDown += new MouseButtonEventHandler(SliderPanel_MouseLeftButtonDown);
-            MouseLeftButtonUp += new MouseButtonEventHandler(SliderPanel_MouseLeftButtonUp);
+        private static readonly Stack<string> pctl = new Stack<string>();
 
-        }
+        private static string ppctl = "";
 
-        public event PropertyChangedEventHandler PropertyChanged;
-        protected void SendPropertyChanged(String propertyName)
-        {
-            if ((PropertyChanged != null))
-            {
-                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-            }
-        }
+        private int _Counter;
+
+        private int _SelectedIndex;
+
+        private bool canmove;
 
         public Point MouseStart, MouseNow, MouseFirst, MouseFinal;
+        private readonly double navHeight = 40;
+        private readonly double navWidth = 25;
 
-        int _Counter;
+        public SliderPanel()
+        {
+            MouseLeftButtonDown += SliderPanel_MouseLeftButtonDown;
+            MouseLeftButtonUp += SliderPanel_MouseLeftButtonUp;
+        }
+
         public int Counter
         {
-            get
-            {
-                return _Counter;
-            }
+            get => _Counter;
             set
             {
                 _Counter = value;
@@ -46,13 +41,30 @@ namespace Core.Common.UI
             }
         }
 
-        
-
-
-
-        void SliderPanel_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        public int SelectedIndex
         {
-            if (IsMouseOver == true)
+            get => _SelectedIndex;
+            set
+            {
+                _SelectedIndex = value;
+                SendPropertyChanged("SelectedIndex");
+                AnimateBySelectedIndex(value);
+            }
+        }
+
+        public string Orientation { get; set; }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected void SendPropertyChanged(string propertyName)
+        {
+            if (PropertyChanged != null) PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+
+        private void SliderPanel_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            if (IsMouseOver)
             {
                 CaptureMouse();
                 canmove = true;
@@ -60,17 +72,14 @@ namespace Core.Common.UI
                 MouseNow = MouseStart;
                 MouseFirst = MouseStart;
 
-                MouseMove += new MouseEventHandler(SliderPanel_MouseMove);
+                MouseMove += SliderPanel_MouseMove;
                 e.Handled = true;
             }
         }
 
-        bool canmove = false;
-
-        void SliderPanel_MouseMove(object sender, MouseEventArgs e)
+        private void SliderPanel_MouseMove(object sender, MouseEventArgs e)
         {
-
-            if (canmove == true)
+            if (canmove)
             {
                 MouseNow = e.GetPosition(this);
 
@@ -83,31 +92,25 @@ namespace Core.Common.UI
 
         public void MoveControls()
         {
-            if (canmove == true)
-            {
+            if (canmove)
                 for (var i = 0; i < Children.Count; i++)
-                {
-
                     if (Orientation == "Horizontal")
                     {
-                        var yu = new TranslateTransform(Children[i].RenderTransform.Value.OffsetX + (MouseNow.X - MouseStart.X), 0);
+                        var yu = new TranslateTransform(
+                            Children[i].RenderTransform.Value.OffsetX + (MouseNow.X - MouseStart.X), 0);
                         Children[i].RenderTransform = yu;
                     }
                     else
                     {
-                        var yu = new TranslateTransform(0, Children[i].RenderTransform.Value.OffsetY + (MouseNow.Y - MouseStart.Y));
+                        var yu = new TranslateTransform(0,
+                            Children[i].RenderTransform.Value.OffsetY + (MouseNow.Y - MouseStart.Y));
                         Children[i].RenderTransform = yu;
                     }
-                }
-
-               
-            }
         }
 
         public void MoveControls(double value)
         {
             if (Orientation == "Horizontal")
-            {
                 for (var i = 0; i < Children.Count; i++)
                 {
                     var pFrom = Children[i].RenderTransform.Value.OffsetX;
@@ -117,11 +120,9 @@ namespace Core.Common.UI
                     var yu = new TranslateTransform(Children[i].RenderTransform.Value.OffsetX + value, 0);
                     Children[i].RenderTransform = yu;
 
-                    ((TranslateTransform)Children[i].RenderTransform).BeginAnimation(TranslateTransform.XProperty, da);
+                    ((TranslateTransform) Children[i].RenderTransform).BeginAnimation(TranslateTransform.XProperty, da);
                 }
-            }
             else
-            {
                 for (var i = 0; i < Children.Count; i++)
                 {
                     var pFrom = Children[i].RenderTransform.Value.OffsetY;
@@ -131,27 +132,11 @@ namespace Core.Common.UI
                     var yu = new TranslateTransform(0, Children[i].RenderTransform.Value.OffsetY + value);
                     Children[i].RenderTransform = yu;
 
-                    ((TranslateTransform)Children[i].RenderTransform).BeginAnimation(TranslateTransform.YProperty, da);
+                    ((TranslateTransform) Children[i].RenderTransform).BeginAnimation(TranslateTransform.YProperty, da);
                 }
-            }
         }
 
-        int _SelectedIndex;
-        public int SelectedIndex
-        {
-            get
-            {
-                return _SelectedIndex;
-            }
-            set
-            {
-                _SelectedIndex = value;
-                SendPropertyChanged("SelectedIndex");
-                AnimateBySelectedIndex(value);
-            }
-        }
-
-        void AnimateBySelectedIndex(int index)
+        private void AnimateBySelectedIndex(int index)
         {
             if (index < 0 || index > Children.Count - 1 || index * -1 == Counter)
                 return;
@@ -162,13 +147,14 @@ namespace Core.Common.UI
             if (Orientation == "Horizontal")
             {
                 pTo = index * DesiredSize.Width;
-                pFrom = index > Counter ? (pTo - DesiredSize.Width) : (pTo + DesiredSize.Width);
+                pFrom = index > Counter ? pTo - DesiredSize.Width : pTo + DesiredSize.Width;
             }
             else
             {
                 pTo = index * DesiredSize.Height;
-                pFrom = index > Counter ? (pTo - DesiredSize.Height) : (pTo + DesiredSize.Height);
+                pFrom = index > Counter ? pTo - DesiredSize.Height : pTo + DesiredSize.Height;
             }
+
             Counter = index;
 
             for (var i = 0; i < Children.Count; i++)
@@ -179,29 +165,29 @@ namespace Core.Common.UI
                     var yu = new TranslateTransform(Children[i].RenderTransform.Value.OffsetX, 0);
                     Children[i].RenderTransform = yu;
 
-                    ((TranslateTransform)Children[i].RenderTransform).BeginAnimation(TranslateTransform.XProperty, da);
+                    ((TranslateTransform) Children[i].RenderTransform).BeginAnimation(TranslateTransform.XProperty, da);
                 }
                 else
                 {
                     var yu = new TranslateTransform(0, Children[i].RenderTransform.Value.OffsetY);
                     Children[i].RenderTransform = yu;
 
-                    ((TranslateTransform)Children[i].RenderTransform).BeginAnimation(TranslateTransform.YProperty, da);
+                    ((TranslateTransform) Children[i].RenderTransform).BeginAnimation(TranslateTransform.YProperty, da);
                 }
             }
         }
 
-        void SliderPanel_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        private void SliderPanel_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
             try
             {
-                MouseMove -= new MouseEventHandler(SliderPanel_MouseMove);
+                MouseMove -= SliderPanel_MouseMove;
 
                 MouseFinal = e.GetPosition(this);
                 ReleaseMouseCapture();
                 if (Orientation == "Horizontal")
                 {
-                    if ((MouseFinal.X - MouseFirst.X) > 0)
+                    if (MouseFinal.X - MouseFirst.X > 0)
                     {
                         if (Math.Abs(MouseFinal.X - MouseFirst.X) > 50)
                             Counter = Counter + 1;
@@ -214,7 +200,7 @@ namespace Core.Common.UI
                 }
                 else
                 {
-                    if ((MouseFinal.Y - MouseFirst.Y) > 0)
+                    if (MouseFinal.Y - MouseFirst.Y > 0)
                     {
                         if (Math.Abs(MouseFinal.Y - MouseFirst.Y) > 50)
                             Counter = Counter + 1;
@@ -231,7 +217,9 @@ namespace Core.Common.UI
                 if (Orientation == "Horizontal")
                 {
                     pTo = Counter * DesiredSize.Width;
-                    pFrom = (MouseFinal.X - MouseFirst.X) > 0 ? (pTo - DesiredSize.Width) + (MouseFinal.X - MouseFirst.X) : (pTo + DesiredSize.Width) + (MouseFinal.X - MouseFirst.X);
+                    pFrom = MouseFinal.X - MouseFirst.X > 0
+                        ? pTo - DesiredSize.Width + (MouseFinal.X - MouseFirst.X)
+                        : pTo + DesiredSize.Width + (MouseFinal.X - MouseFirst.X);
 
                     if (Math.Abs(MouseFinal.X - MouseFirst.X) < 50)
                         pFrom = pTo + (MouseFinal.X - MouseFirst.X);
@@ -252,7 +240,9 @@ namespace Core.Common.UI
                 else
                 {
                     pTo = Counter * DesiredSize.Height;
-                    pFrom = (MouseFinal.Y - MouseFirst.Y) > 0 ? (pTo - DesiredSize.Height) + (MouseFinal.Y - MouseFirst.Y) : (pTo + DesiredSize.Height) + (MouseFinal.Y - MouseFirst.Y);
+                    pFrom = MouseFinal.Y - MouseFirst.Y > 0
+                        ? pTo - DesiredSize.Height + (MouseFinal.Y - MouseFirst.Y)
+                        : pTo + DesiredSize.Height + (MouseFinal.Y - MouseFirst.Y);
 
                     if (Math.Abs(MouseFinal.Y - MouseFirst.Y) < 50)
                         pFrom = pTo + (MouseFinal.Y - MouseFirst.Y);
@@ -283,7 +273,9 @@ namespace Core.Common.UI
                 SelectedIndex = Math.Abs(Counter);
                 e.Handled = true;
             }
-            catch { }
+            catch
+            {
+            }
             finally
             {
                 canmove = false;
@@ -302,12 +294,10 @@ namespace Core.Common.UI
             }
 
             resultSize.Width =
-                double.IsPositiveInfinity(availableSize.Width) ?
-                resultSize.Width : availableSize.Width;
+                double.IsPositiveInfinity(availableSize.Width) ? resultSize.Width : availableSize.Width;
 
             resultSize.Height =
-                double.IsPositiveInfinity(availableSize.Height) ?
-                resultSize.Height : availableSize.Height;
+                double.IsPositiveInfinity(availableSize.Height) ? resultSize.Height : availableSize.Height;
 
             return resultSize;
         }
@@ -315,30 +305,21 @@ namespace Core.Common.UI
         protected override Size ArrangeOverride(Size finalSize)
         {
             for (var i = 0; i < Children.Count; i++)
-            {
-                Children[i].Arrange(new Rect((i * finalSize.Width), (double)0, finalSize.Width, finalSize.Height));
-            }
+                Children[i].Arrange(new Rect(i * finalSize.Width, 0, finalSize.Width, finalSize.Height));
 
             Clip = new RectangleGeometry(new Rect(0, 0, DesiredSize.Width, DesiredSize.Height));
 
             return base.ArrangeOverride(finalSize);
         }
-        static Stack<string> pctl = new Stack<string>();
 
         public void MoveToPreviousCtl()
         {
             var ctl = pctl.Pop();
-            while (ctl == ppctl && pctl.Count > 0)
-            {
-                ctl = pctl.Pop();
-            }
+            while (ctl == ppctl && pctl.Count > 0) ctl = pctl.Pop();
             //if (ctl == ppctl && pctl.Count > 0) 
             MoveTo(ctl);
         }
 
-        static string ppctl = "";
-        private double navWidth = 25;
-        private double navHeight = 40;
         public void MoveTo(string ctl)
         {
             var slid = this;
@@ -371,10 +352,12 @@ namespace Core.Common.UI
                 var sl = slidcontents.TransformToAncestor(slid.Parent as Visual).Transform(new Point(0, 0)).Y * -1;
                 slid.MoveControls(sl + navHeight);
             }
+
             slidcontents.IsExpanded = true;
             ppctl = ctl;
             pctl.Push(ctl);
         }
+
         public void BringIntoView(string ctl)
         {
             var slid = this;
@@ -391,9 +374,6 @@ namespace Core.Common.UI
             }
 
             BringIntoView(slidcontents);
-
-
-
         }
 
         public void BringIntoView(Expander slidcontents)
@@ -402,40 +382,27 @@ namespace Core.Common.UI
             if (slidcontents == null) return;
             if (slidcontents.IsExpanded == false) return;
 
-            var sp = (FrameworkElement)slid.Parent;
+            var sp = (FrameworkElement) slid.Parent;
 
 
-            var exp = ((FrameworkElement)slidcontents.Content);
+            var exp = (FrameworkElement) slidcontents.Content;
 
             if (slid.Orientation == "Horizontal")
             {
                 var sl = slidcontents.TransformToAncestor(slid.Parent as Visual).Transform(new Point(0, 0)).X * -1;
-                if (sl * -1 > (sp.ActualWidth - exp.ActualWidth) && sp.ActualWidth > exp.ActualWidth)
-                {
+                if (sl * -1 > sp.ActualWidth - exp.ActualWidth && sp.ActualWidth > exp.ActualWidth)
                     slid.MoveControls(sl + sp.ActualWidth - exp.ActualWidth);
-                }
-                if (sl * -1 < 0 || sp.ActualWidth < exp.ActualWidth)
-                {
-                    slid.MoveControls(sl + navWidth);
-                }
+                if (sl * -1 < 0 || sp.ActualWidth < exp.ActualWidth) slid.MoveControls(sl + navWidth);
             }
             else
             {
                 var sl = slidcontents.TransformToAncestor(slid.Parent as Visual).Transform(new Point(0, 0)).Y * -1;
-                if (sl * -1 > (sp.ActualHeight - exp.ActualHeight))
-                {
-                    // slid.MoveControls(sl + sp.ActualHeight - exp.ActualHeight + nav);
-                    slid.MoveControls(sl + navHeight);
-                }
-                if (sl * -1 < 0)
-                {
-                    slid.MoveControls(sl + navHeight);
-                }
+                if (sl * -1 > sp.ActualHeight - exp.ActualHeight) slid.MoveControls(sl + navHeight);
+                if (sl * -1 < 0) slid.MoveControls(sl + navHeight);
             }
+
             ppctl = slidcontents.Name;
             pctl.Push(slidcontents.Name);
         }
-
-        public string Orientation { get; set; }
     }
 }

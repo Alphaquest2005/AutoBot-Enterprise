@@ -7,12 +7,12 @@ using System.Windows.Media;
 
 namespace Core.Common.UI.DataVirtualization
 {
-    partial class AdornerManager
+    internal partial class AdornerManager
     {
         private class DecoratorAdorner : Adorner
         {
-            private UIElement _child;
             private AdornerLayer _adornerLayer;
+            private readonly UIElement _child;
 
             public DecoratorAdorner(FrameworkElement source, DataTemplate adorner)
                 : base(source)
@@ -35,10 +35,9 @@ namespace Core.Common.UI.DataVirtualization
                 AddVisualChild(_child);
             }
 
-            private FrameworkElement Source
-            {
-                get { return AdornedElement as FrameworkElement; }
-            }
+            private FrameworkElement Source => AdornedElement as FrameworkElement;
+
+            protected override int VisualChildrenCount => 1;
 
             protected override Size ArrangeOverride(Size finalSize)
             {
@@ -53,24 +52,19 @@ namespace Core.Common.UI.DataVirtualization
                 return _child;
             }
 
-            protected override int VisualChildrenCount
-            {
-                get { return 1; }
-            }
-
             public void Show()
             {
                 Debug.Assert(_adornerLayer == null);
 
                 if (!Source.IsLoaded)
-                    Source.Loaded += new RoutedEventHandler(OnLoaded);
+                    Source.Loaded += OnLoaded;
                 else
                     AddToAdornerLayer();
             }
 
             private void OnLoaded(object sender, RoutedEventArgs e)
             {
-                Source.Loaded -= new RoutedEventHandler(OnLoaded);
+                Source.Loaded -= OnLoaded;
                 AddToAdornerLayer();
             }
 
@@ -83,7 +77,7 @@ namespace Core.Common.UI.DataVirtualization
 
             public void Close()
             {
-                Source.Loaded -= new RoutedEventHandler(OnLoaded);
+                Source.Loaded -= OnLoaded;
                 if (_adornerLayer != null)
                 {
                     _adornerLayer.Remove(this);

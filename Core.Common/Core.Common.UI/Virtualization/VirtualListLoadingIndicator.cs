@@ -1,62 +1,107 @@
 ﻿using System;
-using System.Diagnostics;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Windows;
-using System.Windows.Data;
 using System.Windows.Controls;
 using System.Windows.Input;
-using System.Windows.Threading;
-using System.Threading;
 
 namespace Core.Common.UI.DataVirtualization
 {
     public sealed class VirtualListLoadingIndicator : Control
     {
+        public static readonly RoutedCommand RetryCommand =
+            new RoutedCommand("Retry", typeof(VirtualListLoadingIndicator));
+
+        private static readonly DependencyPropertyKey HasErrorPropertyKey = DependencyProperty.RegisterReadOnly(
+            "HasError", typeof(bool), typeof(VirtualListLoadingIndicator),
+            new FrameworkPropertyMetadata(false));
+
+        public static readonly DependencyProperty HasErrorProperty = HasErrorPropertyKey.DependencyProperty;
+
+        private static readonly DependencyPropertyKey ErrorMessagePropertyKey = DependencyProperty.RegisterReadOnly(
+            "ErrorMessage", typeof(string), typeof(VirtualListLoadingIndicator),
+            new FrameworkPropertyMetadata(null));
+
+        public static readonly DependencyProperty ErrorMessageProperty = ErrorMessagePropertyKey.DependencyProperty;
+
+        private IVirtualList _list;
+        private QueuedBackgroundWorkerState _loadingState = QueuedBackgroundWorkerState.Standby;
+
+        static VirtualListLoadingIndicator()
+        {
+            DefaultStyleKeyProperty.OverrideMetadata(typeof(VirtualListLoadingIndicator),
+                new FrameworkPropertyMetadata(typeof(VirtualListLoadingIndicator)));
+            var retryCommandBinding = new CommandBinding(RetryCommand,
+                OnRetryCommandExecuted,
+                CanExecuteRetryCommand);
+            CommandManager.RegisterClassCommandBinding(typeof(VirtualListLoadingIndicator), retryCommandBinding);
+        }
+
+        private VirtualListLoadingIndicator(IVirtualList list, QueuedBackgroundWorkerState loadingState)
+        {
+            SetState(list, loadingState);
+        }
+
+        public bool HasError
+        {
+            get => (bool) GetValue(HasErrorProperty);
+            private set => SetValue(HasErrorPropertyKey, value);
+        }
+
+        public string ErrorMessage
+        {
+            get => (string) GetValue(ErrorMessageProperty);
+            private set => SetValue(ErrorMessagePropertyKey, value);
+        }
+
+        private static void OnRetryCommandExecuted(object sender, ExecutedRoutedEventArgs e)
+        {
+            ((VirtualListLoadingIndicator) sender).RetryLoading();
+        }
+
+        private static void CanExecuteRetryCommand(object sender, CanExecuteRoutedEventArgs e)
+        {
+            var control = (VirtualListLoadingIndicator) sender;
+            e.CanExecute = control.HasError;
+        }
+
+        private void SetState(IVirtualList list, QueuedBackgroundWorkerState loadingState)
+        {
+            if (_list == list && _loadingState == loadingState)
+                return;
+
+            _list = list;
+            _loadingState = loadingState;
+            HasError = _loadingState == QueuedBackgroundWorkerState.StoppedByError;
+            ErrorMessage = HasError ? _list.LastLoadingError.ToString() : null;
+        }
+
+        public void RetryLoading()
+        {
+            if (HasError)
+                _list.RetryLoading();
+        }
+
         #region IsAttached attached property
 
         private sealed class ItemsControlManager : IDisposable
         {
-            ItemsControl _itemsControl;
-            IVirtualList _list;
-            QueuedBackgroundWorkerState _loadingState = QueuedBackgroundWorkerState.Standby;
+            private ItemsControl _itemsControl;
+            private IVirtualList _list;
 
             public ItemsControlManager(ItemsControl itemsControl)
             {
                 Debug.Assert(itemsControl != null);
                 _itemsControl = itemsControl;
                 SetState(itemsControl.ItemsSource as IVirtualList);
-                var dpd = DependencyPropertyDescriptor.FromProperty(ItemsControl.ItemsSourceProperty, typeof(ItemsControl));
+                var dpd = DependencyPropertyDescriptor.FromProperty(ItemsControl.ItemsSourceProperty,
+                    typeof(ItemsControl));
                 dpd.AddValueChanged(itemsControl, OnItemsSourceChanged);
-            }
-
-            public void Dispose()
-            {
-                if (LoadingIndicator != null)
-                    AdornerManager.SetAdorner(_itemsControl, null);
-
-                if (_itemsControl != null)
-                {
-                    var dpd = DependencyPropertyDescriptor.FromProperty(ItemsControl.ItemsSourceProperty, typeof(ItemsControl));
-                    dpd.RemoveValueChanged(_itemsControl, OnItemsSourceChanged);
-                    _itemsControl = null;
-                }
-                if (_list != null)
-                {
-                    _list.LoadingStateChanged -= OnLoadingStateChanged;
-                    _list = null;
-                }
-                _loadingState = QueuedBackgroundWorkerState.Standby;
-                GC.SuppressFinalize(this);
-            }
-
-            void OnItemsSourceChanged(object sender, EventArgs e)
-            {
-                SetState(_itemsControl.ItemsSource as IVirtualList);
             }
 
             private IVirtualList List
             {
-                get { return _list; }
+                get => _list;
                 set
                 {
                     if (_list == value)
@@ -72,16 +117,43 @@ namespace Core.Common.UI.DataVirtualization
                 }
             }
 
-            private void OnLoadingStateChanged(object sender, EventArgs e)
+            private QueuedBackgroundWorkerState LoadingState { get; set; } = QueuedBackgroundWorkerState.Standby;
+
+            private VirtualListLoadingIndicator LoadingIndicator =>
+                AdornerManager.GetAdorner(_itemsControl) as VirtualListLoadingIndicator;
+
+            public void Dispose()
             {
-                var list = (IVirtualList)sender;
-                SetState(list.LoadingState);
+                if (LoadingIndicator != null)
+                    AdornerManager.SetAdorner(_itemsControl, null);
+
+                if (_itemsControl != null)
+                {
+                    var dpd = DependencyPropertyDescriptor.FromProperty(ItemsControl.ItemsSourceProperty,
+                        typeof(ItemsControl));
+                    dpd.RemoveValueChanged(_itemsControl, OnItemsSourceChanged);
+                    _itemsControl = null;
+                }
+
+                if (_list != null)
+                {
+                    _list.LoadingStateChanged -= OnLoadingStateChanged;
+                    _list = null;
+                }
+
+                LoadingState = QueuedBackgroundWorkerState.Standby;
+                GC.SuppressFinalize(this);
             }
 
-            private QueuedBackgroundWorkerState LoadingState
+            private void OnItemsSourceChanged(object sender, EventArgs e)
             {
-                get { return _loadingState; }
-                set { _loadingState = value; }
+                SetState(_itemsControl.ItemsSource as IVirtualList);
+            }
+
+            private void OnLoadingStateChanged(object sender, EventArgs e)
+            {
+                var list = (IVirtualList) sender;
+                SetState(list.LoadingState);
             }
 
             private void SetState(IVirtualList list)
@@ -118,21 +190,19 @@ namespace Core.Common.UI.DataVirtualization
                     AdornerManager.SetAdorner(_itemsControl, null);
                 }
             }
-
-            private VirtualListLoadingIndicator LoadingIndicator
-            {
-                get { return AdornerManager.GetAdorner(_itemsControl) as VirtualListLoadingIndicator; }
-            }
         }
 
-        public static readonly DependencyProperty IsAttachedProperty = DependencyProperty.RegisterAttached("IsAttached", typeof(bool), typeof(VirtualListLoadingIndicator),
-            new FrameworkPropertyMetadata(false, new PropertyChangedCallback(OnIsAttachedChanged)));
-        private static readonly DependencyProperty ItemsControlManagerProperty = DependencyProperty.RegisterAttached("ItemsControlManager", typeof(ItemsControlManager), typeof(VirtualListLoadingIndicator),
+        public static readonly DependencyProperty IsAttachedProperty = DependencyProperty.RegisterAttached("IsAttached",
+            typeof(bool), typeof(VirtualListLoadingIndicator),
+            new FrameworkPropertyMetadata(false, OnIsAttachedChanged));
+
+        private static readonly DependencyProperty ItemsControlManagerProperty = DependencyProperty.RegisterAttached(
+            "ItemsControlManager", typeof(ItemsControlManager), typeof(VirtualListLoadingIndicator),
             new FrameworkPropertyMetadata(null));
 
         public static bool GetIsAttached(DependencyObject d)
         {
-            return (bool)d.GetValue(IsAttachedProperty);
+            return (bool) d.GetValue(IsAttachedProperty);
         }
 
         public static void SetIsAttached(DependencyObject d, bool value)
@@ -142,7 +212,7 @@ namespace Core.Common.UI.DataVirtualization
 
         private static ItemsControlManager GetItemsControlManager(ItemsControl itemsControl)
         {
-            return (ItemsControlManager)itemsControl.GetValue(ItemsControlManagerProperty);
+            return (ItemsControlManager) itemsControl.GetValue(ItemsControlManagerProperty);
         }
 
         private static void SetItemsControlManager(ItemsControl itemsControl, ItemsControlManager value)
@@ -155,13 +225,13 @@ namespace Core.Common.UI.DataVirtualization
             itemsControl.ClearValue(ItemsControlManagerProperty);
         }
 
-        static void OnIsAttachedChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        private static void OnIsAttachedChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             var itemsControl = d as ItemsControl;
             if (itemsControl == null)
                 return;
-            var oldValue = (bool)e.OldValue;
-            var newValue = (bool)e.NewValue;
+            var oldValue = (bool) e.OldValue;
+            var newValue = (bool) e.NewValue;
             if (oldValue == newValue)
                 return;
 
@@ -178,70 +248,5 @@ namespace Core.Common.UI.DataVirtualization
         }
 
         #endregion
-
-        public static readonly RoutedCommand RetryCommand = new RoutedCommand("Retry", typeof(VirtualListLoadingIndicator));
-
-        static VirtualListLoadingIndicator()
-        {
-            DefaultStyleKeyProperty.OverrideMetadata(typeof(VirtualListLoadingIndicator), new FrameworkPropertyMetadata(typeof(VirtualListLoadingIndicator)));
-            var retryCommandBinding = new CommandBinding(RetryCommand,
-                new ExecutedRoutedEventHandler(OnRetryCommandExecuted),
-                new CanExecuteRoutedEventHandler(CanExecuteRetryCommand));
-            CommandManager.RegisterClassCommandBinding(typeof(VirtualListLoadingIndicator), retryCommandBinding);
-        }
-
-        private static void OnRetryCommandExecuted(object sender, ExecutedRoutedEventArgs e)
-        {
-            ((VirtualListLoadingIndicator)sender).RetryLoading();
-        }
-
-        private static void CanExecuteRetryCommand(object sender, CanExecuteRoutedEventArgs e)
-        {
-            var control = (VirtualListLoadingIndicator)sender;
-            e.CanExecute = control.HasError;
-        }
-
-        private IVirtualList _list;
-        private QueuedBackgroundWorkerState _loadingState = QueuedBackgroundWorkerState.Standby;
-        private static readonly DependencyPropertyKey HasErrorPropertyKey = DependencyProperty.RegisterReadOnly("HasError", typeof(bool), typeof(VirtualListLoadingIndicator),
-            new FrameworkPropertyMetadata(false));
-        public static readonly DependencyProperty HasErrorProperty = HasErrorPropertyKey.DependencyProperty;
-        private static readonly DependencyPropertyKey ErrorMessagePropertyKey = DependencyProperty.RegisterReadOnly("ErrorMessage", typeof(string), typeof(VirtualListLoadingIndicator),
-            new FrameworkPropertyMetadata(null));
-        public static readonly DependencyProperty ErrorMessageProperty = ErrorMessagePropertyKey.DependencyProperty;
-
-        private VirtualListLoadingIndicator(IVirtualList list, QueuedBackgroundWorkerState loadingState)
-        {
-            SetState(list, loadingState);
-        }
-
-        void SetState(IVirtualList list, QueuedBackgroundWorkerState loadingState)
-        {
-            if (_list == list && _loadingState == loadingState)
-                return;
-
-            _list = list;
-            _loadingState = loadingState;
-            HasError = _loadingState == QueuedBackgroundWorkerState.StoppedByError;
-            ErrorMessage = HasError ? _list.LastLoadingError.ToString() : null;
-        }
-
-        public bool HasError
-        {
-            get { return (bool)GetValue(HasErrorProperty); }
-            private set { SetValue(HasErrorPropertyKey, value); }
-        }
-
-        public string ErrorMessage
-        {
-            get { return (string)GetValue(ErrorMessageProperty); }
-            private set { SetValue(ErrorMessagePropertyKey, value); }
-        }
-
-        public void RetryLoading()
-        {
-            if (HasError)
-                _list.RetryLoading();
-        }
     }
 }

@@ -1,43 +1,27 @@
-﻿using Core.Common;
+﻿using System;
 using Core.Common.Data.Contracts;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 using TrackableEntities.Client;
-
 
 namespace Core.Common.Client.Entities
 {
-    public abstract class BaseEntity<T> : EntityBase, IIdentifiableEntity, ICreateEntityFromString<T> where T : IIdentifiableEntity
+    public abstract class BaseEntity<T> : EntityBase, IIdentifiableEntity, ICreateEntityFromString<T>
+        where T : IIdentifiableEntity
     {
-        
-        
-       // public DateTime EntryDateTime { get; set; }
+        private readonly Guid _entityGuid = Guid.NewGuid();
+
+
+        // public DateTime EntryDateTime { get; set; }
 
 
         public virtual string EntityId
         {
-            get
-            {
-                throw new NotImplementedException();
-            }
-            set
-            {
-                throw new NotImplementedException();
-            }
+            get => throw new NotImplementedException();
+            set => throw new NotImplementedException();
         }
 
         public virtual string EntityName
         {
-            get
-            {
-                return EntityId.ToString();
-            }
+            get => EntityId;
             set
             {
                 //throw new NotImplementedException();
@@ -51,7 +35,6 @@ namespace Core.Common.Client.Entities
 
         public override bool Equals(object obj)
         {
-
             var other = obj as BaseEntity<T>;
             if (ReferenceEquals(other, null)) return false;
             if (ReferenceEquals(this, other)) return true;
@@ -72,13 +55,10 @@ namespace Core.Common.Client.Entities
             return !(a == b);
         }
 
-        private readonly Guid _entityGuid = Guid.NewGuid();
-
         public override int GetHashCode()
         {
             // ReSharper disable once cuz of nhibernate
-            return (_entityGuid.ToString()).GetHashCode();
+            return _entityGuid.ToString().GetHashCode();
         }
-
     }
 }

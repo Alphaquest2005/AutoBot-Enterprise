@@ -1,44 +1,39 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Media;
 
-
 namespace Core.Common.UI
-{ 
-        public class Common
+{
+    public class Common
     {
         /// <summary>
-        /// Finds a Child of a given item in the visual tree. 
+        ///     Finds a Child of a given item in the visual tree.
         /// </summary>
         /// <param name="parent">A direct parent of the queried item.</param>
         /// <typeparam name="T">The type of the queried item.</typeparam>
         /// <param name="childName">x:Name or Name of child. </param>
-        /// <returns>The first parent item that matches the submitted type parameter. 
-        /// If not matching item can be found, 
-        /// a null parent is being returned.</returns>
-        /// 
-
-            static public T GetVisualChild<T>(Visual parent) where T : Visual
+        /// <returns>
+        ///     The first parent item that matches the submitted type parameter.
+        ///     If not matching item can be found,
+        ///     a null parent is being returned.
+        /// </returns>
+        public static T GetVisualChild<T>(Visual parent) where T : Visual
+        {
+            var child = default(T);
+            var numVisuals = VisualTreeHelper.GetChildrenCount(parent);
+            for (var i = 0; i < numVisuals; i++)
             {
-                var child = default(T);
-                var numVisuals = VisualTreeHelper.GetChildrenCount(parent);
-                for (var i = 0; i < numVisuals; i++)
-                {
-                    var v = (Visual)VisualTreeHelper.GetChild(parent, i);
-                    child = v as T;
-                    if (child == null) child = GetVisualChild<T>(v);
-                    if (child != null) break;
-                }
-                return child;
+                var v = (Visual) VisualTreeHelper.GetChild(parent, i);
+                child = v as T;
+                if (child == null) child = GetVisualChild<T>(v);
+                if (child != null) break;
             }
+
+            return child;
+        }
 
 
         public static T FindChild<T>(DependencyObject parent, string childName)
-           where T : DependencyObject
+            where T : DependencyObject
         {
             // Confirm parent and childName are valid. 
             if (parent == null) return null;
@@ -66,14 +61,14 @@ namespace Core.Common.UI
                     if (frameworkElement != null && frameworkElement.Name == childName)
                     {
                         // if the child's name is of the request name
-                        foundChild = (T)child;
+                        foundChild = (T) child;
                         break;
                     }
                 }
                 else
                 {
                     // child element found.
-                    foundChild = (T)child;
+                    foundChild = (T) child;
                     break;
                 }
             }

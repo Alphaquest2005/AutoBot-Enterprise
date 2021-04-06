@@ -1,17 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Text;
+﻿using System.Globalization;
 using System.Windows.Controls;
 using Core.Common.Validation;
 
-
 namespace Core.Common.UI.Validation
 {
-   public class GenericValidationRule : ValidationRule
+    public class GenericValidationRule : ValidationRule
     {
-        private IValidationRule ValidationRule;
+        private readonly IValidationRule ValidationRule;
 
         public GenericValidationRule(IValidationRule validationRule)
         {

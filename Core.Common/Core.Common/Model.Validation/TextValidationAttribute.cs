@@ -6,11 +6,6 @@ namespace Core.Common.Validation
     {
         public int MinLength { get; set; }
 
-        public TextValidationAttribute()
-        {
-
-        }
-
         public void Validate(object value, out bool isValid, out string errorMessage)
         {
             isValid = false;
