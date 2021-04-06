@@ -212,7 +212,7 @@ namespace WaterNut.DataSpace
                 throw;
             }
         }
-
+private static List<SummaryData> _universalData = null;
         private static List<ItemSalesPiSummary> GetPiSummary(int applicationSettingsId, DateTime startDate,
             DateTime endDate, string dfp,
             AllocationDSContext ctx, string entryType)
@@ -223,15 +223,16 @@ namespace WaterNut.DataSpace
 
                 var res = new List<ItemSalesPiSummary>();
 
-                var universalData = ctx.ItemSalesAsycudaPiSummary
+                if(_universalData == null)
+                _universalData = ctx.ItemSalesAsycudaPiSummary
                     .GroupJoin(ctx.AsycudaItemPiQuantityData, pis => pis.PreviousItem_Id, pid => pid.Item_Id,
-                        (pis, pid) => new {Summary = pis, pIData = pid})
+                        (pis, pid) => new SummaryData {Summary = pis, pIData = pid})
                     //.Where(x => x.ItemNumber == "14479" || x.ItemNumber == "014479")
                     .Where(x => x.Summary.ApplicationSettingsId == applicationSettingsId)
 
                     .ToList();
 
-                res.AddRange(universalData
+                res.AddRange(_universalData
                     .GroupBy(g => new
                     {
                         PreviousItem_Id = g.Summary.PreviousItem_Id,
@@ -261,7 +262,7 @@ namespace WaterNut.DataSpace
                     }).ToList());
 
 
-                var allSales = universalData; //.Where(x => x.EntryDataType == entryType || x.Type == null)
+                var allSales = _universalData; //.Where(x => x.EntryDataType == entryType || x.Type == null)
 
                 //var test = allSales.Where(x => x.PreviousItem_Id == 44067);
 
@@ -2045,6 +2046,12 @@ namespace WaterNut.DataSpace
             public double TotalQtyAllocated { get; set; }
             public string Type { get; set; }
         }
+    }
+
+    internal class SummaryData
+    {
+        public ItemSalesAsycudaPiSummary Summary { get; set; }
+        public IEnumerable<AsycudaItemPiQuantityData> pIData { get; set; }
     }
 
     internal class x7100SalesPi
