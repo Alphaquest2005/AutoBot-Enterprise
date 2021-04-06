@@ -2,6 +2,7 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.Entity;
 using System.Data.SqlClient;
 using System.Diagnostics;
 using System.Globalization;
@@ -28,6 +29,7 @@ using LicenseDS.Business.Entities;
 using MoreLinq.Extensions;
 using Omu.ValueInjecter;
 using TrackableEntities;
+using TrackableEntities.EF6;
 using ValuationDS.Business.Entities;
 using WaterNut.Business.Entities;
 using WaterNut.DataLayer;

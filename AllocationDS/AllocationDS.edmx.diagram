@@ -67,7 +67,7 @@
         <AssociationConnector Association="WaterNutDBModel.EntryDataDetailsAsycudaDocumentItemEntryDataDetails" />
         <EntityTypeShape EntityType="WaterNutDBModel.AscyudaItemPiQuantity" Width="2.75" PointX="14.5" PointY="15.125" />
         <AssociationConnector Association="WaterNutDBModel.AscyudaItemPiQuantityAdjustmentShortAllocations" />
-        <EntityTypeShape EntityType="WaterNutDBModel.AsycudaItemPiQuantityData" Width="1.5" PointX="19.75" PointY="1.125" />
+        <EntityTypeShape EntityType="WaterNutDBModel.AsycudaItemPiQuantityData" Width="3.375" PointX="21.5" PointY="5.5" />
         <EntityTypeShape EntityType="WaterNutDBModel.PreviousItemsEx" Width="3.625" PointX="10.375" PointY="3.75" />
         <EntityTypeShape EntityType="WaterNutDBModel.InventoryItem" Width="1.5" PointX="0.5" PointY="15.125" />
         <AssociationConnector Association="WaterNutDBModel.TariffCodesInventoryItemsEx" />

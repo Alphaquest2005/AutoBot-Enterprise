@@ -213,130 +213,162 @@ namespace WaterNut.DataSpace
             }
         }
 
-        private static List<ItemSalesPiSummary> GetPiSummary(int applicationSettingsId, DateTime startDate, DateTime endDate, string dfp,
-            AllocationDSContext ctx,  string entryType)
+        private static List<ItemSalesPiSummary> GetPiSummary(int applicationSettingsId, DateTime startDate,
+            DateTime endDate, string dfp,
+            AllocationDSContext ctx, string entryType)
         {
-            var res = new List<ItemSalesPiSummary>();
-
-            var universalData = ctx.ItemSalesAsycudaPiSummary
-                //.Where(x => x.ItemNumber == "14479" || x.ItemNumber == "014479")
-                .Where(x => x.ApplicationSettingsId == applicationSettingsId)
-               
-                .ToList();
-
-            res.AddRange(universalData
-                .GroupBy(g => new
-                {
-                    PreviousItem_Id = g.PreviousItem_Id,
-                    pCNumber = g.pCNumber,
-                    pLineNumber = g.pLineNumber,
-                   // ItemNumber = g.ItemNumber, /// took out all itemnumber because the pos can have different itemnumbers in entrydatadetails... c#14280 - 64
+            try
+            {
 
 
-                })
-                .Select(x => new ItemSalesPiSummary
-                {
-                    PreviousItem_Id = (int)x.Key.PreviousItem_Id,
-                    ItemNumber = x.First().ItemNumber,
-                    QtyAllocated = x.DistinctBy(q => q.Id).Select(z => z.QtyAllocated).DefaultIfEmpty(0).Sum(),
-                    pQtyAllocated = x.DistinctBy(q => new { q.DutyFreePaid, q.pQtyAllocated }).Select(z => z.pQtyAllocated).DefaultIfEmpty(0).Sum(),
-                    PiQuantity = x.DistinctBy(q => q.Id).Select(z => z.PiQuantity).DefaultIfEmpty(0).Sum(),
-                    pCNumber = x.Key.pCNumber,
-                    pLineNumber = (int)x.Key.pLineNumber,
-                    DutyFreePaid = "Universal",
-                    Type = "Universal",
-                    EntryDataType = "Universal",
-                }).ToList());
-            
+                var res = new List<ItemSalesPiSummary>();
 
-            var allSales = universalData;//.Where(x => x.EntryDataType == entryType || x.Type == null)
+                var universalData = ctx.ItemSalesAsycudaPiSummary
+                    .GroupJoin(ctx.AsycudaItemPiQuantityData, pis => pis.PreviousItem_Id, pid => pid.Item_Id,
+                        (pis, pid) => new {Summary = pis, pIData = pid})
+                    //.Where(x => x.ItemNumber == "14479" || x.ItemNumber == "014479")
+                    .Where(x => x.Summary.ApplicationSettingsId == applicationSettingsId)
 
-            //var test = allSales.Where(x => x.PreviousItem_Id == 44067);
+                    .ToList();
 
-            res.AddRange(allSales 
-                .GroupBy(g => new
-                {
-                    PreviousItem_Id = g.PreviousItem_Id,
-                    pCNumber = g.pCNumber,
-                    pLineNumber = g.pLineNumber,
-                   // ItemNumber = g.ItemNumber,
+                res.AddRange(universalData
+                    .GroupBy(g => new
+                    {
+                        PreviousItem_Id = g.Summary.PreviousItem_Id,
+                        pCNumber = g.Summary.pCNumber,
+                        pLineNumber = g.Summary.pLineNumber,
+                        // ItemNumber = g.ItemNumber, /// took out all itemnumber because the pos can have different itemnumbers in entrydatadetails... c#14280 - 64
 
 
-                })
-                .Select(x => new ItemSalesPiSummary
-                {
-                    PreviousItem_Id = (int)x.Key.PreviousItem_Id,
-                    ItemNumber = x.First().ItemNumber,
-                    QtyAllocated = x.DistinctBy(q => q.Id).Select(z => z.QtyAllocated).DefaultIfEmpty(0).Sum(),
-                    pQtyAllocated = x.DistinctBy(q => new {q.DutyFreePaid, q.pQtyAllocated}).Select(z => z.pQtyAllocated).DefaultIfEmpty(0).Sum(),
-                    PiQuantity = x.DistinctBy(q => q.Id).Select(z => z.PiQuantity).DefaultIfEmpty(0).Sum(),
-                    pCNumber = x.Key.pCNumber,
-                    pLineNumber = (int) x.Key.pLineNumber,
-                    DutyFreePaid = "All",
-                    Type = "All",
-                    EntryDataType = entryType
-                }).ToList());
+                    })
+                    .Select(x => new ItemSalesPiSummary
+                    {
+                        PreviousItem_Id = (int) x.Key.PreviousItem_Id,
+                        ItemNumber = x.First().Summary.ItemNumber,
+                        QtyAllocated = x.DistinctBy(q => q.Summary.Id).Select(z => z.Summary.QtyAllocated)
+                            .DefaultIfEmpty(0).Sum(),
+                        pQtyAllocated = x.DistinctBy(q => new {q.Summary.DutyFreePaid, q.Summary.pQtyAllocated})
+                            .Select(z => z.Summary.pQtyAllocated).DefaultIfEmpty(0).Sum(),
+                        PiQuantity =
+                            x.DistinctBy(q => q.Summary.Id)
+                                .SelectMany(z => z.pIData.Select(zz => zz.PiQuantity.GetValueOrDefault()))
+                                .DefaultIfEmpty(0).Sum(),
+                        pCNumber = x.Key.pCNumber,
+                        pLineNumber = (int) x.Key.pLineNumber,
+                        DutyFreePaid = "Universal",
+                        Type = "Universal",
+                        EntryDataType = "Universal",
+                    }).ToList());
 
-            //var test2 = allSales.Where(x => x.PreviousItem_Id == 490395).ToList();
-           //var test3 = res.Where(x => x.PreviousItem_Id == 44067).ToList();
+
+                var allSales = universalData; //.Where(x => x.EntryDataType == entryType || x.Type == null)
+
+                //var test = allSales.Where(x => x.PreviousItem_Id == 44067);
+
+                res.AddRange(allSales
+                    .GroupBy(g => new
+                    {
+                        PreviousItem_Id = g.Summary.PreviousItem_Id,
+                        pCNumber = g.Summary.pCNumber,
+                        pLineNumber = g.Summary.pLineNumber,
+                        // ItemNumber = g.ItemNumber,
 
 
-            var allHistoricSales = allSales
-                .Where(x => x.Type == entryType || x.Type == null)
-                .Where(x => x.EntryDataDate <= endDate)
-                .Where(x => x.DutyFreePaid == dfp).ToList();
+                    })
+                    .Select(x => new ItemSalesPiSummary
+                    {
+                        PreviousItem_Id = (int) x.Key.PreviousItem_Id,
+                        ItemNumber = x.First().Summary.ItemNumber,
+                        QtyAllocated = x.DistinctBy(q => q.Summary.Id).Select(z => z.Summary.QtyAllocated)
+                            .DefaultIfEmpty(0).Sum(),
+                        pQtyAllocated = x.DistinctBy(q => new {q.Summary.DutyFreePaid, q.Summary.pQtyAllocated})
+                            .Select(z => z.Summary.pQtyAllocated).DefaultIfEmpty(0).Sum(),
+                        PiQuantity =
+                            x.DistinctBy(q => q.Summary.Id)
+                                .SelectMany(z => z.pIData.Select(zz => zz.PiQuantity.GetValueOrDefault()))
+                                .DefaultIfEmpty(0)
+                                .Sum(), //x.DistinctBy(q => q.Summary.Id).Select(z => z.Summary.PiQuantity).DefaultIfEmpty(0).Sum(),
+                        pCNumber = x.Key.pCNumber,
+                        pLineNumber = (int) x.Key.pLineNumber,
+                        DutyFreePaid = "All",
+                        Type = "All",
+                        EntryDataType = entryType
+                    }).ToList());
 
-            res.AddRange(allHistoricSales
-                .GroupBy(g => new
-                {
-                    PreviousItem_Id = g.PreviousItem_Id,
-                    pCNumber = g.pCNumber,
-                    pLineNumber = g.pLineNumber,
-                  //  ItemNumber = g.ItemNumber,
-                    DutyFreePaid = g.DutyFreePaid
+                //var test2 = allSales.Where(x => x.PreviousItem_Id == 490395).ToList();
+                //var test3 = res.Where(x => x.PreviousItem_Id == 44067).ToList();
 
-                })
-                .Select(x => new ItemSalesPiSummary
-                {
-                    PreviousItem_Id = (int) x.Key.PreviousItem_Id,
-                    ItemNumber = x.First().ItemNumber,
-                    QtyAllocated = x.Select(z => z.QtyAllocated).DefaultIfEmpty(0).Sum(),
-                    pQtyAllocated = x.Select(z => z.pQtyAllocated).Distinct().DefaultIfEmpty(0).Sum(),
-                    PiQuantity = x.Select(z => z.PiQuantity).DefaultIfEmpty(0).Sum(),
-                    pCNumber = x.Key.pCNumber,
-                    pLineNumber = (int) x.Key.pLineNumber,
-                    DutyFreePaid = x.Key.DutyFreePaid,
-                    Type = "Historic",
-                    EntryDataType = entryType
-                }).ToList());
 
-            res.AddRange(allHistoricSales
-                .Where(x => x.EntryDataDate >= startDate)
-                .GroupBy(g => new
-                {
-                    PreviousItem_Id = g.PreviousItem_Id,
-                    pCNumber = g.pCNumber,
-                    pLineNumber = g.pLineNumber,
-                    //ItemNumber = g.ItemNumber,
-                    DutyFreePaid = g.DutyFreePaid
+                var allHistoricSales = allSales
+                    .Where(x => x.Summary.Type == entryType || x.Summary.Type == null)
+                    .Where(x => x.Summary.EntryDataDate <= endDate)
+                    .Where(x => x.Summary.DutyFreePaid == dfp).ToList();
 
-                })
-                .Select(x => new ItemSalesPiSummary
-                {
-                    PreviousItem_Id = (int) x.Key.PreviousItem_Id,
-                    ItemNumber = x.First().ItemNumber,
-                    QtyAllocated = x.Select(z => z.QtyAllocated).DefaultIfEmpty(0).Sum(),
-                    pQtyAllocated = x.Select(z => z.pQtyAllocated).Distinct().DefaultIfEmpty(0).Sum(),
-                    PiQuantity = x.Select(z => z.PiQuantity).DefaultIfEmpty(0).Sum(),
-                    pCNumber = x.Key.pCNumber,
-                    pLineNumber = (int) x.Key.pLineNumber,
-                    DutyFreePaid = x.Key.DutyFreePaid,
-                    Type = "Current",
-                    EntryDataType = entryType
-                }).ToList());
-            return res;
+                res.AddRange(allHistoricSales
+                    .GroupBy(g => new
+                    {
+                        PreviousItem_Id = g.Summary.PreviousItem_Id,
+                        pCNumber = g.Summary.pCNumber,
+                        pLineNumber = g.Summary.pLineNumber,
+                        //  ItemNumber = g.ItemNumber,
+                        DutyFreePaid = g.Summary.DutyFreePaid
+
+                    })
+                    .Select(x => new ItemSalesPiSummary
+                    {
+                        PreviousItem_Id = (int) x.Key.PreviousItem_Id,
+                        ItemNumber = x.First().Summary.ItemNumber,
+                        QtyAllocated = x.Select(z => z.Summary.QtyAllocated).DefaultIfEmpty(0).Sum(),
+                        pQtyAllocated = x.Select(z => z.Summary.pQtyAllocated).Distinct().DefaultIfEmpty(0).Sum(),
+                        PiQuantity =
+                            x.DistinctBy(q => q.Summary.Id)
+                                .SelectMany(z => z.pIData.Select(zz => zz.PiQuantity.GetValueOrDefault()))
+                                .DefaultIfEmpty(0)
+                                .Sum(), // x.Select(z => z.Summary.PiQuantity).DefaultIfEmpty(0).Sum(),
+                        pCNumber = x.Key.pCNumber,
+                        pLineNumber = (int) x.Key.pLineNumber,
+                        DutyFreePaid = x.Key.DutyFreePaid,
+                        Type = "Historic",
+                        EntryDataType = entryType
+                    }).ToList());
+
+                res.AddRange(allHistoricSales
+                    .Where(x => x.Summary.EntryDataDate >= startDate)
+                    .GroupBy(g => new
+                    {
+                        PreviousItem_Id = g.Summary.PreviousItem_Id,
+                        pCNumber = g.Summary.pCNumber,
+                        pLineNumber = g.Summary.pLineNumber,
+                        //ItemNumber = g.ItemNumber,
+                        DutyFreePaid = g.Summary.DutyFreePaid
+
+                    })
+                    .Select(x => new ItemSalesPiSummary
+                    {
+                        PreviousItem_Id = (int) x.Key.PreviousItem_Id,
+                        ItemNumber = x.First().Summary.ItemNumber,
+                        QtyAllocated = x.Select(z => z.Summary.QtyAllocated).DefaultIfEmpty(0).Sum(),
+                        pQtyAllocated = x.Select(z => z.Summary.pQtyAllocated).Distinct().DefaultIfEmpty(0).Sum(),
+                        PiQuantity =
+                            x.DistinctBy(q => q.Summary.Id)
+                                .SelectMany(z => z.pIData.Select(zz => zz.PiQuantity.GetValueOrDefault()))
+                                .DefaultIfEmpty(0)
+                                .Sum(), // x.Select(z => z.Summary.PiQuantity).DefaultIfEmpty(0).Sum(),
+                        pCNumber = x.Key.pCNumber,
+                        pLineNumber = (int) x.Key.pLineNumber,
+                        DutyFreePaid = x.Key.DutyFreePaid,
+                        Type = "Current",
+                        EntryDataType = entryType
+                    }).ToList());
+                return res;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
         }
-      
+
         public class ItemSalesPiSummary
         {
             public string ItemNumber { get; set; }
