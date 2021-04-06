@@ -256,7 +256,7 @@ namespace WaterNut.DataSpace
                         QtyAllocated = x.Select(z => z.Summary.QtyAllocated).DefaultIfEmpty(0).Sum(),
                         pQtyAllocated = x.Select(z => z.Summary.pQtyAllocated).Distinct().DefaultIfEmpty(0).Sum(),
                         PiQuantity =
-                            x.DistinctBy(q => q.Summary.Id)
+                            x.DistinctBy(q => q.Summary.PreviousItem_Id)
                                 .SelectMany(z => z.pIData.Select(zz => zz.PiQuantity.GetValueOrDefault()))
                                 .DefaultIfEmpty(0)
                                 .Sum(), // x.Select(z => z.Summary.PiQuantity).DefaultIfEmpty(0).Sum(),
@@ -285,7 +285,7 @@ namespace WaterNut.DataSpace
                         QtyAllocated = x.Select(z => z.Summary.QtyAllocated).DefaultIfEmpty(0).Sum(),
                         pQtyAllocated = x.Select(z => z.Summary.pQtyAllocated).Distinct().DefaultIfEmpty(0).Sum(),
                         PiQuantity =
-                            x.DistinctBy(q => q.Summary.Id)
+                            x.DistinctBy(q => q.Summary.PreviousItem_Id)
                                 .SelectMany(z => z.pIData.Select(zz => zz.PiQuantity.GetValueOrDefault()))
                                 .DefaultIfEmpty(0)
                                 .Sum(), // x.Select(z => z.Summary.PiQuantity).DefaultIfEmpty(0).Sum(),
@@ -331,7 +331,7 @@ namespace WaterNut.DataSpace
                         pQtyAllocated = x.DistinctBy(q => new {q.Summary.DutyFreePaid, q.Summary.pQtyAllocated})
                             .Select(z => z.Summary.pQtyAllocated).DefaultIfEmpty(0).Sum(),
                         PiQuantity =
-                            x.DistinctBy(q => q.Summary.Id)
+                            x.DistinctBy(q => q.Summary.PreviousItem_Id)
                                 .SelectMany(z => z.pIData.Select(zz => zz.PiQuantity.GetValueOrDefault()))
                                 .DefaultIfEmpty(0).Sum(),
                         pCNumber = x.Key.pCNumber,
@@ -358,7 +358,7 @@ namespace WaterNut.DataSpace
                         pQtyAllocated = x.DistinctBy(q => new {q.Summary.DutyFreePaid, q.Summary.pQtyAllocated})
                             .Select(z => z.Summary.pQtyAllocated).DefaultIfEmpty(0).Sum(),
                         PiQuantity =
-                            x.DistinctBy(q => q.Summary.Id)
+                            x.DistinctBy(q => q.Summary.PreviousItem_Id)
                                 .SelectMany(z => z.pIData.Select(zz => zz.PiQuantity.GetValueOrDefault()))
                                 .DefaultIfEmpty(0)
                                 .Sum(), //x.DistinctBy(q => q.Summary.Id).Select(z => z.Summary.PiQuantity).DefaultIfEmpty(0).Sum(),
