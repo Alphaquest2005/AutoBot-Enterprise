@@ -2772,6 +2772,12 @@ namespace WaterNut.DataSpace
             ExportDocSet(docset, directoryName, overWrite);
         }
 
+        public async Task ExportLastDocumentInDocSet(int AsycudaDocumentSetId, string directoryName, bool overWrite)
+        {
+            var docset = await GetAsycudaDocumentSet(AsycudaDocumentSetId).ConfigureAwait(false);
+            ExportLastDocumentInDocSet(docset, directoryName, overWrite);
+        }
+
         public async Task<AsycudaDocumentSet> GetAsycudaDocumentSet(int asycudaDocumentSetId)
         {
 
@@ -2872,6 +2878,56 @@ namespace WaterNut.DataSpace
                     {
 
                         Instance.DocToXML(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder == null? fileInfo.DirectoryName : Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder,docSet.Declarant_Reference_Number),doc, fileInfo);
+                    }
+
+
+                    StatusModel.StatusUpdate();
+                    // ExportDocumentToExcel(doc, directoryName);
+                }
+                catch (Exception ex)
+                {
+
+                    exceptions.Enqueue(
+                        new ApplicationException(
+                            $"Could not import file - '{doc.ReferenceNumber}. Error:{ex.Message} Stacktrace:{ex.StackTrace}"));
+                }
+
+                ////}
+            }
+
+            if (exceptions.Count <= 0) return;
+            var fault = new ValidationFault
+            {
+                Result = false,
+                Message = exceptions.First().Message,
+                Description = exceptions.First().StackTrace
+            };
+            throw new FaultException<ValidationFault>(fault, new FaultReason(fault.Message));
+
+        }
+
+        internal void ExportLastDocumentInDocSet(AsycudaDocumentSet docSet, string directoryName, bool overWrite)
+        {
+
+            StatusModel.StartStatusUpdate("Exporting Files", docSet.Documents.Count());
+            var exceptions = new ConcurrentQueue<Exception>();
+            if (!Directory.Exists(directoryName)) return;
+            if (File.Exists(Path.Combine(directoryName, "Instructions.txt")))
+                File.Delete(Path.Combine(directoryName, "Instructions.txt"));
+            if (File.Exists(Path.Combine(directoryName, "InstructionResults.txt")))
+                File.Delete(Path.Combine(directoryName, "InstructionResults.txt"));
+
+            foreach (var doc in docSet.Documents.Skip(docSet.Documents.Count() - 1))
+            {
+                //if (doc.xcuda_Item.Any() == true)
+                //{
+                try
+                {
+                    var fileInfo = new FileInfo(Path.Combine(directoryName, doc.ReferenceNumber + ".xml"));
+                    if (overWrite == true || !File.Exists(fileInfo.FullName))
+                    {
+
+                        Instance.DocToXML(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder == null ? fileInfo.DirectoryName : Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder, docSet.Declarant_Reference_Number), doc, fileInfo);
                     }
 
 

@@ -4592,8 +4592,13 @@ namespace AutoBot
 
             ClearDocSetEntryData(fileType.AsycudaDocumentSetId);
             ClearDocSetAttachments(fileType.AsycudaDocumentSetId, fileType.EmailId == null? null :(int?) Convert.ToInt32(fileType.EmailId) );
-
-
+            var docSet = BaseDataModel.Instance.GetAsycudaDocumentSet(fileType.AsycudaDocumentSetId).Result;
+            string directoryName = Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder,
+                                                        docSet.Declarant_Reference_Number);
+            var instFile = Path.Combine(directoryName, "Instructions.txt");
+            var resFile = Path.Combine(directoryName, "InstructionResults.txt");
+            if (File.Exists(instFile)) File.Delete(instFile);
+            if (File.Exists(resFile)) File.Delete(resFile);
         }
 
 
@@ -4794,12 +4799,13 @@ namespace AutoBot
                     foreach (var doc in lst)
                     {
 
-                        BaseDataModel.Instance.ExportDocSet(doc.Key.AsycudaDocumentSetId,
-                            Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder,
-                                doc.Key.Declarant_Reference_Number), true).Wait();
-                        ExportDocSetSalesReport(doc.Key.AsycudaDocumentSetId,
-                            Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder,
-                                doc.Key.Declarant_Reference_Number)).Wait();
+                        string directoryName = Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder,
+                                                        doc.Key.Declarant_Reference_Number);
+                     
+                        BaseDataModel.Instance.ExportLastDocumentInDocSet(doc.Key.AsycudaDocumentSetId,
+                            directoryName, true).Wait();
+                        ExportLastDocSetSalesReport(doc.Key.AsycudaDocumentSetId,
+                            directoryName).Wait();
 
                     }
 
@@ -5442,6 +5448,55 @@ namespace AutoBot
             if (exceptions.Count > 0) throw new AggregateException(exceptions);
         }
 
+        public static async Task ExportLastDocSetSalesReport(int asycudaDocumentSetId, string folder)
+        {
+            var doclst =
+                await
+                    new SalesDataService().GetSalesDocuments(
+                        asycudaDocumentSetId)
+                        .ConfigureAwait(false);
+            if (doclst == null || !doclst.ToList().Any()) return;
+
+
+            var exceptions = new ConcurrentQueue<Exception>();
+
+            using (var sta = new StaTaskScheduler(numberOfThreads: 1))
+            {
+
+                await Task.Factory.StartNew(() =>
+                {
+                    var s = new ExportToCSV<SaleReportLine, List<SaleReportLine>>();
+                    s.StartUp();
+                    foreach (var doc in doclst)
+                    {
+                        try
+                        {
+                            var data = GetDocumentSalesReport(doc.ASYCUDA_Id).Result;
+                            if (data != null)
+                            {
+                                string path = Path.Combine(folder,
+                                    !string.IsNullOrEmpty(doc.CNumber) ? doc.CNumber : doc.ReferenceNumber + ".csv.pdf");
+                                s.dataToPrint = data.ToList();
+                                s.SaveReport(path);
+                            }
+                            else
+                            {
+                                File.Create(Path.Combine(folder, doc.CNumber ?? doc.ReferenceNumber + ".csv.pdf"));
+                            }
+
+                        }
+                        catch (Exception ex)
+                        {
+                            exceptions.Enqueue(ex);
+                        }
+                    }
+                    s.ShutDown();
+                },
+                    CancellationToken.None, TaskCreationOptions.None, sta).ConfigureAwait(false);
+            }
+            if (exceptions.Count > 0) throw new AggregateException(exceptions);
+        }
+
         public static async Task<IEnumerable<SaleReportLine>> GetDocumentSalesReport(int ASYCUDA_Id)
         {
             var alst = await Ex9SalesReport(ASYCUDA_Id).ConfigureAwait(false);
@@ -5640,7 +5695,7 @@ namespace AutoBot
                                 .Include(x => x.Attachments)
                                 .FirstOrDefault(x => x.Attachments.FilePath == file.FullName 
                                                      && x.AsycudaDocumentSetId == fileType.AsycudaDocumentSetId);
-                        var existingRefCount = ctx.Attachments.Select(x => x.Reference).Where(x => x == newReference).Count();
+                        var existingRefCount = ctx.Attachments.Select(x => x.Reference).Where(x => x.Contains(newReference)).Count();
                         if (existingRefCount > 0) newReference = $"{existingRefCount + 1}-{newReference}";
                         using (var ctx1 = new CoreEntitiesContext() { StartTracking = true })
                         {
