@@ -257,7 +257,7 @@ namespace WaterNut.DataSpace
                         pQtyAllocated = x.Select(z => z.Summary.pQtyAllocated).Distinct().DefaultIfEmpty(0).Sum(),
                         PiQuantity =
                             x.DistinctBy(q => q.Summary.PreviousItem_Id)
-                                .SelectMany(z => z.pIData.Select(zz => zz.PiQuantity.GetValueOrDefault()))
+                                .SelectMany(z => z.pIData.Where(zz => zz.AssessmentDate <= endDate).Select(zz => zz.PiQuantity.GetValueOrDefault()))
                                 .DefaultIfEmpty(0)
                                 .Sum(), // x.Select(z => z.Summary.PiQuantity).DefaultIfEmpty(0).Sum(),
                         pCNumber = x.Key.pCNumber,
@@ -268,7 +268,7 @@ namespace WaterNut.DataSpace
                     }).ToList());
 
                 res.AddRange(allHistoricSales
-                    .Where(x => x.Summary.EntryDataDate >= startDate)
+                    .Where(x => x.Summary.EntryDataDate >= startDate /*&& x.Summary.EntryDataDate <= endDate*/)
                     .GroupBy(g => new
                     {
                         PreviousItem_Id = g.Summary.PreviousItem_Id,
@@ -286,7 +286,7 @@ namespace WaterNut.DataSpace
                         pQtyAllocated = x.Select(z => z.Summary.pQtyAllocated).Distinct().DefaultIfEmpty(0).Sum(),
                         PiQuantity =
                             x.DistinctBy(q => q.Summary.PreviousItem_Id)
-                                .SelectMany(z => z.pIData.Select(zz => zz.PiQuantity.GetValueOrDefault()))
+                                .SelectMany(z => z.pIData.Where(zz => zz.AssessmentDate >= startDate && zz.AssessmentDate <= endDate).Select(zz => zz.PiQuantity.GetValueOrDefault()))
                                 .DefaultIfEmpty(0)
                                 .Sum(), // x.Select(z => z.Summary.PiQuantity).DefaultIfEmpty(0).Sum(),
                         pCNumber = x.Key.pCNumber,
@@ -309,7 +309,7 @@ namespace WaterNut.DataSpace
             if (_universalData == null)
             {
                 _universalData = ctx.ItemSalesAsycudaPiSummary
-                    .GroupJoin(ctx.AsycudaItemPiQuantityData, pis => new { PreviousItem_Id = pis.PreviousItem_Id.GetValueOrDefault(), pis.DutyFreePaid}, pid => new { PreviousItem_Id = pid.Item_Id, pid.DutyFreePaid},
+                    .GroupJoin(ctx.AsycudaItemPiQuantityData, pis => new { PreviousItem_Id = (int) pis.PreviousItem_Id, pis.DutyFreePaid}, pid => new { PreviousItem_Id = pid.Item_Id, pid.DutyFreePaid},
                         (pis, pid) => new SummaryData {Summary = pis, pIData = pid})
                     //.Where(x => x.ItemNumber == "14479" || x.ItemNumber == "014479")
                     .Where(x => x.Summary.ApplicationSettingsId == applicationSettingsId)
