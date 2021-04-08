@@ -226,7 +226,7 @@ namespace WaterNut.DataSpace
 
                 var res = new List<ItemSalesPiSummary>();
 
-                SummaryInititalization(applicationSettingsId, ctx, entryType);
+                SummaryInititalization(applicationSettingsId, ctx, entryType, startDate, endDate);
 
 
 
