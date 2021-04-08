@@ -228,14 +228,15 @@ namespace WaterNut.DataSpace
 
                 SummaryInititalization(applicationSettingsId, ctx, entryType, startDate, endDate);
 
-
-
+                var testres = allSales.Where(x => x.Summary.PreviousItem_Id == 250360).ToList();
+                var testlistQtyAllocated = testres.Select(x => x.Summary.QtyAllocated).ToList();
+                var testQtyAllocated = testres.Sum(x => x.Summary.QtyAllocated);
                 res.AddRange(universalDataSummary);
                 res.AddRange(allSalesSummary);
 
 
                 var allHistoricSales = allSales
-                    .Where(x => x.Summary.Type == entryType || x.Summary.Type == null)
+                    .Where(x => (x.Summary.Type??"Sales") == entryType)// || x.Summary.Type == null
                     .Where(x => x.Summary.EntryDataDate <= endDate)
                     .Where(x => x.Summary.DutyFreePaid == dfp).ToList();
 
@@ -265,7 +266,6 @@ namespace WaterNut.DataSpace
                         DutyFreePaid = x.Key.DutyFreePaid,
                         Type = "Historic",
                         EntryDataType = entryType,
-                        StartDate = startDate,
                         EndDate = endDate
                     }).ToList());
 
@@ -354,6 +354,8 @@ namespace WaterNut.DataSpace
                         PreviousItem_Id = g.Summary.PreviousItem_Id,
                         pCNumber = g.Summary.pCNumber,
                         pLineNumber = g.Summary.pLineNumber,
+                       // entryType = g.Summary.Type??"Sales",
+                        
                         // ItemNumber = g.ItemNumber,
                     })
                     .Select(x => new ItemSalesPiSummary
@@ -363,9 +365,10 @@ namespace WaterNut.DataSpace
                         QtyAllocated = x.DistinctBy(q => q.Summary.Id).Select(z => z.Summary.QtyAllocated)
                             .DefaultIfEmpty(0).Sum(),
                         pQtyAllocated = x.DistinctBy(q => new {q.Summary.DutyFreePaid, q.Summary.pQtyAllocated})
+                            
                             .Select(z => z.Summary.pQtyAllocated).DefaultIfEmpty(0).Sum(),
                         PiQuantity =
-                            x.DistinctBy(q => q.Summary.PreviousItem_Id)
+                            x.DistinctBy(q => new { q.Summary.DutyFreePaid, q.Summary.PreviousItem_Id})
                                 .SelectMany(z => z.pIData.Select(zz => zz.PiQuantity.GetValueOrDefault()))
                                 .DefaultIfEmpty(0)
                                 .Sum(), //x.DistinctBy(q => q.Summary.Id).Select(z => z.Summary.PiQuantity).DefaultIfEmpty(0).Sum(),
@@ -373,7 +376,7 @@ namespace WaterNut.DataSpace
                         pLineNumber = (int) x.Key.pLineNumber,
                         DutyFreePaid = "All",
                         Type = "All",
-                        EntryDataType = entryType,
+                        EntryDataType = entryType,//x.Key.entryType,
                         StartDate = startDate,
                         EndDate = endDate
                     }).ToList();
@@ -1190,15 +1193,16 @@ namespace WaterNut.DataSpace
                     .Select(x => x.TotalQuantity)
                     .DefaultIfEmpty(0).Sum();
 
-                var universalSalesAll = (double) universalData.GroupBy(x => x.PreviousItem_Id).Select(x => x.FirstOrDefault(q => q.pQtyAllocated > 0)?.pQtyAllocated)
-                    .DefaultIfEmpty(0.0).Sum();
+               // var universalSalesAll = (double)universalData.GroupBy(x => x.PreviousItem_Id).Select(x => x.FirstOrDefault()?.pQtyAllocated).DefaultIfEmpty(0.0).Sum();
+                var universalSalesAll = (double) universalData.GroupBy(x => x.PreviousItem_Id).Select(x => x.FirstOrDefault(q => q.pQtyAllocated > 0)?.pQtyAllocated).DefaultIfEmpty(0.0).Sum();
                 var universalPiAll = (double) universalData.GroupBy(x => x.PreviousItem_Id).Select(x => x.FirstOrDefault(q => q.PiQuantity > 0)?.PiQuantity)
                     .DefaultIfEmpty(0.0).Sum();
 
-                var totalSalesAll = (double) salesPiAll.GroupBy(x => x.PreviousItem_Id).Select(x => x.FirstOrDefault(q => q.pQtyAllocated > 0)?.pQtyAllocated)
-                    .DefaultIfEmpty(0.0).Sum();
+               // var totalSalesAll = (double)salesPiAll.GroupBy(x => x.PreviousItem_Id).SelectMany(x => x.Select(z => z.QtyAllocated)).DefaultIfEmpty(0.0).Sum();
+                var totalSalesAll = (double) salesPiAll.GroupBy(x => x.PreviousItem_Id).Select(x => x.FirstOrDefault(q => q.pQtyAllocated > 0)?.pQtyAllocated).DefaultIfEmpty(0.0).Sum();
                 var totalPiAll = (double) salesPiAll.GroupBy(x => x.PreviousItem_Id).Select(x => x.FirstOrDefault(q => q.PiQuantity > 0)?.PiQuantity)
                     .DefaultIfEmpty(0.0).Sum();
+                //var totalSalesHistoric = (double)salesPiHistoric.GroupBy(x => x.PreviousItem_Id).SelectMany(x => x.Select(z => z.QtyAllocated)).DefaultIfEmpty(0.0).Sum();
                 var totalSalesHistoric = (double) salesPiHistoric.GroupBy(x => x.PreviousItem_Id).Select(x => x.FirstOrDefault(q => q.pQtyAllocated > 0)?.pQtyAllocated).DefaultIfEmpty(0.0).Sum();
                 var totalPiHistoric = (double) salesPiHistoric.GroupBy(x => x.PreviousItem_Id).Select(x => x.FirstOrDefault(q => q.PiQuantity > 0)?.PiQuantity)
                     .DefaultIfEmpty(0.0).Sum();
@@ -1206,6 +1210,10 @@ namespace WaterNut.DataSpace
                 var totalPiCurrent = (double) salesPiCurrent.GroupBy(x => x.PreviousItem_Id).Select(x => x.FirstOrDefault(q => q.PiQuantity > 0)?.PiQuantity)
                     .DefaultIfEmpty(0.0).Sum();
 
+                var itemPiHistoric = itemSalesPiHistoric.GroupBy(x => x.PreviousItem_Id)
+                   .Select(x => x.First().PiQuantity).DefaultIfEmpty(0).Sum();
+
+                var itemSalesHistoric = (double)itemSalesPiHistoric.Select(x => x.QtyAllocated).DefaultIfEmpty(0.0).Sum();
 
                 var preEx9Bucket = mypod.EntlnData.Quantity;
                 if (applyEx9Bucket)
@@ -1301,8 +1309,8 @@ namespace WaterNut.DataSpace
 
 
 
-                var itemPiHistoric = itemSalesPiHistoric.GroupBy(x => x.PreviousItem_Id)
-                    .Select(x => x.First().PiQuantity).DefaultIfEmpty(0).Sum();
+               
+
 
                 if (totalSalesAll == 0)// && mypod.Allocations.FirstOrDefault()?.Status != "Short Shipped"
                 {
@@ -1402,6 +1410,28 @@ namespace WaterNut.DataSpace
                                totalPiAll PI: {totalPiAll}
                                xQuantity:{mypod.EntlnData.Quantity}");
                     return 0;
+                }
+
+                //// item sales vs item pi, prevents early exwarehouse when its just one totalsales vs totalpi
+
+                if (Math.Round(itemSalesHistoric, 2) <
+                       Math.Round((itemPiHistoric + docPi + mypod.EntlnData.Quantity) * salesFactor, 2))
+                {
+                    //updateXStatus(mypod.Allocations,
+                    //    $@"Failed Historical Check:: Total Historic Sales:{Math.Round(totalSalesHistoric, 2)}
+                    //       Total Historic PI: {totalPiHistoric}
+                    //       xQuantity:{mypod.EntlnData.Quantity}");
+                    //return 0;
+                    var availibleQty = itemSalesHistoric - itemPiHistoric;
+                    Ex9Bucket(mypod, availibleQty, itemSalesHistoric, itemPiHistoric, "Historic");
+                    if (mypod.EntlnData.Quantity == 0)
+                    {
+                        updateXStatus(mypod.Allocations,
+                            $@"Failed Item Historical Check:: Item Historic Sales:{Math.Round(itemSalesHistoric, 2)}
+                                   Item Historic PI: {itemPiHistoric}
+                                   xQuantity:{mypod.EntlnData.Quantity}");
+                        return 0;
+                    }
                 }
 
 
