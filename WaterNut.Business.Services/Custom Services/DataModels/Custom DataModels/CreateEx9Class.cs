@@ -264,7 +264,9 @@ namespace WaterNut.DataSpace
                         pLineNumber = (int) x.Key.pLineNumber,
                         DutyFreePaid = x.Key.DutyFreePaid,
                         Type = "Historic",
-                        EntryDataType = entryType
+                        EntryDataType = entryType,
+                        StartDate = startDate,
+                        EndDate = endDate
                     }).ToList());
 
                 res.AddRange(allHistoricSales
@@ -293,7 +295,9 @@ namespace WaterNut.DataSpace
                         pLineNumber = (int) x.Key.pLineNumber,
                         DutyFreePaid = x.Key.DutyFreePaid,
                         Type = "Current",
-                        EntryDataType = entryType
+                        EntryDataType = entryType,
+                        StartDate = startDate,
+                        EndDate = endDate
                     }).ToList());
                 return res;
             }
@@ -304,7 +308,8 @@ namespace WaterNut.DataSpace
             }
         }
 
-        private static void SummaryInititalization(int applicationSettingsId, AllocationDSContext ctx, string entryType)
+        private static void SummaryInititalization(int applicationSettingsId, AllocationDSContext ctx, string entryType,
+            DateTime startDate, DateTime endDate)
         {
             if (_universalData == null)
             {
@@ -339,6 +344,8 @@ namespace WaterNut.DataSpace
                         DutyFreePaid = "Universal",
                         Type = "Universal",
                         EntryDataType = "Universal",
+                        StartDate = startDate,
+                        EndDate = endDate
                     }).ToList();
                 allSales = _universalData;
                 allSalesSummary = allSales
@@ -366,7 +373,9 @@ namespace WaterNut.DataSpace
                         pLineNumber = (int) x.Key.pLineNumber,
                         DutyFreePaid = "All",
                         Type = "All",
-                        EntryDataType = entryType
+                        EntryDataType = entryType,
+                        StartDate = startDate,
+                        EndDate = endDate
                     }).ToList();
             }
         }
@@ -384,6 +393,8 @@ namespace WaterNut.DataSpace
             public int PreviousItem_Id { get; set; }
             public double pQtyAllocated { get; set; }
             public string EntryDataType { get; set; }
+            public DateTime StartDate { get; set; }
+            public DateTime EndDate { get; set; }
         }
 
         
