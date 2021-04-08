@@ -228,9 +228,9 @@ namespace WaterNut.DataSpace
 
                 SummaryInititalization(applicationSettingsId, ctx, entryType, startDate, endDate);
 
-                var testres = allSales.Where(x => x.Summary.PreviousItem_Id == 250360).ToList();
-                var testlistQtyAllocated = testres.Select(x => x.Summary.QtyAllocated).ToList();
-                var testQtyAllocated = testres.Sum(x => x.Summary.QtyAllocated);
+                //var testres = allSales.Where(x => x.Summary.PreviousItem_Id == 250360).ToList();
+                //var testlistQtyAllocated = testres.Select(x => x.Summary.QtyAllocated).ToList();
+                //var testQtyAllocated = testres.Sum(x => x.Summary.QtyAllocated);
                 res.AddRange(universalDataSummary);
                 res.AddRange(allSalesSummary);
 
