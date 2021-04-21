@@ -691,8 +691,8 @@ namespace WaterNut.DataSpace
 					.Where(x => x.AsycudaDocument.ApplicationSettingsId == applicationSettingsId)
                     .Where(x => asycudaDocumentSetId == null || x.AsycudaDocument.AsycudaDocumentSetId == asycudaDocumentSetId)
                     .Where(x => (x.AsycudaDocument.CNumber != null || x.AsycudaDocument.IsManuallyAssessed == true)
-                                && (x.AsycudaDocument.CustomsOperationId == (int)CustomsOperations.Import
-                                 || x.AsycudaDocument.CustomsOperationId == (int)CustomsOperations.Warehouse)
+                                && (/*x.AsycudaDocument.CustomsOperationId == (int)CustomsOperations.Import
+                                 ||*/ x.AsycudaDocument.CustomsOperationId == (int)CustomsOperations.Warehouse)
                                 && (x.AsycudaDocument.Customs_Procedure.Sales == true || x.AsycudaDocument.Customs_Procedure.Stock == true) &&
                                  (x.AsycudaDocument.Cancelled == null || x.AsycudaDocument.Cancelled == false) &&
                                  x.AsycudaDocument.DoNotAllocate != true)
@@ -722,7 +722,7 @@ namespace WaterNut.DataSpace
 						};
 			}
 
-		   // var res = asycudaEntries.Where(x => x.Key == "PRM/84101");
+		    //var res = asycudaEntries.Where(x => x.Key == "BM/SHG16B");
 			return asycudaEntries;
 		}
 

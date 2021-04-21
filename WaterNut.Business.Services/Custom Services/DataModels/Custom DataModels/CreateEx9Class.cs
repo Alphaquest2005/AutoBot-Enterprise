@@ -229,7 +229,7 @@ namespace WaterNut.DataSpace
 
                 SummaryInititalization(applicationSettingsId, ctx, entryType, startDate, endDate);
 
-                var testres = allSales.Where(x => x.Summary.PreviousItem_Id == 250360).ToList();
+                var testres = allSales.Where(x => x.Summary.PreviousItem_Id == 698042).ToList();
                 var testlistQtyAllocated = testres.Select(x => x.Summary.QtyAllocated).ToList();
                 var testQtyAllocated = testres.Sum(x => x.Summary.QtyAllocated);
                 res.AddRange(universalDataSummary);
@@ -1646,7 +1646,7 @@ namespace WaterNut.DataSpace
                     var remainingSalesQty = mypod.Allocations.Sum(x => x.QtyAllocated);
                     //if (remainingSalesQty > availibleQty && totalallocations > 1)
                     //{
-                    if (i <= 0 && rejects.Any())
+                    if (i <= 0 && rejects.Any() && remainingSalesQty <= 0)
                     {
                         updateXStatus(rejects,
                             $@"Failed All Sales Check:: {type} Sales:{Math.Round(totalSalesAll, 2)}

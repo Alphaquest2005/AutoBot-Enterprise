@@ -771,7 +771,7 @@ namespace WaterNut.DataSpace
                             Cost = line.Cost,
                             InvoiceQty = line.InvoiceQuantity,
                             ItemDescription = line.ItemDescription,
-                            ItemNumber = line.ItemNumber,
+                            ItemNumber = ((string)Convert.ToString(line.ItemNumber)).Truncate(20),
                             LineNumber = line.LineNumber,
                             Quantity = line.Quantity,
                             ReceivedQty = line.ReceivedQuantity,
