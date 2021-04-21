@@ -7,21 +7,17 @@
     using System.ComponentModel.DataAnnotations.Schema;
     using System.Collections.Generic;
     
-    public partial class InvoicesMap : EntityTypeConfiguration<Invoices>
+    public partial class InvoiceIdentificatonRegExMap : EntityTypeConfiguration<InvoiceIdentificatonRegEx>
     {
-        public InvoicesMap()
+        public InvoiceIdentificatonRegExMap()
         {                        
               this.HasKey(t => t.Id);        
-              this.ToTable("OCR-Invoices");
+              this.ToTable("OCR-InvoiceIdentificatonRegEx");
               this.Property(t => t.Id).HasColumnName("Id").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.Identity));
-              this.Property(t => t.Name).HasColumnName("Name").IsRequired().HasMaxLength(50);
-              this.Property(t => t.FileTypeId).HasColumnName("FileTypeId");
-              this.Property(t => t.ApplicationSettingsId).HasColumnName("ApplicationSettingsId");
-              this.Property(t => t.IsActive).HasColumnName("IsActive");
-              this.HasMany(t => t.Parts).WithRequired(t => (Invoices)t.Invoices);
-              this.HasMany(t => t.RegEx).WithRequired(t => (Invoices)t.OCR_Invoices);
-              this.HasMany(t => t.FileTypes).WithRequired(t => (Invoices)t.Invoices);
-              this.HasMany(t => t.InvoiceIdentificatonRegEx).WithRequired(t => (Invoices)t.OCR_Invoices);
+              this.Property(t => t.InvoiceId).HasColumnName("InvoiceId");
+              this.Property(t => t.RegExId).HasColumnName("RegExId");
+              this.HasRequired(t => t.OCR_Invoices).WithMany(t =>(ICollection<InvoiceIdentificatonRegEx>) t.InvoiceIdentificatonRegEx).HasForeignKey(d => d.InvoiceId);
+              this.HasRequired(t => t.OCR_RegularExpressions).WithMany(t =>(ICollection<InvoiceIdentificatonRegEx>) t.InvoiceIdentificatonRegEx).HasForeignKey(d => d.RegExId);
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);
     			this.Ignore(t => t.ModifiedProperties);

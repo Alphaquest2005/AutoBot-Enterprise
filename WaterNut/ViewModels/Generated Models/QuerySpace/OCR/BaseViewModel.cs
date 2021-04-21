@@ -57,6 +57,7 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
                         RegisterToReceiveMessages<string>(MessageToken.CurrentEndIDChanged, OnCurrentEndIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentFieldFormatRegExIDChanged, OnCurrentFieldFormatRegExIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentFieldsIDChanged, OnCurrentFieldsIDChanged);
+                        RegisterToReceiveMessages<string>(MessageToken.CurrentInvoiceIdentificatonRegExIDChanged, OnCurrentInvoiceIdentificatonRegExIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentInvoiceRegExIDChanged, OnCurrentInvoiceRegExIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentInvoicesIDChanged, OnCurrentInvoicesIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentLinesIDChanged, OnCurrentLinesIDChanged);
@@ -74,6 +75,7 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
                         RegisterToReceiveMessages<End>(MessageToken.CurrentEndChanged, OnCurrentEndChanged);
                         RegisterToReceiveMessages<FieldFormatRegEx>(MessageToken.CurrentFieldFormatRegExChanged, OnCurrentFieldFormatRegExChanged);
                         RegisterToReceiveMessages<Fields>(MessageToken.CurrentFieldsChanged, OnCurrentFieldsChanged);
+                        RegisterToReceiveMessages<InvoiceIdentificatonRegEx>(MessageToken.CurrentInvoiceIdentificatonRegExChanged, OnCurrentInvoiceIdentificatonRegExChanged);
                         RegisterToReceiveMessages<InvoiceRegEx>(MessageToken.CurrentInvoiceRegExChanged, OnCurrentInvoiceRegExChanged);
                         RegisterToReceiveMessages<Invoices>(MessageToken.CurrentInvoicesChanged, OnCurrentInvoicesChanged);
                         RegisterToReceiveMessages<Lines>(MessageToken.CurrentLinesChanged, OnCurrentLinesChanged);
@@ -208,6 +210,33 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
                                     if (!string.IsNullOrEmpty(_currentFieldsID)) BeginSendMessage(MessageToken.CurrentFieldsIDChanged,
                                                      new NotificationEventArgs<string>(MessageToken.CurrentFieldsIDChanged, _currentFieldsID));
                                     NotifyPropertyChanged(x => this.CurrentFieldsID);  
+                                }
+                            }
+                        }
+                        internal async void OnCurrentInvoiceIdentificatonRegExIDChanged(object sender, NotificationEventArgs<string> e)
+                        {
+                            using (InvoiceIdentificatonRegExRepository ctx = new InvoiceIdentificatonRegExRepository())
+                            {
+                                CurrentInvoiceIdentificatonRegEx = await ctx.GetInvoiceIdentificatonRegEx(e.Data).ConfigureAwait(continueOnCapturedContext: false);
+                            }
+                            NotifyPropertyChanged(m => CurrentInvoiceIdentificatonRegEx);
+                        }
+
+                        private  string _currentInvoiceIdentificatonRegExID = "";
+                        public string CurrentInvoiceIdentificatonRegExID
+                        {
+                            get
+                            {
+                                return _currentInvoiceIdentificatonRegExID;
+                            }
+                            set
+                            {
+                                if (_currentInvoiceIdentificatonRegExID != value)
+                                {
+                                    _currentInvoiceIdentificatonRegExID = value;
+                                    if (!string.IsNullOrEmpty(_currentInvoiceIdentificatonRegExID)) BeginSendMessage(MessageToken.CurrentInvoiceIdentificatonRegExIDChanged,
+                                                     new NotificationEventArgs<string>(MessageToken.CurrentInvoiceIdentificatonRegExIDChanged, _currentInvoiceIdentificatonRegExID));
+                                    NotifyPropertyChanged(x => this.CurrentInvoiceIdentificatonRegExID);  
                                 }
                             }
                         }
@@ -690,6 +719,56 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
                      
        
 
+        internal void OnCurrentInvoiceIdentificatonRegExChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<InvoiceIdentificatonRegEx> e)
+        {
+            //CurrentInvoiceIdentificatonRegEx = e.Data;
+            NotifyPropertyChanged(m => this.CurrentInvoiceIdentificatonRegEx);
+        }
+
+        private  InvoiceIdentificatonRegEx _currentInvoiceIdentificatonRegEx;
+        public InvoiceIdentificatonRegEx CurrentInvoiceIdentificatonRegEx
+        {
+            get
+            {
+                return _currentInvoiceIdentificatonRegEx;
+            }
+            set
+            {
+                if (_currentInvoiceIdentificatonRegEx != value)
+                {
+                    _currentInvoiceIdentificatonRegEx = value;
+                    BeginSendMessage(MessageToken.CurrentInvoiceIdentificatonRegExChanged,
+                                                     new NotificationEventArgs<InvoiceIdentificatonRegEx>(MessageToken.CurrentInvoiceIdentificatonRegExChanged, _currentInvoiceIdentificatonRegEx)); 
+                    NotifyPropertyChanged(x => this.CurrentInvoiceIdentificatonRegEx);    
+                    // all current navigation properties = null
+   
+                }
+            }
+        }
+
+		VirtualListItem<InvoiceIdentificatonRegEx> _vcurrentInvoiceIdentificatonRegEx;
+        public VirtualListItem<InvoiceIdentificatonRegEx> VCurrentInvoiceIdentificatonRegEx
+        {
+            get
+            {
+                return _vcurrentInvoiceIdentificatonRegEx;
+            }
+            set
+            {
+                if (_vcurrentInvoiceIdentificatonRegEx != value)
+                {
+                    _vcurrentInvoiceIdentificatonRegEx = value;
+					if(_vcurrentInvoiceIdentificatonRegEx != null) CurrentInvoiceIdentificatonRegEx = value.Data;
+                    NotifyPropertyChanged(x => this.VCurrentInvoiceIdentificatonRegEx);                    
+                }
+            }
+        }
+
+
+
+                     
+       
+
         internal void OnCurrentInvoiceRegExChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<InvoiceRegEx> e)
         {
             //CurrentInvoiceRegEx = e.Data;
@@ -765,6 +844,7 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
                  CurrentParts = null;
                  CurrentInvoiceRegEx = null;
                  CurrentOCRFileTypes = null;
+                 CurrentInvoiceIdentificatonRegEx = null;
    
                 }
             }
@@ -1129,6 +1209,7 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
                  CurrentStart = null;
                  CurrentInvoiceRegEx = null;
                  CurrentFieldFormatRegEx = null;
+                 CurrentInvoiceIdentificatonRegEx = null;
    
                 }
             }

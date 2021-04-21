@@ -84,6 +84,7 @@ namespace WaterNut.DataSpace
                 {
                     var templates = ctx.Invoices
                         .Include(x => x.Parts)
+                        .Include("InvoiceIdentificatonRegEx.OCR_RegularExpressions")
                         .Include("RegEx.RegEx")
                         .Include("RegEx.ReplacementRegEx")
                         .Include("Parts.RecuringPart")
@@ -106,6 +107,13 @@ namespace WaterNut.DataSpace
                     {
                         try
                         {
+
+                           if(tmp.OcrInvoices.InvoiceIdentificatonRegEx.Any() && tmp.OcrInvoices.InvoiceIdentificatonRegEx.Any(x => Regex.IsMatch(pdftxt.ToString(),
+                                x.OCR_RegularExpressions.RegEx,
+                                RegexOptions.IgnoreCase | (x.OCR_RegularExpressions.MultiLine == true
+                                    ? RegexOptions.Multiline
+                                    : RegexOptions.Singleline) | RegexOptions.ExplicitCapture) == false)) continue;
+
                             List<dynamic> csvLines = tmp.Read(tmp.Format(pdftxt.ToString()));
                             if (csvLines.Count < 1 || !tmp.Success)
                             {
@@ -289,6 +297,9 @@ namespace WaterNut.DataSpace
                 var lineCount = 0;
                 foreach (var line in text)
                 {
+                    //if ((lineCount/text.Count) > MaxLinesCheckedToStart && Parts.First().WasStarted == false)
+                    //    return new List<dynamic>() ;
+
                     lineCount += 1;
                     var iLine = new List<InvoiceLine>(){ new InvoiceLine(line, lineCount) };
                     Parts.ForEach(x => x.Read(iLine));
@@ -313,6 +324,8 @@ namespace WaterNut.DataSpace
                 throw;
             }
         }
+
+        public double MaxLinesCheckedToStart { get; set; } = 0.5;
 
         private List<IDictionary<string, object>> SetPartLineValues(Part x)
         {
@@ -485,7 +498,7 @@ namespace WaterNut.DataSpace
                         //    $"{f.Key.Field} can not convert to {f.Key.DataType} for Value:{f.Value}");
                         return DateTime.MinValue;
                 case "English Date":
-                    var formatStrings = new List<string>() { "dd/MM/yyyy", "dd/M/yyyy", "d/MM/yyyy", "d/M/yyyy" };
+                    var formatStrings = new List<string>() { "dd/MM/yyyy", "dd/M/yyyy", "d/MM/yyyy", "d/M/yyyy","M/yyyy" };
                     foreach (String formatString in formatStrings)
                     {
                         if (DateTime.TryParseExact(f.Value, formatString, CultureInfo.InvariantCulture, DateTimeStyles.None,
@@ -503,11 +516,12 @@ namespace WaterNut.DataSpace
         {
             try
             {
-                foreach (var reg in OcrInvoices.RegEx)
+                foreach (var reg in OcrInvoices.RegEx.OrderBy(x => x.Id))
                 {
                     pdftxt = Regex.Replace(pdftxt, reg.RegEx.RegEx, reg.ReplacementRegEx.RegEx,
                         RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.ExplicitCapture);
                 }
+
 
                 return pdftxt.Split(new[] {"\r\n", "\r", "\n"}, StringSplitOptions.None).ToList();
             }
@@ -538,6 +552,10 @@ namespace WaterNut.DataSpace
         private readonly List<InvoiceLine> _endlines = new List<InvoiceLine>();
         private readonly List<InvoiceLine> _bodylines = new List<InvoiceLine>();
         private readonly List<InvoiceLine> _lines = new List<InvoiceLine>();
+
+        private StringBuilder _linesTxt = new StringBuilder();
+        private StringBuilder _bodyTxt = new StringBuilder();
+
         public Parts OCR_Part;
 
         public Part(Parts part)
@@ -599,7 +617,9 @@ namespace WaterNut.DataSpace
                             _startlines.Clear();
                             _endlines.Clear();
                             _bodylines.Clear();
+                            _bodyTxt.Clear();
                             _lines.Clear();
+                            _linesTxt.Clear();
                         }
 
                     }
@@ -612,7 +632,11 @@ namespace WaterNut.DataSpace
 
                 }
 
-                _lines.AddRange(newlines);
+                if (_lines.FirstOrDefault(x => x.LineNumber == newlines.First().LineNumber) == null)
+                {
+                    _lines.AddRange(newlines);
+                    newlines.ForEach(x => _linesTxt.AppendLine(x.Line));
+                }
 
                 var startFound = FindStart();
                 if (startFound)
@@ -624,6 +648,7 @@ namespace WaterNut.DataSpace
                         {
                             _startlines.Clear();
                             _endlines.Clear();
+                            _bodyTxt.Clear();
                             _bodylines.Clear();
                             if (StartCount != 0) _startlines.Add(_lines.First());
                         }
@@ -635,15 +660,21 @@ namespace WaterNut.DataSpace
 
 
                     _bodylines.AddRange(_lines);
+                    _lines.ForEach(x => _bodyTxt.AppendLine(x.Line));
                     ChildParts.ForEach(x => x.Read(_lines));
-                    Lines.ForEach(x => x.Read(_bodylines));
+                    Lines.ForEach(x =>
+                    {
+                        if (x.OCR_Lines.RegularExpressions.MultiLine == true)
+                            x.Read(_bodyTxt.ToString(), _bodylines.First().LineNumber);
+                        else x.Read(_bodylines.Last().Line, _bodylines.Last().LineNumber);
+                    });
 
                 }
 
                 if (_startlines.Count() == StartCount
                     && _startlines.All(x => _lines.All(l => l.LineNumber != x.LineNumber))
                     && _endlines.Count() < EndCount && OCR_Part.End.Any(z => Regex
-                        .Match(_lines.Select(x => x.Line).DefaultIfEmpty("").Aggregate((c, n) => c + "\r\n" + n),
+                        .Match(_linesTxt.ToString(),//_lines.Select(x => x.Line).DefaultIfEmpty("").Aggregate((c, n) => c + "\r\n" + n),
                             z.RegularExpressions.RegEx,
                             z.RegularExpressions.MultiLine == true
                                 ? RegexOptions.Multiline
@@ -653,7 +684,11 @@ namespace WaterNut.DataSpace
                 }
 
 
-                if (OCR_Part.Start.All(z => z.RegularExpressions?.MultiLine != true)) _lines.Clear();
+                if (OCR_Part.Start.All(z => z.RegularExpressions?.MultiLine != true))
+                {
+                    _lines.Clear();
+                    _linesTxt.Clear();
+                }
 
             }
             catch (Exception e)
@@ -671,10 +706,13 @@ namespace WaterNut.DataSpace
 
 
                 if (!OCR_Part.Start.Any()) return true;
+
+                if (WasStarted && OCR_Part.RecuringPart?.IsComposite == true) return false;
+
                 foreach (var z in OCR_Part.Start)
                 {
                     var match = Regex
-                        .Match(_lines.Select(x => x.Line).DefaultIfEmpty("").Aggregate((c, n) => c + "\r\n" + n),
+                        .Match(_linesTxt.ToString(),//_lines.Select(x => x.Line).DefaultIfEmpty("").Aggregate((c, n) => c + "\r\n" + n),
                             z.RegularExpressions.RegEx,
                             z.RegularExpressions.MultiLine == true
                                 ? RegexOptions.Multiline
@@ -686,12 +724,14 @@ namespace WaterNut.DataSpace
                         {
                             var sline = new List<InvoiceLine>();
                             var lines = _lines.OrderByDescending(x => x.LineNumber).ToList();
+                            var matchLines = match.Value.Split(new char[] {'\r', '\n'}, StringSplitOptions.RemoveEmptyEntries);
                             for (var index = 0; index < lines.Count; index++)
                             {
+                                if (sline.Count > matchLines.Length + 1) return false;
                                 var line = lines[index];
-                                sline.Add(line);
+                                if(match.Value.Contains(line.Line) || matchLines.Any(x => line.Line.Contains(x))) sline.Add(line);
                                 if (!sline.OrderBy(x => x.LineNumber).Select(x => x.Line).DefaultIfEmpty("")
-                                    .Aggregate((c, n) => c + "\r\n" + n).Contains(match.Value)) continue;
+                                    .Aggregate((c, n) => c + "\r\n" + n).Contains(match.Value.Trim())) continue;
 
                                 _lines.Clear();
                                 _lines.AddRange(sline.OrderBy(x => x.LineNumber));
@@ -724,15 +764,13 @@ namespace WaterNut.DataSpace
             OCR_Lines = lines;
         }
 
-        public bool Read(List<InvoiceLine> lines)
+        public bool Read(string line, int lineNumber)//(List<InvoiceLine> lines, StringBuilder _linesTxt)
         {
             try
             {
-
-
-                var line = OCR_Lines.RegularExpressions.MultiLine == true
-                    ? lines.Select(x => x.Line).DefaultIfEmpty("").Aggregate((c, n) => c + "\r\n" + n)
-                    : lines.Last().Line;
+                //var line = OCR_Lines.RegularExpressions.MultiLine == true
+                //    ? _linesTxt.ToString() //lines.Select(x => x.Line).DefaultIfEmpty("").Aggregate((c, n) => c + "\r\n" + n)
+                //    : lines.Last().Line;
                 var match = Regex.Match(line, OCR_Lines.RegularExpressions.RegEx,
                     OCR_Lines.RegularExpressions.MultiLine == true
                         ? RegexOptions.Multiline
@@ -757,7 +795,7 @@ namespace WaterNut.DataSpace
                     values.Add(field, value.Trim()); //$"\"{}\""
                 }
 
-                Values[lines.First().LineNumber] = values;
+                Values[lineNumber] = values;
                 return true;
             }
             catch (Exception e)

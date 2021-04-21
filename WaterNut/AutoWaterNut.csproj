@@ -571,6 +571,7 @@
     <Compile Include="ViewModels\Generated Models\QuerySpace\OCR\EndViewModel.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\OCR\FieldFormatRegExViewModel.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\OCR\FieldsViewModel.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\OCR\InvoiceIdentificatonRegExViewModel.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\OCR\InvoiceRegExViewModel.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\OCR\InvoicesViewModel.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\OCR\LinesViewModel.cs" />
@@ -731,6 +732,7 @@
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\OCR\EndTotals.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\OCR\FieldFormatRegExTotals.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\OCR\FieldsTotals.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\OCR\InvoiceIdentificatonRegExTotals.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\OCR\InvoiceRegExTotals.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\OCR\InvoicesTotals.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\OCR\LinesTotals.cs" />
@@ -879,6 +881,7 @@
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\OCR\EndVirturalListLoader.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\OCR\FieldFormatRegExVirturalListLoader.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\OCR\FieldsVirturalListLoader.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\OCR\InvoiceIdentificatonRegExVirturalListLoader.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\OCR\InvoiceRegExVirturalListLoader.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\OCR\InvoicesVirturalListLoader.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\OCR\LinesVirturalListLoader.cs" />

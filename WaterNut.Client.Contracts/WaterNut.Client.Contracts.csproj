@@ -238,6 +238,7 @@
     <Compile Include="OCR\IEndService.cs" />
     <Compile Include="OCR\IFieldFormatRegExService.cs" />
     <Compile Include="OCR\IFieldsService.cs" />
+    <Compile Include="OCR\IInvoiceIdentificatonRegExService.cs" />
     <Compile Include="OCR\IInvoiceRegExService.cs" />
     <Compile Include="OCR\IInvoicesService.cs" />
     <Compile Include="OCR\ILinesService.cs" />

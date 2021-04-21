@@ -974,10 +974,11 @@ namespace AutoBotUtilities
                     }
                 }
 
-                if (!masterShipment.ShipmentAttachedBL.Any() && masterShipment.ShipmentAttachedRider.Any())
+                var ridersWithNoBLs = masterShipment.ShipmentAttachedRider.Where(x => !x.ShipmentRider.ShipmentRiderBLs.Any()).ToList();
+                if (ridersWithNoBLs.Any())
                 {
                     //TODO:// Copy the system above
-                    foreach (var sRider in masterShipment.ShipmentAttachedRider)
+                    foreach (var sRider in ridersWithNoBLs)
                     {
                         var rider = sRider.ShipmentRider;
 

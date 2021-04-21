@@ -49,6 +49,14 @@
           <Property Name="Id" Type="int" Nullable="false" />
           <Property Name="Value" Type="nvarchar(max)" />
         </EntityType>
+        <EntityType Name="OCR-InvoiceIdentificatonRegEx">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="InvoiceId" Type="int" Nullable="false" />
+          <Property Name="RegExId" Type="int" Nullable="false" />
+        </EntityType>
         <EntityType Name="OCR-InvoiceRegEx">
           <Key>
             <PropertyRef Name="Id" />
@@ -245,6 +253,32 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.OCRInvoicesFileTypes' doe
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_OCR-InvoiceIdentificatonRegEx_OCR-Invoices">
+          <End Role="OCR-Invoices" Type="Self.OCR-Invoices" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="OCR-InvoiceIdentificatonRegEx" Type="Self.OCR-InvoiceIdentificatonRegEx" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="OCR-Invoices">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="OCR-InvoiceIdentificatonRegEx">
+              <PropertyRef Name="InvoiceId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_OCR-InvoiceIdentificatonRegEx_OCR-RegularExpressions">
+          <End Role="OCR-RegularExpressions" Type="Self.OCR-RegularExpressions" Multiplicity="1" />
+          <End Role="OCR-InvoiceIdentificatonRegEx" Type="Self.OCR-InvoiceIdentificatonRegEx" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="OCR-RegularExpressions">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="OCR-InvoiceIdentificatonRegEx">
+              <PropertyRef Name="RegExId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_OCR-InvoiceRegEx_OCR-Invoices">
           <End Role="OCR-Invoices" Type="Self.OCR-Invoices" Multiplicity="1">
             <OnDelete Action="Cascade" />
@@ -401,6 +435,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.OCRInvoicesFileTypes' doe
           <EntitySet Name="OCR-FieldFormatRegEx" EntityType="Self.OCR-FieldFormatRegEx" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="OCR-Fields" EntityType="Self.OCR-Fields" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="OCR-FieldValue" EntityType="Self.OCR-FieldValue" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="OCR-InvoiceIdentificatonRegEx" EntityType="Self.OCR-InvoiceIdentificatonRegEx" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="OCR-InvoiceRegEx" EntityType="Self.OCR-InvoiceRegEx" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="OCR-Invoices" EntityType="Self.OCR-Invoices" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="OCR-Lines" EntityType="Self.OCR-Lines" Schema="dbo" store:Type="Tables" />
@@ -450,6 +485,14 @@ FROM [dbo].[OCRInvoicesFileTypes] AS [OCRInvoicesFileTypes]</DefiningQuery>
           <AssociationSet Name="FK_OCR-FieldValue_OCR-Fields" Association="Self.FK_OCR-FieldValue_OCR-Fields">
             <End Role="OCR-Fields" EntitySet="OCR-Fields" />
             <End Role="OCR-FieldValue" EntitySet="OCR-FieldValue" />
+          </AssociationSet>
+          <AssociationSet Name="FK_OCR-InvoiceIdentificatonRegEx_OCR-Invoices" Association="Self.FK_OCR-InvoiceIdentificatonRegEx_OCR-Invoices">
+            <End Role="OCR-Invoices" EntitySet="OCR-Invoices" />
+            <End Role="OCR-InvoiceIdentificatonRegEx" EntitySet="OCR-InvoiceIdentificatonRegEx" />
+          </AssociationSet>
+          <AssociationSet Name="FK_OCR-InvoiceIdentificatonRegEx_OCR-RegularExpressions" Association="Self.FK_OCR-InvoiceIdentificatonRegEx_OCR-RegularExpressions">
+            <End Role="OCR-RegularExpressions" EntitySet="OCR-RegularExpressions" />
+            <End Role="OCR-InvoiceIdentificatonRegEx" EntitySet="OCR-InvoiceIdentificatonRegEx" />
           </AssociationSet>
           <AssociationSet Name="FK_OCR-InvoiceRegEx_OCR-Invoices" Association="Self.FK_OCR-InvoiceRegEx_OCR-Invoices">
             <End Role="OCR-Invoices" EntitySet="OCR-Invoices" />
@@ -595,6 +638,15 @@ FROM [dbo].[OCRInvoicesFileTypes] AS [OCRInvoicesFileTypes]</DefiningQuery>
             <End Role="Invoices" EntitySet="Invoices" />
             <End Role="OCRInvoicesFileTypes" EntitySet="OCRInvoicesFileTypes" />
           </AssociationSet>
+          <EntitySet Name="InvoiceIdentificatonRegEx" EntityType="WaterNutDBModel.InvoiceIdentificatonRegEx" />
+          <AssociationSet Name="FK_OCR_InvoiceIdentificatonRegEx_OCR_Invoices" Association="WaterNutDBModel.FK_OCR_InvoiceIdentificatonRegEx_OCR_Invoices">
+            <End Role="Invoices" EntitySet="Invoices" />
+            <End Role="OCR_InvoiceIdentificatonRegEx" EntitySet="InvoiceIdentificatonRegEx" />
+          </AssociationSet>
+          <AssociationSet Name="FK_OCR_InvoiceIdentificatonRegEx_OCR_RegularExpressions" Association="WaterNutDBModel.FK_OCR_InvoiceIdentificatonRegEx_OCR_RegularExpressions">
+            <End Role="RegularExpressions" EntitySet="RegularExpressions" />
+            <End Role="OCR_InvoiceIdentificatonRegEx" EntitySet="InvoiceIdentificatonRegEx" />
+          </AssociationSet>
           </EntityContainer>
         <EntityType Name="End">
           <Key>
@@ -633,6 +685,7 @@ FROM [dbo].[OCRInvoicesFileTypes] AS [OCRInvoicesFileTypes]</DefiningQuery>
           <NavigationProperty Name="FileTypes" Relationship="WaterNutDBModel.FK_OCRInvoicesFileTypes_OCR_Invoices" FromRole="Invoices" ToRole="OCRInvoicesFileTypes" />
           <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
           <Property Name="IsActive" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="InvoiceIdentificatonRegEx" Relationship="WaterNutDBModel.FK_OCR_InvoiceIdentificatonRegEx_OCR_Invoices" FromRole="Invoices" ToRole="OCR_InvoiceIdentificatonRegEx" />
         </EntityType>
         <EntityType Name="Parts">
           <Key>
@@ -672,6 +725,7 @@ FROM [dbo].[OCRInvoicesFileTypes] AS [OCRInvoicesFileTypes]</DefiningQuery>
           <NavigationProperty Name="FieldFormatRegEx" Relationship="WaterNutDBModel.FK_OCR_FieldFormatRegEx_OCR_RegularExpressions" FromRole="RegularExpressions" ToRole="OCR_FieldFormatRegEx" />
           <NavigationProperty Name="FieldFormatRepRegEx" Relationship="WaterNutDBModel.FK_OCR_FieldFormatRegEx_OCR_RegularExpressions1" FromRole="RegularExpressions" ToRole="OCR_FieldFormatRegEx" />
           <Property Name="MultiLine" Type="Boolean" />
+          <NavigationProperty Name="InvoiceIdentificatonRegEx" Relationship="WaterNutDBModel.FK_OCR_InvoiceIdentificatonRegEx_OCR_RegularExpressions" FromRole="RegularExpressions" ToRole="OCR_InvoiceIdentificatonRegEx" />
         </EntityType>
         <EntityType Name="Start">
           <Key>
@@ -1020,6 +1074,42 @@ FROM [dbo].[OCRInvoicesFileTypes] AS [OCRInvoicesFileTypes]</DefiningQuery>
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="InvoiceIdentificatonRegEx">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="InvoiceId" Type="Int32" Nullable="false" />
+          <Property Name="RegExId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="OCR_Invoices" Relationship="WaterNutDBModel.FK_OCR_InvoiceIdentificatonRegEx_OCR_Invoices" FromRole="OCR_InvoiceIdentificatonRegEx" ToRole="Invoices" />
+          <NavigationProperty Name="OCR_RegularExpressions" Relationship="WaterNutDBModel.FK_OCR_InvoiceIdentificatonRegEx_OCR_RegularExpressions" FromRole="OCR_InvoiceIdentificatonRegEx" ToRole="RegularExpressions" />
+        </EntityType>
+        <Association Name="FK_OCR_InvoiceIdentificatonRegEx_OCR_Invoices">
+          <End Type="WaterNutDBModel.Invoices" Role="Invoices" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="WaterNutDBModel.InvoiceIdentificatonRegEx" Role="OCR_InvoiceIdentificatonRegEx" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Invoices">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="OCR_InvoiceIdentificatonRegEx">
+              <PropertyRef Name="InvoiceId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_OCR_InvoiceIdentificatonRegEx_OCR_RegularExpressions">
+          <End Type="WaterNutDBModel.RegularExpressions" Role="RegularExpressions" Multiplicity="1" />
+          <End Type="WaterNutDBModel.InvoiceIdentificatonRegEx" Role="OCR_InvoiceIdentificatonRegEx" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="RegularExpressions">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="OCR_InvoiceIdentificatonRegEx">
+              <PropertyRef Name="RegExId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -1154,6 +1244,15 @@ FROM [dbo].[OCRInvoicesFileTypes] AS [OCRInvoicesFileTypes]</DefiningQuery>
               <MappingFragment StoreEntitySet="OCRInvoicesFileTypes">
                 <ScalarProperty Name="FileTypeId" ColumnName="FileTypeId" />
                 <ScalarProperty Name="OCRInvoiceId" ColumnName="OCRInvoiceId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="InvoiceIdentificatonRegEx">
+            <EntityTypeMapping TypeName="WaterNutDBModel.InvoiceIdentificatonRegEx">
+              <MappingFragment StoreEntitySet="OCR-InvoiceIdentificatonRegEx">
+                <ScalarProperty Name="RegExId" ColumnName="RegExId" />
+                <ScalarProperty Name="InvoiceId" ColumnName="InvoiceId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

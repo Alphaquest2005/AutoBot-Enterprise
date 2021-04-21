@@ -271,6 +271,7 @@
     <Compile Include="Generated Repositories\OCR\EndRepository.cs" />
     <Compile Include="Generated Repositories\OCR\FieldFormatRegExRepository.cs" />
     <Compile Include="Generated Repositories\OCR\FieldsRepository.cs" />
+    <Compile Include="Generated Repositories\OCR\InvoiceIdentificatonRegExRepository.cs" />
     <Compile Include="Generated Repositories\OCR\InvoiceRegExRepository.cs" />
     <Compile Include="Generated Repositories\OCR\InvoicesRepository.cs" />
     <Compile Include="Generated Repositories\OCR\LinesRepository.cs" />

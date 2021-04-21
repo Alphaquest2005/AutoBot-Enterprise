@@ -129,7 +129,7 @@ namespace WaterNut.DataSpace
 
                 var rawRiders = csvRiders
                     .Select(x => new{
-                        ETA = x.Key.Date,
+                        ETA = x.Key.ETA,
                         DocumentDate = x.Key.Date,
                         ShipmentRiderDetails = x.Select(z => new 
                         {
@@ -457,7 +457,7 @@ namespace WaterNut.DataSpace
                                                 .Select(z => new InvoiceDetails()
                                                 {
                                                     Quantity = Convert.ToDouble(z["Quantity"].ToString()),
-                                                    ItemNumber = z.ContainsKey("ItemNumber") ? z["ItemNumber"].ToString(): null,
+                                                    ItemNumber = z.ContainsKey("ItemNumber") ? z["ItemNumber"].ToString().Truncate(20): null,
                                                     ItemDescription = z["ItemDescription"].ToString().Truncate(255),
                                                     Units = z.ContainsKey("Units") ? z["Units"].ToString() : null,
                                                     Cost = Convert.ToDouble(z["Cost"].ToString()),
@@ -491,6 +491,7 @@ namespace WaterNut.DataSpace
                 {
                     foreach (var invoice in lst)
                     {
+                       
                         var existingManifest =
                             ctx.ShipmentInvoice.FirstOrDefault(
                                 x => x.InvoiceNo == invoice.InvoiceNo);
@@ -506,6 +507,9 @@ namespace WaterNut.DataSpace
                             invoice.SubTotal = invoice.ImportedSubTotal;
                         }
 
+                        if (invoice.ImportedTotalDifference > 0.001)
+                            throw new ApplicationException(
+                                $"Imported Total Difference for Invoice > 0: {invoice.ImportedTotalDifference}");
 
                         ctx.ShipmentInvoice.Add(invoice);
 

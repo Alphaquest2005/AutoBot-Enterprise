@@ -1378,9 +1378,9 @@ namespace WaterNut.DataSpace
 
             xcuda_Gs_external_freight.Amount_foreign_currency = freightRate;
             xcuda_Gs_external_freight.Currency_code = currency;
-            if (xcuda_Gs_external_freight.TrackingState != TrackingState.Added)
-                xcuda_Gs_external_freight.TrackingState = TrackingState.Modified;
-            ctx.ApplyChanges(xcuda_Gs_external_freight);
+            //if (xcuda_Gs_external_freight.TrackingState != TrackingState.Added)
+            //    xcuda_Gs_external_freight.TrackingState = TrackingState.Modified;
+            //ctx.ApplyChanges(xcuda_Gs_external_freight);
         }
 
         private static void UpdateWeight(DocumentDSContext ctx, KeyValuePair<int, double> doc, double weightRate)
@@ -1404,9 +1404,9 @@ namespace WaterNut.DataSpace
 
                 xcuda_Weight.Gross_weight = weightRate < 0.01 ? 0.01 : weightRate;
 
-                if (xcuda_Weight.TrackingState != TrackingState.Added)
-                    xcuda_Weight.TrackingState = TrackingState.Modified;
-                ctx.ApplyChanges(xcuda_Weight);
+                //if (xcuda_Weight.TrackingState != TrackingState.Added)
+                //    xcuda_Weight.TrackingState = TrackingState.Modified;
+                //ctx.ApplyChanges(xcuda_Weight);
 
                 using (var ictx = new DocumentItemDSContext {StartTracking = true})
                 {

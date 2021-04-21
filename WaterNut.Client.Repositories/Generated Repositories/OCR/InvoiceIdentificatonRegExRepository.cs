@@ -32,36 +32,36 @@ using System;
 using System.ServiceModel;
 using TrackableEntities.Common;
 
-using RegularExpressions = OCR.Client.Entities.RegularExpressions;
+using InvoiceIdentificatonRegEx = OCR.Client.Entities.InvoiceIdentificatonRegEx;
 
 namespace OCR.Client.Repositories 
 {
    
-    public partial class RegularExpressionsRepository : BaseRepository<RegularExpressionsRepository>
+    public partial class InvoiceIdentificatonRegExRepository : BaseRepository<InvoiceIdentificatonRegExRepository>
     {
 
-       private static readonly RegularExpressionsRepository instance;
-       static RegularExpressionsRepository()
+       private static readonly InvoiceIdentificatonRegExRepository instance;
+       static InvoiceIdentificatonRegExRepository()
         {
-            instance = new RegularExpressionsRepository();
+            instance = new InvoiceIdentificatonRegExRepository();
         }
 
-       public static RegularExpressionsRepository Instance
+       public static InvoiceIdentificatonRegExRepository Instance
         {
             get { return instance; }
         }
         
-        public async Task<IEnumerable<RegularExpressions>> RegularExpressions(List<string> includesLst = null)
+        public async Task<IEnumerable<InvoiceIdentificatonRegEx>> InvoiceIdentificatonRegEx(List<string> includesLst = null)
         {
-            if (System.ComponentModel.LicenseManager.UsageMode == LicenseUsageMode.Designtime) return new List<RegularExpressions>().AsEnumerable();
+            if (System.ComponentModel.LicenseManager.UsageMode == LicenseUsageMode.Designtime) return new List<InvoiceIdentificatonRegEx>().AsEnumerable();
             try
             {
-                using (var t = new RegularExpressionsClient())
+                using (var t = new InvoiceIdentificatonRegExClient())
                     {
-                        var res = await t.GetRegularExpressions(includesLst).ConfigureAwait(continueOnCapturedContext: false);
+                        var res = await t.GetInvoiceIdentificatonRegEx(includesLst).ConfigureAwait(continueOnCapturedContext: false);
                         if (res != null)
                         {
-                            return res.Select(x => new RegularExpressions(x)).AsEnumerable();
+                            return res.Select(x => new InvoiceIdentificatonRegEx(x)).AsEnumerable();
                         }
                         else
                         {
@@ -80,26 +80,26 @@ namespace OCR.Client.Repositories
             }
         }
 
-		 public async Task<IEnumerable<RegularExpressions>> GetRegularExpressionsByExpression(string exp, List<string> includesLst = null)
+		 public async Task<IEnumerable<InvoiceIdentificatonRegEx>> GetInvoiceIdentificatonRegExByExpression(string exp, List<string> includesLst = null)
         {
-            if (System.ComponentModel.LicenseManager.UsageMode == LicenseUsageMode.Designtime || exp == null || exp == "None") return new List<RegularExpressions>().AsEnumerable();
+            if (System.ComponentModel.LicenseManager.UsageMode == LicenseUsageMode.Designtime || exp == null || exp == "None") return new List<InvoiceIdentificatonRegEx>().AsEnumerable();
             try
             {
-                using (var t = new RegularExpressionsClient())
+                using (var t = new InvoiceIdentificatonRegExClient())
                     {
-					    IEnumerable<DTO.RegularExpressions> res = null;
+					    IEnumerable<DTO.InvoiceIdentificatonRegEx> res = null;
                         if(exp == "All")
                         {                       
-						    res = await t.GetRegularExpressions(includesLst).ConfigureAwait(continueOnCapturedContext: false);					
+						    res = await t.GetInvoiceIdentificatonRegEx(includesLst).ConfigureAwait(continueOnCapturedContext: false);					
                         }
                         else
                         {
-                             res = await t.GetRegularExpressionsByExpression(exp, includesLst).ConfigureAwait(continueOnCapturedContext: false);	                         
+                             res = await t.GetInvoiceIdentificatonRegExByExpression(exp, includesLst).ConfigureAwait(continueOnCapturedContext: false);	                         
                         }
                     
                         if (res != null)
                         {
-                            return res.Select(x => new RegularExpressions(x)).AsEnumerable();
+                            return res.Select(x => new InvoiceIdentificatonRegEx(x)).AsEnumerable();
                         }
                         else
                         {
@@ -118,21 +118,21 @@ namespace OCR.Client.Repositories
             }
         }
 
-		 public async Task<IEnumerable<RegularExpressions>> GetRegularExpressionsByExpressionLst(List<string> expLst, List<string> includesLst = null)
+		 public async Task<IEnumerable<InvoiceIdentificatonRegEx>> GetInvoiceIdentificatonRegExByExpressionLst(List<string> expLst, List<string> includesLst = null)
         {
-            if (System.ComponentModel.LicenseManager.UsageMode == LicenseUsageMode.Designtime || expLst.Count == 0 || expLst.FirstOrDefault() == "None") return new List<RegularExpressions>().AsEnumerable();
+            if (System.ComponentModel.LicenseManager.UsageMode == LicenseUsageMode.Designtime || expLst.Count == 0 || expLst.FirstOrDefault() == "None") return new List<InvoiceIdentificatonRegEx>().AsEnumerable();
             try
             {
-                using (var t = new RegularExpressionsClient())
+                using (var t = new InvoiceIdentificatonRegExClient())
                     {
-					    IEnumerable<DTO.RegularExpressions> res = null;
+					    IEnumerable<DTO.InvoiceIdentificatonRegEx> res = null;
                        
-                        res = await t.GetRegularExpressionsByExpressionLst(expLst, includesLst).ConfigureAwait(continueOnCapturedContext: false);	                         
+                        res = await t.GetInvoiceIdentificatonRegExByExpressionLst(expLst, includesLst).ConfigureAwait(continueOnCapturedContext: false);	                         
                       
                     
                         if (res != null)
                         {
-                            return res.Select(x => new RegularExpressions(x)).AsEnumerable();
+                            return res.Select(x => new InvoiceIdentificatonRegEx(x)).AsEnumerable();
                         }
                         else
                         {
@@ -152,26 +152,26 @@ namespace OCR.Client.Repositories
         }
 
 
-		 public async Task<IEnumerable<RegularExpressions>> GetRegularExpressionsByExpressionNav(string exp, Dictionary<string, string> navExp, List<string> includesLst = null)
+		 public async Task<IEnumerable<InvoiceIdentificatonRegEx>> GetInvoiceIdentificatonRegExByExpressionNav(string exp, Dictionary<string, string> navExp, List<string> includesLst = null)
         {
-            if (System.ComponentModel.LicenseManager.UsageMode == LicenseUsageMode.Designtime || exp == null || exp == "None") return new List<RegularExpressions>().AsEnumerable();
+            if (System.ComponentModel.LicenseManager.UsageMode == LicenseUsageMode.Designtime || exp == null || exp == "None") return new List<InvoiceIdentificatonRegEx>().AsEnumerable();
             try
             {
-                using (var t = new RegularExpressionsClient())
+                using (var t = new InvoiceIdentificatonRegExClient())
                     {
-					    IEnumerable<DTO.RegularExpressions> res = null;
+					    IEnumerable<DTO.InvoiceIdentificatonRegEx> res = null;
                         if(exp == "All" && navExp.Count == 0)
                         {                       
-						    res = await t.GetRegularExpressions(includesLst).ConfigureAwait(continueOnCapturedContext: false);					
+						    res = await t.GetInvoiceIdentificatonRegEx(includesLst).ConfigureAwait(continueOnCapturedContext: false);					
                         }
                         else
                         {
-                             res = await t.GetRegularExpressionsByExpressionNav(exp, navExp, includesLst).ConfigureAwait(continueOnCapturedContext: false);	                         
+                             res = await t.GetInvoiceIdentificatonRegExByExpressionNav(exp, navExp, includesLst).ConfigureAwait(continueOnCapturedContext: false);	                         
                         }
                     
                         if (res != null)
                         {
-                            return res.Select(x => new RegularExpressions(x)).AsEnumerable();
+                            return res.Select(x => new InvoiceIdentificatonRegEx(x)).AsEnumerable();
                         }
                         else
                         {
@@ -191,25 +191,19 @@ namespace OCR.Client.Repositories
         }
 
 
-        public async Task<RegularExpressions> GetRegularExpressions(string id, List<string> includesLst = null)
+        public async Task<InvoiceIdentificatonRegEx> GetInvoiceIdentificatonRegEx(string id, List<string> includesLst = null)
         {
              try
              {   
-                 using (var t = new RegularExpressionsClient())
+                 using (var t = new InvoiceIdentificatonRegExClient())
                     {
-                        var res = await t.GetRegularExpressionsByKey(id,includesLst).ConfigureAwait(continueOnCapturedContext: false);
+                        var res = await t.GetInvoiceIdentificatonRegExByKey(id,includesLst).ConfigureAwait(continueOnCapturedContext: false);
                          if(res != null)
                         {
-                            return new RegularExpressions(res)
+                            return new InvoiceIdentificatonRegEx(res)
                     {
-                     // End = new System.Collections.ObjectModel.ObservableCollection<End>(res.End.Select(y => new End(y))),    
-                     // Lines = new System.Collections.ObjectModel.ObservableCollection<Lines>(res.Lines.Select(y => new Lines(y))),    
-                     // Start = new System.Collections.ObjectModel.ObservableCollection<Start>(res.Start.Select(y => new Start(y))),    
-                     // InvoiceRegEx = new System.Collections.ObjectModel.ObservableCollection<InvoiceRegEx>(res.InvoiceRegEx.Select(y => new InvoiceRegEx(y))),    
-                     // InvoiceRepRegEx = new System.Collections.ObjectModel.ObservableCollection<InvoiceRegEx>(res.InvoiceRepRegEx.Select(y => new InvoiceRegEx(y))),    
-                     // FieldFormatRegEx = new System.Collections.ObjectModel.ObservableCollection<FieldFormatRegEx>(res.FieldFormatRegEx.Select(y => new FieldFormatRegEx(y))),    
-                     // FieldFormatRepRegEx = new System.Collections.ObjectModel.ObservableCollection<FieldFormatRegEx>(res.FieldFormatRepRegEx.Select(y => new FieldFormatRegEx(y))),    
-                     // InvoiceIdentificatonRegEx = new System.Collections.ObjectModel.ObservableCollection<InvoiceIdentificatonRegEx>(res.InvoiceIdentificatonRegEx.Select(y => new InvoiceIdentificatonRegEx(y)))    
+                  // OCR_Invoices = (res.OCR_Invoices != null?new Invoices(res.OCR_Invoices): null),    
+                  // OCR_RegularExpressions = (res.OCR_RegularExpressions != null?new RegularExpressions(res.OCR_RegularExpressions): null)    
                   };
                     }
                     else
@@ -229,7 +223,7 @@ namespace OCR.Client.Repositories
             }
         }
 
-        public async Task<RegularExpressions> UpdateRegularExpressions(RegularExpressions entity)
+        public async Task<InvoiceIdentificatonRegEx> UpdateInvoiceIdentificatonRegEx(InvoiceIdentificatonRegEx entity)
         {
             if (entity == null) return entity;
             var entitychanges = entity.ChangeTracker.GetChanges().FirstOrDefault();
@@ -237,10 +231,10 @@ namespace OCR.Client.Repositories
             {
                 try
                 {
-                    using (var t = new RegularExpressionsClient())
+                    using (var t = new InvoiceIdentificatonRegExClient())
                     {
      
-                        var updatedEntity =  await t.UpdateRegularExpressions(entitychanges).ConfigureAwait(false);
+                        var updatedEntity =  await t.UpdateInvoiceIdentificatonRegEx(entitychanges).ConfigureAwait(false);
                         entity.EntityId = updatedEntity.EntityId;
                         entity.DTO.AcceptChanges();
                          //var  = entity.;
@@ -266,13 +260,13 @@ namespace OCR.Client.Repositories
 
         }
 
-        public async Task<RegularExpressions> CreateRegularExpressions(RegularExpressions entity)
+        public async Task<InvoiceIdentificatonRegEx> CreateInvoiceIdentificatonRegEx(InvoiceIdentificatonRegEx entity)
         {
             try
             {   
-                using (var t = new RegularExpressionsClient())
+                using (var t = new InvoiceIdentificatonRegExClient())
                     {
-                        return new RegularExpressions(await t.CreateRegularExpressions(entity.DTO).ConfigureAwait(continueOnCapturedContext: false));
+                        return new InvoiceIdentificatonRegEx(await t.CreateInvoiceIdentificatonRegEx(entity.DTO).ConfigureAwait(continueOnCapturedContext: false));
                     }
             }
             catch (FaultException<ValidationFault> e)
@@ -286,13 +280,13 @@ namespace OCR.Client.Repositories
             }
         }
 
-        public async Task<bool> DeleteRegularExpressions(string id)
+        public async Task<bool> DeleteInvoiceIdentificatonRegEx(string id)
         {
             try
             {
-             using (var t = new RegularExpressionsClient())
+             using (var t = new InvoiceIdentificatonRegExClient())
                 {
-                    return await t.DeleteRegularExpressions(id).ConfigureAwait(continueOnCapturedContext: false);
+                    return await t.DeleteInvoiceIdentificatonRegEx(id).ConfigureAwait(continueOnCapturedContext: false);
                 }
             }
             catch (FaultException<ValidationFault> e)
@@ -306,13 +300,13 @@ namespace OCR.Client.Repositories
             }         
         }
 
-        public async Task<bool> RemoveSelectedRegularExpressions(IEnumerable<string> selectedRegularExpressions)
+        public async Task<bool> RemoveSelectedInvoiceIdentificatonRegEx(IEnumerable<string> selectedInvoiceIdentificatonRegEx)
         {
             try
             {
-                using (var ctx = new RegularExpressionsClient())
+                using (var ctx = new InvoiceIdentificatonRegExClient())
                 {
-                    return await ctx.RemoveSelectedRegularExpressions(selectedRegularExpressions).ConfigureAwait(false);
+                    return await ctx.RemoveSelectedInvoiceIdentificatonRegEx(selectedInvoiceIdentificatonRegEx).ConfigureAwait(false);
                 }
             }
             catch (FaultException<ValidationFault> e)
@@ -329,21 +323,21 @@ namespace OCR.Client.Repositories
 
 		//Virtural List Implementation
 
-		public async Task<Tuple<IEnumerable<RegularExpressions>, int>> LoadRange(int startIndex, int count, string exp, Dictionary<string, string> navExp, IEnumerable<string> includeLst = null)
+		public async Task<Tuple<IEnumerable<InvoiceIdentificatonRegEx>, int>> LoadRange(int startIndex, int count, string exp, Dictionary<string, string> navExp, IEnumerable<string> includeLst = null)
         {
 			var overallCount = 0;
             if (System.ComponentModel.LicenseManager.UsageMode == LicenseUsageMode.Designtime || exp == null || exp == "None")
             {
                 
-                return new Tuple<IEnumerable<RegularExpressions>, int>(new List<RegularExpressions>().AsEnumerable(), overallCount);
+                return new Tuple<IEnumerable<InvoiceIdentificatonRegEx>, int>(new List<InvoiceIdentificatonRegEx>().AsEnumerable(), overallCount);
             }
             
             try
             {
-                using (var t = new RegularExpressionsClient())
+                using (var t = new InvoiceIdentificatonRegExClient())
                 {
 
-                    IEnumerable<DTO.RegularExpressions> res = null;
+                    IEnumerable<DTO.InvoiceIdentificatonRegEx> res = null;
                                          
 						    res = await t.LoadRangeNav(startIndex, count, exp, navExp, includeLst).ConfigureAwait(continueOnCapturedContext: false);
 						    overallCount = await t.CountNav(exp, navExp).ConfigureAwait(continueOnCapturedContext: false);
@@ -352,7 +346,7 @@ namespace OCR.Client.Repositories
                                 
                     if (res != null)
                     {
-                        return new Tuple<IEnumerable<RegularExpressions>, int>(res.Select(x => new RegularExpressions(x)).AsEnumerable(), overallCount);
+                        return new Tuple<IEnumerable<InvoiceIdentificatonRegEx>, int>(res.Select(x => new InvoiceIdentificatonRegEx(x)).AsEnumerable(), overallCount);
                     }
                     else
                     {
@@ -371,12 +365,68 @@ namespace OCR.Client.Repositories
             }
         }
 
-        
+	 public async Task<IEnumerable<InvoiceIdentificatonRegEx>> GetInvoiceIdentificatonRegExByInvoiceId(string InvoiceId, List<string> includesLst = null)
+        {
+             if (InvoiceId == "0") return null;
+            try
+            {
+                 using (InvoiceIdentificatonRegExClient t = new InvoiceIdentificatonRegExClient())
+                    {
+                        var res = await t.GetInvoiceIdentificatonRegExByInvoiceId(InvoiceId, includesLst).ConfigureAwait(continueOnCapturedContext: false);
+                         if(res != null)
+                        {
+                            return res.Select(x => new InvoiceIdentificatonRegEx(x)).AsEnumerable();
+					    }                
+					    else
+					    {
+						    return null;
+					    }                    
+                    }
+            }
+            catch (FaultException<ValidationFault> e)
+            {
+                throw new Exception(e.Detail.Message, e.InnerException);
+            }
+            catch (Exception)
+            {
+                Debugger.Break();
+                throw;
+            }
+        } 
+ 	 public async Task<IEnumerable<InvoiceIdentificatonRegEx>> GetInvoiceIdentificatonRegExByRegExId(string RegExId, List<string> includesLst = null)
+        {
+             if (RegExId == "0") return null;
+            try
+            {
+                 using (InvoiceIdentificatonRegExClient t = new InvoiceIdentificatonRegExClient())
+                    {
+                        var res = await t.GetInvoiceIdentificatonRegExByRegExId(RegExId, includesLst).ConfigureAwait(continueOnCapturedContext: false);
+                         if(res != null)
+                        {
+                            return res.Select(x => new InvoiceIdentificatonRegEx(x)).AsEnumerable();
+					    }                
+					    else
+					    {
+						    return null;
+					    }                    
+                    }
+            }
+            catch (FaultException<ValidationFault> e)
+            {
+                throw new Exception(e.Detail.Message, e.InnerException);
+            }
+            catch (Exception)
+            {
+                Debugger.Break();
+                throw;
+            }
+        } 
+         
 		public decimal SumField(string whereExp, string sumExp)
         {
             try
             {
-                using (var t = new RegularExpressionsClient())
+                using (var t = new InvoiceIdentificatonRegExClient())
                 {
                     return t.SumField(whereExp,sumExp);
                 }
@@ -397,7 +447,7 @@ namespace OCR.Client.Repositories
         {
             try
             {
-                using (var t = new RegularExpressionsClient())
+                using (var t = new InvoiceIdentificatonRegExClient())
                 {
                     return await t.SumNav(whereExp,navExp,sumExp).ConfigureAwait(false);
                 }

@@ -126,6 +126,19 @@ namespace OCR.Client.DTO
 		}
         private ChangeTrackingCollection<OCRFileTypes> _FileTypes = new ChangeTrackingCollection<OCRFileTypes>();
 
+        [DataMember]
+        public ChangeTrackingCollection<InvoiceIdentificatonRegEx> InvoiceIdentificatonRegEx
+		{
+		    get { return _InvoiceIdentificatonRegEx; }
+			set
+			{
+			    if (Equals(value, _InvoiceIdentificatonRegEx)) return;
+				_InvoiceIdentificatonRegEx = value;
+				NotifyPropertyChanged();//m => this.InvoiceIdentificatonRegEx
+			}
+		}
+        private ChangeTrackingCollection<InvoiceIdentificatonRegEx> _InvoiceIdentificatonRegEx = new ChangeTrackingCollection<InvoiceIdentificatonRegEx>();
+
    //     [DataMember]
    //     public TrackingState TrackingState { get; set; }
 

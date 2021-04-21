@@ -524,6 +524,7 @@
 ..\WaterNut.Business.Entities\Generated Business Entities\OCR\End.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\OCR\FieldFormatRegEx.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\OCR\Fields.cs
+..\WaterNut.Business.Entities\Generated Business Entities\OCR\InvoiceIdentificatonRegEx.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\OCR\InvoiceRegEx.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\OCR\Invoices.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\OCR\Lines.cs
@@ -916,6 +917,7 @@
 ..\WaterNut.Business.Entities\Generated Mappings\OCR\End.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\OCR\FieldFormatRegEx.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\OCR\Fields.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\OCR\InvoiceIdentificatonRegEx.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\OCR\InvoiceRegEx.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\OCR\Invoices.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\OCR\Lines.map.cs
@@ -1316,6 +1318,7 @@
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\OCR\End.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\OCR\FieldFormatRegEx.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\OCR\Fields.cs
+..\WaterNut.Business.Entities\Generated ChangeTracking Models\OCR\InvoiceIdentificatonRegEx.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\OCR\InvoiceRegEx.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\OCR\Invoices.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\OCR\Lines.cs
@@ -1694,6 +1697,7 @@
 ..\WaterNut.Business.Entities\Generated Constructors Models\OCR\End.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\OCR\FieldFormatRegEx.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\OCR\Fields.cs
+..\WaterNut.Business.Entities\Generated Constructors Models\OCR\InvoiceIdentificatonRegEx.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\OCR\InvoiceRegEx.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\OCR\Invoices.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\OCR\Lines.cs
@@ -2072,6 +2076,7 @@
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\OCR\End.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\OCR\FieldFormatRegEx.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\OCR\Fields.cs
+..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\OCR\InvoiceIdentificatonRegEx.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\OCR\InvoiceRegEx.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\OCR\Invoices.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\OCR\Lines.cs
@@ -2450,6 +2455,7 @@
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\OCR\End.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\OCR\FieldFormatRegEx.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\OCR\Fields.cs
+..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\OCR\InvoiceIdentificatonRegEx.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\OCR\InvoiceRegEx.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\OCR\Invoices.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\OCR\Lines.cs
@@ -2625,6 +2631,7 @@
 ..\WaterNut.Client.DTO\Generated Client Entities\OCR\End.cs
 ..\WaterNut.Client.DTO\Generated Client Entities\OCR\FieldFormatRegEx.cs
 ..\WaterNut.Client.DTO\Generated Client Entities\OCR\Fields.cs
+..\WaterNut.Client.DTO\Generated Client Entities\OCR\InvoiceIdentificatonRegEx.cs
 ..\WaterNut.Client.DTO\Generated Client Entities\OCR\InvoiceRegEx.cs
 ..\WaterNut.Client.DTO\Generated Client Entities\OCR\Invoices.cs
 ..\WaterNut.Client.DTO\Generated Client Entities\OCR\Lines.cs
@@ -2780,6 +2787,7 @@
 ..\WaterNut.Client.Entities\Generated Client Entities\OCR\Enums\PartTypes.cs
 ..\WaterNut.Client.Entities\Generated Client Entities\OCR\FieldFormatRegEx.cs
 ..\WaterNut.Client.Entities\Generated Client Entities\OCR\Fields.cs
+..\WaterNut.Client.Entities\Generated Client Entities\OCR\InvoiceIdentificatonRegEx.cs
 ..\WaterNut.Client.Entities\Generated Client Entities\OCR\InvoiceRegEx.cs
 ..\WaterNut.Client.Entities\Generated Client Entities\OCR\Invoices.cs
 ..\WaterNut.Client.Entities\Generated Client Entities\OCR\Lines.cs
@@ -2938,6 +2946,7 @@
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\OCR\End.cs
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\OCR\FieldFormatRegEx.cs
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\OCR\Fields.cs
+..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\OCR\InvoiceIdentificatonRegEx.cs
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\OCR\InvoiceRegEx.cs
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\OCR\Invoices.cs
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\OCR\Lines.cs
@@ -3090,6 +3099,7 @@
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\OCR\End.cs
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\OCR\FieldFormatRegEx.cs
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\OCR\Fields.cs
+..\WaterNut.Client.DTO\Generated MyNavProp Models\OCR\InvoiceIdentificatonRegEx.cs
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\OCR\InvoiceRegEx.cs
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\OCR\Invoices.cs
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\OCR\Lines.cs
@@ -3242,6 +3252,7 @@
 ..\WaterNut.Client.Entities\Generated Constructors Models\OCR\End.cs
 ..\WaterNut.Client.Entities\Generated Constructors Models\OCR\FieldFormatRegEx.cs
 ..\WaterNut.Client.Entities\Generated Constructors Models\OCR\Fields.cs
+..\WaterNut.Client.Entities\Generated Constructors Models\OCR\InvoiceIdentificatonRegEx.cs
 ..\WaterNut.Client.Entities\Generated Constructors Models\OCR\InvoiceRegEx.cs
 ..\WaterNut.Client.Entities\Generated Constructors Models\OCR\Invoices.cs
 ..\WaterNut.Client.Entities\Generated Constructors Models\OCR\Lines.cs
@@ -3394,6 +3405,7 @@
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\OCR\End.cs
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\OCR\FieldFormatRegEx.cs
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\OCR\Fields.cs
+..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\OCR\InvoiceIdentificatonRegEx.cs
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\OCR\InvoiceRegEx.cs
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\OCR\Invoices.cs
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\OCR\Lines.cs
@@ -3546,6 +3558,7 @@
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\OCR\End.cs
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\OCR\FieldFormatRegEx.cs
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\OCR\Fields.cs
+..\WaterNut.Client.Entities\Generated MyNavProp Models\OCR\InvoiceIdentificatonRegEx.cs
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\OCR\InvoiceRegEx.cs
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\OCR\Invoices.cs
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\OCR\Lines.cs
@@ -3948,6 +3961,7 @@
 ..\WaterNut.Business.Entities\Generated Mappings\OCR\End.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\OCR\FieldFormatRegEx.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\OCR\Fields.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\OCR\InvoiceIdentificatonRegEx.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\OCR\InvoiceRegEx.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\OCR\Invoices.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\OCR\Lines.map.cs
@@ -4169,6 +4183,7 @@
 ..\WaterNut.Client.Repositories\Generated Repositories\OCR\EndRepository.cs
 ..\WaterNut.Client.Repositories\Generated Repositories\OCR\FieldFormatRegExRepository.cs
 ..\WaterNut.Client.Repositories\Generated Repositories\OCR\FieldsRepository.cs
+..\WaterNut.Client.Repositories\Generated Repositories\OCR\InvoiceIdentificatonRegExRepository.cs
 ..\WaterNut.Client.Repositories\Generated Repositories\OCR\InvoiceRegExRepository.cs
 ..\WaterNut.Client.Repositories\Generated Repositories\OCR\InvoicesRepository.cs
 ..\WaterNut.Client.Repositories\Generated Repositories\OCR\LinesRepository.cs
@@ -4341,6 +4356,7 @@
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\OCR\EndViewModel.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\OCR\FieldFormatRegExViewModel.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\OCR\FieldsViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\OCR\InvoiceIdentificatonRegExViewModel.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\OCR\InvoiceRegExViewModel.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\OCR\InvoicesViewModel.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\OCR\LinesViewModel.cs
@@ -4488,6 +4504,7 @@
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\OCR\EndTotals.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\OCR\FieldFormatRegExTotals.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\OCR\FieldsTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\OCR\InvoiceIdentificatonRegExTotals.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\OCR\InvoiceRegExTotals.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\OCR\InvoicesTotals.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\OCR\LinesTotals.cs
@@ -4630,6 +4647,7 @@
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\OCR\EndVirturalListLoader.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\OCR\FieldFormatRegExVirturalListLoader.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\OCR\FieldsVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\OCR\InvoiceIdentificatonRegExVirturalListLoader.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\OCR\InvoiceRegExVirturalListLoader.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\OCR\InvoicesVirturalListLoader.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\OCR\LinesVirturalListLoader.cs
@@ -4992,6 +5010,7 @@
 ..\WaterNut.Business.Services\Contracts\OCR\IEndService.cs
 ..\WaterNut.Business.Services\Contracts\OCR\IFieldFormatRegExService.cs
 ..\WaterNut.Business.Services\Contracts\OCR\IFieldsService.cs
+..\WaterNut.Business.Services\Contracts\OCR\IInvoiceIdentificatonRegExService.cs
 ..\WaterNut.Business.Services\Contracts\OCR\IInvoiceRegExService.cs
 ..\WaterNut.Business.Services\Contracts\OCR\IInvoicesService.cs
 ..\WaterNut.Business.Services\Contracts\OCR\ILinesService.cs
@@ -5370,6 +5389,7 @@
 ..\WaterNut.Business.Services\Services\OCR\EndService.cs
 ..\WaterNut.Business.Services\Services\OCR\FieldFormatRegExService.cs
 ..\WaterNut.Business.Services\Services\OCR\FieldsService.cs
+..\WaterNut.Business.Services\Services\OCR\InvoiceIdentificatonRegExService.cs
 ..\WaterNut.Business.Services\Services\OCR\InvoiceRegExService.cs
 ..\WaterNut.Business.Services\Services\OCR\InvoicesService.cs
 ..\WaterNut.Business.Services\Services\OCR\LinesService.cs
@@ -5538,6 +5558,7 @@
 ..\WaterNut.Client.Contracts\OCR\IEndService.cs
 ..\WaterNut.Client.Contracts\OCR\IFieldFormatRegExService.cs
 ..\WaterNut.Client.Contracts\OCR\IFieldsService.cs
+..\WaterNut.Client.Contracts\OCR\IInvoiceIdentificatonRegExService.cs
 ..\WaterNut.Client.Contracts\OCR\IInvoiceRegExService.cs
 ..\WaterNut.Client.Contracts\OCR\IInvoicesService.cs
 ..\WaterNut.Client.Contracts\OCR\ILinesService.cs
@@ -5690,6 +5711,7 @@
 ..\WaterNut.Client.Services\OCR\EndClient.cs
 ..\WaterNut.Client.Services\OCR\FieldFormatRegExClient.cs
 ..\WaterNut.Client.Services\OCR\FieldsClient.cs
+..\WaterNut.Client.Services\OCR\InvoiceIdentificatonRegExClient.cs
 ..\WaterNut.Client.Services\OCR\InvoiceRegExClient.cs
 ..\WaterNut.Client.Services\OCR\InvoicesClient.cs
 ..\WaterNut.Client.Services\OCR\LinesClient.cs

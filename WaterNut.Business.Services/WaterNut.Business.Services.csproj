@@ -700,6 +700,7 @@
     <Compile Include="Contracts\OCR\IEndService.cs" />
     <Compile Include="Contracts\OCR\IFieldFormatRegExService.cs" />
     <Compile Include="Contracts\OCR\IFieldsService.cs" />
+    <Compile Include="Contracts\OCR\IInvoiceIdentificatonRegExService.cs" />
     <Compile Include="Contracts\OCR\IInvoiceRegExService.cs" />
     <Compile Include="Contracts\OCR\IInvoicesService.cs" />
     <Compile Include="Contracts\OCR\ILinesService.cs" />
@@ -1288,6 +1289,7 @@
     <Compile Include="Services\OCR\EndService.cs" />
     <Compile Include="Services\OCR\FieldFormatRegExService.cs" />
     <Compile Include="Services\OCR\FieldsService.cs" />
+    <Compile Include="Services\OCR\InvoiceIdentificatonRegExService.cs" />
     <Compile Include="Services\OCR\InvoiceRegExService.cs" />
     <Compile Include="Services\OCR\InvoicesService.cs" />
     <Compile Include="Services\OCR\LinesService.cs" />

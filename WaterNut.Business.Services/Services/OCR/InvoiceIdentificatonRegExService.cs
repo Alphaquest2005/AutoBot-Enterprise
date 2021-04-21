@@ -32,19 +32,19 @@ using WaterNut.Interfaces;
 
 namespace OCR.Business.Services
 {
-   [Export (typeof(IInvoicesService))]
+   [Export (typeof(IInvoiceIdentificatonRegExService))]
    [Export(typeof(IBusinessService))]
    [PartCreationPolicy(CreationPolicy.NonShared)]
    [ServiceBehavior(InstanceContextMode = InstanceContextMode.PerCall,
                     ConcurrencyMode = ConcurrencyMode.Multiple)]
    
-    public partial class InvoicesService : IInvoicesService, IDisposable
+    public partial class InvoiceIdentificatonRegExService : IInvoiceIdentificatonRegExService, IDisposable
     {
         //private readonly OCRContext dbContext;
 
         public bool StartTracking { get; set; }
 
-        public InvoicesService()
+        public InvoiceIdentificatonRegExService()
         {
             try
             {
@@ -65,7 +65,7 @@ namespace OCR.Business.Services
             }
         }
 
-        public async Task<IEnumerable<Invoices>> GetInvoices(List<string> includesLst = null, bool tracking = true)
+        public async Task<IEnumerable<InvoiceIdentificatonRegEx>> GetInvoiceIdentificatonRegEx(List<string> includesLst = null, bool tracking = true)
         {
             try
             {
@@ -75,7 +75,7 @@ namespace OCR.Business.Services
                   using ( var dbContext = new OCRContext(){StartTracking = StartTracking})
                   {
 				    var set = AddIncludes(includesLst, dbContext);
-                    IEnumerable<Invoices> entities = await set.AsNoTracking().ToListAsync()
+                    IEnumerable<InvoiceIdentificatonRegEx> entities = await set.AsNoTracking().ToListAsync()
 													       .ConfigureAwait(continueOnCapturedContext: false);
                            //scope.Complete();
                             if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
@@ -98,7 +98,7 @@ namespace OCR.Business.Services
         }
 
 
-        public async Task<Invoices> GetInvoicesByKey(string Id, List<string> includesLst = null, bool tracking = true)
+        public async Task<InvoiceIdentificatonRegEx> GetInvoiceIdentificatonRegExByKey(string Id, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
@@ -107,7 +107,7 @@ namespace OCR.Business.Services
               {
                 var i = Convert.ToInt32(Id);
 				var set = AddIncludes(includesLst, dbContext);
-                Invoices entity = await set.AsNoTracking().SingleOrDefaultAsync(x => x.Id == i).ConfigureAwait(continueOnCapturedContext: false);
+                InvoiceIdentificatonRegEx entity = await set.AsNoTracking().SingleOrDefaultAsync(x => x.Id == i).ConfigureAwait(continueOnCapturedContext: false);
                 if(tracking && entity != null) entity.StartTracking();
                 return entity;
               }
@@ -127,14 +127,14 @@ namespace OCR.Business.Services
         }
 
 
-		 public async Task<IEnumerable<Invoices>> GetInvoicesByExpression(string exp, List<string> includesLst = null, bool tracking = true)
+		 public async Task<IEnumerable<InvoiceIdentificatonRegEx>> GetInvoiceIdentificatonRegExByExpression(string exp, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
                 using (var dbContext = new OCRContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-					if (string.IsNullOrEmpty(exp) || exp == "None") return new List<Invoices>();
+					if (string.IsNullOrEmpty(exp) || exp == "None") return new List<InvoiceIdentificatonRegEx>();
 					var set = AddIncludes(includesLst, dbContext);
                     if (exp == "All")
                     {
@@ -170,14 +170,14 @@ namespace OCR.Business.Services
             }
         }
 
-		 public async Task<IEnumerable<Invoices>> GetInvoicesByExpressionLst(List<string> expLst, List<string> includesLst = null, bool tracking = true)
+		 public async Task<IEnumerable<InvoiceIdentificatonRegEx>> GetInvoiceIdentificatonRegExByExpressionLst(List<string> expLst, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
                 using (var dbContext = new OCRContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-					if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return new List<Invoices>();
+					if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return new List<InvoiceIdentificatonRegEx>();
 					var set = AddIncludes(includesLst, dbContext);
                     if (expLst.FirstOrDefault() == "All")
                     {
@@ -212,7 +212,7 @@ namespace OCR.Business.Services
             }
         }
 
-		public async Task<IEnumerable<Invoices>> GetInvoicesByExpressionNav(string exp,
+		public async Task<IEnumerable<InvoiceIdentificatonRegEx>> GetInvoiceIdentificatonRegExByExpressionNav(string exp,
 																							  Dictionary<string, string> navExp,
 																							  List<string> includesLst = null, bool tracking = true)
         {
@@ -221,7 +221,7 @@ namespace OCR.Business.Services
                 using (var dbContext = new OCRContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-                    if (string.IsNullOrEmpty(exp) || exp == "None") return new List<Invoices>();
+                    if (string.IsNullOrEmpty(exp) || exp == "None") return new List<InvoiceIdentificatonRegEx>();
 
                     if (exp == "All" && navExp.Count == 0)
                     {
@@ -235,28 +235,16 @@ namespace OCR.Business.Services
                     {
                         switch (itm.Key)
                         {
-                            case "Parts":
+                            case "OCR_Invoices":
                                 return
                                     await
-                                        GetWhere<Parts>(dbContext, exp, itm.Value, "Invoices", "Select", includesLst)
+                                        GetWhere<Invoices>(dbContext, exp, itm.Value, "InvoiceIdentificatonRegEx", "SelectMany", includesLst)
 										.ConfigureAwait(continueOnCapturedContext: false);
 
-                            case "RegEx":
+                            case "OCR_RegularExpressions":
                                 return
                                     await
-                                        GetWhere<InvoiceRegEx>(dbContext, exp, itm.Value, "OCR_Invoices", "Select", includesLst)
-										.ConfigureAwait(continueOnCapturedContext: false);
-
-                            case "FileTypes":
-                                return
-                                    await
-                                        GetWhere<OCRFileTypes>(dbContext, exp, itm.Value, "Invoices", "Select", includesLst)
-										.ConfigureAwait(continueOnCapturedContext: false);
-
-                            case "InvoiceIdentificatonRegEx":
-                                return
-                                    await
-                                        GetWhere<InvoiceIdentificatonRegEx>(dbContext, exp, itm.Value, "OCR_Invoices", "Select", includesLst)
+                                        GetWhere<RegularExpressions>(dbContext, exp, itm.Value, "InvoiceIdentificatonRegEx", "SelectMany", includesLst)
 										.ConfigureAwait(continueOnCapturedContext: false);
 
                         }
@@ -285,17 +273,17 @@ namespace OCR.Business.Services
             }
         }
 
-        public async Task<IEnumerable<Invoices>> GetInvoicesByBatch(string exp,
+        public async Task<IEnumerable<InvoiceIdentificatonRegEx>> GetInvoiceIdentificatonRegExByBatch(string exp,
             int totalrow, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
 
-                var res = new ConcurrentQueue<List<Invoices>>();
+                var res = new ConcurrentQueue<List<InvoiceIdentificatonRegEx>>();
 
 
 
-                if (string.IsNullOrEmpty(exp) || exp == "None") return new List<Invoices>();
+                if (string.IsNullOrEmpty(exp) || exp == "None") return new List<InvoiceIdentificatonRegEx>();
 
 
                 var batchSize = 500;
@@ -316,7 +304,7 @@ namespace OCR.Business.Services
                                 dbContext.Configuration.AutoDetectChangesEnabled = false;
                                 //dbContext.Configuration.LazyLoadingEnabled = true;
                                 var set = AddIncludes(includesLst, dbContext);
-                                IQueryable<Invoices> dset;
+                                IQueryable<InvoiceIdentificatonRegEx> dset;
                                 if (exp == "All")
                                 {
                                     dset = set.OrderBy(x => x.Id);
@@ -360,17 +348,17 @@ namespace OCR.Business.Services
                 throw new FaultException<ValidationFault>(fault);
             }
         }
-        public async Task<IEnumerable<Invoices>> GetInvoicesByBatchExpressionLst(List<string> expLst,
+        public async Task<IEnumerable<InvoiceIdentificatonRegEx>> GetInvoiceIdentificatonRegExByBatchExpressionLst(List<string> expLst,
             int totalrow, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
 
-                var res = new ConcurrentQueue<List<Invoices>>();
+                var res = new ConcurrentQueue<List<InvoiceIdentificatonRegEx>>();
 
 
 
-                if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return new List<Invoices>();
+                if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return new List<InvoiceIdentificatonRegEx>();
 
 
                 var batchSize = 500;
@@ -391,7 +379,7 @@ namespace OCR.Business.Services
                                 dbContext.Configuration.AutoDetectChangesEnabled = false;
                                 //dbContext.Configuration.LazyLoadingEnabled = true;
                                 var set = AddIncludes(includesLst, dbContext);
-                                IQueryable<Invoices> dset;
+                                IQueryable<InvoiceIdentificatonRegEx> dset;
                                 if (expLst.FirstOrDefault() == "All")
                                 {
                                     dset = set.OrderBy(x => x.Id);
@@ -436,13 +424,13 @@ namespace OCR.Business.Services
         }
 
 
-        public async Task<Invoices> UpdateInvoices(Invoices entity)
+        public async Task<InvoiceIdentificatonRegEx> UpdateInvoiceIdentificatonRegEx(InvoiceIdentificatonRegEx entity)
         { 
             using ( var dbContext = new OCRContext(){StartTracking = StartTracking})
               {
                 try
                 {   
-                     var res = (Invoices) entity;
+                     var res = (InvoiceIdentificatonRegEx) entity;
                     if(res.TrackingState == TrackingState.Unchanged) res.TrackingState = TrackingState.Modified;                              
                     
                     dbContext.ApplyChanges(res);
@@ -518,14 +506,14 @@ namespace OCR.Business.Services
            return entity;
         }
 
-        public async Task<Invoices> CreateInvoices(Invoices entity)
+        public async Task<InvoiceIdentificatonRegEx> CreateInvoiceIdentificatonRegEx(InvoiceIdentificatonRegEx entity)
         {
             try
             {
-                var res = (Invoices) entity;
+                var res = (InvoiceIdentificatonRegEx) entity;
               using ( var dbContext = new OCRContext(){StartTracking = StartTracking})
               {
-                dbContext.Invoices.Add(res);
+                dbContext.InvoiceIdentificatonRegEx.Add(res);
                 await dbContext.SaveChangesAsync().ConfigureAwait(continueOnCapturedContext: false);
                 res.AcceptChanges();
                 return res;
@@ -545,21 +533,21 @@ namespace OCR.Business.Services
             }
         }
 
-        public async Task<bool> DeleteInvoices(string Id)
+        public async Task<bool> DeleteInvoiceIdentificatonRegEx(string Id)
         {
             try
             {
               using ( var dbContext = new OCRContext(){StartTracking = StartTracking})
               {
                 var i = Convert.ToInt32(Id);
-                Invoices entity = await dbContext.Invoices
+                InvoiceIdentificatonRegEx entity = await dbContext.InvoiceIdentificatonRegEx
 													.SingleOrDefaultAsync(x => x.Id == i)
 													.ConfigureAwait(continueOnCapturedContext: false);
                 if (entity == null)
                     return false;
 
-                    dbContext.Invoices.Attach(entity);
-                    dbContext.Invoices.Remove(entity);
+                    dbContext.InvoiceIdentificatonRegEx.Attach(entity);
+                    dbContext.InvoiceIdentificatonRegEx.Remove(entity);
                     await dbContext.SaveChangesAsync().ConfigureAwait(continueOnCapturedContext: false);
                     return true;
               }
@@ -578,19 +566,19 @@ namespace OCR.Business.Services
             }
         }
 
-        public async Task<bool> RemoveSelectedInvoices(IEnumerable<string> lst)
+        public async Task<bool> RemoveSelectedInvoiceIdentificatonRegEx(IEnumerable<string> lst)
         {
             try
             {
-                StatusModel.StartStatusUpdate("Removing Invoices", lst.Count());
+                StatusModel.StartStatusUpdate("Removing InvoiceIdentificatonRegEx", lst.Count());
                 var t = Task.Run(() =>
                 {
-                    using (var ctx = new InvoicesService())
+                    using (var ctx = new InvoiceIdentificatonRegExService())
                     {
                         foreach (var item in lst.ToList())
                         {
 
-                            ctx.DeleteInvoices(item).Wait();
+                            ctx.DeleteInvoiceIdentificatonRegEx(item).Wait();
                             StatusModel.StatusUpdate();
                         }
                     }
@@ -625,7 +613,7 @@ namespace OCR.Business.Services
                 {
                     dbContext.Database.CommandTimeout = 0;
                     if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return 0;
-                    var set = (IQueryable<Invoices>)dbContext.Invoices; 
+                    var set = (IQueryable<InvoiceIdentificatonRegEx>)dbContext.InvoiceIdentificatonRegEx; 
                     if (expLst.FirstOrDefault() == "All")
                     {
                         return await set.AsNoTracking().CountAsync()
@@ -663,7 +651,7 @@ namespace OCR.Business.Services
                     if (string.IsNullOrEmpty(exp) || exp == "None") return 0;
                     if (exp == "All")
                     {
-                        return await dbContext.Invoices
+                        return await dbContext.InvoiceIdentificatonRegEx
                                     .AsNoTracking()
 									.CountAsync()
 									.ConfigureAwait(continueOnCapturedContext: false);
@@ -671,7 +659,7 @@ namespace OCR.Business.Services
                     else
                     {
                         
-                        return await dbContext.Invoices
+                        return await dbContext.InvoiceIdentificatonRegEx
 									.AsNoTracking()
                                     .Where(exp)
 									.CountAsync()
@@ -693,17 +681,17 @@ namespace OCR.Business.Services
             }
         }
         
-        public async Task<IEnumerable<Invoices>> LoadRange(int startIndex, int count, string exp)
+        public async Task<IEnumerable<InvoiceIdentificatonRegEx>> LoadRange(int startIndex, int count, string exp)
         {
             try
             {
                 using (var dbContext = new OCRContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-                    if (string.IsNullOrEmpty(exp) || exp == "None") return new List<Invoices>();
+                    if (string.IsNullOrEmpty(exp) || exp == "None") return new List<InvoiceIdentificatonRegEx>();
                     if (exp == "All")
                     {
-                        return await dbContext.Invoices
+                        return await dbContext.InvoiceIdentificatonRegEx
 										.AsNoTracking()
                                         .OrderBy(y => y.Id)
 										.Skip(startIndex)
@@ -714,7 +702,7 @@ namespace OCR.Business.Services
                     else
                     {
                         
-                        return await dbContext.Invoices
+                        return await dbContext.InvoiceIdentificatonRegEx
 										.AsNoTracking()
                                         .Where(exp)
 										.OrderBy(y => y.Id)
@@ -749,7 +737,7 @@ namespace OCR.Business.Services
                     dbContext.Database.CommandTimeout = 0;
                     if (exp == "All" && navExp.Count == 0)
                     {
-                        return await dbContext.Invoices
+                        return await dbContext.InvoiceIdentificatonRegEx
 										.AsNoTracking()
                                         .CountAsync()
 										.ConfigureAwait(continueOnCapturedContext: false);
@@ -758,21 +746,15 @@ namespace OCR.Business.Services
                     {
                         switch (itm.Key)
                         {
-                            case "Parts":
-                                return await CountWhere<Parts>(dbContext, exp, itm.Value, "Invoices", "Select")
+                            case "OCR_Invoices":
+                                return await CountWhere<Invoices>(dbContext, exp, itm.Value, "InvoiceIdentificatonRegEx", "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "RegEx":
-                                return await CountWhere<InvoiceRegEx>(dbContext, exp, itm.Value, "OCR_Invoices", "Select")
-											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "FileTypes":
-                                return await CountWhere<OCRFileTypes>(dbContext, exp, itm.Value, "Invoices", "Select")
-											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "InvoiceIdentificatonRegEx":
-                                return await CountWhere<InvoiceIdentificatonRegEx>(dbContext, exp, itm.Value, "OCR_Invoices", "Select")
+                            case "OCR_RegularExpressions":
+                                return await CountWhere<RegularExpressions>(dbContext, exp, itm.Value, "InvoiceIdentificatonRegEx", "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }
-                    return await dbContext.Invoices.Where(exp == "All" || exp == null ? "Id != null" : exp)
+                    return await dbContext.InvoiceIdentificatonRegEx.Where(exp == "All" || exp == null ? "Id != null" : exp)
 											.AsNoTracking()
                                             .CountAsync()
 											.ConfigureAwait(continueOnCapturedContext: false);
@@ -814,7 +796,7 @@ namespace OCR.Business.Services
             return await dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
-                .SelectMany(navProp).OfType<Invoices>()
+                .SelectMany(navProp).OfType<InvoiceIdentificatonRegEx>()
                 .Where(exp == "All" || exp == null ? "Id != null" : exp)
                 .Distinct()
                 .OrderBy("Id")
@@ -835,7 +817,7 @@ namespace OCR.Business.Services
             return await dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
-                .Select(navProp).OfType<Invoices>()
+                .Select(navProp).OfType<InvoiceIdentificatonRegEx>()
                 .Where(exp == "All" || exp == null ? "Id != null" : exp)
                 .Distinct()
                 .OrderBy("Id")
@@ -849,7 +831,7 @@ namespace OCR.Business.Services
 			}
         }
 
-		  public async Task<IEnumerable<Invoices>> LoadRangeNav(int startIndex, int count, string exp,
+		  public async Task<IEnumerable<InvoiceIdentificatonRegEx>> LoadRangeNav(int startIndex, int count, string exp,
                                                                                  Dictionary<string, string> navExp, IEnumerable<string> includeLst = null)
         {
             try
@@ -857,7 +839,7 @@ namespace OCR.Business.Services
                 using (var dbContext = new OCRContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-                    if ((string.IsNullOrEmpty(exp) && navExp.Count == 0) || exp == "None") return new List<Invoices>();
+                    if ((string.IsNullOrEmpty(exp) && navExp.Count == 0) || exp == "None") return new List<InvoiceIdentificatonRegEx>();
                     var set = AddIncludes(includeLst, dbContext);
 
                     if (exp == "All" && navExp.Count == 0)
@@ -876,28 +858,16 @@ namespace OCR.Business.Services
                     {
                         switch (itm.Key)
                         {
-                            case "Parts":
+                            case "OCR_Invoices":
                                 return
                                     await
-                                        LoadRangeWhere<Parts>(startIndex, count, dbContext, exp, itm.Value, "Invoices", "Select")
+                                        LoadRangeWhere<Invoices>(startIndex, count, dbContext, exp, itm.Value, "InvoiceIdentificatonRegEx", "SelectMany")
 													.ConfigureAwait(continueOnCapturedContext: false);
 
-                            case "RegEx":
+                            case "OCR_RegularExpressions":
                                 return
                                     await
-                                        LoadRangeWhere<InvoiceRegEx>(startIndex, count, dbContext, exp, itm.Value, "OCR_Invoices", "Select")
-													.ConfigureAwait(continueOnCapturedContext: false);
-
-                            case "FileTypes":
-                                return
-                                    await
-                                        LoadRangeWhere<OCRFileTypes>(startIndex, count, dbContext, exp, itm.Value, "Invoices", "Select")
-													.ConfigureAwait(continueOnCapturedContext: false);
-
-                            case "InvoiceIdentificatonRegEx":
-                                return
-                                    await
-                                        LoadRangeWhere<InvoiceIdentificatonRegEx>(startIndex, count, dbContext, exp, itm.Value, "OCR_Invoices", "Select")
+                                        LoadRangeWhere<RegularExpressions>(startIndex, count, dbContext, exp, itm.Value, "InvoiceIdentificatonRegEx", "SelectMany")
 													.ConfigureAwait(continueOnCapturedContext: false);
 
                           
@@ -906,7 +876,7 @@ namespace OCR.Business.Services
 						}
 
                     }
-                    return await set//dbContext.Invoices
+                    return await set//dbContext.InvoiceIdentificatonRegEx
 								.AsNoTracking()
                                 .Where(exp == "All" || exp == null ? "Id != null" : exp)
 								.OrderBy(y => y.Id)
@@ -933,7 +903,7 @@ namespace OCR.Business.Services
             }
         }
 
-		private static async Task<IEnumerable<Invoices>> LoadRangeWhere<T>(int startIndex, int count,
+		private static async Task<IEnumerable<InvoiceIdentificatonRegEx>> LoadRangeWhere<T>(int startIndex, int count,
             OCRContext dbContext, string exp, string navExp, string navProp, string rel, IEnumerable<string> includeLst = null) where T : class
         {
              switch (rel)
@@ -948,7 +918,7 @@ namespace OCR.Business.Services
 		    }
         }
 
-		private static async Task<IEnumerable<Invoices>> LoadRangeSelectMany<T>(int startIndex, int count,
+		private static async Task<IEnumerable<InvoiceIdentificatonRegEx>> LoadRangeSelectMany<T>(int startIndex, int count,
             OCRContext dbContext, string exp, string navExp, string navProp, IEnumerable<string> includeLst = null) where T : class
         {
 			try
@@ -956,7 +926,7 @@ namespace OCR.Business.Services
             var set = dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
-                .SelectMany(navProp).OfType<Invoices>();
+                .SelectMany(navProp).OfType<InvoiceIdentificatonRegEx>();
     
             if (includeLst != null) set = includeLst.Aggregate(set, (current, itm) => current.Include(itm));            
 
@@ -977,7 +947,7 @@ namespace OCR.Business.Services
 			}
         }
 
-		private static async Task<IEnumerable<Invoices>> LoadRangeSelect<T>(int startIndex, int count,
+		private static async Task<IEnumerable<InvoiceIdentificatonRegEx>> LoadRangeSelect<T>(int startIndex, int count,
             OCRContext dbContext, string exp, string navExp, string navProp, IEnumerable<string> includeLst = null) where T : class
         {
 			try
@@ -985,7 +955,7 @@ namespace OCR.Business.Services
               var set = dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
-                .Select(navProp).OfType<Invoices>();
+                .Select(navProp).OfType<InvoiceIdentificatonRegEx>();
 
                if (includeLst != null) set = includeLst.Aggregate(set, (current, itm) => current.Include(itm)); 
                 
@@ -1006,7 +976,7 @@ namespace OCR.Business.Services
 			}
         }
 
-        private static async Task<IEnumerable<Invoices>> GetWhere<T>(OCRContext dbContext,
+        private static async Task<IEnumerable<InvoiceIdentificatonRegEx>> GetWhere<T>(OCRContext dbContext,
             string exp, string navExp, string navProp, string rel, List<string> includesLst = null) where T : class
         {
 			try
@@ -1030,7 +1000,7 @@ namespace OCR.Business.Services
 			}
         }
 
-		private static async Task<IEnumerable<Invoices>> GetWhereSelectMany<T>(OCRContext dbContext,
+		private static async Task<IEnumerable<InvoiceIdentificatonRegEx>> GetWhereSelectMany<T>(OCRContext dbContext,
             string exp, string navExp, string navProp, List<string> includesLst = null) where T : class
         {
 			try
@@ -1041,17 +1011,17 @@ namespace OCR.Business.Services
 				return await dbContext.Set<T>()
 							.AsNoTracking()
                             .Where(navExp)
-							.SelectMany(navProp).OfType<Invoices>()
+							.SelectMany(navProp).OfType<InvoiceIdentificatonRegEx>()
 							.Where(exp == "All" || exp == null?"Id != null":exp)
 							.Distinct()
 							.ToListAsync()
 							.ConfigureAwait(continueOnCapturedContext: false);
 			}
 
-			var set = (DbQuery<Invoices>)dbContext.Set<T>()
+			var set = (DbQuery<InvoiceIdentificatonRegEx>)dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
-                .SelectMany(navProp).OfType<Invoices>()
+                .SelectMany(navProp).OfType<InvoiceIdentificatonRegEx>()
                 .Where(exp == "All" || exp == null?"Id != null":exp)
                 .Distinct();
 
@@ -1067,7 +1037,7 @@ namespace OCR.Business.Services
 			}
         }
 
-		private static async Task<IEnumerable<Invoices>> GetWhereSelect<T>(OCRContext dbContext,
+		private static async Task<IEnumerable<InvoiceIdentificatonRegEx>> GetWhereSelect<T>(OCRContext dbContext,
             string exp, string navExp, string navProp, List<string> includesLst = null) where T : class
         {
 			try
@@ -1078,17 +1048,17 @@ namespace OCR.Business.Services
 				return await dbContext.Set<T>()
 							.AsNoTracking()
                             .Where(navExp)
-							.Select(navProp).OfType<Invoices>()
+							.Select(navProp).OfType<InvoiceIdentificatonRegEx>()
 							.Where(exp == "All" || exp == null?"Id != null":exp)
 							.Distinct()
 							.ToListAsync()
 							.ConfigureAwait(continueOnCapturedContext: false);
 			}
 
-			var set = (DbQuery<Invoices>)dbContext.Set<T>()
+			var set = (DbQuery<InvoiceIdentificatonRegEx>)dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
-                .Select(navProp).OfType<Invoices>()
+                .Select(navProp).OfType<InvoiceIdentificatonRegEx>()
                 .Where(exp == "All" || exp == null?"Id != null":exp)
                 .Distinct();
 
@@ -1104,21 +1074,17 @@ namespace OCR.Business.Services
 			}
         }
 
-			        public async Task<IEnumerable<Invoices>> GetInvoicesByFileTypeId(string FileTypeId, List<string> includesLst = null)
+			        public async Task<IEnumerable<InvoiceIdentificatonRegEx>> GetInvoiceIdentificatonRegExByInvoiceId(string InvoiceId, List<string> includesLst = null)
         {
             try
             {
                 using ( var dbContext = new OCRContext(){StartTracking = StartTracking})
               {
-                var i = Convert.ToInt32(FileTypeId);
+                var i = Convert.ToInt32(InvoiceId);
                 var set = AddIncludes(includesLst, dbContext);
-                IEnumerable<Invoices> entities = await set//dbContext.Invoices
-                                                    // .Include(x => x.Parts)									  
-                                                    // .Include(x => x.RegEx)									  
-                                                    // .Include(x => x.FileTypes)									  
-                                                    // .Include(x => x.InvoiceIdentificatonRegEx)									  
+                IEnumerable<InvoiceIdentificatonRegEx> entities = await set//dbContext.InvoiceIdentificatonRegEx
                                       .AsNoTracking()
-                                        .Where(x => x.FileTypeId.ToString() == FileTypeId.ToString())
+                                        .Where(x => x.InvoiceId.ToString() == InvoiceId.ToString())
 										.ToListAsync()
 										.ConfigureAwait(continueOnCapturedContext: false);
                 return entities;
@@ -1137,21 +1103,17 @@ namespace OCR.Business.Services
                     throw new FaultException<ValidationFault>(fault);
             }
         }
- 	        public async Task<IEnumerable<Invoices>> GetInvoicesByApplicationSettingsId(string ApplicationSettingsId, List<string> includesLst = null)
+ 	        public async Task<IEnumerable<InvoiceIdentificatonRegEx>> GetInvoiceIdentificatonRegExByRegExId(string RegExId, List<string> includesLst = null)
         {
             try
             {
                 using ( var dbContext = new OCRContext(){StartTracking = StartTracking})
               {
-                var i = Convert.ToInt32(ApplicationSettingsId);
+                var i = Convert.ToInt32(RegExId);
                 var set = AddIncludes(includesLst, dbContext);
-                IEnumerable<Invoices> entities = await set//dbContext.Invoices
-                                                    // .Include(x => x.Parts)									  
-                                                    // .Include(x => x.RegEx)									  
-                                                    // .Include(x => x.FileTypes)									  
-                                                    // .Include(x => x.InvoiceIdentificatonRegEx)									  
+                IEnumerable<InvoiceIdentificatonRegEx> entities = await set//dbContext.InvoiceIdentificatonRegEx
                                       .AsNoTracking()
-                                        .Where(x => x.ApplicationSettingsId.ToString() == ApplicationSettingsId.ToString())
+                                        .Where(x => x.RegExId.ToString() == RegExId.ToString())
 										.ToListAsync()
 										.ConfigureAwait(continueOnCapturedContext: false);
                 return entities;
@@ -1182,11 +1144,11 @@ namespace OCR.Business.Services
                      if (string.IsNullOrEmpty(whereExp) || whereExp == "None") return 0;
                      if (whereExp == "All")
                      {
-                          res = Convert.ToDecimal(dbContext.Invoices.AsNoTracking().Sum(field));
+                          res = Convert.ToDecimal(dbContext.InvoiceIdentificatonRegEx.AsNoTracking().Sum(field));
                      }
                      else
                      {
-                         res = Convert.ToDecimal(dbContext.Invoices.AsNoTracking().Where(whereExp).Sum(field));
+                         res = Convert.ToDecimal(dbContext.InvoiceIdentificatonRegEx.AsNoTracking().Where(whereExp).Sum(field));
                      }
                      
                      return res;
@@ -1214,10 +1176,10 @@ namespace OCR.Business.Services
                 using (var dbContext = new OCRContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-                    if (!dbContext.Invoices.Any()) return 0;
+                    if (!dbContext.InvoiceIdentificatonRegEx.Any()) return 0;
                     if (exp == "All" && navExp.Count == 0)
                     {
-                        return Convert.ToDecimal(dbContext.Invoices
+                        return Convert.ToDecimal(dbContext.InvoiceIdentificatonRegEx
 										.AsNoTracking()
                                         .Sum(field)??0);
                     }
@@ -1225,21 +1187,15 @@ namespace OCR.Business.Services
                     {
                         switch (itm.Key)
                         {
-                            case "Parts":
-                                return await SumWhere<Parts>(dbContext, exp, itm.Value, "Invoices", field, "Select")
+                            case "OCR_Invoices":
+                                return await SumWhere<Invoices>(dbContext, exp, itm.Value, "InvoiceIdentificatonRegEx", field, "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "RegEx":
-                                return await SumWhere<InvoiceRegEx>(dbContext, exp, itm.Value, "OCR_Invoices", field, "Select")
-											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "FileTypes":
-                                return await SumWhere<OCRFileTypes>(dbContext, exp, itm.Value, "Invoices", field, "Select")
-											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "InvoiceIdentificatonRegEx":
-                                return await SumWhere<InvoiceIdentificatonRegEx>(dbContext, exp, itm.Value, "OCR_Invoices", field, "Select")
+                            case "OCR_RegularExpressions":
+                                return await SumWhere<RegularExpressions>(dbContext, exp, itm.Value, "InvoiceIdentificatonRegEx", field, "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }
-                    return Convert.ToDecimal(dbContext.Invoices.Where(exp == "All" || exp == null ? "Id != null" : exp)
+                    return Convert.ToDecimal(dbContext.InvoiceIdentificatonRegEx.Where(exp == "All" || exp == null ? "Id != null" : exp)
 											.AsNoTracking()
                                             .Sum(field)??0);
                 }
@@ -1279,7 +1235,7 @@ namespace OCR.Business.Services
             return Convert.ToDecimal(dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
-                .SelectMany(navProp).OfType<Invoices>()
+                .SelectMany(navProp).OfType<InvoiceIdentificatonRegEx>()
                 .Where(exp == "All" || exp == null ? "Id != null" : exp)
                 .Distinct()
                 .OrderBy("Id")
@@ -1299,7 +1255,7 @@ namespace OCR.Business.Services
             return Convert.ToDecimal(dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
-                .Select(navProp).OfType<Invoices>()
+                .Select(navProp).OfType<InvoiceIdentificatonRegEx>()
                 .Where(exp == "All" || exp == null ? "Id != null" : exp)
                 .Distinct()
                 .OrderBy("Id")
@@ -1325,11 +1281,11 @@ namespace OCR.Business.Services
                      if (string.IsNullOrEmpty(whereExp) || whereExp == "None") return res;
                      if (whereExp == "All")
                      {
-                          res = Convert.ToString(dbContext.Invoices.AsNoTracking().Min(field));
+                          res = Convert.ToString(dbContext.InvoiceIdentificatonRegEx.AsNoTracking().Min(field));
                      }
                      else
                      {
-                         res = Convert.ToString(dbContext.Invoices.AsNoTracking().Where(whereExp).Min(field));
+                         res = Convert.ToString(dbContext.InvoiceIdentificatonRegEx.AsNoTracking().Where(whereExp).Min(field));
                      }
                      
                      return res;
@@ -1350,12 +1306,12 @@ namespace OCR.Business.Services
          }
 
 		 
-		private static IQueryable<Invoices> AddIncludes(IEnumerable<string> includesLst, OCRContext dbContext)
+		private static IQueryable<InvoiceIdentificatonRegEx> AddIncludes(IEnumerable<string> includesLst, OCRContext dbContext)
        {
 		 try
 			{
 			   if (includesLst == null) includesLst = new List<string>();
-			   var set =(DbQuery<Invoices>) dbContext.Invoices; 
+			   var set =(DbQuery<InvoiceIdentificatonRegEx>) dbContext.InvoiceIdentificatonRegEx; 
 			   set = includesLst.Where(x => !string.IsNullOrEmpty(x))
                                 .Aggregate(set, (current, itm) => current.Include(itm));
 			   return set;
@@ -1366,7 +1322,7 @@ namespace OCR.Business.Services
 				throw;
 			}
        }
-	   private IQueryable<Invoices> AddWheres(List<string> expLst, IQueryable<Invoices> set)
+	   private IQueryable<InvoiceIdentificatonRegEx> AddWheres(List<string> expLst, IQueryable<InvoiceIdentificatonRegEx> set)
         {
             try
             {

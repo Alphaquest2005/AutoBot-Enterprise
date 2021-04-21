@@ -18,16 +18,8 @@ namespace OCR.Business.Entities
 
     //[JsonObject(IsReference = true)]
     [DataContract(IsReference = true, Namespace="http://www.insight-software.com/WaterNut")]
-    public partial class Invoices : BaseEntity<Invoices>, ITrackable 
+    public partial class InvoiceIdentificatonRegEx : BaseEntity<InvoiceIdentificatonRegEx>, ITrackable 
     {
-        partial void AutoGenStartUp() //Invoices()
-        {
-            this.Parts = new List<Parts>();
-            this.RegEx = new List<InvoiceRegEx>();
-            this.FileTypes = new List<OCRFileTypes>();
-            this.InvoiceIdentificatonRegEx = new List<InvoiceIdentificatonRegEx>();
-        }
-
         [DataMember]
         public int Id 
         {
@@ -44,73 +36,39 @@ namespace OCR.Business.Entities
         }
         int _id;
         [DataMember]
-        public string Name 
+        public int InvoiceId 
         {
             get
             {
-                return _name;
+                return _invoiceid;
             }
             set
             {
-                _name = value;
+                _invoiceid = value;
                 //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
                 NotifyPropertyChanged();
             }
         }
-        string _name;
+        int _invoiceid;
         [DataMember]
-        public int FileTypeId 
+        public int RegExId 
         {
             get
             {
-                return _filetypeid;
+                return _regexid;
             }
             set
             {
-                _filetypeid = value;
+                _regexid = value;
                 //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
                 NotifyPropertyChanged();
             }
         }
-        int _filetypeid;
+        int _regexid;
         [DataMember]
-        public int ApplicationSettingsId 
-        {
-            get
-            {
-                return _applicationsettingsid;
-            }
-            set
-            {
-                _applicationsettingsid = value;
-                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
-                NotifyPropertyChanged();
-            }
-        }
-        int _applicationsettingsid;
+        public Invoices OCR_Invoices { get; set; }
         [DataMember]
-        public bool IsActive 
-        {
-            get
-            {
-                return _isactive;
-            }
-            set
-            {
-                _isactive = value;
-                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
-                NotifyPropertyChanged();
-            }
-        }
-        bool _isactive;
-        [DataMember]
-        public List<Parts> Parts { get; set; }
-        [DataMember]
-        public List<InvoiceRegEx> RegEx { get; set; }
-        [DataMember]
-        public List<OCRFileTypes> FileTypes { get; set; }
-        [DataMember]
-        public List<InvoiceIdentificatonRegEx> InvoiceIdentificatonRegEx { get; set; }
+        public RegularExpressions OCR_RegularExpressions { get; set; }
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

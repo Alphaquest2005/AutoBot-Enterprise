@@ -277,6 +277,12 @@ namespace OCR.Business.Services
                                         GetWhere<FieldFormatRegEx>(dbContext, exp, itm.Value, "RegEx", "Select", includesLst)
 										.ConfigureAwait(continueOnCapturedContext: false);
 
+                            case "InvoiceIdentificatonRegEx":
+                                return
+                                    await
+                                        GetWhere<InvoiceIdentificatonRegEx>(dbContext, exp, itm.Value, "OCR_RegularExpressions", "Select", includesLst)
+										.ConfigureAwait(continueOnCapturedContext: false);
+
                         }
 
                     }
@@ -797,6 +803,9 @@ namespace OCR.Business.Services
                             case "FieldFormatRepRegEx":
                                 return await CountWhere<FieldFormatRegEx>(dbContext, exp, itm.Value, "RegEx", "Select")
 											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "InvoiceIdentificatonRegEx":
+                                return await CountWhere<InvoiceIdentificatonRegEx>(dbContext, exp, itm.Value, "OCR_RegularExpressions", "Select")
+											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }
                     return await dbContext.RegularExpressions.Where(exp == "All" || exp == null ? "Id != null" : exp)
@@ -943,6 +952,12 @@ namespace OCR.Business.Services
                                 return
                                     await
                                         LoadRangeWhere<FieldFormatRegEx>(startIndex, count, dbContext, exp, itm.Value, "RegEx", "Select")
+													.ConfigureAwait(continueOnCapturedContext: false);
+
+                            case "InvoiceIdentificatonRegEx":
+                                return
+                                    await
+                                        LoadRangeWhere<InvoiceIdentificatonRegEx>(startIndex, count, dbContext, exp, itm.Value, "OCR_RegularExpressions", "Select")
 													.ConfigureAwait(continueOnCapturedContext: false);
 
                           
@@ -1224,6 +1239,9 @@ namespace OCR.Business.Services
 											.ConfigureAwait(continueOnCapturedContext: false);
                             case "FieldFormatRepRegEx":
                                 return await SumWhere<FieldFormatRegEx>(dbContext, exp, itm.Value, "RegEx", field, "Select")
+											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "InvoiceIdentificatonRegEx":
+                                return await SumWhere<InvoiceIdentificatonRegEx>(dbContext, exp, itm.Value, "OCR_RegularExpressions", field, "Select")
 											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }

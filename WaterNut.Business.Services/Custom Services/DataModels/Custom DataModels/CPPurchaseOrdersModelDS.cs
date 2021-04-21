@@ -65,21 +65,37 @@ namespace WaterNut.DataSpace
 
                                     INSERT INTO InventoryItems
                                                       (ItemNumber, Description, ApplicationSettingsId)
-                                    SELECT DISTINCT CounterPointPODetails.ITEM_NO, CounterPointPODetails.ITEM_DESCR,  EntryData.ApplicationSettingsId
-									FROM    CounterPointPODetails INNER JOIN
-													 EntryData ON CounterPointPODetails.PO_NO COLLATE Database_Default  = EntryData.EntryDataId COLLATE Database_Default  LEFT OUTER JOIN
-													 InventoryItems AS InventoryItems_1 ON CounterPointPODetails.ITEM_NO = InventoryItems_1.ItemNumber
-									WHERE (CounterPointPODetails.PO_NO = @PONumber) AND (InventoryItems_1.ItemNumber IS NULL) AND (LEFT(CounterPointPODetails.ITEM_NO, 1) <> '*') AND (EntryData.ApplicationSettingsId = @applicationSettingsId) AND 
-													 (EntryData.EntryDataDate = @Date)
+                                    SELECT DISTINCT CounterPointPODetails.ITEM_NO, CounterPointPODetails.ITEM_DESCR, EntryData.ApplicationSettingsId
+                                    FROM    InventoryItemSource INNER JOIN
+                                                     InventoryItems AS InventoryItems_1 ON InventoryItemSource.InventoryId = InventoryItems_1.Id INNER JOIN
+                                                     InventorySources ON InventoryItemSource.InventorySourceId = InventorySources.Id RIGHT OUTER JOIN
+                                                     CounterPointPODetails INNER JOIN
+                                                     EntryData ON CounterPointPODetails.PO_NO COLLATE Database_Default = EntryData.EntryDataId COLLATE Database_Default ON InventoryItems_1.ApplicationSettingsId = EntryData.ApplicationSettingsId AND 
+                                                     InventoryItems_1.ItemNumber = CounterPointPODetails.ITEM_NO
+                                    WHERE (CounterPointPODetails.PO_NO = @PONumber) AND (InventoryItems_1.ItemNumber IS NULL) AND (LEFT(CounterPointPODetails.ITEM_NO, 1) <> '*') AND (EntryData.ApplicationSettingsId = @applicationSettingsId) AND 
+                                                     (EntryData.EntryDataDate = @Date) AND (InventorySources.Name = N'POS')
+
+									insert into InventoryItemSource(InventoryId, InventorySourceId)
+									SELECT        InventoryItems.Id AS InventoryItemId, InventorySources.Id AS InventorySourceId
+									FROM            InventoryItems LEFT OUTER JOIN
+															 InventoryItemSource ON InventoryItems.Id = InventoryItemSource.InventoryId CROSS JOIN
+															 InventorySources
+									WHERE        (InventorySources.Name = N'POS') AND (InventoryItemSource.Id IS NULL)
+
 
                                     INSERT INTO EntryDataDetails
                                                       (EntryData_Id, EntryDataId, LineNumber, ItemNumber, Quantity, Units, ItemDescription, Cost, UnitWeight, QtyAllocated,InventoryItemId)
-									SELECT EntryData.EntryData_Id, CounterPointPODetails.PO_NO, CounterPointPODetails.SEQ_NO, CounterPointPODetails.ITEM_NO, CounterPointPODetails.ORD_QTY, CounterPointPODetails.ORD_UNIT, 
-													 CounterPointPODetails.ITEM_DESCR, CounterPointPODetails.ORD_COST, CounterPointPODetails.UNIT_WEIGHT, 0 AS Expr1, InventoryItems.Id
-									FROM    CounterPointPODetails INNER JOIN
-													 EntryData ON CounterPointPODetails.PO_NO COLLATE DATABASE_DEFAULT = EntryData.EntryDataId COLLATE DATABASE_DEFAULT INNER JOIN
-													 InventoryItems ON CounterPointPODetails.ITEM_NO  COLLATE Database_Default = InventoryItems.ItemNumber  COLLATE Database_Default AND EntryData.ApplicationSettingsId = InventoryItems.ApplicationSettingsId
-									WHERE (CounterPointPODetails.PO_NO = @PONumber) AND (LEFT(CounterPointPODetails.ITEM_NO, 1) <> '*') AND (EntryData.ApplicationSettingsId = @applicationsettingsId) AND (EntryData.EntryDataDate = @Date)
+										SELECT        EntryData.EntryData_Id, CounterPointPODetails.PO_NO, CounterPointPODetails.SEQ_NO, CounterPointPODetails.ITEM_NO, CounterPointPODetails.ORD_QTY, CounterPointPODetails.ORD_UNIT, 
+                                                             CounterPointPODetails.ITEM_DESCR, CounterPointPODetails.ORD_COST, CounterPointPODetails.UNIT_WEIGHT, 0 AS Expr1, Min(InventoryItems.Id) AS Id
+                                    FROM            CounterPointPODetails INNER JOIN
+                                                             EntryData ON CounterPointPODetails.PO_NO COLLATE DATABASE_DEFAULT = EntryData.EntryDataId COLLATE DATABASE_DEFAULT INNER JOIN
+                                                             InventoryItems ON CounterPointPODetails.ITEM_NO COLLATE Database_Default = InventoryItems.ItemNumber COLLATE Database_Default AND EntryData.ApplicationSettingsId = InventoryItems.ApplicationSettingsId INNER JOIN
+                                                             InventoryItemSource ON InventoryItems.Id = InventoryItemSource.InventoryId INNER JOIN
+                                                             InventorySources ON InventoryItemSource.InventorySourceId = InventorySources.Id
+                                    WHERE        (CounterPointPODetails.PO_NO = @PONumber) AND (LEFT(CounterPointPODetails.ITEM_NO, 1) <> '*') AND (EntryData.ApplicationSettingsId = @applicationSettingsId) AND (EntryData.EntryDataDate = @Date) AND 
+                                                             (InventorySources.Name = N'POS')
+                                    GROUP BY EntryData.EntryData_Id, CounterPointPODetails.PO_NO, CounterPointPODetails.SEQ_NO, CounterPointPODetails.ITEM_NO, CounterPointPODetails.ORD_QTY, CounterPointPODetails.ORD_UNIT, 
+                                                             CounterPointPODetails.ITEM_DESCR, CounterPointPODetails.ORD_COST, CounterPointPODetails.UNIT_WEIGHT
 ", 
                                                                                                                
                                                                                                                

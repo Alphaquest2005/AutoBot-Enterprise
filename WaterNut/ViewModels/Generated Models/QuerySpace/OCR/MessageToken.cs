@@ -34,6 +34,12 @@ namespace WaterNut.QuerySpace.OCR
 			public const string FieldsDeleted = "FieldsDeleted";
 			public const string FieldsCreated = "FieldsCreated";
 			public const string FieldsUpdated = "FieldsUpdated";
+			public const string InvoiceIdentificatonRegExFilterExpressionChanged = "InvoiceIdentificatonRegExFilterExpressionChanged";
+			public const string SelectedInvoiceIdentificatonRegExChanged = "SelectedInvoiceIdentificatonRegExChanged";
+            public const string InvoiceIdentificatonRegExChanged = "InvoiceIdentificatonRegExChanged";
+			public const string InvoiceIdentificatonRegExDeleted = "InvoiceIdentificatonRegExDeleted";
+			public const string InvoiceIdentificatonRegExCreated = "InvoiceIdentificatonRegExCreated";
+			public const string InvoiceIdentificatonRegExUpdated = "InvoiceIdentificatonRegExUpdated";
 			public const string OCR_InvoiceRegExFilterExpressionChanged = "OCR_InvoiceRegExFilterExpressionChanged";
 			public const string SelectedOCR_InvoiceRegExChanged = "SelectedOCR_InvoiceRegExChanged";
             public const string OCR_InvoiceRegExChanged = "OCR_InvoiceRegExChanged";
@@ -100,6 +106,7 @@ namespace WaterNut.QuerySpace.OCR
           // public const string EndChanged = "EndChanged";
           // public const string FieldFormatRegExChanged = "FieldFormatRegExChanged";
           // public const string FieldsChanged = "FieldsChanged";
+          // public const string InvoiceIdentificatonRegExChanged = "InvoiceIdentificatonRegExChanged";
           // public const string InvoiceRegExChanged = "InvoiceRegExChanged";
           // public const string InvoicesChanged = "InvoicesChanged";
           // public const string LinesChanged = "LinesChanged";
@@ -120,6 +127,8 @@ namespace WaterNut.QuerySpace.OCR
            public const string CurrentFieldFormatRegExChanged = "CurrentFieldFormatRegExChanged";
    
            public const string CurrentFieldsChanged = "CurrentFieldsChanged";
+   
+           public const string CurrentInvoiceIdentificatonRegExChanged = "CurrentInvoiceIdentificatonRegExChanged";
    
            public const string CurrentInvoiceRegExChanged = "CurrentInvoiceRegExChanged";
    
@@ -150,6 +159,8 @@ namespace WaterNut.QuerySpace.OCR
            public const string CurrentFieldFormatRegExIDChanged = "OnCurrentFieldFormatRegExIDChanged";
    
            public const string CurrentFieldsIDChanged = "OnCurrentFieldsIDChanged";
+   
+           public const string CurrentInvoiceIdentificatonRegExIDChanged = "OnCurrentInvoiceIdentificatonRegExIDChanged";
    
            public const string CurrentInvoiceRegExIDChanged = "OnCurrentInvoiceRegExIDChanged";
    
