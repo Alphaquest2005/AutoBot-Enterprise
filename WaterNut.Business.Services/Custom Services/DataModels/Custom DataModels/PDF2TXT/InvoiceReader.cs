@@ -5,13 +5,16 @@ using System.Dynamic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Net.Sockets;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Threading.Tasks.Schedulers;
+using Core.Common;
 using Core.Common.Extensions;
+using Core.Common.Utils;
 using DocumentDS.Business.Entities;
 using EmailDownloader;
 using EntryDataDS.Business.Entities;
@@ -34,6 +37,8 @@ using Invoices = OCR.Business.Entities.Invoices;
 
 namespace WaterNut.DataSpace
 {
+
+
     public class InvoiceReader
     {
         public static bool Import(string file, int fileTypeId, int emailId, bool overWriteExisting,
@@ -44,126 +49,26 @@ namespace WaterNut.DataSpace
             {
 
                 
-                StringBuilder pdftxt = new StringBuilder();
-                
+                var pdfTxt = GetPdftxt(file);
 
-                //pdftxt = parseUsingPDFBox(file);
-                var ripTask = Task.Run(() =>
-                {
-                    var txt = "------------------------------------------Ripped Text-------------------------\r\n";
-                    txt += pdfPigText(file); //TODO: need to implement the layout logic
-                    return txt; 
-                });
-
-               
-                var singleColumnTask = Task.Run(() =>
-                {
-
-                    var txt =
-                        "------------------------------------------Single Column-------------------------\r\n";
-                    txt += new PdfOcr().Ocr(file, PageSegMode.SingleColumn);
-                    return txt;
-                });
-
-                var sparseTextTask = Task.Run(() =>
-                {
-                   
-                        var txt = "------------------------------------------SparseText-------------------------\r\n";
-                        txt += new PdfOcr().Ocr(file, PageSegMode.SparseText);
-                        return txt;
-                
-                });
-
-                Task.WhenAll(ripTask, singleColumnTask, sparseTextTask);//, 
-
-                pdftxt.AppendLine(ripTask.Result);
-                pdftxt.AppendLine(singleColumnTask.Result);
-                pdftxt.AppendLine(sparseTextTask.Result);
                 //Get Template
-                using (var ctx = new OCRContext())
-                {
-                    var templates = ctx.Invoices
-                        .Include(x => x.Parts)
-                        .Include("InvoiceIdentificatonRegEx.OCR_RegularExpressions")
-                        .Include("RegEx.RegEx")
-                        .Include("RegEx.ReplacementRegEx")
-                        .Include("Parts.RecuringPart")
-                        .Include("Parts.Start.RegularExpressions")
-                        .Include("Parts.End.RegularExpressions")
-                        .Include("Parts.PartTypes")
-                        .Include("Parts.ChildParts.ChildPart.Start.RegularExpressions")
-                        .Include("Parts.ParentParts.ParentPart.Start.RegularExpressions")
-                        .Include("Parts.Lines.RegularExpressions")
-                        .Include("Parts.Lines.Fields.FieldValue")
-                        .Include("Parts.Lines.Fields.FormatRegEx.RegEx")
-                        .Include("Parts.Lines.Fields.FormatRegEx.ReplacementRegEx")
-                        .Where(x => x.IsActive)
-                        .Where(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)
-                        //.Where(x => x.Id == 55) //BaseDataModel.Instance.CurrentApplicationSettings.TestMode != true ||
-                        .ToList()
-                        .Select(x => new Invoice(x));
+                var templates = GetTemplates(x => true);
 
-                    foreach (var tmp in templates)
+                foreach (var tmp in templates)
+                    try
                     {
-                        try
-                        {
-
-                           if(tmp.OcrInvoices.InvoiceIdentificatonRegEx.Any() && tmp.OcrInvoices.InvoiceIdentificatonRegEx.Any(x => Regex.IsMatch(pdftxt.ToString(),
-                                x.OCR_RegularExpressions.RegEx,
-                                RegexOptions.IgnoreCase | (x.OCR_RegularExpressions.MultiLine == true
-                                    ? RegexOptions.Multiline
-                                    : RegexOptions.Singleline) | RegexOptions.ExplicitCapture) == false)) continue;
-
-                            List<dynamic> csvLines = tmp.Read(tmp.Format(pdftxt.ToString()));
-                            if (csvLines.Count < 1 || !tmp.Success)
-                            {
-                                var failedlines = tmp.Lines.DistinctBy(x => x.OCR_Lines.Id).Where(z => z.FailedFields.Any() || (z.OCR_Lines.Fields.Any(f => f.IsRequired) && !z.Values.Any())).ToList();
-                                if (!tmp.Parts.Any(x => x.AllLines.Any(z => z.Values.Values.Any(v => v.Keys.Any(k => k.Field == "Name") && v.Values.Any(kv => kv == tmp.OcrInvoices.Name))))) continue;
-                                if (failedlines.Any() && failedlines.Count < tmp.Lines.Count &&
-                                    tmp.Parts.First().WasStarted && tmp.Lines.SelectMany(x => x.Values.Values).Any())
-                                {
-                                    ReportUnImportedFile(file, emailId, client, pdftxt.ToString(),"Following fields failed to import", failedlines);
-                                    return false;
-                                }
-                                continue;
-                            }
-                            //
-                            // -------------------Plan to only report import failures ---------- data failures will be reported after import
-                            //
-
-                            //var invoiceLines = tmp.Lines.Where(x => x.Values.Any(v => v.Value.Any(f => f.Key.Field == "SubTotal" || f.Key.Field == "InvoiceTotal" || f.Key.EntityType == "InvoiceDetails"))).ToList();
-                            //var fields = invoiceLines.SelectMany(x => x.Values.ToList().SelectMany(v => v.Value).ToList()).ToList();
-                            //var invoiceTotal = fields.Where(x => x.Key.EntityType == "Invoice" && x.Key.Field == "InvoiceTotal").DistinctBy(x => x.Key.Id).Sum(x => Convert.ToDouble(x.Value));
-                            //var subTotal = fields.Where(x => x.Key.EntityType == "Invoice" && x.Key.Field == "SubTotal").DistinctBy(x => x.Key.Id).Sum(x => Convert.ToDouble(x.Value));
-                            //var importedTotal = fields.Where(x => x.Key.EntityType == "InvoiceDetails" && x.Key.Field == "TotalCost" && !string.IsNullOrEmpty(x.Value) ).Sum(x => Convert.ToDouble(x.Value));
-                            //if (Math.Abs(invoiceTotal - importedTotal) > 0.01)
-                            //{
-                                
-
-                            //    ReportUnImportedFile(file, emailId, client, pdftxt.ToString(),"Invoice Totals don't Match Imported Total", invoiceLines);
-                            //    return false;
-                            //}
-
-                            if (fileType.Id != tmp.OcrInvoices.FileTypeId)
-                                fileType = BaseDataModel.GetFileType(tmp.OcrInvoices.FileTypeId);
-
-                            SaveCsvEntryData.Instance.ProcessCsvSummaryData(fileType, docSet, overWriteExisting,
-                                emailId,
-                                 file, csvLines).Wait();
-                            return true;
-                        }
-                        catch (Exception e)
-                        {
-                            var ex = new ApplicationException($"Problem importing file:{file} --- {e.Message}", e);
-                            Console.WriteLine(ex);
-                            continue;
-                        }
-
+                        if(TryReadFile(file, emailId, fileType, pdfTxt, client, overWriteExisting, docSet, tmp)) return true;
+                    }
+                    catch (Exception e)
+                    {
+                        var ex = new ApplicationException($"Problem importing file:{file} --- {e.Message}", e);
+                        Console.WriteLine(ex);
+                        continue;
                     }
 
-                    ReportUnImportedFile(file, emailId, client, pdftxt.ToString(), "No template found for this File", new List<Line>());
+                ReportUnImportedFile(file, emailId, client, pdfTxt.ToString(), "No template found for this File", new List<Line>());
                     //SeeWhatSticks(pdftxt);
-                }
+                
 
                 return false;
             }
@@ -180,6 +85,117 @@ namespace WaterNut.DataSpace
                 
                 return false;
             }
+        }
+
+        public static List<Invoice> GetTemplates(Expression<Func<Invoices, bool>> filter)
+        {
+            List<Invoice> templates;
+            using (var ctx = new OCRContext())
+            {
+                templates = ctx.Invoices
+                    .Include(x => x.Parts)
+                    .Include("InvoiceIdentificatonRegEx.OCR_RegularExpressions")
+                    .Include("RegEx.RegEx")
+                    .Include("RegEx.ReplacementRegEx")
+                    .Include("Parts.RecuringPart")
+                    .Include("Parts.Start.RegularExpressions")
+                    .Include("Parts.End.RegularExpressions")
+                    .Include("Parts.PartTypes")
+                    .Include("Parts.ChildParts.ChildPart.Start.RegularExpressions")
+                    .Include("Parts.ParentParts.ParentPart.Start.RegularExpressions")
+                    .Include("Parts.Lines.RegularExpressions")
+                    .Include("Parts.Lines.Fields.FieldValue")
+                    .Include("Parts.Lines.Fields.FormatRegEx.RegEx")
+                    .Include("Parts.Lines.Fields.FormatRegEx.ReplacementRegEx")
+                    .Where(x => x.IsActive)
+                    .Where(x => x.ApplicationSettingsId ==
+                                BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)
+                    .Where(filter) //BaseDataModel.Instance.CurrentApplicationSettings.TestMode != true ||
+                    .ToList()
+                    .Select(x => new Invoice(x)).ToList();
+            }
+
+            return templates;
+        }
+
+        public static bool TryReadFile(string file, int emailId, FileTypes fileType,StringBuilder pdftxt,Client client, bool overWriteExisting, List<AsycudaDocumentSet> docSet, 
+             Invoice tmp )
+        {
+            
+            if (tmp.OcrInvoices.InvoiceIdentificatonRegEx.Any() && tmp.OcrInvoices.InvoiceIdentificatonRegEx.Any(x =>
+                Regex.IsMatch(pdftxt.ToString(),
+                    x.OCR_RegularExpressions.RegEx,
+                    RegexOptions.IgnoreCase | (x.OCR_RegularExpressions.MultiLine == true
+                        ? RegexOptions.Multiline
+                        : RegexOptions.Singleline) | RegexOptions.ExplicitCapture) == false)) return false;
+
+            List<dynamic> csvLines = tmp.Read(tmp.Format(pdftxt.ToString()));
+            if (csvLines.Count < 1 || !tmp.Success)
+            {
+                var failedlines = tmp.Lines.DistinctBy(x => x.OCR_Lines.Id).Where(z =>
+                    z.FailedFields.Any() || (z.OCR_Lines.Fields.Any(f => f.IsRequired) && !z.Values.Any())).ToList();
+                if (!tmp.Parts.Any(x => x.AllLines.Any(z =>
+                    z.Values.Values.Any(v =>
+                        v.Keys.Any(k => k.Field == "Name") && v.Values.Any(kv => kv == tmp.OcrInvoices.Name))))) return false;
+                if (failedlines.Any() && failedlines.Count < tmp.Lines.Count &&
+                    tmp.Parts.First().WasStarted && tmp.Lines.SelectMany(x => x.Values.Values).Any())
+                {
+                    ReportUnImportedFile(file, emailId, client, pdftxt.ToString(), "Following fields failed to import",
+                        failedlines);
+                    {
+                        return true;
+                    }
+                }
+
+                
+                return false;
+            }
+
+            if (fileType.Id != tmp.OcrInvoices.FileTypeId)
+                fileType = BaseDataModel.GetFileType(tmp.OcrInvoices.FileTypeId);
+
+            SaveCsvEntryData.Instance.ProcessCsvSummaryData(fileType, docSet, overWriteExisting,
+                emailId,
+                file, csvLines).Wait();
+           
+            return true;
+        }
+
+        private static StringBuilder GetPdftxt(string file)
+        {
+            StringBuilder pdftxt = new StringBuilder();
+
+
+            //pdftxt = parseUsingPDFBox(file);
+            var ripTask = Task.Run(() =>
+            {
+                var txt = "------------------------------------------Ripped Text-------------------------\r\n";
+                txt += pdfPigText(file); //TODO: need to implement the layout logic
+                return txt;
+            });
+
+
+            var singleColumnTask = Task.Run(() =>
+            {
+                var txt =
+                    "------------------------------------------Single Column-------------------------\r\n";
+                txt += new PdfOcr().Ocr(file, PageSegMode.SingleColumn);
+                return txt;
+            });
+
+            var sparseTextTask = Task.Run(() =>
+            {
+                var txt = "------------------------------------------SparseText-------------------------\r\n";
+                txt += new PdfOcr().Ocr(file, PageSegMode.SparseText);
+                return txt;
+            });
+
+            Task.WhenAll(ripTask, singleColumnTask, sparseTextTask); //, 
+
+            pdftxt.AppendLine(ripTask.Result);
+            pdftxt.AppendLine(singleColumnTask.Result);
+            pdftxt.AppendLine(sparseTextTask.Result);
+            return pdftxt;
         }
 
         private static string pdfPigText(string file)
@@ -240,9 +256,20 @@ namespace WaterNut.DataSpace
                        $"{failedlst.Select(x => $"Line:{x.OCR_Lines.Name} - RegId: {x.OCR_Lines.RegularExpressions.Id} - Regex: '{x.OCR_Lines.RegularExpressions.RegEx}' - Fields: {x.FailedFields.SelectMany(z => z.ToList()).SelectMany(z => z.Value.ToList()).Select(z => $"{z.Key.Key} - '{z.Key.Field}'").DefaultIfEmpty(string.Empty).Aggregate((o, c) => o + "\r\n" + c)}").DefaultIfEmpty(string.Empty).Aggregate((o, c) => o + "\r\n" + c)}" +
                        "Thanks\r\n" +
                        $"AutoBot";
-            File.WriteAllText(file + ".txt", pdftxt);
+            var txtFile = file + ".txt";
+            if (File.Exists(txtFile)) return;
+            File.WriteAllText(txtFile, pdftxt);
             EmailDownloader.EmailDownloader.ForwardMsg(emailId, client, "Invoice Template Not found!", body,
-                new[] {"Joseph@auto-brokerage.com"}, new[] {file, file + ".txt"});
+                new[] {"Joseph@auto-brokerage.com"}, new[] {file, txtFile});
+            dynamic testCaseData = new BetterExpando();
+            testCaseData.DateTime = DateTime.Now;
+            testCaseData.Id = failedlst.FirstOrDefault()?.OCR_Lines.Parts.Invoices.Id;
+            testCaseData.Supplier = failedlst.FirstOrDefault()?.OCR_Lines.Parts.Invoices.Name;
+            testCaseData.PdfFile = file;
+            testCaseData.TxtFile = txtFile;
+            testCaseData.Message = body;
+            //write to info
+            UnitTestLogger.Log(new List<String>{FunctionLibary.NameOfCallingClass(),  failedlst.FirstOrDefault()?.OCR_Lines.Parts.Invoices.Name, },BaseDataModel.Instance.CurrentApplicationSettings.DataFolder, testCaseData );
         }
 
 

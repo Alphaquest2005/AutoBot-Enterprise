@@ -133,7 +133,7 @@ namespace WaterNut.DataSpace
                         DocumentDate = x.Key.Date,
                         ShipmentRiderDetails = x.Select(z => new 
                         {
-                            Consignee = z[nameof(ShipmentRiderDetails.Consignee)]?.ToString().Trim(),
+                            Consignee = z[nameof(ShipmentRiderDetails.Consignee)]?.ToString().Trim()?? z[nameof(ShipmentRiderDetails.Code)]?.ToString().Trim(),
                             Code = z[nameof(ShipmentRiderDetails.Code)]?.ToString().Trim(),
                             Shipper = z[nameof(ShipmentRiderDetails.Shipper)]?.ToString().Trim(),
                             TrackingNumber = z[nameof(ShipmentRiderDetails.TrackingNumber)]?.ToString().Trim(),
