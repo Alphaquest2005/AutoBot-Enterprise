@@ -15,11 +15,8 @@ namespace WaterNut.DataSpace.Tests
 {
     public class InvoiceReaderTests
     {
-        private static readonly string _unitTestFolder  = "UnitTests";
-        const string txtFileExtension = ".txt";
-
+ 
         [Fact()]
-
         public void ImportTest()
         {
             var testCasesList = GetTestCasesList();
@@ -31,12 +28,12 @@ namespace WaterNut.DataSpace.Tests
                 string supplier = testCase.Supplier;
                 var tmp = InvoiceReader.GetTemplates(x => x.Name == supplier).First();
                 var res = tmp.Read(tmp.Format(pdfTxt));
-                if (Assert.Equal(expectedRes, res))
-                {
+                Assert.Equal(expectedRes, res);
 
-                }
             }
         }
+        private static readonly string _unitTestFolder = "UnitTests";
+        const string txtFileExtension = ".txt";
 
         private static IEnumerable<dynamic> GetTestCasesList()
         {
