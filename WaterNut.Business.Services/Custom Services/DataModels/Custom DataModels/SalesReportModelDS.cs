@@ -67,5 +67,49 @@ namespace WaterNut.DataSpace
 	            return lst;
 	        }
 	    }
+
+		public async Task<AsycudaDocument> GetSalesDocument(int docId)
+		{
+			try
+			{
+
+
+
+
+				List<int> doclst;
+				using (var ctx = new DocumentDSContext())
+				{
+					doclst =
+						ctx.xcuda_ASYCUDA_ExtendedProperties.Where(x => x.ASYCUDA_Id == docId)
+							.Select(x => x.ASYCUDA_Id).ToList();
+				}
+				foreach (var d in doclst)
+				{
+					await AsycudaEntrySummaryListModel.ReorderDocumentItems(d).ConfigureAwait(false);
+				}
+
+
+				using (var ctx = new AsycudaDocumentService())
+				{
+					var lst =
+
+						(await
+							ctx.GetAsycudaDocumentsByExpression(
+								$"ASYCUDA_Id == {docId} && DoNotAllocate != true && (CustomsOperationId == {(int)CustomsOperations.Exwarehouse})",
+								null
+								).ConfigureAwait(false));
+
+
+
+
+					return lst.First();
+				}
+			}
+			catch (System.Exception)
+			{
+
+				throw;
+			}
+		}
 	}
 }

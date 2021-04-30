@@ -931,10 +931,12 @@ namespace WaterNut.DataSpace
                 if (p.PreviousCNumber != null)
                     alst.AddRange(currentAsycudaDocumentSet.AsycudaDocumentSet_Attachments
                         .Where(x => x.Attachment.FilePath.Contains(p.PreviousCNumber) &&
-                                    x.FileType.DocumentCode == "DO02").Select(x => x.Attachment).ToList());
+                                    x.FileType.DocumentCode == "DO02")
+                         
+                        .Select(x => x.Attachment).ToList());
 
 
-            AttachToDocument(alst, cdoc.Document, cdoc.DocumentItems);
+            AttachToDocument(alst.GroupBy(x => new FileInfo(x.FilePath).Name).Select(x => x.Last()).ToList(), cdoc.Document, cdoc.DocumentItems);
         }
 
         private Customs_Procedure AttachEntryDataDocumentType(DocumentCT cdoc, EDDocumentTypes documentType)
@@ -2299,8 +2301,26 @@ namespace WaterNut.DataSpace
 
         public async Task ExportLastDocumentInDocSet(int AsycudaDocumentSetId, string directoryName, bool overWrite)
         {
-            var docset = await GetAsycudaDocumentSet(AsycudaDocumentSetId).ConfigureAwait(false);
+            var docset = await GetDocSetWithEntryDataDocs(AsycudaDocumentSetId).ConfigureAwait(false);
             ExportLastDocumentInDocSet(docset, directoryName, overWrite);
+        }
+
+        public async Task<AsycudaDocumentSet> GetDocSetWithEntryDataDocs(int AsycudaDocumentSetId)
+        {
+            var docset = await GetAsycudaDocumentSet(AsycudaDocumentSetId).ConfigureAwait(false);
+            var docs = new List<xcuda_ASYCUDA>();
+            foreach (var doc in docset.Documents)
+            {
+                if (new DocumentDSContext().AsycudaDocumentEntryDatas.Any(x => x.AsycudaDocumentId == doc.ASYCUDA_Id))
+                    docs.Add(doc);
+                else
+                    break;
+            }
+            docset.xcuda_ASYCUDA_ExtendedProperties.ForEach(x =>
+            {
+                if (docs.FirstOrDefault(z => z.ASYCUDA_Id == x.ASYCUDA_Id) == null) x.xcuda_ASYCUDA = null;
+            });
+            return docset;
         }
 
         public async Task<AsycudaDocumentSet> GetAsycudaDocumentSet(int asycudaDocumentSetId)
@@ -2431,7 +2451,9 @@ namespace WaterNut.DataSpace
             if (File.Exists(Path.Combine(directoryName, "InstructionResults.txt")))
                 File.Delete(Path.Combine(directoryName, "InstructionResults.txt"));
 
-            foreach (var doc in docSet.Documents.Skip(docSet.Documents.Count() - 1))
+            foreach (var doc in docSet.Documents.OrderByDescending(x => x.ASYCUDA_Id))
+
+                
                 //if (doc.xcuda_Item.Any() == true)
                 //{
                 try
@@ -3263,8 +3285,10 @@ namespace WaterNut.DataSpace
                         foreach (var item in itms)
                         {
                             var i = 0;
+                            
                             foreach (var att in item)
                             {
+                                if (i == codeLst.Count()-1) break;
                                 att.Attached_document_code = codeLst[i];
                                 i += 1;
                             }

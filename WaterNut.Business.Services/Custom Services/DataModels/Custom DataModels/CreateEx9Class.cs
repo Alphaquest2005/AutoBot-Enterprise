@@ -229,9 +229,9 @@ namespace WaterNut.DataSpace
 
                 SummaryInititalization(applicationSettingsId, ctx, entryType, startDate, endDate);
 
-                var testres = allSales.Where(x => x.Summary.PreviousItem_Id == 698042).ToList();
-                var testlistQtyAllocated = testres.Select(x => x.Summary.QtyAllocated).ToList();
-                var testQtyAllocated = testres.Sum(x => x.Summary.QtyAllocated);
+               // var testres = allSales.Where(x => x.Summary.PreviousItem_Id == 782698).ToList();
+                //var testlistQtyAllocated = testres.Select(x => x.Summary.QtyAllocated).ToList();
+                //var testQtyAllocated = testres.Sum(x => x.Summary.QtyAllocated);
                 res.AddRange(universalDataSummary);
                 res.AddRange(allSalesSummary);
 
@@ -560,13 +560,13 @@ namespace WaterNut.DataSpace
         {
             var firstItm = cdoc.DocumentItems.FirstOrDefault();
             if (firstItm == null) return;
-            using (var ctx = new EntryDataDSContext())
+            using (var ctx = new DocumentDSContext())
             {
-                var invoice = firstItm.PreviousInvoiceNumber;
-                var supplier = ctx.EntryData
-                    .Include(x => x.Suppliers)
-                    .FirstOrDefault(x => x.EntryDataId == invoice)?.Suppliers;
-                //if(suppl)
+                var exporter = ctx.xcuda_Exporter.FirstOrDefault(x => x.xcuda_Traders.xcuda_ASYCUDA.xcuda_Identification.xcuda_Registration.Number == firstItm.xcuda_PreviousItem.Prev_reg_nbr);
+                if(exporter != null)
+                {
+                    cdoc.Document.xcuda_Traders.xcuda_Exporter.Exporter_name = exporter.Exporter_name;
+                }
             }
         }
 
@@ -1183,7 +1183,7 @@ namespace WaterNut.DataSpace
                 salesPiHistoric.ForEach(x =>
                     Debug.WriteLine(
                         $"Sales vs Pi History: {x.QtyAllocated} of {x.pQtyAllocated} - {x.PiQuantity} | C#{x.pCNumber}-{x.pLineNumber}"));
-                var entryType = salesPiAll.First().EntryDataType;
+                var entryType = salesPiAll.FirstOrDefault()?.EntryDataType?? documentType;
 
                 var docSetPiLst = DocSetPi
                     .Where(x => x.PreviousItem_Id == mypod.EntlnData.PreviousDocumentItemId
@@ -1425,7 +1425,7 @@ namespace WaterNut.DataSpace
                 }
 
                 //// item sales vs item pi, prevents early exwarehouse when its just one totalsales vs totalpi
-
+                if(documentType != "DIS")
                 if (Math.Round(itemSalesHistoric, 2) <
                        Math.Round((itemPiHistoric + itemDocPi + mypod.EntlnData.Quantity) * salesFactor, 2))
                 {
@@ -1576,6 +1576,7 @@ namespace WaterNut.DataSpace
                             pkg = new xcuda_Packages(true)
                             {
                                 Item_Id = itm.Item_Id,
+                                Marks1_of_packages = "Marks",
                                 TrackingState = TrackingState.Added
                             };
                             itm.xcuda_Packages.Add(pkg);
