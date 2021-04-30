@@ -291,7 +291,10 @@ namespace AutoBot
 	                                                    ShipmentInvoicePOs ON [ShipmentInvoicePOMatches-Totals].EntryData_id = ShipmentInvoicePOs.EntryData_Id AND [ShipmentInvoicePOMatches-Totals].InvoiceId = ShipmentInvoicePOs.InvoiceId
                                                     WHERE (ShipmentInvoicePOs.Id IS NULL) 
                                 ----------------*/
-
+                                                UPDATE ShipmentInvoiceDetails
+                                                SET         SalesFactor = ShipmentInvoicePOSalesFactor.QtyFactor
+                                                FROM    ShipmentInvoicePOSalesFactor INNER JOIN
+                                                                 ShipmentInvoiceDetails ON ShipmentInvoicePOSalesFactor.INVDetailsId = ShipmentInvoiceDetails.Id
 
                                                INSERT INTO InventoryItemAlias
                                                                  (InventoryItemId, AliasName, AliasItemId)
@@ -300,6 +303,8 @@ namespace AutoBot
                                                                  InventoryItemAlias AS InventoryItemAlias_1 ON ShipmentInvoicePOItemQueryMatches.POInventoryItemId = InventoryItemAlias_1.InventoryItemId AND 
                                                                  ShipmentInvoicePOItemQueryMatches.INVItemCode = InventoryItemAlias_1.AliasName
                                                 WHERE (InventoryItemAlias_1.AliasId IS NULL)
+
+                                                
 
 
                                                     ");

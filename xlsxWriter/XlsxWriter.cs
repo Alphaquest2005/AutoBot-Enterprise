@@ -61,7 +61,7 @@ namespace xlsxWriter
                         csvFilePath = Path.Combine(pdfFile.DirectoryName, $"{pO.PurchaseOrders.PONumber}.xlsx");
                         var workbook = CreateShipmentWorkBook(riderId, shipmentInvoice, csvFilePath, header, out var invoiceRow, out var riderdetails, out var doRider);
                         var i = 1;
-                        foreach (var itm in pO.PurchaseOrders.EntryDataDetails.Where(x => pO.POMISMatches.All(m => m.POItemCode != x.ItemNumber && m.PODescription != x.ItemDescription /* m.PODetailsId != x.EntryDataDetailsId ---- Took this out because it Allowed the grouped po items to still show*/)))
+                        foreach (var itm in pO.PurchaseOrders.EntryDataDetails.OrderBy(x => x.INVItems.FirstOrDefault()?.InvoiceDetails.FileLineNumber??x.FileLineNumber).Where(x => pO.POMISMatches.All(m => m.POItemCode != x.ItemNumber && m.PODescription != x.ItemDescription /* m.PODetailsId != x.EntryDataDetailsId ---- Took this out because it Allowed the grouped po items to still show*/)))
                         {
                             var pOItem = itm.INVItems.FirstOrDefault();
                             
@@ -81,7 +81,7 @@ namespace xlsxWriter
                                 itm.Quantity);
                             SetValue(workbook, i, header.First(x => x.Key.Column == "POItemNumber").Key.Index, itm.ItemNumber);
                             SetValue(workbook, i, header.First(x => x.Key.Column == nameof(itm.TotalCost)).Key.Index,
-                                itm.TotalCost == 0 ? pOItem.INVTotalCost : itm.TotalCost);
+                                itm.TotalCost == 0 ? pOItem?.INVTotalCost??0 : itm.TotalCost);
                             SetValue(workbook, i, header.First(x => x.Key.Column == nameof(itm.Units)).Key.Index,
                                 itm.Units);
                             if (doRider && i < riderdetails.Count)
@@ -107,7 +107,7 @@ namespace xlsxWriter
                     csvFilePath = Path.Combine(pdfFile.DirectoryName, $"{shipmentInvoice.InvoiceNo}.xlsx");
                     var workbook = CreateShipmentWorkBook(riderId, shipmentInvoice, csvFilePath, header, out var invoiceRow, out var riderdetails, out var doRider);
                     var i = 1;
-                    foreach (var itm in shipmentInvoice.InvoiceDetails)
+                    foreach (var itm in shipmentInvoice.InvoiceDetails.OrderBy(x => x.FileLineNumber))
                     {
                         
 
@@ -159,14 +159,15 @@ namespace xlsxWriter
 
         private static void DoMisMatches(ShipmentInvoice shipmentInvoice, Workbook workbook)
         {
-            if (shipmentInvoice.ShipmentInvoicePOs.Select(x => x.POMISMatches).Any())
-            {
-                
+            var shipmentInvoicePoItemMisMatchesList = shipmentInvoice.ShipmentInvoicePOs.SelectMany(x => x.POMISMatches).ToList();
+            if (!shipmentInvoicePoItemMisMatchesList.Any()) return;
+            
                 workbook.AddWorksheet("MisMatches");
                 var header = "PONumber,InvoiceNo,POItemCode,INVItemCode,PODescription,INVDescription,POCost,INVCost,POQuantity,INVQuantity,POTotalCost,INVTotalCost,INVDetailsId,PODetailsId".Split(',').ToList();
                 header.ForEach(x => SetValue(workbook, 0, header.IndexOf(x), x));
                 var i = 1;
-                foreach (var mis in shipmentInvoice.ShipmentInvoicePOs.SelectMany(x => x.POMISMatches).ToList())
+                
+                foreach (var mis in shipmentInvoicePoItemMisMatchesList)
                 {
                     SetValue(workbook, i, header.IndexOf("PONumber"), mis.PONumber);
                     SetValue(workbook, i, header.IndexOf("InvoiceNo"), mis.InvoiceNo);
@@ -184,8 +185,7 @@ namespace xlsxWriter
                     SetValue(workbook, i, header.IndexOf("PODetailsId"), mis.PODetailsId);
                     i++;
                 }
-               
-            }
+            
         }
 
         public static string CreateUnattachedShipmentWorkBook(

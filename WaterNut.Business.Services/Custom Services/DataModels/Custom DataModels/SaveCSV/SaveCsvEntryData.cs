@@ -507,6 +507,10 @@ namespace WaterNut.DataSpace
                             invoice.SubTotal = invoice.ImportedSubTotal;
                         }
 
+                        if (!invoice.InvoiceDetails.Any())
+                            throw new ApplicationException(
+                                $"No Invoice Details");
+
                         if (invoice.ImportedTotalDifference > 0.001)
                             throw new ApplicationException(
                                 $"Imported Total Difference for Invoice > 0: {invoice.ImportedTotalDifference}");

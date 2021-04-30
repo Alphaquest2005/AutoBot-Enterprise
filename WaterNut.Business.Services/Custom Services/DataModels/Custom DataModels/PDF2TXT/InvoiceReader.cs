@@ -67,7 +67,8 @@ namespace WaterNut.DataSpace
                     }
 
                 ReportUnImportedFile(file, emailId, client, pdfTxt.ToString(), "No template found for this File", new List<Line>());
-                    //SeeWhatSticks(pdftxt);
+
+                    SeeWhatSticks(pdfTxt.ToString());
                 
 
                 return false;
@@ -280,13 +281,35 @@ namespace WaterNut.DataSpace
             {
                 var allLines = ctx.Lines.Include(x => x.RegularExpressions).ToList();
 
-                var goodLines = new List<Lines>();
-                    foreach (var regLine in allLines)
+                var goodLines = new List<Line>();
+                foreach (var regLine in allLines)
+                {
+                    try
                     {
-                      var match =  Regex.Match(pdftext, regLine.RegularExpressions.RegEx,
-                            RegexOptions.Multiline | RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture);
-                        if(match.Success) goodLines.Add(regLine);
+                        var match = Regex.Match(pdftext, regLine.RegularExpressions.RegEx,
+                            regLine.RegularExpressions.MultiLine == true
+                                ? RegexOptions.Multiline
+                                : RegexOptions.Singleline | RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture,
+                            TimeSpan.FromSeconds(5));
+                        if (match.Success)
+                        {
+                            var line = new Line(regLine);
+                            line.Read(match.Value, 1);
+                            if (line.Values.Any(x => x.Value.Values.Any())) goodLines.Add(line);
+                        }
                     }
+                    catch (RegexMatchTimeoutException e)
+                    {
+
+                    }
+                    catch (Exception e)
+                    {
+
+                        Console.WriteLine(e);
+                        throw;
+
+                    }
+                }
 
                 foreach (var line in goodLines)
                 {
