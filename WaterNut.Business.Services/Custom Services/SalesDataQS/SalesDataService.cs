@@ -22,6 +22,11 @@ namespace SalesDataQS.Business.Services
         {
             return await WaterNut.DataSpace.SalesReportModel.Instance.GetSalesDocuments(docSetId).ConfigureAwait(false);
         }
+
+        public async Task<AsycudaDocument> GetSalesDocument(int docId)
+        {
+            return await WaterNut.DataSpace.SalesReportModel.Instance.GetSalesDocument(docId).ConfigureAwait(false);
+        }
     }
 }
 

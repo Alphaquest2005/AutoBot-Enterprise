@@ -1363,7 +1363,7 @@ namespace AutoBot
                         var directoryName = StringExtensions.UpdateToCurrentUser(Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder, "Imports","C71"));
 
                     Console.WriteLine("Download C71 Files");
-                    var notries = 5;
+                    var notries = 2;
                     var tries = 0;
                     var lcont = 0;
                         while (ImportC71Complete(directoryName, out lcont) == false )
@@ -4783,7 +4783,7 @@ namespace AutoBot
 
         public static void ExportDiscpancyEntries(string adjustmentType)
         {
-            Console.WriteLine($"Export {adjustmentType} Entries");
+            Console.WriteLine($"Export Last {adjustmentType} Entries");
 
             // var saleInfo = CurrentSalesInfo();
             try
@@ -4825,7 +4825,7 @@ namespace AutoBot
 
         public static void ExportDocSetDiscpancyEntries(string adjustmentType, FileTypes fileType)
         {
-            Console.WriteLine($"Export {adjustmentType} Entries");
+            Console.WriteLine($"Export Last {adjustmentType} Entries");
 
             // var saleInfo = CurrentSalesInfo();
             try
@@ -4849,10 +4849,10 @@ namespace AutoBot
                         var docSetEx = ctx.AsycudaDocumentSetExs.First(x => x.AsycudaDocumentSetId == doc.Key.AsycudaDocumentSetId);
                         if (docSetEx.ClassifiedLines != docSetEx.TotalLines) continue;
 
-                        BaseDataModel.Instance.ExportDocSet(doc.Key.AsycudaDocumentSetId,
+                        BaseDataModel.Instance.ExportLastDocumentInDocSet(doc.Key.AsycudaDocumentSetId,
                             Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder,
                                 doc.Key.Declarant_Reference_Number), true).Wait();
-                        ExportDocSetSalesReport(doc.Key.AsycudaDocumentSetId,
+                        ExportLastDocSetSalesReport(doc.Key.AsycudaDocumentSetId,
                             Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder,
                                 doc.Key.Declarant_Reference_Number)).Wait();
 
@@ -5455,11 +5455,8 @@ namespace AutoBot
 
         public static async Task ExportLastDocSetSalesReport(int asycudaDocumentSetId, string folder)
         {
-            var doclst =
-                await
-                    new SalesDataService().GetSalesDocuments(
-                        asycudaDocumentSetId)
-                        .ConfigureAwait(false);
+            IEnumerable<AsycudaDocument> doclst = await GetSalesDocumentsWithEntryData
+                (asycudaDocumentSetId).ConfigureAwait(false);
             if (doclst == null || !doclst.ToList().Any()) return;
 
 
@@ -5500,6 +5497,24 @@ namespace AutoBot
                     CancellationToken.None, TaskCreationOptions.None, sta).ConfigureAwait(false);
             }
             if (exceptions.Count > 0) throw new AggregateException(exceptions);
+        }
+
+        private static async Task<IEnumerable<AsycudaDocument>> GetSalesDocumentsWithEntryData(int asycudaDocumentSetId)
+        {
+            try
+            {
+                var docset = await BaseDataModel.Instance.GetDocSetWithEntryDataDocs(asycudaDocumentSetId).ConfigureAwait(false);
+
+                return docset.Documents.Select(x =>
+                                   new SalesDataService().GetSalesDocument(
+                                       x.ASYCUDA_Id).Result).ToList();
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+
         }
 
         public static async Task<IEnumerable<SaleReportLine>> GetDocumentSalesReport(int ASYCUDA_Id)
