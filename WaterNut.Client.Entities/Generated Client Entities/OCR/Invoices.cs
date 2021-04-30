@@ -284,6 +284,60 @@ public bool IsActive
             }
         }
 
+        ObservableCollection<InvoiceIdentificatonRegEx> _InvoiceIdentificatonRegEx = null;
+        public  ObservableCollection<InvoiceIdentificatonRegEx> InvoiceIdentificatonRegEx
+		{
+            
+		    get 
+				{ 
+					if(_InvoiceIdentificatonRegEx != null) return _InvoiceIdentificatonRegEx;
+					//if (this.invoices.InvoiceIdentificatonRegEx == null) Debugger.Break();
+					if(this.invoices.InvoiceIdentificatonRegEx != null)
+					{
+						_InvoiceIdentificatonRegEx = new ObservableCollection<InvoiceIdentificatonRegEx>(this.invoices.InvoiceIdentificatonRegEx.Select(x => new InvoiceIdentificatonRegEx(x)));
+					}
+					
+						_InvoiceIdentificatonRegEx.CollectionChanged += InvoiceIdentificatonRegEx_CollectionChanged; 
+					
+					return _InvoiceIdentificatonRegEx; 
+				}
+			set
+			{
+			    if (Equals(value, _InvoiceIdentificatonRegEx)) return;
+				if (value != null)
+					this.invoices.InvoiceIdentificatonRegEx = new ChangeTrackingCollection<DTO.InvoiceIdentificatonRegEx>(value.Select(x => x.DTO).ToList());
+                _InvoiceIdentificatonRegEx = value;
+				if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				if (_InvoiceIdentificatonRegEx != null)
+				_InvoiceIdentificatonRegEx.CollectionChanged += InvoiceIdentificatonRegEx_CollectionChanged;               
+				NotifyPropertyChanged("InvoiceIdentificatonRegEx");
+			}
+		}
+        
+        void InvoiceIdentificatonRegEx_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            switch (e.Action)
+            {
+                case NotifyCollectionChangedAction.Add:
+                    foreach (InvoiceIdentificatonRegEx itm in e.NewItems)
+                    {
+                        if (itm != null)
+                        invoices.InvoiceIdentificatonRegEx.Add(itm.DTO);
+                    }
+                    if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+                    break;
+                case NotifyCollectionChangedAction.Remove:
+                    foreach (InvoiceIdentificatonRegEx itm in e.OldItems)
+                    {
+                        if (itm != null)
+                        invoices.InvoiceIdentificatonRegEx.Remove(itm.DTO);
+                    }
+					if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+                    break;
+                
+            }
+        }
+
 
         ChangeTrackingCollection<DTO.Invoices> _changeTracker;    
         public ChangeTrackingCollection<DTO.Invoices> ChangeTracker

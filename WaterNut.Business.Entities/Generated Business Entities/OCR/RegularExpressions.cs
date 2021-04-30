@@ -29,6 +29,7 @@ namespace OCR.Business.Entities
             this.InvoiceRepRegEx = new List<InvoiceRegEx>();
             this.FieldFormatRegEx = new List<FieldFormatRegEx>();
             this.FieldFormatRepRegEx = new List<FieldFormatRegEx>();
+            this.InvoiceIdentificatonRegEx = new List<InvoiceIdentificatonRegEx>();
         }
 
         [DataMember]
@@ -90,6 +91,8 @@ namespace OCR.Business.Entities
         public List<FieldFormatRegEx> FieldFormatRegEx { get; set; }
         [DataMember]
         public List<FieldFormatRegEx> FieldFormatRepRegEx { get; set; }
+        [DataMember]
+        public List<InvoiceIdentificatonRegEx> InvoiceIdentificatonRegEx { get; set; }
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

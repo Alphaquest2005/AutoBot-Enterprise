@@ -144,7 +144,7 @@ public string Units
        [RequiredValidationAttribute(ErrorMessage= "ItemDescription is required")]
        
                 
-                [MaxLength(255, ErrorMessage = "ItemDescription has a max length of 255 letters ")]
+                
 public string ItemDescription
 		{ 
 		    get { return this.entrydatadetailsex.ItemDescription; }

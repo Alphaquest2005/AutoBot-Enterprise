@@ -65,20 +65,36 @@ namespace WaterNut.DataSpace
                                     INSERT INTO InventoryItems
                                                       (ItemNumber, Description, ApplicationSettingsId)
                                     SELECT CounterPointSalesDetails.ITEM_NO, CounterPointSalesDetails.ITEM_DESCR, EntryData.ApplicationSettingsId
-									FROM    CounterPointSalesDetails INNER JOIN
-													 EntryData ON CounterPointSalesDetails.INVNO  COLLATE DATABASE_DEFAULT = EntryData.EntryDataId  COLLATE DATABASE_DEFAULT AND CounterPointSalesDetails.DATE = EntryData.EntryDataDate LEFT OUTER JOIN
-													 InventoryItems AS InventoryItems_1 ON CounterPointSalesDetails.ITEM_NO  COLLATE DATABASE_DEFAULT = InventoryItems_1.ItemNumber  COLLATE DATABASE_DEFAULT
-									WHERE (CounterPointSalesDetails.INVNO = @INVNumber and CounterPointSalesDetails.Date = @Date) AND (InventoryItems_1.ItemNumber IS NULL) AND (LEFT(CounterPointSalesDetails.ITEM_NO, 1) <> '*') AND (EntryData.ApplicationSettingsId = @ApplicationSettingsId)
+                                    FROM    InventoryItemSource INNER JOIN
+                                                        InventoryItems AS InventoryItems_1 ON InventoryItemSource.InventoryId = InventoryItems_1.Id INNER JOIN
+                                                        InventorySources ON InventoryItemSource.InventorySourceId = InventorySources.Id RIGHT OUTER JOIN
+                                                        CounterPointSalesDetails INNER JOIN
+                                                        EntryData ON CounterPointSalesDetails.INVNO COLLATE DATABASE_DEFAULT = EntryData.EntryDataId COLLATE DATABASE_DEFAULT AND CounterPointSalesDetails.DATE = EntryData.EntryDataDate ON 
+                                                        InventoryItems_1.ApplicationSettingsId = EntryData.ApplicationSettingsId AND 
+                                                        InventoryItems_1.ItemNumber COLLATE DATABASE_DEFAULT = CounterPointSalesDetails.ITEM_NO COLLATE DATABASE_DEFAULT
+                                    WHERE (CounterPointSalesDetails.INVNO = @INVNumber) AND (CounterPointSalesDetails.DATE = @Date) AND (InventoryItems_1.ItemNumber IS NULL) AND (LEFT(CounterPointSalesDetails.ITEM_NO, 1) <> '*') AND 
+                                                        (EntryData.ApplicationSettingsId = @ApplicationSettingsId) AND (InventorySources.Name = N'POS')
+
+				                    insert into InventoryItemSource(InventoryId, InventorySourceId)
+									SELECT        InventoryItems.Id AS InventoryItemId, InventorySources.Id AS InventorySourceId
+									FROM            InventoryItems LEFT OUTER JOIN
+															 InventoryItemSource ON InventoryItems.Id = InventoryItemSource.InventoryId CROSS JOIN
+															 InventorySources
+									WHERE        (InventorySources.Name = N'POS') AND (InventoryItemSource.Id IS NULL)
+
 
                                     INSERT INTO EntryDataDetails
                                                       (EntryData_Id,EntryDataId, LineNumber, ItemNumber, Quantity, Units, ItemDescription, Cost, UnitWeight, QtyAllocated, InventoryItemId)
                                     SELECT EntryData.EntryData_Id, CounterPointSalesDetails.INVNO, CounterPointSalesDetails.SEQ_NO, CounterPointSalesDetails.ITEM_NO, CounterPointSalesDetails.QUANTITY, CounterPointSalesDetails.QTY_UNIT, 
-													 CounterPointSalesDetails.ITEM_DESCR, CounterPointSalesDetails.COST, ISNULL(CounterPointSalesDetails.UNIT_WEIGHT, 0) AS Expr1, 0 AS Expr2, InventoryItems.Id
-									FROM    CounterPointSalesDetails INNER JOIN
-													 EntryData ON CounterPointSalesDetails.INVNO COLLATE DATABASE_DEFAULT = EntryData.EntryDataId COLLATE DATABASE_DEFAULT AND CounterPointSalesDetails.DATE = EntryData.EntryDataDate INNER JOIN
-													 InventoryItems ON CounterPointSalesDetails.INVNO  COLLATE DATABASE_DEFAULT = InventoryItems.ItemNumber  COLLATE DATABASE_DEFAULT AND EntryData.ApplicationSettingsId = InventoryItems.ApplicationSettingsId
-									WHERE (CounterPointSalesDetails.INVNO = @INVNumber) AND (CounterPointSalesDetails.DATE = @Date) AND (LEFT(CounterPointSalesDetails.ITEM_NO, 1) <> '*') AND 
-													 (EntryData.ApplicationSettingsId = @ApplicationSettingsId)",
+                                                     CounterPointSalesDetails.ITEM_DESCR, CounterPointSalesDetails.COST, ISNULL(CounterPointSalesDetails.UNIT_WEIGHT, 0) AS Expr1, 0 AS Expr2, InventoryItems.Id
+                                    FROM    CounterPointSalesDetails INNER JOIN
+                                                     EntryData ON CounterPointSalesDetails.INVNO COLLATE DATABASE_DEFAULT = EntryData.EntryDataId COLLATE DATABASE_DEFAULT AND CounterPointSalesDetails.DATE = EntryData.EntryDataDate INNER JOIN
+                                                     InventoryItems ON CounterPointSalesDetails.INVNO COLLATE DATABASE_DEFAULT = InventoryItems.ItemNumber COLLATE DATABASE_DEFAULT AND 
+                                                     EntryData.ApplicationSettingsId = InventoryItems.ApplicationSettingsId INNER JOIN
+                                                     InventoryItemSource ON InventoryItems.Id = InventoryItemSource.InventoryId INNER JOIN
+                                                     InventorySources ON InventoryItemSource.InventorySourceId = InventorySources.Id
+                                    WHERE (CounterPointSalesDetails.INVNO = @INVNumber) AND (CounterPointSalesDetails.DATE = @Date) AND (LEFT(CounterPointSalesDetails.ITEM_NO, 1) <> '*') AND 
+                                                     (EntryData.ApplicationSettingsId = @ApplicationSettingsId) AND (InventorySources.Name = N'POS')",
 
 	                    new SqlParameter("@AsycudaDocumentSetId", docSetId),
 	                    new SqlParameter("@INVNumber", c.InvoiceNo),
@@ -138,21 +154,35 @@ namespace WaterNut.DataSpace
 
                                     INSERT INTO InventoryItems
                                                       (ItemNumber, Description, ApplicationSettingsId)
-                                    SELECT CounterPointSalesDetails.ITEM_NO, MAX(CounterPointSalesDetails.ITEM_DESCR) AS ITEM_DESCR, @ApplicationSettingsId
-                                    FROM     CounterPointSalesDetails LEFT OUTER JOIN
-                                                      InventoryItems AS InventoryItems_1 ON CounterPointSalesDetails.ITEM_NO COLLATE DATABASE_DEFAULT = InventoryItems_1.ItemNumber COLLATE DATABASE_DEFAULT
-                                    WHERE  (CounterPointSalesDetails.DATE >= @StartDate) AND (CounterPointSalesDetails.DATE <= @EndDate) AND (InventoryItems_1.ItemNumber IS NULL)
-                                    GROUP BY CounterPointSalesDetails.ITEM_NO
-                                    HAVING (LEFT(CounterPointSalesDetails.ITEM_NO, 1) <> '*')   
+                                    SELECT CounterPointSalesDetails.ITEM_NO, MAX(CounterPointSalesDetails.ITEM_DESCR) AS ITEM_DESCR, @ApplicationSettingsId AS Expr1
+                                    FROM    InventoryItemSource INNER JOIN
+                                                     InventoryItems AS InventoryItems_1 ON InventoryItemSource.InventoryId = InventoryItems_1.Id INNER JOIN
+                                                     InventorySources ON InventoryItemSource.InventorySourceId = InventorySources.Id RIGHT OUTER JOIN
+                                                     CounterPointSalesDetails ON InventoryItems_1.ItemNumber COLLATE DATABASE_DEFAULT = CounterPointSalesDetails.ITEM_NO COLLATE DATABASE_DEFAULT
+                                    WHERE (CounterPointSalesDetails.DATE >= @StartDate) AND (CounterPointSalesDetails.DATE <= @EndDate) AND (InventoryItems_1.ItemNumber IS NULL) AND (InventorySources.Name = N'POS')
+                                    GROUP BY CounterPointSalesDetails.ITEM_NO, InventoryItems_1.ApplicationSettingsId, InventorySources.Name
+                                    HAVING (LEFT(CounterPointSalesDetails.ITEM_NO, 1) <> '*') AND (InventoryItems_1.ApplicationSettingsId = 5)
+
+                                    insert into InventoryItemSource(InventoryId, InventorySourceId)
+									SELECT        InventoryItems.Id AS InventoryItemId, InventorySources.Id AS InventorySourceId
+									FROM            InventoryItems LEFT OUTER JOIN
+															 InventoryItemSource ON InventoryItems.Id = InventoryItemSource.InventoryId CROSS JOIN
+															 InventorySources
+									WHERE        (InventorySources.Name = N'POS') AND (InventoryItemSource.Id IS NULL)
+
 
                                     INSERT INTO EntryDataDetails
                                                       (EntryData_Id,EntryDataId, LineNumber, ItemNumber, Quantity, Units, ItemDescription, Cost, UnitWeight, QtyAllocated, InventoryItemId)
                                     SELECT EntryData.EntryData_Id, CounterPointSalesDetails.INVNO, CounterPointSalesDetails.SEQ_NO, CounterPointSalesDetails.ITEM_NO, CounterPointSalesDetails.QUANTITY, CounterPointSalesDetails.QTY_UNIT, 
 													 CounterPointSalesDetails.ITEM_DESCR, CounterPointSalesDetails.COST, ISNULL(CounterPointSalesDetails.UNIT_WEIGHT, 0) AS Expr1, 0 AS Expr2, InventoryItems.Id
 									FROM    CounterPointSalesDetails INNER JOIN
-													 EntryData ON CounterPointSalesDetails.INVNO  COLLATE DATABASE_DEFAULT = EntryData.EntryDataId  COLLATE DATABASE_DEFAULT AND CounterPointSalesDetails.DATE = EntryData.EntryDataDate INNER JOIN
-													 InventoryItems ON EntryData.ApplicationSettingsId = InventoryItems.ApplicationSettingsId AND CounterPointSalesDetails.ITEM_NO  COLLATE DATABASE_DEFAULT = InventoryItems.ItemNumber  COLLATE DATABASE_DEFAULT
-									WHERE (CounterPointSalesDetails.DATE >= @StartDate) AND (CounterPointSalesDetails.DATE <= @EndDate) AND (LEFT(CounterPointSalesDetails.ITEM_NO, 1) <> '*') and (CounterPointSalesDetails.ITEM_DESCR is not null)",
+													 EntryData ON CounterPointSalesDetails.INVNO COLLATE DATABASE_DEFAULT = EntryData.EntryDataId COLLATE DATABASE_DEFAULT AND CounterPointSalesDetails.DATE = EntryData.EntryDataDate INNER JOIN
+													 InventoryItems ON EntryData.ApplicationSettingsId = InventoryItems.ApplicationSettingsId AND 
+													 CounterPointSalesDetails.ITEM_NO COLLATE DATABASE_DEFAULT = InventoryItems.ItemNumber COLLATE DATABASE_DEFAULT INNER JOIN
+													 InventoryItemSource ON InventoryItems.Id = InventoryItemSource.InventoryId INNER JOIN
+													 InventorySources ON InventoryItemSource.InventorySourceId = InventorySources.Id
+									WHERE (CounterPointSalesDetails.DATE >= @StartDate) AND (CounterPointSalesDetails.DATE <= @EndDate) AND (LEFT(CounterPointSalesDetails.ITEM_NO, 1) <> '*') AND (CounterPointSalesDetails.ITEM_DESCR IS NOT NULL) 
+													 AND (InventorySources.Name = N'POS')",
                                                                                                                                          
                                    new SqlParameter("@AsycudaDocumentSetId", docSetId),
                                    new SqlParameter("@StartDate", startDate),

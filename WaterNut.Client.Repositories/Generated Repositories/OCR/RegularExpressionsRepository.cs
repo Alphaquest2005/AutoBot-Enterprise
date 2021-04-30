@@ -208,7 +208,8 @@ namespace OCR.Client.Repositories
                      // InvoiceRegEx = new System.Collections.ObjectModel.ObservableCollection<InvoiceRegEx>(res.InvoiceRegEx.Select(y => new InvoiceRegEx(y))),    
                      // InvoiceRepRegEx = new System.Collections.ObjectModel.ObservableCollection<InvoiceRegEx>(res.InvoiceRepRegEx.Select(y => new InvoiceRegEx(y))),    
                      // FieldFormatRegEx = new System.Collections.ObjectModel.ObservableCollection<FieldFormatRegEx>(res.FieldFormatRegEx.Select(y => new FieldFormatRegEx(y))),    
-                     // FieldFormatRepRegEx = new System.Collections.ObjectModel.ObservableCollection<FieldFormatRegEx>(res.FieldFormatRepRegEx.Select(y => new FieldFormatRegEx(y)))    
+                     // FieldFormatRepRegEx = new System.Collections.ObjectModel.ObservableCollection<FieldFormatRegEx>(res.FieldFormatRepRegEx.Select(y => new FieldFormatRegEx(y))),    
+                     // InvoiceIdentificatonRegEx = new System.Collections.ObjectModel.ObservableCollection<InvoiceIdentificatonRegEx>(res.InvoiceIdentificatonRegEx.Select(y => new InvoiceIdentificatonRegEx(y)))    
                   };
                     }
                     else

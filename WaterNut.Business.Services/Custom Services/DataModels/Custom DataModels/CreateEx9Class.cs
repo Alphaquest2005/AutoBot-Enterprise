@@ -915,7 +915,9 @@ namespace WaterNut.DataSpace
                                              Comment = x.Comment
                                          }
                                      }).ToList(),
-                                  AllNames = s.SelectMany(x => BaseDataModel.Instance.InventoryCache.Data.Where(c => c.Id == x.InventoryItemId).SelectMany(i => i.InventoryItemAlias.Select(a => a.AliasName)).Append(x.ItemNumber)).Distinct().ToList(),
+                                  AllNames = s.SelectMany(x =>
+                                     MoreEnumerable.Append(BaseDataModel.Instance.InventoryCache.Data.Where(c => c.Id == x.InventoryItemId)
+                                          .SelectMany(i => i.InventoryItemAlias.Select(a => a.AliasName)),x.ItemNumber)).Distinct().ToList(),
                                   EntlnData = new AlloEntryLineData
                                   {
                                       ItemNumber = s.LastOrDefault().ItemNumber,
@@ -1012,7 +1014,10 @@ namespace WaterNut.DataSpace
                                              Comment = x.Comment
                                          }
                                      }},
-                                  AllNames = BaseDataModel.Instance.InventoryCache.Data.Where(c => c.Id == x.InventoryItemId).SelectMany(i => i.InventoryItemAlias.Select(a => a.AliasName)).Distinct().ToList().Append(x.ItemNumber).ToList(),
+                                  AllNames = MoreEnumerable.Append(BaseDataModel.Instance.InventoryCache.Data
+                                      .Where(c => c.Id == x.InventoryItemId)
+                                      .SelectMany(i => i.InventoryItemAlias.Select(a => a.AliasName)).Distinct()
+                                      .ToList(),x.ItemNumber).ToList(),
                                   EntlnData = new AlloEntryLineData
                                   {
                                       ItemNumber = x.ItemNumber,

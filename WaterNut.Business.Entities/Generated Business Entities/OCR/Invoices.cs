@@ -25,6 +25,7 @@ namespace OCR.Business.Entities
             this.Parts = new List<Parts>();
             this.RegEx = new List<InvoiceRegEx>();
             this.FileTypes = new List<OCRFileTypes>();
+            this.InvoiceIdentificatonRegEx = new List<InvoiceIdentificatonRegEx>();
         }
 
         [DataMember]
@@ -108,6 +109,8 @@ namespace OCR.Business.Entities
         public List<InvoiceRegEx> RegEx { get; set; }
         [DataMember]
         public List<OCRFileTypes> FileTypes { get; set; }
+        [DataMember]
+        public List<InvoiceIdentificatonRegEx> InvoiceIdentificatonRegEx { get; set; }
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

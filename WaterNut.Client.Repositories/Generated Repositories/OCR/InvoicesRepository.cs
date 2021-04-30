@@ -204,7 +204,8 @@ namespace OCR.Client.Repositories
                     {
                      // Parts = new System.Collections.ObjectModel.ObservableCollection<Parts>(res.Parts.Select(y => new Parts(y))),    
                      // RegEx = new System.Collections.ObjectModel.ObservableCollection<InvoiceRegEx>(res.RegEx.Select(y => new InvoiceRegEx(y))),    
-                     // FileTypes = new System.Collections.ObjectModel.ObservableCollection<OCRFileTypes>(res.FileTypes.Select(y => new OCRFileTypes(y)))    
+                     // FileTypes = new System.Collections.ObjectModel.ObservableCollection<OCRFileTypes>(res.FileTypes.Select(y => new OCRFileTypes(y))),    
+                     // InvoiceIdentificatonRegEx = new System.Collections.ObjectModel.ObservableCollection<InvoiceIdentificatonRegEx>(res.InvoiceIdentificatonRegEx.Select(y => new InvoiceIdentificatonRegEx(y)))    
                   };
                     }
                     else

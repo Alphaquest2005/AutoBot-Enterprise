@@ -23,6 +23,7 @@
               this.HasMany(t => t.InvoiceRepRegEx).WithRequired(t => (RegularExpressions)t.ReplacementRegEx);
               this.HasMany(t => t.FieldFormatRegEx).WithRequired(t => (RegularExpressions)t.RegEx);
               this.HasMany(t => t.FieldFormatRepRegEx).WithRequired(t => (RegularExpressions)t.ReplacementRegEx);
+              this.HasMany(t => t.InvoiceIdentificatonRegEx).WithRequired(t => (RegularExpressions)t.OCR_RegularExpressions);
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);
     			this.Ignore(t => t.ModifiedProperties);

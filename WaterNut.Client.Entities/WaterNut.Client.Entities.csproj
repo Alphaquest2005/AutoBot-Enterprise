@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>WaterNut.Client.Entities</RootNamespace>
     <AssemblyName>WaterNut.Client.Entities</AssemblyName>
-    <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
     <RestorePackages>true</RestorePackages>
@@ -82,8 +82,8 @@
       <HintPath>..\packages\SimpleMvvmToolkit.5.5.1.0\lib\net45\Microsoft.Expression.Interactions.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.13.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="SimpleMvvmToolkit-Common, Version=5.5.0.0, Culture=neutral, PublicKeyToken=20fad5ed49a0c3b4, processorArchitecture=MSIL">
       <HintPath>..\packages\SimpleMvvmToolkit.5.5.1.0\lib\net45\SimpleMvvmToolkit-Common.dll</HintPath>
@@ -262,6 +262,7 @@
     <Compile Include="Generated Client Entities\OCR\Enums\PartTypes.cs" />
     <Compile Include="Generated Client Entities\OCR\FieldFormatRegEx.cs" />
     <Compile Include="Generated Client Entities\OCR\Fields.cs" />
+    <Compile Include="Generated Client Entities\OCR\InvoiceIdentificatonRegEx.cs" />
     <Compile Include="Generated Client Entities\OCR\InvoiceRegEx.cs" />
     <Compile Include="Generated Client Entities\OCR\Invoices.cs" />
     <Compile Include="Generated Client Entities\OCR\Lines.cs" />
@@ -414,6 +415,7 @@
     <Compile Include="Generated Constructors Models\OCR\End.cs" />
     <Compile Include="Generated Constructors Models\OCR\FieldFormatRegEx.cs" />
     <Compile Include="Generated Constructors Models\OCR\Fields.cs" />
+    <Compile Include="Generated Constructors Models\OCR\InvoiceIdentificatonRegEx.cs" />
     <Compile Include="Generated Constructors Models\OCR\InvoiceRegEx.cs" />
     <Compile Include="Generated Constructors Models\OCR\Invoices.cs" />
     <Compile Include="Generated Constructors Models\OCR\Lines.cs" />
@@ -566,6 +568,7 @@
     <Compile Include="Generated IIdentitfiableEntity Models\OCR\End.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\OCR\FieldFormatRegEx.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\OCR\Fields.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\OCR\InvoiceIdentificatonRegEx.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\OCR\InvoiceRegEx.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\OCR\Invoices.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\OCR\Lines.cs" />
@@ -722,6 +725,7 @@
     <Compile Include="Generated MyNavProp Models\OCR\End.cs" />
     <Compile Include="Generated MyNavProp Models\OCR\FieldFormatRegEx.cs" />
     <Compile Include="Generated MyNavProp Models\OCR\Fields.cs" />
+    <Compile Include="Generated MyNavProp Models\OCR\InvoiceIdentificatonRegEx.cs" />
     <Compile Include="Generated MyNavProp Models\OCR\InvoiceRegEx.cs" />
     <Compile Include="Generated MyNavProp Models\OCR\Invoices.cs" />
     <Compile Include="Generated MyNavProp Models\OCR\Lines.cs" />

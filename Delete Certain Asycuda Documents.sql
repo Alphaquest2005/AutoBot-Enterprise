@@ -1,5 +1,5 @@
 delete from xcuda_Item
-where ASYCUDA_Id in ( select ASYCUDA_Id from AsycudaDocument where ReferenceNumber like '%SUCR375559%' and ImportComplete = 1 )
+where ASYCUDA_Id in ( select ASYCUDA_Id from AsycudaDocument where ReferenceNumber like '%march 2021%' and ImportComplete = 0 )
 
 delete from xcuda_ASYCUDA
-where ASYCUDA_Id in (select ASYCUDA_Id from AsycudaDocument where ReferenceNumber like '%SUCR375559%' and ImportComplete = 1)
+where ASYCUDA_Id in (select ASYCUDA_Id from AsycudaDocument where ReferenceNumber like '%march 2021%' and ImportComplete = 0)

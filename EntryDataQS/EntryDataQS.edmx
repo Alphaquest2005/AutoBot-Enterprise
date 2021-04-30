@@ -539,7 +539,7 @@ FROM [dbo].[InventoryItemsEx] AS [InventoryItemsEx]</DefiningQuery>
           <Property Name="ItemNumber" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true"><a:ImplementsProperty xmlns:a="http://schemas.tempuri.com/ImplementsProperty">IEntryDataDetail.ItemNumber</a:ImplementsProperty></Property>
           <Property Name="Quantity" Type="Double" Nullable="false"><a:ImplementsProperty xmlns:a="http://schemas.tempuri.com/ImplementsProperty">IEntryDataDetail.Quantity</a:ImplementsProperty></Property>
           <Property Name="Units" Type="String" MaxLength="15" FixedLength="false" Unicode="true"><a:ImplementsProperty xmlns:a="http://schemas.tempuri.com/ImplementsProperty">IEntryDataDetail.Units</a:ImplementsProperty></Property>
-          <Property Name="ItemDescription" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true"><a:ImplementsProperty xmlns:a="http://schemas.tempuri.com/ImplementsProperty">IEntryDataDetail.ItemDescription</a:ImplementsProperty></Property>
+          <Property Name="ItemDescription" Type="String" Nullable="false" FixedLength="false" Unicode="true"><a:ImplementsProperty xmlns:a="http://schemas.tempuri.com/ImplementsProperty">IEntryDataDetail.ItemDescription</a:ImplementsProperty></Property>
           <Property Name="Cost" Type="Double" Nullable="false"><a:ImplementsProperty xmlns:a="http://schemas.tempuri.com/ImplementsProperty">IEntryDataDetail.Cost</a:ImplementsProperty></Property>
           <Property Name="QtyAllocated" Type="Double" Nullable="false"><a:ImplementsProperty xmlns:a="http://schemas.tempuri.com/ImplementsProperty">IEntryDataDetail.QtyAllocated</a:ImplementsProperty></Property>
           <Property Name="UnitWeight" Type="Double" Nullable="false" />
