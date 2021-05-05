@@ -1191,14 +1191,7 @@ namespace WaterNut.DataSpace
                 var entryType = salesPiAll.FirstOrDefault()?.EntryDataType?? documentType;
 
                 var docSetPiLst = DocSetPi
-                    .Where(x => x.PreviousItem_Id == mypod.EntlnData.PreviousDocumentItemId
-                             //  && universalData.All(u => u.PreviousItem_Id != mypod.EntlnData.PreviousDocumentItemId)
-                             //x => ((x.pCNumber == null && x.ItemNumber == mypod.EntlnData.pDocumentItem.ItemNumber) ||
-                             //         (x.pCNumber != null && x.pCNumber == mypod.EntlnData.EX9Allocation.pCNumber))
-                             //        && x.pLineNumber == mypod.EntlnData.pDocumentItem.LineNumber.ToString()
-                             )
-                    .Where(x => x.DutyFreePaid == dfp)
-                    //.Where(x => x.Type == entryType)
+                    .Where(x => x.PreviousItem_Id == mypod.EntlnData.PreviousDocumentItemId)
                     .ToList();
 
                 var docPi = docSetPiLst
@@ -1619,6 +1612,7 @@ namespace WaterNut.DataSpace
                         ItemNumber = mypod.EntlnData.ItemNumber,
                         PreviousItem_Id = mypod.EntlnData.PreviousDocumentItemId,
                         DutyFreePaid = dfp,
+                        Type = entryType,
                         TotalQuantity = mypod.EntlnData.Quantity,
                         pCNumber = mypod.EntlnData.EX9Allocation.pCNumber,
                         pLineNumber = mypod.EntlnData.pDocumentItem.LineNumber.ToString()
@@ -1941,21 +1935,19 @@ namespace WaterNut.DataSpace
                 var previousItem = pod.pDocumentItem;
                 if (previousItem == null) return;
                 var plst = previousItem.previousItems.DistinctBy(x => x.PreviousItem_Id);
-                var pw = Convert.ToDouble(pod.EX9Allocation.Net_weight_itm);
-                
-                var iw = Convert.ToDouble((pod.EX9Allocation.Net_weight_itm
-                                           / pod.EX9Allocation.pQuantity) * Convert.ToDouble(pod.Quantity));
+                var pw = Convert.ToDouble(Math.Round(pod.EX9Allocation.Net_weight_itm,2));
 
-                //var ppdfpqty =
-                //        plst.Where(x => x.DutyFreePaid != dfp)
-                //        .Sum(x => x.Suplementary_Quantity);
-                //var pi = pod.EX9Allocation.pQuantity -
-                //         plst.Where(x => x.DutyFreePaid == dfp)
-                //             .Sum(x => x.Suplementary_Quantity);
-                //var pdfpqty = (dfp == "Duty Free"
-                //    ? previousItem.DPQtyAllocated
-                //    : previousItem.DFQtyAllocated);
-                var rw = plst.ToList().Sum(x => x.Net_weight);
+                var rw = plst.ToList().Sum(x => Math.Round(x.Net_weight,2));
+
+                var ra = plst.Sum(x => x.Suplementary_Quantity);
+
+                var iw = ((pw - rw) / (pod.EX9Allocation.pQuantity - ra)) * Convert.ToDouble(pod.Quantity);
+
+                //var iw = Convert.ToDouble((Math.Round(pod.EX9Allocation.Net_weight_itm,2)
+                //                           / pod.EX9Allocation.pQuantity) * Convert.ToDouble(pod.Quantity));
+
+
+
 
                 if ((pod.EX9Allocation.pQuantity - (plst.Sum(x => x.Suplementary_Quantity) + pod.Quantity))  <= 0 && pod.EX9Allocation.pQuantity > 1)
                 {
@@ -1964,7 +1956,7 @@ namespace WaterNut.DataSpace
                 }
                 else
                 {
-                    pitm.Net_weight = Convert.ToDouble(Math.Round(iw, 2));
+                    pitm.Net_weight = Convert.ToDouble(Math.Round(iw, 2, MidpointRounding.ToEven));
                 }
 
                 pitm.Prev_net_weight = pw; //Convert.ToDouble((pw/pod.EX9Allocation.SalesFactor) - rw);

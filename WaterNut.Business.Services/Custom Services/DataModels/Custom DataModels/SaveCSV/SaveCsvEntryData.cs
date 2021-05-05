@@ -845,7 +845,7 @@ namespace WaterNut.DataSpace
                                 //Can't set entrydata_id here cuz this is from data
                                 ItemNumber = x.ItemNumber.ToUpper(),
                                 ItemDescription = x.ItemDescription,
-                                Cost = x.Cost,
+                                Cost = x.Cost??0,
                                 TotalCost = Convert.ToDouble(x.TotalCost ?? 0.0),
                                 Quantity = Convert.ToDouble(x.Quantity ?? 0.0),
                                 FileLineNumber = x.LineNumber,
@@ -855,7 +855,7 @@ namespace WaterNut.DataSpace
                                 InternalFreight = Convert.ToDouble(x.InternalFreight ?? 0.0),
                                 InvoiceQty = Convert.ToDouble(x.InvoiceQuantity ?? 0.0),
                                 ReceivedQty = Convert.ToDouble(x.ReceivedQuantity ?? 0.0),
-                                TaxAmount = x.Tax,
+                                TaxAmount = x.Tax??0,
                                 CNumber = x.PreviousCNumber,
                                 PreviousInvoiceNumber = x.PreviousInvoiceNumber,
                                 Comment = x.Comment,
