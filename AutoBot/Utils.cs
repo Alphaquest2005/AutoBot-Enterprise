@@ -5449,11 +5449,11 @@ namespace AutoBot
                 {
                     var s = new ExportToCSV<SaleReportLine, List<SaleReportLine>>();
                     s.StartUp();
-                    foreach (var doc in doclst)
+                    foreach (var doc in doclst.Where(x => x != null).ToList())
                     {
                         try
                         {
-                            var data = GetDocumentSalesReport(doc.ASYCUDA_Id).Result;
+                            var data = GetDocumentSalesReport(doc.ASYCUDA_Id)?.Result;
                             if (data != null)
                             {
                                 string path = Path.Combine(folder,

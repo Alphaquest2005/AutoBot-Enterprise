@@ -102,7 +102,7 @@ namespace WaterNut.DataSpace
 
 
 
-					return lst.First();
+					return lst.FirstOrDefault();
 				}
 			}
 			catch (System.Exception)

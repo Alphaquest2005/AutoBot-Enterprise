@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.28307.1500
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30621.155
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoWaterNut", "WaterNut\AutoWaterNut.csproj", "{8B598CA2-F2E0-48D8-B7A9-85C4A2837355}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -2737,7 +2737,6 @@ Global
 		{1F6A361A-69AB-407B-B90C-ADB1B7AFD805}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
 		{1F6A361A-69AB-407B-B90C-ADB1B7AFD805}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
 		{1F6A361A-69AB-407B-B90C-ADB1B7AFD805}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{1F6A361A-69AB-407B-B90C-ADB1B7AFD805}.Debug|x64.Build.0 = Debug|Any CPU
 		{1F6A361A-69AB-407B-B90C-ADB1B7AFD805}.Debug|x86.ActiveCfg = Debug|Any CPU
 		{1F6A361A-69AB-407B-B90C-ADB1B7AFD805}.Debug|x86.Build.0 = Debug|Any CPU
 		{1F6A361A-69AB-407B-B90C-ADB1B7AFD805}.DVD-5|Any CPU.ActiveCfg = Debug|Any CPU
