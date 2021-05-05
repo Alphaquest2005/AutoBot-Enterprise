@@ -137,6 +137,11 @@ namespace CoreEntities.Client.Services
             return  await Channel.GetTODO_SubmitPOInfoByAsycudaDocumentSetId(AsycudaDocumentSetId, includesLst).ConfigureAwait(false);
         }
 			 
+  		public async Task<IEnumerable<TODO_SubmitPOInfo>> GetTODO_SubmitPOInfoByEntryData_Id(string EntryData_Id, List<string> includesLst = null)
+        {
+            return  await Channel.GetTODO_SubmitPOInfoByEntryData_Id(EntryData_Id, includesLst).ConfigureAwait(false);
+        }
+			 
           public decimal SumField(string whereExp, string sumExp)
 		{
 			return Channel.SumField(whereExp,sumExp);

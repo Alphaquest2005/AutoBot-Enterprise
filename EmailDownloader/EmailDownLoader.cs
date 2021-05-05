@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Net.Http.Headers;
 using System.Text.RegularExpressions;
+using Core.Common.Utils;
 using CoreEntities.Business.Entities;
 using MailKit;
 using MailKit.Net.Imap;
@@ -294,10 +295,7 @@ namespace EmailDownloader
             }
         }
 
-        private static string ReplaceSpecialChar(string msgSubject, string rstring)
-        {
-            return Regex.Replace(msgSubject, @"[^0-9a-zA-Z\s]+", rstring);
-        }
+       
 
         private static void SaveAttachmentPart(string dataFolder,  MimeEntity a, List<string> lst)
         {
@@ -327,7 +325,7 @@ namespace EmailDownloader
         {
             var newFileName = partFileName.Substring(0,partFileName.LastIndexOf("."));
             var fileExtention = partFileName.Substring(partFileName.LastIndexOf("."));
-            var res = ReplaceSpecialChar(newFileName, "-") + fileExtention;
+            var res = newFileName.ReplaceSpecialChar("-") + fileExtention;
             return res;
         }
 

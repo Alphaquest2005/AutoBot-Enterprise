@@ -101,6 +101,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                         RegisterToReceiveMessages<string>(MessageToken.CurrentTODO_DeleteDocumentSetIDChanged, OnCurrentTODO_DeleteDocumentSetIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentTODO_DiscrepanciesAlreadyXMLedIDChanged, OnCurrentTODO_DiscrepanciesAlreadyXMLedIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentTODO_DiscrepanciesErrorsIDChanged, OnCurrentTODO_DiscrepanciesErrorsIDChanged);
+                        RegisterToReceiveMessages<string>(MessageToken.CurrentTODO_DiscrepanciesExecutionReportIDChanged, OnCurrentTODO_DiscrepanciesExecutionReportIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentTODO_DiscrepanciesToAssessIDChanged, OnCurrentTODO_DiscrepanciesToAssessIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentTODO_DiscrepancyPreExecutionReportIDChanged, OnCurrentTODO_DiscrepancyPreExecutionReportIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentTODO_DocumentsToDeleteIDChanged, OnCurrentTODO_DocumentsToDeleteIDChanged);
@@ -191,6 +192,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                         RegisterToReceiveMessages<TODO_DeleteDocumentSet>(MessageToken.CurrentTODO_DeleteDocumentSetChanged, OnCurrentTODO_DeleteDocumentSetChanged);
                         RegisterToReceiveMessages<TODO_DiscrepanciesAlreadyXMLed>(MessageToken.CurrentTODO_DiscrepanciesAlreadyXMLedChanged, OnCurrentTODO_DiscrepanciesAlreadyXMLedChanged);
                         RegisterToReceiveMessages<TODO_DiscrepanciesErrors>(MessageToken.CurrentTODO_DiscrepanciesErrorsChanged, OnCurrentTODO_DiscrepanciesErrorsChanged);
+                        RegisterToReceiveMessages<TODO_DiscrepanciesExecutionReport>(MessageToken.CurrentTODO_DiscrepanciesExecutionReportChanged, OnCurrentTODO_DiscrepanciesExecutionReportChanged);
                         RegisterToReceiveMessages<TODO_DiscrepanciesToAssess>(MessageToken.CurrentTODO_DiscrepanciesToAssessChanged, OnCurrentTODO_DiscrepanciesToAssessChanged);
                         RegisterToReceiveMessages<TODO_DiscrepancyPreExecutionReport>(MessageToken.CurrentTODO_DiscrepancyPreExecutionReportChanged, OnCurrentTODO_DiscrepancyPreExecutionReportChanged);
                         RegisterToReceiveMessages<TODO_DocumentsToDelete>(MessageToken.CurrentTODO_DocumentsToDeleteChanged, OnCurrentTODO_DocumentsToDeleteChanged);
@@ -1542,6 +1544,33 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                                     if (!string.IsNullOrEmpty(_currentTODO_DiscrepanciesErrorsID)) BeginSendMessage(MessageToken.CurrentTODO_DiscrepanciesErrorsIDChanged,
                                                      new NotificationEventArgs<string>(MessageToken.CurrentTODO_DiscrepanciesErrorsIDChanged, _currentTODO_DiscrepanciesErrorsID));
                                     NotifyPropertyChanged(x => this.CurrentTODO_DiscrepanciesErrorsID);  
+                                }
+                            }
+                        }
+                        internal async void OnCurrentTODO_DiscrepanciesExecutionReportIDChanged(object sender, NotificationEventArgs<string> e)
+                        {
+                            using (TODO_DiscrepanciesExecutionReportRepository ctx = new TODO_DiscrepanciesExecutionReportRepository())
+                            {
+                                CurrentTODO_DiscrepanciesExecutionReport = await ctx.GetTODO_DiscrepanciesExecutionReport(e.Data).ConfigureAwait(continueOnCapturedContext: false);
+                            }
+                            NotifyPropertyChanged(m => CurrentTODO_DiscrepanciesExecutionReport);
+                        }
+
+                        private  string _currentTODO_DiscrepanciesExecutionReportID = "";
+                        public string CurrentTODO_DiscrepanciesExecutionReportID
+                        {
+                            get
+                            {
+                                return _currentTODO_DiscrepanciesExecutionReportID;
+                            }
+                            set
+                            {
+                                if (_currentTODO_DiscrepanciesExecutionReportID != value)
+                                {
+                                    _currentTODO_DiscrepanciesExecutionReportID = value;
+                                    if (!string.IsNullOrEmpty(_currentTODO_DiscrepanciesExecutionReportID)) BeginSendMessage(MessageToken.CurrentTODO_DiscrepanciesExecutionReportIDChanged,
+                                                     new NotificationEventArgs<string>(MessageToken.CurrentTODO_DiscrepanciesExecutionReportIDChanged, _currentTODO_DiscrepanciesExecutionReportID));
+                                    NotifyPropertyChanged(x => this.CurrentTODO_DiscrepanciesExecutionReportID);  
                                 }
                             }
                         }
@@ -5039,6 +5068,56 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     _vcurrentTODO_DiscrepanciesErrors = value;
 					if(_vcurrentTODO_DiscrepanciesErrors != null) CurrentTODO_DiscrepanciesErrors = value.Data;
                     NotifyPropertyChanged(x => this.VCurrentTODO_DiscrepanciesErrors);                    
+                }
+            }
+        }
+
+
+
+                     
+       
+
+        internal void OnCurrentTODO_DiscrepanciesExecutionReportChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<TODO_DiscrepanciesExecutionReport> e)
+        {
+            //CurrentTODO_DiscrepanciesExecutionReport = e.Data;
+            NotifyPropertyChanged(m => this.CurrentTODO_DiscrepanciesExecutionReport);
+        }
+
+        private  TODO_DiscrepanciesExecutionReport _currentTODO_DiscrepanciesExecutionReport;
+        public TODO_DiscrepanciesExecutionReport CurrentTODO_DiscrepanciesExecutionReport
+        {
+            get
+            {
+                return _currentTODO_DiscrepanciesExecutionReport;
+            }
+            set
+            {
+                if (_currentTODO_DiscrepanciesExecutionReport != value)
+                {
+                    _currentTODO_DiscrepanciesExecutionReport = value;
+                    BeginSendMessage(MessageToken.CurrentTODO_DiscrepanciesExecutionReportChanged,
+                                                     new NotificationEventArgs<TODO_DiscrepanciesExecutionReport>(MessageToken.CurrentTODO_DiscrepanciesExecutionReportChanged, _currentTODO_DiscrepanciesExecutionReport)); 
+                    NotifyPropertyChanged(x => this.CurrentTODO_DiscrepanciesExecutionReport);    
+                    // all current navigation properties = null
+   
+                }
+            }
+        }
+
+		VirtualListItem<TODO_DiscrepanciesExecutionReport> _vcurrentTODO_DiscrepanciesExecutionReport;
+        public VirtualListItem<TODO_DiscrepanciesExecutionReport> VCurrentTODO_DiscrepanciesExecutionReport
+        {
+            get
+            {
+                return _vcurrentTODO_DiscrepanciesExecutionReport;
+            }
+            set
+            {
+                if (_vcurrentTODO_DiscrepanciesExecutionReport != value)
+                {
+                    _vcurrentTODO_DiscrepanciesExecutionReport = value;
+					if(_vcurrentTODO_DiscrepanciesExecutionReport != null) CurrentTODO_DiscrepanciesExecutionReport = value.Data;
+                    NotifyPropertyChanged(x => this.VCurrentTODO_DiscrepanciesExecutionReport);                    
                 }
             }
         }

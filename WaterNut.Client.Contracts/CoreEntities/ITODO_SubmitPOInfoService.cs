@@ -94,6 +94,9 @@ namespace CoreEntities.Client.Contracts
   		[OperationContract]
 		Task<IEnumerable<TODO_SubmitPOInfo>> GetTODO_SubmitPOInfoByAsycudaDocumentSetId(string AsycudaDocumentSetId, List<string> includesLst = null);
         
+  		[OperationContract]
+		Task<IEnumerable<TODO_SubmitPOInfo>> GetTODO_SubmitPOInfoByEntryData_Id(string EntryData_Id, List<string> includesLst = null);
+        
   		
     }
 }

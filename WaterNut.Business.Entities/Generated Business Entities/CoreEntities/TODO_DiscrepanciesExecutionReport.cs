@@ -18,10 +18,10 @@ namespace CoreEntities.Business.Entities
 
     //[JsonObject(IsReference = true)]
     [DataContract(IsReference = true, Namespace="http://www.insight-software.com/WaterNut")]
-    public partial class TODO_SubmitPOInfo : BaseEntity<TODO_SubmitPOInfo>, ITrackable 
+    public partial class TODO_DiscrepanciesExecutionReport : BaseEntity<TODO_DiscrepanciesExecutionReport>, ITrackable 
     {
         [DataMember]
-        public int Id 
+        public long Id 
         {
             get
             {
@@ -34,52 +34,22 @@ namespace CoreEntities.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        int _id;
+        long _id;
         [DataMember]
-        public string Number 
+        public int EntryDataDetailsId 
         {
             get
             {
-                return _number;
+                return _entrydatadetailsid;
             }
             set
             {
-                _number = value;
+                _entrydatadetailsid = value;
                 //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
                 NotifyPropertyChanged();
             }
         }
-        string _number;
-        [DataMember]
-        public string Date 
-        {
-            get
-            {
-                return _date;
-            }
-            set
-            {
-                _date = value;
-                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
-                NotifyPropertyChanged();
-            }
-        }
-        string _date;
-        [DataMember]
-        public string SupplierInvoiceNo 
-        {
-            get
-            {
-                return _supplierinvoiceno;
-            }
-            set
-            {
-                _supplierinvoiceno = value;
-                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
-                NotifyPropertyChanged();
-            }
-        }
-        string _supplierinvoiceno;
+        int _entrydatadetailsid;
         [DataMember]
         public int ApplicationSettingsId 
         {
@@ -96,35 +66,125 @@ namespace CoreEntities.Business.Entities
         }
         int _applicationsettingsid;
         [DataMember]
-        public Nullable<int> EmailId 
+        public int AsycudaDocumentSetId 
         {
             get
             {
-                return _emailid;
+                return _asycudadocumentsetid;
             }
             set
             {
-                _emailid = value;
+                _asycudadocumentsetid = value;
                 //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
                 NotifyPropertyChanged();
             }
         }
-        Nullable<int> _emailid;
+        int _asycudadocumentsetid;
         [DataMember]
-        public Nullable<int> FileTypeId 
+        public Nullable<bool> IsClassified 
         {
             get
             {
-                return _filetypeid;
+                return _isclassified;
             }
             set
             {
-                _filetypeid = value;
+                _isclassified = value;
                 //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
                 NotifyPropertyChanged();
             }
         }
-        Nullable<int> _filetypeid;
+        Nullable<bool> _isclassified;
+        [DataMember]
+        public string AdjustmentType 
+        {
+            get
+            {
+                return _adjustmenttype;
+            }
+            set
+            {
+                _adjustmenttype = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _adjustmenttype;
+        [DataMember]
+        public string InvoiceNo 
+        {
+            get
+            {
+                return _invoiceno;
+            }
+            set
+            {
+                _invoiceno = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _invoiceno;
+        [DataMember]
+        public Nullable<double> InvoiceQty 
+        {
+            get
+            {
+                return _invoiceqty;
+            }
+            set
+            {
+                _invoiceqty = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<double> _invoiceqty;
+        [DataMember]
+        public Nullable<double> ReceivedQty 
+        {
+            get
+            {
+                return _receivedqty;
+            }
+            set
+            {
+                _receivedqty = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<double> _receivedqty;
+        [DataMember]
+        public System.DateTime InvoiceDate 
+        {
+            get
+            {
+                return _invoicedate;
+            }
+            set
+            {
+                _invoicedate = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        System.DateTime _invoicedate;
+        [DataMember]
+        public string ItemNumber 
+        {
+            get
+            {
+                return _itemnumber;
+            }
+            set
+            {
+                _itemnumber = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _itemnumber;
         [DataMember]
         public string Status 
         {
@@ -141,36 +201,6 @@ namespace CoreEntities.Business.Entities
         }
         string _status;
         [DataMember]
-        public string CustomsProcedure 
-        {
-            get
-            {
-                return _customsprocedure;
-            }
-            set
-            {
-                _customsprocedure = value;
-                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
-                NotifyPropertyChanged();
-            }
-        }
-        string _customsprocedure;
-        [DataMember]
-        public string DocumentType 
-        {
-            get
-            {
-                return _documenttype;
-            }
-            set
-            {
-                _documenttype = value;
-                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
-                NotifyPropertyChanged();
-            }
-        }
-        string _documenttype;
-        [DataMember]
         public string CNumber 
         {
             get
@@ -186,170 +216,80 @@ namespace CoreEntities.Business.Entities
         }
         string _cnumber;
         [DataMember]
-        public string Reference 
+        public string Declarant_Reference_Number 
         {
             get
             {
-                return _reference;
+                return _declarant_reference_number;
             }
             set
             {
-                _reference = value;
+                _declarant_reference_number = value;
                 //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
                 NotifyPropertyChanged();
             }
         }
-        string _reference;
+        string _declarant_reference_number;
         [DataMember]
-        public Nullable<decimal> Totals_taxes 
+        public Nullable<int> EmailId 
         {
             get
             {
-                return _totals_taxes;
+                return _emailid;
             }
             set
             {
-                _totals_taxes = value;
+                _emailid = value;
                 //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
                 NotifyPropertyChanged();
             }
         }
-        Nullable<decimal> _totals_taxes;
+        Nullable<int> _emailid;
         [DataMember]
-        public double Total_CIF 
+        public string xCNumber 
         {
             get
             {
-                return _total_cif;
+                return _xcnumber;
             }
             set
             {
-                _total_cif = value;
+                _xcnumber = value;
                 //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
                 NotifyPropertyChanged();
             }
         }
-        double _total_cif;
+        string _xcnumber;
         [DataMember]
-        public string WarehouseNo 
+        public Nullable<int> xLineNumber 
         {
             get
             {
-                return _warehouseno;
+                return _xlinenumber;
             }
             set
             {
-                _warehouseno = value;
+                _xlinenumber = value;
                 //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
                 NotifyPropertyChanged();
             }
         }
-        string _warehouseno;
+        Nullable<int> _xlinenumber;
         [DataMember]
-        public string BillingLine 
+        public string xRegistrationDate 
         {
             get
             {
-                return _billingline;
+                return _xregistrationdate;
             }
             set
             {
-                _billingline = value;
+                _xregistrationdate = value;
                 //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
                 NotifyPropertyChanged();
             }
         }
-        string _billingline;
-        [DataMember]
-        public Nullable<bool> IsSubmitted 
-        {
-            get
-            {
-                return _issubmitted;
-            }
-            set
-            {
-                _issubmitted = value;
-                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
-                NotifyPropertyChanged();
-            }
-        }
-        Nullable<bool> _issubmitted;
-        [DataMember]
-        public string PONumber 
-        {
-            get
-            {
-                return _ponumber;
-            }
-            set
-            {
-                _ponumber = value;
-                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
-                NotifyPropertyChanged();
-            }
-        }
-        string _ponumber;
-        [DataMember]
-        public int ASYCUDA_Id 
-        {
-            get
-            {
-                return _asycuda_id;
-            }
-            set
-            {
-                _asycuda_id = value;
-                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
-                NotifyPropertyChanged();
-            }
-        }
-        int _asycuda_id;
-        [DataMember]
-        public string Marks2_of_packages 
-        {
-            get
-            {
-                return _marks2_of_packages;
-            }
-            set
-            {
-                _marks2_of_packages = value;
-                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
-                NotifyPropertyChanged();
-            }
-        }
-        string _marks2_of_packages;
-        [DataMember]
-        public int AsycudaDocumentSetId 
-        {
-            get
-            {
-                return _asycudadocumentsetid;
-            }
-            set
-            {
-                _asycudadocumentsetid = value;
-                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
-                NotifyPropertyChanged();
-            }
-        }
-        int _asycudadocumentsetid;
-        [DataMember]
-        public Nullable<int> EntryData_Id 
-        {
-            get
-            {
-                return _entrydata_id;
-            }
-            set
-            {
-                _entrydata_id = value;
-                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
-                NotifyPropertyChanged();
-            }
-        }
-        Nullable<int> _entrydata_id;
+        string _xregistrationdate;
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

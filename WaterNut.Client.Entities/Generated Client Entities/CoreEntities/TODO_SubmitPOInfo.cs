@@ -317,7 +317,7 @@ public Nullable<bool> IsSubmitted
 		}
      
 
-       [RequiredValidationAttribute(ErrorMessage= "PONumber is required")]
+       
        
                 
                 [MaxLength(50, ErrorMessage = "PONumber has a max length of 50 letters ")]
@@ -377,6 +377,21 @@ public int AsycudaDocumentSetId
 				this.todo_submitpoinfo.AsycudaDocumentSetId = value;
                 if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
 				NotifyPropertyChanged("AsycudaDocumentSetId");
+			}
+		}
+     
+
+       
+       
+public Nullable<int> EntryData_Id
+		{ 
+		    get { return this.todo_submitpoinfo.EntryData_Id; }
+			set
+			{
+			    if (value == this.todo_submitpoinfo.EntryData_Id) return;
+				this.todo_submitpoinfo.EntryData_Id = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("EntryData_Id");
 			}
 		}
      

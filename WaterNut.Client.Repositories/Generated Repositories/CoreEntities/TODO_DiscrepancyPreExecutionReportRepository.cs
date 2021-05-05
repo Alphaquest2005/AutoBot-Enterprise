@@ -361,7 +361,35 @@ namespace CoreEntities.Client.Repositories
             }
         }
 
-	 public async Task<IEnumerable<TODO_DiscrepancyPreExecutionReport>> GetTODO_DiscrepancyPreExecutionReportByAsycudaDocumentSetId(string AsycudaDocumentSetId, List<string> includesLst = null)
+	 public async Task<IEnumerable<TODO_DiscrepancyPreExecutionReport>> GetTODO_DiscrepancyPreExecutionReportByEntryDataId(string EntryDataId, List<string> includesLst = null)
+        {
+             if (EntryDataId == "0") return null;
+            try
+            {
+                 using (TODO_DiscrepancyPreExecutionReportClient t = new TODO_DiscrepancyPreExecutionReportClient())
+                    {
+                        var res = await t.GetTODO_DiscrepancyPreExecutionReportByEntryDataId(EntryDataId, includesLst).ConfigureAwait(continueOnCapturedContext: false);
+                         if(res != null)
+                        {
+                            return res.Select(x => new TODO_DiscrepancyPreExecutionReport(x)).AsEnumerable();
+					    }                
+					    else
+					    {
+						    return null;
+					    }                    
+                    }
+            }
+            catch (FaultException<ValidationFault> e)
+            {
+                throw new Exception(e.Detail.Message, e.InnerException);
+            }
+            catch (Exception)
+            {
+                Debugger.Break();
+                throw;
+            }
+        } 
+ 	 public async Task<IEnumerable<TODO_DiscrepancyPreExecutionReport>> GetTODO_DiscrepancyPreExecutionReportByAsycudaDocumentSetId(string AsycudaDocumentSetId, List<string> includesLst = null)
         {
              if (AsycudaDocumentSetId == "0") return null;
             try

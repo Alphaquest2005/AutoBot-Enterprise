@@ -221,6 +221,8 @@ namespace CoreEntities.Business.Entities
      
         public DbSet<ExpiredEntriesLst> ExpiredEntriesLst { get; set; }
      
+        public DbSet<TODO_DiscrepanciesExecutionReport> TODO_DiscrepanciesExecutionReport { get; set; }
+     
 
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
@@ -398,6 +400,8 @@ namespace CoreEntities.Business.Entities
             modelBuilder.Configurations.Add(new FileTypeMappingRegExsMap());
          
             modelBuilder.Configurations.Add(new ExpiredEntriesLstMap());
+         
+            modelBuilder.Configurations.Add(new TODO_DiscrepanciesExecutionReportMap());
          
 			OnModelCreatingExtentsion(modelBuilder);
 

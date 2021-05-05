@@ -129,6 +129,10 @@
       <Project>{d6846386-8741-4619-bae3-b0cfedbf2597}</Project>
       <Name>Core.Common.Data</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Core.Common\Core.Common\Core.Common.csproj">
+      <Project>{4D734EAC-E84B-40A2-9726-D17263B0FF4A}</Project>
+      <Name>Core.Common</Name>
+    </ProjectReference>
     <ProjectReference Include="..\WaterNut.Business.Entities\WaterNut.Business.Entities.csproj">
       <Project>{978B7943-BD11-41EB-91C9-59A09C6F0ECC}</Project>
       <Name>WaterNut.Business.Entities</Name>

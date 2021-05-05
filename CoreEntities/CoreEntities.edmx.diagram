@@ -137,6 +137,7 @@
         <EntityTypeShape EntityType="WaterNutDBModel.FileTypeMappingRegExs" Width="1.5" PointX="7.25" PointY="33.625" />
         <AssociationConnector Association="WaterNutDBModel.FK_FileTypeMappingRegExs_FileTypeMappings" />
         <EntityTypeShape EntityType="WaterNutDBModel.ExpiredEntriesLst" Width="1.5" PointX="17.375" PointY="19.75" />
+        <EntityTypeShape EntityType="WaterNutDBModel.TODO_DiscrepanciesExecutionReport" Width="1.5" PointX="0.75" PointY="33.75" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

@@ -423,7 +423,7 @@
           <Property Name="TotalCost" Type="float" />
           <Property Name="FileLineNumber" Type="int" />
           <Property Name="InventoryItemId" Type="int" />
-          <Property Name="SalesFactor" Type="int" Nullable="false" />
+          <Property Name="SalesFactor" Type="float" Nullable="false" />
         </EntityType>
         <EntityType Name="ShipmentInvoiceExtraInfo">
           <Key>
@@ -3109,7 +3109,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ShipmentRiderInvoice' doe
           <NavigationProperty Name="Invoice" Relationship="WaterNutDBModel.FK_ShipmentInvoiceDetails_ShipmentInvoice1" FromRole="ShipmentInvoiceDetails" ToRole="ShipmentInvoice" />
           <Property Name="InventoryItemId" Type="Int32" />
           <NavigationProperty Name="POItems" Relationship="WaterNutDBModel.InvoiceDetailsShipmentInvoicePOItemQueryMatches" FromRole="InvoiceDetails" ToRole="ShipmentInvoicePOItemQueryMatches" />
-          <Property Name="SalesFactor" Type="Int32" Nullable="false" />
+          <Property Name="SalesFactor" Type="Double" Nullable="false" />
           <NavigationProperty Name="ItemAlias" Relationship="WaterNutDBModel.InvoiceDetailsShipmentInvoiceDetailsItemAlias" FromRole="InvoiceDetails" ToRole="ShipmentInvoiceDetailsItemAlias" />
         </EntityType>
         <Association Name="FK_ShipmentInvoiceDetails_ShipmentInvoice1">

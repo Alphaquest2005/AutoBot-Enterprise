@@ -120,6 +120,9 @@ namespace CoreEntities.Business.Services
   		[OperationContract]
         [FaultContract(typeof(ValidationFault))]
         Task<IEnumerable<TODO_SubmitPOInfo>> GetTODO_SubmitPOInfoByAsycudaDocumentSetId(string AsycudaDocumentSetId, List<string> includesLst = null);
+  		[OperationContract]
+        [FaultContract(typeof(ValidationFault))]
+        Task<IEnumerable<TODO_SubmitPOInfo>> GetTODO_SubmitPOInfoByEntryData_Id(string EntryData_Id, List<string> includesLst = null);
   
 
 

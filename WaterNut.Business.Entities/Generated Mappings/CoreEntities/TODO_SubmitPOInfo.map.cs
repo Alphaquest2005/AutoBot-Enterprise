@@ -30,10 +30,11 @@
               this.Property(t => t.WarehouseNo).HasColumnName("WarehouseNo").HasMaxLength(50);
               this.Property(t => t.BillingLine).HasColumnName("BillingLine").HasMaxLength(113);
               this.Property(t => t.IsSubmitted).HasColumnName("IsSubmitted");
-              this.Property(t => t.PONumber).HasColumnName("PONumber").IsRequired().HasMaxLength(50);
+              this.Property(t => t.PONumber).HasColumnName("PONumber").HasMaxLength(50);
               this.Property(t => t.ASYCUDA_Id).HasColumnName("ASYCUDA_Id");
               this.Property(t => t.Marks2_of_packages).HasColumnName("Marks2_of_packages").HasMaxLength(40);
               this.Property(t => t.AsycudaDocumentSetId).HasColumnName("AsycudaDocumentSetId");
+              this.Property(t => t.EntryData_Id).HasColumnName("EntryData_Id");
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);
     			this.Ignore(t => t.ModifiedProperties);

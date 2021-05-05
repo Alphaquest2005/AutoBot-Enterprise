@@ -191,7 +191,7 @@ namespace EntryDataDS.Business.Entities
         }
         Nullable<int> _inventoryitemid;
         [DataMember]
-        public int SalesFactor 
+        public double SalesFactor 
         {
             get
             {
@@ -204,7 +204,7 @@ namespace EntryDataDS.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        int _salesfactor;
+        double _salesfactor;
         [DataMember]
         public ShipmentInvoice Invoice { get; set; }
         [DataMember]

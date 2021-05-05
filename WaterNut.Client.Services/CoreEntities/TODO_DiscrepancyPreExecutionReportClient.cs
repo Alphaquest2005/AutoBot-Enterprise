@@ -112,7 +112,12 @@ namespace CoreEntities.Client.Services
         {
             return await Channel.LoadRangeNav(startIndex,count,exp, navExp, includeLst).ConfigureAwait(false);
         }
-		public async Task<IEnumerable<TODO_DiscrepancyPreExecutionReport>> GetTODO_DiscrepancyPreExecutionReportByAsycudaDocumentSetId(string AsycudaDocumentSetId, List<string> includesLst = null)
+		public async Task<IEnumerable<TODO_DiscrepancyPreExecutionReport>> GetTODO_DiscrepancyPreExecutionReportByEntryDataId(string EntryDataId, List<string> includesLst = null)
+        {
+            return  await Channel.GetTODO_DiscrepancyPreExecutionReportByEntryDataId(EntryDataId, includesLst).ConfigureAwait(false);
+        }
+			 
+  		public async Task<IEnumerable<TODO_DiscrepancyPreExecutionReport>> GetTODO_DiscrepancyPreExecutionReportByAsycudaDocumentSetId(string AsycudaDocumentSetId, List<string> includesLst = null)
         {
             return  await Channel.GetTODO_DiscrepancyPreExecutionReportByAsycudaDocumentSetId(AsycudaDocumentSetId, includesLst).ConfigureAwait(false);
         }

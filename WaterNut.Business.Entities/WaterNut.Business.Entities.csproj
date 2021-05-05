@@ -251,6 +251,7 @@
     <Compile Include="Generated Business Entities\CoreEntities\TODO_DeleteDocumentSet.cs" />
     <Compile Include="Generated Business Entities\CoreEntities\TODO_DiscrepanciesAlreadyXMLed.cs" />
     <Compile Include="Generated Business Entities\CoreEntities\TODO_DiscrepanciesErrors.cs" />
+    <Compile Include="Generated Business Entities\CoreEntities\TODO_DiscrepanciesExecutionReport.cs" />
     <Compile Include="Generated Business Entities\CoreEntities\TODO_DiscrepanciesToAssess.cs" />
     <Compile Include="Generated Business Entities\CoreEntities\TODO_DiscrepancyPreExecutionReport.cs" />
     <Compile Include="Generated Business Entities\CoreEntities\TODO_DocumentsToDelete.cs" />
@@ -634,6 +635,7 @@
     <Compile Include="Generated ChangeTracking Models\CoreEntities\TODO_DeleteDocumentSet.cs" />
     <Compile Include="Generated ChangeTracking Models\CoreEntities\TODO_DiscrepanciesAlreadyXMLed.cs" />
     <Compile Include="Generated ChangeTracking Models\CoreEntities\TODO_DiscrepanciesErrors.cs" />
+    <Compile Include="Generated ChangeTracking Models\CoreEntities\TODO_DiscrepanciesExecutionReport.cs" />
     <Compile Include="Generated ChangeTracking Models\CoreEntities\TODO_DiscrepanciesToAssess.cs" />
     <Compile Include="Generated ChangeTracking Models\CoreEntities\TODO_DiscrepancyPreExecutionReport.cs" />
     <Compile Include="Generated ChangeTracking Models\CoreEntities\TODO_DocumentsToDelete.cs" />
@@ -1013,6 +1015,7 @@
     <Compile Include="Generated Constructors Models\CoreEntities\TODO_DeleteDocumentSet.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\TODO_DiscrepanciesAlreadyXMLed.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\TODO_DiscrepanciesErrors.cs" />
+    <Compile Include="Generated Constructors Models\CoreEntities\TODO_DiscrepanciesExecutionReport.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\TODO_DiscrepanciesToAssess.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\TODO_DiscrepancyPreExecutionReport.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\TODO_DocumentsToDelete.cs" />
@@ -1392,6 +1395,7 @@
     <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\TODO_DeleteDocumentSet.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\TODO_DiscrepanciesAlreadyXMLed.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\TODO_DiscrepanciesErrors.cs" />
+    <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\TODO_DiscrepanciesExecutionReport.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\TODO_DiscrepanciesToAssess.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\TODO_DiscrepancyPreExecutionReport.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\TODO_DocumentsToDelete.cs" />
@@ -1771,6 +1775,7 @@
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_DeleteDocumentSet.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_DiscrepanciesAlreadyXMLed.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_DiscrepanciesErrors.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_DiscrepanciesExecutionReport.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_DiscrepanciesToAssess.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_DiscrepancyPreExecutionReport.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_DocumentsToDelete.cs" />
@@ -2160,6 +2165,7 @@
     <Compile Include="Generated Mappings\CoreEntities\TODO_DeleteDocumentSet.map.cs" />
     <Compile Include="Generated Mappings\CoreEntities\TODO_DiscrepanciesAlreadyXMLed.map.cs" />
     <Compile Include="Generated Mappings\CoreEntities\TODO_DiscrepanciesErrors.map.cs" />
+    <Compile Include="Generated Mappings\CoreEntities\TODO_DiscrepanciesExecutionReport.map.cs" />
     <Compile Include="Generated Mappings\CoreEntities\TODO_DiscrepanciesToAssess.map.cs" />
     <Compile Include="Generated Mappings\CoreEntities\TODO_DiscrepancyPreExecutionReport.map.cs" />
     <Compile Include="Generated Mappings\CoreEntities\TODO_DocumentsToDelete.map.cs" />

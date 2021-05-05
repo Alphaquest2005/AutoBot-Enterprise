@@ -61,7 +61,7 @@ namespace xlsxWriter
                         csvFilePath = Path.Combine(pdfFile.DirectoryName, $"{pO.PurchaseOrders.PONumber}.xlsx");
                         var workbook = CreateShipmentWorkBook(riderId, shipmentInvoice, csvFilePath, header, out var invoiceRow, out var riderdetails, out var doRider);
                         var i = 1;
-                        foreach (var itm in pO.PurchaseOrders.EntryDataDetails.OrderBy(x => x.INVItems.FirstOrDefault()?.InvoiceDetails.FileLineNumber??x.FileLineNumber).Where(x => pO.POMISMatches.All(m => m.POItemCode != x.ItemNumber && m.PODescription != x.ItemDescription /* m.PODetailsId != x.EntryDataDetailsId ---- Took this out because it Allowed the grouped po items to still show*/)))
+                        foreach (var itm in pO.PurchaseOrders.EntryDataDetails.OrderBy(x => x.INVItems.FirstOrDefault()?.InvoiceDetails?.FileLineNumber??x.FileLineNumber).Where(x => pO.POMISMatches.All(m => m.POItemCode != x.ItemNumber && m.PODescription != x.ItemDescription /* m.PODetailsId != x.EntryDataDetailsId ---- Took this out because it Allowed the grouped po items to still show*/)))
                         {
                             var pOItem = itm.INVItems.FirstOrDefault();
                             
@@ -231,8 +231,11 @@ namespace xlsxWriter
             currentline += 2 + summaryPkg.UnAttachedInvoices.Count;
             WriteTable(summaryPkg.RiderDetails.Select(x => (dynamic)x).ToList(), workbook, currentline, "Shipper, WarehouseCode, InvoiceNumber, Pieces", "All Rider Details");
 
+            var pkgInvoices = summaryPkg.Invoices.SelectMany(x =>
+                x.ShipmentInvoicePOs.Select(z => new{ InvoiceNo = z.ShipmentInvoice.InvoiceNo,PONumber = z.PurchaseOrders.PONumber, z.ShipmentInvoice.InvoiceTotal, z.ShipmentInvoice.ImportedLines, z.ShipmentInvoice.SupplierCode, Packages = z.ShipmentInvoice.ShipmentRiderInvoice.Where(r => r.RiderID == summaryPkg.RiderSummary.Id).Sum(w => w.Packages)}));
+
             currentline += 2 + summaryPkg.RiderDetails.Count;
-            WriteTable(summaryPkg.Invoices.Select(x => (dynamic)x).ToList(), workbook, currentline, "InvoiceNo, InvoiceTotal, ImportedLines, SupplierCode", "All Invoices");
+            WriteTable(pkgInvoices.Select(x => (dynamic)x).ToList(), workbook, currentline, "InvoiceNo, PONumber, InvoiceTotal, ImportedLines, SupplierCode, Packages", "All Invoices");
 
             
         }
@@ -345,7 +348,7 @@ namespace xlsxWriter
             SetValue(workbook, currentline, 0, "List of Invoices");
             
             var invHeader =
-                "InvoiceNo, InvoiceDate, ImportedLines, SubTotal, InvoiceTotal, ImportedTotalDifference, SupplierCode, SourceFile"
+                "InvoiceNo,PONumber, InvoiceDate, ImportedLines, SubTotal, InvoiceTotal, ImportedTotalDifference, SupplierCode, SourceFile"
                     .Split(',').Select(x => x.Trim()).ToList();
             currentline++;
             invHeader.ForEach(x => SetValue(workbook, currentline, invHeader.IndexOf(x), x));
@@ -359,6 +362,8 @@ namespace xlsxWriter
                
                     SetValue(workbook, currentline, invHeader.IndexOf(nameof(ShipmentInvoice.InvoiceNo)),
                         summaryPkg.Invoices[i].InvoiceNo);
+                    SetValue(workbook, currentline, invHeader.IndexOf("PONumber"),
+                        summaryPkg.Invoices[i].ShipmentInvoicePOs.FirstOrDefault()?.PurchaseOrders?.PONumber??"");
                     SetValue(workbook, currentline , invHeader.IndexOf(nameof(ShipmentInvoice.InvoiceDate)),
                         summaryPkg.Invoices[i].InvoiceDate);
                     SetValue(workbook, currentline, invHeader.IndexOf(nameof(ShipmentInvoice.ImportedLines)),
@@ -475,7 +480,7 @@ namespace xlsxWriter
             SetValue(workbook, invoiceRow, header.First(x => x.Key.Column == nameof(shipmentInvoice.TotalOtherCost)).Key.Index,
                 shipmentInvoice.TotalOtherCost);
 
-            riderdetails = shipmentInvoice.ShipmentRiderInvoice.Where(x => x.ShipmentRiderDetails != null && x.RiderID == riderId).ToList();
+            riderdetails = shipmentInvoice.ShipmentRiderInvoice.Where(x => x.ShipmentRiderDetails != null && x.RiderID == riderId && x.Packages > 0).ToList();
             doRider = false;
             if (riderdetails.Any())
                 if (shipmentInvoice.ShipmentInvoicePOs.Sum(x => x.PurchaseOrders.EntryDataDetails.Count()) <

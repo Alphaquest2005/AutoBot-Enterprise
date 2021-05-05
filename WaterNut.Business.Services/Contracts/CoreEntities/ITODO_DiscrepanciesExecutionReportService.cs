@@ -20,54 +20,54 @@ using WaterNut.Interfaces;
 namespace CoreEntities.Business.Services
 {
     [ServiceContract (Namespace="http://www.insight-software.com/WaterNut")]
-    public partial interface ITODO_DiscrepancyPreExecutionReportService : IBusinessService
+    public partial interface ITODO_DiscrepanciesExecutionReportService : IBusinessService
     {
         [OperationContract]
         [FaultContract(typeof(ValidationFault))]
-        Task<IEnumerable<TODO_DiscrepancyPreExecutionReport>> GetTODO_DiscrepancyPreExecutionReport(List<string> includesLst = null, bool tracking = true);
+        Task<IEnumerable<TODO_DiscrepanciesExecutionReport>> GetTODO_DiscrepanciesExecutionReport(List<string> includesLst = null, bool tracking = true);
 
         [OperationContract]
         [FaultContract(typeof(ValidationFault))]
-        Task<TODO_DiscrepancyPreExecutionReport> GetTODO_DiscrepancyPreExecutionReportByKey(string id, List<string> includesLst = null, bool tracking = true);
+        Task<TODO_DiscrepanciesExecutionReport> GetTODO_DiscrepanciesExecutionReportByKey(string id, List<string> includesLst = null, bool tracking = true);
 
 		[OperationContract]
         [FaultContract(typeof(ValidationFault))]
-        Task<IEnumerable<TODO_DiscrepancyPreExecutionReport>> GetTODO_DiscrepancyPreExecutionReportByExpression(string exp, List<string> includesLst = null, bool tracking = true);
+        Task<IEnumerable<TODO_DiscrepanciesExecutionReport>> GetTODO_DiscrepanciesExecutionReportByExpression(string exp, List<string> includesLst = null, bool tracking = true);
 
 		[OperationContract]
         [FaultContract(typeof(ValidationFault))]
-        Task<IEnumerable<TODO_DiscrepancyPreExecutionReport>> GetTODO_DiscrepancyPreExecutionReportByExpressionLst(List<string> expLst, List<string> includesLst = null, bool tracking = true);
+        Task<IEnumerable<TODO_DiscrepanciesExecutionReport>> GetTODO_DiscrepanciesExecutionReportByExpressionLst(List<string> expLst, List<string> includesLst = null, bool tracking = true);
 
 		[OperationContract]
         [FaultContract(typeof(ValidationFault))]
-		Task<IEnumerable<TODO_DiscrepancyPreExecutionReport>> GetTODO_DiscrepancyPreExecutionReportByExpressionNav(string exp,
+		Task<IEnumerable<TODO_DiscrepanciesExecutionReport>> GetTODO_DiscrepanciesExecutionReportByExpressionNav(string exp,
             Dictionary<string, string> navExp, List<string> includesLst = null, bool tracking = true);
 
         [OperationContract]
         [FaultContract(typeof(ValidationFault))]
-        Task<IEnumerable<TODO_DiscrepancyPreExecutionReport>> GetTODO_DiscrepancyPreExecutionReportByBatch(string exp,
+        Task<IEnumerable<TODO_DiscrepanciesExecutionReport>> GetTODO_DiscrepanciesExecutionReportByBatch(string exp,
             int totalrow, List<string> includesLst = null, bool tracking = true);
 
         [OperationContract]
         [FaultContract(typeof(ValidationFault))]
-        Task<IEnumerable<TODO_DiscrepancyPreExecutionReport>> GetTODO_DiscrepancyPreExecutionReportByBatchExpressionLst(List<string> exp,
+        Task<IEnumerable<TODO_DiscrepanciesExecutionReport>> GetTODO_DiscrepanciesExecutionReportByBatchExpressionLst(List<string> exp,
             int totalrow, List<string> includesLst = null, bool tracking = true);
 
         [OperationContract]
         [FaultContract(typeof(ValidationFault))]
-        Task<TODO_DiscrepancyPreExecutionReport> UpdateTODO_DiscrepancyPreExecutionReport(TODO_DiscrepancyPreExecutionReport entity);
+        Task<TODO_DiscrepanciesExecutionReport> UpdateTODO_DiscrepanciesExecutionReport(TODO_DiscrepanciesExecutionReport entity);
 
         [OperationContract]
         [FaultContract(typeof(ValidationFault))]
-        Task<TODO_DiscrepancyPreExecutionReport> CreateTODO_DiscrepancyPreExecutionReport(TODO_DiscrepancyPreExecutionReport entity);
+        Task<TODO_DiscrepanciesExecutionReport> CreateTODO_DiscrepanciesExecutionReport(TODO_DiscrepanciesExecutionReport entity);
 
         [OperationContract]
         [FaultContract(typeof(ValidationFault))]
-        Task<bool> DeleteTODO_DiscrepancyPreExecutionReport(string id);
+        Task<bool> DeleteTODO_DiscrepanciesExecutionReport(string id);
 
         [OperationContract]
         [FaultContract(typeof(ValidationFault))]
-        Task<bool> RemoveSelectedTODO_DiscrepancyPreExecutionReport(IEnumerable<string> selectedTODO_DiscrepancyPreExecutionReport);
+        Task<bool> RemoveSelectedTODO_DiscrepanciesExecutionReport(IEnumerable<string> selectedTODO_DiscrepanciesExecutionReport);
 	
 		//Virtural list implementation
         [OperationContract]
@@ -84,13 +84,13 @@ namespace CoreEntities.Business.Services
 
         [OperationContract]
         [FaultContract(typeof(ValidationFault))]
-        Task<IEnumerable<TODO_DiscrepancyPreExecutionReport>> LoadRange(int startIndex, int count, string exp);
+        Task<IEnumerable<TODO_DiscrepanciesExecutionReport>> LoadRange(int startIndex, int count, string exp);
 
 
 
 		[OperationContract]
         [FaultContract(typeof(ValidationFault))]
-		Task<IEnumerable<TODO_DiscrepancyPreExecutionReport>> LoadRangeNav(int startIndex, int count, string exp,
+		Task<IEnumerable<TODO_DiscrepanciesExecutionReport>> LoadRangeNav(int startIndex, int count, string exp,
                                                                                  Dictionary<string, string> navExp, IEnumerable<string> includeLst = null);
 
 		[OperationContract]
@@ -107,10 +107,16 @@ namespace CoreEntities.Business.Services
 
 				[OperationContract]
         [FaultContract(typeof(ValidationFault))]
-        Task<IEnumerable<TODO_DiscrepancyPreExecutionReport>> GetTODO_DiscrepancyPreExecutionReportByEntryDataId(string EntryDataId, List<string> includesLst = null);
+        Task<IEnumerable<TODO_DiscrepanciesExecutionReport>> GetTODO_DiscrepanciesExecutionReportByEntryDataDetailsId(string EntryDataDetailsId, List<string> includesLst = null);
   		[OperationContract]
         [FaultContract(typeof(ValidationFault))]
-        Task<IEnumerable<TODO_DiscrepancyPreExecutionReport>> GetTODO_DiscrepancyPreExecutionReportByAsycudaDocumentSetId(string AsycudaDocumentSetId, List<string> includesLst = null);
+        Task<IEnumerable<TODO_DiscrepanciesExecutionReport>> GetTODO_DiscrepanciesExecutionReportByApplicationSettingsId(string ApplicationSettingsId, List<string> includesLst = null);
+  		[OperationContract]
+        [FaultContract(typeof(ValidationFault))]
+        Task<IEnumerable<TODO_DiscrepanciesExecutionReport>> GetTODO_DiscrepanciesExecutionReportByAsycudaDocumentSetId(string AsycudaDocumentSetId, List<string> includesLst = null);
+  		[OperationContract]
+        [FaultContract(typeof(ValidationFault))]
+        Task<IEnumerable<TODO_DiscrepanciesExecutionReport>> GetTODO_DiscrepanciesExecutionReportByEmailId(string EmailId, List<string> includesLst = null);
   
 
 

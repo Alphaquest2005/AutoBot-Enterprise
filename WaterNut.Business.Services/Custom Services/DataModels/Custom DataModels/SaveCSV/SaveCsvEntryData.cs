@@ -70,7 +70,7 @@ namespace WaterNut.DataSpace
                 if (fileType.Type == "Sales" && !mapping.Keys.Any(x => x.DestinationName == "Tax" || x.DestinationName == "TotalTax"))
                     throw new ApplicationException("Sales file dose not contain Tax");
 
-
+                if (!mapping.Any()) throw new ApplicationException($"No Mapping for FileType: {fileType.Id}");
                 
 
 
@@ -139,7 +139,7 @@ namespace WaterNut.DataSpace
                             TrackingNumber = z[nameof(ShipmentRiderDetails.TrackingNumber)]?.ToString().Trim(),
                             Pieces = int.TryParse(z[nameof(ShipmentRiderDetails.Pieces)]?.ToString().Trim(),out var test)? test : 0,//Convert.ToInt32(z[nameof(ShipmentRiderDetails.Pieces)]?.ToString().Trim())
                             WarehouseCode = z[nameof(ShipmentRiderDetails.WarehouseCode)]?.ToString().Trim(),
-                            InvoiceNumber = z[nameof(ShipmentRiderDetails.InvoiceNumber)]?.ToString().Trim(),
+                            InvoiceNumber = z[nameof(ShipmentRiderDetails.InvoiceNumber)]?.ToString().Trim(),//.ReplaceSpecialChar(""),
                             InvoiceTotal = z.ContainsKey(nameof(ShipmentRiderDetails.InvoiceTotal)) ? z[nameof(ShipmentRiderDetails.InvoiceTotal)]?.ToString().Trim() : "0",
                             GrossWeightLB = Convert.ToDouble(z["GrossWeightLB"]?.ToString().Trim()),
                             CubicFeet = z.ContainsKey("VolumeCF") ? Convert.ToDouble(z["VolumeCF"]?.ToString().Trim()) : 0.0
@@ -457,7 +457,7 @@ namespace WaterNut.DataSpace
                                                 .Select(z => new InvoiceDetails()
                                                 {
                                                     Quantity = Convert.ToDouble(z["Quantity"].ToString()),
-                                                    ItemNumber = z.ContainsKey("ItemNumber") ? z["ItemNumber"].ToString().Truncate(20): null,
+                                                    ItemNumber = z.ContainsKey("ItemNumber") ? z["ItemNumber"].ToString().ToUpper().Truncate(20): null,
                                                     ItemDescription = z["ItemDescription"].ToString().Truncate(255),
                                                     Units = z.ContainsKey("Units") ? z["Units"].ToString() : null,
                                                     Cost = Convert.ToDouble(z["Cost"].ToString()),
@@ -653,6 +653,14 @@ namespace WaterNut.DataSpace
                 {
                     foreach (var manifest in lst)
                     {
+                        var detailsQty = manifest.ShipmentBLDetails.Sum(x => x.Quantity);
+                        if (manifest.PackagesNo != detailsQty)
+                        {
+                            throw new ApplicationException(
+                                $"BL Details Quantity don't add up to BL Total Packages! - BL{manifest.PackagesNo} vs Details{detailsQty}");
+                        }
+
+
                         var filename = BaseDataModel.SetFilename(droppedFilePath,manifest.BLNumber, "-BL.pdf");
                         if(!File.Exists(filename)) File.Copy(droppedFilePath, filename);
                         manifest.SourceFile = filename;

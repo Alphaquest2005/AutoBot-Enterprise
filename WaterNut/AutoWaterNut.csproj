@@ -503,6 +503,7 @@
     <Compile Include="ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_DeleteDocumentSetViewModel.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_DiscrepanciesAlreadyXMLedViewModel.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_DiscrepanciesErrorsViewModel.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_DiscrepanciesExecutionReportViewModel.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_DiscrepanciesToAssessViewModel.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_DiscrepancyPreExecutionReportViewModel.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_DocumentsToDeleteViewModel.cs" />
@@ -668,6 +669,7 @@
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_DeleteDocumentSetTotals.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_DiscrepanciesAlreadyXMLedTotals.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_DiscrepanciesErrorsTotals.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_DiscrepanciesExecutionReportTotals.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_DiscrepanciesToAssessTotals.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_DiscrepancyPreExecutionReportTotals.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_DocumentsToDeleteTotals.cs" />
@@ -821,6 +823,7 @@
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_DeleteDocumentSetVirturalListLoader.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_DiscrepanciesAlreadyXMLedVirturalListLoader.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_DiscrepanciesErrorsVirturalListLoader.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_DiscrepanciesExecutionReportVirturalListLoader.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_DiscrepanciesToAssessVirturalListLoader.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_DiscrepancyPreExecutionReportVirturalListLoader.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_DocumentsToDeleteVirturalListLoader.cs" />

@@ -298,6 +298,12 @@ namespace WaterNut.QuerySpace.CoreEntities
 			public const string TODO_DiscrepanciesErrorsDeleted = "TODO_DiscrepanciesErrorsDeleted";
 			public const string TODO_DiscrepanciesErrorsCreated = "TODO_DiscrepanciesErrorsCreated";
 			public const string TODO_DiscrepanciesErrorsUpdated = "TODO_DiscrepanciesErrorsUpdated";
+			public const string TODO_DiscrepanciesExecutionReportFilterExpressionChanged = "TODO_DiscrepanciesExecutionReportFilterExpressionChanged";
+			public const string SelectedTODO_DiscrepanciesExecutionReportChanged = "SelectedTODO_DiscrepanciesExecutionReportChanged";
+            public const string TODO_DiscrepanciesExecutionReportChanged = "TODO_DiscrepanciesExecutionReportChanged";
+			public const string TODO_DiscrepanciesExecutionReportDeleted = "TODO_DiscrepanciesExecutionReportDeleted";
+			public const string TODO_DiscrepanciesExecutionReportCreated = "TODO_DiscrepanciesExecutionReportCreated";
+			public const string TODO_DiscrepanciesExecutionReportUpdated = "TODO_DiscrepanciesExecutionReportUpdated";
 			public const string TODO_DiscrepanciesToAssessFilterExpressionChanged = "TODO_DiscrepanciesToAssessFilterExpressionChanged";
 			public const string SelectedTODO_DiscrepanciesToAssessChanged = "SelectedTODO_DiscrepanciesToAssessChanged";
             public const string TODO_DiscrepanciesToAssessChanged = "TODO_DiscrepanciesToAssessChanged";
@@ -582,6 +588,7 @@ namespace WaterNut.QuerySpace.CoreEntities
           // public const string TODO_DeleteDocumentSetChanged = "TODO_DeleteDocumentSetChanged";
           // public const string TODO_DiscrepanciesAlreadyXMLedChanged = "TODO_DiscrepanciesAlreadyXMLedChanged";
           // public const string TODO_DiscrepanciesErrorsChanged = "TODO_DiscrepanciesErrorsChanged";
+          // public const string TODO_DiscrepanciesExecutionReportChanged = "TODO_DiscrepanciesExecutionReportChanged";
           // public const string TODO_DiscrepanciesToAssessChanged = "TODO_DiscrepanciesToAssessChanged";
           // public const string TODO_DiscrepancyPreExecutionReportChanged = "TODO_DiscrepancyPreExecutionReportChanged";
           // public const string TODO_DocumentsToDeleteChanged = "TODO_DocumentsToDeleteChanged";
@@ -719,6 +726,8 @@ namespace WaterNut.QuerySpace.CoreEntities
            public const string CurrentTODO_DiscrepanciesAlreadyXMLedChanged = "CurrentTODO_DiscrepanciesAlreadyXMLedChanged";
    
            public const string CurrentTODO_DiscrepanciesErrorsChanged = "CurrentTODO_DiscrepanciesErrorsChanged";
+   
+           public const string CurrentTODO_DiscrepanciesExecutionReportChanged = "CurrentTODO_DiscrepanciesExecutionReportChanged";
    
            public const string CurrentTODO_DiscrepanciesToAssessChanged = "CurrentTODO_DiscrepanciesToAssessChanged";
    
@@ -895,6 +904,8 @@ namespace WaterNut.QuerySpace.CoreEntities
            public const string CurrentTODO_DiscrepanciesAlreadyXMLedIDChanged = "OnCurrentTODO_DiscrepanciesAlreadyXMLedIDChanged";
    
            public const string CurrentTODO_DiscrepanciesErrorsIDChanged = "OnCurrentTODO_DiscrepanciesErrorsIDChanged";
+   
+           public const string CurrentTODO_DiscrepanciesExecutionReportIDChanged = "OnCurrentTODO_DiscrepanciesExecutionReportIDChanged";
    
            public const string CurrentTODO_DiscrepanciesToAssessIDChanged = "OnCurrentTODO_DiscrepanciesToAssessIDChanged";
    

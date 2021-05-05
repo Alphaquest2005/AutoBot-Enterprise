@@ -130,7 +130,8 @@ namespace WaterNut.DataSpace
                         ? RegexOptions.Multiline
                         : RegexOptions.Singleline) | RegexOptions.ExplicitCapture) == false)) return false;
 
-            List<dynamic> csvLines = tmp.Read(tmp.Format(pdftxt.ToString()));
+            var formattedPdfTxt = tmp.Format(pdftxt.ToString());
+            var csvLines = tmp.Read(formattedPdfTxt.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None).ToList());
             if (csvLines.Count < 1 || !tmp.Success)
             {
                 var failedlines = tmp.Lines.DistinctBy(x => x.OCR_Lines.Id).Where(z =>
@@ -562,7 +563,7 @@ namespace WaterNut.DataSpace
             }
         }
 
-        public List<string> Format(string pdftxt)
+        public string Format(string pdftxt)
         {
             try
             {
@@ -572,8 +573,8 @@ namespace WaterNut.DataSpace
                         RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.ExplicitCapture);
                 }
 
+                return pdftxt;
 
-                return pdftxt.Split(new[] {"\r\n", "\r", "\n"}, StringSplitOptions.None).ToList();
             }
             catch (Exception e)
             {

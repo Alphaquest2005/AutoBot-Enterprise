@@ -29,6 +29,7 @@ namespace AutoBotUtilities
                 var invoices = ctx.EntryData.OfType<PurchaseOrders>()
                     //.Include(x => x.EntryDataDetails)
                     .Include(x => x.ShipmentInvoicePOs)
+                    .Include("ShipmentInvoicePOs.PurchaseOrders.WarehouseInfo")
                     .Where(x => x.EmailId == shipment.EmailId)
                     .ToList();
 
@@ -58,6 +59,7 @@ namespace AutoBotUtilities
                         .Include("InvoiceDetails.ItemAlias")
                         //.Include("ShipmentInvoicePOs.POMISMatches")
                         .Include("ShipmentInvoicePOs.PurchaseOrders.EntryDataDetails.INVItems")
+                        .Include("ShipmentInvoicePOs.PurchaseOrders.WarehouseInfo")
                         .Include("InvoiceDetails.ItemAlias")
                         .Include("InvoiceDetails.POItems")
                         .Where(x => x.EmailId == shipment.EmailId)
@@ -188,6 +190,7 @@ namespace AutoBotUtilities
                             .Include("InvoiceDetails.POItems")
                             // .Include("ShipmentInvoicePOs.POMISMatches")
                             .Include("ShipmentInvoicePOs.PurchaseOrders.EntryDataDetails.INVItems")
+                            .Include("ShipmentInvoicePOs.PurchaseOrders.WarehouseInfo")
                             .First(z => z.Id == x))
                         .Select(x => new ShipmentAttachedInvoices()
                         {
@@ -298,12 +301,14 @@ namespace AutoBotUtilities
                         .Include(z => z.ShipmentRiderInvoice)
                         .Include(z => z.ShipmentRiderEx)
                         .First(z => z.Id == x))
+                    .MaxBy(x => x.EmailId)
                     .ToList();
                 riders.AddRange(invoiceRiders);
                 newriders.AddRange(invoiceRiders);
 
                 var blRiders = shipment.ShipmentAttachedBL
                     .SelectMany(x => x.ShipmentBL.ShipmentRiderBLs.Select(z => z.RiderId))
+                   
                     .Distinct()
                     .Where(x => riders.All(z => z.Id != x))
                     .Select(x => ctx.ShipmentRider
@@ -312,6 +317,7 @@ namespace AutoBotUtilities
                         .Include(z => z.ShipmentRiderInvoice)
                         .Include(z => z.ShipmentRiderEx)
                         .First(z => z.Id == x))
+                    .MaxBy(x => x.EmailId)
                     .ToList();
 
                 riders.AddRange(blRiders);
@@ -327,6 +333,7 @@ namespace AutoBotUtilities
                             ctx.ShipmentInvoice.Where(i => i.Id == x)
                                 .SelectMany(i => i.ShipmentRiderInvoice.Select(ri => ri.RiderID)).ToList()).Distinct()
                         .ToList()
+                        
                         .Where(x => riders.All(z => z.Id != x))
                         .Select(x => ctx.ShipmentRider
                             .Include(z => z.ShipmentRiderBLs)
@@ -335,6 +342,7 @@ namespace AutoBotUtilities
                             .Include(z => z.ShipmentRiderEx)
                             .First(z => z.Id == x))
                         .OrderByDescending(r => r.Id)
+                        .MaxBy(x => x.EmailId)
                         .Take(1) // take most recent rider to prevent loading multiple riders
                         .ToList();
 
@@ -575,7 +583,7 @@ namespace AutoBotUtilities
             try
             {
                 var shipments = new List<Shipment>();
-                var sendMaster = true;
+                var sendMaster = false;
 
                 ShipmentBL masterBL = null;
                 var bls = masterShipment.ShipmentAttachedBL.Select(x => x.ShipmentBL)
@@ -606,7 +614,7 @@ namespace AutoBotUtilities
                         .SelectMany(x => x.ShipmentRiderBLs.Select(z => z.ShipmentRiderDetails)).Where(x => x != null)
                         .ToList();
 
-                    var clients = riderDetails.DistinctBy(x => x.Id).GroupBy(x => new Tuple<string, int, string>(x.Code, x.RiderId, bl.BLNumber)).ToList();
+                    var clients = riderDetails.Where(x => masterShipment.ShipmentAttachedRider.Any(z => z.ShipmentRider.Id == x.RiderId)).DistinctBy(x => x.Id).GroupBy(x => new Tuple<string, int, string>(x.Code, x.RiderId, bl.BLNumber)).MaxBy(x => x.Key.Item2).ToList();
                     foreach (var client in clients)
                     {
 

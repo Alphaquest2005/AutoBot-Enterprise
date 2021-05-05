@@ -197,6 +197,7 @@
     <Compile Include="Generated Client Entities\CoreEntities\TODO_DeleteDocumentSet.cs" />
     <Compile Include="Generated Client Entities\CoreEntities\TODO_DiscrepanciesAlreadyXMLed.cs" />
     <Compile Include="Generated Client Entities\CoreEntities\TODO_DiscrepanciesErrors.cs" />
+    <Compile Include="Generated Client Entities\CoreEntities\TODO_DiscrepanciesExecutionReport.cs" />
     <Compile Include="Generated Client Entities\CoreEntities\TODO_DiscrepanciesToAssess.cs" />
     <Compile Include="Generated Client Entities\CoreEntities\TODO_DiscrepancyPreExecutionReport.cs" />
     <Compile Include="Generated Client Entities\CoreEntities\TODO_DocumentsToDelete.cs" />
@@ -351,6 +352,7 @@
     <Compile Include="Generated Constructors Models\CoreEntities\TODO_DeleteDocumentSet.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\TODO_DiscrepanciesAlreadyXMLed.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\TODO_DiscrepanciesErrors.cs" />
+    <Compile Include="Generated Constructors Models\CoreEntities\TODO_DiscrepanciesExecutionReport.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\TODO_DiscrepanciesToAssess.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\TODO_DiscrepancyPreExecutionReport.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\TODO_DocumentsToDelete.cs" />
@@ -504,6 +506,7 @@
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_DeleteDocumentSet.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_DiscrepanciesAlreadyXMLed.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_DiscrepanciesErrors.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_DiscrepanciesExecutionReport.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_DiscrepanciesToAssess.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_DiscrepancyPreExecutionReport.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_DocumentsToDelete.cs" />
@@ -661,6 +664,7 @@
     <Compile Include="Generated MyNavProp Models\CoreEntities\TODO_DeleteDocumentSet.cs" />
     <Compile Include="Generated MyNavProp Models\CoreEntities\TODO_DiscrepanciesAlreadyXMLed.cs" />
     <Compile Include="Generated MyNavProp Models\CoreEntities\TODO_DiscrepanciesErrors.cs" />
+    <Compile Include="Generated MyNavProp Models\CoreEntities\TODO_DiscrepanciesExecutionReport.cs" />
     <Compile Include="Generated MyNavProp Models\CoreEntities\TODO_DiscrepanciesToAssess.cs" />
     <Compile Include="Generated MyNavProp Models\CoreEntities\TODO_DiscrepancyPreExecutionReport.cs" />
     <Compile Include="Generated MyNavProp Models\CoreEntities\TODO_DocumentsToDelete.cs" />

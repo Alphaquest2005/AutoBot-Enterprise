@@ -165,6 +165,7 @@
     <Compile Include="CoreEntities\TODO_DeleteDocumentSetClient.cs" />
     <Compile Include="CoreEntities\TODO_DiscrepanciesAlreadyXMLedClient.cs" />
     <Compile Include="CoreEntities\TODO_DiscrepanciesErrorsClient.cs" />
+    <Compile Include="CoreEntities\TODO_DiscrepanciesExecutionReportClient.cs" />
     <Compile Include="CoreEntities\TODO_DiscrepanciesToAssessClient.cs" />
     <Compile Include="CoreEntities\TODO_DiscrepancyPreExecutionReportClient.cs" />
     <Compile Include="CoreEntities\TODO_DocumentsToDeleteClient.cs" />

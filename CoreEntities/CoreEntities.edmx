@@ -918,6 +918,30 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-DiscrepanciesErrors'
           <Property Name="EmailId" Type="int" />
           <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
         </EntityType>
+
+        <EntityType Name="TODO-DiscrepanciesExecutionReport">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="bigint" Nullable="false" />
+          <Property Name="EntryDataDetailsId" Type="int" Nullable="false" />
+          <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
+          <Property Name="AsycudaDocumentSetId" Type="int" Nullable="false" />
+          <Property Name="IsClassified" Type="bit" />
+          <Property Name="AdjustmentType" Type="nvarchar" MaxLength="50" />
+          <Property Name="InvoiceNo" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="InvoiceQty" Type="float" />
+          <Property Name="ReceivedQty" Type="float" />
+          <Property Name="InvoiceDate" Type="datetime2" Precision="7" Nullable="false" />
+          <Property Name="ItemNumber" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="Status" Type="nvarchar" MaxLength="50" />
+          <Property Name="CNumber" Type="nvarchar" MaxLength="50" />
+          <Property Name="Declarant_Reference_Number" Type="nvarchar" MaxLength="50" />
+          <Property Name="EmailId" Type="int" />
+          <Property Name="xCNumber" Type="nvarchar" MaxLength="20" />
+          <Property Name="xLineNumber" Type="int" />
+          <Property Name="xRegistrationDate" Type="nvarchar" MaxLength="10" />
+        </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-DiscrepanciesToAssess' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="TODO-DiscrepanciesToAssess">
@@ -930,24 +954,12 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-DiscrepanciesToAsses
           <Property Name="CNumber" Type="nvarchar" MaxLength="20" />
           <Property Name="AsycudaDocumentSetId" Type="int" Nullable="false" />
         </EntityType>
-        <!--Errors Found During Generation:
-warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-DiscrepancyPreExecutionReport' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        
         <EntityType Name="TODO-DiscrepancyPreExecutionReport">
           <Key>
             <PropertyRef Name="EntryDataDetailsId" />
-            <PropertyRef Name="EntryDataId" />
-            <PropertyRef Name="ItemNumber" />
-            <PropertyRef Name="Quantity" />
-            <PropertyRef Name="ItemDescription" />
-            <PropertyRef Name="Cost" />
-            <PropertyRef Name="QtyAllocated" />
-            <PropertyRef Name="UnitWeight" />
-            
-            <PropertyRef Name="ApplicationSettingsId" />
-            <PropertyRef Name="InvoiceDate" />
-            <PropertyRef Name="DutyFreePaid" />
-            <PropertyRef Name="Subject" />
-            <PropertyRef Name="EmailDate" />
+			<PropertyRef Name="ApplicationSettingsId" />
+       
           </Key>
           <Property Name="EntryDataDetailsId" Type="int" Nullable="false" />
           <Property Name="EntryDataId" Type="nvarchar" MaxLength="50" Nullable="false" />
@@ -1623,12 +1635,11 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-SubmitPOInfo' does n
             
             
             
-            
           </Key>
           <Property Name="Id" Type="int" Nullable="false" />
           <Property Name="Number" Type="nvarchar" MaxLength="20" />
           <Property Name="Date" Type="nvarchar" MaxLength="10" />
-          <Property Name="PONumber" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="PONumber" Type="nvarchar" MaxLength="50" />
           <Property Name="SupplierInvoiceNo" Type="nvarchar" MaxLength="50" />
           <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
           <Property Name="EmailId" Type="int" />
@@ -1646,6 +1657,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-SubmitPOInfo' does n
           <Property Name="IsSubmitted" Type="bit" />
           <Property Name="Marks2_of_packages" Type="nvarchar" MaxLength="40" />
           <Property Name="AsycudaDocumentSetId" Type="int" Nullable="false" />
+          <Property Name="EntryData_Id" Type="int" />
         </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-SubmitSalesToCustoms' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
@@ -2595,6 +2607,28 @@ FROM [dbo].[TODO-DiscrepanciesAlreadyXMLed] AS [TODO-DiscrepanciesAlreadyXMLed]<
 [TODO-DiscrepanciesErrors].[ApplicationSettingsId] AS [ApplicationSettingsId]
 FROM [dbo].[TODO-DiscrepanciesErrors] AS [TODO-DiscrepanciesErrors]</DefiningQuery>
           </EntitySet>
+          <EntitySet Name="TODO-DiscrepanciesExecutionReport" EntityType="Self.TODO-DiscrepanciesExecutionReport" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+[TODO-DiscrepanciesExecutionReport].[Id] AS [Id], 
+[TODO-DiscrepanciesExecutionReport].[EntryDataDetailsId] AS [EntryDataDetailsId], 
+[TODO-DiscrepanciesExecutionReport].[ApplicationSettingsId] AS [ApplicationSettingsId], 
+[TODO-DiscrepanciesExecutionReport].[AsycudaDocumentSetId] AS [AsycudaDocumentSetId], 
+[TODO-DiscrepanciesExecutionReport].[IsClassified] AS [IsClassified], 
+[TODO-DiscrepanciesExecutionReport].[AdjustmentType] AS [AdjustmentType], 
+[TODO-DiscrepanciesExecutionReport].[InvoiceNo] AS [InvoiceNo], 
+[TODO-DiscrepanciesExecutionReport].[InvoiceQty] AS [InvoiceQty], 
+[TODO-DiscrepanciesExecutionReport].[ReceivedQty] AS [ReceivedQty], 
+[TODO-DiscrepanciesExecutionReport].[InvoiceDate] AS [InvoiceDate], 
+[TODO-DiscrepanciesExecutionReport].[ItemNumber] AS [ItemNumber], 
+[TODO-DiscrepanciesExecutionReport].[Status] AS [Status], 
+[TODO-DiscrepanciesExecutionReport].[CNumber] AS [CNumber], 
+[TODO-DiscrepanciesExecutionReport].[Declarant_Reference_Number] AS [Declarant_Reference_Number], 
+[TODO-DiscrepanciesExecutionReport].[EmailId] AS [EmailId], 
+[TODO-DiscrepanciesExecutionReport].[xCNumber] AS [xCNumber], 
+[TODO-DiscrepanciesExecutionReport].[xLineNumber] AS [xLineNumber], 
+[TODO-DiscrepanciesExecutionReport].[xRegistrationDate] AS [xRegistrationDate]
+FROM [dbo].[TODO-DiscrepanciesExecutionReport] AS [TODO-DiscrepanciesExecutionReport]</DefiningQuery>
+          </EntitySet>
           <EntitySet Name="TODO-DiscrepanciesToAssess" EntityType="Self.TODO-DiscrepanciesToAssess" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
 [TODO-DiscrepanciesToAssess].[Declarant_Reference_Number] AS [Declarant_Reference_Number], 
@@ -3133,7 +3167,8 @@ FROM [dbo].[TODO-SubmitMissingInvoicePDFs] AS [TODO-SubmitMissingInvoicePDFs]</D
 [TODO-SubmitPOInfo].[BillingLine] AS [BillingLine], 
 [TODO-SubmitPOInfo].[IsSubmitted] AS [IsSubmitted], 
 [TODO-SubmitPOInfo].[Marks2_of_packages] AS [Marks2_of_packages], 
-[TODO-SubmitPOInfo].[AsycudaDocumentSetId] AS [AsycudaDocumentSetId]
+[TODO-SubmitPOInfo].[AsycudaDocumentSetId] AS [AsycudaDocumentSetId], 
+[TODO-SubmitPOInfo].[EntryData_Id] AS [EntryData_Id]
 FROM [dbo].[TODO-SubmitPOInfo] AS [TODO-SubmitPOInfo]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="TODO-SubmitSalesToCustoms" EntityType="Self.TODO-SubmitSalesToCustoms" store:Type="Views" store:Schema="dbo">
@@ -3621,6 +3656,7 @@ FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
             <End Role="FileTypeMappingRegExs" EntitySet="FileTypeMappingRegExs" />
           </AssociationSet>
           <EntitySet Name="ExpiredEntriesLst" EntityType="WaterNutDBModel.ExpiredEntriesLst" />
+          <EntitySet Name="TODO_DiscrepanciesExecutionReport" EntityType="WaterNutDBModel.TODO_DiscrepanciesExecutionReport" />
           </EntityContainer>
         <EntityType Name="ApplicationSettings">
           <Key>
@@ -5135,18 +5171,8 @@ FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
         <EntityType Name="TODO_DiscrepancyPreExecutionReport">
           <Key>
             <PropertyRef Name="EntryDataDetailsId" />
-            <PropertyRef Name="EntryDataId" />
-            <PropertyRef Name="ItemNumber" />
-            <PropertyRef Name="Quantity" />
-            <PropertyRef Name="ItemDescription" />
-            <PropertyRef Name="Cost" />
-            <PropertyRef Name="QtyAllocated" />
-            <PropertyRef Name="UnitWeight" />
-            <PropertyRef Name="ApplicationSettingsId" />
-            <PropertyRef Name="InvoiceDate" />
-            <PropertyRef Name="Subject" />
-            <PropertyRef Name="EmailDate" />
-            <PropertyRef Name="DutyFreePaid" />
+			<PropertyRef Name="ApplicationSettingsId" />
+           
           </Key>
           <Property Name="EntryDataDetailsId" Type="Int32" Nullable="false" />
           <Property Name="EntryDataId" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
@@ -5694,10 +5720,11 @@ FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
           <Property Name="WarehouseNo" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="BillingLine" Type="String" MaxLength="113" FixedLength="false" Unicode="true" />
           <Property Name="IsSubmitted" Type="Boolean" />
-          <Property Name="PONumber" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="PONumber" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="ASYCUDA_Id" Type="Int32" Nullable="false" />
           <Property Name="Marks2_of_packages" Type="String" MaxLength="40" FixedLength="false" Unicode="true" />
           <Property Name="AsycudaDocumentSetId" Type="Int32" Nullable="false" />
+          <Property Name="EntryData_Id" Type="Int32" />
         </EntityType>
         <EntityType Name="AsycudaDocumentBasicInfo">
           <Key>
@@ -5880,6 +5907,30 @@ FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
           <Property Name="Expiration" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
           <Property Name="GeneralProcedure" Type="String" Nullable="false" MaxLength="1" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="TODO_DiscrepanciesExecutionReport">
+          <Key>
+            <PropertyRef Name="Id" />
+        
+          </Key>
+          <Property Name="Id" Type="Int64" Nullable="false" />
+          <Property Name="EntryDataDetailsId" Type="Int32" Nullable="false" />
+          <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
+          <Property Name="AsycudaDocumentSetId" Type="Int32" Nullable="false" />
+          <Property Name="IsClassified" Type="Boolean" />
+          <Property Name="AdjustmentType" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="InvoiceNo" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="InvoiceQty" Type="Double" />
+          <Property Name="ReceivedQty" Type="Double" />
+          <Property Name="InvoiceDate" Type="DateTime" Nullable="false" Precision="7" />
+          <Property Name="ItemNumber" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="Status" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Declarant_Reference_Number" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="EmailId" Type="Int32" />
+          <Property Name="xCNumber" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="xLineNumber" Type="Int32" />
+          <Property Name="xRegistrationDate" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
         </EntityType>
         </Schema>
     </edmx:ConceptualModels>
@@ -7251,6 +7302,7 @@ FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
           <EntitySetMapping Name="TODO_SubmitPOInfo">
             <EntityTypeMapping TypeName="WaterNutDBModel.TODO_SubmitPOInfo">
               <MappingFragment StoreEntitySet="TODO-SubmitPOInfo">
+                <ScalarProperty Name="EntryData_Id" ColumnName="EntryData_Id" />
                 <ScalarProperty Name="AsycudaDocumentSetId" ColumnName="AsycudaDocumentSetId" />
                 <ScalarProperty Name="Marks2_of_packages" ColumnName="Marks2_of_packages" />
                 <ScalarProperty Name="ASYCUDA_Id" ColumnName="ASYCUDA_Id" />
@@ -7430,6 +7482,30 @@ FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
                 <ScalarProperty Name="RegistrationNumber" ColumnName="RegistrationNumber" />
                 <ScalarProperty Name="RegistrationSerial" ColumnName="RegistrationSerial" />
                 <ScalarProperty Name="Office" ColumnName="Office" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="TODO_DiscrepanciesExecutionReport">
+            <EntityTypeMapping TypeName="WaterNutDBModel.TODO_DiscrepanciesExecutionReport">
+              <MappingFragment StoreEntitySet="TODO-DiscrepanciesExecutionReport">
+                <ScalarProperty Name="xRegistrationDate" ColumnName="xRegistrationDate" />
+                <ScalarProperty Name="xLineNumber" ColumnName="xLineNumber" />
+                <ScalarProperty Name="xCNumber" ColumnName="xCNumber" />
+                <ScalarProperty Name="EmailId" ColumnName="EmailId" />
+                <ScalarProperty Name="Declarant_Reference_Number" ColumnName="Declarant_Reference_Number" />
+                <ScalarProperty Name="CNumber" ColumnName="CNumber" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="ItemNumber" ColumnName="ItemNumber" />
+                <ScalarProperty Name="InvoiceDate" ColumnName="InvoiceDate" />
+                <ScalarProperty Name="ReceivedQty" ColumnName="ReceivedQty" />
+                <ScalarProperty Name="InvoiceQty" ColumnName="InvoiceQty" />
+                <ScalarProperty Name="InvoiceNo" ColumnName="InvoiceNo" />
+                <ScalarProperty Name="AdjustmentType" ColumnName="AdjustmentType" />
+                <ScalarProperty Name="IsClassified" ColumnName="IsClassified" />
+                <ScalarProperty Name="AsycudaDocumentSetId" ColumnName="AsycudaDocumentSetId" />
+                <ScalarProperty Name="ApplicationSettingsId" ColumnName="ApplicationSettingsId" />
+                <ScalarProperty Name="EntryDataDetailsId" ColumnName="EntryDataDetailsId" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>

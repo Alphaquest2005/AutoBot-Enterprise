@@ -201,6 +201,7 @@
     <Compile Include="Generated Repositories\CoreEntities\TODO_DeleteDocumentSetRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\TODO_DiscrepanciesAlreadyXMLedRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\TODO_DiscrepanciesErrorsRepository.cs" />
+    <Compile Include="Generated Repositories\CoreEntities\TODO_DiscrepanciesExecutionReportRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\TODO_DiscrepanciesToAssessRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\TODO_DiscrepancyPreExecutionReportRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\TODO_DocumentsToDeleteRepository.cs" />

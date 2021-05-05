@@ -80,6 +80,9 @@ namespace CoreEntities.Client.Contracts
 		string MinField(string whereExp, string field);
 
 				[OperationContract]
+		Task<IEnumerable<TODO_DiscrepancyPreExecutionReport>> GetTODO_DiscrepancyPreExecutionReportByEntryDataId(string EntryDataId, List<string> includesLst = null);
+        
+  		[OperationContract]
 		Task<IEnumerable<TODO_DiscrepancyPreExecutionReport>> GetTODO_DiscrepancyPreExecutionReportByAsycudaDocumentSetId(string AsycudaDocumentSetId, List<string> includesLst = null);
         
   		

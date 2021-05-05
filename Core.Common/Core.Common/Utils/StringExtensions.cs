@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text.RegularExpressions;
 
 namespace Core.Common.Utils
 {
@@ -36,6 +37,11 @@ namespace Core.Common.Utils
             }
 
             return retVal;
+        }
+
+        public static string ReplaceSpecialChar(this string msgSubject, string rstring)
+        {
+            return Regex.Replace(msgSubject, @"[^0-9a-zA-Z\s]+", rstring);
         }
 
         public static string UpdateToCurrentUser(string dataFolder)

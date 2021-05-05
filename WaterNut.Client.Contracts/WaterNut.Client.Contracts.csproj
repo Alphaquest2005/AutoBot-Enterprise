@@ -159,6 +159,7 @@
     <Compile Include="CoreEntities\ITODO_DeleteDocumentSetService.cs" />
     <Compile Include="CoreEntities\ITODO_DiscrepanciesAlreadyXMLedService.cs" />
     <Compile Include="CoreEntities\ITODO_DiscrepanciesErrorsService.cs" />
+    <Compile Include="CoreEntities\ITODO_DiscrepanciesExecutionReportService.cs" />
     <Compile Include="CoreEntities\ITODO_DiscrepanciesToAssessService.cs" />
     <Compile Include="CoreEntities\ITODO_DiscrepancyPreExecutionReportService.cs" />
     <Compile Include="CoreEntities\ITODO_DocumentsToDeleteService.cs" />

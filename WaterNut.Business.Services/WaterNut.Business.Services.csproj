@@ -468,6 +468,7 @@
     <Compile Include="Contracts\CoreEntities\ITODO_DeleteDocumentSetService.cs" />
     <Compile Include="Contracts\CoreEntities\ITODO_DiscrepanciesAlreadyXMLedService.cs" />
     <Compile Include="Contracts\CoreEntities\ITODO_DiscrepanciesErrorsService.cs" />
+    <Compile Include="Contracts\CoreEntities\ITODO_DiscrepanciesExecutionReportService.cs" />
     <Compile Include="Contracts\CoreEntities\ITODO_DiscrepanciesToAssessService.cs" />
     <Compile Include="Contracts\CoreEntities\ITODO_DiscrepancyPreExecutionReportService.cs" />
     <Compile Include="Contracts\CoreEntities\ITODO_DocumentsToDeleteService.cs" />
@@ -1057,6 +1058,7 @@
     <Compile Include="Services\CoreEntities\TODO_DeleteDocumentSetService.cs" />
     <Compile Include="Services\CoreEntities\TODO_DiscrepanciesAlreadyXMLedService.cs" />
     <Compile Include="Services\CoreEntities\TODO_DiscrepanciesErrorsService.cs" />
+    <Compile Include="Services\CoreEntities\TODO_DiscrepanciesExecutionReportService.cs" />
     <Compile Include="Services\CoreEntities\TODO_DiscrepanciesToAssessService.cs" />
     <Compile Include="Services\CoreEntities\TODO_DiscrepancyPreExecutionReportService.cs" />
     <Compile Include="Services\CoreEntities\TODO_DocumentsToDeleteService.cs" />
