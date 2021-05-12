@@ -1545,9 +1545,9 @@ namespace AutoBot
         {
             try
             {
-
+                var emailId = Convert.ToInt32(ft.EmailId);
                 var lst = GetSubmitEntryData(ft);
-                SubmitDiscrepanciesToCustoms(lst);
+                SubmitDiscrepanciesToCustoms(lst.Where(x => x.Key == emailId));
 
                
             }
@@ -1595,8 +1595,13 @@ namespace AutoBot
                     ctx.Database.CommandTimeout = 60;
                     var contacts = ctx.Contacts.Where(x => x.Role == "Customs").Select(x => x.EmailAddress).ToArray();
                    
-                    foreach (var emailIds in lst)
+                    foreach (var data in lst)
                     {
+                        var emailIds = data.DistinctBy(x => x.CNumber).ToList();
+                        if(!emailIds.Any())
+                        {
+                            throw new NotImplementedException();
+                        }
                         var pdfs = new List<string>();
                         foreach (var itm in emailIds)
                         {
@@ -1628,27 +1633,71 @@ namespace AutoBot
                         var directory = info.Item2;
 
                         var summaryFile = Path.Combine(directory, $"Summary.csv");
-                       
 
+                        var executionFile = Path.Combine(directory, $"ExecutionReport.csv");
+                        var execData = new CoreEntitiesContext().TODO_DiscrepanciesExecutionReport
+                            .Where(x => x.EmailId == data.Key)
+                            .Select(x => new DiscpancyExecData() 
+                            {
+                                InvoiceNo = x.InvoiceNo,
+                                InvoiceDate = x.InvoiceDate,
+                                ItemNumber = x.ItemNumber,
+                                InvoiceQty = x.InvoiceQty,
+                                ReceivedQty = x.ReceivedQty,
+                                CNumber = x.CNumber,
+                                Status = x.Status,
+                                xCNumber = x.xCNumber,
+                                xLineNumber = x.xLineNumber,
+                                xRegistrationDate = x.xRegistrationDate
+
+                            })
+                            .ToList();
+
+                        var exeRes =
+                            new ExportToCSV<DiscpancyExecData,
+                                List<DiscpancyExecData>>();
+                        exeRes.dataToPrint = execData;
+                        using (var sta = new StaTaskScheduler(numberOfThreads: 1))
+                        {
+                            Task.Factory.StartNew(() => exeRes.SaveReport(executionFile), CancellationToken.None,
+                                TaskCreationOptions.None, sta);
+                        }
+                        pdfs.Add(executionFile);
+
+                        var sumData = emailIds
+                            .Select(x => new SubmitEntryData()
+                            {
+                                CNumber = x.CNumber,
+                                ReferenceNumber = x.ReferenceNumber,
+                                DocumentType = x.DocumentType,
+                                CustomsProcedure = x.CustomsProcedure,
+                                RegistrationDate = x.RegistrationDate,
+                                AssessmentDate = x.AssessmentDate
+                            })
+                            .ToList();
 
                         var sumres =
-                            new ExportToCSV<TODO_SubmitDiscrepanciesToCustoms,
-                                List<TODO_SubmitDiscrepanciesToCustoms>>();
-                        sumres.dataToPrint = emailIds.ToList();
+                            new ExportToCSV<SubmitEntryData,
+                                List<SubmitEntryData>>();
+                        sumres.dataToPrint = sumData;
                         using (var sta = new StaTaskScheduler(numberOfThreads: 1))
                         {
                             Task.Factory.StartNew(() => sumres.SaveReport(summaryFile), CancellationToken.None,
                                 TaskCreationOptions.None, sta);
                         }
+                        pdfs.Add(summaryFile);
 
-                        if (emailIds.Key == null)
+                        string reference = emailIds.First().ReferenceNumber.Substring(0, emailIds.First().ReferenceNumber.IndexOf('-'));
+
+                        if (data.Key == null)
                         {
-                            EmailDownloader.EmailDownloader.SendEmail(Client, "", "Assessed Shipping Discrepancy Entries",
+                            EmailDownloader.EmailDownloader.SendEmail(Client, "", $"Assessed Shipping Discrepancy Entries: {reference}",
                                 contacts, body, pdfs.ToArray());
                         }
                         else
                         {
-                            EmailDownloader.EmailDownloader.ForwardMsg(Convert.ToInt32(emailIds.Key), Client, "Assessed Shipping Discrepancy Entries", body, contacts, pdfs.ToArray());
+                            
+                            EmailDownloader.EmailDownloader.ForwardMsg(Convert.ToInt32(data.Key), Client, $"Assessed Shipping Discrepancy Entries: {reference}", body, contacts, pdfs.ToArray());
                         }
 
                         foreach (var item in emailIds)

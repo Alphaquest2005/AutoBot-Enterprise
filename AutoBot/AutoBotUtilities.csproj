@@ -298,9 +298,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Client.cs" />
+    <Compile Include="DiscpancyExecData.cs" />
     <Compile Include="POCreator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ShipmentExtensions.cs" />
+    <Compile Include="SubmitEntryData.cs" />
     <Compile Include="Utils.cs" />
   </ItemGroup>
   <ItemGroup>
