@@ -81,20 +81,20 @@ namespace CoreEntities.Business.Entities
         }
         string _origin;
         [DataMember]
-        public int Quantity_requested 
+        public int Quantity_to_approve 
         {
             get
             {
-                return _quantity_requested;
+                return _quantity_to_approve;
             }
             set
             {
-                _quantity_requested = value;
+                _quantity_to_approve = value;
                 //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
                 NotifyPropertyChanged();
             }
         }
-        int _quantity_requested;
+        int _quantity_to_approve;
         [DataMember]
         public Nullable<System.DateTime> Application_date 
         {

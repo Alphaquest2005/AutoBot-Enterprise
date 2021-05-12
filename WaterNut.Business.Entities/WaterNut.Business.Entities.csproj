@@ -409,8 +409,10 @@
     <Compile Include="Generated Business Entities\EntryDataDS\InventoryItems_NonStock.cs" />
     <Compile Include="Generated Business Entities\EntryDataDS\InventorySources.cs" />
     <Compile Include="Generated Business Entities\EntryDataDS\InvoiceDetails.cs" />
+    <Compile Include="Generated Business Entities\EntryDataDS\InvoiceDetailsVolume.cs" />
     <Compile Include="Generated Business Entities\EntryDataDS\InvoiceExtraInfo.cs" />
     <Compile Include="Generated Business Entities\EntryDataDS\Invoices.cs" />
+    <Compile Include="Generated Business Entities\EntryDataDS\InvoiceVolume.cs" />
     <Compile Include="Generated Business Entities\EntryDataDS\OpeningStock.cs" />
     <Compile Include="Generated Business Entities\EntryDataDS\PackageTypes.cs" />
     <Compile Include="Generated Business Entities\EntryDataDS\PurchaseOrders.cs" />
@@ -450,6 +452,7 @@
     <Compile Include="Generated Business Entities\EntryDataDS\ShipmentRiderEx.cs" />
     <Compile Include="Generated Business Entities\EntryDataDS\ShipmentRiderInvoice.cs" />
     <Compile Include="Generated Business Entities\EntryDataDS\Suppliers.cs" />
+    <Compile Include="Generated Business Entities\EntryDataDS\VolumeUnits.cs" />
     <Compile Include="Generated Business Entities\EntryDataDS\WarehouseInfo.cs" />
     <Compile Include="Generated Business Entities\EntryDataQS\AsycudaDocumentEntryData.cs" />
     <Compile Include="Generated Business Entities\EntryDataQS\AsycudaDocumentItemEntryDataDetail.cs" />
@@ -791,8 +794,10 @@
     <Compile Include="Generated ChangeTracking Models\EntryDataDS\InventoryItems_NonStock.cs" />
     <Compile Include="Generated ChangeTracking Models\EntryDataDS\InventorySources.cs" />
     <Compile Include="Generated ChangeTracking Models\EntryDataDS\InvoiceDetails.cs" />
+    <Compile Include="Generated ChangeTracking Models\EntryDataDS\InvoiceDetailsVolume.cs" />
     <Compile Include="Generated ChangeTracking Models\EntryDataDS\InvoiceExtraInfo.cs" />
     <Compile Include="Generated ChangeTracking Models\EntryDataDS\Invoices.cs" />
+    <Compile Include="Generated ChangeTracking Models\EntryDataDS\InvoiceVolume.cs" />
     <Compile Include="Generated ChangeTracking Models\EntryDataDS\OpeningStock.cs" />
     <Compile Include="Generated ChangeTracking Models\EntryDataDS\PackageTypes.cs" />
     <Compile Include="Generated ChangeTracking Models\EntryDataDS\PurchaseOrders.cs" />
@@ -832,6 +837,7 @@
     <Compile Include="Generated ChangeTracking Models\EntryDataDS\ShipmentRiderEx.cs" />
     <Compile Include="Generated ChangeTracking Models\EntryDataDS\ShipmentRiderInvoice.cs" />
     <Compile Include="Generated ChangeTracking Models\EntryDataDS\Suppliers.cs" />
+    <Compile Include="Generated ChangeTracking Models\EntryDataDS\VolumeUnits.cs" />
     <Compile Include="Generated ChangeTracking Models\EntryDataDS\WarehouseInfo.cs" />
     <Compile Include="Generated ChangeTracking Models\EntryDataQS\AsycudaDocumentEntryData.cs" />
     <Compile Include="Generated ChangeTracking Models\EntryDataQS\AsycudaDocumentItemEntryDataDetail.cs" />
@@ -1171,8 +1177,10 @@
     <Compile Include="Generated Constructors Models\EntryDataDS\InventoryItems_NonStock.cs" />
     <Compile Include="Generated Constructors Models\EntryDataDS\InventorySources.cs" />
     <Compile Include="Generated Constructors Models\EntryDataDS\InvoiceDetails.cs" />
+    <Compile Include="Generated Constructors Models\EntryDataDS\InvoiceDetailsVolume.cs" />
     <Compile Include="Generated Constructors Models\EntryDataDS\InvoiceExtraInfo.cs" />
     <Compile Include="Generated Constructors Models\EntryDataDS\Invoices.cs" />
+    <Compile Include="Generated Constructors Models\EntryDataDS\InvoiceVolume.cs" />
     <Compile Include="Generated Constructors Models\EntryDataDS\OpeningStock.cs" />
     <Compile Include="Generated Constructors Models\EntryDataDS\PackageTypes.cs" />
     <Compile Include="Generated Constructors Models\EntryDataDS\PurchaseOrders.cs" />
@@ -1212,6 +1220,7 @@
     <Compile Include="Generated Constructors Models\EntryDataDS\ShipmentRiderEx.cs" />
     <Compile Include="Generated Constructors Models\EntryDataDS\ShipmentRiderInvoice.cs" />
     <Compile Include="Generated Constructors Models\EntryDataDS\Suppliers.cs" />
+    <Compile Include="Generated Constructors Models\EntryDataDS\VolumeUnits.cs" />
     <Compile Include="Generated Constructors Models\EntryDataDS\WarehouseInfo.cs" />
     <Compile Include="Generated Constructors Models\EntryDataQS\AsycudaDocumentEntryData.cs" />
     <Compile Include="Generated Constructors Models\EntryDataQS\AsycudaDocumentItemEntryDataDetail.cs" />
@@ -1551,8 +1560,10 @@
     <Compile Include="Generated IEntitiyWithKey Models\EntryDataDS\InventoryItems_NonStock.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\EntryDataDS\InventorySources.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\EntryDataDS\InvoiceDetails.cs" />
+    <Compile Include="Generated IEntitiyWithKey Models\EntryDataDS\InvoiceDetailsVolume.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\EntryDataDS\InvoiceExtraInfo.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\EntryDataDS\Invoices.cs" />
+    <Compile Include="Generated IEntitiyWithKey Models\EntryDataDS\InvoiceVolume.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\EntryDataDS\OpeningStock.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\EntryDataDS\PackageTypes.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\EntryDataDS\PurchaseOrders.cs" />
@@ -1592,6 +1603,7 @@
     <Compile Include="Generated IEntitiyWithKey Models\EntryDataDS\ShipmentRiderEx.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\EntryDataDS\ShipmentRiderInvoice.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\EntryDataDS\Suppliers.cs" />
+    <Compile Include="Generated IEntitiyWithKey Models\EntryDataDS\VolumeUnits.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\EntryDataDS\WarehouseInfo.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\EntryDataQS\AsycudaDocumentEntryData.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\EntryDataQS\AsycudaDocumentItemEntryDataDetail.cs" />
@@ -1931,8 +1943,10 @@
     <Compile Include="Generated IIdentitfiableEntity Models\EntryDataDS\InventoryItems_NonStock.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\EntryDataDS\InventorySources.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\EntryDataDS\InvoiceDetails.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\EntryDataDS\InvoiceDetailsVolume.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\EntryDataDS\InvoiceExtraInfo.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\EntryDataDS\Invoices.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\EntryDataDS\InvoiceVolume.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\EntryDataDS\OpeningStock.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\EntryDataDS\PackageTypes.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\EntryDataDS\PurchaseOrders.cs" />
@@ -1972,6 +1986,7 @@
     <Compile Include="Generated IIdentitfiableEntity Models\EntryDataDS\ShipmentRiderEx.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\EntryDataDS\ShipmentRiderInvoice.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\EntryDataDS\Suppliers.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\EntryDataDS\VolumeUnits.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\EntryDataDS\WarehouseInfo.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\EntryDataQS\AsycudaDocumentEntryData.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\EntryDataQS\AsycudaDocumentItemEntryDataDetail.cs" />
@@ -2321,8 +2336,10 @@
     <Compile Include="Generated Mappings\EntryDataDS\InventoryItems_NonStock.map.cs" />
     <Compile Include="Generated Mappings\EntryDataDS\InventorySources.map.cs" />
     <Compile Include="Generated Mappings\EntryDataDS\InvoiceDetails.map.cs" />
+    <Compile Include="Generated Mappings\EntryDataDS\InvoiceDetailsVolume.map.cs" />
     <Compile Include="Generated Mappings\EntryDataDS\InvoiceExtraInfo.map.cs" />
     <Compile Include="Generated Mappings\EntryDataDS\Invoices.map.cs" />
+    <Compile Include="Generated Mappings\EntryDataDS\InvoiceVolume.map.cs" />
     <Compile Include="Generated Mappings\EntryDataDS\OpeningStock.map.cs" />
     <Compile Include="Generated Mappings\EntryDataDS\PackageTypes.map.cs" />
     <Compile Include="Generated Mappings\EntryDataDS\PurchaseOrders.map.cs" />
@@ -2362,6 +2379,7 @@
     <Compile Include="Generated Mappings\EntryDataDS\ShipmentRiderEx.map.cs" />
     <Compile Include="Generated Mappings\EntryDataDS\ShipmentRiderInvoice.map.cs" />
     <Compile Include="Generated Mappings\EntryDataDS\Suppliers.map.cs" />
+    <Compile Include="Generated Mappings\EntryDataDS\VolumeUnits.map.cs" />
     <Compile Include="Generated Mappings\EntryDataDS\WarehouseInfo.map.cs" />
     <Compile Include="Generated Mappings\EntryDataQS\AsycudaDocumentEntryData.map.cs" />
     <Compile Include="Generated Mappings\EntryDataQS\AsycudaDocumentItemEntryDataDetail.map.cs" />

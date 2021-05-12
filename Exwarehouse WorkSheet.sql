@@ -1,6 +1,6 @@
 
 --test with CHAIN/10G-28, WPA/30062,INT/YBA063GL,BM/SHG16B, INT/YBC103/1,CMC/11811 - expried,BM/FGFB,TOH/MTS009_8S,REF/RF0A3FDSTAH
-declare @itemnumber nvarchar(50) = 'AWL/G3010GL', @cnumber nvarchar(50) = '40931' , @linenumber int = 7
+declare @itemnumber nvarchar(50) = 'SEH/R1-S1', @cnumber nvarchar(50) = '11062' , @linenumber int = 9
 
 declare @itemId int = (select item_id from AsycudaItemBasicInfo where CNumber = @cnumber and LineNumber = @linenumber)
 select 'asycudadocument'

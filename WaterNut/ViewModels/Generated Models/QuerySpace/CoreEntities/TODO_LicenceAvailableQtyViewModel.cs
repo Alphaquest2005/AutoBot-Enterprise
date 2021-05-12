@@ -134,10 +134,6 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 
             void CurrentTODO_LicenceAvailableQty__propertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
                 {
-                    //if (e.PropertyName == "AddApplicationSettings")
-                   // {
-                   //    if(ApplicationSettings.Contains(CurrentTODO_LicenceAvailableQty.ApplicationSettings) == false) ApplicationSettings.Add(CurrentTODO_LicenceAvailableQty.ApplicationSettings);
-                    //}
                  } 
         internal virtual void OnTODO_LicenceAvailableQtyChanged(object sender, NotificationEventArgs e)
         {
@@ -149,20 +145,6 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
  
   			// Core Current Entities Changed
 			// theorticall don't need this cuz i am inheriting from core entities baseview model so changes should flow up to here
-                internal virtual void OnCurrentApplicationSettingsChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<ApplicationSettings> e)
-				{
-				if (e.Data == null || e.Data.ApplicationSettingsId == null)
-                {
-                    vloader.FilterExpression = null;
-                }
-                else
-                {
-                    vloader.FilterExpression = string.Format("ApplicationSettingsId == {0}", e.Data.ApplicationSettingsId.ToString());
-                }
-					
-                    TODO_LicenceAvailableQty.Refresh();
-					NotifyPropertyChanged(x => this.TODO_LicenceAvailableQty);
-				}
   
 // Filtering Each Field except IDs
 		public void ViewAll()
@@ -243,17 +225,17 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 
  
 
-		private Int32? _quantity_requestedFilter;
-        public Int32? Quantity_requestedFilter
+		private Int32? _quantity_to_approveFilter;
+        public Int32? Quantity_to_approveFilter
         {
             get
             {
-                return _quantity_requestedFilter;
+                return _quantity_to_approveFilter;
             }
             set
             {
-                _quantity_requestedFilter = value;
-				NotifyPropertyChanged(x => Quantity_requestedFilter);
+                _quantity_to_approveFilter = value;
+				NotifyPropertyChanged(x => Quantity_to_approveFilter);
                 FilterData();
                 
             }
@@ -474,8 +456,8 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 						res.Append(" && " + string.Format("Origin.Contains(\"{0}\")",  OriginFilter));						
  
 
-					if(Quantity_requestedFilter.HasValue)
-						res.Append(" && " + string.Format("Quantity_requested == {0}",  Quantity_requestedFilter.ToString()));				 
+					if(Quantity_to_approveFilter.HasValue)
+						res.Append(" && " + string.Format("Quantity_to_approve == {0}",  Quantity_to_approveFilter.ToString()));				 
 
  
 
@@ -580,7 +562,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     Origin = x.Origin ,
                     
  
-                    Quantity_requested = x.Quantity_requested ,
+                    Quantity_to_approve = x.Quantity_to_approve ,
                     
  
                     Application_date = x.Application_date ,
@@ -620,7 +602,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     public string Origin { get; set; } 
                     
  
-                    public int Quantity_requested { get; set; } 
+                    public int Quantity_to_approve { get; set; } 
                     
  
                     public Nullable<System.DateTime> Application_date { get; set; } 

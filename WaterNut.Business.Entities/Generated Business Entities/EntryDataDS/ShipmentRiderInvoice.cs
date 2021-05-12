@@ -156,6 +156,21 @@ namespace EntryDataDS.Business.Entities
         }
         Nullable<long> _rownumber;
         [DataMember]
+        public Nullable<long> RowNumber2 
+        {
+            get
+            {
+                return _rownumber2;
+            }
+            set
+            {
+                _rownumber2 = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<long> _rownumber2;
+        [DataMember]
         public ShipmentRider ShipmentRider { get; set; }
         [DataMember]
         public ShipmentInvoice ShipmentInvoice { get; set; }

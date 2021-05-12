@@ -211,6 +211,8 @@ namespace EntryDataDS.Business.Entities
         public List<ShipmentInvoicePOItemQueryMatches> POItems { get; set; }
         [DataMember]
         public ShipmentInvoiceDetailsItemAlias ItemAlias { get; set; }
+        [DataMember]
+        public InvoiceDetailsVolume Volume { get; set; }
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

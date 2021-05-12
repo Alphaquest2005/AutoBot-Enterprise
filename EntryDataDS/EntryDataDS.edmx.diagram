@@ -136,6 +136,11 @@
         <EntityTypeShape EntityType="WaterNutDBModel.ShipmentInvoicePOItemData" Width="1.5" PointX="13.375" PointY="17.75" />
         <EntityTypeShape EntityType="WaterNutDBModel.ShipmentInvoiceDetailsItemAlias" Width="2.75" PointX="11.375" PointY="21.75" />
         <AssociationConnector Association="WaterNutDBModel.InvoiceDetailsShipmentInvoiceDetailsItemAlias" />
+        <EntityTypeShape EntityType="WaterNutDBModel.InvoiceDetailsVolume" Width="2.625" PointX="12.75" PointY="25" />
+        <AssociationConnector Association="WaterNutDBModel.FK_ShipmentInvoiceDetails_Volume_ShipmentInvoiceDetails" />
+        <EntityTypeShape EntityType="WaterNutDBModel.InvoiceVolume" Width="1.5" PointX="10.125" PointY="25.375" />
+        <EntityTypeShape EntityType="WaterNutDBModel.VolumeUnits" Width="1.5" PointX="19.375" PointY="5.75" />
+        <AssociationConnector Association="WaterNutDBModel.FK_ShipmentInvoice_TotalVolume_ShipmentInvoice" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

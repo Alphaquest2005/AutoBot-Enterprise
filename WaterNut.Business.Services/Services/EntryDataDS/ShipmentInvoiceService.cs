@@ -271,6 +271,12 @@ namespace EntryDataDS.Business.Services
                                         GetWhere<ShipmentInvoiceRiderDetails>(dbContext, exp, itm.Value, "ShipmentInvoice", "Select", includesLst)
 										.ConfigureAwait(continueOnCapturedContext: false);
 
+                            case "TotalVolume":
+                                return
+                                    await
+                                        GetWhere<InvoiceVolume>(dbContext, exp, itm.Value, "ShipmentInvoice", "SelectMany", includesLst)
+										.ConfigureAwait(continueOnCapturedContext: false);
+
                         }
 
                     }
@@ -788,6 +794,9 @@ namespace EntryDataDS.Business.Services
                             case "ShipmentInvoiceRiderDetails":
                                 return await CountWhere<ShipmentInvoiceRiderDetails>(dbContext, exp, itm.Value, "ShipmentInvoice", "Select")
 											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "TotalVolume":
+                                return await CountWhere<InvoiceVolume>(dbContext, exp, itm.Value, "ShipmentInvoice", "SelectMany")
+											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }
                     return await dbContext.ShipmentInvoice.Where(exp == "All" || exp == null ? "Id != null" : exp)
@@ -928,6 +937,12 @@ namespace EntryDataDS.Business.Services
                                 return
                                     await
                                         LoadRangeWhere<ShipmentInvoiceRiderDetails>(startIndex, count, dbContext, exp, itm.Value, "ShipmentInvoice", "Select")
+													.ConfigureAwait(continueOnCapturedContext: false);
+
+                            case "TotalVolume":
+                                return
+                                    await
+                                        LoadRangeWhere<InvoiceVolume>(startIndex, count, dbContext, exp, itm.Value, "ShipmentInvoice", "SelectMany")
 													.ConfigureAwait(continueOnCapturedContext: false);
 
                           
@@ -1311,6 +1326,9 @@ namespace EntryDataDS.Business.Services
 											.ConfigureAwait(continueOnCapturedContext: false);
                             case "ShipmentInvoiceRiderDetails":
                                 return await SumWhere<ShipmentInvoiceRiderDetails>(dbContext, exp, itm.Value, "ShipmentInvoice", field, "Select")
+											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "TotalVolume":
+                                return await SumWhere<InvoiceVolume>(dbContext, exp, itm.Value, "ShipmentInvoice", field, "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }

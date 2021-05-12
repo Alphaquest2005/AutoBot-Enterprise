@@ -98,16 +98,16 @@ namespace CoreEntities.Business.Services
         }
 
 
-        public async Task<TODO_LicenceAvailableQty> GetTODO_LicenceAvailableQtyByKey(string LicenseId, List<string> includesLst = null, bool tracking = true)
+        public async Task<TODO_LicenceAvailableQty> GetTODO_LicenceAvailableQtyByKey(string RegistrationNumber, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
-			   if(string.IsNullOrEmpty(LicenseId))return null; 
+			   if(string.IsNullOrEmpty(RegistrationNumber))return null; 
               using ( var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
               {
-                var i = Convert.ToInt32(LicenseId);
+                var i = RegistrationNumber;
 				var set = AddIncludes(includesLst, dbContext);
-                TODO_LicenceAvailableQty entity = await set.AsNoTracking().SingleOrDefaultAsync(x => x.LicenseId == i).ConfigureAwait(continueOnCapturedContext: false);
+                TODO_LicenceAvailableQty entity = await set.AsNoTracking().SingleOrDefaultAsync(x => x.RegistrationNumber == i).ConfigureAwait(continueOnCapturedContext: false);
                 if(tracking && entity != null) entity.StartTracking();
                 return entity;
               }
@@ -288,11 +288,11 @@ namespace CoreEntities.Business.Services
                                 IQueryable<TODO_LicenceAvailableQty> dset;
                                 if (exp == "All")
                                 {
-                                    dset = set.OrderBy(x => x.LicenseId);
+                                    dset = set.OrderBy(x => x.RegistrationNumber);
                                 }
                                 else
                                 {
-                                    dset = set.OrderBy(x => x.LicenseId).Where(exp);
+                                    dset = set.OrderBy(x => x.RegistrationNumber).Where(exp);
                                 }
 
                                 var lst = dset.AsNoTracking()
@@ -363,12 +363,12 @@ namespace CoreEntities.Business.Services
                                 IQueryable<TODO_LicenceAvailableQty> dset;
                                 if (expLst.FirstOrDefault() == "All")
                                 {
-                                    dset = set.OrderBy(x => x.LicenseId);
+                                    dset = set.OrderBy(x => x.RegistrationNumber);
                                 }
                                 else
                                 {
                                     set = AddWheres(expLst, set);
-                                    dset = set.OrderBy(x => x.LicenseId);
+                                    dset = set.OrderBy(x => x.RegistrationNumber);
                                 }
 
                                 var lst = dset.AsNoTracking()
@@ -514,15 +514,15 @@ namespace CoreEntities.Business.Services
             }
         }
 
-        public async Task<bool> DeleteTODO_LicenceAvailableQty(string LicenseId)
+        public async Task<bool> DeleteTODO_LicenceAvailableQty(string RegistrationNumber)
         {
             try
             {
               using ( var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
               {
-                var i = Convert.ToInt32(LicenseId);
+                var i = RegistrationNumber;
                 TODO_LicenceAvailableQty entity = await dbContext.TODO_LicenceAvailableQty
-													.SingleOrDefaultAsync(x => x.LicenseId == i)
+													.SingleOrDefaultAsync(x => x.RegistrationNumber == i)
 													.ConfigureAwait(continueOnCapturedContext: false);
                 if (entity == null)
                     return false;
@@ -674,7 +674,7 @@ namespace CoreEntities.Business.Services
                     {
                         return await dbContext.TODO_LicenceAvailableQty
 										.AsNoTracking()
-                                        .OrderBy(y => y.LicenseId)
+                                        .OrderBy(y => y.RegistrationNumber)
 										.Skip(startIndex)
 										.Take(count)
 										.ToListAsync()
@@ -686,7 +686,7 @@ namespace CoreEntities.Business.Services
                         return await dbContext.TODO_LicenceAvailableQty
 										.AsNoTracking()
                                         .Where(exp)
-										.OrderBy(y => y.LicenseId)
+										.OrderBy(y => y.RegistrationNumber)
 										.Skip(startIndex)
 										.Take(count)
 										.ToListAsync()
@@ -723,7 +723,7 @@ namespace CoreEntities.Business.Services
                                         .CountAsync()
 										.ConfigureAwait(continueOnCapturedContext: false);
                     }
-                    return await dbContext.TODO_LicenceAvailableQty.Where(exp == "All" || exp == null ? "LicenseId != null" : exp)
+                    return await dbContext.TODO_LicenceAvailableQty.Where(exp == "All" || exp == null ? "RegistrationNumber != null" : exp)
 											.AsNoTracking()
                                             .CountAsync()
 											.ConfigureAwait(continueOnCapturedContext: false);
@@ -766,9 +766,9 @@ namespace CoreEntities.Business.Services
 				.AsNoTracking()
                 .Where(navExp)
                 .SelectMany(navProp).OfType<TODO_LicenceAvailableQty>()
-                .Where(exp == "All" || exp == null ? "LicenseId != null" : exp)
+                .Where(exp == "All" || exp == null ? "RegistrationNumber != null" : exp)
                 .Distinct()
-                .OrderBy("LicenseId")
+                .OrderBy("RegistrationNumber")
                 .CountAsync()
 				.ConfigureAwait(continueOnCapturedContext: false);
 			}
@@ -787,9 +787,9 @@ namespace CoreEntities.Business.Services
 				.AsNoTracking()
                 .Where(navExp)
                 .Select(navProp).OfType<TODO_LicenceAvailableQty>()
-                .Where(exp == "All" || exp == null ? "LicenseId != null" : exp)
+                .Where(exp == "All" || exp == null ? "RegistrationNumber != null" : exp)
                 .Distinct()
-                .OrderBy("LicenseId")
+                .OrderBy("RegistrationNumber")
                 .CountAsync()
 				.ConfigureAwait(continueOnCapturedContext: false);
 			}
@@ -816,7 +816,7 @@ namespace CoreEntities.Business.Services
                        
                         return await set
 									.AsNoTracking()
-                                    .OrderBy(y => y.LicenseId)
+                                    .OrderBy(y => y.RegistrationNumber)
  
                                     .Skip(startIndex)
                                     .Take(count)
@@ -825,8 +825,8 @@ namespace CoreEntities.Business.Services
                     }
                     return await set//dbContext.TODO_LicenceAvailableQty
 								.AsNoTracking()
-                                .Where(exp == "All" || exp == null ? "LicenseId != null" : exp)
-								.OrderBy(y => y.LicenseId)
+                                .Where(exp == "All" || exp == null ? "RegistrationNumber != null" : exp)
+								.OrderBy(y => y.RegistrationNumber)
  
                                 .Skip(startIndex)
                                 .Take(count)
@@ -878,9 +878,9 @@ namespace CoreEntities.Business.Services
             if (includeLst != null) set = includeLst.Aggregate(set, (current, itm) => current.Include(itm));            
 
             return await set
-                .Where(exp == "All" || exp == null ? "LicenseId != null" : exp)
+                .Where(exp == "All" || exp == null ? "RegistrationNumber != null" : exp)
                 .Distinct()
-                .OrderBy(y => y.LicenseId)
+                .OrderBy(y => y.RegistrationNumber)
  
                 .Skip(startIndex)
                 .Take(count)
@@ -907,9 +907,9 @@ namespace CoreEntities.Business.Services
                if (includeLst != null) set = includeLst.Aggregate(set, (current, itm) => current.Include(itm)); 
                 
                return await set
-                .Where(exp == "All" || exp == null ? "LicenseId != null" : exp)
+                .Where(exp == "All" || exp == null ? "RegistrationNumber != null" : exp)
                 .Distinct()
-                .OrderBy(y => y.LicenseId)
+                .OrderBy(y => y.RegistrationNumber)
  
                 .Skip(startIndex)
                 .Take(count)
@@ -959,7 +959,7 @@ namespace CoreEntities.Business.Services
 							.AsNoTracking()
                             .Where(navExp)
 							.SelectMany(navProp).OfType<TODO_LicenceAvailableQty>()
-							.Where(exp == "All" || exp == null?"LicenseId != null":exp)
+							.Where(exp == "All" || exp == null?"RegistrationNumber != null":exp)
 							.Distinct()
 							.ToListAsync()
 							.ConfigureAwait(continueOnCapturedContext: false);
@@ -969,7 +969,7 @@ namespace CoreEntities.Business.Services
 				.AsNoTracking()
                 .Where(navExp)
                 .SelectMany(navProp).OfType<TODO_LicenceAvailableQty>()
-                .Where(exp == "All" || exp == null?"LicenseId != null":exp)
+                .Where(exp == "All" || exp == null?"RegistrationNumber != null":exp)
                 .Distinct();
 
 			set = includesLst.Aggregate(set, (current, itm) => current.Include(itm));
@@ -996,7 +996,7 @@ namespace CoreEntities.Business.Services
 							.AsNoTracking()
                             .Where(navExp)
 							.Select(navProp).OfType<TODO_LicenceAvailableQty>()
-							.Where(exp == "All" || exp == null?"LicenseId != null":exp)
+							.Where(exp == "All" || exp == null?"RegistrationNumber != null":exp)
 							.Distinct()
 							.ToListAsync()
 							.ConfigureAwait(continueOnCapturedContext: false);
@@ -1006,7 +1006,7 @@ namespace CoreEntities.Business.Services
 				.AsNoTracking()
                 .Where(navExp)
                 .Select(navProp).OfType<TODO_LicenceAvailableQty>()
-                .Where(exp == "All" || exp == null?"LicenseId != null":exp)
+                .Where(exp == "All" || exp == null?"RegistrationNumber != null":exp)
                 .Distinct();
 
 			set = includesLst.Aggregate(set, (current, itm) => current.Include(itm));
@@ -1021,36 +1021,7 @@ namespace CoreEntities.Business.Services
 			}
         }
 
-			        public async Task<IEnumerable<TODO_LicenceAvailableQty>> GetTODO_LicenceAvailableQtyByApplicationSettingsId(string ApplicationSettingsId, List<string> includesLst = null)
-        {
-            try
-            {
-                using ( var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
-              {
-                var i = Convert.ToInt32(ApplicationSettingsId);
-                var set = AddIncludes(includesLst, dbContext);
-                IEnumerable<TODO_LicenceAvailableQty> entities = await set//dbContext.TODO_LicenceAvailableQty
-                                      .AsNoTracking()
-                                        .Where(x => x.ApplicationSettingsId.ToString() == ApplicationSettingsId.ToString())
-										.ToListAsync()
-										.ConfigureAwait(continueOnCapturedContext: false);
-                return entities;
-              }
-             }
-            catch (Exception updateEx)
-            {
-                System.Diagnostics.Debugger.Break();
-                //throw new FaultException(updateEx.Message);
-                    var fault = new ValidationFault
-                                {
-                                    Result = false,
-                                    Message = updateEx.Message,
-                                    Description = updateEx.StackTrace
-                                };
-                    throw new FaultException<ValidationFault>(fault);
-            }
-        }
- 
+		
 		public decimal SumField(string whereExp, string field)
          {
              try
@@ -1101,7 +1072,7 @@ namespace CoreEntities.Business.Services
 										.AsNoTracking()
                                         .Sum(field)??0);
                     }
-                    return Convert.ToDecimal(dbContext.TODO_LicenceAvailableQty.Where(exp == "All" || exp == null ? "LicenseId != null" : exp)
+                    return Convert.ToDecimal(dbContext.TODO_LicenceAvailableQty.Where(exp == "All" || exp == null ? "RegistrationNumber != null" : exp)
 											.AsNoTracking()
                                             .Sum(field)??0);
                 }
@@ -1142,9 +1113,9 @@ namespace CoreEntities.Business.Services
 				.AsNoTracking()
                 .Where(navExp)
                 .SelectMany(navProp).OfType<TODO_LicenceAvailableQty>()
-                .Where(exp == "All" || exp == null ? "LicenseId != null" : exp)
+                .Where(exp == "All" || exp == null ? "RegistrationNumber != null" : exp)
                 .Distinct()
-                .OrderBy("LicenseId")
+                .OrderBy("RegistrationNumber")
                 .Sum(field));
 			}
 			catch (Exception)
@@ -1162,9 +1133,9 @@ namespace CoreEntities.Business.Services
 				.AsNoTracking()
                 .Where(navExp)
                 .Select(navProp).OfType<TODO_LicenceAvailableQty>()
-                .Where(exp == "All" || exp == null ? "LicenseId != null" : exp)
+                .Where(exp == "All" || exp == null ? "RegistrationNumber != null" : exp)
                 .Distinct()
-                .OrderBy("LicenseId")
+                .OrderBy("RegistrationNumber")
                 .Sum(field));
 			}
 			catch (Exception)

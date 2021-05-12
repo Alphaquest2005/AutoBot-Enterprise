@@ -36,6 +36,7 @@
               this.HasMany(t => t.ShipmentAttachedInvoices).WithRequired(t => (ShipmentInvoice)t.ShipmentInvoice);
               this.HasMany(t => t.ShipmentInvoicePOs).WithRequired(t => (ShipmentInvoice)t.ShipmentInvoice);
               this.HasMany(t => t.ShipmentInvoiceRiderDetails).WithRequired(t => (ShipmentInvoice)t.ShipmentInvoice);
+              this.HasOptional(t => t.TotalVolume).WithRequired(t => (ShipmentInvoice)t.ShipmentInvoice);
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);
     			this.Ignore(t => t.ModifiedProperties);

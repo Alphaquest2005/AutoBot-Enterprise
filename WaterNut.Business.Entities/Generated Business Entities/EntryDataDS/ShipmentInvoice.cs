@@ -297,6 +297,8 @@ namespace EntryDataDS.Business.Entities
         public List<ShipmentInvoicePOs> ShipmentInvoicePOs { get; set; }
         [DataMember]
         public List<ShipmentInvoiceRiderDetails> ShipmentInvoiceRiderDetails { get; set; }
+        [DataMember]
+        public InvoiceVolume TotalVolume { get; set; }
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

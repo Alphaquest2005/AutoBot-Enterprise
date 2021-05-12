@@ -159,6 +159,12 @@ namespace EntryDataDS.Business.Entities
      
         public DbSet<ShipmentInvoiceDetailsItemAlias> ShipmentInvoiceDetailsItemAlias { get; set; }
      
+        public DbSet<InvoiceDetailsVolume> InvoiceDetailsVolume { get; set; }
+     
+        public DbSet<InvoiceVolume> InvoiceVolume { get; set; }
+     
+        public DbSet<VolumeUnits> VolumeUnits { get; set; }
+     
 
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
@@ -274,6 +280,12 @@ namespace EntryDataDS.Business.Entities
             modelBuilder.Configurations.Add(new ShipmentInvoicePOItemDataMap());
          
             modelBuilder.Configurations.Add(new ShipmentInvoiceDetailsItemAliasMap());
+         
+            modelBuilder.Configurations.Add(new InvoiceDetailsVolumeMap());
+         
+            modelBuilder.Configurations.Add(new InvoiceVolumeMap());
+         
+            modelBuilder.Configurations.Add(new VolumeUnitsMap());
          
             modelBuilder.Configurations.Add(new AdjustmentsMap());
       

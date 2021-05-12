@@ -74,17 +74,17 @@ namespace CoreEntities.Client.DTO
         private string _Origin;
 
         [DataMember]
-        public int Quantity_requested
+        public int Quantity_to_approve
 		{ 
-		    get { return _Quantity_requested; }
+		    get { return _Quantity_to_approve; }
 			set
 			{
-			    if (value == _Quantity_requested) return;
-				_Quantity_requested = value;
-				NotifyPropertyChanged();//m => this.Quantity_requested
+			    if (value == _Quantity_to_approve) return;
+				_Quantity_to_approve = value;
+				NotifyPropertyChanged();//m => this.Quantity_to_approve
 			}
 		}
-        private int _Quantity_requested;
+        private int _Quantity_to_approve;
 
         [DataMember]
         public Nullable<System.DateTime> Application_date

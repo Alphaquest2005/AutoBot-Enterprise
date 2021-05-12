@@ -108,17 +108,17 @@ public string Origin
 		}
      
 
-       [RequiredValidationAttribute(ErrorMessage= "Quantity_requested is required")]
+       [RequiredValidationAttribute(ErrorMessage= "Quantity_to_approve is required")]
        [NumberValidationAttribute]
-public int Quantity_requested
+public int Quantity_to_approve
 		{ 
-		    get { return this.todo_licenceavailableqty.Quantity_requested; }
+		    get { return this.todo_licenceavailableqty.Quantity_to_approve; }
 			set
 			{
-			    if (value == this.todo_licenceavailableqty.Quantity_requested) return;
-				this.todo_licenceavailableqty.Quantity_requested = value;
+			    if (value == this.todo_licenceavailableqty.Quantity_to_approve) return;
+				this.todo_licenceavailableqty.Quantity_to_approve = value;
                 if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
-				NotifyPropertyChanged("Quantity_requested");
+				NotifyPropertyChanged("Quantity_to_approve");
 			}
 		}
      

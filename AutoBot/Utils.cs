@@ -1749,7 +1749,7 @@ namespace AutoBot
                             Status = x.Status,
                             DutyFreePaid = x.DutyFreePaid,
                             subject = x.Subject,
-                            emailDate = x.EmailDate,
+                            emailDate = x.EmailDate ?? DateTime.MinValue,
                             Reference = x.Reference,
                             DocumentType = x.DocumentType,
 
@@ -1897,7 +1897,7 @@ namespace AutoBot
                             Status = x.Status,
                             DutyFreePaid = x.DutyFreePaid,
                             subject = x.Subject,
-                            emailDate = x.EmailDate,
+                            emailDate = x.EmailDate??DateTime.MinValue,
                             Reference = x.Reference,
                             DocumentType = x.DocumentType,
 

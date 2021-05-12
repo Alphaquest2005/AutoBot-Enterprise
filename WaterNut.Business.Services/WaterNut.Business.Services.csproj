@@ -624,8 +624,10 @@
     <Compile Include="Contracts\EntryDataDS\IInventoryItems_NonStockService.cs" />
     <Compile Include="Contracts\EntryDataDS\IInventorySourcesService.cs" />
     <Compile Include="Contracts\EntryDataDS\IInvoiceDetailsService.cs" />
+    <Compile Include="Contracts\EntryDataDS\IInvoiceDetailsVolumeService.cs" />
     <Compile Include="Contracts\EntryDataDS\IInvoiceExtraInfoService.cs" />
     <Compile Include="Contracts\EntryDataDS\IInvoicesService.cs" />
+    <Compile Include="Contracts\EntryDataDS\IInvoiceVolumeService.cs" />
     <Compile Include="Contracts\EntryDataDS\IOpeningStockService.cs" />
     <Compile Include="Contracts\EntryDataDS\IPackageTypesService.cs" />
     <Compile Include="Contracts\EntryDataDS\IPurchaseOrdersService.cs" />
@@ -665,6 +667,7 @@
     <Compile Include="Contracts\EntryDataDS\IShipmentRiderService.cs" />
     <Compile Include="Contracts\EntryDataDS\IShipmentService.cs" />
     <Compile Include="Contracts\EntryDataDS\ISuppliersService.cs" />
+    <Compile Include="Contracts\EntryDataDS\IVolumeUnitsService.cs" />
     <Compile Include="Contracts\EntryDataDS\IWarehouseInfoService.cs" />
     <Compile Include="Contracts\EntryDataQS\IAsycudaDocumentEntryDataService.cs" />
     <Compile Include="Contracts\EntryDataQS\IAsycudaDocumentItemEntryDataDetailService.cs" />
@@ -1214,8 +1217,10 @@
     <Compile Include="Services\EntryDataDS\InventoryItems_NonStockService.cs" />
     <Compile Include="Services\EntryDataDS\InventorySourcesService.cs" />
     <Compile Include="Services\EntryDataDS\InvoiceDetailsService.cs" />
+    <Compile Include="Services\EntryDataDS\InvoiceDetailsVolumeService.cs" />
     <Compile Include="Services\EntryDataDS\InvoiceExtraInfoService.cs" />
     <Compile Include="Services\EntryDataDS\InvoicesService.cs" />
+    <Compile Include="Services\EntryDataDS\InvoiceVolumeService.cs" />
     <Compile Include="Services\EntryDataDS\OpeningStockService.cs" />
     <Compile Include="Services\EntryDataDS\PackageTypesService.cs" />
     <Compile Include="Services\EntryDataDS\PurchaseOrdersService.cs" />
@@ -1255,6 +1260,7 @@
     <Compile Include="Services\EntryDataDS\ShipmentRiderService.cs" />
     <Compile Include="Services\EntryDataDS\ShipmentService.cs" />
     <Compile Include="Services\EntryDataDS\SuppliersService.cs" />
+    <Compile Include="Services\EntryDataDS\VolumeUnitsService.cs" />
     <Compile Include="Services\EntryDataDS\WarehouseInfoService.cs" />
     <Compile Include="Services\EntryDataQS\AsycudaDocumentEntryDataService.cs" />
     <Compile Include="Services\EntryDataQS\AsycudaDocumentItemEntryDataDetailService.cs" />

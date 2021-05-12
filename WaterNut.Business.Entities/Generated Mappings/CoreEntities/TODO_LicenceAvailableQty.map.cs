@@ -11,13 +11,13 @@
     {
         public TODO_LicenceAvailableQtyMap()
         {                        
-              this.HasKey(t => new {t.LicenseId, t.SegmentId});        
+              this.HasKey(t => new {t.RegistrationNumber, t.ApplicationSettingsId, t.Quantity_to_approve, t.LicenseId, t.SourceFile, t.SegmentId});        
               this.ToTable("TODO-LicenceAvailableQty");
               this.Property(t => t.RegistrationNumber).HasColumnName("RegistrationNumber").IsRequired().HasMaxLength(50);
-              this.Property(t => t.ApplicationSettingsId).HasColumnName("ApplicationSettingsId");
+              this.Property(t => t.ApplicationSettingsId).HasColumnName("ApplicationSettingsId").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.None));
               this.Property(t => t.TariffCode).HasColumnName("TariffCode").HasMaxLength(8);
               this.Property(t => t.Origin).HasColumnName("Origin").HasMaxLength(255);
-              this.Property(t => t.Quantity_requested).HasColumnName("Quantity_requested");
+              this.Property(t => t.Quantity_to_approve).HasColumnName("Quantity_to_approve").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.None));
               this.Property(t => t.Application_date).HasColumnName("Application_date");
               this.Property(t => t.Importation_date).HasColumnName("Importation_date");
               this.Property(t => t.Key).HasColumnName("Key").HasMaxLength(55);

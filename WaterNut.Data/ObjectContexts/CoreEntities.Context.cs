@@ -207,8 +207,6 @@ namespace CoreEntities.Business.Entities
      
         public DbSet<AsycudaItemBasicInfo> AsycudaItemBasicInfo { get; set; }
      
-        public DbSet<TODO_LicenceAvailableQty> TODO_LicenceAvailableQty { get; set; }
-     
         public DbSet<TODO_SubmitEntryCIF> TODO_SubmitEntryCIF { get; set; }
      
         public DbSet<AsycudaDocumentSetC71> AsycudaDocumentSetC71 { get; set; }
@@ -222,6 +220,8 @@ namespace CoreEntities.Business.Entities
         public DbSet<ExpiredEntriesLst> ExpiredEntriesLst { get; set; }
      
         public DbSet<TODO_DiscrepanciesExecutionReport> TODO_DiscrepanciesExecutionReport { get; set; }
+     
+        public DbSet<TODO_LicenceAvailableQty> TODO_LicenceAvailableQty { get; set; }
      
 
 
@@ -387,8 +387,6 @@ namespace CoreEntities.Business.Entities
          
             modelBuilder.Configurations.Add(new AsycudaItemBasicInfoMap());
          
-            modelBuilder.Configurations.Add(new TODO_LicenceAvailableQtyMap());
-         
             modelBuilder.Configurations.Add(new TODO_SubmitEntryCIFMap());
          
             modelBuilder.Configurations.Add(new AsycudaDocumentSetC71Map());
@@ -402,6 +400,8 @@ namespace CoreEntities.Business.Entities
             modelBuilder.Configurations.Add(new ExpiredEntriesLstMap());
          
             modelBuilder.Configurations.Add(new TODO_DiscrepanciesExecutionReportMap());
+         
+            modelBuilder.Configurations.Add(new TODO_LicenceAvailableQtyMap());
          
 			OnModelCreatingExtentsion(modelBuilder);
 

@@ -653,6 +653,11 @@ namespace WaterNut.DataSpace
                 {
                     foreach (var manifest in lst)
                     {
+                        var blDetails = manifest.ShipmentBLDetails
+                            .DistinctBy(x => new {x.Marks, x.Quantity, x.PackageType}).ToList();
+
+                        manifest.ShipmentBLDetails = blDetails;
+
                         var detailsQty = manifest.ShipmentBLDetails.Sum(x => x.Quantity);
                         if (manifest.PackagesNo != detailsQty)
                         {

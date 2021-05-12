@@ -252,6 +252,7 @@ namespace AutoBotUtilities
                     var bls = ctx.ShipmentBL
                         .Include("ShipmentBLDetails.ShipmentRiderBLs.ShipmentBLDetails")
                         .Include("ShipmentBLDetails.ShipmentRiderBLs.ShipmentRiderDetails.ShipmentRider.ShipmentRiderEx")
+                        .Include("ShipmentBLDetails.ShipmentRiderBLs.ShipmentRiderDetails.ShipmentRiderInvoice")
                         .Include("ShipmentBLDetails.ShipmentFreightBLs.ShipmentFreightDetails")
                         //.Include(x => x.ShipmentFreight)
                         .Include(x => x.ShipmentManifestBLs)
@@ -497,6 +498,7 @@ namespace AutoBotUtilities
                         .Select(x => ctx.ShipmentBL
                             .Include("ShipmentBLDetails.ShipmentRiderBLs.ShipmentBLDetails")
                             .Include("ShipmentBLDetails.ShipmentRiderBLs.ShipmentRiderDetails.ShipmentRider.ShipmentRiderEx")
+                            .Include("ShipmentBLDetails.ShipmentRiderBLs.ShipmentRiderDetails.ShipmentRiderInvoice")
                             .Include("ShipmentBLDetails.ShipmentFreightBLs.ShipmentFreightDetails")
                             .Include(z => z.ShipmentBLFreight)
                             .Include(z => z.ShipmentRiderBLs)
@@ -515,6 +517,7 @@ namespace AutoBotUtilities
                         .SelectMany(x => ctx.ShipmentBL
                             .Include("ShipmentBLDetails.ShipmentRiderBLs.ShipmentBLDetails")
                             .Include("ShipmentBLDetails.ShipmentRiderBLs.ShipmentRiderDetails.ShipmentRider.ShipmentRiderEx")
+                            .Include("ShipmentBLDetails.ShipmentRiderBLs.ShipmentRiderDetails.ShipmentRiderInvoice")
                             .Include("ShipmentBLDetails.ShipmentFreightBLs.ShipmentFreightDetails")
                             .Include(z => z.ShipmentBLFreight)
                             .Include(z => z.ShipmentRiderBLs)
@@ -531,6 +534,7 @@ namespace AutoBotUtilities
                         .SelectMany(x => ctx.ShipmentBL
                             .Include("ShipmentBLDetails.ShipmentRiderBLs.ShipmentBLDetails")
                             .Include("ShipmentBLDetails.ShipmentRiderBLs.ShipmentRiderDetails.ShipmentRider.ShipmentRiderEx")
+                            .Include("ShipmentBLDetails.ShipmentRiderBLs.ShipmentRiderDetails.ShipmentRiderInvoice")
                             .Include("ShipmentBLDetails.ShipmentFreightBLs.ShipmentFreightDetails")
                             .Include(z => z.ShipmentBLFreight)
                             .Include(z => z.ShipmentRiderBLs)
@@ -547,6 +551,7 @@ namespace AutoBotUtilities
                         .SelectMany(x => ctx.ShipmentBL
                             .Include("ShipmentBLDetails.ShipmentRiderBLs.ShipmentBLDetails")
                             .Include("ShipmentBLDetails.ShipmentRiderBLs.ShipmentRiderDetails.ShipmentRider.ShipmentRiderEx")
+                            .Include("ShipmentBLDetails.ShipmentRiderBLs.ShipmentRiderDetails.ShipmentRiderInvoice")
                             .Include("ShipmentBLDetails.ShipmentFreightBLs.ShipmentFreightDetails")
                             .Include(z => z.ShipmentBLFreight)
                             .Include(z => z.ShipmentRiderBLs)
@@ -906,7 +911,7 @@ namespace AutoBotUtilities
                 }
 
 
-                return shipments.Where(x => x.ShipmentAttachments.Any()).ToList();
+                return shipments.Where(x => x.ShipmentAttachments.Any() && x.ExpectedEntries > 0).ToList();
 
 
             }
@@ -935,8 +940,8 @@ namespace AutoBotUtilities
                 .Where(x => !invoiceLst.Contains(x.ShipmentInvoiceId))
                 .Select(x => x.ShipmentInvoice).DistinctBy(x => x.InvoiceNo).ToList();
 
-            var unAttachedRiderDetails = client.SelectMany(x =>
-                x.ShipmentInvoiceRiderDetails.Where(r => r.ShipmentInvoice == null)).ToList();
+            var unAttachedRiderDetails = client.Where(x =>
+                x.ShipmentRiderInvoice.Any(z => string.IsNullOrEmpty(z.InvoiceNo) ) ).ToList();
 
 
             var allUnMatchedInvoices = new EntryDataDSContext().ShipmentMIS_Invoices

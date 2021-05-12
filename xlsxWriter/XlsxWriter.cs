@@ -591,7 +591,7 @@ namespace xlsxWriter
         public string Reference { get; set; }
         public List<ShipmentInvoice> Invoices { get; set; }
         public List<ShipmentInvoice> UnAttachedInvoices { get; set; }
-        public List<ShipmentInvoiceRiderDetails> UnAttachedRiderDetails { get; set; }
+        public List<ShipmentRiderDetails> UnAttachedRiderDetails { get; set; }
         public List<ShipmentRiderDetails> RiderDetails { get; set; }
         public List<ShipmentInvoiceRiderManualMatches> RiderManualMatches { get; set; }
         public ShipmentRiderEx RiderSummary { get; set; }

@@ -386,7 +386,7 @@ namespace CoreEntities.Client.DTO
         private string _Subject;
 
         [DataMember]
-        public System.DateTime EmailDate
+        public Nullable<System.DateTime> EmailDate
 		{ 
 		    get { return _EmailDate; }
 			set
@@ -396,7 +396,7 @@ namespace CoreEntities.Client.DTO
 				NotifyPropertyChanged();//m => this.EmailDate
 			}
 		}
-        private System.DateTime _EmailDate;
+        private Nullable<System.DateTime> _EmailDate;
 
         [DataMember]
         public string DutyFreePaid

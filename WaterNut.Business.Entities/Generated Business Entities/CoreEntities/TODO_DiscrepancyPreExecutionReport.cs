@@ -441,7 +441,7 @@ namespace CoreEntities.Business.Entities
         }
         string _subject;
         [DataMember]
-        public System.DateTime EmailDate 
+        public Nullable<System.DateTime> EmailDate 
         {
             get
             {
@@ -454,7 +454,7 @@ namespace CoreEntities.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        System.DateTime _emaildate;
+        Nullable<System.DateTime> _emaildate;
         [DataMember]
         public string DutyFreePaid 
         {

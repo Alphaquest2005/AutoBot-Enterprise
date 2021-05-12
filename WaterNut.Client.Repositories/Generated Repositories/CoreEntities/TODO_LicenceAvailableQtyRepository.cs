@@ -361,35 +361,7 @@ namespace CoreEntities.Client.Repositories
             }
         }
 
-	 public async Task<IEnumerable<TODO_LicenceAvailableQty>> GetTODO_LicenceAvailableQtyByApplicationSettingsId(string ApplicationSettingsId, List<string> includesLst = null)
-        {
-             if (ApplicationSettingsId == "0") return null;
-            try
-            {
-                 using (TODO_LicenceAvailableQtyClient t = new TODO_LicenceAvailableQtyClient())
-                    {
-                        var res = await t.GetTODO_LicenceAvailableQtyByApplicationSettingsId(ApplicationSettingsId, includesLst).ConfigureAwait(continueOnCapturedContext: false);
-                         if(res != null)
-                        {
-                            return res.Select(x => new TODO_LicenceAvailableQty(x)).AsEnumerable();
-					    }                
-					    else
-					    {
-						    return null;
-					    }                    
-                    }
-            }
-            catch (FaultException<ValidationFault> e)
-            {
-                throw new Exception(e.Detail.Message, e.InnerException);
-            }
-            catch (Exception)
-            {
-                Debugger.Break();
-                throw;
-            }
-        } 
-         
+        
 		public decimal SumField(string whereExp, string sumExp)
         {
             try

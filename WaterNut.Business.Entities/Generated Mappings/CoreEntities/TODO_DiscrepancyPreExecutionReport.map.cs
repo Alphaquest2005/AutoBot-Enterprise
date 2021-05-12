@@ -40,7 +40,7 @@
               this.Property(t => t.Type).HasColumnName("Type").HasMaxLength(50);
               this.Property(t => t.Declarant_Reference_Number).HasColumnName("Declarant_Reference_Number").HasMaxLength(50);
               this.Property(t => t.InvoiceDate).HasColumnName("InvoiceDate");
-              this.Property(t => t.Subject).HasColumnName("Subject").IsRequired();
+              this.Property(t => t.Subject).HasColumnName("Subject");
               this.Property(t => t.EmailDate).HasColumnName("EmailDate");
               this.Property(t => t.DutyFreePaid).HasColumnName("DutyFreePaid").IsRequired().IsUnicode(false).HasMaxLength(9);
               this.Property(t => t.DocumentType).HasColumnName("DocumentType").HasMaxLength(40);

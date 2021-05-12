@@ -425,6 +425,14 @@
           <Property Name="InventoryItemId" Type="int" />
           <Property Name="SalesFactor" Type="float" Nullable="false" />
         </EntityType>
+        <EntityType Name="ShipmentInvoiceDetails-Volume">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" />
+          <Property Name="Quantity" Type="float" Nullable="false" />
+          <Property Name="Units" Type="nvarchar" MaxLength="50" Nullable="false" />
+        </EntityType>
         <EntityType Name="ShipmentInvoiceExtraInfo">
           <Key>
             <PropertyRef Name="Id" />
@@ -468,6 +476,14 @@
           <Property Name="RiderInvoiceNumber" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="InvoiceNo" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="Packages" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="ShipmentInvoice-TotalVolume">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" />
+          <Property Name="Quantity" Type="float" Nullable="false" />
+          <Property Name="Units" Type="nvarchar" MaxLength="50" Nullable="false" />
         </EntityType>
         <EntityType Name="ShipmentManifest">
           <Key>
@@ -554,6 +570,13 @@
           <Property Name="CountryCode" Type="nvarchar" MaxLength="3" />
           <Property Name="Country" Type="nvarchar" MaxLength="100" />
           <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="VolumeUnits">
+          <Key>
+            <PropertyRef Name="Name" />
+          </Key>
+          <Property Name="Name" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="RateToLiters" Type="float" Nullable="false" />
         </EntityType>
         <EntityType Name="WarehouseInfo">
           <Key>
@@ -949,6 +972,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ShipmentRiderInvoice' doe
           <Property Name="InvoiceNo" Type="nvarchar" MaxLength="50" />
           <Property Name="Packages" Type="int" Nullable="false" />
           <Property Name="rowNumber" Type="bigint" />
+          <Property Name="RowNumber2" Type="bigint" />
         </EntityType>
         <Association Name="FK_AsycudaDocumentEntryData_EntryData1">
           <End Role="EntryData" Type="Self.EntryData" Multiplicity="1">
@@ -1436,6 +1460,20 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ShipmentRiderInvoice' doe
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_ShipmentInvoiceDetails-Volume_ShipmentInvoiceDetails">
+          <End Role="ShipmentInvoiceDetails" Type="Self.ShipmentInvoiceDetails" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="ShipmentInvoiceDetails-Volume" Type="Self.ShipmentInvoiceDetails-Volume" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="ShipmentInvoiceDetails">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ShipmentInvoiceDetails-Volume">
+              <PropertyRef Name="Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_ShipmentInvoiceExtraInfo_ShipmentInvoice">
           <End Role="ShipmentInvoice" Type="Self.ShipmentInvoice" Multiplicity="1">
             <OnDelete Action="Cascade" />
@@ -1503,6 +1541,20 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ShipmentRiderInvoice' doe
             </Principal>
             <Dependent Role="ShipmentInvoiceRiderDetails">
               <PropertyRef Name="RiderDetailId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ShipmentInvoice-TotalVolume_ShipmentInvoice">
+          <End Role="ShipmentInvoice" Type="Self.ShipmentInvoice" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="ShipmentInvoice-TotalVolume" Type="Self.ShipmentInvoice-TotalVolume" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="ShipmentInvoice">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ShipmentInvoice-TotalVolume">
+              <PropertyRef Name="Id" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -1583,16 +1635,19 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ShipmentRiderInvoice' doe
           <EntitySet Name="ShipmentFreightDetails" EntityType="Self.ShipmentFreightDetails" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ShipmentInvoice" EntityType="Self.ShipmentInvoice" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ShipmentInvoiceDetails" EntityType="Self.ShipmentInvoiceDetails" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ShipmentInvoiceDetails-Volume" EntityType="Self.ShipmentInvoiceDetails-Volume" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ShipmentInvoiceExtraInfo" EntityType="Self.ShipmentInvoiceExtraInfo" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ShipmentInvoicePOManualMatches" EntityType="Self.ShipmentInvoicePOManualMatches" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ShipmentInvoicePOs" EntityType="Self.ShipmentInvoicePOs" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ShipmentInvoiceRiderDetails" EntityType="Self.ShipmentInvoiceRiderDetails" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ShipmentInvoiceRiderManualMatches" EntityType="Self.ShipmentInvoiceRiderManualMatches" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ShipmentInvoice-TotalVolume" EntityType="Self.ShipmentInvoice-TotalVolume" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ShipmentManifest" EntityType="Self.ShipmentManifest" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ShipmentManifestDetails" EntityType="Self.ShipmentManifestDetails" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ShipmentRider" EntityType="Self.ShipmentRider" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ShipmentRiderDetails" EntityType="Self.ShipmentRiderDetails" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Suppliers" EntityType="Self.Suppliers" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="VolumeUnits" EntityType="Self.VolumeUnits" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="WarehouseInfo" EntityType="Self.WarehouseInfo" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="EntryDataDetailsEx" EntityType="Self.EntryDataDetailsEx" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
@@ -1859,7 +1914,8 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ShipmentRiderInvoice' doe
     [ShipmentRiderInvoice].[InvoiceNumber] AS [InvoiceNumber], 
     [ShipmentRiderInvoice].[InvoiceNo] AS [InvoiceNo], 
     [ShipmentRiderInvoice].[Packages] AS [Packages], 
-    [ShipmentRiderInvoice].[rowNumber] AS [rowNumber]
+    [ShipmentRiderInvoice].[rowNumber] AS [rowNumber], 
+    [ShipmentRiderInvoice].[RowNumber2] AS [RowNumber2]
     FROM [dbo].[ShipmentRiderInvoice] AS [ShipmentRiderInvoice]</DefiningQuery>
           </EntitySet>
           <AssociationSet Name="FK_AsycudaDocumentEntryData_EntryData1" Association="Self.FK_AsycudaDocumentEntryData_EntryData1">
@@ -2002,6 +2058,10 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ShipmentRiderInvoice' doe
             <End Role="ShipmentInvoice" EntitySet="ShipmentInvoice" />
             <End Role="ShipmentInvoiceDetails" EntitySet="ShipmentInvoiceDetails" />
           </AssociationSet>
+          <AssociationSet Name="FK_ShipmentInvoiceDetails-Volume_ShipmentInvoiceDetails" Association="Self.FK_ShipmentInvoiceDetails-Volume_ShipmentInvoiceDetails">
+            <End Role="ShipmentInvoiceDetails" EntitySet="ShipmentInvoiceDetails" />
+            <End Role="ShipmentInvoiceDetails-Volume" EntitySet="ShipmentInvoiceDetails-Volume" />
+          </AssociationSet>
           <AssociationSet Name="FK_ShipmentInvoiceExtraInfo_ShipmentInvoice" Association="Self.FK_ShipmentInvoiceExtraInfo_ShipmentInvoice">
             <End Role="ShipmentInvoice" EntitySet="ShipmentInvoice" />
             <End Role="ShipmentInvoiceExtraInfo" EntitySet="ShipmentInvoiceExtraInfo" />
@@ -2021,6 +2081,10 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ShipmentRiderInvoice' doe
           <AssociationSet Name="FK_ShipmentInvoiceRiderDetails_ShipmentRiderDetails" Association="Self.FK_ShipmentInvoiceRiderDetails_ShipmentRiderDetails">
             <End Role="ShipmentRiderDetails" EntitySet="ShipmentRiderDetails" />
             <End Role="ShipmentInvoiceRiderDetails" EntitySet="ShipmentInvoiceRiderDetails" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ShipmentInvoice-TotalVolume_ShipmentInvoice" Association="Self.FK_ShipmentInvoice-TotalVolume_ShipmentInvoice">
+            <End Role="ShipmentInvoice" EntitySet="ShipmentInvoice" />
+            <End Role="ShipmentInvoice-TotalVolume" EntitySet="ShipmentInvoice-TotalVolume" />
           </AssociationSet>
           <AssociationSet Name="FK_ShipmentManifestDetails_ShipmentManifest" Association="Self.FK_ShipmentManifestDetails_ShipmentManifest">
             <End Role="ShipmentManifest" EntitySet="ShipmentManifest" />
@@ -2342,6 +2406,17 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ShipmentRiderInvoice' doe
           <AssociationSet Name="InvoiceDetailsShipmentInvoiceDetailsItemAlias" Association="WaterNutDBModel.InvoiceDetailsShipmentInvoiceDetailsItemAlias">
             <End Role="InvoiceDetails" EntitySet="ShipmentInvoiceDetails" />
             <End Role="ShipmentInvoiceDetailsItemAlias" EntitySet="ShipmentInvoiceDetailsItemAlias" />
+          </AssociationSet>
+          <EntitySet Name="InvoiceDetailsVolume" EntityType="WaterNutDBModel.InvoiceDetailsVolume" />
+          <AssociationSet Name="FK_ShipmentInvoiceDetails_Volume_ShipmentInvoiceDetails" Association="WaterNutDBModel.FK_ShipmentInvoiceDetails_Volume_ShipmentInvoiceDetails">
+            <End Role="InvoiceDetails" EntitySet="ShipmentInvoiceDetails" />
+            <End Role="ShipmentInvoiceDetails_Volume" EntitySet="InvoiceDetailsVolume" />
+          </AssociationSet>
+          <EntitySet Name="InvoiceVolume" EntityType="WaterNutDBModel.InvoiceVolume" />
+          <EntitySet Name="VolumeUnits" EntityType="WaterNutDBModel.VolumeUnits" />
+          <AssociationSet Name="FK_ShipmentInvoice_TotalVolume_ShipmentInvoice" Association="WaterNutDBModel.FK_ShipmentInvoice_TotalVolume_ShipmentInvoice">
+            <End Role="ShipmentInvoice" EntitySet="ShipmentInvoice" />
+            <End Role="ShipmentInvoice_TotalVolume" EntitySet="InvoiceVolume" />
           </AssociationSet>
           </EntityContainer>
         <EntityType Name="Sales" BaseType="WaterNutDBModel.EntryData">
@@ -3091,6 +3166,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ShipmentRiderInvoice' doe
           <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
           <NavigationProperty Name="ShipmentInvoicePOs" Relationship="WaterNutDBModel.FK_ShipmentInvoicePOs_ShipmentInvoice" FromRole="ShipmentInvoice" ToRole="ShipmentInvoicePOs" />
           <NavigationProperty Name="ShipmentInvoiceRiderDetails" Relationship="WaterNutDBModel.FK_ShipmentInvoiceRiderDetails_ShipmentInvoice" FromRole="ShipmentInvoice" ToRole="ShipmentInvoiceRiderDetails" />
+          <NavigationProperty Name="TotalVolume" Relationship="WaterNutDBModel.FK_ShipmentInvoice_TotalVolume_ShipmentInvoice" FromRole="ShipmentInvoice" ToRole="ShipmentInvoice_TotalVolume" />
         </EntityType>
         <EntityType Name="InvoiceDetails">
           <Key>
@@ -3111,6 +3187,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ShipmentRiderInvoice' doe
           <NavigationProperty Name="POItems" Relationship="WaterNutDBModel.InvoiceDetailsShipmentInvoicePOItemQueryMatches" FromRole="InvoiceDetails" ToRole="ShipmentInvoicePOItemQueryMatches" />
           <Property Name="SalesFactor" Type="Double" Nullable="false" />
           <NavigationProperty Name="ItemAlias" Relationship="WaterNutDBModel.InvoiceDetailsShipmentInvoiceDetailsItemAlias" FromRole="InvoiceDetails" ToRole="ShipmentInvoiceDetailsItemAlias" />
+          <NavigationProperty Name="Volume" Relationship="WaterNutDBModel.FK_ShipmentInvoiceDetails_Volume_ShipmentInvoiceDetails" FromRole="InvoiceDetails" ToRole="ShipmentInvoiceDetails_Volume" />
         </EntityType>
         <Association Name="FK_ShipmentInvoiceDetails_ShipmentInvoice1">
           <End Type="WaterNutDBModel.ShipmentInvoice" Role="ShipmentInvoice" Multiplicity="1">
@@ -3184,6 +3261,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ShipmentRiderInvoice' doe
           <NavigationProperty Name="ShipmentRiderDetails" Relationship="WaterNutDBModel.ShipmentRiderDetailsShipmentRiderInvoice" FromRole="ShipmentRiderInvoice" ToRole="ShipmentRiderDetails" />
           <Property Name="Packages" Type="Int32" Nullable="false" />
           <Property Name="rowNumber" Type="Int64" />
+          <Property Name="RowNumber2" Type="Int64" />
         </EntityType>
         <Association Name="ShipmentRiderShipmentRiderInvoice">
           <End Type="WaterNutDBModel.ShipmentRider" Role="ShipmentRider" Multiplicity="1" />
@@ -4098,6 +4176,59 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ShipmentRiderInvoice' doe
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="InvoiceDetailsVolume">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" />
+          <Property Name="Quantity" Type="Double" Nullable="false" />
+          <Property Name="Units" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="ShipmentInvoiceDetails" Relationship="WaterNutDBModel.FK_ShipmentInvoiceDetails_Volume_ShipmentInvoiceDetails" FromRole="ShipmentInvoiceDetails_Volume" ToRole="InvoiceDetails" />
+        </EntityType>
+        <Association Name="FK_ShipmentInvoiceDetails_Volume_ShipmentInvoiceDetails">
+          <End Type="WaterNutDBModel.InvoiceDetails" Role="InvoiceDetails" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="WaterNutDBModel.InvoiceDetailsVolume" Role="ShipmentInvoiceDetails_Volume" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="InvoiceDetails">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ShipmentInvoiceDetails_Volume">
+              <PropertyRef Name="Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="InvoiceVolume">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" />
+          <Property Name="Quantity" Type="Double" Nullable="false" />
+          <Property Name="Units" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="ShipmentInvoice" Relationship="WaterNutDBModel.FK_ShipmentInvoice_TotalVolume_ShipmentInvoice" FromRole="ShipmentInvoice_TotalVolume" ToRole="ShipmentInvoice" />
+        </EntityType>
+        <EntityType Name="VolumeUnits">
+          <Key>
+            <PropertyRef Name="Name" />
+          </Key>
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="RateToLiters" Type="Double" Nullable="false" />
+        </EntityType>
+        <Association Name="FK_ShipmentInvoice_TotalVolume_ShipmentInvoice">
+          <End Type="WaterNutDBModel.ShipmentInvoice" Role="ShipmentInvoice" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="WaterNutDBModel.InvoiceVolume" Role="ShipmentInvoice_TotalVolume" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="ShipmentInvoice">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ShipmentInvoice_TotalVolume">
+              <PropertyRef Name="Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -4630,6 +4761,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ShipmentRiderInvoice' doe
           <EntitySetMapping Name="ShipmentRiderInvoice">
             <EntityTypeMapping TypeName="WaterNutDBModel.ShipmentRiderInvoice">
               <MappingFragment StoreEntitySet="ShipmentRiderInvoice">
+                <ScalarProperty Name="RowNumber2" ColumnName="RowNumber2" />
                 <ScalarProperty Name="rowNumber" ColumnName="rowNumber" />
                 <ScalarProperty Name="Packages" ColumnName="Packages" />
                 <ScalarProperty Name="InvoiceNo" ColumnName="InvoiceNo" />
@@ -4993,6 +5125,32 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ShipmentRiderInvoice' doe
                 <ScalarProperty Name="POItemCode" ColumnName="POItemCode" />
                 <ScalarProperty Name="INVItemCode" ColumnName="INVItemCode" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="InvoiceDetailsVolume">
+            <EntityTypeMapping TypeName="WaterNutDBModel.InvoiceDetailsVolume">
+              <MappingFragment StoreEntitySet="ShipmentInvoiceDetails-Volume">
+                <ScalarProperty Name="Units" ColumnName="Units" />
+                <ScalarProperty Name="Quantity" ColumnName="Quantity" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="InvoiceVolume">
+            <EntityTypeMapping TypeName="WaterNutDBModel.InvoiceVolume">
+              <MappingFragment StoreEntitySet="ShipmentInvoice-TotalVolume">
+                <ScalarProperty Name="Units" ColumnName="Units" />
+                <ScalarProperty Name="Quantity" ColumnName="Quantity" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="VolumeUnits">
+            <EntityTypeMapping TypeName="WaterNutDBModel.VolumeUnits">
+              <MappingFragment StoreEntitySet="VolumeUnits">
+                <ScalarProperty Name="RateToLiters" ColumnName="RateToLiters" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

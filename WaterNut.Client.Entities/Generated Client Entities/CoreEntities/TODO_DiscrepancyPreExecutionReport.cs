@@ -473,7 +473,7 @@ public System.DateTime InvoiceDate
 		}
      
 
-       [RequiredValidationAttribute(ErrorMessage= "Subject is required")]
+       
        
                 
                 
@@ -490,9 +490,9 @@ public string Subject
 		}
      
 
-       [RequiredValidationAttribute(ErrorMessage= "EmailDate is required")]
        
-public System.DateTime EmailDate
+       
+public Nullable<System.DateTime> EmailDate
 		{ 
 		    get { return this.todo_discrepancypreexecutionreport.EmailDate; }
 			set

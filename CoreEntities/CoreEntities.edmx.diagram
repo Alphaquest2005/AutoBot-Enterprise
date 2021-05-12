@@ -129,7 +129,6 @@
         <EntityTypeShape EntityType="WaterNutDBModel.TODO_SubmitPOInfo" Width="2.875" PointX="29.375" PointY="0.75" />
         <EntityTypeShape EntityType="WaterNutDBModel.AsycudaDocumentBasicInfo" Width="1.5" PointX="31.375" PointY="11.75" />
         <EntityTypeShape EntityType="WaterNutDBModel.AsycudaItemBasicInfo" Width="2.375" PointX="30.5" PointY="16.75" />
-        <EntityTypeShape EntityType="WaterNutDBModel.TODO_LicenceAvailableQty" Width="1.5" PointX="31.375" PointY="20.75" />
         <EntityTypeShape EntityType="WaterNutDBModel.TODO_SubmitEntryCIF" Width="1.5" PointX="31.375" PointY="25.75" />
         <EntityTypeShape EntityType="WaterNutDBModel.AsycudaDocumentSetC71" Width="1.5" PointX="32.375" PointY="29.75" />
         <EntityTypeShape EntityType="WaterNutDBModel.TODO_LicenseToXML" Width="2" PointX="25.375" PointY="14.75" />
@@ -138,6 +137,7 @@
         <AssociationConnector Association="WaterNutDBModel.FK_FileTypeMappingRegExs_FileTypeMappings" />
         <EntityTypeShape EntityType="WaterNutDBModel.ExpiredEntriesLst" Width="1.5" PointX="17.375" PointY="19.75" />
         <EntityTypeShape EntityType="WaterNutDBModel.TODO_DiscrepanciesExecutionReport" Width="1.5" PointX="0.75" PointY="33.75" />
+        <EntityTypeShape EntityType="WaterNutDBModel.TODO_LicenceAvailableQty" Width="1.5" PointX="31.375" PointY="20.75" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

@@ -19,11 +19,11 @@ namespace CoreEntities.Client.DTO
         {
             get
             {
-               return this.LicenseId.ToString(); // this.LicenseId == null?"0":                        
+               return this.RegistrationNumber.ToString(); // this.RegistrationNumber == null?"0":                        
             }
             set
             {
-                this.LicenseId = Convert.ToInt32(value);
+                this.RegistrationNumber = Convert.ToString(value);
             }
         }
 

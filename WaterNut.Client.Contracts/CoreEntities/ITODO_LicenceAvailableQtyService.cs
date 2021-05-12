@@ -79,10 +79,7 @@ namespace CoreEntities.Client.Contracts
 		[OperationContract]
 		string MinField(string whereExp, string field);
 
-				[OperationContract]
-		Task<IEnumerable<TODO_LicenceAvailableQty>> GetTODO_LicenceAvailableQtyByApplicationSettingsId(string ApplicationSettingsId, List<string> includesLst = null);
-        
-  		
+				
     }
 }
 
