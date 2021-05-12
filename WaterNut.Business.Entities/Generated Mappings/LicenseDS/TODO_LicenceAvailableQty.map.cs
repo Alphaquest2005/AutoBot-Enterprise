@@ -17,7 +17,6 @@
               this.Property(t => t.ApplicationSettingsId).HasColumnName("ApplicationSettingsId");
               this.Property(t => t.TariffCode).HasColumnName("TariffCode").HasMaxLength(8);
               this.Property(t => t.Origin).HasColumnName("Origin").HasMaxLength(255);
-              this.Property(t => t.Quantity_requested).HasColumnName("Quantity_requested");
               this.Property(t => t.Application_date).HasColumnName("Application_date");
               this.Property(t => t.Importation_date).HasColumnName("Importation_date");
               this.Property(t => t.Key).HasColumnName("Key").HasMaxLength(55);
@@ -26,6 +25,7 @@
               this.Property(t => t.SourceFile).HasColumnName("SourceFile").IsRequired().HasMaxLength(300);
               this.Property(t => t.DocumentReference).HasColumnName("DocumentReference").HasMaxLength(50);
               this.Property(t => t.SegmentId).HasColumnName("SegmentId").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.None));
+              this.Property(t => t.Quantity_to_approve).HasColumnName("Quantity_to_approve");
               this.HasRequired(t => t.xLIC_Lic_item_segment).WithOptional(t => (TODO_LicenceAvailableQty)t.TODO_LicenceAvailableQty);
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);

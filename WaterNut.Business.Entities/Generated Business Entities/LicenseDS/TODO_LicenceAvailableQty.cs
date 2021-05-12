@@ -81,21 +81,6 @@ namespace LicenseDS.Business.Entities
         }
         string _origin;
         [DataMember]
-        public int Quantity_requested 
-        {
-            get
-            {
-                return _quantity_requested;
-            }
-            set
-            {
-                _quantity_requested = value;
-                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
-                NotifyPropertyChanged();
-            }
-        }
-        int _quantity_requested;
-        [DataMember]
         public Nullable<System.DateTime> Application_date 
         {
             get
@@ -215,6 +200,21 @@ namespace LicenseDS.Business.Entities
             }
         }
         int _segmentid;
+        [DataMember]
+        public int Quantity_to_approve 
+        {
+            get
+            {
+                return _quantity_to_approve;
+            }
+            set
+            {
+                _quantity_to_approve = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        int _quantity_to_approve;
         [DataMember]
         public xLIC_Lic_item_segment xLIC_Lic_item_segment { get; set; }
 

@@ -64,16 +64,13 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-LicenceAvailableQty'
           <Key>
             
             
-            
-            
-            
             <PropertyRef Name="SegmentId" />
           </Key>
           <Property Name="RegistrationNumber" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
           <Property Name="TariffCode" Type="nvarchar" MaxLength="8" />
           <Property Name="Origin" Type="nvarchar" MaxLength="255" />
-          <Property Name="Quantity_requested" Type="int" Nullable="false" />
+          <Property Name="Quantity_to_approve" Type="int" Nullable="false" />
           <Property Name="Application_date" Type="date" />
           <Property Name="Importation_date" Type="date" />
           <Property Name="Key" Type="nvarchar" MaxLength="55" />
@@ -160,7 +157,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-LICToCreate' does no
 [TODO-LicenceAvailableQty].[ApplicationSettingsId] AS [ApplicationSettingsId], 
 [TODO-LicenceAvailableQty].[TariffCode] AS [TariffCode], 
 [TODO-LicenceAvailableQty].[Origin] AS [Origin], 
-[TODO-LicenceAvailableQty].[Quantity_requested] AS [Quantity_requested], 
+[TODO-LicenceAvailableQty].[Quantity_to_approve] AS [Quantity_to_approve], 
 [TODO-LicenceAvailableQty].[Application_date] AS [Application_date], 
 [TODO-LicenceAvailableQty].[Importation_date] AS [Importation_date], 
 [TODO-LicenceAvailableQty].[Key] AS [Key], 
@@ -337,7 +334,6 @@ FROM [dbo].[TODO-LICToCreate] AS [TODO-LICToCreate]</DefiningQuery>
           <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
           <Property Name="TariffCode" Type="String" MaxLength="8" FixedLength="false" Unicode="true" />
           <Property Name="Origin" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="Quantity_requested" Type="Int32" Nullable="false" />
           <Property Name="Application_date" Type="DateTime" Precision="0" />
           <Property Name="Importation_date" Type="DateTime" Precision="0" />
           <Property Name="Key" Type="String" MaxLength="55" FixedLength="false" Unicode="true" />
@@ -347,6 +343,7 @@ FROM [dbo].[TODO-LICToCreate] AS [TODO-LICToCreate]</DefiningQuery>
           <Property Name="DocumentReference" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="xLIC_Lic_item_segment" Relationship="WaterNutDBModel.xLIC_Lic_item_segmentTODO_LicenceAvailableQty" FromRole="TODO_LicenceAvailableQty" ToRole="xLIC_Lic_item_segment" />
           <Property Name="SegmentId" Type="Int32" Nullable="false" />
+          <Property Name="Quantity_to_approve" Type="Int32" Nullable="false" />
         </EntityType>
         <Association Name="xLIC_Lic_item_segmentTODO_LicenceAvailableQty">
           <End Type="WaterNutDBModel.xLIC_Lic_item_segment" Role="xLIC_Lic_item_segment" Multiplicity="1" />
@@ -445,6 +442,7 @@ FROM [dbo].[TODO-LICToCreate] AS [TODO-LICToCreate]</DefiningQuery>
           <EntitySetMapping Name="TODO_LicenceAvailableQty">
             <EntityTypeMapping TypeName="WaterNutDBModel.TODO_LicenceAvailableQty">
               <MappingFragment StoreEntitySet="TODO-LicenceAvailableQty">
+                <ScalarProperty Name="Quantity_to_approve" ColumnName="Quantity_to_approve" />
                 <ScalarProperty Name="SegmentId" ColumnName="SegmentId" />
                 <ScalarProperty Name="DocumentReference" ColumnName="DocumentReference" />
                 <ScalarProperty Name="SourceFile" ColumnName="SourceFile" />
@@ -453,7 +451,6 @@ FROM [dbo].[TODO-LICToCreate] AS [TODO-LICToCreate]</DefiningQuery>
                 <ScalarProperty Name="Key" ColumnName="Key" />
                 <ScalarProperty Name="Importation_date" ColumnName="Importation_date" />
                 <ScalarProperty Name="Application_date" ColumnName="Application_date" />
-                <ScalarProperty Name="Quantity_requested" ColumnName="Quantity_requested" />
                 <ScalarProperty Name="Origin" ColumnName="Origin" />
                 <ScalarProperty Name="TariffCode" ColumnName="TariffCode" />
                 <ScalarProperty Name="ApplicationSettingsId" ColumnName="ApplicationSettingsId" />
