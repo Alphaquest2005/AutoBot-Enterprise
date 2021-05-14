@@ -285,6 +285,7 @@
 ..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\SessionSchedule.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\SubItems.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\TODO_AdjustmentsAlreadyXMLed.cs
+..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\TODO_AssessDiscrepancyEntries.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\TODO_C71ToCreate.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\TODO_C71ToXML.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\TODO_CreateDiscrepancyEntries.cs
@@ -682,6 +683,7 @@
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\SessionSchedule.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\SubItems.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_AdjustmentsAlreadyXMLed.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_AssessDiscrepancyEntries.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_C71ToCreate.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_C71ToXML.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_CreateDiscrepancyEntries.map.cs
@@ -1087,6 +1089,7 @@
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\CoreEntities\SessionSchedule.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\CoreEntities\SubItems.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\CoreEntities\TODO_AdjustmentsAlreadyXMLed.cs
+..\WaterNut.Business.Entities\Generated ChangeTracking Models\CoreEntities\TODO_AssessDiscrepancyEntries.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\CoreEntities\TODO_C71ToCreate.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\CoreEntities\TODO_C71ToXML.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\CoreEntities\TODO_CreateDiscrepancyEntries.cs
@@ -1470,6 +1473,7 @@
 ..\WaterNut.Business.Entities\Generated Constructors Models\CoreEntities\SessionSchedule.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\CoreEntities\SubItems.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\CoreEntities\TODO_AdjustmentsAlreadyXMLed.cs
+..\WaterNut.Business.Entities\Generated Constructors Models\CoreEntities\TODO_AssessDiscrepancyEntries.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\CoreEntities\TODO_C71ToCreate.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\CoreEntities\TODO_C71ToXML.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\CoreEntities\TODO_CreateDiscrepancyEntries.cs
@@ -1853,6 +1857,7 @@
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\CoreEntities\SessionSchedule.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\CoreEntities\SubItems.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\CoreEntities\TODO_AdjustmentsAlreadyXMLed.cs
+..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\CoreEntities\TODO_AssessDiscrepancyEntries.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\CoreEntities\TODO_C71ToCreate.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\CoreEntities\TODO_C71ToXML.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\CoreEntities\TODO_CreateDiscrepancyEntries.cs
@@ -2236,6 +2241,7 @@
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\CoreEntities\SessionSchedule.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\CoreEntities\SubItems.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\CoreEntities\TODO_AdjustmentsAlreadyXMLed.cs
+..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\CoreEntities\TODO_AssessDiscrepancyEntries.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\CoreEntities\TODO_C71ToCreate.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\CoreEntities\TODO_C71ToXML.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\CoreEntities\TODO_CreateDiscrepancyEntries.cs
@@ -2584,6 +2590,7 @@
 ..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\SessionSchedule.cs
 ..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\SubItems.cs
 ..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\TODO_AdjustmentsAlreadyXMLed.cs
+..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\TODO_AssessDiscrepancyEntries.cs
 ..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\TODO_C71ToCreate.cs
 ..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\TODO_C71ToXML.cs
 ..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\TODO_CreateDiscrepancyEntries.cs
@@ -2740,6 +2747,7 @@
 ..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\SessionSchedule.cs
 ..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\SubItems.cs
 ..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\TODO_AdjustmentsAlreadyXMLed.cs
+..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\TODO_AssessDiscrepancyEntries.cs
 ..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\TODO_C71ToCreate.cs
 ..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\TODO_C71ToXML.cs
 ..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\TODO_CreateDiscrepancyEntries.cs
@@ -2901,6 +2909,7 @@
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\CoreEntities\SessionSchedule.cs
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\CoreEntities\SubItems.cs
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\CoreEntities\TODO_AdjustmentsAlreadyXMLed.cs
+..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\CoreEntities\TODO_AssessDiscrepancyEntries.cs
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\CoreEntities\TODO_C71ToCreate.cs
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\CoreEntities\TODO_C71ToXML.cs
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\CoreEntities\TODO_CreateDiscrepancyEntries.cs
@@ -3055,6 +3064,7 @@
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\CoreEntities\SessionSchedule.cs
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\CoreEntities\SubItems.cs
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\CoreEntities\TODO_AdjustmentsAlreadyXMLed.cs
+..\WaterNut.Client.DTO\Generated MyNavProp Models\CoreEntities\TODO_AssessDiscrepancyEntries.cs
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\CoreEntities\TODO_C71ToCreate.cs
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\CoreEntities\TODO_C71ToXML.cs
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\CoreEntities\TODO_CreateDiscrepancyEntries.cs
@@ -3209,6 +3219,7 @@
 ..\WaterNut.Client.Entities\Generated Constructors Models\CoreEntities\SessionSchedule.cs
 ..\WaterNut.Client.Entities\Generated Constructors Models\CoreEntities\SubItems.cs
 ..\WaterNut.Client.Entities\Generated Constructors Models\CoreEntities\TODO_AdjustmentsAlreadyXMLed.cs
+..\WaterNut.Client.Entities\Generated Constructors Models\CoreEntities\TODO_AssessDiscrepancyEntries.cs
 ..\WaterNut.Client.Entities\Generated Constructors Models\CoreEntities\TODO_C71ToCreate.cs
 ..\WaterNut.Client.Entities\Generated Constructors Models\CoreEntities\TODO_C71ToXML.cs
 ..\WaterNut.Client.Entities\Generated Constructors Models\CoreEntities\TODO_CreateDiscrepancyEntries.cs
@@ -3363,6 +3374,7 @@
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\CoreEntities\SessionSchedule.cs
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\CoreEntities\SubItems.cs
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\CoreEntities\TODO_AdjustmentsAlreadyXMLed.cs
+..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\CoreEntities\TODO_AssessDiscrepancyEntries.cs
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\CoreEntities\TODO_C71ToCreate.cs
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\CoreEntities\TODO_C71ToXML.cs
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\CoreEntities\TODO_CreateDiscrepancyEntries.cs
@@ -3517,6 +3529,7 @@
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\CoreEntities\SessionSchedule.cs
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\CoreEntities\SubItems.cs
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\CoreEntities\TODO_AdjustmentsAlreadyXMLed.cs
+..\WaterNut.Client.Entities\Generated MyNavProp Models\CoreEntities\TODO_AssessDiscrepancyEntries.cs
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\CoreEntities\TODO_C71ToCreate.cs
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\CoreEntities\TODO_C71ToXML.cs
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\CoreEntities\TODO_CreateDiscrepancyEntries.cs
@@ -3753,6 +3766,7 @@
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\SessionSchedule.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\SubItems.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_AdjustmentsAlreadyXMLed.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_AssessDiscrepancyEntries.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_C71ToCreate.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_C71ToXML.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_CreateDiscrepancyEntries.map.cs
@@ -4143,6 +4157,7 @@
 ..\WaterNut.Client.Repositories\Generated Repositories\CoreEntities\SessionsRepository.cs
 ..\WaterNut.Client.Repositories\Generated Repositories\CoreEntities\SubItemsRepository.cs
 ..\WaterNut.Client.Repositories\Generated Repositories\CoreEntities\TODO_AdjustmentsAlreadyXMLedRepository.cs
+..\WaterNut.Client.Repositories\Generated Repositories\CoreEntities\TODO_AssessDiscrepancyEntriesRepository.cs
 ..\WaterNut.Client.Repositories\Generated Repositories\CoreEntities\TODO_C71ToCreateRepository.cs
 ..\WaterNut.Client.Repositories\Generated Repositories\CoreEntities\TODO_C71ToXMLRepository.cs
 ..\WaterNut.Client.Repositories\Generated Repositories\CoreEntities\TODO_CreateDiscrepancyEntriesRepository.cs
@@ -4318,6 +4333,7 @@
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\SessionsViewModel.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\SubItemsViewModel.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_AdjustmentsAlreadyXMLedViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_AssessDiscrepancyEntriesViewModel.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_C71ToCreateViewModel.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_C71ToXMLViewModel.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_CreateDiscrepancyEntriesViewModel.cs
@@ -4474,6 +4490,7 @@
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\SessionsTotals.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\SubItemsTotals.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_AdjustmentsAlreadyXMLedTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_AssessDiscrepancyEntriesTotals.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_C71ToCreateTotals.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_C71ToXMLTotals.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_CreateDiscrepancyEntriesTotals.cs
@@ -4618,6 +4635,7 @@
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\SessionsVirturalListLoader.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\SubItemsVirturalListLoader.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_AdjustmentsAlreadyXMLedVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_AssessDiscrepancyEntriesVirturalListLoader.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_C71ToCreateVirturalListLoader.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_C71ToXMLVirturalListLoader.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_CreateDiscrepancyEntriesVirturalListLoader.cs
@@ -4810,6 +4828,7 @@
 ..\WaterNut.Business.Services\Contracts\CoreEntities\ISessionsService.cs
 ..\WaterNut.Business.Services\Contracts\CoreEntities\ISubItemsService.cs
 ..\WaterNut.Business.Services\Contracts\CoreEntities\ITODO_AdjustmentsAlreadyXMLedService.cs
+..\WaterNut.Business.Services\Contracts\CoreEntities\ITODO_AssessDiscrepancyEntriesService.cs
 ..\WaterNut.Business.Services\Contracts\CoreEntities\ITODO_C71ToCreateService.cs
 ..\WaterNut.Business.Services\Contracts\CoreEntities\ITODO_C71ToXMLService.cs
 ..\WaterNut.Business.Services\Contracts\CoreEntities\ITODO_CreateDiscrepancyEntriesService.cs
@@ -5193,6 +5212,7 @@
 ..\WaterNut.Business.Services\Services\CoreEntities\SessionsService.cs
 ..\WaterNut.Business.Services\Services\CoreEntities\SubItemsService.cs
 ..\WaterNut.Business.Services\Services\CoreEntities\TODO_AdjustmentsAlreadyXMLedService.cs
+..\WaterNut.Business.Services\Services\CoreEntities\TODO_AssessDiscrepancyEntriesService.cs
 ..\WaterNut.Business.Services\Services\CoreEntities\TODO_C71ToCreateService.cs
 ..\WaterNut.Business.Services\Services\CoreEntities\TODO_C71ToXMLService.cs
 ..\WaterNut.Business.Services\Services\CoreEntities\TODO_CreateDiscrepancyEntriesService.cs
@@ -5534,6 +5554,7 @@
 ..\WaterNut.Client.Contracts\CoreEntities\ISessionsService.cs
 ..\WaterNut.Client.Contracts\CoreEntities\ISubItemsService.cs
 ..\WaterNut.Client.Contracts\CoreEntities\ITODO_AdjustmentsAlreadyXMLedService.cs
+..\WaterNut.Client.Contracts\CoreEntities\ITODO_AssessDiscrepancyEntriesService.cs
 ..\WaterNut.Client.Contracts\CoreEntities\ITODO_C71ToCreateService.cs
 ..\WaterNut.Client.Contracts\CoreEntities\ITODO_C71ToXMLService.cs
 ..\WaterNut.Client.Contracts\CoreEntities\ITODO_CreateDiscrepancyEntriesService.cs
@@ -5688,6 +5709,7 @@
 ..\WaterNut.Client.Services\CoreEntities\SessionsClient.cs
 ..\WaterNut.Client.Services\CoreEntities\SubItemsClient.cs
 ..\WaterNut.Client.Services\CoreEntities\TODO_AdjustmentsAlreadyXMLedClient.cs
+..\WaterNut.Client.Services\CoreEntities\TODO_AssessDiscrepancyEntriesClient.cs
 ..\WaterNut.Client.Services\CoreEntities\TODO_C71ToCreateClient.cs
 ..\WaterNut.Client.Services\CoreEntities\TODO_C71ToXMLClient.cs
 ..\WaterNut.Client.Services\CoreEntities\TODO_CreateDiscrepancyEntriesClient.cs

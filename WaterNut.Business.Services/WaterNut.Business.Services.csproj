@@ -461,6 +461,7 @@
     <Compile Include="Contracts\CoreEntities\ISessionsService.cs" />
     <Compile Include="Contracts\CoreEntities\ISubItemsService.cs" />
     <Compile Include="Contracts\CoreEntities\ITODO_AdjustmentsAlreadyXMLedService.cs" />
+    <Compile Include="Contracts\CoreEntities\ITODO_AssessDiscrepancyEntriesService.cs" />
     <Compile Include="Contracts\CoreEntities\ITODO_C71ToCreateService.cs" />
     <Compile Include="Contracts\CoreEntities\ITODO_C71ToXMLService.cs" />
     <Compile Include="Contracts\CoreEntities\ITODO_CreateDiscrepancyEntriesService.cs" />
@@ -1054,6 +1055,7 @@
     <Compile Include="Services\CoreEntities\SessionsService.cs" />
     <Compile Include="Services\CoreEntities\SubItemsService.cs" />
     <Compile Include="Services\CoreEntities\TODO_AdjustmentsAlreadyXMLedService.cs" />
+    <Compile Include="Services\CoreEntities\TODO_AssessDiscrepancyEntriesService.cs" />
     <Compile Include="Services\CoreEntities\TODO_C71ToCreateService.cs" />
     <Compile Include="Services\CoreEntities\TODO_C71ToXMLService.cs" />
     <Compile Include="Services\CoreEntities\TODO_CreateDiscrepancyEntriesService.cs" />

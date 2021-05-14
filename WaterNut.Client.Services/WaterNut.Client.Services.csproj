@@ -158,6 +158,7 @@
     <Compile Include="CoreEntities\SessionsClient.cs" />
     <Compile Include="CoreEntities\SubItemsClient.cs" />
     <Compile Include="CoreEntities\TODO_AdjustmentsAlreadyXMLedClient.cs" />
+    <Compile Include="CoreEntities\TODO_AssessDiscrepancyEntriesClient.cs" />
     <Compile Include="CoreEntities\TODO_C71ToCreateClient.cs" />
     <Compile Include="CoreEntities\TODO_C71ToXMLClient.cs" />
     <Compile Include="CoreEntities\TODO_CreateDiscrepancyEntriesClient.cs" />

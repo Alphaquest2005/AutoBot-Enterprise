@@ -549,7 +549,7 @@ namespace WaterNut.DataSpace
                         //    $"{f.Key.Field} can not convert to {f.Key.DataType} for Value:{f.Value}");
                         return DateTime.MinValue;
                 case "English Date":
-                    var formatStrings = new List<string>() { "dd/MM/yyyy", "dd/M/yyyy", "d/MM/yyyy", "d/M/yyyy","M/yyyy" };
+                    var formatStrings = new List<string>() { "dd/MM/yyyy", "dd/M/yyyy", "d/MM/yyyy", "d/M/yyyy","M/yyyy", "MMMM d, yyyy", "dd.MM.yyyy" };
                     foreach (String formatString in formatStrings)
                     {
                         if (DateTime.TryParseExact(f.Value, formatString, CultureInfo.InvariantCulture, DateTimeStyles.None,
@@ -778,7 +778,7 @@ namespace WaterNut.DataSpace
                             var matchLines = match.Value.Split(new char[] {'\r', '\n'}, StringSplitOptions.RemoveEmptyEntries);
                             for (var index = 0; index < lines.Count; index++)
                             {
-                                if (sline.Count > matchLines.Length + 1) return false;
+                                if (sline.Count(x => string.IsNullOrEmpty(x.Line)) > matchLines.Count(x => !string.IsNullOrEmpty(x)) + 1) return false;
                                 var line = lines[index];
                                 if(match.Value.Contains(line.Line) || matchLines.Any(x => line.Line.Contains(x))) sline.Add(line);
                                 if (!sline.OrderBy(x => x.LineNumber).Select(x => x.Line).DefaultIfEmpty("")

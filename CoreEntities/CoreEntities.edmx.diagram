@@ -138,6 +138,7 @@
         <EntityTypeShape EntityType="WaterNutDBModel.ExpiredEntriesLst" Width="1.5" PointX="17.375" PointY="19.75" />
         <EntityTypeShape EntityType="WaterNutDBModel.TODO_DiscrepanciesExecutionReport" Width="1.5" PointX="0.75" PointY="33.75" />
         <EntityTypeShape EntityType="WaterNutDBModel.TODO_LicenceAvailableQty" Width="1.5" PointX="31.375" PointY="20.75" />
+        <EntityTypeShape EntityType="WaterNutDBModel.TODO_AssessDiscrepancyEntries" Width="1.5" PointX="28.375" PointY="20.75" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

@@ -731,6 +731,22 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-AdjustmentsAlreadyXM
           <Property Name="DutyFreePaid" Type="varchar" MaxLength="9" Nullable="false" />
         </EntityType>
         <!--Errors Found During Generation:
+warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-AssessDiscrepancyEntries' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="TODO-AssessDiscrepancyEntries">
+          <Key>
+            <PropertyRef Name="ApplicationSettingsId" />
+            <PropertyRef Name="AsycudaDocumentSetId" />
+            <PropertyRef Name="InvoiceNo" />
+            <PropertyRef Name="InvoiceDate" />
+          </Key>
+          <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
+          <Property Name="AsycudaDocumentSetId" Type="int" Nullable="false" />
+          <Property Name="AdjustmentType" Type="nvarchar" MaxLength="50" />
+          <Property Name="InvoiceNo" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="InvoiceDate" Type="datetime2" Precision="7" Nullable="false" />
+          <Property Name="Declarant_Reference_Number" Type="nvarchar" MaxLength="50" />
+        </EntityType>
+        <!--Errors Found During Generation:
 warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-C71ToCreate' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="TODO-C71ToCreate">
           <Key>
@@ -2498,6 +2514,16 @@ FROM [dbo].[LicenceSummary] AS [LicenceSummary]</DefiningQuery>
 [TODO-AdjustmentsAlreadyXMLed].[DutyFreePaid] AS [DutyFreePaid]
 FROM [dbo].[TODO-AdjustmentsAlreadyXMLed] AS [TODO-AdjustmentsAlreadyXMLed]</DefiningQuery>
           </EntitySet>
+          <EntitySet Name="TODO-AssessDiscrepancyEntries" EntityType="Self.TODO-AssessDiscrepancyEntries" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+[TODO-AssessDiscrepancyEntries].[ApplicationSettingsId] AS [ApplicationSettingsId], 
+[TODO-AssessDiscrepancyEntries].[AsycudaDocumentSetId] AS [AsycudaDocumentSetId], 
+[TODO-AssessDiscrepancyEntries].[AdjustmentType] AS [AdjustmentType], 
+[TODO-AssessDiscrepancyEntries].[InvoiceNo] AS [InvoiceNo], 
+[TODO-AssessDiscrepancyEntries].[InvoiceDate] AS [InvoiceDate], 
+[TODO-AssessDiscrepancyEntries].[Declarant_Reference_Number] AS [Declarant_Reference_Number]
+FROM [dbo].[TODO-AssessDiscrepancyEntries] AS [TODO-AssessDiscrepancyEntries]</DefiningQuery>
+          </EntitySet>
           <EntitySet Name="TODO-C71ToCreate" EntityType="Self.TODO-C71ToCreate" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
 [TODO-C71ToCreate].[Id] AS [Id], 
@@ -3674,6 +3700,7 @@ FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
           <EntitySet Name="ExpiredEntriesLst" EntityType="WaterNutDBModel.ExpiredEntriesLst" />
           <EntitySet Name="TODO_DiscrepanciesExecutionReport" EntityType="WaterNutDBModel.TODO_DiscrepanciesExecutionReport" />
           <EntitySet Name="TODO_LicenceAvailableQty" EntityType="WaterNutDBModel.TODO_LicenceAvailableQty" />
+          <EntitySet Name="TODO_AssessDiscrepancyEntries" EntityType="WaterNutDBModel.TODO_AssessDiscrepancyEntries" />
           </EntityContainer>
         <EntityType Name="ApplicationSettings">
           <Key>
@@ -5953,6 +5980,20 @@ FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
           <Property Name="DocumentReference" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="SegmentId" Type="Int32" Nullable="false" />
         </EntityType>
+        <EntityType Name="TODO_AssessDiscrepancyEntries">
+          <Key>
+            <PropertyRef Name="ApplicationSettingsId" />
+            <PropertyRef Name="AsycudaDocumentSetId" />
+            <PropertyRef Name="InvoiceNo" />
+            <PropertyRef Name="InvoiceDate" />
+          </Key>
+          <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
+          <Property Name="AsycudaDocumentSetId" Type="Int32" Nullable="false" />
+          <Property Name="AdjustmentType" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="InvoiceNo" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="InvoiceDate" Type="DateTime" Nullable="false" Precision="7" />
+          <Property Name="Declarant_Reference_Number" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+        </EntityType>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -7528,6 +7569,18 @@ FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
                 <ScalarProperty Name="TariffCode" ColumnName="TariffCode" />
                 <ScalarProperty Name="ApplicationSettingsId" ColumnName="ApplicationSettingsId" />
                 <ScalarProperty Name="RegistrationNumber" ColumnName="RegistrationNumber" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="TODO_AssessDiscrepancyEntries">
+            <EntityTypeMapping TypeName="WaterNutDBModel.TODO_AssessDiscrepancyEntries">
+              <MappingFragment StoreEntitySet="TODO-AssessDiscrepancyEntries">
+                <ScalarProperty Name="Declarant_Reference_Number" ColumnName="Declarant_Reference_Number" />
+                <ScalarProperty Name="InvoiceDate" ColumnName="InvoiceDate" />
+                <ScalarProperty Name="InvoiceNo" ColumnName="InvoiceNo" />
+                <ScalarProperty Name="AdjustmentType" ColumnName="AdjustmentType" />
+                <ScalarProperty Name="AsycudaDocumentSetId" ColumnName="AsycudaDocumentSetId" />
+                <ScalarProperty Name="ApplicationSettingsId" ColumnName="ApplicationSettingsId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

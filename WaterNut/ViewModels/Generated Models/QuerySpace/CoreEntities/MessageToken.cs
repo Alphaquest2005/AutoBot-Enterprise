@@ -256,6 +256,12 @@ namespace WaterNut.QuerySpace.CoreEntities
 			public const string TODO_AdjustmentsAlreadyXMLedDeleted = "TODO_AdjustmentsAlreadyXMLedDeleted";
 			public const string TODO_AdjustmentsAlreadyXMLedCreated = "TODO_AdjustmentsAlreadyXMLedCreated";
 			public const string TODO_AdjustmentsAlreadyXMLedUpdated = "TODO_AdjustmentsAlreadyXMLedUpdated";
+			public const string TODO_AssessDiscrepancyEntriesFilterExpressionChanged = "TODO_AssessDiscrepancyEntriesFilterExpressionChanged";
+			public const string SelectedTODO_AssessDiscrepancyEntriesChanged = "SelectedTODO_AssessDiscrepancyEntriesChanged";
+            public const string TODO_AssessDiscrepancyEntriesChanged = "TODO_AssessDiscrepancyEntriesChanged";
+			public const string TODO_AssessDiscrepancyEntriesDeleted = "TODO_AssessDiscrepancyEntriesDeleted";
+			public const string TODO_AssessDiscrepancyEntriesCreated = "TODO_AssessDiscrepancyEntriesCreated";
+			public const string TODO_AssessDiscrepancyEntriesUpdated = "TODO_AssessDiscrepancyEntriesUpdated";
 			public const string TODO_C71ToCreateFilterExpressionChanged = "TODO_C71ToCreateFilterExpressionChanged";
 			public const string SelectedTODO_C71ToCreateChanged = "SelectedTODO_C71ToCreateChanged";
             public const string TODO_C71ToCreateChanged = "TODO_C71ToCreateChanged";
@@ -581,6 +587,7 @@ namespace WaterNut.QuerySpace.CoreEntities
           // public const string SessionScheduleChanged = "SessionScheduleChanged";
           // public const string SubItemsChanged = "SubItemsChanged";
           // public const string TODO_AdjustmentsAlreadyXMLedChanged = "TODO_AdjustmentsAlreadyXMLedChanged";
+          // public const string TODO_AssessDiscrepancyEntriesChanged = "TODO_AssessDiscrepancyEntriesChanged";
           // public const string TODO_C71ToCreateChanged = "TODO_C71ToCreateChanged";
           // public const string TODO_C71ToXMLChanged = "TODO_C71ToXMLChanged";
           // public const string TODO_CreateDiscrepancyEntriesChanged = "TODO_CreateDiscrepancyEntriesChanged";
@@ -712,6 +719,8 @@ namespace WaterNut.QuerySpace.CoreEntities
            public const string CurrentSubItemsChanged = "CurrentSubItemsChanged";
    
            public const string CurrentTODO_AdjustmentsAlreadyXMLedChanged = "CurrentTODO_AdjustmentsAlreadyXMLedChanged";
+   
+           public const string CurrentTODO_AssessDiscrepancyEntriesChanged = "CurrentTODO_AssessDiscrepancyEntriesChanged";
    
            public const string CurrentTODO_C71ToCreateChanged = "CurrentTODO_C71ToCreateChanged";
    
@@ -890,6 +899,8 @@ namespace WaterNut.QuerySpace.CoreEntities
            public const string CurrentSubItemsIDChanged = "OnCurrentSubItemsIDChanged";
    
            public const string CurrentTODO_AdjustmentsAlreadyXMLedIDChanged = "OnCurrentTODO_AdjustmentsAlreadyXMLedIDChanged";
+   
+           public const string CurrentTODO_AssessDiscrepancyEntriesIDChanged = "OnCurrentTODO_AssessDiscrepancyEntriesIDChanged";
    
            public const string CurrentTODO_C71ToCreateIDChanged = "OnCurrentTODO_C71ToCreateIDChanged";
    

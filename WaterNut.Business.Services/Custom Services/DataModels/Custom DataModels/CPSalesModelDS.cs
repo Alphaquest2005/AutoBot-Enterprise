@@ -73,7 +73,7 @@ namespace WaterNut.DataSpace
                                                         InventoryItems_1.ApplicationSettingsId = EntryData.ApplicationSettingsId AND 
                                                         InventoryItems_1.ItemNumber COLLATE DATABASE_DEFAULT = CounterPointSalesDetails.ITEM_NO COLLATE DATABASE_DEFAULT
                                     WHERE (CounterPointSalesDetails.INVNO = @INVNumber) AND (CounterPointSalesDetails.DATE = @Date) AND (InventoryItems_1.ItemNumber IS NULL) AND (LEFT(CounterPointSalesDetails.ITEM_NO, 1) <> '*') AND 
-                                                        (EntryData.ApplicationSettingsId = @ApplicationSettingsId) AND (InventorySources.Name = N'POS')
+                                                        (EntryData.ApplicationSettingsId = @ApplicationSettingsId) 
 
 				                    insert into InventoryItemSource(InventoryId, InventorySourceId)
 									SELECT        InventoryItems.Id AS InventoryItemId, InventorySources.Id AS InventorySourceId

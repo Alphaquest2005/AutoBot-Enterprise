@@ -4931,7 +4931,7 @@ namespace AutoBot
 
             using (var ctx = new CoreEntitiesContext())
             {
-                var lst = ctx.TODO_CreateDiscrepancyEntries.Where(x =>
+                var lst = ctx.TODO_AssessDiscrepancyEntries.Where(x =>
                             x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId
                             && x.AsycudaDocumentSetId == ft.AsycudaDocumentSetId
                             && x.AdjustmentType == "DIS"

@@ -223,6 +223,8 @@ namespace CoreEntities.Business.Entities
      
         public DbSet<TODO_LicenceAvailableQty> TODO_LicenceAvailableQty { get; set; }
      
+        public DbSet<TODO_AssessDiscrepancyEntries> TODO_AssessDiscrepancyEntries { get; set; }
+     
 
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
@@ -402,6 +404,8 @@ namespace CoreEntities.Business.Entities
             modelBuilder.Configurations.Add(new TODO_DiscrepanciesExecutionReportMap());
          
             modelBuilder.Configurations.Add(new TODO_LicenceAvailableQtyMap());
+         
+            modelBuilder.Configurations.Add(new TODO_AssessDiscrepancyEntriesMap());
          
 			OnModelCreatingExtentsion(modelBuilder);
 

@@ -152,6 +152,7 @@
     <Compile Include="CoreEntities\ISessionsService.cs" />
     <Compile Include="CoreEntities\ISubItemsService.cs" />
     <Compile Include="CoreEntities\ITODO_AdjustmentsAlreadyXMLedService.cs" />
+    <Compile Include="CoreEntities\ITODO_AssessDiscrepancyEntriesService.cs" />
     <Compile Include="CoreEntities\ITODO_C71ToCreateService.cs" />
     <Compile Include="CoreEntities\ITODO_C71ToXMLService.cs" />
     <Compile Include="CoreEntities\ITODO_CreateDiscrepancyEntriesService.cs" />

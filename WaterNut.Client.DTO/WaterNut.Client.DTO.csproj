@@ -161,6 +161,7 @@
     <Compile Include="Generated Client Entities\CoreEntities\SessionSchedule.cs" />
     <Compile Include="Generated Client Entities\CoreEntities\SubItems.cs" />
     <Compile Include="Generated Client Entities\CoreEntities\TODO_AdjustmentsAlreadyXMLed.cs" />
+    <Compile Include="Generated Client Entities\CoreEntities\TODO_AssessDiscrepancyEntries.cs" />
     <Compile Include="Generated Client Entities\CoreEntities\TODO_C71ToCreate.cs" />
     <Compile Include="Generated Client Entities\CoreEntities\TODO_C71ToXML.cs" />
     <Compile Include="Generated Client Entities\CoreEntities\TODO_CreateDiscrepancyEntries.cs" />
@@ -315,6 +316,7 @@
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\SessionSchedule.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\SubItems.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_AdjustmentsAlreadyXMLed.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_AssessDiscrepancyEntries.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_C71ToCreate.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_C71ToXML.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_CreateDiscrepancyEntries.cs" />
@@ -469,6 +471,7 @@
     <Compile Include="Generated MyNavProp Models\CoreEntities\SessionSchedule.cs" />
     <Compile Include="Generated MyNavProp Models\CoreEntities\SubItems.cs" />
     <Compile Include="Generated MyNavProp Models\CoreEntities\TODO_AdjustmentsAlreadyXMLed.cs" />
+    <Compile Include="Generated MyNavProp Models\CoreEntities\TODO_AssessDiscrepancyEntries.cs" />
     <Compile Include="Generated MyNavProp Models\CoreEntities\TODO_C71ToCreate.cs" />
     <Compile Include="Generated MyNavProp Models\CoreEntities\TODO_C71ToXML.cs" />
     <Compile Include="Generated MyNavProp Models\CoreEntities\TODO_CreateDiscrepancyEntries.cs" />
