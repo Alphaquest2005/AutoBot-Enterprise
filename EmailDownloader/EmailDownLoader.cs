@@ -393,7 +393,7 @@ namespace EmailDownloader
             // now to create our body...
             var builder = new BodyBuilder();
             builder.TextBody = body;
-            //builder.Attachments.Add(new MessagePart { Message = msg });
+            builder.Attachments.Add(new MessagePart { Message = msg });
             
 
             foreach (var attachment in attachments)
