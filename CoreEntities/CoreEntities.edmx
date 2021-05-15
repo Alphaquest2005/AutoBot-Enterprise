@@ -1529,6 +1529,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-SubmitDiscrepanciesT
           <Key>
             <PropertyRef Name="Id" />
             <PropertyRef Name="ASYCUDA_Id" />
+            <PropertyRef Name="ToBePaid" />
           </Key>
           <Property Name="Id" Type="int" Nullable="false" />
           <Property Name="CNumber" Type="nvarchar" MaxLength="50" />
@@ -1543,6 +1544,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-SubmitDiscrepanciesT
           <Property Name="CustomsProcedure" Type="nvarchar" MaxLength="11" />
           <Property Name="FilePath" Type="nvarchar" MaxLength="255" />
           <Property Name="Status" Type="nvarchar" MaxLength="50" />
+          <Property Name="ToBePaid" Type="varchar" MaxLength="3" Nullable="false" />
         </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-SubmitDocSetWithIncompleteInvoices' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
@@ -3107,7 +3109,8 @@ FROM [dbo].[TODO-SubmitAllXMLToCustoms] AS [TODO-SubmitAllXMLToCustoms]</Definin
 [TODO-SubmitDiscrepanciesToCustoms].[EmailId] AS [EmailId], 
 [TODO-SubmitDiscrepanciesToCustoms].[CustomsProcedure] AS [CustomsProcedure], 
 [TODO-SubmitDiscrepanciesToCustoms].[FilePath] AS [FilePath], 
-[TODO-SubmitDiscrepanciesToCustoms].[Status] AS [Status]
+[TODO-SubmitDiscrepanciesToCustoms].[Status] AS [Status], 
+[TODO-SubmitDiscrepanciesToCustoms].[ToBePaid] AS [ToBePaid]
 FROM [dbo].[TODO-SubmitDiscrepanciesToCustoms] AS [TODO-SubmitDiscrepanciesToCustoms]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="TODO-SubmitDocSetWithIncompleteInvoices" EntityType="Self.TODO-SubmitDocSetWithIncompleteInvoices" store:Type="Views" store:Schema="dbo">
@@ -4753,6 +4756,7 @@ FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
           <Key>
             <PropertyRef Name="Id" />
             <PropertyRef Name="ASYCUDA_Id" />
+            <PropertyRef Name="ToBePaid" />
           </Key>
           <Property Name="Id" Type="Int32" Nullable="false" />
           <Property Name="CNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
@@ -4767,6 +4771,7 @@ FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
           <Property Name="FilePath" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="Status" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="CustomsProcedure" Type="String" MaxLength="11" FixedLength="false" Unicode="true" />
+          <Property Name="ToBePaid" Type="String" Nullable="false" MaxLength="3" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="AsycudaDocument_Attachments">
           <Key>
@@ -6584,6 +6589,7 @@ FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
           <EntitySetMapping Name="TODO_SubmitDiscrepanciesToCustoms">
             <EntityTypeMapping TypeName="WaterNutDBModel.TODO_SubmitDiscrepanciesToCustoms">
               <MappingFragment StoreEntitySet="TODO-SubmitDiscrepanciesToCustoms">
+                <ScalarProperty Name="ToBePaid" ColumnName="ToBePaid" />
                 <ScalarProperty Name="CustomsProcedure" ColumnName="CustomsProcedure" />
                 <ScalarProperty Name="Status" ColumnName="Status" />
                 <ScalarProperty Name="FilePath" ColumnName="FilePath" />

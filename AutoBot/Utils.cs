@@ -1619,8 +1619,8 @@ namespace AutoBot
 
                         var body = "The Following Discrepancies Entries were Assessed. \r\n" +
 
-                                   $"\t{"pCNumber".FormatedSpace(20)}{"Reference".FormatedSpace(20)}{"AssessmentDate".FormatedSpace(20)}\r\n" +
-                                   $"{emailIds.Select(current => $"\t{current.CNumber.FormatedSpace(20)}{current.ReferenceNumber.FormatedSpace(20)}{current.RegistrationDate.Value.ToString("yyyy-MM-dd").FormatedSpace(20)} \r\n").Aggregate((old, current) => old + current)}" +
+                                   $"\t{"pCNumber".FormatedSpace(20)}{"Reference".FormatedSpace(20)}{"To Be Paid".FormatedSpace(20)}{"AssessmentDate".FormatedSpace(20)}\r\n" +
+                                   $"{emailIds.Select(current => $"\t{current.CNumber.FormatedSpace(20)}{current.ReferenceNumber.FormatedSpace(20)}{current.ToBePaid.FormatedSpace(20)}{current.RegistrationDate.Value.ToString("yyyy-MM-dd").FormatedSpace(20)} \r\n").Aggregate((old, current) => old + current)}" +
                                    $"\r\n" +
                                    $"Please open the attached email to view Email Thread.\r\n" +
                                    $"Any questions or concerns please contact Joseph Bartholomew at Joseph@auto-brokerage.com.\r\n" +
