@@ -730,15 +730,26 @@ namespace AutoBot
                             x.ApplicationSettingsId == item.ApplicationSettingsId);
                         var eAtt = ctx.AsycudaDocumentSet_Attachments.FirstOrDefault(x =>
                             x.Attachments.FilePath == sfile.SourceFileName);
-                        if (eAtt != null)
+                        if (eAtt == null)
                         {
-                            ctx.AttachmentLog.Add(new AttachmentLog(true)
+                            var att = ctx.Attachments.OrderByDescending(x => x.Id).FirstOrDefault(x => x.FilePath == sfile.SourceFileName);
+                            eAtt = new AsycudaDocumentSet_Attachments()
+                            {
+                                AsycudaDocumentSetId = item.AsycudaDocumentSetId,
+                                AttachmentId = att.Id,
+                                DocumentSpecific = true,
+                                FileDate = DateTime.Now,
+                                EmailUniqueId = (string.IsNullOrEmpty(att.EmailId) ? null : (int?)Convert.ToInt32(att.EmailId)),
+                                TrackingState = TrackingState.Added
+                            };
+                        }
+                        ctx.AttachmentLog.Add(new AttachmentLog(true)
                             {
                                 DocSetAttachment = eAtt.Id,
+                                AsycudaDocumentSet_Attachments = eAtt,
                                 Status = "Submit PO Entries",
                                 TrackingState = TrackingState.Added
                             });
-                        }
                     }
 
 
