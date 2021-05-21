@@ -82,6 +82,9 @@ namespace OCR.Client.Contracts
 				[OperationContract]
 		Task<IEnumerable<Fields>> GetFieldsByLineId(string LineId, List<string> includesLst = null);
         
+  		[OperationContract]
+		Task<IEnumerable<Fields>> GetFieldsByParentId(string ParentId, List<string> includesLst = null);
+        
   		
     }
 }

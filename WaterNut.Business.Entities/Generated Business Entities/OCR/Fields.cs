@@ -23,6 +23,7 @@ namespace OCR.Business.Entities
         partial void AutoGenStartUp() //Fields()
         {
             this.FormatRegEx = new List<FieldFormatRegEx>();
+            this.ChildFields = new List<Fields>();
         }
 
         [DataMember]
@@ -131,11 +132,30 @@ namespace OCR.Business.Entities
         }
         string _key;
         [DataMember]
+        public Nullable<int> ParentId 
+        {
+            get
+            {
+                return _parentid;
+            }
+            set
+            {
+                _parentid = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<int> _parentid;
+        [DataMember]
         public Lines Lines { get; set; }
         [DataMember]
         public OCR_FieldValue FieldValue { get; set; }
         [DataMember]
         public List<FieldFormatRegEx> FormatRegEx { get; set; }
+        [DataMember]
+        public List<Fields> ChildFields { get; set; }
+        [DataMember]
+        public Fields ParentField { get; set; }
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

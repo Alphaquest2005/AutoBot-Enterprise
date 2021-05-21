@@ -17,9 +17,12 @@
               this.Property(t => t.PartId).HasColumnName("PartId");
               this.Property(t => t.Name).HasColumnName("Name").IsRequired().HasMaxLength(50);
               this.Property(t => t.RegExId).HasColumnName("RegExId");
+              this.Property(t => t.ParentId).HasColumnName("ParentId");
               this.HasRequired(t => t.Parts).WithMany(t =>(ICollection<Lines>) t.Lines).HasForeignKey(d => d.PartId);
               this.HasRequired(t => t.RegularExpressions).WithMany(t =>(ICollection<Lines>) t.Lines).HasForeignKey(d => d.RegExId);
+              this.HasOptional(t => t.ParentLine).WithMany(t =>(ICollection<Lines>) t.ChildLines).HasForeignKey(d => d.ParentId);
               this.HasMany(t => t.Fields).WithRequired(t => (Lines)t.Lines);
+              this.HasMany(t => t.ChildLines).WithOptional(t => t.ParentLine).HasForeignKey(d => d.ParentId);
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);
     			this.Ignore(t => t.ModifiedProperties);

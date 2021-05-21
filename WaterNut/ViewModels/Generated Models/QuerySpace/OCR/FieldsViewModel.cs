@@ -148,6 +148,10 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
                    // {
                    //    if(OCR_FieldValue.Contains(CurrentFields.FieldValue) == false) OCR_FieldValue.Add(CurrentFields.FieldValue);
                     //}
+                    //if (e.PropertyName == "AddParentField")
+                   // {
+                   //    if(Fields.Contains(CurrentFields.ParentField) == false) Fields.Add(CurrentFields.ParentField);
+                    //}
                  } 
         internal virtual void OnFieldsChanged(object sender, NotificationEventArgs e)
         {

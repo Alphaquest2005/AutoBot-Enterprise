@@ -148,6 +148,10 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
                    // {
                    //    if(RegularExpressions.Contains(CurrentLines.RegularExpressions) == false) RegularExpressions.Add(CurrentLines.RegularExpressions);
                     //}
+                    //if (e.PropertyName == "AddParentLine")
+                   // {
+                   //    if(Lines.Contains(CurrentLines.ParentLine) == false) Lines.Add(CurrentLines.ParentLine);
+                    //}
                  } 
         internal virtual void OnLinesChanged(object sender, NotificationEventArgs e)
         {

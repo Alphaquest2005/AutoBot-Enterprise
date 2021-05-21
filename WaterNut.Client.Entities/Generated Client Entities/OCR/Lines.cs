@@ -107,6 +107,21 @@ public int RegExId
 		}
      
 
+       
+       
+public Nullable<int> ParentId
+		{ 
+		    get { return this.lines.ParentId; }
+			set
+			{
+			    if (value == this.lines.ParentId) return;
+				this.lines.ParentId = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("ParentId");
+			}
+		}
+     
+
         ObservableCollection<Fields> _Fields = null;
         public  ObservableCollection<Fields> Fields
 		{
@@ -263,6 +278,113 @@ public int RegExId
                      this.lines.RegularExpressions = value.DTO;
 				if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
                 NotifyPropertyChanged("RegularExpressions");
+			}
+		}
+        
+
+        ObservableCollection<Lines> _ChildLines = null;
+        public  ObservableCollection<Lines> ChildLines
+		{
+            
+		    get 
+				{ 
+					if(_ChildLines != null) return _ChildLines;
+					//if (this.lines.ChildLines == null) Debugger.Break();
+					if(this.lines.ChildLines != null)
+					{
+						_ChildLines = new ObservableCollection<Lines>(this.lines.ChildLines.Select(x => new Lines(x)));
+					}
+					
+						_ChildLines.CollectionChanged += ChildLines_CollectionChanged; 
+					
+					return _ChildLines; 
+				}
+			set
+			{
+			    if (Equals(value, _ChildLines)) return;
+				if (value != null)
+					this.lines.ChildLines = new ChangeTrackingCollection<DTO.Lines>(value.Select(x => x.DTO).ToList());
+                _ChildLines = value;
+				if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				if (_ChildLines != null)
+				_ChildLines.CollectionChanged += ChildLines_CollectionChanged;               
+				NotifyPropertyChanged("ChildLines");
+			}
+		}
+        
+        void ChildLines_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            switch (e.Action)
+            {
+                case NotifyCollectionChangedAction.Add:
+                    foreach (Lines itm in e.NewItems)
+                    {
+                        if (itm != null)
+                        lines.ChildLines.Add(itm.DTO);
+                    }
+                    if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+                    break;
+                case NotifyCollectionChangedAction.Remove:
+                    foreach (Lines itm in e.OldItems)
+                    {
+                        if (itm != null)
+                        lines.ChildLines.Remove(itm.DTO);
+                    }
+					if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+                    break;
+                
+            }
+        }
+
+       private Lines _ParentLine;
+        public  Lines ParentLine
+		{
+		    get
+               { 
+                  if (this.lines != null)
+                   {
+                       if (_ParentLine != null)
+                       {
+                           if (this.lines.ParentLine !=
+                               _ParentLine.DTO)
+                           {
+                                if (this.lines.ParentLine  != null)
+                               _ParentLine = new Lines(this.lines.ParentLine);
+                           }
+                       }
+                       else
+                       {
+                             if (this.lines.ParentLine  != null)
+                           _ParentLine = new Lines(this.lines.ParentLine);
+                       }
+                   }
+
+
+             //       if (_ParentLine != null) return _ParentLine;
+                       
+             //       var i = new Lines(){TrackingState = TrackingState.Added};
+			//		//if (this.lines.ParentLine == null) Debugger.Break();
+			//		if (this.lines.ParentLine != null)
+            //        {
+            //           i. = this.lines.ParentLine;
+            //        }
+            //        else
+            //        {
+            //            this.lines.ParentLine = i.;
+             //       }
+                           
+            //        _ParentLine = i;
+                     
+                    return _ParentLine;
+               }
+			set
+			{
+			    if (value == _ParentLine) return;
+                _ParentLine = value;
+                if(value != null)
+                     this.lines.ParentLine = value.DTO;
+				if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+                NotifyPropertyChanged("ParentLine");
 			}
 		}
         

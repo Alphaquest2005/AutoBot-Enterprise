@@ -461,6 +461,21 @@ namespace EntryDataDS.Business.Entities
         }
         Nullable<int> _upgradekey;
         [DataMember]
+        public Nullable<double> VolumeLiters 
+        {
+            get
+            {
+                return _volumeliters;
+            }
+            set
+            {
+                _volumeliters = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<double> _volumeliters;
+        [DataMember]
         public EntryData EntryData { get; set; }
         [DataMember]
         public InventoryItemsEx InventoryItemEx { get; set; }

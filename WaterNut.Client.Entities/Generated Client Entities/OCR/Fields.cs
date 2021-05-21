@@ -141,7 +141,7 @@ public int LineId
 		}
      
 
-       
+       [RequiredValidationAttribute(ErrorMessage= "Key is required")]
        
                 
                 [MaxLength(50, ErrorMessage = "Key has a max length of 50 letters ")]
@@ -154,6 +154,21 @@ public string Key
 				this.fields.Key = value;
                 if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
 				NotifyPropertyChanged("Key");
+			}
+		}
+     
+
+       
+       
+public Nullable<int> ParentId
+		{ 
+		    get { return this.fields.ParentId; }
+			set
+			{
+			    if (value == this.fields.ParentId) return;
+				this.fields.ParentId = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("ParentId");
 			}
 		}
      
@@ -317,6 +332,113 @@ public string Key
                 
             }
         }
+
+        ObservableCollection<Fields> _ChildFields = null;
+        public  ObservableCollection<Fields> ChildFields
+		{
+            
+		    get 
+				{ 
+					if(_ChildFields != null) return _ChildFields;
+					//if (this.fields.ChildFields == null) Debugger.Break();
+					if(this.fields.ChildFields != null)
+					{
+						_ChildFields = new ObservableCollection<Fields>(this.fields.ChildFields.Select(x => new Fields(x)));
+					}
+					
+						_ChildFields.CollectionChanged += ChildFields_CollectionChanged; 
+					
+					return _ChildFields; 
+				}
+			set
+			{
+			    if (Equals(value, _ChildFields)) return;
+				if (value != null)
+					this.fields.ChildFields = new ChangeTrackingCollection<DTO.Fields>(value.Select(x => x.DTO).ToList());
+                _ChildFields = value;
+				if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				if (_ChildFields != null)
+				_ChildFields.CollectionChanged += ChildFields_CollectionChanged;               
+				NotifyPropertyChanged("ChildFields");
+			}
+		}
+        
+        void ChildFields_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            switch (e.Action)
+            {
+                case NotifyCollectionChangedAction.Add:
+                    foreach (Fields itm in e.NewItems)
+                    {
+                        if (itm != null)
+                        fields.ChildFields.Add(itm.DTO);
+                    }
+                    if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+                    break;
+                case NotifyCollectionChangedAction.Remove:
+                    foreach (Fields itm in e.OldItems)
+                    {
+                        if (itm != null)
+                        fields.ChildFields.Remove(itm.DTO);
+                    }
+					if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+                    break;
+                
+            }
+        }
+
+       private Fields _ParentField;
+        public  Fields ParentField
+		{
+		    get
+               { 
+                  if (this.fields != null)
+                   {
+                       if (_ParentField != null)
+                       {
+                           if (this.fields.ParentField !=
+                               _ParentField.DTO)
+                           {
+                                if (this.fields.ParentField  != null)
+                               _ParentField = new Fields(this.fields.ParentField);
+                           }
+                       }
+                       else
+                       {
+                             if (this.fields.ParentField  != null)
+                           _ParentField = new Fields(this.fields.ParentField);
+                       }
+                   }
+
+
+             //       if (_ParentField != null) return _ParentField;
+                       
+             //       var i = new Fields(){TrackingState = TrackingState.Added};
+			//		//if (this.fields.ParentField == null) Debugger.Break();
+			//		if (this.fields.ParentField != null)
+            //        {
+            //           i. = this.fields.ParentField;
+            //        }
+            //        else
+            //        {
+            //            this.fields.ParentField = i.;
+             //       }
+                           
+            //        _ParentField = i;
+                     
+                    return _ParentField;
+               }
+			set
+			{
+			    if (value == _ParentField) return;
+                _ParentField = value;
+                if(value != null)
+                     this.fields.ParentField = value.DTO;
+				if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+                NotifyPropertyChanged("ParentField");
+			}
+		}
+        
 
 
         ChangeTrackingCollection<DTO.Fields> _changeTracker;    

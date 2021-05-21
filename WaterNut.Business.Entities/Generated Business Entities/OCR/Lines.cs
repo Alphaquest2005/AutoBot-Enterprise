@@ -23,6 +23,7 @@ namespace OCR.Business.Entities
         partial void AutoGenStartUp() //Lines()
         {
             this.Fields = new List<Fields>();
+            this.ChildLines = new List<Lines>();
         }
 
         [DataMember]
@@ -86,11 +87,30 @@ namespace OCR.Business.Entities
         }
         int _regexid;
         [DataMember]
+        public Nullable<int> ParentId 
+        {
+            get
+            {
+                return _parentid;
+            }
+            set
+            {
+                _parentid = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<int> _parentid;
+        [DataMember]
         public List<Fields> Fields { get; set; }
         [DataMember]
         public Parts Parts { get; set; }
         [DataMember]
         public RegularExpressions RegularExpressions { get; set; }
+        [DataMember]
+        public List<Lines> ChildLines { get; set; }
+        [DataMember]
+        public Lines ParentLine { get; set; }
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

@@ -779,7 +779,7 @@ namespace AutoBotUtilities
                     }
                 }
 
-                var ridersWithNoBLs = masterShipment.ShipmentAttachedRider.Where(x => !x.ShipmentRider.ShipmentRiderBLs.Any()).ToList();
+                var ridersWithNoBLs = masterShipment.ShipmentAttachedRider.Where(x => x.ShipmentRider.ShipmentRiderDetails.Any(z => z.ShipmentRiderBLs.Any(b => bls.All(r => r.Id != b.BLId)))).ToList();
                 if (ridersWithNoBLs.Any())
                 {
                     //TODO:// Copy the system above
@@ -925,20 +925,22 @@ namespace AutoBotUtilities
         private static List<ShipmentInvoice> DoRiderInvoices(Shipment masterShipment, IGrouping<Tuple<string, int, string>, ShipmentRiderDetails> client, UnAttachedWorkBookPkg summaryPkg,
             out string summaryFile)
         {
-            var invoices = masterShipment.ShipmentAttachedInvoices
-                .Where(x => x.ShipmentInvoice.ShipmentRiderInvoice.Any(z =>
-                    client.Any(q => q.Id == z.RiderLineID))) // 
-                //Todo: add to unmaped bl rider lines invoice "client.Where(riderDetail => !riderDetail.ShipmentRiderInvoice.Any())"
-                .Select(x => x.ShipmentInvoice)
-                .DistinctBy(x => x.InvoiceNo)
+
+            var rawInvoices = masterShipment.ShipmentAttachedInvoices
+                .Select(x => x.ShipmentInvoice).ToList();
+
+            var invoices = rawInvoices
+                .DistinctBy(x => x.InvoiceNo) //because it dropping invoices in email id 'C:\Users\josep\OneDrive\Clients\Portage\Emails\Shipments\679\Amazon-com - Order 112-5376880-7024208.pdf'
+                .Where(x => client.Select(q => q.Id).Any(q => q == x.ShipmentRiderInvoice.FirstOrDefault()?.RiderLineID)) // 
+               
                 .ToList();
 
             var invoiceLst = invoices.Select(r => r.Id).ToList();
 
 
-            var unAttachedInvoices = masterShipment.ShipmentAttachedInvoices
-                .Where(x => !invoiceLst.Contains(x.ShipmentInvoiceId))
-                .Select(x => x.ShipmentInvoice).DistinctBy(x => x.InvoiceNo).ToList();
+            var unAttachedInvoices = rawInvoices
+                .Where(x => !invoiceLst.Contains(x.Id))
+                .ToList().DistinctBy(x => x.InvoiceNo).ToList(); // distinct by bug
 
             var unAttachedRiderDetails = client.Where(x =>
                 x.ShipmentRiderInvoice.Any(z => string.IsNullOrEmpty(z.InvoiceNo) ) ).ToList();

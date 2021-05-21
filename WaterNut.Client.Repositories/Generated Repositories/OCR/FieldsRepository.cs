@@ -204,7 +204,9 @@ namespace OCR.Client.Repositories
                     {
                   // Lines = (res.Lines != null?new Lines(res.Lines): null),    
                   // FieldValue = (res.FieldValue != null?new OCR_FieldValue(res.FieldValue): null),    
-                     // FormatRegEx = new System.Collections.ObjectModel.ObservableCollection<FieldFormatRegEx>(res.FormatRegEx.Select(y => new FieldFormatRegEx(y)))    
+                     // FormatRegEx = new System.Collections.ObjectModel.ObservableCollection<FieldFormatRegEx>(res.FormatRegEx.Select(y => new FieldFormatRegEx(y))),    
+                     // ChildFields = new System.Collections.ObjectModel.ObservableCollection<Fields>(res.ChildFields.Select(y => new Fields(y))),    
+                  // ParentField = (res.ParentField != null?new Fields(res.ParentField): null)    
                   };
                     }
                     else
@@ -374,6 +376,34 @@ namespace OCR.Client.Repositories
                  using (FieldsClient t = new FieldsClient())
                     {
                         var res = await t.GetFieldsByLineId(LineId, includesLst).ConfigureAwait(continueOnCapturedContext: false);
+                         if(res != null)
+                        {
+                            return res.Select(x => new Fields(x)).AsEnumerable();
+					    }                
+					    else
+					    {
+						    return null;
+					    }                    
+                    }
+            }
+            catch (FaultException<ValidationFault> e)
+            {
+                throw new Exception(e.Detail.Message, e.InnerException);
+            }
+            catch (Exception)
+            {
+                Debugger.Break();
+                throw;
+            }
+        } 
+ 	 public async Task<IEnumerable<Fields>> GetFieldsByParentId(string ParentId, List<string> includesLst = null)
+        {
+             if (ParentId == "0") return null;
+            try
+            {
+                 using (FieldsClient t = new FieldsClient())
+                    {
+                        var res = await t.GetFieldsByParentId(ParentId, includesLst).ConfigureAwait(continueOnCapturedContext: false);
                          if(res != null)
                         {
                             return res.Select(x => new Fields(x)).AsEnumerable();

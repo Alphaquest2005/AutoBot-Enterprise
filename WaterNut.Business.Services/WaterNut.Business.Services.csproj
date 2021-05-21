@@ -628,7 +628,6 @@
     <Compile Include="Contracts\EntryDataDS\IInvoiceDetailsVolumeService.cs" />
     <Compile Include="Contracts\EntryDataDS\IInvoiceExtraInfoService.cs" />
     <Compile Include="Contracts\EntryDataDS\IInvoicesService.cs" />
-    <Compile Include="Contracts\EntryDataDS\IInvoiceVolumeService.cs" />
     <Compile Include="Contracts\EntryDataDS\IOpeningStockService.cs" />
     <Compile Include="Contracts\EntryDataDS\IPackageTypesService.cs" />
     <Compile Include="Contracts\EntryDataDS\IPurchaseOrdersService.cs" />
@@ -1222,7 +1221,6 @@
     <Compile Include="Services\EntryDataDS\InvoiceDetailsVolumeService.cs" />
     <Compile Include="Services\EntryDataDS\InvoiceExtraInfoService.cs" />
     <Compile Include="Services\EntryDataDS\InvoicesService.cs" />
-    <Compile Include="Services\EntryDataDS\InvoiceVolumeService.cs" />
     <Compile Include="Services\EntryDataDS\OpeningStockService.cs" />
     <Compile Include="Services\EntryDataDS\PackageTypesService.cs" />
     <Compile Include="Services\EntryDataDS\PurchaseOrdersService.cs" />

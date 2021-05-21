@@ -122,6 +122,11 @@ namespace OCR.Client.Services
             return  await Channel.GetLinesByRegExId(RegExId, includesLst).ConfigureAwait(false);
         }
 			 
+  		public async Task<IEnumerable<Lines>> GetLinesByParentId(string ParentId, List<string> includesLst = null)
+        {
+            return  await Channel.GetLinesByParentId(ParentId, includesLst).ConfigureAwait(false);
+        }
+			 
           public decimal SumField(string whereExp, string sumExp)
 		{
 			return Channel.SumField(whereExp,sumExp);

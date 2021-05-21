@@ -231,8 +231,7 @@ namespace xlsxWriter
             currentline += 2 + summaryPkg.UnAttachedInvoices.Count;
             WriteTable(summaryPkg.RiderDetails.Select(x => (dynamic)x).ToList(), workbook, currentline, "Shipper, WarehouseCode, InvoiceNumber, Pieces", "All Rider Details");
 
-            var pkgInvoices = summaryPkg.Invoices.SelectMany(x =>
-                x.ShipmentInvoicePOs.Select(z => new{ InvoiceNo = z.ShipmentInvoice.InvoiceNo,PONumber = z.PurchaseOrders.PONumber, z.ShipmentInvoice.InvoiceTotal, z.ShipmentInvoice.ImportedLines, z.ShipmentInvoice.SupplierCode, Packages = z.ShipmentInvoice.ShipmentRiderInvoice.Where(r => r.RiderID == summaryPkg.RiderSummary.Id).Sum(w => w.Packages)}));
+            var pkgInvoices = summaryPkg.Invoices.Select(z => new{ InvoiceNo = z.InvoiceNo,PONumber = z.ShipmentInvoicePOs.FirstOrDefault()?.PurchaseOrders?.PONumber, z.InvoiceTotal, z.ImportedLines, z.SupplierCode, Packages = z.ShipmentRiderInvoice.Where(r => r.RiderID == summaryPkg.RiderSummary.Id).Sum(w => w.Packages)});
 
             currentline += 2 + summaryPkg.RiderDetails.Count;
             WriteTable(pkgInvoices.Select(x => (dynamic)x).ToList(), workbook, currentline, "InvoiceNo, PONumber, InvoiceTotal, ImportedLines, SupplierCode, Packages", "All Invoices");

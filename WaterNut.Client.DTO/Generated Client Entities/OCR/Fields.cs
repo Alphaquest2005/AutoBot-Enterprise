@@ -112,6 +112,19 @@ namespace OCR.Client.DTO
 		}
         private string _Key;
 
+        [DataMember]
+        public Nullable<int> ParentId
+		{ 
+		    get { return _ParentId; }
+			set
+			{
+			    if (value == _ParentId) return;
+				_ParentId = value;
+				NotifyPropertyChanged();//m => this.ParentId
+			}
+		}
+        private Nullable<int> _ParentId;
+
        
         [DataMember]
         public Lines Lines
@@ -157,6 +170,35 @@ namespace OCR.Client.DTO
 			}
 		}
         private ChangeTrackingCollection<FieldFormatRegEx> _FormatRegEx = new ChangeTrackingCollection<FieldFormatRegEx>();
+
+        [DataMember]
+        public ChangeTrackingCollection<Fields> ChildFields
+		{
+		    get { return _ChildFields; }
+			set
+			{
+			    if (Equals(value, _ChildFields)) return;
+				_ChildFields = value;
+				NotifyPropertyChanged();//m => this.ChildFields
+			}
+		}
+        private ChangeTrackingCollection<Fields> _ChildFields = new ChangeTrackingCollection<Fields>();
+
+        [DataMember]
+        public Fields ParentField
+		{
+		    get { return _ParentField; }
+			set
+			{
+			    if (value == _ParentField) return;
+				_ParentField = value;
+                ParentFieldChangeTracker = _ParentField == null ? null
+                    : new ChangeTrackingCollection<Fields> { _ParentField };
+				NotifyPropertyChanged();//m => this.ParentField
+			}
+		}
+        private Fields _ParentField;
+        private ChangeTrackingCollection<Fields> ParentFieldChangeTracker { get; set; }
 
    //     [DataMember]
    //     public TrackingState TrackingState { get; set; }

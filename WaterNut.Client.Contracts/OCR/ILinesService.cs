@@ -85,6 +85,9 @@ namespace OCR.Client.Contracts
   		[OperationContract]
 		Task<IEnumerable<Lines>> GetLinesByRegExId(string RegExId, List<string> includesLst = null);
         
+  		[OperationContract]
+		Task<IEnumerable<Lines>> GetLinesByParentId(string ParentId, List<string> includesLst = null);
+        
   		
     }
 }

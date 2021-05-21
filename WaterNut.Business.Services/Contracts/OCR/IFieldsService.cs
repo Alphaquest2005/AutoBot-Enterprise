@@ -108,6 +108,9 @@ namespace OCR.Business.Services
 				[OperationContract]
         [FaultContract(typeof(ValidationFault))]
         Task<IEnumerable<Fields>> GetFieldsByLineId(string LineId, List<string> includesLst = null);
+  		[OperationContract]
+        [FaultContract(typeof(ValidationFault))]
+        Task<IEnumerable<Fields>> GetFieldsByParentId(string ParentId, List<string> includesLst = null);
   
 
 

@@ -41,7 +41,12 @@ namespace Core.Common.Utils
 
         public static string ReplaceSpecialChar(this string msgSubject, string rstring)
         {
-            return Regex.Replace(msgSubject, @"[^0-9a-zA-Z\s]+", rstring);
+            return ReplaceRegex(msgSubject, @"[^0-9a-zA-Z\s]+", rstring);
+        }
+
+        public static string ReplaceRegex(this string msgSubject, string pattern, string rstring)
+        {
+            return Regex.Replace(msgSubject, pattern, rstring);
         }
 
         public static string UpdateToCurrentUser(string dataFolder)

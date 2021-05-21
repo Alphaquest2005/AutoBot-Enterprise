@@ -452,7 +452,6 @@
 ..\WaterNut.Business.Entities\Generated Business Entities\EntryDataDS\InvoiceDetailsVolume.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\EntryDataDS\InvoiceExtraInfo.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\EntryDataDS\Invoices.cs
-..\WaterNut.Business.Entities\Generated Business Entities\EntryDataDS\InvoiceVolume.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\EntryDataDS\OpeningStock.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\EntryDataDS\PackageTypes.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\EntryDataDS\PurchaseOrders.cs
@@ -850,7 +849,6 @@
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\InvoiceDetailsVolume.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\InvoiceExtraInfo.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\Invoices.map.cs
-..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\InvoiceVolume.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\OpeningStock.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\PackageTypes.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\PurchaseOrders.map.cs
@@ -1256,7 +1254,6 @@
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\EntryDataDS\InvoiceDetailsVolume.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\EntryDataDS\InvoiceExtraInfo.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\EntryDataDS\Invoices.cs
-..\WaterNut.Business.Entities\Generated ChangeTracking Models\EntryDataDS\InvoiceVolume.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\EntryDataDS\OpeningStock.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\EntryDataDS\PackageTypes.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\EntryDataDS\PurchaseOrders.cs
@@ -1640,7 +1637,6 @@
 ..\WaterNut.Business.Entities\Generated Constructors Models\EntryDataDS\InvoiceDetailsVolume.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\EntryDataDS\InvoiceExtraInfo.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\EntryDataDS\Invoices.cs
-..\WaterNut.Business.Entities\Generated Constructors Models\EntryDataDS\InvoiceVolume.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\EntryDataDS\OpeningStock.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\EntryDataDS\PackageTypes.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\EntryDataDS\PurchaseOrders.cs
@@ -2024,7 +2020,6 @@
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\EntryDataDS\InvoiceDetailsVolume.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\EntryDataDS\InvoiceExtraInfo.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\EntryDataDS\Invoices.cs
-..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\EntryDataDS\InvoiceVolume.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\EntryDataDS\OpeningStock.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\EntryDataDS\PackageTypes.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\EntryDataDS\PurchaseOrders.cs
@@ -2408,7 +2403,6 @@
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\EntryDataDS\InvoiceDetailsVolume.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\EntryDataDS\InvoiceExtraInfo.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\EntryDataDS\Invoices.cs
-..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\EntryDataDS\InvoiceVolume.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\EntryDataDS\OpeningStock.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\EntryDataDS\PackageTypes.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\EntryDataDS\PurchaseOrders.cs
@@ -3933,7 +3927,6 @@
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\InvoiceDetailsVolume.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\InvoiceExtraInfo.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\Invoices.map.cs
-..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\InvoiceVolume.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\OpeningStock.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\PackageTypes.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\PurchaseOrders.map.cs
@@ -4995,7 +4988,6 @@
 ..\WaterNut.Business.Services\Contracts\EntryDataDS\IInvoiceDetailsVolumeService.cs
 ..\WaterNut.Business.Services\Contracts\EntryDataDS\IInvoiceExtraInfoService.cs
 ..\WaterNut.Business.Services\Contracts\EntryDataDS\IInvoicesService.cs
-..\WaterNut.Business.Services\Contracts\EntryDataDS\IInvoiceVolumeService.cs
 ..\WaterNut.Business.Services\Contracts\EntryDataDS\IOpeningStockService.cs
 ..\WaterNut.Business.Services\Contracts\EntryDataDS\IPackageTypesService.cs
 ..\WaterNut.Business.Services\Contracts\EntryDataDS\IPurchaseOrdersService.cs
@@ -5379,7 +5371,6 @@
 ..\WaterNut.Business.Services\Services\EntryDataDS\InvoiceDetailsVolumeService.cs
 ..\WaterNut.Business.Services\Services\EntryDataDS\InvoiceExtraInfoService.cs
 ..\WaterNut.Business.Services\Services\EntryDataDS\InvoicesService.cs
-..\WaterNut.Business.Services\Services\EntryDataDS\InvoiceVolumeService.cs
 ..\WaterNut.Business.Services\Services\EntryDataDS\OpeningStockService.cs
 ..\WaterNut.Business.Services\Services\EntryDataDS\PackageTypesService.cs
 ..\WaterNut.Business.Services\Services\EntryDataDS\PurchaseOrdersService.cs

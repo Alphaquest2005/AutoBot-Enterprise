@@ -328,12 +328,16 @@ namespace AutoBot
                                     .ProcessShipment()
                                     //.SaveShipment()
                                     ;
-                                    
+               
+                var contacts = new CoreEntitiesContext().Contacts.Where(x => x.Role == "PDF Entries" || x.Role == "Developer" || x.Role == "PO Clerk")
+                        .Select(x => x.EmailAddress).ToArray();
+
+               
 
                 shipments.ForEach(shipment =>
                 {
-                    EmailDownloader.EmailDownloader.ForwardMsgToSender(Convert.ToInt32(emailId), Client,
-                                        $"CSVs for {shipment.ShipmentName}", shipment.ToString(), shipment.ShipmentAttachments.Select(x => x.Attachments.FilePath).ToArray());
+                    EmailDownloader.EmailDownloader.SendEmail(Client,"",
+                                        $"CSVs for {shipment.ShipmentName}", contacts, shipment.ToString(), shipment.ShipmentAttachments.Select(x => x.Attachments.FilePath).ToArray());
                 });
 
             }

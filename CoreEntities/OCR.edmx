@@ -36,11 +36,12 @@
           </Key>
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="LineId" Type="int" Nullable="false" />
-          <Property Name="Key" Type="nvarchar" MaxLength="50" />
+          <Property Name="Key" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="Field" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="EntityType" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="IsRequired" Type="bit" Nullable="false" />
           <Property Name="DataType" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="ParentId" Type="int" />
         </EntityType>
         <EntityType Name="OCR-FieldValue">
           <Key>
@@ -94,6 +95,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.OCRInvoicesFileTypes' doe
           <Property Name="PartId" Type="int" Nullable="false" />
           <Property Name="RegExId" Type="int" Nullable="false" />
           <Property Name="Name" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="ParentId" Type="int" />
         </EntityType>
         <EntityType Name="OCR-Parts">
           <Key>
@@ -225,6 +227,18 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.OCRInvoicesFileTypes' doe
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_OCR-Fields_OCR-Fields">
+          <End Role="OCR-Fields" Type="Self.OCR-Fields" Multiplicity="0..1" />
+          <End Role="OCR-Fields1" Type="Self.OCR-Fields" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="OCR-Fields">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="OCR-Fields1">
+              <PropertyRef Name="ParentId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_OCR-Fields_OCR-Lines">
           <End Role="OCR-Lines" Type="Self.OCR-Lines" Multiplicity="1">
             <OnDelete Action="Cascade" />
@@ -328,6 +342,18 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.OCRInvoicesFileTypes' doe
             </Principal>
             <Dependent Role="OCRInvoicesFileTypes">
               <PropertyRef Name="OCRInvoiceId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_OCR-Lines_OCR-Lines">
+          <End Role="OCR-Lines" Type="Self.OCR-Lines" Multiplicity="0..1" />
+          <End Role="OCR-Lines1" Type="Self.OCR-Lines" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="OCR-Lines">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="OCR-Lines1">
+              <PropertyRef Name="ParentId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -478,6 +504,10 @@ FROM [dbo].[OCRInvoicesFileTypes] AS [OCRInvoicesFileTypes]</DefiningQuery>
             <End Role="OCR-RegularExpressions" EntitySet="OCR-RegularExpressions" />
             <End Role="OCR-FieldFormatRegEx" EntitySet="OCR-FieldFormatRegEx" />
           </AssociationSet>
+          <AssociationSet Name="FK_OCR-Fields_OCR-Fields" Association="Self.FK_OCR-Fields_OCR-Fields">
+            <End Role="OCR-Fields" EntitySet="OCR-Fields" />
+            <End Role="OCR-Fields1" EntitySet="OCR-Fields" />
+          </AssociationSet>
           <AssociationSet Name="FK_OCR-Fields_OCR-Lines" Association="Self.FK_OCR-Fields_OCR-Lines">
             <End Role="OCR-Lines" EntitySet="OCR-Lines" />
             <End Role="OCR-Fields" EntitySet="OCR-Fields" />
@@ -509,6 +539,10 @@ FROM [dbo].[OCRInvoicesFileTypes] AS [OCRInvoicesFileTypes]</DefiningQuery>
           <AssociationSet Name="FK_OCRInvoicesFileTypes_OCR-Invoices" Association="Self.FK_OCRInvoicesFileTypes_OCR-Invoices">
             <End Role="OCR-Invoices" EntitySet="OCR-Invoices" />
             <End Role="OCRInvoicesFileTypes" EntitySet="OCRInvoicesFileTypes" />
+          </AssociationSet>
+          <AssociationSet Name="FK_OCR-Lines_OCR-Lines" Association="Self.FK_OCR-Lines_OCR-Lines">
+            <End Role="OCR-Lines" EntitySet="OCR-Lines" />
+            <End Role="OCR-Lines1" EntitySet="OCR-Lines" />
           </AssociationSet>
           <AssociationSet Name="FK_OCR-Lines_OCR-Parts" Association="Self.FK_OCR-Lines_OCR-Parts">
             <End Role="OCR-Parts" EntitySet="OCR-Parts" />
@@ -647,6 +681,14 @@ FROM [dbo].[OCRInvoicesFileTypes] AS [OCRInvoicesFileTypes]</DefiningQuery>
             <End Role="RegularExpressions" EntitySet="RegularExpressions" />
             <End Role="OCR_InvoiceIdentificatonRegEx" EntitySet="InvoiceIdentificatonRegEx" />
           </AssociationSet>
+          <AssociationSet Name="FK_OCR_Fields_OCR_Fields" Association="WaterNutDBModel.FK_OCR_Fields_OCR_Fields">
+            <End Role="Fields" EntitySet="Fields" />
+            <End Role="Fields1" EntitySet="Fields" />
+          </AssociationSet>
+          <AssociationSet Name="FK_OCR_Lines_OCR_Lines" Association="WaterNutDBModel.FK_OCR_Lines_OCR_Lines">
+            <End Role="Lines" EntitySet="Lines" />
+            <End Role="Lines1" EntitySet="Lines" />
+          </AssociationSet>
           </EntityContainer>
         <EntityType Name="End">
           <Key>
@@ -669,9 +711,12 @@ FROM [dbo].[OCRInvoicesFileTypes] AS [OCRInvoicesFileTypes]</DefiningQuery>
           <Property Name="DataType" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="LineId" Type="Int32" Nullable="false" />
           <NavigationProperty Name="Lines" Relationship="WaterNutDBModel.FK_OCR_Fields_OCR_Lines" FromRole="Fields" ToRole="OCR_Lines" />
-          <Property Name="Key" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Key" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
           <NavigationProperty Name="FieldValue" Relationship="WaterNutDBModel.FK_OCR_FieldValue_OCR_Fields" FromRole="Fields" ToRole="OCR_FieldValue" />
           <NavigationProperty Name="FormatRegEx" Relationship="WaterNutDBModel.FK_OCR_FieldFormatRegEx_OCR_Fields" FromRole="Fields" ToRole="OCR_FieldFormatRegEx" />
+          <Property Name="ParentId" Type="Int32" />
+          <NavigationProperty Name="ChildFields" Relationship="WaterNutDBModel.FK_OCR_Fields_OCR_Fields" FromRole="Fields" ToRole="Fields1" />
+          <NavigationProperty Name="ParentField" Relationship="WaterNutDBModel.FK_OCR_Fields_OCR_Fields" FromRole="Fields1" ToRole="Fields" />
         </EntityType>
         <EntityType Name="Invoices">
           <Key>
@@ -804,6 +849,9 @@ FROM [dbo].[OCRInvoicesFileTypes] AS [OCRInvoicesFileTypes]</DefiningQuery>
           <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="RegExId" Type="Int32" Nullable="false" />
           <NavigationProperty Name="RegularExpressions" Relationship="WaterNutDBModel.FK_OCR_Lines_OCR_RegularExpressions" FromRole="Lines" ToRole="RegularExpressions" />
+          <Property Name="ParentId" Type="Int32" />
+          <NavigationProperty Name="ChildLines" Relationship="WaterNutDBModel.FK_OCR_Lines_OCR_Lines" FromRole="Lines" ToRole="Lines1" />
+          <NavigationProperty Name="ParentLine" Relationship="WaterNutDBModel.FK_OCR_Lines_OCR_Lines" FromRole="Lines1" ToRole="Lines" />
         </EntityType>
         <Association Name="FK_OCR_Fields_OCR_Lines">
           <End Type="WaterNutDBModel.Lines" Role="OCR_Lines" Multiplicity="1">
@@ -1110,6 +1158,30 @@ FROM [dbo].[OCRInvoicesFileTypes] AS [OCRInvoicesFileTypes]</DefiningQuery>
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_OCR_Fields_OCR_Fields">
+          <End Type="WaterNutDBModel.Fields" Role="Fields" Multiplicity="0..1" />
+          <End Type="WaterNutDBModel.Fields" Role="Fields1" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Fields">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Fields1">
+              <PropertyRef Name="ParentId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_OCR_Lines_OCR_Lines">
+          <End Type="WaterNutDBModel.Lines" Role="Lines" Multiplicity="0..1" />
+          <End Type="WaterNutDBModel.Lines" Role="Lines1" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Lines">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Lines1">
+              <PropertyRef Name="ParentId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -1128,6 +1200,7 @@ FROM [dbo].[OCRInvoicesFileTypes] AS [OCRInvoicesFileTypes]</DefiningQuery>
           <EntitySetMapping Name="Fields">
             <EntityTypeMapping TypeName="WaterNutDBModel.Fields">
               <MappingFragment StoreEntitySet="OCR-Fields">
+                <ScalarProperty Name="ParentId" ColumnName="ParentId" />
                 <ScalarProperty Name="Key" ColumnName="Key" />
                 <ScalarProperty Name="LineId" ColumnName="LineId" />
                 <ScalarProperty Name="DataType" ColumnName="DataType" />
@@ -1187,6 +1260,7 @@ FROM [dbo].[OCRInvoicesFileTypes] AS [OCRInvoicesFileTypes]</DefiningQuery>
           <EntitySetMapping Name="Lines">
             <EntityTypeMapping TypeName="WaterNutDBModel.Lines">
               <MappingFragment StoreEntitySet="OCR-Lines">
+                <ScalarProperty Name="ParentId" ColumnName="ParentId" />
                 <ScalarProperty Name="RegExId" ColumnName="RegExId" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
                 <ScalarProperty Name="PartId" ColumnName="PartId" />

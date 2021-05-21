@@ -161,8 +161,6 @@ namespace EntryDataDS.Business.Entities
      
         public DbSet<InvoiceDetailsVolume> InvoiceDetailsVolume { get; set; }
      
-        public DbSet<InvoiceVolume> InvoiceVolume { get; set; }
-     
         public DbSet<VolumeUnits> VolumeUnits { get; set; }
      
 
@@ -282,8 +280,6 @@ namespace EntryDataDS.Business.Entities
             modelBuilder.Configurations.Add(new ShipmentInvoiceDetailsItemAliasMap());
          
             modelBuilder.Configurations.Add(new InvoiceDetailsVolumeMap());
-         
-            modelBuilder.Configurations.Add(new InvoiceVolumeMap());
          
             modelBuilder.Configurations.Add(new VolumeUnitsMap());
          

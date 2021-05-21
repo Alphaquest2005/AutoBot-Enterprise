@@ -204,7 +204,9 @@ namespace OCR.Client.Repositories
                     {
                      // Fields = new System.Collections.ObjectModel.ObservableCollection<Fields>(res.Fields.Select(y => new Fields(y))),    
                   // Parts = (res.Parts != null?new Parts(res.Parts): null),    
-                  // RegularExpressions = (res.RegularExpressions != null?new RegularExpressions(res.RegularExpressions): null)    
+                  // RegularExpressions = (res.RegularExpressions != null?new RegularExpressions(res.RegularExpressions): null),    
+                     // ChildLines = new System.Collections.ObjectModel.ObservableCollection<Lines>(res.ChildLines.Select(y => new Lines(y))),    
+                  // ParentLine = (res.ParentLine != null?new Lines(res.ParentLine): null)    
                   };
                     }
                     else
@@ -402,6 +404,34 @@ namespace OCR.Client.Repositories
                  using (LinesClient t = new LinesClient())
                     {
                         var res = await t.GetLinesByRegExId(RegExId, includesLst).ConfigureAwait(continueOnCapturedContext: false);
+                         if(res != null)
+                        {
+                            return res.Select(x => new Lines(x)).AsEnumerable();
+					    }                
+					    else
+					    {
+						    return null;
+					    }                    
+                    }
+            }
+            catch (FaultException<ValidationFault> e)
+            {
+                throw new Exception(e.Detail.Message, e.InnerException);
+            }
+            catch (Exception)
+            {
+                Debugger.Break();
+                throw;
+            }
+        } 
+ 	 public async Task<IEnumerable<Lines>> GetLinesByParentId(string ParentId, List<string> includesLst = null)
+        {
+             if (ParentId == "0") return null;
+            try
+            {
+                 using (LinesClient t = new LinesClient())
+                    {
+                        var res = await t.GetLinesByParentId(ParentId, includesLst).ConfigureAwait(continueOnCapturedContext: false);
                          if(res != null)
                         {
                             return res.Select(x => new Lines(x)).AsEnumerable();

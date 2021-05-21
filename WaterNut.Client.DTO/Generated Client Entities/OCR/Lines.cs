@@ -73,6 +73,19 @@ namespace OCR.Client.DTO
 		}
         private int _RegExId;
 
+        [DataMember]
+        public Nullable<int> ParentId
+		{ 
+		    get { return _ParentId; }
+			set
+			{
+			    if (value == _ParentId) return;
+				_ParentId = value;
+				NotifyPropertyChanged();//m => this.ParentId
+			}
+		}
+        private Nullable<int> _ParentId;
+
        
         [DataMember]
         public ChangeTrackingCollection<Fields> Fields
@@ -118,6 +131,35 @@ namespace OCR.Client.DTO
 		}
         private RegularExpressions _RegularExpressions;
         private ChangeTrackingCollection<RegularExpressions> RegularExpressionsChangeTracker { get; set; }
+
+        [DataMember]
+        public ChangeTrackingCollection<Lines> ChildLines
+		{
+		    get { return _ChildLines; }
+			set
+			{
+			    if (Equals(value, _ChildLines)) return;
+				_ChildLines = value;
+				NotifyPropertyChanged();//m => this.ChildLines
+			}
+		}
+        private ChangeTrackingCollection<Lines> _ChildLines = new ChangeTrackingCollection<Lines>();
+
+        [DataMember]
+        public Lines ParentLine
+		{
+		    get { return _ParentLine; }
+			set
+			{
+			    if (value == _ParentLine) return;
+				_ParentLine = value;
+                ParentLineChangeTracker = _ParentLine == null ? null
+                    : new ChangeTrackingCollection<Lines> { _ParentLine };
+				NotifyPropertyChanged();//m => this.ParentLine
+			}
+		}
+        private Lines _ParentLine;
+        private ChangeTrackingCollection<Lines> ParentLineChangeTracker { get; set; }
 
    //     [DataMember]
    //     public TrackingState TrackingState { get; set; }

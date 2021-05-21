@@ -104,6 +104,44 @@ namespace OCR.Client.Entities
             }
 
       }
+        public string ParentLineEntityName
+        {
+            get
+            {
+                return this.ParentLine == null ? "" : this.ParentLine.EntityName;
+            }
+            set
+            {
+                                if (string.IsNullOrEmpty(value)) return;
+                string[] vals = value.Split(',');
+               
+                    using (LinesClient ctx = new LinesClient())
+                    {
+                        var dto = ctx.GetLines().Result.AsEnumerable().FirstOrDefault(x => x.EntityName == value);
+                        
+
+                        if ( dto == null)
+                        {
+                            this.ParentLine = (Lines)new Lines().CreateEntityFromString(value);
+							
+							this.Id = Convert.ToInt32(this.ParentLine.Id);
+                            this.TrackingState=TrackableEntities.TrackingState.Modified;
+                           NotifyPropertyChanged("AddParentLine");
+                        }
+                        else
+                        {
+                            var obj = new Lines(dto);
+                           if (this.ParentLine == null || this.ParentLine.EntityId != obj.EntityId) this.ParentLine = obj;
+                           
+                        }
+                         
+
+
+                    }
+            
+            }
+
+      }
 
 
 

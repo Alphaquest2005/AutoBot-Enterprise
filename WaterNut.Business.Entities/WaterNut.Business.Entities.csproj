@@ -413,7 +413,6 @@
     <Compile Include="Generated Business Entities\EntryDataDS\InvoiceDetailsVolume.cs" />
     <Compile Include="Generated Business Entities\EntryDataDS\InvoiceExtraInfo.cs" />
     <Compile Include="Generated Business Entities\EntryDataDS\Invoices.cs" />
-    <Compile Include="Generated Business Entities\EntryDataDS\InvoiceVolume.cs" />
     <Compile Include="Generated Business Entities\EntryDataDS\OpeningStock.cs" />
     <Compile Include="Generated Business Entities\EntryDataDS\PackageTypes.cs" />
     <Compile Include="Generated Business Entities\EntryDataDS\PurchaseOrders.cs" />
@@ -799,7 +798,6 @@
     <Compile Include="Generated ChangeTracking Models\EntryDataDS\InvoiceDetailsVolume.cs" />
     <Compile Include="Generated ChangeTracking Models\EntryDataDS\InvoiceExtraInfo.cs" />
     <Compile Include="Generated ChangeTracking Models\EntryDataDS\Invoices.cs" />
-    <Compile Include="Generated ChangeTracking Models\EntryDataDS\InvoiceVolume.cs" />
     <Compile Include="Generated ChangeTracking Models\EntryDataDS\OpeningStock.cs" />
     <Compile Include="Generated ChangeTracking Models\EntryDataDS\PackageTypes.cs" />
     <Compile Include="Generated ChangeTracking Models\EntryDataDS\PurchaseOrders.cs" />
@@ -1183,7 +1181,6 @@
     <Compile Include="Generated Constructors Models\EntryDataDS\InvoiceDetailsVolume.cs" />
     <Compile Include="Generated Constructors Models\EntryDataDS\InvoiceExtraInfo.cs" />
     <Compile Include="Generated Constructors Models\EntryDataDS\Invoices.cs" />
-    <Compile Include="Generated Constructors Models\EntryDataDS\InvoiceVolume.cs" />
     <Compile Include="Generated Constructors Models\EntryDataDS\OpeningStock.cs" />
     <Compile Include="Generated Constructors Models\EntryDataDS\PackageTypes.cs" />
     <Compile Include="Generated Constructors Models\EntryDataDS\PurchaseOrders.cs" />
@@ -1567,7 +1564,6 @@
     <Compile Include="Generated IEntitiyWithKey Models\EntryDataDS\InvoiceDetailsVolume.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\EntryDataDS\InvoiceExtraInfo.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\EntryDataDS\Invoices.cs" />
-    <Compile Include="Generated IEntitiyWithKey Models\EntryDataDS\InvoiceVolume.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\EntryDataDS\OpeningStock.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\EntryDataDS\PackageTypes.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\EntryDataDS\PurchaseOrders.cs" />
@@ -1951,7 +1947,6 @@
     <Compile Include="Generated IIdentitfiableEntity Models\EntryDataDS\InvoiceDetailsVolume.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\EntryDataDS\InvoiceExtraInfo.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\EntryDataDS\Invoices.cs" />
-    <Compile Include="Generated IIdentitfiableEntity Models\EntryDataDS\InvoiceVolume.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\EntryDataDS\OpeningStock.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\EntryDataDS\PackageTypes.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\EntryDataDS\PurchaseOrders.cs" />
@@ -2345,7 +2340,6 @@
     <Compile Include="Generated Mappings\EntryDataDS\InvoiceDetailsVolume.map.cs" />
     <Compile Include="Generated Mappings\EntryDataDS\InvoiceExtraInfo.map.cs" />
     <Compile Include="Generated Mappings\EntryDataDS\Invoices.map.cs" />
-    <Compile Include="Generated Mappings\EntryDataDS\InvoiceVolume.map.cs" />
     <Compile Include="Generated Mappings\EntryDataDS\OpeningStock.map.cs" />
     <Compile Include="Generated Mappings\EntryDataDS\PackageTypes.map.cs" />
     <Compile Include="Generated Mappings\EntryDataDS\PurchaseOrders.map.cs" />

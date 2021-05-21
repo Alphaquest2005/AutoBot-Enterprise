@@ -139,7 +139,7 @@ namespace WaterNut.DataSpace
                             TrackingNumber = z[nameof(ShipmentRiderDetails.TrackingNumber)]?.ToString().Trim(),
                             Pieces = int.TryParse(z[nameof(ShipmentRiderDetails.Pieces)]?.ToString().Trim(),out var test)? test : 0,//Convert.ToInt32(z[nameof(ShipmentRiderDetails.Pieces)]?.ToString().Trim())
                             WarehouseCode = z[nameof(ShipmentRiderDetails.WarehouseCode)]?.ToString().Trim(),
-                            InvoiceNumber = z[nameof(ShipmentRiderDetails.InvoiceNumber)]?.ToString().Trim(),//.ReplaceSpecialChar(""),
+                            InvoiceNumber = z[nameof(ShipmentRiderDetails.InvoiceNumber)]?.ToString().Trim().ReplaceRegex(@"[^0-9a-zA-Z\s\-/\,]+",""),
                             InvoiceTotal = z.ContainsKey(nameof(ShipmentRiderDetails.InvoiceTotal)) ? z[nameof(ShipmentRiderDetails.InvoiceTotal)]?.ToString().Trim() : "0",
                             GrossWeightLB = Convert.ToDouble(z["GrossWeightLB"]?.ToString().Trim()),
                             CubicFeet = z.ContainsKey("VolumeCF") ? Convert.ToDouble(z["VolumeCF"]?.ToString().Trim()) : 0.0
@@ -434,7 +434,7 @@ namespace WaterNut.DataSpace
             try
             {
                 var itms = eslst.Cast<List<IDictionary<string, object>>>().SelectMany(x => x.ToList()).ToList();
-                var lst = itms.Select(x => ((IDictionary<string, object>)x))
+                var lst = itms.Select(x => (IDictionary<string, object>)x)
                     .Select(x => new ShipmentInvoice()
                     {
 
@@ -452,7 +452,7 @@ namespace WaterNut.DataSpace
                         TotalInsurance = x.ContainsKey("TotalInsurance") ? Convert.ToDouble(x["TotalInsurance"].ToString()) : (double?)null,
                         TotalDeduction = x.ContainsKey("TotalDeduction") ? Convert.ToDouble(x["TotalDeduction"].ToString()) : (double?)null,
                         InvoiceDetails = !x.ContainsKey("InvoiceDetails") ? new List<InvoiceDetails>() : ((List<IDictionary<string, object>>)x["InvoiceDetails"])
-                                                .Where(z => z["Quantity"] != null && Convert.ToDouble(z["Quantity"].ToString()) > 0 && (z.ContainsKey("TotalCost") ? Convert.ToDouble(z["TotalCost"].ToString()) : Convert.ToDouble(z["Cost"].ToString())) > 0)
+                                        //        .Where(z => z["Quantity"] != null && Convert.ToDouble(z["Quantity"].ToString()) > 0 && (z.ContainsKey("TotalCost") ? Convert.ToDouble(z["TotalCost"].ToString()) : Convert.ToDouble(z["Cost"].ToString())) > 0)
                                               
                                                 .Select(z => new InvoiceDetails()
                                                 {
@@ -462,7 +462,8 @@ namespace WaterNut.DataSpace
                                                     Units = z.ContainsKey("Units") ? z["Units"].ToString() : null,
                                                     Cost = Convert.ToDouble(z["Cost"].ToString()),
                                                     TotalCost = z.ContainsKey("TotalCost") ? Convert.ToDouble(z["TotalCost"].ToString()) : (double?)null,
-                                                    SalesFactor = z.ContainsKey("SalesFactor") ? Convert.ToInt32(z["SalesFactor"].ToString()) : 1,
+                                                    Volume = z.ContainsKey("Gallons") ? new InvoiceDetailsVolume() {Quantity = Convert.ToDouble(z["Gallons"].ToString()), Units = "Gallons", TrackingState = TrackingState.Added, } : null,
+                                                    SalesFactor = z.ContainsKey("SalesFactor") ? Convert.ToInt32(z["SalesFactor"].ToString()) * (z.ContainsKey("Multiplier")  ? Convert.ToInt32(z["Multiplier"].ToString()) : 1) : 1,
                                                     LineNumber = ((List<IDictionary<string, object>>)x["InvoiceDetails"]).IndexOf(z) + 1,
                                                     FileLineNumber = Convert.ToInt32(z["FileLineNumber"].ToString()),
                                                     InventoryItemId = z.ContainsKey("InventoryItemId") ? (int)z["InventoryItemId"]: (int?)null,

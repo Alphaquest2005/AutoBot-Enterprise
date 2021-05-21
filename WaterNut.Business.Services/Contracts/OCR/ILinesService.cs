@@ -111,6 +111,9 @@ namespace OCR.Business.Services
   		[OperationContract]
         [FaultContract(typeof(ValidationFault))]
         Task<IEnumerable<Lines>> GetLinesByRegExId(string RegExId, List<string> includesLst = null);
+  		[OperationContract]
+        [FaultContract(typeof(ValidationFault))]
+        Task<IEnumerable<Lines>> GetLinesByParentId(string ParentId, List<string> includesLst = null);
   
 
 
