@@ -619,7 +619,11 @@ namespace AutoBotUtilities
                         .SelectMany(x => x.ShipmentRiderBLs.Select(z => z.ShipmentRiderDetails)).Where(x => x != null)
                         .ToList();
 
-                    var clients = riderDetails.Where(x => masterShipment.ShipmentAttachedRider.Any(z => z.ShipmentRider.Id == x.RiderId)).DistinctBy(x => x.Id).GroupBy(x => new Tuple<string, int, string>(x.Code, x.RiderId, bl.BLNumber)).MaxBy(x => x.Key.Item2).ToList();
+                    var clients = riderDetails.Where(x => masterShipment.ShipmentAttachedRider.Any(z => z.ShipmentRider.Id == x.RiderId))
+                                                                                                .DistinctBy(x => x.Id)
+                                                                                                .GroupBy(x => new Tuple<string, int, string>(x.Code, x.RiderId, bl.BLNumber))
+                                                                                               // .MaxBy(x => x.Key.Item2)
+                                                                                                .ToList();
                     foreach (var client in clients)
                     {
 
@@ -971,6 +975,14 @@ namespace AutoBotUtilities
             var riderMatchKeyInv = client.Select(x => x.InvoiceNumber.Trim()).ToList();
 
             summaryPkg.RiderSummary = client.First().ShipmentRider.ShipmentRiderEx;
+
+            summaryPkg.PackagesSummary = new PackagesSummary()
+            {
+                BLPackages = client.DistinctBy(x => x.WarehouseCode).Sum(x => x.ShipmentRiderBLs.DistinctBy(bd => bd.BLDetailId).Sum(b => b.ShipmentBLDetails.Quantity)),
+                RiderPackages = client.Sum(x => x.Pieces),
+                InvoicePackages = client.Sum(x => x.ShipmentRiderInvoice.Sum(i => i.Packages))
+            };
+
 
 
             summaryPkg.RiderManualMatches = new EntryDataDSContext().ShipmentInvoiceRiderManualMatches

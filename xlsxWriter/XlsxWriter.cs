@@ -218,8 +218,11 @@ namespace xlsxWriter
 
             WriteTable(new List<dynamic>(){summaryPkg.RiderSummary}, workbook, currentline, "ETA, DocumentDate, Packages, WarehouseCode, InvoiceNumber, GrossWeightKg, CubicFeet, Code", "Rider Summary:");
 
-            currentline += 4;
-            
+            currentline += 3;
+
+            WriteTable(new List<dynamic>(){ summaryPkg.PackagesSummary}, workbook, currentline, "BLPackages, RiderPackages, InvoicePackages, Diff", "Packages Summary");
+
+            currentline += 3;
             WriteTable(summaryPkg.RiderManualMatches.Select(x => (dynamic)x).ToList(), workbook, currentline, RideManualMatchesHeader, "Manual Matches");
 
             currentline += 2 + summaryPkg.RiderManualMatches.Count;
@@ -347,7 +350,7 @@ namespace xlsxWriter
             SetValue(workbook, currentline, 0, "List of Invoices");
             
             var invHeader =
-                "InvoiceNo,PONumber, InvoiceDate, ImportedLines, SubTotal, InvoiceTotal, ImportedTotalDifference, SupplierCode, SourceFile"
+                "InvoiceNo,PONumber, InvoiceDate, ImportedLines, SubTotal, InvoiceTotal, ImportedTotalDifference, PO/Inv Total Diff, PO/Inv MisMatches, SupplierCode, SourceFile"
                     .Split(',').Select(x => x.Trim()).ToList();
             currentline++;
             invHeader.ForEach(x => SetValue(workbook, currentline, invHeader.IndexOf(x), x));
@@ -373,6 +376,15 @@ namespace xlsxWriter
                         summaryPkg.Invoices[i].InvoiceTotal);
                     SetValue(workbook, currentline, invHeader.IndexOf(nameof(ShipmentInvoice.ImportedTotalDifference)),
                         summaryPkg.Invoices[i].ImportedTotalDifference);
+
+
+                    SetValue(workbook, currentline, invHeader.IndexOf("PO/Inv Total Diff"),
+                        summaryPkg.Invoices[i].SubTotal - summaryPkg.Invoices[i].ShipmentInvoicePOs.FirstOrDefault()?.PurchaseOrders.EntryDataDetails.Sum(x => x.Cost * x.Quantity));
+
+                    SetValue(workbook, currentline, invHeader.IndexOf("PO/Inv MisMatches"),
+                         summaryPkg.Invoices[i].ShipmentInvoicePOs.FirstOrDefault()?.POMISMatches.Count());
+
+
                     SetValue(workbook, currentline, invHeader.IndexOf(nameof(ShipmentInvoice.SupplierCode)),
                         summaryPkg.Invoices[i].SupplierCode);
                     SetValue(workbook, currentline, invHeader.IndexOf(nameof(ShipmentInvoice.SourceFile)),
@@ -595,5 +607,16 @@ namespace xlsxWriter
         public List<ShipmentInvoiceRiderManualMatches> RiderManualMatches { get; set; }
         public ShipmentRiderEx RiderSummary { get; set; }
         public List<ShipmentInvoicePOItemData> Classifications { get; set; }
+        public PackagesSummary PackagesSummary { get; set; }
+
+
     }
+    public class PackagesSummary
+        {
+            public int BLPackages { get; set; }
+            public int RiderPackages { get; set; }
+            public int InvoicePackages { get; set; }
+
+            public int Diff => (BLPackages == 0 ? RiderPackages : BLPackages) - InvoicePackages;
+        }
 }
