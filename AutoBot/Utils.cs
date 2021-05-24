@@ -490,6 +490,7 @@ namespace AutoBot
                         .Where (x => x.IsSubmitted == false)
                         .Where(x => x.CNumber != null)
                         .ToList()
+                        .MaxBy(x => x.AsycudaDocumentSetId)
                         .GroupBy(x => x.AsycudaDocumentSetId)
                         .Join(ctx.AsycudaDocumentSetExs.Include("AsycudaDocumentSet_Attachments.Attachments"),
                             x => x.Key, z => z.AsycudaDocumentSetId, (x, z) => new {x, z})
@@ -539,7 +540,6 @@ namespace AutoBot
                         .Where(x => x.ApplicationSettingsId ==
                                     BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)
                         .Where(x => x.Reference.Contains(docSet.Declarant_Reference_Number))
-
                         .ToList();
                    List<TODO_SubmitPOInfo> lst;
                     if (rlst.Any())

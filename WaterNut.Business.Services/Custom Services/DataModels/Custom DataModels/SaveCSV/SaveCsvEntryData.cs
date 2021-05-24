@@ -875,6 +875,7 @@ namespace WaterNut.DataSpace
                                 Comment = x.Comment,
                                 InventoryItemId = x.InventoryItemId,
                                 EffectiveDate = x.EffectiveDate,
+                                VolumeLiters = Convert.ToDouble(x.Gallons * GalToLtrRate ?? Convert.ToDouble(x.Liters ?? 0.0)),                                
 
                             }),
                         f = g.Select(x => new
@@ -925,8 +926,11 @@ namespace WaterNut.DataSpace
                             .Include("EntryDataDetails")
                             .Where(x => x.EntryDataId == entryDataId 
                                         && x.ApplicationSettingsId == applicationSettingsId ).ToList()
-                            .Where(x => !docSet.Select(z => z.AsycudaDocumentSetId).Except(x.AsycudaDocumentSets.Select(z => z.AsycudaDocumentSetId)).Any())
+                            // this was to prevent deleting entrydata from other folders discrepancy with piece here and there with same entry data. but i changed the discrepancy to work with only one folder.
+                            //.Where(x => !docSet.Select(z => z.AsycudaDocumentSetId).Except(x.AsycudaDocumentSets.Select(z => z.AsycudaDocumentSetId)).Any())
                             .ToList();
+
+
 
                     var olded = overWriteExisting ? null : oldeds.FirstOrDefault();
                         if (oldeds.Any())
@@ -1313,6 +1317,7 @@ namespace WaterNut.DataSpace
                                     LineNumber = e.EntryDataDetailsId == 0 ? lineNumber : e.LineNumber,
                                     EffectiveDate = e.EffectiveDate,
                                     TaxAmount = e.TaxAmount,
+                                    VolumeLiters = e.VolumeLiters,
                                 });
                             }
                             ctx.SaveChanges();
@@ -1417,7 +1422,7 @@ namespace WaterNut.DataSpace
         }
 
         static ConcurrentDictionary<string, List<EntryData>> loadedEntryData = new ConcurrentDictionary<string, List<EntryData>>();
-        
+        private dynamic GalToLtrRate = 3.785;
 
         private async Task<List<EntryData>> GetEntryData(string entryDataId, List<AsycudaDocumentSet> docSet,
             int applicationSettingsId)
