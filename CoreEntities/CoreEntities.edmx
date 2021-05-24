@@ -1295,6 +1295,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-LicenseToXML' does n
           <Property Name="TariffCode" Type="nvarchar" MaxLength="52" />
           <Property Name="TariffCategoryCode" Type="nvarchar" MaxLength="50" />
           <Property Name="Quantity" Type="float" />
+          <Property Name="VolumeLiters" Type="float" />
           <Property Name="LicenseDescription" Type="nvarchar" MaxLength="50" />
           <Property Name="AsycudaDocumentSetId" Type="int" Nullable="false" />
           <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
@@ -2911,6 +2912,7 @@ FROM [dbo].[TODO-LicenceAvailableQty] AS [TODO-LicenceAvailableQty]</DefiningQue
 [TODO-LicenseToXML].[TariffCode] AS [TariffCode], 
 [TODO-LicenseToXML].[TariffCategoryCode] AS [TariffCategoryCode], 
 [TODO-LicenseToXML].[Quantity] AS [Quantity], 
+[TODO-LicenseToXML].[VolumeLiters] AS [VolumeLiters], 
 [TODO-LicenseToXML].[LicenseDescription] AS [LicenseDescription], 
 [TODO-LicenseToXML].[AsycudaDocumentSetId] AS [AsycudaDocumentSetId], 
 [TODO-LicenseToXML].[ApplicationSettingsId] AS [ApplicationSettingsId], 
@@ -5871,6 +5873,7 @@ FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
           <Property Name="ItemNumber" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Name="ItemDescription" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="LineNumber" Type="Int32" />
+          <Property Name="VolumeLiters" Type="Double" />
         </EntityType>
         <EntityType Name="TODO_LICToCreate">
           <Key>
@@ -7465,6 +7468,7 @@ FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
           <EntitySetMapping Name="TODO_LicenseToXML">
             <EntityTypeMapping TypeName="WaterNutDBModel.TODO_LicenseToXML">
               <MappingFragment StoreEntitySet="TODO-LicenseToXML">
+                <ScalarProperty Name="VolumeLiters" ColumnName="VolumeLiters" />
                 <ScalarProperty Name="LineNumber" ColumnName="LineNumber" />
                 <ScalarProperty Name="ItemDescription" ColumnName="ItemDescription" />
                 <ScalarProperty Name="ItemNumber" ColumnName="ItemNumber" />

@@ -64,6 +64,9 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-LicenceAvailableQty'
           <Key>
             
             
+            
+            
+            
             <PropertyRef Name="SegmentId" />
           </Key>
           <Property Name="RegistrationNumber" Type="nvarchar" MaxLength="50" Nullable="false" />

@@ -386,6 +386,24 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
         }	
 
  
+
+		private Double? _volumeLitersFilter;
+        public Double? VolumeLitersFilter
+        {
+            get
+            {
+                return _volumeLitersFilter;
+            }
+            set
+            {
+                _volumeLitersFilter = value;
+				NotifyPropertyChanged(x => VolumeLitersFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
 		internal bool DisableBaseFilterData = false;
         public virtual void FilterData()
 	    {
@@ -460,7 +478,10 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
  
 
 					if(LineNumberFilter.HasValue)
-						res.Append(" && " + string.Format("LineNumber == {0}",  LineNumberFilter.ToString()));							return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
+						res.Append(" && " + string.Format("LineNumber == {0}",  LineNumberFilter.ToString()));				 
+
+					if(VolumeLitersFilter.HasValue)
+						res.Append(" && " + string.Format("VolumeLiters == {0}",  VolumeLitersFilter.ToString()));							return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
 // Send to Excel Implementation
@@ -516,7 +537,10 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     ItemDescription = x.ItemDescription ,
                     
  
-                    LineNumber = x.LineNumber 
+                    LineNumber = x.LineNumber ,
+                    
+ 
+                    VolumeLiters = x.VolumeLiters 
                     
                 }).ToList()
             };
@@ -563,6 +587,9 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     
  
                     public Nullable<int> LineNumber { get; set; } 
+                    
+ 
+                    public Nullable<double> VolumeLiters { get; set; } 
                     
         }
 

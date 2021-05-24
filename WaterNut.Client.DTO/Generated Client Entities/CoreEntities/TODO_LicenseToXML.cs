@@ -216,6 +216,19 @@ namespace CoreEntities.Client.DTO
 		}
         private Nullable<int> _LineNumber;
 
+        [DataMember]
+        public Nullable<double> VolumeLiters
+		{ 
+		    get { return _VolumeLiters; }
+			set
+			{
+			    if (value == _VolumeLiters) return;
+				_VolumeLiters = value;
+				NotifyPropertyChanged();//m => this.VolumeLiters
+			}
+		}
+        private Nullable<double> _VolumeLiters;
+
        
    //     [DataMember]
    //     public TrackingState TrackingState { get; set; }

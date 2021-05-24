@@ -287,6 +287,21 @@ public Nullable<int> LineNumber
 		}
      
 
+       
+       [NumberValidationAttribute]
+public Nullable<double> VolumeLiters
+		{ 
+		    get { return this.todo_licensetoxml.VolumeLiters; }
+			set
+			{
+			    if (value == this.todo_licensetoxml.VolumeLiters) return;
+				this.todo_licensetoxml.VolumeLiters = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("VolumeLiters");
+			}
+		}
+     
+
 
         ChangeTrackingCollection<DTO.TODO_LicenseToXML> _changeTracker;    
         public ChangeTrackingCollection<DTO.TODO_LicenseToXML> ChangeTracker
