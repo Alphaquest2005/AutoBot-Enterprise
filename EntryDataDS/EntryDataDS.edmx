@@ -607,6 +607,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.EntryDataDetailsEx' does 
           <Property Name="ItemDescription" Type="nvarchar" MaxLength="255" Nullable="false" />
           <Property Name="Cost" Type="float" Nullable="false" />
           <Property Name="QtyAllocated" Type="float" Nullable="false" />
+          <Property Name="VolumeLiters" Type="float" />
           <Property Name="UnitWeight" Type="float" Nullable="false" />
           <Property Name="DoNotAllocate" Type="bit" />
           <Property Name="TariffCode" Type="nvarchar" MaxLength="50" />
@@ -845,6 +846,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ShipmentInvoicePOItemQuer
           <Property Name="INVCost" Type="float" Nullable="false" />
           <Property Name="POQuantity" Type="float" Nullable="false" />
           <Property Name="INVQuantity" Type="float" Nullable="false" />
+          <Property Name="Gallons" Type="float" />
           <Property Name="POTotalCost" Type="float" />
           <Property Name="INVTotalCost" Type="float" />
           <Property Name="INVInventoryItemId" Type="int" />
@@ -1639,6 +1641,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ShipmentRiderInvoice' doe
     [EntryDataDetailsEx].[ItemDescription] AS [ItemDescription], 
     [EntryDataDetailsEx].[Cost] AS [Cost], 
     [EntryDataDetailsEx].[QtyAllocated] AS [QtyAllocated], 
+    [EntryDataDetailsEx].[VolumeLiters] AS [VolumeLiters], 
     [EntryDataDetailsEx].[UnitWeight] AS [UnitWeight], 
     [EntryDataDetailsEx].[DoNotAllocate] AS [DoNotAllocate], 
     [EntryDataDetailsEx].[TariffCode] AS [TariffCode], 
@@ -1814,6 +1817,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ShipmentRiderInvoice' doe
     [ShipmentInvoicePOItemQueryMatches].[INVCost] AS [INVCost], 
     [ShipmentInvoicePOItemQueryMatches].[POQuantity] AS [POQuantity], 
     [ShipmentInvoicePOItemQueryMatches].[INVQuantity] AS [INVQuantity], 
+    [ShipmentInvoicePOItemQueryMatches].[Gallons] AS [Gallons], 
     [ShipmentInvoicePOItemQueryMatches].[POTotalCost] AS [POTotalCost], 
     [ShipmentInvoicePOItemQueryMatches].[INVTotalCost] AS [INVTotalCost], 
     [ShipmentInvoicePOItemQueryMatches].[INVInventoryItemId] AS [INVInventoryItemId], 
@@ -2561,6 +2565,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ShipmentRiderInvoice' doe
           <Property Name="EntryData_Id" Type="Int32" Nullable="false" />
           <Property Name="InventoryItemId" Type="Int32" Nullable="false" />
           <Property Name="FileLineNumber" Type="Int32" />
+          <Property Name="VolumeLiters" Type="Double" />
         </EntityType>
         <Association Name="EntryDataDetailsEntryDataDetailsEx">
           <End Type="WaterNutDBModel.EntryDataDetails" Role="EntryDataDetails" Multiplicity="1" />
@@ -3850,6 +3855,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ShipmentRiderInvoice' doe
           <Property Name="POInventoryItemId" Type="Int32" Nullable="false" />
           <NavigationProperty Name="InvoiceDetails" Relationship="WaterNutDBModel.InvoiceDetailsShipmentInvoicePOItemQueryMatches" FromRole="ShipmentInvoicePOItemQueryMatches" ToRole="InvoiceDetails" />
           <NavigationProperty Name="EntryDataDetails" Relationship="WaterNutDBModel.EntryDataDetailsShipmentInvoicePOItemQueryMatches" FromRole="ShipmentInvoicePOItemQueryMatches" ToRole="EntryDataDetails" />
+          <Property Name="Gallons" Type="Double" />
         </EntityType>
         <EntityType Name="ShipmentInvoicePOItemMISMatches">
           <Key>
@@ -4296,6 +4302,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ShipmentRiderInvoice' doe
           <EntitySetMapping Name="EntryDataDetailsEx">
             <EntityTypeMapping TypeName="WaterNutDBModel.EntryDataDetailsEx">
               <MappingFragment StoreEntitySet="EntryDataDetailsEx">
+                <ScalarProperty Name="VolumeLiters" ColumnName="VolumeLiters" />
                 <ScalarProperty Name="FileLineNumber" ColumnName="FileLineNumber" />
                 <ScalarProperty Name="InventoryItemId" ColumnName="InventoryItemId" />
                 <ScalarProperty Name="EntryData_Id" ColumnName="EntryData_Id" />
@@ -4903,6 +4910,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ShipmentRiderInvoice' doe
           <EntitySetMapping Name="ShipmentInvoicePOItemQueryMatches">
             <EntityTypeMapping TypeName="WaterNutDBModel.ShipmentInvoicePOItemQueryMatches">
               <MappingFragment StoreEntitySet="ShipmentInvoicePOItemQueryMatches">
+                <ScalarProperty Name="Gallons" ColumnName="Gallons" />
                 <ScalarProperty Name="POInventoryItemId" ColumnName="POInventoryItemId" />
                 <ScalarProperty Name="INVInventoryItemId" ColumnName="INVInventoryItemId" />
                 <ScalarProperty Name="INVTotalCost" ColumnName="INVTotalCost" />

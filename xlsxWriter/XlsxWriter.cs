@@ -25,7 +25,7 @@ namespace xlsxWriter
         private static string RideManualMatchesHeader = "WarehouseCode, RiderInvoiceNumber, InvoiceNo, Packages";
         private static string RiderManualMatchesTag = "Manual Matches";
 
-        public static List<(string reference, string filepath)> CreatCSV(ShipmentInvoice shipmentInvoice,
+        public static List<(string reference, string filepath)> CreateCSV(ShipmentInvoice shipmentInvoice,
             int riderId)
         {
            
@@ -79,6 +79,11 @@ namespace xlsxWriter
 
                             SetValue(workbook, i, header.First(x => x.Key.Column == nameof(itm.Quantity)).Key.Index,
                                 itm.Quantity);
+
+                            if(pOItem != null && pOItem.Gallons != null)
+                                SetValue(workbook, i, header.First(x => x.Key.Column == "Gallons").Key.Index,
+                                    pOItem.Gallons);
+
                             SetValue(workbook, i, header.First(x => x.Key.Column == "POItemNumber").Key.Index, itm.ItemNumber);
                             SetValue(workbook, i, header.First(x => x.Key.Column == nameof(itm.TotalCost)).Key.Index,
                                 itm.TotalCost == 0 ? pOItem?.INVTotalCost??0 : itm.TotalCost);
@@ -124,6 +129,8 @@ namespace xlsxWriter
                                 itm.ItemAlias.POItemDescription);
                         }
 
+                        if(itm.Volume != null && itm.Volume.Units == "Gallons")
+                            SetValue(workbook, i, header.First(x => x.Key.Column == "Gallons").Key.Index, itm.Quantity * itm.Volume.Quantity);
 
                         SetValue(workbook, i, header.First(x => x.Key.Column == nameof(itm.Quantity)).Key.Index, itm.Quantity);
                         SetValue(workbook, i, header.First(x => x.Key.Column == nameof(itm.TotalCost)).Key.Index, itm.TotalCost);

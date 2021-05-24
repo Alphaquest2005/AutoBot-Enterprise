@@ -291,6 +291,21 @@ namespace EntryDataDS.Business.Entities
         }
         int _poinventoryitemid;
         [DataMember]
+        public Nullable<double> Gallons 
+        {
+            get
+            {
+                return _gallons;
+            }
+            set
+            {
+                _gallons = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<double> _gallons;
+        [DataMember]
         public InvoiceDetails InvoiceDetails { get; set; }
         [DataMember]
         public EntryDataDetails EntryDataDetails { get; set; }

@@ -31,6 +31,7 @@
               this.Property(t => t.INVTotalCost).HasColumnName("INVTotalCost");
               this.Property(t => t.INVInventoryItemId).HasColumnName("INVInventoryItemId");
               this.Property(t => t.POInventoryItemId).HasColumnName("POInventoryItemId");
+              this.Property(t => t.Gallons).HasColumnName("Gallons");
               this.HasRequired(t => t.InvoiceDetails).WithMany(t =>(ICollection<ShipmentInvoicePOItemQueryMatches>) t.POItems).HasForeignKey(d => d.INVDetailsId);
               this.HasRequired(t => t.EntryDataDetails).WithMany(t =>(ICollection<ShipmentInvoicePOItemQueryMatches>) t.INVItems).HasForeignKey(d => d.PODetailsId);
              // Tracking Properties

@@ -54,7 +54,7 @@ namespace WaterNut.DataSpace
                 //Get Template
                 var templates = GetTemplates(x => true);
 
-                foreach (var tmp in templates)
+                foreach (var tmp in templates)//.Where(x => x.OcrInvoices.Id == 37)
                     try
                     {
                         if(TryReadFile(file, emailId, fileType, pdfTxt, client, overWriteExisting, docSet, tmp)) return true;

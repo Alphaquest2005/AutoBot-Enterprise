@@ -57,6 +57,7 @@ namespace AutoBotUtilities
                         .Include("ShipmentRiderInvoice.ShipmentRider")
                         .Include("ShipmentRiderInvoice.ShipmentRiderDetails")
                         .Include("InvoiceDetails.ItemAlias")
+                        .Include("InvoiceDetails.Volume")
                         //.Include("ShipmentInvoicePOs.POMISMatches")
                         .Include("ShipmentInvoicePOs.PurchaseOrders.EntryDataDetails.INVItems")
                         .Include("ShipmentInvoicePOs.PurchaseOrders.WarehouseInfo")
@@ -188,6 +189,7 @@ namespace AutoBotUtilities
                             .Include("ShipmentRiderInvoice.ShipmentRiderDetails")
                             .Include("InvoiceDetails.ItemAlias")
                             .Include("InvoiceDetails.POItems")
+                            .Include("InvoiceDetails.Volume")
                             // .Include("ShipmentInvoicePOs.POMISMatches")
                             .Include("ShipmentInvoicePOs.PurchaseOrders.EntryDataDetails.INVItems")
                             .Include("ShipmentInvoicePOs.PurchaseOrders.WarehouseInfo")
@@ -216,6 +218,7 @@ namespace AutoBotUtilities
                         .Include("ShipmentRiderInvoice.ShipmentRiderDetails")
                         .Include("InvoiceDetails.ItemAlias")
                         .Include("InvoiceDetails.POItems")
+                        .Include("InvoiceDetails.Volume")
                         // .Include("ShipmentInvoicePOs.POMISMatches")
                         .Include("ShipmentInvoicePOs.PurchaseOrders.EntryDataDetails.INVItems")
                         .Where(z => !invoiceLst.Contains(z.Id) && emailLst.Contains(z.EmailId))
@@ -672,7 +675,7 @@ namespace AutoBotUtilities
 
 
                         var invocieAttachments = invoices.Select(shipmentInvoice =>
-                                xlsxWriter.XlsxWriter.CreatCSV(shipmentInvoice, client.Key.Item2))
+                                xlsxWriter.XlsxWriter.CreateCSV(shipmentInvoice, client.Key.Item2))
                             .SelectMany(x => x.ToList())
                             .ToList();
 
@@ -783,7 +786,7 @@ namespace AutoBotUtilities
                     }
                 }
 
-                var ridersWithNoBLs = masterShipment.ShipmentAttachedRider.Where(x => x.ShipmentRider.ShipmentRiderDetails.Any(z => z.ShipmentRiderBLs.Any(b => bls.All(r => r.Id != b.BLId)))).ToList();
+                var ridersWithNoBLs = masterShipment.ShipmentAttachedRider.Where(x => !x.ShipmentRider.ShipmentRiderDetails.Any(z => z.ShipmentRiderBLs.Any(b => bls.All(r => r.Id != b.BLId)))).ToList();
                 if (ridersWithNoBLs.Any())
                 {
                     //TODO:// Copy the system above
@@ -791,7 +794,9 @@ namespace AutoBotUtilities
                     {
                         var rider = sRider.ShipmentRider;
 
-                        var clients = rider.ShipmentRiderDetails.GroupBy(x => new Tuple<string, int, string>(x.Code, x.RiderId,"Next Shipment"))
+                        var clients = rider.ShipmentRiderDetails
+                            .Where(z => !z.ShipmentRiderBLs.Any(b => bls.All(r => r.Id != b.BLId)))
+                                .GroupBy(x => new Tuple<string, int, string>(x.Code, x.RiderId,"Next Shipment"))
                             .ToList().ToList();
 
                         foreach (var client in clients)
@@ -822,7 +827,7 @@ namespace AutoBotUtilities
 
 
                             var invocieAttachments = invoices.Select(shipmentInvoice =>
-                                    xlsxWriter.XlsxWriter.CreatCSV(shipmentInvoice, client.Key.Item2))
+                                    xlsxWriter.XlsxWriter.CreateCSV(shipmentInvoice, client.Key.Item2))
                                 .SelectMany(x => x.ToList())
                                 .ToList();
 
