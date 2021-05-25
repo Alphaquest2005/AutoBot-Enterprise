@@ -1110,7 +1110,7 @@ namespace AutoBot
                             var lst = llst
                                 .Where(x => !string.IsNullOrEmpty(x.LicenseDescription))
                                 .GroupBy(x => x.EntryDataId)
-                                .Select(x => x.OrderByDescending(z => z.SourceFile).FirstOrDefault())
+                                .SelectMany(x => x.OrderByDescending(z => z.SourceFile))//.FirstOrDefault()
                                 .GroupBy(x => new {x.EntryDataId, x.TariffCategoryCode, x.SourceFile})
                             .ToList();
 
