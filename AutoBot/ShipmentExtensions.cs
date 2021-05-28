@@ -934,6 +934,9 @@ namespace AutoBotUtilities
         private static List<ShipmentInvoice> DoRiderInvoices(Shipment masterShipment, IGrouping<Tuple<string, int, string>, ShipmentRiderDetails> client, UnAttachedWorkBookPkg summaryPkg,
             out string summaryFile)
         {
+            try
+            {
+
 
             var rawInvoices = masterShipment.ShipmentAttachedInvoices
                 .Select(x => x.ShipmentInvoice).ToList();
@@ -983,7 +986,7 @@ namespace AutoBotUtilities
 
             summaryPkg.PackagesSummary = new PackagesSummary()
             {
-                BLPackages = client.DistinctBy(x => x.WarehouseCode).Sum(x => x.ShipmentRiderBLs.DistinctBy(bd => bd.BLDetailId).Sum(b => b.ShipmentBLDetails.Quantity)),
+                BLPackages = client.DistinctBy(x => x.WarehouseCode).Sum(x => x.ShipmentRiderBLs.DistinctBy(bd => bd.BLDetailId).Sum(b => b.ShipmentBLDetails?.Quantity??0)),
                 RiderPackages = client.Sum(x => x.Pieces),
                 InvoicePackages = client.Sum(x => x.ShipmentRiderInvoice.Sum(i => i.Packages))
             };
@@ -999,6 +1002,14 @@ namespace AutoBotUtilities
 
             summaryFile = XlsxWriter.CreateUnattachedShipmentWorkBook(client.Key, summaryPkg);
             return invoices;
+
+
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
         }
 
         public static List<Shipment> SaveShipment(this List<Shipment> shipments)

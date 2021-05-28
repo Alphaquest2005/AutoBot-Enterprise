@@ -499,9 +499,7 @@ namespace WaterNut.DataSpace
                         if (existingManifest != null)
                             ctx.ShipmentInvoice.Remove(existingManifest);
 
-                        var details = invoice.InvoiceDetails;
-                        invoice.InvoiceDetails = details.DistinctBy(x => new {x.ItemNumber, x.Quantity, x.TotalCost})
-                            .ToList();
+                        invoice.InvoiceDetails = AutoFixImportErrors(invoice);
 
                         if (Math.Abs(invoice.SubTotal.GetValueOrDefault()) < 0.01)
                         {
@@ -528,6 +526,25 @@ namespace WaterNut.DataSpace
                 Console.WriteLine(e);
                 throw;
             }
+        }
+
+        private static List<InvoiceDetails> AutoFixImportErrors(ShipmentInvoice invoice)
+        {
+            var details = invoice.InvoiceDetails;
+
+            foreach (var err in details.Where(x =>x.TotalCost.GetValueOrDefault() > 0 && Math.Abs((x.Quantity * x.Cost) - x.TotalCost.GetValueOrDefault()) > 0.01))
+            {
+                
+            }
+
+            if (invoice.SubTotal > 0
+                && Math.Abs((double) (invoice.SubTotal - details.Sum(x => x.Cost * x.Quantity))) > 0.01)
+                details = details.DistinctBy(x => new {x.ItemNumber, x.Quantity, x.TotalCost})
+                    .ToList();
+
+
+            var invoiceInvoiceDetails = details ;
+            return invoiceInvoiceDetails;
         }
 
         private void ProcessFreight(FileTypes fileType, List<AsycudaDocumentSet> docSet, bool overWriteExisting, int emailId, string droppedFilePath, List<object> eslst)

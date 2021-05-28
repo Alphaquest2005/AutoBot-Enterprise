@@ -80,7 +80,7 @@ namespace xlsxWriter
                             SetValue(workbook, i, header.First(x => x.Key.Column == nameof(itm.Quantity)).Key.Index,
                                 itm.Quantity);
 
-                            if(pOItem != null && pOItem.Gallons != null)
+                            if(pOItem != null && pOItem.Gallons > 0)
                                 SetValue(workbook, i, header.First(x => x.Key.Column == "Gallons").Key.Index,
                                     pOItem.Gallons);
 
