@@ -106,6 +106,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="C71Summary.cs">
+      <DependentUpon>ValuationDS.tt</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Registered.cs">
       <DependentUpon>ValuationDS.tt</DependentUpon>

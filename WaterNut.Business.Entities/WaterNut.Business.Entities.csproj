@@ -519,6 +519,7 @@
     <Compile Include="Generated Business Entities\SalesDataQS\SalesData.cs" />
     <Compile Include="Generated Business Entities\SalesDataQS\SalesDataAllocations.cs" />
     <Compile Include="Generated Business Entities\SalesDataQS\SalesDataDetail.cs" />
+    <Compile Include="Generated Business Entities\ValuationDS\C71Summary.cs" />
     <Compile Include="Generated Business Entities\ValuationDS\Registered.cs" />
     <Compile Include="Generated Business Entities\ValuationDS\TODO_C71ToCreate.cs" />
     <Compile Include="Generated Business Entities\ValuationDS\xC71_Buyer_segment.cs" />
@@ -902,6 +903,7 @@
     <Compile Include="Generated ChangeTracking Models\SalesDataQS\SalesData.cs" />
     <Compile Include="Generated ChangeTracking Models\SalesDataQS\SalesDataAllocations.cs" />
     <Compile Include="Generated ChangeTracking Models\SalesDataQS\SalesDataDetail.cs" />
+    <Compile Include="Generated ChangeTracking Models\ValuationDS\C71Summary.cs" />
     <Compile Include="Generated ChangeTracking Models\ValuationDS\Registered.cs" />
     <Compile Include="Generated ChangeTracking Models\ValuationDS\TODO_C71ToCreate.cs" />
     <Compile Include="Generated ChangeTracking Models\ValuationDS\xC71_Buyer_segment.cs" />
@@ -1285,6 +1287,7 @@
     <Compile Include="Generated Constructors Models\SalesDataQS\SalesData.cs" />
     <Compile Include="Generated Constructors Models\SalesDataQS\SalesDataAllocations.cs" />
     <Compile Include="Generated Constructors Models\SalesDataQS\SalesDataDetail.cs" />
+    <Compile Include="Generated Constructors Models\ValuationDS\C71Summary.cs" />
     <Compile Include="Generated Constructors Models\ValuationDS\Registered.cs" />
     <Compile Include="Generated Constructors Models\ValuationDS\TODO_C71ToCreate.cs" />
     <Compile Include="Generated Constructors Models\ValuationDS\xC71_Buyer_segment.cs" />
@@ -1668,6 +1671,7 @@
     <Compile Include="Generated IEntitiyWithKey Models\SalesDataQS\SalesData.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\SalesDataQS\SalesDataAllocations.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\SalesDataQS\SalesDataDetail.cs" />
+    <Compile Include="Generated IEntitiyWithKey Models\ValuationDS\C71Summary.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\ValuationDS\Registered.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\ValuationDS\TODO_C71ToCreate.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\ValuationDS\xC71_Buyer_segment.cs" />
@@ -2051,6 +2055,7 @@
     <Compile Include="Generated IIdentitfiableEntity Models\SalesDataQS\SalesData.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\SalesDataQS\SalesDataAllocations.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\SalesDataQS\SalesDataDetail.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\ValuationDS\C71Summary.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\ValuationDS\Registered.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\ValuationDS\TODO_C71ToCreate.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\ValuationDS\xC71_Buyer_segment.cs" />
@@ -2444,6 +2449,7 @@
     <Compile Include="Generated Mappings\SalesDataQS\SalesData.map.cs" />
     <Compile Include="Generated Mappings\SalesDataQS\SalesDataAllocations.map.cs" />
     <Compile Include="Generated Mappings\SalesDataQS\SalesDataDetail.map.cs" />
+    <Compile Include="Generated Mappings\ValuationDS\C71Summary.map.cs" />
     <Compile Include="Generated Mappings\ValuationDS\Registered.map.cs" />
     <Compile Include="Generated Mappings\ValuationDS\TODO_C71ToCreate.map.cs" />
     <Compile Include="Generated Mappings\ValuationDS\xC71_Buyer_segment.map.cs" />

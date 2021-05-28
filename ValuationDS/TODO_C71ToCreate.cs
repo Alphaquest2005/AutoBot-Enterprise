@@ -31,5 +31,7 @@ namespace ValuationDS
         public Nullable<double> TotalCIF { get; set; }
         public double C71Total { get; set; }
         public double Rate { get; set; }
+        public Nullable<int> ExpectedEntries { get; set; }
+        public Nullable<double> GeneratedC71Total { get; set; }
     }
 }

@@ -61,6 +61,8 @@ namespace ValuationDS.Business.Entities
      
         public DbSet<TODO_C71ToCreate> TODO_C71ToCreate { get; set; }
      
+        public DbSet<C71Summary> C71Summary { get; set; }
+     
 
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
@@ -78,6 +80,8 @@ namespace ValuationDS.Business.Entities
             modelBuilder.Configurations.Add(new xC71_Value_declaration_formMap());
          
             modelBuilder.Configurations.Add(new TODO_C71ToCreateMap());
+         
+            modelBuilder.Configurations.Add(new C71SummaryMap());
          
             modelBuilder.Configurations.Add(new RegisteredMap());
       

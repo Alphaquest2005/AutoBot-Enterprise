@@ -30,6 +30,8 @@
               this.Property(t => t.TotalCIF).HasColumnName("TotalCIF");
               this.Property(t => t.C71Total).HasColumnName("C71Total");
               this.Property(t => t.Rate).HasColumnName("Rate");
+              this.Property(t => t.ExpectedEntries).HasColumnName("ExpectedEntries");
+              this.Property(t => t.GeneratedC71Total).HasColumnName("GeneratedC71Total");
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);
     			this.Ignore(t => t.ModifiedProperties);

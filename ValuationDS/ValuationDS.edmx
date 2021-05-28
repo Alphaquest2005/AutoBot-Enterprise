@@ -161,10 +161,31 @@
           <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
         </EntityType>
         <!--Errors Found During Generation:
+warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.C71Summary' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="C71Summary">
+          <Key>
+            <PropertyRef Name="Value_declaration_form_Id" />
+          </Key>
+          <Property Name="Address" Type="nvarchar" MaxLength="255" />
+          <Property Name="Value_declaration_form_Id" Type="int" Nullable="false" />
+          <Property Name="Total" Type="float" />
+          <Property Name="RegisteredId" Type="int" />
+          <Property Name="Reference" Type="nvarchar" MaxLength="255" />
+          <Property Name="SourceFile" Type="nvarchar" MaxLength="300" />
+          <Property Name="RegNumber" Type="nvarchar" MaxLength="50" />
+          <Property Name="DocumentReference" Type="nvarchar" MaxLength="50" />
+          <Property Name="ApplicationSettingsId" Type="int" />
+        </EntityType>
+        <!--Errors Found During Generation:
 warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-C71ToCreate' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="TODO-C71ToCreate">
           <Key>
             <PropertyRef Name="Id" />
+            
+            
+            
+            
+            
           </Key>
           <Property Name="Id" Type="int" Nullable="false" />
           <Property Name="AsycudaDocumentSetId" Type="int" Nullable="false" />
@@ -178,11 +199,13 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-C71ToCreate' does no
           <Property Name="Declarant_Reference_Number" Type="nvarchar" MaxLength="50" />
           <Property Name="TotalInvoices" Type="int" />
           <Property Name="DocumentsCount" Type="int" />
+          <Property Name="ExpectedEntries" Type="int" />
           <Property Name="InvoiceTotal" Type="float" />
           <Property Name="LicenseLines" Type="int" />
           <Property Name="TotalCIF" Type="float" />
           <Property Name="C71Total" Type="float" Nullable="false" />
           <Property Name="Rate" Type="float" Nullable="false" />
+          <Property Name="GeneratedC71Total" Type="float" />
         </EntityType>
         <Association Name="FK_xC71_Identification_segment_xC71_Value_declaration_form">
           <End Role="xC71_Value_declaration_form" Type="Self.xC71_Value_declaration_form" Multiplicity="1">
@@ -276,6 +299,19 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-C71ToCreate' does no
           <EntitySet Name="xC71_Seller_segment" EntityType="Self.xC71_Seller_segment" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="xC71_Value_declaration_form" EntityType="Self.xC71_Value_declaration_form" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="xC71_Value_declaration_form_Registered" EntityType="Self.xC71_Value_declaration_form_Registered" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="C71Summary" EntityType="Self.C71Summary" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+[C71Summary].[Address] AS [Address], 
+[C71Summary].[Value_declaration_form_Id] AS [Value_declaration_form_Id], 
+[C71Summary].[Total] AS [Total], 
+[C71Summary].[RegisteredId] AS [RegisteredId], 
+[C71Summary].[Reference] AS [Reference], 
+[C71Summary].[SourceFile] AS [SourceFile], 
+[C71Summary].[RegNumber] AS [RegNumber], 
+[C71Summary].[DocumentReference] AS [DocumentReference], 
+[C71Summary].[ApplicationSettingsId] AS [ApplicationSettingsId]
+FROM [dbo].[C71Summary] AS [C71Summary]</DefiningQuery>
+          </EntitySet>
           <EntitySet Name="TODO-C71ToCreate" EntityType="Self.TODO-C71ToCreate" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
 [TODO-C71ToCreate].[Id] AS [Id], 
@@ -290,11 +326,13 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-C71ToCreate' does no
 [TODO-C71ToCreate].[Declarant_Reference_Number] AS [Declarant_Reference_Number], 
 [TODO-C71ToCreate].[TotalInvoices] AS [TotalInvoices], 
 [TODO-C71ToCreate].[DocumentsCount] AS [DocumentsCount], 
+[TODO-C71ToCreate].[ExpectedEntries] AS [ExpectedEntries], 
 [TODO-C71ToCreate].[InvoiceTotal] AS [InvoiceTotal], 
 [TODO-C71ToCreate].[LicenseLines] AS [LicenseLines], 
 [TODO-C71ToCreate].[TotalCIF] AS [TotalCIF], 
 [TODO-C71ToCreate].[C71Total] AS [C71Total], 
-[TODO-C71ToCreate].[Rate] AS [Rate]
+[TODO-C71ToCreate].[Rate] AS [Rate], 
+[TODO-C71ToCreate].[GeneratedC71Total] AS [GeneratedC71Total]
 FROM [dbo].[TODO-C71ToCreate] AS [TODO-C71ToCreate]</DefiningQuery>
           </EntitySet>
           <AssociationSet Name="FK_xC71_Identification_segment_xC71_Value_declaration_form" Association="Self.FK_xC71_Identification_segment_xC71_Value_declaration_form">
@@ -354,6 +392,7 @@ FROM [dbo].[TODO-C71ToCreate] AS [TODO-C71ToCreate]</DefiningQuery>
             <End Role="xC71_Item" EntitySet="xC71_Item" />
           </AssociationSet>
           <EntitySet Name="TODO_C71ToCreate" EntityType="WaterNutModelDB.TODO_C71ToCreate" />
+          <EntitySet Name="C71Summary" EntityType="WaterNutModelDB.C71Summary" />
           </EntityContainer>
         <EntityType Name="xC71_Buyer_segment">
           <Key>
@@ -607,6 +646,22 @@ FROM [dbo].[TODO-C71ToCreate] AS [TODO-C71ToCreate]</DefiningQuery>
           <Property Name="TotalCIF" Type="Double" />
           <Property Name="C71Total" Type="Double" Nullable="false" />
           <Property Name="Rate" Type="Double" Nullable="false" />
+          <Property Name="ExpectedEntries" Type="Int32" />
+          <Property Name="GeneratedC71Total" Type="Double" />
+        </EntityType>
+        <EntityType Name="C71Summary">
+          <Key>
+            <PropertyRef Name="Value_declaration_form_Id" />
+          </Key>
+          <Property Name="Address" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Value_declaration_form_Id" Type="Int32" Nullable="false" />
+          <Property Name="Total" Type="Double" />
+          <Property Name="RegisteredId" Type="Int32" />
+          <Property Name="Reference" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="SourceFile" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
+          <Property Name="RegNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="DocumentReference" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ApplicationSettingsId" Type="Int32" />
         </EntityType>
         </Schema>
     </edmx:ConceptualModels>
@@ -777,6 +832,8 @@ FROM [dbo].[TODO-C71ToCreate] AS [TODO-C71ToCreate]</DefiningQuery>
           <EntitySetMapping Name="TODO_C71ToCreate">
             <EntityTypeMapping TypeName="WaterNutModelDB.TODO_C71ToCreate">
               <MappingFragment StoreEntitySet="TODO-C71ToCreate">
+                <ScalarProperty Name="GeneratedC71Total" ColumnName="GeneratedC71Total" />
+                <ScalarProperty Name="ExpectedEntries" ColumnName="ExpectedEntries" />
                 <ScalarProperty Name="Rate" ColumnName="Rate" />
                 <ScalarProperty Name="C71Total" ColumnName="C71Total" />
                 <ScalarProperty Name="TotalCIF" ColumnName="TotalCIF" />
@@ -794,6 +851,21 @@ FROM [dbo].[TODO-C71ToCreate] AS [TODO-C71ToCreate]</DefiningQuery>
                 <ScalarProperty Name="ApplicationSettingsId" ColumnName="ApplicationSettingsId" />
                 <ScalarProperty Name="AsycudaDocumentSetId" ColumnName="AsycudaDocumentSetId" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="C71Summary">
+            <EntityTypeMapping TypeName="WaterNutModelDB.C71Summary">
+              <MappingFragment StoreEntitySet="C71Summary">
+                <ScalarProperty Name="ApplicationSettingsId" ColumnName="ApplicationSettingsId" />
+                <ScalarProperty Name="DocumentReference" ColumnName="DocumentReference" />
+                <ScalarProperty Name="RegNumber" ColumnName="RegNumber" />
+                <ScalarProperty Name="SourceFile" ColumnName="SourceFile" />
+                <ScalarProperty Name="Reference" ColumnName="Reference" />
+                <ScalarProperty Name="RegisteredId" ColumnName="RegisteredId" />
+                <ScalarProperty Name="Total" ColumnName="Total" />
+                <ScalarProperty Name="Value_declaration_form_Id" ColumnName="Value_declaration_form_Id" />
+                <ScalarProperty Name="Address" ColumnName="Address" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

@@ -131,11 +131,6 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>AllRepository.tt</DependentUpon>
     </Compile>
-    <Compile Include="AllServices.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>AllServices.tt</DependentUpon>
-    </Compile>
     <Compile Include="AllViewModels.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -556,6 +551,7 @@
 ..\WaterNut.Business.Entities\Generated Business Entities\SalesDataQS\SalesData.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\SalesDataQS\SalesDataAllocations.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\SalesDataQS\SalesDataDetail.cs
+..\WaterNut.Business.Entities\Generated Business Entities\ValuationDS\C71Summary.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\ValuationDS\Registered.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\ValuationDS\TODO_C71ToCreate.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\ValuationDS\xC71_Buyer_segment.cs
@@ -953,6 +949,7 @@
 ..\WaterNut.Business.Entities\Generated Mappings\SalesDataQS\SalesData.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\SalesDataQS\SalesDataAllocations.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\SalesDataQS\SalesDataDetail.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\ValuationDS\C71Summary.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\ValuationDS\Registered.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\ValuationDS\TODO_C71ToCreate.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\ValuationDS\xC71_Buyer_segment.map.cs
@@ -1358,6 +1355,7 @@
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\SalesDataQS\SalesData.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\SalesDataQS\SalesDataAllocations.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\SalesDataQS\SalesDataDetail.cs
+..\WaterNut.Business.Entities\Generated ChangeTracking Models\ValuationDS\C71Summary.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\ValuationDS\Registered.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\ValuationDS\TODO_C71ToCreate.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\ValuationDS\xC71_Buyer_segment.cs
@@ -1741,6 +1739,7 @@
 ..\WaterNut.Business.Entities\Generated Constructors Models\SalesDataQS\SalesData.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\SalesDataQS\SalesDataAllocations.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\SalesDataQS\SalesDataDetail.cs
+..\WaterNut.Business.Entities\Generated Constructors Models\ValuationDS\C71Summary.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\ValuationDS\Registered.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\ValuationDS\TODO_C71ToCreate.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\ValuationDS\xC71_Buyer_segment.cs
@@ -2124,6 +2123,7 @@
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\SalesDataQS\SalesData.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\SalesDataQS\SalesDataAllocations.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\SalesDataQS\SalesDataDetail.cs
+..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\ValuationDS\C71Summary.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\ValuationDS\Registered.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\ValuationDS\TODO_C71ToCreate.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\ValuationDS\xC71_Buyer_segment.cs
@@ -2507,6 +2507,7 @@
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\SalesDataQS\SalesData.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\SalesDataQS\SalesDataAllocations.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\SalesDataQS\SalesDataDetail.cs
+..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\ValuationDS\C71Summary.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\ValuationDS\Registered.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\ValuationDS\TODO_C71ToCreate.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\ValuationDS\xC71_Buyer_segment.cs
@@ -4031,6 +4032,7 @@
 ..\WaterNut.Business.Entities\Generated Mappings\SalesDataQS\SalesData.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\SalesDataQS\SalesDataAllocations.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\SalesDataQS\SalesDataDetail.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\ValuationDS\C71Summary.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\ValuationDS\Registered.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\ValuationDS\TODO_C71ToCreate.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\ValuationDS\xC71_Buyer_segment.map.cs
@@ -5794,7 +5796,6 @@
 ..\WaterNut.Client.Services\SalesDataQS\SalesDataClient.cs
 ..\WaterNut.Client.Services\SalesDataQS\SalesDataDetailClient.cs
 </LastOutputs>
-      <LastGenOutput>AllServices.cs</LastGenOutput>
     </Content>
     <Content Include="RunAll.tt">
       <LastOutputs>

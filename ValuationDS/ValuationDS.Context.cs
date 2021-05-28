@@ -32,5 +32,6 @@ namespace ValuationDS
         public DbSet<xC71_Seller_segment> xC71_Seller_segment { get; set; }
         public DbSet<xC71_Value_declaration_form> xC71_Value_declaration_form { get; set; }
         public DbSet<TODO_C71ToCreate> TODO_C71ToCreate { get; set; }
+        public DbSet<C71Summary> C71Summary { get; set; }
     }
 }
