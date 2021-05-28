@@ -13,61 +13,61 @@ using System.ServiceModel;
 using System.Threading.Tasks;
 
 using Core.Common.Contracts;
-using CoreEntities.Business.Entities;
+using ValuationDS.Business.Entities;
 using Core.Common.Business.Services;
 using WaterNut.Interfaces;
 
-namespace CoreEntities.Business.Services
+namespace ValuationDS.Business.Services
 {
     [ServiceContract (Namespace="http://www.insight-software.com/WaterNut")]
-    public partial interface IAsycudaDocumentSetC71Service : IBusinessService
+    public partial interface IC71SummaryService : IBusinessService
     {
         [OperationContract]
         [FaultContract(typeof(ValidationFault))]
-        Task<IEnumerable<AsycudaDocumentSetC71>> GetAsycudaDocumentSetC71(List<string> includesLst = null, bool tracking = true);
+        Task<IEnumerable<C71Summary>> GetC71Summary(List<string> includesLst = null, bool tracking = true);
 
         [OperationContract]
         [FaultContract(typeof(ValidationFault))]
-        Task<AsycudaDocumentSetC71> GetAsycudaDocumentSetC71ByKey(string id, List<string> includesLst = null, bool tracking = true);
+        Task<C71Summary> GetC71SummaryByKey(string id, List<string> includesLst = null, bool tracking = true);
 
 		[OperationContract]
         [FaultContract(typeof(ValidationFault))]
-        Task<IEnumerable<AsycudaDocumentSetC71>> GetAsycudaDocumentSetC71ByExpression(string exp, List<string> includesLst = null, bool tracking = true);
+        Task<IEnumerable<C71Summary>> GetC71SummaryByExpression(string exp, List<string> includesLst = null, bool tracking = true);
 
 		[OperationContract]
         [FaultContract(typeof(ValidationFault))]
-        Task<IEnumerable<AsycudaDocumentSetC71>> GetAsycudaDocumentSetC71ByExpressionLst(List<string> expLst, List<string> includesLst = null, bool tracking = true);
+        Task<IEnumerable<C71Summary>> GetC71SummaryByExpressionLst(List<string> expLst, List<string> includesLst = null, bool tracking = true);
 
 		[OperationContract]
         [FaultContract(typeof(ValidationFault))]
-		Task<IEnumerable<AsycudaDocumentSetC71>> GetAsycudaDocumentSetC71ByExpressionNav(string exp,
+		Task<IEnumerable<C71Summary>> GetC71SummaryByExpressionNav(string exp,
             Dictionary<string, string> navExp, List<string> includesLst = null, bool tracking = true);
 
         [OperationContract]
         [FaultContract(typeof(ValidationFault))]
-        Task<IEnumerable<AsycudaDocumentSetC71>> GetAsycudaDocumentSetC71ByBatch(string exp,
+        Task<IEnumerable<C71Summary>> GetC71SummaryByBatch(string exp,
             int totalrow, List<string> includesLst = null, bool tracking = true);
 
         [OperationContract]
         [FaultContract(typeof(ValidationFault))]
-        Task<IEnumerable<AsycudaDocumentSetC71>> GetAsycudaDocumentSetC71ByBatchExpressionLst(List<string> exp,
+        Task<IEnumerable<C71Summary>> GetC71SummaryByBatchExpressionLst(List<string> exp,
             int totalrow, List<string> includesLst = null, bool tracking = true);
 
         [OperationContract]
         [FaultContract(typeof(ValidationFault))]
-        Task<AsycudaDocumentSetC71> UpdateAsycudaDocumentSetC71(AsycudaDocumentSetC71 entity);
+        Task<C71Summary> UpdateC71Summary(C71Summary entity);
 
         [OperationContract]
         [FaultContract(typeof(ValidationFault))]
-        Task<AsycudaDocumentSetC71> CreateAsycudaDocumentSetC71(AsycudaDocumentSetC71 entity);
+        Task<C71Summary> CreateC71Summary(C71Summary entity);
 
         [OperationContract]
         [FaultContract(typeof(ValidationFault))]
-        Task<bool> DeleteAsycudaDocumentSetC71(string id);
+        Task<bool> DeleteC71Summary(string id);
 
         [OperationContract]
         [FaultContract(typeof(ValidationFault))]
-        Task<bool> RemoveSelectedAsycudaDocumentSetC71(IEnumerable<string> selectedAsycudaDocumentSetC71);
+        Task<bool> RemoveSelectedC71Summary(IEnumerable<string> selectedC71Summary);
 	
 		//Virtural list implementation
         [OperationContract]
@@ -84,13 +84,13 @@ namespace CoreEntities.Business.Services
 
         [OperationContract]
         [FaultContract(typeof(ValidationFault))]
-        Task<IEnumerable<AsycudaDocumentSetC71>> LoadRange(int startIndex, int count, string exp);
+        Task<IEnumerable<C71Summary>> LoadRange(int startIndex, int count, string exp);
 
 
 
 		[OperationContract]
         [FaultContract(typeof(ValidationFault))]
-		Task<IEnumerable<AsycudaDocumentSetC71>> LoadRangeNav(int startIndex, int count, string exp,
+		Task<IEnumerable<C71Summary>> LoadRangeNav(int startIndex, int count, string exp,
                                                                                  Dictionary<string, string> navExp, IEnumerable<string> includeLst = null);
 
 		[OperationContract]
@@ -107,10 +107,10 @@ namespace CoreEntities.Business.Services
 
 				[OperationContract]
         [FaultContract(typeof(ValidationFault))]
-        Task<IEnumerable<AsycudaDocumentSetC71>> GetAsycudaDocumentSetC71ByAsycudaDocumentSetId(string AsycudaDocumentSetId, List<string> includesLst = null);
+        Task<IEnumerable<C71Summary>> GetC71SummaryByRegisteredId(string RegisteredId, List<string> includesLst = null);
   		[OperationContract]
         [FaultContract(typeof(ValidationFault))]
-        Task<IEnumerable<AsycudaDocumentSetC71>> GetAsycudaDocumentSetC71ByAttachmentId(string AttachmentId, List<string> includesLst = null);
+        Task<IEnumerable<C71Summary>> GetC71SummaryByApplicationSettingsId(string ApplicationSettingsId, List<string> includesLst = null);
   
 
 

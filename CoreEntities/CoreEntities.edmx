@@ -520,11 +520,9 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AsycudaDocumentItemEntryD
 warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AsycudaDocumentSetC71' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="AsycudaDocumentSetC71">
           <Key>
-            <PropertyRef Name="AsycudaDocumentSetId" />
-            <PropertyRef Name="RegNumber" />
+            
             <PropertyRef Name="Value_declaration_form_Id" />
-            <PropertyRef Name="FilePath" />
-            <PropertyRef Name="AttachmentId" />
+          
           </Key>
           <Property Name="Address" Type="nvarchar" MaxLength="255" />
           <Property Name="Value_declaration_form_Id" Type="int" Nullable="false" />
@@ -5837,10 +5835,7 @@ FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
         <EntityType Name="AsycudaDocumentSetC71">
           <Key>
             <PropertyRef Name="Value_declaration_form_Id" />
-            <PropertyRef Name="AsycudaDocumentSetId" />
-            <PropertyRef Name="FilePath" />
-            <PropertyRef Name="AttachmentId" />
-            <PropertyRef Name="RegNumber" />
+        
           </Key>
           <Property Name="Address" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="Value_declaration_form_Id" Type="Int32" Nullable="false" />

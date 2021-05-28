@@ -131,6 +131,11 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>AllRepository.tt</DependentUpon>
     </Compile>
+    <Compile Include="AllServices.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>AllServices.tt</DependentUpon>
+    </Compile>
     <Compile Include="AllViewModels.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -5094,6 +5099,7 @@
 ..\WaterNut.Business.Services\Contracts\SalesDataQS\ISalesDataAllocationsService.cs
 ..\WaterNut.Business.Services\Contracts\SalesDataQS\ISalesDataDetailService.cs
 ..\WaterNut.Business.Services\Contracts\SalesDataQS\ISalesDataService.cs
+..\WaterNut.Business.Services\Contracts\ValuationDS\IC71SummaryService.cs
 ..\WaterNut.Business.Services\Contracts\ValuationDS\IRegisteredService.cs
 ..\WaterNut.Business.Services\Contracts\ValuationDS\ITODO_C71ToCreateService.cs
 ..\WaterNut.Business.Services\Contracts\ValuationDS\IxC71_Buyer_segmentService.cs
@@ -5477,6 +5483,7 @@
 ..\WaterNut.Business.Services\Services\SalesDataQS\SalesDataAllocationsService.cs
 ..\WaterNut.Business.Services\Services\SalesDataQS\SalesDataDetailService.cs
 ..\WaterNut.Business.Services\Services\SalesDataQS\SalesDataService.cs
+..\WaterNut.Business.Services\Services\ValuationDS\C71SummaryService.cs
 ..\WaterNut.Business.Services\Services\ValuationDS\RegisteredService.cs
 ..\WaterNut.Business.Services\Services\ValuationDS\TODO_C71ToCreateService.cs
 ..\WaterNut.Business.Services\Services\ValuationDS\xC71_Buyer_segmentService.cs
@@ -5796,6 +5803,7 @@
 ..\WaterNut.Client.Services\SalesDataQS\SalesDataClient.cs
 ..\WaterNut.Client.Services\SalesDataQS\SalesDataDetailClient.cs
 </LastOutputs>
+      <LastGenOutput>AllServices.cs</LastGenOutput>
     </Content>
     <Content Include="RunAll.tt">
       <LastOutputs>

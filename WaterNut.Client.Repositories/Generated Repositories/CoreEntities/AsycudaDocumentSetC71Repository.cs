@@ -361,7 +361,63 @@ namespace CoreEntities.Client.Repositories
             }
         }
 
-        
+	 public async Task<IEnumerable<AsycudaDocumentSetC71>> GetAsycudaDocumentSetC71ByAsycudaDocumentSetId(string AsycudaDocumentSetId, List<string> includesLst = null)
+        {
+             if (AsycudaDocumentSetId == "0") return null;
+            try
+            {
+                 using (AsycudaDocumentSetC71Client t = new AsycudaDocumentSetC71Client())
+                    {
+                        var res = await t.GetAsycudaDocumentSetC71ByAsycudaDocumentSetId(AsycudaDocumentSetId, includesLst).ConfigureAwait(continueOnCapturedContext: false);
+                         if(res != null)
+                        {
+                            return res.Select(x => new AsycudaDocumentSetC71(x)).AsEnumerable();
+					    }                
+					    else
+					    {
+						    return null;
+					    }                    
+                    }
+            }
+            catch (FaultException<ValidationFault> e)
+            {
+                throw new Exception(e.Detail.Message, e.InnerException);
+            }
+            catch (Exception)
+            {
+                Debugger.Break();
+                throw;
+            }
+        } 
+ 	 public async Task<IEnumerable<AsycudaDocumentSetC71>> GetAsycudaDocumentSetC71ByAttachmentId(string AttachmentId, List<string> includesLst = null)
+        {
+             if (AttachmentId == "0") return null;
+            try
+            {
+                 using (AsycudaDocumentSetC71Client t = new AsycudaDocumentSetC71Client())
+                    {
+                        var res = await t.GetAsycudaDocumentSetC71ByAttachmentId(AttachmentId, includesLst).ConfigureAwait(continueOnCapturedContext: false);
+                         if(res != null)
+                        {
+                            return res.Select(x => new AsycudaDocumentSetC71(x)).AsEnumerable();
+					    }                
+					    else
+					    {
+						    return null;
+					    }                    
+                    }
+            }
+            catch (FaultException<ValidationFault> e)
+            {
+                throw new Exception(e.Detail.Message, e.InnerException);
+            }
+            catch (Exception)
+            {
+                Debugger.Break();
+                throw;
+            }
+        } 
+         
 		public decimal SumField(string whereExp, string sumExp)
         {
             try

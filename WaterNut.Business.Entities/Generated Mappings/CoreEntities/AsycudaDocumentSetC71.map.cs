@@ -11,14 +11,14 @@
     {
         public AsycudaDocumentSetC71Map()
         {                        
-              this.HasKey(t => new {t.Value_declaration_form_Id, t.AsycudaDocumentSetId, t.FilePath, t.AttachmentId, t.RegNumber});        
+              this.HasKey(t => t.Value_declaration_form_Id);        
               this.ToTable("AsycudaDocumentSetC71");
               this.Property(t => t.Address).HasColumnName("Address").HasMaxLength(255);
               this.Property(t => t.Value_declaration_form_Id).HasColumnName("Value_declaration_form_Id").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.None));
               this.Property(t => t.Total).HasColumnName("Total");
-              this.Property(t => t.AsycudaDocumentSetId).HasColumnName("AsycudaDocumentSetId").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.None));
+              this.Property(t => t.AsycudaDocumentSetId).HasColumnName("AsycudaDocumentSetId");
               this.Property(t => t.FilePath).HasColumnName("FilePath").IsRequired().HasMaxLength(255);
-              this.Property(t => t.AttachmentId).HasColumnName("AttachmentId").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.None));
+              this.Property(t => t.AttachmentId).HasColumnName("AttachmentId");
               this.Property(t => t.RegNumber).HasColumnName("RegNumber").IsRequired().HasMaxLength(50);
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);

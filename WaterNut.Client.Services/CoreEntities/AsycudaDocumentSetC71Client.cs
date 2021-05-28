@@ -112,7 +112,17 @@ namespace CoreEntities.Client.Services
         {
             return await Channel.LoadRangeNav(startIndex,count,exp, navExp, includeLst).ConfigureAwait(false);
         }
-        public decimal SumField(string whereExp, string sumExp)
+		public async Task<IEnumerable<AsycudaDocumentSetC71>> GetAsycudaDocumentSetC71ByAsycudaDocumentSetId(string AsycudaDocumentSetId, List<string> includesLst = null)
+        {
+            return  await Channel.GetAsycudaDocumentSetC71ByAsycudaDocumentSetId(AsycudaDocumentSetId, includesLst).ConfigureAwait(false);
+        }
+			 
+  		public async Task<IEnumerable<AsycudaDocumentSetC71>> GetAsycudaDocumentSetC71ByAttachmentId(string AttachmentId, List<string> includesLst = null)
+        {
+            return  await Channel.GetAsycudaDocumentSetC71ByAttachmentId(AttachmentId, includesLst).ConfigureAwait(false);
+        }
+			 
+          public decimal SumField(string whereExp, string sumExp)
 		{
 			return Channel.SumField(whereExp,sumExp);
 		}

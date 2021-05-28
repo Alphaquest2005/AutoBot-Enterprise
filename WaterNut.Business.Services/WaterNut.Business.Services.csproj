@@ -732,6 +732,7 @@
     <Compile Include="Contracts\SalesDataQS\ISalesDataAllocationsService.cs" />
     <Compile Include="Contracts\SalesDataQS\ISalesDataDetailService.cs" />
     <Compile Include="Contracts\SalesDataQS\ISalesDataService.cs" />
+    <Compile Include="Contracts\ValuationDS\IC71SummaryService.cs" />
     <Compile Include="Contracts\ValuationDS\IRegisteredService.cs" />
     <Compile Include="Contracts\ValuationDS\ITODO_C71ToCreateService.cs" />
     <Compile Include="Contracts\ValuationDS\IxC71_Buyer_segmentService.cs" />
@@ -1325,6 +1326,7 @@
     <Compile Include="Services\SalesDataQS\SalesDataAllocationsService.cs" />
     <Compile Include="Services\SalesDataQS\SalesDataDetailService.cs" />
     <Compile Include="Services\SalesDataQS\SalesDataService.cs" />
+    <Compile Include="Services\ValuationDS\C71SummaryService.cs" />
     <Compile Include="Services\ValuationDS\RegisteredService.cs" />
     <Compile Include="Services\ValuationDS\TODO_C71ToCreateService.cs" />
     <Compile Include="Services\ValuationDS\xC71_Buyer_segmentService.cs" />

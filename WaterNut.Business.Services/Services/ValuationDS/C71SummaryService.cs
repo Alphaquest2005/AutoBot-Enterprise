@@ -18,7 +18,7 @@ using System.Threading.Tasks;
 
 using System.Linq.Dynamic;
 using System.ComponentModel.Composition;
-using CoreEntities.Business.Entities;
+using ValuationDS.Business.Entities;
 using Core.Common.Contracts;
 using Core.Common.Business.Services;
 using Core.Common.UI;
@@ -30,25 +30,25 @@ using TrackableEntities.Common;
 using TrackableEntities.EF6;
 using WaterNut.Interfaces;
 
-namespace CoreEntities.Business.Services
+namespace ValuationDS.Business.Services
 {
-   [Export (typeof(IAsycudaDocumentSetC71Service))]
+   [Export (typeof(IC71SummaryService))]
    [Export(typeof(IBusinessService))]
    [PartCreationPolicy(CreationPolicy.NonShared)]
    [ServiceBehavior(InstanceContextMode = InstanceContextMode.PerCall,
                     ConcurrencyMode = ConcurrencyMode.Multiple)]
    
-    public partial class AsycudaDocumentSetC71Service : IAsycudaDocumentSetC71Service, IDisposable
+    public partial class C71SummaryService : IC71SummaryService, IDisposable
     {
-        //private readonly CoreEntitiesContext dbContext;
+        //private readonly ValuationDSContext dbContext;
 
         public bool StartTracking { get; set; }
 
-        public AsycudaDocumentSetC71Service()
+        public C71SummaryService()
         {
             try
             {
-                // dbContext = new CoreEntitiesContext(){StartTracking = StartTracking};
+                // dbContext = new ValuationDSContext(){StartTracking = StartTracking};
                 StartTracking = false;
              }
             catch (Exception updateEx)
@@ -65,17 +65,17 @@ namespace CoreEntities.Business.Services
             }
         }
 
-        public async Task<IEnumerable<AsycudaDocumentSetC71>> GetAsycudaDocumentSetC71(List<string> includesLst = null, bool tracking = true)
+        public async Task<IEnumerable<C71Summary>> GetC71Summary(List<string> includesLst = null, bool tracking = true)
         {
             try
             {
             //using (var scope = new TransactionScope(TransactionScopeOption.Required,
                                    //new TransactionOptions() {IsolationLevel = IsolationLevel.ReadUncommitted}))
                // {
-                  using ( var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
+                  using ( var dbContext = new ValuationDSContext(){StartTracking = StartTracking})
                   {
 				    var set = AddIncludes(includesLst, dbContext);
-                    IEnumerable<AsycudaDocumentSetC71> entities = await set.AsNoTracking().ToListAsync()
+                    IEnumerable<C71Summary> entities = await set.AsNoTracking().ToListAsync()
 													       .ConfigureAwait(continueOnCapturedContext: false);
                            //scope.Complete();
                             if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
@@ -98,16 +98,16 @@ namespace CoreEntities.Business.Services
         }
 
 
-        public async Task<AsycudaDocumentSetC71> GetAsycudaDocumentSetC71ByKey(string Value_declaration_form_Id, List<string> includesLst = null, bool tracking = true)
+        public async Task<C71Summary> GetC71SummaryByKey(string Value_declaration_form_Id, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
 			   if(string.IsNullOrEmpty(Value_declaration_form_Id))return null; 
-              using ( var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
+              using ( var dbContext = new ValuationDSContext(){StartTracking = StartTracking})
               {
                 var i = Convert.ToInt32(Value_declaration_form_Id);
 				var set = AddIncludes(includesLst, dbContext);
-                AsycudaDocumentSetC71 entity = await set.AsNoTracking().SingleOrDefaultAsync(x => x.Value_declaration_form_Id == i).ConfigureAwait(continueOnCapturedContext: false);
+                C71Summary entity = await set.AsNoTracking().SingleOrDefaultAsync(x => x.Value_declaration_form_Id == i).ConfigureAwait(continueOnCapturedContext: false);
                 if(tracking && entity != null) entity.StartTracking();
                 return entity;
               }
@@ -127,14 +127,14 @@ namespace CoreEntities.Business.Services
         }
 
 
-		 public async Task<IEnumerable<AsycudaDocumentSetC71>> GetAsycudaDocumentSetC71ByExpression(string exp, List<string> includesLst = null, bool tracking = true)
+		 public async Task<IEnumerable<C71Summary>> GetC71SummaryByExpression(string exp, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
-                using (var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
+                using (var dbContext = new ValuationDSContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-					if (string.IsNullOrEmpty(exp) || exp == "None") return new List<AsycudaDocumentSetC71>();
+					if (string.IsNullOrEmpty(exp) || exp == "None") return new List<C71Summary>();
 					var set = AddIncludes(includesLst, dbContext);
                     if (exp == "All")
                     {
@@ -170,14 +170,14 @@ namespace CoreEntities.Business.Services
             }
         }
 
-		 public async Task<IEnumerable<AsycudaDocumentSetC71>> GetAsycudaDocumentSetC71ByExpressionLst(List<string> expLst, List<string> includesLst = null, bool tracking = true)
+		 public async Task<IEnumerable<C71Summary>> GetC71SummaryByExpressionLst(List<string> expLst, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
-                using (var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
+                using (var dbContext = new ValuationDSContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-					if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return new List<AsycudaDocumentSetC71>();
+					if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return new List<C71Summary>();
 					var set = AddIncludes(includesLst, dbContext);
                     if (expLst.FirstOrDefault() == "All")
                     {
@@ -212,16 +212,16 @@ namespace CoreEntities.Business.Services
             }
         }
 
-		public async Task<IEnumerable<AsycudaDocumentSetC71>> GetAsycudaDocumentSetC71ByExpressionNav(string exp,
+		public async Task<IEnumerable<C71Summary>> GetC71SummaryByExpressionNav(string exp,
 																							  Dictionary<string, string> navExp,
 																							  List<string> includesLst = null, bool tracking = true)
         {
             try
             {
-                using (var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
+                using (var dbContext = new ValuationDSContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-                    if (string.IsNullOrEmpty(exp) || exp == "None") return new List<AsycudaDocumentSetC71>();
+                    if (string.IsNullOrEmpty(exp) || exp == "None") return new List<C71Summary>();
 
                     if (exp == "All" && navExp.Count == 0)
                     {
@@ -254,17 +254,17 @@ namespace CoreEntities.Business.Services
             }
         }
 
-        public async Task<IEnumerable<AsycudaDocumentSetC71>> GetAsycudaDocumentSetC71ByBatch(string exp,
+        public async Task<IEnumerable<C71Summary>> GetC71SummaryByBatch(string exp,
             int totalrow, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
 
-                var res = new ConcurrentQueue<List<AsycudaDocumentSetC71>>();
+                var res = new ConcurrentQueue<List<C71Summary>>();
 
 
 
-                if (string.IsNullOrEmpty(exp) || exp == "None") return new List<AsycudaDocumentSetC71>();
+                if (string.IsNullOrEmpty(exp) || exp == "None") return new List<C71Summary>();
 
 
                 var batchSize = 500;
@@ -279,13 +279,13 @@ namespace CoreEntities.Business.Services
                     {
                         try
                         {
-                            using (var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
+                            using (var dbContext = new ValuationDSContext(){StartTracking = StartTracking})
                             {
                                 dbContext.Database.CommandTimeout = 0;
                                 dbContext.Configuration.AutoDetectChangesEnabled = false;
                                 //dbContext.Configuration.LazyLoadingEnabled = true;
                                 var set = AddIncludes(includesLst, dbContext);
-                                IQueryable<AsycudaDocumentSetC71> dset;
+                                IQueryable<C71Summary> dset;
                                 if (exp == "All")
                                 {
                                     dset = set.OrderBy(x => x.Value_declaration_form_Id);
@@ -329,17 +329,17 @@ namespace CoreEntities.Business.Services
                 throw new FaultException<ValidationFault>(fault);
             }
         }
-        public async Task<IEnumerable<AsycudaDocumentSetC71>> GetAsycudaDocumentSetC71ByBatchExpressionLst(List<string> expLst,
+        public async Task<IEnumerable<C71Summary>> GetC71SummaryByBatchExpressionLst(List<string> expLst,
             int totalrow, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
 
-                var res = new ConcurrentQueue<List<AsycudaDocumentSetC71>>();
+                var res = new ConcurrentQueue<List<C71Summary>>();
 
 
 
-                if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return new List<AsycudaDocumentSetC71>();
+                if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return new List<C71Summary>();
 
 
                 var batchSize = 500;
@@ -354,13 +354,13 @@ namespace CoreEntities.Business.Services
                     {
                         try
                         {
-                            using (var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
+                            using (var dbContext = new ValuationDSContext(){StartTracking = StartTracking})
                             {
                                 dbContext.Database.CommandTimeout = 0;
                                 dbContext.Configuration.AutoDetectChangesEnabled = false;
                                 //dbContext.Configuration.LazyLoadingEnabled = true;
                                 var set = AddIncludes(includesLst, dbContext);
-                                IQueryable<AsycudaDocumentSetC71> dset;
+                                IQueryable<C71Summary> dset;
                                 if (expLst.FirstOrDefault() == "All")
                                 {
                                     dset = set.OrderBy(x => x.Value_declaration_form_Id);
@@ -405,13 +405,13 @@ namespace CoreEntities.Business.Services
         }
 
 
-        public async Task<AsycudaDocumentSetC71> UpdateAsycudaDocumentSetC71(AsycudaDocumentSetC71 entity)
+        public async Task<C71Summary> UpdateC71Summary(C71Summary entity)
         { 
-            using ( var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
+            using ( var dbContext = new ValuationDSContext(){StartTracking = StartTracking})
               {
                 try
                 {   
-                     var res = (AsycudaDocumentSetC71) entity;
+                     var res = (C71Summary) entity;
                     if(res.TrackingState == TrackingState.Unchanged) res.TrackingState = TrackingState.Modified;                              
                     
                     dbContext.ApplyChanges(res);
@@ -487,14 +487,14 @@ namespace CoreEntities.Business.Services
            return entity;
         }
 
-        public async Task<AsycudaDocumentSetC71> CreateAsycudaDocumentSetC71(AsycudaDocumentSetC71 entity)
+        public async Task<C71Summary> CreateC71Summary(C71Summary entity)
         {
             try
             {
-                var res = (AsycudaDocumentSetC71) entity;
-              using ( var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
+                var res = (C71Summary) entity;
+              using ( var dbContext = new ValuationDSContext(){StartTracking = StartTracking})
               {
-                dbContext.AsycudaDocumentSetC71.Add(res);
+                dbContext.C71Summary.Add(res);
                 await dbContext.SaveChangesAsync().ConfigureAwait(continueOnCapturedContext: false);
                 res.AcceptChanges();
                 return res;
@@ -514,21 +514,21 @@ namespace CoreEntities.Business.Services
             }
         }
 
-        public async Task<bool> DeleteAsycudaDocumentSetC71(string Value_declaration_form_Id)
+        public async Task<bool> DeleteC71Summary(string Value_declaration_form_Id)
         {
             try
             {
-              using ( var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
+              using ( var dbContext = new ValuationDSContext(){StartTracking = StartTracking})
               {
                 var i = Convert.ToInt32(Value_declaration_form_Id);
-                AsycudaDocumentSetC71 entity = await dbContext.AsycudaDocumentSetC71
+                C71Summary entity = await dbContext.C71Summary
 													.SingleOrDefaultAsync(x => x.Value_declaration_form_Id == i)
 													.ConfigureAwait(continueOnCapturedContext: false);
                 if (entity == null)
                     return false;
 
-                    dbContext.AsycudaDocumentSetC71.Attach(entity);
-                    dbContext.AsycudaDocumentSetC71.Remove(entity);
+                    dbContext.C71Summary.Attach(entity);
+                    dbContext.C71Summary.Remove(entity);
                     await dbContext.SaveChangesAsync().ConfigureAwait(continueOnCapturedContext: false);
                     return true;
               }
@@ -547,19 +547,19 @@ namespace CoreEntities.Business.Services
             }
         }
 
-        public async Task<bool> RemoveSelectedAsycudaDocumentSetC71(IEnumerable<string> lst)
+        public async Task<bool> RemoveSelectedC71Summary(IEnumerable<string> lst)
         {
             try
             {
-                StatusModel.StartStatusUpdate("Removing AsycudaDocumentSetC71", lst.Count());
+                StatusModel.StartStatusUpdate("Removing C71Summary", lst.Count());
                 var t = Task.Run(() =>
                 {
-                    using (var ctx = new AsycudaDocumentSetC71Service())
+                    using (var ctx = new C71SummaryService())
                     {
                         foreach (var item in lst.ToList())
                         {
 
-                            ctx.DeleteAsycudaDocumentSetC71(item).Wait();
+                            ctx.DeleteC71Summary(item).Wait();
                             StatusModel.StatusUpdate();
                         }
                     }
@@ -590,11 +590,11 @@ namespace CoreEntities.Business.Services
         {
             try
             {
-                using (var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
+                using (var dbContext = new ValuationDSContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
                     if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return 0;
-                    var set = (IQueryable<AsycudaDocumentSetC71>)dbContext.AsycudaDocumentSetC71; 
+                    var set = (IQueryable<C71Summary>)dbContext.C71Summary; 
                     if (expLst.FirstOrDefault() == "All")
                     {
                         return await set.AsNoTracking().CountAsync()
@@ -627,12 +627,12 @@ namespace CoreEntities.Business.Services
         {
             try
             {
-                using (CoreEntitiesContext dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
+                using (ValuationDSContext dbContext = new ValuationDSContext(){StartTracking = StartTracking})
                 {
                     if (string.IsNullOrEmpty(exp) || exp == "None") return 0;
                     if (exp == "All")
                     {
-                        return await dbContext.AsycudaDocumentSetC71
+                        return await dbContext.C71Summary
                                     .AsNoTracking()
 									.CountAsync()
 									.ConfigureAwait(continueOnCapturedContext: false);
@@ -640,7 +640,7 @@ namespace CoreEntities.Business.Services
                     else
                     {
                         
-                        return await dbContext.AsycudaDocumentSetC71
+                        return await dbContext.C71Summary
 									.AsNoTracking()
                                     .Where(exp)
 									.CountAsync()
@@ -662,17 +662,17 @@ namespace CoreEntities.Business.Services
             }
         }
         
-        public async Task<IEnumerable<AsycudaDocumentSetC71>> LoadRange(int startIndex, int count, string exp)
+        public async Task<IEnumerable<C71Summary>> LoadRange(int startIndex, int count, string exp)
         {
             try
             {
-                using (var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
+                using (var dbContext = new ValuationDSContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-                    if (string.IsNullOrEmpty(exp) || exp == "None") return new List<AsycudaDocumentSetC71>();
+                    if (string.IsNullOrEmpty(exp) || exp == "None") return new List<C71Summary>();
                     if (exp == "All")
                     {
-                        return await dbContext.AsycudaDocumentSetC71
+                        return await dbContext.C71Summary
 										.AsNoTracking()
                                         .OrderBy(y => y.Value_declaration_form_Id)
 										.Skip(startIndex)
@@ -683,7 +683,7 @@ namespace CoreEntities.Business.Services
                     else
                     {
                         
-                        return await dbContext.AsycudaDocumentSetC71
+                        return await dbContext.C71Summary
 										.AsNoTracking()
                                         .Where(exp)
 										.OrderBy(y => y.Value_declaration_form_Id)
@@ -713,17 +713,17 @@ namespace CoreEntities.Business.Services
             try
             {
                 if (string.IsNullOrEmpty(exp) || exp == "None") return 0;
-                using (var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
+                using (var dbContext = new ValuationDSContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
                     if (exp == "All" && navExp.Count == 0)
                     {
-                        return await dbContext.AsycudaDocumentSetC71
+                        return await dbContext.C71Summary
 										.AsNoTracking()
                                         .CountAsync()
 										.ConfigureAwait(continueOnCapturedContext: false);
                     }
-                    return await dbContext.AsycudaDocumentSetC71.Where(exp == "All" || exp == null ? "Value_declaration_form_Id != null" : exp)
+                    return await dbContext.C71Summary.Where(exp == "All" || exp == null ? "Value_declaration_form_Id != null" : exp)
 											.AsNoTracking()
                                             .CountAsync()
 											.ConfigureAwait(continueOnCapturedContext: false);
@@ -744,7 +744,7 @@ namespace CoreEntities.Business.Services
             }
         }
 
-		private static async Task<int> CountWhere<T>(CoreEntitiesContext dbContext, string exp, string navExp, string navProp, string rel) where T : class
+		private static async Task<int> CountWhere<T>(ValuationDSContext dbContext, string exp, string navExp, string navProp, string rel) where T : class
         {
               switch (rel)
 		    {
@@ -758,14 +758,14 @@ namespace CoreEntities.Business.Services
 		    }
         }
 
-		private static async Task<int> CountWhereSelectMany<T>(CoreEntitiesContext dbContext, string exp, string navExp, string navProp) where T : class
+		private static async Task<int> CountWhereSelectMany<T>(ValuationDSContext dbContext, string exp, string navExp, string navProp) where T : class
         {
 			try
 			{
             return await dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
-                .SelectMany(navProp).OfType<AsycudaDocumentSetC71>()
+                .SelectMany(navProp).OfType<C71Summary>()
                 .Where(exp == "All" || exp == null ? "Value_declaration_form_Id != null" : exp)
                 .Distinct()
                 .OrderBy("Value_declaration_form_Id")
@@ -779,14 +779,14 @@ namespace CoreEntities.Business.Services
 			}
         }
 
-		private static async Task<int> CountWhereSelect<T>(CoreEntitiesContext dbContext, string exp, string navExp, string navProp) where T : class
+		private static async Task<int> CountWhereSelect<T>(ValuationDSContext dbContext, string exp, string navExp, string navProp) where T : class
         {
 			try
 			{
             return await dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
-                .Select(navProp).OfType<AsycudaDocumentSetC71>()
+                .Select(navProp).OfType<C71Summary>()
                 .Where(exp == "All" || exp == null ? "Value_declaration_form_Id != null" : exp)
                 .Distinct()
                 .OrderBy("Value_declaration_form_Id")
@@ -800,15 +800,15 @@ namespace CoreEntities.Business.Services
 			}
         }
 
-		  public async Task<IEnumerable<AsycudaDocumentSetC71>> LoadRangeNav(int startIndex, int count, string exp,
+		  public async Task<IEnumerable<C71Summary>> LoadRangeNav(int startIndex, int count, string exp,
                                                                                  Dictionary<string, string> navExp, IEnumerable<string> includeLst = null)
         {
             try
             {
-                using (var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
+                using (var dbContext = new ValuationDSContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-                    if ((string.IsNullOrEmpty(exp) && navExp.Count == 0) || exp == "None") return new List<AsycudaDocumentSetC71>();
+                    if ((string.IsNullOrEmpty(exp) && navExp.Count == 0) || exp == "None") return new List<C71Summary>();
                     var set = AddIncludes(includeLst, dbContext);
 
                     if (exp == "All" && navExp.Count == 0)
@@ -823,7 +823,7 @@ namespace CoreEntities.Business.Services
 									.ToListAsync()
 									.ConfigureAwait(continueOnCapturedContext: false);
                     }
-                    return await set//dbContext.AsycudaDocumentSetC71
+                    return await set//dbContext.C71Summary
 								.AsNoTracking()
                                 .Where(exp == "All" || exp == null ? "Value_declaration_form_Id != null" : exp)
 								.OrderBy(y => y.Value_declaration_form_Id)
@@ -850,8 +850,8 @@ namespace CoreEntities.Business.Services
             }
         }
 
-		private static async Task<IEnumerable<AsycudaDocumentSetC71>> LoadRangeWhere<T>(int startIndex, int count,
-            CoreEntitiesContext dbContext, string exp, string navExp, string navProp, string rel, IEnumerable<string> includeLst = null) where T : class
+		private static async Task<IEnumerable<C71Summary>> LoadRangeWhere<T>(int startIndex, int count,
+            ValuationDSContext dbContext, string exp, string navExp, string navProp, string rel, IEnumerable<string> includeLst = null) where T : class
         {
              switch (rel)
 		    {
@@ -865,15 +865,15 @@ namespace CoreEntities.Business.Services
 		    }
         }
 
-		private static async Task<IEnumerable<AsycudaDocumentSetC71>> LoadRangeSelectMany<T>(int startIndex, int count,
-            CoreEntitiesContext dbContext, string exp, string navExp, string navProp, IEnumerable<string> includeLst = null) where T : class
+		private static async Task<IEnumerable<C71Summary>> LoadRangeSelectMany<T>(int startIndex, int count,
+            ValuationDSContext dbContext, string exp, string navExp, string navProp, IEnumerable<string> includeLst = null) where T : class
         {
 			try
 			{
             var set = dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
-                .SelectMany(navProp).OfType<AsycudaDocumentSetC71>();
+                .SelectMany(navProp).OfType<C71Summary>();
     
             if (includeLst != null) set = includeLst.Aggregate(set, (current, itm) => current.Include(itm));            
 
@@ -894,15 +894,15 @@ namespace CoreEntities.Business.Services
 			}
         }
 
-		private static async Task<IEnumerable<AsycudaDocumentSetC71>> LoadRangeSelect<T>(int startIndex, int count,
-            CoreEntitiesContext dbContext, string exp, string navExp, string navProp, IEnumerable<string> includeLst = null) where T : class
+		private static async Task<IEnumerable<C71Summary>> LoadRangeSelect<T>(int startIndex, int count,
+            ValuationDSContext dbContext, string exp, string navExp, string navProp, IEnumerable<string> includeLst = null) where T : class
         {
 			try
 			{
               var set = dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
-                .Select(navProp).OfType<AsycudaDocumentSetC71>();
+                .Select(navProp).OfType<C71Summary>();
 
                if (includeLst != null) set = includeLst.Aggregate(set, (current, itm) => current.Include(itm)); 
                 
@@ -923,7 +923,7 @@ namespace CoreEntities.Business.Services
 			}
         }
 
-        private static async Task<IEnumerable<AsycudaDocumentSetC71>> GetWhere<T>(CoreEntitiesContext dbContext,
+        private static async Task<IEnumerable<C71Summary>> GetWhere<T>(ValuationDSContext dbContext,
             string exp, string navExp, string navProp, string rel, List<string> includesLst = null) where T : class
         {
 			try
@@ -947,7 +947,7 @@ namespace CoreEntities.Business.Services
 			}
         }
 
-		private static async Task<IEnumerable<AsycudaDocumentSetC71>> GetWhereSelectMany<T>(CoreEntitiesContext dbContext,
+		private static async Task<IEnumerable<C71Summary>> GetWhereSelectMany<T>(ValuationDSContext dbContext,
             string exp, string navExp, string navProp, List<string> includesLst = null) where T : class
         {
 			try
@@ -958,17 +958,17 @@ namespace CoreEntities.Business.Services
 				return await dbContext.Set<T>()
 							.AsNoTracking()
                             .Where(navExp)
-							.SelectMany(navProp).OfType<AsycudaDocumentSetC71>()
+							.SelectMany(navProp).OfType<C71Summary>()
 							.Where(exp == "All" || exp == null?"Value_declaration_form_Id != null":exp)
 							.Distinct()
 							.ToListAsync()
 							.ConfigureAwait(continueOnCapturedContext: false);
 			}
 
-			var set = (DbQuery<AsycudaDocumentSetC71>)dbContext.Set<T>()
+			var set = (DbQuery<C71Summary>)dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
-                .SelectMany(navProp).OfType<AsycudaDocumentSetC71>()
+                .SelectMany(navProp).OfType<C71Summary>()
                 .Where(exp == "All" || exp == null?"Value_declaration_form_Id != null":exp)
                 .Distinct();
 
@@ -984,7 +984,7 @@ namespace CoreEntities.Business.Services
 			}
         }
 
-		private static async Task<IEnumerable<AsycudaDocumentSetC71>> GetWhereSelect<T>(CoreEntitiesContext dbContext,
+		private static async Task<IEnumerable<C71Summary>> GetWhereSelect<T>(ValuationDSContext dbContext,
             string exp, string navExp, string navProp, List<string> includesLst = null) where T : class
         {
 			try
@@ -995,17 +995,17 @@ namespace CoreEntities.Business.Services
 				return await dbContext.Set<T>()
 							.AsNoTracking()
                             .Where(navExp)
-							.Select(navProp).OfType<AsycudaDocumentSetC71>()
+							.Select(navProp).OfType<C71Summary>()
 							.Where(exp == "All" || exp == null?"Value_declaration_form_Id != null":exp)
 							.Distinct()
 							.ToListAsync()
 							.ConfigureAwait(continueOnCapturedContext: false);
 			}
 
-			var set = (DbQuery<AsycudaDocumentSetC71>)dbContext.Set<T>()
+			var set = (DbQuery<C71Summary>)dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
-                .Select(navProp).OfType<AsycudaDocumentSetC71>()
+                .Select(navProp).OfType<C71Summary>()
                 .Where(exp == "All" || exp == null?"Value_declaration_form_Id != null":exp)
                 .Distinct();
 
@@ -1021,17 +1021,17 @@ namespace CoreEntities.Business.Services
 			}
         }
 
-			        public async Task<IEnumerable<AsycudaDocumentSetC71>> GetAsycudaDocumentSetC71ByAsycudaDocumentSetId(string AsycudaDocumentSetId, List<string> includesLst = null)
+			        public async Task<IEnumerable<C71Summary>> GetC71SummaryByRegisteredId(string RegisteredId, List<string> includesLst = null)
         {
             try
             {
-                using ( var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
+                using ( var dbContext = new ValuationDSContext(){StartTracking = StartTracking})
               {
-                var i = Convert.ToInt32(AsycudaDocumentSetId);
+                var i = Convert.ToInt32(RegisteredId);
                 var set = AddIncludes(includesLst, dbContext);
-                IEnumerable<AsycudaDocumentSetC71> entities = await set//dbContext.AsycudaDocumentSetC71
+                IEnumerable<C71Summary> entities = await set//dbContext.C71Summary
                                       .AsNoTracking()
-                                        .Where(x => x.AsycudaDocumentSetId.ToString() == AsycudaDocumentSetId.ToString())
+                                        .Where(x => x.RegisteredId.ToString() == RegisteredId.ToString())
 										.ToListAsync()
 										.ConfigureAwait(continueOnCapturedContext: false);
                 return entities;
@@ -1050,17 +1050,17 @@ namespace CoreEntities.Business.Services
                     throw new FaultException<ValidationFault>(fault);
             }
         }
- 	        public async Task<IEnumerable<AsycudaDocumentSetC71>> GetAsycudaDocumentSetC71ByAttachmentId(string AttachmentId, List<string> includesLst = null)
+ 	        public async Task<IEnumerable<C71Summary>> GetC71SummaryByApplicationSettingsId(string ApplicationSettingsId, List<string> includesLst = null)
         {
             try
             {
-                using ( var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
+                using ( var dbContext = new ValuationDSContext(){StartTracking = StartTracking})
               {
-                var i = Convert.ToInt32(AttachmentId);
+                var i = Convert.ToInt32(ApplicationSettingsId);
                 var set = AddIncludes(includesLst, dbContext);
-                IEnumerable<AsycudaDocumentSetC71> entities = await set//dbContext.AsycudaDocumentSetC71
+                IEnumerable<C71Summary> entities = await set//dbContext.C71Summary
                                       .AsNoTracking()
-                                        .Where(x => x.AttachmentId.ToString() == AttachmentId.ToString())
+                                        .Where(x => x.ApplicationSettingsId.ToString() == ApplicationSettingsId.ToString())
 										.ToListAsync()
 										.ConfigureAwait(continueOnCapturedContext: false);
                 return entities;
@@ -1084,18 +1084,18 @@ namespace CoreEntities.Business.Services
          {
              try
              {
-                 using (var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
+                 using (var dbContext = new ValuationDSContext(){StartTracking = StartTracking})
                  {
                     dbContext.Database.CommandTimeout = 0;
 					decimal res = 0;
                      if (string.IsNullOrEmpty(whereExp) || whereExp == "None") return 0;
                      if (whereExp == "All")
                      {
-                          res = Convert.ToDecimal(dbContext.AsycudaDocumentSetC71.AsNoTracking().Sum(field));
+                          res = Convert.ToDecimal(dbContext.C71Summary.AsNoTracking().Sum(field));
                      }
                      else
                      {
-                         res = Convert.ToDecimal(dbContext.AsycudaDocumentSetC71.AsNoTracking().Where(whereExp).Sum(field));
+                         res = Convert.ToDecimal(dbContext.C71Summary.AsNoTracking().Where(whereExp).Sum(field));
                      }
                      
                      return res;
@@ -1120,17 +1120,17 @@ namespace CoreEntities.Business.Services
             try
             {
                 if (string.IsNullOrEmpty(exp) || exp == "None") return 0;
-                using (var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
+                using (var dbContext = new ValuationDSContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-                    if (!dbContext.AsycudaDocumentSetC71.Any()) return 0;
+                    if (!dbContext.C71Summary.Any()) return 0;
                     if (exp == "All" && navExp.Count == 0)
                     {
-                        return Convert.ToDecimal(dbContext.AsycudaDocumentSetC71
+                        return Convert.ToDecimal(dbContext.C71Summary
 										.AsNoTracking()
                                         .Sum(field)??0);
                     }
-                    return Convert.ToDecimal(dbContext.AsycudaDocumentSetC71.Where(exp == "All" || exp == null ? "Value_declaration_form_Id != null" : exp)
+                    return Convert.ToDecimal(dbContext.C71Summary.Where(exp == "All" || exp == null ? "Value_declaration_form_Id != null" : exp)
 											.AsNoTracking()
                                             .Sum(field)??0);
                 }
@@ -1150,7 +1150,7 @@ namespace CoreEntities.Business.Services
             }
         }
 
-		private static async Task<decimal> SumWhere<T>(CoreEntitiesContext dbContext, string exp, string navExp, string navProp, string field, string rel) where T : class
+		private static async Task<decimal> SumWhere<T>(ValuationDSContext dbContext, string exp, string navExp, string navProp, string field, string rel) where T : class
         {
               switch (rel)
 		    {
@@ -1163,14 +1163,14 @@ namespace CoreEntities.Business.Services
 		    }
         }
 
-		private static async Task<decimal> SumWhereSelectMany<T>(CoreEntitiesContext dbContext, string exp, string navExp, string navProp, string field) where T : class
+		private static async Task<decimal> SumWhereSelectMany<T>(ValuationDSContext dbContext, string exp, string navExp, string navProp, string field) where T : class
         {
 			try
 			{
             return Convert.ToDecimal(dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
-                .SelectMany(navProp).OfType<AsycudaDocumentSetC71>()
+                .SelectMany(navProp).OfType<C71Summary>()
                 .Where(exp == "All" || exp == null ? "Value_declaration_form_Id != null" : exp)
                 .Distinct()
                 .OrderBy("Value_declaration_form_Id")
@@ -1183,14 +1183,14 @@ namespace CoreEntities.Business.Services
 			}
         }
 
-		private static async Task<decimal> SumWhereSelect<T>(CoreEntitiesContext dbContext, string exp, string navExp, string navProp, string field) where T : class
+		private static async Task<decimal> SumWhereSelect<T>(ValuationDSContext dbContext, string exp, string navExp, string navProp, string field) where T : class
         {
 			try
 			{
             return Convert.ToDecimal(dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
-                .Select(navProp).OfType<AsycudaDocumentSetC71>()
+                .Select(navProp).OfType<C71Summary>()
                 .Where(exp == "All" || exp == null ? "Value_declaration_form_Id != null" : exp)
                 .Distinct()
                 .OrderBy("Value_declaration_form_Id")
@@ -1209,18 +1209,18 @@ namespace CoreEntities.Business.Services
          {
              try
              {
-                 using (var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
+                 using (var dbContext = new ValuationDSContext(){StartTracking = StartTracking})
                  {
                     dbContext.Database.CommandTimeout = 0;
 					string res = "";
                      if (string.IsNullOrEmpty(whereExp) || whereExp == "None") return res;
                      if (whereExp == "All")
                      {
-                          res = Convert.ToString(dbContext.AsycudaDocumentSetC71.AsNoTracking().Min(field));
+                          res = Convert.ToString(dbContext.C71Summary.AsNoTracking().Min(field));
                      }
                      else
                      {
-                         res = Convert.ToString(dbContext.AsycudaDocumentSetC71.AsNoTracking().Where(whereExp).Min(field));
+                         res = Convert.ToString(dbContext.C71Summary.AsNoTracking().Where(whereExp).Min(field));
                      }
                      
                      return res;
@@ -1241,12 +1241,12 @@ namespace CoreEntities.Business.Services
          }
 
 		 
-		private static IQueryable<AsycudaDocumentSetC71> AddIncludes(IEnumerable<string> includesLst, CoreEntitiesContext dbContext)
+		private static IQueryable<C71Summary> AddIncludes(IEnumerable<string> includesLst, ValuationDSContext dbContext)
        {
 		 try
 			{
 			   if (includesLst == null) includesLst = new List<string>();
-			   var set =(DbQuery<AsycudaDocumentSetC71>) dbContext.AsycudaDocumentSetC71; 
+			   var set =(DbQuery<C71Summary>) dbContext.C71Summary; 
 			   set = includesLst.Where(x => !string.IsNullOrEmpty(x))
                                 .Aggregate(set, (current, itm) => current.Include(itm));
 			   return set;
@@ -1257,7 +1257,7 @@ namespace CoreEntities.Business.Services
 				throw;
 			}
        }
-	   private IQueryable<AsycudaDocumentSetC71> AddWheres(List<string> expLst, IQueryable<AsycudaDocumentSetC71> set)
+	   private IQueryable<C71Summary> AddWheres(List<string> expLst, IQueryable<C71Summary> set)
         {
             try
             {
