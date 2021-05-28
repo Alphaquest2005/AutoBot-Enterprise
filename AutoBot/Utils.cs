@@ -1254,6 +1254,11 @@ namespace AutoBot
                 
                 using (var ctx = new ValuationDSContext())
                 {
+
+
+
+
+
                     ctx.Database.CommandTimeout = 0;
                     var pOs = ctx.TODO_C71ToCreate
                         .Where(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)
