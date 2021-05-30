@@ -1965,8 +1965,9 @@ namespace WaterNut.DataSpace
                 {
                     if (Value_declaration_form.CanLoadFromFile(file))
                         LoadC71(docSet, file, ref exceptions);
+                    
                     else
-                        throw new ApplicationException($"Can not Load file '{file}'");
+                                throw new ApplicationException($"Can not Load file '{file}'");
                 }
                 catch (Exception ex)
                 {
@@ -3159,7 +3160,18 @@ namespace WaterNut.DataSpace
                             x.AsycudaDocumentSetId == asycudaDocumentSetId);
                         if (eC71 != null)
                         {
-                            var att = ctx.Attachments.First(x => x.Id == eC71.AttachmentId);
+                            var att = ctx.Attachments.FirstOrDefault(x => x.Id == eC71.AttachmentId);
+                            if(att == null)
+                            {
+                                att = new Attachments()
+                                {
+                                    TrackingState = TrackingState.Added,
+                                    FilePath = eC71.FilePath,
+                                    DocumentCode = "DC05",
+                                    Reference = eC71.RegNumber
+                                };
+                                ctx.Attachments.Add(att);
+                            }
                             c71Att = new List<Attachments> {att};
 
                             ctx.AsycudaDocumentSet_Attachments.Add(new AsycudaDocumentSet_Attachments(true)
