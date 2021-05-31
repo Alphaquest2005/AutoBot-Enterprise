@@ -934,12 +934,46 @@ namespace WaterNut.DataSpace
                     try
                     {
                         var pCnumber = new Regex(@"[C\#]+").Replace(p.PreviousCNumber, "");
-                        LinkPDFs(new List<int>() { Convert.ToInt32(pCnumber) });
-                        List<Attachment> previousDocuments = currentAsycudaDocumentSet.AsycudaDocumentSet_Attachments
-                                                                    .Where(x => x.Attachment.FilePath.Contains(pCnumber) &&
-                                                                                x.FileType.DocumentCode == "DO02")
-                                                                    .Select(x => x.Attachment).ToList();
-                        
+                        LinkPDFs(new List<string>() { pCnumber }, "DO02");
+                        var pdf = $"{pCnumber}.pdf";
+                        using (var ctx = new DocumentDSContext())
+                        {
+                            List<Attachment> previousDocuments = ctx.Attachments
+
+                                                                        .Where(x => x.FilePath.Contains(pdf) &&
+                                                                                    (x.DocumentCode == "NA"))
+                                                                        .ToList();
+                            foreach (var itm in previousDocuments)
+                            {
+
+                                var att = new Attachments()
+                                {
+                                    TrackingState = TrackingState.Added,
+                                    FilePath = itm.FilePath,
+                                    Reference = pCnumber,
+                                    DocumentCode = "DO02",
+                                };
+                                ctx.AsycudaDocument_Attachments.Add(
+                                new AsycudaDocument_Attachments(true)
+                                {
+                                    AsycudaDocumentId = cdoc.Document.ASYCUDA_Id,
+                                    Attachment = att,
+
+                                    TrackingState = TrackingState.Added
+                                });
+
+                                ctx.AsycudaDocumentSet_Attachments.Add(
+                                    new AsycudaDocumentSet_Attachments(true)
+                                    {
+                                        AsycudaDocumentSetId = currentAsycudaDocumentSet.AsycudaDocumentSetId,
+                                        Attachments = att,
+
+                                        TrackingState = TrackingState.Added
+                                    });                              
+
+                            } 
+                            ctx.SaveChanges();
+                        }
                         alst.AddRange(previousDocuments);
 
                     }
@@ -955,7 +989,22 @@ namespace WaterNut.DataSpace
             AttachToDocument(alst.GroupBy(x => new FileInfo(x.FilePath).Name).Select(x => x.Last()).ToList(), cdoc.Document, cdoc.DocumentItems);
         }
 
-        public static void LinkPDFs(List<int> entries)
+        public static void LinkPDFs(List<string> cNumbers, string docCode = "NA")
+        {
+          
+            using (var ctx = new CoreEntitiesContext())
+            {
+                var res = new List<int>();
+                foreach (var entryId in cNumbers)
+                {
+                    res.Add( ctx.AsycudaDocuments.Where(x => x.CNumber == entryId.ToString()).OrderByDescending(x => x.ASYCUDA_Id).Select(x => x.ASYCUDA_Id).First());
+
+                }
+                LinkPDFs(res, docCode);
+            }
+        }
+
+                    public static void LinkPDFs(List<int> entries, string docCode = "NA")
         {
             Console.WriteLine("Link PDF Files");
             var directoryName = StringExtensions.UpdateToCurrentUser(
@@ -994,7 +1043,7 @@ namespace WaterNut.DataSpace
                         var attachment = new Attachments(true)
                         {
                             FilePath = file.FullName,
-                            DocumentCode = "NA",
+                            DocumentCode = docCode,
                             Reference = file.Name.Replace(file.Extension, ""),
                             TrackingState = TrackingState.Added
                         };
