@@ -936,9 +936,10 @@ namespace WaterNut.DataSpace
                         var pCnumber = new Regex(@"[C\#]+").Replace(p.PreviousCNumber, "");
                         LinkPDFs(new List<string>() { pCnumber }, "DO02");
                         var pdf = $"{pCnumber}.pdf";
+                        List<Attachment> previousDocuments;
                         using (var ctx = new DocumentDSContext())
                         {
-                            List<Attachment> previousDocuments = ctx.Attachments
+                             previousDocuments = ctx.Attachments
 
                                                                         .Where(x => x.FilePath.Contains(pdf) &&
                                                                                     (x.DocumentCode == "NA"))
@@ -946,7 +947,7 @@ namespace WaterNut.DataSpace
                             foreach (var itm in previousDocuments)
                             {
 
-                                var att = new Attachments()
+                                var att = new Attachment()
                                 {
                                     TrackingState = TrackingState.Added,
                                     FilePath = itm.FilePath,
@@ -963,10 +964,10 @@ namespace WaterNut.DataSpace
                                 });
 
                                 ctx.AsycudaDocumentSet_Attachments.Add(
-                                    new AsycudaDocumentSet_Attachments(true)
+                                    new global::DocumentDS.Business.Entities.AsycudaDocumentSet_Attachments(true)
                                     {
                                         AsycudaDocumentSetId = currentAsycudaDocumentSet.AsycudaDocumentSetId,
-                                        Attachments = att,
+                                        Attachment = att,
 
                                         TrackingState = TrackingState.Added
                                     });                              
@@ -1004,7 +1005,7 @@ namespace WaterNut.DataSpace
             }
         }
 
-                    public static void LinkPDFs(List<int> entries, string docCode = "NA")
+        public static void LinkPDFs(List<int> entries, string docCode = "NA")
         {
             Console.WriteLine("Link PDF Files");
             var directoryName = StringExtensions.UpdateToCurrentUser(
