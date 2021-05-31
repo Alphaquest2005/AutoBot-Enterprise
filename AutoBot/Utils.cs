@@ -79,7 +79,7 @@ namespace AutoBot
                 {"ExportPOEntries",(ft, fs) => ExportPOEntries(ft.AsycudaDocumentSetId) },
                 {"AssessPOEntry",(ft, fs) => AssessPOEntry(ft.DocReference, ft.AsycudaDocumentSetId)},
                 {"EmailPOEntries",(ft, fs) => EmailPOEntries(ft.AsycudaDocumentSetId,ft.FileTypeContacts.Select(x => x.Contacts).ToList()) },
-                {"DownloadSalesFiles",(ft, fs) => DownloadSalesFiles(false, "IM7History") },
+                {"DownloadSalesFiles",(ft, fs) => DownloadSalesFiles(3, "IM7History",false) },
                 {"Xlsx2csv",(ft, fs) => Xlsx2csv(fs, ft) },
                 {"SaveInfo",(ft, fs) => TrySaveFileInfo(fs, ft) },
                 {"CleanupEntries",(ft, fs) => CleanupEntries() },
@@ -768,7 +768,7 @@ namespace AutoBot
 
         private static void DownloadPOFiles()
         {
-            DownloadSalesFiles(false, "IM7"); //download all for now
+            DownloadSalesFiles(3, "IM7", false); //download all for now
         }
 
         private static void ImportPDF()
@@ -3469,35 +3469,35 @@ namespace AutoBot
             //var directoryName = CurrentSalesInfo().Item4;
             //var overview = Path.Combine(directoryName, "OverView.txt");
             //if(File.Exists(overview)) File.Delete(overview);
-            DownloadSalesFiles(true, "IM7History");
+            DownloadSalesFiles(3, "IM7History", true);
         }
 
-        public static void DownloadSalesFiles(bool redownload, string script)
-        {
-            try
+        //public static void DownloadSalesFiles(bool redownload, string script)
+        //{
+        //    try
 
-            {
-                var directoryName = StringExtensions.UpdateToCurrentUser(Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder, "Imports")); //$@"{Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder, "Imports")}\"; //BaseDataModel.CurrentSalesInfo().Item4;
-                //var asycudaDocumentSetId =
-                //    new CoreEntitiesContext().AsycudaDocumentSetExs.FirstOrDefault(x =>
-                //        x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId &&
-                //        x.Declarant_Reference_Number == "Imports")?.AsycudaDocumentSetId ?? BaseDataModel.CurrentSalesInfo().Item3.AsycudaDocumentSetId;
-                Console.WriteLine("Download Entries");
-                var lcont = 0;
-                while (ImportComplete(directoryName, redownload, out lcont) == false)
-                {
-                    //RunSiKuLi(BaseDataModel.CurrentSalesInfo().Item3.AsycudaDocumentSetId, "IM7", lcont.ToString());
-                    RunSiKuLi(directoryName, script, lcont.ToString());
-                }
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-                throw;
-            }
-        }
+        //    {
+        //        var directoryName = StringExtensions.UpdateToCurrentUser(Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder, "Imports")); //$@"{Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder, "Imports")}\"; //BaseDataModel.CurrentSalesInfo().Item4;
+        //        //var asycudaDocumentSetId =
+        //        //    new CoreEntitiesContext().AsycudaDocumentSetExs.FirstOrDefault(x =>
+        //        //        x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId &&
+        //        //        x.Declarant_Reference_Number == "Imports")?.AsycudaDocumentSetId ?? BaseDataModel.CurrentSalesInfo().Item3.AsycudaDocumentSetId;
+        //        Console.WriteLine("Download Entries");
+        //        var lcont = 0;
+        //        while (ImportComplete(directoryName, redownload, out lcont) == false)
+        //        {
+        //            //RunSiKuLi(BaseDataModel.CurrentSalesInfo().Item3.AsycudaDocumentSetId, "IM7", lcont.ToString());
+        //            RunSiKuLi(directoryName, script, lcont.ToString());
+        //        }
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        Console.WriteLine(e);
+        //        throw;
+        //    }
+        //}
 
-        public static void DownloadSalesFiles(int trytimes, string script)
+        public static void DownloadSalesFiles(int trytimes, string script, bool redownload = false)
         {
             try
 
