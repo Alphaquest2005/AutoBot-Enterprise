@@ -341,6 +341,24 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
         }	
 
  
+
+		private Boolean? _appendValuesFilter;
+        public Boolean? AppendValuesFilter
+        {
+            get
+            {
+                return _appendValuesFilter;
+            }
+            set
+            {
+                _appendValuesFilter = value;
+				NotifyPropertyChanged(x => AppendValuesFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
 		internal bool DisableBaseFilterData = false;
         public virtual void FilterData()
 	    {
@@ -389,6 +407,10 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
 
 									if(string.IsNullOrEmpty(KeyFilter) == false)
 						res.Append(" && " + string.Format("Key.Contains(\"{0}\")",  KeyFilter));						
+ 
+
+									if(AppendValuesFilter.HasValue)
+						res.Append(" && " + string.Format("AppendValues == {0}",  AppendValuesFilter));						
 			return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
@@ -424,7 +446,10 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
                     DataType = x.DataType ,
                     
  
-                    Key = x.Key 
+                    Key = x.Key ,
+                    
+ 
+                    AppendValues = x.AppendValues 
                     
                 }).ToList()
             };
@@ -450,6 +475,9 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
                     
  
                     public string Key { get; set; } 
+                    
+ 
+                    public Nullable<bool> AppendValues { get; set; } 
                     
         }
 

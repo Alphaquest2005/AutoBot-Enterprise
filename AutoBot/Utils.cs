@@ -257,57 +257,7 @@ namespace AutoBot
 
                 using (var ctx = new EntryDataDSContext())
                 {
-                    ctx.Database.ExecuteSqlCommand(@"INSERT INTO ShipmentInvoicePOs
-                                                                    (EntryData_Id, InvoiceId)
-                                                    SELECT EntryData_PurchaseOrders.EntryData_Id, ShipmentInvoice.Id
-                                                    FROM    ShipmentInvoicePOManualMatches INNER JOIN
-                                                                     EntryData_PurchaseOrders ON ShipmentInvoicePOManualMatches.PONumber = EntryData_PurchaseOrders.PONumber INNER JOIN
-                                                                     ShipmentInvoice ON ShipmentInvoicePOManualMatches.InvoiceNo = ShipmentInvoice.InvoiceNo INNER JOIN
-                                                                     EntryData ON EntryData_PurchaseOrders.EntryData_Id = EntryData.EntryData_Id AND ShipmentInvoice.ApplicationSettingsId = EntryData.ApplicationSettingsId LEFT OUTER JOIN
-                                                                     ShipmentInvoicePOs ON EntryData_PurchaseOrders.EntryData_Id = ShipmentInvoicePOs.EntryData_Id AND ShipmentInvoice.Id = ShipmentInvoicePOs.InvoiceId
-                                                    WHERE (ShipmentInvoicePOs.Id IS NULL)
-
-                                                    INSERT INTO ShipmentInvoicePOs
-                                                                        (EntryData_Id, InvoiceId)
-                                                    SELECT distinct ShipmentPOs.EntryData_Id, ShipmentInvoice.Id
-                                                    FROM    ShipmentInvoicePOMatches INNER JOIN
-	                                                    ShipmentPOs ON ShipmentInvoicePOMatches.PONumber = ShipmentPOs.InvoiceNo INNER JOIN
-	                                                    ShipmentInvoice ON ShipmentInvoicePOMatches.InvoiceNo = ShipmentInvoice.InvoiceNo INNER JOIN
-	                                                    EntryData ON ShipmentPOs.EntryData_Id = EntryData.EntryData_Id AND ShipmentInvoice.ApplicationSettingsId = EntryData.ApplicationSettingsId LEFT OUTER JOIN
-	                                                    ShipmentInvoicePOs ON ShipmentPOs.EntryData_Id = ShipmentInvoicePOs.EntryData_Id AND ShipmentInvoice.Id = ShipmentInvoicePOs.InvoiceId
-                                                    WHERE (ShipmentInvoicePOs.Id IS NULL)
-
-                                                    INSERT INTO ShipmentInvoicePOs
-                                                                        (EntryData_Id, InvoiceId)
-                                                    SELECT [ShipmentInvoicePOMatches-Items].POId, [ShipmentInvoicePOMatches-Items].InvId
-                                                    FROM    [ShipmentInvoicePOMatches-Items] LEFT OUTER JOIN
-	                                                    ShipmentInvoicePOs ON [ShipmentInvoicePOMatches-Items].POId = ShipmentInvoicePOs.EntryData_Id AND [ShipmentInvoicePOMatches-Items].InvId = ShipmentInvoicePOs.InvoiceId
-                                                    WHERE (ShipmentInvoicePOs.Id IS NULL)
-
-                                /* --------------     INSERT INTO ShipmentInvoicePOs
-                                                                        (EntryData_Id, InvoiceId)
-                                                    SELECT [ShipmentInvoicePOMatches-Totals].EntryData_id, [ShipmentInvoicePOMatches-Totals].InvoiceId
-                                                    FROM    [ShipmentInvoicePOMatches-Totals] LEFT OUTER JOIN
-	                                                    ShipmentInvoicePOs ON [ShipmentInvoicePOMatches-Totals].EntryData_id = ShipmentInvoicePOs.EntryData_Id AND [ShipmentInvoicePOMatches-Totals].InvoiceId = ShipmentInvoicePOs.InvoiceId
-                                                    WHERE (ShipmentInvoicePOs.Id IS NULL) 
-                                ----------------*/
-                                                UPDATE ShipmentInvoiceDetails
-                                                SET         SalesFactor = ShipmentInvoicePOSalesFactor.QtyFactor
-                                                FROM    ShipmentInvoicePOSalesFactor INNER JOIN
-                                                                 ShipmentInvoiceDetails ON ShipmentInvoicePOSalesFactor.INVDetailsId = ShipmentInvoiceDetails.Id
-
-                                               INSERT INTO InventoryItemAlias
-                                                                 (InventoryItemId, AliasName, AliasItemId)
-                                                SELECT distinct ShipmentInvoicePOItemQueryMatches.POInventoryItemId, ShipmentInvoicePOItemQueryMatches.INVItemCode, ShipmentInvoicePOItemQueryMatches.INVInventoryItemId
-                                                FROM    ShipmentInvoicePOItemQueryMatches LEFT OUTER JOIN
-                                                                 InventoryItemAlias AS InventoryItemAlias_1 ON ShipmentInvoicePOItemQueryMatches.POInventoryItemId = InventoryItemAlias_1.InventoryItemId AND 
-                                                                 ShipmentInvoicePOItemQueryMatches.INVItemCode = InventoryItemAlias_1.AliasName
-                                                WHERE (InventoryItemAlias_1.AliasId IS NULL)
-
-                                                
-
-
-                                                    ");
+                    ctx.Database.ExecuteSqlCommand(@"EXEC [dbo].[PreProcessShipmentSP]");
                 }
 
 

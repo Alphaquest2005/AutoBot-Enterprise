@@ -102,6 +102,21 @@ namespace OCR.Business.Entities
         }
         Nullable<int> _parentid;
         [DataMember]
+        public Nullable<bool> DistinctValues 
+        {
+            get
+            {
+                return _distinctvalues;
+            }
+            set
+            {
+                _distinctvalues = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<bool> _distinctvalues;
+        [DataMember]
         public List<Fields> Fields { get; set; }
         [DataMember]
         public Parts Parts { get; set; }

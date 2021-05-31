@@ -86,6 +86,19 @@ namespace OCR.Client.DTO
 		}
         private Nullable<int> _ParentId;
 
+        [DataMember]
+        public Nullable<bool> DistinctValues
+		{ 
+		    get { return _DistinctValues; }
+			set
+			{
+			    if (value == _DistinctValues) return;
+				_DistinctValues = value;
+				NotifyPropertyChanged();//m => this.DistinctValues
+			}
+		}
+        private Nullable<bool> _DistinctValues;
+
        
         [DataMember]
         public ChangeTrackingCollection<Fields> Fields

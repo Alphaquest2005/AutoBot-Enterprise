@@ -602,7 +602,7 @@ namespace AutoBotUtilities
                         var otherBls = bls.Where(x => x.BLNumber != bl.BLNumber)
                             .SelectMany(x => x.ShipmentBLDetails.Select(z => z.Marks)).ToList();
                         var marks = bl.ShipmentBLDetails.Select(x => x.Marks).ToList();
-                        var matches = otherBls.Where(x => marks.Any(z => z.ToCharArray().Except(x.ToCharArray()).Any())).ToList();
+                        var matches = otherBls.Where(x => marks.Any(z => z == x /*z.ToCharArray().Except(x.ToCharArray()).Any()*/)).ToList();
                         if (matches.Count() == otherBls.Count())
                         {
                             masterBL = bl;
@@ -786,7 +786,7 @@ namespace AutoBotUtilities
                     }
                 }
 
-                var ridersWithNoBLs = masterShipment.ShipmentAttachedRider.Where(x => !x.ShipmentRider.ShipmentRiderDetails.Any(z => z.ShipmentRiderBLs.Any(b => bls.All(r => r.Id != b.BLId)))).ToList();
+                var ridersWithNoBLs = masterShipment.ShipmentAttachedRider.Where(x => x.ShipmentRider.ShipmentRiderDetails.Any(z => !z.ShipmentRiderBLs.Any(b => bls.Any(r => r.Id == b.BLId)))).ToList();
                 if (ridersWithNoBLs.Any())
                 {
                     //TODO:// Copy the system above
@@ -960,12 +960,15 @@ namespace AutoBotUtilities
 
             var allUnMatchedInvoices = new EntryDataDSContext().ShipmentMIS_Invoices
                 .Where(x => invoiceLst.Any(z => z == x.Id)).ToList();
+
             var allUnMatchedPOs = new EntryDataDSContext().ShipmentMIS_POs.ToList();
 
             var invoiceNOs = invoices.Select(r => r.InvoiceNo).ToList();
             invoiceNOs.AddRange(unAttachedInvoices.Select(x => x.InvoiceNo));
+
             var poNOs = invoices.SelectMany(r => r.ShipmentInvoicePOs.Select(z => z.PurchaseOrders.PONumber)).ToList();
             poNOs.AddRange(allUnMatchedPOs.Select(x => x.InvoiceNo).ToList());
+
             var classifications = new EntryDataDSContext().ShipmentInvoicePOItemData
                 .Where(x => invoiceNOs.Contains(x.InvoiceNo) || poNOs.Contains(x.PONumber)).ToList();
             summaryPkg.Classifications = classifications;

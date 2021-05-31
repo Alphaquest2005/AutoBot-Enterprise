@@ -21,6 +21,7 @@
               this.Property(t => t.LineId).HasColumnName("LineId");
               this.Property(t => t.Key).HasColumnName("Key").IsRequired().HasMaxLength(50);
               this.Property(t => t.ParentId).HasColumnName("ParentId");
+              this.Property(t => t.AppendValues).HasColumnName("AppendValues");
               this.HasRequired(t => t.Lines).WithMany(t =>(ICollection<Fields>) t.Fields).HasForeignKey(d => d.LineId);
               this.HasOptional(t => t.ParentField).WithMany(t =>(ICollection<Fields>) t.ChildFields).HasForeignKey(d => d.ParentId);
               this.HasOptional(t => t.FieldValue).WithRequired(t => (Fields)t.Field);

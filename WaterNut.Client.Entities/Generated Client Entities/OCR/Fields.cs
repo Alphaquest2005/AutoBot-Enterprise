@@ -173,6 +173,21 @@ public Nullable<int> ParentId
 		}
      
 
+       
+       
+public Nullable<bool> AppendValues
+		{ 
+		    get { return this.fields.AppendValues; }
+			set
+			{
+			    if (value == this.fields.AppendValues) return;
+				this.fields.AppendValues = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("AppendValues");
+			}
+		}
+     
+
        private Lines _Lines;
         public  Lines Lines
 		{
