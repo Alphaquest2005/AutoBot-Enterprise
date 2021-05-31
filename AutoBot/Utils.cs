@@ -597,7 +597,7 @@ namespace AutoBot
 
                         if(!adp.Any())
                         {
-                            LinkPDFs(new List<int>() { itm.ASYCUDA_Id });
+                            BaseDataModel.LinkPDFs(new List<int>() { itm.ASYCUDA_Id });
                             adp = ctx.AsycudaDocument_Attachments.Where(x => x.AsycudaDocumentId == itm.ASYCUDA_Id).Select(x => x.Attachments.FilePath).ToList();
                         }
 
@@ -1579,7 +1579,7 @@ namespace AutoBot
                             var res = ctx.AsycudaDocument_Attachments.Where(x => x.AsycudaDocumentId == itm.ASYCUDA_Id).Select(x => x.Attachments.FilePath).ToArray();
                             if (!res.Any())
                             {
-                                LinkPDFs( new List<int>() {itm.ASYCUDA_Id});
+                                BaseDataModel.LinkPDFs( new List<int>() {itm.ASYCUDA_Id});
                                 res = ctx.AsycudaDocument_Attachments.Where(x => x.AsycudaDocumentId == itm.ASYCUDA_Id).Select(x => x.Attachments.FilePath).ToArray();
                             }
                             pdfs.AddRange(res);
@@ -2159,7 +2159,7 @@ namespace AutoBot
                             var res = ctx.AsycudaDocument_Attachments.Where(x => x.AsycudaDocumentId == itm.ASYCUDA_Id).Select(x => x.Attachments.FilePath).ToArray();
                             if (!res.Any())
                             {
-                                LinkPDFs(new List<int>() { itm.ASYCUDA_Id });
+                                BaseDataModel.LinkPDFs(new List<int>() { itm.ASYCUDA_Id });
                                 res = ctx.AsycudaDocument_Attachments.Where(x => x.AsycudaDocumentId == itm.ASYCUDA_Id).Select(x => x.Attachments.FilePath).ToArray();
                             }
                             pdfs.AddRange(res);
@@ -3286,7 +3286,7 @@ namespace AutoBot
                     //    .GroupBy(x => x.AsycudaDocumentSetId)
                     //    .Join(ctx.AsycudaDocumentSetExs.Where(x => x.Declarant_Reference_Number != "Imports"), x => x.Key, z => z.AsycudaDocumentSetId, (x, z) => new { x, z }).ToList();
 
-                    LinkPDFs(entries);
+                    BaseDataModel.LinkPDFs(entries);
                 }
             }
             catch (Exception e)
@@ -3296,64 +3296,7 @@ namespace AutoBot
             }
         }
 
-        private static void LinkPDFs(List<int> entries)
-        {
-            Console.WriteLine("Link PDF Files");
-            var directoryName = StringExtensions.UpdateToCurrentUser(
-                    Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder,
-                        "Imports")) //doc.z.Declarant_Reference_Number));
-                ;
-
-            using (var ctx = new CoreEntitiesContext())
-            {
-
-                foreach (var entryId in entries)
-                {
-                    var doc = ctx.AsycudaDocuments.First(x => x.ASYCUDA_Id == entryId);
-
-                    var csvFiles = new DirectoryInfo(directoryName).GetFiles($"*-{doc.CNumber}*")
-                        .Where(x => Regex.IsMatch(x.FullName,
-                            @".*(?<=\\)([A-Z,0-9]{3}\-[A-Z]{5}\-)(?<pCNumber>\d+).*.pdf",
-                            RegexOptions.IgnoreCase)).ToArray();
-                    foreach (var file in csvFiles)
-                    {
-                        var dfile = ctx.Attachments.Include(x => x.AsycudaDocument_Attachments)
-                            .FirstOrDefault(x => x.FilePath == file.FullName);
-
-                        if (dfile != null &&
-                            dfile.AsycudaDocument_Attachments.Any(x => x.AsycudaDocumentId == doc.ASYCUDA_Id)) continue;
-                        var mat = Regex.Match(file.FullName,
-                            @".*(?<=\\)([A-Z,0-9]{3}\-[A-Z]{5}\-)(?<pCNumber>\d+).*.pdf",
-                            RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture);
-                        if (!mat.Success) continue;
-
-                        //var cnumber = mat.Groups["pCNumber"].Value;
-                        //var cdoc = ctx.AsycudaDocuments.FirstOrDefault(x => x.CNumber == cnumber);
-                        //if (cdoc == null) continue;
-
-
-                        ctx.AsycudaDocument_Attachments.Add(
-                            new AsycudaDocument_Attachments(true)
-                            {
-                                AsycudaDocumentId = entryId,
-                                Attachments = new Attachments(true)
-                                {
-                                    FilePath = file.FullName,
-                                    DocumentCode = "NA",
-                                    Reference = file.Name.Replace(file.Extension, ""),
-                                    TrackingState = TrackingState.Added
-                                },
-
-                                TrackingState = TrackingState.Added
-                            });
-
-
-                        ctx.SaveChanges();
-                    }
-                }
-            }
-            
-        }
+        
 
         public static void LinkEmail()
         {

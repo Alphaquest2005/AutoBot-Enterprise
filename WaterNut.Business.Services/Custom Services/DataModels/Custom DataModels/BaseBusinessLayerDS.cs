@@ -70,6 +70,7 @@ using xcuda_Traders_Financial = DocumentDS.Business.Entities.xcuda_Traders_Finan
 using xcuda_Transport = DocumentDS.Business.Entities.xcuda_Transport;
 using xcuda_Weight = DocumentDS.Business.Entities.xcuda_Weight;
 using xcuda_Weight_itm = DocumentItemDS.Business.Entities.xcuda_Weight_itm;
+using System.Text.RegularExpressions;
 
 namespace WaterNut.DataSpace
 {
@@ -929,14 +930,87 @@ namespace WaterNut.DataSpace
                 .ToList();
             if (pod.EntryData is PurchaseOrders p)
                 if (p.PreviousCNumber != null)
-                    alst.AddRange(currentAsycudaDocumentSet.AsycudaDocumentSet_Attachments
-                        .Where(x => x.Attachment.FilePath.Contains(p.PreviousCNumber) &&
-                                    x.FileType.DocumentCode == "DO02")
-                         
-                        .Select(x => x.Attachment).ToList());
+                {
+                    try
+                    {
+                        var pCnumber = new Regex(@"[C\#]+").Replace(p.PreviousCNumber, "");
+                        List<Attachment> previousDocuments = currentAsycudaDocumentSet.AsycudaDocumentSet_Attachments
+                                                                    .Where(x => x.Attachment.FilePath.Contains(p.PreviousCNumber) &&
+                                                                                x.FileType.DocumentCode == "DO02")
+                                                                    .Select(x => x.Attachment).ToList();
+                        LinkPDFs(new List<int>() { Convert.ToInt32(p.PreviousCNumber) });
+                        alst.AddRange(previousDocuments);
+
+                    }
+                    catch (Exception)
+                    {
+
+                        throw;
+                    }
+                }     
+                    
 
 
             AttachToDocument(alst.GroupBy(x => new FileInfo(x.FilePath).Name).Select(x => x.Last()).ToList(), cdoc.Document, cdoc.DocumentItems);
+        }
+
+        public static void LinkPDFs(List<int> entries)
+        {
+            Console.WriteLine("Link PDF Files");
+            var directoryName = StringExtensions.UpdateToCurrentUser(
+                    Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder,
+                        "Imports")) //doc.z.Declarant_Reference_Number));
+                ;
+
+            using (var ctx = new CoreEntitiesContext())
+            {
+
+                foreach (var entryId in entries)
+                {
+                    var doc = ctx.AsycudaDocuments.First(x => x.ASYCUDA_Id == entryId);
+
+                    var csvFiles = new DirectoryInfo(directoryName).GetFiles($"*-{doc.CNumber}*")
+                        .Where(x => Regex.IsMatch(x.FullName,
+                            @".*(?<=\\)([A-Z,0-9]{3}\-[A-Z]{5}\-)(?<pCNumber>\d+).*.pdf",
+                            RegexOptions.IgnoreCase)).ToArray();
+                    foreach (var file in csvFiles)
+                    {
+                        var dfile = ctx.Attachments.Include(x => x.AsycudaDocument_Attachments)
+                            .FirstOrDefault(x => x.FilePath == file.FullName);
+
+                        if (dfile != null &&
+                            dfile.AsycudaDocument_Attachments.Any(x => x.AsycudaDocumentId == doc.ASYCUDA_Id)) continue;
+                        var mat = Regex.Match(file.FullName,
+                            @".*(?<=\\)([A-Z,0-9]{3}\-[A-Z]{5}\-)(?<pCNumber>\d+).*.pdf",
+                            RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture);
+                        if (!mat.Success) continue;
+
+                        //var cnumber = mat.Groups["pCNumber"].Value;
+                        //var cdoc = ctx.AsycudaDocuments.FirstOrDefault(x => x.CNumber == cnumber);
+                        //if (cdoc == null) continue;
+
+
+                        ctx.AsycudaDocument_Attachments.Add(
+                            new AsycudaDocument_Attachments(true)
+                            {
+                                AsycudaDocumentId = entryId,
+                                Attachments = new Attachments(true)
+                                {
+                                    FilePath = file.FullName,
+                                    DocumentCode = "NA",
+                                    Reference = file.Name.Replace(file.Extension, ""),
+                                    TrackingState = TrackingState.Added
+                                },
+
+                                TrackingState = TrackingState.Added
+                            });
+
+
+                        ctx.SaveChanges();
+                    }
+                }
+            }
+
         }
 
         private Customs_Procedure AttachEntryDataDocumentType(DocumentCT cdoc, EDDocumentTypes documentType)
