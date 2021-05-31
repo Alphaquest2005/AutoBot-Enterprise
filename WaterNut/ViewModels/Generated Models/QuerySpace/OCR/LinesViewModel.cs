@@ -270,6 +270,24 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
         }	
 
  
+
+		private Boolean? _distinctValuesFilter;
+        public Boolean? DistinctValuesFilter
+        {
+            get
+            {
+                return _distinctValuesFilter;
+            }
+            set
+            {
+                _distinctValuesFilter = value;
+				NotifyPropertyChanged(x => DistinctValuesFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
 		internal bool DisableBaseFilterData = false;
         public virtual void FilterData()
 	    {
@@ -302,6 +320,10 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
 
 									if(string.IsNullOrEmpty(NameFilter) == false)
 						res.Append(" && " + string.Format("Name.Contains(\"{0}\")",  NameFilter));						
+ 
+
+									if(DistinctValuesFilter.HasValue)
+						res.Append(" && " + string.Format("DistinctValues == {0}",  DistinctValuesFilter));						
 			return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
@@ -325,7 +347,10 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
                 dataToPrint = lst.Select(x => new LinesExcelLine
                 {
  
-                    Name = x.Name 
+                    Name = x.Name ,
+                    
+ 
+                    DistinctValues = x.DistinctValues 
                     
                 }).ToList()
             };
@@ -339,6 +364,9 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
         {
 		 
                     public string Name { get; set; } 
+                    
+ 
+                    public Nullable<bool> DistinctValues { get; set; } 
                     
         }
 

@@ -42,6 +42,7 @@
           <Property Name="IsRequired" Type="bit" Nullable="false" />
           <Property Name="DataType" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="ParentId" Type="int" />
+          <Property Name="AppendValues" Type="bit" />
         </EntityType>
         <EntityType Name="OCR-FieldValue">
           <Key>
@@ -96,6 +97,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.OCRInvoicesFileTypes' doe
           <Property Name="RegExId" Type="int" Nullable="false" />
           <Property Name="Name" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="ParentId" Type="int" />
+          <Property Name="DistinctValues" Type="bit" />
         </EntityType>
         <EntityType Name="OCR-Parts">
           <Key>
@@ -717,6 +719,7 @@ FROM [dbo].[OCRInvoicesFileTypes] AS [OCRInvoicesFileTypes]</DefiningQuery>
           <Property Name="ParentId" Type="Int32" />
           <NavigationProperty Name="ChildFields" Relationship="WaterNutDBModel.FK_OCR_Fields_OCR_Fields" FromRole="Fields" ToRole="Fields1" />
           <NavigationProperty Name="ParentField" Relationship="WaterNutDBModel.FK_OCR_Fields_OCR_Fields" FromRole="Fields1" ToRole="Fields" />
+          <Property Name="AppendValues" Type="Boolean" />
         </EntityType>
         <EntityType Name="Invoices">
           <Key>
@@ -852,6 +855,7 @@ FROM [dbo].[OCRInvoicesFileTypes] AS [OCRInvoicesFileTypes]</DefiningQuery>
           <Property Name="ParentId" Type="Int32" />
           <NavigationProperty Name="ChildLines" Relationship="WaterNutDBModel.FK_OCR_Lines_OCR_Lines" FromRole="Lines" ToRole="Lines1" />
           <NavigationProperty Name="ParentLine" Relationship="WaterNutDBModel.FK_OCR_Lines_OCR_Lines" FromRole="Lines1" ToRole="Lines" />
+          <Property Name="DistinctValues" Type="Boolean" />
         </EntityType>
         <Association Name="FK_OCR_Fields_OCR_Lines">
           <End Type="WaterNutDBModel.Lines" Role="OCR_Lines" Multiplicity="1">
@@ -1200,6 +1204,7 @@ FROM [dbo].[OCRInvoicesFileTypes] AS [OCRInvoicesFileTypes]</DefiningQuery>
           <EntitySetMapping Name="Fields">
             <EntityTypeMapping TypeName="WaterNutDBModel.Fields">
               <MappingFragment StoreEntitySet="OCR-Fields">
+                <ScalarProperty Name="AppendValues" ColumnName="AppendValues" />
                 <ScalarProperty Name="ParentId" ColumnName="ParentId" />
                 <ScalarProperty Name="Key" ColumnName="Key" />
                 <ScalarProperty Name="LineId" ColumnName="LineId" />
@@ -1260,6 +1265,7 @@ FROM [dbo].[OCRInvoicesFileTypes] AS [OCRInvoicesFileTypes]</DefiningQuery>
           <EntitySetMapping Name="Lines">
             <EntityTypeMapping TypeName="WaterNutDBModel.Lines">
               <MappingFragment StoreEntitySet="OCR-Lines">
+                <ScalarProperty Name="DistinctValues" ColumnName="DistinctValues" />
                 <ScalarProperty Name="ParentId" ColumnName="ParentId" />
                 <ScalarProperty Name="RegExId" ColumnName="RegExId" />
                 <ScalarProperty Name="Name" ColumnName="Name" />

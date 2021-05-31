@@ -122,6 +122,21 @@ public Nullable<int> ParentId
 		}
      
 
+       
+       
+public Nullable<bool> DistinctValues
+		{ 
+		    get { return this.lines.DistinctValues; }
+			set
+			{
+			    if (value == this.lines.DistinctValues) return;
+				this.lines.DistinctValues = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("DistinctValues");
+			}
+		}
+     
+
         ObservableCollection<Fields> _Fields = null;
         public  ObservableCollection<Fields> Fields
 		{

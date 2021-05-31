@@ -82,7 +82,7 @@ namespace xlsxWriter
 
                             if(pOItem != null && pOItem.Gallons > 0)
                                 SetValue(workbook, i, header.First(x => x.Key.Column == "Gallons").Key.Index,
-                                    pOItem.Gallons);
+                                    itm.Quantity * pOItem.Gallons);
 
                             SetValue(workbook, i, header.First(x => x.Key.Column == "POItemNumber").Key.Index, itm.ItemNumber);
                             SetValue(workbook, i, header.First(x => x.Key.Column == nameof(itm.TotalCost)).Key.Index,
@@ -357,7 +357,7 @@ namespace xlsxWriter
             SetValue(workbook, currentline, 0, "List of Invoices");
             
             var invHeader =
-                "InvoiceNo,PONumber, InvoiceDate, ImportedLines, SubTotal, InvoiceTotal, ImportedTotalDifference, PO/Inv Total Diff, PO/Inv MisMatches, SupplierCode, SourceFile"
+                "InvoiceNo,PONumber, InvoiceDate, ImportedLines, SubTotal, InvoiceTotal, ImportedTotalDifference,ImportedVSExpectedTotal, PO/Inv Total Diff, PO/Inv MisMatches, SupplierCode, SourceFile"
                     .Split(',').Select(x => x.Trim()).ToList();
             currentline++;
             invHeader.ForEach(x => SetValue(workbook, currentline, invHeader.IndexOf(x), x));
@@ -383,6 +383,14 @@ namespace xlsxWriter
                         summaryPkg.Invoices[i].InvoiceTotal);
                     SetValue(workbook, currentline, invHeader.IndexOf(nameof(ShipmentInvoice.ImportedTotalDifference)),
                         summaryPkg.Invoices[i].ImportedTotalDifference);
+
+                    SetValue(workbook, currentline, invHeader.IndexOf("ImportedVSExpectedTotal"),
+                        summaryPkg.Invoices[i].InvoiceTotal.GetValueOrDefault() 
+                                - (summaryPkg.Invoices[i].SubTotal.GetValueOrDefault() 
+                                        + summaryPkg.Invoices[i].TotalInternalFreight.GetValueOrDefault() 
+                                        + summaryPkg.Invoices[i].TotalOtherCost.GetValueOrDefault()
+                                        + summaryPkg.Invoices[i].TotalInsurance.GetValueOrDefault()
+                                        - summaryPkg.Invoices[i].TotalDeduction.GetValueOrDefault()));
 
 
                     SetValue(workbook, currentline, invHeader.IndexOf("PO/Inv Total Diff"),

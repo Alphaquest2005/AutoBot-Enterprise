@@ -383,7 +383,7 @@ namespace WaterNut.DataSpace
 
         public double MaxLinesCheckedToStart { get; set; } = 0.5;
 
-        private List<IDictionary<string, object>> SetPartLineValues(Part x)
+        private List<IDictionary<string, object>> SetPartLineValues(Part part)
         {
             try
             {
@@ -392,12 +392,14 @@ namespace WaterNut.DataSpace
                 var lst = new List<IDictionary<string, object>>();
                 var itm = new BetterExpando();
                 var ditm = ((IDictionary<string, object>) itm);
-                foreach (var line in x.Lines)
+                foreach (var line in part.Lines)
                 {
-
-                    foreach (var value in line.Values)
+                    var values = line.OCR_Lines.DistinctValues == true 
+                        ? DistinctValues(line.Values)
+                        : line.Values;
+                    foreach (var value in values)
                     {
-                        if (x.OCR_Part.RecuringPart != null && x.OCR_Part.RecuringPart.IsComposite == false)
+                        if (part.OCR_Part.RecuringPart != null && part.OCR_Part.RecuringPart.IsComposite == false)
                         {
                             itm = new BetterExpando();
                             ditm = ((IDictionary<string, object>) itm);
@@ -406,8 +408,8 @@ namespace WaterNut.DataSpace
                         ditm["FileLineNumber"] = value.Key + 1;
                         foreach (var field in value.Value)
                         {
-                            if (ditm.ContainsKey(field.Key.Field) && line.OCR_Lines.Fields.Select(z => z.Field)
-                                    .Count(f => f == field.Key.Field) > 1)
+                            if (ditm.ContainsKey(field.Key.Field) && (field.Key.AppendValues == true ||line.OCR_Lines.Fields.Select(z => z.Field)
+                                    .Count(f => f == field.Key.Field) > 1 ) )
                             {
                                 ImportByDataType(field, ditm, value);
                             }
@@ -419,22 +421,19 @@ namespace WaterNut.DataSpace
 
                         }
 
-                        if (x.OCR_Part.RecuringPart != null && x.OCR_Part.RecuringPart.IsComposite == false)
+                        if (part.OCR_Part.RecuringPart != null && part.OCR_Part.RecuringPart.IsComposite == false)
                             lst.Add(itm);
                     }
-
-
-
                 }
 
-                foreach (var childPart in x.ChildParts)
+                foreach (var childPart in part.ChildParts)
                 {
                    // if (!childPart.Lines.Any()) continue;
                     var childItms = SetPartLineValues(childPart);
                     var fieldname = childPart.AllLines.First().OCR_Lines.Fields.First().EntityType;
                     if (childPart.OCR_Part.RecuringPart != null || !childPart.Lines.Any())
                     {
-                        if (!x.Lines.Any())
+                        if (!part.Lines.Any())
                         {
                             lst.AddRange(childItms);
                         }
@@ -446,7 +445,7 @@ namespace WaterNut.DataSpace
                     }
                     else
                     {
-                        if (!x.Lines.Any())
+                        if (!part.Lines.Any())
                         {
                             lst.Add(childItms.FirstOrDefault());
                         }
@@ -460,7 +459,7 @@ namespace WaterNut.DataSpace
                 }
 
 
-                if ((x.OCR_Part.RecuringPart == null || x.OCR_Part.RecuringPart.IsComposite) && ditm.Any()) lst.Add(itm);
+                if ((part.OCR_Part.RecuringPart == null || part.OCR_Part.RecuringPart.IsComposite) && ditm.Any()) lst.Add(itm);
                 return lst;
             }
             catch (Exception e)
@@ -468,6 +467,16 @@ namespace WaterNut.DataSpace
                 Console.WriteLine(e);
                 throw;
             }
+        }
+
+        private Dictionary<int, Dictionary<Fields, string>> DistinctValues(Dictionary<int, Dictionary<Fields, string>> lineValues)
+        {
+            var res = new Dictionary<int, Dictionary<Fields, string>>();
+            foreach (var val in lineValues.Where(val => !res.Values.Any(z => z.Values.Any(q => val.Value.ContainsValue(q)))))
+            {
+                res.Add(val.Key, val.Value);
+            }
+            return res;
         }
 
         private void ImportByDataType(KeyValuePair<Fields, string> field, IDictionary<string, object> ditm, KeyValuePair<int, Dictionary<Fields, string>> value)
@@ -481,9 +490,21 @@ namespace WaterNut.DataSpace
                 case "Number":
                 case "Numeric":
 
-                    ditm[field.Key.Field] =
+                    if (field.Key.AppendValues == true)
+                    {
+                        var val = GetValueByKey(value, field.Key.Key);
+                        if (ditm[field.Key.Field].ToString() !=  val.ToString())
+                            ditm[field.Key.Field] =
+                            Convert.ToDouble(ditm[field.Key.Field] ?? "0") +
+                            Convert.ToDouble(GetValueByKey(value, field.Key.Key));
+                    }
+                    else
+                    {
+                        ditm[field.Key.Field] =
                         Convert.ToDouble(ditm[field.Key.Field] ?? "0") +
                         Convert.ToDouble(GetValueByKey(value, field.Key.Key));
+                    }
+                    
                     break;
                 default:
                     ditm[field.Key.Field] = GetValueByKey(value, field.Key.Key);

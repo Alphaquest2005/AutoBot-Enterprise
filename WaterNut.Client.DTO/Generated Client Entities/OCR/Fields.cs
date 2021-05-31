@@ -125,6 +125,19 @@ namespace OCR.Client.DTO
 		}
         private Nullable<int> _ParentId;
 
+        [DataMember]
+        public Nullable<bool> AppendValues
+		{ 
+		    get { return _AppendValues; }
+			set
+			{
+			    if (value == _AppendValues) return;
+				_AppendValues = value;
+				NotifyPropertyChanged();//m => this.AppendValues
+			}
+		}
+        private Nullable<bool> _AppendValues;
+
        
         [DataMember]
         public Lines Lines

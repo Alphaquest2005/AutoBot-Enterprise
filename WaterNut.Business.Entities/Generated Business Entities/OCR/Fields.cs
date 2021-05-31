@@ -147,6 +147,21 @@ namespace OCR.Business.Entities
         }
         Nullable<int> _parentid;
         [DataMember]
+        public Nullable<bool> AppendValues 
+        {
+            get
+            {
+                return _appendvalues;
+            }
+            set
+            {
+                _appendvalues = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<bool> _appendvalues;
+        [DataMember]
         public Lines Lines { get; set; }
         [DataMember]
         public OCR_FieldValue FieldValue { get; set; }

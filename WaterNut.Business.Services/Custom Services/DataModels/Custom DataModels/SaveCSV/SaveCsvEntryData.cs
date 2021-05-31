@@ -145,7 +145,7 @@ namespace WaterNut.DataSpace
                             CubicFeet = z.ContainsKey("VolumeCF") ? Convert.ToDouble(z["VolumeCF"]?.ToString().Trim()) : 0.0
                             
 
-                        }).ToList()
+                        }).OrderByDescending(z => z.Pieces).ToList()
 
                     }).ToList();
 
@@ -510,6 +510,7 @@ namespace WaterNut.DataSpace
                             ctx.ShipmentInvoice.Remove(existingManifest);
 
                         invoice.InvoiceDetails = AutoFixImportErrors(invoice);
+                        invoice.ImportedLines = invoice.InvoiceDetails.Count;
 
                         if (Math.Abs(invoice.SubTotal.GetValueOrDefault()) < 0.01)
                         {
