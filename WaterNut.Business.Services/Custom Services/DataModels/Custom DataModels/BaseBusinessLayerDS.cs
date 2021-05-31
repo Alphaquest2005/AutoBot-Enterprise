@@ -934,11 +934,12 @@ namespace WaterNut.DataSpace
                     try
                     {
                         var pCnumber = new Regex(@"[C\#]+").Replace(p.PreviousCNumber, "");
+                        LinkPDFs(new List<int>() { Convert.ToInt32(pCnumber) });
                         List<Attachment> previousDocuments = currentAsycudaDocumentSet.AsycudaDocumentSet_Attachments
-                                                                    .Where(x => x.Attachment.FilePath.Contains(p.PreviousCNumber) &&
+                                                                    .Where(x => x.Attachment.FilePath.Contains(pCnumber) &&
                                                                                 x.FileType.DocumentCode == "DO02")
                                                                     .Select(x => x.Attachment).ToList();
-                        LinkPDFs(new List<int>() { Convert.ToInt32(p.PreviousCNumber) });
+                        
                         alst.AddRange(previousDocuments);
 
                     }
@@ -990,21 +991,30 @@ namespace WaterNut.DataSpace
                         //if (cdoc == null) continue;
 
 
+                        var attachment = new Attachments(true)
+                        {
+                            FilePath = file.FullName,
+                            DocumentCode = "NA",
+                            Reference = file.Name.Replace(file.Extension, ""),
+                            TrackingState = TrackingState.Added
+                        };
                         ctx.AsycudaDocument_Attachments.Add(
-                            new AsycudaDocument_Attachments(true)
+                            new CoreEntities.Business.Entities.AsycudaDocument_Attachments(true)
                             {
                                 AsycudaDocumentId = entryId,
-                                Attachments = new Attachments(true)
-                                {
-                                    FilePath = file.FullName,
-                                    DocumentCode = "NA",
-                                    Reference = file.Name.Replace(file.Extension, ""),
-                                    TrackingState = TrackingState.Added
-                                },
+                                Attachments = attachment,
 
                                 TrackingState = TrackingState.Added
                             });
 
+                        ctx.AsycudaDocumentSet_Attachments.Add(
+                            new CoreEntities.Business.Entities.AsycudaDocumentSet_Attachments(true)
+                            {
+                                AsycudaDocumentSetId = doc.AsycudaDocumentSetId.GetValueOrDefault(),
+                                Attachments = attachment,
+
+                                TrackingState = TrackingState.Added
+                            });
 
                         ctx.SaveChanges();
                     }
