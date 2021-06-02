@@ -575,7 +575,7 @@ namespace AutoBot
                             (x.ImportComplete == null || x.ImportComplete == false));
                         if (newEntry != null)
                         {
-                            
+
                             ndp = ctx.AsycudaDocument_Attachments
                                 .Where(x => x.AsycudaDocumentId == newEntry.ASYCUDA_Id)
                                 .GroupBy(x => x.Attachments.Reference)
@@ -592,10 +592,10 @@ namespace AutoBot
                             .Select(x => x.OrderByDescending(z => z.AttachmentId).FirstOrDefault())
                             .Select(x => x.Attachments.FilePath)
                             .Where(x => x.ToLower().EndsWith(".pdf"))
-                            
+
                             .ToList();
 
-                        if(!adp.Any())
+                        if (!adp.Any())
                         {
                             BaseDataModel.LinkPDFs(new List<int>() { itm.ASYCUDA_Id });
                             adp = ctx.AsycudaDocument_Attachments.Where(x => x.AsycudaDocumentId == itm.ASYCUDA_Id).Select(x => x.Attachments.FilePath).ToList();
@@ -649,7 +649,7 @@ namespace AutoBot
                     Assessedpdfs.Add(summaryFile);
 
 
-                    
+
                     var emailIds = Enumerable.Min<TODO_SubmitPOInfo>(pOs, x => x.EmailId);
 
                     if (emailIds == null)
@@ -683,7 +683,7 @@ namespace AutoBot
                         if (eAtt == null)
                         {
                             var att = ctx.Attachments.OrderByDescending(x => x.Id).FirstOrDefault(x => x.FilePath == sfile.SourceFileName);
-                            eAtt = new AsycudaDocumentSet_Attachments()
+                            eAtt = new AsycudaDocumentSet_Attachments(true)
                             {
                                 AsycudaDocumentSetId = item.AsycudaDocumentSetId,
                                 AttachmentId = att.Id,
@@ -692,19 +692,18 @@ namespace AutoBot
                                 EmailUniqueId = (string.IsNullOrEmpty(att.EmailId) ? null : (int?)Convert.ToInt32(att.EmailId)),
                                 TrackingState = TrackingState.Added
                             };
+                            ctx.AsycudaDocumentSet_Attachments.Add(eAtt);
                         }
                         ctx.AttachmentLog.Add(new AttachmentLog(true)
-                            {
-                                DocSetAttachment = eAtt.Id,
-                                AsycudaDocumentSet_Attachments = eAtt,
-                                Status = "Submit PO Entries",
-                                TrackingState = TrackingState.Added
-                            });
+                        {
+                            DocSetAttachment = eAtt.Id,
+                            AsycudaDocumentSet_Attachments = eAtt,
+                            Status = "Submit PO Entries",
+                            TrackingState = TrackingState.Added
+                        });
+
                     }
-
-
                     ctx.SaveChanges();
-
                 }
                 catch (Exception e)
                 {

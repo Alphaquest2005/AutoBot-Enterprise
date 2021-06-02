@@ -937,44 +937,57 @@ namespace WaterNut.DataSpace
                         LinkPDFs(new List<string>() { pCnumber }, "DO02");
                         var pdf = $"{pCnumber}.pdf";
                         List<Attachment> previousDocuments;
-                        using (var ctx = new DocumentDSContext())
-                        {
-                             previousDocuments = ctx.Attachments
 
-                                                                        .Where(x => x.FilePath.Contains(pdf) &&
-                                                                                    (x.DocumentCode == "NA"))
-                                                                        .ToList();
-                            foreach (var itm in previousDocuments)
+                        previousDocuments = currentAsycudaDocumentSet.AsycudaDocumentSet_Attachments.Where(x => x.Attachment.FilePath.Contains(pdf) && x.Attachment.DocumentCode == "DO02").Select(x => x.Attachment).ToList();
+                        if (!previousDocuments.Any())
+                        {
+
+                            using (var ctx = new DocumentDSContext())
                             {
 
-                                var att = new Attachment()
-                                {
-                                    TrackingState = TrackingState.Added,
-                                    FilePath = itm.FilePath,
-                                    Reference = pCnumber,
-                                    DocumentCode = "DO02",
-                                };
-                                ctx.AsycudaDocument_Attachments.Add(
-                                new AsycudaDocument_Attachments(true)
-                                {
-                                    AsycudaDocumentId = cdoc.Document.ASYCUDA_Id,
-                                    Attachment = att,
+                                previousDocuments = ctx.Attachments
 
-                                    TrackingState = TrackingState.Added
-                                });
+                                                                           .Where(x => x.FilePath.Contains(pdf) &&
+                                                                                       (x.DocumentCode == "NA"))
+                                                                           .ToList();
+                                foreach (var itm in previousDocuments.ToList())
+                                {
+                                    previousDocuments.Remove(itm);
 
-                                ctx.AsycudaDocumentSet_Attachments.Add(
-                                    new global::DocumentDS.Business.Entities.AsycudaDocumentSet_Attachments(true)
+                                    var att = new Attachment()
                                     {
-                                        AsycudaDocumentSetId = currentAsycudaDocumentSet.AsycudaDocumentSetId,
+                                        TrackingState = TrackingState.Added,
+                                        FilePath = itm.FilePath,
+                                        Reference = pCnumber,
+                                        DocumentCode = "DO02",
+                                    };
+                                    ctx.Attachments.Add(att);
+
+                                    ctx.SaveChanges();
+                                    cdoc.Document.AsycudaDocument_Attachments.Add(
+                                    new AsycudaDocument_Attachments(true)
+                                    {
+                                        AsycudaDocumentId = cdoc.Document.ASYCUDA_Id,
                                         Attachment = att,
 
                                         TrackingState = TrackingState.Added
-                                    });                              
+                                    });
 
-                            } 
-                            ctx.SaveChanges();
+                                    currentAsycudaDocumentSet.AsycudaDocumentSet_Attachments.Add(
+                                        new global::DocumentDS.Business.Entities.AsycudaDocumentSet_Attachments(true)
+                                        {
+                                            AsycudaDocumentSetId = currentAsycudaDocumentSet.AsycudaDocumentSetId,
+                                            Attachment = att,
+
+                                            TrackingState = TrackingState.Added
+                                        });
+
+                                    previousDocuments.Add(att);
+                                    ctx.SaveChanges();
+                                }
+                            }
                         }
+
                         alst.AddRange(previousDocuments);
 
                     }
@@ -983,8 +996,8 @@ namespace WaterNut.DataSpace
 
                         throw;
                     }
-                }     
-                    
+                }
+
 
 
             AttachToDocument(alst.GroupBy(x => new FileInfo(x.FilePath).Name).Select(x => x.Last()).ToList(), cdoc.Document, cdoc.DocumentItems);
@@ -3226,7 +3239,7 @@ namespace WaterNut.DataSpace
 
 
                 var res = new Dictionary<Attachments, Registered>();
-                foreach (var i in licAtt)
+                foreach (var i in licAtt.DistinctBy(x => x.Reference))
                 {
                     Registered xLicLicense = new LicenseDSContext().xLIC_License.OfType<Registered>()
                         .Include("xLIC_Lic_item_segment.TODO_LicenceAvailableQty")
