@@ -306,6 +306,21 @@ namespace EntryDataDS.Business.Entities
         }
         Nullable<double> _gallons;
         [DataMember]
+        public Nullable<int> RankNo 
+        {
+            get
+            {
+                return _rankno;
+            }
+            set
+            {
+                _rankno = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<int> _rankno;
+        [DataMember]
         public InvoiceDetails InvoiceDetails { get; set; }
         [DataMember]
         public EntryDataDetails EntryDataDetails { get; set; }

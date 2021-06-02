@@ -63,7 +63,7 @@ namespace xlsxWriter
                         var i = 1;
                         foreach (var itm in pO.PurchaseOrders.EntryDataDetails.OrderBy(x => x.INVItems.FirstOrDefault()?.InvoiceDetails?.FileLineNumber??x.FileLineNumber).Where(x => pO.POMISMatches.All(m => m.POItemCode != x.ItemNumber && m.PODescription != x.ItemDescription /* m.PODetailsId != x.EntryDataDetailsId ---- Took this out because it Allowed the grouped po items to still show*/)))
                         {
-                            var pOItem = itm.INVItems.FirstOrDefault();
+                            var pOItem = itm.INVItems.OrderByDescending(x => x.RankNo).FirstOrDefault();
                             
                             SetValue(workbook, i, header.First(x => x.Key.Column == nameof(pO.PurchaseOrders.PONumber)).Key.Index,
                                 pO.PurchaseOrders.PONumber);
@@ -86,7 +86,7 @@ namespace xlsxWriter
 
                             SetValue(workbook, i, header.First(x => x.Key.Column == "POItemNumber").Key.Index, itm.ItemNumber);
                             SetValue(workbook, i, header.First(x => x.Key.Column == nameof(itm.TotalCost)).Key.Index,
-                                itm.TotalCost == 0 ? pOItem?.INVTotalCost??0 : itm.TotalCost);
+                                itm.TotalCost == 0 ? itm.Quantity * itm.Cost : itm.TotalCost);
                             SetValue(workbook, i, header.First(x => x.Key.Column == nameof(itm.Units)).Key.Index,
                                 itm.Units);
                             if (doRider && i < riderdetails.Count)

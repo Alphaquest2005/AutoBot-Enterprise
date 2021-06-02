@@ -817,7 +817,6 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ShipmentInvoicePOItemMISM
 warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ShipmentInvoicePOItemQueryMatches' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="ShipmentInvoicePOItemQueryMatches">
           <Key>
-            <PropertyRef Name="PODetailsId" />
             <PropertyRef Name="INVDetailsId" />
             
             
@@ -831,6 +830,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ShipmentInvoicePOItemQuer
             
             
             
+            <PropertyRef Name="PODetailsId" />
           </Key>
           <Property Name="PODetailsId" Type="int" Nullable="false" />
           <Property Name="INVDetailsId" Type="int" Nullable="false" />
@@ -851,6 +851,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ShipmentInvoicePOItemQuer
           <Property Name="INVTotalCost" Type="float" />
           <Property Name="INVInventoryItemId" Type="int" />
           <Property Name="POInventoryItemId" Type="int" Nullable="false" />
+          <Property Name="RankNo" Type="int" />
         </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ShipmentManifestBLs' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
@@ -1821,7 +1822,8 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ShipmentRiderInvoice' doe
     [ShipmentInvoicePOItemQueryMatches].[POTotalCost] AS [POTotalCost], 
     [ShipmentInvoicePOItemQueryMatches].[INVTotalCost] AS [INVTotalCost], 
     [ShipmentInvoicePOItemQueryMatches].[INVInventoryItemId] AS [INVInventoryItemId], 
-    [ShipmentInvoicePOItemQueryMatches].[POInventoryItemId] AS [POInventoryItemId]
+    [ShipmentInvoicePOItemQueryMatches].[POInventoryItemId] AS [POInventoryItemId], 
+    [ShipmentInvoicePOItemQueryMatches].[RankNo] AS [RankNo]
     FROM [dbo].[ShipmentInvoicePOItemQueryMatches] AS [ShipmentInvoicePOItemQueryMatches]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="ShipmentManifestBLs" EntityType="Self.ShipmentManifestBLs" store:Type="Views" store:Schema="dbo">
@@ -3856,6 +3858,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ShipmentRiderInvoice' doe
           <NavigationProperty Name="InvoiceDetails" Relationship="WaterNutDBModel.InvoiceDetailsShipmentInvoicePOItemQueryMatches" FromRole="ShipmentInvoicePOItemQueryMatches" ToRole="InvoiceDetails" />
           <NavigationProperty Name="EntryDataDetails" Relationship="WaterNutDBModel.EntryDataDetailsShipmentInvoicePOItemQueryMatches" FromRole="ShipmentInvoicePOItemQueryMatches" ToRole="EntryDataDetails" />
           <Property Name="Gallons" Type="Double" />
+          <Property Name="RankNo" Type="Int32" />
         </EntityType>
         <EntityType Name="ShipmentInvoicePOItemMISMatches">
           <Key>
@@ -4910,6 +4913,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ShipmentRiderInvoice' doe
           <EntitySetMapping Name="ShipmentInvoicePOItemQueryMatches">
             <EntityTypeMapping TypeName="WaterNutDBModel.ShipmentInvoicePOItemQueryMatches">
               <MappingFragment StoreEntitySet="ShipmentInvoicePOItemQueryMatches">
+                <ScalarProperty Name="RankNo" ColumnName="RankNo" />
                 <ScalarProperty Name="Gallons" ColumnName="Gallons" />
                 <ScalarProperty Name="POInventoryItemId" ColumnName="POInventoryItemId" />
                 <ScalarProperty Name="INVInventoryItemId" ColumnName="INVInventoryItemId" />
