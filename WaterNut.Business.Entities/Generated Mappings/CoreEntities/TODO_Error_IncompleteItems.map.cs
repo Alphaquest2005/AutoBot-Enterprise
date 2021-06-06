@@ -19,7 +19,7 @@
               this.Property(t => t.RegistrationDate).HasColumnName("RegistrationDate");
               this.Property(t => t.ApplicationSettingsId).HasColumnName("ApplicationSettingsId");
               this.Property(t => t.ASYCUDA_Id).HasColumnName("ASYCUDA_Id").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.None));
-              this.Property(t => t.SourceFileName).HasColumnName("SourceFileName");
+              this.Property(t => t.SourceFileName).HasColumnName("SourceFileName").HasMaxLength(500);
               this.Property(t => t.LineNumber).HasColumnName("LineNumber");
               this.Property(t => t.AsycudaDocumentSetId).HasColumnName("AsycudaDocumentSetId");
              // Tracking Properties

@@ -3126,9 +3126,9 @@ namespace AutoBot
             {
                 using (var ctx = new CoreEntitiesContext())
                 {
-                    var entries = ctx.TODO_ImportCompleteEntries
-                        .Where(x => x.ApplicationSettingsId ==
-                                    BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId).ToList();
+                    var entries = ctx.Database.SqlQuery<TODO_ImportCompleteEntries>(
+                        $"EXEC [dbo].[Stp_TODO_ImportCompleteEntries] @ApplicationSettingsId = {BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId}");
+                       
                     var lst = entries
 
                         .GroupBy(x => x.AsycudaDocumentSetId)
@@ -3275,15 +3275,19 @@ namespace AutoBot
             {
                 using (var ctx = new CoreEntitiesContext())
                 {
-                    var entries = ctx.TODO_ImportCompleteEntries
-                        .Where(x => x.ApplicationSettingsId ==
-                                    BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)
+                    var entries = ctx.Database.SqlQuery<TODO_ImportCompleteEntries>(
+                        $"EXEC [dbo].[Stp_TODO_ImportCompleteEntries] @ApplicationSettingsId = {BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId}")
                         .Select(x => x.AssessedAsycuda_Id)
                         .Distinct()
                         .ToList();
-                    //var lst = entries
-                    //    .GroupBy(x => x.AsycudaDocumentSetId)
-                    //    .Join(ctx.AsycudaDocumentSetExs.Where(x => x.Declarant_Reference_Number != "Imports"), x => x.Key, z => z.AsycudaDocumentSetId, (x, z) => new { x, z }).ToList();
+
+                    //var entries = ctx.TODO_ImportCompleteEntries
+                    //    .Where(x => x.ApplicationSettingsId ==
+                    //                BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)
+                    //    .Select(x => x.AssessedAsycuda_Id)
+                    //    .Distinct()
+                    //    .ToList();
+
 
                     BaseDataModel.LinkPDFs(entries);
                 }
@@ -3305,9 +3309,12 @@ namespace AutoBot
                 Console.WriteLine("Link Emails");
                 using (var ctx = new CoreEntitiesContext())
                 {
-                    var entries = ctx.TODO_ImportCompleteEntries
-                        .Where(x => x.ApplicationSettingsId ==
-                                    BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId).ToList();
+                    var entries = ctx.Database.SqlQuery<TODO_ImportCompleteEntries>(
+                        $"EXEC [dbo].[Stp_TODO_ImportCompleteEntries] @ApplicationSettingsId = {BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId}");
+
+                    //var entries = ctx.TODO_ImportCompleteEntries
+                    //    .Where(x => x.ApplicationSettingsId ==
+                    //                BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId).ToList();
                     var lst = entries
                         .GroupBy(x => x.AsycudaDocumentSetId)
                         .Join(ctx.AsycudaDocumentSetExs.Where(x => x.Declarant_Reference_Number != "Imports"), x => x.Key, z => z.AsycudaDocumentSetId, (x, z) => new { x, z }).ToList();

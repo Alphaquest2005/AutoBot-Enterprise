@@ -520,15 +520,16 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AsycudaDocumentItemEntryD
 warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AsycudaDocumentSetC71' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="AsycudaDocumentSetC71">
           <Key>
-            
             <PropertyRef Name="Value_declaration_form_Id" />
-          
+            
+            
+            
           </Key>
           <Property Name="Address" Type="nvarchar" MaxLength="255" />
           <Property Name="Value_declaration_form_Id" Type="int" Nullable="false" />
           <Property Name="Total" Type="float" />
           <Property Name="AsycudaDocumentSetId" Type="int" Nullable="false" />
-          <Property Name="FilePath" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="FilePath" Type="nvarchar" MaxLength="255" />
           <Property Name="AttachmentId" Type="int" Nullable="false" />
           <Property Name="RegNumber" Type="nvarchar" MaxLength="50" Nullable="false" />
         </EntityType>
@@ -1070,7 +1071,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-Error-DuplicateEntry
           <Property Name="id" Type="nvarchar" MaxLength="10" />
           <Property Name="DocumentType" Type="nvarchar" MaxLength="40" />
           <Property Name="CNumber" Type="nvarchar" MaxLength="20" />
-          <Property Name="Extended_customs_procedure" Type="nvarchar(max)" />
+          <Property Name="Extended_customs_procedure" Type="nvarchar" MaxLength="5" />
           <Property Name="RegistrationDate" Type="datetime2" Precision="7" />
           <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
           <Property Name="Reference" Type="nvarchar" MaxLength="30" />
@@ -1108,7 +1109,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-Error-IncompleteItem
           <Property Name="ApplicationSettingsId" Type="int" />
           <Property Name="LineNumber" Type="int" Nullable="false" />
           <Property Name="ASYCUDA_Id" Type="int" Nullable="false" />
-          <Property Name="SourceFileName" Type="nvarchar(max)" />
+          <Property Name="SourceFileName" Type="nvarchar" MaxLength="500" />
           <Property Name="AsycudaDocumentSetId" Type="int" />
         </EntityType>
         <!--Errors Found During Generation:
@@ -2203,6 +2204,9 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Function Name="Stp_TODO_ImportCompleteEntries" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="ApplicationSettingsId" Type="int" Mode="In" />
+        </Function>
         <EntityContainer Name="WaterNutDBModelStoreContainer">
           <EntitySet Name="ActionDocSetLogs" EntityType="Self.ActionDocSetLogs" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Actions" EntityType="Self.Actions" Schema="dbo" store:Type="Tables" />
@@ -3704,6 +3708,9 @@ FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
           <EntitySet Name="TODO_DiscrepanciesExecutionReport" EntityType="WaterNutDBModel.TODO_DiscrepanciesExecutionReport" />
           <EntitySet Name="TODO_LicenceAvailableQty" EntityType="WaterNutDBModel.TODO_LicenceAvailableQty" />
           <EntitySet Name="TODO_AssessDiscrepancyEntries" EntityType="WaterNutDBModel.TODO_AssessDiscrepancyEntries" />
+          <FunctionImport Name="Stp_TODO_ImportCompleteEntries">
+            <Parameter Name="ApplicationSettingsId" Mode="In" Type="Int32" />
+          </FunctionImport>
           </EntityContainer>
         <EntityType Name="ApplicationSettings">
           <Key>
@@ -4808,7 +4815,7 @@ FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
           <Property Name="id" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
           <Property Name="DocumentType" Type="String" MaxLength="40" FixedLength="false" Unicode="true" />
           <Property Name="CNumber" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
-          <Property Name="Extended_customs_procedure" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Extended_customs_procedure" Type="String" MaxLength="5" FixedLength="false" Unicode="true" />
           <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
           <Property Name="RegistrationDate" Type="DateTime" Precision="7" />
           <Property Name="Reference" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
@@ -4840,7 +4847,7 @@ FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
           <Property Name="RegistrationDate" Type="DateTime" Precision="7" />
           <Property Name="ApplicationSettingsId" Type="Int32" />
           <Property Name="ASYCUDA_Id" Type="Int32" Nullable="false" />
-          <Property Name="SourceFileName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="SourceFileName" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
           <Property Name="LineNumber" Type="Int32" Nullable="false" />
           <Property Name="AsycudaDocumentSetId" Type="Int32" />
         </EntityType>
@@ -5841,7 +5848,7 @@ FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
           <Property Name="Value_declaration_form_Id" Type="Int32" Nullable="false" />
           <Property Name="Total" Type="Double" />
           <Property Name="AsycudaDocumentSetId" Type="Int32" Nullable="false" />
-          <Property Name="FilePath" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="FilePath" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="AttachmentId" Type="Int32" Nullable="false" />
           <Property Name="RegNumber" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
         </EntityType>
@@ -7589,6 +7596,7 @@ FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <FunctionImportMapping FunctionImportName="Stp_TODO_ImportCompleteEntries" FunctionName="WaterNutDBModel.Store.Stp_TODO_ImportCompleteEntries" />
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>

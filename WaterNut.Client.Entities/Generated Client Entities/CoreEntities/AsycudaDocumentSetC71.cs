@@ -104,7 +104,7 @@ public int AsycudaDocumentSetId
 		}
      
 
-       [RequiredValidationAttribute(ErrorMessage= "FilePath is required")]
+       
        
                 
                 [MaxLength(255, ErrorMessage = "FilePath has a max length of 255 letters ")]

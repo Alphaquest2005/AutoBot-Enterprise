@@ -139,7 +139,7 @@ public int ASYCUDA_Id
        
        
                 
-                
+                [MaxLength(500, ErrorMessage = "SourceFileName has a max length of 500 letters ")]
 public string SourceFileName
 		{ 
 		    get { return this.todo_error_incompleteitems.SourceFileName; }

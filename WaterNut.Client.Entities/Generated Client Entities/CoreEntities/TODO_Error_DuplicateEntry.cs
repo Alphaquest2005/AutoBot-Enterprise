@@ -143,7 +143,7 @@ public string CNumber
        
        
                 
-                
+                [MaxLength(5, ErrorMessage = "Extended_customs_procedure has a max length of 5 letters ")]
 public string Extended_customs_procedure
 		{ 
 		    get { return this.todo_error_duplicateentry.Extended_customs_procedure; }

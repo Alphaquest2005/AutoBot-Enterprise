@@ -137,6 +137,7 @@
           <Property Name="FileLineNumber" Type="int" />
           <Property Name="UpgradeKey" Type="int" />
           <Property Name="VolumeLiters" Type="float" />
+          <Property Name="EntryDataDetailsKey" Type="nvarchar" MaxLength="4000" StoreGeneratedPattern="Computed" />
         </EntityType>
         <EntityType Name="EntryDataFiles">
           <Key>
@@ -817,6 +818,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ShipmentInvoicePOItemMISM
 warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ShipmentInvoicePOItemQueryMatches' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="ShipmentInvoicePOItemQueryMatches">
           <Key>
+            <PropertyRef Name="PODetailsId" />
             <PropertyRef Name="INVDetailsId" />
             
             
@@ -830,7 +832,6 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ShipmentInvoicePOItemQuer
             
             
             
-            <PropertyRef Name="PODetailsId" />
           </Key>
           <Property Name="PODetailsId" Type="int" Nullable="false" />
           <Property Name="INVDetailsId" Type="int" Nullable="false" />
@@ -2484,6 +2485,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ShipmentRiderInvoice' doe
           <Property Name="UpgradeKey" Type="Int32" />
           <NavigationProperty Name="INVItems" Relationship="WaterNutDBModel.EntryDataDetailsShipmentInvoicePOItemQueryMatches" FromRole="EntryDataDetails" ToRole="ShipmentInvoicePOItemQueryMatches" />
           <Property Name="VolumeLiters" Type="Double" />
+          <Property Name="EntryDataDetailsKey" Type="String" MaxLength="4000" FixedLength="false" Unicode="true" annotation:StoreGeneratedPattern="Computed" />
           <a:DomainInterfaceProperty xmlns:a="http://schemas.tempuri.com/DomainInterfaceProperty">IEntryDataDetail</a:DomainInterfaceProperty>
         </EntityType>
         <Association Name="FK_PurchaseOrderDetails_PurchaseOrders">
@@ -4254,6 +4256,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ShipmentRiderInvoice' doe
           <EntitySetMapping Name="EntryDataDetails">
             <EntityTypeMapping TypeName="WaterNutDBModel.EntryDataDetails">
               <MappingFragment StoreEntitySet="EntryDataDetails">
+                <ScalarProperty Name="EntryDataDetailsKey" ColumnName="EntryDataDetailsKey" />
                 <ScalarProperty Name="VolumeLiters" ColumnName="VolumeLiters" />
                 <ScalarProperty Name="UpgradeKey" ColumnName="UpgradeKey" />
                 <ScalarProperty Name="FileLineNumber" ColumnName="FileLineNumber" />

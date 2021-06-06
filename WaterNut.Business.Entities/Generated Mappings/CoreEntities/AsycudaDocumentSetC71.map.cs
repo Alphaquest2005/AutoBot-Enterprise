@@ -17,7 +17,7 @@
               this.Property(t => t.Value_declaration_form_Id).HasColumnName("Value_declaration_form_Id").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.None));
               this.Property(t => t.Total).HasColumnName("Total");
               this.Property(t => t.AsycudaDocumentSetId).HasColumnName("AsycudaDocumentSetId");
-              this.Property(t => t.FilePath).HasColumnName("FilePath").IsRequired().HasMaxLength(255);
+              this.Property(t => t.FilePath).HasColumnName("FilePath").HasMaxLength(255);
               this.Property(t => t.AttachmentId).HasColumnName("AttachmentId");
               this.Property(t => t.RegNumber).HasColumnName("RegNumber").IsRequired().HasMaxLength(50);
              // Tracking Properties
