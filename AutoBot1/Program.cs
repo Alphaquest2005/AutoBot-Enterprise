@@ -35,7 +35,7 @@ namespace AutoBot
                 {
                     //ctx.Configuration.LazyLoadingEnabled = true;
                     //ctx.Configuration.ProxyCreationEnabled = true;
-                    ctx.Database.CommandTimeout = 0;
+                    ctx.Database.CommandTimeout = 10;
 
                     var applicationSettings = ctx.ApplicationSettings.AsNoTracking()
                         .Include(x => x.FileTypes)
