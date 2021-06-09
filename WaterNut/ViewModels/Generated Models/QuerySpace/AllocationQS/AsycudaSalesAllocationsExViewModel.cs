@@ -914,24 +914,6 @@ namespace WaterNut.QuerySpace.AllocationQS.ViewModels
 
  
 
-		private string _customerNameFilter;
-        public string CustomerNameFilter
-        {
-            get
-            {
-                return _customerNameFilter;
-            }
-            set
-            {
-                _customerNameFilter = value;
-				NotifyPropertyChanged(x => CustomerNameFilter);
-                FilterData();
-                
-            }
-        }	
-
- 
-
 		private string _pTariffCodeFilter;
         public string pTariffCodeFilter
         {
@@ -1101,6 +1083,110 @@ namespace WaterNut.QuerySpace.AllocationQS.ViewModels
             {
                 _salesLineNumberFilter = value;
 				NotifyPropertyChanged(x => SalesLineNumberFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
+		private DateTime? _startEffectiveDateFilter = DateTime.Parse(string.Format("{0}/1/{1}", DateTime.Now.Month ,DateTime.Now.Year));
+        public DateTime? StartEffectiveDateFilter
+        {
+            get
+            {
+                return _startEffectiveDateFilter;
+            }
+            set
+            {
+                _startEffectiveDateFilter = value;
+				NotifyPropertyChanged(x => StartEffectiveDateFilter);
+                FilterData();
+                
+            }
+        }	
+
+		private DateTime? _endEffectiveDateFilter = DateTime.Parse(string.Format("{1}/{0}/{2}", DateTime.DaysInMonth( DateTime.Now.Year,DateTime.Now.Month), DateTime.Now.Month, DateTime.Now.Year));
+        public DateTime? EndEffectiveDateFilter
+        {
+            get
+            {
+                return _endEffectiveDateFilter;
+            }
+            set
+            {
+                _endEffectiveDateFilter = value;
+				NotifyPropertyChanged(x => EndEffectiveDateFilter);
+                FilterData();
+                
+            }
+        }
+ 
+
+		private DateTime? _effectiveDateFilter;
+        public DateTime? EffectiveDateFilter
+        {
+            get
+            {
+                return _effectiveDateFilter;
+            }
+            set
+            {
+                _effectiveDateFilter = value;
+				NotifyPropertyChanged(x => EffectiveDateFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
+
+		private string _commentFilter;
+        public string CommentFilter
+        {
+            get
+            {
+                return _commentFilter;
+            }
+            set
+            {
+                _commentFilter = value;
+				NotifyPropertyChanged(x => CommentFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
+
+		private string _typeFilter;
+        public string TypeFilter
+        {
+            get
+            {
+                return _typeFilter;
+            }
+            set
+            {
+                _typeFilter = value;
+				NotifyPropertyChanged(x => TypeFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
+
+		private string _customerNameFilter;
+        public string CustomerNameFilter
+        {
+            get
+            {
+                return _customerNameFilter;
+            }
+            set
+            {
+                _customerNameFilter = value;
+				NotifyPropertyChanged(x => CustomerNameFilter);
                 FilterData();
                 
             }
@@ -1354,10 +1440,6 @@ namespace WaterNut.QuerySpace.AllocationQS.ViewModels
 						}
 				 
 
-									if(string.IsNullOrEmpty(CustomerNameFilter) == false)
-						res.Append(" && " + string.Format("CustomerName.Contains(\"{0}\")",  CustomerNameFilter));						
- 
-
 									if(string.IsNullOrEmpty(pTariffCodeFilter) == false)
 						res.Append(" && " + string.Format("pTariffCode.Contains(\"{0}\")",  pTariffCodeFilter));						
  
@@ -1410,7 +1492,48 @@ namespace WaterNut.QuerySpace.AllocationQS.ViewModels
  
 
 					if(SalesLineNumberFilter.HasValue)
-						res.Append(" && " + string.Format("SalesLineNumber == {0}",  SalesLineNumberFilter.ToString()));							return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
+						res.Append(" && " + string.Format("SalesLineNumber == {0}",  SalesLineNumberFilter.ToString()));				 
+
+ 
+
+				if (Convert.ToDateTime(StartEffectiveDateFilter).Date != DateTime.MinValue &&
+		        Convert.ToDateTime(EndEffectiveDateFilter).Date != DateTime.MinValue) res.Append(" && (");
+
+					if (Convert.ToDateTime(StartEffectiveDateFilter).Date != DateTime.MinValue)
+						{
+							if(StartEffectiveDateFilter.HasValue)
+								res.Append(
+                                            (Convert.ToDateTime(EndEffectiveDateFilter).Date != DateTime.MinValue?"":" && ") +
+                                            string.Format("EffectiveDate >= \"{0}\"",  Convert.ToDateTime(StartEffectiveDateFilter).Date.ToString("MM/dd/yyyy")));
+						}
+
+					if (Convert.ToDateTime(EndEffectiveDateFilter).Date != DateTime.MinValue)
+						{
+							if(EndEffectiveDateFilter.HasValue)
+								res.Append(" && " + string.Format("EffectiveDate <= \"{0}\"",  Convert.ToDateTime(EndEffectiveDateFilter).Date.AddHours(23).ToString("MM/dd/yyyy HH:mm:ss")));
+						}
+
+				if (Convert.ToDateTime(StartEffectiveDateFilter).Date != DateTime.MinValue &&
+		        Convert.ToDateTime(EndEffectiveDateFilter).Date != DateTime.MinValue) res.Append(" )");
+
+					if (Convert.ToDateTime(_effectiveDateFilter).Date != DateTime.MinValue)
+						{
+							if(EffectiveDateFilter.HasValue)
+								res.Append(" && " + string.Format("EffectiveDate == \"{0}\"",  Convert.ToDateTime(EffectiveDateFilter).Date.ToString("MM/dd/yyyy")));
+						}
+				 
+
+									if(string.IsNullOrEmpty(CommentFilter) == false)
+						res.Append(" && " + string.Format("Comment.Contains(\"{0}\")",  CommentFilter));						
+ 
+
+									if(string.IsNullOrEmpty(TypeFilter) == false)
+						res.Append(" && " + string.Format("Type.Contains(\"{0}\")",  TypeFilter));						
+ 
+
+									if(string.IsNullOrEmpty(CustomerNameFilter) == false)
+						res.Append(" && " + string.Format("CustomerName.Contains(\"{0}\")",  CustomerNameFilter));						
+			return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
 // Send to Excel Implementation
@@ -1532,9 +1655,6 @@ namespace WaterNut.QuerySpace.AllocationQS.ViewModels
                     pExpiryDate = x.pExpiryDate ,
                     
  
-                    CustomerName = x.CustomerName ,
-                    
- 
                     pTariffCode = x.pTariffCode ,
                     
  
@@ -1556,7 +1676,19 @@ namespace WaterNut.QuerySpace.AllocationQS.ViewModels
                     xStatus = x.xStatus ,
                     
  
-                    SalesLineNumber = x.SalesLineNumber 
+                    SalesLineNumber = x.SalesLineNumber ,
+                    
+ 
+                    EffectiveDate = x.EffectiveDate ,
+                    
+ 
+                    Comment = x.Comment ,
+                    
+ 
+                    Type = x.Type ,
+                    
+ 
+                    CustomerName = x.CustomerName 
                     
                 }).ToList()
             };
@@ -1569,16 +1701,16 @@ namespace WaterNut.QuerySpace.AllocationQS.ViewModels
         public class AsycudaSalesAllocationsExExcelLine
         {
 		 
-                    public Nullable<double> TotalValue { get; set; } 
+                    public double TotalValue { get; set; } 
                     
  
-                    public Nullable<double> AllocatedValue { get; set; } 
+                    public double AllocatedValue { get; set; } 
                     
  
                     public string Status { get; set; } 
                     
  
-                    public Nullable<double> QtyAllocated { get; set; } 
+                    public double QtyAllocated { get; set; } 
                     
  
                     public Nullable<int> xLineNumber { get; set; } 
@@ -1587,10 +1719,10 @@ namespace WaterNut.QuerySpace.AllocationQS.ViewModels
                     public System.DateTime InvoiceDate { get; set; } 
                     
  
-                    public Nullable<double> SalesQuantity { get; set; } 
+                    public double SalesQuantity { get; set; } 
                     
  
-                    public Nullable<double> SalesQtyAllocated { get; set; } 
+                    public double SalesQtyAllocated { get; set; } 
                     
  
                     public string InvoiceNo { get; set; } 
@@ -1629,7 +1761,7 @@ namespace WaterNut.QuerySpace.AllocationQS.ViewModels
                     public Nullable<int> pLineNumber { get; set; } 
                     
  
-                    public Nullable<double> Cost { get; set; } 
+                    public double Cost { get; set; } 
                     
  
                     public Nullable<double> Total_CIF_itm { get; set; } 
@@ -1668,9 +1800,6 @@ namespace WaterNut.QuerySpace.AllocationQS.ViewModels
                     public Nullable<System.DateTime> pExpiryDate { get; set; } 
                     
  
-                    public string CustomerName { get; set; } 
-                    
- 
                     public string pTariffCode { get; set; } 
                     
  
@@ -1693,6 +1822,18 @@ namespace WaterNut.QuerySpace.AllocationQS.ViewModels
                     
  
                     public Nullable<int> SalesLineNumber { get; set; } 
+                    
+ 
+                    public Nullable<System.DateTime> EffectiveDate { get; set; } 
+                    
+ 
+                    public string Comment { get; set; } 
+                    
+ 
+                    public string Type { get; set; } 
+                    
+ 
+                    public string CustomerName { get; set; } 
                     
         }
 

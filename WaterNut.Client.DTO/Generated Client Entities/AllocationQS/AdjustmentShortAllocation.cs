@@ -100,7 +100,7 @@ namespace AllocationQS.Client.DTO
         private Nullable<int> _xLineNumber;
 
         [DataMember]
-        public int PreviousItem_Id
+        public Nullable<int> PreviousItem_Id
 		{ 
 		    get { return _PreviousItem_Id; }
 			set
@@ -110,7 +110,7 @@ namespace AllocationQS.Client.DTO
 				NotifyPropertyChanged();//m => this.PreviousItem_Id
 			}
 		}
-        private int _PreviousItem_Id;
+        private Nullable<int> _PreviousItem_Id;
 
         [DataMember]
         public System.DateTime InvoiceDate
@@ -269,7 +269,7 @@ namespace AllocationQS.Client.DTO
         private Nullable<double> _pQtyAllocated;
 
         [DataMember]
-        public double PiQuantity
+        public Nullable<double> PiQuantity
 		{ 
 		    get { return _PiQuantity; }
 			set
@@ -279,7 +279,7 @@ namespace AllocationQS.Client.DTO
 				NotifyPropertyChanged();//m => this.PiQuantity
 			}
 		}
-        private double _PiQuantity;
+        private Nullable<double> _PiQuantity;
 
         [DataMember]
         public Nullable<double> SalesFactor

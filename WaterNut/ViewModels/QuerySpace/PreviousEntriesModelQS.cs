@@ -40,7 +40,7 @@ namespace WaterNut.QuerySpace.PreviousDocumentQS.ViewModels
 
 	    private void OnCurrentAsycudaSalesAllocationsExChanged(object sender, NotificationEventArgs<AsycudaSalesAndAdjustmentAllocationsEx> e)
 	    {
-	        GetPreviousDocumentItems(e.Data.PreviousItem_Id);
+	        GetPreviousDocumentItems(e.Data.PreviousItem_Id.GetValueOrDefault());
         }
 
 	    private void OnCurrentAsycudaSalesAllocationsExChanged(object sender, NotificationEventArgs<AsycudaSalesAllocationsEx> e)

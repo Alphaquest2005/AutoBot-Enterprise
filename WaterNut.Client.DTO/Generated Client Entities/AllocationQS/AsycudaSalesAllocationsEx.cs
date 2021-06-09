@@ -35,7 +35,7 @@ namespace AllocationQS.Client.DTO
         private int _AllocationId;
 
         [DataMember]
-        public Nullable<double> TotalValue
+        public double TotalValue
 		{ 
 		    get { return _TotalValue; }
 			set
@@ -45,10 +45,10 @@ namespace AllocationQS.Client.DTO
 				NotifyPropertyChanged();//m => this.TotalValue
 			}
 		}
-        private Nullable<double> _TotalValue;
+        private double _TotalValue;
 
         [DataMember]
-        public Nullable<double> AllocatedValue
+        public double AllocatedValue
 		{ 
 		    get { return _AllocatedValue; }
 			set
@@ -58,7 +58,7 @@ namespace AllocationQS.Client.DTO
 				NotifyPropertyChanged();//m => this.AllocatedValue
 			}
 		}
-        private Nullable<double> _AllocatedValue;
+        private double _AllocatedValue;
 
         [DataMember]
         public string Status
@@ -74,7 +74,7 @@ namespace AllocationQS.Client.DTO
         private string _Status;
 
         [DataMember]
-        public Nullable<double> QtyAllocated
+        public double QtyAllocated
 		{ 
 		    get { return _QtyAllocated; }
 			set
@@ -84,7 +84,7 @@ namespace AllocationQS.Client.DTO
 				NotifyPropertyChanged();//m => this.QtyAllocated
 			}
 		}
-        private Nullable<double> _QtyAllocated;
+        private double _QtyAllocated;
 
         [DataMember]
         public Nullable<int> xLineNumber
@@ -126,7 +126,7 @@ namespace AllocationQS.Client.DTO
         private System.DateTime _InvoiceDate;
 
         [DataMember]
-        public Nullable<double> SalesQuantity
+        public double SalesQuantity
 		{ 
 		    get { return _SalesQuantity; }
 			set
@@ -136,10 +136,10 @@ namespace AllocationQS.Client.DTO
 				NotifyPropertyChanged();//m => this.SalesQuantity
 			}
 		}
-        private Nullable<double> _SalesQuantity;
+        private double _SalesQuantity;
 
         [DataMember]
-        public Nullable<double> SalesQtyAllocated
+        public double SalesQtyAllocated
 		{ 
 		    get { return _SalesQtyAllocated; }
 			set
@@ -149,7 +149,7 @@ namespace AllocationQS.Client.DTO
 				NotifyPropertyChanged();//m => this.SalesQtyAllocated
 			}
 		}
-        private Nullable<double> _SalesQtyAllocated;
+        private double _SalesQtyAllocated;
 
         [DataMember]
         public string InvoiceNo
@@ -360,7 +360,7 @@ namespace AllocationQS.Client.DTO
         private Nullable<int> _pASYCUDA_Id;
 
         [DataMember]
-        public Nullable<double> Cost
+        public double Cost
 		{ 
 		    get { return _Cost; }
 			set
@@ -370,7 +370,7 @@ namespace AllocationQS.Client.DTO
 				NotifyPropertyChanged();//m => this.Cost
 			}
 		}
-        private Nullable<double> _Cost;
+        private double _Cost;
 
         [DataMember]
         public Nullable<double> Total_CIF_itm
@@ -529,19 +529,6 @@ namespace AllocationQS.Client.DTO
         private Nullable<System.DateTime> _pExpiryDate;
 
         [DataMember]
-        public string CustomerName
-		{ 
-		    get { return _CustomerName; }
-			set
-			{
-			    if (value == _CustomerName) return;
-				_CustomerName = value;
-				NotifyPropertyChanged();//m => this.CustomerName
-			}
-		}
-        private string _CustomerName;
-
-        [DataMember]
         public string pTariffCode
 		{ 
 		    get { return _pTariffCode; }
@@ -657,6 +644,97 @@ namespace AllocationQS.Client.DTO
 			}
 		}
         private Nullable<int> _SalesLineNumber;
+
+        [DataMember]
+        public Nullable<System.DateTime> EffectiveDate
+		{ 
+		    get { return _EffectiveDate; }
+			set
+			{
+			    if (value == _EffectiveDate) return;
+				_EffectiveDate = value;
+				NotifyPropertyChanged();//m => this.EffectiveDate
+			}
+		}
+        private Nullable<System.DateTime> _EffectiveDate;
+
+        [DataMember]
+        public string Comment
+		{ 
+		    get { return _Comment; }
+			set
+			{
+			    if (value == _Comment) return;
+				_Comment = value;
+				NotifyPropertyChanged();//m => this.Comment
+			}
+		}
+        private string _Comment;
+
+        [DataMember]
+        public int AsycudaDocumentSetId
+		{ 
+		    get { return _AsycudaDocumentSetId; }
+			set
+			{
+			    if (value == _AsycudaDocumentSetId) return;
+				_AsycudaDocumentSetId = value;
+				NotifyPropertyChanged();//m => this.AsycudaDocumentSetId
+			}
+		}
+        private int _AsycudaDocumentSetId;
+
+        [DataMember]
+        public Nullable<int> FileTypeId
+		{ 
+		    get { return _FileTypeId; }
+			set
+			{
+			    if (value == _FileTypeId) return;
+				_FileTypeId = value;
+				NotifyPropertyChanged();//m => this.FileTypeId
+			}
+		}
+        private Nullable<int> _FileTypeId;
+
+        [DataMember]
+        public Nullable<int> EmailId
+		{ 
+		    get { return _EmailId; }
+			set
+			{
+			    if (value == _EmailId) return;
+				_EmailId = value;
+				NotifyPropertyChanged();//m => this.EmailId
+			}
+		}
+        private Nullable<int> _EmailId;
+
+        [DataMember]
+        public string Type
+		{ 
+		    get { return _Type; }
+			set
+			{
+			    if (value == _Type) return;
+				_Type = value;
+				NotifyPropertyChanged();//m => this.Type
+			}
+		}
+        private string _Type;
+
+        [DataMember]
+        public string CustomerName
+		{ 
+		    get { return _CustomerName; }
+			set
+			{
+			    if (value == _CustomerName) return;
+				_CustomerName = value;
+				NotifyPropertyChanged();//m => this.CustomerName
+			}
+		}
+        private string _CustomerName;
 
        
    //     [DataMember]

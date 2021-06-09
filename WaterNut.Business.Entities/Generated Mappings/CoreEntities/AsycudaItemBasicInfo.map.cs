@@ -23,6 +23,7 @@
               this.Property(t => t.LineNumber).HasColumnName("LineNumber");
               this.Property(t => t.CNumber).HasColumnName("CNumber").HasMaxLength(20);
               this.Property(t => t.RegistrationDate).HasColumnName("RegistrationDate").HasMaxLength(10);
+              this.Property(t => t.AsycudaDocumentSetId).HasColumnName("AsycudaDocumentSetId");
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);
     			this.Ignore(t => t.ModifiedProperties);

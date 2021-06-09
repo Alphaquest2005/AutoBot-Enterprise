@@ -134,9 +134,9 @@ public Nullable<int> xLineNumber
 		}
      
 
-       [RequiredValidationAttribute(ErrorMessage= "PreviousItem_ is required")]
        
-public int PreviousItem_Id
+       
+public Nullable<int> PreviousItem_Id
 		{ 
 		    get { return this.adjustmentshortallocation.PreviousItem_Id; }
 			set
@@ -337,9 +337,9 @@ public Nullable<double> pQtyAllocated
 		}
      
 
-       [RequiredValidationAttribute(ErrorMessage= "PiQuantity is required")]
+       
        [NumberValidationAttribute]
-public double PiQuantity
+public Nullable<double> PiQuantity
 		{ 
 		    get { return this.adjustmentshortallocation.PiQuantity; }
 			set

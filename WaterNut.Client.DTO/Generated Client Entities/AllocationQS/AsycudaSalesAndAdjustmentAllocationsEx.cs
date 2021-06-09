@@ -35,7 +35,7 @@ namespace AllocationQS.Client.DTO
         private int _AllocationId;
 
         [DataMember]
-        public Nullable<double> TotalValue
+        public double TotalValue
 		{ 
 		    get { return _TotalValue; }
 			set
@@ -45,10 +45,10 @@ namespace AllocationQS.Client.DTO
 				NotifyPropertyChanged();//m => this.TotalValue
 			}
 		}
-        private Nullable<double> _TotalValue;
+        private double _TotalValue;
 
         [DataMember]
-        public Nullable<double> AllocatedValue
+        public double AllocatedValue
 		{ 
 		    get { return _AllocatedValue; }
 			set
@@ -58,7 +58,7 @@ namespace AllocationQS.Client.DTO
 				NotifyPropertyChanged();//m => this.AllocatedValue
 			}
 		}
-        private Nullable<double> _AllocatedValue;
+        private double _AllocatedValue;
 
         [DataMember]
         public string Status
@@ -74,7 +74,7 @@ namespace AllocationQS.Client.DTO
         private string _Status;
 
         [DataMember]
-        public Nullable<double> QtyAllocated
+        public double QtyAllocated
 		{ 
 		    get { return _QtyAllocated; }
 			set
@@ -84,7 +84,7 @@ namespace AllocationQS.Client.DTO
 				NotifyPropertyChanged();//m => this.QtyAllocated
 			}
 		}
-        private Nullable<double> _QtyAllocated;
+        private double _QtyAllocated;
 
         [DataMember]
         public Nullable<int> xLineNumber
@@ -100,7 +100,7 @@ namespace AllocationQS.Client.DTO
         private Nullable<int> _xLineNumber;
 
         [DataMember]
-        public int PreviousItem_Id
+        public Nullable<int> PreviousItem_Id
 		{ 
 		    get { return _PreviousItem_Id; }
 			set
@@ -110,7 +110,7 @@ namespace AllocationQS.Client.DTO
 				NotifyPropertyChanged();//m => this.PreviousItem_Id
 			}
 		}
-        private int _PreviousItem_Id;
+        private Nullable<int> _PreviousItem_Id;
 
         [DataMember]
         public System.DateTime InvoiceDate
@@ -139,7 +139,7 @@ namespace AllocationQS.Client.DTO
         private string _CustomerName;
 
         [DataMember]
-        public Nullable<double> SalesQuantity
+        public double SalesQuantity
 		{ 
 		    get { return _SalesQuantity; }
 			set
@@ -149,10 +149,10 @@ namespace AllocationQS.Client.DTO
 				NotifyPropertyChanged();//m => this.SalesQuantity
 			}
 		}
-        private Nullable<double> _SalesQuantity;
+        private double _SalesQuantity;
 
         [DataMember]
-        public Nullable<double> SalesQtyAllocated
+        public double SalesQtyAllocated
 		{ 
 		    get { return _SalesQtyAllocated; }
 			set
@@ -162,7 +162,7 @@ namespace AllocationQS.Client.DTO
 				NotifyPropertyChanged();//m => this.SalesQtyAllocated
 			}
 		}
-        private Nullable<double> _SalesQtyAllocated;
+        private double _SalesQtyAllocated;
 
         [DataMember]
         public string InvoiceNo
@@ -412,7 +412,7 @@ namespace AllocationQS.Client.DTO
         private Nullable<int> _pASYCUDA_Id;
 
         [DataMember]
-        public Nullable<double> Cost
+        public double Cost
 		{ 
 		    get { return _Cost; }
 			set
@@ -422,7 +422,7 @@ namespace AllocationQS.Client.DTO
 				NotifyPropertyChanged();//m => this.Cost
 			}
 		}
-        private Nullable<double> _Cost;
+        private double _Cost;
 
         [DataMember]
         public Nullable<double> Total_CIF_itm

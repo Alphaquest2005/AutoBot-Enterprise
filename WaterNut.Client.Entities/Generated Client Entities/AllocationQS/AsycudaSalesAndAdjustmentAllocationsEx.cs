@@ -57,9 +57,9 @@ public int AllocationId
 		}
      
 
-       
+       [RequiredValidationAttribute(ErrorMessage= "TotalValue is required")]
        [NumberValidationAttribute]
-public Nullable<double> TotalValue
+public double TotalValue
 		{ 
 		    get { return this.asycudasalesandadjustmentallocationsex.TotalValue; }
 			set
@@ -72,9 +72,9 @@ public Nullable<double> TotalValue
 		}
      
 
-       
+       [RequiredValidationAttribute(ErrorMessage= "AllocatedValue is required")]
        [NumberValidationAttribute]
-public Nullable<double> AllocatedValue
+public double AllocatedValue
 		{ 
 		    get { return this.asycudasalesandadjustmentallocationsex.AllocatedValue; }
 			set
@@ -104,9 +104,9 @@ public string Status
 		}
      
 
-       
+       [RequiredValidationAttribute(ErrorMessage= "QtyAllocated is required")]
        [NumberValidationAttribute]
-public Nullable<double> QtyAllocated
+public double QtyAllocated
 		{ 
 		    get { return this.asycudasalesandadjustmentallocationsex.QtyAllocated; }
 			set
@@ -134,9 +134,9 @@ public Nullable<int> xLineNumber
 		}
      
 
-       [RequiredValidationAttribute(ErrorMessage= "PreviousItem_ is required")]
        
-public int PreviousItem_Id
+       
+public Nullable<int> PreviousItem_Id
 		{ 
 		    get { return this.asycudasalesandadjustmentallocationsex.PreviousItem_Id; }
 			set
@@ -181,9 +181,9 @@ public string CustomerName
 		}
      
 
-       
+       [RequiredValidationAttribute(ErrorMessage= "SalesQuantity is required")]
        [NumberValidationAttribute]
-public Nullable<double> SalesQuantity
+public double SalesQuantity
 		{ 
 		    get { return this.asycudasalesandadjustmentallocationsex.SalesQuantity; }
 			set
@@ -196,9 +196,9 @@ public Nullable<double> SalesQuantity
 		}
      
 
-       
+       [RequiredValidationAttribute(ErrorMessage= "SalesQtyAllocated is required")]
        [NumberValidationAttribute]
-public Nullable<double> SalesQtyAllocated
+public double SalesQtyAllocated
 		{ 
 		    get { return this.asycudasalesandadjustmentallocationsex.SalesQtyAllocated; }
 			set
@@ -510,9 +510,9 @@ public Nullable<int> pASYCUDA_Id
 		}
      
 
-       
+       [RequiredValidationAttribute(ErrorMessage= "Cost is required")]
        [NumberValidationAttribute]
-public Nullable<double> Cost
+public double Cost
 		{ 
 		    get { return this.asycudasalesandadjustmentallocationsex.Cost; }
 			set

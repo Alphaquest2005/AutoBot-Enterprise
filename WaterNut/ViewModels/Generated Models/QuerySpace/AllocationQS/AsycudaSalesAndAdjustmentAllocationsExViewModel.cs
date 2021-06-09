@@ -1594,16 +1594,16 @@ namespace WaterNut.QuerySpace.AllocationQS.ViewModels
         public class AsycudaSalesAndAdjustmentAllocationsExExcelLine
         {
 		 
-                    public Nullable<double> TotalValue { get; set; } 
+                    public double TotalValue { get; set; } 
                     
  
-                    public Nullable<double> AllocatedValue { get; set; } 
+                    public double AllocatedValue { get; set; } 
                     
  
                     public string Status { get; set; } 
                     
  
-                    public Nullable<double> QtyAllocated { get; set; } 
+                    public double QtyAllocated { get; set; } 
                     
  
                     public Nullable<int> xLineNumber { get; set; } 
@@ -1615,10 +1615,10 @@ namespace WaterNut.QuerySpace.AllocationQS.ViewModels
                     public string CustomerName { get; set; } 
                     
  
-                    public Nullable<double> SalesQuantity { get; set; } 
+                    public double SalesQuantity { get; set; } 
                     
  
-                    public Nullable<double> SalesQtyAllocated { get; set; } 
+                    public double SalesQtyAllocated { get; set; } 
                     
  
                     public string InvoiceNo { get; set; } 
@@ -1666,7 +1666,7 @@ namespace WaterNut.QuerySpace.AllocationQS.ViewModels
                     public Nullable<int> pLineNumber { get; set; } 
                     
  
-                    public Nullable<double> Cost { get; set; } 
+                    public double Cost { get; set; } 
                     
  
                     public Nullable<double> Total_CIF_itm { get; set; } 

@@ -10,28 +10,14 @@ namespace AllocationDS.Business.Entities
        
         [IgnoreDataMember]
         [NotMapped]
-        public string TariffCode
-        {
-            get
-            {
-                return (PreviousDocumentItem != null && PreviousDocumentItem.ItemCost != null && PreviousDocumentItem.TariffCode != null)
-                    ? PreviousDocumentItem.TariffCode
-                    : "";
-            }
-        }
+        public string TariffCode =>
+            (PreviousDocumentItem != null && PreviousDocumentItem.ItemCost != 0 && PreviousDocumentItem.TariffCode != null)
+                ? PreviousDocumentItem.TariffCode
+                : "";
 
-       
+
         [IgnoreDataMember]
         [NotMapped]
-        public xcuda_Item xBondEntry
-        {
-            get
-            {
-                if(xBondAllocations.Any()) return xBondAllocations.FirstOrDefault().xcuda_Item;
-                return null;
-            }
-        }
-
-
+        public xcuda_Item xBondEntry => xBondAllocations.Any() ? xBondAllocations.FirstOrDefault()?.xcuda_Item : null;
     }
 }

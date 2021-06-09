@@ -198,6 +198,21 @@ public string RegistrationDate
 		}
      
 
+       
+       
+public Nullable<int> AsycudaDocumentSetId
+		{ 
+		    get { return this.asycudaitembasicinfo.AsycudaDocumentSetId; }
+			set
+			{
+			    if (value == this.asycudaitembasicinfo.AsycudaDocumentSetId) return;
+				this.asycudaitembasicinfo.AsycudaDocumentSetId = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("AsycudaDocumentSetId");
+			}
+		}
+     
+
 
         ChangeTrackingCollection<DTO.AsycudaItemBasicInfo> _changeTracker;    
         public ChangeTrackingCollection<DTO.AsycudaItemBasicInfo> ChangeTracker

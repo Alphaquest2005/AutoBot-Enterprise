@@ -57,9 +57,9 @@ public int AllocationId
 		}
      
 
-       
+       [RequiredValidationAttribute(ErrorMessage= "TotalValue is required")]
        [NumberValidationAttribute]
-public Nullable<double> TotalValue
+public double TotalValue
 		{ 
 		    get { return this.asycudasalesallocationsex.TotalValue; }
 			set
@@ -72,9 +72,9 @@ public Nullable<double> TotalValue
 		}
      
 
-       
+       [RequiredValidationAttribute(ErrorMessage= "AllocatedValue is required")]
        [NumberValidationAttribute]
-public Nullable<double> AllocatedValue
+public double AllocatedValue
 		{ 
 		    get { return this.asycudasalesallocationsex.AllocatedValue; }
 			set
@@ -104,9 +104,9 @@ public string Status
 		}
      
 
-       
+       [RequiredValidationAttribute(ErrorMessage= "QtyAllocated is required")]
        [NumberValidationAttribute]
-public Nullable<double> QtyAllocated
+public double QtyAllocated
 		{ 
 		    get { return this.asycudasalesallocationsex.QtyAllocated; }
 			set
@@ -164,9 +164,9 @@ public System.DateTime InvoiceDate
 		}
      
 
-       
+       [RequiredValidationAttribute(ErrorMessage= "SalesQuantity is required")]
        [NumberValidationAttribute]
-public Nullable<double> SalesQuantity
+public double SalesQuantity
 		{ 
 		    get { return this.asycudasalesallocationsex.SalesQuantity; }
 			set
@@ -179,9 +179,9 @@ public Nullable<double> SalesQuantity
 		}
      
 
-       
+       [RequiredValidationAttribute(ErrorMessage= "SalesQtyAllocated is required")]
        [NumberValidationAttribute]
-public Nullable<double> SalesQtyAllocated
+public double SalesQtyAllocated
 		{ 
 		    get { return this.asycudasalesallocationsex.SalesQtyAllocated; }
 			set
@@ -446,9 +446,9 @@ public Nullable<int> pASYCUDA_Id
 		}
      
 
-       
+       [RequiredValidationAttribute(ErrorMessage= "Cost is required")]
        [NumberValidationAttribute]
-public Nullable<double> Cost
+public double Cost
 		{ 
 		    get { return this.asycudasalesallocationsex.Cost; }
 			set
@@ -650,23 +650,6 @@ public Nullable<System.DateTime> pExpiryDate
        
        
                 
-                [MaxLength(255, ErrorMessage = "CustomerName has a max length of 255 letters ")]
-public string CustomerName
-		{ 
-		    get { return this.asycudasalesallocationsex.CustomerName; }
-			set
-			{
-			    if (value == this.asycudasalesallocationsex.CustomerName) return;
-				this.asycudasalesallocationsex.CustomerName = value;
-                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
-				NotifyPropertyChanged("CustomerName");
-			}
-		}
-     
-
-       
-       
-                
                 [MaxLength(20, ErrorMessage = "pTariffCode has a max length of 20 letters ")]
 public string pTariffCode
 		{ 
@@ -803,6 +786,117 @@ public Nullable<int> SalesLineNumber
 				this.asycudasalesallocationsex.SalesLineNumber = value;
                 if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
 				NotifyPropertyChanged("SalesLineNumber");
+			}
+		}
+     
+
+       
+       
+public Nullable<System.DateTime> EffectiveDate
+		{ 
+		    get { return this.asycudasalesallocationsex.EffectiveDate; }
+			set
+			{
+			    if (value == this.asycudasalesallocationsex.EffectiveDate) return;
+				this.asycudasalesallocationsex.EffectiveDate = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("EffectiveDate");
+			}
+		}
+     
+
+       
+       
+                
+                [MaxLength(255, ErrorMessage = "Comment has a max length of 255 letters ")]
+public string Comment
+		{ 
+		    get { return this.asycudasalesallocationsex.Comment; }
+			set
+			{
+			    if (value == this.asycudasalesallocationsex.Comment) return;
+				this.asycudasalesallocationsex.Comment = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("Comment");
+			}
+		}
+     
+
+       [RequiredValidationAttribute(ErrorMessage= "AsycudaDocumentSet is required")]
+       
+public int AsycudaDocumentSetId
+		{ 
+		    get { return this.asycudasalesallocationsex.AsycudaDocumentSetId; }
+			set
+			{
+			    if (value == this.asycudasalesallocationsex.AsycudaDocumentSetId) return;
+				this.asycudasalesallocationsex.AsycudaDocumentSetId = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("AsycudaDocumentSetId");
+			}
+		}
+     
+
+       
+       
+public Nullable<int> FileTypeId
+		{ 
+		    get { return this.asycudasalesallocationsex.FileTypeId; }
+			set
+			{
+			    if (value == this.asycudasalesallocationsex.FileTypeId) return;
+				this.asycudasalesallocationsex.FileTypeId = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("FileTypeId");
+			}
+		}
+     
+
+       
+       
+public Nullable<int> EmailId
+		{ 
+		    get { return this.asycudasalesallocationsex.EmailId; }
+			set
+			{
+			    if (value == this.asycudasalesallocationsex.EmailId) return;
+				this.asycudasalesallocationsex.EmailId = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("EmailId");
+			}
+		}
+     
+
+       [RequiredValidationAttribute(ErrorMessage= "Type is required")]
+       
+                
+                [MaxLength(5, ErrorMessage = "Type has a max length of 5 letters ")]
+public string Type
+		{ 
+		    get { return this.asycudasalesallocationsex.Type; }
+			set
+			{
+			    if (value == this.asycudasalesallocationsex.Type) return;
+				this.asycudasalesallocationsex.Type = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("Type");
+			}
+		}
+     
+
+       
+       
+                
+                [MaxLength(255, ErrorMessage = "CustomerName has a max length of 255 letters ")]
+public string CustomerName
+		{ 
+		    get { return this.asycudasalesallocationsex.CustomerName; }
+			set
+			{
+			    if (value == this.asycudasalesallocationsex.CustomerName) return;
+				this.asycudasalesallocationsex.CustomerName = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("CustomerName");
 			}
 		}
      

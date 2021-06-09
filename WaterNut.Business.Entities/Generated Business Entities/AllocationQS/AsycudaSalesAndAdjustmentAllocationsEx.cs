@@ -36,7 +36,7 @@ namespace AllocationQS.Business.Entities
         }
         int _allocationid;
         [DataMember]
-        public Nullable<double> TotalValue 
+        public double TotalValue 
         {
             get
             {
@@ -49,9 +49,9 @@ namespace AllocationQS.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        Nullable<double> _totalvalue;
+        double _totalvalue;
         [DataMember]
-        public Nullable<double> AllocatedValue 
+        public double AllocatedValue 
         {
             get
             {
@@ -64,7 +64,7 @@ namespace AllocationQS.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        Nullable<double> _allocatedvalue;
+        double _allocatedvalue;
         [DataMember]
         public string Status 
         {
@@ -81,7 +81,7 @@ namespace AllocationQS.Business.Entities
         }
         string _status;
         [DataMember]
-        public Nullable<double> QtyAllocated 
+        public double QtyAllocated 
         {
             get
             {
@@ -94,7 +94,7 @@ namespace AllocationQS.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        Nullable<double> _qtyallocated;
+        double _qtyallocated;
         [DataMember]
         public Nullable<int> xLineNumber 
         {
@@ -111,7 +111,7 @@ namespace AllocationQS.Business.Entities
         }
         Nullable<int> _xlinenumber;
         [DataMember]
-        public int PreviousItem_Id 
+        public Nullable<int> PreviousItem_Id 
         {
             get
             {
@@ -124,7 +124,7 @@ namespace AllocationQS.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        int _previousitem_id;
+        Nullable<int> _previousitem_id;
         [DataMember]
         public System.DateTime InvoiceDate 
         {
@@ -156,7 +156,7 @@ namespace AllocationQS.Business.Entities
         }
         string _customername;
         [DataMember]
-        public Nullable<double> SalesQuantity 
+        public double SalesQuantity 
         {
             get
             {
@@ -169,9 +169,9 @@ namespace AllocationQS.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        Nullable<double> _salesquantity;
+        double _salesquantity;
         [DataMember]
-        public Nullable<double> SalesQtyAllocated 
+        public double SalesQtyAllocated 
         {
             get
             {
@@ -184,7 +184,7 @@ namespace AllocationQS.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        Nullable<double> _salesqtyallocated;
+        double _salesqtyallocated;
         [DataMember]
         public string InvoiceNo 
         {
@@ -471,7 +471,7 @@ namespace AllocationQS.Business.Entities
         }
         Nullable<int> _pasycuda_id;
         [DataMember]
-        public Nullable<double> Cost 
+        public double Cost 
         {
             get
             {
@@ -484,7 +484,7 @@ namespace AllocationQS.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        Nullable<double> _cost;
+        double _cost;
         [DataMember]
         public Nullable<double> Total_CIF_itm 
         {

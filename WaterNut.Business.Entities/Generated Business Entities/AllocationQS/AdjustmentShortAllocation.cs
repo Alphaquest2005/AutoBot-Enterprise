@@ -111,7 +111,7 @@ namespace AllocationQS.Business.Entities
         }
         Nullable<int> _xlinenumber;
         [DataMember]
-        public int PreviousItem_Id 
+        public Nullable<int> PreviousItem_Id 
         {
             get
             {
@@ -124,7 +124,7 @@ namespace AllocationQS.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        int _previousitem_id;
+        Nullable<int> _previousitem_id;
         [DataMember]
         public System.DateTime InvoiceDate 
         {
@@ -306,7 +306,7 @@ namespace AllocationQS.Business.Entities
         }
         Nullable<double> _pqtyallocated;
         [DataMember]
-        public double PiQuantity 
+        public Nullable<double> PiQuantity 
         {
             get
             {
@@ -319,7 +319,7 @@ namespace AllocationQS.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        double _piquantity;
+        Nullable<double> _piquantity;
         [DataMember]
         public Nullable<double> SalesFactor 
         {

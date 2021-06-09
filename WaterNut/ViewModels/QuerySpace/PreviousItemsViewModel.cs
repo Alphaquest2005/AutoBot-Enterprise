@@ -40,7 +40,7 @@ namespace WaterNut.QuerySpace.PreviousDocumentQS.ViewModels
 
         private async void OnCurrentAsycudaSalesAllocationsExChanged(object sender, NotificationEventArgs<AsycudaSalesAndAdjustmentAllocationsEx> e)
         {
-            await GetPreviousItems(e.Data.PreviousItem_Id).ConfigureAwait(false);
+            await GetPreviousItems(e.Data.PreviousItem_Id.GetValueOrDefault()).ConfigureAwait(false);
         }
 
         private async void OnCurrentAsycudaDocumentItemChanged(object sender, NotificationEventArgs<global::CoreEntities.Client.Entities.AsycudaDocumentItem> e)

@@ -263,7 +263,7 @@ namespace WaterNut.DataSpace
 
 				using (var ctx = new AllocationDSContext() { StartTracking = false })
 				{
-				    ctx.Database.CommandTimeout = 0;
+				    ctx.Database.CommandTimeout = 10;
 
 					IMAsycudaEntries = ctx.xcuda_Item.Include(x => x.AsycudaDocument)
 						.Include(x => x.xcuda_Tarification.xcuda_HScode)
@@ -420,7 +420,7 @@ namespace WaterNut.DataSpace
 
 				using (var ctx = new AllocationDSContext() { StartTracking = false })
 				{
-				    ctx.Database.CommandTimeout = 0;
+				    ctx.Database.CommandTimeout = 10;
 					IMAsycudaEntries = ctx.xcuda_Item.Include(x => x.AsycudaDocument)
 						.Include(x => x.xcuda_Tarification.xcuda_HScode)
 						.Include(x => x.xcuda_Tarification.xcuda_Supplementary_unit)

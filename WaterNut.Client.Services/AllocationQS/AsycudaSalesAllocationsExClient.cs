@@ -142,6 +142,16 @@ namespace AllocationQS.Client.Services
             return  await Channel.GetAsycudaSalesAllocationsExByApplicationSettingsId(ApplicationSettingsId, includesLst).ConfigureAwait(false);
         }
 			 
+  		public async Task<IEnumerable<AsycudaSalesAllocationsEx>> GetAsycudaSalesAllocationsExByFileTypeId(string FileTypeId, List<string> includesLst = null)
+        {
+            return  await Channel.GetAsycudaSalesAllocationsExByFileTypeId(FileTypeId, includesLst).ConfigureAwait(false);
+        }
+			 
+  		public async Task<IEnumerable<AsycudaSalesAllocationsEx>> GetAsycudaSalesAllocationsExByEmailId(string EmailId, List<string> includesLst = null)
+        {
+            return  await Channel.GetAsycudaSalesAllocationsExByEmailId(EmailId, includesLst).ConfigureAwait(false);
+        }
+			 
           public decimal SumField(string whereExp, string sumExp)
 		{
 			return Channel.SumField(whereExp,sumExp);

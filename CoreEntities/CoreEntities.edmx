@@ -626,6 +626,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AsycudaItemBasicInfo' doe
           <Property Name="LineNumber" Type="int" Nullable="false" />
           <Property Name="CNumber" Type="nvarchar" MaxLength="20" />
           <Property Name="RegistrationDate" Type="nvarchar" MaxLength="10" />
+          <Property Name="AsycudaDocumentSetId" Type="int" />
         </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemAliasEx' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
@@ -2447,7 +2448,8 @@ FROM [dbo].[AsycudaDocumentSetEx] AS [AsycudaDocumentSetEx]</DefiningQuery>
 [AsycudaItemBasicInfo].[IsAssessed] AS [IsAssessed], 
 [AsycudaItemBasicInfo].[LineNumber] AS [LineNumber], 
 [AsycudaItemBasicInfo].[CNumber] AS [CNumber], 
-[AsycudaItemBasicInfo].[RegistrationDate] AS [RegistrationDate]
+[AsycudaItemBasicInfo].[RegistrationDate] AS [RegistrationDate], 
+[AsycudaItemBasicInfo].[AsycudaDocumentSetId] AS [AsycudaDocumentSetId]
 FROM [dbo].[AsycudaItemBasicInfo] AS [AsycudaItemBasicInfo]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="InventoryItemAliasEx" EntityType="Self.InventoryItemAliasEx" store:Type="Views" store:Schema="dbo">
@@ -3709,7 +3711,7 @@ FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
           <EntitySet Name="TODO_LicenceAvailableQty" EntityType="WaterNutDBModel.TODO_LicenceAvailableQty" />
           <EntitySet Name="TODO_AssessDiscrepancyEntries" EntityType="WaterNutDBModel.TODO_AssessDiscrepancyEntries" />
           <FunctionImport Name="Stp_TODO_ImportCompleteEntries">
-            <Parameter Name="ApplicationSettingsId" Mode="In" Type="Int32" />
+          <Parameter Name="ApplicationSettingsId" Mode="In" Type="Int32" />
           </FunctionImport>
           </EntityContainer>
         <EntityType Name="ApplicationSettings">
@@ -5819,6 +5821,7 @@ FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
           <Property Name="LineNumber" Type="Int32" Nullable="false" />
           <Property Name="CNumber" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Name="RegistrationDate" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="AsycudaDocumentSetId" Type="Int32" />
         </EntityType>
         <EntityType Name="TODO_SubmitEntryCIF">
           <Key>
@@ -7425,6 +7428,7 @@ FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
           <EntitySetMapping Name="AsycudaItemBasicInfo">
             <EntityTypeMapping TypeName="WaterNutDBModel.AsycudaItemBasicInfo">
               <MappingFragment StoreEntitySet="AsycudaItemBasicInfo">
+                <ScalarProperty Name="AsycudaDocumentSetId" ColumnName="AsycudaDocumentSetId" />
                 <ScalarProperty Name="RegistrationDate" ColumnName="RegistrationDate" />
                 <ScalarProperty Name="CNumber" ColumnName="CNumber" />
                 <ScalarProperty Name="LineNumber" ColumnName="LineNumber" />

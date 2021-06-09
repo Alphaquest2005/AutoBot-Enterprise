@@ -36,7 +36,7 @@ namespace AllocationQS.Business.Entities
         }
         int _allocationid;
         [DataMember]
-        public Nullable<double> TotalValue 
+        public double TotalValue 
         {
             get
             {
@@ -49,9 +49,9 @@ namespace AllocationQS.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        Nullable<double> _totalvalue;
+        double _totalvalue;
         [DataMember]
-        public Nullable<double> AllocatedValue 
+        public double AllocatedValue 
         {
             get
             {
@@ -64,7 +64,7 @@ namespace AllocationQS.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        Nullable<double> _allocatedvalue;
+        double _allocatedvalue;
         [DataMember]
         public string Status 
         {
@@ -81,7 +81,7 @@ namespace AllocationQS.Business.Entities
         }
         string _status;
         [DataMember]
-        public Nullable<double> QtyAllocated 
+        public double QtyAllocated 
         {
             get
             {
@@ -94,7 +94,7 @@ namespace AllocationQS.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        Nullable<double> _qtyallocated;
+        double _qtyallocated;
         [DataMember]
         public Nullable<int> xLineNumber 
         {
@@ -141,7 +141,7 @@ namespace AllocationQS.Business.Entities
         }
         System.DateTime _invoicedate;
         [DataMember]
-        public Nullable<double> SalesQuantity 
+        public double SalesQuantity 
         {
             get
             {
@@ -154,9 +154,9 @@ namespace AllocationQS.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        Nullable<double> _salesquantity;
+        double _salesquantity;
         [DataMember]
-        public Nullable<double> SalesQtyAllocated 
+        public double SalesQtyAllocated 
         {
             get
             {
@@ -169,7 +169,7 @@ namespace AllocationQS.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        Nullable<double> _salesqtyallocated;
+        double _salesqtyallocated;
         [DataMember]
         public string InvoiceNo 
         {
@@ -411,7 +411,7 @@ namespace AllocationQS.Business.Entities
         }
         Nullable<int> _pasycuda_id;
         [DataMember]
-        public Nullable<double> Cost 
+        public double Cost 
         {
             get
             {
@@ -424,7 +424,7 @@ namespace AllocationQS.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        Nullable<double> _cost;
+        double _cost;
         [DataMember]
         public Nullable<double> Total_CIF_itm 
         {
@@ -606,21 +606,6 @@ namespace AllocationQS.Business.Entities
         }
         Nullable<System.DateTime> _pexpirydate;
         [DataMember]
-        public string CustomerName 
-        {
-            get
-            {
-                return _customername;
-            }
-            set
-            {
-                _customername = value;
-                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
-                NotifyPropertyChanged();
-            }
-        }
-        string _customername;
-        [DataMember]
         public string pTariffCode 
         {
             get
@@ -755,6 +740,111 @@ namespace AllocationQS.Business.Entities
             }
         }
         Nullable<int> _saleslinenumber;
+        [DataMember]
+        public Nullable<System.DateTime> EffectiveDate 
+        {
+            get
+            {
+                return _effectivedate;
+            }
+            set
+            {
+                _effectivedate = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<System.DateTime> _effectivedate;
+        [DataMember]
+        public string Comment 
+        {
+            get
+            {
+                return _comment;
+            }
+            set
+            {
+                _comment = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _comment;
+        [DataMember]
+        public int AsycudaDocumentSetId 
+        {
+            get
+            {
+                return _asycudadocumentsetid;
+            }
+            set
+            {
+                _asycudadocumentsetid = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        int _asycudadocumentsetid;
+        [DataMember]
+        public Nullable<int> FileTypeId 
+        {
+            get
+            {
+                return _filetypeid;
+            }
+            set
+            {
+                _filetypeid = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<int> _filetypeid;
+        [DataMember]
+        public Nullable<int> EmailId 
+        {
+            get
+            {
+                return _emailid;
+            }
+            set
+            {
+                _emailid = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<int> _emailid;
+        [DataMember]
+        public string Type 
+        {
+            get
+            {
+                return _type;
+            }
+            set
+            {
+                _type = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _type;
+        [DataMember]
+        public string CustomerName 
+        {
+            get
+            {
+                return _customername;
+            }
+            set
+            {
+                _customername = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _customername;
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

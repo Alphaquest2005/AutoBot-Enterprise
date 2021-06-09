@@ -97,6 +97,12 @@ namespace AllocationQS.Client.Contracts
   		[OperationContract]
 		Task<IEnumerable<AsycudaSalesAllocationsEx>> GetAsycudaSalesAllocationsExByApplicationSettingsId(string ApplicationSettingsId, List<string> includesLst = null);
         
+  		[OperationContract]
+		Task<IEnumerable<AsycudaSalesAllocationsEx>> GetAsycudaSalesAllocationsExByFileTypeId(string FileTypeId, List<string> includesLst = null);
+        
+  		[OperationContract]
+		Task<IEnumerable<AsycudaSalesAllocationsEx>> GetAsycudaSalesAllocationsExByEmailId(string EmailId, List<string> includesLst = null);
+        
   		
     }
 }

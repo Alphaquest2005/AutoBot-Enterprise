@@ -131,11 +131,6 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>AllRepository.tt</DependentUpon>
     </Compile>
-    <Compile Include="AllServices.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>AllServices.tt</DependentUpon>
-    </Compile>
     <Compile Include="AllViewModels.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -5803,7 +5798,6 @@
 ..\WaterNut.Client.Services\SalesDataQS\SalesDataClient.cs
 ..\WaterNut.Client.Services\SalesDataQS\SalesDataDetailClient.cs
 </LastOutputs>
-      <LastGenOutput>AllServices.cs</LastGenOutput>
     </Content>
     <Content Include="RunAll.tt">
       <LastOutputs>

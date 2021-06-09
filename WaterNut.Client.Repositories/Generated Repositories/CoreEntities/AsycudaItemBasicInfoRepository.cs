@@ -389,6 +389,7 @@ namespace CoreEntities.Client.Repositories
                 throw;
             }
         } 
+
          
 		public decimal SumField(string whereExp, string sumExp)
         {

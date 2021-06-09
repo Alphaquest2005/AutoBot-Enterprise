@@ -170,6 +170,21 @@ namespace CoreEntities.Business.Entities
             }
         }
         string _registrationdate;
+        [DataMember]
+        public Nullable<int> AsycudaDocumentSetId 
+        {
+            get
+            {
+                return _asycudadocumentsetid;
+            }
+            set
+            {
+                _asycudadocumentsetid = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<int> _asycudadocumentsetid;
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

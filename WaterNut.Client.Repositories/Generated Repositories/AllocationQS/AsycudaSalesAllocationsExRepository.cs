@@ -529,6 +529,62 @@ namespace AllocationQS.Client.Repositories
                 throw;
             }
         } 
+ 	 public async Task<IEnumerable<AsycudaSalesAllocationsEx>> GetAsycudaSalesAllocationsExByFileTypeId(string FileTypeId, List<string> includesLst = null)
+        {
+             if (FileTypeId == "0") return null;
+            try
+            {
+                 using (AsycudaSalesAllocationsExClient t = new AsycudaSalesAllocationsExClient())
+                    {
+                        var res = await t.GetAsycudaSalesAllocationsExByFileTypeId(FileTypeId, includesLst).ConfigureAwait(continueOnCapturedContext: false);
+                         if(res != null)
+                        {
+                            return res.Select(x => new AsycudaSalesAllocationsEx(x)).AsEnumerable();
+					    }                
+					    else
+					    {
+						    return null;
+					    }                    
+                    }
+            }
+            catch (FaultException<ValidationFault> e)
+            {
+                throw new Exception(e.Detail.Message, e.InnerException);
+            }
+            catch (Exception)
+            {
+                Debugger.Break();
+                throw;
+            }
+        } 
+ 	 public async Task<IEnumerable<AsycudaSalesAllocationsEx>> GetAsycudaSalesAllocationsExByEmailId(string EmailId, List<string> includesLst = null)
+        {
+             if (EmailId == "0") return null;
+            try
+            {
+                 using (AsycudaSalesAllocationsExClient t = new AsycudaSalesAllocationsExClient())
+                    {
+                        var res = await t.GetAsycudaSalesAllocationsExByEmailId(EmailId, includesLst).ConfigureAwait(continueOnCapturedContext: false);
+                         if(res != null)
+                        {
+                            return res.Select(x => new AsycudaSalesAllocationsEx(x)).AsEnumerable();
+					    }                
+					    else
+					    {
+						    return null;
+					    }                    
+                    }
+            }
+            catch (FaultException<ValidationFault> e)
+            {
+                throw new Exception(e.Detail.Message, e.InnerException);
+            }
+            catch (Exception)
+            {
+                Debugger.Break();
+                throw;
+            }
+        } 
          
 		public decimal SumField(string whereExp, string sumExp)
         {

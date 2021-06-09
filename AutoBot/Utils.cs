@@ -5155,32 +5155,7 @@ namespace AutoBot
 
         }
 
-        public static void AllocateShorts()
-        {
-            try
-            {
-                return;
-                Console.WriteLine("Short Allocations Started");
-                using (var ctx = new CoreEntitiesContext())
-                {
-                    if (!ctx.TODO_UnallocatedShorts.Any(x =>
-                        x.ApplicationSettingsId ==
-                        BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)) return;
-                    AllocationsModel.Instance.ClearAllAllocations(BaseDataModel.Instance.CurrentApplicationSettings
-                        .ApplicationSettingsId).Wait();
-                    AllocationsBaseModel.Instance
-                        .AllocateSales(BaseDataModel.Instance.CurrentApplicationSettings, false)
-                        .Wait();
-                    EmailAdjustmentErrors();
-                }
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-                throw;
-            }
 
-        }
 
         public static void RecreatePOEntries(int asycudaDocumentSetId)
         {

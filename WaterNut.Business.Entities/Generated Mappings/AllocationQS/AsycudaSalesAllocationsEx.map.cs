@@ -11,7 +11,7 @@
     {
         public AsycudaSalesAllocationsExMap()
         {                        
-              this.HasKey(t => t.AllocationId);        
+              this.HasKey(t => new {t.AllocationId, t.AsycudaDocumentSetId, t.Type});        
               this.ToTable("AsycudaSalesAllocationsEx");
               this.Property(t => t.AllocationId).HasColumnName("AllocationId").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.None));
               this.Property(t => t.TotalValue).HasColumnName("TotalValue");
@@ -52,7 +52,6 @@
               this.Property(t => t.TariffCode).HasColumnName("TariffCode").HasMaxLength(50);
               this.Property(t => t.Invalid).HasColumnName("Invalid");
               this.Property(t => t.pExpiryDate).HasColumnName("pExpiryDate");
-              this.Property(t => t.CustomerName).HasColumnName("CustomerName").HasMaxLength(255);
               this.Property(t => t.pTariffCode).HasColumnName("pTariffCode").HasMaxLength(20);
               this.Property(t => t.pItemNumber).HasColumnName("pItemNumber").HasMaxLength(50);
               this.Property(t => t.xQuantity).HasColumnName("xQuantity");
@@ -62,6 +61,13 @@
               this.Property(t => t.ApplicationSettingsId).HasColumnName("ApplicationSettingsId");
               this.Property(t => t.xStatus).HasColumnName("xStatus").HasMaxLength(255);
               this.Property(t => t.SalesLineNumber).HasColumnName("SalesLineNumber");
+              this.Property(t => t.EffectiveDate).HasColumnName("EffectiveDate");
+              this.Property(t => t.Comment).HasColumnName("Comment").HasMaxLength(255);
+              this.Property(t => t.AsycudaDocumentSetId).HasColumnName("AsycudaDocumentSetId").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.None));
+              this.Property(t => t.FileTypeId).HasColumnName("FileTypeId");
+              this.Property(t => t.EmailId).HasColumnName("EmailId");
+              this.Property(t => t.Type).HasColumnName("Type").IsRequired().IsUnicode(false).HasMaxLength(5);
+              this.Property(t => t.CustomerName).HasColumnName("CustomerName").HasMaxLength(255);
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);
     			this.Ignore(t => t.ModifiedProperties);
