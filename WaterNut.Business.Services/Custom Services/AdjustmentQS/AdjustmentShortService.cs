@@ -38,7 +38,7 @@ namespace AdjustmentQS.Business.Services
 
             using (var ctx = new AdjustmentQSContext() { StartTracking = true })
             {
-                ctx.Database.CommandTimeout = 0;
+                ctx.Database.CommandTimeout = 10;
 
 
 
@@ -68,7 +68,7 @@ namespace AdjustmentQS.Business.Services
 
             using (var ctx = new AdjustmentQSContext() { StartTracking = true })
             {
-                ctx.Database.CommandTimeout = 0;
+                ctx.Database.CommandTimeout = 10;
 
 
 
@@ -805,7 +805,7 @@ namespace AdjustmentQS.Business.Services
                     if (_itemCache != null) return _itemCache;
                     using (var ctx = new CoreEntitiesContext())
                     {
-                        ctx.Database.CommandTimeout = 60;
+                        ctx.Database.CommandTimeout = 10;
                         _itemCache = ctx.AsycudaDocumentItems
                             .Include(x => x.AsycudaDocument)
                             .Include(x => x.AsycudaDocumentItemEntryDataDetails)
@@ -881,7 +881,7 @@ namespace AdjustmentQS.Business.Services
             // get Discrepancy Allocation Errors && Discrepancies that can't be Exwarehoused
             using (var ctx = new AdjustmentQSContext() { StartTracking = true })
             {
-                ctx.Database.CommandTimeout = 0;
+                ctx.Database.CommandTimeout = 10;
 
 
 
@@ -899,24 +899,33 @@ namespace AdjustmentQS.Business.Services
 
         public async Task ProcessDISErrorsForAllocation(int applicationSettingsId, string res)
         {
-            // get Discrepancy Allocation Errors && Discrepancies that can't be Exwarehoused
-            using (var ctx = new AdjustmentQSContext() { StartTracking = true })
+            try
             {
-                ctx.Database.CommandTimeout = 0;
+                // get Discrepancy Allocation Errors && Discrepancies that can't be Exwarehoused
+                using (var ctx = new AdjustmentQSContext() { StartTracking = true })
+                {
+                    ctx.Database.CommandTimeout = 10;
 
 
 
-                var lst = ctx.TODO_PreDiscrepancyErrors
-                    .Where(x => x.ApplicationSettingsId == applicationSettingsId
-                                && res.Contains(x.EntryDataDetailsId.ToString()))
-                    //.Where(x => x.ItemNumber == "HEL/003361001")
-                    .OrderBy(x => x.EntryDataDetailsId)
-                    .DistinctBy(x => x.EntryDataDetailsId)
-                    .ToList();
-                // looking for 'INT/YBA473/3GL'
+                    var lst = ctx.TODO_PreDiscrepancyErrors.ToList()
+                         .OrderBy(x => x.EntryDataDetailsId)
+                        .DistinctBy(x => x.EntryDataDetailsId)
+                        .Where(x => x.ApplicationSettingsId == applicationSettingsId
+                                    && res.Contains(x.EntryDataDetailsId.ToString()))
+                        //.Where(x => x.ItemNumber == "HEL/003361001")
 
-                ProcessDISErrorsForAllocation(lst, ctx);
+                        .ToList();
+                    // looking for 'INT/YBA473/3GL'
+
+                    ProcessDISErrorsForAllocation(lst, ctx);
+                }
             }
+            catch (Exception)
+            {
+                throw;
+            }
+
         }
 
         private static void ProcessDISErrorsForAllocation(List<TODO_PreDiscrepancyErrors> lst, AdjustmentQSContext ctx)

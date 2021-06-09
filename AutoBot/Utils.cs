@@ -846,7 +846,7 @@ namespace AutoBot
                 
             using (var ctx = new CoreEntitiesContext())
             {
-                ctx.Database.CommandTimeout = 0;
+                ctx.Database.CommandTimeout = 10;
                 var res = ctx.TODO_LICToCreate
                     .Where(x => ft.AsycudaDocumentSetId == 0 || x.AsycudaDocumentSetId == ft.AsycudaDocumentSetId)
                     .ToList();
@@ -876,7 +876,7 @@ namespace AutoBot
                 
             using (var ctx = new CoreEntitiesContext())
             {
-                ctx.Database.CommandTimeout = 0;
+                ctx.Database.CommandTimeout = 10;
                 var res = ctx.TODO_C71ToCreate
                     .Where(x => ft.AsycudaDocumentSetId == 0 || x.AsycudaDocumentSetId == ft.AsycudaDocumentSetId)
                     .OrderByDescending(x => x.Id)
@@ -921,7 +921,7 @@ namespace AutoBot
 
             using (var ctx = new CoreEntitiesContext())
             {
-                ctx.Database.CommandTimeout = 0;
+                ctx.Database.CommandTimeout = 10;
                 var lst = ctx.TODO_PODocSet
                     .Where(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)
                     .GroupBy(x => x.AsycudaDocumentSetId)
@@ -943,7 +943,7 @@ namespace AutoBot
         {
             using (var ctx = new EntryDataDSContext() { StartTracking = true })
             {
-                ctx.Database.CommandTimeout = 0;
+                ctx.Database.CommandTimeout = 10;
                 foreach (var file in fs)
                 {
                     var dt = CSV2DataTable(file, "YES");
@@ -999,7 +999,7 @@ namespace AutoBot
             {
                 using (var ctx = new CoreEntitiesContext() {StartTracking = true})
                 {
-                    ctx.Database.CommandTimeout = 0;
+                    ctx.Database.CommandTimeout = 10;
                     foreach (var file in fs)
                     {
                         var dt = CSV2DataTable(file, "YES");
@@ -1039,7 +1039,7 @@ namespace AutoBot
                 using (var ctx = new LicenseDSContext())
                 {
 
-                    ctx.Database.CommandTimeout = 0;
+                    ctx.Database.CommandTimeout = 10;
                     var pOs = ctx.TODO_LICToCreate
                         .Where(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)
                         .Where(x => ft.AsycudaDocumentSetId == 0 || x.AsycudaDocumentSetId == ft.AsycudaDocumentSetId)
@@ -1208,7 +1208,7 @@ namespace AutoBot
 
 
 
-                    ctx.Database.CommandTimeout = 0;
+                    ctx.Database.CommandTimeout = 10;
                     var pOs = ctx.TODO_C71ToCreate
                         .Where(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)
                         .Where(x => ft.AsycudaDocumentSetId == 0 || x.AsycudaDocumentSetId == ft.AsycudaDocumentSetId)
@@ -1278,7 +1278,7 @@ namespace AutoBot
                 using (var ctx = new CoreEntitiesContext())
                 {
 
-                    ctx.Database.CommandTimeout = 0;
+                    ctx.Database.CommandTimeout = 10;
                     var pOs = ctx.TODO_LICToCreate
                         .Where(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)
                         .Where(x => ft.AsycudaDocumentSetId == 0 || x.AsycudaDocumentSetId == ft.AsycudaDocumentSetId)
@@ -1318,7 +1318,7 @@ namespace AutoBot
                 Console.WriteLine("Attempting Download C71 Files");
                 using (var ctx = new CoreEntitiesContext())
                 {
-                    ctx.Database.CommandTimeout = 0;
+                    ctx.Database.CommandTimeout = 10;
 
                     var lst = ctx.TODO_C71ToCreate
                         .Where(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId) 
@@ -1364,7 +1364,7 @@ namespace AutoBot
 
                 using (var ctx = new CoreEntitiesContext())
                 {
-                    ctx.Database.CommandTimeout = 0;
+                    ctx.Database.CommandTimeout = 10;
 
                     var lst = ctx.TODO_Error_IncompleteItems
                         .Where(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)
@@ -1396,7 +1396,7 @@ namespace AutoBot
 
                 using (var ctx = new CoreEntitiesContext())
                 {
-                    ctx.Database.CommandTimeout = 0;
+                    ctx.Database.CommandTimeout = 10;
                     var lst = ctx.TODO_Error_DuplicateEntry
                                 .Where(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)
                                 .GroupBy(x => x.id);
@@ -1438,7 +1438,7 @@ namespace AutoBot
 
                 using (var ctx = new CoreEntitiesContext())
                 {
-                    ctx.Database.CommandTimeout = 0;
+                    ctx.Database.CommandTimeout = 10;
                     var contacts = ctx.Contacts.Where(x => x.Role == "Customs").Select(x => x.EmailAddress).ToArray();
                     var lst = ctx.TODO_SubmitXMLToCustoms.Where(x =>
                                 x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings
@@ -1532,7 +1532,7 @@ namespace AutoBot
         {
             using (var ctx = new CoreEntitiesContext())
             {
-                ctx.Database.CommandTimeout = 60;
+                ctx.Database.CommandTimeout = 10;
                
                 IEnumerable<IGrouping<int?, TODO_SubmitDiscrepanciesToCustoms>> lst;
                 lst = ctx.TODO_SubmitDiscrepanciesToCustoms.Where(x =>
@@ -1561,7 +1561,7 @@ namespace AutoBot
 
                 using (var ctx = new CoreEntitiesContext())
                 {
-                    ctx.Database.CommandTimeout = 60;
+                    ctx.Database.CommandTimeout = 10;
                     var contacts = ctx.Contacts.Where(x => x.Role == "Customs").Select(x => x.EmailAddress).ToArray();
                    
                     foreach (var data in lst)
@@ -1714,7 +1714,7 @@ namespace AutoBot
 
                 using (var ctx = new CoreEntitiesContext())
                 {
-                    ctx.Database.CommandTimeout = 0;
+                    ctx.Database.CommandTimeout = 10;
                     var contacts = ctx.Contacts.Where(x => x.Role == "Customs" || x.Role == "Clerk").Select(x => x.EmailAddress).ToArray();
                     var totaladjustments = ctx.TODO_TotalAdjustmentsToProcess.Where(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings
                                     .ApplicationSettingsId && x.Type == "DIS").ToList();
@@ -1853,7 +1853,7 @@ namespace AutoBot
 
                 using (var ctx = new CoreEntitiesContext())
                 {
-                    ctx.Database.CommandTimeout = 0;
+                    ctx.Database.CommandTimeout = 10;
                     var docset = ctx.AsycudaDocumentSetExs.FirstOrDefault(x =>
                         x.AsycudaDocumentSetId == fileType.AsycudaDocumentSetId);
                     if (docset == null) return;
@@ -2002,7 +2002,7 @@ namespace AutoBot
                 Console.WriteLine("Delete PO Numbers");
                 using (var ctx = new EntryDataDSContext())
                 {
-                    ctx.Database.CommandTimeout = 60;
+                    ctx.Database.CommandTimeout = 10;
                     var cnumberList = ft.Data.Where(z => z.Key == "PONumber").Select(x => x.Value).ToList();
 
                     foreach (var itm in cnumberList)
@@ -2050,7 +2050,7 @@ namespace AutoBot
         {
             using (var ctx = new CoreEntitiesContext())
             {
-                ctx.Database.CommandTimeout = 60;
+                ctx.Database.CommandTimeout = 10;
                 var cnumberList = ft.Data.Where(z => z.Key == "CNumber").Select(x => x.Value).ToList();
 
                 IEnumerable<IGrouping<int?, TODO_SubmitDiscrepanciesToCustoms>> lst;
@@ -2097,7 +2097,7 @@ namespace AutoBot
 
                 using (var ctx = new CoreEntitiesContext())
                 {
-                    ctx.Database.CommandTimeout = 60;
+                    ctx.Database.CommandTimeout = 10;
                 
 
                     IEnumerable<IGrouping<int?, TODO_SubmitDiscrepanciesToCustoms>> lst;
@@ -2146,7 +2146,7 @@ namespace AutoBot
 
                 using (var ctx = new CoreEntitiesContext())
                 {
-                    ctx.Database.CommandTimeout = 60;
+                    ctx.Database.CommandTimeout = 10;
                     var contacts = ctx.Contacts.Where(x => x.Role == "Customs").Select(x => x.EmailAddress).ToArray();
                    var pdfs = new List<string>();
                     var RES = lst.SelectMany(x => x).DistinctBy(x => x.ASYCUDA_Id);
@@ -2250,7 +2250,7 @@ namespace AutoBot
 
                 using (var ctx = new CoreEntitiesContext())
                 {
-                    ctx.Database.CommandTimeout = 0;
+                    ctx.Database.CommandTimeout = 10;
                     var contacts = ctx.Contacts.Where(x => x.Role == "PO Clerk" || x.Role == "Developer").Select(x => x.EmailAddress).ToArray();
                     var lst = ctx.TODO_SubmitIncompleteEntryData
                         .Where(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)
@@ -2311,7 +2311,7 @@ namespace AutoBot
 
                 using (var ctx = new CoreEntitiesContext())
                 {
-                    ctx.Database.CommandTimeout = 0;
+                    ctx.Database.CommandTimeout = 10;
                     var contacts = ctx.Contacts.Where(x => x.Role == "PO Clerk" || x.Role == "Developer").Select(x => x.EmailAddress).ToArray();
                     var lst = ctx.TODO_SubmitDocSetWithIncompleteInvoices
                         .Where(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId).ToList()
@@ -2380,7 +2380,7 @@ namespace AutoBot
 
                 using (var ctx = new CoreEntitiesContext())
                 {
-                    ctx.Database.CommandTimeout = 0;
+                    ctx.Database.CommandTimeout = 10;
                     var contacts = ctx.Contacts.Where(x => x.Role == "PO Clerk" || x.Role == "Developer").Select(x => x.EmailAddress).ToArray();
                     var lst = ctx.TODO_SubmitMissingInvoicePDFs
                         .Where(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId).ToList()
@@ -2447,7 +2447,7 @@ namespace AutoBot
 
                 using (var ctx = new CoreEntitiesContext())
                 {
-                    ctx.Database.CommandTimeout = 0;
+                    ctx.Database.CommandTimeout = 10;
                     var contacts = ctx.Contacts.Where(x => x.Role == "PO Clerk" || x.Role == "Developer").Select(x => x.EmailAddress).ToArray();
                     var lst = ctx.TODO_SubmitEntryCIF
                         .Where(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId).ToList()
@@ -4028,7 +4028,7 @@ namespace AutoBot
             Console.WriteLine("Import C71");
             using (var ctx = new CoreEntitiesContext())
             {
-                ctx.Database.CommandTimeout = 0;
+                ctx.Database.CommandTimeout = 10;
                 var docSets = ctx.TODO_C71ToCreate.Where(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)
                     .Where(x => ft.AsycudaDocumentSetId == 0 || x.AsycudaDocumentSetId == ft.AsycudaDocumentSetId)
                     .ToList();
@@ -4046,7 +4046,7 @@ namespace AutoBot
             Console.WriteLine("Export Latest PO Entries");
             using (var ctx = new CoreEntitiesContext())
             {
-                ctx.Database.CommandTimeout = 0;
+                ctx.Database.CommandTimeout = 10;
                 var docset =
                     ctx.TODO_PODocSet.Where(x =>
                             x.ApplicationSettingsId ==
@@ -4065,7 +4065,7 @@ namespace AutoBot
             Console.WriteLine("Export Latest PO Entries");
             using (var ctx = new CoreEntitiesContext())
             {
-                ctx.Database.CommandTimeout = 0;
+                ctx.Database.CommandTimeout = 10;
                 var docset =
                     ctx.TODO_PODocSet.Where(x =>
                             x.ApplicationSettingsId ==
@@ -4086,7 +4086,7 @@ namespace AutoBot
 
                 using (var ctx = new CoreEntitiesContext())
                 {
-                    ctx.Database.CommandTimeout = 0;
+                    ctx.Database.CommandTimeout = 10;
                     //var reference = declarant_Reference_Number;
                     //var directory = Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder,
                     //    reference);
@@ -4133,7 +4133,7 @@ namespace AutoBot
             Console.WriteLine("Import License");
             using (var ctx = new CoreEntitiesContext())
             {
-                ctx.Database.CommandTimeout = 0;
+                ctx.Database.CommandTimeout = 10;
                 var docSets = ctx.TODO_LICToCreate.Where(x =>
                         x.ApplicationSettingsId ==
                         BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)
@@ -4152,7 +4152,7 @@ namespace AutoBot
         {
             using (var ctx = new CoreEntitiesContext())
             {
-                ctx.Database.CommandTimeout = 0;
+                ctx.Database.CommandTimeout = 10;
 
                 var reference = declarant_Reference_Number;
                 var directory = Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder,
@@ -4217,7 +4217,7 @@ namespace AutoBot
 
                 using (var ctx = new CoreEntitiesContext())
                 {
-                    ctx.Database.CommandTimeout = 0;
+                    ctx.Database.CommandTimeout = 10;
                     var str = $@"SELECT EX9AsycudaSalesAllocations.ItemNumber
                     FROM    EX9AsycudaSalesAllocations INNER JOIN
                                      ApplicationSettings ON EX9AsycudaSalesAllocations.ApplicationSettingsId = ApplicationSettings.ApplicationSettingsId AND 
@@ -4347,7 +4347,7 @@ namespace AutoBot
 
                 using (var ctx = new CoreEntitiesContext())
                 {
-                    ctx.Database.CommandTimeout = 0;
+                    ctx.Database.CommandTimeout = 10;
                     var lst = ctx.TODO_DiscrepanciesAlreadyXMLed.Where(x =>
                                 x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings
                                     .ApplicationSettingsId
@@ -4412,7 +4412,7 @@ namespace AutoBot
 
                 using (var ctx = new CoreEntitiesContext())
                 {
-                    ctx.Database.CommandTimeout = 0;
+                    ctx.Database.CommandTimeout = 10;
                     var disLst = ctx.TODO_DiscrepanciesAlreadyXMLed.Where(x =>
                                 x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings
                                     .ApplicationSettingsId
@@ -4590,7 +4590,7 @@ namespace AutoBot
             {
                 using (var ctx = new CoreEntitiesContext())
                 {
-                    ctx.Database.CommandTimeout = 0;
+                    ctx.Database.CommandTimeout = 10;
                     var lst = new CoreEntitiesContext().Database
                         .SqlQuery<TODO_AdjustmentsToXML>(
                             $"select * from [TODO-AdjustmentsToXML]  where AsycudaDocumentSetId = {fileType.AsycudaDocumentSetId}" +
@@ -4624,7 +4624,7 @@ namespace AutoBot
             {
                 using (var ctx = new CoreEntitiesContext())
                 {
-                    ctx.Database.CommandTimeout = 0;
+                    ctx.Database.CommandTimeout = 10;
                     var lst = new CoreEntitiesContext().Database
                         .SqlQuery<TODO_AdjustmentsToXML>(
                             $"select * from [TODO-AdjustmentsToXML]  where ApplicationSettingsId = {BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId}" +
@@ -4741,7 +4741,7 @@ namespace AutoBot
 
                 using (var ctx = new CoreEntitiesContext())
                 {
-                    ctx.Database.CommandTimeout = 0;
+                    ctx.Database.CommandTimeout = 10;
                     var lst = ctx.TODO_DiscrepanciesToAssess.AsNoTracking()
                         .Where(x => x.Type == adjustmentType
                         //&& x.InvoiceDate >= saleInfo.Item1
@@ -4783,7 +4783,7 @@ namespace AutoBot
 
                 using (var ctx = new CoreEntitiesContext())
                 {
-                    ctx.Database.CommandTimeout = 0;
+                    ctx.Database.CommandTimeout = 10;
                     var lst = ctx.TODO_DiscrepanciesToAssess.AsNoTracking()
                         .Where(x => x.Type == adjustmentType
                                 && x.AsycudaDocumentSetId == fileType.AsycudaDocumentSetId
@@ -4882,7 +4882,7 @@ namespace AutoBot
 
                 using (var ctx = new CoreEntitiesContext())
                 {
-                    ctx.Database.CommandTimeout = 0;
+                    ctx.Database.CommandTimeout = 10;
                     var contacts = ctx.Contacts.Where(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId
                                                             && x.Role == "Developer").Select(x => x.EmailAddress).ToArray();
                    
@@ -4919,7 +4919,7 @@ namespace AutoBot
 
                 using (var ctx = new CoreEntitiesContext())
                 {
-                    ctx.Database.CommandTimeout = 0;
+                    ctx.Database.CommandTimeout = 10;
                     var lst = ctx.TODO_DiscrepanciesErrors.Where(x =>
                                 x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId
                                 && x.AsycudaDocumentSetId == fileType.AsycudaDocumentSetId
@@ -4997,7 +4997,7 @@ namespace AutoBot
             {
                 using (var ctx = new CoreEntitiesContext())
                 {
-                    ctx.Database.CommandTimeout = 0;
+                    ctx.Database.CommandTimeout = 10;
                     var poDocSet = ctx.TODO_PODocSet.Where(x =>
                         x.ApplicationSettingsId ==
                         BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId).ToList();
@@ -5104,7 +5104,7 @@ namespace AutoBot
                     List<KeyValuePair<int, string>> lst;
                     using (var ctx = new CoreEntitiesContext())
                     {
-                        ctx.Database.CommandTimeout = 0;
+                        ctx.Database.CommandTimeout = 10;
                         
                        
                        
@@ -5499,7 +5499,7 @@ namespace AutoBot
             {
                 using (var ctx = new AllocationQSContext())
                 {
-                    ctx.Database.CommandTimeout = 0;
+                    ctx.Database.CommandTimeout = 10;
                     var alst =
                          ctx.AdjustmentShortAllocations.Where(x => x.xASYCUDA_Id == ASYCUDA_Id
                                                                          && x.EntryDataDetailsId != 0
