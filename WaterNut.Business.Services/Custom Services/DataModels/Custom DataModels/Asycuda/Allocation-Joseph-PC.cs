@@ -263,15 +263,16 @@ namespace WaterNut.DataSpace
 
 				using (var ctx = new AllocationDSContext() { StartTracking = false })
 				{
-				    ctx.Database.CommandTimeout = 100;
+				    ctx.Database.CommandTimeout = 10;
 
-					IMAsycudaEntries = ctx.xcuda_Item.Include(x => x.AsycudaDocument)
-						.Include(x => x.xcuda_Tarification.xcuda_HScode)
-						.Include(x => x.xcuda_Tarification.xcuda_Supplementary_unit)
-						.Include(x => x.SubItems)
-						.Include(x => x.xcuda_Goods_description)
+					IMAsycudaEntries = ctx.xcuda_Item
+						//.Include(x => x.AsycudaDocument)
+						//.Include(x => x.xcuda_Tarification.xcuda_HScode)
+						//.Include(x => x.xcuda_Tarification.xcuda_Supplementary_unit)
+						//.Include(x => x.SubItems)
+						//.Include(x => x.xcuda_Goods_description)
 						.Where(x => x.AsycudaDocument.ApplicationSettingsId == applicationSettingsId)
-                        
+                        .Where(x => x.DFQtyAllocated + x.DPQtyAllocated > x.xcuda_Tarification.xcuda_Supplementary_unit.FirstOrDefault(z => z.IsFirstRow == true).Suppplementary_unit_quantity)
 						.Where(x => (x.AsycudaDocument.CNumber != null || x.AsycudaDocument.IsManuallyAssessed == true) &&
 									(x.AsycudaDocument.Customs_Procedure.CustomsOperationId == (int)CustomsOperations.Import 
 									    || x.AsycudaDocument.Customs_Procedure.CustomsOperationId == (int)CustomsOperations.Warehouse)
@@ -287,9 +288,9 @@ namespace WaterNut.DataSpace
 
 
 				if (IMAsycudaEntries == null || !IMAsycudaEntries.Any()) return;
-				var alst = IMAsycudaEntries.Where(x => x != null 
-										&& (x.DFQtyAllocated + x.DPQtyAllocated) > Convert.ToDouble(x.ItemQuantity)).ToList();
-
+				//var alst = IMAsycudaEntries.Where(x => x != null 
+				//						&& (x.DFQtyAllocated + x.DPQtyAllocated) > Convert.ToDouble(x.ItemQuantity)).ToList();
+				var alst = IMAsycudaEntries;
 				//var test = IMAsycudaEntries.Where(x => x.Item_Id == 27018).ToList();
 
 
@@ -306,12 +307,23 @@ namespace WaterNut.DataSpace
 
 								var lst =
 									ctx.AsycudaSalesAllocations
-										.Include(x => x.EntryDataDetails)
-										.Include(x => x.EntryDataDetails.EntryDataDetailsEx)
-										.Include(x => x.PreviousDocumentItem)
+										//.Include(x => x.EntryDataDetails)
+										//.Include(x => x.EntryDataDetails.EntryDataDetailsEx)
+										//.Include(x => x.PreviousDocumentItem)
 										.Where(x => x != null && x.PreviousItem_Id == i.Item_Id)
 										.Where(x => x.EntryDataDetails.EntryDataDetailsEx.SystemDocumentSets != null)
 										.OrderByDescending(x => x.AllocationId)
+										.Select(x => new MarkAllo { AllocationId = x.AllocationId,
+											QtyAllocated = x.QtyAllocated,
+											Status = x.Status,
+											PreviousItem_Id = x.PreviousItem_Id,
+											sQtyAllocated = x.EntryDataDetails.QtyAllocated,
+											DutyFreePaid = x.EntryDataDetails.EntryDataDetailsEx.DutyFreePaid,
+											DFQtyAllocated = x.PreviousDocumentItem.DFQtyAllocated,
+											DPQtyAllocated = x.PreviousDocumentItem.DPQtyAllocated,
+											Item_Id = x.PreviousDocumentItem.Item_Id,
+											EntryDataDetailsId = x.EntryDataDetails.EntryDataDetailsId,
+										})
 										.DistinctBy(x => x.AllocationId)
 										.ToList();
 
@@ -328,32 +340,32 @@ namespace WaterNut.DataSpace
 															SET                QtyAllocated =  QtyAllocated{(r >= 0 ? $"-{r}" : $"+{r * -1}")}
 															where	AllocationId = {allo.AllocationId}";
 
-										allo.EntryDataDetails.QtyAllocated -= r;
+										allo.QtyAllocated -= r;
 										sql += $@" UPDATE       EntryDataDetails
 															SET                QtyAllocated =  QtyAllocated{(r >= 0 ? $"-{r}" : $"+{r * -1}")}
-															where	EntryDataDetailsId = {allo.EntryDataDetails.EntryDataDetailsId}";
+															where	EntryDataDetailsId = {allo.EntryDataDetailsId}";
 
-										if (allo.EntryDataDetails.EntryDataDetailsEx.DutyFreePaid == "Duty Free")
+										if (allo.DutyFreePaid == "Duty Free")
 										{
-											allo.PreviousDocumentItem.DFQtyAllocated -= r;
+											allo.DFQtyAllocated -= r;
 											i.DFQtyAllocated -= r;
 
 											/////// is the same thing
 
 											sql += $@" UPDATE       xcuda_Item
 															SET                DFQtyAllocated = (DFQtyAllocated{(r >= 0 ? $"-{r}" : $"+{r * -1}")})
-															where	item_id = {allo.PreviousDocumentItem.Item_Id}";
+															where	item_id = {allo.Item_Id}";
 										}
 										else
 										{
-											allo.PreviousDocumentItem.DPQtyAllocated -= r;
+											allo.DPQtyAllocated -= r;
 											i.DPQtyAllocated -= r;
 
 											
 
 											sql += $@" UPDATE       xcuda_Item
 															SET                DPQtyAllocated = (DPQtyAllocated{(r >= 0 ? $"-{r}" : $"+{r * -1}")})
-															where	item_id = {allo.PreviousDocumentItem.Item_Id}";
+															where	item_id = {allo.Item_Id}";
 										}
 
 										if (allo.QtyAllocated == 0)
@@ -420,12 +432,14 @@ namespace WaterNut.DataSpace
 
 				using (var ctx = new AllocationDSContext() { StartTracking = false })
 				{
-				    ctx.Database.CommandTimeout = 100;
-					IMAsycudaEntries = ctx.xcuda_Item.Include(x => x.AsycudaDocument)
-						.Include(x => x.xcuda_Tarification.xcuda_HScode)
-						.Include(x => x.xcuda_Tarification.xcuda_Supplementary_unit)
-						.Include(x => x.SubItems)
-						.Include(x => x.xcuda_Goods_description)
+				    ctx.Database.CommandTimeout = 10;
+					IMAsycudaEntries = ctx.xcuda_Item
+						//.Include(x => x.AsycudaDocument)
+						//.Include(x => x.xcuda_Tarification.xcuda_HScode)
+						//.Include(x => x.xcuda_Tarification.xcuda_Supplementary_unit)
+						//.Include(x => x.SubItems)
+						//.Include(x => x.xcuda_Goods_description)
+						.Where (x => x.DFQtyAllocated + x.DPQtyAllocated < 0)
 						.Where(x => x.AsycudaDocument.ApplicationSettingsId == applicationSettingsId)
 					    .Where(x => (x.AsycudaDocument.CNumber != null || x.AsycudaDocument.IsManuallyAssessed == true) &&
 					                (x.AsycudaDocument.Customs_Procedure.CustomsOperationId == (int)CustomsOperations.Import
@@ -444,9 +458,7 @@ namespace WaterNut.DataSpace
 				if (IMAsycudaEntries == null || !IMAsycudaEntries.Any()) return;
 				var alst = IMAsycudaEntries.ToList();
 				if (alst.Any())
-					Parallel.ForEach(alst.Where(x => x != null
-										&& ((x.DFQtyAllocated + x.DPQtyAllocated) < 0))
-						,
+					Parallel.ForEach(alst	,
 						new ParallelOptions() { MaxDegreeOfParallelism = 1 }, i =>//Environment.ProcessorCount*
 						{
 							using (var ctx = new AllocationDSContext() { StartTracking = false })
@@ -457,11 +469,24 @@ namespace WaterNut.DataSpace
 
 								var lst =
 									ctx.AsycudaSalesAllocations
-										.Include(x => x.EntryDataDetails)
-										.Include(x => x.EntryDataDetails.EntryDataDetailsEx)
-										.Include(x => x.PreviousDocumentItem)
+										//.Include(x => x.EntryDataDetails)
+										//.Include(x => x.EntryDataDetails.EntryDataDetailsEx)
+										//.Include(x => x.PreviousDocumentItem)
 										.Where(x => x != null && x.PreviousItem_Id == i.Item_Id)
 										.Where(x => x.EntryDataDetails.EntryDataDetailsEx.SystemDocumentSets != null)
+										.Select(x => new MarkAllo
+										{
+											AllocationId = x.AllocationId,
+											QtyAllocated = x.QtyAllocated,
+											Status = x.Status,
+											PreviousItem_Id = x.PreviousItem_Id,
+											sQtyAllocated = x.EntryDataDetails.QtyAllocated,
+											DutyFreePaid = x.EntryDataDetails.EntryDataDetailsEx.DutyFreePaid,
+											DFQtyAllocated = x.PreviousDocumentItem.DFQtyAllocated,
+											DPQtyAllocated = x.PreviousDocumentItem.DPQtyAllocated,
+											Item_Id = x.PreviousDocumentItem.Item_Id,
+											EntryDataDetailsId = x.EntryDataDetails.EntryDataDetailsId,
+										})
 										.OrderBy(x => x.AllocationId)
 										.DistinctBy(x => x.AllocationId)
 										.ToList();
@@ -479,32 +504,32 @@ namespace WaterNut.DataSpace
 															SET                QtyAllocated =  QtyAllocated{(r >= 0 ? $"+{r}" : $"-{r *-1}")}
 															where	AllocationId = {allo.AllocationId}";
 
-										allo.EntryDataDetails.QtyAllocated += r;
+										allo.QtyAllocated += r;
 										sql += $@" UPDATE       EntryDataDetails
 															SET                QtyAllocated =  QtyAllocated{(r >= 0 ? $"+{r}" : $"-{r * -1}")}
-															where	EntryDataDetailsId = {allo.EntryDataDetails.EntryDataDetailsId}";
+															where	EntryDataDetailsId = {allo.EntryDataDetailsId}";
 
-										if (allo.EntryDataDetails.EntryDataDetailsEx.DutyFreePaid == "Duty Free")
+										if (allo.DutyFreePaid == "Duty Free")
 										{
-											allo.PreviousDocumentItem.DFQtyAllocated += r;
+											allo.DFQtyAllocated += r;
 											i.DFQtyAllocated += r;
 
 											/////// is the same thing
 
 											sql += $@" UPDATE       xcuda_Item
 															SET                DFQtyAllocated = (DFQtyAllocated{(r >= 0 ? $"+{r}" : $"-{r * -1}")})
-															where	item_id = {allo.PreviousDocumentItem.Item_Id}";
+															where	item_id = {allo.Item_Id}";
 										}
 										else
 										{
-											allo.PreviousDocumentItem.DPQtyAllocated += r;
+											allo.DPQtyAllocated += r;
 											i.DPQtyAllocated += r;
 
 
 
 											sql += $@" UPDATE       xcuda_Item
 															SET                DPQtyAllocated = (DPQtyAllocated{(r >= 0 ? $"+{r}" : $"-{r * -1}")})
-															where	item_id = {allo.PreviousDocumentItem.Item_Id}";
+															where	item_id = {allo.Item_Id}";
 										}
 
 										if (allo.QtyAllocated == 0)
@@ -1451,7 +1476,18 @@ namespace WaterNut.DataSpace
 			}
 		}
 
-
-	  
-	}
+        private class MarkAllo
+        {
+            public int AllocationId { get; internal set; }
+            public double QtyAllocated { get; internal set; }
+            public double sQtyAllocated { get; internal set; }
+            public string DutyFreePaid { get; internal set; }
+            public double DFQtyAllocated { get; internal set; }
+            public int Item_Id { get; internal set; }
+            public int EntryDataDetailsId { get; internal set; }
+            public double DPQtyAllocated { get; internal set; }
+            public string Status { get; internal set; }
+            public int? PreviousItem_Id { get; internal set; }
+        }
+    }
 }

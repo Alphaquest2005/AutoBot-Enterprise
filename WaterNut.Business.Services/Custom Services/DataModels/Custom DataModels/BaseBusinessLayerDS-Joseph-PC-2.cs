@@ -2649,7 +2649,7 @@ namespace WaterNut.DataSpace
                         {
                             using (var ctx = new EntryDataDSContext())
                             {
-                                ctx.Database.CommandTimeout = 100;
+                                ctx.Database.CommandTimeout = 10;
                                 var entryDataDetailses = ctx.EntryDataDetails
                                     .Include(x => x.EntryDataDetailsEx)
                                     .Include(x => x.InventoryItems)
@@ -3289,13 +3289,19 @@ namespace WaterNut.DataSpace
         {
             try
             {
+
+                
+                    
+              
                 using (var ctx = new CoreEntitiesContext())
                 {
-                    var lst = ctx.AsycudaDocumentItems
-                        .Include(x => x.AsycudaDocumentItemEntryDataDetails)
-                        .Where(x => x.LineNumber == "1"
-                                    && x.AsycudaDocument.AsycudaDocumentSetId ==
-                                    asycudaDocumentSetId).ToList();
+                    var lst = ctx.AsycudaItemBasicInfo
+                        //.Include(x => x.AsycudaDocumentItemEntryDataDetails)
+                        .Where(x => x.LineNumber == 1
+                                    && x.AsycudaDocumentSetId == asycudaDocumentSetId)
+
+                        .ToList();
+
                     var c71Att = ctx.AsycudaDocumentSet_Attachments.Include(x => x.Attachments).Where(x =>
                             x.FileTypes.Type == "C71" && x.AsycudaDocumentSetId == asycudaDocumentSetId)
                         .Select(x => x.Attachments).AsEnumerable().DistinctBy(x => x.FilePath).Where(x =>
@@ -3345,14 +3351,15 @@ namespace WaterNut.DataSpace
                     foreach (var al in res)
                     foreach (var c71Item in al.Value.xC71_Item)
                     {
-                        var itms = lst.Where(x =>
-                            x.AsycudaDocumentItemEntryDataDetails.Any(z =>
-                                z.key.Contains(c71Item.Invoice_Number)) &&
-                            x.LineNumber == "1").ToList();
+                        var itms = lst.GroupJoin(ctx.AsycudaDocumentItemEntryDataDetails, x => x.Item_Id, a => a.Item_Id, (x,a) => new { x.Item_Id, x.ASYCUDA_Id, data = a.Select(z => z.key)})
+                        .Where(x =>
+                            x.data.Any(z =>
+                                z.Contains(c71Item.Invoice_Number))
+                            ).ToList();
 
-                        foreach (var itm in itms)
+                            foreach (var itm in itms)
                             AttachToDocument(new List<int> {al.Key.Id},
-                                itm.AsycudaDocumentId.GetValueOrDefault(), itm.Item_Id);
+                                itm.ASYCUDA_Id, itm.Item_Id);
                     }
                 }
             }

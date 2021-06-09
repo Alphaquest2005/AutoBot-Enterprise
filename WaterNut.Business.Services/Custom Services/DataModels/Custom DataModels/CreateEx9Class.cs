@@ -202,7 +202,7 @@ namespace WaterNut.DataSpace
 
                 using (var ctx = new AllocationDSContext())
                 {
-                    ctx.Database.CommandTimeout = 10;
+                    ctx.Database.CommandTimeout = 100;
                     return GetPiSummary(applicationSettingsId, startDate, endDate, dfp, ctx, entryDataType);
                 }
             }
@@ -707,7 +707,7 @@ namespace WaterNut.DataSpace
             var res = new List<EX9Allocations>();
             using (var ctx = new AllocationDSContext())
             {
-                ctx.Database.CommandTimeout = 10;
+                ctx.Database.CommandTimeout = 100;
                 res = ctx.EX9AsycudaSalesAllocations
                       .AsNoTracking()
                       .Where(FilterExpression)
@@ -1848,7 +1848,7 @@ namespace WaterNut.DataSpace
                                                             where	AllocationId = {allocation.AllocationId}";
                                 using (var ctx = new AllocationDSContext())
                                 {
-                                    ctx.Database.CommandTimeout = 10;
+                                    ctx.Database.CommandTimeout = 100;
                                     ctx.Database
                                         .ExecuteSqlCommand(TransactionalBehavior.EnsureTransaction, sql);
                                 }

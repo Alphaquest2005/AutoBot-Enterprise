@@ -108,6 +108,9 @@ namespace CoreEntities.Business.Services
 				[OperationContract]
         [FaultContract(typeof(ValidationFault))]
         Task<IEnumerable<AsycudaItemBasicInfo>> GetAsycudaItemBasicInfoByASYCUDA_Id(string ASYCUDA_Id, List<string> includesLst = null);
+  		[OperationContract]
+        [FaultContract(typeof(ValidationFault))]
+        Task<IEnumerable<AsycudaItemBasicInfo>> GetAsycudaItemBasicInfoByAsycudaDocumentSetId(string AsycudaDocumentSetId, List<string> includesLst = null);
   
 
 

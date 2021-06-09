@@ -117,6 +117,11 @@ namespace CoreEntities.Client.Services
             return  await Channel.GetAsycudaItemBasicInfoByASYCUDA_Id(ASYCUDA_Id, includesLst).ConfigureAwait(false);
         }
 			 
+  		public async Task<IEnumerable<AsycudaItemBasicInfo>> GetAsycudaItemBasicInfoByAsycudaDocumentSetId(string AsycudaDocumentSetId, List<string> includesLst = null)
+        {
+            return  await Channel.GetAsycudaItemBasicInfoByAsycudaDocumentSetId(AsycudaDocumentSetId, includesLst).ConfigureAwait(false);
+        }
+			 
           public decimal SumField(string whereExp, string sumExp)
 		{
 			return Channel.SumField(whereExp,sumExp);
