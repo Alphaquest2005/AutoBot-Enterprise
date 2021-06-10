@@ -433,10 +433,11 @@ namespace AutoBot
 
                     var poContacts = ctx.Contacts.Where(x => x.Role == "PO Clerk" || x.Role == "Developer")
                         .Select(x => x.EmailAddress).ToArray();
-
+                    //var sysLst = new DocumentDSContext().SystemDocumentSets.Select(x => x.Id).ToList();   -- dont bother try to filter it
                     var lst = ctx.TODO_SubmitPOInfo
                         .Where(x => x.ApplicationSettingsId ==
                                     BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId && x.FileTypeId != null)
+                       // .Where(x => !sysLst.Contains(x.AsycudaDocumentSetId))
                         .Where (x => x.IsSubmitted == false)
                         .Where(x => x.CNumber != null)
                         .ToList()
