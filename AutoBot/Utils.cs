@@ -5558,7 +5558,7 @@ namespace AutoBot
                     //                Convert.ToDouble(s.QtyAllocated)
                     //        }).Distinct();
 
-                    ctx.Database.CommandTimeout = 10;
+                    ctx.Database.CommandTimeout = 100;
                   
 
                     //    $"xASYCUDA_Id == {} " + "&& EntryDataDetailsId != null " +
