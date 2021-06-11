@@ -396,6 +396,24 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
         }	
 
  
+
+		private string _toBePaidFilter;
+        public string ToBePaidFilter
+        {
+            get
+            {
+                return _toBePaidFilter;
+            }
+            set
+            {
+                _toBePaidFilter = value;
+				NotifyPropertyChanged(x => ToBePaidFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
 		internal bool DisableBaseFilterData = false;
         public virtual void FilterData()
 	    {
@@ -506,6 +524,10 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 
 									if(string.IsNullOrEmpty(CustomsProcedureFilter) == false)
 						res.Append(" && " + string.Format("CustomsProcedure.Contains(\"{0}\")",  CustomsProcedureFilter));						
+ 
+
+									if(string.IsNullOrEmpty(ToBePaidFilter) == false)
+						res.Append(" && " + string.Format("ToBePaid.Contains(\"{0}\")",  ToBePaidFilter));						
 			return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
@@ -550,7 +572,10 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     Status = x.Status ,
                     
  
-                    CustomsProcedure = x.CustomsProcedure 
+                    CustomsProcedure = x.CustomsProcedure ,
+                    
+ 
+                    ToBePaid = x.ToBePaid 
                     
                 }).ToList()
             };
@@ -585,6 +610,9 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     
  
                     public string CustomsProcedure { get; set; } 
+                    
+ 
+                    public string ToBePaid { get; set; } 
                     
         }
 

@@ -1508,6 +1508,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-SubmitAllXMLToCustom
           <Key>
             <PropertyRef Name="Id" />
             <PropertyRef Name="ASYCUDA_Id" />
+            <PropertyRef Name="ToBePaid" />
           </Key>
           <Property Name="Id" Type="int" Nullable="false" />
           <Property Name="CNumber" Type="nvarchar" MaxLength="50" />
@@ -1523,6 +1524,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-SubmitAllXMLToCustom
           <Property Name="FilePath" Type="nvarchar" MaxLength="255" />
           <Property Name="Status" Type="nvarchar" MaxLength="50" />
           <Property Name="SystemDocumentSetId" Type="int" />
+          <Property Name="ToBePaid" Type="varchar" MaxLength="3" Nullable="false" />
         </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-SubmitDiscrepanciesToCustoms' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
@@ -1701,6 +1703,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-SubmitSalesToCustoms
           <Key>
             <PropertyRef Name="Id" />
             <PropertyRef Name="ASYCUDA_Id" />
+            <PropertyRef Name="ToBePaid" />
           </Key>
           <Property Name="Id" Type="int" Nullable="false" />
           <Property Name="CNumber" Type="nvarchar" MaxLength="50" />
@@ -1715,6 +1718,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-SubmitSalesToCustoms
           <Property Name="CustomsProcedure" Type="nvarchar" MaxLength="11" />
           <Property Name="FilePath" Type="nvarchar" MaxLength="255" />
           <Property Name="Status" Type="nvarchar" MaxLength="50" />
+          <Property Name="ToBePaid" Type="varchar" MaxLength="3" Nullable="false" />
         </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-SubmitUnclassifiedItems' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
@@ -1743,6 +1747,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-SubmitXMLToCustoms' 
           <Key>
             <PropertyRef Name="Id" />
             <PropertyRef Name="ASYCUDA_Id" />
+            <PropertyRef Name="ToBePaid" />
           </Key>
           <Property Name="Id" Type="int" Nullable="false" />
           <Property Name="CNumber" Type="nvarchar" MaxLength="50" />
@@ -1757,6 +1762,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-SubmitXMLToCustoms' 
           <Property Name="CustomsProcedure" Type="nvarchar" MaxLength="11" />
           <Property Name="FilePath" Type="nvarchar" MaxLength="255" />
           <Property Name="Status" Type="nvarchar" MaxLength="50" />
+          <Property Name="ToBePaid" Type="varchar" MaxLength="3" Nullable="false" />
         </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-TotalAdjustmentsToProcess' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
@@ -3098,7 +3104,8 @@ FROM [dbo].[ToDo-POToXML] AS [ToDo-POToXML]</DefiningQuery>
 [TODO-SubmitAllXMLToCustoms].[CustomsProcedure] AS [CustomsProcedure], 
 [TODO-SubmitAllXMLToCustoms].[FilePath] AS [FilePath], 
 [TODO-SubmitAllXMLToCustoms].[Status] AS [Status], 
-[TODO-SubmitAllXMLToCustoms].[SystemDocumentSetId] AS [SystemDocumentSetId]
+[TODO-SubmitAllXMLToCustoms].[SystemDocumentSetId] AS [SystemDocumentSetId], 
+[TODO-SubmitAllXMLToCustoms].[ToBePaid] AS [ToBePaid]
 FROM [dbo].[TODO-SubmitAllXMLToCustoms] AS [TODO-SubmitAllXMLToCustoms]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="TODO-SubmitDiscrepanciesToCustoms" EntityType="Self.TODO-SubmitDiscrepanciesToCustoms" store:Type="Views" store:Schema="dbo">
@@ -3237,7 +3244,8 @@ FROM [dbo].[TODO-SubmitPOInfo] AS [TODO-SubmitPOInfo]</DefiningQuery>
 [TODO-SubmitSalesToCustoms].[EmailId] AS [EmailId], 
 [TODO-SubmitSalesToCustoms].[CustomsProcedure] AS [CustomsProcedure], 
 [TODO-SubmitSalesToCustoms].[FilePath] AS [FilePath], 
-[TODO-SubmitSalesToCustoms].[Status] AS [Status]
+[TODO-SubmitSalesToCustoms].[Status] AS [Status], 
+[TODO-SubmitSalesToCustoms].[ToBePaid] AS [ToBePaid]
 FROM [dbo].[TODO-SubmitSalesToCustoms] AS [TODO-SubmitSalesToCustoms]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="TODO-SubmitUnclassifiedItems" EntityType="Self.TODO-SubmitUnclassifiedItems" store:Type="Views" store:Schema="dbo">
@@ -3268,7 +3276,8 @@ FROM [dbo].[TODO-SubmitUnclassifiedItems] AS [TODO-SubmitUnclassifiedItems]</Def
 [TODO-SubmitXMLToCustoms].[EmailId] AS [EmailId], 
 [TODO-SubmitXMLToCustoms].[CustomsProcedure] AS [CustomsProcedure], 
 [TODO-SubmitXMLToCustoms].[FilePath] AS [FilePath], 
-[TODO-SubmitXMLToCustoms].[Status] AS [Status]
+[TODO-SubmitXMLToCustoms].[Status] AS [Status], 
+[TODO-SubmitXMLToCustoms].[ToBePaid] AS [ToBePaid]
 FROM [dbo].[TODO-SubmitXMLToCustoms] AS [TODO-SubmitXMLToCustoms]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="TODO-TotalAdjustmentsToProcess" EntityType="Self.TODO-TotalAdjustmentsToProcess" store:Type="Views" store:Schema="dbo">
@@ -4736,6 +4745,7 @@ FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
           <Key>
             <PropertyRef Name="Id" />
             <PropertyRef Name="ASYCUDA_Id" />
+            <PropertyRef Name="ToBePaid" />
           </Key>
           <Property Name="Id" Type="Int32" Nullable="false" />
           <Property Name="CNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
@@ -4750,6 +4760,7 @@ FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
           <Property Name="FilePath" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="Status" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="CustomsProcedure" Type="String" MaxLength="11" FixedLength="false" Unicode="true" />
+          <Property Name="ToBePaid" Type="String" Nullable="false" MaxLength="3" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="TODO_DiscrepanciesToAssess">
           <Key>
@@ -5607,6 +5618,7 @@ FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
           <Key>
             <PropertyRef Name="Id" />
             <PropertyRef Name="ASYCUDA_Id" />
+            <PropertyRef Name="ToBePaid" />
           </Key>
           <Property Name="Id" Type="Int32" Nullable="false" />
           <Property Name="CNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
@@ -5622,6 +5634,7 @@ FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
           <Property Name="FilePath" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="Status" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="SystemDocumentSetId" Type="Int32" />
+          <Property Name="ToBePaid" Type="String" Nullable="false" MaxLength="3" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="AsycudaDocumentSetEntryDataEx">
           <Key>
@@ -5742,6 +5755,7 @@ FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
           <Key>
             <PropertyRef Name="Id" />
             <PropertyRef Name="ASYCUDA_Id" />
+            <PropertyRef Name="ToBePaid" />
           </Key>
           <Property Name="Id" Type="Int32" Nullable="false" />
           <Property Name="CNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
@@ -5756,6 +5770,7 @@ FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
           <Property Name="CustomsProcedure" Type="String" MaxLength="11" FixedLength="false" Unicode="true" />
           <Property Name="FilePath" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="Status" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ToBePaid" Type="String" Nullable="false" MaxLength="3" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="TODO_SubmitPOInfo">
           <Key>
@@ -6567,6 +6582,7 @@ FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
           <EntitySetMapping Name="TODO_SubmitXMLToCustoms">
             <EntityTypeMapping TypeName="WaterNutDBModel.TODO_SubmitXMLToCustoms">
               <MappingFragment StoreEntitySet="TODO-SubmitXMLToCustoms">
+                <ScalarProperty Name="ToBePaid" ColumnName="ToBePaid" />
                 <ScalarProperty Name="CustomsProcedure" ColumnName="CustomsProcedure" />
                 <ScalarProperty Name="Status" ColumnName="Status" />
                 <ScalarProperty Name="FilePath" ColumnName="FilePath" />
@@ -7245,6 +7261,7 @@ FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
           <EntitySetMapping Name="TODO_SubmitAllXMLToCustoms">
             <EntityTypeMapping TypeName="WaterNutDBModel.TODO_SubmitAllXMLToCustoms">
               <MappingFragment StoreEntitySet="TODO-SubmitAllXMLToCustoms">
+                <ScalarProperty Name="ToBePaid" ColumnName="ToBePaid" />
                 <ScalarProperty Name="SystemDocumentSetId" ColumnName="SystemDocumentSetId" />
                 <ScalarProperty Name="Status" ColumnName="Status" />
                 <ScalarProperty Name="FilePath" ColumnName="FilePath" />
@@ -7359,6 +7376,7 @@ FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
           <EntitySetMapping Name="TODO_SubmitSalesToCustoms">
             <EntityTypeMapping TypeName="WaterNutDBModel.TODO_SubmitSalesToCustoms">
               <MappingFragment StoreEntitySet="TODO-SubmitSalesToCustoms">
+                <ScalarProperty Name="ToBePaid" ColumnName="ToBePaid" />
                 <ScalarProperty Name="Status" ColumnName="Status" />
                 <ScalarProperty Name="FilePath" ColumnName="FilePath" />
                 <ScalarProperty Name="CustomsProcedure" ColumnName="CustomsProcedure" />

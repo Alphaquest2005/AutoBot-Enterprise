@@ -249,6 +249,23 @@ public string Status
 		}
      
 
+       [RequiredValidationAttribute(ErrorMessage= "ToBePaid is required")]
+       
+                
+                [MaxLength(3, ErrorMessage = "ToBePaid has a max length of 3 letters ")]
+public string ToBePaid
+		{ 
+		    get { return this.todo_submitsalestocustoms.ToBePaid; }
+			set
+			{
+			    if (value == this.todo_submitsalestocustoms.ToBePaid) return;
+				this.todo_submitsalestocustoms.ToBePaid = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("ToBePaid");
+			}
+		}
+     
+
 
         ChangeTrackingCollection<DTO.TODO_SubmitSalesToCustoms> _changeTracker;    
         public ChangeTrackingCollection<DTO.TODO_SubmitSalesToCustoms> ChangeTracker

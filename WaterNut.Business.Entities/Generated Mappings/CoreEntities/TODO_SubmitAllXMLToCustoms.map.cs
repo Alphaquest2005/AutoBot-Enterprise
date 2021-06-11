@@ -11,7 +11,7 @@
     {
         public TODO_SubmitAllXMLToCustomsMap()
         {                        
-              this.HasKey(t => new {t.Id, t.ASYCUDA_Id});        
+              this.HasKey(t => new {t.Id, t.ASYCUDA_Id, t.ToBePaid});        
               this.ToTable("TODO-SubmitAllXMLToCustoms");
               this.Property(t => t.Id).HasColumnName("Id").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.None));
               this.Property(t => t.CNumber).HasColumnName("CNumber").HasMaxLength(50);
@@ -27,6 +27,7 @@
               this.Property(t => t.FilePath).HasColumnName("FilePath").HasMaxLength(255);
               this.Property(t => t.Status).HasColumnName("Status").HasMaxLength(50);
               this.Property(t => t.SystemDocumentSetId).HasColumnName("SystemDocumentSetId");
+              this.Property(t => t.ToBePaid).HasColumnName("ToBePaid").IsRequired().IsUnicode(false).HasMaxLength(3);
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);
     			this.Ignore(t => t.ModifiedProperties);

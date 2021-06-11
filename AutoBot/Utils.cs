@@ -2085,7 +2085,7 @@ namespace AutoBot
                         ReferenceNumber = x.ReferenceNumber,
                         RegistrationDate = x.RegistrationDate,
                         Status = x.Status,
-                        IsPaid = x.C
+                        ToBePaid = x.ToBePaid
                     })
                     .GroupBy(x => x.EmailId);
                 return lst;
@@ -2119,7 +2119,8 @@ namespace AutoBot
                             EmailId = x.EmailId,
                             ReferenceNumber = x.ReferenceNumber,
                             RegistrationDate = x.RegistrationDate,
-                            Status = x.Status
+                            Status = x.Status,
+                            ToBePaid = x.ToBePaid
                         })
                         .GroupBy(x => x.EmailId);
                     SubmitSalesToCustoms(lst);

@@ -230,6 +230,21 @@ namespace CoreEntities.Business.Entities
             }
         }
         Nullable<int> _systemdocumentsetid;
+        [DataMember]
+        public string ToBePaid 
+        {
+            get
+            {
+                return _tobepaid;
+            }
+            set
+            {
+                _tobepaid = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _tobepaid;
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

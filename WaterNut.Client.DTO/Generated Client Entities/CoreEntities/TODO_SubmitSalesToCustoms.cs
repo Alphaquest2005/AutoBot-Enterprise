@@ -190,6 +190,19 @@ namespace CoreEntities.Client.DTO
 		}
         private string _Status;
 
+        [DataMember]
+        public string ToBePaid
+		{ 
+		    get { return _ToBePaid; }
+			set
+			{
+			    if (value == _ToBePaid) return;
+				_ToBePaid = value;
+				NotifyPropertyChanged();//m => this.ToBePaid
+			}
+		}
+        private string _ToBePaid;
+
        
    //     [DataMember]
    //     public TrackingState TrackingState { get; set; }
