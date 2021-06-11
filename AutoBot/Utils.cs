@@ -5507,7 +5507,9 @@ namespace AutoBot
                          ctx.AdjustmentShortAllocations.Where(x => x.xASYCUDA_Id == ASYCUDA_Id
                                                                          && x.EntryDataDetailsId != 0
                                                                          && x.PreviousItem_Id != 0
-                                                                         && x.pRegistrationDate != null).ToList();
+                                                                         && x.pRegistrationDate != null)
+                         .Select(x => )
+                         .ToList();
 
                     //    $"xASYCUDA_Id == {} " + "&& EntryDataDetailsId != null " +
                     //    "&& PreviousItem_Id != null" + "&& pRegistrationDate != null")
