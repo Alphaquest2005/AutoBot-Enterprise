@@ -5502,25 +5502,82 @@ namespace AutoBot
             {
                 using (var ctx = new AllocationQSContext())
                 {
+                    //ctx.Database.CommandTimeout = 10;
+                    //var alst =
+                    //     ctx.AdjustmentShortAllocations.Where(x => x.xASYCUDA_Id == ASYCUDA_Id
+                    //                                                     && x.EntryDataDetailsId != 0
+                    //                                                     && x.PreviousItem_Id != 0
+                    //                                                     && x.pRegistrationDate != null)
+                    //     //.Select(x => new Allo()
+                    //     //{
+                    //     //    xLineNumber = x.xLineNumber,
+                    //     //    pCNumber = x.pCNumber,
+                    //     //    pItemNumber = x.pItemNumber,
+                    //     //    InvoiceNo = x.InvoiceNo,
+                    //     //    InvoiceDate = x.InvoiceDate,
+                    //     //    Comment = x.Comment
+
+
+                    //     //} )
+                    //     .ToList();
+
+                    ////    $"xASYCUDA_Id == {} " + "&& EntryDataDetailsId != null " +
+                    ////    "&& PreviousItem_Id != null" + "&& pRegistrationDate != null")
+                    ////.ConfigureAwait(false)).ToList();
+
+                    //var d =
+                    //    alst.Where(x => x.xLineNumber != null)
+                    //        .Where(x => !string.IsNullOrEmpty(x.pCNumber))// prevent pre assessed entries
+                    //        .Where(x => x.pItemNumber.Length <= 20) // to match the entry
+                    //        .OrderBy(s => s.xLineNumber)
+                    //        .ThenBy(s => s.InvoiceNo)
+                    //        .Select(s => new SaleReportLine
+                    //        {
+                    //            Line = Convert.ToInt32(s.xLineNumber),
+                    //            Date = Convert.ToDateTime(s.InvoiceDate),
+                    //            InvoiceNo = s.InvoiceNo,
+                    //            Comment = s.Comment,
+                    //            ItemNumber = s.ItemNumber,
+                    //            ItemDescription = s.ItemDescription,
+                    //            TariffCode = s.TariffCode,
+                    //            SalesFactor = Convert.ToDouble(s.SalesFactor),
+                    //            SalesQuantity = Convert.ToDouble(s.QtyAllocated),
+
+                    //            xQuantity = Convert.ToDouble(s.xQuantity), // Convert.ToDouble(s.QtyAllocated),
+                    //            Price = Convert.ToDouble(s.Cost),
+                    //            SalesType = s.DutyFreePaid,
+                    //            GrossSales = Convert.ToDouble(s.TotalValue),
+                    //            PreviousCNumber = s.pCNumber,
+                    //            PreviousLineNumber = s.pLineNumber.ToString(),
+                    //            PreviousRegDate = Convert.ToDateTime(s.pRegistrationDate).ToShortDateString(),
+                    //            CIFValue =
+                    //                (Convert.ToDouble(s.Total_CIF_itm) / Convert.ToDouble(s.pQuantity)) *
+                    //                Convert.ToDouble(s.QtyAllocated),
+                    //            DutyLiablity =
+                    //                (Convert.ToDouble(s.DutyLiability) / Convert.ToDouble(s.pQuantity)) *
+                    //                Convert.ToDouble(s.QtyAllocated)
+                    //        }).Distinct();
+
                     ctx.Database.CommandTimeout = 10;
-                    var alst =
-                         ctx.AdjustmentShortAllocations.Where(x => x.xASYCUDA_Id == ASYCUDA_Id
-                                                                         && x.EntryDataDetailsId != 0
-                                                                         && x.PreviousItem_Id != 0
-                                                                         && x.pRegistrationDate != null)
-                         .Select(x => )
-                         .ToList();
+                  
 
                     //    $"xASYCUDA_Id == {} " + "&& EntryDataDetailsId != null " +
                     //    "&& PreviousItem_Id != null" + "&& pRegistrationDate != null")
                     //.ConfigureAwait(false)).ToList();
 
                     var d =
-                        alst.Where(x => x.xLineNumber != null)
+                        ctx.AdjustmentShortAllocations.Where(x => x.xASYCUDA_Id == ASYCUDA_Id
+                                                                         && x.EntryDataDetailsId != 0
+                                                                         && x.PreviousItem_Id != 0
+                                                                         && x.pRegistrationDate != null)
+                            .Where(x => x.xLineNumber != null)
                             .Where(x => !string.IsNullOrEmpty(x.pCNumber))// prevent pre assessed entries
                             .Where(x => x.pItemNumber.Length <= 20) // to match the entry
                             .OrderBy(s => s.xLineNumber)
                             .ThenBy(s => s.InvoiceNo)
+                            
+                            .ToList()
+
                             .Select(s => new SaleReportLine
                             {
                                 Line = Convert.ToInt32(s.xLineNumber),
@@ -5549,7 +5606,6 @@ namespace AutoBot
                             }).Distinct();
 
 
-
                     return new ObservableCollection<SaleReportLine>(d);
 
 
@@ -5560,6 +5616,10 @@ namespace AutoBot
             }
 
             return null;
+        }
+
+        public class Allo
+        {
         }
 
         public static async Task<ObservableCollection<SaleReportLine>> Ex9SalesReport(int ASYCUDA_Id)
