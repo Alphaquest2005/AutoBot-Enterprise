@@ -2084,7 +2084,8 @@ namespace AutoBot
                         EmailId = x.EmailId,
                         ReferenceNumber = x.ReferenceNumber,
                         RegistrationDate = x.RegistrationDate,
-                        Status = x.Status
+                        Status = x.Status,
+                        IsPaid = x.C
                     })
                     .GroupBy(x => x.EmailId);
                 return lst;

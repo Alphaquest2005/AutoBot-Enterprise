@@ -730,50 +730,84 @@ namespace WaterNut.DataSpace
 			StatusModel.Timer("Getting Data - Asycuda Entries...");
 			//string itmnumber = "WMHP24-72";
 			IEnumerable<ItemEntries> asycudaEntries = null;
-			using (var ctx = new AllocationDSContext(){StartTracking = false})
+			using (var ctx = new AllocationDSContext() { StartTracking = false })
 			{
+
+				//asycudaEntries = from s in ctx.xcuda_Item
+				//							.Where(x => x.AsycudaDocument.ApplicationSettingsId == applicationSettingsId)
+				//							.Where(x => x.xcuda_Tarification.xcuda_HScode.Precision_4 != null)
+				//							.Where(x => asycudaDocumentSetId == null || x.AsycudaDocument.AsycudaDocumentSetId == asycudaDocumentSetId)
+				//							.Where(x => (x.AsycudaDocument.CNumber != null || x.AsycudaDocument.IsManuallyAssessed == true)
+				//										&& ( x.AsycudaDocument.CustomsOperationId == (int)CustomsOperations.Warehouse)
+				//										&& (x.AsycudaDocument.Customs_Procedure.Sales == true || x.AsycudaDocument.Customs_Procedure.Stock == true) &&
+				//										 (x.AsycudaDocument.Cancelled == null || x.AsycudaDocument.Cancelled == false) &&
+				//										 x.AsycudaDocument.DoNotAllocate != true)
+				//							.Where(x => x.AsycudaDocument.AssessmentDate >= (BaseDataModel.Instance.CurrentApplicationSettings.OpeningStockDate))
+				//							.OrderBy(x => x.LineNumber)
+
+				//				 group s by s.xcuda_Tarification.xcuda_HScode.Precision_4.ToUpper().Trim()
+				//	into g
+				//				 select
+				//					 new ItemEntries
+				//					 {
+				//						 Key = g.Key.Trim(),
+				//						 EntriesList =
+				//							 g.AsEnumerable()
+				//								 .OrderBy(
+				//									 x =>
+				//										 x.AsycudaDocument.EffectiveRegistrationDate == null
+				//											 ? Convert.ToDateTime(x.AsycudaDocument.RegistrationDate)
+				//											 : x.AsycudaDocument.EffectiveRegistrationDate)
+				//								 .ToList()
+				//					 };
+
+				//return asycudaEntries.ToList();
+
 				var lst = ctx.xcuda_Item.Include(x => x.AsycudaDocument.Customs_Procedure)
-					.Include(x => x.xcuda_Tarification.xcuda_HScode)
-					.Include(x => x.xcuda_Tarification.xcuda_Supplementary_unit)
-					.Include(x => x.SubItems)
-					.Include("EntryPreviousItems.xcuda_PreviousItem")
+                    .Include(x => x.xcuda_Tarification.xcuda_HScode)
+                    .Include(x => x.xcuda_Tarification.xcuda_Supplementary_unit)
+                    .Include(x => x.SubItems)
+                    .Include("EntryPreviousItems.xcuda_PreviousItem")
+					.Where(x => x.xcuda_Tarification.xcuda_HScode.Precision_4 != null)
 					.Where(x => x.AsycudaDocument.ApplicationSettingsId == applicationSettingsId)
-                    .Where(x => asycudaDocumentSetId == null || x.AsycudaDocument.AsycudaDocumentSetId == asycudaDocumentSetId)
-                    .Where(x => (x.AsycudaDocument.CNumber != null || x.AsycudaDocument.IsManuallyAssessed == true)
-                                && (/*x.AsycudaDocument.CustomsOperationId == (int)CustomsOperations.Import
-                                 ||*/ x.AsycudaDocument.CustomsOperationId == (int)CustomsOperations.Warehouse)
-                                && (x.AsycudaDocument.Customs_Procedure.Sales == true || x.AsycudaDocument.Customs_Procedure.Stock == true) &&
-                                 (x.AsycudaDocument.Cancelled == null || x.AsycudaDocument.Cancelled == false) &&
-                                 x.AsycudaDocument.DoNotAllocate != true)
-                    .Where(x => x.AsycudaDocument.AssessmentDate >= (BaseDataModel.Instance.CurrentApplicationSettings.OpeningStockDate))
-					.OrderBy(x => x.LineNumber)
-					.ToList();
+                                .Where(x => asycudaDocumentSetId == null || x.AsycudaDocument.AsycudaDocumentSetId == asycudaDocumentSetId)
+                                .Where(x => (x.AsycudaDocument.CNumber != null || x.AsycudaDocument.IsManuallyAssessed == true)
+                                            && (/*x.AsycudaDocument.CustomsOperationId == (int)CustomsOperations.Import
+                                             ||*/ x.AsycudaDocument.CustomsOperationId == (int)CustomsOperations.Warehouse)
+                                            && (x.AsycudaDocument.Customs_Procedure.Sales == true || x.AsycudaDocument.Customs_Procedure.Stock == true) &&
+                                             (x.AsycudaDocument.Cancelled == null || x.AsycudaDocument.Cancelled == false) &&
+                                             x.AsycudaDocument.DoNotAllocate != true)
+                                .Where(x => x.AsycudaDocument.AssessmentDate >= (BaseDataModel.Instance.CurrentApplicationSettings.OpeningStockDate))
+                    .OrderBy(x => x.LineNumber)
+                    .ToList();
 
-				// var res2 = lst.Where(x => x.ItemNumber == "PRM/84101");
+                // var res2 = lst.Where(x => x.ItemNumber == "PRM/84101");
 
-				asycudaEntries = from s in lst.Where(x => x.ItemNumber != null)
-				   // .Where(x => x.ItemNumber == itmnumber)
-					//       .Where(x => x.AsycudaDocument.pCNumber != null).AsEnumerable()
-					group s by s.ItemNumber.ToUpper().Trim()
-					into g
-					select
-						new ItemEntries
-						{
-							Key = g.Key.Trim(),
-							EntriesList =
-								g.AsEnumerable()
-									.OrderBy(
-										x =>
-											x.AsycudaDocument.EffectiveRegistrationDate == null
-												? Convert.ToDateTime(x.AsycudaDocument.RegistrationDate)
-												: x.AsycudaDocument.EffectiveRegistrationDate)
-									.ToList()
-						};
+                asycudaEntries = from s in lst
+                                     // .Where(x => x.ItemNumber == itmnumber)
+                                     //       .Where(x => x.AsycudaDocument.pCNumber != null).AsEnumerable()
+                                 group s by s.ItemNumber.ToUpper().Trim()
+                    into g
+                                 select
+                                     new ItemEntries
+                                     {
+                                         Key = g.Key.Trim(),
+                                         EntriesList =
+                                             g.AsEnumerable()
+                                                 .OrderBy(
+                                                     x =>
+                                                         x.AsycudaDocument.EffectiveRegistrationDate == null
+                                                             ? Convert.ToDateTime(x.AsycudaDocument.RegistrationDate)
+                                                             : x.AsycudaDocument.EffectiveRegistrationDate)
+                                                 .ToList()
+                                     };
+
+				return asycudaEntries.ToList();
 			}
 
-		    //var res = asycudaEntries.Where(x => x.Key == "BM/SHG16B");
-			return asycudaEntries;
-		}
+            //var res = asycudaEntries.Where(x => x.Key == "BM/SHG16B");
+
+        }
 
 		private static async Task<IEnumerable<ItemEntries>> GetAsycudaEntriesWithDescription()
 		{

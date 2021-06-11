@@ -73,7 +73,7 @@ namespace AdjustmentQS.Business.Services
 
 
                 var lst = ctx.AdjustmentDetails
-                    .Include(x => x.AdjustmentEx)
+                    //.Include(x => x.AdjustmentEx)
                     .Where(x => x.ApplicationSettingsId == applicationSettingsId)
                     .Where(x => x.AsycudaDocumentSetId == docSetId)
                     //.Where(x => x.SystemDocumentSet != null)
@@ -82,8 +82,9 @@ namespace AdjustmentQS.Business.Services
                     //.Where( x => x.EntryDataDetailsId == 545303)
                     .Where(x => x.DoNotAllocate == null || x.DoNotAllocate != true)
                     .Where(x => x.EffectiveDate == null) // take out other check cuz of existing entries 
-                    .OrderBy(x => x.EntryDataDetailsId)
+                    
                     .DistinctBy(x => x.EntryDataDetailsId)
+                    .OrderBy(x => x.EntryDataDetailsId)
                     .ToList();
 
                 await DoAutoMatch(applicationSettingsId, lst, ctx);
@@ -160,7 +161,7 @@ namespace AdjustmentQS.Business.Services
                                 ed.PreviousInvoiceNumber.Contains(x.EntryDataId))?.EntryDataDate;
                         else
                         {
-                            ed.EffectiveDate = s.AdjustmentEx.InvoiceDate;
+                            ed.EffectiveDate = s.InvoiceDate;
                         }
                     }
 
