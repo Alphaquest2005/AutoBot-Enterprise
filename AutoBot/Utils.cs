@@ -6440,16 +6440,19 @@ namespace AutoBot
             //                  || str.Contains("\n") || str.Contains(".") || str.Contains("'") || str.Contains("#"));
             //if (mustQuote)
             //{
+            var data = str.Replace("\n", "");
+
             StringBuilder sb = new StringBuilder();
             sb.Append("\"");
-            foreach (char nextChar in str)
+            foreach (char nextChar in data)
             {
                 sb.Append(nextChar);
                 if (nextChar == '"')
                     sb.Append("\"");
             }
             sb.Append("\"");
-            return sb.ToString().Trim();
+            
+            return sb.ToString().Trim(' ',',');
             //}
 
             //return str;

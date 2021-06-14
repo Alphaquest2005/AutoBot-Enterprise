@@ -45,7 +45,7 @@ namespace AdjustmentQS.Business.Services
                 BaseDataModel.ConfigureDocSet(docSet, exportTemplate);
                 using (var ctx = new AdjustmentQSContext())
                 {
-                    ctx.Database.CommandTimeout = 100;
+                    ctx.Database.CommandTimeout = 0;
                     IOrderedQueryable<TODO_AdjustmentOversToXML> lst;
                     if (adjustmentType == "DIS")
                     {

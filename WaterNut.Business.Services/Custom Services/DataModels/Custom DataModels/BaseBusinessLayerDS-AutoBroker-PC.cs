@@ -2649,15 +2649,15 @@ namespace WaterNut.DataSpace
                         {
                             using (var ctx = new EntryDataDSContext())
                             {
-                                ctx.Database.CommandTimeout = 100;
+                                ctx.Database.CommandTimeout = 0;
                                 var entryDataDetailses = ctx.EntryDataDetails
                                     .Include(x => x.EntryDataDetailsEx)
                                     .Include(x => x.InventoryItems)
                                     .Include(x => x.InventoryItemEx)
                               
-                                    .Where(x => x.EntryDataDetailsId == item                                               
-                                             //   && x.EntryData.EntryDataEx != null
-                                             )
+                                    .Where(x => x.EntryDataDetailsId == item
+                                               
+                                                && x.EntryData.EntryDataEx != null)
                                     .Where(x => Math.Abs((double) (x.EntryData.EntryDataEx.ExpectedTotal -
                                                                    (x.EntryData.InvoiceTotal == null ||
                                                                     x.EntryData.InvoiceTotal == 0
@@ -3291,10 +3291,10 @@ namespace WaterNut.DataSpace
             {
                 using (var ctx = new CoreEntitiesContext())
                 {
-                    var lst = ctx.AsycudaItemBasicInfo
-                        //.Include(x => x.AsycudaDocumentItemEntryDataDetails)
-                        .Where(x => x.LineNumber == 1
-                                    && x.AsycudaDocumentSetId ==
+                    var lst = ctx.AsycudaDocumentItems
+                        .Include(x => x.AsycudaDocumentItemEntryDataDetails)
+                        .Where(x => x.LineNumber == "1"
+                                    && x.AsycudaDocument.AsycudaDocumentSetId ==
                                     asycudaDocumentSetId).ToList();
                     var c71Att = ctx.AsycudaDocumentSet_Attachments.Include(x => x.Attachments).Where(x =>
                             x.FileTypes.Type == "C71" && x.AsycudaDocumentSetId == asycudaDocumentSetId)
@@ -3345,16 +3345,14 @@ namespace WaterNut.DataSpace
                     foreach (var al in res)
                     foreach (var c71Item in al.Value.xC71_Item)
                     {
-                        var itms = lst.GroupJoin(ctx.AsycudaDocumentItemEntryDataDetails, x => x.Item_Id, e => e.Item_Id, (x,e) => new { x.Item_Id, x.LineNumber, x.ASYCUDA_Id, data = e.Select(z => z.key) })
-                                
-                                .Where(x =>
-                            x.data.Any(z =>
-                                z.Contains(c71Item.Invoice_Number)) &&
-                            x.LineNumber == 1).ToList();
+                        var itms = lst.Where(x =>
+                            x.AsycudaDocumentItemEntryDataDetails.Any(z =>
+                                z.key.Contains(c71Item.Invoice_Number)) &&
+                            x.LineNumber == "1").ToList();
 
                         foreach (var itm in itms)
                             AttachToDocument(new List<int> {al.Key.Id},
-                                itm.ASYCUDA_Id, itm.Item_Id);
+                                itm.AsycudaDocumentId.GetValueOrDefault(), itm.Item_Id);
                     }
                 }
             }
@@ -3478,16 +3476,17 @@ namespace WaterNut.DataSpace
                     docSet = ctx.AsycudaDocumentSets.First(x => x.AsycudaDocumentSetId == docKey);
                     docSet.xcuda_ASYCUDA_ExtendedProperties =
                         null; //loading property and creating trouble updating it think its a circular navigation property issue
-
-                    var res = ctx.xcuda_ASYCUDA
-                        
+               
+                    var xcudaAsycudas = ctx.xcuda_ASYCUDA
                         .Where(
                             x => x != null && x.xcuda_Declarant != null &&
                                  x.xcuda_Declarant.Number.Contains(docSet.Declarant_Reference_Number) &&
                                  (x.xcuda_ASYCUDA_ExtendedProperties.AsycudaDocumentSetId == docKey &&
                                   x.xcuda_ASYCUDA_ExtendedProperties.ImportComplete == false ||
                                   x.xcuda_ASYCUDA_ExtendedProperties.AsycudaDocumentSetId != docKey &&
-                                  x.xcuda_ASYCUDA_ExtendedProperties.ImportComplete == true))
+                                  x.xcuda_ASYCUDA_ExtendedProperties.ImportComplete == true)).ToList();
+
+                    var res = xcudaAsycudas
                         .GroupBy(x => x.xcuda_Declarant.Number)
                         .ToList();
 
@@ -3541,7 +3540,7 @@ namespace WaterNut.DataSpace
                     }
                 }
 
-          
+                RenameDuplicateDocuments(docSetAsycudaDocumentSetId);
             }
             catch (Exception e)
             {
