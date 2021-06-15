@@ -1854,7 +1854,7 @@ namespace AutoBot
 
                 using (var ctx = new CoreEntitiesContext())
                 {
-                    ctx.Database.CommandTimeout = 10;
+                    ctx.Database.CommandTimeout = 20;
                     var docset = ctx.AsycudaDocumentSetExs.FirstOrDefault(x =>
                         x.AsycudaDocumentSetId == fileType.AsycudaDocumentSetId);
                     if (docset == null) return;
@@ -1897,6 +1897,7 @@ namespace AutoBot
                     var goodadj = ctx.TODO_DiscrepancyPreExecutionReport.Where(x =>
                         x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId
                             && x.AsycudaDocumentSetId == fileType.AsycudaDocumentSetId)
+
                         .Select(x => new DiscrepancyPreExecutionReport()
                         {
                             Type = x.Type,

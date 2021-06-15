@@ -3204,12 +3204,21 @@ namespace WaterNut.DataSpace
         {
             using (var ctx = new CoreEntitiesContext())
             {
-                var allocatedItms = new List<AsycudaDocumentItem>();
+                var allocatedItms = new List<LicenceDocItem>();
                 var lst = ctx.AsycudaDocumentItems
                     .Include(x => x.AsycudaDocumentItemEntryDataDetails)
                     .Where(x => x.TariffCodeLicenseRequired == true
                                 && x.AsycudaDocument.AsycudaDocumentSetId ==
-                                asycudaDocumentSetId).ToList();
+                                asycudaDocumentSetId)
+                    .Select(x => new LicenceDocItem()
+                    {
+                        Item_Id = x.Item_Id,
+                        Details = x.AsycudaDocumentItemEntryDataDetails.Select(z => z.key).ToList(),
+                        TariffCode = x.TariffCode,
+                        ItemQuantity = x.ItemQuantity,
+                        AsycudaDocumentId = x.AsycudaDocumentId
+                    })
+                    .ToList();
                 if (!lst.Any()) return;
                 var docSet = Instance.GetAsycudaDocumentSet(asycudaDocumentSetId).Result;
 
@@ -3260,8 +3269,8 @@ namespace WaterNut.DataSpace
                             ? lst.Where(x => x.TariffCode == truncate).ToList()
                             : lst.Where(x =>
                                     x.TariffCode == truncate &&
-                                    x.AsycudaDocumentItemEntryDataDetails.Any(z =>
-                                        z.key.Contains(entryDataId.EntryDataId)))
+                                    x.Details.Any(z =>
+                                        z.Contains(entryDataId.EntryDataId)))
                                 .ToList();
 
                         double rtotal = lic.TODO_LicenceAvailableQty == null
@@ -3675,6 +3684,15 @@ namespace WaterNut.DataSpace
 
             public double InternalFreight { get; set; }
         }
+    }
+
+    internal class LicenceDocItem
+    {
+        public int Item_Id { get; set; }
+        public List<string> Details { get; set; }
+        public string TariffCode { get; set; }
+        public double? ItemQuantity { get; set; }
+        public int? AsycudaDocumentId { get; set; }
     }
 
     public class SaleReportLine
