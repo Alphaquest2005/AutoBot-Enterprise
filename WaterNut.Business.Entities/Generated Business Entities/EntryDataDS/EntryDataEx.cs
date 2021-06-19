@@ -246,7 +246,7 @@ namespace EntryDataDS.Business.Entities
         }
         Nullable<int> _classifiedlines;
         [DataMember]
-        public int AsycudaDocumentSetId 
+        public Nullable<int> AsycudaDocumentSetId 
         {
             get
             {
@@ -259,7 +259,7 @@ namespace EntryDataDS.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        int _asycudadocumentsetid;
+        Nullable<int> _asycudadocumentsetid;
         [DataMember]
         public double TotalInternalFreight 
         {

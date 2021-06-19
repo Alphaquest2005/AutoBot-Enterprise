@@ -206,6 +206,21 @@ namespace EntryDataDS.Business.Entities
         }
         double _salesfactor;
         [DataMember]
+        public Nullable<double> Discount 
+        {
+            get
+            {
+                return _discount;
+            }
+            set
+            {
+                _discount = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<double> _discount;
+        [DataMember]
         public ShipmentInvoice Invoice { get; set; }
         [DataMember]
         public List<ShipmentInvoicePOItemQueryMatches> POItems { get; set; }

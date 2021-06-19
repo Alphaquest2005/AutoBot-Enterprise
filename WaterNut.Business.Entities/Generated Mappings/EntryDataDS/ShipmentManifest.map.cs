@@ -23,7 +23,7 @@
               this.Property(t => t.Vessel).HasColumnName("Vessel").IsRequired().HasMaxLength(50);
               this.Property(t => t.WayBill).HasColumnName("WayBill").IsRequired().HasMaxLength(50);
               this.Property(t => t.LineNumber).HasColumnName("LineNumber");
-              this.Property(t => t.LoadingPort).HasColumnName("LoadingPort").IsRequired().HasMaxLength(50);
+              this.Property(t => t.LoadingPort).HasColumnName("LoadingPort").HasMaxLength(50);
               this.Property(t => t.ModeOfTransport).HasColumnName("ModeOfTransport").IsRequired().HasMaxLength(50);
               this.Property(t => t.TypeOfBL).HasColumnName("TypeOfBL").IsRequired().HasMaxLength(50);
               this.Property(t => t.CargoReporter).HasColumnName("CargoReporter").HasMaxLength(255);

@@ -363,7 +363,7 @@
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="BLNumber" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="BLNumber" Type="nvarchar" MaxLength="50" />
           <Property Name="Consignee" Type="nvarchar" MaxLength="1000" Nullable="false" />
           <Property Name="Currency" Type="nvarchar" MaxLength="3" />
           <Property Name="InvoiceNumber" Type="nvarchar" MaxLength="50" Nullable="false" />
@@ -426,6 +426,7 @@
           <Property Name="FileLineNumber" Type="int" />
           <Property Name="InventoryItemId" Type="int" />
           <Property Name="SalesFactor" Type="float" Nullable="false" />
+          <Property Name="Discount" Type="float" />
         </EntityType>
         <EntityType Name="ShipmentInvoiceDetails-Volume">
           <Key>
@@ -493,7 +494,7 @@
           <Property Name="Vessel" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="WayBill" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="LineNumber" Type="int" Nullable="false" />
-          <Property Name="LoadingPort" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="LoadingPort" Type="nvarchar" MaxLength="50" />
           <Property Name="ModeOfTransport" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="TypeOfBL" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="CargoReporter" Type="nvarchar" MaxLength="255" />
@@ -652,7 +653,6 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.EntryDataEx' does not hav
             
             
             
-            
           </Key>
           <Property Name="EntryData_Id" Type="int" Nullable="false" />
           <Property Name="InvoiceDate" Type="datetime2" Precision="7" Nullable="false" />
@@ -672,7 +672,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.EntryDataEx' does not hav
           <Property Name="SupplierCode" Type="nvarchar" MaxLength="100" />
           <Property Name="ExpectedTotal" Type="float" Nullable="false" />
           <Property Name="ClassifiedLines" Type="int" />
-          <Property Name="AsycudaDocumentSetId" Type="int" Nullable="false" />
+          <Property Name="AsycudaDocumentSetId" Type="int" />
           <Property Name="TotalInternalFreight" Type="float" Nullable="false" />
           <Property Name="TotalInternalInsurance" Type="float" Nullable="false" />
           <Property Name="TotalOtherCost" Type="float" Nullable="false" />
@@ -2779,7 +2779,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ShipmentRiderInvoice' doe
           <Property Name="SupplierCode" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="ExpectedTotal" Type="Double" Nullable="false" />
           <Property Name="ClassifiedLines" Type="Int32" />
-          <Property Name="AsycudaDocumentSetId" Type="Int32" Nullable="false" />
+          <Property Name="AsycudaDocumentSetId" Type="Int32" />
           <Property Name="TotalInternalFreight" Type="Double" Nullable="false" />
           <Property Name="TotalInternalInsurance" Type="Double" Nullable="false" />
           <Property Name="TotalOtherCost" Type="Double" Nullable="false" />
@@ -3039,7 +3039,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ShipmentRiderInvoice' doe
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="BLNumber" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="BLNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="Consignee" Type="String" Nullable="false" MaxLength="1000" FixedLength="false" Unicode="true" />
           <Property Name="InvoiceNumber" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="InvoiceDate" Type="DateTime" Nullable="false" Precision="0" />
@@ -3166,6 +3166,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ShipmentRiderInvoice' doe
           <Property Name="SalesFactor" Type="Double" Nullable="false" />
           <NavigationProperty Name="ItemAlias" Relationship="WaterNutDBModel.InvoiceDetailsShipmentInvoiceDetailsItemAlias" FromRole="InvoiceDetails" ToRole="ShipmentInvoiceDetailsItemAlias" />
           <NavigationProperty Name="Volume" Relationship="WaterNutDBModel.FK_ShipmentInvoiceDetails_Volume_ShipmentInvoiceDetails" FromRole="InvoiceDetails" ToRole="ShipmentInvoiceDetails_Volume" />
+          <Property Name="Discount" Type="Double" />
         </EntityType>
         <Association Name="FK_ShipmentInvoiceDetails_ShipmentInvoice1">
           <End Type="WaterNutDBModel.ShipmentInvoice" Role="ShipmentInvoice" Multiplicity="1">
@@ -3614,7 +3615,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ShipmentRiderInvoice' doe
           <Property Name="Vessel" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="WayBill" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="LineNumber" Type="Int32" Nullable="false" />
-          <Property Name="LoadingPort" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="LoadingPort" Type="String" Nullable="true" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="ModeOfTransport" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="TypeOfBL" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="CargoReporter" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
@@ -4678,6 +4679,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ShipmentRiderInvoice' doe
           <EntitySetMapping Name="ShipmentInvoiceDetails">
             <EntityTypeMapping TypeName="WaterNutDBModel.InvoiceDetails">
               <MappingFragment StoreEntitySet="ShipmentInvoiceDetails">
+                <ScalarProperty Name="Discount" ColumnName="Discount" />
                 <ScalarProperty Name="SalesFactor" ColumnName="SalesFactor" />
                 <ScalarProperty Name="InventoryItemId" ColumnName="InventoryItemId" />
                 <ScalarProperty Name="ShipmentInvoiceId" ColumnName="ShipmentInvoiceId" />

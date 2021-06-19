@@ -14,7 +14,7 @@
               this.HasKey(t => t.Id);        
               this.ToTable("ShipmentFreight");
               this.Property(t => t.Id).HasColumnName("Id").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.Identity));
-              this.Property(t => t.BLNumber).HasColumnName("BLNumber").IsRequired().HasMaxLength(50);
+              this.Property(t => t.BLNumber).HasColumnName("BLNumber").HasMaxLength(50);
               this.Property(t => t.Consignee).HasColumnName("Consignee").IsRequired().HasMaxLength(1000);
               this.Property(t => t.InvoiceNumber).HasColumnName("InvoiceNumber").IsRequired().HasMaxLength(50);
               this.Property(t => t.InvoiceDate).HasColumnName("InvoiceDate");

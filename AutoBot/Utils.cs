@@ -879,7 +879,7 @@ namespace AutoBot
             {
                 ctx.Database.CommandTimeout = 10;
                 var res = ctx.TODO_C71ToCreate
-                    .Where(x => ft.AsycudaDocumentSetId == 0 || x.AsycudaDocumentSetId == ft.AsycudaDocumentSetId)
+                    .Where(x => x.AsycudaDocumentSetId == ft.AsycudaDocumentSetId)//ft.AsycudaDocumentSetId == 0 ||
                     .OrderByDescending(x => x.Id)
                     .Take(1)
                     .ToList();
@@ -1042,8 +1042,8 @@ namespace AutoBot
 
                     ctx.Database.CommandTimeout = 10;
                     var pOs = ctx.TODO_LICToCreate
-                        .Where(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)
-                        .Where(x => ft.AsycudaDocumentSetId == 0 || x.AsycudaDocumentSetId == ft.AsycudaDocumentSetId)
+                        //.Where(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)
+                        .Where(x => x.AsycudaDocumentSetId == ft.AsycudaDocumentSetId)//ft.AsycudaDocumentSetId == 0 || 
                        .ToList();
                     foreach (var pO in pOs)
                     {
@@ -1142,8 +1142,8 @@ namespace AutoBot
                             $"select * from [TODO-LicenseToXML]  where asycudadocumentsetid = {ft.AsycudaDocumentSetId}").ToList();
 
                     var emails = llst
-                        .Where(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId && x.EmailId != null)
-                        .Where(x => ft.AsycudaDocumentSetId == 0 || x.AsycudaDocumentSetId == ft.AsycudaDocumentSetId)
+                        //.Where(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId )//
+                        .Where(x => x.AsycudaDocumentSetId == ft.AsycudaDocumentSetId && x.EmailId != null)//ft.AsycudaDocumentSetId == 0 || 
                         .GroupBy(x => new { x.EmailId, x.AsycudaDocumentSetId }).ToList();
                     foreach (var email in emails)
                     {
@@ -1211,8 +1211,8 @@ namespace AutoBot
 
                     ctx.Database.CommandTimeout = 10;
                     var pOs = ctx.TODO_C71ToCreate
-                        .Where(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)
-                        .Where(x => ft.AsycudaDocumentSetId == 0 || x.AsycudaDocumentSetId == ft.AsycudaDocumentSetId)
+                        //.Where(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)
+                        .Where(x =>  x.AsycudaDocumentSetId == ft.AsycudaDocumentSetId)//ft.AsycudaDocumentSetId == 0 ||
                         .ToList();
                     foreach (var pO in pOs)
                     {
@@ -1281,8 +1281,8 @@ namespace AutoBot
 
                     ctx.Database.CommandTimeout = 10;
                     var pOs = ctx.TODO_LICToCreate
-                        .Where(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)
-                        .Where(x => ft.AsycudaDocumentSetId == 0 || x.AsycudaDocumentSetId == ft.AsycudaDocumentSetId)
+                        //.Where(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)
+                        .Where(x =>  x.AsycudaDocumentSetId == ft.AsycudaDocumentSetId)//ft.AsycudaDocumentSetId == 0 ||
                         .ToList();
 
                     if (!pOs.Any()) return;
@@ -1322,8 +1322,8 @@ namespace AutoBot
                     ctx.Database.CommandTimeout = 10;
 
                     var lst = ctx.TODO_C71ToCreate
-                        .Where(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId) 
-                        .Where(x => ft.AsycudaDocumentSetId == 0 || x.AsycudaDocumentSetId == ft.AsycudaDocumentSetId)
+                        //.Where(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId) 
+                        .Where(x =>  x.AsycudaDocumentSetId == ft.AsycudaDocumentSetId)//ft.AsycudaDocumentSetId == 0 ||
                         .OrderByDescending(x => x.Id)
                         .Take(1)
                         .ToList();
@@ -2257,8 +2257,8 @@ namespace AutoBot
                     ctx.Database.CommandTimeout = 10;
                     var contacts = ctx.Contacts.Where(x => x.Role == "PO Clerk" || x.Role == "Developer").Select(x => x.EmailAddress).ToArray();
                     var lst = ctx.TODO_SubmitIncompleteEntryData
-                        .Where(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)
-                        .Where(x => ft.AsycudaDocumentSetId == 0 || x.AsycudaDocumentSetId == ft.AsycudaDocumentSetId)
+                        //.Where(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)
+                        .Where(x => x.AsycudaDocumentSetId == ft.AsycudaDocumentSetId)// ft.AsycudaDocumentSetId == 0 ||
                         .ToList()
                         .GroupBy(x => x.EmailId);
                     foreach (var emailIds in lst)
@@ -2318,8 +2318,8 @@ namespace AutoBot
                     ctx.Database.CommandTimeout = 10;
                     var contacts = ctx.Contacts.Where(x => x.Role == "PO Clerk" || x.Role == "Developer").Select(x => x.EmailAddress).ToArray();
                     var lst = ctx.TODO_SubmitDocSetWithIncompleteInvoices
-                        .Where(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId).ToList()
-                        .Where(x => ft.AsycudaDocumentSetId == 0 || x.AsycudaDocumentSetId == ft.AsycudaDocumentSetId)
+                        //.Where(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId).ToList()
+                        .Where(x => x.AsycudaDocumentSetId == ft.AsycudaDocumentSetId)//ft.AsycudaDocumentSetId == 0 ||
                         .ToList()
                         .GroupBy(x => new { x.EmailId, x.AsycudaDocumentSetId });
 
@@ -2387,8 +2387,8 @@ namespace AutoBot
                     ctx.Database.CommandTimeout = 10;
                     var contacts = ctx.Contacts.Where(x => x.Role == "PO Clerk" || x.Role == "Developer").Select(x => x.EmailAddress).ToArray();
                     var lst = ctx.TODO_SubmitMissingInvoicePDFs
-                        .Where(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId).ToList()
-                        .Where(x => ft.AsycudaDocumentSetId == 0 || x.AsycudaDocumentSetId == ft.AsycudaDocumentSetId)
+                        //.Where(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId) // use the more precise filter
+                        .Where(x =>  x.AsycudaDocumentSetId == ft.AsycudaDocumentSetId)
                         .ToList()
                         .GroupBy(x => new { x.EmailId, x.AsycudaDocumentSetId });
 
@@ -2454,8 +2454,8 @@ namespace AutoBot
                     ctx.Database.CommandTimeout = 10;
                     var contacts = ctx.Contacts.Where(x => x.Role == "PO Clerk" || x.Role == "Developer").Select(x => x.EmailAddress).ToArray();
                     var lst = ctx.TODO_SubmitEntryCIF
-                        .Where(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId).ToList()
-                        .Where(x => ft.AsycudaDocumentSetId == 0 || x.AsycudaDocumentSetId == ft.AsycudaDocumentSetId)
+                        //.Where(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId).ToList()
+                        .Where(x => x.AsycudaDocumentSetId == ft.AsycudaDocumentSetId)
                         .ToList();
                     if (!lst.Any()) return;
                     if (GetDocSetActions(ft.AsycudaDocumentSetId, "SubmitEntryCIF").Any()) return;
@@ -2523,8 +2523,8 @@ namespace AutoBot
                 {
 
                     var emails = ctx.TODO_SubmitUnclassifiedItems
-                        .Where(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId && x.EmailId != null)
-                        .Where(x => ft.AsycudaDocumentSetId == 0 || x.AsycudaDocumentSetId == ft.AsycudaDocumentSetId)
+                        //.Where(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId && x.EmailId != null)
+                        .Where(x =>  x.AsycudaDocumentSetId == ft.AsycudaDocumentSetId)//ft.AsycudaDocumentSetId == 0 ||
                         .GroupBy(x => new { x.EmailId, x.AsycudaDocumentSetId }).ToList();
                     foreach (var email in emails)
                     {
@@ -2584,9 +2584,8 @@ namespace AutoBot
                 {
 
                     var emails = ctx.TODO_SubmitUnclassifiedItems
-                        .Where(x => x.ApplicationSettingsId ==
-                                    BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId
-                                    && x.EmailId != null
+                        .Where(x => //x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId &&
+                                    x.EmailId != null
                                     && x.AsycudaDocumentSetId == fileType.AsycudaDocumentSetId)
                         .GroupBy(x => new { x.EmailId, x.AsycudaDocumentSetId }).ToList();
                     foreach (var email in emails)
@@ -2654,9 +2653,8 @@ namespace AutoBot
                 {
 
                     var suppliers = ctx.TODO_SubmitIncompleteSupplierInfo
-                        .Where(x => x.ApplicationSettingsId ==
-                                    BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)
-                        .Where(x => ft.AsycudaDocumentSetId == 0 || x.AsycudaDocumentSetId == ft.AsycudaDocumentSetId)
+                        //.Where(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)
+                        .Where(x =>  x.AsycudaDocumentSetId == ft.AsycudaDocumentSetId)//ft.AsycudaDocumentSetId == 0 ||
                         .GroupBy(x => new {x.SupplierCode}).ToList();
 
                     if (!suppliers.Any()) return;
@@ -2720,8 +2718,8 @@ namespace AutoBot
                 {
                     var contacts = ctx.Contacts.Where(x => x.Role == "PO Clerk" || x.Role == "Broker").Select(x => x.EmailAddress).ToArray();
                     var lst = ctx.TODO_SubmitInadequatePackages
-                        .Where(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)
-                        .Where(x => ft.AsycudaDocumentSetId == 0 || x.AsycudaDocumentSetId == ft.AsycudaDocumentSetId)
+                        //.Where(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)
+                        .Where(x =>  x.AsycudaDocumentSetId == ft.AsycudaDocumentSetId)//ft.AsycudaDocumentSetId == 0 ||
                         .ToList();
 
                     foreach (var docSet in lst)
@@ -3470,7 +3468,7 @@ namespace AutoBot
             using (var ctx = new CoreEntitiesContext())
             {
                 var res = ctx.TODO_PODocSetToAssess
-                    .Where(x => ft.AsycudaDocumentSetId == 0 || x.AsycudaDocumentSetId == ft.AsycudaDocumentSetId)
+                    .Where(x =>  x.AsycudaDocumentSetId == ft.AsycudaDocumentSetId)//ft.AsycudaDocumentSetId == 0 ||
                     .ToList();
                 foreach (var doc in res)
                 {
@@ -4033,8 +4031,9 @@ namespace AutoBot
             using (var ctx = new CoreEntitiesContext())
             {
                 ctx.Database.CommandTimeout = 10;
-                var docSets = ctx.TODO_C71ToCreate.Where(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)
-                    .Where(x => ft.AsycudaDocumentSetId == 0 || x.AsycudaDocumentSetId == ft.AsycudaDocumentSetId)
+                var docSets = ctx.TODO_C71ToCreate
+                    //.Where(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)
+                    .Where(x => x.AsycudaDocumentSetId == ft.AsycudaDocumentSetId)//ft.AsycudaDocumentSetId == 0 || 
                     .ToList();
                 foreach (var poInfo in docSets)
                 {
@@ -4138,10 +4137,9 @@ namespace AutoBot
             using (var ctx = new CoreEntitiesContext())
             {
                 ctx.Database.CommandTimeout = 10;
-                var docSets = ctx.TODO_LICToCreate.Where(x =>
-                        x.ApplicationSettingsId ==
-                        BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)
-                    .Where(x => ft.AsycudaDocumentSetId == 0 || x.AsycudaDocumentSetId == ft.AsycudaDocumentSetId)
+                var docSets = ctx.TODO_LICToCreate
+                    //.Where(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)
+                    .Where(x => x.AsycudaDocumentSetId == ft.AsycudaDocumentSetId)//ft.AsycudaDocumentSetId == 0 || 
                     .ToList();
                 
                 foreach (var poInfo in docSets)
@@ -4417,10 +4415,9 @@ namespace AutoBot
                 using (var ctx = new CoreEntitiesContext())
                 {
                     ctx.Database.CommandTimeout = 10;
-                    var disLst = ctx.TODO_DiscrepanciesAlreadyXMLed.Where(x =>
-                                x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings
-                                    .ApplicationSettingsId
-                                && x.AsycudaDocumentSetId == fileType.AsycudaDocumentSetId
+                    var disLst = ctx.TODO_DiscrepanciesAlreadyXMLed
+                        .Where(x => //x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId &&
+                                    x.AsycudaDocumentSetId == fileType.AsycudaDocumentSetId
                             //     && x.InvoiceNo == "53371108"
                             //&& x.InvoiceDate >= saleInfo.Item1
                             //    &&  x.InvoiceDate <= saleInfo.Item2
@@ -4854,10 +4851,10 @@ namespace AutoBot
 
             using (var ctx = new CoreEntitiesContext())
             {
-                var lst = ctx.TODO_AssessDiscrepancyEntries.Where(x =>
-                            x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId
-                            && x.AsycudaDocumentSetId == ft.AsycudaDocumentSetId
-                            && x.AdjustmentType == "DIS"
+                var lst = ctx.TODO_AssessDiscrepancyEntries
+                    .Where(x =>// x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId &&
+                                x.AsycudaDocumentSetId == ft.AsycudaDocumentSetId
+                                && x.AdjustmentType == "DIS"
                         //&& x.InvoiceDate >= saleInfo.Item1
                         //    &&  x.InvoiceDate <= saleInfo.Item2
                     )
@@ -4924,10 +4921,10 @@ namespace AutoBot
                 using (var ctx = new CoreEntitiesContext())
                 {
                     ctx.Database.CommandTimeout = 10;
-                    var lst = ctx.TODO_DiscrepanciesErrors.Where(x =>
-                                x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId
-                                && x.AsycudaDocumentSetId == fileType.AsycudaDocumentSetId
-                                && x.Type == "DIS").ToList()
+                    var lst = ctx.TODO_DiscrepanciesErrors
+                        .Where(x =>//x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId &&
+                                                                      x.AsycudaDocumentSetId == fileType.AsycudaDocumentSetId
+                                                                      && x.Type == "DIS").ToList()
                         .GroupBy(x => new { x.AsycudaDocumentSetId, x.EmailId });
                     foreach (var doc in lst)
                     {

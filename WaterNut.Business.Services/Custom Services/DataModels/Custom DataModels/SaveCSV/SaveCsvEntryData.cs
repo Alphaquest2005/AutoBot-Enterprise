@@ -472,6 +472,7 @@ namespace WaterNut.DataSpace
                                                     Units = z.ContainsKey("Units") ? z["Units"].ToString() : null,
                                                     Cost = Convert.ToDouble(z["Cost"].ToString()),
                                                     TotalCost = z.ContainsKey("TotalCost") ? Convert.ToDouble(z["TotalCost"].ToString()) : (double?)null,
+                                                    Discount = z.ContainsKey("Discount") ? Convert.ToDouble(z["Discount"].ToString()) : 0,
                                                     Volume = z.ContainsKey("Gallons") ? new InvoiceDetailsVolume() {Quantity = Convert.ToDouble(z["Gallons"].ToString()), Units = "Gallons", TrackingState = TrackingState.Added, } : null,
                                                     SalesFactor = (z.ContainsKey("SalesFactor") && z.ContainsKey("Units") && z["Units"].ToString() != "EA") || (z.ContainsKey("SalesFactor") && !z.ContainsKey("Units")) ? Convert.ToInt32(z["SalesFactor"].ToString()) /* * (z.ContainsKey("Multiplier")  ? Convert.ToInt32(z["Multiplier"].ToString()) : 1) */ : 1,
                                                     LineNumber = ((List<IDictionary<string, object>>)x["InvoiceDetails"]).IndexOf(z) + 1,
@@ -543,7 +544,7 @@ namespace WaterNut.DataSpace
         {
             var details = invoice.InvoiceDetails;
 
-            foreach (var err in details.Where(x =>x.TotalCost.GetValueOrDefault() > 0 && Math.Abs((x.Quantity * x.Cost) - x.TotalCost.GetValueOrDefault()) > 0.01))
+            foreach (var err in details.Where(x =>x.TotalCost.GetValueOrDefault() > 0 && Math.Abs(((x.Quantity * x.Cost) - x.Discount.GetValueOrDefault()) - x.TotalCost.GetValueOrDefault()) > 0.01))
             {
                 
             }
@@ -570,11 +571,11 @@ namespace WaterNut.DataSpace
                         ApplicationSettingsId = BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId,
                         InvoiceNumber = x["InvoiceNumber"].ToString(),
                         Consignee = x["Consignee"].ToString(),
-                        Currency = x["Currency"].ToString().Truncate(3),
+                        Currency = x.ContainsKey("Currency") ?  x["Currency"].ToString().Truncate(3): null,
                         InvoiceDate =(DateTime) x["ETA"],
                         DueDate = x.ContainsKey("DueDate") ? DateTime.Parse(x["DueDate"].ToString()) : DateTime.MinValue,
                         ETA = (DateTime)x["ETA"],
-                        BLNumber = x["BLNumber"].ToString(),
+                        BLNumber = x.ContainsKey("BLNumber") ? x["BLNumber"].ToString(): null,
                         InvoiceTotal = Convert.ToDouble(x["InvoiceTotal"].ToString()),
                         ShipmentFreightDetails = ((List<IDictionary<string, object>>)x["ShipmentFreightDetails"])
                                                 .Select(z => new ShipmentFreightDetails()
@@ -731,12 +732,12 @@ namespace WaterNut.DataSpace
                         RegistrationNumber = x["RegistrationNumber"].ToString(),
                         CustomsOffice = x["CustomsOffice"].ToString(),
                         Voyage = x["Voyage"].ToString(),
-                        ETD = DateTime.Parse(x["ETD"].ToString()),
+                        ETD = x.ContainsKey("ETD") ? DateTime.Parse(x["ETD"].ToString()): DateTime.MinValue,
                         ETA = DateTime.Parse(x["ETA"].ToString()),
                         Vessel = x["Vessel"].ToString(),
                         WayBill = x["WayBill"].ToString(),
                         LineNumber = Convert.ToInt32(x["LineNumber"].ToString()),
-                        LoadingPort = x["LoadingPort"].ToString(),
+                        LoadingPort = x.ContainsKey("ETD") ? x["LoadingPort"].ToString():null,
                         ModeOfTransport = x["ModeOfTransport"].ToString(),
                         TypeOfBL = x["TypeOfBL"].ToString(),
                         //CargoReporter = x["CargoReporter"].ToString(),
