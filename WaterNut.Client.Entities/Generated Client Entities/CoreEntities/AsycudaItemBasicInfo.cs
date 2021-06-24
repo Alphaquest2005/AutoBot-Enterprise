@@ -213,6 +213,40 @@ public Nullable<int> AsycudaDocumentSetId
 		}
      
 
+       
+       
+                
+                [MaxLength(255, ErrorMessage = "Commercial_Description has a max length of 255 letters ")]
+public string Commercial_Description
+		{ 
+		    get { return this.asycudaitembasicinfo.Commercial_Description; }
+			set
+			{
+			    if (value == this.asycudaitembasicinfo.Commercial_Description) return;
+				this.asycudaitembasicinfo.Commercial_Description = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("Commercial_Description");
+			}
+		}
+     
+
+       
+       
+                
+                [MaxLength(20, ErrorMessage = "TariffCode has a max length of 20 letters ")]
+public string TariffCode
+		{ 
+		    get { return this.asycudaitembasicinfo.TariffCode; }
+			set
+			{
+			    if (value == this.asycudaitembasicinfo.TariffCode) return;
+				this.asycudaitembasicinfo.TariffCode = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("TariffCode");
+			}
+		}
+     
+
 
         ChangeTrackingCollection<DTO.AsycudaItemBasicInfo> _changeTracker;    
         public ChangeTrackingCollection<DTO.AsycudaItemBasicInfo> ChangeTracker

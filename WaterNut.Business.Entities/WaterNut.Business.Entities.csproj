@@ -458,7 +458,6 @@
     <Compile Include="Generated Business Entities\EntryDataQS\AsycudaDocumentItemEntryDataDetail.cs" />
     <Compile Include="Generated Business Entities\EntryDataQS\AsycudaDocumentSetEntryData.cs" />
     <Compile Include="Generated Business Entities\EntryDataQS\AsycudaDocumentSetEntryDataDetail.cs" />
-    <Compile Include="Generated Business Entities\EntryDataQS\ContainerEx.cs" />
     <Compile Include="Generated Business Entities\EntryDataQS\EmptyFullCode.cs" />
     <Compile Include="Generated Business Entities\EntryDataQS\EntryData.cs" />
     <Compile Include="Generated Business Entities\EntryDataQS\EntryDataDetailsEx.cs" />
@@ -844,7 +843,6 @@
     <Compile Include="Generated ChangeTracking Models\EntryDataQS\AsycudaDocumentItemEntryDataDetail.cs" />
     <Compile Include="Generated ChangeTracking Models\EntryDataQS\AsycudaDocumentSetEntryData.cs" />
     <Compile Include="Generated ChangeTracking Models\EntryDataQS\AsycudaDocumentSetEntryDataDetail.cs" />
-    <Compile Include="Generated ChangeTracking Models\EntryDataQS\ContainerEx.cs" />
     <Compile Include="Generated ChangeTracking Models\EntryDataQS\EmptyFullCode.cs" />
     <Compile Include="Generated ChangeTracking Models\EntryDataQS\EntryData.cs" />
     <Compile Include="Generated ChangeTracking Models\EntryDataQS\EntryDataDetailsEx.cs" />
@@ -1228,7 +1226,6 @@
     <Compile Include="Generated Constructors Models\EntryDataQS\AsycudaDocumentItemEntryDataDetail.cs" />
     <Compile Include="Generated Constructors Models\EntryDataQS\AsycudaDocumentSetEntryData.cs" />
     <Compile Include="Generated Constructors Models\EntryDataQS\AsycudaDocumentSetEntryDataDetail.cs" />
-    <Compile Include="Generated Constructors Models\EntryDataQS\ContainerEx.cs" />
     <Compile Include="Generated Constructors Models\EntryDataQS\EmptyFullCode.cs" />
     <Compile Include="Generated Constructors Models\EntryDataQS\EntryData.cs" />
     <Compile Include="Generated Constructors Models\EntryDataQS\EntryDataDetailsEx.cs" />
@@ -1612,7 +1609,6 @@
     <Compile Include="Generated IEntitiyWithKey Models\EntryDataQS\AsycudaDocumentItemEntryDataDetail.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\EntryDataQS\AsycudaDocumentSetEntryData.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\EntryDataQS\AsycudaDocumentSetEntryDataDetail.cs" />
-    <Compile Include="Generated IEntitiyWithKey Models\EntryDataQS\ContainerEx.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\EntryDataQS\EmptyFullCode.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\EntryDataQS\EntryData.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\EntryDataQS\EntryDataDetailsEx.cs" />
@@ -1996,7 +1992,6 @@
     <Compile Include="Generated IIdentitfiableEntity Models\EntryDataQS\AsycudaDocumentItemEntryDataDetail.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\EntryDataQS\AsycudaDocumentSetEntryData.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\EntryDataQS\AsycudaDocumentSetEntryDataDetail.cs" />
-    <Compile Include="Generated IIdentitfiableEntity Models\EntryDataQS\ContainerEx.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\EntryDataQS\EmptyFullCode.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\EntryDataQS\EntryData.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\EntryDataQS\EntryDataDetailsEx.cs" />
@@ -2390,7 +2385,6 @@
     <Compile Include="Generated Mappings\EntryDataQS\AsycudaDocumentItemEntryDataDetail.map.cs" />
     <Compile Include="Generated Mappings\EntryDataQS\AsycudaDocumentSetEntryData.map.cs" />
     <Compile Include="Generated Mappings\EntryDataQS\AsycudaDocumentSetEntryDataDetail.map.cs" />
-    <Compile Include="Generated Mappings\EntryDataQS\ContainerEx.map.cs" />
     <Compile Include="Generated Mappings\EntryDataQS\EmptyFullCode.map.cs" />
     <Compile Include="Generated Mappings\EntryDataQS\EntryData.map.cs" />
     <Compile Include="Generated Mappings\EntryDataQS\EntryDataDetailsEx.map.cs" />

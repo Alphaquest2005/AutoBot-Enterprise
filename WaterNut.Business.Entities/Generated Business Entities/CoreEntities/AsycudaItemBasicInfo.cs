@@ -185,6 +185,36 @@ namespace CoreEntities.Business.Entities
             }
         }
         Nullable<int> _asycudadocumentsetid;
+        [DataMember]
+        public string Commercial_Description 
+        {
+            get
+            {
+                return _commercial_description;
+            }
+            set
+            {
+                _commercial_description = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _commercial_description;
+        [DataMember]
+        public string TariffCode 
+        {
+            get
+            {
+                return _tariffcode;
+            }
+            set
+            {
+                _tariffcode = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _tariffcode;
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

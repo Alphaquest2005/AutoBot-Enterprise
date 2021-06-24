@@ -18,20 +18,20 @@ using System.Collections.Generic;
 using System;
 using System.ServiceModel;
 
-using ContainerEx = EntryDataQS.Client.Entities.ContainerEx;
+//using ContainerEx = EntryDataQS.Client.Entities.ContainerEx;
 
-namespace EntryDataQS.Client.Repositories 
-{
-    public partial class ContainerExRepository 
-    {
-        public async Task SaveContainer(ContainerEx container)
-        {
-            using (var ctx = new ContainerExClient())
-            {
-                await ctx.SaveContainer(container.DTO).ConfigureAwait(false);
-            }
-        }
+//namespace EntryDataQS.Client.Repositories 
+//{
+//    public partial class ContainerExRepository 
+//    {
+//        public async Task SaveContainer(ContainerEx container)
+//        {
+//            using (var ctx = new ContainerExClient())
+//            {
+//                await ctx.SaveContainer(container.DTO).ConfigureAwait(false);
+//            }
+//        }
       
-    }
-}
+//    }
+//}
 

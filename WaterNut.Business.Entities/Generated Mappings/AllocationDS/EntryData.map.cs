@@ -32,6 +32,7 @@
               this.Property(t => t.EntryData_Id).HasColumnName("EntryData_Id").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.Identity));
               this.Property(t => t.Packages).HasColumnName("Packages");
               this.Property(t => t.UpgradeKey).HasColumnName("UpgradeKey").HasMaxLength(50);
+              this.Property(t => t.EntryType).HasColumnName("EntryType").HasMaxLength(50);
               this.HasMany(t => t.EntryDataDetails1).WithRequired(t => (EntryData)t.EntryData);
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);

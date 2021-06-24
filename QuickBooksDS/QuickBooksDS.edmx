@@ -7,7 +7,7 @@
     <Schema Namespace="WaterNutDBModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2008" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="InventoryItems">
           <Key>
-            <PropertyRef Name="ItemNumber" />
+            <PropertyRef Name="Id" />
           </Key>
           <Property Name="ItemNumber" Type="nvarchar" MaxLength="20" Nullable="false" />
           <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
@@ -15,6 +15,8 @@
           <Property Name="Category" Type="nvarchar" MaxLength="60" />
           <Property Name="TariffCode" Type="nvarchar" MaxLength="50" />
           <Property Name="EntryTimeStamp" Type="datetime2" Precision="7" />
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="UpgradeKey" Type="nvarchar" MaxLength="20" />
         </EntityType>
         <EntityContainer Name="WaterNutDBModelStoreContainer">
           <EntitySet Name="InventoryItems" EntityType="Self.InventoryItems" Schema="dbo" store:Type="Tables" />
@@ -28,7 +30,7 @@
         </EntityContainer>
         <EntityType Name="InventoryItems">
           <Key>
-            <PropertyRef Name="ItemNumber" />
+            <PropertyRef Name="Id" />
           </Key>
           <Property Name="ItemNumber" Type="String" Nullable="false" MaxLength="20" Unicode="true" FixedLength="false" />
           <Property Name="Description" Type="String" Nullable="false" MaxLength="255" Unicode="true" FixedLength="false" />
@@ -36,6 +38,8 @@
           <Property Name="TariffCode" Type="String" MaxLength="50" Unicode="true" FixedLength="false" />
           <Property Name="EntryTimeStamp" Type="DateTime" Precision="7" />
           <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="UpgradeKey" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -46,6 +50,8 @@
           <EntitySetMapping Name="InventoryItems">
             <EntityTypeMapping TypeName="WaterNutDBModel.InventoryItems">
               <MappingFragment StoreEntitySet="InventoryItems">
+                <ScalarProperty Name="UpgradeKey" ColumnName="UpgradeKey" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="ApplicationSettingsId" ColumnName="ApplicationSettingsId" />
                 <ScalarProperty Name="ItemNumber" ColumnName="ItemNumber" />
                 <ScalarProperty Name="Description" ColumnName="Description" />

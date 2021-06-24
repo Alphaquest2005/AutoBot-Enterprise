@@ -591,6 +591,21 @@ public int InventoryItemId
 		}
      
 
+       
+       [NumberValidationAttribute]
+public Nullable<double> VolumeLiters
+		{ 
+		    get { return this.entrydatadetailsex.VolumeLiters; }
+			set
+			{
+			    if (value == this.entrydatadetailsex.VolumeLiters) return;
+				this.entrydatadetailsex.VolumeLiters = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("VolumeLiters");
+			}
+		}
+     
+
        private InventoryItemsEx _InventoryItemsEx;
         public  InventoryItemsEx InventoryItemsEx
 		{

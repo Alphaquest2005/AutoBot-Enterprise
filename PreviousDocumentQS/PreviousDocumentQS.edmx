@@ -43,8 +43,8 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.PreviousDocumentItem' doe
           <Property Name="Amount_deducted_from_licence" Type="nvarchar" MaxLength="10" />
           <Property Name="Item_Id" Type="int" Nullable="false" />
           <Property Name="ASYCUDA_Id" Type="int" Nullable="false" />
-          <Property Name="Licence_number" Type="nvarchar" MaxLength="6" />
-          <Property Name="Free_text_1" Type="nvarchar" MaxLength="30" />
+          <Property Name="Licence_number" Type="nvarchar" MaxLength="50" />
+          <Property Name="Free_text_1" Type="nvarchar" MaxLength="35" />
           <Property Name="Free_text_2" Type="nvarchar" MaxLength="30" />
           <Property Name="EntryDataDetailsId" Type="int" />
           <Property Name="LineNumber" Type="int" Nullable="false" />
@@ -125,6 +125,8 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.PreviousItemsEx' does not
           <Property Name="ItemNumber" Type="nvarchar" MaxLength="20" />
           <Property Name="pLineNumber" Type="int" />
           <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
+          <Property Name="TotalDutyLiablity" Type="float" />
+          <Property Name="DutyLiablity" Type="float" />
         </EntityType>
         <EntityContainer Name="WaterNutDBModelStoreContainer">
           <EntitySet Name="PreviousDocument" EntityType="Self.PreviousDocument" store:Type="Views" store:Schema="dbo">
@@ -219,7 +221,9 @@ FROM [dbo].[PreviousDocumentItem] AS [PreviousDocumentItem]</DefiningQuery>
 [PreviousItemsEx].[DutyFreePaid] AS [DutyFreePaid], 
 [PreviousItemsEx].[ItemNumber] AS [ItemNumber], 
 [PreviousItemsEx].[pLineNumber] AS [pLineNumber], 
-[PreviousItemsEx].[ApplicationSettingsId] AS [ApplicationSettingsId]
+[PreviousItemsEx].[ApplicationSettingsId] AS [ApplicationSettingsId], 
+[PreviousItemsEx].[TotalDutyLiablity] AS [TotalDutyLiablity], 
+[PreviousItemsEx].[DutyLiablity] AS [DutyLiablity]
 FROM [dbo].[PreviousItemsEx] AS [PreviousItemsEx]</DefiningQuery>
           </EntitySet>
         </EntityContainer>
@@ -274,8 +278,8 @@ FROM [dbo].[PreviousItemsEx] AS [PreviousItemsEx]</DefiningQuery>
           <Property Type="String" Name="Amount_deducted_from_licence" MaxLength="10" FixedLength="false" Unicode="true" />
           <Property Type="Int32" Name="Item_Id" Nullable="false" />
           <Property Type="Int32" Name="ASYCUDA_Id" Nullable="false" />
-          <Property Type="String" Name="Licence_number" MaxLength="6" FixedLength="false" Unicode="true" />
-          <Property Type="String" Name="Free_text_1" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="Licence_number" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="Free_text_1" MaxLength="35" FixedLength="false" Unicode="true" />
           <Property Type="String" Name="Free_text_2" MaxLength="30" FixedLength="false" Unicode="true" />
           <Property Type="Int32" Name="EntryDataDetailsId" />
           <Property Type="Int32" Name="LineNumber" Nullable="false" />
@@ -358,6 +362,8 @@ FROM [dbo].[PreviousItemsEx] AS [PreviousItemsEx]</DefiningQuery>
           <Property Name="Prev_decl_HS_spec" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Name="pLineNumber" Type="Int32" />
           <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
+          <Property Name="TotalDutyLiablity" Type="Double" />
+          <Property Name="DutyLiablity" Type="Double" />
         </EntityType>
         <Association Name="PreviousDocumentItemPreviousItemsEx">
           <End Type="WaterNutDBModel.PreviousDocumentItem" Role="PreviousDocumentItem" Multiplicity="0..1" />
@@ -452,6 +458,8 @@ FROM [dbo].[PreviousItemsEx] AS [PreviousItemsEx]</DefiningQuery>
           <EntitySetMapping Name="PreviousItemsExes">
             <EntityTypeMapping TypeName="WaterNutDBModel.PreviousItemsEx">
               <MappingFragment StoreEntitySet="PreviousItemsEx">
+                <ScalarProperty Name="DutyLiablity" ColumnName="DutyLiablity" />
+                <ScalarProperty Name="TotalDutyLiablity" ColumnName="TotalDutyLiablity" />
                 <ScalarProperty Name="ApplicationSettingsId" ColumnName="ApplicationSettingsId" />
                 <ScalarProperty Name="pLineNumber" ColumnName="pLineNumber" />
                 <ScalarProperty Name="Prev_decl_HS_spec" ColumnName="Prev_decl_HS_spec" />

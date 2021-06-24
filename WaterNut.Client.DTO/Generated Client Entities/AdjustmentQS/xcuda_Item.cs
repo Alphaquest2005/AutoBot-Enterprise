@@ -333,6 +333,19 @@ namespace AdjustmentQS.Client.DTO
 		}
         private Nullable<int> _UpgradeKey;
 
+        [DataMember]
+        public string PreviousInvoiceKey
+		{ 
+		    get { return _PreviousInvoiceKey; }
+			set
+			{
+			    if (value == _PreviousInvoiceKey) return;
+				_PreviousInvoiceKey = value;
+				NotifyPropertyChanged();//m => this.PreviousInvoiceKey
+			}
+		}
+        private string _PreviousInvoiceKey;
+
        
         [DataMember]
         public ChangeTrackingCollection<AsycudaSalesAllocation> AsycudaSalesAllocations

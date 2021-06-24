@@ -586,6 +586,36 @@ public int ApplicationSettingsId
 		}
      
 
+       
+       [NumberValidationAttribute]
+public Nullable<double> TotalDutyLiablity
+		{ 
+		    get { return this.previousitemsex.TotalDutyLiablity; }
+			set
+			{
+			    if (value == this.previousitemsex.TotalDutyLiablity) return;
+				this.previousitemsex.TotalDutyLiablity = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("TotalDutyLiablity");
+			}
+		}
+     
+
+       
+       [NumberValidationAttribute]
+public Nullable<double> DutyLiablity
+		{ 
+		    get { return this.previousitemsex.DutyLiablity; }
+			set
+			{
+			    if (value == this.previousitemsex.DutyLiablity) return;
+				this.previousitemsex.DutyLiablity = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("DutyLiablity");
+			}
+		}
+     
+
        private PreviousDocumentItem _PreviousDocumentItem;
         public  PreviousDocumentItem PreviousDocumentItem
 		{

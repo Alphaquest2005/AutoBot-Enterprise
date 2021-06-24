@@ -880,7 +880,7 @@ namespace AutoBot
                 ctx.Database.CommandTimeout = 10;
                 var res = ctx.TODO_C71ToCreate
                     .Where(x => x.AsycudaDocumentSetId == ft.AsycudaDocumentSetId)//ft.AsycudaDocumentSetId == 0 ||
-                    .OrderByDescending(x => x.Id)
+                    .OrderByDescending(x => x.AsycudaDocumentSetId)
                     .Take(1)
                     .ToList();
 
@@ -1324,7 +1324,7 @@ namespace AutoBot
                     var lst = ctx.TODO_C71ToCreate
                         //.Where(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId) 
                         .Where(x =>  x.AsycudaDocumentSetId == ft.AsycudaDocumentSetId)//ft.AsycudaDocumentSetId == 0 ||
-                        .OrderByDescending(x => x.Id)
+                        .OrderByDescending(x => x.AsycudaDocumentSetId)
                         .Take(1)
                         .ToList();
 

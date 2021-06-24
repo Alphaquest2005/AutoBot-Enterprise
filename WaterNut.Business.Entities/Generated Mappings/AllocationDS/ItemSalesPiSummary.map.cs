@@ -23,7 +23,7 @@
               this.Property(t => t.QtyAllocated).HasColumnName("QtyAllocated");
               this.Property(t => t.EntryDataDate).HasColumnName("EntryDataDate");
               this.Property(t => t.ApplicationSettingsId).HasColumnName("ApplicationSettingsId");
-              this.Property(t => t.ItemNumber).HasColumnName("ItemNumber").HasMaxLength(20);
+              this.Property(t => t.ItemNumber).HasColumnName("ItemNumber").IsRequired().HasMaxLength(20);
               this.Property(t => t.Type).HasColumnName("Type").IsRequired().HasMaxLength(50);
               this.Property(t => t.AllocationId).HasColumnName("AllocationId").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.None));
               this.Property(t => t.Status).HasColumnName("Status").HasMaxLength(255);

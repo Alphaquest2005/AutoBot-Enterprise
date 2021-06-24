@@ -18,11 +18,11 @@ namespace QuickBooksDS.Business.Entities
         {
             get
             {
-                return this.ItemNumber.ToString();  // this.ItemNumber == null?"0":
+                return this.Id.ToString();  // this.Id == null?"0":
             }
             set
             {
-                this.ItemNumber = Convert.ToString(value);
+                this.Id = Convert.ToInt32(value);
             }
         }
 

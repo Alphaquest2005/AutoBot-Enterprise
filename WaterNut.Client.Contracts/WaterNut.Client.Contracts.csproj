@@ -223,7 +223,6 @@
     <Compile Include="EntryDataQS\IAsycudaDocumentItemEntryDataDetailService.cs" />
     <Compile Include="EntryDataQS\IAsycudaDocumentSetEntryDataDetailService.cs" />
     <Compile Include="EntryDataQS\IAsycudaDocumentSetEntryDataService.cs" />
-    <Compile Include="EntryDataQS\IContainerExService.cs" />
     <Compile Include="EntryDataQS\IEmptyFullCodeService.cs" />
     <Compile Include="EntryDataQS\IEntryDataDetailsExService.cs" />
     <Compile Include="EntryDataQS\IEntryDataExService.cs" />

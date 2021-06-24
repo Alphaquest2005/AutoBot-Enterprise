@@ -37,6 +37,7 @@
               this.Property(t => t.PreviousInvoiceItemNumber).HasColumnName("PreviousInvoiceItemNumber").HasMaxLength(50);
               this.Property(t => t.EntryDataType).HasColumnName("EntryDataType").HasMaxLength(50);
               this.Property(t => t.UpgradeKey).HasColumnName("UpgradeKey");
+              this.Property(t => t.PreviousInvoiceKey).HasColumnName("PreviousInvoiceKey").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.Computed)).HasMaxLength(4000);
               this.HasMany(t => t.AsycudaSalesAllocations).WithOptional(t => t.xcuda_Item).HasForeignKey(d => d.PreviousItem_Id);
               this.HasMany(t => t.AdjustmentOversAllocations).WithOptional(t => t.xcuda_Item).HasForeignKey(d => d.PreviousItem_Id);
              // Tracking Properties

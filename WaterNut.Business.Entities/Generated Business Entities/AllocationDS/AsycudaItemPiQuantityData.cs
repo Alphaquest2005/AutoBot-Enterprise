@@ -36,7 +36,7 @@ namespace AllocationDS.Business.Entities
         }
         int _item_id;
         [DataMember]
-        public Nullable<double> PiQuantity 
+        public double PiQuantity 
         {
             get
             {
@@ -49,9 +49,9 @@ namespace AllocationDS.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        Nullable<double> _piquantity;
+        double _piquantity;
         [DataMember]
-        public Nullable<double> PiWeight 
+        public double PiWeight 
         {
             get
             {
@@ -64,7 +64,7 @@ namespace AllocationDS.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        Nullable<double> _piweight;
+        double _piweight;
         [DataMember]
         public Nullable<System.DateTime> AssessmentDate 
         {

@@ -1035,6 +1035,7 @@ namespace WaterNut.DataSpace
                                     {
                                         ApplicationSettingsId = applicationSettingsId,
                                         EntryDataId = entryDataId,
+                                        EntryType = "Sales",
                                         EntryDataDate = (DateTime) item.EntryData.EntryDataDate,
                                         INVNumber = entryDataId,
                                         CustomerName = item.EntryData.CustomerName,
@@ -1070,6 +1071,7 @@ namespace WaterNut.DataSpace
                                     {
                                         ApplicationSettingsId = applicationSettingsId,
                                         EntryDataId = entryDataId,
+                                        EntryType = "INV",
                                         EntryDataDate = (DateTime) item.EntryData.EntryDataDate,
                                         SupplierCode = item.EntryData.Supplier,
                                         TrackingState = TrackingState.Added,
@@ -1117,6 +1119,7 @@ namespace WaterNut.DataSpace
                                         EntryDataId = entryDataId,
                                         EntryDataDate = (DateTime) item.EntryData.EntryDataDate,
                                         PONumber = entryDataId,
+                                        EntryType = "PO",
                                         SupplierCode = item.EntryData.Supplier,
                                         TrackingState = TrackingState.Added,
                                         TotalFreight = item.f.Sum(x => (double)x.TotalFreight),
@@ -1178,6 +1181,7 @@ namespace WaterNut.DataSpace
                                         EntryDataId = entryDataId,
                                         EntryDataDate = (DateTime) item.EntryData.EntryDataDate,
                                         OPSNumber = entryDataId,
+                                        EntryType = "OPS",
                                         TrackingState = TrackingState.Added,
                                         TotalFreight = item.f.Sum(x => (double)x.TotalFreight),
                                         TotalInternalFreight = item.f.Sum(x => (double)x.TotalInternalFreight),
@@ -1208,6 +1212,7 @@ namespace WaterNut.DataSpace
                                     {
                                         ApplicationSettingsId = applicationSettingsId,
                                         EntryDataId = entryDataId,
+                                        EntryType = "ADJ",
                                         EntryDataDate = (DateTime) item.EntryData.EntryDataDate,
                                         TrackingState = TrackingState.Added,
                                         SupplierCode = item.EntryData.Supplier,
@@ -1241,6 +1246,7 @@ namespace WaterNut.DataSpace
                                     {
                                         ApplicationSettingsId = applicationSettingsId,
                                         EntryDataId = entryDataId,
+                                        EntryType = "ADJ",
                                         EntryDataDate = (DateTime) item.EntryData.EntryDataDate,
                                         SupplierCode = item.EntryData.Supplier,
                                         TrackingState = TrackingState.Added,
@@ -1259,7 +1265,7 @@ namespace WaterNut.DataSpace
                                             : item.EntryData.Currency,
                                         Type = "DIS"
                                     };
-                                    if (item.EntryData.DocumentType != "")
+                                    if (!string.IsNullOrEmpty(item.EntryData.DocumentType))
                                         EDdis.DocumentType = new EDDocumentTypes(true)
                                         {
                                             DocumentType = item.EntryData.DocumentType,
@@ -1274,6 +1280,7 @@ namespace WaterNut.DataSpace
                                     {
                                         ApplicationSettingsId = applicationSettingsId,
                                         EntryDataId = entryDataId,
+                                        EntryType = "ADJ",
                                         EntryDataDate = (DateTime) item.EntryData.EntryDataDate,
                                         TrackingState = TrackingState.Added,
                                         TotalFreight = item.f.Sum(x => (double)x.TotalFreight),

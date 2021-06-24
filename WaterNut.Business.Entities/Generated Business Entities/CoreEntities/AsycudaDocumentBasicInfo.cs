@@ -260,6 +260,66 @@ namespace CoreEntities.Business.Entities
             }
         }
         int _customs_procedureid;
+        [DataMember]
+        public string CustomsProcedure 
+        {
+            get
+            {
+                return _customsprocedure;
+            }
+            set
+            {
+                _customsprocedure = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _customsprocedure;
+        [DataMember]
+        public string SourceFileName 
+        {
+            get
+            {
+                return _sourcefilename;
+            }
+            set
+            {
+                _sourcefilename = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _sourcefilename;
+        [DataMember]
+        public Nullable<bool> SubmitToCustoms 
+        {
+            get
+            {
+                return _submittocustoms;
+            }
+            set
+            {
+                _submittocustoms = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<bool> _submittocustoms;
+        [DataMember]
+        public Nullable<bool> IsPaid 
+        {
+            get
+            {
+                return _ispaid;
+            }
+            set
+            {
+                _ispaid = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<bool> _ispaid;
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

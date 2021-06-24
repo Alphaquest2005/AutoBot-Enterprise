@@ -144,7 +144,7 @@ public string Units
        [RequiredValidationAttribute(ErrorMessage= "ItemDescription is required")]
        
                 
-                
+                [MaxLength(255, ErrorMessage = "ItemDescription has a max length of 255 letters ")]
 public string ItemDescription
 		{ 
 		    get { return this.entrydatadetailsex.ItemDescription; }
@@ -590,6 +590,21 @@ public Nullable<int> FileLineNumber
 				this.entrydatadetailsex.FileLineNumber = value;
                 if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
 				NotifyPropertyChanged("FileLineNumber");
+			}
+		}
+     
+
+       
+       [NumberValidationAttribute]
+public Nullable<double> VolumeLiters
+		{ 
+		    get { return this.entrydatadetailsex.VolumeLiters; }
+			set
+			{
+			    if (value == this.entrydatadetailsex.VolumeLiters) return;
+				this.entrydatadetailsex.VolumeLiters = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("VolumeLiters");
 			}
 		}
      

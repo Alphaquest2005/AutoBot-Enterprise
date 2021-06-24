@@ -108,6 +108,9 @@ namespace InventoryDS.Business.Services
 				[OperationContract]
         [FaultContract(typeof(ValidationFault))]
         Task<IEnumerable<InventoryItemAlia>> GetInventoryItemAliaByInventoryItemId(string InventoryItemId, List<string> includesLst = null);
+  		[OperationContract]
+        [FaultContract(typeof(ValidationFault))]
+        Task<IEnumerable<InventoryItemAlia>> GetInventoryItemAliaByAliasItemId(string AliasItemId, List<string> includesLst = null);
   
 
 

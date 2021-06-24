@@ -98,16 +98,16 @@ namespace ValuationDS.Business.Services
         }
 
 
-        public async Task<TODO_C71ToCreate> GetTODO_C71ToCreateByKey(string Id, List<string> includesLst = null, bool tracking = true)
+        public async Task<TODO_C71ToCreate> GetTODO_C71ToCreateByKey(string AsycudaDocumentSetId, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
-			   if(string.IsNullOrEmpty(Id))return null; 
+			   if(string.IsNullOrEmpty(AsycudaDocumentSetId))return null; 
               using ( var dbContext = new ValuationDSContext(){StartTracking = StartTracking})
               {
-                var i = Convert.ToInt32(Id);
+                var i = Convert.ToInt32(AsycudaDocumentSetId);
 				var set = AddIncludes(includesLst, dbContext);
-                TODO_C71ToCreate entity = await set.AsNoTracking().SingleOrDefaultAsync(x => x.Id == i).ConfigureAwait(continueOnCapturedContext: false);
+                TODO_C71ToCreate entity = await set.AsNoTracking().SingleOrDefaultAsync(x => x.AsycudaDocumentSetId == i).ConfigureAwait(continueOnCapturedContext: false);
                 if(tracking && entity != null) entity.StartTracking();
                 return entity;
               }
@@ -288,11 +288,11 @@ namespace ValuationDS.Business.Services
                                 IQueryable<TODO_C71ToCreate> dset;
                                 if (exp == "All")
                                 {
-                                    dset = set.OrderBy(x => x.Id);
+                                    dset = set.OrderBy(x => x.AsycudaDocumentSetId);
                                 }
                                 else
                                 {
-                                    dset = set.OrderBy(x => x.Id).Where(exp);
+                                    dset = set.OrderBy(x => x.AsycudaDocumentSetId).Where(exp);
                                 }
 
                                 var lst = dset.AsNoTracking()
@@ -363,12 +363,12 @@ namespace ValuationDS.Business.Services
                                 IQueryable<TODO_C71ToCreate> dset;
                                 if (expLst.FirstOrDefault() == "All")
                                 {
-                                    dset = set.OrderBy(x => x.Id);
+                                    dset = set.OrderBy(x => x.AsycudaDocumentSetId);
                                 }
                                 else
                                 {
                                     set = AddWheres(expLst, set);
-                                    dset = set.OrderBy(x => x.Id);
+                                    dset = set.OrderBy(x => x.AsycudaDocumentSetId);
                                 }
 
                                 var lst = dset.AsNoTracking()
@@ -514,15 +514,15 @@ namespace ValuationDS.Business.Services
             }
         }
 
-        public async Task<bool> DeleteTODO_C71ToCreate(string Id)
+        public async Task<bool> DeleteTODO_C71ToCreate(string AsycudaDocumentSetId)
         {
             try
             {
               using ( var dbContext = new ValuationDSContext(){StartTracking = StartTracking})
               {
-                var i = Convert.ToInt32(Id);
+                var i = Convert.ToInt32(AsycudaDocumentSetId);
                 TODO_C71ToCreate entity = await dbContext.TODO_C71ToCreate
-													.SingleOrDefaultAsync(x => x.Id == i)
+													.SingleOrDefaultAsync(x => x.AsycudaDocumentSetId == i)
 													.ConfigureAwait(continueOnCapturedContext: false);
                 if (entity == null)
                     return false;
@@ -674,7 +674,7 @@ namespace ValuationDS.Business.Services
                     {
                         return await dbContext.TODO_C71ToCreate
 										.AsNoTracking()
-                                        .OrderBy(y => y.Id)
+                                        .OrderBy(y => y.AsycudaDocumentSetId)
 										.Skip(startIndex)
 										.Take(count)
 										.ToListAsync()
@@ -686,7 +686,7 @@ namespace ValuationDS.Business.Services
                         return await dbContext.TODO_C71ToCreate
 										.AsNoTracking()
                                         .Where(exp)
-										.OrderBy(y => y.Id)
+										.OrderBy(y => y.AsycudaDocumentSetId)
 										.Skip(startIndex)
 										.Take(count)
 										.ToListAsync()
@@ -723,7 +723,7 @@ namespace ValuationDS.Business.Services
                                         .CountAsync()
 										.ConfigureAwait(continueOnCapturedContext: false);
                     }
-                    return await dbContext.TODO_C71ToCreate.Where(exp == "All" || exp == null ? "Id != null" : exp)
+                    return await dbContext.TODO_C71ToCreate.Where(exp == "All" || exp == null ? "AsycudaDocumentSetId != null" : exp)
 											.AsNoTracking()
                                             .CountAsync()
 											.ConfigureAwait(continueOnCapturedContext: false);
@@ -766,9 +766,9 @@ namespace ValuationDS.Business.Services
 				.AsNoTracking()
                 .Where(navExp)
                 .SelectMany(navProp).OfType<TODO_C71ToCreate>()
-                .Where(exp == "All" || exp == null ? "Id != null" : exp)
+                .Where(exp == "All" || exp == null ? "AsycudaDocumentSetId != null" : exp)
                 .Distinct()
-                .OrderBy("Id")
+                .OrderBy("AsycudaDocumentSetId")
                 .CountAsync()
 				.ConfigureAwait(continueOnCapturedContext: false);
 			}
@@ -787,9 +787,9 @@ namespace ValuationDS.Business.Services
 				.AsNoTracking()
                 .Where(navExp)
                 .Select(navProp).OfType<TODO_C71ToCreate>()
-                .Where(exp == "All" || exp == null ? "Id != null" : exp)
+                .Where(exp == "All" || exp == null ? "AsycudaDocumentSetId != null" : exp)
                 .Distinct()
-                .OrderBy("Id")
+                .OrderBy("AsycudaDocumentSetId")
                 .CountAsync()
 				.ConfigureAwait(continueOnCapturedContext: false);
 			}
@@ -816,7 +816,7 @@ namespace ValuationDS.Business.Services
                        
                         return await set
 									.AsNoTracking()
-                                    .OrderBy(y => y.Id)
+                                    .OrderBy(y => y.AsycudaDocumentSetId)
  
                                     .Skip(startIndex)
                                     .Take(count)
@@ -825,8 +825,8 @@ namespace ValuationDS.Business.Services
                     }
                     return await set//dbContext.TODO_C71ToCreate
 								.AsNoTracking()
-                                .Where(exp == "All" || exp == null ? "Id != null" : exp)
-								.OrderBy(y => y.Id)
+                                .Where(exp == "All" || exp == null ? "AsycudaDocumentSetId != null" : exp)
+								.OrderBy(y => y.AsycudaDocumentSetId)
  
                                 .Skip(startIndex)
                                 .Take(count)
@@ -878,9 +878,9 @@ namespace ValuationDS.Business.Services
             if (includeLst != null) set = includeLst.Aggregate(set, (current, itm) => current.Include(itm));            
 
             return await set
-                .Where(exp == "All" || exp == null ? "Id != null" : exp)
+                .Where(exp == "All" || exp == null ? "AsycudaDocumentSetId != null" : exp)
                 .Distinct()
-                .OrderBy(y => y.Id)
+                .OrderBy(y => y.AsycudaDocumentSetId)
  
                 .Skip(startIndex)
                 .Take(count)
@@ -907,9 +907,9 @@ namespace ValuationDS.Business.Services
                if (includeLst != null) set = includeLst.Aggregate(set, (current, itm) => current.Include(itm)); 
                 
                return await set
-                .Where(exp == "All" || exp == null ? "Id != null" : exp)
+                .Where(exp == "All" || exp == null ? "AsycudaDocumentSetId != null" : exp)
                 .Distinct()
-                .OrderBy(y => y.Id)
+                .OrderBy(y => y.AsycudaDocumentSetId)
  
                 .Skip(startIndex)
                 .Take(count)
@@ -959,7 +959,7 @@ namespace ValuationDS.Business.Services
 							.AsNoTracking()
                             .Where(navExp)
 							.SelectMany(navProp).OfType<TODO_C71ToCreate>()
-							.Where(exp == "All" || exp == null?"Id != null":exp)
+							.Where(exp == "All" || exp == null?"AsycudaDocumentSetId != null":exp)
 							.Distinct()
 							.ToListAsync()
 							.ConfigureAwait(continueOnCapturedContext: false);
@@ -969,7 +969,7 @@ namespace ValuationDS.Business.Services
 				.AsNoTracking()
                 .Where(navExp)
                 .SelectMany(navProp).OfType<TODO_C71ToCreate>()
-                .Where(exp == "All" || exp == null?"Id != null":exp)
+                .Where(exp == "All" || exp == null?"AsycudaDocumentSetId != null":exp)
                 .Distinct();
 
 			set = includesLst.Aggregate(set, (current, itm) => current.Include(itm));
@@ -996,7 +996,7 @@ namespace ValuationDS.Business.Services
 							.AsNoTracking()
                             .Where(navExp)
 							.Select(navProp).OfType<TODO_C71ToCreate>()
-							.Where(exp == "All" || exp == null?"Id != null":exp)
+							.Where(exp == "All" || exp == null?"AsycudaDocumentSetId != null":exp)
 							.Distinct()
 							.ToListAsync()
 							.ConfigureAwait(continueOnCapturedContext: false);
@@ -1006,7 +1006,7 @@ namespace ValuationDS.Business.Services
 				.AsNoTracking()
                 .Where(navExp)
                 .Select(navProp).OfType<TODO_C71ToCreate>()
-                .Where(exp == "All" || exp == null?"Id != null":exp)
+                .Where(exp == "All" || exp == null?"AsycudaDocumentSetId != null":exp)
                 .Distinct();
 
 			set = includesLst.Aggregate(set, (current, itm) => current.Include(itm));
@@ -1021,36 +1021,7 @@ namespace ValuationDS.Business.Services
 			}
         }
 
-			        public async Task<IEnumerable<TODO_C71ToCreate>> GetTODO_C71ToCreateByAsycudaDocumentSetId(string AsycudaDocumentSetId, List<string> includesLst = null)
-        {
-            try
-            {
-                using ( var dbContext = new ValuationDSContext(){StartTracking = StartTracking})
-              {
-                var i = Convert.ToInt32(AsycudaDocumentSetId);
-                var set = AddIncludes(includesLst, dbContext);
-                IEnumerable<TODO_C71ToCreate> entities = await set//dbContext.TODO_C71ToCreate
-                                      .AsNoTracking()
-                                        .Where(x => x.AsycudaDocumentSetId.ToString() == AsycudaDocumentSetId.ToString())
-										.ToListAsync()
-										.ConfigureAwait(continueOnCapturedContext: false);
-                return entities;
-              }
-             }
-            catch (Exception updateEx)
-            {
-                System.Diagnostics.Debugger.Break();
-                //throw new FaultException(updateEx.Message);
-                    var fault = new ValidationFault
-                                {
-                                    Result = false,
-                                    Message = updateEx.Message,
-                                    Description = updateEx.StackTrace
-                                };
-                    throw new FaultException<ValidationFault>(fault);
-            }
-        }
- 	        public async Task<IEnumerable<TODO_C71ToCreate>> GetTODO_C71ToCreateByApplicationSettingsId(string ApplicationSettingsId, List<string> includesLst = null)
+			        public async Task<IEnumerable<TODO_C71ToCreate>> GetTODO_C71ToCreateByApplicationSettingsId(string ApplicationSettingsId, List<string> includesLst = null)
         {
             try
             {
@@ -1130,7 +1101,7 @@ namespace ValuationDS.Business.Services
 										.AsNoTracking()
                                         .Sum(field)??0);
                     }
-                    return Convert.ToDecimal(dbContext.TODO_C71ToCreate.Where(exp == "All" || exp == null ? "Id != null" : exp)
+                    return Convert.ToDecimal(dbContext.TODO_C71ToCreate.Where(exp == "All" || exp == null ? "AsycudaDocumentSetId != null" : exp)
 											.AsNoTracking()
                                             .Sum(field)??0);
                 }
@@ -1171,9 +1142,9 @@ namespace ValuationDS.Business.Services
 				.AsNoTracking()
                 .Where(navExp)
                 .SelectMany(navProp).OfType<TODO_C71ToCreate>()
-                .Where(exp == "All" || exp == null ? "Id != null" : exp)
+                .Where(exp == "All" || exp == null ? "AsycudaDocumentSetId != null" : exp)
                 .Distinct()
-                .OrderBy("Id")
+                .OrderBy("AsycudaDocumentSetId")
                 .Sum(field));
 			}
 			catch (Exception)
@@ -1191,9 +1162,9 @@ namespace ValuationDS.Business.Services
 				.AsNoTracking()
                 .Where(navExp)
                 .Select(navProp).OfType<TODO_C71ToCreate>()
-                .Where(exp == "All" || exp == null ? "Id != null" : exp)
+                .Where(exp == "All" || exp == null ? "AsycudaDocumentSetId != null" : exp)
                 .Distinct()
-                .OrderBy("Id")
+                .OrderBy("AsycudaDocumentSetId")
                 .Sum(field));
 			}
 			catch (Exception)

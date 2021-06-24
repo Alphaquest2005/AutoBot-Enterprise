@@ -179,15 +179,10 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.C71Summary' does not have
         <!--Errors Found During Generation:
 warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-C71ToCreate' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="TODO-C71ToCreate">
+          
           <Key>
-            <PropertyRef Name="Id" />
-            
-            
-            
-            
-            
+            <PropertyRef Name="AsycudaDocumentSetId" />
           </Key>
-          <Property Name="Id" Type="int" Nullable="false" />
           <Property Name="AsycudaDocumentSetId" Type="int" Nullable="false" />
           <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
           <Property Name="Country_of_origin_code" Type="nvarchar" MaxLength="3" />
@@ -314,7 +309,6 @@ FROM [dbo].[C71Summary] AS [C71Summary]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="TODO-C71ToCreate" EntityType="Self.TODO-C71ToCreate" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
-[TODO-C71ToCreate].[Id] AS [Id], 
 [TODO-C71ToCreate].[AsycudaDocumentSetId] AS [AsycudaDocumentSetId], 
 [TODO-C71ToCreate].[ApplicationSettingsId] AS [ApplicationSettingsId], 
 [TODO-C71ToCreate].[Country_of_origin_code] AS [Country_of_origin_code], 
@@ -627,9 +621,8 @@ FROM [dbo].[TODO-C71ToCreate] AS [TODO-C71ToCreate]</DefiningQuery>
         </EntityType>
         <EntityType Name="TODO_C71ToCreate">
           <Key>
-            <PropertyRef Name="Id" />
+            <PropertyRef Name="AsycudaDocumentSetId" />
           </Key>
-          <Property Name="Id" Type="Int32" Nullable="false" />
           <Property Name="AsycudaDocumentSetId" Type="Int32" Nullable="false" />
           <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
           <Property Name="Country_of_origin_code" Type="String" MaxLength="3" FixedLength="false" Unicode="true" />
@@ -850,7 +843,6 @@ FROM [dbo].[TODO-C71ToCreate] AS [TODO-C71ToCreate]</DefiningQuery>
                 <ScalarProperty Name="Country_of_origin_code" ColumnName="Country_of_origin_code" />
                 <ScalarProperty Name="ApplicationSettingsId" ColumnName="ApplicationSettingsId" />
                 <ScalarProperty Name="AsycudaDocumentSetId" ColumnName="AsycudaDocumentSetId" />
-                <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

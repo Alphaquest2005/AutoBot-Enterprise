@@ -229,6 +229,58 @@ namespace CoreEntities.Client.DTO
 		}
         private int _Customs_ProcedureId;
 
+        [DataMember]
+        public string CustomsProcedure
+		{ 
+		    get { return _CustomsProcedure; }
+			set
+			{
+			    if (value == _CustomsProcedure) return;
+				_CustomsProcedure = value;
+				NotifyPropertyChanged();//m => this.CustomsProcedure
+			}
+		}
+        private string _CustomsProcedure;
+
+        [DataMember]
+        public string SourceFileName
+		{ 
+		    get { return _SourceFileName; }
+			set
+			{
+			    if (value == _SourceFileName) return;
+				_SourceFileName = value;
+				NotifyPropertyChanged();//m => this.SourceFileName
+			}
+		}
+        private string _SourceFileName;
+
+        [DataMember]
+        public Nullable<bool> SubmitToCustoms
+		{ 
+		    get { return _SubmitToCustoms; }
+			set
+			{
+			    if (value == _SubmitToCustoms) return;
+				_SubmitToCustoms = value;
+				NotifyPropertyChanged();//m => this.SubmitToCustoms
+			}
+		}
+        private Nullable<bool> _SubmitToCustoms;
+
+        [DataMember]
+        public Nullable<bool> IsPaid
+		{ 
+		    get { return _IsPaid; }
+			set
+			{
+			    if (value == _IsPaid) return;
+				_IsPaid = value;
+				NotifyPropertyChanged();//m => this.IsPaid
+			}
+		}
+        private Nullable<bool> _IsPaid;
+
        
    //     [DataMember]
    //     public TrackingState TrackingState { get; set; }

@@ -66,9 +66,9 @@
               this.Property(t => t.xStatus).HasColumnName("xStatus").HasMaxLength(255);
               this.Property(t => t.Type).HasColumnName("Type").HasMaxLength(50);
               this.Property(t => t.SalesLineNumber).HasColumnName("SalesLineNumber");
-              this.HasRequired(t => t.PreviousDocumentItem).WithMany(t =>(ICollection<AdjustmentShortAllocations>) t.AdjustmentShortAllocations).HasForeignKey(d => d.PreviousItem_Id);
+              this.HasOptional(t => t.PreviousDocumentItem).WithMany(t =>(ICollection<AdjustmentShortAllocations>) t.AdjustmentShortAllocations).HasForeignKey(d => d.PreviousItem_Id);
               this.HasRequired(t => t.EntryDataDetails).WithMany(t =>(ICollection<AdjustmentShortAllocations>) t.AdjustmentShortAllocations).HasForeignKey(d => d.EntryDataDetailsId);
-              this.HasRequired(t => t.AscyudaItemPiQuantity).WithMany(t =>(ICollection<AdjustmentShortAllocations>) t.AdjustmentShortAllocations).HasForeignKey(d => d.PreviousItem_Id);
+              this.HasOptional(t => t.AscyudaItemPiQuantity).WithMany(t =>(ICollection<AdjustmentShortAllocations>) t.AdjustmentShortAllocations).HasForeignKey(d => d.PreviousItem_Id);
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);
     			this.Ignore(t => t.ModifiedProperties);

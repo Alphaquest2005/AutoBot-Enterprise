@@ -223,6 +223,21 @@ public Nullable<int> DocumentsCount
 
        
        [NumberValidationAttribute]
+public Nullable<int> ExpectedEntries
+		{ 
+		    get { return this.todo_c71tocreate.ExpectedEntries; }
+			set
+			{
+			    if (value == this.todo_c71tocreate.ExpectedEntries) return;
+				this.todo_c71tocreate.ExpectedEntries = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("ExpectedEntries");
+			}
+		}
+     
+
+       
+       [NumberValidationAttribute]
 public Nullable<double> InvoiceTotal
 		{ 
 		    get { return this.todo_c71tocreate.InvoiceTotal; }
@@ -281,21 +296,6 @@ public double C71Total
 		}
      
 
-       [RequiredValidationAttribute(ErrorMessage= " is required")]
-       
-public int Id
-		{ 
-		    get { return this.todo_c71tocreate.Id; }
-			set
-			{
-			    if (value == this.todo_c71tocreate.Id) return;
-				this.todo_c71tocreate.Id = value;
-                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
-				NotifyPropertyChanged("Id");
-			}
-		}
-     
-
        [RequiredValidationAttribute(ErrorMessage= "Rate is required")]
        [NumberValidationAttribute]
 public double Rate
@@ -307,21 +307,6 @@ public double Rate
 				this.todo_c71tocreate.Rate = value;
                 if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
 				NotifyPropertyChanged("Rate");
-			}
-		}
-     
-
-       
-       [NumberValidationAttribute]
-public Nullable<int> ExpectedEntries
-		{ 
-		    get { return this.todo_c71tocreate.ExpectedEntries; }
-			set
-			{
-			    if (value == this.todo_c71tocreate.ExpectedEntries) return;
-				this.todo_c71tocreate.ExpectedEntries = value;
-                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
-				NotifyPropertyChanged("ExpectedEntries");
 			}
 		}
      

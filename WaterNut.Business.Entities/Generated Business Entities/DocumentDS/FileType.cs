@@ -282,6 +282,21 @@ namespace DocumentDS.Business.Entities
         }
         Nullable<bool> _replicateheaderrow;
         [DataMember]
+        public Nullable<bool> IsImportable 
+        {
+            get
+            {
+                return _isimportable;
+            }
+            set
+            {
+                _isimportable = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<bool> _isimportable;
+        [DataMember]
         public AsycudaDocumentSet AsycudaDocumentSet { get; set; }
         [DataMember]
         public List<AsycudaDocumentSet_Attachments> AsycudaDocumentSet_Attachments { get; set; }

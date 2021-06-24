@@ -4,7 +4,7 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="56bbd49232a14394a1f5955e78732836" Name="Diagram1" ZoomLevel="45">
+      <Diagram DiagramId="56bbd49232a14394a1f5955e78732836" Name="Diagram1" ZoomLevel="66">
         <EntityTypeShape EntityType="WaterNutModelDB.xC71_Buyer_segment" Width="1.5" PointX="5.25" PointY="4.625" />
         <EntityTypeShape EntityType="WaterNutModelDB.xC71_Declarant_segment" Width="1.5" PointX="5.25" PointY="7.375" />
         <EntityTypeShape EntityType="WaterNutModelDB.xC71_Identification_segment" Width="1.5" PointX="3" PointY="2.625" />

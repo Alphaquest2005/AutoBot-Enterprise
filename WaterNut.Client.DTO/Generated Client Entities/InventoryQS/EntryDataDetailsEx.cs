@@ -476,6 +476,19 @@ namespace InventoryQS.Client.DTO
 		}
         private int _InventoryItemId;
 
+        [DataMember]
+        public Nullable<double> VolumeLiters
+		{ 
+		    get { return _VolumeLiters; }
+			set
+			{
+			    if (value == _VolumeLiters) return;
+				_VolumeLiters = value;
+				NotifyPropertyChanged();//m => this.VolumeLiters
+			}
+		}
+        private Nullable<double> _VolumeLiters;
+
        
         [DataMember]
         public InventoryItemsEx InventoryItemsEx

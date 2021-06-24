@@ -314,6 +314,42 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
         }	
 
  
+
+		private string _commercial_DescriptionFilter;
+        public string Commercial_DescriptionFilter
+        {
+            get
+            {
+                return _commercial_DescriptionFilter;
+            }
+            set
+            {
+                _commercial_DescriptionFilter = value;
+				NotifyPropertyChanged(x => Commercial_DescriptionFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
+
+		private string _tariffCodeFilter;
+        public string TariffCodeFilter
+        {
+            get
+            {
+                return _tariffCodeFilter;
+            }
+            set
+            {
+                _tariffCodeFilter = value;
+				NotifyPropertyChanged(x => TariffCodeFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
 		internal bool DisableBaseFilterData = false;
         public virtual void FilterData()
 	    {
@@ -370,6 +406,14 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 
 									if(string.IsNullOrEmpty(RegistrationDateFilter) == false)
 						res.Append(" && " + string.Format("RegistrationDate.Contains(\"{0}\")",  RegistrationDateFilter));						
+ 
+
+									if(string.IsNullOrEmpty(Commercial_DescriptionFilter) == false)
+						res.Append(" && " + string.Format("Commercial_Description.Contains(\"{0}\")",  Commercial_DescriptionFilter));						
+ 
+
+									if(string.IsNullOrEmpty(TariffCodeFilter) == false)
+						res.Append(" && " + string.Format("TariffCode.Contains(\"{0}\")",  TariffCodeFilter));						
 			return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
@@ -414,7 +458,13 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     CNumber = x.CNumber ,
                     
  
-                    RegistrationDate = x.RegistrationDate 
+                    RegistrationDate = x.RegistrationDate ,
+                    
+ 
+                    Commercial_Description = x.Commercial_Description ,
+                    
+ 
+                    TariffCode = x.TariffCode 
                     
                 }).ToList()
             };
@@ -449,6 +499,12 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     
  
                     public string RegistrationDate { get; set; } 
+                    
+ 
+                    public string Commercial_Description { get; set; } 
+                    
+ 
+                    public string TariffCode { get; set; } 
                     
         }
 

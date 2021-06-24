@@ -538,10 +538,8 @@ public string DutyFreePaid
      
 
        
-       
-                
-                [MaxLength(50, ErrorMessage = "pLineNumber has a max length of 50 letters ")]
-public string pLineNumber
+       [NumberValidationAttribute]
+public Nullable<int> pLineNumber
 		{ 
 		    get { return this.todo_adjustmentsalreadyxmled.pLineNumber; }
 			set

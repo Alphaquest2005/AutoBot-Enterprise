@@ -165,6 +165,19 @@ namespace CoreEntities.Client.DTO
         private Nullable<int> _DocumentsCount;
 
         [DataMember]
+        public Nullable<int> ExpectedEntries
+		{ 
+		    get { return _ExpectedEntries; }
+			set
+			{
+			    if (value == _ExpectedEntries) return;
+				_ExpectedEntries = value;
+				NotifyPropertyChanged();//m => this.ExpectedEntries
+			}
+		}
+        private Nullable<int> _ExpectedEntries;
+
+        [DataMember]
         public Nullable<double> InvoiceTotal
 		{ 
 		    get { return _InvoiceTotal; }
@@ -217,19 +230,6 @@ namespace CoreEntities.Client.DTO
         private double _C71Total;
 
         [DataMember]
-        public int Id
-		{ 
-		    get { return _Id; }
-			set
-			{
-			    if (value == _Id) return;
-				_Id = value;
-				NotifyPropertyChanged();//m => this.Id
-			}
-		}
-        private int _Id;
-
-        [DataMember]
         public double Rate
 		{ 
 		    get { return _Rate; }
@@ -241,19 +241,6 @@ namespace CoreEntities.Client.DTO
 			}
 		}
         private double _Rate;
-
-        [DataMember]
-        public Nullable<int> ExpectedEntries
-		{ 
-		    get { return _ExpectedEntries; }
-			set
-			{
-			    if (value == _ExpectedEntries) return;
-				_ExpectedEntries = value;
-				NotifyPropertyChanged();//m => this.ExpectedEntries
-			}
-		}
-        private Nullable<int> _ExpectedEntries;
 
         [DataMember]
         public Nullable<double> GeneratedC71Total

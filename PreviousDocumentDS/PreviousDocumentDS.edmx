@@ -38,6 +38,9 @@
           <Property Name="InventoryItemId" Type="int" Nullable="false" />
           <Property Name="FileLineNumber" Type="int" />
           <Property Name="UpgradeKey" Type="int" />
+          <Property Name="VolumeLiters" Type="float" />
+          <Property Name="EntryDataDetailsKey" Type="nvarchar" MaxLength="4000" StoreGeneratedPattern="Computed" />
+          <Property Name="TotalValue" Type="float" StoreGeneratedPattern="Computed" Nullable="false" />
         </EntityType>
         <EntityType Name="EntryPreviousItems">
           <Key>
@@ -84,6 +87,7 @@
           <Property Name="PreviousInvoiceItemNumber" Type="nvarchar" MaxLength="50" />
           <Property Name="EntryDataType" Type="nvarchar" MaxLength="50" />
           <Property Name="UpgradeKey" Type="int" />
+          <Property Name="PreviousInvoiceKey" Type="nvarchar" MaxLength="4000" StoreGeneratedPattern="Computed" />
         </EntityType>
         <EntityType Name="xcuda_PreviousItem">
           <Key>
@@ -95,13 +99,13 @@
           <Property Name="Commodity_code" Type="nvarchar" MaxLength="20" />
           <Property Name="Previous_item_number" Type="nvarchar" MaxLength="20" />
           <Property Name="Goods_origin" Type="nvarchar" MaxLength="20" />
-          <Property Name="Net_weight" Type="float" Nullable="false" />
-          <Property Name="Prev_net_weight" Type="float" Nullable="false" />
+          <Property Name="Net_weight" Type="decimal" Precision="9" Scale="2" Nullable="false" />
+          <Property Name="Prev_net_weight" Type="decimal" Precision="9" Scale="2" Nullable="false" />
           <Property Name="Prev_reg_ser" Type="nvarchar" MaxLength="20" />
           <Property Name="Prev_reg_nbr" Type="nvarchar" MaxLength="20" />
           <Property Name="Prev_reg_dat" Type="nvarchar" MaxLength="20" />
           <Property Name="Prev_reg_cuo" Type="nvarchar" MaxLength="20" />
-          <Property Name="Suplementary_Quantity" Type="float" Nullable="false" />
+          <Property Name="Suplementary_Quantity" Type="decimal" Precision="9" Scale="2" Nullable="false" />
           <Property Name="Preveious_suplementary_quantity" Type="float" Nullable="false" />
           <Property Name="Current_value" Type="float" Nullable="false" />
           <Property Name="Previous_value" Type="float" Nullable="false" />
@@ -307,6 +311,7 @@
           <Property Name="PreviousInvoiceItemNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="EntryDataType" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="UpgradeKey" Type="Int32" />
+          <Property Name="PreviousInvoiceKey" Type="String" MaxLength="4000" FixedLength="false" Unicode="true" annotation:StoreGeneratedPattern="Computed" />
         </EntityType>
         <EntityType Name="xcuda_PreviousItem">
           <Key>
@@ -318,13 +323,13 @@
           <Property Type="String" Name="Commodity_code" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Type="String" Name="Previous_item_number" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Type="String" Name="Goods_origin" MaxLength="20" FixedLength="false" Unicode="true" />
-          <Property Type="Single" Name="Net_weight" Nullable="false" />
-          <Property Type="Single" Name="Prev_net_weight" Nullable="false" />
+          <Property Type="Decimal" Name="Net_weight" Nullable="false" />
+          <Property Type="Decimal" Name="Prev_net_weight" Nullable="false" />
           <Property Type="String" Name="Prev_reg_ser" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Type="String" Name="Prev_reg_nbr" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Type="String" Name="Prev_reg_dat" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Type="String" Name="Prev_reg_cuo" MaxLength="20" FixedLength="false" Unicode="true" />
-          <Property Type="Single" Name="Suplementary_Quantity" Nullable="false" />
+          <Property Type="Decimal" Name="Suplementary_Quantity" Nullable="false" />
           <Property Type="Single" Name="Preveious_suplementary_quantity" Nullable="false" />
           <Property Type="Single" Name="Current_value" Nullable="false" />
           <Property Type="Single" Name="Previous_value" Nullable="false" />
@@ -449,6 +454,9 @@
           <Property Name="InventoryItemId" Type="Int32" Nullable="false" />
           <Property Name="FileLineNumber" Type="Int32" />
           <Property Name="UpgradeKey" Type="Int32" />
+          <Property Name="VolumeLiters" Type="Double" />
+          <Property Name="EntryDataDetailsKey" Type="String" MaxLength="4000" FixedLength="false" Unicode="true" annotation:StoreGeneratedPattern="Computed" />
+          <Property Name="TotalValue" Type="Double" Nullable="false" annotation:StoreGeneratedPattern="Computed" />
         </EntityType>
         <EntityType Name="EntryPreviousItems">
           <Key>
@@ -492,6 +500,7 @@
           <EntitySetMapping Name="PreviousEntries">
             <EntityTypeMapping TypeName="WaterNutDBModel.PreviousEntry">
               <MappingFragment StoreEntitySet="xcuda_Item">
+                <ScalarProperty Name="PreviousInvoiceKey" ColumnName="PreviousInvoiceKey" />
                 <ScalarProperty Name="UpgradeKey" ColumnName="UpgradeKey" />
                 <ScalarProperty Name="EntryDataType" ColumnName="EntryDataType" />
                 <ScalarProperty Name="PreviousInvoiceItemNumber" ColumnName="PreviousInvoiceItemNumber" />
@@ -573,6 +582,9 @@
           <EntitySetMapping Name="EntryDataDetails">
             <EntityTypeMapping TypeName="WaterNutDBModel.EntryDataDetails">
               <MappingFragment StoreEntitySet="EntryDataDetails">
+                <ScalarProperty Name="TotalValue" ColumnName="TotalValue" />
+                <ScalarProperty Name="EntryDataDetailsKey" ColumnName="EntryDataDetailsKey" />
+                <ScalarProperty Name="VolumeLiters" ColumnName="VolumeLiters" />
                 <ScalarProperty Name="UpgradeKey" ColumnName="UpgradeKey" />
                 <ScalarProperty Name="FileLineNumber" ColumnName="FileLineNumber" />
                 <ScalarProperty Name="InventoryItemId" ColumnName="InventoryItemId" />

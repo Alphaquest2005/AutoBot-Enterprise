@@ -186,6 +186,21 @@ namespace CoreEntities.Business.Entities
         }
         Nullable<int> _documentscount;
         [DataMember]
+        public Nullable<int> ExpectedEntries 
+        {
+            get
+            {
+                return _expectedentries;
+            }
+            set
+            {
+                _expectedentries = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<int> _expectedentries;
+        [DataMember]
         public Nullable<double> InvoiceTotal 
         {
             get
@@ -246,21 +261,6 @@ namespace CoreEntities.Business.Entities
         }
         double _c71total;
         [DataMember]
-        public int Id 
-        {
-            get
-            {
-                return _id;
-            }
-            set
-            {
-                _id = value;
-                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
-                NotifyPropertyChanged();
-            }
-        }
-        int _id;
-        [DataMember]
         public double Rate 
         {
             get
@@ -275,21 +275,6 @@ namespace CoreEntities.Business.Entities
             }
         }
         double _rate;
-        [DataMember]
-        public Nullable<int> ExpectedEntries 
-        {
-            get
-            {
-                return _expectedentries;
-            }
-            set
-            {
-                _expectedentries = value;
-                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
-                NotifyPropertyChanged();
-            }
-        }
-        Nullable<int> _expectedentries;
         [DataMember]
         public Nullable<double> GeneratedC71Total 
         {

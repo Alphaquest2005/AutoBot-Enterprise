@@ -260,7 +260,7 @@ namespace WaterNut.DataSpace
                         pQtyAllocated = x.Select(z => z.Summary.pQtyAllocated).Distinct().DefaultIfEmpty(0).Sum(),
                         PiQuantity =
                             x.DistinctBy(q => q.Summary.PreviousItem_Id)
-                                .SelectMany(z => z.pIData.Where(zz => zz.AssessmentDate <= endDate && zz.EntryDataType == entryType).Select(zz => zz.PiQuantity.GetValueOrDefault()))
+                                .SelectMany(z => z.pIData.Where(zz => zz.AssessmentDate <= endDate && zz.EntryDataType == entryType).Select(zz => zz.PiQuantity))
                                 .DefaultIfEmpty(0)
                                 .Sum(), // x.Select(z => z.Summary.PiQuantity).DefaultIfEmpty(0).Sum(),
                         pCNumber = x.Key.pCNumber,
@@ -290,7 +290,7 @@ namespace WaterNut.DataSpace
                         pQtyAllocated = x.Select(z => z.Summary.pQtyAllocated).Distinct().DefaultIfEmpty(0).Sum(),
                         PiQuantity =
                             x.DistinctBy(q => q.Summary.PreviousItem_Id)
-                                .SelectMany(z => z.pIData.Where(zz => zz.AssessmentDate >= startDate && zz.AssessmentDate <= endDate).Select(zz => zz.PiQuantity.GetValueOrDefault()))
+                                .SelectMany(z => z.pIData.Where(zz => zz.AssessmentDate >= startDate && zz.AssessmentDate <= endDate).Select(zz => zz.PiQuantity))
                                 .DefaultIfEmpty(0)
                                 .Sum(), // x.Select(z => z.Summary.PiQuantity).DefaultIfEmpty(0).Sum(),
                         pCNumber = x.Key.pCNumber,
@@ -333,13 +333,13 @@ namespace WaterNut.DataSpace
                     {
                         PreviousItem_Id = (int) x.Key.PreviousItem_Id,
                         ItemNumber = x.First().Summary.ItemNumber,
-                        QtyAllocated = x.DistinctBy(q => q.Summary.Id).Select(z => z.Summary.QtyAllocated)
+                        QtyAllocated = (double) x.DistinctBy(q => q.Summary.Id).Select(z => z.Summary.QtyAllocated)
                             .DefaultIfEmpty(0).Sum(),
                         pQtyAllocated = x.DistinctBy(q => new {q.Summary.DutyFreePaid, q.Summary.pQtyAllocated})
                             .Select(z => z.Summary.pQtyAllocated).DefaultIfEmpty(0).Sum(),
                         PiQuantity =
                             x.DistinctBy(q => q.Summary.PreviousItem_Id)
-                                .SelectMany(z => z.pIData.Select(zz => zz.PiQuantity.GetValueOrDefault()))
+                                .SelectMany(z => z.pIData.Select(zz => zz.PiQuantity))
                                 .DefaultIfEmpty(0).Sum(),
                         pCNumber = x.Key.pCNumber,
                         pLineNumber = (int) x.Key.pLineNumber,
@@ -364,14 +364,14 @@ namespace WaterNut.DataSpace
                     {
                         PreviousItem_Id = (int) x.Key.PreviousItem_Id,
                         ItemNumber = x.First().Summary.ItemNumber,
-                        QtyAllocated = x.DistinctBy(q => q.Summary.Id).Select(z => z.Summary.QtyAllocated)
+                        QtyAllocated = (double) x.DistinctBy(q => q.Summary.Id).Select(z => z.Summary.QtyAllocated)
                             .DefaultIfEmpty(0).Sum(),
                         pQtyAllocated = x.DistinctBy(q => new {q.Summary.DutyFreePaid, q.Summary.pQtyAllocated})
                             
                             .Select(z => z.Summary.pQtyAllocated).DefaultIfEmpty(0).Sum(),
                         PiQuantity =
                             x.DistinctBy(q => new { q.Summary.DutyFreePaid, q.Summary.PreviousItem_Id})
-                                .SelectMany(z => z.pIData.Select(zz => zz.PiQuantity.GetValueOrDefault()))
+                                .SelectMany(z => z.pIData.Select(zz => zz.PiQuantity))
                                 .DefaultIfEmpty(0)
                                 .Sum(), //x.DistinctBy(q => q.Summary.Id).Select(z => z.Summary.PiQuantity).DefaultIfEmpty(0).Sum(),
                         pCNumber = x.Key.pCNumber,
@@ -389,7 +389,7 @@ namespace WaterNut.DataSpace
         public class ItemSalesPiSummary
         {
             public string ItemNumber { get; set; }
-            public double QtyAllocated { get; set; }
+            public double? QtyAllocated { get; set; }
             public double PiQuantity { get; set; }
             public string pCNumber { get; set; }
             public int pLineNumber { get; set; }
@@ -619,7 +619,7 @@ namespace WaterNut.DataSpace
                     if (xcudaPreviousItems.Any())
                     {
                         cdoc.Document.xcuda_Valuation.xcuda_Weight.Gross_weight =
-                            xcudaPreviousItems.Sum(x => x.Net_weight);
+                            (double) xcudaPreviousItems.Sum(x => x.Net_weight);
                     }
 
 
@@ -759,8 +759,8 @@ namespace WaterNut.DataSpace
                                             z.xcuda_Item.AsycudaDocument.Customs_Procedure.CustomsOperationId ==(int)CustomsOperations.Exwarehouse && z.xcuda_Item.AsycudaDocument.Customs_Procedure.IsPaid == true
                                                 ? "Duty Paid"
                                                 : "Duty Free",
-                                        Net_weight = z.Net_weight,
-                                        Suplementary_Quantity = z.Suplementary_Quantity
+                                        Net_weight = (double) z.Net_weight,
+                                        Suplementary_Quantity = (double) z.Suplementary_Quantity
                                     }).ToList(),
                           TariffSupUnitLkps =
                               x.PreviousDocumentItem.xcuda_Tarification.xcuda_HScode.TariffCodes.TariffCategory.TariffCategoryCodeSuppUnit.Select(z => z.TariffSupUnitLkps).ToList()
@@ -1459,7 +1459,7 @@ namespace WaterNut.DataSpace
                     global::DocumentItemDS.Business.Entities.xcuda_PreviousItem pitm = CreatePreviousItem(
                         lineData,
                         itmcount + i, dfp);
-                    if (Math.Round(pitm.Net_weight, 2) < 0.01)
+                    if (Math.Round(pitm.Net_weight, 2) < (decimal) 0.01)
                     {
                         updateXStatus(mypod.Allocations,
                             $@"Failed PiQuantity < 0.01 :: PiQuantity:{Math.Round(pitm.Net_weight, 2)}");
@@ -1597,13 +1597,13 @@ namespace WaterNut.DataSpace
                     {
                         TrackingState = TrackingState.Added
                     };
-                    itm.xcuda_Valuation_item.xcuda_Weight_itm.Gross_weight_itm = pitm.Net_weight;
-                    itm.xcuda_Valuation_item.xcuda_Weight_itm.Net_weight_itm = pitm.Net_weight;
+                    itm.xcuda_Valuation_item.xcuda_Weight_itm.Gross_weight_itm = (double) pitm.Net_weight;
+                    itm.xcuda_Valuation_item.xcuda_Weight_itm.Net_weight_itm = (double) pitm.Net_weight;
                     // adjusting because not using real statistical value when calculating
                     itm.xcuda_Valuation_item.xcuda_Item_Invoice.Amount_foreign_currency =
-                        Convert.ToDouble(Math.Round((pitm.Current_value * pitm.Suplementary_Quantity), 2));
+                        Convert.ToDouble(Math.Round((pitm.Current_value * (double) pitm.Suplementary_Quantity), 2));
                     itm.xcuda_Valuation_item.xcuda_Item_Invoice.Amount_national_currency =
-                        Convert.ToDouble(Math.Round(pitm.Current_value * pitm.Suplementary_Quantity, 2));
+                        Convert.ToDouble(Math.Round(pitm.Current_value * (double) pitm.Suplementary_Quantity, 2));
                     itm.xcuda_Valuation_item.xcuda_Item_Invoice.Currency_code = "XCD";
                     itm.xcuda_Valuation_item.xcuda_Item_Invoice.Currency_rate = 1;
 
@@ -1778,7 +1778,7 @@ namespace WaterNut.DataSpace
                 //var alreadyTakenOutDFPQty = alreadyTakenOutItemsLst.Any()? alreadyTakenOutItemsLst.Where(x => x.DutyFreePaid == dfp).Sum(xx => xx.Suplementary_Quantity):0;
                 var alreadyTakenOutTotalQuantity = alreadyTakenOutItemsLst.Sum(xx => xx.Suplementary_Quantity);
 
-                 var remainingQtyToBeTakenOut = Math.Round(allocationSales - (allocationPi + docPi) , 3); // //Math.Round(dutyFreePaidAllocated - alreadyTakenOutDFPQty,3);
+                 var remainingQtyToBeTakenOut = Math.Round((double) (allocationSales - (allocationPi + docPi)) , 3); // //Math.Round(dutyFreePaidAllocated - alreadyTakenOutDFPQty,3);
 
                 if ((Math.Abs(asycudaTotalQuantity - alreadyTakenOutTotalQuantity) < 0.01) 
                     //|| (Math.Abs(dutyFreePaidAllocated - alreadyTakenOutDFPQty) < 0.01)  //////////////Allow historical adjustment
@@ -1905,7 +1905,7 @@ namespace WaterNut.DataSpace
                 pitm.Previous_Packages_number = "0";
 
 
-                pitm.Suplementary_Quantity = Convert.ToDouble(pod.Quantity);
+                pitm.Suplementary_Quantity = Convert.ToDecimal(pod.Quantity);
                 pitm.Preveious_suplementary_quantity = Convert.ToDouble(pod.EX9Allocation.pQuantity);
 
 
@@ -1935,13 +1935,13 @@ namespace WaterNut.DataSpace
                 var previousItem = pod.pDocumentItem;
                 if (previousItem == null) return;
                 var plst = previousItem.previousItems.DistinctBy(x => x.PreviousItem_Id);
-                var pw = Convert.ToDouble(Math.Round(pod.EX9Allocation.Net_weight_itm,2));
+                var pw = Convert.ToDecimal(Math.Round(pod.EX9Allocation.Net_weight_itm,2));
 
-                var rw = plst.ToList().Sum(x => Math.Round(x.Net_weight,2));
+                var rw =(decimal) plst.ToList().Sum(x => Math.Round(x.Net_weight,2));
 
                 var ra = plst.Sum(x => x.Suplementary_Quantity);
 
-                var iw = ((pw - rw) / (pod.EX9Allocation.pQuantity - ra)) * Convert.ToDouble(pod.Quantity);
+                var iw = ((pw - (decimal) rw) / (decimal) (pod.EX9Allocation.pQuantity - ra)) * Convert.ToDecimal(pod.Quantity);
 
                 //var iw = Convert.ToDouble((Math.Round(pod.EX9Allocation.Net_weight_itm,2)
                 //                           / pod.EX9Allocation.pQuantity) * Convert.ToDouble(pod.Quantity));
@@ -1952,11 +1952,11 @@ namespace WaterNut.DataSpace
                 if ((pod.EX9Allocation.pQuantity - (plst.Sum(x => x.Suplementary_Quantity) + pod.Quantity))  <= 0 && pod.EX9Allocation.pQuantity > 1)
                 {
 
-                    pitm.Net_weight = Math.Round(Convert.ToDouble(pw - rw), 2, MidpointRounding.ToEven);
+                    pitm.Net_weight = Math.Round(Convert.ToDecimal(pw - rw), 2, MidpointRounding.ToEven);
                 }
                 else
                 {
-                    pitm.Net_weight = Convert.ToDouble(Math.Round(iw, 2, MidpointRounding.ToEven));
+                    pitm.Net_weight = Convert.ToDecimal(Math.Round(iw, 2, MidpointRounding.ToEven));
                 }
 
                 pitm.Prev_net_weight = pw; //Convert.ToDouble((pw/pod.EX9Allocation.SalesFactor) - rw);

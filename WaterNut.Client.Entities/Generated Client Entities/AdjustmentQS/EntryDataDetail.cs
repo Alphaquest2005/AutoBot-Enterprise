@@ -496,6 +496,53 @@ public Nullable<int> UpgradeKey
 		}
      
 
+       
+       [NumberValidationAttribute]
+public Nullable<double> VolumeLiters
+		{ 
+		    get { return this.entrydatadetail.VolumeLiters; }
+			set
+			{
+			    if (value == this.entrydatadetail.VolumeLiters) return;
+				this.entrydatadetail.VolumeLiters = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("VolumeLiters");
+			}
+		}
+     
+
+       
+       
+                
+                [MaxLength(4000, ErrorMessage = "EntryDataDetailsKey has a max length of 4000 letters ")]
+public string EntryDataDetailsKey
+		{ 
+		    get { return this.entrydatadetail.EntryDataDetailsKey; }
+			set
+			{
+			    if (value == this.entrydatadetail.EntryDataDetailsKey) return;
+				this.entrydatadetail.EntryDataDetailsKey = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("EntryDataDetailsKey");
+			}
+		}
+     
+
+       [RequiredValidationAttribute(ErrorMessage= "TotalValue is required")]
+       [NumberValidationAttribute]
+public double TotalValue
+		{ 
+		    get { return this.entrydatadetail.TotalValue; }
+			set
+			{
+			    if (value == this.entrydatadetail.TotalValue) return;
+				this.entrydatadetail.TotalValue = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("TotalValue");
+			}
+		}
+     
+
         ObservableCollection<AsycudaSalesAllocation> _AsycudaSalesAllocations = null;
         public  ObservableCollection<AsycudaSalesAllocation> AsycudaSalesAllocations
 		{

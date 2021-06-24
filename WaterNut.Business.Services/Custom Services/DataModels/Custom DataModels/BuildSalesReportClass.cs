@@ -295,7 +295,7 @@ namespace WaterNut.DataSpace
 
                     var ssa = slst.ElementAt(i);
 
-                    var piQty = (pitm.Pi.Suplementary_Quantity * pitm.SalesFactor);
+                    var piQty = ((double)pitm.Pi.Suplementary_Quantity * pitm.SalesFactor);
 
                     var remainingSalesQty = slst.Skip(i).Sum(x => x.QtyAllocated);
                     if (ssa.QtyAllocated < 0 && pitm.Pi.QtyAllocated * pitm.SalesFactor <= piQty)
@@ -378,7 +378,7 @@ namespace WaterNut.DataSpace
 		private async Task SetXBond(AsycudaSalesAllocations ssa, xcuda_PreviousItem pitm)
 		{
 			var amt = ssa.QtyAllocated;
-			var atot = pitm.Suplementary_Quantity - pitm.QtyAllocated;
+			var atot = (double) pitm.Suplementary_Quantity - pitm.QtyAllocated;
 
 
 			
@@ -563,11 +563,11 @@ namespace WaterNut.DataSpace
 
                                 foreach (var allo in lst)
                                 {
-                                    var tot = i.Value.Pi.QtyAllocated - i.Value.Pi.Suplementary_Quantity;
+                                    var tot = i.Value.Pi.QtyAllocated - (double) i.Value.Pi.Suplementary_Quantity;
                                     var r = tot > allo.AsycudaSalesAllocations.QtyAllocated / i.Value.SalesFactor
                                         ? allo.AsycudaSalesAllocations.QtyAllocated / i.Value.SalesFactor
                                         : tot;
-                                    if (i.Value.Pi.QtyAllocated > i.Value.Pi.Suplementary_Quantity)
+                                    if (i.Value.Pi.QtyAllocated > (double) i.Value.Pi.Suplementary_Quantity)
                                     {
                                         allo.AsycudaSalesAllocations.QtyAllocated -= r;
                                         i.Value.Pi.QtyAllocated -= r;

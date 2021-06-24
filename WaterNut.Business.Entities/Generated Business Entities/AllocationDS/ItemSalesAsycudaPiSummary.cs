@@ -51,7 +51,7 @@ namespace AllocationDS.Business.Entities
         }
         string _itemnumber;
         [DataMember]
-        public double QtyAllocated 
+        public Nullable<double> QtyAllocated 
         {
             get
             {
@@ -64,7 +64,7 @@ namespace AllocationDS.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        double _qtyallocated;
+        Nullable<double> _qtyallocated;
         [DataMember]
         public double PiQuantity 
         {

@@ -77,6 +77,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.EntryDataDetailsEx' does 
           <Property Name="ItemDescription" Type="nvarchar" MaxLength="255" Nullable="false" />
           <Property Name="Cost" Type="float" Nullable="false" />
           <Property Name="QtyAllocated" Type="float" Nullable="false" />
+          <Property Name="VolumeLiters" Type="float" />
           <Property Name="UnitWeight" Type="float" Nullable="false" />
           <Property Name="DoNotAllocate" Type="bit" />
           <Property Name="TariffCode" Type="nvarchar" MaxLength="50" />
@@ -179,6 +180,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does no
 [EntryDataDetailsEx].[ItemDescription] AS [ItemDescription], 
 [EntryDataDetailsEx].[Cost] AS [Cost], 
 [EntryDataDetailsEx].[QtyAllocated] AS [QtyAllocated], 
+[EntryDataDetailsEx].[VolumeLiters] AS [VolumeLiters], 
 [EntryDataDetailsEx].[UnitWeight] AS [UnitWeight], 
 [EntryDataDetailsEx].[DoNotAllocate] AS [DoNotAllocate], 
 [EntryDataDetailsEx].[TariffCode] AS [TariffCode], 
@@ -387,6 +389,7 @@ FROM [dbo].[InventoryItemsEx] AS [InventoryItemsEx]</DefiningQuery>
           <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="FileLineNumber" Type="Int32" />
           <Property Name="InventoryItemId" Type="Int32" Nullable="false" />
+          <Property Name="VolumeLiters" Type="Double" />
         </EntityType>
         <Association Name="InventoryItemsExEntryDataDetailsEx">
           <End Type="WaterNutDBModel.InventoryItemsEx" Role="InventoryItemsEx" Multiplicity="1" />
@@ -502,6 +505,7 @@ FROM [dbo].[InventoryItemsEx] AS [InventoryItemsEx]</DefiningQuery>
           <EntitySetMapping Name="EntryDataDetailsEx">
             <EntityTypeMapping TypeName="WaterNutDBModel.EntryDataDetailsEx">
               <MappingFragment StoreEntitySet="EntryDataDetailsEx">
+                <ScalarProperty Name="VolumeLiters" ColumnName="VolumeLiters" />
                 <ScalarProperty Name="InventoryItemId" ColumnName="InventoryItemId" />
                 <ScalarProperty Name="FileLineNumber" ColumnName="FileLineNumber" />
                 <ScalarProperty Name="Name" ColumnName="Name" />

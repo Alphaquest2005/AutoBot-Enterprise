@@ -16,7 +16,6 @@
         <AssociationConnector Association="WaterNutEntities.EntryDataExAsycudaDocumentEntryData" />
         <AssociationConnector Association="WaterNutEntities.EntryDataExEntryDataDetailsEx" />
         <AssociationConnector Association="WaterNutEntities.EntryDataDetailsExAsycudaDocumentSetEntryDataDetail" />
-        <EntityTypeShape EntityType="WaterNutEntities.ContainerEx" Width="1.5" PointX="9.875" PointY="3.25" />
         <EntityTypeShape EntityType="WaterNutEntities.PackageType" Width="1.5" PointX="2.75" PointY="0.75" />
         <EntityTypeShape EntityType="WaterNutEntities.EmptyFullCode" Width="2.75" PointX="5.375" PointY="0.75" />
         <EntityTypeShape EntityType="WaterNutEntities.EntryData" Width="1.5" PointX="9.375" PointY="12" />

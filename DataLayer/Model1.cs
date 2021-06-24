@@ -15943,6 +15943,30 @@ namespace WaterNut.DataLayer
         private Nullable<global::System.Int32> _UpgradeKey;
         partial void OnUpgradeKeyChanging(Nullable<global::System.Int32> value);
         partial void OnUpgradeKeyChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
+        [DataMemberAttribute()]
+        public global::System.String PreviousInvoiceKey
+        {
+            get
+            {
+                return _PreviousInvoiceKey;
+            }
+            set
+            {
+                OnPreviousInvoiceKeyChanging(value);
+                ReportPropertyChanging("PreviousInvoiceKey");
+                _PreviousInvoiceKey = StructuralObject.SetValidValue(value, true);
+                ReportPropertyChanged("PreviousInvoiceKey");
+                OnPreviousInvoiceKeyChanged();
+            }
+        }
+        private global::System.String _PreviousInvoiceKey;
+        partial void OnPreviousInvoiceKeyChanging(global::System.String value);
+        partial void OnPreviousInvoiceKeyChanged();
 
         #endregion
 
@@ -18719,7 +18743,7 @@ namespace WaterNut.DataLayer
         /// <param name="previous_value">Initial value of the Previous_value property.</param>
         /// <param name="previousItem_Id">Initial value of the PreviousItem_Id property.</param>
         /// <param name="qtyAllocated">Initial value of the QtyAllocated property.</param>
-        public static xcuda_PreviousItem Createxcuda_PreviousItem(global::System.Double net_weight, global::System.Double prev_net_weight, global::System.Double suplementary_Quantity, global::System.Double preveious_suplementary_quantity, global::System.Double current_value, global::System.Double previous_value, global::System.Int32 previousItem_Id, global::System.Double qtyAllocated)
+        public static xcuda_PreviousItem Createxcuda_PreviousItem(global::System.Decimal net_weight, global::System.Decimal prev_net_weight, global::System.Decimal suplementary_Quantity, global::System.Double preveious_suplementary_quantity, global::System.Double current_value, global::System.Double previous_value, global::System.Int32 previousItem_Id, global::System.Double qtyAllocated)
         {
             xcuda_PreviousItem xcuda_PreviousItem = new xcuda_PreviousItem();
             xcuda_PreviousItem.Net_weight = net_weight;
@@ -18886,7 +18910,7 @@ namespace WaterNut.DataLayer
         /// </summary>
         [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
         [DataMemberAttribute()]
-        public global::System.Double Net_weight
+        public global::System.Decimal Net_weight
         {
             get
             {
@@ -18901,8 +18925,8 @@ namespace WaterNut.DataLayer
                 OnNet_weightChanged();
             }
         }
-        private global::System.Double _Net_weight;
-        partial void OnNet_weightChanging(global::System.Double value);
+        private global::System.Decimal _Net_weight;
+        partial void OnNet_weightChanging(global::System.Decimal value);
         partial void OnNet_weightChanged();
     
         /// <summary>
@@ -18910,7 +18934,7 @@ namespace WaterNut.DataLayer
         /// </summary>
         [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
         [DataMemberAttribute()]
-        public global::System.Double Prev_net_weight
+        public global::System.Decimal Prev_net_weight
         {
             get
             {
@@ -18925,8 +18949,8 @@ namespace WaterNut.DataLayer
                 OnPrev_net_weightChanged();
             }
         }
-        private global::System.Double _Prev_net_weight;
-        partial void OnPrev_net_weightChanging(global::System.Double value);
+        private global::System.Decimal _Prev_net_weight;
+        partial void OnPrev_net_weightChanging(global::System.Decimal value);
         partial void OnPrev_net_weightChanged();
     
         /// <summary>
@@ -19030,7 +19054,7 @@ namespace WaterNut.DataLayer
         /// </summary>
         [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
         [DataMemberAttribute()]
-        public global::System.Double Suplementary_Quantity
+        public global::System.Decimal Suplementary_Quantity
         {
             get
             {
@@ -19045,8 +19069,8 @@ namespace WaterNut.DataLayer
                 OnSuplementary_QuantityChanged();
             }
         }
-        private global::System.Double _Suplementary_Quantity;
-        partial void OnSuplementary_QuantityChanging(global::System.Double value);
+        private global::System.Decimal _Suplementary_Quantity;
+        partial void OnSuplementary_QuantityChanging(global::System.Decimal value);
         partial void OnSuplementary_QuantityChanged();
     
         /// <summary>

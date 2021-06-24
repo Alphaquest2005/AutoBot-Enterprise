@@ -111,7 +111,6 @@
         <EntityTypeShape EntityType="WaterNutDBModel.ActionDocSetLogs" Width="1.5" PointX="9.75" PointY="31.875" />
         <AssociationConnector Association="WaterNutDBModel.FK_ActionDocSetLogs_Actions" />
         <EntityTypeShape EntityType="WaterNutDBModel.TODO_SubmitIncompleteSupplierInfo" Width="1.5" PointX="15.375" PointY="18.75" />
-        <EntityTypeShape EntityType="WaterNutDBModel.TODO_C71ToCreate" Width="1.5" PointX="28.5" PointY="13.75" />
         <EntityTypeShape EntityType="WaterNutDBModel.TODO_DiscrepanciesErrors" Width="2.125" PointX="28.375" PointY="23.75" />
         <EntityTypeShape EntityType="WaterNutDBModel.CustomsOperations" Width="1.5" PointX="0.875" PointY="28.625" />
         <AssociationConnector Association="WaterNutDBModel.FK_Customs_Procedure_CustomsOperations" />
@@ -139,6 +138,7 @@
         <EntityTypeShape EntityType="WaterNutDBModel.TODO_DiscrepanciesExecutionReport" Width="1.5" PointX="0.75" PointY="33.75" />
         <EntityTypeShape EntityType="WaterNutDBModel.TODO_LicenceAvailableQty" Width="1.5" PointX="31.375" PointY="20.75" />
         <EntityTypeShape EntityType="WaterNutDBModel.TODO_AssessDiscrepancyEntries" Width="1.5" PointX="28.375" PointY="20.75" />
+        <EntityTypeShape EntityType="WaterNutDBModel.TODO_C71ToCreate" Width="1.5" PointX="3.375" PointY="33.75" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

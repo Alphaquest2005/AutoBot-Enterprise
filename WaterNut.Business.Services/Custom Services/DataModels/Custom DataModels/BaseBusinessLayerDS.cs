@@ -2649,7 +2649,7 @@ namespace WaterNut.DataSpace
                         {
                             using (var ctx = new EntryDataDSContext())
                             {
-                                ctx.Database.CommandTimeout = 100;
+                                ctx.Database.CommandTimeout = 10;
                                 var entryDataDetailses = ctx.EntryDataDetails
                                     .Include(x => x.EntryDataDetailsEx)
                                     .Include(x => x.InventoryItems)
@@ -2766,7 +2766,7 @@ namespace WaterNut.DataSpace
 
             if (i.xcuda_PreviousItem != null)
             {
-                i.xcuda_PreviousItem.Net_weight = asycudaDocumentItem.Net_weight_itm;
+                i.xcuda_PreviousItem.Net_weight = (decimal) asycudaDocumentItem.Net_weight_itm;
                 i.Net_weight = asycudaDocumentItem.Net_weight_itm;
                 i.Gross_weight = asycudaDocumentItem.Net_weight_itm;
             }

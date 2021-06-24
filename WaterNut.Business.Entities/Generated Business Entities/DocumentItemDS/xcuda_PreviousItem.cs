@@ -116,7 +116,7 @@ namespace DocumentItemDS.Business.Entities
         }
         string _goods_origin;
         [DataMember]
-        public double Net_weight 
+        public decimal Net_weight 
         {
             get
             {
@@ -129,9 +129,9 @@ namespace DocumentItemDS.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        double _net_weight;
+        decimal _net_weight;
         [DataMember]
-        public double Prev_net_weight 
+        public decimal Prev_net_weight 
         {
             get
             {
@@ -144,7 +144,7 @@ namespace DocumentItemDS.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        double _prev_net_weight;
+        decimal _prev_net_weight;
         [DataMember]
         public string Prev_reg_ser 
         {
@@ -206,7 +206,7 @@ namespace DocumentItemDS.Business.Entities
         }
         string _prev_reg_cuo;
         [DataMember]
-        public double Suplementary_Quantity 
+        public decimal Suplementary_Quantity 
         {
             get
             {
@@ -219,7 +219,7 @@ namespace DocumentItemDS.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        double _suplementary_quantity;
+        decimal _suplementary_quantity;
         [DataMember]
         public double Preveious_suplementary_quantity 
         {

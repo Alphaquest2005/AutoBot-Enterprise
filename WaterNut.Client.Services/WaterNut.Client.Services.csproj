@@ -230,7 +230,6 @@
     <Compile Include="EntryDataQS\AsycudaDocumentItemEntryDataDetailClient.cs" />
     <Compile Include="EntryDataQS\AsycudaDocumentSetEntryDataClient.cs" />
     <Compile Include="EntryDataQS\AsycudaDocumentSetEntryDataDetailClient.cs" />
-    <Compile Include="EntryDataQS\ContainerExClient.cs" />
     <Compile Include="EntryDataQS\EmptyFullCodeClient.cs" />
     <Compile Include="EntryDataQS\EntryDataClient.cs" />
     <Compile Include="EntryDataQS\EntryDataDetailsExClient.cs" />

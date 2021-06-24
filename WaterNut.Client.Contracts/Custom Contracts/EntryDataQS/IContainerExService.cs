@@ -7,12 +7,12 @@ using EntryDataQS.Client.DTO;
 namespace EntryDataQS.Client.Contracts
 {
    
-    public partial interface IContainerExService 
-    {
-        [OperationContract]
-        Task SaveContainer(ContainerEx container);
+    //public partial interface IContainerExService 
+    //{
+    //    [OperationContract]
+    //    Task SaveContainer(ContainerEx container);
 
        
-    }
+    //}
 }
 

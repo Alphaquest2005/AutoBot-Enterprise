@@ -88,7 +88,7 @@ namespace EntryDataQS.Business.Entities
         }
         Nullable<int> _importedlines;
         [DataMember]
-        public Nullable<int> TotalLines 
+        public int TotalLines 
         {
             get
             {
@@ -101,7 +101,7 @@ namespace EntryDataQS.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        Nullable<int> _totallines;
+        int _totallines;
         [DataMember]
         public string Currency 
         {
@@ -208,7 +208,7 @@ namespace EntryDataQS.Business.Entities
         }
         string _suppliercode;
         [DataMember]
-        public Nullable<double> ImportedTotal 
+        public double ImportedTotal 
         {
             get
             {
@@ -221,7 +221,7 @@ namespace EntryDataQS.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        Nullable<double> _importedtotal;
+        double _importedtotal;
         [DataMember]
         public double ExpectedTotal 
         {
@@ -237,21 +237,6 @@ namespace EntryDataQS.Business.Entities
             }
         }
         double _expectedtotal;
-        [DataMember]
-        public Nullable<int> ClassifiedLines 
-        {
-            get
-            {
-                return _classifiedlines;
-            }
-            set
-            {
-                _classifiedlines = value;
-                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
-                NotifyPropertyChanged();
-            }
-        }
-        Nullable<int> _classifiedlines;
         [DataMember]
         public int AsycudaDocumentSetId 
         {
@@ -387,21 +372,6 @@ namespace EntryDataQS.Business.Entities
             }
         }
         string _sourcefile;
-        [DataMember]
-        public int Packages 
-        {
-            get
-            {
-                return _packages;
-            }
-            set
-            {
-                _packages = value;
-                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
-                NotifyPropertyChanged();
-            }
-        }
-        int _packages;
         [DataMember]
         public string SupplierInvoiceNo 
         {

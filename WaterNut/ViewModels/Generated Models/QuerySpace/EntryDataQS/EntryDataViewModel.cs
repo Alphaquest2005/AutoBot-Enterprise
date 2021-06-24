@@ -493,6 +493,24 @@ namespace WaterNut.QuerySpace.EntryDataQS.ViewModels
         }	
 
  
+
+		private string _entryTypeFilter;
+        public string EntryTypeFilter
+        {
+            get
+            {
+                return _entryTypeFilter;
+            }
+            set
+            {
+                _entryTypeFilter = value;
+				NotifyPropertyChanged(x => EntryTypeFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
 		internal bool DisableBaseFilterData = false;
         public virtual void FilterData()
 	    {
@@ -597,6 +615,10 @@ namespace WaterNut.QuerySpace.EntryDataQS.ViewModels
 
 									if(string.IsNullOrEmpty(UpgradeKeyFilter) == false)
 						res.Append(" && " + string.Format("UpgradeKey.Contains(\"{0}\")",  UpgradeKeyFilter));						
+ 
+
+									if(string.IsNullOrEmpty(EntryTypeFilter) == false)
+						res.Append(" && " + string.Format("EntryType.Contains(\"{0}\")",  EntryTypeFilter));						
 			return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
@@ -662,7 +684,10 @@ namespace WaterNut.QuerySpace.EntryDataQS.ViewModels
                     Packages = x.Packages ,
                     
  
-                    UpgradeKey = x.UpgradeKey 
+                    UpgradeKey = x.UpgradeKey ,
+                    
+ 
+                    EntryType = x.EntryType 
                     
                 }).ToList()
             };
@@ -718,6 +743,9 @@ namespace WaterNut.QuerySpace.EntryDataQS.ViewModels
                     
  
                     public string UpgradeKey { get; set; } 
+                    
+ 
+                    public string EntryType { get; set; } 
                     
         }
 

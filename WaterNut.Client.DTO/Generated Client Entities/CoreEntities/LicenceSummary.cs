@@ -48,7 +48,7 @@ namespace CoreEntities.Client.DTO
         private Nullable<double> _Quantity;
 
         [DataMember]
-        public Nullable<double> Total
+        public int Total
 		{ 
 		    get { return _Total; }
 			set
@@ -58,7 +58,7 @@ namespace CoreEntities.Client.DTO
 				NotifyPropertyChanged();//m => this.Total
 			}
 		}
-        private Nullable<double> _Total;
+        private int _Total;
 
         [DataMember]
         public string TariffCodeDescription

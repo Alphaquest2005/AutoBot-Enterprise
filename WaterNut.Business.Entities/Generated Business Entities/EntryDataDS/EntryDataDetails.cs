@@ -491,6 +491,21 @@ namespace EntryDataDS.Business.Entities
         }
         string _entrydatadetailskey;
         [DataMember]
+        public double TotalValue 
+        {
+            get
+            {
+                return _totalvalue;
+            }
+            set
+            {
+                _totalvalue = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        double _totalvalue;
+        [DataMember]
         public EntryData EntryData { get; set; }
         [DataMember]
         public InventoryItemsEx InventoryItemEx { get; set; }

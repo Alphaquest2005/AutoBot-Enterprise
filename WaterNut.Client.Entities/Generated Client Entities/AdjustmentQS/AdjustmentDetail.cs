@@ -298,23 +298,6 @@ public Nullable<double> ReceivedQty
        
        
                 
-                [MaxLength(50, ErrorMessage = "Status has a max length of 50 letters ")]
-public string Status
-		{ 
-		    get { return this.adjustmentdetail.Status; }
-			set
-			{
-			    if (value == this.adjustmentdetail.Status) return;
-				this.adjustmentdetail.Status = value;
-                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
-				NotifyPropertyChanged("Status");
-			}
-		}
-     
-
-       
-       
-                
                 [MaxLength(50, ErrorMessage = "PreviousInvoiceNumber has a max length of 50 letters ")]
 public string PreviousInvoiceNumber
 		{ 
@@ -609,6 +592,38 @@ public int InventoryItemId
 				this.adjustmentdetail.InventoryItemId = value;
                 if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
 				NotifyPropertyChanged("InventoryItemId");
+			}
+		}
+     
+
+       
+       [NumberValidationAttribute]
+public Nullable<double> TaxAmount
+		{ 
+		    get { return this.adjustmentdetail.TaxAmount; }
+			set
+			{
+			    if (value == this.adjustmentdetail.TaxAmount) return;
+				this.adjustmentdetail.TaxAmount = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("TaxAmount");
+			}
+		}
+     
+
+       
+       
+                
+                [MaxLength(50, ErrorMessage = "Status has a max length of 50 letters ")]
+public string Status
+		{ 
+		    get { return this.adjustmentdetail.Status; }
+			set
+			{
+			    if (value == this.adjustmentdetail.Status) return;
+				this.adjustmentdetail.Status = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("Status");
 			}
 		}
      

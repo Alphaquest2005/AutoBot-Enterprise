@@ -79,6 +79,9 @@
           <Property Name="InventoryItemId" Type="int" Nullable="false" />
           <Property Name="FileLineNumber" Type="int" />
           <Property Name="UpgradeKey" Type="int" />
+          <Property Name="VolumeLiters" Type="float" />
+          <Property Name="EntryDataDetailsKey" Type="nvarchar" MaxLength="4000" StoreGeneratedPattern="Computed" />
+          <Property Name="TotalValue" Type="float" StoreGeneratedPattern="Computed" Nullable="false" />
         </EntityType>
         <EntityType Name="SystemDocumentSets">
           <Key>
@@ -114,6 +117,7 @@
           <Property Name="PreviousInvoiceItemNumber" Type="nvarchar" MaxLength="50" />
           <Property Name="EntryDataType" Type="nvarchar" MaxLength="50" />
           <Property Name="UpgradeKey" Type="int" />
+          <Property Name="PreviousInvoiceKey" Type="nvarchar" MaxLength="4000" StoreGeneratedPattern="Computed" />
         </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AdjustmentDetails' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
@@ -170,6 +174,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AdjustmentDetails' does n
           <Property Name="Subject" Type="nvarchar(max)" />
           <Property Name="EmailDate" Type="datetime" />
           <Property Name="InventoryItemId" Type="int" Nullable="false" />
+          <Property Name="TaxAmount" Type="float" />
         </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AdjustmentEx' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
@@ -269,8 +274,6 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AdjustmentShortAllocation
             
             
             
-            
-            
           </Key>
           <Property Name="AllocationId" Type="int" Nullable="false" />
           <Property Name="TotalValue" Type="float" Nullable="false" />
@@ -278,7 +281,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AdjustmentShortAllocation
           <Property Name="Status" Type="nvarchar" MaxLength="255" />
           <Property Name="QtyAllocated" Type="float" Nullable="false" />
           <Property Name="xLineNumber" Type="int" />
-          <Property Name="PreviousItem_Id" Type="int" Nullable="false" />
+          <Property Name="PreviousItem_Id" Type="int" />
           <Property Name="InvoiceDate" Type="datetime2" Precision="7" Nullable="false" />
           <Property Name="SalesQuantity" Type="float" Nullable="false" />
           <Property Name="SalesQtyAllocated" Type="float" Nullable="false" />
@@ -292,7 +295,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AdjustmentShortAllocation
           <Property Name="pRegistrationDate" Type="datetime" />
           <Property Name="pQuantity" Type="float" />
           <Property Name="pQtyAllocated" Type="float" />
-          <Property Name="PiQuantity" Type="float" Nullable="false" />
+          <Property Name="PiQuantity" Type="float" />
           <Property Name="SalesFactor" Type="float" />
           <Property Name="xCNumber" Type="nvarchar" MaxLength="20" />
           <Property Name="xRegistrationDate" Type="datetime" />
@@ -322,9 +325,9 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AdjustmentShortAllocation
           <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
           <Property Name="FileTypeId" Type="int" />
           <Property Name="EmailId" Type="int" />
-          <Property Name="SANumber" Type="int" />
           <Property Name="xStatus" Type="nvarchar" MaxLength="255" />
           <Property Name="Type" Type="nvarchar" MaxLength="50" />
+          <Property Name="SANumber" Type="int" />
         </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AdjustmentShorts' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
@@ -649,7 +652,8 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-PreDiscrepancyErrors
 [AdjustmentDetails].[InvoiceDate] AS [InvoiceDate], 
 [AdjustmentDetails].[Subject] AS [Subject], 
 [AdjustmentDetails].[EmailDate] AS [EmailDate], 
-[AdjustmentDetails].[InventoryItemId] AS [InventoryItemId]
+[AdjustmentDetails].[InventoryItemId] AS [InventoryItemId], 
+[AdjustmentDetails].[TaxAmount] AS [TaxAmount]
 FROM [dbo].[AdjustmentDetails] AS [AdjustmentDetails]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="AdjustmentEx" EntityType="Self.AdjustmentEx" store:Type="Views" store:Schema="dbo">
@@ -759,9 +763,9 @@ FROM [dbo].[AdjustmentOvers] AS [AdjustmentOvers]</DefiningQuery>
 [AdjustmentShortAllocations].[ApplicationSettingsId] AS [ApplicationSettingsId], 
 [AdjustmentShortAllocations].[FileTypeId] AS [FileTypeId], 
 [AdjustmentShortAllocations].[EmailId] AS [EmailId], 
-[AdjustmentShortAllocations].[SANumber] AS [SANumber], 
 [AdjustmentShortAllocations].[xStatus] AS [xStatus], 
-[AdjustmentShortAllocations].[Type] AS [Type]
+[AdjustmentShortAllocations].[Type] AS [Type], 
+[AdjustmentShortAllocations].[SANumber] AS [SANumber]
 FROM [dbo].[AdjustmentShortAllocations] AS [AdjustmentShortAllocations]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="AdjustmentShorts" EntityType="Self.AdjustmentShorts" store:Type="Views" store:Schema="dbo">
@@ -1278,6 +1282,9 @@ FROM [dbo].[TODO-PreDiscrepancyErrors] AS [TODO-PreDiscrepancyErrors]</DefiningQ
           <Property Name="EntryData_Id" Type="Int32" Nullable="false" />
           <Property Name="FileLineNumber" Type="Int32" />
           <Property Name="UpgradeKey" Type="Int32" />
+          <Property Name="VolumeLiters" Type="Double" />
+          <Property Name="EntryDataDetailsKey" Type="String" MaxLength="4000" FixedLength="false" Unicode="true" annotation:StoreGeneratedPattern="Computed" />
+          <Property Name="TotalValue" Type="Double" Nullable="false" annotation:StoreGeneratedPattern="Computed" />
         </EntityType>
         <Association Name="FK_AsycudaSalesAllocations_EntryDataDetails">
           <End Type="Model.EntryDataDetail" Role="EntryDataDetail" Multiplicity="0..1">
@@ -1303,7 +1310,7 @@ FROM [dbo].[TODO-PreDiscrepancyErrors] AS [TODO-PreDiscrepancyErrors]</DefiningQ
           <Property Name="Status" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="QtyAllocated" Type="Double" Nullable="false" />
           <Property Name="xLineNumber" Type="Int32" />
-          <Property Name="PreviousItem_Id" Type="Int32" Nullable="false" />
+          <Property Name="PreviousItem_Id" Type="Int32" />
           <Property Name="InvoiceDate" Type="DateTime" Nullable="false" Precision="7" />
           <Property Name="SalesQuantity" Type="Double" Nullable="false" />
           <Property Name="SalesQtyAllocated" Type="Double" Nullable="false" />
@@ -1316,7 +1323,7 @@ FROM [dbo].[TODO-PreDiscrepancyErrors] AS [TODO-PreDiscrepancyErrors]</DefiningQ
           <Property Name="pRegistrationDate" Type="DateTime" Precision="3" />
           <Property Name="pQuantity" Type="Double" />
           <Property Name="pQtyAllocated" Type="Double" />
-          <Property Name="PiQuantity" Type="Double" Nullable="false" />
+          <Property Name="PiQuantity" Type="Double" />
           <Property Name="SalesFactor" Type="Double" />
           <Property Name="xCNumber" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Name="xRegistrationDate" Type="DateTime" Precision="3" />
@@ -1395,6 +1402,7 @@ FROM [dbo].[TODO-PreDiscrepancyErrors] AS [TODO-PreDiscrepancyErrors]</DefiningQ
           <NavigationProperty Name="AdjustmentOversAllocations" Relationship="Model.FK_AdjustmentOversAllocations_xcuda_Item" FromRole="xcuda_Item" ToRole="AdjustmentOversAllocation" />
           <Property Name="EntryDataType" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="UpgradeKey" Type="Int32" />
+          <Property Name="PreviousInvoiceKey" Type="String" MaxLength="4000" FixedLength="false" Unicode="true" annotation:StoreGeneratedPattern="Computed" />
         </EntityType>
         <Association Name="FK_AsycudaSalesAllocations_xcuda_Item">
           <End Type="Model.xcuda_Item" Role="xcuda_Item" Multiplicity="0..1" />
@@ -1428,7 +1436,6 @@ FROM [dbo].[TODO-PreDiscrepancyErrors] AS [TODO-PreDiscrepancyErrors]</DefiningQ
           <Property Name="AsycudaDocumentSetId" Type="Int32" Nullable="false" />
           <Property Name="InvoiceQty" Type="Double" />
           <Property Name="ReceivedQty" Type="Double" />
-          <Property Name="Status" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="PreviousInvoiceNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="CNumber" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Name="CLineNumber" Type="Int32" />
@@ -1454,6 +1461,8 @@ FROM [dbo].[TODO-PreDiscrepancyErrors] AS [TODO-PreDiscrepancyErrors]</DefiningQ
           <NavigationProperty Name="SystemDocumentSet" Relationship="Model.SystemDocumentSetAdjustmentDetail" FromRole="AdjustmentDetail" ToRole="SystemDocumentSet" />
           <Property Name="EntryData_Id" Type="Int32" Nullable="false" />
           <Property Name="InventoryItemId" Type="Int32" Nullable="false" />
+          <Property Name="TaxAmount" Type="Double" />
+          <Property Name="Status" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
         </EntityType>
         <Association Name="AdjustmentExAdjustmentDetail">
           <End Type="Model.AdjustmentEx" Role="AdjustmentEx" Multiplicity="1" />
@@ -1922,6 +1931,9 @@ FROM [dbo].[TODO-PreDiscrepancyErrors] AS [TODO-PreDiscrepancyErrors]</DefiningQ
           <EntitySetMapping Name="EntryDataDetails">
             <EntityTypeMapping TypeName="Model.EntryDataDetail">
               <MappingFragment StoreEntitySet="EntryDataDetails">
+                <ScalarProperty Name="TotalValue" ColumnName="TotalValue" />
+                <ScalarProperty Name="EntryDataDetailsKey" ColumnName="EntryDataDetailsKey" />
+                <ScalarProperty Name="VolumeLiters" ColumnName="VolumeLiters" />
                 <ScalarProperty Name="UpgradeKey" ColumnName="UpgradeKey" />
                 <ScalarProperty Name="FileLineNumber" ColumnName="FileLineNumber" />
                 <ScalarProperty Name="EntryData_Id" ColumnName="EntryData_Id" />
@@ -2016,6 +2028,7 @@ FROM [dbo].[TODO-PreDiscrepancyErrors] AS [TODO-PreDiscrepancyErrors]</DefiningQ
           <EntitySetMapping Name="xcuda_Item">
             <EntityTypeMapping TypeName="Model.xcuda_Item">
               <MappingFragment StoreEntitySet="xcuda_Item">
+                <ScalarProperty Name="PreviousInvoiceKey" ColumnName="PreviousInvoiceKey" />
                 <ScalarProperty Name="UpgradeKey" ColumnName="UpgradeKey" />
                 <ScalarProperty Name="EntryDataType" ColumnName="EntryDataType" />
                 <ScalarProperty Name="PreviousInvoiceItemNumber" ColumnName="PreviousInvoiceItemNumber" />
@@ -2046,6 +2059,8 @@ FROM [dbo].[TODO-PreDiscrepancyErrors] AS [TODO-PreDiscrepancyErrors]</DefiningQ
           <EntitySetMapping Name="AdjustmentDetails">
             <EntityTypeMapping TypeName="Model.AdjustmentDetail">
               <MappingFragment StoreEntitySet="AdjustmentDetails">
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="TaxAmount" ColumnName="TaxAmount" />
                 <ScalarProperty Name="InventoryItemId" ColumnName="InventoryItemId" />
                 <ScalarProperty Name="EntryData_Id" ColumnName="EntryData_Id" />
                 <ScalarProperty Name="EmailDate" ColumnName="EmailDate" />
@@ -2065,7 +2080,6 @@ FROM [dbo].[TODO-PreDiscrepancyErrors] AS [TODO-PreDiscrepancyErrors]</DefiningQ
                 <ScalarProperty Name="CLineNumber" ColumnName="CLineNumber" />
                 <ScalarProperty Name="CNumber" ColumnName="CNumber" />
                 <ScalarProperty Name="PreviousInvoiceNumber" ColumnName="PreviousInvoiceNumber" />
-                <ScalarProperty Name="Status" ColumnName="Status" />
                 <ScalarProperty Name="ReceivedQty" ColumnName="ReceivedQty" />
                 <ScalarProperty Name="InvoiceQty" ColumnName="InvoiceQty" />
                 <ScalarProperty Name="AsycudaDocumentSetId" ColumnName="AsycudaDocumentSetId" />

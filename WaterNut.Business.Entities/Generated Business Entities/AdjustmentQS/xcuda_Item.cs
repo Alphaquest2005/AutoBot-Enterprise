@@ -387,6 +387,21 @@ namespace AdjustmentQS.Business.Entities
         }
         Nullable<int> _upgradekey;
         [DataMember]
+        public string PreviousInvoiceKey 
+        {
+            get
+            {
+                return _previousinvoicekey;
+            }
+            set
+            {
+                _previousinvoicekey = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _previousinvoicekey;
+        [DataMember]
         public List<AsycudaSalesAllocation> AsycudaSalesAllocations { get; set; }
         [DataMember]
         public List<AdjustmentOversAllocation> AdjustmentOversAllocations { get; set; }

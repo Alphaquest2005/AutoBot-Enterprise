@@ -37,6 +37,7 @@
               this.Property(t => t.PreviousInvoiceItemNumber).HasColumnName("PreviousInvoiceItemNumber").HasMaxLength(50);
               this.Property(t => t.EntryDataType).HasColumnName("EntryDataType").HasMaxLength(50);
               this.Property(t => t.UpgradeKey).HasColumnName("UpgradeKey");
+              this.Property(t => t.PreviousInvoiceKey).HasColumnName("PreviousInvoiceKey").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.Computed)).HasMaxLength(4000);
               this.HasOptional(t => t.xcuda_Tarification).WithRequired(t => (PreviousEntry)t.xcuda_Item);
               this.HasOptional(t => t.xcuda_Valuation_item).WithRequired(t => (PreviousEntry)t.xcuda_Item);
               this.HasOptional(t => t.xcuda_PreviousItem).WithRequired(t => (PreviousEntry)t.PreviousEntry);

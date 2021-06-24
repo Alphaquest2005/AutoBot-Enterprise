@@ -17,7 +17,7 @@
               this.Property(t => t.PiQuantity).HasColumnName("PiQuantity");
               this.Property(t => t.PiWeight).HasColumnName("PiWeight");
               this.Property(t => t.ApplicationSettingsId).HasColumnName("ApplicationSettingsId");
-              this.HasMany(t => t.AdjustmentShortAllocations).WithRequired(t => (AscyudaItemPiQuantity)t.AscyudaItemPiQuantity);
+              this.HasMany(t => t.AdjustmentShortAllocations).WithOptional(t => t.AscyudaItemPiQuantity).HasForeignKey(d => d.PreviousItem_Id);
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);
     			this.Ignore(t => t.ModifiedProperties);

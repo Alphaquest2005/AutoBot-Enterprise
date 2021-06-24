@@ -422,24 +422,6 @@ namespace WaterNut.QuerySpace.EntryDataQS.ViewModels
 
  
 
-		private Int32? _classifiedLinesFilter;
-        public Int32? ClassifiedLinesFilter
-        {
-            get
-            {
-                return _classifiedLinesFilter;
-            }
-            set
-            {
-                _classifiedLinesFilter = value;
-				NotifyPropertyChanged(x => ClassifiedLinesFilter);
-                FilterData();
-                
-            }
-        }	
-
- 
-
 		private Double? _totalInternalFreightFilter;
         public Double? TotalInternalFreightFilter
         {
@@ -559,24 +541,6 @@ namespace WaterNut.QuerySpace.EntryDataQS.ViewModels
             {
                 _sourceFileFilter = value;
 				NotifyPropertyChanged(x => SourceFileFilter);
-                FilterData();
-                
-            }
-        }	
-
- 
-
-		private Int32? _packagesFilter;
-        public Int32? PackagesFilter
-        {
-            get
-            {
-                return _packagesFilter;
-            }
-            set
-            {
-                _packagesFilter = value;
-				NotifyPropertyChanged(x => PackagesFilter);
                 FilterData();
                 
             }
@@ -713,9 +677,6 @@ namespace WaterNut.QuerySpace.EntryDataQS.ViewModels
 					if(ExpectedTotalFilter.HasValue)
 						res.Append(" && " + string.Format("ExpectedTotal == {0}",  ExpectedTotalFilter.ToString()));				 
 
-					if(ClassifiedLinesFilter.HasValue)
-						res.Append(" && " + string.Format("ClassifiedLines == {0}",  ClassifiedLinesFilter.ToString()));				 
-
 					if(TotalInternalFreightFilter.HasValue)
 						res.Append(" && " + string.Format("TotalInternalFreight == {0}",  TotalInternalFreightFilter.ToString()));				 
 
@@ -737,9 +698,6 @@ namespace WaterNut.QuerySpace.EntryDataQS.ViewModels
 									if(string.IsNullOrEmpty(SourceFileFilter) == false)
 						res.Append(" && " + string.Format("SourceFile.Contains(\"{0}\")",  SourceFileFilter));						
  
-
-					if(PackagesFilter.HasValue)
-						res.Append(" && " + string.Format("Packages == {0}",  PackagesFilter.ToString()));				 
 
 									if(string.IsNullOrEmpty(SupplierInvoiceNoFilter) == false)
 						res.Append(" && " + string.Format("SupplierInvoiceNo.Contains(\"{0}\")",  SupplierInvoiceNoFilter));						
@@ -802,9 +760,6 @@ namespace WaterNut.QuerySpace.EntryDataQS.ViewModels
                     ExpectedTotal = x.ExpectedTotal ,
                     
  
-                    ClassifiedLines = x.ClassifiedLines ,
-                    
- 
                     TotalInternalFreight = x.TotalInternalFreight ,
                     
  
@@ -824,9 +779,6 @@ namespace WaterNut.QuerySpace.EntryDataQS.ViewModels
                     
  
                     SourceFile = x.SourceFile ,
-                    
- 
-                    Packages = x.Packages ,
                     
  
                     SupplierInvoiceNo = x.SupplierInvoiceNo ,
@@ -857,7 +809,7 @@ namespace WaterNut.QuerySpace.EntryDataQS.ViewModels
                     public Nullable<int> ImportedLines { get; set; } 
                     
  
-                    public Nullable<int> TotalLines { get; set; } 
+                    public int TotalLines { get; set; } 
                     
  
                     public string Currency { get; set; } 
@@ -872,13 +824,10 @@ namespace WaterNut.QuerySpace.EntryDataQS.ViewModels
                     public string SupplierCode { get; set; } 
                     
  
-                    public Nullable<double> ImportedTotal { get; set; } 
+                    public double ImportedTotal { get; set; } 
                     
  
                     public double ExpectedTotal { get; set; } 
-                    
- 
-                    public Nullable<int> ClassifiedLines { get; set; } 
                     
  
                     public double TotalInternalFreight { get; set; } 
@@ -900,9 +849,6 @@ namespace WaterNut.QuerySpace.EntryDataQS.ViewModels
                     
  
                     public string SourceFile { get; set; } 
-                    
- 
-                    public int Packages { get; set; } 
                     
  
                     public string SupplierInvoiceNo { get; set; } 

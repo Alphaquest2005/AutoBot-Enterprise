@@ -14,7 +14,6 @@ namespace ValuationDS
     
     public partial class TODO_C71ToCreate
     {
-        public int Id { get; set; }
         public int AsycudaDocumentSetId { get; set; }
         public int ApplicationSettingsId { get; set; }
         public string Country_of_origin_code { get; set; }

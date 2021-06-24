@@ -29,6 +29,10 @@
               this.Property(t => t.ApplicationSettingsId).HasColumnName("ApplicationSettingsId");
               this.Property(t => t.ImportComplete).HasColumnName("ImportComplete");
               this.Property(t => t.Customs_ProcedureId).HasColumnName("Customs_ProcedureId");
+              this.Property(t => t.CustomsProcedure).HasColumnName("CustomsProcedure").HasMaxLength(11);
+              this.Property(t => t.SourceFileName).HasColumnName("SourceFileName").HasMaxLength(500);
+              this.Property(t => t.SubmitToCustoms).HasColumnName("SubmitToCustoms");
+              this.Property(t => t.IsPaid).HasColumnName("IsPaid");
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);
     			this.Ignore(t => t.ModifiedProperties);

@@ -311,6 +311,21 @@ namespace AllocationDS.Business.Entities
         }
         string _upgradekey;
         [DataMember]
+        public string EntryType 
+        {
+            get
+            {
+                return _entrytype;
+            }
+            set
+            {
+                _entrytype = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _entrytype;
+        [DataMember]
         public List<EntryDataDetails> EntryDataDetails1 { get; set; }
 
  //       [DataMember]

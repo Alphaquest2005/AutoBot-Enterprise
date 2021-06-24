@@ -74,7 +74,7 @@ namespace EntryDataQS.Client.DTO
         private Nullable<int> _ImportedLines;
 
         [DataMember]
-        public Nullable<int> TotalLines
+        public int TotalLines
 		{ 
 		    get { return _TotalLines; }
 			set
@@ -84,7 +84,7 @@ namespace EntryDataQS.Client.DTO
 				NotifyPropertyChanged();//m => this.TotalLines
 			}
 		}
-        private Nullable<int> _TotalLines;
+        private int _TotalLines;
 
         [DataMember]
         public string Currency
@@ -178,7 +178,7 @@ namespace EntryDataQS.Client.DTO
         private string _SupplierCode;
 
         [DataMember]
-        public Nullable<double> ImportedTotal
+        public double ImportedTotal
 		{ 
 		    get { return _ImportedTotal; }
 			set
@@ -188,7 +188,7 @@ namespace EntryDataQS.Client.DTO
 				NotifyPropertyChanged();//m => this.ImportedTotal
 			}
 		}
-        private Nullable<double> _ImportedTotal;
+        private double _ImportedTotal;
 
         [DataMember]
         public double ExpectedTotal
@@ -202,19 +202,6 @@ namespace EntryDataQS.Client.DTO
 			}
 		}
         private double _ExpectedTotal;
-
-        [DataMember]
-        public Nullable<int> ClassifiedLines
-		{ 
-		    get { return _ClassifiedLines; }
-			set
-			{
-			    if (value == _ClassifiedLines) return;
-				_ClassifiedLines = value;
-				NotifyPropertyChanged();//m => this.ClassifiedLines
-			}
-		}
-        private Nullable<int> _ClassifiedLines;
 
         [DataMember]
         public int AsycudaDocumentSetId
@@ -332,19 +319,6 @@ namespace EntryDataQS.Client.DTO
 			}
 		}
         private string _SourceFile;
-
-        [DataMember]
-        public int Packages
-		{ 
-		    get { return _Packages; }
-			set
-			{
-			    if (value == _Packages) return;
-				_Packages = value;
-				NotifyPropertyChanged();//m => this.Packages
-			}
-		}
-        private int _Packages;
 
         [DataMember]
         public string SupplierInvoiceNo

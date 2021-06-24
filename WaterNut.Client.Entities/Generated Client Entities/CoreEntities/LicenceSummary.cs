@@ -74,9 +74,9 @@ public Nullable<double> Quantity
 		}
      
 
-       
+       [RequiredValidationAttribute(ErrorMessage= "Total is required")]
        [NumberValidationAttribute]
-public Nullable<double> Total
+public int Total
 		{ 
 		    get { return this.licencesummary.Total; }
 			set

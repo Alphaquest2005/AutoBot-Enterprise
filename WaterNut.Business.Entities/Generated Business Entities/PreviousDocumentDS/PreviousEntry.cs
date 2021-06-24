@@ -386,6 +386,21 @@ namespace PreviousDocumentDS.Business.Entities
         }
         Nullable<int> _upgradekey;
         [DataMember]
+        public string PreviousInvoiceKey 
+        {
+            get
+            {
+                return _previousinvoicekey;
+            }
+            set
+            {
+                _previousinvoicekey = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _previousinvoicekey;
+        [DataMember]
         public xcuda_Tarification xcuda_Tarification { get; set; }
         [DataMember]
         public xcuda_Valuation_item xcuda_Valuation_item { get; set; }

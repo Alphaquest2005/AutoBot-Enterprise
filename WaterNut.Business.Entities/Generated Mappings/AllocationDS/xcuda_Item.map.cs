@@ -37,6 +37,7 @@
               this.Property(t => t.PreviousInvoiceItemNumber).HasColumnName("PreviousInvoiceItemNumber").HasMaxLength(50);
               this.Property(t => t.EntryDataType).HasColumnName("EntryDataType").HasMaxLength(50);
               this.Property(t => t.UpgradeKey).HasColumnName("UpgradeKey");
+              this.Property(t => t.PreviousInvoiceKey).HasColumnName("PreviousInvoiceKey").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.Computed)).HasMaxLength(4000);
               this.HasRequired(t => t.AsycudaDocument).WithMany(t =>(ICollection<xcuda_Item>) t.xcuda_Item).HasForeignKey(d => d.ASYCUDA_Id);
               this.HasMany(t => t.AsycudaSalesAllocations).WithOptional(t => t.PreviousDocumentItem).HasForeignKey(d => d.PreviousItem_Id);
               this.HasOptional(t => t.xcuda_PreviousItem).WithRequired(t => (xcuda_Item)t.xcuda_Item);
@@ -48,7 +49,7 @@
               this.HasMany(t => t.xBondAllocations).WithRequired(t => (xcuda_Item)t.xcuda_Item);
               this.HasMany(t => t.EX9AsycudaSalesAllocations).WithRequired(t => (xcuda_Item)t.PreviousDocumentItem);
               this.HasMany(t => t.EntryPreviousItems).WithRequired(t => (xcuda_Item)t.xcuda_Item);
-              this.HasMany(t => t.AdjustmentShortAllocations).WithRequired(t => (xcuda_Item)t.PreviousDocumentItem);
+              this.HasMany(t => t.AdjustmentShortAllocations).WithOptional(t => t.PreviousDocumentItem).HasForeignKey(d => d.PreviousItem_Id);
               this.HasMany(t => t.ManualAllocations).WithRequired(t => (xcuda_Item)t.xcuda_Item);
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);

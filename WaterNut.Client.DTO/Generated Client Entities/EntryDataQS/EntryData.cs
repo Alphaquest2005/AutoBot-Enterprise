@@ -268,6 +268,19 @@ namespace EntryDataQS.Client.DTO
 		}
         private string _UpgradeKey;
 
+        [DataMember]
+        public string EntryType
+		{ 
+		    get { return _EntryType; }
+			set
+			{
+			    if (value == _EntryType) return;
+				_EntryType = value;
+				NotifyPropertyChanged();//m => this.EntryType
+			}
+		}
+        private string _EntryType;
+
        
         [DataMember]
         public ChangeTrackingCollection<AsycudaDocumentEntryData> AsycudaDocumentEntryDatas

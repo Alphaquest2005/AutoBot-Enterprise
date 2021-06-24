@@ -673,7 +673,6 @@
     <Compile Include="Contracts\EntryDataQS\IAsycudaDocumentItemEntryDataDetailService.cs" />
     <Compile Include="Contracts\EntryDataQS\IAsycudaDocumentSetEntryDataDetailService.cs" />
     <Compile Include="Contracts\EntryDataQS\IAsycudaDocumentSetEntryDataService.cs" />
-    <Compile Include="Contracts\EntryDataQS\IContainerExService.cs" />
     <Compile Include="Contracts\EntryDataQS\IEmptyFullCodeService.cs" />
     <Compile Include="Contracts\EntryDataQS\IEntryDataDetailsExService.cs" />
     <Compile Include="Contracts\EntryDataQS\IEntryDataExService.cs" />
@@ -1267,7 +1266,6 @@
     <Compile Include="Services\EntryDataQS\AsycudaDocumentItemEntryDataDetailService.cs" />
     <Compile Include="Services\EntryDataQS\AsycudaDocumentSetEntryDataDetailService.cs" />
     <Compile Include="Services\EntryDataQS\AsycudaDocumentSetEntryDataService.cs" />
-    <Compile Include="Services\EntryDataQS\ContainerExService.cs" />
     <Compile Include="Services\EntryDataQS\EmptyFullCodeService.cs" />
     <Compile Include="Services\EntryDataQS\EntryDataDetailsExService.cs" />
     <Compile Include="Services\EntryDataQS\EntryDataExService.cs" />

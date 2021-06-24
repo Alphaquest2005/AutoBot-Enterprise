@@ -98,16 +98,16 @@ namespace QuickBooksDS.Business.Services
         }
 
 
-        public async Task<InventoryItems> GetInventoryItemsByKey(string ItemNumber, List<string> includesLst = null, bool tracking = true)
+        public async Task<InventoryItems> GetInventoryItemsByKey(string Id, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
-			   if(string.IsNullOrEmpty(ItemNumber))return null; 
+			   if(string.IsNullOrEmpty(Id))return null; 
               using ( var dbContext = new QuickBooksDSContext(){StartTracking = StartTracking})
               {
-                var i = ItemNumber;
+                var i = Convert.ToInt32(Id);
 				var set = AddIncludes(includesLst, dbContext);
-                InventoryItems entity = await set.AsNoTracking().SingleOrDefaultAsync(x => x.ItemNumber == i).ConfigureAwait(continueOnCapturedContext: false);
+                InventoryItems entity = await set.AsNoTracking().SingleOrDefaultAsync(x => x.Id == i).ConfigureAwait(continueOnCapturedContext: false);
                 if(tracking && entity != null) entity.StartTracking();
                 return entity;
               }
@@ -288,11 +288,11 @@ namespace QuickBooksDS.Business.Services
                                 IQueryable<InventoryItems> dset;
                                 if (exp == "All")
                                 {
-                                    dset = set.OrderBy(x => x.ItemNumber);
+                                    dset = set.OrderBy(x => x.Id);
                                 }
                                 else
                                 {
-                                    dset = set.OrderBy(x => x.ItemNumber).Where(exp);
+                                    dset = set.OrderBy(x => x.Id).Where(exp);
                                 }
 
                                 var lst = dset.AsNoTracking()
@@ -363,12 +363,12 @@ namespace QuickBooksDS.Business.Services
                                 IQueryable<InventoryItems> dset;
                                 if (expLst.FirstOrDefault() == "All")
                                 {
-                                    dset = set.OrderBy(x => x.ItemNumber);
+                                    dset = set.OrderBy(x => x.Id);
                                 }
                                 else
                                 {
                                     set = AddWheres(expLst, set);
-                                    dset = set.OrderBy(x => x.ItemNumber);
+                                    dset = set.OrderBy(x => x.Id);
                                 }
 
                                 var lst = dset.AsNoTracking()
@@ -514,15 +514,15 @@ namespace QuickBooksDS.Business.Services
             }
         }
 
-        public async Task<bool> DeleteInventoryItems(string ItemNumber)
+        public async Task<bool> DeleteInventoryItems(string Id)
         {
             try
             {
               using ( var dbContext = new QuickBooksDSContext(){StartTracking = StartTracking})
               {
-                var i = ItemNumber;
+                var i = Convert.ToInt32(Id);
                 InventoryItems entity = await dbContext.InventoryItems
-													.SingleOrDefaultAsync(x => x.ItemNumber == i)
+													.SingleOrDefaultAsync(x => x.Id == i)
 													.ConfigureAwait(continueOnCapturedContext: false);
                 if (entity == null)
                     return false;
@@ -674,7 +674,7 @@ namespace QuickBooksDS.Business.Services
                     {
                         return await dbContext.InventoryItems
 										.AsNoTracking()
-                                        .OrderBy(y => y.ItemNumber)
+                                        .OrderBy(y => y.Id)
 										.Skip(startIndex)
 										.Take(count)
 										.ToListAsync()
@@ -686,7 +686,7 @@ namespace QuickBooksDS.Business.Services
                         return await dbContext.InventoryItems
 										.AsNoTracking()
                                         .Where(exp)
-										.OrderBy(y => y.ItemNumber)
+										.OrderBy(y => y.Id)
 										.Skip(startIndex)
 										.Take(count)
 										.ToListAsync()
@@ -723,7 +723,7 @@ namespace QuickBooksDS.Business.Services
                                         .CountAsync()
 										.ConfigureAwait(continueOnCapturedContext: false);
                     }
-                    return await dbContext.InventoryItems.Where(exp == "All" || exp == null ? "ItemNumber != null" : exp)
+                    return await dbContext.InventoryItems.Where(exp == "All" || exp == null ? "Id != null" : exp)
 											.AsNoTracking()
                                             .CountAsync()
 											.ConfigureAwait(continueOnCapturedContext: false);
@@ -766,9 +766,9 @@ namespace QuickBooksDS.Business.Services
 				.AsNoTracking()
                 .Where(navExp)
                 .SelectMany(navProp).OfType<InventoryItems>()
-                .Where(exp == "All" || exp == null ? "ItemNumber != null" : exp)
+                .Where(exp == "All" || exp == null ? "Id != null" : exp)
                 .Distinct()
-                .OrderBy("ItemNumber")
+                .OrderBy("Id")
                 .CountAsync()
 				.ConfigureAwait(continueOnCapturedContext: false);
 			}
@@ -787,9 +787,9 @@ namespace QuickBooksDS.Business.Services
 				.AsNoTracking()
                 .Where(navExp)
                 .Select(navProp).OfType<InventoryItems>()
-                .Where(exp == "All" || exp == null ? "ItemNumber != null" : exp)
+                .Where(exp == "All" || exp == null ? "Id != null" : exp)
                 .Distinct()
-                .OrderBy("ItemNumber")
+                .OrderBy("Id")
                 .CountAsync()
 				.ConfigureAwait(continueOnCapturedContext: false);
 			}
@@ -816,7 +816,7 @@ namespace QuickBooksDS.Business.Services
                        
                         return await set
 									.AsNoTracking()
-                                    .OrderBy(y => y.ItemNumber)
+                                    .OrderBy(y => y.Id)
  
                                     .Skip(startIndex)
                                     .Take(count)
@@ -825,8 +825,8 @@ namespace QuickBooksDS.Business.Services
                     }
                     return await set//dbContext.InventoryItems
 								.AsNoTracking()
-                                .Where(exp == "All" || exp == null ? "ItemNumber != null" : exp)
-								.OrderBy(y => y.ItemNumber)
+                                .Where(exp == "All" || exp == null ? "Id != null" : exp)
+								.OrderBy(y => y.Id)
  
                                 .Skip(startIndex)
                                 .Take(count)
@@ -878,9 +878,9 @@ namespace QuickBooksDS.Business.Services
             if (includeLst != null) set = includeLst.Aggregate(set, (current, itm) => current.Include(itm));            
 
             return await set
-                .Where(exp == "All" || exp == null ? "ItemNumber != null" : exp)
+                .Where(exp == "All" || exp == null ? "Id != null" : exp)
                 .Distinct()
-                .OrderBy(y => y.ItemNumber)
+                .OrderBy(y => y.Id)
  
                 .Skip(startIndex)
                 .Take(count)
@@ -907,9 +907,9 @@ namespace QuickBooksDS.Business.Services
                if (includeLst != null) set = includeLst.Aggregate(set, (current, itm) => current.Include(itm)); 
                 
                return await set
-                .Where(exp == "All" || exp == null ? "ItemNumber != null" : exp)
+                .Where(exp == "All" || exp == null ? "Id != null" : exp)
                 .Distinct()
-                .OrderBy(y => y.ItemNumber)
+                .OrderBy(y => y.Id)
  
                 .Skip(startIndex)
                 .Take(count)
@@ -959,7 +959,7 @@ namespace QuickBooksDS.Business.Services
 							.AsNoTracking()
                             .Where(navExp)
 							.SelectMany(navProp).OfType<InventoryItems>()
-							.Where(exp == "All" || exp == null?"ItemNumber != null":exp)
+							.Where(exp == "All" || exp == null?"Id != null":exp)
 							.Distinct()
 							.ToListAsync()
 							.ConfigureAwait(continueOnCapturedContext: false);
@@ -969,7 +969,7 @@ namespace QuickBooksDS.Business.Services
 				.AsNoTracking()
                 .Where(navExp)
                 .SelectMany(navProp).OfType<InventoryItems>()
-                .Where(exp == "All" || exp == null?"ItemNumber != null":exp)
+                .Where(exp == "All" || exp == null?"Id != null":exp)
                 .Distinct();
 
 			set = includesLst.Aggregate(set, (current, itm) => current.Include(itm));
@@ -996,7 +996,7 @@ namespace QuickBooksDS.Business.Services
 							.AsNoTracking()
                             .Where(navExp)
 							.Select(navProp).OfType<InventoryItems>()
-							.Where(exp == "All" || exp == null?"ItemNumber != null":exp)
+							.Where(exp == "All" || exp == null?"Id != null":exp)
 							.Distinct()
 							.ToListAsync()
 							.ConfigureAwait(continueOnCapturedContext: false);
@@ -1006,7 +1006,7 @@ namespace QuickBooksDS.Business.Services
 				.AsNoTracking()
                 .Where(navExp)
                 .Select(navProp).OfType<InventoryItems>()
-                .Where(exp == "All" || exp == null?"ItemNumber != null":exp)
+                .Where(exp == "All" || exp == null?"Id != null":exp)
                 .Distinct();
 
 			set = includesLst.Aggregate(set, (current, itm) => current.Include(itm));
@@ -1101,7 +1101,7 @@ namespace QuickBooksDS.Business.Services
 										.AsNoTracking()
                                         .Sum(field)??0);
                     }
-                    return Convert.ToDecimal(dbContext.InventoryItems.Where(exp == "All" || exp == null ? "ItemNumber != null" : exp)
+                    return Convert.ToDecimal(dbContext.InventoryItems.Where(exp == "All" || exp == null ? "Id != null" : exp)
 											.AsNoTracking()
                                             .Sum(field)??0);
                 }
@@ -1142,9 +1142,9 @@ namespace QuickBooksDS.Business.Services
 				.AsNoTracking()
                 .Where(navExp)
                 .SelectMany(navProp).OfType<InventoryItems>()
-                .Where(exp == "All" || exp == null ? "ItemNumber != null" : exp)
+                .Where(exp == "All" || exp == null ? "Id != null" : exp)
                 .Distinct()
-                .OrderBy("ItemNumber")
+                .OrderBy("Id")
                 .Sum(field));
 			}
 			catch (Exception)
@@ -1162,9 +1162,9 @@ namespace QuickBooksDS.Business.Services
 				.AsNoTracking()
                 .Where(navExp)
                 .Select(navProp).OfType<InventoryItems>()
-                .Where(exp == "All" || exp == null ? "ItemNumber != null" : exp)
+                .Where(exp == "All" || exp == null ? "Id != null" : exp)
                 .Distinct()
-                .OrderBy("ItemNumber")
+                .OrderBy("Id")
                 .Sum(field));
 			}
 			catch (Exception)

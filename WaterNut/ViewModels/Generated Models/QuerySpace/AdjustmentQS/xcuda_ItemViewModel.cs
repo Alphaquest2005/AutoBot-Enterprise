@@ -582,6 +582,24 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
         }	
 
  
+
+		private string _previousInvoiceKeyFilter;
+        public string PreviousInvoiceKeyFilter
+        {
+            get
+            {
+                return _previousInvoiceKeyFilter;
+            }
+            set
+            {
+                _previousInvoiceKeyFilter = value;
+				NotifyPropertyChanged(x => PreviousInvoiceKeyFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
 		internal bool DisableBaseFilterData = false;
         public virtual void FilterData()
 	    {
@@ -714,7 +732,11 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
  
 
 					if(UpgradeKeyFilter.HasValue)
-						res.Append(" && " + string.Format("UpgradeKey == {0}",  UpgradeKeyFilter.ToString()));							return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
+						res.Append(" && " + string.Format("UpgradeKey == {0}",  UpgradeKeyFilter.ToString()));				 
+
+									if(string.IsNullOrEmpty(PreviousInvoiceKeyFilter) == false)
+						res.Append(" && " + string.Format("PreviousInvoiceKey.Contains(\"{0}\")",  PreviousInvoiceKeyFilter));						
+			return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
 // Send to Excel Implementation
@@ -797,7 +819,10 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
                     EntryDataType = x.EntryDataType ,
                     
  
-                    UpgradeKey = x.UpgradeKey 
+                    UpgradeKey = x.UpgradeKey ,
+                    
+ 
+                    PreviousInvoiceKey = x.PreviousInvoiceKey 
                     
                 }).ToList()
             };
@@ -871,6 +896,9 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
                     
  
                     public Nullable<int> UpgradeKey { get; set; } 
+                    
+ 
+                    public string PreviousInvoiceKey { get; set; } 
                     
         }
 

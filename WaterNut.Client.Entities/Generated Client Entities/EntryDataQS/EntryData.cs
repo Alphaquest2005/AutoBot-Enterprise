@@ -340,6 +340,23 @@ public string UpgradeKey
 		}
      
 
+       
+       
+                
+                [MaxLength(50, ErrorMessage = "EntryType has a max length of 50 letters ")]
+public string EntryType
+		{ 
+		    get { return this.entrydata.EntryType; }
+			set
+			{
+			    if (value == this.entrydata.EntryType) return;
+				this.entrydata.EntryType = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("EntryType");
+			}
+		}
+     
+
         ObservableCollection<AsycudaDocumentEntryData> _AsycudaDocumentEntryDatas = null;
         public  ObservableCollection<AsycudaDocumentEntryData> AsycudaDocumentEntryDatas
 		{

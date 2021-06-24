@@ -25,14 +25,15 @@ namespace xlsxWriter
         private static string RideManualMatchesHeader = "WarehouseCode, RiderInvoiceNumber, InvoiceNo, Packages";
         private static string RiderManualMatchesTag = "Manual Matches";
 
-        public static List<(string reference, string filepath)> CreateCSV(ShipmentInvoice shipmentInvoice,
-            int riderId)
+
+        public static List<(string reference, string filepath)> CreateCSV(string shipmentInvoiceKey,
+            List<ShipmentInvoice> shipmentInvoices, int riderId)
         {
-           
+
             try
             {
 
-                var pdfFile = new FileInfo(shipmentInvoice.SourceFile);
+                var pdfFile = new FileInfo(shipmentInvoices.First().SourceFile);
                 var pdfFilePath = "";
                 var csvFilePath = "";
                 var csvs = new List<(string reference, string filepath)>();
@@ -42,117 +43,65 @@ namespace xlsxWriter
                                 BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId
                                 && x.Type == "POTemplate");
 
-               
+
                 var header = poTemplate.FileTypeMappings.OrderBy(x => x.Id).Select((x) => new { value = x, index = poTemplate.FileTypeMappings.IndexOf(x) })
-                    .ToDictionary(x => (Column: x.value.OriginalName,Index: x.index ), v => v.value);
+                    .ToDictionary(x => (Column: x.value.OriginalName, Index: x.index), v => v.value);
 
+                var parent = shipmentInvoices.First();
+                
 
-
-
-
-
-
-                if (shipmentInvoice.ShipmentInvoicePOs.Any())
+                if (parent.ShipmentInvoicePOs.Any())
                 {
-
-                    foreach (var pO in shipmentInvoice.ShipmentInvoicePOs)
-                    {
-                        pdfFilePath = Path.Combine(pdfFile.DirectoryName, $"{pO.PurchaseOrders.PONumber}.pdf");
-                        csvFilePath = Path.Combine(pdfFile.DirectoryName, $"{pO.PurchaseOrders.PONumber}.xlsx");
-                        var workbook = CreateShipmentWorkBook(riderId, shipmentInvoice, csvFilePath, header, out var invoiceRow, out var riderdetails, out var doRider);
-                        var i = 1;
-                        foreach (var itm in pO.PurchaseOrders.EntryDataDetails.OrderBy(x => x.INVItems.FirstOrDefault()?.InvoiceDetails?.FileLineNumber??x.FileLineNumber).Where(x => pO.POMISMatches.All(m => m.POItemCode != x.ItemNumber && m.PODescription != x.ItemDescription /* m.PODetailsId != x.EntryDataDetailsId ---- Took this out because it Allowed the grouped po items to still show*/)))
-                        {
-                            var pOItem = itm.INVItems.OrderByDescending(x => x.RankNo).FirstOrDefault();
-                            
-                            SetValue(workbook, i, header.First(x => x.Key.Column == nameof(pO.PurchaseOrders.PONumber)).Key.Index,
-                                pO.PurchaseOrders.PONumber);
-                            SetValue(workbook, i,
-                                header.First(x => x.Key.Column == nameof(shipmentInvoice.InvoiceDate)).Key.Index,
-                                pO.PurchaseOrders.EntryDataDate.ToString("yyyy-MM-dd"));
-                            SetValue(workbook, i, header.First(x => x.Key.Column == nameof(itm.Cost)).Key.Index,
-                                itm.Cost);
-                            SetValue(workbook, i, header.First(x => x.Key.Column == "POItemDescription").Key.Index, itm.ItemDescription);
-                            SetValue(workbook, i, header.First(x => x.Key.Column == "SupplierItemDescription").Key.Index, pOItem?.INVDescription);
-                            
-                            SetValue(workbook, i, header.First(x => x.Key.Column == "SupplierItemNumber").Key.Index, pOItem?.INVItemCode);
-
-                            SetValue(workbook, i, header.First(x => x.Key.Column == nameof(itm.Quantity)).Key.Index,
-                                itm.Quantity);
-
-                            if(pOItem != null && pOItem.Gallons > 0)
-                                SetValue(workbook, i, header.First(x => x.Key.Column == "Gallons").Key.Index,
-                                    itm.Quantity * pOItem.Gallons);
-
-                            SetValue(workbook, i, header.First(x => x.Key.Column == "POItemNumber").Key.Index, itm.ItemNumber);
-                            SetValue(workbook, i, header.First(x => x.Key.Column == nameof(itm.TotalCost)).Key.Index,
-                                itm.TotalCost == 0 ? itm.Quantity * itm.Cost : itm.TotalCost);
-                            SetValue(workbook, i, header.First(x => x.Key.Column == nameof(itm.Units)).Key.Index,
-                                itm.Units);
-                            if (doRider && i < riderdetails.Count)
-                            {
-                                SetValue(workbook, i + invoiceRow, header.First(x => x.Key.Column == "Packages").Key.Index,
-                                    riderdetails[i].ShipmentRiderDetails.Pieces);
-                                SetValue(workbook, i + invoiceRow, header.First(x => x.Key.Column == "Warehouse").Key.Index,
-                                    riderdetails[i].ShipmentRiderDetails.WarehouseCode);
-                            }
-
-                            i++;
-                        }
-                        DoMisMatches(shipmentInvoice, workbook);
-                        workbook.Save();
-                        if (!File.Exists(pdfFilePath)) File.Copy(pdfFile.FullName, pdfFilePath);
-                        csvs.Add((pO.PurchaseOrders.PONumber, pdfFilePath));
-                        csvs.Add((pO.PurchaseOrders.PONumber, csvFilePath));
-                    }
+                    csvFilePath = Path.Combine(pdfFile.DirectoryName, $"{parent.ShipmentInvoicePOs.First().PurchaseOrders.PONumber}.xlsx");
+                    csvs.Add((parent.ShipmentInvoicePOs.First().PurchaseOrders.PONumber, csvFilePath));
                 }
                 else
                 {
-                    pdfFilePath = Path.Combine(pdfFile.DirectoryName, $"{shipmentInvoice.InvoiceNo}.pdf");
-                    csvFilePath = Path.Combine(pdfFile.DirectoryName, $"{shipmentInvoice.InvoiceNo}.xlsx");
-                    var workbook = CreateShipmentWorkBook(riderId, shipmentInvoice, csvFilePath, header, out var invoiceRow, out var riderdetails, out var doRider);
-                    var i = 1;
-                    foreach (var itm in shipmentInvoice.InvoiceDetails.OrderBy(x => x.FileLineNumber))
-                    {
-                        
-
-                        SetValue(workbook, i, header.First(x => x.Key.Column == "InvoiceNo").Key.Index, shipmentInvoice.InvoiceNo);
-                        SetValue(workbook, i, header.First(x => x.Key.Column == nameof(shipmentInvoice.InvoiceDate)).Key.Index, shipmentInvoice.InvoiceDate.GetValueOrDefault().ToString("yyyy-MM-dd"));
-                        SetValue(workbook, i, header.First(x => x.Key.Column == nameof(itm.Cost)).Key.Index, itm.Cost);
-                        SetValue(workbook, i, header.First(x => x.Key.Column == "SupplierItemDescription").Key.Index, itm.ItemDescription);
-                        SetValue(workbook, i, header.First(x => x.Key.Column == "SupplierItemNumber").Key.Index, itm.ItemNumber);
-                        if (itm.ItemAlias != null)
-                        {
-                            SetValue(workbook, i, header.First(x => x.Key.Column == "POItemNumber").Key.Index,
-                                itm.ItemAlias.POItemCode);
-                            SetValue(workbook, i, header.First(x => x.Key.Column == "POItemDescription").Key.Index,
-                                itm.ItemAlias.POItemDescription);
-                        }
-
-                        if(itm.Volume != null && itm.Volume.Units == "Gallons")
-                            SetValue(workbook, i, header.First(x => x.Key.Column == "Gallons").Key.Index, itm.Quantity * itm.Volume.Quantity);
-
-                        SetValue(workbook, i, header.First(x => x.Key.Column == nameof(itm.Quantity)).Key.Index, itm.Quantity);
-                        SetValue(workbook, i, header.First(x => x.Key.Column == nameof(itm.TotalCost)).Key.Index, itm.TotalCost);
-                        SetValue(workbook, i, header.First(x => x.Key.Column == nameof(itm.Units)).Key.Index, itm.Units);
-
-                        if (doRider && i < riderdetails.Count)
-                        {
-                            SetValue(workbook, i, header.First(x => x.Key.Column == "Packages").Key.Index, riderdetails[i].Packages);
-                            SetValue(workbook, i, header.First(x => x.Key.Column == "Warehouse").Key.Index, riderdetails[i].WarehouseCode);
-                        }
-
-                        i++;
-                    }
-
-                    DoMisMatches(shipmentInvoice, workbook);
-                    workbook.Save();
-                    if (!File.Exists(pdfFilePath)) File.Copy(pdfFile.FullName, pdfFilePath);
-                    csvs.Add((shipmentInvoice.InvoiceNo, pdfFilePath));
-                    csvs.Add((shipmentInvoice.InvoiceNo, csvFilePath));
+                    csvFilePath = Path.Combine(pdfFile.DirectoryName, $"{parent.InvoiceNo}.xlsx");
+                    csvs.Add((parent.InvoiceNo, csvFilePath));
                 }
 
-                
+                var workbook = CreateShipmentWorkBook(riderId, parent, csvFilePath, header,
+                                out var invoiceRow, out var riderdetails, out var doRider);
+                var i = 1;
+                foreach (var shipmentInvoice in shipmentInvoices)
+                {
+
+                    if (shipmentInvoice.ShipmentInvoicePOs.Any())
+                    {
+
+                        foreach (var pO in shipmentInvoice.ShipmentInvoicePOs)
+                        {
+                            pdfFilePath = Path.Combine(pdfFile.DirectoryName, $"{pO.PurchaseOrders.PONumber}.pdf");
+                           
+                          
+                            
+                            WritePOToFile(pO, workbook, header, doRider, riderdetails, invoiceRow);
+                            DoMisMatches(shipmentInvoice, workbook);
+                            workbook.Save();
+
+                            if (!File.Exists(pdfFilePath)) File.Copy(pdfFile.FullName, pdfFilePath);
+                            csvs.Add((pO.PurchaseOrders.PONumber, pdfFilePath));
+                            
+                        }
+                    }
+                    else
+                    {
+                        pdfFilePath = Path.Combine(pdfFile.DirectoryName, $"{shipmentInvoice.InvoiceNo}.pdf");
+                      
+                   
+                        WriteInvToFile(shipmentInvoice, workbook, header, doRider, riderdetails);
+
+                         DoMisMatches(shipmentInvoice, workbook);
+                            workbook.Save();
+                        if (!File.Exists(pdfFilePath)) File.Copy(pdfFile.FullName, pdfFilePath);
+                        csvs.Add((shipmentInvoice.InvoiceNo, pdfFilePath));
+                        
+                    }
+                           
+
+                }
+
 
 
                 return csvs;
@@ -164,16 +113,209 @@ namespace xlsxWriter
             }
         }
 
+        //public static List<(string reference, string filepath)> CreateCSV(ShipmentInvoice shipmentInvoice, int riderId)
+        //{
+           
+        //    try
+        //    {
+
+        //        var pdfFile = new FileInfo(shipmentInvoice.SourceFile);
+        //        var pdfFilePath = "";
+        //        var csvFilePath = "";
+        //        var csvs = new List<(string reference, string filepath)>();
+        //        var poTemplate = new CoreEntitiesContext().FileTypes
+        //            .Include(x => x.FileTypeMappings)
+        //            .First(x => x.ApplicationSettingsId ==
+        //                        BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId
+        //                        && x.Type == "POTemplate");
+
+               
+        //        var header = poTemplate.FileTypeMappings.OrderBy(x => x.Id).Select((x) => new { value = x, index = poTemplate.FileTypeMappings.IndexOf(x) })
+        //            .ToDictionary(x => (Column: x.value.OriginalName,Index: x.index ), v => v.value);
+
+                
+
+
+
+                    
+        //            if (shipmentInvoice.ShipmentInvoicePOs.Any())
+        //            {
+
+        //                foreach (var pO in shipmentInvoice.ShipmentInvoicePOs)
+        //                {
+        //                    pdfFilePath = Path.Combine(pdfFile.DirectoryName, $"{pO.PurchaseOrders.PONumber}.pdf");
+        //                    csvFilePath = Path.Combine(pdfFile.DirectoryName, $"{pO.PurchaseOrders.PONumber}.xlsx");
+        //                    var workbook = CreateShipmentWorkBook(riderId, shipmentInvoice, csvFilePath, header,
+        //                        out var invoiceRow, out var riderdetails, out var doRider);
+        //                    var i = 1;
+        //                    WritePOToFile(pO, workbook, i, header, doRider, riderdetails, invoiceRow);
+
+        //                    DoMisMatches(shipmentInvoice, workbook);
+        //                    workbook.Save();
+        //                    if (!File.Exists(pdfFilePath)) File.Copy(pdfFile.FullName, pdfFilePath);
+        //                    csvs.Add((pO.PurchaseOrders.PONumber, pdfFilePath));
+        //                    csvs.Add((pO.PurchaseOrders.PONumber, csvFilePath));
+        //                }
+        //            }
+        //            else
+        //            {
+        //                pdfFilePath = Path.Combine(pdfFile.DirectoryName, $"{shipmentInvoice.InvoiceNo}.pdf");
+        //                csvFilePath = Path.Combine(pdfFile.DirectoryName, $"{shipmentInvoice.InvoiceNo}.xlsx");
+        //                var workbook = CreateShipmentWorkBook(riderId, shipmentInvoice, csvFilePath, header,
+        //                    out var invoiceRow, out var riderdetails, out var doRider);
+        //                var i = 1;
+
+        //                WriteInvToFile(shipmentInvoice, workbook, i, header, doRider, riderdetails);
+
+        //                DoMisMatches(shipmentInvoice, workbook);
+        //                workbook.Save();
+        //                if (!File.Exists(pdfFilePath)) File.Copy(pdfFile.FullName, pdfFilePath);
+        //                csvs.Add((shipmentInvoice.InvoiceNo, pdfFilePath));
+        //                csvs.Add((shipmentInvoice.InvoiceNo, csvFilePath));
+        //            }
+              
+
+
+
+        //        return csvs;
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        Console.WriteLine(e);
+        //        throw;
+        //    }
+        //}
+
+        private static void WriteInvToFile(ShipmentInvoice shipmentInvoice, Workbook workbook, Dictionary<(string Column, int Index), FileTypeMappings> header,
+            bool doRider, List<ShipmentRiderInvoice> riderdetails)
+        {
+            workbook.SetCurrentWorksheet("POTemplate");
+            var i = workbook.CurrentWorksheet.GetLastRowNumber() + 1;
+
+            foreach (var itm in shipmentInvoice.InvoiceDetails.OrderBy(x => x.FileLineNumber))
+            {
+                SetValue(workbook, i, header.First(x => x.Key.Column == "InvoiceNo").Key.Index,
+                    shipmentInvoice.InvoiceNo);
+                SetValue(workbook, i,
+                    header.First(x => x.Key.Column == nameof(shipmentInvoice.InvoiceDate)).Key.Index,
+                    shipmentInvoice.InvoiceDate.GetValueOrDefault().ToString("yyyy-MM-dd"));
+                SetValue(workbook, i, header.First(x => x.Key.Column == nameof(itm.Cost)).Key.Index,
+                    itm.Cost);
+                SetValue(workbook, i,
+                    header.First(x => x.Key.Column == "SupplierItemDescription").Key.Index,
+                    itm.ItemDescription);
+                SetValue(workbook, i, header.First(x => x.Key.Column == "SupplierItemNumber").Key.Index,
+                    itm.ItemNumber);
+                if (itm.ItemAlias != null)
+                {
+                    SetValue(workbook, i, header.First(x => x.Key.Column == "POItemNumber").Key.Index,
+                        itm.ItemAlias.POItemCode);
+                    SetValue(workbook, i, header.First(x => x.Key.Column == "POItemDescription").Key.Index,
+                        itm.ItemAlias.POItemDescription);
+                }
+
+                if (itm.Volume != null && itm.Volume.Units == "Gallons")
+                    SetValue(workbook, i, header.First(x => x.Key.Column == "Gallons").Key.Index,
+                        itm.Quantity * itm.Volume.Quantity);
+
+                SetValue(workbook, i, header.First(x => x.Key.Column == nameof(itm.Quantity)).Key.Index,
+                    itm.Quantity);
+                SetValue(workbook, i, header.First(x => x.Key.Column == nameof(itm.TotalCost)).Key.Index,
+                    itm.TotalCost);
+                SetValue(workbook, i, header.First(x => x.Key.Column == nameof(itm.Units)).Key.Index,
+                    itm.Units);
+
+                if (doRider && i < riderdetails.Count)
+                {
+                    SetValue(workbook, i, header.First(x => x.Key.Column == "Packages").Key.Index,
+                        riderdetails[i].Packages);
+                    SetValue(workbook, i, header.First(x => x.Key.Column == "Warehouse").Key.Index,
+                        riderdetails[i].WarehouseCode);
+                }
+
+                i++;
+            }
+        }
+
+        private static void WritePOToFile(ShipmentInvoicePOs pO, Workbook workbook,  Dictionary<(string Column, int Index), FileTypeMappings> header, bool doRider,
+            List<ShipmentRiderInvoice> riderdetails, int invoiceRow)
+        {
+            workbook.SetCurrentWorksheet("POTemplate");
+            var i = workbook.CurrentWorksheet.GetLastRowNumber() + 1;
+
+            foreach (var itm in pO.PurchaseOrders.EntryDataDetails
+                .OrderBy(x =>
+                    x.INVItems.FirstOrDefault()?.InvoiceDetails?.FileLineNumber ?? x.FileLineNumber)
+                .Where(x => pO.POMISMatches.All(
+                    m => m.POItemCode != x.ItemNumber &&
+                         m.PODescription !=
+                         x.ItemDescription /* m.PODetailsId != x.EntryDataDetailsId ---- Took this out because it Allowed the grouped po items to still show*/)))
+            {
+                var pOItem = itm.INVItems.OrderByDescending(x => x.RankNo).FirstOrDefault();
+
+                SetValue(workbook, i,
+                    header.First(x => x.Key.Column == nameof(pO.PurchaseOrders.PONumber)).Key.Index,
+                    pO.PurchaseOrders.PONumber);
+                SetValue(workbook, i,
+                    header.First(x => x.Key.Column == nameof(ShipmentInvoice.InvoiceDate)).Key.Index,
+                    pO.PurchaseOrders.EntryDataDate.ToString("yyyy-MM-dd"));
+                SetValue(workbook, i, header.First(x => x.Key.Column == nameof(itm.Cost)).Key.Index,
+                    itm.Cost);
+                SetValue(workbook, i, header.First(x => x.Key.Column == "POItemDescription").Key.Index,
+                    itm.ItemDescription);
+                SetValue(workbook, i,
+                    header.First(x => x.Key.Column == "SupplierItemDescription").Key.Index,
+                    pOItem?.INVDescription);
+
+                SetValue(workbook, i, header.First(x => x.Key.Column == "SupplierItemNumber").Key.Index,
+                    pOItem?.INVItemCode);
+
+                SetValue(workbook, i, header.First(x => x.Key.Column == nameof(itm.Quantity)).Key.Index,
+                    itm.Quantity);
+
+                if (pOItem != null && pOItem.Gallons > 0)
+                    SetValue(workbook, i, header.First(x => x.Key.Column == "Gallons").Key.Index,
+                        itm.Quantity * pOItem.Gallons);
+
+                SetValue(workbook, i, header.First(x => x.Key.Column == "POItemNumber").Key.Index,
+                    itm.ItemNumber);
+                SetValue(workbook, i,
+                    header.First(x => x.Key.Column == nameof(itm.TotalCost)).Key.Index,
+                    itm.TotalCost == 0 ? itm.Quantity * itm.Cost : itm.TotalCost);
+                SetValue(workbook, i, header.First(x => x.Key.Column == nameof(itm.Units)).Key.Index,
+                    itm.Units);
+                if (doRider && i < riderdetails.Count)
+                {
+                    SetValue(workbook, i + invoiceRow,
+                        header.First(x => x.Key.Column == "Packages").Key.Index,
+                        riderdetails[i].ShipmentRiderDetails.Pieces);
+                    SetValue(workbook, i + invoiceRow,
+                        header.First(x => x.Key.Column == "Warehouse").Key.Index,
+                        riderdetails[i].ShipmentRiderDetails.WarehouseCode);
+                }
+
+                i++;
+            }
+        }
+
         private static void DoMisMatches(ShipmentInvoice shipmentInvoice, Workbook workbook)
         {
             var shipmentInvoicePoItemMisMatchesList = shipmentInvoice.ShipmentInvoicePOs.SelectMany(x => x.POMISMatches).ToList();
             if (!shipmentInvoicePoItemMisMatchesList.Any()) return;
-            
+            var header = "PONumber,InvoiceNo,POItemCode,INVItemCode,PODescription,INVDescription,POCost,INVCost,POQuantity,INVQuantity,POTotalCost,INVTotalCost,INVDetailsId,PODetailsId".Split(',').ToList();
+
+            if (!workbook.Worksheets.Exists(x => x.SheetName == "MisMatches"))
+            {
                 workbook.AddWorksheet("MisMatches");
-                var header = "PONumber,InvoiceNo,POItemCode,INVItemCode,PODescription,INVDescription,POCost,INVCost,POQuantity,INVQuantity,POTotalCost,INVTotalCost,INVDetailsId,PODetailsId".Split(',').ToList();
                 header.ForEach(x => SetValue(workbook, 0, header.IndexOf(x), x));
-                var i = 1;
                 
+            }
+            else
+            {
+                workbook.SetCurrentWorksheet("MisMatches");
+            }
+               
+                var i = workbook.CurrentWorksheet.GetLastRowNumber() + 1;
                 foreach (var mis in shipmentInvoicePoItemMisMatchesList)
                 {
                     SetValue(workbook, i, header.IndexOf("PONumber"), mis.PONumber);
@@ -608,6 +750,7 @@ namespace xlsxWriter
         }
 
 
+       
     }
 
     public class UnAttachedWorkBookPkg

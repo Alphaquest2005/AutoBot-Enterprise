@@ -853,6 +853,42 @@ namespace WaterNut.QuerySpace.PreviousDocumentQS.ViewModels
         }	
 
  
+
+		private Double? _totalDutyLiablityFilter;
+        public Double? TotalDutyLiablityFilter
+        {
+            get
+            {
+                return _totalDutyLiablityFilter;
+            }
+            set
+            {
+                _totalDutyLiablityFilter = value;
+				NotifyPropertyChanged(x => TotalDutyLiablityFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
+
+		private Double? _dutyLiablityFilter;
+        public Double? DutyLiablityFilter
+        {
+            get
+            {
+                return _dutyLiablityFilter;
+            }
+            set
+            {
+                _dutyLiablityFilter = value;
+				NotifyPropertyChanged(x => DutyLiablityFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
 		internal bool DisableBaseFilterData = false;
         public virtual void FilterData()
 	    {
@@ -1037,7 +1073,13 @@ namespace WaterNut.QuerySpace.PreviousDocumentQS.ViewModels
  
 
 					if(pLineNumberFilter.HasValue)
-						res.Append(" && " + string.Format("pLineNumber == {0}",  pLineNumberFilter.ToString()));							return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
+						res.Append(" && " + string.Format("pLineNumber == {0}",  pLineNumberFilter.ToString()));				 
+
+					if(TotalDutyLiablityFilter.HasValue)
+						res.Append(" && " + string.Format("TotalDutyLiablity == {0}",  TotalDutyLiablityFilter.ToString()));				 
+
+					if(DutyLiablityFilter.HasValue)
+						res.Append(" && " + string.Format("DutyLiablity == {0}",  DutyLiablityFilter.ToString()));							return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
 // Send to Excel Implementation
@@ -1144,7 +1186,13 @@ namespace WaterNut.QuerySpace.PreviousDocumentQS.ViewModels
                     Prev_decl_HS_spec = x.Prev_decl_HS_spec ,
                     
  
-                    pLineNumber = x.pLineNumber 
+                    pLineNumber = x.pLineNumber ,
+                    
+ 
+                    TotalDutyLiablity = x.TotalDutyLiablity ,
+                    
+ 
+                    DutyLiablity = x.DutyLiablity 
                     
                 }).ToList()
             };
@@ -1242,6 +1290,12 @@ namespace WaterNut.QuerySpace.PreviousDocumentQS.ViewModels
                     
  
                     public Nullable<int> pLineNumber { get; set; } 
+                    
+ 
+                    public Nullable<double> TotalDutyLiablity { get; set; } 
+                    
+ 
+                    public Nullable<double> DutyLiablity { get; set; } 
                     
         }
 

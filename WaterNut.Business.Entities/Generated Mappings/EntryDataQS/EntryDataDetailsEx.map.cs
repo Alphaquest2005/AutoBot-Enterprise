@@ -19,7 +19,7 @@
               this.Property(t => t.ItemNumber).HasColumnName("ItemNumber").IsRequired().HasMaxLength(20);
               this.Property(t => t.Quantity).HasColumnName("Quantity");
               this.Property(t => t.Units).HasColumnName("Units").HasMaxLength(15);
-              this.Property(t => t.ItemDescription).HasColumnName("ItemDescription").IsRequired();
+              this.Property(t => t.ItemDescription).HasColumnName("ItemDescription").IsRequired().HasMaxLength(255);
               this.Property(t => t.Cost).HasColumnName("Cost");
               this.Property(t => t.QtyAllocated).HasColumnName("QtyAllocated");
               this.Property(t => t.UnitWeight).HasColumnName("UnitWeight");
@@ -48,6 +48,7 @@
               this.Property(t => t.EntryData_Id).HasColumnName("EntryData_Id");
               this.Property(t => t.InventoryItemId).HasColumnName("InventoryItemId");
               this.Property(t => t.FileLineNumber).HasColumnName("FileLineNumber");
+              this.Property(t => t.VolumeLiters).HasColumnName("VolumeLiters");
               this.HasRequired(t => t.InventoryItemsEx).WithMany(t =>(ICollection<EntryDataDetailsEx>) t.EntryDataDetailsExs).HasForeignKey(d => d.InventoryItemId);
               this.HasRequired(t => t.EntryDataEx).WithMany(t =>(ICollection<EntryDataDetailsEx>) t.EntryDataDetailsExs).HasForeignKey(d => d.EntryData_Id);
               this.HasMany(t => t.AsycudaDocumentSets).WithRequired(t => (EntryDataDetailsEx)t.EntryDataDetailsEx);

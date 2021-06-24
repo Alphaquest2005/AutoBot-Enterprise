@@ -14,7 +14,7 @@ namespace EntryDataQS.Client.Entities
                {
                    if (ImportedLines.HasValue)
                    {
-                       return ImportedLines.GetValueOrDefault() - TotalLines.GetValueOrDefault();
+                       return ImportedLines.GetValueOrDefault() - TotalLines;
                    }
                    return 0;
                }

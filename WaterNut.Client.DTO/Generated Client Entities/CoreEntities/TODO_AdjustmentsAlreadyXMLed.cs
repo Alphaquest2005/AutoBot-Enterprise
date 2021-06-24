@@ -425,7 +425,7 @@ namespace CoreEntities.Client.DTO
         private string _DutyFreePaid;
 
         [DataMember]
-        public string pLineNumber
+        public Nullable<int> pLineNumber
 		{ 
 		    get { return _pLineNumber; }
 			set
@@ -435,7 +435,7 @@ namespace CoreEntities.Client.DTO
 				NotifyPropertyChanged();//m => this.pLineNumber
 			}
 		}
-        private string _pLineNumber;
+        private Nullable<int> _pLineNumber;
 
        
    //     [DataMember]

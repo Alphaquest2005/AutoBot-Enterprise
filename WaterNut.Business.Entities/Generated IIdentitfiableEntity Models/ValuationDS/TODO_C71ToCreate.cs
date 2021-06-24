@@ -18,11 +18,11 @@ namespace ValuationDS.Business.Entities
         {
             get
             {
-                return this.Id.ToString();  // this.Id == null?"0":
+                return this.AsycudaDocumentSetId.ToString();  // this.AsycudaDocumentSetId == null?"0":
             }
             set
             {
-                this.Id = Convert.ToInt32(value);
+                this.AsycudaDocumentSetId = Convert.ToInt32(value);
             }
         }
 

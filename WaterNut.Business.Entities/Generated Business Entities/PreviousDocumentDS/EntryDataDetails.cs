@@ -455,6 +455,51 @@ namespace PreviousDocumentDS.Business.Entities
             }
         }
         Nullable<int> _upgradekey;
+        [DataMember]
+        public Nullable<double> VolumeLiters 
+        {
+            get
+            {
+                return _volumeliters;
+            }
+            set
+            {
+                _volumeliters = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<double> _volumeliters;
+        [DataMember]
+        public string EntryDataDetailsKey 
+        {
+            get
+            {
+                return _entrydatadetailskey;
+            }
+            set
+            {
+                _entrydatadetailskey = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _entrydatadetailskey;
+        [DataMember]
+        public double TotalValue 
+        {
+            get
+            {
+                return _totalvalue;
+            }
+            set
+            {
+                _totalvalue = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        double _totalvalue;
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

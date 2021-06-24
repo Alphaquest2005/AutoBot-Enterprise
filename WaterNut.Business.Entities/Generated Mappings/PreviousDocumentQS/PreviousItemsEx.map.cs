@@ -47,6 +47,8 @@
               this.Property(t => t.Prev_decl_HS_spec).HasColumnName("Prev_decl_HS_spec").HasMaxLength(20);
               this.Property(t => t.pLineNumber).HasColumnName("pLineNumber");
               this.Property(t => t.ApplicationSettingsId).HasColumnName("ApplicationSettingsId");
+              this.Property(t => t.TotalDutyLiablity).HasColumnName("TotalDutyLiablity");
+              this.Property(t => t.DutyLiablity).HasColumnName("DutyLiablity");
               this.HasOptional(t => t.PreviousDocumentItem).WithMany(t =>(ICollection<PreviousItemsEx>) t.PreviousItemsExes).HasForeignKey(d => d.PreviousDocumentItemId);
               this.HasRequired(t => t.AsycudaDocumentItem).WithMany(t =>(ICollection<PreviousItemsEx>) t.PreviousItemEx).HasForeignKey(d => d.AsycudaDocumentItemId);
              // Tracking Properties

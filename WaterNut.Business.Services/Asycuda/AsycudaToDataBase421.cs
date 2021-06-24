@@ -341,9 +341,9 @@ namespace WaterNut.DataSpace.Asycuda
                     pi.Current_value = Convert.ToSingle(Math.Round(Convert.ToDouble(ai.Prev_decl_ref_value), 2));
                     pi.Goods_origin = ai.Prev_decl_country_origin;
                     pi.Hs_code = ai.Prev_decl_HS_code;
-                    pi.Net_weight = Convert.ToSingle(ai.Prev_decl_weight);
+                    pi.Net_weight = Convert.ToDecimal(ai.Prev_decl_weight);
                     pi.Packages_number = ai.Prev_decl_number_packages;
-                    pi.Prev_net_weight = Convert.ToSingle(ai.Prev_decl_weight_written_off);
+                    pi.Prev_net_weight = Convert.ToDecimal(ai.Prev_decl_weight_written_off);
                     pi.Prev_reg_cuo = ai.Prev_decl_office_code;
                     pi.Prev_decl_HS_spec = ai.Prev_decl_HS_spec;
                     pi.Prev_reg_dat = ai.Prev_decl_reg_year;
@@ -357,7 +357,7 @@ namespace WaterNut.DataSpace.Asycuda
                     if (ai.Prev_decl_ref_value_written_off != null)
                         pi.Previous_value = (float) Math.Round(Convert.ToDouble(ai.Prev_decl_ref_value_written_off), 2);
                     if (!string.IsNullOrEmpty(ai.Prev_decl_supp_quantity))
-                        pi.Suplementary_Quantity = Convert.ToSingle(ai.Prev_decl_supp_quantity);
+                        pi.Suplementary_Quantity = Convert.ToDecimal(ai.Prev_decl_supp_quantity);
 
                     //await DataSpace.DocumentItemDS.ViewModels.BaseDataModel.Instance.Savexcuda_PreviousItem(pi).ConfigureAwait(false);
 

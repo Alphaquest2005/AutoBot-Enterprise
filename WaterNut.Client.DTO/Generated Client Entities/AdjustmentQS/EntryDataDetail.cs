@@ -398,6 +398,45 @@ namespace AdjustmentQS.Client.DTO
 		}
         private Nullable<int> _UpgradeKey;
 
+        [DataMember]
+        public Nullable<double> VolumeLiters
+		{ 
+		    get { return _VolumeLiters; }
+			set
+			{
+			    if (value == _VolumeLiters) return;
+				_VolumeLiters = value;
+				NotifyPropertyChanged();//m => this.VolumeLiters
+			}
+		}
+        private Nullable<double> _VolumeLiters;
+
+        [DataMember]
+        public string EntryDataDetailsKey
+		{ 
+		    get { return _EntryDataDetailsKey; }
+			set
+			{
+			    if (value == _EntryDataDetailsKey) return;
+				_EntryDataDetailsKey = value;
+				NotifyPropertyChanged();//m => this.EntryDataDetailsKey
+			}
+		}
+        private string _EntryDataDetailsKey;
+
+        [DataMember]
+        public double TotalValue
+		{ 
+		    get { return _TotalValue; }
+			set
+			{
+			    if (value == _TotalValue) return;
+				_TotalValue = value;
+				NotifyPropertyChanged();//m => this.TotalValue
+			}
+		}
+        private double _TotalValue;
+
        
         [DataMember]
         public ChangeTrackingCollection<AsycudaSalesAllocation> AsycudaSalesAllocations

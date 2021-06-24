@@ -16,8 +16,8 @@
               this.Property(t => t.Amount_deducted_from_licence).HasColumnName("Amount_deducted_from_licence").HasMaxLength(10);
               this.Property(t => t.Item_Id).HasColumnName("Item_Id").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.None));
               this.Property(t => t.ASYCUDA_Id).HasColumnName("ASYCUDA_Id");
-              this.Property(t => t.Licence_number).HasColumnName("Licence_number").HasMaxLength(6);
-              this.Property(t => t.Free_text_1).HasColumnName("Free_text_1").HasMaxLength(30);
+              this.Property(t => t.Licence_number).HasColumnName("Licence_number").HasMaxLength(50);
+              this.Property(t => t.Free_text_1).HasColumnName("Free_text_1").HasMaxLength(35);
               this.Property(t => t.Free_text_2).HasColumnName("Free_text_2").HasMaxLength(30);
               this.Property(t => t.EntryDataDetailsId).HasColumnName("EntryDataDetailsId");
               this.Property(t => t.LineNumber).HasColumnName("LineNumber");

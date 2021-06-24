@@ -11,10 +11,9 @@
     {
         public TODO_C71ToCreateMap()
         {                        
-              this.HasKey(t => t.Id);        
+              this.HasKey(t => t.AsycudaDocumentSetId);        
               this.ToTable("TODO-C71ToCreate");
-              this.Property(t => t.Id).HasColumnName("Id").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.None));
-              this.Property(t => t.AsycudaDocumentSetId).HasColumnName("AsycudaDocumentSetId");
+              this.Property(t => t.AsycudaDocumentSetId).HasColumnName("AsycudaDocumentSetId").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.None));
               this.Property(t => t.ApplicationSettingsId).HasColumnName("ApplicationSettingsId");
               this.Property(t => t.Country_of_origin_code).HasColumnName("Country_of_origin_code").HasMaxLength(3);
               this.Property(t => t.Currency_Code).HasColumnName("Currency_Code").IsRequired().HasMaxLength(3);

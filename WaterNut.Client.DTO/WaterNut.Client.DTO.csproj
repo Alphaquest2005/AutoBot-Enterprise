@@ -217,7 +217,6 @@
     <Compile Include="Generated Client Entities\EntryDataQS\AsycudaDocumentItemEntryDataDetail.cs" />
     <Compile Include="Generated Client Entities\EntryDataQS\AsycudaDocumentSetEntryData.cs" />
     <Compile Include="Generated Client Entities\EntryDataQS\AsycudaDocumentSetEntryDataDetail.cs" />
-    <Compile Include="Generated Client Entities\EntryDataQS\ContainerEx.cs" />
     <Compile Include="Generated Client Entities\EntryDataQS\EmptyFullCode.cs" />
     <Compile Include="Generated Client Entities\EntryDataQS\EntryData.cs" />
     <Compile Include="Generated Client Entities\EntryDataQS\EntryDataDetailsEx.cs" />
@@ -372,7 +371,6 @@
     <Compile Include="Generated IIdentitfiableEntity Models\EntryDataQS\AsycudaDocumentItemEntryDataDetail.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\EntryDataQS\AsycudaDocumentSetEntryData.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\EntryDataQS\AsycudaDocumentSetEntryDataDetail.cs" />
-    <Compile Include="Generated IIdentitfiableEntity Models\EntryDataQS\ContainerEx.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\EntryDataQS\EmptyFullCode.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\EntryDataQS\EntryData.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\EntryDataQS\EntryDataDetailsEx.cs" />
@@ -527,7 +525,6 @@
     <Compile Include="Generated MyNavProp Models\EntryDataQS\AsycudaDocumentItemEntryDataDetail.cs" />
     <Compile Include="Generated MyNavProp Models\EntryDataQS\AsycudaDocumentSetEntryData.cs" />
     <Compile Include="Generated MyNavProp Models\EntryDataQS\AsycudaDocumentSetEntryDataDetail.cs" />
-    <Compile Include="Generated MyNavProp Models\EntryDataQS\ContainerEx.cs" />
     <Compile Include="Generated MyNavProp Models\EntryDataQS\EmptyFullCode.cs" />
     <Compile Include="Generated MyNavProp Models\EntryDataQS\EntryData.cs" />
     <Compile Include="Generated MyNavProp Models\EntryDataQS\EntryDataDetailsEx.cs" />

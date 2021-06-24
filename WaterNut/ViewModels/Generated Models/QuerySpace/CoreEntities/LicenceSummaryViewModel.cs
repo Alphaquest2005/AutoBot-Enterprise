@@ -265,8 +265,8 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 
  
 
-		private Double? _totalFilter;
-        public Double? TotalFilter
+		private Int32? _totalFilter;
+        public Int32? TotalFilter
         {
             get
             {
@@ -416,7 +416,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     public Nullable<double> Quantity { get; set; } 
                     
  
-                    public Nullable<double> Total { get; set; } 
+                    public int Total { get; set; } 
                     
  
                     public string TariffCodeDescription { get; set; } 

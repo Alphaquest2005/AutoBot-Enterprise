@@ -546,6 +546,21 @@ namespace InventoryQS.Business.Entities
         }
         int _inventoryitemid;
         [DataMember]
+        public Nullable<double> VolumeLiters 
+        {
+            get
+            {
+                return _volumeliters;
+            }
+            set
+            {
+                _volumeliters = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<double> _volumeliters;
+        [DataMember]
         public InventoryItemsEx InventoryItemsEx { get; set; }
 
  //       [DataMember]

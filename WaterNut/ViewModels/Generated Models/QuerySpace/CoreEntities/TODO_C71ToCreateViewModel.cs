@@ -134,6 +134,10 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 
             void CurrentTODO_C71ToCreate__propertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
                 {
+                    //if (e.PropertyName == "AddApplicationSettings")
+                   // {
+                   //    if(ApplicationSettings.Contains(CurrentTODO_C71ToCreate.ApplicationSettings) == false) ApplicationSettings.Add(CurrentTODO_C71ToCreate.ApplicationSettings);
+                    //}
                  } 
         internal virtual void OnTODO_C71ToCreateChanged(object sender, NotificationEventArgs e)
         {
@@ -145,6 +149,20 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
  
   			// Core Current Entities Changed
 			// theorticall don't need this cuz i am inheriting from core entities baseview model so changes should flow up to here
+                internal virtual void OnCurrentApplicationSettingsChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<ApplicationSettings> e)
+				{
+				if (e.Data == null || e.Data.ApplicationSettingsId == null)
+                {
+                    vloader.FilterExpression = null;
+                }
+                else
+                {
+                    vloader.FilterExpression = string.Format("ApplicationSettingsId == {0}", e.Data.ApplicationSettingsId.ToString());
+                }
+					
+                    TODO_C71ToCreate.Refresh();
+					NotifyPropertyChanged(x => this.TODO_C71ToCreate);
+				}
   
 // Filtering Each Field except IDs
 		public void ViewAll()
@@ -333,6 +351,24 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 
  
 
+		private Int32? _expectedEntriesFilter;
+        public Int32? ExpectedEntriesFilter
+        {
+            get
+            {
+                return _expectedEntriesFilter;
+            }
+            set
+            {
+                _expectedEntriesFilter = value;
+				NotifyPropertyChanged(x => ExpectedEntriesFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
+
 		private Double? _invoiceTotalFilter;
         public Double? InvoiceTotalFilter
         {
@@ -423,24 +459,6 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 
  
 
-		private Int32? _expectedEntriesFilter;
-        public Int32? ExpectedEntriesFilter
-        {
-            get
-            {
-                return _expectedEntriesFilter;
-            }
-            set
-            {
-                _expectedEntriesFilter = value;
-				NotifyPropertyChanged(x => ExpectedEntriesFilter);
-                FilterData();
-                
-            }
-        }	
-
- 
-
 		private Double? _generatedC71TotalFilter;
         public Double? GeneratedC71TotalFilter
         {
@@ -522,6 +540,9 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 					if(DocumentsCountFilter.HasValue)
 						res.Append(" && " + string.Format("DocumentsCount == {0}",  DocumentsCountFilter.ToString()));				 
 
+					if(ExpectedEntriesFilter.HasValue)
+						res.Append(" && " + string.Format("ExpectedEntries == {0}",  ExpectedEntriesFilter.ToString()));				 
+
 					if(InvoiceTotalFilter.HasValue)
 						res.Append(" && " + string.Format("InvoiceTotal == {0}",  InvoiceTotalFilter.ToString()));				 
 
@@ -536,9 +557,6 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 
 					if(RateFilter.HasValue)
 						res.Append(" && " + string.Format("Rate == {0}",  RateFilter.ToString()));				 
-
-					if(ExpectedEntriesFilter.HasValue)
-						res.Append(" && " + string.Format("ExpectedEntries == {0}",  ExpectedEntriesFilter.ToString()));				 
 
 					if(GeneratedC71TotalFilter.HasValue)
 						res.Append(" && " + string.Format("GeneratedC71Total == {0}",  GeneratedC71TotalFilter.ToString()));							return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
@@ -591,6 +609,9 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     DocumentsCount = x.DocumentsCount ,
                     
  
+                    ExpectedEntries = x.ExpectedEntries ,
+                    
+ 
                     InvoiceTotal = x.InvoiceTotal ,
                     
  
@@ -604,9 +625,6 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     
  
                     Rate = x.Rate ,
-                    
- 
-                    ExpectedEntries = x.ExpectedEntries ,
                     
  
                     GeneratedC71Total = x.GeneratedC71Total 
@@ -649,6 +667,9 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     public Nullable<int> DocumentsCount { get; set; } 
                     
  
+                    public Nullable<int> ExpectedEntries { get; set; } 
+                    
+ 
                     public Nullable<double> InvoiceTotal { get; set; } 
                     
  
@@ -662,9 +683,6 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     
  
                     public double Rate { get; set; } 
-                    
- 
-                    public Nullable<int> ExpectedEntries { get; set; } 
                     
  
                     public Nullable<double> GeneratedC71Total { get; set; } 

@@ -518,6 +518,78 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
         }	
 
  
+
+		private string _customsProcedureFilter;
+        public string CustomsProcedureFilter
+        {
+            get
+            {
+                return _customsProcedureFilter;
+            }
+            set
+            {
+                _customsProcedureFilter = value;
+				NotifyPropertyChanged(x => CustomsProcedureFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
+
+		private string _sourceFileNameFilter;
+        public string SourceFileNameFilter
+        {
+            get
+            {
+                return _sourceFileNameFilter;
+            }
+            set
+            {
+                _sourceFileNameFilter = value;
+				NotifyPropertyChanged(x => SourceFileNameFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
+
+		private Boolean? _submitToCustomsFilter;
+        public Boolean? SubmitToCustomsFilter
+        {
+            get
+            {
+                return _submitToCustomsFilter;
+            }
+            set
+            {
+                _submitToCustomsFilter = value;
+				NotifyPropertyChanged(x => SubmitToCustomsFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
+
+		private Boolean? _isPaidFilter;
+        public Boolean? IsPaidFilter
+        {
+            get
+            {
+                return _isPaidFilter;
+            }
+            set
+            {
+                _isPaidFilter = value;
+				NotifyPropertyChanged(x => IsPaidFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
 		internal bool DisableBaseFilterData = false;
         public virtual void FilterData()
 	    {
@@ -669,6 +741,22 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 
 									if(ImportCompleteFilter.HasValue)
 						res.Append(" && " + string.Format("ImportComplete == {0}",  ImportCompleteFilter));						
+ 
+
+									if(string.IsNullOrEmpty(CustomsProcedureFilter) == false)
+						res.Append(" && " + string.Format("CustomsProcedure.Contains(\"{0}\")",  CustomsProcedureFilter));						
+ 
+
+									if(string.IsNullOrEmpty(SourceFileNameFilter) == false)
+						res.Append(" && " + string.Format("SourceFileName.Contains(\"{0}\")",  SourceFileNameFilter));						
+ 
+
+									if(SubmitToCustomsFilter.HasValue)
+						res.Append(" && " + string.Format("SubmitToCustoms == {0}",  SubmitToCustomsFilter));						
+ 
+
+									if(IsPaidFilter.HasValue)
+						res.Append(" && " + string.Format("IsPaid == {0}",  IsPaidFilter));						
 			return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
@@ -725,7 +813,19 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     DoNotAllocate = x.DoNotAllocate ,
                     
  
-                    ImportComplete = x.ImportComplete 
+                    ImportComplete = x.ImportComplete ,
+                    
+ 
+                    CustomsProcedure = x.CustomsProcedure ,
+                    
+ 
+                    SourceFileName = x.SourceFileName ,
+                    
+ 
+                    SubmitToCustoms = x.SubmitToCustoms ,
+                    
+ 
+                    IsPaid = x.IsPaid 
                     
                 }).ToList()
             };
@@ -772,6 +872,18 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     
  
                     public bool ImportComplete { get; set; } 
+                    
+ 
+                    public string CustomsProcedure { get; set; } 
+                    
+ 
+                    public string SourceFileName { get; set; } 
+                    
+ 
+                    public Nullable<bool> SubmitToCustoms { get; set; } 
+                    
+ 
+                    public Nullable<bool> IsPaid { get; set; } 
                     
         }
 

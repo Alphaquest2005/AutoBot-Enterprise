@@ -57,7 +57,6 @@ namespace WaterNut.QuerySpace.EntryDataQS.ViewModels
                         RegisterToReceiveMessages<string>(MessageToken.CurrentAsycudaDocumentItemEntryDataDetailIDChanged, OnCurrentAsycudaDocumentItemEntryDataDetailIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentAsycudaDocumentSetEntryDataIDChanged, OnCurrentAsycudaDocumentSetEntryDataIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentAsycudaDocumentSetEntryDataDetailIDChanged, OnCurrentAsycudaDocumentSetEntryDataDetailIDChanged);
-                        RegisterToReceiveMessages<string>(MessageToken.CurrentContainerExIDChanged, OnCurrentContainerExIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentEmptyFullCodeIDChanged, OnCurrentEmptyFullCodeIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentEntryDataIDChanged, OnCurrentEntryDataIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentEntryDataDetailsExIDChanged, OnCurrentEntryDataDetailsExIDChanged);
@@ -71,7 +70,6 @@ namespace WaterNut.QuerySpace.EntryDataQS.ViewModels
                         RegisterToReceiveMessages<AsycudaDocumentItemEntryDataDetail>(MessageToken.CurrentAsycudaDocumentItemEntryDataDetailChanged, OnCurrentAsycudaDocumentItemEntryDataDetailChanged);
                         RegisterToReceiveMessages<AsycudaDocumentSetEntryData>(MessageToken.CurrentAsycudaDocumentSetEntryDataChanged, OnCurrentAsycudaDocumentSetEntryDataChanged);
                         RegisterToReceiveMessages<AsycudaDocumentSetEntryDataDetail>(MessageToken.CurrentAsycudaDocumentSetEntryDataDetailChanged, OnCurrentAsycudaDocumentSetEntryDataDetailChanged);
-                        RegisterToReceiveMessages<ContainerEx>(MessageToken.CurrentContainerExChanged, OnCurrentContainerExChanged);
                         RegisterToReceiveMessages<EmptyFullCode>(MessageToken.CurrentEmptyFullCodeChanged, OnCurrentEmptyFullCodeChanged);
                         RegisterToReceiveMessages<EntryData>(MessageToken.CurrentEntryDataChanged, OnCurrentEntryDataChanged);
                         RegisterToReceiveMessages<EntryDataDetailsEx>(MessageToken.CurrentEntryDataDetailsExChanged, OnCurrentEntryDataDetailsExChanged);
@@ -202,33 +200,6 @@ namespace WaterNut.QuerySpace.EntryDataQS.ViewModels
                                     if (!string.IsNullOrEmpty(_currentAsycudaDocumentSetEntryDataDetailID)) BeginSendMessage(MessageToken.CurrentAsycudaDocumentSetEntryDataDetailIDChanged,
                                                      new NotificationEventArgs<string>(MessageToken.CurrentAsycudaDocumentSetEntryDataDetailIDChanged, _currentAsycudaDocumentSetEntryDataDetailID));
                                     NotifyPropertyChanged(x => this.CurrentAsycudaDocumentSetEntryDataDetailID);  
-                                }
-                            }
-                        }
-                        internal async void OnCurrentContainerExIDChanged(object sender, NotificationEventArgs<string> e)
-                        {
-                            using (ContainerExRepository ctx = new ContainerExRepository())
-                            {
-                                CurrentContainerEx = await ctx.GetContainerEx(e.Data).ConfigureAwait(continueOnCapturedContext: false);
-                            }
-                            NotifyPropertyChanged(m => CurrentContainerEx);
-                        }
-
-                        private  string _currentContainerExID = "";
-                        public string CurrentContainerExID
-                        {
-                            get
-                            {
-                                return _currentContainerExID;
-                            }
-                            set
-                            {
-                                if (_currentContainerExID != value)
-                                {
-                                    _currentContainerExID = value;
-                                    if (!string.IsNullOrEmpty(_currentContainerExID)) BeginSendMessage(MessageToken.CurrentContainerExIDChanged,
-                                                     new NotificationEventArgs<string>(MessageToken.CurrentContainerExIDChanged, _currentContainerExID));
-                                    NotifyPropertyChanged(x => this.CurrentContainerExID);  
                                 }
                             }
                         }
@@ -592,56 +563,6 @@ namespace WaterNut.QuerySpace.EntryDataQS.ViewModels
                     _vcurrentAsycudaDocumentSetEntryDataDetail = value;
 					if(_vcurrentAsycudaDocumentSetEntryDataDetail != null) CurrentAsycudaDocumentSetEntryDataDetail = value.Data;
                     NotifyPropertyChanged(x => this.VCurrentAsycudaDocumentSetEntryDataDetail);                    
-                }
-            }
-        }
-
-
-
-                     
-       
-
-        internal void OnCurrentContainerExChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<ContainerEx> e)
-        {
-            //CurrentContainerEx = e.Data;
-            NotifyPropertyChanged(m => this.CurrentContainerEx);
-        }
-
-        private  ContainerEx _currentContainerEx;
-        public ContainerEx CurrentContainerEx
-        {
-            get
-            {
-                return _currentContainerEx;
-            }
-            set
-            {
-                if (_currentContainerEx != value)
-                {
-                    _currentContainerEx = value;
-                    BeginSendMessage(MessageToken.CurrentContainerExChanged,
-                                                     new NotificationEventArgs<ContainerEx>(MessageToken.CurrentContainerExChanged, _currentContainerEx)); 
-                    NotifyPropertyChanged(x => this.CurrentContainerEx);    
-                    // all current navigation properties = null
-   
-                }
-            }
-        }
-
-		VirtualListItem<ContainerEx> _vcurrentContainerEx;
-        public VirtualListItem<ContainerEx> VCurrentContainerEx
-        {
-            get
-            {
-                return _vcurrentContainerEx;
-            }
-            set
-            {
-                if (_vcurrentContainerEx != value)
-                {
-                    _vcurrentContainerEx = value;
-					if(_vcurrentContainerEx != null) CurrentContainerEx = value.Data;
-                    NotifyPropertyChanged(x => this.VCurrentContainerEx);                    
                 }
             }
         }

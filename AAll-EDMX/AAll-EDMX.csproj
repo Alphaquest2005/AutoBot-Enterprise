@@ -497,7 +497,6 @@
 ..\WaterNut.Business.Entities\Generated Business Entities\EntryDataQS\AsycudaDocumentItemEntryDataDetail.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\EntryDataQS\AsycudaDocumentSetEntryData.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\EntryDataQS\AsycudaDocumentSetEntryDataDetail.cs
-..\WaterNut.Business.Entities\Generated Business Entities\EntryDataQS\ContainerEx.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\EntryDataQS\EmptyFullCode.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\EntryDataQS\EntryData.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\EntryDataQS\EntryDataDetailsEx.cs
@@ -895,7 +894,6 @@
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataQS\AsycudaDocumentItemEntryDataDetail.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataQS\AsycudaDocumentSetEntryData.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataQS\AsycudaDocumentSetEntryDataDetail.map.cs
-..\WaterNut.Business.Entities\Generated Mappings\EntryDataQS\ContainerEx.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataQS\EmptyFullCode.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataQS\EntryData.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataQS\EntryDataDetailsEx.map.cs
@@ -1301,7 +1299,6 @@
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\EntryDataQS\AsycudaDocumentItemEntryDataDetail.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\EntryDataQS\AsycudaDocumentSetEntryData.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\EntryDataQS\AsycudaDocumentSetEntryDataDetail.cs
-..\WaterNut.Business.Entities\Generated ChangeTracking Models\EntryDataQS\ContainerEx.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\EntryDataQS\EmptyFullCode.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\EntryDataQS\EntryData.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\EntryDataQS\EntryDataDetailsEx.cs
@@ -1685,7 +1682,6 @@
 ..\WaterNut.Business.Entities\Generated Constructors Models\EntryDataQS\AsycudaDocumentItemEntryDataDetail.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\EntryDataQS\AsycudaDocumentSetEntryData.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\EntryDataQS\AsycudaDocumentSetEntryDataDetail.cs
-..\WaterNut.Business.Entities\Generated Constructors Models\EntryDataQS\ContainerEx.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\EntryDataQS\EmptyFullCode.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\EntryDataQS\EntryData.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\EntryDataQS\EntryDataDetailsEx.cs
@@ -2069,7 +2065,6 @@
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\EntryDataQS\AsycudaDocumentItemEntryDataDetail.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\EntryDataQS\AsycudaDocumentSetEntryData.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\EntryDataQS\AsycudaDocumentSetEntryDataDetail.cs
-..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\EntryDataQS\ContainerEx.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\EntryDataQS\EmptyFullCode.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\EntryDataQS\EntryData.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\EntryDataQS\EntryDataDetailsEx.cs
@@ -2453,7 +2448,6 @@
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\EntryDataQS\AsycudaDocumentItemEntryDataDetail.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\EntryDataQS\AsycudaDocumentSetEntryData.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\EntryDataQS\AsycudaDocumentSetEntryDataDetail.cs
-..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\EntryDataQS\ContainerEx.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\EntryDataQS\EmptyFullCode.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\EntryDataQS\EntryData.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\EntryDataQS\EntryDataDetailsEx.cs
@@ -2646,7 +2640,6 @@
 ..\WaterNut.Client.DTO\Generated Client Entities\EntryDataQS\AsycudaDocumentItemEntryDataDetail.cs
 ..\WaterNut.Client.DTO\Generated Client Entities\EntryDataQS\AsycudaDocumentSetEntryData.cs
 ..\WaterNut.Client.DTO\Generated Client Entities\EntryDataQS\AsycudaDocumentSetEntryDataDetail.cs
-..\WaterNut.Client.DTO\Generated Client Entities\EntryDataQS\ContainerEx.cs
 ..\WaterNut.Client.DTO\Generated Client Entities\EntryDataQS\EmptyFullCode.cs
 ..\WaterNut.Client.DTO\Generated Client Entities\EntryDataQS\EntryData.cs
 ..\WaterNut.Client.DTO\Generated Client Entities\EntryDataQS\EntryDataDetailsEx.cs
@@ -2803,7 +2796,6 @@
 ..\WaterNut.Client.Entities\Generated Client Entities\EntryDataQS\AsycudaDocumentItemEntryDataDetail.cs
 ..\WaterNut.Client.Entities\Generated Client Entities\EntryDataQS\AsycudaDocumentSetEntryData.cs
 ..\WaterNut.Client.Entities\Generated Client Entities\EntryDataQS\AsycudaDocumentSetEntryDataDetail.cs
-..\WaterNut.Client.Entities\Generated Client Entities\EntryDataQS\ContainerEx.cs
 ..\WaterNut.Client.Entities\Generated Client Entities\EntryDataQS\EmptyFullCode.cs
 ..\WaterNut.Client.Entities\Generated Client Entities\EntryDataQS\EntryData.cs
 ..\WaterNut.Client.Entities\Generated Client Entities\EntryDataQS\EntryDataDetailsEx.cs
@@ -2965,7 +2957,6 @@
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\EntryDataQS\AsycudaDocumentItemEntryDataDetail.cs
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\EntryDataQS\AsycudaDocumentSetEntryData.cs
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\EntryDataQS\AsycudaDocumentSetEntryDataDetail.cs
-..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\EntryDataQS\ContainerEx.cs
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\EntryDataQS\EmptyFullCode.cs
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\EntryDataQS\EntryData.cs
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\EntryDataQS\EntryDataDetailsEx.cs
@@ -3120,7 +3111,6 @@
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\EntryDataQS\AsycudaDocumentItemEntryDataDetail.cs
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\EntryDataQS\AsycudaDocumentSetEntryData.cs
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\EntryDataQS\AsycudaDocumentSetEntryDataDetail.cs
-..\WaterNut.Client.DTO\Generated MyNavProp Models\EntryDataQS\ContainerEx.cs
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\EntryDataQS\EmptyFullCode.cs
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\EntryDataQS\EntryData.cs
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\EntryDataQS\EntryDataDetailsEx.cs
@@ -3275,7 +3265,6 @@
 ..\WaterNut.Client.Entities\Generated Constructors Models\EntryDataQS\AsycudaDocumentItemEntryDataDetail.cs
 ..\WaterNut.Client.Entities\Generated Constructors Models\EntryDataQS\AsycudaDocumentSetEntryData.cs
 ..\WaterNut.Client.Entities\Generated Constructors Models\EntryDataQS\AsycudaDocumentSetEntryDataDetail.cs
-..\WaterNut.Client.Entities\Generated Constructors Models\EntryDataQS\ContainerEx.cs
 ..\WaterNut.Client.Entities\Generated Constructors Models\EntryDataQS\EmptyFullCode.cs
 ..\WaterNut.Client.Entities\Generated Constructors Models\EntryDataQS\EntryData.cs
 ..\WaterNut.Client.Entities\Generated Constructors Models\EntryDataQS\EntryDataDetailsEx.cs
@@ -3430,7 +3419,6 @@
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\EntryDataQS\AsycudaDocumentItemEntryDataDetail.cs
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\EntryDataQS\AsycudaDocumentSetEntryData.cs
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\EntryDataQS\AsycudaDocumentSetEntryDataDetail.cs
-..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\EntryDataQS\ContainerEx.cs
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\EntryDataQS\EmptyFullCode.cs
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\EntryDataQS\EntryData.cs
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\EntryDataQS\EntryDataDetailsEx.cs
@@ -3585,7 +3573,6 @@
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\EntryDataQS\AsycudaDocumentItemEntryDataDetail.cs
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\EntryDataQS\AsycudaDocumentSetEntryData.cs
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\EntryDataQS\AsycudaDocumentSetEntryDataDetail.cs
-..\WaterNut.Client.Entities\Generated MyNavProp Models\EntryDataQS\ContainerEx.cs
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\EntryDataQS\EmptyFullCode.cs
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\EntryDataQS\EntryData.cs
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\EntryDataQS\EntryDataDetailsEx.cs
@@ -3978,7 +3965,6 @@
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataQS\AsycudaDocumentItemEntryDataDetail.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataQS\AsycudaDocumentSetEntryData.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataQS\AsycudaDocumentSetEntryDataDetail.map.cs
-..\WaterNut.Business.Entities\Generated Mappings\EntryDataQS\ContainerEx.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataQS\EmptyFullCode.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataQS\EntryData.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataQS\EntryDataDetailsEx.map.cs
@@ -4215,7 +4201,6 @@
 ..\WaterNut.Client.Repositories\Generated Repositories\EntryDataQS\AsycudaDocumentItemEntryDataDetailRepository.cs
 ..\WaterNut.Client.Repositories\Generated Repositories\EntryDataQS\AsycudaDocumentSetEntryDataDetailRepository.cs
 ..\WaterNut.Client.Repositories\Generated Repositories\EntryDataQS\AsycudaDocumentSetEntryDataRepository.cs
-..\WaterNut.Client.Repositories\Generated Repositories\EntryDataQS\ContainerExRepository.cs
 ..\WaterNut.Client.Repositories\Generated Repositories\EntryDataQS\EmptyFullCodeRepository.cs
 ..\WaterNut.Client.Repositories\Generated Repositories\EntryDataQS\EntryDataDetailsExRepository.cs
 ..\WaterNut.Client.Repositories\Generated Repositories\EntryDataQS\EntryDataExRepository.cs
@@ -4386,7 +4371,6 @@
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\EntryDataQS\AsycudaDocumentSetEntryDataDetailViewModel.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\EntryDataQS\AsycudaDocumentSetEntryDataViewModel.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\EntryDataQS\BaseViewModel.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\EntryDataQS\ContainerExViewModel.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\EntryDataQS\EmptyFullCodeViewModel.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\EntryDataQS\EntryDataDetailsExViewModel.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\EntryDataQS\EntryDataExViewModel.cs
@@ -4542,7 +4526,6 @@
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\EntryDataQS\AsycudaDocumentItemEntryDataDetailTotals.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\EntryDataQS\AsycudaDocumentSetEntryDataDetailTotals.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\EntryDataQS\AsycudaDocumentSetEntryDataTotals.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\EntryDataQS\ContainerExTotals.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\EntryDataQS\EmptyFullCodeTotals.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\EntryDataQS\EntryDataDetailsExTotals.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\EntryDataQS\EntryDataExTotals.cs
@@ -4687,7 +4670,6 @@
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\EntryDataQS\AsycudaDocumentItemEntryDataDetailVirturalListLoader.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\EntryDataQS\AsycudaDocumentSetEntryDataDetailVirturalListLoader.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\EntryDataQS\AsycudaDocumentSetEntryDataVirturalListLoader.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\EntryDataQS\ContainerExVirturalListLoader.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\EntryDataQS\EmptyFullCodeVirturalListLoader.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\EntryDataQS\EntryDataDetailsExVirturalListLoader.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\EntryDataQS\EntryDataExVirturalListLoader.cs
@@ -5040,7 +5022,6 @@
 ..\WaterNut.Business.Services\Contracts\EntryDataQS\IAsycudaDocumentItemEntryDataDetailService.cs
 ..\WaterNut.Business.Services\Contracts\EntryDataQS\IAsycudaDocumentSetEntryDataDetailService.cs
 ..\WaterNut.Business.Services\Contracts\EntryDataQS\IAsycudaDocumentSetEntryDataService.cs
-..\WaterNut.Business.Services\Contracts\EntryDataQS\IContainerExService.cs
 ..\WaterNut.Business.Services\Contracts\EntryDataQS\IEmptyFullCodeService.cs
 ..\WaterNut.Business.Services\Contracts\EntryDataQS\IEntryDataDetailsExService.cs
 ..\WaterNut.Business.Services\Contracts\EntryDataQS\IEntryDataExService.cs
@@ -5424,7 +5405,6 @@
 ..\WaterNut.Business.Services\Services\EntryDataQS\AsycudaDocumentItemEntryDataDetailService.cs
 ..\WaterNut.Business.Services\Services\EntryDataQS\AsycudaDocumentSetEntryDataDetailService.cs
 ..\WaterNut.Business.Services\Services\EntryDataQS\AsycudaDocumentSetEntryDataService.cs
-..\WaterNut.Business.Services\Services\EntryDataQS\ContainerExService.cs
 ..\WaterNut.Business.Services\Services\EntryDataQS\EmptyFullCodeService.cs
 ..\WaterNut.Business.Services\Services\EntryDataQS\EntryDataDetailsExService.cs
 ..\WaterNut.Business.Services\Services\EntryDataQS\EntryDataExService.cs
@@ -5610,7 +5590,6 @@
 ..\WaterNut.Client.Contracts\EntryDataQS\IAsycudaDocumentItemEntryDataDetailService.cs
 ..\WaterNut.Client.Contracts\EntryDataQS\IAsycudaDocumentSetEntryDataDetailService.cs
 ..\WaterNut.Client.Contracts\EntryDataQS\IAsycudaDocumentSetEntryDataService.cs
-..\WaterNut.Client.Contracts\EntryDataQS\IContainerExService.cs
 ..\WaterNut.Client.Contracts\EntryDataQS\IEmptyFullCodeService.cs
 ..\WaterNut.Client.Contracts\EntryDataQS\IEntryDataDetailsExService.cs
 ..\WaterNut.Client.Contracts\EntryDataQS\IEntryDataExService.cs
@@ -5765,7 +5744,6 @@
 ..\WaterNut.Client.Services\EntryDataQS\AsycudaDocumentItemEntryDataDetailClient.cs
 ..\WaterNut.Client.Services\EntryDataQS\AsycudaDocumentSetEntryDataClient.cs
 ..\WaterNut.Client.Services\EntryDataQS\AsycudaDocumentSetEntryDataDetailClient.cs
-..\WaterNut.Client.Services\EntryDataQS\ContainerExClient.cs
 ..\WaterNut.Client.Services\EntryDataQS\EmptyFullCodeClient.cs
 ..\WaterNut.Client.Services\EntryDataQS\EntryDataClient.cs
 ..\WaterNut.Client.Services\EntryDataQS\EntryDataDetailsExClient.cs

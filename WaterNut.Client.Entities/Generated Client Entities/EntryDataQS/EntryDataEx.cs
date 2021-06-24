@@ -45,7 +45,7 @@ namespace EntryDataQS.Client.Entities
         
 
 
-       
+       [RequiredValidationAttribute(ErrorMessage= "Type is required")]
        
                 
                 [MaxLength(50, ErrorMessage = "Type has a max length of 50 letters ")]
@@ -109,9 +109,9 @@ public Nullable<int> ImportedLines
 		}
      
 
-       
+       [RequiredValidationAttribute(ErrorMessage= "TotalLines is required")]
        [NumberValidationAttribute]
-public Nullable<int> TotalLines
+public int TotalLines
 		{ 
 		    get { return this.entrydataex.TotalLines; }
 			set
@@ -235,9 +235,9 @@ public string SupplierCode
 		}
      
 
-       
+       [RequiredValidationAttribute(ErrorMessage= "ImportedTotal is required")]
        [NumberValidationAttribute]
-public Nullable<double> ImportedTotal
+public double ImportedTotal
 		{ 
 		    get { return this.entrydataex.ImportedTotal; }
 			set
@@ -261,21 +261,6 @@ public double ExpectedTotal
 				this.entrydataex.ExpectedTotal = value;
                 if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
 				NotifyPropertyChanged("ExpectedTotal");
-			}
-		}
-     
-
-       
-       [NumberValidationAttribute]
-public Nullable<int> ClassifiedLines
-		{ 
-		    get { return this.entrydataex.ClassifiedLines; }
-			set
-			{
-			    if (value == this.entrydataex.ClassifiedLines) return;
-				this.entrydataex.ClassifiedLines = value;
-                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
-				NotifyPropertyChanged("ClassifiedLines");
 			}
 		}
      
@@ -413,21 +398,6 @@ public string SourceFile
 				this.entrydataex.SourceFile = value;
                 if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
 				NotifyPropertyChanged("SourceFile");
-			}
-		}
-     
-
-       [RequiredValidationAttribute(ErrorMessage= "Packages is required")]
-       [NumberValidationAttribute]
-public int Packages
-		{ 
-		    get { return this.entrydataex.Packages; }
-			set
-			{
-			    if (value == this.entrydataex.Packages) return;
-				this.entrydataex.Packages = value;
-                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
-				NotifyPropertyChanged("Packages");
 			}
 		}
      

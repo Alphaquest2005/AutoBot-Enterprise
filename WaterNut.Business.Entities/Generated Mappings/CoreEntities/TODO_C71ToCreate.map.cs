@@ -11,10 +11,10 @@
     {
         public TODO_C71ToCreateMap()
         {                        
-              this.HasKey(t => new {t.AsycudaDocumentSetId, t.ApplicationSettingsId, t.Id, t.Rate});        
+              this.HasKey(t => t.AsycudaDocumentSetId);        
               this.ToTable("TODO-C71ToCreate");
               this.Property(t => t.AsycudaDocumentSetId).HasColumnName("AsycudaDocumentSetId").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.None));
-              this.Property(t => t.ApplicationSettingsId).HasColumnName("ApplicationSettingsId").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.None));
+              this.Property(t => t.ApplicationSettingsId).HasColumnName("ApplicationSettingsId");
               this.Property(t => t.Country_of_origin_code).HasColumnName("Country_of_origin_code").HasMaxLength(3);
               this.Property(t => t.Currency_Code).HasColumnName("Currency_Code").IsRequired().HasMaxLength(3);
               this.Property(t => t.Manifest_Number).HasColumnName("Manifest_Number").HasMaxLength(50);
@@ -24,13 +24,12 @@
               this.Property(t => t.Declarant_Reference_Number).HasColumnName("Declarant_Reference_Number").HasMaxLength(50);
               this.Property(t => t.TotalInvoices).HasColumnName("TotalInvoices");
               this.Property(t => t.DocumentsCount).HasColumnName("DocumentsCount");
+              this.Property(t => t.ExpectedEntries).HasColumnName("ExpectedEntries");
               this.Property(t => t.InvoiceTotal).HasColumnName("InvoiceTotal");
               this.Property(t => t.LicenseLines).HasColumnName("LicenseLines");
               this.Property(t => t.TotalCIF).HasColumnName("TotalCIF");
               this.Property(t => t.C71Total).HasColumnName("C71Total");
-              this.Property(t => t.Id).HasColumnName("Id").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.None));
               this.Property(t => t.Rate).HasColumnName("Rate");
-              this.Property(t => t.ExpectedEntries).HasColumnName("ExpectedEntries");
               this.Property(t => t.GeneratedC71Total).HasColumnName("GeneratedC71Total");
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);

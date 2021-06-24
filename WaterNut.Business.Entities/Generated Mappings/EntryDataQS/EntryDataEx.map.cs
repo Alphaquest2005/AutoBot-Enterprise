@@ -13,7 +13,7 @@
         {                        
               this.HasKey(t => t.EntryData_Id);        
               this.ToTable("EntryDataEx");
-              this.Property(t => t.Type).HasColumnName("Type").HasMaxLength(50);
+              this.Property(t => t.Type).HasColumnName("Type").IsRequired().HasMaxLength(50);
               this.Property(t => t.InvoiceDate).HasColumnName("InvoiceDate");
               this.Property(t => t.InvoiceNo).HasColumnName("InvoiceNo").IsRequired().HasMaxLength(50);
               this.Property(t => t.ImportedLines).HasColumnName("ImportedLines");
@@ -27,7 +27,6 @@
               this.Property(t => t.SupplierCode).HasColumnName("SupplierCode").HasMaxLength(100);
               this.Property(t => t.ImportedTotal).HasColumnName("ImportedTotal");
               this.Property(t => t.ExpectedTotal).HasColumnName("ExpectedTotal");
-              this.Property(t => t.ClassifiedLines).HasColumnName("ClassifiedLines");
               this.Property(t => t.AsycudaDocumentSetId).HasColumnName("AsycudaDocumentSetId");
               this.Property(t => t.TotalInternalFreight).HasColumnName("TotalInternalFreight");
               this.Property(t => t.TotalInternalInsurance).HasColumnName("TotalInternalInsurance");
@@ -37,7 +36,6 @@
               this.Property(t => t.TotalFreight).HasColumnName("TotalFreight");
               this.Property(t => t.Totals).HasColumnName("Totals");
               this.Property(t => t.SourceFile).HasColumnName("SourceFile");
-              this.Property(t => t.Packages).HasColumnName("Packages");
               this.Property(t => t.SupplierInvoiceNo).HasColumnName("SupplierInvoiceNo").HasMaxLength(50);
               this.Property(t => t.Tax).HasColumnName("Tax");
               this.HasMany(t => t.AsycudaDocumentSets).WithRequired(t => (EntryDataEx)t.EntryDataEx);

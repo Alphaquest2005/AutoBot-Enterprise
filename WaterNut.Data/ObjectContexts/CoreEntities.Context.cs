@@ -181,8 +181,6 @@ namespace CoreEntities.Business.Entities
      
         public DbSet<TODO_SubmitIncompleteSupplierInfo> TODO_SubmitIncompleteSupplierInfo { get; set; }
      
-        public DbSet<TODO_C71ToCreate> TODO_C71ToCreate { get; set; }
-     
         public DbSet<TODO_DiscrepanciesErrors> TODO_DiscrepanciesErrors { get; set; }
      
         public DbSet<CustomsOperations> CustomsOperations { get; set; }
@@ -224,6 +222,8 @@ namespace CoreEntities.Business.Entities
         public DbSet<TODO_LicenceAvailableQty> TODO_LicenceAvailableQty { get; set; }
      
         public DbSet<TODO_AssessDiscrepancyEntries> TODO_AssessDiscrepancyEntries { get; set; }
+     
+        public DbSet<TODO_C71ToCreate> TODO_C71ToCreate { get; set; }
      
 
 
@@ -363,8 +363,6 @@ namespace CoreEntities.Business.Entities
          
             modelBuilder.Configurations.Add(new TODO_SubmitIncompleteSupplierInfoMap());
          
-            modelBuilder.Configurations.Add(new TODO_C71ToCreateMap());
-         
             modelBuilder.Configurations.Add(new TODO_DiscrepanciesErrorsMap());
          
             modelBuilder.Configurations.Add(new CustomsOperationsMap());
@@ -406,6 +404,8 @@ namespace CoreEntities.Business.Entities
             modelBuilder.Configurations.Add(new TODO_LicenceAvailableQtyMap());
          
             modelBuilder.Configurations.Add(new TODO_AssessDiscrepancyEntriesMap());
+         
+            modelBuilder.Configurations.Add(new TODO_C71ToCreateMap());
          
 			OnModelCreatingExtentsion(modelBuilder);
 

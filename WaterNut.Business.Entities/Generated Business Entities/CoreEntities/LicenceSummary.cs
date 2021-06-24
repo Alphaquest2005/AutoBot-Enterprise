@@ -51,7 +51,7 @@ namespace CoreEntities.Business.Entities
         }
         Nullable<double> _quantity;
         [DataMember]
-        public Nullable<double> Total 
+        public int Total 
         {
             get
             {
@@ -64,7 +64,7 @@ namespace CoreEntities.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        Nullable<double> _total;
+        int _total;
         [DataMember]
         public string TariffCodeDescription 
         {

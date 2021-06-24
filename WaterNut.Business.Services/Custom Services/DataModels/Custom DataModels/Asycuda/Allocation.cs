@@ -1404,7 +1404,7 @@ namespace WaterNut.DataSpace
 
 
 				var alst = cAsycudaItm.EntryPreviousItems.Select(p => p.xcuda_PreviousItem)
-							.Where(x => x.DutyFreePaid == dfp && x.QtyAllocated <= x.Suplementary_Quantity)
+							.Where(x => x.DutyFreePaid == dfp && x.QtyAllocated <= (double) x.Suplementary_Quantity)
 							.Where(x => x.xcuda_Item != null && x.xcuda_Item.AsycudaDocument != null)
 							.OrderBy(
 									x =>
@@ -1412,7 +1412,7 @@ namespace WaterNut.DataSpace
 				foreach (var pitm in alst)
 				{
 					if (pitm.QtyAllocated == null) pitm.QtyAllocated = 0;
-					var atot = pitm.Suplementary_Quantity - Convert.ToSingle(pitm.QtyAllocated);
+					var atot = (double)pitm.Suplementary_Quantity - Convert.ToDouble(pitm.QtyAllocated);
 					if (atot == 0) continue;
 					if (amt <= atot)
 					{

@@ -594,24 +594,6 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
 
  
 
-		private string _statusFilter;
-        public string StatusFilter
-        {
-            get
-            {
-                return _statusFilter;
-            }
-            set
-            {
-                _statusFilter = value;
-				NotifyPropertyChanged(x => StatusFilter);
-                FilterData();
-                
-            }
-        }	
-
- 
-
 		private string _previousInvoiceNumberFilter;
         public string PreviousInvoiceNumberFilter
         {
@@ -959,6 +941,42 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
         }	
 
  
+
+		private Double? _taxAmountFilter;
+        public Double? TaxAmountFilter
+        {
+            get
+            {
+                return _taxAmountFilter;
+            }
+            set
+            {
+                _taxAmountFilter = value;
+				NotifyPropertyChanged(x => TaxAmountFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
+
+		private string _statusFilter;
+        public string StatusFilter
+        {
+            get
+            {
+                return _statusFilter;
+            }
+            set
+            {
+                _statusFilter = value;
+				NotifyPropertyChanged(x => StatusFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
 		internal bool DisableBaseFilterData = false;
         public virtual void FilterData()
 	    {
@@ -1036,10 +1054,6 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
 
 					if(ReceivedQtyFilter.HasValue)
 						res.Append(" && " + string.Format("ReceivedQty == {0}",  ReceivedQtyFilter.ToString()));				 
-
-									if(string.IsNullOrEmpty(StatusFilter) == false)
-						res.Append(" && " + string.Format("Status.Contains(\"{0}\")",  StatusFilter));						
- 
 
 									if(string.IsNullOrEmpty(PreviousInvoiceNumberFilter) == false)
 						res.Append(" && " + string.Format("PreviousInvoiceNumber.Contains(\"{0}\")",  PreviousInvoiceNumberFilter));						
@@ -1169,7 +1183,14 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
 							if(EmailDateFilter.HasValue)
 								res.Append(" && " + string.Format("EmailDate == \"{0}\"",  Convert.ToDateTime(EmailDateFilter).Date.ToString("MM/dd/yyyy")));
 						}
-							return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
+				 
+
+					if(TaxAmountFilter.HasValue)
+						res.Append(" && " + string.Format("TaxAmount == {0}",  TaxAmountFilter.ToString()));				 
+
+									if(string.IsNullOrEmpty(StatusFilter) == false)
+						res.Append(" && " + string.Format("Status.Contains(\"{0}\")",  StatusFilter));						
+			return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
 // Send to Excel Implementation
@@ -1234,9 +1255,6 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
                     ReceivedQty = x.ReceivedQty ,
                     
  
-                    Status = x.Status ,
-                    
- 
                     PreviousInvoiceNumber = x.PreviousInvoiceNumber ,
                     
  
@@ -1276,7 +1294,13 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
                     Subject = x.Subject ,
                     
  
-                    EmailDate = x.EmailDate 
+                    EmailDate = x.EmailDate ,
+                    
+ 
+                    TaxAmount = x.TaxAmount ,
+                    
+ 
+                    Status = x.Status 
                     
                 }).ToList()
             };
@@ -1331,9 +1355,6 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
                     public Nullable<double> ReceivedQty { get; set; } 
                     
  
-                    public string Status { get; set; } 
-                    
- 
                     public string PreviousInvoiceNumber { get; set; } 
                     
  
@@ -1374,6 +1395,12 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
                     
  
                     public Nullable<System.DateTime> EmailDate { get; set; } 
+                    
+ 
+                    public Nullable<double> TaxAmount { get; set; } 
+                    
+ 
+                    public string Status { get; set; } 
                     
         }
 

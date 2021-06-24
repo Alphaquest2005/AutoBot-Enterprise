@@ -710,6 +710,60 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
         }	
 
  
+
+		private Double? _volumeLitersFilter;
+        public Double? VolumeLitersFilter
+        {
+            get
+            {
+                return _volumeLitersFilter;
+            }
+            set
+            {
+                _volumeLitersFilter = value;
+				NotifyPropertyChanged(x => VolumeLitersFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
+
+		private string _entryDataDetailsKeyFilter;
+        public string EntryDataDetailsKeyFilter
+        {
+            get
+            {
+                return _entryDataDetailsKeyFilter;
+            }
+            set
+            {
+                _entryDataDetailsKeyFilter = value;
+				NotifyPropertyChanged(x => EntryDataDetailsKeyFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
+
+		private Double? _totalValueFilter;
+        public Double? TotalValueFilter
+        {
+            get
+            {
+                return _totalValueFilter;
+            }
+            set
+            {
+                _totalValueFilter = value;
+				NotifyPropertyChanged(x => TotalValueFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
 		internal bool DisableBaseFilterData = false;
         public virtual void FilterData()
 	    {
@@ -852,7 +906,17 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
 						res.Append(" && " + string.Format("FileLineNumber == {0}",  FileLineNumberFilter.ToString()));				 
 
 					if(UpgradeKeyFilter.HasValue)
-						res.Append(" && " + string.Format("UpgradeKey == {0}",  UpgradeKeyFilter.ToString()));							return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
+						res.Append(" && " + string.Format("UpgradeKey == {0}",  UpgradeKeyFilter.ToString()));				 
+
+					if(VolumeLitersFilter.HasValue)
+						res.Append(" && " + string.Format("VolumeLiters == {0}",  VolumeLitersFilter.ToString()));				 
+
+									if(string.IsNullOrEmpty(EntryDataDetailsKeyFilter) == false)
+						res.Append(" && " + string.Format("EntryDataDetailsKey.Contains(\"{0}\")",  EntryDataDetailsKeyFilter));						
+ 
+
+					if(TotalValueFilter.HasValue)
+						res.Append(" && " + string.Format("TotalValue == {0}",  TotalValueFilter.ToString()));							return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
 // Send to Excel Implementation
@@ -950,7 +1014,16 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
                     FileLineNumber = x.FileLineNumber ,
                     
  
-                    UpgradeKey = x.UpgradeKey 
+                    UpgradeKey = x.UpgradeKey ,
+                    
+ 
+                    VolumeLiters = x.VolumeLiters ,
+                    
+ 
+                    EntryDataDetailsKey = x.EntryDataDetailsKey ,
+                    
+ 
+                    TotalValue = x.TotalValue 
                     
                 }).ToList()
             };
@@ -1039,6 +1112,15 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
                     
  
                     public Nullable<int> UpgradeKey { get; set; } 
+                    
+ 
+                    public Nullable<double> VolumeLiters { get; set; } 
+                    
+ 
+                    public string EntryDataDetailsKey { get; set; } 
+                    
+ 
+                    public double TotalValue { get; set; } 
                     
         }
 

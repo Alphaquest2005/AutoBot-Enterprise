@@ -52,6 +52,7 @@
           <Property Name="EntryData_Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Packages" Type="int" />
           <Property Name="UpgradeKey" Type="nvarchar" MaxLength="50" />
+          <Property Name="EntryType" Type="nvarchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="PackageTypes">
           <Key>
@@ -99,32 +100,6 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AsycudaDocumentSetEntryDa
           <Property Name="Id" Type="bigint" Nullable="false" />
         </EntityType>
         <!--Errors Found During Generation:
-warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ContainerEx' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
-        <EntityType Name="ContainerEx">
-          <Key>
-            
-            
-            <PropertyRef Name="Container_Id" />
-          </Key>
-          <Property Name="Container_identity" Type="nvarchar" MaxLength="255" />
-          <Property Name="Container_type" Type="nvarchar" MaxLength="50" />
-          <Property Name="Empty_full_indicator" Type="nvarchar" MaxLength="255" />
-          <Property Name="Gross_weight" Type="float" Nullable="false" />
-          <Property Name="Goods_description" Type="nvarchar" MaxLength="255" />
-          <Property Name="Packages_number" Type="nvarchar" MaxLength="3" />
-          <Property Name="Packages_type" Type="nvarchar" MaxLength="4" />
-          <Property Name="Packages_weight" Type="float" Nullable="false" />
-          <Property Name="Container_Id" Type="int" Nullable="false" />
-          <Property Name="TotalValue" Type="float" />
-          <Property Name="ShipDate" Type="date" />
-          <Property Name="DeliveryDate" Type="date" />
-          <Property Name="Seal" Type="nvarchar" MaxLength="100" />
-          <Property Name="AsycudaDocumentSetId" Type="int" />
-          <Property Name="EntryDataId" Type="nvarchar" MaxLength="50" />
-          <Property Name="PackageDescription" Type="nvarchar" MaxLength="50" />
-          <Property Name="ContainerTypeDescription" Type="nvarchar" MaxLength="50" />
-        </EntityType>
-        <!--Errors Found During Generation:
 warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.EntryDataDetailsEx' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="EntryDataDetailsEx">
           <Key>
@@ -151,6 +126,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.EntryDataDetailsEx' does 
           <Property Name="ItemDescription" Type="nvarchar" MaxLength="255" Nullable="false" />
           <Property Name="Cost" Type="float" Nullable="false" />
           <Property Name="QtyAllocated" Type="float" Nullable="false" />
+          <Property Name="VolumeLiters" Type="float" />
           <Property Name="UnitWeight" Type="float" Nullable="false" />
           <Property Name="DoNotAllocate" Type="bit" />
           <Property Name="TariffCode" Type="nvarchar" MaxLength="50" />
@@ -195,17 +171,19 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.EntryDataEx' does not hav
             
             
             
+            
+            
           </Key>
           <Property Name="EntryData_Id" Type="int" Nullable="false" />
           <Property Name="InvoiceDate" Type="datetime2" Precision="7" Nullable="false" />
-          <Property Name="Type" Type="nvarchar" MaxLength="50" />
-          <Property Name="ImportedTotal" Type="float" />
+          <Property Name="Type" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="ImportedTotal" Type="float" Nullable="false" />
           <Property Name="InvoiceNo" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="SupplierInvoiceNo" Type="nvarchar" MaxLength="50" />
           <Property Name="Tax" Type="float" />
           <Property Name="InvoiceTotal" Type="float" />
           <Property Name="ImportedLines" Type="int" />
-          <Property Name="TotalLines" Type="int" />
+          <Property Name="TotalLines" Type="float" Nullable="false" />
           <Property Name="Currency" Type="nvarchar" MaxLength="4" />
           <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
           <Property Name="DutyFreePaid" Type="varchar" MaxLength="9" Nullable="false" />
@@ -213,7 +191,6 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.EntryDataEx' does not hav
           <Property Name="FileTypeId" Type="int" />
           <Property Name="SupplierCode" Type="nvarchar" MaxLength="100" />
           <Property Name="ExpectedTotal" Type="float" Nullable="false" />
-          <Property Name="ClassifiedLines" Type="int" />
           <Property Name="AsycudaDocumentSetId" Type="int" Nullable="false" />
           <Property Name="TotalInternalFreight" Type="float" Nullable="false" />
           <Property Name="TotalInternalInsurance" Type="float" Nullable="false" />
@@ -221,7 +198,6 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.EntryDataEx' does not hav
           <Property Name="TotalDeductions" Type="float" Nullable="false" />
           <Property Name="TotalFreight" Type="float" Nullable="false" />
           <Property Name="Totals" Type="float" Nullable="false" />
-          <Property Name="Packages" Type="int" Nullable="false" />
           <Property Name="SourceFile" Type="nvarchar(max)" />
         </EntityType>
         <!--Errors Found During Generation:
@@ -301,27 +277,6 @@ FROM [dbo].[AsycudaDocumentItemEntryDataDetails] AS [AsycudaDocumentItemEntryDat
 [AsycudaDocumentSetEntryDataDetails].[Id] AS [Id]
 FROM [dbo].[AsycudaDocumentSetEntryDataDetails] AS [AsycudaDocumentSetEntryDataDetails]</DefiningQuery>
           </EntitySet>
-          <EntitySet Name="ContainerEx" EntityType="Self.ContainerEx" store:Type="Views" store:Schema="dbo">
-            <DefiningQuery>SELECT 
-[ContainerEx].[Container_identity] AS [Container_identity], 
-[ContainerEx].[Container_type] AS [Container_type], 
-[ContainerEx].[Empty_full_indicator] AS [Empty_full_indicator], 
-[ContainerEx].[Gross_weight] AS [Gross_weight], 
-[ContainerEx].[Goods_description] AS [Goods_description], 
-[ContainerEx].[Packages_number] AS [Packages_number], 
-[ContainerEx].[Packages_type] AS [Packages_type], 
-[ContainerEx].[Packages_weight] AS [Packages_weight], 
-[ContainerEx].[Container_Id] AS [Container_Id], 
-[ContainerEx].[TotalValue] AS [TotalValue], 
-[ContainerEx].[ShipDate] AS [ShipDate], 
-[ContainerEx].[DeliveryDate] AS [DeliveryDate], 
-[ContainerEx].[Seal] AS [Seal], 
-[ContainerEx].[AsycudaDocumentSetId] AS [AsycudaDocumentSetId], 
-[ContainerEx].[EntryDataId] AS [EntryDataId], 
-[ContainerEx].[PackageDescription] AS [PackageDescription], 
-[ContainerEx].[ContainerTypeDescription] AS [ContainerTypeDescription]
-FROM [dbo].[ContainerEx] AS [ContainerEx]</DefiningQuery>
-          </EntitySet>
           <EntitySet Name="EntryDataDetailsEx" EntityType="Self.EntryDataDetailsEx" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
 [EntryDataDetailsEx].[EntryDataDetailsId] AS [EntryDataDetailsId], 
@@ -334,6 +289,7 @@ FROM [dbo].[ContainerEx] AS [ContainerEx]</DefiningQuery>
 [EntryDataDetailsEx].[ItemDescription] AS [ItemDescription], 
 [EntryDataDetailsEx].[Cost] AS [Cost], 
 [EntryDataDetailsEx].[QtyAllocated] AS [QtyAllocated], 
+[EntryDataDetailsEx].[VolumeLiters] AS [VolumeLiters], 
 [EntryDataDetailsEx].[UnitWeight] AS [UnitWeight], 
 [EntryDataDetailsEx].[DoNotAllocate] AS [DoNotAllocate], 
 [EntryDataDetailsEx].[TariffCode] AS [TariffCode], 
@@ -380,7 +336,6 @@ FROM [dbo].[EntryDataDetailsEx] AS [EntryDataDetailsEx]</DefiningQuery>
 [EntryDataEx].[FileTypeId] AS [FileTypeId], 
 [EntryDataEx].[SupplierCode] AS [SupplierCode], 
 [EntryDataEx].[ExpectedTotal] AS [ExpectedTotal], 
-[EntryDataEx].[ClassifiedLines] AS [ClassifiedLines], 
 [EntryDataEx].[AsycudaDocumentSetId] AS [AsycudaDocumentSetId], 
 [EntryDataEx].[TotalInternalFreight] AS [TotalInternalFreight], 
 [EntryDataEx].[TotalInternalInsurance] AS [TotalInternalInsurance], 
@@ -388,7 +343,6 @@ FROM [dbo].[EntryDataDetailsEx] AS [EntryDataDetailsEx]</DefiningQuery>
 [EntryDataEx].[TotalDeductions] AS [TotalDeductions], 
 [EntryDataEx].[TotalFreight] AS [TotalFreight], 
 [EntryDataEx].[Totals] AS [Totals], 
-[EntryDataEx].[Packages] AS [Packages], 
 [EntryDataEx].[SourceFile] AS [SourceFile]
 FROM [dbo].[EntryDataEx] AS [EntryDataEx]</DefiningQuery>
           </EntitySet>
@@ -445,7 +399,6 @@ FROM [dbo].[InventoryItemsEx] AS [InventoryItemsEx]</DefiningQuery>
             <End Role="EntryDataDetailsEx" EntitySet="EntryDataDetailsExes" />
             <End Role="AsycudaDocumentSetEntryDataDetail" EntitySet="AsycudaDocumentSetEntryDataDetails" />
           </AssociationSet>
-          <EntitySet Name="ContainerExes" EntityType="WaterNutEntities.ContainerEx" />
           <EntitySet Name="PackageTypes" EntityType="WaterNutEntities.PackageType" />
           <EntitySet Name="EmptyFullCodes" EntityType="WaterNutEntities.EmptyFullCode" />
           <EntitySet Name="EntryDatas" EntityType="WaterNutEntities.EntryData" />
@@ -478,14 +431,14 @@ FROM [dbo].[InventoryItemsEx] AS [InventoryItemsEx]</DefiningQuery>
           <Key>
             <PropertyRef Name="EntryData_Id" />
           </Key>
-          <Property Name="Type" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Type" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="InvoiceDate" Type="DateTime" Nullable="false" Precision="7"><a:OrderByProperty xmlns:a="http://schemas.tempuri.com/OrderByProperty">Desc</a:OrderByProperty></Property>
           <Property Name="InvoiceNo" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="AsycudaDocumentSets" Relationship="WaterNutEntities.EntryDataExAsycudaDocumentSetEntryData" FromRole="EntryDataEx" ToRole="AsycudaDocumentSetEntryData" />
           <NavigationProperty Name="AsycudaDocuments" Relationship="WaterNutEntities.EntryDataExAsycudaDocumentEntryData" FromRole="EntryDataEx" ToRole="AsycudaDocumentEntryData" />
           <NavigationProperty Name="EntryDataDetailsExs" Relationship="WaterNutEntities.EntryDataExEntryDataDetailsEx" FromRole="EntryDataEx" ToRole="EntryDataDetailsEx" />
           <Property Name="ImportedLines" Type="Int32" />
-          <Property Name="TotalLines" Type="Int32" />
+          <Property Name="TotalLines" Type="Int32" Nullable="false" />
           <Property Name="Currency" Type="String" MaxLength="4" FixedLength="false" Unicode="true" />
           <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
           <Property Name="DutyFreePaid" Type="String" Nullable="false" MaxLength="9" FixedLength="false" Unicode="false" />
@@ -493,9 +446,8 @@ FROM [dbo].[InventoryItemsEx] AS [InventoryItemsEx]</DefiningQuery>
           <Property Name="FileTypeId" Type="Int32" />
           <Property Name="InvoiceTotal" Type="Double" />
           <Property Name="SupplierCode" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Name="ImportedTotal" Type="Double" />
+          <Property Name="ImportedTotal" Type="Double" Nullable="false" />
           <Property Name="ExpectedTotal" Type="Double" Nullable="false" />
-          <Property Name="ClassifiedLines" Type="Int32" />
           <Property Name="AsycudaDocumentSetId" Type="Int32" Nullable="false" />
           <Property Name="TotalInternalFreight" Type="Double" Nullable="false" />
           <Property Name="TotalInternalInsurance" Type="Double" Nullable="false" />
@@ -505,7 +457,6 @@ FROM [dbo].[InventoryItemsEx] AS [InventoryItemsEx]</DefiningQuery>
           <Property Name="TotalFreight" Type="Double" Nullable="false" />
           <Property Name="Totals" Type="Double" Nullable="false" />
           <Property Name="SourceFile" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="Packages" Type="Int32" Nullable="false" />
           <Property Name="SupplierInvoiceNo" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="Tax" Type="Double" />
         </EntityType>
@@ -539,7 +490,7 @@ FROM [dbo].[InventoryItemsEx] AS [InventoryItemsEx]</DefiningQuery>
           <Property Name="ItemNumber" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true"><a:ImplementsProperty xmlns:a="http://schemas.tempuri.com/ImplementsProperty">IEntryDataDetail.ItemNumber</a:ImplementsProperty></Property>
           <Property Name="Quantity" Type="Double" Nullable="false"><a:ImplementsProperty xmlns:a="http://schemas.tempuri.com/ImplementsProperty">IEntryDataDetail.Quantity</a:ImplementsProperty></Property>
           <Property Name="Units" Type="String" MaxLength="15" FixedLength="false" Unicode="true"><a:ImplementsProperty xmlns:a="http://schemas.tempuri.com/ImplementsProperty">IEntryDataDetail.Units</a:ImplementsProperty></Property>
-          <Property Name="ItemDescription" Type="String" Nullable="false" FixedLength="false" Unicode="true"><a:ImplementsProperty xmlns:a="http://schemas.tempuri.com/ImplementsProperty">IEntryDataDetail.ItemDescription</a:ImplementsProperty></Property>
+          <Property Name="ItemDescription" Type="String" Nullable="false" FixedLength="false" Unicode="true" MaxLength="255"><a:ImplementsProperty xmlns:a="http://schemas.tempuri.com/ImplementsProperty">IEntryDataDetail.ItemDescription</a:ImplementsProperty></Property>
           <Property Name="Cost" Type="Double" Nullable="false"><a:ImplementsProperty xmlns:a="http://schemas.tempuri.com/ImplementsProperty">IEntryDataDetail.Cost</a:ImplementsProperty></Property>
           <Property Name="QtyAllocated" Type="Double" Nullable="false"><a:ImplementsProperty xmlns:a="http://schemas.tempuri.com/ImplementsProperty">IEntryDataDetail.QtyAllocated</a:ImplementsProperty></Property>
           <Property Name="UnitWeight" Type="Double" Nullable="false" />
@@ -571,6 +522,7 @@ FROM [dbo].[InventoryItemsEx] AS [InventoryItemsEx]</DefiningQuery>
           <Property Name="EntryData_Id" Type="Int32" Nullable="false" />
           <Property Name="InventoryItemId" Type="Int32" Nullable="false" />
           <Property Name="FileLineNumber" Type="Int32" />
+          <Property Name="VolumeLiters" Type="Double" />
         <a:DomainInterfaceProperty xmlns:a="http://schemas.tempuri.com/DomainInterfaceProperty">IEntryDataDetail</a:DomainInterfaceProperty></EntityType>
         <EntityType Name="AsycudaDocumentSetEntryDataDetail">
           <Key>
@@ -641,28 +593,6 @@ FROM [dbo].[InventoryItemsEx] AS [InventoryItemsEx]</DefiningQuery>
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <EntityType Name="ContainerEx">
-          <Key>
-            <PropertyRef Name="Container_Id" />
-          </Key>
-          <Property Name="Container_identity" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="Container_type" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="Empty_full_indicator" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="Gross_weight" Type="Double" Nullable="false" />
-          <Property Name="Goods_description" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="Packages_number" Type="String" MaxLength="3" FixedLength="false" Unicode="true" />
-          <Property Name="Packages_type" Type="String" MaxLength="4" FixedLength="false" Unicode="true" />
-          <Property Name="Packages_weight" Type="Double" Nullable="false" />
-          <Property Name="Container_Id" Type="Int32" Nullable="false" />
-          <Property Name="TotalValue" Type="Double"><a:DisplayTotalsProperty xmlns:a="http://schemas.tempuri.com/DisplayTotalsProperty">True</a:DisplayTotalsProperty></Property>
-          <Property Name="ShipDate" Type="DateTime" Precision="0" />
-          <Property Name="DeliveryDate" Type="DateTime" Precision="0" />
-          <Property Name="Seal" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Name="AsycudaDocumentSetId" Type="Int32" />
-          <Property Name="EntryDataId" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="PackageDescription" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="ContainerTypeDescription" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-        </EntityType>
         <EntityType Name="PackageType">
           <Key>
             <PropertyRef Name="PackageCode" />
@@ -703,6 +633,7 @@ FROM [dbo].[InventoryItemsEx] AS [InventoryItemsEx]</DefiningQuery>
           <Property Name="EntryData_Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Packages" Type="Int32" />
           <Property Name="UpgradeKey" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="EntryType" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
         </EntityType>
         <Association Name="FK_AsycudaDocumentEntryData_EntryData">
           <End Type="WaterNutEntities.EntryData" Role="EntryData" Multiplicity="1">
@@ -800,6 +731,7 @@ FROM [dbo].[InventoryItemsEx] AS [InventoryItemsEx]</DefiningQuery>
           <EntitySetMapping Name="EntryDataDetailsExes">
             <EntityTypeMapping TypeName="IsTypeOf(WaterNutEntities.EntryDataDetailsEx)">
               <MappingFragment StoreEntitySet="EntryDataDetailsEx">
+                <ScalarProperty Name="VolumeLiters" ColumnName="VolumeLiters" />
                 <ScalarProperty Name="FileLineNumber" ColumnName="FileLineNumber" />
                 <ScalarProperty Name="InventoryItemId" ColumnName="InventoryItemId" />
                 <ScalarProperty Name="EntryData_Id" ColumnName="EntryData_Id" />
@@ -852,7 +784,6 @@ FROM [dbo].[InventoryItemsEx] AS [InventoryItemsEx]</DefiningQuery>
               <MappingFragment StoreEntitySet="EntryDataEx">
                 <ScalarProperty Name="Tax" ColumnName="Tax" />
                 <ScalarProperty Name="SupplierInvoiceNo" ColumnName="SupplierInvoiceNo" />
-                <ScalarProperty Name="Packages" ColumnName="Packages" />
                 <ScalarProperty Name="SourceFile" ColumnName="SourceFile" />
                 <ScalarProperty Name="Totals" ColumnName="Totals" />
                 <ScalarProperty Name="TotalFreight" ColumnName="TotalFreight" />
@@ -862,7 +793,6 @@ FROM [dbo].[InventoryItemsEx] AS [InventoryItemsEx]</DefiningQuery>
                 <ScalarProperty Name="TotalInternalInsurance" ColumnName="TotalInternalInsurance" />
                 <ScalarProperty Name="TotalInternalFreight" ColumnName="TotalInternalFreight" />
                 <ScalarProperty Name="AsycudaDocumentSetId" ColumnName="AsycudaDocumentSetId" />
-                <ScalarProperty Name="ClassifiedLines" ColumnName="ClassifiedLines" />
                 <ScalarProperty Name="ExpectedTotal" ColumnName="ExpectedTotal" />
                 <ScalarProperty Name="ImportedTotal" ColumnName="ImportedTotal" />
                 <ScalarProperty Name="SupplierCode" ColumnName="SupplierCode" />
@@ -877,29 +807,6 @@ FROM [dbo].[InventoryItemsEx] AS [InventoryItemsEx]</DefiningQuery>
                 <ScalarProperty Name="InvoiceNo" ColumnName="InvoiceNo" />
                 <ScalarProperty Name="Type" ColumnName="Type" />
                 <ScalarProperty Name="InvoiceDate" ColumnName="InvoiceDate" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="ContainerExes">
-            <EntityTypeMapping TypeName="WaterNutEntities.ContainerEx">
-              <MappingFragment StoreEntitySet="ContainerEx">
-                <ScalarProperty Name="ContainerTypeDescription" ColumnName="ContainerTypeDescription" />
-                <ScalarProperty Name="PackageDescription" ColumnName="PackageDescription" />
-                <ScalarProperty Name="EntryDataId" ColumnName="EntryDataId" />
-                <ScalarProperty Name="AsycudaDocumentSetId" ColumnName="AsycudaDocumentSetId" />
-                <ScalarProperty Name="Seal" ColumnName="Seal" />
-                <ScalarProperty Name="DeliveryDate" ColumnName="DeliveryDate" />
-                <ScalarProperty Name="ShipDate" ColumnName="ShipDate" />
-                <ScalarProperty Name="TotalValue" ColumnName="TotalValue" />
-                <ScalarProperty Name="Container_Id" ColumnName="Container_Id" />
-                <ScalarProperty Name="Packages_weight" ColumnName="Packages_weight" />
-                <ScalarProperty Name="Packages_type" ColumnName="Packages_type" />
-                <ScalarProperty Name="Packages_number" ColumnName="Packages_number" />
-                <ScalarProperty Name="Goods_description" ColumnName="Goods_description" />
-                <ScalarProperty Name="Gross_weight" ColumnName="Gross_weight" />
-                <ScalarProperty Name="Empty_full_indicator" ColumnName="Empty_full_indicator" />
-                <ScalarProperty Name="Container_type" ColumnName="Container_type" />
-                <ScalarProperty Name="Container_identity" ColumnName="Container_identity" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -923,6 +830,7 @@ FROM [dbo].[InventoryItemsEx] AS [InventoryItemsEx]</DefiningQuery>
           <EntitySetMapping Name="EntryDatas">
             <EntityTypeMapping TypeName="WaterNutEntities.EntryData">
               <MappingFragment StoreEntitySet="EntryData">
+                <ScalarProperty Name="EntryType" ColumnName="EntryType" />
                 <ScalarProperty Name="UpgradeKey" ColumnName="UpgradeKey" />
                 <ScalarProperty Name="Packages" ColumnName="Packages" />
                 <ScalarProperty Name="EntryData_Id" ColumnName="EntryData_Id" />

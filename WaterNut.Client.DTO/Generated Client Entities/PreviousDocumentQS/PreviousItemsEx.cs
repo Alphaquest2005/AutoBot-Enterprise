@@ -463,6 +463,32 @@ namespace PreviousDocumentQS.Client.DTO
 		}
         private int _ApplicationSettingsId;
 
+        [DataMember]
+        public Nullable<double> TotalDutyLiablity
+		{ 
+		    get { return _TotalDutyLiablity; }
+			set
+			{
+			    if (value == _TotalDutyLiablity) return;
+				_TotalDutyLiablity = value;
+				NotifyPropertyChanged();//m => this.TotalDutyLiablity
+			}
+		}
+        private Nullable<double> _TotalDutyLiablity;
+
+        [DataMember]
+        public Nullable<double> DutyLiablity
+		{ 
+		    get { return _DutyLiablity; }
+			set
+			{
+			    if (value == _DutyLiablity) return;
+				_DutyLiablity = value;
+				NotifyPropertyChanged();//m => this.DutyLiablity
+			}
+		}
+        private Nullable<double> _DutyLiablity;
+
        
         [DataMember]
         public PreviousDocumentItem PreviousDocumentItem

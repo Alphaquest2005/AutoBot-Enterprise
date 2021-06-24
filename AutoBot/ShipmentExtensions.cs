@@ -674,10 +674,12 @@ namespace AutoBotUtilities
 
 
 
-                        var invocieAttachments = invoices.Select(shipmentInvoice =>
-                                xlsxWriter.XlsxWriter.CreateCSV(shipmentInvoice, client.Key.Item2))
-                            .SelectMany(x => x.ToList())
-                            .ToList();
+                        var invocieAttachments = invoices
+                                    .GroupBy(x => x.ShipmentRiderInvoice.FirstOrDefault()?.WarehouseCode??"")
+                                    .Select(shipmentInvoice =>
+                                                xlsxWriter.XlsxWriter.CreateCSV(shipmentInvoice.Key, shipmentInvoice.OrderBy(z => z.ShipmentRiderInvoice.FirstOrDefault()?.Packages??0).ToList(), client.Key.Item2))
+                                    .SelectMany(x => x.ToList())
+                                    .ToList();
 
                         attachments.AddRange(invocieAttachments.Where(x => x.filepath.EndsWith(".pdf")).Select(x =>
                             new Attachments()
@@ -826,8 +828,10 @@ namespace AutoBotUtilities
                             });
 
 
-                            var invocieAttachments = invoices.Select(shipmentInvoice =>
-                                    xlsxWriter.XlsxWriter.CreateCSV(shipmentInvoice, client.Key.Item2))
+                            var invocieAttachments = invoices
+                                .GroupBy(x => x.ShipmentRiderInvoice.FirstOrDefault()?.WarehouseCode ?? "")
+                                .Select(shipmentInvoice =>
+                                    xlsxWriter.XlsxWriter.CreateCSV(shipmentInvoice.Key, shipmentInvoice.OrderBy(z => z.ShipmentRiderInvoice.FirstOrDefault()?.Packages ?? 0).ToList(), client.Key.Item2))
                                 .SelectMany(x => x.ToList())
                                 .ToList();
 

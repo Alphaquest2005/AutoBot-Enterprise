@@ -550,7 +550,6 @@
     <Compile Include="ViewModels\Generated Models\QuerySpace\EntryDataQS\AsycudaDocumentSetEntryDataDetailViewModel.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\EntryDataQS\AsycudaDocumentSetEntryDataViewModel.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\EntryDataQS\BaseViewModel.cs" />
-    <Compile Include="ViewModels\Generated Models\QuerySpace\EntryDataQS\ContainerExViewModel.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\EntryDataQS\EmptyFullCodeViewModel.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\EntryDataQS\EntryDataDetailsExViewModel.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\EntryDataQS\EntryDataExViewModel.cs" />
@@ -719,7 +718,6 @@
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\EntryDataQS\AsycudaDocumentItemEntryDataDetailTotals.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\EntryDataQS\AsycudaDocumentSetEntryDataDetailTotals.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\EntryDataQS\AsycudaDocumentSetEntryDataTotals.cs" />
-    <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\EntryDataQS\ContainerExTotals.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\EntryDataQS\EmptyFullCodeTotals.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\EntryDataQS\EntryDataDetailsExTotals.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\EntryDataQS\EntryDataExTotals.cs" />
@@ -870,7 +868,6 @@
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\EntryDataQS\AsycudaDocumentItemEntryDataDetailVirturalListLoader.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\EntryDataQS\AsycudaDocumentSetEntryDataDetailVirturalListLoader.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\EntryDataQS\AsycudaDocumentSetEntryDataVirturalListLoader.cs" />
-    <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\EntryDataQS\ContainerExVirturalListLoader.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\EntryDataQS\EmptyFullCodeVirturalListLoader.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\EntryDataQS\EntryDataDetailsExVirturalListLoader.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\EntryDataQS\EntryDataExVirturalListLoader.cs" />

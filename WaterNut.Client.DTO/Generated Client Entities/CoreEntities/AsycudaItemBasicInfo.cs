@@ -164,6 +164,32 @@ namespace CoreEntities.Client.DTO
 		}
         private Nullable<int> _AsycudaDocumentSetId;
 
+        [DataMember]
+        public string Commercial_Description
+		{ 
+		    get { return _Commercial_Description; }
+			set
+			{
+			    if (value == _Commercial_Description) return;
+				_Commercial_Description = value;
+				NotifyPropertyChanged();//m => this.Commercial_Description
+			}
+		}
+        private string _Commercial_Description;
+
+        [DataMember]
+        public string TariffCode
+		{ 
+		    get { return _TariffCode; }
+			set
+			{
+			    if (value == _TariffCode) return;
+				_TariffCode = value;
+				NotifyPropertyChanged();//m => this.TariffCode
+			}
+		}
+        private string _TariffCode;
+
        
    //     [DataMember]
    //     public TrackingState TrackingState { get; set; }

@@ -51,7 +51,7 @@ namespace EntryDataDS.Business.Entities
         }
         string _type;
         [DataMember]
-        public Nullable<double> ImportedTotal 
+        public double ImportedTotal 
         {
             get
             {
@@ -64,7 +64,7 @@ namespace EntryDataDS.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        Nullable<double> _importedtotal;
+        double _importedtotal;
         [DataMember]
         public string InvoiceNo 
         {
@@ -111,7 +111,7 @@ namespace EntryDataDS.Business.Entities
         }
         Nullable<int> _importedlines;
         [DataMember]
-        public Nullable<int> TotalLines 
+        public int TotalLines 
         {
             get
             {
@@ -124,7 +124,7 @@ namespace EntryDataDS.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        Nullable<int> _totallines;
+        int _totallines;
         [DataMember]
         public string Currency 
         {
@@ -231,22 +231,7 @@ namespace EntryDataDS.Business.Entities
         }
         double _expectedtotal;
         [DataMember]
-        public Nullable<int> ClassifiedLines 
-        {
-            get
-            {
-                return _classifiedlines;
-            }
-            set
-            {
-                _classifiedlines = value;
-                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
-                NotifyPropertyChanged();
-            }
-        }
-        Nullable<int> _classifiedlines;
-        [DataMember]
-        public Nullable<int> AsycudaDocumentSetId 
+        public int AsycudaDocumentSetId 
         {
             get
             {
@@ -259,7 +244,7 @@ namespace EntryDataDS.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        Nullable<int> _asycudadocumentsetid;
+        int _asycudadocumentsetid;
         [DataMember]
         public double TotalInternalFreight 
         {
@@ -380,21 +365,6 @@ namespace EntryDataDS.Business.Entities
             }
         }
         string _sourcefile;
-        [DataMember]
-        public int Packages 
-        {
-            get
-            {
-                return _packages;
-            }
-            set
-            {
-                _packages = value;
-                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
-                NotifyPropertyChanged();
-            }
-        }
-        int _packages;
         [DataMember]
         public string SupplierInvoiceNo 
         {

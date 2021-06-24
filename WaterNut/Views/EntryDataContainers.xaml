@@ -11,7 +11,7 @@
     xmlns:validation="clr-namespace:Core.Common.UI.Validation;assembly=Core.Common.UI"
     xmlns:coreEntities="clr-namespace:WaterNut.QuerySpace.CoreEntities.ViewModels"
     x:Class="WaterNut.Views.EntryDataContainersView" Height="518.209" Width="807.2">
-    <UserControl.Resources>
+    <!--<UserControl.Resources>
         <x:Static Member="qs:EntryDataContainersModel.Instance" x:Key="EntryDataContainersModelDataSource" />
         <Style TargetType="ListBoxItem">
             <Setter Property="virtual:VirtualListItemBase.AutoLoad" Value="true" />
@@ -26,7 +26,7 @@
                         <GradientStop Color="#4CFFFFFF" Offset="1"/>
                     </LinearGradientBrush>
                 </Grid.Background>
-                <!--<TextBlock Text="{Binding mLineNumber}" Margin="10,13,0,11.36" HorizontalAlignment="Left" Width="46"/>-->
+                --><!--<TextBlock Text="{Binding mLineNumber}" Margin="10,13,0,11.36" HorizontalAlignment="Left" Width="46"/>--><!--
                 <TextBox Style="{DynamicResource TextBox2TextBlock}"  Text="{Binding Data.TotalValue, StringFormat=c, Mode=OneWay}" Margin="710,3,0,42" HorizontalAlignment="Left" Width="141" FontSize="14"/>
                 <TextBox Style="{DynamicResource TextBox2TextBlock}"  Text="{Binding Data.Goods_description, Mode=OneWay}" Margin="170,37,0,0" HorizontalAlignment="Left" Width="232" FontSize="14"/>
                 <TextBox Style="{DynamicResource TextBox2TextBlock}"  Text="{Binding Data.Container_identity, Mode=OneWay}" Margin="170,3,0,38" HorizontalAlignment="Left" Width="205" FontSize="14"/>
@@ -109,5 +109,5 @@
         <TextBlock HorizontalAlignment="Left" Height="23" Margin="341,67,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="109" FontSize="14" Text="End Date" TextAlignment="Center"/>
         <DatePicker SelectedDate="{Binding EndDateFilter}" HorizontalAlignment="Left" Height="22" Margin="450,67,0,0" VerticalAlignment="Top" Width="139"/>
         <TextBlock x:Name="SelectTxt_Copy1" HorizontalAlignment="Left" Height="22" Margin="690,79,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="67" FontSize="16" Text="View All" TextAlignment="Left" Style="{DynamicResource TextButtonStyle}" MouseLeftButtonDown="ViewAll"/>
-    </Grid>
+    </Grid>-->
 </UserControl>

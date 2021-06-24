@@ -174,7 +174,7 @@ namespace DocumentItemDS.Business.Entities
         }
         [IgnoreDataMember]
         [NotMapped]
-        public double PiQuantity
+        public Decimal PiQuantity
         {
             get
             {

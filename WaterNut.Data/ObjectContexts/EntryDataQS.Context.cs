@@ -59,8 +59,6 @@ namespace EntryDataQS.Business.Entities
      
         public DbSet<AsycudaDocumentSetEntryDataDetail> AsycudaDocumentSetEntryDataDetails { get; set; }
      
-        public DbSet<ContainerEx> ContainerExes { get; set; }
-     
         public DbSet<PackageType> PackageTypes { get; set; }
      
         public DbSet<EmptyFullCode> EmptyFullCodes { get; set; }
@@ -84,8 +82,6 @@ namespace EntryDataQS.Business.Entities
             modelBuilder.Configurations.Add(new EntryDataDetailsExMap());
          
             modelBuilder.Configurations.Add(new AsycudaDocumentSetEntryDataDetailMap());
-         
-            modelBuilder.Configurations.Add(new ContainerExMap());
          
             modelBuilder.Configurations.Add(new PackageTypeMap());
          

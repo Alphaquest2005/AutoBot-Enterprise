@@ -6,14 +6,14 @@ using EntryDataQS.Business.Entities;
 
 namespace EntryDataQS.Business.Services
 {
-    public partial interface IContainerExService 
-    {
-        [OperationContract]
-        [FaultContract(typeof(ValidationFault))]
-        Task SaveContainer(ContainerEx container);
+    //public partial interface IContainerExService 
+    //{
+    //    [OperationContract]
+    //    [FaultContract(typeof(ValidationFault))]
+    //    Task SaveContainer(ContainerEx container);
 
    
 
-    }
+    //}
 }
 

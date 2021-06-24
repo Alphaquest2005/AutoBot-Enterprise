@@ -21,7 +21,7 @@ namespace WaterNut.DataLayer
                Net_weight_itm = Gross_weight_itm;
                if (xcuda_Valuation_item != null && xcuda_Valuation_item.xcuda_Item.xcuda_PreviousItem != null)
                {
-                   xcuda_Valuation_item.xcuda_Item.xcuda_PreviousItem.Net_weight = Gross_weight_itm;
+                   xcuda_Valuation_item.xcuda_Item.xcuda_PreviousItem.Net_weight = (decimal) Gross_weight_itm;
                }
 
            }

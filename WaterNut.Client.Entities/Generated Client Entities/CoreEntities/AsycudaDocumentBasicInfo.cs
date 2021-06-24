@@ -292,6 +292,70 @@ public int Customs_ProcedureId
 		}
      
 
+       
+       
+                
+                [MaxLength(11, ErrorMessage = "CustomsProcedure has a max length of 11 letters ")]
+public string CustomsProcedure
+		{ 
+		    get { return this.asycudadocumentbasicinfo.CustomsProcedure; }
+			set
+			{
+			    if (value == this.asycudadocumentbasicinfo.CustomsProcedure) return;
+				this.asycudadocumentbasicinfo.CustomsProcedure = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("CustomsProcedure");
+			}
+		}
+     
+
+       
+       
+                
+                [MaxLength(500, ErrorMessage = "SourceFileName has a max length of 500 letters ")]
+public string SourceFileName
+		{ 
+		    get { return this.asycudadocumentbasicinfo.SourceFileName; }
+			set
+			{
+			    if (value == this.asycudadocumentbasicinfo.SourceFileName) return;
+				this.asycudadocumentbasicinfo.SourceFileName = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("SourceFileName");
+			}
+		}
+     
+
+       
+       
+public Nullable<bool> SubmitToCustoms
+		{ 
+		    get { return this.asycudadocumentbasicinfo.SubmitToCustoms; }
+			set
+			{
+			    if (value == this.asycudadocumentbasicinfo.SubmitToCustoms) return;
+				this.asycudadocumentbasicinfo.SubmitToCustoms = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("SubmitToCustoms");
+			}
+		}
+     
+
+       
+       
+public Nullable<bool> IsPaid
+		{ 
+		    get { return this.asycudadocumentbasicinfo.IsPaid; }
+			set
+			{
+			    if (value == this.asycudadocumentbasicinfo.IsPaid) return;
+				this.asycudadocumentbasicinfo.IsPaid = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("IsPaid");
+			}
+		}
+     
+
 
         ChangeTrackingCollection<DTO.AsycudaDocumentBasicInfo> _changeTracker;    
         public ChangeTrackingCollection<DTO.AsycudaDocumentBasicInfo> ChangeTracker

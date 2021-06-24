@@ -425,6 +425,23 @@ public Nullable<int> UpgradeKey
 		}
      
 
+       
+       
+                
+                [MaxLength(4000, ErrorMessage = "PreviousInvoiceKey has a max length of 4000 letters ")]
+public string PreviousInvoiceKey
+		{ 
+		    get { return this.xcuda_item.PreviousInvoiceKey; }
+			set
+			{
+			    if (value == this.xcuda_item.PreviousInvoiceKey) return;
+				this.xcuda_item.PreviousInvoiceKey = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("PreviousInvoiceKey");
+			}
+		}
+     
+
         ObservableCollection<AsycudaSalesAllocation> _AsycudaSalesAllocations = null;
         public  ObservableCollection<AsycudaSalesAllocation> AsycudaSalesAllocations
 		{

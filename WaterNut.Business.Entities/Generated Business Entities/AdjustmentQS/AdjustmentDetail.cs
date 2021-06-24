@@ -267,21 +267,6 @@ namespace AdjustmentQS.Business.Entities
         }
         Nullable<double> _receivedqty;
         [DataMember]
-        public string Status 
-        {
-            get
-            {
-                return _status;
-            }
-            set
-            {
-                _status = value;
-                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
-                NotifyPropertyChanged();
-            }
-        }
-        string _status;
-        [DataMember]
         public string PreviousInvoiceNumber 
         {
             get
@@ -566,6 +551,36 @@ namespace AdjustmentQS.Business.Entities
             }
         }
         int _inventoryitemid;
+        [DataMember]
+        public Nullable<double> TaxAmount 
+        {
+            get
+            {
+                return _taxamount;
+            }
+            set
+            {
+                _taxamount = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<double> _taxamount;
+        [DataMember]
+        public string Status 
+        {
+            get
+            {
+                return _status;
+            }
+            set
+            {
+                _status = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _status;
         [DataMember]
         public AdjustmentEx AdjustmentEx { get; set; }
         [DataMember]

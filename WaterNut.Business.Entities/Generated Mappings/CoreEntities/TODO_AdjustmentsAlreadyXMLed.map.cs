@@ -44,7 +44,7 @@
               this.Property(t => t.PreviousInvoiceNumber).HasColumnName("PreviousInvoiceNumber").HasMaxLength(50);
               this.Property(t => t.Comment).HasColumnName("Comment").HasMaxLength(255);
               this.Property(t => t.DutyFreePaid).HasColumnName("DutyFreePaid").IsRequired().IsUnicode(false).HasMaxLength(9);
-              this.Property(t => t.pLineNumber).HasColumnName("pLineNumber").HasMaxLength(50);
+              this.Property(t => t.pLineNumber).HasColumnName("pLineNumber");
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);
     			this.Ignore(t => t.ModifiedProperties);

@@ -230,19 +230,6 @@ namespace AdjustmentQS.Client.DTO
         private Nullable<double> _ReceivedQty;
 
         [DataMember]
-        public string Status
-		{ 
-		    get { return _Status; }
-			set
-			{
-			    if (value == _Status) return;
-				_Status = value;
-				NotifyPropertyChanged();//m => this.Status
-			}
-		}
-        private string _Status;
-
-        [DataMember]
         public string PreviousInvoiceNumber
 		{ 
 		    get { return _PreviousInvoiceNumber; }
@@ -488,6 +475,32 @@ namespace AdjustmentQS.Client.DTO
 			}
 		}
         private int _InventoryItemId;
+
+        [DataMember]
+        public Nullable<double> TaxAmount
+		{ 
+		    get { return _TaxAmount; }
+			set
+			{
+			    if (value == _TaxAmount) return;
+				_TaxAmount = value;
+				NotifyPropertyChanged();//m => this.TaxAmount
+			}
+		}
+        private Nullable<double> _TaxAmount;
+
+        [DataMember]
+        public string Status
+		{ 
+		    get { return _Status; }
+			set
+			{
+			    if (value == _Status) return;
+				_Status = value;
+				NotifyPropertyChanged();//m => this.Status
+			}
+		}
+        private string _Status;
 
        
         [DataMember]

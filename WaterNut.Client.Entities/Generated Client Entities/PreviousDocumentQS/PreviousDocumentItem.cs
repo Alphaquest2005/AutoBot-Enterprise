@@ -95,7 +95,7 @@ public int ASYCUDA_Id
        
        
                 
-                [MaxLength(6, ErrorMessage = "Licence_number has a max length of 6 letters ")]
+                [MaxLength(50, ErrorMessage = "Licence_number has a max length of 50 letters ")]
 public string Licence_number
 		{ 
 		    get { return this.previousdocumentitem.Licence_number; }
@@ -112,7 +112,7 @@ public string Licence_number
        
        
                 
-                [MaxLength(30, ErrorMessage = "Free_text_1 has a max length of 30 letters ")]
+                [MaxLength(35, ErrorMessage = "Free_text_1 has a max length of 35 letters ")]
 public string Free_text_1
 		{ 
 		    get { return this.previousdocumentitem.Free_text_1; }

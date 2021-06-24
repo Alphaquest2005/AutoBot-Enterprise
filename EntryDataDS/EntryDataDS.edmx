@@ -54,6 +54,7 @@
           <Property Name="EntryData_Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Packages" Type="int" />
           <Property Name="UpgradeKey" Type="nvarchar" MaxLength="50" />
+          <Property Name="EntryType" Type="nvarchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="EntryData_Adjustments">
           <Key>
@@ -138,6 +139,7 @@
           <Property Name="UpgradeKey" Type="int" />
           <Property Name="VolumeLiters" Type="float" />
           <Property Name="EntryDataDetailsKey" Type="nvarchar" MaxLength="4000" StoreGeneratedPattern="Computed" />
+          <Property Name="TotalValue" Type="float" StoreGeneratedPattern="Computed" Nullable="false" />
         </EntityType>
         <EntityType Name="EntryDataFiles">
           <Key>
@@ -653,17 +655,20 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.EntryDataEx' does not hav
             
             
             
+            
+            
+            
           </Key>
           <Property Name="EntryData_Id" Type="int" Nullable="false" />
           <Property Name="InvoiceDate" Type="datetime2" Precision="7" Nullable="false" />
-          <Property Name="Type" Type="nvarchar" MaxLength="50" />
-          <Property Name="ImportedTotal" Type="float" />
+          <Property Name="Type" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="ImportedTotal" Type="float" Nullable="false" />
           <Property Name="InvoiceNo" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="SupplierInvoiceNo" Type="nvarchar" MaxLength="50" />
           <Property Name="Tax" Type="float" />
           <Property Name="InvoiceTotal" Type="float" />
           <Property Name="ImportedLines" Type="int" />
-          <Property Name="TotalLines" Type="int" />
+          <Property Name="TotalLines" Type="float" Nullable="false" />
           <Property Name="Currency" Type="nvarchar" MaxLength="4" />
           <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
           <Property Name="DutyFreePaid" Type="varchar" MaxLength="9" Nullable="false" />
@@ -671,15 +676,13 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.EntryDataEx' does not hav
           <Property Name="FileTypeId" Type="int" />
           <Property Name="SupplierCode" Type="nvarchar" MaxLength="100" />
           <Property Name="ExpectedTotal" Type="float" Nullable="false" />
-          <Property Name="ClassifiedLines" Type="int" />
-          <Property Name="AsycudaDocumentSetId" Type="int" />
+          <Property Name="AsycudaDocumentSetId" Type="int" Nullable="false" />
           <Property Name="TotalInternalFreight" Type="float" Nullable="false" />
           <Property Name="TotalInternalInsurance" Type="float" Nullable="false" />
           <Property Name="TotalOtherCost" Type="float" Nullable="false" />
           <Property Name="TotalDeductions" Type="float" Nullable="false" />
           <Property Name="TotalFreight" Type="float" Nullable="false" />
           <Property Name="Totals" Type="float" Nullable="false" />
-          <Property Name="Packages" Type="int" Nullable="false" />
           <Property Name="SourceFile" Type="nvarchar(max)" />
         </EntityType>
         <!--Errors Found During Generation:
@@ -1690,7 +1693,6 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ShipmentRiderInvoice' doe
     [EntryDataEx].[FileTypeId] AS [FileTypeId], 
     [EntryDataEx].[SupplierCode] AS [SupplierCode], 
     [EntryDataEx].[ExpectedTotal] AS [ExpectedTotal], 
-    [EntryDataEx].[ClassifiedLines] AS [ClassifiedLines], 
     [EntryDataEx].[AsycudaDocumentSetId] AS [AsycudaDocumentSetId], 
     [EntryDataEx].[TotalInternalFreight] AS [TotalInternalFreight], 
     [EntryDataEx].[TotalInternalInsurance] AS [TotalInternalInsurance], 
@@ -1698,7 +1700,6 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ShipmentRiderInvoice' doe
     [EntryDataEx].[TotalDeductions] AS [TotalDeductions], 
     [EntryDataEx].[TotalFreight] AS [TotalFreight], 
     [EntryDataEx].[Totals] AS [Totals], 
-    [EntryDataEx].[Packages] AS [Packages], 
     [EntryDataEx].[SourceFile] AS [SourceFile]
     FROM [dbo].[EntryDataEx] AS [EntryDataEx]</DefiningQuery>
           </EntitySet>
@@ -2432,6 +2433,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ShipmentRiderInvoice' doe
           <Property Name="Packages" Type="Int32" />
           <NavigationProperty Name="Suppliers" Relationship="WaterNutDBModel.FK_EntryData_Suppliers" FromRole="EntryData" ToRole="Suppliers" />
           <Property Name="UpgradeKey" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="EntryType" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <a:DomainInterfaceProperty xmlns:a="http://schemas.tempuri.com/DomainInterfaceProperty"></a:DomainInterfaceProperty>
         </EntityType>
         <EntityType Name="OpeningStock" BaseType="WaterNutDBModel.EntryData">
@@ -2486,6 +2488,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ShipmentRiderInvoice' doe
           <NavigationProperty Name="INVItems" Relationship="WaterNutDBModel.EntryDataDetailsShipmentInvoicePOItemQueryMatches" FromRole="EntryDataDetails" ToRole="ShipmentInvoicePOItemQueryMatches" />
           <Property Name="VolumeLiters" Type="Double" />
           <Property Name="EntryDataDetailsKey" Type="String" MaxLength="4000" FixedLength="false" Unicode="true" annotation:StoreGeneratedPattern="Computed" />
+          <Property Name="TotalValue" Type="Double" Nullable="false" annotation:StoreGeneratedPattern="Computed" />
           <a:DomainInterfaceProperty xmlns:a="http://schemas.tempuri.com/DomainInterfaceProperty">IEntryDataDetail</a:DomainInterfaceProperty>
         </EntityType>
         <Association Name="FK_PurchaseOrderDetails_PurchaseOrders">
@@ -2765,12 +2768,12 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ShipmentRiderInvoice' doe
             <PropertyRef Name="EntryData_Id" />
           </Key>
           <Property Name="InvoiceDate" Type="DateTime" Nullable="false" Precision="7" />
-          <Property Name="Type" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="ImportedTotal" Type="Double" />
+          <Property Name="Type" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="ImportedTotal" Type="Double" Nullable="false" />
           <Property Name="InvoiceNo" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="InvoiceTotal" Type="Double" />
           <Property Name="ImportedLines" Type="Int32" />
-          <Property Name="TotalLines" Type="Int32" />
+          <Property Name="TotalLines" Type="Int32" Nullable="false" />
           <Property Name="Currency" Type="String" MaxLength="4" FixedLength="false" Unicode="true" />
           <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
           <Property Name="DutyFreePaid" Type="String" Nullable="false" MaxLength="9" FixedLength="false" Unicode="false" />
@@ -2778,8 +2781,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ShipmentRiderInvoice' doe
           <Property Name="FileTypeId" Type="Int32" />
           <Property Name="SupplierCode" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="ExpectedTotal" Type="Double" Nullable="false" />
-          <Property Name="ClassifiedLines" Type="Int32" />
-          <Property Name="AsycudaDocumentSetId" Type="Int32" />
+          <Property Name="AsycudaDocumentSetId" Type="Int32" Nullable="false" />
           <Property Name="TotalInternalFreight" Type="Double" Nullable="false" />
           <Property Name="TotalInternalInsurance" Type="Double" Nullable="false" />
           <Property Name="TotalOtherCost" Type="Double" Nullable="false" />
@@ -2789,7 +2791,6 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ShipmentRiderInvoice' doe
           <Property Name="Totals" Type="Double" Nullable="false" />
           <Property Name="EntryData_Id" Type="Int32" Nullable="false" />
           <Property Name="SourceFile" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="Packages" Type="Int32" Nullable="false" />
           <Property Name="SupplierInvoiceNo" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="Tax" Type="Double" />
         </EntityType>
@@ -4196,6 +4197,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ShipmentRiderInvoice' doe
           <EntitySetMapping Name="EntryData">
             <EntityTypeMapping TypeName="IsTypeOf(WaterNutDBModel.EntryData)">
               <MappingFragment StoreEntitySet="EntryData">
+                <ScalarProperty Name="EntryType" ColumnName="EntryType" />
                 <ScalarProperty Name="UpgradeKey" ColumnName="UpgradeKey" />
                 <ScalarProperty Name="Packages" ColumnName="Packages" />
                 <ScalarProperty Name="EntryData_Id" ColumnName="EntryData_Id" />
@@ -4257,6 +4259,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ShipmentRiderInvoice' doe
           <EntitySetMapping Name="EntryDataDetails">
             <EntityTypeMapping TypeName="WaterNutDBModel.EntryDataDetails">
               <MappingFragment StoreEntitySet="EntryDataDetails">
+                <ScalarProperty Name="TotalValue" ColumnName="TotalValue" />
                 <ScalarProperty Name="EntryDataDetailsKey" ColumnName="EntryDataDetailsKey" />
                 <ScalarProperty Name="VolumeLiters" ColumnName="VolumeLiters" />
                 <ScalarProperty Name="UpgradeKey" ColumnName="UpgradeKey" />
@@ -4454,7 +4457,6 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ShipmentRiderInvoice' doe
               <MappingFragment StoreEntitySet="EntryDataEx">
                 <ScalarProperty Name="Tax" ColumnName="Tax" />
                 <ScalarProperty Name="SupplierInvoiceNo" ColumnName="SupplierInvoiceNo" />
-                <ScalarProperty Name="Packages" ColumnName="Packages" />
                 <ScalarProperty Name="SourceFile" ColumnName="SourceFile" />
                 <ScalarProperty Name="EntryData_Id" ColumnName="EntryData_Id" />
                 <ScalarProperty Name="Totals" ColumnName="Totals" />
@@ -4464,7 +4466,6 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ShipmentRiderInvoice' doe
                 <ScalarProperty Name="TotalInternalInsurance" ColumnName="TotalInternalInsurance" />
                 <ScalarProperty Name="TotalInternalFreight" ColumnName="TotalInternalFreight" />
                 <ScalarProperty Name="AsycudaDocumentSetId" ColumnName="AsycudaDocumentSetId" />
-                <ScalarProperty Name="ClassifiedLines" ColumnName="ClassifiedLines" />
                 <ScalarProperty Name="ExpectedTotal" ColumnName="ExpectedTotal" />
                 <ScalarProperty Name="SupplierCode" ColumnName="SupplierCode" />
                 <ScalarProperty Name="FileTypeId" ColumnName="FileTypeId" />

@@ -21,21 +21,6 @@ namespace ValuationDS.Business.Entities
     public partial class TODO_C71ToCreate : BaseEntity<TODO_C71ToCreate>, ITrackable 
     {
         [DataMember]
-        public int Id 
-        {
-            get
-            {
-                return _id;
-            }
-            set
-            {
-                _id = value;
-                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
-                NotifyPropertyChanged();
-            }
-        }
-        int _id;
-        [DataMember]
         public int AsycudaDocumentSetId 
         {
             get

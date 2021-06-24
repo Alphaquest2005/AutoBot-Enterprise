@@ -151,9 +151,9 @@ namespace WaterNut.DataSpace
                                 .Where(x => x.xcuda_Tarification.Item_price > 0)
                                 .Where(x => x.xcuda_Tarification.xcuda_Supplementary_unit.Any())
                                 .Where(x => x.xcuda_Tarification.xcuda_Supplementary_unit.FirstOrDefault()
-                                            .Suppplementary_unit_quantity > x.EntryPreviousItems.Select(y => y.xcuda_PreviousItem)
-                                                                                .Where(y => y.xcuda_Item.AsycudaDocument.CNumber != null || y.xcuda_Item.AsycudaDocument.IsManuallyAssessed == true)
-                                                                                .Select(z => z.Suplementary_Quantity).DefaultIfEmpty(0).Sum())
+                                            .Suppplementary_unit_quantity > (double?) x.EntryPreviousItems.Select(y => y.xcuda_PreviousItem)
+                                    .Where(y => y.xcuda_Item.AsycudaDocument.CNumber != null || y.xcuda_Item.AsycudaDocument.IsManuallyAssessed == true)
+                                    .Select(z => z.Suplementary_Quantity).DefaultIfEmpty(0).Sum())
                                 
                                 .Select(x => new AsycudaDocumentItemIM9()
                                 {
@@ -161,12 +161,12 @@ namespace WaterNut.DataSpace
                                     CNumber = x.AsycudaDocument.CNumber,
                                     Customs_clearance_office_code = x.AsycudaDocument.Customs_clearance_office_code,
                                     Country_of_origin_code = x.xcuda_Goods_description.Country_of_origin_code,
-                                    PiQuantity = x.EntryPreviousItems.Select(y => y.xcuda_PreviousItem)
-                                                                                .Where(y => y.xcuda_Item.AsycudaDocument.CNumber != null || y.xcuda_Item.AsycudaDocument.IsManuallyAssessed == true)
-                                                                                .Select(z => z.Suplementary_Quantity).DefaultIfEmpty(0).Sum(),
-                                    PiWeight = x.EntryPreviousItems.Select(y => y.xcuda_PreviousItem)
-                                                                                .Where(y => y.xcuda_Item.AsycudaDocument.CNumber != null || y.xcuda_Item.AsycudaDocument.IsManuallyAssessed == true)
-                                                                                .Select(z => z.Net_weight).DefaultIfEmpty(0).Sum(),
+                                    PiQuantity = (double) x.EntryPreviousItems.Select(y => y.xcuda_PreviousItem)
+                                        .Where(y => y.xcuda_Item.AsycudaDocument.CNumber != null || y.xcuda_Item.AsycudaDocument.IsManuallyAssessed == true)
+                                        .Select(z => z.Suplementary_Quantity).DefaultIfEmpty(0).Sum(),
+                                    PiWeight = (double) x.EntryPreviousItems.Select(y => y.xcuda_PreviousItem)
+                                        .Where(y => y.xcuda_Item.AsycudaDocument.CNumber != null || y.xcuda_Item.AsycudaDocument.IsManuallyAssessed == true)
+                                        .Select(z => z.Net_weight).DefaultIfEmpty(0).Sum(),
                                     ItemQuantity = (double)x.xcuda_Tarification.xcuda_Supplementary_unit.FirstOrDefault().Suppplementary_unit_quantity,
                                     Suppplementary_unit_code = x.xcuda_Tarification.xcuda_Supplementary_unit.FirstOrDefault().Suppplementary_unit_code,
                                     LineNumber = x.LineNumber,
@@ -225,10 +225,10 @@ namespace WaterNut.DataSpace
                                 CNumber = x.AsycudaDocument.CNumber,
                                 Customs_clearance_office_code = x.AsycudaDocument.Customs_clearance_office_code,
                                 Country_of_origin_code = x.xcuda_Goods_description.Country_of_origin_code,
-                                PiQuantity = x.EntryPreviousItems.Select(y => y.xcuda_PreviousItem)
+                                PiQuantity = (double) x.EntryPreviousItems.Select(y => y.xcuda_PreviousItem)
                                     .Where(y => y.xcuda_Item.AsycudaDocument.CNumber != null /*|| y.xcuda_Item.AsycudaDocument.IsManuallyAssessed == true*/)// only assessed items allowed especially now as i preassessing entries
                                     .Select(z => z.Suplementary_Quantity).DefaultIfEmpty(0).Sum(),
-                                PiWeight = x.EntryPreviousItems.Select(y => y.xcuda_PreviousItem)
+                                PiWeight = (double) x.EntryPreviousItems.Select(y => y.xcuda_PreviousItem)
                                     .Where(y => y.xcuda_Item.AsycudaDocument.CNumber != null /*|| y.xcuda_Item.AsycudaDocument.IsManuallyAssessed == true*/)
                                     .Select(z => z.Net_weight).DefaultIfEmpty(0).Sum(),
                                 ItemQuantity = (double) x.xcuda_Tarification.xcuda_Supplementary_unit.FirstOrDefault(z => z.IsFirstRow == true)
@@ -287,9 +287,9 @@ namespace WaterNut.DataSpace
                            ctx.xcuda_Item
                                .Where(x => x.xcuda_Tarification.xcuda_Supplementary_unit.Any())
                                .Where(x => x.xcuda_Tarification.xcuda_Supplementary_unit.FirstOrDefault()
-                                           .Suppplementary_unit_quantity > x.EntryPreviousItems.Select(y => y.xcuda_PreviousItem)
-                                                                               .Where(y => y.xcuda_Item.AsycudaDocument.CNumber != null )// only aSSessed entries
-                                                                               .Select(z => z.Suplementary_Quantity).DefaultIfEmpty(0).Sum())
+                                           .Suppplementary_unit_quantity > (double?) x.EntryPreviousItems.Select(y => y.xcuda_PreviousItem)
+                                   .Where(y => y.xcuda_Item.AsycudaDocument.CNumber != null )// only aSSessed entries
+                                   .Select(z => z.Suplementary_Quantity).DefaultIfEmpty(0).Sum())
                                .Where(x => str.Contains(x.Item_Id.ToString()))
                                .Select(x => new AsycudaDocumentItemIM9()
                                {
@@ -297,12 +297,12 @@ namespace WaterNut.DataSpace
                                    CNumber = x.AsycudaDocument.CNumber,
                                    Customs_clearance_office_code = x.AsycudaDocument.Customs_clearance_office_code,
                                    Country_of_origin_code = x.xcuda_Goods_description.Country_of_origin_code,
-                                   PiQuantity = x.EntryPreviousItems.Select(y => y.xcuda_PreviousItem)
-                                                                                .Where(y => y.xcuda_Item.AsycudaDocument.CNumber != null)
-                                                                                .Select(z => z.Suplementary_Quantity).DefaultIfEmpty(0).Sum(),
-                                   PiWeight = x.EntryPreviousItems.Select(y => y.xcuda_PreviousItem)
-                                                                                .Where(y => y.xcuda_Item.AsycudaDocument.CNumber != null )
-                                                                                .Select(z => z.Net_weight).DefaultIfEmpty(0).Sum(),
+                                   PiQuantity = (double) x.EntryPreviousItems.Select(y => y.xcuda_PreviousItem)
+                                       .Where(y => y.xcuda_Item.AsycudaDocument.CNumber != null)
+                                       .Select(z => z.Suplementary_Quantity).DefaultIfEmpty(0).Sum(),
+                                   PiWeight = (double) x.EntryPreviousItems.Select(y => y.xcuda_PreviousItem)
+                                       .Where(y => y.xcuda_Item.AsycudaDocument.CNumber != null )
+                                       .Select(z => z.Net_weight).DefaultIfEmpty(0).Sum(),
                                    ItemQuantity = (double)x.xcuda_Tarification.xcuda_Supplementary_unit.FirstOrDefault().Suppplementary_unit_quantity,
                                    Suppplementary_unit_code = x.xcuda_Tarification.xcuda_Supplementary_unit.FirstOrDefault().Suppplementary_unit_code,
                                    LineNumber = x.LineNumber,
@@ -404,14 +404,14 @@ namespace WaterNut.DataSpace
                         Current_item_number = (itmcount + 1).ToString(), // piggy back the previous item count
                         Previous_item_number = ditm.LineNumber.ToString(),
                         Previous_Packages_number = ditm.Number_of_packages.ToString(),
-                        Suplementary_Quantity = Convert.ToDouble(ditm.ItemQuantity - ditm.PiQuantity),
+                        Suplementary_Quantity = Convert.ToDecimal(ditm.ItemQuantity - ditm.PiQuantity),
                         Preveious_suplementary_quantity = Convert.ToDouble(ditm.ItemQuantity),
-                        Prev_net_weight = ditm.Net_weight,
+                        Prev_net_weight = (decimal)ditm.Net_weight,
 
                         //////////////////////////todo///////////////////////////
 
 
-                        Net_weight =  ditm.Net_weight - ditm.PiWeight,
+                        Net_weight = Convert.ToDecimal(ditm.Net_weight - ditm.PiWeight),
                         Goods_origin = ditm.Country_of_origin_code,
                         Previous_value =
                             Convert.ToDouble((ditm.Total_CIF_itm / ditm.ItemQuantity)),
@@ -440,7 +440,7 @@ namespace WaterNut.DataSpace
                 if (cdoc.Document.xcuda_General_information != null)
                     itm.xcuda_Goods_description.Country_of_origin_code =
                         cdoc.Document.xcuda_General_information.xcuda_Country.Country_first_destination;
-                itm.xcuda_Tarification.Item_price = Convert.ToSingle(ditm.Total_CIF_itm/ditm.ItemQuantity)*pitm.Suplementary_Quantity;
+                itm.xcuda_Tarification.Item_price = Convert.ToSingle(ditm.Total_CIF_itm/ditm.ItemQuantity)* (double) pitm.Suplementary_Quantity;
 
                 itm.xcuda_Tarification.xcuda_HScode.Commodity_code = pitm.Hs_code;
                 itm.xcuda_Tarification.xcuda_HScode.Precision_1 = pitm.Commodity_code;
@@ -454,20 +454,20 @@ namespace WaterNut.DataSpace
                 };
 
                 //TODO: Check the weight when creating was making weight zero
-                itm.xcuda_Valuation_item.xcuda_Weight_itm.Gross_weight_itm = pitm.Net_weight;
-                itm.xcuda_Valuation_item.xcuda_Weight_itm.Net_weight_itm = pitm.Net_weight;
+                itm.xcuda_Valuation_item.xcuda_Weight_itm.Gross_weight_itm =(double) pitm.Net_weight;
+                itm.xcuda_Valuation_item.xcuda_Weight_itm.Net_weight_itm = (double) pitm.Net_weight;
                 // adjusting because not using real statistical value when calculating
                 itm.xcuda_Valuation_item.xcuda_Item_Invoice.Amount_foreign_currency =
-                    Convert.ToDouble(Math.Round((pitm.Current_value*pitm.Suplementary_Quantity), 2));
+                    Convert.ToDouble(Math.Round((pitm.Current_value * (double) pitm.Suplementary_Quantity), 2));
                 itm.xcuda_Valuation_item.xcuda_Item_Invoice.Amount_national_currency =
-                    Convert.ToDouble(Math.Round(pitm.Current_value*pitm.Suplementary_Quantity, 2));
+                    Convert.ToDouble(Math.Round(pitm.Current_value * (double) pitm.Suplementary_Quantity, 2));
                 itm.xcuda_Valuation_item.xcuda_Item_Invoice.Currency_code = "XCD";
                 itm.xcuda_Valuation_item.xcuda_Item_Invoice.Currency_rate = 1;
 
                 itm.xcuda_Valuation_item.Total_CIF_itm =
-                    Convert.ToSingle(Math.Round((pitm.Current_value*pitm.Suplementary_Quantity), 4));
+                    Convert.ToSingle(Math.Round((pitm.Current_value * (double)pitm.Suplementary_Quantity), 4));
                 itm.xcuda_Valuation_item.Statistical_value =
-                    Convert.ToSingle(Math.Round((pitm.Current_value*pitm.Suplementary_Quantity), 4));
+                    Convert.ToSingle(Math.Round((pitm.Current_value * (double)pitm.Suplementary_Quantity), 4));
 
                 if (itmcount == 0) //cdoc.DocumentItems.Select(x => x.xcuda_PreviousItem).Count() == 1 ||
                 {
