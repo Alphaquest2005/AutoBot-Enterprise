@@ -627,6 +627,49 @@ namespace AutoBotUtilities
                                                                                                 .GroupBy(x => new Tuple<string, int, string>(x.Code, x.RiderId, bl.BLNumber))
                                                                                                // .MaxBy(x => x.Key.Item2)
                                                                                                 .ToList();
+                    var manifests = masterShipment.ShipmentAttachedManifest
+                        .Where(x => x.ShipmentManifest.WayBill == bl.BLNumber).Select(x => x.ShipmentManifest)
+                        .ToList();
+                    var freightInvoicesbyBL = masterShipment.ShipmentAttachedFreight
+                        .Where(x => x.ShipmentFreight.ShipmentBLFreight.Any(f => f.BLNumber == bl.BLNumber))
+                        .DistinctBy(x => x.FreightInvoiceId).Select(x => x.ShipmentFreight).ToList();
+                    var freightInvoicesbyDetails = masterShipment.ShipmentAttachedFreight
+                        .Where(x => x.ShipmentFreight.ShipmentFreightDetails.Any(z =>
+                            clients.Any(q => q.Any(r => r.WarehouseCode == z.WarehouseCode))))
+                        .DistinctBy(x => x.FreightInvoiceId).Select(x => x.ShipmentFreight).ToList();
+                    var freightInvoices = new List<ShipmentFreight>();
+                    freightInvoices.AddRange(freightInvoicesbyBL);
+                    freightInvoices.AddRange(freightInvoicesbyDetails.Where(x => freightInvoices.All(z => z.Id != x.Id)).ToList());
+
+
+                    var blDetails = bl.ShipmentBLDetails
+                        .SelectMany(x => x.ShipmentRiderBLs.Select(z => z.ShipmentBLDetails)).DistinctBy(x => x.Id)
+                        .Where(x => x.ShipmentBL.ShipmentBLDetails.Any(z =>
+                            clients.Any(q => q.Any(r => r.WarehouseCode == z.Marks))))
+                        .ToList();
+
+
+                    var shipment = new Shipment()
+                    {
+                        ShipmentName =
+                            $"{bl.BLNumber.Split('-').First()}-{clients.First().Key.Item1.Split(' ').FirstOrDefault()}",
+                        ManifestNumber = manifests.LastOrDefault()?.RegistrationNumber,
+                        BLNumber = bl?.BLNumber,
+                        WeightKG = !manifests.Any()
+                            ? clients.SelectMany(x => x.Select(r => r.GrossWeightKg)).Sum()
+                            : manifests.LastOrDefault()?.GrossWeightKG ?? bl?.WeightKG,
+                        ExpectedEntries =  0,
+                        TotalInvoices = 0,
+                        FreightCurrency = freightInvoices.LastOrDefault()?.Currency ?? "USD",
+                        Freight = freightInvoices.LastOrDefault()?.InvoiceTotal,
+                        Origin = "US",
+                        Packages = !blDetails.Any() ? clients.SelectMany(x => x.Select(r => r.Pieces)).Sum() : blDetails.Sum(x => x.Quantity),
+
+                        Location = manifests.LastOrDefault()?.LocationOfGoods,
+                        Office = manifests.LastOrDefault()?.CustomsOffice,
+                        TrackingState = TrackingState.Added
+                    };
+                    var attachments = new List<Attachments>();
                     foreach (var client in clients)
                     {
 
@@ -638,31 +681,13 @@ namespace AutoBotUtilities
                         };
 
 
-                        var manifests = masterShipment.ShipmentAttachedManifest
-                            .Where(x => x.ShipmentManifest.WayBill == bl.BLNumber).Select(x => x.ShipmentManifest)
-                            .ToList();
-                        var freightInvoicesbyBL = masterShipment.ShipmentAttachedFreight
-                            .Where(x => x.ShipmentFreight.ShipmentBLFreight.Any(f => f.BLNumber == bl.BLNumber))
-                            .DistinctBy(x => x.FreightInvoiceId).Select(x => x.ShipmentFreight).ToList();
-                        var freightInvoicesbyDetails = masterShipment.ShipmentAttachedFreight
-                           .Where(x => x.ShipmentFreight.ShipmentFreightDetails.Any(z =>
-                                client.Any(q => q.WarehouseCode == z.WarehouseCode)))
-                            .DistinctBy(x => x.FreightInvoiceId).Select(x => x.ShipmentFreight).ToList();
-                        var freightInvoices = new List<ShipmentFreight>();
-                        freightInvoices.AddRange(freightInvoicesbyBL);
-                        freightInvoices.AddRange(freightInvoicesbyDetails.Where(x => freightInvoices.All(z => z.Id != x.Id)).ToList());
-
-
-                        var blDetails = bl.ShipmentBLDetails
-                            .SelectMany(x => x.ShipmentRiderBLs.Select(z => z.ShipmentBLDetails)).DistinctBy(x => x.Id)
-                            .Where(x => x.ShipmentBL.ShipmentBLDetails.Any(z =>
-                                client.Any(q => q.WarehouseCode == z.Marks)))
-                            .ToList();
 
 
                         var invoices = DoRiderInvoices(masterShipment, client, summaryPkg, out var summaryFile);
 
-                        var attachments = new List<Attachments>();
+
+
+
 
                         attachments.Add(new Attachments()
                         {
@@ -672,14 +697,22 @@ namespace AutoBotUtilities
                             TrackingState = TrackingState.Added
                         });
 
+                        shipment.Currency = invoices.Select(x => x.Currency).FirstOrDefault() ?? "USD";
+                        shipment.ExpectedEntries += invoices.Count(x =>
+                            (Enumerable.FirstOrDefault<ShipmentRiderInvoice>(x.ShipmentRiderInvoice)?.Packages ?? 0) >
+                            0); //invoices.Select(x => x.Id).Count(),
+                        shipment.TotalInvoices += invoices.Select(x => x.Id).Count();
 
 
                         var invocieAttachments = invoices
-                                    .GroupBy(x => x.ShipmentRiderInvoice.FirstOrDefault()?.WarehouseCode??"")
-                                    .Select(shipmentInvoice =>
-                                                xlsxWriter.XlsxWriter.CreateCSV(shipmentInvoice.Key, shipmentInvoice.OrderBy(z => z.ShipmentRiderInvoice.FirstOrDefault()?.Packages??0).ToList(), client.Key.Item2))
-                                    .SelectMany(x => x.ToList())
-                                    .ToList();
+                            .GroupBy(x => x.ShipmentRiderInvoice.FirstOrDefault()?.WarehouseCode ?? "")
+                            .Select(shipmentInvoice =>
+                                xlsxWriter.XlsxWriter.CreateCSV(shipmentInvoice.Key,
+                                    shipmentInvoice.OrderByDescending(z =>
+                                        z.ShipmentRiderInvoice.FirstOrDefault()?.Packages ?? 0).ToList(),
+                                    client.Key.Item2))
+                            .SelectMany(x => x.ToList())
+                            .ToList();
 
                         attachments.AddRange(invocieAttachments.Where(x => x.filepath.EndsWith(".pdf")).Select(x =>
                             new Attachments()
@@ -697,7 +730,15 @@ namespace AutoBotUtilities
                                 Reference = x.reference,
                                 TrackingState = TrackingState.Added
                             }));
-                        attachments.AddRange(manifests.Select(x => new Attachments()
+                        shipment.ShipmentAttachedInvoices.AddRange(invoices.Select(z => new ShipmentAttachedInvoices()
+                        {
+                            ShipmentInvoice = z,
+                            Shipment = shipment,
+                            TrackingState = TrackingState.Added
+                        }).ToList());
+                    }
+
+                    attachments.AddRange(manifests.Select(x => new Attachments()
                         {
                             FilePath = x.SourceFile,
                             DocumentCode = "BL07",
@@ -727,32 +768,8 @@ namespace AutoBotUtilities
                                 TrackingState = TrackingState.Added
                             });
 
-                        var shipment = new Shipment()
-                        {
-                            ShipmentName =
-                                $"{bl.BLNumber.Split('-').First()}-{client.Key.Item1.Split(' ').FirstOrDefault()}",
-                            ManifestNumber = manifests.LastOrDefault()?.RegistrationNumber,
-                            BLNumber = bl?.BLNumber,
-                            WeightKG = client.Any()
-                                ? client.Sum(x => x.GrossWeightKg)
-                                : manifests.LastOrDefault()?.GrossWeightKG ?? bl?.WeightKG,
-                            Currency = invoices.Select(x => x.Currency).FirstOrDefault() ?? "USD",
-                            ExpectedEntries = invoices.Select(x => x.Id).Count(),
-                            TotalInvoices = invoices.Select(x => x.Id).Count(),
-                            FreightCurrency = freightInvoices.LastOrDefault()?.Currency ?? "USD",
-                            Freight = freightInvoices.LastOrDefault()?.InvoiceTotal,
-                            Origin = "US",
-                            Packages = client.Any() ? client.Sum(x => x.Pieces) : blDetails.Sum(x => x.Quantity),
-                            Location = manifests.LastOrDefault()?.LocationOfGoods,
-                            Office = manifests.LastOrDefault()?.CustomsOffice,
-                            TrackingState = TrackingState.Added
-                        };
-                        shipment.ShipmentAttachedInvoices.AddRange(invoices.Select(z => new ShipmentAttachedInvoices()
-                        {
-                            ShipmentInvoice = z,
-                            Shipment = shipment,
-                            TrackingState = TrackingState.Added
-                        }).ToList());
+                       
+                        
                         shipment.ShipmentAttachedBL.AddRange(new List<ShipmentAttachedBL>()
                         {
                             new ShipmentAttachedBL()
@@ -785,7 +802,7 @@ namespace AutoBotUtilities
                             }));
 
                         shipments.Add(shipment);
-                    }
+                   
                 }
 
                 var ridersWithNoBLs = masterShipment.ShipmentAttachedRider.Where(x => x.ShipmentRider.ShipmentRiderDetails.Any(z => !z.ShipmentRiderBLs.Any(b => bls.Any(r => r.Id == b.BLId)))).ToList();
@@ -827,15 +844,16 @@ namespace AutoBotUtilities
                                 TrackingState = TrackingState.Added
                             });
 
+                            
 
                             var invocieAttachments = invoices
                                 .GroupBy(x => x.ShipmentRiderInvoice.FirstOrDefault()?.WarehouseCode ?? "")
                                 .Select(shipmentInvoice =>
-                                    xlsxWriter.XlsxWriter.CreateCSV(shipmentInvoice.Key, shipmentInvoice.OrderBy(z => z.ShipmentRiderInvoice.FirstOrDefault()?.Packages ?? 0).ToList(), client.Key.Item2))
+                                    xlsxWriter.XlsxWriter.CreateCSV(shipmentInvoice.Key, shipmentInvoice.OrderByDescending(z => z.ShipmentRiderInvoice.FirstOrDefault()?.Packages ?? 0).ToList(), client.Key.Item2))
                                 .SelectMany(x => x.ToList())
                                 .ToList();
 
-
+                            
 
                             attachments.AddRange(invocieAttachments.Where(x => x.filepath.EndsWith(".pdf")).Select(x =>
                                 new Attachments()
@@ -877,7 +895,7 @@ namespace AutoBotUtilities
                                 //BLNumber = bl?.BLNumber,
                                 WeightKG = client.Sum(x => x.GrossWeightKg),
                                 Currency = invoices.Select(x => x.Currency).FirstOrDefault() ?? "USD",
-                                ExpectedEntries = invoices.Select(x => x.Id).Count(),
+                                ExpectedEntries = invoices.Count(x => (Enumerable.FirstOrDefault<ShipmentRiderInvoice>(x.ShipmentRiderInvoice)?.Packages??0) > 0),
                                 TotalInvoices = invoices.Select(x => x.Id).Count(),
                                 FreightCurrency = freightInvoices.LastOrDefault()?.Currency ?? "USD",
                                 Freight = freightInvoices.LastOrDefault()?.InvoiceTotal,

@@ -33,7 +33,7 @@ namespace xlsxWriter
             try
             {
 
-                var pdfFile = new FileInfo(shipmentInvoices.First().SourceFile);
+               
                 var pdfFilePath = "";
                 var csvFilePath = "";
                 var csvs = new List<(string reference, string filepath)>();
@@ -47,25 +47,37 @@ namespace xlsxWriter
                 var header = poTemplate.FileTypeMappings.OrderBy(x => x.Id).Select((x) => new { value = x, index = poTemplate.FileTypeMappings.IndexOf(x) })
                     .ToDictionary(x => (Column: x.value.OriginalName, Index: x.index), v => v.value);
 
-                var parent = shipmentInvoices.First();
-                
 
-                if (parent.ShipmentInvoicePOs.Any())
-                {
-                    csvFilePath = Path.Combine(pdfFile.DirectoryName, $"{parent.ShipmentInvoicePOs.First().PurchaseOrders.PONumber}.xlsx");
-                    csvs.Add((parent.ShipmentInvoicePOs.First().PurchaseOrders.PONumber, csvFilePath));
-                }
-                else
-                {
-                    csvFilePath = Path.Combine(pdfFile.DirectoryName, $"{parent.InvoiceNo}.xlsx");
-                    csvs.Add((parent.InvoiceNo, csvFilePath));
-                }
-
-                var workbook = CreateShipmentWorkBook(riderId, parent, csvFilePath, header,
-                                out var invoiceRow, out var riderdetails, out var doRider);
-                var i = 1;
+                ShipmentInvoice parent = null;
+                Workbook workbook = null;
+                int invoiceRow = 0;
+                List<ShipmentRiderInvoice> riderdetails = null;
+                    bool doRider = false;
                 foreach (var shipmentInvoice in shipmentInvoices)
                 {
+                    var pdfFile = new FileInfo(shipmentInvoice.SourceFile);
+
+                    if (shipmentInvoice.ShipmentRiderInvoice.First().Packages > 0)
+                    {
+                        parent = shipmentInvoice;
+
+
+                        if (parent.ShipmentInvoicePOs.Any())
+                        {
+                            csvFilePath = Path.Combine(pdfFile.DirectoryName, $"{parent.ShipmentInvoicePOs.First().PurchaseOrders.PONumber}.xlsx");
+                            csvs.Add((parent.ShipmentInvoicePOs.First().PurchaseOrders.PONumber, csvFilePath));
+                        }
+                        else
+                        {
+                            csvFilePath = Path.Combine(pdfFile.DirectoryName, $"{parent.InvoiceNo}.xlsx");
+                            csvs.Add((parent.InvoiceNo, csvFilePath));
+                        }
+
+                        workbook = CreateShipmentWorkBook(riderId, parent, csvFilePath, header,
+                            out invoiceRow, out riderdetails, out doRider);
+                    }
+
+                    WriteInvHeader(shipmentInvoice, header, workbook);
 
                     if (shipmentInvoice.ShipmentInvoicePOs.Any())
                     {
@@ -80,7 +92,8 @@ namespace xlsxWriter
                             DoMisMatches(shipmentInvoice, workbook);
                             workbook.Save();
 
-                            if (!File.Exists(pdfFilePath)) File.Copy(pdfFile.FullName, pdfFilePath);
+                            //if (!File.Exists(pdfFilePath))
+                                File.Copy(pdfFile.FullName, pdfFilePath, true);
                             csvs.Add((pO.PurchaseOrders.PONumber, pdfFilePath));
                             
                         }
@@ -94,7 +107,8 @@ namespace xlsxWriter
 
                          DoMisMatches(shipmentInvoice, workbook);
                             workbook.Save();
-                        if (!File.Exists(pdfFilePath)) File.Copy(pdfFile.FullName, pdfFilePath);
+                        //if (!File.Exists(pdfFilePath)
+                        File.Copy(pdfFile.FullName, pdfFilePath, true);
                         csvs.Add((shipmentInvoice.InvoiceNo, pdfFilePath));
                         
                     }
@@ -190,7 +204,7 @@ namespace xlsxWriter
             bool doRider, List<ShipmentRiderInvoice> riderdetails)
         {
             workbook.SetCurrentWorksheet("POTemplate");
-            var i = workbook.CurrentWorksheet.GetLastRowNumber() + 1;
+            var i = workbook.CurrentWorksheet.GetLastRowNumber();// == 1 ? 1 : workbook.CurrentWorksheet.GetLastRowNumber() + 1;
 
             foreach (var itm in shipmentInvoice.InvoiceDetails.OrderBy(x => x.FileLineNumber))
             {
@@ -241,7 +255,7 @@ namespace xlsxWriter
             List<ShipmentRiderInvoice> riderdetails, int invoiceRow)
         {
             workbook.SetCurrentWorksheet("POTemplate");
-            var i = workbook.CurrentWorksheet.GetLastRowNumber() + 1;
+            var i = workbook.CurrentWorksheet.GetLastRowNumber() ;//== 1? 1: workbook.CurrentWorksheet.GetLastRowNumber() + 1;
 
             foreach (var itm in pO.PurchaseOrders.EntryDataDetails
                 .OrderBy(x =>
@@ -284,14 +298,14 @@ namespace xlsxWriter
                     itm.TotalCost == 0 ? itm.Quantity * itm.Cost : itm.TotalCost);
                 SetValue(workbook, i, header.First(x => x.Key.Column == nameof(itm.Units)).Key.Index,
                     itm.Units);
-                if (doRider && i < riderdetails.Count)
+                if (doRider && i < riderdetails.Count)//
                 {
                     SetValue(workbook, i + invoiceRow,
                         header.First(x => x.Key.Column == "Packages").Key.Index,
-                        riderdetails[i].ShipmentRiderDetails.Pieces);
+                        riderdetails.First().ShipmentRiderDetails.Pieces);
                     SetValue(workbook, i + invoiceRow,
                         header.First(x => x.Key.Column == "Warehouse").Key.Index,
-                        riderdetails[i].ShipmentRiderDetails.WarehouseCode);
+                        riderdetails.First().ShipmentRiderDetails.WarehouseCode);
                 }
 
                 i++;
@@ -625,28 +639,7 @@ namespace xlsxWriter
 
             header.ForEach(x => { SetValue(workbook, headerRow, x.Key.Index, x.Value.DestinationName); });
             invoiceRow = 1;
-            SetValue(workbook, invoiceRow, header.First(x => x.Key.Column == nameof(shipmentInvoice.InvoiceTotal)).Key.Index,
-                shipmentInvoice.InvoiceTotal.GetValueOrDefault());
-
-                SetValue(workbook, invoiceRow, header.First(x => x.Key.Column == nameof(shipmentInvoice.InvoiceDate)).Key.Index,
-                    shipmentInvoice.InvoiceDate.GetValueOrDefault());
-
-                SetValue(workbook, invoiceRow, header.First(x => x.Key.Column == nameof(shipmentInvoice.SupplierCode)).Key.Index,
-                shipmentInvoice.SupplierCode);
-
-            SetValue(workbook, invoiceRow, header.First(x => x.Key.Column == nameof(shipmentInvoice.Currency)).Key.Index,
-                shipmentInvoice.Currency);
-
-            SetValue(workbook, invoiceRow, header.First(x => x.Key.Column == nameof(shipmentInvoice.InvoiceNo)).Key.Index,
-                shipmentInvoice.InvoiceNo);
-
-            SetValue(workbook, invoiceRow,
-                header.First(x => x.Key.Column == nameof(shipmentInvoice.TotalInternalFreight)).Key.Index,
-                shipmentInvoice.TotalInternalFreight);
-            SetValue(workbook, invoiceRow, header.First(x => x.Key.Column == nameof(shipmentInvoice.TotalDeduction)).Key.Index,
-                shipmentInvoice.TotalDeduction);
-            SetValue(workbook, invoiceRow, header.First(x => x.Key.Column == nameof(shipmentInvoice.TotalOtherCost)).Key.Index,
-                shipmentInvoice.TotalOtherCost);
+            
 
             riderdetails = shipmentInvoice.ShipmentRiderInvoice.Where(x => x.ShipmentRiderDetails != null && x.RiderID == riderId && x.Packages > 0).ToList();
             doRider = false;
@@ -678,6 +671,35 @@ namespace xlsxWriter
                 Console.WriteLine(e);
                 throw;
             }
+        }
+
+        private static void WriteInvHeader(ShipmentInvoice shipmentInvoice, Dictionary<(string Column, int Index), FileTypeMappings> header, Workbook workbook)
+        {
+            workbook.SetCurrentWorksheet("POTemplate");
+            var invoiceRow = workbook.CurrentWorksheet.GetLastRowNumber() == 1 ? 1 : workbook.CurrentWorksheet.GetLastRowNumber() + 1;
+            
+            SetValue(workbook, invoiceRow, header.First(x => x.Key.Column == nameof(shipmentInvoice.InvoiceTotal)).Key.Index,
+                shipmentInvoice.InvoiceTotal.GetValueOrDefault());
+
+            SetValue(workbook, invoiceRow, header.First(x => x.Key.Column == nameof(shipmentInvoice.InvoiceDate)).Key.Index,
+                shipmentInvoice.InvoiceDate.GetValueOrDefault());
+
+            SetValue(workbook, invoiceRow, header.First(x => x.Key.Column == nameof(shipmentInvoice.SupplierCode)).Key.Index,
+                shipmentInvoice.SupplierCode);
+
+            SetValue(workbook, invoiceRow, header.First(x => x.Key.Column == nameof(shipmentInvoice.Currency)).Key.Index,
+                shipmentInvoice.Currency);
+
+            SetValue(workbook, invoiceRow, header.First(x => x.Key.Column == nameof(shipmentInvoice.InvoiceNo)).Key.Index,
+                shipmentInvoice.InvoiceNo);
+
+            SetValue(workbook, invoiceRow,
+                header.First(x => x.Key.Column == nameof(shipmentInvoice.TotalInternalFreight)).Key.Index,
+                shipmentInvoice.TotalInternalFreight);
+            SetValue(workbook, invoiceRow, header.First(x => x.Key.Column == nameof(shipmentInvoice.TotalDeduction)).Key.Index,
+                shipmentInvoice.TotalDeduction);
+            SetValue(workbook, invoiceRow, header.First(x => x.Key.Column == nameof(shipmentInvoice.TotalOtherCost)).Key.Index,
+                shipmentInvoice.TotalOtherCost);
         }
 
 

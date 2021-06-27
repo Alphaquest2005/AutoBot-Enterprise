@@ -353,7 +353,7 @@ namespace WaterNut.DataSpace
             var doclst = docset.xcuda_ASYCUDA_ExtendedProperties.Where(x => x.xcuda_ASYCUDA != null).ToList();
             //foreach (var item in doclst)
             var exceptions = new ConcurrentQueue<Exception>();
-            Parallel.ForEach(doclst, new ParallelOptions {MaxDegreeOfParallelism = Environment.ProcessorCount * 2},
+            Parallel.ForEach(doclst, new ParallelOptions {MaxDegreeOfParallelism = 1},//Environment.ProcessorCount * 2
                 item =>
                 {
                     StatusModel.StatusUpdate();
@@ -3233,7 +3233,8 @@ namespace WaterNut.DataSpace
                 foreach (var lic in availableLic)
                 {
                     var attlst = ctx.Attachments.Where(x =>
-                            x.DocumentCode == "LC02" && x.FilePath == lic.SourceFile)
+                            x.DocumentCode == "LC02"
+                            && x.FilePath == lic.SourceFile)
                         .DistinctBy(x => x.FilePath)
                         .Where(x => x.Reference != "LIC").ToList();
                     licAtt.AddRange(attlst);
@@ -3274,14 +3275,14 @@ namespace WaterNut.DataSpace
                                 .ToList();
 
                         double rtotal = lic.TODO_LicenceAvailableQty == null
-                            ? 0
+                            ? lic.Quantity_to_approve // assume all so it wont pass later 
                             : lic.Quantity_to_approve - lic.TODO_LicenceAvailableQty.Balance.GetValueOrDefault();
 
 
                         foreach (var itm in itms)
                         {
                             if (allocatedItms.Any(z => z.Item_Id == itm.Item_Id)) continue;
-                            if (itm.ItemQuantity <= lic.Quantity_to_approve - rtotal)
+                            if (itm.ItemQuantity <= lic.Quantity_to_approve - rtotal && itm.TariffCode == lic.Commodity_code.Truncate(8))
                             {
                                 rtotal += itm.ItemQuantity.GetValueOrDefault();
                                 AttachToDocument(new List<int> {al.Key.Id},
@@ -3404,8 +3405,9 @@ namespace WaterNut.DataSpace
 
                         var sItms = ctx.xcuda_Item
                             .Include(x => x.xcuda_Attached_documents)
-                            .Where(x => x.ASYCUDA_Id == doc &&
-                                        x.xcuda_Attached_documents.Count(z => z.Attached_document_code == "IV05") == 0)
+                            .Where(x => x.ASYCUDA_Id == doc
+                                       //&&  x.xcuda_Attached_documents.Count(z => z.Attached_document_code == "IV05") == 0
+                                       )
                             .ToList();
 
 
