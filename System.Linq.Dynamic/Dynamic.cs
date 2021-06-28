@@ -8,12 +8,36 @@ using System.Reflection;
 using System.Reflection.Emit;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 
 namespace System.Linq.Dynamic
 {
     public static class DynamicQueryable
     {
+
+        public static string ReplaceMacro(string value, object @object)
+        {
+            try
+            {
+                return Regex.Replace(value, @"{(.+?)}",
+                    match =>
+                    {
+                        var p = Expression.Parameter(@object.GetType(), "x"); //@object.GetType().Name
+                        //Console.WriteLine("{0} {1}",job.GetType(), job.GetType().Name);
+                        var e = System.Linq.Dynamic.DynamicExpression.ParseLambda(new[] {p}, null,
+                            match.Groups[1].Value);
+                        return (e.Compile().DynamicInvoke(@object) ?? "").ToString();
+                    });
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+
+        }
+
         public static IQueryable<T> Where<T>(this IQueryable<T> source, string predicate, params object[] values)
             where T : class
         {

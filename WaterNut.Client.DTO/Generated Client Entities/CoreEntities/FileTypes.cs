@@ -398,6 +398,19 @@ namespace CoreEntities.Client.DTO
 		}
         private ChangeTrackingCollection<EmailFileTypes> _EmailFileTypes = new ChangeTrackingCollection<EmailFileTypes>();
 
+        [DataMember]
+        public ChangeTrackingCollection<ImportActions> ImportActions
+		{
+		    get { return _ImportActions; }
+			set
+			{
+			    if (Equals(value, _ImportActions)) return;
+				_ImportActions = value;
+				NotifyPropertyChanged();//m => this.ImportActions
+			}
+		}
+        private ChangeTrackingCollection<ImportActions> _ImportActions = new ChangeTrackingCollection<ImportActions>();
+
    //     [DataMember]
    //     public TrackingState TrackingState { get; set; }
 

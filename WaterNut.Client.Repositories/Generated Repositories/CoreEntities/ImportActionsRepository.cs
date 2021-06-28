@@ -32,36 +32,36 @@ using System;
 using System.ServiceModel;
 using TrackableEntities.Common;
 
-using TODO_C71ToCreate = CoreEntities.Client.Entities.TODO_C71ToCreate;
+using ImportActions = CoreEntities.Client.Entities.ImportActions;
 
 namespace CoreEntities.Client.Repositories 
 {
    
-    public partial class TODO_C71ToCreateRepository : BaseRepository<TODO_C71ToCreateRepository>
+    public partial class ImportActionsRepository : BaseRepository<ImportActionsRepository>
     {
 
-       private static readonly TODO_C71ToCreateRepository instance;
-       static TODO_C71ToCreateRepository()
+       private static readonly ImportActionsRepository instance;
+       static ImportActionsRepository()
         {
-            instance = new TODO_C71ToCreateRepository();
+            instance = new ImportActionsRepository();
         }
 
-       public static TODO_C71ToCreateRepository Instance
+       public static ImportActionsRepository Instance
         {
             get { return instance; }
         }
         
-        public async Task<IEnumerable<TODO_C71ToCreate>> TODO_C71ToCreate(List<string> includesLst = null)
+        public async Task<IEnumerable<ImportActions>> ImportActions(List<string> includesLst = null)
         {
-            if (System.ComponentModel.LicenseManager.UsageMode == LicenseUsageMode.Designtime) return new List<TODO_C71ToCreate>().AsEnumerable();
+            if (System.ComponentModel.LicenseManager.UsageMode == LicenseUsageMode.Designtime) return new List<ImportActions>().AsEnumerable();
             try
             {
-                using (var t = new TODO_C71ToCreateClient())
+                using (var t = new ImportActionsClient())
                     {
-                        var res = await t.GetTODO_C71ToCreate(includesLst).ConfigureAwait(continueOnCapturedContext: false);
+                        var res = await t.GetImportActions(includesLst).ConfigureAwait(continueOnCapturedContext: false);
                         if (res != null)
                         {
-                            return res.Select(x => new TODO_C71ToCreate(x)).AsEnumerable();
+                            return res.Select(x => new ImportActions(x)).AsEnumerable();
                         }
                         else
                         {
@@ -80,26 +80,26 @@ namespace CoreEntities.Client.Repositories
             }
         }
 
-		 public async Task<IEnumerable<TODO_C71ToCreate>> GetTODO_C71ToCreateByExpression(string exp, List<string> includesLst = null)
+		 public async Task<IEnumerable<ImportActions>> GetImportActionsByExpression(string exp, List<string> includesLst = null)
         {
-            if (System.ComponentModel.LicenseManager.UsageMode == LicenseUsageMode.Designtime || exp == null || exp == "None") return new List<TODO_C71ToCreate>().AsEnumerable();
+            if (System.ComponentModel.LicenseManager.UsageMode == LicenseUsageMode.Designtime || exp == null || exp == "None") return new List<ImportActions>().AsEnumerable();
             try
             {
-                using (var t = new TODO_C71ToCreateClient())
+                using (var t = new ImportActionsClient())
                     {
-					    IEnumerable<DTO.TODO_C71ToCreate> res = null;
+					    IEnumerable<DTO.ImportActions> res = null;
                         if(exp == "All")
                         {                       
-						    res = await t.GetTODO_C71ToCreate(includesLst).ConfigureAwait(continueOnCapturedContext: false);					
+						    res = await t.GetImportActions(includesLst).ConfigureAwait(continueOnCapturedContext: false);					
                         }
                         else
                         {
-                             res = await t.GetTODO_C71ToCreateByExpression(exp, includesLst).ConfigureAwait(continueOnCapturedContext: false);	                         
+                             res = await t.GetImportActionsByExpression(exp, includesLst).ConfigureAwait(continueOnCapturedContext: false);	                         
                         }
                     
                         if (res != null)
                         {
-                            return res.Select(x => new TODO_C71ToCreate(x)).AsEnumerable();
+                            return res.Select(x => new ImportActions(x)).AsEnumerable();
                         }
                         else
                         {
@@ -118,21 +118,21 @@ namespace CoreEntities.Client.Repositories
             }
         }
 
-		 public async Task<IEnumerable<TODO_C71ToCreate>> GetTODO_C71ToCreateByExpressionLst(List<string> expLst, List<string> includesLst = null)
+		 public async Task<IEnumerable<ImportActions>> GetImportActionsByExpressionLst(List<string> expLst, List<string> includesLst = null)
         {
-            if (System.ComponentModel.LicenseManager.UsageMode == LicenseUsageMode.Designtime || expLst.Count == 0 || expLst.FirstOrDefault() == "None") return new List<TODO_C71ToCreate>().AsEnumerable();
+            if (System.ComponentModel.LicenseManager.UsageMode == LicenseUsageMode.Designtime || expLst.Count == 0 || expLst.FirstOrDefault() == "None") return new List<ImportActions>().AsEnumerable();
             try
             {
-                using (var t = new TODO_C71ToCreateClient())
+                using (var t = new ImportActionsClient())
                     {
-					    IEnumerable<DTO.TODO_C71ToCreate> res = null;
+					    IEnumerable<DTO.ImportActions> res = null;
                        
-                        res = await t.GetTODO_C71ToCreateByExpressionLst(expLst, includesLst).ConfigureAwait(continueOnCapturedContext: false);	                         
+                        res = await t.GetImportActionsByExpressionLst(expLst, includesLst).ConfigureAwait(continueOnCapturedContext: false);	                         
                       
                     
                         if (res != null)
                         {
-                            return res.Select(x => new TODO_C71ToCreate(x)).AsEnumerable();
+                            return res.Select(x => new ImportActions(x)).AsEnumerable();
                         }
                         else
                         {
@@ -152,26 +152,26 @@ namespace CoreEntities.Client.Repositories
         }
 
 
-		 public async Task<IEnumerable<TODO_C71ToCreate>> GetTODO_C71ToCreateByExpressionNav(string exp, Dictionary<string, string> navExp, List<string> includesLst = null)
+		 public async Task<IEnumerable<ImportActions>> GetImportActionsByExpressionNav(string exp, Dictionary<string, string> navExp, List<string> includesLst = null)
         {
-            if (System.ComponentModel.LicenseManager.UsageMode == LicenseUsageMode.Designtime || exp == null || exp == "None") return new List<TODO_C71ToCreate>().AsEnumerable();
+            if (System.ComponentModel.LicenseManager.UsageMode == LicenseUsageMode.Designtime || exp == null || exp == "None") return new List<ImportActions>().AsEnumerable();
             try
             {
-                using (var t = new TODO_C71ToCreateClient())
+                using (var t = new ImportActionsClient())
                     {
-					    IEnumerable<DTO.TODO_C71ToCreate> res = null;
+					    IEnumerable<DTO.ImportActions> res = null;
                         if(exp == "All" && navExp.Count == 0)
                         {                       
-						    res = await t.GetTODO_C71ToCreate(includesLst).ConfigureAwait(continueOnCapturedContext: false);					
+						    res = await t.GetImportActions(includesLst).ConfigureAwait(continueOnCapturedContext: false);					
                         }
                         else
                         {
-                             res = await t.GetTODO_C71ToCreateByExpressionNav(exp, navExp, includesLst).ConfigureAwait(continueOnCapturedContext: false);	                         
+                             res = await t.GetImportActionsByExpressionNav(exp, navExp, includesLst).ConfigureAwait(continueOnCapturedContext: false);	                         
                         }
                     
                         if (res != null)
                         {
-                            return res.Select(x => new TODO_C71ToCreate(x)).AsEnumerable();
+                            return res.Select(x => new ImportActions(x)).AsEnumerable();
                         }
                         else
                         {
@@ -191,16 +191,19 @@ namespace CoreEntities.Client.Repositories
         }
 
 
-        public async Task<TODO_C71ToCreate> GetTODO_C71ToCreate(string id, List<string> includesLst = null)
+        public async Task<ImportActions> GetImportActions(string id, List<string> includesLst = null)
         {
              try
              {   
-                 using (var t = new TODO_C71ToCreateClient())
+                 using (var t = new ImportActionsClient())
                     {
-                        var res = await t.GetTODO_C71ToCreateByKey(id,includesLst).ConfigureAwait(continueOnCapturedContext: false);
+                        var res = await t.GetImportActionsByKey(id,includesLst).ConfigureAwait(continueOnCapturedContext: false);
                          if(res != null)
                         {
-                            return new TODO_C71ToCreate(res);
+                            return new ImportActions(res)
+                    {
+                  // FileTypes = (res.FileTypes != null?new FileTypes(res.FileTypes): null)    
+                  };
                     }
                     else
                     {
@@ -219,7 +222,7 @@ namespace CoreEntities.Client.Repositories
             }
         }
 
-        public async Task<TODO_C71ToCreate> UpdateTODO_C71ToCreate(TODO_C71ToCreate entity)
+        public async Task<ImportActions> UpdateImportActions(ImportActions entity)
         {
             if (entity == null) return entity;
             var entitychanges = entity.ChangeTracker.GetChanges().FirstOrDefault();
@@ -227,10 +230,10 @@ namespace CoreEntities.Client.Repositories
             {
                 try
                 {
-                    using (var t = new TODO_C71ToCreateClient())
+                    using (var t = new ImportActionsClient())
                     {
      
-                        var updatedEntity =  await t.UpdateTODO_C71ToCreate(entitychanges).ConfigureAwait(false);
+                        var updatedEntity =  await t.UpdateImportActions(entitychanges).ConfigureAwait(false);
                         entity.EntityId = updatedEntity.EntityId;
                         entity.DTO.AcceptChanges();
                          //var  = entity.;
@@ -256,13 +259,13 @@ namespace CoreEntities.Client.Repositories
 
         }
 
-        public async Task<TODO_C71ToCreate> CreateTODO_C71ToCreate(TODO_C71ToCreate entity)
+        public async Task<ImportActions> CreateImportActions(ImportActions entity)
         {
             try
             {   
-                using (var t = new TODO_C71ToCreateClient())
+                using (var t = new ImportActionsClient())
                     {
-                        return new TODO_C71ToCreate(await t.CreateTODO_C71ToCreate(entity.DTO).ConfigureAwait(continueOnCapturedContext: false));
+                        return new ImportActions(await t.CreateImportActions(entity.DTO).ConfigureAwait(continueOnCapturedContext: false));
                     }
             }
             catch (FaultException<ValidationFault> e)
@@ -276,13 +279,13 @@ namespace CoreEntities.Client.Repositories
             }
         }
 
-        public async Task<bool> DeleteTODO_C71ToCreate(string id)
+        public async Task<bool> DeleteImportActions(string id)
         {
             try
             {
-             using (var t = new TODO_C71ToCreateClient())
+             using (var t = new ImportActionsClient())
                 {
-                    return await t.DeleteTODO_C71ToCreate(id).ConfigureAwait(continueOnCapturedContext: false);
+                    return await t.DeleteImportActions(id).ConfigureAwait(continueOnCapturedContext: false);
                 }
             }
             catch (FaultException<ValidationFault> e)
@@ -296,13 +299,13 @@ namespace CoreEntities.Client.Repositories
             }         
         }
 
-        public async Task<bool> RemoveSelectedTODO_C71ToCreate(IEnumerable<string> selectedTODO_C71ToCreate)
+        public async Task<bool> RemoveSelectedImportActions(IEnumerable<string> selectedImportActions)
         {
             try
             {
-                using (var ctx = new TODO_C71ToCreateClient())
+                using (var ctx = new ImportActionsClient())
                 {
-                    return await ctx.RemoveSelectedTODO_C71ToCreate(selectedTODO_C71ToCreate).ConfigureAwait(false);
+                    return await ctx.RemoveSelectedImportActions(selectedImportActions).ConfigureAwait(false);
                 }
             }
             catch (FaultException<ValidationFault> e)
@@ -319,21 +322,21 @@ namespace CoreEntities.Client.Repositories
 
 		//Virtural List Implementation
 
-		public async Task<Tuple<IEnumerable<TODO_C71ToCreate>, int>> LoadRange(int startIndex, int count, string exp, Dictionary<string, string> navExp, IEnumerable<string> includeLst = null)
+		public async Task<Tuple<IEnumerable<ImportActions>, int>> LoadRange(int startIndex, int count, string exp, Dictionary<string, string> navExp, IEnumerable<string> includeLst = null)
         {
 			var overallCount = 0;
             if (System.ComponentModel.LicenseManager.UsageMode == LicenseUsageMode.Designtime || exp == null || exp == "None")
             {
                 
-                return new Tuple<IEnumerable<TODO_C71ToCreate>, int>(new List<TODO_C71ToCreate>().AsEnumerable(), overallCount);
+                return new Tuple<IEnumerable<ImportActions>, int>(new List<ImportActions>().AsEnumerable(), overallCount);
             }
             
             try
             {
-                using (var t = new TODO_C71ToCreateClient())
+                using (var t = new ImportActionsClient())
                 {
 
-                    IEnumerable<DTO.TODO_C71ToCreate> res = null;
+                    IEnumerable<DTO.ImportActions> res = null;
                                          
 						    res = await t.LoadRangeNav(startIndex, count, exp, navExp, includeLst).ConfigureAwait(continueOnCapturedContext: false);
 						    overallCount = await t.CountNav(exp, navExp).ConfigureAwait(continueOnCapturedContext: false);
@@ -342,7 +345,7 @@ namespace CoreEntities.Client.Repositories
                                 
                     if (res != null)
                     {
-                        return new Tuple<IEnumerable<TODO_C71ToCreate>, int>(res.Select(x => new TODO_C71ToCreate(x)).AsEnumerable(), overallCount);
+                        return new Tuple<IEnumerable<ImportActions>, int>(res.Select(x => new ImportActions(x)).AsEnumerable(), overallCount);
                     }
                     else
                     {
@@ -361,45 +364,17 @@ namespace CoreEntities.Client.Repositories
             }
         }
 
-	 public async Task<IEnumerable<TODO_C71ToCreate>> GetTODO_C71ToCreateByApplicationSettingsId(string ApplicationSettingsId, List<string> includesLst = null)
+	 public async Task<IEnumerable<ImportActions>> GetImportActionsByFileTypeId(string FileTypeId, List<string> includesLst = null)
         {
-             if (ApplicationSettingsId == "0") return null;
+             if (FileTypeId == "0") return null;
             try
             {
-                 using (TODO_C71ToCreateClient t = new TODO_C71ToCreateClient())
+                 using (ImportActionsClient t = new ImportActionsClient())
                     {
-                        var res = await t.GetTODO_C71ToCreateByApplicationSettingsId(ApplicationSettingsId, includesLst).ConfigureAwait(continueOnCapturedContext: false);
+                        var res = await t.GetImportActionsByFileTypeId(FileTypeId, includesLst).ConfigureAwait(continueOnCapturedContext: false);
                          if(res != null)
                         {
-                            return res.Select(x => new TODO_C71ToCreate(x)).AsEnumerable();
-					    }                
-					    else
-					    {
-						    return null;
-					    }                    
-                    }
-            }
-            catch (FaultException<ValidationFault> e)
-            {
-                throw new Exception(e.Detail.Message, e.InnerException);
-            }
-            catch (Exception)
-            {
-                Debugger.Break();
-                throw;
-            }
-        } 
- 	 public async Task<IEnumerable<TODO_C71ToCreate>> GetTODO_C71ToCreateByValue_declaration_form_Id(string Value_declaration_form_Id, List<string> includesLst = null)
-        {
-             if (Value_declaration_form_Id == "0") return null;
-            try
-            {
-                 using (TODO_C71ToCreateClient t = new TODO_C71ToCreateClient())
-                    {
-                        var res = await t.GetTODO_C71ToCreateByValue_declaration_form_Id(Value_declaration_form_Id, includesLst).ConfigureAwait(continueOnCapturedContext: false);
-                         if(res != null)
-                        {
-                            return res.Select(x => new TODO_C71ToCreate(x)).AsEnumerable();
+                            return res.Select(x => new ImportActions(x)).AsEnumerable();
 					    }                
 					    else
 					    {
@@ -422,7 +397,7 @@ namespace CoreEntities.Client.Repositories
         {
             try
             {
-                using (var t = new TODO_C71ToCreateClient())
+                using (var t = new ImportActionsClient())
                 {
                     return t.SumField(whereExp,sumExp);
                 }
@@ -443,7 +418,7 @@ namespace CoreEntities.Client.Repositories
         {
             try
             {
-                using (var t = new TODO_C71ToCreateClient())
+                using (var t = new ImportActionsClient())
                 {
                     return await t.SumNav(whereExp,navExp,sumExp).ConfigureAwait(false);
                 }

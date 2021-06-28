@@ -20,69 +20,69 @@ using System.ComponentModel.Composition;
 
 namespace CoreEntities.Client.Services
 {
-    [Export (typeof(TODO_C71ToCreateClient))]
-    [Export (typeof(ITODO_C71ToCreateService))]
+    [Export (typeof(ImportActionsClient))]
+    [Export (typeof(IImportActionsService))]
     [Export(typeof(IClientService))]
     [PartCreationPolicy(CreationPolicy.NonShared)]
-    public partial class TODO_C71ToCreateClient :  ClientService<ITODO_C71ToCreateService>, ITODO_C71ToCreateService, IDisposable
+    public partial class ImportActionsClient :  ClientService<IImportActionsService>, IImportActionsService, IDisposable
     {
         
-        public async Task<IEnumerable<TODO_C71ToCreate>> GetTODO_C71ToCreate(List<string> includesLst = null)
+        public async Task<IEnumerable<ImportActions>> GetImportActions(List<string> includesLst = null)
         {
-            return await Channel.GetTODO_C71ToCreate(includesLst).ConfigureAwait(false);
+            return await Channel.GetImportActions(includesLst).ConfigureAwait(false);
         }
 
-        public async Task<TODO_C71ToCreate> GetTODO_C71ToCreateByKey(string id, List<string> includesLst = null)
+        public async Task<ImportActions> GetImportActionsByKey(string id, List<string> includesLst = null)
         {
-            return await Channel.GetTODO_C71ToCreateByKey(id, includesLst).ConfigureAwait(false);
+            return await Channel.GetImportActionsByKey(id, includesLst).ConfigureAwait(false);
         }
 
-		public async Task<IEnumerable<TODO_C71ToCreate>> GetTODO_C71ToCreateByExpression(string exp, List<string> includesLst = null)
+		public async Task<IEnumerable<ImportActions>> GetImportActionsByExpression(string exp, List<string> includesLst = null)
         {
-            return await Channel.GetTODO_C71ToCreateByExpression(exp, includesLst).ConfigureAwait(false);
+            return await Channel.GetImportActionsByExpression(exp, includesLst).ConfigureAwait(false);
         }
 
-		public async Task<IEnumerable<TODO_C71ToCreate>> GetTODO_C71ToCreateByExpressionLst(List<string> expLst, List<string> includesLst = null)
+		public async Task<IEnumerable<ImportActions>> GetImportActionsByExpressionLst(List<string> expLst, List<string> includesLst = null)
         {
-            return await Channel.GetTODO_C71ToCreateByExpressionLst(expLst, includesLst).ConfigureAwait(false);
+            return await Channel.GetImportActionsByExpressionLst(expLst, includesLst).ConfigureAwait(false);
         }
 
-		public async Task<IEnumerable<TODO_C71ToCreate>> GetTODO_C71ToCreateByExpressionNav(string exp,
+		public async Task<IEnumerable<ImportActions>> GetImportActionsByExpressionNav(string exp,
 															 Dictionary<string, string> navExp, List<string> includesLst = null)
 		{
-			return await Channel.GetTODO_C71ToCreateByExpressionNav(exp, navExp, includesLst).ConfigureAwait(false);
+			return await Channel.GetImportActionsByExpressionNav(exp, navExp, includesLst).ConfigureAwait(false);
 		}
 
-        public async Task<IEnumerable<TODO_C71ToCreate>> GetTODO_C71ToCreateByBatch(string exp,
+        public async Task<IEnumerable<ImportActions>> GetImportActionsByBatch(string exp,
                                                                         int totalrow, List<string> includesLst = null)
         {
-            return await Channel.GetTODO_C71ToCreateByBatch(exp, totalrow, includesLst).ConfigureAwait(false);
+            return await Channel.GetImportActionsByBatch(exp, totalrow, includesLst).ConfigureAwait(false);
         }
 
-        public async Task<IEnumerable<TODO_C71ToCreate>> GetTODO_C71ToCreateByBatchExpressionLst(List<string> expLst,
+        public async Task<IEnumerable<ImportActions>> GetImportActionsByBatchExpressionLst(List<string> expLst,
                                                                         int totalrow, List<string> includesLst = null)
         {
-            return await Channel.GetTODO_C71ToCreateByBatchExpressionLst(expLst, totalrow, includesLst).ConfigureAwait(false);
+            return await Channel.GetImportActionsByBatchExpressionLst(expLst, totalrow, includesLst).ConfigureAwait(false);
         }
 
-        public async Task<TODO_C71ToCreate> UpdateTODO_C71ToCreate(TODO_C71ToCreate entity)
+        public async Task<ImportActions> UpdateImportActions(ImportActions entity)
         {
-           return await Channel.UpdateTODO_C71ToCreate(entity).ConfigureAwait(false);
+           return await Channel.UpdateImportActions(entity).ConfigureAwait(false);
         }
 
-        public async Task<TODO_C71ToCreate> CreateTODO_C71ToCreate(TODO_C71ToCreate entity)
+        public async Task<ImportActions> CreateImportActions(ImportActions entity)
         {
-           return await Channel.CreateTODO_C71ToCreate(entity).ConfigureAwait(false);
+           return await Channel.CreateImportActions(entity).ConfigureAwait(false);
         }
 
-        public async Task<bool> DeleteTODO_C71ToCreate(string id)
+        public async Task<bool> DeleteImportActions(string id)
         {
-            return await Channel.DeleteTODO_C71ToCreate(id).ConfigureAwait(false);
+            return await Channel.DeleteImportActions(id).ConfigureAwait(false);
         }
 
-        public async Task<bool> RemoveSelectedTODO_C71ToCreate(IEnumerable<string> selectedTODO_C71ToCreate)
+        public async Task<bool> RemoveSelectedImportActions(IEnumerable<string> selectedImportActions)
         {
-           return await Channel.RemoveSelectedTODO_C71ToCreate(selectedTODO_C71ToCreate).ConfigureAwait(false);
+           return await Channel.RemoveSelectedImportActions(selectedImportActions).ConfigureAwait(false);
         }
 
        // Virtural List implementation
@@ -102,24 +102,19 @@ namespace CoreEntities.Client.Services
            return await Channel.CountNav(exp, navExp).ConfigureAwait(false);
         }
 
-        public async Task<IEnumerable<TODO_C71ToCreate>> LoadRange(int startIndex, int count, string exp)
+        public async Task<IEnumerable<ImportActions>> LoadRange(int startIndex, int count, string exp)
         {
             return await Channel.LoadRange(startIndex,count,exp).ConfigureAwait(false);
         }
 
-		public async Task<IEnumerable<TODO_C71ToCreate>>  LoadRangeNav(int startIndex, int count, string exp,
+		public async Task<IEnumerable<ImportActions>>  LoadRangeNav(int startIndex, int count, string exp,
                                                                                  Dictionary<string, string> navExp, IEnumerable<string> includeLst = null)
         {
             return await Channel.LoadRangeNav(startIndex,count,exp, navExp, includeLst).ConfigureAwait(false);
         }
-		public async Task<IEnumerable<TODO_C71ToCreate>> GetTODO_C71ToCreateByApplicationSettingsId(string ApplicationSettingsId, List<string> includesLst = null)
+		public async Task<IEnumerable<ImportActions>> GetImportActionsByFileTypeId(string FileTypeId, List<string> includesLst = null)
         {
-            return  await Channel.GetTODO_C71ToCreateByApplicationSettingsId(ApplicationSettingsId, includesLst).ConfigureAwait(false);
-        }
-			 
-  		public async Task<IEnumerable<TODO_C71ToCreate>> GetTODO_C71ToCreateByValue_declaration_form_Id(string Value_declaration_form_Id, List<string> includesLst = null)
-        {
-            return  await Channel.GetTODO_C71ToCreateByValue_declaration_form_Id(Value_declaration_form_Id, includesLst).ConfigureAwait(false);
+            return  await Channel.GetImportActionsByFileTypeId(FileTypeId, includesLst).ConfigureAwait(false);
         }
 			 
           public decimal SumField(string whereExp, string sumExp)

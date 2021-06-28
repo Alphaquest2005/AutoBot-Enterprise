@@ -16,41 +16,41 @@ using CoreEntities.Client.DTO;
 namespace CoreEntities.Client.Contracts
 {
     [ServiceContract (Namespace="http://www.insight-software.com/WaterNut")]
-    public partial interface ITODO_C71ToCreateService : IClientService
+    public partial interface IImportActionsService : IClientService
     {
         [OperationContract]
-        Task<IEnumerable<TODO_C71ToCreate>> GetTODO_C71ToCreate(List<string> includesLst = null);
+        Task<IEnumerable<ImportActions>> GetImportActions(List<string> includesLst = null);
 
         [OperationContract]
-        Task<TODO_C71ToCreate> GetTODO_C71ToCreateByKey(string id, List<string> includesLst = null);
+        Task<ImportActions> GetImportActionsByKey(string id, List<string> includesLst = null);
 
 		[OperationContract]
-        Task<IEnumerable<TODO_C71ToCreate>> GetTODO_C71ToCreateByExpression(string exp, List<string> includesLst = null);
+        Task<IEnumerable<ImportActions>> GetImportActionsByExpression(string exp, List<string> includesLst = null);
 
 		[OperationContract]
-        Task<IEnumerable<TODO_C71ToCreate>> GetTODO_C71ToCreateByExpressionLst(List<string> expLst, List<string> includesLst = null);
+        Task<IEnumerable<ImportActions>> GetImportActionsByExpressionLst(List<string> expLst, List<string> includesLst = null);
 
 		[OperationContract]
-		Task<IEnumerable<TODO_C71ToCreate>> GetTODO_C71ToCreateByExpressionNav(string exp,
+		Task<IEnumerable<ImportActions>> GetImportActionsByExpressionNav(string exp,
 														 Dictionary<string, string> navExp, List<string> includesLst = null);        
         [OperationContract]
-        Task<IEnumerable<TODO_C71ToCreate>> GetTODO_C71ToCreateByBatch(string exp,
+        Task<IEnumerable<ImportActions>> GetImportActionsByBatch(string exp,
                                                                         int totalrow, List<string> includesLst = null);
         [OperationContract]
-        Task<IEnumerable<TODO_C71ToCreate>> GetTODO_C71ToCreateByBatchExpressionLst(List<string> expLst,
+        Task<IEnumerable<ImportActions>> GetImportActionsByBatchExpressionLst(List<string> expLst,
                                                                         int totalrow, List<string> includesLst = null);
 
 		[OperationContract]
-        Task<TODO_C71ToCreate> UpdateTODO_C71ToCreate(TODO_C71ToCreate entity);
+        Task<ImportActions> UpdateImportActions(ImportActions entity);
 
         [OperationContract]
-        Task<TODO_C71ToCreate> CreateTODO_C71ToCreate(TODO_C71ToCreate entity);
+        Task<ImportActions> CreateImportActions(ImportActions entity);
 
         [OperationContract]
-        Task<bool> DeleteTODO_C71ToCreate(string id);
+        Task<bool> DeleteImportActions(string id);
 
         [OperationContract]
-        Task<bool> RemoveSelectedTODO_C71ToCreate(IEnumerable<string> selectedTODO_C71ToCreate);
+        Task<bool> RemoveSelectedImportActions(IEnumerable<string> selectedImportActions);
 
 		// Virtural List Implementation
 
@@ -64,10 +64,10 @@ namespace CoreEntities.Client.Contracts
         Task<int> CountNav(string exp, Dictionary<string, string> navExp);
 
         [OperationContract]
-        Task<IEnumerable<TODO_C71ToCreate>> LoadRange(int startIndex, int count, string exp);
+        Task<IEnumerable<ImportActions>> LoadRange(int startIndex, int count, string exp);
 
 		[OperationContract]
-		Task<IEnumerable<TODO_C71ToCreate>> LoadRangeNav(int startIndex, int count, string exp,
+		Task<IEnumerable<ImportActions>> LoadRangeNav(int startIndex, int count, string exp,
                                                                                  Dictionary<string, string> navExp, IEnumerable<string> includeLst = null);
 
 		[OperationContract]
@@ -80,10 +80,7 @@ namespace CoreEntities.Client.Contracts
 		string MinField(string whereExp, string field);
 
 				[OperationContract]
-		Task<IEnumerable<TODO_C71ToCreate>> GetTODO_C71ToCreateByApplicationSettingsId(string ApplicationSettingsId, List<string> includesLst = null);
-        
-  		[OperationContract]
-		Task<IEnumerable<TODO_C71ToCreate>> GetTODO_C71ToCreateByValue_declaration_form_Id(string Value_declaration_form_Id, List<string> includesLst = null);
+		Task<IEnumerable<ImportActions>> GetImportActionsByFileTypeId(string FileTypeId, List<string> includesLst = null);
         
   		
     }

@@ -211,6 +211,7 @@ namespace WaterNut.DataSpace
                             .Include("AsycudaDocumentSetEx")
                             .Include("ChildFileTypes")
                             .Include("FileTypeMappings.FileTypeMappingRegExs")
+                            .Include(x => x.ImportActions)
                             .Where(x => x.ApplicationSettingsId ==
                                         Instance.CurrentApplicationSettings.ApplicationSettingsId)
                             .ToList();

@@ -84,6 +84,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                         RegisterToReceiveMessages<string>(MessageToken.CurrentFileTypeMappingRegExsIDChanged, OnCurrentFileTypeMappingRegExsIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentFileTypeMappingsIDChanged, OnCurrentFileTypeMappingsIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentFileTypesIDChanged, OnCurrentFileTypesIDChanged);
+                        RegisterToReceiveMessages<string>(MessageToken.CurrentImportActionsIDChanged, OnCurrentImportActionsIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentInfoMappingIDChanged, OnCurrentInfoMappingIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentInfoMappingRegExIDChanged, OnCurrentInfoMappingRegExIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentInventoryItemAliasXIDChanged, OnCurrentInventoryItemAliasXIDChanged);
@@ -176,6 +177,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                         RegisterToReceiveMessages<FileTypeMappingRegExs>(MessageToken.CurrentFileTypeMappingRegExsChanged, OnCurrentFileTypeMappingRegExsChanged);
                         RegisterToReceiveMessages<FileTypeMappings>(MessageToken.CurrentFileTypeMappingsChanged, OnCurrentFileTypeMappingsChanged);
                         RegisterToReceiveMessages<FileTypes>(MessageToken.CurrentFileTypesChanged, OnCurrentFileTypesChanged);
+                        RegisterToReceiveMessages<ImportActions>(MessageToken.CurrentImportActionsChanged, OnCurrentImportActionsChanged);
                         RegisterToReceiveMessages<InfoMapping>(MessageToken.CurrentInfoMappingChanged, OnCurrentInfoMappingChanged);
                         RegisterToReceiveMessages<InfoMappingRegEx>(MessageToken.CurrentInfoMappingRegExChanged, OnCurrentInfoMappingRegExChanged);
                         RegisterToReceiveMessages<InventoryItemAliasX>(MessageToken.CurrentInventoryItemAliasXChanged, OnCurrentInventoryItemAliasXChanged);
@@ -1087,6 +1089,33 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                                     if (!string.IsNullOrEmpty(_currentFileTypesID)) BeginSendMessage(MessageToken.CurrentFileTypesIDChanged,
                                                      new NotificationEventArgs<string>(MessageToken.CurrentFileTypesIDChanged, _currentFileTypesID));
                                     NotifyPropertyChanged(x => this.CurrentFileTypesID);  
+                                }
+                            }
+                        }
+                        internal async void OnCurrentImportActionsIDChanged(object sender, NotificationEventArgs<string> e)
+                        {
+                            using (ImportActionsRepository ctx = new ImportActionsRepository())
+                            {
+                                CurrentImportActions = await ctx.GetImportActions(e.Data).ConfigureAwait(continueOnCapturedContext: false);
+                            }
+                            NotifyPropertyChanged(m => CurrentImportActions);
+                        }
+
+                        private  string _currentImportActionsID = "";
+                        public string CurrentImportActionsID
+                        {
+                            get
+                            {
+                                return _currentImportActionsID;
+                            }
+                            set
+                            {
+                                if (_currentImportActionsID != value)
+                                {
+                                    _currentImportActionsID = value;
+                                    if (!string.IsNullOrEmpty(_currentImportActionsID)) BeginSendMessage(MessageToken.CurrentImportActionsIDChanged,
+                                                     new NotificationEventArgs<string>(MessageToken.CurrentImportActionsIDChanged, _currentImportActionsID));
+                                    NotifyPropertyChanged(x => this.CurrentImportActionsID);  
                                 }
                             }
                         }
@@ -4222,6 +4251,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                  CurrentFileTypeContacts = null;
                  CurrentAsycudaDocumentSet_Attachments = null;
                  CurrentEmailFileTypes = null;
+                 CurrentImportActions = null;
    
                 }
             }
@@ -4241,6 +4271,56 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     _vcurrentFileTypes = value;
 					if(_vcurrentFileTypes != null) CurrentFileTypes = value.Data;
                     NotifyPropertyChanged(x => this.VCurrentFileTypes);                    
+                }
+            }
+        }
+
+
+
+                     
+       
+
+        internal void OnCurrentImportActionsChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<ImportActions> e)
+        {
+            //CurrentImportActions = e.Data;
+            NotifyPropertyChanged(m => this.CurrentImportActions);
+        }
+
+        private  ImportActions _currentImportActions;
+        public ImportActions CurrentImportActions
+        {
+            get
+            {
+                return _currentImportActions;
+            }
+            set
+            {
+                if (_currentImportActions != value)
+                {
+                    _currentImportActions = value;
+                    BeginSendMessage(MessageToken.CurrentImportActionsChanged,
+                                                     new NotificationEventArgs<ImportActions>(MessageToken.CurrentImportActionsChanged, _currentImportActions)); 
+                    NotifyPropertyChanged(x => this.CurrentImportActions);    
+                    // all current navigation properties = null
+   
+                }
+            }
+        }
+
+		VirtualListItem<ImportActions> _vcurrentImportActions;
+        public VirtualListItem<ImportActions> VCurrentImportActions
+        {
+            get
+            {
+                return _vcurrentImportActions;
+            }
+            set
+            {
+                if (_vcurrentImportActions != value)
+                {
+                    _vcurrentImportActions = value;
+					if(_vcurrentImportActions != null) CurrentImportActions = value.Data;
+                    NotifyPropertyChanged(x => this.VCurrentImportActions);                    
                 }
             }
         }

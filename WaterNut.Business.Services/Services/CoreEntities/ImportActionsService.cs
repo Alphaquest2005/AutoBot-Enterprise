@@ -32,19 +32,19 @@ using WaterNut.Interfaces;
 
 namespace CoreEntities.Business.Services
 {
-   [Export (typeof(ITODO_C71ToCreateService))]
+   [Export (typeof(IImportActionsService))]
    [Export(typeof(IBusinessService))]
    [PartCreationPolicy(CreationPolicy.NonShared)]
    [ServiceBehavior(InstanceContextMode = InstanceContextMode.PerCall,
                     ConcurrencyMode = ConcurrencyMode.Multiple)]
    
-    public partial class TODO_C71ToCreateService : ITODO_C71ToCreateService, IDisposable
+    public partial class ImportActionsService : IImportActionsService, IDisposable
     {
         //private readonly CoreEntitiesContext dbContext;
 
         public bool StartTracking { get; set; }
 
-        public TODO_C71ToCreateService()
+        public ImportActionsService()
         {
             try
             {
@@ -65,7 +65,7 @@ namespace CoreEntities.Business.Services
             }
         }
 
-        public async Task<IEnumerable<TODO_C71ToCreate>> GetTODO_C71ToCreate(List<string> includesLst = null, bool tracking = true)
+        public async Task<IEnumerable<ImportActions>> GetImportActions(List<string> includesLst = null, bool tracking = true)
         {
             try
             {
@@ -75,7 +75,7 @@ namespace CoreEntities.Business.Services
                   using ( var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
                   {
 				    var set = AddIncludes(includesLst, dbContext);
-                    IEnumerable<TODO_C71ToCreate> entities = await set.AsNoTracking().ToListAsync()
+                    IEnumerable<ImportActions> entities = await set.AsNoTracking().ToListAsync()
 													       .ConfigureAwait(continueOnCapturedContext: false);
                            //scope.Complete();
                             if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
@@ -98,16 +98,16 @@ namespace CoreEntities.Business.Services
         }
 
 
-        public async Task<TODO_C71ToCreate> GetTODO_C71ToCreateByKey(string AsycudaDocumentSetId, List<string> includesLst = null, bool tracking = true)
+        public async Task<ImportActions> GetImportActionsByKey(string Id, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
-			   if(string.IsNullOrEmpty(AsycudaDocumentSetId))return null; 
+			   if(string.IsNullOrEmpty(Id))return null; 
               using ( var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
               {
-                var i = Convert.ToInt32(AsycudaDocumentSetId);
+                var i = Convert.ToInt32(Id);
 				var set = AddIncludes(includesLst, dbContext);
-                TODO_C71ToCreate entity = await set.AsNoTracking().SingleOrDefaultAsync(x => x.AsycudaDocumentSetId == i).ConfigureAwait(continueOnCapturedContext: false);
+                ImportActions entity = await set.AsNoTracking().SingleOrDefaultAsync(x => x.Id == i).ConfigureAwait(continueOnCapturedContext: false);
                 if(tracking && entity != null) entity.StartTracking();
                 return entity;
               }
@@ -127,14 +127,14 @@ namespace CoreEntities.Business.Services
         }
 
 
-		 public async Task<IEnumerable<TODO_C71ToCreate>> GetTODO_C71ToCreateByExpression(string exp, List<string> includesLst = null, bool tracking = true)
+		 public async Task<IEnumerable<ImportActions>> GetImportActionsByExpression(string exp, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
                 using (var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-					if (string.IsNullOrEmpty(exp) || exp == "None") return new List<TODO_C71ToCreate>();
+					if (string.IsNullOrEmpty(exp) || exp == "None") return new List<ImportActions>();
 					var set = AddIncludes(includesLst, dbContext);
                     if (exp == "All")
                     {
@@ -170,14 +170,14 @@ namespace CoreEntities.Business.Services
             }
         }
 
-		 public async Task<IEnumerable<TODO_C71ToCreate>> GetTODO_C71ToCreateByExpressionLst(List<string> expLst, List<string> includesLst = null, bool tracking = true)
+		 public async Task<IEnumerable<ImportActions>> GetImportActionsByExpressionLst(List<string> expLst, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
                 using (var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-					if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return new List<TODO_C71ToCreate>();
+					if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return new List<ImportActions>();
 					var set = AddIncludes(includesLst, dbContext);
                     if (expLst.FirstOrDefault() == "All")
                     {
@@ -212,7 +212,7 @@ namespace CoreEntities.Business.Services
             }
         }
 
-		public async Task<IEnumerable<TODO_C71ToCreate>> GetTODO_C71ToCreateByExpressionNav(string exp,
+		public async Task<IEnumerable<ImportActions>> GetImportActionsByExpressionNav(string exp,
 																							  Dictionary<string, string> navExp,
 																							  List<string> includesLst = null, bool tracking = true)
         {
@@ -221,7 +221,7 @@ namespace CoreEntities.Business.Services
                 using (var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-                    if (string.IsNullOrEmpty(exp) || exp == "None") return new List<TODO_C71ToCreate>();
+                    if (string.IsNullOrEmpty(exp) || exp == "None") return new List<ImportActions>();
 
                     if (exp == "All" && navExp.Count == 0)
                     {
@@ -230,6 +230,19 @@ namespace CoreEntities.Business.Services
 												.ConfigureAwait(continueOnCapturedContext: false);
                         if(tracking) aentities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
                         return aentities; 
+                    }
+                    foreach (var itm in navExp)
+                    {
+                        switch (itm.Key)
+                        {
+                            case "FileTypes":
+                                return
+                                    await
+                                        GetWhere<FileTypes>(dbContext, exp, itm.Value, "ImportActions", "SelectMany", includesLst)
+										.ConfigureAwait(continueOnCapturedContext: false);
+
+                        }
+
                     }
 					var set = AddIncludes(includesLst, dbContext);
                     var entities = await set.AsNoTracking().Where(exp)
@@ -254,17 +267,17 @@ namespace CoreEntities.Business.Services
             }
         }
 
-        public async Task<IEnumerable<TODO_C71ToCreate>> GetTODO_C71ToCreateByBatch(string exp,
+        public async Task<IEnumerable<ImportActions>> GetImportActionsByBatch(string exp,
             int totalrow, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
 
-                var res = new ConcurrentQueue<List<TODO_C71ToCreate>>();
+                var res = new ConcurrentQueue<List<ImportActions>>();
 
 
 
-                if (string.IsNullOrEmpty(exp) || exp == "None") return new List<TODO_C71ToCreate>();
+                if (string.IsNullOrEmpty(exp) || exp == "None") return new List<ImportActions>();
 
 
                 var batchSize = 500;
@@ -285,14 +298,14 @@ namespace CoreEntities.Business.Services
                                 dbContext.Configuration.AutoDetectChangesEnabled = false;
                                 //dbContext.Configuration.LazyLoadingEnabled = true;
                                 var set = AddIncludes(includesLst, dbContext);
-                                IQueryable<TODO_C71ToCreate> dset;
+                                IQueryable<ImportActions> dset;
                                 if (exp == "All")
                                 {
-                                    dset = set.OrderBy(x => x.AsycudaDocumentSetId);
+                                    dset = set.OrderBy(x => x.Id);
                                 }
                                 else
                                 {
-                                    dset = set.OrderBy(x => x.AsycudaDocumentSetId).Where(exp);
+                                    dset = set.OrderBy(x => x.Id).Where(exp);
                                 }
 
                                 var lst = dset.AsNoTracking()
@@ -329,17 +342,17 @@ namespace CoreEntities.Business.Services
                 throw new FaultException<ValidationFault>(fault);
             }
         }
-        public async Task<IEnumerable<TODO_C71ToCreate>> GetTODO_C71ToCreateByBatchExpressionLst(List<string> expLst,
+        public async Task<IEnumerable<ImportActions>> GetImportActionsByBatchExpressionLst(List<string> expLst,
             int totalrow, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
 
-                var res = new ConcurrentQueue<List<TODO_C71ToCreate>>();
+                var res = new ConcurrentQueue<List<ImportActions>>();
 
 
 
-                if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return new List<TODO_C71ToCreate>();
+                if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return new List<ImportActions>();
 
 
                 var batchSize = 500;
@@ -360,15 +373,15 @@ namespace CoreEntities.Business.Services
                                 dbContext.Configuration.AutoDetectChangesEnabled = false;
                                 //dbContext.Configuration.LazyLoadingEnabled = true;
                                 var set = AddIncludes(includesLst, dbContext);
-                                IQueryable<TODO_C71ToCreate> dset;
+                                IQueryable<ImportActions> dset;
                                 if (expLst.FirstOrDefault() == "All")
                                 {
-                                    dset = set.OrderBy(x => x.AsycudaDocumentSetId);
+                                    dset = set.OrderBy(x => x.Id);
                                 }
                                 else
                                 {
                                     set = AddWheres(expLst, set);
-                                    dset = set.OrderBy(x => x.AsycudaDocumentSetId);
+                                    dset = set.OrderBy(x => x.Id);
                                 }
 
                                 var lst = dset.AsNoTracking()
@@ -405,13 +418,13 @@ namespace CoreEntities.Business.Services
         }
 
 
-        public async Task<TODO_C71ToCreate> UpdateTODO_C71ToCreate(TODO_C71ToCreate entity)
+        public async Task<ImportActions> UpdateImportActions(ImportActions entity)
         { 
             using ( var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
               {
                 try
                 {   
-                     var res = (TODO_C71ToCreate) entity;
+                     var res = (ImportActions) entity;
                     if(res.TrackingState == TrackingState.Unchanged) res.TrackingState = TrackingState.Modified;                              
                     
                     dbContext.ApplyChanges(res);
@@ -487,14 +500,14 @@ namespace CoreEntities.Business.Services
            return entity;
         }
 
-        public async Task<TODO_C71ToCreate> CreateTODO_C71ToCreate(TODO_C71ToCreate entity)
+        public async Task<ImportActions> CreateImportActions(ImportActions entity)
         {
             try
             {
-                var res = (TODO_C71ToCreate) entity;
+                var res = (ImportActions) entity;
               using ( var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
               {
-                dbContext.TODO_C71ToCreate.Add(res);
+                dbContext.ImportActions.Add(res);
                 await dbContext.SaveChangesAsync().ConfigureAwait(continueOnCapturedContext: false);
                 res.AcceptChanges();
                 return res;
@@ -514,21 +527,21 @@ namespace CoreEntities.Business.Services
             }
         }
 
-        public async Task<bool> DeleteTODO_C71ToCreate(string AsycudaDocumentSetId)
+        public async Task<bool> DeleteImportActions(string Id)
         {
             try
             {
               using ( var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
               {
-                var i = Convert.ToInt32(AsycudaDocumentSetId);
-                TODO_C71ToCreate entity = await dbContext.TODO_C71ToCreate
-													.SingleOrDefaultAsync(x => x.AsycudaDocumentSetId == i)
+                var i = Convert.ToInt32(Id);
+                ImportActions entity = await dbContext.ImportActions
+													.SingleOrDefaultAsync(x => x.Id == i)
 													.ConfigureAwait(continueOnCapturedContext: false);
                 if (entity == null)
                     return false;
 
-                    dbContext.TODO_C71ToCreate.Attach(entity);
-                    dbContext.TODO_C71ToCreate.Remove(entity);
+                    dbContext.ImportActions.Attach(entity);
+                    dbContext.ImportActions.Remove(entity);
                     await dbContext.SaveChangesAsync().ConfigureAwait(continueOnCapturedContext: false);
                     return true;
               }
@@ -547,19 +560,19 @@ namespace CoreEntities.Business.Services
             }
         }
 
-        public async Task<bool> RemoveSelectedTODO_C71ToCreate(IEnumerable<string> lst)
+        public async Task<bool> RemoveSelectedImportActions(IEnumerable<string> lst)
         {
             try
             {
-                StatusModel.StartStatusUpdate("Removing TODO_C71ToCreate", lst.Count());
+                StatusModel.StartStatusUpdate("Removing ImportActions", lst.Count());
                 var t = Task.Run(() =>
                 {
-                    using (var ctx = new TODO_C71ToCreateService())
+                    using (var ctx = new ImportActionsService())
                     {
                         foreach (var item in lst.ToList())
                         {
 
-                            ctx.DeleteTODO_C71ToCreate(item).Wait();
+                            ctx.DeleteImportActions(item).Wait();
                             StatusModel.StatusUpdate();
                         }
                     }
@@ -594,7 +607,7 @@ namespace CoreEntities.Business.Services
                 {
                     dbContext.Database.CommandTimeout = 0;
                     if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return 0;
-                    var set = (IQueryable<TODO_C71ToCreate>)dbContext.TODO_C71ToCreate; 
+                    var set = (IQueryable<ImportActions>)dbContext.ImportActions; 
                     if (expLst.FirstOrDefault() == "All")
                     {
                         return await set.AsNoTracking().CountAsync()
@@ -632,7 +645,7 @@ namespace CoreEntities.Business.Services
                     if (string.IsNullOrEmpty(exp) || exp == "None") return 0;
                     if (exp == "All")
                     {
-                        return await dbContext.TODO_C71ToCreate
+                        return await dbContext.ImportActions
                                     .AsNoTracking()
 									.CountAsync()
 									.ConfigureAwait(continueOnCapturedContext: false);
@@ -640,7 +653,7 @@ namespace CoreEntities.Business.Services
                     else
                     {
                         
-                        return await dbContext.TODO_C71ToCreate
+                        return await dbContext.ImportActions
 									.AsNoTracking()
                                     .Where(exp)
 									.CountAsync()
@@ -662,19 +675,19 @@ namespace CoreEntities.Business.Services
             }
         }
         
-        public async Task<IEnumerable<TODO_C71ToCreate>> LoadRange(int startIndex, int count, string exp)
+        public async Task<IEnumerable<ImportActions>> LoadRange(int startIndex, int count, string exp)
         {
             try
             {
                 using (var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-                    if (string.IsNullOrEmpty(exp) || exp == "None") return new List<TODO_C71ToCreate>();
+                    if (string.IsNullOrEmpty(exp) || exp == "None") return new List<ImportActions>();
                     if (exp == "All")
                     {
-                        return await dbContext.TODO_C71ToCreate
+                        return await dbContext.ImportActions
 										.AsNoTracking()
-                                        .OrderBy(y => y.AsycudaDocumentSetId)
+                                        .OrderBy(y => y.Id)
 										.Skip(startIndex)
 										.Take(count)
 										.ToListAsync()
@@ -683,10 +696,10 @@ namespace CoreEntities.Business.Services
                     else
                     {
                         
-                        return await dbContext.TODO_C71ToCreate
+                        return await dbContext.ImportActions
 										.AsNoTracking()
                                         .Where(exp)
-										.OrderBy(y => y.AsycudaDocumentSetId)
+										.OrderBy(y => y.Id)
 										.Skip(startIndex)
 										.Take(count)
 										.ToListAsync()
@@ -718,12 +731,21 @@ namespace CoreEntities.Business.Services
                     dbContext.Database.CommandTimeout = 0;
                     if (exp == "All" && navExp.Count == 0)
                     {
-                        return await dbContext.TODO_C71ToCreate
+                        return await dbContext.ImportActions
 										.AsNoTracking()
                                         .CountAsync()
 										.ConfigureAwait(continueOnCapturedContext: false);
                     }
-                    return await dbContext.TODO_C71ToCreate.Where(exp == "All" || exp == null ? "AsycudaDocumentSetId != null" : exp)
+                    foreach (var itm in navExp)
+                    {
+                        switch (itm.Key)
+                        {
+                            case "FileTypes":
+                                return await CountWhere<FileTypes>(dbContext, exp, itm.Value, "ImportActions", "SelectMany")
+											.ConfigureAwait(continueOnCapturedContext: false);
+						}
+                    }
+                    return await dbContext.ImportActions.Where(exp == "All" || exp == null ? "Id != null" : exp)
 											.AsNoTracking()
                                             .CountAsync()
 											.ConfigureAwait(continueOnCapturedContext: false);
@@ -765,10 +787,10 @@ namespace CoreEntities.Business.Services
             return await dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
-                .SelectMany(navProp).OfType<TODO_C71ToCreate>()
-                .Where(exp == "All" || exp == null ? "AsycudaDocumentSetId != null" : exp)
+                .SelectMany(navProp).OfType<ImportActions>()
+                .Where(exp == "All" || exp == null ? "Id != null" : exp)
                 .Distinct()
-                .OrderBy("AsycudaDocumentSetId")
+                .OrderBy("Id")
                 .CountAsync()
 				.ConfigureAwait(continueOnCapturedContext: false);
 			}
@@ -786,10 +808,10 @@ namespace CoreEntities.Business.Services
             return await dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
-                .Select(navProp).OfType<TODO_C71ToCreate>()
-                .Where(exp == "All" || exp == null ? "AsycudaDocumentSetId != null" : exp)
+                .Select(navProp).OfType<ImportActions>()
+                .Where(exp == "All" || exp == null ? "Id != null" : exp)
                 .Distinct()
-                .OrderBy("AsycudaDocumentSetId")
+                .OrderBy("Id")
                 .CountAsync()
 				.ConfigureAwait(continueOnCapturedContext: false);
 			}
@@ -800,7 +822,7 @@ namespace CoreEntities.Business.Services
 			}
         }
 
-		  public async Task<IEnumerable<TODO_C71ToCreate>> LoadRangeNav(int startIndex, int count, string exp,
+		  public async Task<IEnumerable<ImportActions>> LoadRangeNav(int startIndex, int count, string exp,
                                                                                  Dictionary<string, string> navExp, IEnumerable<string> includeLst = null)
         {
             try
@@ -808,7 +830,7 @@ namespace CoreEntities.Business.Services
                 using (var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-                    if ((string.IsNullOrEmpty(exp) && navExp.Count == 0) || exp == "None") return new List<TODO_C71ToCreate>();
+                    if ((string.IsNullOrEmpty(exp) && navExp.Count == 0) || exp == "None") return new List<ImportActions>();
                     var set = AddIncludes(includeLst, dbContext);
 
                     if (exp == "All" && navExp.Count == 0)
@@ -816,17 +838,33 @@ namespace CoreEntities.Business.Services
                        
                         return await set
 									.AsNoTracking()
-                                    .OrderBy(y => y.AsycudaDocumentSetId)
+                                    .OrderBy(y => y.Id)
  
                                     .Skip(startIndex)
                                     .Take(count)
 									.ToListAsync()
 									.ConfigureAwait(continueOnCapturedContext: false);
                     }
-                    return await set//dbContext.TODO_C71ToCreate
+                    foreach (var itm in navExp)
+                    {
+                        switch (itm.Key)
+                        {
+                            case "FileTypes":
+                                return
+                                    await
+                                        LoadRangeWhere<FileTypes>(startIndex, count, dbContext, exp, itm.Value, "ImportActions", "SelectMany")
+													.ConfigureAwait(continueOnCapturedContext: false);
+
+                          
+							default:
+                                throw new ArgumentException("No Navigation property found for " + itm.Key);
+						}
+
+                    }
+                    return await set//dbContext.ImportActions
 								.AsNoTracking()
-                                .Where(exp == "All" || exp == null ? "AsycudaDocumentSetId != null" : exp)
-								.OrderBy(y => y.AsycudaDocumentSetId)
+                                .Where(exp == "All" || exp == null ? "Id != null" : exp)
+								.OrderBy(y => y.Id)
  
                                 .Skip(startIndex)
                                 .Take(count)
@@ -850,7 +888,7 @@ namespace CoreEntities.Business.Services
             }
         }
 
-		private static async Task<IEnumerable<TODO_C71ToCreate>> LoadRangeWhere<T>(int startIndex, int count,
+		private static async Task<IEnumerable<ImportActions>> LoadRangeWhere<T>(int startIndex, int count,
             CoreEntitiesContext dbContext, string exp, string navExp, string navProp, string rel, IEnumerable<string> includeLst = null) where T : class
         {
              switch (rel)
@@ -865,7 +903,7 @@ namespace CoreEntities.Business.Services
 		    }
         }
 
-		private static async Task<IEnumerable<TODO_C71ToCreate>> LoadRangeSelectMany<T>(int startIndex, int count,
+		private static async Task<IEnumerable<ImportActions>> LoadRangeSelectMany<T>(int startIndex, int count,
             CoreEntitiesContext dbContext, string exp, string navExp, string navProp, IEnumerable<string> includeLst = null) where T : class
         {
 			try
@@ -873,14 +911,14 @@ namespace CoreEntities.Business.Services
             var set = dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
-                .SelectMany(navProp).OfType<TODO_C71ToCreate>();
+                .SelectMany(navProp).OfType<ImportActions>();
     
             if (includeLst != null) set = includeLst.Aggregate(set, (current, itm) => current.Include(itm));            
 
             return await set
-                .Where(exp == "All" || exp == null ? "AsycudaDocumentSetId != null" : exp)
+                .Where(exp == "All" || exp == null ? "Id != null" : exp)
                 .Distinct()
-                .OrderBy(y => y.AsycudaDocumentSetId)
+                .OrderBy(y => y.Id)
  
                 .Skip(startIndex)
                 .Take(count)
@@ -894,7 +932,7 @@ namespace CoreEntities.Business.Services
 			}
         }
 
-		private static async Task<IEnumerable<TODO_C71ToCreate>> LoadRangeSelect<T>(int startIndex, int count,
+		private static async Task<IEnumerable<ImportActions>> LoadRangeSelect<T>(int startIndex, int count,
             CoreEntitiesContext dbContext, string exp, string navExp, string navProp, IEnumerable<string> includeLst = null) where T : class
         {
 			try
@@ -902,14 +940,14 @@ namespace CoreEntities.Business.Services
               var set = dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
-                .Select(navProp).OfType<TODO_C71ToCreate>();
+                .Select(navProp).OfType<ImportActions>();
 
                if (includeLst != null) set = includeLst.Aggregate(set, (current, itm) => current.Include(itm)); 
                 
                return await set
-                .Where(exp == "All" || exp == null ? "AsycudaDocumentSetId != null" : exp)
+                .Where(exp == "All" || exp == null ? "Id != null" : exp)
                 .Distinct()
-                .OrderBy(y => y.AsycudaDocumentSetId)
+                .OrderBy(y => y.Id)
  
                 .Skip(startIndex)
                 .Take(count)
@@ -923,7 +961,7 @@ namespace CoreEntities.Business.Services
 			}
         }
 
-        private static async Task<IEnumerable<TODO_C71ToCreate>> GetWhere<T>(CoreEntitiesContext dbContext,
+        private static async Task<IEnumerable<ImportActions>> GetWhere<T>(CoreEntitiesContext dbContext,
             string exp, string navExp, string navProp, string rel, List<string> includesLst = null) where T : class
         {
 			try
@@ -947,7 +985,7 @@ namespace CoreEntities.Business.Services
 			}
         }
 
-		private static async Task<IEnumerable<TODO_C71ToCreate>> GetWhereSelectMany<T>(CoreEntitiesContext dbContext,
+		private static async Task<IEnumerable<ImportActions>> GetWhereSelectMany<T>(CoreEntitiesContext dbContext,
             string exp, string navExp, string navProp, List<string> includesLst = null) where T : class
         {
 			try
@@ -958,18 +996,18 @@ namespace CoreEntities.Business.Services
 				return await dbContext.Set<T>()
 							.AsNoTracking()
                             .Where(navExp)
-							.SelectMany(navProp).OfType<TODO_C71ToCreate>()
-							.Where(exp == "All" || exp == null?"AsycudaDocumentSetId != null":exp)
+							.SelectMany(navProp).OfType<ImportActions>()
+							.Where(exp == "All" || exp == null?"Id != null":exp)
 							.Distinct()
 							.ToListAsync()
 							.ConfigureAwait(continueOnCapturedContext: false);
 			}
 
-			var set = (DbQuery<TODO_C71ToCreate>)dbContext.Set<T>()
+			var set = (DbQuery<ImportActions>)dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
-                .SelectMany(navProp).OfType<TODO_C71ToCreate>()
-                .Where(exp == "All" || exp == null?"AsycudaDocumentSetId != null":exp)
+                .SelectMany(navProp).OfType<ImportActions>()
+                .Where(exp == "All" || exp == null?"Id != null":exp)
                 .Distinct();
 
 			set = includesLst.Aggregate(set, (current, itm) => current.Include(itm));
@@ -984,7 +1022,7 @@ namespace CoreEntities.Business.Services
 			}
         }
 
-		private static async Task<IEnumerable<TODO_C71ToCreate>> GetWhereSelect<T>(CoreEntitiesContext dbContext,
+		private static async Task<IEnumerable<ImportActions>> GetWhereSelect<T>(CoreEntitiesContext dbContext,
             string exp, string navExp, string navProp, List<string> includesLst = null) where T : class
         {
 			try
@@ -995,18 +1033,18 @@ namespace CoreEntities.Business.Services
 				return await dbContext.Set<T>()
 							.AsNoTracking()
                             .Where(navExp)
-							.Select(navProp).OfType<TODO_C71ToCreate>()
-							.Where(exp == "All" || exp == null?"AsycudaDocumentSetId != null":exp)
+							.Select(navProp).OfType<ImportActions>()
+							.Where(exp == "All" || exp == null?"Id != null":exp)
 							.Distinct()
 							.ToListAsync()
 							.ConfigureAwait(continueOnCapturedContext: false);
 			}
 
-			var set = (DbQuery<TODO_C71ToCreate>)dbContext.Set<T>()
+			var set = (DbQuery<ImportActions>)dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
-                .Select(navProp).OfType<TODO_C71ToCreate>()
-                .Where(exp == "All" || exp == null?"AsycudaDocumentSetId != null":exp)
+                .Select(navProp).OfType<ImportActions>()
+                .Where(exp == "All" || exp == null?"Id != null":exp)
                 .Distinct();
 
 			set = includesLst.Aggregate(set, (current, itm) => current.Include(itm));
@@ -1021,46 +1059,17 @@ namespace CoreEntities.Business.Services
 			}
         }
 
-			        public async Task<IEnumerable<TODO_C71ToCreate>> GetTODO_C71ToCreateByApplicationSettingsId(string ApplicationSettingsId, List<string> includesLst = null)
+			        public async Task<IEnumerable<ImportActions>> GetImportActionsByFileTypeId(string FileTypeId, List<string> includesLst = null)
         {
             try
             {
                 using ( var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
               {
-                var i = Convert.ToInt32(ApplicationSettingsId);
+                var i = Convert.ToInt32(FileTypeId);
                 var set = AddIncludes(includesLst, dbContext);
-                IEnumerable<TODO_C71ToCreate> entities = await set//dbContext.TODO_C71ToCreate
+                IEnumerable<ImportActions> entities = await set//dbContext.ImportActions
                                       .AsNoTracking()
-                                        .Where(x => x.ApplicationSettingsId.ToString() == ApplicationSettingsId.ToString())
-										.ToListAsync()
-										.ConfigureAwait(continueOnCapturedContext: false);
-                return entities;
-              }
-             }
-            catch (Exception updateEx)
-            {
-                System.Diagnostics.Debugger.Break();
-                //throw new FaultException(updateEx.Message);
-                    var fault = new ValidationFault
-                                {
-                                    Result = false,
-                                    Message = updateEx.Message,
-                                    Description = updateEx.StackTrace
-                                };
-                    throw new FaultException<ValidationFault>(fault);
-            }
-        }
- 	        public async Task<IEnumerable<TODO_C71ToCreate>> GetTODO_C71ToCreateByValue_declaration_form_Id(string Value_declaration_form_Id, List<string> includesLst = null)
-        {
-            try
-            {
-                using ( var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
-              {
-                var i = Convert.ToInt32(Value_declaration_form_Id);
-                var set = AddIncludes(includesLst, dbContext);
-                IEnumerable<TODO_C71ToCreate> entities = await set//dbContext.TODO_C71ToCreate
-                                      .AsNoTracking()
-                                        .Where(x => x.Value_declaration_form_Id.ToString() == Value_declaration_form_Id.ToString())
+                                        .Where(x => x.FileTypeId.ToString() == FileTypeId.ToString())
 										.ToListAsync()
 										.ConfigureAwait(continueOnCapturedContext: false);
                 return entities;
@@ -1091,11 +1100,11 @@ namespace CoreEntities.Business.Services
                      if (string.IsNullOrEmpty(whereExp) || whereExp == "None") return 0;
                      if (whereExp == "All")
                      {
-                          res = Convert.ToDecimal(dbContext.TODO_C71ToCreate.AsNoTracking().Sum(field));
+                          res = Convert.ToDecimal(dbContext.ImportActions.AsNoTracking().Sum(field));
                      }
                      else
                      {
-                         res = Convert.ToDecimal(dbContext.TODO_C71ToCreate.AsNoTracking().Where(whereExp).Sum(field));
+                         res = Convert.ToDecimal(dbContext.ImportActions.AsNoTracking().Where(whereExp).Sum(field));
                      }
                      
                      return res;
@@ -1123,14 +1132,23 @@ namespace CoreEntities.Business.Services
                 using (var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-                    if (!dbContext.TODO_C71ToCreate.Any()) return 0;
+                    if (!dbContext.ImportActions.Any()) return 0;
                     if (exp == "All" && navExp.Count == 0)
                     {
-                        return Convert.ToDecimal(dbContext.TODO_C71ToCreate
+                        return Convert.ToDecimal(dbContext.ImportActions
 										.AsNoTracking()
                                         .Sum(field)??0);
                     }
-                    return Convert.ToDecimal(dbContext.TODO_C71ToCreate.Where(exp == "All" || exp == null ? "AsycudaDocumentSetId != null" : exp)
+                    foreach (var itm in navExp)
+                    {
+                        switch (itm.Key)
+                        {
+                            case "FileTypes":
+                                return await SumWhere<FileTypes>(dbContext, exp, itm.Value, "ImportActions", field, "SelectMany")
+											.ConfigureAwait(continueOnCapturedContext: false);
+						}
+                    }
+                    return Convert.ToDecimal(dbContext.ImportActions.Where(exp == "All" || exp == null ? "Id != null" : exp)
 											.AsNoTracking()
                                             .Sum(field)??0);
                 }
@@ -1170,10 +1188,10 @@ namespace CoreEntities.Business.Services
             return Convert.ToDecimal(dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
-                .SelectMany(navProp).OfType<TODO_C71ToCreate>()
-                .Where(exp == "All" || exp == null ? "AsycudaDocumentSetId != null" : exp)
+                .SelectMany(navProp).OfType<ImportActions>()
+                .Where(exp == "All" || exp == null ? "Id != null" : exp)
                 .Distinct()
-                .OrderBy("AsycudaDocumentSetId")
+                .OrderBy("Id")
                 .Sum(field));
 			}
 			catch (Exception)
@@ -1190,10 +1208,10 @@ namespace CoreEntities.Business.Services
             return Convert.ToDecimal(dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
-                .Select(navProp).OfType<TODO_C71ToCreate>()
-                .Where(exp == "All" || exp == null ? "AsycudaDocumentSetId != null" : exp)
+                .Select(navProp).OfType<ImportActions>()
+                .Where(exp == "All" || exp == null ? "Id != null" : exp)
                 .Distinct()
-                .OrderBy("AsycudaDocumentSetId")
+                .OrderBy("Id")
                 .Sum(field));
 			}
 			catch (Exception)
@@ -1216,11 +1234,11 @@ namespace CoreEntities.Business.Services
                      if (string.IsNullOrEmpty(whereExp) || whereExp == "None") return res;
                      if (whereExp == "All")
                      {
-                          res = Convert.ToString(dbContext.TODO_C71ToCreate.AsNoTracking().Min(field));
+                          res = Convert.ToString(dbContext.ImportActions.AsNoTracking().Min(field));
                      }
                      else
                      {
-                         res = Convert.ToString(dbContext.TODO_C71ToCreate.AsNoTracking().Where(whereExp).Min(field));
+                         res = Convert.ToString(dbContext.ImportActions.AsNoTracking().Where(whereExp).Min(field));
                      }
                      
                      return res;
@@ -1241,12 +1259,12 @@ namespace CoreEntities.Business.Services
          }
 
 		 
-		private static IQueryable<TODO_C71ToCreate> AddIncludes(IEnumerable<string> includesLst, CoreEntitiesContext dbContext)
+		private static IQueryable<ImportActions> AddIncludes(IEnumerable<string> includesLst, CoreEntitiesContext dbContext)
        {
 		 try
 			{
 			   if (includesLst == null) includesLst = new List<string>();
-			   var set =(DbQuery<TODO_C71ToCreate>) dbContext.TODO_C71ToCreate; 
+			   var set =(DbQuery<ImportActions>) dbContext.ImportActions; 
 			   set = includesLst.Where(x => !string.IsNullOrEmpty(x))
                                 .Aggregate(set, (current, itm) => current.Include(itm));
 			   return set;
@@ -1257,7 +1275,7 @@ namespace CoreEntities.Business.Services
 				throw;
 			}
        }
-	   private IQueryable<TODO_C71ToCreate> AddWheres(List<string> expLst, IQueryable<TODO_C71ToCreate> set)
+	   private IQueryable<ImportActions> AddWheres(List<string> expLst, IQueryable<ImportActions> set)
         {
             try
             {

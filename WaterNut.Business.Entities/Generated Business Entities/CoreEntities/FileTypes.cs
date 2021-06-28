@@ -28,6 +28,7 @@ namespace CoreEntities.Business.Entities
             this.AsycudaDocumentSet_Attachments = new List<AsycudaDocumentSet_Attachments>();
             this.ChildFileTypes = new List<FileTypes>();
             this.EmailFileTypes = new List<EmailFileTypes>();
+            this.ImportActions = new List<ImportActions>();
         }
 
         [DataMember]
@@ -320,6 +321,8 @@ namespace CoreEntities.Business.Entities
         public FileTypes ParentFileTypes { get; set; }
         [DataMember]
         public List<EmailFileTypes> EmailFileTypes { get; set; }
+        [DataMember]
+        public List<ImportActions> ImportActions { get; set; }
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

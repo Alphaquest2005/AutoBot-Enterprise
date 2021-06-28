@@ -151,6 +151,7 @@
     <Compile Include="Generated Client Entities\CoreEntities\FileTypeMappingRegExs.cs" />
     <Compile Include="Generated Client Entities\CoreEntities\FileTypeMappings.cs" />
     <Compile Include="Generated Client Entities\CoreEntities\FileTypes.cs" />
+    <Compile Include="Generated Client Entities\CoreEntities\ImportActions.cs" />
     <Compile Include="Generated Client Entities\CoreEntities\InfoMapping.cs" />
     <Compile Include="Generated Client Entities\CoreEntities\InfoMappingRegEx.cs" />
     <Compile Include="Generated Client Entities\CoreEntities\InventoryItemAliasX.cs" />
@@ -305,6 +306,7 @@
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\FileTypeMappingRegExs.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\FileTypeMappings.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\FileTypes.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\ImportActions.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\InfoMapping.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\InfoMappingRegEx.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\InventoryItemAliasX.cs" />
@@ -459,6 +461,7 @@
     <Compile Include="Generated MyNavProp Models\CoreEntities\FileTypeMappingRegExs.cs" />
     <Compile Include="Generated MyNavProp Models\CoreEntities\FileTypeMappings.cs" />
     <Compile Include="Generated MyNavProp Models\CoreEntities\FileTypes.cs" />
+    <Compile Include="Generated MyNavProp Models\CoreEntities\ImportActions.cs" />
     <Compile Include="Generated MyNavProp Models\CoreEntities\InfoMapping.cs" />
     <Compile Include="Generated MyNavProp Models\CoreEntities\InfoMappingRegEx.cs" />
     <Compile Include="Generated MyNavProp Models\CoreEntities\InventoryItemAliasX.cs" />

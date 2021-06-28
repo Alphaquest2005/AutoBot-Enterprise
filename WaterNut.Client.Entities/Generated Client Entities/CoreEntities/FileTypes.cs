@@ -857,6 +857,60 @@ public Nullable<bool> IsImportable
             }
         }
 
+        ObservableCollection<ImportActions> _ImportActions = null;
+        public  ObservableCollection<ImportActions> ImportActions
+		{
+            
+		    get 
+				{ 
+					if(_ImportActions != null) return _ImportActions;
+					//if (this.filetypes.ImportActions == null) Debugger.Break();
+					if(this.filetypes.ImportActions != null)
+					{
+						_ImportActions = new ObservableCollection<ImportActions>(this.filetypes.ImportActions.Select(x => new ImportActions(x)));
+					}
+					
+						_ImportActions.CollectionChanged += ImportActions_CollectionChanged; 
+					
+					return _ImportActions; 
+				}
+			set
+			{
+			    if (Equals(value, _ImportActions)) return;
+				if (value != null)
+					this.filetypes.ImportActions = new ChangeTrackingCollection<DTO.ImportActions>(value.Select(x => x.DTO).ToList());
+                _ImportActions = value;
+				if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				if (_ImportActions != null)
+				_ImportActions.CollectionChanged += ImportActions_CollectionChanged;               
+				NotifyPropertyChanged("ImportActions");
+			}
+		}
+        
+        void ImportActions_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            switch (e.Action)
+            {
+                case NotifyCollectionChangedAction.Add:
+                    foreach (ImportActions itm in e.NewItems)
+                    {
+                        if (itm != null)
+                        filetypes.ImportActions.Add(itm.DTO);
+                    }
+                    if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+                    break;
+                case NotifyCollectionChangedAction.Remove:
+                    foreach (ImportActions itm in e.OldItems)
+                    {
+                        if (itm != null)
+                        filetypes.ImportActions.Remove(itm.DTO);
+                    }
+					if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+                    break;
+                
+            }
+        }
+
 
         ChangeTrackingCollection<DTO.FileTypes> _changeTracker;    
         public ChangeTrackingCollection<DTO.FileTypes> ChangeTracker

@@ -184,6 +184,7 @@
     <Compile Include="Generated Repositories\CoreEntities\FileTypeMappingRegExsRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\FileTypeMappingsRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\FileTypesRepository.cs" />
+    <Compile Include="Generated Repositories\CoreEntities\ImportActionsRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\InfoMappingRegExRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\InfoMappingRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\InventoryItemAliasXRepository.cs" />

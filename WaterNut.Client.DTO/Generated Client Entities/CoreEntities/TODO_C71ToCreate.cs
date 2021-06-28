@@ -255,6 +255,45 @@ namespace CoreEntities.Client.DTO
 		}
         private Nullable<double> _GeneratedC71Total;
 
+        [DataMember]
+        public string Address
+		{ 
+		    get { return _Address; }
+			set
+			{
+			    if (value == _Address) return;
+				_Address = value;
+				NotifyPropertyChanged();//m => this.Address
+			}
+		}
+        private string _Address;
+
+        [DataMember]
+        public Nullable<int> Value_declaration_form_Id
+		{ 
+		    get { return _Value_declaration_form_Id; }
+			set
+			{
+			    if (value == _Value_declaration_form_Id) return;
+				_Value_declaration_form_Id = value;
+				NotifyPropertyChanged();//m => this.Value_declaration_form_Id
+			}
+		}
+        private Nullable<int> _Value_declaration_form_Id;
+
+        [DataMember]
+        public Nullable<int> RegisteredID
+		{ 
+		    get { return _RegisteredID; }
+			set
+			{
+			    if (value == _RegisteredID) return;
+				_RegisteredID = value;
+				NotifyPropertyChanged();//m => this.RegisteredID
+			}
+		}
+        private Nullable<int> _RegisteredID;
+
        
    //     [DataMember]
    //     public TrackingState TrackingState { get; set; }

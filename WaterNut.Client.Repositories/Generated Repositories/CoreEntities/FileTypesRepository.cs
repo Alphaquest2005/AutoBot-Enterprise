@@ -211,7 +211,8 @@ namespace CoreEntities.Client.Repositories
                   // FileGroups = (res.FileGroups != null?new FileGroups(res.FileGroups): null),    
                      // ChildFileTypes = new System.Collections.ObjectModel.ObservableCollection<FileTypes>(res.ChildFileTypes.Select(y => new FileTypes(y))),    
                   // ParentFileTypes = (res.ParentFileTypes != null?new FileTypes(res.ParentFileTypes): null),    
-                     // EmailFileTypes = new System.Collections.ObjectModel.ObservableCollection<EmailFileTypes>(res.EmailFileTypes.Select(y => new EmailFileTypes(y)))    
+                     // EmailFileTypes = new System.Collections.ObjectModel.ObservableCollection<EmailFileTypes>(res.EmailFileTypes.Select(y => new EmailFileTypes(y))),    
+                     // ImportActions = new System.Collections.ObjectModel.ObservableCollection<ImportActions>(res.ImportActions.Select(y => new ImportActions(y)))    
                   };
                     }
                     else

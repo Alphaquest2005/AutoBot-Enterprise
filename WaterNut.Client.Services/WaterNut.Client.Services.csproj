@@ -148,6 +148,7 @@
     <Compile Include="CoreEntities\FileTypeMappingRegExsClient.cs" />
     <Compile Include="CoreEntities\FileTypeMappingsClient.cs" />
     <Compile Include="CoreEntities\FileTypesClient.cs" />
+    <Compile Include="CoreEntities\ImportActionsClient.cs" />
     <Compile Include="CoreEntities\InfoMappingClient.cs" />
     <Compile Include="CoreEntities\InfoMappingRegExClient.cs" />
     <Compile Include="CoreEntities\InventoryItemAliasXClient.cs" />

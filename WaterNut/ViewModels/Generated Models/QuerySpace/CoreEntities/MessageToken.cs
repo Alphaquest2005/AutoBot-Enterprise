@@ -196,6 +196,12 @@ namespace WaterNut.QuerySpace.CoreEntities
 			public const string FileTypesDeleted = "FileTypesDeleted";
 			public const string FileTypesCreated = "FileTypesCreated";
 			public const string FileTypesUpdated = "FileTypesUpdated";
+			public const string ImportActionsFilterExpressionChanged = "ImportActionsFilterExpressionChanged";
+			public const string SelectedImportActionsChanged = "SelectedImportActionsChanged";
+            public const string ImportActionsChanged = "ImportActionsChanged";
+			public const string ImportActionsDeleted = "ImportActionsDeleted";
+			public const string ImportActionsCreated = "ImportActionsCreated";
+			public const string ImportActionsUpdated = "ImportActionsUpdated";
 			public const string InfoMappingFilterExpressionChanged = "InfoMappingFilterExpressionChanged";
 			public const string SelectedInfoMappingChanged = "SelectedInfoMappingChanged";
             public const string InfoMappingChanged = "InfoMappingChanged";
@@ -577,6 +583,7 @@ namespace WaterNut.QuerySpace.CoreEntities
           // public const string FileTypeMappingRegExsChanged = "FileTypeMappingRegExsChanged";
           // public const string FileTypeMappingsChanged = "FileTypeMappingsChanged";
           // public const string FileTypesChanged = "FileTypesChanged";
+          // public const string ImportActionsChanged = "ImportActionsChanged";
           // public const string InfoMappingChanged = "InfoMappingChanged";
           // public const string InfoMappingRegExChanged = "InfoMappingRegExChanged";
           // public const string InventoryItemAliasXChanged = "InventoryItemAliasXChanged";
@@ -699,6 +706,8 @@ namespace WaterNut.QuerySpace.CoreEntities
            public const string CurrentFileTypeMappingsChanged = "CurrentFileTypeMappingsChanged";
    
            public const string CurrentFileTypesChanged = "CurrentFileTypesChanged";
+   
+           public const string CurrentImportActionsChanged = "CurrentImportActionsChanged";
    
            public const string CurrentInfoMappingChanged = "CurrentInfoMappingChanged";
    
@@ -879,6 +888,8 @@ namespace WaterNut.QuerySpace.CoreEntities
            public const string CurrentFileTypeMappingsIDChanged = "OnCurrentFileTypeMappingsIDChanged";
    
            public const string CurrentFileTypesIDChanged = "OnCurrentFileTypesIDChanged";
+   
+           public const string CurrentImportActionsIDChanged = "OnCurrentImportActionsIDChanged";
    
            public const string CurrentInfoMappingIDChanged = "OnCurrentInfoMappingIDChanged";
    

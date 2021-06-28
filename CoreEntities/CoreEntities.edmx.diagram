@@ -139,6 +139,8 @@
         <EntityTypeShape EntityType="WaterNutDBModel.TODO_LicenceAvailableQty" Width="1.5" PointX="31.375" PointY="20.75" />
         <EntityTypeShape EntityType="WaterNutDBModel.TODO_AssessDiscrepancyEntries" Width="1.5" PointX="28.375" PointY="20.75" />
         <EntityTypeShape EntityType="WaterNutDBModel.TODO_C71ToCreate" Width="1.5" PointX="3.375" PointY="33.75" />
+        <EntityTypeShape EntityType="WaterNutDBModel.ImportActions" Width="1.5" PointX="5.125" PointY="40.25" />
+        <AssociationConnector Association="WaterNutDBModel.FK_ImportActions_FileTypes" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

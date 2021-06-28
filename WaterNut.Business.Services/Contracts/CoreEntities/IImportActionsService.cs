@@ -20,54 +20,54 @@ using WaterNut.Interfaces;
 namespace CoreEntities.Business.Services
 {
     [ServiceContract (Namespace="http://www.insight-software.com/WaterNut")]
-    public partial interface ITODO_C71ToCreateService : IBusinessService
+    public partial interface IImportActionsService : IBusinessService
     {
         [OperationContract]
         [FaultContract(typeof(ValidationFault))]
-        Task<IEnumerable<TODO_C71ToCreate>> GetTODO_C71ToCreate(List<string> includesLst = null, bool tracking = true);
+        Task<IEnumerable<ImportActions>> GetImportActions(List<string> includesLst = null, bool tracking = true);
 
         [OperationContract]
         [FaultContract(typeof(ValidationFault))]
-        Task<TODO_C71ToCreate> GetTODO_C71ToCreateByKey(string id, List<string> includesLst = null, bool tracking = true);
+        Task<ImportActions> GetImportActionsByKey(string id, List<string> includesLst = null, bool tracking = true);
 
 		[OperationContract]
         [FaultContract(typeof(ValidationFault))]
-        Task<IEnumerable<TODO_C71ToCreate>> GetTODO_C71ToCreateByExpression(string exp, List<string> includesLst = null, bool tracking = true);
+        Task<IEnumerable<ImportActions>> GetImportActionsByExpression(string exp, List<string> includesLst = null, bool tracking = true);
 
 		[OperationContract]
         [FaultContract(typeof(ValidationFault))]
-        Task<IEnumerable<TODO_C71ToCreate>> GetTODO_C71ToCreateByExpressionLst(List<string> expLst, List<string> includesLst = null, bool tracking = true);
+        Task<IEnumerable<ImportActions>> GetImportActionsByExpressionLst(List<string> expLst, List<string> includesLst = null, bool tracking = true);
 
 		[OperationContract]
         [FaultContract(typeof(ValidationFault))]
-		Task<IEnumerable<TODO_C71ToCreate>> GetTODO_C71ToCreateByExpressionNav(string exp,
+		Task<IEnumerable<ImportActions>> GetImportActionsByExpressionNav(string exp,
             Dictionary<string, string> navExp, List<string> includesLst = null, bool tracking = true);
 
         [OperationContract]
         [FaultContract(typeof(ValidationFault))]
-        Task<IEnumerable<TODO_C71ToCreate>> GetTODO_C71ToCreateByBatch(string exp,
+        Task<IEnumerable<ImportActions>> GetImportActionsByBatch(string exp,
             int totalrow, List<string> includesLst = null, bool tracking = true);
 
         [OperationContract]
         [FaultContract(typeof(ValidationFault))]
-        Task<IEnumerable<TODO_C71ToCreate>> GetTODO_C71ToCreateByBatchExpressionLst(List<string> exp,
+        Task<IEnumerable<ImportActions>> GetImportActionsByBatchExpressionLst(List<string> exp,
             int totalrow, List<string> includesLst = null, bool tracking = true);
 
         [OperationContract]
         [FaultContract(typeof(ValidationFault))]
-        Task<TODO_C71ToCreate> UpdateTODO_C71ToCreate(TODO_C71ToCreate entity);
+        Task<ImportActions> UpdateImportActions(ImportActions entity);
 
         [OperationContract]
         [FaultContract(typeof(ValidationFault))]
-        Task<TODO_C71ToCreate> CreateTODO_C71ToCreate(TODO_C71ToCreate entity);
+        Task<ImportActions> CreateImportActions(ImportActions entity);
 
         [OperationContract]
         [FaultContract(typeof(ValidationFault))]
-        Task<bool> DeleteTODO_C71ToCreate(string id);
+        Task<bool> DeleteImportActions(string id);
 
         [OperationContract]
         [FaultContract(typeof(ValidationFault))]
-        Task<bool> RemoveSelectedTODO_C71ToCreate(IEnumerable<string> selectedTODO_C71ToCreate);
+        Task<bool> RemoveSelectedImportActions(IEnumerable<string> selectedImportActions);
 	
 		//Virtural list implementation
         [OperationContract]
@@ -84,13 +84,13 @@ namespace CoreEntities.Business.Services
 
         [OperationContract]
         [FaultContract(typeof(ValidationFault))]
-        Task<IEnumerable<TODO_C71ToCreate>> LoadRange(int startIndex, int count, string exp);
+        Task<IEnumerable<ImportActions>> LoadRange(int startIndex, int count, string exp);
 
 
 
 		[OperationContract]
         [FaultContract(typeof(ValidationFault))]
-		Task<IEnumerable<TODO_C71ToCreate>> LoadRangeNav(int startIndex, int count, string exp,
+		Task<IEnumerable<ImportActions>> LoadRangeNav(int startIndex, int count, string exp,
                                                                                  Dictionary<string, string> navExp, IEnumerable<string> includeLst = null);
 
 		[OperationContract]
@@ -107,10 +107,7 @@ namespace CoreEntities.Business.Services
 
 				[OperationContract]
         [FaultContract(typeof(ValidationFault))]
-        Task<IEnumerable<TODO_C71ToCreate>> GetTODO_C71ToCreateByApplicationSettingsId(string ApplicationSettingsId, List<string> includesLst = null);
-  		[OperationContract]
-        [FaultContract(typeof(ValidationFault))]
-        Task<IEnumerable<TODO_C71ToCreate>> GetTODO_C71ToCreateByValue_declaration_form_Id(string Value_declaration_form_Id, List<string> includesLst = null);
+        Task<IEnumerable<ImportActions>> GetImportActionsByFileTypeId(string FileTypeId, List<string> includesLst = null);
   
 
 

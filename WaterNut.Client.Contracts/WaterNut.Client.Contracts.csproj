@@ -142,6 +142,7 @@
     <Compile Include="CoreEntities\IFileTypeMappingRegExsService.cs" />
     <Compile Include="CoreEntities\IFileTypeMappingsService.cs" />
     <Compile Include="CoreEntities\IFileTypesService.cs" />
+    <Compile Include="CoreEntities\IImportActionsService.cs" />
     <Compile Include="CoreEntities\IInfoMappingRegExService.cs" />
     <Compile Include="CoreEntities\IInfoMappingService.cs" />
     <Compile Include="CoreEntities\IInventoryItemAliasXService.cs" />

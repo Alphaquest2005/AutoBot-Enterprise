@@ -234,6 +234,7 @@
     <Compile Include="Generated Business Entities\CoreEntities\FileTypeMappingRegExs.cs" />
     <Compile Include="Generated Business Entities\CoreEntities\FileTypeMappings.cs" />
     <Compile Include="Generated Business Entities\CoreEntities\FileTypes.cs" />
+    <Compile Include="Generated Business Entities\CoreEntities\ImportActions.cs" />
     <Compile Include="Generated Business Entities\CoreEntities\InfoMapping.cs" />
     <Compile Include="Generated Business Entities\CoreEntities\InfoMappingRegEx.cs" />
     <Compile Include="Generated Business Entities\CoreEntities\InventoryItemAliasX.cs" />
@@ -621,6 +622,7 @@
     <Compile Include="Generated ChangeTracking Models\CoreEntities\FileTypeMappingRegExs.cs" />
     <Compile Include="Generated ChangeTracking Models\CoreEntities\FileTypeMappings.cs" />
     <Compile Include="Generated ChangeTracking Models\CoreEntities\FileTypes.cs" />
+    <Compile Include="Generated ChangeTracking Models\CoreEntities\ImportActions.cs" />
     <Compile Include="Generated ChangeTracking Models\CoreEntities\InfoMapping.cs" />
     <Compile Include="Generated ChangeTracking Models\CoreEntities\InfoMappingRegEx.cs" />
     <Compile Include="Generated ChangeTracking Models\CoreEntities\InventoryItemAliasX.cs" />
@@ -1004,6 +1006,7 @@
     <Compile Include="Generated Constructors Models\CoreEntities\FileTypeMappingRegExs.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\FileTypeMappings.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\FileTypes.cs" />
+    <Compile Include="Generated Constructors Models\CoreEntities\ImportActions.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\InfoMapping.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\InfoMappingRegEx.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\InventoryItemAliasX.cs" />
@@ -1387,6 +1390,7 @@
     <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\FileTypeMappingRegExs.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\FileTypeMappings.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\FileTypes.cs" />
+    <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\ImportActions.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\InfoMapping.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\InfoMappingRegEx.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\InventoryItemAliasX.cs" />
@@ -1770,6 +1774,7 @@
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\FileTypeMappingRegExs.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\FileTypeMappings.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\FileTypes.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\ImportActions.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\InfoMapping.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\InfoMappingRegEx.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\InventoryItemAliasX.cs" />
@@ -2163,6 +2168,7 @@
     <Compile Include="Generated Mappings\CoreEntities\FileTypeMappingRegExs.map.cs" />
     <Compile Include="Generated Mappings\CoreEntities\FileTypeMappings.map.cs" />
     <Compile Include="Generated Mappings\CoreEntities\FileTypes.map.cs" />
+    <Compile Include="Generated Mappings\CoreEntities\ImportActions.map.cs" />
     <Compile Include="Generated Mappings\CoreEntities\InfoMapping.map.cs" />
     <Compile Include="Generated Mappings\CoreEntities\InfoMappingRegEx.map.cs" />
     <Compile Include="Generated Mappings\CoreEntities\InventoryItemAliasX.map.cs" />

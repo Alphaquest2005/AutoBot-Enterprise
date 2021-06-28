@@ -326,6 +326,53 @@ public Nullable<double> GeneratedC71Total
 		}
      
 
+       
+       
+                
+                [MaxLength(255, ErrorMessage = "Address has a max length of 255 letters ")]
+public string Address
+		{ 
+		    get { return this.todo_c71tocreate.Address; }
+			set
+			{
+			    if (value == this.todo_c71tocreate.Address) return;
+				this.todo_c71tocreate.Address = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("Address");
+			}
+		}
+     
+
+       
+       
+public Nullable<int> Value_declaration_form_Id
+		{ 
+		    get { return this.todo_c71tocreate.Value_declaration_form_Id; }
+			set
+			{
+			    if (value == this.todo_c71tocreate.Value_declaration_form_Id) return;
+				this.todo_c71tocreate.Value_declaration_form_Id = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("Value_declaration_form_Id");
+			}
+		}
+     
+
+       
+       [NumberValidationAttribute]
+public Nullable<int> RegisteredID
+		{ 
+		    get { return this.todo_c71tocreate.RegisteredID; }
+			set
+			{
+			    if (value == this.todo_c71tocreate.RegisteredID) return;
+				this.todo_c71tocreate.RegisteredID = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("RegisteredID");
+			}
+		}
+     
+
 
         ChangeTrackingCollection<DTO.TODO_C71ToCreate> _changeTracker;    
         public ChangeTrackingCollection<DTO.TODO_C71ToCreate> ChangeTracker

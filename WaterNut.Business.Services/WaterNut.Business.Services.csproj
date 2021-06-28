@@ -451,6 +451,7 @@
     <Compile Include="Contracts\CoreEntities\IFileTypeMappingRegExsService.cs" />
     <Compile Include="Contracts\CoreEntities\IFileTypeMappingsService.cs" />
     <Compile Include="Contracts\CoreEntities\IFileTypesService.cs" />
+    <Compile Include="Contracts\CoreEntities\IImportActionsService.cs" />
     <Compile Include="Contracts\CoreEntities\IInfoMappingRegExService.cs" />
     <Compile Include="Contracts\CoreEntities\IInfoMappingService.cs" />
     <Compile Include="Contracts\CoreEntities\IInventoryItemAliasXService.cs" />
@@ -1044,6 +1045,7 @@
     <Compile Include="Services\CoreEntities\FileTypeMappingRegExsService.cs" />
     <Compile Include="Services\CoreEntities\FileTypeMappingsService.cs" />
     <Compile Include="Services\CoreEntities\FileTypesService.cs" />
+    <Compile Include="Services\CoreEntities\ImportActionsService.cs" />
     <Compile Include="Services\CoreEntities\InfoMappingRegExService.cs" />
     <Compile Include="Services\CoreEntities\InfoMappingService.cs" />
     <Compile Include="Services\CoreEntities\InventoryItemAliasXService.cs" />

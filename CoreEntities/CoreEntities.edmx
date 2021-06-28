@@ -286,6 +286,15 @@
           <Property Name="ReplicateHeaderRow" Type="bit" />
           <Property Name="IsImportable" Type="bit" />
         </EntityType>
+        <EntityType Name="ImportActions">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="FileTypeId" Type="int" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Action" Type="nvarchar" MaxLength="500" Nullable="false" />
+        </EntityType>
         <EntityType Name="InfoMapping">
           <Key>
             <PropertyRef Name="Id" />
@@ -758,6 +767,10 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-C71ToCreate' does no
         <EntityType Name="TODO-C71ToCreate">
           <Key>
             <PropertyRef Name="AsycudaDocumentSetId" />
+            
+            
+            
+            
           </Key>
           <Property Name="AsycudaDocumentSetId" Type="int" Nullable="false" />
           <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
@@ -777,6 +790,9 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-C71ToCreate' does no
           <Property Name="C71Total" Type="float" Nullable="false" />
           <Property Name="Rate" Type="float" Nullable="false" />
           <Property Name="GeneratedC71Total" Type="float" />
+          <Property Name="Address" Type="nvarchar" MaxLength="255" />
+          <Property Name="Value_declaration_form_Id" Type="int" />
+          <Property Name="RegisteredID" Type="int" />
         </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-C71ToXML' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
@@ -2150,6 +2166,20 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_ImportActions_FileTypes">
+          <End Role="FileTypes" Type="Self.FileTypes" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="ImportActions" Type="Self.ImportActions" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="FileTypes">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ImportActions">
+              <PropertyRef Name="FileTypeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_InfoMapping_ApplicationSettings">
           <End Role="ApplicationSettings" Type="Self.ApplicationSettings" Multiplicity="1">
             <OnDelete Action="Cascade" />
@@ -2241,6 +2271,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
           <EntitySet Name="FileTypeMappingRegExs" EntityType="Self.FileTypeMappingRegExs" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="FileTypeMappings" EntityType="Self.FileTypeMappings" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="FileTypes" EntityType="Self.FileTypes" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ImportActions" EntityType="Self.ImportActions" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="InfoMapping" EntityType="Self.InfoMapping" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="InfoMappingRegEx" EntityType="Self.InfoMappingRegEx" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="SessionActions" EntityType="Self.SessionActions" Schema="dbo" store:Type="Tables" />
@@ -2565,7 +2596,10 @@ FROM [dbo].[TODO-AssessDiscrepancyEntries] AS [TODO-AssessDiscrepancyEntries]</D
 [TODO-C71ToCreate].[TotalCIF] AS [TotalCIF], 
 [TODO-C71ToCreate].[C71Total] AS [C71Total], 
 [TODO-C71ToCreate].[Rate] AS [Rate], 
-[TODO-C71ToCreate].[GeneratedC71Total] AS [GeneratedC71Total]
+[TODO-C71ToCreate].[GeneratedC71Total] AS [GeneratedC71Total], 
+[TODO-C71ToCreate].[Address] AS [Address], 
+[TODO-C71ToCreate].[Value_declaration_form_Id] AS [Value_declaration_form_Id], 
+[TODO-C71ToCreate].[RegisteredID] AS [RegisteredID]
 FROM [dbo].[TODO-C71ToCreate] AS [TODO-C71ToCreate]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="TODO-C71ToXML" EntityType="Self.TODO-C71ToXML" store:Type="Views" store:Schema="dbo">
@@ -3436,6 +3470,10 @@ FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
             <End Role="FileTypes" EntitySet="FileTypes" />
             <End Role="FileTypes1" EntitySet="FileTypes" />
           </AssociationSet>
+          <AssociationSet Name="FK_ImportActions_FileTypes" Association="Self.FK_ImportActions_FileTypes">
+            <End Role="FileTypes" EntitySet="FileTypes" />
+            <End Role="ImportActions" EntitySet="ImportActions" />
+          </AssociationSet>
           <AssociationSet Name="FK_InfoMapping_ApplicationSettings" Association="Self.FK_InfoMapping_ApplicationSettings">
             <End Role="ApplicationSettings" EntitySet="ApplicationSettings" />
             <End Role="InfoMapping" EntitySet="InfoMapping" />
@@ -3730,6 +3768,11 @@ FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
           <Parameter Name="ApplicationSettingsId" Mode="In" Type="Int32" />
           </FunctionImport>
           <EntitySet Name="TODO_C71ToCreate" EntityType="WaterNutDBModel.TODO_C71ToCreate" />
+          <EntitySet Name="ImportActions" EntityType="WaterNutDBModel.ImportActions" />
+          <AssociationSet Name="FK_ImportActions_FileTypes" Association="WaterNutDBModel.FK_ImportActions_FileTypes">
+            <End Role="FileTypes" EntitySet="FileTypes" />
+            <End Role="ImportActions" EntitySet="ImportActions" />
+          </AssociationSet>
           </EntityContainer>
         <EntityType Name="ApplicationSettings">
           <Key>
@@ -4272,6 +4315,7 @@ FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
           <Property Name="OldFileTypeId" Type="Int32" />
           <Property Name="ReplicateHeaderRow" Type="Boolean" />
           <Property Name="IsImportable" Type="Boolean" />
+          <NavigationProperty Name="ImportActions" Relationship="WaterNutDBModel.FK_ImportActions_FileTypes" FromRole="FileTypes" ToRole="ImportActions" />
         </EntityType>
         <Association Name="FK_FileTypes_ApplicationSettings">
           <End Type="WaterNutDBModel.ApplicationSettings" Role="ApplicationSettings" Multiplicity="1">
@@ -6031,7 +6075,34 @@ FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
           <Property Name="C71Total" Type="Double" Nullable="false" />
           <Property Name="Rate" Type="Double" Nullable="false" />
           <Property Name="GeneratedC71Total" Type="Double" />
+          <Property Name="Address" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Value_declaration_form_Id" Type="Int32" />
+          <Property Name="RegisteredID" Type="Int32" />
         </EntityType>
+        <EntityType Name="ImportActions">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="FileTypeId" Type="Int32" Nullable="false" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Action" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="FileTypes" Relationship="WaterNutDBModel.FK_ImportActions_FileTypes" FromRole="ImportActions" ToRole="FileTypes" />
+        </EntityType>
+        <Association Name="FK_ImportActions_FileTypes">
+          <End Type="WaterNutDBModel.FileTypes" Role="FileTypes" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="WaterNutDBModel.ImportActions" Role="ImportActions" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="FileTypes">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ImportActions">
+              <PropertyRef Name="FileTypeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -7613,6 +7684,9 @@ FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
           <EntitySetMapping Name="TODO_C71ToCreate">
             <EntityTypeMapping TypeName="WaterNutDBModel.TODO_C71ToCreate">
               <MappingFragment StoreEntitySet="TODO-C71ToCreate">
+                <ScalarProperty Name="RegisteredID" ColumnName="RegisteredID" />
+                <ScalarProperty Name="Value_declaration_form_Id" ColumnName="Value_declaration_form_Id" />
+                <ScalarProperty Name="Address" ColumnName="Address" />
                 <ScalarProperty Name="GeneratedC71Total" ColumnName="GeneratedC71Total" />
                 <ScalarProperty Name="Rate" ColumnName="Rate" />
                 <ScalarProperty Name="C71Total" ColumnName="C71Total" />
@@ -7631,6 +7705,16 @@ FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
                 <ScalarProperty Name="Country_of_origin_code" ColumnName="Country_of_origin_code" />
                 <ScalarProperty Name="ApplicationSettingsId" ColumnName="ApplicationSettingsId" />
                 <ScalarProperty Name="AsycudaDocumentSetId" ColumnName="AsycudaDocumentSetId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ImportActions">
+            <EntityTypeMapping TypeName="WaterNutDBModel.ImportActions">
+              <MappingFragment StoreEntitySet="ImportActions">
+                <ScalarProperty Name="Action" ColumnName="Action" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="FileTypeId" ColumnName="FileTypeId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

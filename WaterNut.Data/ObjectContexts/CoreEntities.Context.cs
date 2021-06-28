@@ -225,6 +225,8 @@ namespace CoreEntities.Business.Entities
      
         public DbSet<TODO_C71ToCreate> TODO_C71ToCreate { get; set; }
      
+        public DbSet<ImportActions> ImportActions { get; set; }
+     
 
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
@@ -406,6 +408,8 @@ namespace CoreEntities.Business.Entities
             modelBuilder.Configurations.Add(new TODO_AssessDiscrepancyEntriesMap());
          
             modelBuilder.Configurations.Add(new TODO_C71ToCreateMap());
+         
+            modelBuilder.Configurations.Add(new ImportActionsMap());
          
 			OnModelCreatingExtentsion(modelBuilder);
 

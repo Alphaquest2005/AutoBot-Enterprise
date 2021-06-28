@@ -206,6 +206,7 @@ namespace Core.Common.Extensions
             }
             set
             {
+
                 try
                 {
                     if (_dict.ContainsKey(key))

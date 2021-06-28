@@ -476,6 +476,42 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
         }	
 
  
+
+		private string _addressFilter;
+        public string AddressFilter
+        {
+            get
+            {
+                return _addressFilter;
+            }
+            set
+            {
+                _addressFilter = value;
+				NotifyPropertyChanged(x => AddressFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
+
+		private Int32? _registeredIDFilter;
+        public Int32? RegisteredIDFilter
+        {
+            get
+            {
+                return _registeredIDFilter;
+            }
+            set
+            {
+                _registeredIDFilter = value;
+				NotifyPropertyChanged(x => RegisteredIDFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
 		internal bool DisableBaseFilterData = false;
         public virtual void FilterData()
 	    {
@@ -559,7 +595,14 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 						res.Append(" && " + string.Format("Rate == {0}",  RateFilter.ToString()));				 
 
 					if(GeneratedC71TotalFilter.HasValue)
-						res.Append(" && " + string.Format("GeneratedC71Total == {0}",  GeneratedC71TotalFilter.ToString()));							return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
+						res.Append(" && " + string.Format("GeneratedC71Total == {0}",  GeneratedC71TotalFilter.ToString()));				 
+
+									if(string.IsNullOrEmpty(AddressFilter) == false)
+						res.Append(" && " + string.Format("Address.Contains(\"{0}\")",  AddressFilter));						
+ 
+
+					if(RegisteredIDFilter.HasValue)
+						res.Append(" && " + string.Format("RegisteredID == {0}",  RegisteredIDFilter.ToString()));							return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
 // Send to Excel Implementation
@@ -627,7 +670,13 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     Rate = x.Rate ,
                     
  
-                    GeneratedC71Total = x.GeneratedC71Total 
+                    GeneratedC71Total = x.GeneratedC71Total ,
+                    
+ 
+                    Address = x.Address ,
+                    
+ 
+                    RegisteredID = x.RegisteredID 
                     
                 }).ToList()
             };
@@ -686,6 +735,12 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     
  
                     public Nullable<double> GeneratedC71Total { get; set; } 
+                    
+ 
+                    public string Address { get; set; } 
+                    
+ 
+                    public Nullable<int> RegisteredID { get; set; } 
                     
         }
 
