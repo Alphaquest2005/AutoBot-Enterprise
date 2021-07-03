@@ -5945,7 +5945,7 @@ namespace AutoBot
 
         public static string ReplaceSpecialChar(string msgSubject, string rstring)
         {
-            return Regex.Replace(msgSubject, @"[^0-9a-zA-Z.\s]+", rstring);
+            return Regex.Replace(msgSubject, @"[^0-9a-zA-Z.\s\-]+", rstring);
         }
 
 
