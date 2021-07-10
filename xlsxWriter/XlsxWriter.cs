@@ -92,7 +92,7 @@ namespace xlsxWriter
                             DoMisMatches(shipmentInvoice, workbook);
                             workbook.Save();
 
-                            //if (!File.Exists(pdfFilePath))
+                            if (pdfFile.FullName != pdfFilePath)
                                 File.Copy(pdfFile.FullName, pdfFilePath, true);
                             csvs.Add((pO.PurchaseOrders.PONumber, pdfFilePath));
                             
@@ -107,8 +107,8 @@ namespace xlsxWriter
 
                          DoMisMatches(shipmentInvoice, workbook);
                             workbook.Save();
-                        //if (!File.Exists(pdfFilePath)
-                        File.Copy(pdfFile.FullName, pdfFilePath, true);
+                         if (pdfFile.FullName != pdfFilePath)
+                            File.Copy(pdfFile.FullName, pdfFilePath, true);
                         csvs.Add((shipmentInvoice.InvoiceNo, pdfFilePath));
                         
                     }
