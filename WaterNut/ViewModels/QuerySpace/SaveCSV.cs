@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using AutoBot;
 using Core.Common.UI;
+using CoreEntities.Business.Entities;
 using CoreEntities.Client.Entities;
 using EntryDataQS.Client.Repositories;
 using Microsoft.Win32;
@@ -31,7 +34,7 @@ namespace WaterNut.QuerySpace
             var od = new OpenFileDialog();
             od.Title = "Import Entry Data";
             od.DefaultExt = ".csv";
-            od.Filter = "CSV Files (.csv)|*.csv|TXT Files (.txt)|*.txt";
+            od.Filter = "CSV Files (.csv)|*.csv|TXT Files (.txt)|*.txt|XLSX Files (.xlsx)|*.xlsx";
             od.Multiselect = true;
             var result = od.ShowDialog();
             if (result == true)
@@ -66,7 +69,11 @@ namespace WaterNut.QuerySpace
                             EntryDataExRepository.Instance.SavePDF(f, fileType, asycudaDocumentSetId, overwrite)
                                 .ConfigureAwait(false);
                     }
-                    
+                    if (f.EndsWith(".xlsx"))
+                    {
+                       Utils.Xlsx2csv(new FileInfo[]{ new FileInfo(f)}, new CoreEntitiesContext().FileTypes.First(x => x.Type == fileType && x.ApplicationSettingsId == WaterNut.QuerySpace.CoreEntities.ViewModels.BaseViewModel.Instance.CurrentApplicationSettings.ApplicationSettingsId));
+                    }
+
                 }
 
                 

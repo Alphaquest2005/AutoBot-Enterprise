@@ -822,7 +822,7 @@ namespace AdjustmentQS.Business.Services
                     if (_itemCache != null) return _itemCache;
                     using (var ctx = new CoreEntitiesContext())
                     {
-                        ctx.Database.CommandTimeout = 10;
+                        ctx.Database.CommandTimeout = 0;
                         _itemCache = ctx.AsycudaDocumentItems
                             .Include(x => x.AsycudaDocument)
                             .Include(x => x.AsycudaDocumentItemEntryDataDetails)
