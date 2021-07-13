@@ -901,7 +901,7 @@ namespace WaterNut.DataSpace
                     if (pod.EntryData is PurchaseOrders p)
                         if (p.WarehouseInfo.Any())
                             pkg.Marks2_of_packages = p.WarehouseInfo.Select(z => z.WarehouseNo).DefaultIfEmpty("")
-                                .Aggregate((o, n) => $"{o},{n}");
+                                .Aggregate((o, n) => $"{o},{n}").Truncate(39);
                     itm.xcuda_Packages.Add(pkg);
                 }
 
