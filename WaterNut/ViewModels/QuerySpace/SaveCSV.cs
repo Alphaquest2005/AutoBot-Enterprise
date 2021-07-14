@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -11,6 +12,7 @@ using CoreEntities.Business.Entities;
 using CoreEntities.Client.Entities;
 using EntryDataQS.Client.Repositories;
 using Microsoft.Win32;
+using xcuda_Supplementary_unit = CoreEntities.Business.Entities.xcuda_Supplementary_unit;
 
 namespace WaterNut.QuerySpace
 {
@@ -71,7 +73,12 @@ namespace WaterNut.QuerySpace
                     }
                     if (f.EndsWith(".xlsx"))
                     {
-                       Utils.Xlsx2csv(new FileInfo[]{ new FileInfo(f)}, new CoreEntitiesContext().FileTypes.First(x => x.Type == fileType && x.ApplicationSettingsId == WaterNut.QuerySpace.CoreEntities.ViewModels.BaseViewModel.Instance.CurrentApplicationSettings.ApplicationSettingsId));
+                       Utils.Xlsx2csv(new FileInfo[]{ new FileInfo(f)}, new CoreEntitiesContext().FileTypes
+                                        .Include(x => x.ChildFileTypes)
+                                        .Include(x => x.FileTypeMappings)
+                                        .First(x => x.Type == "XLSX" 
+                           && x.ChildFileTypes.Any(z => z.Type == fileType)
+                           && x.ApplicationSettingsId == WaterNut.QuerySpace.CoreEntities.ViewModels.BaseViewModel.Instance.CurrentApplicationSettings.ApplicationSettingsId));
                     }
 
                 }

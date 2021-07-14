@@ -204,7 +204,7 @@ namespace PreviousDocumentQS.Client.Repositories
                     {
                   // PreviousDocument = (res.PreviousDocument != null?new PreviousDocument(res.PreviousDocument): null),    
                      // PreviousItemsExes = new System.Collections.ObjectModel.ObservableCollection<PreviousItemsEx>(res.PreviousItemsExes.Select(y => new PreviousItemsEx(y))),    
-                     // PreviousItemEx = new System.Collections.ObjectModel.ObservableCollection<PreviousItemsEx>(res.PreviousItemEx.Select(y => new PreviousItemsEx(y)))    
+                     // PreviousItemsExes1 = new System.Collections.ObjectModel.ObservableCollection<PreviousItemsEx>(res.PreviousItemsExes1.Select(y => new PreviousItemsEx(y)))    
                   };
                     }
                     else

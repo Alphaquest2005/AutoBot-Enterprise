@@ -45,7 +45,7 @@ namespace EntryDataQS.Client.Entities
         
 
 
-       [RequiredValidationAttribute(ErrorMessage= "Type is required")]
+       
        
                 
                 [MaxLength(50, ErrorMessage = "Type has a max length of 50 letters ")]
@@ -109,9 +109,9 @@ public Nullable<int> ImportedLines
 		}
      
 
-       [RequiredValidationAttribute(ErrorMessage= "TotalLines is required")]
+       
        [NumberValidationAttribute]
-public int TotalLines
+public Nullable<int> TotalLines
 		{ 
 		    get { return this.entrydataex.TotalLines; }
 			set
@@ -235,9 +235,9 @@ public string SupplierCode
 		}
      
 
-       [RequiredValidationAttribute(ErrorMessage= "ImportedTotal is required")]
+       
        [NumberValidationAttribute]
-public double ImportedTotal
+public Nullable<double> ImportedTotal
 		{ 
 		    get { return this.entrydataex.ImportedTotal; }
 			set

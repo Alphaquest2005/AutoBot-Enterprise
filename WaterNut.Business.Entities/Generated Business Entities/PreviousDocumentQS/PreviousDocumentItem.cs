@@ -23,7 +23,7 @@ namespace PreviousDocumentQS.Business.Entities
         partial void AutoGenStartUp() //PreviousDocumentItem()
         {
             this.PreviousItemsExes = new List<PreviousItemsEx>();
-            this.PreviousItemEx = new List<PreviousItemsEx>();
+            this.PreviousItemsExes1 = new List<PreviousItemsEx>();
         }
 
         [DataMember]
@@ -496,7 +496,7 @@ namespace PreviousDocumentQS.Business.Entities
         [DataMember]
         public List<PreviousItemsEx> PreviousItemsExes { get; set; }
         [DataMember]
-        public List<PreviousItemsEx> PreviousItemEx { get; set; }
+        public List<PreviousItemsEx> PreviousItemsExes1 { get; set; }
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

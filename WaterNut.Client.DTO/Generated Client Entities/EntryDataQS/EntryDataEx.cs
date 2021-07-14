@@ -74,7 +74,7 @@ namespace EntryDataQS.Client.DTO
         private Nullable<int> _ImportedLines;
 
         [DataMember]
-        public int TotalLines
+        public Nullable<int> TotalLines
 		{ 
 		    get { return _TotalLines; }
 			set
@@ -84,7 +84,7 @@ namespace EntryDataQS.Client.DTO
 				NotifyPropertyChanged();//m => this.TotalLines
 			}
 		}
-        private int _TotalLines;
+        private Nullable<int> _TotalLines;
 
         [DataMember]
         public string Currency
@@ -178,7 +178,7 @@ namespace EntryDataQS.Client.DTO
         private string _SupplierCode;
 
         [DataMember]
-        public double ImportedTotal
+        public Nullable<double> ImportedTotal
 		{ 
 		    get { return _ImportedTotal; }
 			set
@@ -188,7 +188,7 @@ namespace EntryDataQS.Client.DTO
 				NotifyPropertyChanged();//m => this.ImportedTotal
 			}
 		}
-        private double _ImportedTotal;
+        private Nullable<double> _ImportedTotal;
 
         [DataMember]
         public double ExpectedTotal

@@ -61,7 +61,7 @@ namespace WaterNut.DataSpace
                     throw new ApplicationException("Please select Document Set before proceding!");
 
                 }
-                var mappingFileType = GetHeadingFileType(headings);
+                var mappingFileType = GetHeadingFileType(headings, fileType.Type);
                 if (mappingFileType != null && mappingFileType.Id != fileType.Id && mappingFileType.Id != fileType.ParentFileTypeId) fileType = mappingFileType;
 
                 fileType = BaseDataModel.GetFileType(fileType);
@@ -97,7 +97,7 @@ namespace WaterNut.DataSpace
 
       
 
-        private FileTypes GetHeadingFileType(string[] heading)
+        private FileTypes GetHeadingFileType(string[] heading, string type)
         {
            
             using (var ctx = new CoreEntitiesContext())
@@ -110,7 +110,8 @@ namespace WaterNut.DataSpace
                         .SelectMany(x => x.FileTypeMappings.Where(z => heading.Select(h => h.ToUpper().Trim()).Contains(z.OriginalName.ToUpper().Trim())))
                         .GroupBy(x => x.FileTypes)
                         .OrderByDescending(x => x.Count())
-                        .Where(x => x.Key.IsImportable == null || x.Key.IsImportable == true) 
+                        .Where(x => x.Key.IsImportable == null || x.Key.IsImportable == true)
+                        .Where(x => type == "Unknown"? x.Key.Type != null : x.Key.Type == type )
                         .ToList();
 
                  var res = resLst.FirstOrDefault();
@@ -1256,7 +1257,7 @@ namespace WaterNut.DataSpace
                                     {
                                         ApplicationSettingsId = applicationSettingsId,
                                         EntryDataId = entryDataId,
-                                        EntryType = "ADJ",
+                                        EntryType = "DIS",
                                         EntryDataDate = (DateTime) item.EntryData.EntryDataDate,
                                         SupplierCode = item.EntryData.Supplier,
                                         TrackingState = TrackingState.Added,
@@ -1290,7 +1291,7 @@ namespace WaterNut.DataSpace
                                     {
                                         ApplicationSettingsId = applicationSettingsId,
                                         EntryDataId = entryDataId,
-                                        EntryType = "ADJ",
+                                        EntryType = "RCON",
                                         EntryDataDate = (DateTime) item.EntryData.EntryDataDate,
                                         TrackingState = TrackingState.Added,
                                         TotalFreight = item.f.Sum(x => (double)x.TotalFreight),

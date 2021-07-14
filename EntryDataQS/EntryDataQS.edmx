@@ -170,20 +170,17 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.EntryDataEx' does not hav
             
             
             
-            
-            
-            
           </Key>
           <Property Name="EntryData_Id" Type="int" Nullable="false" />
           <Property Name="InvoiceDate" Type="datetime2" Precision="7" Nullable="false" />
-          <Property Name="Type" Type="nvarchar" MaxLength="50" Nullable="false" />
-          <Property Name="ImportedTotal" Type="float" Nullable="false" />
+          <Property Name="Type" Type="nvarchar" MaxLength="50" />
+          <Property Name="ImportedTotal" Type="float" />
           <Property Name="InvoiceNo" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="SupplierInvoiceNo" Type="nvarchar" MaxLength="50" />
           <Property Name="Tax" Type="float" />
           <Property Name="InvoiceTotal" Type="float" />
           <Property Name="ImportedLines" Type="int" />
-          <Property Name="TotalLines" Type="float" Nullable="false" />
+          <Property Name="TotalLines" Type="int" />
           <Property Name="Currency" Type="nvarchar" MaxLength="4" />
           <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
           <Property Name="DutyFreePaid" Type="varchar" MaxLength="9" Nullable="false" />
@@ -431,14 +428,14 @@ FROM [dbo].[InventoryItemsEx] AS [InventoryItemsEx]</DefiningQuery>
           <Key>
             <PropertyRef Name="EntryData_Id" />
           </Key>
-          <Property Name="Type" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Type" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="InvoiceDate" Type="DateTime" Nullable="false" Precision="7"><a:OrderByProperty xmlns:a="http://schemas.tempuri.com/OrderByProperty">Desc</a:OrderByProperty></Property>
           <Property Name="InvoiceNo" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="AsycudaDocumentSets" Relationship="WaterNutEntities.EntryDataExAsycudaDocumentSetEntryData" FromRole="EntryDataEx" ToRole="AsycudaDocumentSetEntryData" />
           <NavigationProperty Name="AsycudaDocuments" Relationship="WaterNutEntities.EntryDataExAsycudaDocumentEntryData" FromRole="EntryDataEx" ToRole="AsycudaDocumentEntryData" />
           <NavigationProperty Name="EntryDataDetailsExs" Relationship="WaterNutEntities.EntryDataExEntryDataDetailsEx" FromRole="EntryDataEx" ToRole="EntryDataDetailsEx" />
           <Property Name="ImportedLines" Type="Int32" />
-          <Property Name="TotalLines" Type="Int32" Nullable="false" />
+          <Property Name="TotalLines" Type="Int32" />
           <Property Name="Currency" Type="String" MaxLength="4" FixedLength="false" Unicode="true" />
           <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
           <Property Name="DutyFreePaid" Type="String" Nullable="false" MaxLength="9" FixedLength="false" Unicode="false" />
@@ -446,7 +443,7 @@ FROM [dbo].[InventoryItemsEx] AS [InventoryItemsEx]</DefiningQuery>
           <Property Name="FileTypeId" Type="Int32" />
           <Property Name="InvoiceTotal" Type="Double" />
           <Property Name="SupplierCode" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Name="ImportedTotal" Type="Double" Nullable="false" />
+          <Property Name="ImportedTotal" Type="Double" />
           <Property Name="ExpectedTotal" Type="Double" Nullable="false" />
           <Property Name="AsycudaDocumentSetId" Type="Int32" Nullable="false" />
           <Property Name="TotalInternalFreight" Type="Double" Nullable="false" />

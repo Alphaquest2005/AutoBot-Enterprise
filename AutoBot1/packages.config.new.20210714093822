@@ -2,16 +2,13 @@
 <packages>
   <package id="BouncyCastle" version="1.8.9" targetFramework="net47" />
   <package id="EntityFramework" version="6.4.4" targetFramework="net47" />
-  <package id="Microsoft.Office.Interop.Excel" version="15.0.4795.1000" targetFramework="net462" />
+  <package id="Microsoft.NETCore.Platforms" version="5.0.2" targetFramework="net47" />
   <package id="Microsoft.Win32.Primitives" version="4.3.0" targetFramework="net47" />
-  <package id="morelinq" version="3.3.2" targetFramework="net48" />
-  <package id="MSFT.ParallelExtensionsExtras" version="1.2.0" targetFramework="net45" />
-  <package id="MvcScaffolding" version="1.0.9" targetFramework="net45" />
-  <package id="Newtonsoft.Json" version="13.0.1" targetFramework="net47" />
+  <package id="morelinq" version="3.3.2" targetFramework="net47" />
+  <package id="NanoXLSX" version="1.8.0" targetFramework="net48" />
   <package id="PdfPig" version="0.1.4" targetFramework="net47" />
+  <package id="PicoXLSX" version="2.11.0" targetFramework="net48" />
   <package id="Portable.BouncyCastle" version="1.8.10" targetFramework="net47" />
-  <package id="Serialize.Linq" version="2.0.0" targetFramework="net47" />
-  <package id="SimpleMvvmToolkit" version="5.5.1.0" targetFramework="net45" />
   <package id="System.AppContext" version="4.3.0" targetFramework="net47" />
   <package id="System.Buffers" version="4.5.1" targetFramework="net47" />
   <package id="System.Collections" version="4.3.0" targetFramework="net47" />
@@ -25,7 +22,7 @@
   <package id="System.Globalization" version="4.3.0" targetFramework="net47" />
   <package id="System.Globalization.Calendars" version="4.3.0" targetFramework="net47" />
   <package id="System.IO" version="4.3.0" targetFramework="net47" />
-  <package id="System.IO.Compression" version="4.3.0" targetFramework="net47" />
+  <package id="System.IO.Compression" version="4.3.0" targetFramework="net48" />
   <package id="System.IO.Compression.ZipFile" version="4.3.0" targetFramework="net47" />
   <package id="System.IO.FileSystem" version="4.3.0" targetFramework="net47" />
   <package id="System.IO.FileSystem.Primitives" version="4.3.0" targetFramework="net47" />
@@ -58,15 +55,12 @@
   <package id="System.Text.RegularExpressions" version="4.3.1" targetFramework="net47" />
   <package id="System.Threading" version="4.3.0" targetFramework="net47" />
   <package id="System.Threading.Tasks" version="4.3.0" targetFramework="net47" />
+  <package id="System.Threading.Thread" version="4.3.0" targetFramework="net48" />
   <package id="System.Threading.Timer" version="4.3.0" targetFramework="net47" />
-  <package id="System.ValueTuple" version="4.5.0" targetFramework="net47" />
+  <package id="System.ValueTuple" version="4.5.0" targetFramework="net462" requireReinstallation="true" />
   <package id="System.Xml.ReaderWriter" version="4.3.1" targetFramework="net47" />
   <package id="System.Xml.XDocument" version="4.3.0" targetFramework="net47" />
-  <package id="T4Scaffolding" version="1.0.8" targetFramework="net45" />
-  <package id="T4Scaffolding.Core" version="1.0.0" targetFramework="net45" />
   <package id="Tesseract" version="4.1.1" targetFramework="net47" />
   <package id="Tesseract.Drawing" version="4.1.1" targetFramework="net47" />
   <package id="TesserNet" version="0.3.0" targetFramework="net47" />
-  <package id="TesserNet.System.Drawing" version="0.3.0" targetFramework="net47" />
-  <package id="ValueInjecter" version="3.2.0" targetFramework="net462" />
 </packages>

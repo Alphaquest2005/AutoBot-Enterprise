@@ -376,8 +376,8 @@ namespace WaterNut.QuerySpace.PreviousDocumentQS.ViewModels
 
  
 
-		private Double? _net_weightFilter;
-        public Double? Net_weightFilter
+		private Decimal? _net_weightFilter;
+        public Decimal? Net_weightFilter
         {
             get
             {
@@ -394,8 +394,8 @@ namespace WaterNut.QuerySpace.PreviousDocumentQS.ViewModels
 
  
 
-		private Double? _prev_net_weightFilter;
-        public Double? Prev_net_weightFilter
+		private Decimal? _prev_net_weightFilter;
+        public Decimal? Prev_net_weightFilter
         {
             get
             {
@@ -484,8 +484,8 @@ namespace WaterNut.QuerySpace.PreviousDocumentQS.ViewModels
 
  
 
-		private Double? _suplementary_QuantityFilter;
-        public Double? Suplementary_QuantityFilter
+		private Decimal? _suplementary_QuantityFilter;
+        public Decimal? Suplementary_QuantityFilter
         {
             get
             {
@@ -610,6 +610,24 @@ namespace WaterNut.QuerySpace.PreviousDocumentQS.ViewModels
 
  
 
+		private string _referenceNumberFilter;
+        public string ReferenceNumberFilter
+        {
+            get
+            {
+                return _referenceNumberFilter;
+            }
+            set
+            {
+                _referenceNumberFilter = value;
+				NotifyPropertyChanged(x => ReferenceNumberFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
+
 		private string _cNumberFilter;
         public string CNumberFilter
         {
@@ -677,24 +695,6 @@ namespace WaterNut.QuerySpace.PreviousDocumentQS.ViewModels
         }	
 
  
-
-		private string _referenceNumberFilter;
-        public string ReferenceNumberFilter
-        {
-            get
-            {
-                return _referenceNumberFilter;
-            }
-            set
-            {
-                _referenceNumberFilter = value;
-				NotifyPropertyChanged(x => ReferenceNumberFilter);
-                FilterData();
-                
-            }
-        }	
-
- 
 		private DateTime? _startAssessmentDateFilter = DateTime.Parse(string.Format("{0}/1/{1}", DateTime.Now.Month ,DateTime.Now.Year));
         public DateTime? StartAssessmentDateFilter
         {
@@ -746,17 +746,17 @@ namespace WaterNut.QuerySpace.PreviousDocumentQS.ViewModels
 
  
 
-		private string _itemNumberFilter;
-        public string ItemNumberFilter
+		private string _prev_decl_HS_specFilter;
+        public string Prev_decl_HS_specFilter
         {
             get
             {
-                return _itemNumberFilter;
+                return _prev_decl_HS_specFilter;
             }
             set
             {
-                _itemNumberFilter = value;
-				NotifyPropertyChanged(x => ItemNumberFilter);
+                _prev_decl_HS_specFilter = value;
+				NotifyPropertyChanged(x => Prev_decl_HS_specFilter);
                 FilterData();
                 
             }
@@ -818,17 +818,17 @@ namespace WaterNut.QuerySpace.PreviousDocumentQS.ViewModels
 
  
 
-		private string _prev_decl_HS_specFilter;
-        public string Prev_decl_HS_specFilter
+		private string _itemNumberFilter;
+        public string ItemNumberFilter
         {
             get
             {
-                return _prev_decl_HS_specFilter;
+                return _itemNumberFilter;
             }
             set
             {
-                _prev_decl_HS_specFilter = value;
-				NotifyPropertyChanged(x => Prev_decl_HS_specFilter);
+                _itemNumberFilter = value;
+				NotifyPropertyChanged(x => ItemNumberFilter);
                 FilterData();
                 
             }
@@ -987,6 +987,10 @@ namespace WaterNut.QuerySpace.PreviousDocumentQS.ViewModels
 					if(RndCurrent_ValueFilter.HasValue)
 						res.Append(" && " + string.Format("RndCurrent_Value == {0}",  RndCurrent_ValueFilter.ToString()));				 
 
+									if(string.IsNullOrEmpty(ReferenceNumberFilter) == false)
+						res.Append(" && " + string.Format("ReferenceNumber.Contains(\"{0}\")",  ReferenceNumberFilter));						
+ 
+
 									if(string.IsNullOrEmpty(CNumberFilter) == false)
 						res.Append(" && " + string.Format("CNumber.Contains(\"{0}\")",  CNumberFilter));						
  
@@ -1020,10 +1024,6 @@ namespace WaterNut.QuerySpace.PreviousDocumentQS.ViewModels
 						}
 				 
 
-									if(string.IsNullOrEmpty(ReferenceNumberFilter) == false)
-						res.Append(" && " + string.Format("ReferenceNumber.Contains(\"{0}\")",  ReferenceNumberFilter));						
- 
-
  
 
 				if (Convert.ToDateTime(StartAssessmentDateFilter).Date != DateTime.MinValue &&
@@ -1053,8 +1053,8 @@ namespace WaterNut.QuerySpace.PreviousDocumentQS.ViewModels
 						}
 				 
 
-									if(string.IsNullOrEmpty(ItemNumberFilter) == false)
-						res.Append(" && " + string.Format("ItemNumber.Contains(\"{0}\")",  ItemNumberFilter));						
+									if(string.IsNullOrEmpty(Prev_decl_HS_specFilter) == false)
+						res.Append(" && " + string.Format("Prev_decl_HS_spec.Contains(\"{0}\")",  Prev_decl_HS_specFilter));						
  
 
 					if(SalesFactorFilter.HasValue)
@@ -1068,8 +1068,8 @@ namespace WaterNut.QuerySpace.PreviousDocumentQS.ViewModels
 						res.Append(" && " + string.Format("DutyFreePaid.Contains(\"{0}\")",  DutyFreePaidFilter));						
  
 
-									if(string.IsNullOrEmpty(Prev_decl_HS_specFilter) == false)
-						res.Append(" && " + string.Format("Prev_decl_HS_spec.Contains(\"{0}\")",  Prev_decl_HS_specFilter));						
+									if(string.IsNullOrEmpty(ItemNumberFilter) == false)
+						res.Append(" && " + string.Format("ItemNumber.Contains(\"{0}\")",  ItemNumberFilter));						
  
 
 					if(pLineNumberFilter.HasValue)
@@ -1159,19 +1159,19 @@ namespace WaterNut.QuerySpace.PreviousDocumentQS.ViewModels
                     RndCurrent_Value = x.RndCurrent_Value ,
                     
  
+                    ReferenceNumber = x.ReferenceNumber ,
+                    
+ 
                     CNumber = x.CNumber ,
                     
  
                     RegistrationDate = x.RegistrationDate ,
                     
  
-                    ReferenceNumber = x.ReferenceNumber ,
-                    
- 
                     AssessmentDate = x.AssessmentDate ,
                     
  
-                    ItemNumber = x.ItemNumber ,
+                    Prev_decl_HS_spec = x.Prev_decl_HS_spec ,
                     
  
                     SalesFactor = x.SalesFactor ,
@@ -1183,7 +1183,7 @@ namespace WaterNut.QuerySpace.PreviousDocumentQS.ViewModels
                     DutyFreePaid = x.DutyFreePaid ,
                     
  
-                    Prev_decl_HS_spec = x.Prev_decl_HS_spec ,
+                    ItemNumber = x.ItemNumber ,
                     
  
                     pLineNumber = x.pLineNumber ,
@@ -1223,10 +1223,10 @@ namespace WaterNut.QuerySpace.PreviousDocumentQS.ViewModels
                     public string Goods_origin { get; set; } 
                     
  
-                    public double Net_weight { get; set; } 
+                    public Nullable<decimal> Net_weight { get; set; } 
                     
  
-                    public double Prev_net_weight { get; set; } 
+                    public Nullable<decimal> Prev_net_weight { get; set; } 
                     
  
                     public string Prev_reg_ser { get; set; } 
@@ -1241,7 +1241,7 @@ namespace WaterNut.QuerySpace.PreviousDocumentQS.ViewModels
                     public string Prev_reg_cuo { get; set; } 
                     
  
-                    public double Suplementary_Quantity { get; set; } 
+                    public decimal Suplementary_Quantity { get; set; } 
                     
  
                     public double Preveious_suplementary_quantity { get; set; } 
@@ -1262,19 +1262,19 @@ namespace WaterNut.QuerySpace.PreviousDocumentQS.ViewModels
                     public double RndCurrent_Value { get; set; } 
                     
  
+                    public string ReferenceNumber { get; set; } 
+                    
+ 
                     public string CNumber { get; set; } 
                     
  
                     public Nullable<System.DateTime> RegistrationDate { get; set; } 
                     
  
-                    public string ReferenceNumber { get; set; } 
-                    
- 
                     public Nullable<System.DateTime> AssessmentDate { get; set; } 
                     
  
-                    public string ItemNumber { get; set; } 
+                    public string Prev_decl_HS_spec { get; set; } 
                     
  
                     public double SalesFactor { get; set; } 
@@ -1286,7 +1286,7 @@ namespace WaterNut.QuerySpace.PreviousDocumentQS.ViewModels
                     public string DutyFreePaid { get; set; } 
                     
  
-                    public string Prev_decl_HS_spec { get; set; } 
+                    public string ItemNumber { get; set; } 
                     
  
                     public Nullable<int> pLineNumber { get; set; } 

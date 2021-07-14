@@ -836,7 +836,7 @@ namespace WaterNut.DataSpace
                                                                 $"Adjustments.Type == \"ADJ\" && " + /// Only Adjustments not DIS that should have pCNumber to get matched
 																"((PreviousInvoiceNumber == null) ||" +//pCNumber == null && 
 																" (( PreviousInvoiceNumber != null) && QtyAllocated == 0))" + //trying to capture unallocated adjustments//pCNumber != null ||
-																" && (ReceivedQty - InvoiceQty) < 0 && (EffectiveDate != null || " + ( $"EffectiveDate >= \"{BaseDataModel.Instance.CurrentApplicationSettings.OpeningStockDate}\"") +  ")" +
+																" && (ReceivedQty - InvoiceQty) <= 0 && (EffectiveDate != null || " + ( $"EffectiveDate >= \"{BaseDataModel.Instance.CurrentApplicationSettings.OpeningStockDate}\"") +  ")" +
 															   //"&& Cost > 0 " + --------Cost don't matter in allocations because it comes from previous doc
 															   "&& DoNotAllocate != true", new Dictionary<string, string>()
 															   {

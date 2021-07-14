@@ -455,17 +455,17 @@ namespace PreviousDocumentQS.Client.DTO
         private ChangeTrackingCollection<PreviousItemsEx> _PreviousItemsExes = new ChangeTrackingCollection<PreviousItemsEx>();
 
         [DataMember]
-        public ChangeTrackingCollection<PreviousItemsEx> PreviousItemEx
+        public ChangeTrackingCollection<PreviousItemsEx> PreviousItemsExes1
 		{
-		    get { return _PreviousItemEx; }
+		    get { return _PreviousItemsExes1; }
 			set
 			{
-			    if (Equals(value, _PreviousItemEx)) return;
-				_PreviousItemEx = value;
-				NotifyPropertyChanged();//m => this.PreviousItemEx
+			    if (Equals(value, _PreviousItemsExes1)) return;
+				_PreviousItemsExes1 = value;
+				NotifyPropertyChanged();//m => this.PreviousItemsExes1
 			}
 		}
-        private ChangeTrackingCollection<PreviousItemsEx> _PreviousItemEx = new ChangeTrackingCollection<PreviousItemsEx>();
+        private ChangeTrackingCollection<PreviousItemsEx> _PreviousItemsExes1 = new ChangeTrackingCollection<PreviousItemsEx>();
 
    //     [DataMember]
    //     public TrackingState TrackingState { get; set; }

@@ -111,7 +111,7 @@ namespace PreviousDocumentQS.Business.Entities
         }
         string _goods_origin;
         [DataMember]
-        public double Net_weight 
+        public Nullable<decimal> Net_weight 
         {
             get
             {
@@ -124,9 +124,9 @@ namespace PreviousDocumentQS.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        double _net_weight;
+        Nullable<decimal> _net_weight;
         [DataMember]
-        public double Prev_net_weight 
+        public Nullable<decimal> Prev_net_weight 
         {
             get
             {
@@ -139,7 +139,7 @@ namespace PreviousDocumentQS.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        double _prev_net_weight;
+        Nullable<decimal> _prev_net_weight;
         [DataMember]
         public string Prev_reg_ser 
         {
@@ -201,7 +201,7 @@ namespace PreviousDocumentQS.Business.Entities
         }
         string _prev_reg_cuo;
         [DataMember]
-        public double Suplementary_Quantity 
+        public decimal Suplementary_Quantity 
         {
             get
             {
@@ -214,7 +214,7 @@ namespace PreviousDocumentQS.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        double _suplementary_quantity;
+        decimal _suplementary_quantity;
         [DataMember]
         public double Preveious_suplementary_quantity 
         {
@@ -321,6 +321,21 @@ namespace PreviousDocumentQS.Business.Entities
         }
         double _qtyallocated;
         [DataMember]
+        public Nullable<int> PreviousDocumentItemId 
+        {
+            get
+            {
+                return _previousdocumentitemid;
+            }
+            set
+            {
+                _previousdocumentitemid = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<int> _previousdocumentitemid;
+        [DataMember]
         public double RndCurrent_Value 
         {
             get
@@ -335,6 +350,21 @@ namespace PreviousDocumentQS.Business.Entities
             }
         }
         double _rndcurrent_value;
+        [DataMember]
+        public string ReferenceNumber 
+        {
+            get
+            {
+                return _referencenumber;
+            }
+            set
+            {
+                _referencenumber = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _referencenumber;
         [DataMember]
         public string CNumber 
         {
@@ -366,21 +396,6 @@ namespace PreviousDocumentQS.Business.Entities
         }
         Nullable<System.DateTime> _registrationdate;
         [DataMember]
-        public Nullable<int> PreviousDocumentItemId 
-        {
-            get
-            {
-                return _previousdocumentitemid;
-            }
-            set
-            {
-                _previousdocumentitemid = value;
-                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
-                NotifyPropertyChanged();
-            }
-        }
-        Nullable<int> _previousdocumentitemid;
-        [DataMember]
         public int AsycudaDocumentItemId 
         {
             get
@@ -395,21 +410,6 @@ namespace PreviousDocumentQS.Business.Entities
             }
         }
         int _asycudadocumentitemid;
-        [DataMember]
-        public string ReferenceNumber 
-        {
-            get
-            {
-                return _referencenumber;
-            }
-            set
-            {
-                _referencenumber = value;
-                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
-                NotifyPropertyChanged();
-            }
-        }
-        string _referencenumber;
         [DataMember]
         public Nullable<System.DateTime> AssessmentDate 
         {
@@ -426,20 +426,20 @@ namespace PreviousDocumentQS.Business.Entities
         }
         Nullable<System.DateTime> _assessmentdate;
         [DataMember]
-        public string ItemNumber 
+        public string Prev_decl_HS_spec 
         {
             get
             {
-                return _itemnumber;
+                return _prev_decl_hs_spec;
             }
             set
             {
-                _itemnumber = value;
+                _prev_decl_hs_spec = value;
                 //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
                 NotifyPropertyChanged();
             }
         }
-        string _itemnumber;
+        string _prev_decl_hs_spec;
         [DataMember]
         public double SalesFactor 
         {
@@ -486,20 +486,20 @@ namespace PreviousDocumentQS.Business.Entities
         }
         string _dutyfreepaid;
         [DataMember]
-        public string Prev_decl_HS_spec 
+        public string ItemNumber 
         {
             get
             {
-                return _prev_decl_hs_spec;
+                return _itemnumber;
             }
             set
             {
-                _prev_decl_hs_spec = value;
+                _itemnumber = value;
                 //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
                 NotifyPropertyChanged();
             }
         }
-        string _prev_decl_hs_spec;
+        string _itemnumber;
         [DataMember]
         public Nullable<int> pLineNumber 
         {

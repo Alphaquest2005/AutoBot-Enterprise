@@ -46,7 +46,7 @@
               this.Property(t => t.ApplicationSettingsId).HasColumnName("ApplicationSettingsId");
               this.HasRequired(t => t.PreviousDocument).WithMany(t =>(ICollection<PreviousDocumentItem>) t.PreviousDocumentItems).HasForeignKey(d => d.ASYCUDA_Id);
               this.HasMany(t => t.PreviousItemsExes).WithOptional(t => t.PreviousDocumentItem).HasForeignKey(d => d.PreviousDocumentItemId);
-              this.HasMany(t => t.PreviousItemEx).WithRequired(t => (PreviousDocumentItem)t.AsycudaDocumentItem);
+              this.HasMany(t => t.PreviousItemsExes1).WithRequired(t => (PreviousDocumentItem)t.AsycudaDocumentItem);
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);
     			this.Ignore(t => t.ModifiedProperties);

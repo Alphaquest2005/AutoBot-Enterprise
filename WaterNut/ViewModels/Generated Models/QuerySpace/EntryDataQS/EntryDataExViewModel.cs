@@ -809,7 +809,7 @@ namespace WaterNut.QuerySpace.EntryDataQS.ViewModels
                     public Nullable<int> ImportedLines { get; set; } 
                     
  
-                    public int TotalLines { get; set; } 
+                    public Nullable<int> TotalLines { get; set; } 
                     
  
                     public string Currency { get; set; } 
@@ -824,7 +824,7 @@ namespace WaterNut.QuerySpace.EntryDataQS.ViewModels
                     public string SupplierCode { get; set; } 
                     
  
-                    public double ImportedTotal { get; set; } 
+                    public Nullable<double> ImportedTotal { get; set; } 
                     
  
                     public double ExpectedTotal { get; set; } 

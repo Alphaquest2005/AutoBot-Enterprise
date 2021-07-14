@@ -144,9 +144,9 @@ public string Goods_origin
 		}
      
 
-       [RequiredValidationAttribute(ErrorMessage= "Net_weight is required")]
+       
        [NumberValidationAttribute]
-public double Net_weight
+public Nullable<decimal> Net_weight
 		{ 
 		    get { return this.previousitemsex.Net_weight; }
 			set
@@ -159,9 +159,9 @@ public double Net_weight
 		}
      
 
-       [RequiredValidationAttribute(ErrorMessage= "Prev_net_weight is required")]
+       
        [NumberValidationAttribute]
-public double Prev_net_weight
+public Nullable<decimal> Prev_net_weight
 		{ 
 		    get { return this.previousitemsex.Prev_net_weight; }
 			set
@@ -244,7 +244,7 @@ public string Prev_reg_cuo
 
        [RequiredValidationAttribute(ErrorMessage= "Suplementary_Quantity is required")]
        [NumberValidationAttribute]
-public double Suplementary_Quantity
+public decimal Suplementary_Quantity
 		{ 
 		    get { return this.previousitemsex.Suplementary_Quantity; }
 			set
@@ -364,6 +364,21 @@ public double QtyAllocated
 		}
      
 
+       
+       
+public Nullable<int> PreviousDocumentItemId
+		{ 
+		    get { return this.previousitemsex.PreviousDocumentItemId; }
+			set
+			{
+			    if (value == this.previousitemsex.PreviousDocumentItemId) return;
+				this.previousitemsex.PreviousDocumentItemId = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("PreviousDocumentItemId");
+			}
+		}
+     
+
        [RequiredValidationAttribute(ErrorMessage= "RndCurrent_Value is required")]
        [NumberValidationAttribute]
 public double RndCurrent_Value
@@ -375,6 +390,23 @@ public double RndCurrent_Value
 				this.previousitemsex.RndCurrent_Value = value;
                 if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
 				NotifyPropertyChanged("RndCurrent_Value");
+			}
+		}
+     
+
+       
+       
+                
+                [MaxLength(30, ErrorMessage = "ReferenceNumber has a max length of 30 letters ")]
+public string ReferenceNumber
+		{ 
+		    get { return this.previousitemsex.ReferenceNumber; }
+			set
+			{
+			    if (value == this.previousitemsex.ReferenceNumber) return;
+				this.previousitemsex.ReferenceNumber = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("ReferenceNumber");
 			}
 		}
      
@@ -411,21 +443,6 @@ public Nullable<System.DateTime> RegistrationDate
 		}
      
 
-       
-       
-public Nullable<int> PreviousDocumentItemId
-		{ 
-		    get { return this.previousitemsex.PreviousDocumentItemId; }
-			set
-			{
-			    if (value == this.previousitemsex.PreviousDocumentItemId) return;
-				this.previousitemsex.PreviousDocumentItemId = value;
-                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
-				NotifyPropertyChanged("PreviousDocumentItemId");
-			}
-		}
-     
-
        [RequiredValidationAttribute(ErrorMessage= "AsycudaDocumentItem is required")]
        
 public int AsycudaDocumentItemId
@@ -437,23 +454,6 @@ public int AsycudaDocumentItemId
 				this.previousitemsex.AsycudaDocumentItemId = value;
                 if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
 				NotifyPropertyChanged("AsycudaDocumentItemId");
-			}
-		}
-     
-
-       
-       
-                
-                [MaxLength(30, ErrorMessage = "ReferenceNumber has a max length of 30 letters ")]
-public string ReferenceNumber
-		{ 
-		    get { return this.previousitemsex.ReferenceNumber; }
-			set
-			{
-			    if (value == this.previousitemsex.ReferenceNumber) return;
-				this.previousitemsex.ReferenceNumber = value;
-                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
-				NotifyPropertyChanged("ReferenceNumber");
 			}
 		}
      
@@ -476,16 +476,16 @@ public Nullable<System.DateTime> AssessmentDate
        
        
                 
-                [MaxLength(20, ErrorMessage = "ItemNumber has a max length of 20 letters ")]
-public string ItemNumber
+                [MaxLength(20, ErrorMessage = "Prev_decl_HS_spec has a max length of 20 letters ")]
+public string Prev_decl_HS_spec
 		{ 
-		    get { return this.previousitemsex.ItemNumber; }
+		    get { return this.previousitemsex.Prev_decl_HS_spec; }
 			set
 			{
-			    if (value == this.previousitemsex.ItemNumber) return;
-				this.previousitemsex.ItemNumber = value;
+			    if (value == this.previousitemsex.Prev_decl_HS_spec) return;
+				this.previousitemsex.Prev_decl_HS_spec = value;
                 if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
-				NotifyPropertyChanged("ItemNumber");
+				NotifyPropertyChanged("Prev_decl_HS_spec");
 			}
 		}
      
@@ -542,16 +542,16 @@ public string DutyFreePaid
        
        
                 
-                [MaxLength(20, ErrorMessage = "Prev_decl_HS_spec has a max length of 20 letters ")]
-public string Prev_decl_HS_spec
+                [MaxLength(20, ErrorMessage = "ItemNumber has a max length of 20 letters ")]
+public string ItemNumber
 		{ 
-		    get { return this.previousitemsex.Prev_decl_HS_spec; }
+		    get { return this.previousitemsex.ItemNumber; }
 			set
 			{
-			    if (value == this.previousitemsex.Prev_decl_HS_spec) return;
-				this.previousitemsex.Prev_decl_HS_spec = value;
+			    if (value == this.previousitemsex.ItemNumber) return;
+				this.previousitemsex.ItemNumber = value;
                 if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
-				NotifyPropertyChanged("Prev_decl_HS_spec");
+				NotifyPropertyChanged("ItemNumber");
 			}
 		}
      

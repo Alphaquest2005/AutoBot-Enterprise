@@ -136,7 +136,7 @@
       <HintPath>..\..\..\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5\System.ServiceModel.dll</HintPath>
     </Reference>
     <Reference Include="YamlDotNet, Version=11.0.0.0, Culture=neutral, PublicKeyToken=ec19458f3c15af5e, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\YamlDotNet.11.1.1\lib\net45\YamlDotNet.dll</HintPath>
+      <HintPath>..\..\packages\YamlDotNet.11.2.1\lib\net45\YamlDotNet.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

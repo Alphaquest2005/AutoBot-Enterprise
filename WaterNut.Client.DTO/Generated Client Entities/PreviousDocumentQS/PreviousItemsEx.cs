@@ -100,7 +100,7 @@ namespace PreviousDocumentQS.Client.DTO
         private string _Goods_origin;
 
         [DataMember]
-        public double Net_weight
+        public Nullable<decimal> Net_weight
 		{ 
 		    get { return _Net_weight; }
 			set
@@ -110,10 +110,10 @@ namespace PreviousDocumentQS.Client.DTO
 				NotifyPropertyChanged();//m => this.Net_weight
 			}
 		}
-        private double _Net_weight;
+        private Nullable<decimal> _Net_weight;
 
         [DataMember]
-        public double Prev_net_weight
+        public Nullable<decimal> Prev_net_weight
 		{ 
 		    get { return _Prev_net_weight; }
 			set
@@ -123,7 +123,7 @@ namespace PreviousDocumentQS.Client.DTO
 				NotifyPropertyChanged();//m => this.Prev_net_weight
 			}
 		}
-        private double _Prev_net_weight;
+        private Nullable<decimal> _Prev_net_weight;
 
         [DataMember]
         public string Prev_reg_ser
@@ -178,7 +178,7 @@ namespace PreviousDocumentQS.Client.DTO
         private string _Prev_reg_cuo;
 
         [DataMember]
-        public double Suplementary_Quantity
+        public decimal Suplementary_Quantity
 		{ 
 		    get { return _Suplementary_Quantity; }
 			set
@@ -188,7 +188,7 @@ namespace PreviousDocumentQS.Client.DTO
 				NotifyPropertyChanged();//m => this.Suplementary_Quantity
 			}
 		}
-        private double _Suplementary_Quantity;
+        private decimal _Suplementary_Quantity;
 
         [DataMember]
         public double Preveious_suplementary_quantity
@@ -282,6 +282,19 @@ namespace PreviousDocumentQS.Client.DTO
         private double _QtyAllocated;
 
         [DataMember]
+        public Nullable<int> PreviousDocumentItemId
+		{ 
+		    get { return _PreviousDocumentItemId; }
+			set
+			{
+			    if (value == _PreviousDocumentItemId) return;
+				_PreviousDocumentItemId = value;
+				NotifyPropertyChanged();//m => this.PreviousDocumentItemId
+			}
+		}
+        private Nullable<int> _PreviousDocumentItemId;
+
+        [DataMember]
         public double RndCurrent_Value
 		{ 
 		    get { return _RndCurrent_Value; }
@@ -293,6 +306,19 @@ namespace PreviousDocumentQS.Client.DTO
 			}
 		}
         private double _RndCurrent_Value;
+
+        [DataMember]
+        public string ReferenceNumber
+		{ 
+		    get { return _ReferenceNumber; }
+			set
+			{
+			    if (value == _ReferenceNumber) return;
+				_ReferenceNumber = value;
+				NotifyPropertyChanged();//m => this.ReferenceNumber
+			}
+		}
+        private string _ReferenceNumber;
 
         [DataMember]
         public string CNumber
@@ -321,19 +347,6 @@ namespace PreviousDocumentQS.Client.DTO
         private Nullable<System.DateTime> _RegistrationDate;
 
         [DataMember]
-        public Nullable<int> PreviousDocumentItemId
-		{ 
-		    get { return _PreviousDocumentItemId; }
-			set
-			{
-			    if (value == _PreviousDocumentItemId) return;
-				_PreviousDocumentItemId = value;
-				NotifyPropertyChanged();//m => this.PreviousDocumentItemId
-			}
-		}
-        private Nullable<int> _PreviousDocumentItemId;
-
-        [DataMember]
         public int AsycudaDocumentItemId
 		{ 
 		    get { return _AsycudaDocumentItemId; }
@@ -345,19 +358,6 @@ namespace PreviousDocumentQS.Client.DTO
 			}
 		}
         private int _AsycudaDocumentItemId;
-
-        [DataMember]
-        public string ReferenceNumber
-		{ 
-		    get { return _ReferenceNumber; }
-			set
-			{
-			    if (value == _ReferenceNumber) return;
-				_ReferenceNumber = value;
-				NotifyPropertyChanged();//m => this.ReferenceNumber
-			}
-		}
-        private string _ReferenceNumber;
 
         [DataMember]
         public Nullable<System.DateTime> AssessmentDate
@@ -373,17 +373,17 @@ namespace PreviousDocumentQS.Client.DTO
         private Nullable<System.DateTime> _AssessmentDate;
 
         [DataMember]
-        public string ItemNumber
+        public string Prev_decl_HS_spec
 		{ 
-		    get { return _ItemNumber; }
+		    get { return _Prev_decl_HS_spec; }
 			set
 			{
-			    if (value == _ItemNumber) return;
-				_ItemNumber = value;
-				NotifyPropertyChanged();//m => this.ItemNumber
+			    if (value == _Prev_decl_HS_spec) return;
+				_Prev_decl_HS_spec = value;
+				NotifyPropertyChanged();//m => this.Prev_decl_HS_spec
 			}
 		}
-        private string _ItemNumber;
+        private string _Prev_decl_HS_spec;
 
         [DataMember]
         public double SalesFactor
@@ -425,17 +425,17 @@ namespace PreviousDocumentQS.Client.DTO
         private string _DutyFreePaid;
 
         [DataMember]
-        public string Prev_decl_HS_spec
+        public string ItemNumber
 		{ 
-		    get { return _Prev_decl_HS_spec; }
+		    get { return _ItemNumber; }
 			set
 			{
-			    if (value == _Prev_decl_HS_spec) return;
-				_Prev_decl_HS_spec = value;
-				NotifyPropertyChanged();//m => this.Prev_decl_HS_spec
+			    if (value == _ItemNumber) return;
+				_ItemNumber = value;
+				NotifyPropertyChanged();//m => this.ItemNumber
 			}
 		}
-        private string _Prev_decl_HS_spec;
+        private string _ItemNumber;
 
         [DataMember]
         public Nullable<int> pLineNumber

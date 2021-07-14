@@ -639,37 +639,37 @@ public int ApplicationSettingsId
             }
         }
 
-        ObservableCollection<PreviousItemsEx> _PreviousItemEx = null;
-        public  ObservableCollection<PreviousItemsEx> PreviousItemEx
+        ObservableCollection<PreviousItemsEx> _PreviousItemsExes1 = null;
+        public  ObservableCollection<PreviousItemsEx> PreviousItemsExes1
 		{
             
 		    get 
 				{ 
-					if(_PreviousItemEx != null) return _PreviousItemEx;
-					//if (this.previousdocumentitem.PreviousItemEx == null) Debugger.Break();
-					if(this.previousdocumentitem.PreviousItemEx != null)
+					if(_PreviousItemsExes1 != null) return _PreviousItemsExes1;
+					//if (this.previousdocumentitem.PreviousItemsExes1 == null) Debugger.Break();
+					if(this.previousdocumentitem.PreviousItemsExes1 != null)
 					{
-						_PreviousItemEx = new ObservableCollection<PreviousItemsEx>(this.previousdocumentitem.PreviousItemEx.Select(x => new PreviousItemsEx(x)));
+						_PreviousItemsExes1 = new ObservableCollection<PreviousItemsEx>(this.previousdocumentitem.PreviousItemsExes1.Select(x => new PreviousItemsEx(x)));
 					}
 					
-						_PreviousItemEx.CollectionChanged += PreviousItemEx_CollectionChanged; 
+						_PreviousItemsExes1.CollectionChanged += PreviousItemsExes1_CollectionChanged; 
 					
-					return _PreviousItemEx; 
+					return _PreviousItemsExes1; 
 				}
 			set
 			{
-			    if (Equals(value, _PreviousItemEx)) return;
+			    if (Equals(value, _PreviousItemsExes1)) return;
 				if (value != null)
-					this.previousdocumentitem.PreviousItemEx = new ChangeTrackingCollection<DTO.PreviousItemsEx>(value.Select(x => x.DTO).ToList());
-                _PreviousItemEx = value;
+					this.previousdocumentitem.PreviousItemsExes1 = new ChangeTrackingCollection<DTO.PreviousItemsEx>(value.Select(x => x.DTO).ToList());
+                _PreviousItemsExes1 = value;
 				if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
-				if (_PreviousItemEx != null)
-				_PreviousItemEx.CollectionChanged += PreviousItemEx_CollectionChanged;               
-				NotifyPropertyChanged("PreviousItemEx");
+				if (_PreviousItemsExes1 != null)
+				_PreviousItemsExes1.CollectionChanged += PreviousItemsExes1_CollectionChanged;               
+				NotifyPropertyChanged("PreviousItemsExes1");
 			}
 		}
         
-        void PreviousItemEx_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        void PreviousItemsExes1_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
             switch (e.Action)
             {
@@ -677,7 +677,7 @@ public int ApplicationSettingsId
                     foreach (PreviousItemsEx itm in e.NewItems)
                     {
                         if (itm != null)
-                        previousdocumentitem.PreviousItemEx.Add(itm.DTO);
+                        previousdocumentitem.PreviousItemsExes1.Add(itm.DTO);
                     }
                     if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
                     break;
@@ -685,7 +685,7 @@ public int ApplicationSettingsId
                     foreach (PreviousItemsEx itm in e.OldItems)
                     {
                         if (itm != null)
-                        previousdocumentitem.PreviousItemEx.Remove(itm.DTO);
+                        previousdocumentitem.PreviousItemsExes1.Remove(itm.DTO);
                     }
 					if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
                     break;

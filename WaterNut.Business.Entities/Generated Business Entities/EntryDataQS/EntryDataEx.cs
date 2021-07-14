@@ -88,7 +88,7 @@ namespace EntryDataQS.Business.Entities
         }
         Nullable<int> _importedlines;
         [DataMember]
-        public int TotalLines 
+        public Nullable<int> TotalLines 
         {
             get
             {
@@ -101,7 +101,7 @@ namespace EntryDataQS.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        int _totallines;
+        Nullable<int> _totallines;
         [DataMember]
         public string Currency 
         {
@@ -208,7 +208,7 @@ namespace EntryDataQS.Business.Entities
         }
         string _suppliercode;
         [DataMember]
-        public double ImportedTotal 
+        public Nullable<double> ImportedTotal 
         {
             get
             {
@@ -221,7 +221,7 @@ namespace EntryDataQS.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        double _importedtotal;
+        Nullable<double> _importedtotal;
         [DataMember]
         public double ExpectedTotal 
         {

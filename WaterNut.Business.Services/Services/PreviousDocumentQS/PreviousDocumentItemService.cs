@@ -247,7 +247,7 @@ namespace PreviousDocumentQS.Business.Services
                                         GetWhere<PreviousItemsEx>(dbContext, exp, itm.Value, "PreviousDocumentItem", "Select", includesLst)
 										.ConfigureAwait(continueOnCapturedContext: false);
 
-                            case "PreviousItemEx":
+                            case "PreviousItemsExes1":
                                 return
                                     await
                                         GetWhere<PreviousItemsEx>(dbContext, exp, itm.Value, "PreviousDocumentItem", "Select", includesLst)
@@ -758,7 +758,7 @@ namespace PreviousDocumentQS.Business.Services
                             case "PreviousItemsExes":
                                 return await CountWhere<PreviousItemsEx>(dbContext, exp, itm.Value, "PreviousDocumentItem", "Select")
 											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "PreviousItemEx":
+                            case "PreviousItemsExes1":
                                 return await CountWhere<PreviousItemsEx>(dbContext, exp, itm.Value, "PreviousDocumentItem", "Select")
 											.ConfigureAwait(continueOnCapturedContext: false);
 						}
@@ -879,7 +879,7 @@ namespace PreviousDocumentQS.Business.Services
                                         LoadRangeWhere<PreviousItemsEx>(startIndex, count, dbContext, exp, itm.Value, "PreviousDocumentItem", "Select")
 													.ConfigureAwait(continueOnCapturedContext: false);
 
-                            case "PreviousItemEx":
+                            case "PreviousItemsExes1":
                                 return
                                     await
                                         LoadRangeWhere<PreviousItemsEx>(startIndex, count, dbContext, exp, itm.Value, "PreviousDocumentItem", "Select")
@@ -1099,7 +1099,7 @@ namespace PreviousDocumentQS.Business.Services
                 var set = AddIncludes(includesLst, dbContext);
                 IEnumerable<PreviousDocumentItem> entities = await set//dbContext.PreviousDocumentItems
                                                     // .Include(x => x.PreviousItemsExes)									  
-                                                    // .Include(x => x.PreviousItemEx)									  
+                                                    // .Include(x => x.PreviousItemsExes1)									  
                                       .AsNoTracking()
                                         .Where(x => x.ASYCUDA_Id.ToString() == ASYCUDA_Id.ToString())
 										.ToListAsync()
@@ -1130,7 +1130,7 @@ namespace PreviousDocumentQS.Business.Services
                 var set = AddIncludes(includesLst, dbContext);
                 IEnumerable<PreviousDocumentItem> entities = await set//dbContext.PreviousDocumentItems
                                                     // .Include(x => x.PreviousItemsExes)									  
-                                                    // .Include(x => x.PreviousItemEx)									  
+                                                    // .Include(x => x.PreviousItemsExes1)									  
                                       .AsNoTracking()
                                         .Where(x => x.EntryDataDetailsId.ToString() == EntryDataDetailsId.ToString())
 										.ToListAsync()
@@ -1161,7 +1161,7 @@ namespace PreviousDocumentQS.Business.Services
                 var set = AddIncludes(includesLst, dbContext);
                 IEnumerable<PreviousDocumentItem> entities = await set//dbContext.PreviousDocumentItems
                                                     // .Include(x => x.PreviousItemsExes)									  
-                                                    // .Include(x => x.PreviousItemEx)									  
+                                                    // .Include(x => x.PreviousItemsExes1)									  
                                       .AsNoTracking()
                                         .Where(x => x.ApplicationSettingsId.ToString() == ApplicationSettingsId.ToString())
 										.ToListAsync()
@@ -1243,7 +1243,7 @@ namespace PreviousDocumentQS.Business.Services
                             case "PreviousItemsExes":
                                 return await SumWhere<PreviousItemsEx>(dbContext, exp, itm.Value, "PreviousDocumentItem", field, "Select")
 											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "PreviousItemEx":
+                            case "PreviousItemsExes1":
                                 return await SumWhere<PreviousItemsEx>(dbContext, exp, itm.Value, "PreviousDocumentItem", field, "Select")
 											.ConfigureAwait(continueOnCapturedContext: false);
 						}
