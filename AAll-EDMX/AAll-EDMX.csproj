@@ -259,6 +259,7 @@
 ..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\AsycudaItemBasicInfo.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\AttachmentLog.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\Attachments.cs
+..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\CancelledEntriesLst.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\Contacts.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\Customs_Procedure.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\CustomsOperations.cs
@@ -657,6 +658,7 @@
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\AsycudaItemBasicInfo.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\AttachmentLog.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\Attachments.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\CancelledEntriesLst.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\Contacts.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\Customs_Procedure.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\CustomsOperations.map.cs
@@ -1063,6 +1065,7 @@
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\CoreEntities\AsycudaItemBasicInfo.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\CoreEntities\AttachmentLog.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\CoreEntities\Attachments.cs
+..\WaterNut.Business.Entities\Generated ChangeTracking Models\CoreEntities\CancelledEntriesLst.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\CoreEntities\Contacts.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\CoreEntities\Customs_Procedure.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\CoreEntities\CustomsOperations.cs
@@ -1447,6 +1450,7 @@
 ..\WaterNut.Business.Entities\Generated Constructors Models\CoreEntities\AsycudaItemBasicInfo.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\CoreEntities\AttachmentLog.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\CoreEntities\Attachments.cs
+..\WaterNut.Business.Entities\Generated Constructors Models\CoreEntities\CancelledEntriesLst.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\CoreEntities\Contacts.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\CoreEntities\Customs_Procedure.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\CoreEntities\CustomsOperations.cs
@@ -1831,6 +1835,7 @@
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\CoreEntities\AsycudaItemBasicInfo.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\CoreEntities\AttachmentLog.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\CoreEntities\Attachments.cs
+..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\CoreEntities\CancelledEntriesLst.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\CoreEntities\Contacts.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\CoreEntities\Customs_Procedure.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\CoreEntities\CustomsOperations.cs
@@ -2215,6 +2220,7 @@
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\CoreEntities\AsycudaItemBasicInfo.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\CoreEntities\AttachmentLog.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\CoreEntities\Attachments.cs
+..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\CoreEntities\CancelledEntriesLst.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\CoreEntities\Contacts.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\CoreEntities\Customs_Procedure.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\CoreEntities\CustomsOperations.cs
@@ -2564,6 +2570,7 @@
 ..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\AsycudaItemBasicInfo.cs
 ..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\AttachmentLog.cs
 ..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\Attachments.cs
+..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\CancelledEntriesLst.cs
 ..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\Contacts.cs
 ..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\Customs_Procedure.cs
 ..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\CustomsOperations.cs
@@ -2719,6 +2726,7 @@
 ..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\AsycudaItemBasicInfo.cs
 ..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\AttachmentLog.cs
 ..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\Attachments.cs
+..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\CancelledEntriesLst.cs
 ..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\Contacts.cs
 ..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\Customs_Procedure.cs
 ..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\CustomsOperations.cs
@@ -2883,6 +2891,7 @@
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\CoreEntities\AsycudaItemBasicInfo.cs
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\CoreEntities\AttachmentLog.cs
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\CoreEntities\Attachments.cs
+..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\CoreEntities\CancelledEntriesLst.cs
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\CoreEntities\Contacts.cs
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\CoreEntities\Customs_Procedure.cs
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\CoreEntities\CustomsOperations.cs
@@ -3038,6 +3047,7 @@
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\CoreEntities\AsycudaItemBasicInfo.cs
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\CoreEntities\AttachmentLog.cs
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\CoreEntities\Attachments.cs
+..\WaterNut.Client.DTO\Generated MyNavProp Models\CoreEntities\CancelledEntriesLst.cs
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\CoreEntities\Contacts.cs
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\CoreEntities\Customs_Procedure.cs
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\CoreEntities\CustomsOperations.cs
@@ -3193,6 +3203,7 @@
 ..\WaterNut.Client.Entities\Generated Constructors Models\CoreEntities\AsycudaItemBasicInfo.cs
 ..\WaterNut.Client.Entities\Generated Constructors Models\CoreEntities\AttachmentLog.cs
 ..\WaterNut.Client.Entities\Generated Constructors Models\CoreEntities\Attachments.cs
+..\WaterNut.Client.Entities\Generated Constructors Models\CoreEntities\CancelledEntriesLst.cs
 ..\WaterNut.Client.Entities\Generated Constructors Models\CoreEntities\Contacts.cs
 ..\WaterNut.Client.Entities\Generated Constructors Models\CoreEntities\Customs_Procedure.cs
 ..\WaterNut.Client.Entities\Generated Constructors Models\CoreEntities\CustomsOperations.cs
@@ -3348,6 +3359,7 @@
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\CoreEntities\AsycudaItemBasicInfo.cs
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\CoreEntities\AttachmentLog.cs
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\CoreEntities\Attachments.cs
+..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\CoreEntities\CancelledEntriesLst.cs
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\CoreEntities\Contacts.cs
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\CoreEntities\Customs_Procedure.cs
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\CoreEntities\CustomsOperations.cs
@@ -3503,6 +3515,7 @@
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\CoreEntities\AsycudaItemBasicInfo.cs
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\CoreEntities\AttachmentLog.cs
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\CoreEntities\Attachments.cs
+..\WaterNut.Client.Entities\Generated MyNavProp Models\CoreEntities\CancelledEntriesLst.cs
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\CoreEntities\Contacts.cs
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\CoreEntities\Customs_Procedure.cs
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\CoreEntities\CustomsOperations.cs
@@ -3740,6 +3753,7 @@
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\AsycudaItemBasicInfo.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\AttachmentLog.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\Attachments.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\CancelledEntriesLst.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\Contacts.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\Customs_Procedure.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\CustomsOperations.map.cs
@@ -4131,6 +4145,7 @@
 ..\WaterNut.Client.Repositories\Generated Repositories\CoreEntities\AsycudaItemBasicInfoRepository.cs
 ..\WaterNut.Client.Repositories\Generated Repositories\CoreEntities\AttachmentLogRepository.cs
 ..\WaterNut.Client.Repositories\Generated Repositories\CoreEntities\AttachmentsRepository.cs
+..\WaterNut.Client.Repositories\Generated Repositories\CoreEntities\CancelledEntriesLstRepository.cs
 ..\WaterNut.Client.Repositories\Generated Repositories\CoreEntities\ContactsRepository.cs
 ..\WaterNut.Client.Repositories\Generated Repositories\CoreEntities\Customs_ProcedureRepository.cs
 ..\WaterNut.Client.Repositories\Generated Repositories\CoreEntities\CustomsOperationsRepository.cs
@@ -4306,6 +4321,7 @@
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\AttachmentLogViewModel.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\AttachmentsViewModel.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\BaseViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\CancelledEntriesLstViewModel.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\ContactsViewModel.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\Customs_ProcedureViewModel.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\CustomsOperationsViewModel.cs
@@ -4464,6 +4480,7 @@
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\AsycudaItemBasicInfoTotals.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\AttachmentLogTotals.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\AttachmentsTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\CancelledEntriesLstTotals.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\ContactsTotals.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\Customs_ProcedureTotals.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\CustomsOperationsTotals.cs
@@ -4609,6 +4626,7 @@
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\AsycudaItemBasicInfoVirturalListLoader.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\AttachmentLogVirturalListLoader.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\AttachmentsVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\CancelledEntriesLstVirturalListLoader.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\ContactsVirturalListLoader.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\Customs_ProcedureVirturalListLoader.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\CustomsOperationsVirturalListLoader.cs
@@ -4802,6 +4820,7 @@
 ..\WaterNut.Business.Services\Contracts\CoreEntities\IAsycudaItemBasicInfoService.cs
 ..\WaterNut.Business.Services\Contracts\CoreEntities\IAttachmentLogService.cs
 ..\WaterNut.Business.Services\Contracts\CoreEntities\IAttachmentsService.cs
+..\WaterNut.Business.Services\Contracts\CoreEntities\ICancelledEntriesLstService.cs
 ..\WaterNut.Business.Services\Contracts\CoreEntities\IContactsService.cs
 ..\WaterNut.Business.Services\Contracts\CoreEntities\ICustoms_ProcedureService.cs
 ..\WaterNut.Business.Services\Contracts\CoreEntities\ICustomsOperationsService.cs
@@ -5186,6 +5205,7 @@
 ..\WaterNut.Business.Services\Services\CoreEntities\AsycudaItemBasicInfoService.cs
 ..\WaterNut.Business.Services\Services\CoreEntities\AttachmentLogService.cs
 ..\WaterNut.Business.Services\Services\CoreEntities\AttachmentsService.cs
+..\WaterNut.Business.Services\Services\CoreEntities\CancelledEntriesLstService.cs
 ..\WaterNut.Business.Services\Services\CoreEntities\ContactsService.cs
 ..\WaterNut.Business.Services\Services\CoreEntities\Customs_ProcedureService.cs
 ..\WaterNut.Business.Services\Services\CoreEntities\CustomsOperationsService.cs
@@ -5528,6 +5548,7 @@
 ..\WaterNut.Client.Contracts\CoreEntities\IAsycudaItemBasicInfoService.cs
 ..\WaterNut.Client.Contracts\CoreEntities\IAttachmentLogService.cs
 ..\WaterNut.Client.Contracts\CoreEntities\IAttachmentsService.cs
+..\WaterNut.Client.Contracts\CoreEntities\ICancelledEntriesLstService.cs
 ..\WaterNut.Client.Contracts\CoreEntities\IContactsService.cs
 ..\WaterNut.Client.Contracts\CoreEntities\ICustoms_ProcedureService.cs
 ..\WaterNut.Client.Contracts\CoreEntities\ICustomsOperationsService.cs
@@ -5683,6 +5704,7 @@
 ..\WaterNut.Client.Services\CoreEntities\AsycudaItemBasicInfoClient.cs
 ..\WaterNut.Client.Services\CoreEntities\AttachmentLogClient.cs
 ..\WaterNut.Client.Services\CoreEntities\AttachmentsClient.cs
+..\WaterNut.Client.Services\CoreEntities\CancelledEntriesLstClient.cs
 ..\WaterNut.Client.Services\CoreEntities\ContactsClient.cs
 ..\WaterNut.Client.Services\CoreEntities\Customs_ProcedureClient.cs
 ..\WaterNut.Client.Services\CoreEntities\CustomsOperationsClient.cs

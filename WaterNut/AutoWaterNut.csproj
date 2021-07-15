@@ -469,6 +469,7 @@
     <Compile Include="ViewModels\Generated Models\QuerySpace\CoreEntities\AttachmentLogViewModel.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\CoreEntities\AttachmentsViewModel.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\CoreEntities\BaseViewModel.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\CoreEntities\CancelledEntriesLstViewModel.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\CoreEntities\ContactsViewModel.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\CoreEntities\CustomsOperationsViewModel.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\CoreEntities\Customs_ProcedureViewModel.cs" />
@@ -637,6 +638,7 @@
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\AsycudaItemBasicInfoTotals.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\AttachmentLogTotals.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\AttachmentsTotals.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\CancelledEntriesLstTotals.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\ContactsTotals.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\CustomsOperationsTotals.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\Customs_ProcedureTotals.cs" />
@@ -792,6 +794,7 @@
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\AsycudaItemBasicInfoVirturalListLoader.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\AttachmentLogVirturalListLoader.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\AttachmentsVirturalListLoader.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\CancelledEntriesLstVirturalListLoader.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\ContactsVirturalListLoader.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\CustomsOperationsVirturalListLoader.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\Customs_ProcedureVirturalListLoader.cs" />

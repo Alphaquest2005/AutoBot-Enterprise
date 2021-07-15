@@ -100,6 +100,12 @@ namespace WaterNut.QuerySpace.CoreEntities
 			public const string AttachmentsDeleted = "AttachmentsDeleted";
 			public const string AttachmentsCreated = "AttachmentsCreated";
 			public const string AttachmentsUpdated = "AttachmentsUpdated";
+			public const string CancelledEntriesLstFilterExpressionChanged = "CancelledEntriesLstFilterExpressionChanged";
+			public const string SelectedCancelledEntriesLstChanged = "SelectedCancelledEntriesLstChanged";
+            public const string CancelledEntriesLstChanged = "CancelledEntriesLstChanged";
+			public const string CancelledEntriesLstDeleted = "CancelledEntriesLstDeleted";
+			public const string CancelledEntriesLstCreated = "CancelledEntriesLstCreated";
+			public const string CancelledEntriesLstUpdated = "CancelledEntriesLstUpdated";
 			public const string ContactsFilterExpressionChanged = "ContactsFilterExpressionChanged";
 			public const string SelectedContactsChanged = "SelectedContactsChanged";
             public const string ContactsChanged = "ContactsChanged";
@@ -567,6 +573,7 @@ namespace WaterNut.QuerySpace.CoreEntities
           // public const string AsycudaItemBasicInfoChanged = "AsycudaItemBasicInfoChanged";
           // public const string AttachmentLogChanged = "AttachmentLogChanged";
           // public const string AttachmentsChanged = "AttachmentsChanged";
+          // public const string CancelledEntriesLstChanged = "CancelledEntriesLstChanged";
           // public const string ContactsChanged = "ContactsChanged";
           // public const string Customs_ProcedureChanged = "Customs_ProcedureChanged";
           // public const string CustomsOperationsChanged = "CustomsOperationsChanged";
@@ -674,6 +681,8 @@ namespace WaterNut.QuerySpace.CoreEntities
            public const string CurrentAttachmentLogChanged = "CurrentAttachmentLogChanged";
    
            public const string CurrentAttachmentsChanged = "CurrentAttachmentsChanged";
+   
+           public const string CurrentCancelledEntriesLstChanged = "CurrentCancelledEntriesLstChanged";
    
            public const string CurrentContactsChanged = "CurrentContactsChanged";
    
@@ -856,6 +865,8 @@ namespace WaterNut.QuerySpace.CoreEntities
            public const string CurrentAttachmentLogIDChanged = "OnCurrentAttachmentLogIDChanged";
    
            public const string CurrentAttachmentsIDChanged = "OnCurrentAttachmentsIDChanged";
+   
+           public const string CurrentCancelledEntriesLstIDChanged = "OnCurrentCancelledEntriesLstIDChanged";
    
            public const string CurrentContactsIDChanged = "OnCurrentContactsIDChanged";
    

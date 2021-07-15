@@ -126,6 +126,7 @@
     <Compile Include="CoreEntities\IAsycudaItemBasicInfoService.cs" />
     <Compile Include="CoreEntities\IAttachmentLogService.cs" />
     <Compile Include="CoreEntities\IAttachmentsService.cs" />
+    <Compile Include="CoreEntities\ICancelledEntriesLstService.cs" />
     <Compile Include="CoreEntities\IContactsService.cs" />
     <Compile Include="CoreEntities\ICustomsOperationsService.cs" />
     <Compile Include="CoreEntities\ICustoms_ProcedureService.cs" />

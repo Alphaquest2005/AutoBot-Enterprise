@@ -68,6 +68,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                         RegisterToReceiveMessages<string>(MessageToken.CurrentAsycudaItemBasicInfoIDChanged, OnCurrentAsycudaItemBasicInfoIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentAttachmentLogIDChanged, OnCurrentAttachmentLogIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentAttachmentsIDChanged, OnCurrentAttachmentsIDChanged);
+                        RegisterToReceiveMessages<string>(MessageToken.CurrentCancelledEntriesLstIDChanged, OnCurrentCancelledEntriesLstIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentContactsIDChanged, OnCurrentContactsIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentCustoms_ProcedureIDChanged, OnCurrentCustoms_ProcedureIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentCustomsOperationsIDChanged, OnCurrentCustomsOperationsIDChanged);
@@ -161,6 +162,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                         RegisterToReceiveMessages<AsycudaItemBasicInfo>(MessageToken.CurrentAsycudaItemBasicInfoChanged, OnCurrentAsycudaItemBasicInfoChanged);
                         RegisterToReceiveMessages<AttachmentLog>(MessageToken.CurrentAttachmentLogChanged, OnCurrentAttachmentLogChanged);
                         RegisterToReceiveMessages<Attachments>(MessageToken.CurrentAttachmentsChanged, OnCurrentAttachmentsChanged);
+                        RegisterToReceiveMessages<CancelledEntriesLst>(MessageToken.CurrentCancelledEntriesLstChanged, OnCurrentCancelledEntriesLstChanged);
                         RegisterToReceiveMessages<Contacts>(MessageToken.CurrentContactsChanged, OnCurrentContactsChanged);
                         RegisterToReceiveMessages<Customs_Procedure>(MessageToken.CurrentCustoms_ProcedureChanged, OnCurrentCustoms_ProcedureChanged);
                         RegisterToReceiveMessages<CustomsOperations>(MessageToken.CurrentCustomsOperationsChanged, OnCurrentCustomsOperationsChanged);
@@ -657,6 +659,33 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                                     if (!string.IsNullOrEmpty(_currentAttachmentsID)) BeginSendMessage(MessageToken.CurrentAttachmentsIDChanged,
                                                      new NotificationEventArgs<string>(MessageToken.CurrentAttachmentsIDChanged, _currentAttachmentsID));
                                     NotifyPropertyChanged(x => this.CurrentAttachmentsID);  
+                                }
+                            }
+                        }
+                        internal async void OnCurrentCancelledEntriesLstIDChanged(object sender, NotificationEventArgs<string> e)
+                        {
+                            using (CancelledEntriesLstRepository ctx = new CancelledEntriesLstRepository())
+                            {
+                                CurrentCancelledEntriesLst = await ctx.GetCancelledEntriesLst(e.Data).ConfigureAwait(continueOnCapturedContext: false);
+                            }
+                            NotifyPropertyChanged(m => CurrentCancelledEntriesLst);
+                        }
+
+                        private  string _currentCancelledEntriesLstID = "";
+                        public string CurrentCancelledEntriesLstID
+                        {
+                            get
+                            {
+                                return _currentCancelledEntriesLstID;
+                            }
+                            set
+                            {
+                                if (_currentCancelledEntriesLstID != value)
+                                {
+                                    _currentCancelledEntriesLstID = value;
+                                    if (!string.IsNullOrEmpty(_currentCancelledEntriesLstID)) BeginSendMessage(MessageToken.CurrentCancelledEntriesLstIDChanged,
+                                                     new NotificationEventArgs<string>(MessageToken.CurrentCancelledEntriesLstIDChanged, _currentCancelledEntriesLstID));
+                                    NotifyPropertyChanged(x => this.CurrentCancelledEntriesLstID);  
                                 }
                             }
                         }
@@ -3456,6 +3485,56 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     _vcurrentAttachments = value;
 					if(_vcurrentAttachments != null) CurrentAttachments = value.Data;
                     NotifyPropertyChanged(x => this.VCurrentAttachments);                    
+                }
+            }
+        }
+
+
+
+                     
+       
+
+        internal void OnCurrentCancelledEntriesLstChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<CancelledEntriesLst> e)
+        {
+            //CurrentCancelledEntriesLst = e.Data;
+            NotifyPropertyChanged(m => this.CurrentCancelledEntriesLst);
+        }
+
+        private  CancelledEntriesLst _currentCancelledEntriesLst;
+        public CancelledEntriesLst CurrentCancelledEntriesLst
+        {
+            get
+            {
+                return _currentCancelledEntriesLst;
+            }
+            set
+            {
+                if (_currentCancelledEntriesLst != value)
+                {
+                    _currentCancelledEntriesLst = value;
+                    BeginSendMessage(MessageToken.CurrentCancelledEntriesLstChanged,
+                                                     new NotificationEventArgs<CancelledEntriesLst>(MessageToken.CurrentCancelledEntriesLstChanged, _currentCancelledEntriesLst)); 
+                    NotifyPropertyChanged(x => this.CurrentCancelledEntriesLst);    
+                    // all current navigation properties = null
+   
+                }
+            }
+        }
+
+		VirtualListItem<CancelledEntriesLst> _vcurrentCancelledEntriesLst;
+        public VirtualListItem<CancelledEntriesLst> VCurrentCancelledEntriesLst
+        {
+            get
+            {
+                return _vcurrentCancelledEntriesLst;
+            }
+            set
+            {
+                if (_vcurrentCancelledEntriesLst != value)
+                {
+                    _vcurrentCancelledEntriesLst = value;
+					if(_vcurrentCancelledEntriesLst != null) CurrentCancelledEntriesLst = value.Data;
+                    NotifyPropertyChanged(x => this.VCurrentCancelledEntriesLst);                    
                 }
             }
         }

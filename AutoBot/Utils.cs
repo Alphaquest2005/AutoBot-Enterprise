@@ -216,10 +216,39 @@ namespace AutoBot
                 {"RebuildSalesReport", RebuildSalesReport },
                 {"Ex9AllAllocatedSales",() => Ex9AllAllocatedSales(true) },
                 {"SubmitSalesToCustoms", SubmitSalesToCustoms },
-                {"ImportExpiredEntires", ImportExpiredEntires }
+                {"ImportExpiredEntires", ImportExpiredEntires },
+                {"ImportCancelledEntires", ImportCancelledEntires },
+                {"ImportAllFilesInDataFolder", ImportAllFilesInDataFolder}
 
 
             };
+
+        private static void ImportAllFilesInDataFolder()
+        {
+            Console.WriteLine("Import All Files in DataFolder");
+            var files = Directory.GetFiles(Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder, "Imports"),"*.xml");
+            var res = new List<string>();
+            AsycudaDocumentSetEx docSet;
+            using (var ctx = new CoreEntitiesContext())
+            {
+                var ifiles = ctx.AsycudaDocuments.Where(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId && x.ImportComplete == true).Select(x => new { Office = x.Customs_clearance_office_code, CNumber = x.CNumber }).ToList();
+                
+                docSet = ctx.AsycudaDocumentSetExs.FirstOrDefault(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId &&
+                                                                       x.Declarant_Reference_Number == "Imports");
+                foreach (var file in files)
+                {
+                    var f = Regex.Match(file, @"(?<Office>\w+)\-(?<CNumber>\d+).xml", RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture);
+                    if (f.Success == false) continue;
+                    var i = ifiles.FirstOrDefault(x => x.CNumber == f.Groups["CNumber"].Value && x.Office == f.Groups["Office"].Value);
+                    if (i == null)
+                    {
+                       res.Add(file);
+                    }
+                }
+            }
+
+            BaseDataModel.Instance.ImportDocuments(docSet.AsycudaDocumentSetId, res, true, true, true, true,true).Wait();
+        }
 
         private static void ImportUnAttachedSummary(FileTypes ft, FileInfo[] fs)
         {
@@ -339,6 +368,41 @@ namespace AutoBot
                 x.Type == "ExpiredEntries");
             SaveCsv(new FileInfo[] {new FileInfo(expFile)}, fileType);
         }
+
+        public static void ImportCancelledEntires()
+        {
+
+            try
+            {
+                var docSet = BaseDataModel.CurrentSalesInfo();
+                var directoryName = Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder,
+                    docSet.Item3.Declarant_Reference_Number);
+                var expFile = Path.Combine(directoryName, "CancelledEntries.csv");
+                if (File.Exists(expFile)) File.Delete(expFile);
+
+                while (!File.Exists(expFile))
+                {
+                    RunSiKuLi(directoryName, "CancelledEntries", "0");
+                }
+                ImportCancelledEntires(expFile);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+        }
+
+        public static void ImportCancelledEntires(string expFile)
+        {
+
+            var fileType = new CoreEntitiesContext().FileTypes.First(x =>
+                x.ApplicationSettingsId ==
+                BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId &&
+                x.Type == "CancelledEntries");
+            SaveCsv(new FileInfo[] { new FileInfo(expFile) }, fileType);
+        }
+
 
         private static void RenameDuplicateDocumentCodes()
         {

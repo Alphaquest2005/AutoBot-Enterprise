@@ -109,6 +109,17 @@
           <Property Name="Reference" Type="nvarchar" MaxLength="255" Nullable="false" />
           <Property Name="EmailId" Type="nvarchar" MaxLength="10" />
         </EntityType>
+        <EntityType Name="CancelledEntriesLst">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Office" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="GeneralProcedure" Type="nvarchar" MaxLength="1" Nullable="false" />
+          <Property Name="RegistrationNumber" Type="nvarchar" MaxLength="8" Nullable="false" />
+          <Property Name="RegistrationDate" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
+        </EntityType>
         <EntityType Name="Contacts">
           <Key>
             <PropertyRef Name="Id" />
@@ -2255,6 +2266,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
           <EntitySet Name="AsycudaDocumentSet_Attachments" EntityType="Self.AsycudaDocumentSet_Attachments" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="AttachmentLog" EntityType="Self.AttachmentLog" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Attachments" EntityType="Self.Attachments" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="CancelledEntriesLst" EntityType="Self.CancelledEntriesLst" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Contacts" EntityType="Self.Contacts" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Customs_Procedure" EntityType="Self.Customs_Procedure" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CustomsOperations" EntityType="Self.CustomsOperations" Schema="dbo" store:Type="Tables" />
@@ -3773,6 +3785,7 @@ FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
             <End Role="FileTypes" EntitySet="FileTypes" />
             <End Role="ImportActions" EntitySet="ImportActions" />
           </AssociationSet>
+          <EntitySet Name="CancelledEntriesLst" EntityType="WaterNutDBModel.CancelledEntriesLst" />
           </EntityContainer>
         <EntityType Name="ApplicationSettings">
           <Key>
@@ -6103,6 +6116,17 @@ FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="CancelledEntriesLst">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Office" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="GeneralProcedure" Type="String" Nullable="false" MaxLength="1" FixedLength="false" Unicode="true" />
+          <Property Name="RegistrationNumber" Type="String" Nullable="false" MaxLength="8" FixedLength="false" Unicode="true" />
+          <Property Name="RegistrationDate" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
+        </EntityType>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -7714,6 +7738,18 @@ FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
                 <ScalarProperty Name="Action" ColumnName="Action" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
                 <ScalarProperty Name="FileTypeId" ColumnName="FileTypeId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CancelledEntriesLst">
+            <EntityTypeMapping TypeName="WaterNutDBModel.CancelledEntriesLst">
+              <MappingFragment StoreEntitySet="CancelledEntriesLst">
+                <ScalarProperty Name="ApplicationSettingsId" ColumnName="ApplicationSettingsId" />
+                <ScalarProperty Name="RegistrationDate" ColumnName="RegistrationDate" />
+                <ScalarProperty Name="RegistrationNumber" ColumnName="RegistrationNumber" />
+                <ScalarProperty Name="GeneralProcedure" ColumnName="GeneralProcedure" />
+                <ScalarProperty Name="Office" ColumnName="Office" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>

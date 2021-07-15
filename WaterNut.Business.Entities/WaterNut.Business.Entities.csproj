@@ -216,6 +216,7 @@
     <Compile Include="Generated Business Entities\CoreEntities\AsycudaItemBasicInfo.cs" />
     <Compile Include="Generated Business Entities\CoreEntities\AttachmentLog.cs" />
     <Compile Include="Generated Business Entities\CoreEntities\Attachments.cs" />
+    <Compile Include="Generated Business Entities\CoreEntities\CancelledEntriesLst.cs" />
     <Compile Include="Generated Business Entities\CoreEntities\Contacts.cs" />
     <Compile Include="Generated Business Entities\CoreEntities\CustomsOperations.cs" />
     <Compile Include="Generated Business Entities\CoreEntities\Customs_Procedure.cs" />
@@ -606,6 +607,7 @@
     <Compile Include="Generated ChangeTracking Models\CoreEntities\AsycudaItemBasicInfo.cs" />
     <Compile Include="Generated ChangeTracking Models\CoreEntities\AttachmentLog.cs" />
     <Compile Include="Generated ChangeTracking Models\CoreEntities\Attachments.cs" />
+    <Compile Include="Generated ChangeTracking Models\CoreEntities\CancelledEntriesLst.cs" />
     <Compile Include="Generated ChangeTracking Models\CoreEntities\Contacts.cs" />
     <Compile Include="Generated ChangeTracking Models\CoreEntities\CustomsOperations.cs" />
     <Compile Include="Generated ChangeTracking Models\CoreEntities\Customs_Procedure.cs" />
@@ -990,6 +992,7 @@
     <Compile Include="Generated Constructors Models\CoreEntities\AsycudaItemBasicInfo.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\AttachmentLog.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\Attachments.cs" />
+    <Compile Include="Generated Constructors Models\CoreEntities\CancelledEntriesLst.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\Contacts.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\CustomsOperations.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\Customs_Procedure.cs" />
@@ -1374,6 +1377,7 @@
     <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\AsycudaItemBasicInfo.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\AttachmentLog.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\Attachments.cs" />
+    <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\CancelledEntriesLst.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\Contacts.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\CustomsOperations.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\Customs_Procedure.cs" />
@@ -1758,6 +1762,7 @@
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\AsycudaItemBasicInfo.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\AttachmentLog.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\Attachments.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\CancelledEntriesLst.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\Contacts.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\CustomsOperations.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\Customs_Procedure.cs" />
@@ -2152,6 +2157,7 @@
     <Compile Include="Generated Mappings\CoreEntities\AsycudaItemBasicInfo.map.cs" />
     <Compile Include="Generated Mappings\CoreEntities\AttachmentLog.map.cs" />
     <Compile Include="Generated Mappings\CoreEntities\Attachments.map.cs" />
+    <Compile Include="Generated Mappings\CoreEntities\CancelledEntriesLst.map.cs" />
     <Compile Include="Generated Mappings\CoreEntities\Contacts.map.cs" />
     <Compile Include="Generated Mappings\CoreEntities\CustomsOperations.map.cs" />
     <Compile Include="Generated Mappings\CoreEntities\Customs_Procedure.map.cs" />

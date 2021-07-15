@@ -435,6 +435,7 @@
     <Compile Include="Contracts\CoreEntities\IAsycudaItemBasicInfoService.cs" />
     <Compile Include="Contracts\CoreEntities\IAttachmentLogService.cs" />
     <Compile Include="Contracts\CoreEntities\IAttachmentsService.cs" />
+    <Compile Include="Contracts\CoreEntities\ICancelledEntriesLstService.cs" />
     <Compile Include="Contracts\CoreEntities\IContactsService.cs" />
     <Compile Include="Contracts\CoreEntities\ICustomsOperationsService.cs" />
     <Compile Include="Contracts\CoreEntities\ICustoms_ProcedureService.cs" />
@@ -1029,6 +1030,7 @@
     <Compile Include="Services\CoreEntities\AsycudaItemBasicInfoService.cs" />
     <Compile Include="Services\CoreEntities\AttachmentLogService.cs" />
     <Compile Include="Services\CoreEntities\AttachmentsService.cs" />
+    <Compile Include="Services\CoreEntities\CancelledEntriesLstService.cs" />
     <Compile Include="Services\CoreEntities\ContactsService.cs" />
     <Compile Include="Services\CoreEntities\CustomsOperationsService.cs" />
     <Compile Include="Services\CoreEntities\Customs_ProcedureService.cs" />

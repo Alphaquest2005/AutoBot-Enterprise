@@ -141,6 +141,7 @@
         <EntityTypeShape EntityType="WaterNutDBModel.TODO_C71ToCreate" Width="1.5" PointX="3.375" PointY="33.75" />
         <EntityTypeShape EntityType="WaterNutDBModel.ImportActions" Width="1.5" PointX="5.125" PointY="40.25" />
         <AssociationConnector Association="WaterNutDBModel.FK_ImportActions_FileTypes" />
+        <EntityTypeShape EntityType="WaterNutDBModel.CancelledEntriesLst" Width="1.5" PointX="33.375" PointY="5.75" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

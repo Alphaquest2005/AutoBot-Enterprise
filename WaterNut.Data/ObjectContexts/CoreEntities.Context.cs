@@ -227,6 +227,8 @@ namespace CoreEntities.Business.Entities
      
         public DbSet<ImportActions> ImportActions { get; set; }
      
+        public DbSet<CancelledEntriesLst> CancelledEntriesLst { get; set; }
+     
 
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
@@ -410,6 +412,8 @@ namespace CoreEntities.Business.Entities
             modelBuilder.Configurations.Add(new TODO_C71ToCreateMap());
          
             modelBuilder.Configurations.Add(new ImportActionsMap());
+         
+            modelBuilder.Configurations.Add(new CancelledEntriesLstMap());
          
 			OnModelCreatingExtentsion(modelBuilder);
 
