@@ -1,21 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.Entity;
-using System.Dynamic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Core.Common.Extensions;
-using CoreEntities.Business.Entities;
+﻿using CoreEntities.Business.Entities;
 using EntryDataDS.Business.Entities;
 using MoreLinq;
-using WaterNut.Interfaces;
-using PicoXLSX;
-using NanoXLSX;
+using System;
+using System.Collections.Generic;
+using System.Data.Entity;
+using System.IO;
+using System.Linq;
 using TrackableEntities;
 using WaterNut.DataSpace;
-using FileTypes = CoreEntities.Business.Entities.FileTypes;
 using Workbook = PicoXLSX.Workbook;
 
 namespace xlsxWriter
