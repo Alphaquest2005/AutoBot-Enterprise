@@ -76,7 +76,7 @@ namespace xlsxWriter
                         workbook = CreateShipmentWorkBook(riderId, parent, csvFilePath, header,
                             out invoiceRow, out riderdetails, out doRider);
                     }
-
+                    if(workbook == null) continue;
                     WriteInvHeader(shipmentInvoice, header, workbook);
 
                     if (shipmentInvoice.ShipmentInvoicePOs.Any())
@@ -274,7 +274,7 @@ namespace xlsxWriter
                     header.First(x => x.Key.Column == nameof(ShipmentInvoice.InvoiceDate)).Key.Index,
                     pO.PurchaseOrders.EntryDataDate.ToString("yyyy-MM-dd"));
                 SetValue(workbook, i, header.First(x => x.Key.Column == nameof(itm.Cost)).Key.Index,
-                    itm.Cost);
+                    pOItem?.INVCost ?? itm.Cost);
                 SetValue(workbook, i, header.First(x => x.Key.Column == "POItemDescription").Key.Index,
                     itm.ItemDescription);
                 SetValue(workbook, i,
@@ -295,7 +295,7 @@ namespace xlsxWriter
                     itm.ItemNumber);
                 SetValue(workbook, i,
                     header.First(x => x.Key.Column == nameof(itm.TotalCost)).Key.Index,
-                    itm.TotalCost == 0 ? itm.Quantity * itm.Cost : itm.TotalCost);
+                    pOItem?.INVTotalCost ?? (itm.TotalCost == 0 ? itm.Quantity * itm.Cost : itm.TotalCost));
                 SetValue(workbook, i, header.First(x => x.Key.Column == nameof(itm.Units)).Key.Index,
                     itm.Units);
                 if (doRider && i < riderdetails.Count)//
@@ -759,6 +759,9 @@ namespace xlsxWriter
                     {
                         if(ctx.ShipmentInvoicePOManualMatches.FirstOrDefault(x => x.InvoiceNo == mat.InvoiceNo && x.PONumber == mat.PONumber) != null) continue;
                         ctx.ShipmentInvoicePOManualMatches.Add(mat);
+                        var delitms = ctx.ShipmentInvoicePOs.Where(x => x.PurchaseOrders.EntryDataId == mat.PONumber)
+                            .ToList();
+                        ctx.ShipmentInvoicePOs.RemoveRange(delitms);
                     }
                     
                     ctx.SaveChanges();

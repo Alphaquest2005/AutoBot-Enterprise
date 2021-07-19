@@ -343,7 +343,7 @@
           <Property Name="WeightLB" Type="float" />
           <Property Name="VolumeCF" Type="float" />
           <Property Name="Reference" Type="nvarchar" MaxLength="50" />
-          <Property Name="EmailId" Type="int" Nullable="false" />
+          <Property Name="EmailId" Type="int" />
           <Property Name="SourceFile" Type="nvarchar(max)" Nullable="false" />
           <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
           <Property Name="FileTypeId" Type="int" Nullable="false" />
@@ -373,7 +373,7 @@
           <Property Name="DueDate" Type="date" Nullable="false" />
           <Property Name="InvoiceTotal" Type="float" Nullable="false" />
           <Property Name="ETA" Type="date" Nullable="false" />
-          <Property Name="EmailId" Type="int" Nullable="false" />
+          <Property Name="EmailId" Type="int" />
           <Property Name="SourceFile" Type="nvarchar(max)" Nullable="false" />
           <Property Name="ApplicationSettingsId" Type="int" />
           <Property Name="FileTypeId" Type="int" Nullable="false" />
@@ -401,7 +401,7 @@
           <Property Name="SupplierCode" Type="nvarchar" MaxLength="100" />
           <Property Name="TotalInternalFreight" Type="float" />
           <Property Name="Currency" Type="nvarchar" MaxLength="4" />
-          <Property Name="EmailId" Type="int" Nullable="false" />
+          <Property Name="EmailId" Type="int" />
           <Property Name="FileTypeId" Type="int" Nullable="false" />
           <Property Name="TotalOtherCost" Type="float" />
           <Property Name="TotalInsurance" Type="float" />
@@ -512,7 +512,7 @@
           <Property Name="Goods" Type="nvarchar" MaxLength="1000" Nullable="false" />
           <Property Name="Marks" Type="nvarchar" MaxLength="1000" Nullable="false" />
           <Property Name="Containers" Type="int" />
-          <Property Name="EmailId" Type="int" Nullable="false" />
+          <Property Name="EmailId" Type="int" />
           <Property Name="SourceFile" Type="nvarchar(max)" Nullable="false" />
           <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
           <Property Name="FileTypeId" Type="int" Nullable="false" />
@@ -533,7 +533,7 @@
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="ETA" Type="date" Nullable="false" />
           <Property Name="DocumentDate" Type="date" Nullable="false" />
-          <Property Name="EmailId" Type="int" Nullable="false" />
+          <Property Name="EmailId" Type="int" />
           <Property Name="SourceFile" Type="nvarchar(max)" Nullable="false" />
           <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
           <Property Name="FileTypeId" Type="int" Nullable="false" />
@@ -655,20 +655,17 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.EntryDataEx' does not hav
             
             
             
-            
-            
-            
           </Key>
           <Property Name="EntryData_Id" Type="int" Nullable="false" />
           <Property Name="InvoiceDate" Type="datetime2" Precision="7" Nullable="false" />
-          <Property Name="Type" Type="nvarchar" MaxLength="50" Nullable="false" />
-          <Property Name="ImportedTotal" Type="float" Nullable="false" />
+          <Property Name="Type" Type="nvarchar" MaxLength="50" />
+          <Property Name="ImportedTotal" Type="float" />
           <Property Name="InvoiceNo" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="SupplierInvoiceNo" Type="nvarchar" MaxLength="50" />
           <Property Name="Tax" Type="float" />
           <Property Name="InvoiceTotal" Type="float" />
           <Property Name="ImportedLines" Type="int" />
-          <Property Name="TotalLines" Type="float" Nullable="false" />
+          <Property Name="TotalLines" Type="int" />
           <Property Name="Currency" Type="nvarchar" MaxLength="4" />
           <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
           <Property Name="DutyFreePaid" Type="varchar" MaxLength="9" Nullable="false" />
@@ -2768,12 +2765,12 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ShipmentRiderInvoice' doe
             <PropertyRef Name="EntryData_Id" />
           </Key>
           <Property Name="InvoiceDate" Type="DateTime" Nullable="false" Precision="7" />
-          <Property Name="Type" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="ImportedTotal" Type="Double" Nullable="false" />
+          <Property Name="Type" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ImportedTotal" Type="Double" />
           <Property Name="InvoiceNo" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="InvoiceTotal" Type="Double" />
           <Property Name="ImportedLines" Type="Int32" />
-          <Property Name="TotalLines" Type="Int32" Nullable="false" />
+          <Property Name="TotalLines" Type="Int32" />
           <Property Name="Currency" Type="String" MaxLength="4" FixedLength="false" Unicode="true" />
           <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
           <Property Name="DutyFreePaid" Type="String" Nullable="false" MaxLength="9" FixedLength="false" Unicode="false" />
@@ -2992,7 +2989,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ShipmentRiderInvoice' doe
           <Property Name="WeightLB" Type="Double" />
           <Property Name="VolumeCF" Type="Double" />
           <Property Name="Reference" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="EmailId" Type="Int32" Nullable="false" />
+          <Property Name="EmailId" Type="Int32" />
           <Property Name="SourceFile" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="FileTypeId" Type="Int32" Nullable="false" />
           <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
@@ -3026,7 +3023,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ShipmentRiderInvoice' doe
           <Property Name="ETA" Type="DateTime" Nullable="false" Precision="0" />
           <Property Name="DocumentDate" Type="DateTime" Nullable="false" Precision="0" />
           <NavigationProperty Name="ShipmentRiderDetails" Relationship="WaterNutDBModel.FK_ShipmentRiderDetails_ShipmentRider" FromRole="ShipmentRider" ToRole="ShipmentRiderDetails" />
-          <Property Name="EmailId" Type="Int32" Nullable="false" />
+          <Property Name="EmailId" Type="Int32" />
           <Property Name="SourceFile" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="FileTypeId" Type="Int32" Nullable="false" />
           <NavigationProperty Name="ShipmentRiderInvoice" Relationship="WaterNutDBModel.ShipmentRiderShipmentRiderInvoice" FromRole="ShipmentRider" ToRole="ShipmentRiderInvoice" />
@@ -3047,7 +3044,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ShipmentRiderInvoice' doe
           <Property Name="DueDate" Type="DateTime" Nullable="false" Precision="0" />
           <Property Name="InvoiceTotal" Type="Double" Nullable="false" />
           <Property Name="ETA" Type="DateTime" Nullable="false" Precision="0" />
-          <Property Name="EmailId" Type="Int32" Nullable="false" />
+          <Property Name="EmailId" Type="Int32" />
           <Property Name="SourceFile" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="FileTypeId" Type="Int32" Nullable="false" />
           <NavigationProperty Name="ShipmentFreightDetails" Relationship="WaterNutDBModel.FK_ShipmentFreightDetails_ShipmentFreight" FromRole="ShipmentFreight" ToRole="ShipmentFreightDetails" />
@@ -3129,7 +3126,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ShipmentRiderInvoice' doe
           <Property Name="SupplierCode" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="TotalInternalFreight" Type="Double" />
           <Property Name="Currency" Type="String" MaxLength="4" FixedLength="false" Unicode="true" />
-          <Property Name="EmailId" Type="Int32" Nullable="false" />
+          <Property Name="EmailId" Type="Int32" />
           <Property Name="FileTypeId" Type="Int32" Nullable="false" />
           <Property Name="TotalOtherCost" Type="Double" />
           <Property Name="TotalInsurance" Type="Double" />
@@ -3632,7 +3629,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ShipmentRiderInvoice' doe
           <Property Name="Goods" Type="String" Nullable="false" MaxLength="1000" FixedLength="false" Unicode="true" />
           <Property Name="Marks" Type="String" Nullable="false" MaxLength="1000" FixedLength="false" Unicode="true" />
           <Property Name="Containers" Type="Int32" />
-          <Property Name="EmailId" Type="Int32" Nullable="false" />
+          <Property Name="EmailId" Type="Int32" />
           <Property Name="SourceFile" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
           <Property Name="FileTypeId" Type="Int32" Nullable="false" />

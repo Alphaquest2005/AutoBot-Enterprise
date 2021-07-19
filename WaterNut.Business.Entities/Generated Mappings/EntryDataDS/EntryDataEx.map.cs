@@ -14,7 +14,7 @@
               this.HasKey(t => t.EntryData_Id);        
               this.ToTable("EntryDataEx");
               this.Property(t => t.InvoiceDate).HasColumnName("InvoiceDate");
-              this.Property(t => t.Type).HasColumnName("Type").IsRequired().HasMaxLength(50);
+              this.Property(t => t.Type).HasColumnName("Type").HasMaxLength(50);
               this.Property(t => t.ImportedTotal).HasColumnName("ImportedTotal");
               this.Property(t => t.InvoiceNo).HasColumnName("InvoiceNo").IsRequired().HasMaxLength(50);
               this.Property(t => t.InvoiceTotal).HasColumnName("InvoiceTotal");

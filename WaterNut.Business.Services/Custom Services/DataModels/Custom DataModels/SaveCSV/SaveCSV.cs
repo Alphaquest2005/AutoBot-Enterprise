@@ -105,7 +105,7 @@ namespace WaterNut.DataSpace
         {
             try
             {
-                int? emailId = 0;
+                int? emailId = null;
                
                 using (var ctx = new CoreEntitiesContext())
                 {
@@ -113,7 +113,7 @@ namespace WaterNut.DataSpace
                     var res = ctx.AsycudaDocumentSet_Attachments.Where(x => x.Attachments.FilePath.Replace(".xlsx", "-Fixed.csv") == droppedFilePath 
                                                                             || x.Attachments.FilePath == droppedFilePath) 
                         .Select(x => new{x.EmailUniqueId, x.FileTypeId}).FirstOrDefault();
-                    emailId = res?.EmailUniqueId ?? Convert.ToInt32(fileType.EmailId);
+                    emailId = res?.EmailUniqueId ?? Convert.ToInt32(fileType.EmailId == "0"  || fileType.EmailId == null ? null : fileType.EmailId);
                    
                 }
 

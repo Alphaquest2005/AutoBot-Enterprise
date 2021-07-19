@@ -6039,6 +6039,7 @@ namespace AutoBot
                         }""{directoryName + "\\"}";
                 startInfo.UseShellExecute = false;
                 process.StartInfo = startInfo;
+                process.EnableRaisingEvents = true;
                 process.Start();
                 var timeoutCycles = 0;
                 while (!process.HasExited && process.Responding)
@@ -6229,23 +6230,23 @@ namespace AutoBot
 
             var adjReference = $"ADJ-{new CoreEntitiesContext().AsycudaDocumentSetExs.First(x => x.AsycudaDocumentSetId == fileType.AsycudaDocumentSetId).Declarant_Reference_Number}";
             var disReference = $"DIS-{new CoreEntitiesContext().AsycudaDocumentSetExs.First(x => x.AsycudaDocumentSetId == fileType.AsycudaDocumentSetId).Declarant_Reference_Number}";
-            var dic = new Dictionary<string, Func<Dictionary<string, string>, string>>()
+            var dic = new Dictionary<string, Func<Dictionary<string, string>,DataRow,DataRow, string>>()
             {
-                {"CurrentDate", (dt)=> DateTime.Now.Date.ToShortDateString() },
-                { "DIS-Reference", (dt) => disReference},
-                { "ADJ-Reference", (dt) => adjReference},
-                {"Quantity", (dt) => dt.ContainsKey("Received Quantity") && dt.ContainsKey("Invoice Quantity")? Convert.ToString(Math.Abs(Convert.ToDouble(dt["Received Quantity"].Replace("\"","")) - Convert.ToDouble(dt["Invoice Quantity"].Replace("\"",""))), CultureInfo.CurrentCulture) : Convert.ToDouble(dt["Quantity"].Replace("\"","")).ToString(CultureInfo.CurrentCulture) },
-                {"ZeroCost", (x) => "0" },
-                {"ABS-Added", (dt) => Math.Abs(Convert.ToDouble(dt["{Added}"].Replace("\"",""))).ToString(CultureInfo.CurrentCulture) },
-                {"ABS-Removed", (dt) => Math.Abs(Convert.ToDouble(dt["{Removed}"].Replace("\"",""))).ToString(CultureInfo.CurrentCulture) },
-                {"ADJ-Quantity", (dt) => Convert.ToString(Math.Abs((Math.Abs(Convert.ToDouble(dt["{Added}"].Replace("\"",""))) - Math.Abs(Convert.ToDouble(dt["{Removed}"].Replace("\"",""))))), CultureInfo.CurrentCulture) },
-                {"Cost2USD", (dt) => dt.ContainsKey("{XCDCost}") && Convert.ToDouble(dt["{XCDCost}"].Replace("\"","")) > 0 ? (Convert.ToDouble(dt["{XCDCost}"].Replace("\"",""))/2.7169).ToString(CultureInfo.CurrentCulture) : "{NULL}" },
+                {"CurrentDate", (dt, drow, header)=> DateTime.Now.Date.ToShortDateString() },
+                { "DIS-Reference", (dt, drow, header) => disReference},
+                { "ADJ-Reference", (dt, drow, header) => $"ADJ-{DateTime.Parse(drow[Array.LastIndexOf(header.ItemArray,"Date".ToUpper())].ToString()).ToString("MMM-yy")}"},//adjReference
+                {"Quantity", (dt, drow, header) => dt.ContainsKey("Received Quantity") && dt.ContainsKey("Invoice Quantity")? Convert.ToString(Math.Abs(Convert.ToDouble(dt["Received Quantity"].Replace("\"","")) - Convert.ToDouble(dt["Invoice Quantity"].Replace("\"",""))), CultureInfo.CurrentCulture) : Convert.ToDouble(dt["Quantity"].Replace("\"","")).ToString(CultureInfo.CurrentCulture) },
+                {"ZeroCost", (x, drow, header) => "0" },
+                {"ABS-Added", (dt, drow, header) =>  Math.Abs(Convert.ToDouble(dt["{Added}"].Replace("\"",""))).ToString(CultureInfo.CurrentCulture) },
+                {"ABS-Removed", (dt, drow, header) => Math.Abs(Convert.ToDouble(dt["{Removed}"].Replace("\"",""))).ToString(CultureInfo.CurrentCulture) },
+                {"ADJ-Quantity", (dt, drow, header) => Convert.ToString(Math.Abs((Math.Abs(Convert.ToDouble(dt["{Added}"].Replace("\"",""))) - Math.Abs(Convert.ToDouble(dt["{Removed}"].Replace("\"",""))))), CultureInfo.CurrentCulture) },
+                {"Cost2USD", (dt, drow, header) => dt.ContainsKey("{XCDCost}") && Convert.ToDouble(dt["{XCDCost}"].Replace("\"","")) > 0 ? (Convert.ToDouble(dt["{XCDCost}"].Replace("\"",""))/2.7169).ToString(CultureInfo.CurrentCulture) : "{NULL}" },
             };
 
             foreach (var file in files)
             {
                 var dfile = new FileInfo($@"{file.DirectoryName}\{file.Name.Replace(file.Extension, ".csv")}");
-                if (dfile.Exists && dfile.LastWriteTime >= file.LastWriteTime.AddMinutes(5)) return;
+               // if (dfile.Exists && dfile.LastWriteTime >= file.LastWriteTime.AddMinutes(5)) return;
                 // Reading from a binary Excel file (format; *.xlsx)
                 FileStream stream = File.Open(file.FullName, FileMode.Open, FileAccess.Read);
                 var excelReader = ExcelReaderFactory.CreateReader(stream);
@@ -6327,7 +6328,8 @@ namespace AutoBot
                     var InvoiceNo = misMatch[misHeaderRow.IndexOf("InvoiceNo")].ToString();
                     var invItemCode = misMatch[misHeaderRow.IndexOf("INVItemCode")].ToString();
                     var poItemCode = misMatch[misHeaderRow.IndexOf("POItemCode")].ToString();
-                    if (!string.IsNullOrEmpty(misMatch[misHeaderRow.IndexOf("PONumber")].ToString()) &&
+                    var poNumber = misMatch[misHeaderRow.IndexOf("PONumber")].ToString();
+                    if (!string.IsNullOrEmpty(poNumber) &&
                         !string.IsNullOrEmpty(InvoiceNo) &&
                         !string.IsNullOrEmpty(poItemCode) &&
                         !string.IsNullOrEmpty(invItemCode))
@@ -6460,7 +6462,7 @@ namespace AutoBot
 
                             poRow = new EntryDataDetails() {TrackingState = TrackingState.Added};
                             var pO = ctx.EntryData.FirstOrDefault(x =>
-                                x.EntryDataId == misMatch[misHeaderRow.IndexOf("PONumber")].ToString());
+                                x.EntryDataId == poNumber);
                             if (pO == null) continue;
                             poRow.EntryData_Id = pO.EntryData_Id;
                             ctx.EntryDataDetails.Add(poRow);
@@ -6521,7 +6523,7 @@ namespace AutoBot
         }
 
         public static void FixCsv(FileInfo file, FileTypes fileType,
-            Dictionary<string, Func<Dictionary<string, string>, string>> dic)
+            Dictionary<string, Func<Dictionary<string, string>, DataRow, DataRow, string>> dic)
         {
             try
             {
@@ -6697,7 +6699,7 @@ namespace AutoBot
                                 if (map.Contains("{") && dic.ContainsKey(map.Replace("{", "").Replace("}", "")))
                                 {
 
-                                    val += dic[map.Replace("{", "").Replace("}", "")].Invoke(row);
+                                    val += dic[map.Replace("{", "").Replace("}", "")].Invoke(row, drow, header);
                                 }
                                 else
                                 {
@@ -6725,7 +6727,7 @@ namespace AutoBot
                             {
                                 if (mapping.DestinationName == "Invoice #")
                                 {
-                                    val += dic["DIS-Reference"].Invoke(row);
+                                    val += dic["DIS-Reference"].Invoke(row, drow, header);
 
                                 }
                                 else

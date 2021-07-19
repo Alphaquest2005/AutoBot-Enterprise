@@ -51,7 +51,7 @@ namespace EntryDataDS.Business.Entities
         }
         string _type;
         [DataMember]
-        public double ImportedTotal 
+        public Nullable<double> ImportedTotal 
         {
             get
             {
@@ -64,7 +64,7 @@ namespace EntryDataDS.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        double _importedtotal;
+        Nullable<double> _importedtotal;
         [DataMember]
         public string InvoiceNo 
         {
@@ -111,7 +111,7 @@ namespace EntryDataDS.Business.Entities
         }
         Nullable<int> _importedlines;
         [DataMember]
-        public int TotalLines 
+        public Nullable<int> TotalLines 
         {
             get
             {
@@ -124,7 +124,7 @@ namespace EntryDataDS.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        int _totallines;
+        Nullable<int> _totallines;
         [DataMember]
         public string Currency 
         {

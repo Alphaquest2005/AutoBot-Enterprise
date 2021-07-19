@@ -148,7 +148,7 @@ namespace EntryDataDS.Business.Entities
         }
         System.DateTime _eta;
         [DataMember]
-        public int EmailId 
+        public Nullable<int> EmailId 
         {
             get
             {
@@ -161,7 +161,7 @@ namespace EntryDataDS.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        int _emailid;
+        Nullable<int> _emailid;
         [DataMember]
         public string SourceFile 
         {

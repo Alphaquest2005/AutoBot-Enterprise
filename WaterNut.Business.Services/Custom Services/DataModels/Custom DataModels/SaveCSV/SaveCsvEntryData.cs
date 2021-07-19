@@ -49,7 +49,7 @@ namespace WaterNut.DataSpace
         }
 
         public async Task<bool> ExtractEntryData(FileTypes fileType, string[] lines, string[] headings, 
-            List<AsycudaDocumentSet> docSet, bool overWriteExisting, int emailId, 
+            List<AsycudaDocumentSet> docSet, bool overWriteExisting, int? emailId, 
             string droppedFilePath)
         {
             try
@@ -405,7 +405,7 @@ namespace WaterNut.DataSpace
 
 
         public async Task<bool> ProcessCsvSummaryData(FileTypes fileType, List<AsycudaDocumentSet> docSet,
-            bool overWriteExisting, int emailId, string droppedFilePath, List<dynamic> eslst)
+            bool overWriteExisting, int? emailId, string droppedFilePath, List<dynamic> eslst)
         {
             try
             {
@@ -497,7 +497,7 @@ namespace WaterNut.DataSpace
 
         }
 
-        private void ProcessShipmentInvoice(FileTypes fileType, List<AsycudaDocumentSet> docSet, bool overWriteExisting, int emailId, string droppedFilePath, List<object> eslst)
+        private void ProcessShipmentInvoice(FileTypes fileType, List<AsycudaDocumentSet> docSet, bool overWriteExisting, int? emailId, string droppedFilePath, List<object> eslst)
         {
             try
             {
@@ -617,7 +617,7 @@ namespace WaterNut.DataSpace
             return invoiceInvoiceDetails;
         }
 
-        private void ProcessFreight(FileTypes fileType, List<AsycudaDocumentSet> docSet, bool overWriteExisting, int emailId, string droppedFilePath, List<object> eslst)
+        private void ProcessFreight(FileTypes fileType, List<AsycudaDocumentSet> docSet, bool overWriteExisting, int? emailId, string droppedFilePath, List<object> eslst)
         {
             try
             {
@@ -681,7 +681,7 @@ namespace WaterNut.DataSpace
 
 
         double CF2M3 = 0.0283168;
-        private void ProcessBL(FileTypes fileType, List<AsycudaDocumentSet> docSet, bool overWriteExisting, int emailId,  string droppedFilePath, List<object> eslst)
+        private void ProcessBL(FileTypes fileType, List<AsycudaDocumentSet> docSet, bool overWriteExisting, int? emailId,  string droppedFilePath, List<object> eslst)
         {
             try
             {
@@ -776,7 +776,7 @@ namespace WaterNut.DataSpace
             }
         }
 
-        private void ProcessManifest(FileTypes fileType, List<AsycudaDocumentSet> docSet, bool overWriteExisting, int emailId, string droppedFilePath, List<object> eslst)
+        private void ProcessManifest(FileTypes fileType, List<AsycudaDocumentSet> docSet, bool overWriteExisting, int? emailId, string droppedFilePath, List<object> eslst)
         {
             try
             {
