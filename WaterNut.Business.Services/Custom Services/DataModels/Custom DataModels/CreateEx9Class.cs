@@ -1723,7 +1723,7 @@ namespace WaterNut.DataSpace
         private int AddFreeText(int itmcnt, xcuda_Item itm, string entryDataId, int lineNumber, string comment,
             string itemCode)
         {
-            if (BaseDataModel.Instance.CurrentApplicationSettings.GroupEX9 == true) return itmcnt;
+            //if (BaseDataModel.Instance.CurrentApplicationSettings.GroupEX9 == true) return itmcnt;
             if (itm.Free_text_1 == null) itm.Free_text_1 = "";
             itm.Free_text_1 = $"{entryDataId}|{lineNumber}|{itemCode}";
             itm.PreviousInvoiceItemNumber = itemCode;

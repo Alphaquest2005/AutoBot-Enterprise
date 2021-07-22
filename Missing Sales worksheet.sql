@@ -41,12 +41,13 @@ FROM    xcuda_HScode WITH (NOLOCK) INNER JOIN
                  xcuda_Item WITH (NOLOCK) ON AsycudaDocumentBasicInfo.ASYCUDA_Id = xcuda_Item.ASYCUDA_Id INNER JOIN
                  Primary_Supplementary_Unit WITH (NOLOCK) ON xcuda_Item.Item_Id = Primary_Supplementary_Unit.Tarification_Id ON xcuda_HScode.Item_Id = xcuda_Item.Item_Id LEFT OUTER JOIN
                  EntryDataTypes WITH (NOLOCK) INNER JOIN
-                 EntryDataDetails WITH (NOLOCK) ON EntryDataTypes.EntryData_Id = EntryDataDetails.EntryData_Id ON (xcuda_Item.PreviousInvoiceKey = EntryDataDetails.EntryDataDetailsKey /*or xcuda_item.PreviousInvoiceNumber = EntryDataDetails.EntryDataId*/)
-WHERE EntryDataDetails.EntryDataDetailsKey is null and AsycudaDocumentBasicInfo.CustomsProcedure in ('9074-000','4074-000') and ApplicationSettingsId = 2
+                 EntryDataDetails WITH (NOLOCK) ON EntryDataTypes.EntryData_Id = EntryDataDetails.EntryData_Id ON (xcuda_Item.PreviousInvoiceKey <> EntryDataDetails.EntryDataDetailsKey and xcuda_item.PreviousInvoiceNumber = EntryDataDetails.EntryDataId)
+WHERE EntryDataDetails.EntryDataDetailsKey is null and AsycudaDocumentBasicInfo.CustomsProcedure in ('9074-000','4074-000') and ApplicationSettingsId = 2 --and xcuda_HScode.Precision_4 = 'KGP/SB385496BK'
 
-union
+intersect
+
 SELECT AsycudaDocumentBasicInfo.AsycudaDocumentSetId, AsycudaDocumentBasicInfo.ApplicationSettingsId, EntryDataDetails.EntryDataDetailsId, EntryDataDetails.EntryData_Id, xcuda_Item.Item_Id, 
-                 EntryDataDetails.ItemNumber, EntryDataDetails.EntryDataId + '|' + RTRIM(LTRIM(CAST(EntryDataDetails.LineNumber AS varchar(50)))) AS [key], AsycudaDocumentBasicInfo.DocumentType, 
+                 xcuda_HScode.Precision_4, EntryDataDetails.EntryDataId + '|' + RTRIM(LTRIM(CAST(EntryDataDetails.LineNumber AS varchar(50)))) AS [key], AsycudaDocumentBasicInfo.DocumentType, 
                  AsycudaDocumentBasicInfo.Extended_customs_procedure + '-' + AsycudaDocumentBasicInfo.National_customs_procedure AS CustomsProcedure, 
                  Primary_Supplementary_Unit.Suppplementary_unit_quantity AS Quantity, AsycudaDocumentBasicInfo.ImportComplete, xcuda_Item.ASYCUDA_Id, EntryDataTypes.Type AS EntryDataType, 
                  xcuda_HScode.Commodity_code AS Tariffcode, xcuda_Item.PreviousInvoiceKey, AsycudaDocumentBasicInfo.Reference
@@ -55,8 +56,14 @@ FROM    xcuda_HScode WITH (NOLOCK) INNER JOIN
                  xcuda_Item WITH (NOLOCK) ON AsycudaDocumentBasicInfo.ASYCUDA_Id = xcuda_Item.ASYCUDA_Id INNER JOIN
                  Primary_Supplementary_Unit WITH (NOLOCK) ON xcuda_Item.Item_Id = Primary_Supplementary_Unit.Tarification_Id ON xcuda_HScode.Item_Id = xcuda_Item.Item_Id LEFT OUTER JOIN
                  EntryDataTypes WITH (NOLOCK) INNER JOIN
-                 EntryDataDetails WITH (NOLOCK) ON EntryDataTypes.EntryData_Id = EntryDataDetails.EntryData_Id ON (xcuda_Item.PreviousInvoiceKey <> EntryDataDetails.EntryDataDetailsKey and xcuda_item.PreviousInvoiceNumber = EntryDataDetails.EntryDataId)
-WHERE EntryDataDetails.EntryDataDetailsKey is null and AsycudaDocumentBasicInfo.CustomsProcedure in ('9074-000','4074-000') and ApplicationSettingsId = 2
+                 EntryDataDetails WITH (NOLOCK) ON EntryDataTypes.EntryData_Id = EntryDataDetails.EntryData_Id ON (xcuda_Item.PreviousInvoiceKey = EntryDataDetails.EntryDataDetailsKey /*or xcuda_item.PreviousInvoiceNumber = EntryDataDetails.EntryDataId*/)
+WHERE EntryDataDetails.EntryDataDetailsKey is null and AsycudaDocumentBasicInfo.CustomsProcedure in ('9074-000','4074-000') and ApplicationSettingsId = 2-- and xcuda_HScode.Precision_4 = 'KGP/SB385496BK'
+
+select * from xcuda_item where xcuda_Item.PreviousInvoiceKey like '%TR/007147%'
+select * from EntryDataDetails where EntryDataDetailsKey like '%TR/007147%'
+
+
+
 
 select * from AsycudaDocument where ASYCUDA_Id in (961,
 960,

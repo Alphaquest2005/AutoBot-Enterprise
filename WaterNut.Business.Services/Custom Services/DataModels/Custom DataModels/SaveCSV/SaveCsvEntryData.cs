@@ -721,9 +721,9 @@ namespace WaterNut.DataSpace
                         ShipmentBLDetails = ((List<IDictionary<string, object>>)x["ShipmentBLDetails"])
                                                 .Select(z => new ShipmentBLDetails()
                                                                 {
-                                                                    Quantity = Convert.ToInt32(z["Quantity"].ToString()),
-                                                                    Marks = z["Marks"].ToString(),
-                                                                    PackageType = z["PackageType"].ToString(),
+                                                                    Quantity = z.ContainsKey("Quantity") ? Convert.ToInt32(z["Quantity"].ToString()): 0,
+                                                                    Marks = z.ContainsKey("Marks") ? z["Marks"].ToString(): "",
+                                                                    PackageType = z.ContainsKey("PackageType") ? z["PackageType"].ToString(): "",
                                                                     TrackingState = TrackingState.Added,
                                                                
                                                             }).ToList(),

@@ -197,11 +197,11 @@ namespace WaterNut.DataSpace
                 return txt;
             });
 
-            Task.WhenAll(ripTask, singleColumnTask, sparseTextTask); //, 
+            Task.WaitAll(ripTask, singleColumnTask, sparseTextTask); //, 
 
-            pdftxt.AppendLine(ripTask.Result);
             pdftxt.AppendLine(singleColumnTask.Result);
             pdftxt.AppendLine(sparseTextTask.Result);
+            pdftxt.AppendLine(ripTask.Result);
             return pdftxt;
         }
 
