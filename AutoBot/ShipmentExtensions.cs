@@ -617,11 +617,12 @@ namespace AutoBotUtilities
                 foreach (var aBl in masterShipment.ShipmentAttachedBL.Where(x =>
                    sendMaster ? true : x.ShipmentBL.BLNumber != masterBL?.BLNumber))
                 {
+                    
                     var bl = aBl.ShipmentBL;
                     var riderDetails = bl.ShipmentBLDetails
                         .SelectMany(x => x.ShipmentRiderBLs.Select(z => z.ShipmentRiderDetails)).Where(x => x != null)
                         .ToList();
-
+                    if (!riderDetails.Any()) continue;
                     var clients = riderDetails.Where(x => masterShipment.ShipmentAttachedRider.Any(z => z.ShipmentRider.Id == x.RiderId))
                                                                                                 .DistinctBy(x => x.Id)
                                                                                                 .GroupBy(x => new Tuple<string, int, string>(x.Code, x.RiderId, bl.BLNumber))
@@ -669,6 +670,8 @@ namespace AutoBotUtilities
                         Office = manifests.LastOrDefault()?.CustomsOffice,
                         TrackingState = TrackingState.Added
                     };
+                  
+
                     var attachments = new List<Attachments>();
                     foreach (var client in clients)
                     {
@@ -698,6 +701,10 @@ namespace AutoBotUtilities
                         });
 
                         shipment.Currency = invoices.Select(x => x.Currency).FirstOrDefault() ?? "USD";
+
+                        if (shipment.Currency.Length != 3)
+                            throw new ApplicationException("Currency must be 3 letters");
+
                         shipment.ExpectedEntries += invoices.Count(x =>
                             (Enumerable.FirstOrDefault<ShipmentRiderInvoice>(x.ShipmentRiderInvoice)?.Packages ?? 0) >
                             0); //invoices.Select(x => x.Id).Count(),
@@ -894,7 +901,7 @@ namespace AutoBotUtilities
                                 //ManifestNumber = manifests.LastOrDefault()?.RegistrationNumber,
                                 //BLNumber = bl?.BLNumber,
                                 WeightKG = client.Sum(x => x.GrossWeightKg),
-                                Currency = invoices.Select(x => x.Currency).FirstOrDefault() ?? "USD",
+                                Currency = invoices.Select(x => x.Currency).FirstOrDefault() ?? "USD",//
                                 ExpectedEntries = invoices.Count(x => (Enumerable.FirstOrDefault<ShipmentRiderInvoice>(x.ShipmentRiderInvoice)?.Packages??0) > 0),
                                 TotalInvoices = invoices.Select(x => x.Id).Count(),
                                 FreightCurrency = freightInvoices.LastOrDefault()?.Currency ?? "USD",
@@ -905,6 +912,8 @@ namespace AutoBotUtilities
                                 //Office = manifests.LastOrDefault()?.CustomsOffice,
                                 TrackingState = TrackingState.Added
                             };
+                            if (shipment.Currency.Length != 3)
+                                throw new ApplicationException("Currency must be 3 letters");
                             shipment.ShipmentAttachedInvoices.AddRange(invoices.Select(z =>
                                 new ShipmentAttachedInvoices()
                                 {

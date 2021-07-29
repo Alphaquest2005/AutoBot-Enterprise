@@ -78,7 +78,7 @@ namespace WaterNut.QuerySpace
                                         .Include(x => x.FileTypeMappings)
                                         .First(x => x.Type == "XLSX" 
                            && x.ChildFileTypes.Any(z => z.Type == fileType)
-                           && x.ApplicationSettingsId == WaterNut.QuerySpace.CoreEntities.ViewModels.BaseViewModel.Instance.CurrentApplicationSettings.ApplicationSettingsId));
+                           && x.ApplicationSettingsId == WaterNut.QuerySpace.CoreEntities.ViewModels.BaseViewModel.Instance.CurrentApplicationSettings.ApplicationSettingsId), overwrite);
                     }
 
                 }

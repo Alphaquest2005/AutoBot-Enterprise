@@ -80,7 +80,7 @@ namespace xlsxWriter
                            
                           
                             
-                            WritePOToFile(pO, workbook, header, doRider, riderdetails, invoiceRow);
+                            WritePOToFile(pO, workbook, header, doRider, riderdetails, invoiceRow, shipmentInvoice.ShipmentRiderInvoice.First().Packages == 0);
                             DoMisMatches(shipmentInvoice, workbook);
                             workbook.Save();
 
@@ -243,12 +243,17 @@ namespace xlsxWriter
             }
         }
 
-        private static void WritePOToFile(ShipmentInvoicePOs pO, Workbook workbook,  Dictionary<(string Column, int Index), FileTypeMappings> header, bool doRider,
-            List<ShipmentRiderInvoice> riderdetails, int invoiceRow)
+        private static void WritePOToFile(ShipmentInvoicePOs pO, Workbook workbook,
+            Dictionary<(string Column, int Index), FileTypeMappings> header, bool doRider,
+            List<ShipmentRiderInvoice> riderdetails, int invoiceRow, bool combineedFile)
         {
             workbook.SetCurrentWorksheet("POTemplate");
             var i = workbook.CurrentWorksheet.GetLastRowNumber() ;//== 1? 1: workbook.CurrentWorksheet.GetLastRowNumber() + 1;
-
+            if (combineedFile)
+            {
+                //i += 1;
+               
+            }
             foreach (var itm in pO.PurchaseOrders.EntryDataDetails
                 .OrderBy(x =>
                     x.INVItems.FirstOrDefault()?.InvoiceDetails?.FileLineNumber ?? x.FileLineNumber)
@@ -668,7 +673,7 @@ namespace xlsxWriter
         private static void WriteInvHeader(ShipmentInvoice shipmentInvoice, Dictionary<(string Column, int Index), FileTypeMappings> header, Workbook workbook)
         {
             workbook.SetCurrentWorksheet("POTemplate");
-            var invoiceRow = workbook.CurrentWorksheet.GetLastRowNumber() == 1 ? 1 : workbook.CurrentWorksheet.GetLastRowNumber() + 1;
+            var invoiceRow = shipmentInvoice.ShipmentRiderInvoice.First().Packages == 0 ? workbook.CurrentWorksheet.GetLastRowNumber() + 1 : workbook.CurrentWorksheet.GetLastRowNumber();
             
             SetValue(workbook, invoiceRow, header.First(x => x.Key.Column == nameof(shipmentInvoice.InvoiceTotal)).Key.Index,
                 shipmentInvoice.InvoiceTotal.GetValueOrDefault());

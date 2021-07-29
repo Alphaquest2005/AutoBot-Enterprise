@@ -3830,9 +3830,10 @@ namespace AutoBot
                     foreach (var inline in instructions)
                     {
                         var p = inline.Split('\t');
-                        if (lcont >= res.Length) 
+                        // --- disable because it when it finished it cause it to repeat... better to check thru all to decide if to repeat or not
+                        if (lcont >= res.Length)
                         {
-                            if ((res.Length/2) == (instructions.Length/3)) return true; else return false;
+                            if ((res.Length) == (instructions.Length / 3)) return true; else return false;
                         }
                         if (string.IsNullOrEmpty(res[lcont])) return false;
                         var isSuccess = false;
@@ -6078,7 +6079,7 @@ namespace AutoBot
                 try
                 {
                     
-                    SaveCSVModel.Instance.ProcessDroppedFile(file.FullName, fileType, fileType.OverwriteFiles ?? false)//set to false to merge
+                    SaveCSVModel.Instance.ProcessDroppedFile(file.FullName, fileType, fileType.OverwriteFiles ?? true)//set to false to merge
                         .Wait();
 
 
@@ -6223,7 +6224,7 @@ namespace AutoBot
         }
 
 
-        public static void Xlsx2csv(FileInfo[] files, FileTypes fileType)
+        public static void Xlsx2csv(FileInfo[] files, FileTypes fileType, bool? overwrite = null )
         {
             try
             {
@@ -6303,7 +6304,7 @@ namespace AutoBot
                 csv.Write(table.OrderBy(x => x.Key).Select(x => x.Value).Aggregate((a, x) => a + x));
                 csv.Close();
 
-                FixCsv(new FileInfo(output), fileType, dic);
+                FixCsv(new FileInfo(output), fileType, dic, overwrite);
 
             }
 
@@ -6336,7 +6337,7 @@ namespace AutoBot
                     {
 
                         DataRow row;
-                        var addrow = true;
+                        var addrow = true;// changed to false because when importing in portage it doubling the errors because they get imported in importData function
                         if (string.IsNullOrEmpty(poTemplate.Rows[1][poHeaderRow.IndexOf("PO Number")].ToString()))
                         {
                             row = poTemplate.Rows[1];
@@ -6523,7 +6524,7 @@ namespace AutoBot
         }
 
         public static void FixCsv(FileInfo file, FileTypes fileType,
-            Dictionary<string, Func<Dictionary<string, string>, DataRow, DataRow, string>> dic)
+            Dictionary<string, Func<Dictionary<string, string>, DataRow, DataRow, string>> dic, bool? overwrite)
         {
             try
             {
@@ -6843,6 +6844,7 @@ namespace AutoBot
                     var fileTypes = BaseDataModel.GetFileType(fileType.ChildFileTypes.First());
                     fileTypes.AsycudaDocumentSetId = fileType.AsycudaDocumentSetId;
                     fileTypes.EmailId = fileType.EmailId;
+                    fileTypes.OverwriteFiles = overwrite;
                     SaveCsv(new FileInfo[] { new FileInfo(output) }, fileTypes);
                 }
 

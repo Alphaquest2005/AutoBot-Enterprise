@@ -80,7 +80,7 @@ namespace EmailDownloader
 
             foreach (var attachment in attachments)
             {
-               builder.Attachments.Add(attachment);
+                if(File.Exists(attachment)) builder.Attachments.Add(attachment);
             }
 
 

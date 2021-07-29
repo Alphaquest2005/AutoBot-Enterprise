@@ -928,7 +928,7 @@ namespace WaterNut.DataSpace
                                     ? null
                                     : g.Max(x => ((dynamic)x).SupplierCode?.ToUpper()),
                                 Currency = ((dynamic)g.FirstOrDefault(x => ((dynamic)x).Currency != ""))?.Currency,
-                                EmailId = emailId,
+                                EmailId = emailId == 0 ? null : emailId,
                                 FileTypeId = fileType.Id,
                                 DocumentType = ((dynamic)g.FirstOrDefault(x => ((dynamic)x).DocumentType != ""))?.DocumentType,
                                 SupplierInvoiceNo = ((dynamic)g.FirstOrDefault(x => ((dynamic)x).SupplierInvoiceNo != ""))?.SupplierInvoiceNo,
@@ -1370,7 +1370,7 @@ namespace WaterNut.DataSpace
                         }
                         else
                         {
-                            olded.EmailId = emailId;
+                            olded.EmailId = emailId == 0? null : emailId;
                         }
 
 

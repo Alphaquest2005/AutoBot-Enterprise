@@ -719,7 +719,7 @@ namespace WaterNut.DataSpace
                           Commercial_Description = x.Commercial_Description,
                           DutyFreePaid = x.DutyFreePaid,
                           EntryDataDetailsId = x.EntryDataDetailsId,
-                          InvoiceDate = x.InvoiceDate,
+                          InvoiceDate = (x.EffectiveDate == null || x.EffectiveDate == DateTime.MinValue ? x.InvoiceDate : x.EffectiveDate.Value),
                           EffectiveDate = x.EffectiveDate,
                           InvoiceNo = x.InvoiceNo,
                           ItemDescription = x.ItemDescription,
