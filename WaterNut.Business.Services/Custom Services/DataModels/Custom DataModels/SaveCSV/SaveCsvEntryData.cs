@@ -721,9 +721,9 @@ namespace WaterNut.DataSpace
                         ShipmentBLDetails = ((List<IDictionary<string, object>>)x["ShipmentBLDetails"])
                                                 .Select(z => new ShipmentBLDetails()
                                                                 {
-                                                                    Quantity = Convert.ToInt32(z["Quantity"].ToString()),
-                                                                    Marks = z["Marks"].ToString(),
-                                                                    PackageType = z["PackageType"].ToString(),
+                                                                    Quantity = z.ContainsKey("Quantity") ? Convert.ToInt32(z["Quantity"].ToString()): 0,
+                                                                    Marks = z.ContainsKey("Marks") ? z["Marks"].ToString(): "",
+                                                                    PackageType = z.ContainsKey("PackageType") ? z["PackageType"].ToString(): "",
                                                                     TrackingState = TrackingState.Added,
                                                                
                                                             }).ToList(),
@@ -928,7 +928,7 @@ namespace WaterNut.DataSpace
                                     ? null
                                     : g.Max(x => ((dynamic)x).SupplierCode?.ToUpper()),
                                 Currency = ((dynamic)g.FirstOrDefault(x => ((dynamic)x).Currency != ""))?.Currency,
-                                EmailId = emailId,
+                                EmailId = emailId == 0 ? null : emailId,
                                 FileTypeId = fileType.Id,
                                 DocumentType = ((dynamic)g.FirstOrDefault(x => ((dynamic)x).DocumentType != ""))?.DocumentType,
                                 SupplierInvoiceNo = ((dynamic)g.FirstOrDefault(x => ((dynamic)x).SupplierInvoiceNo != ""))?.SupplierInvoiceNo,
@@ -1370,7 +1370,7 @@ namespace WaterNut.DataSpace
                         }
                         else
                         {
-                            olded.EmailId = emailId;
+                            olded.EmailId = emailId == 0? null : emailId;
                         }
 
 

@@ -253,7 +253,7 @@ namespace WaterNut.DataSpace
 
 
                             UPDATE EntryDataDetails
-                            SET         QtyAllocated = 0, Status = NULL, EffectiveDate = NULL
+                            SET         QtyAllocated = 0, Status = NULL--, EffectiveDate = NULL
                             FROM    EntryDataDetails INNER JOIN
                                              EntryData ON EntryDataDetails.EntryDataId = EntryData.EntryDataId
                             WHERE (EntryData.ApplicationSettingsId = {appSettingsId})
@@ -318,7 +318,7 @@ namespace WaterNut.DataSpace
 
 
                             UPDATE EntryDataDetails
-                            SET         QtyAllocated = 0, Status = NULL, EffectiveDate = NULL
+                            SET         QtyAllocated = 0, Status = NULL--, EffectiveDate = NULL
                             FROM    EntryDataDetails INNER JOIN
                                              EntryData ON EntryDataDetails.EntryDataId = EntryData.EntryDataId 
                             WHERE (EntryDataDetails.ItemNumber in ({lst}))

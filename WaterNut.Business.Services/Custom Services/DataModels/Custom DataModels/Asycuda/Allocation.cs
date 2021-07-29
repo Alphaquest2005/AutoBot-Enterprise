@@ -135,22 +135,12 @@ namespace WaterNut.DataSpace
 	                }) AND (EntryDataDetails.Status IS NULL)");
 
 	            // Consider moving this this is shit code
-	            ctx.Database.ExecuteSqlCommand($@"  update EntryDataDetails
-						  set taxamount = 1
-						  where taxamount is null and comment in ('Promotional Expenses','Charity','Shop / Office / Warehouse Expenses','Office Expenses','PROMOTION','Promotional Expense','Promotional Expenses','Sample',
-											'Shop / Office / Warehouse Expenses','SHOP EXPENSES','SP','SPONSORSHIP','STORE / WAREHOUSE EXPENSE','Store / Warehouse Expenses','STORE EXPENSE','VEHICLE EXPENSE'
-											,'Vehicle Expenses','WAREHOUSE EXPENSE','WAREHOUSE EXPENSES','DONATION')
-
-
-						  update EntryDataDetails
-						  set taxamount = 0
-						  where taxamount is null and comment in ('Annual Stock Take Adjustments','COST CHANGE','Cost of Warranty','Cycle Count Adjustment','Cycle Count Adjustment - item Stolen','Cycle Count Adjustments','Cycle Count Adjustments (Test)',
-						  'DAMAGED','Damaged Goods','Error in System - Negative on Hand Report','Expired / Obsolete Goods','Expired Goods','GROSS STOCK USED INTERNATLLY- INCORRECT CODING USED','Incorrect Internal Code Used',
-						  'LOST / STOLEN','Lost / Stolen Goods','LOST/ STOLEN','Lost/ Stolen Goods','PHYSICAL COUNT ADJUSTMENT','Warr Exp (Stock Write-Off) - Gen','WARRANTY','WARRANTY REPLACEMENT','WARRANTY REPLACEMENT - WRITTEN OFF','WARRANTY REPLACEMENT/ WRITTEN OFF','WARRANTY REPLACEMENT/DAMAGED IN WAREHOUSE','Warranty Replacment','Written Off - Damage Item','Written Off - Expired Goods')
-
-						update EntryDataDetails
-						  set taxamount = 1
-						  where entrydataid like 'ADJ%' and TaxAmount is null");
+	            ctx.Database.ExecuteSqlCommand($@"UPDATE EntryDataDetails
+                                                    SET         TaxAmount = CASE WHEN dutyfreepaid = 'Duty Paid' THEN 1 ELSE 0 END
+                                                    --select EntryDataDetails.*, CASE WHEN dutyfreepaid = 'Duty Paid' THEN 1 ELSE 0 END as taxamount
+                                                    FROM    EntryDataDetails INNER JOIN
+                                                                     EntryData_Adjustments ON EntryDataDetails.EntryData_Id = EntryData_Adjustments.EntryData_Id INNER JOIN
+                                                                     AdjustmentComments ON EntryDataDetails.Comment = AdjustmentComments.Comments");
 
 	            ctx.Database.ExecuteSqlCommand($@"EXEC [dbo].[GetMappingFromInventory] @appsettingId
 													 EXEC[dbo].[CreateInventoryAliasFromInventoryMapping]",
@@ -201,7 +191,7 @@ namespace WaterNut.DataSpace
 			Parallel.ForEach(itemSetsValues.OrderBy(x => x.Key)
 
                //.Where(x => x.SalesList.Any(z => z.EntryDataId.ToLower().Contains("harry")))
-				// .Where(x => x.Key.Contains("VET/FTR132063")) //.Where(x => x.Key.Contains("255100")) // 
+				// .Where(x => x.Key.Contains("CRB/HIF-PUMP")) //.Where(x => x.Key.Contains("255100")) // 
 																		  // .Where(x => "337493".Contains(x.Key))
 																		  //.Where(x => "FAA/SCPI18X112".Contains(x.ItemNumber))//SND/IVF1010MPSF,BRG/NAVICOTE-GL,
 									 , new ParallelOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount * 1 }, itm => //.Where(x => x.ItemNumber == "AT18547")  

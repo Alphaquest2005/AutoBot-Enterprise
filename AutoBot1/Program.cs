@@ -156,7 +156,7 @@ namespace AutoBot
                                     if (fileType.CreateDocumentSet)
                                     {
 
-                                        var docSet = docSetLst.FirstOrDefault(x => x.Declarant_Reference_Number == reference);
+                                         var docSet = docSetLst.FirstOrDefault(x => x.Declarant_Reference_Number == reference);
                                         if (docSet == null)
                                         {
                                             var cp = BaseDataModel.Instance.Customs_Procedures.First(x =>
