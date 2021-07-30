@@ -272,6 +272,7 @@
     <Compile Include="Generated Business Entities\CoreEntities\TODO_ImportCompleteEntries.cs" />
     <Compile Include="Generated Business Entities\CoreEntities\TODO_LicenceAvailableQty.cs" />
     <Compile Include="Generated Business Entities\CoreEntities\TODO_LicenseToXML.cs" />
+    <Compile Include="Generated Business Entities\CoreEntities\TODO_LICToAssess.cs" />
     <Compile Include="Generated Business Entities\CoreEntities\TODO_LICToCreate.cs" />
     <Compile Include="Generated Business Entities\CoreEntities\TODO_PODocSet.cs" />
     <Compile Include="Generated Business Entities\CoreEntities\TODO_PODocSetToAssess.cs" />
@@ -661,6 +662,7 @@
     <Compile Include="Generated ChangeTracking Models\CoreEntities\TODO_ImportCompleteEntries.cs" />
     <Compile Include="Generated ChangeTracking Models\CoreEntities\TODO_LicenceAvailableQty.cs" />
     <Compile Include="Generated ChangeTracking Models\CoreEntities\TODO_LicenseToXML.cs" />
+    <Compile Include="Generated ChangeTracking Models\CoreEntities\TODO_LICToAssess.cs" />
     <Compile Include="Generated ChangeTracking Models\CoreEntities\TODO_LICToCreate.cs" />
     <Compile Include="Generated ChangeTracking Models\CoreEntities\TODO_PODocSet.cs" />
     <Compile Include="Generated ChangeTracking Models\CoreEntities\TODO_PODocSetToAssess.cs" />
@@ -1046,6 +1048,7 @@
     <Compile Include="Generated Constructors Models\CoreEntities\TODO_ImportCompleteEntries.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\TODO_LicenceAvailableQty.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\TODO_LicenseToXML.cs" />
+    <Compile Include="Generated Constructors Models\CoreEntities\TODO_LICToAssess.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\TODO_LICToCreate.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\TODO_PODocSet.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\TODO_PODocSetToAssess.cs" />
@@ -1431,6 +1434,7 @@
     <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\TODO_ImportCompleteEntries.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\TODO_LicenceAvailableQty.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\TODO_LicenseToXML.cs" />
+    <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\TODO_LICToAssess.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\TODO_LICToCreate.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\TODO_PODocSet.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\TODO_PODocSetToAssess.cs" />
@@ -1816,6 +1820,7 @@
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_ImportCompleteEntries.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_LicenceAvailableQty.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_LicenseToXML.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_LICToAssess.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_LICToCreate.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_PODocSet.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_PODocSetToAssess.cs" />
@@ -2211,6 +2216,7 @@
     <Compile Include="Generated Mappings\CoreEntities\TODO_ImportCompleteEntries.map.cs" />
     <Compile Include="Generated Mappings\CoreEntities\TODO_LicenceAvailableQty.map.cs" />
     <Compile Include="Generated Mappings\CoreEntities\TODO_LicenseToXML.map.cs" />
+    <Compile Include="Generated Mappings\CoreEntities\TODO_LICToAssess.map.cs" />
     <Compile Include="Generated Mappings\CoreEntities\TODO_LICToCreate.map.cs" />
     <Compile Include="Generated Mappings\CoreEntities\TODO_PODocSet.map.cs" />
     <Compile Include="Generated Mappings\CoreEntities\TODO_PODocSetToAssess.map.cs" />

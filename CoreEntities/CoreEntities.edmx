@@ -1338,6 +1338,30 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-LicenseToXML' does n
           <Property Name="LineNumber" Type="int" />
         </EntityType>
         <!--Errors Found During Generation:
+warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-LICToAssess' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="TODO-LICToAssess">
+          <Key>
+            <PropertyRef Name="AsycudaDocumentSetId" />
+            <PropertyRef Name="ApplicationSettingsId" />
+            <PropertyRef Name="Currency_Code" />
+          </Key>
+          <Property Name="AsycudaDocumentSetId" Type="int" Nullable="false" />
+          <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
+          <Property Name="Country_of_origin_code" Type="nvarchar" MaxLength="3" />
+          <Property Name="Currency_Code" Type="nvarchar" MaxLength="3" Nullable="false" />
+          <Property Name="Manifest_Number" Type="nvarchar" MaxLength="50" />
+          <Property Name="BLNumber" Type="nvarchar" MaxLength="50" />
+          <Property Name="Type_of_declaration" Type="nvarchar" MaxLength="10" />
+          <Property Name="Declaration_gen_procedure_code" Type="nvarchar" MaxLength="10" />
+          <Property Name="Declarant_Reference_Number" Type="nvarchar" MaxLength="50" />
+          <Property Name="TotalInvoices" Type="int" />
+          <Property Name="DocumentsCount" Type="int" />
+          <Property Name="InvoiceTotal" Type="float" />
+          <Property Name="LicenseLines" Type="int" />
+          <Property Name="TotalCIF" Type="float" />
+          <Property Name="QtyLicensesRequired" Type="int" />
+        </EntityType>
+        <!--Errors Found During Generation:
 warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-LICToCreate' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="TODO-LICToCreate">
           <Key>
@@ -2991,6 +3015,25 @@ FROM [dbo].[TODO-LicenceAvailableQty] AS [TODO-LicenceAvailableQty]</DefiningQue
 [TODO-LicenseToXML].[LineNumber] AS [LineNumber]
 FROM [dbo].[TODO-LicenseToXML] AS [TODO-LicenseToXML]</DefiningQuery>
           </EntitySet>
+          <EntitySet Name="TODO-LICToAssess" EntityType="Self.TODO-LICToAssess" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+[TODO-LICToAssess].[AsycudaDocumentSetId] AS [AsycudaDocumentSetId], 
+[TODO-LICToAssess].[ApplicationSettingsId] AS [ApplicationSettingsId], 
+[TODO-LICToAssess].[Country_of_origin_code] AS [Country_of_origin_code], 
+[TODO-LICToAssess].[Currency_Code] AS [Currency_Code], 
+[TODO-LICToAssess].[Manifest_Number] AS [Manifest_Number], 
+[TODO-LICToAssess].[BLNumber] AS [BLNumber], 
+[TODO-LICToAssess].[Type_of_declaration] AS [Type_of_declaration], 
+[TODO-LICToAssess].[Declaration_gen_procedure_code] AS [Declaration_gen_procedure_code], 
+[TODO-LICToAssess].[Declarant_Reference_Number] AS [Declarant_Reference_Number], 
+[TODO-LICToAssess].[TotalInvoices] AS [TotalInvoices], 
+[TODO-LICToAssess].[DocumentsCount] AS [DocumentsCount], 
+[TODO-LICToAssess].[InvoiceTotal] AS [InvoiceTotal], 
+[TODO-LICToAssess].[LicenseLines] AS [LicenseLines], 
+[TODO-LICToAssess].[TotalCIF] AS [TotalCIF], 
+[TODO-LICToAssess].[QtyLicensesRequired] AS [QtyLicensesRequired]
+FROM [dbo].[TODO-LICToAssess] AS [TODO-LICToAssess]</DefiningQuery>
+          </EntitySet>
           <EntitySet Name="TODO-LICToCreate" EntityType="Self.TODO-LICToCreate" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
 [TODO-LICToCreate].[AsycudaDocumentSetId] AS [AsycudaDocumentSetId], 
@@ -3786,6 +3829,7 @@ FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
             <End Role="ImportActions" EntitySet="ImportActions" />
           </AssociationSet>
           <EntitySet Name="CancelledEntriesLst" EntityType="WaterNutDBModel.CancelledEntriesLst" />
+          <EntitySet Name="TODO_LICToAssess" EntityType="WaterNutDBModel.TODO_LICToAssess" />
           </EntityContainer>
         <EntityType Name="ApplicationSettings">
           <Key>
@@ -6127,6 +6171,28 @@ FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
           <Property Name="RegistrationDate" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
         </EntityType>
+        <EntityType Name="TODO_LICToAssess">
+          <Key>
+            <PropertyRef Name="AsycudaDocumentSetId" />
+            <PropertyRef Name="ApplicationSettingsId" />
+            <PropertyRef Name="Currency_Code" />
+          </Key>
+          <Property Name="AsycudaDocumentSetId" Type="Int32" Nullable="false" />
+          <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
+          <Property Name="Country_of_origin_code" Type="String" MaxLength="3" FixedLength="false" Unicode="true" />
+          <Property Name="Currency_Code" Type="String" Nullable="false" MaxLength="3" FixedLength="false" Unicode="true" />
+          <Property Name="Manifest_Number" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="BLNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Type_of_declaration" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="Declaration_gen_procedure_code" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="Declarant_Reference_Number" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="TotalInvoices" Type="Int32" />
+          <Property Name="DocumentsCount" Type="Int32" />
+          <Property Name="InvoiceTotal" Type="Double" />
+          <Property Name="LicenseLines" Type="Int32" />
+          <Property Name="TotalCIF" Type="Double" />
+          <Property Name="QtyLicensesRequired" Type="Int32" />
+        </EntityType>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -7751,6 +7817,27 @@ FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
                 <ScalarProperty Name="GeneralProcedure" ColumnName="GeneralProcedure" />
                 <ScalarProperty Name="Office" ColumnName="Office" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="TODO_LICToAssess">
+            <EntityTypeMapping TypeName="WaterNutDBModel.TODO_LICToAssess">
+              <MappingFragment StoreEntitySet="TODO-LICToAssess">
+                <ScalarProperty Name="QtyLicensesRequired" ColumnName="QtyLicensesRequired" />
+                <ScalarProperty Name="TotalCIF" ColumnName="TotalCIF" />
+                <ScalarProperty Name="LicenseLines" ColumnName="LicenseLines" />
+                <ScalarProperty Name="InvoiceTotal" ColumnName="InvoiceTotal" />
+                <ScalarProperty Name="DocumentsCount" ColumnName="DocumentsCount" />
+                <ScalarProperty Name="TotalInvoices" ColumnName="TotalInvoices" />
+                <ScalarProperty Name="Declarant_Reference_Number" ColumnName="Declarant_Reference_Number" />
+                <ScalarProperty Name="Declaration_gen_procedure_code" ColumnName="Declaration_gen_procedure_code" />
+                <ScalarProperty Name="Type_of_declaration" ColumnName="Type_of_declaration" />
+                <ScalarProperty Name="BLNumber" ColumnName="BLNumber" />
+                <ScalarProperty Name="Manifest_Number" ColumnName="Manifest_Number" />
+                <ScalarProperty Name="Currency_Code" ColumnName="Currency_Code" />
+                <ScalarProperty Name="Country_of_origin_code" ColumnName="Country_of_origin_code" />
+                <ScalarProperty Name="ApplicationSettingsId" ColumnName="ApplicationSettingsId" />
+                <ScalarProperty Name="AsycudaDocumentSetId" ColumnName="AsycudaDocumentSetId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

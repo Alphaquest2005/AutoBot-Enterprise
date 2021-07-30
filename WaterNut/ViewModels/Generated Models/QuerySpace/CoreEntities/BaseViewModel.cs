@@ -122,6 +122,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                         RegisterToReceiveMessages<string>(MessageToken.CurrentTODO_ImportCompleteEntriesIDChanged, OnCurrentTODO_ImportCompleteEntriesIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentTODO_LicenceAvailableQtyIDChanged, OnCurrentTODO_LicenceAvailableQtyIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentTODO_LicenseToXMLIDChanged, OnCurrentTODO_LicenseToXMLIDChanged);
+                        RegisterToReceiveMessages<string>(MessageToken.CurrentTODO_LICToAssessIDChanged, OnCurrentTODO_LICToAssessIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentTODO_LICToCreateIDChanged, OnCurrentTODO_LICToCreateIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentTODO_PODocSetIDChanged, OnCurrentTODO_PODocSetIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentTODO_PODocSetToAssessIDChanged, OnCurrentTODO_PODocSetToAssessIDChanged);
@@ -216,6 +217,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                         RegisterToReceiveMessages<TODO_ImportCompleteEntries>(MessageToken.CurrentTODO_ImportCompleteEntriesChanged, OnCurrentTODO_ImportCompleteEntriesChanged);
                         RegisterToReceiveMessages<TODO_LicenceAvailableQty>(MessageToken.CurrentTODO_LicenceAvailableQtyChanged, OnCurrentTODO_LicenceAvailableQtyChanged);
                         RegisterToReceiveMessages<TODO_LicenseToXML>(MessageToken.CurrentTODO_LicenseToXMLChanged, OnCurrentTODO_LicenseToXMLChanged);
+                        RegisterToReceiveMessages<TODO_LICToAssess>(MessageToken.CurrentTODO_LICToAssessChanged, OnCurrentTODO_LICToAssessChanged);
                         RegisterToReceiveMessages<TODO_LICToCreate>(MessageToken.CurrentTODO_LICToCreateChanged, OnCurrentTODO_LICToCreateChanged);
                         RegisterToReceiveMessages<TODO_PODocSet>(MessageToken.CurrentTODO_PODocSetChanged, OnCurrentTODO_PODocSetChanged);
                         RegisterToReceiveMessages<TODO_PODocSetToAssess>(MessageToken.CurrentTODO_PODocSetToAssessChanged, OnCurrentTODO_PODocSetToAssessChanged);
@@ -2117,6 +2119,33 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                                     if (!string.IsNullOrEmpty(_currentTODO_LicenseToXMLID)) BeginSendMessage(MessageToken.CurrentTODO_LicenseToXMLIDChanged,
                                                      new NotificationEventArgs<string>(MessageToken.CurrentTODO_LicenseToXMLIDChanged, _currentTODO_LicenseToXMLID));
                                     NotifyPropertyChanged(x => this.CurrentTODO_LicenseToXMLID);  
+                                }
+                            }
+                        }
+                        internal async void OnCurrentTODO_LICToAssessIDChanged(object sender, NotificationEventArgs<string> e)
+                        {
+                            using (TODO_LICToAssessRepository ctx = new TODO_LICToAssessRepository())
+                            {
+                                CurrentTODO_LICToAssess = await ctx.GetTODO_LICToAssess(e.Data).ConfigureAwait(continueOnCapturedContext: false);
+                            }
+                            NotifyPropertyChanged(m => CurrentTODO_LICToAssess);
+                        }
+
+                        private  string _currentTODO_LICToAssessID = "";
+                        public string CurrentTODO_LICToAssessID
+                        {
+                            get
+                            {
+                                return _currentTODO_LICToAssessID;
+                            }
+                            set
+                            {
+                                if (_currentTODO_LICToAssessID != value)
+                                {
+                                    _currentTODO_LICToAssessID = value;
+                                    if (!string.IsNullOrEmpty(_currentTODO_LICToAssessID)) BeginSendMessage(MessageToken.CurrentTODO_LICToAssessIDChanged,
+                                                     new NotificationEventArgs<string>(MessageToken.CurrentTODO_LICToAssessIDChanged, _currentTODO_LICToAssessID));
+                                    NotifyPropertyChanged(x => this.CurrentTODO_LICToAssessID);  
                                 }
                             }
                         }
@@ -6206,6 +6235,56 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     _vcurrentTODO_LicenseToXML = value;
 					if(_vcurrentTODO_LicenseToXML != null) CurrentTODO_LicenseToXML = value.Data;
                     NotifyPropertyChanged(x => this.VCurrentTODO_LicenseToXML);                    
+                }
+            }
+        }
+
+
+
+                     
+       
+
+        internal void OnCurrentTODO_LICToAssessChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<TODO_LICToAssess> e)
+        {
+            //CurrentTODO_LICToAssess = e.Data;
+            NotifyPropertyChanged(m => this.CurrentTODO_LICToAssess);
+        }
+
+        private  TODO_LICToAssess _currentTODO_LICToAssess;
+        public TODO_LICToAssess CurrentTODO_LICToAssess
+        {
+            get
+            {
+                return _currentTODO_LICToAssess;
+            }
+            set
+            {
+                if (_currentTODO_LICToAssess != value)
+                {
+                    _currentTODO_LICToAssess = value;
+                    BeginSendMessage(MessageToken.CurrentTODO_LICToAssessChanged,
+                                                     new NotificationEventArgs<TODO_LICToAssess>(MessageToken.CurrentTODO_LICToAssessChanged, _currentTODO_LICToAssess)); 
+                    NotifyPropertyChanged(x => this.CurrentTODO_LICToAssess);    
+                    // all current navigation properties = null
+   
+                }
+            }
+        }
+
+		VirtualListItem<TODO_LICToAssess> _vcurrentTODO_LICToAssess;
+        public VirtualListItem<TODO_LICToAssess> VCurrentTODO_LICToAssess
+        {
+            get
+            {
+                return _vcurrentTODO_LICToAssess;
+            }
+            set
+            {
+                if (_vcurrentTODO_LICToAssess != value)
+                {
+                    _vcurrentTODO_LICToAssess = value;
+					if(_vcurrentTODO_LICToAssess != null) CurrentTODO_LICToAssess = value.Data;
+                    NotifyPropertyChanged(x => this.VCurrentTODO_LICToAssess);                    
                 }
             }
         }

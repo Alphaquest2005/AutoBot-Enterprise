@@ -222,6 +222,7 @@
     <Compile Include="Generated Repositories\CoreEntities\TODO_ImportCompleteEntriesRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\TODO_LicenceAvailableQtyRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\TODO_LicenseToXMLRepository.cs" />
+    <Compile Include="Generated Repositories\CoreEntities\TODO_LICToAssessRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\TODO_LICToCreateRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\TODO_PODocSetRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\TODO_PODocSetToAssessErrorsRepository.cs" />

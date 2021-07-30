@@ -189,6 +189,7 @@
     <Compile Include="Generated Client Entities\CoreEntities\TODO_ImportCompleteEntries.cs" />
     <Compile Include="Generated Client Entities\CoreEntities\TODO_LicenceAvailableQty.cs" />
     <Compile Include="Generated Client Entities\CoreEntities\TODO_LicenseToXML.cs" />
+    <Compile Include="Generated Client Entities\CoreEntities\TODO_LICToAssess.cs" />
     <Compile Include="Generated Client Entities\CoreEntities\TODO_LICToCreate.cs" />
     <Compile Include="Generated Client Entities\CoreEntities\TODO_PODocSet.cs" />
     <Compile Include="Generated Client Entities\CoreEntities\TODO_PODocSetToAssess.cs" />
@@ -345,6 +346,7 @@
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_ImportCompleteEntries.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_LicenceAvailableQty.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_LicenseToXML.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_LICToAssess.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_LICToCreate.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_PODocSet.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_PODocSetToAssess.cs" />
@@ -501,6 +503,7 @@
     <Compile Include="Generated MyNavProp Models\CoreEntities\TODO_ImportCompleteEntries.cs" />
     <Compile Include="Generated MyNavProp Models\CoreEntities\TODO_LicenceAvailableQty.cs" />
     <Compile Include="Generated MyNavProp Models\CoreEntities\TODO_LicenseToXML.cs" />
+    <Compile Include="Generated MyNavProp Models\CoreEntities\TODO_LICToAssess.cs" />
     <Compile Include="Generated MyNavProp Models\CoreEntities\TODO_LICToCreate.cs" />
     <Compile Include="Generated MyNavProp Models\CoreEntities\TODO_PODocSet.cs" />
     <Compile Include="Generated MyNavProp Models\CoreEntities\TODO_PODocSetToAssess.cs" />

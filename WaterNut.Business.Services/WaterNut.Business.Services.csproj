@@ -489,6 +489,7 @@
     <Compile Include="Contracts\CoreEntities\ITODO_ImportCompleteEntriesService.cs" />
     <Compile Include="Contracts\CoreEntities\ITODO_LicenceAvailableQtyService.cs" />
     <Compile Include="Contracts\CoreEntities\ITODO_LicenseToXMLService.cs" />
+    <Compile Include="Contracts\CoreEntities\ITODO_LICToAssessService.cs" />
     <Compile Include="Contracts\CoreEntities\ITODO_LICToCreateService.cs" />
     <Compile Include="Contracts\CoreEntities\ITODO_PODocSetService.cs" />
     <Compile Include="Contracts\CoreEntities\ITODO_PODocSetToAssessErrorsService.cs" />
@@ -1084,6 +1085,7 @@
     <Compile Include="Services\CoreEntities\TODO_ImportCompleteEntriesService.cs" />
     <Compile Include="Services\CoreEntities\TODO_LicenceAvailableQtyService.cs" />
     <Compile Include="Services\CoreEntities\TODO_LicenseToXMLService.cs" />
+    <Compile Include="Services\CoreEntities\TODO_LICToAssessService.cs" />
     <Compile Include="Services\CoreEntities\TODO_LICToCreateService.cs" />
     <Compile Include="Services\CoreEntities\TODO_PODocSetService.cs" />
     <Compile Include="Services\CoreEntities\TODO_PODocSetToAssessErrorsService.cs" />

@@ -424,6 +424,12 @@ namespace WaterNut.QuerySpace.CoreEntities
 			public const string TODO_LicenseToXMLDeleted = "TODO_LicenseToXMLDeleted";
 			public const string TODO_LicenseToXMLCreated = "TODO_LicenseToXMLCreated";
 			public const string TODO_LicenseToXMLUpdated = "TODO_LicenseToXMLUpdated";
+			public const string TODO_LICToAssessFilterExpressionChanged = "TODO_LICToAssessFilterExpressionChanged";
+			public const string SelectedTODO_LICToAssessChanged = "SelectedTODO_LICToAssessChanged";
+            public const string TODO_LICToAssessChanged = "TODO_LICToAssessChanged";
+			public const string TODO_LICToAssessDeleted = "TODO_LICToAssessDeleted";
+			public const string TODO_LICToAssessCreated = "TODO_LICToAssessCreated";
+			public const string TODO_LICToAssessUpdated = "TODO_LICToAssessUpdated";
 			public const string TODO_LICToCreateFilterExpressionChanged = "TODO_LICToCreateFilterExpressionChanged";
 			public const string SelectedTODO_LICToCreateChanged = "SelectedTODO_LICToCreateChanged";
             public const string TODO_LICToCreateChanged = "TODO_LICToCreateChanged";
@@ -627,6 +633,7 @@ namespace WaterNut.QuerySpace.CoreEntities
           // public const string TODO_ImportCompleteEntriesChanged = "TODO_ImportCompleteEntriesChanged";
           // public const string TODO_LicenceAvailableQtyChanged = "TODO_LicenceAvailableQtyChanged";
           // public const string TODO_LicenseToXMLChanged = "TODO_LicenseToXMLChanged";
+          // public const string TODO_LICToAssessChanged = "TODO_LICToAssessChanged";
           // public const string TODO_LICToCreateChanged = "TODO_LICToCreateChanged";
           // public const string TODO_PODocSetChanged = "TODO_PODocSetChanged";
           // public const string TODO_PODocSetToAssessChanged = "TODO_PODocSetToAssessChanged";
@@ -789,6 +796,8 @@ namespace WaterNut.QuerySpace.CoreEntities
            public const string CurrentTODO_LicenceAvailableQtyChanged = "CurrentTODO_LicenceAvailableQtyChanged";
    
            public const string CurrentTODO_LicenseToXMLChanged = "CurrentTODO_LicenseToXMLChanged";
+   
+           public const string CurrentTODO_LICToAssessChanged = "CurrentTODO_LICToAssessChanged";
    
            public const string CurrentTODO_LICToCreateChanged = "CurrentTODO_LICToCreateChanged";
    
@@ -973,6 +982,8 @@ namespace WaterNut.QuerySpace.CoreEntities
            public const string CurrentTODO_LicenceAvailableQtyIDChanged = "OnCurrentTODO_LicenceAvailableQtyIDChanged";
    
            public const string CurrentTODO_LicenseToXMLIDChanged = "OnCurrentTODO_LicenseToXMLIDChanged";
+   
+           public const string CurrentTODO_LICToAssessIDChanged = "OnCurrentTODO_LICToAssessIDChanged";
    
            public const string CurrentTODO_LICToCreateIDChanged = "OnCurrentTODO_LICToCreateIDChanged";
    

@@ -434,36 +434,40 @@ namespace xlsxWriter
         {
             try
             {
-
-                workbook.SetCurrentWorksheet(sheetName);
-                var header = headerString.Split(',').Select(x => x.Trim()).ToList();
-                var currentRow = 0;
-                var currentColumn = 0;
-                var lst = new List<T>();
-                var readStarted = false;
-                while (true)
+                using (var ctx = new EntryDataDSContext())
                 {
-                    if (currentRow > 100) break;
-
-                    if (workbook.CurrentWorksheet.HasCell(currentColumn, currentRow) &&
-                        workbook.CurrentWorksheet.GetCell(currentColumn, currentRow).Value.ToString() == tableTag)
+                    workbook.SetCurrentWorksheet(sheetName);
+                    var header = headerString.Split(',').Select(x => x.Trim()).ToList();
+                    var currentRow = 0;
+                    var currentColumn = 0;
+                    var lst = new List<T>();
+                    var readStarted = false;
+                    while (true)
                     {
-                        currentColumn++;
-                        if (header.All(x =>
-                            workbook.CurrentWorksheet.GetCell(currentColumn + header.IndexOf(x), currentRow).Value
-                                .ToString() == x))
+                        if (currentRow > 100) break;
+
+                        if (workbook.CurrentWorksheet.HasCell(currentColumn, currentRow) &&
+                            workbook.CurrentWorksheet.GetCell(currentColumn, currentRow).Value.ToString() == tableTag)
                         {
-                            readStarted = true;
-                            currentRow++;
+                            currentColumn++;
+                            if (header.All(x =>
+                                workbook.CurrentWorksheet.GetCell(currentColumn + header.IndexOf(x), currentRow).Value
+                                    .ToString() == x))
+                            {
+                                readStarted = true;
+                                currentRow++;
+                            }
                         }
-                    }
 
-                    if (readStarted)
-                    {
-                        
-                        
-                            
+                        if (readStarted)
+                        {
+
+
+
                             if (!workbook.CurrentWorksheet.HasCell(currentColumn, currentRow)) break;
+
+
+
                             var itm = new T() {TrackingState = TrackingState.Added};
                             header.ForEach(x =>
                             {
@@ -475,15 +479,14 @@ namespace xlsxWriter
                             });
                             lst.Add(itm);
 
-                        
+
+                        }
+
+                        currentRow++;
                     }
 
-                    currentRow++;
-                }
+                    if (!lst.Any()) return;
 
-                if (!lst.Any()) return;
-                using (var ctx = new EntryDataDSContext())
-                {
                     ctx.Set<T>().AddRange(lst);
                     ctx.SaveChanges();
                 }

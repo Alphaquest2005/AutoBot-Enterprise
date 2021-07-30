@@ -229,6 +229,8 @@ namespace CoreEntities.Business.Entities
      
         public DbSet<CancelledEntriesLst> CancelledEntriesLst { get; set; }
      
+        public DbSet<TODO_LICToAssess> TODO_LICToAssess { get; set; }
+     
 
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
@@ -414,6 +416,8 @@ namespace CoreEntities.Business.Entities
             modelBuilder.Configurations.Add(new ImportActionsMap());
          
             modelBuilder.Configurations.Add(new CancelledEntriesLstMap());
+         
+            modelBuilder.Configurations.Add(new TODO_LICToAssessMap());
          
 			OnModelCreatingExtentsion(modelBuilder);
 

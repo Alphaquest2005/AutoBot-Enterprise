@@ -51,7 +51,10 @@ namespace OCR.Client.Enums
         Sparsedetails = 17,
 
       
-        DetailsLine = 18
+        DetailsLine = 18,
+
+      
+        Marks = 19
   }
 }
 
