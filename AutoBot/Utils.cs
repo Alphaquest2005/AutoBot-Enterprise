@@ -498,12 +498,18 @@ namespace AutoBot
                     var poContacts = ctx.Contacts.Where(x => x.Role == "PO Clerk" || x.Role == "Developer")
                         .Select(x => x.EmailAddress).ToArray();
                     //var sysLst = new DocumentDSContext().SystemDocumentSets.Select(x => x.Id).ToList();   -- dont bother try to filter it
+                    var docset =
+                    ctx.AsycudaDocumentSetExs.Where(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)
+                                     .OrderByDescending(x => x.AsycudaDocumentSetId)
+                                     .FirstOrDefault();
+
                     var lst = ctx.TODO_SubmitPOInfo
                         .Where(x => x.ApplicationSettingsId ==
                                     BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId && x.FileTypeId != null)
                        // .Where(x => !sysLst.Contains(x.AsycudaDocumentSetId))
                         .Where (x => x.IsSubmitted == false)
                         .Where(x => x.CNumber != null)
+                        .Where(x => x.Reference.Contains(docset.Declarant_Reference_Number))
                         .ToList()
                         .MaxBy(x => x.AsycudaDocumentSetId)
                         .GroupBy(x => x.AsycudaDocumentSetId)

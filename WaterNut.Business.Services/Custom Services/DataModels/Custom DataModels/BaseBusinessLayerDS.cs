@@ -202,7 +202,7 @@ namespace WaterNut.DataSpace
         {
             try
             {
-                if (_fileTypes == null)
+                if (_fileTypes == null || Instance.CurrentApplicationSettings.ApplicationSettingsId != _fileTypes.First().ApplicationSettingsId)
                     using (var ctx = new CoreEntitiesContext())
                     {
                         _fileTypes = ctx.FileTypes
