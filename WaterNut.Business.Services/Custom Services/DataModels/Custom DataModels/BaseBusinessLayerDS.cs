@@ -2221,7 +2221,7 @@ namespace WaterNut.DataSpace
             
             var exceptions = new ConcurrentQueue<Exception>();
             Parallel.ForEach(fileNames,
-                new ParallelOptions {MaxDegreeOfParallelism = 1}, //Environment.ProcessorCount *
+                new ParallelOptions {MaxDegreeOfParallelism = Environment.ProcessorCount * 1}, //
                 f => //
                 {
                     try

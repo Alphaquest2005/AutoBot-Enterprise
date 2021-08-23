@@ -6847,11 +6847,11 @@ namespace AutoBot
                 csv.Close();
                 if (fileType.ChildFileTypes.Any())
                 {
-                    var fileTypes = BaseDataModel.GetFileType(fileType.ChildFileTypes.First());
-                    fileTypes.AsycudaDocumentSetId = fileType.AsycudaDocumentSetId;
-                    fileTypes.EmailId = fileType.EmailId;
-                    fileTypes.OverwriteFiles = overwrite;
-                    SaveCsv(new FileInfo[] { new FileInfo(output) }, fileTypes);
+                    var cfileTypes = BaseDataModel.GetFileType(fileType.ChildFileTypes.First());
+                    cfileTypes.AsycudaDocumentSetId = fileType.AsycudaDocumentSetId;
+                    cfileTypes.EmailId = fileType.EmailId;
+                    cfileTypes.OverwriteFiles = overwrite;
+                    SaveCsv(new FileInfo[] { new FileInfo(output) }, cfileTypes);
                 }
 
             }
