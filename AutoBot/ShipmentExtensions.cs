@@ -1022,7 +1022,7 @@ namespace AutoBotUtilities
             {
                 BLPackages = client.DistinctBy(x => x.WarehouseCode).Sum(x => x.ShipmentRiderBLs.DistinctBy(bd => bd.BLDetailId).Sum(b => b.ShipmentBLDetails?.Quantity??0)),
                 RiderPackages = client.Sum(x => x.Pieces),
-                InvoicePackages = client.Sum(x => x.ShipmentRiderInvoice.Sum(i => i.Packages))
+                InvoicePackages = client.Sum(x => x.ShipmentRiderInvoice.Where(i => !string.IsNullOrEmpty(i.InvoiceNo)).Sum(i => i.Packages))
             };
 
 

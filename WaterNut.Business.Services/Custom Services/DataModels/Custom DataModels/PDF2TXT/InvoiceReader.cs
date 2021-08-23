@@ -54,7 +54,7 @@ namespace WaterNut.DataSpace
                 //Get Template
                 var templates = GetTemplates(x => true);
 
-                foreach (var tmp in templates)//.Where(x => x.OcrInvoices.Id == 37)
+                foreach (var tmp in templates.OrderBy(x => x.OcrInvoices.Id))//.Where(x => x.OcrInvoices.Id == 37)
                     try
                     {
                         if(TryReadFile(file, emailId, fileType, pdfTxt, client, overWriteExisting, docSet, tmp)) return true;
@@ -642,6 +642,7 @@ namespace WaterNut.DataSpace
             OCR_Part = part;
             ChildParts = part.ParentParts.Select(x => new Part(x.ChildPart)).ToList();
             Lines = part.Lines.Select(x => new Line(x)).ToList();
+            lastLineRead = 0;
 
         }
 
@@ -676,6 +677,8 @@ namespace WaterNut.DataSpace
 
         public bool WasStarted => this._startlines.Any();
 
+        private static int lastLineRead = 0;
+
         public void Read(List<InvoiceLine> newlines)
         {
             try
@@ -695,6 +698,7 @@ namespace WaterNut.DataSpace
                             _endlines.Clear();
                             _bodylines.Clear();
                             _bodyTxt.Clear();
+                            lastLineRead = _lines.LastOrDefault()?.LineNumber??0;
                             _lines.Clear();
                             _linesTxt.Clear();
                         }
@@ -709,11 +713,17 @@ namespace WaterNut.DataSpace
 
                 }
 
-                if (_lines.FirstOrDefault(x => x.LineNumber == newlines.First().LineNumber) == null)
-                {
-                    _lines.AddRange(newlines);
-                    newlines.ForEach(x => _linesTxt.AppendLine(x.Line));
-                }
+
+                //if (_lines.FirstOrDefault(x => x.LineNumber == newlines.First().LineNumber) == null)
+                //{
+                //    _lines.AddRange(newlines);
+                //    newlines.ForEach(x => _linesTxt.AppendLine(x.Line));
+                //}
+
+                var newInvoiceLines = newlines.Where(x => (_lines.LastOrDefault()?.LineNumber?? lastLineRead) < x.LineNumber).ToList();
+                _lines.AddRange(newInvoiceLines);
+                newInvoiceLines.ForEach(x => _linesTxt.AppendLine(x.Line));
+
 
                 var startFound = FindStart();
                 if (startFound)
@@ -804,7 +814,7 @@ namespace WaterNut.DataSpace
                             var matchLines = match.Value.Split(new char[] {'\r', '\n'}, StringSplitOptions.RemoveEmptyEntries);
                             for (var index = 0; index < lines.Count; index++)
                             {
-                                if (sline.Count(x => string.IsNullOrEmpty(x.Line)) > matchLines.Count(x => !string.IsNullOrEmpty(x)) + 1) return false;
+                                if (sline.Count(x => !string.IsNullOrEmpty(x.Line)) > matchLines.Count(x => !string.IsNullOrEmpty(x)) + 1) return false;
                                 var line = lines[index];
                                 if(match.Value.Contains(line.Line) || matchLines.Any(x => line.Line.Contains(x))) sline.Add(line);
                                 if (!sline.OrderBy(x => x.LineNumber).Select(x => x.Line).DefaultIfEmpty("")
