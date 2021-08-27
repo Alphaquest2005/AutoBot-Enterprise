@@ -18,19 +18,10 @@ namespace EntryDataDS.Business.Entities
 
     //[JsonObject(IsReference = true)]
     [DataContract(IsReference = true, Namespace="http://www.insight-software.com/WaterNut")]
-    public partial class ShipmentRider : BaseEntity<ShipmentRider>, ITrackable 
+    public partial class ShipmentRiderManifests : BaseEntity<ShipmentRiderManifests>, ITrackable 
     {
-        partial void AutoGenStartUp() //ShipmentRider()
-        {
-            this.ShipmentRiderDetails = new List<ShipmentRiderDetails>();
-            this.ShipmentRiderInvoice = new List<ShipmentRiderInvoice>();
-            this.ShipmentRiderBLs = new List<ShipmentRiderBLs>();
-            this.ShipmentAttachedRider = new List<ShipmentAttachedRider>();
-            this.ShipmentRiderManifests = new List<ShipmentRiderManifests>();
-        }
-
         [DataMember]
-        public int Id 
+        public Nullable<int> id 
         {
             get
             {
@@ -43,7 +34,52 @@ namespace EntryDataDS.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        int _id;
+        Nullable<int> _id;
+        [DataMember]
+        public int RiderId 
+        {
+            get
+            {
+                return _riderid;
+            }
+            set
+            {
+                _riderid = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        int _riderid;
+        [DataMember]
+        public int RiderDetailId 
+        {
+            get
+            {
+                return _riderdetailid;
+            }
+            set
+            {
+                _riderdetailid = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        int _riderdetailid;
+        [DataMember]
+        public int ManifestId 
+        {
+            get
+            {
+                return _manifestid;
+            }
+            set
+            {
+                _manifestid = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        int _manifestid;
         [DataMember]
         public System.DateTime ETA 
         {
@@ -60,92 +96,69 @@ namespace EntryDataDS.Business.Entities
         }
         System.DateTime _eta;
         [DataMember]
-        public System.DateTime DocumentDate 
+        public string BLNumber 
         {
             get
             {
-                return _documentdate;
+                return _blnumber;
             }
             set
             {
-                _documentdate = value;
+                _blnumber = value;
                 //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
                 NotifyPropertyChanged();
             }
         }
-        System.DateTime _documentdate;
+        string _blnumber;
         [DataMember]
-        public Nullable<int> EmailId 
+        public int Quantity 
         {
             get
             {
-                return _emailid;
+                return _quantity;
             }
             set
             {
-                _emailid = value;
+                _quantity = value;
                 //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
                 NotifyPropertyChanged();
             }
         }
-        Nullable<int> _emailid;
+        int _quantity;
         [DataMember]
-        public string SourceFile 
+        public string Marks 
         {
             get
             {
-                return _sourcefile;
+                return _marks;
             }
             set
             {
-                _sourcefile = value;
+                _marks = value;
                 //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
                 NotifyPropertyChanged();
             }
         }
-        string _sourcefile;
+        string _marks;
         [DataMember]
-        public int FileTypeId 
+        public string ManifestMark 
         {
             get
             {
-                return _filetypeid;
+                return _manifestmark;
             }
             set
             {
-                _filetypeid = value;
+                _manifestmark = value;
                 //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
                 NotifyPropertyChanged();
             }
         }
-        int _filetypeid;
+        string _manifestmark;
         [DataMember]
-        public int ApplicationSettingsId 
-        {
-            get
-            {
-                return _applicationsettingsid;
-            }
-            set
-            {
-                _applicationsettingsid = value;
-                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
-                NotifyPropertyChanged();
-            }
-        }
-        int _applicationsettingsid;
+        public ShipmentRider ShipmentRider { get; set; }
         [DataMember]
-        public List<ShipmentRiderDetails> ShipmentRiderDetails { get; set; }
-        [DataMember]
-        public List<ShipmentRiderInvoice> ShipmentRiderInvoice { get; set; }
-        [DataMember]
-        public List<ShipmentRiderBLs> ShipmentRiderBLs { get; set; }
-        [DataMember]
-        public List<ShipmentAttachedRider> ShipmentAttachedRider { get; set; }
-        [DataMember]
-        public ShipmentRiderEx ShipmentRiderEx { get; set; }
-        [DataMember]
-        public List<ShipmentRiderManifests> ShipmentRiderManifests { get; set; }
+        public ShipmentManifest ShipmentManifest { get; set; }
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

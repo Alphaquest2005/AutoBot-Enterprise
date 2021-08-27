@@ -313,7 +313,7 @@ namespace xlsxWriter
         {
             var shipmentInvoicePoItemMisMatchesList = shipmentInvoice.ShipmentInvoicePOs.SelectMany(x => x.POMISMatches).ToList();
             if (!shipmentInvoicePoItemMisMatchesList.Any()) return;
-            var header = "PONumber,InvoiceNo,POItemCode,INVItemCode,PODescription,INVDescription,POCost,INVCost,POQuantity,INVQuantity,POTotalCost,INVTotalCost,INVDetailsId,PODetailsId".Split(',').ToList();
+            var header = "PONumber,InvoiceNo,POItemCode,INVItemCode,PODescription,INVDescription,POCost,INVCost,POQuantity,INVQuantity,INVSalesFactor,POTotalCost,INVTotalCost,INVDetailsId,PODetailsId".Split(',').ToList();
 
             if (!workbook.Worksheets.Exists(x => x.SheetName == "MisMatches"))
             {
@@ -339,6 +339,7 @@ namespace xlsxWriter
                     SetValue(workbook, i, header.IndexOf("INVCost"), mis.INVCost);
                     SetValue(workbook, i, header.IndexOf("POQuantity"), mis.POQuantity);
                     SetValue(workbook, i, header.IndexOf("INVQuantity"), mis.INVQuantity);
+                    SetValue(workbook, i, header.IndexOf("INVQuantity"), mis.INVSalesFactor);
                     SetValue(workbook, i, header.IndexOf("POTotalCost"), mis.POTotalCost);
                     SetValue(workbook, i, header.IndexOf("INVTotalCost"), mis.INVTotalCost);
                     SetValue(workbook, i, header.IndexOf("INVDetailsId"), mis.INVDetailsId);

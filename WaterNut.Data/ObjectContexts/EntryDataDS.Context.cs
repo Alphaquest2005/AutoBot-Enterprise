@@ -163,6 +163,8 @@ namespace EntryDataDS.Business.Entities
      
         public DbSet<VolumeUnits> VolumeUnits { get; set; }
      
+        public DbSet<ShipmentRiderManifests> ShipmentRiderManifests { get; set; }
+     
 
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
@@ -282,6 +284,8 @@ namespace EntryDataDS.Business.Entities
             modelBuilder.Configurations.Add(new InvoiceDetailsVolumeMap());
          
             modelBuilder.Configurations.Add(new VolumeUnitsMap());
+         
+            modelBuilder.Configurations.Add(new ShipmentRiderManifestsMap());
          
             modelBuilder.Configurations.Add(new AdjustmentsMap());
       

@@ -298,11 +298,12 @@ namespace AutoBot
                                     .LoadEmailManifest()
                                     .LoadEmailFreight()
                                     .LoadDBBL()
+                                    .LoadDBManifest()
                                     .LoadDBRiders()
                                     .LoadDBBL()
+                                    .LoadDBManifest()
                                     .LoadDBRiders()
                                     .LoadDBFreight()
-                                    .LoadDBManifest()
                                     .LoadDBInvoices()
                                     .ProcessShipment()
                                     //.SaveShipment()
@@ -2120,46 +2121,57 @@ namespace AutoBot
 
         private static IEnumerable<IGrouping<int?, TODO_SubmitDiscrepanciesToCustoms>> GetSubmitEntryData(FileTypes ft)
         {
-            using (var ctx = new CoreEntitiesContext())
+            try
             {
-                ctx.Database.CommandTimeout = 10;
-                var cnumberList = ft.Data.Where(z => z.Key == "CNumber").Select(x => x.Value).ToList();
 
-                IEnumerable<IGrouping<int?, TODO_SubmitDiscrepanciesToCustoms>> lst;
-                List<TODO_SubmitAllXMLToCustoms> res;
-                if (cnumberList.Any())
-                {
-                    res = ctx.TODO_SubmitAllXMLToCustoms.Where(x =>
-                            x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings
-                                .ApplicationSettingsId && cnumberList.Contains(x.CNumber))
-                        .ToList();
-                }
-                else
-                {
-                    var docSet = BaseDataModel.Instance.GetAsycudaDocumentSet(ft.AsycudaDocumentSetId).Result;
-                    res = ctx.TODO_SubmitAllXMLToCustoms.Where(x =>
-                            x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings
-                                .ApplicationSettingsId && x.ReferenceNumber.Contains(docSet.Declarant_Reference_Number))
-                        .ToList();
-                }
 
-                lst = res.Select(x => new TODO_SubmitDiscrepanciesToCustoms()
+                using (var ctx = new CoreEntitiesContext())
+                {
+                    ctx.Database.CommandTimeout = 20;
+                    var cnumberList = ft.Data.Where(z => z.Key == "CNumber").Select(x => x.Value).ToList();
+
+                    IEnumerable<IGrouping<int?, TODO_SubmitDiscrepanciesToCustoms>> lst;
+                    List<TODO_SubmitAllXMLToCustoms> res;
+                    if (cnumberList.Any())
                     {
-                        CNumber = x.CNumber,
-                        ApplicationSettingsId = x.ApplicationSettingsId,
-                        AssessmentDate = x.AssessmentDate,
-                        ASYCUDA_Id = x.ASYCUDA_Id,
-                        AsycudaDocumentSetId = x.AsycudaDocumentSetId,
-                        CustomsProcedure = x.CustomsProcedure,
-                        DocumentType = x.DocumentType,
-                        EmailId = x.EmailId,
-                        ReferenceNumber = x.ReferenceNumber,
-                        RegistrationDate = x.RegistrationDate,
-                        Status = x.Status,
-                        ToBePaid = x.ToBePaid
-                    })
-                    .GroupBy(x => x.EmailId);
-                return lst;
+                        res = ctx.TODO_SubmitAllXMLToCustoms.Where(x =>
+                                x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings
+                                    .ApplicationSettingsId && cnumberList.Contains(x.CNumber))
+                            .ToList();
+                    }
+                    else
+                    {
+                        var docSet = BaseDataModel.Instance.GetAsycudaDocumentSet(ft.AsycudaDocumentSetId).Result;
+                        res = ctx.TODO_SubmitAllXMLToCustoms.Where(x =>
+                                x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings
+                                    .ApplicationSettingsId &&
+                                x.ReferenceNumber.Contains(docSet.Declarant_Reference_Number))
+                            .ToList();
+                    }
+
+                    lst = res.Select(x => new TODO_SubmitDiscrepanciesToCustoms()
+                        {
+                            CNumber = x.CNumber,
+                            ApplicationSettingsId = x.ApplicationSettingsId,
+                            AssessmentDate = x.AssessmentDate,
+                            ASYCUDA_Id = x.ASYCUDA_Id,
+                            AsycudaDocumentSetId = x.AsycudaDocumentSetId,
+                            CustomsProcedure = x.CustomsProcedure,
+                            DocumentType = x.DocumentType,
+                            EmailId = x.EmailId,
+                            ReferenceNumber = x.ReferenceNumber,
+                            RegistrationDate = x.RegistrationDate,
+                            Status = x.Status,
+                            ToBePaid = x.ToBePaid
+                        })
+                        .GroupBy(x => x.EmailId);
+                    return lst;
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
             }
         }
 
@@ -4991,7 +5003,7 @@ namespace AutoBot
 
                 using (var ctx = new CoreEntitiesContext())
                 {
-                    ctx.Database.CommandTimeout = 10;
+                    ctx.Database.CommandTimeout = 20;
                     var lst = ctx.TODO_DiscrepanciesErrors
                         .Where(x =>//x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId &&
                                                                       x.AsycudaDocumentSetId == fileType.AsycudaDocumentSetId

@@ -667,6 +667,7 @@
     <Compile Include="Contracts\EntryDataDS\IShipmentRiderDetailsService.cs" />
     <Compile Include="Contracts\EntryDataDS\IShipmentRiderExService.cs" />
     <Compile Include="Contracts\EntryDataDS\IShipmentRiderInvoiceService.cs" />
+    <Compile Include="Contracts\EntryDataDS\IShipmentRiderManifestsService.cs" />
     <Compile Include="Contracts\EntryDataDS\IShipmentRiderService.cs" />
     <Compile Include="Contracts\EntryDataDS\IShipmentService.cs" />
     <Compile Include="Contracts\EntryDataDS\ISuppliersService.cs" />
@@ -1263,6 +1264,7 @@
     <Compile Include="Services\EntryDataDS\ShipmentRiderDetailsService.cs" />
     <Compile Include="Services\EntryDataDS\ShipmentRiderExService.cs" />
     <Compile Include="Services\EntryDataDS\ShipmentRiderInvoiceService.cs" />
+    <Compile Include="Services\EntryDataDS\ShipmentRiderManifestsService.cs" />
     <Compile Include="Services\EntryDataDS\ShipmentRiderService.cs" />
     <Compile Include="Services\EntryDataDS\ShipmentService.cs" />
     <Compile Include="Services\EntryDataDS\SuppliersService.cs" />

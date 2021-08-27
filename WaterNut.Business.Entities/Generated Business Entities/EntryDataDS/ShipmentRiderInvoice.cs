@@ -126,7 +126,7 @@ namespace EntryDataDS.Business.Entities
         }
         string _invoiceno;
         [DataMember]
-        public int Packages 
+        public Nullable<int> Packages 
         {
             get
             {
@@ -139,7 +139,7 @@ namespace EntryDataDS.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        int _packages;
+        Nullable<int> _packages;
         [DataMember]
         public Nullable<long> rowNumber 
         {

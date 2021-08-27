@@ -139,6 +139,9 @@
         <EntityTypeShape EntityType="WaterNutDBModel.InvoiceDetailsVolume" Width="2.625" PointX="12.75" PointY="25" />
         <AssociationConnector Association="WaterNutDBModel.FK_ShipmentInvoiceDetails_Volume_ShipmentInvoiceDetails" />
         <EntityTypeShape EntityType="WaterNutDBModel.VolumeUnits" Width="1.5" PointX="19.375" PointY="5.75" />
+        <EntityTypeShape EntityType="WaterNutDBModel.ShipmentRiderManifests" Width="1.5" PointX="0.5" PointY="8.75" />
+        <AssociationConnector Association="WaterNutDBModel.ShipmentRiderShipmentRiderManifests" />
+        <AssociationConnector Association="WaterNutDBModel.ShipmentManifestShipmentRiderManifests" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

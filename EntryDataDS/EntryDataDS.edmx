@@ -811,6 +811,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ShipmentInvoicePOItemMISM
           <Property Name="INVCost" Type="float" />
           <Property Name="POQuantity" Type="float" />
           <Property Name="INVQuantity" Type="float" />
+          <Property Name="INVSalesFactor" Type="float" />
           <Property Name="POTotalCost" Type="float" />
           <Property Name="INVTotalCost" Type="float" />
         </EntityType>
@@ -957,7 +958,6 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ShipmentRiderInvoice' doe
           <Key>
             
             
-            
             <PropertyRef Name="id" />
           </Key>
           <Property Name="id" Type="int" Nullable="false" />
@@ -967,9 +967,32 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ShipmentRiderInvoice' doe
           <Property Name="WarehouseCode" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="InvoiceNumber" Type="nvarchar" MaxLength="255" />
           <Property Name="InvoiceNo" Type="nvarchar" MaxLength="50" />
-          <Property Name="Packages" Type="int" Nullable="false" />
+          <Property Name="Packages" Type="int" />
           <Property Name="rowNumber" Type="bigint" />
           <Property Name="RowNumber2" Type="bigint" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ShipmentRiderManifests' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="ShipmentRiderManifests">
+          <Key>
+            <PropertyRef Name="RiderId" />
+            <PropertyRef Name="RiderDetailId" />
+            <PropertyRef Name="ManifestId" />
+            <PropertyRef Name="ETA" />
+            <PropertyRef Name="BLNumber" />
+            <PropertyRef Name="Quantity" />
+            <PropertyRef Name="Marks" />
+            <PropertyRef Name="ManifestMark" />
+          </Key>
+          <Property Name="id" Type="int" />
+          <Property Name="RiderId" Type="int" Nullable="false" />
+          <Property Name="RiderDetailId" Type="int" Nullable="false" />
+          <Property Name="ManifestId" Type="int" Nullable="false" />
+          <Property Name="ETA" Type="date" Nullable="false" />
+          <Property Name="BLNumber" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Quantity" Type="int" Nullable="false" />
+          <Property Name="Marks" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="ManifestMark" Type="nvarchar" MaxLength="1000" Nullable="false" />
         </EntityType>
         <Association Name="FK_AsycudaDocumentEntryData_EntryData1">
           <End Role="EntryData" Type="Self.EntryData" Multiplicity="1">
@@ -1797,6 +1820,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ShipmentRiderInvoice' doe
     [ShipmentInvoicePOItemMISMatches].[INVCost] AS [INVCost], 
     [ShipmentInvoicePOItemMISMatches].[POQuantity] AS [POQuantity], 
     [ShipmentInvoicePOItemMISMatches].[INVQuantity] AS [INVQuantity], 
+    [ShipmentInvoicePOItemMISMatches].[INVSalesFactor] AS [INVSalesFactor], 
     [ShipmentInvoicePOItemMISMatches].[POTotalCost] AS [POTotalCost], 
     [ShipmentInvoicePOItemMISMatches].[INVTotalCost] AS [INVTotalCost]
     FROM [dbo].[ShipmentInvoicePOItemMISMatches] AS [ShipmentInvoicePOItemMISMatches]</DefiningQuery>
@@ -1900,6 +1924,19 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ShipmentRiderInvoice' doe
     [ShipmentRiderInvoice].[rowNumber] AS [rowNumber], 
     [ShipmentRiderInvoice].[RowNumber2] AS [RowNumber2]
     FROM [dbo].[ShipmentRiderInvoice] AS [ShipmentRiderInvoice]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="ShipmentRiderManifests" EntityType="Self.ShipmentRiderManifests" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [ShipmentRiderManifests].[id] AS [id], 
+    [ShipmentRiderManifests].[RiderId] AS [RiderId], 
+    [ShipmentRiderManifests].[RiderDetailId] AS [RiderDetailId], 
+    [ShipmentRiderManifests].[ManifestId] AS [ManifestId], 
+    [ShipmentRiderManifests].[ETA] AS [ETA], 
+    [ShipmentRiderManifests].[BLNumber] AS [BLNumber], 
+    [ShipmentRiderManifests].[Quantity] AS [Quantity], 
+    [ShipmentRiderManifests].[Marks] AS [Marks], 
+    [ShipmentRiderManifests].[ManifestMark] AS [ManifestMark]
+    FROM [dbo].[ShipmentRiderManifests] AS [ShipmentRiderManifests]</DefiningQuery>
           </EntitySet>
           <AssociationSet Name="FK_AsycudaDocumentEntryData_EntryData1" Association="Self.FK_AsycudaDocumentEntryData_EntryData1">
             <End Role="EntryData" EntitySet="EntryData" />
@@ -2392,6 +2429,15 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ShipmentRiderInvoice' doe
             <End Role="ShipmentInvoiceDetails_Volume" EntitySet="InvoiceDetailsVolume" />
           </AssociationSet>
           <EntitySet Name="VolumeUnits" EntityType="WaterNutDBModel.VolumeUnits" />
+          <EntitySet Name="ShipmentRiderManifests" EntityType="WaterNutDBModel.ShipmentRiderManifests" />
+          <AssociationSet Name="ShipmentRiderShipmentRiderManifests" Association="WaterNutDBModel.ShipmentRiderShipmentRiderManifests">
+            <End Role="ShipmentRider" EntitySet="ShipmentRider" />
+            <End Role="ShipmentRiderManifests" EntitySet="ShipmentRiderManifests" />
+          </AssociationSet>
+          <AssociationSet Name="ShipmentManifestShipmentRiderManifests" Association="WaterNutDBModel.ShipmentManifestShipmentRiderManifests">
+            <End Role="ShipmentManifest" EntitySet="ShipmentManifest" />
+            <End Role="ShipmentRiderManifests" EntitySet="ShipmentRiderManifests" />
+          </AssociationSet>
           </EntityContainer>
         <EntityType Name="Sales" BaseType="WaterNutDBModel.EntryData">
           <Property Name="INVNumber" Type="String" Nullable="false" MaxLength="50" Unicode="true" FixedLength="false"><a:EntityNameProperty xmlns:a="http://schemas.tempuri.com/EntityNameProperty">False</a:EntityNameProperty></Property>
@@ -3031,6 +3077,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ShipmentRiderInvoice' doe
           <NavigationProperty Name="ShipmentAttachedRider" Relationship="WaterNutDBModel.FK_ShipmentAttachedRider_ShipmentRider" FromRole="ShipmentRider" ToRole="ShipmentAttachedRider" />
           <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
           <NavigationProperty Name="ShipmentRiderEx" Relationship="WaterNutDBModel.ShipmentRiderShipmentRiderEx" FromRole="ShipmentRider" ToRole="ShipmentRiderEx" />
+          <NavigationProperty Name="ShipmentRiderManifests" Relationship="WaterNutDBModel.ShipmentRiderShipmentRiderManifests" FromRole="ShipmentRider" ToRole="ShipmentRiderManifests" />
         </EntityType>
         <EntityType Name="ShipmentFreight">
           <Key>
@@ -3236,7 +3283,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ShipmentRiderInvoice' doe
           <NavigationProperty Name="ShipmentRider" Relationship="WaterNutDBModel.ShipmentRiderShipmentRiderInvoice" FromRole="ShipmentRiderInvoice" ToRole="ShipmentRider" />
           <NavigationProperty Name="ShipmentInvoice" Relationship="WaterNutDBModel.ShipmentInvoiceShipmentRiderInvoice" FromRole="ShipmentRiderInvoice" ToRole="ShipmentInvoice" />
           <NavigationProperty Name="ShipmentRiderDetails" Relationship="WaterNutDBModel.ShipmentRiderDetailsShipmentRiderInvoice" FromRole="ShipmentRiderInvoice" ToRole="ShipmentRiderDetails" />
-          <Property Name="Packages" Type="Int32" Nullable="false" />
+          <Property Name="Packages" Type="Int32" />
           <Property Name="rowNumber" Type="Int64" />
           <Property Name="RowNumber2" Type="Int64" />
         </EntityType>
@@ -3636,6 +3683,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ShipmentRiderInvoice' doe
           <NavigationProperty Name="ShipmentAttachedManifest" Relationship="WaterNutDBModel.FK_ShipmentAttachedManifest_ShipmentManifest" FromRole="ShipmentManifest" ToRole="ShipmentAttachedManifest" />
           <NavigationProperty Name="ShipmentManifestDetails" Relationship="WaterNutDBModel.FK_ShipmentManifestDetails_ShipmentManifest" FromRole="ShipmentManifest" ToRole="ShipmentManifestDetails" />
           <NavigationProperty Name="ShipmentManifestBLs" Relationship="WaterNutDBModel.ShipmentManifestShipmentManifestBLs" FromRole="ShipmentManifest" ToRole="ShipmentManifestBLs" />
+          <NavigationProperty Name="ShipmentRiderManifests" Relationship="WaterNutDBModel.ShipmentManifestShipmentRiderManifests" FromRole="ShipmentManifest" ToRole="ShipmentRiderManifests" />
         </EntityType>
         <Association Name="FK_ShipmentAttachedManifest_ShipmentManifest">
           <End Type="WaterNutDBModel.ShipmentManifest" Role="ShipmentManifest" Multiplicity="1">
@@ -3883,6 +3931,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ShipmentRiderInvoice' doe
           <Property Name="POTotalCost" Type="Double" />
           <Property Name="INVTotalCost" Type="Double" />
           <NavigationProperty Name="ShipmentInvoicePOs" Relationship="WaterNutDBModel.ShipmentInvoicePOsShipmentInvoicePOItemMISMatches" FromRole="ShipmentInvoicePOItemMISMatches" ToRole="ShipmentInvoicePOs" />
+          <Property Name="INVSalesFactor" Type="Double" />
         </EntityType>
         <Association Name="ShipmentInvoicePOsShipmentInvoicePOItemMISMatches">
           <End Type="WaterNutDBModel.ShipmentInvoicePOs" Role="ShipmentInvoicePOs" Multiplicity="0..1" />
@@ -4185,6 +4234,53 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ShipmentRiderInvoice' doe
           <Property Name="Name" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="RateToLiters" Type="Double" Nullable="false" />
         </EntityType>
+        <EntityType Name="ShipmentRiderManifests">
+          <Key>
+            <PropertyRef Name="RiderId" />
+            <PropertyRef Name="RiderDetailId" />
+            <PropertyRef Name="ManifestId" />
+            <PropertyRef Name="ETA" />
+            <PropertyRef Name="BLNumber" />
+            <PropertyRef Name="Quantity" />
+            <PropertyRef Name="Marks" />
+            <PropertyRef Name="ManifestMark" />
+          </Key>
+          <Property Name="id" Type="Int32" />
+          <Property Name="RiderId" Type="Int32" Nullable="false" />
+          <Property Name="RiderDetailId" Type="Int32" Nullable="false" />
+          <Property Name="ManifestId" Type="Int32" Nullable="false" />
+          <Property Name="ETA" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="BLNumber" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Quantity" Type="Int32" Nullable="false" />
+          <Property Name="Marks" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ManifestMark" Type="String" Nullable="false" MaxLength="1000" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="ShipmentRider" Relationship="WaterNutDBModel.ShipmentRiderShipmentRiderManifests" FromRole="ShipmentRiderManifests" ToRole="ShipmentRider" />
+          <NavigationProperty Name="ShipmentManifest" Relationship="WaterNutDBModel.ShipmentManifestShipmentRiderManifests" FromRole="ShipmentRiderManifests" ToRole="ShipmentManifest" />
+        </EntityType>
+        <Association Name="ShipmentRiderShipmentRiderManifests">
+          <End Type="WaterNutDBModel.ShipmentRider" Role="ShipmentRider" Multiplicity="1" />
+          <End Type="WaterNutDBModel.ShipmentRiderManifests" Role="ShipmentRiderManifests" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ShipmentRider">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ShipmentRiderManifests">
+              <PropertyRef Name="RiderId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="ShipmentManifestShipmentRiderManifests">
+          <End Type="WaterNutDBModel.ShipmentManifest" Role="ShipmentManifest" Multiplicity="1" />
+          <End Type="WaterNutDBModel.ShipmentRiderManifests" Role="ShipmentRiderManifests" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ShipmentManifest">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ShipmentRiderManifests">
+              <PropertyRef Name="ManifestId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -4942,6 +5038,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ShipmentRiderInvoice' doe
           <EntitySetMapping Name="ShipmentInvoicePOItemMISMatches">
             <EntityTypeMapping TypeName="WaterNutDBModel.ShipmentInvoicePOItemMISMatches">
               <MappingFragment StoreEntitySet="ShipmentInvoicePOItemMISMatches">
+                <ScalarProperty Name="INVSalesFactor" ColumnName="INVSalesFactor" />
                 <ScalarProperty Name="INVTotalCost" ColumnName="INVTotalCost" />
                 <ScalarProperty Name="POTotalCost" ColumnName="POTotalCost" />
                 <ScalarProperty Name="INVQuantity" ColumnName="INVQuantity" />
@@ -5104,6 +5201,21 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ShipmentRiderInvoice' doe
               <MappingFragment StoreEntitySet="VolumeUnits">
                 <ScalarProperty Name="RateToLiters" ColumnName="RateToLiters" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ShipmentRiderManifests">
+            <EntityTypeMapping TypeName="WaterNutDBModel.ShipmentRiderManifests">
+              <MappingFragment StoreEntitySet="ShipmentRiderManifests">
+                <ScalarProperty Name="ManifestMark" ColumnName="ManifestMark" />
+                <ScalarProperty Name="Marks" ColumnName="Marks" />
+                <ScalarProperty Name="Quantity" ColumnName="Quantity" />
+                <ScalarProperty Name="BLNumber" ColumnName="BLNumber" />
+                <ScalarProperty Name="ETA" ColumnName="ETA" />
+                <ScalarProperty Name="ManifestId" ColumnName="ManifestId" />
+                <ScalarProperty Name="RiderDetailId" ColumnName="RiderDetailId" />
+                <ScalarProperty Name="RiderId" ColumnName="RiderId" />
+                <ScalarProperty Name="id" ColumnName="id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

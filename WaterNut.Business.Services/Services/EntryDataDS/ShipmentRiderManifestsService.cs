@@ -32,19 +32,19 @@ using WaterNut.Interfaces;
 
 namespace EntryDataDS.Business.Services
 {
-   [Export (typeof(IShipmentRiderService))]
+   [Export (typeof(IShipmentRiderManifestsService))]
    [Export(typeof(IBusinessService))]
    [PartCreationPolicy(CreationPolicy.NonShared)]
    [ServiceBehavior(InstanceContextMode = InstanceContextMode.PerCall,
                     ConcurrencyMode = ConcurrencyMode.Multiple)]
    
-    public partial class ShipmentRiderService : IShipmentRiderService, IDisposable
+    public partial class ShipmentRiderManifestsService : IShipmentRiderManifestsService, IDisposable
     {
         //private readonly EntryDataDSContext dbContext;
 
         public bool StartTracking { get; set; }
 
-        public ShipmentRiderService()
+        public ShipmentRiderManifestsService()
         {
             try
             {
@@ -65,7 +65,7 @@ namespace EntryDataDS.Business.Services
             }
         }
 
-        public async Task<IEnumerable<ShipmentRider>> GetShipmentRider(List<string> includesLst = null, bool tracking = true)
+        public async Task<IEnumerable<ShipmentRiderManifests>> GetShipmentRiderManifests(List<string> includesLst = null, bool tracking = true)
         {
             try
             {
@@ -75,7 +75,7 @@ namespace EntryDataDS.Business.Services
                   using ( var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
                   {
 				    var set = AddIncludes(includesLst, dbContext);
-                    IEnumerable<ShipmentRider> entities = await set.AsNoTracking().ToListAsync()
+                    IEnumerable<ShipmentRiderManifests> entities = await set.AsNoTracking().ToListAsync()
 													       .ConfigureAwait(continueOnCapturedContext: false);
                            //scope.Complete();
                             if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
@@ -98,16 +98,16 @@ namespace EntryDataDS.Business.Services
         }
 
 
-        public async Task<ShipmentRider> GetShipmentRiderByKey(string Id, List<string> includesLst = null, bool tracking = true)
+        public async Task<ShipmentRiderManifests> GetShipmentRiderManifestsByKey(string RiderId, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
-			   if(string.IsNullOrEmpty(Id))return null; 
+			   if(string.IsNullOrEmpty(RiderId))return null; 
               using ( var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
               {
-                var i = Convert.ToInt32(Id);
+                var i = Convert.ToInt32(RiderId);
 				var set = AddIncludes(includesLst, dbContext);
-                ShipmentRider entity = await set.AsNoTracking().SingleOrDefaultAsync(x => x.Id == i).ConfigureAwait(continueOnCapturedContext: false);
+                ShipmentRiderManifests entity = await set.AsNoTracking().SingleOrDefaultAsync(x => x.RiderId == i).ConfigureAwait(continueOnCapturedContext: false);
                 if(tracking && entity != null) entity.StartTracking();
                 return entity;
               }
@@ -127,14 +127,14 @@ namespace EntryDataDS.Business.Services
         }
 
 
-		 public async Task<IEnumerable<ShipmentRider>> GetShipmentRiderByExpression(string exp, List<string> includesLst = null, bool tracking = true)
+		 public async Task<IEnumerable<ShipmentRiderManifests>> GetShipmentRiderManifestsByExpression(string exp, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
                 using (var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-					if (string.IsNullOrEmpty(exp) || exp == "None") return new List<ShipmentRider>();
+					if (string.IsNullOrEmpty(exp) || exp == "None") return new List<ShipmentRiderManifests>();
 					var set = AddIncludes(includesLst, dbContext);
                     if (exp == "All")
                     {
@@ -170,14 +170,14 @@ namespace EntryDataDS.Business.Services
             }
         }
 
-		 public async Task<IEnumerable<ShipmentRider>> GetShipmentRiderByExpressionLst(List<string> expLst, List<string> includesLst = null, bool tracking = true)
+		 public async Task<IEnumerable<ShipmentRiderManifests>> GetShipmentRiderManifestsByExpressionLst(List<string> expLst, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
                 using (var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-					if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return new List<ShipmentRider>();
+					if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return new List<ShipmentRiderManifests>();
 					var set = AddIncludes(includesLst, dbContext);
                     if (expLst.FirstOrDefault() == "All")
                     {
@@ -212,7 +212,7 @@ namespace EntryDataDS.Business.Services
             }
         }
 
-		public async Task<IEnumerable<ShipmentRider>> GetShipmentRiderByExpressionNav(string exp,
+		public async Task<IEnumerable<ShipmentRiderManifests>> GetShipmentRiderManifestsByExpressionNav(string exp,
 																							  Dictionary<string, string> navExp,
 																							  List<string> includesLst = null, bool tracking = true)
         {
@@ -221,7 +221,7 @@ namespace EntryDataDS.Business.Services
                 using (var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-                    if (string.IsNullOrEmpty(exp) || exp == "None") return new List<ShipmentRider>();
+                    if (string.IsNullOrEmpty(exp) || exp == "None") return new List<ShipmentRiderManifests>();
 
                     if (exp == "All" && navExp.Count == 0)
                     {
@@ -235,40 +235,16 @@ namespace EntryDataDS.Business.Services
                     {
                         switch (itm.Key)
                         {
-                            case "ShipmentRiderDetails":
+                            case "ShipmentRider":
                                 return
                                     await
-                                        GetWhere<ShipmentRiderDetails>(dbContext, exp, itm.Value, "ShipmentRider", "Select", includesLst)
+                                        GetWhere<ShipmentRider>(dbContext, exp, itm.Value, "ShipmentRiderManifests", "SelectMany", includesLst)
 										.ConfigureAwait(continueOnCapturedContext: false);
 
-                            case "ShipmentRiderInvoice":
+                            case "ShipmentManifest":
                                 return
                                     await
-                                        GetWhere<ShipmentRiderInvoice>(dbContext, exp, itm.Value, "ShipmentRider", "Select", includesLst)
-										.ConfigureAwait(continueOnCapturedContext: false);
-
-                            case "ShipmentRiderBLs":
-                                return
-                                    await
-                                        GetWhere<ShipmentRiderBLs>(dbContext, exp, itm.Value, "ShipmentRider", "Select", includesLst)
-										.ConfigureAwait(continueOnCapturedContext: false);
-
-                            case "ShipmentAttachedRider":
-                                return
-                                    await
-                                        GetWhere<ShipmentAttachedRider>(dbContext, exp, itm.Value, "ShipmentRider", "Select", includesLst)
-										.ConfigureAwait(continueOnCapturedContext: false);
-
-                            case "ShipmentRiderEx":
-                                return
-                                    await
-                                        GetWhere<ShipmentRiderEx>(dbContext, exp, itm.Value, "ShipmentRider", "SelectMany", includesLst)
-										.ConfigureAwait(continueOnCapturedContext: false);
-
-                            case "ShipmentRiderManifests":
-                                return
-                                    await
-                                        GetWhere<ShipmentRiderManifests>(dbContext, exp, itm.Value, "ShipmentRider", "Select", includesLst)
+                                        GetWhere<ShipmentManifest>(dbContext, exp, itm.Value, "ShipmentRiderManifests", "SelectMany", includesLst)
 										.ConfigureAwait(continueOnCapturedContext: false);
 
                         }
@@ -297,17 +273,17 @@ namespace EntryDataDS.Business.Services
             }
         }
 
-        public async Task<IEnumerable<ShipmentRider>> GetShipmentRiderByBatch(string exp,
+        public async Task<IEnumerable<ShipmentRiderManifests>> GetShipmentRiderManifestsByBatch(string exp,
             int totalrow, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
 
-                var res = new ConcurrentQueue<List<ShipmentRider>>();
+                var res = new ConcurrentQueue<List<ShipmentRiderManifests>>();
 
 
 
-                if (string.IsNullOrEmpty(exp) || exp == "None") return new List<ShipmentRider>();
+                if (string.IsNullOrEmpty(exp) || exp == "None") return new List<ShipmentRiderManifests>();
 
 
                 var batchSize = 500;
@@ -328,14 +304,14 @@ namespace EntryDataDS.Business.Services
                                 dbContext.Configuration.AutoDetectChangesEnabled = false;
                                 //dbContext.Configuration.LazyLoadingEnabled = true;
                                 var set = AddIncludes(includesLst, dbContext);
-                                IQueryable<ShipmentRider> dset;
+                                IQueryable<ShipmentRiderManifests> dset;
                                 if (exp == "All")
                                 {
-                                    dset = set.OrderBy(x => x.Id);
+                                    dset = set.OrderBy(x => x.RiderId);
                                 }
                                 else
                                 {
-                                    dset = set.OrderBy(x => x.Id).Where(exp);
+                                    dset = set.OrderBy(x => x.RiderId).Where(exp);
                                 }
 
                                 var lst = dset.AsNoTracking()
@@ -372,17 +348,17 @@ namespace EntryDataDS.Business.Services
                 throw new FaultException<ValidationFault>(fault);
             }
         }
-        public async Task<IEnumerable<ShipmentRider>> GetShipmentRiderByBatchExpressionLst(List<string> expLst,
+        public async Task<IEnumerable<ShipmentRiderManifests>> GetShipmentRiderManifestsByBatchExpressionLst(List<string> expLst,
             int totalrow, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
 
-                var res = new ConcurrentQueue<List<ShipmentRider>>();
+                var res = new ConcurrentQueue<List<ShipmentRiderManifests>>();
 
 
 
-                if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return new List<ShipmentRider>();
+                if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return new List<ShipmentRiderManifests>();
 
 
                 var batchSize = 500;
@@ -403,15 +379,15 @@ namespace EntryDataDS.Business.Services
                                 dbContext.Configuration.AutoDetectChangesEnabled = false;
                                 //dbContext.Configuration.LazyLoadingEnabled = true;
                                 var set = AddIncludes(includesLst, dbContext);
-                                IQueryable<ShipmentRider> dset;
+                                IQueryable<ShipmentRiderManifests> dset;
                                 if (expLst.FirstOrDefault() == "All")
                                 {
-                                    dset = set.OrderBy(x => x.Id);
+                                    dset = set.OrderBy(x => x.RiderId);
                                 }
                                 else
                                 {
                                     set = AddWheres(expLst, set);
-                                    dset = set.OrderBy(x => x.Id);
+                                    dset = set.OrderBy(x => x.RiderId);
                                 }
 
                                 var lst = dset.AsNoTracking()
@@ -448,13 +424,13 @@ namespace EntryDataDS.Business.Services
         }
 
 
-        public async Task<ShipmentRider> UpdateShipmentRider(ShipmentRider entity)
+        public async Task<ShipmentRiderManifests> UpdateShipmentRiderManifests(ShipmentRiderManifests entity)
         { 
             using ( var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
               {
                 try
                 {   
-                     var res = (ShipmentRider) entity;
+                     var res = (ShipmentRiderManifests) entity;
                     if(res.TrackingState == TrackingState.Unchanged) res.TrackingState = TrackingState.Modified;                              
                     
                     dbContext.ApplyChanges(res);
@@ -530,14 +506,14 @@ namespace EntryDataDS.Business.Services
            return entity;
         }
 
-        public async Task<ShipmentRider> CreateShipmentRider(ShipmentRider entity)
+        public async Task<ShipmentRiderManifests> CreateShipmentRiderManifests(ShipmentRiderManifests entity)
         {
             try
             {
-                var res = (ShipmentRider) entity;
+                var res = (ShipmentRiderManifests) entity;
               using ( var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
               {
-                dbContext.ShipmentRider.Add(res);
+                dbContext.ShipmentRiderManifests.Add(res);
                 await dbContext.SaveChangesAsync().ConfigureAwait(continueOnCapturedContext: false);
                 res.AcceptChanges();
                 return res;
@@ -557,21 +533,21 @@ namespace EntryDataDS.Business.Services
             }
         }
 
-        public async Task<bool> DeleteShipmentRider(string Id)
+        public async Task<bool> DeleteShipmentRiderManifests(string RiderId)
         {
             try
             {
               using ( var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
               {
-                var i = Convert.ToInt32(Id);
-                ShipmentRider entity = await dbContext.ShipmentRider
-													.SingleOrDefaultAsync(x => x.Id == i)
+                var i = Convert.ToInt32(RiderId);
+                ShipmentRiderManifests entity = await dbContext.ShipmentRiderManifests
+													.SingleOrDefaultAsync(x => x.RiderId == i)
 													.ConfigureAwait(continueOnCapturedContext: false);
                 if (entity == null)
                     return false;
 
-                    dbContext.ShipmentRider.Attach(entity);
-                    dbContext.ShipmentRider.Remove(entity);
+                    dbContext.ShipmentRiderManifests.Attach(entity);
+                    dbContext.ShipmentRiderManifests.Remove(entity);
                     await dbContext.SaveChangesAsync().ConfigureAwait(continueOnCapturedContext: false);
                     return true;
               }
@@ -590,19 +566,19 @@ namespace EntryDataDS.Business.Services
             }
         }
 
-        public async Task<bool> RemoveSelectedShipmentRider(IEnumerable<string> lst)
+        public async Task<bool> RemoveSelectedShipmentRiderManifests(IEnumerable<string> lst)
         {
             try
             {
-                StatusModel.StartStatusUpdate("Removing ShipmentRider", lst.Count());
+                StatusModel.StartStatusUpdate("Removing ShipmentRiderManifests", lst.Count());
                 var t = Task.Run(() =>
                 {
-                    using (var ctx = new ShipmentRiderService())
+                    using (var ctx = new ShipmentRiderManifestsService())
                     {
                         foreach (var item in lst.ToList())
                         {
 
-                            ctx.DeleteShipmentRider(item).Wait();
+                            ctx.DeleteShipmentRiderManifests(item).Wait();
                             StatusModel.StatusUpdate();
                         }
                     }
@@ -637,7 +613,7 @@ namespace EntryDataDS.Business.Services
                 {
                     dbContext.Database.CommandTimeout = 0;
                     if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return 0;
-                    var set = (IQueryable<ShipmentRider>)dbContext.ShipmentRider; 
+                    var set = (IQueryable<ShipmentRiderManifests>)dbContext.ShipmentRiderManifests; 
                     if (expLst.FirstOrDefault() == "All")
                     {
                         return await set.AsNoTracking().CountAsync()
@@ -675,7 +651,7 @@ namespace EntryDataDS.Business.Services
                     if (string.IsNullOrEmpty(exp) || exp == "None") return 0;
                     if (exp == "All")
                     {
-                        return await dbContext.ShipmentRider
+                        return await dbContext.ShipmentRiderManifests
                                     .AsNoTracking()
 									.CountAsync()
 									.ConfigureAwait(continueOnCapturedContext: false);
@@ -683,7 +659,7 @@ namespace EntryDataDS.Business.Services
                     else
                     {
                         
-                        return await dbContext.ShipmentRider
+                        return await dbContext.ShipmentRiderManifests
 									.AsNoTracking()
                                     .Where(exp)
 									.CountAsync()
@@ -705,19 +681,19 @@ namespace EntryDataDS.Business.Services
             }
         }
         
-        public async Task<IEnumerable<ShipmentRider>> LoadRange(int startIndex, int count, string exp)
+        public async Task<IEnumerable<ShipmentRiderManifests>> LoadRange(int startIndex, int count, string exp)
         {
             try
             {
                 using (var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-                    if (string.IsNullOrEmpty(exp) || exp == "None") return new List<ShipmentRider>();
+                    if (string.IsNullOrEmpty(exp) || exp == "None") return new List<ShipmentRiderManifests>();
                     if (exp == "All")
                     {
-                        return await dbContext.ShipmentRider
+                        return await dbContext.ShipmentRiderManifests
 										.AsNoTracking()
-                                        .OrderBy(y => y.Id)
+                                        .OrderBy(y => y.RiderId)
 										.Skip(startIndex)
 										.Take(count)
 										.ToListAsync()
@@ -726,10 +702,10 @@ namespace EntryDataDS.Business.Services
                     else
                     {
                         
-                        return await dbContext.ShipmentRider
+                        return await dbContext.ShipmentRiderManifests
 										.AsNoTracking()
                                         .Where(exp)
-										.OrderBy(y => y.Id)
+										.OrderBy(y => y.RiderId)
 										.Skip(startIndex)
 										.Take(count)
 										.ToListAsync()
@@ -761,7 +737,7 @@ namespace EntryDataDS.Business.Services
                     dbContext.Database.CommandTimeout = 0;
                     if (exp == "All" && navExp.Count == 0)
                     {
-                        return await dbContext.ShipmentRider
+                        return await dbContext.ShipmentRiderManifests
 										.AsNoTracking()
                                         .CountAsync()
 										.ConfigureAwait(continueOnCapturedContext: false);
@@ -770,27 +746,15 @@ namespace EntryDataDS.Business.Services
                     {
                         switch (itm.Key)
                         {
-                            case "ShipmentRiderDetails":
-                                return await CountWhere<ShipmentRiderDetails>(dbContext, exp, itm.Value, "ShipmentRider", "Select")
+                            case "ShipmentRider":
+                                return await CountWhere<ShipmentRider>(dbContext, exp, itm.Value, "ShipmentRiderManifests", "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "ShipmentRiderInvoice":
-                                return await CountWhere<ShipmentRiderInvoice>(dbContext, exp, itm.Value, "ShipmentRider", "Select")
-											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "ShipmentRiderBLs":
-                                return await CountWhere<ShipmentRiderBLs>(dbContext, exp, itm.Value, "ShipmentRider", "Select")
-											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "ShipmentAttachedRider":
-                                return await CountWhere<ShipmentAttachedRider>(dbContext, exp, itm.Value, "ShipmentRider", "Select")
-											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "ShipmentRiderEx":
-                                return await CountWhere<ShipmentRiderEx>(dbContext, exp, itm.Value, "ShipmentRider", "SelectMany")
-											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "ShipmentRiderManifests":
-                                return await CountWhere<ShipmentRiderManifests>(dbContext, exp, itm.Value, "ShipmentRider", "Select")
+                            case "ShipmentManifest":
+                                return await CountWhere<ShipmentManifest>(dbContext, exp, itm.Value, "ShipmentRiderManifests", "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }
-                    return await dbContext.ShipmentRider.Where(exp == "All" || exp == null ? "Id != null" : exp)
+                    return await dbContext.ShipmentRiderManifests.Where(exp == "All" || exp == null ? "RiderId != null" : exp)
 											.AsNoTracking()
                                             .CountAsync()
 											.ConfigureAwait(continueOnCapturedContext: false);
@@ -832,10 +796,10 @@ namespace EntryDataDS.Business.Services
             return await dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
-                .SelectMany(navProp).OfType<ShipmentRider>()
-                .Where(exp == "All" || exp == null ? "Id != null" : exp)
+                .SelectMany(navProp).OfType<ShipmentRiderManifests>()
+                .Where(exp == "All" || exp == null ? "RiderId != null" : exp)
                 .Distinct()
-                .OrderBy("Id")
+                .OrderBy("RiderId")
                 .CountAsync()
 				.ConfigureAwait(continueOnCapturedContext: false);
 			}
@@ -853,10 +817,10 @@ namespace EntryDataDS.Business.Services
             return await dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
-                .Select(navProp).OfType<ShipmentRider>()
-                .Where(exp == "All" || exp == null ? "Id != null" : exp)
+                .Select(navProp).OfType<ShipmentRiderManifests>()
+                .Where(exp == "All" || exp == null ? "RiderId != null" : exp)
                 .Distinct()
-                .OrderBy("Id")
+                .OrderBy("RiderId")
                 .CountAsync()
 				.ConfigureAwait(continueOnCapturedContext: false);
 			}
@@ -867,7 +831,7 @@ namespace EntryDataDS.Business.Services
 			}
         }
 
-		  public async Task<IEnumerable<ShipmentRider>> LoadRangeNav(int startIndex, int count, string exp,
+		  public async Task<IEnumerable<ShipmentRiderManifests>> LoadRangeNav(int startIndex, int count, string exp,
                                                                                  Dictionary<string, string> navExp, IEnumerable<string> includeLst = null)
         {
             try
@@ -875,7 +839,7 @@ namespace EntryDataDS.Business.Services
                 using (var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-                    if ((string.IsNullOrEmpty(exp) && navExp.Count == 0) || exp == "None") return new List<ShipmentRider>();
+                    if ((string.IsNullOrEmpty(exp) && navExp.Count == 0) || exp == "None") return new List<ShipmentRiderManifests>();
                     var set = AddIncludes(includeLst, dbContext);
 
                     if (exp == "All" && navExp.Count == 0)
@@ -883,7 +847,7 @@ namespace EntryDataDS.Business.Services
                        
                         return await set
 									.AsNoTracking()
-                                    .OrderBy(y => y.Id)
+                                    .OrderBy(y => y.RiderId)
  
                                     .Skip(startIndex)
                                     .Take(count)
@@ -894,40 +858,16 @@ namespace EntryDataDS.Business.Services
                     {
                         switch (itm.Key)
                         {
-                            case "ShipmentRiderDetails":
+                            case "ShipmentRider":
                                 return
                                     await
-                                        LoadRangeWhere<ShipmentRiderDetails>(startIndex, count, dbContext, exp, itm.Value, "ShipmentRider", "Select")
+                                        LoadRangeWhere<ShipmentRider>(startIndex, count, dbContext, exp, itm.Value, "ShipmentRiderManifests", "SelectMany")
 													.ConfigureAwait(continueOnCapturedContext: false);
 
-                            case "ShipmentRiderInvoice":
+                            case "ShipmentManifest":
                                 return
                                     await
-                                        LoadRangeWhere<ShipmentRiderInvoice>(startIndex, count, dbContext, exp, itm.Value, "ShipmentRider", "Select")
-													.ConfigureAwait(continueOnCapturedContext: false);
-
-                            case "ShipmentRiderBLs":
-                                return
-                                    await
-                                        LoadRangeWhere<ShipmentRiderBLs>(startIndex, count, dbContext, exp, itm.Value, "ShipmentRider", "Select")
-													.ConfigureAwait(continueOnCapturedContext: false);
-
-                            case "ShipmentAttachedRider":
-                                return
-                                    await
-                                        LoadRangeWhere<ShipmentAttachedRider>(startIndex, count, dbContext, exp, itm.Value, "ShipmentRider", "Select")
-													.ConfigureAwait(continueOnCapturedContext: false);
-
-                            case "ShipmentRiderEx":
-                                return
-                                    await
-                                        LoadRangeWhere<ShipmentRiderEx>(startIndex, count, dbContext, exp, itm.Value, "ShipmentRider", "SelectMany")
-													.ConfigureAwait(continueOnCapturedContext: false);
-
-                            case "ShipmentRiderManifests":
-                                return
-                                    await
-                                        LoadRangeWhere<ShipmentRiderManifests>(startIndex, count, dbContext, exp, itm.Value, "ShipmentRider", "Select")
+                                        LoadRangeWhere<ShipmentManifest>(startIndex, count, dbContext, exp, itm.Value, "ShipmentRiderManifests", "SelectMany")
 													.ConfigureAwait(continueOnCapturedContext: false);
 
                           
@@ -936,10 +876,10 @@ namespace EntryDataDS.Business.Services
 						}
 
                     }
-                    return await set//dbContext.ShipmentRider
+                    return await set//dbContext.ShipmentRiderManifests
 								.AsNoTracking()
-                                .Where(exp == "All" || exp == null ? "Id != null" : exp)
-								.OrderBy(y => y.Id)
+                                .Where(exp == "All" || exp == null ? "RiderId != null" : exp)
+								.OrderBy(y => y.RiderId)
  
                                 .Skip(startIndex)
                                 .Take(count)
@@ -963,7 +903,7 @@ namespace EntryDataDS.Business.Services
             }
         }
 
-		private static async Task<IEnumerable<ShipmentRider>> LoadRangeWhere<T>(int startIndex, int count,
+		private static async Task<IEnumerable<ShipmentRiderManifests>> LoadRangeWhere<T>(int startIndex, int count,
             EntryDataDSContext dbContext, string exp, string navExp, string navProp, string rel, IEnumerable<string> includeLst = null) where T : class
         {
              switch (rel)
@@ -978,7 +918,7 @@ namespace EntryDataDS.Business.Services
 		    }
         }
 
-		private static async Task<IEnumerable<ShipmentRider>> LoadRangeSelectMany<T>(int startIndex, int count,
+		private static async Task<IEnumerable<ShipmentRiderManifests>> LoadRangeSelectMany<T>(int startIndex, int count,
             EntryDataDSContext dbContext, string exp, string navExp, string navProp, IEnumerable<string> includeLst = null) where T : class
         {
 			try
@@ -986,14 +926,14 @@ namespace EntryDataDS.Business.Services
             var set = dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
-                .SelectMany(navProp).OfType<ShipmentRider>();
+                .SelectMany(navProp).OfType<ShipmentRiderManifests>();
     
             if (includeLst != null) set = includeLst.Aggregate(set, (current, itm) => current.Include(itm));            
 
             return await set
-                .Where(exp == "All" || exp == null ? "Id != null" : exp)
+                .Where(exp == "All" || exp == null ? "RiderId != null" : exp)
                 .Distinct()
-                .OrderBy(y => y.Id)
+                .OrderBy(y => y.RiderId)
  
                 .Skip(startIndex)
                 .Take(count)
@@ -1007,7 +947,7 @@ namespace EntryDataDS.Business.Services
 			}
         }
 
-		private static async Task<IEnumerable<ShipmentRider>> LoadRangeSelect<T>(int startIndex, int count,
+		private static async Task<IEnumerable<ShipmentRiderManifests>> LoadRangeSelect<T>(int startIndex, int count,
             EntryDataDSContext dbContext, string exp, string navExp, string navProp, IEnumerable<string> includeLst = null) where T : class
         {
 			try
@@ -1015,14 +955,14 @@ namespace EntryDataDS.Business.Services
               var set = dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
-                .Select(navProp).OfType<ShipmentRider>();
+                .Select(navProp).OfType<ShipmentRiderManifests>();
 
                if (includeLst != null) set = includeLst.Aggregate(set, (current, itm) => current.Include(itm)); 
                 
                return await set
-                .Where(exp == "All" || exp == null ? "Id != null" : exp)
+                .Where(exp == "All" || exp == null ? "RiderId != null" : exp)
                 .Distinct()
-                .OrderBy(y => y.Id)
+                .OrderBy(y => y.RiderId)
  
                 .Skip(startIndex)
                 .Take(count)
@@ -1036,7 +976,7 @@ namespace EntryDataDS.Business.Services
 			}
         }
 
-        private static async Task<IEnumerable<ShipmentRider>> GetWhere<T>(EntryDataDSContext dbContext,
+        private static async Task<IEnumerable<ShipmentRiderManifests>> GetWhere<T>(EntryDataDSContext dbContext,
             string exp, string navExp, string navProp, string rel, List<string> includesLst = null) where T : class
         {
 			try
@@ -1060,7 +1000,7 @@ namespace EntryDataDS.Business.Services
 			}
         }
 
-		private static async Task<IEnumerable<ShipmentRider>> GetWhereSelectMany<T>(EntryDataDSContext dbContext,
+		private static async Task<IEnumerable<ShipmentRiderManifests>> GetWhereSelectMany<T>(EntryDataDSContext dbContext,
             string exp, string navExp, string navProp, List<string> includesLst = null) where T : class
         {
 			try
@@ -1071,18 +1011,18 @@ namespace EntryDataDS.Business.Services
 				return await dbContext.Set<T>()
 							.AsNoTracking()
                             .Where(navExp)
-							.SelectMany(navProp).OfType<ShipmentRider>()
-							.Where(exp == "All" || exp == null?"Id != null":exp)
+							.SelectMany(navProp).OfType<ShipmentRiderManifests>()
+							.Where(exp == "All" || exp == null?"RiderId != null":exp)
 							.Distinct()
 							.ToListAsync()
 							.ConfigureAwait(continueOnCapturedContext: false);
 			}
 
-			var set = (DbQuery<ShipmentRider>)dbContext.Set<T>()
+			var set = (DbQuery<ShipmentRiderManifests>)dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
-                .SelectMany(navProp).OfType<ShipmentRider>()
-                .Where(exp == "All" || exp == null?"Id != null":exp)
+                .SelectMany(navProp).OfType<ShipmentRiderManifests>()
+                .Where(exp == "All" || exp == null?"RiderId != null":exp)
                 .Distinct();
 
 			set = includesLst.Aggregate(set, (current, itm) => current.Include(itm));
@@ -1097,7 +1037,7 @@ namespace EntryDataDS.Business.Services
 			}
         }
 
-		private static async Task<IEnumerable<ShipmentRider>> GetWhereSelect<T>(EntryDataDSContext dbContext,
+		private static async Task<IEnumerable<ShipmentRiderManifests>> GetWhereSelect<T>(EntryDataDSContext dbContext,
             string exp, string navExp, string navProp, List<string> includesLst = null) where T : class
         {
 			try
@@ -1108,18 +1048,18 @@ namespace EntryDataDS.Business.Services
 				return await dbContext.Set<T>()
 							.AsNoTracking()
                             .Where(navExp)
-							.Select(navProp).OfType<ShipmentRider>()
-							.Where(exp == "All" || exp == null?"Id != null":exp)
+							.Select(navProp).OfType<ShipmentRiderManifests>()
+							.Where(exp == "All" || exp == null?"RiderId != null":exp)
 							.Distinct()
 							.ToListAsync()
 							.ConfigureAwait(continueOnCapturedContext: false);
 			}
 
-			var set = (DbQuery<ShipmentRider>)dbContext.Set<T>()
+			var set = (DbQuery<ShipmentRiderManifests>)dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
-                .Select(navProp).OfType<ShipmentRider>()
-                .Where(exp == "All" || exp == null?"Id != null":exp)
+                .Select(navProp).OfType<ShipmentRiderManifests>()
+                .Where(exp == "All" || exp == null?"RiderId != null":exp)
                 .Distinct();
 
 			set = includesLst.Aggregate(set, (current, itm) => current.Include(itm));
@@ -1134,109 +1074,7 @@ namespace EntryDataDS.Business.Services
 			}
         }
 
-			        public async Task<IEnumerable<ShipmentRider>> GetShipmentRiderByEmailId(string EmailId, List<string> includesLst = null)
-        {
-            try
-            {
-                using ( var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
-              {
-                var i = Convert.ToInt32(EmailId);
-                var set = AddIncludes(includesLst, dbContext);
-                IEnumerable<ShipmentRider> entities = await set//dbContext.ShipmentRider
-                                                    // .Include(x => x.ShipmentRiderDetails)									  
-                                                    // .Include(x => x.ShipmentRiderInvoice)									  
-                                                    // .Include(x => x.ShipmentRiderBLs)									  
-                                                    // .Include(x => x.ShipmentAttachedRider)									  
-                                                    // .Include(x => x.ShipmentRiderManifests)									  
-                                      .AsNoTracking()
-                                        .Where(x => x.EmailId.ToString() == EmailId.ToString())
-										.ToListAsync()
-										.ConfigureAwait(continueOnCapturedContext: false);
-                return entities;
-              }
-             }
-            catch (Exception updateEx)
-            {
-                System.Diagnostics.Debugger.Break();
-                //throw new FaultException(updateEx.Message);
-                    var fault = new ValidationFault
-                                {
-                                    Result = false,
-                                    Message = updateEx.Message,
-                                    Description = updateEx.StackTrace
-                                };
-                    throw new FaultException<ValidationFault>(fault);
-            }
-        }
- 	        public async Task<IEnumerable<ShipmentRider>> GetShipmentRiderByFileTypeId(string FileTypeId, List<string> includesLst = null)
-        {
-            try
-            {
-                using ( var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
-              {
-                var i = Convert.ToInt32(FileTypeId);
-                var set = AddIncludes(includesLst, dbContext);
-                IEnumerable<ShipmentRider> entities = await set//dbContext.ShipmentRider
-                                                    // .Include(x => x.ShipmentRiderDetails)									  
-                                                    // .Include(x => x.ShipmentRiderInvoice)									  
-                                                    // .Include(x => x.ShipmentRiderBLs)									  
-                                                    // .Include(x => x.ShipmentAttachedRider)									  
-                                                    // .Include(x => x.ShipmentRiderManifests)									  
-                                      .AsNoTracking()
-                                        .Where(x => x.FileTypeId.ToString() == FileTypeId.ToString())
-										.ToListAsync()
-										.ConfigureAwait(continueOnCapturedContext: false);
-                return entities;
-              }
-             }
-            catch (Exception updateEx)
-            {
-                System.Diagnostics.Debugger.Break();
-                //throw new FaultException(updateEx.Message);
-                    var fault = new ValidationFault
-                                {
-                                    Result = false,
-                                    Message = updateEx.Message,
-                                    Description = updateEx.StackTrace
-                                };
-                    throw new FaultException<ValidationFault>(fault);
-            }
-        }
- 	        public async Task<IEnumerable<ShipmentRider>> GetShipmentRiderByApplicationSettingsId(string ApplicationSettingsId, List<string> includesLst = null)
-        {
-            try
-            {
-                using ( var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
-              {
-                var i = Convert.ToInt32(ApplicationSettingsId);
-                var set = AddIncludes(includesLst, dbContext);
-                IEnumerable<ShipmentRider> entities = await set//dbContext.ShipmentRider
-                                                    // .Include(x => x.ShipmentRiderDetails)									  
-                                                    // .Include(x => x.ShipmentRiderInvoice)									  
-                                                    // .Include(x => x.ShipmentRiderBLs)									  
-                                                    // .Include(x => x.ShipmentAttachedRider)									  
-                                                    // .Include(x => x.ShipmentRiderManifests)									  
-                                      .AsNoTracking()
-                                        .Where(x => x.ApplicationSettingsId.ToString() == ApplicationSettingsId.ToString())
-										.ToListAsync()
-										.ConfigureAwait(continueOnCapturedContext: false);
-                return entities;
-              }
-             }
-            catch (Exception updateEx)
-            {
-                System.Diagnostics.Debugger.Break();
-                //throw new FaultException(updateEx.Message);
-                    var fault = new ValidationFault
-                                {
-                                    Result = false,
-                                    Message = updateEx.Message,
-                                    Description = updateEx.StackTrace
-                                };
-                    throw new FaultException<ValidationFault>(fault);
-            }
-        }
- 
+		
 		public decimal SumField(string whereExp, string field)
          {
              try
@@ -1248,11 +1086,11 @@ namespace EntryDataDS.Business.Services
                      if (string.IsNullOrEmpty(whereExp) || whereExp == "None") return 0;
                      if (whereExp == "All")
                      {
-                          res = Convert.ToDecimal(dbContext.ShipmentRider.AsNoTracking().Sum(field));
+                          res = Convert.ToDecimal(dbContext.ShipmentRiderManifests.AsNoTracking().Sum(field));
                      }
                      else
                      {
-                         res = Convert.ToDecimal(dbContext.ShipmentRider.AsNoTracking().Where(whereExp).Sum(field));
+                         res = Convert.ToDecimal(dbContext.ShipmentRiderManifests.AsNoTracking().Where(whereExp).Sum(field));
                      }
                      
                      return res;
@@ -1280,10 +1118,10 @@ namespace EntryDataDS.Business.Services
                 using (var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-                    if (!dbContext.ShipmentRider.Any()) return 0;
+                    if (!dbContext.ShipmentRiderManifests.Any()) return 0;
                     if (exp == "All" && navExp.Count == 0)
                     {
-                        return Convert.ToDecimal(dbContext.ShipmentRider
+                        return Convert.ToDecimal(dbContext.ShipmentRiderManifests
 										.AsNoTracking()
                                         .Sum(field)??0);
                     }
@@ -1291,27 +1129,15 @@ namespace EntryDataDS.Business.Services
                     {
                         switch (itm.Key)
                         {
-                            case "ShipmentRiderDetails":
-                                return await SumWhere<ShipmentRiderDetails>(dbContext, exp, itm.Value, "ShipmentRider", field, "Select")
+                            case "ShipmentRider":
+                                return await SumWhere<ShipmentRider>(dbContext, exp, itm.Value, "ShipmentRiderManifests", field, "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "ShipmentRiderInvoice":
-                                return await SumWhere<ShipmentRiderInvoice>(dbContext, exp, itm.Value, "ShipmentRider", field, "Select")
-											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "ShipmentRiderBLs":
-                                return await SumWhere<ShipmentRiderBLs>(dbContext, exp, itm.Value, "ShipmentRider", field, "Select")
-											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "ShipmentAttachedRider":
-                                return await SumWhere<ShipmentAttachedRider>(dbContext, exp, itm.Value, "ShipmentRider", field, "Select")
-											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "ShipmentRiderEx":
-                                return await SumWhere<ShipmentRiderEx>(dbContext, exp, itm.Value, "ShipmentRider", field, "SelectMany")
-											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "ShipmentRiderManifests":
-                                return await SumWhere<ShipmentRiderManifests>(dbContext, exp, itm.Value, "ShipmentRider", field, "Select")
+                            case "ShipmentManifest":
+                                return await SumWhere<ShipmentManifest>(dbContext, exp, itm.Value, "ShipmentRiderManifests", field, "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }
-                    return Convert.ToDecimal(dbContext.ShipmentRider.Where(exp == "All" || exp == null ? "Id != null" : exp)
+                    return Convert.ToDecimal(dbContext.ShipmentRiderManifests.Where(exp == "All" || exp == null ? "RiderId != null" : exp)
 											.AsNoTracking()
                                             .Sum(field)??0);
                 }
@@ -1351,10 +1177,10 @@ namespace EntryDataDS.Business.Services
             return Convert.ToDecimal(dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
-                .SelectMany(navProp).OfType<ShipmentRider>()
-                .Where(exp == "All" || exp == null ? "Id != null" : exp)
+                .SelectMany(navProp).OfType<ShipmentRiderManifests>()
+                .Where(exp == "All" || exp == null ? "RiderId != null" : exp)
                 .Distinct()
-                .OrderBy("Id")
+                .OrderBy("RiderId")
                 .Sum(field));
 			}
 			catch (Exception)
@@ -1371,10 +1197,10 @@ namespace EntryDataDS.Business.Services
             return Convert.ToDecimal(dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
-                .Select(navProp).OfType<ShipmentRider>()
-                .Where(exp == "All" || exp == null ? "Id != null" : exp)
+                .Select(navProp).OfType<ShipmentRiderManifests>()
+                .Where(exp == "All" || exp == null ? "RiderId != null" : exp)
                 .Distinct()
-                .OrderBy("Id")
+                .OrderBy("RiderId")
                 .Sum(field));
 			}
 			catch (Exception)
@@ -1397,11 +1223,11 @@ namespace EntryDataDS.Business.Services
                      if (string.IsNullOrEmpty(whereExp) || whereExp == "None") return res;
                      if (whereExp == "All")
                      {
-                          res = Convert.ToString(dbContext.ShipmentRider.AsNoTracking().Min(field));
+                          res = Convert.ToString(dbContext.ShipmentRiderManifests.AsNoTracking().Min(field));
                      }
                      else
                      {
-                         res = Convert.ToString(dbContext.ShipmentRider.AsNoTracking().Where(whereExp).Min(field));
+                         res = Convert.ToString(dbContext.ShipmentRiderManifests.AsNoTracking().Where(whereExp).Min(field));
                      }
                      
                      return res;
@@ -1422,12 +1248,12 @@ namespace EntryDataDS.Business.Services
          }
 
 		 
-		private static IQueryable<ShipmentRider> AddIncludes(IEnumerable<string> includesLst, EntryDataDSContext dbContext)
+		private static IQueryable<ShipmentRiderManifests> AddIncludes(IEnumerable<string> includesLst, EntryDataDSContext dbContext)
        {
 		 try
 			{
 			   if (includesLst == null) includesLst = new List<string>();
-			   var set =(DbQuery<ShipmentRider>) dbContext.ShipmentRider; 
+			   var set =(DbQuery<ShipmentRiderManifests>) dbContext.ShipmentRiderManifests; 
 			   set = includesLst.Where(x => !string.IsNullOrEmpty(x))
                                 .Aggregate(set, (current, itm) => current.Include(itm));
 			   return set;
@@ -1438,7 +1264,7 @@ namespace EntryDataDS.Business.Services
 				throw;
 			}
        }
-	   private IQueryable<ShipmentRider> AddWheres(List<string> expLst, IQueryable<ShipmentRider> set)
+	   private IQueryable<ShipmentRiderManifests> AddWheres(List<string> expLst, IQueryable<ShipmentRiderManifests> set)
         {
             try
             {
