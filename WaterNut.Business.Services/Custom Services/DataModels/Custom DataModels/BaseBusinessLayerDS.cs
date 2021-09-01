@@ -812,6 +812,7 @@ namespace WaterNut.DataSpace
                         pod.EntryData.Suppliers == null)
                         throw new ApplicationException($"Supplier not found for InvoiceNo {pod.EntryData.EntryDataId}");
                     cdoc.Document.xcuda_Traders.xcuda_Exporter.Exporter_name =
+                        $"INV# {((PurchaseOrders)pod.EntryData).SupplierInvoiceNo}\r\n" +
                         $"{pod.EntryData.Suppliers?.SupplierName}\r\n" +
                         $"{pod.EntryData.Suppliers?.Street}\r\n";
 
@@ -1485,19 +1486,26 @@ namespace WaterNut.DataSpace
 
                 var freightRate = totalFreight != 0 ? totalFreight / totalfob : 0;
                 var weightRate = totalWeight != 0 ? totalWeight / totalfob : 0;
+                double weightUsed = 0;
+
                 using (var ctx = new DocumentDSContext {StartTracking = true})
                 {
                     foreach (var doc in docValues.Where(x => x.Value != 0))
+                    {
+                        if (weightUsed > totalWeight)
+                            throw new ApplicationException("Weight Used Exceed Total Weight!");
+
                         if (asycudaDocumentSet.ApportionMethod == "Equal")
                         {
                             UpdateFreight(ctx, doc, totalFreight / doclst.Count(), currency);
-                            UpdateWeight(ctx, doc, totalWeight / doclst.Count());
+                            weightUsed += UpdateWeight(ctx, doc, totalWeight / doclst.Count());
                         }
                         else
                         {
                             UpdateFreight(ctx, doc, doc.Value * freightRate, currency);
-                            UpdateWeight(ctx, doc, doc.Value * weightRate);
+                            weightUsed += UpdateWeight(ctx, doc, doc.Value * weightRate);
                         }
+                    }
 
                     ctx.SaveChanges();
                 }
@@ -1533,13 +1541,13 @@ namespace WaterNut.DataSpace
             //ctx.ApplyChanges(xcuda_Gs_external_freight);
         }
 
-        private static void UpdateWeight(DocumentDSContext ctx, KeyValuePair<int, double> doc, double weightRate)
+        private static double UpdateWeight(DocumentDSContext ctx, KeyValuePair<int, double> doc, double weightRate)
         {
             try
             {
-                if (Instance.CurrentApplicationSettings.WeightCalculationMethod.ToLower() != "Value".ToLower()) return;
+                if (Instance.CurrentApplicationSettings.WeightCalculationMethod.ToLower() != "Value".ToLower()) return 0;
                 var val = ctx.xcuda_Valuation.Include(x => x.xcuda_Weight).FirstOrDefault(x => x.ASYCUDA_Id == doc.Key);
-                if (val == null) return;
+                if (val == null) return 0;
                 var xcuda_Weight = val.xcuda_Weight;
                 if (xcuda_Weight == null)
                 {
@@ -1557,13 +1565,13 @@ namespace WaterNut.DataSpace
                 //if (xcuda_Weight.TrackingState != TrackingState.Added)
                 //    xcuda_Weight.TrackingState = TrackingState.Modified;
                 //ctx.ApplyChanges(xcuda_Weight);
-
+                double weightUsed = 0;
                 using (var ictx = new DocumentItemDSContext {StartTracking = true})
                 {
                     var lst = ictx.xcuda_Weight_itm
                         .Include(x => x.xcuda_Valuation_item)
                         .Where(x => x.xcuda_Valuation_item.xcuda_Item.ASYCUDA_Id == doc.Key).ToList();
-                    var mw = 0.0;
+                    var runningMiniumWeight = 0.0;
                     foreach (var itm in lst)
                     {
                         var calWgt = weightRate * (itm.xcuda_Valuation_item.Total_CIF_itm / doc.Value);
@@ -1572,23 +1580,26 @@ namespace WaterNut.DataSpace
                                          .Unordered_xcuda_Supplementary_unit.First(x => x.IsFirstRow == true)
                                          .Suppplementary_unit_quantity.GetValueOrDefault() * .01;
 
-                        if (calWgt - mw < minWgt)
+                        if (calWgt - runningMiniumWeight < minWgt)
                         {
                             itm.Gross_weight_itm = minWgt;
-                            mw += minWgt;
+                            runningMiniumWeight += minWgt;
                         }
                         else
                         {
-                            itm.Gross_weight_itm = calWgt - mw;
-                            mw = 0;
+                            itm.Gross_weight_itm = calWgt - runningMiniumWeight;
+                            runningMiniumWeight = 0;
                         }
 
                         itm.Net_weight_itm =
                             itm.Gross_weight_itm;
+                        weightUsed += itm.Gross_weight_itm;
                     }
 
                     ictx.SaveChanges();
                 }
+
+                return weightUsed;
             }
             catch (Exception e)
             {

@@ -228,6 +228,11 @@ namespace xlsxWriter
                     itm.Quantity);
                 SetValue(workbook, i, header.First(x => x.Key.Column == nameof(itm.TotalCost)).Key.Index,
                     itm.TotalCost);
+                SetFormula(workbook, i, header.First(x => x.Key.Column == "Total").Key.Index,
+                    $"=O{i+1}*K{i+1}");
+                SetFormula(workbook, i, header.First(x => x.Key.Column == "TotalCost Vs Total").Key.Index,
+                    $"=P{i+1}-Q{i+1}");
+                
                 SetValue(workbook, i, header.First(x => x.Key.Column == nameof(itm.Units)).Key.Index,
                     itm.Units);
 
@@ -293,6 +298,12 @@ namespace xlsxWriter
                 SetValue(workbook, i,
                     header.First(x => x.Key.Column == nameof(itm.TotalCost)).Key.Index,
                     pOItem?.INVTotalCost ?? (itm.TotalCost == 0 ? itm.Quantity * itm.Cost : itm.TotalCost));
+
+                SetFormula(workbook, i, header.First(x => x.Key.Column == "Total").Key.Index,
+                    $"=O{i+1}*K{i+1}");
+                SetFormula(workbook, i, header.First(x => x.Key.Column == "TotalCost Vs Total").Key.Index,
+                    $"=P{i+1}-Q{i+1}");
+
                 SetValue(workbook, i, header.First(x => x.Key.Column == nameof(itm.Units)).Key.Index,
                     itm.Units);
                 if (doRider && i < riderdetails.Count)//
@@ -709,6 +720,13 @@ namespace xlsxWriter
             
             workbook.CurrentWorksheet.AddCell(value ?? "",col, row);
         }
+
+        private static void SetFormula(Workbook workbook, int row, int col, dynamic value)
+        {
+
+            workbook.CurrentWorksheet.AddCellFormula(value ?? "", col, row);
+        }
+
 
         public static string SaveUnAttachedSummary(FileInfo file)
         {
