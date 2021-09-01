@@ -66,6 +66,26 @@ namespace AutoBotUtilities
                         .Where(x => x.EmailId == shipment.EmailId)
                         .ToList();
                     var ctxShipmentInvoicePoItemMisMatches = ctx.ShipmentInvoicePOItemMISMatches.ToList();
+
+                    var poInvoices = shipment.ShipmentAttachedPOs
+                        .SelectMany(x => x.PurchaseOrders.ShipmentInvoicePOs)
+                        .DistinctBy(x => x.InvoiceId)
+                        .Where(x => invoices.All(z => z.Id != x.InvoiceId))
+                        .Select(x => ctx.ShipmentInvoice
+                            .Include(z => z.ShipmentRiderInvoice)
+                            .Include("ShipmentRiderInvoice.ShipmentRider")
+                            .Include("ShipmentRiderInvoice.ShipmentRiderDetails")
+                            .Include("InvoiceDetails.ItemAlias")
+                            .Include("InvoiceDetails.Volume")
+                            //.Include("ShipmentInvoicePOs.POMISMatches")
+                            .Include("ShipmentInvoicePOs.PurchaseOrders.EntryDataDetails.INVItems")
+                            .Include("ShipmentInvoicePOs.PurchaseOrders.WarehouseInfo")
+                            .Include("InvoiceDetails.ItemAlias")
+                            .Include("InvoiceDetails.POItems")
+                            .First(z => z.Id == x.InvoiceId))
+                        .ToList();
+                    invoices.AddRange(poInvoices);
+
                     foreach (var inv in invoices.SelectMany(x => x.ShipmentInvoicePOs))
                     {
 
