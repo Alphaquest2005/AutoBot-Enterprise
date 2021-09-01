@@ -2221,7 +2221,7 @@ namespace WaterNut.DataSpace
             
             var exceptions = new ConcurrentQueue<Exception>();
             Parallel.ForEach(fileNames,
-                new ParallelOptions {MaxDegreeOfParallelism = Environment.ProcessorCount * 1}, //
+                new ParallelOptions {MaxDegreeOfParallelism =1}, // Environment.ProcessorCount * // have to fix deadlock issue first
                 f => //
                 {
                     try
