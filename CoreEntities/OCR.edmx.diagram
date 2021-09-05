@@ -4,7 +4,7 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="854f53cbf00c44538b256d1947980b44" Name="Diagram1" ZoomLevel="74">
+      <Diagram DiagramId="854f53cbf00c44538b256d1947980b44" Name="Data" ZoomLevel="74">
         <EntityTypeShape EntityType="WaterNutDBModel.End" Width="3.375" PointX="10.5" PointY="3.75" />
         <EntityTypeShape EntityType="WaterNutDBModel.Fields" Width="1.5" PointX="7.5" PointY="7.75" />
         <EntityTypeShape EntityType="WaterNutDBModel.Invoices" Width="1.5" PointX="0.75" PointY="9.5" />
@@ -44,6 +44,11 @@
         <AssociationConnector Association="WaterNutDBModel.FK_OCR_InvoiceIdentificatonRegEx_OCR_RegularExpressions" />
         <AssociationConnector Association="WaterNutDBModel.FK_OCR_Fields_OCR_Fields" />
         <AssociationConnector Association="WaterNutDBModel.FK_OCR_Lines_OCR_Lines" />
+      </Diagram>
+      <Diagram DiagramId="2a65efe28dcf4398b5a10bc2fc674aa6" Name="Query" >
+        <EntityTypeShape EntityType="WaterNutDBModel.Invoice" Width="1.5" PointX="0.75" PointY="0.75" />
+        <EntityTypeShape EntityType="WaterNutDBModel.Part" Width="1.5" PointX="3.375" PointY="0.75" />
+        <AssociationConnector Association="WaterNutDBModel.OCR_InvoiceExOCR_PartsView" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

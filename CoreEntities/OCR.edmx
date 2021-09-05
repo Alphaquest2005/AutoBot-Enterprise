@@ -137,6 +137,42 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.OCRInvoicesFileTypes' doe
           <Property Name="PartId" Type="int" Nullable="false" />
           <Property Name="RegExId" Type="int" Nullable="false" />
         </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.OCR_InvoiceEx' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="OCR_InvoiceEx">
+          <Key>
+            <PropertyRef Name="Id" />
+            
+            
+            
+            
+            
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" />
+          <Property Name="Invoice" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Type" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="FileTypeId" Type="int" Nullable="false" />
+          <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
+          <Property Name="IsActive" Type="bit" Nullable="false" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.OCR-PartsView' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="OCR-PartsView">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Invoice" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Part" Type="nvarchar" MaxLength="50" />
+          <Property Name="StartMultiLine" Type="bit" />
+          <Property Name="Start" Type="nvarchar(max)" />
+          <Property Name="EndMultiLine" Type="bit" />
+          <Property Name="End" Type="nvarchar(max)" />
+          <Property Name="IsRecuring" Type="bit" />
+          <Property Name="IsComposite" Type="bit" />
+          <Property Name="Id" Type="int" Nullable="false" />
+          <Property Name="StartRegExId" Type="int" />
+          <Property Name="InvoiceId" Type="int" Nullable="false" />
+        </EntityType>
         <Association Name="FK_OCR-ChildPart_OCR-Parts">
           <End Role="OCR-Parts" Type="Self.OCR-Parts" Multiplicity="1" />
           <End Role="OCR-ChildPart" Type="Self.OCR-ChildPart" Multiplicity="*" />
@@ -478,6 +514,31 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.OCRInvoicesFileTypes' doe
 [OCRInvoicesFileTypes].[FileTypeId] AS [FileTypeId]
 FROM [dbo].[OCRInvoicesFileTypes] AS [OCRInvoicesFileTypes]</DefiningQuery>
           </EntitySet>
+          <EntitySet Name="OCR_InvoiceEx" EntityType="Self.OCR_InvoiceEx" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+[OCR_InvoiceEx].[Id] AS [Id], 
+[OCR_InvoiceEx].[Invoice] AS [Invoice], 
+[OCR_InvoiceEx].[Type] AS [Type], 
+[OCR_InvoiceEx].[FileTypeId] AS [FileTypeId], 
+[OCR_InvoiceEx].[ApplicationSettingsId] AS [ApplicationSettingsId], 
+[OCR_InvoiceEx].[IsActive] AS [IsActive]
+FROM [dbo].[OCR_InvoiceEx] AS [OCR_InvoiceEx]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="OCR-PartsView" EntityType="Self.OCR-PartsView" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+[OCR-PartsView].[Invoice] AS [Invoice], 
+[OCR-PartsView].[Part] AS [Part], 
+[OCR-PartsView].[StartMultiLine] AS [StartMultiLine], 
+[OCR-PartsView].[Start] AS [Start], 
+[OCR-PartsView].[EndMultiLine] AS [EndMultiLine], 
+[OCR-PartsView].[End] AS [End], 
+[OCR-PartsView].[IsRecuring] AS [IsRecuring], 
+[OCR-PartsView].[IsComposite] AS [IsComposite], 
+[OCR-PartsView].[Id] AS [Id], 
+[OCR-PartsView].[StartRegExId] AS [StartRegExId], 
+[OCR-PartsView].[InvoiceId] AS [InvoiceId]
+FROM [dbo].[OCR-PartsView] AS [OCR-PartsView]</DefiningQuery>
+          </EntitySet>
           <AssociationSet Name="FK_OCR-ChildPart_OCR-Parts" Association="Self.FK_OCR-ChildPart_OCR-Parts">
             <End Role="OCR-Parts" EntitySet="OCR-Parts" />
             <End Role="OCR-ChildPart" EntitySet="OCR-ChildPart" />
@@ -690,6 +751,12 @@ FROM [dbo].[OCRInvoicesFileTypes] AS [OCRInvoicesFileTypes]</DefiningQuery>
           <AssociationSet Name="FK_OCR_Lines_OCR_Lines" Association="WaterNutDBModel.FK_OCR_Lines_OCR_Lines">
             <End Role="Lines" EntitySet="Lines" />
             <End Role="Lines1" EntitySet="Lines" />
+          </AssociationSet>
+          <EntitySet Name="InvoiceExs" EntityType="WaterNutDBModel.Invoice" />
+          <EntitySet Name="PartExs" EntityType="WaterNutDBModel.Part" />
+          <AssociationSet Name="OCR_InvoiceExOCR_PartsView" Association="WaterNutDBModel.OCR_InvoiceExOCR_PartsView">
+            <End Role="OCR_InvoiceEx" EntitySet="InvoiceExs" />
+            <End Role="OCR_PartsView" EntitySet="PartExs" />
           </AssociationSet>
           </EntityContainer>
         <EntityType Name="End">
@@ -1186,6 +1253,47 @@ FROM [dbo].[OCRInvoicesFileTypes] AS [OCRInvoicesFileTypes]</DefiningQuery>
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="Invoice">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Type" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="FileTypeId" Type="Int32" Nullable="false" />
+          <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
+          <Property Name="IsActive" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="Parts" Relationship="WaterNutDBModel.OCR_InvoiceExOCR_PartsView" FromRole="OCR_InvoiceEx" ToRole="OCR_PartsView" />
+        </EntityType>
+        <EntityType Name="Part">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="StartMultiLine" Type="Boolean" />
+          <Property Name="Start" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="EndMultiLine" Type="Boolean" />
+          <Property Name="End" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="IsRecuring" Type="Boolean" />
+          <Property Name="IsComposite" Type="Boolean" />
+          <Property Name="Id" Type="Int32" Nullable="false" />
+          <Property Name="StartRegExId" Type="Int32" />
+          <Property Name="InvoiceId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Invoice" Relationship="WaterNutDBModel.OCR_InvoiceExOCR_PartsView" FromRole="OCR_PartsView" ToRole="OCR_InvoiceEx" />
+          <Property Name="InvoiceName" Type="String" Nullable="false" />
+        </EntityType>
+        <Association Name="OCR_InvoiceExOCR_PartsView">
+          <End Type="WaterNutDBModel.Invoice" Role="OCR_InvoiceEx" Multiplicity="1" />
+          <End Type="WaterNutDBModel.Part" Role="OCR_PartsView" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="OCR_InvoiceEx">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="OCR_PartsView">
+              <PropertyRef Name="InvoiceId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -1333,6 +1441,35 @@ FROM [dbo].[OCRInvoicesFileTypes] AS [OCRInvoicesFileTypes]</DefiningQuery>
                 <ScalarProperty Name="RegExId" ColumnName="RegExId" />
                 <ScalarProperty Name="InvoiceId" ColumnName="InvoiceId" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="InvoiceExs">
+            <EntityTypeMapping TypeName="WaterNutDBModel.Invoice">
+              <MappingFragment StoreEntitySet="OCR_InvoiceEx">
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="ApplicationSettingsId" ColumnName="ApplicationSettingsId" />
+                <ScalarProperty Name="FileTypeId" ColumnName="FileTypeId" />
+                <ScalarProperty Name="Type" ColumnName="Type" />
+                <ScalarProperty Name="Name" ColumnName="Invoice" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PartExs">
+            <EntityTypeMapping TypeName="WaterNutDBModel.Part">
+              <MappingFragment StoreEntitySet="OCR-PartsView">
+                <ScalarProperty Name="InvoiceName" ColumnName="Invoice" />
+                <ScalarProperty Name="InvoiceId" ColumnName="InvoiceId" />
+                <ScalarProperty Name="StartRegExId" ColumnName="StartRegExId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="IsComposite" ColumnName="IsComposite" />
+                <ScalarProperty Name="IsRecuring" ColumnName="IsRecuring" />
+                <ScalarProperty Name="End" ColumnName="End" />
+                <ScalarProperty Name="EndMultiLine" ColumnName="EndMultiLine" />
+                <ScalarProperty Name="Start" ColumnName="Start" />
+                <ScalarProperty Name="StartMultiLine" ColumnName="StartMultiLine" />
+                <ScalarProperty Name="Name" ColumnName="Part" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

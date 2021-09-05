@@ -1,0 +1,3 @@
+NABU CAN BE DOWNLOADED FROM
+
+svn://svn.subversion.ru/usr/local/svn/nabu
