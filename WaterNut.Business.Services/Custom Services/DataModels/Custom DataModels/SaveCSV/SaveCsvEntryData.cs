@@ -713,7 +713,11 @@ namespace WaterNut.DataSpace
 
                         WeightLB = x.ContainsKey("WeightLB") ? Convert.ToDouble(x["WeightLB"].ToString()): (double?) null,
                         VolumeCF = x.ContainsKey("VolumeCF") ? Convert.ToDouble(x["VolumeCF"].ToString()): (double?) null,
-                        //Freight = Convert.ToDouble(x["Freight"].ToString()),
+
+
+
+                        Freight = Convert.ToDouble(x["Freight"].ToString()),
+                        FreightCurrency = x["FreightCurrency"].ToString(),
                         //LocationOfGoods = x["LocationOfGoods"].ToString(),
                         //Goods = x["Goods"].ToString(),
                         //Marks = x["Marks"].ToString(),

@@ -348,6 +348,8 @@
           <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
           <Property Name="FileTypeId" Type="int" Nullable="false" />
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Freight" Type="float" />
+          <Property Name="FreightCurrency" Type="nvarchar" MaxLength="10" />
         </EntityType>
         <EntityType Name="ShipmentBLDetails">
           <Key>
@@ -3046,6 +3048,8 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ShipmentRiderManifests' d
           <NavigationProperty Name="ShipmentManifestBLs" Relationship="WaterNutDBModel.ShipmentBLShipmentManifestBLs" FromRole="ShipmentBL" ToRole="ShipmentManifestBLs" />
           <NavigationProperty Name="ShipmentRiderBLs" Relationship="WaterNutDBModel.ShipmentBLShipmentRiderBLs" FromRole="ShipmentBL" ToRole="ShipmentRiderBLs" />
           <NavigationProperty Name="ShipmentBLFreight" Relationship="WaterNutDBModel.ShipmentBLShipmentBLFreight" FromRole="ShipmentBL" ToRole="ShipmentBLFreight" />
+          <Property Name="Freight" Type="Double" />
+          <Property Name="FreightCurrency" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="ShipmentBLDetails">
           <Key>
@@ -4651,6 +4655,8 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ShipmentRiderManifests' d
           <EntitySetMapping Name="ShipmentBL">
             <EntityTypeMapping TypeName="WaterNutDBModel.ShipmentBL">
               <MappingFragment StoreEntitySet="ShipmentBL">
+                <ScalarProperty Name="FreightCurrency" ColumnName="FreightCurrency" />
+                <ScalarProperty Name="Freight" ColumnName="Freight" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="ApplicationSettingsId" ColumnName="ApplicationSettingsId" />
                 <ScalarProperty Name="FileTypeId" ColumnName="FileTypeId" />

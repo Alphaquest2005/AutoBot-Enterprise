@@ -31,6 +31,8 @@
               this.Property(t => t.FileTypeId).HasColumnName("FileTypeId");
               this.Property(t => t.ApplicationSettingsId).HasColumnName("ApplicationSettingsId");
               this.Property(t => t.Id).HasColumnName("Id").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.Identity));
+              this.Property(t => t.Freight).HasColumnName("Freight");
+              this.Property(t => t.FreightCurrency).HasColumnName("FreightCurrency").HasMaxLength(10);
               this.HasMany(t => t.ShimentBLCharges).WithRequired(t => (ShipmentBL)t.ShipmentBL);
               this.HasMany(t => t.ShipmentAttachedBL).WithRequired(t => (ShipmentBL)t.ShipmentBL);
               this.HasMany(t => t.ShipmentBLDetails).WithRequired(t => (ShipmentBL)t.ShipmentBL);

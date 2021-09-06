@@ -276,7 +276,7 @@ namespace xlsxWriter
                     header.First(x => x.Key.Column == nameof(ShipmentInvoice.InvoiceDate)).Key.Index,
                     pO.PurchaseOrders.EntryDataDate.ToString("yyyy-MM-dd"));
                 SetValue(workbook, i, header.First(x => x.Key.Column == nameof(itm.Cost)).Key.Index,
-                    pOItem?.INVCost ?? itm.Cost);
+                    (pOItem?.INVQuantity == itm.Quantity && pOItem?.INVCost != null ? pOItem?.INVCost : itm.Cost));
                 SetValue(workbook, i, header.First(x => x.Key.Column == "POItemDescription").Key.Index,
                     itm.ItemDescription);
                 SetValue(workbook, i,
@@ -350,7 +350,7 @@ namespace xlsxWriter
                     SetValue(workbook, i, header.IndexOf("INVCost"), mis.INVCost);
                     SetValue(workbook, i, header.IndexOf("POQuantity"), mis.POQuantity);
                     SetValue(workbook, i, header.IndexOf("INVQuantity"), mis.INVQuantity);
-                    SetValue(workbook, i, header.IndexOf("INVQuantity"), mis.INVSalesFactor);
+                    SetValue(workbook, i, header.IndexOf("INVSalesFactor"), mis.INVSalesFactor);
                     SetValue(workbook, i, header.IndexOf("POTotalCost"), mis.POTotalCost);
                     SetValue(workbook, i, header.IndexOf("INVTotalCost"), mis.INVTotalCost);
                     SetValue(workbook, i, header.IndexOf("INVDetailsId"), mis.INVDetailsId);

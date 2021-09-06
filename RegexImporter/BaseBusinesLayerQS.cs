@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using Core.Common.UI.DataVirtualization;
+using Omu.ValueInjecter;
 using CoreEntities.Client.Entities;
 using CoreEntities.Client.Repositories;
 using SimpleMvvmToolkit;
@@ -20,9 +21,15 @@ namespace RegexImporter
         
             if (CurrentApplicationSettings == null && LicenseManager.UsageMode != LicenseUsageMode.Designtime)
             {
-                using (var ctx = new ApplicationSettingsRepository())
+                using (var ctx = new CoreEntities.Business.Entities.CoreEntitiesContext())
                 {
-                    ApplicationSettings = ctx.ApplicationSettings().Result.Where(x => x.IsActive).ToList();
+
+
+                    ApplicationSettings = ctx.ApplicationSettings
+                            .Where(x => x.IsActive)
+                            .ToList()
+                            .Select(x => new ApplicationSettings().InjectFrom(x))
+                            .Cast<ApplicationSettings>().ToList();
                     CurrentApplicationSettings = ApplicationSettings.FirstOrDefault();
                 }
 
@@ -35,14 +42,14 @@ namespace RegexImporter
         }
 
 
-        private static readonly Core.Common.UI.BaseViewModel _instance;
+        private static readonly BaseViewModel _instance;
         static BaseViewModel()
         {
-            _instance = new Core.Common.UI.BaseViewModel();
+            _instance = new BaseViewModel();
             Initialization = InitializationAsync();
         }
 
-        public static Core.Common.UI.BaseViewModel Instance
+        public static BaseViewModel Instance
         {
             get { return _instance; }
         }

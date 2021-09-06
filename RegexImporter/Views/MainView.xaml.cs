@@ -21,19 +21,19 @@ namespace WaterNut.Views
 	{
 		public MainView()
 		{
-            try
-            {
+			try
+			{
 
-                InitializeComponent();
-                BaseViewModel.Slider = slider;
-                //im = (MainViewModel)this.FindResource("MainViewModelDataSource");
-                // Insert code required on object creation below this point.
-                CompanyLst.Visibility = BaseViewModel.IsMyComputer ? Visibility.Visible : Visibility.Collapsed;
-            }
-            catch (Exception Ex)
-            {
-                MessageBox.Show(Ex.Message + Ex.StackTrace);
-            }
+				InitializeComponent();
+				BaseViewModel.Slider = slider;
+				//im = (MainViewModel)this.FindResource("MainViewModelDataSource");
+				// Insert code required on object creation below this point.
+				CompanyLst.Visibility = BaseViewModel.IsMyComputer ? Visibility.Visible : Visibility.Collapsed;
+			}
+			catch (Exception Ex)
+			{
+				MessageBox.Show(Ex.Message + Ex.StackTrace);
+			}
 
 		}
 
@@ -52,10 +52,10 @@ namespace WaterNut.Views
 			}
 			else
 			{
-               // var p = ((FrameworkElement)sender).Parent as Expander;
-               //// p.IsExpanded = true;
-               // p.UpdateLayout();
-               // BaseViewModel.Slider.BringIntoView(p);
+			   // var p = ((FrameworkElement)sender).Parent as Expander;
+			   //// p.IsExpanded = true;
+			   // p.UpdateLayout();
+			   // BaseViewModel.Slider.BringIntoView(p);
 			}
 		}
 

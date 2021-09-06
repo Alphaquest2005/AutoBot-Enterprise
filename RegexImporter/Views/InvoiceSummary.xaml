@@ -9,16 +9,17 @@
 	mc:Ignorable="d"
 	xmlns:local="clr-namespace:WaterNut"
 	xmlns:viewModels="clr-namespace:WaterNut.QuerySpace.OCR.ViewModels;assembly=AutoWaterNut"
+	xmlns:regExViewModels="clr-namespace:RegexImporter.ViewModels"
 	x:Class="WaterNut.Views.AsycudaDocumentSummaryList"
 	d:DesignWidth="640" d:DesignHeight="480">
     <UserControl.Resources>
-        <x:Static Member="viewModels:I.Instance" x:Key="AsycudaDocumentSetsModelDataSource" />
+        <x:Static Member="regExViewModels:InvoiceExViewModel.Instance" x:Key="InvoiceModelDataSource" />
         <!--<x:Static Member="QS:AsycudaDocumentsModel.Instance" x:Key="DocsModel" />-->
         <Style TargetType="ListBoxItem">
             <Setter Property="virtual:VirtualListItemBase.AutoLoad" Value="true" />
         </Style>
 
-        <DataTemplate x:Key="LinesTemplate" DataType="{x:Type QSOCREntities:Lines}">
+        <DataTemplate x:Key="LinesTemplate" DataType="{x:Type QSOCREntities:Part}">
             <Grid d:DesignWidth="561.4" d:DesignHeight="53.6" Width="Auto">
                 <TextBlock Text="{Binding Invoice, Mode=OneWay}" HorizontalAlignment="Left" Height="33" Margin="21,21,0,-0.667" TextWrapping="Wrap"  VerticalAlignment="Top" Width="81" FontSize="21.333"/>
                 <TextBlock Text="{Binding Type}" HorizontalAlignment="Left" Width="164" Height="30" Margin="119,-1,0,0" TextWrapping="Wrap"  VerticalAlignment="Top"  FontSize="16"/>
@@ -44,7 +45,7 @@
                 </DataTrigger>
             </DataTemplate.Triggers>
         </DataTemplate>
-        <DataTemplate x:Key="InvoiceTemplate"  DataType="{x:Type QSOCREntities:OCR_InvoiceEx}">
+        <DataTemplate x:Key="InvoiceTemplate"  DataType="{x:Type QSOCREntities:Invoice}">
             <Expander Expanded="Expander_Expanded" Collapsed="Expander_Collapsed" >
                 <Expander.Header>
                     <Grid d:DesignWidth="561.4" d:DesignHeight="53.6" Width="561"  Background="#00000000">
@@ -56,10 +57,10 @@
                         
                     </Grid>
                 </Expander.Header>
-                <ListBox x:Name="DocGrd"
-                         SelectedItem="{Binding Source={x:Static QS:BaseViewModel.Instance}, Path=CurrentAsycudaDocument}"
+                <ListBox x:Name="PartLst"
+                         SelectedItem="{Binding Source={x:Static viewModels:PartViewModel_AutoGen.Instance}, Path=CurrentPart}"
                          ItemTemplate="{DynamicResource xcuda_ASYCUDATemplate}"
-                         ItemsSource="{Binding AsycudaDocuments, Source={StaticResource AsycudaDocumentSetsModelDataSource}}" HorizontalAlignment="Stretch" Height="300" Margin="0,0,0,0" VerticalAlignment="Top" Width="Auto" SelectionChanged="DocGrd_SelectionChanged" />
+                         ItemsSource="{Binding Parts, Source={StaticResource InvoiceModelDataSource}}" HorizontalAlignment="Stretch" Height="300" Margin="0,0,0,0" VerticalAlignment="Top" Width="Auto" SelectionChanged="DocGrd_SelectionChanged" />
             </Expander>
             <!---->
 
@@ -67,22 +68,13 @@
         </DataTemplate>
     </UserControl.Resources>
 
-    <Grid x:Name="LayoutRoot" DataContext="{Binding Source={StaticResource AsycudaDocumentSetsModelDataSource}}">
+    <Grid x:Name="LayoutRoot" DataContext="{Binding Source={StaticResource InvoiceModelDataSource}}">
         <TextBlock HorizontalAlignment="Left" Height="33" Margin="9,7,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="234" FontSize="21.333" Text="Asycuda Documents List"/>
         <ListBox x:Name="DocSetGrd" 
-                 SelectedItem="{Binding Source={x:Static QS:BaseViewModel.Instance}, Path=VCurrentAsycudaDocumentSetEx}" 
+                 SelectedItem="{Binding Source={x:Static viewModels:BaseViewModel.Instance}, Path=VCurrentInvoice}" 
                  ItemTemplate="{DynamicResource AsycudaDocumentSetTemplate}" 
-                 ItemsSource="{Binding AsycudaDocumentSetExs}" 
+                 ItemsSource="{Binding InvoiceExs}" 
                  HorizontalAlignment="Stretch" Height="387" Margin="0,93,0,0" VerticalAlignment="Top" Width="Auto" SelectionChanged="DocSetGrd_SelectionChanged"  Style="{DynamicResource AlphaListBoxStyle}"/>
-        <TextBlock MouseLeftButtonDown="ViewAll" HorizontalAlignment="Left" Height="26" Margin="545,67,0,0" TextWrapping="Wrap" Text="View All" VerticalAlignment="Top" Width="75" FontSize="16" Style="{DynamicResource TextButtonStyle}" TextAlignment="Right" />
-        <TextBlock x:Name="ImportBtn" MouseLeftButtonDown="ImportBtn_MouseLeftButtonDown" HorizontalAlignment="Left" Height="26" Margin="572,40,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="50" FontSize="16" Style="{DynamicResource TextButtonStyle}" TextAlignment="Right" ><Run Text="Import"/><LineBreak/><Run/></TextBlock>
-        <TextBlock x:Name="ExportBtn" MouseLeftButtonDown="ExportBtn_MouseLeftButtonDown" HorizontalAlignment="Left" Height="26" Margin="498,7,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="132" FontSize="16" Style="{DynamicResource TextButtonStyle}" TextAlignment="Right" Text="Export to XML file" />
-        <TextBlock Text="{Binding AsycudaDocumentSetExs.Count, StringFormat=0 Results}" HorizontalAlignment="Left" Height="24" Margin="264,6,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="201" FontSize="20" TextAlignment="Right" Foreground="#FFE4E453"/>
-        <CheckBox IsChecked="{Binding ImportOnlyRegisteredDocuments}" x:Name="MultiSelectChk_Copy1" HorizontalAlignment="Left" Height="22" Margin="50,43,0,0" VerticalAlignment="Top" Width="145" Content="Import Only Reg. Docs" RenderTransformOrigin="0.488,0.464"/>
-        <CheckBox IsChecked="{Binding ImportTariffCodes}" x:Name="MultiSelectChk_Copy2" HorizontalAlignment="Left" Height="22" Margin="50,67,0,0" VerticalAlignment="Top" Width="120" Content="Import TariffCodes" RenderTransformOrigin="0.488,0.464"/>
-        <CheckBox IsChecked="{Binding NoMessages}" x:Name="MultiSelectChk_Copy3" HorizontalAlignment="Left" Height="22" Margin="225,44,0,0" VerticalAlignment="Top" Width="95" Content="No Messages" RenderTransformOrigin="0.488,0.464"/>
-        <CheckBox IsChecked="{Binding OverwriteExisting}" x:Name="MultiSelectChk_Copy" HorizontalAlignment="Left"  Height="48" Margin="355,45,0,0" VerticalAlignment="Top" Width="95" Content="Overwrite &#xA;existing Docs" RenderTransformOrigin="0.488,0.464"/>
-        <CheckBox IsChecked="{Binding LinkPi}" x:Name="MultiSelectChk_Copy4" HorizontalAlignment="Left" Height="22" Margin="225,66,0,0" VerticalAlignment="Top" Width="95" Content="Link Pi" RenderTransformOrigin="0.488,0.464"/>
-        <TextBlock x:Name="ImportBtn_Copy1" MouseLeftButtonDown="AttachDocuments" HorizontalAlignment="Left" Height="44" Margin="466,44,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="74" FontSize="12" Style="{DynamicResource TextButtonStyle}" TextAlignment="Right" ><Run Text="Attach"/><LineBreak/><Run Text="Documents"/></TextBlock>
+        
     </Grid>
 </UserControl>

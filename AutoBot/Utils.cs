@@ -914,31 +914,40 @@ namespace AutoBot
 
         private static void AssessLicense(FileTypes ft)
         {
-            
-                
-            using (var ctx = new CoreEntitiesContext())
+
+            try
             {
-                ctx.Database.CommandTimeout = 10;
-                var res = ctx.TODO_LICToAssess
-                    .Where(x => ft.AsycudaDocumentSetId == 0 || x.AsycudaDocumentSetId == ft.AsycudaDocumentSetId)
-                    .ToList();
 
-                foreach (var doc in res)
+
+                using (var ctx = new CoreEntitiesContext())
                 {
+                    ctx.Database.CommandTimeout = 20;
+                    var res = ctx.TODO_LICToAssess
+                        .Where(x => ft.AsycudaDocumentSetId == 0 || x.AsycudaDocumentSetId == ft.AsycudaDocumentSetId)
+                        .ToList();
 
-                    var directoryName = Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder,
-                        doc.Declarant_Reference_Number);
-                    var instrFile = Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder,
-                        doc.Declarant_Reference_Number, "LIC-Instructions.txt");
-                    if (!File.Exists(instrFile)) continue;
-                    var resultsFile = Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder,
-                        doc.Declarant_Reference_Number, "LIC-InstructionResults.txt");
-                    var lcont = 0;
-                    while (AssessLICComplete(instrFile, resultsFile, out lcont) == false)
+                    foreach (var doc in res)
                     {
-                        RunSiKuLi(directoryName, "AssessLIC", lcont.ToString());
+
+                        var directoryName = Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder,
+                            doc.Declarant_Reference_Number);
+                        var instrFile = Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder,
+                            doc.Declarant_Reference_Number, "LIC-Instructions.txt");
+                        if (!File.Exists(instrFile)) continue;
+                        var resultsFile = Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder,
+                            doc.Declarant_Reference_Number, "LIC-InstructionResults.txt");
+                        var lcont = 0;
+                        while (AssessLICComplete(instrFile, resultsFile, out lcont) == false)
+                        {
+                            RunSiKuLi(directoryName, "AssessLIC", lcont.ToString());
+                        }
                     }
                 }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
             }
         }
 

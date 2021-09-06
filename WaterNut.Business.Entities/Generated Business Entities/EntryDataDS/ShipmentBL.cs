@@ -301,6 +301,36 @@ namespace EntryDataDS.Business.Entities
         }
         int _id;
         [DataMember]
+        public Nullable<double> Freight 
+        {
+            get
+            {
+                return _freight;
+            }
+            set
+            {
+                _freight = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<double> _freight;
+        [DataMember]
+        public string FreightCurrency 
+        {
+            get
+            {
+                return _freightcurrency;
+            }
+            set
+            {
+                _freightcurrency = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _freightcurrency;
+        [DataMember]
         public List<ShimentBLCharges> ShimentBLCharges { get; set; }
         [DataMember]
         public List<ShipmentAttachedBL> ShipmentAttachedBL { get; set; }

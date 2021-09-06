@@ -11,7 +11,7 @@
     x:Class="WaterNut.Views.MainView"
 	d:DesignWidth="2988.06" d:DesignHeight="500">
     <UserControl.Resources>
-        <x:Static Member="ui:BaseViewModel.Instance" x:Key="BaseViewModelDataSource" />
+        <x:Static Member="regexImporter:BaseViewModel.Instance" x:Key="BaseViewModelDataSource" />
 
 
         <System:Double x:Key="ExpHeadFontSize">16</System:Double>

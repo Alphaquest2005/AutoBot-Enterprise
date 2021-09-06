@@ -520,7 +520,7 @@ namespace AutoBotUtilities
 
 
 
-                    shipment.ShipmentAttachedManifest.AddRange(manifests.Select(x => new ShipmentAttachedManifest()
+                    shipment.ShipmentAttachedManifest.AddRange(manifests.Where(x => shipment.ShipmentAttachedManifest.All(z => z.ManifestId != x.Id)).Select(x => new ShipmentAttachedManifest()
                     {
                         ShipmentManifest = x,
                         ManifestId = x.Id,
@@ -725,8 +725,8 @@ namespace AutoBotUtilities
                                 : manifests.LastOrDefault()?.GrossWeightKG ?? bl?.WeightKG,
                             ExpectedEntries = 0,
                             TotalInvoices = 0,
-                            FreightCurrency = freightInvoices.LastOrDefault()?.Currency ?? "USD",
-                            Freight = freightInvoices.LastOrDefault()?.InvoiceTotal,
+                            FreightCurrency = freightInvoices.LastOrDefault()?.Currency ?? bl.FreightCurrency ?? "USD",
+                            Freight = freightInvoices.LastOrDefault()?.InvoiceTotal ?? bl.Freight,
                             Origin = "US",
                             Packages =manifests.LastOrDefault()?.Packages ?? (!blDetails.Any()
                                 ? clients.SelectMany(x => x.Select(r => r.Pieces)).Sum()
