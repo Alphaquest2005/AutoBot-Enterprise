@@ -275,12 +275,16 @@
     <Compile Include="Generated Repositories\OCR\EndRepository.cs" />
     <Compile Include="Generated Repositories\OCR\FieldFormatRegExRepository.cs" />
     <Compile Include="Generated Repositories\OCR\FieldsRepository.cs" />
+    <Compile Include="Generated Repositories\OCR\ImportErrorsRepository.cs" />
     <Compile Include="Generated Repositories\OCR\InvoiceIdentificatonRegExRepository.cs" />
     <Compile Include="Generated Repositories\OCR\InvoiceRegExRepository.cs" />
     <Compile Include="Generated Repositories\OCR\InvoiceRepository.cs" />
     <Compile Include="Generated Repositories\OCR\InvoicesRepository.cs" />
+    <Compile Include="Generated Repositories\OCR\LineRepository.cs" />
     <Compile Include="Generated Repositories\OCR\LinesRepository.cs" />
     <Compile Include="Generated Repositories\OCR\OCRFileTypesRepository.cs" />
+    <Compile Include="Generated Repositories\OCR\OCR_FailedFieldsRepository.cs" />
+    <Compile Include="Generated Repositories\OCR\OCR_FailedLinesRepository.cs" />
     <Compile Include="Generated Repositories\OCR\OCR_FieldValueRepository.cs" />
     <Compile Include="Generated Repositories\OCR\PartRepository.cs" />
     <Compile Include="Generated Repositories\OCR\PartsRepository.cs" />

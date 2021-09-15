@@ -24,6 +24,7 @@ namespace OCR.Business.Entities
         {
             this.FormatRegEx = new List<FieldFormatRegEx>();
             this.ChildFields = new List<Fields>();
+            this.OCR_FailedFields = new List<OCR_FailedFields>();
         }
 
         [DataMember]
@@ -171,6 +172,8 @@ namespace OCR.Business.Entities
         public List<Fields> ChildFields { get; set; }
         [DataMember]
         public Fields ParentField { get; set; }
+        [DataMember]
+        public List<OCR_FailedFields> OCR_FailedFields { get; set; }
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

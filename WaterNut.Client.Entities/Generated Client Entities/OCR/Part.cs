@@ -42,6 +42,9 @@ namespace OCR.Client.Entities
                 part = value;
             }
         }
+        
+
+
        
        
                 
@@ -201,7 +204,7 @@ public int InvoiceId
        [RequiredValidationAttribute(ErrorMessage= "InvoiceName is required")]
        
                 
-                
+                [MaxLength(50, ErrorMessage = "InvoiceName has a max length of 50 letters ")]
 public string InvoiceName
 		{ 
 		    get { return this.part.InvoiceName; }
@@ -267,6 +270,60 @@ public string InvoiceName
 			}
 		}
         
+
+        ObservableCollection<Line> _OCR_LinesView = null;
+        public  ObservableCollection<Line> OCR_LinesView
+		{
+            
+		    get 
+				{ 
+					if(_OCR_LinesView != null) return _OCR_LinesView;
+					//if (this.part.OCR_LinesView == null) Debugger.Break();
+					if(this.part.OCR_LinesView != null)
+					{
+						_OCR_LinesView = new ObservableCollection<Line>(this.part.OCR_LinesView.Select(x => new Line(x)));
+					}
+					
+						_OCR_LinesView.CollectionChanged += OCR_LinesView_CollectionChanged; 
+					
+					return _OCR_LinesView; 
+				}
+			set
+			{
+			    if (Equals(value, _OCR_LinesView)) return;
+				if (value != null)
+					this.part.OCR_LinesView = new ChangeTrackingCollection<DTO.Line>(value.Select(x => x.DTO).ToList());
+                _OCR_LinesView = value;
+				if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				if (_OCR_LinesView != null)
+				_OCR_LinesView.CollectionChanged += OCR_LinesView_CollectionChanged;               
+				NotifyPropertyChanged("OCR_LinesView");
+			}
+		}
+        
+        void OCR_LinesView_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            switch (e.Action)
+            {
+                case NotifyCollectionChangedAction.Add:
+                    foreach (Line itm in e.NewItems)
+                    {
+                        if (itm != null)
+                        part.OCR_LinesView.Add(itm.DTO);
+                    }
+                    if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+                    break;
+                case NotifyCollectionChangedAction.Remove:
+                    foreach (Line itm in e.OldItems)
+                    {
+                        if (itm != null)
+                        part.OCR_LinesView.Remove(itm.DTO);
+                    }
+					if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+                    break;
+                
+            }
+        }
 
 
         ChangeTrackingCollection<DTO.Part> _changeTracker;    

@@ -181,6 +181,19 @@ namespace OCR.Client.DTO
         private Invoice _Invoice;
         private ChangeTrackingCollection<Invoice> InvoiceChangeTracker { get; set; }
 
+        [DataMember]
+        public ChangeTrackingCollection<Line> OCR_LinesView
+		{
+		    get { return _OCR_LinesView; }
+			set
+			{
+			    if (Equals(value, _OCR_LinesView)) return;
+				_OCR_LinesView = value;
+				NotifyPropertyChanged();//m => this.OCR_LinesView
+			}
+		}
+        private ChangeTrackingCollection<Line> _OCR_LinesView = new ChangeTrackingCollection<Line>();
+
    //     [DataMember]
    //     public TrackingState TrackingState { get; set; }
 

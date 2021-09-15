@@ -455,6 +455,60 @@ public Nullable<bool> AppendValues
 		}
         
 
+        ObservableCollection<OCR_FailedFields> _OCR_FailedFields = null;
+        public  ObservableCollection<OCR_FailedFields> OCR_FailedFields
+		{
+            
+		    get 
+				{ 
+					if(_OCR_FailedFields != null) return _OCR_FailedFields;
+					//if (this.fields.OCR_FailedFields == null) Debugger.Break();
+					if(this.fields.OCR_FailedFields != null)
+					{
+						_OCR_FailedFields = new ObservableCollection<OCR_FailedFields>(this.fields.OCR_FailedFields.Select(x => new OCR_FailedFields(x)));
+					}
+					
+						_OCR_FailedFields.CollectionChanged += OCR_FailedFields_CollectionChanged; 
+					
+					return _OCR_FailedFields; 
+				}
+			set
+			{
+			    if (Equals(value, _OCR_FailedFields)) return;
+				if (value != null)
+					this.fields.OCR_FailedFields = new ChangeTrackingCollection<DTO.OCR_FailedFields>(value.Select(x => x.DTO).ToList());
+                _OCR_FailedFields = value;
+				if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				if (_OCR_FailedFields != null)
+				_OCR_FailedFields.CollectionChanged += OCR_FailedFields_CollectionChanged;               
+				NotifyPropertyChanged("OCR_FailedFields");
+			}
+		}
+        
+        void OCR_FailedFields_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            switch (e.Action)
+            {
+                case NotifyCollectionChangedAction.Add:
+                    foreach (OCR_FailedFields itm in e.NewItems)
+                    {
+                        if (itm != null)
+                        fields.OCR_FailedFields.Add(itm.DTO);
+                    }
+                    if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+                    break;
+                case NotifyCollectionChangedAction.Remove:
+                    foreach (OCR_FailedFields itm in e.OldItems)
+                    {
+                        if (itm != null)
+                        fields.OCR_FailedFields.Remove(itm.DTO);
+                    }
+					if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+                    break;
+                
+            }
+        }
+
 
         ChangeTrackingCollection<DTO.Fields> _changeTracker;    
         public ChangeTrackingCollection<DTO.Fields> ChangeTracker

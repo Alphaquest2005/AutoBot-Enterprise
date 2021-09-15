@@ -53,8 +53,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                 NotifyPropertyChanged(x => this.ApplicationSettings);
             }
         }
-   
 
-    
+
     }
 }

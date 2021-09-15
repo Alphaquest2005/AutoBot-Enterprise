@@ -3860,7 +3860,7 @@ namespace AutoBot
                         // --- disable because it when it finished it cause it to repeat... better to check thru all to decide if to repeat or not
                         if (lcont >= res.Length)
                         {
-                            if ((res.Length) == (instructions.Length / 3) || (res.Length == 2 && instructions.Length == 3)) return true; else return false;
+                            if ((res.Length/2) == (instructions.Length / 3) || ((res.Length -1) / 2) == (instructions.Length / 3) || (res.Length == 2 && instructions.Length == 3) || (res.Length == 3 && instructions.Length == 6)) return true; else return false;
                         }
                         if (string.IsNullOrEmpty(res[lcont])) return false;
                         var isSuccess = false;

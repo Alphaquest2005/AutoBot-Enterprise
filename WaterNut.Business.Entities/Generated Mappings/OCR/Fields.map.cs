@@ -27,6 +27,7 @@
               this.HasOptional(t => t.FieldValue).WithRequired(t => (Fields)t.Field);
               this.HasMany(t => t.FormatRegEx).WithRequired(t => (Fields)t.Field);
               this.HasMany(t => t.ChildFields).WithOptional(t => t.ParentField).HasForeignKey(d => d.ParentId);
+              this.HasMany(t => t.OCR_FailedFields).WithRequired(t => (Fields)t.OCR_Fields);
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);
     			this.Ignore(t => t.ModifiedProperties);

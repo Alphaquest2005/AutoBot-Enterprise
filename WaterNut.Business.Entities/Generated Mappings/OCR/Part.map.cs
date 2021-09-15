@@ -23,8 +23,9 @@
               this.Property(t => t.Id).HasColumnName("Id").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.None));
               this.Property(t => t.StartRegExId).HasColumnName("StartRegExId");
               this.Property(t => t.InvoiceId).HasColumnName("InvoiceId");
-              this.Property(t => t.InvoiceName).HasColumnName("Invoice").IsRequired();
+              this.Property(t => t.InvoiceName).HasColumnName("Invoice").IsRequired().HasMaxLength(50);
               this.HasRequired(t => t.Invoice).WithMany(t =>(ICollection<Part>) t.Parts).HasForeignKey(d => d.InvoiceId);
+              this.HasMany(t => t.OCR_LinesView).WithOptional(t => t.Part).HasForeignKey(d => d.PartId);
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);
     			this.Ignore(t => t.ModifiedProperties);

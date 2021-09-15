@@ -34,6 +34,12 @@ namespace WaterNut.QuerySpace.OCR
 			public const string FieldsDeleted = "FieldsDeleted";
 			public const string FieldsCreated = "FieldsCreated";
 			public const string FieldsUpdated = "FieldsUpdated";
+			public const string ImportErrorsFilterExpressionChanged = "ImportErrorsFilterExpressionChanged";
+			public const string SelectedImportErrorsChanged = "SelectedImportErrorsChanged";
+            public const string ImportErrorsChanged = "ImportErrorsChanged";
+			public const string ImportErrorsDeleted = "ImportErrorsDeleted";
+			public const string ImportErrorsCreated = "ImportErrorsCreated";
+			public const string ImportErrorsUpdated = "ImportErrorsUpdated";
 			public const string InvoiceExsFilterExpressionChanged = "InvoiceExsFilterExpressionChanged";
 			public const string SelectedInvoiceExsChanged = "SelectedInvoiceExsChanged";
             public const string InvoiceExsChanged = "InvoiceExsChanged";
@@ -58,12 +64,30 @@ namespace WaterNut.QuerySpace.OCR
 			public const string InvoicesDeleted = "InvoicesDeleted";
 			public const string InvoicesCreated = "InvoicesCreated";
 			public const string InvoicesUpdated = "InvoicesUpdated";
+			public const string LineSetFilterExpressionChanged = "LineSetFilterExpressionChanged";
+			public const string SelectedLineSetChanged = "SelectedLineSetChanged";
+            public const string LineSetChanged = "LineSetChanged";
+			public const string LineSetDeleted = "LineSetDeleted";
+			public const string LineSetCreated = "LineSetCreated";
+			public const string LineSetUpdated = "LineSetUpdated";
 			public const string LinesFilterExpressionChanged = "LinesFilterExpressionChanged";
 			public const string SelectedLinesChanged = "SelectedLinesChanged";
             public const string LinesChanged = "LinesChanged";
 			public const string LinesDeleted = "LinesDeleted";
 			public const string LinesCreated = "LinesCreated";
 			public const string LinesUpdated = "LinesUpdated";
+			public const string OCR_FailedFieldsFilterExpressionChanged = "OCR_FailedFieldsFilterExpressionChanged";
+			public const string SelectedOCR_FailedFieldsChanged = "SelectedOCR_FailedFieldsChanged";
+            public const string OCR_FailedFieldsChanged = "OCR_FailedFieldsChanged";
+			public const string OCR_FailedFieldsDeleted = "OCR_FailedFieldsDeleted";
+			public const string OCR_FailedFieldsCreated = "OCR_FailedFieldsCreated";
+			public const string OCR_FailedFieldsUpdated = "OCR_FailedFieldsUpdated";
+			public const string OCR_FailedLinesFilterExpressionChanged = "OCR_FailedLinesFilterExpressionChanged";
+			public const string SelectedOCR_FailedLinesChanged = "SelectedOCR_FailedLinesChanged";
+            public const string OCR_FailedLinesChanged = "OCR_FailedLinesChanged";
+			public const string OCR_FailedLinesDeleted = "OCR_FailedLinesDeleted";
+			public const string OCR_FailedLinesCreated = "OCR_FailedLinesCreated";
+			public const string OCR_FailedLinesUpdated = "OCR_FailedLinesUpdated";
 			public const string OCR_FieldValueFilterExpressionChanged = "OCR_FieldValueFilterExpressionChanged";
 			public const string SelectedOCR_FieldValueChanged = "SelectedOCR_FieldValueChanged";
             public const string OCR_FieldValueChanged = "OCR_FieldValueChanged";
@@ -118,11 +142,15 @@ namespace WaterNut.QuerySpace.OCR
           // public const string EndChanged = "EndChanged";
           // public const string FieldFormatRegExChanged = "FieldFormatRegExChanged";
           // public const string FieldsChanged = "FieldsChanged";
+          // public const string ImportErrorsChanged = "ImportErrorsChanged";
           // public const string InvoiceChanged = "InvoiceChanged";
           // public const string InvoiceIdentificatonRegExChanged = "InvoiceIdentificatonRegExChanged";
           // public const string InvoiceRegExChanged = "InvoiceRegExChanged";
           // public const string InvoicesChanged = "InvoicesChanged";
+          // public const string LineChanged = "LineChanged";
           // public const string LinesChanged = "LinesChanged";
+          // public const string OCR_FailedFieldsChanged = "OCR_FailedFieldsChanged";
+          // public const string OCR_FailedLinesChanged = "OCR_FailedLinesChanged";
           // public const string OCR_FieldValueChanged = "OCR_FieldValueChanged";
           // public const string OCRFileTypesChanged = "OCRFileTypesChanged";
           // public const string PartChanged = "PartChanged";
@@ -142,6 +170,8 @@ namespace WaterNut.QuerySpace.OCR
    
            public const string CurrentFieldsChanged = "CurrentFieldsChanged";
    
+           public const string CurrentImportErrorsChanged = "CurrentImportErrorsChanged";
+   
            public const string CurrentInvoiceChanged = "CurrentInvoiceChanged";
    
            public const string CurrentInvoiceIdentificatonRegExChanged = "CurrentInvoiceIdentificatonRegExChanged";
@@ -150,7 +180,13 @@ namespace WaterNut.QuerySpace.OCR
    
            public const string CurrentInvoicesChanged = "CurrentInvoicesChanged";
    
+           public const string CurrentLineChanged = "CurrentLineChanged";
+   
            public const string CurrentLinesChanged = "CurrentLinesChanged";
+   
+           public const string CurrentOCR_FailedFieldsChanged = "CurrentOCR_FailedFieldsChanged";
+   
+           public const string CurrentOCR_FailedLinesChanged = "CurrentOCR_FailedLinesChanged";
    
            public const string CurrentOCR_FieldValueChanged = "CurrentOCR_FieldValueChanged";
    
@@ -178,6 +214,8 @@ namespace WaterNut.QuerySpace.OCR
    
            public const string CurrentFieldsIDChanged = "OnCurrentFieldsIDChanged";
    
+           public const string CurrentImportErrorsIDChanged = "OnCurrentImportErrorsIDChanged";
+   
            public const string CurrentInvoiceIDChanged = "OnCurrentInvoiceIDChanged";
    
            public const string CurrentInvoiceIdentificatonRegExIDChanged = "OnCurrentInvoiceIdentificatonRegExIDChanged";
@@ -186,7 +224,13 @@ namespace WaterNut.QuerySpace.OCR
    
            public const string CurrentInvoicesIDChanged = "OnCurrentInvoicesIDChanged";
    
+           public const string CurrentLineIDChanged = "OnCurrentLineIDChanged";
+   
            public const string CurrentLinesIDChanged = "OnCurrentLinesIDChanged";
+   
+           public const string CurrentOCR_FailedFieldsIDChanged = "OnCurrentOCR_FailedFieldsIDChanged";
+   
+           public const string CurrentOCR_FailedLinesIDChanged = "OnCurrentOCR_FailedLinesIDChanged";
    
            public const string CurrentOCR_FieldValueIDChanged = "OnCurrentOCR_FieldValueIDChanged";
    

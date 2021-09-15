@@ -44,11 +44,20 @@
         <AssociationConnector Association="WaterNutDBModel.FK_OCR_InvoiceIdentificatonRegEx_OCR_RegularExpressions" />
         <AssociationConnector Association="WaterNutDBModel.FK_OCR_Fields_OCR_Fields" />
         <AssociationConnector Association="WaterNutDBModel.FK_OCR_Lines_OCR_Lines" />
+        <EntityTypeShape EntityType="WaterNutDBModel.ImportErrors" Width="1.5" PointX="16.875" PointY="14.75" />
+        <EntityTypeShape EntityType="WaterNutDBModel.OCR_FailedFields" Width="1.5" PointX="15" PointY="11.625" />
+        <EntityTypeShape EntityType="WaterNutDBModel.OCR_FailedLines" Width="1.5" PointX="18.375" PointY="11.5" />
+        <AssociationConnector Association="WaterNutDBModel.FK_OCR_FailedLines_ImportErrors" />
+        <AssociationConnector Association="WaterNutDBModel.FK_OCR_FailedFields_OCR_FailedLines" />
+        <AssociationConnector Association="WaterNutDBModel.FK_OCR_FailedFields_OCR_Fields" />
+        <AssociationConnector Association="WaterNutDBModel.FK_OCR_FailedLines_OCR_Lines" />
       </Diagram>
       <Diagram DiagramId="2a65efe28dcf4398b5a10bc2fc674aa6" Name="Query" >
         <EntityTypeShape EntityType="WaterNutDBModel.Invoice" Width="1.5" PointX="0.75" PointY="0.75" />
         <EntityTypeShape EntityType="WaterNutDBModel.Part" Width="1.5" PointX="3.375" PointY="0.75" />
         <AssociationConnector Association="WaterNutDBModel.OCR_InvoiceExOCR_PartsView" />
+        <EntityTypeShape EntityType="WaterNutDBModel.Line" Width="2.5" PointX="6.375" PointY="1.125" />
+        <AssociationConnector Association="WaterNutDBModel.PartOCR_LinesView" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

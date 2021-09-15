@@ -4,10 +4,12 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using Core.Common.UI.DataVirtualization;
+using CoreEntities.Business.Services;
 using Omu.ValueInjecter;
 using CoreEntities.Client.Entities;
 using CoreEntities.Client.Repositories;
 using SimpleMvvmToolkit;
+using WaterNut.DataSpace;
 using WaterNut.QuerySpace.CoreEntities;
 
 namespace RegexImporter
@@ -61,8 +63,13 @@ namespace RegexImporter
 
         private void OnCurrentApplicationSettingsChanged1(object sender, NotificationEventArgs<ApplicationSettings> e)
         {
-            SystemRepository.Instance.SetCurrentApplicationSettings(e.Data.ApplicationSettingsId);
-            AutoBot.Utils.SetCurrentApplicationSettings(e.Data.ApplicationSettingsId);
+            //SystemRepository.Instance.SetCurrentApplicationSettings(e.Data.ApplicationSettingsId);
+
+            //if(WaterNut.QuerySpace.CoreEntities.ViewModels.BaseViewModel.Instance.CurrentApplicationSettings.ApplicationSettingsId != e.Data.ApplicationSettingsId)
+            //    WaterNut.QuerySpace.CoreEntities.ViewModels.BaseViewModel.Instance.CurrentApplicationSettings = e.Data;
+            
+            //AutoBot.Utils.SetCurrentApplicationSettings(e.Data.ApplicationSettingsId);
+            CurrentApplicationSettings = e.Data;
         }
 
         public List<ApplicationSettings> ApplicationSettings

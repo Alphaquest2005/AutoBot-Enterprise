@@ -2,25 +2,20 @@
 using System.Windows.Controls;
 using System.Windows.Input;
 using Core.Common.UI.DataVirtualization;
-using CoreEntities.Client.Entities;
 using OCR.Client.Entities;
 using RegexImporter.ViewModels;
-using WaterNut.QuerySpace.AllocationQS.ViewModels;
-using WaterNut.QuerySpace.CoreEntities.ViewModels;
 
-
-
-namespace WaterNut.Views
+namespace RegexImporter.Views
 {
 	/// <summary>
-	/// Interaction logic for AsycudaDocumentSummaryList.xaml
+	/// Interaction logic for InvoiceSummary.xaml
 	/// </summary>
-	public partial class AsycudaDocumentSummaryList : UserControl
+	public partial class InvoiceSummary : UserControl
 	{
-		public AsycudaDocumentSummaryList()
+		public InvoiceSummary()
 		{
 			InitializeComponent();
-			im = (InvoiceExViewModel)FindResource("IDataSource");
+			im = (InvoiceExViewModel)FindResource("InvoiceModelDataSource");
 			// Insert code required on object creation below this point.
 
 		}
@@ -28,14 +23,20 @@ namespace WaterNut.Views
 		
 
 
-		private void Expander_Expanded(object sender, RoutedEventArgs e)
+		private void Invoice_Expanded(object sender, RoutedEventArgs e)
 		{
-			QuerySpace.OCR.ViewModels.BaseViewModel.Instance.CurrentInvoice = (Invoice)((sender as FrameworkElement).DataContext as VirtualListItem<Invoice>).Data;
+			WaterNut.QuerySpace.OCR.ViewModels.BaseViewModel.Instance.CurrentInvoice = (Invoice)((sender as FrameworkElement).DataContext as VirtualListItem<Invoice>).Data;
 
 		}
 
-	
-		private void DocSetGrd_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void Part_Expanded(object sender, RoutedEventArgs e)
+        {
+            WaterNut.QuerySpace.OCR.ViewModels.BaseViewModel.Instance.CurrentPart = (Part)((sender as FrameworkElement).DataContext );
+
+        }
+
+
+        private void DocSetGrd_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
 			if (e.AddedItems.Count > 0)
 				((ListBox)sender).ScrollIntoView(e.AddedItems[0]);
@@ -53,16 +54,22 @@ namespace WaterNut.Views
 		}
 
 
-		private void Expander_Collapsed(object sender, RoutedEventArgs e)
+		private void Invoice_Collapsed(object sender, RoutedEventArgs e)
 		{
-			QuerySpace.OCR.ViewModels.BaseViewModel.Instance.CurrentInvoice = null;
-			QuerySpace.OCR.ViewModels.BaseViewModel.Instance.CurrentParts = null;
+			WaterNut.QuerySpace.OCR.ViewModels.BaseViewModel.Instance.CurrentInvoice = null;
+			WaterNut.QuerySpace.OCR.ViewModels.BaseViewModel.Instance.CurrentParts = null;
 		   
 		}
 
+        private void Part_Collapsed(object sender, RoutedEventArgs e)
+        {
+            WaterNut.QuerySpace.OCR.ViewModels.BaseViewModel.Instance.CurrentPart = null;
+            WaterNut.QuerySpace.OCR.ViewModels.BaseViewModel.Instance.CurrentLine = null;
+
+        }
 
 
-		private void TextBox_PreviewKeyDown(object sender, KeyEventArgs e)
+        private void TextBox_PreviewKeyDown(object sender, KeyEventArgs e)
 		{
 			if (e.Key == Key.Enter)
 			{

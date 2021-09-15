@@ -65,6 +65,7 @@
         },
         "RegexImporter": {
             "Projects": {
+                "AutoWaterNutServer": {},
                 "RegexImporter": {}
             }
         }

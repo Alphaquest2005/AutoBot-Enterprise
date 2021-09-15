@@ -5,6 +5,32 @@
     <!-- SSDL content -->
     <edmx:StorageModels>
     <Schema Namespace="WaterNutDBModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2008" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="ImportErrors">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" />
+          <Property Name="PdfText" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="Error" Type="nvarchar" MaxLength="500" Nullable="false" />
+          <Property Name="EntryDateTime" Type="datetime" Nullable="false" />
+        </EntityType>
+        <EntityType Name="OCR_FailedFields">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="FailedLineEventId" Type="int" Nullable="false" />
+          <Property Name="FieldId" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="OCR_FailedLines">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="DocSetAttachmentId" Type="int" Nullable="false" />
+          <Property Name="LineId" Type="int" Nullable="false" />
+          <Property Name="Resolved" Type="bit" Nullable="false" />
+        </EntityType>
         <EntityType Name="OCR-ChildPart">
           <Key>
             <PropertyRef Name="Id" />
@@ -156,9 +182,28 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.OCR_InvoiceEx' does not h
           <Property Name="IsActive" Type="bit" Nullable="false" />
         </EntityType>
         <!--Errors Found During Generation:
+warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.OCR-LinesView' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="OCR-LinesView">
+          
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Invoice" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Part" Type="nvarchar" MaxLength="50" />
+          <Property Name="Line" Type="nvarchar" MaxLength="50" />
+          <Property Name="MultiLine" Type="bit" />
+          <Property Name="RegEx" Type="nvarchar(max)" />
+          <Property Name="Id" Type="int" Nullable="false" />
+          <Property Name="RegExId" Type="int" />
+          <Property Name="ParentId" Type="int" />
+          <Property Name="PartId" Type="int" />
+        </EntityType>
+        <!--Errors Found During Generation:
 warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.OCR-PartsView' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="OCR-PartsView">
           <Key>
+            
+            
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Invoice" Type="nvarchar" MaxLength="50" Nullable="false" />
@@ -173,6 +218,60 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.OCR-PartsView' does not h
           <Property Name="StartRegExId" Type="int" />
           <Property Name="InvoiceId" Type="int" Nullable="false" />
         </EntityType>
+        <Association Name="FK_OCR_FailedFields_OCR_FailedLines">
+          <End Role="OCR_FailedLines" Type="Self.OCR_FailedLines" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="OCR_FailedFields" Type="Self.OCR_FailedFields" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="OCR_FailedLines">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="OCR_FailedFields">
+              <PropertyRef Name="FailedLineEventId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_OCR_FailedFields_OCR-Fields">
+          <End Role="OCR-Fields" Type="Self.OCR-Fields" Multiplicity="1" />
+          <End Role="OCR_FailedFields" Type="Self.OCR_FailedFields" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="OCR-Fields">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="OCR_FailedFields">
+              <PropertyRef Name="FieldId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_OCR_FailedLines_ImportErrors">
+          <End Role="ImportErrors" Type="Self.ImportErrors" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="OCR_FailedLines" Type="Self.OCR_FailedLines" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ImportErrors">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="OCR_FailedLines">
+              <PropertyRef Name="DocSetAttachmentId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_OCR_FailedLines_OCR-Lines">
+          <End Role="OCR-Lines" Type="Self.OCR-Lines" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="OCR_FailedLines" Type="Self.OCR_FailedLines" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="OCR-Lines">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="OCR_FailedLines">
+              <PropertyRef Name="LineId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_OCR-ChildPart_OCR-Parts">
           <End Role="OCR-Parts" Type="Self.OCR-Parts" Multiplicity="1" />
           <End Role="OCR-ChildPart" Type="Self.OCR-ChildPart" Multiplicity="*" />
@@ -494,6 +593,9 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.OCR-PartsView' does not h
           </ReferentialConstraint>
         </Association>
         <EntityContainer Name="WaterNutDBModelStoreContainer">
+          <EntitySet Name="ImportErrors" EntityType="Self.ImportErrors" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="OCR_FailedFields" EntityType="Self.OCR_FailedFields" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="OCR_FailedLines" EntityType="Self.OCR_FailedLines" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="OCR-ChildPart" EntityType="Self.OCR-ChildPart" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="OCR-End" EntityType="Self.OCR-End" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="OCR-FieldFormatRegEx" EntityType="Self.OCR-FieldFormatRegEx" Schema="dbo" store:Type="Tables" />
@@ -524,6 +626,19 @@ FROM [dbo].[OCRInvoicesFileTypes] AS [OCRInvoicesFileTypes]</DefiningQuery>
 [OCR_InvoiceEx].[IsActive] AS [IsActive]
 FROM [dbo].[OCR_InvoiceEx] AS [OCR_InvoiceEx]</DefiningQuery>
           </EntitySet>
+          <EntitySet Name="OCR-LinesView" EntityType="Self.OCR-LinesView" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+[OCR-LinesView].[Invoice] AS [Invoice], 
+[OCR-LinesView].[Part] AS [Part], 
+[OCR-LinesView].[Line] AS [Line], 
+[OCR-LinesView].[MultiLine] AS [MultiLine], 
+[OCR-LinesView].[RegEx] AS [RegEx], 
+[OCR-LinesView].[Id] AS [Id], 
+[OCR-LinesView].[RegExId] AS [RegExId], 
+[OCR-LinesView].[ParentId] AS [ParentId], 
+[OCR-LinesView].[PartId] AS [PartId]
+FROM [dbo].[OCR-LinesView] AS [OCR-LinesView]</DefiningQuery>
+          </EntitySet>
           <EntitySet Name="OCR-PartsView" EntityType="Self.OCR-PartsView" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
 [OCR-PartsView].[Invoice] AS [Invoice], 
@@ -539,6 +654,22 @@ FROM [dbo].[OCR_InvoiceEx] AS [OCR_InvoiceEx]</DefiningQuery>
 [OCR-PartsView].[InvoiceId] AS [InvoiceId]
 FROM [dbo].[OCR-PartsView] AS [OCR-PartsView]</DefiningQuery>
           </EntitySet>
+          <AssociationSet Name="FK_OCR_FailedFields_OCR_FailedLines" Association="Self.FK_OCR_FailedFields_OCR_FailedLines">
+            <End Role="OCR_FailedLines" EntitySet="OCR_FailedLines" />
+            <End Role="OCR_FailedFields" EntitySet="OCR_FailedFields" />
+          </AssociationSet>
+          <AssociationSet Name="FK_OCR_FailedFields_OCR-Fields" Association="Self.FK_OCR_FailedFields_OCR-Fields">
+            <End Role="OCR-Fields" EntitySet="OCR-Fields" />
+            <End Role="OCR_FailedFields" EntitySet="OCR_FailedFields" />
+          </AssociationSet>
+          <AssociationSet Name="FK_OCR_FailedLines_ImportErrors" Association="Self.FK_OCR_FailedLines_ImportErrors">
+            <End Role="ImportErrors" EntitySet="ImportErrors" />
+            <End Role="OCR_FailedLines" EntitySet="OCR_FailedLines" />
+          </AssociationSet>
+          <AssociationSet Name="FK_OCR_FailedLines_OCR-Lines" Association="Self.FK_OCR_FailedLines_OCR-Lines">
+            <End Role="OCR-Lines" EntitySet="OCR-Lines" />
+            <End Role="OCR_FailedLines" EntitySet="OCR_FailedLines" />
+          </AssociationSet>
           <AssociationSet Name="FK_OCR-ChildPart_OCR-Parts" Association="Self.FK_OCR-ChildPart_OCR-Parts">
             <End Role="OCR-Parts" EntitySet="OCR-Parts" />
             <End Role="OCR-ChildPart" EntitySet="OCR-ChildPart" />
@@ -758,6 +889,30 @@ FROM [dbo].[OCR-PartsView] AS [OCR-PartsView]</DefiningQuery>
             <End Role="OCR_InvoiceEx" EntitySet="InvoiceExs" />
             <End Role="OCR_PartsView" EntitySet="PartExs" />
           </AssociationSet>
+          <EntitySet Name="LineSet" EntityType="WaterNutDBModel.Line" />
+          <AssociationSet Name="PartOCR_LinesView" Association="WaterNutDBModel.PartOCR_LinesView">
+            <End Role="Part" EntitySet="PartExs" />
+            <End Role="OCR_LinesView" EntitySet="LineSet" />
+          </AssociationSet>
+          <EntitySet Name="ImportErrors" EntityType="WaterNutDBModel.ImportErrors" />
+          <EntitySet Name="OCR_FailedFields" EntityType="WaterNutDBModel.OCR_FailedFields" />
+          <EntitySet Name="OCR_FailedLines" EntityType="WaterNutDBModel.OCR_FailedLines" />
+          <AssociationSet Name="FK_OCR_FailedLines_ImportErrors" Association="WaterNutDBModel.FK_OCR_FailedLines_ImportErrors">
+            <End Role="ImportErrors" EntitySet="ImportErrors" />
+            <End Role="OCR_FailedLines" EntitySet="OCR_FailedLines" />
+          </AssociationSet>
+          <AssociationSet Name="FK_OCR_FailedFields_OCR_FailedLines" Association="WaterNutDBModel.FK_OCR_FailedFields_OCR_FailedLines">
+            <End Role="OCR_FailedLines" EntitySet="OCR_FailedLines" />
+            <End Role="OCR_FailedFields" EntitySet="OCR_FailedFields" />
+          </AssociationSet>
+          <AssociationSet Name="FK_OCR_FailedFields_OCR_Fields" Association="WaterNutDBModel.FK_OCR_FailedFields_OCR_Fields">
+            <End Role="Fields" EntitySet="Fields" />
+            <End Role="OCR_FailedFields" EntitySet="OCR_FailedFields" />
+          </AssociationSet>
+          <AssociationSet Name="FK_OCR_FailedLines_OCR_Lines" Association="WaterNutDBModel.FK_OCR_FailedLines_OCR_Lines">
+            <End Role="Lines" EntitySet="Lines" />
+            <End Role="OCR_FailedLines" EntitySet="OCR_FailedLines" />
+          </AssociationSet>
           </EntityContainer>
         <EntityType Name="End">
           <Key>
@@ -787,6 +942,7 @@ FROM [dbo].[OCR-PartsView] AS [OCR-PartsView]</DefiningQuery>
           <NavigationProperty Name="ChildFields" Relationship="WaterNutDBModel.FK_OCR_Fields_OCR_Fields" FromRole="Fields" ToRole="Fields1" />
           <NavigationProperty Name="ParentField" Relationship="WaterNutDBModel.FK_OCR_Fields_OCR_Fields" FromRole="Fields1" ToRole="Fields" />
           <Property Name="AppendValues" Type="Boolean" />
+          <NavigationProperty Name="OCR_FailedFields" Relationship="WaterNutDBModel.FK_OCR_FailedFields_OCR_Fields" FromRole="Fields" ToRole="OCR_FailedFields" />
         </EntityType>
         <EntityType Name="Invoices">
           <Key>
@@ -923,6 +1079,7 @@ FROM [dbo].[OCR-PartsView] AS [OCR-PartsView]</DefiningQuery>
           <NavigationProperty Name="ChildLines" Relationship="WaterNutDBModel.FK_OCR_Lines_OCR_Lines" FromRole="Lines" ToRole="Lines1" />
           <NavigationProperty Name="ParentLine" Relationship="WaterNutDBModel.FK_OCR_Lines_OCR_Lines" FromRole="Lines1" ToRole="Lines" />
           <Property Name="DistinctValues" Type="Boolean" />
+          <NavigationProperty Name="OCR_FailedLines" Relationship="WaterNutDBModel.FK_OCR_FailedLines_OCR_Lines" FromRole="Lines" ToRole="OCR_FailedLines" />
         </EntityType>
         <Association Name="FK_OCR_Fields_OCR_Lines">
           <End Type="WaterNutDBModel.Lines" Role="OCR_Lines" Multiplicity="1">
@@ -1280,7 +1437,8 @@ FROM [dbo].[OCR-PartsView] AS [OCR-PartsView]</DefiningQuery>
           <Property Name="StartRegExId" Type="Int32" />
           <Property Name="InvoiceId" Type="Int32" Nullable="false" />
           <NavigationProperty Name="Invoice" Relationship="WaterNutDBModel.OCR_InvoiceExOCR_PartsView" FromRole="OCR_PartsView" ToRole="OCR_InvoiceEx" />
-          <Property Name="InvoiceName" Type="String" Nullable="false" />
+          <Property Name="InvoiceName" Type="String" Nullable="false" MaxLength="50" Unicode="true" FixedLength="false" />
+          <NavigationProperty Name="OCR_LinesView" Relationship="WaterNutDBModel.PartOCR_LinesView" FromRole="Part" ToRole="OCR_LinesView" />
         </EntityType>
         <Association Name="OCR_InvoiceExOCR_PartsView">
           <End Type="WaterNutDBModel.Invoice" Role="OCR_InvoiceEx" Multiplicity="1" />
@@ -1291,6 +1449,119 @@ FROM [dbo].[OCR-PartsView] AS [OCR-PartsView]</DefiningQuery>
             </Principal>
             <Dependent Role="OCR_PartsView">
               <PropertyRef Name="InvoiceId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="Line">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Invoice" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="PartName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="MultiLine" Type="Boolean" />
+          <Property Name="RegEx" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Id" Type="Int32" Nullable="false" />
+          <Property Name="RegExId" Type="Int32" />
+          <Property Name="ParentId" Type="Int32" />
+          <Property Name="PartId" Type="Int32" />
+          <NavigationProperty Name="Part" Relationship="WaterNutDBModel.PartOCR_LinesView" FromRole="OCR_LinesView" ToRole="Part" />
+        </EntityType>
+        <Association Name="PartOCR_LinesView">
+          <End Type="WaterNutDBModel.Part" Role="Part" Multiplicity="0..1" />
+          <End Type="WaterNutDBModel.Line" Role="OCR_LinesView" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Part">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="OCR_LinesView">
+              <PropertyRef Name="PartId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="ImportErrors">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" />
+          <Property Name="PdfText" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Error" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="EntryDateTime" Type="DateTime" Nullable="false" Precision="3" />
+          <NavigationProperty Name="OCR_FailedLines" Relationship="WaterNutDBModel.FK_OCR_FailedLines_ImportErrors" FromRole="ImportErrors" ToRole="OCR_FailedLines" />
+        </EntityType>
+        <EntityType Name="OCR_FailedFields">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="FailedLineEventId" Type="Int32" Nullable="false" />
+          <Property Name="FieldId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="OCR_FailedLines" Relationship="WaterNutDBModel.FK_OCR_FailedFields_OCR_FailedLines" FromRole="OCR_FailedFields" ToRole="OCR_FailedLines" />
+          <NavigationProperty Name="OCR_Fields" Relationship="WaterNutDBModel.FK_OCR_FailedFields_OCR_Fields" FromRole="OCR_FailedFields" ToRole="Fields" />
+        </EntityType>
+        <EntityType Name="OCR_FailedLines">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="DocSetAttachmentId" Type="Int32" Nullable="false" />
+          <Property Name="LineId" Type="Int32" Nullable="false" />
+          <Property Name="Resolved" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="ImportErrors" Relationship="WaterNutDBModel.FK_OCR_FailedLines_ImportErrors" FromRole="OCR_FailedLines" ToRole="ImportErrors" />
+          <NavigationProperty Name="OCR_FailedFields" Relationship="WaterNutDBModel.FK_OCR_FailedFields_OCR_FailedLines" FromRole="OCR_FailedLines" ToRole="OCR_FailedFields" />
+          <NavigationProperty Name="OCR_Lines" Relationship="WaterNutDBModel.FK_OCR_FailedLines_OCR_Lines" FromRole="OCR_FailedLines" ToRole="Lines" />
+        </EntityType>
+        <Association Name="FK_OCR_FailedLines_ImportErrors">
+          <End Type="WaterNutDBModel.ImportErrors" Role="ImportErrors" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="WaterNutDBModel.OCR_FailedLines" Role="OCR_FailedLines" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ImportErrors">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="OCR_FailedLines">
+              <PropertyRef Name="DocSetAttachmentId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_OCR_FailedFields_OCR_FailedLines">
+          <End Type="WaterNutDBModel.OCR_FailedLines" Role="OCR_FailedLines" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="WaterNutDBModel.OCR_FailedFields" Role="OCR_FailedFields" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="OCR_FailedLines">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="OCR_FailedFields">
+              <PropertyRef Name="FailedLineEventId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_OCR_FailedFields_OCR_Fields">
+          <End Type="WaterNutDBModel.Fields" Role="Fields" Multiplicity="1" />
+          <End Type="WaterNutDBModel.OCR_FailedFields" Role="OCR_FailedFields" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Fields">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="OCR_FailedFields">
+              <PropertyRef Name="FieldId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_OCR_FailedLines_OCR_Lines">
+          <End Type="WaterNutDBModel.Lines" Role="Lines" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="WaterNutDBModel.OCR_FailedLines" Role="OCR_FailedLines" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Lines">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="OCR_FailedLines">
+              <PropertyRef Name="LineId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -1470,6 +1741,50 @@ FROM [dbo].[OCR-PartsView] AS [OCR-PartsView]</DefiningQuery>
                 <ScalarProperty Name="Start" ColumnName="Start" />
                 <ScalarProperty Name="StartMultiLine" ColumnName="StartMultiLine" />
                 <ScalarProperty Name="Name" ColumnName="Part" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="LineSet">
+            <EntityTypeMapping TypeName="WaterNutDBModel.Line">
+              <MappingFragment StoreEntitySet="OCR-LinesView">
+                <ScalarProperty Name="PartId" ColumnName="PartId" />
+                <ScalarProperty Name="ParentId" ColumnName="ParentId" />
+                <ScalarProperty Name="RegExId" ColumnName="RegExId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="RegEx" ColumnName="RegEx" />
+                <ScalarProperty Name="MultiLine" ColumnName="MultiLine" />
+                <ScalarProperty Name="Name" ColumnName="Line" />
+                <ScalarProperty Name="PartName" ColumnName="Part" />
+                <ScalarProperty Name="Invoice" ColumnName="Invoice" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ImportErrors">
+            <EntityTypeMapping TypeName="WaterNutDBModel.ImportErrors">
+              <MappingFragment StoreEntitySet="ImportErrors">
+                <ScalarProperty Name="EntryDateTime" ColumnName="EntryDateTime" />
+                <ScalarProperty Name="Error" ColumnName="Error" />
+                <ScalarProperty Name="PdfText" ColumnName="PdfText" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="OCR_FailedFields">
+            <EntityTypeMapping TypeName="WaterNutDBModel.OCR_FailedFields">
+              <MappingFragment StoreEntitySet="OCR_FailedFields">
+                <ScalarProperty Name="FieldId" ColumnName="FieldId" />
+                <ScalarProperty Name="FailedLineEventId" ColumnName="FailedLineEventId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="OCR_FailedLines">
+            <EntityTypeMapping TypeName="WaterNutDBModel.OCR_FailedLines">
+              <MappingFragment StoreEntitySet="OCR_FailedLines">
+                <ScalarProperty Name="Resolved" ColumnName="Resolved" />
+                <ScalarProperty Name="LineId" ColumnName="LineId" />
+                <ScalarProperty Name="DocSetAttachmentId" ColumnName="DocSetAttachmentId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

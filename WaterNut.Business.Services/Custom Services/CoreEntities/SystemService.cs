@@ -57,6 +57,8 @@ namespace CoreEntities.Business.Services
 
         }
 
+        
+
         public void SetCurrentApplicationSettings(int applicationSettingId)
         {
             using (var ctx = new CoreEntitiesContext())

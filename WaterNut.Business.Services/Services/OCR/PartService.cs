@@ -241,6 +241,12 @@ namespace OCR.Business.Services
                                         GetWhere<Invoice>(dbContext, exp, itm.Value, "Parts", "SelectMany", includesLst)
 										.ConfigureAwait(continueOnCapturedContext: false);
 
+                            case "OCR_LinesView":
+                                return
+                                    await
+                                        GetWhere<Line>(dbContext, exp, itm.Value, "Part", "Select", includesLst)
+										.ConfigureAwait(continueOnCapturedContext: false);
+
                         }
 
                     }
@@ -743,6 +749,9 @@ namespace OCR.Business.Services
                             case "Invoice":
                                 return await CountWhere<Invoice>(dbContext, exp, itm.Value, "Parts", "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "OCR_LinesView":
+                                return await CountWhere<Line>(dbContext, exp, itm.Value, "Part", "Select")
+											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }
                     return await dbContext.PartExs.Where(exp == "All" || exp == null ? "Id != null" : exp)
@@ -853,6 +862,12 @@ namespace OCR.Business.Services
                                 return
                                     await
                                         LoadRangeWhere<Invoice>(startIndex, count, dbContext, exp, itm.Value, "Parts", "SelectMany")
+													.ConfigureAwait(continueOnCapturedContext: false);
+
+                            case "OCR_LinesView":
+                                return
+                                    await
+                                        LoadRangeWhere<Line>(startIndex, count, dbContext, exp, itm.Value, "Part", "Select")
 													.ConfigureAwait(continueOnCapturedContext: false);
 
                           
@@ -1068,6 +1083,7 @@ namespace OCR.Business.Services
                 var i = Convert.ToInt32(StartRegExId);
                 var set = AddIncludes(includesLst, dbContext);
                 IEnumerable<Part> entities = await set//dbContext.PartExs
+                                                    // .Include(x => x.OCR_LinesView)									  
                                       .AsNoTracking()
                                         .Where(x => x.StartRegExId.ToString() == StartRegExId.ToString())
 										.ToListAsync()
@@ -1097,6 +1113,7 @@ namespace OCR.Business.Services
                 var i = Convert.ToInt32(InvoiceId);
                 var set = AddIncludes(includesLst, dbContext);
                 IEnumerable<Part> entities = await set//dbContext.PartExs
+                                                    // .Include(x => x.OCR_LinesView)									  
                                       .AsNoTracking()
                                         .Where(x => x.InvoiceId.ToString() == InvoiceId.ToString())
 										.ToListAsync()
@@ -1174,6 +1191,9 @@ namespace OCR.Business.Services
                         {
                             case "Invoice":
                                 return await SumWhere<Invoice>(dbContext, exp, itm.Value, "Parts", field, "SelectMany")
+											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "OCR_LinesView":
+                                return await SumWhere<Line>(dbContext, exp, itm.Value, "Part", field, "Select")
 											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }

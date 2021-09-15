@@ -202,7 +202,8 @@ namespace OCR.Client.Repositories
                         {
                             return new Part(res)
                     {
-                  // Invoice = (res.Invoice != null?new Invoice(res.Invoice): null)    
+                  // Invoice = (res.Invoice != null?new Invoice(res.Invoice): null),    
+                     // OCR_LinesView = new System.Collections.ObjectModel.ObservableCollection<Line>(res.OCR_LinesView.Select(y => new Line(y)))    
                   };
                     }
                     else

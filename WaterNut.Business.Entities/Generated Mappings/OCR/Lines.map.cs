@@ -24,6 +24,7 @@
               this.HasOptional(t => t.ParentLine).WithMany(t =>(ICollection<Lines>) t.ChildLines).HasForeignKey(d => d.ParentId);
               this.HasMany(t => t.Fields).WithRequired(t => (Lines)t.Lines);
               this.HasMany(t => t.ChildLines).WithOptional(t => t.ParentLine).HasForeignKey(d => d.ParentId);
+              this.HasMany(t => t.OCR_FailedLines).WithRequired(t => (Lines)t.OCR_Lines);
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);
     			this.Ignore(t => t.ModifiedProperties);

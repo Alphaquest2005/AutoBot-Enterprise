@@ -20,6 +20,11 @@ namespace OCR.Business.Entities
     [DataContract(IsReference = true, Namespace="http://www.insight-software.com/WaterNut")]
     public partial class Part : BaseEntity<Part>, ITrackable 
     {
+        partial void AutoGenStartUp() //Part()
+        {
+            this.OCR_LinesView = new List<Line>();
+        }
+
         [DataMember]
         public string Name 
         {
@@ -187,6 +192,8 @@ namespace OCR.Business.Entities
         string _invoicename;
         [DataMember]
         public Invoice Invoice { get; set; }
+        [DataMember]
+        public List<Line> OCR_LinesView { get; set; }
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }
