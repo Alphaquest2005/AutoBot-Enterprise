@@ -263,6 +263,7 @@
 ..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\Contacts.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\Customs_Procedure.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\CustomsOperations.cs
+..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\Declarant.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\Document_Type.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\EmailFileTypes.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\EmailInfoMappings.cs
@@ -667,6 +668,7 @@
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\Contacts.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\Customs_Procedure.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\CustomsOperations.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\Declarant.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\Document_Type.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\EmailFileTypes.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\EmailInfoMappings.map.cs
@@ -1079,6 +1081,7 @@
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\CoreEntities\Contacts.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\CoreEntities\Customs_Procedure.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\CoreEntities\CustomsOperations.cs
+..\WaterNut.Business.Entities\Generated ChangeTracking Models\CoreEntities\Declarant.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\CoreEntities\Document_Type.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\CoreEntities\EmailFileTypes.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\CoreEntities\EmailInfoMappings.cs
@@ -1469,6 +1472,7 @@
 ..\WaterNut.Business.Entities\Generated Constructors Models\CoreEntities\Contacts.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\CoreEntities\Customs_Procedure.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\CoreEntities\CustomsOperations.cs
+..\WaterNut.Business.Entities\Generated Constructors Models\CoreEntities\Declarant.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\CoreEntities\Document_Type.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\CoreEntities\EmailFileTypes.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\CoreEntities\EmailInfoMappings.cs
@@ -1859,6 +1863,7 @@
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\CoreEntities\Contacts.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\CoreEntities\Customs_Procedure.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\CoreEntities\CustomsOperations.cs
+..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\CoreEntities\Declarant.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\CoreEntities\Document_Type.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\CoreEntities\EmailFileTypes.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\CoreEntities\EmailInfoMappings.cs
@@ -2249,6 +2254,7 @@
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\CoreEntities\Contacts.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\CoreEntities\Customs_Procedure.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\CoreEntities\CustomsOperations.cs
+..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\CoreEntities\Declarant.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\CoreEntities\Document_Type.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\CoreEntities\EmailFileTypes.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\CoreEntities\EmailInfoMappings.cs
@@ -2604,6 +2610,7 @@
 ..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\Contacts.cs
 ..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\Customs_Procedure.cs
 ..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\CustomsOperations.cs
+..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\Declarant.cs
 ..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\Document_Type.cs
 ..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\EmailFileTypes.cs
 ..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\EmailInfoMappings.cs
@@ -2764,6 +2771,7 @@
 ..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\Contacts.cs
 ..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\Customs_Procedure.cs
 ..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\CustomsOperations.cs
+..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\Declarant.cs
 ..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\Document_Type.cs
 ..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\EmailFileTypes.cs
 ..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\EmailInfoMappings.cs
@@ -2933,6 +2941,7 @@
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\CoreEntities\Contacts.cs
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\CoreEntities\Customs_Procedure.cs
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\CoreEntities\CustomsOperations.cs
+..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\CoreEntities\Declarant.cs
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\CoreEntities\Document_Type.cs
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\CoreEntities\EmailFileTypes.cs
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\CoreEntities\EmailInfoMappings.cs
@@ -3093,6 +3102,7 @@
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\CoreEntities\Contacts.cs
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\CoreEntities\Customs_Procedure.cs
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\CoreEntities\CustomsOperations.cs
+..\WaterNut.Client.DTO\Generated MyNavProp Models\CoreEntities\Declarant.cs
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\CoreEntities\Document_Type.cs
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\CoreEntities\EmailFileTypes.cs
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\CoreEntities\EmailInfoMappings.cs
@@ -3253,6 +3263,7 @@
 ..\WaterNut.Client.Entities\Generated Constructors Models\CoreEntities\Contacts.cs
 ..\WaterNut.Client.Entities\Generated Constructors Models\CoreEntities\Customs_Procedure.cs
 ..\WaterNut.Client.Entities\Generated Constructors Models\CoreEntities\CustomsOperations.cs
+..\WaterNut.Client.Entities\Generated Constructors Models\CoreEntities\Declarant.cs
 ..\WaterNut.Client.Entities\Generated Constructors Models\CoreEntities\Document_Type.cs
 ..\WaterNut.Client.Entities\Generated Constructors Models\CoreEntities\EmailFileTypes.cs
 ..\WaterNut.Client.Entities\Generated Constructors Models\CoreEntities\EmailInfoMappings.cs
@@ -3413,6 +3424,7 @@
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\CoreEntities\Contacts.cs
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\CoreEntities\Customs_Procedure.cs
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\CoreEntities\CustomsOperations.cs
+..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\CoreEntities\Declarant.cs
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\CoreEntities\Document_Type.cs
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\CoreEntities\EmailFileTypes.cs
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\CoreEntities\EmailInfoMappings.cs
@@ -3573,6 +3585,7 @@
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\CoreEntities\Contacts.cs
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\CoreEntities\Customs_Procedure.cs
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\CoreEntities\CustomsOperations.cs
+..\WaterNut.Client.Entities\Generated MyNavProp Models\CoreEntities\Declarant.cs
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\CoreEntities\Document_Type.cs
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\CoreEntities\EmailFileTypes.cs
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\CoreEntities\EmailInfoMappings.cs
@@ -3815,6 +3828,7 @@
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\Contacts.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\Customs_Procedure.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\CustomsOperations.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\Declarant.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\Document_Type.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\EmailFileTypes.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\EmailInfoMappings.map.cs
@@ -4212,6 +4226,7 @@
 ..\WaterNut.Client.Repositories\Generated Repositories\CoreEntities\ContactsRepository.cs
 ..\WaterNut.Client.Repositories\Generated Repositories\CoreEntities\Customs_ProcedureRepository.cs
 ..\WaterNut.Client.Repositories\Generated Repositories\CoreEntities\CustomsOperationsRepository.cs
+..\WaterNut.Client.Repositories\Generated Repositories\CoreEntities\DeclarantRepository.cs
 ..\WaterNut.Client.Repositories\Generated Repositories\CoreEntities\Document_TypeRepository.cs
 ..\WaterNut.Client.Repositories\Generated Repositories\CoreEntities\EmailFileTypesRepository.cs
 ..\WaterNut.Client.Repositories\Generated Repositories\CoreEntities\EmailInfoMappingsRepository.cs
@@ -4392,6 +4407,7 @@
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\ContactsViewModel.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\Customs_ProcedureViewModel.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\CustomsOperationsViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\DeclarantViewModel.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\Document_TypeViewModel.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\EmailFileTypesViewModel.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\EmailInfoMappingsViewModel.cs
@@ -4555,6 +4571,7 @@
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\ContactsTotals.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\Customs_ProcedureTotals.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\CustomsOperationsTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\DeclarantTotals.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\Document_TypeTotals.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\EmailFileTypesTotals.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\EmailInfoMappingsTotals.cs
@@ -4705,6 +4722,7 @@
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\ContactsVirturalListLoader.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\Customs_ProcedureVirturalListLoader.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\CustomsOperationsVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\DeclarantVirturalListLoader.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\Document_TypeVirturalListLoader.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\EmailFileTypesVirturalListLoader.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\EmailInfoMappingsVirturalListLoader.cs
@@ -4903,6 +4921,7 @@
 ..\WaterNut.Business.Services\Contracts\CoreEntities\IContactsService.cs
 ..\WaterNut.Business.Services\Contracts\CoreEntities\ICustoms_ProcedureService.cs
 ..\WaterNut.Business.Services\Contracts\CoreEntities\ICustomsOperationsService.cs
+..\WaterNut.Business.Services\Contracts\CoreEntities\IDeclarantService.cs
 ..\WaterNut.Business.Services\Contracts\CoreEntities\IDocument_TypeService.cs
 ..\WaterNut.Business.Services\Contracts\CoreEntities\IEmailFileTypesService.cs
 ..\WaterNut.Business.Services\Contracts\CoreEntities\IEmailInfoMappingsService.cs
@@ -5293,6 +5312,7 @@
 ..\WaterNut.Business.Services\Services\CoreEntities\ContactsService.cs
 ..\WaterNut.Business.Services\Services\CoreEntities\Customs_ProcedureService.cs
 ..\WaterNut.Business.Services\Services\CoreEntities\CustomsOperationsService.cs
+..\WaterNut.Business.Services\Services\CoreEntities\DeclarantService.cs
 ..\WaterNut.Business.Services\Services\CoreEntities\Document_TypeService.cs
 ..\WaterNut.Business.Services\Services\CoreEntities\EmailFileTypesService.cs
 ..\WaterNut.Business.Services\Services\CoreEntities\EmailInfoMappingsService.cs
@@ -5641,6 +5661,7 @@
 ..\WaterNut.Client.Contracts\CoreEntities\IContactsService.cs
 ..\WaterNut.Client.Contracts\CoreEntities\ICustoms_ProcedureService.cs
 ..\WaterNut.Client.Contracts\CoreEntities\ICustomsOperationsService.cs
+..\WaterNut.Client.Contracts\CoreEntities\IDeclarantService.cs
 ..\WaterNut.Client.Contracts\CoreEntities\IDocument_TypeService.cs
 ..\WaterNut.Client.Contracts\CoreEntities\IEmailFileTypesService.cs
 ..\WaterNut.Client.Contracts\CoreEntities\IEmailInfoMappingsService.cs
@@ -5801,6 +5822,7 @@
 ..\WaterNut.Client.Services\CoreEntities\ContactsClient.cs
 ..\WaterNut.Client.Services\CoreEntities\Customs_ProcedureClient.cs
 ..\WaterNut.Client.Services\CoreEntities\CustomsOperationsClient.cs
+..\WaterNut.Client.Services\CoreEntities\DeclarantClient.cs
 ..\WaterNut.Client.Services\CoreEntities\Document_TypeClient.cs
 ..\WaterNut.Client.Services\CoreEntities\EmailFileTypesClient.cs
 ..\WaterNut.Client.Services\CoreEntities\EmailInfoMappingsClient.cs

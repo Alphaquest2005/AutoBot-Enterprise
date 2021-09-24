@@ -32,19 +32,19 @@ using WaterNut.Interfaces;
 
 namespace CoreEntities.Business.Services
 {
-   [Export (typeof(IApplicationSettingsService))]
+   [Export (typeof(IDeclarantService))]
    [Export(typeof(IBusinessService))]
    [PartCreationPolicy(CreationPolicy.NonShared)]
    [ServiceBehavior(InstanceContextMode = InstanceContextMode.PerCall,
                     ConcurrencyMode = ConcurrencyMode.Multiple)]
    
-    public partial class ApplicationSettingsService : IApplicationSettingsService, IDisposable
+    public partial class DeclarantService : IDeclarantService, IDisposable
     {
         //private readonly CoreEntitiesContext dbContext;
 
         public bool StartTracking { get; set; }
 
-        public ApplicationSettingsService()
+        public DeclarantService()
         {
             try
             {
@@ -65,7 +65,7 @@ namespace CoreEntities.Business.Services
             }
         }
 
-        public async Task<IEnumerable<ApplicationSettings>> GetApplicationSettings(List<string> includesLst = null, bool tracking = true)
+        public async Task<IEnumerable<Declarant>> GetDeclarants(List<string> includesLst = null, bool tracking = true)
         {
             try
             {
@@ -75,7 +75,7 @@ namespace CoreEntities.Business.Services
                   using ( var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
                   {
 				    var set = AddIncludes(includesLst, dbContext);
-                    IEnumerable<ApplicationSettings> entities = await set.AsNoTracking().ToListAsync()
+                    IEnumerable<Declarant> entities = await set.AsNoTracking().ToListAsync()
 													       .ConfigureAwait(continueOnCapturedContext: false);
                            //scope.Complete();
                             if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
@@ -98,16 +98,16 @@ namespace CoreEntities.Business.Services
         }
 
 
-        public async Task<ApplicationSettings> GetApplicationSettingsByKey(string ApplicationSettingsId, List<string> includesLst = null, bool tracking = true)
+        public async Task<Declarant> GetDeclarantByKey(string Id, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
-			   if(string.IsNullOrEmpty(ApplicationSettingsId))return null; 
+			   if(string.IsNullOrEmpty(Id))return null; 
               using ( var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
               {
-                var i = Convert.ToInt32(ApplicationSettingsId);
+                var i = Convert.ToInt32(Id);
 				var set = AddIncludes(includesLst, dbContext);
-                ApplicationSettings entity = await set.AsNoTracking().SingleOrDefaultAsync(x => x.ApplicationSettingsId == i).ConfigureAwait(continueOnCapturedContext: false);
+                Declarant entity = await set.AsNoTracking().SingleOrDefaultAsync(x => x.Id == i).ConfigureAwait(continueOnCapturedContext: false);
                 if(tracking && entity != null) entity.StartTracking();
                 return entity;
               }
@@ -127,14 +127,14 @@ namespace CoreEntities.Business.Services
         }
 
 
-		 public async Task<IEnumerable<ApplicationSettings>> GetApplicationSettingsByExpression(string exp, List<string> includesLst = null, bool tracking = true)
+		 public async Task<IEnumerable<Declarant>> GetDeclarantsByExpression(string exp, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
                 using (var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-					if (string.IsNullOrEmpty(exp) || exp == "None") return new List<ApplicationSettings>();
+					if (string.IsNullOrEmpty(exp) || exp == "None") return new List<Declarant>();
 					var set = AddIncludes(includesLst, dbContext);
                     if (exp == "All")
                     {
@@ -170,14 +170,14 @@ namespace CoreEntities.Business.Services
             }
         }
 
-		 public async Task<IEnumerable<ApplicationSettings>> GetApplicationSettingsByExpressionLst(List<string> expLst, List<string> includesLst = null, bool tracking = true)
+		 public async Task<IEnumerable<Declarant>> GetDeclarantsByExpressionLst(List<string> expLst, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
                 using (var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-					if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return new List<ApplicationSettings>();
+					if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return new List<Declarant>();
 					var set = AddIncludes(includesLst, dbContext);
                     if (expLst.FirstOrDefault() == "All")
                     {
@@ -212,7 +212,7 @@ namespace CoreEntities.Business.Services
             }
         }
 
-		public async Task<IEnumerable<ApplicationSettings>> GetApplicationSettingsByExpressionNav(string exp,
+		public async Task<IEnumerable<Declarant>> GetDeclarantsByExpressionNav(string exp,
 																							  Dictionary<string, string> navExp,
 																							  List<string> includesLst = null, bool tracking = true)
         {
@@ -221,7 +221,7 @@ namespace CoreEntities.Business.Services
                 using (var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-                    if (string.IsNullOrEmpty(exp) || exp == "None") return new List<ApplicationSettings>();
+                    if (string.IsNullOrEmpty(exp) || exp == "None") return new List<Declarant>();
 
                     if (exp == "All" && navExp.Count == 0)
                     {
@@ -235,52 +235,10 @@ namespace CoreEntities.Business.Services
                     {
                         switch (itm.Key)
                         {
-                            case "AsycudaDocumentSetEx":
+                            case "ApplicationSettings":
                                 return
                                     await
-                                        GetWhere<AsycudaDocumentSetEx>(dbContext, exp, itm.Value, "ApplicationSettings", "Select", includesLst)
-										.ConfigureAwait(continueOnCapturedContext: false);
-
-                            case "AsycudaDocument":
-                                return
-                                    await
-                                        GetWhere<AsycudaDocument>(dbContext, exp, itm.Value, "ApplicationSettings", "Select", includesLst)
-										.ConfigureAwait(continueOnCapturedContext: false);
-
-                            case "AsycudaDocumentItem":
-                                return
-                                    await
-                                        GetWhere<AsycudaDocumentItem>(dbContext, exp, itm.Value, "ApplicationSettings", "Select", includesLst)
-										.ConfigureAwait(continueOnCapturedContext: false);
-
-                            case "InventoryItemsEx":
-                                return
-                                    await
-                                        GetWhere<InventoryItemX>(dbContext, exp, itm.Value, "ApplicationSettings", "Select", includesLst)
-										.ConfigureAwait(continueOnCapturedContext: false);
-
-                            case "FileTypes":
-                                return
-                                    await
-                                        GetWhere<FileTypes>(dbContext, exp, itm.Value, "ApplicationSettings", "Select", includesLst)
-										.ConfigureAwait(continueOnCapturedContext: false);
-
-                            case "InfoMapping":
-                                return
-                                    await
-                                        GetWhere<InfoMapping>(dbContext, exp, itm.Value, "ApplicationSettings", "Select", includesLst)
-										.ConfigureAwait(continueOnCapturedContext: false);
-
-                            case "EmailMapping":
-                                return
-                                    await
-                                        GetWhere<EmailMapping>(dbContext, exp, itm.Value, "ApplicationSettings", "Select", includesLst)
-										.ConfigureAwait(continueOnCapturedContext: false);
-
-                            case "Declarants":
-                                return
-                                    await
-                                        GetWhere<Declarant>(dbContext, exp, itm.Value, "ApplicationSettings", "Select", includesLst)
+                                        GetWhere<ApplicationSettings>(dbContext, exp, itm.Value, "Declarants", "SelectMany", includesLst)
 										.ConfigureAwait(continueOnCapturedContext: false);
 
                         }
@@ -309,17 +267,17 @@ namespace CoreEntities.Business.Services
             }
         }
 
-        public async Task<IEnumerable<ApplicationSettings>> GetApplicationSettingsByBatch(string exp,
+        public async Task<IEnumerable<Declarant>> GetDeclarantsByBatch(string exp,
             int totalrow, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
 
-                var res = new ConcurrentQueue<List<ApplicationSettings>>();
+                var res = new ConcurrentQueue<List<Declarant>>();
 
 
 
-                if (string.IsNullOrEmpty(exp) || exp == "None") return new List<ApplicationSettings>();
+                if (string.IsNullOrEmpty(exp) || exp == "None") return new List<Declarant>();
 
 
                 var batchSize = 500;
@@ -340,14 +298,14 @@ namespace CoreEntities.Business.Services
                                 dbContext.Configuration.AutoDetectChangesEnabled = false;
                                 //dbContext.Configuration.LazyLoadingEnabled = true;
                                 var set = AddIncludes(includesLst, dbContext);
-                                IQueryable<ApplicationSettings> dset;
+                                IQueryable<Declarant> dset;
                                 if (exp == "All")
                                 {
-                                    dset = set.OrderBy(x => x.ApplicationSettingsId);
+                                    dset = set.OrderBy(x => x.Id);
                                 }
                                 else
                                 {
-                                    dset = set.OrderBy(x => x.ApplicationSettingsId).Where(exp);
+                                    dset = set.OrderBy(x => x.Id).Where(exp);
                                 }
 
                                 var lst = dset.AsNoTracking()
@@ -384,17 +342,17 @@ namespace CoreEntities.Business.Services
                 throw new FaultException<ValidationFault>(fault);
             }
         }
-        public async Task<IEnumerable<ApplicationSettings>> GetApplicationSettingsByBatchExpressionLst(List<string> expLst,
+        public async Task<IEnumerable<Declarant>> GetDeclarantsByBatchExpressionLst(List<string> expLst,
             int totalrow, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
 
-                var res = new ConcurrentQueue<List<ApplicationSettings>>();
+                var res = new ConcurrentQueue<List<Declarant>>();
 
 
 
-                if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return new List<ApplicationSettings>();
+                if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return new List<Declarant>();
 
 
                 var batchSize = 500;
@@ -415,15 +373,15 @@ namespace CoreEntities.Business.Services
                                 dbContext.Configuration.AutoDetectChangesEnabled = false;
                                 //dbContext.Configuration.LazyLoadingEnabled = true;
                                 var set = AddIncludes(includesLst, dbContext);
-                                IQueryable<ApplicationSettings> dset;
+                                IQueryable<Declarant> dset;
                                 if (expLst.FirstOrDefault() == "All")
                                 {
-                                    dset = set.OrderBy(x => x.ApplicationSettingsId);
+                                    dset = set.OrderBy(x => x.Id);
                                 }
                                 else
                                 {
                                     set = AddWheres(expLst, set);
-                                    dset = set.OrderBy(x => x.ApplicationSettingsId);
+                                    dset = set.OrderBy(x => x.Id);
                                 }
 
                                 var lst = dset.AsNoTracking()
@@ -460,13 +418,13 @@ namespace CoreEntities.Business.Services
         }
 
 
-        public async Task<ApplicationSettings> UpdateApplicationSettings(ApplicationSettings entity)
+        public async Task<Declarant> UpdateDeclarant(Declarant entity)
         { 
             using ( var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
               {
                 try
                 {   
-                     var res = (ApplicationSettings) entity;
+                     var res = (Declarant) entity;
                     if(res.TrackingState == TrackingState.Unchanged) res.TrackingState = TrackingState.Modified;                              
                     
                     dbContext.ApplyChanges(res);
@@ -542,14 +500,14 @@ namespace CoreEntities.Business.Services
            return entity;
         }
 
-        public async Task<ApplicationSettings> CreateApplicationSettings(ApplicationSettings entity)
+        public async Task<Declarant> CreateDeclarant(Declarant entity)
         {
             try
             {
-                var res = (ApplicationSettings) entity;
+                var res = (Declarant) entity;
               using ( var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
               {
-                dbContext.ApplicationSettings.Add(res);
+                dbContext.Declarants.Add(res);
                 await dbContext.SaveChangesAsync().ConfigureAwait(continueOnCapturedContext: false);
                 res.AcceptChanges();
                 return res;
@@ -569,21 +527,21 @@ namespace CoreEntities.Business.Services
             }
         }
 
-        public async Task<bool> DeleteApplicationSettings(string ApplicationSettingsId)
+        public async Task<bool> DeleteDeclarant(string Id)
         {
             try
             {
               using ( var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
               {
-                var i = Convert.ToInt32(ApplicationSettingsId);
-                ApplicationSettings entity = await dbContext.ApplicationSettings
-													.SingleOrDefaultAsync(x => x.ApplicationSettingsId == i)
+                var i = Convert.ToInt32(Id);
+                Declarant entity = await dbContext.Declarants
+													.SingleOrDefaultAsync(x => x.Id == i)
 													.ConfigureAwait(continueOnCapturedContext: false);
                 if (entity == null)
                     return false;
 
-                    dbContext.ApplicationSettings.Attach(entity);
-                    dbContext.ApplicationSettings.Remove(entity);
+                    dbContext.Declarants.Attach(entity);
+                    dbContext.Declarants.Remove(entity);
                     await dbContext.SaveChangesAsync().ConfigureAwait(continueOnCapturedContext: false);
                     return true;
               }
@@ -602,19 +560,19 @@ namespace CoreEntities.Business.Services
             }
         }
 
-        public async Task<bool> RemoveSelectedApplicationSettings(IEnumerable<string> lst)
+        public async Task<bool> RemoveSelectedDeclarant(IEnumerable<string> lst)
         {
             try
             {
-                StatusModel.StartStatusUpdate("Removing ApplicationSettings", lst.Count());
+                StatusModel.StartStatusUpdate("Removing Declarant", lst.Count());
                 var t = Task.Run(() =>
                 {
-                    using (var ctx = new ApplicationSettingsService())
+                    using (var ctx = new DeclarantService())
                     {
                         foreach (var item in lst.ToList())
                         {
 
-                            ctx.DeleteApplicationSettings(item).Wait();
+                            ctx.DeleteDeclarant(item).Wait();
                             StatusModel.StatusUpdate();
                         }
                     }
@@ -649,7 +607,7 @@ namespace CoreEntities.Business.Services
                 {
                     dbContext.Database.CommandTimeout = 0;
                     if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return 0;
-                    var set = (IQueryable<ApplicationSettings>)dbContext.ApplicationSettings; 
+                    var set = (IQueryable<Declarant>)dbContext.Declarants; 
                     if (expLst.FirstOrDefault() == "All")
                     {
                         return await set.AsNoTracking().CountAsync()
@@ -687,7 +645,7 @@ namespace CoreEntities.Business.Services
                     if (string.IsNullOrEmpty(exp) || exp == "None") return 0;
                     if (exp == "All")
                     {
-                        return await dbContext.ApplicationSettings
+                        return await dbContext.Declarants
                                     .AsNoTracking()
 									.CountAsync()
 									.ConfigureAwait(continueOnCapturedContext: false);
@@ -695,7 +653,7 @@ namespace CoreEntities.Business.Services
                     else
                     {
                         
-                        return await dbContext.ApplicationSettings
+                        return await dbContext.Declarants
 									.AsNoTracking()
                                     .Where(exp)
 									.CountAsync()
@@ -717,19 +675,19 @@ namespace CoreEntities.Business.Services
             }
         }
         
-        public async Task<IEnumerable<ApplicationSettings>> LoadRange(int startIndex, int count, string exp)
+        public async Task<IEnumerable<Declarant>> LoadRange(int startIndex, int count, string exp)
         {
             try
             {
                 using (var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-                    if (string.IsNullOrEmpty(exp) || exp == "None") return new List<ApplicationSettings>();
+                    if (string.IsNullOrEmpty(exp) || exp == "None") return new List<Declarant>();
                     if (exp == "All")
                     {
-                        return await dbContext.ApplicationSettings
+                        return await dbContext.Declarants
 										.AsNoTracking()
-                                        .OrderBy(y => y.ApplicationSettingsId)
+                                        .OrderBy(y => y.Id)
 										.Skip(startIndex)
 										.Take(count)
 										.ToListAsync()
@@ -738,10 +696,10 @@ namespace CoreEntities.Business.Services
                     else
                     {
                         
-                        return await dbContext.ApplicationSettings
+                        return await dbContext.Declarants
 										.AsNoTracking()
                                         .Where(exp)
-										.OrderBy(y => y.ApplicationSettingsId)
+										.OrderBy(y => y.Id)
 										.Skip(startIndex)
 										.Take(count)
 										.ToListAsync()
@@ -773,7 +731,7 @@ namespace CoreEntities.Business.Services
                     dbContext.Database.CommandTimeout = 0;
                     if (exp == "All" && navExp.Count == 0)
                     {
-                        return await dbContext.ApplicationSettings
+                        return await dbContext.Declarants
 										.AsNoTracking()
                                         .CountAsync()
 										.ConfigureAwait(continueOnCapturedContext: false);
@@ -782,33 +740,12 @@ namespace CoreEntities.Business.Services
                     {
                         switch (itm.Key)
                         {
-                            case "AsycudaDocumentSetEx":
-                                return await CountWhere<AsycudaDocumentSetEx>(dbContext, exp, itm.Value, "ApplicationSettings", "Select")
-											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "AsycudaDocument":
-                                return await CountWhere<AsycudaDocument>(dbContext, exp, itm.Value, "ApplicationSettings", "Select")
-											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "AsycudaDocumentItem":
-                                return await CountWhere<AsycudaDocumentItem>(dbContext, exp, itm.Value, "ApplicationSettings", "Select")
-											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "InventoryItemsEx":
-                                return await CountWhere<InventoryItemX>(dbContext, exp, itm.Value, "ApplicationSettings", "Select")
-											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "FileTypes":
-                                return await CountWhere<FileTypes>(dbContext, exp, itm.Value, "ApplicationSettings", "Select")
-											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "InfoMapping":
-                                return await CountWhere<InfoMapping>(dbContext, exp, itm.Value, "ApplicationSettings", "Select")
-											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "EmailMapping":
-                                return await CountWhere<EmailMapping>(dbContext, exp, itm.Value, "ApplicationSettings", "Select")
-											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "Declarants":
-                                return await CountWhere<Declarant>(dbContext, exp, itm.Value, "ApplicationSettings", "Select")
+                            case "ApplicationSettings":
+                                return await CountWhere<ApplicationSettings>(dbContext, exp, itm.Value, "Declarants", "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }
-                    return await dbContext.ApplicationSettings.Where(exp == "All" || exp == null ? "ApplicationSettingsId != null" : exp)
+                    return await dbContext.Declarants.Where(exp == "All" || exp == null ? "Id != null" : exp)
 											.AsNoTracking()
                                             .CountAsync()
 											.ConfigureAwait(continueOnCapturedContext: false);
@@ -850,10 +787,10 @@ namespace CoreEntities.Business.Services
             return await dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
-                .SelectMany(navProp).OfType<ApplicationSettings>()
-                .Where(exp == "All" || exp == null ? "ApplicationSettingsId != null" : exp)
+                .SelectMany(navProp).OfType<Declarant>()
+                .Where(exp == "All" || exp == null ? "Id != null" : exp)
                 .Distinct()
-                .OrderBy("ApplicationSettingsId")
+                .OrderBy("Id")
                 .CountAsync()
 				.ConfigureAwait(continueOnCapturedContext: false);
 			}
@@ -871,10 +808,10 @@ namespace CoreEntities.Business.Services
             return await dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
-                .Select(navProp).OfType<ApplicationSettings>()
-                .Where(exp == "All" || exp == null ? "ApplicationSettingsId != null" : exp)
+                .Select(navProp).OfType<Declarant>()
+                .Where(exp == "All" || exp == null ? "Id != null" : exp)
                 .Distinct()
-                .OrderBy("ApplicationSettingsId")
+                .OrderBy("Id")
                 .CountAsync()
 				.ConfigureAwait(continueOnCapturedContext: false);
 			}
@@ -885,7 +822,7 @@ namespace CoreEntities.Business.Services
 			}
         }
 
-		  public async Task<IEnumerable<ApplicationSettings>> LoadRangeNav(int startIndex, int count, string exp,
+		  public async Task<IEnumerable<Declarant>> LoadRangeNav(int startIndex, int count, string exp,
                                                                                  Dictionary<string, string> navExp, IEnumerable<string> includeLst = null)
         {
             try
@@ -893,7 +830,7 @@ namespace CoreEntities.Business.Services
                 using (var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-                    if ((string.IsNullOrEmpty(exp) && navExp.Count == 0) || exp == "None") return new List<ApplicationSettings>();
+                    if ((string.IsNullOrEmpty(exp) && navExp.Count == 0) || exp == "None") return new List<Declarant>();
                     var set = AddIncludes(includeLst, dbContext);
 
                     if (exp == "All" && navExp.Count == 0)
@@ -901,7 +838,7 @@ namespace CoreEntities.Business.Services
                        
                         return await set
 									.AsNoTracking()
-                                    .OrderBy(y => y.ApplicationSettingsId)
+                                    .OrderBy(y => y.Id)
  
                                     .Skip(startIndex)
                                     .Take(count)
@@ -912,52 +849,10 @@ namespace CoreEntities.Business.Services
                     {
                         switch (itm.Key)
                         {
-                            case "AsycudaDocumentSetEx":
+                            case "ApplicationSettings":
                                 return
                                     await
-                                        LoadRangeWhere<AsycudaDocumentSetEx>(startIndex, count, dbContext, exp, itm.Value, "ApplicationSettings", "Select")
-													.ConfigureAwait(continueOnCapturedContext: false);
-
-                            case "AsycudaDocument":
-                                return
-                                    await
-                                        LoadRangeWhere<AsycudaDocument>(startIndex, count, dbContext, exp, itm.Value, "ApplicationSettings", "Select")
-													.ConfigureAwait(continueOnCapturedContext: false);
-
-                            case "AsycudaDocumentItem":
-                                return
-                                    await
-                                        LoadRangeWhere<AsycudaDocumentItem>(startIndex, count, dbContext, exp, itm.Value, "ApplicationSettings", "Select")
-													.ConfigureAwait(continueOnCapturedContext: false);
-
-                            case "InventoryItemsEx":
-                                return
-                                    await
-                                        LoadRangeWhere<InventoryItemX>(startIndex, count, dbContext, exp, itm.Value, "ApplicationSettings", "Select")
-													.ConfigureAwait(continueOnCapturedContext: false);
-
-                            case "FileTypes":
-                                return
-                                    await
-                                        LoadRangeWhere<FileTypes>(startIndex, count, dbContext, exp, itm.Value, "ApplicationSettings", "Select")
-													.ConfigureAwait(continueOnCapturedContext: false);
-
-                            case "InfoMapping":
-                                return
-                                    await
-                                        LoadRangeWhere<InfoMapping>(startIndex, count, dbContext, exp, itm.Value, "ApplicationSettings", "Select")
-													.ConfigureAwait(continueOnCapturedContext: false);
-
-                            case "EmailMapping":
-                                return
-                                    await
-                                        LoadRangeWhere<EmailMapping>(startIndex, count, dbContext, exp, itm.Value, "ApplicationSettings", "Select")
-													.ConfigureAwait(continueOnCapturedContext: false);
-
-                            case "Declarants":
-                                return
-                                    await
-                                        LoadRangeWhere<Declarant>(startIndex, count, dbContext, exp, itm.Value, "ApplicationSettings", "Select")
+                                        LoadRangeWhere<ApplicationSettings>(startIndex, count, dbContext, exp, itm.Value, "Declarants", "SelectMany")
 													.ConfigureAwait(continueOnCapturedContext: false);
 
                           
@@ -966,10 +861,10 @@ namespace CoreEntities.Business.Services
 						}
 
                     }
-                    return await set//dbContext.ApplicationSettings
+                    return await set//dbContext.Declarants
 								.AsNoTracking()
-                                .Where(exp == "All" || exp == null ? "ApplicationSettingsId != null" : exp)
-								.OrderBy(y => y.ApplicationSettingsId)
+                                .Where(exp == "All" || exp == null ? "Id != null" : exp)
+								.OrderBy(y => y.Id)
  
                                 .Skip(startIndex)
                                 .Take(count)
@@ -993,7 +888,7 @@ namespace CoreEntities.Business.Services
             }
         }
 
-		private static async Task<IEnumerable<ApplicationSettings>> LoadRangeWhere<T>(int startIndex, int count,
+		private static async Task<IEnumerable<Declarant>> LoadRangeWhere<T>(int startIndex, int count,
             CoreEntitiesContext dbContext, string exp, string navExp, string navProp, string rel, IEnumerable<string> includeLst = null) where T : class
         {
              switch (rel)
@@ -1008,7 +903,7 @@ namespace CoreEntities.Business.Services
 		    }
         }
 
-		private static async Task<IEnumerable<ApplicationSettings>> LoadRangeSelectMany<T>(int startIndex, int count,
+		private static async Task<IEnumerable<Declarant>> LoadRangeSelectMany<T>(int startIndex, int count,
             CoreEntitiesContext dbContext, string exp, string navExp, string navProp, IEnumerable<string> includeLst = null) where T : class
         {
 			try
@@ -1016,14 +911,14 @@ namespace CoreEntities.Business.Services
             var set = dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
-                .SelectMany(navProp).OfType<ApplicationSettings>();
+                .SelectMany(navProp).OfType<Declarant>();
     
             if (includeLst != null) set = includeLst.Aggregate(set, (current, itm) => current.Include(itm));            
 
             return await set
-                .Where(exp == "All" || exp == null ? "ApplicationSettingsId != null" : exp)
+                .Where(exp == "All" || exp == null ? "Id != null" : exp)
                 .Distinct()
-                .OrderBy(y => y.ApplicationSettingsId)
+                .OrderBy(y => y.Id)
  
                 .Skip(startIndex)
                 .Take(count)
@@ -1037,7 +932,7 @@ namespace CoreEntities.Business.Services
 			}
         }
 
-		private static async Task<IEnumerable<ApplicationSettings>> LoadRangeSelect<T>(int startIndex, int count,
+		private static async Task<IEnumerable<Declarant>> LoadRangeSelect<T>(int startIndex, int count,
             CoreEntitiesContext dbContext, string exp, string navExp, string navProp, IEnumerable<string> includeLst = null) where T : class
         {
 			try
@@ -1045,14 +940,14 @@ namespace CoreEntities.Business.Services
               var set = dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
-                .Select(navProp).OfType<ApplicationSettings>();
+                .Select(navProp).OfType<Declarant>();
 
                if (includeLst != null) set = includeLst.Aggregate(set, (current, itm) => current.Include(itm)); 
                 
                return await set
-                .Where(exp == "All" || exp == null ? "ApplicationSettingsId != null" : exp)
+                .Where(exp == "All" || exp == null ? "Id != null" : exp)
                 .Distinct()
-                .OrderBy(y => y.ApplicationSettingsId)
+                .OrderBy(y => y.Id)
  
                 .Skip(startIndex)
                 .Take(count)
@@ -1066,7 +961,7 @@ namespace CoreEntities.Business.Services
 			}
         }
 
-        private static async Task<IEnumerable<ApplicationSettings>> GetWhere<T>(CoreEntitiesContext dbContext,
+        private static async Task<IEnumerable<Declarant>> GetWhere<T>(CoreEntitiesContext dbContext,
             string exp, string navExp, string navProp, string rel, List<string> includesLst = null) where T : class
         {
 			try
@@ -1090,7 +985,7 @@ namespace CoreEntities.Business.Services
 			}
         }
 
-		private static async Task<IEnumerable<ApplicationSettings>> GetWhereSelectMany<T>(CoreEntitiesContext dbContext,
+		private static async Task<IEnumerable<Declarant>> GetWhereSelectMany<T>(CoreEntitiesContext dbContext,
             string exp, string navExp, string navProp, List<string> includesLst = null) where T : class
         {
 			try
@@ -1101,18 +996,18 @@ namespace CoreEntities.Business.Services
 				return await dbContext.Set<T>()
 							.AsNoTracking()
                             .Where(navExp)
-							.SelectMany(navProp).OfType<ApplicationSettings>()
-							.Where(exp == "All" || exp == null?"ApplicationSettingsId != null":exp)
+							.SelectMany(navProp).OfType<Declarant>()
+							.Where(exp == "All" || exp == null?"Id != null":exp)
 							.Distinct()
 							.ToListAsync()
 							.ConfigureAwait(continueOnCapturedContext: false);
 			}
 
-			var set = (DbQuery<ApplicationSettings>)dbContext.Set<T>()
+			var set = (DbQuery<Declarant>)dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
-                .SelectMany(navProp).OfType<ApplicationSettings>()
-                .Where(exp == "All" || exp == null?"ApplicationSettingsId != null":exp)
+                .SelectMany(navProp).OfType<Declarant>()
+                .Where(exp == "All" || exp == null?"Id != null":exp)
                 .Distinct();
 
 			set = includesLst.Aggregate(set, (current, itm) => current.Include(itm));
@@ -1127,7 +1022,7 @@ namespace CoreEntities.Business.Services
 			}
         }
 
-		private static async Task<IEnumerable<ApplicationSettings>> GetWhereSelect<T>(CoreEntitiesContext dbContext,
+		private static async Task<IEnumerable<Declarant>> GetWhereSelect<T>(CoreEntitiesContext dbContext,
             string exp, string navExp, string navProp, List<string> includesLst = null) where T : class
         {
 			try
@@ -1138,18 +1033,18 @@ namespace CoreEntities.Business.Services
 				return await dbContext.Set<T>()
 							.AsNoTracking()
                             .Where(navExp)
-							.Select(navProp).OfType<ApplicationSettings>()
-							.Where(exp == "All" || exp == null?"ApplicationSettingsId != null":exp)
+							.Select(navProp).OfType<Declarant>()
+							.Where(exp == "All" || exp == null?"Id != null":exp)
 							.Distinct()
 							.ToListAsync()
 							.ConfigureAwait(continueOnCapturedContext: false);
 			}
 
-			var set = (DbQuery<ApplicationSettings>)dbContext.Set<T>()
+			var set = (DbQuery<Declarant>)dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
-                .Select(navProp).OfType<ApplicationSettings>()
-                .Where(exp == "All" || exp == null?"ApplicationSettingsId != null":exp)
+                .Select(navProp).OfType<Declarant>()
+                .Where(exp == "All" || exp == null?"Id != null":exp)
                 .Distinct();
 
 			set = includesLst.Aggregate(set, (current, itm) => current.Include(itm));
@@ -1164,25 +1059,17 @@ namespace CoreEntities.Business.Services
 			}
         }
 
-			        public async Task<IEnumerable<ApplicationSettings>> GetApplicationSettingsByBondTypeId(string BondTypeId, List<string> includesLst = null)
+			        public async Task<IEnumerable<Declarant>> GetDeclarantByApplicationSettingsId(string ApplicationSettingsId, List<string> includesLst = null)
         {
             try
             {
                 using ( var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
               {
-                var i = Convert.ToInt32(BondTypeId);
+                var i = Convert.ToInt32(ApplicationSettingsId);
                 var set = AddIncludes(includesLst, dbContext);
-                IEnumerable<ApplicationSettings> entities = await set//dbContext.ApplicationSettings
-                                                    // .Include(x => x.AsycudaDocumentSetEx)									  
-                                                    // .Include(x => x.AsycudaDocument)									  
-                                                    // .Include(x => x.AsycudaDocumentItem)									  
-                                                    // .Include(x => x.InventoryItemsEx)									  
-                                                    // .Include(x => x.FileTypes)									  
-                                                    // .Include(x => x.InfoMapping)									  
-                                                    // .Include(x => x.EmailMapping)									  
-                                                    // .Include(x => x.Declarants)									  
+                IEnumerable<Declarant> entities = await set//dbContext.Declarants
                                       .AsNoTracking()
-                                        .Where(x => x.BondTypeId.ToString() == BondTypeId.ToString())
+                                        .Where(x => x.ApplicationSettingsId.ToString() == ApplicationSettingsId.ToString())
 										.ToListAsync()
 										.ConfigureAwait(continueOnCapturedContext: false);
                 return entities;
@@ -1213,11 +1100,11 @@ namespace CoreEntities.Business.Services
                      if (string.IsNullOrEmpty(whereExp) || whereExp == "None") return 0;
                      if (whereExp == "All")
                      {
-                          res = Convert.ToDecimal(dbContext.ApplicationSettings.AsNoTracking().Sum(field));
+                          res = Convert.ToDecimal(dbContext.Declarants.AsNoTracking().Sum(field));
                      }
                      else
                      {
-                         res = Convert.ToDecimal(dbContext.ApplicationSettings.AsNoTracking().Where(whereExp).Sum(field));
+                         res = Convert.ToDecimal(dbContext.Declarants.AsNoTracking().Where(whereExp).Sum(field));
                      }
                      
                      return res;
@@ -1245,10 +1132,10 @@ namespace CoreEntities.Business.Services
                 using (var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-                    if (!dbContext.ApplicationSettings.Any()) return 0;
+                    if (!dbContext.Declarants.Any()) return 0;
                     if (exp == "All" && navExp.Count == 0)
                     {
-                        return Convert.ToDecimal(dbContext.ApplicationSettings
+                        return Convert.ToDecimal(dbContext.Declarants
 										.AsNoTracking()
                                         .Sum(field)??0);
                     }
@@ -1256,33 +1143,12 @@ namespace CoreEntities.Business.Services
                     {
                         switch (itm.Key)
                         {
-                            case "AsycudaDocumentSetEx":
-                                return await SumWhere<AsycudaDocumentSetEx>(dbContext, exp, itm.Value, "ApplicationSettings", field, "Select")
-											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "AsycudaDocument":
-                                return await SumWhere<AsycudaDocument>(dbContext, exp, itm.Value, "ApplicationSettings", field, "Select")
-											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "AsycudaDocumentItem":
-                                return await SumWhere<AsycudaDocumentItem>(dbContext, exp, itm.Value, "ApplicationSettings", field, "Select")
-											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "InventoryItemsEx":
-                                return await SumWhere<InventoryItemX>(dbContext, exp, itm.Value, "ApplicationSettings", field, "Select")
-											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "FileTypes":
-                                return await SumWhere<FileTypes>(dbContext, exp, itm.Value, "ApplicationSettings", field, "Select")
-											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "InfoMapping":
-                                return await SumWhere<InfoMapping>(dbContext, exp, itm.Value, "ApplicationSettings", field, "Select")
-											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "EmailMapping":
-                                return await SumWhere<EmailMapping>(dbContext, exp, itm.Value, "ApplicationSettings", field, "Select")
-											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "Declarants":
-                                return await SumWhere<Declarant>(dbContext, exp, itm.Value, "ApplicationSettings", field, "Select")
+                            case "ApplicationSettings":
+                                return await SumWhere<ApplicationSettings>(dbContext, exp, itm.Value, "Declarants", field, "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }
-                    return Convert.ToDecimal(dbContext.ApplicationSettings.Where(exp == "All" || exp == null ? "ApplicationSettingsId != null" : exp)
+                    return Convert.ToDecimal(dbContext.Declarants.Where(exp == "All" || exp == null ? "Id != null" : exp)
 											.AsNoTracking()
                                             .Sum(field)??0);
                 }
@@ -1322,10 +1188,10 @@ namespace CoreEntities.Business.Services
             return Convert.ToDecimal(dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
-                .SelectMany(navProp).OfType<ApplicationSettings>()
-                .Where(exp == "All" || exp == null ? "ApplicationSettingsId != null" : exp)
+                .SelectMany(navProp).OfType<Declarant>()
+                .Where(exp == "All" || exp == null ? "Id != null" : exp)
                 .Distinct()
-                .OrderBy("ApplicationSettingsId")
+                .OrderBy("Id")
                 .Sum(field));
 			}
 			catch (Exception)
@@ -1342,10 +1208,10 @@ namespace CoreEntities.Business.Services
             return Convert.ToDecimal(dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
-                .Select(navProp).OfType<ApplicationSettings>()
-                .Where(exp == "All" || exp == null ? "ApplicationSettingsId != null" : exp)
+                .Select(navProp).OfType<Declarant>()
+                .Where(exp == "All" || exp == null ? "Id != null" : exp)
                 .Distinct()
-                .OrderBy("ApplicationSettingsId")
+                .OrderBy("Id")
                 .Sum(field));
 			}
 			catch (Exception)
@@ -1368,11 +1234,11 @@ namespace CoreEntities.Business.Services
                      if (string.IsNullOrEmpty(whereExp) || whereExp == "None") return res;
                      if (whereExp == "All")
                      {
-                          res = Convert.ToString(dbContext.ApplicationSettings.AsNoTracking().Min(field));
+                          res = Convert.ToString(dbContext.Declarants.AsNoTracking().Min(field));
                      }
                      else
                      {
-                         res = Convert.ToString(dbContext.ApplicationSettings.AsNoTracking().Where(whereExp).Min(field));
+                         res = Convert.ToString(dbContext.Declarants.AsNoTracking().Where(whereExp).Min(field));
                      }
                      
                      return res;
@@ -1393,12 +1259,12 @@ namespace CoreEntities.Business.Services
          }
 
 		 
-		private static IQueryable<ApplicationSettings> AddIncludes(IEnumerable<string> includesLst, CoreEntitiesContext dbContext)
+		private static IQueryable<Declarant> AddIncludes(IEnumerable<string> includesLst, CoreEntitiesContext dbContext)
        {
 		 try
 			{
 			   if (includesLst == null) includesLst = new List<string>();
-			   var set =(DbQuery<ApplicationSettings>) dbContext.ApplicationSettings; 
+			   var set =(DbQuery<Declarant>) dbContext.Declarants; 
 			   set = includesLst.Where(x => !string.IsNullOrEmpty(x))
                                 .Aggregate(set, (current, itm) => current.Include(itm));
 			   return set;
@@ -1409,7 +1275,7 @@ namespace CoreEntities.Business.Services
 				throw;
 			}
        }
-	   private IQueryable<ApplicationSettings> AddWheres(List<string> expLst, IQueryable<ApplicationSettings> set)
+	   private IQueryable<Declarant> AddWheres(List<string> expLst, IQueryable<Declarant> set)
         {
             try
             {

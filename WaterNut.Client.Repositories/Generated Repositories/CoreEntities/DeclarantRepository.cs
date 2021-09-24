@@ -32,36 +32,36 @@ using System;
 using System.ServiceModel;
 using TrackableEntities.Common;
 
-using ApplicationSettings = CoreEntities.Client.Entities.ApplicationSettings;
+using Declarant = CoreEntities.Client.Entities.Declarant;
 
 namespace CoreEntities.Client.Repositories 
 {
    
-    public partial class ApplicationSettingsRepository : BaseRepository<ApplicationSettingsRepository>
+    public partial class DeclarantRepository : BaseRepository<DeclarantRepository>
     {
 
-       private static readonly ApplicationSettingsRepository instance;
-       static ApplicationSettingsRepository()
+       private static readonly DeclarantRepository instance;
+       static DeclarantRepository()
         {
-            instance = new ApplicationSettingsRepository();
+            instance = new DeclarantRepository();
         }
 
-       public static ApplicationSettingsRepository Instance
+       public static DeclarantRepository Instance
         {
             get { return instance; }
         }
         
-        public async Task<IEnumerable<ApplicationSettings>> ApplicationSettings(List<string> includesLst = null)
+        public async Task<IEnumerable<Declarant>> Declarants(List<string> includesLst = null)
         {
-            if (System.ComponentModel.LicenseManager.UsageMode == LicenseUsageMode.Designtime) return new List<ApplicationSettings>().AsEnumerable();
+            if (System.ComponentModel.LicenseManager.UsageMode == LicenseUsageMode.Designtime) return new List<Declarant>().AsEnumerable();
             try
             {
-                using (var t = new ApplicationSettingsClient())
+                using (var t = new DeclarantClient())
                     {
-                        var res = await t.GetApplicationSettings(includesLst).ConfigureAwait(continueOnCapturedContext: false);
+                        var res = await t.GetDeclarants(includesLst).ConfigureAwait(continueOnCapturedContext: false);
                         if (res != null)
                         {
-                            return res.Select(x => new ApplicationSettings(x)).AsEnumerable();
+                            return res.Select(x => new Declarant(x)).AsEnumerable();
                         }
                         else
                         {
@@ -80,26 +80,26 @@ namespace CoreEntities.Client.Repositories
             }
         }
 
-		 public async Task<IEnumerable<ApplicationSettings>> GetApplicationSettingsByExpression(string exp, List<string> includesLst = null)
+		 public async Task<IEnumerable<Declarant>> GetDeclarantsByExpression(string exp, List<string> includesLst = null)
         {
-            if (System.ComponentModel.LicenseManager.UsageMode == LicenseUsageMode.Designtime || exp == null || exp == "None") return new List<ApplicationSettings>().AsEnumerable();
+            if (System.ComponentModel.LicenseManager.UsageMode == LicenseUsageMode.Designtime || exp == null || exp == "None") return new List<Declarant>().AsEnumerable();
             try
             {
-                using (var t = new ApplicationSettingsClient())
+                using (var t = new DeclarantClient())
                     {
-					    IEnumerable<DTO.ApplicationSettings> res = null;
+					    IEnumerable<DTO.Declarant> res = null;
                         if(exp == "All")
                         {                       
-						    res = await t.GetApplicationSettings(includesLst).ConfigureAwait(continueOnCapturedContext: false);					
+						    res = await t.GetDeclarants(includesLst).ConfigureAwait(continueOnCapturedContext: false);					
                         }
                         else
                         {
-                             res = await t.GetApplicationSettingsByExpression(exp, includesLst).ConfigureAwait(continueOnCapturedContext: false);	                         
+                             res = await t.GetDeclarantsByExpression(exp, includesLst).ConfigureAwait(continueOnCapturedContext: false);	                         
                         }
                     
                         if (res != null)
                         {
-                            return res.Select(x => new ApplicationSettings(x)).AsEnumerable();
+                            return res.Select(x => new Declarant(x)).AsEnumerable();
                         }
                         else
                         {
@@ -118,21 +118,21 @@ namespace CoreEntities.Client.Repositories
             }
         }
 
-		 public async Task<IEnumerable<ApplicationSettings>> GetApplicationSettingsByExpressionLst(List<string> expLst, List<string> includesLst = null)
+		 public async Task<IEnumerable<Declarant>> GetDeclarantsByExpressionLst(List<string> expLst, List<string> includesLst = null)
         {
-            if (System.ComponentModel.LicenseManager.UsageMode == LicenseUsageMode.Designtime || expLst.Count == 0 || expLst.FirstOrDefault() == "None") return new List<ApplicationSettings>().AsEnumerable();
+            if (System.ComponentModel.LicenseManager.UsageMode == LicenseUsageMode.Designtime || expLst.Count == 0 || expLst.FirstOrDefault() == "None") return new List<Declarant>().AsEnumerable();
             try
             {
-                using (var t = new ApplicationSettingsClient())
+                using (var t = new DeclarantClient())
                     {
-					    IEnumerable<DTO.ApplicationSettings> res = null;
+					    IEnumerable<DTO.Declarant> res = null;
                        
-                        res = await t.GetApplicationSettingsByExpressionLst(expLst, includesLst).ConfigureAwait(continueOnCapturedContext: false);	                         
+                        res = await t.GetDeclarantsByExpressionLst(expLst, includesLst).ConfigureAwait(continueOnCapturedContext: false);	                         
                       
                     
                         if (res != null)
                         {
-                            return res.Select(x => new ApplicationSettings(x)).AsEnumerable();
+                            return res.Select(x => new Declarant(x)).AsEnumerable();
                         }
                         else
                         {
@@ -152,26 +152,26 @@ namespace CoreEntities.Client.Repositories
         }
 
 
-		 public async Task<IEnumerable<ApplicationSettings>> GetApplicationSettingsByExpressionNav(string exp, Dictionary<string, string> navExp, List<string> includesLst = null)
+		 public async Task<IEnumerable<Declarant>> GetDeclarantsByExpressionNav(string exp, Dictionary<string, string> navExp, List<string> includesLst = null)
         {
-            if (System.ComponentModel.LicenseManager.UsageMode == LicenseUsageMode.Designtime || exp == null || exp == "None") return new List<ApplicationSettings>().AsEnumerable();
+            if (System.ComponentModel.LicenseManager.UsageMode == LicenseUsageMode.Designtime || exp == null || exp == "None") return new List<Declarant>().AsEnumerable();
             try
             {
-                using (var t = new ApplicationSettingsClient())
+                using (var t = new DeclarantClient())
                     {
-					    IEnumerable<DTO.ApplicationSettings> res = null;
+					    IEnumerable<DTO.Declarant> res = null;
                         if(exp == "All" && navExp.Count == 0)
                         {                       
-						    res = await t.GetApplicationSettings(includesLst).ConfigureAwait(continueOnCapturedContext: false);					
+						    res = await t.GetDeclarants(includesLst).ConfigureAwait(continueOnCapturedContext: false);					
                         }
                         else
                         {
-                             res = await t.GetApplicationSettingsByExpressionNav(exp, navExp, includesLst).ConfigureAwait(continueOnCapturedContext: false);	                         
+                             res = await t.GetDeclarantsByExpressionNav(exp, navExp, includesLst).ConfigureAwait(continueOnCapturedContext: false);	                         
                         }
                     
                         if (res != null)
                         {
-                            return res.Select(x => new ApplicationSettings(x)).AsEnumerable();
+                            return res.Select(x => new Declarant(x)).AsEnumerable();
                         }
                         else
                         {
@@ -191,25 +191,18 @@ namespace CoreEntities.Client.Repositories
         }
 
 
-        public async Task<ApplicationSettings> GetApplicationSettings(string id, List<string> includesLst = null)
+        public async Task<Declarant> GetDeclarant(string id, List<string> includesLst = null)
         {
              try
              {   
-                 using (var t = new ApplicationSettingsClient())
+                 using (var t = new DeclarantClient())
                     {
-                        var res = await t.GetApplicationSettingsByKey(id,includesLst).ConfigureAwait(continueOnCapturedContext: false);
+                        var res = await t.GetDeclarantByKey(id,includesLst).ConfigureAwait(continueOnCapturedContext: false);
                          if(res != null)
                         {
-                            return new ApplicationSettings(res)
+                            return new Declarant(res)
                     {
-                     // AsycudaDocumentSetEx = new System.Collections.ObjectModel.ObservableCollection<AsycudaDocumentSetEx>(res.AsycudaDocumentSetEx.Select(y => new AsycudaDocumentSetEx(y))),    
-                     // AsycudaDocument = new System.Collections.ObjectModel.ObservableCollection<AsycudaDocument>(res.AsycudaDocument.Select(y => new AsycudaDocument(y))),    
-                     // AsycudaDocumentItem = new System.Collections.ObjectModel.ObservableCollection<AsycudaDocumentItem>(res.AsycudaDocumentItem.Select(y => new AsycudaDocumentItem(y))),    
-                     // InventoryItemsEx = new System.Collections.ObjectModel.ObservableCollection<InventoryItemX>(res.InventoryItemsEx.Select(y => new InventoryItemX(y))),    
-                     // FileTypes = new System.Collections.ObjectModel.ObservableCollection<FileTypes>(res.FileTypes.Select(y => new FileTypes(y))),    
-                     // InfoMapping = new System.Collections.ObjectModel.ObservableCollection<InfoMapping>(res.InfoMapping.Select(y => new InfoMapping(y))),    
-                     // EmailMapping = new System.Collections.ObjectModel.ObservableCollection<EmailMapping>(res.EmailMapping.Select(y => new EmailMapping(y))),    
-                     // Declarants = new System.Collections.ObjectModel.ObservableCollection<Declarant>(res.Declarants.Select(y => new Declarant(y)))    
+                  // ApplicationSettings = (res.ApplicationSettings != null?new ApplicationSettings(res.ApplicationSettings): null)    
                   };
                     }
                     else
@@ -229,7 +222,7 @@ namespace CoreEntities.Client.Repositories
             }
         }
 
-        public async Task<ApplicationSettings> UpdateApplicationSettings(ApplicationSettings entity)
+        public async Task<Declarant> UpdateDeclarant(Declarant entity)
         {
             if (entity == null) return entity;
             var entitychanges = entity.ChangeTracker.GetChanges().FirstOrDefault();
@@ -237,10 +230,10 @@ namespace CoreEntities.Client.Repositories
             {
                 try
                 {
-                    using (var t = new ApplicationSettingsClient())
+                    using (var t = new DeclarantClient())
                     {
      
-                        var updatedEntity =  await t.UpdateApplicationSettings(entitychanges).ConfigureAwait(false);
+                        var updatedEntity =  await t.UpdateDeclarant(entitychanges).ConfigureAwait(false);
                         entity.EntityId = updatedEntity.EntityId;
                         entity.DTO.AcceptChanges();
                          //var  = entity.;
@@ -266,13 +259,13 @@ namespace CoreEntities.Client.Repositories
 
         }
 
-        public async Task<ApplicationSettings> CreateApplicationSettings(ApplicationSettings entity)
+        public async Task<Declarant> CreateDeclarant(Declarant entity)
         {
             try
             {   
-                using (var t = new ApplicationSettingsClient())
+                using (var t = new DeclarantClient())
                     {
-                        return new ApplicationSettings(await t.CreateApplicationSettings(entity.DTO).ConfigureAwait(continueOnCapturedContext: false));
+                        return new Declarant(await t.CreateDeclarant(entity.DTO).ConfigureAwait(continueOnCapturedContext: false));
                     }
             }
             catch (FaultException<ValidationFault> e)
@@ -286,13 +279,13 @@ namespace CoreEntities.Client.Repositories
             }
         }
 
-        public async Task<bool> DeleteApplicationSettings(string id)
+        public async Task<bool> DeleteDeclarant(string id)
         {
             try
             {
-             using (var t = new ApplicationSettingsClient())
+             using (var t = new DeclarantClient())
                 {
-                    return await t.DeleteApplicationSettings(id).ConfigureAwait(continueOnCapturedContext: false);
+                    return await t.DeleteDeclarant(id).ConfigureAwait(continueOnCapturedContext: false);
                 }
             }
             catch (FaultException<ValidationFault> e)
@@ -306,13 +299,13 @@ namespace CoreEntities.Client.Repositories
             }         
         }
 
-        public async Task<bool> RemoveSelectedApplicationSettings(IEnumerable<string> selectedApplicationSettings)
+        public async Task<bool> RemoveSelectedDeclarant(IEnumerable<string> selectedDeclarant)
         {
             try
             {
-                using (var ctx = new ApplicationSettingsClient())
+                using (var ctx = new DeclarantClient())
                 {
-                    return await ctx.RemoveSelectedApplicationSettings(selectedApplicationSettings).ConfigureAwait(false);
+                    return await ctx.RemoveSelectedDeclarant(selectedDeclarant).ConfigureAwait(false);
                 }
             }
             catch (FaultException<ValidationFault> e)
@@ -329,21 +322,21 @@ namespace CoreEntities.Client.Repositories
 
 		//Virtural List Implementation
 
-		public async Task<Tuple<IEnumerable<ApplicationSettings>, int>> LoadRange(int startIndex, int count, string exp, Dictionary<string, string> navExp, IEnumerable<string> includeLst = null)
+		public async Task<Tuple<IEnumerable<Declarant>, int>> LoadRange(int startIndex, int count, string exp, Dictionary<string, string> navExp, IEnumerable<string> includeLst = null)
         {
 			var overallCount = 0;
             if (System.ComponentModel.LicenseManager.UsageMode == LicenseUsageMode.Designtime || exp == null || exp == "None")
             {
                 
-                return new Tuple<IEnumerable<ApplicationSettings>, int>(new List<ApplicationSettings>().AsEnumerable(), overallCount);
+                return new Tuple<IEnumerable<Declarant>, int>(new List<Declarant>().AsEnumerable(), overallCount);
             }
             
             try
             {
-                using (var t = new ApplicationSettingsClient())
+                using (var t = new DeclarantClient())
                 {
 
-                    IEnumerable<DTO.ApplicationSettings> res = null;
+                    IEnumerable<DTO.Declarant> res = null;
                                          
 						    res = await t.LoadRangeNav(startIndex, count, exp, navExp, includeLst).ConfigureAwait(continueOnCapturedContext: false);
 						    overallCount = await t.CountNav(exp, navExp).ConfigureAwait(continueOnCapturedContext: false);
@@ -352,7 +345,7 @@ namespace CoreEntities.Client.Repositories
                                 
                     if (res != null)
                     {
-                        return new Tuple<IEnumerable<ApplicationSettings>, int>(res.Select(x => new ApplicationSettings(x)).AsEnumerable(), overallCount);
+                        return new Tuple<IEnumerable<Declarant>, int>(res.Select(x => new Declarant(x)).AsEnumerable(), overallCount);
                     }
                     else
                     {
@@ -371,17 +364,17 @@ namespace CoreEntities.Client.Repositories
             }
         }
 
-	 public async Task<IEnumerable<ApplicationSettings>> GetApplicationSettingsByBondTypeId(string BondTypeId, List<string> includesLst = null)
+	 public async Task<IEnumerable<Declarant>> GetDeclarantByApplicationSettingsId(string ApplicationSettingsId, List<string> includesLst = null)
         {
-             if (BondTypeId == "0") return null;
+             if (ApplicationSettingsId == "0") return null;
             try
             {
-                 using (ApplicationSettingsClient t = new ApplicationSettingsClient())
+                 using (DeclarantClient t = new DeclarantClient())
                     {
-                        var res = await t.GetApplicationSettingsByBondTypeId(BondTypeId, includesLst).ConfigureAwait(continueOnCapturedContext: false);
+                        var res = await t.GetDeclarantByApplicationSettingsId(ApplicationSettingsId, includesLst).ConfigureAwait(continueOnCapturedContext: false);
                          if(res != null)
                         {
-                            return res.Select(x => new ApplicationSettings(x)).AsEnumerable();
+                            return res.Select(x => new Declarant(x)).AsEnumerable();
 					    }                
 					    else
 					    {
@@ -404,7 +397,7 @@ namespace CoreEntities.Client.Repositories
         {
             try
             {
-                using (var t = new ApplicationSettingsClient())
+                using (var t = new DeclarantClient())
                 {
                     return t.SumField(whereExp,sumExp);
                 }
@@ -425,7 +418,7 @@ namespace CoreEntities.Client.Repositories
         {
             try
             {
-                using (var t = new ApplicationSettingsClient())
+                using (var t = new DeclarantClient())
                 {
                     return await t.SumNav(whereExp,navExp,sumExp).ConfigureAwait(false);
                 }

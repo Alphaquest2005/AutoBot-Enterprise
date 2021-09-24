@@ -130,6 +130,7 @@
     <Compile Include="CoreEntities\IContactsService.cs" />
     <Compile Include="CoreEntities\ICustomsOperationsService.cs" />
     <Compile Include="CoreEntities\ICustoms_ProcedureService.cs" />
+    <Compile Include="CoreEntities\IDeclarantService.cs" />
     <Compile Include="CoreEntities\IDocument_TypeService.cs" />
     <Compile Include="CoreEntities\IEmailFileTypesService.cs" />
     <Compile Include="CoreEntities\IEmailInfoMappingsService.cs" />

@@ -42,7 +42,6 @@
               this.Property(t => t.AllowCleanBond).HasColumnName("AllowCleanBond").HasMaxLength(50);
               this.Property(t => t.OrderEntriesBy).HasColumnName("OrderEntriesBy").HasMaxLength(50);
               this.Property(t => t.OpeningStockDate).HasColumnName("OpeningStockDate");
-              this.Property(t => t.DeclarantCode).HasColumnName("DeclarantCode").IsRequired().HasMaxLength(50);
               this.Property(t => t.WeightCalculationMethod).HasColumnName("WeightCalculationMethod").HasMaxLength(50);
               this.Property(t => t.BondQuantum).HasColumnName("BondQuantum");
               this.Property(t => t.DataFolder).HasColumnName("DataFolder").HasMaxLength(999);
@@ -64,6 +63,7 @@
               this.HasMany(t => t.FileTypes).WithRequired(t => (ApplicationSettings)t.ApplicationSettings);
               this.HasMany(t => t.InfoMapping).WithRequired(t => (ApplicationSettings)t.ApplicationSettings);
               this.HasMany(t => t.EmailMapping).WithRequired(t => (ApplicationSettings)t.ApplicationSettings);
+              this.HasMany(t => t.Declarants).WithRequired(t => (ApplicationSettings)t.ApplicationSettings);
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);
     			this.Ignore(t => t.ModifiedProperties);

@@ -124,6 +124,12 @@ namespace WaterNut.QuerySpace.CoreEntities
 			public const string CustomsOperationsDeleted = "CustomsOperationsDeleted";
 			public const string CustomsOperationsCreated = "CustomsOperationsCreated";
 			public const string CustomsOperationsUpdated = "CustomsOperationsUpdated";
+			public const string DeclarantsFilterExpressionChanged = "DeclarantsFilterExpressionChanged";
+			public const string SelectedDeclarantsChanged = "SelectedDeclarantsChanged";
+            public const string DeclarantsChanged = "DeclarantsChanged";
+			public const string DeclarantsDeleted = "DeclarantsDeleted";
+			public const string DeclarantsCreated = "DeclarantsCreated";
+			public const string DeclarantsUpdated = "DeclarantsUpdated";
 			public const string Document_TypeFilterExpressionChanged = "Document_TypeFilterExpressionChanged";
 			public const string SelectedDocument_TypeChanged = "SelectedDocument_TypeChanged";
             public const string Document_TypeChanged = "Document_TypeChanged";
@@ -583,6 +589,7 @@ namespace WaterNut.QuerySpace.CoreEntities
           // public const string ContactsChanged = "ContactsChanged";
           // public const string Customs_ProcedureChanged = "Customs_ProcedureChanged";
           // public const string CustomsOperationsChanged = "CustomsOperationsChanged";
+          // public const string DeclarantChanged = "DeclarantChanged";
           // public const string Document_TypeChanged = "Document_TypeChanged";
           // public const string EmailFileTypesChanged = "EmailFileTypesChanged";
           // public const string EmailInfoMappingsChanged = "EmailInfoMappingsChanged";
@@ -696,6 +703,8 @@ namespace WaterNut.QuerySpace.CoreEntities
            public const string CurrentCustoms_ProcedureChanged = "CurrentCustoms_ProcedureChanged";
    
            public const string CurrentCustomsOperationsChanged = "CurrentCustomsOperationsChanged";
+   
+           public const string CurrentDeclarantChanged = "CurrentDeclarantChanged";
    
            public const string CurrentDocument_TypeChanged = "CurrentDocument_TypeChanged";
    
@@ -882,6 +891,8 @@ namespace WaterNut.QuerySpace.CoreEntities
            public const string CurrentCustoms_ProcedureIDChanged = "OnCurrentCustoms_ProcedureIDChanged";
    
            public const string CurrentCustomsOperationsIDChanged = "OnCurrentCustomsOperationsIDChanged";
+   
+           public const string CurrentDeclarantIDChanged = "OnCurrentDeclarantIDChanged";
    
            public const string CurrentDocument_TypeIDChanged = "OnCurrentDocument_TypeIDChanged";
    

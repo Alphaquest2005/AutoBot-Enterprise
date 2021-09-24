@@ -172,6 +172,7 @@
     <Compile Include="Generated Repositories\CoreEntities\ContactsRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\CustomsOperationsRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\Customs_ProcedureRepository.cs" />
+    <Compile Include="Generated Repositories\CoreEntities\DeclarantRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\Document_TypeRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\EmailFileTypesRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\EmailInfoMappingsRepository.cs" />

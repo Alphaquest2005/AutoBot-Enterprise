@@ -220,6 +220,7 @@
     <Compile Include="Generated Business Entities\CoreEntities\Contacts.cs" />
     <Compile Include="Generated Business Entities\CoreEntities\CustomsOperations.cs" />
     <Compile Include="Generated Business Entities\CoreEntities\Customs_Procedure.cs" />
+    <Compile Include="Generated Business Entities\CoreEntities\Declarant.cs" />
     <Compile Include="Generated Business Entities\CoreEntities\Document_Type.cs" />
     <Compile Include="Generated Business Entities\CoreEntities\EmailFileTypes.cs" />
     <Compile Include="Generated Business Entities\CoreEntities\EmailInfoMappings.cs" />
@@ -616,6 +617,7 @@
     <Compile Include="Generated ChangeTracking Models\CoreEntities\Contacts.cs" />
     <Compile Include="Generated ChangeTracking Models\CoreEntities\CustomsOperations.cs" />
     <Compile Include="Generated ChangeTracking Models\CoreEntities\Customs_Procedure.cs" />
+    <Compile Include="Generated ChangeTracking Models\CoreEntities\Declarant.cs" />
     <Compile Include="Generated ChangeTracking Models\CoreEntities\Document_Type.cs" />
     <Compile Include="Generated ChangeTracking Models\CoreEntities\EmailFileTypes.cs" />
     <Compile Include="Generated ChangeTracking Models\CoreEntities\EmailInfoMappings.cs" />
@@ -1006,6 +1008,7 @@
     <Compile Include="Generated Constructors Models\CoreEntities\Contacts.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\CustomsOperations.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\Customs_Procedure.cs" />
+    <Compile Include="Generated Constructors Models\CoreEntities\Declarant.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\Document_Type.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\EmailFileTypes.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\EmailInfoMappings.cs" />
@@ -1396,6 +1399,7 @@
     <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\Contacts.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\CustomsOperations.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\Customs_Procedure.cs" />
+    <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\Declarant.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\Document_Type.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\EmailFileTypes.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\EmailInfoMappings.cs" />
@@ -1786,6 +1790,7 @@
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\Contacts.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\CustomsOperations.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\Customs_Procedure.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\Declarant.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\Document_Type.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\EmailFileTypes.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\EmailInfoMappings.cs" />
@@ -2186,6 +2191,7 @@
     <Compile Include="Generated Mappings\CoreEntities\Contacts.map.cs" />
     <Compile Include="Generated Mappings\CoreEntities\CustomsOperations.map.cs" />
     <Compile Include="Generated Mappings\CoreEntities\Customs_Procedure.map.cs" />
+    <Compile Include="Generated Mappings\CoreEntities\Declarant.map.cs" />
     <Compile Include="Generated Mappings\CoreEntities\Document_Type.map.cs" />
     <Compile Include="Generated Mappings\CoreEntities\EmailFileTypes.map.cs" />
     <Compile Include="Generated Mappings\CoreEntities\EmailInfoMappings.map.cs" />

@@ -526,23 +526,6 @@ public System.DateTime OpeningStockDate
 		}
      
 
-       [RequiredValidationAttribute(ErrorMessage= "DeclarantCode is required")]
-       
-                
-                [MaxLength(50, ErrorMessage = "DeclarantCode has a max length of 50 letters ")]
-public string DeclarantCode
-		{ 
-		    get { return this.applicationsettings.DeclarantCode; }
-			set
-			{
-			    if (value == this.applicationsettings.DeclarantCode) return;
-				this.applicationsettings.DeclarantCode = value;
-                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
-				NotifyPropertyChanged("DeclarantCode");
-			}
-		}
-     
-
        
        
                 
@@ -1138,6 +1121,60 @@ public Nullable<bool> RequirePOs
                     {
                         if (itm != null)
                         applicationsettings.EmailMapping.Remove(itm.DTO);
+                    }
+					if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+                    break;
+                
+            }
+        }
+
+        ObservableCollection<Declarant> _Declarants = null;
+        public  ObservableCollection<Declarant> Declarants
+		{
+            
+		    get 
+				{ 
+					if(_Declarants != null) return _Declarants;
+					//if (this.applicationsettings.Declarants == null) Debugger.Break();
+					if(this.applicationsettings.Declarants != null)
+					{
+						_Declarants = new ObservableCollection<Declarant>(this.applicationsettings.Declarants.Select(x => new Declarant(x)));
+					}
+					
+						_Declarants.CollectionChanged += Declarants_CollectionChanged; 
+					
+					return _Declarants; 
+				}
+			set
+			{
+			    if (Equals(value, _Declarants)) return;
+				if (value != null)
+					this.applicationsettings.Declarants = new ChangeTrackingCollection<DTO.Declarant>(value.Select(x => x.DTO).ToList());
+                _Declarants = value;
+				if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				if (_Declarants != null)
+				_Declarants.CollectionChanged += Declarants_CollectionChanged;               
+				NotifyPropertyChanged("Declarants");
+			}
+		}
+        
+        void Declarants_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            switch (e.Action)
+            {
+                case NotifyCollectionChangedAction.Add:
+                    foreach (Declarant itm in e.NewItems)
+                    {
+                        if (itm != null)
+                        applicationsettings.Declarants.Add(itm.DTO);
+                    }
+                    if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+                    break;
+                case NotifyCollectionChangedAction.Remove:
+                    foreach (Declarant itm in e.OldItems)
+                    {
+                        if (itm != null)
+                        applicationsettings.Declarants.Remove(itm.DTO);
                     }
 					if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
                     break;

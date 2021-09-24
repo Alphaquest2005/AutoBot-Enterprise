@@ -452,7 +452,7 @@ namespace WaterNut.DataSpace
             cdoc.Document.xcuda_Declarant.Number = ads.Declarant_Reference_Number + $"-{prefix}" +
                                                    cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.FileNumber
                                                        .ToString();
-            cdoc.Document.xcuda_Declarant.Declarant_code = CurrentApplicationSettings.DeclarantCode;
+            cdoc.Document.xcuda_Declarant.Declarant_code = CurrentApplicationSettings.Declarants.First(x => x.IsDefault == true).DeclarantCode;
             cdoc.Document.xcuda_Identification.Manifest_reference_number = ads.Manifest_Number;
             cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.AsycudaDocumentSetId = ads.AsycudaDocumentSetId;
 
@@ -2164,13 +2164,14 @@ namespace WaterNut.DataSpace
                 ) return;
                 using (var ctx = new CoreEntitiesContext())
                 {
-                    var declarantCode = ctx.ApplicationSettings
-                        .First(x => x.ApplicationSettingsId == docSet.ApplicationSettingsId).DeclarantCode;
+                    var declarants = ctx.ApplicationSettings
+                        .Include(x => x.Declarants)
+                        .First(x => x.ApplicationSettingsId == docSet.ApplicationSettingsId).Declarants;
                     var fileCode = a.General_segment.Importer_code.Text.FirstOrDefault();
                     if (fileCode == null) return;
-                    if (!fileCode.Contains(declarantCode))
+                    if (!declarants.Any(x => fileCode.Contains(x.DeclarantCode)))
                         throw new ApplicationException(
-                            $"Could not import file - '{file} - The file is for another warehouse{fileCode}. While this Warehouse is {declarantCode}");
+                            $"Could not import file - '{file} - The file is for another warehouse{fileCode}. While this Warehouse is {declarants.First().DeclarantCode}");
                 }
 
 
@@ -2198,12 +2199,13 @@ namespace WaterNut.DataSpace
                 var a = Value_declaration_form.LoadFromFile(file);
                 using (var ctx = new CoreEntitiesContext())
                 {
-                    var declarantCode = ctx.ApplicationSettings
-                        .First(x => x.ApplicationSettingsId == docSet.ApplicationSettingsId).DeclarantCode;
+                    var declarants = ctx.ApplicationSettings
+                        .Include(x => x.Declarants)
+                        .First(x => x.ApplicationSettingsId == docSet.ApplicationSettingsId).Declarants;
                     var fileCode = a.Identification_segment.Declarant_segment.Code.Text.FirstOrDefault();
-                    if (!fileCode.Contains(declarantCode))
+                    if (!declarants.Any( x => fileCode.Contains(x.DeclarantCode)))
                         throw new ApplicationException(
-                            $"Could not import file - '{file} - The file is for another warehouse{fileCode}. While this Warehouse is {declarantCode}");
+                            $"Could not import file - '{file} - The file is for another warehouse{fileCode}. While this Warehouse is {declarants.First().DeclarantCode}");
                 }
 
 
@@ -2279,13 +2281,14 @@ namespace WaterNut.DataSpace
                 var a = ASYCUDA.LoadFromFile(f);
                 using (var ctx = new CoreEntitiesContext())
                 {
-                    var declarantCode = ctx.ApplicationSettings
-                        .First(x => x.ApplicationSettingsId == docSet.ApplicationSettingsId).DeclarantCode;
+                    var declarants = ctx.ApplicationSettings
+                        .Include(x => x.Declarants)
+                        .First(x => x.ApplicationSettingsId == docSet.ApplicationSettingsId).Declarants;
                     var fileCode = a.Warehouse.Identification.Text.FirstOrDefault() ??
                                    a.Declarant.Declarant_code.Text.FirstOrDefault();
-                    if (!fileCode.Contains(declarantCode))
+                    if (!declarants.Any(x => fileCode.Contains(x.DeclarantCode)))
                         throw new ApplicationException(
-                            $"Could not import file - '{f} - The file is for another warehouse{fileCode}. While this Warehouse is {declarantCode}");
+                            $"Could not import file - '{f} - The file is for another warehouse{fileCode}. While this Warehouse is {declarants.First().DeclarantCode}");
                 }
 
 

@@ -15,8 +15,8 @@ using WaterNut.Interfaces;
 
 namespace AllocationDS.Business.Entities
 {
-		//public partial class EntryDataDetails: IEntryDataDetail //AllocationDS
-		//{  // please don't expect properties here, they are implict, only multilayer will appear here
+		public partial class EntryDataDetails: IEntryDataDetail //AllocationDS
+		{  // please don't expect properties here, they are implict, only multilayer will appear here
   //               [IgnoreDataMember]
   //               [NotMapped]
   //               public Int32 EntryDataDetailsId 
@@ -25,6 +25,6 @@ namespace AllocationDS.Business.Entities
   //                  set { this.InventoryItemsEx.ManualAllocations.EntryDataDetailsId = value;}
   //              }
                           
-  //      }
+       }
 }
 

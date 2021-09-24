@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel.Composition;
+using System.Data.Entity;
 using System.Linq;
 using System.ServiceModel;
 using AllocationQS.Business.Services;
@@ -64,7 +65,10 @@ namespace CoreEntities.Business.Services
             using (var ctx = new CoreEntitiesContext())
             {
                 BaseDataModel.Instance.CurrentApplicationSettings =
-                    ctx.ApplicationSettings.Where(x => x.IsActive).First(x => x.ApplicationSettingsId == applicationSettingId);
+                    ctx.ApplicationSettings
+                        .Include(x => x.Declarants)
+                        .Where(x => x.IsActive)
+                        .First(x => x.ApplicationSettingsId == applicationSettingId);
             }
         }
 

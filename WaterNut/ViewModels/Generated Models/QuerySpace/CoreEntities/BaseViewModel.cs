@@ -72,6 +72,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                         RegisterToReceiveMessages<string>(MessageToken.CurrentContactsIDChanged, OnCurrentContactsIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentCustoms_ProcedureIDChanged, OnCurrentCustoms_ProcedureIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentCustomsOperationsIDChanged, OnCurrentCustomsOperationsIDChanged);
+                        RegisterToReceiveMessages<string>(MessageToken.CurrentDeclarantIDChanged, OnCurrentDeclarantIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentDocument_TypeIDChanged, OnCurrentDocument_TypeIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentEmailFileTypesIDChanged, OnCurrentEmailFileTypesIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentEmailInfoMappingsIDChanged, OnCurrentEmailInfoMappingsIDChanged);
@@ -167,6 +168,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                         RegisterToReceiveMessages<Contacts>(MessageToken.CurrentContactsChanged, OnCurrentContactsChanged);
                         RegisterToReceiveMessages<Customs_Procedure>(MessageToken.CurrentCustoms_ProcedureChanged, OnCurrentCustoms_ProcedureChanged);
                         RegisterToReceiveMessages<CustomsOperations>(MessageToken.CurrentCustomsOperationsChanged, OnCurrentCustomsOperationsChanged);
+                        RegisterToReceiveMessages<Declarant>(MessageToken.CurrentDeclarantChanged, OnCurrentDeclarantChanged);
                         RegisterToReceiveMessages<Document_Type>(MessageToken.CurrentDocument_TypeChanged, OnCurrentDocument_TypeChanged);
                         RegisterToReceiveMessages<EmailFileTypes>(MessageToken.CurrentEmailFileTypesChanged, OnCurrentEmailFileTypesChanged);
                         RegisterToReceiveMessages<EmailInfoMappings>(MessageToken.CurrentEmailInfoMappingsChanged, OnCurrentEmailInfoMappingsChanged);
@@ -769,6 +771,33 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                                     if (!string.IsNullOrEmpty(_currentCustomsOperationsID)) BeginSendMessage(MessageToken.CurrentCustomsOperationsIDChanged,
                                                      new NotificationEventArgs<string>(MessageToken.CurrentCustomsOperationsIDChanged, _currentCustomsOperationsID));
                                     NotifyPropertyChanged(x => this.CurrentCustomsOperationsID);  
+                                }
+                            }
+                        }
+                        internal async void OnCurrentDeclarantIDChanged(object sender, NotificationEventArgs<string> e)
+                        {
+                            using (DeclarantRepository ctx = new DeclarantRepository())
+                            {
+                                CurrentDeclarant = await ctx.GetDeclarant(e.Data).ConfigureAwait(continueOnCapturedContext: false);
+                            }
+                            NotifyPropertyChanged(m => CurrentDeclarant);
+                        }
+
+                        private  string _currentDeclarantID = "";
+                        public string CurrentDeclarantID
+                        {
+                            get
+                            {
+                                return _currentDeclarantID;
+                            }
+                            set
+                            {
+                                if (_currentDeclarantID != value)
+                                {
+                                    _currentDeclarantID = value;
+                                    if (!string.IsNullOrEmpty(_currentDeclarantID)) BeginSendMessage(MessageToken.CurrentDeclarantIDChanged,
+                                                     new NotificationEventArgs<string>(MessageToken.CurrentDeclarantIDChanged, _currentDeclarantID));
+                                    NotifyPropertyChanged(x => this.CurrentDeclarantID);  
                                 }
                             }
                         }
@@ -2882,6 +2911,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                  CurrentFileTypes = null;
                  CurrentInfoMapping = null;
                  CurrentEmailMapping = null;
+                 CurrentDeclarant = null;
    
                 }
             }
@@ -3717,6 +3747,56 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     _vcurrentCustomsOperations = value;
 					if(_vcurrentCustomsOperations != null) CurrentCustomsOperations = value.Data;
                     NotifyPropertyChanged(x => this.VCurrentCustomsOperations);                    
+                }
+            }
+        }
+
+
+
+                     
+       
+
+        internal void OnCurrentDeclarantChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<Declarant> e)
+        {
+            //CurrentDeclarant = e.Data;
+            NotifyPropertyChanged(m => this.CurrentDeclarant);
+        }
+
+        private  Declarant _currentDeclarant;
+        public Declarant CurrentDeclarant
+        {
+            get
+            {
+                return _currentDeclarant;
+            }
+            set
+            {
+                if (_currentDeclarant != value)
+                {
+                    _currentDeclarant = value;
+                    BeginSendMessage(MessageToken.CurrentDeclarantChanged,
+                                                     new NotificationEventArgs<Declarant>(MessageToken.CurrentDeclarantChanged, _currentDeclarant)); 
+                    NotifyPropertyChanged(x => this.CurrentDeclarant);    
+                    // all current navigation properties = null
+   
+                }
+            }
+        }
+
+		VirtualListItem<Declarant> _vcurrentDeclarant;
+        public VirtualListItem<Declarant> VCurrentDeclarant
+        {
+            get
+            {
+                return _vcurrentDeclarant;
+            }
+            set
+            {
+                if (_vcurrentDeclarant != value)
+                {
+                    _vcurrentDeclarant = value;
+					if(_vcurrentDeclarant != null) CurrentDeclarant = value.Data;
+                    NotifyPropertyChanged(x => this.VCurrentDeclarant);                    
                 }
             }
         }

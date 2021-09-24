@@ -56,7 +56,6 @@
           <Property Name="OrderEntriesBy" Type="nvarchar" MaxLength="50" />
           <Property Name="OpeningStockDate" Type="datetime2" Precision="7" Nullable="false" />
           <Property Name="WeightCalculationMethod" Type="nvarchar" MaxLength="50" />
-          <Property Name="DeclarantCode" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="BondQuantum" Type="float" />
           <Property Name="DataFolder" Type="nvarchar" MaxLength="999" />
           <Property Name="CompanyName" Type="nvarchar" MaxLength="50" Nullable="false" />
@@ -70,6 +69,15 @@
           <Property Name="TestMode" Type="bit" />
           <Property Name="BondTypeId" Type="int" Nullable="false" />
           <Property Name="RequirePOs" Type="bit" />
+        </EntityType>
+        <EntityType Name="ApplicationSettings-Declarants">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
+          <Property Name="DeclarantCode" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="IsDefault" Type="bit" Nullable="false" />
         </EntityType>
         <EntityType Name="AsycudaDocument_Attachments">
           <Key>
@@ -1924,6 +1932,18 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_ApplicationSettings-Declarants_ApplicationSettings">
+          <End Role="ApplicationSettings" Type="Self.ApplicationSettings" Multiplicity="1" />
+          <End Role="ApplicationSettings-Declarants" Type="Self.ApplicationSettings-Declarants" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ApplicationSettings">
+              <PropertyRef Name="ApplicationSettingsId" />
+            </Principal>
+            <Dependent Role="ApplicationSettings-Declarants">
+              <PropertyRef Name="ApplicationSettingsId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_AsycudaDocument_Attachments_Attachments">
           <End Role="Attachments" Type="Self.Attachments" Multiplicity="1">
             <OnDelete Action="Cascade" />
@@ -2285,6 +2305,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
           <EntitySet Name="ActionDocSetLogs" EntityType="Self.ActionDocSetLogs" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Actions" EntityType="Self.Actions" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ApplicationSettings" EntityType="Self.ApplicationSettings" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ApplicationSettings-Declarants" EntityType="Self.ApplicationSettings-Declarants" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="AsycudaDocument_Attachments" EntityType="Self.AsycudaDocument_Attachments" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="AsycudaDocumentSet_Attachments" EntityType="Self.AsycudaDocumentSet_Attachments" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="AttachmentLog" EntityType="Self.AttachmentLog" Schema="dbo" store:Type="Tables" />
@@ -3440,6 +3461,10 @@ FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
             <End Role="Actions" EntitySet="Actions" />
             <End Role="ActionDocSetLogs" EntitySet="ActionDocSetLogs" />
           </AssociationSet>
+          <AssociationSet Name="FK_ApplicationSettings-Declarants_ApplicationSettings" Association="Self.FK_ApplicationSettings-Declarants_ApplicationSettings">
+            <End Role="ApplicationSettings" EntitySet="ApplicationSettings" />
+            <End Role="ApplicationSettings-Declarants" EntitySet="ApplicationSettings-Declarants" />
+          </AssociationSet>
           <AssociationSet Name="FK_AsycudaDocument_Attachments_Attachments" Association="Self.FK_AsycudaDocument_Attachments_Attachments">
             <End Role="Attachments" EntitySet="Attachments" />
             <End Role="AsycudaDocument_Attachments" EntitySet="AsycudaDocument_Attachments" />
@@ -3829,6 +3854,11 @@ FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
           </AssociationSet>
           <EntitySet Name="CancelledEntriesLst" EntityType="WaterNutDBModel.CancelledEntriesLst" />
           <EntitySet Name="TODO_LICToAssess" EntityType="WaterNutDBModel.TODO_LICToAssess" />
+          <EntitySet Name="Declarants" EntityType="WaterNutDBModel.Declarant" />
+          <AssociationSet Name="FK_ApplicationSettings_Declarants_ApplicationSettings" Association="WaterNutDBModel.FK_ApplicationSettings_Declarants_ApplicationSettings">
+            <End Role="ApplicationSettings" EntitySet="ApplicationSettings" />
+            <End Role="ApplicationSettings_Declarants" EntitySet="Declarants" />
+          </AssociationSet>
           </EntityContainer>
         <EntityType Name="ApplicationSettings">
           <Key>
@@ -3863,7 +3893,6 @@ FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
           <Property Name="AllowCleanBond" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="OrderEntriesBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="OpeningStockDate" Type="DateTime" Precision="7" Nullable="false" />
-          <Property Name="DeclarantCode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="WeightCalculationMethod" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="BondQuantum" Type="Double" />
           <Property Name="DataFolder" Type="String" MaxLength="999" FixedLength="false" Unicode="true" />
@@ -3884,7 +3913,8 @@ FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
           <Property Name="AssessEX" Type="Boolean" />
           <Property Name="TestMode" Type="Boolean" />
           <Property Name="BondTypeId" Type="Int32" Nullable="false" />
-          <Property Name="RequirePOs" Type="Boolean" /><a:MainEntityProperty xmlns:a="http://schemas.tempuri.com/MainEntityProperty">True</a:MainEntityProperty>
+          <Property Name="RequirePOs" Type="Boolean" />
+          <NavigationProperty Name="Declarants" Relationship="WaterNutDBModel.FK_ApplicationSettings_Declarants_ApplicationSettings" FromRole="ApplicationSettings" ToRole="ApplicationSettings_Declarants" /><a:MainEntityProperty xmlns:a="http://schemas.tempuri.com/MainEntityProperty">True</a:MainEntityProperty>
         </EntityType>
         <EntityType Name="AsycudaDocument">
           <Key>
@@ -6192,6 +6222,28 @@ FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
           <Property Name="TotalCIF" Type="Double" />
           <Property Name="QtyLicensesRequired" Type="Int32" />
         </EntityType>
+        <EntityType Name="Declarant">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
+          <Property Name="DeclarantCode" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="IsDefault" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="ApplicationSettings" Relationship="WaterNutDBModel.FK_ApplicationSettings_Declarants_ApplicationSettings" FromRole="ApplicationSettings_Declarants" ToRole="ApplicationSettings" />
+        </EntityType>
+        <Association Name="FK_ApplicationSettings_Declarants_ApplicationSettings">
+          <End Type="WaterNutDBModel.ApplicationSettings" Role="ApplicationSettings" Multiplicity="1" />
+          <End Type="WaterNutDBModel.Declarant" Role="ApplicationSettings_Declarants" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ApplicationSettings">
+              <PropertyRef Name="ApplicationSettingsId" />
+            </Principal>
+            <Dependent Role="ApplicationSettings_Declarants">
+              <PropertyRef Name="ApplicationSettingsId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -6215,7 +6267,6 @@ FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
                 <ScalarProperty Name="DataFolder" ColumnName="DataFolder" />
                 <ScalarProperty Name="BondQuantum" ColumnName="BondQuantum" />
                 <ScalarProperty Name="WeightCalculationMethod" ColumnName="WeightCalculationMethod" />
-                <ScalarProperty Name="DeclarantCode" ColumnName="DeclarantCode" />
                 <ScalarProperty Name="OpeningStockDate" ColumnName="OpeningStockDate" />
                 <ScalarProperty Name="OrderEntriesBy" ColumnName="OrderEntriesBy" />
                 <ScalarProperty Name="AllowCleanBond" ColumnName="AllowCleanBond" />
@@ -7837,6 +7888,16 @@ FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
                 <ScalarProperty Name="Country_of_origin_code" ColumnName="Country_of_origin_code" />
                 <ScalarProperty Name="ApplicationSettingsId" ColumnName="ApplicationSettingsId" />
                 <ScalarProperty Name="AsycudaDocumentSetId" ColumnName="AsycudaDocumentSetId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Declarants">
+            <EntityTypeMapping TypeName="WaterNutDBModel.Declarant">
+              <MappingFragment StoreEntitySet="ApplicationSettings-Declarants">
+                <ScalarProperty Name="IsDefault" ColumnName="IsDefault" />
+                <ScalarProperty Name="DeclarantCode" ColumnName="DeclarantCode" />
+                <ScalarProperty Name="ApplicationSettingsId" ColumnName="ApplicationSettingsId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

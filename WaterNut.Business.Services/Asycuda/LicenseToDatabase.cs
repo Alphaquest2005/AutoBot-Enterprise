@@ -224,7 +224,7 @@ namespace WaterNut.DataSpace.Asycuda
             lic.xLIC_General_segment.Exporter_name = supplier?.SupplierName?? supplier?.SupplierCode;
             lic.xLIC_General_segment.Exporter_country_code = supplier?.CountryCode;
 
-            lic.xLIC_General_segment.Importer_code = BaseDataModel.Instance.CurrentApplicationSettings.DeclarantCode;
+            lic.xLIC_General_segment.Importer_code = BaseDataModel.Instance.CurrentApplicationSettings.Declarants.First(x => x.IsDefault == true).DeclarantCode;
 
             foreach (var item in lst.GroupBy(x => new{ x.TariffCode, x.LicenseDescription}))
             {

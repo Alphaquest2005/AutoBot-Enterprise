@@ -167,6 +167,7 @@
     <Compile Include="Generated Client Entities\CoreEntities\Contacts.cs" />
     <Compile Include="Generated Client Entities\CoreEntities\CustomsOperations.cs" />
     <Compile Include="Generated Client Entities\CoreEntities\Customs_Procedure.cs" />
+    <Compile Include="Generated Client Entities\CoreEntities\Declarant.cs" />
     <Compile Include="Generated Client Entities\CoreEntities\Document_Type.cs" />
     <Compile Include="Generated Client Entities\CoreEntities\EmailFileTypes.cs" />
     <Compile Include="Generated Client Entities\CoreEntities\EmailInfoMappings.cs" />
@@ -330,6 +331,7 @@
     <Compile Include="Generated Constructors Models\CoreEntities\Contacts.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\CustomsOperations.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\Customs_Procedure.cs" />
+    <Compile Include="Generated Constructors Models\CoreEntities\Declarant.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\Document_Type.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\EmailFileTypes.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\EmailInfoMappings.cs" />
@@ -490,6 +492,7 @@
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\Contacts.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\CustomsOperations.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\Customs_Procedure.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\Declarant.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\Document_Type.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\EmailFileTypes.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\EmailInfoMappings.cs" />
@@ -654,6 +657,7 @@
     <Compile Include="Generated MyNavProp Models\CoreEntities\Contacts.cs" />
     <Compile Include="Generated MyNavProp Models\CoreEntities\CustomsOperations.cs" />
     <Compile Include="Generated MyNavProp Models\CoreEntities\Customs_Procedure.cs" />
+    <Compile Include="Generated MyNavProp Models\CoreEntities\Declarant.cs" />
     <Compile Include="Generated MyNavProp Models\CoreEntities\Document_Type.cs" />
     <Compile Include="Generated MyNavProp Models\CoreEntities\EmailFileTypes.cs" />
     <Compile Include="Generated MyNavProp Models\CoreEntities\EmailInfoMappings.cs" />

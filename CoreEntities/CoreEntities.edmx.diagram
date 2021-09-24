@@ -143,6 +143,8 @@
         <AssociationConnector Association="WaterNutDBModel.FK_ImportActions_FileTypes" />
         <EntityTypeShape EntityType="WaterNutDBModel.CancelledEntriesLst" Width="1.5" PointX="33.375" PointY="5.75" />
         <EntityTypeShape EntityType="WaterNutDBModel.TODO_LICToAssess" Width="1.5" PointX="33.375" PointY="8.75" />
+        <EntityTypeShape EntityType="WaterNutDBModel.Declarant" Width="1.5" PointX="2.75" PointY="39.75" />
+        <AssociationConnector Association="WaterNutDBModel.FK_ApplicationSettings_Declarants_ApplicationSettings" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

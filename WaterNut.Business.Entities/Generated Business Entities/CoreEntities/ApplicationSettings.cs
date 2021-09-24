@@ -29,6 +29,7 @@ namespace CoreEntities.Business.Entities
             this.FileTypes = new List<FileTypes>();
             this.InfoMapping = new List<InfoMapping>();
             this.EmailMapping = new List<EmailMapping>();
+            this.Declarants = new List<Declarant>();
         }
 
         [DataMember]
@@ -467,21 +468,6 @@ namespace CoreEntities.Business.Entities
         }
         System.DateTime _openingstockdate;
         [DataMember]
-        public string DeclarantCode 
-        {
-            get
-            {
-                return _declarantcode;
-            }
-            set
-            {
-                _declarantcode = value;
-                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
-                NotifyPropertyChanged();
-            }
-        }
-        string _declarantcode;
-        [DataMember]
         public string WeightCalculationMethod 
         {
             get
@@ -705,6 +691,8 @@ namespace CoreEntities.Business.Entities
         public List<InfoMapping> InfoMapping { get; set; }
         [DataMember]
         public List<EmailMapping> EmailMapping { get; set; }
+        [DataMember]
+        public List<Declarant> Declarants { get; set; }
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

@@ -399,19 +399,6 @@ namespace CoreEntities.Client.DTO
         private System.DateTime _OpeningStockDate;
 
         [DataMember]
-        public string DeclarantCode
-		{ 
-		    get { return _DeclarantCode; }
-			set
-			{
-			    if (value == _DeclarantCode) return;
-				_DeclarantCode = value;
-				NotifyPropertyChanged();//m => this.DeclarantCode
-			}
-		}
-        private string _DeclarantCode;
-
-        [DataMember]
         public string WeightCalculationMethod
 		{ 
 		    get { return _WeightCalculationMethod; }
@@ -684,6 +671,19 @@ namespace CoreEntities.Client.DTO
 			}
 		}
         private ChangeTrackingCollection<EmailMapping> _EmailMapping = new ChangeTrackingCollection<EmailMapping>();
+
+        [DataMember]
+        public ChangeTrackingCollection<Declarant> Declarants
+		{
+		    get { return _Declarants; }
+			set
+			{
+			    if (Equals(value, _Declarants)) return;
+				_Declarants = value;
+				NotifyPropertyChanged();//m => this.Declarants
+			}
+		}
+        private ChangeTrackingCollection<Declarant> _Declarants = new ChangeTrackingCollection<Declarant>();
 
    //     [DataMember]
    //     public TrackingState TrackingState { get; set; }

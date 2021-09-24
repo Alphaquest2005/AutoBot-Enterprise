@@ -480,8 +480,8 @@ namespace WaterNut.DataSpace.Asycuda
             c71.xC71_Identification_segment.xC71_Seller_segment.CountryCode = supplier.CountryCode;
             
 
-            c71.xC71_Identification_segment.xC71_Buyer_segment.Code = BaseDataModel.Instance.CurrentApplicationSettings.DeclarantCode;
-            c71.xC71_Identification_segment.xC71_Declarant_segment.Code = BaseDataModel.Instance.CurrentApplicationSettings.DeclarantCode;
+            c71.xC71_Identification_segment.xC71_Buyer_segment.Code = BaseDataModel.Instance.CurrentApplicationSettings.Declarants.First(x => x.IsDefault == true).DeclarantCode;
+            c71.xC71_Identification_segment.xC71_Declarant_segment.Code = BaseDataModel.Instance.CurrentApplicationSettings.Declarants.First(x => x.IsDefault == true).DeclarantCode;
             c71.xC71_Identification_segment.No_7A = true;
             c71.xC71_Identification_segment.No_8A = true;
             c71.xC71_Identification_segment.No_9A = true;

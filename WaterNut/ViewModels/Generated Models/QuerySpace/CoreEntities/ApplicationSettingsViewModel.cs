@@ -708,24 +708,6 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 
  
 
-		private string _declarantCodeFilter;
-        public string DeclarantCodeFilter
-        {
-            get
-            {
-                return _declarantCodeFilter;
-            }
-            set
-            {
-                _declarantCodeFilter = value;
-				NotifyPropertyChanged(x => DeclarantCodeFilter);
-                FilterData();
-                
-            }
-        }	
-
- 
-
 		private string _weightCalculationMethodFilter;
         public string WeightCalculationMethodFilter
         {
@@ -1125,10 +1107,6 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 						}
 				 
 
-									if(string.IsNullOrEmpty(DeclarantCodeFilter) == false)
-						res.Append(" && " + string.Format("DeclarantCode.Contains(\"{0}\")",  DeclarantCodeFilter));						
- 
-
 									if(string.IsNullOrEmpty(WeightCalculationMethodFilter) == false)
 						res.Append(" && " + string.Format("WeightCalculationMethod.Contains(\"{0}\")",  WeightCalculationMethodFilter));						
  
@@ -1285,9 +1263,6 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     OpeningStockDate = x.OpeningStockDate ,
                     
  
-                    DeclarantCode = x.DeclarantCode ,
-                    
- 
                     WeightCalculationMethod = x.WeightCalculationMethod ,
                     
  
@@ -1419,9 +1394,6 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     
  
                     public System.DateTime OpeningStockDate { get; set; } 
-                    
- 
-                    public string DeclarantCode { get; set; } 
                     
  
                     public string WeightCalculationMethod { get; set; } 
