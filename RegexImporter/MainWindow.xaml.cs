@@ -29,7 +29,7 @@ namespace RegexImporter
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             //App.splash.Close(TimeSpan.FromSeconds(1));
-            Core.Common.UI.BaseViewModel.Slider.MoveTo("AsycudaDocumentSummaryIntroExP");
+            Core.Common.UI.BaseViewModel.Slider.MoveTo("InvoiceSummaryEXP");
         }
 
         bool collapseHome = false;
@@ -77,7 +77,7 @@ namespace RegexImporter
 
         private void HomeBtn_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            Core.Common.UI.BaseViewModel.Slider.MoveTo("AsycudaDocumentSummaryIntroExP");
+            Core.Common.UI.BaseViewModel.Slider.MoveTo("InvoiceSummaryExP");
         }
 
         private void MoveWindow(object sender, MouseButtonEventArgs e)

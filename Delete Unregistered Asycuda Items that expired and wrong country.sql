@@ -47,6 +47,6 @@ where Item_id in
 FROM    xcuda_Item INNER JOIN
                  AsycudaDocument ON xcuda_Item.ASYCUDA_Id = AsycudaDocument.ASYCUDA_Id INNER JOIN
                  PreviousItemsEx ON xcuda_Item.Item_Id = PreviousItemsEx.PreviousDocumentItemId
-WHERE (PreviousItemsEx.CNumber IS NULL) AND (PreviousItemsEx.Prev_reg_nbr = '37855') 
-AND (PreviousItemsEx.Previous_item_number = N'35')
+WHERE (PreviousItemsEx.CNumber IS NULL) AND (PreviousItemsEx.Prev_reg_nbr = '23925') 
+AND (PreviousItemsEx.Previous_item_number = N'2')
 ) as t)

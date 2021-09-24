@@ -15,6 +15,7 @@ using System.Threading.Tasks.Schedulers;
 using Core.Common;
 using Core.Common.Extensions;
 using Core.Common.Utils;
+using CoreEntities.Business.Entities;
 using DocumentDS.Business.Entities;
 using EmailDownloader;
 using EntryDataDS.Business.Entities;
@@ -25,6 +26,7 @@ using OCR.Business.Entities;
 using pdf_ocr;
 using SimpleMvvmToolkit.ModelExtensions;
 using Tesseract;
+using TrackableEntities;
 using UglyToad.PdfPig;
 using UglyToad.PdfPig.Content;
 using UglyToad.PdfPig.DocumentLayoutAnalysis.PageSegmenter;
@@ -32,6 +34,8 @@ using UglyToad.PdfPig.DocumentLayoutAnalysis.ReadingOrderDetector;
 using UglyToad.PdfPig.DocumentLayoutAnalysis.TextExtractor;
 using UglyToad.PdfPig.DocumentLayoutAnalysis.WordExtractor;
 using WaterNut.DataSpace;
+using AsycudaDocumentSet_Attachments = CoreEntities.Business.Entities.AsycudaDocumentSet_Attachments;
+using Attachments = CoreEntities.Business.Entities.Attachments;
 using FileTypes = CoreEntities.Business.Entities.FileTypes;
 using Invoices = OCR.Business.Entities.Invoices;
 
@@ -57,18 +61,27 @@ namespace WaterNut.DataSpace
                 foreach (var tmp in templates.OrderBy(x => x.OcrInvoices.Id))//.Where(x => x.OcrInvoices.Id == 37)
                     try
                     {
-                        if(TryReadFile(file, emailId, fileType, pdfTxt, client, overWriteExisting, docSet, tmp)) return true;
+                        if(TryReadFile(file, emailId, fileType, pdfTxt, client, overWriteExisting, docSet, tmp, fileTypeId)) return true;
                     }
                     catch (Exception e)
                     {
-                        var ex = new ApplicationException($"Problem importing file:{file} --- {e.Message}", e);
+                        Exception realerror = e;
+                        while (realerror.InnerException != null)
+                            realerror = realerror.InnerException;
+
+                        var failedLines = tmp.Lines.Where(x => x.OCR_Lines.Fields.Any(z => realerror.Message.Contains(z.Field)) || realerror.Message.Contains(x.OCR_Lines.Name))
+                            .ToList();
+
+                        ReportUnImportedFile(docSet, file, emailId, fileTypeId, client, pdfTxt.ToString(), $"Problem importing file:{file} --- {realerror.Message}", failedLines);
+
+                        var ex = new ApplicationException($"Problem importing file:{file} --- {realerror.Message}", e);
                         Console.WriteLine(ex);
-                        continue;
+                        return false;
                     }
 
-                ReportUnImportedFile(file, emailId, client, pdfTxt.ToString(), "No template found for this File", new List<Line>());
+                ReportUnImportedFile(docSet,file, emailId,fileTypeId, client, pdfTxt.ToString(), "No template found for this File", new List<Line>());
 
-                    SeeWhatSticks(pdfTxt.ToString());
+                   // SeeWhatSticks(pdfTxt.ToString());
                 
 
                 return false;
@@ -123,7 +136,7 @@ namespace WaterNut.DataSpace
         }
 
         public static bool TryReadFile(string file, int emailId, FileTypes fileType,StringBuilder pdftxt,Client client, bool overWriteExisting, List<AsycudaDocumentSet> docSet, 
-             Invoice tmp )
+             Invoice tmp, int fileTypeId)
         {
             
             if (tmp.OcrInvoices.InvoiceIdentificatonRegEx.Any() && tmp.OcrInvoices.InvoiceIdentificatonRegEx.Any(x =>
@@ -145,7 +158,7 @@ namespace WaterNut.DataSpace
                 if (failedlines.Any() && failedlines.Count < tmp.Lines.Count &&
                     tmp.Parts.First().WasStarted && tmp.Lines.SelectMany(x => x.Values.Values).Any())
                 {
-                    ReportUnImportedFile(file, emailId, client, pdftxt.ToString(), "Following fields failed to import",
+                    ReportUnImportedFile(docSet, file, emailId,fileTypeId, client, pdftxt.ToString(), "Following fields failed to import",
                         failedlines);
                     {
                         return true;
@@ -168,7 +181,7 @@ namespace WaterNut.DataSpace
             return true;
         }
 
-        private static StringBuilder GetPdftxt(string file)
+        public static StringBuilder GetPdftxt(string file)
         {
             StringBuilder pdftxt = new StringBuilder();
 
@@ -235,39 +248,123 @@ namespace WaterNut.DataSpace
 
         }
 
-        private static string parseUsingPDFBox(string input)
-        {
-            PDDocument doc = null;
+   
 
-            try
+        private static void ReportUnImportedFile(List<AsycudaDocumentSet> asycudaDocumentSets, string file, int emailId,
+            int fileTypeId,
+            Client client, string pdftxt, string error,
+            List<Line> failedlst)
+        {
+            var fileInfo = new FileInfo(file);
+            
+            var txtFile = file + ".txt";
+            //if (File.Exists(txtFile)) return;
+            File.WriteAllText(txtFile, pdftxt);
+            var body = CreateEmail(file, emailId, client, error, failedlst, fileInfo, txtFile);
+            CreateTestCase(file, failedlst, txtFile, body);
+
+
+            SaveImportError(asycudaDocumentSets, file, emailId, fileTypeId, pdftxt, error, failedlst, fileInfo);
+        }
+
+        private static void SaveImportError(List<AsycudaDocumentSet> asycudaDocumentSets, string file, int emailId, int fileTypeId, string pdftxt,
+            string error, List<Line> failedlst, FileInfo fileInfo)
+        {
+            List<AsycudaDocumentSet_Attachments> existingAttachment = new List<AsycudaDocumentSet_Attachments>();
+            using (var ctx = new CoreEntitiesContext())
             {
-                doc = PDDocument.load(input);
-                PDFTextStripper stripper = new PDFTextStripper();
-               // stripper.
-                return stripper.getText(doc);
-            }
-            finally
-            {
-                if (doc != null)
+                foreach (var docSet in asycudaDocumentSets)
                 {
-                    doc.close();
+                    existingAttachment.AddRange(ctx.AsycudaDocumentSet_Attachments
+                        .Include(x => x.Attachments)
+                        .Where(x =>
+                            x.AsycudaDocumentSetId == docSet.AsycudaDocumentSetId && x.Attachments.FilePath == file)
+                        .ToList());
+                    if (!existingAttachment.Any())
+                    {
+                        var newAttachment = new CoreEntities.Business.Entities.AsycudaDocumentSet_Attachments(true)
+                        {
+                            TrackingState = TrackingState.Added,
+                            AsycudaDocumentSetId = docSet.AsycudaDocumentSetId,
+                            Attachments = new Attachments(true)
+                            {
+                                TrackingState = TrackingState.Added,
+                                EmailId = emailId.ToString(),
+                                FilePath = file
+                            },
+                            DocumentSpecific = true,
+                            FileDate = fileInfo.CreationTime,
+                            FileTypeId = fileTypeId,
+                        };
+                        ctx.AsycudaDocumentSet_Attachments.Add(newAttachment);
+                        ctx.SaveChanges();
+                        existingAttachment.Add(newAttachment);
+                    }
+                }
+            }
+
+            using (var ctx = new OCRContext())
+            {
+                foreach (var att in existingAttachment)
+                {
+                    var importErr = ctx.ImportErrors.FirstOrDefault(x => x.Id == att.Id);
+                    if (importErr == null)
+                    {
+                        importErr = new ImportErrors(true)
+                        {
+                            Id = att.Id,
+                            PdfText = pdftxt,
+                            Error = error,
+                            EntryDateTime = DateTime.Now,
+                            OCR_FailedLines = failedlst.Select(x => new OCR_FailedLines(true)
+                            {
+                                TrackingState = TrackingState.Added,
+                                DocSetAttachmentId = att.Id,
+                                LineId = x.OCR_Lines.Id,
+                                Resolved = false,
+                                OCR_FailedFields = x.FailedFields.SelectMany(z =>
+                                        z.SelectMany(q => q.Value.Select(w => w.Key)))
+                                    .DistinctBy(z => z.Id)
+                                    .Select(z => new OCR_FailedFields(true)
+                                    {
+                                        TrackingState = TrackingState.Added,
+                                        FieldId = z.Id,
+                                    })
+                                    .ToList()
+                            }).ToList()
+                        };
+                        ctx.ImportErrors.Add(importErr);
+                    }
+                    else
+                    {
+                        importErr.PdfText = pdftxt;
+                        importErr.Error = error;
+                        importErr.EntryDateTime = DateTime.Now;
+                        importErr.OCR_FailedLines = failedlst.Select(x => new OCR_FailedLines(true)
+                        {
+                            TrackingState = TrackingState.Added,
+                            DocSetAttachmentId = att.Id,
+                            LineId = x.OCR_Lines.Id,
+                            Resolved = false,
+                            OCR_FailedFields = x.FailedFields.SelectMany(z =>
+                                    z.SelectMany(q => q.Value.Select(w => w.Key)))
+                                .DistinctBy(z => z.Id)
+                                .Select(z => new OCR_FailedFields(true)
+                                {
+                                    TrackingState = TrackingState.Added,
+                                    FieldId = z.Id,
+                                })
+                                .ToList()
+                        }).ToList();
+                    }
+
+                    ctx.SaveChanges();
                 }
             }
         }
 
-        private static void ReportUnImportedFile(string file, int emailId, Client client, string pdftxt, string error,
-            List<Line> failedlst)
+        private static void CreateTestCase(string file, List<Line> failedlst, string txtFile, string body)
         {
-            var fileInfo = new FileInfo(file);
-            var body = $"Hey,\r\n\r\n {error}-'{fileInfo.Name}'.\r\n" +
-                       $"{failedlst.Select(x => $"Line:{x.OCR_Lines.Name} - RegId: {x.OCR_Lines.RegularExpressions.Id} - Regex: '{x.OCR_Lines.RegularExpressions.RegEx}' - Fields: {x.FailedFields.SelectMany(z => z.ToList()).SelectMany(z => z.Value.ToList()).Select(z => $"{z.Key.Key} - '{z.Key.Field}'").DefaultIfEmpty(string.Empty).Aggregate((o, c) => o + "\r\n" + c)}").DefaultIfEmpty(string.Empty).Aggregate((o, c) => o + "\r\n" + c)}" +
-                       "Thanks\r\n" +
-                       $"AutoBot";
-            var txtFile = file + ".txt";
-            if (File.Exists(txtFile)) return;
-            File.WriteAllText(txtFile, pdftxt);
-            EmailDownloader.EmailDownloader.ForwardMsg(emailId, client, "Invoice Template Not found!", body,
-                new[] {"Joseph@auto-brokerage.com"}, new[] {file, txtFile});
             dynamic testCaseData = new BetterExpando();
             testCaseData.DateTime = DateTime.Now;
             testCaseData.Id = failedlst.FirstOrDefault()?.OCR_Lines.Parts.Invoices.Id;
@@ -276,9 +373,23 @@ namespace WaterNut.DataSpace
             testCaseData.TxtFile = txtFile;
             testCaseData.Message = body;
             //write to info
-            UnitTestLogger.Log(new List<String>{FunctionLibary.NameOfCallingClass(),  failedlst.FirstOrDefault()?.OCR_Lines.Parts.Invoices.Name, },BaseDataModel.Instance.CurrentApplicationSettings.DataFolder, testCaseData );
+            UnitTestLogger.Log(
+                new List<String>
+                    {FunctionLibary.NameOfCallingClass(), failedlst.FirstOrDefault()?.OCR_Lines.Parts.Invoices.Name,},
+                BaseDataModel.Instance.CurrentApplicationSettings.DataFolder, testCaseData);
         }
 
+        private static string CreateEmail(string file, int emailId, Client client, string error, List<Line> failedlst,
+            FileInfo fileInfo, string txtFile)
+        {
+            var body = $"Hey,\r\n\r\n {error}-'{fileInfo.Name}'.\r\n" +
+                       $"{failedlst.Select(x => $"Line:{x.OCR_Lines.Name} - RegId: {x.OCR_Lines.RegularExpressions.Id} - Regex: '{x.OCR_Lines.RegularExpressions.RegEx}' - Fields: {x.FailedFields.SelectMany(z => z.ToList()).SelectMany(z => z.Value.ToList()).Select(z => $"{z.Key.Key} - '{z.Key.Field}'").DefaultIfEmpty(string.Empty).Aggregate((o, c) => o + "\r\n" + c)}").DefaultIfEmpty(string.Empty).Aggregate((o, c) => o + "\r\n" + c)}" +
+                       "Thanks\r\n" +
+                       $"AutoBot";
+            EmailDownloader.EmailDownloader.ForwardMsg(emailId, client, "Invoice Template Not found!", body,
+                new[] {"Joseph@auto-brokerage.com"}, new[] {file, txtFile});
+            return body;
+        }
 
 
         private static void SeeWhatSticks(string pdftext)
@@ -439,7 +550,15 @@ namespace WaterNut.DataSpace
                         }
                         else
                         {
-                            ditm[fieldname] = childItms;
+                            if (ditm.ContainsKey(fieldname))
+                            {
+                                ((List<IDictionary<string, object>>) ditm[fieldname]).AddRange(childItms);
+                            }
+                            else
+                            {
+                               ditm[fieldname] = childItms; 
+                            }
+                            
                         }
                             
                     }
@@ -803,7 +922,7 @@ namespace WaterNut.DataSpace
                             z.RegularExpressions.RegEx,
                             (z.RegularExpressions.MultiLine == true
                                 ? RegexOptions.Multiline
-                                : RegexOptions.Singleline) | RegexOptions.IgnoreCase);
+                                : RegexOptions.Singleline) | RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture);
                     if (match.Success)
                     {
 

@@ -716,8 +716,8 @@ namespace WaterNut.DataSpace
 
 
 
-                        Freight = Convert.ToDouble(x["Freight"].ToString()),
-                        FreightCurrency = x["FreightCurrency"].ToString(),
+                        Freight = x.ContainsKey("Freight") ? Convert.ToDouble(x["Freight"].ToString()): (double?) null,
+                        FreightCurrency = x.ContainsKey("FreightCurrency") ? x["FreightCurrency"].ToString(): null,
                         //LocationOfGoods = x["LocationOfGoods"].ToString(),
                         //Goods = x["Goods"].ToString(),
                         //Marks = x["Marks"].ToString(),

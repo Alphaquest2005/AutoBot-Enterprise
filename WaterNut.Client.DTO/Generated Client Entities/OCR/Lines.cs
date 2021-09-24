@@ -174,6 +174,19 @@ namespace OCR.Client.DTO
         private Lines _ParentLine;
         private ChangeTrackingCollection<Lines> ParentLineChangeTracker { get; set; }
 
+        [DataMember]
+        public ChangeTrackingCollection<OCR_FailedLines> OCR_FailedLines
+		{
+		    get { return _OCR_FailedLines; }
+			set
+			{
+			    if (Equals(value, _OCR_FailedLines)) return;
+				_OCR_FailedLines = value;
+				NotifyPropertyChanged();//m => this.OCR_FailedLines
+			}
+		}
+        private ChangeTrackingCollection<OCR_FailedLines> _OCR_FailedLines = new ChangeTrackingCollection<OCR_FailedLines>();
+
    //     [DataMember]
    //     public TrackingState TrackingState { get; set; }
 

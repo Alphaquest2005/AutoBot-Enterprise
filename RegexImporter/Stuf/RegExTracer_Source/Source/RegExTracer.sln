@@ -1,6 +1,8 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 9.00
-# Visual Studio 2005
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.1684
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RegExTracer", "RegExTracer.csproj", "{C910E85F-D1A0-41F3-AB05-7F7CB22ADCEC}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nabu.Forms", "..\Nabu\Nabu.Forms\Nabu.Forms.csproj", "{BF8D69BA-5B66-4DED-B609-B89929ECC3DA}"
@@ -34,5 +36,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {95852940-B002-4F61-8A87-33E2F899F7F2}
 	EndGlobalSection
 EndGlobal

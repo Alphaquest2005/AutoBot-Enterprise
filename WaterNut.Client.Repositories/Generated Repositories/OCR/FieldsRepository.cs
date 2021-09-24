@@ -206,7 +206,8 @@ namespace OCR.Client.Repositories
                   // FieldValue = (res.FieldValue != null?new OCR_FieldValue(res.FieldValue): null),    
                      // FormatRegEx = new System.Collections.ObjectModel.ObservableCollection<FieldFormatRegEx>(res.FormatRegEx.Select(y => new FieldFormatRegEx(y))),    
                      // ChildFields = new System.Collections.ObjectModel.ObservableCollection<Fields>(res.ChildFields.Select(y => new Fields(y))),    
-                  // ParentField = (res.ParentField != null?new Fields(res.ParentField): null)    
+                  // ParentField = (res.ParentField != null?new Fields(res.ParentField): null),    
+                     // OCR_FailedFields = new System.Collections.ObjectModel.ObservableCollection<OCR_FailedFields>(res.OCR_FailedFields.Select(y => new OCR_FailedFields(y)))    
                   };
                     }
                     else

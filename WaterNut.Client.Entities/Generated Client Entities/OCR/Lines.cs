@@ -404,6 +404,60 @@ public Nullable<bool> DistinctValues
 		}
         
 
+        ObservableCollection<OCR_FailedLines> _OCR_FailedLines = null;
+        public  ObservableCollection<OCR_FailedLines> OCR_FailedLines
+		{
+            
+		    get 
+				{ 
+					if(_OCR_FailedLines != null) return _OCR_FailedLines;
+					//if (this.lines.OCR_FailedLines == null) Debugger.Break();
+					if(this.lines.OCR_FailedLines != null)
+					{
+						_OCR_FailedLines = new ObservableCollection<OCR_FailedLines>(this.lines.OCR_FailedLines.Select(x => new OCR_FailedLines(x)));
+					}
+					
+						_OCR_FailedLines.CollectionChanged += OCR_FailedLines_CollectionChanged; 
+					
+					return _OCR_FailedLines; 
+				}
+			set
+			{
+			    if (Equals(value, _OCR_FailedLines)) return;
+				if (value != null)
+					this.lines.OCR_FailedLines = new ChangeTrackingCollection<DTO.OCR_FailedLines>(value.Select(x => x.DTO).ToList());
+                _OCR_FailedLines = value;
+				if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				if (_OCR_FailedLines != null)
+				_OCR_FailedLines.CollectionChanged += OCR_FailedLines_CollectionChanged;               
+				NotifyPropertyChanged("OCR_FailedLines");
+			}
+		}
+        
+        void OCR_FailedLines_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            switch (e.Action)
+            {
+                case NotifyCollectionChangedAction.Add:
+                    foreach (OCR_FailedLines itm in e.NewItems)
+                    {
+                        if (itm != null)
+                        lines.OCR_FailedLines.Add(itm.DTO);
+                    }
+                    if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+                    break;
+                case NotifyCollectionChangedAction.Remove:
+                    foreach (OCR_FailedLines itm in e.OldItems)
+                    {
+                        if (itm != null)
+                        lines.OCR_FailedLines.Remove(itm.DTO);
+                    }
+					if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+                    break;
+                
+            }
+        }
+
 
         ChangeTrackingCollection<DTO.Lines> _changeTracker;    
         public ChangeTrackingCollection<DTO.Lines> ChangeTracker

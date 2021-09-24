@@ -5,11 +5,12 @@
     xmlns:i="http://schemas.microsoft.com/Expression/2010/interactivity" xmlns:ei="http://schemas.microsoft.com/Expression/2010/interactions"
 	xmlns:d="http://schemas.microsoft.com/Expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:Custom="http://www.galasoft.ch/mvvmlight"
     xmlns:regexImporter="clr-namespace:RegexImporter"
+    xmlns:views1="clr-namespace:RegexImporter.Views"
     mc:Ignorable="d"     
     x:Class="RegexImporter.MainWindow"
 	x:Name="Window"    
-	Title="WaterNut"
-	Width="1310.969" Height="783.169" Loaded="Window_Loaded" WindowStartupLocation="CenterScreen" ResizeMode="CanResizeWithGrip" WindowStyle="None"  WindowState="Maximized" AllowsTransparency="True" BorderBrush="#CC3233C4" BorderThickness="5" >
+    Title="WaterNut"
+	Width="1310.969" Height="783.169" Loaded="Window_Loaded" WindowStartupLocation="CenterScreen" ResizeMode="CanResizeWithGrip" WindowStyle="None"  WindowState="Maximized" AllowsTransparency="False" BorderBrush="#CC3233C4" BorderThickness="5" >
     <Window.Resources>
         <regexImporter:MainWindowModel x:Key="MainWindowModelDataSource" />
     </Window.Resources>
@@ -29,7 +30,7 @@
 
     <Grid x:Name="LayoutRoot" DataContext="{Binding Source={StaticResource MainWindowModelDataSource}}" d:DataContext="{d:DesignData /SampleData/MainWindowModelSampleData.xaml}" >
         <views:Status Height="71" VerticalAlignment="Bottom" HorizontalAlignment="Stretch" Margin="271,0,315.6,108"   />
-        <views:MainView Margin="0,0,0,125"  />
+        <views1:MainView Margin="0,0,0,125"  />
         <Border Height="95" Margin="0,0,0,25" VerticalAlignment="Bottom" HorizontalAlignment="Stretch" BorderThickness="2" Background="#4CFAFAFA"   >
             <Border.Effect>
                 <DropShadowEffect Color="Green"/>

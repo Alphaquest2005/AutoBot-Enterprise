@@ -77,9 +77,11 @@ namespace OCR.Business.Entities
      
         public DbSet<InvoiceIdentificatonRegEx> InvoiceIdentificatonRegEx { get; set; }
      
-        public DbSet<Invoice> InvoiceExs { get; set; }
+        public DbSet<ImportErrors> ImportErrors { get; set; }
      
-        public DbSet<Part> PartExs { get; set; }
+        public DbSet<OCR_FailedFields> OCR_FailedFields { get; set; }
+     
+        public DbSet<OCR_FailedLines> OCR_FailedLines { get; set; }
      
 
 
@@ -115,9 +117,11 @@ namespace OCR.Business.Entities
          
             modelBuilder.Configurations.Add(new InvoiceIdentificatonRegExMap());
          
-            modelBuilder.Configurations.Add(new InvoiceMap());
+            modelBuilder.Configurations.Add(new ImportErrorsMap());
          
-            modelBuilder.Configurations.Add(new PartMap());
+            modelBuilder.Configurations.Add(new OCR_FailedFieldsMap());
+         
+            modelBuilder.Configurations.Add(new OCR_FailedLinesMap());
          
 			OnModelCreatingExtentsion(modelBuilder);
 

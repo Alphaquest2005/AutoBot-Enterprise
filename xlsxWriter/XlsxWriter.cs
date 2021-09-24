@@ -49,7 +49,27 @@ namespace xlsxWriter
                 {
                     var pdfFile = new FileInfo(shipmentInvoice.SourceFile);
 
-                    if (shipmentInvoice.ShipmentRiderInvoice.First().Packages > 0)
+                    if (shipmentInvoice.ShipmentRiderInvoice.Any() && shipmentInvoice.ShipmentRiderInvoice.First().Packages > 0)
+                    {
+                        parent = shipmentInvoice;
+
+
+                        if (parent.ShipmentInvoicePOs.Any())
+                        {
+                            csvFilePath = Path.Combine(pdfFile.DirectoryName, $"{parent.ShipmentInvoicePOs.First().PurchaseOrders.PONumber}.xlsx");
+                            csvs.Add((parent.ShipmentInvoicePOs.First().PurchaseOrders.PONumber, csvFilePath));
+                        }
+                        else
+                        {
+                            csvFilePath = Path.Combine(pdfFile.DirectoryName, $"{parent.InvoiceNo}.xlsx");
+                            csvs.Add((parent.InvoiceNo, csvFilePath));
+                        }
+
+                        workbook = CreateShipmentWorkBook(riderId, parent, csvFilePath, header,
+                            out invoiceRow, out riderdetails, out doRider);
+                    }
+
+                    if (!shipmentInvoice.ShipmentRiderInvoice.Any())
                     {
                         parent = shipmentInvoice;
 
@@ -80,7 +100,7 @@ namespace xlsxWriter
                            
                           
                             
-                            WritePOToFile(pO, workbook, header, doRider, riderdetails, invoiceRow, shipmentInvoice.ShipmentRiderInvoice.First().Packages == 0);
+                            WritePOToFile(pO, workbook, header, doRider, riderdetails, invoiceRow, (shipmentInvoice.ShipmentRiderInvoice.FirstOrDefault()?.Packages ?? 0) == 0);
                             DoMisMatches(shipmentInvoice, workbook);
                             workbook.Save();
 
@@ -428,6 +448,7 @@ namespace xlsxWriter
                     for (int i = 0; i < table.Count; i++)
                     {
                         var itm = table[i];
+                        if(itm != null)
                         SetValue(workbook, currentline + i + 1, header.IndexOf(x) + 1,
                             itm.GetType().GetProperty(x)?.GetValue(itm)?.ToString());
                     }
@@ -688,7 +709,7 @@ namespace xlsxWriter
         private static void WriteInvHeader(ShipmentInvoice shipmentInvoice, Dictionary<(string Column, int Index), FileTypeMappings> header, Workbook workbook)
         {
             workbook.SetCurrentWorksheet("POTemplate");
-            var invoiceRow = shipmentInvoice.ShipmentRiderInvoice.First().Packages == 0 ? workbook.CurrentWorksheet.GetLastRowNumber() + 1 : workbook.CurrentWorksheet.GetLastRowNumber();
+            var invoiceRow = (shipmentInvoice.ShipmentRiderInvoice.FirstOrDefault()?.Packages ?? 0) == 0 ? workbook.CurrentWorksheet.GetLastRowNumber() + 1 : workbook.CurrentWorksheet.GetLastRowNumber();
             
             SetValue(workbook, invoiceRow, header.First(x => x.Key.Column == nameof(shipmentInvoice.InvoiceTotal)).Key.Index,
                 shipmentInvoice.InvoiceTotal.GetValueOrDefault());

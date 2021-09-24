@@ -57,14 +57,15 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
                         RegisterToReceiveMessages<string>(MessageToken.CurrentEndIDChanged, OnCurrentEndIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentFieldFormatRegExIDChanged, OnCurrentFieldFormatRegExIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentFieldsIDChanged, OnCurrentFieldsIDChanged);
-                        RegisterToReceiveMessages<string>(MessageToken.CurrentInvoiceIDChanged, OnCurrentInvoiceIDChanged);
+                        RegisterToReceiveMessages<string>(MessageToken.CurrentImportErrorsIDChanged, OnCurrentImportErrorsIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentInvoiceIdentificatonRegExIDChanged, OnCurrentInvoiceIdentificatonRegExIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentInvoiceRegExIDChanged, OnCurrentInvoiceRegExIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentInvoicesIDChanged, OnCurrentInvoicesIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentLinesIDChanged, OnCurrentLinesIDChanged);
+                        RegisterToReceiveMessages<string>(MessageToken.CurrentOCR_FailedFieldsIDChanged, OnCurrentOCR_FailedFieldsIDChanged);
+                        RegisterToReceiveMessages<string>(MessageToken.CurrentOCR_FailedLinesIDChanged, OnCurrentOCR_FailedLinesIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentOCR_FieldValueIDChanged, OnCurrentOCR_FieldValueIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentOCRFileTypesIDChanged, OnCurrentOCRFileTypesIDChanged);
-                        RegisterToReceiveMessages<string>(MessageToken.CurrentPartIDChanged, OnCurrentPartIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentPartsIDChanged, OnCurrentPartsIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentPartTypesIDChanged, OnCurrentPartTypesIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentRecuringPartIDChanged, OnCurrentRecuringPartIDChanged);
@@ -77,14 +78,15 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
                         RegisterToReceiveMessages<End>(MessageToken.CurrentEndChanged, OnCurrentEndChanged);
                         RegisterToReceiveMessages<FieldFormatRegEx>(MessageToken.CurrentFieldFormatRegExChanged, OnCurrentFieldFormatRegExChanged);
                         RegisterToReceiveMessages<Fields>(MessageToken.CurrentFieldsChanged, OnCurrentFieldsChanged);
-                        RegisterToReceiveMessages<Invoice>(MessageToken.CurrentInvoiceChanged, OnCurrentInvoiceChanged);
+                        RegisterToReceiveMessages<ImportErrors>(MessageToken.CurrentImportErrorsChanged, OnCurrentImportErrorsChanged);
                         RegisterToReceiveMessages<InvoiceIdentificatonRegEx>(MessageToken.CurrentInvoiceIdentificatonRegExChanged, OnCurrentInvoiceIdentificatonRegExChanged);
                         RegisterToReceiveMessages<InvoiceRegEx>(MessageToken.CurrentInvoiceRegExChanged, OnCurrentInvoiceRegExChanged);
                         RegisterToReceiveMessages<Invoices>(MessageToken.CurrentInvoicesChanged, OnCurrentInvoicesChanged);
                         RegisterToReceiveMessages<Lines>(MessageToken.CurrentLinesChanged, OnCurrentLinesChanged);
+                        RegisterToReceiveMessages<OCR_FailedFields>(MessageToken.CurrentOCR_FailedFieldsChanged, OnCurrentOCR_FailedFieldsChanged);
+                        RegisterToReceiveMessages<OCR_FailedLines>(MessageToken.CurrentOCR_FailedLinesChanged, OnCurrentOCR_FailedLinesChanged);
                         RegisterToReceiveMessages<OCR_FieldValue>(MessageToken.CurrentOCR_FieldValueChanged, OnCurrentOCR_FieldValueChanged);
                         RegisterToReceiveMessages<OCRFileTypes>(MessageToken.CurrentOCRFileTypesChanged, OnCurrentOCRFileTypesChanged);
-                        RegisterToReceiveMessages<Part>(MessageToken.CurrentPartChanged, OnCurrentPartChanged);
                         RegisterToReceiveMessages<Parts>(MessageToken.CurrentPartsChanged, OnCurrentPartsChanged);
                         RegisterToReceiveMessages<PartTypes>(MessageToken.CurrentPartTypesChanged, OnCurrentPartTypesChanged);
                         RegisterToReceiveMessages<RecuringPart>(MessageToken.CurrentRecuringPartChanged, OnCurrentRecuringPartChanged);
@@ -217,30 +219,30 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
                                 }
                             }
                         }
-                        internal async void OnCurrentInvoiceIDChanged(object sender, NotificationEventArgs<string> e)
+                        internal async void OnCurrentImportErrorsIDChanged(object sender, NotificationEventArgs<string> e)
                         {
-                            using (InvoiceRepository ctx = new InvoiceRepository())
+                            using (ImportErrorsRepository ctx = new ImportErrorsRepository())
                             {
-                                CurrentInvoice = await ctx.GetInvoice(e.Data).ConfigureAwait(continueOnCapturedContext: false);
+                                CurrentImportErrors = await ctx.GetImportErrors(e.Data).ConfigureAwait(continueOnCapturedContext: false);
                             }
-                            NotifyPropertyChanged(m => CurrentInvoice);
+                            NotifyPropertyChanged(m => CurrentImportErrors);
                         }
 
-                        private  string _currentInvoiceID = "";
-                        public string CurrentInvoiceID
+                        private  string _currentImportErrorsID = "";
+                        public string CurrentImportErrorsID
                         {
                             get
                             {
-                                return _currentInvoiceID;
+                                return _currentImportErrorsID;
                             }
                             set
                             {
-                                if (_currentInvoiceID != value)
+                                if (_currentImportErrorsID != value)
                                 {
-                                    _currentInvoiceID = value;
-                                    if (!string.IsNullOrEmpty(_currentInvoiceID)) BeginSendMessage(MessageToken.CurrentInvoiceIDChanged,
-                                                     new NotificationEventArgs<string>(MessageToken.CurrentInvoiceIDChanged, _currentInvoiceID));
-                                    NotifyPropertyChanged(x => this.CurrentInvoiceID);  
+                                    _currentImportErrorsID = value;
+                                    if (!string.IsNullOrEmpty(_currentImportErrorsID)) BeginSendMessage(MessageToken.CurrentImportErrorsIDChanged,
+                                                     new NotificationEventArgs<string>(MessageToken.CurrentImportErrorsIDChanged, _currentImportErrorsID));
+                                    NotifyPropertyChanged(x => this.CurrentImportErrorsID);  
                                 }
                             }
                         }
@@ -352,6 +354,60 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
                                 }
                             }
                         }
+                        internal async void OnCurrentOCR_FailedFieldsIDChanged(object sender, NotificationEventArgs<string> e)
+                        {
+                            using (OCR_FailedFieldsRepository ctx = new OCR_FailedFieldsRepository())
+                            {
+                                CurrentOCR_FailedFields = await ctx.GetOCR_FailedFields(e.Data).ConfigureAwait(continueOnCapturedContext: false);
+                            }
+                            NotifyPropertyChanged(m => CurrentOCR_FailedFields);
+                        }
+
+                        private  string _currentOCR_FailedFieldsID = "";
+                        public string CurrentOCR_FailedFieldsID
+                        {
+                            get
+                            {
+                                return _currentOCR_FailedFieldsID;
+                            }
+                            set
+                            {
+                                if (_currentOCR_FailedFieldsID != value)
+                                {
+                                    _currentOCR_FailedFieldsID = value;
+                                    if (!string.IsNullOrEmpty(_currentOCR_FailedFieldsID)) BeginSendMessage(MessageToken.CurrentOCR_FailedFieldsIDChanged,
+                                                     new NotificationEventArgs<string>(MessageToken.CurrentOCR_FailedFieldsIDChanged, _currentOCR_FailedFieldsID));
+                                    NotifyPropertyChanged(x => this.CurrentOCR_FailedFieldsID);  
+                                }
+                            }
+                        }
+                        internal async void OnCurrentOCR_FailedLinesIDChanged(object sender, NotificationEventArgs<string> e)
+                        {
+                            using (OCR_FailedLinesRepository ctx = new OCR_FailedLinesRepository())
+                            {
+                                CurrentOCR_FailedLines = await ctx.GetOCR_FailedLines(e.Data).ConfigureAwait(continueOnCapturedContext: false);
+                            }
+                            NotifyPropertyChanged(m => CurrentOCR_FailedLines);
+                        }
+
+                        private  string _currentOCR_FailedLinesID = "";
+                        public string CurrentOCR_FailedLinesID
+                        {
+                            get
+                            {
+                                return _currentOCR_FailedLinesID;
+                            }
+                            set
+                            {
+                                if (_currentOCR_FailedLinesID != value)
+                                {
+                                    _currentOCR_FailedLinesID = value;
+                                    if (!string.IsNullOrEmpty(_currentOCR_FailedLinesID)) BeginSendMessage(MessageToken.CurrentOCR_FailedLinesIDChanged,
+                                                     new NotificationEventArgs<string>(MessageToken.CurrentOCR_FailedLinesIDChanged, _currentOCR_FailedLinesID));
+                                    NotifyPropertyChanged(x => this.CurrentOCR_FailedLinesID);  
+                                }
+                            }
+                        }
                         internal async void OnCurrentOCR_FieldValueIDChanged(object sender, NotificationEventArgs<string> e)
                         {
                             using (OCR_FieldValueRepository ctx = new OCR_FieldValueRepository())
@@ -403,33 +459,6 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
                                     if (!string.IsNullOrEmpty(_currentOCRFileTypesID)) BeginSendMessage(MessageToken.CurrentOCRFileTypesIDChanged,
                                                      new NotificationEventArgs<string>(MessageToken.CurrentOCRFileTypesIDChanged, _currentOCRFileTypesID));
                                     NotifyPropertyChanged(x => this.CurrentOCRFileTypesID);  
-                                }
-                            }
-                        }
-                        internal async void OnCurrentPartIDChanged(object sender, NotificationEventArgs<string> e)
-                        {
-                            using (PartRepository ctx = new PartRepository())
-                            {
-                                CurrentPart = await ctx.GetPart(e.Data).ConfigureAwait(continueOnCapturedContext: false);
-                            }
-                            NotifyPropertyChanged(m => CurrentPart);
-                        }
-
-                        private  string _currentPartID = "";
-                        public string CurrentPartID
-                        {
-                            get
-                            {
-                                return _currentPartID;
-                            }
-                            set
-                            {
-                                if (_currentPartID != value)
-                                {
-                                    _currentPartID = value;
-                                    if (!string.IsNullOrEmpty(_currentPartID)) BeginSendMessage(MessageToken.CurrentPartIDChanged,
-                                                     new NotificationEventArgs<string>(MessageToken.CurrentPartIDChanged, _currentPartID));
-                                    NotifyPropertyChanged(x => this.CurrentPartID);  
                                 }
                             }
                         }
@@ -749,6 +778,7 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
                     // all current navigation properties = null
                  CurrentOCR_FieldValue = null;
                  CurrentFieldFormatRegEx = null;
+                 CurrentOCR_FailedFields = null;
    
                 }
             }
@@ -777,48 +807,48 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
                      
        
 
-        internal void OnCurrentInvoiceChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<Invoice> e)
+        internal void OnCurrentImportErrorsChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<ImportErrors> e)
         {
-            //CurrentInvoice = e.Data;
-            NotifyPropertyChanged(m => this.CurrentInvoice);
+            //CurrentImportErrors = e.Data;
+            NotifyPropertyChanged(m => this.CurrentImportErrors);
         }
 
-        private  Invoice _currentInvoice;
-        public Invoice CurrentInvoice
+        private  ImportErrors _currentImportErrors;
+        public ImportErrors CurrentImportErrors
         {
             get
             {
-                return _currentInvoice;
+                return _currentImportErrors;
             }
             set
             {
-                if (_currentInvoice != value)
+                if (_currentImportErrors != value)
                 {
-                    _currentInvoice = value;
-                    BeginSendMessage(MessageToken.CurrentInvoiceChanged,
-                                                     new NotificationEventArgs<Invoice>(MessageToken.CurrentInvoiceChanged, _currentInvoice)); 
-                    NotifyPropertyChanged(x => this.CurrentInvoice);    
+                    _currentImportErrors = value;
+                    BeginSendMessage(MessageToken.CurrentImportErrorsChanged,
+                                                     new NotificationEventArgs<ImportErrors>(MessageToken.CurrentImportErrorsChanged, _currentImportErrors)); 
+                    NotifyPropertyChanged(x => this.CurrentImportErrors);    
                     // all current navigation properties = null
-                 CurrentPart = null;
+                 CurrentOCR_FailedLines = null;
    
                 }
             }
         }
 
-		VirtualListItem<Invoice> _vcurrentInvoice;
-        public VirtualListItem<Invoice> VCurrentInvoice
+		VirtualListItem<ImportErrors> _vcurrentImportErrors;
+        public VirtualListItem<ImportErrors> VCurrentImportErrors
         {
             get
             {
-                return _vcurrentInvoice;
+                return _vcurrentImportErrors;
             }
             set
             {
-                if (_vcurrentInvoice != value)
+                if (_vcurrentImportErrors != value)
                 {
-                    _vcurrentInvoice = value;
-					if(_vcurrentInvoice != null) CurrentInvoice = value.Data;
-                    NotifyPropertyChanged(x => this.VCurrentInvoice);                    
+                    _vcurrentImportErrors = value;
+					if(_vcurrentImportErrors != null) CurrentImportErrors = value.Data;
+                    NotifyPropertyChanged(x => this.VCurrentImportErrors);                    
                 }
             }
         }
@@ -1005,6 +1035,7 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
                     NotifyPropertyChanged(x => this.CurrentLines);    
                     // all current navigation properties = null
                  CurrentFields = null;
+                 CurrentOCR_FailedLines = null;
    
                 }
             }
@@ -1024,6 +1055,107 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
                     _vcurrentLines = value;
 					if(_vcurrentLines != null) CurrentLines = value.Data;
                     NotifyPropertyChanged(x => this.VCurrentLines);                    
+                }
+            }
+        }
+
+
+
+                     
+       
+
+        internal void OnCurrentOCR_FailedFieldsChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<OCR_FailedFields> e)
+        {
+            //CurrentOCR_FailedFields = e.Data;
+            NotifyPropertyChanged(m => this.CurrentOCR_FailedFields);
+        }
+
+        private  OCR_FailedFields _currentOCR_FailedFields;
+        public OCR_FailedFields CurrentOCR_FailedFields
+        {
+            get
+            {
+                return _currentOCR_FailedFields;
+            }
+            set
+            {
+                if (_currentOCR_FailedFields != value)
+                {
+                    _currentOCR_FailedFields = value;
+                    BeginSendMessage(MessageToken.CurrentOCR_FailedFieldsChanged,
+                                                     new NotificationEventArgs<OCR_FailedFields>(MessageToken.CurrentOCR_FailedFieldsChanged, _currentOCR_FailedFields)); 
+                    NotifyPropertyChanged(x => this.CurrentOCR_FailedFields);    
+                    // all current navigation properties = null
+   
+                }
+            }
+        }
+
+		VirtualListItem<OCR_FailedFields> _vcurrentOCR_FailedFields;
+        public VirtualListItem<OCR_FailedFields> VCurrentOCR_FailedFields
+        {
+            get
+            {
+                return _vcurrentOCR_FailedFields;
+            }
+            set
+            {
+                if (_vcurrentOCR_FailedFields != value)
+                {
+                    _vcurrentOCR_FailedFields = value;
+					if(_vcurrentOCR_FailedFields != null) CurrentOCR_FailedFields = value.Data;
+                    NotifyPropertyChanged(x => this.VCurrentOCR_FailedFields);                    
+                }
+            }
+        }
+
+
+
+                     
+       
+
+        internal void OnCurrentOCR_FailedLinesChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<OCR_FailedLines> e)
+        {
+            //CurrentOCR_FailedLines = e.Data;
+            NotifyPropertyChanged(m => this.CurrentOCR_FailedLines);
+        }
+
+        private  OCR_FailedLines _currentOCR_FailedLines;
+        public OCR_FailedLines CurrentOCR_FailedLines
+        {
+            get
+            {
+                return _currentOCR_FailedLines;
+            }
+            set
+            {
+                if (_currentOCR_FailedLines != value)
+                {
+                    _currentOCR_FailedLines = value;
+                    BeginSendMessage(MessageToken.CurrentOCR_FailedLinesChanged,
+                                                     new NotificationEventArgs<OCR_FailedLines>(MessageToken.CurrentOCR_FailedLinesChanged, _currentOCR_FailedLines)); 
+                    NotifyPropertyChanged(x => this.CurrentOCR_FailedLines);    
+                    // all current navigation properties = null
+                 CurrentOCR_FailedFields = null;
+   
+                }
+            }
+        }
+
+		VirtualListItem<OCR_FailedLines> _vcurrentOCR_FailedLines;
+        public VirtualListItem<OCR_FailedLines> VCurrentOCR_FailedLines
+        {
+            get
+            {
+                return _vcurrentOCR_FailedLines;
+            }
+            set
+            {
+                if (_vcurrentOCR_FailedLines != value)
+                {
+                    _vcurrentOCR_FailedLines = value;
+					if(_vcurrentOCR_FailedLines != null) CurrentOCR_FailedLines = value.Data;
+                    NotifyPropertyChanged(x => this.VCurrentOCR_FailedLines);                    
                 }
             }
         }
@@ -1125,56 +1257,6 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
                     _vcurrentOCRFileTypes = value;
 					if(_vcurrentOCRFileTypes != null) CurrentOCRFileTypes = value.Data;
                     NotifyPropertyChanged(x => this.VCurrentOCRFileTypes);                    
-                }
-            }
-        }
-
-
-
-                     
-       
-
-        internal void OnCurrentPartChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<Part> e)
-        {
-            //CurrentPart = e.Data;
-            NotifyPropertyChanged(m => this.CurrentPart);
-        }
-
-        private  Part _currentPart;
-        public Part CurrentPart
-        {
-            get
-            {
-                return _currentPart;
-            }
-            set
-            {
-                if (_currentPart != value)
-                {
-                    _currentPart = value;
-                    BeginSendMessage(MessageToken.CurrentPartChanged,
-                                                     new NotificationEventArgs<Part>(MessageToken.CurrentPartChanged, _currentPart)); 
-                    NotifyPropertyChanged(x => this.CurrentPart);    
-                    // all current navigation properties = null
-   
-                }
-            }
-        }
-
-		VirtualListItem<Part> _vcurrentPart;
-        public VirtualListItem<Part> VCurrentPart
-        {
-            get
-            {
-                return _vcurrentPart;
-            }
-            set
-            {
-                if (_vcurrentPart != value)
-                {
-                    _vcurrentPart = value;
-					if(_vcurrentPart != null) CurrentPart = value.Data;
-                    NotifyPropertyChanged(x => this.VCurrentPart);                    
                 }
             }
         }

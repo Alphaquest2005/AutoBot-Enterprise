@@ -24,6 +24,7 @@ namespace OCR.Business.Entities
         {
             this.Fields = new List<Fields>();
             this.ChildLines = new List<Lines>();
+            this.OCR_FailedLines = new List<OCR_FailedLines>();
         }
 
         [DataMember]
@@ -126,6 +127,8 @@ namespace OCR.Business.Entities
         public List<Lines> ChildLines { get; set; }
         [DataMember]
         public Lines ParentLine { get; set; }
+        [DataMember]
+        public List<OCR_FailedLines> OCR_FailedLines { get; set; }
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

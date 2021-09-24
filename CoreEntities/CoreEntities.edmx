@@ -105,8 +105,8 @@
           </Key>
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="FilePath" Type="nvarchar" MaxLength="255" Nullable="false" />
-          <Property Name="DocumentCode" Type="nvarchar" MaxLength="50" Nullable="false" />
-          <Property Name="Reference" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="DocumentCode" Type="nvarchar" MaxLength="50" />
+          <Property Name="Reference" Type="nvarchar" MaxLength="255" />
           <Property Name="EmailId" Type="nvarchar" MaxLength="10" />
         </EntityType>
         <EntityType Name="CancelledEntriesLst">
@@ -934,10 +934,9 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-DiscrepanciesErrors'
             
             
             
-            
+            <PropertyRef Name="ApplicationSettingsId" />
             <PropertyRef Name="Subject" />
             <PropertyRef Name="EmailDate" />
-            <PropertyRef Name="ApplicationSettingsId" />
           </Key>
           <Property Name="Entrydatadetailsid" Type="int" Nullable="false" />
           <Property Name="AsycudaDocumentSetId" Type="int" Nullable="false" />
@@ -956,7 +955,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-DiscrepanciesErrors'
           <Property Name="PreviousInvoiceNumber" Type="nvarchar" MaxLength="50" />
           <Property Name="Comment" Type="nvarchar" MaxLength="255" />
           <Property Name="Status" Type="nvarchar" MaxLength="306" />
-          <Property Name="DutyFreePaid" Type="varchar" MaxLength="9" Nullable="false" />
+          <Property Name="DutyFreePaid" Type="nvarchar" MaxLength="50" />
           <Property Name="Subject" Type="nvarchar(max)" Nullable="false" />
           <Property Name="EmailDate" Type="datetime" Nullable="false" />
           <Property Name="EmailId" Type="int" />
@@ -4479,9 +4478,9 @@ FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="FilePath" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="AsycudaDocumentSet_Attachments" Relationship="WaterNutDBModel.FK_AsycudaDocumentSet_Attachments_Attachments" FromRole="Attachments" ToRole="AsycudaDocumentSet_Attachments" />
-          <Property Name="DocumentCode" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="DocumentCode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="AsycudaDocument_Attachments" Relationship="WaterNutDBModel.FK_AsycudaDocument_Attachments_Attachments" FromRole="Attachments" ToRole="AsycudaDocument_Attachments" />
-          <Property Name="Reference" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Reference" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="EmailId" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
         </EntityType>
         <Association Name="FK_AsycudaDocumentSet_Attachments_Attachments">
@@ -5620,7 +5619,7 @@ FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
           <Property Name="PreviousCNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="PreviousInvoiceNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="Status" Type="String" MaxLength="306" FixedLength="false" Unicode="true" />
-          <Property Name="DutyFreePaid" Type="String" Nullable="false" MaxLength="9" FixedLength="false" Unicode="false" />
+          <Property Name="DutyFreePaid" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
           <Property Name="Comment" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="Subject" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />

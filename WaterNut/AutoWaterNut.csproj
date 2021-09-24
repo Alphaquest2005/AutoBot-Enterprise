@@ -147,6 +147,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\WaterNut.Business.Services\Custom Services\DataModels\Custom DataModels\PDF2TXT\IKVM.Runtime.dll</HintPath>
     </Reference>
+    <Reference Include="itextsharp, Version=5.5.13.2, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
+      <HintPath>..\packages\iTextSharp.5.5.13.2\lib\itextsharp.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Expression.Interactions">
       <HintPath>..\packages\SimpleMvvmToolkit.5.5.1.0\lib\net45\Microsoft.Expression.Interactions.dll</HintPath>
       <Private>True</Private>
@@ -425,6 +428,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="ViewModels\Custom\MessageToken.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\AdjustmentQS\AdjustmentDetailViewModel.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\AdjustmentQS\AdjustmentExViewModel.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\AdjustmentQS\AdjustmentOversAllocationViewModel.cs" />
@@ -575,17 +579,18 @@
     <Compile Include="ViewModels\Generated Models\QuerySpace\OCR\EndViewModel.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\OCR\FieldFormatRegExViewModel.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\OCR\FieldsViewModel.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\OCR\ImportErrorsViewModel.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\OCR\InvoiceIdentificatonRegExViewModel.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\OCR\InvoiceRegExViewModel.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\OCR\InvoicesViewModel.cs" />
-    <Compile Include="ViewModels\Generated Models\QuerySpace\OCR\InvoiceViewModel.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\OCR\LinesViewModel.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\OCR\MessageToken.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\OCR\OCRFileTypesViewModel.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\OCR\OCR_FailedFieldsViewModel.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\OCR\OCR_FailedLinesViewModel.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\OCR\OCR_FieldValueViewModel.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\OCR\PartsViewModel.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\OCR\PartTypesViewModel.cs" />
-    <Compile Include="ViewModels\Generated Models\QuerySpace\OCR\PartViewModel.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\OCR\RecuringPartViewModel.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\OCR\RegularExpressionsViewModel.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\OCR\StartViewModel.cs" />
@@ -742,15 +747,16 @@
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\OCR\EndTotals.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\OCR\FieldFormatRegExTotals.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\OCR\FieldsTotals.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\OCR\ImportErrorsTotals.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\OCR\InvoiceIdentificatonRegExTotals.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\OCR\InvoiceRegExTotals.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\OCR\InvoicesTotals.cs" />
-    <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\OCR\InvoiceTotals.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\OCR\LinesTotals.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\OCR\OCRFileTypesTotals.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\OCR\OCR_FailedFieldsTotals.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\OCR\OCR_FailedLinesTotals.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\OCR\OCR_FieldValueTotals.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\OCR\PartsTotals.cs" />
-    <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\OCR\PartTotals.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\OCR\PartTypesTotals.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\OCR\RecuringPartTotals.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\OCR\RegularExpressionsTotals.cs" />
@@ -897,16 +903,17 @@
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\OCR\EndVirturalListLoader.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\OCR\FieldFormatRegExVirturalListLoader.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\OCR\FieldsVirturalListLoader.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\OCR\ImportErrorsVirturalListLoader.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\OCR\InvoiceIdentificatonRegExVirturalListLoader.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\OCR\InvoiceRegExVirturalListLoader.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\OCR\InvoicesVirturalListLoader.cs" />
-    <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\OCR\InvoiceVirturalListLoader.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\OCR\LinesVirturalListLoader.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\OCR\OCRFileTypesVirturalListLoader.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\OCR\OCR_FailedFieldsVirturalListLoader.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\OCR\OCR_FailedLinesVirturalListLoader.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\OCR\OCR_FieldValueVirturalListLoader.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\OCR\PartsVirturalListLoader.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\OCR\PartTypesVirturalListLoader.cs" />
-    <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\OCR\PartVirturalListLoader.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\OCR\RecuringPartVirturalListLoader.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\OCR\RegularExpressionsVirturalListLoader.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\OCR\StartVirturalListLoader.cs" />
@@ -1340,12 +1347,6 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="IKVM.Runtime.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="itextsharp.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Omu.ValueInjecter.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="pdfbox-1.8.7.dll">

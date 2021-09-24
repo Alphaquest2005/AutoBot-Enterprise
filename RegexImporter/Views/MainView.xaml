@@ -7,8 +7,9 @@
     xmlns:regexImporter="clr-namespace:RegexImporter"
     xmlns:System="clr-namespace:System;assembly=mscorlib"
     xmlns:ui="clr-namespace:Core.Common.UI;assembly=Core.Common.UI"
+    xmlns:views="clr-namespace:RegexImporter.Views"
     mc:Ignorable="d"
-    x:Class="WaterNut.Views.MainView"
+    x:Class="RegexImporter.Views.MainView"
 	d:DesignWidth="2988.06" d:DesignHeight="500">
     <UserControl.Resources>
         <x:Static Member="regexImporter:BaseViewModel.Instance" x:Key="BaseViewModelDataSource" />
@@ -41,69 +42,63 @@
                         <TranslateTransform/>
                     </TransformGroup>
                 </StackPanel.LayoutTransform>
+                <Expander x:Name="AsycudaFilesSummaryEXP"  ExpandDirection="Right"  BorderThickness="1"  Visibility="{Binding CurrentApplicationSettings.AllowWareHouse}" HorizontalAlignment="Left" Height="495" Margin="25,10,0,0" VerticalAlignment="Top" Width="Auto" IsExpanded="True">
+                    <Expander.Header>
+                        <Grid Width="128" MouseEnter="BringIntoView"  Height="Auto">
+                            <TextBlock Height="63" Style="{DynamicResource ExpHeadStyle}" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="0,10,33,0" Width="55" FontFamily="Segoe UI Symbol" FontSize="40" Text="&#xE115;"/>
+                            <TextBlock Text="Document Set Files" Style="{DynamicResource ExpHeadStyle}" HorizontalAlignment="Right" Margin="0,65,0,174.2" TextWrapping="Wrap" Width="128" TextAlignment="Center" RenderTransformOrigin="0.535,1.32" FontSize="{DynamicResource ExpHeadFontSize}" FontWeight="Bold"/>
+                        </Grid>
+                    </Expander.Header>
+                    <views:AsycudaFilesSummaryList Margin="0" MouseEnter="BringIntoView" />
+                </Expander>
+                <Expander x:Name="PDFDetailsEXP"  ExpandDirection="Right"  BorderThickness="1"  Visibility="{Binding CurrentApplicationSettings.AllowWareHouse}" HorizontalAlignment="Left" Height="495" Margin="25,10,0,0" VerticalAlignment="Top" Width="Auto" IsExpanded="True">
+                    <Expander.Header>
+                        <Grid Width="128" MouseEnter="BringIntoView"  Height="Auto">
+                            <TextBlock Height="63" Style="{DynamicResource ExpHeadStyle}" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="0,10,33,0" Width="55" FontFamily="Segoe UI Symbol" FontSize="40" Text="&#xE115;"/>
+                            <TextBlock Text="PDF Viewer" Style="{DynamicResource ExpHeadStyle}" HorizontalAlignment="Right" Margin="0,65,0,174.2" TextWrapping="Wrap" Width="128" TextAlignment="Center" RenderTransformOrigin="0.535,1.32" FontSize="{DynamicResource ExpHeadFontSize}" FontWeight="Bold"/>
+                        </Grid>
+                    </Expander.Header>
+                    <views:PdfViewer Margin="0" MouseEnter="BringIntoView" />
+                </Expander>
+                <Expander x:Name="TxtViewerEXP"  ExpandDirection="Right"  BorderThickness="1"  Visibility="{Binding CurrentApplicationSettings.AllowWareHouse}" HorizontalAlignment="Left" Height="495" Margin="25,10,0,0" VerticalAlignment="Top" Width="Auto" IsExpanded="True">
+                    <Expander.Header>
+                        <Grid Width="128" MouseEnter="BringIntoView"  Height="Auto">
+                            <TextBlock Height="63" Style="{DynamicResource ExpHeadStyle}" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="0,10,33,0" Width="55" FontFamily="Segoe UI Symbol" FontSize="40" Text="&#xE115;"/>
+                            <TextBlock Text="Txt Details" Style="{DynamicResource ExpHeadStyle}" HorizontalAlignment="Right" Margin="0,65,0,174.2" TextWrapping="Wrap" Width="128" TextAlignment="Center" RenderTransformOrigin="0.535,1.32" FontSize="{DynamicResource ExpHeadFontSize}" FontWeight="Bold"/>
+                        </Grid>
+                    </Expander.Header>
+                    <views:TxtViewer Margin="0" MouseEnter="BringIntoView" />
+                </Expander>
+                
+                <Expander x:Name="RegexDetailsEXP"  ExpandDirection="Right"  BorderThickness="1"  Visibility="{Binding CurrentApplicationSettings.AllowWareHouse}" HorizontalAlignment="Left" Height="495" Margin="25,10,0,0" VerticalAlignment="Top" Width="Auto" IsExpanded="True">
+                    <Expander.Header>
+                        <Grid Width="128" MouseEnter="BringIntoView"  Height="Auto">
+                            <TextBlock Height="63" Style="{DynamicResource ExpHeadStyle}" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="0,10,33,0" Width="55" FontFamily="Segoe UI Symbol" FontSize="40" Text="&#xE115;"/>
+                            <TextBlock Text="Regex Details" Style="{DynamicResource ExpHeadStyle}" HorizontalAlignment="Right" Margin="0,65,0,174.2" TextWrapping="Wrap" Width="128" TextAlignment="Center" RenderTransformOrigin="0.535,1.32" FontSize="{DynamicResource ExpHeadFontSize}" FontWeight="Bold"/>
+                        </Grid>
+                    </Expander.Header>
+                    <views:RegexDetails Margin="0" MouseEnter="BringIntoView" />
+                </Expander>
 
-                <Expander x:Name="CreateAsycudaDocumentExP"  ExpandDirection="Right"  BorderThickness="1"  Visibility="{Binding CurrentApplicationSettings.AllowWareHouse}" HorizontalAlignment="Left" Height="495" Margin="25,10,0,0" VerticalAlignment="Top" Width="Auto" IsExpanded="True">
+                <Expander x:Name="InvoiceSummaryEXP"  ExpandDirection="Right"  BorderThickness="1"  Visibility="{Binding CurrentApplicationSettings.AllowWareHouse}" HorizontalAlignment="Left" Height="495" Margin="25,10,0,0" VerticalAlignment="Top" Width="Auto" IsExpanded="True">
                     <Expander.Header>
                         <Grid Width="128" MouseEnter="BringIntoView"  Height="Auto">
                             <TextBlock Height="63" Style="{DynamicResource ExpHeadStyle}" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="0,10,33,0" Width="55" FontFamily="Segoe UI Symbol" FontSize="40" Text="&#xE115;"/>
                             <TextBlock Text="Create/Edit Asycuda Documents" Style="{DynamicResource ExpHeadStyle}" HorizontalAlignment="Right" Margin="0,65,0,174.2" TextWrapping="Wrap" Width="128" TextAlignment="Center" RenderTransformOrigin="0.535,1.32" FontSize="{DynamicResource ExpHeadFontSize}" FontWeight="Bold"/>
                         </Grid>
                     </Expander.Header>
-                    <!--<view:CreateAsycudaDocument Margin="0" MouseEnter="BringIntoView" />-->
+                    <views:InvoiceSummary Margin="0" MouseEnter="BringIntoView" />
                 </Expander>
 
 
-               
-            </StackPanel>
+
+</StackPanel>
         </ui:SliderPanel>
         <Grid x:Name="Header" DataContext="{Binding}" VerticalAlignment="Top" Height="133" >
             <TextBlock HorizontalAlignment="Left" Height="70" Margin="116,0,0,0" TextWrapping="Wrap" Text="{Binding CurrentApplicationSettings.SoftwareName}" VerticalAlignment="Top" Width="1123" FontSize="48" FontFamily="Segoe UI Light"/>
-            <ContentControl Name="CurrentItmCC" Content="{Binding CurrentItem}" Margin="645,68,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Height="65" Width="697">
-                <ContentControl.Resources>
-                    <!--<DataTemplate DataType="{x:Type inventoryDS:InventoryItem}" >
-                        <Grid >
-                            <TextBlock HorizontalAlignment="Left" Height="19" Margin="436,1,0,0" TextWrapping="Wrap" Text="TariffCode" VerticalAlignment="Top" Width="75" FontSize="13.333" Foreground="#FFFFFED6"/>
-                            <TextBlock HorizontalAlignment="Left" Height="52" TextWrapping="Wrap" Text="Current Inventory Item" VerticalAlignment="Top" Width="87" FontSize="13.333" Foreground="#FF4D4C4C" OpacityMask="Black" FontWeight="Bold" Margin="0,-3,0,0"/>
-                            <TextBlock HorizontalAlignment="Left" Height="20" Margin="111.8,0,0,0" TextWrapping="Wrap" Text="Item Number" VerticalAlignment="Top" Width="83.8" FontSize="13.333" Foreground="#FFFFFED6"/>
-                            <TextBlock Text="{Binding ItemNumber}" Margin="200,-1,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Height="28" Width="230.4" FontSize="13.333" Foreground="#FFFFFA42" />
-                            <TextBlock Text="{Binding Description}" Margin="200,25,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Height="21" Width="515" Foreground="#FFFFFA42" TextWrapping="Wrap" />
-                            <TextBlock HorizontalAlignment="Left" Height="21" Margin="111.8,25,0,0" TextWrapping="Wrap" Text="Description" VerticalAlignment="Top" Width="83.8" FontSize="13.333" Foreground="#FFFFFED6" TextAlignment="Left"/>
-                            <TextBlock Text="{Binding TariffCode}" Margin="516,-3,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Height="28" Width="119" FontSize="16" Foreground="#FFFFFA42" />
-                        </Grid>
-                    </DataTemplate>
-                    <DataTemplate DataType="{x:Type documentItemDS:xcuda_Item}">
-                        <Grid >
-                            <TextBlock HorizontalAlignment="Left" Height="52" TextWrapping="Wrap" Text="Current Asycuda Item" VerticalAlignment="Top" Width="69" FontSize="13.333" Foreground="#FF4D4C4C" OpacityMask="Black" FontWeight="Bold" Margin="0,2,0,0"/>
-
-                            <TextBlock HorizontalAlignment="Left" Height="26.6" Margin="134,28.29,0,0" TextWrapping="Wrap" Text="{Binding xcuda_Tarification.xcuda_HScode.Commodity_code}" VerticalAlignment="Top" Width="99.6" FontSize="16" Foreground="#FFFDFF3F"/>
-                            <TextBlock HorizontalAlignment="Left" Height="26.6" Margin="149,2,0,0" TextWrapping="Wrap" Text="{Binding xcuda_Tarification.xcuda_HScode.Precision_4}" VerticalAlignment="Top" Width="99.6" FontSize="18.667" Foreground="#FFFDFF3F"/>
-                            <TextBlock HorizontalAlignment="Left" Height="24.4" Margin="255.6,2,0,0" TextWrapping="Wrap" Text="{Binding xcuda_Goods_description.Commercial_Description}" VerticalAlignment="Top" Width="224.8" FontSize="16" Foreground="#FFFDFF3F"/>
-                            <TextBlock HorizontalAlignment="Left" Height="31.6" Margin="575.864,2,0,0" TextWrapping="Wrap" Text="{Binding ItemCost}" VerticalAlignment="Top" Width="74.536" FontSize="18.667" Foreground="#FFFDFF3F"/>
-                            <TextBlock HorizontalAlignment="Left" Height="21.6" Margin="575.864,43,0,0" TextWrapping="Wrap" Text="{Binding xcuda_Valuation_item.Total_CIF_itm}" VerticalAlignment="Top" Width="74.536" FontSize="16" Foreground="#FFFDFF3F"/>
-                            <TextBlock HorizontalAlignment="Left" Height="31.6" Margin="501.8,2,0,0" TextWrapping="Wrap" Text="{Binding xcuda_Tarification.xcuda_Supplementary_unit/Suppplementary_unit_quantity}" VerticalAlignment="Top" Width="74.536" FontSize="18.667" Foreground="#FFFDFF3F"/>
-                            <TextBlock HorizontalAlignment="Left" Height="21.6" Margin="501.8,43,0,0" TextWrapping="Wrap" Text="{Binding xcuda_Tarification.xcuda_Supplementary_unit/Suppplementary_unit_code}" VerticalAlignment="Top" Width="74.536" FontSize="16" Foreground="#FFFDFF3F"/>
-                            <TextBlock HorizontalAlignment="Left" Height="40.2" Margin="238.6,28.29,0,0" TextWrapping="Wrap" Text="{Binding xcuda_Goods_description.Description_of_goods}" VerticalAlignment="Top" Width="241.8" Foreground="#FFFDFF3F"/>
-                            <TextBlock HorizontalAlignment="Left" Height="26.6" Margin="74,16.4,0,0" TextWrapping="Wrap" Text="{Binding LineNumber}" VerticalAlignment="Top" Width="55" FontSize="16" FontWeight="Bold" Foreground="#FFFDFF3F"/>
-                        </Grid>
-                    </DataTemplate>-->
-                </ContentControl.Resources>
-            </ContentControl>
+            
             <TextBlock x:Name="BackBtn" HorizontalAlignment="Left" Height="70" Margin="18,27,0,0" TextWrapping="Wrap" Text="&#xE0C0;" VerticalAlignment="Top" Width="70" FontSize="48" FontFamily="Segoe UI Symbol" TextAlignment="Center" Style="{DynamicResource TextButtonStyle}" MouseLeftButtonDown="BackBtn_MouseLeftButtonDown" Background="#00000000"/>
-            <ContentControl x:Name="CurrentAsycudaDocumentCC" Content="{Binding CurrentAsycudaDocument}" Margin="116,68,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Height="65" Width="524">
-                <ContentControl.Resources>
-                    <!--<DataTemplate DataType="{x:Type documentDS:xcuda_ASYCUDA}">
-                        <Grid >
-                            <TextBlock HorizontalAlignment="Left" Height="19" Margin="275,6,0,0" TextWrapping="Wrap" Text="Reference" VerticalAlignment="Top" Width="75" FontSize="13.333" Foreground="#FFFFFED6"/>
-                            <TextBlock HorizontalAlignment="Left" Height="52" TextWrapping="Wrap" Text="Current Asycuda Document" VerticalAlignment="Top" Width="87" FontSize="13.333" Foreground="#FF4D4C4C" OpacityMask="Black" FontWeight="Bold" Margin="0,-3,0,0"/>
-                            <TextBlock HorizontalAlignment="Left" Height="20" Margin="111.8,0,0,0" TextWrapping="Wrap" Text="Type" VerticalAlignment="Top" Width="83.8" FontSize="13.333" Foreground="#FFFFFED6"/>
-                            <TextBlock Text="{Binding  xcuda_Identification.xcuda_Type.DisplayName}" Margin="200,-1,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Height="28" Width="70" FontSize="13.333" Foreground="#FFFFFA42" />
-                            <TextBlock Text="{Binding xcuda_ASYCUDA_ExtendedProperties.AsycudaDocumentSet.Description}" Margin="200,25,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Height="21" Width="515" Foreground="#FFFFFA42" TextWrapping="Wrap" />
-                            <TextBlock HorizontalAlignment="Left" Height="21" Margin="111.8,25,0,0" TextWrapping="Wrap" Text="Description" VerticalAlignment="Top" Width="83.8" FontSize="13.333" Foreground="#FFFFFED6" TextAlignment="Left"/>
-                            <TextBlock Text="{Binding xcuda_Declarant.Number}" Margin="355,-1,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Height="28" Width="299" FontSize="16" Foreground="#FFFFFA42" />
-                        </Grid>
-                    </DataTemplate>-->
-                </ContentControl.Resources>
-            </ContentControl>
+            
             <ComboBox x:Name="CompanyLst"
                 ItemsSource="{Binding ApplicationSettings}"
                 SelectedItem="{Binding CurrentApplicationSettings}"

@@ -265,6 +265,12 @@ namespace OCR.Business.Services
                                         GetWhere<Fields>(dbContext, exp, itm.Value, "ChildFields", "SelectMany", includesLst)
 										.ConfigureAwait(continueOnCapturedContext: false);
 
+                            case "OCR_FailedFields":
+                                return
+                                    await
+                                        GetWhere<OCR_FailedFields>(dbContext, exp, itm.Value, "OCR_Fields", "Select", includesLst)
+										.ConfigureAwait(continueOnCapturedContext: false);
+
                         }
 
                     }
@@ -779,6 +785,9 @@ namespace OCR.Business.Services
                             case "ParentField":
                                 return await CountWhere<Fields>(dbContext, exp, itm.Value, "ChildFields", "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "OCR_FailedFields":
+                                return await CountWhere<OCR_FailedFields>(dbContext, exp, itm.Value, "OCR_Fields", "Select")
+											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }
                     return await dbContext.Fields.Where(exp == "All" || exp == null ? "Id != null" : exp)
@@ -913,6 +922,12 @@ namespace OCR.Business.Services
                                 return
                                     await
                                         LoadRangeWhere<Fields>(startIndex, count, dbContext, exp, itm.Value, "ChildFields", "SelectMany")
+													.ConfigureAwait(continueOnCapturedContext: false);
+
+                            case "OCR_FailedFields":
+                                return
+                                    await
+                                        LoadRangeWhere<OCR_FailedFields>(startIndex, count, dbContext, exp, itm.Value, "OCR_Fields", "Select")
 													.ConfigureAwait(continueOnCapturedContext: false);
 
                           
@@ -1130,6 +1145,7 @@ namespace OCR.Business.Services
                 IEnumerable<Fields> entities = await set//dbContext.Fields
                                                     // .Include(x => x.FormatRegEx)									  
                                                     // .Include(x => x.ChildFields)									  
+                                                    // .Include(x => x.OCR_FailedFields)									  
                                       .AsNoTracking()
                                         .Where(x => x.LineId.ToString() == LineId.ToString())
 										.ToListAsync()
@@ -1161,6 +1177,7 @@ namespace OCR.Business.Services
                 IEnumerable<Fields> entities = await set//dbContext.Fields
                                                     // .Include(x => x.FormatRegEx)									  
                                                     // .Include(x => x.ChildFields)									  
+                                                    // .Include(x => x.OCR_FailedFields)									  
                                       .AsNoTracking()
                                         .Where(x => x.ParentId.ToString() == ParentId.ToString())
 										.ToListAsync()
@@ -1250,6 +1267,9 @@ namespace OCR.Business.Services
 											.ConfigureAwait(continueOnCapturedContext: false);
                             case "ParentField":
                                 return await SumWhere<Fields>(dbContext, exp, itm.Value, "ChildFields", field, "SelectMany")
+											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "OCR_FailedFields":
+                                return await SumWhere<OCR_FailedFields>(dbContext, exp, itm.Value, "OCR_Fields", field, "Select")
 											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }

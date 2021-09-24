@@ -242,14 +242,15 @@
     <Compile Include="OCR\IEndService.cs" />
     <Compile Include="OCR\IFieldFormatRegExService.cs" />
     <Compile Include="OCR\IFieldsService.cs" />
+    <Compile Include="OCR\IImportErrorsService.cs" />
     <Compile Include="OCR\IInvoiceIdentificatonRegExService.cs" />
     <Compile Include="OCR\IInvoiceRegExService.cs" />
-    <Compile Include="OCR\IInvoiceService.cs" />
     <Compile Include="OCR\IInvoicesService.cs" />
     <Compile Include="OCR\ILinesService.cs" />
     <Compile Include="OCR\IOCRFileTypesService.cs" />
+    <Compile Include="OCR\IOCR_FailedFieldsService.cs" />
+    <Compile Include="OCR\IOCR_FailedLinesService.cs" />
     <Compile Include="OCR\IOCR_FieldValueService.cs" />
-    <Compile Include="OCR\IPartService.cs" />
     <Compile Include="OCR\IPartsService.cs" />
     <Compile Include="OCR\IPartTypesService.cs" />
     <Compile Include="OCR\IRecuringPartService.cs" />

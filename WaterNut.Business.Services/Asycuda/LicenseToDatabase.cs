@@ -232,8 +232,8 @@ namespace WaterNut.DataSpace.Asycuda
                 {
                     Description = item.Key.LicenseDescription,
                     Commodity_code = item.Key.TariffCode,
-                    Quantity_requested = Convert.ToInt32(Math.Ceiling((double)item.Sum(x => x.VolumeLiters?? x.Quantity))),
-                    Quantity_to_approve = Convert.ToInt32(Math.Ceiling((double)item.Sum(x => x.VolumeLiters ?? x.Quantity))),
+                    Quantity_requested = Convert.ToInt32(Math.Ceiling((double)item.Sum(x => x.VolumeLiters == 0 ? x.Quantity : x.VolumeLiters))),
+                    Quantity_to_approve = Convert.ToInt32(Math.Ceiling((double)item.Sum(x => x.VolumeLiters == 0 ? x.Quantity : x.VolumeLiters))),
                     Origin = item.First().Country_of_origin_code,
                     Unit_of_measurement = item.First().UOM,
                     TrackingState = TrackingState.Added

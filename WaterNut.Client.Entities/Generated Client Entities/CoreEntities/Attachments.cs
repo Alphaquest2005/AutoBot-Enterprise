@@ -77,7 +77,7 @@ public string FilePath
 		}
      
 
-       [RequiredValidationAttribute(ErrorMessage= "DocumentCode is required")]
+       
        
                 
                 [MaxLength(50, ErrorMessage = "DocumentCode has a max length of 50 letters ")]
@@ -94,7 +94,7 @@ public string DocumentCode
 		}
      
 
-       [RequiredValidationAttribute(ErrorMessage= "Reference is required")]
+       
        
                 
                 [MaxLength(255, ErrorMessage = "Reference has a max length of 255 letters ")]

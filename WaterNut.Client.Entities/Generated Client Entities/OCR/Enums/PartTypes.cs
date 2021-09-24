@@ -54,7 +54,10 @@ namespace OCR.Client.Enums
         DetailsLine = 18,
 
       
-        Marks = 19
+        Marks = 19,
+
+      
+        Invoiceline2 = 20
   }
 }
 

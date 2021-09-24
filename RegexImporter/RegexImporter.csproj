@@ -38,12 +38,21 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject>RegexImporter.App</StartupObject>
+  </PropertyGroup>
   <ItemGroup>
+    <Reference Include="BouncyCastle.Crypto, Version=1.8.6.0, Culture=neutral, PublicKeyToken=0e99375e54769942">
+      <HintPath>..\packages\BouncyCastle.1.8.6.1\lib\BouncyCastle.Crypto.dll</HintPath>
+    </Reference>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.4.4\lib\net45\EntityFramework.dll</HintPath>
     </Reference>
     <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.4.4\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
+    <Reference Include="itextsharp, Version=5.5.13.2, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
+      <HintPath>..\packages\iTextSharp.5.5.13.2\lib\itextsharp.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Expression.Interactions, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\SimpleMvvmToolkit.5.5.1.0\lib\net45\Microsoft.Expression.Interactions.dll</HintPath>
@@ -58,6 +67,7 @@
       <HintPath>..\packages\SimpleMvvmToolkit.5.5.1.0\lib\net45\SimpleMvvmToolkit-WPF.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Data" />
     <Reference Include="System.Runtime.Serialization" />
@@ -94,8 +104,24 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="BaseBusinesLayerQS.cs" />
+    <Compile Include="ViewModels\BaseBusinesLayerQS.cs" />
+    <Compile Include="ViewModels\DocumentFilesViewModel.cs" />
+    <Compile Include="ViewModels\TxtViewerViewModel.cs" />
+    <Compile Include="ViewModels\PDFViewerViewModel.cs" />
+    <Compile Include="ViewModels\RegExViewModel.cs" />
     <Compile Include="ViewModels\InvoiceExViewModel.cs" />
+    <Compile Include="Views\AsycudaFilesSummaryList.xaml.cs">
+      <DependentUpon>AsycudaFilesSummaryList.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\TXTViewer.xaml.cs">
+      <DependentUpon>TXTViewer.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\PdfViewer.xaml.cs">
+      <DependentUpon>PdfViewer.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\RegexDetails.xaml.cs">
+      <DependentUpon>RegexDetails.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\InvoiceSummary.xaml.cs">
       <DependentUpon>InvoiceSummary.xaml</DependentUpon>
     </Compile>
@@ -126,6 +152,22 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Styles\Theme.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\AsycudaFilesSummaryList.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\TXTViewer.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\PdfViewer.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\RegexDetails.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -194,9 +236,21 @@
       <Project>{86a8ef70-1196-4073-beca-3343883dec96}</Project>
       <Name>CoreEntities</Name>
     </ProjectReference>
+    <ProjectReference Include="..\DomainInterfaces\InterfacesModel.csproj">
+      <Project>{11235d24-1165-4dc4-b91b-0426ea669451}</Project>
+      <Name>InterfacesModel</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\PdfOcr\pdf-ocr.csproj">
+      <Project>{523fbf1e-bb4f-435a-9a9e-63de49cd721d}</Project>
+      <Name>pdf-ocr</Name>
+    </ProjectReference>
     <ProjectReference Include="..\WaterNut.Business.Entities\WaterNut.Business.Entities.csproj">
       <Project>{978B7943-BD11-41EB-91C9-59A09C6F0ECC}</Project>
       <Name>WaterNut.Business.Entities</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\WaterNut.Business.Services\WaterNut.Business.Services.csproj">
+      <Project>{02885F55-31E7-48FB-9944-DF99540F3270}</Project>
+      <Name>WaterNut.Business.Services</Name>
     </ProjectReference>
     <ProjectReference Include="..\WaterNut.Client.Bootstraper\WaterNut.Client.Bootstraper.csproj">
       <Project>{6ed70b7d-cd5e-4bdd-9bcb-84f5fa2850a3}</Project>

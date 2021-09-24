@@ -213,6 +213,19 @@ namespace OCR.Client.DTO
         private Fields _ParentField;
         private ChangeTrackingCollection<Fields> ParentFieldChangeTracker { get; set; }
 
+        [DataMember]
+        public ChangeTrackingCollection<OCR_FailedFields> OCR_FailedFields
+		{
+		    get { return _OCR_FailedFields; }
+			set
+			{
+			    if (Equals(value, _OCR_FailedFields)) return;
+				_OCR_FailedFields = value;
+				NotifyPropertyChanged();//m => this.OCR_FailedFields
+			}
+		}
+        private ChangeTrackingCollection<OCR_FailedFields> _OCR_FailedFields = new ChangeTrackingCollection<OCR_FailedFields>();
+
    //     [DataMember]
    //     public TrackingState TrackingState { get; set; }
 
