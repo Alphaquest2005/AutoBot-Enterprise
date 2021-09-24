@@ -181,7 +181,7 @@ namespace WaterNut.DataSpace
             return true;
         }
 
-        private static StringBuilder GetPdftxt(string file)
+        public static StringBuilder GetPdftxt(string file)
         {
             StringBuilder pdftxt = new StringBuilder();
 
@@ -248,25 +248,7 @@ namespace WaterNut.DataSpace
 
         }
 
-        private static string parseUsingPDFBox(string input)
-        {
-            PDDocument doc = null;
-
-            try
-            {
-                doc = PDDocument.load(input);
-                PDFTextStripper stripper = new PDFTextStripper();
-               // stripper.
-                return stripper.getText(doc);
-            }
-            finally
-            {
-                if (doc != null)
-                {
-                    doc.close();
-                }
-            }
-        }
+   
 
         private static void ReportUnImportedFile(List<AsycudaDocumentSet> asycudaDocumentSets, string file, int emailId,
             int fileTypeId,
@@ -940,7 +922,7 @@ namespace WaterNut.DataSpace
                             z.RegularExpressions.RegEx,
                             (z.RegularExpressions.MultiLine == true
                                 ? RegexOptions.Multiline
-                                : RegexOptions.Singleline) | RegexOptions.IgnoreCase);
+                                : RegexOptions.Singleline) | RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture);
                     if (match.Success)
                     {
 

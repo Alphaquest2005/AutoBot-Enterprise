@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,7 +14,7 @@ using OCR_BaseViewModel = WaterNut.QuerySpace.OCR.ViewModels.BaseViewModel;
 namespace RegexImporter.ViewModels
 {
     
-    public class InvoiceExViewModel : InvoiceViewModel_AutoGen
+    public class InvoiceExViewModel : InvoicesViewModel_AutoGen
     {
         private static readonly InvoiceExViewModel instance;
 
@@ -21,7 +22,6 @@ namespace RegexImporter.ViewModels
         {
             instance = new InvoiceExViewModel()
             {
-                
             };
         }
 
@@ -32,19 +32,18 @@ namespace RegexImporter.ViewModels
 
         private InvoiceExViewModel()
         {
-            RegisterToReceiveMessages<Invoice>(MessageToken.CurrentInvoiceChanged, OnCurrentOCR_InvoiceExChanged2);
-            RegisterToReceiveMessages(MessageToken.InvoiceExsChanged, OnOCR_InvoiceExChanged3);
-            RegisterToReceiveMessages<Invoice>(MessageToken.InvoiceExsChanged, OnOCR_InvoiceExChanged2);
-            RegisterToReceiveMessages<Part>(MessageToken.CurrentPartChanged, OnOCR_PartExsChanged2);
-
-
+            RegisterToReceiveMessages<Invoices>(MessageToken.CurrentInvoicesChanged, OnCurrentOCR_InvoiceExChanged2);
+            RegisterToReceiveMessages(MessageToken.InvoicesChanged, OnOCR_InvoiceExChanged3);
+            RegisterToReceiveMessages<Invoices>(MessageToken.InvoicesChanged, OnOCR_InvoiceExChanged2);
+            RegisterToReceiveMessages<Parts>(MessageToken.CurrentPartsChanged, OnOCR_PartExsChanged2);
 
         }
 
-       
+        public new readonly InvoicesVirturalListLoader vloader = new InvoicesVirturalListLoader() { IncludesLst = new List<string>() { "RegEx.RegEx", "InvoiceIdentificatonRegEx.OCR_RegularExpressions" } };
 
-        private IEnumerable<Part> _parts = null;
-        public IEnumerable<Part> Parts
+
+        private IEnumerable<Parts> _parts = null;
+        public IEnumerable<Parts> Parts
         {
             get { return _parts; }
             set
@@ -55,8 +54,8 @@ namespace RegexImporter.ViewModels
         }
 
 
-        private IEnumerable<Line> _lines = null;
-        public IEnumerable<Line> Lines
+        private IEnumerable<Lines> _lines = null;
+        public IEnumerable<Lines> Lines
         {
             get { return _lines; }
             set
@@ -71,47 +70,78 @@ namespace RegexImporter.ViewModels
             await RefreshParts().ConfigureAwait(false);
         }
 
-        private async void OnOCR_InvoiceExChanged2(object sender, NotificationEventArgs<Invoice> e)
+        private async void OnOCR_InvoiceExChanged2(object sender, NotificationEventArgs<Invoices> e)
         {
             await RefreshParts().ConfigureAwait(false);
         }
 
         private async Task RefreshParts()
         {
-            if (OCR_BaseViewModel.Instance.CurrentInvoice != null)
+            if (OCR_BaseViewModel.Instance.CurrentInvoices != null)
             {
                 Parts =
                     await
-                        PartRepository.Instance.GetPartByInvoiceId(
-                                OCR_BaseViewModel.Instance.CurrentInvoice.Id.ToString())
+                        PartsRepository.Instance.GetPartsByTemplateId(
+                                OCR_BaseViewModel.Instance.CurrentInvoices.Id.ToString(),new List<string>(){ "PartTypes", "Start.RegularExpressions", "End.RegularExpressions"})
                             .ConfigureAwait(false);
             }
         }
 
         private async void OnCurrentOCR_InvoiceExChanged2(object sender,
-            NotificationEventArgs<Invoice> e)
+            NotificationEventArgs<Invoices> e)
         {
             if (e.Data != null)
             {
                 Parts =
                     await
-                        PartRepository.Instance.GetPartByInvoiceId(
-                                OCR_BaseViewModel.Instance.CurrentInvoice.Id.ToString())
+                        PartsRepository.Instance.GetPartsByExpression($"TemplateId == {OCR_BaseViewModel.Instance.CurrentInvoices.Id}",
+                                new List<string>(){ "PartTypes", "Start.RegularExpressions", "End.RegularExpressions" }
+                                )
                             .ConfigureAwait(false);
                 NameFilter = e.Data.Name;
             }
         }
 
-        private async void OnOCR_PartExsChanged2(object sender, NotificationEventArgs<Part> e)
+        private async void OnOCR_PartExsChanged2(object sender, NotificationEventArgs<Parts> e)
         {
             if (e.Data != null)
             {
                 Lines =
                     await
-                        LineRepository.Instance.GetLineByPartId(
-                                e.Data.Id.ToString())
+                        LinesRepository.Instance.GetLinesByPartId(
+                                e.Data.Id.ToString(), new List<string>(){"RegularExpressions", "Fields.FormatRegEx.RegEx", "Fields.FormatRegEx.ReplacementRegEx" })
                             .ConfigureAwait(false);
             }
+        }
+
+
+        public void AutoDetect()
+        {
+            var invoices = InvoicesRepository.Instance.GetInvoicesByExpression("All",
+                new List<string>() {"RegEx.RegEx", "InvoiceIdentificatonRegEx.OCR_RegularExpressions"}).Result.ToList();
+
+            var selected = new List<Invoices>() ;
+            var pdfText = TXTViewerViewModel.Instance.PDFText;
+            var parts = PartsRepository.Instance.GetPartsByExpression($"All",
+                    new List<string>() {"Start.RegularExpressions", "End.RegularExpressions"}
+                )
+                .Result.ToList();
+            foreach (var inv in invoices)
+
+            {
+                if (inv.InvoiceIdentificatonRegEx.Any())
+                {
+                   if(inv.InvoiceIdentificatonRegEx.Any(x => x.OCR_RegularExpressions.Regex.Match(pdfText).Success)) selected.Add(inv);
+                }
+                else
+                {
+                    if(parts.All(x => x.TemplateId == inv.Id && x.Start.Any(z => z.RegularExpressions.Regex.IsMatch(pdfText)))) selected.Add(inv);
+                }
+            }
+
+            var res = new StringBuilder();
+            res.Append($" && \"{selected.Select(x => x.Id.ToString()).DefaultIfEmpty("").Aggregate( (o,n) => $"{o}, {n}")}\".Contains(Id)");
+            FilterData(res);
         }
     }
 }

@@ -14,62 +14,120 @@
 	d:DesignWidth="640" d:DesignHeight="600" Width="640" Height="600">
     <UserControl.Resources>
         <x:Static Member="regExViewModels:RegexViewModel.Instance" x:Key="RegexViewModelDataSource" />
-        
 
-        <DataTemplate DataType="{x:Type QSOCREntities:Line}">
+        <DataTemplate x:Key="RegexTemplate"  DataType="{x:Type QSOCREntities:RegularExpressions}">
+            <Grid Width="Auto">
+                
+                <StackPanel Margin="0, 0,0,0">
+                    <Grid>
+                        <TextBox Text="{Binding RegEx, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextWrapping="Wrap"  HorizontalAlignment="Left" Height="Auto" Margin="0,25,0,0"  VerticalAlignment="Top" Width="Auto" FontSize="18"/>
+                        <TextBlock Text="{Binding Name}" HorizontalAlignment="Left" Height="22" Margin="10,0,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="Auto" FontSize="18" FontWeight="Bold" />
+                        <CheckBox IsChecked="{Binding MultiLine}" HorizontalAlignment="Left" Height="22" Margin="151,0,0,0" VerticalAlignment="Top" Width="166" FontSize="14" Content="MultiLine"/>
+                        <!--<TextBlock Width="Auto"
+                                   Height="26"
+                                   Margin="250,5,15,0"
+                                   HorizontalAlignment="Right"
+                                   VerticalAlignment="Top"
+                                   FontSize="16"
+                                   MouseLeftButtonDown="FindMatches"
+                                   Style="{DynamicResource TextButtonStyle}"
+                                   Text="Find Matches"
+                                   TextAlignment="Right"
+                                   TextWrapping="Wrap" />-->
+                        <TextBlock Width="Auto"
+                                   Height="26"
+                                   Margin="250,5,150,0"
+                                   HorizontalAlignment="Right"
+                                   VerticalAlignment="Top"
+                                   FontSize="16"
+                                   MouseLeftButtonDown="Save"
+                                   Style="{DynamicResource TextButtonStyle}"
+                                   Text="Save"
+                                   TextAlignment="Right"
+                                   TextWrapping="Wrap" />
+                    </Grid>
+                </StackPanel>
+
+            </Grid>
+
+        </DataTemplate>
+
+        
+        <DataTemplate  DataType="{x:Type QSOCREntities:Fields}">
+            <Grid Width="Auto">
+
+                <StackPanel Margin="0, 0,0,0">
+                    <Grid>
+                        <TextBlock HorizontalAlignment="Left" Height="33" Margin="9,7,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="234" FontSize="21.333" Text="Field Regex"/>
+                        <TextBlock Text="{Binding Field, Mode=OneWay}" HorizontalAlignment="Left" Height="33" Margin="0,40,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Width="Auto" FontSize="21.333"/>
+
+
+
+                    </Grid>
+                    
+
+                </StackPanel>
+
+            </Grid>
+
+        </DataTemplate>
+
+        <DataTemplate DataType="{x:Type QSOCREntities:Lines}">
             <Grid Width="Auto">
                 <TextBlock HorizontalAlignment="Left" Height="33" Margin="9,7,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="234" FontSize="21.333" Text="Line Regex"/>
                 <TextBlock Text="{Binding Name, Mode=OneWay}" HorizontalAlignment="Left" Height="33" Margin="0,40,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Width="Auto" FontSize="21.333"/>
-                <StackPanel Margin="0, 80,0,0">
-                    <Grid>
-                        <TextBox Text="{Binding RegEx, Mode=OneWay}" TextWrapping="Wrap"  HorizontalAlignment="Left" Height="Auto" Margin="0,25,0,0"  VerticalAlignment="Top" Width="Auto" FontSize="18"/>
-                        <TextBlock Text="Regex" HorizontalAlignment="Left" Height="22" Margin="10,0,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="Auto" FontSize="18" FontWeight="Bold" />
-                        <CheckBox IsChecked="{Binding MultiLine}" HorizontalAlignment="Left" Height="22" Margin="151,0,0,0" VerticalAlignment="Top" Width="166" FontSize="14" Content="MultiLine"/>
-                    </Grid>
-                </StackPanel>
+
+
 
             </Grid>
             
         </DataTemplate>
-        <DataTemplate DataType="{x:Type QSOCREntities:Part}">
+        <DataTemplate DataType="{x:Type QSOCREntities:Parts}">
 
             <Grid d:DesignWidth="561.4" d:DesignHeight="53.6" Width="561"  Background="#00000000">
                 <TextBlock HorizontalAlignment="Left" Height="33" Margin="0,2,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="234" FontSize="21.333" Text="Part RegEx"/>
-                <TextBox Text="{Binding Name, Mode=OneWay}" Style="{DynamicResource TextBox2TextBlock}"  HorizontalAlignment="Left" Height="32" Margin="0,40,0,0" TextWrapping="NoWrap"  VerticalAlignment="Top" Width="361" FontSize="21.333"/>
-                <StackPanel Margin="0, 80,0,0">
-                    <Grid>
-                        <TextBox Text="{Binding Start, Mode=OneWay}" TextWrapping="Wrap"  HorizontalAlignment="Left" Height="Auto" Margin="0,25,0,0"  VerticalAlignment="Top" Width="Auto" FontSize="18"/>
-                        <TextBlock Text="Start" HorizontalAlignment="Left" Height="22" Margin="10,0,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="46" FontSize="18" FontWeight="Bold" />
-                        <CheckBox IsChecked="{Binding StartMultiLine}" HorizontalAlignment="Left" Height="22" Margin="151,0,0,0" VerticalAlignment="Top" Width="166" FontSize="14" Content="MultiLine"/>
-                    </Grid>
-                    <Grid>
-                        <TextBox Text="{Binding End, Mode=OneWay}" TextWrapping="Wrap"  HorizontalAlignment="Left" Height="Auto" Margin="0,25,0,0"  VerticalAlignment="Top" Width="Auto" FontSize="18"/>
-                        <TextBlock Text="End" HorizontalAlignment="Left" Height="22" Margin="10,0,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="46" FontSize="18" FontWeight="Bold" />
-                        <CheckBox IsChecked="{Binding EndMultiLine}" HorizontalAlignment="Left" Height="22" Margin="151,0,0,0" VerticalAlignment="Top" Width="166" FontSize="14" Content="MultiLine"/>
-                    </Grid>
-                </StackPanel>
+                <TextBox Text="{Binding PartTypes.Name, Mode=OneWay}" Style="{DynamicResource TextBox2TextBlock}"  HorizontalAlignment="Left" Height="32" Margin="0,40,0,0" TextWrapping="NoWrap"  VerticalAlignment="Top" Width="361" FontSize="21.333"/>
+               
 
             </Grid>
 
         </DataTemplate>
-        <DataTemplate  DataType="{x:Type QSOCREntities:Invoice}">
+        <DataTemplate  DataType="{x:Type QSOCREntities:Invoices}">
             
                     <Grid d:DesignWidth="561.4" d:DesignHeight="40.6" Width="561"  Background="#00000000">
-                <TextBlock HorizontalAlignment="Left" Height="33" Margin="9,7,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="234" FontSize="21.333" Text="Invoice Regex"/>
-                <TextBox Text="{Binding Name, Mode=OneWay}" Style="{DynamicResource TextBox2TextBlock}"  HorizontalAlignment="Left" Height="32" Margin="0,40,0,0" TextWrapping="NoWrap"  VerticalAlignment="Top" Width="361" FontSize="21.333"/>
+                        <TextBlock HorizontalAlignment="Left" Height="33" Margin="9,7,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="234" FontSize="21.333" Text="Invoice Regex"/>
+                        <TextBox Text="{Binding Name, Mode=OneWay}" Style="{DynamicResource TextBox2TextBlock}"  HorizontalAlignment="Left" Height="32" Margin="0,40,0,0" TextWrapping="NoWrap"  VerticalAlignment="Top" Width="361" FontSize="21.333"/>
                         
 
 
-                        
-                    </Grid>
+
+
+            </Grid>
             
 
         </DataTemplate>
     </UserControl.Resources>
 
     <Grid x:Name="LayoutRoot" DataContext="{Binding Source={StaticResource RegexViewModelDataSource}}" Width="640" Height="600" >
-        
-        <ContentControl Content="{Binding CurrentObject}" Margin="0"/>
+        <StackPanel Orientation="Vertical">
+            <ContentControl Content="{Binding CurrentRegexObject.Source}"/>
+            <ListBox x:Name="ItemLst"
+                     Width="Auto"
+                     Height="Auto"
+                     Margin="0,20,-0.333,0"
+                     HorizontalAlignment="Stretch"
+                     VerticalAlignment="Top"
+                     ItemTemplate="{DynamicResource RegexTemplate}"
+                     ItemsSource="{Binding RegexObjects}"
+                     SelectedItem="{Binding CurrentRegex}"
+                     SelectionChanged="ItemList_SelectionChanged"
+                     SelectionMode="Single"
+                     Style="{DynamicResource AlphaListBoxStyle}" />
 
+            <TreeView x:Name="ResultsTree" SelectedItemChanged="ResultsTree_OnSelectedItemChanged" />
+
+            
+
+        </StackPanel>
     </Grid>
 </UserControl>

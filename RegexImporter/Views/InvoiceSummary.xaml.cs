@@ -25,13 +25,13 @@ namespace RegexImporter.Views
 
 		private void Invoice_Expanded(object sender, RoutedEventArgs e)
 		{
-			WaterNut.QuerySpace.OCR.ViewModels.BaseViewModel.Instance.CurrentInvoice = (Invoice)((sender as FrameworkElement).DataContext as VirtualListItem<Invoice>).Data;
+			WaterNut.QuerySpace.OCR.ViewModels.BaseViewModel.Instance.CurrentInvoices = (Invoices)((sender as FrameworkElement).DataContext as VirtualListItem<Invoices>).Data;
 
 		}
 
         private void Part_Expanded(object sender, RoutedEventArgs e)
         {
-            WaterNut.QuerySpace.OCR.ViewModels.BaseViewModel.Instance.CurrentPart = (Part)((sender as FrameworkElement).DataContext );
+            WaterNut.QuerySpace.OCR.ViewModels.BaseViewModel.Instance.CurrentParts = (Parts)((sender as FrameworkElement).DataContext );
 
         }
 
@@ -56,15 +56,15 @@ namespace RegexImporter.Views
 
 		private void Invoice_Collapsed(object sender, RoutedEventArgs e)
 		{
-			WaterNut.QuerySpace.OCR.ViewModels.BaseViewModel.Instance.CurrentInvoice = null;
+			WaterNut.QuerySpace.OCR.ViewModels.BaseViewModel.Instance.CurrentInvoices = null;
 			WaterNut.QuerySpace.OCR.ViewModels.BaseViewModel.Instance.CurrentParts = null;
 		   
 		}
 
         private void Part_Collapsed(object sender, RoutedEventArgs e)
         {
-            WaterNut.QuerySpace.OCR.ViewModels.BaseViewModel.Instance.CurrentPart = null;
-            WaterNut.QuerySpace.OCR.ViewModels.BaseViewModel.Instance.CurrentLine = null;
+            WaterNut.QuerySpace.OCR.ViewModels.BaseViewModel.Instance.CurrentParts = null;
+            WaterNut.QuerySpace.OCR.ViewModels.BaseViewModel.Instance.CurrentLines = null;
 
         }
 
@@ -88,5 +88,10 @@ namespace RegexImporter.Views
 		  
 		}
 
-	}
+        private void AutoDetect(object sender, MouseButtonEventArgs e)
+        {
+            im.AutoDetect();
+
+        }
+    }
 }

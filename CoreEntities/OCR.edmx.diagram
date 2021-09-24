@@ -9,7 +9,7 @@
         <EntityTypeShape EntityType="WaterNutDBModel.Fields" Width="1.5" PointX="7.5" PointY="7.75" />
         <EntityTypeShape EntityType="WaterNutDBModel.Invoices" Width="1.5" PointX="0.75" PointY="9.5" />
         <EntityTypeShape EntityType="WaterNutDBModel.Parts" Width="1.5" PointX="3" PointY="7.75" />
-        <EntityTypeShape EntityType="WaterNutDBModel.PartTypes" Width="1.5" PointX="0.75" PointY="7.125" />
+        <EntityTypeShape EntityType="WaterNutDBModel.PartTypes" Width="1.5" PointX="0.5" PointY="7.375" />
         <EntityTypeShape EntityType="WaterNutDBModel.RegularExpressions" Width="2.875" PointX="0.75" PointY="4" />
         <EntityTypeShape EntityType="WaterNutDBModel.Start" Width="1.5" PointX="9.875" PointY="0.875" />
         <AssociationConnector Association="WaterNutDBModel.FK_OCR_End_OCR_Parts" />
@@ -53,11 +53,6 @@
         <AssociationConnector Association="WaterNutDBModel.FK_OCR_FailedLines_OCR_Lines" />
       </Diagram>
       <Diagram DiagramId="2a65efe28dcf4398b5a10bc2fc674aa6" Name="Query" >
-        <EntityTypeShape EntityType="WaterNutDBModel.Invoice" Width="1.5" PointX="0.75" PointY="0.75" />
-        <EntityTypeShape EntityType="WaterNutDBModel.Part" Width="1.5" PointX="3.375" PointY="0.75" />
-        <AssociationConnector Association="WaterNutDBModel.OCR_InvoiceExOCR_PartsView" />
-        <EntityTypeShape EntityType="WaterNutDBModel.Line" Width="2.5" PointX="6.375" PointY="1.125" />
-        <AssociationConnector Association="WaterNutDBModel.PartOCR_LinesView" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

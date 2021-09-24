@@ -75,17 +75,49 @@ namespace RegexImporter.ViewModels
         {
             if (e.Data != null)
             {
-               Attachments =
-                    await
-                        AsycudaDocumentSet_AttachmentsRepository.Instance.GetAsycudaDocumentSet_AttachmentsByExpressionNav(
-                            $"AsycudaDocumentSetId == {e.Data.AsycudaDocumentSetId}", new Dictionary<string, string>(){{"Attachments","FilePath.Contains(\".pdf\")"}}, new List<string>(){"Attachments"}).ConfigureAwait(false);
+                GetAttachments(e.Data.AsycudaDocumentSetId);
+               //Attachments =
+               //     await
+               //         AsycudaDocumentSet_AttachmentsRepository.Instance.GetAsycudaDocumentSet_AttachmentsByExpressionNav(
+               //             $"AsycudaDocumentSetId == {e.Data.AsycudaDocumentSetId}", new Dictionary<string, string>(){{"Attachments","FilePath.Contains(\".pdf\")"}}, new List<string>(){"Attachments"}).ConfigureAwait(false);
             }
         }
 
+        public DateTime StartFileDateFilter
+        {
+            get => _startFileDateFilter;
+            set
+            {
+                _startFileDateFilter = value;
+                GetAttachments(WaterNut.QuerySpace.CoreEntities.ViewModels.BaseViewModel.Instance.CurrentAsycudaDocumentSetEx.AsycudaDocumentSetId);
+            }
+        }
 
-       
+        public DateTime EndFileDateFilter
+        {
+            get => _endFileDateFilter;
+            set
+            {
+                _endFileDateFilter = value;
+                GetAttachments(WaterNut.QuerySpace.CoreEntities.ViewModels.BaseViewModel.Instance.CurrentAsycudaDocumentSetEx.AsycudaDocumentSetId);
+
+            }
+        }
+
+        private void GetAttachments(int asycudaDocumentSetId)
+        {
+            Attachments =
+                AsycudaDocumentSet_AttachmentsRepository.Instance.GetAsycudaDocumentSet_AttachmentsByExpressionNav(
+                    $"AsycudaDocumentSetId == {asycudaDocumentSetId} && FileDate >= \"{StartFileDateFilter.ToShortDateString()}\" && FileDate <= \"{EndFileDateFilter.ToShortDateString()}\"",
+                    new Dictionary<string, string>() {{"Attachments", "FilePath.Contains(\".pdf\")"}},
+                    new List<string>() {"Attachments"}).Result;
+        }
+
 
         private IEnumerable<AsycudaDocumentSet_Attachments> _attachments = null;
+        private DateTime _endFileDateFilter = DateTime.Today;
+        private DateTime _startFileDateFilter = DateTime.Today;
+
         public IEnumerable<AsycudaDocumentSet_Attachments> Attachments
         {
             get { return _attachments; }

@@ -8,6 +8,7 @@ using CoreEntities.Client.Entities;
 using OCR.Client.Entities;
 using OCR.Client.Repositories;
 using SimpleMvvmToolkit;
+using WaterNut.DataSpace;
 using WaterNut.QuerySpace.CoreEntities;
 using WaterNut.QuerySpace.CoreEntities.ViewModels;
 using WaterNut.QuerySpace.OCR.ViewModels;
@@ -71,5 +72,24 @@ namespace RegexImporter.ViewModels
 
 
         public Task Initialization { get; }
+
+        public void ExtractTxt()
+        {
+           PDFText = InvoiceReader.GetPdftxt(CurrentAttachment.Attachments.FilePath).ToString();
+        }
+
+        private string _pdfText = null;
+        public string PDFText
+        {
+            get { return _pdfText; }
+            set
+            {
+                _pdfText = value;
+                BeginSendMessage(WaterNut.QuerySpace.OCR.MessageToken.PDFText,
+                    new NotificationEventArgs<string>(WaterNut.QuerySpace.OCR.MessageToken.PDFText, _pdfText));
+                NotifyPropertyChanged(x => this.PDFText);
+
+            }
+        }
     }
 }

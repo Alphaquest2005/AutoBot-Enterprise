@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+
 using Core.Common;
 using CoreEntities.Client.Entities;
 using OCR.Client.Entities;
@@ -12,6 +14,7 @@ using WaterNut.QuerySpace.CoreEntities;
 using WaterNut.QuerySpace.CoreEntities.ViewModels;
 using WaterNut.QuerySpace.OCR.ViewModels;
 using AsycudaDocumentSetEx = CoreEntities.Client.Entities.AsycudaDocumentSetEx;
+
 using OCR_BaseViewModel = WaterNut.QuerySpace.OCR.ViewModels.BaseViewModel;
 
 namespace RegexImporter.ViewModels
@@ -37,15 +40,67 @@ namespace RegexImporter.ViewModels
         private TXTViewerViewModel()
         {
             RegisterToReceiveMessages<AsycudaDocumentSet_Attachments>(MessageToken.CurrentAsycudaDocumentSet_AttachmentsChanged, OnCurrentAttachmentChanged);
-//RegisterToReceiveMessages<AsycudaDocumentSet_Attachments>(MessageToken.CurrentAsycudaDocumentSet_AttachmentsChanged, OnCurrentAsycudaDocumentSet_AttachmentsChanged);
+            RegisterToReceiveMessages<Match>(WaterNut.QuerySpace.OCR.MessageToken.CurrentMatch, OnCurrentMatch);
+            RegisterToReceiveMessages<Group>(WaterNut.QuerySpace.OCR.MessageToken.CurrentGroup, OnCurrentGroup);
+            RegisterToReceiveMessages<Capture>(WaterNut.QuerySpace.OCR.MessageToken.CurrentCapture, OnCurrentCapture);
+
+            RegisterToReceiveMessages<string>(WaterNut.QuerySpace.OCR.MessageToken.PDFText, onPDFTextChanged);
+
+            //RegisterToReceiveMessages<AsycudaDocumentSet_Attachments>(MessageToken.CurrentAsycudaDocumentSet_AttachmentsChanged, OnCurrentAsycudaDocumentSet_AttachmentsChanged);
             //RegisterToReceiveMessages<Part>(MessageToken.CurrentPartChanged, OnOCR_PartExsChanged2);
-           // RegisterToReceiveMessages<AsycudaDocumentSetEx>(MessageToken.CurrentAsycudaDocumentSetExChanged, OnOCR_CurrentLineChanged);
+            // RegisterToReceiveMessages<AsycudaDocumentSetEx>(MessageToken.CurrentAsycudaDocumentSetExChanged, OnOCR_CurrentLineChanged);
 
 
 
         }
 
-      
+        private void onPDFTextChanged(object sender, NotificationEventArgs<string> e)
+        {
+            PDFText = e.Data;
+        }
+
+        private void OnCurrentCapture(object sender, NotificationEventArgs<Capture> e)
+        {
+            CurrentTextSelection = new TextSelection()
+            {
+                Index = e.Data.Index,
+                Length = e.Data.Length
+            };
+
+        }
+
+        private void OnCurrentGroup(object sender, NotificationEventArgs<Group> e)
+        {
+            CurrentTextSelection = new TextSelection()
+            {
+                Index = e.Data.Index,
+                Length = e.Data.Length
+            };
+
+        }
+
+        private TextSelection _currentTextSelection = null;
+        public TextSelection CurrentTextSelection
+        {
+            get { return _currentTextSelection; }
+            set
+            {
+                _currentTextSelection = value;
+                NotifyPropertyChanged(x => this.CurrentTextSelection);
+            }
+        }
+
+
+        private void OnCurrentMatch(object sender, NotificationEventArgs<Match> e)
+        {
+            CurrentTextSelection = new TextSelection()
+            {
+                Index = e.Data.Index,
+                Length = e.Data.Length
+            };
+
+        }
+
 
         private void OnCurrentAttachmentChanged(object sender, NotificationEventArgs<AsycudaDocumentSet_Attachments> e)
         {
@@ -53,14 +108,16 @@ namespace RegexImporter.ViewModels
             {
                 
                 CurrentImportError = new ImportErrorsRepository().GetImportErrors(e.Data.Id.ToString(), new List<string>(){ "OCR_FailedLines" }).Result;
-                OCR_BaseViewModel.Instance.CurrentImportErrors = CurrentImportError;
+                BaseViewModel.Instance.CurrentImportError = CurrentImportError;
+                PDFText = null;
                 if (CurrentImportError == null) return;
-                var currentLine = new LineRepository().GetLine(
-                    CurrentImportError?.OCR_FailedLines.FirstOrDefault()?.LineId.ToString(), new List<string>() {"Part"}).Result;
-                OCR_BaseViewModel.Instance.CurrentPart = currentLine.Part;
-                OCR_BaseViewModel.Instance.CurrentInvoice = new InvoiceRepository().GetInvoice(
-                    OCR_BaseViewModel.Instance.CurrentPart.InvoiceId.ToString(), new List<string>() { "Parts" }).Result;
-                OCR_BaseViewModel.Instance.CurrentLine = currentLine;
+                var currentLine = new LinesRepository().GetLines(
+                    CurrentImportError?.OCR_FailedLines.FirstOrDefault()?.LineId.ToString(), new List<string>() {"Parts"}).Result;
+                OCR_BaseViewModel.Instance.CurrentParts = currentLine.Parts;
+                OCR_BaseViewModel.Instance.CurrentInvoices = new InvoicesRepository().GetInvoices(
+                    OCR_BaseViewModel.Instance.CurrentParts.TemplateId.ToString(), new List<string>() { "Parts" }).Result;
+                OCR_BaseViewModel.Instance.CurrentLines = currentLine;
+                PDFText = CurrentImportError.PdfText;
             }
         }
 
@@ -78,7 +135,26 @@ namespace RegexImporter.ViewModels
         }
 
 
+        private string _pdfText = "No Text Found";
+        public string PDFText
+        {
+            get { return _pdfText; }
+            set
+            {
+                _pdfText = value;
+               NotifyPropertyChanged(x => this.PDFText);
+
+            }
+        }
+
+
 
         public Task Initialization { get; }
+    }
+
+    public class TextSelection
+    {
+        public int Index { get; set; }
+        public int Length { get; set; }
     }
 }

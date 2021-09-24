@@ -23,7 +23,7 @@
           Background="White" >
         <StackPanel Orientation="Vertical">
         <TextBox Text="{Binding CurrentImportError.Error}" TextWrapping="Wrap" VerticalAlignment="Top" HorizontalAlignment="Left" Height="100" x:Name="errViewer" Margin="0" />
-            <TextBox Text="{Binding CurrentImportError.PdfText}" TextWrapping="Wrap" MaxHeight="500" VerticalScrollBarVisibility="Auto" VerticalAlignment="Top" HorizontalAlignment="Left"  x:Name="txtViewer" Margin="0" />
+            <TextBox Text="{Binding PDFText}" TextWrapping="Wrap" MaxHeight="375" VerticalScrollBarVisibility="Auto" VerticalAlignment="Top" HorizontalAlignment="Left"  x:Name="txtViewer" Margin="0" />
         </StackPanel>
     </Grid>
 </UserControl>

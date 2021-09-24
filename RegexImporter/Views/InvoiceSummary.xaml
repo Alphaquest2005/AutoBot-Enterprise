@@ -19,10 +19,33 @@
             <Setter Property="virtual:VirtualListItemBase.AutoLoad" Value="true" />
         </Style>
 
-        <DataTemplate x:Key="LineTemplate" DataType="{x:Type QSOCREntities:Line}">
+        <DataTemplate x:Key="FieldTemplate" DataType="{x:Type QSOCREntities:Fields}">
+            <Grid Margin="20,0,0,0" Width="Auto">
+                <TextBlock Text="{Binding Key, Mode=OneWay}" HorizontalAlignment="Left" Height="33" Margin="21,0,0,-0.667" TextWrapping="Wrap"  VerticalAlignment="Top" Width="Auto" FontSize="21.333"/>
+                <TextBlock Text="{Binding Field, Mode=OneWay}" HorizontalAlignment="Left" Height="33" Margin="200,0,0,-0.667" TextWrapping="Wrap"  VerticalAlignment="Top" Width="Auto" FontSize="21.333"/>
+
+                <Image Name="CancelImg" Height="15" Width="25" Margin="10,0,595.578,4.866"/>
+                <Rectangle HorizontalAlignment="Left" Height="25" Margin="0,1,0,-0.667" Stroke="{x:Null}" VerticalAlignment="Top" Width="15">
+                    <Rectangle.Fill>
+                        <RadialGradientBrush>
+                            <GradientStop Color="White" Offset="0.011"/>
+                            <GradientStop Color="#FF67AB58" Offset="1"/>
+                        </RadialGradientBrush>
+                    </Rectangle.Fill>
+                </Rectangle>
+
+            </Grid>
+            <DataTemplate.Triggers>
+                <DataTrigger Binding="{Binding ImportComplete}" Value="False">
+                    <Setter TargetName="CancelImg" Property="Source" Value="{StaticResource CancelImage}"/>
+                </DataTrigger>
+            </DataTemplate.Triggers>
+        </DataTemplate>
+
+        <DataTemplate x:Key="LineTemplate" DataType="{x:Type QSOCREntities:Lines}">
             <Grid Width="Auto">
                 <TextBlock Text="{Binding Name, Mode=OneWay}" HorizontalAlignment="Left" Height="33" Margin="21,21,0,-0.667" TextWrapping="Wrap"  VerticalAlignment="Top" Width="Auto" FontSize="21.333"/>
-                
+
                 <Image Name="CancelImg" Height="25" Width="25" Margin="10,0,595.578,4.866"/>
                 <Rectangle HorizontalAlignment="Left" Height="53" Margin="0,1,0,-0.667" Stroke="{x:Null}" VerticalAlignment="Top" Width="15">
                     <Rectangle.Fill>
@@ -32,6 +55,18 @@
                         </RadialGradientBrush>
                     </Rectangle.Fill>
                 </Rectangle>
+                <ListBox x:Name="FieldLst"
+                         Width="Auto"
+                         Height="Auto"
+                         Margin="0,60,0,0"
+                         HorizontalAlignment="Stretch"
+                         VerticalAlignment="Top"
+                         MaxHeight="150"
+                         ItemTemplate="{DynamicResource FieldTemplate}"
+                         SelectedItem="{Binding Source={x:Static viewModels:BaseViewModel.Instance}, Path=CurrentFields}"
+                         ItemsSource="{Binding Fields}"
+                         SelectionMode="Single"
+                         Style="{DynamicResource AlphaListBoxStyle}" />
             </Grid>
             <DataTemplate.Triggers>
                 <DataTrigger Binding="{Binding ImportComplete}" Value="False">
@@ -39,16 +74,16 @@
                 </DataTrigger>
             </DataTemplate.Triggers>
         </DataTemplate>
-        <DataTemplate x:Key="PartTemplate"  DataType="{x:Type QSOCREntities:Part}">
+        <DataTemplate x:Key="PartTemplate"  DataType="{x:Type QSOCREntities:Parts}">
             <Expander Expanded="Part_Expanded" Collapsed="Part_Collapsed" >
                 <Expander.Header>
                     <Grid d:DesignWidth="561.4" d:DesignHeight="53.6" Width="561"  Background="#00000000">
-                        <TextBox Text="{Binding Name, Mode=OneWay}" Style="{DynamicResource TextBox2TextBlock}"  HorizontalAlignment="Left" Height="32" Margin="0" TextWrapping="NoWrap"  VerticalAlignment="Top" Width="361" FontSize="21.333"/>
-                        
+                        <TextBox Text="{Binding PartTypes.Name, Mode=OneWay}" Style="{DynamicResource TextBox2TextBlock}"  HorizontalAlignment="Left" Height="32" Margin="0" TextWrapping="NoWrap"  VerticalAlignment="Top" Width="361" FontSize="21.333"/>
+
                     </Grid>
                 </Expander.Header>
                 <ListBox x:Name="LinesLst"
-                         SelectedItem="{Binding Source={x:Static viewModels:BaseViewModel.Instance}, Path=CurrentLine}"
+                         SelectedItem="{Binding Source={x:Static viewModels:BaseViewModel.Instance}, Path=CurrentLines}"
                          ItemTemplate="{DynamicResource LineTemplate}"
                          ItemsSource="{Binding Lines, Source={StaticResource InvoiceModelDataSource}}" HorizontalAlignment="Stretch" Height="250" Margin="0,0,0,0" VerticalAlignment="Top" Width="Auto" SelectionChanged="DocGrd_SelectionChanged" />
             </Expander>
@@ -56,7 +91,7 @@
 
 
         </DataTemplate>
-        <DataTemplate x:Key="InvoiceTemplate"  DataType="{x:Type QSOCREntities:Invoice}">
+        <DataTemplate x:Key="InvoiceTemplate"  DataType="{x:Type QSOCREntities:Invoices}">
             <Expander Expanded="Invoice_Expanded" Collapsed="Invoice_Collapsed" >
                 <Expander.Header>
                     <Grid d:DesignWidth="561.4" d:DesignHeight="40.6" Width="561"  Background="#00000000">
@@ -69,7 +104,7 @@
                     </Grid>
                 </Expander.Header>
                 <ListBox x:Name="PartLst"
-                         SelectedItem="{Binding Source={x:Static viewModels:BaseViewModel.Instance}, Path=VCurrentPart}" 
+                         SelectedItem="{Binding Source={x:Static viewModels:BaseViewModel.Instance}, Path=CurrentParts}" 
                          ItemTemplate="{DynamicResource PartTemplate}"
                          ItemsSource="{Binding Parts, Source={StaticResource InvoiceModelDataSource}}" HorizontalAlignment="Stretch" Height="Auto" Margin="0,0,0,0" VerticalAlignment="Top" Width="Auto" SelectionChanged="DocGrd_SelectionChanged" />
             </Expander>
@@ -82,9 +117,9 @@
     <Grid x:Name="LayoutRoot" DataContext="{Binding Source={StaticResource InvoiceModelDataSource}}">
         <TextBlock HorizontalAlignment="Left" Height="33" Margin="9,7,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="234" FontSize="21.333" Text="Document List"/>
         <ListBox x:Name="DocSetGrd" 
-                 SelectedItem="{Binding Source={x:Static viewModels:BaseViewModel.Instance}, Path=VCurrentInvoice}" 
+                 SelectedItem="{Binding Source={x:Static viewModels:BaseViewModel.Instance}, Path=VCurrentInvoices}" 
                  ItemTemplate="{DynamicResource InvoiceTemplate}" 
-                 ItemsSource="{Binding InvoiceExs}" 
+                 ItemsSource="{Binding Invoices}" 
                  HorizontalAlignment="Stretch" Height="Auto" Margin="0,93,0,0" VerticalAlignment="Top" Width="Auto" SelectionChanged="DocSetGrd_SelectionChanged"  Style="{DynamicResource AlphaListBoxStyle}"/>
 
         <TextBox Width="300"
@@ -112,6 +147,18 @@
                    Text="View All"
                    TextAlignment="Right"
                    TextWrapping="Wrap"/>
-        
+
+        <TextBlock Width="90"
+                   Height="26"
+                   Margin="334,26,0,0"
+                   HorizontalAlignment="Left"
+                   VerticalAlignment="Top"
+                   FontSize="16"
+                   MouseLeftButtonDown="AutoDetect"
+                   Style="{DynamicResource TextButtonStyle}"
+                   Text="AutoDetect"
+                   TextAlignment="Right"
+                   TextWrapping="Wrap"/>
+
     </Grid>
 </UserControl>

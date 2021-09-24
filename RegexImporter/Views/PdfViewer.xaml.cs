@@ -58,5 +58,9 @@ namespace RegexImporter.Views
 		  
 		}
 
-	}
+        private void ExtractTxt(object sender, MouseButtonEventArgs e)
+        {
+            im.ExtractTxt();
+        }
+    }
 }

@@ -58,17 +58,14 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
                         RegisterToReceiveMessages<string>(MessageToken.CurrentFieldFormatRegExIDChanged, OnCurrentFieldFormatRegExIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentFieldsIDChanged, OnCurrentFieldsIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentImportErrorsIDChanged, OnCurrentImportErrorsIDChanged);
-                        RegisterToReceiveMessages<string>(MessageToken.CurrentInvoiceIDChanged, OnCurrentInvoiceIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentInvoiceIdentificatonRegExIDChanged, OnCurrentInvoiceIdentificatonRegExIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentInvoiceRegExIDChanged, OnCurrentInvoiceRegExIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentInvoicesIDChanged, OnCurrentInvoicesIDChanged);
-                        RegisterToReceiveMessages<string>(MessageToken.CurrentLineIDChanged, OnCurrentLineIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentLinesIDChanged, OnCurrentLinesIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentOCR_FailedFieldsIDChanged, OnCurrentOCR_FailedFieldsIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentOCR_FailedLinesIDChanged, OnCurrentOCR_FailedLinesIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentOCR_FieldValueIDChanged, OnCurrentOCR_FieldValueIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentOCRFileTypesIDChanged, OnCurrentOCRFileTypesIDChanged);
-                        RegisterToReceiveMessages<string>(MessageToken.CurrentPartIDChanged, OnCurrentPartIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentPartsIDChanged, OnCurrentPartsIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentPartTypesIDChanged, OnCurrentPartTypesIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentRecuringPartIDChanged, OnCurrentRecuringPartIDChanged);
@@ -82,17 +79,14 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
                         RegisterToReceiveMessages<FieldFormatRegEx>(MessageToken.CurrentFieldFormatRegExChanged, OnCurrentFieldFormatRegExChanged);
                         RegisterToReceiveMessages<Fields>(MessageToken.CurrentFieldsChanged, OnCurrentFieldsChanged);
                         RegisterToReceiveMessages<ImportErrors>(MessageToken.CurrentImportErrorsChanged, OnCurrentImportErrorsChanged);
-                        RegisterToReceiveMessages<Invoice>(MessageToken.CurrentInvoiceChanged, OnCurrentInvoiceChanged);
                         RegisterToReceiveMessages<InvoiceIdentificatonRegEx>(MessageToken.CurrentInvoiceIdentificatonRegExChanged, OnCurrentInvoiceIdentificatonRegExChanged);
                         RegisterToReceiveMessages<InvoiceRegEx>(MessageToken.CurrentInvoiceRegExChanged, OnCurrentInvoiceRegExChanged);
                         RegisterToReceiveMessages<Invoices>(MessageToken.CurrentInvoicesChanged, OnCurrentInvoicesChanged);
-                        RegisterToReceiveMessages<Line>(MessageToken.CurrentLineChanged, OnCurrentLineChanged);
                         RegisterToReceiveMessages<Lines>(MessageToken.CurrentLinesChanged, OnCurrentLinesChanged);
                         RegisterToReceiveMessages<OCR_FailedFields>(MessageToken.CurrentOCR_FailedFieldsChanged, OnCurrentOCR_FailedFieldsChanged);
                         RegisterToReceiveMessages<OCR_FailedLines>(MessageToken.CurrentOCR_FailedLinesChanged, OnCurrentOCR_FailedLinesChanged);
                         RegisterToReceiveMessages<OCR_FieldValue>(MessageToken.CurrentOCR_FieldValueChanged, OnCurrentOCR_FieldValueChanged);
                         RegisterToReceiveMessages<OCRFileTypes>(MessageToken.CurrentOCRFileTypesChanged, OnCurrentOCRFileTypesChanged);
-                        RegisterToReceiveMessages<Part>(MessageToken.CurrentPartChanged, OnCurrentPartChanged);
                         RegisterToReceiveMessages<Parts>(MessageToken.CurrentPartsChanged, OnCurrentPartsChanged);
                         RegisterToReceiveMessages<PartTypes>(MessageToken.CurrentPartTypesChanged, OnCurrentPartTypesChanged);
                         RegisterToReceiveMessages<RecuringPart>(MessageToken.CurrentRecuringPartChanged, OnCurrentRecuringPartChanged);
@@ -252,33 +246,6 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
                                 }
                             }
                         }
-                        internal async void OnCurrentInvoiceIDChanged(object sender, NotificationEventArgs<string> e)
-                        {
-                            using (InvoiceRepository ctx = new InvoiceRepository())
-                            {
-                                CurrentInvoice = await ctx.GetInvoice(e.Data).ConfigureAwait(continueOnCapturedContext: false);
-                            }
-                            NotifyPropertyChanged(m => CurrentInvoice);
-                        }
-
-                        private  string _currentInvoiceID = "";
-                        public string CurrentInvoiceID
-                        {
-                            get
-                            {
-                                return _currentInvoiceID;
-                            }
-                            set
-                            {
-                                if (_currentInvoiceID != value)
-                                {
-                                    _currentInvoiceID = value;
-                                    if (!string.IsNullOrEmpty(_currentInvoiceID)) BeginSendMessage(MessageToken.CurrentInvoiceIDChanged,
-                                                     new NotificationEventArgs<string>(MessageToken.CurrentInvoiceIDChanged, _currentInvoiceID));
-                                    NotifyPropertyChanged(x => this.CurrentInvoiceID);  
-                                }
-                            }
-                        }
                         internal async void OnCurrentInvoiceIdentificatonRegExIDChanged(object sender, NotificationEventArgs<string> e)
                         {
                             using (InvoiceIdentificatonRegExRepository ctx = new InvoiceIdentificatonRegExRepository())
@@ -357,33 +324,6 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
                                     if (!string.IsNullOrEmpty(_currentInvoicesID)) BeginSendMessage(MessageToken.CurrentInvoicesIDChanged,
                                                      new NotificationEventArgs<string>(MessageToken.CurrentInvoicesIDChanged, _currentInvoicesID));
                                     NotifyPropertyChanged(x => this.CurrentInvoicesID);  
-                                }
-                            }
-                        }
-                        internal async void OnCurrentLineIDChanged(object sender, NotificationEventArgs<string> e)
-                        {
-                            using (LineRepository ctx = new LineRepository())
-                            {
-                                CurrentLine = await ctx.GetLine(e.Data).ConfigureAwait(continueOnCapturedContext: false);
-                            }
-                            NotifyPropertyChanged(m => CurrentLine);
-                        }
-
-                        private  string _currentLineID = "";
-                        public string CurrentLineID
-                        {
-                            get
-                            {
-                                return _currentLineID;
-                            }
-                            set
-                            {
-                                if (_currentLineID != value)
-                                {
-                                    _currentLineID = value;
-                                    if (!string.IsNullOrEmpty(_currentLineID)) BeginSendMessage(MessageToken.CurrentLineIDChanged,
-                                                     new NotificationEventArgs<string>(MessageToken.CurrentLineIDChanged, _currentLineID));
-                                    NotifyPropertyChanged(x => this.CurrentLineID);  
                                 }
                             }
                         }
@@ -519,33 +459,6 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
                                     if (!string.IsNullOrEmpty(_currentOCRFileTypesID)) BeginSendMessage(MessageToken.CurrentOCRFileTypesIDChanged,
                                                      new NotificationEventArgs<string>(MessageToken.CurrentOCRFileTypesIDChanged, _currentOCRFileTypesID));
                                     NotifyPropertyChanged(x => this.CurrentOCRFileTypesID);  
-                                }
-                            }
-                        }
-                        internal async void OnCurrentPartIDChanged(object sender, NotificationEventArgs<string> e)
-                        {
-                            using (PartRepository ctx = new PartRepository())
-                            {
-                                CurrentPart = await ctx.GetPart(e.Data).ConfigureAwait(continueOnCapturedContext: false);
-                            }
-                            NotifyPropertyChanged(m => CurrentPart);
-                        }
-
-                        private  string _currentPartID = "";
-                        public string CurrentPartID
-                        {
-                            get
-                            {
-                                return _currentPartID;
-                            }
-                            set
-                            {
-                                if (_currentPartID != value)
-                                {
-                                    _currentPartID = value;
-                                    if (!string.IsNullOrEmpty(_currentPartID)) BeginSendMessage(MessageToken.CurrentPartIDChanged,
-                                                     new NotificationEventArgs<string>(MessageToken.CurrentPartIDChanged, _currentPartID));
-                                    NotifyPropertyChanged(x => this.CurrentPartID);  
                                 }
                             }
                         }
@@ -945,57 +858,6 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
                      
        
 
-        internal void OnCurrentInvoiceChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<Invoice> e)
-        {
-            //CurrentInvoice = e.Data;
-            NotifyPropertyChanged(m => this.CurrentInvoice);
-        }
-
-        private  Invoice _currentInvoice;
-        public Invoice CurrentInvoice
-        {
-            get
-            {
-                return _currentInvoice;
-            }
-            set
-            {
-                if (_currentInvoice != value)
-                {
-                    _currentInvoice = value;
-                    BeginSendMessage(MessageToken.CurrentInvoiceChanged,
-                                                     new NotificationEventArgs<Invoice>(MessageToken.CurrentInvoiceChanged, _currentInvoice)); 
-                    NotifyPropertyChanged(x => this.CurrentInvoice);    
-                    // all current navigation properties = null
-                 CurrentPart = null;
-   
-                }
-            }
-        }
-
-		VirtualListItem<Invoice> _vcurrentInvoice;
-        public VirtualListItem<Invoice> VCurrentInvoice
-        {
-            get
-            {
-                return _vcurrentInvoice;
-            }
-            set
-            {
-                if (_vcurrentInvoice != value)
-                {
-                    _vcurrentInvoice = value;
-					if(_vcurrentInvoice != null) CurrentInvoice = value.Data;
-                    NotifyPropertyChanged(x => this.VCurrentInvoice);                    
-                }
-            }
-        }
-
-
-
-                     
-       
-
         internal void OnCurrentInvoiceIdentificatonRegExChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<InvoiceIdentificatonRegEx> e)
         {
             //CurrentInvoiceIdentificatonRegEx = e.Data;
@@ -1141,56 +1003,6 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
                     _vcurrentInvoices = value;
 					if(_vcurrentInvoices != null) CurrentInvoices = value.Data;
                     NotifyPropertyChanged(x => this.VCurrentInvoices);                    
-                }
-            }
-        }
-
-
-
-                     
-       
-
-        internal void OnCurrentLineChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<Line> e)
-        {
-            //CurrentLine = e.Data;
-            NotifyPropertyChanged(m => this.CurrentLine);
-        }
-
-        private  Line _currentLine;
-        public Line CurrentLine
-        {
-            get
-            {
-                return _currentLine;
-            }
-            set
-            {
-                if (_currentLine != value)
-                {
-                    _currentLine = value;
-                    BeginSendMessage(MessageToken.CurrentLineChanged,
-                                                     new NotificationEventArgs<Line>(MessageToken.CurrentLineChanged, _currentLine)); 
-                    NotifyPropertyChanged(x => this.CurrentLine);    
-                    // all current navigation properties = null
-   
-                }
-            }
-        }
-
-		VirtualListItem<Line> _vcurrentLine;
-        public VirtualListItem<Line> VCurrentLine
-        {
-            get
-            {
-                return _vcurrentLine;
-            }
-            set
-            {
-                if (_vcurrentLine != value)
-                {
-                    _vcurrentLine = value;
-					if(_vcurrentLine != null) CurrentLine = value.Data;
-                    NotifyPropertyChanged(x => this.VCurrentLine);                    
                 }
             }
         }
@@ -1445,57 +1257,6 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
                     _vcurrentOCRFileTypes = value;
 					if(_vcurrentOCRFileTypes != null) CurrentOCRFileTypes = value.Data;
                     NotifyPropertyChanged(x => this.VCurrentOCRFileTypes);                    
-                }
-            }
-        }
-
-
-
-                     
-       
-
-        internal void OnCurrentPartChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<Part> e)
-        {
-            //CurrentPart = e.Data;
-            NotifyPropertyChanged(m => this.CurrentPart);
-        }
-
-        private  Part _currentPart;
-        public Part CurrentPart
-        {
-            get
-            {
-                return _currentPart;
-            }
-            set
-            {
-                if (_currentPart != value)
-                {
-                    _currentPart = value;
-                    BeginSendMessage(MessageToken.CurrentPartChanged,
-                                                     new NotificationEventArgs<Part>(MessageToken.CurrentPartChanged, _currentPart)); 
-                    NotifyPropertyChanged(x => this.CurrentPart);    
-                    // all current navigation properties = null
-                 CurrentLine = null;
-   
-                }
-            }
-        }
-
-		VirtualListItem<Part> _vcurrentPart;
-        public VirtualListItem<Part> VCurrentPart
-        {
-            get
-            {
-                return _vcurrentPart;
-            }
-            set
-            {
-                if (_vcurrentPart != value)
-                {
-                    _vcurrentPart = value;
-					if(_vcurrentPart != null) CurrentPart = value.Data;
-                    NotifyPropertyChanged(x => this.VCurrentPart);                    
                 }
             }
         }

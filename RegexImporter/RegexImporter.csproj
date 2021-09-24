@@ -42,11 +42,17 @@
     <StartupObject>RegexImporter.App</StartupObject>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="BouncyCastle.Crypto, Version=1.8.6.0, Culture=neutral, PublicKeyToken=0e99375e54769942">
+      <HintPath>..\packages\BouncyCastle.1.8.6.1\lib\BouncyCastle.Crypto.dll</HintPath>
+    </Reference>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.4.4\lib\net45\EntityFramework.dll</HintPath>
     </Reference>
     <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.4.4\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
+    <Reference Include="itextsharp, Version=5.5.13.2, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
+      <HintPath>..\packages\iTextSharp.5.5.13.2\lib\itextsharp.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Expression.Interactions, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\SimpleMvvmToolkit.5.5.1.0\lib\net45\Microsoft.Expression.Interactions.dll</HintPath>
@@ -233,6 +239,10 @@
     <ProjectReference Include="..\DomainInterfaces\InterfacesModel.csproj">
       <Project>{11235d24-1165-4dc4-b91b-0426ea669451}</Project>
       <Name>InterfacesModel</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\PdfOcr\pdf-ocr.csproj">
+      <Project>{523fbf1e-bb4f-435a-9a9e-63de49cd721d}</Project>
+      <Name>pdf-ocr</Name>
     </ProjectReference>
     <ProjectReference Include="..\WaterNut.Business.Entities\WaterNut.Business.Entities.csproj">
       <Project>{978B7943-BD11-41EB-91C9-59A09C6F0ECC}</Project>

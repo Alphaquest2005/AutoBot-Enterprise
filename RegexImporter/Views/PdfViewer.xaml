@@ -20,9 +20,22 @@
     </UserControl.Resources>
 
     <Grid  x:Name="LayoutRoot" DataContext="{Binding Source={StaticResource FileDetailsViewModelDataSource}}" Width="640" Height="600"
-          Background="White" >
+          Background="Transparent" >
+        <Grid>
+            <TextBlock Width="Auto"
+                       Height="26"
+                       Margin="250,5,0,0"
+                       HorizontalAlignment="Right"
+                       VerticalAlignment="Top"
+                       FontSize="16"
+                       MouseLeftButtonDown="ExtractTxt"
+                       Style="{DynamicResource TextButtonStyle}"
+                       Text="Extract Text"
+                       TextAlignment="Right"
+                       TextWrapping="Wrap" />
+        </Grid>
 
-        <WebBrowser VerticalAlignment="Top" HorizontalAlignment="Left"  x:Name="pdfWebViewer" Margin="0" />
+        <WebBrowser VerticalAlignment="Top" HorizontalAlignment="Left"  x:Name="pdfWebViewer" Margin="0,50,0,0" />
 
     </Grid>
 </UserControl>

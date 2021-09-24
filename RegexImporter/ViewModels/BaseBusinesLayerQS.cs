@@ -8,6 +8,7 @@ using CoreEntities.Business.Services;
 using Omu.ValueInjecter;
 using CoreEntities.Client.Entities;
 using CoreEntities.Client.Repositories;
+using OCR.Client.Entities;
 using SimpleMvvmToolkit;
 using WaterNut.DataSpace;
 using WaterNut.QuerySpace.CoreEntities;
@@ -110,7 +111,22 @@ namespace RegexImporter
             }
         }
 
+        public ImportErrors CurrentImportError
+        {
+            get => _currentImportError;
+            set
+            {
+                _currentImportError = value;
+                BeginSendMessage(MessageToken.CurrentApplicationSettingsChanged,
+                    new NotificationEventArgs<ImportErrors>(WaterNut.QuerySpace.OCR.MessageToken.CurrentImportErrorsChanged, _currentImportError));
+                NotifyPropertyChanged(x => this.CurrentImportError);
+            }
+        }
+
+
         VirtualListItem<ApplicationSettings> _vcurrentApplicationSettings;
+        private ImportErrors _currentImportError;
+
         public VirtualListItem<ApplicationSettings> VCurrentApplicationSettings
         {
             get

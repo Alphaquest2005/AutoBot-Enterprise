@@ -20,11 +20,22 @@ namespace RegexImporter.Views
 			InitializeComponent();
 			im = (TXTViewerViewModel)FindResource("FileDetailsViewModelDataSource");
             // Insert code required on object creation below this point.
+            im.PropertyChanged += onPropertyChanged;
 
 
         }
 
-     
+        private void onPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(im.CurrentTextSelection))
+            {
+                if (im.CurrentTextSelection == null) return;
+                txtViewer.Focus();
+                txtViewer.Select(im.CurrentTextSelection.Index, im.CurrentTextSelection.Length);
+                txtViewer.ScrollToLine(txtViewer.GetLineIndexFromCharacterIndex(txtViewer.SelectionStart));
+            }
+        }
+
 
         TXTViewerViewModel im;
 		
