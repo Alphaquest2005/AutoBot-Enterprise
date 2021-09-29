@@ -6273,6 +6273,8 @@ namespace AutoBot
 
             foreach (var file in files)
             {
+
+
                 var dfile = new FileInfo($@"{file.DirectoryName}\{file.Name.Replace(file.Extension, ".csv")}");
                // if (dfile.Exists && dfile.LastWriteTime >= file.LastWriteTime.AddMinutes(5)) return;
                 // Reading from a binary Excel file (format; *.xlsx)

@@ -529,7 +529,7 @@ namespace WaterNut.DataSpace
                                                     ItemDescription = z["ItemDescription"].ToString().Truncate(255),
                                                     Units = z.ContainsKey("Units") ? z["Units"].ToString() : null,
                                                     Cost = Convert.ToDouble(z["Cost"].ToString()),
-                                                    TotalCost = z.ContainsKey("TotalCost") ? Convert.ToDouble(z["TotalCost"].ToString()) : (double?)null,
+                                                    TotalCost = z.ContainsKey("TotalCost") ? Convert.ToDouble(z["TotalCost"].ToString()) : Convert.ToDouble(z["Cost"].ToString()) * Convert.ToDouble(z["Quantity"].ToString()),
                                                     Discount = z.ContainsKey("Discount") ? Convert.ToDouble(z["Discount"].ToString()) : 0,
                                                     Volume = z.ContainsKey("Gallons") ? new InvoiceDetailsVolume() {Quantity = Convert.ToDouble(z["Gallons"].ToString()), Units = "Gallons", TrackingState = TrackingState.Added, } : null,
                                                     SalesFactor = (z.ContainsKey("SalesFactor") && z.ContainsKey("Units") && z["Units"].ToString() != "EA") || (z.ContainsKey("SalesFactor") && !z.ContainsKey("Units")) ? Convert.ToInt32(z["SalesFactor"].ToString()) /* * (z.ContainsKey("Multiplier")  ? Convert.ToInt32(z["Multiplier"].ToString()) : 1) */ : 1,

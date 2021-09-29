@@ -32,19 +32,19 @@ using WaterNut.Interfaces;
 
 namespace CoreEntities.Business.Services
 {
-   [Export (typeof(IFileTypesService))]
+   [Export (typeof(IFileTypeReplaceRegexService))]
    [Export(typeof(IBusinessService))]
    [PartCreationPolicy(CreationPolicy.NonShared)]
    [ServiceBehavior(InstanceContextMode = InstanceContextMode.PerCall,
                     ConcurrencyMode = ConcurrencyMode.Multiple)]
    
-    public partial class FileTypesService : IFileTypesService, IDisposable
+    public partial class FileTypeReplaceRegexService : IFileTypeReplaceRegexService, IDisposable
     {
         //private readonly CoreEntitiesContext dbContext;
 
         public bool StartTracking { get; set; }
 
-        public FileTypesService()
+        public FileTypeReplaceRegexService()
         {
             try
             {
@@ -65,7 +65,7 @@ namespace CoreEntities.Business.Services
             }
         }
 
-        public async Task<IEnumerable<FileTypes>> GetFileTypes(List<string> includesLst = null, bool tracking = true)
+        public async Task<IEnumerable<FileTypeReplaceRegex>> GetFileTypeReplaceRegex(List<string> includesLst = null, bool tracking = true)
         {
             try
             {
@@ -75,7 +75,7 @@ namespace CoreEntities.Business.Services
                   using ( var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
                   {
 				    var set = AddIncludes(includesLst, dbContext);
-                    IEnumerable<FileTypes> entities = await set.AsNoTracking().ToListAsync()
+                    IEnumerable<FileTypeReplaceRegex> entities = await set.AsNoTracking().ToListAsync()
 													       .ConfigureAwait(continueOnCapturedContext: false);
                            //scope.Complete();
                             if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
@@ -98,7 +98,7 @@ namespace CoreEntities.Business.Services
         }
 
 
-        public async Task<FileTypes> GetFileTypesByKey(string Id, List<string> includesLst = null, bool tracking = true)
+        public async Task<FileTypeReplaceRegex> GetFileTypeReplaceRegexByKey(string Id, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
@@ -107,7 +107,7 @@ namespace CoreEntities.Business.Services
               {
                 var i = Convert.ToInt32(Id);
 				var set = AddIncludes(includesLst, dbContext);
-                FileTypes entity = await set.AsNoTracking().SingleOrDefaultAsync(x => x.Id == i).ConfigureAwait(continueOnCapturedContext: false);
+                FileTypeReplaceRegex entity = await set.AsNoTracking().SingleOrDefaultAsync(x => x.Id == i).ConfigureAwait(continueOnCapturedContext: false);
                 if(tracking && entity != null) entity.StartTracking();
                 return entity;
               }
@@ -127,14 +127,14 @@ namespace CoreEntities.Business.Services
         }
 
 
-		 public async Task<IEnumerable<FileTypes>> GetFileTypesByExpression(string exp, List<string> includesLst = null, bool tracking = true)
+		 public async Task<IEnumerable<FileTypeReplaceRegex>> GetFileTypeReplaceRegexByExpression(string exp, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
                 using (var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-					if (string.IsNullOrEmpty(exp) || exp == "None") return new List<FileTypes>();
+					if (string.IsNullOrEmpty(exp) || exp == "None") return new List<FileTypeReplaceRegex>();
 					var set = AddIncludes(includesLst, dbContext);
                     if (exp == "All")
                     {
@@ -170,14 +170,14 @@ namespace CoreEntities.Business.Services
             }
         }
 
-		 public async Task<IEnumerable<FileTypes>> GetFileTypesByExpressionLst(List<string> expLst, List<string> includesLst = null, bool tracking = true)
+		 public async Task<IEnumerable<FileTypeReplaceRegex>> GetFileTypeReplaceRegexByExpressionLst(List<string> expLst, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
                 using (var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-					if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return new List<FileTypes>();
+					if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return new List<FileTypeReplaceRegex>();
 					var set = AddIncludes(includesLst, dbContext);
                     if (expLst.FirstOrDefault() == "All")
                     {
@@ -212,7 +212,7 @@ namespace CoreEntities.Business.Services
             }
         }
 
-		public async Task<IEnumerable<FileTypes>> GetFileTypesByExpressionNav(string exp,
+		public async Task<IEnumerable<FileTypeReplaceRegex>> GetFileTypeReplaceRegexByExpressionNav(string exp,
 																							  Dictionary<string, string> navExp,
 																							  List<string> includesLst = null, bool tracking = true)
         {
@@ -221,7 +221,7 @@ namespace CoreEntities.Business.Services
                 using (var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-                    if (string.IsNullOrEmpty(exp) || exp == "None") return new List<FileTypes>();
+                    if (string.IsNullOrEmpty(exp) || exp == "None") return new List<FileTypeReplaceRegex>();
 
                     if (exp == "All" && navExp.Count == 0)
                     {
@@ -235,76 +235,10 @@ namespace CoreEntities.Business.Services
                     {
                         switch (itm.Key)
                         {
-                            case "ApplicationSettings":
+                            case "FileTypes":
                                 return
                                     await
-                                        GetWhere<ApplicationSettings>(dbContext, exp, itm.Value, "FileTypes", "SelectMany", includesLst)
-										.ConfigureAwait(continueOnCapturedContext: false);
-
-                            case "AsycudaDocumentSetEx":
-                                return
-                                    await
-                                        GetWhere<AsycudaDocumentSetEx>(dbContext, exp, itm.Value, "FileTypes", "SelectMany", includesLst)
-										.ConfigureAwait(continueOnCapturedContext: false);
-
-                            case "FileTypeMappings":
-                                return
-                                    await
-                                        GetWhere<FileTypeMappings>(dbContext, exp, itm.Value, "FileTypes", "Select", includesLst)
-										.ConfigureAwait(continueOnCapturedContext: false);
-
-                            case "FileTypeActions":
-                                return
-                                    await
-                                        GetWhere<FileTypeActions>(dbContext, exp, itm.Value, "FileTypes", "Select", includesLst)
-										.ConfigureAwait(continueOnCapturedContext: false);
-
-                            case "FileTypeContacts":
-                                return
-                                    await
-                                        GetWhere<FileTypeContacts>(dbContext, exp, itm.Value, "FileTypes", "Select", includesLst)
-										.ConfigureAwait(continueOnCapturedContext: false);
-
-                            case "AsycudaDocumentSet_Attachments":
-                                return
-                                    await
-                                        GetWhere<AsycudaDocumentSet_Attachments>(dbContext, exp, itm.Value, "FileTypes", "Select", includesLst)
-										.ConfigureAwait(continueOnCapturedContext: false);
-
-                            case "FileGroups":
-                                return
-                                    await
-                                        GetWhere<FileGroups>(dbContext, exp, itm.Value, "FileTypes", "SelectMany", includesLst)
-										.ConfigureAwait(continueOnCapturedContext: false);
-
-                            case "ChildFileTypes":
-                                return
-                                    await
-                                        GetWhere<FileTypes>(dbContext, exp, itm.Value, "ChildFileTypes", "Select", includesLst)
-										.ConfigureAwait(continueOnCapturedContext: false);
-
-                            case "ParentFileTypes":
-                                return
-                                    await
-                                        GetWhere<FileTypes>(dbContext, exp, itm.Value, "ChildFileTypes", "SelectMany", includesLst)
-										.ConfigureAwait(continueOnCapturedContext: false);
-
-                            case "EmailFileTypes":
-                                return
-                                    await
-                                        GetWhere<EmailFileTypes>(dbContext, exp, itm.Value, "FileTypes", "Select", includesLst)
-										.ConfigureAwait(continueOnCapturedContext: false);
-
-                            case "ImportActions":
-                                return
-                                    await
-                                        GetWhere<ImportActions>(dbContext, exp, itm.Value, "FileTypes", "Select", includesLst)
-										.ConfigureAwait(continueOnCapturedContext: false);
-
-                            case "FileTypeReplaceRegex":
-                                return
-                                    await
-                                        GetWhere<FileTypeReplaceRegex>(dbContext, exp, itm.Value, "FileTypes", "Select", includesLst)
+                                        GetWhere<FileTypes>(dbContext, exp, itm.Value, "FileTypeReplaceRegex", "SelectMany", includesLst)
 										.ConfigureAwait(continueOnCapturedContext: false);
 
                         }
@@ -333,17 +267,17 @@ namespace CoreEntities.Business.Services
             }
         }
 
-        public async Task<IEnumerable<FileTypes>> GetFileTypesByBatch(string exp,
+        public async Task<IEnumerable<FileTypeReplaceRegex>> GetFileTypeReplaceRegexByBatch(string exp,
             int totalrow, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
 
-                var res = new ConcurrentQueue<List<FileTypes>>();
+                var res = new ConcurrentQueue<List<FileTypeReplaceRegex>>();
 
 
 
-                if (string.IsNullOrEmpty(exp) || exp == "None") return new List<FileTypes>();
+                if (string.IsNullOrEmpty(exp) || exp == "None") return new List<FileTypeReplaceRegex>();
 
 
                 var batchSize = 500;
@@ -364,7 +298,7 @@ namespace CoreEntities.Business.Services
                                 dbContext.Configuration.AutoDetectChangesEnabled = false;
                                 //dbContext.Configuration.LazyLoadingEnabled = true;
                                 var set = AddIncludes(includesLst, dbContext);
-                                IQueryable<FileTypes> dset;
+                                IQueryable<FileTypeReplaceRegex> dset;
                                 if (exp == "All")
                                 {
                                     dset = set.OrderBy(x => x.Id);
@@ -408,17 +342,17 @@ namespace CoreEntities.Business.Services
                 throw new FaultException<ValidationFault>(fault);
             }
         }
-        public async Task<IEnumerable<FileTypes>> GetFileTypesByBatchExpressionLst(List<string> expLst,
+        public async Task<IEnumerable<FileTypeReplaceRegex>> GetFileTypeReplaceRegexByBatchExpressionLst(List<string> expLst,
             int totalrow, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
 
-                var res = new ConcurrentQueue<List<FileTypes>>();
+                var res = new ConcurrentQueue<List<FileTypeReplaceRegex>>();
 
 
 
-                if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return new List<FileTypes>();
+                if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return new List<FileTypeReplaceRegex>();
 
 
                 var batchSize = 500;
@@ -439,7 +373,7 @@ namespace CoreEntities.Business.Services
                                 dbContext.Configuration.AutoDetectChangesEnabled = false;
                                 //dbContext.Configuration.LazyLoadingEnabled = true;
                                 var set = AddIncludes(includesLst, dbContext);
-                                IQueryable<FileTypes> dset;
+                                IQueryable<FileTypeReplaceRegex> dset;
                                 if (expLst.FirstOrDefault() == "All")
                                 {
                                     dset = set.OrderBy(x => x.Id);
@@ -484,13 +418,13 @@ namespace CoreEntities.Business.Services
         }
 
 
-        public async Task<FileTypes> UpdateFileTypes(FileTypes entity)
+        public async Task<FileTypeReplaceRegex> UpdateFileTypeReplaceRegex(FileTypeReplaceRegex entity)
         { 
             using ( var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
               {
                 try
                 {   
-                     var res = (FileTypes) entity;
+                     var res = (FileTypeReplaceRegex) entity;
                     if(res.TrackingState == TrackingState.Unchanged) res.TrackingState = TrackingState.Modified;                              
                     
                     dbContext.ApplyChanges(res);
@@ -566,14 +500,14 @@ namespace CoreEntities.Business.Services
            return entity;
         }
 
-        public async Task<FileTypes> CreateFileTypes(FileTypes entity)
+        public async Task<FileTypeReplaceRegex> CreateFileTypeReplaceRegex(FileTypeReplaceRegex entity)
         {
             try
             {
-                var res = (FileTypes) entity;
+                var res = (FileTypeReplaceRegex) entity;
               using ( var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
               {
-                dbContext.FileTypes.Add(res);
+                dbContext.FileTypeReplaceRegex.Add(res);
                 await dbContext.SaveChangesAsync().ConfigureAwait(continueOnCapturedContext: false);
                 res.AcceptChanges();
                 return res;
@@ -593,21 +527,21 @@ namespace CoreEntities.Business.Services
             }
         }
 
-        public async Task<bool> DeleteFileTypes(string Id)
+        public async Task<bool> DeleteFileTypeReplaceRegex(string Id)
         {
             try
             {
               using ( var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
               {
                 var i = Convert.ToInt32(Id);
-                FileTypes entity = await dbContext.FileTypes
+                FileTypeReplaceRegex entity = await dbContext.FileTypeReplaceRegex
 													.SingleOrDefaultAsync(x => x.Id == i)
 													.ConfigureAwait(continueOnCapturedContext: false);
                 if (entity == null)
                     return false;
 
-                    dbContext.FileTypes.Attach(entity);
-                    dbContext.FileTypes.Remove(entity);
+                    dbContext.FileTypeReplaceRegex.Attach(entity);
+                    dbContext.FileTypeReplaceRegex.Remove(entity);
                     await dbContext.SaveChangesAsync().ConfigureAwait(continueOnCapturedContext: false);
                     return true;
               }
@@ -626,19 +560,19 @@ namespace CoreEntities.Business.Services
             }
         }
 
-        public async Task<bool> RemoveSelectedFileTypes(IEnumerable<string> lst)
+        public async Task<bool> RemoveSelectedFileTypeReplaceRegex(IEnumerable<string> lst)
         {
             try
             {
-                StatusModel.StartStatusUpdate("Removing FileTypes", lst.Count());
+                StatusModel.StartStatusUpdate("Removing FileTypeReplaceRegex", lst.Count());
                 var t = Task.Run(() =>
                 {
-                    using (var ctx = new FileTypesService())
+                    using (var ctx = new FileTypeReplaceRegexService())
                     {
                         foreach (var item in lst.ToList())
                         {
 
-                            ctx.DeleteFileTypes(item).Wait();
+                            ctx.DeleteFileTypeReplaceRegex(item).Wait();
                             StatusModel.StatusUpdate();
                         }
                     }
@@ -673,7 +607,7 @@ namespace CoreEntities.Business.Services
                 {
                     dbContext.Database.CommandTimeout = 0;
                     if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return 0;
-                    var set = (IQueryable<FileTypes>)dbContext.FileTypes; 
+                    var set = (IQueryable<FileTypeReplaceRegex>)dbContext.FileTypeReplaceRegex; 
                     if (expLst.FirstOrDefault() == "All")
                     {
                         return await set.AsNoTracking().CountAsync()
@@ -711,7 +645,7 @@ namespace CoreEntities.Business.Services
                     if (string.IsNullOrEmpty(exp) || exp == "None") return 0;
                     if (exp == "All")
                     {
-                        return await dbContext.FileTypes
+                        return await dbContext.FileTypeReplaceRegex
                                     .AsNoTracking()
 									.CountAsync()
 									.ConfigureAwait(continueOnCapturedContext: false);
@@ -719,7 +653,7 @@ namespace CoreEntities.Business.Services
                     else
                     {
                         
-                        return await dbContext.FileTypes
+                        return await dbContext.FileTypeReplaceRegex
 									.AsNoTracking()
                                     .Where(exp)
 									.CountAsync()
@@ -741,17 +675,17 @@ namespace CoreEntities.Business.Services
             }
         }
         
-        public async Task<IEnumerable<FileTypes>> LoadRange(int startIndex, int count, string exp)
+        public async Task<IEnumerable<FileTypeReplaceRegex>> LoadRange(int startIndex, int count, string exp)
         {
             try
             {
                 using (var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-                    if (string.IsNullOrEmpty(exp) || exp == "None") return new List<FileTypes>();
+                    if (string.IsNullOrEmpty(exp) || exp == "None") return new List<FileTypeReplaceRegex>();
                     if (exp == "All")
                     {
-                        return await dbContext.FileTypes
+                        return await dbContext.FileTypeReplaceRegex
 										.AsNoTracking()
                                         .OrderBy(y => y.Id)
 										.Skip(startIndex)
@@ -762,7 +696,7 @@ namespace CoreEntities.Business.Services
                     else
                     {
                         
-                        return await dbContext.FileTypes
+                        return await dbContext.FileTypeReplaceRegex
 										.AsNoTracking()
                                         .Where(exp)
 										.OrderBy(y => y.Id)
@@ -797,7 +731,7 @@ namespace CoreEntities.Business.Services
                     dbContext.Database.CommandTimeout = 0;
                     if (exp == "All" && navExp.Count == 0)
                     {
-                        return await dbContext.FileTypes
+                        return await dbContext.FileTypeReplaceRegex
 										.AsNoTracking()
                                         .CountAsync()
 										.ConfigureAwait(continueOnCapturedContext: false);
@@ -806,45 +740,12 @@ namespace CoreEntities.Business.Services
                     {
                         switch (itm.Key)
                         {
-                            case "ApplicationSettings":
-                                return await CountWhere<ApplicationSettings>(dbContext, exp, itm.Value, "FileTypes", "SelectMany")
-											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "AsycudaDocumentSetEx":
-                                return await CountWhere<AsycudaDocumentSetEx>(dbContext, exp, itm.Value, "FileTypes", "SelectMany")
-											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "FileTypeMappings":
-                                return await CountWhere<FileTypeMappings>(dbContext, exp, itm.Value, "FileTypes", "Select")
-											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "FileTypeActions":
-                                return await CountWhere<FileTypeActions>(dbContext, exp, itm.Value, "FileTypes", "Select")
-											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "FileTypeContacts":
-                                return await CountWhere<FileTypeContacts>(dbContext, exp, itm.Value, "FileTypes", "Select")
-											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "AsycudaDocumentSet_Attachments":
-                                return await CountWhere<AsycudaDocumentSet_Attachments>(dbContext, exp, itm.Value, "FileTypes", "Select")
-											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "FileGroups":
-                                return await CountWhere<FileGroups>(dbContext, exp, itm.Value, "FileTypes", "SelectMany")
-											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "ChildFileTypes":
-                                return await CountWhere<FileTypes>(dbContext, exp, itm.Value, "ChildFileTypes", "Select")
-											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "ParentFileTypes":
-                                return await CountWhere<FileTypes>(dbContext, exp, itm.Value, "ChildFileTypes", "SelectMany")
-											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "EmailFileTypes":
-                                return await CountWhere<EmailFileTypes>(dbContext, exp, itm.Value, "FileTypes", "Select")
-											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "ImportActions":
-                                return await CountWhere<ImportActions>(dbContext, exp, itm.Value, "FileTypes", "Select")
-											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "FileTypeReplaceRegex":
-                                return await CountWhere<FileTypeReplaceRegex>(dbContext, exp, itm.Value, "FileTypes", "Select")
+                            case "FileTypes":
+                                return await CountWhere<FileTypes>(dbContext, exp, itm.Value, "FileTypeReplaceRegex", "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }
-                    return await dbContext.FileTypes.Where(exp == "All" || exp == null ? "Id != null" : exp)
+                    return await dbContext.FileTypeReplaceRegex.Where(exp == "All" || exp == null ? "Id != null" : exp)
 											.AsNoTracking()
                                             .CountAsync()
 											.ConfigureAwait(continueOnCapturedContext: false);
@@ -886,7 +787,7 @@ namespace CoreEntities.Business.Services
             return await dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
-                .SelectMany(navProp).OfType<FileTypes>()
+                .SelectMany(navProp).OfType<FileTypeReplaceRegex>()
                 .Where(exp == "All" || exp == null ? "Id != null" : exp)
                 .Distinct()
                 .OrderBy("Id")
@@ -907,7 +808,7 @@ namespace CoreEntities.Business.Services
             return await dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
-                .Select(navProp).OfType<FileTypes>()
+                .Select(navProp).OfType<FileTypeReplaceRegex>()
                 .Where(exp == "All" || exp == null ? "Id != null" : exp)
                 .Distinct()
                 .OrderBy("Id")
@@ -921,7 +822,7 @@ namespace CoreEntities.Business.Services
 			}
         }
 
-		  public async Task<IEnumerable<FileTypes>> LoadRangeNav(int startIndex, int count, string exp,
+		  public async Task<IEnumerable<FileTypeReplaceRegex>> LoadRangeNav(int startIndex, int count, string exp,
                                                                                  Dictionary<string, string> navExp, IEnumerable<string> includeLst = null)
         {
             try
@@ -929,7 +830,7 @@ namespace CoreEntities.Business.Services
                 using (var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-                    if ((string.IsNullOrEmpty(exp) && navExp.Count == 0) || exp == "None") return new List<FileTypes>();
+                    if ((string.IsNullOrEmpty(exp) && navExp.Count == 0) || exp == "None") return new List<FileTypeReplaceRegex>();
                     var set = AddIncludes(includeLst, dbContext);
 
                     if (exp == "All" && navExp.Count == 0)
@@ -948,76 +849,10 @@ namespace CoreEntities.Business.Services
                     {
                         switch (itm.Key)
                         {
-                            case "ApplicationSettings":
+                            case "FileTypes":
                                 return
                                     await
-                                        LoadRangeWhere<ApplicationSettings>(startIndex, count, dbContext, exp, itm.Value, "FileTypes", "SelectMany")
-													.ConfigureAwait(continueOnCapturedContext: false);
-
-                            case "AsycudaDocumentSetEx":
-                                return
-                                    await
-                                        LoadRangeWhere<AsycudaDocumentSetEx>(startIndex, count, dbContext, exp, itm.Value, "FileTypes", "SelectMany")
-													.ConfigureAwait(continueOnCapturedContext: false);
-
-                            case "FileTypeMappings":
-                                return
-                                    await
-                                        LoadRangeWhere<FileTypeMappings>(startIndex, count, dbContext, exp, itm.Value, "FileTypes", "Select")
-													.ConfigureAwait(continueOnCapturedContext: false);
-
-                            case "FileTypeActions":
-                                return
-                                    await
-                                        LoadRangeWhere<FileTypeActions>(startIndex, count, dbContext, exp, itm.Value, "FileTypes", "Select")
-													.ConfigureAwait(continueOnCapturedContext: false);
-
-                            case "FileTypeContacts":
-                                return
-                                    await
-                                        LoadRangeWhere<FileTypeContacts>(startIndex, count, dbContext, exp, itm.Value, "FileTypes", "Select")
-													.ConfigureAwait(continueOnCapturedContext: false);
-
-                            case "AsycudaDocumentSet_Attachments":
-                                return
-                                    await
-                                        LoadRangeWhere<AsycudaDocumentSet_Attachments>(startIndex, count, dbContext, exp, itm.Value, "FileTypes", "Select")
-													.ConfigureAwait(continueOnCapturedContext: false);
-
-                            case "FileGroups":
-                                return
-                                    await
-                                        LoadRangeWhere<FileGroups>(startIndex, count, dbContext, exp, itm.Value, "FileTypes", "SelectMany")
-													.ConfigureAwait(continueOnCapturedContext: false);
-
-                            case "ChildFileTypes":
-                                return
-                                    await
-                                        LoadRangeWhere<FileTypes>(startIndex, count, dbContext, exp, itm.Value, "ChildFileTypes", "Select")
-													.ConfigureAwait(continueOnCapturedContext: false);
-
-                            case "ParentFileTypes":
-                                return
-                                    await
-                                        LoadRangeWhere<FileTypes>(startIndex, count, dbContext, exp, itm.Value, "ChildFileTypes", "SelectMany")
-													.ConfigureAwait(continueOnCapturedContext: false);
-
-                            case "EmailFileTypes":
-                                return
-                                    await
-                                        LoadRangeWhere<EmailFileTypes>(startIndex, count, dbContext, exp, itm.Value, "FileTypes", "Select")
-													.ConfigureAwait(continueOnCapturedContext: false);
-
-                            case "ImportActions":
-                                return
-                                    await
-                                        LoadRangeWhere<ImportActions>(startIndex, count, dbContext, exp, itm.Value, "FileTypes", "Select")
-													.ConfigureAwait(continueOnCapturedContext: false);
-
-                            case "FileTypeReplaceRegex":
-                                return
-                                    await
-                                        LoadRangeWhere<FileTypeReplaceRegex>(startIndex, count, dbContext, exp, itm.Value, "FileTypes", "Select")
+                                        LoadRangeWhere<FileTypes>(startIndex, count, dbContext, exp, itm.Value, "FileTypeReplaceRegex", "SelectMany")
 													.ConfigureAwait(continueOnCapturedContext: false);
 
                           
@@ -1026,7 +861,7 @@ namespace CoreEntities.Business.Services
 						}
 
                     }
-                    return await set//dbContext.FileTypes
+                    return await set//dbContext.FileTypeReplaceRegex
 								.AsNoTracking()
                                 .Where(exp == "All" || exp == null ? "Id != null" : exp)
 								.OrderBy(y => y.Id)
@@ -1053,7 +888,7 @@ namespace CoreEntities.Business.Services
             }
         }
 
-		private static async Task<IEnumerable<FileTypes>> LoadRangeWhere<T>(int startIndex, int count,
+		private static async Task<IEnumerable<FileTypeReplaceRegex>> LoadRangeWhere<T>(int startIndex, int count,
             CoreEntitiesContext dbContext, string exp, string navExp, string navProp, string rel, IEnumerable<string> includeLst = null) where T : class
         {
              switch (rel)
@@ -1068,7 +903,7 @@ namespace CoreEntities.Business.Services
 		    }
         }
 
-		private static async Task<IEnumerable<FileTypes>> LoadRangeSelectMany<T>(int startIndex, int count,
+		private static async Task<IEnumerable<FileTypeReplaceRegex>> LoadRangeSelectMany<T>(int startIndex, int count,
             CoreEntitiesContext dbContext, string exp, string navExp, string navProp, IEnumerable<string> includeLst = null) where T : class
         {
 			try
@@ -1076,7 +911,7 @@ namespace CoreEntities.Business.Services
             var set = dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
-                .SelectMany(navProp).OfType<FileTypes>();
+                .SelectMany(navProp).OfType<FileTypeReplaceRegex>();
     
             if (includeLst != null) set = includeLst.Aggregate(set, (current, itm) => current.Include(itm));            
 
@@ -1097,7 +932,7 @@ namespace CoreEntities.Business.Services
 			}
         }
 
-		private static async Task<IEnumerable<FileTypes>> LoadRangeSelect<T>(int startIndex, int count,
+		private static async Task<IEnumerable<FileTypeReplaceRegex>> LoadRangeSelect<T>(int startIndex, int count,
             CoreEntitiesContext dbContext, string exp, string navExp, string navProp, IEnumerable<string> includeLst = null) where T : class
         {
 			try
@@ -1105,7 +940,7 @@ namespace CoreEntities.Business.Services
               var set = dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
-                .Select(navProp).OfType<FileTypes>();
+                .Select(navProp).OfType<FileTypeReplaceRegex>();
 
                if (includeLst != null) set = includeLst.Aggregate(set, (current, itm) => current.Include(itm)); 
                 
@@ -1126,7 +961,7 @@ namespace CoreEntities.Business.Services
 			}
         }
 
-        private static async Task<IEnumerable<FileTypes>> GetWhere<T>(CoreEntitiesContext dbContext,
+        private static async Task<IEnumerable<FileTypeReplaceRegex>> GetWhere<T>(CoreEntitiesContext dbContext,
             string exp, string navExp, string navProp, string rel, List<string> includesLst = null) where T : class
         {
 			try
@@ -1150,7 +985,7 @@ namespace CoreEntities.Business.Services
 			}
         }
 
-		private static async Task<IEnumerable<FileTypes>> GetWhereSelectMany<T>(CoreEntitiesContext dbContext,
+		private static async Task<IEnumerable<FileTypeReplaceRegex>> GetWhereSelectMany<T>(CoreEntitiesContext dbContext,
             string exp, string navExp, string navProp, List<string> includesLst = null) where T : class
         {
 			try
@@ -1161,17 +996,17 @@ namespace CoreEntities.Business.Services
 				return await dbContext.Set<T>()
 							.AsNoTracking()
                             .Where(navExp)
-							.SelectMany(navProp).OfType<FileTypes>()
+							.SelectMany(navProp).OfType<FileTypeReplaceRegex>()
 							.Where(exp == "All" || exp == null?"Id != null":exp)
 							.Distinct()
 							.ToListAsync()
 							.ConfigureAwait(continueOnCapturedContext: false);
 			}
 
-			var set = (DbQuery<FileTypes>)dbContext.Set<T>()
+			var set = (DbQuery<FileTypeReplaceRegex>)dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
-                .SelectMany(navProp).OfType<FileTypes>()
+                .SelectMany(navProp).OfType<FileTypeReplaceRegex>()
                 .Where(exp == "All" || exp == null?"Id != null":exp)
                 .Distinct();
 
@@ -1187,7 +1022,7 @@ namespace CoreEntities.Business.Services
 			}
         }
 
-		private static async Task<IEnumerable<FileTypes>> GetWhereSelect<T>(CoreEntitiesContext dbContext,
+		private static async Task<IEnumerable<FileTypeReplaceRegex>> GetWhereSelect<T>(CoreEntitiesContext dbContext,
             string exp, string navExp, string navProp, List<string> includesLst = null) where T : class
         {
 			try
@@ -1198,17 +1033,17 @@ namespace CoreEntities.Business.Services
 				return await dbContext.Set<T>()
 							.AsNoTracking()
                             .Where(navExp)
-							.Select(navProp).OfType<FileTypes>()
+							.Select(navProp).OfType<FileTypeReplaceRegex>()
 							.Where(exp == "All" || exp == null?"Id != null":exp)
 							.Distinct()
 							.ToListAsync()
 							.ConfigureAwait(continueOnCapturedContext: false);
 			}
 
-			var set = (DbQuery<FileTypes>)dbContext.Set<T>()
+			var set = (DbQuery<FileTypeReplaceRegex>)dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
-                .Select(navProp).OfType<FileTypes>()
+                .Select(navProp).OfType<FileTypeReplaceRegex>()
                 .Where(exp == "All" || exp == null?"Id != null":exp)
                 .Distinct();
 
@@ -1224,173 +1059,17 @@ namespace CoreEntities.Business.Services
 			}
         }
 
-			        public async Task<IEnumerable<FileTypes>> GetFileTypesByApplicationSettingsId(string ApplicationSettingsId, List<string> includesLst = null)
+			        public async Task<IEnumerable<FileTypeReplaceRegex>> GetFileTypeReplaceRegexByFileTypeId(string FileTypeId, List<string> includesLst = null)
         {
             try
             {
                 using ( var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
               {
-                var i = Convert.ToInt32(ApplicationSettingsId);
+                var i = Convert.ToInt32(FileTypeId);
                 var set = AddIncludes(includesLst, dbContext);
-                IEnumerable<FileTypes> entities = await set//dbContext.FileTypes
-                                                    // .Include(x => x.FileTypeMappings)									  
-                                                    // .Include(x => x.FileTypeActions)									  
-                                                    // .Include(x => x.FileTypeContacts)									  
-                                                    // .Include(x => x.AsycudaDocumentSet_Attachments)									  
-                                                    // .Include(x => x.ChildFileTypes)									  
-                                                    // .Include(x => x.EmailFileTypes)									  
-                                                    // .Include(x => x.ImportActions)									  
-                                                    // .Include(x => x.FileTypeReplaceRegex)									  
+                IEnumerable<FileTypeReplaceRegex> entities = await set//dbContext.FileTypeReplaceRegex
                                       .AsNoTracking()
-                                        .Where(x => x.ApplicationSettingsId.ToString() == ApplicationSettingsId.ToString())
-										.ToListAsync()
-										.ConfigureAwait(continueOnCapturedContext: false);
-                return entities;
-              }
-             }
-            catch (Exception updateEx)
-            {
-                System.Diagnostics.Debugger.Break();
-                //throw new FaultException(updateEx.Message);
-                    var fault = new ValidationFault
-                                {
-                                    Result = false,
-                                    Message = updateEx.Message,
-                                    Description = updateEx.StackTrace
-                                };
-                    throw new FaultException<ValidationFault>(fault);
-            }
-        }
- 	        public async Task<IEnumerable<FileTypes>> GetFileTypesByAsycudaDocumentSetId(string AsycudaDocumentSetId, List<string> includesLst = null)
-        {
-            try
-            {
-                using ( var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
-              {
-                var i = Convert.ToInt32(AsycudaDocumentSetId);
-                var set = AddIncludes(includesLst, dbContext);
-                IEnumerable<FileTypes> entities = await set//dbContext.FileTypes
-                                                    // .Include(x => x.FileTypeMappings)									  
-                                                    // .Include(x => x.FileTypeActions)									  
-                                                    // .Include(x => x.FileTypeContacts)									  
-                                                    // .Include(x => x.AsycudaDocumentSet_Attachments)									  
-                                                    // .Include(x => x.ChildFileTypes)									  
-                                                    // .Include(x => x.EmailFileTypes)									  
-                                                    // .Include(x => x.ImportActions)									  
-                                                    // .Include(x => x.FileTypeReplaceRegex)									  
-                                      .AsNoTracking()
-                                        .Where(x => x.AsycudaDocumentSetId.ToString() == AsycudaDocumentSetId.ToString())
-										.ToListAsync()
-										.ConfigureAwait(continueOnCapturedContext: false);
-                return entities;
-              }
-             }
-            catch (Exception updateEx)
-            {
-                System.Diagnostics.Debugger.Break();
-                //throw new FaultException(updateEx.Message);
-                    var fault = new ValidationFault
-                                {
-                                    Result = false,
-                                    Message = updateEx.Message,
-                                    Description = updateEx.StackTrace
-                                };
-                    throw new FaultException<ValidationFault>(fault);
-            }
-        }
- 	        public async Task<IEnumerable<FileTypes>> GetFileTypesByFileGroupId(string FileGroupId, List<string> includesLst = null)
-        {
-            try
-            {
-                using ( var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
-              {
-                var i = Convert.ToInt32(FileGroupId);
-                var set = AddIncludes(includesLst, dbContext);
-                IEnumerable<FileTypes> entities = await set//dbContext.FileTypes
-                                                    // .Include(x => x.FileTypeMappings)									  
-                                                    // .Include(x => x.FileTypeActions)									  
-                                                    // .Include(x => x.FileTypeContacts)									  
-                                                    // .Include(x => x.AsycudaDocumentSet_Attachments)									  
-                                                    // .Include(x => x.ChildFileTypes)									  
-                                                    // .Include(x => x.EmailFileTypes)									  
-                                                    // .Include(x => x.ImportActions)									  
-                                                    // .Include(x => x.FileTypeReplaceRegex)									  
-                                      .AsNoTracking()
-                                        .Where(x => x.FileGroupId.ToString() == FileGroupId.ToString())
-										.ToListAsync()
-										.ConfigureAwait(continueOnCapturedContext: false);
-                return entities;
-              }
-             }
-            catch (Exception updateEx)
-            {
-                System.Diagnostics.Debugger.Break();
-                //throw new FaultException(updateEx.Message);
-                    var fault = new ValidationFault
-                                {
-                                    Result = false,
-                                    Message = updateEx.Message,
-                                    Description = updateEx.StackTrace
-                                };
-                    throw new FaultException<ValidationFault>(fault);
-            }
-        }
- 	        public async Task<IEnumerable<FileTypes>> GetFileTypesByParentFileTypeId(string ParentFileTypeId, List<string> includesLst = null)
-        {
-            try
-            {
-                using ( var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
-              {
-                var i = Convert.ToInt32(ParentFileTypeId);
-                var set = AddIncludes(includesLst, dbContext);
-                IEnumerable<FileTypes> entities = await set//dbContext.FileTypes
-                                                    // .Include(x => x.FileTypeMappings)									  
-                                                    // .Include(x => x.FileTypeActions)									  
-                                                    // .Include(x => x.FileTypeContacts)									  
-                                                    // .Include(x => x.AsycudaDocumentSet_Attachments)									  
-                                                    // .Include(x => x.ChildFileTypes)									  
-                                                    // .Include(x => x.EmailFileTypes)									  
-                                                    // .Include(x => x.ImportActions)									  
-                                                    // .Include(x => x.FileTypeReplaceRegex)									  
-                                      .AsNoTracking()
-                                        .Where(x => x.ParentFileTypeId.ToString() == ParentFileTypeId.ToString())
-										.ToListAsync()
-										.ConfigureAwait(continueOnCapturedContext: false);
-                return entities;
-              }
-             }
-            catch (Exception updateEx)
-            {
-                System.Diagnostics.Debugger.Break();
-                //throw new FaultException(updateEx.Message);
-                    var fault = new ValidationFault
-                                {
-                                    Result = false,
-                                    Message = updateEx.Message,
-                                    Description = updateEx.StackTrace
-                                };
-                    throw new FaultException<ValidationFault>(fault);
-            }
-        }
- 	        public async Task<IEnumerable<FileTypes>> GetFileTypesByOldFileTypeId(string OldFileTypeId, List<string> includesLst = null)
-        {
-            try
-            {
-                using ( var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
-              {
-                var i = Convert.ToInt32(OldFileTypeId);
-                var set = AddIncludes(includesLst, dbContext);
-                IEnumerable<FileTypes> entities = await set//dbContext.FileTypes
-                                                    // .Include(x => x.FileTypeMappings)									  
-                                                    // .Include(x => x.FileTypeActions)									  
-                                                    // .Include(x => x.FileTypeContacts)									  
-                                                    // .Include(x => x.AsycudaDocumentSet_Attachments)									  
-                                                    // .Include(x => x.ChildFileTypes)									  
-                                                    // .Include(x => x.EmailFileTypes)									  
-                                                    // .Include(x => x.ImportActions)									  
-                                                    // .Include(x => x.FileTypeReplaceRegex)									  
-                                      .AsNoTracking()
-                                        .Where(x => x.OldFileTypeId.ToString() == OldFileTypeId.ToString())
+                                        .Where(x => x.FileTypeId.ToString() == FileTypeId.ToString())
 										.ToListAsync()
 										.ConfigureAwait(continueOnCapturedContext: false);
                 return entities;
@@ -1421,11 +1100,11 @@ namespace CoreEntities.Business.Services
                      if (string.IsNullOrEmpty(whereExp) || whereExp == "None") return 0;
                      if (whereExp == "All")
                      {
-                          res = Convert.ToDecimal(dbContext.FileTypes.AsNoTracking().Sum(field));
+                          res = Convert.ToDecimal(dbContext.FileTypeReplaceRegex.AsNoTracking().Sum(field));
                      }
                      else
                      {
-                         res = Convert.ToDecimal(dbContext.FileTypes.AsNoTracking().Where(whereExp).Sum(field));
+                         res = Convert.ToDecimal(dbContext.FileTypeReplaceRegex.AsNoTracking().Where(whereExp).Sum(field));
                      }
                      
                      return res;
@@ -1453,10 +1132,10 @@ namespace CoreEntities.Business.Services
                 using (var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-                    if (!dbContext.FileTypes.Any()) return 0;
+                    if (!dbContext.FileTypeReplaceRegex.Any()) return 0;
                     if (exp == "All" && navExp.Count == 0)
                     {
-                        return Convert.ToDecimal(dbContext.FileTypes
+                        return Convert.ToDecimal(dbContext.FileTypeReplaceRegex
 										.AsNoTracking()
                                         .Sum(field)??0);
                     }
@@ -1464,45 +1143,12 @@ namespace CoreEntities.Business.Services
                     {
                         switch (itm.Key)
                         {
-                            case "ApplicationSettings":
-                                return await SumWhere<ApplicationSettings>(dbContext, exp, itm.Value, "FileTypes", field, "SelectMany")
-											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "AsycudaDocumentSetEx":
-                                return await SumWhere<AsycudaDocumentSetEx>(dbContext, exp, itm.Value, "FileTypes", field, "SelectMany")
-											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "FileTypeMappings":
-                                return await SumWhere<FileTypeMappings>(dbContext, exp, itm.Value, "FileTypes", field, "Select")
-											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "FileTypeActions":
-                                return await SumWhere<FileTypeActions>(dbContext, exp, itm.Value, "FileTypes", field, "Select")
-											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "FileTypeContacts":
-                                return await SumWhere<FileTypeContacts>(dbContext, exp, itm.Value, "FileTypes", field, "Select")
-											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "AsycudaDocumentSet_Attachments":
-                                return await SumWhere<AsycudaDocumentSet_Attachments>(dbContext, exp, itm.Value, "FileTypes", field, "Select")
-											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "FileGroups":
-                                return await SumWhere<FileGroups>(dbContext, exp, itm.Value, "FileTypes", field, "SelectMany")
-											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "ChildFileTypes":
-                                return await SumWhere<FileTypes>(dbContext, exp, itm.Value, "ChildFileTypes", field, "Select")
-											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "ParentFileTypes":
-                                return await SumWhere<FileTypes>(dbContext, exp, itm.Value, "ChildFileTypes", field, "SelectMany")
-											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "EmailFileTypes":
-                                return await SumWhere<EmailFileTypes>(dbContext, exp, itm.Value, "FileTypes", field, "Select")
-											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "ImportActions":
-                                return await SumWhere<ImportActions>(dbContext, exp, itm.Value, "FileTypes", field, "Select")
-											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "FileTypeReplaceRegex":
-                                return await SumWhere<FileTypeReplaceRegex>(dbContext, exp, itm.Value, "FileTypes", field, "Select")
+                            case "FileTypes":
+                                return await SumWhere<FileTypes>(dbContext, exp, itm.Value, "FileTypeReplaceRegex", field, "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }
-                    return Convert.ToDecimal(dbContext.FileTypes.Where(exp == "All" || exp == null ? "Id != null" : exp)
+                    return Convert.ToDecimal(dbContext.FileTypeReplaceRegex.Where(exp == "All" || exp == null ? "Id != null" : exp)
 											.AsNoTracking()
                                             .Sum(field)??0);
                 }
@@ -1542,7 +1188,7 @@ namespace CoreEntities.Business.Services
             return Convert.ToDecimal(dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
-                .SelectMany(navProp).OfType<FileTypes>()
+                .SelectMany(navProp).OfType<FileTypeReplaceRegex>()
                 .Where(exp == "All" || exp == null ? "Id != null" : exp)
                 .Distinct()
                 .OrderBy("Id")
@@ -1562,7 +1208,7 @@ namespace CoreEntities.Business.Services
             return Convert.ToDecimal(dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
-                .Select(navProp).OfType<FileTypes>()
+                .Select(navProp).OfType<FileTypeReplaceRegex>()
                 .Where(exp == "All" || exp == null ? "Id != null" : exp)
                 .Distinct()
                 .OrderBy("Id")
@@ -1588,11 +1234,11 @@ namespace CoreEntities.Business.Services
                      if (string.IsNullOrEmpty(whereExp) || whereExp == "None") return res;
                      if (whereExp == "All")
                      {
-                          res = Convert.ToString(dbContext.FileTypes.AsNoTracking().Min(field));
+                          res = Convert.ToString(dbContext.FileTypeReplaceRegex.AsNoTracking().Min(field));
                      }
                      else
                      {
-                         res = Convert.ToString(dbContext.FileTypes.AsNoTracking().Where(whereExp).Min(field));
+                         res = Convert.ToString(dbContext.FileTypeReplaceRegex.AsNoTracking().Where(whereExp).Min(field));
                      }
                      
                      return res;
@@ -1613,12 +1259,12 @@ namespace CoreEntities.Business.Services
          }
 
 		 
-		private static IQueryable<FileTypes> AddIncludes(IEnumerable<string> includesLst, CoreEntitiesContext dbContext)
+		private static IQueryable<FileTypeReplaceRegex> AddIncludes(IEnumerable<string> includesLst, CoreEntitiesContext dbContext)
        {
 		 try
 			{
 			   if (includesLst == null) includesLst = new List<string>();
-			   var set =(DbQuery<FileTypes>) dbContext.FileTypes; 
+			   var set =(DbQuery<FileTypeReplaceRegex>) dbContext.FileTypeReplaceRegex; 
 			   set = includesLst.Where(x => !string.IsNullOrEmpty(x))
                                 .Aggregate(set, (current, itm) => current.Include(itm));
 			   return set;
@@ -1629,7 +1275,7 @@ namespace CoreEntities.Business.Services
 				throw;
 			}
        }
-	   private IQueryable<FileTypes> AddWheres(List<string> expLst, IQueryable<FileTypes> set)
+	   private IQueryable<FileTypeReplaceRegex> AddWheres(List<string> expLst, IQueryable<FileTypeReplaceRegex> set)
         {
             try
             {

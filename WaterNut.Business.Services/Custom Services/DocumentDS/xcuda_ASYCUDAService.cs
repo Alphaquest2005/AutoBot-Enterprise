@@ -19,7 +19,14 @@ namespace DocumentDS.Business.Services
                 res.xcuda_ASYCUDA_ExtendedProperties.AsycudaDocumentSet = null;  //its a shared resource in multi threading
                 res.xcuda_ASYCUDA_ExtendedProperties.Customs_Procedure = null;
                 res.xcuda_ASYCUDA_ExtendedProperties.Document_Type = null;
+
                 res.xcuda_ASYCUDA_ExtendedProperties.ExportTemplate = null;
+                //res.xcuda_General_information = null;
+                //res.xcuda_Identification = null;
+                //res.xcuda_Property = null;
+                //res.xcuda_Valuation = null;
+                ////res.xcuda_Traders = null;
+                //res.xcuda_Declarant = null;
                 if (res.xcuda_Traders.xcuda_Exporter.TrackingState == TrackingState.Added 
                     &&  string.IsNullOrEmpty(res.xcuda_Traders.xcuda_Exporter.Exporter_name)) res.xcuda_Traders = null;
                 return await Updatexcuda_ASYCUDA(res).ConfigureAwait(false);
