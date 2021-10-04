@@ -709,7 +709,7 @@ namespace AutoBotUtilities
                             ExpectedEntries = 0,
                             TotalInvoices = 0,
                             FreightCurrency = freightInvoices.LastOrDefault()?.Currency ?? bl.FreightCurrency ?? "USD",
-                            Freight = freightInvoices.LastOrDefault()?.InvoiceTotal ?? bl.Freight,
+                            Freight = freightInvoices.LastOrDefault()?.InvoiceTotal ?? (bl?.BLNumber ==  manifests.LastOrDefault()?.WayBill ?  bl.Freight : 0),
                             Origin = "US",
                             Packages =manifests.LastOrDefault()?.Packages ?? (!blDetails.Any()
                                 ? clients.SelectMany(x => x.Select(r => r.Pieces)).Sum()

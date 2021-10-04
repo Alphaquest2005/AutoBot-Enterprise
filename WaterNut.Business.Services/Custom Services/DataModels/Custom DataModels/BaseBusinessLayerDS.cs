@@ -212,6 +212,7 @@ namespace WaterNut.DataSpace
                             .Include("ChildFileTypes")
                             .Include("FileTypeMappings.FileTypeMappingRegExs")
                             .Include(x => x.ImportActions)
+                            .Include(x => x.FileTypeReplaceRegex)
                             .Where(x => x.ApplicationSettingsId ==
                                         Instance.CurrentApplicationSettings.ApplicationSettingsId)
                             .ToList();

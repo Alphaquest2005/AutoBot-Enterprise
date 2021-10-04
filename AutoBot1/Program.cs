@@ -39,6 +39,7 @@ namespace AutoBot
 
                     var applicationSettings = ctx.ApplicationSettings.AsNoTracking()
                         .Include(x => x.FileTypes)
+                        .Include(x => x.Declarants)
                         //.Include("FileTypes.FileTypeContacts.Contacts")
                         //.Include("FileTypes.FileTypeActions.Actions")
                         //.Include("FileTypes.AsycudaDocumentSetEx")

@@ -1116,7 +1116,7 @@ namespace AutoBot
             {
                 Console.WriteLine("Create License Files");
                 
-
+                
                 using (var ctx = new LicenseDSContext())
                 {
 
@@ -1128,12 +1128,19 @@ namespace AutoBot
                     foreach (var pO in pOs)
                     {
                         //if (pO.Item1.Declarant_Reference_Number != "30-15936") continue;
-                        var directoryName =  Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder,
+                        var directoryName = Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder,
                             pO.Declarant_Reference_Number);
                         if (!Directory.Exists(directoryName)) continue;
 
+                     
+                            var instructions = Path.Combine(directoryName, "LIC-Instructions.txt");
+                            if (File.Exists(instructions)) File.Delete(instructions);
+                      
 
-                        var llst = new CoreEntitiesContext().Database
+                        
+                    
+
+                    var llst = new CoreEntitiesContext().Database
                             .SqlQuery<TODO_LicenseToXML>(
                                 $"select * from [TODO-LicenseToXML]  where asycudadocumentsetid = {pO.AsycudaDocumentSetId} and LicenseDescription is not null").ToList();
 
@@ -6790,8 +6797,9 @@ namespace AutoBot
                                     //val = "";
                                 }
                             }
-                            else if (mapping.DataType == "Date")
+                            else if ( mapping.DataType == "Date")
                             {
+                                if (string.IsNullOrEmpty(val)) continue;
                                 if (DateTime.TryParse(val, out var tmp) == false)
                                 {
                                     //EmailDownloader.EmailDownloader.SendEmail(Utils.Client, null, $"Bug Found",
@@ -6849,7 +6857,7 @@ namespace AutoBot
                 }
 
 
-                if (row.Count > 0 && row.Count >= fileType.FileTypeMappings.DistinctBy(x => x.DestinationName)
+                if (row.Count > 0 && row.Count(x => !string.IsNullOrEmpty(x.Value) && fileType.FileTypeMappings.Any(z => z.Required == true && z.DestinationName == x.Key)) >= fileType.FileTypeMappings.DistinctBy(x => x.DestinationName)
                         .Count(x => x.Required == true))
                 {
                     var value = fileType.FileTypeMappings.Any()

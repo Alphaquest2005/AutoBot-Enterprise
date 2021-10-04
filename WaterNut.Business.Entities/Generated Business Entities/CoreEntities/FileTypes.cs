@@ -29,6 +29,7 @@ namespace CoreEntities.Business.Entities
             this.ChildFileTypes = new List<FileTypes>();
             this.EmailFileTypes = new List<EmailFileTypes>();
             this.ImportActions = new List<ImportActions>();
+            this.FileTypeReplaceRegex = new List<FileTypeReplaceRegex>();
         }
 
         [DataMember]
@@ -323,6 +324,8 @@ namespace CoreEntities.Business.Entities
         public List<EmailFileTypes> EmailFileTypes { get; set; }
         [DataMember]
         public List<ImportActions> ImportActions { get; set; }
+        [DataMember]
+        public List<FileTypeReplaceRegex> FileTypeReplaceRegex { get; set; }
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

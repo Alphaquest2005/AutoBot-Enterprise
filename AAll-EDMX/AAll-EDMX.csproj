@@ -580,6 +580,31 @@
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>AllBusinessMappings.cs</LastGenOutput>
       <LastOutputs>
+..\WaterNut.Business.Entities\Generated Business Entities\AllocationDS\Enums\CustomsOperations.cs
+..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\Enums\CustomsOperations.cs
+..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\Enums\FileGroups.cs
+..\WaterNut.Business.Entities\Generated Business Entities\DocumentDS\Enums\CustomsOperation.cs
+..\WaterNut.Business.Entities\Generated Business Entities\EntryDataDS\Enums\InventorySources.cs
+..\WaterNut.Business.Entities\Generated Business Entities\InventoryDS\Enums\InventorySource.cs
+..\WaterNut.Business.Entities\Generated Business Entities\OCR\Enums\PartTypes.cs
+..\WaterNut.Business.Entities\Generated Mappings\AdjustmentQS\AdjustmentDetail.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\AdjustmentQS\AdjustmentEx.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\AdjustmentQS\AdjustmentOver.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\AdjustmentQS\AdjustmentOversAllocation.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\AdjustmentQS\AdjustmentShort.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\AdjustmentQS\AsycudaDocumentEntryData.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\AdjustmentQS\AsycudaDocumentItemEntryDataDetail.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\AdjustmentQS\AsycudaDocumentItemLastItemCost.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\AdjustmentQS\AsycudaDocumentSetEntryData.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\AdjustmentQS\AsycudaSalesAllocation.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\AdjustmentQS\EntryDataDetail.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\AdjustmentQS\InventoryItemAliasEx.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\AdjustmentQS\InventoryItemsEx.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\AdjustmentQS\ShortAllocation.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\AdjustmentQS\SystemDocumentSet.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\AdjustmentQS\TODO_AdjustmentOversToXML.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\AdjustmentQS\TODO_PreDiscrepancyErrors.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\AdjustmentQS\xcuda_Item.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\AllocationDS\Adjustments.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\AllocationDS\AdjustmentShortAllocations.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\AllocationDS\AllocationErrors.map.cs
@@ -591,6 +616,386 @@
 ..\WaterNut.Business.Entities\Generated Mappings\AllocationDS\AsycudaSalesAllocations.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\AllocationDS\Customs_Procedure.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\AllocationDS\CustomsOperations.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\AllocationDS\EntryData.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\AllocationDS\EntryDataDetails.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\AllocationDS\EntryDataDetailsEx.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\AllocationDS\EntryPreviousItems.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\AllocationDS\EX9AsycudaSalesAllocations.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\AllocationDS\InventoryItem.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\AllocationDS\InventoryItemAlias.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\AllocationDS\ItemSalesAsycudaPiSummary.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\AllocationDS\ItemSalesPiSummary.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\AllocationDS\ManualAllocations.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\AllocationDS\PreviousItemsEx.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\AllocationDS\Sales.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\AllocationDS\SubItems.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\AllocationDS\SystemDocumentSets.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\AllocationDS\TariffCategory.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\AllocationDS\TariffCategoryCodeSuppUnit.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\AllocationDS\TariffCodes.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\AllocationDS\TariffSupUnitLkps.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\AllocationDS\xBondAllocations.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\AllocationDS\xcuda_Goods_description.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\AllocationDS\xcuda_HScode.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\AllocationDS\xcuda_Item.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\AllocationDS\xcuda_Item_Invoice.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\AllocationDS\xcuda_PreviousItem.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\AllocationDS\xcuda_Supplementary_unit.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\AllocationDS\xcuda_Tarification.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\AllocationDS\xcuda_Taxation.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\AllocationDS\xcuda_Taxation_line.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\AllocationDS\xcuda_Valuation_item.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\AllocationDS\xcuda_Weight.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\AllocationDS\xcuda_Weight_itm.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\AllocationQS\AdjustmentShortAllocation.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\AllocationQS\AsycudaSalesAllocationsEx.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\AllocationQS\AsycudaSalesAndAdjustmentAllocationsEx.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\ActionDocSetLogs.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\Actions.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\ApplicationSettings.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\AsycudaDocument.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\AsycudaDocument_Attachments.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\AsycudaDocumentBasicInfo.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\AsycudaDocumentItem.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\AsycudaDocumentItemEntryDataDetails.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\AsycudaDocumentSet_Attachments.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\AsycudaDocumentSetC71.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\AsycudaDocumentSetEntryDataEx.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\AsycudaDocumentSetEx.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\AsycudaItemBasicInfo.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\AttachmentLog.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\Attachments.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\CancelledEntriesLst.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\Contacts.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\Customs_Procedure.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\CustomsOperations.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\Declarant.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\Document_Type.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\EmailFileTypes.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\EmailInfoMappings.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\EmailMapping.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\Emails.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\EntryPreviousItems.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\ExpiredEntriesLst.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\FileGroups.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\FileTypeActions.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\FileTypeContacts.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\FileTypeMappingRegExs.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\FileTypeMappings.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\FileTypeReplaceRegex.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\FileTypes.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\ImportActions.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\InfoMapping.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\InfoMappingRegEx.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\InventoryItemAliasX.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\InventoryItemX.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\LicenceSummary.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\SessionActions.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\Sessions.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\SessionSchedule.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\SubItems.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_AdjustmentsAlreadyXMLed.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_AssessDiscrepancyEntries.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_C71ToCreate.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_C71ToXML.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_CreateDiscrepancyEntries.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_CreateEx9.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_DeleteDocumentSet.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_DiscrepanciesAlreadyXMLed.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_DiscrepanciesErrors.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_DiscrepanciesExecutionReport.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_DiscrepanciesToAssess.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_DiscrepancyPreExecutionReport.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_DocumentsToDelete.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_EntriesExpiringNextMonth.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_Error_DuplicateEntry.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_Error_IncompleteImport.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_Error_IncompleteItems.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_ERRReport_Allocations.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_ERRReport_AsycudaEntries.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_ERRReport_AsycudaLines.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_ERRReport_ByItemNumber.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_ERRReport_EntryDataDetails.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_ERRReport_SubmitWarehouseErrors.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_ERRReport_UnmappedItems.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_ImportCompleteEntries.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_LicenceAvailableQty.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_LicenseToXML.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_LICToAssess.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_LICToCreate.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_PODocSet.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_PODocSetToAssess.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_PODocSetToAssessErrors.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_PODocSetToExport.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\ToDo_POToXML.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_SubmitAllXMLToCustoms.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_SubmitDiscrepanciesToCustoms.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_SubmitDocSetWithIncompleteInvoices.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_SubmitEntryCIF.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_SubmitInadequatePackages.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_SubmitIncompleteEntryData.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_SubmitIncompleteSupplierInfo.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_SubmitMissingInvoicePDFs.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_SubmitPOInfo.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_SubmitSalesToCustoms.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_SubmitUnclassifiedItems.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_SubmitXMLToCustoms.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_TotalAdjustmentsToProcess.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_UnallocatedSales.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_UnallocatedShorts.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\xcuda_Supplementary_unit.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CounterPointQS\CounterPointPODetails.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CounterPointQS\CounterPointPOs.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CounterPointQS\CounterPointSales.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CounterPointQS\CounterPointSalesDetails.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentDS\AsycudaDocument_Attachments.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentDS\AsycudaDocumentEntryData.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentDS\AsycudaDocumentSet.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentDS\AsycudaDocumentSet_Attachments.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentDS\AsycudaDocumentSetEntryData.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentDS\Attachment.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentDS\Container.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentDS\Customs_Procedure.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentDS\CustomsOperation.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentDS\Document_Type.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentDS\ExportTemplate.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentDS\FileType.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentDS\PackageType.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentDS\SystemDocumentSet.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentDS\xcuda_Assessment.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentDS\xcuda_Assessment_notice.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentDS\xcuda_ASYCUDA.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentDS\xcuda_ASYCUDA_ExtendedProperties.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentDS\xcuda_ASYCUDAEx.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentDS\xcuda_Border_information.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentDS\xcuda_Border_office.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentDS\xcuda_Consignee.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentDS\xcuda_Container.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentDS\xcuda_Country.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentDS\xcuda_Declarant.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentDS\xcuda_Delivery_terms.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentDS\xcuda_Departure_arrival_information.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentDS\xcuda_Destination.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentDS\xcuda_Export.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentDS\xcuda_Export_release.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentDS\xcuda_Exporter.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentDS\xcuda_Financial.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentDS\xcuda_Financial_Amounts.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentDS\xcuda_Financial_Guarantee.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentDS\xcuda_Forms.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentDS\xcuda_General_information.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentDS\xcuda_Global_taxes.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentDS\xcuda_Gs_deduction.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentDS\xcuda_Gs_external_freight.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentDS\xcuda_Gs_insurance.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentDS\xcuda_Gs_internal_freight.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentDS\xcuda_Gs_Invoice.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentDS\xcuda_Gs_other_cost.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentDS\xcuda_Identification.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentDS\xcuda_Means_of_transport.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentDS\xcuda_Nbers.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentDS\xcuda_Office_segment.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentDS\xcuda_Place_of_loading.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentDS\xcuda_Principal.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentDS\xcuda_Property.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentDS\xcuda_receipt.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentDS\xcuda_Registration.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentDS\xcuda_Seals.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentDS\xcuda_Signature.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentDS\xcuda_Suppliers_documents.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentDS\xcuda_Total.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentDS\xcuda_Traders.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentDS\xcuda_Traders_Financial.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentDS\xcuda_Transit.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentDS\xcuda_Transit_Destination.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentDS\xcuda_Transport.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentDS\xcuda_Type.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentDS\xcuda_Valuation.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentDS\xcuda_Warehouse.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentDS\xcuda_Weight.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentItemDS\Attachments.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentItemDS\EntryPreviousItems.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentItemDS\PreviousItemsEx.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentItemDS\SubItems.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentItemDS\xBondAllocations.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentItemDS\xcuda_Attached_documents.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentItemDS\xcuda_Attachments.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentItemDS\xcuda_Goods_description.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentItemDS\xcuda_HScode.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentItemDS\xcuda_Inventory_Item.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentItemDS\xcuda_Item.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentItemDS\xcuda_item_deduction.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentItemDS\xcuda_item_external_freight.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentItemDS\xcuda_item_insurance.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentItemDS\xcuda_item_internal_freight.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentItemDS\xcuda_Item_Invoice.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentItemDS\xcuda_item_other_cost.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentItemDS\xcuda_ItemEntryDataDetails.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentItemDS\xcuda_Packages.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentItemDS\xcuda_Previous_doc.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentItemDS\xcuda_PreviousItem.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentItemDS\xcuda_Supplementary_unit.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentItemDS\xcuda_Suppliers_link.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentItemDS\xcuda_Tarification.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentItemDS\xcuda_Taxation.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentItemDS\xcuda_Taxation_line.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentItemDS\xcuda_Valuation_item.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentItemDS\xcuda_Weight_itm.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\Adjustments.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\AsycudaDocumentEntryData.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\AsycudaDocumentSetEntryData.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\Attachments.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\EDDocumentTypes.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\EntryData.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\EntryDataDetails.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\EntryDataDetailsEx.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\EntryDataEx.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\EntryDataExTotals.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\EntryDataFiles.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\FileTypes.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\InventoryItemAlias.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\InventoryItems.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\InventoryItems_NonStock.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\InventoryItemsEx.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\InventoryItemSource.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\InventorySources.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\InvoiceDetails.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\InvoiceDetailsVolume.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\InvoiceExtraInfo.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\Invoices.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\OpeningStock.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\PackageTypes.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\PurchaseOrders.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\Sales.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShimentBLCharges.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\Shipment.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentAttachedBL.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentAttachedFreight.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentAttachedInvoices.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentAttachedManifest.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentAttachedPOs.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentAttachedRider.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentAttachments.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentBL.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentBLDetails.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentBLFreight.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentFreight.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentFreightBLs.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentFreightDetails.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentInvoice.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentInvoiceDetailsItemAlias.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentInvoicePOItemData.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentInvoicePOItemMISMatches.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentInvoicePOItemQueryMatches.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentInvoicePOManualMatches.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentInvoicePOs.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentInvoiceRiderDetails.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentInvoiceRiderManualMatches.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentManifest.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentManifestBLs.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentManifestDetails.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentMIS_Invoices.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentMIS_POs.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentRider.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentRiderBLs.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentRiderDetails.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentRiderEx.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentRiderInvoice.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentRiderManifests.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\Suppliers.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\VolumeUnits.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\WarehouseInfo.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataQS\AsycudaDocumentEntryData.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataQS\AsycudaDocumentItemEntryDataDetail.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataQS\AsycudaDocumentSetEntryData.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataQS\AsycudaDocumentSetEntryDataDetail.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataQS\EmptyFullCode.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataQS\EntryData.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataQS\EntryDataDetailsEx.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataQS\EntryDataEx.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataQS\InventoryItemsEx.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataQS\PackageType.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\InventoryDS\InventoryItem.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\InventoryDS\InventoryItemAlia.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\InventoryDS\InventoryItemSource.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\InventoryDS\InventorySource.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\InventoryDS\TariffCategory.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\InventoryDS\TariffCategoryCodeSuppUnit.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\InventoryDS\TariffCode.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\InventoryDS\TariffSupUnitLkp.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\InventoryQS\EntryDataDetailsEx.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\InventoryQS\InventoryItemsEx.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\InventoryQS\TariffCategory.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\InventoryQS\TariffCategoryCodeSuppUnit.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\InventoryQS\TariffCodes.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\InventoryQS\TariffSupUnitLkps.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\LicenseDS\Registered.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\LicenseDS\TODO_LicenceAvailableQty.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\LicenseDS\TODO_LICToCreate.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\LicenseDS\xLIC_General_segment.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\LicenseDS\xLIC_Lic_item_segment.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\LicenseDS\xLIC_License.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\OCR\ChildParts.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\OCR\End.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\OCR\FieldFormatRegEx.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\OCR\Fields.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\OCR\ImportErrors.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\OCR\InvoiceIdentificatonRegEx.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\OCR\InvoiceRegEx.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\OCR\Invoices.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\OCR\Lines.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\OCR\OCR_FailedFields.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\OCR\OCR_FailedLines.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\OCR\OCR_FieldValue.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\OCR\OCRFileTypes.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\OCR\Parts.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\OCR\PartTypes.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\OCR\RecuringPart.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\OCR\RegularExpressions.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\OCR\Start.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\PreviousDocumentDS\EntryDataDetails.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\PreviousDocumentDS\EntryPreviousItems.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\PreviousDocumentDS\PreviousEntry.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\PreviousDocumentDS\xcuda_HScode.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\PreviousDocumentDS\xcuda_PreviousItem.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\PreviousDocumentDS\xcuda_Tarification.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\PreviousDocumentDS\xcuda_Valuation_item.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\PreviousDocumentQS\PreviousDocument.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\PreviousDocumentQS\PreviousDocumentItem.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\PreviousDocumentQS\PreviousItemsEx.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\QuickBooksDS\InventoryItems.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\SalesDataQS\AsycudaDocumentEntryData.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\SalesDataQS\AsycudaDocumentSetEntryData.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\SalesDataQS\AsycudaDocumentSetEntryDataDetails.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\SalesDataQS\SalesData.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\SalesDataQS\SalesDataAllocations.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\SalesDataQS\SalesDataDetail.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\ValuationDS\C71Summary.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\ValuationDS\Registered.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\ValuationDS\TODO_C71ToCreate.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\ValuationDS\xC71_Buyer_segment.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\ValuationDS\xC71_Declarant_segment.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\ValuationDS\xC71_Identification_segment.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\ValuationDS\xC71_Item.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\ValuationDS\xC71_Seller_segment.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\ValuationDS\xC71_Value_declaration_form.map.cs
+..\WaterNut.Data\DbContextMappings\AllocationDS.Mappings.cs
+..\WaterNut.Data\DbContextMappings\AllocationQS.Mappings.cs
+..\WaterNut.Data\DbContextMappings\CoreEntities.Mappings.cs
+..\WaterNut.Data\DbContextMappings\CounterPointQS.Mappings.cs
+..\WaterNut.Data\DbContextMappings\DocumentDS.Mappings.cs
+..\WaterNut.Data\DbContextMappings\DocumentItemDS.Mappings.cs
+..\WaterNut.Data\DbContextMappings\EntryDataDS.Mappings.cs
+..\WaterNut.Data\DbContextMappings\EntryDataQS.Mappings.cs
+..\WaterNut.Data\DbContextMappings\InventoryDS.Mappings.cs
+..\WaterNut.Data\DbContextMappings\InventoryQS.Mappings.cs
+..\WaterNut.Data\DbContextMappings\LicenseDS.Mappings.cs
+..\WaterNut.Data\DbContextMappings\OCR.Mappings.cs
+..\WaterNut.Data\DbContextMappings\PreviousDocumentDS.Mappings.cs
+..\WaterNut.Data\DbContextMappings\PreviousDocumentQS.Mappings.cs
+..\WaterNut.Data\DbContextMappings\QuickBooksDS.Mappings.cs
+..\WaterNut.Data\DbContextMappings\SalesDataQS.Mappings.cs
+..\WaterNut.Data\DbContextMappings\ValuationDS.Mappings.cs
 </LastOutputs>
     </Content>
     <Content Include="AllBusinessModels.tt">
@@ -2171,6 +2576,24 @@
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>AllClientEntities.cs</LastGenOutput>
       <LastOutputs>
+..\WaterNut.Client.DTO\Generated Client Entities\AdjustmentQS\AdjustmentDetail.cs
+..\WaterNut.Client.DTO\Generated Client Entities\AdjustmentQS\AdjustmentEx.cs
+..\WaterNut.Client.DTO\Generated Client Entities\AdjustmentQS\AdjustmentOver.cs
+..\WaterNut.Client.DTO\Generated Client Entities\AdjustmentQS\AdjustmentOversAllocation.cs
+..\WaterNut.Client.DTO\Generated Client Entities\AdjustmentQS\AdjustmentShort.cs
+..\WaterNut.Client.DTO\Generated Client Entities\AdjustmentQS\AsycudaDocumentEntryData.cs
+..\WaterNut.Client.DTO\Generated Client Entities\AdjustmentQS\AsycudaDocumentItemEntryDataDetail.cs
+..\WaterNut.Client.DTO\Generated Client Entities\AdjustmentQS\AsycudaDocumentItemLastItemCost.cs
+..\WaterNut.Client.DTO\Generated Client Entities\AdjustmentQS\AsycudaDocumentSetEntryData.cs
+..\WaterNut.Client.DTO\Generated Client Entities\AdjustmentQS\AsycudaSalesAllocation.cs
+..\WaterNut.Client.DTO\Generated Client Entities\AdjustmentQS\EntryDataDetail.cs
+..\WaterNut.Client.DTO\Generated Client Entities\AdjustmentQS\InventoryItemAliasEx.cs
+..\WaterNut.Client.DTO\Generated Client Entities\AdjustmentQS\InventoryItemsEx.cs
+..\WaterNut.Client.DTO\Generated Client Entities\AdjustmentQS\ShortAllocation.cs
+..\WaterNut.Client.DTO\Generated Client Entities\AdjustmentQS\SystemDocumentSet.cs
+..\WaterNut.Client.DTO\Generated Client Entities\AdjustmentQS\TODO_AdjustmentOversToXML.cs
+..\WaterNut.Client.DTO\Generated Client Entities\AdjustmentQS\TODO_PreDiscrepancyErrors.cs
+..\WaterNut.Client.DTO\Generated Client Entities\AdjustmentQS\xcuda_Item.cs
 ..\WaterNut.Client.DTO\Generated Client Entities\AllocationQS\AdjustmentShortAllocation.cs
 ..\WaterNut.Client.DTO\Generated Client Entities\AllocationQS\AsycudaSalesAllocationsEx.cs
 ..\WaterNut.Client.DTO\Generated Client Entities\AllocationQS\AsycudaSalesAndAdjustmentAllocationsEx.cs
@@ -2193,10 +2616,146 @@
 ..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\Contacts.cs
 ..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\Customs_Procedure.cs
 ..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\CustomsOperations.cs
+..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\Declarant.cs
+..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\Document_Type.cs
+..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\EmailFileTypes.cs
+..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\EmailInfoMappings.cs
+..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\EmailMapping.cs
+..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\Emails.cs
+..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\EntryPreviousItems.cs
+..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\ExpiredEntriesLst.cs
+..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\FileGroups.cs
+..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\FileTypeActions.cs
+..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\FileTypeContacts.cs
+..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\FileTypeMappingRegExs.cs
+..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\FileTypeMappings.cs
+..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\FileTypeReplaceRegex.cs
+..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\FileTypes.cs
+..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\ImportActions.cs
+..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\InfoMapping.cs
+..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\InfoMappingRegEx.cs
+..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\InventoryItemAliasX.cs
+..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\InventoryItemX.cs
+..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\LicenceSummary.cs
+..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\SessionActions.cs
+..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\Sessions.cs
+..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\SessionSchedule.cs
+..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\SubItems.cs
+..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\TODO_AdjustmentsAlreadyXMLed.cs
+..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\TODO_AssessDiscrepancyEntries.cs
+..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\TODO_C71ToCreate.cs
+..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\TODO_C71ToXML.cs
+..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\TODO_CreateDiscrepancyEntries.cs
+..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\TODO_CreateEx9.cs
+..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\TODO_DeleteDocumentSet.cs
+..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\TODO_DiscrepanciesAlreadyXMLed.cs
+..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\TODO_DiscrepanciesErrors.cs
+..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\TODO_DiscrepanciesExecutionReport.cs
+..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\TODO_DiscrepanciesToAssess.cs
+..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\TODO_DiscrepancyPreExecutionReport.cs
+..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\TODO_DocumentsToDelete.cs
+..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\TODO_EntriesExpiringNextMonth.cs
+..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\TODO_Error_DuplicateEntry.cs
+..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\TODO_Error_IncompleteImport.cs
+..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\TODO_Error_IncompleteItems.cs
+..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\TODO_ERRReport_Allocations.cs
+..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\TODO_ERRReport_AsycudaEntries.cs
+..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\TODO_ERRReport_AsycudaLines.cs
+..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\TODO_ERRReport_ByItemNumber.cs
+..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\TODO_ERRReport_EntryDataDetails.cs
+..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\TODO_ERRReport_SubmitWarehouseErrors.cs
+..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\TODO_ERRReport_UnmappedItems.cs
+..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\TODO_ImportCompleteEntries.cs
+..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\TODO_LicenceAvailableQty.cs
+..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\TODO_LicenseToXML.cs
+..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\TODO_LICToAssess.cs
+..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\TODO_LICToCreate.cs
+..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\TODO_PODocSet.cs
+..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\TODO_PODocSetToAssess.cs
+..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\TODO_PODocSetToAssessErrors.cs
+..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\TODO_PODocSetToExport.cs
+..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\ToDo_POToXML.cs
+..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\TODO_SubmitAllXMLToCustoms.cs
+..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\TODO_SubmitDiscrepanciesToCustoms.cs
+..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\TODO_SubmitDocSetWithIncompleteInvoices.cs
+..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\TODO_SubmitEntryCIF.cs
+..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\TODO_SubmitInadequatePackages.cs
+..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\TODO_SubmitIncompleteEntryData.cs
+..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\TODO_SubmitIncompleteSupplierInfo.cs
+..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\TODO_SubmitMissingInvoicePDFs.cs
+..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\TODO_SubmitPOInfo.cs
+..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\TODO_SubmitSalesToCustoms.cs
+..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\TODO_SubmitUnclassifiedItems.cs
+..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\TODO_SubmitXMLToCustoms.cs
+..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\TODO_TotalAdjustmentsToProcess.cs
+..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\TODO_UnallocatedSales.cs
+..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\TODO_UnallocatedShorts.cs
+..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\xcuda_Supplementary_unit.cs
 ..\WaterNut.Client.DTO\Generated Client Entities\CounterPointQS\CounterPointPODetails.cs
 ..\WaterNut.Client.DTO\Generated Client Entities\CounterPointQS\CounterPointPOs.cs
 ..\WaterNut.Client.DTO\Generated Client Entities\CounterPointQS\CounterPointSales.cs
 ..\WaterNut.Client.DTO\Generated Client Entities\CounterPointQS\CounterPointSalesDetails.cs
+..\WaterNut.Client.DTO\Generated Client Entities\EntryDataQS\AsycudaDocumentEntryData.cs
+..\WaterNut.Client.DTO\Generated Client Entities\EntryDataQS\AsycudaDocumentItemEntryDataDetail.cs
+..\WaterNut.Client.DTO\Generated Client Entities\EntryDataQS\AsycudaDocumentSetEntryData.cs
+..\WaterNut.Client.DTO\Generated Client Entities\EntryDataQS\AsycudaDocumentSetEntryDataDetail.cs
+..\WaterNut.Client.DTO\Generated Client Entities\EntryDataQS\EmptyFullCode.cs
+..\WaterNut.Client.DTO\Generated Client Entities\EntryDataQS\EntryData.cs
+..\WaterNut.Client.DTO\Generated Client Entities\EntryDataQS\EntryDataDetailsEx.cs
+..\WaterNut.Client.DTO\Generated Client Entities\EntryDataQS\EntryDataEx.cs
+..\WaterNut.Client.DTO\Generated Client Entities\EntryDataQS\InventoryItemsEx.cs
+..\WaterNut.Client.DTO\Generated Client Entities\EntryDataQS\PackageType.cs
+..\WaterNut.Client.DTO\Generated Client Entities\InventoryQS\EntryDataDetailsEx.cs
+..\WaterNut.Client.DTO\Generated Client Entities\InventoryQS\InventoryItemsEx.cs
+..\WaterNut.Client.DTO\Generated Client Entities\InventoryQS\TariffCategory.cs
+..\WaterNut.Client.DTO\Generated Client Entities\InventoryQS\TariffCategoryCodeSuppUnit.cs
+..\WaterNut.Client.DTO\Generated Client Entities\InventoryQS\TariffCodes.cs
+..\WaterNut.Client.DTO\Generated Client Entities\InventoryQS\TariffSupUnitLkps.cs
+..\WaterNut.Client.DTO\Generated Client Entities\OCR\ChildParts.cs
+..\WaterNut.Client.DTO\Generated Client Entities\OCR\End.cs
+..\WaterNut.Client.DTO\Generated Client Entities\OCR\FieldFormatRegEx.cs
+..\WaterNut.Client.DTO\Generated Client Entities\OCR\Fields.cs
+..\WaterNut.Client.DTO\Generated Client Entities\OCR\ImportErrors.cs
+..\WaterNut.Client.DTO\Generated Client Entities\OCR\InvoiceIdentificatonRegEx.cs
+..\WaterNut.Client.DTO\Generated Client Entities\OCR\InvoiceRegEx.cs
+..\WaterNut.Client.DTO\Generated Client Entities\OCR\Invoices.cs
+..\WaterNut.Client.DTO\Generated Client Entities\OCR\Lines.cs
+..\WaterNut.Client.DTO\Generated Client Entities\OCR\OCR_FailedFields.cs
+..\WaterNut.Client.DTO\Generated Client Entities\OCR\OCR_FailedLines.cs
+..\WaterNut.Client.DTO\Generated Client Entities\OCR\OCR_FieldValue.cs
+..\WaterNut.Client.DTO\Generated Client Entities\OCR\OCRFileTypes.cs
+..\WaterNut.Client.DTO\Generated Client Entities\OCR\Parts.cs
+..\WaterNut.Client.DTO\Generated Client Entities\OCR\PartTypes.cs
+..\WaterNut.Client.DTO\Generated Client Entities\OCR\RecuringPart.cs
+..\WaterNut.Client.DTO\Generated Client Entities\OCR\RegularExpressions.cs
+..\WaterNut.Client.DTO\Generated Client Entities\OCR\Start.cs
+..\WaterNut.Client.DTO\Generated Client Entities\PreviousDocumentQS\PreviousDocument.cs
+..\WaterNut.Client.DTO\Generated Client Entities\PreviousDocumentQS\PreviousDocumentItem.cs
+..\WaterNut.Client.DTO\Generated Client Entities\PreviousDocumentQS\PreviousItemsEx.cs
+..\WaterNut.Client.DTO\Generated Client Entities\SalesDataQS\AsycudaDocumentEntryData.cs
+..\WaterNut.Client.DTO\Generated Client Entities\SalesDataQS\AsycudaDocumentSetEntryData.cs
+..\WaterNut.Client.DTO\Generated Client Entities\SalesDataQS\AsycudaDocumentSetEntryDataDetails.cs
+..\WaterNut.Client.DTO\Generated Client Entities\SalesDataQS\SalesData.cs
+..\WaterNut.Client.DTO\Generated Client Entities\SalesDataQS\SalesDataAllocations.cs
+..\WaterNut.Client.DTO\Generated Client Entities\SalesDataQS\SalesDataDetail.cs
+..\WaterNut.Client.Entities\Generated Client Entities\AdjustmentQS\AdjustmentDetail.cs
+..\WaterNut.Client.Entities\Generated Client Entities\AdjustmentQS\AdjustmentEx.cs
+..\WaterNut.Client.Entities\Generated Client Entities\AdjustmentQS\AdjustmentOver.cs
+..\WaterNut.Client.Entities\Generated Client Entities\AdjustmentQS\AdjustmentOversAllocation.cs
+..\WaterNut.Client.Entities\Generated Client Entities\AdjustmentQS\AdjustmentShort.cs
+..\WaterNut.Client.Entities\Generated Client Entities\AdjustmentQS\AsycudaDocumentEntryData.cs
+..\WaterNut.Client.Entities\Generated Client Entities\AdjustmentQS\AsycudaDocumentItemEntryDataDetail.cs
+..\WaterNut.Client.Entities\Generated Client Entities\AdjustmentQS\AsycudaDocumentItemLastItemCost.cs
+..\WaterNut.Client.Entities\Generated Client Entities\AdjustmentQS\AsycudaDocumentSetEntryData.cs
+..\WaterNut.Client.Entities\Generated Client Entities\AdjustmentQS\AsycudaSalesAllocation.cs
+..\WaterNut.Client.Entities\Generated Client Entities\AdjustmentQS\EntryDataDetail.cs
+..\WaterNut.Client.Entities\Generated Client Entities\AdjustmentQS\InventoryItemAliasEx.cs
+..\WaterNut.Client.Entities\Generated Client Entities\AdjustmentQS\InventoryItemsEx.cs
+..\WaterNut.Client.Entities\Generated Client Entities\AdjustmentQS\ShortAllocation.cs
+..\WaterNut.Client.Entities\Generated Client Entities\AdjustmentQS\SystemDocumentSet.cs
+..\WaterNut.Client.Entities\Generated Client Entities\AdjustmentQS\TODO_AdjustmentOversToXML.cs
+..\WaterNut.Client.Entities\Generated Client Entities\AdjustmentQS\TODO_PreDiscrepancyErrors.cs
+..\WaterNut.Client.Entities\Generated Client Entities\AdjustmentQS\xcuda_Item.cs
 ..\WaterNut.Client.Entities\Generated Client Entities\AllocationQS\AdjustmentShortAllocation.cs
 ..\WaterNut.Client.Entities\Generated Client Entities\AllocationQS\AsycudaSalesAllocationsEx.cs
 ..\WaterNut.Client.Entities\Generated Client Entities\AllocationQS\AsycudaSalesAndAdjustmentAllocationsEx.cs
@@ -2219,10 +2778,131 @@
 ..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\Contacts.cs
 ..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\Customs_Procedure.cs
 ..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\CustomsOperations.cs
+..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\Declarant.cs
+..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\Document_Type.cs
+..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\EmailFileTypes.cs
+..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\EmailInfoMappings.cs
+..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\EmailMapping.cs
+..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\Emails.cs
+..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\EntryPreviousItems.cs
+..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\Enums\CustomsOperations.cs
+..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\Enums\FileGroups.cs
+..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\ExpiredEntriesLst.cs
+..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\FileGroups.cs
+..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\FileTypeActions.cs
+..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\FileTypeContacts.cs
+..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\FileTypeMappingRegExs.cs
+..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\FileTypeMappings.cs
+..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\FileTypeReplaceRegex.cs
+..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\FileTypes.cs
+..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\ImportActions.cs
+..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\InfoMapping.cs
+..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\InfoMappingRegEx.cs
+..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\InventoryItemAliasX.cs
+..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\InventoryItemX.cs
+..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\LicenceSummary.cs
+..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\SessionActions.cs
+..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\Sessions.cs
+..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\SessionSchedule.cs
+..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\SubItems.cs
+..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\TODO_AdjustmentsAlreadyXMLed.cs
+..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\TODO_AssessDiscrepancyEntries.cs
+..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\TODO_C71ToCreate.cs
+..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\TODO_C71ToXML.cs
+..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\TODO_CreateDiscrepancyEntries.cs
+..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\TODO_CreateEx9.cs
+..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\TODO_DeleteDocumentSet.cs
+..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\TODO_DiscrepanciesAlreadyXMLed.cs
+..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\TODO_DiscrepanciesErrors.cs
+..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\TODO_DiscrepanciesExecutionReport.cs
+..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\TODO_DiscrepanciesToAssess.cs
+..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\TODO_DiscrepancyPreExecutionReport.cs
+..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\TODO_DocumentsToDelete.cs
+..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\TODO_EntriesExpiringNextMonth.cs
+..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\TODO_Error_DuplicateEntry.cs
+..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\TODO_Error_IncompleteImport.cs
+..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\TODO_Error_IncompleteItems.cs
+..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\TODO_ERRReport_Allocations.cs
+..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\TODO_ERRReport_AsycudaEntries.cs
+..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\TODO_ERRReport_AsycudaLines.cs
+..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\TODO_ERRReport_ByItemNumber.cs
+..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\TODO_ERRReport_EntryDataDetails.cs
+..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\TODO_ERRReport_SubmitWarehouseErrors.cs
+..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\TODO_ERRReport_UnmappedItems.cs
+..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\TODO_ImportCompleteEntries.cs
+..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\TODO_LicenceAvailableQty.cs
+..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\TODO_LicenseToXML.cs
+..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\TODO_LICToAssess.cs
+..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\TODO_LICToCreate.cs
+..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\TODO_PODocSet.cs
+..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\TODO_PODocSetToAssess.cs
+..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\TODO_PODocSetToAssessErrors.cs
+..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\TODO_PODocSetToExport.cs
+..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\ToDo_POToXML.cs
+..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\TODO_SubmitAllXMLToCustoms.cs
+..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\TODO_SubmitDiscrepanciesToCustoms.cs
+..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\TODO_SubmitDocSetWithIncompleteInvoices.cs
+..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\TODO_SubmitEntryCIF.cs
+..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\TODO_SubmitInadequatePackages.cs
+..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\TODO_SubmitIncompleteEntryData.cs
+..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\TODO_SubmitIncompleteSupplierInfo.cs
+..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\TODO_SubmitMissingInvoicePDFs.cs
+..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\TODO_SubmitPOInfo.cs
+..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\TODO_SubmitSalesToCustoms.cs
+..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\TODO_SubmitUnclassifiedItems.cs
+..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\TODO_SubmitXMLToCustoms.cs
+..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\TODO_TotalAdjustmentsToProcess.cs
+..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\TODO_UnallocatedSales.cs
+..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\TODO_UnallocatedShorts.cs
+..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\xcuda_Supplementary_unit.cs
 ..\WaterNut.Client.Entities\Generated Client Entities\CounterPointQS\CounterPointPODetails.cs
 ..\WaterNut.Client.Entities\Generated Client Entities\CounterPointQS\CounterPointPOs.cs
 ..\WaterNut.Client.Entities\Generated Client Entities\CounterPointQS\CounterPointSales.cs
 ..\WaterNut.Client.Entities\Generated Client Entities\CounterPointQS\CounterPointSalesDetails.cs
+..\WaterNut.Client.Entities\Generated Client Entities\EntryDataQS\AsycudaDocumentEntryData.cs
+..\WaterNut.Client.Entities\Generated Client Entities\EntryDataQS\AsycudaDocumentItemEntryDataDetail.cs
+..\WaterNut.Client.Entities\Generated Client Entities\EntryDataQS\AsycudaDocumentSetEntryData.cs
+..\WaterNut.Client.Entities\Generated Client Entities\EntryDataQS\AsycudaDocumentSetEntryDataDetail.cs
+..\WaterNut.Client.Entities\Generated Client Entities\EntryDataQS\EmptyFullCode.cs
+..\WaterNut.Client.Entities\Generated Client Entities\EntryDataQS\EntryData.cs
+..\WaterNut.Client.Entities\Generated Client Entities\EntryDataQS\EntryDataDetailsEx.cs
+..\WaterNut.Client.Entities\Generated Client Entities\EntryDataQS\EntryDataEx.cs
+..\WaterNut.Client.Entities\Generated Client Entities\EntryDataQS\InventoryItemsEx.cs
+..\WaterNut.Client.Entities\Generated Client Entities\EntryDataQS\PackageType.cs
+..\WaterNut.Client.Entities\Generated Client Entities\InventoryQS\EntryDataDetailsEx.cs
+..\WaterNut.Client.Entities\Generated Client Entities\InventoryQS\InventoryItemsEx.cs
+..\WaterNut.Client.Entities\Generated Client Entities\InventoryQS\TariffCategory.cs
+..\WaterNut.Client.Entities\Generated Client Entities\InventoryQS\TariffCategoryCodeSuppUnit.cs
+..\WaterNut.Client.Entities\Generated Client Entities\InventoryQS\TariffCodes.cs
+..\WaterNut.Client.Entities\Generated Client Entities\InventoryQS\TariffSupUnitLkps.cs
+..\WaterNut.Client.Entities\Generated Client Entities\OCR\ChildParts.cs
+..\WaterNut.Client.Entities\Generated Client Entities\OCR\End.cs
+..\WaterNut.Client.Entities\Generated Client Entities\OCR\Enums\PartTypes.cs
+..\WaterNut.Client.Entities\Generated Client Entities\OCR\FieldFormatRegEx.cs
+..\WaterNut.Client.Entities\Generated Client Entities\OCR\Fields.cs
+..\WaterNut.Client.Entities\Generated Client Entities\OCR\ImportErrors.cs
+..\WaterNut.Client.Entities\Generated Client Entities\OCR\InvoiceIdentificatonRegEx.cs
+..\WaterNut.Client.Entities\Generated Client Entities\OCR\InvoiceRegEx.cs
+..\WaterNut.Client.Entities\Generated Client Entities\OCR\Invoices.cs
+..\WaterNut.Client.Entities\Generated Client Entities\OCR\Lines.cs
+..\WaterNut.Client.Entities\Generated Client Entities\OCR\OCR_FailedFields.cs
+..\WaterNut.Client.Entities\Generated Client Entities\OCR\OCR_FailedLines.cs
+..\WaterNut.Client.Entities\Generated Client Entities\OCR\OCR_FieldValue.cs
+..\WaterNut.Client.Entities\Generated Client Entities\OCR\OCRFileTypes.cs
+..\WaterNut.Client.Entities\Generated Client Entities\OCR\Parts.cs
+..\WaterNut.Client.Entities\Generated Client Entities\OCR\PartTypes.cs
+..\WaterNut.Client.Entities\Generated Client Entities\OCR\RecuringPart.cs
+..\WaterNut.Client.Entities\Generated Client Entities\OCR\RegularExpressions.cs
+..\WaterNut.Client.Entities\Generated Client Entities\OCR\Start.cs
+..\WaterNut.Client.Entities\Generated Client Entities\PreviousDocumentQS\PreviousDocument.cs
+..\WaterNut.Client.Entities\Generated Client Entities\PreviousDocumentQS\PreviousDocumentItem.cs
+..\WaterNut.Client.Entities\Generated Client Entities\PreviousDocumentQS\PreviousItemsEx.cs
+..\WaterNut.Client.Entities\Generated Client Entities\SalesDataQS\AsycudaDocumentEntryData.cs
+..\WaterNut.Client.Entities\Generated Client Entities\SalesDataQS\AsycudaDocumentSetEntryData.cs
+..\WaterNut.Client.Entities\Generated Client Entities\SalesDataQS\AsycudaDocumentSetEntryDataDetails.cs
+..\WaterNut.Client.Entities\Generated Client Entities\SalesDataQS\SalesData.cs
+..\WaterNut.Client.Entities\Generated Client Entities\SalesDataQS\SalesDataAllocations.cs
+..\WaterNut.Client.Entities\Generated Client Entities\SalesDataQS\SalesDataDetail.cs
 </LastOutputs>
     </Content>
     <Content Include="AllClientModels.tt">
@@ -3072,6 +3752,31 @@
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>AllMapping1.cs</LastGenOutput>
       <LastOutputs>
+..\WaterNut.Business.Entities\Generated Business Entities\AllocationDS\Enums\CustomsOperations.cs
+..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\Enums\CustomsOperations.cs
+..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\Enums\FileGroups.cs
+..\WaterNut.Business.Entities\Generated Business Entities\DocumentDS\Enums\CustomsOperation.cs
+..\WaterNut.Business.Entities\Generated Business Entities\EntryDataDS\Enums\InventorySources.cs
+..\WaterNut.Business.Entities\Generated Business Entities\InventoryDS\Enums\InventorySource.cs
+..\WaterNut.Business.Entities\Generated Business Entities\OCR\Enums\PartTypes.cs
+..\WaterNut.Business.Entities\Generated Mappings\AdjustmentQS\AdjustmentDetail.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\AdjustmentQS\AdjustmentEx.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\AdjustmentQS\AdjustmentOver.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\AdjustmentQS\AdjustmentOversAllocation.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\AdjustmentQS\AdjustmentShort.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\AdjustmentQS\AsycudaDocumentEntryData.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\AdjustmentQS\AsycudaDocumentItemEntryDataDetail.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\AdjustmentQS\AsycudaDocumentItemLastItemCost.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\AdjustmentQS\AsycudaDocumentSetEntryData.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\AdjustmentQS\AsycudaSalesAllocation.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\AdjustmentQS\EntryDataDetail.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\AdjustmentQS\InventoryItemAliasEx.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\AdjustmentQS\InventoryItemsEx.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\AdjustmentQS\ShortAllocation.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\AdjustmentQS\SystemDocumentSet.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\AdjustmentQS\TODO_AdjustmentOversToXML.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\AdjustmentQS\TODO_PreDiscrepancyErrors.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\AdjustmentQS\xcuda_Item.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\AllocationDS\Adjustments.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\AllocationDS\AdjustmentShortAllocations.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\AllocationDS\AllocationErrors.map.cs
@@ -3083,6 +3788,387 @@
 ..\WaterNut.Business.Entities\Generated Mappings\AllocationDS\AsycudaSalesAllocations.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\AllocationDS\Customs_Procedure.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\AllocationDS\CustomsOperations.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\AllocationDS\EntryData.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\AllocationDS\EntryDataDetails.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\AllocationDS\EntryDataDetailsEx.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\AllocationDS\EntryPreviousItems.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\AllocationDS\EX9AsycudaSalesAllocations.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\AllocationDS\InventoryItem.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\AllocationDS\InventoryItemAlias.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\AllocationDS\ItemSalesAsycudaPiSummary.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\AllocationDS\ItemSalesPiSummary.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\AllocationDS\ManualAllocations.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\AllocationDS\PreviousItemsEx.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\AllocationDS\Sales.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\AllocationDS\SubItems.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\AllocationDS\SystemDocumentSets.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\AllocationDS\TariffCategory.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\AllocationDS\TariffCategoryCodeSuppUnit.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\AllocationDS\TariffCodes.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\AllocationDS\TariffSupUnitLkps.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\AllocationDS\xBondAllocations.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\AllocationDS\xcuda_Goods_description.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\AllocationDS\xcuda_HScode.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\AllocationDS\xcuda_Item.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\AllocationDS\xcuda_Item_Invoice.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\AllocationDS\xcuda_PreviousItem.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\AllocationDS\xcuda_Supplementary_unit.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\AllocationDS\xcuda_Tarification.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\AllocationDS\xcuda_Taxation.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\AllocationDS\xcuda_Taxation_line.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\AllocationDS\xcuda_Valuation_item.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\AllocationDS\xcuda_Weight.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\AllocationDS\xcuda_Weight_itm.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\AllocationQS\AdjustmentShortAllocation.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\AllocationQS\AsycudaSalesAllocationsEx.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\AllocationQS\AsycudaSalesAndAdjustmentAllocationsEx.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\ActionDocSetLogs.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\Actions.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\ApplicationSettings.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\AsycudaDocument.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\AsycudaDocument_Attachments.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\AsycudaDocumentBasicInfo.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\AsycudaDocumentItem.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\AsycudaDocumentItemEntryDataDetails.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\AsycudaDocumentSet_Attachments.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\AsycudaDocumentSetC71.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\AsycudaDocumentSetEntryDataEx.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\AsycudaDocumentSetEx.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\AsycudaItemBasicInfo.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\AttachmentLog.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\Attachments.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\CancelledEntriesLst.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\Contacts.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\Customs_Procedure.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\CustomsOperations.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\Declarant.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\Document_Type.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\EmailFileTypes.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\EmailInfoMappings.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\EmailMapping.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\Emails.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\EntryPreviousItems.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\ExpiredEntriesLst.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\FileGroups.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\FileTypeActions.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\FileTypeContacts.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\FileTypeMappingRegExs.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\FileTypeMappings.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\FileTypeReplaceRegex.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\FileTypes.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\ImportActions.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\InfoMapping.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\InfoMappingRegEx.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\InventoryItemAliasX.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\InventoryItemX.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\LicenceSummary.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\SessionActions.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\Sessions.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\SessionSchedule.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\SubItems.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_AdjustmentsAlreadyXMLed.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_AssessDiscrepancyEntries.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_C71ToCreate.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_C71ToXML.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_CreateDiscrepancyEntries.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_CreateEx9.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_DeleteDocumentSet.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_DiscrepanciesAlreadyXMLed.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_DiscrepanciesErrors.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_DiscrepanciesExecutionReport.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_DiscrepanciesToAssess.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_DiscrepancyPreExecutionReport.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_DocumentsToDelete.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_EntriesExpiringNextMonth.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_Error_DuplicateEntry.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_Error_IncompleteImport.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_Error_IncompleteItems.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_ERRReport_Allocations.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_ERRReport_AsycudaEntries.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_ERRReport_AsycudaLines.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_ERRReport_ByItemNumber.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_ERRReport_EntryDataDetails.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_ERRReport_SubmitWarehouseErrors.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_ERRReport_UnmappedItems.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_ImportCompleteEntries.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_LicenceAvailableQty.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_LicenseToXML.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_LICToAssess.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_LICToCreate.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_PODocSet.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_PODocSetToAssess.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_PODocSetToAssessErrors.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_PODocSetToExport.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\ToDo_POToXML.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_SubmitAllXMLToCustoms.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_SubmitDiscrepanciesToCustoms.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_SubmitDocSetWithIncompleteInvoices.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_SubmitEntryCIF.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_SubmitInadequatePackages.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_SubmitIncompleteEntryData.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_SubmitIncompleteSupplierInfo.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_SubmitMissingInvoicePDFs.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_SubmitPOInfo.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_SubmitSalesToCustoms.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_SubmitUnclassifiedItems.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_SubmitXMLToCustoms.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_TotalAdjustmentsToProcess.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_UnallocatedSales.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_UnallocatedShorts.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\xcuda_Supplementary_unit.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CounterPointQS\CounterPointPODetails.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CounterPointQS\CounterPointPOs.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CounterPointQS\CounterPointSales.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CounterPointQS\CounterPointSalesDetails.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentDS\AsycudaDocument_Attachments.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentDS\AsycudaDocumentEntryData.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentDS\AsycudaDocumentSet.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentDS\AsycudaDocumentSet_Attachments.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentDS\AsycudaDocumentSetEntryData.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentDS\Attachment.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentDS\Container.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentDS\Customs_Procedure.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentDS\CustomsOperation.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentDS\Document_Type.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentDS\ExportTemplate.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentDS\FileType.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentDS\PackageType.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentDS\SystemDocumentSet.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentDS\xcuda_Assessment.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentDS\xcuda_Assessment_notice.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentDS\xcuda_ASYCUDA.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentDS\xcuda_ASYCUDA_ExtendedProperties.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentDS\xcuda_ASYCUDAEx.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentDS\xcuda_Border_information.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentDS\xcuda_Border_office.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentDS\xcuda_Consignee.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentDS\xcuda_Container.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentDS\xcuda_Country.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentDS\xcuda_Declarant.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentDS\xcuda_Delivery_terms.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentDS\xcuda_Departure_arrival_information.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentDS\xcuda_Destination.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentDS\xcuda_Export.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentDS\xcuda_Export_release.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentDS\xcuda_Exporter.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentDS\xcuda_Financial.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentDS\xcuda_Financial_Amounts.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentDS\xcuda_Financial_Guarantee.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentDS\xcuda_Forms.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentDS\xcuda_General_information.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentDS\xcuda_Global_taxes.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentDS\xcuda_Gs_deduction.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentDS\xcuda_Gs_external_freight.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentDS\xcuda_Gs_insurance.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentDS\xcuda_Gs_internal_freight.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentDS\xcuda_Gs_Invoice.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentDS\xcuda_Gs_other_cost.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentDS\xcuda_Identification.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentDS\xcuda_Means_of_transport.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentDS\xcuda_Nbers.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentDS\xcuda_Office_segment.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentDS\xcuda_Place_of_loading.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentDS\xcuda_Principal.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentDS\xcuda_Property.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentDS\xcuda_receipt.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentDS\xcuda_Registration.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentDS\xcuda_Seals.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentDS\xcuda_Signature.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentDS\xcuda_Suppliers_documents.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentDS\xcuda_Total.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentDS\xcuda_Traders.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentDS\xcuda_Traders_Financial.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentDS\xcuda_Transit.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentDS\xcuda_Transit_Destination.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentDS\xcuda_Transport.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentDS\xcuda_Type.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentDS\xcuda_Valuation.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentDS\xcuda_Warehouse.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentDS\xcuda_Weight.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentItemDS\Attachments.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentItemDS\EntryPreviousItems.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentItemDS\PreviousItemsEx.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentItemDS\SubItems.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentItemDS\xBondAllocations.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentItemDS\xcuda_Attached_documents.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentItemDS\xcuda_Attachments.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentItemDS\xcuda_Goods_description.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentItemDS\xcuda_HScode.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentItemDS\xcuda_Inventory_Item.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentItemDS\xcuda_Item.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentItemDS\xcuda_item_deduction.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentItemDS\xcuda_item_external_freight.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentItemDS\xcuda_item_insurance.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentItemDS\xcuda_item_internal_freight.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentItemDS\xcuda_Item_Invoice.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentItemDS\xcuda_item_other_cost.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentItemDS\xcuda_ItemEntryDataDetails.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentItemDS\xcuda_Packages.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentItemDS\xcuda_Previous_doc.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentItemDS\xcuda_PreviousItem.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentItemDS\xcuda_Supplementary_unit.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentItemDS\xcuda_Suppliers_link.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentItemDS\xcuda_Tarification.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentItemDS\xcuda_Taxation.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentItemDS\xcuda_Taxation_line.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentItemDS\xcuda_Valuation_item.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentItemDS\xcuda_Weight_itm.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\Adjustments.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\AsycudaDocumentEntryData.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\AsycudaDocumentSetEntryData.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\Attachments.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\EDDocumentTypes.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\EntryData.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\EntryDataDetails.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\EntryDataDetailsEx.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\EntryDataEx.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\EntryDataExTotals.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\EntryDataFiles.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\FileTypes.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\InventoryItemAlias.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\InventoryItems.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\InventoryItems_NonStock.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\InventoryItemsEx.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\InventoryItemSource.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\InventorySources.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\InvoiceDetails.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\InvoiceDetailsVolume.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\InvoiceExtraInfo.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\Invoices.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\OpeningStock.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\PackageTypes.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\PurchaseOrders.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\Sales.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShimentBLCharges.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\Shipment.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentAttachedBL.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentAttachedFreight.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentAttachedInvoices.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentAttachedManifest.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentAttachedPOs.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentAttachedRider.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentAttachments.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentBL.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentBLDetails.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentBLFreight.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentFreight.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentFreightBLs.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentFreightDetails.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentInvoice.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentInvoiceDetailsItemAlias.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentInvoicePOItemData.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentInvoicePOItemMISMatches.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentInvoicePOItemQueryMatches.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentInvoicePOManualMatches.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentInvoicePOs.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentInvoiceRiderDetails.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentInvoiceRiderManualMatches.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentManifest.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentManifestBLs.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentManifestDetails.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentMIS_Invoices.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentMIS_POs.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentRider.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentRiderBLs.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentRiderDetails.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentRiderEx.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentRiderInvoice.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentRiderManifests.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\Suppliers.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\VolumeUnits.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\WarehouseInfo.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataQS\AsycudaDocumentEntryData.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataQS\AsycudaDocumentItemEntryDataDetail.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataQS\AsycudaDocumentSetEntryData.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataQS\AsycudaDocumentSetEntryDataDetail.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataQS\EmptyFullCode.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataQS\EntryData.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataQS\EntryDataDetailsEx.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataQS\EntryDataEx.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataQS\InventoryItemsEx.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataQS\PackageType.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\InventoryDS\InventoryItem.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\InventoryDS\InventoryItemAlia.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\InventoryDS\InventoryItemSource.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\InventoryDS\InventorySource.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\InventoryDS\TariffCategory.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\InventoryDS\TariffCategoryCodeSuppUnit.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\InventoryDS\TariffCode.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\InventoryDS\TariffSupUnitLkp.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\InventoryQS\EntryDataDetailsEx.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\InventoryQS\InventoryItemsEx.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\InventoryQS\TariffCategory.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\InventoryQS\TariffCategoryCodeSuppUnit.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\InventoryQS\TariffCodes.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\InventoryQS\TariffSupUnitLkps.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\LicenseDS\Registered.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\LicenseDS\TODO_LicenceAvailableQty.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\LicenseDS\TODO_LICToCreate.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\LicenseDS\xLIC_General_segment.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\LicenseDS\xLIC_Lic_item_segment.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\LicenseDS\xLIC_License.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\OCR\ChildParts.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\OCR\End.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\OCR\FieldFormatRegEx.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\OCR\Fields.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\OCR\ImportErrors.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\OCR\InvoiceIdentificatonRegEx.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\OCR\InvoiceRegEx.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\OCR\Invoices.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\OCR\Lines.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\OCR\OCR_FailedFields.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\OCR\OCR_FailedLines.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\OCR\OCR_FieldValue.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\OCR\OCRFileTypes.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\OCR\Parts.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\OCR\PartTypes.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\OCR\RecuringPart.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\OCR\RegularExpressions.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\OCR\Start.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\PreviousDocumentDS\EntryDataDetails.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\PreviousDocumentDS\EntryPreviousItems.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\PreviousDocumentDS\PreviousEntry.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\PreviousDocumentDS\xcuda_HScode.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\PreviousDocumentDS\xcuda_PreviousItem.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\PreviousDocumentDS\xcuda_Tarification.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\PreviousDocumentDS\xcuda_Valuation_item.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\PreviousDocumentQS\PreviousDocument.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\PreviousDocumentQS\PreviousDocumentItem.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\PreviousDocumentQS\PreviousItemsEx.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\QuickBooksDS\InventoryItems.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\SalesDataQS\AsycudaDocumentEntryData.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\SalesDataQS\AsycudaDocumentSetEntryData.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\SalesDataQS\AsycudaDocumentSetEntryDataDetails.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\SalesDataQS\SalesData.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\SalesDataQS\SalesDataAllocations.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\SalesDataQS\SalesDataDetail.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\ValuationDS\C71Summary.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\ValuationDS\Registered.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\ValuationDS\TODO_C71ToCreate.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\ValuationDS\xC71_Buyer_segment.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\ValuationDS\xC71_Declarant_segment.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\ValuationDS\xC71_Identification_segment.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\ValuationDS\xC71_Item.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\ValuationDS\xC71_Seller_segment.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\ValuationDS\xC71_Value_declaration_form.map.cs
+..\WaterNut.Data\DbContextMappings\AdjustmentQS.Mappings.cs
+..\WaterNut.Data\DbContextMappings\AllocationDS.Mappings.cs
+..\WaterNut.Data\DbContextMappings\AllocationQS.Mappings.cs
+..\WaterNut.Data\DbContextMappings\CoreEntities.Mappings.cs
+..\WaterNut.Data\DbContextMappings\CounterPointQS.Mappings.cs
+..\WaterNut.Data\DbContextMappings\DocumentDS.Mappings.cs
+..\WaterNut.Data\DbContextMappings\DocumentItemDS.Mappings.cs
+..\WaterNut.Data\DbContextMappings\EntryDataDS.Mappings.cs
+..\WaterNut.Data\DbContextMappings\EntryDataQS.Mappings.cs
+..\WaterNut.Data\DbContextMappings\InventoryDS.Mappings.cs
+..\WaterNut.Data\DbContextMappings\InventoryQS.Mappings.cs
+..\WaterNut.Data\DbContextMappings\LicenseDS.Mappings.cs
+..\WaterNut.Data\DbContextMappings\OCR.Mappings.cs
+..\WaterNut.Data\DbContextMappings\PreviousDocumentDS.Mappings.cs
+..\WaterNut.Data\DbContextMappings\PreviousDocumentQS.Mappings.cs
+..\WaterNut.Data\DbContextMappings\QuickBooksDS.Mappings.cs
+..\WaterNut.Data\DbContextMappings\SalesDataQS.Mappings.cs
+..\WaterNut.Data\DbContextMappings\ValuationDS.Mappings.cs
 </LastOutputs>
     </Content>
     <Content Include="AllObjectContext.tt">

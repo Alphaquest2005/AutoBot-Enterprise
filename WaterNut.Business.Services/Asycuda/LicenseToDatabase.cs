@@ -212,6 +212,8 @@ namespace WaterNut.DataSpace.Asycuda
         public xLIC_License CreateLicense(List<TODO_LicenseToXML> lst, Contacts contact, Suppliers supplier,
             string docRef)
         {
+            
+
             var lic = CreateLicense();
             lic.xLIC_General_segment.Application_date = DateTime.Now.Date.ToShortDateString();
             lic.xLIC_General_segment.Importation_date = DateTime.Now.Date.AddMonths(3).ToShortDateString();

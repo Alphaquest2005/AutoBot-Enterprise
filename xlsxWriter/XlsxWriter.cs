@@ -258,10 +258,14 @@ namespace xlsxWriter
 
                 if (doRider && i < riderdetails.Count)
                 {
-                    SetValue(workbook, i, header.First(x => x.Key.Column == "Packages").Key.Index,
-                        riderdetails[i].Packages);
-                    SetValue(workbook, i, header.First(x => x.Key.Column == "Warehouse").Key.Index,
-                        riderdetails[i].WarehouseCode);
+                    foreach (var riderdetail in riderdetails)
+                    {
+                        SetValue(workbook, i, header.First(x => x.Key.Column == "Packages").Key.Index,
+                            riderdetail.Packages);
+                        SetValue(workbook, i, header.First(x => x.Key.Column == "Warehouse").Key.Index,
+                            riderdetail.WarehouseCode);
+                    }
+
                 }
 
                 i++;
@@ -328,12 +332,16 @@ namespace xlsxWriter
                     itm.Units);
                 if (doRider && i < riderdetails.Count)//
                 {
-                    SetValue(workbook, i + invoiceRow,
-                        header.First(x => x.Key.Column == "Packages").Key.Index,
-                        riderdetails.First().ShipmentRiderDetails.Pieces);
-                    SetValue(workbook, i + invoiceRow,
-                        header.First(x => x.Key.Column == "Warehouse").Key.Index,
-                        riderdetails.First().ShipmentRiderDetails.WarehouseCode);
+                    foreach (var riderdetail in riderdetails)
+                    {
+                        SetValue(workbook, i + invoiceRow,
+                            header.First(x => x.Key.Column == "Packages").Key.Index,
+                            riderdetail.ShipmentRiderDetails.Pieces);
+                        SetValue(workbook, i + invoiceRow,
+                            header.First(x => x.Key.Column == "Warehouse").Key.Index,
+                            riderdetail.ShipmentRiderDetails.WarehouseCode);
+                    }
+                  
                 }
 
                 i++;
@@ -342,7 +350,12 @@ namespace xlsxWriter
 
         private static void DoMisMatches(ShipmentInvoice shipmentInvoice, Workbook workbook)
         {
-            var shipmentInvoicePoItemMisMatchesList = shipmentInvoice.ShipmentInvoicePOs.SelectMany(x => x.POMISMatches).ToList();
+            var shipmentInvoicePoItemMisMatchesList = shipmentInvoice
+                .ShipmentInvoicePOs
+                .SelectMany(x => x.POMISMatches)
+                //.Where(x => (x.INVQuantity != 0 && x.INVQuantity != null) && (x.POQuantity != 0 && x.POQuantity != null))
+                .OrderBy(x => x.INVTotalCost).ThenBy(x => x.POTotalCost)
+                .ToList();
             if (!shipmentInvoicePoItemMisMatchesList.Any()) return;
             var header = "PONumber,InvoiceNo,POItemCode,INVItemCode,PODescription,INVDescription,POCost,INVCost,POQuantity,INVQuantity,INVSalesFactor,POTotalCost,INVTotalCost,INVDetailsId,PODetailsId".Split(',').ToList();
 
