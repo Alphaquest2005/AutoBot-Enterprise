@@ -411,6 +411,19 @@ namespace CoreEntities.Client.DTO
 		}
         private ChangeTrackingCollection<ImportActions> _ImportActions = new ChangeTrackingCollection<ImportActions>();
 
+        [DataMember]
+        public ChangeTrackingCollection<FileTypeReplaceRegex> FileTypeReplaceRegex
+		{
+		    get { return _FileTypeReplaceRegex; }
+			set
+			{
+			    if (Equals(value, _FileTypeReplaceRegex)) return;
+				_FileTypeReplaceRegex = value;
+				NotifyPropertyChanged();//m => this.FileTypeReplaceRegex
+			}
+		}
+        private ChangeTrackingCollection<FileTypeReplaceRegex> _FileTypeReplaceRegex = new ChangeTrackingCollection<FileTypeReplaceRegex>();
+
    //     [DataMember]
    //     public TrackingState TrackingState { get; set; }
 

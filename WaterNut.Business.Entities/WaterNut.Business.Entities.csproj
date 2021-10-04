@@ -235,6 +235,7 @@
     <Compile Include="Generated Business Entities\CoreEntities\FileTypeContacts.cs" />
     <Compile Include="Generated Business Entities\CoreEntities\FileTypeMappingRegExs.cs" />
     <Compile Include="Generated Business Entities\CoreEntities\FileTypeMappings.cs" />
+    <Compile Include="Generated Business Entities\CoreEntities\FileTypeReplaceRegex.cs" />
     <Compile Include="Generated Business Entities\CoreEntities\FileTypes.cs" />
     <Compile Include="Generated Business Entities\CoreEntities\ImportActions.cs" />
     <Compile Include="Generated Business Entities\CoreEntities\InfoMapping.cs" />
@@ -630,6 +631,7 @@
     <Compile Include="Generated ChangeTracking Models\CoreEntities\FileTypeContacts.cs" />
     <Compile Include="Generated ChangeTracking Models\CoreEntities\FileTypeMappingRegExs.cs" />
     <Compile Include="Generated ChangeTracking Models\CoreEntities\FileTypeMappings.cs" />
+    <Compile Include="Generated ChangeTracking Models\CoreEntities\FileTypeReplaceRegex.cs" />
     <Compile Include="Generated ChangeTracking Models\CoreEntities\FileTypes.cs" />
     <Compile Include="Generated ChangeTracking Models\CoreEntities\ImportActions.cs" />
     <Compile Include="Generated ChangeTracking Models\CoreEntities\InfoMapping.cs" />
@@ -1021,6 +1023,7 @@
     <Compile Include="Generated Constructors Models\CoreEntities\FileTypeContacts.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\FileTypeMappingRegExs.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\FileTypeMappings.cs" />
+    <Compile Include="Generated Constructors Models\CoreEntities\FileTypeReplaceRegex.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\FileTypes.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\ImportActions.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\InfoMapping.cs" />
@@ -1412,6 +1415,7 @@
     <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\FileTypeContacts.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\FileTypeMappingRegExs.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\FileTypeMappings.cs" />
+    <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\FileTypeReplaceRegex.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\FileTypes.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\ImportActions.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\InfoMapping.cs" />
@@ -1803,6 +1807,7 @@
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\FileTypeContacts.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\FileTypeMappingRegExs.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\FileTypeMappings.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\FileTypeReplaceRegex.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\FileTypes.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\ImportActions.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\InfoMapping.cs" />
@@ -2204,6 +2209,7 @@
     <Compile Include="Generated Mappings\CoreEntities\FileTypeContacts.map.cs" />
     <Compile Include="Generated Mappings\CoreEntities\FileTypeMappingRegExs.map.cs" />
     <Compile Include="Generated Mappings\CoreEntities\FileTypeMappings.map.cs" />
+    <Compile Include="Generated Mappings\CoreEntities\FileTypeReplaceRegex.map.cs" />
     <Compile Include="Generated Mappings\CoreEntities\FileTypes.map.cs" />
     <Compile Include="Generated Mappings\CoreEntities\ImportActions.map.cs" />
     <Compile Include="Generated Mappings\CoreEntities\InfoMapping.map.cs" />

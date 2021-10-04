@@ -452,6 +452,7 @@
     <Compile Include="Contracts\CoreEntities\IFileTypeContactsService.cs" />
     <Compile Include="Contracts\CoreEntities\IFileTypeMappingRegExsService.cs" />
     <Compile Include="Contracts\CoreEntities\IFileTypeMappingsService.cs" />
+    <Compile Include="Contracts\CoreEntities\IFileTypeReplaceRegexService.cs" />
     <Compile Include="Contracts\CoreEntities\IFileTypesService.cs" />
     <Compile Include="Contracts\CoreEntities\IImportActionsService.cs" />
     <Compile Include="Contracts\CoreEntities\IInfoMappingRegExService.cs" />
@@ -1053,6 +1054,7 @@
     <Compile Include="Services\CoreEntities\FileTypeContactsService.cs" />
     <Compile Include="Services\CoreEntities\FileTypeMappingRegExsService.cs" />
     <Compile Include="Services\CoreEntities\FileTypeMappingsService.cs" />
+    <Compile Include="Services\CoreEntities\FileTypeReplaceRegexService.cs" />
     <Compile Include="Services\CoreEntities\FileTypesService.cs" />
     <Compile Include="Services\CoreEntities\ImportActionsService.cs" />
     <Compile Include="Services\CoreEntities\InfoMappingRegExService.cs" />

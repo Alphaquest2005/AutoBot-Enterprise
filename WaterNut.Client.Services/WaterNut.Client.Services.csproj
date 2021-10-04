@@ -149,6 +149,7 @@
     <Compile Include="CoreEntities\FileTypeContactsClient.cs" />
     <Compile Include="CoreEntities\FileTypeMappingRegExsClient.cs" />
     <Compile Include="CoreEntities\FileTypeMappingsClient.cs" />
+    <Compile Include="CoreEntities\FileTypeReplaceRegexClient.cs" />
     <Compile Include="CoreEntities\FileTypesClient.cs" />
     <Compile Include="CoreEntities\ImportActionsClient.cs" />
     <Compile Include="CoreEntities\InfoMappingClient.cs" />

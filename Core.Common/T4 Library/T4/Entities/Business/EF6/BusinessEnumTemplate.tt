@@ -32,7 +32,7 @@
 
         private string columnId = "Id";
         private string columnName = "Name";
-        string connectionString = @"data source=192.168.0.5\SQLDEVELOPER2017;initial catalog=AutoBot-EnterpriseDB;integrated security=SSPI";
+        string connectionString = @"data source=Joseph-PC\SQLDEVELOPER2017;initial catalog=AutoBot-EnterpriseDB;integrated security=SSPI";
 
  
        

@@ -301,6 +301,12 @@ namespace CoreEntities.Business.Services
                                         GetWhere<ImportActions>(dbContext, exp, itm.Value, "FileTypes", "Select", includesLst)
 										.ConfigureAwait(continueOnCapturedContext: false);
 
+                            case "FileTypeReplaceRegex":
+                                return
+                                    await
+                                        GetWhere<FileTypeReplaceRegex>(dbContext, exp, itm.Value, "FileTypes", "Select", includesLst)
+										.ConfigureAwait(continueOnCapturedContext: false);
+
                         }
 
                     }
@@ -833,6 +839,9 @@ namespace CoreEntities.Business.Services
                             case "ImportActions":
                                 return await CountWhere<ImportActions>(dbContext, exp, itm.Value, "FileTypes", "Select")
 											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "FileTypeReplaceRegex":
+                                return await CountWhere<FileTypeReplaceRegex>(dbContext, exp, itm.Value, "FileTypes", "Select")
+											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }
                     return await dbContext.FileTypes.Where(exp == "All" || exp == null ? "Id != null" : exp)
@@ -1003,6 +1012,12 @@ namespace CoreEntities.Business.Services
                                 return
                                     await
                                         LoadRangeWhere<ImportActions>(startIndex, count, dbContext, exp, itm.Value, "FileTypes", "Select")
+													.ConfigureAwait(continueOnCapturedContext: false);
+
+                            case "FileTypeReplaceRegex":
+                                return
+                                    await
+                                        LoadRangeWhere<FileTypeReplaceRegex>(startIndex, count, dbContext, exp, itm.Value, "FileTypes", "Select")
 													.ConfigureAwait(continueOnCapturedContext: false);
 
                           
@@ -1225,6 +1240,7 @@ namespace CoreEntities.Business.Services
                                                     // .Include(x => x.ChildFileTypes)									  
                                                     // .Include(x => x.EmailFileTypes)									  
                                                     // .Include(x => x.ImportActions)									  
+                                                    // .Include(x => x.FileTypeReplaceRegex)									  
                                       .AsNoTracking()
                                         .Where(x => x.ApplicationSettingsId.ToString() == ApplicationSettingsId.ToString())
 										.ToListAsync()
@@ -1261,6 +1277,7 @@ namespace CoreEntities.Business.Services
                                                     // .Include(x => x.ChildFileTypes)									  
                                                     // .Include(x => x.EmailFileTypes)									  
                                                     // .Include(x => x.ImportActions)									  
+                                                    // .Include(x => x.FileTypeReplaceRegex)									  
                                       .AsNoTracking()
                                         .Where(x => x.AsycudaDocumentSetId.ToString() == AsycudaDocumentSetId.ToString())
 										.ToListAsync()
@@ -1297,6 +1314,7 @@ namespace CoreEntities.Business.Services
                                                     // .Include(x => x.ChildFileTypes)									  
                                                     // .Include(x => x.EmailFileTypes)									  
                                                     // .Include(x => x.ImportActions)									  
+                                                    // .Include(x => x.FileTypeReplaceRegex)									  
                                       .AsNoTracking()
                                         .Where(x => x.FileGroupId.ToString() == FileGroupId.ToString())
 										.ToListAsync()
@@ -1333,6 +1351,7 @@ namespace CoreEntities.Business.Services
                                                     // .Include(x => x.ChildFileTypes)									  
                                                     // .Include(x => x.EmailFileTypes)									  
                                                     // .Include(x => x.ImportActions)									  
+                                                    // .Include(x => x.FileTypeReplaceRegex)									  
                                       .AsNoTracking()
                                         .Where(x => x.ParentFileTypeId.ToString() == ParentFileTypeId.ToString())
 										.ToListAsync()
@@ -1369,6 +1388,7 @@ namespace CoreEntities.Business.Services
                                                     // .Include(x => x.ChildFileTypes)									  
                                                     // .Include(x => x.EmailFileTypes)									  
                                                     // .Include(x => x.ImportActions)									  
+                                                    // .Include(x => x.FileTypeReplaceRegex)									  
                                       .AsNoTracking()
                                         .Where(x => x.OldFileTypeId.ToString() == OldFileTypeId.ToString())
 										.ToListAsync()
@@ -1476,6 +1496,9 @@ namespace CoreEntities.Business.Services
 											.ConfigureAwait(continueOnCapturedContext: false);
                             case "ImportActions":
                                 return await SumWhere<ImportActions>(dbContext, exp, itm.Value, "FileTypes", field, "Select")
+											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "FileTypeReplaceRegex":
+                                return await SumWhere<FileTypeReplaceRegex>(dbContext, exp, itm.Value, "FileTypes", field, "Select")
 											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }

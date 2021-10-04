@@ -52,37 +52,14 @@ namespace AutoBotUtilities
 
                 using (var ctx = new EntryDataDSContext())
                 {
-                    var invoices = ctx.ShipmentInvoice
-                        .Include(x => x.ShipmentRiderInvoice)
-                        .Include("ShipmentRiderInvoice.ShipmentRider")
-                        .Include("ShipmentRiderInvoice.ShipmentRiderDetails")
-                        .Include("InvoiceDetails.ItemAlias")
-                        .Include("InvoiceDetails.Volume")
-                        //.Include("ShipmentInvoicePOs.POMISMatches")
-                        .Include("ShipmentInvoicePOs.PurchaseOrders.EntryDataDetails.INVItems")
-                        .Include("ShipmentInvoicePOs.PurchaseOrders.WarehouseInfo")
-                        .Include("InvoiceDetails.ItemAlias")
-                        .Include("InvoiceDetails.POItems")
-                        .Where(x => x.EmailId == shipment.EmailId)
-                        .ToList();
+                    var invoices = GetShipmentInvoices().Where(x => x.EmailId == shipment.EmailId).ToList();
                     var ctxShipmentInvoicePoItemMisMatches = ctx.ShipmentInvoicePOItemMISMatches.ToList();
 
                     var poInvoices = shipment.ShipmentAttachedPOs
                         .SelectMany(x => x.PurchaseOrders.ShipmentInvoicePOs)
                         .DistinctBy(x => x.InvoiceId)
                         .Where(x => invoices.All(z => z.Id != x.InvoiceId))
-                        .Select(x => ctx.ShipmentInvoice
-                            .Include(z => z.ShipmentRiderInvoice)
-                            .Include("ShipmentRiderInvoice.ShipmentRider")
-                            .Include("ShipmentRiderInvoice.ShipmentRiderDetails")
-                            .Include("InvoiceDetails.ItemAlias")
-                            .Include("InvoiceDetails.Volume")
-                            //.Include("ShipmentInvoicePOs.POMISMatches")
-                            .Include("ShipmentInvoicePOs.PurchaseOrders.EntryDataDetails.INVItems")
-                            .Include("ShipmentInvoicePOs.PurchaseOrders.WarehouseInfo")
-                            .Include("InvoiceDetails.ItemAlias")
-                            .Include("InvoiceDetails.POItems")
-                            .First(z => z.Id == x.InvoiceId))
+                        .Select(x => GetShipmentInvoices().First(z => z.Id == x.InvoiceId))
                         .ToList();
                     invoices.AddRange(poInvoices);
 
@@ -108,6 +85,28 @@ namespace AutoBotUtilities
                 Console.WriteLine(e);
                 throw;
             }
+        }
+
+
+        private static List<ShipmentInvoice> shipmentInvoices = null;
+        private static List<ShipmentInvoice> GetShipmentInvoices( )
+        {
+
+            if( shipmentInvoices == null)
+
+                shipmentInvoices = new EntryDataDSContext().ShipmentInvoice
+                .Include(x => x.ShipmentRiderInvoice)
+                .Include("ShipmentRiderInvoice.ShipmentRider")
+                .Include("ShipmentRiderInvoice.ShipmentRiderDetails")
+                .Include("InvoiceDetails.ItemAlias")
+                .Include("InvoiceDetails.Volume")
+                //.Include("ShipmentInvoicePOs.POMISMatches")
+                .Include("ShipmentInvoicePOs.PurchaseOrders.EntryDataDetails.INVItems")
+                .Include("ShipmentInvoicePOs.PurchaseOrders.WarehouseInfo")
+                .Include("InvoiceDetails.ItemAlias")
+                .Include("InvoiceDetails.POItems")
+               .ToList();
+            return shipmentInvoices;
         }
 
         public static Shipment LoadEmailRiders(this Shipment shipment)
@@ -205,16 +204,7 @@ namespace AutoBotUtilities
                         .Distinct()
                         
                         .Where(x => shipment.ShipmentAttachedInvoices.All(z => z.ShipmentInvoiceId != x))
-                        .Select(x => ctx.ShipmentInvoice
-                            .Include("ShipmentRiderInvoice.ShipmentRider")
-                            .Include("ShipmentRiderInvoice.ShipmentRiderDetails")
-                            .Include("InvoiceDetails.ItemAlias")
-                            .Include("InvoiceDetails.POItems")
-                            .Include("InvoiceDetails.Volume")
-                            // .Include("ShipmentInvoicePOs.POMISMatches")
-                            .Include("ShipmentInvoicePOs.PurchaseOrders.EntryDataDetails.INVItems")
-                            .Include("ShipmentInvoicePOs.PurchaseOrders.WarehouseInfo")
-                            .First(z => z.Id == x))
+                        .Select(x => GetShipmentInvoices().First(z => z.Id == x))
                         .Select(x => new ShipmentAttachedInvoices()
                         {
                             Shipment = shipment,
@@ -234,14 +224,7 @@ namespace AutoBotUtilities
 
                     var emailLst = invoices.Select(x => x.ShipmentInvoice.EmailId).Distinct().ToList();
                     var invoiceLst = invoices.Select(x => x.ShipmentInvoice.Id).Distinct().ToList();
-                   var inattachedInvoices = ctx.ShipmentInvoice
-                        .Include("ShipmentRiderInvoice.ShipmentRider")
-                        .Include("ShipmentRiderInvoice.ShipmentRiderDetails")
-                        .Include("InvoiceDetails.ItemAlias")
-                        .Include("InvoiceDetails.POItems")
-                        .Include("InvoiceDetails.Volume")
-                        // .Include("ShipmentInvoicePOs.POMISMatches")
-                        .Include("ShipmentInvoicePOs.PurchaseOrders.EntryDataDetails.INVItems")
+                   var inattachedInvoices = GetShipmentInvoices()
                         .Where(z => !invoiceLst.Contains(z.Id) && emailLst.Contains(z.EmailId))
                        .ToList()
                         .Select(x => new ShipmentAttachedInvoices()
@@ -376,7 +359,7 @@ namespace AutoBotUtilities
                         .SelectMany(x => x.PurchaseOrders.ShipmentInvoicePOs.Select(z => z.InvoiceId))
                         .Distinct()
                         .SelectMany(x =>
-                            ctx.ShipmentInvoice.Where(i => i.Id == x)
+                            GetShipmentInvoices().Where(i => i.Id == x)
                                 .SelectMany(i => i.ShipmentRiderInvoice.Select(ri => ri.RiderID)).ToList()).Distinct()
                         .ToList()
                         
@@ -726,7 +709,7 @@ namespace AutoBotUtilities
                             ExpectedEntries = 0,
                             TotalInvoices = 0,
                             FreightCurrency = freightInvoices.LastOrDefault()?.Currency ?? bl.FreightCurrency ?? "USD",
-                            Freight = freightInvoices.LastOrDefault()?.InvoiceTotal ?? bl.Freight,
+                            Freight = freightInvoices.LastOrDefault()?.InvoiceTotal ?? (bl?.BLNumber ==  manifests.LastOrDefault()?.WayBill ?  bl.Freight : 0),
                             Origin = "US",
                             Packages =manifests.LastOrDefault()?.Packages ?? (!blDetails.Any()
                                 ? clients.SelectMany(x => x.Select(r => r.Pieces)).Sum()

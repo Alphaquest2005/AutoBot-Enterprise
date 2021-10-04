@@ -474,34 +474,48 @@ namespace WaterNut.DataSpace.Asycuda
         public xC71_Value_declaration_form CreateC71(Suppliers supplier, List<TODO_C71ToXML> lst,
             string docRef)
         {
-            var c71 = CreateNewC71();
-            c71.xC71_Identification_segment.xC71_Seller_segment.Name = supplier.SupplierName ?? supplier.SupplierCode;
-            c71.xC71_Identification_segment.xC71_Seller_segment.Address = $"Ref:{docRef},\r\n{supplier.Street}" ;
-            c71.xC71_Identification_segment.xC71_Seller_segment.CountryCode = supplier.CountryCode;
-            
-
-            c71.xC71_Identification_segment.xC71_Buyer_segment.Code = BaseDataModel.Instance.CurrentApplicationSettings.Declarants.First(x => x.IsDefault == true).DeclarantCode;
-            c71.xC71_Identification_segment.xC71_Declarant_segment.Code = BaseDataModel.Instance.CurrentApplicationSettings.Declarants.First(x => x.IsDefault == true).DeclarantCode;
-            c71.xC71_Identification_segment.No_7A = true;
-            c71.xC71_Identification_segment.No_8A = true;
-            c71.xC71_Identification_segment.No_9A = true;
-            c71.xC71_Identification_segment.No_9B = true;
-
-            foreach (var item in lst)
+            try
             {
-                c71.xC71_Item.Add(new xC71_Item(true)
-                {
-                    Terms_of_Delivery_Code = item.Code ?? "FOB",
-                    Invoice_Number = item.InvoiceNo,
-                    Invoice_Date = item.InvoiceDate.ToShortDateString(),
-                    Currency_code_net = item.Currency,
-                    Net_Price = item.InvoiceTotal.ToString(CultureInfo.InvariantCulture),
-                    
-                    TrackingState = TrackingState.Added
-                });
-            }
 
-            return c71;
+               
+
+                var c71 = CreateNewC71();
+                c71.xC71_Identification_segment.xC71_Seller_segment.Name =
+                    supplier.SupplierName ?? supplier.SupplierCode;
+                c71.xC71_Identification_segment.xC71_Seller_segment.Address = $"Ref:{docRef},\r\n{supplier.Street}";
+                c71.xC71_Identification_segment.xC71_Seller_segment.CountryCode = supplier.CountryCode;
+
+
+                c71.xC71_Identification_segment.xC71_Buyer_segment.Code = BaseDataModel.Instance.CurrentApplicationSettings.Declarants.First(x => x.IsDefault == true).DeclarantCode;
+                c71.xC71_Identification_segment.xC71_Declarant_segment.Code = BaseDataModel.Instance.CurrentApplicationSettings.Declarants.First(x => x.IsDefault == true).DeclarantCode;
+                c71.xC71_Identification_segment.No_7A = true;
+                c71.xC71_Identification_segment.No_8A = true;
+                c71.xC71_Identification_segment.No_9A = true;
+                c71.xC71_Identification_segment.No_9B = true;
+
+                foreach (var item in lst)
+                {
+                    c71.xC71_Item.Add(new xC71_Item(true)
+                    {
+                        Terms_of_Delivery_Code = item.Code ?? "FOB",
+                        Invoice_Number = item.InvoiceNo,
+                        Invoice_Date = item.InvoiceDate.ToShortDateString(),
+                        Currency_code_net = item.Currency,
+                        Net_Price = item.InvoiceTotal.ToString(CultureInfo.InvariantCulture),
+
+                        TrackingState = TrackingState.Added
+                    });
+                }
+
+                return c71;
+
+
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
         }
 
         public bool ExportC71(int docSetId,xC71_Value_declaration_form c71, string fileName)

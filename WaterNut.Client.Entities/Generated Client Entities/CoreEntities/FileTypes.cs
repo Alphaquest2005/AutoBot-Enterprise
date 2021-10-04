@@ -911,6 +911,60 @@ public Nullable<bool> IsImportable
             }
         }
 
+        ObservableCollection<FileTypeReplaceRegex> _FileTypeReplaceRegex = null;
+        public  ObservableCollection<FileTypeReplaceRegex> FileTypeReplaceRegex
+		{
+            
+		    get 
+				{ 
+					if(_FileTypeReplaceRegex != null) return _FileTypeReplaceRegex;
+					//if (this.filetypes.FileTypeReplaceRegex == null) Debugger.Break();
+					if(this.filetypes.FileTypeReplaceRegex != null)
+					{
+						_FileTypeReplaceRegex = new ObservableCollection<FileTypeReplaceRegex>(this.filetypes.FileTypeReplaceRegex.Select(x => new FileTypeReplaceRegex(x)));
+					}
+					
+						_FileTypeReplaceRegex.CollectionChanged += FileTypeReplaceRegex_CollectionChanged; 
+					
+					return _FileTypeReplaceRegex; 
+				}
+			set
+			{
+			    if (Equals(value, _FileTypeReplaceRegex)) return;
+				if (value != null)
+					this.filetypes.FileTypeReplaceRegex = new ChangeTrackingCollection<DTO.FileTypeReplaceRegex>(value.Select(x => x.DTO).ToList());
+                _FileTypeReplaceRegex = value;
+				if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				if (_FileTypeReplaceRegex != null)
+				_FileTypeReplaceRegex.CollectionChanged += FileTypeReplaceRegex_CollectionChanged;               
+				NotifyPropertyChanged("FileTypeReplaceRegex");
+			}
+		}
+        
+        void FileTypeReplaceRegex_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            switch (e.Action)
+            {
+                case NotifyCollectionChangedAction.Add:
+                    foreach (FileTypeReplaceRegex itm in e.NewItems)
+                    {
+                        if (itm != null)
+                        filetypes.FileTypeReplaceRegex.Add(itm.DTO);
+                    }
+                    if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+                    break;
+                case NotifyCollectionChangedAction.Remove:
+                    foreach (FileTypeReplaceRegex itm in e.OldItems)
+                    {
+                        if (itm != null)
+                        filetypes.FileTypeReplaceRegex.Remove(itm.DTO);
+                    }
+					if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+                    break;
+                
+            }
+        }
+
 
         ChangeTrackingCollection<DTO.FileTypes> _changeTracker;    
         public ChangeTrackingCollection<DTO.FileTypes> ChangeTracker

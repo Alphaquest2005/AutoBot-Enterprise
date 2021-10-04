@@ -233,6 +233,8 @@ namespace CoreEntities.Business.Entities
      
         public DbSet<Declarant> Declarants { get; set; }
      
+        public DbSet<FileTypeReplaceRegex> FileTypeReplaceRegex { get; set; }
+     
 
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
@@ -422,6 +424,8 @@ namespace CoreEntities.Business.Entities
             modelBuilder.Configurations.Add(new TODO_LICToAssessMap());
          
             modelBuilder.Configurations.Add(new DeclarantMap());
+         
+            modelBuilder.Configurations.Add(new FileTypeReplaceRegexMap());
          
 			OnModelCreatingExtentsion(modelBuilder);
 

@@ -528,8 +528,8 @@ namespace WaterNut.DataSpace
                                                     ItemNumber = z.ContainsKey("ItemNumber") ? z["ItemNumber"].ToString().ToUpper().Truncate(20): null,
                                                     ItemDescription = z["ItemDescription"].ToString().Truncate(255),
                                                     Units = z.ContainsKey("Units") ? z["Units"].ToString() : null,
-                                                    Cost = Convert.ToDouble(z["Cost"].ToString()),
-                                                    TotalCost = z.ContainsKey("TotalCost") ? Convert.ToDouble(z["TotalCost"].ToString()) : (double?)null,
+                                                    Cost = z.ContainsKey("Cost") ? Convert.ToDouble(z["Cost"].ToString()) : Convert.ToDouble(z["TotalCost"].ToString()) / (Convert.ToDouble(z["Quantity"].ToString()) == 0 ? 1 : Convert.ToDouble(z["Quantity"].ToString())),
+                                                    TotalCost = z.ContainsKey("TotalCost") ? Convert.ToDouble(z["TotalCost"].ToString()) : Convert.ToDouble(z["Cost"].ToString()) * Convert.ToDouble(z["Quantity"].ToString()),
                                                     Discount = z.ContainsKey("Discount") ? Convert.ToDouble(z["Discount"].ToString()) : 0,
                                                     Volume = z.ContainsKey("Gallons") ? new InvoiceDetailsVolume() {Quantity = Convert.ToDouble(z["Gallons"].ToString()), Units = "Gallons", TrackingState = TrackingState.Added, } : null,
                                                     SalesFactor = (z.ContainsKey("SalesFactor") && z.ContainsKey("Units") && z["Units"].ToString() != "EA") || (z.ContainsKey("SalesFactor") && !z.ContainsKey("Units")) ? Convert.ToInt32(z["SalesFactor"].ToString()) /* * (z.ContainsKey("Multiplier")  ? Convert.ToInt32(z["Multiplier"].ToString()) : 1) */ : 1,
@@ -1583,7 +1583,7 @@ namespace WaterNut.DataSpace
 
                 for (i = 1; i < lines.Count(); i++)
                 {
-
+                    
                     var d = GetCSVDataFromLine(lines[i], mapping, headings, fileType);
                     if (d != null)
                     {
@@ -1728,12 +1728,17 @@ namespace WaterNut.DataSpace
              var splits = line.CsvSplit().Select(x => x.Trim()).ToArray();
              if (splits.Length < headings.Length) return null;
 
-             dynamic res = new BetterExpando();
+             //var requiredcnt = fileType.FileTypeMappings.Count(x => x.Required == true);
+
+
+                dynamic res = new BetterExpando();
              res.SourceRow = line;
              foreach (var key in map.Keys)
              {
                  try
                  {
+                     if (key.Required == true && string.IsNullOrEmpty(splits[map[key]])) return null;
+
                      if (string.IsNullOrEmpty(splits[map[key]]))
                      {
                          if (((IDictionary<string, object>) res).ContainsKey(key.DestinationName) &&
@@ -1943,9 +1948,9 @@ namespace WaterNut.DataSpace
                 {
 
                     
-                    var i = inventoryItems.Any(x => x.ItemNumber == item.Key.ItemNumber &&  x.InventoryItemSources.FirstOrDefault()?.InventorySource == inventorySource)
-                        ? inventoryItems.FirstOrDefault(x => x.ItemNumber == item.Key.ItemNumber && x.InventoryItemSources.FirstOrDefault()?.InventorySource == inventorySource)
-                        : inventoryItems.FirstOrDefault(x => x.ItemNumber == item.Key.ItemNumber);
+                    var i = inventoryItems.Any(x => x.ApplicationSettingsId == applicationSettingsId && x.ItemNumber == item.Key.ItemNumber &&  x.InventoryItemSources.FirstOrDefault()?.InventorySource == inventorySource)
+                        ? inventoryItems.FirstOrDefault(x => x.ApplicationSettingsId == applicationSettingsId && x.ItemNumber == item.Key.ItemNumber && x.InventoryItemSources.FirstOrDefault()?.InventorySource == inventorySource)
+                        : inventoryItems.FirstOrDefault(x => x.ApplicationSettingsId == applicationSettingsId && x.ItemNumber == item.Key.ItemNumber);
 
                     if (i == null || i.InventoryItemSources.FirstOrDefault()?.InventorySource != inventorySource)
                     {
@@ -1992,7 +1997,7 @@ namespace WaterNut.DataSpace
                     foreach (var invItemCode in invItemCodes)
                     {
                         string supplierItemNumber = invItemCode.SupplierItemNumber.ToString();
-                        var invItem = ctx.InventoryItems.FirstOrDefault(x => x.ItemNumber == supplierItemNumber);
+                        var invItem = ctx.InventoryItems.FirstOrDefault(x => x.ApplicationSettingsId == applicationSettingsId && x.ItemNumber == supplierItemNumber);
                         if(invItem == null)
                         { invItem = new InventoryItem(true)
                             {
