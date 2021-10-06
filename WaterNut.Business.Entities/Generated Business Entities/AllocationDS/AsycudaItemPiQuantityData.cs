@@ -36,7 +36,7 @@ namespace AllocationDS.Business.Entities
         }
         int _item_id;
         [DataMember]
-        public double PiQuantity 
+        public Nullable<double> PiQuantity 
         {
             get
             {
@@ -49,9 +49,9 @@ namespace AllocationDS.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        double _piquantity;
+        Nullable<double> _piquantity;
         [DataMember]
-        public double PiWeight 
+        public Nullable<double> PiWeight 
         {
             get
             {
@@ -64,7 +64,7 @@ namespace AllocationDS.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        double _piweight;
+        Nullable<double> _piweight;
         [DataMember]
         public Nullable<System.DateTime> AssessmentDate 
         {
@@ -275,6 +275,21 @@ namespace AllocationDS.Business.Entities
             }
         }
         string _entrydatatype;
+        [DataMember]
+        public int xLineNumber 
+        {
+            get
+            {
+                return _xlinenumber;
+            }
+            set
+            {
+                _xlinenumber = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        int _xlinenumber;
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

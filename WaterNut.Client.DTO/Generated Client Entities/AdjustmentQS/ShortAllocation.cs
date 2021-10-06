@@ -477,7 +477,7 @@ namespace AdjustmentQS.Client.DTO
         private string _WarehouseError;
 
         [DataMember]
-        public Nullable<int> SANumber
+        public int SANumber
 		{ 
 		    get { return _SANumber; }
 			set
@@ -487,7 +487,7 @@ namespace AdjustmentQS.Client.DTO
 				NotifyPropertyChanged();//m => this.SANumber
 			}
 		}
-        private Nullable<int> _SANumber;
+        private int _SANumber;
 
         [DataMember]
         public string xReferenceNumber
@@ -709,6 +709,19 @@ namespace AdjustmentQS.Client.DTO
 			}
 		}
         private Nullable<int> _SalesLineNumber;
+
+        [DataMember]
+        public string pPrecision1
+		{ 
+		    get { return _pPrecision1; }
+			set
+			{
+			    if (value == _pPrecision1) return;
+				_pPrecision1 = value;
+				NotifyPropertyChanged();//m => this.pPrecision1
+			}
+		}
+        private string _pPrecision1;
 
        
         [DataMember]

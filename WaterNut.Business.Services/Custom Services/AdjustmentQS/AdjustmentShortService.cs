@@ -564,6 +564,7 @@ namespace AdjustmentQS.Business.Services
                             pItemNumber = c.x.pItemNumber,
                             pItemDescription = c.x.PreviousDocumentItem.xcuda_Goods_description.Commercial_Description,
                             pTariffCode = c.x.pTariffCode,
+                            pPrecision1 = c.x.pPrecision1,
                             DFQtyAllocated = c.x.PreviousDocumentItem.DFQtyAllocated,
                             DPQtyAllocated = c.x.PreviousDocumentItem.DPQtyAllocated,
                             LineNumber = (int)c.x.EntryDataDetails.LineNumber,

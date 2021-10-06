@@ -3468,7 +3468,7 @@ namespace AutoBot
             //var directoryName = CurrentSalesInfo().Item4;
             //var overview = Path.Combine(directoryName, "OverView.txt");
             //if(File.Exists(overview)) File.Delete(overview);
-            DownloadSalesFiles(3, "IM7History", true);
+            DownloadSalesFiles(5, "IM7History", true);
         }
 
         //public static void DownloadSalesFiles(bool redownload, string script)

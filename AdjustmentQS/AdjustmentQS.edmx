@@ -136,7 +136,6 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AdjustmentDetails' does n
             
             
             
-            
           </Key>
           <Property Name="EntryDataDetailsId" Type="int" Nullable="false" />
           <Property Name="EntryData_Id" Type="int" Nullable="false" />
@@ -161,7 +160,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AdjustmentDetails' does n
           <Property Name="CLineNumber" Type="int" />
           <Property Name="Downloaded" Type="bit" />
           <Property Name="PreviousCNumber" Type="nvarchar" MaxLength="50" />
-          <Property Name="DutyFreePaid" Type="varchar" MaxLength="9" Nullable="false" />
+          <Property Name="DutyFreePaid" Type="nvarchar" MaxLength="50" />
           <Property Name="Type" Type="nvarchar" MaxLength="50" />
           <Property Name="Comment" Type="nvarchar" MaxLength="255" />
           <Property Name="EffectiveDate" Type="datetime2" Precision="7" />
@@ -316,18 +315,19 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AdjustmentShortAllocation
           <Property Name="Invalid" Type="bit" />
           <Property Name="pExpiryDate" Type="datetime" />
           <Property Name="pTariffCode" Type="nvarchar" MaxLength="20" />
+          <Property Name="pPrecision1" Type="nvarchar" MaxLength="255" />
           <Property Name="pItemNumber" Type="nvarchar" MaxLength="50" />
           <Property Name="EffectiveDate" Type="datetime2" Precision="7" />
           <Property Name="Comment" Type="nvarchar" MaxLength="255" />
           <Property Name="AsycudaDocumentSetId" Type="int" Nullable="false" />
           <Property Name="AssessmentDate" Type="datetime2" Precision="7" />
-          <Property Name="DutyFreePaid" Type="varchar" MaxLength="9" Nullable="false" />
+          <Property Name="DutyFreePaid" Type="nvarchar" MaxLength="50" />
           <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
           <Property Name="FileTypeId" Type="int" />
           <Property Name="EmailId" Type="int" />
           <Property Name="xStatus" Type="nvarchar" MaxLength="255" />
           <Property Name="Type" Type="nvarchar" MaxLength="50" />
-          <Property Name="SANumber" Type="int" />
+          <Property Name="SANumber" Type="int" Nullable="false" />
         </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AdjustmentShorts' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
@@ -754,6 +754,7 @@ FROM [dbo].[AdjustmentOvers] AS [AdjustmentOvers]</DefiningQuery>
 [AdjustmentShortAllocations].[Invalid] AS [Invalid], 
 [AdjustmentShortAllocations].[pExpiryDate] AS [pExpiryDate], 
 [AdjustmentShortAllocations].[pTariffCode] AS [pTariffCode], 
+[AdjustmentShortAllocations].[pPrecision1] AS [pPrecision1], 
 [AdjustmentShortAllocations].[pItemNumber] AS [pItemNumber], 
 [AdjustmentShortAllocations].[EffectiveDate] AS [EffectiveDate], 
 [AdjustmentShortAllocations].[Comment] AS [Comment], 
@@ -1339,7 +1340,7 @@ FROM [dbo].[TODO-PreDiscrepancyErrors] AS [TODO-PreDiscrepancyErrors]</DefiningQ
           <Property Name="DoNotAllocateSales" Type="Boolean" />
           <Property Name="DoNotAllocatePreviousEntry" Type="Boolean" />
           <Property Name="WarehouseError" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="SANumber" Type="Int32" />
+          <Property Name="SANumber" Type="Int32" Nullable="false" />
           <Property Name="xReferenceNumber" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
           <Property Name="TariffCode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="Invalid" Type="Boolean" />
@@ -1350,7 +1351,7 @@ FROM [dbo].[TODO-PreDiscrepancyErrors] AS [TODO-PreDiscrepancyErrors]</DefiningQ
           <Property Name="EffectiveDate" Type="DateTime" Precision="7" />
           <Property Name="Comment" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="AssessmentDate" Type="DateTime" Precision="7" />
-          <Property Name="DutyFreePaid" Type="String" Nullable="false" MaxLength="9" FixedLength="false" Unicode="false" />
+          <Property Name="DutyFreePaid" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
           <NavigationProperty Name="AdjustmentDetail" Relationship="Model.AdjustmentDetailShortAllocation" FromRole="ShortAllocation" ToRole="AdjustmentDetail" />
           <Property Name="AsycudaDocumentSetId" Type="Int32" Nullable="false" />
@@ -1359,6 +1360,7 @@ FROM [dbo].[TODO-PreDiscrepancyErrors] AS [TODO-PreDiscrepancyErrors]</DefiningQ
           <Property Name="xStatus" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="Type" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="SalesLineNumber" Type="Int32" />
+          <Property Name="pPrecision1" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
         </EntityType>
         <Association Name="AdjustmentShortAdjustmentShortAllocation">
           <End Type="Model.AdjustmentShort" Role="AdjustmentShort" Multiplicity="1" />
@@ -1441,7 +1443,7 @@ FROM [dbo].[TODO-PreDiscrepancyErrors] AS [TODO-PreDiscrepancyErrors]</DefiningQ
           <Property Name="CLineNumber" Type="Int32" />
           <Property Name="Downloaded" Type="Boolean" />
           <Property Name="PreviousCNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="DutyFreePaid" Type="String" MaxLength="9" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="DutyFreePaid" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="Type" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="Comment" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="EffectiveDate" Type="DateTime" Precision="7" />
@@ -1969,6 +1971,7 @@ FROM [dbo].[TODO-PreDiscrepancyErrors] AS [TODO-PreDiscrepancyErrors]</DefiningQ
           <EntitySetMapping Name="ShortAllocations">
             <EntityTypeMapping TypeName="Model.ShortAllocation">
               <MappingFragment StoreEntitySet="AdjustmentShortAllocations">
+                <ScalarProperty Name="pPrecision1" ColumnName="pPrecision1" />
                 <ScalarProperty Name="SalesLineNumber" ColumnName="SalesLineNumber" />
                 <ScalarProperty Name="Type" ColumnName="Type" />
                 <ScalarProperty Name="xStatus" ColumnName="xStatus" />

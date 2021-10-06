@@ -34,7 +34,7 @@
               this.Property(t => t.CLineNumber).HasColumnName("CLineNumber");
               this.Property(t => t.Downloaded).HasColumnName("Downloaded");
               this.Property(t => t.PreviousCNumber).HasColumnName("PreviousCNumber").HasMaxLength(50);
-              this.Property(t => t.DutyFreePaid).HasColumnName("DutyFreePaid").IsRequired().IsUnicode(false).HasMaxLength(9);
+              this.Property(t => t.DutyFreePaid).HasColumnName("DutyFreePaid").HasMaxLength(50);
               this.Property(t => t.Type).HasColumnName("Type").HasMaxLength(50);
               this.Property(t => t.Comment).HasColumnName("Comment").HasMaxLength(255);
               this.Property(t => t.EffectiveDate).HasColumnName("EffectiveDate");

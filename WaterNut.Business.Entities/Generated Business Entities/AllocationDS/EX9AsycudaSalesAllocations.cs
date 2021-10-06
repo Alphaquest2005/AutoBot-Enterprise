@@ -111,7 +111,7 @@ namespace AllocationDS.Business.Entities
         }
         int _previousitem_id;
         [DataMember]
-        public System.DateTime InvoiceDate 
+        public Nullable<System.DateTime> InvoiceDate 
         {
             get
             {
@@ -124,7 +124,7 @@ namespace AllocationDS.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        System.DateTime _invoicedate;
+        Nullable<System.DateTime> _invoicedate;
         [DataMember]
         public double SalesQuantity 
         {
@@ -201,7 +201,7 @@ namespace AllocationDS.Business.Entities
         }
         string _itemdescription;
         [DataMember]
-        public int EntryDataDetailsId 
+        public Nullable<int> EntryDataDetailsId 
         {
             get
             {
@@ -214,7 +214,7 @@ namespace AllocationDS.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        int _entrydatadetailsid;
+        Nullable<int> _entrydatadetailsid;
         [DataMember]
         public string DutyFreePaid 
         {
@@ -456,7 +456,7 @@ namespace AllocationDS.Business.Entities
         }
         Nullable<bool> _donotallocatepreviousentry;
         [DataMember]
-        public int SANumber 
+        public Nullable<int> SANumber 
         {
             get
             {
@@ -469,7 +469,7 @@ namespace AllocationDS.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        int _sanumber;
+        Nullable<int> _sanumber;
         [DataMember]
         public string Commercial_Description 
         {
@@ -651,7 +651,7 @@ namespace AllocationDS.Business.Entities
         }
         int _xbond_item_id;
         [DataMember]
-        public int ApplicationSettingsId 
+        public Nullable<int> ApplicationSettingsId 
         {
             get
             {
@@ -664,7 +664,7 @@ namespace AllocationDS.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        int _applicationsettingsid;
+        Nullable<int> _applicationsettingsid;
         [DataMember]
         public Nullable<int> SalesLineNumber 
         {
@@ -861,7 +861,7 @@ namespace AllocationDS.Business.Entities
         }
         string _xstatus;
         [DataMember]
-        public int EntryData_Id 
+        public Nullable<int> EntryData_Id 
         {
             get
             {
@@ -874,7 +874,7 @@ namespace AllocationDS.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        int _entrydata_id;
+        Nullable<int> _entrydata_id;
         [DataMember]
         public string Comment 
         {
@@ -921,7 +921,7 @@ namespace AllocationDS.Business.Entities
         }
         Nullable<int> _customs_procedureid;
         [DataMember]
-        public int InventoryItemId 
+        public Nullable<int> InventoryItemId 
         {
             get
             {
@@ -934,7 +934,7 @@ namespace AllocationDS.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        int _inventoryitemid;
+        Nullable<int> _inventoryitemid;
         [DataMember]
         public string Type 
         {
@@ -950,6 +950,21 @@ namespace AllocationDS.Business.Entities
             }
         }
         string _type;
+        [DataMember]
+        public string pPrecision1 
+        {
+            get
+            {
+                return _pprecision1;
+            }
+            set
+            {
+                _pprecision1 = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _pprecision1;
         [DataMember]
         public xcuda_Item PreviousDocumentItem { get; set; }
         [DataMember]

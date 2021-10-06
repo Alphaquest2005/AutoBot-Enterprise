@@ -14,7 +14,7 @@
               this.HasKey(t => new {t.PreviousItem_Id, t.Type, t.EntryDataDate, t.AllocationId, t.SalesQty, t.SalesAllocatedQty});        
               this.ToTable("ItemSalesPiSummary");
               this.Property(t => t.PreviousItem_Id).HasColumnName("PreviousItem_Id").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.None));
-              this.Property(t => t.DutyFreePaid).HasColumnName("DutyFreePaid").IsRequired().IsUnicode(false).HasMaxLength(9);
+              this.Property(t => t.DutyFreePaid).HasColumnName("DutyFreePaid").HasMaxLength(50);
               this.Property(t => t.pLineNumber).HasColumnName("pLineNumber");
               this.Property(t => t.pQtyAllocated).HasColumnName("pQtyAllocated");
               this.Property(t => t.pCNumber).HasColumnName("pCNumber").HasMaxLength(20);

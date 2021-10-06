@@ -546,7 +546,7 @@ namespace AdjustmentQS.Business.Entities
         }
         string _warehouseerror;
         [DataMember]
-        public Nullable<int> SANumber 
+        public int SANumber 
         {
             get
             {
@@ -559,7 +559,7 @@ namespace AdjustmentQS.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        Nullable<int> _sanumber;
+        int _sanumber;
         [DataMember]
         public string xReferenceNumber 
         {
@@ -815,6 +815,21 @@ namespace AdjustmentQS.Business.Entities
             }
         }
         Nullable<int> _saleslinenumber;
+        [DataMember]
+        public string pPrecision1 
+        {
+            get
+            {
+                return _pprecision1;
+            }
+            set
+            {
+                _pprecision1 = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _pprecision1;
         [DataMember]
         public AdjustmentShort AdjustmentShort { get; set; }
         [DataMember]

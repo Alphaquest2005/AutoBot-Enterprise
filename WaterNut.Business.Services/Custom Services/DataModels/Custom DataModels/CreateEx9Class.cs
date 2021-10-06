@@ -259,7 +259,7 @@ namespace WaterNut.DataSpace
                         QtyAllocated = x.Select(z => z.Summary.QtyAllocated).DefaultIfEmpty(0).Sum(),
                         pQtyAllocated = x.Select(z => z.Summary.pQtyAllocated).Distinct().DefaultIfEmpty(0).Sum(),
                         PiQuantity =
-                            x.DistinctBy(q => q.Summary.PreviousItem_Id)
+                            (double) x.DistinctBy(q => q.Summary.PreviousItem_Id)
                                 .SelectMany(z => z.pIData.Where(zz => zz.AssessmentDate <= endDate && zz.EntryDataType == entryType).Select(zz => zz.PiQuantity))
                                 .DefaultIfEmpty(0)
                                 .Sum(), // x.Select(z => z.Summary.PiQuantity).DefaultIfEmpty(0).Sum(),
@@ -289,7 +289,7 @@ namespace WaterNut.DataSpace
                         QtyAllocated = x.Select(z => z.Summary.QtyAllocated).DefaultIfEmpty(0).Sum(),
                         pQtyAllocated = x.Select(z => z.Summary.pQtyAllocated).Distinct().DefaultIfEmpty(0).Sum(),
                         PiQuantity =
-                            x.DistinctBy(q => q.Summary.PreviousItem_Id)
+                            (double) x.DistinctBy(q => q.Summary.PreviousItem_Id)
                                 .SelectMany(z => z.pIData.Where(zz => zz.AssessmentDate >= startDate && zz.AssessmentDate <= endDate).Select(zz => zz.PiQuantity))
                                 .DefaultIfEmpty(0)
                                 .Sum(), // x.Select(z => z.Summary.PiQuantity).DefaultIfEmpty(0).Sum(),
@@ -338,7 +338,7 @@ namespace WaterNut.DataSpace
                         pQtyAllocated = x.DistinctBy(q => new {q.Summary.DutyFreePaid, q.Summary.pQtyAllocated})
                             .Select(z => z.Summary.pQtyAllocated).DefaultIfEmpty(0).Sum(),
                         PiQuantity =
-                            x.DistinctBy(q => q.Summary.PreviousItem_Id)
+                            (double) x.DistinctBy(q => q.Summary.PreviousItem_Id)
                                 .SelectMany(z => z.pIData.Select(zz => zz.PiQuantity))
                                 .DefaultIfEmpty(0).Sum(),
                         pCNumber = x.Key.pCNumber,
@@ -370,7 +370,7 @@ namespace WaterNut.DataSpace
                             
                             .Select(z => z.Summary.pQtyAllocated).DefaultIfEmpty(0).Sum(),
                         PiQuantity =
-                            x.DistinctBy(q => new { q.Summary.DutyFreePaid, q.Summary.PreviousItem_Id})
+                            (double) x.DistinctBy(q => new { q.Summary.DutyFreePaid, q.Summary.PreviousItem_Id})
                                 .SelectMany(z => z.pIData.Select(zz => zz.PiQuantity))
                                 .DefaultIfEmpty(0)
                                 .Sum(), //x.DistinctBy(q => q.Summary.Id).Select(z => z.Summary.PiQuantity).DefaultIfEmpty(0).Sum(),
@@ -715,11 +715,11 @@ namespace WaterNut.DataSpace
                       {
                           Type = x.Type,
                           AllocationId = x.AllocationId,
-                          EntryData_Id = x.EntryData_Id,
+                          EntryData_Id = (int) x.EntryData_Id,
                           Commercial_Description = x.Commercial_Description,
                           DutyFreePaid = x.DutyFreePaid,
                           EntryDataDetailsId = x.EntryDataDetailsId,
-                          InvoiceDate = (x.EffectiveDate == null || x.EffectiveDate == DateTime.MinValue ? x.InvoiceDate : x.EffectiveDate.Value),
+                          InvoiceDate = (DateTime) (x.EffectiveDate == null || x.EffectiveDate == DateTime.MinValue ? x.InvoiceDate : x.EffectiveDate.Value),
                           EffectiveDate = x.EffectiveDate,
                           InvoiceNo = x.InvoiceNo,
                           ItemDescription = x.ItemDescription,
@@ -735,6 +735,7 @@ namespace WaterNut.DataSpace
                           pItemNumber = x.pItemNumber,
                           pItemDescription = x.Commercial_Description,
                           pTariffCode = x.pTariffCode,
+                          pPrecision1 = x.pPrecision1,
                           DFQtyAllocated = x.DFQtyAllocated,
                           DPQtyAllocated =  x.DPQtyAllocated,
                           pLineNumber =  x.pLineNumber,
@@ -747,7 +748,7 @@ namespace WaterNut.DataSpace
                           Country_of_origin_code = x.Country_of_origin_code,
                           Total_CIF_itm =  x.Total_CIF_itm,
                           Net_weight_itm =  x.Net_weight_itm,
-                          InventoryItemId = x.InventoryItemId,
+                          InventoryItemId = (int) x.InventoryItemId,
                           previousItems = x.PreviousDocumentItem.EntryPreviousItems
                                     .Select(y => y.xcuda_PreviousItem)
                                     .Where(y => (y.xcuda_Item.AsycudaDocument.CNumber != null || y.xcuda_Item.AsycudaDocument.IsManuallyAssessed == true) 
@@ -967,7 +968,8 @@ namespace WaterNut.DataSpace
                                           pRegistrationDate = s.LastOrDefault().pRegistrationDate,
                                           pQtyAllocated = s.LastOrDefault().QtyAllocated,
                                           Total_CIF_itm = s.LastOrDefault().Total_CIF_itm,
-                                          pTariffCode = s.LastOrDefault().pTariffCode
+                                          pTariffCode = s.LastOrDefault().pTariffCode,
+                                          pPrecision1 = s.LastOrDefault().pPrecision1
                                       },
                                       TariffSupUnitLkps = s.LastOrDefault().TariffSupUnitLkps.Select(x => (ITariffSupUnitLkp)x).ToList()
 
@@ -1066,7 +1068,8 @@ namespace WaterNut.DataSpace
                                           pRegistrationDate = x.pRegistrationDate,
                                           pQtyAllocated = x.QtyAllocated,
                                           Total_CIF_itm = x.Total_CIF_itm,
-                                          pTariffCode = x.pTariffCode
+                                          pTariffCode = x.pTariffCode,
+                                          pPrecision1 = x.pPrecision1
                                       },
                                       TariffSupUnitLkps = x.TariffSupUnitLkps.Select(z => (ITariffSupUnitLkp)z).ToList()
 
@@ -1894,7 +1897,7 @@ namespace WaterNut.DataSpace
                 
 
                 pitm.Hs_code = pod.EX9Allocation.pTariffCode;
-                pitm.Commodity_code = "00";
+                pitm.Commodity_code = pod.EX9Allocation.pPrecision1;
                 pitm.Current_item_number = (itmcount + 1).ToString(); // piggy back the previous item count
                 pitm.Previous_item_number = previousItem.LineNumber.ToString();
 
@@ -2080,6 +2083,7 @@ namespace WaterNut.DataSpace
 
         public class EX9Allocation
         {
+            public string pPrecision1;
             public string pTariffCode { get; set; }
             public double pQuantity { get; set; }
             public string Country_of_origin_code { get; set; }
@@ -2189,6 +2193,7 @@ namespace WaterNut.DataSpace
         public string Comment { get; set; }
         public string Type { get; set; }
         public int InventoryItemId { get; set; }
+        public string pPrecision1 { get; set; }
     }
 
     public class AllocationDataBlock
