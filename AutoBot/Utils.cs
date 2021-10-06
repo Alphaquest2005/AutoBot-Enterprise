@@ -3468,7 +3468,7 @@ namespace AutoBot
             //var directoryName = CurrentSalesInfo().Item4;
             //var overview = Path.Combine(directoryName, "OverView.txt");
             //if(File.Exists(overview)) File.Delete(overview);
-            DownloadSalesFiles(5, "IM7History", true);
+            DownloadSalesFiles(100, "IM7History", true);
         }
 
         //public static void DownloadSalesFiles(bool redownload, string script)
@@ -5075,6 +5075,7 @@ namespace AutoBot
 
                 var appSetting = ctx.ApplicationSettings.AsNoTracking()
                     .Include(x => x.FileTypes)
+                    .Include(x => x.Declarants)
                     .Include("FileTypes.FileTypeContacts.Contacts")
                     .Include("FileTypes.FileTypeActions.Actions")
                     .Include(x => x.EmailMapping)
