@@ -1477,6 +1477,7 @@ namespace WaterNut.DataSpace
                     itm.EmailId = lineData.EmailId;
                     itm.xcuda_Valuation_item.Total_CIF_itm = pitm.Current_value;
                     itm.xcuda_Tarification.xcuda_HScode.Precision_4 = lineData.pDocumentItem.ItemNumber;
+                    itm.xcuda_Tarification.xcuda_HScode.Precision_1 = lineData.EX9Allocation.pPrecision1;
                     itm.xcuda_Goods_description.Commercial_Description =
                         BaseDataModel.Instance.CleanText(lineData.pDocumentItem.Description);
                     itm.IsAssessed = false;
