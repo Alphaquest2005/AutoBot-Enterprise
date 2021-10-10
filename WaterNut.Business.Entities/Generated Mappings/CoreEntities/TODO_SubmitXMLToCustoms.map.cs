@@ -14,11 +14,11 @@
               this.HasKey(t => new {t.Id, t.ASYCUDA_Id, t.ToBePaid});        
               this.ToTable("TODO-SubmitXMLToCustoms");
               this.Property(t => t.Id).HasColumnName("Id").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.None));
-              this.Property(t => t.CNumber).HasColumnName("CNumber").HasMaxLength(50);
+              this.Property(t => t.CNumber).HasColumnName("CNumber").HasMaxLength(20);
               this.Property(t => t.RegistrationDate).HasColumnName("RegistrationDate");
-              this.Property(t => t.ReferenceNumber).HasColumnName("ReferenceNumber").HasMaxLength(50);
+              this.Property(t => t.ReferenceNumber).HasColumnName("ReferenceNumber").HasMaxLength(30);
               this.Property(t => t.AsycudaDocumentSetId).HasColumnName("AsycudaDocumentSetId");
-              this.Property(t => t.DocumentType).HasColumnName("DocumentType").HasMaxLength(20);
+              this.Property(t => t.DocumentType).HasColumnName("DocumentType").HasMaxLength(40);
               this.Property(t => t.AssessmentDate).HasColumnName("AssessmentDate");
               this.Property(t => t.ApplicationSettingsId).HasColumnName("ApplicationSettingsId");
               this.Property(t => t.EmailId).HasColumnName("EmailId");

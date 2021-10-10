@@ -131,6 +131,7 @@
           <Property Name="VolumeLiters" Type="float" />
           <Property Name="EntryDataDetailsKey" Type="nvarchar" MaxLength="4000" StoreGeneratedPattern="Computed" />
           <Property Name="TotalValue" Type="float" StoreGeneratedPattern="Computed" Nullable="false" />
+          <Property Name="CLineNumber" Type="int" />
         </EntityType>
         <EntityType Name="EntryDataDetails_Allocations">
           <Key>
@@ -623,6 +624,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.EntryDataDetailsEx' does 
           <Property Name="Status" Type="nvarchar" MaxLength="50" />
           <Property Name="PreviousInvoiceNumber" Type="nvarchar" MaxLength="50" />
           <Property Name="PreviousCNumber" Type="nvarchar" MaxLength="50" />
+          <Property Name="PreviousCLineNumber" Type="int" />
           <Property Name="Comment" Type="nvarchar" MaxLength="255" />
           <Property Name="EffectiveDate" Type="datetime2" Precision="7" />
           <Property Name="IsReconciled" Type="bit" />
@@ -779,7 +781,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ItemSalesAsycudaPiSummary
           <Property Name="Type" Type="nvarchar" MaxLength="50" />
           <Property Name="MonthYear" Type="varchar" MaxLength="7" />
           <Property Name="EntryDataDate" Type="datetime2" Precision="7" />
-          <Property Name="DutyFreePaid" Type="varchar" MaxLength="9" />
+          <Property Name="DutyFreePaid" Type="nvarchar" MaxLength="50" />
           <Property Name="EntryDataType" Type="nvarchar" MaxLength="50" />
         </EntityType>
         <!--Errors Found During Generation:
@@ -1426,6 +1428,7 @@ FROM [dbo].[AsycudaItemPiQuantityData] AS [AsycudaItemPiQuantityData]</DefiningQ
 [EntryDataDetailsEx].[Status] AS [Status], 
 [EntryDataDetailsEx].[PreviousInvoiceNumber] AS [PreviousInvoiceNumber], 
 [EntryDataDetailsEx].[PreviousCNumber] AS [PreviousCNumber], 
+[EntryDataDetailsEx].[PreviousCLineNumber] AS [PreviousCLineNumber], 
 [EntryDataDetailsEx].[Comment] AS [Comment], 
 [EntryDataDetailsEx].[EffectiveDate] AS [EffectiveDate], 
 [EntryDataDetailsEx].[IsReconciled] AS [IsReconciled], 
@@ -1992,6 +1995,7 @@ FROM [dbo].[PreviousItemsEx] AS [PreviousItemsEx]</DefiningQuery>
           <Property Name="VolumeLiters" Type="Double" />
           <Property Name="EntryDataDetailsKey" Type="String" MaxLength="4000" FixedLength="false" Unicode="true" annotation:StoreGeneratedPattern="Computed" />
           <Property Name="TotalValue" Type="Double" Nullable="false" annotation:StoreGeneratedPattern="Computed" />
+          <Property Name="CLineNumber" Type="Int32" />
           <a:DomainInterfaceProperty xmlns:a="http://schemas.tempuri.com/DomainInterfaceProperty">IEntryDataDetail</a:DomainInterfaceProperty>
           
         </EntityType>
@@ -2109,6 +2113,7 @@ FROM [dbo].[PreviousItemsEx] AS [PreviousItemsEx]</DefiningQuery>
           <Property Name="InventoryItemId" Type="Int32" Nullable="false" />
           <Property Name="FileLineNumber" Type="Int32" />
           <Property Name="VolumeLiters" Type="Double" />
+          <Property Name="PreviousCLineNumber" Type="Int32" />
         </EntityType>
         <Association Name="EntryDataDetailsEntryDataDetailsEx">
           <End Type="WaterNutDBModel.EntryDataDetails" Multiplicity="1" Role="EntryDataDetails" />
@@ -2996,13 +3001,13 @@ FROM [dbo].[PreviousItemsEx] AS [PreviousItemsEx]</DefiningQuery>
           <Property Name="Commodity_code" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Name="Previous_item_number" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Name="Goods_origin" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
-          <Property Name="Net_weight" Type="Decimal" />
-          <Property Name="Prev_net_weight" Type="Decimal" />
+          <Property Name="Net_weight" Type="Decimal" Precision="9" Scale="2" />
+          <Property Name="Prev_net_weight" Type="Decimal" Precision="9" Scale="2" />
           <Property Name="Prev_reg_ser" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Name="Prev_reg_nbr" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Name="Prev_reg_dat" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Name="Prev_reg_cuo" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
-          <Property Name="Suplementary_Quantity" Type="Decimal" Nullable="false" />
+          <Property Name="Suplementary_Quantity" Type="Decimal" Nullable="false" Precision="9" Scale="2" />
           <Property Name="Preveious_suplementary_quantity" Type="Double" Nullable="false" />
           <Property Name="Current_value" Type="Double" Nullable="false" />
           <Property Name="Previous_value" Type="Double" Nullable="false" />
@@ -3225,7 +3230,7 @@ FROM [dbo].[PreviousItemsEx] AS [PreviousItemsEx]</DefiningQuery>
           <Property Name="pQtyAllocated" Type="Double" Nullable="false" />
           <Property Name="MonthYear" Type="String" MaxLength="7" FixedLength="false" Unicode="false" />
           <Property Name="EntryDataDate" Type="DateTime" Precision="7" />
-          <Property Name="DutyFreePaid" Type="String" MaxLength="9" FixedLength="false" Unicode="false" />
+          <Property Name="DutyFreePaid" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="EntryDataType" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="Id" Type="Int32" Nullable="false" />
           <Property Name="SalesQty" Type="Double" Nullable="false" />
@@ -3354,6 +3359,7 @@ FROM [dbo].[PreviousItemsEx] AS [PreviousItemsEx]</DefiningQuery>
           <EntitySetMapping Name="EntryDataDetails">
             <EntityTypeMapping TypeName="WaterNutDBModel.EntryDataDetails">
               <MappingFragment StoreEntitySet="EntryDataDetails">
+                <ScalarProperty Name="CLineNumber" ColumnName="CLineNumber" />
                 <ScalarProperty Name="TotalValue" ColumnName="TotalValue" />
                 <ScalarProperty Name="EntryDataDetailsKey" ColumnName="EntryDataDetailsKey" />
                 <ScalarProperty Name="VolumeLiters" ColumnName="VolumeLiters" />
@@ -3423,6 +3429,7 @@ FROM [dbo].[PreviousItemsEx] AS [PreviousItemsEx]</DefiningQuery>
           <EntitySetMapping Name="EntryDataDetailsEx">
             <EntityTypeMapping TypeName="WaterNutDBModel.EntryDataDetailsEx">
               <MappingFragment StoreEntitySet="EntryDataDetailsEx">
+                <ScalarProperty Name="PreviousCLineNumber" ColumnName="PreviousCLineNumber" />
                 <ScalarProperty Name="VolumeLiters" ColumnName="VolumeLiters" />
                 <ScalarProperty Name="FileLineNumber" ColumnName="FileLineNumber" />
                 <ScalarProperty Name="InventoryItemId" ColumnName="InventoryItemId" />

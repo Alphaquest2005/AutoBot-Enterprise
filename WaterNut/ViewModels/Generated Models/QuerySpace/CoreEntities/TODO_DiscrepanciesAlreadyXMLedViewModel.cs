@@ -1091,7 +1091,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     DutyFreePaid = x.DutyFreePaid ,
                     
  
-                    pLineNumber = x.pLineNumber 
+                    pLineNumber = x.pLineNumber.GetValueOrDefault().ToString() 
                     
                 }).ToList()
             };

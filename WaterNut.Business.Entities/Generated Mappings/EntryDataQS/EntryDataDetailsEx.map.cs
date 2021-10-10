@@ -49,6 +49,7 @@
               this.Property(t => t.InventoryItemId).HasColumnName("InventoryItemId");
               this.Property(t => t.FileLineNumber).HasColumnName("FileLineNumber");
               this.Property(t => t.VolumeLiters).HasColumnName("VolumeLiters");
+              this.Property(t => t.PreviousCLineNumber).HasColumnName("PreviousCLineNumber");
               this.HasRequired(t => t.InventoryItemsEx).WithMany(t =>(ICollection<EntryDataDetailsEx>) t.EntryDataDetailsExs).HasForeignKey(d => d.InventoryItemId);
               this.HasRequired(t => t.EntryDataEx).WithMany(t =>(ICollection<EntryDataDetailsEx>) t.EntryDataDetailsExs).HasForeignKey(d => d.EntryData_Id);
               this.HasMany(t => t.AsycudaDocumentSets).WithRequired(t => (EntryDataDetailsEx)t.EntryDataDetailsEx);

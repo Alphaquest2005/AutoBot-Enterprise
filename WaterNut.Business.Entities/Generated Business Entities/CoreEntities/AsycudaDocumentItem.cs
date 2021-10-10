@@ -719,6 +719,21 @@ namespace CoreEntities.Business.Entities
         }
         Nullable<int> _inventoryitemid;
         [DataMember]
+        public string CustomsProcedure 
+        {
+            get
+            {
+                return _customsprocedure;
+            }
+            set
+            {
+                _customsprocedure = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _customsprocedure;
+        [DataMember]
         public AsycudaDocument AsycudaDocument { get; set; }
         [DataMember]
         public List<SubItems> SubItems { get; set; }

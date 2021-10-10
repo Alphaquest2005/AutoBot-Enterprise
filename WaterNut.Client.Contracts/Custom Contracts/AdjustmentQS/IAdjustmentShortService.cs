@@ -12,7 +12,7 @@ namespace AdjustmentQS.Client.Contracts
     public partial interface IAdjustmentShortService 
     {
         [OperationContract]
-        Task AutoMatch(int applicationSettingsId);
+        Task AutoMatch(int applicationSettingsId, bool overWriteExisting);
 
         [OperationContract]
         Task MatchToAsycudaItem(int entryDataDetailId, int itemId);

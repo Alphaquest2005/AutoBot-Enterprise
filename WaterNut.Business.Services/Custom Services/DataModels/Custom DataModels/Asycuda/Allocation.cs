@@ -98,7 +98,7 @@ namespace WaterNut.DataSpace
 			    StatusModel.Timer("Auto Match Adjustments");
 				using (var ctx = new AdjustmentShortService())
 				{
-					await ctx.AutoMatch(applicationSettings.ApplicationSettingsId).ConfigureAwait(false);
+					await ctx.AutoMatch(applicationSettings.ApplicationSettingsId, true).ConfigureAwait(false);
 				   if(forceDiscrepancyExecution) await ctx.ProcessDISErrorsForAllocation(applicationSettings.ApplicationSettingsId).ConfigureAwait(false);
 				}
 
@@ -191,7 +191,7 @@ namespace WaterNut.DataSpace
 			Parallel.ForEach(itemSetsValues.OrderBy(x => x.Key)
 
                //.Where(x => x.SalesList.Any(z => z.EntryDataId.ToLower().Contains("harry")))
-				// .Where(x => x.Key.Contains("CRB/HIF-PUMP")) //.Where(x => x.Key.Contains("255100")) // 
+				// .Where(x => x.Key.Contains("8309")) //.Where(x => x.Key.Contains("255100")) // 
 																		  // .Where(x => "337493".Contains(x.Key))
 																		  //.Where(x => "FAA/SCPI18X112".Contains(x.ItemNumber))//SND/IVF1010MPSF,BRG/NAVICOTE-GL,
 									 , new ParallelOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount * 1 }, itm => //.Where(x => x.ItemNumber == "AT18547")  
@@ -712,7 +712,7 @@ namespace WaterNut.DataSpace
 						};
 			}
 
-		    //var res = asycudaEntries.Where(x => x.Key == "BM/SHG16B");
+		    //var res = asycudaEntries.Where(x => x.Key.Contains("8309"));
 			return asycudaEntries;
 		}
 

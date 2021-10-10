@@ -509,6 +509,21 @@ namespace AllocationDS.Business.Entities
         }
         double _totalvalue;
         [DataMember]
+        public Nullable<int> CLineNumber 
+        {
+            get
+            {
+                return _clinenumber;
+            }
+            set
+            {
+                _clinenumber = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<int> _clinenumber;
+        [DataMember]
         public List<AsycudaSalesAllocations> AsycudaSalesAllocations { get; set; }
         [DataMember]
         public EntryDataDetailsEx EntryDataDetailsEx { get; set; }

@@ -49,6 +49,7 @@
               this.Property(t => t.InventoryItemId).HasColumnName("InventoryItemId");
               this.Property(t => t.FileLineNumber).HasColumnName("FileLineNumber");
               this.Property(t => t.VolumeLiters).HasColumnName("VolumeLiters");
+              this.Property(t => t.PreviousCLineNumber).HasColumnName("PreviousCLineNumber");
               this.HasRequired(t => t.EntryDataDetails).WithOptional(t => (EntryDataDetailsEx)t.EntryDataDetailsEx);
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);

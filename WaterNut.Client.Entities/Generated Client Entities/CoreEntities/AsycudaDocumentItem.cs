@@ -765,6 +765,23 @@ public Nullable<int> InventoryItemId
 		}
      
 
+       
+       
+                
+                [MaxLength(41, ErrorMessage = "CustomsProcedure has a max length of 41 letters ")]
+public string CustomsProcedure
+		{ 
+		    get { return this.asycudadocumentitem.CustomsProcedure; }
+			set
+			{
+			    if (value == this.asycudadocumentitem.CustomsProcedure) return;
+				this.asycudadocumentitem.CustomsProcedure = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("CustomsProcedure");
+			}
+		}
+     
+
        private AsycudaDocument _AsycudaDocument;
         public  AsycudaDocument AsycudaDocument
 		{

@@ -139,6 +139,10 @@ namespace WaterNut.DataSpace
                 {
                     var headings = headerline.CsvSplit();
 
+                    var headingswithnewLine = headings.Where(x => x.EndsWith("\r\n")).ToList();
+                    if (headingswithnewLine.Any())
+                        throw new ApplicationException(
+                            $"Headers contain New Line: {headingswithnewLine.Aggregate((o, n) => o + ", " + n)}");
 
                     if (fileType.Type == "SI")
                     {

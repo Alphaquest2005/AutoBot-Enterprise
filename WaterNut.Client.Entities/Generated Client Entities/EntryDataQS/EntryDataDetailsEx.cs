@@ -609,6 +609,21 @@ public Nullable<double> VolumeLiters
 		}
      
 
+       
+       [NumberValidationAttribute]
+public Nullable<int> PreviousCLineNumber
+		{ 
+		    get { return this.entrydatadetailsex.PreviousCLineNumber; }
+			set
+			{
+			    if (value == this.entrydatadetailsex.PreviousCLineNumber) return;
+				this.entrydatadetailsex.PreviousCLineNumber = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("PreviousCLineNumber");
+			}
+		}
+     
+
        private InventoryItemsEx _InventoryItemsEx;
         public  InventoryItemsEx InventoryItemsEx
 		{

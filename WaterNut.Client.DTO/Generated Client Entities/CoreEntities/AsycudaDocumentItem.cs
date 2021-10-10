@@ -619,6 +619,19 @@ namespace CoreEntities.Client.DTO
 		}
         private Nullable<int> _InventoryItemId;
 
+        [DataMember]
+        public string CustomsProcedure
+		{ 
+		    get { return _CustomsProcedure; }
+			set
+			{
+			    if (value == _CustomsProcedure) return;
+				_CustomsProcedure = value;
+				NotifyPropertyChanged();//m => this.CustomsProcedure
+			}
+		}
+        private string _CustomsProcedure;
+
        
         [DataMember]
         public AsycudaDocument AsycudaDocument

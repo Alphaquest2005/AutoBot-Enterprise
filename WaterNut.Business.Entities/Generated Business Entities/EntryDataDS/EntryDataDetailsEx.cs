@@ -561,6 +561,21 @@ namespace EntryDataDS.Business.Entities
         }
         Nullable<double> _volumeliters;
         [DataMember]
+        public Nullable<int> PreviousCLineNumber 
+        {
+            get
+            {
+                return _previousclinenumber;
+            }
+            set
+            {
+                _previousclinenumber = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<int> _previousclinenumber;
+        [DataMember]
         public EntryDataDetails EntryDataDetails { get; set; }
 
  //       [DataMember]

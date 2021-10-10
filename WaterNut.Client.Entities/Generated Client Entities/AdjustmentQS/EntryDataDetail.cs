@@ -543,6 +543,21 @@ public double TotalValue
 		}
      
 
+       
+       [NumberValidationAttribute]
+public Nullable<int> CLineNumber
+		{ 
+		    get { return this.entrydatadetail.CLineNumber; }
+			set
+			{
+			    if (value == this.entrydatadetail.CLineNumber) return;
+				this.entrydatadetail.CLineNumber = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("CLineNumber");
+			}
+		}
+     
+
         ObservableCollection<AsycudaSalesAllocation> _AsycudaSalesAllocations = null;
         public  ObservableCollection<AsycudaSalesAllocation> AsycudaSalesAllocations
 		{

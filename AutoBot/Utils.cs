@@ -1686,7 +1686,7 @@ namespace AutoBot
                                    $"AutoBot";
 
 
-                        var info = CurrentPOInfo(emailIds.First().AsycudaDocumentSetId.GetValueOrDefault()).FirstOrDefault();
+                        var info = CurrentPOInfo(emailIds.First().AsycudaDocumentSetId).FirstOrDefault();
                         var directory = info.Item2;
 
                         var summaryFile = Path.Combine(directory, $"Summary.csv");
@@ -2198,7 +2198,7 @@ namespace AutoBot
 
                 using (var ctx = new CoreEntitiesContext())
                 {
-                    ctx.Database.CommandTimeout = 10;
+                    ctx.Database.CommandTimeout = 20;
                 
 
                     IEnumerable<IGrouping<int?, TODO_SubmitDiscrepanciesToCustoms>> lst;
@@ -2252,6 +2252,11 @@ namespace AutoBot
                     var contacts = ctx.Contacts.Where(x => x.Role == "Customs").Select(x => x.EmailAddress).ToArray();
                    var pdfs = new List<string>();
                     var RES = lst.SelectMany(x => x).DistinctBy(x => x.ASYCUDA_Id);
+                    if (!RES.Any())
+                    {
+                        Console.WriteLine("No Sales Found!");
+                        return;
+                    }
                     foreach (var itm in RES)
                     {
 
@@ -2280,7 +2285,7 @@ namespace AutoBot
                                    $"AutoBot";
 
 
-                        var info = CurrentPOInfo(RES.First().AsycudaDocumentSetId.GetValueOrDefault()).FirstOrDefault();
+                        var info = CurrentPOInfo(RES.First().AsycudaDocumentSetId).FirstOrDefault();
                         var directory = info.Item2;
 
                         var summaryFile = Path.Combine(directory, $"SalesSummary.csv");
@@ -2933,8 +2938,7 @@ namespace AutoBot
         public static void AutoMatch()
         {
             Console.WriteLine("AutoMatch ...");
-            new AdjustmentShortService()
-                .AutoMatch(BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId).Wait();
+            new AdjustmentShortService().AutoMatch(BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId, true).Wait();
         }
 
         public static void CleanupEntries()
@@ -5882,8 +5886,8 @@ namespace AutoBot
                         {
                             Em = x,
                             Rx = z,
-                            Key = Regex.Match(line, z.KeyRegX, RegexOptions.IgnoreCase),
-                            Field = Regex.Match(line, z.FieldRx, RegexOptions.IgnoreCase)
+                            Key = Regex.Match(line, z.KeyRegX, RegexOptions.IgnoreCase | RegexOptions.Multiline),
+                            Field = Regex.Match(line, z.FieldRx, RegexOptions.IgnoreCase | RegexOptions.Multiline)
                         }))
                             .Where(z => z.Key.Success && z.Field.Success).ToList();
 

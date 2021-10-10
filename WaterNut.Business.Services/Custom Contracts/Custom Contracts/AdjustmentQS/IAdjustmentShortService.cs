@@ -12,7 +12,7 @@ namespace AdjustmentQS.Business.Services
     {
         [OperationContract]
         [FaultContract(typeof(ValidationFault))]
-        Task AutoMatch(int applicationSettingsId);
+        Task AutoMatch(int applicationSettingsId, bool overWriteExisting);
 
         [OperationContract]
         [FaultContract(typeof(ValidationFault))]

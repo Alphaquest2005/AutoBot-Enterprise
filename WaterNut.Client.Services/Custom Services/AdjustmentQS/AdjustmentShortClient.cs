@@ -13,9 +13,9 @@ namespace AdjustmentQS.Client.Services
 {
     public partial class AdjustmentShortClient
     {
-        public async Task AutoMatch(int applicationSettingsId)
+        public async Task AutoMatch(int applicationSettingsId, bool overWriteExisting)
         {
-            await Channel.AutoMatch(applicationSettingsId).ConfigureAwait(false);
+            await Channel.AutoMatch(applicationSettingsId, overWriteExisting).ConfigureAwait(false);
         }
 
         public async Task MatchToAsycudaItem(int entryDataDetailId, int itemId)

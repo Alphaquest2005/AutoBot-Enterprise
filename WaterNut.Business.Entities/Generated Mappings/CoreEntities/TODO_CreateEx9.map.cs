@@ -13,7 +13,7 @@
         {                        
               this.HasKey(t => new {t.ApplicationSettingsId, t.PreviousItem_Id});        
               this.ToTable("TODO-CreateEx9");
-              this.Property(t => t.ItemNumber).HasColumnName("ItemNumber").IsRequired().HasMaxLength(20);
+              this.Property(t => t.ItemNumber).HasColumnName("ItemNumber").HasMaxLength(20);
               this.Property(t => t.ApplicationSettingsId).HasColumnName("ApplicationSettingsId").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.None));
               this.Property(t => t.QtyAllocated).HasColumnName("QtyAllocated");
               this.Property(t => t.pQuantity).HasColumnName("pQuantity");

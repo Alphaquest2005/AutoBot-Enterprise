@@ -507,6 +507,21 @@ namespace AdjustmentQS.Business.Entities
         }
         double _totalvalue;
         [DataMember]
+        public Nullable<int> CLineNumber 
+        {
+            get
+            {
+                return _clinenumber;
+            }
+            set
+            {
+                _clinenumber = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<int> _clinenumber;
+        [DataMember]
         public List<AsycudaSalesAllocation> AsycudaSalesAllocations { get; set; }
         [DataMember]
         public InventoryItemsEx InventoryItemsEx { get; set; }

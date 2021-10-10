@@ -31,7 +31,7 @@ namespace AdjustmentQS.Business.Services
         private List<AsycudaDocumentItem> _itemCache;
         private List<InventoryItemAliasX> _itemAliaCache;
 
-        public async Task AutoMatch(int applicationSettingsId)
+        public async Task AutoMatch(int applicationSettingsId, bool overwriteExisting)
         {
 
 
@@ -48,9 +48,9 @@ namespace AdjustmentQS.Business.Services
                     .Where(x => x.SystemDocumentSet != null)
                     // .Where(x => x.ItemNumber == "HEL/003361001")
                     //.Where(x => x.EntryDataId == "120902")
-                    //.Where( x => x.EntryDataDetailsId == 545303)
+                    //.Where( x => x.EntryDataDetailsId == 16569)
                     .Where(x => x.DoNotAllocate == null || x.DoNotAllocate != true)
-                    .Where(x => x.EffectiveDate == null) // take out other check cuz of existing entries 
+                    .Where(x => overwriteExisting ? x != null : x.EffectiveDate == null) // take out other check cuz of existing entries 
                     .OrderBy(x => x.EntryDataDetailsId)
                     .DistinctBy(x => x.EntryDataDetailsId)
                     .ToList();
@@ -141,13 +141,14 @@ namespace AdjustmentQS.Business.Services
                         if ((tryCNumber || string.IsNullOrEmpty(s.PreviousInvoiceNumber)) &&
                             s.InvoiceQty.GetValueOrDefault() > 0 && !string.IsNullOrEmpty(s.PreviousCNumber))
                         {
-                            var aItem = await GetAsycudaEntriesInCNumber(s.PreviousCNumber, s.ItemNumber)
+                            var aItem = await GetAsycudaEntriesInCNumber(s.PreviousCNumber, s.PreviousCLineNumber, s.ItemNumber)
                                 .ConfigureAwait(false);
+                                
                             if (!aItem.Any())
                                 aItem = await GetAsycudaEntriesInCNumberReference(applicationSettingsId,
                                         s.PreviousCNumber, s.ItemNumber)
                                     .ConfigureAwait(false);
-                            MatchToAsycudaItem(s, aItem, ed, ctx);
+                            MatchToAsycudaItem(s, aItem.OrderBy(x => x.AsycudaDocument.AssessmentDate).ToList(), ed, ctx);
                             // continue;
                         }
 
@@ -760,7 +761,8 @@ namespace AdjustmentQS.Business.Services
         }
 
 
-        private async Task<List<AsycudaDocumentItem>> GetAsycudaEntriesInCNumber(string cNumber, string itemNumber)
+        private async Task<List<AsycudaDocumentItem>> GetAsycudaEntriesInCNumber(string cNumber,
+            int? previousCLineNumber, string itemNumber)
         {
 
             try
@@ -769,10 +771,12 @@ namespace AdjustmentQS.Business.Services
 
                 // get document item in cnumber
                 var aItem = AsycudaDocumentItemCache
-                    .Where(x => x.AsycudaDocument.CNumber != null
+                    .Where(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId
+                                && x.AsycudaDocument.CNumber != null
                                 && x.AsycudaDocument.CustomsOperationId == (int)CustomsOperations.Warehouse
                                 && x.AsycudaDocument.ImportComplete == true
-                                && x.ItemNumber == itemNumber && cNumber.Contains(x.AsycudaDocument.CNumber));
+                                && x.ItemNumber == itemNumber && cNumber.Contains(x.AsycudaDocument.CNumber)
+                                && x.LineNumber == (previousCLineNumber == null ? x.LineNumber : previousCLineNumber.Value.ToString()));
                 var res = aItem.ToList();
                 var alias = ItemAliasCache.Where(x => x.ItemNumber.ToUpper().Trim() == itemNumber).Select(y => y.AliasName.ToUpper().Trim()).ToList();
 
@@ -831,9 +835,7 @@ namespace AdjustmentQS.Business.Services
                                             .CurrentApplicationSettings.ApplicationSettingsId)
                             .Where(x => (x.AsycudaDocument.CNumber != null ||
                                          x.AsycudaDocument.IsManuallyAssessed == true) &&
-                                        (x.AsycudaDocument.Extended_customs_procedure == "7000" ||
-                                         x.AsycudaDocument.Extended_customs_procedure == "7400" ||
-                                         x.AsycudaDocument.Extended_customs_procedure == "7100") &&
+                                        (x.AsycudaDocument.Customs_Procedure.CustomsOperations.Name == "Warehouse") &&
                                         // x.WarehouseError == null && 
                                         (x.AsycudaDocument.Cancelled == null || x.AsycudaDocument.Cancelled == false) &&
                                         x.AsycudaDocument.DoNotAllocate != true).ToList();

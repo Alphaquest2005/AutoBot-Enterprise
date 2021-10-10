@@ -486,7 +486,7 @@ namespace CoreEntities.Business.Entities
         }
         int _entrydata_id;
         [DataMember]
-        public string pLineNumber 
+        public Nullable<int> pLineNumber 
         {
             get
             {
@@ -499,7 +499,7 @@ namespace CoreEntities.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        string _plinenumber;
+        Nullable<int> _plinenumber;
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

@@ -42,7 +42,7 @@ namespace CoreEntities.Client.Entities
                 todo_createex9 = value;
             }
         }
-       [RequiredValidationAttribute(ErrorMessage= "ItemNumber is required")]
+       
        
                 
                 [MaxLength(20, ErrorMessage = "ItemNumber has a max length of 20 letters ")]

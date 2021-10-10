@@ -74,7 +74,7 @@ namespace CoreEntities.Client.DTO
         private string _ReferenceNumber;
 
         [DataMember]
-        public Nullable<int> AsycudaDocumentSetId
+        public int AsycudaDocumentSetId
 		{ 
 		    get { return _AsycudaDocumentSetId; }
 			set
@@ -84,7 +84,7 @@ namespace CoreEntities.Client.DTO
 				NotifyPropertyChanged();//m => this.AsycudaDocumentSetId
 			}
 		}
-        private Nullable<int> _AsycudaDocumentSetId;
+        private int _AsycudaDocumentSetId;
 
         [DataMember]
         public string DocumentType
@@ -113,7 +113,7 @@ namespace CoreEntities.Client.DTO
         private Nullable<System.DateTime> _AssessmentDate;
 
         [DataMember]
-        public Nullable<int> ApplicationSettingsId
+        public int ApplicationSettingsId
 		{ 
 		    get { return _ApplicationSettingsId; }
 			set
@@ -123,7 +123,7 @@ namespace CoreEntities.Client.DTO
 				NotifyPropertyChanged();//m => this.ApplicationSettingsId
 			}
 		}
-        private Nullable<int> _ApplicationSettingsId;
+        private int _ApplicationSettingsId;
 
         [DataMember]
         public Nullable<int> EmailId

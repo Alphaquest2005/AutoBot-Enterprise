@@ -489,6 +489,19 @@ namespace EntryDataQS.Client.DTO
 		}
         private Nullable<double> _VolumeLiters;
 
+        [DataMember]
+        public Nullable<int> PreviousCLineNumber
+		{ 
+		    get { return _PreviousCLineNumber; }
+			set
+			{
+			    if (value == _PreviousCLineNumber) return;
+				_PreviousCLineNumber = value;
+				NotifyPropertyChanged();//m => this.PreviousCLineNumber
+			}
+		}
+        private Nullable<int> _PreviousCLineNumber;
+
        
         [DataMember]
         public InventoryItemsEx InventoryItemsEx

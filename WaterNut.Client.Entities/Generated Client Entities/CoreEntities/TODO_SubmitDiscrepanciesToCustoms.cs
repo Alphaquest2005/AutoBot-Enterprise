@@ -60,7 +60,7 @@ public int Id
        
        
                 
-                [MaxLength(50, ErrorMessage = "CNumber has a max length of 50 letters ")]
+                [MaxLength(20, ErrorMessage = "CNumber has a max length of 20 letters ")]
 public string CNumber
 		{ 
 		    get { return this.todo_submitdiscrepanciestocustoms.CNumber; }
@@ -107,7 +107,7 @@ public Nullable<System.DateTime> RegistrationDate
        
        
                 
-                [MaxLength(50, ErrorMessage = "ReferenceNumber has a max length of 50 letters ")]
+                [MaxLength(30, ErrorMessage = "ReferenceNumber has a max length of 30 letters ")]
 public string ReferenceNumber
 		{ 
 		    get { return this.todo_submitdiscrepanciestocustoms.ReferenceNumber; }
@@ -121,9 +121,9 @@ public string ReferenceNumber
 		}
      
 
+       [RequiredValidationAttribute(ErrorMessage= "AsycudaDocumentSet is required")]
        
-       
-public Nullable<int> AsycudaDocumentSetId
+public int AsycudaDocumentSetId
 		{ 
 		    get { return this.todo_submitdiscrepanciestocustoms.AsycudaDocumentSetId; }
 			set
@@ -139,7 +139,7 @@ public Nullable<int> AsycudaDocumentSetId
        
        
                 
-                [MaxLength(20, ErrorMessage = "DocumentType has a max length of 20 letters ")]
+                [MaxLength(40, ErrorMessage = "DocumentType has a max length of 40 letters ")]
 public string DocumentType
 		{ 
 		    get { return this.todo_submitdiscrepanciestocustoms.DocumentType; }
@@ -168,9 +168,9 @@ public Nullable<System.DateTime> AssessmentDate
 		}
      
 
+       [RequiredValidationAttribute(ErrorMessage= "ApplicationSettings is required")]
        
-       
-public Nullable<int> ApplicationSettingsId
+public int ApplicationSettingsId
 		{ 
 		    get { return this.todo_submitdiscrepanciestocustoms.ApplicationSettingsId; }
 			set

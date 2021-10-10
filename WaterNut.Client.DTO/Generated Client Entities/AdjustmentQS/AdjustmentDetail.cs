@@ -502,6 +502,19 @@ namespace AdjustmentQS.Client.DTO
 		}
         private string _Status;
 
+        [DataMember]
+        public Nullable<int> PreviousCLineNumber
+		{ 
+		    get { return _PreviousCLineNumber; }
+			set
+			{
+			    if (value == _PreviousCLineNumber) return;
+				_PreviousCLineNumber = value;
+				NotifyPropertyChanged();//m => this.PreviousCLineNumber
+			}
+		}
+        private Nullable<int> _PreviousCLineNumber;
+
        
         [DataMember]
         public AdjustmentEx AdjustmentEx

@@ -10,11 +10,11 @@ namespace AdjustmentQS.Client.Repositories
 
     public partial class AdjustmentShortRepository 
     {
-        public async Task AutoMatch(int applicationSettingsId)
+        public async Task AutoMatch(int applicationSettingsId, bool overWriteExisting)
         {
             using (var t = new AdjustmentShortClient())
             {
-                await t.AutoMatch(applicationSettingsId).ConfigureAwait(false);
+                await t.AutoMatch(applicationSettingsId, overWriteExisting).ConfigureAwait(false);
             }
         }
 

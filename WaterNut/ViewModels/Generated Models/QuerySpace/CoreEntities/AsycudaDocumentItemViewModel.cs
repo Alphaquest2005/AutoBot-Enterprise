@@ -1092,6 +1092,24 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
         }	
 
  
+
+		private string _customsProcedureFilter;
+        public string CustomsProcedureFilter
+        {
+            get
+            {
+                return _customsProcedureFilter;
+            }
+            set
+            {
+                _customsProcedureFilter = value;
+				NotifyPropertyChanged(x => CustomsProcedureFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
 		internal bool DisableBaseFilterData = false;
         public virtual void FilterData()
 	    {
@@ -1319,6 +1337,10 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 
 									if(string.IsNullOrEmpty(PreviousInvoiceItemNumberFilter) == false)
 						res.Append(" && " + string.Format("PreviousInvoiceItemNumber.Contains(\"{0}\")",  PreviousInvoiceItemNumberFilter));						
+ 
+
+									if(string.IsNullOrEmpty(CustomsProcedureFilter) == false)
+						res.Append(" && " + string.Format("CustomsProcedure.Contains(\"{0}\")",  CustomsProcedureFilter));						
 			return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
@@ -1462,7 +1484,10 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     PreviousInvoiceLineNumber = x.PreviousInvoiceLineNumber ,
                     
  
-                    PreviousInvoiceItemNumber = x.PreviousInvoiceItemNumber 
+                    PreviousInvoiceItemNumber = x.PreviousInvoiceItemNumber ,
+                    
+ 
+                    CustomsProcedure = x.CustomsProcedure 
                     
                 }).ToList()
             };
@@ -1596,6 +1621,9 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     
  
                     public string PreviousInvoiceItemNumber { get; set; } 
+                    
+ 
+                    public string CustomsProcedure { get; set; } 
                     
         }
 

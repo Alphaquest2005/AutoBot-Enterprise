@@ -508,7 +508,7 @@ public System.DateTime EmailDate
        [RequiredValidationAttribute(ErrorMessage= "DutyFreePaid is required")]
        
                 
-                [MaxLength(9, ErrorMessage = "DutyFreePaid has a max length of 9 letters ")]
+                [MaxLength(50, ErrorMessage = "DutyFreePaid has a max length of 50 letters ")]
 public string DutyFreePaid
 		{ 
 		    get { return this.todo_totaladjustmentstoprocess.DutyFreePaid; }

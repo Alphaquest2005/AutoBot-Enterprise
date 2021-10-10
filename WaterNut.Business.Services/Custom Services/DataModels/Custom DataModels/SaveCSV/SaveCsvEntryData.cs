@@ -13,6 +13,7 @@ using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Asycuda421;
 using Core.Common.CSV;
 using Core.Common.Extensions;
 using Core.Common.Utils;
@@ -914,7 +915,7 @@ namespace WaterNut.DataSpace
                
 
                 var ed = (from es in eslst.Select(x => (dynamic)x)
-                    group es by new {es.EntryDataId, es.EntryDataDate, es.CustomerName}//, es.Currency
+                    group es by new {es.EntryDataId, es.EntryDataDate, es.CustomerName}//, es.Currency,
                     into g
                     select new
                     {
@@ -962,6 +963,7 @@ namespace WaterNut.DataSpace
                                 ReceivedQty = Convert.ToDouble(x.ReceivedQuantity ?? 0.0),
                                 TaxAmount = x.Tax??0,
                                 CNumber = x.PreviousCNumber,
+                                CLineNumber = (int?) x.PreviousCLineNumber,
                                 PreviousInvoiceNumber = x.PreviousInvoiceNumber,
                                 Comment = x.Comment,
                                 InventoryItemId = x.InventoryItemId,
@@ -1407,6 +1409,7 @@ namespace WaterNut.DataSpace
                                     ReceivedQty = e.ReceivedQty,
                                     InvoiceQty = e.InvoiceQty,
                                     CNumber = string.IsNullOrEmpty(e.CNumber) ? null : e.CNumber,
+                                    CLineNumber = e.CLineNumber ,
                                     PreviousInvoiceNumber = string.IsNullOrEmpty(e.PreviousInvoiceNumber)
                                         ? null
                                         : e.PreviousInvoiceNumber,
@@ -1552,24 +1555,45 @@ namespace WaterNut.DataSpace
 
         private void GetMappings(Dictionary<FileTypeMappings, int> mapping, string[] headings, FileTypes fileType)
         {
-
-            for (var i = 0; i < headings.Count(); i++)
+            try
             {
-                var h = headings[i].Trim().ToUpper();
 
-                if (h == "") continue;
+                
+                for (var i = 0; i < headings.Count(); i++)
+                {
+                    var h = headings[i].Trim().ToUpper();
 
-                var ftm = fileType.FileTypeMappings.FirstOrDefault(x => x.OriginalName.ToUpper().Trim() == h.Trim());
-                if (ftm != null)
-                {
-                    mapping.Add(ftm, i);
-                }
-                else
-                {
-                    
+                    if (h == "") continue;
+
+                    foreach (var m in fileType.FileTypeMappings)
+                    {
+                        if (m.DestinationName.EndsWith("\r\n"))
+                            throw new ApplicationException(
+                                $"Mapping contain New Line: {m.DestinationName}");
+                        if (m.OriginalName.EndsWith("\r\n"))
+                            throw new ApplicationException(
+                                $"Mapping contain New Line: {m.OriginalName}");
+                    }
+
+
+                    var ftm = fileType.FileTypeMappings.FirstOrDefault(x =>
+                        x.OriginalName.ToUpper().Trim() == h.Trim());
+                    if (ftm != null)
+                    {
+                        
+                        mapping.Add(ftm, i);
+                    }
+                    else
+                    {
+
+                    }
                 }
             }
-
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
         }
 
 
@@ -1625,11 +1649,11 @@ namespace WaterNut.DataSpace
                     }
                 },
                 {"ItemNumber", (c, mapping, splits) => c.ItemNumber = splits[mapping["ItemNumber"]].Replace("[", "")},
-                {
-                    "ItemAlias",
-                    (c, mapping, splits) =>
-                        c.ItemAlias = mapping.ContainsKey("ItemAlias") ? splits[mapping["ItemAlias"]] : ""
-                },
+                //{
+                //    "ItemAlias",
+                //    (c, mapping, splits) =>
+                //        c.ItemAlias = mapping.ContainsKey("ItemAlias") ? splits[mapping["ItemAlias"]] : ""
+                //},
                 {"ItemDescription", (c, mapping, splits) => c.ItemDescription = splits[mapping["ItemDescription"]]},
                 {
                     "Cost",
@@ -1809,8 +1833,9 @@ namespace WaterNut.DataSpace
                 var val = splits[index];
                 foreach (var regEx in key.FileTypeMappingRegExs)
                 {
+                   
                     val = Regex.Replace(val, regEx.ReplacementRegex, regEx.ReplacementValue ?? "",
-                        RegexOptions.IgnoreCase);
+                        RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture | RegexOptions.Multiline);
                 }
 
                 if (key.DataType == "Date")
@@ -1992,9 +2017,16 @@ namespace WaterNut.DataSpace
                             line.InventoryItemId = i.Id;
                         }
 
-                    var invItemCodes = item.Select(x => new {x.SupplierItemNumber, x.SupplierItemDescription}).Where(x => !string.IsNullOrEmpty(x.SupplierItemNumber) && i.ItemNumber != x.SupplierItemNumber )
+                    var invItemCodes = item.Select(x => new { SupplierItemNumber = (string) x.SupplierItemNumber, SupplierItemDescription = (string) x.SupplierItemDescription}).Where(x => !string.IsNullOrEmpty(x.SupplierItemNumber) && i.ItemNumber != x.SupplierItemNumber )
                         .DistinctBy(x => x.SupplierItemNumber).ToList();
-                    foreach (var invItemCode in invItemCodes)
+
+                    var AliasItemCodes = item.Select(x => new { SupplierItemNumber =(string) x.ItemAlias, SupplierItemDescription = (string) x.ItemDescription })
+                        .Where(x => !string.IsNullOrEmpty(x.SupplierItemNumber) && i.ItemNumber != x.SupplierItemNumber)
+                        .DistinctBy(x => x.SupplierItemNumber).ToList();
+
+                    invItemCodes.AddRange(AliasItemCodes);
+
+                   foreach (var invItemCode in invItemCodes)
                     {
                         string supplierItemNumber = invItemCode.SupplierItemNumber.ToString();
                         var invItem = ctx.InventoryItems.FirstOrDefault(x => x.ApplicationSettingsId == applicationSettingsId && x.ItemNumber == supplierItemNumber);

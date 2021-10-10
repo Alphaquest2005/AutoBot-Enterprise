@@ -628,6 +628,21 @@ public string Status
 		}
      
 
+       
+       [NumberValidationAttribute]
+public Nullable<int> PreviousCLineNumber
+		{ 
+		    get { return this.adjustmentdetail.PreviousCLineNumber; }
+			set
+			{
+			    if (value == this.adjustmentdetail.PreviousCLineNumber) return;
+				this.adjustmentdetail.PreviousCLineNumber = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("PreviousCLineNumber");
+			}
+		}
+     
+
        private AdjustmentEx _AdjustmentEx;
         public  AdjustmentEx AdjustmentEx
 		{

@@ -582,6 +582,21 @@ namespace AdjustmentQS.Business.Entities
         }
         string _status;
         [DataMember]
+        public Nullable<int> PreviousCLineNumber 
+        {
+            get
+            {
+                return _previousclinenumber;
+            }
+            set
+            {
+                _previousclinenumber = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<int> _previousclinenumber;
+        [DataMember]
         public AdjustmentEx AdjustmentEx { get; set; }
         [DataMember]
         public AdjustmentShort AdjustmentShorts { get; set; }

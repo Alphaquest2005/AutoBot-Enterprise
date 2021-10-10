@@ -437,6 +437,19 @@ namespace AdjustmentQS.Client.DTO
 		}
         private double _TotalValue;
 
+        [DataMember]
+        public Nullable<int> CLineNumber
+		{ 
+		    get { return _CLineNumber; }
+			set
+			{
+			    if (value == _CLineNumber) return;
+				_CLineNumber = value;
+				NotifyPropertyChanged();//m => this.CLineNumber
+			}
+		}
+        private Nullable<int> _CLineNumber;
+
        
         [DataMember]
         public ChangeTrackingCollection<AsycudaSalesAllocation> AsycudaSalesAllocations

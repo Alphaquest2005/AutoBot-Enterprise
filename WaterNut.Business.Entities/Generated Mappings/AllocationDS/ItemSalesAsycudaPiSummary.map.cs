@@ -24,7 +24,7 @@
               this.Property(t => t.pQtyAllocated).HasColumnName("pQtyAllocated");
               this.Property(t => t.MonthYear).HasColumnName("MonthYear").IsUnicode(false).HasMaxLength(7);
               this.Property(t => t.EntryDataDate).HasColumnName("EntryDataDate");
-              this.Property(t => t.DutyFreePaid).HasColumnName("DutyFreePaid").IsUnicode(false).HasMaxLength(9);
+              this.Property(t => t.DutyFreePaid).HasColumnName("DutyFreePaid").HasMaxLength(50);
               this.Property(t => t.EntryDataType).HasColumnName("EntryDataType").HasMaxLength(50);
               this.Property(t => t.Id).HasColumnName("Id").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.None));
               this.Property(t => t.SalesQty).HasColumnName("SalesQty");

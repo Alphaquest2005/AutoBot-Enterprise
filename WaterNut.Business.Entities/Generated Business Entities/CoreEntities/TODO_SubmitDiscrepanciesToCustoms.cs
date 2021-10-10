@@ -96,7 +96,7 @@ namespace CoreEntities.Business.Entities
         }
         string _referencenumber;
         [DataMember]
-        public Nullable<int> AsycudaDocumentSetId 
+        public int AsycudaDocumentSetId 
         {
             get
             {
@@ -109,7 +109,7 @@ namespace CoreEntities.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        Nullable<int> _asycudadocumentsetid;
+        int _asycudadocumentsetid;
         [DataMember]
         public string DocumentType 
         {
@@ -141,7 +141,7 @@ namespace CoreEntities.Business.Entities
         }
         Nullable<System.DateTime> _assessmentdate;
         [DataMember]
-        public Nullable<int> ApplicationSettingsId 
+        public int ApplicationSettingsId 
         {
             get
             {
@@ -154,7 +154,7 @@ namespace CoreEntities.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        Nullable<int> _applicationsettingsid;
+        int _applicationsettingsid;
         [DataMember]
         public Nullable<int> EmailId 
         {
