@@ -1,4 +1,4 @@
-declare @appid int = 3
+declare @appid int = 2
 
 delete from asycudasalesallocations 
 where PreviousItem_Id in 

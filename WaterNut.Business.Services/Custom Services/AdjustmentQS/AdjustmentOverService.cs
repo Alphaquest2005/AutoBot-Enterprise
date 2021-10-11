@@ -75,7 +75,7 @@ namespace AdjustmentQS.Business.Services
                             ItemNumber = x.ItemNumber,
                             ItemDescription = x.ItemDescription,
                             Cost = (double) x.Cost,
-                            Quantity = (double) x.ReceivedQty - (double) x.InvoiceQty,
+                            Quantity = Math.Abs((double)x.ReceivedQty - (double)x.InvoiceQty) < 0.0001 && (double)x.ReceivedQty > 0 ? (double)x.ReceivedQty : (double) x.ReceivedQty - (double) x.InvoiceQty,
                             EffectiveDate = x.EffectiveDate ?? x.InvoiceDate,
                             LineNumber = x.LineNumber,
                             Comment = x.Comment,

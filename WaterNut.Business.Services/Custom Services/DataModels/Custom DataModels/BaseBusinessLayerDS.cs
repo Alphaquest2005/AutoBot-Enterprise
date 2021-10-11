@@ -777,11 +777,20 @@ namespace WaterNut.DataSpace
                 var itm = CreateItemFromEntryDataDetail(pod, cdoc);
 
                 if (pod.EntryData is PurchaseOrders p)
+                {
                     if (itmcount == 0 && p.FinancialInformation != null)
                         cdoc.Document.xcuda_Traders.xcuda_Traders_Financial = new xcuda_Traders_Financial
                         {
                             Financial_name = p.FinancialInformation
                         };
+
+                    cdoc.Document.xcuda_Traders.xcuda_Exporter.Exporter_name =
+                        $"INV# {p.SupplierInvoiceNo}\r\n" +
+                        $"{pod.EntryData.Suppliers?.SupplierName}\r\n" +
+                        $"{pod.EntryData.Suppliers?.Street}\r\n";
+
+                }
+
 
                 if (itm == null) continue;
                 itmcount += 1;
@@ -812,10 +821,8 @@ namespace WaterNut.DataSpace
                     if (Instance.CurrentApplicationSettings.AssessIM7 == true &&
                         pod.EntryData.Suppliers == null)
                         throw new ApplicationException($"Supplier not found for InvoiceNo {pod.EntryData.EntryDataId}");
-                    cdoc.Document.xcuda_Traders.xcuda_Exporter.Exporter_name =
-                        $"INV# {((PurchaseOrders)pod.EntryData).SupplierInvoiceNo}\r\n" +
-                        $"{pod.EntryData.Suppliers?.SupplierName}\r\n" +
-                        $"{pod.EntryData.Suppliers?.Street}\r\n";
+                    
+
 
                     oldentryData = pod.EntryData;
                 }
