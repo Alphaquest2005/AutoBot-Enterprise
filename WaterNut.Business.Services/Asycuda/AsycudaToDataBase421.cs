@@ -1086,10 +1086,15 @@ private void Update_TarrifCodes(ASYCUDAItem ai)
             //}).ConfigureAwait(false)).FirstOrDefault();
             if (cp == null)
             {
+                var scp = BaseDataModel.Instance.Customs_ProcedureCache.Data.FirstOrDefault(x => x.Extended_customs_procedure == t.Extended_customs_procedure
+                                                           && x.Document_TypeId == da.Document.xcuda_ASYCUDA_ExtendedProperties.Document_Type.Document_TypeId);
+
                 cp = new Customs_Procedure(true)
                 {
                     Extended_customs_procedure = t.Extended_customs_procedure,
                     National_customs_procedure = t.National_customs_procedure,
+                    BondTypeId = BaseDataModel.Instance.CurrentApplicationSettings.BondTypeId,
+                    CustomsOperationId = scp.CustomsOperationId,
                     TrackingState = TrackingState.Added
                 };
                 
