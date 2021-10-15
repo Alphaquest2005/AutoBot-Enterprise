@@ -699,9 +699,10 @@ namespace WaterNut.DataSpace
                 case "TariffCode":
                     if (combineEntryDataInSameFile)
                         entryLineDatas = entryLineDatas.OrderBy(p => p.EntryData.SourceFile)
-                            .ThenBy(p => p.InventoryItem.TariffCode).ToList();
+                            .ThenBy(p => p.EntryData.EntryDataId)
+                            .ThenBy(p => p.InventoryItem?.TariffCode ?? p.TariffCode).ToList();
                     else
-                        entryLineDatas = entryLineDatas.OrderBy(p => p.InventoryItem.TariffCode).ToList();
+                        entryLineDatas = entryLineDatas.OrderBy(p => p.InventoryItem?.TariffCode ?? p.TariffCode).ToList();
 
                     break;
                 case "Invoice":

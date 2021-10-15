@@ -11,3 +11,23 @@ GROUP BY EntryDataDetails.EntryDataId, EntryData.EntryDataDate, EntryDataDetails
 select * from PreviousItemsEx where Prev_reg_nbr = '46042'
 
 select * from EntryDataDetails where EntryDataDetails.EntryDataId = 'Asycuda-C#2997'
+
+-------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------
+
+--Set the EffectiveDate and Invoice date Back to before start of Real sales
+
+--UPDATE EntryDataDetails
+--SET         EffectiveDate = '12/31/2020'
+--FROM    EntryDataDetails INNER JOIN
+--                 EntryData ON EntryDataDetails.EntryData_Id = EntryData.EntryData_Id INNER JOIN
+--                 EntryData_Adjustments ON EntryData.EntryData_Id = EntryData_Adjustments.EntryData_Id
+--WHERE (EntryData.ApplicationSettingsId = 7)
+
+
+--UPDATE EntryData
+--SET         EntryDataDate = '12/31/2020'
+--FROM    EntryDataDetails INNER JOIN
+--                 EntryData ON EntryDataDetails.EntryData_Id = EntryData.EntryData_Id INNER JOIN
+--                 EntryData_Adjustments ON EntryData.EntryData_Id = EntryData_Adjustments.EntryData_Id
+--WHERE (EntryData.ApplicationSettingsId = 7)
