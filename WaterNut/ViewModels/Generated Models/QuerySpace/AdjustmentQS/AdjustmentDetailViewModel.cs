@@ -977,6 +977,24 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
         }	
 
  
+
+		private Int32? _previousCLineNumberFilter;
+        public Int32? PreviousCLineNumberFilter
+        {
+            get
+            {
+                return _previousCLineNumberFilter;
+            }
+            set
+            {
+                _previousCLineNumberFilter = value;
+				NotifyPropertyChanged(x => PreviousCLineNumberFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
 		internal bool DisableBaseFilterData = false;
         public virtual void FilterData()
 	    {
@@ -1190,7 +1208,10 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
 
 									if(string.IsNullOrEmpty(StatusFilter) == false)
 						res.Append(" && " + string.Format("Status.Contains(\"{0}\")",  StatusFilter));						
-			return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
+ 
+
+					if(PreviousCLineNumberFilter.HasValue)
+						res.Append(" && " + string.Format("PreviousCLineNumber == {0}",  PreviousCLineNumberFilter.ToString()));							return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
 // Send to Excel Implementation
@@ -1300,7 +1321,10 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
                     TaxAmount = x.TaxAmount ,
                     
  
-                    Status = x.Status 
+                    Status = x.Status ,
+                    
+ 
+                    PreviousCLineNumber = x.PreviousCLineNumber 
                     
                 }).ToList()
             };
@@ -1401,6 +1425,9 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
                     
  
                     public string Status { get; set; } 
+                    
+ 
+                    public Nullable<int> PreviousCLineNumber { get; set; } 
                     
         }
 

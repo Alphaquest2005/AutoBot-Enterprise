@@ -22,19 +22,6 @@ namespace AllocationQS.Client.DTO
     public partial class AsycudaSalesAndAdjustmentAllocationsEx : BaseEntity<AsycudaSalesAndAdjustmentAllocationsEx>, ITrackable, IEquatable<AsycudaSalesAndAdjustmentAllocationsEx>
     {
         [DataMember]
-        public int AllocationId
-		{ 
-		    get { return _AllocationId; }
-			set
-			{
-			    if (value == _AllocationId) return;
-				_AllocationId = value;
-				NotifyPropertyChanged();//m => this.AllocationId
-			}
-		}
-        private int _AllocationId;
-
-        [DataMember]
         public double TotalValue
 		{ 
 		    get { return _TotalValue; }
@@ -87,30 +74,17 @@ namespace AllocationQS.Client.DTO
         private double _QtyAllocated;
 
         [DataMember]
-        public Nullable<int> xLineNumber
+        public int SANumber
 		{ 
-		    get { return _xLineNumber; }
+		    get { return _SANumber; }
 			set
 			{
-			    if (value == _xLineNumber) return;
-				_xLineNumber = value;
-				NotifyPropertyChanged();//m => this.xLineNumber
+			    if (value == _SANumber) return;
+				_SANumber = value;
+				NotifyPropertyChanged();//m => this.SANumber
 			}
 		}
-        private Nullable<int> _xLineNumber;
-
-        [DataMember]
-        public Nullable<int> PreviousItem_Id
-		{ 
-		    get { return _PreviousItem_Id; }
-			set
-			{
-			    if (value == _PreviousItem_Id) return;
-				_PreviousItem_Id = value;
-				NotifyPropertyChanged();//m => this.PreviousItem_Id
-			}
-		}
-        private Nullable<int> _PreviousItem_Id;
+        private int _SANumber;
 
         [DataMember]
         public System.DateTime InvoiceDate
@@ -178,6 +152,19 @@ namespace AllocationQS.Client.DTO
         private string _InvoiceNo;
 
         [DataMember]
+        public Nullable<int> SalesLineNumber
+		{ 
+		    get { return _SalesLineNumber; }
+			set
+			{
+			    if (value == _SalesLineNumber) return;
+				_SalesLineNumber = value;
+				NotifyPropertyChanged();//m => this.SalesLineNumber
+			}
+		}
+        private Nullable<int> _SalesLineNumber;
+
+        [DataMember]
         public string ItemNumber
 		{ 
 		    get { return _ItemNumber; }
@@ -204,32 +191,6 @@ namespace AllocationQS.Client.DTO
         private string _ItemDescription;
 
         [DataMember]
-        public int EntryDataDetailsId
-		{ 
-		    get { return _EntryDataDetailsId; }
-			set
-			{
-			    if (value == _EntryDataDetailsId) return;
-				_EntryDataDetailsId = value;
-				NotifyPropertyChanged();//m => this.EntryDataDetailsId
-			}
-		}
-        private int _EntryDataDetailsId;
-
-        [DataMember]
-        public int xBond_Item_Id
-		{ 
-		    get { return _xBond_Item_Id; }
-			set
-			{
-			    if (value == _xBond_Item_Id) return;
-				_xBond_Item_Id = value;
-				NotifyPropertyChanged();//m => this.xBond_Item_Id
-			}
-		}
-        private int _xBond_Item_Id;
-
-        [DataMember]
         public string DutyFreePaid
 		{ 
 		    get { return _DutyFreePaid; }
@@ -241,175 +202,6 @@ namespace AllocationQS.Client.DTO
 			}
 		}
         private string _DutyFreePaid;
-
-        [DataMember]
-        public string pCNumber
-		{ 
-		    get { return _pCNumber; }
-			set
-			{
-			    if (value == _pCNumber) return;
-				_pCNumber = value;
-				NotifyPropertyChanged();//m => this.pCNumber
-			}
-		}
-        private string _pCNumber;
-
-        [DataMember]
-        public Nullable<System.DateTime> pRegistrationDate
-		{ 
-		    get { return _pRegistrationDate; }
-			set
-			{
-			    if (value == _pRegistrationDate) return;
-				_pRegistrationDate = value;
-				NotifyPropertyChanged();//m => this.pRegistrationDate
-			}
-		}
-        private Nullable<System.DateTime> _pRegistrationDate;
-
-        [DataMember]
-        public Nullable<double> pQuantity
-		{ 
-		    get { return _pQuantity; }
-			set
-			{
-			    if (value == _pQuantity) return;
-				_pQuantity = value;
-				NotifyPropertyChanged();//m => this.pQuantity
-			}
-		}
-        private Nullable<double> _pQuantity;
-
-        [DataMember]
-        public Nullable<double> pQtyAllocated
-		{ 
-		    get { return _pQtyAllocated; }
-			set
-			{
-			    if (value == _pQtyAllocated) return;
-				_pQtyAllocated = value;
-				NotifyPropertyChanged();//m => this.pQtyAllocated
-			}
-		}
-        private Nullable<double> _pQtyAllocated;
-
-        [DataMember]
-        public Nullable<double> PiQuantity
-		{ 
-		    get { return _PiQuantity; }
-			set
-			{
-			    if (value == _PiQuantity) return;
-				_PiQuantity = value;
-				NotifyPropertyChanged();//m => this.PiQuantity
-			}
-		}
-        private Nullable<double> _PiQuantity;
-
-        [DataMember]
-        public Nullable<double> SalesFactor
-		{ 
-		    get { return _SalesFactor; }
-			set
-			{
-			    if (value == _SalesFactor) return;
-				_SalesFactor = value;
-				NotifyPropertyChanged();//m => this.SalesFactor
-			}
-		}
-        private Nullable<double> _SalesFactor;
-
-        [DataMember]
-        public string xCNumber
-		{ 
-		    get { return _xCNumber; }
-			set
-			{
-			    if (value == _xCNumber) return;
-				_xCNumber = value;
-				NotifyPropertyChanged();//m => this.xCNumber
-			}
-		}
-        private string _xCNumber;
-
-        [DataMember]
-        public Nullable<System.DateTime> xRegistrationDate
-		{ 
-		    get { return _xRegistrationDate; }
-			set
-			{
-			    if (value == _xRegistrationDate) return;
-				_xRegistrationDate = value;
-				NotifyPropertyChanged();//m => this.xRegistrationDate
-			}
-		}
-        private Nullable<System.DateTime> _xRegistrationDate;
-
-        [DataMember]
-        public Nullable<double> xQuantity
-		{ 
-		    get { return _xQuantity; }
-			set
-			{
-			    if (value == _xQuantity) return;
-				_xQuantity = value;
-				NotifyPropertyChanged();//m => this.xQuantity
-			}
-		}
-        private Nullable<double> _xQuantity;
-
-        [DataMember]
-        public string pReferenceNumber
-		{ 
-		    get { return _pReferenceNumber; }
-			set
-			{
-			    if (value == _pReferenceNumber) return;
-				_pReferenceNumber = value;
-				NotifyPropertyChanged();//m => this.pReferenceNumber
-			}
-		}
-        private string _pReferenceNumber;
-
-        [DataMember]
-        public Nullable<int> pLineNumber
-		{ 
-		    get { return _pLineNumber; }
-			set
-			{
-			    if (value == _pLineNumber) return;
-				_pLineNumber = value;
-				NotifyPropertyChanged();//m => this.pLineNumber
-			}
-		}
-        private Nullable<int> _pLineNumber;
-
-        [DataMember]
-        public Nullable<int> xASYCUDA_Id
-		{ 
-		    get { return _xASYCUDA_Id; }
-			set
-			{
-			    if (value == _xASYCUDA_Id) return;
-				_xASYCUDA_Id = value;
-				NotifyPropertyChanged();//m => this.xASYCUDA_Id
-			}
-		}
-        private Nullable<int> _xASYCUDA_Id;
-
-        [DataMember]
-        public Nullable<int> pASYCUDA_Id
-		{ 
-		    get { return _pASYCUDA_Id; }
-			set
-			{
-			    if (value == _pASYCUDA_Id) return;
-				_pASYCUDA_Id = value;
-				NotifyPropertyChanged();//m => this.pASYCUDA_Id
-			}
-		}
-        private Nullable<int> _pASYCUDA_Id;
 
         [DataMember]
         public double Cost
@@ -464,6 +256,136 @@ namespace AllocationQS.Client.DTO
         private double _TaxAmount;
 
         [DataMember]
+        public Nullable<double> SalesFactor
+		{ 
+		    get { return _SalesFactor; }
+			set
+			{
+			    if (value == _SalesFactor) return;
+				_SalesFactor = value;
+				NotifyPropertyChanged();//m => this.SalesFactor
+			}
+		}
+        private Nullable<double> _SalesFactor;
+
+        [DataMember]
+        public string pReferenceNumber
+		{ 
+		    get { return _pReferenceNumber; }
+			set
+			{
+			    if (value == _pReferenceNumber) return;
+				_pReferenceNumber = value;
+				NotifyPropertyChanged();//m => this.pReferenceNumber
+			}
+		}
+        private string _pReferenceNumber;
+
+        [DataMember]
+        public Nullable<System.DateTime> pRegistrationDate
+		{ 
+		    get { return _pRegistrationDate; }
+			set
+			{
+			    if (value == _pRegistrationDate) return;
+				_pRegistrationDate = value;
+				NotifyPropertyChanged();//m => this.pRegistrationDate
+			}
+		}
+        private Nullable<System.DateTime> _pRegistrationDate;
+
+        [DataMember]
+        public string pCNumber
+		{ 
+		    get { return _pCNumber; }
+			set
+			{
+			    if (value == _pCNumber) return;
+				_pCNumber = value;
+				NotifyPropertyChanged();//m => this.pCNumber
+			}
+		}
+        private string _pCNumber;
+
+        [DataMember]
+        public Nullable<int> pLineNumber
+		{ 
+		    get { return _pLineNumber; }
+			set
+			{
+			    if (value == _pLineNumber) return;
+				_pLineNumber = value;
+				NotifyPropertyChanged();//m => this.pLineNumber
+			}
+		}
+        private Nullable<int> _pLineNumber;
+
+        [DataMember]
+        public Nullable<double> pQuantity
+		{ 
+		    get { return _pQuantity; }
+			set
+			{
+			    if (value == _pQuantity) return;
+				_pQuantity = value;
+				NotifyPropertyChanged();//m => this.pQuantity
+			}
+		}
+        private Nullable<double> _pQuantity;
+
+        [DataMember]
+        public Nullable<double> pQtyAllocated
+		{ 
+		    get { return _pQtyAllocated; }
+			set
+			{
+			    if (value == _pQtyAllocated) return;
+				_pQtyAllocated = value;
+				NotifyPropertyChanged();//m => this.pQtyAllocated
+			}
+		}
+        private Nullable<double> _pQtyAllocated;
+
+        [DataMember]
+        public Nullable<double> PiQuantity
+		{ 
+		    get { return _PiQuantity; }
+			set
+			{
+			    if (value == _PiQuantity) return;
+				_PiQuantity = value;
+				NotifyPropertyChanged();//m => this.PiQuantity
+			}
+		}
+        private Nullable<double> _PiQuantity;
+
+        [DataMember]
+        public Nullable<System.DateTime> pExpiryDate
+		{ 
+		    get { return _pExpiryDate; }
+			set
+			{
+			    if (value == _pExpiryDate) return;
+				_pExpiryDate = value;
+				NotifyPropertyChanged();//m => this.pExpiryDate
+			}
+		}
+        private Nullable<System.DateTime> _pExpiryDate;
+
+        [DataMember]
+        public string pTariffCode
+		{ 
+		    get { return _pTariffCode; }
+			set
+			{
+			    if (value == _pTariffCode) return;
+				_pTariffCode = value;
+				NotifyPropertyChanged();//m => this.pTariffCode
+			}
+		}
+        private string _pTariffCode;
+
+        [DataMember]
         public Nullable<bool> pIsAssessed
 		{ 
 		    get { return _pIsAssessed; }
@@ -516,32 +438,6 @@ namespace AllocationQS.Client.DTO
         private string _WarehouseError;
 
         [DataMember]
-        public Nullable<int> SANumber
-		{ 
-		    get { return _SANumber; }
-			set
-			{
-			    if (value == _SANumber) return;
-				_SANumber = value;
-				NotifyPropertyChanged();//m => this.SANumber
-			}
-		}
-        private Nullable<int> _SANumber;
-
-        [DataMember]
-        public string xReferenceNumber
-		{ 
-		    get { return _xReferenceNumber; }
-			set
-			{
-			    if (value == _xReferenceNumber) return;
-				_xReferenceNumber = value;
-				NotifyPropertyChanged();//m => this.xReferenceNumber
-			}
-		}
-        private string _xReferenceNumber;
-
-        [DataMember]
         public string TariffCode
 		{ 
 		    get { return _TariffCode; }
@@ -566,32 +462,6 @@ namespace AllocationQS.Client.DTO
 			}
 		}
         private Nullable<bool> _Invalid;
-
-        [DataMember]
-        public Nullable<System.DateTime> pExpiryDate
-		{ 
-		    get { return _pExpiryDate; }
-			set
-			{
-			    if (value == _pExpiryDate) return;
-				_pExpiryDate = value;
-				NotifyPropertyChanged();//m => this.pExpiryDate
-			}
-		}
-        private Nullable<System.DateTime> _pExpiryDate;
-
-        [DataMember]
-        public string pTariffCode
-		{ 
-		    get { return _pTariffCode; }
-			set
-			{
-			    if (value == _pTariffCode) return;
-				_pTariffCode = value;
-				NotifyPropertyChanged();//m => this.pTariffCode
-			}
-		}
-        private string _pTariffCode;
 
         [DataMember]
         public string pItemNumber
@@ -633,19 +503,6 @@ namespace AllocationQS.Client.DTO
         private Nullable<System.DateTime> _AssessmentDate;
 
         [DataMember]
-        public int ApplicationSettingsId
-		{ 
-		    get { return _ApplicationSettingsId; }
-			set
-			{
-			    if (value == _ApplicationSettingsId) return;
-				_ApplicationSettingsId = value;
-				NotifyPropertyChanged();//m => this.ApplicationSettingsId
-			}
-		}
-        private int _ApplicationSettingsId;
-
-        [DataMember]
         public string xStatus
 		{ 
 		    get { return _xStatus; }
@@ -659,17 +516,160 @@ namespace AllocationQS.Client.DTO
         private string _xStatus;
 
         [DataMember]
-        public Nullable<int> SalesLineNumber
+        public string xReferenceNumber
 		{ 
-		    get { return _SalesLineNumber; }
+		    get { return _xReferenceNumber; }
 			set
 			{
-			    if (value == _SalesLineNumber) return;
-				_SalesLineNumber = value;
-				NotifyPropertyChanged();//m => this.SalesLineNumber
+			    if (value == _xReferenceNumber) return;
+				_xReferenceNumber = value;
+				NotifyPropertyChanged();//m => this.xReferenceNumber
 			}
 		}
-        private Nullable<int> _SalesLineNumber;
+        private string _xReferenceNumber;
+
+        [DataMember]
+        public string xCNumber
+		{ 
+		    get { return _xCNumber; }
+			set
+			{
+			    if (value == _xCNumber) return;
+				_xCNumber = value;
+				NotifyPropertyChanged();//m => this.xCNumber
+			}
+		}
+        private string _xCNumber;
+
+        [DataMember]
+        public Nullable<int> xLineNumber
+		{ 
+		    get { return _xLineNumber; }
+			set
+			{
+			    if (value == _xLineNumber) return;
+				_xLineNumber = value;
+				NotifyPropertyChanged();//m => this.xLineNumber
+			}
+		}
+        private Nullable<int> _xLineNumber;
+
+        [DataMember]
+        public Nullable<System.DateTime> xRegistrationDate
+		{ 
+		    get { return _xRegistrationDate; }
+			set
+			{
+			    if (value == _xRegistrationDate) return;
+				_xRegistrationDate = value;
+				NotifyPropertyChanged();//m => this.xRegistrationDate
+			}
+		}
+        private Nullable<System.DateTime> _xRegistrationDate;
+
+        [DataMember]
+        public Nullable<double> xQuantity
+		{ 
+		    get { return _xQuantity; }
+			set
+			{
+			    if (value == _xQuantity) return;
+				_xQuantity = value;
+				NotifyPropertyChanged();//m => this.xQuantity
+			}
+		}
+        private Nullable<double> _xQuantity;
+
+        [DataMember]
+        public int AllocationId
+		{ 
+		    get { return _AllocationId; }
+			set
+			{
+			    if (value == _AllocationId) return;
+				_AllocationId = value;
+				NotifyPropertyChanged();//m => this.AllocationId
+			}
+		}
+        private int _AllocationId;
+
+        [DataMember]
+        public int EntryDataDetailsId
+		{ 
+		    get { return _EntryDataDetailsId; }
+			set
+			{
+			    if (value == _EntryDataDetailsId) return;
+				_EntryDataDetailsId = value;
+				NotifyPropertyChanged();//m => this.EntryDataDetailsId
+			}
+		}
+        private int _EntryDataDetailsId;
+
+        [DataMember]
+        public Nullable<int> PreviousItem_Id
+		{ 
+		    get { return _PreviousItem_Id; }
+			set
+			{
+			    if (value == _PreviousItem_Id) return;
+				_PreviousItem_Id = value;
+				NotifyPropertyChanged();//m => this.PreviousItem_Id
+			}
+		}
+        private Nullable<int> _PreviousItem_Id;
+
+        [DataMember]
+        public int xBond_Item_Id
+		{ 
+		    get { return _xBond_Item_Id; }
+			set
+			{
+			    if (value == _xBond_Item_Id) return;
+				_xBond_Item_Id = value;
+				NotifyPropertyChanged();//m => this.xBond_Item_Id
+			}
+		}
+        private int _xBond_Item_Id;
+
+        [DataMember]
+        public Nullable<int> xASYCUDA_Id
+		{ 
+		    get { return _xASYCUDA_Id; }
+			set
+			{
+			    if (value == _xASYCUDA_Id) return;
+				_xASYCUDA_Id = value;
+				NotifyPropertyChanged();//m => this.xASYCUDA_Id
+			}
+		}
+        private Nullable<int> _xASYCUDA_Id;
+
+        [DataMember]
+        public Nullable<int> pASYCUDA_Id
+		{ 
+		    get { return _pASYCUDA_Id; }
+			set
+			{
+			    if (value == _pASYCUDA_Id) return;
+				_pASYCUDA_Id = value;
+				NotifyPropertyChanged();//m => this.pASYCUDA_Id
+			}
+		}
+        private Nullable<int> _pASYCUDA_Id;
+
+        [DataMember]
+        public int ApplicationSettingsId
+		{ 
+		    get { return _ApplicationSettingsId; }
+			set
+			{
+			    if (value == _ApplicationSettingsId) return;
+				_ApplicationSettingsId = value;
+				NotifyPropertyChanged();//m => this.ApplicationSettingsId
+			}
+		}
+        private int _ApplicationSettingsId;
 
        
    //     [DataMember]

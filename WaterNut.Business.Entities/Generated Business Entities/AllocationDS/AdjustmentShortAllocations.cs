@@ -20,6 +20,11 @@ namespace AllocationDS.Business.Entities
     [DataContract(IsReference = true, Namespace="http://www.insight-software.com/WaterNut")]
     public partial class AdjustmentShortAllocations : BaseEntity<AdjustmentShortAllocations>, ITrackable 
     {
+        partial void AutoGenStartUp() //AdjustmentShortAllocations()
+        {
+            this.AsycudaSalesAllocationsPIData = new List<AsycudaSalesAllocationsPIData>();
+        }
+
         [DataMember]
         public int AllocationId 
         {
@@ -836,6 +841,8 @@ namespace AllocationDS.Business.Entities
         public EntryDataDetails EntryDataDetails { get; set; }
         [DataMember]
         public AscyudaItemPiQuantity AscyudaItemPiQuantity { get; set; }
+        [DataMember]
+        public List<AsycudaSalesAllocationsPIData> AsycudaSalesAllocationsPIData { get; set; }
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

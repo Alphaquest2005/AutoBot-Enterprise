@@ -821,6 +821,24 @@ namespace WaterNut.QuerySpace.EntryDataQS.ViewModels
         }	
 
  
+
+		private Int32? _previousCLineNumberFilter;
+        public Int32? PreviousCLineNumberFilter
+        {
+            get
+            {
+                return _previousCLineNumberFilter;
+            }
+            set
+            {
+                _previousCLineNumberFilter = value;
+				NotifyPropertyChanged(x => PreviousCLineNumberFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
 		internal bool DisableBaseFilterData = false;
         public virtual void FilterData()
 	    {
@@ -977,7 +995,10 @@ namespace WaterNut.QuerySpace.EntryDataQS.ViewModels
 						res.Append(" && " + string.Format("FileLineNumber == {0}",  FileLineNumberFilter.ToString()));				 
 
 					if(VolumeLitersFilter.HasValue)
-						res.Append(" && " + string.Format("VolumeLiters == {0}",  VolumeLitersFilter.ToString()));							return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
+						res.Append(" && " + string.Format("VolumeLiters == {0}",  VolumeLitersFilter.ToString()));				 
+
+					if(PreviousCLineNumberFilter.HasValue)
+						res.Append(" && " + string.Format("PreviousCLineNumber == {0}",  PreviousCLineNumberFilter.ToString()));							return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
 // Send to Excel Implementation
@@ -1084,7 +1105,10 @@ namespace WaterNut.QuerySpace.EntryDataQS.ViewModels
                     FileLineNumber = x.FileLineNumber ,
                     
  
-                    VolumeLiters = x.VolumeLiters 
+                    VolumeLiters = x.VolumeLiters ,
+                    
+ 
+                    PreviousCLineNumber = x.PreviousCLineNumber 
                     
                 }).ToList()
             };
@@ -1182,6 +1206,9 @@ namespace WaterNut.QuerySpace.EntryDataQS.ViewModels
                     
  
                     public Nullable<double> VolumeLiters { get; set; } 
+                    
+ 
+                    public Nullable<int> PreviousCLineNumber { get; set; } 
                     
         }
 

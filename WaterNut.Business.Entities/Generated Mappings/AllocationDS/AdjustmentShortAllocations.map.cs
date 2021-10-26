@@ -70,6 +70,7 @@
               this.HasOptional(t => t.PreviousDocumentItem).WithMany(t =>(ICollection<AdjustmentShortAllocations>) t.AdjustmentShortAllocations).HasForeignKey(d => d.PreviousItem_Id);
               this.HasRequired(t => t.EntryDataDetails).WithMany(t =>(ICollection<AdjustmentShortAllocations>) t.AdjustmentShortAllocations).HasForeignKey(d => d.EntryDataDetailsId);
               this.HasOptional(t => t.AscyudaItemPiQuantity).WithMany(t =>(ICollection<AdjustmentShortAllocations>) t.AdjustmentShortAllocations).HasForeignKey(d => d.PreviousItem_Id);
+              this.HasMany(t => t.AsycudaSalesAllocationsPIData).WithRequired(t => (AdjustmentShortAllocations)t.AdjustmentShortAllocations);
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);
     			this.Ignore(t => t.ModifiedProperties);

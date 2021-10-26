@@ -583,9 +583,9 @@ public string WarehouseError
 		}
      
 
-       
+       [RequiredValidationAttribute(ErrorMessage= "SANumber is required")]
        [NumberValidationAttribute]
-public Nullable<int> SANumber
+public int SANumber
 		{ 
 		    get { return this.adjustmentshortallocation.SANumber; }
 			set
@@ -743,10 +743,10 @@ public Nullable<System.DateTime> AssessmentDate
 		}
      
 
-       [RequiredValidationAttribute(ErrorMessage= "DutyFreePaid is required")]
+       
        
                 
-                [MaxLength(9, ErrorMessage = "DutyFreePaid has a max length of 9 letters ")]
+                [MaxLength(50, ErrorMessage = "DutyFreePaid has a max length of 50 letters ")]
 public string DutyFreePaid
 		{ 
 		    get { return this.adjustmentshortallocation.DutyFreePaid; }
@@ -865,6 +865,23 @@ public Nullable<int> SalesLineNumber
 				this.adjustmentshortallocation.SalesLineNumber = value;
                 if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
 				NotifyPropertyChanged("SalesLineNumber");
+			}
+		}
+     
+
+       
+       
+                
+                [MaxLength(255, ErrorMessage = "pPrecision1 has a max length of 255 letters ")]
+public string pPrecision1
+		{ 
+		    get { return this.adjustmentshortallocation.pPrecision1; }
+			set
+			{
+			    if (value == this.adjustmentshortallocation.pPrecision1) return;
+				this.adjustmentshortallocation.pPrecision1 = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("pPrecision1");
 			}
 		}
      

@@ -1692,9 +1692,12 @@ namespace WaterNut.DataSpace
                     "SupplierInvoiceNo",
                     (c, mapping, splits) =>
                     {
-                        c.EntryDataId = !string.IsNullOrEmpty(splits[mapping["EntryDataId"]])
-                            ? splits[mapping["EntryDataId"]].Trim().Replace("PO/GD/", "").Replace("SHOP/GR_", "")
-                            : splits[mapping["SupplierInvoiceNo"]];
+                        if (string.IsNullOrEmpty(c.EntryDataId))// do this incase entrydataid empty.. might nee to check order?
+                        {
+                            c.EntryDataId = !string.IsNullOrEmpty(splits[mapping["EntryDataId"]])
+                                ? splits[mapping["EntryDataId"]].Trim().Replace("PO/GD/", "").Replace("SHOP/GR_", "")
+                                : splits[mapping["SupplierInvoiceNo"]];
+                        }
                         c.SupplierInvoiceNo = splits[mapping["SupplierInvoiceNo"]];
                     }
                 },
@@ -1771,14 +1774,14 @@ namespace WaterNut.DataSpace
                      {
 
                          var err = ImportChecks[key.DestinationName].Invoke(res,
-                             map.Where(x => x.Key.Id == key.Id).ToDictionary(x => x.Key.DestinationName, x => x.Value), splits);
+                             map/*.Where(x => x.Key.Id == key.Id)*/.ToDictionary(x => x.Key.DestinationName, x => x.Value), splits);
                          if (err.Item1) throw new ApplicationException(err.Item2);
                      }
 
                      if (ImportActions.ContainsKey(key.DestinationName))
-                     {
+                     {// come up with a better solution cuz of duplicate keys
                          ImportActions[key.DestinationName].Invoke(res,
-                             map.Where(x => x.Key.Id == key.Id).ToDictionary(x => x.Key.DestinationName, x => x.Value), splits);
+                             map/*.Where(x => x.Key.Id == key.Id)*/.ToDictionary(x => x.Key.DestinationName, x => x.Value), splits);
                      }
                      else
                      {

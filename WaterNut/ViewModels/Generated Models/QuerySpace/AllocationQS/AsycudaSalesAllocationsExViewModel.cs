@@ -1782,7 +1782,7 @@ namespace WaterNut.QuerySpace.AllocationQS.ViewModels
                     public Nullable<bool> DoNotAllocatePreviousEntry { get; set; } 
                     
  
-                    public Nullable<int> SANumber { get; set; } 
+                    public int SANumber { get; set; } 
                     
  
                     public string pReferenceNumber { get; set; } 

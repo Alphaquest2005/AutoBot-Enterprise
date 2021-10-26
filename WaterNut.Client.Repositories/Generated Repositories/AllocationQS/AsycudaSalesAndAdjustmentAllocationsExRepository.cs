@@ -389,34 +389,6 @@ namespace AllocationQS.Client.Repositories
                 throw;
             }
         } 
- 	 public async Task<IEnumerable<AsycudaSalesAndAdjustmentAllocationsEx>> GetAsycudaSalesAndAdjustmentAllocationsExByEntryDataDetailsId(string EntryDataDetailsId, List<string> includesLst = null)
-        {
-             if (EntryDataDetailsId == "0") return null;
-            try
-            {
-                 using (AsycudaSalesAndAdjustmentAllocationsExClient t = new AsycudaSalesAndAdjustmentAllocationsExClient())
-                    {
-                        var res = await t.GetAsycudaSalesAndAdjustmentAllocationsExByEntryDataDetailsId(EntryDataDetailsId, includesLst).ConfigureAwait(continueOnCapturedContext: false);
-                         if(res != null)
-                        {
-                            return res.Select(x => new AsycudaSalesAndAdjustmentAllocationsEx(x)).AsEnumerable();
-					    }                
-					    else
-					    {
-						    return null;
-					    }                    
-                    }
-            }
-            catch (FaultException<ValidationFault> e)
-            {
-                throw new Exception(e.Detail.Message, e.InnerException);
-            }
-            catch (Exception)
-            {
-                Debugger.Break();
-                throw;
-            }
-        } 
  	 public async Task<IEnumerable<AsycudaSalesAndAdjustmentAllocationsEx>> GetAsycudaSalesAndAdjustmentAllocationsExByxASYCUDA_Id(string xASYCUDA_Id, List<string> includesLst = null)
         {
              if (xASYCUDA_Id == "0") return null;
@@ -453,34 +425,6 @@ namespace AllocationQS.Client.Repositories
                  using (AsycudaSalesAndAdjustmentAllocationsExClient t = new AsycudaSalesAndAdjustmentAllocationsExClient())
                     {
                         var res = await t.GetAsycudaSalesAndAdjustmentAllocationsExBypASYCUDA_Id(pASYCUDA_Id, includesLst).ConfigureAwait(continueOnCapturedContext: false);
-                         if(res != null)
-                        {
-                            return res.Select(x => new AsycudaSalesAndAdjustmentAllocationsEx(x)).AsEnumerable();
-					    }                
-					    else
-					    {
-						    return null;
-					    }                    
-                    }
-            }
-            catch (FaultException<ValidationFault> e)
-            {
-                throw new Exception(e.Detail.Message, e.InnerException);
-            }
-            catch (Exception)
-            {
-                Debugger.Break();
-                throw;
-            }
-        } 
- 	 public async Task<IEnumerable<AsycudaSalesAndAdjustmentAllocationsEx>> GetAsycudaSalesAndAdjustmentAllocationsExByApplicationSettingsId(string ApplicationSettingsId, List<string> includesLst = null)
-        {
-             if (ApplicationSettingsId == "0") return null;
-            try
-            {
-                 using (AsycudaSalesAndAdjustmentAllocationsExClient t = new AsycudaSalesAndAdjustmentAllocationsExClient())
-                    {
-                        var res = await t.GetAsycudaSalesAndAdjustmentAllocationsExByApplicationSettingsId(ApplicationSettingsId, includesLst).ConfigureAwait(continueOnCapturedContext: false);
                          if(res != null)
                         {
                             return res.Select(x => new AsycudaSalesAndAdjustmentAllocationsEx(x)).AsEnumerable();

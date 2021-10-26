@@ -551,9 +551,9 @@ public Nullable<bool> DoNotAllocatePreviousEntry
 		}
      
 
-       
+       [RequiredValidationAttribute(ErrorMessage= "SANumber is required")]
        [NumberValidationAttribute]
-public Nullable<int> SANumber
+public int SANumber
 		{ 
 		    get { return this.asycudasalesallocationsex.SANumber; }
 			set

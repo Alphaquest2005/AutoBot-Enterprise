@@ -170,6 +170,8 @@ namespace AllocationDS.Business.Entities
         public List<EntryDataDetailsEx> EntryDataDetailsEx { get; set; }
         [DataMember]
         public List<InventoryItemAlias> InventoryItemAliasEx { get; set; }
+        [DataMember]
+        public LumpedItem LumpedItem { get; set; }
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

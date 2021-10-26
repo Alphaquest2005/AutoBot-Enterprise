@@ -42,21 +42,6 @@ namespace AllocationQS.Client.Entities
                 asycudasalesandadjustmentallocationsex = value;
             }
         }
-       [RequiredValidationAttribute(ErrorMessage= "Allocation is required")]
-       
-public int AllocationId
-		{ 
-		    get { return this.asycudasalesandadjustmentallocationsex.AllocationId; }
-			set
-			{
-			    if (value == this.asycudasalesandadjustmentallocationsex.AllocationId) return;
-				this.asycudasalesandadjustmentallocationsex.AllocationId = value;
-                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
-				NotifyPropertyChanged("AllocationId");
-			}
-		}
-     
-
        [RequiredValidationAttribute(ErrorMessage= "TotalValue is required")]
        [NumberValidationAttribute]
 public double TotalValue
@@ -119,32 +104,17 @@ public double QtyAllocated
 		}
      
 
-       
+       [RequiredValidationAttribute(ErrorMessage= "SANumber is required")]
        [NumberValidationAttribute]
-public Nullable<int> xLineNumber
+public int SANumber
 		{ 
-		    get { return this.asycudasalesandadjustmentallocationsex.xLineNumber; }
+		    get { return this.asycudasalesandadjustmentallocationsex.SANumber; }
 			set
 			{
-			    if (value == this.asycudasalesandadjustmentallocationsex.xLineNumber) return;
-				this.asycudasalesandadjustmentallocationsex.xLineNumber = value;
+			    if (value == this.asycudasalesandadjustmentallocationsex.SANumber) return;
+				this.asycudasalesandadjustmentallocationsex.SANumber = value;
                 if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
-				NotifyPropertyChanged("xLineNumber");
-			}
-		}
-     
-
-       
-       
-public Nullable<int> PreviousItem_Id
-		{ 
-		    get { return this.asycudasalesandadjustmentallocationsex.PreviousItem_Id; }
-			set
-			{
-			    if (value == this.asycudasalesandadjustmentallocationsex.PreviousItem_Id) return;
-				this.asycudasalesandadjustmentallocationsex.PreviousItem_Id = value;
-                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
-				NotifyPropertyChanged("PreviousItem_Id");
+				NotifyPropertyChanged("SANumber");
 			}
 		}
      
@@ -228,6 +198,21 @@ public string InvoiceNo
 		}
      
 
+       
+       [NumberValidationAttribute]
+public Nullable<int> SalesLineNumber
+		{ 
+		    get { return this.asycudasalesandadjustmentallocationsex.SalesLineNumber; }
+			set
+			{
+			    if (value == this.asycudasalesandadjustmentallocationsex.SalesLineNumber) return;
+				this.asycudasalesandadjustmentallocationsex.SalesLineNumber = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("SalesLineNumber");
+			}
+		}
+     
+
        [RequiredValidationAttribute(ErrorMessage= "ItemNumber is required")]
        
                 
@@ -262,40 +247,10 @@ public string ItemDescription
 		}
      
 
-       [RequiredValidationAttribute(ErrorMessage= "EntryDataDetails is required")]
        
-public int EntryDataDetailsId
-		{ 
-		    get { return this.asycudasalesandadjustmentallocationsex.EntryDataDetailsId; }
-			set
-			{
-			    if (value == this.asycudasalesandadjustmentallocationsex.EntryDataDetailsId) return;
-				this.asycudasalesandadjustmentallocationsex.EntryDataDetailsId = value;
-                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
-				NotifyPropertyChanged("EntryDataDetailsId");
-			}
-		}
-     
-
-       [RequiredValidationAttribute(ErrorMessage= "xBond_Item_ is required")]
-       
-public int xBond_Item_Id
-		{ 
-		    get { return this.asycudasalesandadjustmentallocationsex.xBond_Item_Id; }
-			set
-			{
-			    if (value == this.asycudasalesandadjustmentallocationsex.xBond_Item_Id) return;
-				this.asycudasalesandadjustmentallocationsex.xBond_Item_Id = value;
-                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
-				NotifyPropertyChanged("xBond_Item_Id");
-			}
-		}
-     
-
-       [RequiredValidationAttribute(ErrorMessage= "DutyFreePaid is required")]
        
                 
-                [MaxLength(9, ErrorMessage = "DutyFreePaid has a max length of 9 letters ")]
+                [MaxLength(50, ErrorMessage = "DutyFreePaid has a max length of 50 letters ")]
 public string DutyFreePaid
 		{ 
 		    get { return this.asycudasalesandadjustmentallocationsex.DutyFreePaid; }
@@ -305,207 +260,6 @@ public string DutyFreePaid
 				this.asycudasalesandadjustmentallocationsex.DutyFreePaid = value;
                 if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
 				NotifyPropertyChanged("DutyFreePaid");
-			}
-		}
-     
-
-       
-       
-                
-                [MaxLength(20, ErrorMessage = "pCNumber has a max length of 20 letters ")]
-public string pCNumber
-		{ 
-		    get { return this.asycudasalesandadjustmentallocationsex.pCNumber; }
-			set
-			{
-			    if (value == this.asycudasalesandadjustmentallocationsex.pCNumber) return;
-				this.asycudasalesandadjustmentallocationsex.pCNumber = value;
-                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
-				NotifyPropertyChanged("pCNumber");
-			}
-		}
-     
-
-       
-       
-public Nullable<System.DateTime> pRegistrationDate
-		{ 
-		    get { return this.asycudasalesandadjustmentallocationsex.pRegistrationDate; }
-			set
-			{
-			    if (value == this.asycudasalesandadjustmentallocationsex.pRegistrationDate) return;
-				this.asycudasalesandadjustmentallocationsex.pRegistrationDate = value;
-                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
-				NotifyPropertyChanged("pRegistrationDate");
-			}
-		}
-     
-
-       
-       [NumberValidationAttribute]
-public Nullable<double> pQuantity
-		{ 
-		    get { return this.asycudasalesandadjustmentallocationsex.pQuantity; }
-			set
-			{
-			    if (value == this.asycudasalesandadjustmentallocationsex.pQuantity) return;
-				this.asycudasalesandadjustmentallocationsex.pQuantity = value;
-                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
-				NotifyPropertyChanged("pQuantity");
-			}
-		}
-     
-
-       
-       [NumberValidationAttribute]
-public Nullable<double> pQtyAllocated
-		{ 
-		    get { return this.asycudasalesandadjustmentallocationsex.pQtyAllocated; }
-			set
-			{
-			    if (value == this.asycudasalesandadjustmentallocationsex.pQtyAllocated) return;
-				this.asycudasalesandadjustmentallocationsex.pQtyAllocated = value;
-                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
-				NotifyPropertyChanged("pQtyAllocated");
-			}
-		}
-     
-
-       
-       [NumberValidationAttribute]
-public Nullable<double> PiQuantity
-		{ 
-		    get { return this.asycudasalesandadjustmentallocationsex.PiQuantity; }
-			set
-			{
-			    if (value == this.asycudasalesandadjustmentallocationsex.PiQuantity) return;
-				this.asycudasalesandadjustmentallocationsex.PiQuantity = value;
-                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
-				NotifyPropertyChanged("PiQuantity");
-			}
-		}
-     
-
-       
-       [NumberValidationAttribute]
-public Nullable<double> SalesFactor
-		{ 
-		    get { return this.asycudasalesandadjustmentallocationsex.SalesFactor; }
-			set
-			{
-			    if (value == this.asycudasalesandadjustmentallocationsex.SalesFactor) return;
-				this.asycudasalesandadjustmentallocationsex.SalesFactor = value;
-                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
-				NotifyPropertyChanged("SalesFactor");
-			}
-		}
-     
-
-       
-       
-                
-                [MaxLength(20, ErrorMessage = "xCNumber has a max length of 20 letters ")]
-public string xCNumber
-		{ 
-		    get { return this.asycudasalesandadjustmentallocationsex.xCNumber; }
-			set
-			{
-			    if (value == this.asycudasalesandadjustmentallocationsex.xCNumber) return;
-				this.asycudasalesandadjustmentallocationsex.xCNumber = value;
-                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
-				NotifyPropertyChanged("xCNumber");
-			}
-		}
-     
-
-       
-       
-public Nullable<System.DateTime> xRegistrationDate
-		{ 
-		    get { return this.asycudasalesandadjustmentallocationsex.xRegistrationDate; }
-			set
-			{
-			    if (value == this.asycudasalesandadjustmentallocationsex.xRegistrationDate) return;
-				this.asycudasalesandadjustmentallocationsex.xRegistrationDate = value;
-                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
-				NotifyPropertyChanged("xRegistrationDate");
-			}
-		}
-     
-
-       
-       [NumberValidationAttribute]
-public Nullable<double> xQuantity
-		{ 
-		    get { return this.asycudasalesandadjustmentallocationsex.xQuantity; }
-			set
-			{
-			    if (value == this.asycudasalesandadjustmentallocationsex.xQuantity) return;
-				this.asycudasalesandadjustmentallocationsex.xQuantity = value;
-                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
-				NotifyPropertyChanged("xQuantity");
-			}
-		}
-     
-
-       
-       
-                
-                [MaxLength(30, ErrorMessage = "pReferenceNumber has a max length of 30 letters ")]
-public string pReferenceNumber
-		{ 
-		    get { return this.asycudasalesandadjustmentallocationsex.pReferenceNumber; }
-			set
-			{
-			    if (value == this.asycudasalesandadjustmentallocationsex.pReferenceNumber) return;
-				this.asycudasalesandadjustmentallocationsex.pReferenceNumber = value;
-                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
-				NotifyPropertyChanged("pReferenceNumber");
-			}
-		}
-     
-
-       
-       [NumberValidationAttribute]
-public Nullable<int> pLineNumber
-		{ 
-		    get { return this.asycudasalesandadjustmentallocationsex.pLineNumber; }
-			set
-			{
-			    if (value == this.asycudasalesandadjustmentallocationsex.pLineNumber) return;
-				this.asycudasalesandadjustmentallocationsex.pLineNumber = value;
-                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
-				NotifyPropertyChanged("pLineNumber");
-			}
-		}
-     
-
-       
-       
-public Nullable<int> xASYCUDA_Id
-		{ 
-		    get { return this.asycudasalesandadjustmentallocationsex.xASYCUDA_Id; }
-			set
-			{
-			    if (value == this.asycudasalesandadjustmentallocationsex.xASYCUDA_Id) return;
-				this.asycudasalesandadjustmentallocationsex.xASYCUDA_Id = value;
-                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
-				NotifyPropertyChanged("xASYCUDA_Id");
-			}
-		}
-     
-
-       
-       
-public Nullable<int> pASYCUDA_Id
-		{ 
-		    get { return this.asycudasalesandadjustmentallocationsex.pASYCUDA_Id; }
-			set
-			{
-			    if (value == this.asycudasalesandadjustmentallocationsex.pASYCUDA_Id) return;
-				this.asycudasalesandadjustmentallocationsex.pASYCUDA_Id = value;
-                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
-				NotifyPropertyChanged("pASYCUDA_Id");
 			}
 		}
      
@@ -566,6 +320,162 @@ public double TaxAmount
 				this.asycudasalesandadjustmentallocationsex.TaxAmount = value;
                 if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
 				NotifyPropertyChanged("TaxAmount");
+			}
+		}
+     
+
+       
+       [NumberValidationAttribute]
+public Nullable<double> SalesFactor
+		{ 
+		    get { return this.asycudasalesandadjustmentallocationsex.SalesFactor; }
+			set
+			{
+			    if (value == this.asycudasalesandadjustmentallocationsex.SalesFactor) return;
+				this.asycudasalesandadjustmentallocationsex.SalesFactor = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("SalesFactor");
+			}
+		}
+     
+
+       
+       
+                
+                [MaxLength(30, ErrorMessage = "pReferenceNumber has a max length of 30 letters ")]
+public string pReferenceNumber
+		{ 
+		    get { return this.asycudasalesandadjustmentallocationsex.pReferenceNumber; }
+			set
+			{
+			    if (value == this.asycudasalesandadjustmentallocationsex.pReferenceNumber) return;
+				this.asycudasalesandadjustmentallocationsex.pReferenceNumber = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("pReferenceNumber");
+			}
+		}
+     
+
+       
+       
+public Nullable<System.DateTime> pRegistrationDate
+		{ 
+		    get { return this.asycudasalesandadjustmentallocationsex.pRegistrationDate; }
+			set
+			{
+			    if (value == this.asycudasalesandadjustmentallocationsex.pRegistrationDate) return;
+				this.asycudasalesandadjustmentallocationsex.pRegistrationDate = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("pRegistrationDate");
+			}
+		}
+     
+
+       
+       
+                
+                [MaxLength(20, ErrorMessage = "pCNumber has a max length of 20 letters ")]
+public string pCNumber
+		{ 
+		    get { return this.asycudasalesandadjustmentallocationsex.pCNumber; }
+			set
+			{
+			    if (value == this.asycudasalesandadjustmentallocationsex.pCNumber) return;
+				this.asycudasalesandadjustmentallocationsex.pCNumber = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("pCNumber");
+			}
+		}
+     
+
+       
+       [NumberValidationAttribute]
+public Nullable<int> pLineNumber
+		{ 
+		    get { return this.asycudasalesandadjustmentallocationsex.pLineNumber; }
+			set
+			{
+			    if (value == this.asycudasalesandadjustmentallocationsex.pLineNumber) return;
+				this.asycudasalesandadjustmentallocationsex.pLineNumber = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("pLineNumber");
+			}
+		}
+     
+
+       
+       [NumberValidationAttribute]
+public Nullable<double> pQuantity
+		{ 
+		    get { return this.asycudasalesandadjustmentallocationsex.pQuantity; }
+			set
+			{
+			    if (value == this.asycudasalesandadjustmentallocationsex.pQuantity) return;
+				this.asycudasalesandadjustmentallocationsex.pQuantity = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("pQuantity");
+			}
+		}
+     
+
+       
+       [NumberValidationAttribute]
+public Nullable<double> pQtyAllocated
+		{ 
+		    get { return this.asycudasalesandadjustmentallocationsex.pQtyAllocated; }
+			set
+			{
+			    if (value == this.asycudasalesandadjustmentallocationsex.pQtyAllocated) return;
+				this.asycudasalesandadjustmentallocationsex.pQtyAllocated = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("pQtyAllocated");
+			}
+		}
+     
+
+       
+       [NumberValidationAttribute]
+public Nullable<double> PiQuantity
+		{ 
+		    get { return this.asycudasalesandadjustmentallocationsex.PiQuantity; }
+			set
+			{
+			    if (value == this.asycudasalesandadjustmentallocationsex.PiQuantity) return;
+				this.asycudasalesandadjustmentallocationsex.PiQuantity = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("PiQuantity");
+			}
+		}
+     
+
+       
+       
+public Nullable<System.DateTime> pExpiryDate
+		{ 
+		    get { return this.asycudasalesandadjustmentallocationsex.pExpiryDate; }
+			set
+			{
+			    if (value == this.asycudasalesandadjustmentallocationsex.pExpiryDate) return;
+				this.asycudasalesandadjustmentallocationsex.pExpiryDate = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("pExpiryDate");
+			}
+		}
+     
+
+       
+       
+                
+                [MaxLength(20, ErrorMessage = "pTariffCode has a max length of 20 letters ")]
+public string pTariffCode
+		{ 
+		    get { return this.asycudasalesandadjustmentallocationsex.pTariffCode; }
+			set
+			{
+			    if (value == this.asycudasalesandadjustmentallocationsex.pTariffCode) return;
+				this.asycudasalesandadjustmentallocationsex.pTariffCode = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("pTariffCode");
 			}
 		}
      
@@ -633,38 +543,6 @@ public string WarehouseError
      
 
        
-       [NumberValidationAttribute]
-public Nullable<int> SANumber
-		{ 
-		    get { return this.asycudasalesandadjustmentallocationsex.SANumber; }
-			set
-			{
-			    if (value == this.asycudasalesandadjustmentallocationsex.SANumber) return;
-				this.asycudasalesandadjustmentallocationsex.SANumber = value;
-                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
-				NotifyPropertyChanged("SANumber");
-			}
-		}
-     
-
-       
-       
-                
-                [MaxLength(30, ErrorMessage = "xReferenceNumber has a max length of 30 letters ")]
-public string xReferenceNumber
-		{ 
-		    get { return this.asycudasalesandadjustmentallocationsex.xReferenceNumber; }
-			set
-			{
-			    if (value == this.asycudasalesandadjustmentallocationsex.xReferenceNumber) return;
-				this.asycudasalesandadjustmentallocationsex.xReferenceNumber = value;
-                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
-				NotifyPropertyChanged("xReferenceNumber");
-			}
-		}
-     
-
-       
        
                 
                 [MaxLength(50, ErrorMessage = "TariffCode has a max length of 50 letters ")]
@@ -692,38 +570,6 @@ public Nullable<bool> Invalid
 				this.asycudasalesandadjustmentallocationsex.Invalid = value;
                 if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
 				NotifyPropertyChanged("Invalid");
-			}
-		}
-     
-
-       
-       
-public Nullable<System.DateTime> pExpiryDate
-		{ 
-		    get { return this.asycudasalesandadjustmentallocationsex.pExpiryDate; }
-			set
-			{
-			    if (value == this.asycudasalesandadjustmentallocationsex.pExpiryDate) return;
-				this.asycudasalesandadjustmentallocationsex.pExpiryDate = value;
-                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
-				NotifyPropertyChanged("pExpiryDate");
-			}
-		}
-     
-
-       
-       
-                
-                [MaxLength(20, ErrorMessage = "pTariffCode has a max length of 20 letters ")]
-public string pTariffCode
-		{ 
-		    get { return this.asycudasalesandadjustmentallocationsex.pTariffCode; }
-			set
-			{
-			    if (value == this.asycudasalesandadjustmentallocationsex.pTariffCode) return;
-				this.asycudasalesandadjustmentallocationsex.pTariffCode = value;
-                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
-				NotifyPropertyChanged("pTariffCode");
 			}
 		}
      
@@ -777,21 +623,6 @@ public Nullable<System.DateTime> AssessmentDate
 		}
      
 
-       [RequiredValidationAttribute(ErrorMessage= "ApplicationSettings is required")]
-       
-public int ApplicationSettingsId
-		{ 
-		    get { return this.asycudasalesandadjustmentallocationsex.ApplicationSettingsId; }
-			set
-			{
-			    if (value == this.asycudasalesandadjustmentallocationsex.ApplicationSettingsId) return;
-				this.asycudasalesandadjustmentallocationsex.ApplicationSettingsId = value;
-                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
-				NotifyPropertyChanged("ApplicationSettingsId");
-			}
-		}
-     
-
        
        
                 
@@ -810,16 +641,185 @@ public string xStatus
      
 
        
-       [NumberValidationAttribute]
-public Nullable<int> SalesLineNumber
+       
+                
+                [MaxLength(30, ErrorMessage = "xReferenceNumber has a max length of 30 letters ")]
+public string xReferenceNumber
 		{ 
-		    get { return this.asycudasalesandadjustmentallocationsex.SalesLineNumber; }
+		    get { return this.asycudasalesandadjustmentallocationsex.xReferenceNumber; }
 			set
 			{
-			    if (value == this.asycudasalesandadjustmentallocationsex.SalesLineNumber) return;
-				this.asycudasalesandadjustmentallocationsex.SalesLineNumber = value;
+			    if (value == this.asycudasalesandadjustmentallocationsex.xReferenceNumber) return;
+				this.asycudasalesandadjustmentallocationsex.xReferenceNumber = value;
                 if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
-				NotifyPropertyChanged("SalesLineNumber");
+				NotifyPropertyChanged("xReferenceNumber");
+			}
+		}
+     
+
+       
+       
+                
+                [MaxLength(20, ErrorMessage = "xCNumber has a max length of 20 letters ")]
+public string xCNumber
+		{ 
+		    get { return this.asycudasalesandadjustmentallocationsex.xCNumber; }
+			set
+			{
+			    if (value == this.asycudasalesandadjustmentallocationsex.xCNumber) return;
+				this.asycudasalesandadjustmentallocationsex.xCNumber = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("xCNumber");
+			}
+		}
+     
+
+       
+       [NumberValidationAttribute]
+public Nullable<int> xLineNumber
+		{ 
+		    get { return this.asycudasalesandadjustmentallocationsex.xLineNumber; }
+			set
+			{
+			    if (value == this.asycudasalesandadjustmentallocationsex.xLineNumber) return;
+				this.asycudasalesandadjustmentallocationsex.xLineNumber = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("xLineNumber");
+			}
+		}
+     
+
+       
+       
+public Nullable<System.DateTime> xRegistrationDate
+		{ 
+		    get { return this.asycudasalesandadjustmentallocationsex.xRegistrationDate; }
+			set
+			{
+			    if (value == this.asycudasalesandadjustmentallocationsex.xRegistrationDate) return;
+				this.asycudasalesandadjustmentallocationsex.xRegistrationDate = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("xRegistrationDate");
+			}
+		}
+     
+
+       
+       [NumberValidationAttribute]
+public Nullable<double> xQuantity
+		{ 
+		    get { return this.asycudasalesandadjustmentallocationsex.xQuantity; }
+			set
+			{
+			    if (value == this.asycudasalesandadjustmentallocationsex.xQuantity) return;
+				this.asycudasalesandadjustmentallocationsex.xQuantity = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("xQuantity");
+			}
+		}
+     
+
+       [RequiredValidationAttribute(ErrorMessage= "Allocation is required")]
+       
+public int AllocationId
+		{ 
+		    get { return this.asycudasalesandadjustmentallocationsex.AllocationId; }
+			set
+			{
+			    if (value == this.asycudasalesandadjustmentallocationsex.AllocationId) return;
+				this.asycudasalesandadjustmentallocationsex.AllocationId = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("AllocationId");
+			}
+		}
+     
+
+       [RequiredValidationAttribute(ErrorMessage= "EntryDataDetails is required")]
+       
+public int EntryDataDetailsId
+		{ 
+		    get { return this.asycudasalesandadjustmentallocationsex.EntryDataDetailsId; }
+			set
+			{
+			    if (value == this.asycudasalesandadjustmentallocationsex.EntryDataDetailsId) return;
+				this.asycudasalesandadjustmentallocationsex.EntryDataDetailsId = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("EntryDataDetailsId");
+			}
+		}
+     
+
+       
+       
+public Nullable<int> PreviousItem_Id
+		{ 
+		    get { return this.asycudasalesandadjustmentallocationsex.PreviousItem_Id; }
+			set
+			{
+			    if (value == this.asycudasalesandadjustmentallocationsex.PreviousItem_Id) return;
+				this.asycudasalesandadjustmentallocationsex.PreviousItem_Id = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("PreviousItem_Id");
+			}
+		}
+     
+
+       [RequiredValidationAttribute(ErrorMessage= "xBond_Item_ is required")]
+       
+public int xBond_Item_Id
+		{ 
+		    get { return this.asycudasalesandadjustmentallocationsex.xBond_Item_Id; }
+			set
+			{
+			    if (value == this.asycudasalesandadjustmentallocationsex.xBond_Item_Id) return;
+				this.asycudasalesandadjustmentallocationsex.xBond_Item_Id = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("xBond_Item_Id");
+			}
+		}
+     
+
+       
+       
+public Nullable<int> xASYCUDA_Id
+		{ 
+		    get { return this.asycudasalesandadjustmentallocationsex.xASYCUDA_Id; }
+			set
+			{
+			    if (value == this.asycudasalesandadjustmentallocationsex.xASYCUDA_Id) return;
+				this.asycudasalesandadjustmentallocationsex.xASYCUDA_Id = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("xASYCUDA_Id");
+			}
+		}
+     
+
+       
+       
+public Nullable<int> pASYCUDA_Id
+		{ 
+		    get { return this.asycudasalesandadjustmentallocationsex.pASYCUDA_Id; }
+			set
+			{
+			    if (value == this.asycudasalesandadjustmentallocationsex.pASYCUDA_Id) return;
+				this.asycudasalesandadjustmentallocationsex.pASYCUDA_Id = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("pASYCUDA_Id");
+			}
+		}
+     
+
+       [RequiredValidationAttribute(ErrorMessage= "ApplicationSettings is required")]
+       
+public int ApplicationSettingsId
+		{ 
+		    get { return this.asycudasalesandadjustmentallocationsex.ApplicationSettingsId; }
+			set
+			{
+			    if (value == this.asycudasalesandadjustmentallocationsex.ApplicationSettingsId) return;
+				this.asycudasalesandadjustmentallocationsex.ApplicationSettingsId = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("ApplicationSettingsId");
 			}
 		}
      

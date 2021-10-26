@@ -344,7 +344,7 @@ namespace AdjustmentQS.Business.Services
 
                         doclst = await CreateEx9Class.Instance.CreateDutyFreePaidDocument(dutyFreePaid,
                                 slst, docSet, adjustmentType, false, itemPiSummarylst, false,
-                                false, false, "Current", false, false, true, perInvoice, false, false, "S") //ex9bucket = false because sales affect current the piquantity
+                                false, false, "Current", false, false, true, perInvoice, false, false, false, "S") //ex9bucket = false because sales affect current the piquantity
                             .ConfigureAwait(
                                 false);
                     }
@@ -352,7 +352,7 @@ namespace AdjustmentQS.Business.Services
                     {
                         doclst = await CreateEx9Class.Instance.CreateDutyFreePaidDocument(dutyFreePaid,
                                  slst, docSet, adjustmentType, false, itemPiSummarylst, true,
-                                 false, false, "Historic", true, true, true, perInvoice, false, true, "S")
+                                 false, false, "Historic", true, true, true, perInvoice, false, true, true, "S")
                              .ConfigureAwait(
                                  false);
                     }
@@ -504,7 +504,7 @@ namespace AdjustmentQS.Business.Services
                     {
                         //TODO: use expirydate in asycuda document
                         pres = ctx.AdjustmentShortAllocations
-
+                            .Include(x => x.AsycudaSalesAllocationsPIData)
                             .OrderBy(x => x.AllocationId)
                             .Where(x => x.pRegistrationDate == null || (DbFunctions.AddDays(((DateTime)x.pRegistrationDate), 730)) > DateTime.Now)
                             .Where(x => x.EntryDataDetails.EntryDataDetailsEx.SystemDocumentSets != null)
@@ -513,6 +513,7 @@ namespace AdjustmentQS.Business.Services
                     else
                     {
                         pres = ctx.AdjustmentShortAllocations.OrderBy(x => x.AllocationId)
+                            .Include(x => x.AsycudaSalesAllocationsPIData)
                             .Where(x => x.pRegistrationDate == null || (DbFunctions.AddDays(((DateTime)x.pRegistrationDate), 730)) > DateTime.Now)
                             .Where(x => x.EntryDataDetails.EntryDataDetailsEx.SystemDocumentSets != null);
 
@@ -582,6 +583,7 @@ namespace AdjustmentQS.Business.Services
                             Net_weight_itm = c.w.FirstOrDefault().Net_weight_itm,
                             InventoryItemId = c.x.EntryDataDetails.InventoryItemId,
                             // Net_weight_itm = c.x.PreviousDocumentItem != null ? ctx.xcuda_Weight_itm.FirstOrDefault(q => q.Valuation_item_Id == x.PreviousItem_Id).Net_weight_itm: 0,
+                            PIData = c.x.AsycudaSalesAllocationsPIData,
                             previousItems = c.x.PreviousDocumentItem.EntryPreviousItems
                                     .Select(y => y.xcuda_PreviousItem)
                                     .Where(y => (y.xcuda_Item.AsycudaDocument.CNumber != null || y.xcuda_Item.AsycudaDocument.IsManuallyAssessed == true) && y.xcuda_Item.AsycudaDocument.Cancelled != true)

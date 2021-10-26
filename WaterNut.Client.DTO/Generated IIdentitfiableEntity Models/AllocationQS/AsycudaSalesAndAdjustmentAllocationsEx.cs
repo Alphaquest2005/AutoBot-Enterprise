@@ -19,11 +19,11 @@ namespace AllocationQS.Client.DTO
         {
             get
             {
-               return this.AllocationId.ToString(); // this.AllocationId == null?"0":                        
+               return this.TotalValue.ToString(); // this.TotalValue == null?"0":                        
             }
             set
             {
-                this.AllocationId = Convert.ToInt32(value);
+                this.TotalValue = Convert.ToDouble(value);
             }
         }
 

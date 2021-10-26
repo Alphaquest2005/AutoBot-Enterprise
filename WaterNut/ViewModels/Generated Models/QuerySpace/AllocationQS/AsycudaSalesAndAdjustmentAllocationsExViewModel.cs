@@ -55,7 +55,6 @@ namespace WaterNut.QuerySpace.AllocationQS.ViewModels
 
 
  			// Recieve messages for Core Current Entities Changed
-                        RegisterToReceiveMessages<ApplicationSettings>(CoreEntities.MessageToken.CurrentApplicationSettingsChanged, OnCurrentApplicationSettingsChanged);
  
 
 			AsycudaSalesAndAdjustmentAllocationsExes = new VirtualList<AsycudaSalesAndAdjustmentAllocationsEx>(vloader);
@@ -137,10 +136,6 @@ namespace WaterNut.QuerySpace.AllocationQS.ViewModels
 
             void CurrentAsycudaSalesAndAdjustmentAllocationsEx__propertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
                 {
-                    //if (e.PropertyName == "AddApplicationSettings")
-                   // {
-                   //    if(ApplicationSettings.Contains(CurrentAsycudaSalesAndAdjustmentAllocationsEx.ApplicationSettings) == false) ApplicationSettings.Add(CurrentAsycudaSalesAndAdjustmentAllocationsEx.ApplicationSettings);
-                    //}
                  } 
         internal virtual void OnAsycudaSalesAndAdjustmentAllocationsExesChanged(object sender, NotificationEventArgs e)
         {
@@ -152,20 +147,6 @@ namespace WaterNut.QuerySpace.AllocationQS.ViewModels
  
   			// Core Current Entities Changed
 			// theorticall don't need this cuz i am inheriting from core entities baseview model so changes should flow up to here
-                internal virtual void OnCurrentApplicationSettingsChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<ApplicationSettings> e)
-				{
-				if (e.Data == null || e.Data.ApplicationSettingsId == null)
-                {
-                    vloader.FilterExpression = null;
-                }
-                else
-                {
-                    vloader.FilterExpression = string.Format("ApplicationSettingsId == {0}", e.Data.ApplicationSettingsId.ToString());
-                }
-					
-                    AsycudaSalesAndAdjustmentAllocationsExes.Refresh();
-					NotifyPropertyChanged(x => this.AsycudaSalesAndAdjustmentAllocationsExes);
-				}
   
 // Filtering Each Field except IDs
 		public void ViewAll()
@@ -264,17 +245,17 @@ namespace WaterNut.QuerySpace.AllocationQS.ViewModels
 
  
 
-		private Int32? _xLineNumberFilter;
-        public Int32? xLineNumberFilter
+		private Int32? _sANumberFilter;
+        public Int32? SANumberFilter
         {
             get
             {
-                return _xLineNumberFilter;
+                return _sANumberFilter;
             }
             set
             {
-                _xLineNumberFilter = value;
-				NotifyPropertyChanged(x => xLineNumberFilter);
+                _sANumberFilter = value;
+				NotifyPropertyChanged(x => SANumberFilter);
                 FilterData();
                 
             }
@@ -404,6 +385,24 @@ namespace WaterNut.QuerySpace.AllocationQS.ViewModels
 
  
 
+		private Int32? _salesLineNumberFilter;
+        public Int32? SalesLineNumberFilter
+        {
+            get
+            {
+                return _salesLineNumberFilter;
+            }
+            set
+            {
+                _salesLineNumberFilter = value;
+				NotifyPropertyChanged(x => SalesLineNumberFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
+
 		private string _itemNumberFilter;
         public string ItemNumberFilter
         {
@@ -451,268 +450,6 @@ namespace WaterNut.QuerySpace.AllocationQS.ViewModels
             {
                 _dutyFreePaidFilter = value;
 				NotifyPropertyChanged(x => DutyFreePaidFilter);
-                FilterData();
-                
-            }
-        }	
-
- 
-
-		private string _pCNumberFilter;
-        public string pCNumberFilter
-        {
-            get
-            {
-                return _pCNumberFilter;
-            }
-            set
-            {
-                _pCNumberFilter = value;
-				NotifyPropertyChanged(x => pCNumberFilter);
-                FilterData();
-                
-            }
-        }	
-
- 
-		private DateTime? _startpRegistrationDateFilter = DateTime.Parse(string.Format("{0}/1/{1}", DateTime.Now.Month ,DateTime.Now.Year));
-        public DateTime? StartpRegistrationDateFilter
-        {
-            get
-            {
-                return _startpRegistrationDateFilter;
-            }
-            set
-            {
-                _startpRegistrationDateFilter = value;
-				NotifyPropertyChanged(x => StartpRegistrationDateFilter);
-                FilterData();
-                
-            }
-        }	
-
-		private DateTime? _endpRegistrationDateFilter = DateTime.Parse(string.Format("{1}/{0}/{2}", DateTime.DaysInMonth( DateTime.Now.Year,DateTime.Now.Month), DateTime.Now.Month, DateTime.Now.Year));
-        public DateTime? EndpRegistrationDateFilter
-        {
-            get
-            {
-                return _endpRegistrationDateFilter;
-            }
-            set
-            {
-                _endpRegistrationDateFilter = value;
-				NotifyPropertyChanged(x => EndpRegistrationDateFilter);
-                FilterData();
-                
-            }
-        }
- 
-
-		private DateTime? _pRegistrationDateFilter;
-        public DateTime? pRegistrationDateFilter
-        {
-            get
-            {
-                return _pRegistrationDateFilter;
-            }
-            set
-            {
-                _pRegistrationDateFilter = value;
-				NotifyPropertyChanged(x => pRegistrationDateFilter);
-                FilterData();
-                
-            }
-        }	
-
- 
-
-		private Double? _pQuantityFilter;
-        public Double? pQuantityFilter
-        {
-            get
-            {
-                return _pQuantityFilter;
-            }
-            set
-            {
-                _pQuantityFilter = value;
-				NotifyPropertyChanged(x => pQuantityFilter);
-                FilterData();
-                
-            }
-        }	
-
- 
-
-		private Double? _pQtyAllocatedFilter;
-        public Double? pQtyAllocatedFilter
-        {
-            get
-            {
-                return _pQtyAllocatedFilter;
-            }
-            set
-            {
-                _pQtyAllocatedFilter = value;
-				NotifyPropertyChanged(x => pQtyAllocatedFilter);
-                FilterData();
-                
-            }
-        }	
-
- 
-
-		private Double? _piQuantityFilter;
-        public Double? PiQuantityFilter
-        {
-            get
-            {
-                return _piQuantityFilter;
-            }
-            set
-            {
-                _piQuantityFilter = value;
-				NotifyPropertyChanged(x => PiQuantityFilter);
-                FilterData();
-                
-            }
-        }	
-
- 
-
-		private Double? _salesFactorFilter;
-        public Double? SalesFactorFilter
-        {
-            get
-            {
-                return _salesFactorFilter;
-            }
-            set
-            {
-                _salesFactorFilter = value;
-				NotifyPropertyChanged(x => SalesFactorFilter);
-                FilterData();
-                
-            }
-        }	
-
- 
-
-		private string _xCNumberFilter;
-        public string xCNumberFilter
-        {
-            get
-            {
-                return _xCNumberFilter;
-            }
-            set
-            {
-                _xCNumberFilter = value;
-				NotifyPropertyChanged(x => xCNumberFilter);
-                FilterData();
-                
-            }
-        }	
-
- 
-		private DateTime? _startxRegistrationDateFilter = DateTime.Parse(string.Format("{0}/1/{1}", DateTime.Now.Month ,DateTime.Now.Year));
-        public DateTime? StartxRegistrationDateFilter
-        {
-            get
-            {
-                return _startxRegistrationDateFilter;
-            }
-            set
-            {
-                _startxRegistrationDateFilter = value;
-				NotifyPropertyChanged(x => StartxRegistrationDateFilter);
-                FilterData();
-                
-            }
-        }	
-
-		private DateTime? _endxRegistrationDateFilter = DateTime.Parse(string.Format("{1}/{0}/{2}", DateTime.DaysInMonth( DateTime.Now.Year,DateTime.Now.Month), DateTime.Now.Month, DateTime.Now.Year));
-        public DateTime? EndxRegistrationDateFilter
-        {
-            get
-            {
-                return _endxRegistrationDateFilter;
-            }
-            set
-            {
-                _endxRegistrationDateFilter = value;
-				NotifyPropertyChanged(x => EndxRegistrationDateFilter);
-                FilterData();
-                
-            }
-        }
- 
-
-		private DateTime? _xRegistrationDateFilter;
-        public DateTime? xRegistrationDateFilter
-        {
-            get
-            {
-                return _xRegistrationDateFilter;
-            }
-            set
-            {
-                _xRegistrationDateFilter = value;
-				NotifyPropertyChanged(x => xRegistrationDateFilter);
-                FilterData();
-                
-            }
-        }	
-
- 
-
-		private Double? _xQuantityFilter;
-        public Double? xQuantityFilter
-        {
-            get
-            {
-                return _xQuantityFilter;
-            }
-            set
-            {
-                _xQuantityFilter = value;
-				NotifyPropertyChanged(x => xQuantityFilter);
-                FilterData();
-                
-            }
-        }	
-
- 
-
-		private string _pReferenceNumberFilter;
-        public string pReferenceNumberFilter
-        {
-            get
-            {
-                return _pReferenceNumberFilter;
-            }
-            set
-            {
-                _pReferenceNumberFilter = value;
-				NotifyPropertyChanged(x => pReferenceNumberFilter);
-                FilterData();
-                
-            }
-        }	
-
- 
-
-		private Int32? _pLineNumberFilter;
-        public Int32? pLineNumberFilter
-        {
-            get
-            {
-                return _pLineNumberFilter;
-            }
-            set
-            {
-                _pLineNumberFilter = value;
-				NotifyPropertyChanged(x => pLineNumberFilter);
                 FilterData();
                 
             }
@@ -792,6 +529,250 @@ namespace WaterNut.QuerySpace.AllocationQS.ViewModels
 
  
 
+		private Double? _salesFactorFilter;
+        public Double? SalesFactorFilter
+        {
+            get
+            {
+                return _salesFactorFilter;
+            }
+            set
+            {
+                _salesFactorFilter = value;
+				NotifyPropertyChanged(x => SalesFactorFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
+
+		private string _pReferenceNumberFilter;
+        public string pReferenceNumberFilter
+        {
+            get
+            {
+                return _pReferenceNumberFilter;
+            }
+            set
+            {
+                _pReferenceNumberFilter = value;
+				NotifyPropertyChanged(x => pReferenceNumberFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
+		private DateTime? _startpRegistrationDateFilter = DateTime.Parse(string.Format("{0}/1/{1}", DateTime.Now.Month ,DateTime.Now.Year));
+        public DateTime? StartpRegistrationDateFilter
+        {
+            get
+            {
+                return _startpRegistrationDateFilter;
+            }
+            set
+            {
+                _startpRegistrationDateFilter = value;
+				NotifyPropertyChanged(x => StartpRegistrationDateFilter);
+                FilterData();
+                
+            }
+        }	
+
+		private DateTime? _endpRegistrationDateFilter = DateTime.Parse(string.Format("{1}/{0}/{2}", DateTime.DaysInMonth( DateTime.Now.Year,DateTime.Now.Month), DateTime.Now.Month, DateTime.Now.Year));
+        public DateTime? EndpRegistrationDateFilter
+        {
+            get
+            {
+                return _endpRegistrationDateFilter;
+            }
+            set
+            {
+                _endpRegistrationDateFilter = value;
+				NotifyPropertyChanged(x => EndpRegistrationDateFilter);
+                FilterData();
+                
+            }
+        }
+ 
+
+		private DateTime? _pRegistrationDateFilter;
+        public DateTime? pRegistrationDateFilter
+        {
+            get
+            {
+                return _pRegistrationDateFilter;
+            }
+            set
+            {
+                _pRegistrationDateFilter = value;
+				NotifyPropertyChanged(x => pRegistrationDateFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
+
+		private string _pCNumberFilter;
+        public string pCNumberFilter
+        {
+            get
+            {
+                return _pCNumberFilter;
+            }
+            set
+            {
+                _pCNumberFilter = value;
+				NotifyPropertyChanged(x => pCNumberFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
+
+		private Int32? _pLineNumberFilter;
+        public Int32? pLineNumberFilter
+        {
+            get
+            {
+                return _pLineNumberFilter;
+            }
+            set
+            {
+                _pLineNumberFilter = value;
+				NotifyPropertyChanged(x => pLineNumberFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
+
+		private Double? _pQuantityFilter;
+        public Double? pQuantityFilter
+        {
+            get
+            {
+                return _pQuantityFilter;
+            }
+            set
+            {
+                _pQuantityFilter = value;
+				NotifyPropertyChanged(x => pQuantityFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
+
+		private Double? _pQtyAllocatedFilter;
+        public Double? pQtyAllocatedFilter
+        {
+            get
+            {
+                return _pQtyAllocatedFilter;
+            }
+            set
+            {
+                _pQtyAllocatedFilter = value;
+				NotifyPropertyChanged(x => pQtyAllocatedFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
+
+		private Double? _piQuantityFilter;
+        public Double? PiQuantityFilter
+        {
+            get
+            {
+                return _piQuantityFilter;
+            }
+            set
+            {
+                _piQuantityFilter = value;
+				NotifyPropertyChanged(x => PiQuantityFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
+		private DateTime? _startpExpiryDateFilter = DateTime.Parse(string.Format("{0}/1/{1}", DateTime.Now.Month ,DateTime.Now.Year));
+        public DateTime? StartpExpiryDateFilter
+        {
+            get
+            {
+                return _startpExpiryDateFilter;
+            }
+            set
+            {
+                _startpExpiryDateFilter = value;
+				NotifyPropertyChanged(x => StartpExpiryDateFilter);
+                FilterData();
+                
+            }
+        }	
+
+		private DateTime? _endpExpiryDateFilter = DateTime.Parse(string.Format("{1}/{0}/{2}", DateTime.DaysInMonth( DateTime.Now.Year,DateTime.Now.Month), DateTime.Now.Month, DateTime.Now.Year));
+        public DateTime? EndpExpiryDateFilter
+        {
+            get
+            {
+                return _endpExpiryDateFilter;
+            }
+            set
+            {
+                _endpExpiryDateFilter = value;
+				NotifyPropertyChanged(x => EndpExpiryDateFilter);
+                FilterData();
+                
+            }
+        }
+ 
+
+		private DateTime? _pExpiryDateFilter;
+        public DateTime? pExpiryDateFilter
+        {
+            get
+            {
+                return _pExpiryDateFilter;
+            }
+            set
+            {
+                _pExpiryDateFilter = value;
+				NotifyPropertyChanged(x => pExpiryDateFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
+
+		private string _pTariffCodeFilter;
+        public string pTariffCodeFilter
+        {
+            get
+            {
+                return _pTariffCodeFilter;
+            }
+            set
+            {
+                _pTariffCodeFilter = value;
+				NotifyPropertyChanged(x => pTariffCodeFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
+
 		private Boolean? _pIsAssessedFilter;
         public Boolean? pIsAssessedFilter
         {
@@ -864,42 +845,6 @@ namespace WaterNut.QuerySpace.AllocationQS.ViewModels
 
  
 
-		private Int32? _sANumberFilter;
-        public Int32? SANumberFilter
-        {
-            get
-            {
-                return _sANumberFilter;
-            }
-            set
-            {
-                _sANumberFilter = value;
-				NotifyPropertyChanged(x => SANumberFilter);
-                FilterData();
-                
-            }
-        }	
-
- 
-
-		private string _xReferenceNumberFilter;
-        public string xReferenceNumberFilter
-        {
-            get
-            {
-                return _xReferenceNumberFilter;
-            }
-            set
-            {
-                _xReferenceNumberFilter = value;
-				NotifyPropertyChanged(x => xReferenceNumberFilter);
-                FilterData();
-                
-            }
-        }	
-
- 
-
 		private string _tariffCodeFilter;
         public string TariffCodeFilter
         {
@@ -929,74 +874,6 @@ namespace WaterNut.QuerySpace.AllocationQS.ViewModels
             {
                 _invalidFilter = value;
 				NotifyPropertyChanged(x => InvalidFilter);
-                FilterData();
-                
-            }
-        }	
-
- 
-		private DateTime? _startpExpiryDateFilter = DateTime.Parse(string.Format("{0}/1/{1}", DateTime.Now.Month ,DateTime.Now.Year));
-        public DateTime? StartpExpiryDateFilter
-        {
-            get
-            {
-                return _startpExpiryDateFilter;
-            }
-            set
-            {
-                _startpExpiryDateFilter = value;
-				NotifyPropertyChanged(x => StartpExpiryDateFilter);
-                FilterData();
-                
-            }
-        }	
-
-		private DateTime? _endpExpiryDateFilter = DateTime.Parse(string.Format("{1}/{0}/{2}", DateTime.DaysInMonth( DateTime.Now.Year,DateTime.Now.Month), DateTime.Now.Month, DateTime.Now.Year));
-        public DateTime? EndpExpiryDateFilter
-        {
-            get
-            {
-                return _endpExpiryDateFilter;
-            }
-            set
-            {
-                _endpExpiryDateFilter = value;
-				NotifyPropertyChanged(x => EndpExpiryDateFilter);
-                FilterData();
-                
-            }
-        }
- 
-
-		private DateTime? _pExpiryDateFilter;
-        public DateTime? pExpiryDateFilter
-        {
-            get
-            {
-                return _pExpiryDateFilter;
-            }
-            set
-            {
-                _pExpiryDateFilter = value;
-				NotifyPropertyChanged(x => pExpiryDateFilter);
-                FilterData();
-                
-            }
-        }	
-
- 
-
-		private string _pTariffCodeFilter;
-        public string pTariffCodeFilter
-        {
-            get
-            {
-                return _pTariffCodeFilter;
-            }
-            set
-            {
-                _pTariffCodeFilter = value;
-				NotifyPropertyChanged(x => pTariffCodeFilter);
                 FilterData();
                 
             }
@@ -1108,17 +985,121 @@ namespace WaterNut.QuerySpace.AllocationQS.ViewModels
 
  
 
-		private Int32? _salesLineNumberFilter;
-        public Int32? SalesLineNumberFilter
+		private string _xReferenceNumberFilter;
+        public string xReferenceNumberFilter
         {
             get
             {
-                return _salesLineNumberFilter;
+                return _xReferenceNumberFilter;
             }
             set
             {
-                _salesLineNumberFilter = value;
-				NotifyPropertyChanged(x => SalesLineNumberFilter);
+                _xReferenceNumberFilter = value;
+				NotifyPropertyChanged(x => xReferenceNumberFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
+
+		private string _xCNumberFilter;
+        public string xCNumberFilter
+        {
+            get
+            {
+                return _xCNumberFilter;
+            }
+            set
+            {
+                _xCNumberFilter = value;
+				NotifyPropertyChanged(x => xCNumberFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
+
+		private Int32? _xLineNumberFilter;
+        public Int32? xLineNumberFilter
+        {
+            get
+            {
+                return _xLineNumberFilter;
+            }
+            set
+            {
+                _xLineNumberFilter = value;
+				NotifyPropertyChanged(x => xLineNumberFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
+		private DateTime? _startxRegistrationDateFilter = DateTime.Parse(string.Format("{0}/1/{1}", DateTime.Now.Month ,DateTime.Now.Year));
+        public DateTime? StartxRegistrationDateFilter
+        {
+            get
+            {
+                return _startxRegistrationDateFilter;
+            }
+            set
+            {
+                _startxRegistrationDateFilter = value;
+				NotifyPropertyChanged(x => StartxRegistrationDateFilter);
+                FilterData();
+                
+            }
+        }	
+
+		private DateTime? _endxRegistrationDateFilter = DateTime.Parse(string.Format("{1}/{0}/{2}", DateTime.DaysInMonth( DateTime.Now.Year,DateTime.Now.Month), DateTime.Now.Month, DateTime.Now.Year));
+        public DateTime? EndxRegistrationDateFilter
+        {
+            get
+            {
+                return _endxRegistrationDateFilter;
+            }
+            set
+            {
+                _endxRegistrationDateFilter = value;
+				NotifyPropertyChanged(x => EndxRegistrationDateFilter);
+                FilterData();
+                
+            }
+        }
+ 
+
+		private DateTime? _xRegistrationDateFilter;
+        public DateTime? xRegistrationDateFilter
+        {
+            get
+            {
+                return _xRegistrationDateFilter;
+            }
+            set
+            {
+                _xRegistrationDateFilter = value;
+				NotifyPropertyChanged(x => xRegistrationDateFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
+
+		private Double? _xQuantityFilter;
+        public Double? xQuantityFilter
+        {
+            get
+            {
+                return _xQuantityFilter;
+            }
+            set
+            {
+                _xQuantityFilter = value;
+				NotifyPropertyChanged(x => xQuantityFilter);
                 FilterData();
                 
             }
@@ -1168,8 +1149,8 @@ namespace WaterNut.QuerySpace.AllocationQS.ViewModels
 					if(QtyAllocatedFilter.HasValue)
 						res.Append(" && " + string.Format("QtyAllocated == {0}",  QtyAllocatedFilter.ToString()));				 
 
-					if(xLineNumberFilter.HasValue)
-						res.Append(" && " + string.Format("xLineNumber == {0}",  xLineNumberFilter.ToString()));				 
+					if(SANumberFilter.HasValue)
+						res.Append(" && " + string.Format("SANumber == {0}",  SANumberFilter.ToString()));				 
 
  
 
@@ -1214,6 +1195,9 @@ namespace WaterNut.QuerySpace.AllocationQS.ViewModels
 						res.Append(" && " + string.Format("InvoiceNo.Contains(\"{0}\")",  InvoiceNoFilter));						
  
 
+					if(SalesLineNumberFilter.HasValue)
+						res.Append(" && " + string.Format("SalesLineNumber == {0}",  SalesLineNumberFilter.ToString()));				 
+
 									if(string.IsNullOrEmpty(ItemNumberFilter) == false)
 						res.Append(" && " + string.Format("ItemNumber.Contains(\"{0}\")",  ItemNumberFilter));						
  
@@ -1226,8 +1210,23 @@ namespace WaterNut.QuerySpace.AllocationQS.ViewModels
 						res.Append(" && " + string.Format("DutyFreePaid.Contains(\"{0}\")",  DutyFreePaidFilter));						
  
 
-									if(string.IsNullOrEmpty(pCNumberFilter) == false)
-						res.Append(" && " + string.Format("pCNumber.Contains(\"{0}\")",  pCNumberFilter));						
+					if(CostFilter.HasValue)
+						res.Append(" && " + string.Format("Cost == {0}",  CostFilter.ToString()));				 
+
+					if(Total_CIF_itmFilter.HasValue)
+						res.Append(" && " + string.Format("Total_CIF_itm == {0}",  Total_CIF_itmFilter.ToString()));				 
+
+					if(DutyLiabilityFilter.HasValue)
+						res.Append(" && " + string.Format("DutyLiability == {0}",  DutyLiabilityFilter.ToString()));				 
+
+					if(TaxAmountFilter.HasValue)
+						res.Append(" && " + string.Format("TaxAmount == {0}",  TaxAmountFilter.ToString()));				 
+
+					if(SalesFactorFilter.HasValue)
+						res.Append(" && " + string.Format("SalesFactor == {0}",  SalesFactorFilter.ToString()));				 
+
+									if(string.IsNullOrEmpty(pReferenceNumberFilter) == false)
+						res.Append(" && " + string.Format("pReferenceNumber.Contains(\"{0}\")",  pReferenceNumberFilter));						
  
 
  
@@ -1259,6 +1258,13 @@ namespace WaterNut.QuerySpace.AllocationQS.ViewModels
 						}
 				 
 
+									if(string.IsNullOrEmpty(pCNumberFilter) == false)
+						res.Append(" && " + string.Format("pCNumber.Contains(\"{0}\")",  pCNumberFilter));						
+ 
+
+					if(pLineNumberFilter.HasValue)
+						res.Append(" && " + string.Format("pLineNumber == {0}",  pLineNumberFilter.ToString()));				 
+
 					if(pQuantityFilter.HasValue)
 						res.Append(" && " + string.Format("pQuantity == {0}",  pQuantityFilter.ToString()));				 
 
@@ -1267,95 +1273,6 @@ namespace WaterNut.QuerySpace.AllocationQS.ViewModels
 
 					if(PiQuantityFilter.HasValue)
 						res.Append(" && " + string.Format("PiQuantity == {0}",  PiQuantityFilter.ToString()));				 
-
-					if(SalesFactorFilter.HasValue)
-						res.Append(" && " + string.Format("SalesFactor == {0}",  SalesFactorFilter.ToString()));				 
-
-									if(string.IsNullOrEmpty(xCNumberFilter) == false)
-						res.Append(" && " + string.Format("xCNumber.Contains(\"{0}\")",  xCNumberFilter));						
- 
-
- 
-
-				if (Convert.ToDateTime(StartxRegistrationDateFilter).Date != DateTime.MinValue &&
-		        Convert.ToDateTime(EndxRegistrationDateFilter).Date != DateTime.MinValue) res.Append(" && (");
-
-					if (Convert.ToDateTime(StartxRegistrationDateFilter).Date != DateTime.MinValue)
-						{
-							if(StartxRegistrationDateFilter.HasValue)
-								res.Append(
-                                            (Convert.ToDateTime(EndxRegistrationDateFilter).Date != DateTime.MinValue?"":" && ") +
-                                            string.Format("xRegistrationDate >= \"{0}\"",  Convert.ToDateTime(StartxRegistrationDateFilter).Date.ToString("MM/dd/yyyy")));
-						}
-
-					if (Convert.ToDateTime(EndxRegistrationDateFilter).Date != DateTime.MinValue)
-						{
-							if(EndxRegistrationDateFilter.HasValue)
-								res.Append(" && " + string.Format("xRegistrationDate <= \"{0}\"",  Convert.ToDateTime(EndxRegistrationDateFilter).Date.AddHours(23).ToString("MM/dd/yyyy HH:mm:ss")));
-						}
-
-				if (Convert.ToDateTime(StartxRegistrationDateFilter).Date != DateTime.MinValue &&
-		        Convert.ToDateTime(EndxRegistrationDateFilter).Date != DateTime.MinValue) res.Append(" )");
-
-					if (Convert.ToDateTime(_xRegistrationDateFilter).Date != DateTime.MinValue)
-						{
-							if(xRegistrationDateFilter.HasValue)
-								res.Append(" && " + string.Format("xRegistrationDate == \"{0}\"",  Convert.ToDateTime(xRegistrationDateFilter).Date.ToString("MM/dd/yyyy")));
-						}
-				 
-
-					if(xQuantityFilter.HasValue)
-						res.Append(" && " + string.Format("xQuantity == {0}",  xQuantityFilter.ToString()));				 
-
-									if(string.IsNullOrEmpty(pReferenceNumberFilter) == false)
-						res.Append(" && " + string.Format("pReferenceNumber.Contains(\"{0}\")",  pReferenceNumberFilter));						
- 
-
-					if(pLineNumberFilter.HasValue)
-						res.Append(" && " + string.Format("pLineNumber == {0}",  pLineNumberFilter.ToString()));				 
-
-					if(CostFilter.HasValue)
-						res.Append(" && " + string.Format("Cost == {0}",  CostFilter.ToString()));				 
-
-					if(Total_CIF_itmFilter.HasValue)
-						res.Append(" && " + string.Format("Total_CIF_itm == {0}",  Total_CIF_itmFilter.ToString()));				 
-
-					if(DutyLiabilityFilter.HasValue)
-						res.Append(" && " + string.Format("DutyLiability == {0}",  DutyLiabilityFilter.ToString()));				 
-
-					if(TaxAmountFilter.HasValue)
-						res.Append(" && " + string.Format("TaxAmount == {0}",  TaxAmountFilter.ToString()));				 
-
-									if(pIsAssessedFilter.HasValue)
-						res.Append(" && " + string.Format("pIsAssessed == {0}",  pIsAssessedFilter));						
- 
-
-									if(DoNotAllocateSalesFilter.HasValue)
-						res.Append(" && " + string.Format("DoNotAllocateSales == {0}",  DoNotAllocateSalesFilter));						
- 
-
-									if(DoNotAllocatePreviousEntryFilter.HasValue)
-						res.Append(" && " + string.Format("DoNotAllocatePreviousEntry == {0}",  DoNotAllocatePreviousEntryFilter));						
- 
-
-									if(string.IsNullOrEmpty(WarehouseErrorFilter) == false)
-						res.Append(" && " + string.Format("WarehouseError.Contains(\"{0}\")",  WarehouseErrorFilter));						
- 
-
-					if(SANumberFilter.HasValue)
-						res.Append(" && " + string.Format("SANumber == {0}",  SANumberFilter.ToString()));				 
-
-									if(string.IsNullOrEmpty(xReferenceNumberFilter) == false)
-						res.Append(" && " + string.Format("xReferenceNumber.Contains(\"{0}\")",  xReferenceNumberFilter));						
- 
-
-									if(string.IsNullOrEmpty(TariffCodeFilter) == false)
-						res.Append(" && " + string.Format("TariffCode.Contains(\"{0}\")",  TariffCodeFilter));						
- 
-
-									if(InvalidFilter.HasValue)
-						res.Append(" && " + string.Format("Invalid == {0}",  InvalidFilter));						
- 
 
  
 
@@ -1388,6 +1305,30 @@ namespace WaterNut.QuerySpace.AllocationQS.ViewModels
 
 									if(string.IsNullOrEmpty(pTariffCodeFilter) == false)
 						res.Append(" && " + string.Format("pTariffCode.Contains(\"{0}\")",  pTariffCodeFilter));						
+ 
+
+									if(pIsAssessedFilter.HasValue)
+						res.Append(" && " + string.Format("pIsAssessed == {0}",  pIsAssessedFilter));						
+ 
+
+									if(DoNotAllocateSalesFilter.HasValue)
+						res.Append(" && " + string.Format("DoNotAllocateSales == {0}",  DoNotAllocateSalesFilter));						
+ 
+
+									if(DoNotAllocatePreviousEntryFilter.HasValue)
+						res.Append(" && " + string.Format("DoNotAllocatePreviousEntry == {0}",  DoNotAllocatePreviousEntryFilter));						
+ 
+
+									if(string.IsNullOrEmpty(WarehouseErrorFilter) == false)
+						res.Append(" && " + string.Format("WarehouseError.Contains(\"{0}\")",  WarehouseErrorFilter));						
+ 
+
+									if(string.IsNullOrEmpty(TariffCodeFilter) == false)
+						res.Append(" && " + string.Format("TariffCode.Contains(\"{0}\")",  TariffCodeFilter));						
+ 
+
+									if(InvalidFilter.HasValue)
+						res.Append(" && " + string.Format("Invalid == {0}",  InvalidFilter));						
  
 
 									if(string.IsNullOrEmpty(pItemNumberFilter) == false)
@@ -1431,8 +1372,48 @@ namespace WaterNut.QuerySpace.AllocationQS.ViewModels
 						res.Append(" && " + string.Format("xStatus.Contains(\"{0}\")",  xStatusFilter));						
  
 
-					if(SalesLineNumberFilter.HasValue)
-						res.Append(" && " + string.Format("SalesLineNumber == {0}",  SalesLineNumberFilter.ToString()));							return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
+									if(string.IsNullOrEmpty(xReferenceNumberFilter) == false)
+						res.Append(" && " + string.Format("xReferenceNumber.Contains(\"{0}\")",  xReferenceNumberFilter));						
+ 
+
+									if(string.IsNullOrEmpty(xCNumberFilter) == false)
+						res.Append(" && " + string.Format("xCNumber.Contains(\"{0}\")",  xCNumberFilter));						
+ 
+
+					if(xLineNumberFilter.HasValue)
+						res.Append(" && " + string.Format("xLineNumber == {0}",  xLineNumberFilter.ToString()));				 
+
+ 
+
+				if (Convert.ToDateTime(StartxRegistrationDateFilter).Date != DateTime.MinValue &&
+		        Convert.ToDateTime(EndxRegistrationDateFilter).Date != DateTime.MinValue) res.Append(" && (");
+
+					if (Convert.ToDateTime(StartxRegistrationDateFilter).Date != DateTime.MinValue)
+						{
+							if(StartxRegistrationDateFilter.HasValue)
+								res.Append(
+                                            (Convert.ToDateTime(EndxRegistrationDateFilter).Date != DateTime.MinValue?"":" && ") +
+                                            string.Format("xRegistrationDate >= \"{0}\"",  Convert.ToDateTime(StartxRegistrationDateFilter).Date.ToString("MM/dd/yyyy")));
+						}
+
+					if (Convert.ToDateTime(EndxRegistrationDateFilter).Date != DateTime.MinValue)
+						{
+							if(EndxRegistrationDateFilter.HasValue)
+								res.Append(" && " + string.Format("xRegistrationDate <= \"{0}\"",  Convert.ToDateTime(EndxRegistrationDateFilter).Date.AddHours(23).ToString("MM/dd/yyyy HH:mm:ss")));
+						}
+
+				if (Convert.ToDateTime(StartxRegistrationDateFilter).Date != DateTime.MinValue &&
+		        Convert.ToDateTime(EndxRegistrationDateFilter).Date != DateTime.MinValue) res.Append(" )");
+
+					if (Convert.ToDateTime(_xRegistrationDateFilter).Date != DateTime.MinValue)
+						{
+							if(xRegistrationDateFilter.HasValue)
+								res.Append(" && " + string.Format("xRegistrationDate == \"{0}\"",  Convert.ToDateTime(xRegistrationDateFilter).Date.ToString("MM/dd/yyyy")));
+						}
+				 
+
+					if(xQuantityFilter.HasValue)
+						res.Append(" && " + string.Format("xQuantity == {0}",  xQuantityFilter.ToString()));							return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
 // Send to Excel Implementation
@@ -1467,7 +1448,7 @@ namespace WaterNut.QuerySpace.AllocationQS.ViewModels
                     QtyAllocated = x.QtyAllocated ,
                     
  
-                    xLineNumber = x.xLineNumber ,
+                    SANumber = x.SANumber ,
                     
  
                     InvoiceDate = x.InvoiceDate ,
@@ -1485,6 +1466,9 @@ namespace WaterNut.QuerySpace.AllocationQS.ViewModels
                     InvoiceNo = x.InvoiceNo ,
                     
  
+                    SalesLineNumber = x.SalesLineNumber ,
+                    
+ 
                     ItemNumber = x.ItemNumber ,
                     
  
@@ -1492,39 +1476,6 @@ namespace WaterNut.QuerySpace.AllocationQS.ViewModels
                     
  
                     DutyFreePaid = x.DutyFreePaid ,
-                    
- 
-                    pCNumber = x.pCNumber ,
-                    
- 
-                    pRegistrationDate = x.pRegistrationDate ,
-                    
- 
-                    pQuantity = x.pQuantity ,
-                    
- 
-                    pQtyAllocated = x.pQtyAllocated ,
-                    
- 
-                    PiQuantity = x.PiQuantity ,
-                    
- 
-                    SalesFactor = x.SalesFactor ,
-                    
- 
-                    xCNumber = x.xCNumber ,
-                    
- 
-                    xRegistrationDate = x.xRegistrationDate ,
-                    
- 
-                    xQuantity = x.xQuantity ,
-                    
- 
-                    pReferenceNumber = x.pReferenceNumber ,
-                    
- 
-                    pLineNumber = x.pLineNumber ,
                     
  
                     Cost = x.Cost ,
@@ -1539,6 +1490,36 @@ namespace WaterNut.QuerySpace.AllocationQS.ViewModels
                     TaxAmount = x.TaxAmount ,
                     
  
+                    SalesFactor = x.SalesFactor ,
+                    
+ 
+                    pReferenceNumber = x.pReferenceNumber ,
+                    
+ 
+                    pRegistrationDate = x.pRegistrationDate ,
+                    
+ 
+                    pCNumber = x.pCNumber ,
+                    
+ 
+                    pLineNumber = x.pLineNumber ,
+                    
+ 
+                    pQuantity = x.pQuantity ,
+                    
+ 
+                    pQtyAllocated = x.pQtyAllocated ,
+                    
+ 
+                    PiQuantity = x.PiQuantity ,
+                    
+ 
+                    pExpiryDate = x.pExpiryDate ,
+                    
+ 
+                    pTariffCode = x.pTariffCode ,
+                    
+ 
                     pIsAssessed = x.pIsAssessed ,
                     
  
@@ -1551,22 +1532,10 @@ namespace WaterNut.QuerySpace.AllocationQS.ViewModels
                     WarehouseError = x.WarehouseError ,
                     
  
-                    SANumber = x.SANumber ,
-                    
- 
-                    xReferenceNumber = x.xReferenceNumber ,
-                    
- 
                     TariffCode = x.TariffCode ,
                     
  
                     Invalid = x.Invalid ,
-                    
- 
-                    pExpiryDate = x.pExpiryDate ,
-                    
- 
-                    pTariffCode = x.pTariffCode ,
                     
  
                     pItemNumber = x.pItemNumber ,
@@ -1581,7 +1550,19 @@ namespace WaterNut.QuerySpace.AllocationQS.ViewModels
                     xStatus = x.xStatus ,
                     
  
-                    SalesLineNumber = x.SalesLineNumber 
+                    xReferenceNumber = x.xReferenceNumber ,
+                    
+ 
+                    xCNumber = x.xCNumber ,
+                    
+ 
+                    xLineNumber = x.xLineNumber ,
+                    
+ 
+                    xRegistrationDate = x.xRegistrationDate ,
+                    
+ 
+                    xQuantity = x.xQuantity 
                     
                 }).ToList()
             };
@@ -1606,7 +1587,7 @@ namespace WaterNut.QuerySpace.AllocationQS.ViewModels
                     public double QtyAllocated { get; set; } 
                     
  
-                    public Nullable<int> xLineNumber { get; set; } 
+                    public int SANumber { get; set; } 
                     
  
                     public System.DateTime InvoiceDate { get; set; } 
@@ -1624,6 +1605,9 @@ namespace WaterNut.QuerySpace.AllocationQS.ViewModels
                     public string InvoiceNo { get; set; } 
                     
  
+                    public Nullable<int> SalesLineNumber { get; set; } 
+                    
+ 
                     public string ItemNumber { get; set; } 
                     
  
@@ -1631,39 +1615,6 @@ namespace WaterNut.QuerySpace.AllocationQS.ViewModels
                     
  
                     public string DutyFreePaid { get; set; } 
-                    
- 
-                    public string pCNumber { get; set; } 
-                    
- 
-                    public Nullable<System.DateTime> pRegistrationDate { get; set; } 
-                    
- 
-                    public Nullable<double> pQuantity { get; set; } 
-                    
- 
-                    public Nullable<double> pQtyAllocated { get; set; } 
-                    
- 
-                    public Nullable<double> PiQuantity { get; set; } 
-                    
- 
-                    public Nullable<double> SalesFactor { get; set; } 
-                    
- 
-                    public string xCNumber { get; set; } 
-                    
- 
-                    public Nullable<System.DateTime> xRegistrationDate { get; set; } 
-                    
- 
-                    public Nullable<double> xQuantity { get; set; } 
-                    
- 
-                    public string pReferenceNumber { get; set; } 
-                    
- 
-                    public Nullable<int> pLineNumber { get; set; } 
                     
  
                     public double Cost { get; set; } 
@@ -1678,6 +1629,36 @@ namespace WaterNut.QuerySpace.AllocationQS.ViewModels
                     public double TaxAmount { get; set; } 
                     
  
+                    public Nullable<double> SalesFactor { get; set; } 
+                    
+ 
+                    public string pReferenceNumber { get; set; } 
+                    
+ 
+                    public Nullable<System.DateTime> pRegistrationDate { get; set; } 
+                    
+ 
+                    public string pCNumber { get; set; } 
+                    
+ 
+                    public Nullable<int> pLineNumber { get; set; } 
+                    
+ 
+                    public Nullable<double> pQuantity { get; set; } 
+                    
+ 
+                    public Nullable<double> pQtyAllocated { get; set; } 
+                    
+ 
+                    public Nullable<double> PiQuantity { get; set; } 
+                    
+ 
+                    public Nullable<System.DateTime> pExpiryDate { get; set; } 
+                    
+ 
+                    public string pTariffCode { get; set; } 
+                    
+ 
                     public Nullable<bool> pIsAssessed { get; set; } 
                     
  
@@ -1690,22 +1671,10 @@ namespace WaterNut.QuerySpace.AllocationQS.ViewModels
                     public string WarehouseError { get; set; } 
                     
  
-                    public Nullable<int> SANumber { get; set; } 
-                    
- 
-                    public string xReferenceNumber { get; set; } 
-                    
- 
                     public string TariffCode { get; set; } 
                     
  
                     public Nullable<bool> Invalid { get; set; } 
-                    
- 
-                    public Nullable<System.DateTime> pExpiryDate { get; set; } 
-                    
- 
-                    public string pTariffCode { get; set; } 
                     
  
                     public string pItemNumber { get; set; } 
@@ -1720,7 +1689,19 @@ namespace WaterNut.QuerySpace.AllocationQS.ViewModels
                     public string xStatus { get; set; } 
                     
  
-                    public Nullable<int> SalesLineNumber { get; set; } 
+                    public string xReferenceNumber { get; set; } 
+                    
+ 
+                    public string xCNumber { get; set; } 
+                    
+ 
+                    public Nullable<int> xLineNumber { get; set; } 
+                    
+ 
+                    public Nullable<System.DateTime> xRegistrationDate { get; set; } 
+                    
+ 
+                    public Nullable<double> xQuantity { get; set; } 
                     
         }
 
