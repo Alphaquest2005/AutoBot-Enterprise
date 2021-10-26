@@ -708,99 +708,99 @@ namespace WaterNut.DataSpace
                                 "&& WarehouseError == null " +
                                 $"&& (CustomsOperationId == { (int)CustomsOperations.Warehouse})";
             var res = new List<EX9Allocations>();
-                
-                res = EX9AsycudaSalesAllocations().AsQueryable()
-                      .Where(FilterExpression)
-                      .Select(x => new EX9Allocations
-                      {
-                          Type = x.Type,
-                          AllocationId = x.AllocationId,
-                          EntryData_Id = (int) x.EntryData_Id,
-                          Commercial_Description = x.Commercial_Description,
-                          DutyFreePaid = x.DutyFreePaid,
-                          EntryDataDetailsId = x.EntryDataDetailsId,
-                          InvoiceDate = (DateTime) (x.EffectiveDate == null || x.EffectiveDate == DateTime.MinValue ? x.InvoiceDate : x.EffectiveDate.Value),
-                          EffectiveDate = x.EffectiveDate,
-                          InvoiceNo = x.InvoiceNo,
-                          ItemDescription = x.ItemDescription,
-                          ItemNumber = x.ItemNumber,
-                          pCNumber = x.pCNumber,
-                          pItemCost = x.pItemCost,
-                          Status = x.Status,
-                          PreviousItem_Id = x.PreviousItem_Id,
-                          QtyAllocated =  x.QtyAllocated,
-                          SalesFactor = x.SalesFactor,
-                          SalesQtyAllocated = x.SalesQtyAllocated,
-                          SalesQuantity = x.SalesQuantity,
-                          pItemNumber = x.pItemNumber,
-                          pItemDescription = x.Commercial_Description,
-                          pTariffCode = x.pTariffCode,
-                          pPrecision1 = x.pPrecision1,
-                          DFQtyAllocated = x.DFQtyAllocated,
-                          DPQtyAllocated =  x.DPQtyAllocated,
-                          pLineNumber =  x.pLineNumber,
-                          LineNumber = x.SalesLineNumber,
-                          Comment = x.Comment,
-                          Customs_clearance_office_code = x.Customs_clearance_office_code,
-                          pQuantity = x.pQuantity,
-                          pRegistrationDate =  x.pRegistrationDate,
-                          pAssessmentDate =  x.AssessmentDate,
-                          Country_of_origin_code = x.Country_of_origin_code,
-                          Total_CIF_itm =  x.Total_CIF_itm,
-                          Net_weight_itm =  x.Net_weight_itm,
-                          InventoryItemId = (int) x.InventoryItemId,
-                          PIData = x.AsycudaSalesAllocationsPIData,
-                          previousItems = x.PreviousDocumentItem.EntryPreviousItems
-                                    .Select(y => y.xcuda_PreviousItem)
-                                    .Where(y => (y.xcuda_Item.AsycudaDocument.CNumber != null || y.xcuda_Item.AsycudaDocument.IsManuallyAssessed == true) 
-                                                && y.xcuda_Item.AsycudaDocument.Cancelled != true)
-                                    .Select(z => new previousItems()
-                                    {
-                                        PreviousItem_Id = z.PreviousItem_Id,
-                                        DutyFreePaid =
-                                            z.xcuda_Item.AsycudaDocument.Customs_Procedure.CustomsOperationId ==(int)CustomsOperations.Exwarehouse && z.xcuda_Item.AsycudaDocument.Customs_Procedure.IsPaid == true
-                                                ? "Duty Paid"
-                                                : "Duty Free",
-                                        Net_weight = (double) z.Net_weight,
-                                        Suplementary_Quantity = (double) z.Suplementary_Quantity
-                                    }).ToList(),
-                          TariffSupUnitLkps =
-                              x.PreviousDocumentItem.xcuda_Tarification.xcuda_HScode.TariffCodes.TariffCategory.TariffCategoryCodeSuppUnit.Select(z => z.TariffSupUnitLkps).ToList()
-                          //.Select(x => (ITariffSupUnitLkp)x)
 
-                      }
+            using (var ctx = new AllocationDSContext())
+            {
+                ctx.Database.CommandTimeout = 0;
+                res = ctx.EX9AsycudaSalesAllocations
+                   // .Include(x => x.AsycudaSalesAllocationsPIData)
+                    .AsNoTracking()
+                    .Where(FilterExpression)
+                    .Select(x => new EX9Allocations
+                        {
+                            Type = x.Type,
+                            AllocationId = x.AllocationId,
+                            EntryData_Id = (int) x.EntryData_Id,
+                            Commercial_Description = x.Commercial_Description,
+                            DutyFreePaid = x.DutyFreePaid,
+                            EntryDataDetailsId = x.EntryDataDetailsId,
+                            InvoiceDate = (DateTime) (x.EffectiveDate == null || x.EffectiveDate == DateTime.MinValue
+                                ? x.InvoiceDate
+                                : x.EffectiveDate.Value),
+                            EffectiveDate = x.EffectiveDate,
+                            InvoiceNo = x.InvoiceNo,
+                            ItemDescription = x.ItemDescription,
+                            ItemNumber = x.ItemNumber,
+                            pCNumber = x.pCNumber,
+                            pItemCost = x.pItemCost,
+                            Status = x.Status,
+                            PreviousItem_Id = x.PreviousItem_Id,
+                            QtyAllocated = x.QtyAllocated,
+                            SalesFactor = x.SalesFactor,
+                            SalesQtyAllocated = x.SalesQtyAllocated,
+                            SalesQuantity = x.SalesQuantity,
+                            pItemNumber = x.pItemNumber,
+                            pItemDescription = x.Commercial_Description,
+                            pTariffCode = x.pTariffCode,
+                            pPrecision1 = x.pPrecision1,
+                            DFQtyAllocated = x.DFQtyAllocated,
+                            DPQtyAllocated = x.DPQtyAllocated,
+                            pLineNumber = x.pLineNumber,
+                            LineNumber = x.SalesLineNumber,
+                            Comment = x.Comment,
+                            Customs_clearance_office_code = x.Customs_clearance_office_code,
+                            pQuantity = x.pQuantity,
+                            pRegistrationDate = x.pRegistrationDate,
+                            pAssessmentDate = x.AssessmentDate,
+                            Country_of_origin_code = x.Country_of_origin_code,
+                            Total_CIF_itm = x.Total_CIF_itm,
+                            Net_weight_itm = x.Net_weight_itm,
+                            InventoryItemId = (int) x.InventoryItemId,
+                            PIData = x.AsycudaSalesAllocationsPIData,
+                            previousItems = x.PreviousDocumentItem.EntryPreviousItems
+                                .Select(y => y.xcuda_PreviousItem)
+                                .Where(y => (y.xcuda_Item.AsycudaDocument.CNumber != null ||
+                                             y.xcuda_Item.AsycudaDocument.IsManuallyAssessed == true)
+                                            && y.xcuda_Item.AsycudaDocument.Cancelled != true)
+                                .Select(z => new previousItems()
+                                {
+                                    PreviousItem_Id = z.PreviousItem_Id,
+                                    DutyFreePaid =
+                                        z.xcuda_Item.AsycudaDocument.Customs_Procedure.CustomsOperationId ==
+                                        (int) CustomsOperations.Exwarehouse &&
+                                        z.xcuda_Item.AsycudaDocument.Customs_Procedure.IsPaid == true
+                                            ? "Duty Paid"
+                                            : "Duty Free",
+                                    Net_weight = (double) z.Net_weight,
+                                    Suplementary_Quantity = (double) z.Suplementary_Quantity
+                                }).ToList(),
+                            TariffSupUnitLkps =
+                                x.PreviousDocumentItem.xcuda_Tarification.xcuda_HScode.TariffCodes.TariffCategory
+                                    .TariffCategoryCodeSuppUnit.Select(z => z.TariffSupUnitLkps).ToList()
+                            //.Select(x => (ITariffSupUnitLkp)x)
+
+                        }
                     )
-                    
-                                      //////////// prevent exwarehouse of item whos piQuantity > than AllocatedQuantity//////////
 
-                                      .ToList();
+                    //////////// prevent exwarehouse of item whos piQuantity > than AllocatedQuantity//////////
 
-            
+                    .ToList();
+
+                var piDatas = ctx.AsycudaSalesAllocationsPIData.ToList();
+
+                foreach (var ex9 in res)
+                {
+                    ex9.PIData = piDatas.Where(x => x.AllocationId == ex9.AllocationId).ToList();
+                }
+
+            }
+
 
             return res.OrderBy(x => x.AllocationId);
         }
 
         private static List<EX9AsycudaSalesAllocations> ex9AsycudaSalesAllocations = null;
 
-        private static List<EX9AsycudaSalesAllocations> EX9AsycudaSalesAllocations()
-        {
-            try
-            {
-                using (var ctx = new AllocationDSContext())
-                {
-                    ctx.Database.CommandTimeout = 30;
-                    return ex9AsycudaSalesAllocations ?? (ex9AsycudaSalesAllocations = ctx.EX9AsycudaSalesAllocations
-                        .Include(x => x.AsycudaSalesAllocationsPIData)
-                        .AsNoTracking().ToList());
-                }
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-                throw;
-            }
-
-        }
 
 
         private IEnumerable<AllocationDataBlock> CreateWholeAllocationDataBlocks(

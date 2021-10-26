@@ -598,7 +598,7 @@ namespace WaterNut.DataSpace
 						 };
 
 			var res = new ConcurrentDictionary<string, ItemSet>();
-			foreach (var itm in itmLst)//.Where(x => x.Key == "291970").ToList()
+			foreach (var itm in itmLst.Where(x => x.Key == "322871").ToList())//
             {
 
 				res.AddOrUpdate(itm.Key, itm,(key,value) =>
@@ -680,6 +680,7 @@ namespace WaterNut.DataSpace
 			{
 				var lst = ctx.xcuda_Item.Include(x => x.AsycudaDocument.Customs_Procedure)
 					.Include(x => x.xcuda_Tarification.xcuda_HScode)
+                    .Include("EntryPreviousItems.xcuda_PreviousItem.xcuda_Item.AsycudaDocument")
 					.Include(x => x.xcuda_Tarification.xcuda_Supplementary_unit)
 					.Include(x => x.SubItems)
 					.Include("EntryPreviousItems.xcuda_PreviousItem")
