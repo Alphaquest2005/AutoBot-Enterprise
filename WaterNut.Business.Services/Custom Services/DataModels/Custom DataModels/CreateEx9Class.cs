@@ -25,6 +25,7 @@ using AllocationQS.Business.Entities;
 using CoreEntities.Business.Enums;
 using DocumentItemDS.Business.Entities;
 using EntryDataDS.Business.Entities;
+using java.security;
 using MoreLinq;
 using PreviousDocumentQS.Business.Entities;
 using TrackableEntities.EF6;
@@ -95,7 +96,7 @@ namespace WaterNut.DataSpace
             {
                 DocSetPi.Clear();// moved here because data is cached wont update automatically
                 freashStart = true;
-
+                ex9AsycudaSalesAllocations = null;
                 //var dutylst = CreateDutyList(slst);
                 var dutylst = new List<string>() {"Duty Paid", "Duty Free"};
                 if (!filterExp.Contains("InvoiceDate"))
@@ -707,12 +708,8 @@ namespace WaterNut.DataSpace
                                 "&& WarehouseError == null " +
                                 $"&& (CustomsOperationId == { (int)CustomsOperations.Warehouse})";
             var res = new List<EX9Allocations>();
-            using (var ctx = new AllocationDSContext())
-            {
-                ctx.Database.CommandTimeout = 0;
-                res = ctx.EX9AsycudaSalesAllocations
-                    .Include(x => x.AsycudaSalesAllocationsPIData)
-                    .AsNoTracking()
+                
+                res = EX9AsycudaSalesAllocations().AsQueryable()
                       .Where(FilterExpression)
                       .Select(x => new EX9Allocations
                       {
@@ -778,12 +775,33 @@ namespace WaterNut.DataSpace
 
                                       .ToList();
 
-            }
+            
 
             return res.OrderBy(x => x.AllocationId);
         }
 
-       
+        private static List<EX9AsycudaSalesAllocations> ex9AsycudaSalesAllocations = null;
+
+        private static List<EX9AsycudaSalesAllocations> EX9AsycudaSalesAllocations()
+        {
+            try
+            {
+                using (var ctx = new AllocationDSContext())
+                {
+                    ctx.Database.CommandTimeout = 30;
+                    return ex9AsycudaSalesAllocations ?? (ex9AsycudaSalesAllocations = ctx.EX9AsycudaSalesAllocations
+                        .Include(x => x.AsycudaSalesAllocationsPIData)
+                        .AsNoTracking().ToList());
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+
+        }
+
 
         private IEnumerable<AllocationDataBlock> CreateWholeAllocationDataBlocks(
             IEnumerable<EX9Allocations> slstSource)
@@ -1662,7 +1680,7 @@ namespace WaterNut.DataSpace
                     
                     //if (remainingSalesQty > availibleQty && totalallocations > 1)
                     //{
-                    if (i <= 0 && rejects.Any() && remainingSalesQty <= 0)
+                    if (i <= 0  && remainingSalesQty <= 0)//&& rejects.Any()
                     {
                         updateXStatus(rejects,
                             $@"Failed All Sales Check:: {type} Sales:{Math.Round(totalSalesAll, 2)}
