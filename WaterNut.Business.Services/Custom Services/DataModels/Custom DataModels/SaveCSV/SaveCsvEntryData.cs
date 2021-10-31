@@ -1994,7 +1994,9 @@ namespace WaterNut.DataSpace
 
 
                         i = ctx.InventoryItems.Add(i);
+                        
                         ctx.SaveChanges();
+                        inventoryItems.Add(i);
 
                         }
                     else
@@ -2043,6 +2045,7 @@ namespace WaterNut.DataSpace
                             };
                             ctx.InventoryItems.Add(invItem);
                             ctx.SaveChanges();
+                            inventoryItems.Add(invItem);
                         } 
                         if (i.InventoryItemAlias.FirstOrDefault(x => x.AliasName == supplierItemNumber) == null)
                         {
@@ -2050,6 +2053,7 @@ namespace WaterNut.DataSpace
                             {
                                 InventoryItemId = i.Id,
                                 AliasName = ((string)supplierItemNumber).Truncate(20),
+                                AliasItemId = invItem.Id,
                                 AliasId = invItem.Id,
                                 TrackingState = TrackingState.Added
 

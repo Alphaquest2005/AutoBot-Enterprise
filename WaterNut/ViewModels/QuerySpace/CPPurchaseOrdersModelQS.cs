@@ -25,11 +25,14 @@ namespace WaterNut.QuerySpace.CounterPointQS.ViewModels
             //    instance = null;
             //    return;
             //}
-                
-            instance = new CPPurchaseOrdersModel()
+            if (WaterNut.QuerySpace.CoreEntities.ViewModels.BaseViewModel.Instance.CurrentApplicationSettings
+                .AllowCounterPoint != "Hidden")
             {
-                DateFilter=DateTime.MinValue,
-            };
+                instance = new CPPurchaseOrdersModel()
+                {
+                    DateFilter = DateTime.MinValue,
+                };
+            }
         }
 
         public static CPPurchaseOrdersModel Instance

@@ -1689,7 +1689,7 @@ namespace WaterNut.DataSpace
                         mypod.EntlnData.Quantity = availibleQty;
                         return;
                     }
-                    var ssa = mypod.Allocations.ElementAt(i);
+                    var ssa = mypod.Allocations.ElementAt(i-1);
                     var piData = ssa.PIData.Sum(x => x.xQuantity) ?? 0;
                     var nr = mypod.Allocations.Take(i).Sum(x => x.QtyAllocated - (x.PIData.Sum(z => z.xQuantity) ?? 0));
 
