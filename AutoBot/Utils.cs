@@ -1620,7 +1620,7 @@ namespace AutoBot
         {
             using (var ctx = new CoreEntitiesContext())
             {
-                ctx.Database.CommandTimeout = 10;
+                ctx.Database.CommandTimeout = 20;
                
                 IEnumerable<IGrouping<int?, TODO_SubmitDiscrepanciesToCustoms>> lst;
                 lst = ctx.TODO_SubmitDiscrepanciesToCustoms.Where(x =>
