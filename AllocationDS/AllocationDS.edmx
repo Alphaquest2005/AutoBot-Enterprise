@@ -148,6 +148,12 @@
           <Property Name="Item_Id" Type="int" Nullable="false" />
           <Property Name="EntryPreviousItemId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
         </EntityType>
+        <EntityType Name="InventoryItems-Lumped">
+          <Key>
+            <PropertyRef Name="InventoryItemId" />
+          </Key>
+          <Property Name="InventoryItemId" Type="int" Nullable="false" />
+        </EntityType>
         <EntityType Name="SubItems">
           <Key>
             <PropertyRef Name="SubItem_Id" />
@@ -581,6 +587,21 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AsycudaItemPiQuantityData
           <Property Name="Id" Type="int" Nullable="false" />
           <Property Name="EntryDataType" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="xLineNumber" Type="int" Nullable="false" />
+        </EntityType>
+
+        <EntityType Name="AsycudaSalesAllocationsPIData">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="AllocationId" Type="int" Nullable="false" />
+          <Property Name="xLineNumber" Type="int" Nullable="false" />
+          <Property Name="xBond_Item_Id" Type="int" Nullable="false" />
+          <Property Name="xCNumber" Type="nvarchar" MaxLength="20" />
+          <Property Name="xRegistrationDate" Type="datetime" />
+          <Property Name="xQuantity" Type="float" />
+          <Property Name="xASYCUDA_Id" Type="int" Nullable="false" />
+          <Property Name="xReferenceNumber" Type="nvarchar" MaxLength="30" />
+          <Property Name="Id" Type="int"  Nullable="false" />
         </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.EntryDataDetailsEx' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
@@ -1225,6 +1246,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.PreviousItemsEx' does not
           <EntitySet Name="EntryDataDetails" EntityType="Self.EntryDataDetails" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="EntryDataDetails_Allocations" EntityType="Self.EntryDataDetails_Allocations" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="EntryPreviousItems" EntityType="Self.EntryPreviousItems" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="InventoryItems-Lumped" EntityType="Self.InventoryItems-Lumped" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="SubItems" EntityType="Self.SubItems" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="SystemDocumentSets" EntityType="Self.SystemDocumentSets" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="TariffCategory" EntityType="Self.TariffCategory" Schema="dbo" store:Type="Tables" />
@@ -1400,6 +1422,19 @@ FROM [dbo].[AsycudaDocumentItemEntryDataDetails] AS [AsycudaDocumentItemEntryDat
 [AsycudaItemPiQuantityData].[EntryDataType] AS [EntryDataType], 
 [AsycudaItemPiQuantityData].[xLineNumber] AS [xLineNumber]
 FROM [dbo].[AsycudaItemPiQuantityData] AS [AsycudaItemPiQuantityData]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="AsycudaSalesAllocationsPIData" EntityType="Self.AsycudaSalesAllocationsPIData" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+[AsycudaSalesAllocationsPIData].[AllocationId] AS [AllocationId], 
+[AsycudaSalesAllocationsPIData].[xLineNumber] AS [xLineNumber], 
+[AsycudaSalesAllocationsPIData].[xBond_Item_Id] AS [xBond_Item_Id], 
+[AsycudaSalesAllocationsPIData].[xCNumber] AS [xCNumber], 
+[AsycudaSalesAllocationsPIData].[xRegistrationDate] AS [xRegistrationDate], 
+[AsycudaSalesAllocationsPIData].[xQuantity] AS [xQuantity], 
+[AsycudaSalesAllocationsPIData].[xASYCUDA_Id] AS [xASYCUDA_Id], 
+[AsycudaSalesAllocationsPIData].[xReferenceNumber] AS [xReferenceNumber], 
+[AsycudaSalesAllocationsPIData].[Id] AS [Id]
+FROM [dbo].[AsycudaSalesAllocationsPIData] AS [AsycudaSalesAllocationsPIData]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="EntryDataDetailsEx" EntityType="Self.EntryDataDetailsEx" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
@@ -1929,6 +1964,24 @@ FROM [dbo].[PreviousItemsEx] AS [PreviousItemsEx]</DefiningQuery>
             <End Role="TariffCodes" EntitySet="TariffCodes" />
             <End Role="xcuda_HScode" EntitySet="xcuda_HScode" />
           </AssociationSet>
+          <EntitySet Name="LumpedItems" EntityType="WaterNutDBModel.LumpedItem" />
+          <AssociationSet Name="InventoryItemInventoryItems_Lumped" Association="WaterNutDBModel.InventoryItemInventoryItems_Lumped">
+            <End Role="InventoryItem" EntitySet="InventoryItems" />
+            <End Role="InventoryItems_Lumped" EntitySet="LumpedItems" />
+          </AssociationSet>
+          <EntitySet Name="AsycudaSalesAllocationsPIData" EntityType="WaterNutDBModel.AsycudaSalesAllocationsPIData" />
+          <AssociationSet Name="EX9AsycudaSalesAllocationsAsycudaSalesAllocationsPIData" Association="WaterNutDBModel.EX9AsycudaSalesAllocationsAsycudaSalesAllocationsPIData">
+            <End Role="EX9AsycudaSalesAllocations" EntitySet="EX9AsycudaSalesAllocations" />
+            <End Role="AsycudaSalesAllocationsPIData" EntitySet="AsycudaSalesAllocationsPIData" />
+          </AssociationSet>
+          <AssociationSet Name="AdjustmentShortAllocationsAsycudaSalesAllocationsPIData" Association="WaterNutDBModel.AdjustmentShortAllocationsAsycudaSalesAllocationsPIData">
+            <End Role="AdjustmentShortAllocations" EntitySet="AdjustmentShortAllocations" />
+            <End Role="AsycudaSalesAllocationsPIData" EntitySet="AsycudaSalesAllocationsPIData" />
+          </AssociationSet>
+          <AssociationSet Name="AsycudaSalesAllocationsAsycudaSalesAllocationsPIData" Association="WaterNutDBModel.AsycudaSalesAllocationsAsycudaSalesAllocationsPIData">
+            <End Role="AsycudaSalesAllocations" EntitySet="AsycudaSalesAllocations" />
+            <End Role="AsycudaSalesAllocationsPIData" EntitySet="AsycudaSalesAllocationsPIData" />
+          </AssociationSet>
           </EntityContainer>
         <EntityType Name="AsycudaSalesAllocations">
           <Key>
@@ -1949,6 +2002,7 @@ FROM [dbo].[PreviousItemsEx] AS [PreviousItemsEx]</DefiningQuery>
           <NavigationProperty Name="EX9AsycudaSalesAllocations" Relationship="WaterNutDBModel.AsycudaSalesAllocationsEX9AsycudaSalesAllocations" FromRole="AsycudaSalesAllocations" ToRole="EX9AsycudaSalesAllocations" />
           <Property Name="xStatus" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="Comments" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="PIData" Relationship="WaterNutDBModel.AsycudaSalesAllocationsAsycudaSalesAllocationsPIData" FromRole="AsycudaSalesAllocations" ToRole="AsycudaSalesAllocationsPIData" />
         </EntityType>
         <EntityType Name="EntryDataDetails">
           <Key>
@@ -2716,6 +2770,7 @@ FROM [dbo].[PreviousItemsEx] AS [PreviousItemsEx]</DefiningQuery>
           <Property Name="InventoryItemId" Type="Int32" />
           <Property Name="Type" Type="String" Nullable="false" MaxLength="5" FixedLength="false" Unicode="false" />
           <Property Name="pPrecision1" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="AsycudaSalesAllocationsPIData" Relationship="WaterNutDBModel.EX9AsycudaSalesAllocationsAsycudaSalesAllocationsPIData" FromRole="EX9AsycudaSalesAllocations" ToRole="AsycudaSalesAllocationsPIData" />
         </EntityType>
         <Association Name="xcuda_ItemEX9AsycudaSalesAllocations">
           <End Type="WaterNutDBModel.xcuda_Item" Role="xcuda_Item" Multiplicity="1" />
@@ -2865,6 +2920,7 @@ FROM [dbo].[PreviousItemsEx] AS [PreviousItemsEx]</DefiningQuery>
           <Property Name="Type" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="SalesLineNumber" Type="Int32" />
           <Property Name="pPrecision1" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="AsycudaSalesAllocationsPIData" Relationship="WaterNutDBModel.AdjustmentShortAllocationsAsycudaSalesAllocationsPIData" FromRole="AdjustmentShortAllocations" ToRole="AsycudaSalesAllocationsPIData" />
         </EntityType>
         <Association Name="xcuda_ItemAdjustmentShortAllocations">
           <End Type="WaterNutDBModel.xcuda_Item" Role="xcuda_Item" Multiplicity="0..1" />
@@ -3049,6 +3105,7 @@ FROM [dbo].[PreviousItemsEx] AS [PreviousItemsEx]</DefiningQuery>
           <NavigationProperty Name="EntryDataDetailsEx" Relationship="WaterNutDBModel.InventoryItemsExEntryDataDetailsEx" FromRole="InventoryItemsEx" ToRole="EntryDataDetailsEx" />
           <NavigationProperty Name="InventoryItemAliasEx" Relationship="WaterNutDBModel.InventoryItemInventoryItemAliasEx" FromRole="InventoryItem" ToRole="InventoryItemAliasEx" />
           <Property Name="InventoryItemId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="LumpedItem" Relationship="WaterNutDBModel.InventoryItemInventoryItems_Lumped" FromRole="InventoryItem" ToRole="InventoryItems_Lumped" />
         </EntityType>
         <Association Name="TariffCodesInventoryItemsEx">
           <End Type="WaterNutDBModel.TariffCodes" Role="TariffCodes" Multiplicity="0..1" />
@@ -3330,6 +3387,78 @@ FROM [dbo].[PreviousItemsEx] AS [PreviousItemsEx]</DefiningQuery>
             </Principal>
             <Dependent Role="xcuda_HScode">
               <PropertyRef Name="Commodity_code" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="LumpedItem">
+          <Key>
+            <PropertyRef Name="InventoryItemId" />
+          </Key>
+          <Property Name="InventoryItemId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="InventoryItem" Relationship="WaterNutDBModel.InventoryItemInventoryItems_Lumped" FromRole="InventoryItems_Lumped" ToRole="InventoryItem" />
+        </EntityType>
+        <Association Name="InventoryItemInventoryItems_Lumped">
+          <End Type="WaterNutDBModel.InventoryItem" Role="InventoryItem" Multiplicity="1" />
+          <End Type="WaterNutDBModel.LumpedItem" Role="InventoryItems_Lumped" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="InventoryItem">
+              <PropertyRef Name="InventoryItemId" />
+            </Principal>
+            <Dependent Role="InventoryItems_Lumped">
+              <PropertyRef Name="InventoryItemId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="AsycudaSalesAllocationsPIData">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="AllocationId" Type="Int32" Nullable="false" />
+          <Property Name="xLineNumber" Type="Int32" Nullable="false" />
+          <Property Name="xBond_Item_Id" Type="Int32" Nullable="false" />
+          <Property Name="xCNumber" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="xRegistrationDate" Type="DateTime" Precision="3" />
+          <Property Name="xQuantity" Type="Double" />
+          <Property Name="xASYCUDA_Id" Type="Int32" Nullable="false" />
+          <Property Name="xReferenceNumber" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="Id" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="EX9AsycudaSalesAllocations" Relationship="WaterNutDBModel.EX9AsycudaSalesAllocationsAsycudaSalesAllocationsPIData" FromRole="AsycudaSalesAllocationsPIData" ToRole="EX9AsycudaSalesAllocations" />
+          <NavigationProperty Name="AdjustmentShortAllocations" Relationship="WaterNutDBModel.AdjustmentShortAllocationsAsycudaSalesAllocationsPIData" FromRole="AsycudaSalesAllocationsPIData" ToRole="AdjustmentShortAllocations" />
+          <NavigationProperty Name="AsycudaSalesAllocations" Relationship="WaterNutDBModel.AsycudaSalesAllocationsAsycudaSalesAllocationsPIData" FromRole="AsycudaSalesAllocationsPIData" ToRole="AsycudaSalesAllocations" />
+        </EntityType>
+        <Association Name="EX9AsycudaSalesAllocationsAsycudaSalesAllocationsPIData">
+          <End Type="WaterNutDBModel.EX9AsycudaSalesAllocations" Role="EX9AsycudaSalesAllocations" Multiplicity="1" />
+          <End Type="WaterNutDBModel.AsycudaSalesAllocationsPIData" Role="AsycudaSalesAllocationsPIData" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="EX9AsycudaSalesAllocations">
+              <PropertyRef Name="AllocationId" />
+            </Principal>
+            <Dependent Role="AsycudaSalesAllocationsPIData">
+              <PropertyRef Name="AllocationId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="AdjustmentShortAllocationsAsycudaSalesAllocationsPIData">
+          <End Type="WaterNutDBModel.AdjustmentShortAllocations" Role="AdjustmentShortAllocations" Multiplicity="1" />
+          <End Type="WaterNutDBModel.AsycudaSalesAllocationsPIData" Role="AsycudaSalesAllocationsPIData" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AdjustmentShortAllocations">
+              <PropertyRef Name="AllocationId" />
+            </Principal>
+            <Dependent Role="AsycudaSalesAllocationsPIData">
+              <PropertyRef Name="AllocationId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="AsycudaSalesAllocationsAsycudaSalesAllocationsPIData">
+          <End Type="WaterNutDBModel.AsycudaSalesAllocations" Role="AsycudaSalesAllocations" Multiplicity="1" />
+          <End Type="WaterNutDBModel.AsycudaSalesAllocationsPIData" Role="AsycudaSalesAllocationsPIData" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AsycudaSalesAllocations">
+              <PropertyRef Name="AllocationId" />
+            </Principal>
+            <Dependent Role="AsycudaSalesAllocationsPIData">
+              <PropertyRef Name="AllocationId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -4123,6 +4252,28 @@ FROM [dbo].[PreviousItemsEx] AS [PreviousItemsEx]</DefiningQuery>
               <MappingFragment StoreEntitySet="CustomsOperations">
                 <ScalarProperty Name="Name" ColumnName="Name" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="LumpedItems">
+            <EntityTypeMapping TypeName="WaterNutDBModel.LumpedItem">
+              <MappingFragment StoreEntitySet="InventoryItems-Lumped">
+                <ScalarProperty Name="InventoryItemId" ColumnName="InventoryItemId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="AsycudaSalesAllocationsPIData">
+            <EntityTypeMapping TypeName="WaterNutDBModel.AsycudaSalesAllocationsPIData">
+              <MappingFragment StoreEntitySet="AsycudaSalesAllocationsPIData">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="xReferenceNumber" ColumnName="xReferenceNumber" />
+                <ScalarProperty Name="xASYCUDA_Id" ColumnName="xASYCUDA_Id" />
+                <ScalarProperty Name="xQuantity" ColumnName="xQuantity" />
+                <ScalarProperty Name="xRegistrationDate" ColumnName="xRegistrationDate" />
+                <ScalarProperty Name="xCNumber" ColumnName="xCNumber" />
+                <ScalarProperty Name="xBond_Item_Id" ColumnName="xBond_Item_Id" />
+                <ScalarProperty Name="xLineNumber" ColumnName="xLineNumber" />
+                <ScalarProperty Name="AllocationId" ColumnName="AllocationId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

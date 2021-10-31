@@ -516,7 +516,7 @@ namespace AllocationQS.Business.Entities
         }
         Nullable<bool> _donotallocatepreviousentry;
         [DataMember]
-        public Nullable<int> SANumber 
+        public int SANumber 
         {
             get
             {
@@ -529,7 +529,7 @@ namespace AllocationQS.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        Nullable<int> _sanumber;
+        int _sanumber;
         [DataMember]
         public string pReferenceNumber 
         {

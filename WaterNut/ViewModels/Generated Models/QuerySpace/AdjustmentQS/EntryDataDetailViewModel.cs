@@ -764,6 +764,24 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
         }	
 
  
+
+		private Int32? _cLineNumberFilter;
+        public Int32? CLineNumberFilter
+        {
+            get
+            {
+                return _cLineNumberFilter;
+            }
+            set
+            {
+                _cLineNumberFilter = value;
+				NotifyPropertyChanged(x => CLineNumberFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
 		internal bool DisableBaseFilterData = false;
         public virtual void FilterData()
 	    {
@@ -916,7 +934,10 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
  
 
 					if(TotalValueFilter.HasValue)
-						res.Append(" && " + string.Format("TotalValue == {0}",  TotalValueFilter.ToString()));							return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
+						res.Append(" && " + string.Format("TotalValue == {0}",  TotalValueFilter.ToString()));				 
+
+					if(CLineNumberFilter.HasValue)
+						res.Append(" && " + string.Format("CLineNumber == {0}",  CLineNumberFilter.ToString()));							return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
 // Send to Excel Implementation
@@ -1023,7 +1044,10 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
                     EntryDataDetailsKey = x.EntryDataDetailsKey ,
                     
  
-                    TotalValue = x.TotalValue 
+                    TotalValue = x.TotalValue ,
+                    
+ 
+                    CLineNumber = x.CLineNumber 
                     
                 }).ToList()
             };
@@ -1121,6 +1145,9 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
                     
  
                     public double TotalValue { get; set; } 
+                    
+ 
+                    public Nullable<int> CLineNumber { get; set; } 
                     
         }
 

@@ -949,7 +949,7 @@ namespace WaterNut.DataSpace
                             {
                                 EntryDataId = x.EntryDataId,
                                 //Can't set entrydata_id here cuz this is from data
-                                ItemNumber = x.ItemNumber.ToUpper(),
+                                ItemNumber = ((string)x.ItemNumber.ToUpper()).Truncate(20),
                                 ItemDescription = x.ItemDescription,
                                 Cost = x.Cost??0,
                                 TotalCost = Convert.ToDouble(x.TotalCost ?? 0.0),
@@ -966,7 +966,7 @@ namespace WaterNut.DataSpace
                                 CLineNumber = (int?) x.PreviousCLineNumber,
                                 PreviousInvoiceNumber = x.PreviousInvoiceNumber,
                                 Comment = x.Comment,
-                                InventoryItemId = x.InventoryItemId,
+                                InventoryItemId = x.InventoryItemId ?? 0,
                                 EffectiveDate = x.EffectiveDate,
                                 VolumeLiters = Convert.ToDouble(x.Gallons * GalToLtrRate ?? Convert.ToDouble(x.Liters ?? 0.0)),                                
 
@@ -1395,7 +1395,7 @@ namespace WaterNut.DataSpace
                                 {
                                     EntryDataId = e.EntryDataId,
                                     EntryData_Id = olded?.EntryData_Id ?? 0,
-                                    ItemNumber = e.ItemNumber.Truncate(20),
+                                    ItemNumber = ((string)e.ItemNumber).Truncate(20),
                                     InventoryItemId = e.InventoryItemId,
                                     ItemDescription = e.ItemDescription,
                                     Quantity = e.Quantity,
@@ -1453,7 +1453,7 @@ namespace WaterNut.DataSpace
                         {
 
                             foreach (var e in item.InventoryItems
-                                .Where(x => !string.IsNullOrEmpty(x.ItemAlias) && x.ItemAlias != x.ItemNumber).ToList())
+                                .Where(x => !string.IsNullOrEmpty(x.ItemAlias) && x.ItemAlias != x.ItemNumber && x.ItemAlias != null).ToList())
                             {
                                 string itemNumber = e.ItemNumber;
                                 var inventoryItem = ctx.InventoryItems
@@ -1466,13 +1466,13 @@ namespace WaterNut.DataSpace
                                             x.AliasName == e.ItemAlias) ==
                                         null)
                                     {
+                                        string aliasName = ((string)e.ItemAlias).Truncate(20);
                                         inventoryItem.InventoryItemAlias.Add(new InventoryItemAlia(true)
                                         {
                                             InventoryItemId = inventoryItem.Id,
-                                            AliasName = e.ItemAlias.Truncate(20),
+                                            AliasName = aliasName,
 
                                         });
-
                                     }
                                 }
 
@@ -1558,7 +1558,7 @@ namespace WaterNut.DataSpace
             try
             {
 
-                
+
                 for (var i = 0; i < headings.Count(); i++)
                 {
                     var h = headings[i].Trim().ToUpper();
@@ -1576,16 +1576,11 @@ namespace WaterNut.DataSpace
                     }
 
 
-                    var ftm = fileType.FileTypeMappings.FirstOrDefault(x =>
-                        x.OriginalName.ToUpper().Trim() == h.Trim());
-                    if (ftm != null)
+                    var ftms = fileType.FileTypeMappings.Where(x =>
+                        x.OriginalName.ToUpper().Trim() == h.Trim()).ToList();
+                    foreach (var ftm in ftms)
                     {
-                        
-                        mapping.Add(ftm, i);
-                    }
-                    else
-                    {
-
+                       mapping.Add(ftm, i);
                     }
                 }
             }
@@ -1697,9 +1692,12 @@ namespace WaterNut.DataSpace
                     "SupplierInvoiceNo",
                     (c, mapping, splits) =>
                     {
-                        c.EntryDataId = !string.IsNullOrEmpty(splits[mapping["EntryDataId"]])
-                            ? splits[mapping["EntryDataId"]].Trim().Replace("PO/GD/", "").Replace("SHOP/GR_", "")
-                            : splits[mapping["SupplierInvoiceNo"]];
+                        if (string.IsNullOrEmpty(c.EntryDataId))// do this incase entrydataid empty.. might nee to check order?
+                        {
+                            c.EntryDataId = !string.IsNullOrEmpty(splits[mapping["EntryDataId"]])
+                                ? splits[mapping["EntryDataId"]].Trim().Replace("PO/GD/", "").Replace("SHOP/GR_", "")
+                                : splits[mapping["SupplierInvoiceNo"]];
+                        }
                         c.SupplierInvoiceNo = splits[mapping["SupplierInvoiceNo"]];
                     }
                 },
@@ -1776,14 +1774,14 @@ namespace WaterNut.DataSpace
                      {
 
                          var err = ImportChecks[key.DestinationName].Invoke(res,
-                             map.ToDictionary(x => x.Key.DestinationName, x => x.Value), splits);
+                             map/*.Where(x => x.Key.Id == key.Id)*/.ToDictionary(x => x.Key.DestinationName, x => x.Value), splits);
                          if (err.Item1) throw new ApplicationException(err.Item2);
                      }
 
                      if (ImportActions.ContainsKey(key.DestinationName))
-                     {
+                     {// come up with a better solution cuz of duplicate keys
                          ImportActions[key.DestinationName].Invoke(res,
-                             map.ToDictionary(x => x.Key.DestinationName, x => x.Value), splits);
+                             map/*.Where(x => x.Key.Id == key.Id)*/.ToDictionary(x => x.Key.DestinationName, x => x.Value), splits);
                      }
                      else
                      {
@@ -1996,7 +1994,9 @@ namespace WaterNut.DataSpace
 
 
                         i = ctx.InventoryItems.Add(i);
+                        
                         ctx.SaveChanges();
+                        inventoryItems.Add(i);
 
                         }
                     else
@@ -2020,7 +2020,7 @@ namespace WaterNut.DataSpace
                     var invItemCodes = item.Select(x => new { SupplierItemNumber = (string) x.SupplierItemNumber, SupplierItemDescription = (string) x.SupplierItemDescription}).Where(x => !string.IsNullOrEmpty(x.SupplierItemNumber) && i.ItemNumber != x.SupplierItemNumber )
                         .DistinctBy(x => x.SupplierItemNumber).ToList();
 
-                    var AliasItemCodes = item.Select(x => new { SupplierItemNumber =(string) x.ItemAlias, SupplierItemDescription = (string) x.ItemDescription })
+                    var AliasItemCodes = item.Where(x => !string.IsNullOrEmpty(x.ItemAlias)).Select(x => new { SupplierItemNumber =(string)x.ItemAlias.ToString(), SupplierItemDescription = (string) x.ItemDescription })
                         .Where(x => !string.IsNullOrEmpty(x.SupplierItemNumber) && i.ItemNumber != x.SupplierItemNumber)
                         .DistinctBy(x => x.SupplierItemNumber).ToList();
 
@@ -2045,13 +2045,15 @@ namespace WaterNut.DataSpace
                             };
                             ctx.InventoryItems.Add(invItem);
                             ctx.SaveChanges();
+                            inventoryItems.Add(invItem);
                         } 
                         if (i.InventoryItemAlias.FirstOrDefault(x => x.AliasName == supplierItemNumber) == null)
                         {
                             i.InventoryItemAlias.Add(new InventoryItemAlia(true)
                             {
                                 InventoryItemId = i.Id,
-                                AliasName = supplierItemNumber.Truncate(20),
+                                AliasName = ((string)supplierItemNumber).Truncate(20),
+                                AliasItemId = invItem.Id,
                                 AliasId = invItem.Id,
                                 TrackingState = TrackingState.Added
 

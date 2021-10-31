@@ -551,7 +551,7 @@ namespace WaterNut.QuerySpace.AllocationQS.ViewModels
                   ,
                             PerIM7,
                             Process7100,
-                            ApplyCurrentChecks, CoreEntities.ViewModels.BaseViewModel.Instance.CurrentAsycudaDocumentSetEx.AsycudaDocumentSetId, "Sales","Historic",true, true, true, true, true, false,true, true, true).ConfigureAwait(false);
+                            ApplyCurrentChecks, CoreEntities.ViewModels.BaseViewModel.Instance.CurrentAsycudaDocumentSetEx.AsycudaDocumentSetId, "Sales","Historic",true, true, true, true, true, false,true, true, true, true).ConfigureAwait(false);
            MessageBus.Default.BeginNotify(CoreEntities.MessageToken.AsycudaDocumentSetExsChanged, this, new NotificationEventArgs(CoreEntities.MessageToken.AsycudaDocumentSetExsChanged));
           StatusModel.StopStatusUpdate();
             MessageBox.Show("Complete","Asycuda Toolkit", MessageBoxButton.OK, MessageBoxImage.Exclamation);
@@ -748,7 +748,7 @@ namespace WaterNut.QuerySpace.AllocationQS.ViewModels
 
 
 
-                    await AsycudaSalesAllocationsExRepository.Instance.CreateEx9(filterExpression, false, false, false, CoreEntities.ViewModels.BaseViewModel.Instance.CurrentAsycudaDocumentSetEx.AsycudaDocumentSetId, "Sales", "Historic", true, true, true, false, false, false, true, true, true).ConfigureAwait(false);
+                    await AsycudaSalesAllocationsExRepository.Instance.CreateEx9(filterExpression, false, false, false, CoreEntities.ViewModels.BaseViewModel.Instance.CurrentAsycudaDocumentSetEx.AsycudaDocumentSetId, "Sales", "Historic", true, true, true, false, false, false, true, true, true, true).ConfigureAwait(false);
 
                 }
 
@@ -761,6 +761,8 @@ namespace WaterNut.QuerySpace.AllocationQS.ViewModels
                
                 MessageBus.Default.BeginNotify(MessageToken.AsycudaSalesAllocationsExsChanged, null,
                     new NotificationEventArgs(MessageToken.AsycudaSalesAllocationsExsChanged));
+
+                MessageBus.Default.BeginNotify(CoreEntities.MessageToken.AsycudaDocumentSetExsChanged, this, new NotificationEventArgs(CoreEntities.MessageToken.AsycudaDocumentSetExsChanged));
 
                 MessageBus.Default.BeginNotify(QuerySpace.CoreEntities.MessageToken.AsycudaDocumentsChanged, null,
                     new NotificationEventArgs(QuerySpace.CoreEntities.MessageToken.AsycudaDocumentsChanged));

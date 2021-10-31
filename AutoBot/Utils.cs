@@ -921,7 +921,7 @@ namespace AutoBot
 
                 using (var ctx = new CoreEntitiesContext())
                 {
-                    ctx.Database.CommandTimeout = 20;
+                    ctx.Database.CommandTimeout = 30;
                     var res = ctx.TODO_LICToAssess
                         .Where(x => ft.AsycudaDocumentSetId == 0 || x.AsycudaDocumentSetId == ft.AsycudaDocumentSetId)
                         .ToList();
@@ -4364,7 +4364,7 @@ namespace AutoBot
 
 
 
-                AllocationsModel.Instance.CreateEX9Class.CreateEx9(filterExpression, false, false, true, docset, "Sales", "Historic", true, true, true,true,true,false,true,true, true).Wait();
+                AllocationsModel.Instance.CreateEX9Class.CreateEx9(filterExpression, false, false, true, docset, "Sales", "Historic", true, true, true,true,true,false,true,true, true, true).Wait();
                 //await CreateDutyFreePaidDocument(dfp, res, docSet, "Sales", true,
                 //        itemSalesPiSummarylst.Where(x => x.DutyFreePaid == dfp || x.DutyFreePaid == "All")
                 //            .ToList(), true, true, true, "Historic", true, ApplyCurrentChecks,
@@ -4427,7 +4427,7 @@ namespace AutoBot
 
 
 
-                AllocationsModel.Instance.CreateEX9Class.CreateEx9(filterExpression, false, false, false, docset, "Sales", "Historic", true, true,true,false,false, false, true, true, true).Wait();
+                AllocationsModel.Instance.CreateEX9Class.CreateEx9(filterExpression, false, false, false, docset, "Sales", "Historic", true, true,true,false,false, false, true, true, true, false).Wait();
                 //await CreateDutyFreePaidDocument(dfp, res, docSet, "Sales", true,
                 //        itemSalesPiSummarylst.Where(x => x.DutyFreePaid == dfp || x.DutyFreePaid == "All")
                 //            .ToList(), true, true, true, "Historic", true, ApplyCurrentChecks,

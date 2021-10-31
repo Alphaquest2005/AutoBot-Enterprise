@@ -117,11 +117,6 @@ namespace AllocationQS.Client.Services
             return  await Channel.GetAsycudaSalesAndAdjustmentAllocationsExByPreviousItem_Id(PreviousItem_Id, includesLst).ConfigureAwait(false);
         }
 			 
-  		public async Task<IEnumerable<AsycudaSalesAndAdjustmentAllocationsEx>> GetAsycudaSalesAndAdjustmentAllocationsExByEntryDataDetailsId(string EntryDataDetailsId, List<string> includesLst = null)
-        {
-            return  await Channel.GetAsycudaSalesAndAdjustmentAllocationsExByEntryDataDetailsId(EntryDataDetailsId, includesLst).ConfigureAwait(false);
-        }
-			 
   		public async Task<IEnumerable<AsycudaSalesAndAdjustmentAllocationsEx>> GetAsycudaSalesAndAdjustmentAllocationsExByxASYCUDA_Id(string xASYCUDA_Id, List<string> includesLst = null)
         {
             return  await Channel.GetAsycudaSalesAndAdjustmentAllocationsExByxASYCUDA_Id(xASYCUDA_Id, includesLst).ConfigureAwait(false);
@@ -130,11 +125,6 @@ namespace AllocationQS.Client.Services
   		public async Task<IEnumerable<AsycudaSalesAndAdjustmentAllocationsEx>> GetAsycudaSalesAndAdjustmentAllocationsExBypASYCUDA_Id(string pASYCUDA_Id, List<string> includesLst = null)
         {
             return  await Channel.GetAsycudaSalesAndAdjustmentAllocationsExBypASYCUDA_Id(pASYCUDA_Id, includesLst).ConfigureAwait(false);
-        }
-			 
-  		public async Task<IEnumerable<AsycudaSalesAndAdjustmentAllocationsEx>> GetAsycudaSalesAndAdjustmentAllocationsExByApplicationSettingsId(string ApplicationSettingsId, List<string> includesLst = null)
-        {
-            return  await Channel.GetAsycudaSalesAndAdjustmentAllocationsExByApplicationSettingsId(ApplicationSettingsId, includesLst).ConfigureAwait(false);
         }
 			 
           public decimal SumField(string whereExp, string sumExp)

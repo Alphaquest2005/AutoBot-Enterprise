@@ -83,16 +83,10 @@ namespace AllocationQS.Client.Contracts
 		Task<IEnumerable<AsycudaSalesAndAdjustmentAllocationsEx>> GetAsycudaSalesAndAdjustmentAllocationsExByPreviousItem_Id(string PreviousItem_Id, List<string> includesLst = null);
         
   		[OperationContract]
-		Task<IEnumerable<AsycudaSalesAndAdjustmentAllocationsEx>> GetAsycudaSalesAndAdjustmentAllocationsExByEntryDataDetailsId(string EntryDataDetailsId, List<string> includesLst = null);
-        
-  		[OperationContract]
 		Task<IEnumerable<AsycudaSalesAndAdjustmentAllocationsEx>> GetAsycudaSalesAndAdjustmentAllocationsExByxASYCUDA_Id(string xASYCUDA_Id, List<string> includesLst = null);
         
   		[OperationContract]
 		Task<IEnumerable<AsycudaSalesAndAdjustmentAllocationsEx>> GetAsycudaSalesAndAdjustmentAllocationsExBypASYCUDA_Id(string pASYCUDA_Id, List<string> includesLst = null);
-        
-  		[OperationContract]
-		Task<IEnumerable<AsycudaSalesAndAdjustmentAllocationsEx>> GetAsycudaSalesAndAdjustmentAllocationsExByApplicationSettingsId(string ApplicationSettingsId, List<string> includesLst = null);
         
   		
     }

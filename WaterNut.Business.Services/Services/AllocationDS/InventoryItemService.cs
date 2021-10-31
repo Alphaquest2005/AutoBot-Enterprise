@@ -259,6 +259,12 @@ namespace AllocationDS.Business.Services
                                         GetWhere<InventoryItemAlias>(dbContext, exp, itm.Value, "InventoryItem", "Select", includesLst)
 										.ConfigureAwait(continueOnCapturedContext: false);
 
+                            case "LumpedItem":
+                                return
+                                    await
+                                        GetWhere<LumpedItem>(dbContext, exp, itm.Value, "InventoryItem", "SelectMany", includesLst)
+										.ConfigureAwait(continueOnCapturedContext: false);
+
                         }
 
                     }
@@ -770,6 +776,9 @@ namespace AllocationDS.Business.Services
                             case "InventoryItemAliasEx":
                                 return await CountWhere<InventoryItemAlias>(dbContext, exp, itm.Value, "InventoryItem", "Select")
 											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "LumpedItem":
+                                return await CountWhere<LumpedItem>(dbContext, exp, itm.Value, "InventoryItem", "SelectMany")
+											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }
                     return await dbContext.InventoryItems.Where(exp == "All" || exp == null ? "InventoryItemId != null" : exp)
@@ -898,6 +907,12 @@ namespace AllocationDS.Business.Services
                                 return
                                     await
                                         LoadRangeWhere<InventoryItemAlias>(startIndex, count, dbContext, exp, itm.Value, "InventoryItem", "Select")
+													.ConfigureAwait(continueOnCapturedContext: false);
+
+                            case "LumpedItem":
+                                return
+                                    await
+                                        LoadRangeWhere<LumpedItem>(startIndex, count, dbContext, exp, itm.Value, "InventoryItem", "SelectMany")
 													.ConfigureAwait(continueOnCapturedContext: false);
 
                           
@@ -1202,6 +1217,9 @@ namespace AllocationDS.Business.Services
 											.ConfigureAwait(continueOnCapturedContext: false);
                             case "InventoryItemAliasEx":
                                 return await SumWhere<InventoryItemAlias>(dbContext, exp, itm.Value, "InventoryItem", field, "Select")
+											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "LumpedItem":
+                                return await SumWhere<LumpedItem>(dbContext, exp, itm.Value, "InventoryItem", field, "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }

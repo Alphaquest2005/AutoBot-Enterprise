@@ -14,11 +14,14 @@ namespace WaterNut.Views
 	{
 		public CPSales()
 		{
-			InitializeComponent();
-			
-			// Insert code required on object creation below this point.
-            im = (CPSalesModel)FindResource("CPSalesModelDataSource");
-		}
+            if (WaterNut.QuerySpace.CoreEntities.ViewModels.BaseViewModel.Instance.CurrentApplicationSettings.AllowCounterPoint != "Hidden")
+            {
+                InitializeComponent();
+
+                // Insert code required on object creation below this point.
+                im = (CPSalesModel) FindResource("CPSalesModelDataSource");
+            }
+        }
 
 	    private CPSalesModel im; //CPSalesModel.Instance;
         private async void DownloadTxt_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)

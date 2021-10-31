@@ -26,7 +26,7 @@
                         <ColumnDefinition Width="188*"/>
                         <ColumnDefinition Width="175*"/>
                     </Grid.ColumnDefinitions>
-                    <TextBox Style="{DynamicResource TextBox2TextBlock}"  Text="{Binding Data.SANumber, Mode=OneWay}" HorizontalAlignment="Left" Height="30" TextWrapping="Wrap" VerticalAlignment="Top" Width="59" FontSize="13.333" FontWeight="Bold" TextAlignment="Center" Margin="0,0,0,-0.618"/>
+                    <TextBox Style="{DynamicResource TextBox2TextBlock}"  Text="{Binding Data.SalesLineNumber, Mode=OneWay}" HorizontalAlignment="Left" Height="30" TextWrapping="Wrap" VerticalAlignment="Top" Width="59" FontSize="13.333" FontWeight="Bold" TextAlignment="Center" Margin="0,0,0,-0.618"/>
                     <TextBox Style="{DynamicResource TextBox2TextBlock}"  Text="{Binding Data.InvoiceNo, Mode=OneWay}" HorizontalAlignment="Left" Height="25" TextWrapping="Wrap" VerticalAlignment="Top" Width="109" FontSize="13.333" FontWeight="Normal" TextAlignment="Center" Margin="63,0,0,0"/>
                     <TextBox Style="{DynamicResource TextBox2TextBlock}"  Text="{Binding Data.InvoiceDate, StringFormat=d, Mode=OneWay}" HorizontalAlignment="Left" Height="30" TextWrapping="Wrap" VerticalAlignment="Top" Width="90" FontSize="13.333" FontWeight="Normal" TextAlignment="Center" Margin="177,0,0,0" Grid.ColumnSpan="2"/>
                     <TextBox Style="{DynamicResource TextBox2TextBlock}"  Text="{Binding Data.SalesQtyAllocated, Mode=OneWay}" HorizontalAlignment="Left" Height="30" TextWrapping="Wrap" VerticalAlignment="Top" Width="41" FontSize="13.333" FontWeight="Normal" TextAlignment="Center" Margin="83.6,0,0,0" Grid.Column="1"/>
@@ -47,7 +47,8 @@
                 <TextBox Style="{DynamicResource TextBox2TextBlock}"  Text="{Binding Data.Type, Mode=OneWay}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="21,10,0,0" Height="50" FontSize="18.667" Width="66" TextWrapping="Wrap"/>
                 <Grid HorizontalAlignment="Left" Height="86" Margin="998,0,-45,0" VerticalAlignment="Top" Width="147" Background="#7FA48DD2" RenderTransformOrigin="0.503,0.574">
                     <TextBox Style="{DynamicResource TextBox2TextBlock}"  Text="{Binding Data.xReferenceNumber, Mode=OneWay}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="10,2,0,0" Height="25" FontSize="16" Width="127" TextAlignment="Center"/>
-                    <TextBox Style="{DynamicResource TextBox2TextBlock}"  Text="{Binding Data.xLineNumber}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="10,28,0,0" Height="25" FontSize="18.667" Width="127" TextAlignment="Center"/>
+                    <TextBox Style="{DynamicResource TextBox2TextBlock}"  Text="{Binding Data.xCNumber}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="10,25,0,0" Height="25" FontSize="18.667" Width="127" TextAlignment="Center"/>
+                    <TextBox Style="{DynamicResource TextBox2TextBlock}"  Text="{Binding Data.xLineNumber}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="10,45,0,0" Height="25" FontSize="18.667" Width="127" TextAlignment="Center"/>
                     <TextBlock x:Name="GoToEntryTxt" HorizontalAlignment="Left" Height="18" Margin="30,68,0,0" TextWrapping="Wrap" Text="Goto Entry" VerticalAlignment="Top" Width="76" TextAlignment="Center" Style="{DynamicResource TextButtonStyle}" MouseLeftButtonUp="GoToEntryTxt_MouseLeftButtonUp"/>
                 </Grid>
                 <Rectangle HorizontalAlignment="Left" Height="85" Margin="0,1,0,0" Stroke="{x:Null}" VerticalAlignment="Top" Width="16">

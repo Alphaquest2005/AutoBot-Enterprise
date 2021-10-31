@@ -80,6 +80,7 @@
               this.HasOptional(t => t.InventoryItemsEx).WithMany(t =>(ICollection<EX9AsycudaSalesAllocations>) t.EX9AsycudaSalesAllocations).HasForeignKey(d => d.InventoryItemId);
               this.HasRequired(t => t.AsycudaSalesAllocations).WithOptional(t => (EX9AsycudaSalesAllocations)t.EX9AsycudaSalesAllocations);
               this.HasOptional(t => t.EntryDataDetails).WithMany(t =>(ICollection<EX9AsycudaSalesAllocations>) t.EX9AsycudaSalesAllocations).HasForeignKey(d => d.EntryDataDetailsId);
+              this.HasMany(t => t.AsycudaSalesAllocationsPIData).WithRequired(t => (EX9AsycudaSalesAllocations)t.EX9AsycudaSalesAllocations);
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);
     			this.Ignore(t => t.ModifiedProperties);

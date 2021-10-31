@@ -92,7 +92,7 @@ where Item_id in
 FROM   xcuda_Item INNER JOIN
              xcuda_HScode ON xcuda_Item.Item_Id = xcuda_HScode.Item_Id INNER JOIN
              xcuda_Registration ON xcuda_Item.ASYCUDA_Id = xcuda_Registration.ASYCUDA_Id
-where Commodity_code = '56089020')
+where Commodity_code = '39241010')
 
 
 update xcuda_Item

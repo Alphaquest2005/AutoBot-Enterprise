@@ -24,8 +24,12 @@ namespace WaterNut.QuerySpace.CounterPointQS.ViewModels
         private static readonly CPSalesModel instance;
         static CPSalesModel()
         {
-         instance = new CPSalesModel() { DateFilter = DateTime.MinValue };
-           
+            if (WaterNut.QuerySpace.CoreEntities.ViewModels.BaseViewModel.Instance.CurrentApplicationSettings
+                .AllowCounterPoint != "Hidden")
+            {
+                instance = new CPSalesModel() {DateFilter = DateTime.MinValue};
+            }
+
         }
 
 	    //private static void OnCurrentApplicationSettingsChanged(object sender, NotificationEventArgs<ApplicationSettings> e)

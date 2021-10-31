@@ -749,8 +749,8 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 
  
 
-		private string _pLineNumberFilter;
-        public string pLineNumberFilter
+		private Int32? _pLineNumberFilter;
+        public Int32? pLineNumberFilter
         {
             get
             {
@@ -991,9 +991,8 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 						res.Append(" && " + string.Format("DutyFreePaid.Contains(\"{0}\")",  DutyFreePaidFilter));						
  
 
-									if(string.IsNullOrEmpty(pLineNumberFilter) == false)
-						res.Append(" && " + string.Format("pLineNumber.Contains(\"{0}\")",  pLineNumberFilter));						
-			return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
+					if(pLineNumberFilter.HasValue)
+						res.Append(" && " + string.Format("pLineNumber == {0}",  pLineNumberFilter.ToString()));							return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
 // Send to Excel Implementation
@@ -1091,7 +1090,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     DutyFreePaid = x.DutyFreePaid ,
                     
  
-                    pLineNumber = x.pLineNumber.GetValueOrDefault().ToString() 
+                    pLineNumber = x.pLineNumber 
                     
                 }).ToList()
             };
@@ -1179,7 +1178,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     public string DutyFreePaid { get; set; } 
                     
  
-                    public string pLineNumber { get; set; } 
+                    public Nullable<int> pLineNumber { get; set; } 
                     
         }
 

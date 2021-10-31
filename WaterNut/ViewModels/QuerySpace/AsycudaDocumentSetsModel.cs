@@ -38,9 +38,10 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             RegisterToReceiveMessages<AsycudaDocumentSetEx>(MessageToken.CurrentAsycudaDocumentSetExChanged, OnCurrentAsycudaDocumentSetExChanged2);
             RegisterToReceiveMessages(MessageToken.AsycudaDocumentSetExsChanged, OnAsycudaDocumentSetExsChanged3);
             RegisterToReceiveMessages<AsycudaDocumentSetEx>(MessageToken.AsycudaDocumentSetExsChanged, OnAsycudaDocumentSetExsChanged2);
+            RegisterToReceiveMessages<ApplicationSettings>(MessageToken.CurrentApplicationSettingsChanged, OnCurrentApplicationSettingsChanged);
 
-            
-            
+
+
         }
 
 
