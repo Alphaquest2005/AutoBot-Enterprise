@@ -20,6 +20,7 @@ using xcuda_Weight = DocumentDS.Business.Entities.xcuda_Weight;
 using xcuda_Weight_itm = DocumentItemDS.Business.Entities.xcuda_Weight_itm;
 using System.Data.Entity;
 using System.IO;
+using System.Linq.Expressions;
 using System.Text.RegularExpressions;
 using AllocationQS.Business.Entities;
 using CoreEntities.Business.Enums;
@@ -96,7 +97,7 @@ namespace WaterNut.DataSpace
             {
                 DocSetPi.Clear();// moved here because data is cached wont update automatically
                 freashStart = true;
-                ex9AsycudaSalesAllocations = null;
+                _ex9AsycudaSalesAllocations = null;
                 //var dutylst = CreateDutyList(slst);
                 var dutylst = new List<string>() {"Duty Paid", "Duty Free"};
                 if (!filterExp.Contains("InvoiceDate"))
@@ -694,28 +695,35 @@ namespace WaterNut.DataSpace
             }
         }
 
-        private IEnumerable<EX9Allocations> GetEX9Data(string FilterExpression)
+        private List<EX9Allocations> GetEX9Data(string FilterExpression)
         {
-            FilterExpression =
-                FilterExpression.Replace("&& (pExpiryDate >= \"" + DateTime.Now.Date.ToShortDateString() + "\" || pExpiryDate == null)", "");
-
-           
-            FilterExpression += "&& DoNotAllocateSales != true " +
-                                "&& DoNotAllocatePreviousEntry != true " +
-                                "&& DoNotEX != true " +
-                                "&& Status == null " + // force no error execution
-                                //"&& AllocationErrors == null" +
-                                "&& WarehouseError == null " +
-                                $"&& (CustomsOperationId == { (int)CustomsOperations.Warehouse})";
-            var res = new List<EX9Allocations>();
-
-            using (var ctx = new AllocationDSContext())
+            try
             {
-                ctx.Database.CommandTimeout = 0;
-                res = ctx.EX9AsycudaSalesAllocations
-                   // .Include(x => x.AsycudaSalesAllocationsPIData)
-                    .AsNoTracking()
+
+
+                FilterExpression =
+                    FilterExpression.Replace(
+                        "&& (pExpiryDate >= \"" + DateTime.Now.Date.ToShortDateString() + "\" || pExpiryDate == null)",
+                        "");
+
+
+                FilterExpression += "&& DoNotAllocateSales != true " +
+                                    "&& DoNotAllocatePreviousEntry != true " +
+                                    "&& DoNotEX != true " +
+                                    "&& Status == null " + // force no error execution
+                                    //"&& AllocationErrors == null" +
+                                    "&& WarehouseError == null " +
+                                    $"&& (CustomsOperationId == {(int) CustomsOperations.Warehouse})";
+                var res = new List<EX9Allocations>();
+
+
+                var tres = GetEx9AsycudaSalesAllocations();
+
+
+
+                res = tres
                     .Where(FilterExpression)
+                    .ToList()
                     .Select(x => new EX9Allocations
                         {
                             Type = x.Type,
@@ -757,7 +765,7 @@ namespace WaterNut.DataSpace
                             Net_weight_itm = x.Net_weight_itm,
                             InventoryItemId = (int) x.InventoryItemId,
                             PIData = x.AsycudaSalesAllocationsPIData,
-                            previousItems = x.PreviousDocumentItem.EntryPreviousItems
+                            previousItems = x?.PreviousDocumentItem.EntryPreviousItems
                                 .Select(y => y.xcuda_PreviousItem)
                                 .Where(y => (y.xcuda_Item.AsycudaDocument.CNumber != null ||
                                              y.xcuda_Item.AsycudaDocument.IsManuallyAssessed == true)
@@ -775,7 +783,7 @@ namespace WaterNut.DataSpace
                                     Suplementary_Quantity = (double) z.Suplementary_Quantity
                                 }).ToList(),
                             TariffSupUnitLkps =
-                                x.PreviousDocumentItem.xcuda_Tarification.xcuda_HScode.TariffCodes.TariffCategory
+                                x.PreviousDocumentItem?.xcuda_Tarification.xcuda_HScode.TariffCodes.TariffCategory
                                     .TariffCategoryCodeSuppUnit.Select(z => z.TariffSupUnitLkps).ToList()
                             //.Select(x => (ITariffSupUnitLkp)x)
 
@@ -786,20 +794,49 @@ namespace WaterNut.DataSpace
 
                     .ToList();
 
-                var piDatas = ctx.AsycudaSalesAllocationsPIData.ToList();
+                //var piDatas = ctx.AsycudaSalesAllocationsPIData.ToList();
 
-                foreach (var ex9 in res)
-                {
-                    ex9.PIData = piDatas.Where(x => x.AllocationId == ex9.AllocationId).ToList();
-                }
+                //foreach (var ex9 in res)
+                //{
+                //    ex9.PIData = piDatas.Where(x => x.AllocationId == ex9.AllocationId).ToList();
+                //}
 
+
+
+
+                return res.OrderBy(x => x.AllocationId).ToList();
             }
-
-
-            return res.OrderBy(x => x.AllocationId);
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
         }
 
-        private static List<EX9AsycudaSalesAllocations> ex9AsycudaSalesAllocations = null;
+        private static List<EX9AsycudaSalesAllocations> _ex9AsycudaSalesAllocations = null;
+        private static IQueryable<EX9AsycudaSalesAllocations> GetEx9AsycudaSalesAllocations()
+        {
+            using (var ctx = new AllocationDSContext())
+            {
+                ctx.Database.CommandTimeout = 60;
+               
+                
+                if (_ex9AsycudaSalesAllocations == null)
+                {
+                    _ex9AsycudaSalesAllocations = ctx.EX9AsycudaSalesAllocations
+                    .Include(x => x.AsycudaSalesAllocationsPIData)
+                    .Include("PreviousDocumentItem.EntryPreviousItems.xcuda_PreviousItem.xcuda_Item.AsycudaDocument.Customs_Procedure")
+                    .Include("PreviousDocumentItem.AsycudaDocument.Customs_Procedure.CustomsOperations")
+                    .Include("PreviousDocumentItem.xcuda_Tarification.xcuda_HScode.TariffCodes.TariffCategory.TariffCategoryCodeSuppUnit")
+                    .AsNoTracking()
+                    
+                    .ToList();
+                }
+                return _ex9AsycudaSalesAllocations.AsQueryable();
+            }
+        }
+
+        
 
 
 
@@ -1697,7 +1734,7 @@ namespace WaterNut.DataSpace
                     {
                         ssa.QtyAllocated = availibleQty - nr;
                         mypod.EntlnData.Quantity = availibleQty;
-                        //break;
+                        break;//put back break because its finished reducing allocations and need to exit --- gonna bug somewhere can't remember
                     }
                     else
                     {

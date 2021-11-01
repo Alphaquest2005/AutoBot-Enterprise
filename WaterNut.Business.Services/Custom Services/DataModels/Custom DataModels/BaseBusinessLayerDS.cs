@@ -1864,8 +1864,8 @@ namespace WaterNut.DataSpace
             {
                 if (pod.TariffSupUnitLkps == null || !pod.TariffSupUnitLkps.Any()) return;
 
-                var tariffSupUnitLkps = pod.TariffSupUnitLkps.DistinctBy(s => s.SuppUnitCode2).ToList();
-                if (tariffSupUnitLkps != null)
+                var tariffSupUnitLkps = pod.TariffSupUnitLkps.Where(x => x != null).DistinctBy(s => s.SuppUnitCode2).ToList();
+                if (tariffSupUnitLkps.Any())
                     foreach (var item in tariffSupUnitLkps.ToList())
                         itm.xcuda_Tarification.Unordered_xcuda_Supplementary_unit.Add(
                             new xcuda_Supplementary_unit(true)

@@ -192,7 +192,7 @@ namespace WaterNut.DataSpace
             var count = itemSetsValues.Count();
 			Parallel.ForEach(itemSetsValues.OrderBy(x => x.Key.EntryDataDate)
                     .ThenBy(x => x.Key.EntryDataId).ThenBy(x => x.Key.ItemNumber)
-			.Where(x => x.EntriesList.Any(z => z.TariffCode == "69139000")).ToList()
+			//.Where(x => x.EntriesList.Any(z => z.TariffCode == "69139000")).ToList()
 			//.Where(x => x.EntriesList.Any(z => z.AsycudaDocument.CNumber == "44887" && z.LineNumber == 17))
 
 									 //.Where(x => x.SalesList.Any(z => z.EntryDataId.ToLower().Contains("harry")))
@@ -607,10 +607,10 @@ namespace WaterNut.DataSpace
                     };
 
                 var res = new ConcurrentDictionary<(DateTime EntryDataDate, string EntryDataId, string ItemNumber), ItemSet>();
-                foreach (var itm in itmLst) ///.Where(x => x.Key == "0101-0336MDHNV").ToList()///.Where(x => x.SalesList.Any(z => z.EntryDataId == "61091010")).ToList()
+                foreach (var itm in itmLst) //.Where(x => x.Key.ItemNumber == "322871").ToList()////.Where(x => x.SalesList.Any(z => z.EntryDataId == "61091010")).ToList()
 				{
 
-                    res.AddOrUpdate(itm.Key, itm, (key, value) =>
+					res.AddOrUpdate(itm.Key, itm, (key, value) =>
                     {
                         //value.EntriesList.AddRange(itm.EntriesList);  ------ causes Duplicated entries
                         value.SalesList.AddRange(itm.SalesList);
@@ -1036,7 +1036,7 @@ namespace WaterNut.DataSpace
 					for (var i = CurrentAsycudaItemIndex; i < asycudaEntries.Count(); i++)
 					{
 						// reset in event earlier dat
-
+                        if (saleitmQtyToallocate == 0) break;
 						if (CurrentAsycudaItemIndex != i || GetAsycudaEntriesWithItemNumber(asycudaEntries, CurrentAsycudaItemIndex).Item_Id != cAsycudaItm.Item_Id)
 						{
 							if (i < 0) i = 0;
@@ -1115,20 +1115,52 @@ namespace WaterNut.DataSpace
 								}
 
 								if (ramt == 0) break;
-								if (ramt < 0) /// step back 2 so it jumps 1
-								{
-									if (i == 0)
-									{
-										if (CurrentSalesItemIndex == 0 && saleslst.Count == 1)
-											await AddExceptionAllocation(saleitm, "Returned More than Sold")
-												.ConfigureAwait(false);
-										break;
-									}
+                                if (ramt < 0) /// step back 2 so it jumps 1
+                                {
+                                    if (i == 0)
+                                    {
+                                        //get last allocation item for this from cache
 
-									i -= 2;
-								}
 
-							}
+                                        if (CurrentSalesItemIndex == 0 && saleslst.Count == 1)
+                                        {
+                                            var pitmsIds = asycudaEntries.Select(x => x.Item_Id).ToList();
+                                            var dfp = saleitm.DutyFreePaid;
+                                            var lastAllocation = new AllocationDSContext()
+                                                .AsycudaSalesAllocations
+                                                .Where(x => x.EntryDataDetails.InventoryItemId ==
+                                                            saleitm.InventoryItemId
+                                                            && pitmsIds.Any(z => z == x.PreviousItem_Id)
+                                                            && (dfp == "Duty Free" ? x.PreviousDocumentItem.DFQtyAllocated > 0 : x.PreviousDocumentItem.DPQtyAllocated > 0))
+                                                .OrderByDescending(x => x.AllocationId).FirstOrDefault();
+
+                                            if (lastAllocation == null)
+                                            {
+
+                                                await AddExceptionAllocation(saleitm, "Returned More than Sold")
+                                                    .ConfigureAwait(false);
+                                                break;
+                                            }
+                                            // refreash all items from cache and set currentindex to last previous item
+                                            //and continue
+
+                                            var lastIndex = asycudaEntries.FindLastIndex(x =>
+                                                x.Item_Id == lastAllocation.PreviousItem_Id);
+                                            i = lastIndex-1;
+                                        }
+
+
+
+                                    }
+                                    else
+                                    {
+                                        i -= 2;
+                                    }
+
+                                    
+                                }
+
+                            }
 							else
 							{
 
@@ -1261,7 +1293,7 @@ namespace WaterNut.DataSpace
             var TotalDFPAllocatedQty = previousItems.Any() ? previousItems
                 .Sum(x => x.QtyAllocated) : (saleItem.DutyFreePaid == "Duty Free" ? cAsycudaItm.DFQtyAllocated : cAsycudaItm.DPQtyAllocated);
             var remainingDFPAllocation = TotalDFPtoAllocate - TotalDFPAllocatedQty;
-            var freeToAllocate =  (TotalDFPAllocatedQty + nonDFPQty + (cAsycudaItm.QtyAllocated >= TotalPiQty ? TotalPiQty : 0) );
+            var freeToAllocate =  TotalDFPAllocatedQty + nonDFPQty + cAsycudaItm.QtyAllocated;
 
 
 
