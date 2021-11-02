@@ -782,6 +782,21 @@ public string CustomsProcedure
 		}
      
 
+       
+       
+public Nullable<System.DateTime> AssessmentDate
+		{ 
+		    get { return this.asycudadocumentitem.AssessmentDate; }
+			set
+			{
+			    if (value == this.asycudadocumentitem.AssessmentDate) return;
+				this.asycudadocumentitem.AssessmentDate = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("AssessmentDate");
+			}
+		}
+     
+
        private AsycudaDocument _AsycudaDocument;
         public  AsycudaDocument AsycudaDocument
 		{

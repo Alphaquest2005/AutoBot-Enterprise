@@ -530,6 +530,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AsycudaDocumentItem' does
           <Property Name="ExpiryDate" Type="datetime2" Precision="7" />
           <Property Name="InventoryItemId" Type="int" />
           <Property Name="CustomsProcedure" Type="nvarchar" MaxLength="41" />
+          <Property Name="AssessmentDate" Type="datetime2" Precision="7" />
         </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AsycudaDocumentItemEntryDataDetails' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
@@ -2481,7 +2482,8 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
     [AsycudaDocumentItem].[Cancelled] AS [Cancelled], 
     [AsycudaDocumentItem].[ExpiryDate] AS [ExpiryDate], 
     [AsycudaDocumentItem].[InventoryItemId] AS [InventoryItemId], 
-    [AsycudaDocumentItem].[CustomsProcedure] AS [CustomsProcedure]
+    [AsycudaDocumentItem].[CustomsProcedure] AS [CustomsProcedure], 
+    [AsycudaDocumentItem].[AssessmentDate] AS [AssessmentDate]
     FROM [dbo].[AsycudaDocumentItem] AS [AsycudaDocumentItem]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="AsycudaDocumentItemEntryDataDetails" EntityType="Self.AsycudaDocumentItemEntryDataDetails" store:Type="Views" store:Schema="dbo">
@@ -4063,7 +4065,8 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
           <NavigationProperty Name="ApplicationSettings" Relationship="WaterNutDBModel.ApplicationSettingsAsycudaDocumentItem" FromRole="AsycudaDocumentItem" ToRole="ApplicationSettings" />
           <NavigationProperty Name="InventoryItemsEx" Relationship="WaterNutDBModel.InventoryItemsExAsycudaDocumentItem" FromRole="AsycudaDocumentItem" ToRole="InventoryItemsEx" />
           <Property Name="InventoryItemId" Type="Int32" />
-          <Property Name="CustomsProcedure" Type="String" MaxLength="41" FixedLength="false" Unicode="true" /><a:DomainInterfaceProperty xmlns:a="http://schemas.tempuri.com/DomainInterfaceProperty">IDocumentItem,IWeightItem</a:DomainInterfaceProperty>
+          <Property Name="CustomsProcedure" Type="String" MaxLength="41" FixedLength="false" Unicode="true" />
+          <Property Name="AssessmentDate" Type="DateTime" Precision="7" /><a:DomainInterfaceProperty xmlns:a="http://schemas.tempuri.com/DomainInterfaceProperty">IDocumentItem,IWeightItem</a:DomainInterfaceProperty>
         </EntityType>
         <Association Name="AsycudaDocumentAsycudaDocumentItem">
           <End Type="WaterNutDBModel.AsycudaDocument" Role="AsycudaDocument" Multiplicity="0..1" />
@@ -6414,6 +6417,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
           <EntitySetMapping Name="AsycudaDocumentItems">
             <EntityTypeMapping TypeName="WaterNutDBModel.AsycudaDocumentItem">
               <MappingFragment StoreEntitySet="AsycudaDocumentItem">
+                <ScalarProperty Name="AssessmentDate" ColumnName="AssessmentDate" />
                 <ScalarProperty Name="CustomsProcedure" ColumnName="CustomsProcedure" />
                 <ScalarProperty Name="InventoryItemId" ColumnName="InventoryItemId" />
                 <ScalarProperty Name="ApplicationSettingsId" ColumnName="ApplicationSettingsId" />

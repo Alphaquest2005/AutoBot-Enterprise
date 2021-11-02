@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
@@ -14,31 +15,15 @@ using SimpleMvvmToolkit;
 using WaterNut.QuerySpace.PreviousDocumentQS.ViewModels;
 using AsycudaDocumentItem = CoreEntities.Client.Entities.AsycudaDocumentItem;
 using System.Data.Entity;
+using System.Threading;
+using System.Threading.Tasks.Schedulers;
+using Core.Common.Converters;
 using Core.Common.UI.DataVirtualization;
 using CoreEntities.Client.Entities;
 
 namespace WaterNut.QuerySpace.AllocationQS.ViewModels
 {
-    public partial class AsycudaSalesAndAdjustmentAllocationsExViewModel_AutoGen
-    {
-        partial void OnCreated()
-        {
-            _endInvoiceDateFilter = DateTime.Parse(string.Format("{0}/{2}/{1}", DateTime.Now.Month, DateTime.Now.Year, DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month)));
 
-            _pRegistrationDateFilter = DateTime.MinValue;
-            _startpRegistrationDateFilter = DateTime.MinValue;
-            _endpRegistrationDateFilter = DateTime.MinValue;
-            _xRegistrationDateFilter = DateTime.MinValue;
-            _startxRegistrationDateFilter = DateTime.MinValue;
-            _endxRegistrationDateFilter = DateTime.MinValue;
-            _startpExpiryDateFilter = DateTime.MinValue;
-            _endpExpiryDateFilter = DateTime.MinValue;
-            _endAssessmentDateFilter = DateTime.MinValue;
-            _startAssessmentDateFilter = DateTime.MinValue;
-        }
-
-        
-    }
     public partial class AllocationsModel: AsycudaSalesAndAdjustmentAllocationsExViewModel_AutoGen
     {
         private static readonly AllocationsModel instance;
@@ -79,6 +64,161 @@ namespace WaterNut.QuerySpace.AllocationQS.ViewModels
         private void OnCurrentAsycudaSalesAllocationsExChanged1(object sender, NotificationEventArgs<AsycudaSalesAndAdjustmentAllocationsEx> e)
         {
             
+        }
+
+        public  new async Task Send2Excel()
+        {
+            IEnumerable<AsycudaSalesAndAdjustmentAllocationsEx> lst = null;
+            using (var ctx = new AsycudaSalesAndAdjustmentAllocationsExRepository())
+            {
+                lst = await ctx.GetAsycudaSalesAndAdjustmentAllocationsExesByExpressionNav(vloader.FilterExpression, vloader.NavigationExpression).ConfigureAwait(continueOnCapturedContext: false);
+            }
+            if (lst == null || !lst.Any())
+            {
+                MessageBox.Show("No Data to Send to Excel");
+                return;
+            }
+            var s = new ExportToCSV<AsycudaSalesAndAdjustmentAllocationsExExcelLine, List<AsycudaSalesAndAdjustmentAllocationsExExcelLine>>
+            {
+                dataToPrint = lst.OrderBy(x => x.AllocationId).Select(x => new AsycudaSalesAndAdjustmentAllocationsExExcelLine
+                {
+
+                    TotalValue = x.TotalValue,
+
+
+                    AllocatedValue = x.AllocatedValue,
+
+
+                    Status = x.Status,
+
+
+                    QtyAllocated = x.QtyAllocated,
+
+
+                    SANumber = x.SANumber,
+
+
+                    InvoiceDate = x.InvoiceDate,
+
+
+                    CustomerName = x.CustomerName,
+
+
+                    SalesQuantity = x.SalesQuantity,
+
+
+                    SalesQtyAllocated = x.SalesQtyAllocated,
+
+
+                    InvoiceNo = x.InvoiceNo,
+
+
+                    SalesLineNumber = x.SalesLineNumber,
+
+
+                    ItemNumber = x.ItemNumber,
+
+
+                    ItemDescription = x.ItemDescription,
+
+
+                    DutyFreePaid = x.DutyFreePaid,
+
+
+                    Cost = x.Cost,
+
+
+                    Total_CIF_itm = x.Total_CIF_itm,
+
+
+                    DutyLiability = x.DutyLiability,
+
+
+                    TaxAmount = x.TaxAmount,
+
+
+                    SalesFactor = x.SalesFactor,
+
+
+                    pReferenceNumber = x.pReferenceNumber,
+
+
+                    pRegistrationDate = x.pRegistrationDate,
+
+
+                    pCNumber = x.pCNumber,
+
+
+                    pLineNumber = x.pLineNumber,
+
+
+                    pQuantity = x.pQuantity,
+
+
+                    pQtyAllocated = x.pQtyAllocated,
+
+
+                    PiQuantity = x.PiQuantity,
+
+
+                    pExpiryDate = x.pExpiryDate,
+
+
+                    pTariffCode = x.pTariffCode,
+
+
+                    pIsAssessed = x.pIsAssessed,
+
+
+                    DoNotAllocateSales = x.DoNotAllocateSales,
+
+
+                    DoNotAllocatePreviousEntry = x.DoNotAllocatePreviousEntry,
+
+
+                    WarehouseError = x.WarehouseError,
+
+
+                    TariffCode = x.TariffCode,
+
+
+                    Invalid = x.Invalid,
+
+
+                    pItemNumber = x.pItemNumber,
+
+
+                    Type = x.Type,
+
+
+                    AssessmentDate = x.AssessmentDate,
+
+
+                    xStatus = x.xStatus,
+
+
+                    xReferenceNumber = x.xReferenceNumber,
+
+
+                    xCNumber = x.xCNumber,
+
+
+                    xLineNumber = x.xLineNumber,
+
+
+                    xRegistrationDate = x.xRegistrationDate,
+
+
+                    xQuantity = x.xQuantity,
+
+                    AllocationId = x.AllocationId
+
+                }).ToList()
+            };
+            using (var sta = new StaTaskScheduler(numberOfThreads: 1))
+            {
+                await Task.Factory.StartNew(s.GenerateReport, CancellationToken.None, TaskCreationOptions.None, sta).ConfigureAwait(false);
+            }
         }
 
         void AllocationsModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -781,5 +921,32 @@ namespace WaterNut.QuerySpace.AllocationQS.ViewModels
                 throw;
             }
         }
+
+       
     }
+
+    public partial class AsycudaSalesAndAdjustmentAllocationsExViewModel_AutoGen
+    {
+        partial void OnCreated()
+        {
+            _endInvoiceDateFilter = DateTime.Parse(string.Format("{0}/{2}/{1}", DateTime.Now.Month, DateTime.Now.Year, DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month)));
+
+            _pRegistrationDateFilter = DateTime.MinValue;
+            _startpRegistrationDateFilter = DateTime.MinValue;
+            _endpRegistrationDateFilter = DateTime.MinValue;
+            _xRegistrationDateFilter = DateTime.MinValue;
+            _startxRegistrationDateFilter = DateTime.MinValue;
+            _endxRegistrationDateFilter = DateTime.MinValue;
+            _startpExpiryDateFilter = DateTime.MinValue;
+            _endpExpiryDateFilter = DateTime.MinValue;
+            _endAssessmentDateFilter = DateTime.MinValue;
+            _startAssessmentDateFilter = DateTime.MinValue;
+        }
+
+       
+    }
+
+
+
 }
+

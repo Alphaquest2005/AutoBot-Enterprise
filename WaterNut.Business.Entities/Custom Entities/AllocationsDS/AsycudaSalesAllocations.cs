@@ -19,5 +19,19 @@ namespace AllocationDS.Business.Entities
         [IgnoreDataMember]
         [NotMapped]
         public xcuda_Item xBondEntry => xBondAllocations.Any() ? xBondAllocations.FirstOrDefault()?.xcuda_Item : null;
+
+        [IgnoreDataMember]
+        [NotMapped]
+        public string DutyFreePaid =>
+            (EntryDataDetails != null)
+                ? EntryDataDetails.DutyFreePaid
+                : "";
+
+        [IgnoreDataMember]
+        [NotMapped]
+        public string Type =>
+            (EntryDataDetails != null)
+                ? EntryDataDetails.Sales != null ? EntryDataDetails.Sales.EntryType : EntryDataDetails.Adjustments.Type
+                : "";
     }
 }

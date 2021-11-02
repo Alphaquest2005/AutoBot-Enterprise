@@ -60,6 +60,7 @@
               this.Property(t => t.ApplicationSettingsId).HasColumnName("ApplicationSettingsId");
               this.Property(t => t.InventoryItemId).HasColumnName("InventoryItemId");
               this.Property(t => t.CustomsProcedure).HasColumnName("CustomsProcedure").HasMaxLength(41);
+              this.Property(t => t.AssessmentDate).HasColumnName("AssessmentDate");
               this.HasOptional(t => t.AsycudaDocument).WithMany(t =>(ICollection<AsycudaDocumentItem>) t.AsycudaDocumentItems).HasForeignKey(d => d.AsycudaDocumentId);
               this.HasOptional(t => t.ApplicationSettings).WithMany(t =>(ICollection<AsycudaDocumentItem>) t.AsycudaDocumentItem).HasForeignKey(d => d.ApplicationSettingsId);
               this.HasOptional(t => t.InventoryItemsEx).WithMany(t =>(ICollection<AsycudaDocumentItem>) t.AsycudaDocumentItem).HasForeignKey(d => d.InventoryItemId);

@@ -632,6 +632,19 @@ namespace CoreEntities.Client.DTO
 		}
         private string _CustomsProcedure;
 
+        [DataMember]
+        public Nullable<System.DateTime> AssessmentDate
+		{ 
+		    get { return _AssessmentDate; }
+			set
+			{
+			    if (value == _AssessmentDate) return;
+				_AssessmentDate = value;
+				NotifyPropertyChanged();//m => this.AssessmentDate
+			}
+		}
+        private Nullable<System.DateTime> _AssessmentDate;
+
        
         [DataMember]
         public AsycudaDocument AsycudaDocument
