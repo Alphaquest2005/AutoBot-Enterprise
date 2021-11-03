@@ -814,29 +814,41 @@ namespace WaterNut.DataSpace
         }
 
         private static List<EX9AsycudaSalesAllocations> _ex9AsycudaSalesAllocations = null;
+
         private static IQueryable<EX9AsycudaSalesAllocations> GetEx9AsycudaSalesAllocations()
         {
-            using (var ctx = new AllocationDSContext())
+            try
             {
-                ctx.Database.CommandTimeout = 60;
-               
-                
-                if (_ex9AsycudaSalesAllocations == null)
+
+
+                using (var ctx = new AllocationDSContext())
                 {
-                    _ex9AsycudaSalesAllocations = ctx.EX9AsycudaSalesAllocations
-                    .Include(x => x.AsycudaSalesAllocationsPIData)
-                    .Include("PreviousDocumentItem.EntryPreviousItems.xcuda_PreviousItem.xcuda_Item.AsycudaDocument.Customs_Procedure")
-                    .Include("PreviousDocumentItem.AsycudaDocument.Customs_Procedure.CustomsOperations")
-                    .Include("PreviousDocumentItem.xcuda_Tarification.xcuda_HScode.TariffCodes.TariffCategory.TariffCategoryCodeSuppUnit")
-                    .AsNoTracking()
-                    
-                    .ToList();
+                    ctx.Database.CommandTimeout = 0;
+
+
+                    if (_ex9AsycudaSalesAllocations == null)
+                    {
+                        _ex9AsycudaSalesAllocations = ctx.EX9AsycudaSalesAllocations
+                            .Include(x => x.AsycudaSalesAllocationsPIData)
+                            .Include("PreviousDocumentItem.EntryPreviousItems.xcuda_PreviousItem.xcuda_Item.AsycudaDocument.Customs_Procedure")
+                            .Include("PreviousDocumentItem.AsycudaDocument.Customs_Procedure.CustomsOperations")
+                            .Include("PreviousDocumentItem.xcuda_Tarification.xcuda_HScode.TariffCodes.TariffCategory.TariffCategoryCodeSuppUnit")
+                            .AsNoTracking()
+
+                            .ToList();
+                    }
+
+                    return _ex9AsycudaSalesAllocations.AsQueryable();
                 }
-                return _ex9AsycudaSalesAllocations.AsQueryable();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
             }
         }
 
-        
+
 
 
 
