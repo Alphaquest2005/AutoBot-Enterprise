@@ -607,7 +607,7 @@ namespace WaterNut.DataSpace
                     };
 
                 var res = new ConcurrentDictionary<(DateTime EntryDataDate, string EntryDataId, string ItemNumber), ItemSet>();
-                foreach (var itm in itmLst) //.Where(x => x.Key.ItemNumber == "0211-0279XLCSEA").ToList()//.Where(x => x.Key.ItemNumber.StartsWith("A")).ToList()//.Where(x => x.SalesList.Any(z => z.EntryDataId == "61091010")).ToList()
+                foreach (var itm in itmLst.Where(x => x.Key.ItemNumber.StartsWith("T")).ToList()) //.Where(x => x.Key.ItemNumber == "TRC/1206-QC").ToList()////.Where(x => x.SalesList.Any(z => z.EntryDataId == "61091010")).ToList()
 				{
 
 					res.AddOrUpdate(itm.Key, itm, (key, value) =>

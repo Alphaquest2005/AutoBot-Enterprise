@@ -508,6 +508,7 @@ namespace WaterNut.DataSpace
                     var values = line.OCR_Lines.DistinctValues == true 
                         ? DistinctValues(line.Values)
                         : line.Values;
+
                     foreach (var value in values)
                     {
                         if (part.OCR_Part.RecuringPart != null && part.OCR_Part.RecuringPart.IsComposite == false)
@@ -532,6 +533,7 @@ namespace WaterNut.DataSpace
 
                         }
 
+                        if (ditm.Count == 1) continue;
                         if (part.OCR_Part.RecuringPart != null && part.OCR_Part.RecuringPart.IsComposite == false)
                             lst.Add(itm);
                     }
