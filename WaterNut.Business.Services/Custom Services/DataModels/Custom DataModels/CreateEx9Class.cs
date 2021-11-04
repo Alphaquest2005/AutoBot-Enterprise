@@ -127,6 +127,7 @@ namespace WaterNut.DataSpace
                         .Replace($@"InvoiceDate <= ""{realEndDate:MM/dd/yyyy HH:mm:ss}""",
                             $@"InvoiceDate <= ""{endDate:MM/dd/yyyy HH:mm:ss}""");
 
+                    var dateFilter = $@"InvoiceDate >= ""{startDate:MM/dd/yyyy}"" && InvoiceDate <= ""{endDate:MM/dd/yyyy HH:mm:ss}""";
                     //  var salesSummary = GetSalesSummary(startDate, endDate);
                     List<string> errors = new List<string>();
                     //using (var ctx = new AllocationDSContext())
@@ -141,7 +142,7 @@ namespace WaterNut.DataSpace
                     var exPro =
                         " && (PreviousDocumentItem.AsycudaDocument.Customs_Procedure.CustomsOperations.Name == \"Warehouse\" )";
                     var slst =
-                        (await CreateAllocationDataBlocks(currentFilter + exPro, errors).ConfigureAwait(false))
+                        (await CreateAllocationDataBlocks(currentFilter + exPro, errors, dateFilter).ConfigureAwait(false))
                         .Where(x => x.Allocations.Count > 0);
 
 
@@ -677,12 +678,13 @@ namespace WaterNut.DataSpace
 
 
         private async Task<IEnumerable<AllocationDataBlock>> CreateAllocationDataBlocks(string filterExpression,
-            List<string> errors)
+            List<string> errors,
+            string dateFilter)
         {
             try
             {
                 StatusModel.Timer("Getting ExBond Data");
-                var slstSource = GetEX9Data(filterExpression).Where(x => !errors.Contains(x.ItemNumber)).ToList();
+                var slstSource = GetEX9Data(filterExpression, dateFilter).Where(x => !errors.Contains(x.ItemNumber)).ToList();
                 StatusModel.StartStatusUpdate("Creating xBond Entries", slstSource.Count());
                 IEnumerable<AllocationDataBlock> slst;
                 slst = CreateWholeAllocationDataBlocks(slstSource);
@@ -695,7 +697,7 @@ namespace WaterNut.DataSpace
             }
         }
 
-        private List<EX9Allocations> GetEX9Data(string FilterExpression)
+        private List<EX9Allocations> GetEX9Data(string FilterExpression, string dateFilter)
         {
             try
             {
@@ -717,7 +719,7 @@ namespace WaterNut.DataSpace
                 var res = new List<EX9Allocations>();
 
 
-                var tres = GetEx9AsycudaSalesAllocations();
+                var tres = GetEx9AsycudaSalesAllocations(dateFilter);
 
 
 
@@ -815,7 +817,7 @@ namespace WaterNut.DataSpace
 
         private static List<EX9AsycudaSalesAllocations> _ex9AsycudaSalesAllocations = null;
 
-        private static IQueryable<EX9AsycudaSalesAllocations> GetEx9AsycudaSalesAllocations()
+        private static IQueryable<EX9AsycudaSalesAllocations> GetEx9AsycudaSalesAllocations(string filterExpression)
         {
             try
             {
@@ -826,17 +828,19 @@ namespace WaterNut.DataSpace
                     ctx.Database.CommandTimeout = 0;
 
 
-                    if (_ex9AsycudaSalesAllocations == null)
-                    {
+                    //if (_ex9AsycudaSalesAllocations == null)
+                    //{
+                    //////////////////////Cant load all data in memory too much
                         _ex9AsycudaSalesAllocations = ctx.EX9AsycudaSalesAllocations
                             .Include(x => x.AsycudaSalesAllocationsPIData)
                             .Include("PreviousDocumentItem.EntryPreviousItems.xcuda_PreviousItem.xcuda_Item.AsycudaDocument.Customs_Procedure")
                             .Include("PreviousDocumentItem.AsycudaDocument.Customs_Procedure.CustomsOperations")
                             .Include("PreviousDocumentItem.xcuda_Tarification.xcuda_HScode.TariffCodes.TariffCategory.TariffCategoryCodeSuppUnit")
+                            .Where(filterExpression)
                             .AsNoTracking()
 
                             .ToList();
-                    }
+                    //}
 
                     return _ex9AsycudaSalesAllocations.AsQueryable();
                 }
