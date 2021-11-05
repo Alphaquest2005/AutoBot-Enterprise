@@ -1858,7 +1858,7 @@ namespace WaterNut.DataSpace
 
                 if ((Math.Abs(asycudaTotalQuantity - alreadyTakenOutTotalQuantity) < 0.01) 
                     //|| (Math.Abs(dutyFreePaidAllocated - alreadyTakenOutDFPQty) < 0.01)  //////////////Allow historical adjustment
-                    || (Math.Abs(remainingQtyToBeTakenOut) < 0)
+                    || (Math.Abs(remainingQtyToBeTakenOut) <= 0)
                     || allocationSales < allocationPi)
                 {
                     updateXStatus(mypod.Allocations,

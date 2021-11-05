@@ -1007,6 +1007,7 @@ namespace WaterNut.DataSpace
 
                     if (CurrentSalesItemIndex != s)
 					{
+                        if (saleitm.AsycudaSalesAllocations.Count == 0) Debugger.Break();
 						CurrentSalesItemIndex = s;
 						saleitm = GetSaleEntries(saleslst, CurrentSalesItemIndex);
 					}
@@ -1081,7 +1082,7 @@ namespace WaterNut.DataSpace
                         if (saleitmQtyToallocate < 0 && cAsycudaItm.AsycudaSalesAllocations.Where(x => x.DutyFreePaid == saleitm.DutyFreePaid).Sum(x => x.QtyAllocated) == 0)
                         {
                             var previousI = GetPreviousAllocatedAsycudaItem(asycudaEntries, saleitm, i).Result;
-                            if (previousI != i)
+                            if (previousI != i && previousI != i-1)
                             {
                                 i = previousI;
                                 continue;
@@ -1180,10 +1181,14 @@ namespace WaterNut.DataSpace
 
 					}
 
-					
-					
+                    if (saleitm.AsycudaSalesAllocations.Count == 0)
+                    {
+                        await AddExceptionAllocation(saleitm, "Over Sold").ConfigureAwait(false);
+						//Debugger.Break();
+                    }
 
-				}
+
+                }
 					
 			}
 
@@ -1320,8 +1325,9 @@ namespace WaterNut.DataSpace
             var allocatedQty = cAsycudaItm.AsycudaSalesAllocations.Where(x => x.DutyFreePaid == saleItem.DutyFreePaid).Sum(x => x.QtyAllocated);
             var nonAllocatedQty = cAsycudaItm.AsycudaSalesAllocations.Where(x => x.DutyFreePaid != saleItem.DutyFreePaid).Sum(x => x.QtyAllocated);
 
+            var finalNonDFPQty = nonDFPQty > nonAllocatedQty ? nonDFPQty : nonAllocatedQty;
 
-			var TakeOut = (nonDFPQty + totalDfPQtyAllocated + nonAllocatedQty) > cAsycudaItm.ItemQuantity ? cAsycudaItm.QtyAllocated : (nonDFPQty + totalDfPQtyAllocated + nonAllocatedQty);
+			var TakeOut = (finalNonDFPQty + totalDfPQtyAllocated ) > cAsycudaItm.ItemQuantity ? cAsycudaItm.QtyAllocated : (finalNonDFPQty + totalDfPQtyAllocated);
 
 
 			var res = cAsycudaItm.ItemQuantity -  TakeOut;
