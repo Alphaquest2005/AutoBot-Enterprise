@@ -98,6 +98,7 @@ namespace WaterNut.DataSpace
                 DocSetPi.Clear();// moved here because data is cached wont update automatically
                 freashStart = true;
                 _ex9AsycudaSalesAllocations = null;
+                docPreviousItems = new Dictionary<int, List<previousItems>>();
                 //var dutylst = CreateDutyList(slst);
                 var dutylst = new List<string>() {"Duty Paid", "Duty Free"};
                 if (!filterExp.Contains("InvoiceDate"))
@@ -1588,6 +1589,16 @@ namespace WaterNut.DataSpace
 
                     itm.xcuda_PreviousItem = pitm;
                     pitm.xcuda_Item = itm;
+                    var previousItems = new previousItems() { DutyFreePaid = dfp, Net_weight = (double)pitm.Net_weight, PreviousItem_Id = pitm.PreviousItem_Id, Suplementary_Quantity = (double)pitm.Suplementary_Quantity };
+                    if (docPreviousItems.ContainsKey(lineData.PreviousDocumentItemId))
+                    {
+                        docPreviousItems[lineData.PreviousDocumentItemId].Add(previousItems);
+                    }
+                    else
+                    {
+                        docPreviousItems.Add(lineData.PreviousDocumentItemId, new List<previousItems>() {previousItems});
+                    }
+                    
 
                     var ep = new EntryPreviousItems(true)
                     {
@@ -1795,17 +1806,9 @@ namespace WaterNut.DataSpace
         }
 
         private static pDocumentItem oldPDocumentItem = null;
-        static List<previousItems> existingPreviousItems = new List<previousItems>(); 
-        private List<previousItems> Get7100PreviousItems(AlloEntryLineData entlnDataPDocumentItem, string dfp)
-        {
-            if(oldPDocumentItem.xcuda_ItemId == entlnDataPDocumentItem.PreviousDocumentItemId) return existingPreviousItems;
-            oldPDocumentItem = entlnDataPDocumentItem.pDocumentItem;
-            using (var ctx = new AllocationDSContext())
-            {
 
-            }
-                return existingPreviousItems;
-        }
+        private static Dictionary<int, List<previousItems>> docPreviousItems = new Dictionary<int, List<previousItems>>();
+
 
         
 
@@ -1844,17 +1847,21 @@ namespace WaterNut.DataSpace
                 //var itemAllocated = (dfp == "Duty Free" ? asycudaLine.DFQtyAllocated : asycudaLine.DPQtyAllocated);
                 //var allocationsAllocated = allocations.Sum(x => x.QtyAllocated);
                // var totalSalesQtyAllocatedHistoric = salesSummary.Select(x => x.TotalQtyAllocated).DefaultIfEmpty(0).Sum() / salesFactor; // down to run levels
-               var allocationSales = entryLine.EntryDataDetails.Sum(x => x.QtyAllocated); //itemSalesPiSummaryLst.Select(x => x.QtyAllocated).DefaultIfEmpty(0).Sum();//switch to QtyAllocated - 'CLC/124075'
+               var allocationSales = itemSalesPiSummaryLst.First().Type == "Historic" ? itemSalesPiSummaryLst.Select(x => x.QtyAllocated).DefaultIfEmpty(0).Sum() :  entryLine.EntryDataDetails.Sum(x => x.QtyAllocated); //itemSalesPiSummaryLst.Select(x => x.QtyAllocated).DefaultIfEmpty(0).Sum();//switch to QtyAllocated - 'CLC/124075' -- rouge 'WAM03600'
 
                 var allocationPi = itemSalesPiSummaryLst.GroupBy(x => x.PreviousItem_Id).Select(x => x.First().PiQuantity).DefaultIfEmpty(0).Sum();
             
                 var asycudaTotalQuantity = asycudaLine.ItemQuantity;//PdfpAllocated;//
 
-                var alreadyTakenOutItemsLst = asycudaLine.previousItems.DistinctBy(x => x.PreviousItem_Id);
+                var alreadyTakenOutItemsLst = asycudaLine.previousItems.DistinctBy(x => x.PreviousItem_Id).ToList();
+                if(docPreviousItems.ContainsKey(asycudaLine.xcuda_ItemId)) alreadyTakenOutItemsLst.AddRange(docPreviousItems[asycudaLine.xcuda_ItemId]);
+                
          
                 var alreadyTakenOutTotalQuantity = alreadyTakenOutItemsLst.Sum(xx => xx.Suplementary_Quantity);
 
-                 var remainingQtyToBeTakenOut = Math.Round((double) (allocationSales - (allocationPi + docPi)) , 3); 
+                var alreadyTakenOutDFPQuantity = alreadyTakenOutItemsLst.Where(x => x.DutyFreePaid == dfp).Sum(xx => xx.Suplementary_Quantity);
+
+                var remainingQtyToBeTakenOut = Math.Round((double) (allocationSales - (allocationPi )) , 3);//+ docPi taking out docpi here because sales is not total sales 
 
                 if ((Math.Abs(asycudaTotalQuantity - alreadyTakenOutTotalQuantity) < 0.01) 
                     //|| (Math.Abs(dutyFreePaidAllocated - alreadyTakenOutDFPQty) < 0.01)  //////////////Allow historical adjustment
@@ -1883,6 +1890,9 @@ namespace WaterNut.DataSpace
                         if (Math.Abs(remainingQtyToBeTakenOut) < 0.001) return;
                         if (salesLst.Any() == false) return;
 
+
+
+
                         foreach (var saleItm in salesLst) //EntryDataDetailSummary saleItm = salesLst.ElementAtOrDefault(salesrow);
                         {
                           
@@ -1894,9 +1904,9 @@ namespace WaterNut.DataSpace
 
                         foreach (var allocation in saleAllocationsLst)
                         {
-                          
-                            
-                            var piData = allocation.PIData.Sum(x => x.xQuantity) ?? 0;
+
+
+                            var piData = allocation.PIData.Sum(x => x.xQuantity)??0 ;
                             //var takeOut = piData;//CalculateTakeOut(totalAllocatedQty, remainingQtyToBeTakenOut, allocation.QtyAllocated, piData,  salesFactor);
 
                         totalAllocatedQty -= piData;
