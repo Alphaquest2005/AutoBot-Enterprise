@@ -94,11 +94,13 @@ namespace WaterNut.DataSpace
             bool universalPIcheck, bool itemPIcheck)
         {
             try
-            {
-                DocSetPi.Clear();// moved here because data is cached wont update automatically
+            {  
+                DocSetPi.Clear();
+                
+                //DocSetPi.Clear();// moved here because data is cached wont update automatically
                 freashStart = true;
                 _ex9AsycudaSalesAllocations = null;
-                docPreviousItems = new Dictionary<int, List<previousItems>>();
+                //docPreviousItems = new Dictionary<int, List<previousItems>>();
                 //var dutylst = CreateDutyList(slst);
                 var dutylst = new List<string>() {"Duty Paid", "Duty Free"};
                 if (!filterExp.Contains("InvoiceDate"))
@@ -119,6 +121,8 @@ namespace WaterNut.DataSpace
 
                 while (startDate <= realEndDate)
                 {
+                     
+                    docPreviousItems = new Dictionary<int, List<previousItems>>();// moved here because the reloaded month data already has data 
 
                     DateTime firstOfNextMonth = new DateTime(startDate.Year, startDate.Month, 1).AddMonths(1);
                     DateTime endDate = firstOfNextMonth.AddDays(-1).AddHours(23);
@@ -1427,16 +1431,16 @@ namespace WaterNut.DataSpace
                     }
 
 
-
+                    var docDFPpi = DocSetPi.Where(x => x.DutyFreePaid == dfp && x.PreviousItem_Id == mypod.EntlnData.PreviousDocumentItemId).Sum(x => x.TotalQuantity);
                     if (Math.Round(totalSalesHistoric, 2) <
-                        Math.Round((totalPiHistoric + docPi + mypod.EntlnData.Quantity) * salesFactor, 2))
+                        Math.Round((totalPiHistoric + docDFPpi + mypod.EntlnData.Quantity) * salesFactor, 2))// take out docpi because its included in sales
                     {
                         //updateXStatus(mypod.Allocations,
                         //    $@"Failed Historical Check:: Total Historic Sales:{Math.Round(totalSalesHistoric, 2)}
                         //       Total Historic PI: {totalPiHistoric}
                         //       xQuantity:{mypod.EntlnData.Quantity}");
                         //return 0;
-                        var availibleQty = totalSalesHistoric - (totalPiHistoric + docPi);
+                        var availibleQty = totalSalesHistoric - (totalPiHistoric + docDFPpi);
                         if (availibleQty != 0) Ex9Bucket(mypod, availibleQty, totalSalesHistoric, totalPiHistoric, "Historic");
                         if (mypod.EntlnData.Quantity == 0)
                         {
@@ -1738,7 +1742,7 @@ namespace WaterNut.DataSpace
             {
                 var totalallocations = mypod.Allocations.Count();
                 var rejects = new List<AsycudaSalesAllocations>();
-                for (int i = totalallocations - 1; i < totalallocations; i--)
+                for (int i = totalallocations; i <= totalallocations; i--)
                 {
                     var remainingSalesQty = mypod.Allocations.Take(i).Sum(x => x.QtyAllocated - (x.PIData.Sum(z => z.xQuantity) ?? 0));
                     
@@ -1762,6 +1766,12 @@ namespace WaterNut.DataSpace
                         ssa.QtyAllocated = availibleQty - nr;
                         mypod.EntlnData.Quantity = availibleQty;
                         break;//put back break because its finished reducing allocations and need to exit --- gonna bug somewhere can't remember
+                    }
+                    if (nr > availibleQty)
+                    {
+                        ssa.QtyAllocated = availibleQty;
+                        mypod.EntlnData.Quantity = availibleQty;
+                        break;
                     }
                     else
                     {
@@ -1854,7 +1864,7 @@ namespace WaterNut.DataSpace
                 var asycudaTotalQuantity = asycudaLine.ItemQuantity;//PdfpAllocated;//
 
                 var alreadyTakenOutItemsLst = asycudaLine.previousItems.DistinctBy(x => x.PreviousItem_Id).ToList();
-                if(docPreviousItems.ContainsKey(asycudaLine.xcuda_ItemId)) alreadyTakenOutItemsLst.AddRange(docPreviousItems[asycudaLine.xcuda_ItemId]);
+                if(docPreviousItems.ContainsKey(asycudaLine.xcuda_ItemId)) alreadyTakenOutItemsLst.AddRange(docPreviousItems[asycudaLine.xcuda_ItemId].Where(x => x.DutyFreePaid == dfp).ToList());
                 
          
                 var alreadyTakenOutTotalQuantity = alreadyTakenOutItemsLst.Sum(xx => xx.Suplementary_Quantity);
@@ -1891,77 +1901,101 @@ namespace WaterNut.DataSpace
                         if (salesLst.Any() == false) return;
 
 
+                        var startAllocationItemIndex = 0;
+                        var currentSalesItemIndex = 0;
+                        var saleItm = salesLst.ElementAt(currentSalesItemIndex);
 
 
-                        foreach (var saleItm in salesLst) //EntryDataDetailSummary saleItm = salesLst.ElementAtOrDefault(salesrow);
+
+                        for (var s = currentSalesItemIndex; s < salesLst.Count(); s++)
                         {
-                          
-                           
-                        if (saleItm == null) break;
-                        var saleAllocationsLst = allocations.Where(x => x.EntryDataDetailsId == saleItm.EntryDataDetailsId).OrderBy(x => x.AllocationId).ToList();
-                        
-                        
-
-                        foreach (var allocation in saleAllocationsLst)
-                        {
+                            var currentAllocationItemIndex = startAllocationItemIndex;
+                            if (currentSalesItemIndex != s)
+                            {
+                                currentSalesItemIndex = s;
+                                saleItm = salesLst.ElementAt(currentSalesItemIndex);
+                            }
 
 
-                            var piData = allocation.PIData.Sum(x => x.xQuantity)??0 ;
-                            //var takeOut = piData;//CalculateTakeOut(totalAllocatedQty, remainingQtyToBeTakenOut, allocation.QtyAllocated, piData,  salesFactor);
 
-                        totalAllocatedQty -= piData;
-                        entryLine.Quantity -= piData;
-                        allocation.QtyAllocated -=  piData * salesFactor;
-                        saleItm.QtyAllocated -= piData * salesFactor;
-                      
+                            if (saleItm == null) break;
+                            var saleAllocationsLst = allocations
+                                .Where(x => x.EntryDataDetailsId == saleItm.EntryDataDetailsId)
+                                .OrderBy(x => x.AllocationId).ToList();
 
-                        if (Math.Abs(allocation.QtyAllocated) < 0.001 )//&& saleAllocationsLst.Count > 1
-                        {
-                            updateXStatus(new List<AsycudaSalesAllocations>() {allocation},
-                                $@"Failed Ex9 Bucket");
-                            allocations.Remove(allocation);
-                        }
-                        else
-                        {
-                            if (piData > 0)
+                            var allocation = saleAllocationsLst.ElementAt(currentAllocationItemIndex);
+
+                            for (var i = currentAllocationItemIndex; i < saleAllocationsLst.Count(); i++)
                             {
 
+                                if (currentAllocationItemIndex != i ||
+                                    saleAllocationsLst.ElementAt(currentAllocationItemIndex).AllocationId !=
+                                    allocation.AllocationId)
+                                {
+                                    if (i < 0) i = 0;
+                                    currentAllocationItemIndex = i;
+                                    allocation = saleAllocationsLst.ElementAt(currentAllocationItemIndex);
 
-                                var sql = "";
+                                }
 
-                                // Create New allocation
-                                sql +=
-                                    $@"Insert into AsycudaSalesAllocations(QtyAllocated, EntryDataDetailsId, PreviousItem_Id, EANumber, SANumber)
+                                var piData = allocation.PIData.Sum(x => x.xQuantity) ?? 0;
+                                //var takeOut = piData;//CalculateTakeOut(totalAllocatedQty, remainingQtyToBeTakenOut, allocation.QtyAllocated, piData,  salesFactor);
+
+                                totalAllocatedQty -= piData;
+                                entryLine.Quantity -= piData;
+                                allocation.QtyAllocated -= piData * salesFactor;
+                                saleItm.QtyAllocated -= piData * salesFactor;
+
+
+                                if (Math.Abs(allocation.QtyAllocated) < 0.001) //&& saleAllocationsLst.Count > 1
+                                {
+                                    updateXStatus(new List<AsycudaSalesAllocations>() {allocation},
+                                        $@"Failed Ex9 Bucket");
+                                    allocations.Remove(allocation);
+
+                                    if (totalAllocatedQty < 0) continue;
+                                }
+                                else
+                                {
+                                    if (piData > 0)
+                                    {
+
+
+                                        var sql = "";
+
+                                        // Create New allocation
+                                        sql +=
+                                            $@"Insert into AsycudaSalesAllocations(QtyAllocated, EntryDataDetailsId, PreviousItem_Id, EANumber, SANumber)
                                            Values ({piData * salesFactor},{allocation.EntryDataDetailsId},{
                                                allocation.PreviousItem_Id
                                            },{allocation.EANumber + 1},{allocation.SANumber + 1})";
-                                // update existing allocation
-                                sql += $@" UPDATE       AsycudaSalesAllocations
+                                        // update existing allocation
+                                        sql += $@" UPDATE       AsycudaSalesAllocations
                                                             SET                QtyAllocated =  QtyAllocated{(piData >= 0 ? $"-{piData * salesFactor}" : $"+{piData * -1 * salesFactor}")}
                                                             where	AllocationId = {allocation.AllocationId}";
-                                using (var ctx = new AllocationDSContext())
-                                {
-                                    ctx.Database.CommandTimeout = 0;
-                                    ctx.Database
-                                        .ExecuteSqlCommand(TransactionalBehavior.EnsureTransaction, sql);
+                                        using (var ctx = new AllocationDSContext())
+                                        {
+                                            ctx.Database.CommandTimeout = 0;
+                                            ctx.Database
+                                                .ExecuteSqlCommand(TransactionalBehavior.EnsureTransaction, sql);
+                                        }
+                                    }
                                 }
+
+
                             }
+
+                            if (Math.Abs(saleItm.QtyAllocated) < 0.001)
+                            {
+                                entryLine.EntryDataDetails.Remove(saleItm);
+                                // salesLst.RemoveAt(0);
+                            }
+
+
                         }
-                            
-
-                        }
-
-                        if (Math.Abs(saleItm.QtyAllocated) < 0.001)
-                        {
-                            entryLine.EntryDataDetails.Remove(saleItm);
-                            // salesLst.RemoveAt(0);
-                        }
-                     
-
-                    }
 
 
-                   // entryLine.Quantity = remainingQtyToBeTakenOut;
+                        // entryLine.Quantity = remainingQtyToBeTakenOut;
                    
                 //}
                 //if (entryLine.Quantity + alreadyTakenOutTotalQuantity > asycudaTotalQuantity) entryLine.Quantity = asycudaTotalQuantity - alreadyTakenOutTotalQuantity;
