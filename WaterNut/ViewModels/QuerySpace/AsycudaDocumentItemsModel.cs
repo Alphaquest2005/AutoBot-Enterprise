@@ -35,6 +35,9 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                 EndRegistrationDateFilter = DateTime.MinValue,
                 StartExpiryDateFilter = DateTime.MinValue,
                 EndExpiryDateFilter = DateTime.MinValue,
+                StartAssessmentDateFilter =  DateTime.MinValue,
+                EndAssessmentDateFilter = DateTime.MinValue,
+
             };
         }
 
