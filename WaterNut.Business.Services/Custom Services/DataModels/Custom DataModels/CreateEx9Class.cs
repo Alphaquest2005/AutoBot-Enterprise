@@ -35,6 +35,7 @@ using Customs_Procedure = DocumentDS.Business.Entities.Customs_Procedure;
 using EntryPreviousItems = DocumentItemDS.Business.Entities.EntryPreviousItems;
 using xcuda_Item = DocumentItemDS.Business.Entities.xcuda_Item;
 using Attachments = DocumentItemDS.Business.Entities.Attachments;
+using xcuda_Supplementary_unit = DocumentItemDS.Business.Entities.xcuda_Supplementary_unit;
 
 //using xcuda_Item = AllocationDS.Business.Entities.xcuda_Item;
 //using xcuda_PreviousItem = AllocationDS.Business.Entities.xcuda_PreviousItem;
@@ -840,7 +841,7 @@ namespace WaterNut.DataSpace
                             .Include(x => x.AsycudaSalesAllocationsPIData)
                             .Include("PreviousDocumentItem.EntryPreviousItems.xcuda_PreviousItem.xcuda_Item.AsycudaDocument.Customs_Procedure")
                             .Include("PreviousDocumentItem.AsycudaDocument.Customs_Procedure.CustomsOperations")
-                            .Include("PreviousDocumentItem.xcuda_Tarification.xcuda_HScode.TariffCodes.TariffCategory.TariffCategoryCodeSuppUnit")
+                            .Include("PreviousDocumentItem.xcuda_Tarification.xcuda_HScode.TariffCodes.TariffCategory.TariffCategoryCodeSuppUnit.TariffSupUnitLkps")
                             .Where(filterExpression)
                             .AsNoTracking()
 
@@ -1593,16 +1594,22 @@ namespace WaterNut.DataSpace
 
                     itm.xcuda_PreviousItem = pitm;
                     pitm.xcuda_Item = itm;
-                    var previousItems = new previousItems() { DutyFreePaid = dfp, Net_weight = (double)pitm.Net_weight, PreviousItem_Id = pitm.PreviousItem_Id, Suplementary_Quantity = (double)pitm.Suplementary_Quantity };
+                    var previousItems = new previousItems()
+                    {
+                        DutyFreePaid = dfp, Net_weight = (double) pitm.Net_weight,
+                        PreviousItem_Id = pitm.PreviousItem_Id,
+                        Suplementary_Quantity = (double) pitm.Suplementary_Quantity
+                    };
                     if (docPreviousItems.ContainsKey(lineData.PreviousDocumentItemId))
                     {
                         docPreviousItems[lineData.PreviousDocumentItemId].Add(previousItems);
                     }
                     else
                     {
-                        docPreviousItems.Add(lineData.PreviousDocumentItemId, new List<previousItems>() {previousItems});
+                        docPreviousItems.Add(lineData.PreviousDocumentItemId,
+                            new List<previousItems>() {previousItems});
                     }
-                    
+
 
                     var ep = new EntryPreviousItems(true)
                     {
@@ -1637,8 +1644,9 @@ namespace WaterNut.DataSpace
                                     Attachments = new Attachments(true)
                                     {
                                         FilePath = Path.Combine(
-                                            BaseDataModel.Instance.CurrentApplicationSettings.DataFolder == null? cdoc.Document.ReferenceNumber + ".csv.pdf":
-                                                $"{BaseDataModel.Instance.CurrentApplicationSettings.DataFolder}\\{cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.AsycudaDocumentSet.Declarant_Reference_Number}\\{cdoc.Document.ReferenceNumber}.csv.pdf"),
+                                            BaseDataModel.Instance.CurrentApplicationSettings.DataFolder == null
+                                                ? cdoc.Document.ReferenceNumber + ".csv.pdf"
+                                                : $"{BaseDataModel.Instance.CurrentApplicationSettings.DataFolder}\\{cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.AsycudaDocumentSet.Declarant_Reference_Number}\\{cdoc.Document.ReferenceNumber}.csv.pdf"),
                                         TrackingState = TrackingState.Added,
                                         DocumentCode = BaseDataModel.Instance.ExportTemplates.FirstOrDefault(x =>
                                             x.Customs_Procedure == cdoc.Document.xcuda_ASYCUDA_ExtendedProperties
@@ -1719,9 +1727,12 @@ namespace WaterNut.DataSpace
                         pLineNumber = mypod.EntlnData.pDocumentItem.LineNumber.ToString()
                     });
 
+                    BaseDataModel.Instance.ProcessItemTariff(mypod.EntlnData, cdoc.Document, itm);
+
                     itmsCreated += 1;
 
                 }
+
 
 
 
@@ -1734,6 +1745,7 @@ namespace WaterNut.DataSpace
 
 
         }
+
 
         private void Ex9Bucket(MyPodData mypod, double availibleQty, double totalSalesAll, double totalPiAll,
             string type)

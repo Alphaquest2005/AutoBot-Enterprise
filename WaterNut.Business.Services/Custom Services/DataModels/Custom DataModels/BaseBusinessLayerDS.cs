@@ -1858,7 +1858,7 @@ namespace WaterNut.DataSpace
             return new xcuda_Item(true) {TrackingState = TrackingState.Added}; //
         }
 
-        private void ProcessItemTariff(IEntryLineData pod, xcuda_ASYCUDA cdoc, xcuda_Item itm)
+        public void ProcessItemTariff(IEntryLineData pod, xcuda_ASYCUDA cdoc, xcuda_Item itm)
         {
             if (pod.TariffCode != null)
             {
