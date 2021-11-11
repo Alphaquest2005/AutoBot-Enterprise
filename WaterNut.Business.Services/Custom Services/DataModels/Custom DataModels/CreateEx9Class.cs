@@ -1321,10 +1321,10 @@ namespace WaterNut.DataSpace
                 var itemSalesHistoric = (double)itemSalesPiHistoric.Select(x => x.QtyAllocated).DefaultIfEmpty(0.0).Sum();
 
                 ///// have to add this because of Alias and Tariffcode Mappings to make check Super-specific
-                var itemNumberPiHistoric = universalData.Where(x =>x.ItemNumber == mypod.EntlnData.ItemNumber && x.DutyFreePaid == dfp).GroupBy(x => x.PreviousItem_Id)
+                var itemNumberPiHistoric = universalData.Where(x =>x.ItemNumber == mypod.EntlnData.ItemNumber && x.DutyFreePaid == dfp && x.Type == "Historic").GroupBy(x => x.PreviousItem_Id)
                     .Select(x => x.First().PiQuantity).DefaultIfEmpty(0).Sum();
 
-                var itemNumberSalesHistoric = (double)universalData.Where(x => x.ItemNumber == mypod.EntlnData.ItemNumber && x.DutyFreePaid == dfp).Select(x => x.QtyAllocated).DefaultIfEmpty(0.0).Sum();
+                var itemNumberSalesHistoric = (double)universalData.Where(x => x.ItemNumber == mypod.EntlnData.ItemNumber && x.DutyFreePaid == dfp && x.Type == "Historic").Select(x => x.QtyAllocated).DefaultIfEmpty(0.0).Sum();
 
 
                 var preEx9Bucket = mypod.EntlnData.Quantity;
