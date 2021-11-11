@@ -1787,7 +1787,7 @@ namespace WaterNut.DataSpace
                     }
                     else
                     {
-                        mypod.Allocations.RemoveAt(i);
+                        mypod.Allocations.RemoveAt(i-1);
                         rejects.Add(ssa);
                     }
                     //}

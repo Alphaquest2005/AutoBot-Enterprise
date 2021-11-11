@@ -1462,6 +1462,8 @@ namespace WaterNut.DataSpace
                         if (asycudaDocumentSet.TotalFreight != null)
                             totalFreight = asycudaDocumentSet.TotalFreight.Value;
                         if (asycudaDocumentSet.TotalWeight != null) totalWeight = asycudaDocumentSet.TotalWeight.Value;
+                        if ( totalWeight <=0)
+                            throw new ApplicationException($"DocSet:{asycudaDocumentSet.Declarant_Reference_Number} Weight is Zero");
 
                         currency = asycudaDocumentSet.FreightCurrencyCode ?? asycudaDocumentSet.Currency_Code;
                     }
@@ -1487,7 +1489,9 @@ namespace WaterNut.DataSpace
                         var f = ctx.AsycudaDocuments.Where(x => x.ASYCUDA_Id == doc)
                             .Select(y => y.TotalFreight).DefaultIfEmpty(0)
                             .Sum(); // should be zero if new existing has value take away existing value
-                        var val = t.GetValueOrDefault() - f.GetValueOrDefault();
+                        var totalItems = ctx.AsycudaItemBasicInfo.Where(x => x.ASYCUDA_Id == doc).Select(x => x.ItemQuantity).DefaultIfEmpty(0).Sum() * 0.01;
+                        ////////// added total items to prevent over weight due to minimum 0.01 requirement
+                        var val = t.GetValueOrDefault() - f.GetValueOrDefault() + totalItems.GetValueOrDefault();
                         docValues.Add(doc, val);
                         totalfob += val;
                     }
