@@ -32,19 +32,19 @@ using WaterNut.Interfaces;
 
 namespace AllocationDS.Business.Services
 {
-   [Export (typeof(IInventoryItemService))]
+   [Export (typeof(ILumpedItemService))]
    [Export(typeof(IBusinessService))]
    [PartCreationPolicy(CreationPolicy.NonShared)]
    [ServiceBehavior(InstanceContextMode = InstanceContextMode.PerCall,
                     ConcurrencyMode = ConcurrencyMode.Multiple)]
    
-    public partial class InventoryItemService : IInventoryItemService, IDisposable
+    public partial class LumpedItemService : ILumpedItemService, IDisposable
     {
         //private readonly AllocationDSContext dbContext;
 
         public bool StartTracking { get; set; }
 
-        public InventoryItemService()
+        public LumpedItemService()
         {
             try
             {
@@ -65,7 +65,7 @@ namespace AllocationDS.Business.Services
             }
         }
 
-        public async Task<IEnumerable<InventoryItem>> GetInventoryItems(List<string> includesLst = null, bool tracking = true)
+        public async Task<IEnumerable<LumpedItem>> GetLumpedItems(List<string> includesLst = null, bool tracking = true)
         {
             try
             {
@@ -75,7 +75,7 @@ namespace AllocationDS.Business.Services
                   using ( var dbContext = new AllocationDSContext(){StartTracking = StartTracking})
                   {
 				    var set = AddIncludes(includesLst, dbContext);
-                    IEnumerable<InventoryItem> entities = await set.AsNoTracking().ToListAsync()
+                    IEnumerable<LumpedItem> entities = await set.AsNoTracking().ToListAsync()
 													       .ConfigureAwait(continueOnCapturedContext: false);
                            //scope.Complete();
                             if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
@@ -98,7 +98,7 @@ namespace AllocationDS.Business.Services
         }
 
 
-        public async Task<InventoryItem> GetInventoryItemByKey(string InventoryItemId, List<string> includesLst = null, bool tracking = true)
+        public async Task<LumpedItem> GetLumpedItemByKey(string InventoryItemId, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
@@ -107,7 +107,7 @@ namespace AllocationDS.Business.Services
               {
                 var i = Convert.ToInt32(InventoryItemId);
 				var set = AddIncludes(includesLst, dbContext);
-                InventoryItem entity = await set.AsNoTracking().SingleOrDefaultAsync(x => x.InventoryItemId == i).ConfigureAwait(continueOnCapturedContext: false);
+                LumpedItem entity = await set.AsNoTracking().SingleOrDefaultAsync(x => x.InventoryItemId == i).ConfigureAwait(continueOnCapturedContext: false);
                 if(tracking && entity != null) entity.StartTracking();
                 return entity;
               }
@@ -127,14 +127,14 @@ namespace AllocationDS.Business.Services
         }
 
 
-		 public async Task<IEnumerable<InventoryItem>> GetInventoryItemsByExpression(string exp, List<string> includesLst = null, bool tracking = true)
+		 public async Task<IEnumerable<LumpedItem>> GetLumpedItemsByExpression(string exp, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
                 using (var dbContext = new AllocationDSContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-					if (string.IsNullOrEmpty(exp) || exp == "None") return new List<InventoryItem>();
+					if (string.IsNullOrEmpty(exp) || exp == "None") return new List<LumpedItem>();
 					var set = AddIncludes(includesLst, dbContext);
                     if (exp == "All")
                     {
@@ -170,14 +170,14 @@ namespace AllocationDS.Business.Services
             }
         }
 
-		 public async Task<IEnumerable<InventoryItem>> GetInventoryItemsByExpressionLst(List<string> expLst, List<string> includesLst = null, bool tracking = true)
+		 public async Task<IEnumerable<LumpedItem>> GetLumpedItemsByExpressionLst(List<string> expLst, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
                 using (var dbContext = new AllocationDSContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-					if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return new List<InventoryItem>();
+					if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return new List<LumpedItem>();
 					var set = AddIncludes(includesLst, dbContext);
                     if (expLst.FirstOrDefault() == "All")
                     {
@@ -212,7 +212,7 @@ namespace AllocationDS.Business.Services
             }
         }
 
-		public async Task<IEnumerable<InventoryItem>> GetInventoryItemsByExpressionNav(string exp,
+		public async Task<IEnumerable<LumpedItem>> GetLumpedItemsByExpressionNav(string exp,
 																							  Dictionary<string, string> navExp,
 																							  List<string> includesLst = null, bool tracking = true)
         {
@@ -221,7 +221,7 @@ namespace AllocationDS.Business.Services
                 using (var dbContext = new AllocationDSContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-                    if (string.IsNullOrEmpty(exp) || exp == "None") return new List<InventoryItem>();
+                    if (string.IsNullOrEmpty(exp) || exp == "None") return new List<LumpedItem>();
 
                     if (exp == "All" && navExp.Count == 0)
                     {
@@ -235,34 +235,10 @@ namespace AllocationDS.Business.Services
                     {
                         switch (itm.Key)
                         {
-                            case "TariffCodes":
+                            case "InventoryItem":
                                 return
                                     await
-                                        GetWhere<TariffCodes>(dbContext, exp, itm.Value, "InventoryItemsEx", "SelectMany", includesLst)
-										.ConfigureAwait(continueOnCapturedContext: false);
-
-                            case "EX9AsycudaSalesAllocations":
-                                return
-                                    await
-                                        GetWhere<EX9AsycudaSalesAllocations>(dbContext, exp, itm.Value, "InventoryItemsEx", "Select", includesLst)
-										.ConfigureAwait(continueOnCapturedContext: false);
-
-                            case "EntryDataDetailsEx":
-                                return
-                                    await
-                                        GetWhere<EntryDataDetailsEx>(dbContext, exp, itm.Value, "InventoryItemsEx", "Select", includesLst)
-										.ConfigureAwait(continueOnCapturedContext: false);
-
-                            case "InventoryItemAliasEx":
-                                return
-                                    await
-                                        GetWhere<InventoryItemAlias>(dbContext, exp, itm.Value, "InventoryItem", "Select", includesLst)
-										.ConfigureAwait(continueOnCapturedContext: false);
-
-                            case "LumpedItem":
-                                return
-                                    await
-                                        GetWhere<LumpedItem>(dbContext, exp, itm.Value, "InventoryItem", "SelectMany", includesLst)
+                                        GetWhere<InventoryItem>(dbContext, exp, itm.Value, "LumpedItem", "SelectMany", includesLst)
 										.ConfigureAwait(continueOnCapturedContext: false);
 
                         }
@@ -291,17 +267,17 @@ namespace AllocationDS.Business.Services
             }
         }
 
-        public async Task<IEnumerable<InventoryItem>> GetInventoryItemsByBatch(string exp,
+        public async Task<IEnumerable<LumpedItem>> GetLumpedItemsByBatch(string exp,
             int totalrow, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
 
-                var res = new ConcurrentQueue<List<InventoryItem>>();
+                var res = new ConcurrentQueue<List<LumpedItem>>();
 
 
 
-                if (string.IsNullOrEmpty(exp) || exp == "None") return new List<InventoryItem>();
+                if (string.IsNullOrEmpty(exp) || exp == "None") return new List<LumpedItem>();
 
 
                 var batchSize = 500;
@@ -322,7 +298,7 @@ namespace AllocationDS.Business.Services
                                 dbContext.Configuration.AutoDetectChangesEnabled = false;
                                 //dbContext.Configuration.LazyLoadingEnabled = true;
                                 var set = AddIncludes(includesLst, dbContext);
-                                IQueryable<InventoryItem> dset;
+                                IQueryable<LumpedItem> dset;
                                 if (exp == "All")
                                 {
                                     dset = set.OrderBy(x => x.InventoryItemId);
@@ -366,17 +342,17 @@ namespace AllocationDS.Business.Services
                 throw new FaultException<ValidationFault>(fault);
             }
         }
-        public async Task<IEnumerable<InventoryItem>> GetInventoryItemsByBatchExpressionLst(List<string> expLst,
+        public async Task<IEnumerable<LumpedItem>> GetLumpedItemsByBatchExpressionLst(List<string> expLst,
             int totalrow, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
 
-                var res = new ConcurrentQueue<List<InventoryItem>>();
+                var res = new ConcurrentQueue<List<LumpedItem>>();
 
 
 
-                if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return new List<InventoryItem>();
+                if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return new List<LumpedItem>();
 
 
                 var batchSize = 500;
@@ -397,7 +373,7 @@ namespace AllocationDS.Business.Services
                                 dbContext.Configuration.AutoDetectChangesEnabled = false;
                                 //dbContext.Configuration.LazyLoadingEnabled = true;
                                 var set = AddIncludes(includesLst, dbContext);
-                                IQueryable<InventoryItem> dset;
+                                IQueryable<LumpedItem> dset;
                                 if (expLst.FirstOrDefault() == "All")
                                 {
                                     dset = set.OrderBy(x => x.InventoryItemId);
@@ -442,13 +418,13 @@ namespace AllocationDS.Business.Services
         }
 
 
-        public async Task<InventoryItem> UpdateInventoryItem(InventoryItem entity)
+        public async Task<LumpedItem> UpdateLumpedItem(LumpedItem entity)
         { 
             using ( var dbContext = new AllocationDSContext(){StartTracking = StartTracking})
               {
                 try
                 {   
-                     var res = (InventoryItem) entity;
+                     var res = (LumpedItem) entity;
                     if(res.TrackingState == TrackingState.Unchanged) res.TrackingState = TrackingState.Modified;                              
                     
                     dbContext.ApplyChanges(res);
@@ -524,14 +500,14 @@ namespace AllocationDS.Business.Services
            return entity;
         }
 
-        public async Task<InventoryItem> CreateInventoryItem(InventoryItem entity)
+        public async Task<LumpedItem> CreateLumpedItem(LumpedItem entity)
         {
             try
             {
-                var res = (InventoryItem) entity;
+                var res = (LumpedItem) entity;
               using ( var dbContext = new AllocationDSContext(){StartTracking = StartTracking})
               {
-                dbContext.InventoryItems.Add(res);
+                dbContext.LumpedItems.Add(res);
                 await dbContext.SaveChangesAsync().ConfigureAwait(continueOnCapturedContext: false);
                 res.AcceptChanges();
                 return res;
@@ -551,21 +527,21 @@ namespace AllocationDS.Business.Services
             }
         }
 
-        public async Task<bool> DeleteInventoryItem(string InventoryItemId)
+        public async Task<bool> DeleteLumpedItem(string InventoryItemId)
         {
             try
             {
               using ( var dbContext = new AllocationDSContext(){StartTracking = StartTracking})
               {
                 var i = Convert.ToInt32(InventoryItemId);
-                InventoryItem entity = await dbContext.InventoryItems
+                LumpedItem entity = await dbContext.LumpedItems
 													.SingleOrDefaultAsync(x => x.InventoryItemId == i)
 													.ConfigureAwait(continueOnCapturedContext: false);
                 if (entity == null)
                     return false;
 
-                    dbContext.InventoryItems.Attach(entity);
-                    dbContext.InventoryItems.Remove(entity);
+                    dbContext.LumpedItems.Attach(entity);
+                    dbContext.LumpedItems.Remove(entity);
                     await dbContext.SaveChangesAsync().ConfigureAwait(continueOnCapturedContext: false);
                     return true;
               }
@@ -584,19 +560,19 @@ namespace AllocationDS.Business.Services
             }
         }
 
-        public async Task<bool> RemoveSelectedInventoryItem(IEnumerable<string> lst)
+        public async Task<bool> RemoveSelectedLumpedItem(IEnumerable<string> lst)
         {
             try
             {
-                StatusModel.StartStatusUpdate("Removing InventoryItem", lst.Count());
+                StatusModel.StartStatusUpdate("Removing LumpedItem", lst.Count());
                 var t = Task.Run(() =>
                 {
-                    using (var ctx = new InventoryItemService())
+                    using (var ctx = new LumpedItemService())
                     {
                         foreach (var item in lst.ToList())
                         {
 
-                            ctx.DeleteInventoryItem(item).Wait();
+                            ctx.DeleteLumpedItem(item).Wait();
                             StatusModel.StatusUpdate();
                         }
                     }
@@ -631,7 +607,7 @@ namespace AllocationDS.Business.Services
                 {
                     dbContext.Database.CommandTimeout = 0;
                     if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return 0;
-                    var set = (IQueryable<InventoryItem>)dbContext.InventoryItems; 
+                    var set = (IQueryable<LumpedItem>)dbContext.LumpedItems; 
                     if (expLst.FirstOrDefault() == "All")
                     {
                         return await set.AsNoTracking().CountAsync()
@@ -669,7 +645,7 @@ namespace AllocationDS.Business.Services
                     if (string.IsNullOrEmpty(exp) || exp == "None") return 0;
                     if (exp == "All")
                     {
-                        return await dbContext.InventoryItems
+                        return await dbContext.LumpedItems
                                     .AsNoTracking()
 									.CountAsync()
 									.ConfigureAwait(continueOnCapturedContext: false);
@@ -677,7 +653,7 @@ namespace AllocationDS.Business.Services
                     else
                     {
                         
-                        return await dbContext.InventoryItems
+                        return await dbContext.LumpedItems
 									.AsNoTracking()
                                     .Where(exp)
 									.CountAsync()
@@ -699,17 +675,17 @@ namespace AllocationDS.Business.Services
             }
         }
         
-        public async Task<IEnumerable<InventoryItem>> LoadRange(int startIndex, int count, string exp)
+        public async Task<IEnumerable<LumpedItem>> LoadRange(int startIndex, int count, string exp)
         {
             try
             {
                 using (var dbContext = new AllocationDSContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-                    if (string.IsNullOrEmpty(exp) || exp == "None") return new List<InventoryItem>();
+                    if (string.IsNullOrEmpty(exp) || exp == "None") return new List<LumpedItem>();
                     if (exp == "All")
                     {
-                        return await dbContext.InventoryItems
+                        return await dbContext.LumpedItems
 										.AsNoTracking()
                                         .OrderBy(y => y.InventoryItemId)
 										.Skip(startIndex)
@@ -720,7 +696,7 @@ namespace AllocationDS.Business.Services
                     else
                     {
                         
-                        return await dbContext.InventoryItems
+                        return await dbContext.LumpedItems
 										.AsNoTracking()
                                         .Where(exp)
 										.OrderBy(y => y.InventoryItemId)
@@ -755,7 +731,7 @@ namespace AllocationDS.Business.Services
                     dbContext.Database.CommandTimeout = 0;
                     if (exp == "All" && navExp.Count == 0)
                     {
-                        return await dbContext.InventoryItems
+                        return await dbContext.LumpedItems
 										.AsNoTracking()
                                         .CountAsync()
 										.ConfigureAwait(continueOnCapturedContext: false);
@@ -764,24 +740,12 @@ namespace AllocationDS.Business.Services
                     {
                         switch (itm.Key)
                         {
-                            case "TariffCodes":
-                                return await CountWhere<TariffCodes>(dbContext, exp, itm.Value, "InventoryItemsEx", "SelectMany")
-											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "EX9AsycudaSalesAllocations":
-                                return await CountWhere<EX9AsycudaSalesAllocations>(dbContext, exp, itm.Value, "InventoryItemsEx", "Select")
-											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "EntryDataDetailsEx":
-                                return await CountWhere<EntryDataDetailsEx>(dbContext, exp, itm.Value, "InventoryItemsEx", "Select")
-											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "InventoryItemAliasEx":
-                                return await CountWhere<InventoryItemAlias>(dbContext, exp, itm.Value, "InventoryItem", "Select")
-											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "LumpedItem":
-                                return await CountWhere<LumpedItem>(dbContext, exp, itm.Value, "InventoryItem", "SelectMany")
+                            case "InventoryItem":
+                                return await CountWhere<InventoryItem>(dbContext, exp, itm.Value, "LumpedItem", "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }
-                    return await dbContext.InventoryItems.Where(exp == "All" || exp == null ? "InventoryItemId != null" : exp)
+                    return await dbContext.LumpedItems.Where(exp == "All" || exp == null ? "InventoryItemId != null" : exp)
 											.AsNoTracking()
                                             .CountAsync()
 											.ConfigureAwait(continueOnCapturedContext: false);
@@ -823,7 +787,7 @@ namespace AllocationDS.Business.Services
             return await dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
-                .SelectMany(navProp).OfType<InventoryItem>()
+                .SelectMany(navProp).OfType<LumpedItem>()
                 .Where(exp == "All" || exp == null ? "InventoryItemId != null" : exp)
                 .Distinct()
                 .OrderBy("InventoryItemId")
@@ -844,7 +808,7 @@ namespace AllocationDS.Business.Services
             return await dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
-                .Select(navProp).OfType<InventoryItem>()
+                .Select(navProp).OfType<LumpedItem>()
                 .Where(exp == "All" || exp == null ? "InventoryItemId != null" : exp)
                 .Distinct()
                 .OrderBy("InventoryItemId")
@@ -858,7 +822,7 @@ namespace AllocationDS.Business.Services
 			}
         }
 
-		  public async Task<IEnumerable<InventoryItem>> LoadRangeNav(int startIndex, int count, string exp,
+		  public async Task<IEnumerable<LumpedItem>> LoadRangeNav(int startIndex, int count, string exp,
                                                                                  Dictionary<string, string> navExp, IEnumerable<string> includeLst = null)
         {
             try
@@ -866,7 +830,7 @@ namespace AllocationDS.Business.Services
                 using (var dbContext = new AllocationDSContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-                    if ((string.IsNullOrEmpty(exp) && navExp.Count == 0) || exp == "None") return new List<InventoryItem>();
+                    if ((string.IsNullOrEmpty(exp) && navExp.Count == 0) || exp == "None") return new List<LumpedItem>();
                     var set = AddIncludes(includeLst, dbContext);
 
                     if (exp == "All" && navExp.Count == 0)
@@ -885,34 +849,10 @@ namespace AllocationDS.Business.Services
                     {
                         switch (itm.Key)
                         {
-                            case "TariffCodes":
+                            case "InventoryItem":
                                 return
                                     await
-                                        LoadRangeWhere<TariffCodes>(startIndex, count, dbContext, exp, itm.Value, "InventoryItemsEx", "SelectMany")
-													.ConfigureAwait(continueOnCapturedContext: false);
-
-                            case "EX9AsycudaSalesAllocations":
-                                return
-                                    await
-                                        LoadRangeWhere<EX9AsycudaSalesAllocations>(startIndex, count, dbContext, exp, itm.Value, "InventoryItemsEx", "Select")
-													.ConfigureAwait(continueOnCapturedContext: false);
-
-                            case "EntryDataDetailsEx":
-                                return
-                                    await
-                                        LoadRangeWhere<EntryDataDetailsEx>(startIndex, count, dbContext, exp, itm.Value, "InventoryItemsEx", "Select")
-													.ConfigureAwait(continueOnCapturedContext: false);
-
-                            case "InventoryItemAliasEx":
-                                return
-                                    await
-                                        LoadRangeWhere<InventoryItemAlias>(startIndex, count, dbContext, exp, itm.Value, "InventoryItem", "Select")
-													.ConfigureAwait(continueOnCapturedContext: false);
-
-                            case "LumpedItem":
-                                return
-                                    await
-                                        LoadRangeWhere<LumpedItem>(startIndex, count, dbContext, exp, itm.Value, "InventoryItem", "SelectMany")
+                                        LoadRangeWhere<InventoryItem>(startIndex, count, dbContext, exp, itm.Value, "LumpedItem", "SelectMany")
 													.ConfigureAwait(continueOnCapturedContext: false);
 
                           
@@ -921,7 +861,7 @@ namespace AllocationDS.Business.Services
 						}
 
                     }
-                    return await set//dbContext.InventoryItems
+                    return await set//dbContext.LumpedItems
 								.AsNoTracking()
                                 .Where(exp == "All" || exp == null ? "InventoryItemId != null" : exp)
 								.OrderBy(y => y.InventoryItemId)
@@ -948,7 +888,7 @@ namespace AllocationDS.Business.Services
             }
         }
 
-		private static async Task<IEnumerable<InventoryItem>> LoadRangeWhere<T>(int startIndex, int count,
+		private static async Task<IEnumerable<LumpedItem>> LoadRangeWhere<T>(int startIndex, int count,
             AllocationDSContext dbContext, string exp, string navExp, string navProp, string rel, IEnumerable<string> includeLst = null) where T : class
         {
              switch (rel)
@@ -963,7 +903,7 @@ namespace AllocationDS.Business.Services
 		    }
         }
 
-		private static async Task<IEnumerable<InventoryItem>> LoadRangeSelectMany<T>(int startIndex, int count,
+		private static async Task<IEnumerable<LumpedItem>> LoadRangeSelectMany<T>(int startIndex, int count,
             AllocationDSContext dbContext, string exp, string navExp, string navProp, IEnumerable<string> includeLst = null) where T : class
         {
 			try
@@ -971,7 +911,7 @@ namespace AllocationDS.Business.Services
             var set = dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
-                .SelectMany(navProp).OfType<InventoryItem>();
+                .SelectMany(navProp).OfType<LumpedItem>();
     
             if (includeLst != null) set = includeLst.Aggregate(set, (current, itm) => current.Include(itm));            
 
@@ -992,7 +932,7 @@ namespace AllocationDS.Business.Services
 			}
         }
 
-		private static async Task<IEnumerable<InventoryItem>> LoadRangeSelect<T>(int startIndex, int count,
+		private static async Task<IEnumerable<LumpedItem>> LoadRangeSelect<T>(int startIndex, int count,
             AllocationDSContext dbContext, string exp, string navExp, string navProp, IEnumerable<string> includeLst = null) where T : class
         {
 			try
@@ -1000,7 +940,7 @@ namespace AllocationDS.Business.Services
               var set = dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
-                .Select(navProp).OfType<InventoryItem>();
+                .Select(navProp).OfType<LumpedItem>();
 
                if (includeLst != null) set = includeLst.Aggregate(set, (current, itm) => current.Include(itm)); 
                 
@@ -1021,7 +961,7 @@ namespace AllocationDS.Business.Services
 			}
         }
 
-        private static async Task<IEnumerable<InventoryItem>> GetWhere<T>(AllocationDSContext dbContext,
+        private static async Task<IEnumerable<LumpedItem>> GetWhere<T>(AllocationDSContext dbContext,
             string exp, string navExp, string navProp, string rel, List<string> includesLst = null) where T : class
         {
 			try
@@ -1045,7 +985,7 @@ namespace AllocationDS.Business.Services
 			}
         }
 
-		private static async Task<IEnumerable<InventoryItem>> GetWhereSelectMany<T>(AllocationDSContext dbContext,
+		private static async Task<IEnumerable<LumpedItem>> GetWhereSelectMany<T>(AllocationDSContext dbContext,
             string exp, string navExp, string navProp, List<string> includesLst = null) where T : class
         {
 			try
@@ -1056,17 +996,17 @@ namespace AllocationDS.Business.Services
 				return await dbContext.Set<T>()
 							.AsNoTracking()
                             .Where(navExp)
-							.SelectMany(navProp).OfType<InventoryItem>()
+							.SelectMany(navProp).OfType<LumpedItem>()
 							.Where(exp == "All" || exp == null?"InventoryItemId != null":exp)
 							.Distinct()
 							.ToListAsync()
 							.ConfigureAwait(continueOnCapturedContext: false);
 			}
 
-			var set = (DbQuery<InventoryItem>)dbContext.Set<T>()
+			var set = (DbQuery<LumpedItem>)dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
-                .SelectMany(navProp).OfType<InventoryItem>()
+                .SelectMany(navProp).OfType<LumpedItem>()
                 .Where(exp == "All" || exp == null?"InventoryItemId != null":exp)
                 .Distinct();
 
@@ -1082,7 +1022,7 @@ namespace AllocationDS.Business.Services
 			}
         }
 
-		private static async Task<IEnumerable<InventoryItem>> GetWhereSelect<T>(AllocationDSContext dbContext,
+		private static async Task<IEnumerable<LumpedItem>> GetWhereSelect<T>(AllocationDSContext dbContext,
             string exp, string navExp, string navProp, List<string> includesLst = null) where T : class
         {
 			try
@@ -1093,17 +1033,17 @@ namespace AllocationDS.Business.Services
 				return await dbContext.Set<T>()
 							.AsNoTracking()
                             .Where(navExp)
-							.Select(navProp).OfType<InventoryItem>()
+							.Select(navProp).OfType<LumpedItem>()
 							.Where(exp == "All" || exp == null?"InventoryItemId != null":exp)
 							.Distinct()
 							.ToListAsync()
 							.ConfigureAwait(continueOnCapturedContext: false);
 			}
 
-			var set = (DbQuery<InventoryItem>)dbContext.Set<T>()
+			var set = (DbQuery<LumpedItem>)dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
-                .Select(navProp).OfType<InventoryItem>()
+                .Select(navProp).OfType<LumpedItem>()
                 .Where(exp == "All" || exp == null?"InventoryItemId != null":exp)
                 .Distinct();
 
@@ -1119,39 +1059,7 @@ namespace AllocationDS.Business.Services
 			}
         }
 
-			        public async Task<IEnumerable<InventoryItem>> GetInventoryItemByApplicationSettingsId(string ApplicationSettingsId, List<string> includesLst = null)
-        {
-            try
-            {
-                using ( var dbContext = new AllocationDSContext(){StartTracking = StartTracking})
-              {
-                var i = Convert.ToInt32(ApplicationSettingsId);
-                var set = AddIncludes(includesLst, dbContext);
-                IEnumerable<InventoryItem> entities = await set//dbContext.InventoryItems
-                                                    // .Include(x => x.EX9AsycudaSalesAllocations)									  
-                                                    // .Include(x => x.EntryDataDetailsEx)									  
-                                                    // .Include(x => x.InventoryItemAliasEx)									  
-                                      .AsNoTracking()
-                                        .Where(x => x.ApplicationSettingsId.ToString() == ApplicationSettingsId.ToString())
-										.ToListAsync()
-										.ConfigureAwait(continueOnCapturedContext: false);
-                return entities;
-              }
-             }
-            catch (Exception updateEx)
-            {
-                System.Diagnostics.Debugger.Break();
-                //throw new FaultException(updateEx.Message);
-                    var fault = new ValidationFault
-                                {
-                                    Result = false,
-                                    Message = updateEx.Message,
-                                    Description = updateEx.StackTrace
-                                };
-                    throw new FaultException<ValidationFault>(fault);
-            }
-        }
- 
+		
 		public decimal SumField(string whereExp, string field)
          {
              try
@@ -1163,11 +1071,11 @@ namespace AllocationDS.Business.Services
                      if (string.IsNullOrEmpty(whereExp) || whereExp == "None") return 0;
                      if (whereExp == "All")
                      {
-                          res = Convert.ToDecimal(dbContext.InventoryItems.AsNoTracking().Sum(field));
+                          res = Convert.ToDecimal(dbContext.LumpedItems.AsNoTracking().Sum(field));
                      }
                      else
                      {
-                         res = Convert.ToDecimal(dbContext.InventoryItems.AsNoTracking().Where(whereExp).Sum(field));
+                         res = Convert.ToDecimal(dbContext.LumpedItems.AsNoTracking().Where(whereExp).Sum(field));
                      }
                      
                      return res;
@@ -1195,10 +1103,10 @@ namespace AllocationDS.Business.Services
                 using (var dbContext = new AllocationDSContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-                    if (!dbContext.InventoryItems.Any()) return 0;
+                    if (!dbContext.LumpedItems.Any()) return 0;
                     if (exp == "All" && navExp.Count == 0)
                     {
-                        return Convert.ToDecimal(dbContext.InventoryItems
+                        return Convert.ToDecimal(dbContext.LumpedItems
 										.AsNoTracking()
                                         .Sum(field)??0);
                     }
@@ -1206,24 +1114,12 @@ namespace AllocationDS.Business.Services
                     {
                         switch (itm.Key)
                         {
-                            case "TariffCodes":
-                                return await SumWhere<TariffCodes>(dbContext, exp, itm.Value, "InventoryItemsEx", field, "SelectMany")
-											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "EX9AsycudaSalesAllocations":
-                                return await SumWhere<EX9AsycudaSalesAllocations>(dbContext, exp, itm.Value, "InventoryItemsEx", field, "Select")
-											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "EntryDataDetailsEx":
-                                return await SumWhere<EntryDataDetailsEx>(dbContext, exp, itm.Value, "InventoryItemsEx", field, "Select")
-											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "InventoryItemAliasEx":
-                                return await SumWhere<InventoryItemAlias>(dbContext, exp, itm.Value, "InventoryItem", field, "Select")
-											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "LumpedItem":
-                                return await SumWhere<LumpedItem>(dbContext, exp, itm.Value, "InventoryItem", field, "SelectMany")
+                            case "InventoryItem":
+                                return await SumWhere<InventoryItem>(dbContext, exp, itm.Value, "LumpedItem", field, "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }
-                    return Convert.ToDecimal(dbContext.InventoryItems.Where(exp == "All" || exp == null ? "InventoryItemId != null" : exp)
+                    return Convert.ToDecimal(dbContext.LumpedItems.Where(exp == "All" || exp == null ? "InventoryItemId != null" : exp)
 											.AsNoTracking()
                                             .Sum(field)??0);
                 }
@@ -1263,7 +1159,7 @@ namespace AllocationDS.Business.Services
             return Convert.ToDecimal(dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
-                .SelectMany(navProp).OfType<InventoryItem>()
+                .SelectMany(navProp).OfType<LumpedItem>()
                 .Where(exp == "All" || exp == null ? "InventoryItemId != null" : exp)
                 .Distinct()
                 .OrderBy("InventoryItemId")
@@ -1283,7 +1179,7 @@ namespace AllocationDS.Business.Services
             return Convert.ToDecimal(dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
-                .Select(navProp).OfType<InventoryItem>()
+                .Select(navProp).OfType<LumpedItem>()
                 .Where(exp == "All" || exp == null ? "InventoryItemId != null" : exp)
                 .Distinct()
                 .OrderBy("InventoryItemId")
@@ -1309,11 +1205,11 @@ namespace AllocationDS.Business.Services
                      if (string.IsNullOrEmpty(whereExp) || whereExp == "None") return res;
                      if (whereExp == "All")
                      {
-                          res = Convert.ToString(dbContext.InventoryItems.AsNoTracking().Min(field));
+                          res = Convert.ToString(dbContext.LumpedItems.AsNoTracking().Min(field));
                      }
                      else
                      {
-                         res = Convert.ToString(dbContext.InventoryItems.AsNoTracking().Where(whereExp).Min(field));
+                         res = Convert.ToString(dbContext.LumpedItems.AsNoTracking().Where(whereExp).Min(field));
                      }
                      
                      return res;
@@ -1334,12 +1230,12 @@ namespace AllocationDS.Business.Services
          }
 
 		 
-		private static IQueryable<InventoryItem> AddIncludes(IEnumerable<string> includesLst, AllocationDSContext dbContext)
+		private static IQueryable<LumpedItem> AddIncludes(IEnumerable<string> includesLst, AllocationDSContext dbContext)
        {
 		 try
 			{
 			   if (includesLst == null) includesLst = new List<string>();
-			   var set =(DbQuery<InventoryItem>) dbContext.InventoryItems; 
+			   var set =(DbQuery<LumpedItem>) dbContext.LumpedItems; 
 			   set = includesLst.Where(x => !string.IsNullOrEmpty(x))
                                 .Aggregate(set, (current, itm) => current.Include(itm));
 			   return set;
@@ -1350,7 +1246,7 @@ namespace AllocationDS.Business.Services
 				throw;
 			}
        }
-	   private IQueryable<InventoryItem> AddWheres(List<string> expLst, IQueryable<InventoryItem> set)
+	   private IQueryable<LumpedItem> AddWheres(List<string> expLst, IQueryable<LumpedItem> set)
         {
             try
             {

@@ -344,7 +344,7 @@ namespace AdjustmentQS.Business.Services
 
                         doclst = await CreateEx9Class.Instance.CreateDutyFreePaidDocument(dutyFreePaid,
                                 slst, docSet, adjustmentType, false, itemPiSummarylst, false,
-                                false, false, "Current", false, false, true, perInvoice, false, false, "S") //ex9bucket = false because sales affect current the piquantity
+                                false, false, "Current", false, false, true, perInvoice, false, false, false, "S") //ex9bucket = false because sales affect current the piquantity
                             .ConfigureAwait(
                                 false);
                     }
@@ -352,7 +352,7 @@ namespace AdjustmentQS.Business.Services
                     {
                         doclst = await CreateEx9Class.Instance.CreateDutyFreePaidDocument(dutyFreePaid,
                                  slst, docSet, adjustmentType, false, itemPiSummarylst, true,
-                                 false, false, "Historic", true, true, true, perInvoice, false, true, "S")
+                                 false, false, "Historic", true, true, true, perInvoice, false, true, true, "S")
                              .ConfigureAwait(
                                  false);
                     }

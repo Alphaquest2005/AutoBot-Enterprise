@@ -395,6 +395,7 @@
     <Compile Include="Contracts\AllocationDS\IInventoryItemService.cs" />
     <Compile Include="Contracts\AllocationDS\IItemSalesAsycudaPiSummaryService.cs" />
     <Compile Include="Contracts\AllocationDS\IItemSalesPiSummaryService.cs" />
+    <Compile Include="Contracts\AllocationDS\ILumpedItemService.cs" />
     <Compile Include="Contracts\AllocationDS\IManualAllocationsService.cs" />
     <Compile Include="Contracts\AllocationDS\IPreviousItemsExService.cs" />
     <Compile Include="Contracts\AllocationDS\ISalesService.cs" />
@@ -997,6 +998,7 @@
     <Compile Include="Services\AllocationDS\InventoryItemService.cs" />
     <Compile Include="Services\AllocationDS\ItemSalesAsycudaPiSummaryService.cs" />
     <Compile Include="Services\AllocationDS\ItemSalesPiSummaryService.cs" />
+    <Compile Include="Services\AllocationDS\LumpedItemService.cs" />
     <Compile Include="Services\AllocationDS\ManualAllocationsService.cs" />
     <Compile Include="Services\AllocationDS\PreviousItemsExService.cs" />
     <Compile Include="Services\AllocationDS\SalesService.cs" />

@@ -148,6 +148,12 @@
           <Property Name="Item_Id" Type="int" Nullable="false" />
           <Property Name="EntryPreviousItemId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
         </EntityType>
+        <EntityType Name="InventoryItems-Lumped">
+          <Key>
+            <PropertyRef Name="InventoryItemId" />
+          </Key>
+          <Property Name="InventoryItemId" Type="int" Nullable="false" />
+        </EntityType>
         <EntityType Name="SubItems">
           <Key>
             <PropertyRef Name="SubItem_Id" />
@@ -1225,6 +1231,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.PreviousItemsEx' does not
           <EntitySet Name="EntryDataDetails" EntityType="Self.EntryDataDetails" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="EntryDataDetails_Allocations" EntityType="Self.EntryDataDetails_Allocations" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="EntryPreviousItems" EntityType="Self.EntryPreviousItems" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="InventoryItems-Lumped" EntityType="Self.InventoryItems-Lumped" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="SubItems" EntityType="Self.SubItems" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="SystemDocumentSets" EntityType="Self.SystemDocumentSets" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="TariffCategory" EntityType="Self.TariffCategory" Schema="dbo" store:Type="Tables" />
@@ -1928,6 +1935,11 @@ FROM [dbo].[PreviousItemsEx] AS [PreviousItemsEx]</DefiningQuery>
           <AssociationSet Name="TariffCodesxcuda_HScode" Association="WaterNutDBModel.TariffCodesxcuda_HScode">
             <End Role="TariffCodes" EntitySet="TariffCodes" />
             <End Role="xcuda_HScode" EntitySet="xcuda_HScode" />
+          </AssociationSet>
+          <EntitySet Name="LumpedItems" EntityType="WaterNutDBModel.LumpedItem" />
+          <AssociationSet Name="InventoryItemInventoryItems_Lumped" Association="WaterNutDBModel.InventoryItemInventoryItems_Lumped">
+            <End Role="InventoryItem" EntitySet="InventoryItems" />
+            <End Role="InventoryItems_Lumped" EntitySet="LumpedItems" />
           </AssociationSet>
           </EntityContainer>
         <EntityType Name="AsycudaSalesAllocations">
@@ -3049,6 +3061,7 @@ FROM [dbo].[PreviousItemsEx] AS [PreviousItemsEx]</DefiningQuery>
           <NavigationProperty Name="EntryDataDetailsEx" Relationship="WaterNutDBModel.InventoryItemsExEntryDataDetailsEx" FromRole="InventoryItemsEx" ToRole="EntryDataDetailsEx" />
           <NavigationProperty Name="InventoryItemAliasEx" Relationship="WaterNutDBModel.InventoryItemInventoryItemAliasEx" FromRole="InventoryItem" ToRole="InventoryItemAliasEx" />
           <Property Name="InventoryItemId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="LumpedItem" Relationship="WaterNutDBModel.InventoryItemInventoryItems_Lumped" FromRole="InventoryItem" ToRole="InventoryItems_Lumped" />
         </EntityType>
         <Association Name="TariffCodesInventoryItemsEx">
           <End Type="WaterNutDBModel.TariffCodes" Role="TariffCodes" Multiplicity="0..1" />
@@ -3330,6 +3343,25 @@ FROM [dbo].[PreviousItemsEx] AS [PreviousItemsEx]</DefiningQuery>
             </Principal>
             <Dependent Role="xcuda_HScode">
               <PropertyRef Name="Commodity_code" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="LumpedItem">
+          <Key>
+            <PropertyRef Name="InventoryItemId" />
+          </Key>
+          <Property Name="InventoryItemId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="InventoryItem" Relationship="WaterNutDBModel.InventoryItemInventoryItems_Lumped" FromRole="InventoryItems_Lumped" ToRole="InventoryItem" />
+        </EntityType>
+        <Association Name="InventoryItemInventoryItems_Lumped">
+          <End Type="WaterNutDBModel.InventoryItem" Role="InventoryItem" Multiplicity="1" />
+          <End Type="WaterNutDBModel.LumpedItem" Role="InventoryItems_Lumped" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="InventoryItem">
+              <PropertyRef Name="InventoryItemId" />
+            </Principal>
+            <Dependent Role="InventoryItems_Lumped">
+              <PropertyRef Name="InventoryItemId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -4123,6 +4155,13 @@ FROM [dbo].[PreviousItemsEx] AS [PreviousItemsEx]</DefiningQuery>
               <MappingFragment StoreEntitySet="CustomsOperations">
                 <ScalarProperty Name="Name" ColumnName="Name" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="LumpedItems">
+            <EntityTypeMapping TypeName="WaterNutDBModel.LumpedItem">
+              <MappingFragment StoreEntitySet="InventoryItems-Lumped">
+                <ScalarProperty Name="InventoryItemId" ColumnName="InventoryItemId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

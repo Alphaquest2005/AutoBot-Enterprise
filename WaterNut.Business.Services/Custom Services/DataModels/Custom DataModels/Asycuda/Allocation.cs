@@ -55,7 +55,7 @@ namespace WaterNut.DataSpace
 					   (_inventoryAliasCache =
 						   new DataCache<InventoryItemAlias>(
 							   AllocationDS.DataModels.BaseDataModel.Instance.SearchInventoryItemAlias(
-								   new List<string>() {"All"}, null).Result));
+								   new List<string>() {"All"},new List<string>(){"InventoryItem.LumpedItem"}).Result));
 			}
 			set { _inventoryAliasCache = value; }
 		}
@@ -598,8 +598,8 @@ namespace WaterNut.DataSpace
 						 };
 
 			var res = new ConcurrentDictionary<string, ItemSet>();
-			foreach (var itm in itmLst)
-			{
+			foreach (var itm in itmLst)//.Where(x => x.Key == "291970").ToList()
+            {
 
 				res.AddOrUpdate(itm.Key, itm,(key,value) =>
 				{
@@ -609,14 +609,19 @@ namespace WaterNut.DataSpace
 					return value ;
 				});
 			}
-
+            var lumpedItems = Instance.InventoryAliasCache.Data.Where(x => x.InventoryItem.LumpedItem != null).ToList();
 			
-			foreach (var r in res)//.Where(x => x.Key == "5331368").ToList()
+			foreach (var r in res)//
 			{
-				var alias = Instance.InventoryAliasCache.Data.Where(x => x.ItemNumber.ToUpper().Trim() == r.Key).Select(y => y.AliasName.ToUpper().Trim()).ToList();
-				if (!alias.Any()) continue;
+				var alias = Instance.InventoryAliasCache.Data.Where(x => x.ItemNumber.ToUpper().Trim() == r.Key).Select(y => y.AliasName.ToUpper().Trim()).Distinct().ToList();
+
+                
+                var lumpedAlias = alias.Join(lumpedItems, (x) => x, (y) => y.AliasName,
+                    (x, y) => y.ItemNumber).Distinct().ToList();
+
+				if (!alias.Any() && !lumpedAlias.Any()) continue;
 				//var te = asycudaEntries.Where(x => x.Key == "EVC/508").ToList();
-				var ae = asycudaEntries.Where(x => alias.Contains(x.Key)).SelectMany(y => y.EntriesList).ToList();
+				var ae = asycudaEntries.Where(x => alias.Contains(x.Key) || lumpedAlias.Contains(x.Key)).SelectMany(y => y.EntriesList).ToList();
 				if (ae.Any()) r.Value.EntriesList.AddRange(ae);
 
 				// Manual allocation
