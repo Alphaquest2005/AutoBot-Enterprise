@@ -1110,6 +1110,56 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
         }	
 
  
+		private DateTime? _startAssessmentDateFilter = DateTime.Parse(string.Format("{0}/1/{1}", DateTime.Now.Month ,DateTime.Now.Year));
+        public DateTime? StartAssessmentDateFilter
+        {
+            get
+            {
+                return _startAssessmentDateFilter;
+            }
+            set
+            {
+                _startAssessmentDateFilter = value;
+				NotifyPropertyChanged(x => StartAssessmentDateFilter);
+                FilterData();
+                
+            }
+        }	
+
+		private DateTime? _endAssessmentDateFilter = DateTime.Parse(string.Format("{1}/{0}/{2}", DateTime.DaysInMonth( DateTime.Now.Year,DateTime.Now.Month), DateTime.Now.Month, DateTime.Now.Year));
+        public DateTime? EndAssessmentDateFilter
+        {
+            get
+            {
+                return _endAssessmentDateFilter;
+            }
+            set
+            {
+                _endAssessmentDateFilter = value;
+				NotifyPropertyChanged(x => EndAssessmentDateFilter);
+                FilterData();
+                
+            }
+        }
+ 
+
+		private DateTime? _assessmentDateFilter;
+        public DateTime? AssessmentDateFilter
+        {
+            get
+            {
+                return _assessmentDateFilter;
+            }
+            set
+            {
+                _assessmentDateFilter = value;
+				NotifyPropertyChanged(x => AssessmentDateFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
 		internal bool DisableBaseFilterData = false;
         public virtual void FilterData()
 	    {
@@ -1341,7 +1391,36 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 
 									if(string.IsNullOrEmpty(CustomsProcedureFilter) == false)
 						res.Append(" && " + string.Format("CustomsProcedure.Contains(\"{0}\")",  CustomsProcedureFilter));						
-			return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
+ 
+
+ 
+
+				if (Convert.ToDateTime(StartAssessmentDateFilter).Date != DateTime.MinValue &&
+		        Convert.ToDateTime(EndAssessmentDateFilter).Date != DateTime.MinValue) res.Append(" && (");
+
+					if (Convert.ToDateTime(StartAssessmentDateFilter).Date != DateTime.MinValue)
+						{
+							if(StartAssessmentDateFilter.HasValue)
+								res.Append(
+                                            (Convert.ToDateTime(EndAssessmentDateFilter).Date != DateTime.MinValue?"":" && ") +
+                                            string.Format("AssessmentDate >= \"{0}\"",  Convert.ToDateTime(StartAssessmentDateFilter).Date.ToString("MM/dd/yyyy")));
+						}
+
+					if (Convert.ToDateTime(EndAssessmentDateFilter).Date != DateTime.MinValue)
+						{
+							if(EndAssessmentDateFilter.HasValue)
+								res.Append(" && " + string.Format("AssessmentDate <= \"{0}\"",  Convert.ToDateTime(EndAssessmentDateFilter).Date.AddHours(23).ToString("MM/dd/yyyy HH:mm:ss")));
+						}
+
+				if (Convert.ToDateTime(StartAssessmentDateFilter).Date != DateTime.MinValue &&
+		        Convert.ToDateTime(EndAssessmentDateFilter).Date != DateTime.MinValue) res.Append(" )");
+
+					if (Convert.ToDateTime(_assessmentDateFilter).Date != DateTime.MinValue)
+						{
+							if(AssessmentDateFilter.HasValue)
+								res.Append(" && " + string.Format("AssessmentDate == \"{0}\"",  Convert.ToDateTime(AssessmentDateFilter).Date.ToString("MM/dd/yyyy")));
+						}
+							return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
 // Send to Excel Implementation
@@ -1487,7 +1566,10 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     PreviousInvoiceItemNumber = x.PreviousInvoiceItemNumber ,
                     
  
-                    CustomsProcedure = x.CustomsProcedure 
+                    CustomsProcedure = x.CustomsProcedure ,
+                    
+ 
+                    AssessmentDate = x.AssessmentDate 
                     
                 }).ToList()
             };
@@ -1624,6 +1706,9 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     
  
                     public string CustomsProcedure { get; set; } 
+                    
+ 
+                    public Nullable<System.DateTime> AssessmentDate { get; set; } 
                     
         }
 

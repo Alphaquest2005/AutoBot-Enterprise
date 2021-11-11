@@ -25,9 +25,18 @@ namespace WaterNut
         public MainWindow()
         {
             InitializeComponent();
+
+            if (BaseViewModel.Instance.CurrentApplicationSettings.AllowCounterPoint == "Hidden")
+            {
+                downloadCounterPountTxt = null;
+                CPSalesTxt = null;
+            }
+            else
+            {
+                downloadCounterPountTxt.Visibility = (Visibility)Enum.Parse(Visibility.GetType(), BaseViewModel.Instance.CurrentApplicationSettings.AllowCounterPoint);
+                CPSalesTxt.Visibility = (Visibility)Enum.Parse(Visibility.GetType(), BaseViewModel.Instance.CurrentApplicationSettings.AllowCounterPoint);
+            }
             
-            downloadCounterPountTxt.Visibility = (Visibility)Enum.Parse(Visibility.GetType(), BaseViewModel.Instance.CurrentApplicationSettings.AllowCounterPoint);
-            CPSalesTxt.Visibility = (Visibility)Enum.Parse(Visibility.GetType(), BaseViewModel.Instance.CurrentApplicationSettings.AllowCounterPoint);
 
             homeExpand.Visibility = (Visibility)Enum.Parse(Visibility.GetType(), BaseViewModel.Instance.CurrentApplicationSettings.AllowWareHouse);
             Ex9.Visibility = (Visibility)Enum.Parse(Visibility.GetType(), BaseViewModel.Instance.CurrentApplicationSettings.AllowXBond);

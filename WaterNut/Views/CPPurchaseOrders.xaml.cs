@@ -13,6 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using WaterNut.QuerySpace;
 using WaterNut.QuerySpace.CounterPointQS.ViewModels;
+using BaseViewModel = WaterNut.QuerySpace.CoreEntities.ViewModels.BaseViewModel;
 
 namespace WaterNut.Views
 {
@@ -25,8 +26,11 @@ namespace WaterNut.Views
 		{
             try
             {
-                InitializeComponent();
-                im = (CPPurchaseOrdersModel)FindResource("CPPurchaseOrdersModelDataSource");
+                if (BaseViewModel.Instance.CurrentApplicationSettings.AllowCounterPoint != "Hidden")
+                {
+                    InitializeComponent();
+                    im = (CPPurchaseOrdersModel) FindResource("CPPurchaseOrdersModelDataSource");
+                }
             }
             catch (Exception Ex)
             {

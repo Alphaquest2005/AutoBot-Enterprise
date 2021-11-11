@@ -383,6 +383,7 @@
     <Compile Include="Contracts\AllocationDS\IAsycudaDocumentService.cs" />
     <Compile Include="Contracts\AllocationDS\IAsycudaItemPiQuantityDataService.cs" />
     <Compile Include="Contracts\AllocationDS\IAsycudaLkpLstService.cs" />
+    <Compile Include="Contracts\AllocationDS\IAsycudaSalesAllocationsPIDataService.cs" />
     <Compile Include="Contracts\AllocationDS\IAsycudaSalesAllocationsService.cs" />
     <Compile Include="Contracts\AllocationDS\ICustomsOperationsService.cs" />
     <Compile Include="Contracts\AllocationDS\ICustoms_ProcedureService.cs" />
@@ -986,6 +987,7 @@
     <Compile Include="Services\AllocationDS\AsycudaDocumentService.cs" />
     <Compile Include="Services\AllocationDS\AsycudaItemPiQuantityDataService.cs" />
     <Compile Include="Services\AllocationDS\AsycudaLkpLstService.cs" />
+    <Compile Include="Services\AllocationDS\AsycudaSalesAllocationsPIDataService.cs" />
     <Compile Include="Services\AllocationDS\AsycudaSalesAllocationsService.cs" />
     <Compile Include="Services\AllocationDS\CustomsOperationsService.cs" />
     <Compile Include="Services\AllocationDS\Customs_ProcedureService.cs" />

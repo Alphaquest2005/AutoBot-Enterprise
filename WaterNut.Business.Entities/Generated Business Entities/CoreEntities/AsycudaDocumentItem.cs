@@ -734,6 +734,21 @@ namespace CoreEntities.Business.Entities
         }
         string _customsprocedure;
         [DataMember]
+        public Nullable<System.DateTime> AssessmentDate 
+        {
+            get
+            {
+                return _assessmentdate;
+            }
+            set
+            {
+                _assessmentdate = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<System.DateTime> _assessmentdate;
+        [DataMember]
         public AsycudaDocument AsycudaDocument { get; set; }
         [DataMember]
         public List<SubItems> SubItems { get; set; }

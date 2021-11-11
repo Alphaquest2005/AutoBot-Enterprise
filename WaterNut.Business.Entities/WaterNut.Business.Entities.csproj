@@ -164,6 +164,7 @@
     <Compile Include="Generated Business Entities\AllocationDS\AsycudaItemPiQuantityData.cs" />
     <Compile Include="Generated Business Entities\AllocationDS\AsycudaLkpLst.cs" />
     <Compile Include="Generated Business Entities\AllocationDS\AsycudaSalesAllocations.cs" />
+    <Compile Include="Generated Business Entities\AllocationDS\AsycudaSalesAllocationsPIData.cs" />
     <Compile Include="Generated Business Entities\AllocationDS\CustomsOperations.cs" />
     <Compile Include="Generated Business Entities\AllocationDS\Customs_Procedure.cs" />
     <Compile Include="Generated Business Entities\AllocationDS\EntryData.cs" />
@@ -564,6 +565,7 @@
     <Compile Include="Generated ChangeTracking Models\AllocationDS\AsycudaItemPiQuantityData.cs" />
     <Compile Include="Generated ChangeTracking Models\AllocationDS\AsycudaLkpLst.cs" />
     <Compile Include="Generated ChangeTracking Models\AllocationDS\AsycudaSalesAllocations.cs" />
+    <Compile Include="Generated ChangeTracking Models\AllocationDS\AsycudaSalesAllocationsPIData.cs" />
     <Compile Include="Generated ChangeTracking Models\AllocationDS\CustomsOperations.cs" />
     <Compile Include="Generated ChangeTracking Models\AllocationDS\Customs_Procedure.cs" />
     <Compile Include="Generated ChangeTracking Models\AllocationDS\EntryData.cs" />
@@ -957,6 +959,7 @@
     <Compile Include="Generated Constructors Models\AllocationDS\AsycudaItemPiQuantityData.cs" />
     <Compile Include="Generated Constructors Models\AllocationDS\AsycudaLkpLst.cs" />
     <Compile Include="Generated Constructors Models\AllocationDS\AsycudaSalesAllocations.cs" />
+    <Compile Include="Generated Constructors Models\AllocationDS\AsycudaSalesAllocationsPIData.cs" />
     <Compile Include="Generated Constructors Models\AllocationDS\CustomsOperations.cs" />
     <Compile Include="Generated Constructors Models\AllocationDS\Customs_Procedure.cs" />
     <Compile Include="Generated Constructors Models\AllocationDS\EntryData.cs" />
@@ -1350,6 +1353,7 @@
     <Compile Include="Generated IEntitiyWithKey Models\AllocationDS\AsycudaItemPiQuantityData.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\AllocationDS\AsycudaLkpLst.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\AllocationDS\AsycudaSalesAllocations.cs" />
+    <Compile Include="Generated IEntitiyWithKey Models\AllocationDS\AsycudaSalesAllocationsPIData.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\AllocationDS\CustomsOperations.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\AllocationDS\Customs_Procedure.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\AllocationDS\EntryData.cs" />
@@ -1743,6 +1747,7 @@
     <Compile Include="Generated IIdentitfiableEntity Models\AllocationDS\AsycudaItemPiQuantityData.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\AllocationDS\AsycudaLkpLst.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\AllocationDS\AsycudaSalesAllocations.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\AllocationDS\AsycudaSalesAllocationsPIData.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\AllocationDS\CustomsOperations.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\AllocationDS\Customs_Procedure.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\AllocationDS\EntryData.cs" />
@@ -2146,6 +2151,7 @@
     <Compile Include="Generated Mappings\AllocationDS\AsycudaItemPiQuantityData.map.cs" />
     <Compile Include="Generated Mappings\AllocationDS\AsycudaLkpLst.map.cs" />
     <Compile Include="Generated Mappings\AllocationDS\AsycudaSalesAllocations.map.cs" />
+    <Compile Include="Generated Mappings\AllocationDS\AsycudaSalesAllocationsPIData.map.cs" />
     <Compile Include="Generated Mappings\AllocationDS\CustomsOperations.map.cs" />
     <Compile Include="Generated Mappings\AllocationDS\Customs_Procedure.map.cs" />
     <Compile Include="Generated Mappings\AllocationDS\EntryData.map.cs" />

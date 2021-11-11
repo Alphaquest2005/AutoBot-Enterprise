@@ -129,6 +129,8 @@ namespace AllocationDS.Business.Entities
      
         public DbSet<LumpedItem> LumpedItems { get; set; }
      
+        public DbSet<AsycudaSalesAllocationsPIData> AsycudaSalesAllocationsPIData { get; set; }
+     
 
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
@@ -214,6 +216,8 @@ namespace AllocationDS.Business.Entities
             modelBuilder.Configurations.Add(new CustomsOperationsMap());
          
             modelBuilder.Configurations.Add(new LumpedItemMap());
+         
+            modelBuilder.Configurations.Add(new AsycudaSalesAllocationsPIDataMap());
          
             modelBuilder.Configurations.Add(new AdjustmentsMap());
       

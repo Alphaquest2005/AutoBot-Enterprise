@@ -1157,6 +1157,24 @@ namespace WaterNut.QuerySpace.AllocationQS.ViewModels
         }	
 
  
+
+		private string _pPrecision1Filter;
+        public string pPrecision1Filter
+        {
+            get
+            {
+                return _pPrecision1Filter;
+            }
+            set
+            {
+                _pPrecision1Filter = value;
+				NotifyPropertyChanged(x => pPrecision1Filter);
+                FilterData();
+                
+            }
+        }	
+
+ 
 		internal bool DisableBaseFilterData = false;
         public virtual void FilterData()
 	    {
@@ -1490,7 +1508,11 @@ namespace WaterNut.QuerySpace.AllocationQS.ViewModels
  
 
 					if(SalesLineNumberFilter.HasValue)
-						res.Append(" && " + string.Format("SalesLineNumber == {0}",  SalesLineNumberFilter.ToString()));							return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
+						res.Append(" && " + string.Format("SalesLineNumber == {0}",  SalesLineNumberFilter.ToString()));				 
+
+									if(string.IsNullOrEmpty(pPrecision1Filter) == false)
+						res.Append(" && " + string.Format("pPrecision1.Contains(\"{0}\")",  pPrecision1Filter));						
+			return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
 // Send to Excel Implementation
@@ -1639,7 +1661,10 @@ namespace WaterNut.QuerySpace.AllocationQS.ViewModels
                     Type = x.Type ,
                     
  
-                    SalesLineNumber = x.SalesLineNumber 
+                    SalesLineNumber = x.SalesLineNumber ,
+                    
+ 
+                    pPrecision1 = x.pPrecision1 
                     
                 }).ToList()
             };
@@ -1739,7 +1764,7 @@ namespace WaterNut.QuerySpace.AllocationQS.ViewModels
                     public string WarehouseError { get; set; } 
                     
  
-                    public Nullable<int> SANumber { get; set; } 
+                    public int SANumber { get; set; } 
                     
  
                     public string xReferenceNumber { get; set; } 
@@ -1779,6 +1804,9 @@ namespace WaterNut.QuerySpace.AllocationQS.ViewModels
                     
  
                     public Nullable<int> SalesLineNumber { get; set; } 
+                    
+ 
+                    public string pPrecision1 { get; set; } 
                     
         }
 

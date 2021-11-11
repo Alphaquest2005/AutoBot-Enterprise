@@ -645,7 +645,7 @@ namespace Asycuda421
                             ? fileinfo.FullName.Replace($"{DocSetPath}", _destinatonFile.DirectoryName)
                             : Path.Combine(_destinatonFile.DirectoryName, fileinfo.Name);
                         // var desFile = Path.Combine(desPath, fileinfo.Name);
-                        if (!File.Exists(desFile)) desFile = fileinfo.FullName;
+                        //if (!File.Exists(desFile)) desFile = fileinfo.FullName; // took out because of sales file not created yet
                         File.AppendAllText(Path.Combine(_destinatonFile.DirectoryName, "Instructions.txt"),
                             $"{doc.Attached_documents_Id}\tAttachment\t{desFile}\r\n");
                     }
@@ -840,7 +840,8 @@ namespace Asycuda421
                 if (item.xcuda_Tarification.xcuda_HScode.Commodity_code != null)
                     ai.Tarification.HScode.Commodity_code.Text.Add(item.xcuda_Tarification.xcuda_HScode
                         .Commodity_code); // item.xcuda_Tarification.xcuda_HScode.Commodity_code;
-                // ai.Tarification.HScode.Precision_1 = item.xcuda_Tarification.xcuda_HScode.Precision_1;
+                 ai.Tarification.HScode.Precision_1.Text.Clear();
+                ai.Tarification.HScode.Precision_1.Text.Add(item.xcuda_Tarification.xcuda_HScode.Precision_1);
                 if (item.xcuda_Tarification.xcuda_HScode.Precision_4 != null && item.ItemNumber.Length <= 20) //
                     ai.Tarification.HScode.Precision_4.Text.Add(item.xcuda_Tarification.xcuda_HScode.Precision_4.Trim()
                         .Truncate(20));

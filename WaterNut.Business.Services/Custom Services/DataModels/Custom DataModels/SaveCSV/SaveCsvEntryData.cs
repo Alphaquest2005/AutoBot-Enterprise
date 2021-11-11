@@ -423,6 +423,10 @@ namespace WaterNut.DataSpace
                 //if (instructions.Contains("Append")) overWriteExisting = false;
                 //if (instructions.Contains("Replace")) overWriteExisting = true;
 
+                if (docSet.Any(x =>
+                    x.ApplicationSettingsId != BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId))
+                    throw new ApplicationException("Doc Set not belonging to Current Company");
+
 
                 if (fileType.Type == "Rider")
                 {
@@ -1466,13 +1470,22 @@ namespace WaterNut.DataSpace
                                             x.AliasName == e.ItemAlias) ==
                                         null)
                                     {
-                                        string aliasName = ((string)e.ItemAlias).Truncate(20);
-                                        inventoryItem.InventoryItemAlias.Add(new InventoryItemAlia(true)
+                                       
+                                    string aliasName = ((string)e.ItemAlias).Truncate(20);
+                                    var aliasItm = ctx.InventoryItems
+                                        .FirstOrDefault(x => x.ApplicationSettingsId == applicationSettingsId &&
+                                                             x.ItemNumber == aliasName);
+                                    if (aliasItm == null)
+                                        throw new ApplicationException(
+                                            $"No Alias Inventory Item Found... need to add it before creating Alias {aliasName} for InventoryItem {inventoryItem.ItemNumber}");
+
+                                    inventoryItem.InventoryItemAlias.Add(new InventoryItemAlia(true)
                                         {
                                             InventoryItemId = inventoryItem.Id,
                                             AliasName = aliasName,
+                                            AliasItemId = aliasItm.Id,
 
-                                        });
+                                    });
                                     }
                                 }
 
@@ -1692,9 +1705,12 @@ namespace WaterNut.DataSpace
                     "SupplierInvoiceNo",
                     (c, mapping, splits) =>
                     {
-                        c.EntryDataId = !string.IsNullOrEmpty(splits[mapping["EntryDataId"]])
-                            ? splits[mapping["EntryDataId"]].Trim().Replace("PO/GD/", "").Replace("SHOP/GR_", "")
-                            : splits[mapping["SupplierInvoiceNo"]];
+                        if (string.IsNullOrEmpty(c.EntryDataId))// do this incase entrydataid empty.. might nee to check order?
+                        {
+                            c.EntryDataId = !string.IsNullOrEmpty(splits[mapping["EntryDataId"]])
+                                ? splits[mapping["EntryDataId"]].Trim().Replace("PO/GD/", "").Replace("SHOP/GR_", "")
+                                : splits[mapping["SupplierInvoiceNo"]];
+                        }
                         c.SupplierInvoiceNo = splits[mapping["SupplierInvoiceNo"]];
                     }
                 },
@@ -1771,14 +1787,14 @@ namespace WaterNut.DataSpace
                      {
 
                          var err = ImportChecks[key.DestinationName].Invoke(res,
-                             map.Where(x => x.Key.Id == key.Id).ToDictionary(x => x.Key.DestinationName, x => x.Value), splits);
+                             map/*.Where(x => x.Key.Id == key.Id)*/.ToDictionary(x => x.Key.DestinationName, x => x.Value), splits);
                          if (err.Item1) throw new ApplicationException(err.Item2);
                      }
 
                      if (ImportActions.ContainsKey(key.DestinationName))
-                     {
+                     {// come up with a better solution cuz of duplicate keys
                          ImportActions[key.DestinationName].Invoke(res,
-                             map.Where(x => x.Key.Id == key.Id).ToDictionary(x => x.Key.DestinationName, x => x.Value), splits);
+                             map/*.Where(x => x.Key.Id == key.Id)*/.ToDictionary(x => x.Key.DestinationName, x => x.Value), splits);
                      }
                      else
                      {
@@ -1921,159 +1937,212 @@ namespace WaterNut.DataSpace
         {
             try
             {
-               
-               
 
-               var itmlst = eslst.Where(x => x.ItemNumber != null)
-                            .GroupBy(g => new { ItemNumber = g.ItemNumber.ToUpper(), g.ItemDescription, g.TariffCode})
-                            .ToList();
-            InventorySource inventorySource;
-            using (var dctx = new InventoryDSContext())
-            {
-                switch (fileType.Type)
+
+
+                var itmlst = eslst.Where(x => x.ItemNumber != null)
+                    .GroupBy(g => new {ItemNumber = g.ItemNumber.ToUpper(), g.ItemDescription, g.TariffCode})
+                    .ToList();
+                InventorySource inventorySource;
+                using (var dctx = new InventoryDSContext())
                 {
-                    case "Shipment Invoice":
-                    case "INV":
-
-                        inventorySource = dctx.InventorySources.FirstOrDefault(x => x.Name == "Supplier");
-                        break;
-                    case "PO":
-                        inventorySource = dctx.InventorySources.First(x => x.Name == "POS");
-                        break;
-                    case "OPS":
-                        inventorySource = dctx.InventorySources.First(x => x.Name == "POS");
-                        break;
-                    case "ADJ":
-                        inventorySource = dctx.InventorySources.First(x => x.Name == "POS");
-                        break;
-                    case "Sales":
-                        inventorySource = dctx.InventorySources.First(x => x.Name == "POS");
-                        break;
-                    case "DIS":
-                        inventorySource = dctx.InventorySources.First(x => x.Name == "POS");
-                        break;
-                    default:
-                        throw new ApplicationException("Unknown CSV FileType");
-
-                }
-            }
-
-            using (var ctx = new InventoryDSContext() {StartTracking = true})
-            {
-                var inventoryItems = ctx.InventoryItems
-                    .Include("InventoryItemSources.InventorySource")
-                    .Include("InventoryItemAlias")
-                    .Where(x => x.ApplicationSettingsId == applicationSettingsId).ToList();
-                foreach (var item in itmlst)
-                {
-
-                    
-                    var i = inventoryItems.Any(x => x.ApplicationSettingsId == applicationSettingsId && x.ItemNumber == item.Key.ItemNumber &&  x.InventoryItemSources.FirstOrDefault()?.InventorySource == inventorySource)
-                        ? inventoryItems.FirstOrDefault(x => x.ApplicationSettingsId == applicationSettingsId && x.ItemNumber == item.Key.ItemNumber && x.InventoryItemSources.FirstOrDefault()?.InventorySource == inventorySource)
-                        : inventoryItems.FirstOrDefault(x => x.ApplicationSettingsId == applicationSettingsId && x.ItemNumber == item.Key.ItemNumber);
-
-                    if (i == null || i.InventoryItemSources.FirstOrDefault()?.InventorySource != inventorySource)
+                    switch (fileType.Type)
                     {
-                        i = new InventoryItem(true)
-                        {
-                            ApplicationSettingsId = applicationSettingsId,
-                            Description = item.Key.ItemDescription,
-                            ItemNumber = ((string)item.Key.ItemNumber).Truncate(20),
-                            InventoryItemSources = new List<InventoryItemSource>(){ new InventoryItemSource(true)
-                            {
-                                InventorySourceId = inventorySource.Id,
-                                TrackingState = TrackingState.Added
-                            }},
-                            TrackingState = TrackingState.Added
-                        };
-                        if (!string.IsNullOrEmpty(item.Key.TariffCode)) i.TariffCode = item.Key.TariffCode;
+                        case "Shipment Invoice":
+                        case "INV":
 
-
-
-                        i = ctx.InventoryItems.Add(i);
-                        ctx.SaveChanges();
-
-                        }
-                    else
-                    {
-                        if (i.Description != item.Key.ItemDescription || i.TariffCode != item.Key.TariffCode)
-                        {
-                            i.StartTracking();
-                            i.Description = item.Key.ItemDescription;
-                            if (!string.IsNullOrEmpty(item.Key.TariffCode)) i.TariffCode = item.Key.TariffCode;
-                           // await ctx.UpdateInventoryItem(i).ConfigureAwait(false);
-                            
-                        }
+                            inventorySource = dctx.InventorySources.FirstOrDefault(x => x.Name == "Supplier");
+                            break;
+                        case "PO":
+                            inventorySource = dctx.InventorySources.First(x => x.Name == "POS");
+                            break;
+                        case "OPS":
+                            inventorySource = dctx.InventorySources.First(x => x.Name == "POS");
+                            break;
+                        case "ADJ":
+                            inventorySource = dctx.InventorySources.First(x => x.Name == "POS");
+                            break;
+                        case "Sales":
+                            inventorySource = dctx.InventorySources.First(x => x.Name == "POS");
+                            break;
+                        case "DIS":
+                            inventorySource = dctx.InventorySources.First(x => x.Name == "POS");
+                            break;
+                        default:
+                            throw new ApplicationException("Unknown CSV FileType");
 
                     }
+                }
+
+                if (inventorySource == null)
+                    throw new ApplicationException($"No Inventory source setup for FileType:{fileType.Type}");
+
+                using (var ctx = new InventoryDSContext() {StartTracking = true})
+                {
+                    var inventoryItems = ctx.InventoryItems
+                        .Include("InventoryItemSources.InventorySource")
+                        .Include("InventoryItemAlias")
+                        .Where(x => x.ApplicationSettingsId == applicationSettingsId).ToList();
+                    foreach (var item in itmlst)
+                    {
+
+
+                        //var i = inventoryItems.Any(x => x.ApplicationSettingsId == applicationSettingsId && x.ItemNumber == item.Key.ItemNumber && x.InventoryItemSources.FirstOrDefault()?.InventorySource == inventorySource)
+                        //    ? inventoryItems.FirstOrDefault(x =>
+                        //        x.ApplicationSettingsId == applicationSettingsId &&
+                        //        x.ItemNumber == item.Key.ItemNumber &&
+                        //        x.InventoryItemSources.FirstOrDefault()?.InventorySource == inventorySource)
+                        //    : inventoryItems.FirstOrDefault(x =>
+                        //        x.ApplicationSettingsId == applicationSettingsId &&
+                        //        x.ItemNumber == item.Key.ItemNumber);
+                        var i = inventoryItems.FirstOrDefault(x =>
+                            x.ApplicationSettingsId == applicationSettingsId && x.ItemNumber == item.Key.ItemNumber);
+
+                        if (i == null || i.InventoryItemSources.All(x => x.InventorySource.Id != inventorySource.Id))
+                        {
+                            if (string.IsNullOrEmpty(item.Key.ItemDescription) && i == null) continue;
+                            i = new InventoryItem(true)
+                            {
+                                ApplicationSettingsId = applicationSettingsId,
+                                Description =i?.Description  ?? item.Key.ItemDescription , // quicker trust database than file
+                                ItemNumber = ((string) item.Key.ItemNumber).Truncate(20),
+                                InventoryItemSources = new List<InventoryItemSource>()
+                                {
+                                    new InventoryItemSource(true)
+                                    {
+                                        InventorySourceId = inventorySource.Id,
+                                        TrackingState = TrackingState.Added
+                                    }
+                                },
+                                TrackingState = TrackingState.Added
+                            };
+                            if (!string.IsNullOrEmpty(item.Key.TariffCode)) i.TariffCode = item.Key.TariffCode;
+                            if (string.IsNullOrEmpty(item.Key.ItemDescription))
+                                foreach (var line in item)
+                                {
+                                    line.ItemDescription = i.Description;
+                                }
+
+
+                            i = ctx.InventoryItems.Add(i);
+
+                            ctx.SaveChanges();
+                            inventoryItems.Add(i);
+
+                        }
+                        else
+                        {
+                            if (i.Description != item.Key.ItemDescription || i.TariffCode != item.Key.TariffCode)
+                            {
+                                i.StartTracking();
+                                if (!string.IsNullOrEmpty(item.Key.ItemDescription))
+                                {
+                                    i.Description = item.Key.ItemDescription;
+                                }
+                                else
+                                {
+                                    foreach (var line in item)
+                                    {
+                                        line.ItemDescription = i.Description;
+                                    }
+                                }
+
+
+
+                                if (!string.IsNullOrEmpty(item.Key.TariffCode)) i.TariffCode = item.Key.TariffCode;
+                                // await ctx.UpdateInventoryItem(i).ConfigureAwait(false);
+
+                            }
+
+                        }
 
                         foreach (var line in item)
                         {
                             line.InventoryItemId = i.Id;
                         }
 
-                    var invItemCodes = item.Select(x => new { SupplierItemNumber = (string) x.SupplierItemNumber, SupplierItemDescription = (string) x.SupplierItemDescription}).Where(x => !string.IsNullOrEmpty(x.SupplierItemNumber) && i.ItemNumber != x.SupplierItemNumber )
-                        .DistinctBy(x => x.SupplierItemNumber).ToList();
-
-                    var AliasItemCodes = item.Where(x => !string.IsNullOrEmpty(x.ItemAlias)).Select(x => new { SupplierItemNumber =(string)x.ItemAlias.ToString(), SupplierItemDescription = (string) x.ItemDescription })
-                        .Where(x => !string.IsNullOrEmpty(x.SupplierItemNumber) && i.ItemNumber != x.SupplierItemNumber)
-                        .DistinctBy(x => x.SupplierItemNumber).ToList();
-
-                    invItemCodes.AddRange(AliasItemCodes);
-
-                   foreach (var invItemCode in invItemCodes)
-                    {
-                        string supplierItemNumber = invItemCode.SupplierItemNumber.ToString();
-                        var invItem = ctx.InventoryItems.FirstOrDefault(x => x.ApplicationSettingsId == applicationSettingsId && x.ItemNumber == supplierItemNumber);
-                        if(invItem == null)
-                        { invItem = new InventoryItem(true)
+                        var invItemCodes = item
+                            .Select(x => new
                             {
-                                ApplicationSettingsId = applicationSettingsId,
-                                Description = invItemCode.SupplierItemDescription,
-                                ItemNumber = ((string)invItemCode.SupplierItemNumber).Truncate(20),
-                                InventoryItemSources = new List<InventoryItemSource>(){ new InventoryItemSource(true)
+                                SupplierItemNumber = (string) x.SupplierItemNumber,
+                                SupplierItemDescription = (string) x.SupplierItemDescription
+                            }).Where(x =>
+                                !string.IsNullOrEmpty(x.SupplierItemNumber) && i.ItemNumber != x.SupplierItemNumber)
+                            .DistinctBy(x => x.SupplierItemNumber).ToList();
+
+                        var AliasItemCodes = item.Where(x => !string.IsNullOrEmpty(x.ItemAlias)).Select(x =>
+                                new
                                 {
-                                    InventorySourceId = inventorySource.Id,
-                                    TrackingState = TrackingState.Added
-                                }},
-                                TrackingState = TrackingState.Added
-                            };
-                            ctx.InventoryItems.Add(invItem);
-                            ctx.SaveChanges();
-                        } 
-                        if (i.InventoryItemAlias.FirstOrDefault(x => x.AliasName == supplierItemNumber) == null)
+                                    SupplierItemNumber = (string) x.ItemAlias.ToString(),
+                                    SupplierItemDescription = (string) x.ItemDescription
+                                })
+                            .Where(x => !string.IsNullOrEmpty(x.SupplierItemNumber) &&
+                                        i.ItemNumber != x.SupplierItemNumber)
+                            .DistinctBy(x => x.SupplierItemNumber).ToList();
+
+                        invItemCodes.AddRange(AliasItemCodes);
+
+                        foreach (var invItemCode in invItemCodes)
                         {
-                            i.InventoryItemAlias.Add(new InventoryItemAlia(true)
+                            string supplierItemNumber = invItemCode.SupplierItemNumber.ToString();
+                            var invItem = ctx.InventoryItems.FirstOrDefault(x =>
+                                x.ApplicationSettingsId == applicationSettingsId && x.ItemNumber == supplierItemNumber);
+                            if (invItem == null)
                             {
-                                InventoryItemId = i.Id,
-                                AliasName = ((string)supplierItemNumber).Truncate(20),
-                                AliasId = invItem.Id,
-                                TrackingState = TrackingState.Added
+                                invItem = new InventoryItem(true)
+                                {
+                                    ApplicationSettingsId = applicationSettingsId,
+                                    Description = invItemCode.SupplierItemDescription,
+                                    ItemNumber = ((string) invItemCode.SupplierItemNumber).Truncate(20),
+                                    InventoryItemSources = new List<InventoryItemSource>()
+                                    {
+                                        new InventoryItemSource(true)
+                                        {
+                                            InventorySourceId = inventorySource.Id,
+                                            TrackingState = TrackingState.Added
+                                        }
+                                    },
+                                    TrackingState = TrackingState.Added
+                                };
+                                ctx.InventoryItems.Add(invItem);
+                                ctx.SaveChanges();
+                                inventoryItems.Add(invItem);
+                            }
 
-                            });
+                            if (i.InventoryItemAlias.FirstOrDefault(x => x.AliasName == supplierItemNumber) == null)
+                            {
+                                i.InventoryItemAlias.Add(new InventoryItemAlia(true)
+                                {
+                                    InventoryItemId = i.Id,
+                                    AliasName = ((string) supplierItemNumber).Truncate(20),
+                                    AliasItemId = invItem.Id,
+                                    AliasId = invItem.Id,
+                                    TrackingState = TrackingState.Added
 
+                                });
+
+                            }
                         }
+
+
+
+
+
                     }
 
-
-
-
-
+                    ctx.SaveChanges();
                 }
 
-                ctx.SaveChanges();
             }
-
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
         }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-            throw;
-        }
-    }
 
 
-private async Task<OpeningStock> CreateOpeningStock(OpeningStock EDops)
+        private async Task<OpeningStock> CreateOpeningStock(OpeningStock EDops)
         {
             using (var ctx = new OpeningStockService())
             {

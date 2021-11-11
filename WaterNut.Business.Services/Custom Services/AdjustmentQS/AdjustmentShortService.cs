@@ -504,7 +504,7 @@ namespace AdjustmentQS.Business.Services
                     {
                         //TODO: use expirydate in asycuda document
                         pres = ctx.AdjustmentShortAllocations
-
+                            .Include(x => x.AsycudaSalesAllocationsPIData)
                             .OrderBy(x => x.AllocationId)
                             .Where(x => x.pRegistrationDate == null || (DbFunctions.AddDays(((DateTime)x.pRegistrationDate), 730)) > DateTime.Now)
                             .Where(x => x.EntryDataDetails.EntryDataDetailsEx.SystemDocumentSets != null)
@@ -513,6 +513,7 @@ namespace AdjustmentQS.Business.Services
                     else
                     {
                         pres = ctx.AdjustmentShortAllocations.OrderBy(x => x.AllocationId)
+                            .Include(x => x.AsycudaSalesAllocationsPIData)
                             .Where(x => x.pRegistrationDate == null || (DbFunctions.AddDays(((DateTime)x.pRegistrationDate), 730)) > DateTime.Now)
                             .Where(x => x.EntryDataDetails.EntryDataDetailsEx.SystemDocumentSets != null);
 
@@ -582,6 +583,7 @@ namespace AdjustmentQS.Business.Services
                             Net_weight_itm = c.w.FirstOrDefault().Net_weight_itm,
                             InventoryItemId = c.x.EntryDataDetails.InventoryItemId,
                             // Net_weight_itm = c.x.PreviousDocumentItem != null ? ctx.xcuda_Weight_itm.FirstOrDefault(q => q.Valuation_item_Id == x.PreviousItem_Id).Net_weight_itm: 0,
+                            PIData = c.x.AsycudaSalesAllocationsPIData,
                             previousItems = c.x.PreviousDocumentItem.EntryPreviousItems
                                     .Select(y => y.xcuda_PreviousItem)
                                     .Where(y => (y.xcuda_Item.AsycudaDocument.CNumber != null || y.xcuda_Item.AsycudaDocument.IsManuallyAssessed == true) && y.xcuda_Item.AsycudaDocument.Cancelled != true)
@@ -758,8 +760,65 @@ namespace AdjustmentQS.Business.Services
             }
 
 
+
+
         }
 
+
+        //private void SetPreviousItemXbond(AsycudaSalesAllocations ssa, AsycudaDocumentItem cAsycudaItm, string dfp, double amt)
+        //{
+        //    try
+        //    {
+        //        if (BaseDataModel.Instance.CurrentApplicationSettings.AllowEntryDoNotAllocate != "Visible") return;
+
+
+        //        var alst = cAsycudaItm.EntryPreviousItems.Select(p => p.xcuda_PreviousItem)
+        //            .Where(x => x.DutyFreePaid == dfp && x.QtyAllocated <= (double)x.Suplementary_Quantity)
+        //            .Where(x => x.xcuda_Item != null && x.xcuda_Item.AsycudaDocument != null && x.xcuda_Item.AsycudaDocument.Cancelled != true)
+        //            .OrderBy(
+        //                x =>
+        //                    x.xcuda_Item.AsycudaDocument.EffectiveRegistrationDate ?? Convert.ToDateTime(x.xcuda_Item.AsycudaDocument.RegistrationDate)).ToList();
+        //        foreach (var pitm in alst)
+        //        {
+
+        //            var atot = (double)pitm.Suplementary_Quantity - Convert.ToDouble(pitm.QtyAllocated);
+        //            if (atot == 0) continue;
+        //            if (amt <= atot)
+        //            {
+        //                pitm.QtyAllocated += amt;
+        //                var xbond = new xBondAllocations(true)
+        //                {
+        //                    AllocationId = ssa.AllocationId,
+        //                    xEntryItem_Id = pitm.xcuda_Item.Item_Id,
+        //                    TrackingState = TrackingState.Added
+        //                };
+
+        //                ssa.xBondAllocations.Add(xbond);
+        //                pitm.xcuda_Item.xBondAllocations.Add(xbond);
+        //                break;
+        //            }
+        //            else
+        //            {
+        //                pitm.QtyAllocated += atot;
+        //                var xbond = new xBondAllocations(true)
+        //                {
+        //                    AllocationId = ssa.AllocationId,
+        //                    xEntryItem_Id = pitm.xcuda_Item.Item_Id,
+        //                    TrackingState = TrackingState.Added
+        //                };
+        //                ssa.xBondAllocations.Add(xbond);
+        //                pitm.xcuda_Item.xBondAllocations.Add(xbond);
+        //                amt -= atot;
+        //            }
+
+        //        }
+
+        //    }
+        //    catch (Exception Ex)
+        //    {
+        //        throw;
+        //    }
+        //}
 
         private async Task<List<AsycudaDocumentItem>> GetAsycudaEntriesInCNumber(string cNumber,
             int? previousCLineNumber, string itemNumber)

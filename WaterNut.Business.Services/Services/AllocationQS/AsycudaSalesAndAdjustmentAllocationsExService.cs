@@ -98,16 +98,16 @@ namespace AllocationQS.Business.Services
         }
 
 
-        public async Task<AsycudaSalesAndAdjustmentAllocationsEx> GetAsycudaSalesAndAdjustmentAllocationsExByKey(string AllocationId, List<string> includesLst = null, bool tracking = true)
+        public async Task<AsycudaSalesAndAdjustmentAllocationsEx> GetAsycudaSalesAndAdjustmentAllocationsExByKey(string TotalValue, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
-			   if(string.IsNullOrEmpty(AllocationId))return null; 
+			   if(string.IsNullOrEmpty(TotalValue))return null; 
               using ( var dbContext = new AllocationQSContext(){StartTracking = StartTracking})
               {
-                var i = Convert.ToInt32(AllocationId);
+                var i = Convert.ToInt32(TotalValue);
 				var set = AddIncludes(includesLst, dbContext);
-                AsycudaSalesAndAdjustmentAllocationsEx entity = await set.AsNoTracking().SingleOrDefaultAsync(x => x.AllocationId == i).ConfigureAwait(continueOnCapturedContext: false);
+                AsycudaSalesAndAdjustmentAllocationsEx entity = await set.AsNoTracking().SingleOrDefaultAsync(x => x.TotalValue == i).ConfigureAwait(continueOnCapturedContext: false);
                 if(tracking && entity != null) entity.StartTracking();
                 return entity;
               }
@@ -288,11 +288,11 @@ namespace AllocationQS.Business.Services
                                 IQueryable<AsycudaSalesAndAdjustmentAllocationsEx> dset;
                                 if (exp == "All")
                                 {
-                                    dset = set.OrderBy(x => x.AllocationId);
+                                    dset = set.OrderBy(x => x.TotalValue);
                                 }
                                 else
                                 {
-                                    dset = set.OrderBy(x => x.AllocationId).Where(exp);
+                                    dset = set.OrderBy(x => x.TotalValue).Where(exp);
                                 }
 
                                 var lst = dset.AsNoTracking()
@@ -363,12 +363,12 @@ namespace AllocationQS.Business.Services
                                 IQueryable<AsycudaSalesAndAdjustmentAllocationsEx> dset;
                                 if (expLst.FirstOrDefault() == "All")
                                 {
-                                    dset = set.OrderBy(x => x.AllocationId);
+                                    dset = set.OrderBy(x => x.TotalValue);
                                 }
                                 else
                                 {
                                     set = AddWheres(expLst, set);
-                                    dset = set.OrderBy(x => x.AllocationId);
+                                    dset = set.OrderBy(x => x.TotalValue);
                                 }
 
                                 var lst = dset.AsNoTracking()
@@ -514,15 +514,15 @@ namespace AllocationQS.Business.Services
             }
         }
 
-        public async Task<bool> DeleteAsycudaSalesAndAdjustmentAllocationsEx(string AllocationId)
+        public async Task<bool> DeleteAsycudaSalesAndAdjustmentAllocationsEx(string TotalValue)
         {
             try
             {
               using ( var dbContext = new AllocationQSContext(){StartTracking = StartTracking})
               {
-                var i = Convert.ToInt32(AllocationId);
+                var i = Convert.ToInt32(TotalValue);
                 AsycudaSalesAndAdjustmentAllocationsEx entity = await dbContext.AsycudaSalesAndAdjustmentAllocationsExes
-													.SingleOrDefaultAsync(x => x.AllocationId == i)
+													.SingleOrDefaultAsync(x => x.TotalValue == i)
 													.ConfigureAwait(continueOnCapturedContext: false);
                 if (entity == null)
                     return false;
@@ -674,7 +674,7 @@ namespace AllocationQS.Business.Services
                     {
                         return await dbContext.AsycudaSalesAndAdjustmentAllocationsExes
 										.AsNoTracking()
-                                        .OrderBy(y => y.AllocationId)
+                                        .OrderBy(y => y.TotalValue)
 										.Skip(startIndex)
 										.Take(count)
 										.ToListAsync()
@@ -686,7 +686,7 @@ namespace AllocationQS.Business.Services
                         return await dbContext.AsycudaSalesAndAdjustmentAllocationsExes
 										.AsNoTracking()
                                         .Where(exp)
-										.OrderBy(y => y.AllocationId)
+										.OrderBy(y => y.TotalValue)
 										.Skip(startIndex)
 										.Take(count)
 										.ToListAsync()
@@ -723,7 +723,7 @@ namespace AllocationQS.Business.Services
                                         .CountAsync()
 										.ConfigureAwait(continueOnCapturedContext: false);
                     }
-                    return await dbContext.AsycudaSalesAndAdjustmentAllocationsExes.Where(exp == "All" || exp == null ? "AllocationId != null" : exp)
+                    return await dbContext.AsycudaSalesAndAdjustmentAllocationsExes.Where(exp == "All" || exp == null ? "TotalValue != null" : exp)
 											.AsNoTracking()
                                             .CountAsync()
 											.ConfigureAwait(continueOnCapturedContext: false);
@@ -766,9 +766,9 @@ namespace AllocationQS.Business.Services
 				.AsNoTracking()
                 .Where(navExp)
                 .SelectMany(navProp).OfType<AsycudaSalesAndAdjustmentAllocationsEx>()
-                .Where(exp == "All" || exp == null ? "AllocationId != null" : exp)
+                .Where(exp == "All" || exp == null ? "TotalValue != null" : exp)
                 .Distinct()
-                .OrderBy("AllocationId")
+                .OrderBy("TotalValue")
                 .CountAsync()
 				.ConfigureAwait(continueOnCapturedContext: false);
 			}
@@ -787,9 +787,9 @@ namespace AllocationQS.Business.Services
 				.AsNoTracking()
                 .Where(navExp)
                 .Select(navProp).OfType<AsycudaSalesAndAdjustmentAllocationsEx>()
-                .Where(exp == "All" || exp == null ? "AllocationId != null" : exp)
+                .Where(exp == "All" || exp == null ? "TotalValue != null" : exp)
                 .Distinct()
-                .OrderBy("AllocationId")
+                .OrderBy("TotalValue")
                 .CountAsync()
 				.ConfigureAwait(continueOnCapturedContext: false);
 			}
@@ -816,7 +816,7 @@ namespace AllocationQS.Business.Services
                        
                         return await set
 									.AsNoTracking()
-                                    .OrderBy(y => y.AllocationId)
+                                    .OrderBy(y => y.TotalValue)
  
                                     .Skip(startIndex)
                                     .Take(count)
@@ -825,8 +825,8 @@ namespace AllocationQS.Business.Services
                     }
                     return await set//dbContext.AsycudaSalesAndAdjustmentAllocationsExes
 								.AsNoTracking()
-                                .Where(exp == "All" || exp == null ? "AllocationId != null" : exp)
-								.OrderBy(y => y.AllocationId)
+                                .Where(exp == "All" || exp == null ? "TotalValue != null" : exp)
+								.OrderBy(y => y.TotalValue)
  
                                 .Skip(startIndex)
                                 .Take(count)
@@ -878,9 +878,9 @@ namespace AllocationQS.Business.Services
             if (includeLst != null) set = includeLst.Aggregate(set, (current, itm) => current.Include(itm));            
 
             return await set
-                .Where(exp == "All" || exp == null ? "AllocationId != null" : exp)
+                .Where(exp == "All" || exp == null ? "TotalValue != null" : exp)
                 .Distinct()
-                .OrderBy(y => y.AllocationId)
+                .OrderBy(y => y.TotalValue)
  
                 .Skip(startIndex)
                 .Take(count)
@@ -907,9 +907,9 @@ namespace AllocationQS.Business.Services
                if (includeLst != null) set = includeLst.Aggregate(set, (current, itm) => current.Include(itm)); 
                 
                return await set
-                .Where(exp == "All" || exp == null ? "AllocationId != null" : exp)
+                .Where(exp == "All" || exp == null ? "TotalValue != null" : exp)
                 .Distinct()
-                .OrderBy(y => y.AllocationId)
+                .OrderBy(y => y.TotalValue)
  
                 .Skip(startIndex)
                 .Take(count)
@@ -959,7 +959,7 @@ namespace AllocationQS.Business.Services
 							.AsNoTracking()
                             .Where(navExp)
 							.SelectMany(navProp).OfType<AsycudaSalesAndAdjustmentAllocationsEx>()
-							.Where(exp == "All" || exp == null?"AllocationId != null":exp)
+							.Where(exp == "All" || exp == null?"TotalValue != null":exp)
 							.Distinct()
 							.ToListAsync()
 							.ConfigureAwait(continueOnCapturedContext: false);
@@ -969,7 +969,7 @@ namespace AllocationQS.Business.Services
 				.AsNoTracking()
                 .Where(navExp)
                 .SelectMany(navProp).OfType<AsycudaSalesAndAdjustmentAllocationsEx>()
-                .Where(exp == "All" || exp == null?"AllocationId != null":exp)
+                .Where(exp == "All" || exp == null?"TotalValue != null":exp)
                 .Distinct();
 
 			set = includesLst.Aggregate(set, (current, itm) => current.Include(itm));
@@ -996,7 +996,7 @@ namespace AllocationQS.Business.Services
 							.AsNoTracking()
                             .Where(navExp)
 							.Select(navProp).OfType<AsycudaSalesAndAdjustmentAllocationsEx>()
-							.Where(exp == "All" || exp == null?"AllocationId != null":exp)
+							.Where(exp == "All" || exp == null?"TotalValue != null":exp)
 							.Distinct()
 							.ToListAsync()
 							.ConfigureAwait(continueOnCapturedContext: false);
@@ -1006,7 +1006,7 @@ namespace AllocationQS.Business.Services
 				.AsNoTracking()
                 .Where(navExp)
                 .Select(navProp).OfType<AsycudaSalesAndAdjustmentAllocationsEx>()
-                .Where(exp == "All" || exp == null?"AllocationId != null":exp)
+                .Where(exp == "All" || exp == null?"TotalValue != null":exp)
                 .Distinct();
 
 			set = includesLst.Aggregate(set, (current, itm) => current.Include(itm));
@@ -1032,35 +1032,6 @@ namespace AllocationQS.Business.Services
                 IEnumerable<AsycudaSalesAndAdjustmentAllocationsEx> entities = await set//dbContext.AsycudaSalesAndAdjustmentAllocationsExes
                                       .AsNoTracking()
                                         .Where(x => x.PreviousItem_Id.ToString() == PreviousItem_Id.ToString())
-										.ToListAsync()
-										.ConfigureAwait(continueOnCapturedContext: false);
-                return entities;
-              }
-             }
-            catch (Exception updateEx)
-            {
-                System.Diagnostics.Debugger.Break();
-                //throw new FaultException(updateEx.Message);
-                    var fault = new ValidationFault
-                                {
-                                    Result = false,
-                                    Message = updateEx.Message,
-                                    Description = updateEx.StackTrace
-                                };
-                    throw new FaultException<ValidationFault>(fault);
-            }
-        }
- 	        public async Task<IEnumerable<AsycudaSalesAndAdjustmentAllocationsEx>> GetAsycudaSalesAndAdjustmentAllocationsExByEntryDataDetailsId(string EntryDataDetailsId, List<string> includesLst = null)
-        {
-            try
-            {
-                using ( var dbContext = new AllocationQSContext(){StartTracking = StartTracking})
-              {
-                var i = Convert.ToInt32(EntryDataDetailsId);
-                var set = AddIncludes(includesLst, dbContext);
-                IEnumerable<AsycudaSalesAndAdjustmentAllocationsEx> entities = await set//dbContext.AsycudaSalesAndAdjustmentAllocationsExes
-                                      .AsNoTracking()
-                                        .Where(x => x.EntryDataDetailsId.ToString() == EntryDataDetailsId.ToString())
 										.ToListAsync()
 										.ConfigureAwait(continueOnCapturedContext: false);
                 return entities;
@@ -1137,35 +1108,6 @@ namespace AllocationQS.Business.Services
                     throw new FaultException<ValidationFault>(fault);
             }
         }
- 	        public async Task<IEnumerable<AsycudaSalesAndAdjustmentAllocationsEx>> GetAsycudaSalesAndAdjustmentAllocationsExByApplicationSettingsId(string ApplicationSettingsId, List<string> includesLst = null)
-        {
-            try
-            {
-                using ( var dbContext = new AllocationQSContext(){StartTracking = StartTracking})
-              {
-                var i = Convert.ToInt32(ApplicationSettingsId);
-                var set = AddIncludes(includesLst, dbContext);
-                IEnumerable<AsycudaSalesAndAdjustmentAllocationsEx> entities = await set//dbContext.AsycudaSalesAndAdjustmentAllocationsExes
-                                      .AsNoTracking()
-                                        .Where(x => x.ApplicationSettingsId.ToString() == ApplicationSettingsId.ToString())
-										.ToListAsync()
-										.ConfigureAwait(continueOnCapturedContext: false);
-                return entities;
-              }
-             }
-            catch (Exception updateEx)
-            {
-                System.Diagnostics.Debugger.Break();
-                //throw new FaultException(updateEx.Message);
-                    var fault = new ValidationFault
-                                {
-                                    Result = false,
-                                    Message = updateEx.Message,
-                                    Description = updateEx.StackTrace
-                                };
-                    throw new FaultException<ValidationFault>(fault);
-            }
-        }
  
 		public decimal SumField(string whereExp, string field)
          {
@@ -1217,7 +1159,7 @@ namespace AllocationQS.Business.Services
 										.AsNoTracking()
                                         .Sum(field)??0);
                     }
-                    return Convert.ToDecimal(dbContext.AsycudaSalesAndAdjustmentAllocationsExes.Where(exp == "All" || exp == null ? "AllocationId != null" : exp)
+                    return Convert.ToDecimal(dbContext.AsycudaSalesAndAdjustmentAllocationsExes.Where(exp == "All" || exp == null ? "TotalValue != null" : exp)
 											.AsNoTracking()
                                             .Sum(field)??0);
                 }
@@ -1258,9 +1200,9 @@ namespace AllocationQS.Business.Services
 				.AsNoTracking()
                 .Where(navExp)
                 .SelectMany(navProp).OfType<AsycudaSalesAndAdjustmentAllocationsEx>()
-                .Where(exp == "All" || exp == null ? "AllocationId != null" : exp)
+                .Where(exp == "All" || exp == null ? "TotalValue != null" : exp)
                 .Distinct()
-                .OrderBy("AllocationId")
+                .OrderBy("TotalValue")
                 .Sum(field));
 			}
 			catch (Exception)
@@ -1278,9 +1220,9 @@ namespace AllocationQS.Business.Services
 				.AsNoTracking()
                 .Where(navExp)
                 .Select(navProp).OfType<AsycudaSalesAndAdjustmentAllocationsEx>()
-                .Where(exp == "All" || exp == null ? "AllocationId != null" : exp)
+                .Where(exp == "All" || exp == null ? "TotalValue != null" : exp)
                 .Distinct()
-                .OrderBy("AllocationId")
+                .OrderBy("TotalValue")
                 .Sum(field));
 			}
 			catch (Exception)

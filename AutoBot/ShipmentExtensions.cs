@@ -659,10 +659,27 @@ namespace AutoBotUtilities
                 {
                     
                     var bl = aBl.ShipmentBL;
-                    var riderDetails = bl.ShipmentBLDetails
-                        .SelectMany(x => x.ShipmentRiderBLs.Select(z => z.ShipmentRiderDetails)).Where(x => x != null)
-                        .ToList();
-                    if (!riderDetails.Any()) continue;
+                   var riderDetails = new List<ShipmentRiderDetails>();
+
+                    var blManifests = masterShipment.ShipmentAttachedManifest
+                            .Where(x => x.ShipmentManifest.WayBill == bl.BLNumber).Select(x => x.ShipmentManifest).DistinctBy(x => x.Id)
+                            .ToList();
+                
+                foreach (var manifest in blManifests.SelectMany(x => x.ShipmentRiderManifests).DistinctBy(x => x.RiderId).ToList())
+                {
+                    var rider = masterShipment.ShipmentAttachedRider
+                        .FirstOrDefault(x => x.ShipmentId == manifest.RiderId)?.ShipmentRider;
+                    if(rider != null) riderDetails.AddRange(rider.ShipmentRiderDetails);
+                }
+                
+
+                    if (!riderDetails.Any())
+                    {
+                         riderDetails = bl.ShipmentBLDetails
+                            .SelectMany(x => x.ShipmentRiderBLs.Select(z => z.ShipmentRiderDetails)).Where(x => x != null)
+                            .ToList();
+                        if (!riderDetails.Any()) continue;
+                    }
                     var clients = riderDetails.Where(x => masterShipment.ShipmentAttachedRider.Any(z => z.ShipmentRider.Id == x.RiderId))
                                                                                                 .DistinctBy(x => x.Id)
                                                                                                 .GroupBy(x => new Tuple<string, int, string>(x.Code, x.RiderId, bl.BLNumber))

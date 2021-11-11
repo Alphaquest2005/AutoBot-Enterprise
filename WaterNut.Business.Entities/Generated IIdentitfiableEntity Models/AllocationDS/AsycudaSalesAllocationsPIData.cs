@@ -8,9 +8,9 @@ using CoreEntities.Business.Entities;
 using Core.Common.Data.Contracts;
 using System;
 
-namespace AllocationQS.Business.Entities
+namespace AllocationDS.Business.Entities
 {
-    public partial class AsycudaSalesAndAdjustmentAllocationsEx: IIdentifiableEntity
+    public partial class AsycudaSalesAllocationsPIData: IIdentifiableEntity
     {
        
        #region IIdentifiable Entities
@@ -18,11 +18,11 @@ namespace AllocationQS.Business.Entities
         {
             get
             {
-                return this.TotalValue.ToString();  // this.TotalValue == null?"0":
+                return this.Id.ToString();  // this.Id == null?"0":
             }
             set
             {
-                this.TotalValue = Convert.ToDouble(value);
+                this.Id = Convert.ToInt32(value);
             }
         }
 

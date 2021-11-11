@@ -253,6 +253,12 @@ namespace AllocationDS.Business.Services
                                         GetWhere<AscyudaItemPiQuantity>(dbContext, exp, itm.Value, "AdjustmentShortAllocations", "SelectMany", includesLst)
 										.ConfigureAwait(continueOnCapturedContext: false);
 
+                            case "AsycudaSalesAllocationsPIData":
+                                return
+                                    await
+                                        GetWhere<AsycudaSalesAllocationsPIData>(dbContext, exp, itm.Value, "AdjustmentShortAllocations", "Select", includesLst)
+										.ConfigureAwait(continueOnCapturedContext: false);
+
                         }
 
                     }
@@ -761,6 +767,9 @@ namespace AllocationDS.Business.Services
                             case "AscyudaItemPiQuantity":
                                 return await CountWhere<AscyudaItemPiQuantity>(dbContext, exp, itm.Value, "AdjustmentShortAllocations", "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "AsycudaSalesAllocationsPIData":
+                                return await CountWhere<AsycudaSalesAllocationsPIData>(dbContext, exp, itm.Value, "AdjustmentShortAllocations", "Select")
+											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }
                     return await dbContext.AdjustmentShortAllocations.Where(exp == "All" || exp == null ? "AllocationId != null" : exp)
@@ -883,6 +892,12 @@ namespace AllocationDS.Business.Services
                                 return
                                     await
                                         LoadRangeWhere<AscyudaItemPiQuantity>(startIndex, count, dbContext, exp, itm.Value, "AdjustmentShortAllocations", "SelectMany")
+													.ConfigureAwait(continueOnCapturedContext: false);
+
+                            case "AsycudaSalesAllocationsPIData":
+                                return
+                                    await
+                                        LoadRangeWhere<AsycudaSalesAllocationsPIData>(startIndex, count, dbContext, exp, itm.Value, "AdjustmentShortAllocations", "Select")
 													.ConfigureAwait(continueOnCapturedContext: false);
 
                           
@@ -1098,6 +1113,7 @@ namespace AllocationDS.Business.Services
                 var i = Convert.ToInt32(PreviousItem_Id);
                 var set = AddIncludes(includesLst, dbContext);
                 IEnumerable<AdjustmentShortAllocations> entities = await set//dbContext.AdjustmentShortAllocations
+                                                    // .Include(x => x.AsycudaSalesAllocationsPIData)									  
                                       .AsNoTracking()
                                         .Where(x => x.PreviousItem_Id.ToString() == PreviousItem_Id.ToString())
 										.ToListAsync()
@@ -1127,6 +1143,7 @@ namespace AllocationDS.Business.Services
                 var i = Convert.ToInt32(EntryDataDetailsId);
                 var set = AddIncludes(includesLst, dbContext);
                 IEnumerable<AdjustmentShortAllocations> entities = await set//dbContext.AdjustmentShortAllocations
+                                                    // .Include(x => x.AsycudaSalesAllocationsPIData)									  
                                       .AsNoTracking()
                                         .Where(x => x.EntryDataDetailsId.ToString() == EntryDataDetailsId.ToString())
 										.ToListAsync()
@@ -1156,6 +1173,7 @@ namespace AllocationDS.Business.Services
                 var i = Convert.ToInt32(xBond_Item_Id);
                 var set = AddIncludes(includesLst, dbContext);
                 IEnumerable<AdjustmentShortAllocations> entities = await set//dbContext.AdjustmentShortAllocations
+                                                    // .Include(x => x.AsycudaSalesAllocationsPIData)									  
                                       .AsNoTracking()
                                         .Where(x => x.xBond_Item_Id.ToString() == xBond_Item_Id.ToString())
 										.ToListAsync()
@@ -1185,6 +1203,7 @@ namespace AllocationDS.Business.Services
                 var i = Convert.ToInt32(xASYCUDA_Id);
                 var set = AddIncludes(includesLst, dbContext);
                 IEnumerable<AdjustmentShortAllocations> entities = await set//dbContext.AdjustmentShortAllocations
+                                                    // .Include(x => x.AsycudaSalesAllocationsPIData)									  
                                       .AsNoTracking()
                                         .Where(x => x.xASYCUDA_Id.ToString() == xASYCUDA_Id.ToString())
 										.ToListAsync()
@@ -1214,6 +1233,7 @@ namespace AllocationDS.Business.Services
                 var i = Convert.ToInt32(pASYCUDA_Id);
                 var set = AddIncludes(includesLst, dbContext);
                 IEnumerable<AdjustmentShortAllocations> entities = await set//dbContext.AdjustmentShortAllocations
+                                                    // .Include(x => x.AsycudaSalesAllocationsPIData)									  
                                       .AsNoTracking()
                                         .Where(x => x.pASYCUDA_Id.ToString() == pASYCUDA_Id.ToString())
 										.ToListAsync()
@@ -1243,6 +1263,7 @@ namespace AllocationDS.Business.Services
                 var i = Convert.ToInt32(ApplicationSettingsId);
                 var set = AddIncludes(includesLst, dbContext);
                 IEnumerable<AdjustmentShortAllocations> entities = await set//dbContext.AdjustmentShortAllocations
+                                                    // .Include(x => x.AsycudaSalesAllocationsPIData)									  
                                       .AsNoTracking()
                                         .Where(x => x.ApplicationSettingsId.ToString() == ApplicationSettingsId.ToString())
 										.ToListAsync()
@@ -1272,6 +1293,7 @@ namespace AllocationDS.Business.Services
                 var i = Convert.ToInt32(AsycudaDocumentSetId);
                 var set = AddIncludes(includesLst, dbContext);
                 IEnumerable<AdjustmentShortAllocations> entities = await set//dbContext.AdjustmentShortAllocations
+                                                    // .Include(x => x.AsycudaSalesAllocationsPIData)									  
                                       .AsNoTracking()
                                         .Where(x => x.AsycudaDocumentSetId.ToString() == AsycudaDocumentSetId.ToString())
 										.ToListAsync()
@@ -1301,6 +1323,7 @@ namespace AllocationDS.Business.Services
                 var i = Convert.ToInt32(FileTypeId);
                 var set = AddIncludes(includesLst, dbContext);
                 IEnumerable<AdjustmentShortAllocations> entities = await set//dbContext.AdjustmentShortAllocations
+                                                    // .Include(x => x.AsycudaSalesAllocationsPIData)									  
                                       .AsNoTracking()
                                         .Where(x => x.FileTypeId.ToString() == FileTypeId.ToString())
 										.ToListAsync()
@@ -1330,6 +1353,7 @@ namespace AllocationDS.Business.Services
                 var i = Convert.ToInt32(EmailId);
                 var set = AddIncludes(includesLst, dbContext);
                 IEnumerable<AdjustmentShortAllocations> entities = await set//dbContext.AdjustmentShortAllocations
+                                                    // .Include(x => x.AsycudaSalesAllocationsPIData)									  
                                       .AsNoTracking()
                                         .Where(x => x.EmailId.ToString() == EmailId.ToString())
 										.ToListAsync()
@@ -1413,6 +1437,9 @@ namespace AllocationDS.Business.Services
 											.ConfigureAwait(continueOnCapturedContext: false);
                             case "AscyudaItemPiQuantity":
                                 return await SumWhere<AscyudaItemPiQuantity>(dbContext, exp, itm.Value, "AdjustmentShortAllocations", field, "SelectMany")
+											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "AsycudaSalesAllocationsPIData":
+                                return await SumWhere<AsycudaSalesAllocationsPIData>(dbContext, exp, itm.Value, "AdjustmentShortAllocations", field, "Select")
 											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }

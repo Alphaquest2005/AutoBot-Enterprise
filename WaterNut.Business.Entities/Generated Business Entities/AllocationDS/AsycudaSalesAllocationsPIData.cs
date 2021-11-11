@@ -18,14 +18,8 @@ namespace AllocationDS.Business.Entities
 
     //[JsonObject(IsReference = true)]
     [DataContract(IsReference = true, Namespace="http://www.insight-software.com/WaterNut")]
-    public partial class AsycudaSalesAllocations : BaseEntity<AsycudaSalesAllocations>, ITrackable 
+    public partial class AsycudaSalesAllocationsPIData : BaseEntity<AsycudaSalesAllocationsPIData>, ITrackable 
     {
-        partial void AutoGenStartUp() //AsycudaSalesAllocations()
-        {
-            this.xBondAllocations = new List<xBondAllocations>();
-            this.PIData = new List<AsycudaSalesAllocationsPIData>();
-        }
-
         [DataMember]
         public int AllocationId 
         {
@@ -42,165 +36,131 @@ namespace AllocationDS.Business.Entities
         }
         int _allocationid;
         [DataMember]
-        public Nullable<int> EntryDataDetailsId 
+        public int xLineNumber 
         {
             get
             {
-                return _entrydatadetailsid;
+                return _xlinenumber;
             }
             set
             {
-                _entrydatadetailsid = value;
+                _xlinenumber = value;
                 //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
                 NotifyPropertyChanged();
             }
         }
-        Nullable<int> _entrydatadetailsid;
+        int _xlinenumber;
         [DataMember]
-        public Nullable<int> PreviousItem_Id 
+        public int xBond_Item_Id 
         {
             get
             {
-                return _previousitem_id;
+                return _xbond_item_id;
             }
             set
             {
-                _previousitem_id = value;
+                _xbond_item_id = value;
                 //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
                 NotifyPropertyChanged();
             }
         }
-        Nullable<int> _previousitem_id;
+        int _xbond_item_id;
         [DataMember]
-        public string Status 
+        public string xCNumber 
         {
             get
             {
-                return _status;
+                return _xcnumber;
             }
             set
             {
-                _status = value;
+                _xcnumber = value;
                 //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
                 NotifyPropertyChanged();
             }
         }
-        string _status;
+        string _xcnumber;
         [DataMember]
-        public double QtyAllocated 
+        public Nullable<System.DateTime> xRegistrationDate 
         {
             get
             {
-                return _qtyallocated;
+                return _xregistrationdate;
             }
             set
             {
-                _qtyallocated = value;
+                _xregistrationdate = value;
                 //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
                 NotifyPropertyChanged();
             }
         }
-        double _qtyallocated;
+        Nullable<System.DateTime> _xregistrationdate;
         [DataMember]
-        public Nullable<System.DateTime> EntryTimeStamp 
+        public Nullable<double> xQuantity 
         {
             get
             {
-                return _entrytimestamp;
+                return _xquantity;
             }
             set
             {
-                _entrytimestamp = value;
+                _xquantity = value;
                 //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
                 NotifyPropertyChanged();
             }
         }
-        Nullable<System.DateTime> _entrytimestamp;
+        Nullable<double> _xquantity;
         [DataMember]
-        public int EANumber 
+        public int xASYCUDA_Id 
         {
             get
             {
-                return _eanumber;
+                return _xasycuda_id;
             }
             set
             {
-                _eanumber = value;
+                _xasycuda_id = value;
                 //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
                 NotifyPropertyChanged();
             }
         }
-        int _eanumber;
+        int _xasycuda_id;
         [DataMember]
-        public int SANumber 
+        public string xReferenceNumber 
         {
             get
             {
-                return _sanumber;
+                return _xreferencenumber;
             }
             set
             {
-                _sanumber = value;
+                _xreferencenumber = value;
                 //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
                 NotifyPropertyChanged();
             }
         }
-        int _sanumber;
+        string _xreferencenumber;
         [DataMember]
-        public Nullable<int> xEntryItem_Id 
+        public int Id 
         {
             get
             {
-                return _xentryitem_id;
+                return _id;
             }
             set
             {
-                _xentryitem_id = value;
+                _id = value;
                 //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
                 NotifyPropertyChanged();
             }
         }
-        Nullable<int> _xentryitem_id;
-        [DataMember]
-        public string xStatus 
-        {
-            get
-            {
-                return _xstatus;
-            }
-            set
-            {
-                _xstatus = value;
-                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
-                NotifyPropertyChanged();
-            }
-        }
-        string _xstatus;
-        [DataMember]
-        public string Comments 
-        {
-            get
-            {
-                return _comments;
-            }
-            set
-            {
-                _comments = value;
-                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
-                NotifyPropertyChanged();
-            }
-        }
-        string _comments;
-        [DataMember]
-        public EntryDataDetails EntryDataDetails { get; set; }
-        [DataMember]
-        public xcuda_Item PreviousDocumentItem { get; set; }
-        [DataMember]
-        public List<xBondAllocations> xBondAllocations { get; set; }
+        int _id;
         [DataMember]
         public EX9AsycudaSalesAllocations EX9AsycudaSalesAllocations { get; set; }
         [DataMember]
-        public List<AsycudaSalesAllocationsPIData> PIData { get; set; }
+        public AdjustmentShortAllocations AdjustmentShortAllocations { get; set; }
+        [DataMember]
+        public AsycudaSalesAllocations AsycudaSalesAllocations { get; set; }
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

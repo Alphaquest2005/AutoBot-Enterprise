@@ -1,12 +1,42 @@
-SELECT EntryDataDetails.EntryDataId, EntryData.EntryDataDate, EntryDataDetails.ItemNumber, EntryDataDetails.ItemDescription, EntryDataDetails.Quantity, EntryDataDetails.Cost, PreviousItemsEx.Prev_reg_nbr as CNumber, PreviousItemsEx.Previous_item_number AS pLineNumber, 
-                 PreviousItemsEx.CNumber as xCNumber,  PreviousItemsEx.Current_item_number as xLineNumber, EntryDataDetails.LineNumber, EntryDataDetails.EntryDataDetailsId
-FROM    EntryData INNER JOIN
+SELECT 'Asycuda-C#' + PreviousItemsEx.CNumber AS 'Invoice #', AsycudaDocument.RegistrationDate as Date, PreviousItemsEx.Prev_decl_HS_spec AS ItemNumber, InventoryItems.Description, PreviousItemsEx.Suplementary_Quantity AS Quantity, 
+                 PreviousItemsEx.Current_value AS TotalCost, PreviousItemsEx.Prev_reg_nbr AS CNumber, PreviousItemsEx.Previous_item_number AS CLineNumber, PreviousItemsEx.CNumber AS xCNumber, 
+                 PreviousItemsEx.Current_item_number AS xLineNumber
+FROM    InventoryItems INNER JOIN
+                 [InventoryItems-Lumped] ON InventoryItems.Id = [InventoryItems-Lumped].InventoryItemId INNER JOIN
+                 PreviousItemsEx ON InventoryItems.ApplicationSettingsId = PreviousItemsEx.ApplicationSettingsId AND InventoryItems.ItemNumber = PreviousItemsEx.Prev_decl_HS_spec INNER JOIN
+                 AsycudaDocument ON PreviousItemsEx.ASYCUDA_Id = AsycudaDocument.ASYCUDA_Id
+WHERE (PreviousItemsEx.ApplicationSettingsId = 6) and AsycudaDocument.RegistrationDate <= '10/1/2021'
+GROUP BY PreviousItemsEx.Prev_reg_nbr, PreviousItemsEx.CNumber, PreviousItemsEx.Current_item_number, PreviousItemsEx.Previous_item_number, PreviousItemsEx.Prev_decl_HS_spec, InventoryItems.Description, 
+                 PreviousItemsEx.Suplementary_Quantity, PreviousItemsEx.Current_value, AsycudaDocument.RegistrationDate
+order by  AsycudaDocument.RegistrationDate
+
+
+SELECT EntryDataDetails.EntryDataId, EntryData.EntryDataDate, EntryDataDetails.ItemNumber, EntryDataDetails.ItemDescription, EntryDataDetails.Quantity, EntryDataDetails.Cost, 
+                 PreviousItemsEx.Prev_reg_nbr AS CNumber, PreviousItemsEx.Previous_item_number AS pLineNumber, PreviousItemsEx.CNumber AS xCNumber, PreviousItemsEx.Current_item_number AS xLineNumber, 
+                 EntryDataDetails.LineNumber, EntryDataDetails.EntryDataDetailsId
+FROM    InventoryItems INNER JOIN
+                 [InventoryItems-Lumped] ON InventoryItems.Id = [InventoryItems-Lumped].InventoryItemId INNER JOIN
+                 EntryData INNER JOIN
                  EntryDataDetails ON EntryData.EntryData_Id = EntryDataDetails.EntryData_Id INNER JOIN
                  PreviousItemsEx ON EntryData.EntryDataId LIKE '%' + PreviousItemsEx.CNumber + '-' + PreviousItemsEx.Current_item_number AND EntryData.ApplicationSettingsId = PreviousItemsEx.ApplicationSettingsId INNER JOIN
-                 EntryData_Adjustments ON EntryData.EntryData_Id = EntryData_Adjustments.EntryData_Id
-WHERE (PreviousItemsEx.ApplicationSettingsId = 7) AND (EntryData.ApplicationSettingsId = 7) AND (EntryDataDetails.EntryDataId LIKE N'Asycuda-C#%')
+                 EntryData_Adjustments ON EntryData.EntryData_Id = EntryData_Adjustments.EntryData_Id ON InventoryItems.ItemNumber = PreviousItemsEx.ItemNumber AND 
+                 InventoryItems.ApplicationSettingsId = PreviousItemsEx.ApplicationSettingsId
+WHERE (PreviousItemsEx.ApplicationSettingsId = 6) AND (EntryData.ApplicationSettingsId = 6) AND (EntryDataDetails.EntryDataId LIKE N'Asycuda-C#%')
 GROUP BY EntryDataDetails.EntryDataId, EntryData.EntryDataDate, EntryDataDetails.ItemNumber, EntryDataDetails.ItemDescription, EntryDataDetails.Quantity, EntryDataDetails.Cost, PreviousItemsEx.Prev_reg_nbr, 
                  PreviousItemsEx.CNumber, PreviousItemsEx.Current_item_number, EntryDataDetails.LineNumber, EntryDataDetails.EntryDataDetailsId, PreviousItemsEx.Previous_item_number
+
+
+
+
+
+
+
+SELECT InventoryItems.ItemNumber, InventoryItems.ApplicationSettingsId, InventoryItems.Description, InventoryItems.Category, InventoryItems.TariffCode, InventoryItems.EntryTimeStamp, InventoryItems.Id, 
+                 InventoryItems.UpgradeKey, InventorySources.Name
+FROM    InventoryItems INNER JOIN
+                 InventoryItemSource ON InventoryItems.Id = InventoryItemSource.InventoryId INNER JOIN
+                 InventorySources ON InventoryItemSource.InventorySourceId = InventorySources.Id
+WHERE (InventoryItems.ApplicationSettingsId = 6) AND (InventorySources.Name = N'Asycuda')
 
 select * from PreviousItemsEx where Prev_reg_nbr = '46042'
 
@@ -14,6 +44,23 @@ select * from EntryDataDetails where EntryDataDetails.EntryDataId = 'Asycuda-C#2
 
 -------------------------------------------------------------------------------------
 -------------------------------------------------------------------------------------
+
+
+SELECT EntryDataDetails.EntryDataId, EntryData.EntryDataDate, EntryDataDetails.ItemNumber, EntryDataDetails.ItemDescription, EntryDataDetails.Quantity, EntryDataDetails.Cost, 
+                 PreviousItemsEx.Prev_reg_nbr AS CNumber, PreviousItemsEx.Previous_item_number AS pLineNumber, PreviousItemsEx.CNumber AS xCNumber, PreviousItemsEx.Current_item_number AS xLineNumber, 
+                 EntryDataDetails.LineNumber, EntryDataDetails.EntryDataDetailsId
+FROM    InventoryItems INNER JOIN
+                 [InventoryItems-Lumped] ON InventoryItems.Id = [InventoryItems-Lumped].InventoryItemId INNER JOIN
+                 EntryData INNER JOIN
+                 EntryDataDetails ON EntryData.EntryData_Id = EntryDataDetails.EntryData_Id INNER JOIN
+                 PreviousItemsEx ON EntryData.EntryDataId LIKE '%' + PreviousItemsEx.CNumber + '-' + PreviousItemsEx.Current_item_number AND EntryData.ApplicationSettingsId = PreviousItemsEx.ApplicationSettingsId INNER JOIN
+                 EntryData_Adjustments ON EntryData.EntryData_Id = EntryData_Adjustments.EntryData_Id ON InventoryItems.ItemNumber = PreviousItemsEx.ItemNumber AND 
+                 InventoryItems.ApplicationSettingsId = PreviousItemsEx.ApplicationSettingsId
+WHERE (PreviousItemsEx.ApplicationSettingsId = 6) AND (EntryData.ApplicationSettingsId = 6) AND (EntryDataDetails.EntryDataId LIKE N'Asycuda-C#%')
+GROUP BY EntryDataDetails.EntryDataId, EntryData.EntryDataDate, EntryDataDetails.ItemNumber, EntryDataDetails.ItemDescription, EntryDataDetails.Quantity, EntryDataDetails.Cost, PreviousItemsEx.Prev_reg_nbr, 
+                 PreviousItemsEx.CNumber, PreviousItemsEx.Current_item_number, EntryDataDetails.LineNumber, EntryDataDetails.EntryDataDetailsId, PreviousItemsEx.Previous_item_number
+
+
 
 --Set the EffectiveDate and Invoice date Back to before start of Real sales
 

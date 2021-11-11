@@ -208,6 +208,7 @@
 ..\WaterNut.Business.Entities\Generated Business Entities\AllocationDS\AsycudaItemPiQuantityData.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\AllocationDS\AsycudaLkpLst.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\AllocationDS\AsycudaSalesAllocations.cs
+..\WaterNut.Business.Entities\Generated Business Entities\AllocationDS\AsycudaSalesAllocationsPIData.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\AllocationDS\Customs_Procedure.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\AllocationDS\CustomsOperations.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\AllocationDS\EntryData.cs
@@ -615,6 +616,7 @@
 ..\WaterNut.Business.Entities\Generated Mappings\AllocationDS\AsycudaItemPiQuantityData.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\AllocationDS\AsycudaLkpLst.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\AllocationDS\AsycudaSalesAllocations.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\AllocationDS\AsycudaSalesAllocationsPIData.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\AllocationDS\Customs_Procedure.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\AllocationDS\CustomsOperations.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\AllocationDS\EntryData.map.cs
@@ -1030,6 +1032,7 @@
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\AllocationDS\AsycudaItemPiQuantityData.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\AllocationDS\AsycudaLkpLst.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\AllocationDS\AsycudaSalesAllocations.cs
+..\WaterNut.Business.Entities\Generated ChangeTracking Models\AllocationDS\AsycudaSalesAllocationsPIData.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\AllocationDS\Customs_Procedure.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\AllocationDS\CustomsOperations.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\AllocationDS\EntryData.cs
@@ -1423,6 +1426,7 @@
 ..\WaterNut.Business.Entities\Generated Constructors Models\AllocationDS\AsycudaItemPiQuantityData.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\AllocationDS\AsycudaLkpLst.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\AllocationDS\AsycudaSalesAllocations.cs
+..\WaterNut.Business.Entities\Generated Constructors Models\AllocationDS\AsycudaSalesAllocationsPIData.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\AllocationDS\Customs_Procedure.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\AllocationDS\CustomsOperations.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\AllocationDS\EntryData.cs
@@ -1816,6 +1820,7 @@
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\AllocationDS\AsycudaItemPiQuantityData.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\AllocationDS\AsycudaLkpLst.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\AllocationDS\AsycudaSalesAllocations.cs
+..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\AllocationDS\AsycudaSalesAllocationsPIData.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\AllocationDS\Customs_Procedure.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\AllocationDS\CustomsOperations.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\AllocationDS\EntryData.cs
@@ -2209,6 +2214,7 @@
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\AllocationDS\AsycudaItemPiQuantityData.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\AllocationDS\AsycudaLkpLst.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\AllocationDS\AsycudaSalesAllocations.cs
+..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\AllocationDS\AsycudaSalesAllocationsPIData.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\AllocationDS\Customs_Procedure.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\AllocationDS\CustomsOperations.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\AllocationDS\EntryData.cs
@@ -3792,6 +3798,7 @@
 ..\WaterNut.Business.Entities\Generated Mappings\AllocationDS\AsycudaItemPiQuantityData.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\AllocationDS\AsycudaLkpLst.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\AllocationDS\AsycudaSalesAllocations.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\AllocationDS\AsycudaSalesAllocationsPIData.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\AllocationDS\Customs_Procedure.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\AllocationDS\CustomsOperations.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\AllocationDS\EntryData.map.cs
@@ -4890,6 +4897,7 @@
 ..\WaterNut.Business.Services\Contracts\AllocationDS\IAsycudaDocumentService.cs
 ..\WaterNut.Business.Services\Contracts\AllocationDS\IAsycudaItemPiQuantityDataService.cs
 ..\WaterNut.Business.Services\Contracts\AllocationDS\IAsycudaLkpLstService.cs
+..\WaterNut.Business.Services\Contracts\AllocationDS\IAsycudaSalesAllocationsPIDataService.cs
 ..\WaterNut.Business.Services\Contracts\AllocationDS\IAsycudaSalesAllocationsService.cs
 ..\WaterNut.Business.Services\Contracts\AllocationDS\ICustoms_ProcedureService.cs
 ..\WaterNut.Business.Services\Contracts\AllocationDS\ICustomsOperationsService.cs
@@ -5283,6 +5291,7 @@
 ..\WaterNut.Business.Services\Services\AllocationDS\AsycudaDocumentService.cs
 ..\WaterNut.Business.Services\Services\AllocationDS\AsycudaItemPiQuantityDataService.cs
 ..\WaterNut.Business.Services\Services\AllocationDS\AsycudaLkpLstService.cs
+..\WaterNut.Business.Services\Services\AllocationDS\AsycudaSalesAllocationsPIDataService.cs
 ..\WaterNut.Business.Services\Services\AllocationDS\AsycudaSalesAllocationsService.cs
 ..\WaterNut.Business.Services\Services\AllocationDS\Customs_ProcedureService.cs
 ..\WaterNut.Business.Services\Services\AllocationDS\CustomsOperationsService.cs

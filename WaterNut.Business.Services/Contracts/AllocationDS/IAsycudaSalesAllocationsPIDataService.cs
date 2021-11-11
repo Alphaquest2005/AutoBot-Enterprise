@@ -13,61 +13,61 @@ using System.ServiceModel;
 using System.Threading.Tasks;
 
 using Core.Common.Contracts;
-using AllocationQS.Business.Entities;
+using AllocationDS.Business.Entities;
 using Core.Common.Business.Services;
 using WaterNut.Interfaces;
 
-namespace AllocationQS.Business.Services
+namespace AllocationDS.Business.Services
 {
     [ServiceContract (Namespace="http://www.insight-software.com/WaterNut")]
-    public partial interface IAsycudaSalesAndAdjustmentAllocationsExService : IBusinessService
+    public partial interface IAsycudaSalesAllocationsPIDataService : IBusinessService
     {
         [OperationContract]
         [FaultContract(typeof(ValidationFault))]
-        Task<IEnumerable<AsycudaSalesAndAdjustmentAllocationsEx>> GetAsycudaSalesAndAdjustmentAllocationsExes(List<string> includesLst = null, bool tracking = true);
+        Task<IEnumerable<AsycudaSalesAllocationsPIData>> GetAsycudaSalesAllocationsPIData(List<string> includesLst = null, bool tracking = true);
 
         [OperationContract]
         [FaultContract(typeof(ValidationFault))]
-        Task<AsycudaSalesAndAdjustmentAllocationsEx> GetAsycudaSalesAndAdjustmentAllocationsExByKey(string id, List<string> includesLst = null, bool tracking = true);
+        Task<AsycudaSalesAllocationsPIData> GetAsycudaSalesAllocationsPIDataByKey(string id, List<string> includesLst = null, bool tracking = true);
 
 		[OperationContract]
         [FaultContract(typeof(ValidationFault))]
-        Task<IEnumerable<AsycudaSalesAndAdjustmentAllocationsEx>> GetAsycudaSalesAndAdjustmentAllocationsExesByExpression(string exp, List<string> includesLst = null, bool tracking = true);
+        Task<IEnumerable<AsycudaSalesAllocationsPIData>> GetAsycudaSalesAllocationsPIDataByExpression(string exp, List<string> includesLst = null, bool tracking = true);
 
 		[OperationContract]
         [FaultContract(typeof(ValidationFault))]
-        Task<IEnumerable<AsycudaSalesAndAdjustmentAllocationsEx>> GetAsycudaSalesAndAdjustmentAllocationsExesByExpressionLst(List<string> expLst, List<string> includesLst = null, bool tracking = true);
+        Task<IEnumerable<AsycudaSalesAllocationsPIData>> GetAsycudaSalesAllocationsPIDataByExpressionLst(List<string> expLst, List<string> includesLst = null, bool tracking = true);
 
 		[OperationContract]
         [FaultContract(typeof(ValidationFault))]
-		Task<IEnumerable<AsycudaSalesAndAdjustmentAllocationsEx>> GetAsycudaSalesAndAdjustmentAllocationsExesByExpressionNav(string exp,
+		Task<IEnumerable<AsycudaSalesAllocationsPIData>> GetAsycudaSalesAllocationsPIDataByExpressionNav(string exp,
             Dictionary<string, string> navExp, List<string> includesLst = null, bool tracking = true);
 
         [OperationContract]
         [FaultContract(typeof(ValidationFault))]
-        Task<IEnumerable<AsycudaSalesAndAdjustmentAllocationsEx>> GetAsycudaSalesAndAdjustmentAllocationsExesByBatch(string exp,
+        Task<IEnumerable<AsycudaSalesAllocationsPIData>> GetAsycudaSalesAllocationsPIDataByBatch(string exp,
             int totalrow, List<string> includesLst = null, bool tracking = true);
 
         [OperationContract]
         [FaultContract(typeof(ValidationFault))]
-        Task<IEnumerable<AsycudaSalesAndAdjustmentAllocationsEx>> GetAsycudaSalesAndAdjustmentAllocationsExesByBatchExpressionLst(List<string> exp,
+        Task<IEnumerable<AsycudaSalesAllocationsPIData>> GetAsycudaSalesAllocationsPIDataByBatchExpressionLst(List<string> exp,
             int totalrow, List<string> includesLst = null, bool tracking = true);
 
         [OperationContract]
         [FaultContract(typeof(ValidationFault))]
-        Task<AsycudaSalesAndAdjustmentAllocationsEx> UpdateAsycudaSalesAndAdjustmentAllocationsEx(AsycudaSalesAndAdjustmentAllocationsEx entity);
+        Task<AsycudaSalesAllocationsPIData> UpdateAsycudaSalesAllocationsPIData(AsycudaSalesAllocationsPIData entity);
 
         [OperationContract]
         [FaultContract(typeof(ValidationFault))]
-        Task<AsycudaSalesAndAdjustmentAllocationsEx> CreateAsycudaSalesAndAdjustmentAllocationsEx(AsycudaSalesAndAdjustmentAllocationsEx entity);
+        Task<AsycudaSalesAllocationsPIData> CreateAsycudaSalesAllocationsPIData(AsycudaSalesAllocationsPIData entity);
 
         [OperationContract]
         [FaultContract(typeof(ValidationFault))]
-        Task<bool> DeleteAsycudaSalesAndAdjustmentAllocationsEx(string id);
+        Task<bool> DeleteAsycudaSalesAllocationsPIData(string id);
 
         [OperationContract]
         [FaultContract(typeof(ValidationFault))]
-        Task<bool> RemoveSelectedAsycudaSalesAndAdjustmentAllocationsEx(IEnumerable<string> selectedAsycudaSalesAndAdjustmentAllocationsEx);
+        Task<bool> RemoveSelectedAsycudaSalesAllocationsPIData(IEnumerable<string> selectedAsycudaSalesAllocationsPIData);
 	
 		//Virtural list implementation
         [OperationContract]
@@ -84,13 +84,13 @@ namespace AllocationQS.Business.Services
 
         [OperationContract]
         [FaultContract(typeof(ValidationFault))]
-        Task<IEnumerable<AsycudaSalesAndAdjustmentAllocationsEx>> LoadRange(int startIndex, int count, string exp);
+        Task<IEnumerable<AsycudaSalesAllocationsPIData>> LoadRange(int startIndex, int count, string exp);
 
 
 
 		[OperationContract]
         [FaultContract(typeof(ValidationFault))]
-		Task<IEnumerable<AsycudaSalesAndAdjustmentAllocationsEx>> LoadRangeNav(int startIndex, int count, string exp,
+		Task<IEnumerable<AsycudaSalesAllocationsPIData>> LoadRangeNav(int startIndex, int count, string exp,
                                                                                  Dictionary<string, string> navExp, IEnumerable<string> includeLst = null);
 
 		[OperationContract]
@@ -107,13 +107,13 @@ namespace AllocationQS.Business.Services
 
 				[OperationContract]
         [FaultContract(typeof(ValidationFault))]
-        Task<IEnumerable<AsycudaSalesAndAdjustmentAllocationsEx>> GetAsycudaSalesAndAdjustmentAllocationsExByPreviousItem_Id(string PreviousItem_Id, List<string> includesLst = null);
+        Task<IEnumerable<AsycudaSalesAllocationsPIData>> GetAsycudaSalesAllocationsPIDataByAllocationId(string AllocationId, List<string> includesLst = null);
   		[OperationContract]
         [FaultContract(typeof(ValidationFault))]
-        Task<IEnumerable<AsycudaSalesAndAdjustmentAllocationsEx>> GetAsycudaSalesAndAdjustmentAllocationsExByxASYCUDA_Id(string xASYCUDA_Id, List<string> includesLst = null);
+        Task<IEnumerable<AsycudaSalesAllocationsPIData>> GetAsycudaSalesAllocationsPIDataByxBond_Item_Id(string xBond_Item_Id, List<string> includesLst = null);
   		[OperationContract]
         [FaultContract(typeof(ValidationFault))]
-        Task<IEnumerable<AsycudaSalesAndAdjustmentAllocationsEx>> GetAsycudaSalesAndAdjustmentAllocationsExBypASYCUDA_Id(string pASYCUDA_Id, List<string> includesLst = null);
+        Task<IEnumerable<AsycudaSalesAllocationsPIData>> GetAsycudaSalesAllocationsPIDataByxASYCUDA_Id(string xASYCUDA_Id, List<string> includesLst = null);
   
 
 

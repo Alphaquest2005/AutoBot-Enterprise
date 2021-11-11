@@ -451,7 +451,7 @@ namespace AllocationQS.Client.DTO
         private Nullable<bool> _DoNotAllocatePreviousEntry;
 
         [DataMember]
-        public Nullable<int> SANumber
+        public int SANumber
 		{ 
 		    get { return _SANumber; }
 			set
@@ -461,7 +461,7 @@ namespace AllocationQS.Client.DTO
 				NotifyPropertyChanged();//m => this.SANumber
 			}
 		}
-        private Nullable<int> _SANumber;
+        private int _SANumber;
 
         [DataMember]
         public string pReferenceNumber
