@@ -1291,6 +1291,13 @@ namespace WaterNut.DataSpace
                     .Select(x => x.TotalQuantity)
                     .DefaultIfEmpty(0).Sum();
 
+                var itemNumberDocPi = docSetPiLst
+                    .Where(x => x.Type == entryType)
+                    .Where(x => x.ItemNumber == mypod.EntlnData.ItemNumber)
+                    .Where(x => x.DutyFreePaid == dfp)//c#17227 line 40 -Appid = 7
+                    .Select(x => x.TotalQuantity)
+                    .DefaultIfEmpty(0).Sum();
+
                 // var universalSalesAll = (double)universalData.GroupBy(x => x.PreviousItem_Id).Select(x => x.FirstOrDefault()?.pQtyAllocated).DefaultIfEmpty(0.0).Sum();
                 var universalSalesAll = (double) universalData.GroupBy(x => x.PreviousItem_Id).Select(x => x.FirstOrDefault(q => q.pQtyAllocated > 0)?.pQtyAllocated).DefaultIfEmpty(0.0).Sum();
                 var universalPiAll = (double) universalData.GroupBy(x => x.PreviousItem_Id).Select(x => x.FirstOrDefault(q => q.PiQuantity > 0)?.PiQuantity)
@@ -1312,6 +1319,13 @@ namespace WaterNut.DataSpace
                    .Select(x => x.First().PiQuantity).DefaultIfEmpty(0).Sum();
 
                 var itemSalesHistoric = (double)itemSalesPiHistoric.Select(x => x.QtyAllocated).DefaultIfEmpty(0.0).Sum();
+
+                ///// have to add this because of Alias and Tariffcode Mappings to make check Super-specific
+                var itemNumberPiHistoric = universalData.Where(x =>x.ItemNumber == mypod.EntlnData.ItemNumber && x.DutyFreePaid == dfp).GroupBy(x => x.PreviousItem_Id)
+                    .Select(x => x.First().PiQuantity).DefaultIfEmpty(0).Sum();
+
+                var itemNumberSalesHistoric = (double)universalData.Where(x => x.ItemNumber == mypod.EntlnData.ItemNumber && x.DutyFreePaid == dfp).Select(x => x.QtyAllocated).DefaultIfEmpty(0.0).Sum();
+
 
                 var preEx9Bucket = mypod.EntlnData.Quantity;
                 if (applyEx9Bucket)
@@ -1512,7 +1526,9 @@ namespace WaterNut.DataSpace
 
                 //// item sales vs item pi, prevents early exwarehouse when its just one totalsales vs totalpi
                 //if(documentType != "DIS")
-                if(itemPIcheck)/// re-enabled for EX9ALL because its over taking - Appid = 6, INV: 29916-5803 
+                if (itemPIcheck)
+                {
+                    /// re-enabled for EX9ALL because its over taking - Appid = 6, INV: 29916-5803 
                     if (Math.Round(itemSalesHistoric, 2) <
                         Math.Round((itemPiHistoric + itemDocPi + mypod.EntlnData.Quantity) * salesFactor, 2))
                     {
@@ -1532,6 +1548,30 @@ namespace WaterNut.DataSpace
                             return 0;
                         }
                     }
+
+                    //////// Added because of Tariff code and alias mapping allocation
+
+                    if (Math.Round(itemNumberSalesHistoric, 2) <
+                        Math.Round((itemNumberPiHistoric + itemNumberDocPi + mypod.EntlnData.Quantity) * salesFactor, 2))
+                    {
+                        //updateXStatus(mypod.Allocations,
+                        //    $@"Failed Historical Check:: Total Historic Sales:{Math.Round(totalSalesHistoric, 2)}
+                        //       Total Historic PI: {totalPiHistoric}
+                        //       xQuantity:{mypod.EntlnData.Quantity}");
+                        //return 0;
+                        var availibleQty = itemNumberSalesHistoric - (itemNumberPiHistoric + itemNumberDocPi);
+                        Ex9Bucket(mypod, availibleQty, itemNumberSalesHistoric, itemNumberPiHistoric, "Historic");
+                        if (mypod.EntlnData.Quantity == 0)
+                        {
+                            updateXStatus(mypod.Allocations,
+                                $@"Failed Super-Specic ItemNumber Historical Check:: ItemNumber Historic Sales:{Math.Round(itemNumberSalesHistoric, 2)}
+                                   ItemNumber Historic PI: {itemNumberPiHistoric}
+                                   xQuantity:{mypod.EntlnData.Quantity}");
+                            return 0;
+                        }
+                    }
+
+                }
 
                 if (mypod.EntlnData.Quantity <= 0) return 0;
                 //////////////////// can't delump allocations because of returns and 1kg weights issue too much items wont be able to exwarehouse
@@ -1869,7 +1909,10 @@ namespace WaterNut.DataSpace
                 //var itemAllocated = (dfp == "Duty Free" ? asycudaLine.DFQtyAllocated : asycudaLine.DPQtyAllocated);
                 //var allocationsAllocated = allocations.Sum(x => x.QtyAllocated);
                // var totalSalesQtyAllocatedHistoric = salesSummary.Select(x => x.TotalQtyAllocated).DefaultIfEmpty(0).Sum() / salesFactor; // down to run levels
-               var allocationSales = itemSalesPiSummaryLst.First().Type == "Historic" ? itemSalesPiSummaryLst.Select(x => x.QtyAllocated).DefaultIfEmpty(0).Sum() :  entryLine.EntryDataDetails.Sum(x => x.QtyAllocated); //itemSalesPiSummaryLst.Select(x => x.QtyAllocated).DefaultIfEmpty(0).Sum();//switch to QtyAllocated - 'CLC/124075' -- rouge 'WAM03600'
+               var allocationSales = itemSalesPiSummaryLst.Select(x => x.QtyAllocated).DefaultIfEmpty(0).Sum() >
+                                     entryLine.EntryDataDetails.Sum(x => x.QtyAllocated)
+                   ? itemSalesPiSummaryLst.Select(x => x.QtyAllocated).DefaultIfEmpty(0).Sum() 
+                   : entryLine.EntryDataDetails.Sum(x => x.QtyAllocated);/// Can't use just sales data because of partial exwarehouse the pi quantity will over ride it better to use total quantity '322035' columbian emeralds // itemSalesPiSummaryLst.First().Type == "Historic" ? itemSalesPiSummaryLst.Select(x => x.QtyAllocated).DefaultIfEmpty(0).Sum() :  entryLine.EntryDataDetails.Sum(x => x.QtyAllocated); //itemSalesPiSummaryLst.Select(x => x.QtyAllocated).DefaultIfEmpty(0).Sum();//switch to QtyAllocated - 'CLC/124075' -- rouge 'WAM03600'
 
                 var allocationPi = itemSalesPiSummaryLst.GroupBy(x => x.PreviousItem_Id).Select(x => x.First().PiQuantity).DefaultIfEmpty(0).Sum();
             
