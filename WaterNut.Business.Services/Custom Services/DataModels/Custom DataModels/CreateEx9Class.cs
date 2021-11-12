@@ -1320,12 +1320,7 @@ namespace WaterNut.DataSpace
 
                 var itemSalesHistoric = (double)itemSalesPiHistoric.Select(x => x.QtyAllocated).DefaultIfEmpty(0.0).Sum();
 
-                ///// have to add this because of Alias and Tariffcode Mappings to make check Super-specific
-                var itemNumberPiHistoric = universalData.Where(x =>x.ItemNumber == mypod.EntlnData.ItemNumber && x.DutyFreePaid == dfp && x.Type == "Historic").GroupBy(x => x.PreviousItem_Id)
-                    .Select(x => x.First().PiQuantity).DefaultIfEmpty(0).Sum();
-
-                var itemNumberSalesHistoric = (double)universalData.Where(x => x.ItemNumber == mypod.EntlnData.ItemNumber && x.DutyFreePaid == dfp && x.Type == "Historic").Select(x => x.QtyAllocated).DefaultIfEmpty(0.0).Sum();
-
+              
 
                 var preEx9Bucket = mypod.EntlnData.Quantity;
                 if (applyEx9Bucket)
@@ -1548,29 +1543,6 @@ namespace WaterNut.DataSpace
                             return 0;
                         }
                     }
-
-                    //////// Added because of Tariff code and alias mapping allocation
-
-                    if (Math.Round(itemNumberSalesHistoric, 2) <
-                        Math.Round((itemNumberPiHistoric + itemNumberDocPi + mypod.EntlnData.Quantity) * salesFactor, 2))
-                    {
-                        //updateXStatus(mypod.Allocations,
-                        //    $@"Failed Historical Check:: Total Historic Sales:{Math.Round(totalSalesHistoric, 2)}
-                        //       Total Historic PI: {totalPiHistoric}
-                        //       xQuantity:{mypod.EntlnData.Quantity}");
-                        //return 0;
-                        var availibleQty = itemNumberSalesHistoric - (itemNumberPiHistoric + itemNumberDocPi);
-                        Ex9Bucket(mypod, availibleQty, itemNumberSalesHistoric, itemNumberPiHistoric, "Historic");
-                        if (mypod.EntlnData.Quantity == 0)
-                        {
-                            updateXStatus(mypod.Allocations,
-                                $@"Failed Super-Specic ItemNumber Historical Check:: ItemNumber Historic Sales:{Math.Round(itemNumberSalesHistoric, 2)}
-                                   ItemNumber Historic PI: {itemNumberPiHistoric}
-                                   xQuantity:{mypod.EntlnData.Quantity}");
-                            return 0;
-                        }
-                    }
-
                 }
 
                 if (mypod.EntlnData.Quantity <= 0) return 0;
