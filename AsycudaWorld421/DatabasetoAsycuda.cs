@@ -645,7 +645,7 @@ namespace Asycuda421
                             ? fileinfo.FullName.Replace($"{DocSetPath}", _destinatonFile.DirectoryName)
                             : Path.Combine(_destinatonFile.DirectoryName, fileinfo.Name);
                         // var desFile = Path.Combine(desPath, fileinfo.Name);
-                        //if (!File.Exists(desFile)) desFile = fileinfo.FullName; // took out because of sales file not created yet
+                        if (!File.Exists(desFile)) desFile = fileinfo.FullName; //create sales files first before entries// took out because of sales file not created yet
                         File.AppendAllText(Path.Combine(_destinatonFile.DirectoryName, "Instructions.txt"),
                             $"{doc.Attached_documents_Id}\tAttachment\t{desFile}\r\n");
                     }

@@ -204,7 +204,8 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 
         internal async Task ExportDocSet(AsycudaDocumentSetEx docSet)
         {
-            var res = MessageBox.Show("Do you want to Export ALL Documents in this Document Set?", "Export Document Set", MessageBoxButton.YesNo);
+            var res = MessageBox.Show("Do you want to Export ALL Documents in this Document Set?",
+                "Export Document Set", MessageBoxButton.YesNo);
             if (res == MessageBoxResult.Yes)
             {
                 StatusModel.Timer("Exporting DocumentSet");
@@ -219,6 +220,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                         first = name;
                         break;
                     }
+
                     if (first != null)
                     {
                         var directoryInfo = new DirectoryInfo(first).Parent;
@@ -230,8 +232,12 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                             //var t2 = SalesReportModel.Instance.ExportDocSetSalesReport(docSet.AsycudaDocumentSetId, dir);
                             //await Task.WhenAll(t1, t2).ConfigureAwait(false);
 
-                            await AsycudaDocumentSetExRepository.Instance.ExportDocSet(docSet.AsycudaDocumentSetId, dir).ConfigureAwait(false);
-                            await SalesReportModel.Instance.ExportDocSetSalesReport(docSet.AsycudaDocumentSetId, dir).ConfigureAwait(false);
+
+                            await SalesReportModel.Instance.ExportDocSetSalesReport(docSet.AsycudaDocumentSetId, dir)
+                                .ConfigureAwait(false);
+                            await AsycudaDocumentSetExRepository.Instance.ExportDocSet(docSet.AsycudaDocumentSetId, dir)
+                                .ConfigureAwait(false);
+
 
 
 
@@ -239,8 +245,9 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                         }
                     }
                 }
+
                 StatusModel.StopStatusUpdate();
-                MessageBox.Show("Complete","Asycuda Toolkit", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                MessageBox.Show("Complete", "Asycuda Toolkit", MessageBoxButton.OK, MessageBoxImage.Exclamation);
 
             }
         }

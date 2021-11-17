@@ -4417,8 +4417,9 @@ namespace AutoBot
                     "&& PreviousItem_Id != null" +
                     //"&& (xBond_Item_Id == 0)" + not relevant because it could be assigned to another sale but not exwarehoused
                     "&& (QtyAllocated != null && EntryDataDetailsId != null)" +
-                     // "&& (PiQuantity < pQtyAllocated)" +
-                    "&& (pQuantity > PiQuantity)" +
+                    "&& (PiQuantity < pQtyAllocated)" +
+                    //////////// I left this because i only want to use interface to remove All ALLOCATED 
+                    //"&& (pQuantity > PiQuantity)" +
                     //"&& (pQuantity - pQtyAllocated  < 0.001)" + // prevents spill over allocations
                     "&& (Status == null || Status == \"\")" +
                     (BaseDataModel.Instance.CurrentApplicationSettings.AllowNonXEntries == "Visible"
@@ -4884,11 +4885,11 @@ namespace AutoBot
 
                         string directoryName = Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder,
                                                         doc.Key.Declarant_Reference_Number);
-                     
-                        BaseDataModel.Instance.ExportLastDocumentInDocSet(doc.Key.AsycudaDocumentSetId,
-                            directoryName, true).Wait();
                         ExportLastDocSetSalesReport(doc.Key.AsycudaDocumentSetId,
                             directoryName).Wait();
+                        BaseDataModel.Instance.ExportLastDocumentInDocSet(doc.Key.AsycudaDocumentSetId,
+                            directoryName, true).Wait();
+                       
 
                     }
 
@@ -5441,12 +5442,14 @@ namespace AutoBot
             try
             {
                 var i = BaseDataModel.CurrentSalesInfo();
-                BaseDataModel.Instance.ExportDocSet(i.Item3.AsycudaDocumentSetId,
-                    Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder,
-                        i.Item3.Declarant_Reference_Number), true).Wait();
+                
                 ExportDocSetSalesReport(i.Item3.AsycudaDocumentSetId,
                     Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder,
                         i.Item3.Declarant_Reference_Number)).Wait();
+                
+                BaseDataModel.Instance.ExportDocSet(i.Item3.AsycudaDocumentSetId,
+                    Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder,
+                        i.Item3.Declarant_Reference_Number), true).Wait();
 
 
             }

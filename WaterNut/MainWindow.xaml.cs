@@ -418,5 +418,10 @@ namespace WaterNut
             }
             
         }
+
+        private async void EX9AllAllocations(object sender, MouseButtonEventArgs e)
+        {
+            await AllocationsModel.Instance.EX9AllAllocations(true).ConfigureAwait(false);
+        }
     }
 }
