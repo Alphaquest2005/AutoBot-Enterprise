@@ -27,7 +27,7 @@ namespace EntryDataQS.Business.Services
             using (var ctx = new CoreEntitiesContext())
             {
                 var dfileType = ctx.FileTypes.ToList().FirstOrDefault(x =>
-                    Regex.IsMatch(droppedFilePath, x.FilePattern, RegexOptions.IgnoreCase) && x.Type == fileType);
+                    Regex.IsMatch(droppedFilePath, x.FilePattern, RegexOptions.IgnoreCase) && x.Type == fileType && x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId);
                 if (dfileType == null) // for filenames not in database
                 {
                     dfileType = ctx.FileTypes.First(x => x.Type == fileType);

@@ -1456,13 +1456,13 @@ namespace WaterNut.DataSpace
                 using (var ctx = new DocumentDSContext())
                 {
                     asycudaDocumentSet =
-                        ctx.AsycudaDocumentSets.FirstOrDefault(x => x.AsycudaDocumentSetId == asycudaDocumentSetId);
+                        ctx.AsycudaDocumentSets.Include(x => x.xcuda_ASYCUDA_ExtendedProperties).FirstOrDefault(x => x.AsycudaDocumentSetId == asycudaDocumentSetId);
                     if (asycudaDocumentSet != null)
                     {
                         if (asycudaDocumentSet.TotalFreight != null)
                             totalFreight = asycudaDocumentSet.TotalFreight.Value;
                         if (asycudaDocumentSet.TotalWeight != null) totalWeight = asycudaDocumentSet.TotalWeight.Value;
-                        if ( totalWeight <=0)
+                        if ( totalWeight <=0 && asycudaDocumentSet.Documents.Count() > 0)
                             throw new ApplicationException($"DocSet:{asycudaDocumentSet.Declarant_Reference_Number} Weight is Zero");
 
                         currency = asycudaDocumentSet.FreightCurrencyCode ?? asycudaDocumentSet.Currency_Code;

@@ -840,8 +840,12 @@ namespace Asycuda421
                 if (item.xcuda_Tarification.xcuda_HScode.Commodity_code != null)
                     ai.Tarification.HScode.Commodity_code.Text.Add(item.xcuda_Tarification.xcuda_HScode
                         .Commodity_code); // item.xcuda_Tarification.xcuda_HScode.Commodity_code;
-                 ai.Tarification.HScode.Precision_1.Text.Clear();
-                ai.Tarification.HScode.Precision_1.Text.Add(item.xcuda_Tarification.xcuda_HScode.Precision_1);
+                if (item.xcuda_Tarification.xcuda_HScode.Precision_1 != null)
+                {
+                    ai.Tarification.HScode.Precision_1.Text.Clear();
+                    ai.Tarification.HScode.Precision_1.Text.Add(item.xcuda_Tarification.xcuda_HScode.Precision_1);
+                }
+
                 if (item.xcuda_Tarification.xcuda_HScode.Precision_4 != null && item.ItemNumber.Length <= 20) //
                     ai.Tarification.HScode.Precision_4.Text.Add(item.xcuda_Tarification.xcuda_HScode.Precision_4.Trim()
                         .Truncate(20));

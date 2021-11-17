@@ -120,13 +120,13 @@ namespace WaterNut.DataSpace
                         CultureInfo.CurrentCulture);
                 DateTime startDate = realStartDate;
 
-                while (startDate <= realEndDate)
+                while (startDate < realEndDate)
                 {
                      
                     docPreviousItems = new Dictionary<int, List<previousItems>>();// moved here because the reloaded month data already has data 
 
                     DateTime firstOfNextMonth = new DateTime(startDate.Year, startDate.Month, 1).AddMonths(1);
-                    DateTime endDate = firstOfNextMonth.AddDays(-1).AddHours(23);
+                    DateTime endDate = checkForMultipleMonths ? firstOfNextMonth.AddDays(-1).AddHours(23) : realEndDate;
 
                     var currentFilter = filterExp.Replace($@"InvoiceDate >= ""{realStartDate:MM/dd/yyyy}""",
                             $@"InvoiceDate >= ""{startDate:MM/dd/yyyy}""")
@@ -192,7 +192,7 @@ namespace WaterNut.DataSpace
 
                     }
 
-                    startDate = new DateTime(startDate.Year, startDate.Month, 1).AddMonths(1);
+                    startDate = checkForMultipleMonths ? new DateTime(startDate.Year, startDate.Month, 1).AddMonths(1): realEndDate;
                 }
                 BaseDataModel.RenameDuplicateDocuments(docSet.AsycudaDocumentSetId);
                 StatusModel.StopStatusUpdate();
@@ -1492,32 +1492,7 @@ namespace WaterNut.DataSpace
                 }
 
 
-                ////////////////////////////////////////////////////////////////////////
-                //// Cap to prevent over creation of ex9 vs Item Quantity espectially if creating Duty paid and Duty Free at same time
 
-                if (mypod.EntlnData.pDocumentItem.ItemQuantity <
-                    Math.Round((itemPiHistoric + docPi + mypod.EntlnData.Quantity), 2))
-                {
-                    updateXStatus(mypod.Allocations,
-                        $@"Failed ItemQuantity < ItemPIHistoric & ItemQuantity:{
-                                mypod.EntlnData.pDocumentItem.ItemQuantity
-                            }
-                               Item Historic PI: {itemPiHistoric}
-                               xQuantity:{mypod.EntlnData.Quantity}");
-                    return 0;
-                }
-
-                if (mypod.EntlnData.pDocumentItem.ItemQuantity <
-                    Math.Round((totalPiAll + docPi + mypod.EntlnData.Quantity), 2))
-                {
-                    updateXStatus(mypod.Allocations,
-                        $@"Failed ItemQuantity < totalPiAll & ItemQuantity:{
-                                mypod.EntlnData.pDocumentItem.ItemQuantity
-                            }
-                               totalPiAll PI: {totalPiAll}
-                               xQuantity:{mypod.EntlnData.Quantity}");
-                    return 0;
-                }
 
                 //// item sales vs item pi, prevents early exwarehouse when its just one totalsales vs totalpi
                 //if(documentType != "DIS")
@@ -1543,6 +1518,42 @@ namespace WaterNut.DataSpace
                             return 0;
                         }
                     }
+
+                    ////////////////////////////////////////////////////////////////////////
+                    //// Cap to prevent over creation of ex9 vs Item Quantity espectially if creating Duty paid and Duty Free at same time
+
+                    if (mypod.EntlnData.pDocumentItem.ItemQuantity <
+                        Math.Round(itemPiHistoric + itemDocPi + mypod.EntlnData.Quantity, 2))
+                    {
+
+                        var availibleQty = mypod.EntlnData.pDocumentItem.ItemQuantity - (itemPiHistoric + itemDocPi);
+                        /// pass item quantity to ex9 bucket
+                        Debugger.Break();
+                        Ex9Bucket(mypod, availibleQty, itemSalesHistoric, itemPiHistoric, "Historic");
+                        if (mypod.EntlnData.Quantity == 0)
+                        {
+                            updateXStatus(mypod.Allocations,
+                                $@"Failed ItemQuantity < ItemPIHistoric & xQuantity:{
+                                    mypod.EntlnData.pDocumentItem.ItemQuantity
+                                }
+                               Item Historic PI: {itemPiHistoric}
+                               xQuantity:{mypod.EntlnData.Quantity}");
+                            return 0;
+                        }
+                    }
+
+                    if (mypod.EntlnData.pDocumentItem.ItemQuantity <
+                        Math.Round((totalPiAll + docPi + mypod.EntlnData.Quantity), 2))
+                    {
+                        updateXStatus(mypod.Allocations,
+                            $@"Failed ItemQuantity < totalPiAll & xQuantity:{
+                                mypod.EntlnData.pDocumentItem.ItemQuantity
+                            }
+                               totalPiAll PI: {totalPiAll}
+                               xQuantity:{mypod.EntlnData.Quantity}");
+                        return 0;
+                    }
+
                 }
 
                 if (mypod.EntlnData.Quantity <= 0) return 0;

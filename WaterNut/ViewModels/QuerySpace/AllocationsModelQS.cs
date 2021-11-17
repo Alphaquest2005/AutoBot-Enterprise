@@ -878,7 +878,8 @@ namespace WaterNut.QuerySpace.AllocationQS.ViewModels
                     " && PreviousItem_Id != null" +
                     //"&& (xBond_Item_Id == 0)" + not relevant because it could be assigned to another sale but not exwarehoused
                     " && (QtyAllocated != null && EntryDataDetailsId != null)" +
-                    " && (PiQuantity < pQtyAllocated)" +
+                    //  " && (PiQuantity < pQtyAllocated)" +
+                    " && (pQuantity > PiQuantity)" +
                     //"&& (pQuantity - pQtyAllocated  < 0.001)" + // prevents spill over allocations
                     " && (Status == null || Status == \"\")" +
                     (CoreEntities.ViewModels.BaseViewModel.Instance.CurrentApplicationSettings.AllowNonXEntries == "Visible"

@@ -751,7 +751,8 @@ namespace WaterNut.DataSpace
                     foreach (var manifest in lst)
                     {
                         var blDetails = manifest.ShipmentBLDetails
-                            .DistinctBy(x => new {x.Marks, x.Quantity, x.PackageType}).ToList();
+                            //.DistinctBy(x => new {x.Marks, x.Quantity, x.PackageType})/// took this out because of repeat data
+                            .ToList();
 
                         manifest.ShipmentBLDetails = blDetails;
 
