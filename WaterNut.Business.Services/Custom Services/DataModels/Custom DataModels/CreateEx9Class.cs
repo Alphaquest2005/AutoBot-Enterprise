@@ -1491,8 +1491,18 @@ namespace WaterNut.DataSpace
                     }
                 }
 
-
-
+                // mandatory check to prevent overtaking
+                if (mypod.EntlnData.pDocumentItem.ItemQuantity <
+                       Math.Round((totalPiAll + docPi + mypod.EntlnData.Quantity), 2))
+                {
+                    updateXStatus(mypod.Allocations,
+                        $@"Failed ItemQuantity < totalPiAll & xQuantity:{
+                            mypod.EntlnData.pDocumentItem.ItemQuantity
+                        }
+                               totalPiAll PI: {totalPiAll}
+                               xQuantity:{mypod.EntlnData.Quantity}");
+                    return 0;
+                }
 
                 //// item sales vs item pi, prevents early exwarehouse when its just one totalsales vs totalpi
                 //if(documentType != "DIS")
@@ -1542,17 +1552,7 @@ namespace WaterNut.DataSpace
                         }
                     }
 
-                    if (mypod.EntlnData.pDocumentItem.ItemQuantity <
-                        Math.Round((totalPiAll + docPi + mypod.EntlnData.Quantity), 2))
-                    {
-                        updateXStatus(mypod.Allocations,
-                            $@"Failed ItemQuantity < totalPiAll & xQuantity:{
-                                mypod.EntlnData.pDocumentItem.ItemQuantity
-                            }
-                               totalPiAll PI: {totalPiAll}
-                               xQuantity:{mypod.EntlnData.Quantity}");
-                        return 0;
-                    }
+                   
 
                 }
 
