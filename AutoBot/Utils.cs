@@ -4783,8 +4783,18 @@ namespace AutoBot
                 foreach (var doc in lst.Select(x => x.Key).Distinct<int>())
                 {
 
+
+                    using (var ctx = new CoreEntitiesContext())
+                    {
+                        ctx.Database.CommandTimeout = 10;
+                        var keys = lst.SelectMany(x => x.Select(z => z.EntryDataDetailsKey)).ToList();
+
+                        if (ctx.AsycudaDocumentItemEntryDataDetails.Any(x => keys.Contains(x.key)))
+                            BaseDataModel.Instance.UpdateAsycudaDocumentSetLastNumber(doc, 0);
+                    }
+
                     BaseDataModel.Instance.ClearAsycudaDocumentSet(doc).Wait();
-                    BaseDataModel.Instance.UpdateAsycudaDocumentSetLastNumber(doc, 0);
+                    //; // took it of so it would keep counting up
                 }
             }
 

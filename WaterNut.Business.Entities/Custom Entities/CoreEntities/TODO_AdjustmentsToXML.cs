@@ -216,12 +216,31 @@ namespace CoreEntities.Business.Entities
         }
         string _declarant_reference_number;
 
- //       [DataMember]
- //       public TrackingState TrackingState { get; set; }
- //       [DataMember]
- //       public ICollection<string> ModifiedProperties { get; set; }
-//        [DataMember]//JsonProperty,
- //       private Guid EntityIdentifier { get; set; }
+
+
+        
+        [DataMember]
+        public string EntryDataDetailsKey
+        {
+            get
+            {
+                return _entryDataDetailsKey;
+            }
+            set
+            {
+                _entryDataDetailsKey = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+       string _entryDataDetailsKey;
+
+        //       [DataMember]
+        //       public TrackingState TrackingState { get; set; }
+        //       [DataMember]
+        //       public ICollection<string> ModifiedProperties { get; set; }
+        //        [DataMember]//JsonProperty,
+        //       private Guid EntityIdentifier { get; set; }
     }
 }
 

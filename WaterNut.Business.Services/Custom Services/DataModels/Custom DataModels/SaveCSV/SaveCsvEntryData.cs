@@ -1997,7 +1997,7 @@ namespace WaterNut.DataSpace
                         //        x.ApplicationSettingsId == applicationSettingsId &&
                         //        x.ItemNumber == item.Key.ItemNumber);
                         var i = inventoryItems.FirstOrDefault(x =>
-                            x.ApplicationSettingsId == applicationSettingsId && x.ItemNumber == item.Key.ItemNumber);
+                            x.ApplicationSettingsId == applicationSettingsId && x.ItemNumber == item.Key.ItemNumber && x.InventoryItemSources.Any(z => z.InventorySourceId  == inventorySource.Id));
 
                         if (i == null || i.InventoryItemSources.All(x => x.InventorySource.Id != inventorySource.Id))
                         {

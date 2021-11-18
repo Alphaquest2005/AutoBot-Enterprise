@@ -1491,7 +1491,7 @@ namespace WaterNut.DataSpace
                             .Sum(); // should be zero if new existing has value take away existing value
                         var totalItems = ctx.AsycudaItemBasicInfo.Where(x => x.ASYCUDA_Id == doc).Select(x => x.ItemQuantity).DefaultIfEmpty(0).Sum() * 0.01;
                         ////////// added total items to prevent over weight due to minimum 0.01 requirement
-                        var val = t.GetValueOrDefault() - f.GetValueOrDefault() + totalItems.GetValueOrDefault();
+                        var val = t.GetValueOrDefault() - f.GetValueOrDefault();// + totalItems.GetValueOrDefault(); 
                         docValues.Add(doc, val);
                         totalfob += val;
                     }
