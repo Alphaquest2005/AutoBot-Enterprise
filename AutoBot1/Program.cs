@@ -316,14 +316,19 @@ namespace AutoBot
                         $"The following actions were missing: {missingActions.Select(x => x.Actions.Name).Aggregate((old, current) => old + ", " + current)}");
                 }
 
-                fileType.FileTypeActions.Where(x => x.Actions.IsDataSpecific == true).OrderBy(x => x.Id)
+                 fileType.FileTypeActions.Where(x => x.Actions.IsDataSpecific == true).OrderBy(x => x.Id)
                     .Where(x => (x.AssessIM7.Equals(null) && x.AssessEX.Equals(null)) ||
                                 (appSetting.AssessIM7 == x.AssessIM7 ||
                                  appSetting.AssessEX == x.AssessEX))
                     .Where(x => x.Actions.TestMode ==
                                 (BaseDataModel.Instance.CurrentApplicationSettings.TestMode))
-                    .Select(x => Utils.FileActions[x.Actions.Name]).ToList()
-                    .ForEach(x => { x.Invoke(fileType, files); });
+                    .Select(x => new {Name = x.Actions.Name, Action = Utils.FileActions[x.Actions.Name]}).ToList()
+                    .ForEach(x =>
+                    {
+                        if (string.IsNullOrEmpty(fileType.ProcessNextStep) || fileType.ProcessNextStep == x.Name)
+                            x.Action.Invoke(fileType, files);
+                    });
+               
             }
             catch (Exception e)
             {
@@ -342,8 +347,12 @@ namespace AutoBot
                                  appSetting.AssessEX == x.AssessEX))
                     .Where(x => x.Actions.TestMode ==
                                 (BaseDataModel.Instance.CurrentApplicationSettings.TestMode))
-                    .Select(x => Utils.FileActions[x.Actions.Name]).ToList()
-                    .ForEach(x => { x.Invoke(fileType, files); });
+                    .Select(x => new { Name = x.Actions.Name, Action = Utils.FileActions[x.Actions.Name] }).ToList()
+                    .ForEach(x =>
+                    {
+                        if (string.IsNullOrEmpty(fileType.ProcessNextStep) || fileType.ProcessNextStep == x.Name)
+                            x.Action.Invoke(fileType, files);
+                    });
             }
             catch (Exception e)
             {

@@ -1448,10 +1448,12 @@ namespace WaterNut.DataSpace
             {
                 var currency = "";
                 double totalfob = 0;
+                double totalItemQuantity = 0;
                 double totalFreight = 0;
                 double totalWeight = 0;
                 List<int> doclst = null;
-                var docValues = new Dictionary<int, double>();
+                var CIFValues = new Dictionary<int, double>();
+                var ItemQuantities = new Dictionary<int, double>();
                 AsycudaDocumentSet asycudaDocumentSet;
                 using (var ctx = new DocumentDSContext())
                 {
@@ -1491,32 +1493,38 @@ namespace WaterNut.DataSpace
                             .Sum(); // should be zero if new existing has value take away existing value
                         var totalItems = ctx.AsycudaItemBasicInfo.Where(x => x.ASYCUDA_Id == doc).Select(x => x.ItemQuantity).DefaultIfEmpty(0).Sum() * 0.01;
                         ////////// added total items to prevent over weight due to minimum 0.01 requirement
-                        var val = t.GetValueOrDefault() - f.GetValueOrDefault();// + totalItems.GetValueOrDefault(); 
-                        docValues.Add(doc, val);
+                        var val = t.GetValueOrDefault() - f.GetValueOrDefault();// + ; 
+                        CIFValues.Add(doc, val);
+                        ItemQuantities.Add(doc, totalItems.GetValueOrDefault());
                         totalfob += val;
+                        totalItemQuantity += totalItems.GetValueOrDefault();
                     }
                 }
 
                 var freightRate = totalFreight != 0 ? totalFreight / totalfob : 0;
-                var weightRate = totalWeight != 0 ? totalWeight / totalfob : 0;
+                var weightRate = totalWeight != 0 ? totalWeight / totalItemQuantity : 0;
                 double weightUsed = 0;
 
                 using (var ctx = new DocumentDSContext {StartTracking = true})
                 {
-                    foreach (var doc in docValues.Where(x => x.Value != 0))
+                    foreach (var doc in doclst)
                     {
+                        //calulate frieght based on value, calculate weight based on quantity to prevent the minimum weight per value issue
+                        var cif = CIFValues.FirstOrDefault(x => x.Value > 0 && x.Key == doc);
+                        var totalItems = ItemQuantities.FirstOrDefault(x => x.Value > 0 && x.Key == doc);
+
                         if (weightUsed > totalWeight)
                             throw new ApplicationException("Weight Used Exceed Total Weight!");
 
                         if (asycudaDocumentSet.ApportionMethod == "Equal")
                         {
-                            UpdateFreight(ctx, doc, totalFreight / doclst.Count(), currency);
-                            weightUsed += UpdateWeight(ctx, doc, totalWeight / doclst.Count());
+                           if(cif.Value != 0) UpdateFreight(ctx, cif, totalFreight / doclst.Count(), currency);
+                           if (totalItems.Value != 0) weightUsed += UpdateWeight(ctx, totalItems, totalWeight / doclst.Count());
                         }
                         else
                         {
-                            UpdateFreight(ctx, doc, doc.Value * freightRate, currency);
-                            weightUsed += UpdateWeight(ctx, doc, doc.Value * weightRate);
+                            if (cif.Value != 0) UpdateFreight(ctx, cif, cif.Value * freightRate, currency);
+                            if (totalItems.Value != 0) weightUsed += UpdateWeight(ctx, totalItems, totalItems.Value * weightRate);
                         }
                     }
 

@@ -27,5 +27,9 @@ namespace CoreEntities.Business.Entities
         [IgnoreDataMember]
         [NotMapped]
         public List<EmailInfoMappings> EmailInfoMappings { get; set; } = new List<EmailInfoMappings>();
+       
+        [IgnoreDataMember]
+        [NotMapped]
+        public string ProcessNextStep { get; set; }
     }
 }

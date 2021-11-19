@@ -1773,6 +1773,32 @@ namespace AutoBot
                                     TrackingState = TrackingState.Added
                                 });
                             }
+                            else
+                            {
+                                var attachment =
+                                    ctx.Attachments.First(x => x.FilePath == sfile.SourceFileName);
+                                ctx.AsycudaDocumentSet_Attachments.Add(new AsycudaDocumentSet_Attachments()
+                                {
+                                    TrackingState = TrackingState.Added,
+                                    AsycudaDocumentSetId = ctx.AsycudaDocumentSetExs.First(x =>
+                                        x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings
+                                            .ApplicationSettingsId
+                                        && x.Declarant_Reference_Number == "Imports").AsycudaDocumentSetId,
+                                    AttachmentId = attachment.Id,
+                                    DocumentSpecific = true,
+                                    EmailUniqueId = item.EmailId,
+                                    AttachmentLog = new List<AttachmentLog>()
+                                    {
+                                        new AttachmentLog(true)
+                                        {
+
+                                            Status = "Submit XML To Customs",
+                                            TrackingState = TrackingState.Added
+                                        }
+                                    }
+                                });
+
+                            }
                         }
 
                         ctx.SaveChanges();
@@ -5247,21 +5273,42 @@ namespace AutoBot
                     using (var ctx = new CoreEntitiesContext())
                     {
                         ctx.Database.CommandTimeout = 10;
-                        
-                       
-                       
+
+
+
                         lst = new AdjustmentQSContext()
                             .AdjustmentDetails
-                            .Where(x => x.AsycudaDocumentSetId == fileType.AsycudaDocumentSetId 
+                            .Where(x => x.AsycudaDocumentSetId == fileType.AsycudaDocumentSetId
                                         && x.Type == "DIS")
                             .Select(x => new {x.EntryDataDetailsId, x.ItemNumber})
                             .Distinct()
                             .ToList()
-                            .Select(x => new KeyValuePair<int,string> (x.EntryDataDetailsId, x.ItemNumber))
+                            .Select(x => new KeyValuePair<int, string>(x.EntryDataDetailsId, x.ItemNumber))
                             .ToList();
+                        var ids = lst.Select(x => x.Key).ToList();
+                        var itemEntryDataDetails = ctx.AsycudaDocumentItemEntryDataDetails
+                            .Where(x => x.ImportComplete == true && ids.Contains(x.EntryDataDetailsId))
+                            .ToList()
+                            .Join(lst, x => x.EntryDataDetailsId, z => z.Key, (x, z) => new {key = z, doc = x});
+                        foreach (var itm in itemEntryDataDetails)
+                        {
+                            var sourcefile = ctx.AsycudaDocuments.First(x => x.ASYCUDA_Id == itm.doc.Asycuda_id).SourceFileName;
+                            if (ctx.AttachmentLog
+                                .FirstOrDefault(x =>
+                                    x.AsycudaDocumentSet_Attachments.Attachments.FilePath == sourcefile &&
+                                    x.Status == "Submit XML To Customs") == null)
+                            {
+                                fileType.ProcessNextStep = "ReSubmitDiscrepanciesToCustoms";
+                                return;
+                            }
+                        }
+
                     }
 
-                if (!lst.Any()) return;
+                    if (!lst.Any()) return;
+
+                
+
                 AllocationsModel.Instance.ClearDocSetAllocations(lst.Select(x => $"'{x.Value}'").Aggregate((o, n) => $"{o},{n}")).Wait();
 
                 AllocationsBaseModel.PrepareDataForAllocation(BaseDataModel.Instance.CurrentApplicationSettings);
