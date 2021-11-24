@@ -5289,19 +5289,35 @@ namespace AutoBot
                         var itemEntryDataDetails = ctx.AsycudaDocumentItemEntryDataDetails
                             .Where(x => x.ImportComplete == true && ids.Contains(x.EntryDataDetailsId))
                             .ToList()
-                            .Join(lst, x => x.EntryDataDetailsId, z => z.Key, (x, z) => new {key = z, doc = x});
+                            .Join(lst, x => x.EntryDataDetailsId, z => z.Key, (x, z) => new {key = z, doc = x})
+                            .ToList();
                         foreach (var itm in itemEntryDataDetails)
                         {
-                            var sourcefile = ctx.AsycudaDocuments.First(x => x.ASYCUDA_Id == itm.doc.Asycuda_id).SourceFileName;
+                            var sourcefile = ctx.AsycudaDocuments.First(x => x.ASYCUDA_Id == itm.doc.Asycuda_id)
+                                .SourceFileName;
                             if (ctx.AttachmentLog
                                 .FirstOrDefault(x =>
                                     x.AsycudaDocumentSet_Attachments.Attachments.FilePath == sourcefile &&
                                     x.Status == "Submit XML To Customs") == null)
                             {
-                                fileType.ProcessNextStep = "ReSubmitDiscrepanciesToCustoms";
-                                return;
+                                break;
                             }
+                            else
+                            {
+                                continue;
+                            }
+
+                            fileType.ProcessNextStep = "ReSubmitDiscrepanciesToCustoms";
+                            return;
+
                         }
+
+                        var alreadyExecuted = lst.Where(x => itemEntryDataDetails.Any(z => z.key.Key == x.Key)).ToList();
+                        foreach (var itm in alreadyExecuted)
+                        {
+                            lst.Remove(itm);
+                        }
+                        
 
                     }
 

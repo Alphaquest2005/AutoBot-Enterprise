@@ -5,12 +5,16 @@ using System.Data.Entity;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices.ComTypes;
 using Core.Common.Utils;
+using CoreEntities.Business.Entities;
+using DocumentDS.Business.Entities;
 using MoreLinq;
 using Org.BouncyCastle.Crypto.Operators;
 using TrackableEntities;
 using WaterNut.DataSpace;
 using xlsxWriter;
+using Attachments = EntryDataDS.Business.Entities.Attachments;
 
 //using NPOI.SS.UserModel;
 //using NPOI.XSSF.UserModel;
@@ -765,10 +769,14 @@ namespace AutoBotUtilities
                             TrackingState = TrackingState.Added
                         });
 
-                        shipment.Currency = invoices.Select(x => x.Currency).FirstOrDefault() ?? "USD";
+                        shipment.Currency =  "USD";//invoices.Select(x => x.Currency).FirstOrDefault() ??
 
                         if (shipment.Currency.Length != 3)
+                        {
+                            
                             throw new ApplicationException("Currency must be 3 letters");
+                        }
+
 
                         shipment.ExpectedEntries += invoices.Count(x =>
                             (Enumerable.FirstOrDefault<ShipmentRiderInvoice>(x.ShipmentRiderInvoice)?.Packages ?? 0) >
@@ -975,7 +983,7 @@ namespace AutoBotUtilities
                                 ManifestNumber = manifests.LastOrDefault()?.RegistrationNumber,
                                 BLNumber = manifests.LastOrDefault()?.WayBill,
                                 WeightKG = client.Sum(x => x.GrossWeightKg),
-                                Currency = invoices.Select(x => x.Currency).FirstOrDefault() ?? "USD", //
+                                Currency =  "USD", //invoices.Select(x => x.Currency).FirstOrDefault() ??
                                 ExpectedEntries = invoices.Count(x =>
                                     (Enumerable.FirstOrDefault<ShipmentRiderInvoice>(x.ShipmentRiderInvoice)
                                         ?.Packages ?? 0) > 0),

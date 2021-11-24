@@ -1491,7 +1491,7 @@ namespace WaterNut.DataSpace
                         var f = ctx.AsycudaDocuments.Where(x => x.ASYCUDA_Id == doc)
                             .Select(y => y.TotalFreight).DefaultIfEmpty(0)
                             .Sum(); // should be zero if new existing has value take away existing value
-                        var totalItems = ctx.AsycudaItemBasicInfo.Where(x => x.ASYCUDA_Id == doc).Select(x => x.ItemQuantity).DefaultIfEmpty(0).Sum() * 0.01;
+                        var totalItems = ctx.AsycudaItemBasicInfo.Where(x => x.ASYCUDA_Id == doc).Select(x => x.ItemQuantity).DefaultIfEmpty(0).Sum() ;//* 0.01
                         ////////// added total items to prevent over weight due to minimum 0.01 requirement
                         var val = t.GetValueOrDefault() - f.GetValueOrDefault();// + ; 
                         CIFValues.Add(doc, val);
@@ -1509,7 +1509,7 @@ namespace WaterNut.DataSpace
                 {
                     foreach (var doc in doclst)
                     {
-                        //calulate frieght based on value, calculate weight based on quantity to prevent the minimum weight per value issue
+                        //calulate frieght based on value, calculate weight based on quantity to prevent the minimm weight per value issue
                         var cif = CIFValues.FirstOrDefault(x => x.Value > 0 && x.Key == doc);
                         var totalItems = ItemQuantities.FirstOrDefault(x => x.Value > 0 && x.Key == doc);
 
@@ -1592,14 +1592,18 @@ namespace WaterNut.DataSpace
                     var lst = ictx.xcuda_Weight_itm
                         .Include(x => x.xcuda_Valuation_item)
                         .Where(x => x.xcuda_Valuation_item.xcuda_Item.ASYCUDA_Id == doc.Key).ToList();
+
+
                     var runningMiniumWeight = 0.0;
                     foreach (var itm in lst)
                     {
-                        var calWgt = weightRate * (itm.xcuda_Valuation_item.Total_CIF_itm / doc.Value);
-                        var minWgt = ictx.xcuda_Tarification.Include(x => x.Unordered_xcuda_Supplementary_unit)
-                                         .First(z => z.Item_Id == itm.Valuation_item_Id)
-                                         .Unordered_xcuda_Supplementary_unit.First(x => x.IsFirstRow == true)
-                                         .Suppplementary_unit_quantity.GetValueOrDefault() * .01;
+                        var itmQuantity = ictx.xcuda_Tarification.Include(x => x.Unordered_xcuda_Supplementary_unit)
+                            .First(z => z.Item_Id == itm.Valuation_item_Id)
+                            .Unordered_xcuda_Supplementary_unit.First(x => x.IsFirstRow == true)
+                            .Suppplementary_unit_quantity.GetValueOrDefault();
+
+                        var calWgt = weightRate * (itmQuantity / doc.Value);
+                        var minWgt = itmQuantity * .01;
 
                         if (calWgt - runningMiniumWeight < minWgt)
                         {
@@ -3529,7 +3533,7 @@ namespace WaterNut.DataSpace
                         null; //loading property and creating trouble updating it think its a circular navigation property issue
 
                     var res = ctx.xcuda_ASYCUDA
-                        
+                        .Include(x => x.xcuda_ASYCUDA_ExtendedProperties)
                         .Where(
                             x => x != null && x.xcuda_Declarant != null &&
                                  x.xcuda_Declarant.Number.Contains(docSet.Declarant_Reference_Number) &&
@@ -3541,7 +3545,7 @@ namespace WaterNut.DataSpace
                         .ToList();
 
                     lst = res
-                        .Where(x => x.Key != null && x.Count() > 1)
+                        .Where(x => x.Key != null && x.Count() > 1 || x.Any(z => z.xcuda_ASYCUDA_ExtendedProperties.FileNumber == docSet.LastFileNumber))
                         .ToList();
 
                     if (!lst.Any()) return;
