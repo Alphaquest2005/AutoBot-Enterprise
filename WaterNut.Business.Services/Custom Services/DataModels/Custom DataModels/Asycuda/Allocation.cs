@@ -100,7 +100,7 @@ namespace WaterNut.DataSpace
 				using (var ctx = new AdjustmentShortService())
 				{
 					await ctx.AutoMatch(applicationSettings.ApplicationSettingsId, true).ConfigureAwait(false);
-				   if(forceDiscrepancyExecution) await ctx.ProcessDISErrorsForAllocation(applicationSettings.ApplicationSettingsId).ConfigureAwait(false);
+				  // if(forceDiscrepancyExecution) await ctx.ProcessDISErrorsForAllocation(applicationSettings.ApplicationSettingsId).ConfigureAwait(false); // automatch doing everything now
 				}
 
 

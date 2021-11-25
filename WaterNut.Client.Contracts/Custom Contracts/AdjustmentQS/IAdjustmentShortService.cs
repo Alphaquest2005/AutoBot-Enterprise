@@ -24,6 +24,6 @@ namespace AdjustmentQS.Client.Contracts
     public partial interface IAdjustmentOverService
     {
         [OperationContract]
-        Task CreateOPS(string filterExpression, object perInvoice, int asycudaDocumentSetId);
+        Task CreateOPS(string filterExpression, object perInvoice,string adjustmentType , int asycudaDocumentSetId);
     }
 }

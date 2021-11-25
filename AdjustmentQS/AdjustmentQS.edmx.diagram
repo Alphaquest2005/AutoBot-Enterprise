@@ -31,19 +31,20 @@
         <AssociationConnector Association="Model.AdjustmentShortAsycudaDocumentItemEntryDataDetail" />
         <AssociationConnector Association="Model.AdjustmentDetailAsycudaDocumentItemEntryDataDetail" />
         <AssociationConnector Association="Model.AdjustmentDetailShortAllocation" />
-        <EntityTypeShape EntityType="Model.AsycudaDocumentItemLastItemCost" Width="3.75" PointX="10.375" PointY="12.75" />
-        <EntityTypeShape EntityType="Model.InventoryItemAliasEx" Width="2" PointX="8.125" PointY="16.125" />
+        <EntityTypeShape EntityType="Model.AsycudaDocumentItemLastItemCost" Width="3.75" PointX="10.375" PointY="13.25" />
+        <EntityTypeShape EntityType="Model.InventoryItemAliasEx" Width="2" PointX="7.875" PointY="17.5" />
         <EntityTypeShape EntityType="Model.InventoryItemsEx" Width="1.5" PointX="4.75" PointY="14.75" />
         <AssociationConnector Association="Model.InventoryItemsExInventoryItemAliasEx" />
         <AssociationConnector Association="Model.InventoryItemsExEntryDataDetail" />
         <AssociationConnector Association="Model.InventoryItemsExAdjustmentOver" />
-        <EntityTypeShape EntityType="Model.AdjustmentOversAllocation" Width="1.5" PointX="26.625" PointY="7.875" />
+        <EntityTypeShape EntityType="Model.AdjustmentOversAllocation" Width="3.625" PointX="26.625" PointY="7.875" />
         <AssociationConnector Association="Model.FK_AdjustmentOversAllocations_EntryDataDetails" />
         <AssociationConnector Association="Model.FK_AdjustmentOversAllocations_xcuda_Item" />
         <EntityTypeShape EntityType="Model.SystemDocumentSet" Width="1.5" PointX="9.875" PointY="1" />
         <AssociationConnector Association="Model.SystemDocumentSetAdjustmentDetail" />
         <EntityTypeShape EntityType="Model.TODO_PreDiscrepancyErrors" Width="1.5" PointX="0.75" PointY="15.75" />
         <EntityTypeShape EntityType="Model.TODO_AdjustmentOversToXML" Width="1.5" PointX="15.375" PointY="7.75" />
+        <AssociationConnector Association="Model.AdjustmentExEntryDataDetail" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

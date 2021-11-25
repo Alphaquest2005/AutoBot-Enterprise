@@ -27,8 +27,28 @@ using CoreEntities.Client.Entities;
 
 namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
 {
-    
-	public partial class AdjustmentOverViewModel_AutoGen : ViewModelBase<AdjustmentOverViewModel_AutoGen>
+
+    public partial class AdjustmentOverViewModel_AutoGen
+    {
+        partial void OnCreated()
+        {
+            EffectiveDateFilter = DateTime.MinValue;
+            _startEffectiveDateFilter = DateTime.MinValue;
+            _endEffectiveDateFilter = DateTime.MinValue;
+            EmailDateFilter = DateTime.MinValue;
+            _startEmailDateFilter = DateTime.MinValue;
+            _endEmailDateFilter = DateTime.MinValue;
+
+            InvoiceDateFilter = DateTime.MinValue;
+            _startInvoiceDateFilter = DateTime.MinValue;
+            _endInvoiceDateFilter = DateTime.MinValue;
+
+        }
+
+
+    }
+
+    public partial class AdjustmentOverViewModel_AutoGen : ViewModelBase<AdjustmentOverViewModel_AutoGen>
 	{
 
        private static readonly AdjustmentOverViewModel_AutoGen instance;

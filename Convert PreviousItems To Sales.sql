@@ -26,6 +26,14 @@ GROUP BY EntryDataDetails.EntryDataId, EntryData.EntryDataDate, EntryDataDetails
                  PreviousItemsEx.CNumber, PreviousItemsEx.Current_item_number, EntryDataDetails.LineNumber, EntryDataDetails.EntryDataDetailsId, PreviousItemsEx.Previous_item_number
 
 
+----//////////////////////////////// set the date to the date entry was done
+
+UPDATE EntryData
+SET         EntryDataDate = EntryDataDetails.EffectiveDate
+FROM    EntryData_Adjustments INNER JOIN
+                 EntryData ON EntryData_Adjustments.EntryData_Id = EntryData.EntryData_Id INNER JOIN
+                 EntryDataDetails ON EntryData.EntryData_Id = EntryDataDetails.EntryData_Id
+WHERE (EntryData.ApplicationSettingsId = 7)
 
 
 

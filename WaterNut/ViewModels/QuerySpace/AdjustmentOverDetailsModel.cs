@@ -165,7 +165,7 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
             }
             if (_viewMatches)
             {
-                res.Append(@" && EntryDataDetailAllocations.Any()");
+                res.Append(@" && Status == null");
             }
 
             if (_viewSelected)
@@ -176,7 +176,7 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
                     var slst = BuildOSLst(lst);
                     //remove comma
 
-                    res.Append(slst);
+                    res.Append($@" && ({slst})");
                 }
             }
 
@@ -191,9 +191,16 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
 
         }
 
-        private async Task BuildOSLst(List<AdjustmentEx> lst)
+        private string BuildOSLst(List<AdjustmentEx> lst)
         {
-           // await AdjustmentExRepository.Instance.BuildOSLst(lst.Select(x => x.AdjustmentsId).ToList()).ConfigureAwait(false);
+            // res.Append($@" && EntryDataId == ""{BaseViewModel.Instance.CurrentAdjustmentEx.EntityId}""")
+            return lst.Where(x => x?.EntryData_Id != 0).Select(x => x.EntryData_Id.ToString()).Aggregate(new StringBuilder(), (o, n) =>
+            {
+                //if (o.Length > 0) o.Append($"EntryDataId =={o}");
+                o.Append($" EntryData_Id == {n} ||");
+                return o;
+
+            }).ToString().TrimEnd('|', ' ');
         }
 
 
@@ -244,7 +251,7 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
             StatusModel.Timer("Creating IM9");
             using (var ctx = new AdjustmentOverRepository())
             {
-                await ctx.CreateOPS(vloader.FilterExpression, PerInvoice, CoreEntities.ViewModels.BaseViewModel.Instance.CurrentAsycudaDocumentSetEx.AsycudaDocumentSetId).ConfigureAwait(false);
+                await ctx.CreateOPS(vloader.FilterExpression, PerInvoice,"DIS", CoreEntities.ViewModels.BaseViewModel.Instance.CurrentAsycudaDocumentSetEx.AsycudaDocumentSetId).ConfigureAwait(false);
             }
 
             MessageBus.Default.BeginNotify(MessageToken.AdjustmentOversChanged, this,

@@ -33,29 +33,66 @@ namespace AdjustmentQS.Business.Services
 
         public async Task AutoMatch(int applicationSettingsId, bool overwriteExisting)
         {
-
-
-
-            using (var ctx = new AdjustmentQSContext() { StartTracking = true })
+            try
             {
-                ctx.Database.CommandTimeout = 10;
+
+
+                using (var ctx = new AdjustmentQSContext() {StartTracking = true})
+                {
+                    ctx.Database.CommandTimeout = 10;
 
 
 
-                var lst = ctx.AdjustmentDetails
-                    .Include(x => x.AdjustmentEx)
-                    .Where(x => x.ApplicationSettingsId == applicationSettingsId)
-                    .Where(x => x.SystemDocumentSet != null)
-                    // .Where(x => x.ItemNumber == "HEL/003361001")
-                    //.Where(x => x.EntryDataId == "120902")
-                    //.Where( x => x.EntryDataDetailsId == 16569)
-                    .Where(x => x.DoNotAllocate == null || x.DoNotAllocate != true)
-                    .Where(x => overwriteExisting ? x != null : x.EffectiveDate == null) // take out other check cuz of existing entries 
-                    .OrderBy(x => x.EntryDataDetailsId)
-                    .DistinctBy(x => x.EntryDataDetailsId)
-                    .ToList();
+                    var lst = ctx.AdjustmentDetails
+                        .Include(x => x.AdjustmentEx)
+                        .Where(x => x.ApplicationSettingsId == applicationSettingsId)
+                        .Where(x => x.SystemDocumentSet != null)
+                        //.Where(x => x.ItemNumber == "RE90530")
+                        //.Where(x => x.EntryDataId == "120902")
+                        //.Where( x => x.EntryDataDetailsId == 16569)
+                        .Where(x => x.DoNotAllocate == null || x.DoNotAllocate != true)
+                        .Where(x => overwriteExisting
+                            ? x != null
+                            : x.EffectiveDate == null) // take out other check cuz of existing entries 
+                        .OrderBy(x => x.EntryDataDetailsId)
+                        .DistinctBy(x => x.EntryDataDetailsId)
+                        .ToList();
 
-                await DoAutoMatch(applicationSettingsId, lst, ctx);
+                    AllocationsModel.Instance
+                        .ClearDocSetAllocations(lst.Select(x => $"'{x.ItemNumber}'").Aggregate((o, n) => $"{o},{n}"))
+                        .Wait();
+
+                    AllocationsBaseModel.PrepareDataForAllocation(BaseDataModel.Instance.CurrentApplicationSettings);
+
+
+
+                    await DoAutoMatch(applicationSettingsId, lst, ctx);
+
+
+
+                    new AdjustmentShortService()
+                        .ProcessDISErrorsForAllocation(
+                            BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId,
+                            lst.Select(x => $"{x.EntryDataDetailsId.ToString()}-{x.ItemNumber}")
+                                .Aggregate((o, n) => $"{o},{n}")).Wait();
+
+                    new AllocationsBaseModel()
+                        .AllocateSalesByMatchingSalestoAsycudaEntriesOnItemNumber(
+                            BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId, false,
+                            lst.Select(x => $"{x.EntryDataDetailsId.ToString()}-{x.ItemNumber}")
+                                .Aggregate((o, n) => $"{o},{n}")).Wait();
+
+                    new AllocationsBaseModel()
+                        .MarkErrors(BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId).Wait();
+
+
+                }
+
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
             }
 
         }
@@ -98,7 +135,7 @@ namespace AdjustmentQS.Business.Services
 
         }
 
-        private async Task DoAutoMatch(int applicationSettingsId, List<AdjustmentDetail> lst, AdjustmentQSContext ctx)
+        public async Task DoAutoMatch(int applicationSettingsId, List<AdjustmentDetail> lst, AdjustmentQSContext ctx)
         {
             try
             {
@@ -523,7 +560,7 @@ namespace AdjustmentQS.Business.Services
 
                     }
 
-                    entryDataDetailsIds = entryDataDetailsIds ?? new List<int>();
+                   // entryDataDetailsIds = entryDataDetailsIds ?? new List<int>();
 
                     res = pres
                         .Where(exp)
@@ -682,7 +719,7 @@ namespace AdjustmentQS.Business.Services
         {
             //ed.Status = null;
             //ed.QtyAllocated = 0;
-            var remainingShortQty = (os.InvoiceQty.GetValueOrDefault() - os.ReceivedQty.GetValueOrDefault());
+            var remainingShortQty = os.InvoiceQty.GetValueOrDefault() - os.ReceivedQty.GetValueOrDefault();
 
             if (!alst.Any())
             {
@@ -722,8 +759,15 @@ namespace AdjustmentQS.Business.Services
 
             foreach (var aItem in alst)
             {
-                var pitm = ctx.xcuda_Item.First(x => x.Item_Id == aItem.Item_Id);
+                var pitm = ctx.xcuda_Item
+                 //   .Include("AsycudaSalesAllocations.EntryDataDetail.AdjustmentEx")
+                    .First(x => x.Item_Id == aItem.Item_Id);
                 //pitm.DFQtyAllocated = 0;
+
+                //if (Math.Abs(pitm.AsycudaSalesAllocations.Where(x => x.EntryDataDetailsId == os.EntryDataDetailsId)
+                //    .Select(x => x.QtyAllocated).Sum() - os.Quantity) < 0.001)
+                //    return;
+
                 var asycudaQty =
                     Convert.ToDouble(aItem.ItemQuantity.GetValueOrDefault() - pitm.DFQtyAllocated);
 

@@ -8,6 +8,6 @@ namespace AdjustmentQS.Business.Services
     {
         [OperationContract]
         [FaultContract(typeof(ValidationFault))]
-        Task CreateOPS(string filterExpression, bool perInvoice, int asycudaDocumentSetId);
+        Task CreateOPS(string filterExpression, bool perInvoice, string adjustmentType, int asycudaDocumentSetId);
     }
 }

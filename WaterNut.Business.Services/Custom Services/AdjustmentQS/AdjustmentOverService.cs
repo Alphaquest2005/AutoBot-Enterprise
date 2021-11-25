@@ -62,7 +62,7 @@ namespace AdjustmentQS.Business.Services
                         .Where(x => x.ApplicationSettingsId == docSet.ApplicationSettingsId)
                         .Where(filterExpression)
                         //.Where(x => !entryDataDetailsIds.Any() || entryDataDetailsIds.Any(z => z == x.EntryDataDetailsId))
-                        .Where(x => (x.EffectiveDate != null || x.EffectiveDate > DateTime.MinValue))
+                        .Where(x => x.EffectiveDate != null || x.EffectiveDate > DateTime.MinValue)
                         .OrderBy(x => x.EffectiveDate);
                     }
                         
@@ -158,9 +158,9 @@ namespace AdjustmentQS.Business.Services
         
 
        
-        public async Task CreateOPS(string filterExpression, bool perInvoice, int asycudaDocumentSetId)
+        public async Task CreateOPS(string filterExpression, bool perInvoice, string adjustmentType, int asycudaDocumentSetId)
         {
-            await CreateOPS(filterExpression, perInvoice, asycudaDocumentSetId,"ADJ", null).ConfigureAwait(false);
+            await CreateOPS(filterExpression, perInvoice, asycudaDocumentSetId,adjustmentType, null).ConfigureAwait(false);
         }
     }
 }

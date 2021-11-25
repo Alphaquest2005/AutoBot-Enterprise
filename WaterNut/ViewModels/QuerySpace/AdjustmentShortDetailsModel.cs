@@ -26,7 +26,11 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
             EmailDateFilter = DateTime.MinValue;
             _startEmailDateFilter = DateTime.MinValue;
             _endEmailDateFilter = DateTime.MinValue;
-            
+
+            InvoiceDateFilter = DateTime.MinValue;
+            _startInvoiceDateFilter = DateTime.MinValue;
+            _endInvoiceDateFilter = DateTime.MinValue;
+
         }
 
 
@@ -224,7 +228,7 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
             }
             if (_viewMatches)
             {
-                res.Append(@" && EntryDataDetailAllocations.Any()");
+                res.Append(@" && Status == null");
             }
 
             if (_viewSelected)
@@ -235,7 +239,7 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
                     var slst = BuildOSLst(lst);
                     //remove comma
 
-                    res.Append(slst);
+                    res.Append($@" && ({slst})");
                 }
             }
 
@@ -252,9 +256,16 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
 
         
 
-        private async Task BuildOSLst(List<AdjustmentEx> lst)
+        private string BuildOSLst(List<AdjustmentEx> lst)
         {
-           // await AdjustmentExRepository.Instance.BuildOSLst(lst.Select(x => x.AdjustmentsId).ToList()).ConfigureAwait(false);
+            // res.Append($@" && EntryDataId == ""{BaseViewModel.Instance.CurrentAdjustmentEx.EntityId}""")
+            return lst.Where(x => x?.InvoiceNo != null).Select(x => x.InvoiceNo.ToString()).Aggregate(new StringBuilder(), (o, n) =>
+            {
+                //if (o.Length > 0) o.Append($"EntryDataId =={o}");
+                o.Append($" EntryDataId == \"{n}\" ||");
+                return o;
+                
+            }).ToString().TrimEnd('|',' ');
         }
 
 

@@ -1053,6 +1053,10 @@ FROM [dbo].[TODO-PreDiscrepancyErrors] AS [TODO-PreDiscrepancyErrors]</DefiningQ
           </AssociationSet>
           <EntitySet Name="TODO_PreDiscrepancyErrors" EntityType="Model.TODO_PreDiscrepancyErrors" />
           <EntitySet Name="TODO_AdjustmentOversToXML" EntityType="Model.TODO_AdjustmentOversToXML" />
+          <AssociationSet Name="AdjustmentExEntryDataDetail" Association="Model.AdjustmentExEntryDataDetail">
+            <End Role="AdjustmentEx" EntitySet="AdjustmentExes" />
+            <End Role="EntryDataDetail" EntitySet="EntryDataDetails" />
+          </AssociationSet>
           </EntityContainer>
         <EntityType Name="AsycudaSalesAllocation">
           <Key>
@@ -1112,6 +1116,7 @@ FROM [dbo].[TODO-PreDiscrepancyErrors] AS [TODO-PreDiscrepancyErrors]</DefiningQ
           <Property Name="InvoiceTotal" Type="Double" />
           <Property Name="ImportedTotal" Type="Double" />
           <Property Name="EntryData_Id" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="EntryDataDetails" Relationship="Model.AdjustmentExEntryDataDetail" FromRole="AdjustmentEx" ToRole="EntryDataDetail" />
         </EntityType>
         <Association Name="AdjustmentExAsycudaDocumentSetEntryData">
           <End Type="Model.AdjustmentEx" Role="AdjustmentEx" Multiplicity="1" />
@@ -1287,6 +1292,7 @@ FROM [dbo].[TODO-PreDiscrepancyErrors] AS [TODO-PreDiscrepancyErrors]</DefiningQ
           <Property Name="EntryDataDetailsKey" Type="String" MaxLength="4000" FixedLength="false" Unicode="true" annotation:StoreGeneratedPattern="Computed" />
           <Property Name="TotalValue" Type="Double" Nullable="false" annotation:StoreGeneratedPattern="Computed" />
           <Property Name="CLineNumber" Type="Int32" />
+          <NavigationProperty Name="AdjustmentEx" Relationship="Model.AdjustmentExEntryDataDetail" FromRole="EntryDataDetail" ToRole="AdjustmentEx" />
         </EntityType>
         <Association Name="FK_AsycudaSalesAllocations_EntryDataDetails">
           <End Type="Model.EntryDataDetail" Role="EntryDataDetail" Multiplicity="0..1">
@@ -1792,6 +1798,18 @@ FROM [dbo].[TODO-PreDiscrepancyErrors] AS [TODO-PreDiscrepancyErrors]</DefiningQ
           <Property Name="EmailDate" Type="DateTime" Precision="3" />
           <Property Name="AlreadyExecuted" Type="Int32" Nullable="false" />
         </EntityType>
+        <Association Name="AdjustmentExEntryDataDetail">
+          <End Type="Model.AdjustmentEx" Role="AdjustmentEx" Multiplicity="1" />
+          <End Type="Model.EntryDataDetail" Role="EntryDataDetail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AdjustmentEx">
+              <PropertyRef Name="EntryData_Id" />
+            </Principal>
+            <Dependent Role="EntryDataDetail">
+              <PropertyRef Name="EntryData_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->

@@ -25,9 +25,9 @@ namespace WaterNut.Views
 
         private AdjustmentShortDetailsModel im;
 
-        private void Send2Excel(object sender, MouseButtonEventArgs e)
+        private async void Send2Excel(object sender, MouseButtonEventArgs e)
         {
-
+           await im.Send2Excel().ConfigureAwait(false);
         }
 
         private void TextBox_PreviewKeyDown(object sender, KeyEventArgs e)
