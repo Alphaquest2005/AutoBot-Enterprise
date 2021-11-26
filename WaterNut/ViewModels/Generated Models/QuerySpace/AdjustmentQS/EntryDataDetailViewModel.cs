@@ -55,6 +55,8 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
 
  
 			RegisterToReceiveMessages<InventoryItemsEx>(MessageToken.CurrentInventoryItemsExChanged, OnCurrentInventoryItemsExChanged);
+ 
+			RegisterToReceiveMessages<AdjustmentEx>(MessageToken.CurrentAdjustmentExChanged, OnCurrentAdjustmentExChanged);
 
  			// Recieve messages for Core Current Entities Changed
  
@@ -142,6 +144,10 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
                    // {
                    //    if(InventoryItemsExes.Contains(CurrentEntryDataDetail.InventoryItemsEx) == false) InventoryItemsExes.Add(CurrentEntryDataDetail.InventoryItemsEx);
                     //}
+                    //if (e.PropertyName == "AddAdjustmentEx")
+                   // {
+                   //    if(AdjustmentExes.Contains(CurrentEntryDataDetail.AdjustmentEx) == false) AdjustmentExes.Add(CurrentEntryDataDetail.AdjustmentEx);
+                    //}
                  } 
         internal virtual void OnEntryDataDetailsChanged(object sender, NotificationEventArgs e)
         {
@@ -167,6 +173,23 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
 				NotifyPropertyChanged(x => this.EntryDataDetails);
                 // SendMessage(MessageToken.EntryDataDetailsChanged, new NotificationEventArgs(MessageToken.EntryDataDetailsChanged));
                 			}
+	
+		 internal virtual void OnCurrentAdjustmentExChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<AdjustmentEx> e)
+			{
+			if(ViewCurrentAdjustmentEx == false) return;
+			if (e.Data == null || e.Data.EntryData_Id == null)
+                {
+                    vloader.FilterExpression = "None";
+                }
+                else
+                {
+				vloader.FilterExpression = string.Format("EntryData_Id == {0}", e.Data.EntryData_Id.ToString());
+                 }
+
+				EntryDataDetails.Refresh();
+				NotifyPropertyChanged(x => this.EntryDataDetails);
+                // SendMessage(MessageToken.EntryDataDetailsChanged, new NotificationEventArgs(MessageToken.EntryDataDetailsChanged));
+                			}
 
   			// Core Current Entities Changed
 			// theorticall don't need this cuz i am inheriting from core entities baseview model so changes should flow up to here
@@ -184,6 +207,21 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
              {
                  _viewCurrentInventoryItemsEx = value;
                  NotifyPropertyChanged(x => x.ViewCurrentInventoryItemsEx);
+                FilterData();
+             }
+         }
+ 	
+		 bool _viewCurrentAdjustmentEx = false;
+         public bool ViewCurrentAdjustmentEx
+         {
+             get
+             {
+                 return _viewCurrentAdjustmentEx;
+             }
+             set
+             {
+                 _viewCurrentAdjustmentEx = value;
+                 NotifyPropertyChanged(x => x.ViewCurrentAdjustmentEx);
                 FilterData();
              }
          }

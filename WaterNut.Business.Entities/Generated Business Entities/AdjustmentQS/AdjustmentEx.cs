@@ -27,6 +27,7 @@ namespace AdjustmentQS.Business.Entities
             this.AdjustmentOvers = new List<AdjustmentOver>();
             this.AdjustmentShorts = new List<AdjustmentShort>();
             this.AdjustmentDetails = new List<AdjustmentDetail>();
+            this.EntryDataDetails = new List<EntryDataDetail>();
         }
 
         [DataMember]
@@ -234,6 +235,8 @@ namespace AdjustmentQS.Business.Entities
         public List<AdjustmentShort> AdjustmentShorts { get; set; }
         [DataMember]
         public List<AdjustmentDetail> AdjustmentDetails { get; set; }
+        [DataMember]
+        public List<EntryDataDetail> EntryDataDetails { get; set; }
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

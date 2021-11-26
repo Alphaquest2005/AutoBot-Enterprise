@@ -493,6 +493,22 @@ namespace AdjustmentQS.Client.DTO
 		}
         private ChangeTrackingCollection<AdjustmentOversAllocation> _AdjustmentOversAllocations = new ChangeTrackingCollection<AdjustmentOversAllocation>();
 
+        [DataMember]
+        public AdjustmentEx AdjustmentEx
+		{
+		    get { return _AdjustmentEx; }
+			set
+			{
+			    if (value == _AdjustmentEx) return;
+				_AdjustmentEx = value;
+                AdjustmentExChangeTracker = _AdjustmentEx == null ? null
+                    : new ChangeTrackingCollection<AdjustmentEx> { _AdjustmentEx };
+				NotifyPropertyChanged();//m => this.AdjustmentEx
+			}
+		}
+        private AdjustmentEx _AdjustmentEx;
+        private ChangeTrackingCollection<AdjustmentEx> AdjustmentExChangeTracker { get; set; }
+
    //     [DataMember]
    //     public TrackingState TrackingState { get; set; }
 

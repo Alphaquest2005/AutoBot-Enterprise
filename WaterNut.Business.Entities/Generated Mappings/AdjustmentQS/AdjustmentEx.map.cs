@@ -31,6 +31,7 @@
               this.HasMany(t => t.AdjustmentOvers).WithRequired(t => (AdjustmentEx)t.AdjustmentEx);
               this.HasMany(t => t.AdjustmentShorts).WithRequired(t => (AdjustmentEx)t.AdjustmentEx);
               this.HasMany(t => t.AdjustmentDetails).WithRequired(t => (AdjustmentEx)t.AdjustmentEx);
+              this.HasMany(t => t.EntryDataDetails).WithRequired(t => (AdjustmentEx)t.AdjustmentEx);
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);
     			this.Ignore(t => t.ModifiedProperties);

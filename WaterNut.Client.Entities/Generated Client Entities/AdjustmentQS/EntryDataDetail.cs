@@ -719,6 +719,59 @@ public Nullable<int> CLineNumber
             }
         }
 
+       private AdjustmentEx _AdjustmentEx;
+        public  AdjustmentEx AdjustmentEx
+		{
+		    get
+               { 
+                  if (this.entrydatadetail != null)
+                   {
+                       if (_AdjustmentEx != null)
+                       {
+                           if (this.entrydatadetail.AdjustmentEx !=
+                               _AdjustmentEx.DTO)
+                           {
+                                if (this.entrydatadetail.AdjustmentEx  != null)
+                               _AdjustmentEx = new AdjustmentEx(this.entrydatadetail.AdjustmentEx);
+                           }
+                       }
+                       else
+                       {
+                             if (this.entrydatadetail.AdjustmentEx  != null)
+                           _AdjustmentEx = new AdjustmentEx(this.entrydatadetail.AdjustmentEx);
+                       }
+                   }
+
+
+             //       if (_AdjustmentEx != null) return _AdjustmentEx;
+                       
+             //       var i = new AdjustmentEx(){TrackingState = TrackingState.Added};
+			//		//if (this.entrydatadetail.AdjustmentEx == null) Debugger.Break();
+			//		if (this.entrydatadetail.AdjustmentEx != null)
+            //        {
+            //           i. = this.entrydatadetail.AdjustmentEx;
+            //        }
+            //        else
+            //        {
+            //            this.entrydatadetail.AdjustmentEx = i.;
+             //       }
+                           
+            //        _AdjustmentEx = i;
+                     
+                    return _AdjustmentEx;
+               }
+			set
+			{
+			    if (value == _AdjustmentEx) return;
+                _AdjustmentEx = value;
+                if(value != null)
+                     this.entrydatadetail.AdjustmentEx = value.DTO;
+				if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+                NotifyPropertyChanged("AdjustmentEx");
+			}
+		}
+        
+
 
         ChangeTrackingCollection<DTO.EntryDataDetail> _changeTracker;    
         public ChangeTrackingCollection<DTO.EntryDataDetail> ChangeTracker

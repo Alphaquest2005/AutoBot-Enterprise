@@ -253,6 +253,12 @@ namespace EntryDataDS.Business.Services
                                         GetWhere<ShipmentBLFreight>(dbContext, exp, itm.Value, "ShipmentFreight", "Select", includesLst)
 										.ConfigureAwait(continueOnCapturedContext: false);
 
+                            case "ShipmentFreightManifests":
+                                return
+                                    await
+                                        GetWhere<ShipmentFreightManifests>(dbContext, exp, itm.Value, "ShipmentFreight", "Select", includesLst)
+										.ConfigureAwait(continueOnCapturedContext: false);
+
                         }
 
                     }
@@ -761,6 +767,9 @@ namespace EntryDataDS.Business.Services
                             case "ShipmentBLFreight":
                                 return await CountWhere<ShipmentBLFreight>(dbContext, exp, itm.Value, "ShipmentFreight", "Select")
 											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "ShipmentFreightManifests":
+                                return await CountWhere<ShipmentFreightManifests>(dbContext, exp, itm.Value, "ShipmentFreight", "Select")
+											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }
                     return await dbContext.ShipmentFreight.Where(exp == "All" || exp == null ? "Id != null" : exp)
@@ -883,6 +892,12 @@ namespace EntryDataDS.Business.Services
                                 return
                                     await
                                         LoadRangeWhere<ShipmentBLFreight>(startIndex, count, dbContext, exp, itm.Value, "ShipmentFreight", "Select")
+													.ConfigureAwait(continueOnCapturedContext: false);
+
+                            case "ShipmentFreightManifests":
+                                return
+                                    await
+                                        LoadRangeWhere<ShipmentFreightManifests>(startIndex, count, dbContext, exp, itm.Value, "ShipmentFreight", "Select")
 													.ConfigureAwait(continueOnCapturedContext: false);
 
                           
@@ -1101,6 +1116,7 @@ namespace EntryDataDS.Business.Services
                                                     // .Include(x => x.ShipmentFreightDetails)									  
                                                     // .Include(x => x.ShipmentAttachedFreight)									  
                                                     // .Include(x => x.ShipmentBLFreight)									  
+                                                    // .Include(x => x.ShipmentFreightManifests)									  
                                       .AsNoTracking()
                                         .Where(x => x.EmailId.ToString() == EmailId.ToString())
 										.ToListAsync()
@@ -1133,6 +1149,7 @@ namespace EntryDataDS.Business.Services
                                                     // .Include(x => x.ShipmentFreightDetails)									  
                                                     // .Include(x => x.ShipmentAttachedFreight)									  
                                                     // .Include(x => x.ShipmentBLFreight)									  
+                                                    // .Include(x => x.ShipmentFreightManifests)									  
                                       .AsNoTracking()
                                         .Where(x => x.FileTypeId.ToString() == FileTypeId.ToString())
 										.ToListAsync()
@@ -1165,6 +1182,7 @@ namespace EntryDataDS.Business.Services
                                                     // .Include(x => x.ShipmentFreightDetails)									  
                                                     // .Include(x => x.ShipmentAttachedFreight)									  
                                                     // .Include(x => x.ShipmentBLFreight)									  
+                                                    // .Include(x => x.ShipmentFreightManifests)									  
                                       .AsNoTracking()
                                         .Where(x => x.ApplicationSettingsId.ToString() == ApplicationSettingsId.ToString())
 										.ToListAsync()
@@ -1248,6 +1266,9 @@ namespace EntryDataDS.Business.Services
 											.ConfigureAwait(continueOnCapturedContext: false);
                             case "ShipmentBLFreight":
                                 return await SumWhere<ShipmentBLFreight>(dbContext, exp, itm.Value, "ShipmentFreight", field, "Select")
+											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "ShipmentFreightManifests":
+                                return await SumWhere<ShipmentFreightManifests>(dbContext, exp, itm.Value, "ShipmentFreight", field, "Select")
 											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }

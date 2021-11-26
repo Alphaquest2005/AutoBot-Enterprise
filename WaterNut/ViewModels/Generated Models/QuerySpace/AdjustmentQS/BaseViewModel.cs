@@ -685,6 +685,7 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
                  CurrentAdjustmentOver = null;
                  CurrentAdjustmentShort = null;
                  CurrentAdjustmentDetail = null;
+                 CurrentEntryDataDetail = null;
    
                 }
             }

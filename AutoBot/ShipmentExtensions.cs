@@ -177,6 +177,7 @@ namespace AutoBotUtilities
                 var freights = ctx.ShipmentFreight
                     .Include("ShipmentFreightDetails.ShipmentFreightBLs.ShipmentBLDetails")
                     .Include(x => x.ShipmentBLFreight)
+                    .Include(x => x.ShipmentFreightManifests)
                     .Where(x => x.EmailId == shipment.EmailId).AsEnumerable()
                     .DistinctBy(x => x.Id)
                     .ToList();
@@ -425,6 +426,7 @@ namespace AutoBotUtilities
                         .SelectMany(x => ctx.ShipmentFreight
                             .Include("ShipmentFreightDetails.ShipmentFreightBLs.ShipmentBLDetails")
                             .Include(z => z.ShipmentBLFreight)
+                            .Include(z => z.ShipmentFreightManifests)
                             .Where(z => z.Id == x.FreightId))
                         .DistinctBy(x => x.Id)
                         .ToList();
@@ -437,7 +439,21 @@ namespace AutoBotUtilities
                         .SelectMany(x => ctx.ShipmentFreight
                             .Include("ShipmentFreightDetails.ShipmentFreightBLs.ShipmentBLDetails")
                             .Include(z => z.ShipmentBLFreight)
+                            .Include(z => z.ShipmentFreightManifests)
                             .Where(z => z.Id == x.FreightInvoiceId))
+                        .DistinctBy(x => x.Id)
+                        .ToList();
+                    freightList.AddRange(frightBls);
+
+                    var manifestFreight = shipment.ShipmentAttachedManifest
+                        .SelectMany(x => x.ShipmentManifest.ShipmentFreightManifests)
+                        .DistinctBy(x => x.FreightId)
+                        .Where(x => freightList.All(z => z.Id != x.FreightId))
+                        .SelectMany(x => ctx.ShipmentFreight
+                            .Include("ShipmentFreightDetails.ShipmentFreightBLs.ShipmentBLDetails")
+                            .Include(z => z.ShipmentBLFreight)
+                            .Include(z => z.ShipmentFreightManifests)
+                            .Where(z => z.Id == x.FreightId))
                         .DistinctBy(x => x.Id)
                         .ToList();
                     freightList.AddRange(frightBls);
@@ -449,6 +465,7 @@ namespace AutoBotUtilities
                         .SelectMany(x => ctx.ShipmentFreight
                             .Include("ShipmentFreightDetails.ShipmentFreightBLs.ShipmentBLDetails")
                             .Include(z => z.ShipmentBLFreight)
+                            .Include(z => z.ShipmentFreightManifests)
                             .Where(z => z.ShipmentFreightDetails.Any(f => f.WarehouseCode == x.WarehouseCode))
                             .ToList()
                             .DistinctBy(f => f.Id)
@@ -504,6 +521,18 @@ namespace AutoBotUtilities
                             .First(z => z.Id == x.ManifestId))
                         .ToList();
                     manifests.AddRange(riderManifests);
+
+
+                    var freightManifests = shipment.ShipmentAttachedFreight
+                        .SelectMany(x => x.ShipmentFreight.ShipmentFreightManifests)
+                        .DistinctBy(x => x.ManifestId)
+                        .Where(x => manifests.All(z => z.Id != x.ManifestId))
+                        .Select(x => ctx.ShipmentManifest
+                            .Include("ShipmentManifestBLs.ShipmentBL")
+                            .Include(z => z.ShipmentRiderManifests)
+                            .First(z => z.Id == x.ManifestId))
+                        .ToList();
+                    manifests.AddRange(freightManifests);
 
 
 

@@ -18,7 +18,7 @@ using System.Threading.Tasks;
 
 using System.Linq.Dynamic;
 using System.ComponentModel.Composition;
-using AdjustmentQS.Business.Entities;
+using EntryDataDS.Business.Entities;
 using Core.Common.Contracts;
 using Core.Common.Business.Services;
 using Core.Common.UI;
@@ -30,25 +30,25 @@ using TrackableEntities.Common;
 using TrackableEntities.EF6;
 using WaterNut.Interfaces;
 
-namespace AdjustmentQS.Business.Services
+namespace EntryDataDS.Business.Services
 {
-   [Export (typeof(IAdjustmentExService))]
+   [Export (typeof(IShipmentFreightManifestsService))]
    [Export(typeof(IBusinessService))]
    [PartCreationPolicy(CreationPolicy.NonShared)]
    [ServiceBehavior(InstanceContextMode = InstanceContextMode.PerCall,
                     ConcurrencyMode = ConcurrencyMode.Multiple)]
    
-    public partial class AdjustmentExService : IAdjustmentExService, IDisposable
+    public partial class ShipmentFreightManifestsService : IShipmentFreightManifestsService, IDisposable
     {
-        //private readonly AdjustmentQSContext dbContext;
+        //private readonly EntryDataDSContext dbContext;
 
         public bool StartTracking { get; set; }
 
-        public AdjustmentExService()
+        public ShipmentFreightManifestsService()
         {
             try
             {
-                // dbContext = new AdjustmentQSContext(){StartTracking = StartTracking};
+                // dbContext = new EntryDataDSContext(){StartTracking = StartTracking};
                 StartTracking = false;
              }
             catch (Exception updateEx)
@@ -65,17 +65,17 @@ namespace AdjustmentQS.Business.Services
             }
         }
 
-        public async Task<IEnumerable<AdjustmentEx>> GetAdjustmentExes(List<string> includesLst = null, bool tracking = true)
+        public async Task<IEnumerable<ShipmentFreightManifests>> GetShipmentFreightManifests(List<string> includesLst = null, bool tracking = true)
         {
             try
             {
             //using (var scope = new TransactionScope(TransactionScopeOption.Required,
                                    //new TransactionOptions() {IsolationLevel = IsolationLevel.ReadUncommitted}))
                // {
-                  using ( var dbContext = new AdjustmentQSContext(){StartTracking = StartTracking})
+                  using ( var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
                   {
 				    var set = AddIncludes(includesLst, dbContext);
-                    IEnumerable<AdjustmentEx> entities = await set.AsNoTracking().ToListAsync()
+                    IEnumerable<ShipmentFreightManifests> entities = await set.AsNoTracking().ToListAsync()
 													       .ConfigureAwait(continueOnCapturedContext: false);
                            //scope.Complete();
                             if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
@@ -98,16 +98,16 @@ namespace AdjustmentQS.Business.Services
         }
 
 
-        public async Task<AdjustmentEx> GetAdjustmentExByKey(string EntryData_Id, List<string> includesLst = null, bool tracking = true)
+        public async Task<ShipmentFreightManifests> GetShipmentFreightManifestsByKey(string Id, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
-			   if(string.IsNullOrEmpty(EntryData_Id))return null; 
-              using ( var dbContext = new AdjustmentQSContext(){StartTracking = StartTracking})
+			   if(string.IsNullOrEmpty(Id))return null; 
+              using ( var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
               {
-                var i = Convert.ToInt32(EntryData_Id);
+                var i = Convert.ToInt32(Id);
 				var set = AddIncludes(includesLst, dbContext);
-                AdjustmentEx entity = await set.AsNoTracking().SingleOrDefaultAsync(x => x.EntryData_Id == i).ConfigureAwait(continueOnCapturedContext: false);
+                ShipmentFreightManifests entity = await set.AsNoTracking().SingleOrDefaultAsync(x => x.Id == i).ConfigureAwait(continueOnCapturedContext: false);
                 if(tracking && entity != null) entity.StartTracking();
                 return entity;
               }
@@ -127,14 +127,14 @@ namespace AdjustmentQS.Business.Services
         }
 
 
-		 public async Task<IEnumerable<AdjustmentEx>> GetAdjustmentExesByExpression(string exp, List<string> includesLst = null, bool tracking = true)
+		 public async Task<IEnumerable<ShipmentFreightManifests>> GetShipmentFreightManifestsByExpression(string exp, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
-                using (var dbContext = new AdjustmentQSContext(){StartTracking = StartTracking})
+                using (var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-					if (string.IsNullOrEmpty(exp) || exp == "None") return new List<AdjustmentEx>();
+					if (string.IsNullOrEmpty(exp) || exp == "None") return new List<ShipmentFreightManifests>();
 					var set = AddIncludes(includesLst, dbContext);
                     if (exp == "All")
                     {
@@ -170,14 +170,14 @@ namespace AdjustmentQS.Business.Services
             }
         }
 
-		 public async Task<IEnumerable<AdjustmentEx>> GetAdjustmentExesByExpressionLst(List<string> expLst, List<string> includesLst = null, bool tracking = true)
+		 public async Task<IEnumerable<ShipmentFreightManifests>> GetShipmentFreightManifestsByExpressionLst(List<string> expLst, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
-                using (var dbContext = new AdjustmentQSContext(){StartTracking = StartTracking})
+                using (var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-					if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return new List<AdjustmentEx>();
+					if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return new List<ShipmentFreightManifests>();
 					var set = AddIncludes(includesLst, dbContext);
                     if (expLst.FirstOrDefault() == "All")
                     {
@@ -212,16 +212,16 @@ namespace AdjustmentQS.Business.Services
             }
         }
 
-		public async Task<IEnumerable<AdjustmentEx>> GetAdjustmentExesByExpressionNav(string exp,
+		public async Task<IEnumerable<ShipmentFreightManifests>> GetShipmentFreightManifestsByExpressionNav(string exp,
 																							  Dictionary<string, string> navExp,
 																							  List<string> includesLst = null, bool tracking = true)
         {
             try
             {
-                using (var dbContext = new AdjustmentQSContext(){StartTracking = StartTracking})
+                using (var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-                    if (string.IsNullOrEmpty(exp) || exp == "None") return new List<AdjustmentEx>();
+                    if (string.IsNullOrEmpty(exp) || exp == "None") return new List<ShipmentFreightManifests>();
 
                     if (exp == "All" && navExp.Count == 0)
                     {
@@ -235,40 +235,16 @@ namespace AdjustmentQS.Business.Services
                     {
                         switch (itm.Key)
                         {
-                            case "AsycudaDocumentSets":
+                            case "ShipmentFreight":
                                 return
                                     await
-                                        GetWhere<AsycudaDocumentSetEntryData>(dbContext, exp, itm.Value, "AdjustmentEx", "Select", includesLst)
+                                        GetWhere<ShipmentFreight>(dbContext, exp, itm.Value, "ShipmentFreightManifests", "SelectMany", includesLst)
 										.ConfigureAwait(continueOnCapturedContext: false);
 
-                            case "AsycudaDocuments":
+                            case "ShipmentManifest":
                                 return
                                     await
-                                        GetWhere<AsycudaDocumentEntryData>(dbContext, exp, itm.Value, "AdjustmentEx", "Select", includesLst)
-										.ConfigureAwait(continueOnCapturedContext: false);
-
-                            case "AdjustmentOvers":
-                                return
-                                    await
-                                        GetWhere<AdjustmentOver>(dbContext, exp, itm.Value, "AdjustmentEx", "Select", includesLst)
-										.ConfigureAwait(continueOnCapturedContext: false);
-
-                            case "AdjustmentShorts":
-                                return
-                                    await
-                                        GetWhere<AdjustmentShort>(dbContext, exp, itm.Value, "AdjustmentEx", "Select", includesLst)
-										.ConfigureAwait(continueOnCapturedContext: false);
-
-                            case "AdjustmentDetails":
-                                return
-                                    await
-                                        GetWhere<AdjustmentDetail>(dbContext, exp, itm.Value, "AdjustmentEx", "Select", includesLst)
-										.ConfigureAwait(continueOnCapturedContext: false);
-
-                            case "EntryDataDetails":
-                                return
-                                    await
-                                        GetWhere<EntryDataDetail>(dbContext, exp, itm.Value, "AdjustmentEx", "Select", includesLst)
+                                        GetWhere<ShipmentManifest>(dbContext, exp, itm.Value, "ShipmentFreightManifests", "SelectMany", includesLst)
 										.ConfigureAwait(continueOnCapturedContext: false);
 
                         }
@@ -297,17 +273,17 @@ namespace AdjustmentQS.Business.Services
             }
         }
 
-        public async Task<IEnumerable<AdjustmentEx>> GetAdjustmentExesByBatch(string exp,
+        public async Task<IEnumerable<ShipmentFreightManifests>> GetShipmentFreightManifestsByBatch(string exp,
             int totalrow, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
 
-                var res = new ConcurrentQueue<List<AdjustmentEx>>();
+                var res = new ConcurrentQueue<List<ShipmentFreightManifests>>();
 
 
 
-                if (string.IsNullOrEmpty(exp) || exp == "None") return new List<AdjustmentEx>();
+                if (string.IsNullOrEmpty(exp) || exp == "None") return new List<ShipmentFreightManifests>();
 
 
                 var batchSize = 500;
@@ -322,20 +298,20 @@ namespace AdjustmentQS.Business.Services
                     {
                         try
                         {
-                            using (var dbContext = new AdjustmentQSContext(){StartTracking = StartTracking})
+                            using (var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
                             {
                                 dbContext.Database.CommandTimeout = 0;
                                 dbContext.Configuration.AutoDetectChangesEnabled = false;
                                 //dbContext.Configuration.LazyLoadingEnabled = true;
                                 var set = AddIncludes(includesLst, dbContext);
-                                IQueryable<AdjustmentEx> dset;
+                                IQueryable<ShipmentFreightManifests> dset;
                                 if (exp == "All")
                                 {
-                                    dset = set.OrderBy(x => x.EntryData_Id);
+                                    dset = set.OrderBy(x => x.Id);
                                 }
                                 else
                                 {
-                                    dset = set.OrderBy(x => x.EntryData_Id).Where(exp);
+                                    dset = set.OrderBy(x => x.Id).Where(exp);
                                 }
 
                                 var lst = dset.AsNoTracking()
@@ -372,17 +348,17 @@ namespace AdjustmentQS.Business.Services
                 throw new FaultException<ValidationFault>(fault);
             }
         }
-        public async Task<IEnumerable<AdjustmentEx>> GetAdjustmentExesByBatchExpressionLst(List<string> expLst,
+        public async Task<IEnumerable<ShipmentFreightManifests>> GetShipmentFreightManifestsByBatchExpressionLst(List<string> expLst,
             int totalrow, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
 
-                var res = new ConcurrentQueue<List<AdjustmentEx>>();
+                var res = new ConcurrentQueue<List<ShipmentFreightManifests>>();
 
 
 
-                if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return new List<AdjustmentEx>();
+                if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return new List<ShipmentFreightManifests>();
 
 
                 var batchSize = 500;
@@ -397,21 +373,21 @@ namespace AdjustmentQS.Business.Services
                     {
                         try
                         {
-                            using (var dbContext = new AdjustmentQSContext(){StartTracking = StartTracking})
+                            using (var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
                             {
                                 dbContext.Database.CommandTimeout = 0;
                                 dbContext.Configuration.AutoDetectChangesEnabled = false;
                                 //dbContext.Configuration.LazyLoadingEnabled = true;
                                 var set = AddIncludes(includesLst, dbContext);
-                                IQueryable<AdjustmentEx> dset;
+                                IQueryable<ShipmentFreightManifests> dset;
                                 if (expLst.FirstOrDefault() == "All")
                                 {
-                                    dset = set.OrderBy(x => x.EntryData_Id);
+                                    dset = set.OrderBy(x => x.Id);
                                 }
                                 else
                                 {
                                     set = AddWheres(expLst, set);
-                                    dset = set.OrderBy(x => x.EntryData_Id);
+                                    dset = set.OrderBy(x => x.Id);
                                 }
 
                                 var lst = dset.AsNoTracking()
@@ -448,13 +424,13 @@ namespace AdjustmentQS.Business.Services
         }
 
 
-        public async Task<AdjustmentEx> UpdateAdjustmentEx(AdjustmentEx entity)
+        public async Task<ShipmentFreightManifests> UpdateShipmentFreightManifests(ShipmentFreightManifests entity)
         { 
-            using ( var dbContext = new AdjustmentQSContext(){StartTracking = StartTracking})
+            using ( var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
               {
                 try
                 {   
-                     var res = (AdjustmentEx) entity;
+                     var res = (ShipmentFreightManifests) entity;
                     if(res.TrackingState == TrackingState.Unchanged) res.TrackingState = TrackingState.Modified;                              
                     
                     dbContext.ApplyChanges(res);
@@ -530,14 +506,14 @@ namespace AdjustmentQS.Business.Services
            return entity;
         }
 
-        public async Task<AdjustmentEx> CreateAdjustmentEx(AdjustmentEx entity)
+        public async Task<ShipmentFreightManifests> CreateShipmentFreightManifests(ShipmentFreightManifests entity)
         {
             try
             {
-                var res = (AdjustmentEx) entity;
-              using ( var dbContext = new AdjustmentQSContext(){StartTracking = StartTracking})
+                var res = (ShipmentFreightManifests) entity;
+              using ( var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
               {
-                dbContext.AdjustmentExes.Add(res);
+                dbContext.ShipmentFreightManifests.Add(res);
                 await dbContext.SaveChangesAsync().ConfigureAwait(continueOnCapturedContext: false);
                 res.AcceptChanges();
                 return res;
@@ -557,21 +533,21 @@ namespace AdjustmentQS.Business.Services
             }
         }
 
-        public async Task<bool> DeleteAdjustmentEx(string EntryData_Id)
+        public async Task<bool> DeleteShipmentFreightManifests(string Id)
         {
             try
             {
-              using ( var dbContext = new AdjustmentQSContext(){StartTracking = StartTracking})
+              using ( var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
               {
-                var i = Convert.ToInt32(EntryData_Id);
-                AdjustmentEx entity = await dbContext.AdjustmentExes
-													.SingleOrDefaultAsync(x => x.EntryData_Id == i)
+                var i = Convert.ToInt32(Id);
+                ShipmentFreightManifests entity = await dbContext.ShipmentFreightManifests
+													.SingleOrDefaultAsync(x => x.Id == i)
 													.ConfigureAwait(continueOnCapturedContext: false);
                 if (entity == null)
                     return false;
 
-                    dbContext.AdjustmentExes.Attach(entity);
-                    dbContext.AdjustmentExes.Remove(entity);
+                    dbContext.ShipmentFreightManifests.Attach(entity);
+                    dbContext.ShipmentFreightManifests.Remove(entity);
                     await dbContext.SaveChangesAsync().ConfigureAwait(continueOnCapturedContext: false);
                     return true;
               }
@@ -590,19 +566,19 @@ namespace AdjustmentQS.Business.Services
             }
         }
 
-        public async Task<bool> RemoveSelectedAdjustmentEx(IEnumerable<string> lst)
+        public async Task<bool> RemoveSelectedShipmentFreightManifests(IEnumerable<string> lst)
         {
             try
             {
-                StatusModel.StartStatusUpdate("Removing AdjustmentEx", lst.Count());
+                StatusModel.StartStatusUpdate("Removing ShipmentFreightManifests", lst.Count());
                 var t = Task.Run(() =>
                 {
-                    using (var ctx = new AdjustmentExService())
+                    using (var ctx = new ShipmentFreightManifestsService())
                     {
                         foreach (var item in lst.ToList())
                         {
 
-                            ctx.DeleteAdjustmentEx(item).Wait();
+                            ctx.DeleteShipmentFreightManifests(item).Wait();
                             StatusModel.StatusUpdate();
                         }
                     }
@@ -633,11 +609,11 @@ namespace AdjustmentQS.Business.Services
         {
             try
             {
-                using (var dbContext = new AdjustmentQSContext(){StartTracking = StartTracking})
+                using (var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
                     if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return 0;
-                    var set = (IQueryable<AdjustmentEx>)dbContext.AdjustmentExes; 
+                    var set = (IQueryable<ShipmentFreightManifests>)dbContext.ShipmentFreightManifests; 
                     if (expLst.FirstOrDefault() == "All")
                     {
                         return await set.AsNoTracking().CountAsync()
@@ -670,12 +646,12 @@ namespace AdjustmentQS.Business.Services
         {
             try
             {
-                using (AdjustmentQSContext dbContext = new AdjustmentQSContext(){StartTracking = StartTracking})
+                using (EntryDataDSContext dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
                 {
                     if (string.IsNullOrEmpty(exp) || exp == "None") return 0;
                     if (exp == "All")
                     {
-                        return await dbContext.AdjustmentExes
+                        return await dbContext.ShipmentFreightManifests
                                     .AsNoTracking()
 									.CountAsync()
 									.ConfigureAwait(continueOnCapturedContext: false);
@@ -683,7 +659,7 @@ namespace AdjustmentQS.Business.Services
                     else
                     {
                         
-                        return await dbContext.AdjustmentExes
+                        return await dbContext.ShipmentFreightManifests
 									.AsNoTracking()
                                     .Where(exp)
 									.CountAsync()
@@ -705,19 +681,19 @@ namespace AdjustmentQS.Business.Services
             }
         }
         
-        public async Task<IEnumerable<AdjustmentEx>> LoadRange(int startIndex, int count, string exp)
+        public async Task<IEnumerable<ShipmentFreightManifests>> LoadRange(int startIndex, int count, string exp)
         {
             try
             {
-                using (var dbContext = new AdjustmentQSContext(){StartTracking = StartTracking})
+                using (var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-                    if (string.IsNullOrEmpty(exp) || exp == "None") return new List<AdjustmentEx>();
+                    if (string.IsNullOrEmpty(exp) || exp == "None") return new List<ShipmentFreightManifests>();
                     if (exp == "All")
                     {
-                        return await dbContext.AdjustmentExes
+                        return await dbContext.ShipmentFreightManifests
 										.AsNoTracking()
-                                        .OrderBy(y => y.EntryData_Id)
+                                        .OrderBy(y => y.Id)
 										.Skip(startIndex)
 										.Take(count)
 										.ToListAsync()
@@ -726,10 +702,10 @@ namespace AdjustmentQS.Business.Services
                     else
                     {
                         
-                        return await dbContext.AdjustmentExes
+                        return await dbContext.ShipmentFreightManifests
 										.AsNoTracking()
                                         .Where(exp)
-										.OrderBy(y => y.EntryData_Id)
+										.OrderBy(y => y.Id)
 										.Skip(startIndex)
 										.Take(count)
 										.ToListAsync()
@@ -756,12 +732,12 @@ namespace AdjustmentQS.Business.Services
             try
             {
                 if (string.IsNullOrEmpty(exp) || exp == "None") return 0;
-                using (var dbContext = new AdjustmentQSContext(){StartTracking = StartTracking})
+                using (var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
                     if (exp == "All" && navExp.Count == 0)
                     {
-                        return await dbContext.AdjustmentExes
+                        return await dbContext.ShipmentFreightManifests
 										.AsNoTracking()
                                         .CountAsync()
 										.ConfigureAwait(continueOnCapturedContext: false);
@@ -770,27 +746,15 @@ namespace AdjustmentQS.Business.Services
                     {
                         switch (itm.Key)
                         {
-                            case "AsycudaDocumentSets":
-                                return await CountWhere<AsycudaDocumentSetEntryData>(dbContext, exp, itm.Value, "AdjustmentEx", "Select")
+                            case "ShipmentFreight":
+                                return await CountWhere<ShipmentFreight>(dbContext, exp, itm.Value, "ShipmentFreightManifests", "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "AsycudaDocuments":
-                                return await CountWhere<AsycudaDocumentEntryData>(dbContext, exp, itm.Value, "AdjustmentEx", "Select")
-											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "AdjustmentOvers":
-                                return await CountWhere<AdjustmentOver>(dbContext, exp, itm.Value, "AdjustmentEx", "Select")
-											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "AdjustmentShorts":
-                                return await CountWhere<AdjustmentShort>(dbContext, exp, itm.Value, "AdjustmentEx", "Select")
-											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "AdjustmentDetails":
-                                return await CountWhere<AdjustmentDetail>(dbContext, exp, itm.Value, "AdjustmentEx", "Select")
-											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "EntryDataDetails":
-                                return await CountWhere<EntryDataDetail>(dbContext, exp, itm.Value, "AdjustmentEx", "Select")
+                            case "ShipmentManifest":
+                                return await CountWhere<ShipmentManifest>(dbContext, exp, itm.Value, "ShipmentFreightManifests", "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }
-                    return await dbContext.AdjustmentExes.Where(exp == "All" || exp == null ? "EntryData_Id != null" : exp)
+                    return await dbContext.ShipmentFreightManifests.Where(exp == "All" || exp == null ? "Id != null" : exp)
 											.AsNoTracking()
                                             .CountAsync()
 											.ConfigureAwait(continueOnCapturedContext: false);
@@ -811,7 +775,7 @@ namespace AdjustmentQS.Business.Services
             }
         }
 
-		private static async Task<int> CountWhere<T>(AdjustmentQSContext dbContext, string exp, string navExp, string navProp, string rel) where T : class
+		private static async Task<int> CountWhere<T>(EntryDataDSContext dbContext, string exp, string navExp, string navProp, string rel) where T : class
         {
               switch (rel)
 		    {
@@ -825,17 +789,17 @@ namespace AdjustmentQS.Business.Services
 		    }
         }
 
-		private static async Task<int> CountWhereSelectMany<T>(AdjustmentQSContext dbContext, string exp, string navExp, string navProp) where T : class
+		private static async Task<int> CountWhereSelectMany<T>(EntryDataDSContext dbContext, string exp, string navExp, string navProp) where T : class
         {
 			try
 			{
             return await dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
-                .SelectMany(navProp).OfType<AdjustmentEx>()
-                .Where(exp == "All" || exp == null ? "EntryData_Id != null" : exp)
+                .SelectMany(navProp).OfType<ShipmentFreightManifests>()
+                .Where(exp == "All" || exp == null ? "Id != null" : exp)
                 .Distinct()
-                .OrderBy("EntryData_Id")
+                .OrderBy("Id")
                 .CountAsync()
 				.ConfigureAwait(continueOnCapturedContext: false);
 			}
@@ -846,17 +810,17 @@ namespace AdjustmentQS.Business.Services
 			}
         }
 
-		private static async Task<int> CountWhereSelect<T>(AdjustmentQSContext dbContext, string exp, string navExp, string navProp) where T : class
+		private static async Task<int> CountWhereSelect<T>(EntryDataDSContext dbContext, string exp, string navExp, string navProp) where T : class
         {
 			try
 			{
             return await dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
-                .Select(navProp).OfType<AdjustmentEx>()
-                .Where(exp == "All" || exp == null ? "EntryData_Id != null" : exp)
+                .Select(navProp).OfType<ShipmentFreightManifests>()
+                .Where(exp == "All" || exp == null ? "Id != null" : exp)
                 .Distinct()
-                .OrderBy("EntryData_Id")
+                .OrderBy("Id")
                 .CountAsync()
 				.ConfigureAwait(continueOnCapturedContext: false);
 			}
@@ -867,15 +831,15 @@ namespace AdjustmentQS.Business.Services
 			}
         }
 
-		  public async Task<IEnumerable<AdjustmentEx>> LoadRangeNav(int startIndex, int count, string exp,
+		  public async Task<IEnumerable<ShipmentFreightManifests>> LoadRangeNav(int startIndex, int count, string exp,
                                                                                  Dictionary<string, string> navExp, IEnumerable<string> includeLst = null)
         {
             try
             {
-                using (var dbContext = new AdjustmentQSContext(){StartTracking = StartTracking})
+                using (var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-                    if ((string.IsNullOrEmpty(exp) && navExp.Count == 0) || exp == "None") return new List<AdjustmentEx>();
+                    if ((string.IsNullOrEmpty(exp) && navExp.Count == 0) || exp == "None") return new List<ShipmentFreightManifests>();
                     var set = AddIncludes(includeLst, dbContext);
 
                     if (exp == "All" && navExp.Count == 0)
@@ -883,7 +847,7 @@ namespace AdjustmentQS.Business.Services
                        
                         return await set
 									.AsNoTracking()
-                                    .OrderBy(y => y.EntryData_Id)
+                                    .OrderBy(y => y.Id)
  
                                     .Skip(startIndex)
                                     .Take(count)
@@ -894,40 +858,16 @@ namespace AdjustmentQS.Business.Services
                     {
                         switch (itm.Key)
                         {
-                            case "AsycudaDocumentSets":
+                            case "ShipmentFreight":
                                 return
                                     await
-                                        LoadRangeWhere<AsycudaDocumentSetEntryData>(startIndex, count, dbContext, exp, itm.Value, "AdjustmentEx", "Select")
+                                        LoadRangeWhere<ShipmentFreight>(startIndex, count, dbContext, exp, itm.Value, "ShipmentFreightManifests", "SelectMany")
 													.ConfigureAwait(continueOnCapturedContext: false);
 
-                            case "AsycudaDocuments":
+                            case "ShipmentManifest":
                                 return
                                     await
-                                        LoadRangeWhere<AsycudaDocumentEntryData>(startIndex, count, dbContext, exp, itm.Value, "AdjustmentEx", "Select")
-													.ConfigureAwait(continueOnCapturedContext: false);
-
-                            case "AdjustmentOvers":
-                                return
-                                    await
-                                        LoadRangeWhere<AdjustmentOver>(startIndex, count, dbContext, exp, itm.Value, "AdjustmentEx", "Select")
-													.ConfigureAwait(continueOnCapturedContext: false);
-
-                            case "AdjustmentShorts":
-                                return
-                                    await
-                                        LoadRangeWhere<AdjustmentShort>(startIndex, count, dbContext, exp, itm.Value, "AdjustmentEx", "Select")
-													.ConfigureAwait(continueOnCapturedContext: false);
-
-                            case "AdjustmentDetails":
-                                return
-                                    await
-                                        LoadRangeWhere<AdjustmentDetail>(startIndex, count, dbContext, exp, itm.Value, "AdjustmentEx", "Select")
-													.ConfigureAwait(continueOnCapturedContext: false);
-
-                            case "EntryDataDetails":
-                                return
-                                    await
-                                        LoadRangeWhere<EntryDataDetail>(startIndex, count, dbContext, exp, itm.Value, "AdjustmentEx", "Select")
+                                        LoadRangeWhere<ShipmentManifest>(startIndex, count, dbContext, exp, itm.Value, "ShipmentFreightManifests", "SelectMany")
 													.ConfigureAwait(continueOnCapturedContext: false);
 
                           
@@ -936,10 +876,10 @@ namespace AdjustmentQS.Business.Services
 						}
 
                     }
-                    return await set//dbContext.AdjustmentExes
+                    return await set//dbContext.ShipmentFreightManifests
 								.AsNoTracking()
-                                .Where(exp == "All" || exp == null ? "EntryData_Id != null" : exp)
-								.OrderBy(y => y.EntryData_Id)
+                                .Where(exp == "All" || exp == null ? "Id != null" : exp)
+								.OrderBy(y => y.Id)
  
                                 .Skip(startIndex)
                                 .Take(count)
@@ -963,8 +903,8 @@ namespace AdjustmentQS.Business.Services
             }
         }
 
-		private static async Task<IEnumerable<AdjustmentEx>> LoadRangeWhere<T>(int startIndex, int count,
-            AdjustmentQSContext dbContext, string exp, string navExp, string navProp, string rel, IEnumerable<string> includeLst = null) where T : class
+		private static async Task<IEnumerable<ShipmentFreightManifests>> LoadRangeWhere<T>(int startIndex, int count,
+            EntryDataDSContext dbContext, string exp, string navExp, string navProp, string rel, IEnumerable<string> includeLst = null) where T : class
         {
              switch (rel)
 		    {
@@ -978,22 +918,22 @@ namespace AdjustmentQS.Business.Services
 		    }
         }
 
-		private static async Task<IEnumerable<AdjustmentEx>> LoadRangeSelectMany<T>(int startIndex, int count,
-            AdjustmentQSContext dbContext, string exp, string navExp, string navProp, IEnumerable<string> includeLst = null) where T : class
+		private static async Task<IEnumerable<ShipmentFreightManifests>> LoadRangeSelectMany<T>(int startIndex, int count,
+            EntryDataDSContext dbContext, string exp, string navExp, string navProp, IEnumerable<string> includeLst = null) where T : class
         {
 			try
 			{
             var set = dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
-                .SelectMany(navProp).OfType<AdjustmentEx>();
+                .SelectMany(navProp).OfType<ShipmentFreightManifests>();
     
             if (includeLst != null) set = includeLst.Aggregate(set, (current, itm) => current.Include(itm));            
 
             return await set
-                .Where(exp == "All" || exp == null ? "EntryData_Id != null" : exp)
+                .Where(exp == "All" || exp == null ? "Id != null" : exp)
                 .Distinct()
-                .OrderBy(y => y.EntryData_Id)
+                .OrderBy(y => y.Id)
  
                 .Skip(startIndex)
                 .Take(count)
@@ -1007,22 +947,22 @@ namespace AdjustmentQS.Business.Services
 			}
         }
 
-		private static async Task<IEnumerable<AdjustmentEx>> LoadRangeSelect<T>(int startIndex, int count,
-            AdjustmentQSContext dbContext, string exp, string navExp, string navProp, IEnumerable<string> includeLst = null) where T : class
+		private static async Task<IEnumerable<ShipmentFreightManifests>> LoadRangeSelect<T>(int startIndex, int count,
+            EntryDataDSContext dbContext, string exp, string navExp, string navProp, IEnumerable<string> includeLst = null) where T : class
         {
 			try
 			{
               var set = dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
-                .Select(navProp).OfType<AdjustmentEx>();
+                .Select(navProp).OfType<ShipmentFreightManifests>();
 
                if (includeLst != null) set = includeLst.Aggregate(set, (current, itm) => current.Include(itm)); 
                 
                return await set
-                .Where(exp == "All" || exp == null ? "EntryData_Id != null" : exp)
+                .Where(exp == "All" || exp == null ? "Id != null" : exp)
                 .Distinct()
-                .OrderBy(y => y.EntryData_Id)
+                .OrderBy(y => y.Id)
  
                 .Skip(startIndex)
                 .Take(count)
@@ -1036,7 +976,7 @@ namespace AdjustmentQS.Business.Services
 			}
         }
 
-        private static async Task<IEnumerable<AdjustmentEx>> GetWhere<T>(AdjustmentQSContext dbContext,
+        private static async Task<IEnumerable<ShipmentFreightManifests>> GetWhere<T>(EntryDataDSContext dbContext,
             string exp, string navExp, string navProp, string rel, List<string> includesLst = null) where T : class
         {
 			try
@@ -1060,7 +1000,7 @@ namespace AdjustmentQS.Business.Services
 			}
         }
 
-		private static async Task<IEnumerable<AdjustmentEx>> GetWhereSelectMany<T>(AdjustmentQSContext dbContext,
+		private static async Task<IEnumerable<ShipmentFreightManifests>> GetWhereSelectMany<T>(EntryDataDSContext dbContext,
             string exp, string navExp, string navProp, List<string> includesLst = null) where T : class
         {
 			try
@@ -1071,18 +1011,18 @@ namespace AdjustmentQS.Business.Services
 				return await dbContext.Set<T>()
 							.AsNoTracking()
                             .Where(navExp)
-							.SelectMany(navProp).OfType<AdjustmentEx>()
-							.Where(exp == "All" || exp == null?"EntryData_Id != null":exp)
+							.SelectMany(navProp).OfType<ShipmentFreightManifests>()
+							.Where(exp == "All" || exp == null?"Id != null":exp)
 							.Distinct()
 							.ToListAsync()
 							.ConfigureAwait(continueOnCapturedContext: false);
 			}
 
-			var set = (DbQuery<AdjustmentEx>)dbContext.Set<T>()
+			var set = (DbQuery<ShipmentFreightManifests>)dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
-                .SelectMany(navProp).OfType<AdjustmentEx>()
-                .Where(exp == "All" || exp == null?"EntryData_Id != null":exp)
+                .SelectMany(navProp).OfType<ShipmentFreightManifests>()
+                .Where(exp == "All" || exp == null?"Id != null":exp)
                 .Distinct();
 
 			set = includesLst.Aggregate(set, (current, itm) => current.Include(itm));
@@ -1097,7 +1037,7 @@ namespace AdjustmentQS.Business.Services
 			}
         }
 
-		private static async Task<IEnumerable<AdjustmentEx>> GetWhereSelect<T>(AdjustmentQSContext dbContext,
+		private static async Task<IEnumerable<ShipmentFreightManifests>> GetWhereSelect<T>(EntryDataDSContext dbContext,
             string exp, string navExp, string navProp, List<string> includesLst = null) where T : class
         {
 			try
@@ -1108,18 +1048,18 @@ namespace AdjustmentQS.Business.Services
 				return await dbContext.Set<T>()
 							.AsNoTracking()
                             .Where(navExp)
-							.Select(navProp).OfType<AdjustmentEx>()
-							.Where(exp == "All" || exp == null?"EntryData_Id != null":exp)
+							.Select(navProp).OfType<ShipmentFreightManifests>()
+							.Where(exp == "All" || exp == null?"Id != null":exp)
 							.Distinct()
 							.ToListAsync()
 							.ConfigureAwait(continueOnCapturedContext: false);
 			}
 
-			var set = (DbQuery<AdjustmentEx>)dbContext.Set<T>()
+			var set = (DbQuery<ShipmentFreightManifests>)dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
-                .Select(navProp).OfType<AdjustmentEx>()
-                .Where(exp == "All" || exp == null?"EntryData_Id != null":exp)
+                .Select(navProp).OfType<ShipmentFreightManifests>()
+                .Where(exp == "All" || exp == null?"Id != null":exp)
                 .Distinct();
 
 			set = includesLst.Aggregate(set, (current, itm) => current.Include(itm));
@@ -1134,23 +1074,17 @@ namespace AdjustmentQS.Business.Services
 			}
         }
 
-			        public async Task<IEnumerable<AdjustmentEx>> GetAdjustmentExByApplicationSettingsId(string ApplicationSettingsId, List<string> includesLst = null)
+			        public async Task<IEnumerable<ShipmentFreightManifests>> GetShipmentFreightManifestsByFreightDetailId(string FreightDetailId, List<string> includesLst = null)
         {
             try
             {
-                using ( var dbContext = new AdjustmentQSContext(){StartTracking = StartTracking})
+                using ( var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
               {
-                var i = Convert.ToInt32(ApplicationSettingsId);
+                var i = Convert.ToInt32(FreightDetailId);
                 var set = AddIncludes(includesLst, dbContext);
-                IEnumerable<AdjustmentEx> entities = await set//dbContext.AdjustmentExes
-                                                    // .Include(x => x.AsycudaDocumentSets)									  
-                                                    // .Include(x => x.AsycudaDocuments)									  
-                                                    // .Include(x => x.AdjustmentOvers)									  
-                                                    // .Include(x => x.AdjustmentShorts)									  
-                                                    // .Include(x => x.AdjustmentDetails)									  
-                                                    // .Include(x => x.EntryDataDetails)									  
+                IEnumerable<ShipmentFreightManifests> entities = await set//dbContext.ShipmentFreightManifests
                                       .AsNoTracking()
-                                        .Where(x => x.ApplicationSettingsId.ToString() == ApplicationSettingsId.ToString())
+                                        .Where(x => x.FreightDetailId.ToString() == FreightDetailId.ToString())
 										.ToListAsync()
 										.ConfigureAwait(continueOnCapturedContext: false);
                 return entities;
@@ -1169,23 +1103,17 @@ namespace AdjustmentQS.Business.Services
                     throw new FaultException<ValidationFault>(fault);
             }
         }
- 	        public async Task<IEnumerable<AdjustmentEx>> GetAdjustmentExByEmailId(string EmailId, List<string> includesLst = null)
+ 	        public async Task<IEnumerable<ShipmentFreightManifests>> GetShipmentFreightManifestsByFreightId(string FreightId, List<string> includesLst = null)
         {
             try
             {
-                using ( var dbContext = new AdjustmentQSContext(){StartTracking = StartTracking})
+                using ( var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
               {
-                var i = Convert.ToInt32(EmailId);
+                var i = Convert.ToInt32(FreightId);
                 var set = AddIncludes(includesLst, dbContext);
-                IEnumerable<AdjustmentEx> entities = await set//dbContext.AdjustmentExes
-                                                    // .Include(x => x.AsycudaDocumentSets)									  
-                                                    // .Include(x => x.AsycudaDocuments)									  
-                                                    // .Include(x => x.AdjustmentOvers)									  
-                                                    // .Include(x => x.AdjustmentShorts)									  
-                                                    // .Include(x => x.AdjustmentDetails)									  
-                                                    // .Include(x => x.EntryDataDetails)									  
+                IEnumerable<ShipmentFreightManifests> entities = await set//dbContext.ShipmentFreightManifests
                                       .AsNoTracking()
-                                        .Where(x => x.EmailId.ToString() == EmailId.ToString())
+                                        .Where(x => x.FreightId.ToString() == FreightId.ToString())
 										.ToListAsync()
 										.ConfigureAwait(continueOnCapturedContext: false);
                 return entities;
@@ -1204,23 +1132,17 @@ namespace AdjustmentQS.Business.Services
                     throw new FaultException<ValidationFault>(fault);
             }
         }
- 	        public async Task<IEnumerable<AdjustmentEx>> GetAdjustmentExByFileTypeId(string FileTypeId, List<string> includesLst = null)
+ 	        public async Task<IEnumerable<ShipmentFreightManifests>> GetShipmentFreightManifestsByManifestId(string ManifestId, List<string> includesLst = null)
         {
             try
             {
-                using ( var dbContext = new AdjustmentQSContext(){StartTracking = StartTracking})
+                using ( var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
               {
-                var i = Convert.ToInt32(FileTypeId);
+                var i = Convert.ToInt32(ManifestId);
                 var set = AddIncludes(includesLst, dbContext);
-                IEnumerable<AdjustmentEx> entities = await set//dbContext.AdjustmentExes
-                                                    // .Include(x => x.AsycudaDocumentSets)									  
-                                                    // .Include(x => x.AsycudaDocuments)									  
-                                                    // .Include(x => x.AdjustmentOvers)									  
-                                                    // .Include(x => x.AdjustmentShorts)									  
-                                                    // .Include(x => x.AdjustmentDetails)									  
-                                                    // .Include(x => x.EntryDataDetails)									  
+                IEnumerable<ShipmentFreightManifests> entities = await set//dbContext.ShipmentFreightManifests
                                       .AsNoTracking()
-                                        .Where(x => x.FileTypeId.ToString() == FileTypeId.ToString())
+                                        .Where(x => x.ManifestId.ToString() == ManifestId.ToString())
 										.ToListAsync()
 										.ConfigureAwait(continueOnCapturedContext: false);
                 return entities;
@@ -1244,18 +1166,18 @@ namespace AdjustmentQS.Business.Services
          {
              try
              {
-                 using (var dbContext = new AdjustmentQSContext(){StartTracking = StartTracking})
+                 using (var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
                  {
                     dbContext.Database.CommandTimeout = 0;
 					decimal res = 0;
                      if (string.IsNullOrEmpty(whereExp) || whereExp == "None") return 0;
                      if (whereExp == "All")
                      {
-                          res = Convert.ToDecimal(dbContext.AdjustmentExes.AsNoTracking().Sum(field));
+                          res = Convert.ToDecimal(dbContext.ShipmentFreightManifests.AsNoTracking().Sum(field));
                      }
                      else
                      {
-                         res = Convert.ToDecimal(dbContext.AdjustmentExes.AsNoTracking().Where(whereExp).Sum(field));
+                         res = Convert.ToDecimal(dbContext.ShipmentFreightManifests.AsNoTracking().Where(whereExp).Sum(field));
                      }
                      
                      return res;
@@ -1280,13 +1202,13 @@ namespace AdjustmentQS.Business.Services
             try
             {
                 if (string.IsNullOrEmpty(exp) || exp == "None") return 0;
-                using (var dbContext = new AdjustmentQSContext(){StartTracking = StartTracking})
+                using (var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-                    if (!dbContext.AdjustmentExes.Any()) return 0;
+                    if (!dbContext.ShipmentFreightManifests.Any()) return 0;
                     if (exp == "All" && navExp.Count == 0)
                     {
-                        return Convert.ToDecimal(dbContext.AdjustmentExes
+                        return Convert.ToDecimal(dbContext.ShipmentFreightManifests
 										.AsNoTracking()
                                         .Sum(field)??0);
                     }
@@ -1294,27 +1216,15 @@ namespace AdjustmentQS.Business.Services
                     {
                         switch (itm.Key)
                         {
-                            case "AsycudaDocumentSets":
-                                return await SumWhere<AsycudaDocumentSetEntryData>(dbContext, exp, itm.Value, "AdjustmentEx", field, "Select")
+                            case "ShipmentFreight":
+                                return await SumWhere<ShipmentFreight>(dbContext, exp, itm.Value, "ShipmentFreightManifests", field, "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "AsycudaDocuments":
-                                return await SumWhere<AsycudaDocumentEntryData>(dbContext, exp, itm.Value, "AdjustmentEx", field, "Select")
-											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "AdjustmentOvers":
-                                return await SumWhere<AdjustmentOver>(dbContext, exp, itm.Value, "AdjustmentEx", field, "Select")
-											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "AdjustmentShorts":
-                                return await SumWhere<AdjustmentShort>(dbContext, exp, itm.Value, "AdjustmentEx", field, "Select")
-											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "AdjustmentDetails":
-                                return await SumWhere<AdjustmentDetail>(dbContext, exp, itm.Value, "AdjustmentEx", field, "Select")
-											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "EntryDataDetails":
-                                return await SumWhere<EntryDataDetail>(dbContext, exp, itm.Value, "AdjustmentEx", field, "Select")
+                            case "ShipmentManifest":
+                                return await SumWhere<ShipmentManifest>(dbContext, exp, itm.Value, "ShipmentFreightManifests", field, "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }
-                    return Convert.ToDecimal(dbContext.AdjustmentExes.Where(exp == "All" || exp == null ? "EntryData_Id != null" : exp)
+                    return Convert.ToDecimal(dbContext.ShipmentFreightManifests.Where(exp == "All" || exp == null ? "Id != null" : exp)
 											.AsNoTracking()
                                             .Sum(field)??0);
                 }
@@ -1334,7 +1244,7 @@ namespace AdjustmentQS.Business.Services
             }
         }
 
-		private static async Task<decimal> SumWhere<T>(AdjustmentQSContext dbContext, string exp, string navExp, string navProp, string field, string rel) where T : class
+		private static async Task<decimal> SumWhere<T>(EntryDataDSContext dbContext, string exp, string navExp, string navProp, string field, string rel) where T : class
         {
               switch (rel)
 		    {
@@ -1347,17 +1257,17 @@ namespace AdjustmentQS.Business.Services
 		    }
         }
 
-		private static async Task<decimal> SumWhereSelectMany<T>(AdjustmentQSContext dbContext, string exp, string navExp, string navProp, string field) where T : class
+		private static async Task<decimal> SumWhereSelectMany<T>(EntryDataDSContext dbContext, string exp, string navExp, string navProp, string field) where T : class
         {
 			try
 			{
             return Convert.ToDecimal(dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
-                .SelectMany(navProp).OfType<AdjustmentEx>()
-                .Where(exp == "All" || exp == null ? "EntryData_Id != null" : exp)
+                .SelectMany(navProp).OfType<ShipmentFreightManifests>()
+                .Where(exp == "All" || exp == null ? "Id != null" : exp)
                 .Distinct()
-                .OrderBy("EntryData_Id")
+                .OrderBy("Id")
                 .Sum(field));
 			}
 			catch (Exception)
@@ -1367,17 +1277,17 @@ namespace AdjustmentQS.Business.Services
 			}
         }
 
-		private static async Task<decimal> SumWhereSelect<T>(AdjustmentQSContext dbContext, string exp, string navExp, string navProp, string field) where T : class
+		private static async Task<decimal> SumWhereSelect<T>(EntryDataDSContext dbContext, string exp, string navExp, string navProp, string field) where T : class
         {
 			try
 			{
             return Convert.ToDecimal(dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
-                .Select(navProp).OfType<AdjustmentEx>()
-                .Where(exp == "All" || exp == null ? "EntryData_Id != null" : exp)
+                .Select(navProp).OfType<ShipmentFreightManifests>()
+                .Where(exp == "All" || exp == null ? "Id != null" : exp)
                 .Distinct()
-                .OrderBy("EntryData_Id")
+                .OrderBy("Id")
                 .Sum(field));
 			}
 			catch (Exception)
@@ -1393,18 +1303,18 @@ namespace AdjustmentQS.Business.Services
          {
              try
              {
-                 using (var dbContext = new AdjustmentQSContext(){StartTracking = StartTracking})
+                 using (var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
                  {
                     dbContext.Database.CommandTimeout = 0;
 					string res = "";
                      if (string.IsNullOrEmpty(whereExp) || whereExp == "None") return res;
                      if (whereExp == "All")
                      {
-                          res = Convert.ToString(dbContext.AdjustmentExes.AsNoTracking().Min(field));
+                          res = Convert.ToString(dbContext.ShipmentFreightManifests.AsNoTracking().Min(field));
                      }
                      else
                      {
-                         res = Convert.ToString(dbContext.AdjustmentExes.AsNoTracking().Where(whereExp).Min(field));
+                         res = Convert.ToString(dbContext.ShipmentFreightManifests.AsNoTracking().Where(whereExp).Min(field));
                      }
                      
                      return res;
@@ -1425,12 +1335,12 @@ namespace AdjustmentQS.Business.Services
          }
 
 		 
-		private static IQueryable<AdjustmentEx> AddIncludes(IEnumerable<string> includesLst, AdjustmentQSContext dbContext)
+		private static IQueryable<ShipmentFreightManifests> AddIncludes(IEnumerable<string> includesLst, EntryDataDSContext dbContext)
        {
 		 try
 			{
 			   if (includesLst == null) includesLst = new List<string>();
-			   var set =(DbQuery<AdjustmentEx>) dbContext.AdjustmentExes; 
+			   var set =(DbQuery<ShipmentFreightManifests>) dbContext.ShipmentFreightManifests; 
 			   set = includesLst.Where(x => !string.IsNullOrEmpty(x))
                                 .Aggregate(set, (current, itm) => current.Include(itm));
 			   return set;
@@ -1441,7 +1351,7 @@ namespace AdjustmentQS.Business.Services
 				throw;
 			}
        }
-	   private IQueryable<AdjustmentEx> AddWheres(List<string> expLst, IQueryable<AdjustmentEx> set)
+	   private IQueryable<ShipmentFreightManifests> AddWheres(List<string> expLst, IQueryable<ShipmentFreightManifests> set)
         {
             try
             {

@@ -256,6 +256,19 @@ namespace AdjustmentQS.Client.DTO
 		}
         private ChangeTrackingCollection<AdjustmentDetail> _AdjustmentDetails = new ChangeTrackingCollection<AdjustmentDetail>();
 
+        [DataMember]
+        public ChangeTrackingCollection<EntryDataDetail> EntryDataDetails
+		{
+		    get { return _EntryDataDetails; }
+			set
+			{
+			    if (Equals(value, _EntryDataDetails)) return;
+				_EntryDataDetails = value;
+				NotifyPropertyChanged();//m => this.EntryDataDetails
+			}
+		}
+        private ChangeTrackingCollection<EntryDataDetail> _EntryDataDetails = new ChangeTrackingCollection<EntryDataDetail>();
+
    //     [DataMember]
    //     public TrackingState TrackingState { get; set; }
 

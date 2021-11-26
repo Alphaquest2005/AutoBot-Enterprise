@@ -206,7 +206,8 @@ namespace AdjustmentQS.Client.Repositories
                      // AsycudaDocuments = new System.Collections.ObjectModel.ObservableCollection<AsycudaDocumentEntryData>(res.AsycudaDocuments.Select(y => new AsycudaDocumentEntryData(y))),    
                      // AdjustmentOvers = new System.Collections.ObjectModel.ObservableCollection<AdjustmentOver>(res.AdjustmentOvers.Select(y => new AdjustmentOver(y))),    
                      // AdjustmentShorts = new System.Collections.ObjectModel.ObservableCollection<AdjustmentShort>(res.AdjustmentShorts.Select(y => new AdjustmentShort(y))),    
-                     // AdjustmentDetails = new System.Collections.ObjectModel.ObservableCollection<AdjustmentDetail>(res.AdjustmentDetails.Select(y => new AdjustmentDetail(y)))    
+                     // AdjustmentDetails = new System.Collections.ObjectModel.ObservableCollection<AdjustmentDetail>(res.AdjustmentDetails.Select(y => new AdjustmentDetail(y))),    
+                     // EntryDataDetails = new System.Collections.ObjectModel.ObservableCollection<EntryDataDetail>(res.EntryDataDetails.Select(y => new EntryDataDetail(y)))    
                   };
                     }
                     else

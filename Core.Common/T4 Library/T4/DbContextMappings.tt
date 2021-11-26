@@ -228,7 +228,7 @@ private Dictionary<EntityType, Tuple<EntitySet, Dictionary<EdmProperty, EdmPrope
 {
      var dictionary = new Dictionary<EntityType, Tuple<EntitySet, Dictionary<EdmProperty, EdmProperty>>>();
 
-     foreach (EntitySet set in entitySets)
+     foreach (EntitySet set in entitySets.Distinct())
      {
           XmlNodeList nodes = mappingNode.SelectNodes(string.Format(".//ef:EntitySetMapping[@Name=\"{0}\"]/ef:EntityTypeMapping/ef:MappingFragment", set.Name), nsmgr);
           foreach(XmlNode node in nodes)
@@ -248,7 +248,7 @@ private Dictionary<EntityType, Tuple<EntitySet, Dictionary<EdmProperty, EdmPrope
                    EdmProperty property2 = set2.ElementType.Properties[str];
                    entityMap.Add(property, property2);
               }
-              dictionary.Add(type, Tuple.Create(set2, entityMap));
+              if(dictionary.Keys.FirstOrDefault(x=> x.Name == type.Name) == null) dictionary.Add(type, Tuple.Create(set2, entityMap));
           }
      }
      return dictionary;

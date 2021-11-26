@@ -253,6 +253,12 @@ namespace AdjustmentQS.Business.Services
                                         GetWhere<AdjustmentOversAllocation>(dbContext, exp, itm.Value, "EntryDataDetail", "Select", includesLst)
 										.ConfigureAwait(continueOnCapturedContext: false);
 
+                            case "AdjustmentEx":
+                                return
+                                    await
+                                        GetWhere<AdjustmentEx>(dbContext, exp, itm.Value, "EntryDataDetails", "SelectMany", includesLst)
+										.ConfigureAwait(continueOnCapturedContext: false);
+
                         }
 
                     }
@@ -761,6 +767,9 @@ namespace AdjustmentQS.Business.Services
                             case "AdjustmentOversAllocations":
                                 return await CountWhere<AdjustmentOversAllocation>(dbContext, exp, itm.Value, "EntryDataDetail", "Select")
 											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "AdjustmentEx":
+                                return await CountWhere<AdjustmentEx>(dbContext, exp, itm.Value, "EntryDataDetails", "SelectMany")
+											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }
                     return await dbContext.EntryDataDetails.Where(exp == "All" || exp == null ? "EntryDataDetailsId != null" : exp)
@@ -883,6 +892,12 @@ namespace AdjustmentQS.Business.Services
                                 return
                                     await
                                         LoadRangeWhere<AdjustmentOversAllocation>(startIndex, count, dbContext, exp, itm.Value, "EntryDataDetail", "Select")
+													.ConfigureAwait(continueOnCapturedContext: false);
+
+                            case "AdjustmentEx":
+                                return
+                                    await
+                                        LoadRangeWhere<AdjustmentEx>(startIndex, count, dbContext, exp, itm.Value, "EntryDataDetails", "SelectMany")
 													.ConfigureAwait(continueOnCapturedContext: false);
 
                           
@@ -1245,6 +1260,9 @@ namespace AdjustmentQS.Business.Services
 											.ConfigureAwait(continueOnCapturedContext: false);
                             case "AdjustmentOversAllocations":
                                 return await SumWhere<AdjustmentOversAllocation>(dbContext, exp, itm.Value, "EntryDataDetail", field, "Select")
+											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "AdjustmentEx":
+                                return await SumWhere<AdjustmentEx>(dbContext, exp, itm.Value, "EntryDataDetails", field, "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }

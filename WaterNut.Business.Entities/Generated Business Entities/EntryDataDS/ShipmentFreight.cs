@@ -25,6 +25,7 @@ namespace EntryDataDS.Business.Entities
             this.ShipmentFreightDetails = new List<ShipmentFreightDetails>();
             this.ShipmentAttachedFreight = new List<ShipmentAttachedFreight>();
             this.ShipmentBLFreight = new List<ShipmentBLFreight>();
+            this.ShipmentFreightManifests = new List<ShipmentFreightManifests>();
         }
 
         [DataMember]
@@ -228,6 +229,8 @@ namespace EntryDataDS.Business.Entities
         public List<ShipmentAttachedFreight> ShipmentAttachedFreight { get; set; }
         [DataMember]
         public List<ShipmentBLFreight> ShipmentBLFreight { get; set; }
+        [DataMember]
+        public List<ShipmentFreightManifests> ShipmentFreightManifests { get; set; }
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

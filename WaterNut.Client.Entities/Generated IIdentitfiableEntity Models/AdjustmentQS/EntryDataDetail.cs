@@ -66,6 +66,44 @@ namespace AdjustmentQS.Client.Entities
             }
 
       }
+        public string AdjustmentExEntityName
+        {
+            get
+            {
+                return this.AdjustmentEx == null ? "" : this.AdjustmentEx.EntityName;
+            }
+            set
+            {
+                                if (string.IsNullOrEmpty(value)) return;
+                string[] vals = value.Split(',');
+               
+                    using (AdjustmentExClient ctx = new AdjustmentExClient())
+                    {
+                        var dto = ctx.GetAdjustmentExes().Result.AsEnumerable().FirstOrDefault(x => x.EntityName == value);
+                        
+
+                        if ( dto == null)
+                        {
+                            this.AdjustmentEx = (AdjustmentEx)new AdjustmentEx().CreateEntityFromString(value);
+							
+							this.EntryDataDetailsId = Convert.ToInt32(this.AdjustmentEx.EntryData_Id);
+                            this.TrackingState=TrackableEntities.TrackingState.Modified;
+                           NotifyPropertyChanged("AddAdjustmentEx");
+                        }
+                        else
+                        {
+                            var obj = new AdjustmentEx(dto);
+                           if (this.AdjustmentEx == null || this.AdjustmentEx.EntityId != obj.EntityId) this.AdjustmentEx = obj;
+                           
+                        }
+                         
+
+
+                    }
+            
+            }
+
+      }
 
 
 

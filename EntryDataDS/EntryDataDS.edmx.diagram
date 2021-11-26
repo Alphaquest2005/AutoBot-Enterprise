@@ -142,6 +142,9 @@
         <EntityTypeShape EntityType="WaterNutDBModel.ShipmentRiderManifests" Width="1.5" PointX="0.5" PointY="8.75" />
         <AssociationConnector Association="WaterNutDBModel.ShipmentRiderShipmentRiderManifests" />
         <AssociationConnector Association="WaterNutDBModel.ShipmentManifestShipmentRiderManifests" />
+        <EntityTypeShape EntityType="WaterNutDBModel.ShipmentFreightManifests" Width="1.5" PointX="6.375" PointY="20.75" />
+        <AssociationConnector Association="WaterNutDBModel.ShipmentFreightShipmentFreightManifests" />
+        <AssociationConnector Association="WaterNutDBModel.ShipmentManifestShipmentFreightManifests" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

@@ -37,7 +37,7 @@ namespace AdjustmentQS.Business.Services
             {
 
 
-                using (var ctx = new AdjustmentQSContext() {StartTracking = true})
+                using (var ctx = new AdjustmentQSContext() { StartTracking = true })
                 {
                     ctx.Database.CommandTimeout = 10;
 
@@ -47,8 +47,8 @@ namespace AdjustmentQS.Business.Services
                         .Include(x => x.AdjustmentEx)
                         .Where(x => x.ApplicationSettingsId == applicationSettingsId)
                         .Where(x => x.SystemDocumentSet != null)
-                        //.Where(x => x.ItemNumber == "RE90530")
-                        //.Where(x => x.EntryDataId == "120902")
+                        //.Where(x => x.ItemNumber == "BS01016")
+                        //.Where(x => x.EntryDataId == "EXP1T001461")
                         //.Where( x => x.EntryDataDetailsId == 16569)
                         .Where(x => x.DoNotAllocate == null || x.DoNotAllocate != true)
                         .Where(x => overwriteExisting
@@ -103,7 +103,7 @@ namespace AdjustmentQS.Business.Services
             try
             {
 
-                using (var ctx = new AdjustmentQSContext() {StartTracking = true})
+                using (var ctx = new AdjustmentQSContext() { StartTracking = true })
                 {
                     ctx.Database.CommandTimeout = 10;
 
@@ -180,7 +180,7 @@ namespace AdjustmentQS.Business.Services
                         {
                             var aItem = await GetAsycudaEntriesInCNumber(s.PreviousCNumber, s.PreviousCLineNumber, s.ItemNumber)
                                 .ConfigureAwait(false);
-                                
+
                             if (!aItem.Any())
                                 aItem = await GetAsycudaEntriesInCNumberReference(applicationSettingsId,
                                         s.PreviousCNumber, s.ItemNumber)
@@ -226,7 +226,7 @@ namespace AdjustmentQS.Business.Services
                                 x.ItemNumber == ed.ItemNumber &&
                                 x.applicationsettingsid == applicationSettingsId);
                         if (lastItemCost != null)
-                            ed.LastCost = (double) lastItemCost.LocalItemCost.GetValueOrDefault();
+                            ed.LastCost = (double)lastItemCost.LocalItemCost.GetValueOrDefault();
                     }
                     catch (Exception ex)
                     {
@@ -393,7 +393,7 @@ namespace AdjustmentQS.Business.Services
                              .ConfigureAwait(
                                  false);
                     }
-                    
+
                     BaseDataModel.StripAttachments(doclst, emailId);
                     BaseDataModel.AttachEmailPDF(asycudaDocumentSetId, emailId);
                     BaseDataModel.SetInvoicePerline(doclst.Select(x => x.Document.ASYCUDA_Id).ToList());
@@ -560,7 +560,7 @@ namespace AdjustmentQS.Business.Services
 
                     }
 
-                   // entryDataDetailsIds = entryDataDetailsIds ?? new List<int>();
+                    // entryDataDetailsIds = entryDataDetailsIds ?? new List<int>();
 
                     res = pres
                         .Where(exp)
@@ -631,8 +631,8 @@ namespace AdjustmentQS.Business.Services
                                             z.xcuda_Item.AsycudaDocument.Extended_customs_procedure == "4074" || z.xcuda_Item.AsycudaDocument.Extended_customs_procedure == "4070"
                                                 ? "Duty Paid"
                                                 : "Duty Free",
-                                        Net_weight = (double) z.Net_weight,
-                                        Suplementary_Quantity = (double) z.Suplementary_Quantity
+                                        Net_weight = (double)z.Net_weight,
+                                        Suplementary_Quantity = (double)z.Suplementary_Quantity
                                     }).ToList(),
                             TariffSupUnitLkps =
                                 c.x.EntryDataDetails.EntryDataDetailsEx.InventoryItemsEx.TariffCodes.TariffCategory.TariffCategoryCodeSuppUnit.Select(x => x.TariffSupUnitLkps).ToList(),
@@ -760,7 +760,7 @@ namespace AdjustmentQS.Business.Services
             foreach (var aItem in alst)
             {
                 var pitm = ctx.xcuda_Item
-                 //   .Include("AsycudaSalesAllocations.EntryDataDetail.AdjustmentEx")
+                    //   .Include("AsycudaSalesAllocations.EntryDataDetail.AdjustmentEx")
                     .First(x => x.Item_Id == aItem.Item_Id);
                 //pitm.DFQtyAllocated = 0;
 

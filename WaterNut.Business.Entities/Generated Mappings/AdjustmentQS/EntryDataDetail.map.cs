@@ -47,6 +47,7 @@
               this.Property(t => t.TotalValue).HasColumnName("TotalValue").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.Computed));
               this.Property(t => t.CLineNumber).HasColumnName("CLineNumber");
               this.HasRequired(t => t.InventoryItemsEx).WithMany(t =>(ICollection<EntryDataDetail>) t.EntryDataDetails).HasForeignKey(d => d.InventoryItemId);
+              this.HasRequired(t => t.AdjustmentEx).WithMany(t =>(ICollection<EntryDataDetail>) t.EntryDataDetails).HasForeignKey(d => d.EntryData_Id);
               this.HasMany(t => t.AsycudaSalesAllocations).WithOptional(t => t.EntryDataDetail).HasForeignKey(d => d.EntryDataDetailsId);
               this.HasMany(t => t.AdjustmentOversAllocations).WithRequired(t => (EntryDataDetail)t.EntryDataDetail);
              // Tracking Properties

@@ -757,6 +757,20 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ShipmentFreightBLs' does 
           <Property Name="Marks" Type="nvarchar" MaxLength="50" Nullable="false" />
         </EntityType>
         <!--Errors Found During Generation:
+warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ShipmentFreightManifests' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="ShipmentFreightManifests">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" />
+          <Property Name="FreightDetailId" Type="int" Nullable="false" />
+          <Property Name="FreightId" Type="int" Nullable="false" />
+          <Property Name="ManifestId" Type="int" Nullable="false" />
+          <Property Name="RegistrationNumber" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="InvoiceNumber" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="WarehouseCode" Type="nvarchar" MaxLength="50" />
+        </EntityType>
+        <!--Errors Found During Generation:
 warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ShipmentInvoiceDetailsItemAlias' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="ShipmentInvoiceDetailsItemAlias">
           <Key>
@@ -1660,288 +1674,299 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ShipmentRiderManifests' d
           <EntitySet Name="WarehouseInfo" EntityType="Self.WarehouseInfo" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="EntryDataDetailsEx" EntityType="Self.EntryDataDetailsEx" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
-    [EntryDataDetailsEx].[EntryDataDetailsId] AS [EntryDataDetailsId], 
-    [EntryDataDetailsEx].[EntryData_Id] AS [EntryData_Id], 
-    [EntryDataDetailsEx].[EntryDataId] AS [EntryDataId], 
-    [EntryDataDetailsEx].[LineNumber] AS [LineNumber], 
-    [EntryDataDetailsEx].[ItemNumber] AS [ItemNumber], 
-    [EntryDataDetailsEx].[Quantity] AS [Quantity], 
-    [EntryDataDetailsEx].[Units] AS [Units], 
-    [EntryDataDetailsEx].[ItemDescription] AS [ItemDescription], 
-    [EntryDataDetailsEx].[Cost] AS [Cost], 
-    [EntryDataDetailsEx].[QtyAllocated] AS [QtyAllocated], 
-    [EntryDataDetailsEx].[VolumeLiters] AS [VolumeLiters], 
-    [EntryDataDetailsEx].[UnitWeight] AS [UnitWeight], 
-    [EntryDataDetailsEx].[DoNotAllocate] AS [DoNotAllocate], 
-    [EntryDataDetailsEx].[TariffCode] AS [TariffCode], 
-    [EntryDataDetailsEx].[CNumber] AS [CNumber], 
-    [EntryDataDetailsEx].[CLineNumber] AS [CLineNumber], 
-    [EntryDataDetailsEx].[Downloaded] AS [Downloaded], 
-    [EntryDataDetailsEx].[DutyFreePaid] AS [DutyFreePaid], 
-    [EntryDataDetailsEx].[Total] AS [Total], 
-    [EntryDataDetailsEx].[AsycudaDocumentSetId] AS [AsycudaDocumentSetId], 
-    [EntryDataDetailsEx].[InvoiceQty] AS [InvoiceQty], 
-    [EntryDataDetailsEx].[ReceivedQty] AS [ReceivedQty], 
-    [EntryDataDetailsEx].[Status] AS [Status], 
-    [EntryDataDetailsEx].[PreviousInvoiceNumber] AS [PreviousInvoiceNumber], 
-    [EntryDataDetailsEx].[PreviousCNumber] AS [PreviousCNumber], 
-    [EntryDataDetailsEx].[PreviousCLineNumber] AS [PreviousCLineNumber], 
-    [EntryDataDetailsEx].[Comment] AS [Comment], 
-    [EntryDataDetailsEx].[EffectiveDate] AS [EffectiveDate], 
-    [EntryDataDetailsEx].[IsReconciled] AS [IsReconciled], 
-    [EntryDataDetailsEx].[ApplicationSettingsId] AS [ApplicationSettingsId], 
-    [EntryDataDetailsEx].[LastCost] AS [LastCost], 
-    [EntryDataDetailsEx].[FileLineNumber] AS [FileLineNumber], 
-    [EntryDataDetailsEx].[TaxAmount] AS [TaxAmount], 
-    [EntryDataDetailsEx].[EmailId] AS [EmailId], 
-    [EntryDataDetailsEx].[FileTypeId] AS [FileTypeId], 
-    [EntryDataDetailsEx].[Name] AS [Name], 
-    [EntryDataDetailsEx].[InventoryItemId] AS [InventoryItemId]
-    FROM [dbo].[EntryDataDetailsEx] AS [EntryDataDetailsEx]</DefiningQuery>
+[EntryDataDetailsEx].[EntryDataDetailsId] AS [EntryDataDetailsId], 
+[EntryDataDetailsEx].[EntryData_Id] AS [EntryData_Id], 
+[EntryDataDetailsEx].[EntryDataId] AS [EntryDataId], 
+[EntryDataDetailsEx].[LineNumber] AS [LineNumber], 
+[EntryDataDetailsEx].[ItemNumber] AS [ItemNumber], 
+[EntryDataDetailsEx].[Quantity] AS [Quantity], 
+[EntryDataDetailsEx].[Units] AS [Units], 
+[EntryDataDetailsEx].[ItemDescription] AS [ItemDescription], 
+[EntryDataDetailsEx].[Cost] AS [Cost], 
+[EntryDataDetailsEx].[QtyAllocated] AS [QtyAllocated], 
+[EntryDataDetailsEx].[VolumeLiters] AS [VolumeLiters], 
+[EntryDataDetailsEx].[UnitWeight] AS [UnitWeight], 
+[EntryDataDetailsEx].[DoNotAllocate] AS [DoNotAllocate], 
+[EntryDataDetailsEx].[TariffCode] AS [TariffCode], 
+[EntryDataDetailsEx].[CNumber] AS [CNumber], 
+[EntryDataDetailsEx].[CLineNumber] AS [CLineNumber], 
+[EntryDataDetailsEx].[Downloaded] AS [Downloaded], 
+[EntryDataDetailsEx].[DutyFreePaid] AS [DutyFreePaid], 
+[EntryDataDetailsEx].[Total] AS [Total], 
+[EntryDataDetailsEx].[AsycudaDocumentSetId] AS [AsycudaDocumentSetId], 
+[EntryDataDetailsEx].[InvoiceQty] AS [InvoiceQty], 
+[EntryDataDetailsEx].[ReceivedQty] AS [ReceivedQty], 
+[EntryDataDetailsEx].[Status] AS [Status], 
+[EntryDataDetailsEx].[PreviousInvoiceNumber] AS [PreviousInvoiceNumber], 
+[EntryDataDetailsEx].[PreviousCNumber] AS [PreviousCNumber], 
+[EntryDataDetailsEx].[PreviousCLineNumber] AS [PreviousCLineNumber], 
+[EntryDataDetailsEx].[Comment] AS [Comment], 
+[EntryDataDetailsEx].[EffectiveDate] AS [EffectiveDate], 
+[EntryDataDetailsEx].[IsReconciled] AS [IsReconciled], 
+[EntryDataDetailsEx].[ApplicationSettingsId] AS [ApplicationSettingsId], 
+[EntryDataDetailsEx].[LastCost] AS [LastCost], 
+[EntryDataDetailsEx].[FileLineNumber] AS [FileLineNumber], 
+[EntryDataDetailsEx].[TaxAmount] AS [TaxAmount], 
+[EntryDataDetailsEx].[EmailId] AS [EmailId], 
+[EntryDataDetailsEx].[FileTypeId] AS [FileTypeId], 
+[EntryDataDetailsEx].[Name] AS [Name], 
+[EntryDataDetailsEx].[InventoryItemId] AS [InventoryItemId]
+FROM [dbo].[EntryDataDetailsEx] AS [EntryDataDetailsEx]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="EntryDataEx" EntityType="Self.EntryDataEx" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
-    [EntryDataEx].[EntryData_Id] AS [EntryData_Id], 
-    [EntryDataEx].[InvoiceDate] AS [InvoiceDate], 
-    [EntryDataEx].[Type] AS [Type], 
-    [EntryDataEx].[ImportedTotal] AS [ImportedTotal], 
-    [EntryDataEx].[InvoiceNo] AS [InvoiceNo], 
-    [EntryDataEx].[SupplierInvoiceNo] AS [SupplierInvoiceNo], 
-    [EntryDataEx].[Tax] AS [Tax], 
-    [EntryDataEx].[InvoiceTotal] AS [InvoiceTotal], 
-    [EntryDataEx].[ImportedLines] AS [ImportedLines], 
-    [EntryDataEx].[TotalLines] AS [TotalLines], 
-    [EntryDataEx].[Currency] AS [Currency], 
-    [EntryDataEx].[ApplicationSettingsId] AS [ApplicationSettingsId], 
-    [EntryDataEx].[DutyFreePaid] AS [DutyFreePaid], 
-    [EntryDataEx].[EmailId] AS [EmailId], 
-    [EntryDataEx].[FileTypeId] AS [FileTypeId], 
-    [EntryDataEx].[SupplierCode] AS [SupplierCode], 
-    [EntryDataEx].[ExpectedTotal] AS [ExpectedTotal], 
-    [EntryDataEx].[AsycudaDocumentSetId] AS [AsycudaDocumentSetId], 
-    [EntryDataEx].[TotalInternalFreight] AS [TotalInternalFreight], 
-    [EntryDataEx].[TotalInternalInsurance] AS [TotalInternalInsurance], 
-    [EntryDataEx].[TotalOtherCost] AS [TotalOtherCost], 
-    [EntryDataEx].[TotalDeductions] AS [TotalDeductions], 
-    [EntryDataEx].[TotalFreight] AS [TotalFreight], 
-    [EntryDataEx].[Totals] AS [Totals], 
-    [EntryDataEx].[SourceFile] AS [SourceFile]
-    FROM [dbo].[EntryDataEx] AS [EntryDataEx]</DefiningQuery>
+[EntryDataEx].[EntryData_Id] AS [EntryData_Id], 
+[EntryDataEx].[InvoiceDate] AS [InvoiceDate], 
+[EntryDataEx].[Type] AS [Type], 
+[EntryDataEx].[ImportedTotal] AS [ImportedTotal], 
+[EntryDataEx].[InvoiceNo] AS [InvoiceNo], 
+[EntryDataEx].[SupplierInvoiceNo] AS [SupplierInvoiceNo], 
+[EntryDataEx].[Tax] AS [Tax], 
+[EntryDataEx].[InvoiceTotal] AS [InvoiceTotal], 
+[EntryDataEx].[ImportedLines] AS [ImportedLines], 
+[EntryDataEx].[TotalLines] AS [TotalLines], 
+[EntryDataEx].[Currency] AS [Currency], 
+[EntryDataEx].[ApplicationSettingsId] AS [ApplicationSettingsId], 
+[EntryDataEx].[DutyFreePaid] AS [DutyFreePaid], 
+[EntryDataEx].[EmailId] AS [EmailId], 
+[EntryDataEx].[FileTypeId] AS [FileTypeId], 
+[EntryDataEx].[SupplierCode] AS [SupplierCode], 
+[EntryDataEx].[ExpectedTotal] AS [ExpectedTotal], 
+[EntryDataEx].[AsycudaDocumentSetId] AS [AsycudaDocumentSetId], 
+[EntryDataEx].[TotalInternalFreight] AS [TotalInternalFreight], 
+[EntryDataEx].[TotalInternalInsurance] AS [TotalInternalInsurance], 
+[EntryDataEx].[TotalOtherCost] AS [TotalOtherCost], 
+[EntryDataEx].[TotalDeductions] AS [TotalDeductions], 
+[EntryDataEx].[TotalFreight] AS [TotalFreight], 
+[EntryDataEx].[Totals] AS [Totals], 
+[EntryDataEx].[SourceFile] AS [SourceFile]
+FROM [dbo].[EntryDataEx] AS [EntryDataEx]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="EntryDataExTotals" EntityType="Self.EntryDataExTotals" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
-    [EntryDataExTotals].[EntryData_Id] AS [EntryData_Id], 
-    [EntryDataExTotals].[EntryDataId] AS [EntryDataId], 
-    [EntryDataExTotals].[Total] AS [Total], 
-    [EntryDataExTotals].[AllocatedTotal] AS [AllocatedTotal], 
-    [EntryDataExTotals].[TotalLines] AS [TotalLines], 
-    [EntryDataExTotals].[Tax] AS [Tax], 
-    [EntryDataExTotals].[ClassifiedLines] AS [ClassifiedLines], 
-    [EntryDataExTotals].[LicenseLines] AS [LicenseLines], 
-    [EntryDataExTotals].[QtyLicensesRequired] AS [QtyLicensesRequired], 
-    [EntryDataExTotals].[AsycudaDocumentSetId] AS [AsycudaDocumentSetId], 
-    [EntryDataExTotals].[Packages] AS [Packages]
-    FROM [dbo].[EntryDataExTotals] AS [EntryDataExTotals]</DefiningQuery>
+[EntryDataExTotals].[EntryData_Id] AS [EntryData_Id], 
+[EntryDataExTotals].[EntryDataId] AS [EntryDataId], 
+[EntryDataExTotals].[Total] AS [Total], 
+[EntryDataExTotals].[AllocatedTotal] AS [AllocatedTotal], 
+[EntryDataExTotals].[TotalLines] AS [TotalLines], 
+[EntryDataExTotals].[Tax] AS [Tax], 
+[EntryDataExTotals].[ClassifiedLines] AS [ClassifiedLines], 
+[EntryDataExTotals].[LicenseLines] AS [LicenseLines], 
+[EntryDataExTotals].[QtyLicensesRequired] AS [QtyLicensesRequired], 
+[EntryDataExTotals].[AsycudaDocumentSetId] AS [AsycudaDocumentSetId], 
+[EntryDataExTotals].[Packages] AS [Packages]
+FROM [dbo].[EntryDataExTotals] AS [EntryDataExTotals]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="InventoryItemsEx" EntityType="Self.InventoryItemsEx" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
-    [InventoryItemsEx].[InventoryItemId] AS [InventoryItemId], 
-    [InventoryItemsEx].[ItemNumber] AS [ItemNumber], 
-    [InventoryItemsEx].[Description] AS [Description], 
-    [InventoryItemsEx].[Category] AS [Category], 
-    [InventoryItemsEx].[TariffCode] AS [TariffCode], 
-    [InventoryItemsEx].[EntryTimeStamp] AS [EntryTimeStamp], 
-    [InventoryItemsEx].[SuppUnitCode2] AS [SuppUnitCode2], 
-    [InventoryItemsEx].[SuppQty] AS [SuppQty], 
-    [InventoryItemsEx].[ApplicationSettingsId] AS [ApplicationSettingsId]
-    FROM [dbo].[InventoryItemsEx] AS [InventoryItemsEx]</DefiningQuery>
+[InventoryItemsEx].[InventoryItemId] AS [InventoryItemId], 
+[InventoryItemsEx].[ItemNumber] AS [ItemNumber], 
+[InventoryItemsEx].[Description] AS [Description], 
+[InventoryItemsEx].[Category] AS [Category], 
+[InventoryItemsEx].[TariffCode] AS [TariffCode], 
+[InventoryItemsEx].[EntryTimeStamp] AS [EntryTimeStamp], 
+[InventoryItemsEx].[SuppUnitCode2] AS [SuppUnitCode2], 
+[InventoryItemsEx].[SuppQty] AS [SuppQty], 
+[InventoryItemsEx].[ApplicationSettingsId] AS [ApplicationSettingsId]
+FROM [dbo].[InventoryItemsEx] AS [InventoryItemsEx]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="ShipmentBLFreight" EntityType="Self.ShipmentBLFreight" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
-    [ShipmentBLFreight].[Id] AS [Id], 
-    [ShipmentBLFreight].[BLNumber] AS [BLNumber], 
-    [ShipmentBLFreight].[InvoiceNumber] AS [InvoiceNumber], 
-    [ShipmentBLFreight].[InvoiceDate] AS [InvoiceDate], 
-    [ShipmentBLFreight].[InvoiceTotal] AS [InvoiceTotal], 
-    [ShipmentBLFreight].[FreightInvoiceId] AS [FreightInvoiceId], 
-    [ShipmentBLFreight].[BLId] AS [BLId]
-    FROM [dbo].[ShipmentBLFreight] AS [ShipmentBLFreight]</DefiningQuery>
+[ShipmentBLFreight].[Id] AS [Id], 
+[ShipmentBLFreight].[BLNumber] AS [BLNumber], 
+[ShipmentBLFreight].[InvoiceNumber] AS [InvoiceNumber], 
+[ShipmentBLFreight].[InvoiceDate] AS [InvoiceDate], 
+[ShipmentBLFreight].[InvoiceTotal] AS [InvoiceTotal], 
+[ShipmentBLFreight].[FreightInvoiceId] AS [FreightInvoiceId], 
+[ShipmentBLFreight].[BLId] AS [BLId]
+FROM [dbo].[ShipmentBLFreight] AS [ShipmentBLFreight]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="ShipmentFreightBLs" EntityType="Self.ShipmentFreightBLs" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
-    [ShipmentFreightBLs].[Id] AS [Id], 
-    [ShipmentFreightBLs].[FreightDetailId] AS [FreightDetailId], 
-    [ShipmentFreightBLs].[BLDetailId] AS [BLDetailId], 
-    [ShipmentFreightBLs].[FreightId] AS [FreightId], 
-    [ShipmentFreightBLs].[BLNumber] AS [BLNumber], 
-    [ShipmentFreightBLs].[Total] AS [Total], 
-    [ShipmentFreightBLs].[Marks] AS [Marks]
-    FROM [dbo].[ShipmentFreightBLs] AS [ShipmentFreightBLs]</DefiningQuery>
+[ShipmentFreightBLs].[Id] AS [Id], 
+[ShipmentFreightBLs].[FreightDetailId] AS [FreightDetailId], 
+[ShipmentFreightBLs].[BLDetailId] AS [BLDetailId], 
+[ShipmentFreightBLs].[FreightId] AS [FreightId], 
+[ShipmentFreightBLs].[BLNumber] AS [BLNumber], 
+[ShipmentFreightBLs].[Total] AS [Total], 
+[ShipmentFreightBLs].[Marks] AS [Marks]
+FROM [dbo].[ShipmentFreightBLs] AS [ShipmentFreightBLs]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="ShipmentFreightManifests" EntityType="Self.ShipmentFreightManifests" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+[ShipmentFreightManifests].[Id] AS [Id], 
+[ShipmentFreightManifests].[FreightDetailId] AS [FreightDetailId], 
+[ShipmentFreightManifests].[FreightId] AS [FreightId], 
+[ShipmentFreightManifests].[ManifestId] AS [ManifestId], 
+[ShipmentFreightManifests].[RegistrationNumber] AS [RegistrationNumber], 
+[ShipmentFreightManifests].[InvoiceNumber] AS [InvoiceNumber], 
+[ShipmentFreightManifests].[WarehouseCode] AS [WarehouseCode]
+FROM [dbo].[ShipmentFreightManifests] AS [ShipmentFreightManifests]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="ShipmentInvoiceDetailsItemAlias" EntityType="Self.ShipmentInvoiceDetailsItemAlias" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
-    [ShipmentInvoiceDetailsItemAlias].[Id] AS [Id], 
-    [ShipmentInvoiceDetailsItemAlias].[INVItemCode] AS [INVItemCode], 
-    [ShipmentInvoiceDetailsItemAlias].[POItemCode] AS [POItemCode], 
-    [ShipmentInvoiceDetailsItemAlias].[POItemDescription] AS [POItemDescription]
-    FROM [dbo].[ShipmentInvoiceDetailsItemAlias] AS [ShipmentInvoiceDetailsItemAlias]</DefiningQuery>
+[ShipmentInvoiceDetailsItemAlias].[Id] AS [Id], 
+[ShipmentInvoiceDetailsItemAlias].[INVItemCode] AS [INVItemCode], 
+[ShipmentInvoiceDetailsItemAlias].[POItemCode] AS [POItemCode], 
+[ShipmentInvoiceDetailsItemAlias].[POItemDescription] AS [POItemDescription]
+FROM [dbo].[ShipmentInvoiceDetailsItemAlias] AS [ShipmentInvoiceDetailsItemAlias]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="ShipmentInvoicePOItemData" EntityType="Self.ShipmentInvoicePOItemData" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
-    [ShipmentInvoicePOItemData].[Id] AS [Id], 
-    [ShipmentInvoicePOItemData].[PODetailsId] AS [PODetailsId], 
-    [ShipmentInvoicePOItemData].[INVDetailsId] AS [INVDetailsId], 
-    [ShipmentInvoicePOItemData].[POId] AS [POId], 
-    [ShipmentInvoicePOItemData].[INVId] AS [INVId], 
-    [ShipmentInvoicePOItemData].[PONumber] AS [PONumber], 
-    [ShipmentInvoicePOItemData].[InvoiceNo] AS [InvoiceNo], 
-    [ShipmentInvoicePOItemData].[POItemCode] AS [POItemCode], 
-    [ShipmentInvoicePOItemData].[INVItemCode] AS [INVItemCode], 
-    [ShipmentInvoicePOItemData].[PODescription] AS [PODescription], 
-    [ShipmentInvoicePOItemData].[INVDescription] AS [INVDescription], 
-    [ShipmentInvoicePOItemData].[TariffCode] AS [TariffCode], 
-    [ShipmentInvoicePOItemData].[POCost] AS [POCost], 
-    [ShipmentInvoicePOItemData].[INVCost] AS [INVCost], 
-    [ShipmentInvoicePOItemData].[POQuantity] AS [POQuantity], 
-    [ShipmentInvoicePOItemData].[INVQuantity] AS [INVQuantity], 
-    [ShipmentInvoicePOItemData].[POTotalCost] AS [POTotalCost], 
-    [ShipmentInvoicePOItemData].[INVTotalCost] AS [INVTotalCost]
-    FROM [dbo].[ShipmentInvoicePOItemData] AS [ShipmentInvoicePOItemData]</DefiningQuery>
+[ShipmentInvoicePOItemData].[Id] AS [Id], 
+[ShipmentInvoicePOItemData].[PODetailsId] AS [PODetailsId], 
+[ShipmentInvoicePOItemData].[INVDetailsId] AS [INVDetailsId], 
+[ShipmentInvoicePOItemData].[POId] AS [POId], 
+[ShipmentInvoicePOItemData].[INVId] AS [INVId], 
+[ShipmentInvoicePOItemData].[PONumber] AS [PONumber], 
+[ShipmentInvoicePOItemData].[InvoiceNo] AS [InvoiceNo], 
+[ShipmentInvoicePOItemData].[POItemCode] AS [POItemCode], 
+[ShipmentInvoicePOItemData].[INVItemCode] AS [INVItemCode], 
+[ShipmentInvoicePOItemData].[PODescription] AS [PODescription], 
+[ShipmentInvoicePOItemData].[INVDescription] AS [INVDescription], 
+[ShipmentInvoicePOItemData].[TariffCode] AS [TariffCode], 
+[ShipmentInvoicePOItemData].[POCost] AS [POCost], 
+[ShipmentInvoicePOItemData].[INVCost] AS [INVCost], 
+[ShipmentInvoicePOItemData].[POQuantity] AS [POQuantity], 
+[ShipmentInvoicePOItemData].[INVQuantity] AS [INVQuantity], 
+[ShipmentInvoicePOItemData].[POTotalCost] AS [POTotalCost], 
+[ShipmentInvoicePOItemData].[INVTotalCost] AS [INVTotalCost]
+FROM [dbo].[ShipmentInvoicePOItemData] AS [ShipmentInvoicePOItemData]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="ShipmentInvoicePOItemMISMatches" EntityType="Self.ShipmentInvoicePOItemMISMatches" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
-    [ShipmentInvoicePOItemMISMatches].[Id] AS [Id], 
-    [ShipmentInvoicePOItemMISMatches].[PODetailsId] AS [PODetailsId], 
-    [ShipmentInvoicePOItemMISMatches].[INVDetailsId] AS [INVDetailsId], 
-    [ShipmentInvoicePOItemMISMatches].[POId] AS [POId], 
-    [ShipmentInvoicePOItemMISMatches].[INVId] AS [INVId], 
-    [ShipmentInvoicePOItemMISMatches].[PONumber] AS [PONumber], 
-    [ShipmentInvoicePOItemMISMatches].[InvoiceNo] AS [InvoiceNo], 
-    [ShipmentInvoicePOItemMISMatches].[POItemCode] AS [POItemCode], 
-    [ShipmentInvoicePOItemMISMatches].[INVItemCode] AS [INVItemCode], 
-    [ShipmentInvoicePOItemMISMatches].[PODescription] AS [PODescription], 
-    [ShipmentInvoicePOItemMISMatches].[INVDescription] AS [INVDescription], 
-    [ShipmentInvoicePOItemMISMatches].[POCost] AS [POCost], 
-    [ShipmentInvoicePOItemMISMatches].[INVCost] AS [INVCost], 
-    [ShipmentInvoicePOItemMISMatches].[POQuantity] AS [POQuantity], 
-    [ShipmentInvoicePOItemMISMatches].[INVQuantity] AS [INVQuantity], 
-    [ShipmentInvoicePOItemMISMatches].[INVSalesFactor] AS [INVSalesFactor], 
-    [ShipmentInvoicePOItemMISMatches].[POTotalCost] AS [POTotalCost], 
-    [ShipmentInvoicePOItemMISMatches].[INVTotalCost] AS [INVTotalCost]
-    FROM [dbo].[ShipmentInvoicePOItemMISMatches] AS [ShipmentInvoicePOItemMISMatches]</DefiningQuery>
+[ShipmentInvoicePOItemMISMatches].[Id] AS [Id], 
+[ShipmentInvoicePOItemMISMatches].[PODetailsId] AS [PODetailsId], 
+[ShipmentInvoicePOItemMISMatches].[INVDetailsId] AS [INVDetailsId], 
+[ShipmentInvoicePOItemMISMatches].[POId] AS [POId], 
+[ShipmentInvoicePOItemMISMatches].[INVId] AS [INVId], 
+[ShipmentInvoicePOItemMISMatches].[PONumber] AS [PONumber], 
+[ShipmentInvoicePOItemMISMatches].[InvoiceNo] AS [InvoiceNo], 
+[ShipmentInvoicePOItemMISMatches].[POItemCode] AS [POItemCode], 
+[ShipmentInvoicePOItemMISMatches].[INVItemCode] AS [INVItemCode], 
+[ShipmentInvoicePOItemMISMatches].[PODescription] AS [PODescription], 
+[ShipmentInvoicePOItemMISMatches].[INVDescription] AS [INVDescription], 
+[ShipmentInvoicePOItemMISMatches].[POCost] AS [POCost], 
+[ShipmentInvoicePOItemMISMatches].[INVCost] AS [INVCost], 
+[ShipmentInvoicePOItemMISMatches].[POQuantity] AS [POQuantity], 
+[ShipmentInvoicePOItemMISMatches].[INVQuantity] AS [INVQuantity], 
+[ShipmentInvoicePOItemMISMatches].[INVSalesFactor] AS [INVSalesFactor], 
+[ShipmentInvoicePOItemMISMatches].[POTotalCost] AS [POTotalCost], 
+[ShipmentInvoicePOItemMISMatches].[INVTotalCost] AS [INVTotalCost]
+FROM [dbo].[ShipmentInvoicePOItemMISMatches] AS [ShipmentInvoicePOItemMISMatches]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="ShipmentInvoicePOItemQueryMatches" EntityType="Self.ShipmentInvoicePOItemQueryMatches" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
-    [ShipmentInvoicePOItemQueryMatches].[PODetailsId] AS [PODetailsId], 
-    [ShipmentInvoicePOItemQueryMatches].[INVDetailsId] AS [INVDetailsId], 
-    [ShipmentInvoicePOItemQueryMatches].[POId] AS [POId], 
-    [ShipmentInvoicePOItemQueryMatches].[INVId] AS [INVId], 
-    [ShipmentInvoicePOItemQueryMatches].[PONumber] AS [PONumber], 
-    [ShipmentInvoicePOItemQueryMatches].[InvoiceNo] AS [InvoiceNo], 
-    [ShipmentInvoicePOItemQueryMatches].[POItemCode] AS [POItemCode], 
-    [ShipmentInvoicePOItemQueryMatches].[INVItemCode] AS [INVItemCode], 
-    [ShipmentInvoicePOItemQueryMatches].[PODescription] AS [PODescription], 
-    [ShipmentInvoicePOItemQueryMatches].[INVDescription] AS [INVDescription], 
-    [ShipmentInvoicePOItemQueryMatches].[POCost] AS [POCost], 
-    [ShipmentInvoicePOItemQueryMatches].[INVCost] AS [INVCost], 
-    [ShipmentInvoicePOItemQueryMatches].[POQuantity] AS [POQuantity], 
-    [ShipmentInvoicePOItemQueryMatches].[INVQuantity] AS [INVQuantity], 
-    [ShipmentInvoicePOItemQueryMatches].[Gallons] AS [Gallons], 
-    [ShipmentInvoicePOItemQueryMatches].[POTotalCost] AS [POTotalCost], 
-    [ShipmentInvoicePOItemQueryMatches].[INVTotalCost] AS [INVTotalCost], 
-    [ShipmentInvoicePOItemQueryMatches].[INVInventoryItemId] AS [INVInventoryItemId], 
-    [ShipmentInvoicePOItemQueryMatches].[POInventoryItemId] AS [POInventoryItemId], 
-    [ShipmentInvoicePOItemQueryMatches].[RankNo] AS [RankNo]
-    FROM [dbo].[ShipmentInvoicePOItemQueryMatches] AS [ShipmentInvoicePOItemQueryMatches]</DefiningQuery>
+[ShipmentInvoicePOItemQueryMatches].[PODetailsId] AS [PODetailsId], 
+[ShipmentInvoicePOItemQueryMatches].[INVDetailsId] AS [INVDetailsId], 
+[ShipmentInvoicePOItemQueryMatches].[POId] AS [POId], 
+[ShipmentInvoicePOItemQueryMatches].[INVId] AS [INVId], 
+[ShipmentInvoicePOItemQueryMatches].[PONumber] AS [PONumber], 
+[ShipmentInvoicePOItemQueryMatches].[InvoiceNo] AS [InvoiceNo], 
+[ShipmentInvoicePOItemQueryMatches].[POItemCode] AS [POItemCode], 
+[ShipmentInvoicePOItemQueryMatches].[INVItemCode] AS [INVItemCode], 
+[ShipmentInvoicePOItemQueryMatches].[PODescription] AS [PODescription], 
+[ShipmentInvoicePOItemQueryMatches].[INVDescription] AS [INVDescription], 
+[ShipmentInvoicePOItemQueryMatches].[POCost] AS [POCost], 
+[ShipmentInvoicePOItemQueryMatches].[INVCost] AS [INVCost], 
+[ShipmentInvoicePOItemQueryMatches].[POQuantity] AS [POQuantity], 
+[ShipmentInvoicePOItemQueryMatches].[INVQuantity] AS [INVQuantity], 
+[ShipmentInvoicePOItemQueryMatches].[Gallons] AS [Gallons], 
+[ShipmentInvoicePOItemQueryMatches].[POTotalCost] AS [POTotalCost], 
+[ShipmentInvoicePOItemQueryMatches].[INVTotalCost] AS [INVTotalCost], 
+[ShipmentInvoicePOItemQueryMatches].[INVInventoryItemId] AS [INVInventoryItemId], 
+[ShipmentInvoicePOItemQueryMatches].[POInventoryItemId] AS [POInventoryItemId], 
+[ShipmentInvoicePOItemQueryMatches].[RankNo] AS [RankNo]
+FROM [dbo].[ShipmentInvoicePOItemQueryMatches] AS [ShipmentInvoicePOItemQueryMatches]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="ShipmentManifestBLs" EntityType="Self.ShipmentManifestBLs" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
-    [ShipmentManifestBLs].[Id] AS [Id], 
-    [ShipmentManifestBLs].[ManifestId] AS [ManifestId], 
-    [ShipmentManifestBLs].[BLId] AS [BLId], 
-    [ShipmentManifestBLs].[BLNumber] AS [BLNumber], 
-    [ShipmentManifestBLs].[WayBill] AS [WayBill]
-    FROM [dbo].[ShipmentManifestBLs] AS [ShipmentManifestBLs]</DefiningQuery>
+[ShipmentManifestBLs].[Id] AS [Id], 
+[ShipmentManifestBLs].[ManifestId] AS [ManifestId], 
+[ShipmentManifestBLs].[BLId] AS [BLId], 
+[ShipmentManifestBLs].[BLNumber] AS [BLNumber], 
+[ShipmentManifestBLs].[WayBill] AS [WayBill]
+FROM [dbo].[ShipmentManifestBLs] AS [ShipmentManifestBLs]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="ShipmentMIS-Invoices" EntityType="Self.ShipmentMIS-Invoices" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
-    [ShipmentMIS-Invoices].[Id] AS [Id], 
-    [ShipmentMIS-Invoices].[InvoiceNo] AS [InvoiceNo], 
-    [ShipmentMIS-Invoices].[InvoiceDate] AS [InvoiceDate], 
-    [ShipmentMIS-Invoices].[SubTotal] AS [SubTotal], 
-    [ShipmentMIS-Invoices].[InvoiceTotal] AS [InvoiceTotal], 
-    [ShipmentMIS-Invoices].[ImportedLines] AS [ImportedLines], 
-    [ShipmentMIS-Invoices].[RiderID] AS [RiderID], 
-    [ShipmentMIS-Invoices].[SupplierCode] AS [SupplierCode], 
-    [ShipmentMIS-Invoices].[SourceFile] AS [SourceFile]
-    FROM [dbo].[ShipmentMIS-Invoices] AS [ShipmentMIS-Invoices]</DefiningQuery>
+[ShipmentMIS-Invoices].[Id] AS [Id], 
+[ShipmentMIS-Invoices].[InvoiceNo] AS [InvoiceNo], 
+[ShipmentMIS-Invoices].[InvoiceDate] AS [InvoiceDate], 
+[ShipmentMIS-Invoices].[SubTotal] AS [SubTotal], 
+[ShipmentMIS-Invoices].[InvoiceTotal] AS [InvoiceTotal], 
+[ShipmentMIS-Invoices].[ImportedLines] AS [ImportedLines], 
+[ShipmentMIS-Invoices].[RiderID] AS [RiderID], 
+[ShipmentMIS-Invoices].[SupplierCode] AS [SupplierCode], 
+[ShipmentMIS-Invoices].[SourceFile] AS [SourceFile]
+FROM [dbo].[ShipmentMIS-Invoices] AS [ShipmentMIS-Invoices]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="ShipmentMIS-POs" EntityType="Self.ShipmentMIS-POs" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
-    [ShipmentMIS-POs].[EntryData_Id] AS [EntryData_Id], 
-    [ShipmentMIS-POs].[InvoiceNo] AS [InvoiceNo], 
-    [ShipmentMIS-POs].[InvoiceDate] AS [InvoiceDate], 
-    [ShipmentMIS-POs].[SubTotal] AS [SubTotal], 
-    [ShipmentMIS-POs].[InvoiceTotal] AS [InvoiceTotal], 
-    [ShipmentMIS-POs].[ImportedLines] AS [ImportedLines], 
-    [ShipmentMIS-POs].[InvoiceId] AS [InvoiceId], 
-    [ShipmentMIS-POs].[SupplierCode] AS [SupplierCode], 
-    [ShipmentMIS-POs].[SourceFile] AS [SourceFile]
-    FROM [dbo].[ShipmentMIS-POs] AS [ShipmentMIS-POs]</DefiningQuery>
+[ShipmentMIS-POs].[EntryData_Id] AS [EntryData_Id], 
+[ShipmentMIS-POs].[InvoiceNo] AS [InvoiceNo], 
+[ShipmentMIS-POs].[InvoiceDate] AS [InvoiceDate], 
+[ShipmentMIS-POs].[SubTotal] AS [SubTotal], 
+[ShipmentMIS-POs].[InvoiceTotal] AS [InvoiceTotal], 
+[ShipmentMIS-POs].[ImportedLines] AS [ImportedLines], 
+[ShipmentMIS-POs].[InvoiceId] AS [InvoiceId], 
+[ShipmentMIS-POs].[SupplierCode] AS [SupplierCode], 
+[ShipmentMIS-POs].[SourceFile] AS [SourceFile]
+FROM [dbo].[ShipmentMIS-POs] AS [ShipmentMIS-POs]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="ShipmentRiderBLs" EntityType="Self.ShipmentRiderBLs" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
-    [ShipmentRiderBLs].[id] AS [id], 
-    [ShipmentRiderBLs].[RiderId] AS [RiderId], 
-    [ShipmentRiderBLs].[RiderDetailId] AS [RiderDetailId], 
-    [ShipmentRiderBLs].[BLId] AS [BLId], 
-    [ShipmentRiderBLs].[ETA] AS [ETA], 
-    [ShipmentRiderBLs].[BLNumber] AS [BLNumber], 
-    [ShipmentRiderBLs].[Quantity] AS [Quantity], 
-    [ShipmentRiderBLs].[Marks] AS [Marks], 
-    [ShipmentRiderBLs].[BLDetailId] AS [BLDetailId]
-    FROM [dbo].[ShipmentRiderBLs] AS [ShipmentRiderBLs]</DefiningQuery>
+[ShipmentRiderBLs].[id] AS [id], 
+[ShipmentRiderBLs].[RiderId] AS [RiderId], 
+[ShipmentRiderBLs].[RiderDetailId] AS [RiderDetailId], 
+[ShipmentRiderBLs].[BLId] AS [BLId], 
+[ShipmentRiderBLs].[ETA] AS [ETA], 
+[ShipmentRiderBLs].[BLNumber] AS [BLNumber], 
+[ShipmentRiderBLs].[Quantity] AS [Quantity], 
+[ShipmentRiderBLs].[Marks] AS [Marks], 
+[ShipmentRiderBLs].[BLDetailId] AS [BLDetailId]
+FROM [dbo].[ShipmentRiderBLs] AS [ShipmentRiderBLs]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="ShipmentRiderEx" EntityType="Self.ShipmentRiderEx" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
-    [ShipmentRiderEx].[ApplicationSettingsId] AS [ApplicationSettingsId], 
-    [ShipmentRiderEx].[ETA] AS [ETA], 
-    [ShipmentRiderEx].[DocumentDate] AS [DocumentDate], 
-    [ShipmentRiderEx].[Packages] AS [Packages], 
-    [ShipmentRiderEx].[WarehouseCode] AS [WarehouseCode], 
-    [ShipmentRiderEx].[InvoiceNumber] AS [InvoiceNumber], 
-    [ShipmentRiderEx].[GrossWeightKg] AS [GrossWeightKg], 
-    [ShipmentRiderEx].[CubicFeet] AS [CubicFeet], 
-    [ShipmentRiderEx].[Id] AS [Id], 
-    [ShipmentRiderEx].[Code] AS [Code]
-    FROM [dbo].[ShipmentRiderEx] AS [ShipmentRiderEx]</DefiningQuery>
+[ShipmentRiderEx].[ApplicationSettingsId] AS [ApplicationSettingsId], 
+[ShipmentRiderEx].[ETA] AS [ETA], 
+[ShipmentRiderEx].[DocumentDate] AS [DocumentDate], 
+[ShipmentRiderEx].[Packages] AS [Packages], 
+[ShipmentRiderEx].[WarehouseCode] AS [WarehouseCode], 
+[ShipmentRiderEx].[InvoiceNumber] AS [InvoiceNumber], 
+[ShipmentRiderEx].[GrossWeightKg] AS [GrossWeightKg], 
+[ShipmentRiderEx].[CubicFeet] AS [CubicFeet], 
+[ShipmentRiderEx].[Id] AS [Id], 
+[ShipmentRiderEx].[Code] AS [Code]
+FROM [dbo].[ShipmentRiderEx] AS [ShipmentRiderEx]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="ShipmentRiderInvoice" EntityType="Self.ShipmentRiderInvoice" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
-    [ShipmentRiderInvoice].[id] AS [id], 
-    [ShipmentRiderInvoice].[RiderLineID] AS [RiderLineID], 
-    [ShipmentRiderInvoice].[RiderID] AS [RiderID], 
-    [ShipmentRiderInvoice].[InvoiceId] AS [InvoiceId], 
-    [ShipmentRiderInvoice].[WarehouseCode] AS [WarehouseCode], 
-    [ShipmentRiderInvoice].[InvoiceNumber] AS [InvoiceNumber], 
-    [ShipmentRiderInvoice].[InvoiceNo] AS [InvoiceNo], 
-    [ShipmentRiderInvoice].[Packages] AS [Packages], 
-    [ShipmentRiderInvoice].[rowNumber] AS [rowNumber], 
-    [ShipmentRiderInvoice].[RowNumber2] AS [RowNumber2]
-    FROM [dbo].[ShipmentRiderInvoice] AS [ShipmentRiderInvoice]</DefiningQuery>
+[ShipmentRiderInvoice].[id] AS [id], 
+[ShipmentRiderInvoice].[RiderLineID] AS [RiderLineID], 
+[ShipmentRiderInvoice].[RiderID] AS [RiderID], 
+[ShipmentRiderInvoice].[InvoiceId] AS [InvoiceId], 
+[ShipmentRiderInvoice].[WarehouseCode] AS [WarehouseCode], 
+[ShipmentRiderInvoice].[InvoiceNumber] AS [InvoiceNumber], 
+[ShipmentRiderInvoice].[InvoiceNo] AS [InvoiceNo], 
+[ShipmentRiderInvoice].[Packages] AS [Packages], 
+[ShipmentRiderInvoice].[rowNumber] AS [rowNumber], 
+[ShipmentRiderInvoice].[RowNumber2] AS [RowNumber2]
+FROM [dbo].[ShipmentRiderInvoice] AS [ShipmentRiderInvoice]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="ShipmentRiderManifests" EntityType="Self.ShipmentRiderManifests" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
-    [ShipmentRiderManifests].[id] AS [id], 
-    [ShipmentRiderManifests].[RiderId] AS [RiderId], 
-    [ShipmentRiderManifests].[RiderDetailId] AS [RiderDetailId], 
-    [ShipmentRiderManifests].[ManifestId] AS [ManifestId], 
-    [ShipmentRiderManifests].[ETA] AS [ETA], 
-    [ShipmentRiderManifests].[BLNumber] AS [BLNumber], 
-    [ShipmentRiderManifests].[Quantity] AS [Quantity], 
-    [ShipmentRiderManifests].[Marks] AS [Marks], 
-    [ShipmentRiderManifests].[ManifestMark] AS [ManifestMark]
-    FROM [dbo].[ShipmentRiderManifests] AS [ShipmentRiderManifests]</DefiningQuery>
+[ShipmentRiderManifests].[id] AS [id], 
+[ShipmentRiderManifests].[RiderId] AS [RiderId], 
+[ShipmentRiderManifests].[RiderDetailId] AS [RiderDetailId], 
+[ShipmentRiderManifests].[ManifestId] AS [ManifestId], 
+[ShipmentRiderManifests].[ETA] AS [ETA], 
+[ShipmentRiderManifests].[BLNumber] AS [BLNumber], 
+[ShipmentRiderManifests].[Quantity] AS [Quantity], 
+[ShipmentRiderManifests].[Marks] AS [Marks], 
+[ShipmentRiderManifests].[ManifestMark] AS [ManifestMark]
+FROM [dbo].[ShipmentRiderManifests] AS [ShipmentRiderManifests]</DefiningQuery>
           </EntitySet>
           <AssociationSet Name="FK_AsycudaDocumentEntryData_EntryData1" Association="Self.FK_AsycudaDocumentEntryData_EntryData1">
             <End Role="EntryData" EntitySet="EntryData" />
@@ -2442,6 +2467,15 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ShipmentRiderManifests' d
           <AssociationSet Name="ShipmentManifestShipmentRiderManifests" Association="WaterNutDBModel.ShipmentManifestShipmentRiderManifests">
             <End Role="ShipmentManifest" EntitySet="ShipmentManifest" />
             <End Role="ShipmentRiderManifests" EntitySet="ShipmentRiderManifests" />
+          </AssociationSet>
+          <EntitySet Name="ShipmentFreightManifests" EntityType="WaterNutDBModel.ShipmentFreightManifests" />
+          <AssociationSet Name="ShipmentFreightShipmentFreightManifests" Association="WaterNutDBModel.ShipmentFreightShipmentFreightManifests">
+            <End Role="ShipmentFreight" EntitySet="ShipmentFreight" />
+            <End Role="ShipmentFreightManifests" EntitySet="ShipmentFreightManifests" />
+          </AssociationSet>
+          <AssociationSet Name="ShipmentManifestShipmentFreightManifests" Association="WaterNutDBModel.ShipmentManifestShipmentFreightManifests">
+            <End Role="ShipmentManifest" EntitySet="ShipmentManifest" />
+            <End Role="ShipmentFreightManifests" EntitySet="ShipmentFreightManifests" />
           </AssociationSet>
           </EntityContainer>
         <EntityType Name="Sales" BaseType="WaterNutDBModel.EntryData">
@@ -3108,6 +3142,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ShipmentRiderManifests' d
           <Property Name="ApplicationSettingsId" Type="Int32" />
           <Property Name="Currency" Type="String" MaxLength="3" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="ShipmentBLFreight" Relationship="WaterNutDBModel.ShipmentFreightShipmentBLFreight" FromRole="ShipmentFreight" ToRole="ShipmentBLFreight" />
+          <NavigationProperty Name="ShipmentFreightManifests" Relationship="WaterNutDBModel.ShipmentFreightShipmentFreightManifests" FromRole="ShipmentFreight" ToRole="ShipmentFreightManifests" />
         </EntityType>
         <EntityType Name="ShipmentRiderDetails">
           <Key>
@@ -3693,6 +3728,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ShipmentRiderManifests' d
           <NavigationProperty Name="ShipmentManifestDetails" Relationship="WaterNutDBModel.FK_ShipmentManifestDetails_ShipmentManifest" FromRole="ShipmentManifest" ToRole="ShipmentManifestDetails" />
           <NavigationProperty Name="ShipmentManifestBLs" Relationship="WaterNutDBModel.ShipmentManifestShipmentManifestBLs" FromRole="ShipmentManifest" ToRole="ShipmentManifestBLs" />
           <NavigationProperty Name="ShipmentRiderManifests" Relationship="WaterNutDBModel.ShipmentManifestShipmentRiderManifests" FromRole="ShipmentManifest" ToRole="ShipmentRiderManifests" />
+          <NavigationProperty Name="ShipmentFreightManifests" Relationship="WaterNutDBModel.ShipmentManifestShipmentFreightManifests" FromRole="ShipmentManifest" ToRole="ShipmentFreightManifests" />
         </EntityType>
         <Association Name="FK_ShipmentAttachedManifest_ShipmentManifest">
           <End Type="WaterNutDBModel.ShipmentManifest" Role="ShipmentManifest" Multiplicity="1">
@@ -4286,6 +4322,44 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ShipmentRiderManifests' d
               <PropertyRef Name="Id" />
             </Principal>
             <Dependent Role="ShipmentRiderManifests">
+              <PropertyRef Name="ManifestId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="ShipmentFreightManifests">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" />
+          <Property Name="FreightDetailId" Type="Int32" Nullable="false" />
+          <Property Name="FreightId" Type="Int32" Nullable="false" />
+          <Property Name="ManifestId" Type="Int32" Nullable="false" />
+          <Property Name="RegistrationNumber" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="InvoiceNumber" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="WarehouseCode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="ShipmentFreight" Relationship="WaterNutDBModel.ShipmentFreightShipmentFreightManifests" FromRole="ShipmentFreightManifests" ToRole="ShipmentFreight" />
+          <NavigationProperty Name="ShipmentManifest" Relationship="WaterNutDBModel.ShipmentManifestShipmentFreightManifests" FromRole="ShipmentFreightManifests" ToRole="ShipmentManifest" />
+        </EntityType>
+        <Association Name="ShipmentFreightShipmentFreightManifests">
+          <End Type="WaterNutDBModel.ShipmentFreight" Role="ShipmentFreight" Multiplicity="1" />
+          <End Type="WaterNutDBModel.ShipmentFreightManifests" Role="ShipmentFreightManifests" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ShipmentFreight">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ShipmentFreightManifests">
+              <PropertyRef Name="FreightId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="ShipmentManifestShipmentFreightManifests">
+          <End Type="WaterNutDBModel.ShipmentManifest" Role="ShipmentManifest" Multiplicity="1" />
+          <End Type="WaterNutDBModel.ShipmentFreightManifests" Role="ShipmentFreightManifests" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ShipmentManifest">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ShipmentFreightManifests">
               <PropertyRef Name="ManifestId" />
             </Dependent>
           </ReferentialConstraint>
@@ -5232,6 +5306,19 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ShipmentRiderManifests' d
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="ShipmentFreightManifests">
+            <EntityTypeMapping TypeName="WaterNutDBModel.ShipmentFreightManifests">
+              <MappingFragment StoreEntitySet="ShipmentFreightManifests">
+                <ScalarProperty Name="WarehouseCode" ColumnName="WarehouseCode" />
+                <ScalarProperty Name="InvoiceNumber" ColumnName="InvoiceNumber" />
+                <ScalarProperty Name="RegistrationNumber" ColumnName="RegistrationNumber" />
+                <ScalarProperty Name="ManifestId" ColumnName="ManifestId" />
+                <ScalarProperty Name="FreightId" ColumnName="FreightId" />
+                <ScalarProperty Name="FreightDetailId" ColumnName="FreightDetailId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>
@@ -5249,7 +5336,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ShipmentRiderManifests' d
         <DesignerProperty Name="EnablePluralization" Value="False" />
         <DesignerProperty Name="IncludeForeignKeysInModel" Value="True" />
         <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
-        <DesignerProperty Name="UseLegacyProvider" Value="False" />
+        <DesignerProperty Name="UseLegacyProvider" Value="True" />
       </DesignerInfoPropertySet>
     </Options>
     <!-- Diagram content (shape and connector positions) -->
