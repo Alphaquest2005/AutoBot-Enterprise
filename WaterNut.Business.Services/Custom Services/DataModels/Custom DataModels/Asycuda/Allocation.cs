@@ -571,7 +571,7 @@ namespace WaterNut.DataSpace
                 var dislst = await GetDiscrepancieslstWithItemNumber(applicationSettingsId, lst).ConfigureAwait(false);
                 saleslst.AddRange(dislst);
 
-                var itmLst = CreateItemSetsWithItemNumbers(saleslst, asycudaEntries);
+                var itmLst = CreateItemSetsWithItemNumbers(saleslst.OrderBy(x => x.Key.EntryDataDate).ToList(), asycudaEntries);
 
                 //var test = itmLst.Where(x => x.Key == "8BM/MK-BAG-REUSE60").ToList();
 
@@ -869,7 +869,7 @@ namespace WaterNut.DataSpace
                             .ConfigureAwait(false);
                 adjlst = (salesData
                         .Where(x => lst == null || lst.Contains(x.ItemNumber))
-                      .GroupBy(d => (EntryDataDate: d.Sales?.EntryDataDate ?? d.Adjustments.EntryDataDate, EntryDataId: d.EntryDataId, ItemNumber: d.ItemNumber.ToUpper().Trim()))
+                      .GroupBy(d => (EntryDataDate: d.EffectiveDate ?? d.Adjustments.EntryDataDate, EntryDataId: d.EntryDataId, ItemNumber: d.ItemNumber.ToUpper().Trim()))
                     .Select(g => new ItemSales
                     {
                         Key = g.Key,
@@ -887,7 +887,8 @@ namespace WaterNut.DataSpace
                     EntryDataId = x.Adjustments.EntryDataId,
                     EntryDataDate = Convert.ToDateTime(x.EffectiveDate),
                     INVNumber = x.Adjustments.EntryDataId,
-                    Tax = x.Adjustments.Tax
+                    Tax = x.Adjustments.Tax,
+                    EntryDataType = "ADJ"
                 };
                 x.Comment = "Adjustment";
             });
@@ -928,7 +929,7 @@ namespace WaterNut.DataSpace
                                 .ConfigureAwait(false);
                     adjlst = (salesData
                         .Where(x => lst == null || lst.Contains(x.ItemNumber))
-                        .GroupBy(d => (EntryDataDate: d.Adjustments.EntryDataDate, EntryDataId: d.EntryDataId, ItemNumber: d.ItemNumber.ToUpper().Trim()))
+                        .GroupBy(d => (EntryDataDate: d.EffectiveDate ?? d.Adjustments.EntryDataDate, EntryDataId: d.EntryDataId, ItemNumber: d.ItemNumber.ToUpper().Trim()))
                         .Select(g => new ItemSales
                         {
                             Key = g.Key,
@@ -946,6 +947,7 @@ namespace WaterNut.DataSpace
                         EntryDataId = x.Adjustments.EntryDataId,
                         EntryDataDate = Convert.ToDateTime(x.EffectiveDate),
                         INVNumber = x.Adjustments.EntryDataId,
+                        EntryDataType = "DIS"
                     };
                     x.Comment = "Adjustment";
                     x.Quantity = (double)(x.InvoiceQty - x.ReceivedQty);// switched it so its positive
@@ -1308,7 +1310,7 @@ namespace WaterNut.DataSpace
                 .Sum(x => x.Suplementary_Quantity);
             var nonDFPQty = cAsycudaItm.EntryPreviousItems.Any() ? (double)cAsycudaItm.EntryPreviousItems
                 .Select(x => x.xcuda_PreviousItem)
-                .Where(x => x.DutyFreePaid != saleItem.DutyFreePaid || x.xcuda_Item.EntryDataType == "DIS")
+                .Where(x => x.DutyFreePaid != saleItem.DutyFreePaid || (x.xcuda_Item.EntryDataType ?? "Sales") != saleItem.Sales.EntryDataType)
                 .Sum(x => x.Suplementary_Quantity) : (saleItem.DutyFreePaid == "Duty Free" ? cAsycudaItm.DPQtyAllocated : cAsycudaItm.DFQtyAllocated);
 
 
@@ -1331,7 +1333,9 @@ namespace WaterNut.DataSpace
 
             var finalNonDFPQty = nonDFPQty > nonAllocatedQty ? nonDFPQty : nonAllocatedQty;
 
-            var TakeOut = (finalNonDFPQty + totalDfPQtyAllocated) > cAsycudaItm.ItemQuantity ? cAsycudaItm.QtyAllocated : (finalNonDFPQty + totalDfPQtyAllocated);
+            var TakeOut = (finalNonDFPQty + totalDfPQtyAllocated) > cAsycudaItm.ItemQuantity 
+                                ? finalNonDFPQty >= cAsycudaItm.ItemQuantity ? cAsycudaItm.ItemQuantity : cAsycudaItm.QtyAllocated 
+                                : (finalNonDFPQty + totalDfPQtyAllocated);
 
 
             var res = cAsycudaItm.ItemQuantity - TakeOut;

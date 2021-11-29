@@ -35,7 +35,7 @@ namespace AdjustmentQS.Business.Services
         {
             try
             {
-
+                _itemCache = null;
 
                 using (var ctx = new AdjustmentQSContext() { StartTracking = true })
                 {
@@ -47,6 +47,8 @@ namespace AdjustmentQS.Business.Services
                         .Include(x => x.AdjustmentEx)
                         .Where(x => x.ApplicationSettingsId == applicationSettingsId)
                         .Where(x => x.SystemDocumentSet != null)
+                        .Where(x => x.Type == "DIS")
+                        //.Where(x => x.ItemNumber == "SH01053")
                         //.Where(x => x.ItemNumber == "BS01016")
                         //.Where(x => x.EntryDataId == "EXP1T001461")
                         //.Where( x => x.EntryDataDetailsId == 16569)
@@ -57,6 +59,21 @@ namespace AdjustmentQS.Business.Services
                         .OrderBy(x => x.EntryDataDetailsId)
                         .DistinctBy(x => x.EntryDataDetailsId)
                         .ToList();
+
+                    //var ids = lst.Select(x => x.EntryDataDetailsId).ToList();
+
+                    //var itemEntryDataDetails = ctx.AsycudaDocumentItemEntryDataDetails
+                    //    .Where(x => ids.Contains(x.EntryDataDetailsId))
+                    //    .ToList()
+                    //    .Join(lst, x => x.EntryDataDetailsId, z => z.EntryDataDetailsId, (x, z) => new { key = z, doc = x })
+                    //    .ToList();
+
+
+                    //var alreadyExecuted = lst.Where(x => itemEntryDataDetails.Any(z => z.key.EntryDataDetailsId == x.EntryDataDetailsId)).ToList();
+                    //foreach (var itm in alreadyExecuted)
+                    //{
+                    //    //lst.Remove(itm);
+                    //}
 
                     AllocationsModel.Instance
                         .ClearDocSetAllocations(lst.Select(x => $"'{x.ItemNumber}'").Aggregate((o, n) => $"{o},{n}"))
@@ -148,9 +165,11 @@ namespace AdjustmentQS.Business.Services
                     try
                     {
                         ctx.SaveChanges();
-
+                        
                         if (string.IsNullOrEmpty(s.ItemNumber)) continue;
                         var ed = ctx.EntryDataDetails.First(x => x.EntryDataDetailsId == s.EntryDataDetailsId);
+
+                        ed.Comment = null;
                         if (!string.IsNullOrEmpty(s.PreviousInvoiceNumber))
                         {
                             List<AsycudaDocumentItem> aItem;
@@ -356,7 +375,7 @@ namespace AdjustmentQS.Business.Services
 
                 var exPro =
                     $" && PreviousDocumentItem.AsycudaDocument.ApplicationSettingsId = {docSet.ApplicationSettingsId}" +
-                    //"&& PreviousDocumentItem.AsycudaDocument.SystemDocumentSet == null" +
+                    $" && EntryDataDetails.EntryDataDetailsEx.AsycudaDocumentSetId == {docSet.AsycudaDocumentSetId}" +
                     $" && (PreviousDocumentItem.AsycudaDocument.CustomsOperationId == {(int)CustomsOperations.Warehouse})";
                 var slst =
                     (await CreateAllocationDataBlocks(perInvoice, filterExpression + exPro, entryDataDetailsIds, adjustmentType).ConfigureAwait(false))
@@ -743,6 +762,24 @@ namespace AdjustmentQS.Business.Services
                 return;
             }
 
+            if (alst.Select(x => x.ItemQuantity.GetValueOrDefault() - x.PiQuantity.GetValueOrDefault()).Sum() <
+                remainingShortQty)
+            {
+
+                var existingExecution = ctx.AsycudaDocumentItemEntryDataDetails
+                    .FirstOrDefault(x => x.EntryDataDetailsId == ed.EntryDataDetailsId);
+
+                if (existingExecution == null)
+                {
+                    ed.Status = "PiQuantity Already eXed-Out";
+                    return;
+                }
+
+                ////Adding back Status because something is definitly wrong if qty reported is more than what entry states... 
+                /// going and allocat the rest will cause allocations to an error
+
+            }
+
 
             if (remainingShortQty < 0)
             {
@@ -1054,7 +1091,7 @@ namespace AdjustmentQS.Business.Services
         private static void ProcessDISErrorsForAllocation(List<TODO_PreDiscrepancyErrors> lst, AdjustmentQSContext ctx)
         {
             StatusModel.StartStatusUpdate("Preparing Discrepancy Errors for Re-Allocation", lst.Count());
-            foreach (var s in lst)
+            foreach (var s in lst.Where(x => x.ReceivedQty > x.InvoiceQty))
             {
                 var ed = ctx.EntryDataDetails.First(x => x.EntryDataDetailsId == s.EntryDataDetailsId);
                 ed.EffectiveDate = BaseDataModel.CurrentSalesInfo().Item2;

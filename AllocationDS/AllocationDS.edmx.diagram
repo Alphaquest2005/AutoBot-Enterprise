@@ -17,7 +17,7 @@
         <InheritanceConnector EntityType="WaterNutDBModel.Sales" />
         <EntityTypeShape EntityType="WaterNutDBModel.xcuda_PreviousItem" Width="2.375" PointX="6.625" PointY="23.75" FillColor="Olive" />
         <AssociationConnector Association="WaterNutDBModel.FK_xcuda_PreviousItem_xcuda_Item" />
-        <EntityTypeShape EntityType="WaterNutDBModel.AsycudaDocument" Width="2" PointX="0.625" PointY="19.25" />
+        <EntityTypeShape EntityType="WaterNutDBModel.AsycudaDocument" Width="2" PointX="26.625" PointY="21.25" />
         <AssociationConnector Association="WaterNutDBModel.AsycudaDocumentxcuda_Item" />
         <EntityTypeShape EntityType="WaterNutDBModel.SubItems" Width="1.5" PointX="6.625" PointY="10.375" />
         <AssociationConnector Association="WaterNutDBModel.FK_SubItems_xcuda_Item" />
@@ -79,7 +79,7 @@
         <EntityTypeShape EntityType="WaterNutDBModel.AllocationErrors" Width="1.5" PointX="11.625" PointY="13.25" />
         <AssociationConnector Association="WaterNutDBModel.EntryDataDetailsEX9AsycudaSalesAllocations" />
         <EntityTypeShape EntityType="WaterNutDBModel.ItemSalesPiSummary" Width="1.5" PointX="15.375" PointY="0.75" />
-        <EntityTypeShape EntityType="WaterNutDBModel.SystemDocumentSets" Width="1.5" PointX="1.25" PointY="28.375" />
+        <EntityTypeShape EntityType="WaterNutDBModel.SystemDocumentSets" Width="1.5" PointX="2" PointY="30.625" />
         <AssociationConnector Association="WaterNutDBModel.SystemDocumentSetsAsycudaDocument" />
         <AssociationConnector Association="WaterNutDBModel.SystemDocumentSetsEntryDataDetailsEx" />
         <AssociationConnector Association="WaterNutDBModel.FK_EntryDataDetails_EntryData" />
