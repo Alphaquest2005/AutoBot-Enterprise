@@ -50,7 +50,7 @@ namespace AdjustmentQS.Business.Services
                         .Where(x => x.Type == "DIS")
                         //.Where(x => x.ItemNumber == "SH01053")
                         //.Where(x => x.ItemNumber == "BS01016")
-                        //.Where(x => x.EntryDataId == "EXP1T001461")
+                        //.Where(x => x.EntryDataId == "Asycuda-C#33687-19")
                         //.Where( x => x.EntryDataDetailsId == 16569)
                         .Where(x => x.DoNotAllocate == null || x.DoNotAllocate != true)
                         .Where(x => overwriteExisting
@@ -762,7 +762,7 @@ namespace AdjustmentQS.Business.Services
                 return;
             }
 
-            if (alst.Select(x => x.ItemQuantity.GetValueOrDefault() - x.PiQuantity.GetValueOrDefault()).Sum() <
+            if (ed.IsReconciled == false && alst.Select(x => x.ItemQuantity.GetValueOrDefault() - x.PiQuantity.GetValueOrDefault()).Sum() <
                 remainingShortQty)
             {
 

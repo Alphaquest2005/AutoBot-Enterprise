@@ -195,7 +195,7 @@ namespace WaterNut.DataSpace
                                      //.ThenBy(x => x.Key.EntryDataId).ThenBy(x => x.Key.ItemNumber)
                                      //.Where(x => x.EntriesList.Any(z => z.TariffCode == "61091010")).ToList()
                                      //.Where(x => x.EntriesList.Any(z => z.AsycudaDocument.CNumber == "44887" && z.LineNumber == 17))
-
+                                     //.Where(x => x.Key.ItemNumber == "0211-0280MDZBLU")
                                      //.Where(x => x.SalesList.Any(z => z.EntryDataId.ToLower().Contains("harry")))
                                      // .Where(x => x.Key.ItemNumber.StartsWith("A")) //.Where(x => x.Key.Contains("255100")) // 
                                      // .Where(x => "337493".Contains(x.Key))
@@ -573,7 +573,7 @@ namespace WaterNut.DataSpace
 
                 var itmLst = CreateItemSetsWithItemNumbers(saleslst.OrderBy(x => x.Key.EntryDataDate).ToList(), asycudaEntries);
 
-                //var test = itmLst.Where(x => x.Key == "8BM/MK-BAG-REUSE60").ToList();
+                //var test = itmLst.Where(x => x.Key.EntryDataId == "Asycuda-C#33687-19").ToList();
 
                 return itmLst;
             }
@@ -1222,9 +1222,9 @@ namespace WaterNut.DataSpace
 
             if (lastAllocation == null)
             {
-                if (asycudaEntries.Sum(x => x.AsycudaSalesAllocations.Count()) != 0)
-                    await AddExceptionAllocation(saleitm, "Returned More than Sold")
-                        .ConfigureAwait(false);
+                //if (asycudaEntries.Sum(x => x.AsycudaSalesAllocations.Count()) != 0)
+                 //   await AddExceptionAllocation(saleitm, "Returned More than Sold")
+                   //     .ConfigureAwait(false);
                 return i;
             }
             // refreash all items from cache and set currentindex to last previous item

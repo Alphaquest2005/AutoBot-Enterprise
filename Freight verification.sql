@@ -22,6 +22,6 @@ GROUP BY xcuda_ASYCUDA_ExtendedProperties.AsycudaDocumentSetId, AsycudaDocumentT
 GO
 
 
-select * from [AsycudaDocumentSetFreightCIFVerification] where CNumber = '38136'
+select * from [AsycudaDocumentSetFreightCIFVerification] where CNumber = '8910'
 
-select * from [AsycudaDocumentSetFreightCIFVerification] where ReferenceNumber like 'SUCR540154-BUDGET%'
+select * from [AsycudaDocumentSetFreightCIFVerification] where ReferenceNumber like 'PEVGRE11334-Budget%' order by CNumber

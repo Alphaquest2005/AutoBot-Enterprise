@@ -791,8 +791,8 @@ namespace WaterNut.DataSpace
                                     Suplementary_Quantity = (double) z.Suplementary_Quantity
                                 }).ToList(),
                             TariffSupUnitLkps =
-                                x.PreviousDocumentItem?.xcuda_Tarification.xcuda_HScode.TariffCodes.TariffCategory
-                                    .TariffCategoryCodeSuppUnit.Select(z => z.TariffSupUnitLkps).ToList()
+                                x.PreviousDocumentItem?.xcuda_Tarification.xcuda_HScode.TariffCodes == null ? new List<TariffSupUnitLkps>() :x.PreviousDocumentItem?.xcuda_Tarification.xcuda_HScode.TariffCodes.TariffCategory
+                                    ?.TariffCategoryCodeSuppUnit?.Select(z => z.TariffSupUnitLkps).ToList()
                             //.Select(x => (ITariffSupUnitLkp)x)
 
                         }

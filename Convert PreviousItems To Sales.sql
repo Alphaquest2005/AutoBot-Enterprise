@@ -33,9 +33,15 @@ SET         EntryDataDate = EntryDataDetails.EffectiveDate
 FROM    EntryData_Adjustments INNER JOIN
                  EntryData ON EntryData_Adjustments.EntryData_Id = EntryData.EntryData_Id INNER JOIN
                  EntryDataDetails ON EntryData.EntryData_Id = EntryDataDetails.EntryData_Id
-WHERE (EntryData.ApplicationSettingsId = 7)
+WHERE (EntryData.ApplicationSettingsId = 6) AND (EntryDataDetails.EntryDataId LIKE N'Asycuda-C#%')
 
 
+UPDATE EntryDataDetails
+SET         IsReconciled = 1 --- to prevent it from actually trying to exwarehouse these
+FROM    EntryData_Adjustments INNER JOIN
+                 EntryData ON EntryData_Adjustments.EntryData_Id = EntryData.EntryData_Id INNER JOIN
+                 EntryDataDetails ON EntryData.EntryData_Id = EntryDataDetails.EntryData_Id
+WHERE (EntryData.ApplicationSettingsId = 6) AND (EntryDataDetails.EntryDataId LIKE N'Asycuda-C#%')
 
 
 
