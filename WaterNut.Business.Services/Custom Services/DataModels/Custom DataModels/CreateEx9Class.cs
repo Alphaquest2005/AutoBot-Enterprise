@@ -768,6 +768,7 @@ namespace WaterNut.DataSpace
                             pQuantity = x.pQuantity,
                             pRegistrationDate = x.pRegistrationDate,
                             pAssessmentDate = x.AssessmentDate,
+                            pExpiryDate = x.pExpiryDate,
                             Country_of_origin_code = x.Country_of_origin_code,
                             Total_CIF_itm = x.Total_CIF_itm,
                             Net_weight_itm = x.Net_weight_itm,
@@ -1039,6 +1040,7 @@ namespace WaterNut.DataSpace
                                           Description = s.LastOrDefault().pItemDescription,
                                           xcuda_ItemId = s.LastOrDefault().PreviousItem_Id.GetValueOrDefault(),
                                           AssessmentDate = s.LastOrDefault().pAssessmentDate,
+                                          ExpiryDate = s.LastOrDefault().pExpiryDate,
                                           previousItems = s.LastOrDefault().previousItems
                                       },
                                       EX9Allocation = new EX9Allocation()
@@ -1201,7 +1203,18 @@ namespace WaterNut.DataSpace
                 // clear all xstatus so know what happened
                 updateXStatus(mypod.Allocations,null);
 
+                if (mypod.EntlnData.pDocumentItem.ExpiryDate <= DateTime.Now)
+                {
+                    updateXStatus(mypod.Allocations,
+                        $@"Expired Entry: '{
+                                mypod.EntlnData.pDocumentItem.ExpiryDate.ToShortDateString()}'");
+                    return 0;
+                }
+
+
                 /////////////// QtyAllocated >= piQuantity cap
+                ///
+                /// 
                 /// 
                 if (checkQtyAllocatedGreaterThanPiQuantity)
                 {
@@ -2253,6 +2266,7 @@ namespace WaterNut.DataSpace
             public string ItemNumber { get; set; }
             public int xcuda_ItemId { get; set; }
             public string Description { get; set; }
+            public DateTime ExpiryDate { get; set; }
         }
 
         public class EX9Allocation
@@ -2369,6 +2383,7 @@ namespace WaterNut.DataSpace
         public int InventoryItemId { get; set; }
         public string pPrecision1 { get; set; }
         public List<AsycudaSalesAllocationsPIData> PIData { get; set; }
+        public DateTime pExpiryDate { get; set; }
     }
 
     public class AllocationDataBlock

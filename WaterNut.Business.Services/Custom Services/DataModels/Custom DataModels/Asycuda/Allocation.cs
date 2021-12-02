@@ -1107,7 +1107,7 @@ namespace WaterNut.DataSpace
                         {
                             if (CurrentAsycudaItemIndex == 0)
                             {
-                                await AddExceptionAllocation(saleitm, "Returned More than Sold").ConfigureAwait(false);
+                               // await AddExceptionAllocation(saleitm, "Returned More than Sold").ConfigureAwait(false);
                                 break;
                             }
                             i -= 2;

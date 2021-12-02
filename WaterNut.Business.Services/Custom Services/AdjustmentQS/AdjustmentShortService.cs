@@ -633,6 +633,7 @@ namespace AdjustmentQS.Business.Services
                             pQuantity = (double)c.x.pQuantity,
                             pRegistrationDate = (DateTime)(c.x.pRegistrationDate ?? c.x.PreviousDocumentItem.AsycudaDocument.AssessmentDate),
                             pAssessmentDate = (DateTime)c.x.PreviousDocumentItem.AsycudaDocument.AssessmentDate,
+                            pExpiryDate = (DateTime)c.x.PreviousDocumentItem.AsycudaDocument.ExpiryDate,
                             Country_of_origin_code =
                                 c.x.PreviousDocumentItem.xcuda_Goods_description.Country_of_origin_code,
                             Total_CIF_itm = c.x.PreviousDocumentItem.xcuda_Valuation_item.Total_CIF_itm,
