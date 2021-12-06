@@ -1974,6 +1974,8 @@ namespace WaterNut.DataSpace
                                 .Where(x => x.EntryDataDetailsId == saleItm.EntryDataDetailsId)
                                 .OrderBy(x => x.AllocationId).ToList();
 
+                            if (!saleAllocationsLst.Any()) break;
+
                             var allocation = saleAllocationsLst.ElementAt(currentAllocationItemIndex);
 
                             for (var i = currentAllocationItemIndex; i < saleAllocationsLst.Count(); i++)
