@@ -833,7 +833,7 @@ namespace WaterNut.DataSpace
                 using (var ctx = new AllocationDSContext())
                 {
                     ctx.Database.CommandTimeout = 0;
-
+                    
 
                     //if (_ex9AsycudaSalesAllocations == null)
                     //{

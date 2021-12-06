@@ -1092,7 +1092,7 @@ namespace AdjustmentQS.Business.Services
         private static void ProcessDISErrorsForAllocation(List<TODO_PreDiscrepancyErrors> lst, AdjustmentQSContext ctx)
         {
             StatusModel.StartStatusUpdate("Preparing Discrepancy Errors for Re-Allocation", lst.Count());
-            foreach (var s in lst.Where(x => x.ReceivedQty > x.InvoiceQty))
+            foreach (var s in lst.Where(x => x.ReceivedQty > x.InvoiceQty && x.IsReconciled != true))
             {
                 var ed = ctx.EntryDataDetails.First(x => x.EntryDataDetailsId == s.EntryDataDetailsId);
                 ed.EffectiveDate = BaseDataModel.CurrentSalesInfo().Item2;
