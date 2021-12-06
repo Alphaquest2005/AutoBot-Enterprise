@@ -16,7 +16,7 @@ FROM    [History-Allocations] INNER JOIN
                                   [History-Allocations].SANumber = AsycudaSalesAllocationsEx.SANumber
 								  ----- logic here
 								  AND [History-Allocations].pItemNumber = AsycudaSalesAllocationsEx.pItemNumber AND ([History-Allocations].QtyAllocated <> AsycudaSalesAllocationsEx.QtyAllocated 
-								  or [History-Allocations].xQuantity <> AsycudaSalesAllocationsEx.xQuantity or  [History-Allocations].Status <> AsycudaSalesAllocationsEx.Status  )
+								 or  [History-Allocations].Status <> AsycudaSalesAllocationsEx.Status  )
 
 WHERE ([History-Allocations].BatchNo = @BatchNo) AND ([History-Allocations].ItemNumber LIKE '%' + @ItemNumber + '%')
 

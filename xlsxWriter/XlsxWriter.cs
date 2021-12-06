@@ -357,7 +357,7 @@ namespace xlsxWriter
                 .OrderBy(x => x.INVTotalCost).ThenBy(x => x.POTotalCost)
                 .ToList();
             if (!shipmentInvoicePoItemMisMatchesList.Any()) return;
-            var header = "PONumber,InvoiceNo,POItemCode,INVItemCode,PODescription,INVDescription,POCost,INVCost,POQuantity,INVQuantity,INVSalesFactor,POTotalCost,INVTotalCost,INVDetailsId,PODetailsId".Split(',').ToList();
+            var header = "PONumber,POItemCode,PODescription,POCost,POQuantity,POTotalCost,PODetailsId,InvoiceNo,INVItemCode,INVDescription,INVCost,INVQuantity,INVSalesFactor,INVTotalCost,INVDetailsId".Split(',').ToList();
 
             if (!workbook.Worksheets.Exists(x => x.SheetName == "MisMatches"))
             {

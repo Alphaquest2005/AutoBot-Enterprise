@@ -721,7 +721,7 @@ namespace AutoBotUtilities
                     foreach (var client in clients)
                     {
                         var manifests = masterShipment.ShipmentAttachedManifest
-                            .Where(x => x.ShipmentManifest.WayBill == bl.BLNumber ||
+                            .Where(x => x.ShipmentManifest.WayBill == bl.BLNumber || x.ShipmentManifest.Voyage.Contains(bl.Voyage) ||
                                         x.ShipmentManifest.ShipmentRiderManifests.Any(z =>
                                             z.RiderId == client.First().RiderId)).Select(x => x.ShipmentManifest)
                             .ToList();
@@ -759,7 +759,9 @@ namespace AutoBotUtilities
                             ExpectedEntries = 0,
                             TotalInvoices = 0,
                             FreightCurrency = freightInvoices.LastOrDefault()?.Currency ?? bl.FreightCurrency ?? "USD",
-                            Freight = freightInvoices.LastOrDefault()?.InvoiceTotal ?? (bl?.BLNumber ==  manifests.LastOrDefault()?.WayBill ?  bl.Freight : 0),
+                            // dont understand why i checking manifest if there is no freight invoice
+                            //Freight = freightInvoices.LastOrDefault()?.InvoiceTotal ?? (bl?.BLNumber ==  manifests.LastOrDefault()?.WayBill || manifests.Any(x => x.Voyage.Contains(bl.Voyage)) ?  bl.Freight : 0),
+                            Freight = freightInvoices.LastOrDefault()?.InvoiceTotal ?? bl.Freight,
                             Origin = "US",
                             Packages =manifests.LastOrDefault()?.Packages ?? (!blDetails.Any()
                                 ? clients.SelectMany(x => x.Select(r => r.Pieces)).Sum()
