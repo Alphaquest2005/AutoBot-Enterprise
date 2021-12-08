@@ -1,37 +1,30 @@
 ﻿using System;
 using System.Data.SqlClient;
 using System.Threading.Tasks;
-
-using CounterPointQS.Business.Entities;
 using Core.Common.UI;
+using CounterPointQS.Business.Entities;
 using WaterNut.DataLayer;
-
 
 namespace WaterNut.DataSpace
 {
-	public class CPSalesModel  
-	{
-       private static readonly CPSalesModel instance;
-       static CPSalesModel()
+    public class CPSalesModel
+    {
+        static CPSalesModel()
         {
-            instance = new CPSalesModel();
-            
+            Instance = new CPSalesModel();
         }
 
-       public static CPSalesModel Instance
-        {
-            get { return instance; }
-        }
+        public static CPSalesModel Instance { get; }
 
-	    public async Task DownloadCPSales(CounterPointSales c, int docSetId)
-	    {
-	        //WaterNutDBEntities db = BaseDataModel.db;//new WaterNutDBEntities(Properties.Settings.Default.WaterNutDBEntitiesConnection);
-	        if (docSetId != 0)
-	        {
-	            StatusModel.Timer("Downloading CP Sales...");
-	            using (var ctx = new WaterNutDBEntities() {CommandTimeout = 0})
-	            {
-	                 ctx.ExecuteStoreCommand(@"
+        public async Task DownloadCPSales(CounterPointSales c, int docSetId)
+        {
+            //WaterNutDBEntities db = BaseDataModel.db;//new WaterNutDBEntities(Properties.Settings.Default.WaterNutDBEntitiesConnection);
+            if (docSetId != 0)
+            {
+                StatusModel.Timer("Downloading CP Sales...");
+                using (var ctx = new WaterNutDBEntities {CommandTimeout = 0})
+                {
+                    ctx.ExecuteStoreCommand(@"
                             
                                     declare @entryData_Id int
 									set @entryData_Id = (select distinct entrydata_id from entrydata where entrydataid = @INVNumber and EntryDataDate = @Date and ApplicationSettingsId = @ApplicationSettingsId)
@@ -95,29 +88,26 @@ namespace WaterNut.DataSpace
                                                      InventorySources ON InventoryItemSource.InventorySourceId = InventorySources.Id
                                     WHERE (CounterPointSalesDetails.INVNO = @INVNumber) AND (CounterPointSalesDetails.DATE = @Date) AND (LEFT(CounterPointSalesDetails.ITEM_NO, 1) <> '*') AND 
                                                      (EntryData.ApplicationSettingsId = @ApplicationSettingsId) AND (InventorySources.Name = N'POS')",
-
-	                    new SqlParameter("@AsycudaDocumentSetId", docSetId),
-	                    new SqlParameter("@INVNumber", c.InvoiceNo),
-	                     new SqlParameter("@Date", c.Date),
-	                     new SqlParameter("@ApplicationSettingsId", BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)); 
-
+                        new SqlParameter("@AsycudaDocumentSetId", docSetId),
+                        new SqlParameter("@INVNumber", c.InvoiceNo),
+                        new SqlParameter("@Date", c.Date),
+                        new SqlParameter("@ApplicationSettingsId",
+                            BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId));
                 }
-	            StatusModel.Timer("Refreshing Sales Data");
+
+                StatusModel.Timer("Refreshing Sales Data");
 
 
-	            StatusModel.StopStatusUpdate();
+                StatusModel.StopStatusUpdate();
+            }
+        }
 
-	        }
-	    }
-
-	    public async Task DownloadCPSalesDateRange(DateTime startDate, DateTime endDate, int docSetId)
+        public async Task DownloadCPSalesDateRange(DateTime startDate, DateTime endDate, int docSetId)
         {
-           
-              
-                    StatusModel.Timer("Downloading CP Sales Data...");
-                    using (var ctx = new WaterNutDBEntities() { CommandTimeout = 0 })
-                    {
-                         ctx.ExecuteStoreCommand(@"
+            StatusModel.Timer("Downloading CP Sales Data...");
+            using (var ctx = new WaterNutDBEntities {CommandTimeout = 0})
+            {
+                ctx.ExecuteStoreCommand(@"
 
                                     DELETE FROM EntryData
 									FROM    EntryData INNER JOIN
@@ -183,20 +173,14 @@ namespace WaterNut.DataSpace
 													 InventorySources ON InventoryItemSource.InventorySourceId = InventorySources.Id
 									WHERE (CounterPointSalesDetails.DATE >= @StartDate) AND (CounterPointSalesDetails.DATE <= @EndDate) AND (LEFT(CounterPointSalesDetails.ITEM_NO, 1) <> '*') AND (CounterPointSalesDetails.ITEM_DESCR IS NOT NULL) 
 													 AND (InventorySources.Name = N'POS')",
-                                                                                                                                         
-                                   new SqlParameter("@AsycudaDocumentSetId", docSetId),
-                                   new SqlParameter("@StartDate", startDate),
-                                   new SqlParameter("@EndDate", endDate),
-                             new SqlParameter("@ApplicationSettingsId", BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId));
-                    }
-             
-                    StatusModel.StopStatusUpdate();
-              
+                    new SqlParameter("@AsycudaDocumentSetId", docSetId),
+                    new SqlParameter("@StartDate", startDate),
+                    new SqlParameter("@EndDate", endDate),
+                    new SqlParameter("@ApplicationSettingsId",
+                        BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId));
+            }
 
-           
+            StatusModel.StopStatusUpdate();
         }
-
-
-        
     }
 }

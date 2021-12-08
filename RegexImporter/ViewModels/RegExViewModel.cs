@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.Entity;
-using System.Dynamic;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Core.Common;
@@ -12,30 +9,30 @@ using OCR.Client.Entities;
 using OCR.Client.Repositories;
 using SimpleMvvmToolkit;
 using WaterNut.QuerySpace.OCR;
-using WaterNut.QuerySpace.OCR.ViewModels;
-
 using OCR_BaseViewModel = WaterNut.QuerySpace.OCR.ViewModels.BaseViewModel;
-
-using RegularExpressions = OCR.Client.Entities.RegularExpressions;
 
 namespace RegexImporter.ViewModels
 {
-
     public class RegexViewModel : ViewModelBase<RegexViewModel>, IAsyncInitialization
     {
-        private static readonly RegexViewModel instance;
+        private Capture _currentCapture;
+
+        private Group _currentGroup;
+
+
+        private Match _currentMatch;
+
+
+        private RegularExpressions _currentRegex;
+
+
+        private dynamic _currentRegexObject;
+
+        private List<RegularExpressions> _regexObjects;
 
         static RegexViewModel()
         {
-            instance = new RegexViewModel()
-            {
-
-            };
-        }
-
-        public static RegexViewModel Instance
-        {
-            get { return instance; }
+            Instance = new RegexViewModel();
         }
 
         private RegexViewModel()
@@ -44,10 +41,81 @@ namespace RegexImporter.ViewModels
             RegisterToReceiveMessages<Parts>(MessageToken.CurrentPartsChanged, OnOCR_PartExsChanged2);
             RegisterToReceiveMessages<Lines>(MessageToken.CurrentLinesChanged, OnOCR_CurrentLineChanged);
             RegisterToReceiveMessages<Fields>(MessageToken.CurrentFieldsChanged, OnOCR_CurrentFieldsChanged);
-
-
-
         }
+
+        public static RegexViewModel Instance { get; }
+
+        public dynamic CurrentRegexObject
+        {
+            get => _currentRegexObject;
+            set
+            {
+                _currentRegexObject = value;
+                NotifyPropertyChanged(x => CurrentRegexObject);
+            }
+        }
+
+        public List<RegularExpressions> RegexObjects
+        {
+            get => _regexObjects;
+            set
+            {
+                _regexObjects = value;
+                NotifyPropertyChanged(x => RegexObjects);
+            }
+        }
+
+        public RegularExpressions CurrentRegex
+        {
+            get => _currentRegex;
+            set
+            {
+                _currentRegex = value;
+                NotifyPropertyChanged(x => CurrentRegex);
+            }
+        }
+
+
+        public Match CurrentMatch
+        {
+            get => _currentMatch;
+            set
+            {
+                _currentMatch = value;
+                BeginSendMessage(MessageToken.CurrentMatch,
+                    new NotificationEventArgs<Match>(MessageToken.CurrentMatch, _currentMatch));
+                NotifyPropertyChanged(x => CurrentMatch);
+            }
+        }
+
+        public Group CurrentGroup
+        {
+            get => _currentGroup;
+            set
+            {
+                _currentGroup = value;
+                BeginSendMessage(MessageToken.CurrentGroup,
+                    new NotificationEventArgs<Group>(MessageToken.CurrentGroup, _currentGroup));
+                NotifyPropertyChanged(x => CurrentGroup);
+            }
+        }
+
+        public Capture CurrentCapture
+        {
+            get => _currentCapture;
+            set
+            {
+                _currentCapture = value;
+                BeginSendMessage(MessageToken.CurrentCapture,
+                    new NotificationEventArgs<Capture>(MessageToken.CurrentCapture, _currentCapture));
+                NotifyPropertyChanged(x => CurrentCapture);
+            }
+        }
+
+        public List<Match> Matches { get; set; } = new List<Match>();
+
+
+        public Task Initialization { get; }
 
         private void OnOCR_CurrentFieldsChanged(object sender, NotificationEventArgs<Fields> e)
         {
@@ -56,12 +124,11 @@ namespace RegexImporter.ViewModels
             {
                 dynamic part = new BetterExpando();
                 part.Source = e.Data;
-                part.Save = (Action<Fields>)(x =>
+                part.Save = (Action<Fields>) (x =>
                 {
                     part.Source = FieldsRepository.Instance.UpdateFields(e.Data).Result;
                     UpdateRegexObjects();
                     CurrentRegexObject = part;
-
                 });
 
                 CurrentRegexObject = part;
@@ -72,7 +139,6 @@ namespace RegexImporter.ViewModels
                 eres.ForEach(x => x.Name = "Replacement");
                 RegexObjects.AddRange(eres);
                 CurrentRegex = RegexObjects.FirstOrDefault();
-
             }
         }
 
@@ -82,104 +148,21 @@ namespace RegexImporter.ViewModels
             {
                 dynamic line = new BetterExpando();
                 line.Source = e.Data;
-                line.Save = (Action<Lines>)(x =>
+                line.Save = (Action<Lines>) (x =>
                 {
                     line.Source = LinesRepository.Instance.UpdateLines(e.Data).Result;
                     UpdateRegexObjects();
                     CurrentRegexObject = line;
-                   
                 });
 
                 CurrentRegexObject = line;
 
-                var list = e.Data.RegularExpressions == null ? new List<RegularExpressions>() : new List<RegularExpressions>() { e.Data.RegularExpressions };
+                var list = e.Data.RegularExpressions == null
+                    ? new List<RegularExpressions>()
+                    : new List<RegularExpressions> {e.Data.RegularExpressions};
                 list.ForEach(x => x.Name = "Line");
                 RegexObjects = list;
                 CurrentRegex = RegexObjects.FirstOrDefault();
-
-            }
-
-            
-        }
-
-
-        private dynamic _currentRegexObject = null;
-        public dynamic CurrentRegexObject
-        {
-            get { return _currentRegexObject; }
-            set
-            {
-                _currentRegexObject = value;
-                NotifyPropertyChanged(x => this.CurrentRegexObject);
-            }
-        }
-
-        private List<RegularExpressions> _regexObjects = null;
-        public List<RegularExpressions> RegexObjects
-        {
-            get { return _regexObjects; }
-            set
-            {
-                _regexObjects = value;
-                NotifyPropertyChanged(x => this.RegexObjects);
-            }
-        }
-
-
-        private RegularExpressions _currentRegex = null;
-        public RegularExpressions CurrentRegex
-        {
-            get { return _currentRegex; }
-            set
-            {
-                _currentRegex = value;
-                NotifyPropertyChanged(x => this.CurrentRegex);
-            }
-        }
-
-
-
-
-        private Match _currentMatch = null;
-        
-        
-
-        public Match CurrentMatch
-        {
-            get { return _currentMatch; }
-            set
-            {
-                _currentMatch = value;
-                BeginSendMessage(MessageToken.CurrentMatch,
-                    new NotificationEventArgs<Match>(MessageToken.CurrentMatch, _currentMatch));
-                NotifyPropertyChanged(x => this.CurrentMatch);
-            }
-        }
-
-        private Group _currentGroup;
-        public Group CurrentGroup
-        {
-            get => _currentGroup;
-            set
-            {
-                _currentGroup = value;
-                BeginSendMessage(MessageToken.CurrentGroup,
-                    new NotificationEventArgs<Group>(MessageToken.CurrentGroup, _currentGroup));
-                NotifyPropertyChanged(x => this.CurrentGroup);
-            }
-        }
-
-        private Capture _currentCapture;
-        public Capture CurrentCapture
-        {
-            get => _currentCapture;
-            set
-            {
-                _currentCapture = value;
-                BeginSendMessage(MessageToken.CurrentCapture,
-                    new NotificationEventArgs<Capture>(MessageToken.CurrentCapture, _currentCapture));
-                NotifyPropertyChanged(x => this.CurrentCapture);
-
             }
         }
 
@@ -191,12 +174,11 @@ namespace RegexImporter.ViewModels
             {
                 dynamic part = new BetterExpando();
                 part.Source = e.Data;
-                part.Save = (Action<Invoices>)(x =>
+                part.Save = (Action<Invoices>) (x =>
                 {
                     part.Source = InvoicesRepository.Instance.UpdateInvoices(e.Data).Result;
                     UpdateRegexObjects();
                     CurrentRegexObject = part;
-
                 });
 
                 CurrentRegexObject = part;
@@ -207,10 +189,7 @@ namespace RegexImporter.ViewModels
                 eres.ForEach(x => x.Name = "Identification ");
                 RegexObjects.AddRange(eres);
                 CurrentRegex = RegexObjects.FirstOrDefault();
-
             }
-
-
         }
 
         private async void OnOCR_PartExsChanged2(object sender, NotificationEventArgs<Parts> e)
@@ -220,12 +199,11 @@ namespace RegexImporter.ViewModels
             {
                 dynamic part = new BetterExpando();
                 part.Source = e.Data;
-                part.Save = (Action<Lines>)(x =>
+                part.Save = (Action<Lines>) (x =>
                 {
                     part.Source = PartsRepository.Instance.UpdateParts(e.Data).Result;
                     UpdateRegexObjects();
                     CurrentRegexObject = part;
-
                 });
 
                 CurrentRegexObject = part;
@@ -236,28 +214,17 @@ namespace RegexImporter.ViewModels
                 eres.ForEach(x => x.Name = "End");
                 RegexObjects.AddRange(eres);
                 CurrentRegex = RegexObjects.FirstOrDefault();
-
             }
-
-
         }
 
         private void UpdateRegexObjects()
         {
             var uRegObj = new List<RegularExpressions>();
             foreach (var reg in RegexObjects)
-            {
                 uRegObj.Add(RegularExpressionsRepository.Instance.UpdateRegularExpressions(reg).Result);
-            }
 
             RegexObjects = uRegObj;
             CurrentRegex = RegexObjects.FirstOrDefault();
         }
-
-
-        public Task Initialization { get; }
-        public List<Match> Matches { get; set; } = new List<Match>();
-
-     
     }
 }
