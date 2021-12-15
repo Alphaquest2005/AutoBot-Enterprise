@@ -361,7 +361,35 @@ namespace CoreEntities.Client.Repositories
             }
         }
 
-	 public async Task<IEnumerable<TODO_TotalAdjustmentsToProcess>> GetTODO_TotalAdjustmentsToProcessByAsycudaDocumentSetId(string AsycudaDocumentSetId, List<string> includesLst = null)
+	 public async Task<IEnumerable<TODO_TotalAdjustmentsToProcess>> GetTODO_TotalAdjustmentsToProcessByEntryDataId(string EntryDataId, List<string> includesLst = null)
+        {
+             if (EntryDataId == "0") return null;
+            try
+            {
+                 using (TODO_TotalAdjustmentsToProcessClient t = new TODO_TotalAdjustmentsToProcessClient())
+                    {
+                        var res = await t.GetTODO_TotalAdjustmentsToProcessByEntryDataId(EntryDataId, includesLst).ConfigureAwait(continueOnCapturedContext: false);
+                         if(res != null)
+                        {
+                            return res.Select(x => new TODO_TotalAdjustmentsToProcess(x)).AsEnumerable();
+					    }                
+					    else
+					    {
+						    return null;
+					    }                    
+                    }
+            }
+            catch (FaultException<ValidationFault> e)
+            {
+                throw new Exception(e.Detail.Message, e.InnerException);
+            }
+            catch (Exception)
+            {
+                Debugger.Break();
+                throw;
+            }
+        } 
+ 	 public async Task<IEnumerable<TODO_TotalAdjustmentsToProcess>> GetTODO_TotalAdjustmentsToProcessByAsycudaDocumentSetId(string AsycudaDocumentSetId, List<string> includesLst = null)
         {
              if (AsycudaDocumentSetId == "0") return null;
             try

@@ -12,9 +12,7 @@ namespace AutoBotUtilities
 {
     public static class ShipmentExtensions
     {
-        private static string invoiceDocumentCode = "IV05";
-        private static string naDocumentCode = "NA";
-
+     
 
         private static List<ShipmentInvoice> shipmentInvoices;
 
@@ -1147,13 +1145,14 @@ namespace AutoBotUtilities
             try
             {
                 var rawInvoices = masterShipment.ShipmentAttachedInvoices
+                    .Where(x => x.ShipmentInvoice.ShipmentInvoiceRiderDetails.Any(z => z.ShipmentRiderDetails.RiderId == client.Key.Item2) || x.ShipmentInvoice.ShipmentRiderInvoice.Any(z => z.RiderID == client.Key.Item2))
                     .Select(x => x.ShipmentInvoice).ToList();
 
                 var invoices = rawInvoices
-                    .DistinctBy(x =>
+                        .DistinctBy(x =>
                         x.InvoiceNo) //because it dropping invoices in email id 'C:\Users\josep\OneDrive\Clients\Portage\Emails\Shipments\679\Amazon-com - Order 112-5376880-7024208.pdf'
                     .Where(x => client == null || client.Select(q => q.Id)
-                        .Any(q => q == x.ShipmentRiderInvoice.FirstOrDefault()?.RiderLineID)) // 
+                        .Any(q => x.ShipmentRiderInvoice.Any(z => z.RiderLineID == q))) // 
                     .ToList();
 
                 var invoiceLst = invoices.Select(r => r.Id).ToList();

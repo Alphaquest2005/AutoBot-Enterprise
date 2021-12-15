@@ -1,0 +1,37 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Class1.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="EntityFramework" Version="6.4.4" />
+    <PackageReference Include="NSubstitute" Version="4.2.2" />
+    <PackageReference Include="NUnit" Version="3.13.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\WaterNut.Business.Services\WaterNut.Business.Services.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Custom Services\DataModels\Custom DataModels\InterFaceBased\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="TrackableEntities.Client">
+      <HintPath>..\WaterNut\TrackableEntities.Client.dll</HintPath>
+    </Reference>
+    <Reference Include="TrackableEntities.Common">
+      <HintPath>..\WaterNut\TrackableEntities.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="TrackableEntities.EF.6">
+      <HintPath>..\WaterNut\TrackableEntities.EF.6.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+</Project>

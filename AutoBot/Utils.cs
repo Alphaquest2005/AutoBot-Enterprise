@@ -35,6 +35,7 @@ using AdjustmentQS.Business.Entities;
 using Asycuda421;
 using AutoBotUtilities;
 using EmailDownloader;
+using Org.BouncyCastle.Ocsp;
 //using NPOI.SS.UserModel;
 //using NPOI.XSSF.UserModel;
 using SimpleMvvmToolkit.ModelExtensions;
@@ -1979,7 +1980,8 @@ namespace AutoBot
                     var totaladjustments = ctx.TODO_TotalAdjustmentsToProcess
                         .Where(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId 
                                     && x.Type == "DIS"
-                                    && x.AsycudaDocumentSetId == fileType.AsycudaDocumentSetId).ToList();
+                                    && x.AsycudaDocumentSetId == fileType.AsycudaDocumentSetId
+                                    ).ToList();
                     var errors = ctx.TODO_DiscrepanciesErrors.Where(x =>
                         x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId
                             && x.AsycudaDocumentSetId == fileType.AsycudaDocumentSetId)
@@ -6415,6 +6417,17 @@ namespace AutoBot
                     row_no++;
                 }
 
+
+
+
+                if (fileType.ChildFileTypes.FirstOrDefault()?.Type == "Unknown")
+                {
+                    DetectFileType(fileType, file, rows);
+                    return;
+                }
+
+
+
                 var table = new ConcurrentDictionary<int, string>();
                 Parallel.ForEach(rows, new ParallelOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount * 1 },
                     row =>
@@ -6457,6 +6470,51 @@ namespace AutoBot
 
                 throw;
             }
+        }
+
+        private static void DetectFileType(FileTypes fileType, FileInfo file, List<DataRow> dataRows)
+        {
+            FileTypes rfileType = null;
+            var potentialsFileTypes = new List<FileTypes>();
+            var lastHeaderRow = dataRows[0].ItemArray.ToList();
+            int drow_no = 0;
+            List<object> headerRow;
+            while (drow_no < dataRows.Count)
+            {
+                headerRow = dataRows[drow_no].ItemArray.ToList();
+                var filetypes = BaseDataModel.FileTypes();
+                foreach (var f in filetypes.Where(x => x.IsImportable != false && x.FileTypeMappings.Any()))
+                {
+                    if (f.FileTypeMappings.Any(x =>
+                            headerRow.IndexOf(x.OriginalName) > -1 &&
+                            !string.IsNullOrEmpty(
+                                dataRows[drow_no][headerRow.IndexOf(x.OriginalName)].ToString())))
+                    {
+                        potentialsFileTypes.Add(f);
+                        lastHeaderRow = headerRow;
+                    }
+                }
+
+                drow_no++;
+            }
+
+            rfileType = potentialsFileTypes
+                .OrderByDescending(x => x.FileTypeMappings.Where(z =>
+                    lastHeaderRow.Select(h => h.ToString().ToUpper().Trim())
+                        .Contains(z.OriginalName.ToUpper().Trim())).Count())
+                .ThenByDescending(x => x.FileTypeActions)
+                .FirstOrDefault();
+            rfileType.AsycudaDocumentSetId = fileType.AsycudaDocumentSetId;
+            rfileType.Data = fileType.Data;
+            rfileType.EmailId = fileType.EmailId;
+            headerRow = lastHeaderRow;
+            drow_no = 0;
+
+            ExecuteDataSpecificFileActions(rfileType, new FileInfo[] { file },
+                BaseDataModel.Instance.CurrentApplicationSettings);
+            ExecuteNonSpecificFileActions(rfileType, new FileInfo[] { file },
+                BaseDataModel.Instance.CurrentApplicationSettings);
+            return;
         }
 
         private static void ReadMISMatches(DataTable misMatches, DataTable poTemplate)
@@ -6684,7 +6742,7 @@ namespace AutoBot
                 if(File.Exists(dfile.FullName))File.Delete(dfile.FullName);
                 // Reading from a binary Excel file (format; *.xlsx)
                 var dt = CSV2DataTable(file, "NO");
-
+                var executeFileActions = false;
 
                 var table = new System.Collections.Concurrent.ConcurrentDictionary<int, string>();
                 int drow_no = 0;
@@ -6697,10 +6755,13 @@ namespace AutoBot
                 //delete rows till header
                 DataRow currentReplicatedHeading = null;
                 var headerRow = dt.Rows[0].ItemArray.ToList();
+                
+
                 while (drow_no < dt.Rows.Count)
                 {
                     if (fileType.ReplicateHeaderRow == true)
                     {
+
                         if (fileType.FileTypeMappings.Where(x => x.Required).All(x => !string.IsNullOrEmpty(dt.Rows[drow_no][headerRow.IndexOf(x.OriginalName)].ToString())))
                         {
                             if (dt.Rows[drow_no].ItemArray.Count(x => !string.IsNullOrEmpty(x.ToString())) >=
@@ -6989,7 +7050,11 @@ namespace AutoBot
                     cfileTypes.AsycudaDocumentSetId = fileType.AsycudaDocumentSetId;
                     cfileTypes.EmailId = fileType.EmailId;
                     cfileTypes.OverwriteFiles = overwrite;
-                    SaveCsv(new FileInfo[] { new FileInfo(output) }, cfileTypes);
+                    var fileInfos = new FileInfo[] { new FileInfo(output) };
+                    
+                    
+                    SaveCsv(fileInfos, cfileTypes);
+                    
                 }
 
             }
@@ -7038,11 +7103,64 @@ namespace AutoBot
             return dt;
         }
 
-        /// <summary>
-        /// Turn a string into a CSV cell output
-        /// </summary>
-        /// <param name="str">String to output</param>
-        /// <returns>The CSV cell formatted string</returns>
+        public static void ExecuteDataSpecificFileActions(FileTypes fileType, FileInfo[] files, ApplicationSettings appSetting)
+        {
+            try
+            {
+                var missingActions = fileType.FileTypeActions.Where(x => x.Actions.IsDataSpecific == true
+                                                    && !Utils.FileActions.ContainsKey(x.Actions.Name)).ToList();
+
+                if (missingActions.Any())
+                {
+                    throw new ApplicationException(
+                        $"The following actions were missing: {missingActions.Select(x => x.Actions.Name).Aggregate((old, current) => old + ", " + current)}");
+                }
+
+                fileType.FileTypeActions.Where(x => x.Actions.IsDataSpecific == true).OrderBy(x => x.Id)
+                   .Where(x => (x.AssessIM7.Equals(null) && x.AssessEX.Equals(null)) ||
+                               (appSetting.AssessIM7 == x.AssessIM7 ||
+                                appSetting.AssessEX == x.AssessEX))
+                   .Where(x => x.Actions.TestMode ==
+                               (BaseDataModel.Instance.CurrentApplicationSettings.TestMode))
+                   .Select(x => new { Name = x.Actions.Name, Action = Utils.FileActions[x.Actions.Name] }).ToList()
+                   .ForEach(x =>
+                   {
+                       if (string.IsNullOrEmpty(fileType.ProcessNextStep) || fileType.ProcessNextStep == x.Name)
+                           x.Action.Invoke(fileType, files);
+                   });
+
+            }
+            catch (Exception e)
+            {
+                EmailDownloader.EmailDownloader.SendEmail(Utils.Client, null, $"Bug Found",
+                    new[] { "Joseph@auto-brokerage.com" }, $"{e.Message}\r\n{e.StackTrace}",
+                    Array.Empty<string>());
+            }
+        }
+        public static void ExecuteNonSpecificFileActions(FileTypes fileType, FileInfo[] files, ApplicationSettings appSetting)
+        {
+            try
+            {
+                fileType.FileTypeActions.Where(x => x.Actions.IsDataSpecific == null || x.Actions.IsDataSpecific != true).OrderBy(x => x.Id)
+                    .Where(x => (x.AssessIM7.Equals(null) && x.AssessEX.Equals(null)) ||
+                                (appSetting.AssessIM7 == x.AssessIM7 ||
+                                 appSetting.AssessEX == x.AssessEX))
+                    .Where(x => x.Actions.TestMode ==
+                                (BaseDataModel.Instance.CurrentApplicationSettings.TestMode))
+                    .Select(x => new { Name = x.Actions.Name, Action = Utils.FileActions[x.Actions.Name] }).ToList()
+                    .ForEach(x =>
+                    {
+                        if (string.IsNullOrEmpty(fileType.ProcessNextStep) || fileType.ProcessNextStep == x.Name)
+                            x.Action.Invoke(fileType, files);
+                    });
+            }
+            catch (Exception e)
+            {
+                EmailDownloader.EmailDownloader.SendEmail(Utils.Client, null, $"Bug Found",
+                    new[] { "Joseph@auto-brokerage.com" }, $"{e.Message}\r\n{e.StackTrace}",
+                    Array.Empty<string>());
+            }
+        }
 
     }
 

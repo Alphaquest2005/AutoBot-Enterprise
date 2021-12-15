@@ -226,6 +226,37 @@ namespace WaterNut.DataSpace
             }
         }
 
+        public static List<FileTypes> FileTypes()
+        {
+            try
+            {
+                if (_fileTypes == null || Instance.CurrentApplicationSettings.ApplicationSettingsId !=
+                    _fileTypes.First().ApplicationSettingsId)
+                    using (var ctx = new CoreEntitiesContext())
+                    {
+                        _fileTypes = ctx.FileTypes
+                            .Include("FileTypeContacts.Contacts")
+                            .Include("FileTypeActions.Actions")
+                            .Include("AsycudaDocumentSetEx")
+                            .Include("ChildFileTypes")
+                            .Include("FileTypeMappings.FileTypeMappingRegExs")
+                            .Include(x => x.ImportActions)
+                            .Include(x => x.FileTypeReplaceRegex)
+                            .Where(x => x.ApplicationSettingsId ==
+                                        Instance.CurrentApplicationSettings.ApplicationSettingsId)
+                            .ToList();
+
+                    }
+
+                return _fileTypes;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+        }
+
         public static Tuple<DateTime, DateTime, AsycudaDocumentSetEx, string> CurrentSalesInfo()
         {
             var startDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1).AddMonths(-1);
@@ -332,6 +363,13 @@ namespace WaterNut.DataSpace
 
         public async Task ClearAsycudaDocumentSet(AsycudaDocumentSet docset)
         {
+            var sysDocSet =
+                new DocumentDSContext().SystemDocumentSets.FirstOrDefault(x => x.Id == docset.AsycudaDocumentSetId);
+            if (sysDocSet != null)
+            {
+                throw new ApplicationException(
+                    "Trying to delete from System DocumentSet! General Policy this Cannot happen.");
+            }
             StatusModel.StartStatusUpdate($"Deleting Documents from '{docset.Declarant_Reference_Number}' Document Set",
                 docset.xcuda_ASYCUDA_ExtendedProperties.Count());
 
