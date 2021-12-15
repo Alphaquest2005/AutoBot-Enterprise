@@ -6849,6 +6849,7 @@ namespace AutoBot
                                 {
                                     var index = Array.LastIndexOf(header.ItemArray,
                                         map.ToUpper()); //last index of because of Cost USD file has two columns
+                                    if (index == -1) continue;
                                     val += drow[index];
                                 }
 
