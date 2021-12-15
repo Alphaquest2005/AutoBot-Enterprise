@@ -191,11 +191,11 @@ namespace AutoBot
 
                                     }
 
-                                    ExecuteDataSpecificFileActions(fileType, csvFiles, appSetting);
+                                    Utils.ExecuteDataSpecificFileActions(fileType, csvFiles, appSetting);
 
                                     if (msg.Key.Item2.EmailMapping.IsSingleEmail == true)
                                     {
-                                        ExecuteNonSpecificFileActions(fileType, csvFiles, appSetting);
+                                        Utils.ExecuteNonSpecificFileActions(fileType, csvFiles, appSetting);
                                     }
                                     else
                                     {
@@ -221,7 +221,7 @@ namespace AutoBot
                                 foreach (var t in pf)
                                 {
                                     t.Item1.AsycudaDocumentSetId = docSetId.Key;
-                                    ExecuteNonSpecificFileActions(t.Item1, t.Item2, appSetting);
+                                    Utils.ExecuteNonSpecificFileActions(t.Item1, t.Item2, appSetting);
                                 }
                             }
 
@@ -303,64 +303,7 @@ namespace AutoBot
 
 
 
-        private static void ExecuteDataSpecificFileActions(FileTypes fileType, FileInfo[] files, ApplicationSettings appSetting)
-        {
-            try
-            {
-                var missingActions = fileType.FileTypeActions.Where(x => x.Actions.IsDataSpecific == true
-                                                    && !Utils.FileActions.ContainsKey(x.Actions.Name)).ToList();
-
-                if (missingActions.Any())
-                {
-                    throw new ApplicationException(
-                        $"The following actions were missing: {missingActions.Select(x => x.Actions.Name).Aggregate((old, current) => old + ", " + current)}");
-                }
-
-                 fileType.FileTypeActions.Where(x => x.Actions.IsDataSpecific == true).OrderBy(x => x.Id)
-                    .Where(x => (x.AssessIM7.Equals(null) && x.AssessEX.Equals(null)) ||
-                                (appSetting.AssessIM7 == x.AssessIM7 ||
-                                 appSetting.AssessEX == x.AssessEX))
-                    .Where(x => x.Actions.TestMode ==
-                                (BaseDataModel.Instance.CurrentApplicationSettings.TestMode))
-                    .Select(x => new {Name = x.Actions.Name, Action = Utils.FileActions[x.Actions.Name]}).ToList()
-                    .ForEach(x =>
-                    {
-                        if (string.IsNullOrEmpty(fileType.ProcessNextStep) || fileType.ProcessNextStep == x.Name)
-                            x.Action.Invoke(fileType, files);
-                    });
-               
-            }
-            catch (Exception e)
-            {
-                EmailDownloader.EmailDownloader.SendEmail(Utils.Client, null, $"Bug Found",
-                    new[] { "Joseph@auto-brokerage.com" }, $"{e.Message}\r\n{e.StackTrace}",
-                    Array.Empty<string>());
-            }
-        }
-        private static void ExecuteNonSpecificFileActions(FileTypes fileType, FileInfo[] files, ApplicationSettings appSetting)
-        {
-            try
-            {
-                fileType.FileTypeActions.Where(x => x.Actions.IsDataSpecific == null || x.Actions.IsDataSpecific != true).OrderBy(x => x.Id)
-                    .Where(x => (x.AssessIM7.Equals(null) && x.AssessEX.Equals(null)) ||
-                                (appSetting.AssessIM7 == x.AssessIM7 ||
-                                 appSetting.AssessEX == x.AssessEX))
-                    .Where(x => x.Actions.TestMode ==
-                                (BaseDataModel.Instance.CurrentApplicationSettings.TestMode))
-                    .Select(x => new { Name = x.Actions.Name, Action = Utils.FileActions[x.Actions.Name] }).ToList()
-                    .ForEach(x =>
-                    {
-                        if (string.IsNullOrEmpty(fileType.ProcessNextStep) || fileType.ProcessNextStep == x.Name)
-                            x.Action.Invoke(fileType, files);
-                    });
-            }
-            catch (Exception e)
-            {
-                EmailDownloader.EmailDownloader.SendEmail(Utils.Client, null, $"Bug Found",
-                    new[] {"Joseph@auto-brokerage.com"}, $"{e.Message}\r\n{e.StackTrace}",
-                    Array.Empty<string>());
-            }
-        }
+       
     }
 
 }

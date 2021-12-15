@@ -107,6 +107,9 @@ namespace CoreEntities.Business.Services
 
 				[OperationContract]
         [FaultContract(typeof(ValidationFault))]
+        Task<IEnumerable<TODO_TotalAdjustmentsToProcess>> GetTODO_TotalAdjustmentsToProcessByEntryDataId(string EntryDataId, List<string> includesLst = null);
+  		[OperationContract]
+        [FaultContract(typeof(ValidationFault))]
         Task<IEnumerable<TODO_TotalAdjustmentsToProcess>> GetTODO_TotalAdjustmentsToProcessByAsycudaDocumentSetId(string AsycudaDocumentSetId, List<string> includesLst = null);
   
 

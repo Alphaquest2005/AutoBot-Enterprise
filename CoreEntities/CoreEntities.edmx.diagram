@@ -99,7 +99,7 @@
         <EntityTypeShape EntityType="WaterNutDBModel.TODO_ImportCompleteEntries" Width="2.625" PointX="13.375" PointY="26.75" />
         <EntityTypeShape EntityType="WaterNutDBModel.TODO_AdjustmentsAlreadyXMLed" Width="1.5" PointX="26.375" PointY="20.75" />
         <EntityTypeShape EntityType="WaterNutDBModel.TODO_DiscrepancyPreExecutionReport" Width="1.5" PointX="22.375" PointY="26.75" />
-        <EntityTypeShape EntityType="WaterNutDBModel.TODO_TotalAdjustmentsToProcess" Width="1.5" PointX="26.375" PointY="25.75" />
+        <EntityTypeShape EntityType="WaterNutDBModel.TODO_TotalAdjustmentsToProcess" Width="1.5" PointX="25.125" PointY="26.875" />
         <EntityTypeShape EntityType="WaterNutDBModel.TODO_DiscrepanciesAlreadyXMLed" Width="1.5" PointX="27.375" PointY="5.75" />
         <AssociationConnector Association="WaterNutDBModel.FK_FileTypes_FileTypes" />
         <EntityTypeShape EntityType="WaterNutDBModel.EmailFileTypes" Width="1.5" PointX="10" PointY="28.625" />

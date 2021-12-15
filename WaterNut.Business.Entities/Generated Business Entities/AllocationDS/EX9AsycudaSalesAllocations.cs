@@ -176,7 +176,6 @@ namespace AllocationDS.Business.Entities
         }
         string _invoiceno;
         [DataMember]
-        [CaseInsensitive]
         public string ItemNumber 
         {
             get
@@ -989,17 +988,6 @@ namespace AllocationDS.Business.Entities
 //        [DataMember]//JsonProperty,
  //       private Guid EntityIdentifier { get; set; }
     }
-
-    [AttributeUsage(AttributeTargets.Property, AllowMultiple = true)]
-    public class CaseInsensitiveAttribute : Attribute
-    {
-        public CaseInsensitiveAttribute()
-        {
-            IsEnabled = true;
-        }
-        public bool IsEnabled { get; set; }
-    }
-
 }
 
 

@@ -1,37 +1,30 @@
 ﻿using System;
 using System.Data.SqlClient;
 using System.Threading.Tasks;
-using CounterPointQS.Business.Entities;
 using Core.Common.UI;
+using CounterPointQS.Business.Entities;
 using WaterNut.DataLayer;
-
 
 namespace WaterNut.DataSpace
 {
-	public class CPPurchaseOrdersModel 
-	{
-        private static readonly CPPurchaseOrdersModel instance;
+    public class CPPurchaseOrdersModel
+    {
         static CPPurchaseOrdersModel()
         {
-            instance = new CPPurchaseOrdersModel();
-            
+            Instance = new CPPurchaseOrdersModel();
         }
 
-        public static CPPurchaseOrdersModel Instance
-        {
-            get { return instance; }
-        }
+        public static CPPurchaseOrdersModel Instance { get; }
 
         public async Task DownloadCPO(CounterPointPOs c, int asycudaDocumentSetId)
         {
-           if (c == null) return;
-           if (asycudaDocumentSetId != 0)
+            if (c == null) return;
+            if (asycudaDocumentSetId != 0)
             {
-         
                 StatusModel.Timer("Downloading CP Data...");
-                using (var ctx = new WaterNutDBEntities() { CommandTimeout = 0 })
+                using (var ctx = new WaterNutDBEntities {CommandTimeout = 0})
                 {
-                   await ctx.ExecuteStoreCommandAsync(@"
+                    await ctx.ExecuteStoreCommandAsync(@"
 
                                     Declare @entryData_Id int
 									set @entryData_Id = (select distinct entrydata_id from entrydata where entrydataid = @PONumber and EntryDataDate = @Date and ApplicationSettingsId = @ApplicationSettingsId)
@@ -96,26 +89,24 @@ namespace WaterNut.DataSpace
                                                              (InventorySources.Name = N'POS')
                                     GROUP BY EntryData.EntryData_Id, CounterPointPODetails.PO_NO, CounterPointPODetails.SEQ_NO, CounterPointPODetails.ITEM_NO, CounterPointPODetails.ORD_QTY, CounterPointPODetails.ORD_UNIT, 
                                                              CounterPointPODetails.ITEM_DESCR, CounterPointPODetails.ORD_COST, CounterPointPODetails.UNIT_WEIGHT
-", 
-                                                                                                               
-                                                                                                               
-                                   new SqlParameter("@AsycudaDocumentSetId", asycudaDocumentSetId),
-                                   new SqlParameter("@PONumber", c.PurchaseOrderNo),
-                                    new SqlParameter("@Date", c.Date),
-                                    new SqlParameter("@ApplicationSettingsId", BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)).ConfigureAwait(false);
+",
+                            new SqlParameter("@AsycudaDocumentSetId", asycudaDocumentSetId),
+                            new SqlParameter("@PONumber", c.PurchaseOrderNo),
+                            new SqlParameter("@Date", c.Date),
+                            new SqlParameter("@ApplicationSettingsId",
+                                BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId))
+                        .ConfigureAwait(false);
                 }
-            StatusModel.Timer("Refreshing CP Data...");
 
-           
+                StatusModel.Timer("Refreshing CP Data...");
 
-           StatusModel.StopStatusUpdate();
+
+                StatusModel.StopStatusUpdate();
             }
             else
             {
                 throw new ApplicationException("Please Select a Asycuda Document Set before downloading PO");
             }
         }
-
-      
     }
 }

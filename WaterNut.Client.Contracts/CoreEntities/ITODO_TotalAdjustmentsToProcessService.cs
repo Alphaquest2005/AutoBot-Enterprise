@@ -80,6 +80,9 @@ namespace CoreEntities.Client.Contracts
 		string MinField(string whereExp, string field);
 
 				[OperationContract]
+		Task<IEnumerable<TODO_TotalAdjustmentsToProcess>> GetTODO_TotalAdjustmentsToProcessByEntryDataId(string EntryDataId, List<string> includesLst = null);
+        
+  		[OperationContract]
 		Task<IEnumerable<TODO_TotalAdjustmentsToProcess>> GetTODO_TotalAdjustmentsToProcessByAsycudaDocumentSetId(string AsycudaDocumentSetId, List<string> includesLst = null);
         
   		

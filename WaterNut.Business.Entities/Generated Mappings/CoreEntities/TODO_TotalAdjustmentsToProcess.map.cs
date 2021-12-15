@@ -11,7 +11,7 @@
     {
         public TODO_TotalAdjustmentsToProcessMap()
         {                        
-              this.HasKey(t => new {t.EntryDataDetailsId, t.EntryDataId, t.ItemNumber, t.Quantity, t.ItemDescription, t.Cost, t.QtyAllocated, t.UnitWeight, t.ApplicationSettingsId, t.InvoiceDate, t.Subject, t.EmailDate, t.DutyFreePaid});        
+              this.HasKey(t => new {t.EntryDataDetailsId, t.ApplicationSettingsId});        
               this.ToTable("TODO-TotalAdjustmentsToProcess");
               this.Property(t => t.EntryDataDetailsId).HasColumnName("EntryDataDetailsId").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.None));
               this.Property(t => t.EntryDataId).HasColumnName("EntryDataId").IsRequired().HasMaxLength(50);

@@ -281,6 +281,7 @@
           <Property Name="DestinationName" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="DataType" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="Required" Type="bit" Nullable="false" />
+          <Property Name="Comments" Type="nvarchar" MaxLength="255" />
         </EntityType>
         <EntityType Name="FileTypeReplaceRegex">
           <Key>
@@ -1845,19 +1846,8 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-TotalAdjustmentsToPr
         <EntityType Name="TODO-TotalAdjustmentsToProcess">
           <Key>
             <PropertyRef Name="EntryDataDetailsId" />
-            <PropertyRef Name="EntryDataId" />
-            <PropertyRef Name="ItemNumber" />
-            <PropertyRef Name="Quantity" />
-            <PropertyRef Name="ItemDescription" />
-            <PropertyRef Name="Cost" />
-            <PropertyRef Name="QtyAllocated" />
-            <PropertyRef Name="UnitWeight" />
             
             <PropertyRef Name="ApplicationSettingsId" />
-            <PropertyRef Name="InvoiceDate" />
-            <PropertyRef Name="Subject" />
-            <PropertyRef Name="EmailDate" />
-            <PropertyRef Name="DutyFreePaid" />
           </Key>
           <Property Name="EntryDataDetailsId" Type="int" Nullable="false" />
           <Property Name="EntryDataId" Type="nvarchar" MaxLength="50" Nullable="false" />
@@ -4485,6 +4475,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
           <Property Name="DataType" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="Required" Type="Boolean" Nullable="false" />
           <NavigationProperty Name="FileTypeMappingRegExs" Relationship="WaterNutDBModel.FK_FileTypeMappingRegExs_FileTypeMappings" FromRole="FileTypeMappings" ToRole="FileTypeMappingRegExs" />
+          <Property Name="Comments" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
         </EntityType>
         <Association Name="FK_FileTypeMappings_FileTypes">
           <End Type="WaterNutDBModel.FileTypes" Role="FileTypes" Multiplicity="1">
@@ -5461,18 +5452,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
         <EntityType Name="TODO_TotalAdjustmentsToProcess">
           <Key>
             <PropertyRef Name="EntryDataDetailsId" />
-            <PropertyRef Name="EntryDataId" />
-            <PropertyRef Name="ItemNumber" />
-            <PropertyRef Name="Quantity" />
-            <PropertyRef Name="ItemDescription" />
-            <PropertyRef Name="Cost" />
-            <PropertyRef Name="QtyAllocated" />
-            <PropertyRef Name="UnitWeight" />
             <PropertyRef Name="ApplicationSettingsId" />
-            <PropertyRef Name="InvoiceDate" />
-            <PropertyRef Name="Subject" />
-            <PropertyRef Name="EmailDate" />
-            <PropertyRef Name="DutyFreePaid" />
           </Key>
           <Property Name="EntryDataDetailsId" Type="Int32" Nullable="false" />
           <Property Name="EntryDataId" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
@@ -5495,7 +5475,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
           <Property Name="PreviousCNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="Comment" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="Status" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="EffectiveDate" Type="DateTime" Precision="7" />
+          <Property Name="EffectiveDate" Type="DateTime" Precision="7" Nullable="true" />
           <Property Name="Currency" Type="String" MaxLength="4" FixedLength="false" Unicode="true" />
           <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
           <Property Name="Type" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
@@ -6655,6 +6635,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
           <EntitySetMapping Name="FileTypeMappings">
             <EntityTypeMapping TypeName="WaterNutDBModel.FileTypeMappings">
               <MappingFragment StoreEntitySet="FileTypeMappings">
+                <ScalarProperty Name="Comments" ColumnName="Comments" />
                 <ScalarProperty Name="Required" ColumnName="Required" />
                 <ScalarProperty Name="DataType" ColumnName="DataType" />
                 <ScalarProperty Name="DestinationName" ColumnName="DestinationName" />
