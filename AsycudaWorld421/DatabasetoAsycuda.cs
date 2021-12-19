@@ -613,6 +613,10 @@ namespace Asycuda421
 
         private void SaveAttachedDocuments(xcuda_Item item, ASYCUDAItem ai)
         {
+            try
+            {
+
+           
             foreach (var doc in item.xcuda_Attached_documents)
             {
                 var adoc = new ASYCUDAItemAttached_documents();
@@ -640,7 +644,7 @@ namespace Asycuda421
                     else
                     {
                         var fileinfo = new FileInfo(filePath);
-                        if (fileinfo.Extension != ".pdf") fileinfo = Change2Pdf(fileinfo);
+                        if (fileinfo.Extension != ".pdf" && File.Exists(filePath)) fileinfo = Change2Pdf(fileinfo);
                         var desFile = DocSetPath != _destinatonFile.DirectoryName && DocSetPath != null
                             ? fileinfo.FullName.Replace($"{DocSetPath}", _destinatonFile.DirectoryName)
                             : Path.Combine(_destinatonFile.DirectoryName, fileinfo.Name);
@@ -650,6 +654,12 @@ namespace Asycuda421
                             $"{doc.Attached_documents_Id}\tAttachment\t{desFile}\r\n");
                     }
                 }
+            }
+            }
+            catch (Exception)
+            {
+
+                throw;
             }
         }
 
