@@ -6474,47 +6474,57 @@ namespace AutoBot
 
         private static void DetectFileType(FileTypes fileType, FileInfo file, List<DataRow> dataRows)
         {
-            FileTypes rfileType = null;
-            var potentialsFileTypes = new List<FileTypes>();
-            var lastHeaderRow = dataRows[0].ItemArray.ToList();
-            int drow_no = 0;
-            List<object> headerRow;
-            while (drow_no < dataRows.Count)
+            try
             {
-                headerRow = dataRows[drow_no].ItemArray.ToList();
-                var filetypes = BaseDataModel.FileTypes();
-                foreach (var f in filetypes.Where(x => x.IsImportable != false && x.FileTypeMappings.Any()))
+
+                FileTypes rfileType = null;
+                var potentialsFileTypes = new List<FileTypes>();
+                var lastHeaderRow = dataRows[0].ItemArray.ToList();
+                int drow_no = 0;
+                List<object> headerRow;
+                while (drow_no < dataRows.Count)
                 {
-                    if (f.FileTypeMappings.Any(x =>
-                            headerRow.IndexOf(x.OriginalName) > -1 &&
-                            !string.IsNullOrEmpty(
-                                dataRows[drow_no][headerRow.IndexOf(x.OriginalName)].ToString())))
+                    headerRow = dataRows[drow_no].ItemArray.ToList();
+                    var filetypes = BaseDataModel.FileTypes();
+                    foreach (var f in filetypes.Where(x => x.IsImportable != false && x.FileTypeMappings.Any()))
                     {
-                        potentialsFileTypes.Add(f);
-                        lastHeaderRow = headerRow;
+                        if (f.FileTypeMappings.Any(x =>
+                                headerRow.IndexOf(x.OriginalName) > -1 &&
+                                !string.IsNullOrEmpty(
+                                    dataRows[drow_no][headerRow.IndexOf(x.OriginalName)].ToString())))
+                        {
+                            potentialsFileTypes.Add(f);
+                            lastHeaderRow = headerRow;
+                        }
                     }
+
+                    drow_no++;
                 }
 
-                drow_no++;
+                rfileType = potentialsFileTypes
+                    .OrderByDescending(x => x.FileTypeMappings.Where(z =>
+                        lastHeaderRow.Select(h => h.ToString().ToUpper().Trim())
+                            .Contains(z.OriginalName.ToUpper().Trim())).Count())
+                    .ThenByDescending(x => x.FileTypeActions.Count())
+                    .FirstOrDefault();
+                rfileType.AsycudaDocumentSetId = fileType.AsycudaDocumentSetId;
+                rfileType.Data = fileType.Data;
+                rfileType.EmailId = fileType.EmailId;
+                headerRow = lastHeaderRow;
+                drow_no = 0;
+
+                ExecuteDataSpecificFileActions(rfileType, new FileInfo[] { file },
+                    BaseDataModel.Instance.CurrentApplicationSettings);
+                ExecuteNonSpecificFileActions(rfileType, new FileInfo[] { file },
+                    BaseDataModel.Instance.CurrentApplicationSettings);
+                return;
+
             }
-
-            rfileType = potentialsFileTypes
-                .OrderByDescending(x => x.FileTypeMappings.Where(z =>
-                    lastHeaderRow.Select(h => h.ToString().ToUpper().Trim())
-                        .Contains(z.OriginalName.ToUpper().Trim())).Count())
-                .ThenByDescending(x => x.FileTypeActions)
-                .FirstOrDefault();
-            rfileType.AsycudaDocumentSetId = fileType.AsycudaDocumentSetId;
-            rfileType.Data = fileType.Data;
-            rfileType.EmailId = fileType.EmailId;
-            headerRow = lastHeaderRow;
-            drow_no = 0;
-
-            ExecuteDataSpecificFileActions(rfileType, new FileInfo[] { file },
-                BaseDataModel.Instance.CurrentApplicationSettings);
-            ExecuteNonSpecificFileActions(rfileType, new FileInfo[] { file },
-                BaseDataModel.Instance.CurrentApplicationSettings);
-            return;
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
         }
 
         private static void ReadMISMatches(DataTable misMatches, DataTable poTemplate)
@@ -6845,7 +6855,7 @@ namespace AutoBot
                     dRows[i]["LineNumber"] = i;
                 }
 
-                header["LineNumber"] = "LineNumber";
+                header["LineNumber"] = "LineNumber".ToUpper();
                 var headerlst = header.ItemArray.ToList();
 
                 var missingMaps = fileType.FileTypeMappings.Where(x => x.Required && !x.OriginalName.Contains("{"))
@@ -6865,7 +6875,7 @@ namespace AutoBot
             drow =>
             {
                 var row = new Dictionary<string, string>();
-                var row_no = drow["LineNumber"].ToString() == $"LineNumber" ? 0 : Convert.ToInt32(drow["LineNumber"]);
+                var row_no = drow["LineNumber"].ToString() == $"LineNumber".ToUpper() ? 0 : Convert.ToInt32(drow["LineNumber"]);
                 if (fileType.FileTypeMappings.Any())
                 {
                     foreach (var mapping in fileType.FileTypeMappings.OrderBy(x => x.Id))
@@ -6919,6 +6929,12 @@ namespace AutoBot
 
                         }
 
+                         foreach (var regEx in mapping.FileTypeMappingRegExs)
+                        {
+
+                            val = Regex.Replace(val, regEx.ReplacementRegex, regEx.ReplacementValue ?? "",
+                                RegexOptions.IgnoreCase | RegexOptions.Multiline);
+                        }
 
                         if (val == "{NULL}") continue;
                         if (val == "" && row_no == 0) continue;
@@ -7055,6 +7071,10 @@ namespace AutoBot
                     
                     SaveCsv(fileInfos, cfileTypes);
                     
+                }
+                else
+                {
+                    SaveCsv(new FileInfo[] { new FileInfo(output) }, fileType);
                 }
 
             }

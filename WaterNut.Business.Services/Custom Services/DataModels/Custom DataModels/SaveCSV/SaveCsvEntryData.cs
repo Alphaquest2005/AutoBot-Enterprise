@@ -163,9 +163,9 @@ namespace WaterNut.DataSpace
 
                 using (var ctx = new EntryDataDSContext())
                 {
-                    foreach (var rawRider in rawRiders.Where(x => x.ETA != null))
+                    foreach (var rawRider in rawRiders)//.Where(x => x.ETA != null) // bad data duh make sense
                     {
-                        DateTime eta = (DateTime) rawRider.ETA;
+                        DateTime eta = (DateTime) (rawRider.ETA ?? DateTime.MinValue);
                         var existingRider = ctx.ShipmentRider.Where(x => x.ETA == eta).ToList();
                         if (existingRider.Any()) ctx.ShipmentRider.RemoveRange(existingRider);
                         
@@ -291,8 +291,8 @@ namespace WaterNut.DataSpace
                         ctx.ShipmentRider.Add(new ShipmentRider()
                         {
                             ApplicationSettingsId = BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId,
-                            ETA = (DateTime)rawRider.ETA,
-                            DocumentDate = (DateTime)rawRider.DocumentDate,
+                            ETA = (DateTime)(rawRider.ETA ?? DateTime.MinValue),
+                            DocumentDate = (DateTime)(rawRider.DocumentDate ?? DateTime.MinValue),
                             FileTypeId =fileType.Id,
                             EmailId = emailId.GetValueOrDefault(),
                             SourceFile = droppedFilePath,
@@ -1571,7 +1571,7 @@ namespace WaterNut.DataSpace
         {
             try
             {
-
+                CheckMappingsForCarriageReturn(fileType);
 
                 for (var i = 0; i < headings.Count(); i++)
                 {
@@ -1579,19 +1579,8 @@ namespace WaterNut.DataSpace
 
                     if (h == "") continue;
 
-                    foreach (var m in fileType.FileTypeMappings)
-                    {
-                        if (m.DestinationName.EndsWith("\r\n"))
-                            throw new ApplicationException(
-                                $"Mapping contain New Line: {m.DestinationName}");
-                        if (m.OriginalName.EndsWith("\r\n"))
-                            throw new ApplicationException(
-                                $"Mapping contain New Line: {m.OriginalName}");
-                    }
-
-
                     var ftms = fileType.FileTypeMappings.Where(x =>
-                        x.OriginalName.ToUpper().Trim() == h.Trim()).ToList();
+                        x.OriginalName.ToUpper().Trim() == h.Trim() || x.DestinationName.ToUpper().Trim() == h.Trim()).ToList(); // added destination name to reduce redundancy
                     foreach (var ftm in ftms)
                     {
                        mapping.Add(ftm, i);
@@ -1602,6 +1591,19 @@ namespace WaterNut.DataSpace
             {
                 Console.WriteLine(e);
                 throw;
+            }
+        }
+
+        private static void CheckMappingsForCarriageReturn(FileTypes fileType)
+        {
+            foreach (var m in fileType.FileTypeMappings)
+            {
+                if (m.DestinationName.EndsWith("\r\n"))
+                    throw new ApplicationException(
+                        $"Mapping contain New Line: {m.DestinationName}");
+                if (m.OriginalName.EndsWith("\r\n"))
+                    throw new ApplicationException(
+                        $"Mapping contain New Line: {m.OriginalName}");
             }
         }
 

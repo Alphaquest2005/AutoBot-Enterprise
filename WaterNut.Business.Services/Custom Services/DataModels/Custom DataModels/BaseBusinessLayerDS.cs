@@ -930,12 +930,22 @@ namespace WaterNut.DataSpace
                 .DistinctBy(x => x.Id)
                 .ToList();
             if (!(pod.EntryData is PurchaseOrders p)) return;
-            if (p.PreviousCNumber == null) return;
+            if (p.PreviousCNumber != null)
+            {
+                AddPreviousDocument(currentAsycudaDocumentSet, cdoc, p, alst);
+            }
 
+            AttachToDocument(alst.GroupBy(x => new FileInfo(x.FilePath).Name).Select(x => x.Last()).ToList(),
+                cdoc.Document, cdoc.DocumentItems);
+        }
+
+        private static void AddPreviousDocument(AsycudaDocumentSet currentAsycudaDocumentSet, DocumentCT cdoc, PurchaseOrders p,
+            List<Attachment> alst)
+        {
             var pCnumber = new Regex(@"[C\#]+").Replace(p.PreviousCNumber, "");
 
 
-            LinkPDFs(new List<string> {pCnumber}, "DO02");
+            LinkPDFs(new List<string> { pCnumber }, "DO02");
             var pdf = $"{pCnumber}.pdf";
             List<Attachment> previousDocuments;
 
@@ -987,10 +997,6 @@ namespace WaterNut.DataSpace
                 }
 
             alst.AddRange(previousDocuments);
-
-
-            AttachToDocument(alst.GroupBy(x => new FileInfo(x.FilePath).Name).Select(x => x.Last()).ToList(),
-                cdoc.Document, cdoc.DocumentItems);
         }
 
         public static void LinkPDFs(List<string> cNumbers, string docCode = "NA")
