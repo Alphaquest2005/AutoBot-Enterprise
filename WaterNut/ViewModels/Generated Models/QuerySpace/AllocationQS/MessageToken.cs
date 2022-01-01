@@ -16,6 +16,12 @@ namespace WaterNut.QuerySpace.AllocationQS
 			public const string AdjustmentShortAllocationsDeleted = "AdjustmentShortAllocationsDeleted";
 			public const string AdjustmentShortAllocationsCreated = "AdjustmentShortAllocationsCreated";
 			public const string AdjustmentShortAllocationsUpdated = "AdjustmentShortAllocationsUpdated";
+			public const string AllocationsTestCasesFilterExpressionChanged = "AllocationsTestCasesFilterExpressionChanged";
+			public const string SelectedAllocationsTestCasesChanged = "SelectedAllocationsTestCasesChanged";
+            public const string AllocationsTestCasesChanged = "AllocationsTestCasesChanged";
+			public const string AllocationsTestCasesDeleted = "AllocationsTestCasesDeleted";
+			public const string AllocationsTestCasesCreated = "AllocationsTestCasesCreated";
+			public const string AllocationsTestCasesUpdated = "AllocationsTestCasesUpdated";
 			public const string AsycudaSalesAllocationsExsFilterExpressionChanged = "AsycudaSalesAllocationsExsFilterExpressionChanged";
 			public const string SelectedAsycudaSalesAllocationsExsChanged = "SelectedAsycudaSalesAllocationsExsChanged";
             public const string AsycudaSalesAllocationsExsChanged = "AsycudaSalesAllocationsExsChanged";
@@ -31,12 +37,15 @@ namespace WaterNut.QuerySpace.AllocationQS
   
 
           // public const string AdjustmentShortAllocationChanged = "AdjustmentShortAllocationChanged";
+          // public const string AllocationsTestCasChanged = "AllocationsTestCasChanged";
           // public const string AsycudaSalesAllocationsExChanged = "AsycudaSalesAllocationsExChanged";
           // public const string AsycudaSalesAndAdjustmentAllocationsExChanged = "AsycudaSalesAndAdjustmentAllocationsExChanged";
  
 
    
            public const string CurrentAdjustmentShortAllocationChanged = "CurrentAdjustmentShortAllocationChanged";
+   
+           public const string CurrentAllocationsTestCasChanged = "CurrentAllocationsTestCasChanged";
    
            public const string CurrentAsycudaSalesAllocationsExChanged = "CurrentAsycudaSalesAllocationsExChanged";
    
@@ -45,6 +54,8 @@ namespace WaterNut.QuerySpace.AllocationQS
 
    
            public const string CurrentAdjustmentShortAllocationIDChanged = "OnCurrentAdjustmentShortAllocationIDChanged";
+   
+           public const string CurrentAllocationsTestCasIDChanged = "OnCurrentAllocationsTestCasIDChanged";
    
            public const string CurrentAsycudaSalesAllocationsExIDChanged = "OnCurrentAsycudaSalesAllocationsExIDChanged";
    

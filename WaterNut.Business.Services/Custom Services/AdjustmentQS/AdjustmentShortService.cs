@@ -74,7 +74,7 @@ namespace AdjustmentQS.Business.Services
                     //{
                     //    //lst.Remove(itm);
                     //}
-
+                    if (!lst.Any()) return;
                     AllocationsModel.Instance
                         .ClearDocSetAllocations(lst.Select(x => $"'{x.ItemNumber}'").Aggregate((o, n) => $"{o},{n}"))
                         .Wait();
@@ -116,6 +116,43 @@ namespace AdjustmentQS.Business.Services
 
 
         public async Task AutoMatchDocSet(int applicationSettingsId, int docSetId)
+        {
+            try
+            {
+
+                using (var ctx = new AdjustmentQSContext() { StartTracking = true })
+                {
+                    ctx.Database.CommandTimeout = 10;
+
+
+
+                    var lst = ctx.AdjustmentDetails
+                        //.Include(x => x.AdjustmentEx)
+                        .Where(x => x.ApplicationSettingsId == applicationSettingsId)
+                        .Where(x => x.AsycudaDocumentSetId == docSetId)
+                        //.Where(x => x.SystemDocumentSet != null)
+                        // .Where(x => x.ItemNumber == "HEL/003361001")
+                        //.Where(x => x.EntryDataId == "120902")
+                        //.Where( x => x.EntryDataDetailsId == 545303)
+                        .Where(x => x.DoNotAllocate == null || x.DoNotAllocate != true)
+                        .Where(x => x.EffectiveDate == null) // take out other check cuz of existing entries 
+
+                        .DistinctBy(x => x.EntryDataDetailsId)
+                        .OrderBy(x => x.EntryDataDetailsId)
+                        .ToList();
+
+                    await DoAutoMatch(applicationSettingsId, lst, ctx);
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+
+        }
+
+        public async Task AutoMatchItems(int applicationSettingsId, int docSetId)
         {
             try
             {
@@ -1104,6 +1141,42 @@ namespace AdjustmentQS.Business.Services
             }
 
             ctx.SaveChanges();
+        }
+
+        public async Task AutoMatchItems(int applicationSettingsId, string strLst)
+        {
+            try
+            {
+
+                using (var ctx = new AdjustmentQSContext() { StartTracking = true })
+                {
+                    ctx.Database.CommandTimeout = 10;
+
+
+
+                    var lst = ctx.AdjustmentDetails
+                        //.Include(x => x.AdjustmentEx)
+                        .Where(x => x.ApplicationSettingsId == applicationSettingsId
+                                    && strLst.Contains(x.EntryDataDetailsId.ToString()))
+                        //.Where(x => x.SystemDocumentSet != null)
+                        // .Where(x => x.ItemNumber == "HEL/003361001")
+                        //.Where(x => x.EntryDataId == "120902")
+                        //.Where( x => x.EntryDataDetailsId == 545303)
+                        .Where(x => x.DoNotAllocate == null || x.DoNotAllocate != true)
+                        .Where(x => x.EffectiveDate == null) // take out other check cuz of existing entries 
+
+                        .DistinctBy(x => x.EntryDataDetailsId)
+                        .OrderBy(x => x.EntryDataDetailsId)
+                        .ToList();
+
+                    await DoAutoMatch(applicationSettingsId, lst, ctx);
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
         }
     }
 }

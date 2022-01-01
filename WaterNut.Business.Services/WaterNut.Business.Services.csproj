@@ -378,6 +378,7 @@
     <Compile Include="Contracts\AllocationDS\IAdjustmentShortAllocationsService.cs" />
     <Compile Include="Contracts\AllocationDS\IAdjustmentsService.cs" />
     <Compile Include="Contracts\AllocationDS\IAllocationErrorsService.cs" />
+    <Compile Include="Contracts\AllocationDS\IAllocationsTestCasesService.cs" />
     <Compile Include="Contracts\AllocationDS\IAscyudaItemPiQuantityService.cs" />
     <Compile Include="Contracts\AllocationDS\IAsycudaDocumentItemEntryDataDetailsService.cs" />
     <Compile Include="Contracts\AllocationDS\IAsycudaDocumentService.cs" />
@@ -420,6 +421,7 @@
     <Compile Include="Contracts\AllocationDS\Ixcuda_WeightService.cs" />
     <Compile Include="Contracts\AllocationDS\Ixcuda_Weight_itmService.cs" />
     <Compile Include="Contracts\AllocationQS\IAdjustmentShortAllocationService.cs" />
+    <Compile Include="Contracts\AllocationQS\IAllocationsTestCasService.cs" />
     <Compile Include="Contracts\AllocationQS\IAsycudaSalesAllocationsExService.cs" />
     <Compile Include="Contracts\AllocationQS\IAsycudaSalesAndAdjustmentAllocationsExService.cs" />
     <Compile Include="Contracts\CoreEntities\IActionDocSetLogsService.cs" />
@@ -983,6 +985,7 @@
     <Compile Include="Services\AllocationDS\AdjustmentShortAllocationsService.cs" />
     <Compile Include="Services\AllocationDS\AdjustmentsService.cs" />
     <Compile Include="Services\AllocationDS\AllocationErrorsService.cs" />
+    <Compile Include="Services\AllocationDS\AllocationsTestCasesService.cs" />
     <Compile Include="Services\AllocationDS\AscyudaItemPiQuantityService.cs" />
     <Compile Include="Services\AllocationDS\AsycudaDocumentItemEntryDataDetailsService.cs" />
     <Compile Include="Services\AllocationDS\AsycudaDocumentService.cs" />
@@ -1025,6 +1028,7 @@
     <Compile Include="Services\AllocationDS\xcuda_WeightService.cs" />
     <Compile Include="Services\AllocationDS\xcuda_Weight_itmService.cs" />
     <Compile Include="Services\AllocationQS\AdjustmentShortAllocationService.cs" />
+    <Compile Include="Services\AllocationQS\AllocationsTestCasService.cs" />
     <Compile Include="Services\AllocationQS\AsycudaSalesAllocationsExService.cs" />
     <Compile Include="Services\AllocationQS\AsycudaSalesAndAdjustmentAllocationsExService.cs" />
     <Compile Include="Services\CoreEntities\ActionDocSetLogsService.cs" />

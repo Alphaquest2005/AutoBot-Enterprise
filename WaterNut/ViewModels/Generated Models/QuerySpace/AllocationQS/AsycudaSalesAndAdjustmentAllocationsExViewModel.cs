@@ -1702,7 +1702,7 @@ namespace WaterNut.QuerySpace.AllocationQS.ViewModels
                     
  
                     public Nullable<double> xQuantity { get; set; }
-            public int AllocationId { get; internal set; }
+                    public int AllocationId { get; set; }
         }
 
 		

@@ -54,12 +54,14 @@ namespace WaterNut.QuerySpace.AllocationQS.ViewModels
  
 
                         RegisterToReceiveMessages<string>(MessageToken.CurrentAdjustmentShortAllocationIDChanged, OnCurrentAdjustmentShortAllocationIDChanged);
+                        RegisterToReceiveMessages<string>(MessageToken.CurrentAllocationsTestCasIDChanged, OnCurrentAllocationsTestCasIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentAsycudaSalesAllocationsExIDChanged, OnCurrentAsycudaSalesAllocationsExIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentAsycudaSalesAndAdjustmentAllocationsExIDChanged, OnCurrentAsycudaSalesAndAdjustmentAllocationsExIDChanged);
        
 
 			// Recieve messages for Current Object Changed
                         RegisterToReceiveMessages<AdjustmentShortAllocation>(MessageToken.CurrentAdjustmentShortAllocationChanged, OnCurrentAdjustmentShortAllocationChanged);
+                        RegisterToReceiveMessages<AllocationsTestCas>(MessageToken.CurrentAllocationsTestCasChanged, OnCurrentAllocationsTestCasChanged);
                         RegisterToReceiveMessages<AsycudaSalesAllocationsEx>(MessageToken.CurrentAsycudaSalesAllocationsExChanged, OnCurrentAsycudaSalesAllocationsExChanged);
                         RegisterToReceiveMessages<AsycudaSalesAndAdjustmentAllocationsEx>(MessageToken.CurrentAsycudaSalesAndAdjustmentAllocationsExChanged, OnCurrentAsycudaSalesAndAdjustmentAllocationsExChanged);
     
@@ -105,6 +107,33 @@ namespace WaterNut.QuerySpace.AllocationQS.ViewModels
                                     if (!string.IsNullOrEmpty(_currentAdjustmentShortAllocationID)) BeginSendMessage(MessageToken.CurrentAdjustmentShortAllocationIDChanged,
                                                      new NotificationEventArgs<string>(MessageToken.CurrentAdjustmentShortAllocationIDChanged, _currentAdjustmentShortAllocationID));
                                     NotifyPropertyChanged(x => this.CurrentAdjustmentShortAllocationID);  
+                                }
+                            }
+                        }
+                        internal async void OnCurrentAllocationsTestCasIDChanged(object sender, NotificationEventArgs<string> e)
+                        {
+                            using (AllocationsTestCasRepository ctx = new AllocationsTestCasRepository())
+                            {
+                                CurrentAllocationsTestCas = await ctx.GetAllocationsTestCas(e.Data).ConfigureAwait(continueOnCapturedContext: false);
+                            }
+                            NotifyPropertyChanged(m => CurrentAllocationsTestCas);
+                        }
+
+                        private  string _currentAllocationsTestCasID = "";
+                        public string CurrentAllocationsTestCasID
+                        {
+                            get
+                            {
+                                return _currentAllocationsTestCasID;
+                            }
+                            set
+                            {
+                                if (_currentAllocationsTestCasID != value)
+                                {
+                                    _currentAllocationsTestCasID = value;
+                                    if (!string.IsNullOrEmpty(_currentAllocationsTestCasID)) BeginSendMessage(MessageToken.CurrentAllocationsTestCasIDChanged,
+                                                     new NotificationEventArgs<string>(MessageToken.CurrentAllocationsTestCasIDChanged, _currentAllocationsTestCasID));
+                                    NotifyPropertyChanged(x => this.CurrentAllocationsTestCasID);  
                                 }
                             }
                         }
@@ -210,6 +239,56 @@ namespace WaterNut.QuerySpace.AllocationQS.ViewModels
                     _vcurrentAdjustmentShortAllocation = value;
 					if(_vcurrentAdjustmentShortAllocation != null) CurrentAdjustmentShortAllocation = value.Data;
                     NotifyPropertyChanged(x => this.VCurrentAdjustmentShortAllocation);                    
+                }
+            }
+        }
+
+
+
+                     
+       
+
+        internal void OnCurrentAllocationsTestCasChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<AllocationsTestCas> e)
+        {
+            //CurrentAllocationsTestCas = e.Data;
+            NotifyPropertyChanged(m => this.CurrentAllocationsTestCas);
+        }
+
+        private  AllocationsTestCas _currentAllocationsTestCas;
+        public AllocationsTestCas CurrentAllocationsTestCas
+        {
+            get
+            {
+                return _currentAllocationsTestCas;
+            }
+            set
+            {
+                if (_currentAllocationsTestCas != value)
+                {
+                    _currentAllocationsTestCas = value;
+                    BeginSendMessage(MessageToken.CurrentAllocationsTestCasChanged,
+                                                     new NotificationEventArgs<AllocationsTestCas>(MessageToken.CurrentAllocationsTestCasChanged, _currentAllocationsTestCas)); 
+                    NotifyPropertyChanged(x => this.CurrentAllocationsTestCas);    
+                    // all current navigation properties = null
+   
+                }
+            }
+        }
+
+		VirtualListItem<AllocationsTestCas> _vcurrentAllocationsTestCas;
+        public VirtualListItem<AllocationsTestCas> VCurrentAllocationsTestCas
+        {
+            get
+            {
+                return _vcurrentAllocationsTestCas;
+            }
+            set
+            {
+                if (_vcurrentAllocationsTestCas != value)
+                {
+                    _vcurrentAllocationsTestCas = value;
+					if(_vcurrentAllocationsTestCas != null) CurrentAllocationsTestCas = value.Data;
+                    NotifyPropertyChanged(x => this.VCurrentAllocationsTestCas);                    
                 }
             }
         }

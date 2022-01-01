@@ -614,7 +614,7 @@ namespace WaterNut.DataSpace
 
             if (invoice.SubTotal > 0
                 && Math.Abs((double) (invoice.SubTotal - details.Sum(x => x.Cost * x.Quantity))) > 0.01)
-                details = details.DistinctBy(x => new {x.ItemNumber, x.Quantity, x.TotalCost})
+                details = details.DistinctBy(x => new { ItemNumber = x.ItemNumber.ToUpper(), x.Quantity, x.TotalCost})
                     .ToList();
 
 
@@ -1790,14 +1790,18 @@ namespace WaterNut.DataSpace
                      {
 
                          var err = ImportChecks[key.DestinationName].Invoke(res,
-                             map/*.Where(x => x.Key.Id == key.Id)*/.ToDictionary(x => x.Key.DestinationName, x => x.Value), splits);
+                             map
+                                 .Where(x => headings.Contains(x.Key.OriginalName) )//|| headings.Contains(x.Key.DestinationName)
+                                 .ToDictionary(x => x.Key.DestinationName, x => x.Value), splits);
                          if (err.Item1) throw new ApplicationException(err.Item2);
                      }
 
                      if (ImportActions.ContainsKey(key.DestinationName))
                      {// come up with a better solution cuz of duplicate keys
                          ImportActions[key.DestinationName].Invoke(res,
-                             map/*.Where(x => x.Key.Id == key.Id)*/.ToDictionary(x => x.Key.DestinationName, x => x.Value), splits);
+                             map
+                                 .Where(x => headings.Contains(x.Key.OriginalName) )//|| headings.Contains(x.Key.DestinationName)
+                                 .ToDictionary(x => x.Key.DestinationName, x => x.Value), splits);
                      }
                      else
                      {
@@ -1819,10 +1823,24 @@ namespace WaterNut.DataSpace
 
              foreach (var action in fileType.ImportActions)
              {
-                 ((IDictionary<string, object>) res)[action.Name] = DynamicQueryable.ReplaceMacro(
-                     action.Action,
-                     new ImportData() {res = (IDictionary<string, object>) res,
-                         mapping = map.ToDictionary(x => x.Key.DestinationName, x => x.Value), splits = splits});
+                 try
+                 {
+                     ((IDictionary<string, object>)res)[action.Name] = DynamicQueryable.ReplaceMacro(
+                         action.Action,
+                         new ImportData()
+                         {
+                             res = (IDictionary<string, object>)res,
+                             mapping = map
+                                 .Where(x => headings.Contains(x.Key.OriginalName))
+                                 .ToDictionary(x => x.Key.DestinationName, x => x.Value),
+                             splits = splits
+                         });
+                    }
+                 catch (Exception e)
+                 {
+                    // can't figure out how to test for missing columns so just skip if failed
+                 }
+                
              }
 
              return res;

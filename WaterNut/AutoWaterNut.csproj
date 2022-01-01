@@ -451,6 +451,7 @@
     <Compile Include="ViewModels\Generated Models\QuerySpace\AdjustmentQS\TODO_PreDiscrepancyErrorsViewModel.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\AdjustmentQS\xcuda_ItemViewModel.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\AllocationQS\AdjustmentShortAllocationViewModel.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\AllocationQS\AllocationsTestCasViewModel.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\AllocationQS\AsycudaSalesAllocationsExViewModel.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\AllocationQS\AsycudaSalesAndAdjustmentAllocationsExViewModel.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\AllocationQS\BaseViewModel.cs" />
@@ -631,6 +632,7 @@
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\AdjustmentQS\TODO_PreDiscrepancyErrorsTotals.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\AdjustmentQS\xcuda_ItemTotals.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\AllocationQS\AdjustmentShortAllocationTotals.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\AllocationQS\AllocationsTestCasTotals.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\AllocationQS\AsycudaSalesAllocationsExTotals.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\AllocationQS\AsycudaSalesAndAdjustmentAllocationsExTotals.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\ActionDocSetLogsTotals.cs" />
@@ -793,6 +795,7 @@
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\AdjustmentQS\TODO_PreDiscrepancyErrorsVirturalListLoader.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\AdjustmentQS\xcuda_ItemVirturalListLoader.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\AllocationQS\AdjustmentShortAllocationVirturalListLoader.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\AllocationQS\AllocationsTestCasVirturalListLoader.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\AllocationQS\AsycudaSalesAllocationsExVirturalListLoader.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\AllocationQS\AsycudaSalesAndAdjustmentAllocationsExVirturalListLoader.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\ActionDocSetLogsVirturalListLoader.cs" />

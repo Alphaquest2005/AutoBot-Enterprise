@@ -114,6 +114,7 @@
     <Compile Include="AdjustmentQS\TODO_PreDiscrepancyErrorsClient.cs" />
     <Compile Include="AdjustmentQS\xcuda_ItemClient.cs" />
     <Compile Include="AllocationQS\AdjustmentShortAllocationClient.cs" />
+    <Compile Include="AllocationQS\AllocationsTestCasClient.cs" />
     <Compile Include="AllocationQS\AsycudaSalesAllocationsExClient.cs" />
     <Compile Include="AllocationQS\AsycudaSalesAndAdjustmentAllocationsExClient.cs" />
     <Compile Include="ClientService.cs" />

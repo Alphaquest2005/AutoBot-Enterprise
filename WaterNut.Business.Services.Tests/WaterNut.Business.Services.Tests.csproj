@@ -19,10 +19,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Custom Services\DataModels\Custom DataModels\InterFaceBased\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Reference Include="TrackableEntities.Client">
       <HintPath>..\WaterNut\TrackableEntities.Client.dll</HintPath>
     </Reference>
@@ -32,6 +28,10 @@
     <Reference Include="TrackableEntities.EF.6">
       <HintPath>..\WaterNut\TrackableEntities.EF.6.dll</HintPath>
     </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Custom Services\DataModels\" />
   </ItemGroup>
 
 </Project>

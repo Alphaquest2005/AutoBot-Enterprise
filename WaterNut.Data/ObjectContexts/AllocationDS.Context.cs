@@ -127,9 +127,11 @@ namespace AllocationDS.Business.Entities
      
         public DbSet<CustomsOperations> CustomsOperations { get; set; }
      
-        public DbSet<LumpedItem> LumpedItems { get; set; }
-     
         public DbSet<AsycudaSalesAllocationsPIData> AsycudaSalesAllocationsPIData { get; set; }
+     
+        public DbSet<AllocationsTestCases> AllocationsTestCases { get; set; }
+     
+        public DbSet<LumpedItem> LumpedItems { get; set; }
      
 
 
@@ -215,9 +217,11 @@ namespace AllocationDS.Business.Entities
          
             modelBuilder.Configurations.Add(new CustomsOperationsMap());
          
-            modelBuilder.Configurations.Add(new LumpedItemMap());
-         
             modelBuilder.Configurations.Add(new AsycudaSalesAllocationsPIDataMap());
+         
+            modelBuilder.Configurations.Add(new AllocationsTestCasesMap());
+         
+            modelBuilder.Configurations.Add(new LumpedItemMap());
          
             modelBuilder.Configurations.Add(new AdjustmentsMap());
       

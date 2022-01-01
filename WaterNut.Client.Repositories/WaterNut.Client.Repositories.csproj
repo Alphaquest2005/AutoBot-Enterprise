@@ -150,6 +150,7 @@
     <Compile Include="Generated Repositories\AdjustmentQS\xcuda_ItemRepository.cs" />
     <Compile Include="Generated Repositories\AllocationQSRepository.cs" />
     <Compile Include="Generated Repositories\AllocationQS\AdjustmentShortAllocationRepository.cs" />
+    <Compile Include="Generated Repositories\AllocationQS\AllocationsTestCasRepository.cs" />
     <Compile Include="Generated Repositories\AllocationQS\AsycudaSalesAllocationsExRepository.cs" />
     <Compile Include="Generated Repositories\AllocationQS\AsycudaSalesAndAdjustmentAllocationsExRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntitiesRepository.cs" />

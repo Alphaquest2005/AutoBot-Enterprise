@@ -92,12 +92,13 @@
         <EntityTypeShape EntityType="WaterNutDBModel.CustomsOperations" Width="1.5" PointX="22.125" PointY="21.25" />
         <AssociationConnector Association="WaterNutDBModel.FK_Customs_Procedure_CustomsOperations" />
         <AssociationConnector Association="WaterNutDBModel.TariffCodesxcuda_HScode" />
-        <EntityTypeShape EntityType="WaterNutDBModel.LumpedItem" Width="1.5" PointX="0.75" PointY="3.75" />
-        <AssociationConnector Association="WaterNutDBModel.InventoryItemInventoryItems_Lumped" />
         <EntityTypeShape EntityType="WaterNutDBModel.AsycudaSalesAllocationsPIData" Width="2.5" PointX="22.125" PointY="10.625" />
         <AssociationConnector Association="WaterNutDBModel.EX9AsycudaSalesAllocationsAsycudaSalesAllocationsPIData" />
         <AssociationConnector Association="WaterNutDBModel.AdjustmentShortAllocationsAsycudaSalesAllocationsPIData" />
         <AssociationConnector Association="WaterNutDBModel.AsycudaSalesAllocationsAsycudaSalesAllocationsPIData" />
+        <EntityTypeShape EntityType="WaterNutDBModel.AllocationsTestCases" Width="1.5" PointX="29.75" PointY="7.5" />
+        <EntityTypeShape EntityType="WaterNutDBModel.LumpedItem" Width="1.5" PointX="0.75" PointY="3.75" />
+        <AssociationConnector Association="WaterNutDBModel.InventoryItemInventoryItems_Lumped" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

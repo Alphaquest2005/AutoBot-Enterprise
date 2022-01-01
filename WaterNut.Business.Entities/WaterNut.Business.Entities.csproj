@@ -158,6 +158,7 @@
     <Compile Include="Generated Business Entities\AllocationDS\Adjustments.cs" />
     <Compile Include="Generated Business Entities\AllocationDS\AdjustmentShortAllocations.cs" />
     <Compile Include="Generated Business Entities\AllocationDS\AllocationErrors.cs" />
+    <Compile Include="Generated Business Entities\AllocationDS\AllocationsTestCases.cs" />
     <Compile Include="Generated Business Entities\AllocationDS\AscyudaItemPiQuantity.cs" />
     <Compile Include="Generated Business Entities\AllocationDS\AsycudaDocument.cs" />
     <Compile Include="Generated Business Entities\AllocationDS\AsycudaDocumentItemEntryDataDetails.cs" />
@@ -201,6 +202,7 @@
     <Compile Include="Generated Business Entities\AllocationDS\xcuda_Weight.cs" />
     <Compile Include="Generated Business Entities\AllocationDS\xcuda_Weight_itm.cs" />
     <Compile Include="Generated Business Entities\AllocationQS\AdjustmentShortAllocation.cs" />
+    <Compile Include="Generated Business Entities\AllocationQS\AllocationsTestCas.cs" />
     <Compile Include="Generated Business Entities\AllocationQS\AsycudaSalesAllocationsEx.cs" />
     <Compile Include="Generated Business Entities\AllocationQS\AsycudaSalesAndAdjustmentAllocationsEx.cs" />
     <Compile Include="Generated Business Entities\CoreEntities\ActionDocSetLogs.cs" />
@@ -560,6 +562,7 @@
     <Compile Include="Generated ChangeTracking Models\AllocationDS\Adjustments.cs" />
     <Compile Include="Generated ChangeTracking Models\AllocationDS\AdjustmentShortAllocations.cs" />
     <Compile Include="Generated ChangeTracking Models\AllocationDS\AllocationErrors.cs" />
+    <Compile Include="Generated ChangeTracking Models\AllocationDS\AllocationsTestCases.cs" />
     <Compile Include="Generated ChangeTracking Models\AllocationDS\AscyudaItemPiQuantity.cs" />
     <Compile Include="Generated ChangeTracking Models\AllocationDS\AsycudaDocument.cs" />
     <Compile Include="Generated ChangeTracking Models\AllocationDS\AsycudaDocumentItemEntryDataDetails.cs" />
@@ -602,6 +605,7 @@
     <Compile Include="Generated ChangeTracking Models\AllocationDS\xcuda_Weight.cs" />
     <Compile Include="Generated ChangeTracking Models\AllocationDS\xcuda_Weight_itm.cs" />
     <Compile Include="Generated ChangeTracking Models\AllocationQS\AdjustmentShortAllocation.cs" />
+    <Compile Include="Generated ChangeTracking Models\AllocationQS\AllocationsTestCas.cs" />
     <Compile Include="Generated ChangeTracking Models\AllocationQS\AsycudaSalesAllocationsEx.cs" />
     <Compile Include="Generated ChangeTracking Models\AllocationQS\AsycudaSalesAndAdjustmentAllocationsEx.cs" />
     <Compile Include="Generated ChangeTracking Models\CoreEntities\ActionDocSetLogs.cs" />
@@ -955,6 +959,7 @@
     <Compile Include="Generated Constructors Models\AllocationDS\Adjustments.cs" />
     <Compile Include="Generated Constructors Models\AllocationDS\AdjustmentShortAllocations.cs" />
     <Compile Include="Generated Constructors Models\AllocationDS\AllocationErrors.cs" />
+    <Compile Include="Generated Constructors Models\AllocationDS\AllocationsTestCases.cs" />
     <Compile Include="Generated Constructors Models\AllocationDS\AscyudaItemPiQuantity.cs" />
     <Compile Include="Generated Constructors Models\AllocationDS\AsycudaDocument.cs" />
     <Compile Include="Generated Constructors Models\AllocationDS\AsycudaDocumentItemEntryDataDetails.cs" />
@@ -997,6 +1002,7 @@
     <Compile Include="Generated Constructors Models\AllocationDS\xcuda_Weight.cs" />
     <Compile Include="Generated Constructors Models\AllocationDS\xcuda_Weight_itm.cs" />
     <Compile Include="Generated Constructors Models\AllocationQS\AdjustmentShortAllocation.cs" />
+    <Compile Include="Generated Constructors Models\AllocationQS\AllocationsTestCas.cs" />
     <Compile Include="Generated Constructors Models\AllocationQS\AsycudaSalesAllocationsEx.cs" />
     <Compile Include="Generated Constructors Models\AllocationQS\AsycudaSalesAndAdjustmentAllocationsEx.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\ActionDocSetLogs.cs" />
@@ -1350,6 +1356,7 @@
     <Compile Include="Generated IEntitiyWithKey Models\AllocationDS\Adjustments.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\AllocationDS\AdjustmentShortAllocations.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\AllocationDS\AllocationErrors.cs" />
+    <Compile Include="Generated IEntitiyWithKey Models\AllocationDS\AllocationsTestCases.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\AllocationDS\AscyudaItemPiQuantity.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\AllocationDS\AsycudaDocument.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\AllocationDS\AsycudaDocumentItemEntryDataDetails.cs" />
@@ -1392,6 +1399,7 @@
     <Compile Include="Generated IEntitiyWithKey Models\AllocationDS\xcuda_Weight.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\AllocationDS\xcuda_Weight_itm.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\AllocationQS\AdjustmentShortAllocation.cs" />
+    <Compile Include="Generated IEntitiyWithKey Models\AllocationQS\AllocationsTestCas.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\AllocationQS\AsycudaSalesAllocationsEx.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\AllocationQS\AsycudaSalesAndAdjustmentAllocationsEx.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\ActionDocSetLogs.cs" />
@@ -1745,6 +1753,7 @@
     <Compile Include="Generated IIdentitfiableEntity Models\AllocationDS\Adjustments.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\AllocationDS\AdjustmentShortAllocations.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\AllocationDS\AllocationErrors.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\AllocationDS\AllocationsTestCases.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\AllocationDS\AscyudaItemPiQuantity.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\AllocationDS\AsycudaDocument.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\AllocationDS\AsycudaDocumentItemEntryDataDetails.cs" />
@@ -1787,6 +1796,7 @@
     <Compile Include="Generated IIdentitfiableEntity Models\AllocationDS\xcuda_Weight.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\AllocationDS\xcuda_Weight_itm.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\AllocationQS\AdjustmentShortAllocation.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\AllocationQS\AllocationsTestCas.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\AllocationQS\AsycudaSalesAllocationsEx.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\AllocationQS\AsycudaSalesAndAdjustmentAllocationsEx.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\ActionDocSetLogs.cs" />
@@ -2150,6 +2160,7 @@
     <Compile Include="Generated Mappings\AllocationDS\Adjustments.map.cs" />
     <Compile Include="Generated Mappings\AllocationDS\AdjustmentShortAllocations.map.cs" />
     <Compile Include="Generated Mappings\AllocationDS\AllocationErrors.map.cs" />
+    <Compile Include="Generated Mappings\AllocationDS\AllocationsTestCases.map.cs" />
     <Compile Include="Generated Mappings\AllocationDS\AscyudaItemPiQuantity.map.cs" />
     <Compile Include="Generated Mappings\AllocationDS\AsycudaDocument.map.cs" />
     <Compile Include="Generated Mappings\AllocationDS\AsycudaDocumentItemEntryDataDetails.map.cs" />
@@ -2192,6 +2203,7 @@
     <Compile Include="Generated Mappings\AllocationDS\xcuda_Weight.map.cs" />
     <Compile Include="Generated Mappings\AllocationDS\xcuda_Weight_itm.map.cs" />
     <Compile Include="Generated Mappings\AllocationQS\AdjustmentShortAllocation.map.cs" />
+    <Compile Include="Generated Mappings\AllocationQS\AllocationsTestCas.map.cs" />
     <Compile Include="Generated Mappings\AllocationQS\AsycudaSalesAllocationsEx.map.cs" />
     <Compile Include="Generated Mappings\AllocationQS\AsycudaSalesAndAdjustmentAllocationsEx.map.cs" />
     <Compile Include="Generated Mappings\CoreEntities\ActionDocSetLogs.map.cs" />

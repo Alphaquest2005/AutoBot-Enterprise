@@ -8,6 +8,7 @@
         <EntityTypeShape EntityType="WaterNutDBModel.AsycudaSalesAllocationsEx" Width="2.625" PointX="0.75" PointY="0.75" />
         <EntityTypeShape EntityType="WaterNutDBModel.AdjustmentShortAllocation" Width="2.375" PointX="10.125" PointY="1.25" />
         <EntityTypeShape EntityType="WaterNutDBModel.AsycudaSalesAndAdjustmentAllocationsEx" Width="1.5" PointX="4.375" PointY="0.75" />
+        <EntityTypeShape EntityType="WaterNutDBModel.AllocationsTestCas" Width="1.5" PointX="6.375" PointY="0.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

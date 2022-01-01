@@ -202,6 +202,7 @@
 ..\WaterNut.Business.Entities\Generated Business Entities\AllocationDS\Adjustments.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\AllocationDS\AdjustmentShortAllocations.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\AllocationDS\AllocationErrors.cs
+..\WaterNut.Business.Entities\Generated Business Entities\AllocationDS\AllocationsTestCases.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\AllocationDS\AscyudaItemPiQuantity.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\AllocationDS\AsycudaDocument.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\AllocationDS\AsycudaDocumentItemEntryDataDetails.cs
@@ -244,6 +245,7 @@
 ..\WaterNut.Business.Entities\Generated Business Entities\AllocationDS\xcuda_Weight.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\AllocationDS\xcuda_Weight_itm.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\AllocationQS\AdjustmentShortAllocation.cs
+..\WaterNut.Business.Entities\Generated Business Entities\AllocationQS\AllocationsTestCas.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\AllocationQS\AsycudaSalesAllocationsEx.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\AllocationQS\AsycudaSalesAndAdjustmentAllocationsEx.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\ActionDocSetLogs.cs
@@ -611,6 +613,7 @@
 ..\WaterNut.Business.Entities\Generated Mappings\AllocationDS\Adjustments.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\AllocationDS\AdjustmentShortAllocations.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\AllocationDS\AllocationErrors.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\AllocationDS\AllocationsTestCases.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\AllocationDS\AscyudaItemPiQuantity.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\AllocationDS\AsycudaDocument.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\AllocationDS\AsycudaDocumentItemEntryDataDetails.map.cs
@@ -653,6 +656,7 @@
 ..\WaterNut.Business.Entities\Generated Mappings\AllocationDS\xcuda_Weight.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\AllocationDS\xcuda_Weight_itm.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\AllocationQS\AdjustmentShortAllocation.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\AllocationQS\AllocationsTestCas.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\AllocationQS\AsycudaSalesAllocationsEx.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\AllocationQS\AsycudaSalesAndAdjustmentAllocationsEx.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\ActionDocSetLogs.map.cs
@@ -1028,6 +1032,7 @@
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\AllocationDS\Adjustments.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\AllocationDS\AdjustmentShortAllocations.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\AllocationDS\AllocationErrors.cs
+..\WaterNut.Business.Entities\Generated ChangeTracking Models\AllocationDS\AllocationsTestCases.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\AllocationDS\AscyudaItemPiQuantity.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\AllocationDS\AsycudaDocument.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\AllocationDS\AsycudaDocumentItemEntryDataDetails.cs
@@ -1070,6 +1075,7 @@
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\AllocationDS\xcuda_Weight.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\AllocationDS\xcuda_Weight_itm.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\AllocationQS\AdjustmentShortAllocation.cs
+..\WaterNut.Business.Entities\Generated ChangeTracking Models\AllocationQS\AllocationsTestCas.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\AllocationQS\AsycudaSalesAllocationsEx.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\AllocationQS\AsycudaSalesAndAdjustmentAllocationsEx.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\CoreEntities\ActionDocSetLogs.cs
@@ -1423,6 +1429,7 @@
 ..\WaterNut.Business.Entities\Generated Constructors Models\AllocationDS\Adjustments.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\AllocationDS\AdjustmentShortAllocations.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\AllocationDS\AllocationErrors.cs
+..\WaterNut.Business.Entities\Generated Constructors Models\AllocationDS\AllocationsTestCases.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\AllocationDS\AscyudaItemPiQuantity.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\AllocationDS\AsycudaDocument.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\AllocationDS\AsycudaDocumentItemEntryDataDetails.cs
@@ -1465,6 +1472,7 @@
 ..\WaterNut.Business.Entities\Generated Constructors Models\AllocationDS\xcuda_Weight.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\AllocationDS\xcuda_Weight_itm.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\AllocationQS\AdjustmentShortAllocation.cs
+..\WaterNut.Business.Entities\Generated Constructors Models\AllocationQS\AllocationsTestCas.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\AllocationQS\AsycudaSalesAllocationsEx.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\AllocationQS\AsycudaSalesAndAdjustmentAllocationsEx.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\CoreEntities\ActionDocSetLogs.cs
@@ -1818,6 +1826,7 @@
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\AllocationDS\Adjustments.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\AllocationDS\AdjustmentShortAllocations.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\AllocationDS\AllocationErrors.cs
+..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\AllocationDS\AllocationsTestCases.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\AllocationDS\AscyudaItemPiQuantity.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\AllocationDS\AsycudaDocument.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\AllocationDS\AsycudaDocumentItemEntryDataDetails.cs
@@ -1860,6 +1869,7 @@
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\AllocationDS\xcuda_Weight.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\AllocationDS\xcuda_Weight_itm.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\AllocationQS\AdjustmentShortAllocation.cs
+..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\AllocationQS\AllocationsTestCas.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\AllocationQS\AsycudaSalesAllocationsEx.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\AllocationQS\AsycudaSalesAndAdjustmentAllocationsEx.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\CoreEntities\ActionDocSetLogs.cs
@@ -2213,6 +2223,7 @@
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\AllocationDS\Adjustments.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\AllocationDS\AdjustmentShortAllocations.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\AllocationDS\AllocationErrors.cs
+..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\AllocationDS\AllocationsTestCases.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\AllocationDS\AscyudaItemPiQuantity.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\AllocationDS\AsycudaDocument.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\AllocationDS\AsycudaDocumentItemEntryDataDetails.cs
@@ -2255,6 +2266,7 @@
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\AllocationDS\xcuda_Weight.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\AllocationDS\xcuda_Weight_itm.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\AllocationQS\AdjustmentShortAllocation.cs
+..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\AllocationQS\AllocationsTestCas.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\AllocationQS\AsycudaSalesAllocationsEx.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\AllocationQS\AsycudaSalesAndAdjustmentAllocationsEx.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\CoreEntities\ActionDocSetLogs.cs
@@ -2613,6 +2625,7 @@
 ..\WaterNut.Client.DTO\Generated Client Entities\AdjustmentQS\TODO_PreDiscrepancyErrors.cs
 ..\WaterNut.Client.DTO\Generated Client Entities\AdjustmentQS\xcuda_Item.cs
 ..\WaterNut.Client.DTO\Generated Client Entities\AllocationQS\AdjustmentShortAllocation.cs
+..\WaterNut.Client.DTO\Generated Client Entities\AllocationQS\AllocationsTestCas.cs
 ..\WaterNut.Client.DTO\Generated Client Entities\AllocationQS\AsycudaSalesAllocationsEx.cs
 ..\WaterNut.Client.DTO\Generated Client Entities\AllocationQS\AsycudaSalesAndAdjustmentAllocationsEx.cs
 ..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\ActionDocSetLogs.cs
@@ -2775,6 +2788,7 @@
 ..\WaterNut.Client.Entities\Generated Client Entities\AdjustmentQS\TODO_PreDiscrepancyErrors.cs
 ..\WaterNut.Client.Entities\Generated Client Entities\AdjustmentQS\xcuda_Item.cs
 ..\WaterNut.Client.Entities\Generated Client Entities\AllocationQS\AdjustmentShortAllocation.cs
+..\WaterNut.Client.Entities\Generated Client Entities\AllocationQS\AllocationsTestCas.cs
 ..\WaterNut.Client.Entities\Generated Client Entities\AllocationQS\AsycudaSalesAllocationsEx.cs
 ..\WaterNut.Client.Entities\Generated Client Entities\AllocationQS\AsycudaSalesAndAdjustmentAllocationsEx.cs
 ..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\ActionDocSetLogs.cs
@@ -2946,6 +2960,7 @@
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\AdjustmentQS\TODO_PreDiscrepancyErrors.cs
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\AdjustmentQS\xcuda_Item.cs
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\AllocationQS\AdjustmentShortAllocation.cs
+..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\AllocationQS\AllocationsTestCas.cs
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\AllocationQS\AsycudaSalesAllocationsEx.cs
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\AllocationQS\AsycudaSalesAndAdjustmentAllocationsEx.cs
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\CoreEntities\ActionDocSetLogs.cs
@@ -3108,6 +3123,7 @@
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\AdjustmentQS\TODO_PreDiscrepancyErrors.cs
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\AdjustmentQS\xcuda_Item.cs
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\AllocationQS\AdjustmentShortAllocation.cs
+..\WaterNut.Client.DTO\Generated MyNavProp Models\AllocationQS\AllocationsTestCas.cs
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\AllocationQS\AsycudaSalesAllocationsEx.cs
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\AllocationQS\AsycudaSalesAndAdjustmentAllocationsEx.cs
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\CoreEntities\ActionDocSetLogs.cs
@@ -3270,6 +3286,7 @@
 ..\WaterNut.Client.Entities\Generated Constructors Models\AdjustmentQS\TODO_PreDiscrepancyErrors.cs
 ..\WaterNut.Client.Entities\Generated Constructors Models\AdjustmentQS\xcuda_Item.cs
 ..\WaterNut.Client.Entities\Generated Constructors Models\AllocationQS\AdjustmentShortAllocation.cs
+..\WaterNut.Client.Entities\Generated Constructors Models\AllocationQS\AllocationsTestCas.cs
 ..\WaterNut.Client.Entities\Generated Constructors Models\AllocationQS\AsycudaSalesAllocationsEx.cs
 ..\WaterNut.Client.Entities\Generated Constructors Models\AllocationQS\AsycudaSalesAndAdjustmentAllocationsEx.cs
 ..\WaterNut.Client.Entities\Generated Constructors Models\CoreEntities\ActionDocSetLogs.cs
@@ -3432,6 +3449,7 @@
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\AdjustmentQS\TODO_PreDiscrepancyErrors.cs
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\AdjustmentQS\xcuda_Item.cs
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\AllocationQS\AdjustmentShortAllocation.cs
+..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\AllocationQS\AllocationsTestCas.cs
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\AllocationQS\AsycudaSalesAllocationsEx.cs
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\AllocationQS\AsycudaSalesAndAdjustmentAllocationsEx.cs
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\CoreEntities\ActionDocSetLogs.cs
@@ -3594,6 +3612,7 @@
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\AdjustmentQS\TODO_PreDiscrepancyErrors.cs
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\AdjustmentQS\xcuda_Item.cs
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\AllocationQS\AdjustmentShortAllocation.cs
+..\WaterNut.Client.Entities\Generated MyNavProp Models\AllocationQS\AllocationsTestCas.cs
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\AllocationQS\AsycudaSalesAllocationsEx.cs
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\AllocationQS\AsycudaSalesAndAdjustmentAllocationsEx.cs
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\CoreEntities\ActionDocSetLogs.cs
@@ -3798,6 +3817,7 @@
 ..\WaterNut.Business.Entities\Generated Mappings\AllocationDS\Adjustments.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\AllocationDS\AdjustmentShortAllocations.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\AllocationDS\AllocationErrors.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\AllocationDS\AllocationsTestCases.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\AllocationDS\AscyudaItemPiQuantity.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\AllocationDS\AsycudaDocument.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\AllocationDS\AsycudaDocumentItemEntryDataDetails.map.cs
@@ -3840,6 +3860,7 @@
 ..\WaterNut.Business.Entities\Generated Mappings\AllocationDS\xcuda_Weight.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\AllocationDS\xcuda_Weight_itm.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\AllocationQS\AdjustmentShortAllocation.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\AllocationQS\AllocationsTestCas.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\AllocationQS\AsycudaSalesAllocationsEx.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\AllocationQS\AsycudaSalesAndAdjustmentAllocationsEx.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\ActionDocSetLogs.map.cs
@@ -4239,6 +4260,7 @@
 ..\WaterNut.Client.Repositories\Generated Repositories\AdjustmentQS\TODO_PreDiscrepancyErrorsRepository.cs
 ..\WaterNut.Client.Repositories\Generated Repositories\AdjustmentQS\xcuda_ItemRepository.cs
 ..\WaterNut.Client.Repositories\Generated Repositories\AllocationQS\AdjustmentShortAllocationRepository.cs
+..\WaterNut.Client.Repositories\Generated Repositories\AllocationQS\AllocationsTestCasRepository.cs
 ..\WaterNut.Client.Repositories\Generated Repositories\AllocationQS\AsycudaSalesAllocationsExRepository.cs
 ..\WaterNut.Client.Repositories\Generated Repositories\AllocationQS\AsycudaSalesAndAdjustmentAllocationsExRepository.cs
 ..\WaterNut.Client.Repositories\Generated Repositories\AllocationQSRepository.cs
@@ -4417,6 +4439,7 @@
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\AdjustmentQS\TODO_PreDiscrepancyErrorsViewModel.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\AdjustmentQS\xcuda_ItemViewModel.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\AllocationQS\AdjustmentShortAllocationViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\AllocationQS\AllocationsTestCasViewModel.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\AllocationQS\AsycudaSalesAllocationsExViewModel.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\AllocationQS\AsycudaSalesAndAdjustmentAllocationsExViewModel.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\AllocationQS\BaseViewModel.cs
@@ -4587,6 +4610,7 @@
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\AdjustmentQS\TODO_PreDiscrepancyErrorsTotals.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\AdjustmentQS\xcuda_ItemTotals.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\AllocationQS\AdjustmentShortAllocationTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\AllocationQS\AllocationsTestCasTotals.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\AllocationQS\AsycudaSalesAllocationsExTotals.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\AllocationQS\AsycudaSalesAndAdjustmentAllocationsExTotals.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\ActionDocSetLogsTotals.cs
@@ -4739,6 +4763,7 @@
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\AdjustmentQS\TODO_PreDiscrepancyErrorsVirturalListLoader.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\AdjustmentQS\xcuda_ItemVirturalListLoader.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\AllocationQS\AdjustmentShortAllocationVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\AllocationQS\AllocationsTestCasVirturalListLoader.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\AllocationQS\AsycudaSalesAllocationsExVirturalListLoader.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\AllocationQS\AsycudaSalesAndAdjustmentAllocationsExVirturalListLoader.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\ActionDocSetLogsVirturalListLoader.cs
@@ -4899,6 +4924,7 @@
 ..\WaterNut.Business.Services\Contracts\AllocationDS\IAdjustmentShortAllocationsService.cs
 ..\WaterNut.Business.Services\Contracts\AllocationDS\IAdjustmentsService.cs
 ..\WaterNut.Business.Services\Contracts\AllocationDS\IAllocationErrorsService.cs
+..\WaterNut.Business.Services\Contracts\AllocationDS\IAllocationsTestCasesService.cs
 ..\WaterNut.Business.Services\Contracts\AllocationDS\IAscyudaItemPiQuantityService.cs
 ..\WaterNut.Business.Services\Contracts\AllocationDS\IAsycudaDocumentItemEntryDataDetailsService.cs
 ..\WaterNut.Business.Services\Contracts\AllocationDS\IAsycudaDocumentService.cs
@@ -4941,6 +4967,7 @@
 ..\WaterNut.Business.Services\Contracts\AllocationDS\Ixcuda_Weight_itmService.cs
 ..\WaterNut.Business.Services\Contracts\AllocationDS\Ixcuda_WeightService.cs
 ..\WaterNut.Business.Services\Contracts\AllocationQS\IAdjustmentShortAllocationService.cs
+..\WaterNut.Business.Services\Contracts\AllocationQS\IAllocationsTestCasService.cs
 ..\WaterNut.Business.Services\Contracts\AllocationQS\IAsycudaSalesAllocationsExService.cs
 ..\WaterNut.Business.Services\Contracts\AllocationQS\IAsycudaSalesAndAdjustmentAllocationsExService.cs
 ..\WaterNut.Business.Services\Contracts\CoreEntities\IActionDocSetLogsService.cs
@@ -5294,6 +5321,7 @@
 ..\WaterNut.Business.Services\Services\AllocationDS\AdjustmentShortAllocationsService.cs
 ..\WaterNut.Business.Services\Services\AllocationDS\AdjustmentsService.cs
 ..\WaterNut.Business.Services\Services\AllocationDS\AllocationErrorsService.cs
+..\WaterNut.Business.Services\Services\AllocationDS\AllocationsTestCasesService.cs
 ..\WaterNut.Business.Services\Services\AllocationDS\AscyudaItemPiQuantityService.cs
 ..\WaterNut.Business.Services\Services\AllocationDS\AsycudaDocumentItemEntryDataDetailsService.cs
 ..\WaterNut.Business.Services\Services\AllocationDS\AsycudaDocumentService.cs
@@ -5336,6 +5364,7 @@
 ..\WaterNut.Business.Services\Services\AllocationDS\xcuda_Weight_itmService.cs
 ..\WaterNut.Business.Services\Services\AllocationDS\xcuda_WeightService.cs
 ..\WaterNut.Business.Services\Services\AllocationQS\AdjustmentShortAllocationService.cs
+..\WaterNut.Business.Services\Services\AllocationQS\AllocationsTestCasService.cs
 ..\WaterNut.Business.Services\Services\AllocationQS\AsycudaSalesAllocationsExService.cs
 ..\WaterNut.Business.Services\Services\AllocationQS\AsycudaSalesAndAdjustmentAllocationsExService.cs
 ..\WaterNut.Business.Services\Services\CoreEntities\ActionDocSetLogsService.cs
@@ -5687,6 +5716,7 @@
 ..\WaterNut.Client.Contracts\AdjustmentQS\ITODO_PreDiscrepancyErrorsService.cs
 ..\WaterNut.Client.Contracts\AdjustmentQS\Ixcuda_ItemService.cs
 ..\WaterNut.Client.Contracts\AllocationQS\IAdjustmentShortAllocationService.cs
+..\WaterNut.Client.Contracts\AllocationQS\IAllocationsTestCasService.cs
 ..\WaterNut.Client.Contracts\AllocationQS\IAsycudaSalesAllocationsExService.cs
 ..\WaterNut.Client.Contracts\AllocationQS\IAsycudaSalesAndAdjustmentAllocationsExService.cs
 ..\WaterNut.Client.Contracts\CoreEntities\IActionDocSetLogsService.cs
@@ -5849,6 +5879,7 @@
 ..\WaterNut.Client.Services\AdjustmentQS\TODO_PreDiscrepancyErrorsClient.cs
 ..\WaterNut.Client.Services\AdjustmentQS\xcuda_ItemClient.cs
 ..\WaterNut.Client.Services\AllocationQS\AdjustmentShortAllocationClient.cs
+..\WaterNut.Client.Services\AllocationQS\AllocationsTestCasClient.cs
 ..\WaterNut.Client.Services\AllocationQS\AsycudaSalesAllocationsExClient.cs
 ..\WaterNut.Client.Services\AllocationQS\AsycudaSalesAndAdjustmentAllocationsExClient.cs
 ..\WaterNut.Client.Services\CoreEntities\ActionDocSetLogsClient.cs
