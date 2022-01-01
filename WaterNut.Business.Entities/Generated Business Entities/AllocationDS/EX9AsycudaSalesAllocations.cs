@@ -626,7 +626,7 @@ namespace AllocationDS.Business.Entities
         }
         Nullable<bool> _invalid;
         [DataMember]
-        public System.DateTime pExpiryDate 
+        public Nullable<System.DateTime> pExpiryDate 
         {
             get
             {
@@ -639,7 +639,7 @@ namespace AllocationDS.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        System.DateTime _pexpirydate;
+        Nullable<System.DateTime> _pexpirydate;
         [DataMember]
         public int xBond_Item_Id 
         {

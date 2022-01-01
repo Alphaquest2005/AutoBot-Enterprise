@@ -2261,7 +2261,7 @@ namespace WaterNut.DataSpace
         {
             var zeroitems = "";
             // create blank asycuda document
-            dynamic olddoc;
+            ASYCUDA olddoc;
             if (ASYCUDA.CanLoadFromFile(filename))
                 olddoc = ASYCUDA.LoadFromFile(filename);
             else if (ASYCUDA.CanLoadFromFile(filename))
@@ -2283,8 +2283,8 @@ namespace WaterNut.DataSpace
             var cp = Instance.Customs_Procedures.Single(x =>
                 x.CustomsOperationId == (int) CustomsOperations.Exwarehouse && x.Stock == true);
 
-            var exp = Instance.ExportTemplates.Single(x =>
-                x.Customs_Procedure == cp.CustomsProcedure);
+            var exp = Instance.ExportTemplates
+                .Single(x =>x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId &&  x.Customs_Procedure == cp.CustomsProcedure);
 
             var linenumber = 0;
             foreach (var olditem in olddoc.Item)
@@ -2295,9 +2295,10 @@ namespace WaterNut.DataSpace
                 // create new entry
                 var i = olditem.Clone();
 
-
-                i.Tarification.Extended_customs_procedure = cp.Extended_customs_procedure;
-                i.Tarification.National_customs_procedure = cp.National_customs_procedure;
+                i.Tarification.Extended_customs_procedure.Text.Clear();
+                i.Tarification.Extended_customs_procedure.Text.Add(cp.Extended_customs_procedure);
+                i.Tarification.National_customs_procedure.Text.Clear();
+                i.Tarification.National_customs_procedure.Text.Add(cp.National_customs_procedure);
 
 
                 i.Previous_doc.Summary_declaration.Text.Clear();
@@ -2309,8 +2310,8 @@ namespace WaterNut.DataSpace
 
 
                 var pitm = new ASYCUDAPrev_decl();
-                pitm.Prev_decl_HS_code = i.Tarification.HScode.Commodity_code;
-                pitm.Prev_decl_HS_prec = "00";
+                pitm.Prev_decl_HS_code = i.Tarification.HScode.Commodity_code.Text.FirstOrDefault();
+                pitm.Prev_decl_HS_prec = i.Tarification.HScode.Precision_1.Text.FirstOrDefault();
                 pitm.Prev_decl_current_item = linenumber.ToString(); // piggy back the previous item count
                 pitm.Prev_decl_item_number = linenumber.ToString();
 
@@ -2319,12 +2320,15 @@ namespace WaterNut.DataSpace
                         .ToString();
                 pitm.Prev_decl_weight_written_off = olditem.Valuation_item.Weight_itm.Net_weight_itm.ToString();
 
+                if (!string.IsNullOrEmpty(olditem.Packages.Number_of_packages))
+                {
+                    pitm.Prev_decl_number_packages_written_off =
+                        Math.Round(Convert.ToDouble(olditem.Packages.Number_of_packages), 0).ToString();
 
-                pitm.Prev_decl_number_packages_written_off =
-                    Math.Round(Convert.ToDouble(olditem.Packages.Number_of_packages), 0).ToString();
-                pitm.Prev_decl_number_packages =
-                    Math.Round(Convert.ToDouble(olditem.Packages.Number_of_packages), 0).ToString();
 
+                    pitm.Prev_decl_number_packages =
+                        Math.Round(Convert.ToDouble(olditem.Packages.Number_of_packages), 0).ToString();
+                }
 
                 pitm.Prev_decl_supp_quantity = olditem.Tarification.Supplementary_unit[0]
                     .Suppplementary_unit_quantity.ToString();
@@ -2332,7 +2336,7 @@ namespace WaterNut.DataSpace
                     .Suppplementary_unit_quantity.ToString();
 
 
-                pitm.Prev_decl_country_origin = olditem.Goods_description.Country_of_origin_code;
+                pitm.Prev_decl_country_origin = olditem.Goods_description.Country_of_origin_code.Text.FirstOrDefault();
 
                 var oq = "";
 
@@ -2348,11 +2352,15 @@ namespace WaterNut.DataSpace
                 }
 
 
-                pitm.Prev_decl_ref_value_written_off =
-                    (Convert.ToDecimal(olditem.Valuation_item.Total_CIF_itm) / Convert.ToDecimal(oq)).ToString();
-                pitm.Prev_decl_ref_value =
-                    (Convert.ToDecimal(olditem.Valuation_item.Total_CIF_itm) / Convert.ToDecimal(oq))
-                    .ToString(); // * System.Convert.ToDecimal(fa.QUANTITY);
+                if (!string.IsNullOrEmpty(olditem.Valuation_item.Total_CIF_itm))
+                {
+                    pitm.Prev_decl_ref_value_written_off =
+                        (Convert.ToDecimal(olditem.Valuation_item.Total_CIF_itm) / Convert.ToDecimal(oq)).ToString();
+                    pitm.Prev_decl_ref_value =
+                        (Convert.ToDecimal(olditem.Valuation_item.Total_CIF_itm) / Convert.ToDecimal(oq))
+                        .ToString(); // * System.Convert.ToDecimal(fa.QUANTITY);
+                }
+
                 pitm.Prev_decl_reg_serial = "C";
                 pitm.Prev_decl_reg_number = olddoc.Identification.Registration.Number;
                 pitm.Prev_decl_reg_year = DateTime.Parse(olddoc.Identification.Registration.Date).Year.ToString();
@@ -2361,8 +2369,8 @@ namespace WaterNut.DataSpace
 
                 newdoc.Prev_decl.Add(pitm);
 
-
-                i.Valuation_item.Item_Invoice.Currency_code = exp.Gs_Invoice_Currency_code;
+                i.Valuation_item.Item_Invoice.Currency_code.Text.Clear();
+                i.Valuation_item.Item_Invoice.Currency_code.Text.Add(exp.Gs_Invoice_Currency_code); 
                 i.Valuation_item.Item_Invoice.Amount_foreign_currency = olditem.Valuation_item.Total_CIF_itm;
                 i.Valuation_item.Item_Invoice.Amount_national_currency = olditem.Valuation_item.Total_CIF_itm;
                 i.Valuation_item.Statistical_value = olditem.Valuation_item.Total_CIF_itm;
@@ -2378,13 +2386,13 @@ namespace WaterNut.DataSpace
 
             newdoc.Valuation.Gs_Invoice.Currency_code.Text.Add(exp.Gs_Invoice_Currency_code);
             newdoc.Valuation.Gs_Invoice.Amount_foreign_currency = Math
-                .Round(newdoc.Item.Sum(i => Convert.ToDouble(i.Valuation_item.Total_CIF_itm)), 2).ToString();
+                .Round(newdoc.Item.Where(i => !string.IsNullOrEmpty(i.Valuation_item.Total_CIF_itm)).Sum(i => Convert.ToDouble(i.Valuation_item.Total_CIF_itm)), 2).ToString();
             newdoc.Valuation.Gs_Invoice.Amount_national_currency = Math
-                .Round(newdoc.Item.Sum(i => Convert.ToDouble(i.Valuation_item.Total_CIF_itm)), 2).ToString();
+                .Round(newdoc.Item.Where(i => !string.IsNullOrEmpty(i.Valuation_item.Total_CIF_itm)).Sum(i => Convert.ToDouble(i.Valuation_item.Total_CIF_itm)), 2).ToString();
 
             var oldfile = new FileInfo(filename);
             newdoc.SaveToFile(Path.Combine(oldfile.DirectoryName,
-                oldfile.Name.Replace(oldfile.Extension, "") + "-Ex9" + zeroitems + oldfile.Extension));
+                olddoc.Identification.Registration.Number + "-Ex9" + zeroitems + oldfile.Extension));
         }
 
         public async Task ExportDocSet(int AsycudaDocumentSetId, string directoryName, bool overWrite)
@@ -2795,7 +2803,7 @@ namespace WaterNut.DataSpace
                     }).ConfigureAwait(false);
 
 
-                if (plst.Any() == false) return;
+                if (plst.Any() == false || da.Document.xcuda_Identification.xcuda_Type.DisplayName == "IM7") return; // im7s created from ex9 document can have previousitems... have to remove these
                 foreach (var itm in da.DocumentItems)
                 {
                     var pplst = plst.Where(x => x.Previous_item_number == itm.LineNumber.ToString() &&

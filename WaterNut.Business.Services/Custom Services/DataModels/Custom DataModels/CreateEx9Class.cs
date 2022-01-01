@@ -768,7 +768,7 @@ namespace WaterNut.DataSpace
                             pQuantity = x.pQuantity,
                             pRegistrationDate = x.pRegistrationDate,
                             pAssessmentDate = x.AssessmentDate,
-                            pExpiryDate = x.pExpiryDate,
+                            pExpiryDate = (DateTime)x.pExpiryDate.GetValueOrDefault(),
                             Country_of_origin_code = x.Country_of_origin_code,
                             Total_CIF_itm = x.Total_CIF_itm,
                             Net_weight_itm = x.Net_weight_itm,

@@ -146,6 +146,7 @@
     <Compile Include="Generated Client Entities\AdjustmentQS\TODO_PreDiscrepancyErrors.cs" />
     <Compile Include="Generated Client Entities\AdjustmentQS\xcuda_Item.cs" />
     <Compile Include="Generated Client Entities\AllocationQS\AdjustmentShortAllocation.cs" />
+    <Compile Include="Generated Client Entities\AllocationQS\AllocationsTestCas.cs" />
     <Compile Include="Generated Client Entities\AllocationQS\AsycudaSalesAllocationsEx.cs" />
     <Compile Include="Generated Client Entities\AllocationQS\AsycudaSalesAndAdjustmentAllocationsEx.cs" />
     <Compile Include="Generated Client Entities\CoreEntities\ActionDocSetLogs.cs" />
@@ -311,6 +312,7 @@
     <Compile Include="Generated Constructors Models\AdjustmentQS\TODO_PreDiscrepancyErrors.cs" />
     <Compile Include="Generated Constructors Models\AdjustmentQS\xcuda_Item.cs" />
     <Compile Include="Generated Constructors Models\AllocationQS\AdjustmentShortAllocation.cs" />
+    <Compile Include="Generated Constructors Models\AllocationQS\AllocationsTestCas.cs" />
     <Compile Include="Generated Constructors Models\AllocationQS\AsycudaSalesAllocationsEx.cs" />
     <Compile Include="Generated Constructors Models\AllocationQS\AsycudaSalesAndAdjustmentAllocationsEx.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\ActionDocSetLogs.cs" />
@@ -473,6 +475,7 @@
     <Compile Include="Generated IIdentitfiableEntity Models\AdjustmentQS\TODO_PreDiscrepancyErrors.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\AdjustmentQS\xcuda_Item.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\AllocationQS\AdjustmentShortAllocation.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\AllocationQS\AllocationsTestCas.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\AllocationQS\AsycudaSalesAllocationsEx.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\AllocationQS\AsycudaSalesAndAdjustmentAllocationsEx.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\ActionDocSetLogs.cs" />
@@ -639,6 +642,7 @@
     <Compile Include="Generated MyNavProp Models\AdjustmentQS\TODO_PreDiscrepancyErrors.cs" />
     <Compile Include="Generated MyNavProp Models\AdjustmentQS\xcuda_Item.cs" />
     <Compile Include="Generated MyNavProp Models\AllocationQS\AdjustmentShortAllocation.cs" />
+    <Compile Include="Generated MyNavProp Models\AllocationQS\AllocationsTestCas.cs" />
     <Compile Include="Generated MyNavProp Models\AllocationQS\AsycudaSalesAllocationsEx.cs" />
     <Compile Include="Generated MyNavProp Models\AllocationQS\AsycudaSalesAndAdjustmentAllocationsEx.cs" />
     <Compile Include="Generated MyNavProp Models\CoreEntities\ActionDocSetLogs.cs" />

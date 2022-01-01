@@ -53,6 +53,8 @@ namespace AllocationQS.Business.Entities
      
         public DbSet<AsycudaSalesAndAdjustmentAllocationsEx> AsycudaSalesAndAdjustmentAllocationsExes { get; set; }
      
+        public DbSet<AllocationsTestCas> AllocationsTestCases { get; set; }
+     
 
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
@@ -62,6 +64,8 @@ namespace AllocationQS.Business.Entities
             modelBuilder.Configurations.Add(new AdjustmentShortAllocationMap());
          
             modelBuilder.Configurations.Add(new AsycudaSalesAndAdjustmentAllocationsExMap());
+         
+            modelBuilder.Configurations.Add(new AllocationsTestCasMap());
          
 			OnModelCreatingExtentsion(modelBuilder);
 

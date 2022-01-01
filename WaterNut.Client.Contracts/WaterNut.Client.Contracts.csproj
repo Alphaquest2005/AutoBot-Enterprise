@@ -109,6 +109,7 @@
     <Compile Include="AdjustmentQS\ITODO_PreDiscrepancyErrorsService.cs" />
     <Compile Include="AdjustmentQS\Ixcuda_ItemService.cs" />
     <Compile Include="AllocationQS\IAdjustmentShortAllocationService.cs" />
+    <Compile Include="AllocationQS\IAllocationsTestCasService.cs" />
     <Compile Include="AllocationQS\IAsycudaSalesAllocationsExService.cs" />
     <Compile Include="AllocationQS\IAsycudaSalesAndAdjustmentAllocationsExService.cs" />
     <Compile Include="CoreEntities\IActionDocSetLogsService.cs" />
