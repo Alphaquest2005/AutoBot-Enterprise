@@ -5404,26 +5404,36 @@ namespace AutoBot
 
         private static void CreatePOEntries(int docSetId, List<int> entrylst)
         {
-            BaseDataModel.Instance.ClearAsycudaDocumentSet((int) docSetId).Wait();
-            BaseDataModel.Instance.UpdateAsycudaDocumentSetLastNumber(docSetId, 0);
-
-            var po = CurrentPOInfo(docSetId).FirstOrDefault();
-            var insts = Path.Combine(po.Item2, "InstructionResults.txt");
-            if(File.Exists(insts)) File.Delete(insts);
-
-            //BaseDataModel.Instance.AddToEntry(
-            //        docSetId.Entrylst.Where(x => x.IsClassified == true).Select(x => x.EntryDataDetailsId),
-            //        docSetId.DocSetId,
-            //        BaseDataModel.Instance.CurrentApplicationSettings.InvoicePerEntry ?? true).Wait();
-            //BaseDataModel.Instance.AddToEntry(
-            //        docSetId.Entrylst.Where(x => x.IsClassified == false).Select(x => x.EntryDataDetailsId),
-            //        docSetId.DocSetId,
-            //        BaseDataModel.Instance.CurrentApplicationSettings.InvoicePerEntry ?? true)
-            //    .Wait();
+            try
+            {
 
 
-            BaseDataModel.Instance.AddToEntry(entrylst,docSetId,
-                (BaseDataModel.Instance.CurrentApplicationSettings.InvoicePerEntry ?? true), true, false).Wait();
+                BaseDataModel.Instance.ClearAsycudaDocumentSet((int)docSetId).Wait();
+                BaseDataModel.Instance.UpdateAsycudaDocumentSetLastNumber(docSetId, 0);
+
+                var po = CurrentPOInfo(docSetId).FirstOrDefault();
+                var insts = Path.Combine(po.Item2, "InstructionResults.txt");
+                if (File.Exists(insts)) File.Delete(insts);
+
+                //BaseDataModel.Instance.AddToEntry(
+                //        docSetId.Entrylst.Where(x => x.IsClassified == true).Select(x => x.EntryDataDetailsId),
+                //        docSetId.DocSetId,
+                //        BaseDataModel.Instance.CurrentApplicationSettings.InvoicePerEntry ?? true).Wait();
+                //BaseDataModel.Instance.AddToEntry(
+                //        docSetId.Entrylst.Where(x => x.IsClassified == false).Select(x => x.EntryDataDetailsId),
+                //        docSetId.DocSetId,
+                //        BaseDataModel.Instance.CurrentApplicationSettings.InvoicePerEntry ?? true)
+                //    .Wait();
+
+
+                BaseDataModel.Instance.AddToEntry(entrylst, docSetId,
+                    (BaseDataModel.Instance.CurrentApplicationSettings.InvoicePerEntry ?? true), true, false).Wait();
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
         }
 
         public static void ExportPOEntries(int asycudaDocumentSetId)
