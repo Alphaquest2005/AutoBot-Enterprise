@@ -139,11 +139,16 @@ namespace AutoBot
                 {"ProcessUnknownCSVFileType", (ft,fs) => ProcessUnknownCSVFileType(ft, fs) },
                 {"ProcessUnknownPDFFileType", (ft,fs) => ProcessUnknownPDFFileType(ft, fs) },
                 {"ImportUnAttachedSummary", (ft,fs) => ImportUnAttachedSummary(ft, fs) },
-               
+
+                {"RemoveDuplicateEntries", RemoveDuplicateEntries },
+
 
             };
 
-     
+        private static void RemoveDuplicateEntries(FileTypes ft, FileInfo[] fs)
+        {
+            RemoveDuplicateEntries();
+        }
 
 
         public static Dictionary<string, Action> SessionActions =>
@@ -1477,6 +1482,11 @@ namespace AutoBot
 
                 throw e;
             }
+        }
+
+        private static void RemoveDuplicateEntries()
+        {
+
         }
 
         private static void RemoveDuplicateEntries()

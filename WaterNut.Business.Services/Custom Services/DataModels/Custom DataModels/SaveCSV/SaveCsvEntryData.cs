@@ -410,19 +410,7 @@ namespace WaterNut.DataSpace
         {
             try
             {
-               
-                //var instructionslst = eslst.Cast<List<IDictionary<string, object>>>().SelectMany(x => x.ToList())
-                //    .Where(x => x.ContainsKey("Instructions"))
-                //                            .Select(x =>x["Instructions"].ToString()).ToList();
-                //List<string> instructions = new List<string>();
-                //if (instructionslst.Any())
-                //{
-                //    instructions = instructionslst.SelectMany(x => x.Split(',')).Where(x => !string.IsNullOrEmpty(x)).ToList();
-                //}
-
-                //if (instructions.Contains("Append")) overWriteExisting = false;
-                //if (instructions.Contains("Replace")) overWriteExisting = true;
-
+              
                 if (docSet.Any(x =>
                     x.ApplicationSettingsId != BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId))
                     throw new ApplicationException("Doc Set not belonging to Current Company");
@@ -1220,10 +1208,7 @@ namespace WaterNut.DataSpace
                                     };
                                     foreach (var warehouseNo in item.f.Where(x => !string.IsNullOrEmpty(x.WarehouseNo)))
                                     {
-                                        //var poList = warehouseNo.WarehouseNo.Split(new string[] {"|", ","},
-                                        //    StringSplitOptions.RemoveEmptyEntries);
-                                        //foreach (var w in poList)
-                                        //{
+                                        
                                             EDpo.WarehouseInfo.Add(new WarehouseInfo()
                                             {
                                                 WarehouseNo = warehouseNo.WarehouseNo,
@@ -1231,7 +1216,7 @@ namespace WaterNut.DataSpace
                                                 EntryData_PurchaseOrders = EDpo,
                                                 TrackingState = TrackingState.Added
                                             });
-                                        //}
+                                        
                                     }
                                     if (!string.IsNullOrEmpty(item.EntryData.DocumentType))
                                         EDpo.DocumentType = new EDDocumentTypes(true)
