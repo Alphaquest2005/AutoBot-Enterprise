@@ -141,9 +141,44 @@ namespace AutoBot
                 {"ImportUnAttachedSummary", (ft,fs) => ImportUnAttachedSummary(ft, fs) },
 
                 {"RemoveDuplicateEntries", RemoveDuplicateEntries },
-
+                {"FixIncompleteEntries", FixIncompleteEntries },
+                {"EmailWarehouseErrors", EmailWarehouseErrors },
+                {"ImportExpiredEntires", ImportExpiredEntires },
+                {"ImportCancelledEntires", ImportCancelledEntires },
+                {"EmailEntriesExpiringNextMonth", EmailEntriesExpiringNextMonth },
+                {"RecreateEx9", RecreateEx9 },//
 
             };
+
+        private static void RecreateEx9(FileTypes arg1, FileInfo[] arg2)
+        {
+            CreateEx9(true);
+        }
+
+        private static void EmailEntriesExpiringNextMonth(FileTypes arg1, FileInfo[] arg2)
+        {
+            EmailEntriesExpiringNextMonth();
+        }
+
+        private static void ImportCancelledEntires(FileTypes arg1, FileInfo[] arg2)
+        {
+            ImportCancelledEntires();
+        }
+
+        private static void ImportExpiredEntires(FileTypes arg1, FileInfo[] arg2)
+        {
+            ImportExpiredEntires();
+        }
+
+        private static void EmailWarehouseErrors(FileTypes arg1, FileInfo[] arg2)
+        {
+            EmailWarehouseErrors();
+        }
+
+        private static void FixIncompleteEntries(FileTypes arg1, FileInfo[] arg2)
+        {
+            FixIncompleteEntries();
+        }
 
         private static void RemoveDuplicateEntries(FileTypes ft, FileInfo[] fs)
         {
@@ -1484,11 +1519,7 @@ namespace AutoBot
             }
         }
 
-        private static void RemoveDuplicateEntries()
-        {
-
-        }
-
+      
         private static void RemoveDuplicateEntries()
         {
             try
