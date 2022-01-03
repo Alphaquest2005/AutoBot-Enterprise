@@ -61,6 +61,8 @@ namespace AutoBot
 {
     public class Utils
     {
+        private static int maxRowsToFindHeader = 10;
+
         public class FileAction
         {
 
@@ -6539,16 +6541,16 @@ namespace AutoBot
                 var lastHeaderRow = dataRows[0].ItemArray.ToList();
                 int drow_no = 0;
                 List<object> headerRow;
-                while (drow_no < dataRows.Count)
+                var filetypes = BaseDataModel.FileTypes();
+                while (drow_no < dataRows.Take(maxRowsToFindHeader).ToList().Count)
                 {
                     headerRow = dataRows[drow_no].ItemArray.ToList();
-                    var filetypes = BaseDataModel.FileTypes();
+                    
                     foreach (var f in filetypes.Where(x => x.IsImportable != false && x.FileTypeMappings.Any()))
                     {
-                        if (f.FileTypeMappings.Any(x =>
-                                headerRow.IndexOf(x.OriginalName) > -1 &&
-                                !string.IsNullOrEmpty(
-                                    dataRows[drow_no][headerRow.IndexOf(x.OriginalName)].ToString())))
+                        if (headerRow
+                            .Any(x =>
+                                f.FileTypeMappings.Where(z => z.Required == true).Any(z => z.OriginalName == x.ToString())))
                         {
                             potentialsFileTypes.Add(f);
                             lastHeaderRow = headerRow;
