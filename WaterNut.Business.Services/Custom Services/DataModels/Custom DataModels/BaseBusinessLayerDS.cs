@@ -620,7 +620,7 @@ namespace WaterNut.DataSpace
                 (from s in await GetSelectedPODetails(entryDatalst.Distinct().ToList(), docSetId)
                         .ConfigureAwait(false)
                     select s).ToList();
-            ;
+            
             if (!IsValidEntryData(slstSource)) return;
 
             await CreateEntryItems(slstSource, docSet, perInvoice, true, false, combineEntryDataInSameFile,
@@ -1001,13 +1001,21 @@ namespace WaterNut.DataSpace
 
         public static void LinkPDFs(List<string> cNumbers, string docCode = "NA")
         {
-            using (var ctx = new CoreEntitiesContext())
+            try
             {
-                var res = new List<int>();
-                foreach (var entryId in cNumbers)
-                    res.Add(ctx.AsycudaDocuments.Where(x => x.CNumber == entryId).OrderByDescending(x => x.ASYCUDA_Id)
-                        .Select(x => x.ASYCUDA_Id).First());
-                LinkPDFs(res, docCode);
+                using (var ctx = new CoreEntitiesContext())
+                {
+                    var res = new List<int>();
+                    foreach (var entryId in cNumbers)
+                        res.Add(ctx.AsycudaDocuments.Where(x => x.CNumber == entryId).OrderByDescending(x => x.ASYCUDA_Id)
+                            .Select(x => x.ASYCUDA_Id).FirstOrDefault());
+                    LinkPDFs(res.Where(x => x != 0).ToList(), docCode);
+                }
+            }
+            catch (Exception)
+            {
+
+                throw;
             }
         }
 
@@ -1023,8 +1031,8 @@ namespace WaterNut.DataSpace
             {
                 foreach (var entryId in entries)
                 {
-                    var doc = ctx.AsycudaDocuments.First(x => x.ASYCUDA_Id == entryId);
-
+                    var doc = ctx.AsycudaDocuments.FirstOrDefault(x => x.ASYCUDA_Id == entryId);
+                    if (doc == null) continue;
                     var csvFiles = new DirectoryInfo(directoryName).GetFiles($"*-{doc.CNumber}*")
                         .Where(x => Regex.IsMatch(x.FullName,
                             @".*(?<=\\)([A-Z,0-9]{3}\-[A-Z]{5}\-)(?<pCNumber>\d+).*.pdf",
