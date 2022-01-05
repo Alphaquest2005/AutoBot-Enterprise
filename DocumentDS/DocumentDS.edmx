@@ -77,8 +77,8 @@
           </Key>
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="FilePath" Type="nvarchar" MaxLength="255" Nullable="false" />
-          <Property Name="DocumentCode" Type="nvarchar" MaxLength="50" Nullable="false" />
-          <Property Name="Reference" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="DocumentCode" Type="nvarchar" MaxLength="50" />
+          <Property Name="Reference" Type="nvarchar" MaxLength="255" />
           <Property Name="EmailId" Type="nvarchar" MaxLength="10" />
         </EntityType>
         <EntityType Name="Container">
@@ -2002,7 +2002,6 @@ FROM [dbo].[xcuda_ASYCUDAEx] AS [xcuda_ASYCUDAEx]</DefiningQuery>
           <EntitySet Name="xcuda_Gs_internal_freight" EntityType="WaterNutDBModel.xcuda_Gs_internal_freight" />
           <EntitySet Name="xcuda_Gs_Invoice" EntityType="WaterNutDBModel.xcuda_Gs_Invoice" />
           <EntitySet Name="xcuda_Gs_other_cost" EntityType="WaterNutDBModel.xcuda_Gs_other_cost" />
-          <EntitySet Name="xcuda_Identification" EntityType="WaterNutDBModel.xcuda_Identification" />
           <EntitySet Name="xcuda_Means_of_transport" EntityType="WaterNutDBModel.xcuda_Means_of_transport" />
           <EntitySet Name="xcuda_Nbers" EntityType="WaterNutDBModel.xcuda_Nbers" />
           <EntitySet Name="xcuda_Office_segment" EntityType="WaterNutDBModel.xcuda_Office_segment" />
@@ -2036,10 +2035,6 @@ FROM [dbo].[xcuda_ASYCUDAEx] AS [xcuda_ASYCUDAEx]</DefiningQuery>
             <End Role="Document_Type" EntitySet="Document_Type" />
             <End Role="Customs_Procedure" EntitySet="Customs_Procedure" />
           </AssociationSet>
-          <AssociationSet Name="FK_Identification_Assessment" Association="WaterNutDBModel.FK_Identification_Assessment">
-            <End Role="xcuda_Identification" EntitySet="xcuda_Identification" />
-            <End Role="xcuda_Assessment" EntitySet="xcuda_Assessment" />
-          </AssociationSet>
           <AssociationSet Name="FK_ASYCUDA_Assessment_notice" Association="WaterNutDBModel.FK_ASYCUDA_Assessment_notice">
             <End Role="xcuda_ASYCUDA" EntitySet="xcuda_ASYCUDA" />
             <End Role="xcuda_Assessment_notice" EntitySet="xcuda_Assessment_notice" />
@@ -2067,10 +2062,6 @@ FROM [dbo].[xcuda_ASYCUDAEx] AS [xcuda_ASYCUDAEx]</DefiningQuery>
           <AssociationSet Name="FK_ASYCUDA_Global_taxes" Association="WaterNutDBModel.FK_ASYCUDA_Global_taxes">
             <End Role="xcuda_ASYCUDA" EntitySet="xcuda_ASYCUDA" />
             <End Role="xcuda_Global_taxes" EntitySet="xcuda_Global_taxes" />
-          </AssociationSet>
-          <AssociationSet Name="FK_ASYCUDA_Identification" Association="WaterNutDBModel.FK_ASYCUDA_Identification">
-            <End Role="xcuda_ASYCUDA" EntitySet="xcuda_ASYCUDA" />
-            <End Role="xcuda_Identification" EntitySet="xcuda_Identification" />
           </AssociationSet>
           <AssociationSet Name="FK_ASYCUDA_Property" Association="WaterNutDBModel.FK_ASYCUDA_Property">
             <End Role="xcuda_ASYCUDA" EntitySet="xcuda_ASYCUDA" />
@@ -2163,22 +2154,6 @@ FROM [dbo].[xcuda_ASYCUDAEx] AS [xcuda_ASYCUDAEx]</DefiningQuery>
           <AssociationSet Name="FK_xcuda_Gs_other_cost_xcuda_Valuation" Association="WaterNutDBModel.FK_xcuda_Gs_other_cost_xcuda_Valuation">
             <End Role="xcuda_Valuation" EntitySet="xcuda_Valuation" />
             <End Role="xcuda_Gs_other_cost" EntitySet="xcuda_Gs_other_cost" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Identification_Office_segment" Association="WaterNutDBModel.FK_Identification_Office_segment">
-            <End Role="xcuda_Identification" EntitySet="xcuda_Identification" />
-            <End Role="xcuda_Office_segment" EntitySet="xcuda_Office_segment" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Identification_receipt" Association="WaterNutDBModel.FK_Identification_receipt">
-            <End Role="xcuda_Identification" EntitySet="xcuda_Identification" />
-            <End Role="xcuda_receipt" EntitySet="xcuda_receipt" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Identification_Registration" Association="WaterNutDBModel.FK_Identification_Registration">
-            <End Role="xcuda_Identification" EntitySet="xcuda_Identification" />
-            <End Role="xcuda_Registration" EntitySet="xcuda_Registration" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Identification_Type" Association="WaterNutDBModel.FK_Identification_Type">
-            <End Role="xcuda_Identification" EntitySet="xcuda_Identification" />
-            <End Role="xcuda_Type" EntitySet="xcuda_Type" />
           </AssociationSet>
           <AssociationSet Name="FK_Transport_Means_of_transport" Association="WaterNutDBModel.FK_Transport_Means_of_transport">
             <End Role="xcuda_Transport" EntitySet="xcuda_Transport" />
@@ -2311,6 +2286,31 @@ FROM [dbo].[xcuda_ASYCUDAEx] AS [xcuda_ASYCUDAEx]</DefiningQuery>
           <AssociationSet Name="FK_Customs_Procedure_CustomsOperations" Association="WaterNutDBModel.FK_Customs_Procedure_CustomsOperations">
             <End Role="CustomsOperation" EntitySet="CustomsOperations" />
             <End Role="Customs_Procedure" EntitySet="Customs_Procedure" />
+          </AssociationSet>
+          <EntitySet Name="xcuda_Identification" EntityType="WaterNutDBModel.xcuda_Identification" />
+          <AssociationSet Name="FK_Identification_Assessment" Association="WaterNutDBModel.FK_Identification_Assessment">
+            <End Role="xcuda_Identification" EntitySet="xcuda_Identification" />
+            <End Role="xcuda_Assessment" EntitySet="xcuda_Assessment" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ASYCUDA_Identification" Association="WaterNutDBModel.FK_ASYCUDA_Identification">
+            <End Role="xcuda_ASYCUDA" EntitySet="xcuda_ASYCUDA" />
+            <End Role="xcuda_Identification" EntitySet="xcuda_Identification" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Identification_Office_segment" Association="WaterNutDBModel.FK_Identification_Office_segment">
+            <End Role="xcuda_Identification" EntitySet="xcuda_Identification" />
+            <End Role="xcuda_Office_segment" EntitySet="xcuda_Office_segment" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Identification_receipt" Association="WaterNutDBModel.FK_Identification_receipt">
+            <End Role="xcuda_Identification" EntitySet="xcuda_Identification" />
+            <End Role="xcuda_receipt" EntitySet="xcuda_receipt" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Identification_Registration" Association="WaterNutDBModel.FK_Identification_Registration">
+            <End Role="xcuda_Identification" EntitySet="xcuda_Identification" />
+            <End Role="xcuda_Registration" EntitySet="xcuda_Registration" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Identification_Type" Association="WaterNutDBModel.FK_Identification_Type">
+            <End Role="xcuda_Identification" EntitySet="xcuda_Identification" />
+            <End Role="xcuda_Type" EntitySet="xcuda_Type" />
           </AssociationSet>
         </EntityContainer>
         <EntityType Name="AsycudaDocumentSet">
@@ -2452,7 +2452,6 @@ FROM [dbo].[xcuda_ASYCUDAEx] AS [xcuda_ASYCUDAEx]</DefiningQuery>
           <NavigationProperty Name="xcuda_Financial" Relationship="WaterNutDBModel.FK_ASYCUDA_Financial" FromRole="xcuda_ASYCUDA" ToRole="xcuda_Financial" />
           <NavigationProperty Name="xcuda_General_information" Relationship="WaterNutDBModel.FK_ASYCUDA_General_information" FromRole="xcuda_ASYCUDA" ToRole="xcuda_General_information" />
           <NavigationProperty Name="xcuda_Global_taxes" Relationship="WaterNutDBModel.FK_ASYCUDA_Global_taxes" FromRole="xcuda_ASYCUDA" ToRole="xcuda_Global_taxes" />
-          <NavigationProperty Name="xcuda_Identification" Relationship="WaterNutDBModel.FK_ASYCUDA_Identification" FromRole="xcuda_ASYCUDA" ToRole="xcuda_Identification" />
           <NavigationProperty Name="xcuda_Property" Relationship="WaterNutDBModel.FK_ASYCUDA_Property" FromRole="xcuda_ASYCUDA" ToRole="xcuda_Property" />
           <NavigationProperty Name="xcuda_Suppliers_documents" Relationship="WaterNutDBModel.FK_ASYCUDA_Suppliers_documents" FromRole="xcuda_ASYCUDA" ToRole="xcuda_Suppliers_documents" />
           <NavigationProperty Name="xcuda_Transit" Relationship="WaterNutDBModel.FK_ASYCUDA_Transit" FromRole="xcuda_ASYCUDA" ToRole="xcuda_Transit" />
@@ -2464,7 +2463,9 @@ FROM [dbo].[xcuda_ASYCUDAEx] AS [xcuda_ASYCUDAEx]</DefiningQuery>
           <NavigationProperty Name="AsycudaDocumentEntryDatas" Relationship="WaterNutDBModel.FK_AsycudaDocumentEntryData_xcuda_ASYCUDA" FromRole="xcuda_ASYCUDA" ToRole="AsycudaDocumentEntryData" />
           <NavigationProperty Name="AsycudaDocument_Attachments" Relationship="WaterNutDBModel.FK_AsycudaDocument_Attachments_xcuda_ASYCUDA" FromRole="xcuda_ASYCUDA" ToRole="AsycudaDocument_Attachments" />
           <NavigationProperty Name="xcuda_ASYCUDA_ExtendedProperties" Relationship="WaterNutDBModel.FK_xcuda_ExtendedProperty_inherits_xcuda_ASYCUDA" FromRole="xcuda_ASYCUDA" ToRole="xcuda_ASYCUDA_ExtendedProperties" />
-          <Property Name="UpgradeKey" Type="Int32" /><a:DomainInterfaceProperty xmlns:a="http://schemas.tempuri.com/DomainInterfaceProperty">IDocument</a:DomainInterfaceProperty>
+          <Property Name="UpgradeKey" Type="Int32" />
+          <NavigationProperty Name="xcuda_Identification" Relationship="WaterNutDBModel.FK_ASYCUDA_Identification" FromRole="xcuda_ASYCUDA" ToRole="xcuda_Identification" />
+          <a:DomainInterfaceProperty xmlns:a="http://schemas.tempuri.com/DomainInterfaceProperty">IDocument</a:DomainInterfaceProperty>
         </EntityType>
         <EntityType Name="xcuda_Border_information">
           <Key>
@@ -2731,19 +2732,6 @@ FROM [dbo].[xcuda_ASYCUDAEx] AS [xcuda_ASYCUDAEx]</DefiningQuery>
           <NavigationProperty Name="xcuda_Valuation" Relationship="WaterNutDBModel.FK_xcuda_Gs_other_cost_xcuda_Valuation" FromRole="xcuda_Gs_other_cost" ToRole="xcuda_Valuation" />
           <Property Name="Currency_code" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
         </EntityType>
-        <EntityType Name="xcuda_Identification">
-          <Key>
-            <PropertyRef Name="ASYCUDA_Id" />
-          </Key>
-          <Property Name="ASYCUDA_Id" Type="Int32" Nullable="false" />
-          <Property Name="Manifest_reference_number" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="xcuda_Assessment" Relationship="WaterNutDBModel.FK_Identification_Assessment" FromRole="xcuda_Identification" ToRole="xcuda_Assessment" />
-          <NavigationProperty Name="xcuda_ASYCUDA" Relationship="WaterNutDBModel.FK_ASYCUDA_Identification" FromRole="xcuda_Identification" ToRole="xcuda_ASYCUDA" />
-          <NavigationProperty Name="xcuda_Office_segment" Relationship="WaterNutDBModel.FK_Identification_Office_segment" FromRole="xcuda_Identification" ToRole="xcuda_Office_segment" />
-          <NavigationProperty Name="xcuda_receipt" Relationship="WaterNutDBModel.FK_Identification_receipt" FromRole="xcuda_Identification" ToRole="xcuda_receipt" />
-          <NavigationProperty Name="xcuda_Registration" Relationship="WaterNutDBModel.FK_Identification_Registration" FromRole="xcuda_Identification" ToRole="xcuda_Registration" />
-          <NavigationProperty Name="xcuda_Type" Relationship="WaterNutDBModel.FK_Identification_Type" FromRole="xcuda_Identification" ToRole="xcuda_Type" />
-        </EntityType>
         <EntityType Name="xcuda_Means_of_transport">
           <Key>
             <PropertyRef Name="Means_of_transport_Id" />
@@ -3007,20 +2995,6 @@ FROM [dbo].[xcuda_ASYCUDAEx] AS [xcuda_ASYCUDAEx]</DefiningQuery>
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_Identification_Assessment">
-          <End Type="WaterNutDBModel.xcuda_Identification" Role="xcuda_Identification" Multiplicity="1">
-            <OnDelete Action="Cascade" />
-          </End>
-          <End Type="WaterNutDBModel.xcuda_Assessment" Role="xcuda_Assessment" Multiplicity="0..1" />
-          <ReferentialConstraint>
-            <Principal Role="xcuda_Identification">
-              <PropertyRef Name="ASYCUDA_Id" />
-            </Principal>
-            <Dependent Role="xcuda_Assessment">
-              <PropertyRef Name="ASYCUDA_Id" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK_ASYCUDA_Assessment_notice">
           <End Type="WaterNutDBModel.xcuda_ASYCUDA" Role="xcuda_ASYCUDA" Multiplicity="0..1">
             <OnDelete Action="Cascade" />
@@ -3115,20 +3089,6 @@ FROM [dbo].[xcuda_ASYCUDAEx] AS [xcuda_ASYCUDAEx]</DefiningQuery>
               <PropertyRef Name="ASYCUDA_Id" />
             </Principal>
             <Dependent Role="xcuda_Global_taxes">
-              <PropertyRef Name="ASYCUDA_Id" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_ASYCUDA_Identification">
-          <End Type="WaterNutDBModel.xcuda_ASYCUDA" Role="xcuda_ASYCUDA" Multiplicity="1">
-            <OnDelete Action="Cascade" />
-          </End>
-          <End Type="WaterNutDBModel.xcuda_Identification" Role="xcuda_Identification" Multiplicity="0..1" />
-          <ReferentialConstraint>
-            <Principal Role="xcuda_ASYCUDA">
-              <PropertyRef Name="ASYCUDA_Id" />
-            </Principal>
-            <Dependent Role="xcuda_Identification">
               <PropertyRef Name="ASYCUDA_Id" />
             </Dependent>
           </ReferentialConstraint>
@@ -3452,62 +3412,6 @@ FROM [dbo].[xcuda_ASYCUDAEx] AS [xcuda_ASYCUDAEx]</DefiningQuery>
             </Principal>
             <Dependent Role="xcuda_Gs_other_cost">
               <PropertyRef Name="Valuation_Id" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_Identification_Office_segment">
-          <End Type="WaterNutDBModel.xcuda_Identification" Role="xcuda_Identification" Multiplicity="1">
-            <OnDelete Action="Cascade" />
-          </End>
-          <End Type="WaterNutDBModel.xcuda_Office_segment" Role="xcuda_Office_segment" Multiplicity="0..1" />
-          <ReferentialConstraint>
-            <Principal Role="xcuda_Identification">
-              <PropertyRef Name="ASYCUDA_Id" />
-            </Principal>
-            <Dependent Role="xcuda_Office_segment">
-              <PropertyRef Name="ASYCUDA_Id" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_Identification_receipt">
-          <End Type="WaterNutDBModel.xcuda_Identification" Role="xcuda_Identification" Multiplicity="1">
-            <OnDelete Action="Cascade" />
-          </End>
-          <End Type="WaterNutDBModel.xcuda_receipt" Role="xcuda_receipt" Multiplicity="0..1" />
-          <ReferentialConstraint>
-            <Principal Role="xcuda_Identification">
-              <PropertyRef Name="ASYCUDA_Id" />
-            </Principal>
-            <Dependent Role="xcuda_receipt">
-              <PropertyRef Name="ASYCUDA_Id" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_Identification_Registration">
-          <End Type="WaterNutDBModel.xcuda_Identification" Role="xcuda_Identification" Multiplicity="1">
-            <OnDelete Action="Cascade" />
-          </End>
-          <End Type="WaterNutDBModel.xcuda_Registration" Role="xcuda_Registration" Multiplicity="0..1" />
-          <ReferentialConstraint>
-            <Principal Role="xcuda_Identification">
-              <PropertyRef Name="ASYCUDA_Id" />
-            </Principal>
-            <Dependent Role="xcuda_Registration">
-              <PropertyRef Name="ASYCUDA_Id" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_Identification_Type">
-          <End Type="WaterNutDBModel.xcuda_Identification" Role="xcuda_Identification" Multiplicity="1">
-            <OnDelete Action="Cascade" />
-          </End>
-          <End Type="WaterNutDBModel.xcuda_Type" Role="xcuda_Type" Multiplicity="0..1" />
-          <ReferentialConstraint>
-            <Principal Role="xcuda_Identification">
-              <PropertyRef Name="ASYCUDA_Id" />
-            </Principal>
-            <Dependent Role="xcuda_Type">
-              <PropertyRef Name="ASYCUDA_Id" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -3863,8 +3767,8 @@ FROM [dbo].[xcuda_ASYCUDAEx] AS [xcuda_ASYCUDAEx]</DefiningQuery>
           <Property Name="FilePath" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="AsycudaDocument_Attachments" Relationship="WaterNutDBModel.FK_AsycudaDocument_Attachments_Attachments" FromRole="Attachment" ToRole="AsycudaDocument_Attachments" />
           <NavigationProperty Name="AsycudaDocumentSet_Attachments" Relationship="WaterNutDBModel.FK_AsycudaDocumentSet_Attachments_Attachments" FromRole="Attachment" ToRole="AsycudaDocumentSet_Attachments" />
-          <Property Name="DocumentCode" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="Reference" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="DocumentCode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Reference" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="EmailId" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
         </EntityType>
         <Association Name="FK_AsycudaDocument_Attachments_Attachments">
@@ -4075,6 +3979,103 @@ FROM [dbo].[xcuda_ASYCUDAEx] AS [xcuda_ASYCUDAEx]</DefiningQuery>
             </Principal>
             <Dependent Role="Customs_Procedure">
               <PropertyRef Name="CustomsOperationId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="xcuda_Identification">
+          <Key>
+            <PropertyRef Name="ASYCUDA_Id" />
+          </Key>
+          <Property Name="ASYCUDA_Id" Type="Int32" Nullable="false" />
+          <Property Name="Manifest_reference_number" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="xcuda_Assessment" Relationship="WaterNutDBModel.FK_Identification_Assessment" FromRole="xcuda_Identification" ToRole="xcuda_Assessment" />
+          <NavigationProperty Name="xcuda_ASYCUDA" Relationship="WaterNutDBModel.FK_ASYCUDA_Identification" FromRole="xcuda_Identification" ToRole="xcuda_ASYCUDA" />
+          <NavigationProperty Name="xcuda_Office_segment" Relationship="WaterNutDBModel.FK_Identification_Office_segment" FromRole="xcuda_Identification" ToRole="xcuda_Office_segment" />
+          <NavigationProperty Name="xcuda_receipt" Relationship="WaterNutDBModel.FK_Identification_receipt" FromRole="xcuda_Identification" ToRole="xcuda_receipt" />
+          <NavigationProperty Name="xcuda_Registration" Relationship="WaterNutDBModel.FK_Identification_Registration" FromRole="xcuda_Identification" ToRole="xcuda_Registration" />
+          <NavigationProperty Name="xcuda_Type" Relationship="WaterNutDBModel.FK_Identification_Type" FromRole="xcuda_Identification" ToRole="xcuda_Type" />
+        </EntityType>
+        <Association Name="FK_Identification_Assessment">
+          <End Type="WaterNutDBModel.xcuda_Identification" Role="xcuda_Identification" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="WaterNutDBModel.xcuda_Assessment" Role="xcuda_Assessment" Multiplicity="1" />
+          <ReferentialConstraint>
+            <Principal Role="xcuda_Identification">
+              <PropertyRef Name="ASYCUDA_Id" />
+            </Principal>
+            <Dependent Role="xcuda_Assessment">
+              <PropertyRef Name="ASYCUDA_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ASYCUDA_Identification">
+          <End Type="WaterNutDBModel.xcuda_ASYCUDA" Role="xcuda_ASYCUDA" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="WaterNutDBModel.xcuda_Identification" Role="xcuda_Identification" Multiplicity="1" />
+          <ReferentialConstraint>
+            <Principal Role="xcuda_ASYCUDA">
+              <PropertyRef Name="ASYCUDA_Id" />
+            </Principal>
+            <Dependent Role="xcuda_Identification">
+              <PropertyRef Name="ASYCUDA_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Identification_Office_segment">
+          <End Type="WaterNutDBModel.xcuda_Identification" Role="xcuda_Identification" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="WaterNutDBModel.xcuda_Office_segment" Role="xcuda_Office_segment" Multiplicity="1" />
+          <ReferentialConstraint>
+            <Principal Role="xcuda_Identification">
+              <PropertyRef Name="ASYCUDA_Id" />
+            </Principal>
+            <Dependent Role="xcuda_Office_segment">
+              <PropertyRef Name="ASYCUDA_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Identification_receipt">
+          <End Type="WaterNutDBModel.xcuda_Identification" Role="xcuda_Identification" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="WaterNutDBModel.xcuda_receipt" Role="xcuda_receipt" Multiplicity="1" />
+          <ReferentialConstraint>
+            <Principal Role="xcuda_Identification">
+              <PropertyRef Name="ASYCUDA_Id" />
+            </Principal>
+            <Dependent Role="xcuda_receipt">
+              <PropertyRef Name="ASYCUDA_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Identification_Registration">
+          <End Type="WaterNutDBModel.xcuda_Identification" Role="xcuda_Identification" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="WaterNutDBModel.xcuda_Registration" Role="xcuda_Registration" Multiplicity="1" />
+          <ReferentialConstraint>
+            <Principal Role="xcuda_Identification">
+              <PropertyRef Name="ASYCUDA_Id" />
+            </Principal>
+            <Dependent Role="xcuda_Registration">
+              <PropertyRef Name="ASYCUDA_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Identification_Type">
+          <End Type="WaterNutDBModel.xcuda_Identification" Role="xcuda_Identification" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="WaterNutDBModel.xcuda_Type" Role="xcuda_Type" Multiplicity="1" />
+          <ReferentialConstraint>
+            <Principal Role="xcuda_Identification">
+              <PropertyRef Name="ASYCUDA_Id" />
+            </Principal>
+            <Dependent Role="xcuda_Type">
+              <PropertyRef Name="ASYCUDA_Id" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -4467,14 +4468,6 @@ FROM [dbo].[xcuda_ASYCUDAEx] AS [xcuda_ASYCUDAEx]</DefiningQuery>
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="xcuda_Identification">
-            <EntityTypeMapping TypeName="WaterNutDBModel.xcuda_Identification">
-              <MappingFragment StoreEntitySet="xcuda_Identification">
-                <ScalarProperty Name="Manifest_reference_number" ColumnName="Manifest_reference_number" />
-                <ScalarProperty Name="ASYCUDA_Id" ColumnName="ASYCUDA_Id" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="xcuda_Means_of_transport">
             <EntityTypeMapping TypeName="WaterNutDBModel.xcuda_Means_of_transport">
               <MappingFragment StoreEntitySet="xcuda_Means_of_transport">
@@ -4829,6 +4822,14 @@ FROM [dbo].[xcuda_ASYCUDAEx] AS [xcuda_ASYCUDAEx]</DefiningQuery>
               <MappingFragment StoreEntitySet="CustomsOperations">
                 <ScalarProperty Name="Name" ColumnName="Name" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="xcuda_Identification">
+            <EntityTypeMapping TypeName="WaterNutDBModel.xcuda_Identification">
+              <MappingFragment StoreEntitySet="xcuda_Identification">
+                <ScalarProperty Name="Manifest_reference_number" ColumnName="Manifest_reference_number" />
+                <ScalarProperty Name="ASYCUDA_Id" ColumnName="ASYCUDA_Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

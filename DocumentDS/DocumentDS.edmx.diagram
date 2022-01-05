@@ -36,7 +36,6 @@
         <EntityTypeShape EntityType="WaterNutDBModel.xcuda_Gs_internal_freight" Width="1.5" PointX="5.25" PointY="38.5" />
         <EntityTypeShape EntityType="WaterNutDBModel.xcuda_Gs_Invoice" Width="1.5" PointX="2.75" PointY="0.75" />
         <EntityTypeShape EntityType="WaterNutDBModel.xcuda_Gs_other_cost" Width="1.5" PointX="5.25" PointY="32.625" />
-        <EntityTypeShape EntityType="WaterNutDBModel.xcuda_Identification" Width="1.5" PointX="3" PointY="13.75" />
         <EntityTypeShape EntityType="WaterNutDBModel.xcuda_Means_of_transport" Width="1.5" PointX="5.25" PointY="80.75" />
         <EntityTypeShape EntityType="WaterNutDBModel.xcuda_Nbers" Width="1.5" PointX="5.25" PointY="95.5" />
         <EntityTypeShape EntityType="WaterNutDBModel.xcuda_Office_segment" Width="1.5" PointX="5.25" PointY="14.125" />
@@ -61,7 +60,6 @@
         <AssociationConnector Association="WaterNutDBModel.FK_AsycudaDocumentSet_Customs_Procedure" />
         <AssociationConnector Association="WaterNutDBModel.FK_AsycudaDocumentSet_Document_Type" />
         <AssociationConnector Association="WaterNutDBModel.FK_Customs_Procedure_Document_Type" />
-        <AssociationConnector Association="WaterNutDBModel.FK_Identification_Assessment" />
         <AssociationConnector Association="WaterNutDBModel.FK_ASYCUDA_Assessment_notice" />
         <AssociationConnector Association="WaterNutDBModel.FK_ASYCUDA_Container" />
         <AssociationConnector Association="WaterNutDBModel.FK_ASYCUDA_Declarant" />
@@ -69,7 +67,6 @@
         <AssociationConnector Association="WaterNutDBModel.FK_ASYCUDA_Financial" />
         <AssociationConnector Association="WaterNutDBModel.FK_ASYCUDA_General_information" />
         <AssociationConnector Association="WaterNutDBModel.FK_ASYCUDA_Global_taxes" />
-        <AssociationConnector Association="WaterNutDBModel.FK_ASYCUDA_Identification" />
         <AssociationConnector Association="WaterNutDBModel.FK_ASYCUDA_Property" />
         <AssociationConnector Association="WaterNutDBModel.FK_ASYCUDA_Suppliers_documents" />
         <AssociationConnector Association="WaterNutDBModel.FK_ASYCUDA_Transit" />
@@ -93,10 +90,6 @@
         <AssociationConnector Association="WaterNutDBModel.FK_xcuda_Gs_insurance_xcuda_Valuation" />
         <AssociationConnector Association="WaterNutDBModel.FK_xcuda_Gs_internal_freight_xcuda_Valuation" />
         <AssociationConnector Association="WaterNutDBModel.FK_xcuda_Gs_other_cost_xcuda_Valuation" />
-        <AssociationConnector Association="WaterNutDBModel.FK_Identification_Office_segment" />
-        <AssociationConnector Association="WaterNutDBModel.FK_Identification_receipt" />
-        <AssociationConnector Association="WaterNutDBModel.FK_Identification_Registration" />
-        <AssociationConnector Association="WaterNutDBModel.FK_Identification_Type" />
         <AssociationConnector Association="WaterNutDBModel.FK_Transport_Means_of_transport" />
         <AssociationConnector Association="WaterNutDBModel.FK_Property_Nbers" />
         <AssociationConnector Association="WaterNutDBModel.FK_Transport_Place_of_loading" />
@@ -139,6 +132,13 @@
         <AssociationConnector Association="WaterNutDBModel.FK_xcuda_ExtendedProperty_inherits_xcuda_ASYCUDA" />
         <EntityTypeShape EntityType="WaterNutDBModel.CustomsOperation" Width="2" PointX="7.875" PointY="73.25" />
         <AssociationConnector Association="WaterNutDBModel.FK_Customs_Procedure_CustomsOperations" />
+        <EntityTypeShape EntityType="WaterNutDBModel.xcuda_Identification" Width="1.5" PointX="3.625" PointY="114" />
+        <AssociationConnector Association="WaterNutDBModel.FK_Identification_Assessment" />
+        <AssociationConnector Association="WaterNutDBModel.FK_ASYCUDA_Identification" />
+        <AssociationConnector Association="WaterNutDBModel.FK_Identification_Office_segment" />
+        <AssociationConnector Association="WaterNutDBModel.FK_Identification_receipt" />
+        <AssociationConnector Association="WaterNutDBModel.FK_Identification_Registration" />
+        <AssociationConnector Association="WaterNutDBModel.FK_Identification_Type" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

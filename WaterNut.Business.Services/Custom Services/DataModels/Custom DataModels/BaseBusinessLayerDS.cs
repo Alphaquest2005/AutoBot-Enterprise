@@ -2791,7 +2791,7 @@ namespace WaterNut.DataSpace
             }
         }
 
-        public async Task LinkExistingPreviousItems(xcuda_ASYCUDA da, List<xcuda_Item> documentItems)
+        public async Task LinkExistingPreviousItems(xcuda_ASYCUDA da, List<xcuda_Item> documentItems, bool update)
         {
             //get all previous items for this document
             try
@@ -2805,7 +2805,7 @@ namespace WaterNut.DataSpace
                     }).ConfigureAwait(false);
 
 
-                if (plst.Any() == false || da.xcuda_Identification.xcuda_Type.DisplayName == "IM7") return; // im7s created from ex9 document can have previousitems... have to remove these
+                if (plst.Any() == false ) return; // || da.xcuda_Identification.xcuda_Type.DisplayName == "IM7"// im7s created from ex9 document can have previousitems... have to remove these
                 foreach (var itm in documentItems)
                 {
                     var pplst = plst.Where(x => x.Previous_item_number == itm.LineNumber.ToString() &&
@@ -2816,10 +2816,19 @@ namespace WaterNut.DataSpace
                         var ep = new global::DocumentItemDS.Business.Entities.EntryPreviousItems(true)
                         {
                             Item_Id = itm.Item_Id,
+                            xcuda_Item = itm,
                             PreviousItem_Id = p.PreviousItem_Id,
+                            xcuda_PreviousItem = p,
                             TrackingState = TrackingState.Added
                         };
                         itm.xcuda_PreviousItems.Add(ep);
+                        if (!update) continue;
+                        using (var ctx = new DocumentItemDSContext())
+                        {
+                            await ctx.Database.ExecuteSqlCommandAsync($@"INSERT INTO EntryPreviousItems
+                                                                                (PreviousItem_Id, Item_Id)
+                                                                                VALUES ({ep.PreviousItem_Id}, {ep.Item_Id})").ConfigureAwait(false);
+                        }
                     }
                 }
             }

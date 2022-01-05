@@ -57,6 +57,8 @@ using CustomsOperations = CoreEntities.Business.Enums.CustomsOperations;
 using EntryDataDetails = EntryDataDS.Business.Entities.EntryDataDetails;
 using FileTypes = CoreEntities.Business.Entities.FileTypes;
 using InventoryItemAlias = EntryDataDS.Business.Entities.InventoryItemAlias;
+using xBondAllocations = AllocationDS.Business.Entities.xBondAllocations;
+using xcuda_Tarification = DocumentItemDS.Business.Entities.xcuda_Tarification;
 
 namespace AutoBot
 {
@@ -274,39 +276,78 @@ namespace AutoBot
 
         private static void relinkAllPreviousItems()
         {
-            Console.WriteLine("ReLink All Previous Items");
-            List<xcuda_ASYCUDA> docLst;
-            using (var ctx = new DocumentDSContext())
+            try
             {
-                docLst = ctx.xcuda_ASYCUDA
-                    .Include(x => x.xcuda_Identification.xcuda_Registration)
-                    .Include(x => x.xcuda_Identification.xcuda_Type)
-                    .Where(x => x.xcuda_ASYCUDA_ExtendedProperties.Customs_Procedure.Document_Type.Declaration_gen_procedure_code == "7")
-                    .ToList();
-            }
 
-            using (var ctx = new DocumentItemDSContext())
-            {
-                foreach (var doc in docLst)
+                Console.WriteLine("ReLink All Previous Items");
+
+                //////// all what i fucking try aint work just can't load the navigation properties fucking ef shit
+                List<xcuda_ASYCUDA> docLst;
+                List<xcuda_Identification> idlst;
+                using (var ctx = new DocumentDSContext() { StartTracking = true })
                 {
-                    ctx.Database.ExecuteSqlCommand($@"DELETE FROM EntryPreviousItems
+
+
+                    idlst = ctx.xcuda_Identification
+                        .Include(x => x.xcuda_Registration)
+                        .Include(x => x.xcuda_Type)
+                        .Where(x => x.xcuda_ASYCUDA.xcuda_ASYCUDA_ExtendedProperties.Customs_Procedure.Document_Type
+                            .Declaration_gen_procedure_code == "7")
+                        .ToList();
+                }
+
+                using (var ctx = new DocumentDSContext() { StartTracking = true })
+                    {
+                        docLst = ctx.xcuda_ASYCUDA
+                        //.Include(x => x.xcuda_Identification.xcuda_Registration)
+                        //.Include(x => x.xcuda_Identification.xcuda_Type)
+                        .Where(x => x.xcuda_ASYCUDA_ExtendedProperties.Customs_Procedure.Document_Type
+                            .Declaration_gen_procedure_code == "7")
+                        .ToList();
+                }
+                List<xcuda_Tarification> itmCodes;
+                using (var ctx = new DocumentItemDSContext(){StartTracking = true})
+                {
+                    
+                    itmCodes = ctx.xcuda_Tarification
+                        .Include(x => x.xcuda_HScode)
+                        .ToList();
+                }
+
+                using (var ctx = new DocumentItemDSContext() { StartTracking = true })
+                {
+                    foreach (var doc in docLst)
+                    {
+                        ctx.Database.ExecuteSqlCommand($@"DELETE FROM EntryPreviousItems
                     FROM    EntryPreviousItems INNER JOIN
                     xcuda_Item ON EntryPreviousItems.Item_Id = xcuda_Item.Item_Id
                     WHERE(xcuda_Item.ASYCUDA_Id = {doc.ASYCUDA_Id})");
 
-                    var itms = ctx.xcuda_Item
-                        .Where(x => x.ASYCUDA_Id == doc.ASYCUDA_Id)
-                        .ToList();
+                        var itms = ctx.xcuda_Item
+                            //.Include(x => x.xcuda_Tarification.xcuda_HScode)
+                            .Where(x => x.ASYCUDA_Id == doc.ASYCUDA_Id)
+                            .ToList();
 
-                     BaseDataModel.Instance.LinkExistingPreviousItems(doc, itms).RunSynchronously();
+                        doc.xcuda_Identification = idlst.First(x => x.ASYCUDA_Id == doc.ASYCUDA_Id);
+                        foreach (var itm in itms)
+                        {
+                            itm.xcuda_Tarification = itmCodes.First(x => x.Item_Id == itm.Item_Id);
 
+                        }
 
+                        BaseDataModel.Instance.LinkExistingPreviousItems(doc, itms, true).Wait();
 
+                       
+
+                        
+                    }
                 }
             }
-
-
-
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
         }
 
         private static void ImportAllFilesInDataFolder()

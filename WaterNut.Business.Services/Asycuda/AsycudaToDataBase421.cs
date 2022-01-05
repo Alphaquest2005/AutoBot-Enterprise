@@ -122,7 +122,7 @@ namespace WaterNut.DataSpace.Asycuda
                     return;
                 }
 
-                if (LinkPi) await BaseDataModel.Instance.LinkExistingPreviousItems(da.Document, da.DocumentItems).ConfigureAwait(false);
+                if (LinkPi) await BaseDataModel.Instance.LinkExistingPreviousItems(da.Document, da.DocumentItems, false).ConfigureAwait(false);
 
                
                 if (da.Document.xcuda_Identification.xcuda_Type.DisplayName != "IM7")

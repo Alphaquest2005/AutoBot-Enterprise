@@ -110,8 +110,6 @@ namespace DocumentDS.Business.Entities
         [DataMember]
         public List<xcuda_Global_taxes> xcuda_Global_taxes { get; set; }
         [DataMember]
-        public xcuda_Identification xcuda_Identification { get; set; }
-        [DataMember]
         public xcuda_Property xcuda_Property { get; set; }
         [DataMember]
         public List<xcuda_Suppliers_documents> xcuda_Suppliers_documents { get; set; }
@@ -133,6 +131,8 @@ namespace DocumentDS.Business.Entities
         public List<AsycudaDocument_Attachments> AsycudaDocument_Attachments { get; set; }
         [DataMember]
         public xcuda_ASYCUDA_ExtendedProperties xcuda_ASYCUDA_ExtendedProperties { get; set; }
+        [DataMember]
+        public xcuda_Identification xcuda_Identification { get; set; }
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }
