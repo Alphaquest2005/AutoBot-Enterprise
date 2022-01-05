@@ -35,6 +35,7 @@ using AdjustmentQS.Business.Entities;
 using AllocationDS.Business.Entities;
 using Asycuda421;
 using AutoBotUtilities;
+using DocumentItemDS.Business.Entities;
 using EmailDownloader;
 using Org.BouncyCastle.Ocsp;
 //using NPOI.SS.UserModel;
@@ -265,10 +266,48 @@ namespace AutoBot
                 {"SubmitSalesToCustoms", SubmitSalesToCustoms },
                 {"ImportExpiredEntires", ImportExpiredEntires },
                 {"ImportCancelledEntires", ImportCancelledEntires },
-                {"ImportAllFilesInDataFolder", ImportAllFilesInDataFolder}
+                {"ImportAllFilesInDataFolder", ImportAllFilesInDataFolder},
+                {"relinkAllPreviousItems",relinkAllPreviousItems}
 
 
             };
+
+        private static void relinkAllPreviousItems()
+        {
+            Console.WriteLine("ReLink All Previous Items");
+            List<xcuda_ASYCUDA> docLst;
+            using (var ctx = new DocumentDSContext())
+            {
+                docLst = ctx.xcuda_ASYCUDA
+                    .Include(x => x.xcuda_Identification.xcuda_Registration)
+                    .Include(x => x.xcuda_Identification.xcuda_Type)
+                    .Where(x => x.xcuda_ASYCUDA_ExtendedProperties.Customs_Procedure.Document_Type.Declaration_gen_procedure_code == "7")
+                    .ToList();
+            }
+
+            using (var ctx = new DocumentItemDSContext())
+            {
+                foreach (var doc in docLst)
+                {
+                    ctx.Database.ExecuteSqlCommand($@"DELETE FROM EntryPreviousItems
+                    FROM    EntryPreviousItems INNER JOIN
+                    xcuda_Item ON EntryPreviousItems.Item_Id = xcuda_Item.Item_Id
+                    WHERE(xcuda_Item.ASYCUDA_Id = {doc.ASYCUDA_Id})");
+
+                    var itms = ctx.xcuda_Item
+                        .Where(x => x.ASYCUDA_Id == doc.ASYCUDA_Id)
+                        .ToList();
+
+                     BaseDataModel.Instance.LinkExistingPreviousItems(doc, itms).RunSynchronously();
+
+
+
+                }
+            }
+
+
+
+        }
 
         private static void ImportAllFilesInDataFolder()
         {
@@ -3775,8 +3814,8 @@ namespace AutoBot
             var lcont = 0;
             while (AssessComplete(instrFile, resultsFile, out lcont) == false)
             {
-               // RunSiKuLi(asycudaDocumentSetId, "AssessIM7", lcont.ToString());
-                RunSiKuLi(directoryName, "SaveIM7", lcont.ToString());
+                RunSiKuLi(directoryName, "AssessIM7", lcont.ToString());
+                //RunSiKuLi(directoryName, "SaveIM7", lcont.ToString());
             }
 
 

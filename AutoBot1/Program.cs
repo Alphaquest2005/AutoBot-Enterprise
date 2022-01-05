@@ -244,6 +244,7 @@ namespace AutoBot
                             .Where(x =>
                                 (x.ApplicationSettingId == null || x.ApplicationSettingId ==
                                 BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId))
+                            .OrderBy(x => x.Id)
                             .ToList();
 
 

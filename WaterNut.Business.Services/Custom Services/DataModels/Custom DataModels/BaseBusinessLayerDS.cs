@@ -397,12 +397,6 @@ namespace WaterNut.DataSpace
         }
 
 
-        public void IntCdoc(xcuda_ASYCUDA doc, AsycudaDocumentSet ads)
-        {
-            var cdoc = new DocumentCT {Document = doc};
-            IntCdoc(cdoc, ads);
-        }
-
         public async Task<DocumentCT> CreateDocumentCt(AsycudaDocumentSet currentAsycudaDocumentSet)
         {
             var cdoc = new DocumentCT();
@@ -2797,7 +2791,7 @@ namespace WaterNut.DataSpace
             }
         }
 
-        public async Task LinkExistingPreviousItems(DocumentCT da)
+        public async Task LinkExistingPreviousItems(xcuda_ASYCUDA da, List<xcuda_Item> documentItems)
         {
             //get all previous items for this document
             try
@@ -2807,12 +2801,12 @@ namespace WaterNut.DataSpace
                 plst = await DocumentItemDS.DataModels.BaseDataModel.Instance.Searchxcuda_PreviousItem(
                     new List<string>
                     {
-                        $"Prev_reg_nbr == \"{da.Document.xcuda_Identification.xcuda_Registration.Number}\""
+                        $"Prev_reg_nbr == \"{da.xcuda_Identification.xcuda_Registration.Number}\""
                     }).ConfigureAwait(false);
 
 
-                if (plst.Any() == false || da.Document.xcuda_Identification.xcuda_Type.DisplayName == "IM7") return; // im7s created from ex9 document can have previousitems... have to remove these
-                foreach (var itm in da.DocumentItems)
+                if (plst.Any() == false || da.xcuda_Identification.xcuda_Type.DisplayName == "IM7") return; // im7s created from ex9 document can have previousitems... have to remove these
+                foreach (var itm in documentItems)
                 {
                     var pplst = plst.Where(x => x.Previous_item_number == itm.LineNumber.ToString() &&
                                                 x.Prev_decl_HS_spec == itm.ItemNumber);
