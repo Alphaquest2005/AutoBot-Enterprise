@@ -2301,14 +2301,14 @@ namespace AutoBot
                     ctx.Database.CommandTimeout = 20;
                     var cnumberList = ft.Data.Where(z => z.Key == "CNumber").Select(x => x.Value).ToList();
                     var cplst = BaseDataModel.Instance.Customs_Procedures
-                        .Where(x => x.CustomsOperation.Name == "Exwarehouse").ToList();
+                        .Where(x => x.CustomsOperation.Name == "Exwarehouse").Select(x => x.CustomsProcedure).ToList();
                     IEnumerable<IGrouping<int?, TODO_SubmitDiscrepanciesToCustoms>> lst;
                     List<TODO_SubmitAllXMLToCustoms> res;
                     if (cnumberList.Any())
                     {
                         res = ctx.TODO_SubmitAllXMLToCustoms.Where(x =>
                                 x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings
-                                    .ApplicationSettingsId && cnumberList.Contains(x.CNumber) && cplst.Any(z => z.CustomsProcedure == x.CustomsProcedure))
+                                    .ApplicationSettingsId && cnumberList.Contains(x.CNumber) && cplst.Any(z => z == x.CustomsProcedure))
                             .ToList();
                     }
                     else
@@ -2317,7 +2317,7 @@ namespace AutoBot
                         res = ctx.TODO_SubmitAllXMLToCustoms.Where(x =>
                                 x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings
                                     .ApplicationSettingsId &&
-                                x.ReferenceNumber.Contains(docSet.Declarant_Reference_Number) && cplst.Any(z => z.CustomsProcedure == x.CustomsProcedure))
+                                x.ReferenceNumber.Contains(docSet.Declarant_Reference_Number) && cplst.Any(z => z == x.CustomsProcedure))
                             .ToList();
                     }
 
