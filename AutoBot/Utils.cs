@@ -4226,13 +4226,16 @@ namespace AutoBot
                     var desFolder = Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder,
                         ctx.AsycudaDocumentSetExs.First(x => x.AsycudaDocumentSetId == docSetId)
                             .Declarant_Reference_Number);
-                    var csvFiles = new DirectoryInfo(desFolder).GetFiles()
+                    var directoryInfo = new DirectoryInfo(desFolder);
+                    directoryInfo.Refresh();
+                    var csvFiles = directoryInfo.GetFiles()
                         .Where(x => Regex.IsMatch(x.FullName, ft.FilePattern, RegexOptions.IgnoreCase))
-                        .Where(x => x.LastWriteTime.Date >= lastfiledate)
+                        .Where(x => x.LastWriteTime >= lastfiledate)
                         .ToArray();
+                    
                     if (csvFiles.Length > 0)
                         BaseDataModel.Instance.ImportDocuments(ft.AsycudaDocumentSetId,
-                            csvFiles.Select(x => x.FullName).ToList(), true, true, false, false, true).Wait();
+                            csvFiles.Select(x => x.FullName).ToList(), true, true, false, true, true).Wait();
                     RemoveDuplicateEntries();
                     FixIncompleteEntries();
                 }
