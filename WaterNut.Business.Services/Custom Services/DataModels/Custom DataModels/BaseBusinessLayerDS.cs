@@ -1027,7 +1027,9 @@ namespace WaterNut.DataSpace
                 {
                     var doc = ctx.AsycudaDocuments.FirstOrDefault(x => x.ASYCUDA_Id == entryId);
                     if (doc == null) continue;
-                    var csvFiles = new DirectoryInfo(directoryName).GetFiles($"*-{doc.CNumber}*")
+                    var fileInfos = new DirectoryInfo(directoryName).GetFiles($"*-{doc.CNumber}.pdf").ToList();
+                    fileInfos.AddRange(new DirectoryInfo(directoryName).GetFiles($"*-{doc.CNumber}-*.pdf").ToList());
+                    var csvFiles = fileInfos
                         .Where(x => Regex.IsMatch(x.FullName,
                             @".*(?<=\\)([A-Z,0-9]{3}\-[A-Z]{5}\-)(?<pCNumber>\d+).*.pdf",
                             RegexOptions.IgnoreCase)).ToArray();
