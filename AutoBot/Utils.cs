@@ -6695,6 +6695,7 @@ namespace AutoBot
                     drow_no++;
                 }
 
+                if (!potentialsFileTypes.Any()) return;
                 rfileType = potentialsFileTypes
                     .OrderByDescending(x => x.FileTypeMappings.Where(z =>
                         lastHeaderRow.Select(h => h.ToString().ToUpper().Trim())
