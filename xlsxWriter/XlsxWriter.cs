@@ -344,6 +344,7 @@ namespace xlsxWriter
                 .SelectMany(x => x.POMISMatches)
                 //.Where(x => (x.INVQuantity != 0 && x.INVQuantity != null) && (x.POQuantity != 0 && x.POQuantity != null))
                 .OrderBy(x => x.INVTotalCost).ThenBy(x => x.POTotalCost)
+                //.DistinctBy(x => x.INVDetailsId)
                 .ToList();
             if (!shipmentInvoicePoItemMisMatchesList.Any()) return;
             var header =

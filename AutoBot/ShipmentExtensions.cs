@@ -203,6 +203,9 @@ namespace AutoBotUtilities
 
                     var emailLst = invoices.Select(x => x.ShipmentInvoice.EmailId).Distinct().ToList();
                     var invoiceLst = invoices.Select(x => x.ShipmentInvoice.Id).Distinct().ToList();
+
+                  
+
                     var inattachedInvoices = GetShipmentInvoices()
                         .Where(z => !invoiceLst.Contains(z.Id) && emailLst.Contains(z.EmailId))
                         .ToList()
@@ -685,7 +688,7 @@ namespace AutoBotUtilities
                     {
                         var manifests = masterShipment.ShipmentAttachedManifest
                             .Where(x => x.ShipmentManifest.WayBill == bl.BLNumber ||
-                                        x.ShipmentManifest.Voyage.Contains(bl.Voyage) ||
+                                        (!string.IsNullOrEmpty(bl.Voyage) && x.ShipmentManifest.Voyage.Contains(bl.Voyage)) ||
                                         x.ShipmentManifest.ShipmentRiderManifests.Any(z =>
                                             z.RiderId == client.First().RiderId)).Select(x => x.ShipmentManifest)
                             .ToList();
