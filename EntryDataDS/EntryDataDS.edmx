@@ -760,6 +760,11 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ShipmentFreightBLs' does 
 warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ShipmentFreightManifests' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="ShipmentFreightManifests">
           <Key>
+            
+            
+            
+            
+            
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="int" Nullable="false" />
@@ -925,6 +930,26 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ShipmentMIS-POs' does not
           <Property Name="InvoiceId" Type="int" />
           <Property Name="SupplierCode" Type="nvarchar" MaxLength="100" />
           <Property Name="SourceFile" Type="nvarchar(max)" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ShipmentPOs' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="ShipmentPOs">
+          <Key>
+            <PropertyRef Name="EntryData_Id" />
+            
+            
+            
+          </Key>
+          <Property Name="EntryData_Id" Type="int" Nullable="false" />
+          <Property Name="InvoiceNo" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="InvoiceDate" Type="datetime2" Precision="7" Nullable="false" />
+          <Property Name="SubTotal" Type="float" />
+          <Property Name="InvoiceTotal" Type="float" />
+          <Property Name="ImportedLine" Type="int" />
+          <Property Name="SupplierCode" Type="nvarchar" MaxLength="100" />
+          <Property Name="EmailId" Type="int" />
+          <Property Name="SourceFile" Type="nvarchar(max)" />
+          <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
         </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ShipmentRiderBLs' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
@@ -1914,6 +1939,20 @@ FROM [dbo].[ShipmentMIS-Invoices] AS [ShipmentMIS-Invoices]</DefiningQuery>
 [ShipmentMIS-POs].[SourceFile] AS [SourceFile]
 FROM [dbo].[ShipmentMIS-POs] AS [ShipmentMIS-POs]</DefiningQuery>
           </EntitySet>
+          <EntitySet Name="ShipmentPOs" EntityType="Self.ShipmentPOs" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+[ShipmentPOs].[EntryData_Id] AS [EntryData_Id], 
+[ShipmentPOs].[InvoiceNo] AS [InvoiceNo], 
+[ShipmentPOs].[InvoiceDate] AS [InvoiceDate], 
+[ShipmentPOs].[SubTotal] AS [SubTotal], 
+[ShipmentPOs].[InvoiceTotal] AS [InvoiceTotal], 
+[ShipmentPOs].[ImportedLine] AS [ImportedLine], 
+[ShipmentPOs].[SupplierCode] AS [SupplierCode], 
+[ShipmentPOs].[EmailId] AS [EmailId], 
+[ShipmentPOs].[SourceFile] AS [SourceFile], 
+[ShipmentPOs].[ApplicationSettingsId] AS [ApplicationSettingsId]
+FROM [dbo].[ShipmentPOs] AS [ShipmentPOs]</DefiningQuery>
+          </EntitySet>
           <EntitySet Name="ShipmentRiderBLs" EntityType="Self.ShipmentRiderBLs" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
 [ShipmentRiderBLs].[id] AS [id], 
@@ -2477,6 +2516,7 @@ FROM [dbo].[ShipmentRiderManifests] AS [ShipmentRiderManifests]</DefiningQuery>
             <End Role="ShipmentManifest" EntitySet="ShipmentManifest" />
             <End Role="ShipmentFreightManifests" EntitySet="ShipmentFreightManifests" />
           </AssociationSet>
+          <EntitySet Name="ShipmentPOs" EntityType="WaterNutDBModel.ShipmentPOs" />
           </EntityContainer>
         <EntityType Name="Sales" BaseType="WaterNutDBModel.EntryData">
           <Property Name="INVNumber" Type="String" Nullable="false" MaxLength="50" Unicode="true" FixedLength="false"><a:EntityNameProperty xmlns:a="http://schemas.tempuri.com/EntityNameProperty">False</a:EntityNameProperty></Property>
@@ -4364,6 +4404,21 @@ FROM [dbo].[ShipmentRiderManifests] AS [ShipmentRiderManifests]</DefiningQuery>
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="ShipmentPOs">
+          <Key>
+            <PropertyRef Name="EntryData_Id" />
+          </Key>
+          <Property Name="EntryData_Id" Type="Int32" Nullable="false" />
+          <Property Name="InvoiceNo" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="InvoiceDate" Type="DateTime" Nullable="false" Precision="7" />
+          <Property Name="SubTotal" Type="Double" />
+          <Property Name="InvoiceTotal" Type="Double" />
+          <Property Name="ImportedLine" Type="Int32" />
+          <Property Name="SupplierCode" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="SourceFile" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
+          <Property Name="EmailId" Type="Int32" />
+        </EntityType>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -5316,6 +5371,22 @@ FROM [dbo].[ShipmentRiderManifests] AS [ShipmentRiderManifests]</DefiningQuery>
                 <ScalarProperty Name="FreightId" ColumnName="FreightId" />
                 <ScalarProperty Name="FreightDetailId" ColumnName="FreightDetailId" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ShipmentPOs">
+            <EntityTypeMapping TypeName="WaterNutDBModel.ShipmentPOs">
+              <MappingFragment StoreEntitySet="ShipmentPOs">
+                <ScalarProperty Name="EmailId" ColumnName="EmailId" />
+                <ScalarProperty Name="ApplicationSettingsId" ColumnName="ApplicationSettingsId" />
+                <ScalarProperty Name="SourceFile" ColumnName="SourceFile" />
+                <ScalarProperty Name="SupplierCode" ColumnName="SupplierCode" />
+                <ScalarProperty Name="ImportedLine" ColumnName="ImportedLine" />
+                <ScalarProperty Name="InvoiceTotal" ColumnName="InvoiceTotal" />
+                <ScalarProperty Name="SubTotal" ColumnName="SubTotal" />
+                <ScalarProperty Name="InvoiceDate" ColumnName="InvoiceDate" />
+                <ScalarProperty Name="InvoiceNo" ColumnName="InvoiceNo" />
+                <ScalarProperty Name="EntryData_Id" ColumnName="EntryData_Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

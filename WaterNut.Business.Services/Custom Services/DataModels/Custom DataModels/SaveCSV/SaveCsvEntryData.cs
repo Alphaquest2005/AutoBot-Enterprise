@@ -446,14 +446,24 @@ namespace WaterNut.DataSpace
 
                 if (fileType.Type == "Shipment Invoice")
                 {
-                    if(eslst.Any(x => ((List<IDictionary<string, object>>)x).Any(z => z.ContainsKey("InvoiceDetails"))))
+                    if(eslst is List<dynamic>)  eslst = ConvertCSVToShipmentInvoice(eslst);
+
+                    if (!eslst.Any(
+                            x => ((List<IDictionary<string, object>>)x).Any(z => z.ContainsKey("InvoiceDetails"))))
+                    {
+                        // convert csv to normal shipment invoice structure
+                       
                         await ImportInventory(eslst.SelectMany(x => ((List<IDictionary<string, object>>)x).Select(z => z["InvoiceDetails"])).SelectMany(x => ((List<IDictionary<string, object>>)x).Select(z => (dynamic)z)).ToList(), docSet.First().ApplicationSettingsId, fileType).ConfigureAwait(false);
+
+                    }
+
+                        
                     ProcessShipmentInvoice(fileType, docSet, overWriteExisting, emailId, 
                         droppedFilePath, eslst);
+                        return true;
 
+                  
                     
-                    //await ImportInventory(eslst.SelectMany(x => ((List<IDictionary<string, object>>)x).Select(z => z["InvoiceDetails"])).ToList(), docSet.First().ApplicationSettingsId, fileType).ConfigureAwait(false);
-                    return true;
                 }
 
                 if (fileType.Type == "ExpiredEntries")
@@ -490,6 +500,128 @@ namespace WaterNut.DataSpace
 
         }
 
+        private List<dynamic> ConvertCSVToShipmentInvoice(List<dynamic> eslst)
+        {
+            var res = new List<dynamic>();
+
+            var ed = (from es in eslst.Select(x => (dynamic)x)
+                      group es by new { es.EntryDataId, es.EntryDataDate, es.CustomerName }//, es.Currency,
+                    into g
+                      select new
+                      {
+                          EntryData =
+                              new
+                              {
+                                  EntryDataId = g.Key.EntryDataId,
+                                  EntryDataDate = g.Key.EntryDataDate,
+                                  CustomerName = g.Key.CustomerName,
+                                  Tax = ((dynamic)g.FirstOrDefault())?.Tax,
+
+                                  Supplier = string.IsNullOrEmpty(g.Max(x => ((dynamic)x).SupplierCode))
+                                      ? null
+                                      : g.Max(x => ((dynamic)x).SupplierCode?.ToUpper()),
+                                  Currency = ((dynamic)g.FirstOrDefault(x => ((dynamic)x).Currency != ""))?.Currency,
+                             
+                                  DocumentType = ((dynamic)g.FirstOrDefault(x => ((dynamic)x).DocumentType != ""))?.DocumentType,
+                                  SupplierInvoiceNo = ((dynamic)g.FirstOrDefault(x => ((dynamic)x).SupplierInvoiceNo != ""))?.SupplierInvoiceNo,
+                                  PreviousCNumber = ((dynamic)g.FirstOrDefault(x => ((dynamic)x).PreviousCNumber != ""))?.PreviousCNumber,
+                                  FinancialInformation = ((dynamic)g.FirstOrDefault(x => ((dynamic)x).FinancialInformation != ""))?.FinancialInformation,
+
+                                  PONumber = ((dynamic)g.FirstOrDefault(x => ((dynamic)x).PONumber != ""))?.PONumber,
+                                  
+
+                              },
+                          EntryDataDetails = g.Where(x => !string.IsNullOrEmpty(x.ItemNumber)).Select(x =>
+                              new 
+                              {
+                                  EntryDataId = x.EntryDataId,
+                                //Can't set entrydata_id here cuz this is from data
+                                ItemNumber = ((string)x.ItemNumber.ToUpper()).Truncate(20),
+                                  ItemDescription = x.ItemDescription,
+                                  SupplierItemNumber = x.SupplierItemNumber,
+                                  SupplierItemDescription = x.SupplierItemDescription,
+                                  Cost = x.Cost ?? 0,
+                                  TotalCost = Convert.ToDouble(x.TotalCost ?? 0.0),
+                                  Quantity = Convert.ToDouble(x.Quantity ?? 0.0),
+                                  FileLineNumber = x.LineNumber,
+                                  Units = x.Units,
+                                  Freight = Convert.ToDouble(x.Freight ?? 0.0),
+                                  Weight = Convert.ToDouble(x.Weight ?? 0.0),
+                                  InternalFreight = Convert.ToDouble(x.InternalFreight ?? 0.0),
+                                  InvoiceQty = Convert.ToDouble(x.InvoiceQuantity ?? 0.0),
+                                  ReceivedQty = Convert.ToDouble(x.ReceivedQuantity ?? 0.0),
+                                  TaxAmount = x.Tax ?? 0,
+                                  CNumber = x.PreviousCNumber,
+                                  CLineNumber = (int?)x.PreviousCLineNumber,
+                                  PreviousInvoiceNumber = x.PreviousInvoiceNumber,
+                                  Comment = x.Comment,
+                                  InventoryItemId = x.InventoryItemId ?? 0,
+                                  EffectiveDate = x.EffectiveDate,
+                                  VolumeLiters = Convert.ToDouble(x.Gallons * GalToLtrRate ?? Convert.ToDouble(x.Liters ?? 0.0)),
+
+                              }),
+                          f = g.Select(x => new
+                          {
+                              TotalWeight = Convert.ToDouble(x.TotalWeight ?? 0.0),
+                              TotalFreight = Convert.ToDouble(x.TotalFreight ?? 0.0),
+                              TotalInternalFreight = Convert.ToDouble(x.TotalInternalFreight ?? 0.0),
+                              TotalOtherCost = Convert.ToDouble(x.TotalOtherCost ?? 0.0),
+                              TotalInsurance = Convert.ToDouble(x.TotalInsurance ?? 0.0),
+                              TotalDeductions = Convert.ToDouble(x.TotalDeductions ?? 0.0),
+                              InvoiceTotal = Convert.ToDouble(x.InvoiceTotal ?? 0.0),
+                              TotalTax = Convert.ToDouble(x.TotalTax ?? 0.0),
+                              Packages = Convert.ToInt32(x.Packages ?? 0),
+                              WarehouseNo = x.WarehouseNo,
+
+
+
+
+                          }),
+                          InventoryItems = g.DistinctBy(x => new { x.ItemNumber, x.ItemAlias })
+                              .Select(x => new { x.ItemNumber, x.ItemAlias })
+                      }).ToList();
+
+            foreach (var itm in ed)
+            {
+                dynamic header = (IDictionary<string, object>)new BetterExpando();
+                header.InvoiceNo = itm.EntryData.SupplierInvoiceNo;
+                header.InvoiceDate = itm.EntryData.EntryDataDate;
+                header.InvoiceTotal = itm.f.Sum(x => (double)x.InvoiceTotal);
+                header.TotalInternalFreight = itm.f.Sum(x => (double)x.TotalInternalFreight);
+                header.TotalOtherCost = itm.f.Sum(x => (double)x.TotalOtherCost);
+                header.TotalDeduction = itm.f.Sum(x => (double)x.TotalDeductions);
+                header.SupplierCode = itm.EntryData.Supplier;
+
+
+                dynamic extraInfo = (IDictionary<string, object>)new BetterExpando();
+                extraInfo.PONumber = itm.EntryData.PONumber;
+
+                dynamic invoiceDetails = new List<IDictionary<string, object>>();
+
+                foreach (var entryDataDetail in itm.EntryDataDetails)
+                {
+                    if (string.IsNullOrEmpty(entryDataDetail.SupplierItemNumber)) return null;
+                    dynamic edd = (IDictionary<string, object>)new BetterExpando();
+                    edd.ItemNumber = entryDataDetail.SupplierItemNumber;
+                    edd.ItemDescription = entryDataDetail.SupplierItemDescription;
+                    edd.Quantity = entryDataDetail.Quantity;
+                    edd.Cost = entryDataDetail.Cost;
+                    edd.TotalCost = entryDataDetail.TotalCost;
+                    edd.FileLineNumber = entryDataDetail.FileLineNumber;
+
+                    invoiceDetails.Add((IDictionary<string, object>)edd);
+                }
+
+                header.ExtraInfo = new List<IDictionary<string, object>>() { extraInfo };
+                header.InvoiceDetails = invoiceDetails;
+
+                res.Add(new List<IDictionary<string, object>>(){(IDictionary<string, object>)header });
+            }
+
+
+            return res;
+        }
+
         private void ProcessShipmentInvoice(FileTypes fileType, List<AsycudaDocumentSet> docSet, bool overWriteExisting, int? emailId, string droppedFilePath, List<object> eslst)
         {
             try
@@ -513,7 +645,7 @@ namespace WaterNut.DataSpace
                         TotalInsurance = x.ContainsKey("TotalInsurance") ? Convert.ToDouble(x["TotalInsurance"].ToString()) : (double?)null,
                         TotalDeduction = x.ContainsKey("TotalDeduction") ? Convert.ToDouble(x["TotalDeduction"].ToString()) : (double?)null,
                         InvoiceDetails = !x.ContainsKey("InvoiceDetails") ? new List<InvoiceDetails>() : ((List<IDictionary<string, object>>)x["InvoiceDetails"])
-                                        //        .Where(z => z["Quantity"] != null && Convert.ToDouble(z["Quantity"].ToString()) > 0 && (z.ContainsKey("TotalCost") ? Convert.ToDouble(z["TotalCost"].ToString()) : Convert.ToDouble(z["Cost"].ToString())) > 0)
+                                                .Where(z => z.ContainsKey("ItemDescription"))
                                               
                                                 .Select(z => new InvoiceDetails()
                                                 {
@@ -535,6 +667,7 @@ namespace WaterNut.DataSpace
                         InvoiceExtraInfo = !x.ContainsKey("ExtraInfo")? new List<InvoiceExtraInfo>(): ((List<IDictionary<string, object>>)x["ExtraInfo"])
                             .Where(z => z.Keys.Any())
                             .SelectMany(z => z)
+                            .Where(z => z.Value != null)
                             .Select(z => new InvoiceExtraInfo()
                             {
                                 Info = z.Key.ToString(),
@@ -600,8 +733,8 @@ namespace WaterNut.DataSpace
                 
             }
 
-            if (invoice.SubTotal > 0
-                && Math.Abs((double) (invoice.SubTotal - details.Sum(x => x.Cost * x.Quantity))) > 0.01)
+            //if (invoice.SubTotal > 0
+            //    && Math.Abs((double) (invoice.SubTotal - details.Sum(x => x.Cost * x.Quantity))) > 0.01)
                 details = details.DistinctBy(x => new { ItemNumber = x.ItemNumber.ToUpper(), x.Quantity, x.TotalCost})
                     .ToList();
 
@@ -1163,6 +1296,7 @@ namespace WaterNut.DataSpace
                                     olded = await CreateInvoice(EDinv).ConfigureAwait(false);
 
                                     break;
+                            
                                 case "PO":
                                     if (BaseDataModel.Instance.CurrentApplicationSettings.AssessIM7 == true &&
                                         Math.Abs((double) item.f.Sum(x => x.InvoiceTotal)) < .001)
@@ -1680,14 +1814,20 @@ namespace WaterNut.DataSpace
                         c.ItemNumber = !string.IsNullOrEmpty(splits[mapping["POItemNumber"]])
                             ? splits[mapping["POItemNumber"]]
                             : splits[mapping["SupplierItemNumber"]];
+
+                        c.SupplierItemNumber = splits[mapping["SupplierItemNumber"]];
                     }
                 },
                 {
                     "SupplierItemDescription",
-                    (c, mapping, splits) => c.ItemDescription =
-                        !string.IsNullOrEmpty(splits[mapping["POItemDescription"]])
-                            ? splits[mapping["POItemDescription"]]
-                            : splits[mapping["SupplierItemDescription"]]
+                    (c, mapping, splits) =>
+                    {
+                        c.ItemDescription =
+                            !string.IsNullOrEmpty(splits[mapping["POItemDescription"]])
+                                ? splits[mapping["POItemDescription"]]
+                                : splits[mapping["SupplierItemDescription"]];
+                        c.SupplierItemDescription = splits[mapping["SupplierItemDescription"]];
+                    }
                 },
                 {
                     "SupplierInvoiceNo",
@@ -1863,7 +2003,7 @@ namespace WaterNut.DataSpace
                         return rdate;
                     }
 
-                    var formatStrings = new List<string>() { "M/y", "M/d/y", "M-d-y", "dd/MM/yyyy", "dd/M/yyyy" };
+                    var formatStrings = new List<string>() { "M/y", "M/d/y", "M-d-y", "dd/MM/yyyy", "dd/M/yyyy", "dddd dd MMMM yyyy" };
                     foreach (String formatString in formatStrings)
                     {
                         if (DateTime.TryParseExact(val, formatString, CultureInfo.InvariantCulture, DateTimeStyles.None,

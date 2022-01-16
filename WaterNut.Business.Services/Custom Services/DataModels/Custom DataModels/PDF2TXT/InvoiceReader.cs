@@ -210,7 +210,35 @@ namespace WaterNut.DataSpace
                 return txt;
             });
 
-            Task.WaitAll(ripTask, singleColumnTask, sparseTextTask); //, 
+            //var sparsOsdTextTask = Task.Run(() =>
+            //{
+            //    var txt = "------------------------------------------SparseTextOsd-------------------------\r\n";
+            //    txt += new PdfOcr().Ocr(file, PageSegMode.SparseTextOsd);
+            //    return txt;
+            //});
+
+            //var SingleWordTextTask = Task.Run(() =>
+            //{
+            //    var txt = "------------------------------------------SingleWord-------------------------\r\n";
+            //    txt += new PdfOcr().Ocr(file, PageSegMode.SingleWord);
+            //    return txt;
+            //});
+
+            //var OsdOnlyTextTask = Task.Run(() =>
+            //{
+            //    var txt = "------------------------------------------OsdOnly-------------------------\r\n";
+            //    txt += new PdfOcr().Ocr(file, PageSegMode.OsdOnly);
+            //    return txt;
+            //});
+
+            //var RawLineTextTask = Task.Run(() =>
+            //{
+            //    var txt = "------------------------------------------RawLine-------------------------\r\n";
+            //    txt += new PdfOcr().Ocr(file, PageSegMode.RawLine);
+            //    return txt;
+            //});
+
+            Task.WaitAll(ripTask, singleColumnTask, sparseTextTask); //RawLineTextTask, OsdOnlyTextTask, SingleWordTextTask, sparsOsdTextTask
 
             pdftxt.AppendLine(singleColumnTask.Result);
             pdftxt.AppendLine(sparseTextTask.Result);
@@ -493,7 +521,7 @@ namespace WaterNut.DataSpace
         }
 
         public double MaxLinesCheckedToStart { get; set; } = 0.5;
-
+        private static Dictionary<string, List<BetterExpando>> table = new Dictionary<string, List<BetterExpando>>();
         private List<IDictionary<string, object>> SetPartLineValues(Part part)
         {
             try
@@ -503,19 +531,44 @@ namespace WaterNut.DataSpace
                 var lst = new List<IDictionary<string, object>>();
                 var itm = new BetterExpando();
                 var ditm = ((IDictionary<string, object>) itm);
+
+                
+
                 foreach (var line in part.Lines)
                 {
-                    var values = line.OCR_Lines.DistinctValues == true 
+                    if (!line.OCR_Lines.Fields.Any()) continue;
+                    var values = (line.OCR_Lines.DistinctValues == true 
                         ? DistinctValues(line.Values)
-                        : line.Values;
+                        : line.Values).ToList();
 
-                    foreach (var value in values)
+                    if (!table.ContainsKey(line.OCR_Lines.Fields.First().EntityType) && line.OCR_Lines.IsColumn == true)
+                        table.Add(line.OCR_Lines.Fields.First().EntityType, new List<BetterExpando>() { itm });
+                   
+                 
+
+                        for (int i = 0; i <= values.Count - 1; i++)
                     {
+                        var value = values[i];
                         if (part.OCR_Part.RecuringPart != null && part.OCR_Part.RecuringPart.IsComposite == false)
                         {
-                            itm = new BetterExpando();
-                            ditm = ((IDictionary<string, object>) itm);
+                            if (line.OCR_Lines.IsColumn != true || (line.OCR_Lines.IsColumn == true && i > table[line.OCR_Lines.Fields.First().EntityType].Count - 1))
+                            {
+                                itm = new BetterExpando();
+                                if(line.OCR_Lines.IsColumn == true)
+                                {
+                                   table[line.OCR_Lines.Fields.First().EntityType].Add(itm);
+                                    
+                                }
+                            }
+                            else
+                            {
+                                itm = table[line.OCR_Lines.Fields.First().EntityType][i];
+                            } 
+
+                            ditm = ((IDictionary<string, object>)itm);
                         }
+
+
 
                         ditm["FileLineNumber"] = value.Key + 1;
                         foreach (var field in value.Value)

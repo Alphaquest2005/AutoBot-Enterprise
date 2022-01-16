@@ -123,7 +123,8 @@ namespace WaterNut.DataSpace
         private async Task<List<AsycudaSalesAllocations>> GetErrOPSData(string filterExpression)
         {
             var lst = await AllocationsModel.Instance.GetAsycudaSalesAllocations(filterExpression).ConfigureAwait(false);
-            return lst.Where(x => !string.IsNullOrEmpty(x.Status) && x.Status != "Net Weight < 0.01").ToList();
+            return lst.Where(x => !string.IsNullOrEmpty(x.Status) 
+                                  && (x.xStatus != "Net Weight < 0.01" && !string.IsNullOrEmpty(x.xStatus))).ToList();
             //return lst.Where(x => x.PreviousDocumentItem == null 
             //                      && x.QtyAllocated == 0
             //                      && x.EntryDataDetails.Quantity > 0

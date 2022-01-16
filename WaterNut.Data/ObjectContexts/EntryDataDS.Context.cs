@@ -167,6 +167,8 @@ namespace EntryDataDS.Business.Entities
      
         public DbSet<ShipmentFreightManifests> ShipmentFreightManifests { get; set; }
      
+        public DbSet<ShipmentPOs> ShipmentPOs { get; set; }
+     
 
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
@@ -290,6 +292,8 @@ namespace EntryDataDS.Business.Entities
             modelBuilder.Configurations.Add(new ShipmentRiderManifestsMap());
          
             modelBuilder.Configurations.Add(new ShipmentFreightManifestsMap());
+         
+            modelBuilder.Configurations.Add(new ShipmentPOsMap());
          
             modelBuilder.Configurations.Add(new AdjustmentsMap());
       

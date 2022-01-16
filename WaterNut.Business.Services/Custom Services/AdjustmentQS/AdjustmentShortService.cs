@@ -50,7 +50,7 @@ namespace AdjustmentQS.Business.Services
                         .Where(x => x.Type == "DIS")
                         //.Where(x => x.ItemNumber == "SH01053")
                         //.Where(x => x.ItemNumber == "BS01016")
-                        //.Where(x => x.EntryDataId == "Asycuda-C#33687-19")
+                       // .Where(x => x.EntryDataId == "Asycuda-C#5062")
                         //.Where( x => x.EntryDataDetailsId == 16569)
                         .Where(x => x.DoNotAllocate == null || x.DoNotAllocate != true)
                         .Where(x => overwriteExisting
@@ -946,14 +946,14 @@ namespace AdjustmentQS.Business.Services
             try
             {
 
-
+                var clst = cNumber.Split(',', ' ');
                 // get document item in cnumber
                 var aItem = AsycudaDocumentItemCache
                     .Where(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId
                                 && x.AsycudaDocument.CNumber != null
                                 && x.AsycudaDocument.CustomsOperationId == (int)CustomsOperations.Warehouse
                                 && x.AsycudaDocument.ImportComplete == true
-                                && x.ItemNumber == itemNumber && cNumber.Contains(x.AsycudaDocument.CNumber)
+                                && x.ItemNumber == itemNumber && clst.Any(z => z == x.AsycudaDocument.CNumber)
                                 && x.LineNumber == (previousCLineNumber == null ? x.LineNumber : previousCLineNumber.Value.ToString()));
                 var res = aItem.ToList();
                 var alias = ItemAliasCache.Where(x => x.ItemNumber.ToUpper().Trim() == itemNumber).Select(y => y.AliasName.ToUpper().Trim()).ToList();

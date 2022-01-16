@@ -13,137 +13,163 @@ using Core.Common.Business.Entities;
 using WaterNut.Interfaces;
 using TrackableEntities;
 
-namespace OCR.Business.Entities
+namespace EntryDataDS.Business.Entities
 {
 
     //[JsonObject(IsReference = true)]
     [DataContract(IsReference = true, Namespace="http://www.insight-software.com/WaterNut")]
-    public partial class Lines : BaseEntity<Lines>, ITrackable 
+    public partial class ShipmentPOs : BaseEntity<ShipmentPOs>, ITrackable 
     {
-        partial void AutoGenStartUp() //Lines()
-        {
-            this.Fields = new List<Fields>();
-            this.ChildLines = new List<Lines>();
-            this.OCR_FailedLines = new List<OCR_FailedLines>();
-        }
-
         [DataMember]
-        public int Id 
+        public int EntryData_Id 
         {
             get
             {
-                return _id;
+                return _entrydata_id;
             }
             set
             {
-                _id = value;
+                _entrydata_id = value;
                 //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
                 NotifyPropertyChanged();
             }
         }
-        int _id;
+        int _entrydata_id;
         [DataMember]
-        public int PartId 
+        public string InvoiceNo 
         {
             get
             {
-                return _partid;
+                return _invoiceno;
             }
             set
             {
-                _partid = value;
+                _invoiceno = value;
                 //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
                 NotifyPropertyChanged();
             }
         }
-        int _partid;
+        string _invoiceno;
         [DataMember]
-        public string Name 
+        public System.DateTime InvoiceDate 
         {
             get
             {
-                return _name;
+                return _invoicedate;
             }
             set
             {
-                _name = value;
+                _invoicedate = value;
                 //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
                 NotifyPropertyChanged();
             }
         }
-        string _name;
+        System.DateTime _invoicedate;
         [DataMember]
-        public int RegExId 
+        public Nullable<double> SubTotal 
         {
             get
             {
-                return _regexid;
+                return _subtotal;
             }
             set
             {
-                _regexid = value;
+                _subtotal = value;
                 //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
                 NotifyPropertyChanged();
             }
         }
-        int _regexid;
+        Nullable<double> _subtotal;
         [DataMember]
-        public Nullable<int> ParentId 
+        public Nullable<double> InvoiceTotal 
         {
             get
             {
-                return _parentid;
+                return _invoicetotal;
             }
             set
             {
-                _parentid = value;
+                _invoicetotal = value;
                 //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
                 NotifyPropertyChanged();
             }
         }
-        Nullable<int> _parentid;
+        Nullable<double> _invoicetotal;
         [DataMember]
-        public Nullable<bool> DistinctValues 
+        public Nullable<int> ImportedLine 
         {
             get
             {
-                return _distinctvalues;
+                return _importedline;
             }
             set
             {
-                _distinctvalues = value;
+                _importedline = value;
                 //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
                 NotifyPropertyChanged();
             }
         }
-        Nullable<bool> _distinctvalues;
+        Nullable<int> _importedline;
         [DataMember]
-        public Nullable<bool> IsColumn 
+        public string SupplierCode 
         {
             get
             {
-                return _iscolumn;
+                return _suppliercode;
             }
             set
             {
-                _iscolumn = value;
+                _suppliercode = value;
                 //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
                 NotifyPropertyChanged();
             }
         }
-        Nullable<bool> _iscolumn;
+        string _suppliercode;
         [DataMember]
-        public List<Fields> Fields { get; set; }
+        public string SourceFile 
+        {
+            get
+            {
+                return _sourcefile;
+            }
+            set
+            {
+                _sourcefile = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _sourcefile;
         [DataMember]
-        public Parts Parts { get; set; }
+        public int ApplicationSettingsId 
+        {
+            get
+            {
+                return _applicationsettingsid;
+            }
+            set
+            {
+                _applicationsettingsid = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        int _applicationsettingsid;
         [DataMember]
-        public RegularExpressions RegularExpressions { get; set; }
-        [DataMember]
-        public List<Lines> ChildLines { get; set; }
-        [DataMember]
-        public Lines ParentLine { get; set; }
-        [DataMember]
-        public List<OCR_FailedLines> OCR_FailedLines { get; set; }
+        public Nullable<int> EmailId 
+        {
+            get
+            {
+                return _emailid;
+            }
+            set
+            {
+                _emailid = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<int> _emailid;
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

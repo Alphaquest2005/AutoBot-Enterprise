@@ -124,6 +124,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.OCRInvoicesFileTypes' doe
           <Property Name="Name" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="ParentId" Type="int" />
           <Property Name="DistinctValues" Type="bit" />
+          <Property Name="IsColumn" Type="bit" />
         </EntityType>
         <EntityType Name="OCR-Parts">
           <Key>
@@ -163,12 +164,6 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.OCRInvoicesFileTypes' doe
           <Property Name="PartId" Type="int" Nullable="false" />
           <Property Name="RegExId" Type="int" Nullable="false" />
         </EntityType>
-        <!--Errors Found During Generation:
-warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.OCR_InvoiceEx' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
-        <!--Errors Found During Generation:
-warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.OCR-LinesView' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
-        <!--Errors Found During Generation:
-warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.OCR-PartsView' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <Association Name="FK_OCR_FailedFields_OCR_FailedLines">
           <End Role="OCR_FailedLines" Type="Self.OCR_FailedLines" Multiplicity="1">
             <OnDelete Action="Cascade" />
@@ -982,6 +977,7 @@ FROM [dbo].[OCRInvoicesFileTypes] AS [OCRInvoicesFileTypes]</DefiningQuery>
           <NavigationProperty Name="ParentLine" Relationship="WaterNutDBModel.FK_OCR_Lines_OCR_Lines" FromRole="Lines1" ToRole="Lines" />
           <Property Name="DistinctValues" Type="Boolean" />
           <NavigationProperty Name="OCR_FailedLines" Relationship="WaterNutDBModel.FK_OCR_FailedLines_OCR_Lines" FromRole="Lines" ToRole="OCR_FailedLines" />
+          <Property Name="IsColumn" Type="Boolean" />
         </EntityType>
         <Association Name="FK_OCR_Fields_OCR_Lines">
           <End Type="WaterNutDBModel.Lines" Role="OCR_Lines" Multiplicity="1">
@@ -1477,6 +1473,7 @@ FROM [dbo].[OCRInvoicesFileTypes] AS [OCRInvoicesFileTypes]</DefiningQuery>
           <EntitySetMapping Name="Lines">
             <EntityTypeMapping TypeName="WaterNutDBModel.Lines">
               <MappingFragment StoreEntitySet="OCR-Lines">
+                <ScalarProperty Name="IsColumn" ColumnName="IsColumn" />
                 <ScalarProperty Name="DistinctValues" ColumnName="DistinctValues" />
                 <ScalarProperty Name="ParentId" ColumnName="ParentId" />
                 <ScalarProperty Name="RegExId" ColumnName="RegExId" />

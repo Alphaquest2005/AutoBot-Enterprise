@@ -6683,9 +6683,8 @@ namespace AutoBot
                     
                     foreach (var f in filetypes.Where(x => x.IsImportable != false && x.FileTypeMappings.Any()))
                     {
-                        if (headerRow
-                            .Any(x =>
-                                f.FileTypeMappings.Where(z => z.Required == true).Any(z => z.OriginalName == x.ToString())))
+                        if (//headerRow.Any(x => f.FileTypeMappings.All(z => z.Required == false) && f.FileTypeMappings.All(z => z.OriginalName == x.ToString())) || // All False && all in header or all required in header
+                                               headerRow.Any(x => f.FileTypeMappings.Where(z => z.Required == true).Any(z => z.OriginalName == x.ToString() || z.DestinationName == x.ToString())))
                         {
                             potentialsFileTypes.Add(f);
                             lastHeaderRow = headerRow;
@@ -7129,14 +7128,15 @@ namespace AutoBot
 
         private static void ImportChildFileTypes(FileTypes fileType, bool? overwrite, string output)
         {
-            var cfileTypes = BaseDataModel.GetFileType(fileType.ChildFileTypes.First());
-            cfileTypes.AsycudaDocumentSetId = fileType.AsycudaDocumentSetId;
-            cfileTypes.EmailId = fileType.EmailId;
-            cfileTypes.OverwriteFiles = overwrite;
-            var fileInfos = new FileInfo[] { new FileInfo(output) };
-
-
-            SaveCsv(fileInfos, cfileTypes);
+            foreach (var cfileType in fileType.ChildFileTypes)
+            {
+                var cfileTypes = BaseDataModel.GetFileType(cfileType);
+                cfileTypes.AsycudaDocumentSetId = fileType.AsycudaDocumentSetId;
+                cfileTypes.EmailId = fileType.EmailId;
+                cfileTypes.OverwriteFiles = overwrite;
+                var fileInfos = new FileInfo[] { new FileInfo(output) };
+                SaveCsv(fileInfos, cfileTypes);
+            }
         }
 
         private static string CreateFile(FileInfo file, ConcurrentDictionary<int, string> table)
@@ -7236,6 +7236,7 @@ namespace AutoBot
         private static string ProcessValue(FileInfo file, FileTypes fileType, Dictionary<string, Func<Dictionary<string, string>, DataRow, DataRow, string>> dic, string val, int row_no,
             DataRow header, FileTypeMappings mapping, Dictionary<string, string> row, DataRow drow)
         {
+            var errLst = new List<string>();
             if (val == "{NULL}") return val;
             if (val == "" && row_no == 0) return val;
             if (val == "" && row_no > 0 &&
@@ -7254,11 +7255,7 @@ namespace AutoBot
                     {
                         //EmailDownloader.EmailDownloader.SendEmail(Utils.Client, null, $"Bug Found",
                         //    new[] { "Joseph@auto-brokerage.com" }, $"Required Field - '{mapping.OriginalName}' on Line:{ row_no} in File: { file.Name} has no Value.", Array.Empty<string>());
-                        EmailDownloader.EmailDownloader.ForwardMsg(Convert.ToUInt16(fileType.EmailId),
-                            Utils.Client, $"Bug Found",
-                            $"Required Field - '{mapping.OriginalName}' on Line:{row_no} in File: {file.Name} has no Value.",
-                            new[] { "Joseph@auto-brokerage.com" }, Array.Empty<string>()
-                        );
+                       errLst.Add($"Required Field - '{mapping.OriginalName}' on Line:{row_no} in File: {file.Name} has no Value.");
                         return val;
                     }
                 }
@@ -7270,11 +7267,7 @@ namespace AutoBot
                     {
                         //EmailDownloader.EmailDownloader.SendEmail(Utils.Client, null, $"Bug Found",
                         //    new[] { "Joseph@auto-brokerage.com" }, $"Required Field - '{mapping.OriginalName}' on Line:{ row_no} in File: { file.Name} has no Value.", Array.Empty<string>());
-                        EmailDownloader.EmailDownloader.ForwardMsg(Convert.ToUInt16(fileType.EmailId),
-                            Utils.Client, $"Bug Found",
-                            $"Required Field - '{mapping.OriginalName}' on Line:{row_no} in File: {file.Name} has Value ='{val}' cannot be converted to Number.",
-                            new[] { "Joseph@auto-brokerage.com" }, Array.Empty<string>()
-                        );
+                       errLst.Add($"Required Field - '{mapping.OriginalName}' on Line:{row_no} in File: {file.Name} has Value ='{val}' cannot be converted to Number.");
                         return val;
                         //val = "";
                     }
@@ -7286,15 +7279,17 @@ namespace AutoBot
                     {
                         //EmailDownloader.EmailDownloader.SendEmail(Utils.Client, null, $"Bug Found",
                         //    new[] { "Joseph@auto-brokerage.com" }, $"Required Field - '{mapping.OriginalName}' on Line:{ row_no} in File: { file.Name} has no Value.", Array.Empty<string>());
-                        EmailDownloader.EmailDownloader.ForwardMsg(Convert.ToUInt16(fileType.EmailId),
-                            Utils.Client, $"Bug Found",
-                            $"Required Field - '{mapping.OriginalName}' on Line:{row_no} in File: {file.Name} has Value ='{val}' cannot be converted to date.",
-                            new[] { "Joseph@auto-brokerage.com" }, Array.Empty<string>()
-                        );
+                        errLst.Add($"Required Field - '{mapping.OriginalName}' on Line:{row_no} in File: {file.Name} has Value ='{val}' cannot be converted to date.");
                         return val;
                         //  val = "";
                     }
                 }
+                        if(errLst.Any())
+                            EmailDownloader.EmailDownloader.ForwardMsg(Convert.ToUInt16(fileType.EmailId),
+                            Utils.Client, $"Bug Found",
+                            errLst.Aggregate((o,n) => o + "\r\n" + n),
+                            new[] { "Joseph@auto-brokerage.com" }, Array.Empty<string>()
+                        );
 
             return val;
         }

@@ -531,6 +531,7 @@ namespace xlsxWriter
 
                     if (!lst.Any()) return;
 
+                    
                     ctx.Set<T>().AddRange(lst);
                     ctx.SaveChanges();
                 }

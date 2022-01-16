@@ -99,6 +99,19 @@ namespace OCR.Client.DTO
 		}
         private Nullable<bool> _DistinctValues;
 
+        [DataMember]
+        public Nullable<bool> IsColumn
+		{ 
+		    get { return _IsColumn; }
+			set
+			{
+			    if (value == _IsColumn) return;
+				_IsColumn = value;
+				NotifyPropertyChanged();//m => this.IsColumn
+			}
+		}
+        private Nullable<bool> _IsColumn;
+
        
         [DataMember]
         public ChangeTrackingCollection<Fields> Fields

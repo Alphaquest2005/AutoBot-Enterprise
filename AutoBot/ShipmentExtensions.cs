@@ -1174,14 +1174,37 @@ namespace AutoBotUtilities
                 var allUnMatchedInvoices = new EntryDataDSContext().ShipmentMIS_Invoices
                     .Where(x => invoiceLst.Any(z => z == x.Id)).ToList();
 
-                var allUnMatchedPOs = new EntryDataDSContext().ShipmentMIS_POs.ToList();
+                List<ShipmentMIS_POs> allUnMatchedPOs = new List<ShipmentMIS_POs>();
+               // allUnMatchedPOs = new EntryDataDSContext().ShipmentMIS_POs.ToList();
+               
+               
 
                 var invoiceNOs = invoices.Select(r => r.InvoiceNo).ToList();
                 invoiceNOs.AddRange(unAttachedInvoices.Select(x => x.InvoiceNo));
 
                 var poNOs = invoices.SelectMany(r => r.ShipmentInvoicePOs.Select(z => z.PurchaseOrders.PONumber))
                     .ToList();
+
+                var rawPOs = rawInvoices.SelectMany(x => x.ShipmentInvoicePOs.Select(z => z.PurchaseOrders)).ToList();
+                var poEmailIds = rawPOs.Select(x => x.EmailId).Distinct();
+                var unMatchEmailPOs = new EntryDataDSContext().ShipmentPOs.Where(x => poEmailIds.Contains(x.EmailId) && !poNOs.Contains(x.InvoiceNo)).ToList();
+                allUnMatchedPOs.AddRange(unMatchEmailPOs.Select(x => new ShipmentMIS_POs()
+                {
+                    EntryData_Id = x.EntryData_Id,
+                    ImportedLines = x.ImportedLine,
+                    InvoiceDate = x.InvoiceDate,
+                    InvoiceNo = x.InvoiceNo,
+                    InvoiceTotal = x.InvoiceTotal,
+                    InvoiceId = x.EntryData_Id,
+                    SourceFile = x.SourceFile,
+                    SupplierCode = x.SupplierCode,
+                    SubTotal = x.SubTotal,
+                }));
+
                 poNOs.AddRange(allUnMatchedPOs.Select(x => x.InvoiceNo).ToList());
+
+               
+
 
                 var classifications = new EntryDataDSContext().ShipmentInvoicePOItemData
                     .Where(x => invoiceNOs.Contains(x.InvoiceNo) || poNOs.Contains(x.PONumber)).ToList();

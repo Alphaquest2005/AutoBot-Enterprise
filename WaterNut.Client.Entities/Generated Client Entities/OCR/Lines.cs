@@ -137,6 +137,21 @@ public Nullable<bool> DistinctValues
 		}
      
 
+       
+       
+public Nullable<bool> IsColumn
+		{ 
+		    get { return this.lines.IsColumn; }
+			set
+			{
+			    if (value == this.lines.IsColumn) return;
+				this.lines.IsColumn = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("IsColumn");
+			}
+		}
+     
+
         ObservableCollection<Fields> _Fields = null;
         public  ObservableCollection<Fields> Fields
 		{
