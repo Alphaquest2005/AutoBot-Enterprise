@@ -446,8 +446,11 @@ namespace WaterNut.DataSpace
 
                 if (fileType.Type == "Shipment Invoice")
                 {
-                    if(eslst is List<dynamic>)  eslst = ConvertCSVToShipmentInvoice(eslst);
-
+                    if (eslst is List<dynamic>)
+                    {
+                        eslst = ConvertCSVToShipmentInvoice(eslst);
+                        if (eslst == null) return false;
+                    }
                     if (!eslst.Any(
                             x => ((List<IDictionary<string, object>>)x).Any(z => z.ContainsKey("InvoiceDetails"))))
                     {
