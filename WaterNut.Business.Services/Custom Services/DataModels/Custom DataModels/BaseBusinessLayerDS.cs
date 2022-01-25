@@ -2453,14 +2453,14 @@ namespace WaterNut.DataSpace
                 if (!cdoc.DocumentItems.Any()) return;
                 var alst = docSet.AsycudaDocumentSet_Attachments
                     .Where(x => x.DocumentSpecific == false
-                                && cdoc.EmailIds.Contains(x.EmailUniqueId)
+                                && cdoc.EmailIds.Contains(x.EmailId)
                                 && cdoc.Document.AsycudaDocument_Attachments.All(z =>
                                     z.AttachmentId != x.AttachmentId)).ToList();
 
                 foreach (var att in alst)
                 foreach (var itm in cdoc.DocumentItems)
                 {
-                    if (itm.EmailId != att.EmailUniqueId) continue;
+                    if (itm.EmailId != att.EmailId) continue;
                     //.Select(x => x.InvoiceNo).Distinct().Aggregate((old, current) => old + "," + current)
                     cdoc.Document.AsycudaDocument_Attachments.Add(new AsycudaDocument_Attachments(true)
                     {
@@ -3106,7 +3106,7 @@ namespace WaterNut.DataSpace
             try
             {
                 if (emailId == null) return;
-                var email = Convert.ToInt32(emailId);
+                var email = emailId;
 
                 List<xcuda_ASYCUDA> docs;
                 List<xcuda_Item> itms;
@@ -3120,13 +3120,13 @@ namespace WaterNut.DataSpace
                         .Where(x => x.Attachment.FilePath.EndsWith("pdf")
                                     && x.FileType.Type != "INV"
                                     && x.AsycudaDocumentSetId == asycudaDocumentSetId
-                                    && x.EmailUniqueId == email)
+                                    && x.EmailId == email)
                         .Select(x => x.Attachment).AsEnumerable().DistinctBy(x => x.FilePath).ToList();
 
                     var nonpdfs = ctx.AsycudaDocumentSet_Attachments.Include(x => x.Attachment).Where(x =>
                             !x.Attachment.FilePath.EndsWith("pdf") && x.FileType.Type != "INV"
                                                                    && x.AsycudaDocumentSetId == asycudaDocumentSetId
-                                                                   && x.EmailUniqueId == email)
+                                                                   && x.EmailId == email)
                         .Select(x => x.Attachment).AsEnumerable().DistinctBy(x => x.FilePath).ToList();
 
                     pdfs.AddRange(nonpdfs);

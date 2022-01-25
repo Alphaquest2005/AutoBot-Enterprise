@@ -714,6 +714,24 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
 
  
 
+		private string _emailIdFilter;
+        public string EmailIdFilter
+        {
+            get
+            {
+                return _emailIdFilter;
+            }
+            set
+            {
+                _emailIdFilter = value;
+				NotifyPropertyChanged(x => EmailIdFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
+
 		private string _dutyFreePaidFilter;
         public string DutyFreePaidFilter
         {
@@ -1006,6 +1024,10 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
 						res.Append(" && " + string.Format("Type.Contains(\"{0}\")",  TypeFilter));						
  
 
+									if(string.IsNullOrEmpty(EmailIdFilter) == false)
+						res.Append(" && " + string.Format("EmailId.Contains(\"{0}\")",  EmailIdFilter));						
+ 
+
 									if(string.IsNullOrEmpty(DutyFreePaidFilter) == false)
 						res.Append(" && " + string.Format("DutyFreePaid.Contains(\"{0}\")",  DutyFreePaidFilter));						
  
@@ -1166,6 +1188,9 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
                     Type = x.Type ,
                     
  
+                    EmailId = x.EmailId ,
+                    
+ 
                     DutyFreePaid = x.DutyFreePaid ,
                     
  
@@ -1258,6 +1283,9 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
                     
  
                     public string Type { get; set; } 
+                    
+ 
+                    public string EmailId { get; set; } 
                     
  
                     public string DutyFreePaid { get; set; } 

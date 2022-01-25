@@ -461,7 +461,9 @@ public string Type
 
        
        
-public Nullable<int> EmailId
+                
+                [MaxLength(255, ErrorMessage = "EmailId has a max length of 255 letters ")]
+public string EmailId
 		{ 
 		    get { return this.adjustmentshort.EmailId; }
 			set

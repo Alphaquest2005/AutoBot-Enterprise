@@ -401,6 +401,24 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 
  
 
+		private string _emailIdFilter;
+        public string EmailIdFilter
+        {
+            get
+            {
+                return _emailIdFilter;
+            }
+            set
+            {
+                _emailIdFilter = value;
+				NotifyPropertyChanged(x => EmailIdFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
+
 		private string _xCNumberFilter;
         public string xCNumberFilter
         {
@@ -547,6 +565,10 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 						res.Append(" && " + string.Format("Declarant_Reference_Number.Contains(\"{0}\")",  Declarant_Reference_NumberFilter));						
  
 
+									if(string.IsNullOrEmpty(EmailIdFilter) == false)
+						res.Append(" && " + string.Format("EmailId.Contains(\"{0}\")",  EmailIdFilter));						
+ 
+
 									if(string.IsNullOrEmpty(xCNumberFilter) == false)
 						res.Append(" && " + string.Format("xCNumber.Contains(\"{0}\")",  xCNumberFilter));						
  
@@ -609,6 +631,9 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     Declarant_Reference_Number = x.Declarant_Reference_Number ,
                     
  
+                    EmailId = x.EmailId ,
+                    
+ 
                     xCNumber = x.xCNumber ,
                     
  
@@ -656,6 +681,9 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     
  
                     public string Declarant_Reference_Number { get; set; } 
+                    
+ 
+                    public string EmailId { get; set; } 
                     
  
                     public string xCNumber { get; set; } 

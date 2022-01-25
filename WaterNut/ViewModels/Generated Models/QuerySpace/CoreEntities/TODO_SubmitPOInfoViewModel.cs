@@ -243,6 +243,24 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 
  
 
+		private string _emailIdFilter;
+        public string EmailIdFilter
+        {
+            get
+            {
+                return _emailIdFilter;
+            }
+            set
+            {
+                _emailIdFilter = value;
+				NotifyPropertyChanged(x => EmailIdFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
+
 		private string _statusFilter;
         public string StatusFilter
         {
@@ -500,6 +518,10 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 						res.Append(" && " + string.Format("SupplierInvoiceNo.Contains(\"{0}\")",  SupplierInvoiceNoFilter));						
  
 
+									if(string.IsNullOrEmpty(EmailIdFilter) == false)
+						res.Append(" && " + string.Format("EmailId.Contains(\"{0}\")",  EmailIdFilter));						
+ 
+
 									if(string.IsNullOrEmpty(StatusFilter) == false)
 						res.Append(" && " + string.Format("Status.Contains(\"{0}\")",  StatusFilter));						
  
@@ -576,6 +598,9 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     SupplierInvoiceNo = x.SupplierInvoiceNo ,
                     
  
+                    EmailId = x.EmailId ,
+                    
+ 
                     Status = x.Status ,
                     
  
@@ -629,6 +654,9 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     
  
                     public string SupplierInvoiceNo { get; set; } 
+                    
+ 
+                    public string EmailId { get; set; } 
                     
  
                     public string Status { get; set; } 

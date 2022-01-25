@@ -768,6 +768,24 @@ namespace WaterNut.QuerySpace.EntryDataQS.ViewModels
 
  
 
+		private string _emailIdFilter;
+        public string EmailIdFilter
+        {
+            get
+            {
+                return _emailIdFilter;
+            }
+            set
+            {
+                _emailIdFilter = value;
+				NotifyPropertyChanged(x => EmailIdFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
+
 		private string _nameFilter;
         public string NameFilter
         {
@@ -987,6 +1005,10 @@ namespace WaterNut.QuerySpace.EntryDataQS.ViewModels
 					if(TaxAmountFilter.HasValue)
 						res.Append(" && " + string.Format("TaxAmount == {0}",  TaxAmountFilter.ToString()));				 
 
+									if(string.IsNullOrEmpty(EmailIdFilter) == false)
+						res.Append(" && " + string.Format("EmailId.Contains(\"{0}\")",  EmailIdFilter));						
+ 
+
 									if(string.IsNullOrEmpty(NameFilter) == false)
 						res.Append(" && " + string.Format("Name.Contains(\"{0}\")",  NameFilter));						
  
@@ -1099,6 +1121,9 @@ namespace WaterNut.QuerySpace.EntryDataQS.ViewModels
                     TaxAmount = x.TaxAmount ,
                     
  
+                    EmailId = x.EmailId ,
+                    
+ 
                     Name = x.Name ,
                     
  
@@ -1197,6 +1222,9 @@ namespace WaterNut.QuerySpace.EntryDataQS.ViewModels
                     
  
                     public Nullable<double> TaxAmount { get; set; } 
+                    
+ 
+                    public string EmailId { get; set; } 
                     
  
                     public string Name { get; set; } 

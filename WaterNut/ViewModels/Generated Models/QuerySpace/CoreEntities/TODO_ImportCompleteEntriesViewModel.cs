@@ -189,6 +189,24 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 
  
 
+		private string _emailIdFilter;
+        public string EmailIdFilter
+        {
+            get
+            {
+                return _emailIdFilter;
+            }
+            set
+            {
+                _emailIdFilter = value;
+				NotifyPropertyChanged(x => EmailIdFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
+
 		private string _entryDataIdFilter;
         public string EntryDataIdFilter
         {
@@ -236,6 +254,10 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 		var res = new StringBuilder();
  
 
+									if(string.IsNullOrEmpty(EmailIdFilter) == false)
+						res.Append(" && " + string.Format("EmailId.Contains(\"{0}\")",  EmailIdFilter));						
+ 
+
 									if(string.IsNullOrEmpty(EntryDataIdFilter) == false)
 						res.Append(" && " + string.Format("EntryDataId.Contains(\"{0}\")",  EntryDataIdFilter));						
 			return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
@@ -261,6 +283,9 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                 dataToPrint = lst.Select(x => new TODO_ImportCompleteEntriesExcelLine
                 {
  
+                    EmailId = x.EmailId ,
+                    
+ 
                     EntryDataId = x.EntryDataId 
                     
                 }).ToList()
@@ -274,6 +299,9 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
         public class TODO_ImportCompleteEntriesExcelLine
         {
 		 
+                    public string EmailId { get; set; } 
+                    
+ 
                     public string EntryDataId { get; set; } 
                     
         }

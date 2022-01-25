@@ -109,7 +109,7 @@ namespace AutoBot
                             foreach (var msg in msgLst)
                             {
                                 var desFolder = Path.Combine(appSetting.DataFolder, msg.Key.Item1,
-                                    msg.Key.Item2.EmailId.ToString());
+                                    msg.Key.Item2.EmailUniqueId.ToString());
 
                                 if (!msg.Key.Item2.EmailMapping.EmailFileTypes
                                     .All(x => x.IsRequired != true || new DirectoryInfo(desFolder).GetFiles()
@@ -132,7 +132,7 @@ namespace AutoBot
                                                         RegexOptions.IgnoreCase) &&
                                                     x.LastWriteTime >= beforeImport).ToArray();
 
-                                    fileType.EmailId = msg.Key.Item3;
+                                    fileType.EmailId = msg.Key.Item2.EmailId;//msg.Key.Item3;
 
                                     if (csvFiles.Length == 0)
                                     {

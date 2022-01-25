@@ -43,7 +43,6 @@
           <Property Name="TotalInternalFreight" Type="float" />
           <Property Name="TotalWeight" Type="float" />
           <Property Name="Currency" Type="nvarchar" MaxLength="4" />
-          <Property Name="EmailId" Type="int" />
           <Property Name="FileTypeId" Type="int" />
           <Property Name="TotalOtherCost" Type="float" />
           <Property Name="TotalInsurance" Type="float" />
@@ -53,6 +52,7 @@
           <Property Name="Packages" Type="int" />
           <Property Name="UpgradeKey" Type="nvarchar" MaxLength="50" />
           <Property Name="EntryType" Type="nvarchar" MaxLength="50" />
+          <Property Name="EmailId" Type="nvarchar" MaxLength="255" />
         </EntityType>
         <EntityType Name="PackageTypes">
           <Key>
@@ -149,7 +149,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.EntryDataDetailsEx' does 
           <Property Name="LastCost" Type="float" />
           <Property Name="FileLineNumber" Type="int" />
           <Property Name="TaxAmount" Type="float" />
-          <Property Name="EmailId" Type="int" />
+          <Property Name="EmailId" Type="nvarchar" MaxLength="255" />
           <Property Name="FileTypeId" Type="int" />
           <Property Name="Name" Type="nvarchar" MaxLength="50" />
           <Property Name="InventoryItemId" Type="int" Nullable="false" />
@@ -185,7 +185,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.EntryDataEx' does not hav
           <Property Name="Currency" Type="nvarchar" MaxLength="4" />
           <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
           <Property Name="DutyFreePaid" Type="varchar" MaxLength="9" Nullable="false" />
-          <Property Name="EmailId" Type="int" />
+          <Property Name="EmailId" Type="nvarchar" MaxLength="255" />
           <Property Name="FileTypeId" Type="int" />
           <Property Name="SupplierCode" Type="nvarchar" MaxLength="100" />
           <Property Name="ExpectedTotal" Type="float" Nullable="false" />
@@ -441,7 +441,7 @@ FROM [dbo].[InventoryItemsEx] AS [InventoryItemsEx]</DefiningQuery>
           <Property Name="Currency" Type="String" MaxLength="4" FixedLength="false" Unicode="true" />
           <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
           <Property Name="DutyFreePaid" Type="String" Nullable="false" MaxLength="9" FixedLength="false" Unicode="false" />
-          <Property Name="EmailId" Type="Int32" />
+          <Property Name="EmailId" Type="String" />
           <Property Name="FileTypeId" Type="Int32" />
           <Property Name="InvoiceTotal" Type="Double" />
           <Property Name="SupplierCode" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
@@ -515,7 +515,7 @@ FROM [dbo].[InventoryItemsEx] AS [InventoryItemsEx]</DefiningQuery>
           <Property Name="ApplicationSettingsId" Type="Int32" />
           <Property Name="LastCost" Type="Double" />
           <Property Name="TaxAmount" Type="Double" />
-          <Property Name="EmailId" Type="Int32" />
+          <Property Name="EmailId" Type="String" />
           <Property Name="FileTypeId" Type="Int32" />
           <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="EntryData_Id" Type="Int32" Nullable="false" />
@@ -622,7 +622,7 @@ FROM [dbo].[InventoryItemsEx] AS [InventoryItemsEx]</DefiningQuery>
           <NavigationProperty Name="AsycudaDocumentEntryDatas" Relationship="WaterNutEntities.FK_AsycudaDocumentEntryData_EntryData" FromRole="EntryData" ToRole="AsycudaDocumentEntryData" />
           <NavigationProperty Name="AsycudaDocumentSetEntryDatas" Relationship="WaterNutEntities.FK_AsycudaDocumentSetEntryData_EntryData" FromRole="EntryData" ToRole="AsycudaDocumentSetEntryData" />
           <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
-          <Property Name="EmailId" Type="Int32" />
+          <Property Name="EmailId" Type="String" />
           <Property Name="FileTypeId" Type="Int32" />
           <Property Name="SupplierCode" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="InvoiceTotal" Type="Double" />

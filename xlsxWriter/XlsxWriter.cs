@@ -19,6 +19,12 @@ namespace xlsxWriter
 
         private static readonly string RiderManualMatchesTag = "Manual Matches";
 
+        public static List<(string reference, string filepath)> CreateCSV(string shipmentInvoiceKey,
+                List<ShipmentInvoice> shipmentInvoices, string emailId)
+        {
+            var riderId = new CoreEntitiesContext().Emails.FirstOrDefault(x => x.EmailId == emailId)?.EmailUniqueId ?? 0;
+            return CreateCSV(shipmentInvoiceKey, shipmentInvoices, riderId);
+        }
 
         public static List<(string reference, string filepath)> CreateCSV(string shipmentInvoiceKey,
             List<ShipmentInvoice> shipmentInvoices, int riderId)
@@ -33,6 +39,8 @@ namespace xlsxWriter
                     .First(x => x.ApplicationSettingsId ==
                                 BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId
                                 && x.Type == "POTemplate");
+
+                
 
 
                 var header = poTemplate.FileTypeMappings.OrderBy(x => x.Id)
@@ -103,14 +111,18 @@ namespace xlsxWriter
 
 
                             WritePOToFile(pO, workbook, header, doRider, riderdetails, invoiceRow,
-                                (shipmentInvoice.ShipmentRiderInvoice.FirstOrDefault()?.Packages ?? 0) == 0);
-                            DoMisMatches(shipmentInvoice, workbook);
-                            workbook.Save();
+                                ( shipmentInvoice.ShipmentInvoicePOs.Count > 1));//shipmentInvoice.ShipmentRiderInvoice.FirstOrDefault()?.Packages ?? 0) == 0 ||
+
+                            //DoMisMatches(shipmentInvoice, workbook);
+                            //workbook.Save();
 
                             if (pdfFile.FullName != pdfFilePath)
                                 File.Copy(pdfFile.FullName, pdfFilePath, true);
                             csvs.Add((pO.PurchaseOrders.PONumber, pdfFilePath));
                         }
+
+                        DoMisMatches(shipmentInvoice, workbook);
+                        workbook.Save();
                     }
                     else
                     {
@@ -270,9 +282,11 @@ namespace xlsxWriter
             workbook.SetCurrentWorksheet("POTemplate");
             var i = workbook.CurrentWorksheet
                 .GetLastRowNumber(); //== 1? 1: workbook.CurrentWorksheet.GetLastRowNumber() + 1;
-            if (combineedFile)
+            if (combineedFile
+                && workbook.CurrentWorksheet.HasCell(header.First(x => x.Key.Column == nameof(pO.PurchaseOrders.PONumber)).Key.Index, i)
+                && !string.IsNullOrEmpty(workbook.CurrentWorksheet.GetCell(header.First(x => x.Key.Column == nameof(pO.PurchaseOrders.PONumber)).Key.Index, i).Value.ToString()))
             {
-                //i += 1;
+                i += 1;
             }
 
             foreach (var itm in pO.PurchaseOrders.EntryDataDetails
@@ -344,7 +358,7 @@ namespace xlsxWriter
                 .SelectMany(x => x.POMISMatches)
                 //.Where(x => (x.INVQuantity != 0 && x.INVQuantity != null) && (x.POQuantity != 0 && x.POQuantity != null))
                 .OrderBy(x => x.INVTotalCost).ThenBy(x => x.POTotalCost)
-                //.DistinctBy(x => x.INVDetailsId)
+                .DistinctBy(x => x.INVDetailsId)// re intro this because multiple pos to one invoice
                 .ToList();
             if (!shipmentInvoicePoItemMisMatchesList.Any()) return;
             var header =
@@ -840,6 +854,8 @@ namespace xlsxWriter
                 throw;
             }
         }
+
+        
     }
 
     public class UnAttachedWorkBookPkg

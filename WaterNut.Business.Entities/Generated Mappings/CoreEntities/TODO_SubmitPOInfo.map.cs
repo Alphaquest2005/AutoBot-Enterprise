@@ -18,7 +18,7 @@
               this.Property(t => t.Date).HasColumnName("Date").HasMaxLength(10);
               this.Property(t => t.SupplierInvoiceNo).HasColumnName("SupplierInvoiceNo").HasMaxLength(50);
               this.Property(t => t.ApplicationSettingsId).HasColumnName("ApplicationSettingsId");
-              this.Property(t => t.EmailId).HasColumnName("EmailId");
+              this.Property(t => t.EmailId).HasColumnName("EmailId").HasMaxLength(255);
               this.Property(t => t.FileTypeId).HasColumnName("FileTypeId");
               this.Property(t => t.Status).HasColumnName("Status").IsRequired().IsUnicode(false).HasMaxLength(11);
               this.Property(t => t.CustomsProcedure).HasColumnName("CustomsProcedure").HasMaxLength(11);

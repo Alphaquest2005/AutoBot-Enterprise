@@ -504,7 +504,9 @@ public Nullable<double> TaxAmount
 
        
        
-public Nullable<int> EmailId
+                
+                
+public string EmailId
 		{ 
 		    get { return this.entrydatadetailsex.EmailId; }
 			set

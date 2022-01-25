@@ -224,14 +224,14 @@ namespace EmailDownloader
                 }
                
 
-                return new Tuple<string, Email, string>($"{subject.Trim()}", new Email(emailId: Convert.ToInt32(uid.ToString()), subject: msg.Subject, emailDate: msg.Date.DateTime, emailMapping: emailMapping), uid.ToString());
+                return new Tuple<string, Email, string>($"{subject.Trim()}", new Email(emailUniqueId: Convert.ToInt32(uid.ToString()), subject: msg.Subject, emailDate: msg.Date.DateTime, emailMapping: emailMapping), uid.ToString());
 
             }
 
             return null;
         }
 
-        public static bool SendBackMsg(int uID, Client clientDetails, string errtxt)
+        public static bool SendBackMsg(string uID, Client clientDetails, string errtxt)
         {
             try
             {
@@ -338,12 +338,14 @@ namespace EmailDownloader
             lst.Add(fileName);
         }
 
-        public static bool ForwardMsg(int uID, Client clientDetails, string subject, string body,string[] contacts ,string[] attachments
+        public static bool ForwardMsg(string emailId, Client clientDetails, string subject, string body,string[] contacts ,string[] attachments
             )
         {
             try
             {
-               
+
+                var uID = new CoreEntitiesContext().Emails.FirstOrDefault(x => x.EmailId == emailId)?.EmailUniqueId??0;
+                if (uID == 0) throw new ApplicationException($"Email not found for {emailId}");
                 var msg = GetMsg(uID, clientDetails);
                 if (msg != null)
                 {

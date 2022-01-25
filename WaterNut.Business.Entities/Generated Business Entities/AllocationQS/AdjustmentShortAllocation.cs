@@ -756,7 +756,7 @@ namespace AllocationQS.Business.Entities
         }
         Nullable<int> _filetypeid;
         [DataMember]
-        public Nullable<int> EmailId 
+        public string EmailId 
         {
             get
             {
@@ -769,7 +769,7 @@ namespace AllocationQS.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        Nullable<int> _emailid;
+        string _emailid;
         [DataMember]
         public string xStatus 
         {

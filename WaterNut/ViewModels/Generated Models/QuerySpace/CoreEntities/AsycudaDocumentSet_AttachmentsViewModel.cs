@@ -227,14 +227,15 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 		 internal virtual void OnCurrentEmailsChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<Emails> e)
 			{
 			if(ViewCurrentEmails == false) return;
-			if (e.Data == null || e.Data.EmailUniqueId == null)
+			if (e.Data == null || e.Data.EmailId == null)
                 {
                     vloader.FilterExpression = "None";
                 }
                 else
                 {
-				vloader.FilterExpression = string.Format("EmailUniqueId == {0}", e.Data.EmailUniqueId.ToString());
-                 }
+				
+				vloader.FilterExpression = string.Format("EmailId == \"{0}\"", e.Data.EmailId.ToString());
+                }
 
 				AsycudaDocumentSet_Attachments.Refresh();
 				NotifyPropertyChanged(x => this.AsycudaDocumentSet_Attachments);
@@ -398,6 +399,24 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
         }	
 
  
+
+		private string _emailIdFilter;
+        public string EmailIdFilter
+        {
+            get
+            {
+                return _emailIdFilter;
+            }
+            set
+            {
+                _emailIdFilter = value;
+				NotifyPropertyChanged(x => EmailIdFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
 		internal bool DisableBaseFilterData = false;
         public virtual void FilterData()
 	    {
@@ -459,7 +478,11 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 							if(FileDateFilter.HasValue)
 								res.Append(" && " + string.Format("FileDate == \"{0}\"",  Convert.ToDateTime(FileDateFilter).Date.ToString("MM/dd/yyyy")));
 						}
-							return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
+				 
+
+									if(string.IsNullOrEmpty(EmailIdFilter) == false)
+						res.Append(" && " + string.Format("EmailId.Contains(\"{0}\")",  EmailIdFilter));						
+			return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
 // Send to Excel Implementation
@@ -485,7 +508,10 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     DocumentSpecific = x.DocumentSpecific ,
                     
  
-                    FileDate = x.FileDate 
+                    FileDate = x.FileDate ,
+                    
+ 
+                    EmailId = x.EmailId 
                     
                 }).ToList()
             };
@@ -502,6 +528,9 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     
  
                     public System.DateTime FileDate { get; set; } 
+                    
+ 
+                    public string EmailId { get; set; } 
                     
         }
 

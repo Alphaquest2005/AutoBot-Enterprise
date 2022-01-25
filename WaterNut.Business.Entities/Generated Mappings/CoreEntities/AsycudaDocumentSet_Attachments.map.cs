@@ -18,12 +18,12 @@
               this.Property(t => t.AsycudaDocumentSetId).HasColumnName("AsycudaDocumentSetId");
               this.Property(t => t.DocumentSpecific).HasColumnName("DocumentSpecific");
               this.Property(t => t.FileDate).HasColumnName("FileDate");
-              this.Property(t => t.EmailUniqueId).HasColumnName("EmailUniqueId");
               this.Property(t => t.FileTypeId).HasColumnName("FileTypeId");
+              this.Property(t => t.EmailId).HasColumnName("EmailId").HasMaxLength(255);
               this.HasRequired(t => t.Attachments).WithMany(t =>(ICollection<AsycudaDocumentSet_Attachments>) t.AsycudaDocumentSet_Attachments).HasForeignKey(d => d.AttachmentId);
               this.HasRequired(t => t.AsycudaDocumentSetEx).WithMany(t =>(ICollection<AsycudaDocumentSet_Attachments>) t.AsycudaDocumentSet_Attachments).HasForeignKey(d => d.AsycudaDocumentSetId);
               this.HasOptional(t => t.FileTypes).WithMany(t =>(ICollection<AsycudaDocumentSet_Attachments>) t.AsycudaDocumentSet_Attachments).HasForeignKey(d => d.FileTypeId);
-              this.HasOptional(t => t.Emails).WithMany(t =>(ICollection<AsycudaDocumentSet_Attachments>) t.AsycudaDocumentSet_Attachments).HasForeignKey(d => d.EmailUniqueId);
+              this.HasOptional(t => t.Emails).WithMany(t =>(ICollection<AsycudaDocumentSet_Attachments>) t.AsycudaDocumentSet_Attachments).HasForeignKey(d => d.EmailId);
               this.HasMany(t => t.AttachmentLog).WithRequired(t => (AsycudaDocumentSet_Attachments)t.AsycudaDocumentSet_Attachments);
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);

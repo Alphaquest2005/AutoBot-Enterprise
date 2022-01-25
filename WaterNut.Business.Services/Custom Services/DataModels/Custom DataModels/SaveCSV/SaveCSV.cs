@@ -105,15 +105,15 @@ namespace WaterNut.DataSpace
         {
             try
             {
-                int? emailId = null;
+                string emailId = null;
                
                 using (var ctx = new CoreEntitiesContext())
                 {
                     
                     var res = ctx.AsycudaDocumentSet_Attachments.Where(x => x.Attachments.FilePath.Replace(".xlsx", "-Fixed.csv") == droppedFilePath 
                                                                             || x.Attachments.FilePath == droppedFilePath) 
-                        .Select(x => new{x.EmailUniqueId, x.FileTypeId}).FirstOrDefault();
-                    emailId = res?.EmailUniqueId ?? Convert.ToInt32(fileType.EmailId == "0"  || fileType.EmailId == null ? null : fileType.EmailId);
+                        .Select(x => new{x.EmailId, x.FileTypeId}).FirstOrDefault();
+                    emailId = res?.EmailId ?? (fileType.EmailId == "0"  || fileType.EmailId == null ? null : fileType.EmailId);
                    
                 }
 
@@ -150,7 +150,7 @@ namespace WaterNut.DataSpace
                         return;
                     }
 
-                    if (await SaveCsvEntryData.Instance.ExtractEntryData(fileType, lines, headings,  docSet, overWriteExisting, emailId.GetValueOrDefault(), droppedFilePath).ConfigureAwait(false)) return;
+                    if (await SaveCsvEntryData.Instance.ExtractEntryData(fileType, lines, headings,  docSet, overWriteExisting, emailId, droppedFilePath).ConfigureAwait(false)) return;
                 }
             }
             catch (Exception Ex)

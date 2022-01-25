@@ -169,7 +169,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AdjustmentDetails' does n
           <Property Name="Currency" Type="nvarchar" MaxLength="4" />
           <Property Name="IsReconciled" Type="bit" />
           <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
-          <Property Name="EmailId" Type="int" />
+          <Property Name="EmailId" Type="nvarchar" MaxLength="255" />
           <Property Name="FileTypeId" Type="int" />
           <Property Name="InvoiceDate" Type="datetime2" Precision="7" Nullable="false" />
           <Property Name="Subject" Type="nvarchar(max)" />
@@ -198,7 +198,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AdjustmentEx' does not ha
           <Property Name="TotalLines" Type="int" />
           <Property Name="Currency" Type="nvarchar" MaxLength="4" />
           <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
-          <Property Name="EmailId" Type="int" />
+          <Property Name="EmailId" Type="nvarchar" MaxLength="255" />
           <Property Name="FileTypeId" Type="int" />
         </EntityType>
         <!--Errors Found During Generation:
@@ -247,7 +247,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AdjustmentOvers' does not
           <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
           <Property Name="Type" Type="nvarchar" MaxLength="50" />
           <Property Name="DutyFreePaid" Type="nvarchar" MaxLength="50" />
-          <Property Name="EmailId" Type="int" />
+          <Property Name="EmailId" Type="nvarchar" MaxLength="255" />
           <Property Name="FileTypeId" Type="int" />
           <Property Name="InvoiceDate" Type="datetime2" Precision="7" Nullable="false" />
           <Property Name="Subject" Type="nvarchar(max)" />
@@ -314,7 +314,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AdjustmentShortAllocation
           <Property Name="xReferenceNumber" Type="nvarchar" MaxLength="30" />
           <Property Name="TariffCode" Type="nvarchar" MaxLength="50" />
           <Property Name="Invalid" Type="bit" />
-          <Property Name="pExpiryDate" Type="datetime" />
+          <Property Name="pExpiryDate" Type="datetime2" Precision="7" />
           <Property Name="pTariffCode" Type="nvarchar" MaxLength="20" />
           <Property Name="pPrecision1" Type="nvarchar" MaxLength="255" />
           <Property Name="pItemNumber" Type="nvarchar" MaxLength="50" />
@@ -325,7 +325,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AdjustmentShortAllocation
           <Property Name="DutyFreePaid" Type="nvarchar" MaxLength="50" />
           <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
           <Property Name="FileTypeId" Type="int" />
-          <Property Name="EmailId" Type="int" />
+          <Property Name="EmailId" Type="nvarchar" MaxLength="255" />
           <Property Name="xStatus" Type="nvarchar" MaxLength="255" />
           <Property Name="Type" Type="nvarchar" MaxLength="50" />
           <Property Name="SANumber" Type="int" Nullable="false" />
@@ -377,7 +377,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AdjustmentShorts' does no
           <Property Name="Currency" Type="nvarchar" MaxLength="4" />
           <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
           <Property Name="Type" Type="nvarchar" MaxLength="50" />
-          <Property Name="EmailId" Type="int" />
+          <Property Name="EmailId" Type="nvarchar" MaxLength="255" />
           <Property Name="FileTypeId" Type="int" />
           <Property Name="InvoiceDate" Type="datetime2" Precision="7" Nullable="false" />
           <Property Name="Subject" Type="nvarchar(max)" />
@@ -493,7 +493,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-AdjustmentOversToXML
           <Property Name="ApplicationSettingsId" Type="int" />
           <Property Name="Type" Type="nvarchar" MaxLength="50" />
           <Property Name="DutyFreePaid" Type="nvarchar" MaxLength="50" />
-          <Property Name="EmailId" Type="int" />
+          <Property Name="EmailId" Type="nvarchar" MaxLength="255" />
           <Property Name="FileTypeId" Type="int" />
           <Property Name="InvoiceDate" Type="datetime2" Precision="7" />
           <Property Name="Subject" Type="nvarchar(max)" />
@@ -546,7 +546,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-PreDiscrepancyErrors
           <Property Name="IsReconciled" Type="bit" />
           <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
           <Property Name="FileTypeId" Type="int" />
-          <Property Name="EmailId" Type="int" />
+          <Property Name="EmailId" Type="nvarchar" MaxLength="255" />
           <Property Name="Declarant_Reference_Number" Type="nvarchar" MaxLength="50" />
           <Property Name="InvoiceDate" Type="datetime2" Precision="7" Nullable="false" />
           <Property Name="Subject" Type="nvarchar(max)" />
@@ -1111,7 +1111,7 @@ FROM [dbo].[TODO-PreDiscrepancyErrors] AS [TODO-PreDiscrepancyErrors]</DefiningQ
           <NavigationProperty Name="AdjustmentShorts" Relationship="Model.AdjustmentExAdjustmentShort" FromRole="AdjustmentEx" ToRole="AdjustmentShort" />
           <NavigationProperty Name="AdjustmentDetails" Relationship="Model.AdjustmentExAdjustmentDetail" FromRole="AdjustmentEx" ToRole="AdjustmentDetail" />
           <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
-          <Property Name="EmailId" Type="Int32" />
+          <Property Name="EmailId" Type="String" MaxLength="255" Unicode="true" FixedLength="false" />
           <Property Name="FileTypeId" Type="Int32" />
           <Property Name="InvoiceTotal" Type="Double" />
           <Property Name="ImportedTotal" Type="Double" />
@@ -1176,7 +1176,7 @@ FROM [dbo].[TODO-PreDiscrepancyErrors] AS [TODO-PreDiscrepancyErrors]</DefiningQ
           <NavigationProperty Name="InventoryItemsEx" Relationship="Model.InventoryItemsExAdjustmentOver" FromRole="AdjustmentOver" ToRole="InventoryItemsEx" />
           <Property Name="Type" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="DutyFreePaid" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="EmailId" Type="Int32" />
+          <Property Name="EmailId" Type="String" MaxLength="255" Unicode="true" FixedLength="false" />
           <Property Name="FileTypeId" Type="Int32" />
           <Property Name="InvoiceDate" Type="DateTime" Nullable="false" Precision="7" />
           <Property Name="Subject" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
@@ -1219,7 +1219,7 @@ FROM [dbo].[TODO-PreDiscrepancyErrors] AS [TODO-PreDiscrepancyErrors]</DefiningQ
           <NavigationProperty Name="AsycudaDocumentItemEntryDataDetails" Relationship="Model.AdjustmentShortAsycudaDocumentItemEntryDataDetail" FromRole="AdjustmentShort" ToRole="AsycudaDocumentItemEntryDataDetail" />
           <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
           <Property Name="Type" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="EmailId" Type="Int32" />
+          <Property Name="EmailId" Type="String" MaxLength="255" Unicode="true" FixedLength="false" />
           <Property Name="FileTypeId" Type="Int32" />
           <Property Name="DutyFreePaid" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="InvoiceDate" Type="DateTime" Nullable="false" Precision="7" />
@@ -1351,7 +1351,7 @@ FROM [dbo].[TODO-PreDiscrepancyErrors] AS [TODO-PreDiscrepancyErrors]</DefiningQ
           <Property Name="xReferenceNumber" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
           <Property Name="TariffCode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="Invalid" Type="Boolean" />
-          <Property Name="pExpiryDate" Type="DateTime" Precision="3" />
+          <Property Name="pExpiryDate" Type="DateTime" Precision="7" />
           <Property Name="pTariffCode" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Name="pItemNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="AdjustmentShort" Relationship="Model.AdjustmentShortAdjustmentShortAllocation" FromRole="AdjustmentShortAllocation" ToRole="AdjustmentShort" />
@@ -1363,7 +1363,7 @@ FROM [dbo].[TODO-PreDiscrepancyErrors] AS [TODO-PreDiscrepancyErrors]</DefiningQ
           <NavigationProperty Name="AdjustmentDetail" Relationship="Model.AdjustmentDetailShortAllocation" FromRole="ShortAllocation" ToRole="AdjustmentDetail" />
           <Property Name="AsycudaDocumentSetId" Type="Int32" Nullable="false" />
           <Property Name="FileTypeId" Type="Int32" />
-          <Property Name="EmailId" Type="Int32" />
+          <Property Name="EmailId" Type="String" MaxLength="255" Unicode="true" FixedLength="false" />
           <Property Name="xStatus" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="Type" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="SalesLineNumber" Type="Int32" />
@@ -1462,7 +1462,7 @@ FROM [dbo].[TODO-PreDiscrepancyErrors] AS [TODO-PreDiscrepancyErrors]</DefiningQ
           <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
           <NavigationProperty Name="AsycudaDocumentItemEntryDataDetails" Relationship="Model.AdjustmentDetailAsycudaDocumentItemEntryDataDetail" FromRole="AdjustmentDetail" ToRole="AsycudaDocumentItemEntryDataDetail" />
           <NavigationProperty Name="ShortAllocations" Relationship="Model.AdjustmentDetailShortAllocation" FromRole="AdjustmentDetail" ToRole="ShortAllocation" />
-          <Property Name="EmailId" Type="Int32" />
+          <Property Name="EmailId" Type="String" MaxLength="255" Unicode="true" FixedLength="false" />
           <Property Name="FileTypeId" Type="Int32" />
           <Property Name="InvoiceDate" Type="DateTime" Nullable="false" Precision="7" />
           <Property Name="Subject" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
@@ -1751,7 +1751,7 @@ FROM [dbo].[TODO-PreDiscrepancyErrors] AS [TODO-PreDiscrepancyErrors]</DefiningQ
           <Property Name="IsReconciled" Type="Boolean" />
           <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
           <Property Name="FileTypeId" Type="Int32" />
-          <Property Name="EmailId" Type="Int32" />
+          <Property Name="EmailId" Type="String" MaxLength="255" Unicode="true" FixedLength="false" />
           <Property Name="Declarant_Reference_Number" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="InvoiceDate" Type="DateTime" Nullable="false" Precision="7" />
           <Property Name="Subject" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
@@ -1791,7 +1791,7 @@ FROM [dbo].[TODO-PreDiscrepancyErrors] AS [TODO-PreDiscrepancyErrors]</DefiningQ
           <Property Name="ApplicationSettingsId" Type="Int32" />
           <Property Name="Type" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="DutyFreePaid" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="EmailId" Type="Int32" />
+          <Property Name="EmailId" Type="String" MaxLength="255" Unicode="true" FixedLength="false" />
           <Property Name="FileTypeId" Type="Int32" />
           <Property Name="InvoiceDate" Type="DateTime" Precision="7" />
           <Property Name="Subject" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />

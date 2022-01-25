@@ -137,6 +137,10 @@
       <Project>{978B7943-BD11-41EB-91C9-59A09C6F0ECC}</Project>
       <Name>WaterNut.Business.Entities</Name>
     </ProjectReference>
+    <ProjectReference Include="..\WaterNut.Data\WaterNut.Data.csproj">
+      <Project>{92EB0CBF-4018-427B-AA8B-13B088650DB8}</Project>
+      <Name>WaterNut.Data</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

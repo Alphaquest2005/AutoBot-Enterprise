@@ -823,6 +823,24 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
         }	
 
  
+
+		private string _emailIdFilter;
+        public string EmailIdFilter
+        {
+            get
+            {
+                return _emailIdFilter;
+            }
+            set
+            {
+                _emailIdFilter = value;
+				NotifyPropertyChanged(x => EmailIdFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
 		private DateTime? _startInvoiceDateFilter = DateTime.Parse(string.Format("{0}/1/{1}", DateTime.Now.Month ,DateTime.Now.Year));
         public DateTime? StartInvoiceDateFilter
         {
@@ -1141,6 +1159,10 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
 						res.Append(" && " + string.Format("IsReconciled == {0}",  IsReconciledFilter));						
  
 
+									if(string.IsNullOrEmpty(EmailIdFilter) == false)
+						res.Append(" && " + string.Format("EmailId.Contains(\"{0}\")",  EmailIdFilter));						
+ 
+
  
 
 				if (Convert.ToDateTime(StartInvoiceDateFilter).Date != DateTime.MinValue &&
@@ -1309,6 +1331,9 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
                     IsReconciled = x.IsReconciled ,
                     
  
+                    EmailId = x.EmailId ,
+                    
+ 
                     InvoiceDate = x.InvoiceDate ,
                     
  
@@ -1410,6 +1435,9 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
                     
  
                     public Nullable<bool> IsReconciled { get; set; } 
+                    
+ 
+                    public string EmailId { get; set; } 
                     
  
                     public System.DateTime InvoiceDate { get; set; } 

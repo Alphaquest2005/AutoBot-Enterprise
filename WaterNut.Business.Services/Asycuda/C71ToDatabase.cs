@@ -430,7 +430,7 @@ namespace WaterNut.DataSpace.Asycuda
                         AsycudaDocumentSetId = docSet.AsycudaDocumentSetId,
                         DocumentSpecific = true,
                         FileDate = file.LastWriteTime,
-                        EmailUniqueId = null,
+                        EmailId = null,
                         FileTypeId = fileType.Id,
                         TrackingState = TrackingState.Added,
                         Attachments = new CoreEntities.Business.Entities.Attachments(true)

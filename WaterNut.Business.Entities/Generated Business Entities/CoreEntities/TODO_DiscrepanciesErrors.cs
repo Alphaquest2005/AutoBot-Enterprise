@@ -336,7 +336,7 @@ namespace CoreEntities.Business.Entities
         }
         System.DateTime _emaildate;
         [DataMember]
-        public Nullable<int> EmailId 
+        public string EmailId 
         {
             get
             {
@@ -349,7 +349,7 @@ namespace CoreEntities.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        Nullable<int> _emailid;
+        string _emailid;
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

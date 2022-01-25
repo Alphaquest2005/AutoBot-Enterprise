@@ -673,6 +673,24 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
 
  
 
+		private string _emailIdFilter;
+        public string EmailIdFilter
+        {
+            get
+            {
+                return _emailIdFilter;
+            }
+            set
+            {
+                _emailIdFilter = value;
+				NotifyPropertyChanged(x => EmailIdFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
+
 		private string _declarant_Reference_NumberFilter;
         public string Declarant_Reference_NumberFilter
         {
@@ -994,6 +1012,10 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
 						res.Append(" && " + string.Format("IsReconciled == {0}",  IsReconciledFilter));						
  
 
+									if(string.IsNullOrEmpty(EmailIdFilter) == false)
+						res.Append(" && " + string.Format("EmailId.Contains(\"{0}\")",  EmailIdFilter));						
+ 
+
 									if(string.IsNullOrEmpty(Declarant_Reference_NumberFilter) == false)
 						res.Append(" && " + string.Format("Declarant_Reference_Number.Contains(\"{0}\")",  Declarant_Reference_NumberFilter));						
  
@@ -1165,6 +1187,9 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
                     IsReconciled = x.IsReconciled ,
                     
  
+                    EmailId = x.EmailId ,
+                    
+ 
                     Declarant_Reference_Number = x.Declarant_Reference_Number ,
                     
  
@@ -1269,6 +1294,9 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
                     
  
                     public Nullable<bool> IsReconciled { get; set; } 
+                    
+ 
+                    public string EmailId { get; set; } 
                     
  
                     public string Declarant_Reference_Number { get; set; } 

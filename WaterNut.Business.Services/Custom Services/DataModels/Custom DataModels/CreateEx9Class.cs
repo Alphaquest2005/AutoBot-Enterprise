@@ -2252,7 +2252,7 @@ namespace WaterNut.DataSpace
             public pDocumentItem pDocumentItem { get; set; }
             public EX9Allocation EX9Allocation { get; set; }
             public int? FileTypeId { get; set; }
-            public int? EmailId { get; set; }
+            public string EmailId { get; set; }
         }
 
         public class pDocumentItem
@@ -2378,7 +2378,7 @@ namespace WaterNut.DataSpace
         public int pLineNumber { get; set; }
         public string Currency { get; set; }
         public int? FileTypeId { get; set; }
-        public int? EmailId { get; set; }
+        public string EmailId { get; set; }
         public int EntryData_Id { get; set; }
         public string Comment { get; set; }
         public string Type { get; set; }

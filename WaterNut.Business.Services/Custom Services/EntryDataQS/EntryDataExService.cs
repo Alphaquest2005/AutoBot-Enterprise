@@ -41,16 +41,13 @@ namespace EntryDataQS.Business.Services
 
         public async Task SavePDF(string droppedFilePath, string fileType, int docSetId, bool overwrite)
         {
-            
-            int? emailId = 0;
-            int? fileTypeId = 0;
             using (var ctx = new CoreEntitiesContext())
             {
 
                 var res = ctx.AsycudaDocumentSet_Attachments.Where(x => x.Attachments.FilePath == droppedFilePath)
-                    .Select(x => new { x.EmailUniqueId, x.FileTypeId }).FirstOrDefault();
-                emailId = res?.EmailUniqueId;
-                fileTypeId = res?.FileTypeId;
+                    .Select(x => new { x.EmailId, x.FileTypeId }).FirstOrDefault();
+                var emailId = res?.EmailId;
+                var fileTypeId = res?.FileTypeId;
 
                 var dfileType = ctx.FileTypes.ToList().FirstOrDefault(x =>
                     Regex.IsMatch(droppedFilePath, x.FilePattern, RegexOptions.IgnoreCase) && x.Type == fileType);
@@ -68,7 +65,7 @@ namespace EntryDataQS.Business.Services
                     Email = BaseDataModel.Instance.CurrentApplicationSettings.Email,
                     EmailMappings = BaseDataModel.Instance.CurrentApplicationSettings.EmailMapping.ToList()
                 };
-                InvoiceReader.Import(droppedFilePath, fileTypeId.GetValueOrDefault(), emailId.GetValueOrDefault(), overwrite, SaveCSVModel.Instance.GetDocSets(dfileType), dfileType, client);
+                InvoiceReader.Import(droppedFilePath, fileTypeId.GetValueOrDefault(), emailId, overwrite, SaveCSVModel.Instance.GetDocSets(dfileType), dfileType, client);
             }
             
         }

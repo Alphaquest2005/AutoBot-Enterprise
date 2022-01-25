@@ -608,6 +608,24 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
         }	
 
  
+
+		private string _emailIdFilter;
+        public string EmailIdFilter
+        {
+            get
+            {
+                return _emailIdFilter;
+            }
+            set
+            {
+                _emailIdFilter = value;
+				NotifyPropertyChanged(x => EmailIdFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
 		internal bool DisableBaseFilterData = false;
         public virtual void FilterData()
 	    {
@@ -781,7 +799,11 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 							if(EmailDateFilter.HasValue)
 								res.Append(" && " + string.Format("EmailDate == \"{0}\"",  Convert.ToDateTime(EmailDateFilter).Date.ToString("MM/dd/yyyy")));
 						}
-							return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
+				 
+
+									if(string.IsNullOrEmpty(EmailIdFilter) == false)
+						res.Append(" && " + string.Format("EmailId.Contains(\"{0}\")",  EmailIdFilter));						
+			return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
 // Send to Excel Implementation
@@ -858,7 +880,10 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     Subject = x.Subject ,
                     
  
-                    EmailDate = x.EmailDate 
+                    EmailDate = x.EmailDate ,
+                    
+ 
+                    EmailId = x.EmailId 
                     
                 }).ToList()
             };
@@ -926,6 +951,9 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     
  
                     public System.DateTime EmailDate { get; set; } 
+                    
+ 
+                    public string EmailId { get; set; } 
                     
         }
 

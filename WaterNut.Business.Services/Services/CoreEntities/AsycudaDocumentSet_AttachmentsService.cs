@@ -1179,18 +1179,18 @@ namespace CoreEntities.Business.Services
                     throw new FaultException<ValidationFault>(fault);
             }
         }
- 	        public async Task<IEnumerable<AsycudaDocumentSet_Attachments>> GetAsycudaDocumentSet_AttachmentsByEmailUniqueId(string EmailUniqueId, List<string> includesLst = null)
+ 	        public async Task<IEnumerable<AsycudaDocumentSet_Attachments>> GetAsycudaDocumentSet_AttachmentsByFileTypeId(string FileTypeId, List<string> includesLst = null)
         {
             try
             {
                 using ( var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
               {
-                var i = Convert.ToInt32(EmailUniqueId);
+                var i = Convert.ToInt32(FileTypeId);
                 var set = AddIncludes(includesLst, dbContext);
                 IEnumerable<AsycudaDocumentSet_Attachments> entities = await set//dbContext.AsycudaDocumentSet_Attachments
                                                     // .Include(x => x.AttachmentLog)									  
                                       .AsNoTracking()
-                                        .Where(x => x.EmailUniqueId.ToString() == EmailUniqueId.ToString())
+                                        .Where(x => x.FileTypeId.ToString() == FileTypeId.ToString())
 										.ToListAsync()
 										.ConfigureAwait(continueOnCapturedContext: false);
                 return entities;
@@ -1209,18 +1209,18 @@ namespace CoreEntities.Business.Services
                     throw new FaultException<ValidationFault>(fault);
             }
         }
- 	        public async Task<IEnumerable<AsycudaDocumentSet_Attachments>> GetAsycudaDocumentSet_AttachmentsByFileTypeId(string FileTypeId, List<string> includesLst = null)
+ 	        public async Task<IEnumerable<AsycudaDocumentSet_Attachments>> GetAsycudaDocumentSet_AttachmentsByEmailId(string EmailId, List<string> includesLst = null)
         {
             try
             {
                 using ( var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
               {
-                var i = Convert.ToInt32(FileTypeId);
+                var i = EmailId;
                 var set = AddIncludes(includesLst, dbContext);
                 IEnumerable<AsycudaDocumentSet_Attachments> entities = await set//dbContext.AsycudaDocumentSet_Attachments
                                                     // .Include(x => x.AttachmentLog)									  
                                       .AsNoTracking()
-                                        .Where(x => x.FileTypeId.ToString() == FileTypeId.ToString())
+                                        .Where(x => x.EmailId.ToString() == EmailId.ToString())
 										.ToListAsync()
 										.ConfigureAwait(continueOnCapturedContext: false);
                 return entities;

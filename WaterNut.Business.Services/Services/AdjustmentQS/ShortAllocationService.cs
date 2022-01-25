@@ -1312,7 +1312,7 @@ namespace AdjustmentQS.Business.Services
             {
                 using ( var dbContext = new AdjustmentQSContext(){StartTracking = StartTracking})
               {
-                var i = Convert.ToInt32(EmailId);
+                var i = EmailId;
                 var set = AddIncludes(includesLst, dbContext);
                 IEnumerable<ShortAllocation> entities = await set//dbContext.ShortAllocations
                                       .AsNoTracking()

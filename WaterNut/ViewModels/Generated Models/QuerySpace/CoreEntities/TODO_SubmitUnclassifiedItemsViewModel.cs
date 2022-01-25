@@ -261,6 +261,24 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 
  
 
+		private string _emailIdFilter;
+        public string EmailIdFilter
+        {
+            get
+            {
+                return _emailIdFilter;
+            }
+            set
+            {
+                _emailIdFilter = value;
+				NotifyPropertyChanged(x => EmailIdFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
+
 		private string _typeFilter;
         public string TypeFilter
         {
@@ -345,6 +363,10 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 						res.Append(" && " + string.Format("TariffCode.Contains(\"{0}\")",  TariffCodeFilter));						
  
 
+									if(string.IsNullOrEmpty(EmailIdFilter) == false)
+						res.Append(" && " + string.Format("EmailId.Contains(\"{0}\")",  EmailIdFilter));						
+ 
+
 									if(string.IsNullOrEmpty(TypeFilter) == false)
 						res.Append(" && " + string.Format("Type.Contains(\"{0}\")",  TypeFilter));						
  
@@ -389,6 +411,9 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     TariffCode = x.TariffCode ,
                     
  
+                    EmailId = x.EmailId ,
+                    
+ 
                     Type = x.Type ,
                     
  
@@ -418,6 +443,9 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     
  
                     public string TariffCode { get; set; } 
+                    
+ 
+                    public string EmailId { get; set; } 
                     
  
                     public string Type { get; set; } 

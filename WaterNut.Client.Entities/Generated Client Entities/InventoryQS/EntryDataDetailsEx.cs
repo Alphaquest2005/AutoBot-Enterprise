@@ -516,7 +516,9 @@ public int EntryData_Id
 
        
        
-public Nullable<int> EmailId
+                
+                
+public string EmailId
 		{ 
 		    get { return this.entrydatadetailsex.EmailId; }
 			set
@@ -602,6 +604,21 @@ public Nullable<double> VolumeLiters
 				this.entrydatadetailsex.VolumeLiters = value;
                 if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
 				NotifyPropertyChanged("VolumeLiters");
+			}
+		}
+     
+
+       
+       [NumberValidationAttribute]
+public Nullable<int> PreviousCLineNumber
+		{ 
+		    get { return this.entrydatadetailsex.PreviousCLineNumber; }
+			set
+			{
+			    if (value == this.entrydatadetailsex.PreviousCLineNumber) return;
+				this.entrydatadetailsex.PreviousCLineNumber = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("PreviousCLineNumber");
 			}
 		}
      

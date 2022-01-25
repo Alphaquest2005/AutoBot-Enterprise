@@ -39,7 +39,7 @@
               this.Property(t => t.Goods).HasColumnName("Goods").IsRequired().HasMaxLength(1000);
               this.Property(t => t.Marks).HasColumnName("Marks").IsRequired().HasMaxLength(1000);
               this.Property(t => t.Containers).HasColumnName("Containers");
-              this.Property(t => t.EmailId).HasColumnName("EmailId");
+              this.Property(t => t.EmailId).HasColumnName("EmailId").HasMaxLength(255);
               this.Property(t => t.SourceFile).HasColumnName("SourceFile").IsRequired();
               this.Property(t => t.ApplicationSettingsId).HasColumnName("ApplicationSettingsId");
               this.Property(t => t.FileTypeId).HasColumnName("FileTypeId");

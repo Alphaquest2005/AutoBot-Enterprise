@@ -424,14 +424,14 @@ namespace CoreEntities.Client.Repositories
                 throw;
             }
         } 
- 	 public async Task<IEnumerable<AsycudaDocumentSet_Attachments>> GetAsycudaDocumentSet_AttachmentsByEmailUniqueId(string EmailUniqueId, List<string> includesLst = null)
+ 	 public async Task<IEnumerable<AsycudaDocumentSet_Attachments>> GetAsycudaDocumentSet_AttachmentsByFileTypeId(string FileTypeId, List<string> includesLst = null)
         {
-             if (EmailUniqueId == "0") return null;
+             if (FileTypeId == "0") return null;
             try
             {
                  using (AsycudaDocumentSet_AttachmentsClient t = new AsycudaDocumentSet_AttachmentsClient())
                     {
-                        var res = await t.GetAsycudaDocumentSet_AttachmentsByEmailUniqueId(EmailUniqueId, includesLst).ConfigureAwait(continueOnCapturedContext: false);
+                        var res = await t.GetAsycudaDocumentSet_AttachmentsByFileTypeId(FileTypeId, includesLst).ConfigureAwait(continueOnCapturedContext: false);
                          if(res != null)
                         {
                             return res.Select(x => new AsycudaDocumentSet_Attachments(x)).AsEnumerable();
@@ -452,14 +452,14 @@ namespace CoreEntities.Client.Repositories
                 throw;
             }
         } 
- 	 public async Task<IEnumerable<AsycudaDocumentSet_Attachments>> GetAsycudaDocumentSet_AttachmentsByFileTypeId(string FileTypeId, List<string> includesLst = null)
+ 	 public async Task<IEnumerable<AsycudaDocumentSet_Attachments>> GetAsycudaDocumentSet_AttachmentsByEmailId(string EmailId, List<string> includesLst = null)
         {
-             if (FileTypeId == "0") return null;
+             if (EmailId == "0") return null;
             try
             {
                  using (AsycudaDocumentSet_AttachmentsClient t = new AsycudaDocumentSet_AttachmentsClient())
                     {
-                        var res = await t.GetAsycudaDocumentSet_AttachmentsByFileTypeId(FileTypeId, includesLst).ConfigureAwait(continueOnCapturedContext: false);
+                        var res = await t.GetAsycudaDocumentSet_AttachmentsByEmailId(EmailId, includesLst).ConfigureAwait(continueOnCapturedContext: false);
                          if(res != null)
                         {
                             return res.Select(x => new AsycudaDocumentSet_Attachments(x)).AsEnumerable();

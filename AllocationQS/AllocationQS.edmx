@@ -76,7 +76,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AdjustmentShortAllocation
           <Property Name="DutyFreePaid" Type="nvarchar" MaxLength="50" />
           <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
           <Property Name="FileTypeId" Type="int" />
-          <Property Name="EmailId" Type="int" />
+          <Property Name="EmailId" Type="nvarchar" MaxLength="255" />
           <Property Name="xStatus" Type="nvarchar" MaxLength="255" />
           <Property Name="Type" Type="nvarchar" MaxLength="50" />
           <Property Name="SANumber" Type="int" Nullable="false" />
@@ -86,6 +86,10 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AllocationsTestCases' doe
         <EntityType Name="AllocationsTestCases">
           <Key>
             <PropertyRef Name="Id" />
+            
+            
+            
+            
           </Key>
           <Property Name="Id" Type="int" Nullable="false" />
           <Property Name="ItemNumber" Type="nvarchar" MaxLength="50" Nullable="false" />
@@ -167,7 +171,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AsycudaSalesAllocationsEx
           <Property Name="DutyFreePaid" Type="varchar" MaxLength="9" Nullable="false" />
           <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
           <Property Name="FileTypeId" Type="int" />
-          <Property Name="EmailId" Type="int" />
+          <Property Name="EmailId" Type="nvarchar" MaxLength="255" />
           <Property Name="xStatus" Type="nvarchar" MaxLength="255" />
           <Property Name="Type" Type="varchar" MaxLength="5" Nullable="false" />
           <Property Name="TaxAmount" Type="float" Nullable="false" />
@@ -496,7 +500,7 @@ FROM [dbo].[AsycudaSalesAndAdjustmentAllocationsEx] AS [AsycudaSalesAndAdjustmen
           <Property Name="Comment" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="AsycudaDocumentSetId" Type="Int32" Nullable="false" />
           <Property Name="FileTypeId" Type="Int32" />
-          <Property Name="EmailId" Type="Int32" />
+          <Property Name="EmailId" Type="String" MaxLength="255" />
           <Property Name="Type" Type="String" Nullable="false" MaxLength="5" FixedLength="false" Unicode="false" />
           <Property Name="CustomerName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
         </EntityType>
@@ -554,7 +558,7 @@ FROM [dbo].[AsycudaSalesAndAdjustmentAllocationsEx] AS [AsycudaSalesAndAdjustmen
           <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
           <Property Name="AsycudaDocumentSetId" Type="Int32" Nullable="false" />
           <Property Name="FileTypeId" Type="Int32" />
-          <Property Name="EmailId" Type="Int32" />
+          <Property Name="EmailId" Type="String" MaxLength="255" />
           <Property Name="xStatus" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="Type" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="SalesLineNumber" Type="Int32" />

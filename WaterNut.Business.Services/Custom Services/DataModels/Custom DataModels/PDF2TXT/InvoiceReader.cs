@@ -45,7 +45,7 @@ namespace WaterNut.DataSpace
 
     public class InvoiceReader
     {
-        public static bool Import(string file, int fileTypeId, int emailId, bool overWriteExisting,
+        public static bool Import(string file, int fileTypeId, string emailId, bool overWriteExisting,
             List<AsycudaDocumentSet> docSet, FileTypes fileType, Client client)
         {
             //Get Text
@@ -135,7 +135,7 @@ namespace WaterNut.DataSpace
             return templates;
         }
 
-        public static bool TryReadFile(string file, int emailId, FileTypes fileType,StringBuilder pdftxt,Client client, bool overWriteExisting, List<AsycudaDocumentSet> docSet, 
+        public static bool TryReadFile(string file, string emailId, FileTypes fileType,StringBuilder pdftxt,Client client, bool overWriteExisting, List<AsycudaDocumentSet> docSet, 
              Invoice tmp, int fileTypeId)
         {
             
@@ -278,7 +278,7 @@ namespace WaterNut.DataSpace
 
    
 
-        private static void ReportUnImportedFile(List<AsycudaDocumentSet> asycudaDocumentSets, string file, int emailId,
+        private static void ReportUnImportedFile(List<AsycudaDocumentSet> asycudaDocumentSets, string file, string emailId,
             int fileTypeId,
             Client client, string pdftxt, string error,
             List<Line> failedlst)
@@ -295,7 +295,7 @@ namespace WaterNut.DataSpace
             SaveImportError(asycudaDocumentSets, file, emailId, fileTypeId, pdftxt, error, failedlst, fileInfo);
         }
 
-        private static void SaveImportError(List<AsycudaDocumentSet> asycudaDocumentSets, string file, int emailId, int fileTypeId, string pdftxt,
+        private static void SaveImportError(List<AsycudaDocumentSet> asycudaDocumentSets, string file, string emailId, int fileTypeId, string pdftxt,
             string error, List<Line> failedlst, FileInfo fileInfo)
         {
             List<AsycudaDocumentSet_Attachments> existingAttachment = new List<AsycudaDocumentSet_Attachments>();
@@ -407,7 +407,7 @@ namespace WaterNut.DataSpace
                 BaseDataModel.Instance.CurrentApplicationSettings.DataFolder, testCaseData);
         }
 
-        private static string CreateEmail(string file, int emailId, Client client, string error, List<Line> failedlst,
+        private static string CreateEmail(string file, string emailId, Client client, string error, List<Line> failedlst,
             FileInfo fileInfo, string txtFile)
         {
             var body = $"Hey,\r\n\r\n {error}-'{fileInfo.Name}'.\r\n" +

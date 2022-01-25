@@ -22,19 +22,6 @@ namespace CoreEntities.Client.DTO
     public partial class Emails : BaseEntity<Emails>, ITrackable, IEquatable<Emails>
     {
         [DataMember]
-        public int EmailUniqueId
-		{ 
-		    get { return _EmailUniqueId; }
-			set
-			{
-			    if (value == _EmailUniqueId) return;
-				_EmailUniqueId = value;
-				NotifyPropertyChanged();//m => this.EmailUniqueId
-			}
-		}
-        private int _EmailUniqueId;
-
-        [DataMember]
         public string Subject
 		{ 
 		    get { return _Subject; }
@@ -59,6 +46,45 @@ namespace CoreEntities.Client.DTO
 			}
 		}
         private System.DateTime _EmailDate;
+
+        [DataMember]
+        public string EmailId
+		{ 
+		    get { return _EmailId; }
+			set
+			{
+			    if (value == _EmailId) return;
+				_EmailId = value;
+				NotifyPropertyChanged();//m => this.EmailId
+			}
+		}
+        private string _EmailId;
+
+        [DataMember]
+        public string MachineName
+		{ 
+		    get { return _MachineName; }
+			set
+			{
+			    if (value == _MachineName) return;
+				_MachineName = value;
+				NotifyPropertyChanged();//m => this.MachineName
+			}
+		}
+        private string _MachineName;
+
+        [DataMember]
+        public Nullable<int> EmailUniqueId
+		{ 
+		    get { return _EmailUniqueId; }
+			set
+			{
+			    if (value == _EmailUniqueId) return;
+				_EmailUniqueId = value;
+				NotifyPropertyChanged();//m => this.EmailUniqueId
+			}
+		}
+        private Nullable<int> _EmailUniqueId;
 
        
         [DataMember]

@@ -364,7 +364,35 @@ namespace CoreEntities.Client.Repositories
             }
         }
 
-        
+	 public async Task<IEnumerable<Emails>> GetEmailsByEmailUniqueId(string EmailUniqueId, List<string> includesLst = null)
+        {
+             if (EmailUniqueId == "0") return null;
+            try
+            {
+                 using (EmailsClient t = new EmailsClient())
+                    {
+                        var res = await t.GetEmailsByEmailUniqueId(EmailUniqueId, includesLst).ConfigureAwait(continueOnCapturedContext: false);
+                         if(res != null)
+                        {
+                            return res.Select(x => new Emails(x)).AsEnumerable();
+					    }                
+					    else
+					    {
+						    return null;
+					    }                    
+                    }
+            }
+            catch (FaultException<ValidationFault> e)
+            {
+                throw new Exception(e.Detail.Message, e.InnerException);
+            }
+            catch (Exception)
+            {
+                Debugger.Break();
+                throw;
+            }
+        } 
+         
 		public decimal SumField(string whereExp, string sumExp)
         {
             try

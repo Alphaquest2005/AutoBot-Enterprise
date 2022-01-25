@@ -74,7 +74,9 @@ public Nullable<int> ApplicationSettingsId
 
        
        
-public Nullable<int> EmailId
+                
+                [MaxLength(255, ErrorMessage = "EmailId has a max length of 255 letters ")]
+public string EmailId
 		{ 
 		    get { return this.todo_importcompleteentries.EmailId; }
 			set

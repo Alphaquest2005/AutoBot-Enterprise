@@ -60,8 +60,8 @@
           <Property Name="AsycudaDocumentSetId" Type="int" Nullable="false" />
           <Property Name="DocumentSpecific" Type="bit" Nullable="false" />
           <Property Name="FileDate" Type="date" Nullable="false" />
-          <Property Name="EmailUniqueId" Type="int" />
           <Property Name="FileTypeId" Type="int" />
+          <Property Name="EmailId" Type="nvarchar" MaxLength="255" />
         </EntityType>
         <EntityType Name="AsycudaDocumentSetEntryData">
           <Key>
@@ -79,7 +79,7 @@
           <Property Name="FilePath" Type="nvarchar" MaxLength="255" Nullable="false" />
           <Property Name="DocumentCode" Type="nvarchar" MaxLength="50" />
           <Property Name="Reference" Type="nvarchar" MaxLength="255" />
-          <Property Name="EmailId" Type="nvarchar" MaxLength="10" />
+          <Property Name="EmailId" Type="nvarchar" MaxLength="255" />
         </EntityType>
         <EntityType Name="Container">
           <Key>
@@ -3755,9 +3755,9 @@ FROM [dbo].[xcuda_ASYCUDAEx] AS [xcuda_ASYCUDAEx]</DefiningQuery>
           <NavigationProperty Name="Attachment" Relationship="WaterNutDBModel.FK_AsycudaDocumentSet_Attachments_Attachments" FromRole="AsycudaDocumentSet_Attachments" ToRole="Attachment" />
           <Property Name="DocumentSpecific" Type="Boolean" Nullable="false" />
           <Property Name="FileDate" Type="DateTime" Nullable="false" Precision="0" />
-          <Property Name="EmailUniqueId" Type="Int32" />
           <Property Name="FileTypeId" Type="Int32" />
           <NavigationProperty Name="FileType" Relationship="WaterNutDBModel.FK_AsycudaDocumentSet_Attachments_FileTypes" FromRole="AsycudaDocumentSet_Attachments" ToRole="FileType" />
+          <Property Name="EmailId" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="Attachment">
           <Key>
@@ -3769,7 +3769,7 @@ FROM [dbo].[xcuda_ASYCUDAEx] AS [xcuda_ASYCUDAEx]</DefiningQuery>
           <NavigationProperty Name="AsycudaDocumentSet_Attachments" Relationship="WaterNutDBModel.FK_AsycudaDocumentSet_Attachments_Attachments" FromRole="Attachment" ToRole="AsycudaDocumentSet_Attachments" />
           <Property Name="DocumentCode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="Reference" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="EmailId" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="EmailId" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
         </EntityType>
         <Association Name="FK_AsycudaDocument_Attachments_Attachments">
           <End Type="WaterNutDBModel.Attachment" Role="Attachment" Multiplicity="1">
@@ -4741,8 +4741,8 @@ FROM [dbo].[xcuda_ASYCUDAEx] AS [xcuda_ASYCUDAEx]</DefiningQuery>
           <EntitySetMapping Name="AsycudaDocumentSet_Attachments">
             <EntityTypeMapping TypeName="WaterNutDBModel.AsycudaDocumentSet_Attachments">
               <MappingFragment StoreEntitySet="AsycudaDocumentSet_Attachments">
+                <ScalarProperty Name="EmailId" ColumnName="EmailId" />
                 <ScalarProperty Name="FileTypeId" ColumnName="FileTypeId" />
-                <ScalarProperty Name="EmailUniqueId" ColumnName="EmailUniqueId" />
                 <ScalarProperty Name="FileDate" ColumnName="FileDate" />
                 <ScalarProperty Name="DocumentSpecific" ColumnName="DocumentSpecific" />
                 <ScalarProperty Name="AsycudaDocumentSetId" ColumnName="AsycudaDocumentSetId" />

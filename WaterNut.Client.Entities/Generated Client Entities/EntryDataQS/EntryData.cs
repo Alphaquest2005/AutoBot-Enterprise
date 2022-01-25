@@ -171,7 +171,9 @@ public int ApplicationSettingsId
 
        
        
-public Nullable<int> EmailId
+                
+                
+public string EmailId
 		{ 
 		    get { return this.entrydata.EmailId; }
 			set

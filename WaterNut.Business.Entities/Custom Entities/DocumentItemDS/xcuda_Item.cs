@@ -224,6 +224,6 @@ namespace DocumentItemDS.Business.Entities
         }
         [IgnoreDataMember]
         [NotMapped]
-        public int? EmailId { get; set; }
+        public string EmailId { get; set; }
     }
 }

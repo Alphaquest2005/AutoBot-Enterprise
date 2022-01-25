@@ -13,26 +13,6 @@ namespace CoreEntities.Client.Entities
 {
     public partial class TODO_SubmitUnclassifiedItems
     {
-        
-            partial void MyNavPropStartUp()
-            {
-
-              PropertyChanged += UpdateMyNavProp;
-
-            }
-
-
-      
-       #region MyNavProp Entities
-      
-      
-
-        void UpdateMyNavProp(object sender, System.ComponentModel.PropertyChangedEventArgs e)
-        {
-        }
-       
-
-         #endregion
  
     }
    

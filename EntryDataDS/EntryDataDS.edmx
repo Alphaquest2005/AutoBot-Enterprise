@@ -29,7 +29,7 @@
           <Property Name="FilePath" Type="nvarchar" MaxLength="255" Nullable="false" />
           <Property Name="DocumentCode" Type="nvarchar" MaxLength="50" />
           <Property Name="Reference" Type="nvarchar" MaxLength="255" />
-          <Property Name="EmailId" Type="nvarchar" MaxLength="10" />
+          <Property Name="EmailId" Type="nvarchar" MaxLength="255" />
         </EntityType>
         <EntityType Name="EntryData">
           <Key>
@@ -45,7 +45,6 @@
           <Property Name="TotalInternalFreight" Type="float" />
           <Property Name="TotalWeight" Type="float" />
           <Property Name="Currency" Type="nvarchar" MaxLength="4" />
-          <Property Name="EmailId" Type="int" />
           <Property Name="FileTypeId" Type="int" />
           <Property Name="TotalOtherCost" Type="float" />
           <Property Name="TotalInsurance" Type="float" />
@@ -55,6 +54,7 @@
           <Property Name="Packages" Type="int" />
           <Property Name="UpgradeKey" Type="nvarchar" MaxLength="50" />
           <Property Name="EntryType" Type="nvarchar" MaxLength="50" />
+          <Property Name="EmailId" Type="nvarchar" MaxLength="255" />
         </EntityType>
         <EntityType Name="EntryData_Adjustments">
           <Key>
@@ -148,7 +148,7 @@
           </Key>
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
-          <Property Name="EmailId" Type="int" />
+          <Property Name="EmailId" Type="nvarchar" MaxLength="255" />
           <Property Name="FileTypeId" Type="int" />
           <Property Name="FileType" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="SourceFile" Type="nvarchar(max)" Nullable="false" />
@@ -344,7 +344,7 @@
           <Property Name="WeightLB" Type="float" />
           <Property Name="VolumeCF" Type="float" />
           <Property Name="Reference" Type="nvarchar" MaxLength="50" />
-          <Property Name="EmailId" Type="int" />
+          <Property Name="EmailId" Type="nvarchar" MaxLength="255" />
           <Property Name="SourceFile" Type="nvarchar(max)" Nullable="false" />
           <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
           <Property Name="FileTypeId" Type="int" Nullable="false" />
@@ -376,7 +376,7 @@
           <Property Name="DueDate" Type="date" Nullable="false" />
           <Property Name="InvoiceTotal" Type="float" Nullable="false" />
           <Property Name="ETA" Type="date" Nullable="false" />
-          <Property Name="EmailId" Type="int" />
+          <Property Name="EmailId" Type="nvarchar" MaxLength="255" />
           <Property Name="SourceFile" Type="nvarchar(max)" Nullable="false" />
           <Property Name="ApplicationSettingsId" Type="int" />
           <Property Name="FileTypeId" Type="int" Nullable="false" />
@@ -404,7 +404,7 @@
           <Property Name="SupplierCode" Type="nvarchar" MaxLength="100" />
           <Property Name="TotalInternalFreight" Type="float" />
           <Property Name="Currency" Type="nvarchar" MaxLength="4" />
-          <Property Name="EmailId" Type="int" />
+          <Property Name="EmailId" Type="nvarchar" MaxLength="255" />
           <Property Name="FileTypeId" Type="int" Nullable="false" />
           <Property Name="TotalOtherCost" Type="float" />
           <Property Name="TotalInsurance" Type="float" />
@@ -515,7 +515,7 @@
           <Property Name="Goods" Type="nvarchar" MaxLength="1000" Nullable="false" />
           <Property Name="Marks" Type="nvarchar" MaxLength="1000" Nullable="false" />
           <Property Name="Containers" Type="int" />
-          <Property Name="EmailId" Type="int" />
+          <Property Name="EmailId" Type="nvarchar" MaxLength="255" />
           <Property Name="SourceFile" Type="nvarchar(max)" Nullable="false" />
           <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
           <Property Name="FileTypeId" Type="int" Nullable="false" />
@@ -536,7 +536,7 @@
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="ETA" Type="date" Nullable="false" />
           <Property Name="DocumentDate" Type="date" Nullable="false" />
-          <Property Name="EmailId" Type="int" />
+          <Property Name="EmailId" Type="nvarchar" MaxLength="255" />
           <Property Name="SourceFile" Type="nvarchar(max)" Nullable="false" />
           <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
           <Property Name="FileTypeId" Type="int" Nullable="false" />
@@ -637,7 +637,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.EntryDataDetailsEx' does 
           <Property Name="LastCost" Type="float" />
           <Property Name="FileLineNumber" Type="int" />
           <Property Name="TaxAmount" Type="float" />
-          <Property Name="EmailId" Type="int" />
+          <Property Name="EmailId" Type="nvarchar" MaxLength="255" />
           <Property Name="FileTypeId" Type="int" />
           <Property Name="Name" Type="nvarchar" MaxLength="50" />
           <Property Name="InventoryItemId" Type="int" Nullable="false" />
@@ -673,7 +673,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.EntryDataEx' does not hav
           <Property Name="Currency" Type="nvarchar" MaxLength="4" />
           <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
           <Property Name="DutyFreePaid" Type="varchar" MaxLength="9" Nullable="false" />
-          <Property Name="EmailId" Type="int" />
+          <Property Name="EmailId" Type="nvarchar" MaxLength="255" />
           <Property Name="FileTypeId" Type="int" />
           <Property Name="SupplierCode" Type="nvarchar" MaxLength="100" />
           <Property Name="ExpectedTotal" Type="float" Nullable="false" />
@@ -947,7 +947,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ShipmentPOs' does not hav
           <Property Name="InvoiceTotal" Type="float" />
           <Property Name="ImportedLine" Type="int" />
           <Property Name="SupplierCode" Type="nvarchar" MaxLength="100" />
-          <Property Name="EmailId" Type="int" />
+          <Property Name="EmailId" Type="nvarchar" MaxLength="255" />
           <Property Name="SourceFile" Type="nvarchar(max)" />
           <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
         </EntityType>
@@ -2539,7 +2539,7 @@ FROM [dbo].[ShipmentRiderManifests] AS [ShipmentRiderManifests]</DefiningQuery>
           <Property Name="TotalWeight" Type="Double" />
           <Property Name="Currency" Type="String" MaxLength="4" FixedLength="false" Unicode="true" />
           <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
-          <Property Name="EmailId" Type="Int32" />
+          <Property Name="EmailId" Type="String" MaxLength="255" Unicode="true" FixedLength="false" />
           <Property Name="FileTypeId" Type="Int32" />
           <NavigationProperty Name="FileTypes" Relationship="WaterNutDBModel.FK_EntryData_FileTypes" FromRole="EntryData" ToRole="FileTypes" />
           <Property Name="SupplierCode" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
@@ -2689,7 +2689,7 @@ FROM [dbo].[ShipmentRiderManifests] AS [ShipmentRiderManifests]</DefiningQuery>
           <Property Name="ApplicationSettingsId" Type="Int32" />
           <Property Name="LastCost" Type="Double" />
           <Property Name="TaxAmount" Type="Double" />
-          <Property Name="EmailId" Type="Int32" />
+          <Property Name="EmailId" Type="String" MaxLength="255" Unicode="true" FixedLength="false" />
           <Property Name="FileTypeId" Type="Int32" />
           <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="EntryData_Id" Type="Int32" Nullable="false" />
@@ -2901,7 +2901,7 @@ FROM [dbo].[ShipmentRiderManifests] AS [ShipmentRiderManifests]</DefiningQuery>
           <Property Name="Currency" Type="String" MaxLength="4" FixedLength="false" Unicode="true" />
           <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
           <Property Name="DutyFreePaid" Type="String" Nullable="false" MaxLength="9" FixedLength="false" Unicode="false" />
-          <Property Name="EmailId" Type="Int32" />
+          <Property Name="EmailId" Type="String" MaxLength="255" Unicode="true" FixedLength="false" />
           <Property Name="FileTypeId" Type="Int32" />
           <Property Name="SupplierCode" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="ExpectedTotal" Type="Double" Nullable="false" />
@@ -3044,7 +3044,7 @@ FROM [dbo].[ShipmentRiderManifests] AS [ShipmentRiderManifests]</DefiningQuery>
           <Property Name="InvoiceQty" Type="Double" />
           <Property Name="ReceivedQty" Type="Double" />
           <Property Name="TaxAmount" Type="Double" />
-          <Property Name="EmailId" Type="Int32" />
+          <Property Name="EmailId" Type="String" MaxLength="255" Unicode="true" FixedLength="false" />
           <Property Name="FileTypeId" Type="Int32" />
           <Property Name="FileType" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
@@ -3116,7 +3116,7 @@ FROM [dbo].[ShipmentRiderManifests] AS [ShipmentRiderManifests]</DefiningQuery>
           <Property Name="WeightLB" Type="Double" />
           <Property Name="VolumeCF" Type="Double" />
           <Property Name="Reference" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="EmailId" Type="Int32" />
+          <Property Name="EmailId" Type="String" MaxLength="255" Unicode="true" FixedLength="false" />
           <Property Name="SourceFile" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="FileTypeId" Type="Int32" Nullable="false" />
           <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
@@ -3152,7 +3152,7 @@ FROM [dbo].[ShipmentRiderManifests] AS [ShipmentRiderManifests]</DefiningQuery>
           <Property Name="ETA" Type="DateTime" Nullable="false" Precision="0" />
           <Property Name="DocumentDate" Type="DateTime" Nullable="false" Precision="0" />
           <NavigationProperty Name="ShipmentRiderDetails" Relationship="WaterNutDBModel.FK_ShipmentRiderDetails_ShipmentRider" FromRole="ShipmentRider" ToRole="ShipmentRiderDetails" />
-          <Property Name="EmailId" Type="Int32" />
+          <Property Name="EmailId" Type="String" MaxLength="255" Unicode="true" FixedLength="false" />
           <Property Name="SourceFile" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="FileTypeId" Type="Int32" Nullable="false" />
           <NavigationProperty Name="ShipmentRiderInvoice" Relationship="WaterNutDBModel.ShipmentRiderShipmentRiderInvoice" FromRole="ShipmentRider" ToRole="ShipmentRiderInvoice" />
@@ -3174,7 +3174,7 @@ FROM [dbo].[ShipmentRiderManifests] AS [ShipmentRiderManifests]</DefiningQuery>
           <Property Name="DueDate" Type="DateTime" Nullable="false" Precision="0" />
           <Property Name="InvoiceTotal" Type="Double" Nullable="false" />
           <Property Name="ETA" Type="DateTime" Nullable="false" Precision="0" />
-          <Property Name="EmailId" Type="Int32" />
+          <Property Name="EmailId" Type="String" MaxLength="255" Unicode="true" FixedLength="false" />
           <Property Name="SourceFile" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="FileTypeId" Type="Int32" Nullable="false" />
           <NavigationProperty Name="ShipmentFreightDetails" Relationship="WaterNutDBModel.FK_ShipmentFreightDetails_ShipmentFreight" FromRole="ShipmentFreight" ToRole="ShipmentFreightDetails" />
@@ -3257,7 +3257,7 @@ FROM [dbo].[ShipmentRiderManifests] AS [ShipmentRiderManifests]</DefiningQuery>
           <Property Name="SupplierCode" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="TotalInternalFreight" Type="Double" />
           <Property Name="Currency" Type="String" MaxLength="4" FixedLength="false" Unicode="true" />
-          <Property Name="EmailId" Type="Int32" />
+          <Property Name="EmailId" Type="String" MaxLength="255" Unicode="true" FixedLength="false" />
           <Property Name="FileTypeId" Type="Int32" Nullable="false" />
           <Property Name="TotalOtherCost" Type="Double" />
           <Property Name="TotalInsurance" Type="Double" />
@@ -3639,7 +3639,7 @@ FROM [dbo].[ShipmentRiderManifests] AS [ShipmentRiderManifests]</DefiningQuery>
           <Property Name="FilePath" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="DocumentCode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="Reference" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="EmailId" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="EmailId" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="ShipmentAttachments" Relationship="WaterNutDBModel.FK_ShipmentAttachments_Attachments" FromRole="Attachments" ToRole="ShipmentAttachments" />
         </EntityType>
         <Association Name="FK_ShipmentAttachments_Attachments">
@@ -3760,7 +3760,7 @@ FROM [dbo].[ShipmentRiderManifests] AS [ShipmentRiderManifests]</DefiningQuery>
           <Property Name="Goods" Type="String" Nullable="false" MaxLength="1000" FixedLength="false" Unicode="true" />
           <Property Name="Marks" Type="String" Nullable="false" MaxLength="1000" FixedLength="false" Unicode="true" />
           <Property Name="Containers" Type="Int32" />
-          <Property Name="EmailId" Type="Int32" />
+          <Property Name="EmailId" Type="String" MaxLength="255" Unicode="true" FixedLength="false" />
           <Property Name="SourceFile" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
           <Property Name="FileTypeId" Type="Int32" Nullable="false" />
@@ -4417,7 +4417,7 @@ FROM [dbo].[ShipmentRiderManifests] AS [ShipmentRiderManifests]</DefiningQuery>
           <Property Name="SupplierCode" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="SourceFile" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
-          <Property Name="EmailId" Type="Int32" />
+          <Property Name="EmailId" Type="String" />
         </EntityType>
         </Schema>
     </edmx:ConceptualModels>

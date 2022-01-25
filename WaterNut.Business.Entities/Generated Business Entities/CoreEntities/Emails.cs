@@ -26,21 +26,6 @@ namespace CoreEntities.Business.Entities
         }
 
         [DataMember]
-        public int EmailUniqueId 
-        {
-            get
-            {
-                return _emailuniqueid;
-            }
-            set
-            {
-                _emailuniqueid = value;
-                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
-                NotifyPropertyChanged();
-            }
-        }
-        int _emailuniqueid;
-        [DataMember]
         public string Subject 
         {
             get
@@ -70,6 +55,51 @@ namespace CoreEntities.Business.Entities
             }
         }
         System.DateTime _emaildate;
+        [DataMember]
+        public string EmailId 
+        {
+            get
+            {
+                return _emailid;
+            }
+            set
+            {
+                _emailid = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _emailid;
+        [DataMember]
+        public string MachineName 
+        {
+            get
+            {
+                return _machinename;
+            }
+            set
+            {
+                _machinename = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _machinename;
+        [DataMember]
+        public Nullable<int> EmailUniqueId 
+        {
+            get
+            {
+                return _emailuniqueid;
+            }
+            set
+            {
+                _emailuniqueid = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<int> _emailuniqueid;
         [DataMember]
         public List<AsycudaDocumentSet_Attachments> AsycudaDocumentSet_Attachments { get; set; }
 

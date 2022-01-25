@@ -1140,7 +1140,7 @@ namespace AllocationDS.Business.Services
             {
                 using ( var dbContext = new AllocationDSContext(){StartTracking = StartTracking})
               {
-                var i = Convert.ToInt32(EmailId);
+                var i = EmailId;
                 var set = AddIncludes(includesLst, dbContext);
                 IEnumerable<Sales> entities = await set//dbContext.EntryData.OfType<Sales>()
                                                     // .Include(x => x.EntryDataDetails)									  

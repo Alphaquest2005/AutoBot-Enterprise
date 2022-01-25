@@ -224,6 +224,24 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
         }	
 
  
+
+		private string _emailIdFilter;
+        public string EmailIdFilter
+        {
+            get
+            {
+                return _emailIdFilter;
+            }
+            set
+            {
+                _emailIdFilter = value;
+				NotifyPropertyChanged(x => EmailIdFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
 		internal bool DisableBaseFilterData = false;
         public virtual void FilterData()
 	    {
@@ -264,6 +282,10 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 
 									if(string.IsNullOrEmpty(Declarant_Reference_NumberFilter) == false)
 						res.Append(" && " + string.Format("Declarant_Reference_Number.Contains(\"{0}\")",  Declarant_Reference_NumberFilter));						
+ 
+
+									if(string.IsNullOrEmpty(EmailIdFilter) == false)
+						res.Append(" && " + string.Format("EmailId.Contains(\"{0}\")",  EmailIdFilter));						
 			return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
@@ -293,7 +315,10 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     SourceFile = x.SourceFile ,
                     
  
-                    Declarant_Reference_Number = x.Declarant_Reference_Number 
+                    Declarant_Reference_Number = x.Declarant_Reference_Number ,
+                    
+ 
+                    EmailId = x.EmailId 
                     
                 }).ToList()
             };
@@ -313,6 +338,9 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     
  
                     public string Declarant_Reference_Number { get; set; } 
+                    
+ 
+                    public string EmailId { get; set; } 
                     
         }
 

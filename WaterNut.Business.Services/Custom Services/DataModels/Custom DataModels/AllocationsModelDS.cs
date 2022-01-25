@@ -138,7 +138,7 @@ namespace WaterNut.DataSpace
                 {"pCNumber", "PreviousDocumentItem.AsycudaDocument.pCNumber"},
                 {"pLineNumber", "PreviousDocumentItem.LineNumber"},
                 {"PreviousItem_Id == 0", "PreviousItem_Id == null"},
-                {"ApplicationSettingsId", "EntryDataDetails.Sales.ApplicationSettingsId"},
+                {"(ApplicationSettingsId", "(EntryDataDetails.Sales.ApplicationSettingsId"},
             };
 
 

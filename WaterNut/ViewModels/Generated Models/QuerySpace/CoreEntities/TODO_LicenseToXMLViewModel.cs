@@ -333,6 +333,24 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 
  
 
+		private string _emailIdFilter;
+        public string EmailIdFilter
+        {
+            get
+            {
+                return _emailIdFilter;
+            }
+            set
+            {
+                _emailIdFilter = value;
+				NotifyPropertyChanged(x => EmailIdFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
+
 		private string _itemNumberFilter;
         public string ItemNumberFilter
         {
@@ -469,6 +487,10 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 						res.Append(" && " + string.Format("SourceFile.Contains(\"{0}\")",  SourceFileFilter));						
  
 
+									if(string.IsNullOrEmpty(EmailIdFilter) == false)
+						res.Append(" && " + string.Format("EmailId.Contains(\"{0}\")",  EmailIdFilter));						
+ 
+
 									if(string.IsNullOrEmpty(ItemNumberFilter) == false)
 						res.Append(" && " + string.Format("ItemNumber.Contains(\"{0}\")",  ItemNumberFilter));						
  
@@ -531,6 +553,9 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     SourceFile = x.SourceFile ,
                     
  
+                    EmailId = x.EmailId ,
+                    
+ 
                     ItemNumber = x.ItemNumber ,
                     
  
@@ -578,6 +603,9 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     
  
                     public string SourceFile { get; set; } 
+                    
+ 
+                    public string EmailId { get; set; } 
                     
  
                     public string ItemNumber { get; set; } 

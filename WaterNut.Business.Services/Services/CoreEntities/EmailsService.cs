@@ -98,16 +98,16 @@ namespace CoreEntities.Business.Services
         }
 
 
-        public async Task<Emails> GetEmailsByKey(string EmailUniqueId, List<string> includesLst = null, bool tracking = true)
+        public async Task<Emails> GetEmailsByKey(string EmailId, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
-			   if(string.IsNullOrEmpty(EmailUniqueId))return null; 
+			   if(string.IsNullOrEmpty(EmailId))return null; 
               using ( var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
               {
-                var i = Convert.ToInt32(EmailUniqueId);
+                var i = EmailId;
 				var set = AddIncludes(includesLst, dbContext);
-                Emails entity = await set.AsNoTracking().SingleOrDefaultAsync(x => x.EmailUniqueId == i).ConfigureAwait(continueOnCapturedContext: false);
+                Emails entity = await set.AsNoTracking().SingleOrDefaultAsync(x => x.EmailId == i).ConfigureAwait(continueOnCapturedContext: false);
                 if(tracking && entity != null) entity.StartTracking();
                 return entity;
               }
@@ -301,11 +301,11 @@ namespace CoreEntities.Business.Services
                                 IQueryable<Emails> dset;
                                 if (exp == "All")
                                 {
-                                    dset = set.OrderBy(x => x.EmailUniqueId);
+                                    dset = set.OrderBy(x => x.EmailId);
                                 }
                                 else
                                 {
-                                    dset = set.OrderBy(x => x.EmailUniqueId).Where(exp);
+                                    dset = set.OrderBy(x => x.EmailId).Where(exp);
                                 }
 
                                 var lst = dset.AsNoTracking()
@@ -376,12 +376,12 @@ namespace CoreEntities.Business.Services
                                 IQueryable<Emails> dset;
                                 if (expLst.FirstOrDefault() == "All")
                                 {
-                                    dset = set.OrderBy(x => x.EmailUniqueId);
+                                    dset = set.OrderBy(x => x.EmailId);
                                 }
                                 else
                                 {
                                     set = AddWheres(expLst, set);
-                                    dset = set.OrderBy(x => x.EmailUniqueId);
+                                    dset = set.OrderBy(x => x.EmailId);
                                 }
 
                                 var lst = dset.AsNoTracking()
@@ -527,15 +527,15 @@ namespace CoreEntities.Business.Services
             }
         }
 
-        public async Task<bool> DeleteEmails(string EmailUniqueId)
+        public async Task<bool> DeleteEmails(string EmailId)
         {
             try
             {
               using ( var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
               {
-                var i = Convert.ToInt32(EmailUniqueId);
+                var i = EmailId;
                 Emails entity = await dbContext.Emails
-													.SingleOrDefaultAsync(x => x.EmailUniqueId == i)
+													.SingleOrDefaultAsync(x => x.EmailId == i)
 													.ConfigureAwait(continueOnCapturedContext: false);
                 if (entity == null)
                     return false;
@@ -687,7 +687,7 @@ namespace CoreEntities.Business.Services
                     {
                         return await dbContext.Emails
 										.AsNoTracking()
-                                        .OrderBy(y => y.EmailUniqueId)
+                                        .OrderBy(y => y.EmailId)
 										.Skip(startIndex)
 										.Take(count)
 										.ToListAsync()
@@ -699,7 +699,7 @@ namespace CoreEntities.Business.Services
                         return await dbContext.Emails
 										.AsNoTracking()
                                         .Where(exp)
-										.OrderBy(y => y.EmailUniqueId)
+										.OrderBy(y => y.EmailId)
 										.Skip(startIndex)
 										.Take(count)
 										.ToListAsync()
@@ -745,7 +745,7 @@ namespace CoreEntities.Business.Services
 											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }
-                    return await dbContext.Emails.Where(exp == "All" || exp == null ? "EmailUniqueId != null" : exp)
+                    return await dbContext.Emails.Where(exp == "All" || exp == null ? "EmailId != null" : exp)
 											.AsNoTracking()
                                             .CountAsync()
 											.ConfigureAwait(continueOnCapturedContext: false);
@@ -788,9 +788,9 @@ namespace CoreEntities.Business.Services
 				.AsNoTracking()
                 .Where(navExp)
                 .SelectMany(navProp).OfType<Emails>()
-                .Where(exp == "All" || exp == null ? "EmailUniqueId != null" : exp)
+                .Where(exp == "All" || exp == null ? "EmailId != null" : exp)
                 .Distinct()
-                .OrderBy("EmailUniqueId")
+                .OrderBy("EmailId")
                 .CountAsync()
 				.ConfigureAwait(continueOnCapturedContext: false);
 			}
@@ -809,9 +809,9 @@ namespace CoreEntities.Business.Services
 				.AsNoTracking()
                 .Where(navExp)
                 .Select(navProp).OfType<Emails>()
-                .Where(exp == "All" || exp == null ? "EmailUniqueId != null" : exp)
+                .Where(exp == "All" || exp == null ? "EmailId != null" : exp)
                 .Distinct()
-                .OrderBy("EmailUniqueId")
+                .OrderBy("EmailId")
                 .CountAsync()
 				.ConfigureAwait(continueOnCapturedContext: false);
 			}
@@ -838,7 +838,7 @@ namespace CoreEntities.Business.Services
                        
                         return await set
 									.AsNoTracking()
-                                    .OrderBy(y => y.EmailUniqueId)
+                                    .OrderBy(y => y.EmailId)
  
                                     .Skip(startIndex)
                                     .Take(count)
@@ -863,8 +863,8 @@ namespace CoreEntities.Business.Services
                     }
                     return await set//dbContext.Emails
 								.AsNoTracking()
-                                .Where(exp == "All" || exp == null ? "EmailUniqueId != null" : exp)
-								.OrderBy(y => y.EmailUniqueId)
+                                .Where(exp == "All" || exp == null ? "EmailId != null" : exp)
+								.OrderBy(y => y.EmailId)
  
                                 .Skip(startIndex)
                                 .Take(count)
@@ -916,9 +916,9 @@ namespace CoreEntities.Business.Services
             if (includeLst != null) set = includeLst.Aggregate(set, (current, itm) => current.Include(itm));            
 
             return await set
-                .Where(exp == "All" || exp == null ? "EmailUniqueId != null" : exp)
+                .Where(exp == "All" || exp == null ? "EmailId != null" : exp)
                 .Distinct()
-                .OrderBy(y => y.EmailUniqueId)
+                .OrderBy(y => y.EmailId)
  
                 .Skip(startIndex)
                 .Take(count)
@@ -945,9 +945,9 @@ namespace CoreEntities.Business.Services
                if (includeLst != null) set = includeLst.Aggregate(set, (current, itm) => current.Include(itm)); 
                 
                return await set
-                .Where(exp == "All" || exp == null ? "EmailUniqueId != null" : exp)
+                .Where(exp == "All" || exp == null ? "EmailId != null" : exp)
                 .Distinct()
-                .OrderBy(y => y.EmailUniqueId)
+                .OrderBy(y => y.EmailId)
  
                 .Skip(startIndex)
                 .Take(count)
@@ -997,7 +997,7 @@ namespace CoreEntities.Business.Services
 							.AsNoTracking()
                             .Where(navExp)
 							.SelectMany(navProp).OfType<Emails>()
-							.Where(exp == "All" || exp == null?"EmailUniqueId != null":exp)
+							.Where(exp == "All" || exp == null?"EmailId != null":exp)
 							.Distinct()
 							.ToListAsync()
 							.ConfigureAwait(continueOnCapturedContext: false);
@@ -1007,7 +1007,7 @@ namespace CoreEntities.Business.Services
 				.AsNoTracking()
                 .Where(navExp)
                 .SelectMany(navProp).OfType<Emails>()
-                .Where(exp == "All" || exp == null?"EmailUniqueId != null":exp)
+                .Where(exp == "All" || exp == null?"EmailId != null":exp)
                 .Distinct();
 
 			set = includesLst.Aggregate(set, (current, itm) => current.Include(itm));
@@ -1034,7 +1034,7 @@ namespace CoreEntities.Business.Services
 							.AsNoTracking()
                             .Where(navExp)
 							.Select(navProp).OfType<Emails>()
-							.Where(exp == "All" || exp == null?"EmailUniqueId != null":exp)
+							.Where(exp == "All" || exp == null?"EmailId != null":exp)
 							.Distinct()
 							.ToListAsync()
 							.ConfigureAwait(continueOnCapturedContext: false);
@@ -1044,7 +1044,7 @@ namespace CoreEntities.Business.Services
 				.AsNoTracking()
                 .Where(navExp)
                 .Select(navProp).OfType<Emails>()
-                .Where(exp == "All" || exp == null?"EmailUniqueId != null":exp)
+                .Where(exp == "All" || exp == null?"EmailId != null":exp)
                 .Distinct();
 
 			set = includesLst.Aggregate(set, (current, itm) => current.Include(itm));
@@ -1059,7 +1059,37 @@ namespace CoreEntities.Business.Services
 			}
         }
 
-		
+			        public async Task<IEnumerable<Emails>> GetEmailsByEmailUniqueId(string EmailUniqueId, List<string> includesLst = null)
+        {
+            try
+            {
+                using ( var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
+              {
+                var i = Convert.ToInt32(EmailUniqueId);
+                var set = AddIncludes(includesLst, dbContext);
+                IEnumerable<Emails> entities = await set//dbContext.Emails
+                                                    // .Include(x => x.AsycudaDocumentSet_Attachments)									  
+                                      .AsNoTracking()
+                                        .Where(x => x.EmailUniqueId.ToString() == EmailUniqueId.ToString())
+										.ToListAsync()
+										.ConfigureAwait(continueOnCapturedContext: false);
+                return entities;
+              }
+             }
+            catch (Exception updateEx)
+            {
+                System.Diagnostics.Debugger.Break();
+                //throw new FaultException(updateEx.Message);
+                    var fault = new ValidationFault
+                                {
+                                    Result = false,
+                                    Message = updateEx.Message,
+                                    Description = updateEx.StackTrace
+                                };
+                    throw new FaultException<ValidationFault>(fault);
+            }
+        }
+ 
 		public decimal SumField(string whereExp, string field)
          {
              try
@@ -1119,7 +1149,7 @@ namespace CoreEntities.Business.Services
 											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }
-                    return Convert.ToDecimal(dbContext.Emails.Where(exp == "All" || exp == null ? "EmailUniqueId != null" : exp)
+                    return Convert.ToDecimal(dbContext.Emails.Where(exp == "All" || exp == null ? "EmailId != null" : exp)
 											.AsNoTracking()
                                             .Sum(field)??0);
                 }
@@ -1160,9 +1190,9 @@ namespace CoreEntities.Business.Services
 				.AsNoTracking()
                 .Where(navExp)
                 .SelectMany(navProp).OfType<Emails>()
-                .Where(exp == "All" || exp == null ? "EmailUniqueId != null" : exp)
+                .Where(exp == "All" || exp == null ? "EmailId != null" : exp)
                 .Distinct()
-                .OrderBy("EmailUniqueId")
+                .OrderBy("EmailId")
                 .Sum(field));
 			}
 			catch (Exception)
@@ -1180,9 +1210,9 @@ namespace CoreEntities.Business.Services
 				.AsNoTracking()
                 .Where(navExp)
                 .Select(navProp).OfType<Emails>()
-                .Where(exp == "All" || exp == null ? "EmailUniqueId != null" : exp)
+                .Where(exp == "All" || exp == null ? "EmailId != null" : exp)
                 .Distinct()
-                .OrderBy("EmailUniqueId")
+                .OrderBy("EmailId")
                 .Sum(field));
 			}
 			catch (Exception)

@@ -26,7 +26,7 @@
               this.Property(t => t.WeightLB).HasColumnName("WeightLB");
               this.Property(t => t.VolumeCF).HasColumnName("VolumeCF");
               this.Property(t => t.Reference).HasColumnName("Reference").HasMaxLength(50);
-              this.Property(t => t.EmailId).HasColumnName("EmailId");
+              this.Property(t => t.EmailId).HasColumnName("EmailId").HasMaxLength(255);
               this.Property(t => t.SourceFile).HasColumnName("SourceFile").IsRequired();
               this.Property(t => t.FileTypeId).HasColumnName("FileTypeId");
               this.Property(t => t.ApplicationSettingsId).HasColumnName("ApplicationSettingsId");

@@ -1275,7 +1275,7 @@ namespace AllocationDS.Business.Services
             {
                 using ( var dbContext = new AllocationDSContext(){StartTracking = StartTracking})
               {
-                var i = Convert.ToInt32(EmailId);
+                var i = EmailId;
                 var set = AddIncludes(includesLst, dbContext);
                 IEnumerable<EX9AsycudaSalesAllocations> entities = await set//dbContext.EX9AsycudaSalesAllocations
                                                     // .Include(x => x.AsycudaSalesAllocationsPIData)									  

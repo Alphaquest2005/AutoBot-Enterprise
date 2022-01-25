@@ -461,7 +461,7 @@ namespace EntryDataQS.Business.Entities
         }
         Nullable<double> _taxamount;
         [DataMember]
-        public Nullable<int> EmailId 
+        public string EmailId 
         {
             get
             {
@@ -474,7 +474,7 @@ namespace EntryDataQS.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        Nullable<int> _emailid;
+        string _emailid;
         [DataMember]
         public Nullable<int> FileTypeId 
         {

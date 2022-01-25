@@ -383,7 +383,7 @@ namespace AutoBot
             {
                 var reference = xlsxWriter.XlsxWriter.SaveUnAttachedSummary(file);
                 var res = reference.Split('-');
-                ft.EmailId = res[2];
+                //ft.EmailId = res[2];
                 CreateShipmentEmail(ft, fs);
             }
 
@@ -406,7 +406,7 @@ namespace AutoBot
             {
 
            
-            var emailId = Convert.ToInt32(fileType.EmailId);
+            var emailId = fileType.EmailId;
             
                 // Todo quick paks etc put Man reg#, bl numer, TotalWeight & Totalfreight in spreadsheet. so invoice can generate the entry.
                 // change the required documents to match too
@@ -439,13 +439,21 @@ namespace AutoBot
                 var contacts = new CoreEntitiesContext().Contacts.Where(x => x.Role == "PDF Entries" || x.Role == "Developer" || x.Role == "PO Clerk")
                         .Select(x => x.EmailAddress).ToArray();
 
-               
 
-                shipments.ForEach(shipment =>
+                using (var ctx = new EntryDataDSContext())
                 {
-                    EmailDownloader.EmailDownloader.SendEmail(Client,"",
-                                        $"CSVs for {shipment.ShipmentName}", contacts, shipment.ToString(), shipment.ShipmentAttachments.Select(x => x.Attachments.FilePath).ToArray());
-                });
+                    shipments.ForEach(shipment =>
+                    {
+                        EmailDownloader.EmailDownloader.SendEmail(Client, "",
+                            $"CSVs for {shipment.ShipmentName}", contacts, shipment.ToString(),
+                            shipment.ShipmentAttachments.Select(x => x.Attachments.FilePath).ToArray());
+
+                       
+                           ctx.Attachments.AddRange(shipment.ShipmentAttachments.Select(x => x.Attachments).ToList());
+                       
+                    });
+                    ctx.SaveChanges();
+                }
 
             }
             catch (Exception e)
@@ -849,7 +857,7 @@ namespace AutoBot
 
 
 
-                    var emailIds = Enumerable.Min<TODO_SubmitPOInfo>(pOs, x => x.EmailId);
+                    var emailIds = pOs.FirstOrDefault().EmailId;
 
                     if (emailIds == null)
                     {
@@ -863,11 +871,11 @@ namespace AutoBot
                     }
                     else
                     {
-                        EmailDownloader.EmailDownloader.ForwardMsg(Convert.ToInt32(emailIds), Client,
+                        EmailDownloader.EmailDownloader.ForwardMsg(emailIds, Client,
                             $"Document Package for {docSet.Declarant_Reference_Number}", body, contacts,
                             pdfs.ToArray());
 
-                        EmailDownloader.EmailDownloader.ForwardMsg(Convert.ToInt32(emailIds), Client,
+                        EmailDownloader.EmailDownloader.ForwardMsg(emailIds, Client,
                             $"Assessed Entries for {docSet.Declarant_Reference_Number}", body, poContacts,
                             Assessedpdfs.ToArray());
                     }
@@ -888,8 +896,7 @@ namespace AutoBot
                                 AttachmentId = att.Id,
                                 DocumentSpecific = true,
                                 FileDate = DateTime.Now,
-                                EmailUniqueId = (string.IsNullOrEmpty(att.EmailId) ? null : (int?)Convert.ToInt32(att.EmailId)),
-                                TrackingState = TrackingState.Added
+                                EmailId = att.EmailId,
                             };
                             ctx.AsycudaDocumentSet_Attachments.Add(eAtt);
                         }
@@ -942,17 +949,17 @@ namespace AutoBot
             var failedFiles = new List<string>();
             foreach (var file in csvFiles.Where(x => x.Extension.ToLower() == ".pdf"))
             {
-                int? emailId = 0;
+                string emailId = null;
                 int? fileTypeId = 0;
                 using (var ctx = new CoreEntitiesContext())
                 {
 
                     var res = ctx.AsycudaDocumentSet_Attachments.Where(x => x.Attachments.FilePath == file.FullName)
-                        .Select(x => new { x.EmailUniqueId, x.FileTypeId }).FirstOrDefault();
-                    emailId = res?.EmailUniqueId;
+                        .Select(x => new { x.EmailId, x.FileTypeId }).FirstOrDefault();
+                    emailId = res?.EmailId;
                     fileTypeId = res?.FileTypeId;
                 }
-                var success = InvoiceReader.Import(file.FullName, fileTypeId.GetValueOrDefault(), emailId.GetValueOrDefault(), true, SaveCSVModel.Instance.GetDocSets(fileType), fileType, Utils.Client);
+                var success = InvoiceReader.Import(file.FullName, fileTypeId.GetValueOrDefault(), emailId, true, SaveCSVModel.Instance.GetDocSets(fileType), fileType, Utils.Client);
                
             }
         }
@@ -1365,7 +1372,7 @@ namespace AutoBot
                         //if (GetDocSetActions(email.Key.AsycudaDocumentSetId, "SubmitUnclassifiedItems").Any()) continue;
 
 
-                        var errorfile = Path.Combine(directory, $"BlankLicenseDescription-{email.Key.EmailId}.csv");
+                        var errorfile = Path.Combine(directory, $"BlankLicenseDescription-{email.Key.AsycudaDocumentSetId}.csv");
                         var errors = email.Select(x => new BlankLicenseDescription()
                         {
                             InvoiceNo = x.EntryDataId,
@@ -1389,7 +1396,7 @@ namespace AutoBot
 
                         var contacts = ctx.Contacts.Where(x => x.Role == "Broker").ToList();
                         if (File.Exists(errorfile))
-                            EmailDownloader.EmailDownloader.ForwardMsg(Convert.ToInt32(email.Key.EmailId), Client,
+                            EmailDownloader.EmailDownloader.ForwardMsg(email.Key.EmailId, Client,
                                 $"Error:Blank License Description",
                                 "Please Fill out the attached License Description and resend CSV...",
                                 contacts.Select(x => x.EmailAddress).ToArray(),
@@ -1692,7 +1699,7 @@ namespace AutoBot
                         }
                         else
                         {
-                            EmailDownloader.EmailDownloader.ForwardMsg(Convert.ToInt32(emailIds.Key), Client, "Assessed Ex-Warehouse Entries", body, contacts, attlst.ToArray());
+                            EmailDownloader.EmailDownloader.ForwardMsg(emailIds.Key, Client, "Assessed Ex-Warehouse Entries", body, contacts, attlst.ToArray());
                         }
 
                         foreach (var item in emailIds)
@@ -1730,7 +1737,7 @@ namespace AutoBot
         {
             try
             {
-                var emailId = Convert.ToInt32(ft.EmailId);
+                var emailId = ft.EmailId;
                 var lst = GetSubmitEntryData(ft);
                 SubmitDiscrepanciesToCustoms(lst.Where(x => x.Key == emailId));
 
@@ -1750,7 +1757,7 @@ namespace AutoBot
             {
                 ctx.Database.CommandTimeout = 20;
                
-                IEnumerable<IGrouping<int?, TODO_SubmitDiscrepanciesToCustoms>> lst;
+                IEnumerable<IGrouping<string, TODO_SubmitDiscrepanciesToCustoms>> lst;
                 lst = ctx.TODO_SubmitDiscrepanciesToCustoms.Where(x =>
                         x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings
                             .ApplicationSettingsId)
@@ -1764,7 +1771,7 @@ namespace AutoBot
         }
 
                
-        private static void SubmitDiscrepanciesToCustoms(IEnumerable<IGrouping<int?, TODO_SubmitDiscrepanciesToCustoms>> lst)
+        private static void SubmitDiscrepanciesToCustoms(IEnumerable<IGrouping<string, TODO_SubmitDiscrepanciesToCustoms>> lst)
         {
             try
             {
@@ -1882,7 +1889,7 @@ namespace AutoBot
                         else
                         {
                             
-                            EmailDownloader.EmailDownloader.ForwardMsg(Convert.ToInt32(data.Key), Client, $"Assessed Shipping Discrepancy Entries: {reference}", body, contacts, pdfs.ToArray());
+                            EmailDownloader.EmailDownloader.ForwardMsg(data.Key, Client, $"Assessed Shipping Discrepancy Entries: {reference}", body, contacts, pdfs.ToArray());
                         }
 
                         foreach (var item in emailIds)
@@ -1914,7 +1921,7 @@ namespace AutoBot
                                         && x.Declarant_Reference_Number == "Imports").AsycudaDocumentSetId,
                                     AttachmentId = attachment.Id,
                                     DocumentSpecific = true,
-                                    EmailUniqueId = item.EmailId,
+                                    EmailId = item.EmailId,
                                     AttachmentLog = new List<AttachmentLog>()
                                     {
                                         new AttachmentLog(true)
@@ -2194,7 +2201,7 @@ namespace AutoBot
                                             $"Regards,\r\n" +
                                             $"AutoBot";
 
-                        EmailDownloader.EmailDownloader.ForwardMsg(Convert.ToInt32(fileType.EmailId), Client, "Error Found Assessing Shipping Discrepancy Entries", errorBody,contacts ,attachments.ToArray() );
+                        EmailDownloader.EmailDownloader.ForwardMsg(fileType.EmailId, Client, "Error Found Assessing Shipping Discrepancy Entries", errorBody,contacts ,attachments.ToArray() );
                     }
 
                     if (goodadj.Any())
@@ -2290,7 +2297,7 @@ namespace AutoBot
 
         }
 
-        private static IEnumerable<IGrouping<int?, TODO_SubmitDiscrepanciesToCustoms>> GetSubmitEntryData(FileTypes ft)
+        private static IEnumerable<IGrouping<string, TODO_SubmitDiscrepanciesToCustoms>> GetSubmitEntryData(FileTypes ft)
         {
             try
             {
@@ -2302,7 +2309,7 @@ namespace AutoBot
                     var cnumberList = ft.Data.Where(z => z.Key == "CNumber").Select(x => x.Value).ToList();
                     var cplst = BaseDataModel.Instance.Customs_Procedures
                         .Where(x => x.CustomsOperation.Name == "Exwarehouse").Select(x => x.CustomsProcedure).ToList();
-                    IEnumerable<IGrouping<int?, TODO_SubmitDiscrepanciesToCustoms>> lst;
+                    IEnumerable<IGrouping<string, TODO_SubmitDiscrepanciesToCustoms>> lst;
                     List<TODO_SubmitAllXMLToCustoms> res;
                     if (cnumberList.Any())
                     {
@@ -2357,7 +2364,7 @@ namespace AutoBot
                     ctx.Database.CommandTimeout = 20;
                 
 
-                    IEnumerable<IGrouping<int?, TODO_SubmitDiscrepanciesToCustoms>> lst;
+                    IEnumerable<IGrouping<string, TODO_SubmitDiscrepanciesToCustoms>> lst;
                     lst = ctx.TODO_SubmitSalesToCustoms.Where(x =>
                             x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)
 
@@ -2391,7 +2398,7 @@ namespace AutoBot
         }
 
 
-        private static void SubmitSalesToCustoms(IEnumerable<IGrouping<int?, TODO_SubmitDiscrepanciesToCustoms>> lst)
+        private static void SubmitSalesToCustoms(IEnumerable<IGrouping<string, TODO_SubmitDiscrepanciesToCustoms>> lst)
         {
             try
             {
@@ -2544,7 +2551,7 @@ namespace AutoBot
                         }
                         else
                         {
-                            EmailDownloader.EmailDownloader.ForwardMsg(Convert.ToInt32(emailIds.Key), Client, "Error:Incomplete Invoice Data", body, contacts, attlst.ToArray());
+                            EmailDownloader.EmailDownloader.ForwardMsg(emailIds.Key, Client, "Error:Incomplete Invoice Data", body, contacts, attlst.ToArray());
                         }
 
 
@@ -2606,7 +2613,7 @@ namespace AutoBot
                         }
                         else
                         {
-                            EmailDownloader.EmailDownloader.ForwardMsg(Convert.ToInt32(emailIds.Key.EmailId), Client, "Error:Missing Invoices", body, contacts, attlst.ToArray());
+                            EmailDownloader.EmailDownloader.ForwardMsg(emailIds.Key.EmailId, Client, "Error:Missing Invoices", body, contacts, attlst.ToArray());
                         }
 
 
@@ -2675,7 +2682,7 @@ namespace AutoBot
                         }
                         else
                         {
-                            EmailDownloader.EmailDownloader.ForwardMsg(Convert.ToInt32(emailIds.Key.EmailId), Client, "Error:Missing Invoices PDF Attachments", body, contacts, attlst.ToArray());
+                            EmailDownloader.EmailDownloader.ForwardMsg(emailIds.Key.EmailId, Client, "Error:Missing Invoices PDF Attachments", body, contacts, attlst.ToArray());
                         }
 
 
@@ -2791,7 +2798,7 @@ namespace AutoBot
                         //if (GetDocSetActions(email.Key.AsycudaDocumentSetId, "SubmitUnclassifiedItems").Any()) continue;
 
 
-                        var errorfile = Path.Combine(directory, $"UnclassifiedItems-{email.Key.EmailId}.csv");
+                        var errorfile = Path.Combine(directory, $"UnclassifiedItems-{email.Key.AsycudaDocumentSetId}.csv");
                         var errors = email.Select(x => new UnClassifiedItem()
                         {
                             InvoiceNo = x.InvoiceNo,
@@ -2814,7 +2821,7 @@ namespace AutoBot
 
                         var contacts = ctx.Contacts.Where(x => x.Role == "Broker").ToList();
                         if (File.Exists(errorfile))
-                            EmailDownloader.EmailDownloader.ForwardMsg(Convert.ToInt32(email.Key.EmailId), Client,
+                            EmailDownloader.EmailDownloader.ForwardMsg(email.Key.EmailId, Client,
                                 $"Error:UnClassified Items",
                                 "Please Fill out the attached Tarrif Codes and resend CSV...",
                                 contacts.Select(x => x.EmailAddress).ToArray(),
@@ -2854,7 +2861,7 @@ namespace AutoBot
                         var info = CurrentPOInfo(email.Key.AsycudaDocumentSetId).FirstOrDefault();
                         var directory = info.Item2;
 
-                        var errorfile = Path.Combine(directory, $"UnclassifiedItems-{email.Key.EmailId}.csv");
+                        var errorfile = Path.Combine(directory, $"UnclassifiedItems-{email.Key.AsycudaDocumentSetId}.csv");
                         var errors = email.Select(x => new UnClassifiedItem()
                         {
                             InvoiceNo = x.InvoiceNo,
@@ -2877,7 +2884,7 @@ namespace AutoBot
 
                         var contacts = ctx.Contacts.Where(x => x.Role == "Broker").ToList();
                         if (File.Exists(errorfile))
-                            EmailDownloader.EmailDownloader.ForwardMsg(Convert.ToInt32(email.Key.EmailId), Client,
+                            EmailDownloader.EmailDownloader.ForwardMsg(email.Key.EmailId, Client,
                                 $"Error:UnClassified Items",
                                 "Please Fill out the attached Tarrif Codes and resend CSV...",
                                 contacts.Select(x => x.EmailAddress).ToArray(),
@@ -4697,7 +4704,7 @@ namespace AutoBot
                                    $"Please Check the spreadsheet or inform Joseph Bartholomew if this is an Error.\r\n" +
                                    $"Regards,\r\n" +
                                    $"AutoBot";
-                        EmailDownloader.EmailDownloader.SendBackMsg(Convert.ToInt32(fileType.EmailId), Client,
+                        EmailDownloader.EmailDownloader.SendBackMsg(fileType.EmailId, Client,
                             body);
 
 
@@ -4756,13 +4763,13 @@ namespace AutoBot
             }
         }
 
-        private static void ClearDocSetAttachments(int asycudaDocumentSetId, int? emailId = null)
+        private static void ClearDocSetAttachments(int asycudaDocumentSetId, string emailId = null)
         {
             using (var dtx = new DocumentDSContext())
             {
                 var res = dtx.AsycudaDocumentSet_Attachments.Where(x =>
                     x.AsycudaDocumentSet.SystemDocumentSet == null
-                    && x.AsycudaDocumentSetId == asycudaDocumentSetId && emailId == null ? true : x.EmailUniqueId != emailId);
+                    && x.AsycudaDocumentSetId == asycudaDocumentSetId && emailId == null ? true : x.EmailId != emailId);
                 if (res.Any())
                 {
                     dtx.AsycudaDocumentSet_Attachments.RemoveRange(res);
@@ -4835,8 +4842,7 @@ namespace AutoBot
 
             }
             ClearDocSetEntryData(fileType.AsycudaDocumentSetId);
-                ClearDocSetAttachments(fileType.AsycudaDocumentSetId,
-                    fileType.EmailId == null ? null : (int?) Convert.ToInt32(fileType.EmailId));
+                ClearDocSetAttachments(fileType.AsycudaDocumentSetId, fileType.EmailId);
             if (File.Exists(instFile)) File.Delete(instFile);
 
 
@@ -5242,7 +5248,7 @@ namespace AutoBot
                                        $"Please Check the spreadsheet or inform Joseph Bartholomew if this is an Error.\r\n" +
                                        $"Regards,\r\n" +
                                        $"AutoBot";
-                            if (!EmailDownloader.EmailDownloader.SendBackMsg(Convert.ToInt32(eId.EmailUniqueId), Client,
+                            if (!EmailDownloader.EmailDownloader.SendBackMsg(eId.EmailId, Client,
                                 body)) continue;
                             ctx.AttachmentLog.Add(new AttachmentLog(true)
                             {
@@ -6107,14 +6113,16 @@ namespace AutoBot
                         if (existingRefCount > 0) newReference = $"{existingRefCount + 1}-{newReference}";
                         using (var ctx1 = new CoreEntitiesContext() { StartTracking = true })
                         {
-                            var oldemail = ctx1.Emails.FirstOrDefault(x => x.EmailUniqueId == email.EmailId);
+                            var oldemail = ctx1.Emails.FirstOrDefault(x => x.EmailId == email.EmailId);
                             if (oldemail == null)
                             {
                                 oldemail = ctx.Emails.Add(new Emails(true)
                                 {
-                                    EmailUniqueId = email.EmailId,
+                                    EmailUniqueId = email.EmailUniqueId,
+                                    EmailId = email.EmailId,
                                     Subject = email.Subject,
                                     EmailDate = email.EmailDate,
+                                    MachineName = Environment.MachineName,
                                     TrackingState = TrackingState.Added
                                 });
                                 ctx.SaveChanges();
@@ -6132,11 +6140,11 @@ namespace AutoBot
                                             FilePath = file.FullName,
                                             DocumentCode = fileType.DocumentCode,
                                             Reference = newReference,
-                                            EmailId = email.EmailId.ToString(),
+                                            EmailId = email.EmailId,
                                         },
                                         DocumentSpecific = fileType.DocumentSpecific,
                                         FileDate = file.LastWriteTime,
-                                        EmailUniqueId = email.EmailId,
+                                        EmailId = email.EmailId,
                                         FileTypeId = fileType.Id,
                                         TrackingState = TrackingState.Added
                                     });
@@ -6146,11 +6154,11 @@ namespace AutoBot
                             {
                                 attachment.DocumentSpecific = fileType.DocumentSpecific;
                                 attachment.FileDate = file.LastWriteTime;
-                                attachment.EmailUniqueId = email.EmailId;
+                                attachment.EmailId = email.EmailId;
                                 attachment.FileTypeId = fileType.Id;
                                 attachment.Attachments.Reference = newReference;
                                 attachment.Attachments.DocumentCode = fileType.DocumentCode;
-                                attachment.Attachments.EmailId = email.EmailId.ToString();
+                                attachment.Attachments.EmailId = email.EmailId;
                             }
 
                             ctx1.SaveChanges();
@@ -6443,8 +6451,8 @@ namespace AutoBot
                                        $"Regards,\r\n" +
                                        $"AutoBot";
                             var emailId = ctx.AsycudaDocumentSet_Attachments
-                                .FirstOrDefault(x => x.Attachments.FilePath.Contains(file.FullName.Replace(file.Extension, "").Replace("-Fixed", "")))?.EmailUniqueId;
-                            EmailDownloader.EmailDownloader.SendBackMsg(Convert.ToInt32(emailId), Client, body);
+                                .FirstOrDefault(x => x.Attachments.FilePath.Contains(file.FullName.Replace(file.Extension, "").Replace("-Fixed", "")))?.EmailId;
+                            EmailDownloader.EmailDownloader.SendBackMsg(emailId, Client, body);
                             ctx.AttachmentLog.Add(new AttachmentLog(true)
                             {
                                 DocSetAttachment = att.Id,
@@ -6495,8 +6503,8 @@ namespace AutoBot
                                        $"Regards,\r\n" +
                                        $"AutoBot";
                             var emailId = ctx.AsycudaDocumentSet_Attachments
-                                .FirstOrDefault(x => x.Attachments.FilePath.Contains(file.FullName.Replace(file.Extension, "").Replace("-Fixed", "")))?.EmailUniqueId;
-                            EmailDownloader.EmailDownloader.SendBackMsg(Convert.ToInt32(emailId), Client, body);
+                                .FirstOrDefault(x => x.Attachments.FilePath.Contains(file.FullName.Replace(file.Extension, "").Replace("-Fixed", "")))?.EmailId;
+                            EmailDownloader.EmailDownloader.SendBackMsg(emailId, Client, body);
                             ctx.AttachmentLog.Add(new AttachmentLog(true)
                             {
                                 DocSetAttachment = att.Id,
@@ -7222,6 +7230,7 @@ namespace AutoBot
                 }
                 else
                 {
+                    if (val == "{NULL}" && !string.IsNullOrEmpty(row[mapping.DestinationName])) return row; //don't overwrite good value
                     row[mapping.DestinationName] = StringToCSVCell(val);
                 }
             }
@@ -7285,7 +7294,7 @@ namespace AutoBot
                     }
                 }
                         if(errLst.Any())
-                            EmailDownloader.EmailDownloader.ForwardMsg(Convert.ToUInt16(fileType.EmailId),
+                            EmailDownloader.EmailDownloader.ForwardMsg(fileType.EmailId,
                             Utils.Client, $"Bug Found",
                             errLst.Aggregate((o,n) => o + "\r\n" + n),
                             new[] { "Joseph@auto-brokerage.com" }, Array.Empty<string>()
@@ -7332,7 +7341,7 @@ namespace AutoBot
                 if (mapping.Required)
                 {
                     if (mappingMailSent) return mappingMailSent;
-                    EmailDownloader.EmailDownloader.ForwardMsg(Convert.ToUInt16(fileType.EmailId),
+                    EmailDownloader.EmailDownloader.ForwardMsg(fileType.EmailId,
                         Utils.Client, $"Bug Found",
                         $"Required Field - '{mapping.OriginalName}' on Line:{row_no} in File: {file.Name} dose not exists.",
                         new[] { "Joseph@auto-brokerage.com" }, Array.Empty<string>()

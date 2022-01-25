@@ -175,7 +175,9 @@ public string DutyFreePaid
 
        
        
-public Nullable<int> EmailId
+                
+                
+public string EmailId
 		{ 
 		    get { return this.entrydataex.EmailId; }
 			set

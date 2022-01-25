@@ -350,6 +350,24 @@ namespace WaterNut.QuerySpace.EntryDataQS.ViewModels
 
  
 
+		private string _emailIdFilter;
+        public string EmailIdFilter
+        {
+            get
+            {
+                return _emailIdFilter;
+            }
+            set
+            {
+                _emailIdFilter = value;
+				NotifyPropertyChanged(x => EmailIdFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
+
 		private Double? _invoiceTotalFilter;
         public Double? InvoiceTotalFilter
         {
@@ -664,6 +682,10 @@ namespace WaterNut.QuerySpace.EntryDataQS.ViewModels
 						res.Append(" && " + string.Format("DutyFreePaid.Contains(\"{0}\")",  DutyFreePaidFilter));						
  
 
+									if(string.IsNullOrEmpty(EmailIdFilter) == false)
+						res.Append(" && " + string.Format("EmailId.Contains(\"{0}\")",  EmailIdFilter));						
+ 
+
 					if(InvoiceTotalFilter.HasValue)
 						res.Append(" && " + string.Format("InvoiceTotal == {0}",  InvoiceTotalFilter.ToString()));				 
 
@@ -748,6 +770,9 @@ namespace WaterNut.QuerySpace.EntryDataQS.ViewModels
                     DutyFreePaid = x.DutyFreePaid ,
                     
  
+                    EmailId = x.EmailId ,
+                    
+ 
                     InvoiceTotal = x.InvoiceTotal ,
                     
  
@@ -816,6 +841,9 @@ namespace WaterNut.QuerySpace.EntryDataQS.ViewModels
                     
  
                     public string DutyFreePaid { get; set; } 
+                    
+ 
+                    public string EmailId { get; set; } 
                     
  
                     public Nullable<double> InvoiceTotal { get; set; } 

@@ -45,21 +45,6 @@ namespace CoreEntities.Client.Entities
         
 
 
-       [RequiredValidationAttribute(ErrorMessage= "EmailUnique is required")]
-       
-public int EmailUniqueId
-		{ 
-		    get { return this.emails.EmailUniqueId; }
-			set
-			{
-			    if (value == this.emails.EmailUniqueId) return;
-				this.emails.EmailUniqueId = value;
-                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
-				NotifyPropertyChanged("EmailUniqueId");
-			}
-		}
-     
-
        [RequiredValidationAttribute(ErrorMessage= "Subject is required")]
        
                 
@@ -88,6 +73,55 @@ public System.DateTime EmailDate
 				this.emails.EmailDate = value;
                 if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
 				NotifyPropertyChanged("EmailDate");
+			}
+		}
+     
+
+       [RequiredValidationAttribute(ErrorMessage= "Email is required")]
+       
+                
+                [MaxLength(255, ErrorMessage = "EmailId has a max length of 255 letters ")]
+public string EmailId
+		{ 
+		    get { return this.emails.EmailId; }
+			set
+			{
+			    if (value == this.emails.EmailId) return;
+				this.emails.EmailId = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("EmailId");
+			}
+		}
+     
+
+       
+       
+                
+                [MaxLength(50, ErrorMessage = "MachineName has a max length of 50 letters ")]
+public string MachineName
+		{ 
+		    get { return this.emails.MachineName; }
+			set
+			{
+			    if (value == this.emails.MachineName) return;
+				this.emails.MachineName = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("MachineName");
+			}
+		}
+     
+
+       
+       
+public Nullable<int> EmailUniqueId
+		{ 
+		    get { return this.emails.EmailUniqueId; }
+			set
+			{
+			    if (value == this.emails.EmailUniqueId) return;
+				this.emails.EmailUniqueId = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("EmailUniqueId");
 			}
 		}
      

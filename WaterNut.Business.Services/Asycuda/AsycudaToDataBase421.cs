@@ -146,7 +146,7 @@ namespace WaterNut.DataSpace.Asycuda
                         AsycudaDocumentSetId = docSet.AsycudaDocumentSetId,
                         DocumentSpecific = true,
                         FileDate = file.LastWriteTime,
-                        EmailUniqueId = null,
+                        EmailId = null,
                         FileTypeId = ctx.FileTypes.FirstOrDefault(x =>
                             x.ApplicationSettingsId ==
                             BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId &&

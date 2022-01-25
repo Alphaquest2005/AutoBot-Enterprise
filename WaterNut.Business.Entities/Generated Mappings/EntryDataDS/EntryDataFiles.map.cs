@@ -28,7 +28,7 @@
               this.Property(t => t.InvoiceQty).HasColumnName("InvoiceQty");
               this.Property(t => t.ReceivedQty).HasColumnName("ReceivedQty");
               this.Property(t => t.TaxAmount).HasColumnName("TaxAmount");
-              this.Property(t => t.EmailId).HasColumnName("EmailId");
+              this.Property(t => t.EmailId).HasColumnName("EmailId").HasMaxLength(255);
               this.Property(t => t.FileTypeId).HasColumnName("FileTypeId");
               this.Property(t => t.FileType).HasColumnName("FileType").IsRequired().HasMaxLength(50);
               this.Property(t => t.ApplicationSettingsId).HasColumnName("ApplicationSettingsId");

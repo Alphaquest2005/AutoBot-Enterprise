@@ -42,7 +42,7 @@
               this.Property(t => t.ApplicationSettingsId).HasColumnName("ApplicationSettingsId");
               this.Property(t => t.LastCost).HasColumnName("LastCost");
               this.Property(t => t.TaxAmount).HasColumnName("TaxAmount");
-              this.Property(t => t.EmailId).HasColumnName("EmailId");
+              this.Property(t => t.EmailId).HasColumnName("EmailId").HasMaxLength(255);
               this.Property(t => t.FileTypeId).HasColumnName("FileTypeId");
               this.Property(t => t.Name).HasColumnName("Name").HasMaxLength(50);
               this.Property(t => t.EntryData_Id).HasColumnName("EntryData_Id");

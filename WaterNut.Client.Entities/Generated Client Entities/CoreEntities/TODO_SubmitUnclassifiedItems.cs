@@ -127,7 +127,9 @@ public string TariffCode
 
        
        
-public Nullable<int> EmailId
+                
+                [MaxLength(255, ErrorMessage = "EmailId has a max length of 255 letters ")]
+public string EmailId
 		{ 
 		    get { return this.todo_submitunclassifieditems.EmailId; }
 			set
