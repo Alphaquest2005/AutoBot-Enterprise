@@ -5439,15 +5439,16 @@ namespace AutoBot
                                     x.AsycudaDocumentSet_Attachments.Attachments.FilePath == sourcefile &&
                                     x.Status == "Submit XML To Customs") == null)
                             {
-                                break;
+                                fileType.ProcessNextStep = null;
+                            break;
                             }
                             else
                             {
-                                continue;
+                                fileType.ProcessNextStep = "ReSubmitDiscrepanciesToCustoms";
+                            continue;
                             }
 
-                            fileType.ProcessNextStep = "ReSubmitDiscrepanciesToCustoms";
-                            return;
+                          
 
                         }
 

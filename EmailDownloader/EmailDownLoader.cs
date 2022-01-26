@@ -355,7 +355,12 @@ namespace EmailDownloader
             {
 
                 var uID = new CoreEntitiesContext().Emails.FirstOrDefault(x => x.EmailId == emailId)?.EmailUniqueId??0;
-                if (uID == 0) throw new ApplicationException($"Email not found for {emailId}");
+                if (uID == 0)
+                {
+                    //throw new ApplicationException($"Email not found for {emailId}");
+                    SendEmail(clientDetails,null, subject, contacts, body, attachments  );
+                    return true;
+                }
                 var msg = GetMsg(uID, clientDetails);
                 if (msg != null)
                 {
