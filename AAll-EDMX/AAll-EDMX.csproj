@@ -272,6 +272,7 @@
 ..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\EmailFileTypes.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\EmailInfoMappings.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\EmailMapping.cs
+..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\EmailMappingRexExs.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\Emails.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\EntryPreviousItems.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\ExpiredEntriesLst.cs
@@ -684,6 +685,7 @@
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\EmailFileTypes.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\EmailInfoMappings.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\EmailMapping.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\EmailMappingRexExs.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\Emails.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\EntryPreviousItems.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\ExpiredEntriesLst.map.cs
@@ -1104,6 +1106,7 @@
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\CoreEntities\EmailFileTypes.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\CoreEntities\EmailInfoMappings.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\CoreEntities\EmailMapping.cs
+..\WaterNut.Business.Entities\Generated ChangeTracking Models\CoreEntities\EmailMappingRexExs.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\CoreEntities\Emails.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\CoreEntities\EntryPreviousItems.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\CoreEntities\ExpiredEntriesLst.cs
@@ -1502,6 +1505,7 @@
 ..\WaterNut.Business.Entities\Generated Constructors Models\CoreEntities\EmailFileTypes.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\CoreEntities\EmailInfoMappings.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\CoreEntities\EmailMapping.cs
+..\WaterNut.Business.Entities\Generated Constructors Models\CoreEntities\EmailMappingRexExs.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\CoreEntities\Emails.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\CoreEntities\EntryPreviousItems.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\CoreEntities\ExpiredEntriesLst.cs
@@ -1900,6 +1904,7 @@
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\CoreEntities\EmailFileTypes.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\CoreEntities\EmailInfoMappings.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\CoreEntities\EmailMapping.cs
+..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\CoreEntities\EmailMappingRexExs.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\CoreEntities\Emails.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\CoreEntities\EntryPreviousItems.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\CoreEntities\ExpiredEntriesLst.cs
@@ -2298,6 +2303,7 @@
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\CoreEntities\EmailFileTypes.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\CoreEntities\EmailInfoMappings.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\CoreEntities\EmailMapping.cs
+..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\CoreEntities\EmailMappingRexExs.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\CoreEntities\Emails.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\CoreEntities\EntryPreviousItems.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\CoreEntities\ExpiredEntriesLst.cs
@@ -2658,6 +2664,7 @@
 ..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\EmailFileTypes.cs
 ..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\EmailInfoMappings.cs
 ..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\EmailMapping.cs
+..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\EmailMappingRexExs.cs
 ..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\Emails.cs
 ..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\EntryPreviousItems.cs
 ..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\ExpiredEntriesLst.cs
@@ -2821,6 +2828,7 @@
 ..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\EmailFileTypes.cs
 ..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\EmailInfoMappings.cs
 ..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\EmailMapping.cs
+..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\EmailMappingRexExs.cs
 ..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\Emails.cs
 ..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\EntryPreviousItems.cs
 ..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\Enums\CustomsOperations.cs
@@ -2993,6 +3001,7 @@
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\CoreEntities\EmailFileTypes.cs
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\CoreEntities\EmailInfoMappings.cs
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\CoreEntities\EmailMapping.cs
+..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\CoreEntities\EmailMappingRexExs.cs
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\CoreEntities\Emails.cs
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\CoreEntities\EntryPreviousItems.cs
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\CoreEntities\ExpiredEntriesLst.cs
@@ -3156,6 +3165,7 @@
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\CoreEntities\EmailFileTypes.cs
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\CoreEntities\EmailInfoMappings.cs
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\CoreEntities\EmailMapping.cs
+..\WaterNut.Client.DTO\Generated MyNavProp Models\CoreEntities\EmailMappingRexExs.cs
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\CoreEntities\Emails.cs
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\CoreEntities\EntryPreviousItems.cs
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\CoreEntities\ExpiredEntriesLst.cs
@@ -3319,6 +3329,7 @@
 ..\WaterNut.Client.Entities\Generated Constructors Models\CoreEntities\EmailFileTypes.cs
 ..\WaterNut.Client.Entities\Generated Constructors Models\CoreEntities\EmailInfoMappings.cs
 ..\WaterNut.Client.Entities\Generated Constructors Models\CoreEntities\EmailMapping.cs
+..\WaterNut.Client.Entities\Generated Constructors Models\CoreEntities\EmailMappingRexExs.cs
 ..\WaterNut.Client.Entities\Generated Constructors Models\CoreEntities\Emails.cs
 ..\WaterNut.Client.Entities\Generated Constructors Models\CoreEntities\EntryPreviousItems.cs
 ..\WaterNut.Client.Entities\Generated Constructors Models\CoreEntities\ExpiredEntriesLst.cs
@@ -3482,6 +3493,7 @@
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\CoreEntities\EmailFileTypes.cs
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\CoreEntities\EmailInfoMappings.cs
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\CoreEntities\EmailMapping.cs
+..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\CoreEntities\EmailMappingRexExs.cs
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\CoreEntities\Emails.cs
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\CoreEntities\EntryPreviousItems.cs
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\CoreEntities\ExpiredEntriesLst.cs
@@ -3645,6 +3657,7 @@
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\CoreEntities\EmailFileTypes.cs
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\CoreEntities\EmailInfoMappings.cs
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\CoreEntities\EmailMapping.cs
+..\WaterNut.Client.Entities\Generated MyNavProp Models\CoreEntities\EmailMappingRexExs.cs
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\CoreEntities\Emails.cs
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\CoreEntities\EntryPreviousItems.cs
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\CoreEntities\ExpiredEntriesLst.cs
@@ -3893,6 +3906,7 @@
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\EmailFileTypes.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\EmailInfoMappings.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\EmailMapping.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\EmailMappingRexExs.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\Emails.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\EntryPreviousItems.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\ExpiredEntriesLst.map.cs
@@ -4295,6 +4309,7 @@
 ..\WaterNut.Client.Repositories\Generated Repositories\CoreEntities\EmailFileTypesRepository.cs
 ..\WaterNut.Client.Repositories\Generated Repositories\CoreEntities\EmailInfoMappingsRepository.cs
 ..\WaterNut.Client.Repositories\Generated Repositories\CoreEntities\EmailMappingRepository.cs
+..\WaterNut.Client.Repositories\Generated Repositories\CoreEntities\EmailMappingRexExsRepository.cs
 ..\WaterNut.Client.Repositories\Generated Repositories\CoreEntities\EmailsRepository.cs
 ..\WaterNut.Client.Repositories\Generated Repositories\CoreEntities\EntryPreviousItemsRepository.cs
 ..\WaterNut.Client.Repositories\Generated Repositories\CoreEntities\ExpiredEntriesLstRepository.cs
@@ -4477,6 +4492,7 @@
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\Document_TypeViewModel.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\EmailFileTypesViewModel.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\EmailInfoMappingsViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\EmailMappingRexExsViewModel.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\EmailMappingViewModel.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\EmailsViewModel.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\EntryPreviousItemsViewModel.cs
@@ -4643,6 +4659,7 @@
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\Document_TypeTotals.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\EmailFileTypesTotals.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\EmailInfoMappingsTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\EmailMappingRexExsTotals.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\EmailMappingTotals.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\EmailsTotals.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\EntryPreviousItemsTotals.cs
@@ -4796,6 +4813,7 @@
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\Document_TypeVirturalListLoader.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\EmailFileTypesVirturalListLoader.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\EmailInfoMappingsVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\EmailMappingRexExsVirturalListLoader.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\EmailMappingVirturalListLoader.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\EmailsVirturalListLoader.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\EntryPreviousItemsVirturalListLoader.cs
@@ -5000,6 +5018,7 @@
 ..\WaterNut.Business.Services\Contracts\CoreEntities\IDocument_TypeService.cs
 ..\WaterNut.Business.Services\Contracts\CoreEntities\IEmailFileTypesService.cs
 ..\WaterNut.Business.Services\Contracts\CoreEntities\IEmailInfoMappingsService.cs
+..\WaterNut.Business.Services\Contracts\CoreEntities\IEmailMappingRexExsService.cs
 ..\WaterNut.Business.Services\Contracts\CoreEntities\IEmailMappingService.cs
 ..\WaterNut.Business.Services\Contracts\CoreEntities\IEmailsService.cs
 ..\WaterNut.Business.Services\Contracts\CoreEntities\IEntryPreviousItemsService.cs
@@ -5398,6 +5417,7 @@
 ..\WaterNut.Business.Services\Services\CoreEntities\Document_TypeService.cs
 ..\WaterNut.Business.Services\Services\CoreEntities\EmailFileTypesService.cs
 ..\WaterNut.Business.Services\Services\CoreEntities\EmailInfoMappingsService.cs
+..\WaterNut.Business.Services\Services\CoreEntities\EmailMappingRexExsService.cs
 ..\WaterNut.Business.Services\Services\CoreEntities\EmailMappingService.cs
 ..\WaterNut.Business.Services\Services\CoreEntities\EmailsService.cs
 ..\WaterNut.Business.Services\Services\CoreEntities\EntryPreviousItemsService.cs
@@ -5751,6 +5771,7 @@
 ..\WaterNut.Client.Contracts\CoreEntities\IDocument_TypeService.cs
 ..\WaterNut.Client.Contracts\CoreEntities\IEmailFileTypesService.cs
 ..\WaterNut.Client.Contracts\CoreEntities\IEmailInfoMappingsService.cs
+..\WaterNut.Client.Contracts\CoreEntities\IEmailMappingRexExsService.cs
 ..\WaterNut.Client.Contracts\CoreEntities\IEmailMappingService.cs
 ..\WaterNut.Client.Contracts\CoreEntities\IEmailsService.cs
 ..\WaterNut.Client.Contracts\CoreEntities\IEntryPreviousItemsService.cs
@@ -5915,6 +5936,7 @@
 ..\WaterNut.Client.Services\CoreEntities\EmailFileTypesClient.cs
 ..\WaterNut.Client.Services\CoreEntities\EmailInfoMappingsClient.cs
 ..\WaterNut.Client.Services\CoreEntities\EmailMappingClient.cs
+..\WaterNut.Client.Services\CoreEntities\EmailMappingRexExsClient.cs
 ..\WaterNut.Client.Services\CoreEntities\EmailsClient.cs
 ..\WaterNut.Client.Services\CoreEntities\EntryPreviousItemsClient.cs
 ..\WaterNut.Client.Services\CoreEntities\ExpiredEntriesLstClient.cs

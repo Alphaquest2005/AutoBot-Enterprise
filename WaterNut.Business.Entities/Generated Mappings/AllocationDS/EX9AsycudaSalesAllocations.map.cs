@@ -66,7 +66,7 @@
               this.Property(t => t.AssessmentDate).HasColumnName("AssessmentDate");
               this.Property(t => t.IsManuallyAssessed).HasColumnName("IsManuallyAssessed");
               this.Property(t => t.DocumentType).HasColumnName("DocumentType").HasMaxLength(40);
-              this.Property(t => t.EmailId).HasColumnName("EmailId");
+              this.Property(t => t.EmailId).HasColumnName("EmailId").HasMaxLength(255);
               this.Property(t => t.FileTypeId).HasColumnName("FileTypeId");
               this.Property(t => t.xStatus).HasColumnName("xStatus").HasMaxLength(255);
               this.Property(t => t.EntryData_Id).HasColumnName("EntryData_Id");

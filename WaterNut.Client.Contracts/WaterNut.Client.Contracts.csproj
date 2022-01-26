@@ -135,6 +135,7 @@
     <Compile Include="CoreEntities\IDocument_TypeService.cs" />
     <Compile Include="CoreEntities\IEmailFileTypesService.cs" />
     <Compile Include="CoreEntities\IEmailInfoMappingsService.cs" />
+    <Compile Include="CoreEntities\IEmailMappingRexExsService.cs" />
     <Compile Include="CoreEntities\IEmailMappingService.cs" />
     <Compile Include="CoreEntities\IEmailsService.cs" />
     <Compile Include="CoreEntities\IEntryPreviousItemsService.cs" />

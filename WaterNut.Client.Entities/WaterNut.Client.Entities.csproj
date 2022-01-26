@@ -173,6 +173,7 @@
     <Compile Include="Generated Client Entities\CoreEntities\EmailFileTypes.cs" />
     <Compile Include="Generated Client Entities\CoreEntities\EmailInfoMappings.cs" />
     <Compile Include="Generated Client Entities\CoreEntities\EmailMapping.cs" />
+    <Compile Include="Generated Client Entities\CoreEntities\EmailMappingRexExs.cs" />
     <Compile Include="Generated Client Entities\CoreEntities\Emails.cs" />
     <Compile Include="Generated Client Entities\CoreEntities\EntryPreviousItems.cs" />
     <Compile Include="Generated Client Entities\CoreEntities\Enums\CustomsOperations.cs" />
@@ -339,6 +340,7 @@
     <Compile Include="Generated Constructors Models\CoreEntities\EmailFileTypes.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\EmailInfoMappings.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\EmailMapping.cs" />
+    <Compile Include="Generated Constructors Models\CoreEntities\EmailMappingRexExs.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\Emails.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\EntryPreviousItems.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\ExpiredEntriesLst.cs" />
@@ -502,6 +504,7 @@
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\EmailFileTypes.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\EmailInfoMappings.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\EmailMapping.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\EmailMappingRexExs.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\Emails.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\EntryPreviousItems.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\ExpiredEntriesLst.cs" />
@@ -669,6 +672,7 @@
     <Compile Include="Generated MyNavProp Models\CoreEntities\EmailFileTypes.cs" />
     <Compile Include="Generated MyNavProp Models\CoreEntities\EmailInfoMappings.cs" />
     <Compile Include="Generated MyNavProp Models\CoreEntities\EmailMapping.cs" />
+    <Compile Include="Generated MyNavProp Models\CoreEntities\EmailMappingRexExs.cs" />
     <Compile Include="Generated MyNavProp Models\CoreEntities\Emails.cs" />
     <Compile Include="Generated MyNavProp Models\CoreEntities\EntryPreviousItems.cs" />
     <Compile Include="Generated MyNavProp Models\CoreEntities\ExpiredEntriesLst.cs" />

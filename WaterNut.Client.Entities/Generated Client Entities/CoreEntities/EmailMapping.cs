@@ -285,6 +285,60 @@ public string ReplacementValue
             }
         }
 
+        ObservableCollection<EmailMappingRexExs> _EmailMappingRexExs = null;
+        public  ObservableCollection<EmailMappingRexExs> EmailMappingRexExs
+		{
+            
+		    get 
+				{ 
+					if(_EmailMappingRexExs != null) return _EmailMappingRexExs;
+					//if (this.emailmapping.EmailMappingRexExs == null) Debugger.Break();
+					if(this.emailmapping.EmailMappingRexExs != null)
+					{
+						_EmailMappingRexExs = new ObservableCollection<EmailMappingRexExs>(this.emailmapping.EmailMappingRexExs.Select(x => new EmailMappingRexExs(x)));
+					}
+					
+						_EmailMappingRexExs.CollectionChanged += EmailMappingRexExs_CollectionChanged; 
+					
+					return _EmailMappingRexExs; 
+				}
+			set
+			{
+			    if (Equals(value, _EmailMappingRexExs)) return;
+				if (value != null)
+					this.emailmapping.EmailMappingRexExs = new ChangeTrackingCollection<DTO.EmailMappingRexExs>(value.Select(x => x.DTO).ToList());
+                _EmailMappingRexExs = value;
+				if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				if (_EmailMappingRexExs != null)
+				_EmailMappingRexExs.CollectionChanged += EmailMappingRexExs_CollectionChanged;               
+				NotifyPropertyChanged("EmailMappingRexExs");
+			}
+		}
+        
+        void EmailMappingRexExs_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            switch (e.Action)
+            {
+                case NotifyCollectionChangedAction.Add:
+                    foreach (EmailMappingRexExs itm in e.NewItems)
+                    {
+                        if (itm != null)
+                        emailmapping.EmailMappingRexExs.Add(itm.DTO);
+                    }
+                    if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+                    break;
+                case NotifyCollectionChangedAction.Remove:
+                    foreach (EmailMappingRexExs itm in e.OldItems)
+                    {
+                        if (itm != null)
+                        emailmapping.EmailMappingRexExs.Remove(itm.DTO);
+                    }
+					if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+                    break;
+                
+            }
+        }
+
 
         ChangeTrackingCollection<DTO.EmailMapping> _changeTracker;    
         public ChangeTrackingCollection<DTO.EmailMapping> ChangeTracker

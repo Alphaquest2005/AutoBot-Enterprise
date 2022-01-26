@@ -49,6 +49,7 @@ namespace AutoBot
                         //.Include("EmailMapping.EmailFileTypes.FileTypes.FileTypeMappings")
                         //.Include("EmailMapping.EmailFileTypes.FileTypes.ChildFileTypes")
                         .Include("EmailMapping.EmailFileTypes.FileTypes")
+                        .Include("EmailMapping.EmailMappingRexExs")
                         .Include("EmailMapping.EmailInfoMappings.InfoMapping.InfoMappingRegEx")
                         //.Include("FileTypes.ChildFileTypes")
                         //.Include("FileTypes.FileTypeMappings")

@@ -447,6 +447,7 @@
     <Compile Include="Contracts\CoreEntities\IDocument_TypeService.cs" />
     <Compile Include="Contracts\CoreEntities\IEmailFileTypesService.cs" />
     <Compile Include="Contracts\CoreEntities\IEmailInfoMappingsService.cs" />
+    <Compile Include="Contracts\CoreEntities\IEmailMappingRexExsService.cs" />
     <Compile Include="Contracts\CoreEntities\IEmailMappingService.cs" />
     <Compile Include="Contracts\CoreEntities\IEmailsService.cs" />
     <Compile Include="Contracts\CoreEntities\IEntryPreviousItemsService.cs" />
@@ -1055,6 +1056,7 @@
     <Compile Include="Services\CoreEntities\Document_TypeService.cs" />
     <Compile Include="Services\CoreEntities\EmailFileTypesService.cs" />
     <Compile Include="Services\CoreEntities\EmailInfoMappingsService.cs" />
+    <Compile Include="Services\CoreEntities\EmailMappingRexExsService.cs" />
     <Compile Include="Services\CoreEntities\EmailMappingService.cs" />
     <Compile Include="Services\CoreEntities\EmailsService.cs" />
     <Compile Include="Services\CoreEntities\EntryPreviousItemsService.cs" />

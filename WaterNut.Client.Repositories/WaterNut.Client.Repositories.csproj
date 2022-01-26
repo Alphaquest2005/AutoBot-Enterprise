@@ -178,6 +178,7 @@
     <Compile Include="Generated Repositories\CoreEntities\EmailFileTypesRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\EmailInfoMappingsRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\EmailMappingRepository.cs" />
+    <Compile Include="Generated Repositories\CoreEntities\EmailMappingRexExsRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\EmailsRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\EntryPreviousItemsRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\ExpiredEntriesLstRepository.cs" />

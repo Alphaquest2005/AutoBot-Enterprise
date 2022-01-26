@@ -186,7 +186,7 @@ public int ApplicationSettingsId
        
        
                 
-                
+                [MaxLength(255, ErrorMessage = "EmailId has a max length of 255 letters ")]
 public string EmailId
 		{ 
 		    get { return this.todo_submitsalestocustoms.EmailId; }

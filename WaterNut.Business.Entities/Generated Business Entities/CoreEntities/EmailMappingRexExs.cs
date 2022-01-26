@@ -18,15 +18,8 @@ namespace CoreEntities.Business.Entities
 
     //[JsonObject(IsReference = true)]
     [DataContract(IsReference = true, Namespace="http://www.insight-software.com/WaterNut")]
-    public partial class EmailMapping : BaseEntity<EmailMapping>, ITrackable 
+    public partial class EmailMappingRexExs : BaseEntity<EmailMappingRexExs>, ITrackable 
     {
-        partial void AutoGenStartUp() //EmailMapping()
-        {
-            this.EmailFileTypes = new List<EmailFileTypes>();
-            this.EmailInfoMappings = new List<EmailInfoMappings>();
-            this.EmailMappingRexExs = new List<EmailMappingRexExs>();
-        }
-
         [DataMember]
         public int Id 
         {
@@ -43,50 +36,35 @@ namespace CoreEntities.Business.Entities
         }
         int _id;
         [DataMember]
-        public int ApplicationSettingsId 
+        public int EmailMappingId 
         {
             get
             {
-                return _applicationsettingsid;
+                return _emailmappingid;
             }
             set
             {
-                _applicationsettingsid = value;
+                _emailmappingid = value;
                 //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
                 NotifyPropertyChanged();
             }
         }
-        int _applicationsettingsid;
+        int _emailmappingid;
         [DataMember]
-        public string Pattern 
+        public string ReplacementRegex 
         {
             get
             {
-                return _pattern;
+                return _replacementregex;
             }
             set
             {
-                _pattern = value;
+                _replacementregex = value;
                 //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
                 NotifyPropertyChanged();
             }
         }
-        string _pattern;
-        [DataMember]
-        public Nullable<bool> IsSingleEmail 
-        {
-            get
-            {
-                return _issingleemail;
-            }
-            set
-            {
-                _issingleemail = value;
-                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
-                NotifyPropertyChanged();
-            }
-        }
-        Nullable<bool> _issingleemail;
+        string _replacementregex;
         [DataMember]
         public string ReplacementValue 
         {
@@ -103,13 +81,7 @@ namespace CoreEntities.Business.Entities
         }
         string _replacementvalue;
         [DataMember]
-        public ApplicationSettings ApplicationSettings { get; set; }
-        [DataMember]
-        public List<EmailFileTypes> EmailFileTypes { get; set; }
-        [DataMember]
-        public List<EmailInfoMappings> EmailInfoMappings { get; set; }
-        [DataMember]
-        public List<EmailMappingRexExs> EmailMappingRexExs { get; set; }
+        public EmailMapping EmailMapping { get; set; }
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

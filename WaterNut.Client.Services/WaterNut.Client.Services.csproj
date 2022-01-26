@@ -142,6 +142,7 @@
     <Compile Include="CoreEntities\EmailFileTypesClient.cs" />
     <Compile Include="CoreEntities\EmailInfoMappingsClient.cs" />
     <Compile Include="CoreEntities\EmailMappingClient.cs" />
+    <Compile Include="CoreEntities\EmailMappingRexExsClient.cs" />
     <Compile Include="CoreEntities\EmailsClient.cs" />
     <Compile Include="CoreEntities\EntryPreviousItemsClient.cs" />
     <Compile Include="CoreEntities\ExpiredEntriesLstClient.cs" />

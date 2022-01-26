@@ -222,7 +222,14 @@ namespace EmailDownloader
                             : emailMapping.ReplacementValue;
                     subject += " " + g.Trim();
                 }
-               
+
+                foreach (var regEx in emailMapping.EmailMappingRexExs)
+                {
+
+                    subject = Regex.Replace(subject, regEx.ReplacementRegex, regEx.ReplacementValue ?? "",
+                        RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture | RegexOptions.Multiline);
+                }
+
 
                 return new Tuple<string, Email, string>($"{subject.Trim()}", new Email(emailUniqueId: Convert.ToInt32(uid.ToString()), subject: msg.Subject, emailDate: msg.Date.DateTime, emailMapping: emailMapping), uid.ToString());
 
