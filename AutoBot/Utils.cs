@@ -6693,7 +6693,7 @@ namespace AutoBot
                     foreach (var f in filetypes.Where(x => x.IsImportable != false && x.FileTypeMappings.Any()))
                     {
                         if (//headerRow.Any(x => f.FileTypeMappings.All(z => z.Required == false) && f.FileTypeMappings.All(z => z.OriginalName == x.ToString())) || // All False && all in header or all required in header
-                                               headerRow.Any(x => f.FileTypeMappings.Where(z => z.Required == true).Any(z => z.OriginalName == x.ToString() || z.DestinationName == x.ToString())))
+                                               headerRow.Any(x => f.FileTypeMappings.Where(z => z.Required == true).Any(z => z.OriginalName.ToUpper().Trim() == x.ToString().ToUpper().Trim() || z.DestinationName.ToUpper().Trim() == x.ToString().ToUpper().Trim())))
                         {
                             potentialsFileTypes.Add(f);
                             lastHeaderRow = headerRow;
