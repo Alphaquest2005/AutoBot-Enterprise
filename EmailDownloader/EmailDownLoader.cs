@@ -238,7 +238,7 @@ namespace EmailDownloader
             return null;
         }
 
-        public static bool SendBackMsg(string uID, Client clientDetails, string errtxt)
+        public static bool SendBackMsg(string emailId, Client clientDetails, string errtxt)
         {
             try
             {
@@ -247,6 +247,9 @@ namespace EmailDownloader
                 imapClient.Authenticate(clientDetails.Email, clientDetails.Password);
                 var dataFolder = clientDetails.DataFolder;
                 imapClient.Inbox.Open(FolderAccess.ReadWrite);
+
+                var uID = new CoreEntitiesContext().Emails.FirstOrDefault(x => x.EmailId == emailId)?.EmailUniqueId;
+                if (uID == null) return false;
                 var msg = imapClient.Inbox.GetMessage(new UniqueId(Convert.ToUInt16(uID)));
                 imapClient.Disconnect(true);
                 if (msg != null)
