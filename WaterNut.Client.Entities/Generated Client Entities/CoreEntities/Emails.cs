@@ -126,6 +126,21 @@ public Nullable<int> EmailUniqueId
 		}
      
 
+       
+       
+public Nullable<int> ApplicationSettingsId
+		{ 
+		    get { return this.emails.ApplicationSettingsId; }
+			set
+			{
+			    if (value == this.emails.ApplicationSettingsId) return;
+				this.emails.ApplicationSettingsId = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("ApplicationSettingsId");
+			}
+		}
+     
+
         ObservableCollection<AsycudaDocumentSet_Attachments> _AsycudaDocumentSet_Attachments = null;
         public  ObservableCollection<AsycudaDocumentSet_Attachments> AsycudaDocumentSet_Attachments
 		{
@@ -173,6 +188,60 @@ public Nullable<int> EmailUniqueId
                     {
                         if (itm != null)
                         emails.AsycudaDocumentSet_Attachments.Remove(itm.DTO);
+                    }
+					if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+                    break;
+                
+            }
+        }
+
+        ObservableCollection<EmailAttachments> _EmailAttachments = null;
+        public  ObservableCollection<EmailAttachments> EmailAttachments
+		{
+            
+		    get 
+				{ 
+					if(_EmailAttachments != null) return _EmailAttachments;
+					//if (this.emails.EmailAttachments == null) Debugger.Break();
+					if(this.emails.EmailAttachments != null)
+					{
+						_EmailAttachments = new ObservableCollection<EmailAttachments>(this.emails.EmailAttachments.Select(x => new EmailAttachments(x)));
+					}
+					
+						_EmailAttachments.CollectionChanged += EmailAttachments_CollectionChanged; 
+					
+					return _EmailAttachments; 
+				}
+			set
+			{
+			    if (Equals(value, _EmailAttachments)) return;
+				if (value != null)
+					this.emails.EmailAttachments = new ChangeTrackingCollection<DTO.EmailAttachments>(value.Select(x => x.DTO).ToList());
+                _EmailAttachments = value;
+				if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				if (_EmailAttachments != null)
+				_EmailAttachments.CollectionChanged += EmailAttachments_CollectionChanged;               
+				NotifyPropertyChanged("EmailAttachments");
+			}
+		}
+        
+        void EmailAttachments_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            switch (e.Action)
+            {
+                case NotifyCollectionChangedAction.Add:
+                    foreach (EmailAttachments itm in e.NewItems)
+                    {
+                        if (itm != null)
+                        emails.EmailAttachments.Add(itm.DTO);
+                    }
+                    if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+                    break;
+                case NotifyCollectionChangedAction.Remove:
+                    foreach (EmailAttachments itm in e.OldItems)
+                    {
+                        if (itm != null)
+                        emails.EmailAttachments.Remove(itm.DTO);
                     }
 					if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
                     break;

@@ -139,6 +139,7 @@
     <Compile Include="CoreEntities\Customs_ProcedureClient.cs" />
     <Compile Include="CoreEntities\DeclarantClient.cs" />
     <Compile Include="CoreEntities\Document_TypeClient.cs" />
+    <Compile Include="CoreEntities\EmailAttachmentsClient.cs" />
     <Compile Include="CoreEntities\EmailFileTypesClient.cs" />
     <Compile Include="CoreEntities\EmailInfoMappingsClient.cs" />
     <Compile Include="CoreEntities\EmailMappingClient.cs" />

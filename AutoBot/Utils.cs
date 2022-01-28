@@ -6098,75 +6098,49 @@ namespace AutoBot
             {
 
 
-                using (var ctx = new CoreEntitiesContext())
+                using (var ctx = new CoreEntitiesContext() { StartTracking = true })
                 {
+                    var oldemail = ctx.Emails.Include("EmailAttachments.Attachments").FirstOrDefault(x => x.EmailId == email.EmailId);
+                    if (oldemail == null)
+                    {
+                        oldemail = ctx.Emails.Add(new Emails(true)
+                        {
+                            EmailUniqueId = email.EmailUniqueId,
+                            EmailId = email.EmailId,
+                            Subject = email.Subject,
+                            EmailDate = email.EmailDate,
+                            MachineName = Environment.MachineName,
+                            ApplicationSettingsId = BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId,
+                            TrackingState = TrackingState.Added
+                        });
+                        ctx.SaveChanges();
+                    }
 
                     foreach (var file in csvFiles)
                     {
-                        var newReference = file.Name.Replace(file.Extension, "");
 
-                        var attachment =
-                            ctx.AsycudaDocumentSet_Attachments
-                                .Include(x => x.Attachments)
-                                .FirstOrDefault(x => x.Attachments.FilePath == file.FullName 
-                                                     && x.AsycudaDocumentSetId == fileType.AsycudaDocumentSetId);
-                        var existingRefCount = ctx.Attachments.Select(x => x.Reference).Where(x => x.Contains(newReference)).Count();
-                        if (existingRefCount > 0) newReference = $"{existingRefCount + 1}-{newReference}";
-                        using (var ctx1 = new CoreEntitiesContext() { StartTracking = true })
+                        var reference = GetReference(file, ctx);
+
+                        Attachments attachment = ctx.Attachments.FirstOrDefault(x => x.FilePath == file.FullName);
+                        if(attachment == null)
+                        attachment = new Attachments(true)
                         {
-                            var oldemail = ctx1.Emails.FirstOrDefault(x => x.EmailId == email.EmailId);
-                            if (oldemail == null)
-                            {
-                                oldemail = ctx.Emails.Add(new Emails(true)
-                                {
-                                    EmailUniqueId = email.EmailUniqueId,
-                                    EmailId = email.EmailId,
-                                    Subject = email.Subject,
-                                    EmailDate = email.EmailDate,
-                                    MachineName = Environment.MachineName,
-                                    TrackingState = TrackingState.Added
-                                });
-                                ctx.SaveChanges();
-                            }
+                            FilePath = file.FullName,
+                            DocumentCode = fileType.DocumentCode,
+                            Reference = reference,
+                            EmailId = email.EmailId,
+                            TrackingState = TrackingState.Added
+                        };
 
-                            
-                            if (attachment == null)
-                            {
-                                ctx1.AsycudaDocumentSet_Attachments.Add(
-                                    new AsycudaDocumentSet_Attachments(true)
-                                    {
-                                        AsycudaDocumentSetId = fileType.AsycudaDocumentSetId,
-                                        Attachments = new Attachments(true)
-                                        {
-                                            FilePath = file.FullName,
-                                            DocumentCode = fileType.DocumentCode,
-                                            Reference = newReference,
-                                            EmailId = email.EmailId,
-                                        },
-                                        DocumentSpecific = fileType.DocumentSpecific,
-                                        FileDate = file.LastWriteTime,
-                                        EmailId = email.EmailId,
-                                        FileTypeId = fileType.Id,
-                                        TrackingState = TrackingState.Added
-                                    });
 
-                            }
-                            else
-                            {
-                                attachment.DocumentSpecific = fileType.DocumentSpecific;
-                                attachment.FileDate = file.LastWriteTime;
-                                attachment.EmailId = email.EmailId;
-                                attachment.FileTypeId = fileType.Id;
-                                attachment.Attachments.Reference = newReference;
-                                attachment.Attachments.DocumentCode = fileType.DocumentCode;
-                                attachment.Attachments.EmailId = email.EmailId;
-                            }
+                        AddUpdateEmailAttachments(fileType, email, oldemail, file, ctx, attachment, reference);
 
-                            ctx1.SaveChanges();
-                        }
+                        if (fileType.AsycudaDocumentSetId != 0)
+                            AddUpdateDocSetAttachement(fileType, email, ctx, file, attachment, reference);
+
                     }
 
-                    ctx.SaveChanges();
+
                 }
             }
             catch (Exception e)
@@ -6174,6 +6148,83 @@ namespace AutoBot
                 Console.WriteLine(e);
                 throw;
             }
+        }
+
+        private static void AddUpdateEmailAttachments(FileTypes fileType, Email email, Emails oldemail, FileInfo file,
+            CoreEntitiesContext ctx, Attachments attachment, string reference)
+        {
+            var emailAttachement =
+                oldemail.EmailAttachments.FirstOrDefault(x => x.Attachments.FilePath == file.FullName);
+
+
+            if (emailAttachement == null)
+            {
+                ctx.EmailAttachments.Add(
+                    new EmailAttachments(true)
+                    {
+                        Attachments = attachment,
+                        DocumentSpecific = fileType.DocumentSpecific,
+                        EmailId = email.EmailId,
+                        FileTypeId = fileType.Id,
+                        TrackingState = TrackingState.Added
+                    });
+            }
+            else
+            {
+                emailAttachement.DocumentSpecific = fileType.DocumentSpecific;
+                emailAttachement.EmailId = email.EmailId;
+                emailAttachement.FileTypeId = fileType.Id;
+                emailAttachement.Attachments.Reference = reference;
+                emailAttachement.Attachments.DocumentCode = fileType.DocumentCode;
+                emailAttachement.Attachments.EmailId = email.EmailId;
+            }
+            ctx.SaveChanges();
+        }
+
+        private static string GetReference(FileInfo file, CoreEntitiesContext ctx)
+        {
+            var newReference = file.Name.Replace(file.Extension, "");
+
+            var existingRefCount = ctx.Attachments.Select(x => x.Reference)
+                .Where(x => x.Contains(newReference)).Count();
+            if (existingRefCount > 0) newReference = $"{existingRefCount + 1}-{newReference}";
+            return newReference;
+        }
+
+        private static void AddUpdateDocSetAttachement(FileTypes fileType, Email email, CoreEntitiesContext ctx, FileInfo file,
+            Attachments attachment, string newReference)
+        {
+            var docSetAttachment =
+                ctx.AsycudaDocumentSet_Attachments
+                    .Include(x => x.Attachments)
+                    .FirstOrDefault(x => x.Attachments.FilePath == file.FullName
+                                         && x.AsycudaDocumentSetId == fileType.AsycudaDocumentSetId);
+            if (docSetAttachment == null)
+            {
+                ctx.AsycudaDocumentSet_Attachments.Add(
+                    new AsycudaDocumentSet_Attachments(true)
+                    {
+                        AsycudaDocumentSetId = fileType.AsycudaDocumentSetId,
+                        Attachments = attachment,
+                        DocumentSpecific = fileType.DocumentSpecific,
+                        FileDate = file.LastWriteTime,
+                        EmailId = email.EmailId,
+                        FileTypeId = fileType.Id,
+                        TrackingState = TrackingState.Added
+                    });
+            }
+            else
+            {
+                docSetAttachment.DocumentSpecific = fileType.DocumentSpecific;
+                docSetAttachment.FileDate = file.LastWriteTime;
+                docSetAttachment.EmailId = email.EmailId;
+                docSetAttachment.FileTypeId = fileType.Id;
+                docSetAttachment.Attachments.Reference = newReference;
+                docSetAttachment.Attachments.DocumentCode = fileType.DocumentCode;
+                docSetAttachment.Attachments.EmailId = email.EmailId;
+            }
+
+            ctx.SaveChanges();
         }
 
         public static FileInfo[] TrySaveFileInfo(FileInfo[] csvFiles, FileTypes fileType)

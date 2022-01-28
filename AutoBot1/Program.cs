@@ -96,11 +96,11 @@ namespace AutoBot
                                 DataFolder = appSetting.DataFolder,
                                 Password = appSetting.EmailPassword,
                                 Email = appSetting.Email,
+                                ApplicationSettingsId = appSetting.ApplicationSettingsId,
                                 EmailMappings = appSetting.EmailMapping.ToList()
                             };
 
-                            var msgLst = Task.Run(() => EmailDownloader.EmailDownloader.CheckEmails(Utils.Client)).Result/*.OrderBy(x =>
-                                    x.Key.Item2.EmailMapping.EmailFileTypes.Sum(z => z.FileTypes.FileTypeActions.Count))*/
+                            var msgLst = Task.Run(() => EmailDownloader.EmailDownloader.CheckEmails(Utils.Client)).Result
                                 .ToList();
                             // get downloads
                             Console.WriteLine($"{msgLst.Count()} Emails Processed");
@@ -117,6 +117,8 @@ namespace AutoBot
                                                   .Any(z => Regex.IsMatch(z.FullName,
                                                       x.FileTypes.FilePattern,
                                                       RegexOptions.IgnoreCase) && z.LastWriteTime >= beforeImport))) continue;
+
+                                
 
                                 foreach (var emailFileType in msg.Key.Item2.FileTypes.OrderBy(x =>
                                     x.Type == "Info"))
@@ -184,13 +186,9 @@ namespace AutoBot
                                         fileType.AsycudaDocumentSetId = ndocSet.AsycudaDocumentSetId;
                                         fileType.Data.Add(new KeyValuePair<string, string>("AsycudaDocumentSetId",
                                             fileType.AsycudaDocumentSetId.ToString()));
-
-
-                                        Utils.SaveAttachments(csvFiles, fileType, msg.Key.Item2);
-
-
-
                                     }
+                                    
+                                    Utils.SaveAttachments(csvFiles, fileType, msg.Key.Item2);
 
                                     Utils.ExecuteDataSpecificFileActions(fileType, csvFiles, appSetting);
 

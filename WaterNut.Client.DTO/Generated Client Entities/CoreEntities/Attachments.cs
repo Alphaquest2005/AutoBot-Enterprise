@@ -113,6 +113,19 @@ namespace CoreEntities.Client.DTO
 		}
         private ChangeTrackingCollection<AsycudaDocument_Attachments> _AsycudaDocument_Attachments = new ChangeTrackingCollection<AsycudaDocument_Attachments>();
 
+        [DataMember]
+        public ChangeTrackingCollection<EmailAttachments> EmailAttachments
+		{
+		    get { return _EmailAttachments; }
+			set
+			{
+			    if (Equals(value, _EmailAttachments)) return;
+				_EmailAttachments = value;
+				NotifyPropertyChanged();//m => this.EmailAttachments
+			}
+		}
+        private ChangeTrackingCollection<EmailAttachments> _EmailAttachments = new ChangeTrackingCollection<EmailAttachments>();
+
    //     [DataMember]
    //     public TrackingState TrackingState { get; set; }
 

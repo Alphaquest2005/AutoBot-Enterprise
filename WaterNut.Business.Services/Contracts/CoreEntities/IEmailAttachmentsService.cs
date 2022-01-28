@@ -20,54 +20,54 @@ using WaterNut.Interfaces;
 namespace CoreEntities.Business.Services
 {
     [ServiceContract (Namespace="http://www.insight-software.com/WaterNut")]
-    public partial interface IEmailsService : IBusinessService
+    public partial interface IEmailAttachmentsService : IBusinessService
     {
         [OperationContract]
         [FaultContract(typeof(ValidationFault))]
-        Task<IEnumerable<Emails>> GetEmails(List<string> includesLst = null, bool tracking = true);
+        Task<IEnumerable<EmailAttachments>> GetEmailAttachments(List<string> includesLst = null, bool tracking = true);
 
         [OperationContract]
         [FaultContract(typeof(ValidationFault))]
-        Task<Emails> GetEmailsByKey(string id, List<string> includesLst = null, bool tracking = true);
+        Task<EmailAttachments> GetEmailAttachmentsByKey(string id, List<string> includesLst = null, bool tracking = true);
 
 		[OperationContract]
         [FaultContract(typeof(ValidationFault))]
-        Task<IEnumerable<Emails>> GetEmailsByExpression(string exp, List<string> includesLst = null, bool tracking = true);
+        Task<IEnumerable<EmailAttachments>> GetEmailAttachmentsByExpression(string exp, List<string> includesLst = null, bool tracking = true);
 
 		[OperationContract]
         [FaultContract(typeof(ValidationFault))]
-        Task<IEnumerable<Emails>> GetEmailsByExpressionLst(List<string> expLst, List<string> includesLst = null, bool tracking = true);
+        Task<IEnumerable<EmailAttachments>> GetEmailAttachmentsByExpressionLst(List<string> expLst, List<string> includesLst = null, bool tracking = true);
 
 		[OperationContract]
         [FaultContract(typeof(ValidationFault))]
-		Task<IEnumerable<Emails>> GetEmailsByExpressionNav(string exp,
+		Task<IEnumerable<EmailAttachments>> GetEmailAttachmentsByExpressionNav(string exp,
             Dictionary<string, string> navExp, List<string> includesLst = null, bool tracking = true);
 
         [OperationContract]
         [FaultContract(typeof(ValidationFault))]
-        Task<IEnumerable<Emails>> GetEmailsByBatch(string exp,
+        Task<IEnumerable<EmailAttachments>> GetEmailAttachmentsByBatch(string exp,
             int totalrow, List<string> includesLst = null, bool tracking = true);
 
         [OperationContract]
         [FaultContract(typeof(ValidationFault))]
-        Task<IEnumerable<Emails>> GetEmailsByBatchExpressionLst(List<string> exp,
+        Task<IEnumerable<EmailAttachments>> GetEmailAttachmentsByBatchExpressionLst(List<string> exp,
             int totalrow, List<string> includesLst = null, bool tracking = true);
 
         [OperationContract]
         [FaultContract(typeof(ValidationFault))]
-        Task<Emails> UpdateEmails(Emails entity);
+        Task<EmailAttachments> UpdateEmailAttachments(EmailAttachments entity);
 
         [OperationContract]
         [FaultContract(typeof(ValidationFault))]
-        Task<Emails> CreateEmails(Emails entity);
+        Task<EmailAttachments> CreateEmailAttachments(EmailAttachments entity);
 
         [OperationContract]
         [FaultContract(typeof(ValidationFault))]
-        Task<bool> DeleteEmails(string id);
+        Task<bool> DeleteEmailAttachments(string id);
 
         [OperationContract]
         [FaultContract(typeof(ValidationFault))]
-        Task<bool> RemoveSelectedEmails(IEnumerable<string> selectedEmails);
+        Task<bool> RemoveSelectedEmailAttachments(IEnumerable<string> selectedEmailAttachments);
 	
 		//Virtural list implementation
         [OperationContract]
@@ -84,13 +84,13 @@ namespace CoreEntities.Business.Services
 
         [OperationContract]
         [FaultContract(typeof(ValidationFault))]
-        Task<IEnumerable<Emails>> LoadRange(int startIndex, int count, string exp);
+        Task<IEnumerable<EmailAttachments>> LoadRange(int startIndex, int count, string exp);
 
 
 
 		[OperationContract]
         [FaultContract(typeof(ValidationFault))]
-		Task<IEnumerable<Emails>> LoadRangeNav(int startIndex, int count, string exp,
+		Task<IEnumerable<EmailAttachments>> LoadRangeNav(int startIndex, int count, string exp,
                                                                                  Dictionary<string, string> navExp, IEnumerable<string> includeLst = null);
 
 		[OperationContract]
@@ -107,10 +107,13 @@ namespace CoreEntities.Business.Services
 
 				[OperationContract]
         [FaultContract(typeof(ValidationFault))]
-        Task<IEnumerable<Emails>> GetEmailsByEmailUniqueId(string EmailUniqueId, List<string> includesLst = null);
+        Task<IEnumerable<EmailAttachments>> GetEmailAttachmentsByEmailId(string EmailId, List<string> includesLst = null);
   		[OperationContract]
         [FaultContract(typeof(ValidationFault))]
-        Task<IEnumerable<Emails>> GetEmailsByApplicationSettingsId(string ApplicationSettingsId, List<string> includesLst = null);
+        Task<IEnumerable<EmailAttachments>> GetEmailAttachmentsByAttachmentId(string AttachmentId, List<string> includesLst = null);
+  		[OperationContract]
+        [FaultContract(typeof(ValidationFault))]
+        Task<IEnumerable<EmailAttachments>> GetEmailAttachmentsByFileTypeId(string FileTypeId, List<string> includesLst = null);
   
 
 

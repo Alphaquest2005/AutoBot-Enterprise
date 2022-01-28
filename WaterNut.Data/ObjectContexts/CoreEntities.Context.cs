@@ -237,6 +237,8 @@ namespace CoreEntities.Business.Entities
      
         public DbSet<EmailMappingRexExs> EmailMappingRexExs { get; set; }
      
+        public DbSet<EmailAttachments> EmailAttachments { get; set; }
+     
 
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
@@ -430,6 +432,8 @@ namespace CoreEntities.Business.Entities
             modelBuilder.Configurations.Add(new FileTypeReplaceRegexMap());
          
             modelBuilder.Configurations.Add(new EmailMappingRexExsMap());
+         
+            modelBuilder.Configurations.Add(new EmailAttachmentsMap());
          
 			OnModelCreatingExtentsion(modelBuilder);
 

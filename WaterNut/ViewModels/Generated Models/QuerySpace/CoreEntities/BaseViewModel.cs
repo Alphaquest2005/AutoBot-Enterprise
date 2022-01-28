@@ -74,6 +74,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                         RegisterToReceiveMessages<string>(MessageToken.CurrentCustomsOperationsIDChanged, OnCurrentCustomsOperationsIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentDeclarantIDChanged, OnCurrentDeclarantIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentDocument_TypeIDChanged, OnCurrentDocument_TypeIDChanged);
+                        RegisterToReceiveMessages<string>(MessageToken.CurrentEmailAttachmentsIDChanged, OnCurrentEmailAttachmentsIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentEmailFileTypesIDChanged, OnCurrentEmailFileTypesIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentEmailInfoMappingsIDChanged, OnCurrentEmailInfoMappingsIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentEmailMappingIDChanged, OnCurrentEmailMappingIDChanged);
@@ -172,6 +173,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                         RegisterToReceiveMessages<CustomsOperations>(MessageToken.CurrentCustomsOperationsChanged, OnCurrentCustomsOperationsChanged);
                         RegisterToReceiveMessages<Declarant>(MessageToken.CurrentDeclarantChanged, OnCurrentDeclarantChanged);
                         RegisterToReceiveMessages<Document_Type>(MessageToken.CurrentDocument_TypeChanged, OnCurrentDocument_TypeChanged);
+                        RegisterToReceiveMessages<EmailAttachments>(MessageToken.CurrentEmailAttachmentsChanged, OnCurrentEmailAttachmentsChanged);
                         RegisterToReceiveMessages<EmailFileTypes>(MessageToken.CurrentEmailFileTypesChanged, OnCurrentEmailFileTypesChanged);
                         RegisterToReceiveMessages<EmailInfoMappings>(MessageToken.CurrentEmailInfoMappingsChanged, OnCurrentEmailInfoMappingsChanged);
                         RegisterToReceiveMessages<EmailMapping>(MessageToken.CurrentEmailMappingChanged, OnCurrentEmailMappingChanged);
@@ -829,6 +831,33 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                                     if (!string.IsNullOrEmpty(_currentDocument_TypeID)) BeginSendMessage(MessageToken.CurrentDocument_TypeIDChanged,
                                                      new NotificationEventArgs<string>(MessageToken.CurrentDocument_TypeIDChanged, _currentDocument_TypeID));
                                     NotifyPropertyChanged(x => this.CurrentDocument_TypeID);  
+                                }
+                            }
+                        }
+                        internal async void OnCurrentEmailAttachmentsIDChanged(object sender, NotificationEventArgs<string> e)
+                        {
+                            using (EmailAttachmentsRepository ctx = new EmailAttachmentsRepository())
+                            {
+                                CurrentEmailAttachments = await ctx.GetEmailAttachments(e.Data).ConfigureAwait(continueOnCapturedContext: false);
+                            }
+                            NotifyPropertyChanged(m => CurrentEmailAttachments);
+                        }
+
+                        private  string _currentEmailAttachmentsID = "";
+                        public string CurrentEmailAttachmentsID
+                        {
+                            get
+                            {
+                                return _currentEmailAttachmentsID;
+                            }
+                            set
+                            {
+                                if (_currentEmailAttachmentsID != value)
+                                {
+                                    _currentEmailAttachmentsID = value;
+                                    if (!string.IsNullOrEmpty(_currentEmailAttachmentsID)) BeginSendMessage(MessageToken.CurrentEmailAttachmentsIDChanged,
+                                                     new NotificationEventArgs<string>(MessageToken.CurrentEmailAttachmentsIDChanged, _currentEmailAttachmentsID));
+                                    NotifyPropertyChanged(x => this.CurrentEmailAttachmentsID);  
                                 }
                             }
                         }
@@ -3583,6 +3612,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     // all current navigation properties = null
                  CurrentAsycudaDocumentSet_Attachments = null;
                  CurrentAsycudaDocument_Attachments = null;
+                 CurrentEmailAttachments = null;
    
                 }
             }
@@ -3915,6 +3945,56 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                      
        
 
+        internal void OnCurrentEmailAttachmentsChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<EmailAttachments> e)
+        {
+            //CurrentEmailAttachments = e.Data;
+            NotifyPropertyChanged(m => this.CurrentEmailAttachments);
+        }
+
+        private  EmailAttachments _currentEmailAttachments;
+        public EmailAttachments CurrentEmailAttachments
+        {
+            get
+            {
+                return _currentEmailAttachments;
+            }
+            set
+            {
+                if (_currentEmailAttachments != value)
+                {
+                    _currentEmailAttachments = value;
+                    BeginSendMessage(MessageToken.CurrentEmailAttachmentsChanged,
+                                                     new NotificationEventArgs<EmailAttachments>(MessageToken.CurrentEmailAttachmentsChanged, _currentEmailAttachments)); 
+                    NotifyPropertyChanged(x => this.CurrentEmailAttachments);    
+                    // all current navigation properties = null
+   
+                }
+            }
+        }
+
+		VirtualListItem<EmailAttachments> _vcurrentEmailAttachments;
+        public VirtualListItem<EmailAttachments> VCurrentEmailAttachments
+        {
+            get
+            {
+                return _vcurrentEmailAttachments;
+            }
+            set
+            {
+                if (_vcurrentEmailAttachments != value)
+                {
+                    _vcurrentEmailAttachments = value;
+					if(_vcurrentEmailAttachments != null) CurrentEmailAttachments = value.Data;
+                    NotifyPropertyChanged(x => this.VCurrentEmailAttachments);                    
+                }
+            }
+        }
+
+
+
+                     
+       
+
         internal void OnCurrentEmailFileTypesChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<EmailFileTypes> e)
         {
             //CurrentEmailFileTypes = e.Data;
@@ -4141,6 +4221,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     NotifyPropertyChanged(x => this.CurrentEmails);    
                     // all current navigation properties = null
                  CurrentAsycudaDocumentSet_Attachments = null;
+                 CurrentEmailAttachments = null;
    
                 }
             }

@@ -236,6 +236,60 @@ public string EmailId
             }
         }
 
+        ObservableCollection<EmailAttachments> _EmailAttachments = null;
+        public  ObservableCollection<EmailAttachments> EmailAttachments
+		{
+            
+		    get 
+				{ 
+					if(_EmailAttachments != null) return _EmailAttachments;
+					//if (this.attachments.EmailAttachments == null) Debugger.Break();
+					if(this.attachments.EmailAttachments != null)
+					{
+						_EmailAttachments = new ObservableCollection<EmailAttachments>(this.attachments.EmailAttachments.Select(x => new EmailAttachments(x)));
+					}
+					
+						_EmailAttachments.CollectionChanged += EmailAttachments_CollectionChanged; 
+					
+					return _EmailAttachments; 
+				}
+			set
+			{
+			    if (Equals(value, _EmailAttachments)) return;
+				if (value != null)
+					this.attachments.EmailAttachments = new ChangeTrackingCollection<DTO.EmailAttachments>(value.Select(x => x.DTO).ToList());
+                _EmailAttachments = value;
+				if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				if (_EmailAttachments != null)
+				_EmailAttachments.CollectionChanged += EmailAttachments_CollectionChanged;               
+				NotifyPropertyChanged("EmailAttachments");
+			}
+		}
+        
+        void EmailAttachments_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            switch (e.Action)
+            {
+                case NotifyCollectionChangedAction.Add:
+                    foreach (EmailAttachments itm in e.NewItems)
+                    {
+                        if (itm != null)
+                        attachments.EmailAttachments.Add(itm.DTO);
+                    }
+                    if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+                    break;
+                case NotifyCollectionChangedAction.Remove:
+                    foreach (EmailAttachments itm in e.OldItems)
+                    {
+                        if (itm != null)
+                        attachments.EmailAttachments.Remove(itm.DTO);
+                    }
+					if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+                    break;
+                
+            }
+        }
+
 
         ChangeTrackingCollection<DTO.Attachments> _changeTracker;    
         public ChangeTrackingCollection<DTO.Attachments> ChangeTracker
