@@ -6114,7 +6114,7 @@ namespace AutoBot
                         if (existingRefCount > 0) newReference = $"{existingRefCount + 1}-{newReference}";
                         using (var ctx1 = new CoreEntitiesContext() { StartTracking = true })
                         {
-                            var oldemail = ctx1.Emails.FirstOrDefault(x => x.EmailId == email.EmailId);
+                            var oldemail = ctx1.Emails.FirstOrDefault(x => x.EmailId == email.EmailId && (x.MachineName == null || x.MachineName == Environment.MachineName));
                             if (oldemail == null)
                             {
                                 oldemail = ctx.Emails.Add(new Emails(true)
@@ -6129,6 +6129,11 @@ namespace AutoBot
                                 ctx.SaveChanges();
                             }
 
+                            // update uniqueid incase email changes
+                                oldemail.EmailUniqueId = email.EmailUniqueId;
+                                oldemail.MachineName = Environment.MachineName;
+                                ctx.SaveChanges();
+                           
                             
                             if (attachment == null)
                             {

@@ -248,7 +248,7 @@ namespace EmailDownloader
                 var dataFolder = clientDetails.DataFolder;
                 imapClient.Inbox.Open(FolderAccess.ReadWrite);
 
-                var uID = new CoreEntitiesContext().Emails.FirstOrDefault(x => x.EmailId == emailId)?.EmailUniqueId;
+                var uID = new CoreEntitiesContext().Emails.FirstOrDefault(x => x.EmailId == emailId && x.MachineName == Environment.MachineName)?.EmailUniqueId;
                 if (uID == null) return false;
                 var msg = imapClient.Inbox.GetMessage(new UniqueId(Convert.ToUInt16(uID)));
                 imapClient.Disconnect(true);
@@ -354,7 +354,7 @@ namespace EmailDownloader
             try
             {
 
-                var uID = new CoreEntitiesContext().Emails.FirstOrDefault(x => x.EmailId == emailId)?.EmailUniqueId??0;
+                var uID = new CoreEntitiesContext().Emails.FirstOrDefault(x => x.EmailId == emailId && x.MachineName == Environment.MachineName)?.EmailUniqueId??0;
                 if (uID == 0)
                 {
                     //throw new ApplicationException($"Email not found for {emailId}");
