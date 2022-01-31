@@ -19,7 +19,7 @@ namespace EmailDownloader
     public static partial class EmailDownloader
     {
 
-        public static bool ReturnOnlyUnknownMails { get; set; } = true;
+        public static bool ReturnOnlyUnknownMails { get; set; } = false;
         public static Dictionary<Tuple<string, Email, string>, List<string>> CheckEmails(Client client)
         {
             try
