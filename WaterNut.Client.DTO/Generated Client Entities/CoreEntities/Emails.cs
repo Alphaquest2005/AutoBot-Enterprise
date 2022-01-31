@@ -86,6 +86,19 @@ namespace CoreEntities.Client.DTO
 		}
         private Nullable<int> _EmailUniqueId;
 
+        [DataMember]
+        public Nullable<int> ApplicationSettingsId
+		{ 
+		    get { return _ApplicationSettingsId; }
+			set
+			{
+			    if (value == _ApplicationSettingsId) return;
+				_ApplicationSettingsId = value;
+				NotifyPropertyChanged();//m => this.ApplicationSettingsId
+			}
+		}
+        private Nullable<int> _ApplicationSettingsId;
+
        
         [DataMember]
         public ChangeTrackingCollection<AsycudaDocumentSet_Attachments> AsycudaDocumentSet_Attachments
@@ -99,6 +112,19 @@ namespace CoreEntities.Client.DTO
 			}
 		}
         private ChangeTrackingCollection<AsycudaDocumentSet_Attachments> _AsycudaDocumentSet_Attachments = new ChangeTrackingCollection<AsycudaDocumentSet_Attachments>();
+
+        [DataMember]
+        public ChangeTrackingCollection<EmailAttachments> EmailAttachments
+		{
+		    get { return _EmailAttachments; }
+			set
+			{
+			    if (Equals(value, _EmailAttachments)) return;
+				_EmailAttachments = value;
+				NotifyPropertyChanged();//m => this.EmailAttachments
+			}
+		}
+        private ChangeTrackingCollection<EmailAttachments> _EmailAttachments = new ChangeTrackingCollection<EmailAttachments>();
 
    //     [DataMember]
    //     public TrackingState TrackingState { get; set; }

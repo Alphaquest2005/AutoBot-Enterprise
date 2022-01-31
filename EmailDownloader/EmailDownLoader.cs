@@ -18,6 +18,8 @@ namespace EmailDownloader
 {
     public static partial class EmailDownloader
     {
+
+        public static bool ReturnOnlyUnknownMails { get; set; } = true;
         public static Dictionary<Tuple<string, Email, string>, List<string>> CheckEmails(Client client)
         {
             try
@@ -100,10 +102,23 @@ namespace EmailDownloader
                 var msgFiles = new Dictionary<Tuple<string, Email, string>, List<string>>();
 
                 var uniqueIds = imapClient.Inbox.Search(SearchQuery.NotSeen).ToList();
+                var existingEmails = new List<Emails>();
+                if (ReturnOnlyUnknownMails)
+                {
+                    existingEmails = new CoreEntitiesContext().Emails
+                        .Where(x => x.ApplicationSettingsId == client.ApplicationSettingsId).ToList();
+                }
+
                 foreach (var uid in uniqueIds)
                 {
                     var lst = new List<string>();
                     var msg = imapClient.Inbox.GetMessage(uid);
+
+                    if (ReturnOnlyUnknownMails)
+                    {
+                        if(existingEmails.FirstOrDefault(x => x.EmailDate == msg.Date.DateTime && x.Subject == msg.Subject) != null) continue;
+                    }
+
                     var emailsFound =
                         emailMappings.Where(x => Regex.IsMatch(msg.Subject, x.Pattern, RegexOptions.IgnoreCase | RegexOptions.Multiline))
                             .OrderByDescending(x => x.Pattern.Length)

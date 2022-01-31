@@ -10,5 +10,6 @@ namespace EmailDownloader
         public string DataFolder { get; set; }
         public List<EmailMapping> EmailMappings { get; set; }
         public string CompanyName { get; set; }
+        public int ApplicationSettingsId { get; set; }
     }
 }

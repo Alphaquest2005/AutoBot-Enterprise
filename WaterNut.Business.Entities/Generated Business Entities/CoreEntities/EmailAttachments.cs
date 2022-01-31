@@ -18,15 +18,8 @@ namespace CoreEntities.Business.Entities
 
     //[JsonObject(IsReference = true)]
     [DataContract(IsReference = true, Namespace="http://www.insight-software.com/WaterNut")]
-    public partial class Attachments : BaseEntity<Attachments>, ITrackable 
+    public partial class EmailAttachments : BaseEntity<EmailAttachments>, ITrackable 
     {
-        partial void AutoGenStartUp() //Attachments()
-        {
-            this.AsycudaDocumentSet_Attachments = new List<AsycudaDocumentSet_Attachments>();
-            this.AsycudaDocument_Attachments = new List<AsycudaDocument_Attachments>();
-            this.EmailAttachments = new List<EmailAttachments>();
-        }
-
         [DataMember]
         public int Id 
         {
@@ -43,51 +36,6 @@ namespace CoreEntities.Business.Entities
         }
         int _id;
         [DataMember]
-        public string FilePath 
-        {
-            get
-            {
-                return _filepath;
-            }
-            set
-            {
-                _filepath = value;
-                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
-                NotifyPropertyChanged();
-            }
-        }
-        string _filepath;
-        [DataMember]
-        public string DocumentCode 
-        {
-            get
-            {
-                return _documentcode;
-            }
-            set
-            {
-                _documentcode = value;
-                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
-                NotifyPropertyChanged();
-            }
-        }
-        string _documentcode;
-        [DataMember]
-        public string Reference 
-        {
-            get
-            {
-                return _reference;
-            }
-            set
-            {
-                _reference = value;
-                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
-                NotifyPropertyChanged();
-            }
-        }
-        string _reference;
-        [DataMember]
         public string EmailId 
         {
             get
@@ -103,11 +51,54 @@ namespace CoreEntities.Business.Entities
         }
         string _emailid;
         [DataMember]
-        public List<AsycudaDocumentSet_Attachments> AsycudaDocumentSet_Attachments { get; set; }
+        public int AttachmentId 
+        {
+            get
+            {
+                return _attachmentid;
+            }
+            set
+            {
+                _attachmentid = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        int _attachmentid;
         [DataMember]
-        public List<AsycudaDocument_Attachments> AsycudaDocument_Attachments { get; set; }
+        public Nullable<int> FileTypeId 
+        {
+            get
+            {
+                return _filetypeid;
+            }
+            set
+            {
+                _filetypeid = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<int> _filetypeid;
         [DataMember]
-        public List<EmailAttachments> EmailAttachments { get; set; }
+        public bool DocumentSpecific 
+        {
+            get
+            {
+                return _documentspecific;
+            }
+            set
+            {
+                _documentspecific = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        bool _documentspecific;
+        [DataMember]
+        public Attachments Attachments { get; set; }
+        [DataMember]
+        public Emails Emails { get; set; }
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

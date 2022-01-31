@@ -173,6 +173,16 @@
           <Property Name="Type_of_declaration" Type="nvarchar" MaxLength="10" />
           <Property Name="Declaration_gen_procedure_code" Type="nvarchar" MaxLength="10" />
         </EntityType>
+        <EntityType Name="EmailAttachments">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="EmailId" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="AttachmentId" Type="int" Nullable="false" />
+          <Property Name="FileTypeId" Type="int" />
+          <Property Name="DocumentSpecific" Type="bit" Nullable="false" />
+        </EntityType>
         <EntityType Name="EmailFileTypes">
           <Key>
             <PropertyRef Name="Id" />
@@ -219,6 +229,7 @@
           <Property Name="EmailId" Type="nvarchar" MaxLength="255" Nullable="false" />
           <Property Name="MachineName" Type="nvarchar" MaxLength="50" />
           <Property Name="EmailUniqueId" Type="int" />
+          <Property Name="ApplicationSettingsId" Type="int" />
         </EntityType>
         <EntityType Name="EntryPreviousItems">
           <Key>
@@ -2060,6 +2071,34 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_EmailAttachments_Attachments">
+          <End Role="Attachments" Type="Self.Attachments" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="EmailAttachments" Type="Self.EmailAttachments" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Attachments">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="EmailAttachments">
+              <PropertyRef Name="AttachmentId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_EmailAttachments_Emails">
+          <End Role="Emails" Type="Self.Emails" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="EmailAttachments" Type="Self.EmailAttachments" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Emails">
+              <PropertyRef Name="EmailId" />
+            </Principal>
+            <Dependent Role="EmailAttachments">
+              <PropertyRef Name="EmailId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_EmailFileTypes_EmailMapping">
           <End Role="EmailMapping" Type="Self.EmailMapping" Multiplicity="1" />
           <End Role="EmailFileTypes" Type="Self.EmailFileTypes" Multiplicity="*" />
@@ -2369,6 +2408,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
           <EntitySet Name="Customs_Procedure" EntityType="Self.Customs_Procedure" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CustomsOperations" EntityType="Self.CustomsOperations" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Document_Type" EntityType="Self.Document_Type" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="EmailAttachments" EntityType="Self.EmailAttachments" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="EmailFileTypes" EntityType="Self.EmailFileTypes" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="EmailInfoMappings" EntityType="Self.EmailInfoMappings" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="EmailMapping" EntityType="Self.EmailMapping" Schema="dbo" store:Type="Tables" />
@@ -3551,6 +3591,14 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
             <End Role="Document_Type" EntitySet="Document_Type" />
             <End Role="Customs_Procedure" EntitySet="Customs_Procedure" />
           </AssociationSet>
+          <AssociationSet Name="FK_EmailAttachments_Attachments" Association="Self.FK_EmailAttachments_Attachments">
+            <End Role="Attachments" EntitySet="Attachments" />
+            <End Role="EmailAttachments" EntitySet="EmailAttachments" />
+          </AssociationSet>
+          <AssociationSet Name="FK_EmailAttachments_Emails" Association="Self.FK_EmailAttachments_Emails">
+            <End Role="Emails" EntitySet="Emails" />
+            <End Role="EmailAttachments" EntitySet="EmailAttachments" />
+          </AssociationSet>
           <AssociationSet Name="FK_EmailFileTypes_EmailMapping" Association="Self.FK_EmailFileTypes_EmailMapping">
             <End Role="EmailMapping" EntitySet="EmailMapping" />
             <End Role="EmailFileTypes" EntitySet="EmailFileTypes" />
@@ -3934,6 +3982,15 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
           <AssociationSet Name="FK_EmailMappingRexExs_EmailMapping" Association="WaterNutDBModel.FK_EmailMappingRexExs_EmailMapping">
             <End Role="EmailMapping" EntitySet="EmailMapping" />
             <End Role="EmailMappingRexExs" EntitySet="EmailMappingRexExs" />
+          </AssociationSet>
+          <EntitySet Name="EmailAttachments" EntityType="WaterNutDBModel.EmailAttachments" />
+          <AssociationSet Name="FK_EmailAttachments_Attachments" Association="WaterNutDBModel.FK_EmailAttachments_Attachments">
+            <End Role="Attachments" EntitySet="Attachments" />
+            <End Role="EmailAttachments" EntitySet="EmailAttachments" />
+          </AssociationSet>
+          <AssociationSet Name="FK_EmailAttachments_Emails" Association="WaterNutDBModel.FK_EmailAttachments_Emails">
+            <End Role="Emails" EntitySet="Emails" />
+            <End Role="EmailAttachments" EntitySet="EmailAttachments" />
           </AssociationSet>
           </EntityContainer>
         <EntityType Name="ApplicationSettings">
@@ -4592,6 +4649,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
           <NavigationProperty Name="AsycudaDocument_Attachments" Relationship="WaterNutDBModel.FK_AsycudaDocument_Attachments_Attachments" FromRole="Attachments" ToRole="AsycudaDocument_Attachments" />
           <Property Name="Reference" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="EmailId" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="EmailAttachments" Relationship="WaterNutDBModel.FK_EmailAttachments_Attachments" FromRole="Attachments" ToRole="EmailAttachments" />
         </EntityType>
         <Association Name="FK_AsycudaDocumentSet_Attachments_Attachments">
           <End Type="WaterNutDBModel.Attachments" Role="Attachments" Multiplicity="1">
@@ -4906,6 +4964,8 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
           <NavigationProperty Name="AsycudaDocumentSet_Attachments" Relationship="WaterNutDBModel.FK_AsycudaDocumentSet_Attachments_Emails1" FromRole="Emails" ToRole="AsycudaDocumentSet_Attachments" />
           <Property Name="MachineName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="EmailUniqueId" Type="Int32" />
+          <Property Name="ApplicationSettingsId" Type="Int32" />
+          <NavigationProperty Name="EmailAttachments" Relationship="WaterNutDBModel.FK_EmailAttachments_Emails" FromRole="Emails" ToRole="EmailAttachments" />
         </EntityType>
         <EntityType Name="FileGroups">
           <Key>
@@ -6366,6 +6426,46 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="EmailAttachments">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="EmailId" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="AttachmentId" Type="Int32" Nullable="false" />
+          <Property Name="FileTypeId" Type="Int32" />
+          <Property Name="DocumentSpecific" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="Attachments" Relationship="WaterNutDBModel.FK_EmailAttachments_Attachments" FromRole="EmailAttachments" ToRole="Attachments" />
+          <NavigationProperty Name="Emails" Relationship="WaterNutDBModel.FK_EmailAttachments_Emails" FromRole="EmailAttachments" ToRole="Emails" />
+        </EntityType>
+        <Association Name="FK_EmailAttachments_Attachments">
+          <End Type="WaterNutDBModel.Attachments" Role="Attachments" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="WaterNutDBModel.EmailAttachments" Role="EmailAttachments" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Attachments">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="EmailAttachments">
+              <PropertyRef Name="AttachmentId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_EmailAttachments_Emails">
+          <End Type="WaterNutDBModel.Emails" Role="Emails" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="WaterNutDBModel.EmailAttachments" Role="EmailAttachments" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Emails">
+              <PropertyRef Name="EmailId" />
+            </Principal>
+            <Dependent Role="EmailAttachments">
+              <PropertyRef Name="EmailId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -6900,6 +7000,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
           <EntitySetMapping Name="Emails">
             <EntityTypeMapping TypeName="WaterNutDBModel.Emails">
               <MappingFragment StoreEntitySet="Emails">
+                <ScalarProperty Name="ApplicationSettingsId" ColumnName="ApplicationSettingsId" />
                 <ScalarProperty Name="EmailUniqueId" ColumnName="EmailUniqueId" />
                 <ScalarProperty Name="MachineName" ColumnName="MachineName" />
                 <ScalarProperty Name="EmailId" ColumnName="EmailId" />
@@ -8044,6 +8145,17 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
                 <ScalarProperty Name="ReplacementValue" ColumnName="ReplacementValue" />
                 <ScalarProperty Name="ReplacementRegex" ColumnName="ReplacementRegex" />
                 <ScalarProperty Name="EmailMappingId" ColumnName="EmailMappingId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="EmailAttachments">
+            <EntityTypeMapping TypeName="WaterNutDBModel.EmailAttachments">
+              <MappingFragment StoreEntitySet="EmailAttachments">
+                <ScalarProperty Name="DocumentSpecific" ColumnName="DocumentSpecific" />
+                <ScalarProperty Name="FileTypeId" ColumnName="FileTypeId" />
+                <ScalarProperty Name="AttachmentId" ColumnName="AttachmentId" />
+                <ScalarProperty Name="EmailId" ColumnName="EmailId" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>

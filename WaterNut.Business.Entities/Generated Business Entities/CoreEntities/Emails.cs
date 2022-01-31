@@ -23,6 +23,7 @@ namespace CoreEntities.Business.Entities
         partial void AutoGenStartUp() //Emails()
         {
             this.AsycudaDocumentSet_Attachments = new List<AsycudaDocumentSet_Attachments>();
+            this.EmailAttachments = new List<EmailAttachments>();
         }
 
         [DataMember]
@@ -101,7 +102,24 @@ namespace CoreEntities.Business.Entities
         }
         Nullable<int> _emailuniqueid;
         [DataMember]
+        public Nullable<int> ApplicationSettingsId 
+        {
+            get
+            {
+                return _applicationsettingsid;
+            }
+            set
+            {
+                _applicationsettingsid = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<int> _applicationsettingsid;
+        [DataMember]
         public List<AsycudaDocumentSet_Attachments> AsycudaDocumentSet_Attachments { get; set; }
+        [DataMember]
+        public List<EmailAttachments> EmailAttachments { get; set; }
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

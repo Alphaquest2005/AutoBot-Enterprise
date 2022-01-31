@@ -22,7 +22,7 @@
               this.Property(t => t.SupplierCode).HasColumnName("SupplierCode").HasMaxLength(100);
               this.Property(t => t.SourceFile).HasColumnName("SourceFile");
               this.Property(t => t.ApplicationSettingsId).HasColumnName("ApplicationSettingsId");
-              this.Property(t => t.EmailId).HasColumnName("EmailId");
+              this.Property(t => t.EmailId).HasColumnName("EmailId").HasMaxLength(255);
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);
     			this.Ignore(t => t.ModifiedProperties);

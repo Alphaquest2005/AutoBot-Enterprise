@@ -32,19 +32,19 @@ using WaterNut.Interfaces;
 
 namespace CoreEntities.Business.Services
 {
-   [Export (typeof(IAttachmentsService))]
+   [Export (typeof(IEmailAttachmentsService))]
    [Export(typeof(IBusinessService))]
    [PartCreationPolicy(CreationPolicy.NonShared)]
    [ServiceBehavior(InstanceContextMode = InstanceContextMode.PerCall,
                     ConcurrencyMode = ConcurrencyMode.Multiple)]
    
-    public partial class AttachmentsService : IAttachmentsService, IDisposable
+    public partial class EmailAttachmentsService : IEmailAttachmentsService, IDisposable
     {
         //private readonly CoreEntitiesContext dbContext;
 
         public bool StartTracking { get; set; }
 
-        public AttachmentsService()
+        public EmailAttachmentsService()
         {
             try
             {
@@ -65,7 +65,7 @@ namespace CoreEntities.Business.Services
             }
         }
 
-        public async Task<IEnumerable<Attachments>> GetAttachments(List<string> includesLst = null, bool tracking = true)
+        public async Task<IEnumerable<EmailAttachments>> GetEmailAttachments(List<string> includesLst = null, bool tracking = true)
         {
             try
             {
@@ -75,7 +75,7 @@ namespace CoreEntities.Business.Services
                   using ( var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
                   {
 				    var set = AddIncludes(includesLst, dbContext);
-                    IEnumerable<Attachments> entities = await set.AsNoTracking().ToListAsync()
+                    IEnumerable<EmailAttachments> entities = await set.AsNoTracking().ToListAsync()
 													       .ConfigureAwait(continueOnCapturedContext: false);
                            //scope.Complete();
                             if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
@@ -98,7 +98,7 @@ namespace CoreEntities.Business.Services
         }
 
 
-        public async Task<Attachments> GetAttachmentsByKey(string Id, List<string> includesLst = null, bool tracking = true)
+        public async Task<EmailAttachments> GetEmailAttachmentsByKey(string Id, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
@@ -107,7 +107,7 @@ namespace CoreEntities.Business.Services
               {
                 var i = Convert.ToInt32(Id);
 				var set = AddIncludes(includesLst, dbContext);
-                Attachments entity = await set.AsNoTracking().SingleOrDefaultAsync(x => x.Id == i).ConfigureAwait(continueOnCapturedContext: false);
+                EmailAttachments entity = await set.AsNoTracking().SingleOrDefaultAsync(x => x.Id == i).ConfigureAwait(continueOnCapturedContext: false);
                 if(tracking && entity != null) entity.StartTracking();
                 return entity;
               }
@@ -127,14 +127,14 @@ namespace CoreEntities.Business.Services
         }
 
 
-		 public async Task<IEnumerable<Attachments>> GetAttachmentsByExpression(string exp, List<string> includesLst = null, bool tracking = true)
+		 public async Task<IEnumerable<EmailAttachments>> GetEmailAttachmentsByExpression(string exp, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
                 using (var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-					if (string.IsNullOrEmpty(exp) || exp == "None") return new List<Attachments>();
+					if (string.IsNullOrEmpty(exp) || exp == "None") return new List<EmailAttachments>();
 					var set = AddIncludes(includesLst, dbContext);
                     if (exp == "All")
                     {
@@ -170,14 +170,14 @@ namespace CoreEntities.Business.Services
             }
         }
 
-		 public async Task<IEnumerable<Attachments>> GetAttachmentsByExpressionLst(List<string> expLst, List<string> includesLst = null, bool tracking = true)
+		 public async Task<IEnumerable<EmailAttachments>> GetEmailAttachmentsByExpressionLst(List<string> expLst, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
                 using (var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-					if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return new List<Attachments>();
+					if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return new List<EmailAttachments>();
 					var set = AddIncludes(includesLst, dbContext);
                     if (expLst.FirstOrDefault() == "All")
                     {
@@ -212,7 +212,7 @@ namespace CoreEntities.Business.Services
             }
         }
 
-		public async Task<IEnumerable<Attachments>> GetAttachmentsByExpressionNav(string exp,
+		public async Task<IEnumerable<EmailAttachments>> GetEmailAttachmentsByExpressionNav(string exp,
 																							  Dictionary<string, string> navExp,
 																							  List<string> includesLst = null, bool tracking = true)
         {
@@ -221,7 +221,7 @@ namespace CoreEntities.Business.Services
                 using (var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-                    if (string.IsNullOrEmpty(exp) || exp == "None") return new List<Attachments>();
+                    if (string.IsNullOrEmpty(exp) || exp == "None") return new List<EmailAttachments>();
 
                     if (exp == "All" && navExp.Count == 0)
                     {
@@ -235,22 +235,16 @@ namespace CoreEntities.Business.Services
                     {
                         switch (itm.Key)
                         {
-                            case "AsycudaDocumentSet_Attachments":
+                            case "Attachments":
                                 return
                                     await
-                                        GetWhere<AsycudaDocumentSet_Attachments>(dbContext, exp, itm.Value, "Attachments", "Select", includesLst)
+                                        GetWhere<Attachments>(dbContext, exp, itm.Value, "EmailAttachments", "SelectMany", includesLst)
 										.ConfigureAwait(continueOnCapturedContext: false);
 
-                            case "AsycudaDocument_Attachments":
+                            case "Emails":
                                 return
                                     await
-                                        GetWhere<AsycudaDocument_Attachments>(dbContext, exp, itm.Value, "Attachments", "Select", includesLst)
-										.ConfigureAwait(continueOnCapturedContext: false);
-
-                            case "EmailAttachments":
-                                return
-                                    await
-                                        GetWhere<EmailAttachments>(dbContext, exp, itm.Value, "Attachments", "Select", includesLst)
+                                        GetWhere<Emails>(dbContext, exp, itm.Value, "EmailAttachments", "SelectMany", includesLst)
 										.ConfigureAwait(continueOnCapturedContext: false);
 
                         }
@@ -279,17 +273,17 @@ namespace CoreEntities.Business.Services
             }
         }
 
-        public async Task<IEnumerable<Attachments>> GetAttachmentsByBatch(string exp,
+        public async Task<IEnumerable<EmailAttachments>> GetEmailAttachmentsByBatch(string exp,
             int totalrow, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
 
-                var res = new ConcurrentQueue<List<Attachments>>();
+                var res = new ConcurrentQueue<List<EmailAttachments>>();
 
 
 
-                if (string.IsNullOrEmpty(exp) || exp == "None") return new List<Attachments>();
+                if (string.IsNullOrEmpty(exp) || exp == "None") return new List<EmailAttachments>();
 
 
                 var batchSize = 500;
@@ -310,7 +304,7 @@ namespace CoreEntities.Business.Services
                                 dbContext.Configuration.AutoDetectChangesEnabled = false;
                                 //dbContext.Configuration.LazyLoadingEnabled = true;
                                 var set = AddIncludes(includesLst, dbContext);
-                                IQueryable<Attachments> dset;
+                                IQueryable<EmailAttachments> dset;
                                 if (exp == "All")
                                 {
                                     dset = set.OrderBy(x => x.Id);
@@ -354,17 +348,17 @@ namespace CoreEntities.Business.Services
                 throw new FaultException<ValidationFault>(fault);
             }
         }
-        public async Task<IEnumerable<Attachments>> GetAttachmentsByBatchExpressionLst(List<string> expLst,
+        public async Task<IEnumerable<EmailAttachments>> GetEmailAttachmentsByBatchExpressionLst(List<string> expLst,
             int totalrow, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
 
-                var res = new ConcurrentQueue<List<Attachments>>();
+                var res = new ConcurrentQueue<List<EmailAttachments>>();
 
 
 
-                if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return new List<Attachments>();
+                if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return new List<EmailAttachments>();
 
 
                 var batchSize = 500;
@@ -385,7 +379,7 @@ namespace CoreEntities.Business.Services
                                 dbContext.Configuration.AutoDetectChangesEnabled = false;
                                 //dbContext.Configuration.LazyLoadingEnabled = true;
                                 var set = AddIncludes(includesLst, dbContext);
-                                IQueryable<Attachments> dset;
+                                IQueryable<EmailAttachments> dset;
                                 if (expLst.FirstOrDefault() == "All")
                                 {
                                     dset = set.OrderBy(x => x.Id);
@@ -430,13 +424,13 @@ namespace CoreEntities.Business.Services
         }
 
 
-        public async Task<Attachments> UpdateAttachments(Attachments entity)
+        public async Task<EmailAttachments> UpdateEmailAttachments(EmailAttachments entity)
         { 
             using ( var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
               {
                 try
                 {   
-                     var res = (Attachments) entity;
+                     var res = (EmailAttachments) entity;
                     if(res.TrackingState == TrackingState.Unchanged) res.TrackingState = TrackingState.Modified;                              
                     
                     dbContext.ApplyChanges(res);
@@ -512,14 +506,14 @@ namespace CoreEntities.Business.Services
            return entity;
         }
 
-        public async Task<Attachments> CreateAttachments(Attachments entity)
+        public async Task<EmailAttachments> CreateEmailAttachments(EmailAttachments entity)
         {
             try
             {
-                var res = (Attachments) entity;
+                var res = (EmailAttachments) entity;
               using ( var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
               {
-                dbContext.Attachments.Add(res);
+                dbContext.EmailAttachments.Add(res);
                 await dbContext.SaveChangesAsync().ConfigureAwait(continueOnCapturedContext: false);
                 res.AcceptChanges();
                 return res;
@@ -539,21 +533,21 @@ namespace CoreEntities.Business.Services
             }
         }
 
-        public async Task<bool> DeleteAttachments(string Id)
+        public async Task<bool> DeleteEmailAttachments(string Id)
         {
             try
             {
               using ( var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
               {
                 var i = Convert.ToInt32(Id);
-                Attachments entity = await dbContext.Attachments
+                EmailAttachments entity = await dbContext.EmailAttachments
 													.SingleOrDefaultAsync(x => x.Id == i)
 													.ConfigureAwait(continueOnCapturedContext: false);
                 if (entity == null)
                     return false;
 
-                    dbContext.Attachments.Attach(entity);
-                    dbContext.Attachments.Remove(entity);
+                    dbContext.EmailAttachments.Attach(entity);
+                    dbContext.EmailAttachments.Remove(entity);
                     await dbContext.SaveChangesAsync().ConfigureAwait(continueOnCapturedContext: false);
                     return true;
               }
@@ -572,19 +566,19 @@ namespace CoreEntities.Business.Services
             }
         }
 
-        public async Task<bool> RemoveSelectedAttachments(IEnumerable<string> lst)
+        public async Task<bool> RemoveSelectedEmailAttachments(IEnumerable<string> lst)
         {
             try
             {
-                StatusModel.StartStatusUpdate("Removing Attachments", lst.Count());
+                StatusModel.StartStatusUpdate("Removing EmailAttachments", lst.Count());
                 var t = Task.Run(() =>
                 {
-                    using (var ctx = new AttachmentsService())
+                    using (var ctx = new EmailAttachmentsService())
                     {
                         foreach (var item in lst.ToList())
                         {
 
-                            ctx.DeleteAttachments(item).Wait();
+                            ctx.DeleteEmailAttachments(item).Wait();
                             StatusModel.StatusUpdate();
                         }
                     }
@@ -619,7 +613,7 @@ namespace CoreEntities.Business.Services
                 {
                     dbContext.Database.CommandTimeout = 0;
                     if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return 0;
-                    var set = (IQueryable<Attachments>)dbContext.Attachments; 
+                    var set = (IQueryable<EmailAttachments>)dbContext.EmailAttachments; 
                     if (expLst.FirstOrDefault() == "All")
                     {
                         return await set.AsNoTracking().CountAsync()
@@ -657,7 +651,7 @@ namespace CoreEntities.Business.Services
                     if (string.IsNullOrEmpty(exp) || exp == "None") return 0;
                     if (exp == "All")
                     {
-                        return await dbContext.Attachments
+                        return await dbContext.EmailAttachments
                                     .AsNoTracking()
 									.CountAsync()
 									.ConfigureAwait(continueOnCapturedContext: false);
@@ -665,7 +659,7 @@ namespace CoreEntities.Business.Services
                     else
                     {
                         
-                        return await dbContext.Attachments
+                        return await dbContext.EmailAttachments
 									.AsNoTracking()
                                     .Where(exp)
 									.CountAsync()
@@ -687,17 +681,17 @@ namespace CoreEntities.Business.Services
             }
         }
         
-        public async Task<IEnumerable<Attachments>> LoadRange(int startIndex, int count, string exp)
+        public async Task<IEnumerable<EmailAttachments>> LoadRange(int startIndex, int count, string exp)
         {
             try
             {
                 using (var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-                    if (string.IsNullOrEmpty(exp) || exp == "None") return new List<Attachments>();
+                    if (string.IsNullOrEmpty(exp) || exp == "None") return new List<EmailAttachments>();
                     if (exp == "All")
                     {
-                        return await dbContext.Attachments
+                        return await dbContext.EmailAttachments
 										.AsNoTracking()
                                         .OrderBy(y => y.Id)
 										.Skip(startIndex)
@@ -708,7 +702,7 @@ namespace CoreEntities.Business.Services
                     else
                     {
                         
-                        return await dbContext.Attachments
+                        return await dbContext.EmailAttachments
 										.AsNoTracking()
                                         .Where(exp)
 										.OrderBy(y => y.Id)
@@ -743,7 +737,7 @@ namespace CoreEntities.Business.Services
                     dbContext.Database.CommandTimeout = 0;
                     if (exp == "All" && navExp.Count == 0)
                     {
-                        return await dbContext.Attachments
+                        return await dbContext.EmailAttachments
 										.AsNoTracking()
                                         .CountAsync()
 										.ConfigureAwait(continueOnCapturedContext: false);
@@ -752,18 +746,15 @@ namespace CoreEntities.Business.Services
                     {
                         switch (itm.Key)
                         {
-                            case "AsycudaDocumentSet_Attachments":
-                                return await CountWhere<AsycudaDocumentSet_Attachments>(dbContext, exp, itm.Value, "Attachments", "Select")
+                            case "Attachments":
+                                return await CountWhere<Attachments>(dbContext, exp, itm.Value, "EmailAttachments", "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "AsycudaDocument_Attachments":
-                                return await CountWhere<AsycudaDocument_Attachments>(dbContext, exp, itm.Value, "Attachments", "Select")
-											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "EmailAttachments":
-                                return await CountWhere<EmailAttachments>(dbContext, exp, itm.Value, "Attachments", "Select")
+                            case "Emails":
+                                return await CountWhere<Emails>(dbContext, exp, itm.Value, "EmailAttachments", "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }
-                    return await dbContext.Attachments.Where(exp == "All" || exp == null ? "Id != null" : exp)
+                    return await dbContext.EmailAttachments.Where(exp == "All" || exp == null ? "Id != null" : exp)
 											.AsNoTracking()
                                             .CountAsync()
 											.ConfigureAwait(continueOnCapturedContext: false);
@@ -805,7 +796,7 @@ namespace CoreEntities.Business.Services
             return await dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
-                .SelectMany(navProp).OfType<Attachments>()
+                .SelectMany(navProp).OfType<EmailAttachments>()
                 .Where(exp == "All" || exp == null ? "Id != null" : exp)
                 .Distinct()
                 .OrderBy("Id")
@@ -826,7 +817,7 @@ namespace CoreEntities.Business.Services
             return await dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
-                .Select(navProp).OfType<Attachments>()
+                .Select(navProp).OfType<EmailAttachments>()
                 .Where(exp == "All" || exp == null ? "Id != null" : exp)
                 .Distinct()
                 .OrderBy("Id")
@@ -840,7 +831,7 @@ namespace CoreEntities.Business.Services
 			}
         }
 
-		  public async Task<IEnumerable<Attachments>> LoadRangeNav(int startIndex, int count, string exp,
+		  public async Task<IEnumerable<EmailAttachments>> LoadRangeNav(int startIndex, int count, string exp,
                                                                                  Dictionary<string, string> navExp, IEnumerable<string> includeLst = null)
         {
             try
@@ -848,7 +839,7 @@ namespace CoreEntities.Business.Services
                 using (var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-                    if ((string.IsNullOrEmpty(exp) && navExp.Count == 0) || exp == "None") return new List<Attachments>();
+                    if ((string.IsNullOrEmpty(exp) && navExp.Count == 0) || exp == "None") return new List<EmailAttachments>();
                     var set = AddIncludes(includeLst, dbContext);
 
                     if (exp == "All" && navExp.Count == 0)
@@ -867,22 +858,16 @@ namespace CoreEntities.Business.Services
                     {
                         switch (itm.Key)
                         {
-                            case "AsycudaDocumentSet_Attachments":
+                            case "Attachments":
                                 return
                                     await
-                                        LoadRangeWhere<AsycudaDocumentSet_Attachments>(startIndex, count, dbContext, exp, itm.Value, "Attachments", "Select")
+                                        LoadRangeWhere<Attachments>(startIndex, count, dbContext, exp, itm.Value, "EmailAttachments", "SelectMany")
 													.ConfigureAwait(continueOnCapturedContext: false);
 
-                            case "AsycudaDocument_Attachments":
+                            case "Emails":
                                 return
                                     await
-                                        LoadRangeWhere<AsycudaDocument_Attachments>(startIndex, count, dbContext, exp, itm.Value, "Attachments", "Select")
-													.ConfigureAwait(continueOnCapturedContext: false);
-
-                            case "EmailAttachments":
-                                return
-                                    await
-                                        LoadRangeWhere<EmailAttachments>(startIndex, count, dbContext, exp, itm.Value, "Attachments", "Select")
+                                        LoadRangeWhere<Emails>(startIndex, count, dbContext, exp, itm.Value, "EmailAttachments", "SelectMany")
 													.ConfigureAwait(continueOnCapturedContext: false);
 
                           
@@ -891,7 +876,7 @@ namespace CoreEntities.Business.Services
 						}
 
                     }
-                    return await set//dbContext.Attachments
+                    return await set//dbContext.EmailAttachments
 								.AsNoTracking()
                                 .Where(exp == "All" || exp == null ? "Id != null" : exp)
 								.OrderBy(y => y.Id)
@@ -918,7 +903,7 @@ namespace CoreEntities.Business.Services
             }
         }
 
-		private static async Task<IEnumerable<Attachments>> LoadRangeWhere<T>(int startIndex, int count,
+		private static async Task<IEnumerable<EmailAttachments>> LoadRangeWhere<T>(int startIndex, int count,
             CoreEntitiesContext dbContext, string exp, string navExp, string navProp, string rel, IEnumerable<string> includeLst = null) where T : class
         {
              switch (rel)
@@ -933,7 +918,7 @@ namespace CoreEntities.Business.Services
 		    }
         }
 
-		private static async Task<IEnumerable<Attachments>> LoadRangeSelectMany<T>(int startIndex, int count,
+		private static async Task<IEnumerable<EmailAttachments>> LoadRangeSelectMany<T>(int startIndex, int count,
             CoreEntitiesContext dbContext, string exp, string navExp, string navProp, IEnumerable<string> includeLst = null) where T : class
         {
 			try
@@ -941,7 +926,7 @@ namespace CoreEntities.Business.Services
             var set = dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
-                .SelectMany(navProp).OfType<Attachments>();
+                .SelectMany(navProp).OfType<EmailAttachments>();
     
             if (includeLst != null) set = includeLst.Aggregate(set, (current, itm) => current.Include(itm));            
 
@@ -962,7 +947,7 @@ namespace CoreEntities.Business.Services
 			}
         }
 
-		private static async Task<IEnumerable<Attachments>> LoadRangeSelect<T>(int startIndex, int count,
+		private static async Task<IEnumerable<EmailAttachments>> LoadRangeSelect<T>(int startIndex, int count,
             CoreEntitiesContext dbContext, string exp, string navExp, string navProp, IEnumerable<string> includeLst = null) where T : class
         {
 			try
@@ -970,7 +955,7 @@ namespace CoreEntities.Business.Services
               var set = dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
-                .Select(navProp).OfType<Attachments>();
+                .Select(navProp).OfType<EmailAttachments>();
 
                if (includeLst != null) set = includeLst.Aggregate(set, (current, itm) => current.Include(itm)); 
                 
@@ -991,7 +976,7 @@ namespace CoreEntities.Business.Services
 			}
         }
 
-        private static async Task<IEnumerable<Attachments>> GetWhere<T>(CoreEntitiesContext dbContext,
+        private static async Task<IEnumerable<EmailAttachments>> GetWhere<T>(CoreEntitiesContext dbContext,
             string exp, string navExp, string navProp, string rel, List<string> includesLst = null) where T : class
         {
 			try
@@ -1015,7 +1000,7 @@ namespace CoreEntities.Business.Services
 			}
         }
 
-		private static async Task<IEnumerable<Attachments>> GetWhereSelectMany<T>(CoreEntitiesContext dbContext,
+		private static async Task<IEnumerable<EmailAttachments>> GetWhereSelectMany<T>(CoreEntitiesContext dbContext,
             string exp, string navExp, string navProp, List<string> includesLst = null) where T : class
         {
 			try
@@ -1026,17 +1011,17 @@ namespace CoreEntities.Business.Services
 				return await dbContext.Set<T>()
 							.AsNoTracking()
                             .Where(navExp)
-							.SelectMany(navProp).OfType<Attachments>()
+							.SelectMany(navProp).OfType<EmailAttachments>()
 							.Where(exp == "All" || exp == null?"Id != null":exp)
 							.Distinct()
 							.ToListAsync()
 							.ConfigureAwait(continueOnCapturedContext: false);
 			}
 
-			var set = (DbQuery<Attachments>)dbContext.Set<T>()
+			var set = (DbQuery<EmailAttachments>)dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
-                .SelectMany(navProp).OfType<Attachments>()
+                .SelectMany(navProp).OfType<EmailAttachments>()
                 .Where(exp == "All" || exp == null?"Id != null":exp)
                 .Distinct();
 
@@ -1052,7 +1037,7 @@ namespace CoreEntities.Business.Services
 			}
         }
 
-		private static async Task<IEnumerable<Attachments>> GetWhereSelect<T>(CoreEntitiesContext dbContext,
+		private static async Task<IEnumerable<EmailAttachments>> GetWhereSelect<T>(CoreEntitiesContext dbContext,
             string exp, string navExp, string navProp, List<string> includesLst = null) where T : class
         {
 			try
@@ -1063,17 +1048,17 @@ namespace CoreEntities.Business.Services
 				return await dbContext.Set<T>()
 							.AsNoTracking()
                             .Where(navExp)
-							.Select(navProp).OfType<Attachments>()
+							.Select(navProp).OfType<EmailAttachments>()
 							.Where(exp == "All" || exp == null?"Id != null":exp)
 							.Distinct()
 							.ToListAsync()
 							.ConfigureAwait(continueOnCapturedContext: false);
 			}
 
-			var set = (DbQuery<Attachments>)dbContext.Set<T>()
+			var set = (DbQuery<EmailAttachments>)dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
-                .Select(navProp).OfType<Attachments>()
+                .Select(navProp).OfType<EmailAttachments>()
                 .Where(exp == "All" || exp == null?"Id != null":exp)
                 .Distinct();
 
@@ -1089,7 +1074,7 @@ namespace CoreEntities.Business.Services
 			}
         }
 
-			        public async Task<IEnumerable<Attachments>> GetAttachmentsByEmailId(string EmailId, List<string> includesLst = null)
+			        public async Task<IEnumerable<EmailAttachments>> GetEmailAttachmentsByEmailId(string EmailId, List<string> includesLst = null)
         {
             try
             {
@@ -1097,12 +1082,67 @@ namespace CoreEntities.Business.Services
               {
                 var i = EmailId;
                 var set = AddIncludes(includesLst, dbContext);
-                IEnumerable<Attachments> entities = await set//dbContext.Attachments
-                                                    // .Include(x => x.AsycudaDocumentSet_Attachments)									  
-                                                    // .Include(x => x.AsycudaDocument_Attachments)									  
-                                                    // .Include(x => x.EmailAttachments)									  
+                IEnumerable<EmailAttachments> entities = await set//dbContext.EmailAttachments
                                       .AsNoTracking()
                                         .Where(x => x.EmailId.ToString() == EmailId.ToString())
+										.ToListAsync()
+										.ConfigureAwait(continueOnCapturedContext: false);
+                return entities;
+              }
+             }
+            catch (Exception updateEx)
+            {
+                System.Diagnostics.Debugger.Break();
+                //throw new FaultException(updateEx.Message);
+                    var fault = new ValidationFault
+                                {
+                                    Result = false,
+                                    Message = updateEx.Message,
+                                    Description = updateEx.StackTrace
+                                };
+                    throw new FaultException<ValidationFault>(fault);
+            }
+        }
+ 	        public async Task<IEnumerable<EmailAttachments>> GetEmailAttachmentsByAttachmentId(string AttachmentId, List<string> includesLst = null)
+        {
+            try
+            {
+                using ( var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
+              {
+                var i = Convert.ToInt32(AttachmentId);
+                var set = AddIncludes(includesLst, dbContext);
+                IEnumerable<EmailAttachments> entities = await set//dbContext.EmailAttachments
+                                      .AsNoTracking()
+                                        .Where(x => x.AttachmentId.ToString() == AttachmentId.ToString())
+										.ToListAsync()
+										.ConfigureAwait(continueOnCapturedContext: false);
+                return entities;
+              }
+             }
+            catch (Exception updateEx)
+            {
+                System.Diagnostics.Debugger.Break();
+                //throw new FaultException(updateEx.Message);
+                    var fault = new ValidationFault
+                                {
+                                    Result = false,
+                                    Message = updateEx.Message,
+                                    Description = updateEx.StackTrace
+                                };
+                    throw new FaultException<ValidationFault>(fault);
+            }
+        }
+ 	        public async Task<IEnumerable<EmailAttachments>> GetEmailAttachmentsByFileTypeId(string FileTypeId, List<string> includesLst = null)
+        {
+            try
+            {
+                using ( var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
+              {
+                var i = Convert.ToInt32(FileTypeId);
+                var set = AddIncludes(includesLst, dbContext);
+                IEnumerable<EmailAttachments> entities = await set//dbContext.EmailAttachments
+                                      .AsNoTracking()
+                                        .Where(x => x.FileTypeId.ToString() == FileTypeId.ToString())
 										.ToListAsync()
 										.ConfigureAwait(continueOnCapturedContext: false);
                 return entities;
@@ -1133,11 +1173,11 @@ namespace CoreEntities.Business.Services
                      if (string.IsNullOrEmpty(whereExp) || whereExp == "None") return 0;
                      if (whereExp == "All")
                      {
-                          res = Convert.ToDecimal(dbContext.Attachments.AsNoTracking().Sum(field));
+                          res = Convert.ToDecimal(dbContext.EmailAttachments.AsNoTracking().Sum(field));
                      }
                      else
                      {
-                         res = Convert.ToDecimal(dbContext.Attachments.AsNoTracking().Where(whereExp).Sum(field));
+                         res = Convert.ToDecimal(dbContext.EmailAttachments.AsNoTracking().Where(whereExp).Sum(field));
                      }
                      
                      return res;
@@ -1165,10 +1205,10 @@ namespace CoreEntities.Business.Services
                 using (var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-                    if (!dbContext.Attachments.Any()) return 0;
+                    if (!dbContext.EmailAttachments.Any()) return 0;
                     if (exp == "All" && navExp.Count == 0)
                     {
-                        return Convert.ToDecimal(dbContext.Attachments
+                        return Convert.ToDecimal(dbContext.EmailAttachments
 										.AsNoTracking()
                                         .Sum(field)??0);
                     }
@@ -1176,18 +1216,15 @@ namespace CoreEntities.Business.Services
                     {
                         switch (itm.Key)
                         {
-                            case "AsycudaDocumentSet_Attachments":
-                                return await SumWhere<AsycudaDocumentSet_Attachments>(dbContext, exp, itm.Value, "Attachments", field, "Select")
+                            case "Attachments":
+                                return await SumWhere<Attachments>(dbContext, exp, itm.Value, "EmailAttachments", field, "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "AsycudaDocument_Attachments":
-                                return await SumWhere<AsycudaDocument_Attachments>(dbContext, exp, itm.Value, "Attachments", field, "Select")
-											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "EmailAttachments":
-                                return await SumWhere<EmailAttachments>(dbContext, exp, itm.Value, "Attachments", field, "Select")
+                            case "Emails":
+                                return await SumWhere<Emails>(dbContext, exp, itm.Value, "EmailAttachments", field, "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }
-                    return Convert.ToDecimal(dbContext.Attachments.Where(exp == "All" || exp == null ? "Id != null" : exp)
+                    return Convert.ToDecimal(dbContext.EmailAttachments.Where(exp == "All" || exp == null ? "Id != null" : exp)
 											.AsNoTracking()
                                             .Sum(field)??0);
                 }
@@ -1227,7 +1264,7 @@ namespace CoreEntities.Business.Services
             return Convert.ToDecimal(dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
-                .SelectMany(navProp).OfType<Attachments>()
+                .SelectMany(navProp).OfType<EmailAttachments>()
                 .Where(exp == "All" || exp == null ? "Id != null" : exp)
                 .Distinct()
                 .OrderBy("Id")
@@ -1247,7 +1284,7 @@ namespace CoreEntities.Business.Services
             return Convert.ToDecimal(dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
-                .Select(navProp).OfType<Attachments>()
+                .Select(navProp).OfType<EmailAttachments>()
                 .Where(exp == "All" || exp == null ? "Id != null" : exp)
                 .Distinct()
                 .OrderBy("Id")
@@ -1273,11 +1310,11 @@ namespace CoreEntities.Business.Services
                      if (string.IsNullOrEmpty(whereExp) || whereExp == "None") return res;
                      if (whereExp == "All")
                      {
-                          res = Convert.ToString(dbContext.Attachments.AsNoTracking().Min(field));
+                          res = Convert.ToString(dbContext.EmailAttachments.AsNoTracking().Min(field));
                      }
                      else
                      {
-                         res = Convert.ToString(dbContext.Attachments.AsNoTracking().Where(whereExp).Min(field));
+                         res = Convert.ToString(dbContext.EmailAttachments.AsNoTracking().Where(whereExp).Min(field));
                      }
                      
                      return res;
@@ -1298,12 +1335,12 @@ namespace CoreEntities.Business.Services
          }
 
 		 
-		private static IQueryable<Attachments> AddIncludes(IEnumerable<string> includesLst, CoreEntitiesContext dbContext)
+		private static IQueryable<EmailAttachments> AddIncludes(IEnumerable<string> includesLst, CoreEntitiesContext dbContext)
        {
 		 try
 			{
 			   if (includesLst == null) includesLst = new List<string>();
-			   var set =(DbQuery<Attachments>) dbContext.Attachments; 
+			   var set =(DbQuery<EmailAttachments>) dbContext.EmailAttachments; 
 			   set = includesLst.Where(x => !string.IsNullOrEmpty(x))
                                 .Aggregate(set, (current, itm) => current.Include(itm));
 			   return set;
@@ -1314,7 +1351,7 @@ namespace CoreEntities.Business.Services
 				throw;
 			}
        }
-	   private IQueryable<Attachments> AddWheres(List<string> expLst, IQueryable<Attachments> set)
+	   private IQueryable<EmailAttachments> AddWheres(List<string> expLst, IQueryable<EmailAttachments> set)
         {
             try
             {

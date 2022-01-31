@@ -16,41 +16,41 @@ using CoreEntities.Client.DTO;
 namespace CoreEntities.Client.Contracts
 {
     [ServiceContract (Namespace="http://www.insight-software.com/WaterNut")]
-    public partial interface IEmailsService : IClientService
+    public partial interface IEmailAttachmentsService : IClientService
     {
         [OperationContract]
-        Task<IEnumerable<Emails>> GetEmails(List<string> includesLst = null);
+        Task<IEnumerable<EmailAttachments>> GetEmailAttachments(List<string> includesLst = null);
 
         [OperationContract]
-        Task<Emails> GetEmailsByKey(string id, List<string> includesLst = null);
+        Task<EmailAttachments> GetEmailAttachmentsByKey(string id, List<string> includesLst = null);
 
 		[OperationContract]
-        Task<IEnumerable<Emails>> GetEmailsByExpression(string exp, List<string> includesLst = null);
+        Task<IEnumerable<EmailAttachments>> GetEmailAttachmentsByExpression(string exp, List<string> includesLst = null);
 
 		[OperationContract]
-        Task<IEnumerable<Emails>> GetEmailsByExpressionLst(List<string> expLst, List<string> includesLst = null);
+        Task<IEnumerable<EmailAttachments>> GetEmailAttachmentsByExpressionLst(List<string> expLst, List<string> includesLst = null);
 
 		[OperationContract]
-		Task<IEnumerable<Emails>> GetEmailsByExpressionNav(string exp,
+		Task<IEnumerable<EmailAttachments>> GetEmailAttachmentsByExpressionNav(string exp,
 														 Dictionary<string, string> navExp, List<string> includesLst = null);        
         [OperationContract]
-        Task<IEnumerable<Emails>> GetEmailsByBatch(string exp,
+        Task<IEnumerable<EmailAttachments>> GetEmailAttachmentsByBatch(string exp,
                                                                         int totalrow, List<string> includesLst = null);
         [OperationContract]
-        Task<IEnumerable<Emails>> GetEmailsByBatchExpressionLst(List<string> expLst,
+        Task<IEnumerable<EmailAttachments>> GetEmailAttachmentsByBatchExpressionLst(List<string> expLst,
                                                                         int totalrow, List<string> includesLst = null);
 
 		[OperationContract]
-        Task<Emails> UpdateEmails(Emails entity);
+        Task<EmailAttachments> UpdateEmailAttachments(EmailAttachments entity);
 
         [OperationContract]
-        Task<Emails> CreateEmails(Emails entity);
+        Task<EmailAttachments> CreateEmailAttachments(EmailAttachments entity);
 
         [OperationContract]
-        Task<bool> DeleteEmails(string id);
+        Task<bool> DeleteEmailAttachments(string id);
 
         [OperationContract]
-        Task<bool> RemoveSelectedEmails(IEnumerable<string> selectedEmails);
+        Task<bool> RemoveSelectedEmailAttachments(IEnumerable<string> selectedEmailAttachments);
 
 		// Virtural List Implementation
 
@@ -64,10 +64,10 @@ namespace CoreEntities.Client.Contracts
         Task<int> CountNav(string exp, Dictionary<string, string> navExp);
 
         [OperationContract]
-        Task<IEnumerable<Emails>> LoadRange(int startIndex, int count, string exp);
+        Task<IEnumerable<EmailAttachments>> LoadRange(int startIndex, int count, string exp);
 
 		[OperationContract]
-		Task<IEnumerable<Emails>> LoadRangeNav(int startIndex, int count, string exp,
+		Task<IEnumerable<EmailAttachments>> LoadRangeNav(int startIndex, int count, string exp,
                                                                                  Dictionary<string, string> navExp, IEnumerable<string> includeLst = null);
 
 		[OperationContract]
@@ -80,10 +80,13 @@ namespace CoreEntities.Client.Contracts
 		string MinField(string whereExp, string field);
 
 				[OperationContract]
-		Task<IEnumerable<Emails>> GetEmailsByEmailUniqueId(string EmailUniqueId, List<string> includesLst = null);
+		Task<IEnumerable<EmailAttachments>> GetEmailAttachmentsByEmailId(string EmailId, List<string> includesLst = null);
         
   		[OperationContract]
-		Task<IEnumerable<Emails>> GetEmailsByApplicationSettingsId(string ApplicationSettingsId, List<string> includesLst = null);
+		Task<IEnumerable<EmailAttachments>> GetEmailAttachmentsByAttachmentId(string AttachmentId, List<string> includesLst = null);
+        
+  		[OperationContract]
+		Task<IEnumerable<EmailAttachments>> GetEmailAttachmentsByFileTypeId(string FileTypeId, List<string> includesLst = null);
         
   		
     }

@@ -7,20 +7,19 @@
     using System.ComponentModel.DataAnnotations.Schema;
     using System.Collections.Generic;
     
-    public partial class AttachmentsMap : EntityTypeConfiguration<Attachments>
+    public partial class EmailAttachmentsMap : EntityTypeConfiguration<EmailAttachments>
     {
-        public AttachmentsMap()
+        public EmailAttachmentsMap()
         {                        
               this.HasKey(t => t.Id);        
-              this.ToTable("Attachments");
+              this.ToTable("EmailAttachments");
               this.Property(t => t.Id).HasColumnName("Id").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.Identity));
-              this.Property(t => t.FilePath).HasColumnName("FilePath").IsRequired().HasMaxLength(255);
-              this.Property(t => t.DocumentCode).HasColumnName("DocumentCode").HasMaxLength(50);
-              this.Property(t => t.Reference).HasColumnName("Reference").HasMaxLength(255);
-              this.Property(t => t.EmailId).HasColumnName("EmailId").HasMaxLength(255);
-              this.HasMany(t => t.AsycudaDocumentSet_Attachments).WithRequired(t => (Attachments)t.Attachments);
-              this.HasMany(t => t.AsycudaDocument_Attachments).WithRequired(t => (Attachments)t.Attachments);
-              this.HasMany(t => t.EmailAttachments).WithRequired(t => (Attachments)t.Attachments);
+              this.Property(t => t.EmailId).HasColumnName("EmailId").IsRequired().HasMaxLength(255);
+              this.Property(t => t.AttachmentId).HasColumnName("AttachmentId");
+              this.Property(t => t.FileTypeId).HasColumnName("FileTypeId");
+              this.Property(t => t.DocumentSpecific).HasColumnName("DocumentSpecific");
+              this.HasRequired(t => t.Attachments).WithMany(t =>(ICollection<EmailAttachments>) t.EmailAttachments).HasForeignKey(d => d.AttachmentId);
+              this.HasRequired(t => t.Emails).WithMany(t =>(ICollection<EmailAttachments>) t.EmailAttachments).HasForeignKey(d => d.EmailId);
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);
     			this.Ignore(t => t.ModifiedProperties);

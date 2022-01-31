@@ -32,36 +32,36 @@ using System;
 using System.ServiceModel;
 using TrackableEntities.Common;
 
-using Attachments = CoreEntities.Client.Entities.Attachments;
+using EmailAttachments = CoreEntities.Client.Entities.EmailAttachments;
 
 namespace CoreEntities.Client.Repositories 
 {
    
-    public partial class AttachmentsRepository : BaseRepository<AttachmentsRepository>
+    public partial class EmailAttachmentsRepository : BaseRepository<EmailAttachmentsRepository>
     {
 
-       private static readonly AttachmentsRepository instance;
-       static AttachmentsRepository()
+       private static readonly EmailAttachmentsRepository instance;
+       static EmailAttachmentsRepository()
         {
-            instance = new AttachmentsRepository();
+            instance = new EmailAttachmentsRepository();
         }
 
-       public static AttachmentsRepository Instance
+       public static EmailAttachmentsRepository Instance
         {
             get { return instance; }
         }
         
-        public async Task<IEnumerable<Attachments>> Attachments(List<string> includesLst = null)
+        public async Task<IEnumerable<EmailAttachments>> EmailAttachments(List<string> includesLst = null)
         {
-            if (System.ComponentModel.LicenseManager.UsageMode == LicenseUsageMode.Designtime) return new List<Attachments>().AsEnumerable();
+            if (System.ComponentModel.LicenseManager.UsageMode == LicenseUsageMode.Designtime) return new List<EmailAttachments>().AsEnumerable();
             try
             {
-                using (var t = new AttachmentsClient())
+                using (var t = new EmailAttachmentsClient())
                     {
-                        var res = await t.GetAttachments(includesLst).ConfigureAwait(continueOnCapturedContext: false);
+                        var res = await t.GetEmailAttachments(includesLst).ConfigureAwait(continueOnCapturedContext: false);
                         if (res != null)
                         {
-                            return res.Select(x => new Attachments(x)).AsEnumerable();
+                            return res.Select(x => new EmailAttachments(x)).AsEnumerable();
                         }
                         else
                         {
@@ -80,26 +80,26 @@ namespace CoreEntities.Client.Repositories
             }
         }
 
-		 public async Task<IEnumerable<Attachments>> GetAttachmentsByExpression(string exp, List<string> includesLst = null)
+		 public async Task<IEnumerable<EmailAttachments>> GetEmailAttachmentsByExpression(string exp, List<string> includesLst = null)
         {
-            if (System.ComponentModel.LicenseManager.UsageMode == LicenseUsageMode.Designtime || exp == null || exp == "None") return new List<Attachments>().AsEnumerable();
+            if (System.ComponentModel.LicenseManager.UsageMode == LicenseUsageMode.Designtime || exp == null || exp == "None") return new List<EmailAttachments>().AsEnumerable();
             try
             {
-                using (var t = new AttachmentsClient())
+                using (var t = new EmailAttachmentsClient())
                     {
-					    IEnumerable<DTO.Attachments> res = null;
+					    IEnumerable<DTO.EmailAttachments> res = null;
                         if(exp == "All")
                         {                       
-						    res = await t.GetAttachments(includesLst).ConfigureAwait(continueOnCapturedContext: false);					
+						    res = await t.GetEmailAttachments(includesLst).ConfigureAwait(continueOnCapturedContext: false);					
                         }
                         else
                         {
-                             res = await t.GetAttachmentsByExpression(exp, includesLst).ConfigureAwait(continueOnCapturedContext: false);	                         
+                             res = await t.GetEmailAttachmentsByExpression(exp, includesLst).ConfigureAwait(continueOnCapturedContext: false);	                         
                         }
                     
                         if (res != null)
                         {
-                            return res.Select(x => new Attachments(x)).AsEnumerable();
+                            return res.Select(x => new EmailAttachments(x)).AsEnumerable();
                         }
                         else
                         {
@@ -118,21 +118,21 @@ namespace CoreEntities.Client.Repositories
             }
         }
 
-		 public async Task<IEnumerable<Attachments>> GetAttachmentsByExpressionLst(List<string> expLst, List<string> includesLst = null)
+		 public async Task<IEnumerable<EmailAttachments>> GetEmailAttachmentsByExpressionLst(List<string> expLst, List<string> includesLst = null)
         {
-            if (System.ComponentModel.LicenseManager.UsageMode == LicenseUsageMode.Designtime || expLst.Count == 0 || expLst.FirstOrDefault() == "None") return new List<Attachments>().AsEnumerable();
+            if (System.ComponentModel.LicenseManager.UsageMode == LicenseUsageMode.Designtime || expLst.Count == 0 || expLst.FirstOrDefault() == "None") return new List<EmailAttachments>().AsEnumerable();
             try
             {
-                using (var t = new AttachmentsClient())
+                using (var t = new EmailAttachmentsClient())
                     {
-					    IEnumerable<DTO.Attachments> res = null;
+					    IEnumerable<DTO.EmailAttachments> res = null;
                        
-                        res = await t.GetAttachmentsByExpressionLst(expLst, includesLst).ConfigureAwait(continueOnCapturedContext: false);	                         
+                        res = await t.GetEmailAttachmentsByExpressionLst(expLst, includesLst).ConfigureAwait(continueOnCapturedContext: false);	                         
                       
                     
                         if (res != null)
                         {
-                            return res.Select(x => new Attachments(x)).AsEnumerable();
+                            return res.Select(x => new EmailAttachments(x)).AsEnumerable();
                         }
                         else
                         {
@@ -152,26 +152,26 @@ namespace CoreEntities.Client.Repositories
         }
 
 
-		 public async Task<IEnumerable<Attachments>> GetAttachmentsByExpressionNav(string exp, Dictionary<string, string> navExp, List<string> includesLst = null)
+		 public async Task<IEnumerable<EmailAttachments>> GetEmailAttachmentsByExpressionNav(string exp, Dictionary<string, string> navExp, List<string> includesLst = null)
         {
-            if (System.ComponentModel.LicenseManager.UsageMode == LicenseUsageMode.Designtime || exp == null || exp == "None") return new List<Attachments>().AsEnumerable();
+            if (System.ComponentModel.LicenseManager.UsageMode == LicenseUsageMode.Designtime || exp == null || exp == "None") return new List<EmailAttachments>().AsEnumerable();
             try
             {
-                using (var t = new AttachmentsClient())
+                using (var t = new EmailAttachmentsClient())
                     {
-					    IEnumerable<DTO.Attachments> res = null;
+					    IEnumerable<DTO.EmailAttachments> res = null;
                         if(exp == "All" && navExp.Count == 0)
                         {                       
-						    res = await t.GetAttachments(includesLst).ConfigureAwait(continueOnCapturedContext: false);					
+						    res = await t.GetEmailAttachments(includesLst).ConfigureAwait(continueOnCapturedContext: false);					
                         }
                         else
                         {
-                             res = await t.GetAttachmentsByExpressionNav(exp, navExp, includesLst).ConfigureAwait(continueOnCapturedContext: false);	                         
+                             res = await t.GetEmailAttachmentsByExpressionNav(exp, navExp, includesLst).ConfigureAwait(continueOnCapturedContext: false);	                         
                         }
                     
                         if (res != null)
                         {
-                            return res.Select(x => new Attachments(x)).AsEnumerable();
+                            return res.Select(x => new EmailAttachments(x)).AsEnumerable();
                         }
                         else
                         {
@@ -191,20 +191,19 @@ namespace CoreEntities.Client.Repositories
         }
 
 
-        public async Task<Attachments> GetAttachments(string id, List<string> includesLst = null)
+        public async Task<EmailAttachments> GetEmailAttachments(string id, List<string> includesLst = null)
         {
              try
              {   
-                 using (var t = new AttachmentsClient())
+                 using (var t = new EmailAttachmentsClient())
                     {
-                        var res = await t.GetAttachmentsByKey(id,includesLst).ConfigureAwait(continueOnCapturedContext: false);
+                        var res = await t.GetEmailAttachmentsByKey(id,includesLst).ConfigureAwait(continueOnCapturedContext: false);
                          if(res != null)
                         {
-                            return new Attachments(res)
+                            return new EmailAttachments(res)
                     {
-                     // AsycudaDocumentSet_Attachments = new System.Collections.ObjectModel.ObservableCollection<AsycudaDocumentSet_Attachments>(res.AsycudaDocumentSet_Attachments.Select(y => new AsycudaDocumentSet_Attachments(y))),    
-                     // AsycudaDocument_Attachments = new System.Collections.ObjectModel.ObservableCollection<AsycudaDocument_Attachments>(res.AsycudaDocument_Attachments.Select(y => new AsycudaDocument_Attachments(y))),    
-                     // EmailAttachments = new System.Collections.ObjectModel.ObservableCollection<EmailAttachments>(res.EmailAttachments.Select(y => new EmailAttachments(y)))    
+                  // Attachments = (res.Attachments != null?new Attachments(res.Attachments): null),    
+                  // Emails = (res.Emails != null?new Emails(res.Emails): null)    
                   };
                     }
                     else
@@ -224,7 +223,7 @@ namespace CoreEntities.Client.Repositories
             }
         }
 
-        public async Task<Attachments> UpdateAttachments(Attachments entity)
+        public async Task<EmailAttachments> UpdateEmailAttachments(EmailAttachments entity)
         {
             if (entity == null) return entity;
             var entitychanges = entity.ChangeTracker.GetChanges().FirstOrDefault();
@@ -232,10 +231,10 @@ namespace CoreEntities.Client.Repositories
             {
                 try
                 {
-                    using (var t = new AttachmentsClient())
+                    using (var t = new EmailAttachmentsClient())
                     {
      
-                        var updatedEntity =  await t.UpdateAttachments(entitychanges).ConfigureAwait(false);
+                        var updatedEntity =  await t.UpdateEmailAttachments(entitychanges).ConfigureAwait(false);
                         entity.EntityId = updatedEntity.EntityId;
                         entity.DTO.AcceptChanges();
                          //var  = entity.;
@@ -261,13 +260,13 @@ namespace CoreEntities.Client.Repositories
 
         }
 
-        public async Task<Attachments> CreateAttachments(Attachments entity)
+        public async Task<EmailAttachments> CreateEmailAttachments(EmailAttachments entity)
         {
             try
             {   
-                using (var t = new AttachmentsClient())
+                using (var t = new EmailAttachmentsClient())
                     {
-                        return new Attachments(await t.CreateAttachments(entity.DTO).ConfigureAwait(continueOnCapturedContext: false));
+                        return new EmailAttachments(await t.CreateEmailAttachments(entity.DTO).ConfigureAwait(continueOnCapturedContext: false));
                     }
             }
             catch (FaultException<ValidationFault> e)
@@ -281,13 +280,13 @@ namespace CoreEntities.Client.Repositories
             }
         }
 
-        public async Task<bool> DeleteAttachments(string id)
+        public async Task<bool> DeleteEmailAttachments(string id)
         {
             try
             {
-             using (var t = new AttachmentsClient())
+             using (var t = new EmailAttachmentsClient())
                 {
-                    return await t.DeleteAttachments(id).ConfigureAwait(continueOnCapturedContext: false);
+                    return await t.DeleteEmailAttachments(id).ConfigureAwait(continueOnCapturedContext: false);
                 }
             }
             catch (FaultException<ValidationFault> e)
@@ -301,13 +300,13 @@ namespace CoreEntities.Client.Repositories
             }         
         }
 
-        public async Task<bool> RemoveSelectedAttachments(IEnumerable<string> selectedAttachments)
+        public async Task<bool> RemoveSelectedEmailAttachments(IEnumerable<string> selectedEmailAttachments)
         {
             try
             {
-                using (var ctx = new AttachmentsClient())
+                using (var ctx = new EmailAttachmentsClient())
                 {
-                    return await ctx.RemoveSelectedAttachments(selectedAttachments).ConfigureAwait(false);
+                    return await ctx.RemoveSelectedEmailAttachments(selectedEmailAttachments).ConfigureAwait(false);
                 }
             }
             catch (FaultException<ValidationFault> e)
@@ -324,21 +323,21 @@ namespace CoreEntities.Client.Repositories
 
 		//Virtural List Implementation
 
-		public async Task<Tuple<IEnumerable<Attachments>, int>> LoadRange(int startIndex, int count, string exp, Dictionary<string, string> navExp, IEnumerable<string> includeLst = null)
+		public async Task<Tuple<IEnumerable<EmailAttachments>, int>> LoadRange(int startIndex, int count, string exp, Dictionary<string, string> navExp, IEnumerable<string> includeLst = null)
         {
 			var overallCount = 0;
             if (System.ComponentModel.LicenseManager.UsageMode == LicenseUsageMode.Designtime || exp == null || exp == "None")
             {
                 
-                return new Tuple<IEnumerable<Attachments>, int>(new List<Attachments>().AsEnumerable(), overallCount);
+                return new Tuple<IEnumerable<EmailAttachments>, int>(new List<EmailAttachments>().AsEnumerable(), overallCount);
             }
             
             try
             {
-                using (var t = new AttachmentsClient())
+                using (var t = new EmailAttachmentsClient())
                 {
 
-                    IEnumerable<DTO.Attachments> res = null;
+                    IEnumerable<DTO.EmailAttachments> res = null;
                                          
 						    res = await t.LoadRangeNav(startIndex, count, exp, navExp, includeLst).ConfigureAwait(continueOnCapturedContext: false);
 						    overallCount = await t.CountNav(exp, navExp).ConfigureAwait(continueOnCapturedContext: false);
@@ -347,7 +346,7 @@ namespace CoreEntities.Client.Repositories
                                 
                     if (res != null)
                     {
-                        return new Tuple<IEnumerable<Attachments>, int>(res.Select(x => new Attachments(x)).AsEnumerable(), overallCount);
+                        return new Tuple<IEnumerable<EmailAttachments>, int>(res.Select(x => new EmailAttachments(x)).AsEnumerable(), overallCount);
                     }
                     else
                     {
@@ -366,17 +365,73 @@ namespace CoreEntities.Client.Repositories
             }
         }
 
-	 public async Task<IEnumerable<Attachments>> GetAttachmentsByEmailId(string EmailId, List<string> includesLst = null)
+	 public async Task<IEnumerable<EmailAttachments>> GetEmailAttachmentsByEmailId(string EmailId, List<string> includesLst = null)
         {
              if (EmailId == "0") return null;
             try
             {
-                 using (AttachmentsClient t = new AttachmentsClient())
+                 using (EmailAttachmentsClient t = new EmailAttachmentsClient())
                     {
-                        var res = await t.GetAttachmentsByEmailId(EmailId, includesLst).ConfigureAwait(continueOnCapturedContext: false);
+                        var res = await t.GetEmailAttachmentsByEmailId(EmailId, includesLst).ConfigureAwait(continueOnCapturedContext: false);
                          if(res != null)
                         {
-                            return res.Select(x => new Attachments(x)).AsEnumerable();
+                            return res.Select(x => new EmailAttachments(x)).AsEnumerable();
+					    }                
+					    else
+					    {
+						    return null;
+					    }                    
+                    }
+            }
+            catch (FaultException<ValidationFault> e)
+            {
+                throw new Exception(e.Detail.Message, e.InnerException);
+            }
+            catch (Exception)
+            {
+                Debugger.Break();
+                throw;
+            }
+        } 
+ 	 public async Task<IEnumerable<EmailAttachments>> GetEmailAttachmentsByAttachmentId(string AttachmentId, List<string> includesLst = null)
+        {
+             if (AttachmentId == "0") return null;
+            try
+            {
+                 using (EmailAttachmentsClient t = new EmailAttachmentsClient())
+                    {
+                        var res = await t.GetEmailAttachmentsByAttachmentId(AttachmentId, includesLst).ConfigureAwait(continueOnCapturedContext: false);
+                         if(res != null)
+                        {
+                            return res.Select(x => new EmailAttachments(x)).AsEnumerable();
+					    }                
+					    else
+					    {
+						    return null;
+					    }                    
+                    }
+            }
+            catch (FaultException<ValidationFault> e)
+            {
+                throw new Exception(e.Detail.Message, e.InnerException);
+            }
+            catch (Exception)
+            {
+                Debugger.Break();
+                throw;
+            }
+        } 
+ 	 public async Task<IEnumerable<EmailAttachments>> GetEmailAttachmentsByFileTypeId(string FileTypeId, List<string> includesLst = null)
+        {
+             if (FileTypeId == "0") return null;
+            try
+            {
+                 using (EmailAttachmentsClient t = new EmailAttachmentsClient())
+                    {
+                        var res = await t.GetEmailAttachmentsByFileTypeId(FileTypeId, includesLst).ConfigureAwait(continueOnCapturedContext: false);
+                         if(res != null)
+                        {
+                            return res.Select(x => new EmailAttachments(x)).AsEnumerable();
 					    }                
 					    else
 					    {
@@ -399,7 +454,7 @@ namespace CoreEntities.Client.Repositories
         {
             try
             {
-                using (var t = new AttachmentsClient())
+                using (var t = new EmailAttachmentsClient())
                 {
                     return t.SumField(whereExp,sumExp);
                 }
@@ -420,7 +475,7 @@ namespace CoreEntities.Client.Repositories
         {
             try
             {
-                using (var t = new AttachmentsClient())
+                using (var t = new EmailAttachmentsClient())
                 {
                     return await t.SumNav(whereExp,navExp,sumExp).ConfigureAwait(false);
                 }

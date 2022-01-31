@@ -136,6 +136,12 @@ namespace WaterNut.QuerySpace.CoreEntities
 			public const string Document_TypeDeleted = "Document_TypeDeleted";
 			public const string Document_TypeCreated = "Document_TypeCreated";
 			public const string Document_TypeUpdated = "Document_TypeUpdated";
+			public const string EmailAttachmentsFilterExpressionChanged = "EmailAttachmentsFilterExpressionChanged";
+			public const string SelectedEmailAttachmentsChanged = "SelectedEmailAttachmentsChanged";
+            public const string EmailAttachmentsChanged = "EmailAttachmentsChanged";
+			public const string EmailAttachmentsDeleted = "EmailAttachmentsDeleted";
+			public const string EmailAttachmentsCreated = "EmailAttachmentsCreated";
+			public const string EmailAttachmentsUpdated = "EmailAttachmentsUpdated";
 			public const string EmailFileTypesFilterExpressionChanged = "EmailFileTypesFilterExpressionChanged";
 			public const string SelectedEmailFileTypesChanged = "SelectedEmailFileTypesChanged";
             public const string EmailFileTypesChanged = "EmailFileTypesChanged";
@@ -603,6 +609,7 @@ namespace WaterNut.QuerySpace.CoreEntities
           // public const string CustomsOperationsChanged = "CustomsOperationsChanged";
           // public const string DeclarantChanged = "DeclarantChanged";
           // public const string Document_TypeChanged = "Document_TypeChanged";
+          // public const string EmailAttachmentsChanged = "EmailAttachmentsChanged";
           // public const string EmailFileTypesChanged = "EmailFileTypesChanged";
           // public const string EmailInfoMappingsChanged = "EmailInfoMappingsChanged";
           // public const string EmailMappingChanged = "EmailMappingChanged";
@@ -721,6 +728,8 @@ namespace WaterNut.QuerySpace.CoreEntities
            public const string CurrentDeclarantChanged = "CurrentDeclarantChanged";
    
            public const string CurrentDocument_TypeChanged = "CurrentDocument_TypeChanged";
+   
+           public const string CurrentEmailAttachmentsChanged = "CurrentEmailAttachmentsChanged";
    
            public const string CurrentEmailFileTypesChanged = "CurrentEmailFileTypesChanged";
    
@@ -913,6 +922,8 @@ namespace WaterNut.QuerySpace.CoreEntities
            public const string CurrentDeclarantIDChanged = "OnCurrentDeclarantIDChanged";
    
            public const string CurrentDocument_TypeIDChanged = "OnCurrentDocument_TypeIDChanged";
+   
+           public const string CurrentEmailAttachmentsIDChanged = "OnCurrentEmailAttachmentsIDChanged";
    
            public const string CurrentEmailFileTypesIDChanged = "OnCurrentEmailFileTypesIDChanged";
    

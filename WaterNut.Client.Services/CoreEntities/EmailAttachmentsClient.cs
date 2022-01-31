@@ -20,69 +20,69 @@ using System.ComponentModel.Composition;
 
 namespace CoreEntities.Client.Services
 {
-    [Export (typeof(EmailsClient))]
-    [Export (typeof(IEmailsService))]
+    [Export (typeof(EmailAttachmentsClient))]
+    [Export (typeof(IEmailAttachmentsService))]
     [Export(typeof(IClientService))]
     [PartCreationPolicy(CreationPolicy.NonShared)]
-    public partial class EmailsClient :  ClientService<IEmailsService>, IEmailsService, IDisposable
+    public partial class EmailAttachmentsClient :  ClientService<IEmailAttachmentsService>, IEmailAttachmentsService, IDisposable
     {
         
-        public async Task<IEnumerable<Emails>> GetEmails(List<string> includesLst = null)
+        public async Task<IEnumerable<EmailAttachments>> GetEmailAttachments(List<string> includesLst = null)
         {
-            return await Channel.GetEmails(includesLst).ConfigureAwait(false);
+            return await Channel.GetEmailAttachments(includesLst).ConfigureAwait(false);
         }
 
-        public async Task<Emails> GetEmailsByKey(string id, List<string> includesLst = null)
+        public async Task<EmailAttachments> GetEmailAttachmentsByKey(string id, List<string> includesLst = null)
         {
-            return await Channel.GetEmailsByKey(id, includesLst).ConfigureAwait(false);
+            return await Channel.GetEmailAttachmentsByKey(id, includesLst).ConfigureAwait(false);
         }
 
-		public async Task<IEnumerable<Emails>> GetEmailsByExpression(string exp, List<string> includesLst = null)
+		public async Task<IEnumerable<EmailAttachments>> GetEmailAttachmentsByExpression(string exp, List<string> includesLst = null)
         {
-            return await Channel.GetEmailsByExpression(exp, includesLst).ConfigureAwait(false);
+            return await Channel.GetEmailAttachmentsByExpression(exp, includesLst).ConfigureAwait(false);
         }
 
-		public async Task<IEnumerable<Emails>> GetEmailsByExpressionLst(List<string> expLst, List<string> includesLst = null)
+		public async Task<IEnumerable<EmailAttachments>> GetEmailAttachmentsByExpressionLst(List<string> expLst, List<string> includesLst = null)
         {
-            return await Channel.GetEmailsByExpressionLst(expLst, includesLst).ConfigureAwait(false);
+            return await Channel.GetEmailAttachmentsByExpressionLst(expLst, includesLst).ConfigureAwait(false);
         }
 
-		public async Task<IEnumerable<Emails>> GetEmailsByExpressionNav(string exp,
+		public async Task<IEnumerable<EmailAttachments>> GetEmailAttachmentsByExpressionNav(string exp,
 															 Dictionary<string, string> navExp, List<string> includesLst = null)
 		{
-			return await Channel.GetEmailsByExpressionNav(exp, navExp, includesLst).ConfigureAwait(false);
+			return await Channel.GetEmailAttachmentsByExpressionNav(exp, navExp, includesLst).ConfigureAwait(false);
 		}
 
-        public async Task<IEnumerable<Emails>> GetEmailsByBatch(string exp,
+        public async Task<IEnumerable<EmailAttachments>> GetEmailAttachmentsByBatch(string exp,
                                                                         int totalrow, List<string> includesLst = null)
         {
-            return await Channel.GetEmailsByBatch(exp, totalrow, includesLst).ConfigureAwait(false);
+            return await Channel.GetEmailAttachmentsByBatch(exp, totalrow, includesLst).ConfigureAwait(false);
         }
 
-        public async Task<IEnumerable<Emails>> GetEmailsByBatchExpressionLst(List<string> expLst,
+        public async Task<IEnumerable<EmailAttachments>> GetEmailAttachmentsByBatchExpressionLst(List<string> expLst,
                                                                         int totalrow, List<string> includesLst = null)
         {
-            return await Channel.GetEmailsByBatchExpressionLst(expLst, totalrow, includesLst).ConfigureAwait(false);
+            return await Channel.GetEmailAttachmentsByBatchExpressionLst(expLst, totalrow, includesLst).ConfigureAwait(false);
         }
 
-        public async Task<Emails> UpdateEmails(Emails entity)
+        public async Task<EmailAttachments> UpdateEmailAttachments(EmailAttachments entity)
         {
-           return await Channel.UpdateEmails(entity).ConfigureAwait(false);
+           return await Channel.UpdateEmailAttachments(entity).ConfigureAwait(false);
         }
 
-        public async Task<Emails> CreateEmails(Emails entity)
+        public async Task<EmailAttachments> CreateEmailAttachments(EmailAttachments entity)
         {
-           return await Channel.CreateEmails(entity).ConfigureAwait(false);
+           return await Channel.CreateEmailAttachments(entity).ConfigureAwait(false);
         }
 
-        public async Task<bool> DeleteEmails(string id)
+        public async Task<bool> DeleteEmailAttachments(string id)
         {
-            return await Channel.DeleteEmails(id).ConfigureAwait(false);
+            return await Channel.DeleteEmailAttachments(id).ConfigureAwait(false);
         }
 
-        public async Task<bool> RemoveSelectedEmails(IEnumerable<string> selectedEmails)
+        public async Task<bool> RemoveSelectedEmailAttachments(IEnumerable<string> selectedEmailAttachments)
         {
-           return await Channel.RemoveSelectedEmails(selectedEmails).ConfigureAwait(false);
+           return await Channel.RemoveSelectedEmailAttachments(selectedEmailAttachments).ConfigureAwait(false);
         }
 
        // Virtural List implementation
@@ -102,24 +102,29 @@ namespace CoreEntities.Client.Services
            return await Channel.CountNav(exp, navExp).ConfigureAwait(false);
         }
 
-        public async Task<IEnumerable<Emails>> LoadRange(int startIndex, int count, string exp)
+        public async Task<IEnumerable<EmailAttachments>> LoadRange(int startIndex, int count, string exp)
         {
             return await Channel.LoadRange(startIndex,count,exp).ConfigureAwait(false);
         }
 
-		public async Task<IEnumerable<Emails>>  LoadRangeNav(int startIndex, int count, string exp,
+		public async Task<IEnumerable<EmailAttachments>>  LoadRangeNav(int startIndex, int count, string exp,
                                                                                  Dictionary<string, string> navExp, IEnumerable<string> includeLst = null)
         {
             return await Channel.LoadRangeNav(startIndex,count,exp, navExp, includeLst).ConfigureAwait(false);
         }
-		public async Task<IEnumerable<Emails>> GetEmailsByEmailUniqueId(string EmailUniqueId, List<string> includesLst = null)
+		public async Task<IEnumerable<EmailAttachments>> GetEmailAttachmentsByEmailId(string EmailId, List<string> includesLst = null)
         {
-            return  await Channel.GetEmailsByEmailUniqueId(EmailUniqueId, includesLst).ConfigureAwait(false);
+            return  await Channel.GetEmailAttachmentsByEmailId(EmailId, includesLst).ConfigureAwait(false);
         }
 			 
-  		public async Task<IEnumerable<Emails>> GetEmailsByApplicationSettingsId(string ApplicationSettingsId, List<string> includesLst = null)
+  		public async Task<IEnumerable<EmailAttachments>> GetEmailAttachmentsByAttachmentId(string AttachmentId, List<string> includesLst = null)
         {
-            return  await Channel.GetEmailsByApplicationSettingsId(ApplicationSettingsId, includesLst).ConfigureAwait(false);
+            return  await Channel.GetEmailAttachmentsByAttachmentId(AttachmentId, includesLst).ConfigureAwait(false);
+        }
+			 
+  		public async Task<IEnumerable<EmailAttachments>> GetEmailAttachmentsByFileTypeId(string FileTypeId, List<string> includesLst = null)
+        {
+            return  await Channel.GetEmailAttachmentsByFileTypeId(FileTypeId, includesLst).ConfigureAwait(false);
         }
 			 
           public decimal SumField(string whereExp, string sumExp)

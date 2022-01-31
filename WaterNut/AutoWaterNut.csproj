@@ -480,6 +480,7 @@
     <Compile Include="ViewModels\Generated Models\QuerySpace\CoreEntities\Customs_ProcedureViewModel.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\CoreEntities\DeclarantViewModel.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\CoreEntities\Document_TypeViewModel.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\CoreEntities\EmailAttachmentsViewModel.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\CoreEntities\EmailFileTypesViewModel.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\CoreEntities\EmailInfoMappingsViewModel.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\CoreEntities\EmailMappingRexExsViewModel.cs" />
@@ -657,6 +658,7 @@
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\Customs_ProcedureTotals.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\DeclarantTotals.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\Document_TypeTotals.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\EmailAttachmentsTotals.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\EmailFileTypesTotals.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\EmailInfoMappingsTotals.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\EmailMappingRexExsTotals.cs" />
@@ -821,6 +823,7 @@
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\Customs_ProcedureVirturalListLoader.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\DeclarantVirturalListLoader.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\Document_TypeVirturalListLoader.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\EmailAttachmentsVirturalListLoader.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\EmailFileTypesVirturalListLoader.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\EmailInfoMappingsVirturalListLoader.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\EmailMappingRexExsVirturalListLoader.cs" />

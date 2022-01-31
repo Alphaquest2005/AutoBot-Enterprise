@@ -18,7 +18,9 @@
               this.Property(t => t.EmailId).HasColumnName("EmailId").IsRequired().HasMaxLength(255);
               this.Property(t => t.MachineName).HasColumnName("MachineName").HasMaxLength(50);
               this.Property(t => t.EmailUniqueId).HasColumnName("EmailUniqueId");
+              this.Property(t => t.ApplicationSettingsId).HasColumnName("ApplicationSettingsId");
               this.HasMany(t => t.AsycudaDocumentSet_Attachments).WithOptional(t => t.Emails).HasForeignKey(d => d.EmailId);
+              this.HasMany(t => t.EmailAttachments).WithRequired(t => (Emails)t.Emails);
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);
     			this.Ignore(t => t.ModifiedProperties);
