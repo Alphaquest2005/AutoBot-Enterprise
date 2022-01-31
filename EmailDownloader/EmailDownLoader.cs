@@ -19,9 +19,10 @@ namespace EmailDownloader
     public static partial class EmailDownloader
     {
 
-        public static bool ReturnOnlyUnknownMails { get; set; } = true;
+        public static bool ReturnOnlyUnknownMails { get; set; } = false;
         public static Dictionary<Tuple<string, Email, string>, List<string>> CheckEmails(Client client)
         {
+            var res = new Dictionary<Tuple<string, Email, string>, List<string>>();
             try
             {
                 if(string.IsNullOrEmpty(client.Email)) return new Dictionary<Tuple<string, Email, string>, List<string>>();
@@ -30,7 +31,8 @@ namespace EmailDownloader
                             imapClient.Authenticate(client.Email, client.Password);
                             var dataFolder = client.DataFolder;
                             imapClient.Inbox.Open(FolderAccess.ReadWrite);
-                            var res = DownloadAttachment(imapClient, dataFolder, client.EmailMappings, client);
+                            
+                            DownloadAttachment(imapClient, dataFolder, client.EmailMappings, client,ref res);
 
                             imapClient.Disconnect(true);
                             return res;
@@ -39,7 +41,7 @@ namespace EmailDownloader
             {
                 
                 Console.WriteLine(e);
-                return new Dictionary<Tuple<string, Email, string>, List<string>>();
+                return res;
             }
             
         }
@@ -92,14 +94,16 @@ namespace EmailDownloader
         }
 
 
-        public static Dictionary<Tuple<string, Email, string>, List<string>> DownloadAttachment(ImapClient imapClient, string dataFolder,
-            List<EmailMapping> emailMappings, Client client)
+        public static void DownloadAttachment(ImapClient imapClient,
+            string dataFolder,
+            List<EmailMapping> emailMappings, Client client,
+            ref Dictionary<Tuple<string, Email, string>, List<string>> msgFiles)
         {
             try
             {
                 var sendNotifications = true;
 
-                var msgFiles = new Dictionary<Tuple<string, Email, string>, List<string>>();
+                //var msgFiles = new Dictionary<Tuple<string, Email, string>, List<string>>();
 
                 var uniqueIds = imapClient.Inbox.Search(SearchQuery.NotSeen).ToList();
                 var existingEmails = new List<Emails>();
@@ -200,7 +204,7 @@ namespace EmailDownloader
 
                 }
 
-                return msgFiles;
+                
             }
             catch (Exception e)
             {

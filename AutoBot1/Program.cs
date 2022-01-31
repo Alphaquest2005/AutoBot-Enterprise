@@ -25,6 +25,8 @@ namespace AutoBot
 
     partial class Program
     {
+        public static bool ReadOnlyMode { get; set; } = false;
+
         static void Main(string[] args)
         {
             try
@@ -189,18 +191,20 @@ namespace AutoBot
                                     }
                                     
                                     Utils.SaveAttachments(csvFiles, fileType, msg.Key.Item2);
-
-                                    Utils.ExecuteDataSpecificFileActions(fileType, csvFiles, appSetting);
-
-                                    if (msg.Key.Item2.EmailMapping.IsSingleEmail == true)
+                                    if (!ReadOnlyMode)
                                     {
-                                        Utils.ExecuteNonSpecificFileActions(fileType, csvFiles, appSetting);
+                                        Utils.ExecuteDataSpecificFileActions(fileType, csvFiles, appSetting);
+
+                                        if (msg.Key.Item2.EmailMapping.IsSingleEmail == true)
+                                        {
+                                            Utils.ExecuteNonSpecificFileActions(fileType, csvFiles, appSetting);
+                                        }
+                                        else
+                                        {
+                                            processedFileTypes.Add(new Tuple<FileTypes, FileInfo[], int>(fileType,
+                                                csvFiles, ndocSet?.AsycudaDocumentSetId ?? 0));
+                                        }
                                     }
-                                    else
-                                    {
-                                        processedFileTypes.Add(new Tuple<FileTypes, FileInfo[], int>(fileType, csvFiles, ndocSet?.AsycudaDocumentSetId??0));
-                                    }
-                                    
 
 
 
@@ -209,21 +213,23 @@ namespace AutoBot
                                 }
                             }
 
-                            var pfg = processedFileTypes
-                                .Where(x => x.Item1.FileTypeActions.Any(z =>
-                                    z.Actions.IsDataSpecific == null || z.Actions.IsDataSpecific != true))
-                                .GroupBy(x => x.Item3).ToList();
+                            if (ReadOnlyMode) return;
+                            
+                                var pfg = processedFileTypes
+                                    .Where(x => x.Item1.FileTypeActions.Any(z =>
+                                        z.Actions.IsDataSpecific == null || z.Actions.IsDataSpecific != true))
+                                    .GroupBy(x => x.Item3).ToList();
 
-                            foreach (var docSetId in pfg)
-                            {
-                                var pf = docSetId.DistinctBy(x => x.Item1.Id).ToList();
-                                foreach (var t in pf)
+                                foreach (var docSetId in pfg)
                                 {
-                                    t.Item1.AsycudaDocumentSetId = docSetId.Key;
-                                    Utils.ExecuteNonSpecificFileActions(t.Item1, t.Item2, appSetting);
+                                    var pf = docSetId.DistinctBy(x => x.Item1.Id).ToList();
+                                    foreach (var t in pf)
+                                    {
+                                        t.Item1.AsycudaDocumentSetId = docSetId.Key;
+                                        Utils.ExecuteNonSpecificFileActions(t.Item1, t.Item2, appSetting);
+                                    }
                                 }
-                            }
-
+                            
 
                         }
 
