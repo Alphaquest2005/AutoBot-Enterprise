@@ -22,7 +22,7 @@ namespace xlsxWriter
         public static List<(string reference, string filepath)> CreateCSV(string shipmentInvoiceKey,
                 List<ShipmentInvoice> shipmentInvoices, string emailId)
         {
-            var riderId = new CoreEntitiesContext().Emails.FirstOrDefault(x => x.EmailId == emailId)?.EmailUniqueId ?? 0;
+            var riderId = new CoreEntitiesContext().Emails.FirstOrDefault(x => x.EmailId == emailId && x.MachineName == Environment.MachineName)?.EmailUniqueId ?? 0;
             return CreateCSV(shipmentInvoiceKey, shipmentInvoices, riderId);
         }
 

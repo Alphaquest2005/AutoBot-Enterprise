@@ -6115,6 +6115,11 @@ namespace AutoBot
                         });
                         ctx.SaveChanges();
                     }
+                    else
+                    {
+                        oldemail.MachineName = Environment.MachineName;
+                        oldemail.EmailUniqueId = email.EmailUniqueId;
+                    }
 
                     foreach (var file in csvFiles)
                     {
