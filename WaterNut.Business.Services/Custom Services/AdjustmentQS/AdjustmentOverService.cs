@@ -54,6 +54,7 @@ namespace AdjustmentQS.Business.Services
                     if (adjustmentType == "DIS")
                         lst = ctx.TODO_AdjustmentOversToXML
                             .Where(x => x.ApplicationSettingsId == docSet.ApplicationSettingsId)
+                            .Where(x => x.AsycudaDocumentSetId == asycudaDocumentSetId)
                             .Where(filterExpression)
                             .Where(x => !entryDataDetailsIds.Any() ||
                                         entryDataDetailsIds.Any(z => z == x.EntryDataDetailsId))
@@ -62,6 +63,7 @@ namespace AdjustmentQS.Business.Services
                     else
                         lst = ctx.TODO_AdjustmentOversToXML
                             .Where(x => x.ApplicationSettingsId == docSet.ApplicationSettingsId)
+                            .Where(x => x.AsycudaDocumentSetId == asycudaDocumentSetId)
                             .Where(filterExpression)
                             //.Where(x => !entryDataDetailsIds.Any() || entryDataDetailsIds.Any(z => z == x.EntryDataDetailsId))
                             .Where(x => x.EffectiveDate != null || x.EffectiveDate > DateTime.MinValue)

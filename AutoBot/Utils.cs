@@ -64,6 +64,7 @@ namespace AutoBot
 {
     public class Utils
     {
+        private const int _noOfCyclesBeforeHardExit = 60;
         private static int maxRowsToFindHeader = 10;
 
         public class FileAction
@@ -88,7 +89,7 @@ namespace AutoBot
                 {"RecreatePOEntries",(ft, fs) => RecreatePOEntries(ft.AsycudaDocumentSetId) },
                 {"ExportPOEntries",(ft, fs) => ExportPOEntries(ft.AsycudaDocumentSetId) },
                 {"AssessPOEntry",(ft, fs) => AssessPOEntry(ft.DocReference, ft.AsycudaDocumentSetId)},
-                {"EmailPOEntries",(ft, fs) => EmailPOEntries(ft.AsycudaDocumentSetId,ft.FileTypeContacts.Select(x => x.Contacts).ToList()) },
+                {"EmailPOEntries",(ft, fs) => EmailPOEntries(ft.AsycudaDocumentSetId) },
                 {"DownloadSalesFiles",(ft, fs) => DownloadSalesFiles(3, "IM7History",false) },
                 {"Xlsx2csv",(ft, fs) => Xlsx2csv(fs, ft) },
                 {"SaveInfo",(ft, fs) => TrySaveFileInfo(fs, ft) },
@@ -352,29 +353,49 @@ namespace AutoBot
 
         private static void ImportAllFilesInDataFolder()
         {
-            Console.WriteLine("Import All Files in DataFolder");
-            var files = Directory.GetFiles(Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder, "Imports"),"*.xml");
-            var res = new List<string>();
-            AsycudaDocumentSetEx docSet;
-            using (var ctx = new CoreEntitiesContext())
+            try
             {
-                var ifiles = ctx.AsycudaDocuments.Where(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId && x.ImportComplete == true).Select(x => new { Office = x.Customs_clearance_office_code, CNumber = x.CNumber }).ToList();
-                
-                docSet = ctx.AsycudaDocumentSetExs.FirstOrDefault(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId &&
-                                                                       x.Declarant_Reference_Number == "Imports");
-                foreach (var file in files)
+
+
+                Console.WriteLine("Import All Files in DataFolder");
+                var files = Directory.GetFiles(
+                    Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder, "Imports"), "*.xml");
+                var res = new List<string>();
+                AsycudaDocumentSetEx docSet;
+                using (var ctx = new CoreEntitiesContext())
                 {
-                    var f = Regex.Match(file, @"(?<Office>\w+)\-(?<CNumber>\d+).xml", RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture);
-                    if (f.Success == false) continue;
-                    var i = ifiles.FirstOrDefault(x => x.CNumber == f.Groups["CNumber"].Value && x.Office == f.Groups["Office"].Value);
-                    if (i == null)
+                    var ifiles = ctx.AsycudaDocuments
+                        .Where(x => x.ApplicationSettingsId ==
+                                    BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId &&
+                                    x.ImportComplete == true).Select(x => new
+                            { Office = x.Customs_clearance_office_code, CNumber = x.CNumber }).ToList();
+
+                    docSet = ctx.AsycudaDocumentSetExs.FirstOrDefault(x =>
+                        x.ApplicationSettingsId ==
+                        BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId &&
+                        x.Declarant_Reference_Number == "Imports");
+                    foreach (var file in files)
                     {
-                       res.Add(file);
+                        var f = Regex.Match(file, @"(?<Office>\w+)\-(?<CNumber>\d+).xml",
+                            RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture);
+                        if (f.Success == false) continue;
+                        var i = ifiles.FirstOrDefault(x =>
+                            x.CNumber == f.Groups["CNumber"].Value && x.Office == f.Groups["Office"].Value);
+                        if (i == null)
+                        {
+                            res.Add(file);
+                        }
                     }
                 }
-            }
 
-            BaseDataModel.Instance.ImportDocuments(docSet.AsycudaDocumentSetId, res, true, true, true, true,true).Wait();
+                BaseDataModel.Instance.ImportDocuments(docSet.AsycudaDocumentSetId, res, true, true, true, true, true)
+                    .Wait();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
         }
 
         private static void ImportUnAttachedSummary(FileTypes ft, FileInfo[] fs)
@@ -628,11 +649,14 @@ namespace AutoBot
 
                 using (var ctx = new CoreEntitiesContext())
                 {
-                    var contacts = ctx.Contacts.Where(x => x.Role == "PDF Entries" || x.Role == "Developer")
-                        .Select(x => x.EmailAddress).ToArray();
+                    var contacts = ctx.Contacts
+                        .Where(x => x.Role == "PDF Entries" || x.Role == "Developer")
+                        .Where(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)
+                        .Select(x => x.EmailAddress).Distinct().ToArray();
 
                     var poContacts = ctx.Contacts.Where(x => x.Role == "PO Clerk" || x.Role == "Developer")
-                        .Select(x => x.EmailAddress).ToArray();
+                        .Where(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)
+                        .Select(x => x.EmailAddress).Distinct().ToArray();
                     //var sysLst = new DocumentDSContext().SystemDocumentSets.Select(x => x.Id).ToList();   -- dont bother try to filter it
                     var docset =
                     ctx.AsycudaDocumentSetExs.Where(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)
@@ -683,10 +707,12 @@ namespace AutoBot
                     var poList = ft.Data.Where(z => z.Key == "CNumber").Select(x => x.Value).ToList();
 
                     var contacts = ctx.Contacts.Where(x => x.Role == "PDF Entries" || x.Role == "Developer")
-                        .Select(x => x.EmailAddress).ToArray();
+                        .Where(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)
+                        .Select(x => x.EmailAddress).Distinct().ToArray();
 
                     var poContacts = ctx.Contacts.Where(x => x.Role == "PO Clerk" || x.Role == "Developer")
-                        .Select(x => x.EmailAddress).ToArray();
+                        .Where(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)
+                        .Select(x => x.EmailAddress).Distinct().ToArray();
                     var docSet = ctx.AsycudaDocumentSetExs.Include("AsycudaDocumentSet_Attachments.Attachments")
                                            .FirstOrDefault(x => x.AsycudaDocumentSetId == ft.AsycudaDocumentSetId);
                     if (docSet == null)
@@ -1394,7 +1420,9 @@ namespace AutoBot
                                 TaskCreationOptions.None, sta);
                         }
 
-                        var contacts = ctx.Contacts.Where(x => x.Role == "Broker").ToList();
+                        var contacts = ctx.Contacts.Where(x => x.Role == "Broker")
+                            .Where(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)
+                            .DistinctBy(x => x.EmailAddress).ToList();
                         if (File.Exists(errorfile))
                             EmailDownloader.EmailDownloader.ForwardMsg(email.Key.EmailId, Client,
                                 $"Error:Blank License Description",
@@ -1662,7 +1690,9 @@ namespace AutoBot
                 using (var ctx = new CoreEntitiesContext())
                 {
                     ctx.Database.CommandTimeout = 10;
-                    var contacts = ctx.Contacts.Where(x => x.Role == "Customs").Select(x => x.EmailAddress).ToArray();
+                    var contacts = ctx.Contacts.Where(x => x.Role == "Customs")
+                        .Where(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)
+                        .Select(x => x.EmailAddress).ToArray();
                     var lst = ctx.TODO_SubmitXMLToCustoms.Where(x =>
                                 x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings
                                     .ApplicationSettingsId
@@ -1785,7 +1815,9 @@ namespace AutoBot
                 using (var ctx = new CoreEntitiesContext())
                 {
                     ctx.Database.CommandTimeout = 10;
-                    var contacts = ctx.Contacts.Where(x => x.Role == "Customs").Select(x => x.EmailAddress).ToArray();
+                    var contacts = ctx.Contacts.Where(x => x.Role == "Customs")
+                        .Where(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)
+                        .Select(x => x.EmailAddress).Distinct().ToArray();
                    
                     foreach (var data in lst)
                     {
@@ -1964,7 +1996,11 @@ namespace AutoBot
                 using (var ctx = new CoreEntitiesContext())
                 {
                     ctx.Database.CommandTimeout = 10;
-                    var contacts = ctx.Contacts.Where(x => x.Role == "Customs" || x.Role == "Clerk").Select(x => x.EmailAddress).ToArray();
+                    var contacts = ctx.Contacts.Where(x => x.Role == "Customs" || x.Role == "Clerk")
+                        .Where(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)
+                        .Select(x => x.EmailAddress)
+                        .Distinct()
+                        .ToArray();
                     var totaladjustments = ctx.TODO_TotalAdjustmentsToProcess.Where(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings
                                     .ApplicationSettingsId && x.Type == "DIS").ToList();
                     var errors = ctx.TODO_DiscrepanciesErrors.Where(x =>
@@ -2110,7 +2146,11 @@ namespace AutoBot
                     var info = CurrentPOInfo(fileType.AsycudaDocumentSetId).FirstOrDefault();
                                     var directory = info.Item2;
 
-                    var contacts = ctx.Contacts.Where(x => x.Role == "Customs" || x.Role == "Clerk").Select(x => x.EmailAddress).ToArray();
+                    var contacts = ctx.Contacts.Where(x => x.Role == "Broker" || x.Role == "Clerk")
+                        .Where(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)
+                        .Select(x => x.EmailAddress)
+                        .Distinct()
+                        .ToArray();
                     var totaladjustments = ctx.TODO_TotalAdjustmentsToProcess
                         .Where(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId 
                                     && x.Type == "DIS"
@@ -2412,7 +2452,12 @@ namespace AutoBot
                 using (var ctx = new CoreEntitiesContext())
                 {
                     ctx.Database.CommandTimeout = 10;
-                    var contacts = ctx.Contacts.Where(x => x.Role == "Customs").Select(x => x.EmailAddress).ToArray();
+                    var contacts = ctx.Contacts
+                        .Where(x => x.Role == "Customs" || x.Role == "Clerk")
+                        .Where(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)
+                        .Select(x => x.EmailAddress)
+                        .Distinct()
+                        .ToArray();
                    var pdfs = new List<string>();
                     var RES = lst.SelectMany(x => x).DistinctBy(x => x.ASYCUDA_Id);
                     if (!RES.Any())
@@ -2521,7 +2566,12 @@ namespace AutoBot
                 using (var ctx = new CoreEntitiesContext())
                 {
                     ctx.Database.CommandTimeout = 10;
-                    var contacts = ctx.Contacts.Where(x => x.Role == "PO Clerk" || x.Role == "Developer").Select(x => x.EmailAddress).ToArray();
+                    var contacts = ctx.Contacts
+                        .Where(x => x.Role == "PO Clerk" || x.Role == "Broker")
+                        .Where(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)
+                        .Select(x => x.EmailAddress)
+                        .Distinct()
+                        .ToArray();
                     var lst = ctx.TODO_SubmitIncompleteEntryData
                         //.Where(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)
                         .Where(x => x.AsycudaDocumentSetId == ft.AsycudaDocumentSetId)// ft.AsycudaDocumentSetId == 0 ||
@@ -2582,7 +2632,11 @@ namespace AutoBot
                 using (var ctx = new CoreEntitiesContext())
                 {
                     ctx.Database.CommandTimeout = 10;
-                    var contacts = ctx.Contacts.Where(x => x.Role == "PO Clerk" || x.Role == "Developer").Select(x => x.EmailAddress).ToArray();
+                    var contacts = ctx.Contacts.Where(x => x.Role == "PO Clerk" || x.Role == "Broker")
+                        .Where(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)
+                        .Select(x => x.EmailAddress)
+                        .Distinct()
+                        .ToArray();
                     var lst = ctx.TODO_SubmitDocSetWithIncompleteInvoices
                         //.Where(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId).ToList()
                         .Where(x => x.AsycudaDocumentSetId == ft.AsycudaDocumentSetId)//ft.AsycudaDocumentSetId == 0 ||
@@ -2651,7 +2705,11 @@ namespace AutoBot
                 using (var ctx = new CoreEntitiesContext())
                 {
                     ctx.Database.CommandTimeout = 10;
-                    var contacts = ctx.Contacts.Where(x => x.Role == "PO Clerk" || x.Role == "Developer").Select(x => x.EmailAddress).ToArray();
+                    var contacts = ctx.Contacts.Where(x => x.Role == "PO Clerk" || x.Role == "Broker")
+                        .Where(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)
+                        .Select(x => x.EmailAddress)
+                        .Distinct()
+                        .ToArray();
                     var lst = ctx.TODO_SubmitMissingInvoicePDFs
                         //.Where(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId) // use the more precise filter
                         .Where(x =>  x.AsycudaDocumentSetId == ft.AsycudaDocumentSetId)
@@ -2718,7 +2776,11 @@ namespace AutoBot
                 using (var ctx = new CoreEntitiesContext())
                 {
                     ctx.Database.CommandTimeout = 10;
-                    var contacts = ctx.Contacts.Where(x => x.Role == "PO Clerk" || x.Role == "Developer").Select(x => x.EmailAddress).ToArray();
+                    var contacts = ctx.Contacts.Where(x => x.Role == "PO Clerk" || x.Role == "Broker")
+                        .Where(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)
+                        .Select(x => x.EmailAddress)
+                        .Distinct()
+                        .ToArray();
                     var lst = ctx.TODO_SubmitEntryCIF
                         //.Where(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId).ToList()
                         .Where(x => x.AsycudaDocumentSetId == ft.AsycudaDocumentSetId)
@@ -2819,7 +2881,10 @@ namespace AutoBot
                                 TaskCreationOptions.None, sta);
                         }
 
-                        var contacts = ctx.Contacts.Where(x => x.Role == "Broker").ToList();
+                        var contacts = ctx.Contacts
+                            .Where(x => x.Role == "Broker")
+                            .Where(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)
+                            .ToList();
                         if (File.Exists(errorfile))
                             EmailDownloader.EmailDownloader.ForwardMsg(email.Key.EmailId, Client,
                                 $"Error:UnClassified Items",
@@ -2882,7 +2947,10 @@ namespace AutoBot
                                 TaskCreationOptions.None, sta);
                         }
 
-                        var contacts = ctx.Contacts.Where(x => x.Role == "Broker").ToList();
+                        var contacts = ctx.Contacts
+                            .Where(x => x.Role == "Broker")
+                            .Where(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)
+                            .ToList();
                         if (File.Exists(errorfile))
                             EmailDownloader.EmailDownloader.ForwardMsg(email.Key.EmailId, Client,
                                 $"Error:UnClassified Items",
@@ -2982,7 +3050,9 @@ namespace AutoBot
 
                 using (var ctx = new CoreEntitiesContext())
                 {
-                    var contacts = ctx.Contacts.Where(x => x.Role == "PO Clerk" || x.Role == "Broker").Select(x => x.EmailAddress).ToArray();
+                    var contacts = ctx.Contacts.Where(x => x.Role == "PO Clerk" || x.Role == "Broker")
+                        .Where(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)
+                        .Select(x => x.EmailAddress).ToArray();
                     var lst = ctx.TODO_SubmitInadequatePackages
                         //.Where(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)
                         .Where(x =>  x.AsycudaDocumentSetId == ft.AsycudaDocumentSetId)//ft.AsycudaDocumentSetId == 0 ||
@@ -3061,7 +3131,9 @@ namespace AutoBot
 
                 using (var ctx = new CoreEntitiesContext())
                 {
-                    var contacts = ctx.Contacts.Where(x => x.Role == "Clerk" || x.Role == "Broker").Select(x => x.EmailAddress).ToArray();
+                    var contacts = ctx.Contacts.Where(x => x.Role == "Clerk" || x.Role == "Broker")
+                        .Where(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)
+                        .Select(x => x.EmailAddress).ToArray();
                     var lst = ctx.TODO_SubmitInadequatePackages.Where(x =>
                         x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings
                             .ApplicationSettingsId).ToList();
@@ -3167,9 +3239,11 @@ namespace AutoBot
 
                 SaveCSVReport(errors, errorfile);
 
-                var contacts = ctx.FileTypes.Where(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId).Where(x => x.Type == "Customs").SelectMany(x => x.FileTypeContacts.Select(z => z.Contacts)).ToList();
-                contacts.AddRange(ctx.FileTypes.Where(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId).Where(x => x.Type == "Sales").SelectMany(x => x.FileTypeContacts.Select(z => z.Contacts)).ToList());
-                contacts = ctx.Contacts.Where(x => x.Role == "Developer").ToList();
+                
+                var contacts = ctx.Contacts
+                    .Where(x => x.Role == "Broker" || x.Role == "Customs" || x.Role == "Clerk")
+                    .Where(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)
+                    .ToList();
                 if (File.Exists(errorfile))
                 {
                     var body = "The following entries are expiring within the next month. \r\n" +
@@ -3214,9 +3288,10 @@ namespace AutoBot
                     Task.Factory.StartNew(() => res.SaveReport(errorfile), CancellationToken.None, TaskCreationOptions.None, sta);
                 }
 
-                var contacts = ctx.FileTypes.Where(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId).Where(x => x.Type == "Customs").SelectMany(x => x.FileTypeContacts.Select(z => z.Contacts)).ToList();
-                contacts.AddRange(ctx.FileTypes.Where(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId).Where(x => x.Type == "Sales").SelectMany(x => x.FileTypeContacts.Select(z => z.Contacts)).ToList());
-                contacts = ctx.Contacts.Where(x => x.Role == "Developer").ToList();
+                var contacts = ctx.Contacts
+                    .Where(x => x.Role == "Broker" || x.Role == "Customs" || x.Role == "Clerk")
+                    .Where(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)
+                    .ToList();
                 if (File.Exists(errorfile))
                 {
                     var body = "Attached are Issues that have been found on Assessed Entries that prevent Ex-warehousing. \r\n" +
@@ -3274,7 +3349,10 @@ namespace AutoBot
 
             using (var ctx = new CoreEntitiesContext())
             {
-                var contacts = ctx.FileTypes.Where(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId).Where(x => x.Type == "Sales").SelectMany(x => x.FileTypeContacts.Select(z => z.Contacts)).ToList();
+                var contacts = ctx.Contacts
+                    .Where(x => x.Role == "Broker" || x.Role == "Customs" || x.Role == "Clerk")
+                    .Where(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)
+                    .ToList();
                 if (File.Exists(errorfile))
                     EmailDownloader.EmailDownloader.SendEmail(Client, directory, $"Sales Errors for {info.Item1.ToString("yyyy-MM-dd")} - {info.Item2.ToString("yyyy-MM-dd")}", contacts.Select(x => x.EmailAddress).ToArray(), "Please see attached...", new string[] { errorfile });
             }
@@ -3306,7 +3384,10 @@ namespace AutoBot
 
             using (var ctx = new CoreEntitiesContext())
             {
-                var contacts = ctx.FileTypes.Where(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId).Where(x => x.Type == "Sales").SelectMany(x => x.FileTypeContacts.Select(z => z.Contacts)).ToList();
+                var contacts = ctx.Contacts
+                    .Where(x => x.Role == "Broker" || x.Role == "Customs" || x.Role == "Clerk")
+                    .Where(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)
+                    .ToList();
                 if (File.Exists(errorfile))
                     EmailDownloader.EmailDownloader.SendEmail(Client, directory, $"Adjustment Errors for {info.Item1.ToString("yyyy-MM-dd")} - {info.Item2.ToString("yyyy-MM-dd")}", contacts.Select(x => x.EmailAddress).ToArray(), "Please see attached...", new string[] { errorfile });
             }
@@ -3322,21 +3403,23 @@ namespace AutoBot
                     ctx.AsycudaDocumentSetExs.Where(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)
                         .OrderByDescending(x => x.AsycudaDocumentSetId)
                         .FirstOrDefault();
-                var contacts = ctx.Contacts.Where(x =>
-                    x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId
-                    && x.Role == "Broker").ToList();
+                
                 if (docset != null)
                 {
-                    EmailPOEntries(docset.AsycudaDocumentSetId, contacts);
+                    EmailPOEntries(docset.AsycudaDocumentSetId);
                 }
             }
         }
 
-        public static void EmailPOEntries(int asycudaDocumentSetId, List<Contacts> contacts)
+        public static void EmailPOEntries(int asycudaDocumentSetId)
         {
             try
             {
 
+                var contacts = new CoreEntitiesContext().Contacts
+                    .Where(x => x.Role == "Broker" || x.Role == "PO Clerk")
+                    .Where(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)
+                    .ToList();
 
                 if (!contacts.Any() || BaseDataModel.Instance.CurrentApplicationSettings.AssessIM7 == true) return;
                 //if (new CoreEntitiesContext().TODO_PODocSetToExport.All(x => x.AsycudaDocumentSetId != asycudaDocumentSetId)) return;
@@ -3757,7 +3840,8 @@ namespace AutoBot
                 if (!res.Any()) return;
                 Console.WriteLine("Emailing Assessment Errors - please check Mail");
                 var docSet = ctx.AsycudaDocumentSetExs.First(x => x.AsycudaDocumentSetId == ft.AsycudaDocumentSetId);
-                var poContacts = ctx.Contacts.Where(x => x.Role == "PO Clerk" || x.Role == "Developer")
+                var poContacts = ctx.Contacts.Where(x => x.Role == "PO Clerk" || x.Role == "Broker")
+                    .Where(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)
                     .Select(x => x.EmailAddress).ToArray();
                 var body =
                     $"Please see attached documents .\r\n" +
@@ -5189,8 +5273,9 @@ namespace AutoBot
                 using (var ctx = new CoreEntitiesContext())
                 {
                     ctx.Database.CommandTimeout = 10;
-                    var contacts = ctx.Contacts.Where(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId
-                                                            && x.Role == "Developer").Select(x => x.EmailAddress).ToArray();
+                    var contacts = ctx.Contacts
+                        .Where(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId
+                                                            && (x.Role == "Developer" || x.Role == "Broker") ).Select(x => x.EmailAddress).ToArray();
                    
 
                             var body = $"Please see attached.\r\n" +
@@ -6443,12 +6528,21 @@ namespace AutoBot
                 startInfo.UseShellExecute = false;
                 process.StartInfo = startInfo;
                 process.EnableRaisingEvents = true;
+
+                /// wait if instance already running 
+                foreach (var process1 in Process.GetProcesses().Where(x => x.MainWindowTitle.Contains("ASYCUDA"))
+                             .ToList())
+                {
+                    Thread.Sleep(1000 * 60);
+                }
+
+
                 process.Start();
                 var timeoutCycles = 0;
                 while (!process.HasExited && process.Responding)
                 {
                     //if(File.Exists(Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder, $"{docRef}/I")))
-                    if (timeoutCycles > 12) break;
+                    if (timeoutCycles > _noOfCyclesBeforeHardExit) break;
                     //Console.WriteLine($"Waiting {timeoutCycles} Minutes");
                     Debug.WriteLine($"Waiting {timeoutCycles} Minutes");
                     Thread.Sleep(1000 * 60);

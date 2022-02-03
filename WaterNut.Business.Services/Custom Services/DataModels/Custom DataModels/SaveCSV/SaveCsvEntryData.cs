@@ -1705,7 +1705,8 @@ namespace WaterNut.DataSpace
                     if (h == "") continue;
 
                     var ftms = fileType.FileTypeMappings.Where(x =>
-                        x.OriginalName.ToUpper().Trim() == h.ToUpper().Trim() || x.DestinationName.ToUpper().Trim() == h.ToUpper().Trim()).ToList(); // added destination name to reduce redundancy
+                        x.OriginalName.ToUpper().Trim() == h.ToUpper().Trim() /*|| x.DestinationName.ToUpper().Trim() == h.ToUpper().Trim()*/).ToList(); // added destination name to reduce redundancy
+                    // took out destination because do duplicate "total cost & cost"
                     foreach (var ftm in ftms)
                     {
                        mapping.Add(ftm, i);
@@ -1795,7 +1796,7 @@ namespace WaterNut.DataSpace
                     "Cost",
                     (c, mapping, splits) => c.Cost = !mapping.ContainsKey("Cost")
                         ? 0
-                        : Convert.ToSingle(string.IsNullOrEmpty(splits[mapping["Cost"]])
+                        : Convert.ToSingle(string.IsNullOrEmpty(splits[mapping["Cost"]]) || splits[mapping["Cost"]] == "{NULL}"
                             ? "0"
                             : splits[mapping["Cost"]].Replace("$", "").Replace("�", "").Replace("USD", "").Trim())
                 },
@@ -1930,8 +1931,9 @@ namespace WaterNut.DataSpace
 
                          var err = ImportChecks[key.DestinationName].Invoke(res,
                              map
-                                     //////// turn on for Filetype 125 itemnumber 
-                                 .Where(x => headings.Contains(x.Key.OriginalName) )//|| headings.Contains(x.Key.DestinationName)
+                                     //////// turn on for Filetype 125 itemnumber  --
+                                     /// Turn off because- the mapping should only contains items in heading. see mapping code
+                                 //.Where(x => headings.Contains(x.Key.OriginalName) )//|| headings.Contains(x.Key.DestinationName)
                                  .ToDictionary(x => x.Key.DestinationName, x => x.Value), splits);
                          if (err.Item1) throw new ApplicationException(err.Item2);
                      }
@@ -1940,8 +1942,9 @@ namespace WaterNut.DataSpace
                      {// come up with a better solution cuz of duplicate keys
                          ImportActions[key.DestinationName].Invoke(res,
                              map
-                                 //////// turn on for Filetype 125 itemnumber 
-                                 .Where(x => headings.Contains(x.Key.OriginalName) )//|| headings.Contains(x.Key.DestinationName)
+                                 //////// turn on for Filetype 125 itemnumber
+                                 /// /// Turn off because- the mapping should only contains items in heading. see mapping code
+                                 //.Where(x => headings.Contains(x.Key.OriginalName) )//|| headings.Contains(x.Key.DestinationName)
                                  .ToDictionary(x => x.Key.DestinationName, x => x.Value), splits);
                      }
                      else

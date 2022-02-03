@@ -5,7 +5,7 @@ FROM    InventoryItems INNER JOIN
                  [InventoryItems-Lumped] ON InventoryItems.Id = [InventoryItems-Lumped].InventoryItemId INNER JOIN
                  PreviousItemsEx ON InventoryItems.ApplicationSettingsId = PreviousItemsEx.ApplicationSettingsId AND InventoryItems.ItemNumber = PreviousItemsEx.Prev_decl_HS_spec INNER JOIN
                  AsycudaDocument ON PreviousItemsEx.ASYCUDA_Id = AsycudaDocument.ASYCUDA_Id
-WHERE (PreviousItemsEx.ApplicationSettingsId = 6) AND (AsycudaDocument.RegistrationDate <= '10/1/2021')
+WHERE (PreviousItemsEx.ApplicationSettingsId = 6) and AsycudaDocument.EffectiveRegistrationDate is null--AND (AsycudaDocument.RegistrationDate <= '10/1/2021')
 GROUP BY PreviousItemsEx.Prev_reg_nbr, PreviousItemsEx.CNumber, PreviousItemsEx.Current_item_number, PreviousItemsEx.Previous_item_number, PreviousItemsEx.Prev_decl_HS_spec, InventoryItems.Description, 
                  PreviousItemsEx.Suplementary_Quantity, PreviousItemsEx.Current_value, AsycudaDocument.RegistrationDate
 ORDER BY Date
