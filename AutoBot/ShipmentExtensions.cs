@@ -1148,7 +1148,7 @@ namespace AutoBotUtilities
             try
             {
                 var rawInvoices = masterShipment.ShipmentAttachedInvoices
-                    .Where(x => x.ShipmentInvoice.ShipmentInvoiceRiderDetails.Any(z => z.ShipmentRiderDetails.RiderId == client.Key.Item2) || x.ShipmentInvoice.ShipmentRiderInvoice.Any(z => z.RiderID == client.Key.Item2))
+                    .Where(x => client == null ||  x.ShipmentInvoice.ShipmentInvoiceRiderDetails.Any(z => z.ShipmentRiderDetails.RiderId == client.Key.Item2) || x.ShipmentInvoice.ShipmentRiderInvoice.Any(z => z.RiderID == client.Key.Item2))
                     .Select(x => x.ShipmentInvoice).ToList();
 
                 var invoices = rawInvoices

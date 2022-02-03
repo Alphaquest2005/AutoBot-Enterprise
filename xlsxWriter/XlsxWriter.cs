@@ -66,12 +66,12 @@ namespace xlsxWriter
                         if (parent.ShipmentInvoicePOs.Any())
                         {
                             csvFilePath = Path.Combine(pdfFile.DirectoryName,
-                                $"{parent.ShipmentInvoicePOs.First().PurchaseOrders.PONumber}.xlsx");
+                                $"{parent.ShipmentInvoicePOs.First().PurchaseOrders.PONumber.Replace("/", "-")}.xlsx");
                             csvs.Add((parent.ShipmentInvoicePOs.First().PurchaseOrders.PONumber, csvFilePath));
                         }
                         else
                         {
-                            csvFilePath = Path.Combine(pdfFile.DirectoryName, $"{parent.InvoiceNo}.xlsx");
+                            csvFilePath = Path.Combine(pdfFile.DirectoryName, $"{parent.InvoiceNo.Replace("/", "-")}.xlsx");
                             csvs.Add((parent.InvoiceNo, csvFilePath));
                         }
 
@@ -87,12 +87,12 @@ namespace xlsxWriter
                         if (parent.ShipmentInvoicePOs.Any())
                         {
                             csvFilePath = Path.Combine(pdfFile.DirectoryName,
-                                $"{parent.ShipmentInvoicePOs.First().PurchaseOrders.PONumber}.xlsx");
+                                $"{parent.ShipmentInvoicePOs.First().PurchaseOrders.PONumber.Replace("/", "-")}.xlsx");
                             csvs.Add((parent.ShipmentInvoicePOs.First().PurchaseOrders.PONumber, csvFilePath));
                         }
                         else
                         {
-                            csvFilePath = Path.Combine(pdfFile.DirectoryName, $"{parent.InvoiceNo}.xlsx");
+                            csvFilePath = Path.Combine(pdfFile.DirectoryName, $"{parent.InvoiceNo.Replace("/","-")}.xlsx");
                             csvs.Add((parent.InvoiceNo, csvFilePath));
                         }
 
@@ -107,7 +107,7 @@ namespace xlsxWriter
                     {
                         foreach (var pO in shipmentInvoice.ShipmentInvoicePOs)
                         {
-                            pdfFilePath = Path.Combine(pdfFile.DirectoryName, $"{pO.PurchaseOrders.PONumber}.pdf");
+                            pdfFilePath = Path.Combine(pdfFile.DirectoryName, $"{pO.PurchaseOrders.PONumber.Replace("/", "-")}.pdf");
 
 
                             WritePOToFile(pO, workbook, header, doRider, riderdetails, invoiceRow,
@@ -126,7 +126,7 @@ namespace xlsxWriter
                     }
                     else
                     {
-                        pdfFilePath = Path.Combine(pdfFile.DirectoryName, $"{shipmentInvoice.InvoiceNo}.pdf");
+                        pdfFilePath = Path.Combine(pdfFile.DirectoryName, $"{shipmentInvoice.InvoiceNo.Replace("/", "-")}.pdf");
 
 
                         WriteInvToFile(shipmentInvoice, workbook, header, doRider, riderdetails);

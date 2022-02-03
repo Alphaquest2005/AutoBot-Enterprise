@@ -458,7 +458,9 @@ namespace AutoBot
                                     ;
                
                 var contacts = new CoreEntitiesContext().Contacts.Where(x => x.Role == "PDF Entries" || x.Role == "Developer" || x.Role == "PO Clerk")
-                        .Select(x => x.EmailAddress).ToArray();
+                        .Select(x => x.EmailAddress)
+                        .Distinct()
+                        .ToArray();
 
 
                 using (var ctx = new EntryDataDSContext())
@@ -1231,6 +1233,19 @@ namespace AutoBot
 
                 }
             }
+
+                SetFileTypeDocSetToLatest(ft);
+
+        }
+
+        private static void SetFileTypeDocSetToLatest(FileTypes ft)
+        {
+            if (ft.AsycudaDocumentSetId == 0)
+                ft.AsycudaDocumentSetId =
+                    new CoreEntitiesContext().AsycudaDocumentSetExs.Where(x =>
+                            x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)
+                        .OrderByDescending(x => x.AsycudaDocumentSetId)
+                        .FirstOrDefault().AsycudaDocumentSetId;
         }
 
 
@@ -5653,6 +5668,9 @@ namespace AutoBot
 
                     }
                     Console.WriteLine("RecreatePOEntries");
+
+                  
+
                     var res = ctx.ToDo_POToXML.Where(x =>
                             x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId &&
                             x.AsycudaDocumentSetId == asycudaDocumentSetId)
