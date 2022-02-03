@@ -99,7 +99,8 @@ namespace AutoBot
                                 Password = appSetting.EmailPassword,
                                 Email = appSetting.Email,
                                 ApplicationSettingsId = appSetting.ApplicationSettingsId,
-                                EmailMappings = appSetting.EmailMapping.ToList()
+                                EmailMappings = appSetting.EmailMapping.ToList(),
+                                TestMode = appSetting.TestMode??false
                             };
 
                             var msgLst = Task.Run(() => EmailDownloader.EmailDownloader.CheckEmails(Utils.Client)).Result

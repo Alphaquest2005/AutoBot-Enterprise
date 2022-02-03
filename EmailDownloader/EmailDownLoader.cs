@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.Eventing.Reader;
 using System.IO;
 using System.Linq;
 using System.Net.Http.Headers;
@@ -70,11 +71,20 @@ namespace EmailDownloader
         {
             var message = new MimeMessage();
             message.From.Add(new MailboxAddress($"{client.CompanyName}-AutoBot", client.Email));
-            foreach (var recipent in to)
+            if (!client.TestMode)
             {
-               message.To.Add(MailboxAddress.Parse(recipent)); 
+                foreach (var recipent in to)
+                {
+                    message.To.Add(MailboxAddress.Parse(recipent));
+                }
+
             }
-            
+            else
+            {
+                message.To.Add(new MailboxAddress("Joseph Bartholomew", "Joseph@auto-brokerage.com"));
+            }
+
+
             message.Subject = subject;
 
             var builder = new BodyBuilder();
@@ -296,9 +306,19 @@ namespace EmailDownloader
             // construct a new message
             var message = new MimeMessage();
             message.From.Add(new MailboxAddress($"{clientDetails.CompanyName}-AutoBot", clientDetails.Email));
-            message.ReplyTo.Add(new MailboxAddress(msg.From.First().Name, msg.From.Mailboxes.FirstOrDefault().Address));
-            message.To.Add(new MailboxAddress(msg.From.First().Name, msg.From.Mailboxes.FirstOrDefault().Address));
-            message.To.Add(new MailboxAddress("Joseph Bartholomew", "Joseph@auto-brokerage.com"));
+            if (!clientDetails.TestMode)
+            {
+                message.ReplyTo.Add(new MailboxAddress(msg.From.First().Name,
+                    msg.From.Mailboxes.FirstOrDefault().Address));
+
+                message.To.Add(new MailboxAddress(msg.From.First().Name, msg.From.Mailboxes.FirstOrDefault().Address));
+                message.Cc.Add(new MailboxAddress("Joseph Bartholomew", "Joseph@auto-brokerage.com"));
+            }
+            else
+            {
+                message.To.Add(new MailboxAddress("Joseph Bartholomew", "Joseph@auto-brokerage.com"));
+            }
+
             message.Subject = "FWD: " + msg.Subject;
 
             // now to create our body...
@@ -413,18 +433,29 @@ namespace EmailDownloader
             return msg;
         }
 
-        private static void ForwardMsg(MimeMessage msg, Client clientDetails,string subject, string body,string[] contacts , string[] attachments)
+        private static void ForwardMsg(MimeMessage msg, Client clientDetails, string subject, string body,
+            string[] contacts, string[] attachments)
         {
             // construct a new message
             var message = new MimeMessage();
             message.From.Add(new MailboxAddress($"{clientDetails.CompanyName}-AutoBot", clientDetails.Email));
-            message.ReplyTo.Add(new MailboxAddress(msg.From.First().Name, msg.From.Mailboxes.FirstOrDefault().Address));
-            message.Cc.Add(new MailboxAddress("Joseph Bartholomew", "Joseph@auto-brokerage.com"));
-
-            foreach (var recipent in contacts.Distinct())
+            if (!clientDetails.TestMode)
             {
-                message.To.Add(MailboxAddress.Parse(recipent));
+                message.ReplyTo.Add(new MailboxAddress(msg.From.First().Name,
+                    msg.From.Mailboxes.FirstOrDefault().Address));
+
+                foreach (var recipent in contacts.Distinct())
+                {
+                    message.To.Add(MailboxAddress.Parse(recipent));
+                }
+
+                message.Cc.Add(new MailboxAddress("Joseph Bartholomew", "Joseph@auto-brokerage.com"));
             }
+            else
+            {
+                message.To.Add(new MailboxAddress("Joseph Bartholomew", "Joseph@auto-brokerage.com"));
+            }
+
             message.Subject = subject;
 
             // now to create our body...
