@@ -77,7 +77,7 @@ namespace EmailDownloader
                 {
                     message.To.Add(MailboxAddress.Parse(recipent));
                 }
-
+                message.Cc.Add(new MailboxAddress("Joseph Bartholomew", "Joseph@auto-brokerage.com"));
             }
             else
             {
