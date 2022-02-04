@@ -1071,7 +1071,7 @@ namespace WaterNut.DataSpace
                                 SupplierInvoiceNo = ((dynamic)g.FirstOrDefault(x => ((dynamic)x).SupplierInvoiceNo != ""))?.SupplierInvoiceNo,
                                 PreviousCNumber = ((dynamic)g.FirstOrDefault(x => ((dynamic)x).PreviousCNumber != ""))?.PreviousCNumber,
                                 FinancialInformation = ((dynamic)g.FirstOrDefault(x => ((dynamic)x).FinancialInformation != ""))?.FinancialInformation,
-
+                                Vendor = ((dynamic)g.FirstOrDefault(x => ((dynamic)x).Vendor != ""))?.Vendor,
                                 PONumber = ((dynamic)g.FirstOrDefault(x => ((dynamic)x).PONumber != ""))?.PONumber,
                                 SourceFile = droppedFilePath,
                                 
@@ -1454,6 +1454,7 @@ namespace WaterNut.DataSpace
                                         EmailId = item.EntryData.EmailId,
                                         FileTypeId = item.EntryData.FileTypeId,
                                         SourceFile = item.EntryData.SourceFile,
+                                        Vendor = item.EntryData.Vendor,
                                         Currency = string.IsNullOrEmpty(item.EntryData.Currency)
                                             ? null
                                             : item.EntryData.Currency,

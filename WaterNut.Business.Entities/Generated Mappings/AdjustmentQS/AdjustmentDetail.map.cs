@@ -51,6 +51,7 @@
               this.Property(t => t.TaxAmount).HasColumnName("TaxAmount");
               this.Property(t => t.Status).HasColumnName("Status").HasMaxLength(50);
               this.Property(t => t.PreviousCLineNumber).HasColumnName("PreviousCLineNumber");
+              this.Property(t => t.Vendor).HasColumnName("Vendor").HasMaxLength(50);
               this.HasRequired(t => t.AdjustmentEx).WithMany(t =>(ICollection<AdjustmentDetail>) t.AdjustmentDetails).HasForeignKey(d => d.EntryData_Id);
               this.HasRequired(t => t.SystemDocumentSet).WithMany(t =>(ICollection<AdjustmentDetail>) t.AdjustmentDetails).HasForeignKey(d => d.AsycudaDocumentSetId);
               this.HasOptional(t => t.AdjustmentShorts).WithRequired(t => (AdjustmentDetail) t.AdjustmentDetail);

@@ -1013,6 +1013,24 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
         }	
 
  
+
+		private string _vendorFilter;
+        public string VendorFilter
+        {
+            get
+            {
+                return _vendorFilter;
+            }
+            set
+            {
+                _vendorFilter = value;
+				NotifyPropertyChanged(x => VendorFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
 		internal bool DisableBaseFilterData = false;
         public virtual void FilterData()
 	    {
@@ -1233,7 +1251,11 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
  
 
 					if(PreviousCLineNumberFilter.HasValue)
-						res.Append(" && " + string.Format("PreviousCLineNumber == {0}",  PreviousCLineNumberFilter.ToString()));							return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
+						res.Append(" && " + string.Format("PreviousCLineNumber == {0}",  PreviousCLineNumberFilter.ToString()));				 
+
+									if(string.IsNullOrEmpty(VendorFilter) == false)
+						res.Append(" && " + string.Format("Vendor.Contains(\"{0}\")",  VendorFilter));						
+			return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
 // Send to Excel Implementation
@@ -1349,7 +1371,10 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
                     Status = x.Status ,
                     
  
-                    PreviousCLineNumber = x.PreviousCLineNumber 
+                    PreviousCLineNumber = x.PreviousCLineNumber ,
+                    
+ 
+                    Vendor = x.Vendor 
                     
                 }).ToList()
             };
@@ -1456,6 +1481,9 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
                     
  
                     public Nullable<int> PreviousCLineNumber { get; set; } 
+                    
+ 
+                    public string Vendor { get; set; } 
                     
         }
 

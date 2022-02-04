@@ -4343,6 +4343,9 @@ namespace AutoBot
                     if (csvFiles.Length > 0)
                         BaseDataModel.Instance.ImportDocuments(ft.AsycudaDocumentSetId,
                             csvFiles.Select(x => x.FullName).ToList(), true, true, false, true, true).Wait();
+
+                    ImportAllFilesInDataFolder();
+
                     RemoveDuplicateEntries();
                     FixIncompleteEntries();
                 }
@@ -4379,6 +4382,9 @@ namespace AutoBot
                     if (csvFiles.Length > 0)
                         BaseDataModel.Instance.ImportDocuments(ft.AsycudaDocumentSetId,
                             csvFiles.Select(x => x.FullName).ToList(), true, true, false, false, true).Wait();
+
+                    ImportAllFilesInDataFolder();
+
                     RemoveDuplicateEntries();
                     FixIncompleteEntries();
                 }

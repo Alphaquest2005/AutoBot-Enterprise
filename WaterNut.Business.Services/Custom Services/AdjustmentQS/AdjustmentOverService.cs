@@ -85,13 +85,14 @@ namespace AdjustmentQS.Business.Services
                             EffectiveDate = x.EffectiveDate ?? x.InvoiceDate,
                             LineNumber = x.LineNumber,
                             Comment = x.Comment,
-                            EntryData = new EntryData
+                            EntryData = new Adjustments()
                             {
                                 EntryDataId = x.EntryDataId,
                                 EntryData_Id = x.EntryData_Id,
                                 Currency = x.Currency,
                                 EntryDataDate = (DateTime) x.InvoiceDate,
                                 EmailId = x.EmailId,
+                                Vendor = x.Vendor,
                                 FileTypeId = x.FileTypeId
                             },
                             InventoryItemEx = new InventoryItemsEx

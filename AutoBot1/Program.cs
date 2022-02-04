@@ -12,6 +12,7 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using AutoBot.Properties;
 using Core.Common.Utils;
 using EntryDataDS.Business.Entities;
 using MoreLinq.Extensions;
@@ -83,7 +84,7 @@ namespace AutoBot
                                     .Where(x => lastAction.ActionId == null || x.ActionId == lastAction.ActionId)
                                     .Select(x => Utils.SessionActions[x.Actions.Name])
                                     .ForEach(x => x.Invoke());
-                               
+
                                 continue;
                             }
 
@@ -100,7 +101,7 @@ namespace AutoBot
                                 Email = appSetting.Email,
                                 ApplicationSettingsId = appSetting.ApplicationSettingsId,
                                 EmailMappings = appSetting.EmailMapping.ToList(),
-                                TestMode = appSetting.TestMode??false
+                                DevMode = Settings.Default.DevMode
                             };
 
                             var msgLst = Task.Run(() => EmailDownloader.EmailDownloader.CheckEmails(Utils.Client)).Result

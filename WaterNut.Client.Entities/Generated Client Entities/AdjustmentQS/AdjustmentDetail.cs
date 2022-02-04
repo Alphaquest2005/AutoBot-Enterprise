@@ -645,6 +645,23 @@ public Nullable<int> PreviousCLineNumber
 		}
      
 
+       
+       
+                
+                [MaxLength(50, ErrorMessage = "Vendor has a max length of 50 letters ")]
+public string Vendor
+		{ 
+		    get { return this.adjustmentdetail.Vendor; }
+			set
+			{
+			    if (value == this.adjustmentdetail.Vendor) return;
+				this.adjustmentdetail.Vendor = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("Vendor");
+			}
+		}
+     
+
        private AdjustmentEx _AdjustmentEx;
         public  AdjustmentEx AdjustmentEx
 		{

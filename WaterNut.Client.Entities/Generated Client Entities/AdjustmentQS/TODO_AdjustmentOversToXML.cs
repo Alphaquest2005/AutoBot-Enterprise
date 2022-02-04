@@ -567,6 +567,23 @@ public int AlreadyExecuted
 		}
      
 
+       
+       
+                
+                [MaxLength(50, ErrorMessage = "Vendor has a max length of 50 letters ")]
+public string Vendor
+		{ 
+		    get { return this.todo_adjustmentoverstoxml.Vendor; }
+			set
+			{
+			    if (value == this.todo_adjustmentoverstoxml.Vendor) return;
+				this.todo_adjustmentoverstoxml.Vendor = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("Vendor");
+			}
+		}
+     
+
 
         ChangeTrackingCollection<DTO.TODO_AdjustmentOversToXML> _changeTracker;    
         public ChangeTrackingCollection<DTO.TODO_AdjustmentOversToXML> ChangeTracker

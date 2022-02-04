@@ -365,7 +365,7 @@ namespace Asycuda421
                     .Where(x => x.ApplicationSettingsId ==
                                 da.xcuda_ASYCUDA_ExtendedProperties.AsycudaDocumentSet.ApplicationSettingsId)
                     .FirstOrDefault(x =>
-                        x.Description == da.xcuda_ASYCUDA_ExtendedProperties.Document_Type.DisplayName);
+                        x.Customs_Procedure == da.xcuda_ASYCUDA_ExtendedProperties.Customs_Procedure.CustomsProcedure);// x.Description == da.xcuda_ASYCUDA_ExtendedProperties.Document_Type.DisplayName
 
             //if (Exp == null && da.xcuda_ASYCUDA_ExtendedProperties.AsycudaDocumentSet != null && da.xcuda_ASYCUDA_ExtendedProperties.AsycudaDocumentSet.ExportTemplate != null)
             //{

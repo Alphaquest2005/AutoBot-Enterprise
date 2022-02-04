@@ -778,6 +778,14 @@ namespace WaterNut.DataSpace
                         $"{pod.EntryData.Suppliers?.Street}\r\n";
                 }
 
+                if (pod.EntryData is Adjustments a)
+                {
+                  
+                    cdoc.Document.xcuda_Traders.xcuda_Exporter.Exporter_name =
+                        $"{pod.EntryData.Suppliers?.SupplierName ?? a.Vendor}\r\n" +
+                        $"{pod.EntryData.Suppliers?.Street}\r\n";
+                }
+
 
                 if (itm == null) continue;
                 itmcount += 1;
