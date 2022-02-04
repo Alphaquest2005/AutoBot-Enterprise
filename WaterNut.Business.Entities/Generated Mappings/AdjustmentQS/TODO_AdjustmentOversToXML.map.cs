@@ -46,6 +46,7 @@
               this.Property(t => t.Subject).HasColumnName("Subject");
               this.Property(t => t.EmailDate).HasColumnName("EmailDate");
               this.Property(t => t.AlreadyExecuted).HasColumnName("AlreadyExecuted");
+              this.Property(t => t.Vendor).HasColumnName("Vendor").HasMaxLength(50);
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);
     			this.Ignore(t => t.ModifiedProperties);

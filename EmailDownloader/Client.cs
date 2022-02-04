@@ -11,6 +11,6 @@ namespace EmailDownloader
         public List<EmailMapping> EmailMappings { get; set; }
         public string CompanyName { get; set; }
         public int ApplicationSettingsId { get; set; }
-        public bool TestMode { get; set; }
+        public bool DevMode { get; set; }
     }
 }

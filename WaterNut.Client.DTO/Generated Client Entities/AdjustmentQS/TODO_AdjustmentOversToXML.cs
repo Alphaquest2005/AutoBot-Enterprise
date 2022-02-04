@@ -450,6 +450,19 @@ namespace AdjustmentQS.Client.DTO
 		}
         private int _AlreadyExecuted;
 
+        [DataMember]
+        public string Vendor
+		{ 
+		    get { return _Vendor; }
+			set
+			{
+			    if (value == _Vendor) return;
+				_Vendor = value;
+				NotifyPropertyChanged();//m => this.Vendor
+			}
+		}
+        private string _Vendor;
+
        
    //     [DataMember]
    //     public TrackingState TrackingState { get; set; }

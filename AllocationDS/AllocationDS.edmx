@@ -85,6 +85,7 @@
           <Property Name="Type" Type="nvarchar" MaxLength="50" />
           <Property Name="EntryData_Id" Type="int" Nullable="false" />
           <Property Name="Tax" Type="float" />
+          <Property Name="Vendor" Type="nvarchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="EntryData_Sales">
           <Key>
@@ -2977,6 +2978,7 @@ FROM [dbo].[PreviousItemsEx] AS [PreviousItemsEx]</DefiningQuery>
           <NavigationProperty Name="EntryDataDetails" Relationship="WaterNutDBModel.EntryData_AdjustmentsEntryDataDetails" FromRole="EntryData_Adjustments" ToRole="EntryDataDetails" />
           <Property Name="Type" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="Tax" Type="Double" />
+          <Property Name="Vendor" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
         </EntityType>
         <Association Name="EntryData_AdjustmentsEntryDataDetails">
           <End Type="WaterNutDBModel.Adjustments" Role="EntryData_Adjustments" Multiplicity="1" />
@@ -3670,6 +3672,7 @@ FROM [dbo].[PreviousItemsEx] AS [PreviousItemsEx]</DefiningQuery>
             </EntityTypeMapping>
             <EntityTypeMapping TypeName="IsTypeOf(WaterNutDBModel.Adjustments)">
               <MappingFragment StoreEntitySet="EntryData_Adjustments">
+                <ScalarProperty Name="Vendor" ColumnName="Vendor" />
                 <ScalarProperty Name="Tax" ColumnName="Tax" />
                 <ScalarProperty Name="EntryData_Id" ColumnName="EntryData_Id" />
                 <ScalarProperty Name="Type" ColumnName="Type" />

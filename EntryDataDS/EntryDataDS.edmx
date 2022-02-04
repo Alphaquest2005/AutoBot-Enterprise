@@ -63,6 +63,7 @@
           <Property Name="Type" Type="nvarchar" MaxLength="50" />
           <Property Name="EntryData_Id" Type="int" Nullable="false" />
           <Property Name="Tax" Type="float" />
+          <Property Name="Vendor" Type="nvarchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="EntryData_DocumentType">
           <Key>
@@ -1093,7 +1094,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ShipmentRiderManifests' d
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_EntryData_FileTypes">
+        <Association Name="FK_EntryData_FileTypes1">
           <End Role="FileTypes" Type="Self.FileTypes" Multiplicity="0..1" />
           <End Role="EntryData" Type="Self.EntryData" Multiplicity="*" />
           <ReferentialConstraint>
@@ -2023,7 +2024,7 @@ FROM [dbo].[ShipmentRiderManifests] AS [ShipmentRiderManifests]</DefiningQuery>
             <End Role="EntryData" EntitySet="EntryData" />
             <End Role="EntryData_DocumentType" EntitySet="EntryData_DocumentType" />
           </AssociationSet>
-          <AssociationSet Name="FK_EntryData_FileTypes" Association="Self.FK_EntryData_FileTypes">
+          <AssociationSet Name="FK_EntryData_FileTypes1" Association="Self.FK_EntryData_FileTypes1">
             <End Role="FileTypes" EntitySet="FileTypes" />
             <End Role="EntryData" EntitySet="EntryData" />
           </AssociationSet>
@@ -2780,6 +2781,7 @@ FROM [dbo].[ShipmentRiderManifests] AS [ShipmentRiderManifests]</DefiningQuery>
         <EntityType Name="Adjustments" BaseType="WaterNutDBModel.EntryData">
           <Property Name="Type" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="Tax" Type="Double" />
+          <Property Name="Vendor" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="FileTypes">
           <Key>
@@ -4475,6 +4477,7 @@ FROM [dbo].[ShipmentRiderManifests] AS [ShipmentRiderManifests]</DefiningQuery>
             </EntityTypeMapping>
             <EntityTypeMapping TypeName="IsTypeOf(WaterNutDBModel.Adjustments)">
               <MappingFragment StoreEntitySet="EntryData_Adjustments">
+                <ScalarProperty Name="Vendor" ColumnName="Vendor" />
                 <ScalarProperty Name="Tax" ColumnName="Tax" />
                 <ScalarProperty Name="EntryData_Id" ColumnName="EntryData_Id" />
                 <ScalarProperty Name="Type" ColumnName="Type" />

@@ -71,7 +71,7 @@ namespace EmailDownloader
         {
             var message = new MimeMessage();
             message.From.Add(new MailboxAddress($"{client.CompanyName}-AutoBot", client.Email));
-            if (!client.TestMode)
+            if (!client.DevMode)
             {
                 foreach (var recipent in to)
                 {
@@ -306,7 +306,7 @@ namespace EmailDownloader
             // construct a new message
             var message = new MimeMessage();
             message.From.Add(new MailboxAddress($"{clientDetails.CompanyName}-AutoBot", clientDetails.Email));
-            if (!clientDetails.TestMode)
+            if (!clientDetails.DevMode)
             {
                 message.ReplyTo.Add(new MailboxAddress(msg.From.First().Name,
                     msg.From.Mailboxes.FirstOrDefault().Address));
@@ -439,7 +439,7 @@ namespace EmailDownloader
             // construct a new message
             var message = new MimeMessage();
             message.From.Add(new MailboxAddress($"{clientDetails.CompanyName}-AutoBot", clientDetails.Email));
-            if (!clientDetails.TestMode)
+            if (!clientDetails.DevMode)
             {
                 message.ReplyTo.Add(new MailboxAddress(msg.From.First().Name,
                     msg.From.Mailboxes.FirstOrDefault().Address));
