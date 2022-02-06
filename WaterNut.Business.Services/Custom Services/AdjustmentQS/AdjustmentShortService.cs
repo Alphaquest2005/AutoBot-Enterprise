@@ -195,6 +195,8 @@ namespace AdjustmentQS.Business.Services
             {
 
                 StatusModel.StartStatusUpdate("Matching Shorts To Asycuda Entries", lst.Count());
+                var edLst = new List<EntryDataDetail>();
+                DateTime? minEffectiveDate = null;
                 foreach (var s in lst)
                 {
                     //StatusModel.StatusUpdate("Matching Shorts To Asycuda Entries");
@@ -205,7 +207,7 @@ namespace AdjustmentQS.Business.Services
                         
                         if (string.IsNullOrEmpty(s.ItemNumber)) continue;
                         var ed = ctx.EntryDataDetails.First(x => x.EntryDataDetailsId == s.EntryDataDetailsId);
-
+                        edLst.Add(ed);
                         ed.Comment = null;
                         if (!string.IsNullOrEmpty(s.PreviousInvoiceNumber))
                         {
@@ -259,10 +261,11 @@ namespace AdjustmentQS.Business.Services
 
                             // if (ed.EffectiveDate == null) ed.EffectiveDate = s.AdjustmentEx.InvoiceDate;
                             if (s.Type == "DIS")
-                                ed.EffectiveDate = new EntryDataDSContext().EntryData.OfType<PurchaseOrders>()
-                                    .FirstOrDefault(x =>
-                                        x.EntryDataId == ed.EntryDataId ||
-                                        ed.PreviousInvoiceNumber.Contains(x.EntryDataId))?.EntryDataDate;
+                            {
+                                var po = new EntryDataDSContext().EntryData.OfType<PurchaseOrders>()
+                                    .FirstOrDefault(x => x.EntryDataId == ed.EntryDataId);// || ed.PreviousInvoiceNumber.EndsWith(x.EntryDataId) Contains too random
+                                ed.EffectiveDate = po?.EntryDataDate;
+                            }
                             else
                             {
                                 ed.EffectiveDate = s.InvoiceDate;
@@ -288,6 +291,16 @@ namespace AdjustmentQS.Business.Services
                     {
                         throw ex;
                     }
+                }
+
+
+                minEffectiveDate = edLst.Min(x => x.EffectiveDate);
+                if (minEffectiveDate == null) minEffectiveDate = edLst.Min(x => x.AdjustmentEx.InvoiceDate);
+
+                foreach (var ed in edLst.Where(x => x.EffectiveDate == null))
+                {
+                    ed.EffectiveDate = minEffectiveDate;
+                    ed.Status = null;
                 }
 
                 ctx.SaveChanges();
@@ -333,7 +346,8 @@ namespace AdjustmentQS.Business.Services
                                 && x.AsycudaDocument.ImportComplete == true
                                 && x.ApplicationSettingsId == applicationSettingsId &&
                                 (x.PreviousInvoiceNumber.ToUpper().Trim() == sPreviousInvoiceNumber.ToUpper().Trim()
-                                 || sEntryDataId.ToUpper().Trim().Contains(x.PreviousInvoiceNumber.ToUpper().Trim())));
+                                || sEntryDataId.ToUpper().Trim() == x.PreviousInvoiceNumber.ToUpper().Trim()
+                                ));// contains is too vague
                 var res = aItem.ToList();
 
 
@@ -772,24 +786,25 @@ namespace AdjustmentQS.Business.Services
                 ex9Type, null, null).ConfigureAwait(false);
         }
 
-        private void MatchToAsycudaItem(AdjustmentDetail os, List<AsycudaDocumentItem> alst, EntryDataDetail ed, AdjustmentQSContext ctx)
+        private DateTime? MatchToAsycudaItem(AdjustmentDetail os, List<AsycudaDocumentItem> alst, EntryDataDetail ed, AdjustmentQSContext ctx)
         {
             //ed.Status = null;
             //ed.QtyAllocated = 0;
+            DateTime? minEffectiveDate = null;
             var remainingShortQty = os.InvoiceQty.GetValueOrDefault() - os.ReceivedQty.GetValueOrDefault();
 
             if (!alst.Any())
             {
                 //Mark here cuz Allocations don't do Discrepancies only Adjustments
                 ed.Status = "No Asycuda Item Found";
-                return;
+                return minEffectiveDate;
             }
 
             /// took PiQuantity out because then entries can exist already and this just preventing it from relinking
             /// 
 
             ed.EffectiveDate = alst.FirstOrDefault().AsycudaDocument.AssessmentDate;
-
+            minEffectiveDate = ed.EffectiveDate;
             if (alst.Select(x => x.ItemQuantity.GetValueOrDefault() - x.DFQtyAllocated.GetValueOrDefault()).Sum() <
                 remainingShortQty)
             {
@@ -797,7 +812,7 @@ namespace AdjustmentQS.Business.Services
                 ////Adding back Status because something is definitly wrong if qty reported is more than what entry states... 
                 /// going and allocat the rest will cause allocations to an error
                 ed.Status = "Insufficent Quantities";
-                return;
+                return minEffectiveDate;
             }
 
             if (ed.IsReconciled == false && alst.Select(x => x.ItemQuantity.GetValueOrDefault() - x.PiQuantity.GetValueOrDefault()).Sum() <
@@ -810,7 +825,7 @@ namespace AdjustmentQS.Business.Services
                 if (existingExecution == null)
                 {
                     ed.Status = "PiQuantity Already eXed-Out";
-                    return;
+                    return minEffectiveDate;
                 }
 
                 ////Adding back Status because something is definitly wrong if qty reported is more than what entry states... 
@@ -829,7 +844,7 @@ namespace AdjustmentQS.Business.Services
                     TrackingState = TrackingState.Added
 
                 });
-                return;
+                return minEffectiveDate;
             } // if overs just mark and return
 
             foreach (var aItem in alst)
@@ -879,7 +894,7 @@ namespace AdjustmentQS.Business.Services
             }
 
 
-
+            return minEffectiveDate;
 
         }
 
@@ -1129,7 +1144,7 @@ namespace AdjustmentQS.Business.Services
         private static void ProcessDISErrorsForAllocation(List<TODO_PreDiscrepancyErrors> lst, AdjustmentQSContext ctx)
         {
             StatusModel.StartStatusUpdate("Preparing Discrepancy Errors for Re-Allocation", lst.Count());
-            foreach (var s in lst.Where(x => x.ReceivedQty > x.InvoiceQty && x.IsReconciled != true))
+            foreach (var s in lst.Where(x =>  x.IsReconciled != true))//x.ReceivedQty > x.InvoiceQty &&
             {
                 var ed = ctx.EntryDataDetails.First(x => x.EntryDataDetailsId == s.EntryDataDetailsId);
                 ed.EffectiveDate = BaseDataModel.CurrentSalesInfo().Item2;

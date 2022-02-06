@@ -194,9 +194,9 @@ namespace WaterNut.DataSpace
 			Parallel.ForEach(itemSetsValues.OrderBy(x => x.Key.EntryDataDate)
 									 //.ThenBy(x => x.Key.EntryDataId).ThenBy(x => x.Key.ItemNumber)
 									 //.Where(x => x.EntriesList.Any(z => z.TariffCode == "61091010")).ToList()
-									 //.Where(x => x.EntriesList.Any(z => z.AsycudaDocument.CNumber == "44887" && z.LineNumber == 17))
+									// .Where(x => x.EntriesList.Any(z => z.AsycudaDocument.CNumber == "1523" && z.LineNumber == 45))
                                     //.Where(x => x.Key.ItemNumber == "320865")
-									 //.Where(x => x.SalesList.Any(z => z.EntryDataId.ToLower().Contains("harry")))
+									// .Where(x => x.SalesList.Any(z => z.EntryDataId.ToLower().Contains("O11-0004157-01")))
 									 // .Where(x => x.Key.ItemNumber.StartsWith("A")) //.Where(x => x.Key.Contains("255100")) // 
 									 // .Where(x => "337493".Contains(x.Key))
 									 //.Where(x => "FAA/SCPI18X112".Contains(x.ItemNumber))//SND/IVF1010MPSF,BRG/NAVICOTE-GL,
