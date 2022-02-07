@@ -206,7 +206,7 @@ namespace AdjustmentQS.Business.Services
                         ctx.SaveChanges();
                         
                         if (string.IsNullOrEmpty(s.ItemNumber)) continue;
-                        var ed = ctx.EntryDataDetails.First(x => x.EntryDataDetailsId == s.EntryDataDetailsId);
+                        var ed = ctx.EntryDataDetails.Include(x => x.AdjustmentEx).First(x => x.EntryDataDetailsId == s.EntryDataDetailsId);
                         edLst.Add(ed);
                         ed.Comment = null;
                         if (!string.IsNullOrEmpty(s.PreviousInvoiceNumber))
