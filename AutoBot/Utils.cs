@@ -7596,8 +7596,8 @@ namespace AutoBot
             }
             catch (Exception e)
             {
-                EmailDownloader.EmailDownloader.SendEmail(Utils.Client, null, $"Bug Found",
-                    new[] { "Joseph@auto-brokerage.com" }, $"{e.Message}\r\n{e.StackTrace}",
+                EmailDownloader.EmailDownloader.ForwardMsg(fileType.EmailId,Utils.Client, $"Bug Found",
+                     $"{e.Message}\r\n{e.StackTrace}",new[] { "Joseph@auto-brokerage.com" },
                     Array.Empty<string>());
             }
         }

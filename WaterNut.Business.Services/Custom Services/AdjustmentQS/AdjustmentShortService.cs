@@ -294,8 +294,8 @@ namespace AdjustmentQS.Business.Services
                 }
 
 
-                minEffectiveDate = edLst.Min(x => x.EffectiveDate);
-                if (minEffectiveDate == null) minEffectiveDate = edLst.Min(x => x.AdjustmentEx.InvoiceDate);
+                minEffectiveDate = edLst.Min(x => x.EffectiveDate) 
+                                   ?? edLst.Where(x => x.AdjustmentEx != null).Min(x => x.AdjustmentEx.InvoiceDate);
 
                 foreach (var ed in edLst.Where(x => x.EffectiveDate == null))
                 {
