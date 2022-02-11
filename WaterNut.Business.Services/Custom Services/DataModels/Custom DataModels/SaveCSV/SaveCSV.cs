@@ -125,11 +125,9 @@ namespace WaterNut.DataSpace
                     var reg = new Regex(r.Regex, RegexOptions.IgnoreCase | RegexOptions.Multiline);
                     fileTxt = reg.Replace(fileTxt, r.ReplacementRegEx, Int16.MaxValue);
                 }
-
-                var fixedtxt = Regex.Replace(fileTxt, ",\"[^\"\n]*\n", "");
-
+                
                
-                var lines = fixedtxt.Split(new string[] { "\n", "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
+                var lines = fileTxt.Split(new string[] { "\n", "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
                 // identify header
                 var headerline = lines.FirstOrDefault();
                

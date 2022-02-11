@@ -712,15 +712,17 @@ namespace WaterNut.DataSpace
                             throw new ApplicationException(
                                 $"No Invoice Details");
 
-                        if (invoice.ImportedTotalDifference > 0.001)
+                        ctx.ShipmentInvoice.Add(invoice);
+                        
+                        ctx.SaveChanges();
+
+                        //----------ALLOW IMPORTS AND CHANGE THE XLSX TO HIGHLIGHT ERRORS
+                        if (invoice.ImportedTotalDifference > 0.001 )
                             throw new ApplicationException(
                                 $"Imported Total Difference for Invoice > 0: {invoice.ImportedTotalDifference}");
-
-                        ctx.ShipmentInvoice.Add(invoice);
-
                     }
 
-                    ctx.SaveChanges();
+                    
                 }
             }
             catch (Exception e)

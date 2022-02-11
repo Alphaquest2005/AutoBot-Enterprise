@@ -71,7 +71,7 @@ namespace WaterNut.DataSpace
 
                         var failedLines = tmp.Lines.Where(x => x.OCR_Lines.Fields.Any(z => realerror.Message.Contains(z.Field)) || realerror.Message.Contains(x.OCR_Lines.Name))
                             .ToList();
-
+                        if (!failedLines.Any()) failedLines = tmp.Lines.Where(x => x.OCR_Lines.Fields.Any(z => z.DataType == "Number" )).ToList();
                         ReportUnImportedFile(docSet, file, emailId, fileTypeId, client, pdfTxt.ToString(), $"Problem importing file:{file} --- {realerror.Message}", failedLines);
 
                         var ex = new ApplicationException($"Problem importing file:{file} --- {realerror.Message}", e);
@@ -156,7 +156,7 @@ namespace WaterNut.DataSpace
                     z.Values.Values.Any(v =>
                         v.Keys.Any(k => k.Field == "Name") && v.Values.Any(kv => kv == tmp.OcrInvoices.Name))))) return false;
                 if (failedlines.Any() && failedlines.Count < tmp.Lines.Count &&
-                    tmp.Parts.First().WasStarted && tmp.Lines.SelectMany(x => x.Values.Values).Any())
+                    (tmp.Parts.First().WasStarted || !tmp.Parts.First().OCR_Part.Start.Any()) && tmp.Lines.SelectMany(x => x.Values.Values).Any())
                 {
                     ReportUnImportedFile(docSet, file, emailId,fileTypeId, client, pdftxt.ToString(), "Following fields failed to import",
                         failedlines);
@@ -410,14 +410,23 @@ namespace WaterNut.DataSpace
         private static string CreateEmail(string file, string emailId, Client client, string error, List<Line> failedlst,
             FileInfo fileInfo, string txtFile)
         {
-            var body = $"Hey,\r\n\r\n {error}-'{fileInfo.Name}'.\r\n" +
-                       $"{failedlst.Select(x => $"Line:{x.OCR_Lines.Name} - RegId: {x.OCR_Lines.RegularExpressions.Id} - Regex: '{x.OCR_Lines.RegularExpressions.RegEx}' - Fields: {x.FailedFields.SelectMany(z => z.ToList()).SelectMany(z => z.Value.ToList()).Select(z => $"{z.Key.Key} - '{z.Key.Field}'").DefaultIfEmpty(string.Empty).Aggregate((o, c) => o + "\r\n" + c)}").DefaultIfEmpty(string.Empty).Aggregate((o, c) => o + "\r\n" + c)}" +
+            var body = $"Hey,\r\n\r\n {error}-'{fileInfo.Name}'.\r\n\r\n\r\n" +
+                       $"{failedlst.Select(x => $"Line:{x.OCR_Lines.Name} - RegId: {x.OCR_Lines.RegularExpressions.Id} - Regex: {x.OCR_Lines.RegularExpressions.RegEx} - Fields: {x.FailedFields.SelectMany(z => z.ToList()).SelectMany(z => z.Value.ToList()).Select(z => $"{z.Key.Key} - '{z.Key.Field}'").DefaultIfEmpty(string.Empty).Aggregate((o, c) => o + "\r\n\r\n" + c)}").DefaultIfEmpty(string.Empty).Aggregate((o, c) => o + "\r\n" + c)}\r\n\r\n" +
                        "Thanks\r\n" +
-                       $"AutoBot";
-            EmailDownloader.EmailDownloader.ForwardMsg(emailId, client, "Invoice Template Not found!", body,
-                new[] {"Joseph@auto-brokerage.com"}, new[] {file, txtFile});
+                       "Thanks\r\n" +
+                       $"AutoBot\r\n" +
+                       $"\r\n" +
+                       $"\r\n" +
+                       CommandsTxt
+                ;
+            EmailDownloader.EmailDownloader.SendEmail( client, null, "Invoice Template Not found!", new[] {"Joseph@auto-brokerage.com"}, body, new[] {file, txtFile});
             return body;
         }
+
+        public const string CommandsTxt = "Commands:\r\n" +
+                                          "UpdateRegex: RegId: 123, Regex: 'xyz', IsMultiline: True\r\n" +
+                                          "AddFieldRegEx: RegId: 123,  Field: Name, Regex: '', ReplaceRegex: ''\r\n" +
+                                          "RequestInvoice: Name:'xyz'\r\n";
 
 
         private static void SeeWhatSticks(string pdftext)
@@ -849,7 +858,7 @@ namespace WaterNut.DataSpace
         public List<Line> AllLines =>
             Lines.Union(ChildParts.SelectMany(x => x.AllLines)).DistinctBy(x => x.OCR_Lines.Id).ToList();
 
-        public bool WasStarted => this._startlines.Any();
+        public bool WasStarted => this._startlines.Any();//{ get; set; } //;
 
         private static int lastLineRead = 0;
 
@@ -902,6 +911,7 @@ namespace WaterNut.DataSpace
                 var startFound = FindStart();
                 if (startFound)
                 {
+                   // WasStarted = true;
                     if (!WasStarted || (WasStarted && OCR_Part.RecuringPart != null))
                         if (_startlines.Count() < StartCount)
                             _startlines.Add(_lines.First());

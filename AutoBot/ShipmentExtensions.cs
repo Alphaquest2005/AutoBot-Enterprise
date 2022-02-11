@@ -100,19 +100,21 @@ namespace AutoBotUtilities
             using (var ctx = new EntryDataDSContext())
             {
                 var riders = ctx.ShipmentRider
-                    .Include(x => x.ShipmentRiderBLs)
-                    .Include(x => x.ShipmentRiderDetails)
-                    .Include(z => z.ShipmentRiderInvoice)
-                    .Include(x => x.ShipmentRiderEx)
+                        .Include(z => z.ShipmentRiderBLs)
+                        .Include("ShipmentRiderDetails.ShipmentRiderBLs")
+                        .Include(z => z.ShipmentRiderInvoice)
+                        .Include(z => z.ShipmentRiderManifests)
+                        .Include(z => z.ShipmentRiderEx)
                     .Where(x => x.EmailId == shipment.EmailId)
                     .ToList();
-
+                   
 
                 shipment.ShipmentAttachedRider.AddRange(riders.Select(x => new ShipmentAttachedRider
                 {
                     ShipmentRider = x,
                     Shipment = shipment,
                     ShipmentId = x.Id,
+                    RiderId = x.Id,
                     TrackingState = TrackingState.Added
                 }));
             }
@@ -195,6 +197,23 @@ namespace AutoBotUtilities
                             TrackingState = TrackingState.Added
                         })
                         .ToList();
+
+                    var refInvoices = shipment.ShipmentAttachedRider
+                        .SelectMany(x =>
+                            x.ShipmentRider.ShipmentRiderDetails.Select(z => z.InvoiceNumber).Where(z => z != null))
+                        .Distinct()
+                        .Where(x => invoices.All(z => z.ShipmentInvoice.InvoiceNo != x))
+                        .SelectMany(x => GetShipmentInvoices().Where(z => z.InvoiceNo == x))
+                       .Select(x => new ShipmentAttachedInvoices
+                        {
+                            Shipment = shipment,
+                            ShipmentInvoice = x,
+                            ShipmentInvoiceId = x.Id,
+                            TrackingState = TrackingState.Added
+                        })
+                        .ToList();
+
+                    invoices.AddRange(refInvoices);
 
                     var shipmentInvoicePoItemMisMatcheses = ctx.ShipmentInvoicePOItemMISMatches.ToList();
                     foreach (var inv in invoices.SelectMany(x => x.ShipmentInvoice.ShipmentInvoicePOs))
@@ -773,7 +792,7 @@ namespace AutoBotUtilities
                         shipment.TotalInvoices += invoices.Select(x => x.Id).Count();
 
 
-                        var invocieAttachments = invoices
+                        var invoiceAttachments = invoices
                             .GroupBy(x => x.ShipmentRiderInvoice.FirstOrDefault()?.WarehouseCode ?? "")
                             .Select(shipmentInvoice =>
                                 XlsxWriter.CreateCSV(shipmentInvoice.Key,
@@ -783,7 +802,7 @@ namespace AutoBotUtilities
                             .SelectMany(x => x.ToList())
                             .ToList();
 
-                        attachments.AddRange(invocieAttachments.Where(x => x.filepath.EndsWith(".pdf")).Select(x =>
+                        attachments.AddRange(invoiceAttachments.Where(x => x.filepath.EndsWith(".pdf")).Select(x =>
                             new Attachments
                             {
                                 FilePath = x.filepath,
@@ -791,7 +810,7 @@ namespace AutoBotUtilities
                                 Reference = x.reference,
                                 TrackingState = TrackingState.Added
                             }));
-                        attachments.AddRange(invocieAttachments.Where(x => x.filepath.EndsWith(".xlsx")).Select(x =>
+                        attachments.AddRange(invoiceAttachments.Where(x => x.filepath.EndsWith(".xlsx")).Select(x =>
                             new Attachments
                             {
                                 FilePath = x.filepath,

@@ -86,6 +86,19 @@ namespace CoreEntities.Client.DTO
 		}
         private string _ReplacementValue;
 
+        [DataMember]
+        public Nullable<bool> InfoFirst
+		{ 
+		    get { return _InfoFirst; }
+			set
+			{
+			    if (value == _InfoFirst) return;
+				_InfoFirst = value;
+				NotifyPropertyChanged();//m => this.InfoFirst
+			}
+		}
+        private Nullable<bool> _InfoFirst;
+
        
         [DataMember]
         public ApplicationSettings ApplicationSettings

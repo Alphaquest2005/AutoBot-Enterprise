@@ -124,6 +124,21 @@ public string ReplacementValue
 		}
      
 
+       
+       
+public Nullable<bool> InfoFirst
+		{ 
+		    get { return this.emailmapping.InfoFirst; }
+			set
+			{
+			    if (value == this.emailmapping.InfoFirst) return;
+				this.emailmapping.InfoFirst = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("InfoFirst");
+			}
+		}
+     
+
        private ApplicationSettings _ApplicationSettings;
         public  ApplicationSettings ApplicationSettings
 		{

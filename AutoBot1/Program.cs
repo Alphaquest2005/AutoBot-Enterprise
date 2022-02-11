@@ -43,6 +43,7 @@ namespace AutoBot
                     var applicationSettings = ctx.ApplicationSettings.AsNoTracking()
                         .Include(x => x.FileTypes)
                         .Include(x => x.Declarants)
+                        .Include("FileTypes.FileTypeReplaceRegex")
                         //.Include("FileTypes.FileTypeContacts.Contacts")
                         //.Include("FileTypes.FileTypeActions.Actions")
                         //.Include("FileTypes.AsycudaDocumentSetEx")
@@ -122,10 +123,9 @@ namespace AutoBot
                                                       x.FileTypes.FilePattern,
                                                       RegexOptions.IgnoreCase) && z.LastWriteTime >= beforeImport))) continue;
 
-                                
 
-                                foreach (var emailFileType in msg.Key.Item2.FileTypes.OrderBy(x =>
-                                    x.Type == "Info"))
+                                var emailFileTypes = msg.Key.Item2.EmailMapping.InfoFirst == true ? msg.Key.Item2.FileTypes.OrderByDescending(x => x.Type == "Info").ToList() : msg.Key.Item2.FileTypes.OrderBy(x => x.Type == "Info").ToList();
+                                foreach (var emailFileType in emailFileTypes)
                                 {
                                     var fileType = BaseDataModel.GetFileType(emailFileType);
                                     fileType.Data
