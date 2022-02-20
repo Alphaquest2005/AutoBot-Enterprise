@@ -321,6 +321,21 @@ public Nullable<bool> IsImportable
 		}
      
 
+       
+       [NumberValidationAttribute]
+public Nullable<int> MaxFileSizeInMB
+		{ 
+		    get { return this.filetypes.MaxFileSizeInMB; }
+			set
+			{
+			    if (value == this.filetypes.MaxFileSizeInMB) return;
+				this.filetypes.MaxFileSizeInMB = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("MaxFileSizeInMB");
+			}
+		}
+     
+
        private ApplicationSettings _ApplicationSettings;
         public  ApplicationSettings ApplicationSettings
 		{

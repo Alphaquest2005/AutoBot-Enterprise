@@ -71,7 +71,7 @@ namespace WaterNut.DataSpace
 
                         var failedLines = tmp.Lines.Where(x => x.OCR_Lines.Fields.Any(z => realerror.Message.Contains(z.Field)) || realerror.Message.Contains(x.OCR_Lines.Name))
                             .ToList();
-
+                        if (!failedLines.Any()) failedLines = tmp.Lines.Where(x => x.OCR_Lines.Fields.Any(z => z.DataType == "Number" )).ToList();
                         ReportUnImportedFile(docSet, file, emailId, fileTypeId, client, pdfTxt.ToString(), $"Problem importing file:{file} --- {realerror.Message}", failedLines);
 
                         var ex = new ApplicationException($"Problem importing file:{file} --- {realerror.Message}", e);
@@ -139,12 +139,7 @@ namespace WaterNut.DataSpace
              Invoice tmp, int fileTypeId)
         {
             
-            if (tmp.OcrInvoices.InvoiceIdentificatonRegEx.Any() && tmp.OcrInvoices.InvoiceIdentificatonRegEx.Any(x =>
-                Regex.IsMatch(pdftxt.ToString(),
-                    x.OCR_RegularExpressions.RegEx,
-                    RegexOptions.IgnoreCase | (x.OCR_RegularExpressions.MultiLine == true
-                        ? RegexOptions.Multiline
-                        : RegexOptions.Singleline) | RegexOptions.ExplicitCapture) == false)) return false;
+            if (!IsInvoiceDocument(tmp.OcrInvoices, pdftxt.ToString())) return false;
 
             var formattedPdfTxt = tmp.Format(pdftxt.ToString());
             var csvLines = tmp.Read(formattedPdfTxt.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None).ToList());
@@ -156,7 +151,7 @@ namespace WaterNut.DataSpace
                     z.Values.Values.Any(v =>
                         v.Keys.Any(k => k.Field == "Name") && v.Values.Any(kv => kv == tmp.OcrInvoices.Name))))) return false;
                 if (failedlines.Any() && failedlines.Count < tmp.Lines.Count &&
-                    tmp.Parts.First().WasStarted && tmp.Lines.SelectMany(x => x.Values.Values).Any())
+                    (tmp.Parts.First().WasStarted || !tmp.Parts.First().OCR_Part.Start.Any()) && tmp.Lines.SelectMany(x => x.Values.Values).Any())
                 {
                     ReportUnImportedFile(docSet, file, emailId,fileTypeId, client, pdftxt.ToString(), "Following fields failed to import",
                         failedlines);
@@ -179,6 +174,16 @@ namespace WaterNut.DataSpace
                 file, csvLines).Wait();
            
             return true;
+        }
+
+        public static bool IsInvoiceDocument(Invoices invoice, string fileText)
+        {
+            return invoice.InvoiceIdentificatonRegEx.Any() && invoice.InvoiceIdentificatonRegEx.Any(x =>
+                Regex.IsMatch(fileText,
+                    x.OCR_RegularExpressions.RegEx,
+                    RegexOptions.IgnoreCase | (x.OCR_RegularExpressions.MultiLine == true
+                        ? RegexOptions.Multiline
+                        : RegexOptions.Singleline) | RegexOptions.ExplicitCapture));
         }
 
         public static StringBuilder GetPdftxt(string file)
@@ -410,14 +415,23 @@ namespace WaterNut.DataSpace
         private static string CreateEmail(string file, string emailId, Client client, string error, List<Line> failedlst,
             FileInfo fileInfo, string txtFile)
         {
-            var body = $"Hey,\r\n\r\n {error}-'{fileInfo.Name}'.\r\n" +
-                       $"{failedlst.Select(x => $"Line:{x.OCR_Lines.Name} - RegId: {x.OCR_Lines.RegularExpressions.Id} - Regex: '{x.OCR_Lines.RegularExpressions.RegEx}' - Fields: {x.FailedFields.SelectMany(z => z.ToList()).SelectMany(z => z.Value.ToList()).Select(z => $"{z.Key.Key} - '{z.Key.Field}'").DefaultIfEmpty(string.Empty).Aggregate((o, c) => o + "\r\n" + c)}").DefaultIfEmpty(string.Empty).Aggregate((o, c) => o + "\r\n" + c)}" +
+            var body = $"Hey,\r\n\r\n {error}-'{fileInfo.Name}'.\r\n\r\n\r\n" +
+                       $"{failedlst.Select(x => $"Line:{x.OCR_Lines.Name} - RegId: {x.OCR_Lines.RegularExpressions.Id} - Regex: {x.OCR_Lines.RegularExpressions.RegEx} - Fields: {x.FailedFields.SelectMany(z => z.ToList()).SelectMany(z => z.Value.ToList()).Select(z => $"{z.Key.Key} - '{z.Key.Field}'").DefaultIfEmpty(string.Empty).Aggregate((o, c) => o + "\r\n\r\n" + c)}").DefaultIfEmpty(string.Empty).Aggregate((o, c) => o + "\r\n" + c)}\r\n\r\n" +
                        "Thanks\r\n" +
-                       $"AutoBot";
-            EmailDownloader.EmailDownloader.ForwardMsg(emailId, client, "Invoice Template Not found!", body,
-                new[] {"Joseph@auto-brokerage.com"}, new[] {file, txtFile});
+                       "Thanks\r\n" +
+                       $"AutoBot\r\n" +
+                       $"\r\n" +
+                       $"\r\n" +
+                       CommandsTxt
+                ;
+            EmailDownloader.EmailDownloader.SendEmail( client, null, "Invoice Template Not found!", new[] {"Joseph@auto-brokerage.com"}, body, new[] {file, txtFile});
             return body;
         }
+
+        public const string CommandsTxt = "Commands:\r\n" +
+                                          "UpdateRegex: RegId: 000, Regex: 'xyz', IsMultiline: True\r\n" +
+                                          "AddFieldRegEx: RegId: 000,  Field: Name, Regex: '', ReplaceRegex: ''\r\n" +
+                                          "RequestInvoice: Name:'xyz'\r\n";
 
 
         private static void SeeWhatSticks(string pdftext)
@@ -439,7 +453,7 @@ namespace WaterNut.DataSpace
                         if (match.Success)
                         {
                             var line = new Line(regLine);
-                            line.Read(match.Value, 1);
+                            line.Read(match.Value, 1, "SeeWhatSticks");
                             if (line.Values.Any(x => x.Value.Values.Any())) goodLines.Add(line);
                         }
                     }
@@ -570,7 +584,9 @@ namespace WaterNut.DataSpace
 
 
 
-                        ditm["FileLineNumber"] = value.Key + 1;
+                        ditm["FileLineNumber"] = value.Key.lineNumber + 1;
+                        ditm["Instance"] = i+1;
+                        ditm["Section"] = value.Key.section;
                         foreach (var field in value.Value)
                         {
                             if (ditm.ContainsKey(field.Key.Field) && (field.Key.AppendValues == true ||line.OCR_Lines.Fields.Select(z => z.Field)
@@ -643,17 +659,17 @@ namespace WaterNut.DataSpace
             }
         }
 
-        private Dictionary<int, Dictionary<Fields, string>> DistinctValues(Dictionary<int, Dictionary<Fields, string>> lineValues)
+        private Dictionary<(int lineNumber, string section), Dictionary<Fields, string>> DistinctValues(Dictionary<(int lineNumber, string section), Dictionary<Fields, string>> lineValues)
         {
-            var res = new Dictionary<int, Dictionary<Fields, string>>();
+            var res = new Dictionary<(int lineNumber, string section), Dictionary<Fields, string>>();
             foreach (var val in lineValues.Where(val => !res.Values.Any(z => z.Values.Any(q => val.Value.ContainsValue(q)))))
             {
-                res.Add(val.Key, val.Value);
+                res.Add((val.Key.lineNumber, val.Key.section), val.Value);
             }
             return res;
         }
 
-        private void ImportByDataType(KeyValuePair<Fields, string> field, IDictionary<string, object> ditm, KeyValuePair<int, Dictionary<Fields, string>> value)
+        private void ImportByDataType(KeyValuePair<Fields, string> field, IDictionary<string, object> ditm, KeyValuePair<(int lineNumber, string section), Dictionary<Fields, string>> value)
         {
             switch (field.Key.DataType)
             {
@@ -686,7 +702,7 @@ namespace WaterNut.DataSpace
             }
         }
 
-        private dynamic GetValue(KeyValuePair<int, Dictionary<Fields, string>> z, string field)
+        private dynamic GetValue(KeyValuePair<(int lineNumber, string section), Dictionary<Fields, string>> z, string field)
         {
             try
             {
@@ -701,7 +717,7 @@ namespace WaterNut.DataSpace
             }
 
         }
-        private dynamic GetValueByKey(KeyValuePair<int, Dictionary<Fields, string>> z, string key)
+        private dynamic GetValueByKey(KeyValuePair<(int lineNumber, string section), Dictionary<Fields, string>> z, string key)
         {
             try
             {
@@ -849,14 +865,27 @@ namespace WaterNut.DataSpace
         public List<Line> AllLines =>
             Lines.Union(ChildParts.SelectMany(x => x.AllLines)).DistinctBy(x => x.OCR_Lines.Id).ToList();
 
-        public bool WasStarted => this._startlines.Any();
+        public bool WasStarted => this._startlines.Any();//{ get; set; } //;
 
         private static int lastLineRead = 0;
 
+        private static Dictionary<string, string> Sections = new Dictionary<string, string>()
+        {
+            { "Single", "---Single Column---" },
+            { "Sparse", "---SparseText---" },
+            { "Ripped", "---Ripped Text---" }
+        };
+
+        public static string Section { get; set; }
         public void Read(List<InvoiceLine> newlines)
         {
             try
             {
+
+                Sections.ForEach(s =>
+                {
+                    if(newlines.Any(x => x.Line.Contains(s.Value))) Section = s.Key;
+                });
 
                 if ((_endlines.Count == EndCount && EndCount > 0)
                     || (EndCount == 0 && OCR_Part.Start.Any(x => x.RegularExpressions?.MultiLine == true)
@@ -902,6 +931,7 @@ namespace WaterNut.DataSpace
                 var startFound = FindStart();
                 if (startFound)
                 {
+                   // WasStarted = true;
                     if (!WasStarted || (WasStarted && OCR_Part.RecuringPart != null))
                         if (_startlines.Count() < StartCount)
                             _startlines.Add(_lines.First());
@@ -926,8 +956,8 @@ namespace WaterNut.DataSpace
                     Lines.ForEach(x =>
                     {
                         if (x.OCR_Lines.RegularExpressions.MultiLine == true)
-                            x.Read(_bodyTxt.ToString(), _bodylines.First().LineNumber);
-                        else x.Read(_bodylines.Last().Line, _bodylines.Last().LineNumber);
+                            x.Read(_bodyTxt.ToString(), _bodylines.First().LineNumber, Section);
+                        else x.Read(_bodylines.Last().Line, _bodylines.Last().LineNumber, Section);
                     });
 
                 }
@@ -1025,11 +1055,13 @@ namespace WaterNut.DataSpace
             OCR_Lines = lines;
         }
 
-        public bool Read(string line, int lineNumber)
+        private int Instance { get; set; } = 0;
+
+        public bool Read(string line, int lineNumber, string section)
         {
             try
             {
-                
+                Instance += 1;
                 var match = Regex.Match(line, OCR_Lines.RegularExpressions.RegEx,
                     (OCR_Lines.RegularExpressions.MultiLine == true
                         ? RegexOptions.Multiline
@@ -1059,8 +1091,8 @@ namespace WaterNut.DataSpace
                     }
                     
                 }
-
-                Values[lineNumber] = values;
+               
+                Values[(lineNumber, section)] = values;
                 return true;
             }
             catch (Exception e)
@@ -1094,7 +1126,7 @@ namespace WaterNut.DataSpace
             }
         }
 
-        public Dictionary<int, Dictionary<Fields, string>> Values { get; } = new Dictionary<int, Dictionary<Fields, string>>();
+        public Dictionary<(int lineNumber, string section), Dictionary<Fields, string>> Values { get; } = new Dictionary<(int lineNumber, string section), Dictionary<Fields, string>>();
         //public bool MultiLine => OCR_Lines.MultiLine;
 
         public List<Dictionary<string, List<KeyValuePair<Fields, string>>>> FailedFields => this.Values

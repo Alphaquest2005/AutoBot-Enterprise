@@ -26,6 +26,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Linq.Dynamic;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -37,6 +38,7 @@ using Asycuda421;
 using AutoBotUtilities;
 using DocumentItemDS.Business.Entities;
 using EmailDownloader;
+using OCR.Business.Entities;
 using Org.BouncyCastle.Ocsp;
 //using NPOI.SS.UserModel;
 //using NPOI.XSSF.UserModel;
@@ -66,6 +68,7 @@ namespace AutoBot
     {
         private const int _noOfCyclesBeforeHardExit = 60;
         private static int maxRowsToFindHeader = 10;
+        private static int _oneMegaByte = 1000000;
 
         public class FileAction
         {
@@ -151,8 +154,237 @@ namespace AutoBot
                 {"ImportCancelledEntires", ImportCancelledEntires },
                 {"EmailEntriesExpiringNextMonth", EmailEntriesExpiringNextMonth },
                 {"RecreateEx9", RecreateEx9 },//
+                {"UpdateRegEx", UpdateRegEx},
 
             };
+
+        private static void UpdateRegEx(FileTypes fileTypes, FileInfo[] files)
+        {
+            var regExCommands = new Dictionary<string, (Action<Dictionary<string, string>> Action, string[] Params)>()
+            {
+                {
+                    "demo",
+                    ((paramInfo) =>
+                        {
+                            try
+                            {
+                                using (var ctx = new OCRContext())
+                                {
+                                    ctx.SaveChanges();
+                                }
+                            }
+                            catch (Exception e)
+                            {
+                                Console.WriteLine(e);
+                                throw;
+                            }
+
+                        },
+                        new string[] { "RegId", "Regex" }
+                    )
+                },
+                {
+                    "RequestInvoice",
+                    ((paramInfo) =>
+                        {
+                            RequestInvoice(paramInfo, fileTypes);
+                        },
+                        new string[] { "Name"}
+                    )
+                },
+                {
+                    "UpdateRegex",
+                    ((paramInfo) =>
+                        {
+                            try
+                            {
+                                using (var ctx = new OCRContext())
+                                {
+                                    var regId = int.Parse(paramInfo["RegId"]);
+                                    var reg = ctx.RegularExpressions.First(x => x.Id == regId);
+                                    reg.RegEx = paramInfo["Regex"];
+                                    if (paramInfo.ContainsKey("IsMultiline"))
+                                    {
+                                        reg.MultiLine = (paramInfo["IsMultiline"] == "True");
+                                    }
+
+                                ctx.SaveChanges();
+                                }
+                            }
+                            catch (Exception e)
+                            {
+                                Console.WriteLine(e);
+                                throw;
+                            }
+                            
+                        },
+                    new string[] { "RegId", "Regex" }
+                ) 
+                },
+                {
+                    "AddFieldRegEx",
+                    ((paramInfo) =>
+                        {
+                            try
+                            {
+
+                                using (var ctx = new OCRContext())
+                                {
+                                    var regId = int.Parse(paramInfo["RegId"]);
+
+                                    var f = paramInfo["Field"];
+                                    var fields = ctx.Fields.Where(x =>
+                                            x.Key == f &&
+                                            x.Lines.RegExId == regId)
+                                        .ToList();
+                                    var reg = GetRegularExpressions(ctx, paramInfo["Regex"]);
+                                    var regRep = GetRegularExpressions(ctx, paramInfo["ReplaceRegex"]);
+                                    foreach (var field in fields)
+                                    {
+                                        var fr = ctx.OCR_FieldFormatRegEx.FirstOrDefault(x => x.FieldId == field.Id
+                                            && x.RegExId == reg.Id
+                                            && x.ReplacementRegExId == regRep.Id);
+                                        if (fr == null)
+                                        {
+                                            fr = new FieldFormatRegEx()
+                                            {
+                                                Field = field,
+                                                RegEx = reg, ReplacementRegEx = regRep,
+                                                TrackingState = TrackingState.Added
+                                            };
+                                            ctx.OCR_FieldFormatRegEx.Add(fr);
+                                        }
+                                    }
+
+                                    ctx.SaveChanges();
+                                }
+
+                            }
+                            catch (Exception e)
+                            {
+                                Console.WriteLine(e);
+                                throw;
+                            }
+                        },
+                        new string[] { "RegId", "Field", "Regex", "ReplaceRegex" }
+                    )
+                },
+
+            }; 
+
+            foreach (var info in files.Where(x => x.Extension == ".txt"))
+            {
+                var infoTxt = File.ReadAllText(info.FullName);
+                var commands = Regex.Matches(infoTxt, @"(?<Command>\w+):\s(?<Params>.+?)($|\r)",
+                    RegexOptions.Multiline | RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture);
+
+                foreach (Match cmdinfo in commands)
+                {
+                    if (InvoiceReader.CommandsTxt.Contains(cmdinfo.Value)) continue;
+                    var cmdName = cmdinfo.Groups["Command"].Value;
+
+                    if (!regExCommands.ContainsKey(cmdName)) continue;
+
+                    var cmdParamInfo = cmdinfo.Groups["Params"].Value;
+                    var cmdParams = Regex.Matches(cmdParamInfo, @"(?<Param>\w+):\s?(?<Value>.*?)((, )|($|\r))",
+                        RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.ExplicitCapture);
+                    var cmdparamDic = new Dictionary<string, string>();
+                    foreach (Match m in cmdParams)
+                    {
+                        cmdparamDic.Add(m.Groups["Param"].Value.Trim(',', ' ', '\''), m.Groups["Value"].Value.Trim(',',' ','\''));
+                    }
+
+                    ValidateParams(cmdparamDic, regExCommands[cmdName].Params);
+                    regExCommands[cmdName].Action.Invoke(cmdparamDic);
+
+                }
+
+            }
+        }
+
+        private static void RequestInvoice(Dictionary<string, string> paramInfo, FileTypes fileTypes)
+        {
+            try
+            {
+                var lines = new List<RegularExpressions>();
+                using (var ctx = new OCRContext())
+                {
+                    var iname = paramInfo["Name"];
+                    var invoices = ctx.Invoices.Include("InvoiceIdentificatonRegEx.OCR_RegularExpressions").Where(x => x.Name.Contains(iname)).ToList();
+
+                    var pdfs = new DirectoryInfo(fileTypes.FilePath).GetFiles("*.pdf");
+                    var files = new Dictionary<string, string>();
+                    foreach (var pdf in pdfs)
+                    {
+                        var str = InvoiceReader.GetPdftxt(pdf.FullName);
+                        if(str.Length > 0) files.Add(pdf.FullName, str.ToString());
+                    }
+                    foreach (var invoice in invoices)
+                    {
+                        lines.AddRange(ctx.Parts.Where(x => x.Invoices.Name == invoice.Name).SelectMany(z => z.Start)
+                        .Select(q => q.RegularExpressions).ToList());
+
+                    lines.AddRange(ctx.Parts.Where(x => x.Invoices.Name == invoice.Name).SelectMany(z => z.ChildParts)
+                        .SelectMany(q => q.ChildPart.Start.Select(p => p.RegularExpressions)).ToList());
+
+                    lines.AddRange(ctx.Parts.Where(x => x.Invoices.Name == invoice.Name).SelectMany(z => z.Lines)
+                        .Select(q => q.RegularExpressions).ToList());
+
+                    lines.AddRange(ctx.Parts.Where(x => x.Invoices.Name == invoice.Name).SelectMany(z => z.ChildParts)
+                        .SelectMany(q => q.ChildPart.Lines.Select(p => p.RegularExpressions)).ToList());
+
+
+                    var body = $"Hey,\r\n\r\n Regex for {invoice.Name}'.\r\n\r\n\r\n" +
+                               $"{lines.DistinctBy(x => x.Id).Select(x => $"RegId: {x.Id} - Regex: {x.RegEx}").DefaultIfEmpty(string.Empty).Aggregate((o, c) => o + "\r\n" + c)}\r\n\r\n" +
+                               "Thanks\r\n" +
+                               $"AutoBot" +
+                               $"\r\n" +
+                               $"\r\n" +
+                               InvoiceReader.CommandsTxt;
+
+                    var res = files.Where(x => InvoiceReader.IsInvoiceDocument(invoice, x.Value)).ToList();
+                        
+                        res.ForEach(x => File.WriteAllText(x.Key + ".txt", x.Value));
+                        var res1 = res.Select(x => x.Key + ".txt").ToList().Union(res.Select(x => x.Key).ToList()).ToArray();
+                       
+
+                    EmailDownloader.EmailDownloader.SendEmail(Client,null, "Invoice Template Not found!",
+                         new[] { "Joseph@auto-brokerage.com" }, body, res1);
+
+                    fileTypes.ProcessNextStep = "Kill";
+
+                    }
+                    
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+        }
+
+        private static RegularExpressions GetRegularExpressions(OCRContext ctx, string paramInfo)
+        {
+            var reg = ctx.RegularExpressions.FirstOrDefault(x => x.RegEx == paramInfo);
+            if (reg == null)
+            {
+                reg = new RegularExpressions() { RegEx = paramInfo, TrackingState = TrackingState.Added };
+                ctx.RegularExpressions.Add(reg);
+            }
+
+            return reg;
+        }
+
+        private static void ValidateParams(Dictionary<string, string> dictionary, string[] paramInfo)
+        {
+            var missing = paramInfo.Where(x => !dictionary.ContainsKey(x)).ToList();
+            if (missing.Any())
+            {
+                throw new ApplicationException(
+                    $"Update Regex Params Missing: {missing.Aggregate((o, n) => o + ", " + n)}");
+            }
+        }
 
         private static void RecreateEx9(FileTypes arg1, FileInfo[] arg2)
         {
@@ -404,7 +636,8 @@ namespace AutoBot
             {
                 var reference = xlsxWriter.XlsxWriter.SaveUnAttachedSummary(file);
                 var res = reference.Split('-');
-                //ft.EmailId = res[2];
+                var riderId = int.Parse(res[1]);
+                ft.EmailId = new EntryDataDSContext().ShipmentRider.First(x => x.Id == riderId).EmailId;
                 CreateShipmentEmail(ft, fs);
             }
 
@@ -438,6 +671,7 @@ namespace AutoBot
                 }
 
 
+
                 var shipments = new Shipment(){ShipmentName = "Next Shipment",EmailId = emailId, TrackingState = TrackingState.Added}
                                     .LoadEmailPOs()
                                     .LoadEmailInvoices()
@@ -453,6 +687,7 @@ namespace AutoBot
                                     .LoadDBRiders()
                                     .LoadDBFreight()
                                     .LoadDBInvoices()
+                                    .AutoCorrect()
                                     .ProcessShipment()
                                     //.SaveShipment()
                                     ;
@@ -6233,6 +6468,11 @@ namespace AutoBot
                     foreach (var file in csvFiles)
                     {
 
+                        if (fileType.Type != "Unknown")
+                        {
+                            SendBackTooBigEmail(file, fileType);
+                        }
+
                         var reference = GetReference(file, ctx);
 
                         Attachments attachment = ctx.Attachments.FirstOrDefault(x => x.FilePath == file.FullName);
@@ -6261,6 +6501,19 @@ namespace AutoBot
             {
                 Console.WriteLine(e);
                 throw;
+            }
+        }
+
+        private static void SendBackTooBigEmail(FileInfo file, FileTypes fileType)
+        {
+            if (fileType.MaxFileSizeInMB != null && (file.Length / _oneMegaByte) > fileType.MaxFileSizeInMB)
+            {
+                var errTxt =
+                    "Hey,\r\n\r\n" +
+                    $@"Attachment: '{file.Name}' is too large to upload into Asycuda ({Math.Round((double)(file.Length / _oneMegaByte), 2)}). Please remove Formatting or Cut into Smaller chuncks and Resend!" +
+                    "Thanks\r\n" +
+                    "AutoBot";
+                EmailDownloader.EmailDownloader.SendBackMsg(fileType.EmailId, Client, errTxt);
             }
         }
 
@@ -6799,7 +7052,10 @@ namespace AutoBot
 
                 if (fileType.ChildFileTypes.FirstOrDefault()?.Type == "Unknown")
                 {
-                    DetectFileType(fileType, file, rows);
+                    
+                        SendBackTooBigEmail(file, fileType);
+                    
+                        DetectFileType(fileType, file, rows);
                     return;
                 }
 
@@ -6955,126 +7211,126 @@ namespace AutoBot
                         if (addrow) poTemplate.Rows.Add(row);
                     }
 
-                    using (var ctx = new EntryDataDSContext())
-                    {
-                        InvoiceDetails invRow;
-                        EntryDataDetails poRow;
+                    //using (var ctx = new EntryDataDSContext())
+                    //{
+                    //    InvoiceDetails invRow;
+                    //    EntryDataDetails poRow;
 
-                        var invItm = ctx.InventoryItems.Include(x => x.AliasItems).FirstOrDefault(x =>
-                            x.ItemNumber == invItemCode
-                            && x.ApplicationSettingsId ==
-                            BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId);
-                        if (invItm == null)
-                        {
-                            invItm = new InventoryItems()
-                            {
-                                ApplicationSettingsId =
-                                    BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId,
-                                Description = misMatch[misHeaderRow.IndexOf("INVDescription")].ToString(),
-                                ItemNumber = invItemCode,
-                                TrackingState = TrackingState.Added
-                            };
-                            ctx.InventoryItems.Add(invItm);
-                        }
+                    //    var invItm = ctx.InventoryItems.Include(x => x.AliasItems).FirstOrDefault(x =>
+                    //        x.ItemNumber == invItemCode
+                    //        && x.ApplicationSettingsId ==
+                    //        BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId);
+                    //    if (invItm == null)
+                    //    {
+                    //        invItm = new InventoryItems()
+                    //        {
+                    //            ApplicationSettingsId =
+                    //                BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId,
+                    //            Description = misMatch[misHeaderRow.IndexOf("INVDescription")].ToString(),
+                    //            ItemNumber = invItemCode,
+                    //            TrackingState = TrackingState.Added
+                    //        };
+                    //        ctx.InventoryItems.Add(invItm);
+                    //    }
 
-                        var poItm = ctx.InventoryItems.Include(x => x.AliasItems).FirstOrDefault(x =>
-                            x.ItemNumber == poItemCode && x.ApplicationSettingsId ==
-                            BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId);
-                        if (poItm == null)
-                        {
-                            poItm = new InventoryItems()
-                            {
-                                ApplicationSettingsId =
-                                    BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId,
-                                Description = misMatch[misHeaderRow.IndexOf("PODescription")].ToString(),
-                                ItemNumber = poItemCode,
-                                TrackingState = TrackingState.Added
-                            };
-                            ctx.InventoryItems.Add(poItm);
-                        }
+                    //    var poItm = ctx.InventoryItems.Include(x => x.AliasItems).FirstOrDefault(x =>
+                    //        x.ItemNumber == poItemCode && x.ApplicationSettingsId ==
+                    //        BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId);
+                    //    if (poItm == null)
+                    //    {
+                    //        poItm = new InventoryItems()
+                    //        {
+                    //            ApplicationSettingsId =
+                    //                BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId,
+                    //            Description = misMatch[misHeaderRow.IndexOf("PODescription")].ToString(),
+                    //            ItemNumber = poItemCode,
+                    //            TrackingState = TrackingState.Added
+                    //        };
+                    //        ctx.InventoryItems.Add(poItm);
+                    //    }
 
-                        if (!poItm.AliasItems.Any(x => x.AliasItemId == invItm.Id) &&
-                            !invItm.AliasItems.Any(x => x.InventoryItemId == poItm.Id))
-                        {
-                            ctx.InventoryItemAlias.Add(new InventoryItemAlias(true)
-                            {
-                                InventoryItems = poItm,
-                                AliasItem = invItm,
-                                AliasName = invItm.ItemNumber,
-                                TrackingState = TrackingState.Added
-                            });
-                        }
+                    //    if (!poItm.AliasItems.Any(x => x.AliasItemId == invItm.Id) &&
+                    //        !invItm.AliasItems.Any(x => x.InventoryItemId == poItm.Id))
+                    //    {
+                    //        ctx.InventoryItemAlias.Add(new InventoryItemAlias(true)
+                    //        {
+                    //            InventoryItems = poItm,
+                    //            AliasItem = invItm,
+                    //            AliasName = invItm.ItemNumber,
+                    //            TrackingState = TrackingState.Added
+                    //        });
+                    //    }
 
-                        //var itmAlias = ctx.InventoryItemAlias
-                        ctx.SaveChanges();
+                    //    //var itmAlias = ctx.InventoryItemAlias
+                    //    ctx.SaveChanges();
 
 
-                        var INVDetailsId = misMatch[misHeaderRow.IndexOf("INVDetailsId")].ToString();
-                        if (string.IsNullOrEmpty(INVDetailsId))
-                        {
+                    //    var INVDetailsId = misMatch[misHeaderRow.IndexOf("INVDetailsId")].ToString();
+                    //    if (string.IsNullOrEmpty(INVDetailsId))
+                    //    {
 
-                            invRow = new InvoiceDetails() {TrackingState = TrackingState.Added};
-                            var inv = ctx.ShipmentInvoice.FirstOrDefault(x => x.InvoiceNo == InvoiceNo);
-                            if (inv == null) continue;
-                            invRow.ShipmentInvoiceId = inv.Id;
-                            ctx.ShipmentInvoiceDetails.Add(invRow);
+                    //        invRow = new InvoiceDetails() {TrackingState = TrackingState.Added};
+                    //        var inv = ctx.ShipmentInvoice.FirstOrDefault(x => x.InvoiceNo == InvoiceNo);
+                    //        if (inv == null) continue;
+                    //        invRow.ShipmentInvoiceId = inv.Id;
+                    //        ctx.ShipmentInvoiceDetails.Add(invRow);
 
-                        }
-                        else
-                        {
+                    //    }
+                    //    else
+                    //    {
 
-                            invRow = ctx.ShipmentInvoiceDetails.FirstOrDefault(x =>
-                                x.Id.ToString() == INVDetailsId);
-                            if (invRow == null) continue;
+                    //        invRow = ctx.ShipmentInvoiceDetails.FirstOrDefault(x =>
+                    //            x.Id.ToString() == INVDetailsId);
+                    //        if (invRow == null) continue;
 
-                        }
+                    //    }
 
-                        invRow.ItemDescription = misMatch[misHeaderRow.IndexOf("INVDescription")].ToString();
-                        invRow.ItemNumber = misMatch[misHeaderRow.IndexOf("INVItemCode")].ToString();
-                        invRow.Cost = (double) misMatch[misHeaderRow.IndexOf("INVCost")];
-                        invRow.TotalCost = (double) misMatch[misHeaderRow.IndexOf("INVTotalCost")];
-                        if (misHeaderRow.IndexOf("INVSalesFactor") > -1 &&
-                            !string.IsNullOrEmpty(misMatch[misHeaderRow.IndexOf("INVSalesFactor")].ToString()))
-                            invRow.SalesFactor = Convert.ToDouble(misMatch[misHeaderRow.IndexOf("INVSalesFactor")].ToString());
-                        else
-                        {
-                            invRow.SalesFactor = 1;
-                        }
+                    //    invRow.ItemDescription = misMatch[misHeaderRow.IndexOf("INVDescription")].ToString();
+                    //    invRow.ItemNumber = misMatch[misHeaderRow.IndexOf("INVItemCode")].ToString();
+                    //    invRow.Cost = (double) misMatch[misHeaderRow.IndexOf("INVCost")];
+                    //    invRow.TotalCost = (double) misMatch[misHeaderRow.IndexOf("INVTotalCost")];
+                    //    if (misHeaderRow.IndexOf("INVSalesFactor") > -1 &&
+                    //        !string.IsNullOrEmpty(misMatch[misHeaderRow.IndexOf("INVSalesFactor")].ToString()))
+                    //        invRow.SalesFactor = Convert.ToDouble(misMatch[misHeaderRow.IndexOf("INVSalesFactor")].ToString());
+                    //    else
+                    //    {
+                    //        invRow.SalesFactor = 1;
+                    //    }
 
-                        invRow.Quantity = (double) misMatch[misHeaderRow.IndexOf("INVQuantity")];
-                        invRow.InventoryItemId = invItm.Id;
-                        ctx.SaveChanges();
+                    //    invRow.Quantity = (double) misMatch[misHeaderRow.IndexOf("INVQuantity")];
+                    //    invRow.InventoryItemId = invItm.Id;
+                    //    ctx.SaveChanges();
 
-                        var PODetailsId = misMatch[misHeaderRow.IndexOf("PODetailsId")].ToString();
-                        if (string.IsNullOrEmpty(PODetailsId))
-                        {
+                    //    var PODetailsId = misMatch[misHeaderRow.IndexOf("PODetailsId")].ToString();
+                    //    if (string.IsNullOrEmpty(PODetailsId))
+                    //    {
 
-                            poRow = new EntryDataDetails() {TrackingState = TrackingState.Added};
-                            var pO = ctx.EntryData.FirstOrDefault(x =>
-                                x.EntryDataId == poNumber);
-                            if (pO == null) continue;
-                            poRow.EntryData_Id = pO.EntryData_Id;
-                            ctx.EntryDataDetails.Add(poRow);
+                    //        poRow = new EntryDataDetails() {TrackingState = TrackingState.Added};
+                    //        var pO = ctx.EntryData.FirstOrDefault(x =>
+                    //            x.EntryDataId == poNumber);
+                    //        if (pO == null) continue;
+                    //        poRow.EntryData_Id = pO.EntryData_Id;
+                    //        ctx.EntryDataDetails.Add(poRow);
 
-                        }
-                        else
-                        {
+                    //    }
+                    //    else
+                    //    {
 
-                            poRow = ctx.EntryDataDetails.FirstOrDefault(x =>
-                                x.EntryDataDetailsId.ToString() == PODetailsId);
-                            if (poRow == null) continue;
+                    //        poRow = ctx.EntryDataDetails.FirstOrDefault(x =>
+                    //            x.EntryDataDetailsId.ToString() == PODetailsId);
+                    //        if (poRow == null) continue;
 
-                        }
+                    //    }
 
-                        poRow.ItemDescription = misMatch[misHeaderRow.IndexOf("PODescription")].ToString();
-                        poRow.ItemNumber = misMatch[misHeaderRow.IndexOf("POItemCode")].ToString();
-                        poRow.Cost = (double) misMatch[misHeaderRow.IndexOf("POCost")];
-                        poRow.TotalCost = (double) misMatch[misHeaderRow.IndexOf("POTotalCost")];
-                        //poRow.SalesFactor = (int)misMatch["INVSalesFactor"];
-                        poRow.Quantity = (double) misMatch[misHeaderRow.IndexOf("POQuantity")];
-                        poRow.InventoryItemId = poItm.Id;
-                        ctx.SaveChanges();
-                    }
+                    //    poRow.ItemDescription = misMatch[misHeaderRow.IndexOf("PODescription")].ToString();
+                    //    poRow.ItemNumber = misMatch[misHeaderRow.IndexOf("POItemCode")].ToString();
+                    //    poRow.Cost = (double) misMatch[misHeaderRow.IndexOf("POCost")];
+                    //    poRow.TotalCost = (double) misMatch[misHeaderRow.IndexOf("POTotalCost")];
+                    //    //poRow.SalesFactor = (int)misMatch["INVSalesFactor"];
+                    //    poRow.Quantity = (double) misMatch[misHeaderRow.IndexOf("POQuantity")];
+                    //    poRow.InventoryItemId = poItm.Id;
+                    //    ctx.SaveChanges();
+                    //}
 
                 }
 

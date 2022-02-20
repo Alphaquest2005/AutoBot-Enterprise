@@ -303,6 +303,21 @@ namespace CoreEntities.Business.Entities
         }
         Nullable<bool> _isimportable;
         [DataMember]
+        public Nullable<int> MaxFileSizeInMB 
+        {
+            get
+            {
+                return _maxfilesizeinmb;
+            }
+            set
+            {
+                _maxfilesizeinmb = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<int> _maxfilesizeinmb;
+        [DataMember]
         public ApplicationSettings ApplicationSettings { get; set; }
         [DataMember]
         public AsycudaDocumentSetEx AsycudaDocumentSetEx { get; set; }

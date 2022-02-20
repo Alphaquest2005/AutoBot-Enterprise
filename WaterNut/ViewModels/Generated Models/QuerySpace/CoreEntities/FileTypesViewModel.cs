@@ -510,6 +510,24 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
         }	
 
  
+
+		private Int32? _maxFileSizeInMBFilter;
+        public Int32? MaxFileSizeInMBFilter
+        {
+            get
+            {
+                return _maxFileSizeInMBFilter;
+            }
+            set
+            {
+                _maxFileSizeInMBFilter = value;
+				NotifyPropertyChanged(x => MaxFileSizeInMBFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
 		internal bool DisableBaseFilterData = false;
         public virtual void FilterData()
 	    {
@@ -586,7 +604,10 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 
 									if(IsImportableFilter.HasValue)
 						res.Append(" && " + string.Format("IsImportable == {0}",  IsImportableFilter));						
-			return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
+ 
+
+					if(MaxFileSizeInMBFilter.HasValue)
+						res.Append(" && " + string.Format("MaxFileSizeInMB == {0}",  MaxFileSizeInMBFilter.ToString()));							return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
 // Send to Excel Implementation
@@ -642,7 +663,10 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     ReplicateHeaderRow = x.ReplicateHeaderRow ,
                     
  
-                    IsImportable = x.IsImportable 
+                    IsImportable = x.IsImportable ,
+                    
+ 
+                    MaxFileSizeInMB = x.MaxFileSizeInMB 
                     
                 }).ToList()
             };
@@ -689,6 +713,9 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     
  
                     public Nullable<bool> IsImportable { get; set; } 
+                    
+ 
+                    public Nullable<int> MaxFileSizeInMB { get; set; } 
                     
         }
 

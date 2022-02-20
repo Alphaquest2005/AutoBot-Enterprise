@@ -210,6 +210,7 @@
           <Property Name="Pattern" Type="nvarchar(max)" Nullable="false" />
           <Property Name="IsSingleEmail" Type="bit" />
           <Property Name="ReplacementValue" Type="nvarchar" MaxLength="50" />
+          <Property Name="InfoFirst" Type="bit" />
         </EntityType>
         <EntityType Name="EmailMappingRexExs">
           <Key>
@@ -336,6 +337,7 @@
           <Property Name="OldFileTypeId" Type="int" />
           <Property Name="ReplicateHeaderRow" Type="bit" />
           <Property Name="IsImportable" Type="bit" />
+          <Property Name="MaxFileSizeInMB" Type="int" />
         </EntityType>
         <EntityType Name="ImportActions">
           <Key>
@@ -4538,6 +4540,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
           <Property Name="IsImportable" Type="Boolean" />
           <NavigationProperty Name="ImportActions" Relationship="WaterNutDBModel.FK_ImportActions_FileTypes" FromRole="FileTypes" ToRole="ImportActions" />
           <NavigationProperty Name="FileTypeReplaceRegex" Relationship="WaterNutDBModel.FK_FileTypeReplaceRegex_FileTypes" FromRole="FileTypes" ToRole="FileTypeReplaceRegex" />
+          <Property Name="MaxFileSizeInMB" Type="Int32" />
         </EntityType>
         <Association Name="FK_FileTypes_ApplicationSettings">
           <End Type="WaterNutDBModel.ApplicationSettings" Role="ApplicationSettings" Multiplicity="1">
@@ -4690,6 +4693,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
           <Property Name="IsSingleEmail" Type="Boolean" />
           <Property Name="ReplacementValue" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="EmailMappingRexExs" Relationship="WaterNutDBModel.FK_EmailMappingRexExs_EmailMapping" FromRole="EmailMapping" ToRole="EmailMappingRexExs" />
+          <Property Name="InfoFirst" Type="Boolean" />
         </EntityType>
         <Association Name="FK_EmailMapping_ApplicationSettings">
           <End Type="WaterNutDBModel.ApplicationSettings" Role="ApplicationSettings" Multiplicity="1">
@@ -6785,6 +6789,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
           <EntitySetMapping Name="FileTypes">
             <EntityTypeMapping TypeName="WaterNutDBModel.FileTypes">
               <MappingFragment StoreEntitySet="FileTypes">
+                <ScalarProperty Name="MaxFileSizeInMB" ColumnName="MaxFileSizeInMB" />
                 <ScalarProperty Name="IsImportable" ColumnName="IsImportable" />
                 <ScalarProperty Name="ReplicateHeaderRow" ColumnName="ReplicateHeaderRow" />
                 <ScalarProperty Name="OldFileTypeId" ColumnName="OldFileTypeId" />
@@ -6858,6 +6863,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
           <EntitySetMapping Name="EmailMapping">
             <EntityTypeMapping TypeName="WaterNutDBModel.EmailMapping">
               <MappingFragment StoreEntitySet="EmailMapping">
+                <ScalarProperty Name="InfoFirst" ColumnName="InfoFirst" />
                 <ScalarProperty Name="ReplacementValue" ColumnName="ReplacementValue" />
                 <ScalarProperty Name="IsSingleEmail" ColumnName="IsSingleEmail" />
                 <ScalarProperty Name="Pattern" ColumnName="Pattern" />

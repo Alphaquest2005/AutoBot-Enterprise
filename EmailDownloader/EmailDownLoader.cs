@@ -177,6 +177,8 @@ namespace EmailDownloader
                         foreach (var a in msg.Attachments.Where(x => x.ContentType.MediaType != "message"))
                         {
                             if (!a.IsAttachment) continue;
+
+                           
                             SaveAttachmentPart(desFolder, a, lst);
                         }
                         SaveBodyPart(desFolder, msg, lst);
@@ -193,7 +195,7 @@ namespace EmailDownloader
                                     "Hey,\r\n\r\n The System is not configured for none of the Attachments in this mail.\r\n" +
                                     "Check the file Name of attachments again or Check Joseph Bartholomew at Joseph@auto-brokerage.com to make the necessary changes.\r\n" +
                                     "Thanks\r\n" +
-                                    "Ez-Asycuda-Toolkit";
+                                    "AutoBot";
                                 SendBackMsg(msg, client, errTxt);
                             }
                         }

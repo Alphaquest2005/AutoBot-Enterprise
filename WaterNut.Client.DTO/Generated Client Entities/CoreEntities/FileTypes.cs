@@ -255,6 +255,19 @@ namespace CoreEntities.Client.DTO
 		}
         private Nullable<bool> _IsImportable;
 
+        [DataMember]
+        public Nullable<int> MaxFileSizeInMB
+		{ 
+		    get { return _MaxFileSizeInMB; }
+			set
+			{
+			    if (value == _MaxFileSizeInMB) return;
+				_MaxFileSizeInMB = value;
+				NotifyPropertyChanged();//m => this.MaxFileSizeInMB
+			}
+		}
+        private Nullable<int> _MaxFileSizeInMB;
+
        
         [DataMember]
         public ApplicationSettings ApplicationSettings

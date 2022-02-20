@@ -9,6 +9,7 @@ using MoreLinq;
 using PicoXLSX;
 using TrackableEntities;
 using WaterNut.DataSpace;
+using FormatException = PicoXLSX.FormatException;
 
 namespace xlsxWriter
 {
@@ -120,8 +121,14 @@ namespace xlsxWriter
                                 File.Copy(pdfFile.FullName, pdfFilePath, true);
                             csvs.Add((pO.PurchaseOrders.PONumber, pdfFilePath));
                         }
-
-                        DoMisMatches(shipmentInvoice, workbook);
+                        //if(shipmentInvoice.InvoiceTotal - Math.Round(shipmentInvoice.ShipmentInvoicePOs.SelectMany(x => x.PurchaseOrders.EntryDataDetails).Sum(x => x.Cost * x.Quantity), 2) > 0)
+                        //if(Math.Round((double)(shipmentInvoice.InvoiceTotal 
+                        //                       - (shipmentInvoice.InvoiceDetails.Sum(x => x.Cost * x.Quantity) 
+                        //                           + shipmentInvoice.TotalInternalFreight ?? 0 
+                        //                           + shipmentInvoice.TotalInsurance ?? 0 
+                        //                           + shipmentInvoice.TotalOtherCost ?? 
+                        //                           - shipmentInvoice.TotalDeduction ??0)), 2) > 0)
+                            DoMisMatches(shipmentInvoice, workbook);
                         workbook.Save();
                     }
                     else
@@ -130,8 +137,13 @@ namespace xlsxWriter
 
 
                         WriteInvToFile(shipmentInvoice, workbook, header, doRider, riderdetails);
-
-                        DoMisMatches(shipmentInvoice, workbook);
+                        //if (Math.Round((double)(shipmentInvoice.InvoiceTotal
+                        //                        - (shipmentInvoice.InvoiceDetails.Sum(x => x.Cost * x.Quantity)
+                        //                            + shipmentInvoice.TotalInternalFreight ?? 0
+                        //                            + shipmentInvoice.TotalInsurance ?? 0
+                        //                            + shipmentInvoice.TotalOtherCost ??
+                        //                            -shipmentInvoice.TotalDeduction ?? 0)), 2) > 0)
+                            DoMisMatches(shipmentInvoice, workbook);
                         workbook.Save();
                         if (pdfFile.FullName != pdfFilePath)
                             File.Copy(pdfFile.FullName, pdfFilePath, true);
@@ -223,7 +235,7 @@ namespace xlsxWriter
             workbook.SetCurrentWorksheet("POTemplate");
             var i = workbook.CurrentWorksheet
                 .GetLastRowNumber(); // == 1 ? 1 : workbook.CurrentWorksheet.GetLastRowNumber() + 1;
-
+            var starti = i;
             foreach (var itm in shipmentInvoice.InvoiceDetails.OrderBy(x => x.FileLineNumber))
             {
                 SetValue(workbook, i, header.First(x => x.Key.Column == "InvoiceNo").Key.Index,
@@ -273,6 +285,9 @@ namespace xlsxWriter
 
                 i++;
             }
+
+            WriteSummary(workbook, header, i-1, starti, "TotalCost");
+            WriteSummary(workbook, header, i-1, starti, "Total");
         }
 
         private static void WritePOToFile(ShipmentInvoicePOs pO, Workbook workbook,
@@ -289,6 +304,7 @@ namespace xlsxWriter
                 i += 1;
             }
 
+            var starti = i;
             foreach (var itm in pO.PurchaseOrders.EntryDataDetails
                 .OrderBy(x =>
                     x.INVItems.FirstOrDefault()?.InvoiceDetails?.FileLineNumber ?? x.FileLineNumber)
@@ -349,6 +365,59 @@ namespace xlsxWriter
 
                 i++;
             }
+
+            /// write out summary
+            WriteSummary(workbook, header, i-1, starti, "TotalCost");
+            WriteSummary(workbook, header, i-1, starti, "Total");
+        }
+
+        private static void WriteSummary(Workbook workbook,
+            Dictionary<(string Column, int Index), FileTypeMappings> header, int i, int starti, string colHeader)
+        {
+            try
+            {
+
+
+                var r = i + 3;
+
+              
+                SetFormula(workbook, r, header.First(x => x.Key.Column == colHeader).Key.Index,
+                    $"=Sum({GetOrAddCell(workbook, header, starti, colHeader).CellAddress}:{GetOrAddCell(workbook, header, i, colHeader).CellAddress})");
+                SetFormula(workbook, r + 1, header.First(x => x.Key.Column == colHeader).Key.Index,
+                    $"=({GetOrAddCell(workbook, header, starti, "TotalInternalFreight").CellAddress} + " +
+                    $"{GetOrAddCell(workbook, header, starti, "TotalInsurance").CellAddress} + " +
+                    $"{GetOrAddCell(workbook, header, starti, "TotalOtherCost").CellAddress} - " +
+                    $"{GetOrAddCell(workbook, header, starti, "TotalDeduction").CellAddress}" +
+                    $")");
+
+                SetFormula(workbook, r + 2, header.First(x => x.Key.Column == colHeader).Key.Index,
+                    $"=({GetOrAddCell(workbook, header, r, colHeader).CellAddress} + " +
+                    $"{GetOrAddCell(workbook, header, r + 1, colHeader).CellAddress}" +
+                    $")");
+
+                SetFormula(workbook, r + 4, header.First(x => x.Key.Column == colHeader).Key.Index,
+                    $"=({GetOrAddCell(workbook, header, starti, "InvoiceTotal").CellAddress} - " +
+                    $"{GetOrAddCell(workbook, header, r + 2, colHeader).CellAddress}" +
+                    $")");
+
+                //if (GetOrAddCell(workbook, header, r + 4, colHeader).Value.ToString() != "0")
+                //    GetOrAddCell(workbook, header, r + 4, colHeader).CellStyle.CurrentFill =
+                //        new Style.Fill("Black", "Red");
+
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+        }
+
+        private static Cell GetOrAddCell(Workbook workbook, Dictionary<(string Column, int Index), FileTypeMappings> header, int row, string ColName)
+        {
+            if (!workbook.CurrentWorksheet.HasCell(header.First(x => x.Key.Column == ColName).Key.Index, row))
+                workbook.CurrentWorksheet.AddCell("", header.First(x => x.Key.Column == ColName).Key.Index, row);
+            
+            return workbook.CurrentWorksheet.GetCell(header.First(x => x.Key.Column == ColName).Key.Index, row);
         }
 
         private static void DoMisMatches(ShipmentInvoice shipmentInvoice, Workbook workbook)
@@ -358,7 +427,7 @@ namespace xlsxWriter
                 .SelectMany(x => x.POMISMatches)
                 //.Where(x => (x.INVQuantity != 0 && x.INVQuantity != null) && (x.POQuantity != 0 && x.POQuantity != null))
                 .OrderBy(x => x.INVTotalCost).ThenBy(x => x.POTotalCost)
-                .DistinctBy(x => x.INVDetailsId)// re intro this because multiple pos to one invoice
+                .DistinctBy(x => new {x.INVDetailsId, x.PODetailsId})// re intro this because multiple pos to one invoice
                 .ToList();
             if (!shipmentInvoicePoItemMisMatchesList.Any()) return;
             var header =
@@ -529,6 +598,7 @@ namespace xlsxWriter
 
 
                             var itm = new T {TrackingState = TrackingState.Added};
+                            var search = "";
                             header.ForEach(x =>
                             {
                                 var prop = itm.GetType().GetProperty(x);
@@ -536,7 +606,11 @@ namespace xlsxWriter
                                     Convert.ChangeType(workbook.CurrentWorksheet
                                         .GetCell(currentColumn + header.IndexOf(x), currentRow)
                                         .Value, prop.PropertyType));
+                                search += $@" and {prop.Name} = '{prop.GetValue(itm)}'";
                             });
+
+                            ctx.Database.ExecuteSqlCommand($"delete from {itm.GetType().Name} where {search.Substring(4)}");
+                            
                             lst.Add(itm);
                         }
 
@@ -576,52 +650,69 @@ namespace xlsxWriter
                 invHeader.ForEach(x => SetValue(workbook, currentline, invHeader.IndexOf(x), x));
 
                 currentline++;
+               
+                Style duplicateStyle = new Style();                                                                           // Create new style
+                duplicateStyle.CurrentFill.SetColor("FFFF00", Style.Fill.FillType.fillColor);
 
                 var i = 0;
                 while (true)
                 {
                     if (i > summaryPkg.Invoices.Count() - 1) break;
+                    foreach (var po in summaryPkg.Invoices[i].ShipmentInvoicePOs)
+                    {
+                        if (summaryPkg.Invoices[i].ShipmentInvoicePOs.Count > 1)
+                            workbook.CurrentWorksheet.SetActiveStyle(duplicateStyle);
+                        else
+                        {
+                            workbook.CurrentWorksheet.ClearActiveStyle();
+                        }
 
-                    SetValue(workbook, currentline, invHeader.IndexOf(nameof(ShipmentInvoice.InvoiceNo)),
-                        summaryPkg.Invoices[i].InvoiceNo);
-                    SetValue(workbook, currentline, invHeader.IndexOf("PONumber"),
-                        summaryPkg.Invoices[i].ShipmentInvoicePOs.FirstOrDefault()?.PurchaseOrders?.PONumber ?? "");
-                    SetValue(workbook, currentline, invHeader.IndexOf(nameof(ShipmentInvoice.InvoiceDate)),
-                        summaryPkg.Invoices[i].InvoiceDate);
-                    SetValue(workbook, currentline, invHeader.IndexOf(nameof(ShipmentInvoice.ImportedLines)),
-                        summaryPkg.Invoices[i].ImportedLines);
-                    SetValue(workbook, currentline, invHeader.IndexOf(nameof(ShipmentInvoice.SubTotal)),
-                        summaryPkg.Invoices[i].SubTotal);
-                    SetValue(workbook, currentline, invHeader.IndexOf(nameof(ShipmentInvoice.InvoiceTotal)),
-                        summaryPkg.Invoices[i].InvoiceTotal);
-                    SetValue(workbook, currentline, invHeader.IndexOf(nameof(ShipmentInvoice.ImportedTotalDifference)),
-                        summaryPkg.Invoices[i].ImportedTotalDifference);
+                        SetValue(workbook, currentline, invHeader.IndexOf(nameof(ShipmentInvoice.InvoiceNo)),
+                            summaryPkg.Invoices[i].InvoiceNo);
+                        SetValue(workbook, currentline, invHeader.IndexOf("PONumber"),
+                            po.PurchaseOrders?.PONumber ?? "");
+                        SetValue(workbook, currentline, invHeader.IndexOf(nameof(ShipmentInvoice.InvoiceDate)),
+                            summaryPkg.Invoices[i].InvoiceDate);
+                        SetValue(workbook, currentline, invHeader.IndexOf(nameof(ShipmentInvoice.ImportedLines)),
+                            summaryPkg.Invoices[i].ImportedLines);
+                        SetValue(workbook, currentline, invHeader.IndexOf(nameof(ShipmentInvoice.SubTotal)),
+                            summaryPkg.Invoices[i].SubTotal);
+                        SetValue(workbook, currentline, invHeader.IndexOf(nameof(ShipmentInvoice.InvoiceTotal)),
+                            summaryPkg.Invoices[i].InvoiceTotal);
+                        SetValue(workbook, currentline,
+                            invHeader.IndexOf(nameof(ShipmentInvoice.ImportedTotalDifference)),
+                            summaryPkg.Invoices[i].ImportedTotalDifference);
 
-                    SetValue(workbook, currentline, invHeader.IndexOf("ImportedVSExpectedTotal"),
-                        summaryPkg.Invoices[i].InvoiceTotal.GetValueOrDefault()
-                        - (summaryPkg.Invoices[i].SubTotal.GetValueOrDefault()
-                           + summaryPkg.Invoices[i].TotalInternalFreight.GetValueOrDefault()
-                           + summaryPkg.Invoices[i].TotalOtherCost.GetValueOrDefault()
-                           + summaryPkg.Invoices[i].TotalInsurance.GetValueOrDefault()
-                           - summaryPkg.Invoices[i].TotalDeduction.GetValueOrDefault()));
-
-
-                    SetValue(workbook, currentline, invHeader.IndexOf("PO/Inv Total Diff"),
-                        summaryPkg.Invoices[i].SubTotal - summaryPkg.Invoices[i].ShipmentInvoicePOs.FirstOrDefault()
-                            ?.PurchaseOrders.EntryDataDetails.Sum(x => x.Cost * x.Quantity));
-
-                    SetValue(workbook, currentline, invHeader.IndexOf("PO/Inv MisMatches"),
-                        summaryPkg.Invoices[i].ShipmentInvoicePOs.FirstOrDefault()?.POMISMatches.Count());
+                        SetValue(workbook, currentline, invHeader.IndexOf("ImportedVSExpectedTotal"),
+                            summaryPkg.Invoices[i].InvoiceTotal.GetValueOrDefault()
+                            - (summaryPkg.Invoices[i].SubTotal.GetValueOrDefault()
+                               + summaryPkg.Invoices[i].TotalInternalFreight.GetValueOrDefault()
+                               + summaryPkg.Invoices[i].TotalOtherCost.GetValueOrDefault()
+                               + summaryPkg.Invoices[i].TotalInsurance.GetValueOrDefault()
+                               - summaryPkg.Invoices[i].TotalDeduction.GetValueOrDefault()));
 
 
-                    SetValue(workbook, currentline, invHeader.IndexOf(nameof(ShipmentInvoice.SupplierCode)),
-                        summaryPkg.Invoices[i].SupplierCode);
-                    SetValue(workbook, currentline, invHeader.IndexOf(nameof(ShipmentInvoice.SourceFile)),
-                        new FileInfo(summaryPkg.Invoices[i].SourceFile).Name);
+                        var subTotal = Math.Round(summaryPkg.Invoices[i].SubTotal.GetValueOrDefault(), 2) - Math.Round(po.PurchaseOrders.EntryDataDetails.Sum(x => x.Cost * x.Quantity), 2);
+                        SetValue(workbook, currentline, invHeader.IndexOf("PO/Inv Total Diff"),
+                            subTotal);
 
+                        SetValue(workbook, currentline, invHeader.IndexOf("PO/Inv MisMatches"),
+                            po?.POMISMatches.Count());
+
+
+                        SetValue(workbook, currentline, invHeader.IndexOf(nameof(ShipmentInvoice.SupplierCode)),
+                            summaryPkg.Invoices[i].SupplierCode);
+                        SetValue(workbook, currentline, invHeader.IndexOf(nameof(ShipmentInvoice.SourceFile)),
+                            new FileInfo(summaryPkg.Invoices[i].SourceFile).Name);
+
+                        
+
+                        currentline++;
+
+                    }
 
                     i++;
-                    currentline++;
+                    
                 }
             }
             catch (Exception e)
@@ -774,13 +865,16 @@ namespace xlsxWriter
 
             SetValue(workbook, invoiceRow,
                 header.First(x => x.Key.Column == nameof(shipmentInvoice.TotalInternalFreight)).Key.Index,
-                shipmentInvoice.TotalInternalFreight);
+                shipmentInvoice.TotalInternalFreight ??0);
             SetValue(workbook, invoiceRow,
                 header.First(x => x.Key.Column == nameof(shipmentInvoice.TotalDeduction)).Key.Index,
-                shipmentInvoice.TotalDeduction);
+                shipmentInvoice.TotalDeduction ??0);
             SetValue(workbook, invoiceRow,
                 header.First(x => x.Key.Column == nameof(shipmentInvoice.TotalOtherCost)).Key.Index,
-                shipmentInvoice.TotalOtherCost);
+                shipmentInvoice.TotalOtherCost ?? 0);
+            SetValue(workbook, invoiceRow,
+                header.First(x => x.Key.Column == nameof(shipmentInvoice.TotalInsurance)).Key.Index,
+                shipmentInvoice.TotalInsurance ?? 0);
         }
 
 
@@ -833,16 +927,26 @@ namespace xlsxWriter
                 }
 
                 if (!matches.Any()) return;
-                using (var ctx = new EntryDataDSContext())
+                using (var ctx = new EntryDataDSContext(){StartTracking = true})
                 {
                     foreach (var mat in matches)
                     {
                         if (ctx.ShipmentInvoicePOManualMatches.FirstOrDefault(x =>
                             x.InvoiceNo == mat.InvoiceNo && x.PONumber == mat.PONumber) != null) continue;
-                        ctx.ShipmentInvoicePOManualMatches.Add(mat);
+
+
                         var delitms = ctx.ShipmentInvoicePOs.Where(x => x.PurchaseOrders.EntryDataId == mat.PONumber)
                             .ToList();
+
                         ctx.ShipmentInvoicePOs.RemoveRange(delitms);
+
+                        var dellst = ctx.ShipmentInvoicePOManualMatches.Where(x => x.InvoiceNo == mat.InvoiceNo || x.PONumber == mat.PONumber)
+                            .ToList();
+                        ctx.ShipmentInvoicePOManualMatches.RemoveRange(dellst);
+
+                        ctx.SaveChanges();
+
+                        ctx.ShipmentInvoicePOManualMatches.Add(mat);
                     }
 
                     ctx.SaveChanges();
