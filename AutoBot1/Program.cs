@@ -140,7 +140,7 @@ namespace AutoBot
                                                     x.LastWriteTime >= beforeImport).ToArray();
 
                                     fileType.EmailId = msg.Key.Item2.EmailId;//msg.Key.Item3;
-
+                                    fileType.FilePath = desFolder;
                                     if (csvFiles.Length == 0)
                                     {
                                        // if (emailFileType.IsRequired == true) break;
@@ -196,7 +196,7 @@ namespace AutoBot
                                     if (!ReadOnlyMode)
                                     {
                                         Utils.ExecuteDataSpecificFileActions(fileType, csvFiles, appSetting);
-
+                                        if (fileType.ProcessNextStep == "Kill") return;
                                         if (msg.Key.Item2.EmailMapping.IsSingleEmail == true)
                                         {
                                             Utils.ExecuteNonSpecificFileActions(fileType, csvFiles, appSetting);
@@ -227,9 +227,11 @@ namespace AutoBot
 
                                 foreach (var docSetId in pfg)
                                 {
+                                    
                                     var pf = docSetId.DistinctBy(x => x.Item1.Id).ToList();
                                     foreach (var t in pf)
                                     {
+                                        if(t.Item1.ProcessNextStep == "Kill") return;
                                         t.Item1.AsycudaDocumentSetId = docSetId.Key;
                                         Utils.ExecuteNonSpecificFileActions(t.Item1, t.Item2, appSetting);
                                     }

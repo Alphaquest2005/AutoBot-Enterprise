@@ -139,12 +139,7 @@ namespace WaterNut.DataSpace
              Invoice tmp, int fileTypeId)
         {
             
-            if (tmp.OcrInvoices.InvoiceIdentificatonRegEx.Any() && tmp.OcrInvoices.InvoiceIdentificatonRegEx.Any(x =>
-                Regex.IsMatch(pdftxt.ToString(),
-                    x.OCR_RegularExpressions.RegEx,
-                    RegexOptions.IgnoreCase | (x.OCR_RegularExpressions.MultiLine == true
-                        ? RegexOptions.Multiline
-                        : RegexOptions.Singleline) | RegexOptions.ExplicitCapture) == false)) return false;
+            if (!IsInvoiceDocument(tmp.OcrInvoices, pdftxt.ToString())) return false;
 
             var formattedPdfTxt = tmp.Format(pdftxt.ToString());
             var csvLines = tmp.Read(formattedPdfTxt.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None).ToList());
@@ -179,6 +174,16 @@ namespace WaterNut.DataSpace
                 file, csvLines).Wait();
            
             return true;
+        }
+
+        public static bool IsInvoiceDocument(Invoices invoice, string fileText)
+        {
+            return invoice.InvoiceIdentificatonRegEx.Any() && invoice.InvoiceIdentificatonRegEx.Any(x =>
+                Regex.IsMatch(fileText,
+                    x.OCR_RegularExpressions.RegEx,
+                    RegexOptions.IgnoreCase | (x.OCR_RegularExpressions.MultiLine == true
+                        ? RegexOptions.Multiline
+                        : RegexOptions.Singleline) | RegexOptions.ExplicitCapture));
         }
 
         public static StringBuilder GetPdftxt(string file)
@@ -424,8 +429,8 @@ namespace WaterNut.DataSpace
         }
 
         public const string CommandsTxt = "Commands:\r\n" +
-                                          "UpdateRegex: RegId: 123, Regex: 'xyz', IsMultiline: True\r\n" +
-                                          "AddFieldRegEx: RegId: 123,  Field: Name, Regex: '', ReplaceRegex: ''\r\n" +
+                                          "UpdateRegex: RegId: 000, Regex: 'xyz', IsMultiline: True\r\n" +
+                                          "AddFieldRegEx: RegId: 000,  Field: Name, Regex: '', ReplaceRegex: ''\r\n" +
                                           "RequestInvoice: Name:'xyz'\r\n";
 
 
@@ -448,7 +453,7 @@ namespace WaterNut.DataSpace
                         if (match.Success)
                         {
                             var line = new Line(regLine);
-                            line.Read(match.Value, 1);
+                            line.Read(match.Value, 1, "SeeWhatSticks");
                             if (line.Values.Any(x => x.Value.Values.Any())) goodLines.Add(line);
                         }
                     }
@@ -579,7 +584,9 @@ namespace WaterNut.DataSpace
 
 
 
-                        ditm["FileLineNumber"] = value.Key + 1;
+                        ditm["FileLineNumber"] = value.Key.lineNumber + 1;
+                        ditm["Instance"] = i+1;
+                        ditm["Section"] = value.Key.section;
                         foreach (var field in value.Value)
                         {
                             if (ditm.ContainsKey(field.Key.Field) && (field.Key.AppendValues == true ||line.OCR_Lines.Fields.Select(z => z.Field)
@@ -652,17 +659,17 @@ namespace WaterNut.DataSpace
             }
         }
 
-        private Dictionary<int, Dictionary<Fields, string>> DistinctValues(Dictionary<int, Dictionary<Fields, string>> lineValues)
+        private Dictionary<(int lineNumber, string section), Dictionary<Fields, string>> DistinctValues(Dictionary<(int lineNumber, string section), Dictionary<Fields, string>> lineValues)
         {
-            var res = new Dictionary<int, Dictionary<Fields, string>>();
+            var res = new Dictionary<(int lineNumber, string section), Dictionary<Fields, string>>();
             foreach (var val in lineValues.Where(val => !res.Values.Any(z => z.Values.Any(q => val.Value.ContainsValue(q)))))
             {
-                res.Add(val.Key, val.Value);
+                res.Add((val.Key.lineNumber, val.Key.section), val.Value);
             }
             return res;
         }
 
-        private void ImportByDataType(KeyValuePair<Fields, string> field, IDictionary<string, object> ditm, KeyValuePair<int, Dictionary<Fields, string>> value)
+        private void ImportByDataType(KeyValuePair<Fields, string> field, IDictionary<string, object> ditm, KeyValuePair<(int lineNumber, string section), Dictionary<Fields, string>> value)
         {
             switch (field.Key.DataType)
             {
@@ -695,7 +702,7 @@ namespace WaterNut.DataSpace
             }
         }
 
-        private dynamic GetValue(KeyValuePair<int, Dictionary<Fields, string>> z, string field)
+        private dynamic GetValue(KeyValuePair<(int lineNumber, string section), Dictionary<Fields, string>> z, string field)
         {
             try
             {
@@ -710,7 +717,7 @@ namespace WaterNut.DataSpace
             }
 
         }
-        private dynamic GetValueByKey(KeyValuePair<int, Dictionary<Fields, string>> z, string key)
+        private dynamic GetValueByKey(KeyValuePair<(int lineNumber, string section), Dictionary<Fields, string>> z, string key)
         {
             try
             {
@@ -862,10 +869,23 @@ namespace WaterNut.DataSpace
 
         private static int lastLineRead = 0;
 
+        private static Dictionary<string, string> Sections = new Dictionary<string, string>()
+        {
+            { "Single", "---Single Column---" },
+            { "Sparse", "---SparseText---" },
+            { "Ripped", "---Ripped Text---" }
+        };
+
+        public static string Section { get; set; }
         public void Read(List<InvoiceLine> newlines)
         {
             try
             {
+
+                Sections.ForEach(s =>
+                {
+                    if(newlines.Any(x => x.Line.Contains(s.Value))) Section = s.Key;
+                });
 
                 if ((_endlines.Count == EndCount && EndCount > 0)
                     || (EndCount == 0 && OCR_Part.Start.Any(x => x.RegularExpressions?.MultiLine == true)
@@ -936,8 +956,8 @@ namespace WaterNut.DataSpace
                     Lines.ForEach(x =>
                     {
                         if (x.OCR_Lines.RegularExpressions.MultiLine == true)
-                            x.Read(_bodyTxt.ToString(), _bodylines.First().LineNumber);
-                        else x.Read(_bodylines.Last().Line, _bodylines.Last().LineNumber);
+                            x.Read(_bodyTxt.ToString(), _bodylines.First().LineNumber, Section);
+                        else x.Read(_bodylines.Last().Line, _bodylines.Last().LineNumber, Section);
                     });
 
                 }
@@ -1035,11 +1055,13 @@ namespace WaterNut.DataSpace
             OCR_Lines = lines;
         }
 
-        public bool Read(string line, int lineNumber)
+        private int Instance { get; set; } = 0;
+
+        public bool Read(string line, int lineNumber, string section)
         {
             try
             {
-                
+                Instance += 1;
                 var match = Regex.Match(line, OCR_Lines.RegularExpressions.RegEx,
                     (OCR_Lines.RegularExpressions.MultiLine == true
                         ? RegexOptions.Multiline
@@ -1069,8 +1091,8 @@ namespace WaterNut.DataSpace
                     }
                     
                 }
-
-                Values[lineNumber] = values;
+               
+                Values[(lineNumber, section)] = values;
                 return true;
             }
             catch (Exception e)
@@ -1104,7 +1126,7 @@ namespace WaterNut.DataSpace
             }
         }
 
-        public Dictionary<int, Dictionary<Fields, string>> Values { get; } = new Dictionary<int, Dictionary<Fields, string>>();
+        public Dictionary<(int lineNumber, string section), Dictionary<Fields, string>> Values { get; } = new Dictionary<(int lineNumber, string section), Dictionary<Fields, string>>();
         //public bool MultiLine => OCR_Lines.MultiLine;
 
         public List<Dictionary<string, List<KeyValuePair<Fields, string>>>> FailedFields => this.Values

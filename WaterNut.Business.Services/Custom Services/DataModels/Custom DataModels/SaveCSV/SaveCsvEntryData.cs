@@ -446,30 +446,43 @@ namespace WaterNut.DataSpace
 
                 if (fileType.Type == "Shipment Invoice")
                 {
-                    if (eslst.FirstOrDefault() is IDictionary<string, object> itm  && itm.Keys.Contains("EntryDataId"))
+                   
+                    if (eslst.FirstOrDefault() is IDictionary<string, object> itm && itm.Keys.Contains("EntryDataId"))
                     {
-                        var entrydataid = itm["EntryDataId"];
-                        eslst = ConvertCSVToShipmentInvoice(eslst);
-                        droppedFilePath = new CoreEntitiesContext().Attachments.Where(x =>
-                            x.FilePath.Contains(entrydataid + ".pdf")).OrderBy(x => x.Id).FirstOrDefault()?.FilePath;
-                        if (eslst == null) return false;
-                    }
-                    //if (!eslst.Any(
-                    //        x => ((List<IDictionary<string, object>>)x).Any(z => z.ContainsKey("InvoiceDetails"))))
-                    //{
-                    //    // convert csv to normal shipment invoice structure
                        
-                        await ImportInventory(eslst.SelectMany(x => ((List<IDictionary<string, object>>)x).Select(z => z["InvoiceDetails"])).SelectMany(x => ((List<IDictionary<string, object>>)x).Select(z => (dynamic)z)).ToList(), docSet.First().ApplicationSettingsId, fileType).ConfigureAwait(false);
+                        var entrydataid = itm["EntryDataId"];
+                        var xeslst = ConvertCSVToShipmentInvoice(eslst);
+                        var xdroppedFilePath = new CoreEntitiesContext().Attachments.Where(x =>
+                            x.FilePath.Contains(entrydataid + ".pdf")).OrderBy(x => x.Id).FirstOrDefault()?.FilePath;
+                        if (xeslst == null) return false;
+                        await ImportInventory(
+                            xeslst.SelectMany(x =>
+                                ((List<IDictionary<string, object>>)x).Select(z => z["InvoiceDetails"])).SelectMany(x =>
+                                ((List<IDictionary<string, object>>)x).Select(z => (dynamic)z)).ToList(),
+                            docSet.First().ApplicationSettingsId, fileType).ConfigureAwait(false);
 
-                    //}
+                        ProcessShipmentInvoice(fileType, docSet, overWriteExisting, emailId,
+                            xdroppedFilePath, xeslst);
 
-                        
-                    ProcessShipmentInvoice(fileType, docSet, overWriteExisting, emailId, 
-                        droppedFilePath, eslst);
+                    }
+                    else
+                    {
+                        await ImportInventory(
+                            eslst.SelectMany(x =>
+                                ((List<IDictionary<string, object>>)x).Select(z => z["InvoiceDetails"])).SelectMany(x =>
+                                ((List<IDictionary<string, object>>)x).Select(z => (dynamic)z)).ToList(),
+                            docSet.First().ApplicationSettingsId, fileType).ConfigureAwait(false);
+
+
+
+                        ProcessShipmentInvoice(fileType, docSet, overWriteExisting, emailId,
+                            droppedFilePath, eslst);
+
                         return true;
+                    }
 
-                  
-                    
+
+
                 }
 
                 if (fileType.Type == "ExpiredEntries")
@@ -664,8 +677,9 @@ namespace WaterNut.DataSpace
                                                     Discount = z.ContainsKey("Discount") ? Convert.ToDouble(z["Discount"].ToString()) : 0,
                                                     Volume = z.ContainsKey("Gallons") ? new InvoiceDetailsVolume() {Quantity = Convert.ToDouble(z["Gallons"].ToString()), Units = "Gallons", TrackingState = TrackingState.Added, } : null,
                                                     SalesFactor = (z.ContainsKey("SalesFactor") && z.ContainsKey("Units") && z["Units"].ToString() != "EA") || (z.ContainsKey("SalesFactor") && !z.ContainsKey("Units")) ? Convert.ToInt32(z["SalesFactor"].ToString()) /* * (z.ContainsKey("Multiplier")  ? Convert.ToInt32(z["Multiplier"].ToString()) : 1) */ : 1,
-                                                    LineNumber = ((List<IDictionary<string, object>>)x["InvoiceDetails"]).IndexOf(z) + 1,
+                                                    LineNumber = z.ContainsKey("Instance") ? Convert.ToInt32(z["Instance"].ToString()) :((List<IDictionary<string, object>>)x["InvoiceDetails"]).IndexOf(z) + 1,
                                                     FileLineNumber = Convert.ToInt32(z["FileLineNumber"].ToString()),
+                                                    Section = z.ContainsKey("Section") ? z["Section"].ToString( ): null,
                                                     InventoryItemId = z.ContainsKey("InventoryItemId") ? (int)z["InventoryItemId"]: (int?)null,
                                                     TrackingState = TrackingState.Added,
 
@@ -743,12 +757,25 @@ namespace WaterNut.DataSpace
 
             //if (invoice.SubTotal > 0
             //    && Math.Abs((double) (invoice.SubTotal - details.Sum(x => x.Cost * x.Quantity))) > 0.01)
-                details = details.DistinctBy(x => new { ItemNumber = x.ItemNumber.ToUpper(), x.Quantity, x.TotalCost})
-                    .ToList();
+            var secList = details.GroupBy(x => x.Section).ToList();
+            var lst = new List<InvoiceDetails>();
+            foreach (var section in secList)
+            {
+                foreach (var detail in section)
+                {
+                    if (lst.Any(x =>
+                            x.TotalCost == detail.TotalCost && x.ItemNumber == detail.ItemNumber &&
+                            x.Quantity == detail.Quantity && x.Section != detail.Section)) continue;
+                    lst.Add(detail);
+                }
+            }
+
+                //details = details.DistinctBy(x => new { ItemNumber = x.ItemNumber.ToUpper(), x.Quantity, x.TotalCost})
+                //    .ToList();
 
 
-            var invoiceInvoiceDetails = details ;
-            return invoiceInvoiceDetails;
+          //  var invoiceInvoiceDetails = lst ;
+            return lst;
         }
 
         private void ProcessFreight(FileTypes fileType, List<AsycudaDocumentSet> docSet, bool overWriteExisting, string emailId, string droppedFilePath, List<object> eslst)
@@ -886,15 +913,10 @@ namespace WaterNut.DataSpace
                         manifest.ShipmentBLDetails = blDetails;
 
                         var detailsQty = manifest.ShipmentBLDetails.Sum(x => x.Quantity);
-                        if (manifest.PackagesNo != detailsQty)
-                        {
-                            throw new ApplicationException(
-                                $"BL Details Quantity don't add up to BL Total Packages! - BL{manifest.PackagesNo} vs Details{detailsQty}");
-                        }
 
 
-                        var filename = BaseDataModel.SetFilename(droppedFilePath,manifest.BLNumber, "-BL.pdf");
-                        if(!File.Exists(filename)) File.Copy(droppedFilePath, filename);
+                        var filename = BaseDataModel.SetFilename(droppedFilePath, manifest.BLNumber, "-BL.pdf");
+                        if (!File.Exists(filename)) File.Copy(droppedFilePath, filename);
                         manifest.SourceFile = filename;
                         var existingManifest =
                             ctx.ShipmentBL.FirstOrDefault(
@@ -903,9 +925,16 @@ namespace WaterNut.DataSpace
                             ctx.ShipmentBL.Remove(existingManifest);
                         ctx.ShipmentBL.Add(manifest);
 
+                        ctx.SaveChanges();
+                        if (manifest.PackagesNo != detailsQty)
+                        {
+                            throw new ApplicationException(
+                                $"BL Details Quantity don't add up to BL Total Packages! - BL{manifest.PackagesNo} vs Details{detailsQty}");
+                        }
+
                     }
 
-                    ctx.SaveChanges();
+
                 }
             }
             catch (Exception e)
@@ -1304,8 +1333,8 @@ namespace WaterNut.DataSpace
                                     olded = await CreateInvoice(EDinv).ConfigureAwait(false);
 
                                     break;
-                            
-                                case "PO":
+
+                            case "PO": case "Shipment Invoice":
                                     if (BaseDataModel.Instance.CurrentApplicationSettings.AssessIM7 == true &&
                                         Math.Abs((double) item.f.Sum(x => x.InvoiceTotal)) < .001)
                                         throw new ApplicationException(

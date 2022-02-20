@@ -91,3 +91,14 @@ namespace EntryDataDS.Business.Entities
     }
 
 }
+
+namespace EntryDataDS.Business.Entities
+{
+    public partial class InvoiceDetails
+    {
+        [IgnoreDataMember]
+        [NotMapped]
+        public string Section { get; set; }
+        
+    }
+}

@@ -310,12 +310,18 @@ namespace AutoBot
                 using (var ctx = new OCRContext())
                 {
                     var iname = paramInfo["Name"];
-                    var invoices = ctx.Invoices.Where(x => x.Name.Contains(iname)).ToList();
+                    var invoices = ctx.Invoices.Include("InvoiceIdentificatonRegEx.OCR_RegularExpressions").Where(x => x.Name.Contains(iname)).ToList();
+
+                    var pdfs = new DirectoryInfo(fileTypes.FilePath).GetFiles("*.pdf");
+                    var files = new Dictionary<string, string>();
+                    foreach (var pdf in pdfs)
+                    {
+                        var str = InvoiceReader.GetPdftxt(pdf.FullName);
+                        if(str.Length > 0) files.Add(pdf.FullName, str.ToString());
+                    }
                     foreach (var invoice in invoices)
                     {
-                        
-                    
-                    lines.AddRange(ctx.Parts.Where(x => x.Invoices.Name == invoice.Name).SelectMany(z => z.Start)
+                        lines.AddRange(ctx.Parts.Where(x => x.Invoices.Name == invoice.Name).SelectMany(z => z.Start)
                         .Select(q => q.RegularExpressions).ToList());
 
                     lines.AddRange(ctx.Parts.Where(x => x.Invoices.Name == invoice.Name).SelectMany(z => z.ChildParts)
@@ -335,9 +341,17 @@ namespace AutoBot
                                $"\r\n" +
                                $"\r\n" +
                                InvoiceReader.CommandsTxt;
-                    
+
+                    var res = files.Where(x => InvoiceReader.IsInvoiceDocument(invoice, x.Value)).ToList();
+                        
+                        res.ForEach(x => File.WriteAllText(x.Key + ".txt", x.Value));
+                        var res1 = res.Select(x => x.Key + ".txt").ToList().Union(res.Select(x => x.Key).ToList()).ToArray();
+                       
+
                     EmailDownloader.EmailDownloader.SendEmail(Client,null, "Invoice Template Not found!",
-                         new[] { "Joseph@auto-brokerage.com" }, body, Array.Empty<string>());
+                         new[] { "Joseph@auto-brokerage.com" }, body, res1);
+
+                    fileTypes.ProcessNextStep = "Kill";
 
                     }
                     
@@ -657,6 +671,7 @@ namespace AutoBot
                 }
 
 
+
                 var shipments = new Shipment(){ShipmentName = "Next Shipment",EmailId = emailId, TrackingState = TrackingState.Added}
                                     .LoadEmailPOs()
                                     .LoadEmailInvoices()
@@ -672,6 +687,7 @@ namespace AutoBot
                                     .LoadDBRiders()
                                     .LoadDBFreight()
                                     .LoadDBInvoices()
+                                    .AutoCorrect()
                                     .ProcessShipment()
                                     //.SaveShipment()
                                     ;
@@ -7195,126 +7211,126 @@ namespace AutoBot
                         if (addrow) poTemplate.Rows.Add(row);
                     }
 
-                    using (var ctx = new EntryDataDSContext())
-                    {
-                        InvoiceDetails invRow;
-                        EntryDataDetails poRow;
+                    //using (var ctx = new EntryDataDSContext())
+                    //{
+                    //    InvoiceDetails invRow;
+                    //    EntryDataDetails poRow;
 
-                        var invItm = ctx.InventoryItems.Include(x => x.AliasItems).FirstOrDefault(x =>
-                            x.ItemNumber == invItemCode
-                            && x.ApplicationSettingsId ==
-                            BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId);
-                        if (invItm == null)
-                        {
-                            invItm = new InventoryItems()
-                            {
-                                ApplicationSettingsId =
-                                    BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId,
-                                Description = misMatch[misHeaderRow.IndexOf("INVDescription")].ToString(),
-                                ItemNumber = invItemCode,
-                                TrackingState = TrackingState.Added
-                            };
-                            ctx.InventoryItems.Add(invItm);
-                        }
+                    //    var invItm = ctx.InventoryItems.Include(x => x.AliasItems).FirstOrDefault(x =>
+                    //        x.ItemNumber == invItemCode
+                    //        && x.ApplicationSettingsId ==
+                    //        BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId);
+                    //    if (invItm == null)
+                    //    {
+                    //        invItm = new InventoryItems()
+                    //        {
+                    //            ApplicationSettingsId =
+                    //                BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId,
+                    //            Description = misMatch[misHeaderRow.IndexOf("INVDescription")].ToString(),
+                    //            ItemNumber = invItemCode,
+                    //            TrackingState = TrackingState.Added
+                    //        };
+                    //        ctx.InventoryItems.Add(invItm);
+                    //    }
 
-                        var poItm = ctx.InventoryItems.Include(x => x.AliasItems).FirstOrDefault(x =>
-                            x.ItemNumber == poItemCode && x.ApplicationSettingsId ==
-                            BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId);
-                        if (poItm == null)
-                        {
-                            poItm = new InventoryItems()
-                            {
-                                ApplicationSettingsId =
-                                    BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId,
-                                Description = misMatch[misHeaderRow.IndexOf("PODescription")].ToString(),
-                                ItemNumber = poItemCode,
-                                TrackingState = TrackingState.Added
-                            };
-                            ctx.InventoryItems.Add(poItm);
-                        }
+                    //    var poItm = ctx.InventoryItems.Include(x => x.AliasItems).FirstOrDefault(x =>
+                    //        x.ItemNumber == poItemCode && x.ApplicationSettingsId ==
+                    //        BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId);
+                    //    if (poItm == null)
+                    //    {
+                    //        poItm = new InventoryItems()
+                    //        {
+                    //            ApplicationSettingsId =
+                    //                BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId,
+                    //            Description = misMatch[misHeaderRow.IndexOf("PODescription")].ToString(),
+                    //            ItemNumber = poItemCode,
+                    //            TrackingState = TrackingState.Added
+                    //        };
+                    //        ctx.InventoryItems.Add(poItm);
+                    //    }
 
-                        if (!poItm.AliasItems.Any(x => x.AliasItemId == invItm.Id) &&
-                            !invItm.AliasItems.Any(x => x.InventoryItemId == poItm.Id))
-                        {
-                            ctx.InventoryItemAlias.Add(new InventoryItemAlias(true)
-                            {
-                                InventoryItems = poItm,
-                                AliasItem = invItm,
-                                AliasName = invItm.ItemNumber,
-                                TrackingState = TrackingState.Added
-                            });
-                        }
+                    //    if (!poItm.AliasItems.Any(x => x.AliasItemId == invItm.Id) &&
+                    //        !invItm.AliasItems.Any(x => x.InventoryItemId == poItm.Id))
+                    //    {
+                    //        ctx.InventoryItemAlias.Add(new InventoryItemAlias(true)
+                    //        {
+                    //            InventoryItems = poItm,
+                    //            AliasItem = invItm,
+                    //            AliasName = invItm.ItemNumber,
+                    //            TrackingState = TrackingState.Added
+                    //        });
+                    //    }
 
-                        //var itmAlias = ctx.InventoryItemAlias
-                        ctx.SaveChanges();
+                    //    //var itmAlias = ctx.InventoryItemAlias
+                    //    ctx.SaveChanges();
 
 
-                        var INVDetailsId = misMatch[misHeaderRow.IndexOf("INVDetailsId")].ToString();
-                        if (string.IsNullOrEmpty(INVDetailsId))
-                        {
+                    //    var INVDetailsId = misMatch[misHeaderRow.IndexOf("INVDetailsId")].ToString();
+                    //    if (string.IsNullOrEmpty(INVDetailsId))
+                    //    {
 
-                            invRow = new InvoiceDetails() {TrackingState = TrackingState.Added};
-                            var inv = ctx.ShipmentInvoice.FirstOrDefault(x => x.InvoiceNo == InvoiceNo);
-                            if (inv == null) continue;
-                            invRow.ShipmentInvoiceId = inv.Id;
-                            ctx.ShipmentInvoiceDetails.Add(invRow);
+                    //        invRow = new InvoiceDetails() {TrackingState = TrackingState.Added};
+                    //        var inv = ctx.ShipmentInvoice.FirstOrDefault(x => x.InvoiceNo == InvoiceNo);
+                    //        if (inv == null) continue;
+                    //        invRow.ShipmentInvoiceId = inv.Id;
+                    //        ctx.ShipmentInvoiceDetails.Add(invRow);
 
-                        }
-                        else
-                        {
+                    //    }
+                    //    else
+                    //    {
 
-                            invRow = ctx.ShipmentInvoiceDetails.FirstOrDefault(x =>
-                                x.Id.ToString() == INVDetailsId);
-                            if (invRow == null) continue;
+                    //        invRow = ctx.ShipmentInvoiceDetails.FirstOrDefault(x =>
+                    //            x.Id.ToString() == INVDetailsId);
+                    //        if (invRow == null) continue;
 
-                        }
+                    //    }
 
-                        invRow.ItemDescription = misMatch[misHeaderRow.IndexOf("INVDescription")].ToString();
-                        invRow.ItemNumber = misMatch[misHeaderRow.IndexOf("INVItemCode")].ToString();
-                        invRow.Cost = (double) misMatch[misHeaderRow.IndexOf("INVCost")];
-                        invRow.TotalCost = (double) misMatch[misHeaderRow.IndexOf("INVTotalCost")];
-                        if (misHeaderRow.IndexOf("INVSalesFactor") > -1 &&
-                            !string.IsNullOrEmpty(misMatch[misHeaderRow.IndexOf("INVSalesFactor")].ToString()))
-                            invRow.SalesFactor = Convert.ToDouble(misMatch[misHeaderRow.IndexOf("INVSalesFactor")].ToString());
-                        else
-                        {
-                            invRow.SalesFactor = 1;
-                        }
+                    //    invRow.ItemDescription = misMatch[misHeaderRow.IndexOf("INVDescription")].ToString();
+                    //    invRow.ItemNumber = misMatch[misHeaderRow.IndexOf("INVItemCode")].ToString();
+                    //    invRow.Cost = (double) misMatch[misHeaderRow.IndexOf("INVCost")];
+                    //    invRow.TotalCost = (double) misMatch[misHeaderRow.IndexOf("INVTotalCost")];
+                    //    if (misHeaderRow.IndexOf("INVSalesFactor") > -1 &&
+                    //        !string.IsNullOrEmpty(misMatch[misHeaderRow.IndexOf("INVSalesFactor")].ToString()))
+                    //        invRow.SalesFactor = Convert.ToDouble(misMatch[misHeaderRow.IndexOf("INVSalesFactor")].ToString());
+                    //    else
+                    //    {
+                    //        invRow.SalesFactor = 1;
+                    //    }
 
-                        invRow.Quantity = (double) misMatch[misHeaderRow.IndexOf("INVQuantity")];
-                        invRow.InventoryItemId = invItm.Id;
-                        ctx.SaveChanges();
+                    //    invRow.Quantity = (double) misMatch[misHeaderRow.IndexOf("INVQuantity")];
+                    //    invRow.InventoryItemId = invItm.Id;
+                    //    ctx.SaveChanges();
 
-                        var PODetailsId = misMatch[misHeaderRow.IndexOf("PODetailsId")].ToString();
-                        if (string.IsNullOrEmpty(PODetailsId))
-                        {
+                    //    var PODetailsId = misMatch[misHeaderRow.IndexOf("PODetailsId")].ToString();
+                    //    if (string.IsNullOrEmpty(PODetailsId))
+                    //    {
 
-                            poRow = new EntryDataDetails() {TrackingState = TrackingState.Added};
-                            var pO = ctx.EntryData.FirstOrDefault(x =>
-                                x.EntryDataId == poNumber);
-                            if (pO == null) continue;
-                            poRow.EntryData_Id = pO.EntryData_Id;
-                            ctx.EntryDataDetails.Add(poRow);
+                    //        poRow = new EntryDataDetails() {TrackingState = TrackingState.Added};
+                    //        var pO = ctx.EntryData.FirstOrDefault(x =>
+                    //            x.EntryDataId == poNumber);
+                    //        if (pO == null) continue;
+                    //        poRow.EntryData_Id = pO.EntryData_Id;
+                    //        ctx.EntryDataDetails.Add(poRow);
 
-                        }
-                        else
-                        {
+                    //    }
+                    //    else
+                    //    {
 
-                            poRow = ctx.EntryDataDetails.FirstOrDefault(x =>
-                                x.EntryDataDetailsId.ToString() == PODetailsId);
-                            if (poRow == null) continue;
+                    //        poRow = ctx.EntryDataDetails.FirstOrDefault(x =>
+                    //            x.EntryDataDetailsId.ToString() == PODetailsId);
+                    //        if (poRow == null) continue;
 
-                        }
+                    //    }
 
-                        poRow.ItemDescription = misMatch[misHeaderRow.IndexOf("PODescription")].ToString();
-                        poRow.ItemNumber = misMatch[misHeaderRow.IndexOf("POItemCode")].ToString();
-                        poRow.Cost = (double) misMatch[misHeaderRow.IndexOf("POCost")];
-                        poRow.TotalCost = (double) misMatch[misHeaderRow.IndexOf("POTotalCost")];
-                        //poRow.SalesFactor = (int)misMatch["INVSalesFactor"];
-                        poRow.Quantity = (double) misMatch[misHeaderRow.IndexOf("POQuantity")];
-                        poRow.InventoryItemId = poItm.Id;
-                        ctx.SaveChanges();
-                    }
+                    //    poRow.ItemDescription = misMatch[misHeaderRow.IndexOf("PODescription")].ToString();
+                    //    poRow.ItemNumber = misMatch[misHeaderRow.IndexOf("POItemCode")].ToString();
+                    //    poRow.Cost = (double) misMatch[misHeaderRow.IndexOf("POCost")];
+                    //    poRow.TotalCost = (double) misMatch[misHeaderRow.IndexOf("POTotalCost")];
+                    //    //poRow.SalesFactor = (int)misMatch["INVSalesFactor"];
+                    //    poRow.Quantity = (double) misMatch[misHeaderRow.IndexOf("POQuantity")];
+                    //    poRow.InventoryItemId = poItm.Id;
+                    //    ctx.SaveChanges();
+                    //}
 
                 }
 

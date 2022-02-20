@@ -31,5 +31,9 @@ namespace CoreEntities.Business.Entities
         [IgnoreDataMember]
         [NotMapped]
         public string ProcessNextStep { get; set; }
+
+        [IgnoreDataMember]
+        [NotMapped]
+        public string FilePath { get; set; }
     }
 }

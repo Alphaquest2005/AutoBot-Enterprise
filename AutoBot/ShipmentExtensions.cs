@@ -638,6 +638,12 @@ namespace AutoBotUtilities
             }
         }
 
+        public static Shipment AutoCorrect(this Shipment masterShipment)
+        {
+
+            return masterShipment;
+        }
+
 
         public static List<Shipment> ProcessShipment(this Shipment masterShipment)
         {
@@ -1167,7 +1173,9 @@ namespace AutoBotUtilities
             try
             {
                 var rawInvoices = masterShipment.ShipmentAttachedInvoices
-                    .Where(x => client == null ||  x.ShipmentInvoice.ShipmentInvoiceRiderDetails.Any(z => z.ShipmentRiderDetails.RiderId == client.Key.Item2) || x.ShipmentInvoice.ShipmentRiderInvoice.Any(z => z.RiderID == client.Key.Item2))
+                    .Where(x => client == null 
+                                ||  (x.ShipmentInvoice.ShipmentInvoiceRiderDetails.Any(z => z.ShipmentRiderDetails.RiderId == client.Key.Item2) || !x.ShipmentInvoice.ShipmentInvoiceRiderDetails.Any())
+                                || (x.ShipmentInvoice.ShipmentRiderInvoice.Any(z => z.RiderID == client.Key.Item2) || !x.ShipmentInvoice.ShipmentRiderInvoice.Any()))
                     .Select(x => x.ShipmentInvoice).ToList();
 
                 var invoices = rawInvoices
@@ -1186,7 +1194,7 @@ namespace AutoBotUtilities
 
                 var unAttachedRiderDetails = client != null
                     ? client.Where(x =>
-                        x.ShipmentRiderInvoice.Any(z => string.IsNullOrEmpty(z.InvoiceNo))).ToList()
+                       !x.ShipmentRiderInvoice.Any() || x.ShipmentRiderInvoice.Any(z => string.IsNullOrEmpty(z.InvoiceNo)) ).ToList()
                     : new List<ShipmentRiderDetails>();
 
 
