@@ -1083,7 +1083,7 @@ namespace AutoBot
 
                 using (var ctx = new CoreEntitiesContext())
                 {
-                    ctx.Database.CommandTimeout = 30;
+                    ctx.Database.CommandTimeout = 60;
                     var res = ctx.TODO_LICToAssess
                         .Where(x => ft.AsycudaDocumentSetId == 0 || x.AsycudaDocumentSetId == ft.AsycudaDocumentSetId)
                         .ToList();
