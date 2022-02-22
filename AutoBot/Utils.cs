@@ -2485,11 +2485,18 @@ namespace AutoBot
                                 TaskCreationOptions.None, sta);
                         }
                         attachments.Add(errorfile);
-                        var errorBody = "The Attached File contains details of errors found trying to assessed the attached email's Shipping Discrepancies \r\n" +
+                       
+
+                        var errorBody = "Discrepancies Found: \r\n" +
+                                        "System could not Generate Entries the following items on the CNumbers Stated: \r\n" +
+                                        $"\t{"Item Number".FormatedSpace(20)}{"InvoiceQty".FormatedSpace(15)}{"Recieved Qty".FormatedSpace(15)}{"pCNumber".FormatedSpace(15)}{"Reason".FormatedSpace(30)}\r\n" +
+                                        $"{errors.Select(current => $"\t{current.ItemNumber.FormatedSpace(20)}{current.InvoiceQty.ToString().FormatedSpace(15)}{current.ReceivedQty.ToString().FormatedSpace(15)}{current.PreviousCNumber.FormatedSpace(15)}{current.Status.FormatedSpace(30)}\r\n").Aggregate((old, current) => old + current)}" +
+                                        "\r\n" +
+                                        "\r\n" +
+                                        " The Attached File contains details of errors found trying to assessed the attached email's Shipping Discrepancies \r\n" +
                                         $"Any questions or concerns please contact Joseph Bartholomew at Joseph@auto-brokerage.com.\r\n" +
-                                            $"\r\n" +
-                                            $"Regards,\r\n" +
-                                            $"AutoBot";
+                                        $"Regards,\r\n" +
+                                        $"AutoBot";
 
                         EmailDownloader.EmailDownloader.ForwardMsg(fileType.EmailId, Client, "Error Found Assessing Shipping Discrepancy Entries", errorBody,contacts ,attachments.ToArray() );
                     }
@@ -5558,54 +5565,54 @@ namespace AutoBot
             try
             {
 
+                return; // combined into pre assessment report email
+                //Console.WriteLine("Submit Discrepancy Entries");
 
-                Console.WriteLine("Submit Discrepancy Entries");
-
-                // var saleInfo = CurrentSalesInfo();
-
-
-                using (var ctx = new CoreEntitiesContext())
-                {
-                    ctx.Database.CommandTimeout = 20;
-                    var lst = ctx.TODO_DiscrepanciesErrors
-                        .Where(x =>//x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId &&
-                                                                      x.AsycudaDocumentSetId == fileType.AsycudaDocumentSetId
-                                                                      && x.Type == "DIS").ToList()
-                        .GroupBy(x => new { x.AsycudaDocumentSetId, x.EmailId });
-                    foreach (var doc in lst)
-                    {
-                        var emailIds = ctx.AsycudaDocumentSet_Attachments
-                            .Where(x => x.AsycudaDocumentSetId == doc.Key.AsycudaDocumentSetId &&
-                                        x.Attachments.FilePath.EndsWith(".xlsx"))
-                            .Where(x => x.AttachmentLog.All(z => z.Status != "Submit Discrepancy Errors"))
-                            .ToList();
-                        foreach (var eId in emailIds)
-                        {
-
-                            var body = "Discrepancies Found: \r\n" +
-                                       "System could not Generate Entries the following items on the CNumbers Stated: \r\n" +
-                                       $"\t{"Item Number".FormatedSpace(20)}{"InvoiceQty".FormatedSpace(15)}{"Recieved Qty".FormatedSpace(15)}{"pCNumber".FormatedSpace(15)}{"Reason".FormatedSpace(30)}\r\n" +
-                                       $"{doc.Select(current => $"\t{current.ItemNumber.FormatedSpace(20)}{current.InvoiceQty.ToString().FormatedSpace(15)}{current.ReceivedQty.ToString().FormatedSpace(15)}{current.PreviousCNumber.FormatedSpace(15)}{current.Status.FormatedSpace(30)}\r\n").Aggregate((old, current) => old + current)}" +
-                                       $"Please Check the spreadsheet or inform Joseph Bartholomew if this is an Error.\r\n" +
-                                       $"Regards,\r\n" +
-                                       $"AutoBot";
-                            if (!EmailDownloader.EmailDownloader.SendBackMsg(eId.EmailId, Client,
-                                body)) continue;
-                            ctx.AttachmentLog.Add(new AttachmentLog(true)
-                            {
-                                DocSetAttachment = eId.Id,
-                                Status = "Submit Discrepancy Errors",
-                                TrackingState = TrackingState.Added
-                            });
-                            ctx.SaveChanges();
+                //// var saleInfo = CurrentSalesInfo();
 
 
-                        }
+                //using (var ctx = new CoreEntitiesContext())
+                //{
+                //    ctx.Database.CommandTimeout = 20;
+                //    var lst = ctx.TODO_DiscrepanciesErrors
+                //        .Where(x =>//x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId &&
+                //                                                      x.AsycudaDocumentSetId == fileType.AsycudaDocumentSetId
+                //                                                      && x.Type == "DIS").ToList()
+                //        .GroupBy(x => new { x.AsycudaDocumentSetId, x.EmailId });
+                //    foreach (var doc in lst)
+                //    {
+                //        var emailIds = ctx.AsycudaDocumentSet_Attachments
+                //            .Where(x => x.AsycudaDocumentSetId == doc.Key.AsycudaDocumentSetId &&
+                //                        x.Attachments.FilePath.EndsWith(".xlsx"))
+                //            .Where(x => x.AttachmentLog.All(z => z.Status != "Submit Discrepancy Errors"))
+                //            .ToList();
+                //        foreach (var eId in emailIds)
+                //        {
+
+                //            var body = "Discrepancies Found: \r\n" +
+                //                       "System could not Generate Entries the following items on the CNumbers Stated: \r\n" +
+                //                       $"\t{"Item Number".FormatedSpace(20)}{"InvoiceQty".FormatedSpace(15)}{"Recieved Qty".FormatedSpace(15)}{"pCNumber".FormatedSpace(15)}{"Reason".FormatedSpace(30)}\r\n" +
+                //                       $"{doc.Select(current => $"\t{current.ItemNumber.FormatedSpace(20)}{current.InvoiceQty.ToString().FormatedSpace(15)}{current.ReceivedQty.ToString().FormatedSpace(15)}{current.PreviousCNumber.FormatedSpace(15)}{current.Status.FormatedSpace(30)}\r\n").Aggregate((old, current) => old + current)}" +
+                //                       $"Please Check the spreadsheet or inform Joseph Bartholomew if this is an Error.\r\n" +
+                //                       $"Regards,\r\n" +
+                //                       $"AutoBot";
+                //            if (!EmailDownloader.EmailDownloader.SendBackMsg(eId.EmailId, Client,
+                //                body)) continue;
+                //            ctx.AttachmentLog.Add(new AttachmentLog(true)
+                //            {
+                //                DocSetAttachment = eId.Id,
+                //                Status = "Submit Discrepancy Errors",
+                //                TrackingState = TrackingState.Added
+                //            });
+                //            ctx.SaveChanges();
 
 
-                    }
+                //        }
 
-                }
+
+                //    }
+
+                //}
             }
             catch (Exception e)
             {
