@@ -2530,9 +2530,9 @@ namespace AutoBot
                             $"\r\n" +
                             $"Regards,\r\n" +
                             $"AutoBot";
-                        EmailDownloader.EmailDownloader.SendEmail(Client, directory,
+                        EmailDownloader.EmailDownloader.ForwardMsg(fileType.EmailId, Client, 
                                 $"Discrepancy Pre-Assessment Report for  {docset.Declarant_Reference_Number}",
-                                contacts.ToArray(), body, attachments.ToArray());
+                               body ,contacts.ToArray() , attachments.ToArray());
                     }
                 }
             }
