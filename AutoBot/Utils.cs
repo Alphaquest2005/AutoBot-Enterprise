@@ -2396,7 +2396,7 @@ namespace AutoBot
                     var info = CurrentPOInfo(fileType.AsycudaDocumentSetId).FirstOrDefault();
                                     var directory = info.Item2;
 
-                    var contacts = ctx.Contacts.Where(x => x.Role == "Broker" || x.Role == "Clerk")
+                    var contacts = ctx.Contacts.Where(x => x.Role == "Broker" || x.Role == "Clerk" || x.Role == "Customs")
                         .Where(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)
                         .Select(x => x.EmailAddress)
                         .Distinct()
@@ -5757,16 +5757,18 @@ namespace AutoBot
             {
                 Console.WriteLine("Allocate DocSet Discrepancies");
                     List<KeyValuePair<int, string>> lst;
+                    
+
+                var alst =  new AdjustmentQSContext()
+                        .AdjustmentDetails
+                        .Where(x => x.AsycudaDocumentSetId == fileType.AsycudaDocumentSetId
+                                    && x.Type == "DIS").ToList();
                     using (var ctx = new CoreEntitiesContext())
                     {
                         ctx.Database.CommandTimeout = 10;
 
 
-
-                        lst = new AdjustmentQSContext()
-                            .AdjustmentDetails
-                            .Where(x => x.AsycudaDocumentSetId == fileType.AsycudaDocumentSetId
-                                        && x.Type == "DIS")
+                        lst = alst 
                             .Select(x => new {x.EntryDataDetailsId, x.ItemNumber})
                             .Distinct()
                             .ToList()
@@ -5834,7 +5836,7 @@ namespace AutoBot
                 new AllocationsBaseModel()
                     .AllocateSalesByMatchingSalestoAsycudaEntriesOnItemNumber(
                         BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId, false,
-                        lst.Select(x => $"{x.Key.ToString()}-{x.Value}").Aggregate((o,n) => $"{o},{n}")).Wait();
+                        lst.Where(x => alst.Any(z => z.EntryDataDetailsId == x.Key && z.InvoiceQty.GetValueOrDefault() > z.ReceivedQty.GetValueOrDefault())).Select(x => $"{x.Key.ToString()}-{x.Value}").DefaultIfEmpty("").Aggregate((o,n) => $"{o},{n}")).Wait();
 
                 new AllocationsBaseModel()
                     .MarkErrors(BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId).Wait();

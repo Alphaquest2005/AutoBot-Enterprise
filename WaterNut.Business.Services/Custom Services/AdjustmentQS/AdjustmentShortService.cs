@@ -738,7 +738,7 @@ namespace AdjustmentQS.Business.Services
 
 
                     // get document item in cnumber
-                    var clst = cNumber.Replace("C", "").Split(',');
+                    var clst = GetCNumbersFromString(cNumber);
                     var res = ctx.AsycudaDocuments
                         .Where(x => x.ApplicationSettingsId == applicationSettingsId)
                         .Where(x => (x.CNumber != null || x.IsManuallyAssessed == true) &&
@@ -815,7 +815,7 @@ namespace AdjustmentQS.Business.Services
                 return minEffectiveDate;
             }
 
-            if (ed.IsReconciled == false && alst.Select(x => x.ItemQuantity.GetValueOrDefault() - x.PiQuantity.GetValueOrDefault()).Sum() <
+            if ((ed.IsReconciled??false) == false && alst.Select(x => x.ItemQuantity.GetValueOrDefault() - x.PiQuantity.GetValueOrDefault()).Sum() <
                 remainingShortQty)
             {
 
@@ -1052,7 +1052,9 @@ namespace AdjustmentQS.Business.Services
 
             try
             {
-                var doc = AsycudaDocumentItemCache.FirstOrDefault(x => x.CNumber != null && cNumber.Contains(x.CNumber));
+                List<string> cnumberlst = GetCNumbersFromString(cNumber);
+                var doc = AsycudaDocumentItemCache.FirstOrDefault(x => x.CNumber != null && cnumberlst.Contains(x.CNumber));
+                
                 if (doc == null) return new List<AsycudaDocumentItem>();
                 var docref = doc.ReferenceNumber.LastIndexOf("-", StringComparison.Ordinal) > 0
                     ? doc.ReferenceNumber.Substring(0, doc.ReferenceNumber.LastIndexOf("-", StringComparison.Ordinal))
@@ -1087,6 +1089,13 @@ namespace AdjustmentQS.Business.Services
             }
 
 
+        }
+
+        private List<string> GetCNumbersFromString(string cNumber)
+        {
+            var str = cNumber.ToUpper().Replace("C", "");
+            var res = str.Split(',', ' ').ToList();
+            return res;
         }
 
         public async Task ProcessDISErrorsForAllocation(int applicationSettingsId)
@@ -1146,8 +1155,8 @@ namespace AdjustmentQS.Business.Services
             StatusModel.StartStatusUpdate("Preparing Discrepancy Errors for Re-Allocation", lst.Count());
             foreach (var s in lst.Where(x =>  x.IsReconciled != true))//x.ReceivedQty > x.InvoiceQty &&
             {
-                var ed = ctx.EntryDataDetails.First(x => x.EntryDataDetailsId == s.EntryDataDetailsId);
-                ed.EffectiveDate = BaseDataModel.CurrentSalesInfo().Item2;
+                var ed = ctx.EntryDataDetails.Include(x => x.AdjustmentEx).First(x => x.EntryDataDetailsId == s.EntryDataDetailsId);
+                ed.EffectiveDate = ed.AdjustmentEx.InvoiceDate;// BaseDataModel.CurrentSalesInfo().Item2; reset to invoicedate because this just wrong duh make sense
                 ed.QtyAllocated = 0;
                 ed.Comment = $@"DISERROR:{s.Status}";
                 ed.Status = null;

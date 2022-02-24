@@ -112,7 +112,7 @@ namespace AutoBot
 
                             var processedFileTypes = new List<Tuple<FileTypes, FileInfo[], int>>();
 
-                            foreach (var msg in msgLst)
+                            foreach (var msg in msgLst.OrderBy(x => x.Key.Item2.FileTypes.Any(z => z.CreateDocumentSet == true)).ThenBy(x => x.Key.Item2.EmailUniqueId))
                             {
                                 var desFolder = Path.Combine(appSetting.DataFolder, msg.Key.Item1,
                                     msg.Key.Item2.EmailUniqueId.ToString());
