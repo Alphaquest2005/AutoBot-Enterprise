@@ -450,19 +450,23 @@ namespace WaterNut.DataSpace
                     if (eslst.FirstOrDefault() is IDictionary<string, object> itm && itm.Keys.Contains("EntryDataId"))
                     {
                        
+
                         var entrydataid = itm["EntryDataId"];
                         var xeslst = ConvertCSVToShipmentInvoice(eslst);
                         var xdroppedFilePath = new CoreEntitiesContext().Attachments.Where(x =>
-                            x.FilePath.Contains(entrydataid + ".pdf")).OrderBy(x => x.Id).FirstOrDefault()?.FilePath;
+                            x.FilePath.Contains(entrydataid + ".pdf")).OrderByDescending(x => x.Id).FirstOrDefault()?.FilePath;
                         if (xeslst == null) return false;
                         await ImportInventory(
                             xeslst.SelectMany(x =>
                                 ((List<IDictionary<string, object>>)x).Select(z => z["InvoiceDetails"])).SelectMany(x =>
                                 ((List<IDictionary<string, object>>)x).Select(z => (dynamic)z)).ToList(),
                             docSet.First().ApplicationSettingsId, fileType).ConfigureAwait(false);
-
+                        var invoicePOs = xeslst.SelectMany(x =>
+                            ((List<IDictionary<string, object>>)x).Select(z => new {InvoiceNo = z["InvoiceNo"], PONumber = z["PONumber"]}))
+                            .Distinct()
+                            .ToDictionary(x => x.InvoiceNo.ToString(), x => x.PONumber?.ToString()??"");
                         ProcessShipmentInvoice(fileType, docSet, overWriteExisting, emailId,
-                            xdroppedFilePath, xeslst);
+                            xdroppedFilePath, xeslst, invoicePOs);
 
                     }
                     else
@@ -476,7 +480,7 @@ namespace WaterNut.DataSpace
 
 
                         ProcessShipmentInvoice(fileType, docSet, overWriteExisting, emailId,
-                            droppedFilePath, eslst);
+                            droppedFilePath, eslst, null);
 
                         return true;
                     }
@@ -604,6 +608,7 @@ namespace WaterNut.DataSpace
             {
                 dynamic header = (IDictionary<string, object>)new BetterExpando();
                 header.InvoiceNo = itm.EntryData.SupplierInvoiceNo;
+                header.PONumber = itm.EntryData.EntryDataId;
                 header.InvoiceDate = itm.EntryData.EntryDataDate;
                 header.InvoiceTotal = itm.f.Sum(x => (double)x.InvoiceTotal);
                 header.TotalInternalFreight = itm.f.Sum(x => (double)x.TotalInternalFreight);
@@ -641,7 +646,7 @@ namespace WaterNut.DataSpace
             return res;
         }
 
-        private void ProcessShipmentInvoice(FileTypes fileType, List<AsycudaDocumentSet> docSet, bool overWriteExisting, string emailId, string droppedFilePath, List<object> eslst)
+        private void ProcessShipmentInvoice(FileTypes fileType, List<AsycudaDocumentSet> docSet, bool overWriteExisting, string emailId, string droppedFilePath, List<object> eslst, Dictionary<string, string> invoicePOs)
         {
             try
             {
@@ -725,6 +730,12 @@ namespace WaterNut.DataSpace
                         if (!invoice.InvoiceDetails.Any())
                             throw new ApplicationException(
                                 $"No Invoice Details");
+
+                        if (invoicePOs != null && lst.Count > 1 && invoice != lst.First())
+                        {
+                            invoice.SourceFile = invoice.SourceFile.Replace($"{invoicePOs[lst.First().InvoiceNo]}",
+                                invoicePOs[invoice.InvoiceNo]);
+                        }
 
                         ctx.ShipmentInvoice.Add(invoice);
                         

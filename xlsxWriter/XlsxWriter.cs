@@ -654,14 +654,37 @@ namespace xlsxWriter
                 Style duplicateStyle = new Style();                                                                           // Create new style
                 duplicateStyle.CurrentFill.SetColor("FFFF00", Style.Fill.FillType.fillColor);
 
+                Style errStyle = new Style();                                                                           // Create new style
+                errStyle.CurrentFill.SetColor("FFC0CB", Style.Fill.FillType.fillColor);
+
+
                 var i = 0;
                 while (true)
                 {
                     if (i > summaryPkg.Invoices.Count() - 1) break;
                     foreach (var po in summaryPkg.Invoices[i].ShipmentInvoicePOs)
                     {
+                       
+
+                        
+                        
+                        
+                        var importedVSExpectedTotal = summaryPkg.Invoices[i].InvoiceTotal.GetValueOrDefault()
+                                                      - (summaryPkg.Invoices[i].SubTotal.GetValueOrDefault()
+                                                         + summaryPkg.Invoices[i].TotalInternalFreight.GetValueOrDefault()
+                                                         + summaryPkg.Invoices[i].TotalOtherCost.GetValueOrDefault()
+                                                         + summaryPkg.Invoices[i].TotalInsurance.GetValueOrDefault()
+                                                         - summaryPkg.Invoices[i].TotalDeduction.GetValueOrDefault());
+
+                        var subTotal = Math.Round(summaryPkg.Invoices[i].SubTotal.GetValueOrDefault(), 2) - Math.Round(po.PurchaseOrders.EntryDataDetails.Sum(x => x.Cost * x.Quantity), 2);
+                        var importedTotalDifference = summaryPkg.Invoices[i].ImportedTotalDifference;
+                        var poInvMismatch = po?.POMISMatches.Count();
+
+
                         if (summaryPkg.Invoices[i].ShipmentInvoicePOs.Count > 1)
                             workbook.CurrentWorksheet.SetActiveStyle(duplicateStyle);
+                        else if(Math.Round(importedVSExpectedTotal,2) != 0 || Math.Round(importedTotalDifference,2) != 0 || (poInvMismatch??0) != 0)
+                            workbook.CurrentWorksheet.SetActiveStyle(errStyle);
                         else
                         {
                             workbook.CurrentWorksheet.ClearActiveStyle();
@@ -679,25 +702,23 @@ namespace xlsxWriter
                             summaryPkg.Invoices[i].SubTotal);
                         SetValue(workbook, currentline, invHeader.IndexOf(nameof(ShipmentInvoice.InvoiceTotal)),
                             summaryPkg.Invoices[i].InvoiceTotal);
+                        
                         SetValue(workbook, currentline,
                             invHeader.IndexOf(nameof(ShipmentInvoice.ImportedTotalDifference)),
-                            summaryPkg.Invoices[i].ImportedTotalDifference);
+                            importedTotalDifference);
 
+                        
                         SetValue(workbook, currentline, invHeader.IndexOf("ImportedVSExpectedTotal"),
-                            summaryPkg.Invoices[i].InvoiceTotal.GetValueOrDefault()
-                            - (summaryPkg.Invoices[i].SubTotal.GetValueOrDefault()
-                               + summaryPkg.Invoices[i].TotalInternalFreight.GetValueOrDefault()
-                               + summaryPkg.Invoices[i].TotalOtherCost.GetValueOrDefault()
-                               + summaryPkg.Invoices[i].TotalInsurance.GetValueOrDefault()
-                               - summaryPkg.Invoices[i].TotalDeduction.GetValueOrDefault()));
+                            importedVSExpectedTotal);
 
 
-                        var subTotal = Math.Round(summaryPkg.Invoices[i].SubTotal.GetValueOrDefault(), 2) - Math.Round(po.PurchaseOrders.EntryDataDetails.Sum(x => x.Cost * x.Quantity), 2);
+                        
                         SetValue(workbook, currentline, invHeader.IndexOf("PO/Inv Total Diff"),
                             subTotal);
 
+                        
                         SetValue(workbook, currentline, invHeader.IndexOf("PO/Inv MisMatches"),
-                            po?.POMISMatches.Count());
+                            poInvMismatch);
 
 
                         SetValue(workbook, currentline, invHeader.IndexOf(nameof(ShipmentInvoice.SupplierCode)),
