@@ -28,44 +28,6 @@ namespace OCR.Client.Entities
                 this.Id = Convert.ToInt32(value);
             }
         }
-        public string FieldEntityName
-        {
-            get
-            {
-                return this.Field == null ? "" : this.Field.EntityName;
-            }
-            set
-            {
-                                if (string.IsNullOrEmpty(value)) return;
-                string[] vals = value.Split(',');
-               
-                    using (FieldsClient ctx = new FieldsClient())
-                    {
-                        var dto = ctx.GetFields().Result.AsEnumerable().FirstOrDefault(x => x.EntityName == value);
-                        
-
-                        if ( dto == null)
-                        {
-                            this.Field = (Fields)new Fields().CreateEntityFromString(value);
-							
-							this.Id = Convert.ToInt32(this.Field.Id);
-                            this.TrackingState=TrackableEntities.TrackingState.Modified;
-                           NotifyPropertyChanged("AddField");
-                        }
-                        else
-                        {
-                            var obj = new Fields(dto);
-                           if (this.Field == null || this.Field.EntityId != obj.EntityId) this.Field = obj;
-                           
-                        }
-                         
-
-
-                    }
-            
-            }
-
-      }
         public string RegExEntityName
         {
             get
@@ -132,6 +94,44 @@ namespace OCR.Client.Entities
                         {
                             var obj = new RegularExpressions(dto);
                            if (this.ReplacementRegEx == null || this.ReplacementRegEx.EntityId != obj.EntityId) this.ReplacementRegEx = obj;
+                           
+                        }
+                         
+
+
+                    }
+            
+            }
+
+      }
+        public string FieldsEntityName
+        {
+            get
+            {
+                return this.Fields == null ? "" : this.Fields.EntityName;
+            }
+            set
+            {
+                                if (string.IsNullOrEmpty(value)) return;
+                string[] vals = value.Split(',');
+               
+                    using (FieldsClient ctx = new FieldsClient())
+                    {
+                        var dto = ctx.GetFields().Result.AsEnumerable().FirstOrDefault(x => x.EntityName == value);
+                        
+
+                        if ( dto == null)
+                        {
+                            this.Fields = (Fields)new Fields().CreateEntityFromString(value);
+							
+							this.Id = Convert.ToInt32(this.Fields.Id);
+                            this.TrackingState=TrackableEntities.TrackingState.Modified;
+                           NotifyPropertyChanged("AddFields");
+                        }
+                        else
+                        {
+                            var obj = new Fields(dto);
+                           if (this.Fields == null || this.Fields.EntityId != obj.EntityId) this.Fields = obj;
                            
                         }
                          

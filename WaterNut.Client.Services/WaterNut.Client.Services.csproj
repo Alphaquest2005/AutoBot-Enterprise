@@ -262,7 +262,9 @@
     <Compile Include="OCR\OCRFileTypesClient.cs" />
     <Compile Include="OCR\OCR_FailedFieldsClient.cs" />
     <Compile Include="OCR\OCR_FailedLinesClient.cs" />
+    <Compile Include="OCR\OCR_FieldMappingsClient.cs" />
     <Compile Include="OCR\OCR_FieldValueClient.cs" />
+    <Compile Include="OCR\OCR_PartLineFieldsClient.cs" />
     <Compile Include="OCR\PartsClient.cs" />
     <Compile Include="OCR\PartTypesClient.cs" />
     <Compile Include="OCR\RecuringPartClient.cs" />

@@ -59,6 +59,7 @@ using CustomsOperations = CoreEntities.Business.Enums.CustomsOperations;
 using EntryDataDetails = EntryDataDS.Business.Entities.EntryDataDetails;
 using FileTypes = CoreEntities.Business.Entities.FileTypes;
 using InventoryItemAlias = EntryDataDS.Business.Entities.InventoryItemAlias;
+using Invoices = OCR.Business.Entities.Invoices;
 using xBondAllocations = AllocationDS.Business.Entities.xBondAllocations;
 using xcuda_Tarification = DocumentItemDS.Business.Entities.xcuda_Tarification;
 
@@ -223,50 +224,26 @@ namespace AutoBot
                 },
                 {
                     "AddFieldRegEx",
-                    ((paramInfo) =>
-                        {
-                            try
-                            {
-
-                                using (var ctx = new OCRContext())
-                                {
-                                    var regId = int.Parse(paramInfo["RegId"]);
-
-                                    var f = paramInfo["Field"];
-                                    var fields = ctx.Fields.Where(x =>
-                                            x.Key == f &&
-                                            x.Lines.RegExId == regId)
-                                        .ToList();
-                                    var reg = GetRegularExpressions(ctx, paramInfo["Regex"]);
-                                    var regRep = GetRegularExpressions(ctx, paramInfo["ReplaceRegex"]);
-                                    foreach (var field in fields)
-                                    {
-                                        var fr = ctx.OCR_FieldFormatRegEx.FirstOrDefault(x => x.FieldId == field.Id
-                                            && x.RegExId == reg.Id
-                                            && x.ReplacementRegExId == regRep.Id);
-                                        if (fr == null)
-                                        {
-                                            fr = new FieldFormatRegEx()
-                                            {
-                                                Field = field,
-                                                RegEx = reg, ReplacementRegEx = regRep,
-                                                TrackingState = TrackingState.Added
-                                            };
-                                            ctx.OCR_FieldFormatRegEx.Add(fr);
-                                        }
-                                    }
-
-                                    ctx.SaveChanges();
-                                }
-
-                            }
-                            catch (Exception e)
-                            {
-                                Console.WriteLine(e);
-                                throw;
-                            }
-                        },
+                    ((paramInfo) => { AddFieldRegEx(paramInfo); },
                         new string[] { "RegId", "Field", "Regex", "ReplaceRegex" }
+                    )
+                },
+                {
+                    "AddInvoice",
+                    ((paramInfo) => { AddInvoice(paramInfo); },
+                        new string[] { "Name", "IDRegex" }
+                    )
+                },
+                {
+                    "AddPart",
+                    ((paramInfo) => { AddPart(paramInfo); },
+                        new string[] { "Invoice", "Name", "StartRegex", "IsRecurring", "IsComposite" }
+                    )
+                },
+                {
+                    "AddLine",
+                    ((paramInfo) => { AddLine(paramInfo); },
+                        new string[] { "Invoice", "Part", "Name", "Regex"}
                     )
                 },
 
@@ -299,6 +276,218 @@ namespace AutoBot
 
                 }
 
+            }
+        }
+
+        private static void AddFieldRegEx(Dictionary<string, string> paramInfo)
+        {
+            try
+            {
+                using (var ctx = new OCRContext())
+                {
+                    var regId = int.Parse(paramInfo["RegId"]);
+
+                    var f = paramInfo["Field"];
+                    var fields = ctx.Fields.Where(x =>
+                            x.Key == f &&
+                            x.Lines.RegExId == regId)
+                        .ToList();
+                    var reg = GetRegularExpressions(ctx, paramInfo["Regex"]);
+                    var regRep = GetRegularExpressions(ctx, paramInfo["ReplaceRegex"]);
+                    foreach (var field in fields)
+                    {
+                        var fr = ctx.OCR_FieldFormatRegEx.FirstOrDefault(x => x.FieldId == field.Id
+                                                                              && x.RegExId == reg.Id
+                                                                              && x.ReplacementRegExId == regRep.Id);
+                        if (fr == null)
+                        {
+                            fr = new FieldFormatRegEx()
+                            {
+                                Fields = field,
+                                RegEx = reg, ReplacementRegEx = regRep,
+                                TrackingState = TrackingState.Added
+                            };
+                            ctx.OCR_FieldFormatRegEx.Add(fr);
+                        }
+                    }
+
+                    ctx.SaveChanges();
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+        }
+
+        private static void AddLine(Dictionary<string, string> paramInfo)
+        {
+            try
+            {
+                using (var ctx = new OCRContext(){StartTracking = true})
+                {
+                    var pInvoice = paramInfo["Invoice"];
+                    var pPart = paramInfo["Part"];
+                    var pLine = paramInfo["Name"];
+                    var pRegex = paramInfo["Regex"];
+                    var pIsMultiLine = paramInfo.ContainsKey("IsMultiLine") ? bool.Parse(paramInfo["IsMultiLine"]) : (bool?)null;
+
+                    var line = ctx.Lines.FirstOrDefault(x =>
+                        x.Parts.Invoices.Name == pInvoice && x.Parts.PartTypes.Name == pPart && x.Name == pLine);
+                    if (line != null) return;
+                    var part = ctx.Parts.FirstOrDefault(x => x.Invoices.Name == pInvoice && x.PartTypes.Name == pPart);
+                    var invoice = ctx.Invoices.FirstOrDefault(x => x.Name == pInvoice);
+
+                    if (part == null) return;
+                    if (invoice == null) return;
+
+                    var regex = ctx.RegularExpressions.FirstOrDefault(x => x.RegEx == pRegex);
+                    if (regex == null)
+                        regex = new RegularExpressions(true)
+                            { TrackingState = TrackingState.Added, RegEx = pRegex, MultiLine = pIsMultiLine };
+                    line = new Lines(true)
+                        { TrackingState = TrackingState.Added, Parts = part, Name = pLine, RegularExpressions = regex, Fields = new List<Fields>()};
+                    
+                    ctx.Lines.Add(line);
+
+                    ctx.SaveChanges();
+
+                    var fields = Regex.Matches(pRegex, @"\<(?<Keyword>\w+)\>",
+                        RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture);
+
+                    foreach (Match fieldMatch in fields)
+                    {
+                        var keyWord = fieldMatch.Groups["Keyword"].Value;
+                        var fieldMappingsList = ctx.OCR_FieldMappings.Where(x => x.Key == keyWord).ToList();
+                        foreach (var fieldMap in fieldMappingsList)
+                        {
+                            var field = new Fields(true){
+                                Key = keyWord,
+                                Field = fieldMap.Field,
+                                AppendValues = fieldMap.AppendValues,
+                                EntityType = fieldMap.EntityType,
+                                DataType = fieldMap.DataType,
+                                IsRequired = fieldMap.IsRequired,
+                                LineId = line.Id,
+                                TrackingState = TrackingState.Added};
+                            ctx.Fields.Add(field);
+                           ctx.SaveChanges(); 
+                            
+                        }
+
+                    }
+
+                    
+
+
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+        }
+
+        private static void AddPart(Dictionary<string, string> paramInfo)
+        {
+            try
+            {
+                using (var ctx = new OCRContext())
+                {
+                    var pInvoice = paramInfo["Invoice"];
+                    var pPart = paramInfo["Name"];
+                    var pStartRegex = paramInfo["StartRegex"];
+                    var pIsRecurring = bool.Parse(paramInfo["IsRecurring"]);
+                    var pIsComposite = bool.Parse(paramInfo["IsComposite"]);
+                    var pIsMultiLine = paramInfo.ContainsKey("IsMultiLine")? bool.Parse(paramInfo["IsMultiLine"]):(bool?)null;
+                    var pParentPart = paramInfo.ContainsKey("ParentPart") ? paramInfo["ParentPart"] : null;
+
+                    var part = ctx.Parts.Include(x => x.Start)
+                        .FirstOrDefault(x => x.Invoices.Name == pInvoice && x.PartTypes.Name == pPart);
+                    var invoice = ctx.Invoices.FirstOrDefault(x => x.Name == pInvoice);
+                    
+                    if (part != null) return;
+                    if (invoice == null) return;
+                    var parentPart = ctx.Parts.FirstOrDefault(x =>
+                        x.PartTypes.Name == pParentPart && x.Invoices.Name == pInvoice);
+
+                    if (pParentPart != null && parentPart == null) return;
+
+                    var startRegex = ctx.RegularExpressions.FirstOrDefault(x => x.RegEx == pStartRegex);
+                    if (startRegex == null)
+                        startRegex = new RegularExpressions(true)
+                            { TrackingState = TrackingState.Added, RegEx = pStartRegex, MultiLine = pIsMultiLine };
+                    var partType = ctx.PartTypes.FirstOrDefault(x => x.Name == pPart);
+                    if (partType == null)
+                        partType = new PartTypes(true) { TrackingState = TrackingState.Added, Name = pPart };
+                    part = new Parts(true) {
+                        TrackingState = TrackingState.Added,
+                        PartTypes = partType,
+                        Invoices =invoice,
+                        Start = new List<Start>(){new Start(true){TrackingState = TrackingState.Added, RegularExpressions = startRegex}},
+                       
+                    };
+
+                   
+                    if (pIsRecurring == true) part.RecuringPart = new RecuringPart(true) { IsComposite = pIsComposite , TrackingState = TrackingState.Added};
+                    ctx.Parts.Add(part);
+                    ctx.SaveChanges();
+                    
+                    if (pParentPart != null && parentPart != null)
+                        ctx.ChildParts.Add(new ChildParts(true){ChildPart = part, ParentPart = parentPart, TrackingState = TrackingState.Added});
+
+                    ctx.SaveChanges();
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+        }
+
+        private static void AddInvoice(Dictionary<string, string> paramInfo)
+        {
+            try
+            {
+                using (var ctx = new OCRContext())
+                {
+                    var pInvoice = paramInfo["Name"];
+                    var pIDRegex = paramInfo["IDRegex"];
+                    var invoice = ctx.Invoices.Include(x => x.InvoiceIdentificatonRegEx)
+                        .FirstOrDefault(x => x.Name == pInvoice);
+                    if (invoice != null) return;
+                    invoice = new Invoices() {Name = pInvoice,
+                        InvoiceIdentificatonRegEx = new List<InvoiceIdentificatonRegEx>()
+                        {
+                            new InvoiceIdentificatonRegEx(true)
+                            {
+                                OCR_RegularExpressions = new RegularExpressions(true)
+                                {
+                                    RegEx = pIDRegex ,TrackingState = TrackingState.Added,
+                                    
+                                },
+                                TrackingState = TrackingState.Added
+                            }
+
+                        }
+                        , IsActive = true
+                        , ApplicationSettingsId = BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId
+                        , TrackingState = TrackingState.Added
+                        , FileTypeId = new CoreEntitiesContext().FileTypes.First(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId 
+                        && x.Type == "Shipment Invoice").Id
+
+                    };
+                    ctx.Invoices.Add(invoice);
+                    ctx.SaveChanges();
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
             }
         }
 
@@ -7071,7 +7260,7 @@ namespace AutoBot
                         SendBackTooBigEmail(file, fileType);
                     
                         DetectFileType(fileType, file, rows);
-                    return;
+                    continue;
                 }
 
 

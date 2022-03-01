@@ -1157,7 +1157,7 @@ namespace AutoBotUtilities
                 }
 
 
-                return shipments.Where(x => x.ShipmentAttachments.Any() && x.ExpectedEntries > 0).ToList();
+                return shipments.Where(x => x.ShipmentAttachments.Any() && (x.ExpectedEntries > 0 || x.TotalInvoices > 0)).ToList();
             }
             catch (Exception e)
             {

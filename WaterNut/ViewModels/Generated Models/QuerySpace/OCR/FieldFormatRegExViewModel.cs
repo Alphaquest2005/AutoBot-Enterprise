@@ -54,11 +54,11 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
 			RegisterToReceiveMessages(MessageToken.OCR_FieldFormatRegExFilterExpressionChanged, OnOCR_FieldFormatRegExFilterExpressionChanged);
 
  
-			RegisterToReceiveMessages<Fields>(MessageToken.CurrentFieldsChanged, OnCurrentFieldChanged);
- 
 			RegisterToReceiveMessages<RegularExpressions>(MessageToken.CurrentRegularExpressionsChanged, OnCurrentRegExChanged);
  
 			RegisterToReceiveMessages<RegularExpressions>(MessageToken.CurrentRegularExpressionsChanged, OnCurrentReplacementRegExChanged);
+ 
+			RegisterToReceiveMessages<Fields>(MessageToken.CurrentFieldsChanged, OnCurrentFieldsChanged);
 
  			// Recieve messages for Core Current Entities Changed
  
@@ -142,10 +142,6 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
 
             void CurrentFieldFormatRegEx__propertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
                 {
-                    //if (e.PropertyName == "AddField")
-                   // {
-                   //    if(Fields.Contains(CurrentFieldFormatRegEx.Field) == false) Fields.Add(CurrentFieldFormatRegEx.Field);
-                    //}
                     //if (e.PropertyName == "AddRegEx")
                    // {
                    //    if(RegularExpressions.Contains(CurrentFieldFormatRegEx.RegEx) == false) RegularExpressions.Add(CurrentFieldFormatRegEx.RegEx);
@@ -153,6 +149,10 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
                     //if (e.PropertyName == "AddReplacementRegEx")
                    // {
                    //    if(RegularExpressions.Contains(CurrentFieldFormatRegEx.ReplacementRegEx) == false) RegularExpressions.Add(CurrentFieldFormatRegEx.ReplacementRegEx);
+                    //}
+                    //if (e.PropertyName == "AddFields")
+                   // {
+                   //    if(Fields.Contains(CurrentFieldFormatRegEx.Fields) == false) Fields.Add(CurrentFieldFormatRegEx.Fields);
                     //}
                  } 
         internal virtual void OnOCR_FieldFormatRegExChanged(object sender, NotificationEventArgs e)
@@ -163,23 +163,6 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
 
 
  	
-		 internal virtual void OnCurrentFieldChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<Fields> e)
-			{
-			if(ViewCurrentField == false) return;
-			if (e.Data == null || e.Data.Id == null)
-                {
-                    vloader.FilterExpression = "None";
-                }
-                else
-                {
-				vloader.FilterExpression = string.Format("FieldId == {0}", e.Data.Id.ToString());
-                 }
-
-				OCR_FieldFormatRegEx.Refresh();
-				NotifyPropertyChanged(x => this.OCR_FieldFormatRegEx);
-                // SendMessage(MessageToken.OCR_FieldFormatRegExChanged, new NotificationEventArgs(MessageToken.OCR_FieldFormatRegExChanged));
-                			}
-	
 		 internal virtual void OnCurrentRegExChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<RegularExpressions> e)
 			{
 			if(ViewCurrentRegEx == false) return;
@@ -213,26 +196,28 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
 				NotifyPropertyChanged(x => this.OCR_FieldFormatRegEx);
                 // SendMessage(MessageToken.OCR_FieldFormatRegExChanged, new NotificationEventArgs(MessageToken.OCR_FieldFormatRegExChanged));
                 			}
+	
+		 internal virtual void OnCurrentFieldsChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<Fields> e)
+			{
+			if(ViewCurrentFields == false) return;
+			if (e.Data == null || e.Data.Id == null)
+                {
+                    vloader.FilterExpression = "None";
+                }
+                else
+                {
+				vloader.FilterExpression = string.Format("FieldId == {0}", e.Data.Id.ToString());
+                 }
+
+				OCR_FieldFormatRegEx.Refresh();
+				NotifyPropertyChanged(x => this.OCR_FieldFormatRegEx);
+                // SendMessage(MessageToken.OCR_FieldFormatRegExChanged, new NotificationEventArgs(MessageToken.OCR_FieldFormatRegExChanged));
+                			}
 
   			// Core Current Entities Changed
 			// theorticall don't need this cuz i am inheriting from core entities baseview model so changes should flow up to here
   
 // Filtering Each Field except IDs
- 	
-		 bool _viewCurrentField = false;
-         public bool ViewCurrentField
-         {
-             get
-             {
-                 return _viewCurrentField;
-             }
-             set
-             {
-                 _viewCurrentField = value;
-                 NotifyPropertyChanged(x => x.ViewCurrentField);
-                FilterData();
-             }
-         }
  	
 		 bool _viewCurrentRegEx = false;
          public bool ViewCurrentRegEx
@@ -260,6 +245,21 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
              {
                  _viewCurrentReplacementRegEx = value;
                  NotifyPropertyChanged(x => x.ViewCurrentReplacementRegEx);
+                FilterData();
+             }
+         }
+ 	
+		 bool _viewCurrentFields = false;
+         public bool ViewCurrentFields
+         {
+             get
+             {
+                 return _viewCurrentFields;
+             }
+             set
+             {
+                 _viewCurrentFields = value;
+                 NotifyPropertyChanged(x => x.ViewCurrentFields);
                 FilterData();
              }
          }

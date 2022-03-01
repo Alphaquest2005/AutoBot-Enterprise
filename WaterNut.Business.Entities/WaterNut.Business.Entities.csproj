@@ -512,7 +512,9 @@
     <Compile Include="Generated Business Entities\OCR\OCRFileTypes.cs" />
     <Compile Include="Generated Business Entities\OCR\OCR_FailedFields.cs" />
     <Compile Include="Generated Business Entities\OCR\OCR_FailedLines.cs" />
+    <Compile Include="Generated Business Entities\OCR\OCR_FieldMappings.cs" />
     <Compile Include="Generated Business Entities\OCR\OCR_FieldValue.cs" />
+    <Compile Include="Generated Business Entities\OCR\OCR_PartLineFields.cs" />
     <Compile Include="Generated Business Entities\OCR\Parts.cs" />
     <Compile Include="Generated Business Entities\OCR\PartTypes.cs" />
     <Compile Include="Generated Business Entities\OCR\RecuringPart.cs" />
@@ -912,7 +914,9 @@
     <Compile Include="Generated ChangeTracking Models\OCR\OCRFileTypes.cs" />
     <Compile Include="Generated ChangeTracking Models\OCR\OCR_FailedFields.cs" />
     <Compile Include="Generated ChangeTracking Models\OCR\OCR_FailedLines.cs" />
+    <Compile Include="Generated ChangeTracking Models\OCR\OCR_FieldMappings.cs" />
     <Compile Include="Generated ChangeTracking Models\OCR\OCR_FieldValue.cs" />
+    <Compile Include="Generated ChangeTracking Models\OCR\OCR_PartLineFields.cs" />
     <Compile Include="Generated ChangeTracking Models\OCR\Parts.cs" />
     <Compile Include="Generated ChangeTracking Models\OCR\PartTypes.cs" />
     <Compile Include="Generated ChangeTracking Models\OCR\RecuringPart.cs" />
@@ -1312,7 +1316,9 @@
     <Compile Include="Generated Constructors Models\OCR\OCRFileTypes.cs" />
     <Compile Include="Generated Constructors Models\OCR\OCR_FailedFields.cs" />
     <Compile Include="Generated Constructors Models\OCR\OCR_FailedLines.cs" />
+    <Compile Include="Generated Constructors Models\OCR\OCR_FieldMappings.cs" />
     <Compile Include="Generated Constructors Models\OCR\OCR_FieldValue.cs" />
+    <Compile Include="Generated Constructors Models\OCR\OCR_PartLineFields.cs" />
     <Compile Include="Generated Constructors Models\OCR\Parts.cs" />
     <Compile Include="Generated Constructors Models\OCR\PartTypes.cs" />
     <Compile Include="Generated Constructors Models\OCR\RecuringPart.cs" />
@@ -1712,7 +1718,9 @@
     <Compile Include="Generated IEntitiyWithKey Models\OCR\OCRFileTypes.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\OCR\OCR_FailedFields.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\OCR\OCR_FailedLines.cs" />
+    <Compile Include="Generated IEntitiyWithKey Models\OCR\OCR_FieldMappings.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\OCR\OCR_FieldValue.cs" />
+    <Compile Include="Generated IEntitiyWithKey Models\OCR\OCR_PartLineFields.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\OCR\Parts.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\OCR\PartTypes.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\OCR\RecuringPart.cs" />
@@ -2112,7 +2120,9 @@
     <Compile Include="Generated IIdentitfiableEntity Models\OCR\OCRFileTypes.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\OCR\OCR_FailedFields.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\OCR\OCR_FailedLines.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\OCR\OCR_FieldMappings.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\OCR\OCR_FieldValue.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\OCR\OCR_PartLineFields.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\OCR\Parts.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\OCR\PartTypes.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\OCR\RecuringPart.cs" />
@@ -2522,7 +2532,9 @@
     <Compile Include="Generated Mappings\OCR\OCRFileTypes.map.cs" />
     <Compile Include="Generated Mappings\OCR\OCR_FailedFields.map.cs" />
     <Compile Include="Generated Mappings\OCR\OCR_FailedLines.map.cs" />
+    <Compile Include="Generated Mappings\OCR\OCR_FieldMappings.map.cs" />
     <Compile Include="Generated Mappings\OCR\OCR_FieldValue.map.cs" />
+    <Compile Include="Generated Mappings\OCR\OCR_PartLineFields.map.cs" />
     <Compile Include="Generated Mappings\OCR\Parts.map.cs" />
     <Compile Include="Generated Mappings\OCR\PartTypes.map.cs" />
     <Compile Include="Generated Mappings\OCR\RecuringPart.map.cs" />

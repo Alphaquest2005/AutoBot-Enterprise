@@ -152,60 +152,6 @@ public Nullable<bool> IsColumn
 		}
      
 
-        ObservableCollection<Fields> _Fields = null;
-        public  ObservableCollection<Fields> Fields
-		{
-            
-		    get 
-				{ 
-					if(_Fields != null) return _Fields;
-					//if (this.lines.Fields == null) Debugger.Break();
-					if(this.lines.Fields != null)
-					{
-						_Fields = new ObservableCollection<Fields>(this.lines.Fields.Select(x => new Fields(x)));
-					}
-					
-						_Fields.CollectionChanged += Fields_CollectionChanged; 
-					
-					return _Fields; 
-				}
-			set
-			{
-			    if (Equals(value, _Fields)) return;
-				if (value != null)
-					this.lines.Fields = new ChangeTrackingCollection<DTO.Fields>(value.Select(x => x.DTO).ToList());
-                _Fields = value;
-				if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
-				if (_Fields != null)
-				_Fields.CollectionChanged += Fields_CollectionChanged;               
-				NotifyPropertyChanged("Fields");
-			}
-		}
-        
-        void Fields_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
-        {
-            switch (e.Action)
-            {
-                case NotifyCollectionChangedAction.Add:
-                    foreach (Fields itm in e.NewItems)
-                    {
-                        if (itm != null)
-                        lines.Fields.Add(itm.DTO);
-                    }
-                    if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
-                    break;
-                case NotifyCollectionChangedAction.Remove:
-                    foreach (Fields itm in e.OldItems)
-                    {
-                        if (itm != null)
-                        lines.Fields.Remove(itm.DTO);
-                    }
-					if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
-                    break;
-                
-            }
-        }
-
        private Parts _Parts;
         public  Parts Parts
 		{
@@ -419,37 +365,37 @@ public Nullable<bool> IsColumn
 		}
         
 
-        ObservableCollection<OCR_FailedLines> _OCR_FailedLines = null;
-        public  ObservableCollection<OCR_FailedLines> OCR_FailedLines
+        ObservableCollection<OCR_FailedLines> _FailedLines = null;
+        public  ObservableCollection<OCR_FailedLines> FailedLines
 		{
             
 		    get 
 				{ 
-					if(_OCR_FailedLines != null) return _OCR_FailedLines;
-					//if (this.lines.OCR_FailedLines == null) Debugger.Break();
-					if(this.lines.OCR_FailedLines != null)
+					if(_FailedLines != null) return _FailedLines;
+					//if (this.lines.FailedLines == null) Debugger.Break();
+					if(this.lines.FailedLines != null)
 					{
-						_OCR_FailedLines = new ObservableCollection<OCR_FailedLines>(this.lines.OCR_FailedLines.Select(x => new OCR_FailedLines(x)));
+						_FailedLines = new ObservableCollection<OCR_FailedLines>(this.lines.FailedLines.Select(x => new OCR_FailedLines(x)));
 					}
 					
-						_OCR_FailedLines.CollectionChanged += OCR_FailedLines_CollectionChanged; 
+						_FailedLines.CollectionChanged += FailedLines_CollectionChanged; 
 					
-					return _OCR_FailedLines; 
+					return _FailedLines; 
 				}
 			set
 			{
-			    if (Equals(value, _OCR_FailedLines)) return;
+			    if (Equals(value, _FailedLines)) return;
 				if (value != null)
-					this.lines.OCR_FailedLines = new ChangeTrackingCollection<DTO.OCR_FailedLines>(value.Select(x => x.DTO).ToList());
-                _OCR_FailedLines = value;
+					this.lines.FailedLines = new ChangeTrackingCollection<DTO.OCR_FailedLines>(value.Select(x => x.DTO).ToList());
+                _FailedLines = value;
 				if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
-				if (_OCR_FailedLines != null)
-				_OCR_FailedLines.CollectionChanged += OCR_FailedLines_CollectionChanged;               
-				NotifyPropertyChanged("OCR_FailedLines");
+				if (_FailedLines != null)
+				_FailedLines.CollectionChanged += FailedLines_CollectionChanged;               
+				NotifyPropertyChanged("FailedLines");
 			}
 		}
         
-        void OCR_FailedLines_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        void FailedLines_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
             switch (e.Action)
             {
@@ -457,7 +403,7 @@ public Nullable<bool> IsColumn
                     foreach (OCR_FailedLines itm in e.NewItems)
                     {
                         if (itm != null)
-                        lines.OCR_FailedLines.Add(itm.DTO);
+                        lines.FailedLines.Add(itm.DTO);
                     }
                     if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
                     break;
@@ -465,7 +411,61 @@ public Nullable<bool> IsColumn
                     foreach (OCR_FailedLines itm in e.OldItems)
                     {
                         if (itm != null)
-                        lines.OCR_FailedLines.Remove(itm.DTO);
+                        lines.FailedLines.Remove(itm.DTO);
+                    }
+					if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+                    break;
+                
+            }
+        }
+
+        ObservableCollection<Fields> _Fields = null;
+        public  ObservableCollection<Fields> Fields
+		{
+            
+		    get 
+				{ 
+					if(_Fields != null) return _Fields;
+					//if (this.lines.Fields == null) Debugger.Break();
+					if(this.lines.Fields != null)
+					{
+						_Fields = new ObservableCollection<Fields>(this.lines.Fields.Select(x => new Fields(x)));
+					}
+					
+						_Fields.CollectionChanged += Fields_CollectionChanged; 
+					
+					return _Fields; 
+				}
+			set
+			{
+			    if (Equals(value, _Fields)) return;
+				if (value != null)
+					this.lines.Fields = new ChangeTrackingCollection<DTO.Fields>(value.Select(x => x.DTO).ToList());
+                _Fields = value;
+				if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				if (_Fields != null)
+				_Fields.CollectionChanged += Fields_CollectionChanged;               
+				NotifyPropertyChanged("Fields");
+			}
+		}
+        
+        void Fields_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            switch (e.Action)
+            {
+                case NotifyCollectionChangedAction.Add:
+                    foreach (Fields itm in e.NewItems)
+                    {
+                        if (itm != null)
+                        lines.Fields.Add(itm.DTO);
+                    }
+                    if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+                    break;
+                case NotifyCollectionChangedAction.Remove:
+                    foreach (Fields itm in e.OldItems)
+                    {
+                        if (itm != null)
+                        lines.Fields.Remove(itm.DTO);
                     }
 					if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
                     break;

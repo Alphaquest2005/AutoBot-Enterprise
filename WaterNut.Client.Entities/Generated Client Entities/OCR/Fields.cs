@@ -60,6 +60,38 @@ public int Id
 		}
      
 
+       [RequiredValidationAttribute(ErrorMessage= "Line is required")]
+       
+public int LineId
+		{ 
+		    get { return this.fields.LineId; }
+			set
+			{
+			    if (value == this.fields.LineId) return;
+				this.fields.LineId = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("LineId");
+			}
+		}
+     
+
+       [RequiredValidationAttribute(ErrorMessage= "Key is required")]
+       
+                
+                [MaxLength(50, ErrorMessage = "Key has a max length of 50 letters ")]
+public string Key
+		{ 
+		    get { return this.fields.Key; }
+			set
+			{
+			    if (value == this.fields.Key) return;
+				this.fields.Key = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("Key");
+			}
+		}
+     
+
        [RequiredValidationAttribute(ErrorMessage= "Field is required")]
        
                 
@@ -126,38 +158,6 @@ public string DataType
 		}
      
 
-       [RequiredValidationAttribute(ErrorMessage= "Line is required")]
-       
-public int LineId
-		{ 
-		    get { return this.fields.LineId; }
-			set
-			{
-			    if (value == this.fields.LineId) return;
-				this.fields.LineId = value;
-                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
-				NotifyPropertyChanged("LineId");
-			}
-		}
-     
-
-       [RequiredValidationAttribute(ErrorMessage= "Key is required")]
-       
-                
-                [MaxLength(50, ErrorMessage = "Key has a max length of 50 letters ")]
-public string Key
-		{ 
-		    get { return this.fields.Key; }
-			set
-			{
-			    if (value == this.fields.Key) return;
-				this.fields.Key = value;
-                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
-				NotifyPropertyChanged("Key");
-			}
-		}
-     
-
        
        
 public Nullable<int> ParentId
@@ -188,111 +188,59 @@ public Nullable<bool> AppendValues
 		}
      
 
-       private Lines _Lines;
-        public  Lines Lines
+        ObservableCollection<OCR_FailedFields> _FailedFields = null;
+        public  ObservableCollection<OCR_FailedFields> FailedFields
 		{
-		    get
-               { 
-                  if (this.fields != null)
-                   {
-                       if (_Lines != null)
-                       {
-                           if (this.fields.Lines !=
-                               _Lines.DTO)
-                           {
-                                if (this.fields.Lines  != null)
-                               _Lines = new Lines(this.fields.Lines);
-                           }
-                       }
-                       else
-                       {
-                             if (this.fields.Lines  != null)
-                           _Lines = new Lines(this.fields.Lines);
-                       }
-                   }
-
-
-             //       if (_Lines != null) return _Lines;
-                       
-             //       var i = new Lines(){TrackingState = TrackingState.Added};
-			//		//if (this.fields.Lines == null) Debugger.Break();
-			//		if (this.fields.Lines != null)
-            //        {
-            //           i. = this.fields.Lines;
-            //        }
-            //        else
-            //        {
-            //            this.fields.Lines = i.;
-             //       }
-                           
-            //        _Lines = i;
-                     
-                    return _Lines;
-               }
+            
+		    get 
+				{ 
+					if(_FailedFields != null) return _FailedFields;
+					//if (this.fields.FailedFields == null) Debugger.Break();
+					if(this.fields.FailedFields != null)
+					{
+						_FailedFields = new ObservableCollection<OCR_FailedFields>(this.fields.FailedFields.Select(x => new OCR_FailedFields(x)));
+					}
+					
+						_FailedFields.CollectionChanged += FailedFields_CollectionChanged; 
+					
+					return _FailedFields; 
+				}
 			set
 			{
-			    if (value == _Lines) return;
-                _Lines = value;
-                if(value != null)
-                     this.fields.Lines = value.DTO;
+			    if (Equals(value, _FailedFields)) return;
+				if (value != null)
+					this.fields.FailedFields = new ChangeTrackingCollection<DTO.OCR_FailedFields>(value.Select(x => x.DTO).ToList());
+                _FailedFields = value;
 				if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
-                NotifyPropertyChanged("Lines");
+				if (_FailedFields != null)
+				_FailedFields.CollectionChanged += FailedFields_CollectionChanged;               
+				NotifyPropertyChanged("FailedFields");
 			}
 		}
         
-
-       private OCR_FieldValue _FieldValue;
-        public  OCR_FieldValue FieldValue
-		{
-		    get
-               { 
-                  if (this.fields != null)
-                   {
-                       if (_FieldValue != null)
-                       {
-                           if (this.fields.FieldValue !=
-                               _FieldValue.DTO)
-                           {
-                                if (this.fields.FieldValue  != null)
-                               _FieldValue = new OCR_FieldValue(this.fields.FieldValue);
-                           }
-                       }
-                       else
-                       {
-                             if (this.fields.FieldValue  != null)
-                           _FieldValue = new OCR_FieldValue(this.fields.FieldValue);
-                       }
-                   }
-
-
-             //       if (_FieldValue != null) return _FieldValue;
-                       
-             //       var i = new OCR_FieldValue(){TrackingState = TrackingState.Added};
-			//		//if (this.fields.FieldValue == null) Debugger.Break();
-			//		if (this.fields.FieldValue != null)
-            //        {
-            //           i. = this.fields.FieldValue;
-            //        }
-            //        else
-            //        {
-            //            this.fields.FieldValue = i.;
-             //       }
-                           
-            //        _FieldValue = i;
-                     
-                    return _FieldValue;
-               }
-			set
-			{
-			    if (value == _FieldValue) return;
-                _FieldValue = value;
-                if(value != null)
-                     this.fields.FieldValue = value.DTO;
-				if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
-                NotifyPropertyChanged("FieldValue");
-			}
-		}
-        
+        void FailedFields_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            switch (e.Action)
+            {
+                case NotifyCollectionChangedAction.Add:
+                    foreach (OCR_FailedFields itm in e.NewItems)
+                    {
+                        if (itm != null)
+                        fields.FailedFields.Add(itm.DTO);
+                    }
+                    if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+                    break;
+                case NotifyCollectionChangedAction.Remove:
+                    foreach (OCR_FailedFields itm in e.OldItems)
+                    {
+                        if (itm != null)
+                        fields.FailedFields.Remove(itm.DTO);
+                    }
+					if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+                    break;
+                
+            }
+        }
 
         ObservableCollection<FieldFormatRegEx> _FormatRegEx = null;
         public  ObservableCollection<FieldFormatRegEx> FormatRegEx
@@ -455,59 +403,111 @@ public Nullable<bool> AppendValues
 		}
         
 
-        ObservableCollection<OCR_FailedFields> _OCR_FailedFields = null;
-        public  ObservableCollection<OCR_FailedFields> OCR_FailedFields
+       private Lines _Lines;
+        public  Lines Lines
 		{
-            
-		    get 
-				{ 
-					if(_OCR_FailedFields != null) return _OCR_FailedFields;
-					//if (this.fields.OCR_FailedFields == null) Debugger.Break();
-					if(this.fields.OCR_FailedFields != null)
-					{
-						_OCR_FailedFields = new ObservableCollection<OCR_FailedFields>(this.fields.OCR_FailedFields.Select(x => new OCR_FailedFields(x)));
-					}
-					
-						_OCR_FailedFields.CollectionChanged += OCR_FailedFields_CollectionChanged; 
-					
-					return _OCR_FailedFields; 
-				}
+		    get
+               { 
+                  if (this.fields != null)
+                   {
+                       if (_Lines != null)
+                       {
+                           if (this.fields.Lines !=
+                               _Lines.DTO)
+                           {
+                                if (this.fields.Lines  != null)
+                               _Lines = new Lines(this.fields.Lines);
+                           }
+                       }
+                       else
+                       {
+                             if (this.fields.Lines  != null)
+                           _Lines = new Lines(this.fields.Lines);
+                       }
+                   }
+
+
+             //       if (_Lines != null) return _Lines;
+                       
+             //       var i = new Lines(){TrackingState = TrackingState.Added};
+			//		//if (this.fields.Lines == null) Debugger.Break();
+			//		if (this.fields.Lines != null)
+            //        {
+            //           i. = this.fields.Lines;
+            //        }
+            //        else
+            //        {
+            //            this.fields.Lines = i.;
+             //       }
+                           
+            //        _Lines = i;
+                     
+                    return _Lines;
+               }
 			set
 			{
-			    if (Equals(value, _OCR_FailedFields)) return;
-				if (value != null)
-					this.fields.OCR_FailedFields = new ChangeTrackingCollection<DTO.OCR_FailedFields>(value.Select(x => x.DTO).ToList());
-                _OCR_FailedFields = value;
+			    if (value == _Lines) return;
+                _Lines = value;
+                if(value != null)
+                     this.fields.Lines = value.DTO;
 				if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
-				if (_OCR_FailedFields != null)
-				_OCR_FailedFields.CollectionChanged += OCR_FailedFields_CollectionChanged;               
-				NotifyPropertyChanged("OCR_FailedFields");
+                NotifyPropertyChanged("Lines");
 			}
 		}
         
-        void OCR_FailedFields_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
-        {
-            switch (e.Action)
-            {
-                case NotifyCollectionChangedAction.Add:
-                    foreach (OCR_FailedFields itm in e.NewItems)
-                    {
-                        if (itm != null)
-                        fields.OCR_FailedFields.Add(itm.DTO);
-                    }
-                    if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
-                    break;
-                case NotifyCollectionChangedAction.Remove:
-                    foreach (OCR_FailedFields itm in e.OldItems)
-                    {
-                        if (itm != null)
-                        fields.OCR_FailedFields.Remove(itm.DTO);
-                    }
-					if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
-                    break;
-                
-            }
-        }
+
+       private OCR_FieldValue _FieldValue;
+        public  OCR_FieldValue FieldValue
+		{
+		    get
+               { 
+                  if (this.fields != null)
+                   {
+                       if (_FieldValue != null)
+                       {
+                           if (this.fields.FieldValue !=
+                               _FieldValue.DTO)
+                           {
+                                if (this.fields.FieldValue  != null)
+                               _FieldValue = new OCR_FieldValue(this.fields.FieldValue);
+                           }
+                       }
+                       else
+                       {
+                             if (this.fields.FieldValue  != null)
+                           _FieldValue = new OCR_FieldValue(this.fields.FieldValue);
+                       }
+                   }
+
+
+             //       if (_FieldValue != null) return _FieldValue;
+                       
+             //       var i = new OCR_FieldValue(){TrackingState = TrackingState.Added};
+			//		//if (this.fields.FieldValue == null) Debugger.Break();
+			//		if (this.fields.FieldValue != null)
+            //        {
+            //           i. = this.fields.FieldValue;
+            //        }
+            //        else
+            //        {
+            //            this.fields.FieldValue = i.;
+             //       }
+                           
+            //        _FieldValue = i;
+                     
+                    return _FieldValue;
+               }
+			set
+			{
+			    if (value == _FieldValue) return;
+                _FieldValue = value;
+                if(value != null)
+                     this.fields.FieldValue = value.DTO;
+				if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+                NotifyPropertyChanged("FieldValue");
+			}
+		}
+        
 
 
         ChangeTrackingCollection<DTO.Fields> _changeTracker;    

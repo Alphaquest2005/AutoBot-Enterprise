@@ -593,7 +593,9 @@
     <Compile Include="ViewModels\Generated Models\QuerySpace\OCR\OCRFileTypesViewModel.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\OCR\OCR_FailedFieldsViewModel.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\OCR\OCR_FailedLinesViewModel.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\OCR\OCR_FieldMappingsViewModel.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\OCR\OCR_FieldValueViewModel.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\OCR\OCR_PartLineFieldsViewModel.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\OCR\PartsViewModel.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\OCR\PartTypesViewModel.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\OCR\RecuringPartViewModel.cs" />
@@ -765,7 +767,9 @@
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\OCR\OCRFileTypesTotals.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\OCR\OCR_FailedFieldsTotals.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\OCR\OCR_FailedLinesTotals.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\OCR\OCR_FieldMappingsTotals.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\OCR\OCR_FieldValueTotals.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\OCR\OCR_PartLineFieldsTotals.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\OCR\PartsTotals.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\OCR\PartTypesTotals.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\OCR\RecuringPartTotals.cs" />
@@ -926,7 +930,9 @@
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\OCR\OCRFileTypesVirturalListLoader.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\OCR\OCR_FailedFieldsVirturalListLoader.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\OCR\OCR_FailedLinesVirturalListLoader.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\OCR\OCR_FieldMappingsVirturalListLoader.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\OCR\OCR_FieldValueVirturalListLoader.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\OCR\OCR_PartLineFieldsVirturalListLoader.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\OCR\PartsVirturalListLoader.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\OCR\PartTypesVirturalListLoader.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\OCR\RecuringPartVirturalListLoader.cs" />

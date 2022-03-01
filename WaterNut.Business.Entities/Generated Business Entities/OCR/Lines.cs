@@ -22,9 +22,9 @@ namespace OCR.Business.Entities
     {
         partial void AutoGenStartUp() //Lines()
         {
-            this.Fields = new List<Fields>();
             this.ChildLines = new List<Lines>();
-            this.OCR_FailedLines = new List<OCR_FailedLines>();
+            this.FailedLines = new List<OCR_FailedLines>();
+            this.Fields = new List<Fields>();
         }
 
         [DataMember]
@@ -133,8 +133,6 @@ namespace OCR.Business.Entities
         }
         Nullable<bool> _iscolumn;
         [DataMember]
-        public List<Fields> Fields { get; set; }
-        [DataMember]
         public Parts Parts { get; set; }
         [DataMember]
         public RegularExpressions RegularExpressions { get; set; }
@@ -143,7 +141,9 @@ namespace OCR.Business.Entities
         [DataMember]
         public Lines ParentLine { get; set; }
         [DataMember]
-        public List<OCR_FailedLines> OCR_FailedLines { get; set; }
+        public List<OCR_FailedLines> FailedLines { get; set; }
+        [DataMember]
+        public List<Fields> Fields { get; set; }
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

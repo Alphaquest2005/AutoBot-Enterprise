@@ -288,7 +288,9 @@
     <Compile Include="Generated Repositories\OCR\OCRFileTypesRepository.cs" />
     <Compile Include="Generated Repositories\OCR\OCR_FailedFieldsRepository.cs" />
     <Compile Include="Generated Repositories\OCR\OCR_FailedLinesRepository.cs" />
+    <Compile Include="Generated Repositories\OCR\OCR_FieldMappingsRepository.cs" />
     <Compile Include="Generated Repositories\OCR\OCR_FieldValueRepository.cs" />
+    <Compile Include="Generated Repositories\OCR\OCR_PartLineFieldsRepository.cs" />
     <Compile Include="Generated Repositories\OCR\PartsRepository.cs" />
     <Compile Include="Generated Repositories\OCR\PartTypesRepository.cs" />
     <Compile Include="Generated Repositories\OCR\RecuringPartRepository.cs" />
