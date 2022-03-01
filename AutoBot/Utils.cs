@@ -2487,18 +2487,7 @@ namespace AutoBot
                         attachments.Add(errorfile);
                        
 
-                        var errorBody = "Discrepancies Found: \r\n" +
-                                        "System could not Generate Entries the following items on the CNumbers Stated: \r\n" +
-                                        $"\t{"Item Number".FormatedSpace(20)}{"InvoiceQty".FormatedSpace(15)}{"Recieved Qty".FormatedSpace(15)}{"pCNumber".FormatedSpace(15)}{"Reason".FormatedSpace(30)}\r\n" +
-                                        $"{errors.Select(current => $"\t{current.ItemNumber.FormatedSpace(20)}{current.InvoiceQty.ToString().FormatedSpace(15)}{current.ReceivedQty.ToString().FormatedSpace(15)}{current.PreviousCNumber.FormatedSpace(15)}{current.Status.FormatedSpace(30)}\r\n").Aggregate((old, current) => old + current)}" +
-                                        "\r\n" +
-                                        "\r\n" +
-                                        " The Attached File contains details of errors found trying to assessed the attached email's Shipping Discrepancies \r\n" +
-                                        $"Any questions or concerns please contact Joseph Bartholomew at Joseph@auto-brokerage.com.\r\n" +
-                                        $"Regards,\r\n" +
-                                        $"AutoBot";
-
-                        EmailDownloader.EmailDownloader.ForwardMsg(fileType.EmailId, Client, "Error Found Assessing Shipping Discrepancy Entries", errorBody,contacts ,attachments.ToArray() );
+                        
                     }
 
                     if (goodadj.Any())
@@ -2518,6 +2507,16 @@ namespace AutoBot
                     }
                     if (attachments.Any())
                     {
+                        var errorBody = errors.Any()
+                            ? "Discrepancies Found: \r\n" +
+                              "System could not Generate Entries the following items on the CNumbers Stated: \r\n" +
+                              $"\t{"Item Number".FormatedSpace(20)}{"InvoiceQty".FormatedSpace(15)}{"Recieved Qty".FormatedSpace(15)}{"pCNumber".FormatedSpace(15)}{"Reason".FormatedSpace(30)}\r\n" +
+                              $"{errors.Select(current => $"\t{current.ItemNumber.FormatedSpace(20)}{current.InvoiceQty.ToString().FormatedSpace(15)}{current.ReceivedQty.ToString().FormatedSpace(15)}{current.PreviousCNumber.FormatedSpace(15)}{(current.Status+ " | "+current.comment).FormatedSpace(30)}\r\n").Aggregate((old, current) => old + current)}" +
+                              "\r\n" +
+                              "\r\n" +
+                              " The Attached File contains details of errors found trying to assessed the attached email's Shipping Discrepancies \r\n"
+                            : "";
+
                         var body =
                             $"For the Effective Period From: {totaladjustments.Min(x => x.EffectiveDate)?.ToString("yyyy-MM-dd")} To: {totaladjustments.Max(x => x.EffectiveDate)?.ToString("yyyy-MM-dd")}. \r\n" +
                             $"\r\n" +
@@ -2525,14 +2524,20 @@ namespace AutoBot
                             $"{string.Join(",", errBreakdown.Select(current => $"\t{current.Key.FormatedSpace(40)}{current.Count().ToString().FormatedSpace(20)}{(Math.Round((double)(((double)current.Count() / (double)totaladjustments.Count()) * 100), 0)).ToString().FormatedSpace(20)}% \r\n"))}" +
                             $"\t{"Executions".FormatedSpace(40)}{goodadj.Count.ToString().FormatedSpace(20)}{(Math.Round((double)(((double)goodadj.Count() / (double)totaladjustments.Count()) * 100), 0)).ToString().FormatedSpace(20)}% \r\n" +
                             $"\r\n" +
+                            $"{errorBody}"+
                             $"Please see attached for list of Errors and Executions details.\r\n" +
                             $"Any questions or concerns please contact Joseph Bartholomew at Joseph@auto-brokerage.com.\r\n" +
                             $"\r\n" +
                             $"Regards,\r\n" +
                             $"AutoBot";
-                        EmailDownloader.EmailDownloader.SendEmail(Client, directory,
-                                $"Discrepancy Pre-Assessment Report for  {docset.Declarant_Reference_Number}",
-                                contacts.ToArray(), body, attachments.ToArray());
+
+                        
+                        EmailDownloader.EmailDownloader.ForwardMsg(fileType.EmailId, Client, $"Discrepancy Pre-Assessment Report for  {docset.Declarant_Reference_Number}", body, contacts, attachments.ToArray());
+
+
+                        //EmailDownloader.EmailDownloader.SendEmail(Client, directory,
+                        //        $"Discrepancy Pre-Assessment Report for  {docset.Declarant_Reference_Number}",
+                        //        contacts.ToArray(), body, attachments.ToArray());
                     }
                 }
             }
@@ -5833,13 +5838,14 @@ namespace AutoBot
                         BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId,
                         lst.Select(x => $"{x.Key.ToString()}-{x.Value}").Aggregate((o, n) => $"{o},{n}")).Wait();
 
+                var shortlst = lst.Where(x => alst.Any(z => z.EntryDataDetailsId == x.Key && z.InvoiceQty.GetValueOrDefault() > z.ReceivedQty.GetValueOrDefault())).Select(x => $"{x.Key.ToString()}-{x.Value}").DefaultIfEmpty("").Aggregate((o,n) => $"{o},{n}");
                 new AllocationsBaseModel()
                     .AllocateSalesByMatchingSalestoAsycudaEntriesOnItemNumber(
                         BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId, false,
-                        lst.Where(x => alst.Any(z => z.EntryDataDetailsId == x.Key && z.InvoiceQty.GetValueOrDefault() > z.ReceivedQty.GetValueOrDefault())).Select(x => $"{x.Key.ToString()}-{x.Value}").DefaultIfEmpty("").Aggregate((o,n) => $"{o},{n}")).Wait();
+                        shortlst).Wait();
 
                 new AllocationsBaseModel()
-                    .MarkErrors(BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId).Wait();
+                    .MarkErrors(BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId, shortlst).Wait();
 
             }
             catch (Exception e)
