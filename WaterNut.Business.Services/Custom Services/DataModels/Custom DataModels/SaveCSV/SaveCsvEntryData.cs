@@ -742,9 +742,9 @@ namespace WaterNut.DataSpace
                         ctx.SaveChanges();
 
                         //----------ALLOW IMPORTS AND CHANGE THE XLSX TO HIGHLIGHT ERRORS
-                        if (invoice.ImportedTotalDifference > 0.001 )
-                            throw new ApplicationException(
-                                $"Imported Total Difference for Invoice > 0: {invoice.ImportedTotalDifference}");
+                        //if (invoice.ImportedTotalDifference > 0.001 )
+                        //    throw new ApplicationException(
+                        //        $"Imported Total Difference for Invoice > 0: {invoice.ImportedTotalDifference}");
                     }
 
                     

@@ -140,6 +140,10 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
 
             void CurrentFields__propertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
                 {
+                    //if (e.PropertyName == "AddParentField")
+                   // {
+                   //    if(Fields.Contains(CurrentFields.ParentField) == false) Fields.Add(CurrentFields.ParentField);
+                    //}
                     //if (e.PropertyName == "AddLines")
                    // {
                    //    if(Lines.Contains(CurrentFields.Lines) == false) Lines.Add(CurrentFields.Lines);
@@ -147,10 +151,6 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
                     //if (e.PropertyName == "AddFieldValue")
                    // {
                    //    if(OCR_FieldValue.Contains(CurrentFields.FieldValue) == false) OCR_FieldValue.Add(CurrentFields.FieldValue);
-                    //}
-                    //if (e.PropertyName == "AddParentField")
-                   // {
-                   //    if(Fields.Contains(CurrentFields.ParentField) == false) Fields.Add(CurrentFields.ParentField);
                     //}
                  } 
         internal virtual void OnFieldsChanged(object sender, NotificationEventArgs e)
@@ -252,6 +252,24 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
 
  
 
+		private string _keyFilter;
+        public string KeyFilter
+        {
+            get
+            {
+                return _keyFilter;
+            }
+            set
+            {
+                _keyFilter = value;
+				NotifyPropertyChanged(x => KeyFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
+
 		private string _fieldFilter;
         public string FieldFilter
         {
@@ -324,24 +342,6 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
 
  
 
-		private string _keyFilter;
-        public string KeyFilter
-        {
-            get
-            {
-                return _keyFilter;
-            }
-            set
-            {
-                _keyFilter = value;
-				NotifyPropertyChanged(x => KeyFilter);
-                FilterData();
-                
-            }
-        }	
-
- 
-
 		private Boolean? _appendValuesFilter;
         public Boolean? AppendValuesFilter
         {
@@ -389,6 +389,10 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
 		var res = new StringBuilder();
  
 
+									if(string.IsNullOrEmpty(KeyFilter) == false)
+						res.Append(" && " + string.Format("Key.Contains(\"{0}\")",  KeyFilter));						
+ 
+
 									if(string.IsNullOrEmpty(FieldFilter) == false)
 						res.Append(" && " + string.Format("Field.Contains(\"{0}\")",  FieldFilter));						
  
@@ -403,10 +407,6 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
 
 									if(string.IsNullOrEmpty(DataTypeFilter) == false)
 						res.Append(" && " + string.Format("DataType.Contains(\"{0}\")",  DataTypeFilter));						
- 
-
-									if(string.IsNullOrEmpty(KeyFilter) == false)
-						res.Append(" && " + string.Format("Key.Contains(\"{0}\")",  KeyFilter));						
  
 
 									if(AppendValuesFilter.HasValue)
@@ -434,6 +434,9 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
                 dataToPrint = lst.Select(x => new FieldsExcelLine
                 {
  
+                    Key = x.Key ,
+                    
+ 
                     Field = x.Field ,
                     
  
@@ -444,9 +447,6 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
                     
  
                     DataType = x.DataType ,
-                    
- 
-                    Key = x.Key ,
                     
  
                     AppendValues = x.AppendValues 
@@ -462,6 +462,9 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
         public class FieldsExcelLine
         {
 		 
+                    public string Key { get; set; } 
+                    
+ 
                     public string Field { get; set; } 
                     
  
@@ -472,9 +475,6 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
                     
  
                     public string DataType { get; set; } 
-                    
- 
-                    public string Key { get; set; } 
                     
  
                     public Nullable<bool> AppendValues { get; set; } 

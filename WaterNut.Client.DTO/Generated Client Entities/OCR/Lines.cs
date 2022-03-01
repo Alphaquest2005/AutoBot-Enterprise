@@ -114,19 +114,6 @@ namespace OCR.Client.DTO
 
        
         [DataMember]
-        public ChangeTrackingCollection<Fields> Fields
-		{
-		    get { return _Fields; }
-			set
-			{
-			    if (Equals(value, _Fields)) return;
-				_Fields = value;
-				NotifyPropertyChanged();//m => this.Fields
-			}
-		}
-        private ChangeTrackingCollection<Fields> _Fields = new ChangeTrackingCollection<Fields>();
-
-        [DataMember]
         public Parts Parts
 		{
 		    get { return _Parts; }
@@ -188,17 +175,30 @@ namespace OCR.Client.DTO
         private ChangeTrackingCollection<Lines> ParentLineChangeTracker { get; set; }
 
         [DataMember]
-        public ChangeTrackingCollection<OCR_FailedLines> OCR_FailedLines
+        public ChangeTrackingCollection<OCR_FailedLines> FailedLines
 		{
-		    get { return _OCR_FailedLines; }
+		    get { return _FailedLines; }
 			set
 			{
-			    if (Equals(value, _OCR_FailedLines)) return;
-				_OCR_FailedLines = value;
-				NotifyPropertyChanged();//m => this.OCR_FailedLines
+			    if (Equals(value, _FailedLines)) return;
+				_FailedLines = value;
+				NotifyPropertyChanged();//m => this.FailedLines
 			}
 		}
-        private ChangeTrackingCollection<OCR_FailedLines> _OCR_FailedLines = new ChangeTrackingCollection<OCR_FailedLines>();
+        private ChangeTrackingCollection<OCR_FailedLines> _FailedLines = new ChangeTrackingCollection<OCR_FailedLines>();
+
+        [DataMember]
+        public ChangeTrackingCollection<Fields> Fields
+		{
+		    get { return _Fields; }
+			set
+			{
+			    if (Equals(value, _Fields)) return;
+				_Fields = value;
+				NotifyPropertyChanged();//m => this.Fields
+			}
+		}
+        private ChangeTrackingCollection<Fields> _Fields = new ChangeTrackingCollection<Fields>();
 
    //     [DataMember]
    //     public TrackingState TrackingState { get; set; }

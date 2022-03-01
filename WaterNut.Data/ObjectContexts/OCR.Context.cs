@@ -49,8 +49,6 @@ namespace OCR.Business.Entities
 
         public DbSet<End> End { get; set; }
      
-        public DbSet<Fields> Fields { get; set; }
-     
         public DbSet<Invoices> Invoices { get; set; }
      
         public DbSet<Parts> Parts { get; set; }
@@ -83,13 +81,17 @@ namespace OCR.Business.Entities
      
         public DbSet<OCR_FailedLines> OCR_FailedLines { get; set; }
      
+        public DbSet<OCR_FieldMappings> OCR_FieldMappings { get; set; }
+     
+        public DbSet<OCR_PartLineFields> OCR_PartLineFields { get; set; }
+     
+        public DbSet<Fields> Fields { get; set; }
+     
 
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             modelBuilder.Configurations.Add(new EndMap());
-         
-            modelBuilder.Configurations.Add(new FieldsMap());
          
             modelBuilder.Configurations.Add(new InvoicesMap());
          
@@ -122,6 +124,12 @@ namespace OCR.Business.Entities
             modelBuilder.Configurations.Add(new OCR_FailedFieldsMap());
          
             modelBuilder.Configurations.Add(new OCR_FailedLinesMap());
+         
+            modelBuilder.Configurations.Add(new OCR_FieldMappingsMap());
+         
+            modelBuilder.Configurations.Add(new OCR_PartLineFieldsMap());
+         
+            modelBuilder.Configurations.Add(new FieldsMap());
          
 			OnModelCreatingExtentsion(modelBuilder);
 

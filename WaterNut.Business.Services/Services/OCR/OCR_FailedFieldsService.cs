@@ -244,7 +244,7 @@ namespace OCR.Business.Services
                             case "OCR_Fields":
                                 return
                                     await
-                                        GetWhere<Fields>(dbContext, exp, itm.Value, "OCR_FailedFields", "SelectMany", includesLst)
+                                        GetWhere<Fields>(dbContext, exp, itm.Value, "FailedFields", "SelectMany", includesLst)
 										.ConfigureAwait(continueOnCapturedContext: false);
 
                         }
@@ -750,7 +750,7 @@ namespace OCR.Business.Services
                                 return await CountWhere<OCR_FailedLines>(dbContext, exp, itm.Value, "OCR_FailedFields", "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
                             case "OCR_Fields":
-                                return await CountWhere<Fields>(dbContext, exp, itm.Value, "OCR_FailedFields", "SelectMany")
+                                return await CountWhere<Fields>(dbContext, exp, itm.Value, "FailedFields", "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }
@@ -867,7 +867,7 @@ namespace OCR.Business.Services
                             case "OCR_Fields":
                                 return
                                     await
-                                        LoadRangeWhere<Fields>(startIndex, count, dbContext, exp, itm.Value, "OCR_FailedFields", "SelectMany")
+                                        LoadRangeWhere<Fields>(startIndex, count, dbContext, exp, itm.Value, "FailedFields", "SelectMany")
 													.ConfigureAwait(continueOnCapturedContext: false);
 
                           
@@ -1191,7 +1191,7 @@ namespace OCR.Business.Services
                                 return await SumWhere<OCR_FailedLines>(dbContext, exp, itm.Value, "OCR_FailedFields", field, "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
                             case "OCR_Fields":
-                                return await SumWhere<Fields>(dbContext, exp, itm.Value, "OCR_FailedFields", field, "SelectMany")
+                                return await SumWhere<Fields>(dbContext, exp, itm.Value, "FailedFields", field, "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }

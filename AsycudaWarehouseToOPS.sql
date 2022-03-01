@@ -12,7 +12,7 @@ set @ApplicationSettingsId = 5
 set @startdate = '11/30/2021'
 set @endDate = '11/30/2021'
 set @OPSNumber = 'OPS-30-Nov-2021'
-set @lastCnumber = '50580'
+set @lastCnumber = null--'50580'
 set @asycudaEndDate = isnull((select AssessmentDate from AsycudaDocumentBasicInfo where CNumber = @lastCnumber),@endDate) 
 select @asycudaEndDate
 
@@ -728,7 +728,7 @@ go
 							-------------Diff <> piquantity
 							---  XAN/813-0400-01 +1
 							---- vs SPY/0799320 0
-declare @ItemNumber varchar(50) = 'XMA4FLW3'
+declare @ItemNumber varchar(50) = 'A06113'
 select 'Unexecuted Adjustments'
 select * from [#Unexecuted Adjustments] where itemnumber = @ItemNumber
 select 'Adjustments-Shorts Data'

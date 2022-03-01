@@ -235,12 +235,6 @@ namespace OCR.Business.Services
                     {
                         switch (itm.Key)
                         {
-                            case "Field":
-                                return
-                                    await
-                                        GetWhere<Fields>(dbContext, exp, itm.Value, "FormatRegEx", "SelectMany", includesLst)
-										.ConfigureAwait(continueOnCapturedContext: false);
-
                             case "RegEx":
                                 return
                                     await
@@ -251,6 +245,12 @@ namespace OCR.Business.Services
                                 return
                                     await
                                         GetWhere<RegularExpressions>(dbContext, exp, itm.Value, "FieldFormatRegEx", "SelectMany", includesLst)
+										.ConfigureAwait(continueOnCapturedContext: false);
+
+                            case "Fields":
+                                return
+                                    await
+                                        GetWhere<Fields>(dbContext, exp, itm.Value, "FormatRegEx", "SelectMany", includesLst)
 										.ConfigureAwait(continueOnCapturedContext: false);
 
                         }
@@ -752,14 +752,14 @@ namespace OCR.Business.Services
                     {
                         switch (itm.Key)
                         {
-                            case "Field":
-                                return await CountWhere<Fields>(dbContext, exp, itm.Value, "FormatRegEx", "SelectMany")
-											.ConfigureAwait(continueOnCapturedContext: false);
                             case "RegEx":
                                 return await CountWhere<RegularExpressions>(dbContext, exp, itm.Value, "FieldFormatRegEx", "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
                             case "ReplacementRegEx":
                                 return await CountWhere<RegularExpressions>(dbContext, exp, itm.Value, "FieldFormatRegEx", "SelectMany")
+											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "Fields":
+                                return await CountWhere<Fields>(dbContext, exp, itm.Value, "FormatRegEx", "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }
@@ -867,12 +867,6 @@ namespace OCR.Business.Services
                     {
                         switch (itm.Key)
                         {
-                            case "Field":
-                                return
-                                    await
-                                        LoadRangeWhere<Fields>(startIndex, count, dbContext, exp, itm.Value, "FormatRegEx", "SelectMany")
-													.ConfigureAwait(continueOnCapturedContext: false);
-
                             case "RegEx":
                                 return
                                     await
@@ -883,6 +877,12 @@ namespace OCR.Business.Services
                                 return
                                     await
                                         LoadRangeWhere<RegularExpressions>(startIndex, count, dbContext, exp, itm.Value, "FieldFormatRegEx", "SelectMany")
+													.ConfigureAwait(continueOnCapturedContext: false);
+
+                            case "Fields":
+                                return
+                                    await
+                                        LoadRangeWhere<Fields>(startIndex, count, dbContext, exp, itm.Value, "FormatRegEx", "SelectMany")
 													.ConfigureAwait(continueOnCapturedContext: false);
 
                           
@@ -1231,14 +1231,14 @@ namespace OCR.Business.Services
                     {
                         switch (itm.Key)
                         {
-                            case "Field":
-                                return await SumWhere<Fields>(dbContext, exp, itm.Value, "FormatRegEx", field, "SelectMany")
-											.ConfigureAwait(continueOnCapturedContext: false);
                             case "RegEx":
                                 return await SumWhere<RegularExpressions>(dbContext, exp, itm.Value, "FieldFormatRegEx", field, "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
                             case "ReplacementRegEx":
                                 return await SumWhere<RegularExpressions>(dbContext, exp, itm.Value, "FieldFormatRegEx", field, "SelectMany")
+											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "Fields":
+                                return await SumWhere<Fields>(dbContext, exp, itm.Value, "FormatRegEx", field, "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }

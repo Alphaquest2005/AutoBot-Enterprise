@@ -22,9 +22,9 @@ namespace OCR.Business.Entities
     {
         partial void AutoGenStartUp() //Fields()
         {
+            this.FailedFields = new List<OCR_FailedFields>();
             this.FormatRegEx = new List<FieldFormatRegEx>();
             this.ChildFields = new List<Fields>();
-            this.OCR_FailedFields = new List<OCR_FailedFields>();
         }
 
         [DataMember]
@@ -42,6 +42,36 @@ namespace OCR.Business.Entities
             }
         }
         int _id;
+        [DataMember]
+        public int LineId 
+        {
+            get
+            {
+                return _lineid;
+            }
+            set
+            {
+                _lineid = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        int _lineid;
+        [DataMember]
+        public string Key 
+        {
+            get
+            {
+                return _key;
+            }
+            set
+            {
+                _key = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _key;
         [DataMember]
         public string Field 
         {
@@ -103,36 +133,6 @@ namespace OCR.Business.Entities
         }
         string _datatype;
         [DataMember]
-        public int LineId 
-        {
-            get
-            {
-                return _lineid;
-            }
-            set
-            {
-                _lineid = value;
-                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
-                NotifyPropertyChanged();
-            }
-        }
-        int _lineid;
-        [DataMember]
-        public string Key 
-        {
-            get
-            {
-                return _key;
-            }
-            set
-            {
-                _key = value;
-                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
-                NotifyPropertyChanged();
-            }
-        }
-        string _key;
-        [DataMember]
         public Nullable<int> ParentId 
         {
             get
@@ -163,9 +163,7 @@ namespace OCR.Business.Entities
         }
         Nullable<bool> _appendvalues;
         [DataMember]
-        public Lines Lines { get; set; }
-        [DataMember]
-        public OCR_FieldValue FieldValue { get; set; }
+        public List<OCR_FailedFields> FailedFields { get; set; }
         [DataMember]
         public List<FieldFormatRegEx> FormatRegEx { get; set; }
         [DataMember]
@@ -173,7 +171,9 @@ namespace OCR.Business.Entities
         [DataMember]
         public Fields ParentField { get; set; }
         [DataMember]
-        public List<OCR_FailedFields> OCR_FailedFields { get; set; }
+        public Lines Lines { get; set; }
+        [DataMember]
+        public OCR_FieldValue FieldValue { get; set; }
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

@@ -35,6 +35,32 @@ namespace OCR.Client.DTO
         private int _Id;
 
         [DataMember]
+        public int LineId
+		{ 
+		    get { return _LineId; }
+			set
+			{
+			    if (value == _LineId) return;
+				_LineId = value;
+				NotifyPropertyChanged();//m => this.LineId
+			}
+		}
+        private int _LineId;
+
+        [DataMember]
+        public string Key
+		{ 
+		    get { return _Key; }
+			set
+			{
+			    if (value == _Key) return;
+				_Key = value;
+				NotifyPropertyChanged();//m => this.Key
+			}
+		}
+        private string _Key;
+
+        [DataMember]
         public string Field
 		{ 
 		    get { return _Field; }
@@ -87,32 +113,6 @@ namespace OCR.Client.DTO
         private string _DataType;
 
         [DataMember]
-        public int LineId
-		{ 
-		    get { return _LineId; }
-			set
-			{
-			    if (value == _LineId) return;
-				_LineId = value;
-				NotifyPropertyChanged();//m => this.LineId
-			}
-		}
-        private int _LineId;
-
-        [DataMember]
-        public string Key
-		{ 
-		    get { return _Key; }
-			set
-			{
-			    if (value == _Key) return;
-				_Key = value;
-				NotifyPropertyChanged();//m => this.Key
-			}
-		}
-        private string _Key;
-
-        [DataMember]
         public Nullable<int> ParentId
 		{ 
 		    get { return _ParentId; }
@@ -140,36 +140,17 @@ namespace OCR.Client.DTO
 
        
         [DataMember]
-        public Lines Lines
+        public ChangeTrackingCollection<OCR_FailedFields> FailedFields
 		{
-		    get { return _Lines; }
+		    get { return _FailedFields; }
 			set
 			{
-			    if (value == _Lines) return;
-				_Lines = value;
-                LinesChangeTracker = _Lines == null ? null
-                    : new ChangeTrackingCollection<Lines> { _Lines };
-				NotifyPropertyChanged();//m => this.Lines
+			    if (Equals(value, _FailedFields)) return;
+				_FailedFields = value;
+				NotifyPropertyChanged();//m => this.FailedFields
 			}
 		}
-        private Lines _Lines;
-        private ChangeTrackingCollection<Lines> LinesChangeTracker { get; set; }
-
-        [DataMember]
-        public OCR_FieldValue FieldValue
-		{
-		    get { return _FieldValue; }
-			set
-			{
-			    if (value == _FieldValue) return;
-				_FieldValue = value;
-                FieldValueChangeTracker = _FieldValue == null ? null
-                    : new ChangeTrackingCollection<OCR_FieldValue> { _FieldValue };
-				NotifyPropertyChanged();//m => this.FieldValue
-			}
-		}
-        private OCR_FieldValue _FieldValue;
-        private ChangeTrackingCollection<OCR_FieldValue> FieldValueChangeTracker { get; set; }
+        private ChangeTrackingCollection<OCR_FailedFields> _FailedFields = new ChangeTrackingCollection<OCR_FailedFields>();
 
         [DataMember]
         public ChangeTrackingCollection<FieldFormatRegEx> FormatRegEx
@@ -214,17 +195,36 @@ namespace OCR.Client.DTO
         private ChangeTrackingCollection<Fields> ParentFieldChangeTracker { get; set; }
 
         [DataMember]
-        public ChangeTrackingCollection<OCR_FailedFields> OCR_FailedFields
+        public Lines Lines
 		{
-		    get { return _OCR_FailedFields; }
+		    get { return _Lines; }
 			set
 			{
-			    if (Equals(value, _OCR_FailedFields)) return;
-				_OCR_FailedFields = value;
-				NotifyPropertyChanged();//m => this.OCR_FailedFields
+			    if (value == _Lines) return;
+				_Lines = value;
+                LinesChangeTracker = _Lines == null ? null
+                    : new ChangeTrackingCollection<Lines> { _Lines };
+				NotifyPropertyChanged();//m => this.Lines
 			}
 		}
-        private ChangeTrackingCollection<OCR_FailedFields> _OCR_FailedFields = new ChangeTrackingCollection<OCR_FailedFields>();
+        private Lines _Lines;
+        private ChangeTrackingCollection<Lines> LinesChangeTracker { get; set; }
+
+        [DataMember]
+        public OCR_FieldValue FieldValue
+		{
+		    get { return _FieldValue; }
+			set
+			{
+			    if (value == _FieldValue) return;
+				_FieldValue = value;
+                FieldValueChangeTracker = _FieldValue == null ? null
+                    : new ChangeTrackingCollection<OCR_FieldValue> { _FieldValue };
+				NotifyPropertyChanged();//m => this.FieldValue
+			}
+		}
+        private OCR_FieldValue _FieldValue;
+        private ChangeTrackingCollection<OCR_FieldValue> FieldValueChangeTracker { get; set; }
 
    //     [DataMember]
    //     public TrackingState TrackingState { get; set; }

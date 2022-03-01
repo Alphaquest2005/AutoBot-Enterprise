@@ -548,7 +548,9 @@
 ..\WaterNut.Business.Entities\Generated Business Entities\OCR\Lines.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\OCR\OCR_FailedFields.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\OCR\OCR_FailedLines.cs
+..\WaterNut.Business.Entities\Generated Business Entities\OCR\OCR_FieldMappings.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\OCR\OCR_FieldValue.cs
+..\WaterNut.Business.Entities\Generated Business Entities\OCR\OCR_PartLineFields.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\OCR\OCRFileTypes.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\OCR\Parts.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\OCR\PartTypes.cs
@@ -962,7 +964,9 @@
 ..\WaterNut.Business.Entities\Generated Mappings\OCR\Lines.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\OCR\OCR_FailedFields.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\OCR\OCR_FailedLines.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\OCR\OCR_FieldMappings.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\OCR\OCR_FieldValue.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\OCR\OCR_PartLineFields.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\OCR\OCRFileTypes.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\OCR\Parts.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\OCR\PartTypes.map.cs
@@ -1384,7 +1388,9 @@
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\OCR\Lines.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\OCR\OCR_FailedFields.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\OCR\OCR_FailedLines.cs
+..\WaterNut.Business.Entities\Generated ChangeTracking Models\OCR\OCR_FieldMappings.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\OCR\OCR_FieldValue.cs
+..\WaterNut.Business.Entities\Generated ChangeTracking Models\OCR\OCR_PartLineFields.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\OCR\OCRFileTypes.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\OCR\Parts.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\OCR\PartTypes.cs
@@ -1784,7 +1790,9 @@
 ..\WaterNut.Business.Entities\Generated Constructors Models\OCR\Lines.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\OCR\OCR_FailedFields.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\OCR\OCR_FailedLines.cs
+..\WaterNut.Business.Entities\Generated Constructors Models\OCR\OCR_FieldMappings.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\OCR\OCR_FieldValue.cs
+..\WaterNut.Business.Entities\Generated Constructors Models\OCR\OCR_PartLineFields.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\OCR\OCRFileTypes.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\OCR\Parts.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\OCR\PartTypes.cs
@@ -2184,7 +2192,9 @@
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\OCR\Lines.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\OCR\OCR_FailedFields.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\OCR\OCR_FailedLines.cs
+..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\OCR\OCR_FieldMappings.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\OCR\OCR_FieldValue.cs
+..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\OCR\OCR_PartLineFields.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\OCR\OCRFileTypes.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\OCR\Parts.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\OCR\PartTypes.cs
@@ -2584,7 +2594,9 @@
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\OCR\Lines.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\OCR\OCR_FailedFields.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\OCR\OCR_FailedLines.cs
+..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\OCR\OCR_FieldMappings.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\OCR\OCR_FieldValue.cs
+..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\OCR\OCR_PartLineFields.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\OCR\OCRFileTypes.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\OCR\Parts.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\OCR\PartTypes.cs
@@ -2773,7 +2785,9 @@
 ..\WaterNut.Client.DTO\Generated Client Entities\OCR\Lines.cs
 ..\WaterNut.Client.DTO\Generated Client Entities\OCR\OCR_FailedFields.cs
 ..\WaterNut.Client.DTO\Generated Client Entities\OCR\OCR_FailedLines.cs
+..\WaterNut.Client.DTO\Generated Client Entities\OCR\OCR_FieldMappings.cs
 ..\WaterNut.Client.DTO\Generated Client Entities\OCR\OCR_FieldValue.cs
+..\WaterNut.Client.DTO\Generated Client Entities\OCR\OCR_PartLineFields.cs
 ..\WaterNut.Client.DTO\Generated Client Entities\OCR\OCRFileTypes.cs
 ..\WaterNut.Client.DTO\Generated Client Entities\OCR\Parts.cs
 ..\WaterNut.Client.DTO\Generated Client Entities\OCR\PartTypes.cs
@@ -2941,7 +2955,9 @@
 ..\WaterNut.Client.Entities\Generated Client Entities\OCR\Lines.cs
 ..\WaterNut.Client.Entities\Generated Client Entities\OCR\OCR_FailedFields.cs
 ..\WaterNut.Client.Entities\Generated Client Entities\OCR\OCR_FailedLines.cs
+..\WaterNut.Client.Entities\Generated Client Entities\OCR\OCR_FieldMappings.cs
 ..\WaterNut.Client.Entities\Generated Client Entities\OCR\OCR_FieldValue.cs
+..\WaterNut.Client.Entities\Generated Client Entities\OCR\OCR_PartLineFields.cs
 ..\WaterNut.Client.Entities\Generated Client Entities\OCR\OCRFileTypes.cs
 ..\WaterNut.Client.Entities\Generated Client Entities\OCR\Parts.cs
 ..\WaterNut.Client.Entities\Generated Client Entities\OCR\PartTypes.cs
@@ -3112,7 +3128,9 @@
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\OCR\Lines.cs
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\OCR\OCR_FailedFields.cs
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\OCR\OCR_FailedLines.cs
+..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\OCR\OCR_FieldMappings.cs
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\OCR\OCR_FieldValue.cs
+..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\OCR\OCR_PartLineFields.cs
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\OCR\OCRFileTypes.cs
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\OCR\Parts.cs
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\OCR\PartTypes.cs
@@ -3277,7 +3295,9 @@
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\OCR\Lines.cs
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\OCR\OCR_FailedFields.cs
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\OCR\OCR_FailedLines.cs
+..\WaterNut.Client.DTO\Generated MyNavProp Models\OCR\OCR_FieldMappings.cs
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\OCR\OCR_FieldValue.cs
+..\WaterNut.Client.DTO\Generated MyNavProp Models\OCR\OCR_PartLineFields.cs
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\OCR\OCRFileTypes.cs
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\OCR\Parts.cs
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\OCR\PartTypes.cs
@@ -3442,7 +3462,9 @@
 ..\WaterNut.Client.Entities\Generated Constructors Models\OCR\Lines.cs
 ..\WaterNut.Client.Entities\Generated Constructors Models\OCR\OCR_FailedFields.cs
 ..\WaterNut.Client.Entities\Generated Constructors Models\OCR\OCR_FailedLines.cs
+..\WaterNut.Client.Entities\Generated Constructors Models\OCR\OCR_FieldMappings.cs
 ..\WaterNut.Client.Entities\Generated Constructors Models\OCR\OCR_FieldValue.cs
+..\WaterNut.Client.Entities\Generated Constructors Models\OCR\OCR_PartLineFields.cs
 ..\WaterNut.Client.Entities\Generated Constructors Models\OCR\OCRFileTypes.cs
 ..\WaterNut.Client.Entities\Generated Constructors Models\OCR\Parts.cs
 ..\WaterNut.Client.Entities\Generated Constructors Models\OCR\PartTypes.cs
@@ -3607,7 +3629,9 @@
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\OCR\Lines.cs
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\OCR\OCR_FailedFields.cs
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\OCR\OCR_FailedLines.cs
+..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\OCR\OCR_FieldMappings.cs
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\OCR\OCR_FieldValue.cs
+..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\OCR\OCR_PartLineFields.cs
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\OCR\OCRFileTypes.cs
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\OCR\Parts.cs
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\OCR\PartTypes.cs
@@ -3772,7 +3796,9 @@
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\OCR\Lines.cs
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\OCR\OCR_FailedFields.cs
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\OCR\OCR_FailedLines.cs
+..\WaterNut.Client.Entities\Generated MyNavProp Models\OCR\OCR_FieldMappings.cs
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\OCR\OCR_FieldValue.cs
+..\WaterNut.Client.Entities\Generated MyNavProp Models\OCR\OCR_PartLineFields.cs
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\OCR\OCRFileTypes.cs
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\OCR\Parts.cs
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\OCR\PartTypes.cs
@@ -4195,7 +4221,9 @@
 ..\WaterNut.Business.Entities\Generated Mappings\OCR\Lines.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\OCR\OCR_FailedFields.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\OCR\OCR_FailedLines.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\OCR\OCR_FieldMappings.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\OCR\OCR_FieldValue.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\OCR\OCR_PartLineFields.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\OCR\OCRFileTypes.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\OCR\Parts.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\OCR\PartTypes.map.cs
@@ -4430,7 +4458,9 @@
 ..\WaterNut.Client.Repositories\Generated Repositories\OCR\LinesRepository.cs
 ..\WaterNut.Client.Repositories\Generated Repositories\OCR\OCR_FailedFieldsRepository.cs
 ..\WaterNut.Client.Repositories\Generated Repositories\OCR\OCR_FailedLinesRepository.cs
+..\WaterNut.Client.Repositories\Generated Repositories\OCR\OCR_FieldMappingsRepository.cs
 ..\WaterNut.Client.Repositories\Generated Repositories\OCR\OCR_FieldValueRepository.cs
+..\WaterNut.Client.Repositories\Generated Repositories\OCR\OCR_PartLineFieldsRepository.cs
 ..\WaterNut.Client.Repositories\Generated Repositories\OCR\OCRFileTypesRepository.cs
 ..\WaterNut.Client.Repositories\Generated Repositories\OCR\PartsRepository.cs
 ..\WaterNut.Client.Repositories\Generated Repositories\OCR\PartTypesRepository.cs
@@ -4616,7 +4646,9 @@
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\OCR\MessageToken.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\OCR\OCR_FailedFieldsViewModel.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\OCR\OCR_FailedLinesViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\OCR\OCR_FieldMappingsViewModel.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\OCR\OCR_FieldValueViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\OCR\OCR_PartLineFieldsViewModel.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\OCR\OCRFileTypesViewModel.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\OCR\PartsViewModel.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\OCR\PartTypesViewModel.cs
@@ -4775,7 +4807,9 @@
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\OCR\LinesTotals.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\OCR\OCR_FailedFieldsTotals.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\OCR\OCR_FailedLinesTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\OCR\OCR_FieldMappingsTotals.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\OCR\OCR_FieldValueTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\OCR\OCR_PartLineFieldsTotals.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\OCR\OCRFileTypesTotals.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\OCR\PartsTotals.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\OCR\PartTypesTotals.cs
@@ -4930,7 +4964,9 @@
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\OCR\LinesVirturalListLoader.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\OCR\OCR_FailedFieldsVirturalListLoader.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\OCR\OCR_FailedLinesVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\OCR\OCR_FieldMappingsVirturalListLoader.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\OCR\OCR_FieldValueVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\OCR\OCR_PartLineFieldsVirturalListLoader.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\OCR\OCRFileTypesVirturalListLoader.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\OCR\PartsVirturalListLoader.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\OCR\PartTypesVirturalListLoader.cs
@@ -5313,7 +5349,9 @@
 ..\WaterNut.Business.Services\Contracts\OCR\ILinesService.cs
 ..\WaterNut.Business.Services\Contracts\OCR\IOCR_FailedFieldsService.cs
 ..\WaterNut.Business.Services\Contracts\OCR\IOCR_FailedLinesService.cs
+..\WaterNut.Business.Services\Contracts\OCR\IOCR_FieldMappingsService.cs
 ..\WaterNut.Business.Services\Contracts\OCR\IOCR_FieldValueService.cs
+..\WaterNut.Business.Services\Contracts\OCR\IOCR_PartLineFieldsService.cs
 ..\WaterNut.Business.Services\Contracts\OCR\IOCRFileTypesService.cs
 ..\WaterNut.Business.Services\Contracts\OCR\IPartsService.cs
 ..\WaterNut.Business.Services\Contracts\OCR\IPartTypesService.cs
@@ -5713,7 +5751,9 @@
 ..\WaterNut.Business.Services\Services\OCR\LinesService.cs
 ..\WaterNut.Business.Services\Services\OCR\OCR_FailedFieldsService.cs
 ..\WaterNut.Business.Services\Services\OCR\OCR_FailedLinesService.cs
+..\WaterNut.Business.Services\Services\OCR\OCR_FieldMappingsService.cs
 ..\WaterNut.Business.Services\Services\OCR\OCR_FieldValueService.cs
+..\WaterNut.Business.Services\Services\OCR\OCR_PartLineFieldsService.cs
 ..\WaterNut.Business.Services\Services\OCR\OCRFileTypesService.cs
 ..\WaterNut.Business.Services\Services\OCR\PartsService.cs
 ..\WaterNut.Business.Services\Services\OCR\PartTypesService.cs
@@ -5895,7 +5935,9 @@
 ..\WaterNut.Client.Contracts\OCR\ILinesService.cs
 ..\WaterNut.Client.Contracts\OCR\IOCR_FailedFieldsService.cs
 ..\WaterNut.Client.Contracts\OCR\IOCR_FailedLinesService.cs
+..\WaterNut.Client.Contracts\OCR\IOCR_FieldMappingsService.cs
 ..\WaterNut.Client.Contracts\OCR\IOCR_FieldValueService.cs
+..\WaterNut.Client.Contracts\OCR\IOCR_PartLineFieldsService.cs
 ..\WaterNut.Client.Contracts\OCR\IOCRFileTypesService.cs
 ..\WaterNut.Client.Contracts\OCR\IPartsService.cs
 ..\WaterNut.Client.Contracts\OCR\IPartTypesService.cs
@@ -6060,7 +6102,9 @@
 ..\WaterNut.Client.Services\OCR\LinesClient.cs
 ..\WaterNut.Client.Services\OCR\OCR_FailedFieldsClient.cs
 ..\WaterNut.Client.Services\OCR\OCR_FailedLinesClient.cs
+..\WaterNut.Client.Services\OCR\OCR_FieldMappingsClient.cs
 ..\WaterNut.Client.Services\OCR\OCR_FieldValueClient.cs
+..\WaterNut.Client.Services\OCR\OCR_PartLineFieldsClient.cs
 ..\WaterNut.Client.Services\OCR\OCRFileTypesClient.cs
 ..\WaterNut.Client.Services\OCR\PartsClient.cs
 ..\WaterNut.Client.Services\OCR\PartTypesClient.cs
