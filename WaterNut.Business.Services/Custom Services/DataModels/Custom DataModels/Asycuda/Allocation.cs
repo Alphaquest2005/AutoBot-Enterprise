@@ -168,13 +168,13 @@ namespace WaterNut.DataSpace
 			}
 		}
 
-		public async Task MarkErrors(int applicationSettingsId)
+		public async Task MarkErrors(int applicationSettingsId, string shortlst=null)
 		{
 			// MarkNoAsycudaEntry();
 
-			MarkOverAllocatedEntries(applicationSettingsId);
+			MarkOverAllocatedEntries(applicationSettingsId, shortlst);
 
-			MarkUnderAllocatedEntries(applicationSettingsId);
+			MarkUnderAllocatedEntries(applicationSettingsId, shortlst);
 
 
 		}
@@ -249,7 +249,7 @@ namespace WaterNut.DataSpace
 
 
 
-		private void MarkOverAllocatedEntries(int applicationSettingsId)
+		private void MarkOverAllocatedEntries(int applicationSettingsId, string shortlst)
 		{
 
 
@@ -267,7 +267,7 @@ namespace WaterNut.DataSpace
 						.Include(x => x.SubItems)
 						.Include(x => x.xcuda_Goods_description)
 						.Where(x => x.AsycudaDocument.ApplicationSettingsId == applicationSettingsId)
-
+                        .Where(x => (x.DFQtyAllocated + x.DPQtyAllocated) > x.xcuda_Tarification.xcuda_Supplementary_unit.FirstOrDefault(z => z.IsFirstRow == true).Suppplementary_unit_quantity)
 						.Where(x => (x.AsycudaDocument.CNumber != null || x.AsycudaDocument.IsManuallyAssessed == true) &&
 									(x.AsycudaDocument.Customs_Procedure.CustomsOperationId == (int)CustomsOperations.Import
 										|| x.AsycudaDocument.Customs_Procedure.CustomsOperationId == (int)CustomsOperations.Warehouse)
@@ -406,7 +406,7 @@ namespace WaterNut.DataSpace
 		}
 
 
-		private void MarkUnderAllocatedEntries(int applicationSettingsId)
+		private void MarkUnderAllocatedEntries(int applicationSettingsId, string shortlst)
 		{
 
 
@@ -423,6 +423,7 @@ namespace WaterNut.DataSpace
 						.Include(x => x.SubItems)
 						.Include(x => x.xcuda_Goods_description)
 						.Where(x => x.AsycudaDocument.ApplicationSettingsId == applicationSettingsId)
+                        .Where(x => (x.DFQtyAllocated + x.DPQtyAllocated) < 0)
 						.Where(x => (x.AsycudaDocument.CNumber != null || x.AsycudaDocument.IsManuallyAssessed == true) &&
 									(x.AsycudaDocument.Customs_Procedure.CustomsOperationId == (int)CustomsOperations.Import
 									 || x.AsycudaDocument.Customs_Procedure.CustomsOperationId == (int)CustomsOperations.Warehouse)
