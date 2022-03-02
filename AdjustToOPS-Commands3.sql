@@ -13,7 +13,7 @@ set @startdate = '1/1/2018'
 set @endDate = '11/30/2021'
 set @OPSNumber = 'OPS-30-Nov-2021'
 set @lastCnumber = '50580'
-set @asycudaEndDate = isnull((select AssessmentDate from AsycudaDocumentBasicInfo where CNumber = @lastCnumber),@endDate) 
+set @asycudaEndDate = '11/30/2021' --isnull((select AssessmentDate from AsycudaDocumentBasicInfo where CNumber = @lastCnumber),@endDate) 
 select @asycudaEndDate
 
 							
