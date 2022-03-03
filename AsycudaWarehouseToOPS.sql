@@ -101,7 +101,7 @@ drop table #AsycudaData
 SELECT       'C#' + CAST(AsycudaWarehouseData.REG_NBR AS nvarchar(50)) + '-' + CAST(AsycudaWarehouseData.ITEM_NBR AS nvarchar(50)) AS PrevDoc, AsycudaWarehouseData.PRODUCT_ID as Precision_4, AsycudaWarehouseData.TAR_DSC AS Description, 
                          SUM(ISNULL(AsycudaWarehouseData.INIT_QTY - AsycudaWarehouseData.REM_QTY, 0)) AS PiQuantity,sum(isnull(AsycudaWarehouseData.INIT_QTY,0) - isnull(AsycudaWarehouseData.REM_QTY,0)) as QtyAllocated, SUM(AsycudaWarehouseData.INIT_QTY) AS Quantity, 
                          SUM(CAST(ISNULL(AsycudaWarehouseData.REM_QTY, 0) AS float)) AS Amount, AVG(CAST(0 AS float)) AS Cost, 
-                         AsycudaWarehouseData.PRODUCT_ID AS ItemNumber, isnull(InventoryItemAliasEx.InventoryItemId,InventoryItems.Id) AS InventoryItemId,  AsycudaDocument.AssessmentDate,  AsycudaWarehouseData.IDE_REG_DAT as RegistrationDate , AsycudaWarehouseData.REF_NBER as Reference
+                         AsycudaWarehouseData.PRODUCT_ID AS ItemNumber, min(isnull(InventoryItemAliasEx.InventoryItemId,InventoryItems.Id)) AS InventoryItemId,  AsycudaDocument.AssessmentDate,  AsycudaWarehouseData.IDE_REG_DAT as RegistrationDate , AsycudaWarehouseData.REF_NBER as Reference
 into #AsycudaData
 FROM           AsycudaWarehouseData left outer join AsycudaDocument on AsycudaWarehouseData.REG_NBR = AsycudaDocument.CNumber and AsycudaWarehouseData.OFFICE = AsycudaDocument.Customs_clearance_office_code and AsycudaWarehouseData.YEAR = Year(AsycudaDocument.RegistrationDate)
 				left outer join InventoryItems on AsycudaWarehouseData.PRODUCT_ID = InventoryItems.ItemNumber
@@ -111,7 +111,7 @@ WHERE   (AsycudaWarehouseData.ApplicationSettingsId = @ApplicationSettingsId) an
 			
 GROUP BY AsycudaWarehouseData.REG_NBR, AsycudaWarehouseData.ITEM_NBR, PRODUCT_ID, TAR_DSC, INIT_QTY, 
                          REM_QTY, AssessmentDate,  IDE_REG_DAT,
-						 REF_NBER, InventoryItemAliasEx.InventoryItemId,InventoryItems.Id
+						 REF_NBER--, InventoryItemAliasEx.InventoryItemId,InventoryItems.Id
 
 select 'AsycudaData'						 
 select * from #AsycudaData 

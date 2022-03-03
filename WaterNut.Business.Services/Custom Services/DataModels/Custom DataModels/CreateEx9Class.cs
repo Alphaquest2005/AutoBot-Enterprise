@@ -1030,7 +1030,7 @@ namespace WaterNut.DataSpace
                         ItemNumber = s.LastOrDefault()?.ItemNumber,
                         ItemDescription = s.LastOrDefault()?.ItemDescription,
                         TariffCode = s.LastOrDefault()?.pTariffCode,
-                        Cost = (double)(s.LastOrDefault()?.pItemCost.GetValueOrDefault()),
+                        Cost = s.LastOrDefault()?.pItemCost.GetValueOrDefault()??0.0,
                         FileTypeId = s.LastOrDefault()?.FileTypeId,
                         EmailId = s.LastOrDefault()?.EmailId,
                         Quantity = s.Sum(x => x.QtyAllocated / (x.SalesFactor == 0 ? 1 : x.SalesFactor)),
@@ -1052,33 +1052,33 @@ namespace WaterNut.DataSpace
                         Weight = s.LastOrDefault()?.Weight ?? 0.0,
                         pDocumentItem = new pDocumentItem()
                         {
-                            DFQtyAllocated = s.LastOrDefault().DFQtyAllocated,
-                            DPQtyAllocated = s.LastOrDefault().DPQtyAllocated,
-                            ItemQuantity = s.LastOrDefault().pQuantity.GetValueOrDefault(),
-                            LineNumber = s.LastOrDefault().pLineNumber,
-                            ItemNumber = s.LastOrDefault().pItemNumber,
+                            DFQtyAllocated = s.LastOrDefault()?.DFQtyAllocated??0,
+                            DPQtyAllocated = s.LastOrDefault()?.DPQtyAllocated??0,
+                            ItemQuantity = s.LastOrDefault()?.pQuantity.GetValueOrDefault()??0,
+                            LineNumber = s.LastOrDefault()?.pLineNumber??0,
+                            ItemNumber = s.LastOrDefault()?.pItemNumber,
 
-                            Description = s.LastOrDefault().pItemDescription,
-                            xcuda_ItemId = s.LastOrDefault().PreviousItem_Id.GetValueOrDefault(),
-                            AssessmentDate = s.LastOrDefault().pAssessmentDate,
-                            ExpiryDate = s.LastOrDefault().pExpiryDate,
+                            Description = s.LastOrDefault()?.pItemDescription,
+                            xcuda_ItemId = s.LastOrDefault()?.PreviousItem_Id.GetValueOrDefault()??0,
+                            AssessmentDate = s.LastOrDefault()?.pAssessmentDate??DateTime.MinValue,
+                            ExpiryDate = s.LastOrDefault()?.pExpiryDate??DateTime.MinValue,
                             previousItems = s.LastOrDefault().previousItems
                         },
                         EX9Allocation = new EX9Allocation()
                         {
-                            SalesFactor = s.LastOrDefault().SalesFactor,
-                            Net_weight_itm = s.LastOrDefault().Net_weight_itm,
-                            pQuantity = s.LastOrDefault().pQuantity.GetValueOrDefault(),
-                            pCNumber = s.LastOrDefault().pCNumber,
-                            Customs_clearance_office_code = s.LastOrDefault().Customs_clearance_office_code,
-                            Country_of_origin_code = s.LastOrDefault().Country_of_origin_code,
-                            pRegistrationDate = s.LastOrDefault().pRegistrationDate,
-                            pQtyAllocated = s.LastOrDefault().QtyAllocated,
-                            Total_CIF_itm = s.LastOrDefault().Total_CIF_itm,
-                            pTariffCode = s.LastOrDefault().pTariffCode,
-                            pPrecision1 = s.LastOrDefault().pPrecision1
+                            SalesFactor = s.LastOrDefault()?.SalesFactor ?? 0.0,
+                            Net_weight_itm = s.LastOrDefault()?.Net_weight_itm??0.0,
+                            pQuantity = s.LastOrDefault()?.pQuantity.GetValueOrDefault() ?? 0.0,
+                            pCNumber = s.LastOrDefault()?.pCNumber,
+                            Customs_clearance_office_code = s.LastOrDefault()?.Customs_clearance_office_code,
+                            Country_of_origin_code = s.LastOrDefault()?.Country_of_origin_code,
+                            pRegistrationDate = s.LastOrDefault()?.pRegistrationDate??DateTime.MinValue,
+                            pQtyAllocated = s.LastOrDefault()?.QtyAllocated ?? 0.0,
+                            Total_CIF_itm = s.LastOrDefault()?.Total_CIF_itm ?? 0.0,
+                            pTariffCode = s.LastOrDefault()?.pTariffCode,
+                            pPrecision1 = s.LastOrDefault()?.pPrecision1
                         },
-                        TariffSupUnitLkps = s.LastOrDefault().TariffSupUnitLkps.Select(x => (ITariffSupUnitLkp)x)
+                        TariffSupUnitLkps = s.LastOrDefault()?.TariffSupUnitLkps == null ? new List<ITariffSupUnitLkp>(): s.LastOrDefault()?.TariffSupUnitLkps.Select(x => (ITariffSupUnitLkp)x)
                             .ToList()
 
                     }
