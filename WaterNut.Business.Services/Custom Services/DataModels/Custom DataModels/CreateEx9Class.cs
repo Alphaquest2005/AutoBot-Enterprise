@@ -156,7 +156,9 @@ namespace WaterNut.DataSpace
                     {
                         var cp =
                             BaseDataModel.Instance.Customs_Procedures
-                                .Single(x => x.CustomsOperationId == (int)CustomsOperations.Exwarehouse && x.Sales == true && x.IsPaid == (dfp == "Duty Paid"));
+                                .Where(x => x.CustomsOperationId == (int)CustomsOperations.Exwarehouse && x.Sales == true && x.IsPaid == (dfp == "Duty Paid"))
+                                .OrderByDescending(x => x.IsDefault == true)
+                                .First();
 
                         docSet.Customs_Procedure = cp;
 
