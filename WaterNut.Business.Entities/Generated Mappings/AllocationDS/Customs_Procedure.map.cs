@@ -27,6 +27,7 @@
               this.Property(t => t.Sales).HasColumnName("Sales");
               this.Property(t => t.CustomsOperationId).HasColumnName("CustomsOperationId");
               this.Property(t => t.SubmitToCustoms).HasColumnName("SubmitToCustoms");
+              this.Property(t => t.IsDefault).HasColumnName("IsDefault");
               this.HasRequired(t => t.CustomsOperations).WithMany(t =>(ICollection<Customs_Procedure>) t.Customs_Procedure).HasForeignKey(d => d.CustomsOperationId);
               this.HasMany(t => t.AsycudaDocument).WithOptional(t => t.Customs_Procedure).HasForeignKey(d => d.Customs_ProcedureId);
              // Tracking Properties
