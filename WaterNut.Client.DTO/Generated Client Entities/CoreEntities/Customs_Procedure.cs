@@ -203,6 +203,19 @@ namespace CoreEntities.Client.DTO
 		}
         private Nullable<bool> _SubmitToCustoms;
 
+        [DataMember]
+        public Nullable<bool> IsDefault
+		{ 
+		    get { return _IsDefault; }
+			set
+			{
+			    if (value == _IsDefault) return;
+				_IsDefault = value;
+				NotifyPropertyChanged();//m => this.IsDefault
+			}
+		}
+        private Nullable<bool> _IsDefault;
+
        
         [DataMember]
         public Document_Type Document_Type

@@ -45,6 +45,7 @@
           <Property Name="Sales" Type="bit" />
           <Property Name="CustomsOperationId" Type="int" Nullable="false" />
           <Property Name="SubmitToCustoms" Type="bit" />
+          <Property Name="IsDefault" Type="bit" />
         </EntityType>
         <EntityType Name="CustomsOperations">
           <Key>
@@ -3374,6 +3375,7 @@ FROM [dbo].[PreviousItemsEx] AS [PreviousItemsEx]</DefiningQuery>
           <NavigationProperty Name="AsycudaDocument" Relationship="WaterNutDBModel.Customs_ProcedureAsycudaDocument" FromRole="Customs_Procedure" ToRole="AsycudaDocument" />
           <Property Name="SubmitToCustoms" Type="Boolean" />
           <NavigationProperty Name="CustomsOperations" Relationship="WaterNutDBModel.FK_Customs_Procedure_CustomsOperations" FromRole="Customs_Procedure" ToRole="CustomsOperations" />
+          <Property Name="IsDefault" Type="Boolean" />
         </EntityType>
         <Association Name="Customs_ProcedureAsycudaDocument">
           <End Type="WaterNutDBModel.Customs_Procedure" Role="Customs_Procedure" Multiplicity="0..1" />
@@ -4270,6 +4272,7 @@ FROM [dbo].[PreviousItemsEx] AS [PreviousItemsEx]</DefiningQuery>
           <EntitySetMapping Name="Customs_Procedure">
             <EntityTypeMapping TypeName="WaterNutDBModel.Customs_Procedure">
               <MappingFragment StoreEntitySet="Customs_Procedure">
+                <ScalarProperty Name="IsDefault" ColumnName="IsDefault" />
                 <ScalarProperty Name="SubmitToCustoms" ColumnName="SubmitToCustoms" />
                 <ScalarProperty Name="CustomsOperationId" ColumnName="CustomsOperationId" />
                 <ScalarProperty Name="Sales" ColumnName="Sales" />

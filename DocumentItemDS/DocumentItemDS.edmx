@@ -1686,13 +1686,13 @@ FROM [dbo].[PreviousItemsEx] AS [PreviousItemsEx]</DefiningQuery>
           <Property Name="Commodity_code" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Name="Previous_item_number" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Name="Goods_origin" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
-          <Property Name="Net_weight" Type="Decimal" />
-          <Property Name="Prev_net_weight" Type="Decimal" />
+          <Property Name="Net_weight" Type="Decimal" Precision="9" Scale="2" />
+          <Property Name="Prev_net_weight" Type="Decimal" Precision="9" Scale="2" />
           <Property Name="Prev_reg_ser" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Name="Prev_reg_nbr" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Name="Prev_reg_dat" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Name="Prev_reg_cuo" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
-          <Property Name="Suplementary_Quantity" Type="Decimal" Nullable="false" />
+          <Property Name="Suplementary_Quantity" Type="Decimal" Nullable="false" Precision="9" Scale="2" />
           <Property Name="Preveious_suplementary_quantity" Type="Double" Nullable="false" />
           <Property Name="Current_value" Type="Double" Nullable="false" />
           <Property Name="Previous_value" Type="Double" Nullable="false" />

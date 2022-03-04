@@ -114,6 +114,7 @@
           <Property Name="Sales" Type="bit" />
           <Property Name="CustomsOperationId" Type="int" Nullable="false" />
           <Property Name="SubmitToCustoms" Type="bit" />
+          <Property Name="IsDefault" Type="bit" />
         </EntityType>
         <EntityType Name="CustomsOperations">
           <Key>
@@ -187,6 +188,7 @@
           <Property Name="OldFileTypeId" Type="int" />
           <Property Name="ReplicateHeaderRow" Type="bit" />
           <Property Name="IsImportable" Type="bit" />
+          <Property Name="MaxFileSizeInMB" Type="int" />
         </EntityType>
         <EntityType Name="PackageTypes">
           <Key>
@@ -1045,9 +1047,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.xcuda_ASYCUDAEx' does not
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_FileTypes_AsycudaDocumentSet">
-          <End Role="AsycudaDocumentSet" Type="Self.AsycudaDocumentSet" Multiplicity="1">
-            <OnDelete Action="Cascade" />
-          </End>
+          <End Role="AsycudaDocumentSet" Type="Self.AsycudaDocumentSet" Multiplicity="1" />
           <End Role="FileTypes" Type="Self.FileTypes" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="AsycudaDocumentSet">
@@ -2373,6 +2373,7 @@ FROM [dbo].[xcuda_ASYCUDAEx] AS [xcuda_ASYCUDAEx]</DefiningQuery>
           <Property Name="CustomsOperationId" Type="Int32" Nullable="false" />
           <NavigationProperty Name="CustomsOperation" Relationship="WaterNutDBModel.FK_Customs_Procedure_CustomsOperations" FromRole="Customs_Procedure" ToRole="CustomsOperation" />
           <Property Name="SubmitToCustoms" Type="Boolean" />
+          <Property Name="IsDefault" Type="Boolean" />
         </EntityType>
         <EntityType Name="Document_Type">
           <Key>
@@ -3853,6 +3854,7 @@ FROM [dbo].[xcuda_ASYCUDAEx] AS [xcuda_ASYCUDAEx]</DefiningQuery>
           <Property Name="OldFileTypeId" Type="Int32" />
           <Property Name="ReplicateHeaderRow" Type="Boolean" />
           <Property Name="IsImportable" Type="Boolean" />
+          <Property Name="MaxFileSizeInMB" Type="Int32" />
         </EntityType>
         <Association Name="FK_FileTypes_AsycudaDocumentSet">
           <End Type="WaterNutDBModel.AsycudaDocumentSet" Role="AsycudaDocumentSet" Multiplicity="1">
@@ -4119,6 +4121,7 @@ FROM [dbo].[xcuda_ASYCUDAEx] AS [xcuda_ASYCUDAEx]</DefiningQuery>
           <EntitySetMapping Name="Customs_Procedure">
             <EntityTypeMapping TypeName="WaterNutDBModel.Customs_Procedure">
               <MappingFragment StoreEntitySet="Customs_Procedure">
+                <ScalarProperty Name="IsDefault" ColumnName="IsDefault" />
                 <ScalarProperty Name="SubmitToCustoms" ColumnName="SubmitToCustoms" />
                 <ScalarProperty Name="CustomsOperationId" ColumnName="CustomsOperationId" />
                 <ScalarProperty Name="Sales" ColumnName="Sales" />
@@ -4765,6 +4768,7 @@ FROM [dbo].[xcuda_ASYCUDAEx] AS [xcuda_ASYCUDAEx]</DefiningQuery>
           <EntitySetMapping Name="FileTypes">
             <EntityTypeMapping TypeName="WaterNutDBModel.FileType">
               <MappingFragment StoreEntitySet="FileTypes">
+                <ScalarProperty Name="MaxFileSizeInMB" ColumnName="MaxFileSizeInMB" />
                 <ScalarProperty Name="IsImportable" ColumnName="IsImportable" />
                 <ScalarProperty Name="ReplicateHeaderRow" ColumnName="ReplicateHeaderRow" />
                 <ScalarProperty Name="OldFileTypeId" ColumnName="OldFileTypeId" />
