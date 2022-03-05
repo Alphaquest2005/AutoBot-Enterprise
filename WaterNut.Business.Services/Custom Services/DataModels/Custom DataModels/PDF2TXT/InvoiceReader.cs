@@ -480,6 +480,18 @@ namespace WaterNut.DataSpace
 
             }
         }
+
+        public static string GetImageTxt(string directoryName)
+        {
+            var files = Directory.GetFiles(directoryName, "*.png");
+            var strBuilder = new StringBuilder();
+            foreach (var processFile in files)
+            {
+               strBuilder.Append( PdfOcr.GetTextFromImage(PageSegMode.SingleColumn, directoryName, processFile, false));
+            }
+
+            return strBuilder.ToString();
+        }
     }
 
     public class Invoice

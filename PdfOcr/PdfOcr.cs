@@ -62,7 +62,7 @@ namespace pdf_ocr
                 }
                 GetImageFromPdf(processFile, TempDir);
                 //Recognizing text from the generated image
-                return GetTextFromImage(pagemode, TempDir, processFile);
+                return GetTextFromImage(pagemode, TempDir, processFile, true);
             }
             catch (Exception e)
             {
@@ -71,7 +71,7 @@ namespace pdf_ocr
             }
         }
 
-        public string GetTextFromImage(PageSegMode pagemode, string TempDir, string processFile)
+        public static string GetTextFromImage(PageSegMode pagemode, string TempDir, string processFile, bool deleteFolder)
         {
             var recognizedText = GetTextFromImage(pagemode, TempDir);
             File.WriteAllText(processFile + ".txt", recognizedText);
@@ -148,7 +148,7 @@ namespace pdf_ocr
         /// <param name="TempDir"></param>
         /// <param name="imagePath"></param>
         /// <returns></returns>
-        private string GetTextFromImage(PageSegMode pagemode, string TempDir)
+        private static string GetTextFromImage(PageSegMode pagemode, string TempDir)
         {
             var result = new StringBuilder();
             foreach (var file in new DirectoryInfo(TempDir).GetFiles().Where(x => x.Extension == ".png").OrderBy(x => x.LastWriteTime))
