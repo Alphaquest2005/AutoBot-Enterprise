@@ -91,6 +91,9 @@ namespace WaterNut.DataSpace
         private IEnumerable<Document_Type> _document_Types;
 
         private IEnumerable<ExportTemplate> _exportTemplates;
+        private static double _minimumPossibleAsycudaWeight = .01;
+        private static double _runningMiniumWeight = 0.0;
+        private static double _weightAsycudaNormallyOffBy = .2;
 
         static BaseDataModel()
         {
@@ -1555,7 +1558,7 @@ namespace WaterNut.DataSpace
                     val.xcuda_Weight = xcuda_Weight;
                 }
 
-                xcuda_Weight.Gross_weight = weightRate < 0.01 ? 0.01 : weightRate;
+                xcuda_Weight.Gross_weight = weightRate < _minimumPossibleAsycudaWeight ? _minimumPossibleAsycudaWeight : weightRate;
 
                 double weightUsed = 0;
                 using (var ictx = new DocumentItemDSContext {StartTracking = true})
@@ -1565,7 +1568,6 @@ namespace WaterNut.DataSpace
                         .Where(x => x.xcuda_Valuation_item.xcuda_Item.ASYCUDA_Id == doc.Key).ToList();
 
 
-                    var runningMiniumWeight = 0.0;
                     foreach (var itm in lst)
                     {
                         var itmQuantity = ictx.xcuda_Tarification.Include(x => x.Unordered_xcuda_Supplementary_unit)
@@ -1574,18 +1576,20 @@ namespace WaterNut.DataSpace
                             .Suppplementary_unit_quantity.GetValueOrDefault();
 
                         var calWgt = weightRate * (itmQuantity / doc.Value);
-                        var minWgt = itmQuantity * .01;
+                        var minWgt = itmQuantity * _minimumPossibleAsycudaWeight;
 
-                        if (calWgt - runningMiniumWeight < minWgt)
+                        if (calWgt - _runningMiniumWeight < minWgt)
                         {
                             itm.Gross_weight_itm = minWgt;
-                            runningMiniumWeight += minWgt;
+                            _runningMiniumWeight += minWgt;
                         }
                         else
                         {
-                            itm.Gross_weight_itm = calWgt - runningMiniumWeight;
-                            runningMiniumWeight = 0;
+                            itm.Gross_weight_itm = calWgt - _runningMiniumWeight;
+                            _runningMiniumWeight = 0;
                         }
+
+                        itm.Gross_weight_itm += (itm == lst.First() ? _weightAsycudaNormallyOffBy : 0);
 
                         itm.Net_weight_itm =
                             itm.Gross_weight_itm;
@@ -1818,9 +1822,9 @@ namespace WaterNut.DataSpace
                 TrackingState = TrackingState.Added
             };
             itm.xcuda_Valuation_item.xcuda_Weight_itm.Gross_weight_itm = (float) pod.Quantity *
-                                                                         Convert.ToSingle(.01);
+                                                                         Convert.ToSingle(_minimumPossibleAsycudaWeight);
             itm.xcuda_Valuation_item.xcuda_Weight_itm.Net_weight_itm = (float) pod.Quantity *
-                                                                       Convert.ToSingle(.01);
+                                                                       Convert.ToSingle(_minimumPossibleAsycudaWeight);
         }
 
         public string CleanText(string p)

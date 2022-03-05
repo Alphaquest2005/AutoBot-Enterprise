@@ -62,16 +62,21 @@ namespace pdf_ocr
                 }
                 GetImageFromPdf(processFile, TempDir);
                 //Recognizing text from the generated image
-                var recognizedText = GetTextFromImage(pagemode, TempDir);
-                File.WriteAllText(processFile + ".txt", recognizedText);
-                Directory.Delete(TempDir, true);
-                return recognizedText;
+                return GetTextFromImage(pagemode, TempDir, processFile);
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
                 throw;
             }
+        }
+
+        public string GetTextFromImage(PageSegMode pagemode, string TempDir, string processFile)
+        {
+            var recognizedText = GetTextFromImage(pagemode, TempDir);
+            File.WriteAllText(processFile + ".txt", recognizedText);
+            Directory.Delete(TempDir, true);
+            return recognizedText;
         }
 
         /// <summary>

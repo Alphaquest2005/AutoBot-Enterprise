@@ -691,10 +691,25 @@ namespace AutoBot
                 {"ImportExpiredEntires", ImportExpiredEntires },
                 {"ImportCancelledEntires", ImportCancelledEntires },
                 {"ImportAllFilesInDataFolder", ImportAllFilesInDataFolder},
-                {"relinkAllPreviousItems",relinkAllPreviousItems}
+                {"relinkAllPreviousItems",relinkAllPreviousItems},
+                {"ImportWarehouseErrors", ImportWarehouseErrors},
 
 
             };
+
+        private static void ImportWarehouseErrors()
+        {
+            try
+            {
+                Console.WriteLine("ReLink All Previous Items");
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+            
+        }
 
         private static void relinkAllPreviousItems()
         {
