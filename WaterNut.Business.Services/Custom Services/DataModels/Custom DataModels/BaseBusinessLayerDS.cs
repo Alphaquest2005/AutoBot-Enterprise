@@ -604,9 +604,7 @@ namespace WaterNut.DataSpace
                         perInvoice = false;
                 }
 
-            var cp = Instance.Customs_Procedures.Single(x =>
-                x.CustomsOperationId == (int) CustomsOperations.Warehouse
-                && x.Sales == true && x.Stock != true);
+            var cp = GetCustomsProcedure("Duty Paid", "PO");
             docSet.Customs_Procedure = cp;
             docSet.Customs_ProcedureId = cp.Customs_ProcedureId;
 
@@ -625,6 +623,52 @@ namespace WaterNut.DataSpace
         {
         }
 
+        public static Customs_Procedure GetCustomsProcedure(string dfp, string DocumentType)
+        {
+            Customs_Procedure customsProcedure;
+            var isPaid = dfp == "Duty Paid";
+            Func<Customs_Procedure, bool> dtpredicate = x => false;
+            switch (DocumentType)
+            {
+                case "PO":
+                    dtpredicate = x =>
+                        x.CustomsOperationId == (int)CustomsOperations.Warehouse
+                        && x.Sales == true && x.Stock != true;
+
+                    break;
+                case "Sales":
+                    dtpredicate = x =>
+                        x.CustomsOperationId == (int)CustomsOperations.Exwarehouse && x.Sales == true && x.IsPaid == isPaid;
+                    break;
+                case "DIS":
+                    dtpredicate = x =>
+                        x.CustomsOperationId == (int)CustomsOperations.Exwarehouse && x.Discrepancy == true &&
+                        x.IsPaid == isPaid;
+                    break;
+                case "ADJ":
+                    dtpredicate = x =>
+                        x.CustomsOperationId == (int)CustomsOperations.Exwarehouse && x.Adjustment == true &&
+                        x.IsPaid == isPaid;
+                    break;
+                case "IM9":
+                        dtpredicate = x =>
+                                        x.CustomsOperationId == (int)CustomsOperations.Exwarehouse && x.Stock == true;
+                    break;
+                default:
+                    throw new ApplicationException("Document Type");
+            }
+            
+            
+            return GetCustoms_Procedure(dtpredicate);
+        }
+
+        public static Customs_Procedure GetCustoms_Procedure(Func<Customs_Procedure, bool> dtpredicate)
+        {
+            return BaseDataModel.Instance.Customs_Procedures
+                .Where(dtpredicate)
+                .OrderByDescending(x => x.IsDefault == true)
+                .First();
+        }
 
         public static string SetFilename(string droppedFilePath, string targetFileName, string nameExtension)
         {
@@ -2292,8 +2336,7 @@ namespace WaterNut.DataSpace
 
             newdoc.Item.Clear();
 
-            var cp = Instance.Customs_Procedures.Single(x =>
-                x.CustomsOperationId == (int) CustomsOperations.Exwarehouse && x.Stock == true);
+            var cp = GetCustomsProcedure("Duty Free", "IM9");
 
             var exp = Instance.ExportTemplates
                 .Single(x =>x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId &&  x.Customs_Procedure == cp.CustomsProcedure);
@@ -3628,6 +3671,8 @@ namespace WaterNut.DataSpace
 
             public double InternalFreight { get; set; }
         }
+
+       
     }
 
     internal class LicenceDocItem

@@ -2190,27 +2190,11 @@ namespace WaterNut.DataSpace
 
                 cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.AutoUpdate = false;
                 BaseDataModel.Instance.IntCdoc(cdoc, ads, prefix);
-                Customs_Procedure customsProcedure;
-                var isPaid = dfp == "Duty Paid" ;
-                Func<Customs_Procedure, bool> dtpredicate = x => false;
-                switch (DocumentType)
-                {
-                    case "Sales":
-                        dtpredicate = x => x.CustomsOperationId == (int)CustomsOperations.Exwarehouse && x.Sales == true && x.IsPaid == isPaid;
-                        break;
-                    case "DIS":
-                        dtpredicate = x => x.CustomsOperationId == (int)CustomsOperations.Exwarehouse && x.Discrepancy == true && x.IsPaid == isPaid;
-                        break;
-                    case "ADJ":
-                        dtpredicate = x => x.CustomsOperationId == (int)CustomsOperations.Exwarehouse && x.Adjustment == true && x.IsPaid == isPaid;
-                        break;
-                    default:
-                        throw new ApplicationException("Document Type");
+                var customsProcedure = BaseDataModel.GetCustomsProcedure(dfp, DocumentType);
 
-                }
                 cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.Description = $"{DocumentType } {dfp} Entries";
                 
-                customsProcedure = BaseDataModel.Instance.Customs_Procedures.Single(dtpredicate);
+            
 
                 BaseDataModel.Instance.AttachCustomProcedure(cdoc, customsProcedure);
                 AllocationsModel.Instance.AddDutyFreePaidtoRef(cdoc, dfp, ads);
@@ -2255,7 +2239,8 @@ namespace WaterNut.DataSpace
             }
         }
 
-        
+      
+
 
         public class AlloEntryLineData: BaseDataModel.IEntryLineData //: AllocationsModel.AlloEntryLineData
         {
