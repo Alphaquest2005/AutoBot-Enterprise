@@ -65,7 +65,7 @@ namespace WaterNut.DataSpace
         public bool Process7100 { get; set; }
 
 
-        public async Task CreateEx9(string filterExpression, bool perIM7, bool process7100, bool applyCurrentChecks,
+        public async Task<List<DocumentCT>> CreateEx9(string filterExpression, bool perIM7, bool process7100, bool applyCurrentChecks,
             AsycudaDocumentSet docSet, string documentType, string ex9BucketType, bool isGrouped,
             bool checkQtyAllocatedGreaterThanPiQuantity, bool checkForMultipleMonths, bool applyEx9Bucket, bool applyHistoricChecks,  bool perInvoice, bool autoAssess, bool overPIcheck, bool universalPIcheck, bool itemPIcheck)
         {
@@ -76,7 +76,7 @@ namespace WaterNut.DataSpace
                 PerIM7 = perIM7;
                 Process7100 = process7100;
                 
-                await ProcessEx9(docSet, filterExpression, documentType, ex9BucketType, isGrouped, checkQtyAllocatedGreaterThanPiQuantity, checkForMultipleMonths, applyEx9Bucket, applyHistoricChecks, applyCurrentChecks, perInvoice, autoAssess, overPIcheck, universalPIcheck, itemPIcheck).ConfigureAwait(continueOnCapturedContext: false);
+                return await ProcessEx9(docSet, filterExpression, documentType, ex9BucketType, isGrouped, checkQtyAllocatedGreaterThanPiQuantity, checkForMultipleMonths, applyEx9Bucket, applyHistoricChecks, applyCurrentChecks, perInvoice, autoAssess, overPIcheck, universalPIcheck, itemPIcheck).ConfigureAwait(continueOnCapturedContext: false);
 
             }
             catch (Exception)
@@ -88,7 +88,7 @@ namespace WaterNut.DataSpace
 
         public static List<PiSummary> DocSetPi = new List<PiSummary>();
 
-        private async Task ProcessEx9(AsycudaDocumentSet docSet, string filterExp, string documentType,
+        private async Task<List<DocumentCT>> ProcessEx9(AsycudaDocumentSet docSet, string filterExp, string documentType,
             string ex9BucketType, bool isGrouped,
             bool checkQtyAllocatedGreaterThanPiQuantity, bool checkForMultipleMonths, bool applyEx9Bucket,
             bool applyHistoricChecks, bool applyCurrentChecks, bool perInvoice, bool autoAssess, bool overPIcheck,
@@ -101,6 +101,7 @@ namespace WaterNut.DataSpace
                 //DocSetPi.Clear();// moved here because data is cached wont update automatically
                 freashStart = true;
                 _ex9AsycudaSalesAllocations = null;
+                var docs = new List<DocumentCT>();
                 //docPreviousItems = new Dictionary<int, List<previousItems>>();
                 //var dutylst = CreateDutyList(slst);
                 var dutylst = new List<string>() {"Duty Paid", "Duty Free"};
@@ -146,7 +147,8 @@ namespace WaterNut.DataSpace
                     //}
 
                     var exPro =
-                        " && (PreviousDocumentItem.AsycudaDocument.Customs_Procedure.CustomsOperations.Name == \"Warehouse\" )";
+                        " && (PreviousDocumentItem.AsycudaDocument.Customs_Procedure.CustomsOperations.Name == \"Warehouse\" )" +
+                        " && (PreviousDocumentItem.AsycudaDocument.Cancelled == null || PreviousDocumentItem.AsycudaDocument.Cancelled == false)";
                     var slst =
                         (await CreateAllocationDataBlocks(currentFilter + exPro, errors, dateFilter).ConfigureAwait(false))
                         .Where(x => x.Allocations.Count > 0);
@@ -174,7 +176,7 @@ namespace WaterNut.DataSpace
                                 itemSalesPiSummarylst = GetItemSalesPiSummary(docSet.ApplicationSettingsId, startDate,
                                     endDate,
                                     dfp, entrytype.Key); //res.SelectMany(x => x.Allocations).Select(z => z.AllocationId).ToList(), 
-                                await CreateDutyFreePaidDocument(dfp, res, docSet, documentType, isGrouped,
+                               var genDocs =  await CreateDutyFreePaidDocument(dfp, res, docSet, documentType, isGrouped,
                                         itemSalesPiSummarylst.Where(x =>
                                                 x.DutyFreePaid == dfp || x.DutyFreePaid == "All" ||
                                                 x.DutyFreePaid == "Universal")
@@ -182,11 +184,9 @@ namespace WaterNut.DataSpace
                                         applyEx9Bucket, ex9BucketType, applyHistoricChecks, applyCurrentChecks,
                                         autoAssess, perInvoice, overPIcheck, universalPIcheck, itemPIcheck)
                                     .ConfigureAwait(false);
-                                //await CreateDutyFreePaidDocument(dfp, res, docSet, "Sales", true,
-                                //        itemSalesPiSummarylst.Where(x => x.DutyFreePaid == dfp || x.DutyFreePaid == "All")
-                                //            .ToList(), true, true, true, "Historic", true, ApplyCurrentChecks,
-                                //        true, false, true)
-                                //    .ConfigureAwait(false);
+                                docs.AddRange(genDocs);
+
+                               
                             }
                         }
 
@@ -198,6 +198,7 @@ namespace WaterNut.DataSpace
                 }
                 BaseDataModel.RenameDuplicateDocuments(docSet.AsycudaDocumentSetId);
                 StatusModel.StopStatusUpdate();
+                return docs;
             }
             catch (Exception e)
             {

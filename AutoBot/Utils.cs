@@ -32,6 +32,7 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Threading.Tasks.Schedulers;
+using System.Windows.Forms;
 using AdjustmentQS.Business.Entities;
 using AllocationDS.Business.Entities;
 using Asycuda421;
@@ -46,6 +47,7 @@ using SimpleMvvmToolkit.ModelExtensions;
 using TrackableEntities;
 using TrackableEntities.Client;
 using ValuationDS.Business.Entities;
+using WaterNut.Business.Entities;
 using WaterNut.DataSpace;
 using WaterNut.DataSpace.Asycuda;
 using ApplicationException = System.ApplicationException;
@@ -156,8 +158,18 @@ namespace AutoBot
                 {"EmailEntriesExpiringNextMonth", EmailEntriesExpiringNextMonth },
                 {"RecreateEx9", RecreateEx9 },//
                 {"UpdateRegEx", UpdateRegEx},
+                {"ImportWarehouseErrors", (ft,fs) => ImportWarehouseErrors()},
+                {"Kill", Kill},
+                {"LinkPDFs", (ft,fs) => LinkPDFs()},
+                {"DownloadPOFiles", (ft,fs) => DownloadPOFiles()},
+
 
             };
+
+        private static void Kill(FileTypes arg1, FileInfo[] arg2)
+        {
+            Application.Exit();
+        }
 
         private static void UpdateRegEx(FileTypes fileTypes, FileInfo[] files)
         {
@@ -540,7 +552,7 @@ namespace AutoBot
                     EmailDownloader.EmailDownloader.SendEmail(Client,null, "Invoice Template Not found!",
                          new[] { "Joseph@auto-brokerage.com" }, body, res1);
 
-                    fileTypes.ProcessNextStep = "Kill";
+                    fileTypes.ProcessNextStep.Add("Kill");
 
                     }
                     
@@ -575,9 +587,18 @@ namespace AutoBot
             }
         }
 
-        private static void RecreateEx9(FileTypes arg1, FileInfo[] arg2)
+        private static void RecreateEx9(FileTypes filetype, FileInfo[] files)
         {
-            CreateEx9(true);
+            var genDocs = CreateEx9(true);
+
+            if (genDocs.Any()) //reexwarehouse process
+            {
+                filetype.ProcessNextStep.AddRange(new List<string>(){"ExportEx9Entries", "AssessEx9Entries", "DownloadPOFiles", "ImportSalesEntries", "ImportWarehouseErrors", "RecreateEx9" });
+            }
+            else // reimport and submit to customs
+            {
+                filetype.ProcessNextStep.AddRange(new List<string>() { "DownloadPOFiles", "ImportSalesEntries", "LinkPDFs", "SubmitToCustoms", "CleanupEntries" });
+            }
         }
 
         private static void EmailEntriesExpiringNextMonth(FileTypes arg1, FileInfo[] arg2)
@@ -732,13 +753,16 @@ namespace AutoBot
                 {
                     var body = "Ex-Warehouse Errors Found: \r\n" +
                                            "Errors are as follows: \r\n" +
-                                           $"\t {errorLst.Aggregate((old, current) => old + "\r\n\t" + current)}" +
-                                           $"Please Check the spreadsheet or inform Joseph Bartholomew if this is an Error.\r\n" +
+                                           $"\t {errorLst.Aggregate((old, current) => old + "\r\n\t" + current)}\r\n" +
+                                           $"\r\nPlease Check the spreadsheet or inform Joseph Bartholomew if this is an Error.\r\n" +
                                            $"Regards,\r\n" +
                                            $"AutoBot";
                     var contacts = new CoreEntitiesContext().Contacts.Where(x => x.Role == "Broker" && x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId).Select(x => x.EmailAddress).ToArray();
                     EmailDownloader.EmailDownloader.SendEmail(Client, directoryName, $"Exwarehouse Errors Found for: {BaseDataModel.CurrentSalesInfo().Item3.Declarant_Reference_Number}", contacts,body, attachments);
-                    
+                    foreach (var att in attachments)
+                    {
+                      File.Delete(att);  
+                    }
                 }
             }
             catch (Exception e)
@@ -5079,7 +5103,7 @@ namespace AutoBot
             }
         }
 
-        public static void CreateEx9(bool overwrite)
+        public static List<DocumentCT> CreateEx9(bool overwrite)
         {
             try
             {
@@ -5088,7 +5112,7 @@ namespace AutoBot
                 Console.WriteLine("Create Ex9");
 
                 var saleInfo = BaseDataModel.CurrentSalesInfo();
-                if (saleInfo.Item3.AsycudaDocumentSetId == 0) return;
+                if (saleInfo.Item3.AsycudaDocumentSetId == 0) return new List<DocumentCT>();
 
                 var docset = BaseDataModel.Instance.GetAsycudaDocumentSet(saleInfo.Item3.AsycudaDocumentSetId).Result;
                 if (overwrite)
@@ -5119,7 +5143,7 @@ namespace AutoBot
                     HAVING (SUM(EX9AsycudaSalesAllocations.PiQuantity) < SUM(EX9AsycudaSalesAllocations.pQtyAllocated)) AND (SUM(EX9AsycudaSalesAllocations.QtyAllocated) > 0) AND (MAX(EX9AsycudaSalesAllocations.xStatus) IS NULL)";
 
                     var res = ctx.Database.SqlQuery<string>(str);
-                    if (!res.Any()) return;
+                    if (!res.Any()) return new List<DocumentCT>();
                 }
 
 
@@ -5141,12 +5165,9 @@ namespace AutoBot
 
 
 
-                AllocationsModel.Instance.CreateEX9Class.CreateEx9(filterExpression, false, false, true, docset, "Sales", "Historic", true, true, true,true,true,false,true,true, true, true).Wait();
-                //await CreateDutyFreePaidDocument(dfp, res, docSet, "Sales", true,
-                //        itemSalesPiSummarylst.Where(x => x.DutyFreePaid == dfp || x.DutyFreePaid == "All")
-                //            .ToList(), true, true, true, "Historic", true, ApplyCurrentChecks,
-                //        true, false, true)
-                //    .ConfigureAwait(false);
+                return AllocationsModel.Instance.CreateEX9Class.CreateEx9(filterExpression, false, false, true, docset, "Sales", "Historic", true, true, true,true,true,false,true,true, true, true).Result;
+
+              
 
             }
             catch (Exception e)
@@ -5195,6 +5216,7 @@ namespace AutoBot
                     //"&& (xBond_Item_Id == 0)" + not relevant because it could be assigned to another sale but not exwarehoused
                     "&& (QtyAllocated != null && EntryDataDetailsId != null)" +
                     "&& (PiQuantity < pQtyAllocated)" +
+                    
                     //////////// I left this because i only want to use interface to remove All ALLOCATED 
                     //"&& (pQuantity > PiQuantity)" +
                     //"&& (pQuantity - pQtyAllocated  < 0.001)" + // prevents spill over allocations
@@ -6058,7 +6080,7 @@ namespace AutoBot
                             }
                             else
                             {
-                                fileType.ProcessNextStep = "ReSubmitDiscrepanciesToCustoms";
+                                fileType.ProcessNextStep.Add("ReSubmitDiscrepanciesToCustoms");
                             continue;
                             }
 
@@ -8116,12 +8138,8 @@ namespace AutoBot
                                 appSetting.AssessEX == x.AssessEX))
                    .Where(x => x.Actions.TestMode ==
                                (BaseDataModel.Instance.CurrentApplicationSettings.TestMode))
-                   .Select(x => new { Name = x.Actions.Name, Action = Utils.FileActions[x.Actions.Name] }).ToList()
-                   .ForEach(x =>
-                   {
-                       if (string.IsNullOrEmpty(fileType.ProcessNextStep) || fileType.ProcessNextStep == x.Name)
-                           x.Action.Invoke(fileType, files);
-                   });
+                   .Select(x =>  (x.Actions.Name, Utils.FileActions[x.Actions.Name])).ToList()
+                   .ForEach(x => { ExecuteActions(fileType, files, x); });
 
             }
             catch (Exception e)
@@ -8131,6 +8149,24 @@ namespace AutoBot
                     Array.Empty<string>());
             }
         }
+
+        private static void ExecuteActions(FileTypes fileType, FileInfo[] files, (string Name, Action<FileTypes, FileInfo[]> Action) x)
+        {
+            if (fileType.ProcessNextStep.Any())
+            {
+                while (fileType.ProcessNextStep.Any())
+                {
+                    var res = fileType.ProcessNextStep.Select(z => new { Name = z, Action = Utils.FileActions[z] }).ToList();
+                    res.First().Action.Invoke(fileType, files);
+                    fileType.ProcessNextStep.RemoveAt(0);
+                }
+                return;
+            }
+
+
+            x.Action.Invoke(fileType, files);
+        }
+
         public static void ExecuteNonSpecificFileActions(FileTypes fileType, FileInfo[] files, ApplicationSettings appSetting)
         {
             try
@@ -8141,12 +8177,8 @@ namespace AutoBot
                                  appSetting.AssessEX == x.AssessEX))
                     .Where(x => x.Actions.TestMode ==
                                 (BaseDataModel.Instance.CurrentApplicationSettings.TestMode))
-                    .Select(x => new { Name = x.Actions.Name, Action = Utils.FileActions[x.Actions.Name] }).ToList()
-                    .ForEach(x =>
-                    {
-                        if (string.IsNullOrEmpty(fileType.ProcessNextStep) || fileType.ProcessNextStep == x.Name)
-                            x.Action.Invoke(fileType, files);
-                    });
+                    .Select(x => (x.Actions.Name , Utils.FileActions[x.Actions.Name])).ToList()
+                    .ForEach(x =>  ExecuteActions(fileType, files, x));
             }
             catch (Exception e)
             {

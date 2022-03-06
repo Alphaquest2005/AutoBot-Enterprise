@@ -196,7 +196,7 @@ namespace AutoBot
                                     if (!ReadOnlyMode)
                                     {
                                         Utils.ExecuteDataSpecificFileActions(fileType, csvFiles, appSetting);
-                                        if (fileType.ProcessNextStep == "Kill") return;
+                                        //if (fileType.ProcessNextStep.FirstOrDefault() == "Kill") return;
                                         if (msg.Key.Item2.EmailMapping.IsSingleEmail == true)
                                         {
                                             Utils.ExecuteNonSpecificFileActions(fileType, csvFiles, appSetting);
@@ -231,7 +231,7 @@ namespace AutoBot
                                     var pf = docSetId.DistinctBy(x => x.Item1.Id).ToList();
                                     foreach (var t in pf)
                                     {
-                                        if(t.Item1.ProcessNextStep == "Kill") return;
+                                        //if(t.Item1.ProcessNextStep == "Kill") return;
                                         t.Item1.AsycudaDocumentSetId = docSetId.Key;
                                         Utils.ExecuteNonSpecificFileActions(t.Item1, t.Item2, appSetting);
                                     }

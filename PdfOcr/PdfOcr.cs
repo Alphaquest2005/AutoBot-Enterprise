@@ -75,7 +75,7 @@ namespace pdf_ocr
         {
             var recognizedText = GetTextFromImage(pagemode, TempDir);
             File.WriteAllText(processFile + ".txt", recognizedText);
-            Directory.Delete(TempDir, true);
+            if(deleteFolder) Directory.Delete(TempDir, true);
             return recognizedText;
         }
 
