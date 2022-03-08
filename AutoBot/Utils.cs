@@ -597,7 +597,7 @@ namespace AutoBot
             }
             else // reimport and submit to customs
             {
-                filetype.ProcessNextStep.AddRange(new List<string>() { "DownloadPOFiles", "ImportSalesEntries", "LinkPDFs", "SubmitToCustoms", "CleanupEntries" });
+                filetype.ProcessNextStep.AddRange(new List<string>() { "LinkPDFs", "SubmitToCustoms", "CleanupEntries", "Kill" });
             }
         }
 
