@@ -45,6 +45,16 @@ namespace WaterNut.DataSpace
 
     public class InvoiceReader
     {
+        public const string CommandsTxt = "Commands:\r\n" +
+                                          "UpdateRegex: RegId: 000, Regex: 'xyz', IsMultiline: True\r\n" +
+                                          "AddFieldRegEx: RegId: 000,  Field: Name, Regex: '', ReplaceRegex: ''\r\n" +
+                                          "RequestInvoice: Name:'xyz'\r\n" +
+                                          "AddInvoice: Name:'', IDRegex:''\r\n" +
+                                          "AddPart: Invoice:'', Name: '', StartRegex: '', ParentPart:'', IsRecurring: True, IsComposite: False, IsMultiLine: True \r\n" +
+                                          "AddLine: Invoice:'',  Part: '', Name: '', Regex: ''\r\n" +
+                                          "UpdateLine: Invoice:'',  Part: '', Name: '', Regex: ''\r\n" +
+                                          "AddFieldFormatRegex: RegexId: 000, Keyword:'', Regex:'', ReplaceRegex:'', ReplacementRegexIsMultiLine: True, RegexIsMultiLine: True\r\n";
+
         public static bool Import(string file, int fileTypeId, string emailId, bool overWriteExisting,
             List<AsycudaDocumentSet> docSet, FileTypes fileType, Client client)
         {
@@ -58,7 +68,7 @@ namespace WaterNut.DataSpace
                 //Get Template
                 var templates = GetTemplates(x => true);
 
-                foreach (var tmp in templates.OrderBy(x => x.OcrInvoices.Id))//.Where(x => x.OcrInvoices.Id == 37)
+                foreach (var tmp in templates.OrderBy(x => x.OcrInvoices.Id))//.Where(x => x.OcrInvoices.Id == 99)
                     try
                     {
                         if(TryReadFile(file, emailId, fileType, pdfTxt, client, overWriteExisting, docSet, tmp, fileTypeId)) return true;
@@ -428,13 +438,7 @@ namespace WaterNut.DataSpace
             return body;
         }
 
-        public const string CommandsTxt = "Commands:\r\n" +
-                                          "UpdateRegex: RegId: 000, Regex: 'xyz', IsMultiline: True\r\n" +
-                                          "AddFieldRegEx: RegId: 000,  Field: Name, Regex: '', ReplaceRegex: ''\r\n" +
-                                          "RequestInvoice: Name:'xyz'\r\n" +
-                                          "AddInvoice: Name:'', IDRegex:''\r\n" +
-                                          "AddPart: Invoice:'', Name: '' StartRegex: '', ParentPart:'', IsRecurring: True, IsComposite: False, IsMultiLine: True \r\n" +
-                                          "AddLine: Invoice:'',  Part: '', Name: '', Regex: ''";
+
 
 
         private static void SeeWhatSticks(string pdftext)
