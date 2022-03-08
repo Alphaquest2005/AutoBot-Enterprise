@@ -157,11 +157,12 @@ namespace AutoBot
                 {"ImportCancelledEntires", ImportCancelledEntires },
                 {"EmailEntriesExpiringNextMonth", EmailEntriesExpiringNextMonth },
                 {"RecreateEx9", RecreateEx9 },//
-                {"UpdateRegEx", UpdateRegEx},
+                {"UpdateRegEx", UpdateInvoice.UpdateRegEx},
                 {"ImportWarehouseErrors", (ft,fs) => ImportWarehouseErrors()},
                 {"Kill", Kill},
                 {"LinkPDFs", (ft,fs) => LinkPDFs()},
                 {"DownloadPOFiles", (ft,fs) => DownloadPOFiles()},
+                
 
 
             };
@@ -169,422 +170,6 @@ namespace AutoBot
         private static void Kill(FileTypes arg1, FileInfo[] arg2)
         {
             Application.Exit();
-        }
-
-        private static void UpdateRegEx(FileTypes fileTypes, FileInfo[] files)
-        {
-            var regExCommands = new Dictionary<string, (Action<Dictionary<string, string>> Action, string[] Params)>()
-            {
-                {
-                    "demo",
-                    ((paramInfo) =>
-                        {
-                            try
-                            {
-                                using (var ctx = new OCRContext())
-                                {
-                                    ctx.SaveChanges();
-                                }
-                            }
-                            catch (Exception e)
-                            {
-                                Console.WriteLine(e);
-                                throw;
-                            }
-
-                        },
-                        new string[] { "RegId", "Regex" }
-                    )
-                },
-                {
-                    "RequestInvoice",
-                    ((paramInfo) =>
-                        {
-                            RequestInvoice(paramInfo, fileTypes);
-                        },
-                        new string[] { "Name"}
-                    )
-                },
-                {
-                    "UpdateRegex",
-                    ((paramInfo) =>
-                        {
-                            try
-                            {
-                                using (var ctx = new OCRContext())
-                                {
-                                    var regId = int.Parse(paramInfo["RegId"]);
-                                    var reg = ctx.RegularExpressions.First(x => x.Id == regId);
-                                    reg.RegEx = paramInfo["Regex"];
-                                    if (paramInfo.ContainsKey("IsMultiline"))
-                                    {
-                                        reg.MultiLine = (paramInfo["IsMultiline"] == "True");
-                                    }
-
-                                ctx.SaveChanges();
-                                }
-                            }
-                            catch (Exception e)
-                            {
-                                Console.WriteLine(e);
-                                throw;
-                            }
-                            
-                        },
-                    new string[] { "RegId", "Regex" }
-                ) 
-                },
-                {
-                    "AddFieldRegEx",
-                    ((paramInfo) => { AddFieldRegEx(paramInfo); },
-                        new string[] { "RegId", "Field", "Regex", "ReplaceRegex" }
-                    )
-                },
-                {
-                    "AddInvoice",
-                    ((paramInfo) => { AddInvoice(paramInfo); },
-                        new string[] { "Name", "IDRegex" }
-                    )
-                },
-                {
-                    "AddPart",
-                    ((paramInfo) => { AddPart(paramInfo); },
-                        new string[] { "Invoice", "Name", "StartRegex", "IsRecurring", "IsComposite" }
-                    )
-                },
-                {
-                    "AddLine",
-                    ((paramInfo) => { AddLine(paramInfo); },
-                        new string[] { "Invoice", "Part", "Name", "Regex"}
-                    )
-                },
-
-            }; 
-
-            foreach (var info in files.Where(x => x.Extension == ".txt"))
-            {
-                var infoTxt = File.ReadAllText(info.FullName);
-                var commands = Regex.Matches(infoTxt, @"(?<Command>\w+):\s(?<Params>.+?)($|\r)",
-                    RegexOptions.Multiline | RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture);
-
-                foreach (Match cmdinfo in commands)
-                {
-                    if (InvoiceReader.CommandsTxt.Contains(cmdinfo.Value)) continue;
-                    var cmdName = cmdinfo.Groups["Command"].Value;
-
-                    if (!regExCommands.ContainsKey(cmdName)) continue;
-
-                    var cmdParamInfo = cmdinfo.Groups["Params"].Value;
-                    var cmdParams = Regex.Matches(cmdParamInfo, @"(?<Param>\w+):\s?(?<Value>.*?)((, )|($|\r))",
-                        RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.ExplicitCapture);
-                    var cmdparamDic = new Dictionary<string, string>();
-                    foreach (Match m in cmdParams)
-                    {
-                        cmdparamDic.Add(m.Groups["Param"].Value.Trim(',', ' ', '\''), m.Groups["Value"].Value.Trim(',',' ','\''));
-                    }
-
-                    ValidateParams(cmdparamDic, regExCommands[cmdName].Params);
-                    regExCommands[cmdName].Action.Invoke(cmdparamDic);
-
-                }
-
-            }
-        }
-
-        private static void AddFieldRegEx(Dictionary<string, string> paramInfo)
-        {
-            try
-            {
-                using (var ctx = new OCRContext())
-                {
-                    var regId = int.Parse(paramInfo["RegId"]);
-
-                    var f = paramInfo["Field"];
-                    var fields = ctx.Fields.Where(x =>
-                            x.Key == f &&
-                            x.Lines.RegExId == regId)
-                        .ToList();
-                    var reg = GetRegularExpressions(ctx, paramInfo["Regex"]);
-                    var regRep = GetRegularExpressions(ctx, paramInfo["ReplaceRegex"]);
-                    foreach (var field in fields)
-                    {
-                        var fr = ctx.OCR_FieldFormatRegEx.FirstOrDefault(x => x.FieldId == field.Id
-                                                                              && x.RegExId == reg.Id
-                                                                              && x.ReplacementRegExId == regRep.Id);
-                        if (fr == null)
-                        {
-                            fr = new FieldFormatRegEx()
-                            {
-                                Fields = field,
-                                RegEx = reg, ReplacementRegEx = regRep,
-                                TrackingState = TrackingState.Added
-                            };
-                            ctx.OCR_FieldFormatRegEx.Add(fr);
-                        }
-                    }
-
-                    ctx.SaveChanges();
-                }
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-                throw;
-            }
-        }
-
-        private static void AddLine(Dictionary<string, string> paramInfo)
-        {
-            try
-            {
-                using (var ctx = new OCRContext(){StartTracking = true})
-                {
-                    var pInvoice = paramInfo["Invoice"];
-                    var pPart = paramInfo["Part"];
-                    var pLine = paramInfo["Name"];
-                    var pRegex = paramInfo["Regex"];
-                    var pIsMultiLine = paramInfo.ContainsKey("IsMultiLine") ? bool.Parse(paramInfo["IsMultiLine"]) : (bool?)null;
-
-                    var line = ctx.Lines.FirstOrDefault(x =>
-                        x.Parts.Invoices.Name == pInvoice && x.Parts.PartTypes.Name == pPart && x.Name == pLine);
-                    if (line != null) return;
-                    var part = ctx.Parts.FirstOrDefault(x => x.Invoices.Name == pInvoice && x.PartTypes.Name == pPart);
-                    var invoice = ctx.Invoices.FirstOrDefault(x => x.Name == pInvoice);
-
-                    if (part == null) return;
-                    if (invoice == null) return;
-
-                    var regex = ctx.RegularExpressions.FirstOrDefault(x => x.RegEx == pRegex);
-                    if (regex == null)
-                        regex = new RegularExpressions(true)
-                            { TrackingState = TrackingState.Added, RegEx = pRegex, MultiLine = pIsMultiLine };
-                    line = new Lines(true)
-                        { TrackingState = TrackingState.Added, Parts = part, Name = pLine, RegularExpressions = regex, Fields = new List<Fields>()};
-                    
-                    ctx.Lines.Add(line);
-
-                    ctx.SaveChanges();
-
-                    var fields = Regex.Matches(pRegex, @"\<(?<Keyword>\w+)\>",
-                        RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture);
-
-                    foreach (Match fieldMatch in fields)
-                    {
-                        var keyWord = fieldMatch.Groups["Keyword"].Value;
-                        var fieldMappingsList = ctx.OCR_FieldMappings.Where(x => x.Key == keyWord).ToList();
-                        foreach (var fieldMap in fieldMappingsList)
-                        {
-                            var field = new Fields(true){
-                                Key = keyWord,
-                                Field = fieldMap.Field,
-                                AppendValues = fieldMap.AppendValues,
-                                EntityType = fieldMap.EntityType,
-                                DataType = fieldMap.DataType,
-                                IsRequired = fieldMap.IsRequired,
-                                LineId = line.Id,
-                                TrackingState = TrackingState.Added};
-                            ctx.Fields.Add(field);
-                           ctx.SaveChanges(); 
-                            
-                        }
-
-                    }
-
-                    
-
-
-                }
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-                throw;
-            }
-        }
-
-        private static void AddPart(Dictionary<string, string> paramInfo)
-        {
-            try
-            {
-                using (var ctx = new OCRContext())
-                {
-                    var pInvoice = paramInfo["Invoice"];
-                    var pPart = paramInfo["Name"];
-                    var pStartRegex = paramInfo["StartRegex"];
-                    var pIsRecurring = bool.Parse(paramInfo["IsRecurring"]);
-                    var pIsComposite = bool.Parse(paramInfo["IsComposite"]);
-                    var pIsMultiLine = paramInfo.ContainsKey("IsMultiLine")? bool.Parse(paramInfo["IsMultiLine"]):(bool?)null;
-                    var pParentPart = paramInfo.ContainsKey("ParentPart") ? paramInfo["ParentPart"] : null;
-
-                    var part = ctx.Parts.Include(x => x.Start)
-                        .FirstOrDefault(x => x.Invoices.Name == pInvoice && x.PartTypes.Name == pPart);
-                    var invoice = ctx.Invoices.FirstOrDefault(x => x.Name == pInvoice);
-                    
-                    if (part != null) return;
-                    if (invoice == null) return;
-                    var parentPart = ctx.Parts.FirstOrDefault(x =>
-                        x.PartTypes.Name == pParentPart && x.Invoices.Name == pInvoice);
-
-                    if (pParentPart != null && parentPart == null) return;
-
-                    var startRegex = ctx.RegularExpressions.FirstOrDefault(x => x.RegEx == pStartRegex);
-                    if (startRegex == null)
-                        startRegex = new RegularExpressions(true)
-                            { TrackingState = TrackingState.Added, RegEx = pStartRegex, MultiLine = pIsMultiLine };
-                    var partType = ctx.PartTypes.FirstOrDefault(x => x.Name == pPart);
-                    if (partType == null)
-                        partType = new PartTypes(true) { TrackingState = TrackingState.Added, Name = pPart };
-                    part = new Parts(true) {
-                        TrackingState = TrackingState.Added,
-                        PartTypes = partType,
-                        Invoices =invoice,
-                        Start = new List<Start>(){new Start(true){TrackingState = TrackingState.Added, RegularExpressions = startRegex}},
-                       
-                    };
-
-                   
-                    if (pIsRecurring == true) part.RecuringPart = new RecuringPart(true) { IsComposite = pIsComposite , TrackingState = TrackingState.Added};
-                    ctx.Parts.Add(part);
-                    ctx.SaveChanges();
-                    
-                    if (pParentPart != null && parentPart != null)
-                        ctx.ChildParts.Add(new ChildParts(true){ChildPart = part, ParentPart = parentPart, TrackingState = TrackingState.Added});
-
-                    ctx.SaveChanges();
-                }
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-                throw;
-            }
-        }
-
-        private static void AddInvoice(Dictionary<string, string> paramInfo)
-        {
-            try
-            {
-                using (var ctx = new OCRContext())
-                {
-                    var pInvoice = paramInfo["Name"];
-                    var pIDRegex = paramInfo["IDRegex"];
-                    var invoice = ctx.Invoices.Include(x => x.InvoiceIdentificatonRegEx)
-                        .FirstOrDefault(x => x.Name == pInvoice);
-                    if (invoice != null) return;
-                    invoice = new Invoices() {Name = pInvoice,
-                        InvoiceIdentificatonRegEx = new List<InvoiceIdentificatonRegEx>()
-                        {
-                            new InvoiceIdentificatonRegEx(true)
-                            {
-                                OCR_RegularExpressions = new RegularExpressions(true)
-                                {
-                                    RegEx = pIDRegex ,TrackingState = TrackingState.Added,
-                                    
-                                },
-                                TrackingState = TrackingState.Added
-                            }
-
-                        }
-                        , IsActive = true
-                        , ApplicationSettingsId = BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId
-                        , TrackingState = TrackingState.Added
-                        , FileTypeId = new CoreEntitiesContext().FileTypes.First(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId 
-                        && x.Type == "Shipment Invoice").Id
-
-                    };
-                    ctx.Invoices.Add(invoice);
-                    ctx.SaveChanges();
-                }
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-                throw;
-            }
-        }
-
-        private static void RequestInvoice(Dictionary<string, string> paramInfo, FileTypes fileTypes)
-        {
-            try
-            {
-                var lines = new List<RegularExpressions>();
-                using (var ctx = new OCRContext())
-                {
-                    var iname = paramInfo["Name"];
-                    var invoices = ctx.Invoices.Include("InvoiceIdentificatonRegEx.OCR_RegularExpressions").Where(x => x.Name.Contains(iname)).ToList();
-
-                    var pdfs = new DirectoryInfo(fileTypes.FilePath).GetFiles("*.pdf");
-                    var files = new Dictionary<string, string>();
-                    foreach (var pdf in pdfs)
-                    {
-                        var str = InvoiceReader.GetPdftxt(pdf.FullName);
-                        if(str.Length > 0) files.Add(pdf.FullName, str.ToString());
-                    }
-                    foreach (var invoice in invoices)
-                    {
-                        lines.AddRange(ctx.Parts.Where(x => x.Invoices.Name == invoice.Name).SelectMany(z => z.Start)
-                        .Select(q => q.RegularExpressions).ToList());
-
-                    lines.AddRange(ctx.Parts.Where(x => x.Invoices.Name == invoice.Name).SelectMany(z => z.ChildParts)
-                        .SelectMany(q => q.ChildPart.Start.Select(p => p.RegularExpressions)).ToList());
-
-                    lines.AddRange(ctx.Parts.Where(x => x.Invoices.Name == invoice.Name).SelectMany(z => z.Lines)
-                        .Select(q => q.RegularExpressions).ToList());
-
-                    lines.AddRange(ctx.Parts.Where(x => x.Invoices.Name == invoice.Name).SelectMany(z => z.ChildParts)
-                        .SelectMany(q => q.ChildPart.Lines.Select(p => p.RegularExpressions)).ToList());
-
-
-                    var body = $"Hey,\r\n\r\n Regex for {invoice.Name}'.\r\n\r\n\r\n" +
-                               $"{lines.DistinctBy(x => x.Id).Select(x => $"RegId: {x.Id} - Regex: {x.RegEx}").DefaultIfEmpty(string.Empty).Aggregate((o, c) => o + "\r\n" + c)}\r\n\r\n" +
-                               "Thanks\r\n" +
-                               $"AutoBot" +
-                               $"\r\n" +
-                               $"\r\n" +
-                               InvoiceReader.CommandsTxt;
-
-                    var res = files.Where(x => InvoiceReader.IsInvoiceDocument(invoice, x.Value)).ToList();
-                        
-                        res.ForEach(x => File.WriteAllText(x.Key + ".txt", x.Value));
-                        var res1 = res.Select(x => x.Key + ".txt").ToList().Union(res.Select(x => x.Key).ToList()).ToArray();
-                       
-
-                    EmailDownloader.EmailDownloader.SendEmail(Client,null, "Invoice Template Not found!",
-                         new[] { "Joseph@auto-brokerage.com" }, body, res1);
-
-                    fileTypes.ProcessNextStep.Add("Kill");
-
-                    }
-                    
-                }
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-                throw;
-            }
-        }
-
-        private static RegularExpressions GetRegularExpressions(OCRContext ctx, string paramInfo)
-        {
-            var reg = ctx.RegularExpressions.FirstOrDefault(x => x.RegEx == paramInfo);
-            if (reg == null)
-            {
-                reg = new RegularExpressions() { RegEx = paramInfo, TrackingState = TrackingState.Added };
-                ctx.RegularExpressions.Add(reg);
-            }
-
-            return reg;
-        }
-
-        private static void ValidateParams(Dictionary<string, string> dictionary, string[] paramInfo)
-        {
-            var missing = paramInfo.Where(x => !dictionary.ContainsKey(x)).ToList();
-            if (missing.Any())
-            {
-                throw new ApplicationException(
-                    $"Update Regex Params Missing: {missing.Aggregate((o, n) => o + ", " + n)}");
-            }
         }
 
         private static void RecreateEx9(FileTypes filetype, FileInfo[] files)
@@ -1932,7 +1517,7 @@ namespace AutoBot
 
 
                         var errorfile = Path.Combine(directory, $"BlankLicenseDescription-{email.Key.AsycudaDocumentSetId}.csv");
-                        var errors = email.Select(x => new BlankLicenseDescription()
+                        var errors = email.Select(x => new Utils.BlankLicenseDescription()
                         {
                             InvoiceNo = x.EntryDataId,
                             ItemNumber = x.ItemNumber,
@@ -1944,8 +1529,8 @@ namespace AutoBot
 
 
                         var res =
-                            new ExportToCSV<BlankLicenseDescription,
-                                List<BlankLicenseDescription>>();
+                            new ExportToCSV<Utils.BlankLicenseDescription,
+                                List<Utils.BlankLicenseDescription>>();
                         res.dataToPrint = errors;
                         using (var sta = new StaTaskScheduler(numberOfThreads: 1))
                         {
@@ -3406,7 +2991,7 @@ namespace AutoBot
 
 
                         var errorfile = Path.Combine(directory, $"UnclassifiedItems-{email.Key.AsycudaDocumentSetId}.csv");
-                        var errors = email.Select(x => new UnClassifiedItem()
+                        var errors = email.Select(x => new Utils.UnClassifiedItem()
                         {
                             InvoiceNo = x.InvoiceNo,
                             ItemNumber = x.ItemNumber,
@@ -3417,8 +3002,8 @@ namespace AutoBot
 
 
                         var res =
-                            new ExportToCSV<UnClassifiedItem,
-                                List<UnClassifiedItem>>();
+                            new ExportToCSV<Utils.UnClassifiedItem,
+                                List<Utils.UnClassifiedItem>>();
                         res.dataToPrint = errors;
                         using (var sta = new StaTaskScheduler(numberOfThreads: 1))
                         {
@@ -3472,7 +3057,7 @@ namespace AutoBot
                         var directory = info.Item2;
 
                         var errorfile = Path.Combine(directory, $"UnclassifiedItems-{email.Key.AsycudaDocumentSetId}.csv");
-                        var errors = email.Select(x => new UnClassifiedItem()
+                        var errors = email.Select(x => new Utils.UnClassifiedItem()
                         {
                             InvoiceNo = x.InvoiceNo,
                             ItemNumber = x.ItemNumber,
@@ -3483,8 +3068,8 @@ namespace AutoBot
 
 
                         var res =
-                            new ExportToCSV<UnClassifiedItem,
-                                List<UnClassifiedItem>>();
+                            new ExportToCSV<Utils.UnClassifiedItem,
+                                List<Utils.UnClassifiedItem>>();
                         res.dataToPrint = errors;
                         using (var sta = new StaTaskScheduler(numberOfThreads: 1))
                         {
@@ -6394,7 +5979,7 @@ namespace AutoBot
 
                 await Task.Factory.StartNew(() =>
                 {
-                    var s = new ExportToCSV<SaleReportLine, List<SaleReportLine>>();
+                    var s = new ExportToCSV<Utils.SaleReportLine, List<Utils.SaleReportLine>>();
                     s.StartUp();
                     foreach (var doc in doclst)
                     {
@@ -6440,7 +6025,7 @@ namespace AutoBot
 
                 await Task.Factory.StartNew(() =>
                 {
-                    var s = new ExportToCSV<SaleReportLine, List<SaleReportLine>>();
+                    var s = new ExportToCSV<Utils.SaleReportLine, List<Utils.SaleReportLine>>();
                     s.StartUp();
                     foreach (var doc in doclst.Where(x => x != null).ToList())
                     {
@@ -6490,7 +6075,7 @@ namespace AutoBot
 
         }
 
-        public static async Task<IEnumerable<SaleReportLine>> GetDocumentSalesReport(int ASYCUDA_Id)
+        public static async Task<IEnumerable<Utils.SaleReportLine>> GetDocumentSalesReport(int ASYCUDA_Id)
         {
             var alst = await Ex9SalesReport(ASYCUDA_Id).ConfigureAwait(false);
             if (alst.Any()) return alst;
@@ -6543,7 +6128,7 @@ namespace AutoBot
 
         }
 
-        public static ObservableCollection<SaleReportLine> IM9AdjustmentsReport(int ASYCUDA_Id)
+        public static ObservableCollection<Utils.SaleReportLine> IM9AdjustmentsReport(int ASYCUDA_Id)
         {
             try
             {
@@ -6625,7 +6210,7 @@ namespace AutoBot
                             
                             .ToList()
 
-                            .Select(s => new SaleReportLine
+                            .Select(s => new Utils.SaleReportLine
                             {
                                 Line = Convert.ToInt32(s.xLineNumber),
                                 Date = Convert.ToDateTime(s.InvoiceDate),
@@ -6653,7 +6238,7 @@ namespace AutoBot
                             }).Distinct();
 
 
-                    return new ObservableCollection<SaleReportLine>(d);
+                    return new ObservableCollection<Utils.SaleReportLine>(d);
 
 
                 }
@@ -6669,7 +6254,7 @@ namespace AutoBot
         {
         }
 
-        public static async Task<ObservableCollection<SaleReportLine>> Ex9SalesReport(int ASYCUDA_Id)
+        public static async Task<ObservableCollection<Utils.SaleReportLine>> Ex9SalesReport(int ASYCUDA_Id)
         {
             try
             {
@@ -6686,7 +6271,7 @@ namespace AutoBot
                             .Where(x => x.pItemNumber.Length <= 20) // to match the entry
                             .OrderBy(s => s.xLineNumber)
                             .ThenBy(s => s.InvoiceNo)
-                            .Select(s => new SaleReportLine
+                            .Select(s => new Utils.SaleReportLine
                             {
                                 Line = Convert.ToInt32(s.xLineNumber),
                                 Date = Convert.ToDateTime(s.InvoiceDate),
@@ -6716,7 +6301,7 @@ namespace AutoBot
 
 
 
-                    return new ObservableCollection<SaleReportLine>(d);
+                    return new ObservableCollection<Utils.SaleReportLine>(d);
 
 
                 }
