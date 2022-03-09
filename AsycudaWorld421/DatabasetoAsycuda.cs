@@ -76,7 +76,10 @@ namespace Asycuda421
                     ac.Empty_full_indicator = cnt.Empty_full_indicator;
                     if (ac.Gross_weight == null) ac.Gross_weight = new ASYCUDAContainerGross_weight();
                     ac.Gross_weight.Text.Add(cnt.Gross_weight.ToString());
-                    ac.Goods_description = cnt.Goods_description;
+
+                    ac.Goods_description.Text.Clear();
+                    ac.Goods_description.Text.Add(cnt.Goods_description);
+
                     ac.Packages_number = cnt.Packages_number;
                     ac.Packages_type = cnt.Packages_type;
                     ac.Packages_weight = cnt.Packages_weight.ToString();

@@ -1274,7 +1274,7 @@ private void Update_TarrifCodes(ASYCUDAItem ai)
                         c.Container_identity = ac.Container_identity;
                         c.Container_type = ac.Container_type;
                         c.Empty_full_indicator = ac.Empty_full_indicator;
-                        c.Goods_description = ac.Goods_description;
+                        c.Goods_description = ac.Goods_description.Text.FirstOrDefault();
                         c.Gross_weight = Convert.ToSingle(ac.Gross_weight.Text.FirstOrDefault());
                         c.Item_Number = ac.Item_Number;
                         c.Packages_number = ac.Packages_number;

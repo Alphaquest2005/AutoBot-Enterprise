@@ -1173,7 +1173,7 @@ namespace WaterNut.DataSpace
 
                 //Parallel.ForEach(ed, new ParallelOptions() { MaxDegreeOfParallelism = 3 },//Environment.ProcessorCount * 1
                 //    async item =>
-                    foreach (var item in ed.Where(x => x.EntryData.EntryDataId != null))
+                    foreach (var item in ed.Where(x => x.EntryData.EntryDataId != null && x.EntryData.EntryDataDate))
 
                     {
                         string entryDataId = item.EntryData.EntryDataId;
