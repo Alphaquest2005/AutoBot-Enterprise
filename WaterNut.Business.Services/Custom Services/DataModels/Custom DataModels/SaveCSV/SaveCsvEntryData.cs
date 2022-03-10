@@ -900,6 +900,7 @@ namespace WaterNut.DataSpace
                                                                     Quantity = z.ContainsKey("Quantity") ? Convert.ToInt32(z["Quantity"].ToString()): 0,
                                                                     Marks = z.ContainsKey("Marks") ? z["Marks"].ToString(): "",
                                                                     PackageType = z.ContainsKey("PackageType") ? z["PackageType"].ToString(): "",
+                                                                    Section = z.ContainsKey("Section") ? z["Section"].ToString() : null,
                                                                     TrackingState = TrackingState.Added,
                                                                
                                                             }).ToList(),
@@ -915,32 +916,30 @@ namespace WaterNut.DataSpace
 
                 using (var ctx = new EntryDataDSContext())
                 {
-                    foreach (var manifest in lst)
+                    foreach (var bl in lst)
                     {
-                        var blDetails = manifest.ShipmentBLDetails
-                            //.DistinctBy(x => new {x.Marks, x.Quantity, x.PackageType})/// took this out because of repeat data
-                            .ToList();
+                        var blDetails = AutoFixShipmentBlDetails(bl);
 
-                        manifest.ShipmentBLDetails = blDetails;
+                        bl.ShipmentBLDetails = blDetails;
 
-                        var detailsQty = manifest.ShipmentBLDetails.Sum(x => x.Quantity);
+                        var detailsQty = bl.ShipmentBLDetails.Sum(x => x.Quantity);
 
 
-                        var filename = BaseDataModel.SetFilename(droppedFilePath, manifest.BLNumber, "-BL.pdf");
+                        var filename = BaseDataModel.SetFilename(droppedFilePath, bl.BLNumber, "-BL.pdf");
                         if (!File.Exists(filename)) File.Copy(droppedFilePath, filename);
-                        manifest.SourceFile = filename;
-                        var existingManifest =
+                        bl.SourceFile = filename;
+                        var existingBl =
                             ctx.ShipmentBL.FirstOrDefault(
-                                x => x.BLNumber == manifest.BLNumber);
-                        if (existingManifest != null)
-                            ctx.ShipmentBL.Remove(existingManifest);
-                        ctx.ShipmentBL.Add(manifest);
+                                x => x.BLNumber == bl.BLNumber);
+                        if (existingBl != null)
+                            ctx.ShipmentBL.Remove(existingBl);
+                        ctx.ShipmentBL.Add(bl);
 
                         ctx.SaveChanges();
-                        if (manifest.PackagesNo != detailsQty)
+                        if (bl.PackagesNo != detailsQty)
                         {
                             throw new ApplicationException(
-                                $"BL Details Quantity don't add up to BL Total Packages! - BL{manifest.PackagesNo} vs Details{detailsQty}");
+                                $"BL Details Quantity don't add up to BL Total Packages! - BL{bl.PackagesNo} vs Details{detailsQty}");
                         }
 
                     }
@@ -953,6 +952,28 @@ namespace WaterNut.DataSpace
                 Console.WriteLine(e);
                 throw;
             }
+        }
+
+        private static List<ShipmentBLDetails> AutoFixShipmentBlDetails(ShipmentBL bl)
+        {
+            var details = bl.ShipmentBLDetails.ToList();
+
+           
+            var secList = details.GroupBy(x => x.Section).ToList();
+            var lst = new List<ShipmentBLDetails>();
+            foreach (var section in secList)
+            {
+                foreach (var detail in section)
+                {
+                    if (lst.Any(x =>
+                            x.Quantity == detail.Quantity && x.Marks == detail.Marks &&
+                            x.PackageType == detail.PackageType && x.Section != detail.Section)) continue;
+                    lst.Add(detail);
+                }
+            }
+
+            return lst;
+            
         }
 
         private void ProcessManifest(FileTypes fileType, List<AsycudaDocumentSet> docSet, bool overWriteExisting, string emailId, string droppedFilePath, List<object> eslst)
@@ -1173,7 +1194,7 @@ namespace WaterNut.DataSpace
 
                 //Parallel.ForEach(ed, new ParallelOptions() { MaxDegreeOfParallelism = 3 },//Environment.ProcessorCount * 1
                 //    async item =>
-                    foreach (var item in ed.Where(x => x.EntryData.EntryDataId != null && x.EntryData.EntryDataDate))
+                    foreach (var item in ed.Where(x => x.EntryData.EntryDataId != null && x.EntryData.EntryDataDate != null))
 
                     {
                         string entryDataId = item.EntryData.EntryDataId;

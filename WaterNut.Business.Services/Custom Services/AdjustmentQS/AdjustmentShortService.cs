@@ -961,7 +961,7 @@ namespace AdjustmentQS.Business.Services
             try
             {
 
-                var clst = cNumber.Split(',', ' ');
+                var clst = GetCNumbersFromString(cNumber);
                 // get document item in cnumber
                 var aItem = AsycudaDocumentItemCache
                     .Where(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId
