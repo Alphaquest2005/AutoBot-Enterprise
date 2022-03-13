@@ -274,6 +274,7 @@
           <Property Name="EntryDataType" Type="nvarchar" MaxLength="50" />
           <Property Name="UpgradeKey" Type="int" />
           <Property Name="PreviousInvoiceKey" Type="nvarchar" MaxLength="4000" StoreGeneratedPattern="Computed" />
+          <Property Name="xWarehouseError" Type="nvarchar" MaxLength="255" />
         </EntityType>
         <EntityType Name="xcuda_Item_Invoice">
           <Key>
@@ -2138,6 +2139,7 @@ FROM [dbo].[PreviousItemsEx] AS [PreviousItemsEx]</DefiningQuery>
           <Property Name="EntryDataType" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="UpgradeKey" Type="Int32" />
           <Property Name="PreviousInvoiceKey" Type="String" MaxLength="4000" FixedLength="false" Unicode="true" annotation:StoreGeneratedPattern="Computed" />
+          <Property Name="xWarehouseError" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <a:DomainInterfaceProperty xmlns:a="http://schemas.tempuri.com/DomainInterfaceProperty">IDocumentItem</a:DomainInterfaceProperty>
           
         </EntityType>
@@ -3568,6 +3570,7 @@ FROM [dbo].[PreviousItemsEx] AS [PreviousItemsEx]</DefiningQuery>
           <EntitySetMapping Name="xcuda_Item">
             <EntityTypeMapping TypeName="WaterNutDBModel.xcuda_Item">
               <MappingFragment StoreEntitySet="xcuda_Item">
+                <ScalarProperty Name="xWarehouseError" ColumnName="xWarehouseError" />
                 <ScalarProperty Name="PreviousInvoiceKey" ColumnName="PreviousInvoiceKey" />
                 <ScalarProperty Name="UpgradeKey" ColumnName="UpgradeKey" />
                 <ScalarProperty Name="EntryDataType" ColumnName="EntryDataType" />

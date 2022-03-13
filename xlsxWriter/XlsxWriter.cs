@@ -145,7 +145,7 @@ namespace xlsxWriter
                         //                            -shipmentInvoice.TotalDeduction ?? 0)), 2) > 0)
                             DoMisMatches(shipmentInvoice, workbook);
                         workbook.Save();
-                        if (pdfFile.FullName != pdfFilePath)
+                        if (pdfFile.FullName.ToUpper() != pdfFilePath.ToUpper())
                             File.Copy(pdfFile.FullName, pdfFilePath, true);
                         csvs.Add((shipmentInvoice.InvoiceNo, pdfFilePath));
                     }

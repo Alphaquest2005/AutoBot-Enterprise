@@ -16,6 +16,7 @@ namespace AutoBot
     {
         public static void UpdateRegEx(FileTypes fileTypes, FileInfo[] files)
         {
+            
             var regExCommands = RegExCommands(fileTypes);
 
             foreach (var info in files.Where(x => x.Extension == ".txt"))
@@ -27,14 +28,15 @@ namespace AutoBot
                 foreach (Match cmdinfo in commands)
                 {
                     if (InvoiceReader.CommandsTxt.Contains(cmdinfo.Value)) continue;
-                    var cmdName = cmdinfo.Groups["Command"].Value;
+                    var cmdName = cmdinfo.Groups["Command"].Value.Trim();
 
                     if (!regExCommands.ContainsKey(cmdName)) continue;
 
                     var cmdParamInfo = cmdinfo.Groups["Params"].Value;
                     var cmdParams = Regex.Matches(cmdParamInfo, @"(?<Param>\w+):\s?(?<Value>.*?)((, )|($|\r))",
                         RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.ExplicitCapture);
-                    var cmdparamDic = new Dictionary<string, string>();
+                   
+                    var cmdparamDic = new Dictionary<string, string>(Utils.ignoreCase);
                     foreach (Match m in cmdParams)
                     {
                         cmdparamDic.Add(m.Groups["Param"].Value.Trim(',', ' ', '\''), m.Groups["Value"].Value.Trim(',',' ','\''));
@@ -50,7 +52,7 @@ namespace AutoBot
 
         private static Dictionary<string, (Action<Dictionary<string, string>> Action, string[] Params)> RegExCommands(FileTypes fileTypes)
         {
-            var regExCommands = new Dictionary<string, (Action<Dictionary<string, string>> Action, string[] Params)>()
+            var regExCommands = new Dictionary<string, (Action<Dictionary<string, string>> Action, string[] Params)>(Utils.ignoreCase)
             {
                 {
                     "demo",

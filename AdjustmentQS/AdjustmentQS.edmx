@@ -119,6 +119,7 @@
           <Property Name="EntryDataType" Type="nvarchar" MaxLength="50" />
           <Property Name="UpgradeKey" Type="int" />
           <Property Name="PreviousInvoiceKey" Type="nvarchar" MaxLength="4000" StoreGeneratedPattern="Computed" />
+          <Property Name="xWarehouseError" Type="nvarchar" MaxLength="255" />
         </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AdjustmentDetails' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
@@ -1416,6 +1417,7 @@ FROM [dbo].[TODO-PreDiscrepancyErrors] AS [TODO-PreDiscrepancyErrors]</DefiningQ
           <Property Name="EntryDataType" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="UpgradeKey" Type="Int32" />
           <Property Name="PreviousInvoiceKey" Type="String" MaxLength="4000" FixedLength="false" Unicode="true" annotation:StoreGeneratedPattern="Computed" />
+          <Property Name="xWarehouseError" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
         </EntityType>
         <Association Name="FK_AsycudaSalesAllocations_xcuda_Item">
           <End Type="Model.xcuda_Item" Role="xcuda_Item" Multiplicity="0..1" />
@@ -2058,6 +2060,7 @@ FROM [dbo].[TODO-PreDiscrepancyErrors] AS [TODO-PreDiscrepancyErrors]</DefiningQ
           <EntitySetMapping Name="xcuda_Item">
             <EntityTypeMapping TypeName="Model.xcuda_Item">
               <MappingFragment StoreEntitySet="xcuda_Item">
+                <ScalarProperty Name="xWarehouseError" ColumnName="xWarehouseError" />
                 <ScalarProperty Name="PreviousInvoiceKey" ColumnName="PreviousInvoiceKey" />
                 <ScalarProperty Name="UpgradeKey" ColumnName="UpgradeKey" />
                 <ScalarProperty Name="EntryDataType" ColumnName="EntryDataType" />

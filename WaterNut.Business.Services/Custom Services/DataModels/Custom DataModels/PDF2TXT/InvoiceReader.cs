@@ -1081,36 +1081,54 @@ namespace WaterNut.DataSpace
             try
             {
                 Instance += 1;
-                var match = Regex.Match(line, OCR_Lines.RegularExpressions.RegEx,
+                var matches = Regex.Matches(line, OCR_Lines.RegularExpressions.RegEx,
                     (OCR_Lines.RegularExpressions.MultiLine == true
                         ? RegexOptions.Multiline
                         : RegexOptions.Singleline) | RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture);
-                if (!match.Success) return false;
-
+                if (matches.Count == 0) return false;
                 var values = new Dictionary<Fields, string>();
-
-                foreach (var field in OCR_Lines.Fields.Where(x => x.ParentField == null))
+                foreach (Match match in matches)
                 {
-                    var value = field.FieldValue?.Value ?? match.Groups[field.Key].Value.Trim();
-                    foreach (var reg in field.FormatRegEx)
+
+
+                    
+
+
+                    foreach (var field in OCR_Lines.Fields.Where(x => x.ParentField == null))
                     {
-                        value = Regex.Replace(value, reg.RegEx.RegEx, reg.ReplacementRegEx.RegEx,
-                            (OCR_Lines.RegularExpressions.MultiLine == true
-                                ? RegexOptions.Multiline
-                                : RegexOptions.Singleline) | RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture);
-                    }
+                        var value = field.FieldValue?.Value ?? match.Groups[field.Key].Value.Trim();
+                        foreach (var reg in field.FormatRegEx)
+                        {
+                            value = Regex.Replace(value, reg.RegEx.RegEx, reg.ReplacementRegEx.RegEx,
+                                (OCR_Lines.RegularExpressions.MultiLine == true
+                                    ? RegexOptions.Multiline
+                                    : RegexOptions.Singleline) | RegexOptions.IgnoreCase |
+                                RegexOptions.ExplicitCapture);
+                        }
 
-                    ;
 
-                    values.Add(field, value.Trim());
+                        if (values.ContainsKey(field))
+                        {
+                            values[field] = values[field] + " " + value.Trim(); 
+                        }
+                        else
+                        {
+                           values.Add(field, value.Trim()); 
+                        }
+                        
 
-                    foreach (var childField in field.ChildFields)
-                    {
-                        ReadChildField(childField, values, values.Where(x => x.Key.Field == field.Field).Select(x => x.Value).DefaultIfEmpty("").Aggregate((o,n) =>  o + " " + n));
+                        foreach (var childField in field.ChildFields)
+                        {
+                            ReadChildField(childField, values,
+                                values.Where(x => x.Key.Field == field.Field).Select(x => x.Value).DefaultIfEmpty("")
+                                    .Aggregate((o, n) => o + " " + n));
+                        }
+
                     }
                     
+
                 }
-               
+
                 Values[(lineNumber, section)] = values;
                 return true;
             }

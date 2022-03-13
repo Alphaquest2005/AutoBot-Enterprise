@@ -148,7 +148,8 @@ namespace WaterNut.DataSpace
 
                     var exPro =
                         " && (PreviousDocumentItem.AsycudaDocument.Customs_Procedure.CustomsOperations.Name == \"Warehouse\" )" +
-                        " && (PreviousDocumentItem.AsycudaDocument.Cancelled == null || PreviousDocumentItem.AsycudaDocument.Cancelled == false)";
+                        " && (PreviousDocumentItem.AsycudaDocument.Cancelled == null || PreviousDocumentItem.AsycudaDocument.Cancelled == false)" +
+                        "&& (PreviousDocumentItem.xWarehouseError == null)";
                     var slst =
                         (await CreateAllocationDataBlocks(currentFilter + exPro, errors, dateFilter).ConfigureAwait(false))
                         .Where(x => x.Allocations.Count > 0);
@@ -724,6 +725,7 @@ namespace WaterNut.DataSpace
                                     "&& Status == null " + // force no error execution
                                     //"&& AllocationErrors == null" +
                                     "&& WarehouseError == null " +
+
                                     $"&& (CustomsOperationId == {(int) CustomsOperations.Warehouse})";
                 var res = new List<EX9Allocations>();
 

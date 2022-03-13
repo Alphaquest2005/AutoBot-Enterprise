@@ -73,6 +73,8 @@ namespace AutoBot
         private static int maxRowsToFindHeader = 10;
         private static int _oneMegaByte = 1000000;
 
+        public static StringComparer ignoreCase = StringComparer.OrdinalIgnoreCase;
+
         public class FileAction
         {
 
@@ -83,7 +85,7 @@ namespace AutoBot
         }
 
         public static Dictionary<string, Action<FileTypes, FileInfo[]>> FileActions =>
-            new Dictionary<string, Action<FileTypes, FileInfo[]>>
+            new Dictionary<string, Action<FileTypes, FileInfo[]>>(ignoreCase)
             {
                 {"ImportSalesEntries",(ft, fs) => ImportSalesEntries() },
                 {"AllocateSales",(ft, fs) => AllocateSales() },
@@ -218,7 +220,7 @@ namespace AutoBot
 
 
         public static Dictionary<string, Action> SessionActions =>
-            new Dictionary<string, Action>
+            new Dictionary<string, Action>(ignoreCase)
             {
 
                 {"CreateDiscpancyEntries",() => CreateAdjustmentEntries(false, "DIS") },
@@ -312,8 +314,24 @@ namespace AutoBot
                     ("Cancelled Previous Document", 
                      @"Previous declaration\s(?<Year>\d{4})\s(?<Office>\w+)\sC(?<pCNumber>\d+)\shas been cancelled. Please, update previous document linked with item\s(?<LineNumber>)",
                      (mat) => SaveCancelledErrors(mat))
+                ,
+
+                    ("Not Enough Remaining Balance",
+                      @"not [enough balance remaining in decltaration]+ \""(?<Year>\d{4}) (?<Office>\w{5})[\sC]+(?<pCNumber>\d+)[\s-]+(?<pLineNumber>\d+)[%,\""”]+(?<Error>.+?)($|\r)",
+                        (mat) => SaveBalanceErrors(mat)),
+
+                    ("Not Enough Remaining Weight",
+                        @"([On previous document]{10,}[\s\""“]+(?<Year>\d{4}) (?<Office>\w{5})[\. C]+(?<pCNumber>\d+)[\s-]+(?<pLineNumber>\d+)[%,\""”]*(?<Error>.+?)($|\r))",
+                        (mat) => SaveWeightErrors(mat))
+                    ,
+
+                    ("Changed Tariff Code",
+                        @"([Goods (Tarifficountry) in previous declaration]{10,}[\s\""“]+(?<Year>\d{4}) (?<Office>\w{5})[\. C]+(?<pCNumber>\d+)[\s-]+(?<pLineNumber>\d+)[%,\""”]*(?<Error>.+?)($|\r))" ,
+                        (mat) => SaveTariffCode(mat))
                 }; 
                 
+
+
                 Console.WriteLine("Importing Warehouse errors");
                 var directoryName = BaseDataModel.CurrentSalesInfo().Item4;
                 var attachments = Directory.GetFiles(directoryName, "*.png").ToArray();
@@ -356,6 +374,38 @@ namespace AutoBot
                 throw;
             }
             
+        }
+
+        private static void SaveWeightErrors(Match mat)
+        {
+            MarkXWarehouseError(mat);
+        }
+
+        private static void MarkXWarehouseError(Match mat)
+        {
+            try
+            {
+                new CoreEntitiesContext().Database.ExecuteSqlCommand($@"UPDATE xcuda_Item
+                                                SET         xWarehouseError = N'{mat.Groups["Error"]}'
+                                                FROM    AsycudaDocument INNER JOIN
+                                                                 xcuda_Item ON AsycudaDocument.ASYCUDA_Id = xcuda_Item.ASYCUDA_Id
+                                                WHERE (AsycudaDocument.CNumber = N'{mat.Groups["pCNumber"]}') and year(AsycudaDocument.RegistrationDate) = {mat.Groups["Year"]} and AsycudaDocument.Customs_clearance_office_code = '{mat.Groups["Office"]}' AND (xcuda_Item.LineNumber = {mat.Groups["pLineNumber"]})");
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+        }
+
+        private static void SaveTariffCode(Match mat)
+        {
+            MarkXWarehouseError(mat);
+        }
+
+        private static void SaveBalanceErrors(Match mat)
+        {
+            MarkXWarehouseError(mat);
         }
 
         private static void SaveCancelledErrors(Match mat)
