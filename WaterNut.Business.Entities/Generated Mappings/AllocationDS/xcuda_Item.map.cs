@@ -38,6 +38,7 @@
               this.Property(t => t.EntryDataType).HasColumnName("EntryDataType").HasMaxLength(50);
               this.Property(t => t.UpgradeKey).HasColumnName("UpgradeKey");
               this.Property(t => t.PreviousInvoiceKey).HasColumnName("PreviousInvoiceKey").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.Computed)).HasMaxLength(4000);
+              this.Property(t => t.xWarehouseError).HasColumnName("xWarehouseError").HasMaxLength(255);
               this.HasRequired(t => t.AsycudaDocument).WithMany(t =>(ICollection<xcuda_Item>) t.xcuda_Item).HasForeignKey(d => d.ASYCUDA_Id);
               this.HasMany(t => t.AsycudaSalesAllocations).WithOptional(t => t.PreviousDocumentItem).HasForeignKey(d => d.PreviousItem_Id);
               this.HasOptional(t => t.xcuda_PreviousItem).WithRequired(t => (xcuda_Item)t.xcuda_Item);

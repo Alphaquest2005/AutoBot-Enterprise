@@ -408,6 +408,21 @@ namespace DocumentItemDS.Business.Entities
         }
         string _previousinvoicekey;
         [DataMember]
+        public string xWarehouseError 
+        {
+            get
+            {
+                return _xwarehouseerror;
+            }
+            set
+            {
+                _xwarehouseerror = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _xwarehouseerror;
+        [DataMember]
         public List<SubItems> SubItems { get; set; }
         [DataMember]
         public List<xBondAllocations> xBondAllocations { get; set; }

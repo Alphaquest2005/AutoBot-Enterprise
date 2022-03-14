@@ -408,6 +408,21 @@ namespace AllocationDS.Business.Entities
         }
         string _previousinvoicekey;
         [DataMember]
+        public string xWarehouseError 
+        {
+            get
+            {
+                return _xwarehouseerror;
+            }
+            set
+            {
+                _xwarehouseerror = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _xwarehouseerror;
+        [DataMember]
         public List<AsycudaSalesAllocations> AsycudaSalesAllocations { get; set; }
         [DataMember]
         public xcuda_PreviousItem xcuda_PreviousItem { get; set; }
