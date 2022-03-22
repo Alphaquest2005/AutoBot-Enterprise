@@ -301,6 +301,7 @@ namespace AutoBot
                 {"ImportAllFilesInDataFolder", ImportAllFilesInDataFolder},
                 {"relinkAllPreviousItems",relinkAllPreviousItems},
                 {"ImportWarehouseErrors", ImportWarehouseErrors},
+                {"RunSQLBlackBox", SQLBlackBox.RunSqlBlackBox},
 
 
             };

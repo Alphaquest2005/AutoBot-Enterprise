@@ -94,6 +94,8 @@ namespace WaterNut.DataSpace
 
 			try
 			{
+                SQLBlackBox.RunSqlBlackBox();
+
 				PrepareDataForAllocation(applicationSettings);
 
 

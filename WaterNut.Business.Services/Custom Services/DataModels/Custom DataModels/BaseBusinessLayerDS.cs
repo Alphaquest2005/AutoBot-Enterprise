@@ -177,6 +177,8 @@ namespace WaterNut.DataSpace
             var tasks = new List<Task>();
 
 
+            SQLBlackBox.RunSqlBlackBox();
+
             _inventoryCache =
                 new DataCache<InventoryItem>(
                     new InventoryDSContext().InventoryItems.Include(x => x.InventoryItemAlias).ToList());
