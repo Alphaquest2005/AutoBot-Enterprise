@@ -7791,21 +7791,32 @@ namespace AutoBot
             }
         }
 
-        private static void ExecuteActions(FileTypes fileType, FileInfo[] files, (string Name, Action<FileTypes, FileInfo[]> Action) x)
+        private static void ExecuteActions(FileTypes fileType, FileInfo[] files,
+            (string Name, Action<FileTypes, FileInfo[]> Action) x)
         {
-            if (fileType.ProcessNextStep.Any())
+            try
             {
-                while (fileType.ProcessNextStep.Any())
+                if (fileType.ProcessNextStep != null && fileType.ProcessNextStep.Any())
                 {
-                    var res = fileType.ProcessNextStep.Select(z => new { Name = z, Action = Utils.FileActions[z] }).ToList();
-                    res.First().Action.Invoke(fileType, files);
-                    fileType.ProcessNextStep.RemoveAt(0);
+                    while (fileType.ProcessNextStep.Any())
+                    {
+                        var res = fileType.ProcessNextStep.Select(z => new {Name = z, Action = Utils.FileActions[z]})
+                            .ToList();
+                        res.First().Action.Invoke(fileType, files);
+                        fileType.ProcessNextStep.RemoveAt(0);
+                    }
+
+                    return;
                 }
-                return;
+
+
+                x.Action.Invoke(fileType, files);
             }
-
-
-            x.Action.Invoke(fileType, files);
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
         }
 
         public static void ExecuteNonSpecificFileActions(FileTypes fileType, FileInfo[] files, ApplicationSettings appSetting)
