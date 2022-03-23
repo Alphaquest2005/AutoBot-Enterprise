@@ -5678,77 +5678,78 @@ namespace AutoBot
             try
             {
                 Console.WriteLine("Allocate DocSet Discrepancies");
-                    List<KeyValuePair<int, string>> lst;
-                    
+                List<KeyValuePair<int, string>> lst;
 
-                var alst =  new AdjustmentQSContext()
-                        .AdjustmentDetails
-                        .Where(x => x.AsycudaDocumentSetId == fileType.AsycudaDocumentSetId
-                                    && x.Type == "DIS").ToList();
-                    using (var ctx = new CoreEntitiesContext())
+
+                var alst = new AdjustmentQSContext()
+                    .AdjustmentDetails
+                    .Where(x => x.AsycudaDocumentSetId == fileType.AsycudaDocumentSetId
+                                && x.Type == "DIS").ToList();
+                using (var ctx = new CoreEntitiesContext())
+                {
+                    ctx.Database.CommandTimeout = 10;
+
+
+                    lst = alst
+                        .Select(x => new { x.EntryDataDetailsId, x.ItemNumber })
+                        .Distinct()
+                        .ToList()
+                        .Select(x => new KeyValuePair<int, string>(x.EntryDataDetailsId, x.ItemNumber))
+                        .ToList();
+                    var ids = lst.Select(x => x.Key).ToList();
+                    var itemEntryDataDetails = ctx.AsycudaDocumentItemEntryDataDetails
+                        .Where(x => x.ImportComplete == true && ids.Contains(x.EntryDataDetailsId))
+                        .ToList()
+                        .Join(lst, x => x.EntryDataDetailsId, z => z.Key, (x, z) => new { key = z, doc = x })
+                        .ToList();
+                    foreach (var itm in itemEntryDataDetails)
                     {
-                        ctx.Database.CommandTimeout = 10;
-
-
-                        lst = alst 
-                            .Select(x => new {x.EntryDataDetailsId, x.ItemNumber})
-                            .Distinct()
-                            .ToList()
-                            .Select(x => new KeyValuePair<int, string>(x.EntryDataDetailsId, x.ItemNumber))
-                            .ToList();
-                        var ids = lst.Select(x => x.Key).ToList();
-                        var itemEntryDataDetails = ctx.AsycudaDocumentItemEntryDataDetails
-                            .Where(x => x.ImportComplete == true && ids.Contains(x.EntryDataDetailsId))
-                            .ToList()
-                            .Join(lst, x => x.EntryDataDetailsId, z => z.Key, (x, z) => new {key = z, doc = x})
-                            .ToList();
-                        foreach (var itm in itemEntryDataDetails)
-                        {
-                            var sourcefile = ctx.AsycudaDocuments.First(x => x.ASYCUDA_Id == itm.doc.Asycuda_id)
-                                .SourceFileName;
-                            if (ctx.AttachmentLog
+                        var sourcefile = ctx.AsycudaDocuments.First(x => x.ASYCUDA_Id == itm.doc.Asycuda_id)
+                            .SourceFileName;
+                        if (ctx.AttachmentLog
                                 .FirstOrDefault(x =>
                                     x.AsycudaDocumentSet_Attachments.Attachments.FilePath == sourcefile &&
                                     x.Status == "Submit XML To Customs") == null)
-                            {
-                                fileType.ProcessNextStep = null;
-                            break;
-                            }
-                            else
-                            {
-                                fileType.ProcessNextStep.Add("ReSubmitDiscrepanciesToCustoms");
-                            continue;
-                            }
-
-                          
-
-                        }
-
-                        var alreadyExecuted = lst.Where(x => itemEntryDataDetails.Any(z => z.key.Key == x.Key)).ToList();
-                        foreach (var itm in alreadyExecuted)
                         {
-                            lst.Remove(itm);
+                            fileType.ProcessNextStep = null;
+                            break;
                         }
-                        
+                        else
+                        {
+                            fileType.ProcessNextStep.Add("ReSubmitDiscrepanciesToCustoms");
+                            continue;
+                        }
+
+
 
                     }
 
-                    if (!lst.Any()) return;
+                    var alreadyExecuted = lst.Where(x => itemEntryDataDetails.Any(z => z.key.Key == x.Key)).ToList();
+                    foreach (var itm in alreadyExecuted)
+                    {
+                        lst.Remove(itm);
+                    }
 
-                
 
-                AllocationsModel.Instance.ClearDocSetAllocations(lst.Select(x => $"'{x.Value}'").Aggregate((o, n) => $"{o},{n}")).Wait();
+                }
+
+                if (!lst.Any()) return;
+
+
+
+                AllocationsModel.Instance
+                    .ClearDocSetAllocations(lst.Select(x => $"'{x.Value}'").Aggregate((o, n) => $"{o},{n}")).Wait();
 
                 AllocationsBaseModel.PrepareDataForAllocation(BaseDataModel.Instance.CurrentApplicationSettings);
 
-             
 
-                
+
+
 
 
                 new AdjustmentShortService()
-                        .AutoMatchDocSet(BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId,
-                            fileType.AsycudaDocumentSetId).Wait();
+                    .AutoMatchDocSet(BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId,
+                        fileType.AsycudaDocumentSetId).Wait();
 
                 new AdjustmentShortService()
                     .ProcessDISErrorsForAllocation(
@@ -5760,15 +5761,22 @@ namespace AutoBot
                     .Where(x => x.AsycudaDocumentSetId == fileType.AsycudaDocumentSetId
                                 && x.Type == "DIS" && !x.ShortAllocations.Any()).ToList();
 
-                var shortlst = lst.Where(x => ualst.Any(z => z.EntryDataDetailsId == x.Key && z.InvoiceQty.GetValueOrDefault() > z.ReceivedQty.GetValueOrDefault())).Select(x => $"{x.Key.ToString()}-{x.Value}").DefaultIfEmpty("").Aggregate((o,n) => $"{o},{n}");
-                new AllocationsBaseModel()
-                    .AllocateSalesByMatchingSalestoAsycudaEntriesOnItemNumber(
-                        BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId, false,
-                        shortlst).Wait();
+                var shortlst = lst
+                    .Where(x => ualst.Any(z =>
+                        z.EntryDataDetailsId == x.Key &&
+                        z.InvoiceQty.GetValueOrDefault() > z.ReceivedQty.GetValueOrDefault()))
+                    .Select(x => $"{x.Key.ToString()}-{x.Value}").DefaultIfEmpty("").Aggregate((o, n) => $"{o},{n}");
+                if (!string.IsNullOrEmpty(shortlst))
+                {
+                    new AllocationsBaseModel()
+                        .AllocateSalesByMatchingSalestoAsycudaEntriesOnItemNumber(
+                            BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId, false,
+                            shortlst).Wait();
 
-                new AllocationsBaseModel()
-                    .MarkErrors(BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId, shortlst).Wait();
-
+                    new AllocationsBaseModel()
+                        .MarkErrors(BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId, shortlst)
+                        .Wait();
+                }
             }
             catch (Exception e)
             {
