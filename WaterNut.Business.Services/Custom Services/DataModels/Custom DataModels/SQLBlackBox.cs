@@ -27,7 +27,7 @@ namespace WaterNut.DataSpace
                     var cncStr = ctx.Database.Connection.ConnectionString;
                     var oDatabase = ctx.Database.Connection.Database;
                     SqlConnection nConn = new SqlConnection(cncStr);
-                    List<string> Databases = GetDatabaseList(cncStr);
+                   // List<string> Databases = GetDatabaseList(cncStr);
 
                     foreach (var sName in scripts)
                     {
@@ -37,14 +37,15 @@ namespace WaterNut.DataSpace
                         String script = File.ReadAllText($@"SQLBlackBox\{sName}.sql");
                         SqlCommand myCommand = new SqlCommand(script, nConn);
                         int i = 0;
-                        foreach (string db in Databases)
-                        {
+                        //foreach (string db in Databases)
+                        //{
                             try
                             {
-                                var database = db;
+                                //var database = db;
+                                
                                 ++i;
 
-                                cncStr = cncStr.Replace(oDatabase, db);
+                                //cncStr = cncStr.Replace(oDatabase, db);
                                 nConn = new SqlConnection(cncStr);
                                 myCommand = new SqlCommand(script, nConn);
                                 nConn.Open();
@@ -56,14 +57,14 @@ namespace WaterNut.DataSpace
                             }
                             catch (Exception ex)
                             {
-                                Console.WriteLine("Error in Db: " + db + "\nError Statement:" + ex.Message);
+                                Console.WriteLine("Error in Db: " + oDatabase + "\nError Statement:" + ex.Message);
                             }
                             finally
                             {
                                 nConn.Close();
                                 // Console.WriteLine("----------------------------------------------------------");
                             }
-                        }
+                     //   }
 
                     }
 
