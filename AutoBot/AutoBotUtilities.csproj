@@ -301,6 +301,11 @@
     <Compile Include="DiscpancyExecData.cs" />
     <Compile Include="POCreator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
     <Compile Include="ShipmentExtensions.cs" />
     <Compile Include="SubmitEntryData.cs" />
     <Compile Include="UpdateInvoice.cs" />
@@ -311,6 +316,10 @@
       <SubType>Designer</SubType>
     </None>
     <None Include="packages.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\AsycudaWorld421\AsycudaWorld421.csproj">
@@ -369,6 +378,22 @@
       <Project>{d906b53e-5d68-4ff3-a2bc-b1c808474160}</Project>
       <Name>xlsxWriter</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <Content Include="SQLBlackBox\AddHighImpactIndexesStoredProc.txt" />
+    <Content Include="SQLBlackBox\AdhocChange.sql" />
+    <Content Include="SQLBlackBox\AdjustFileGrowth.sql" />
+    <Content Include="SQLBlackBox\CallHighImpactIndexProc.txt" />
+    <Content Include="SQLBlackBox\CleanBackupHistory.sql" />
+    <Content Include="SQLBlackBox\CreateHighImpactFinal.sql" />
+    <Content Include="SQLBlackBox\dropIndexDupes.sql" />
+    <Content Include="SQLBlackBox\IndexUsageStatistics.txt" />
+    <Content Include="SQLBlackBox\IterateOverDatabases.txt" />
+    <Content Include="SQLBlackBox\RemoveBBIndexesFinal.sql" />
+    <Content Include="SQLBlackBox\RemoveUnusedIndexes.sql" />
+    <Content Include="SQLBlackBox\SmatIndexRebuild.sql" />
+    <Content Include="SQLBlackBox\UpdateStats.sql" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

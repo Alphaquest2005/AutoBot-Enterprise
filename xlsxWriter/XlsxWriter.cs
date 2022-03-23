@@ -315,6 +315,8 @@ namespace xlsxWriter
             {
                 var pOItem = itm.INVItems.OrderByDescending(x => x.RankNo).FirstOrDefault();
 
+                var invTotalCost = itm.INVItems.Select(x => x.INVTotalCost?? x.INVQuantity * x.INVCost).Sum();
+
                 SetValue(workbook, i,
                     header.First(x => x.Key.Column == nameof(pO.PurchaseOrders.PONumber)).Key.Index,
                     pO.PurchaseOrders.PONumber);
@@ -343,7 +345,7 @@ namespace xlsxWriter
                     itm.ItemNumber);
                 SetValue(workbook, i,
                     header.First(x => x.Key.Column == nameof(itm.TotalCost)).Key.Index,
-                    pOItem?.INVTotalCost ?? (itm.TotalCost == 0 ? itm.Quantity * itm.Cost : itm.TotalCost));
+                    invTotalCost);
 
                 SetFormula(workbook, i, header.First(x => x.Key.Column == "Total").Key.Index,
                     $"=O{i + 1}*K{i + 1}");
@@ -677,13 +679,14 @@ namespace xlsxWriter
                                                          - summaryPkg.Invoices[i].TotalDeduction.GetValueOrDefault());
 
                         var subTotal = Math.Round(summaryPkg.Invoices[i].SubTotal.GetValueOrDefault(), 2) - Math.Round(po.PurchaseOrders.EntryDataDetails.Sum(x => x.Cost * x.Quantity), 2);
+                        var totalCost = Math.Round(summaryPkg.Invoices[i].InvoiceDetails.Sum(x => x.TotalCost??0), 2) - Math.Round(po.PurchaseOrders.EntryDataDetails.Sum(x => x.Cost * x.Quantity), 2);
                         var importedTotalDifference = summaryPkg.Invoices[i].ImportedTotalDifference;
                         var poInvMismatch = po?.POMISMatches.Count();
 
 
                         if (summaryPkg.Invoices[i].ShipmentInvoicePOs.Count > 1)
                             workbook.CurrentWorksheet.SetActiveStyle(duplicateStyle);
-                        else if(Math.Round(importedVSExpectedTotal,2) != 0 || Math.Round(importedTotalDifference,2) != 0 || (poInvMismatch??0) != 0)
+                        else if(Math.Round(importedVSExpectedTotal,2) != 0 || Math.Round(importedTotalDifference,2) != 0 || (poInvMismatch??0) != 0 || totalCost != 0)
                             workbook.CurrentWorksheet.SetActiveStyle(errStyle);
                         else
                         {

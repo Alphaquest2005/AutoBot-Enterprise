@@ -1,0 +1,39 @@
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Data.SqlClient;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace HighImpactIndexes
+{
+    class Program
+    {
+        //  private static object key;
+
+        static void Main(string[] args)
+        {
+
+            string server = @"MWEST5510\SQL01";
+            string userid = "Jim";
+            string password = "Peloton";
+            string database = "master";
+            string cncStr = @"Server=" + server + ";Database=" + database + ";User Id=" + userid + ";Password = " + password + "; ";
+
+
+            using (var conn = new SqlConnection(cncStr))
+            using (var command = new SqlCommand("uspCreateIndexes", conn)
+            {
+                CommandType = CommandType.StoredProcedure
+            })
+            {
+                conn.Open();
+                command.ExecuteNonQuery();
+            }
+
+        }
+    }
+}

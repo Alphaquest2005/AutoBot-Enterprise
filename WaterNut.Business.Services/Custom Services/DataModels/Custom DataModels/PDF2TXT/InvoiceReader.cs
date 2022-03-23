@@ -1104,8 +1104,11 @@ namespace WaterNut.DataSpace
                         }
 
 
-                        if (values.ContainsKey(field))
+                        if (values.ContainsKey(field) )
                         {
+                            if (/*OCR_Lines.Parts.RecuringPart != null && OCR_Lines.Parts.RecuringPart.IsComposite == true && 
+                                 Took this out becasue marineco has two details which combining
+                                 */ OCR_Lines.DistinctValues.GetValueOrDefault() != true) continue;
                             values[field] = values[field] + " " + value.Trim(); 
                         }
                         else

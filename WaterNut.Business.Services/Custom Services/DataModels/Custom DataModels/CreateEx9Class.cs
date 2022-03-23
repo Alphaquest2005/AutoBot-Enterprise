@@ -95,7 +95,9 @@ namespace WaterNut.DataSpace
             bool universalPIcheck, bool itemPIcheck)
         {
             try
-            {  
+            {
+                SQLBlackBox.RunSqlBlackBox();
+
                 DocSetPi.Clear();
                 
                 //DocSetPi.Clear();// moved here because data is cached wont update automatically

@@ -301,6 +301,7 @@ namespace AutoBot
                 {"ImportAllFilesInDataFolder", ImportAllFilesInDataFolder},
                 {"relinkAllPreviousItems",relinkAllPreviousItems},
                 {"ImportWarehouseErrors", ImportWarehouseErrors},
+                {"RunSQLBlackBox", SQLBlackBox.RunSqlBlackBox},
 
 
             };
@@ -5754,7 +5755,12 @@ namespace AutoBot
                         BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId,
                         lst.Select(x => $"{x.Key.ToString()}-{x.Value}").Aggregate((o, n) => $"{o},{n}")).Wait();
 
-                var shortlst = lst.Where(x => alst.Any(z => z.EntryDataDetailsId == x.Key && z.InvoiceQty.GetValueOrDefault() > z.ReceivedQty.GetValueOrDefault())).Select(x => $"{x.Key.ToString()}-{x.Value}").DefaultIfEmpty("").Aggregate((o,n) => $"{o},{n}");
+                var ualst = new AdjustmentQSContext()
+                    .AdjustmentDetails
+                    .Where(x => x.AsycudaDocumentSetId == fileType.AsycudaDocumentSetId
+                                && x.Type == "DIS" && !x.ShortAllocations.Any()).ToList();
+
+                var shortlst = lst.Where(x => ualst.Any(z => z.EntryDataDetailsId == x.Key && z.InvoiceQty.GetValueOrDefault() > z.ReceivedQty.GetValueOrDefault())).Select(x => $"{x.Key.ToString()}-{x.Value}").DefaultIfEmpty("").Aggregate((o,n) => $"{o},{n}");
                 new AllocationsBaseModel()
                     .AllocateSalesByMatchingSalestoAsycudaEntriesOnItemNumber(
                         BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId, false,
