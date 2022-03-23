@@ -158,16 +158,15 @@ namespace DocumentItemDS.Business.Entities
             {
                 if (xcuda_Tarification != null)
                 {
-                    var xcudaSupplementaryUnit = xcuda_Tarification.xcuda_Supplementary_unit.FirstOrDefault();
+                    var xcudaSupplementaryUnit = xcuda_Tarification.xcuda_Supplementary_unit.FirstOrDefault(x => x.IsFirstRow == true);
                     if (xcudaSupplementaryUnit == null)
                     {
 
-                        xcuda_Tarification.Unordered_xcuda_Supplementary_unit.Add(new xcuda_Supplementary_unit(true){ Suppplementary_unit_quantity = value, TrackingState = TrackingState.Added});
+                        xcuda_Tarification.Unordered_xcuda_Supplementary_unit.Add(new xcuda_Supplementary_unit(true){ Suppplementary_unit_quantity = value, TrackingState = TrackingState.Added, IsFirstRow = true});
                     }
                     if (xcudaSupplementaryUnit != null)
                     {
-                        xcudaSupplementaryUnit.Suppplementary_unit_quantity =
-                           xcudaSupplementaryUnit.Suppplementary_unit_quantity + value;
+                        xcudaSupplementaryUnit.Suppplementary_unit_quantity = value;
                     }
                 }
             }

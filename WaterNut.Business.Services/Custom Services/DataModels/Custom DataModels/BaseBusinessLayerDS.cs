@@ -1633,7 +1633,7 @@ namespace WaterNut.DataSpace
                             _runningMiniumWeight = 0;
                         }
 
-                        itm.Gross_weight_itm += (itm == lst.First() ? _weightAsycudaNormallyOffBy : 0);
+                        itm.Gross_weight_itm -= (itm == lst.First() ? _weightAsycudaNormallyOffBy : 0);
 
                         itm.Net_weight_itm =
                             itm.Gross_weight_itm;

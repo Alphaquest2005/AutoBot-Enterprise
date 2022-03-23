@@ -1654,6 +1654,9 @@ namespace WaterNut.DataSpace
 
                     itm.xcuda_PreviousItem = pitm;
                     pitm.xcuda_Item = itm;
+
+                    itm.ItemQuantity = (double) pitm.Suplementary_Quantity; // taking the previous item quantity because thats governing thing when exwarehousing. c#36689 51 9/1/2021
+
                     var previousItems = new previousItems()
                     {
                         DutyFreePaid = dfp, Net_weight = (double) pitm.Net_weight,
@@ -1669,6 +1672,8 @@ namespace WaterNut.DataSpace
                         docPreviousItems.Add(lineData.PreviousDocumentItemId,
                             new List<previousItems>() {previousItems});
                     }
+
+                    
 
 
                     var ep = new EntryPreviousItems(true)

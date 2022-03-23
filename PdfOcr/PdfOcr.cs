@@ -151,10 +151,10 @@ namespace pdf_ocr
         private static string GetTextFromImage(PageSegMode pagemode, string TempDir)
         {
             var result = new StringBuilder();
-            foreach (var file in new DirectoryInfo(TempDir).GetFiles().Where(x => x.Extension == ".png").OrderBy(x => x.LastWriteTime))
+
+            var files = new DirectoryInfo(TempDir).GetFiles().Where(x => x.Extension == ".png").OrderBy(x => x.LastWriteTime).ToList();
+            foreach (var file in files)
             {
-
-
                 using (var img = Pix.LoadFromFile(file.FullName))
                 {
                     using (var tesseractEngine = new TesseractEngine(Path.Combine(Environment.CurrentDirectory, "tessdata"), ocrLanguage, EngineMode.Default))
