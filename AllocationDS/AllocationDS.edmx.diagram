@@ -99,6 +99,9 @@
         <EntityTypeShape EntityType="WaterNutDBModel.AllocationsTestCases" Width="1.5" PointX="29.75" PointY="7.5" />
         <EntityTypeShape EntityType="WaterNutDBModel.LumpedItem" Width="1.5" PointX="0.75" PointY="3.75" />
         <AssociationConnector Association="WaterNutDBModel.InventoryItemInventoryItems_Lumped" />
+        <AssociationConnector Association="WaterNutDBModel.AsycudaDocumentAsycudaDocumentItemEntryDataDetails" />
+        <AssociationConnector Association="WaterNutDBModel.xcuda_ItemAsycudaDocumentItemEntryDataDetails" />
+        <EntityTypeShape EntityType="WaterNutDBModel.ExistingAllocations" Width="2.375" PointX="27.375" PointY="1.625" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

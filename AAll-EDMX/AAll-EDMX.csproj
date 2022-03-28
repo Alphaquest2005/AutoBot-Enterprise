@@ -217,6 +217,7 @@
 ..\WaterNut.Business.Entities\Generated Business Entities\AllocationDS\EntryDataDetailsEx.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\AllocationDS\EntryPreviousItems.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\AllocationDS\EX9AsycudaSalesAllocations.cs
+..\WaterNut.Business.Entities\Generated Business Entities\AllocationDS\ExistingAllocations.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\AllocationDS\InventoryItem.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\AllocationDS\InventoryItemAlias.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\AllocationDS\ItemSalesAsycudaPiSummary.cs
@@ -633,6 +634,7 @@
 ..\WaterNut.Business.Entities\Generated Mappings\AllocationDS\EntryDataDetailsEx.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\AllocationDS\EntryPreviousItems.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\AllocationDS\EX9AsycudaSalesAllocations.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\AllocationDS\ExistingAllocations.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\AllocationDS\InventoryItem.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\AllocationDS\InventoryItemAlias.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\AllocationDS\ItemSalesAsycudaPiSummary.map.cs
@@ -1057,6 +1059,7 @@
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\AllocationDS\EntryDataDetailsEx.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\AllocationDS\EntryPreviousItems.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\AllocationDS\EX9AsycudaSalesAllocations.cs
+..\WaterNut.Business.Entities\Generated ChangeTracking Models\AllocationDS\ExistingAllocations.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\AllocationDS\InventoryItem.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\AllocationDS\InventoryItemAlias.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\AllocationDS\ItemSalesAsycudaPiSummary.cs
@@ -1459,6 +1462,7 @@
 ..\WaterNut.Business.Entities\Generated Constructors Models\AllocationDS\EntryDataDetailsEx.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\AllocationDS\EntryPreviousItems.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\AllocationDS\EX9AsycudaSalesAllocations.cs
+..\WaterNut.Business.Entities\Generated Constructors Models\AllocationDS\ExistingAllocations.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\AllocationDS\InventoryItem.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\AllocationDS\InventoryItemAlias.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\AllocationDS\ItemSalesAsycudaPiSummary.cs
@@ -1861,6 +1865,7 @@
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\AllocationDS\EntryDataDetailsEx.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\AllocationDS\EntryPreviousItems.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\AllocationDS\EX9AsycudaSalesAllocations.cs
+..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\AllocationDS\ExistingAllocations.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\AllocationDS\InventoryItem.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\AllocationDS\InventoryItemAlias.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\AllocationDS\ItemSalesAsycudaPiSummary.cs
@@ -2263,6 +2268,7 @@
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\AllocationDS\EntryDataDetailsEx.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\AllocationDS\EntryPreviousItems.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\AllocationDS\EX9AsycudaSalesAllocations.cs
+..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\AllocationDS\ExistingAllocations.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\AllocationDS\InventoryItem.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\AllocationDS\InventoryItemAlias.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\AllocationDS\ItemSalesAsycudaPiSummary.cs
@@ -3890,6 +3896,7 @@
 ..\WaterNut.Business.Entities\Generated Mappings\AllocationDS\EntryDataDetailsEx.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\AllocationDS\EntryPreviousItems.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\AllocationDS\EX9AsycudaSalesAllocations.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\AllocationDS\ExistingAllocations.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\AllocationDS\InventoryItem.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\AllocationDS\InventoryItemAlias.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\AllocationDS\ItemSalesAsycudaPiSummary.map.cs
@@ -5018,6 +5025,7 @@
 ..\WaterNut.Business.Services\Contracts\AllocationDS\IEntryDataService.cs
 ..\WaterNut.Business.Services\Contracts\AllocationDS\IEntryPreviousItemsService.cs
 ..\WaterNut.Business.Services\Contracts\AllocationDS\IEX9AsycudaSalesAllocationsService.cs
+..\WaterNut.Business.Services\Contracts\AllocationDS\IExistingAllocationsService.cs
 ..\WaterNut.Business.Services\Contracts\AllocationDS\IInventoryItemAliasService.cs
 ..\WaterNut.Business.Services\Contracts\AllocationDS\IInventoryItemService.cs
 ..\WaterNut.Business.Services\Contracts\AllocationDS\IItemSalesAsycudaPiSummaryService.cs
@@ -5420,6 +5428,7 @@
 ..\WaterNut.Business.Services\Services\AllocationDS\EntryDataService.cs
 ..\WaterNut.Business.Services\Services\AllocationDS\EntryPreviousItemsService.cs
 ..\WaterNut.Business.Services\Services\AllocationDS\EX9AsycudaSalesAllocationsService.cs
+..\WaterNut.Business.Services\Services\AllocationDS\ExistingAllocationsService.cs
 ..\WaterNut.Business.Services\Services\AllocationDS\InventoryItemAliasService.cs
 ..\WaterNut.Business.Services\Services\AllocationDS\InventoryItemService.cs
 ..\WaterNut.Business.Services\Services\AllocationDS\ItemSalesAsycudaPiSummaryService.cs

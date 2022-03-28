@@ -56,6 +56,7 @@ namespace AdjustmentQS.Business.Services
                         .Where(x => overwriteExisting
                             ? x != null
                             : x.EffectiveDate == null) // take out other check cuz of existing entries 
+                        .Where(x => !x.ShortAllocations.Any())
                         .OrderBy(x => x.EntryDataDetailsId)
                         .DistinctBy(x => x.EntryDataDetailsId)
                         .ToList();

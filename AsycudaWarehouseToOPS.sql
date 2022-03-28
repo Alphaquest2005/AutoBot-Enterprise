@@ -390,7 +390,7 @@ where --not ((isnull([Asycuda-Quantity], 0) = 0 and isnull([OPS-QuantityOnHand],
 
 
 drop table [#P2O-Overs]
-SELECT  distinct 'P2O-Overs-' + FORMAT(@startdate, 'MMMyy') + '-' + FORMAT(@endDate, 'MMMyy') as [Invoice #], @startdate as [Date],[#Results].InvoiceNo, [#Results].ItemNumber,[#Results].InventoryItemId ,[#Results].Description, [#Results].[Asycuda-Quantity] as [From Quantity], [#Results].OPSCost, [#Results].[Quantity] as [To Quantity], [#Results].AsycudaCost, abs([#Results].Diff) as Quantity, [#Results].Cost, 'XCD' as Currency
+SELECT  distinct 'P2O-Overs-' + FORMAT(@startdate, 'MMMyy') + '-' + FORMAT(@endDate, 'MMMyy') as [Invoice #], @startdate as [Date],[#Results].InvoiceNo, [#Results].ItemNumber,[#Results].InventoryItemId ,[#Results].Description, isnull([#Results].[Asycuda-Quantity],0) - isnull([#Results].[Asycuda-PiQuantity],0) as [From Quantity], [#Results].OPSCost, [#Results].[Quantity] as [To Quantity], [#Results].AsycudaCost, abs([#Results].Diff) as Quantity, [#Results].Cost, 'XCD' as Currency
 into [#P2O-Overs]
 FROM     [#InComplete] as [#Results]       left outer join [InventoryItems-NonStock] on [#Results].InventoryItemId = [InventoryItems-NonStock].InventoryItemId    
 			                 
@@ -406,7 +406,7 @@ WHERE        ([#Results].InvoiceNo <> 'Asycuda') and cost <> 0 and [#Results].[A
 
 
 drop table [#P2O-Shorts]
-SELECT  distinct  'P2O-Shorts-' + FORMAT(@startdate, 'MMMyy') + '-' + FORMAT(@endDate, 'MMMyy') as [Invoice #], @endDate as [Date], [#Results].InvoiceNo, [#Results].ItemNumber, [#Results].InventoryItemId,[#Results].Description, [#Results].[Asycuda-Quantity] as [From Quantity], [#Results].OPSCost, [#Results].[Quantity] as [To Quantity], [#Results].AsycudaCost, [#Results].Diff * -1 as Quantity, [#Results].Cost, 'XCD' as Currency
+SELECT  distinct  'P2O-Shorts-' + FORMAT(@startdate, 'MMMyy') + '-' + FORMAT(@endDate, 'MMMyy') as [Invoice #], @endDate as [Date], [#Results].InvoiceNo, [#Results].ItemNumber, [#Results].InventoryItemId,[#Results].Description, isnull([#Results].[Asycuda-Quantity],0) - isnull([#Results].[Asycuda-PiQuantity],0) as [From Quantity], [#Results].OPSCost, [#Results].[Quantity] as [To Quantity], [#Results].AsycudaCost, [#Results].Diff * -1 as Quantity, [#Results].Cost, 'XCD' as Currency
 into [#P2O-Shorts]
 FROM     [#InComplete] as [#Results]   left outer join [InventoryItems-NonStock] on [#Results].InventoryItemId = [InventoryItems-NonStock].InventoryItemId   
 			
@@ -419,7 +419,7 @@ WHERE        ([#Results].InvoiceNo <> 'Asycuda') AND (diff < 0 and [Quantity] >=
 
 
 drop table  [#A2O-Overs]
-SELECT  distinct      'A2O-Overs-' + FORMAT(@startdate, 'MMMyy') + '-' + FORMAT(@endDate, 'MMMyy') as [Invoice #], @startdate as [Date], [#Results].InvoiceNo, [#Results].ItemNumber, [#Results].InventoryItemId,[#Results].Description,[#Results].Returns,[#Results].OPS2Zero,[#Results].Adjustments , [#Results].[Asycuda-Quantity] as [From Quantity], [#Results].OPSCost, [#Results].[Quantity] as [To Quantity], [#Results].AsycudaCost, [#Results].Diff as Quantity, [#Results].Cost, 'XCD' as Currency
+SELECT  distinct      'A2O-Overs-' + FORMAT(@startdate, 'MMMyy') + '-' + FORMAT(@endDate, 'MMMyy') as [Invoice #], @startdate as [Date], [#Results].InvoiceNo, [#Results].ItemNumber, [#Results].InventoryItemId,[#Results].Description,[#Results].Returns,[#Results].OPS2Zero,[#Results].Adjustments , isnull([#Results].[Asycuda-Quantity],0) - isnull([#Results].[Asycuda-PiQuantity],0) as [From Quantity], [#Results].OPSCost, [#Results].[Quantity] as [To Quantity], [#Results].AsycudaCost, [#Results].Diff as Quantity, [#Results].Cost, 'XCD' as Currency
 into [#A2O-Overs]
 FROM     [#InComplete] as [#Results]       left outer join [InventoryItems-NonStock] on [#Results].InventoryItemId = [InventoryItems-NonStock].InventoryItemId                 
 WHERE       ([#Results].InvoiceNo <> 'Asycuda' and [#Results].[Asycuda-Quantity] = 0)  and cost <> 0 and (diff > 0) and [InventoryItems-NonStock].InventoryItemId is null
@@ -431,7 +431,7 @@ WHERE       ([#Results].InvoiceNo <> 'Asycuda' and [#Results].[Asycuda-Quantity]
 
 
 drop table  [#A2O-Shorts]
-SELECT  distinct    'A2O-Shorts-' + FORMAT(@startdate, 'MMMyy') + '-' + FORMAT(@endDate, 'MMMyy') as [Invoice #], @endDate as [Date], [#Results].InvoiceNo, [#Results].ItemNumber, [#Results].InventoryItemId,[#Results].Description, [#Results].[Asycuda-Quantity] as [From Quantity], [#Results].OPSCost, [#Results].[OPS-Quantity] as [To Quantity], [#Results].AsycudaCost, [#Results].Diff * -1 as Quantity, [#Results].Cost, 'XCD' as Currency
+SELECT  distinct    'A2O-Shorts-' + FORMAT(@startdate, 'MMMyy') + '-' + FORMAT(@endDate, 'MMMyy') as [Invoice #], @endDate as [Date], [#Results].InvoiceNo, [#Results].ItemNumber, [#Results].InventoryItemId,[#Results].Description, isnull([#Results].[Asycuda-Quantity],0) - isnull([#Results].[Asycuda-PiQuantity],0) as [From Quantity], [#Results].OPSCost, [#Results].[OPS-Quantity] as [To Quantity], [#Results].AsycudaCost, [#Results].Diff * -1 as Quantity, [#Results].Cost, 'XCD' as Currency
 into [#A2O-Shorts]
 FROM   [#InComplete] as   [#Results]   left outer join [InventoryItems-NonStock] on [#Results].InventoryItemId = [InventoryItems-NonStock].InventoryItemId                       
 WHERE        ([#Results].InvoiceNo = 'Asycuda') AND (diff < 0 and [OPS-Quantity] <= 0) and [InventoryItems-NonStock].InventoryItemId is null
@@ -728,7 +728,7 @@ go
 							-------------Diff <> piquantity
 							---  XAN/813-0400-01 +1
 							---- vs SPY/0799320 0
-declare @ItemNumber varchar(50) = 'A06113'
+declare @ItemNumber varchar(50) = 'IP14723'
 select 'Unexecuted Adjustments'
 select * from [#Unexecuted Adjustments] where itemnumber = @ItemNumber
 select 'Adjustments-Shorts Data'

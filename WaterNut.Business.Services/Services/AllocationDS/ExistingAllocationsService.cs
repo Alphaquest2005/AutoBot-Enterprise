@@ -32,19 +32,19 @@ using WaterNut.Interfaces;
 
 namespace AllocationDS.Business.Services
 {
-   [Export (typeof(IAsycudaDocumentItemEntryDataDetailsService))]
+   [Export (typeof(IExistingAllocationsService))]
    [Export(typeof(IBusinessService))]
    [PartCreationPolicy(CreationPolicy.NonShared)]
    [ServiceBehavior(InstanceContextMode = InstanceContextMode.PerCall,
                     ConcurrencyMode = ConcurrencyMode.Multiple)]
    
-    public partial class AsycudaDocumentItemEntryDataDetailsService : IAsycudaDocumentItemEntryDataDetailsService, IDisposable
+    public partial class ExistingAllocationsService : IExistingAllocationsService, IDisposable
     {
         //private readonly AllocationDSContext dbContext;
 
         public bool StartTracking { get; set; }
 
-        public AsycudaDocumentItemEntryDataDetailsService()
+        public ExistingAllocationsService()
         {
             try
             {
@@ -65,7 +65,7 @@ namespace AllocationDS.Business.Services
             }
         }
 
-        public async Task<IEnumerable<AsycudaDocumentItemEntryDataDetails>> GetAsycudaDocumentItemEntryDataDetails(List<string> includesLst = null, bool tracking = true)
+        public async Task<IEnumerable<ExistingAllocations>> GetExistingAllocations(List<string> includesLst = null, bool tracking = true)
         {
             try
             {
@@ -75,7 +75,7 @@ namespace AllocationDS.Business.Services
                   using ( var dbContext = new AllocationDSContext(){StartTracking = StartTracking})
                   {
 				    var set = AddIncludes(includesLst, dbContext);
-                    IEnumerable<AsycudaDocumentItemEntryDataDetails> entities = await set.AsNoTracking().ToListAsync()
+                    IEnumerable<ExistingAllocations> entities = await set.AsNoTracking().ToListAsync()
 													       .ConfigureAwait(continueOnCapturedContext: false);
                            //scope.Complete();
                             if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
@@ -98,7 +98,7 @@ namespace AllocationDS.Business.Services
         }
 
 
-        public async Task<AsycudaDocumentItemEntryDataDetails> GetAsycudaDocumentItemEntryDataDetailsByKey(string EntryDataDetailsId, List<string> includesLst = null, bool tracking = true)
+        public async Task<ExistingAllocations> GetExistingAllocationsByKey(string EntryDataDetailsId, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
@@ -107,7 +107,7 @@ namespace AllocationDS.Business.Services
               {
                 var i = Convert.ToInt32(EntryDataDetailsId);
 				var set = AddIncludes(includesLst, dbContext);
-                AsycudaDocumentItemEntryDataDetails entity = await set.AsNoTracking().SingleOrDefaultAsync(x => x.EntryDataDetailsId == i).ConfigureAwait(continueOnCapturedContext: false);
+                ExistingAllocations entity = await set.AsNoTracking().SingleOrDefaultAsync(x => x.EntryDataDetailsId == i).ConfigureAwait(continueOnCapturedContext: false);
                 if(tracking && entity != null) entity.StartTracking();
                 return entity;
               }
@@ -127,14 +127,14 @@ namespace AllocationDS.Business.Services
         }
 
 
-		 public async Task<IEnumerable<AsycudaDocumentItemEntryDataDetails>> GetAsycudaDocumentItemEntryDataDetailsByExpression(string exp, List<string> includesLst = null, bool tracking = true)
+		 public async Task<IEnumerable<ExistingAllocations>> GetExistingAllocationsByExpression(string exp, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
                 using (var dbContext = new AllocationDSContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-					if (string.IsNullOrEmpty(exp) || exp == "None") return new List<AsycudaDocumentItemEntryDataDetails>();
+					if (string.IsNullOrEmpty(exp) || exp == "None") return new List<ExistingAllocations>();
 					var set = AddIncludes(includesLst, dbContext);
                     if (exp == "All")
                     {
@@ -170,14 +170,14 @@ namespace AllocationDS.Business.Services
             }
         }
 
-		 public async Task<IEnumerable<AsycudaDocumentItemEntryDataDetails>> GetAsycudaDocumentItemEntryDataDetailsByExpressionLst(List<string> expLst, List<string> includesLst = null, bool tracking = true)
+		 public async Task<IEnumerable<ExistingAllocations>> GetExistingAllocationsByExpressionLst(List<string> expLst, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
                 using (var dbContext = new AllocationDSContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-					if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return new List<AsycudaDocumentItemEntryDataDetails>();
+					if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return new List<ExistingAllocations>();
 					var set = AddIncludes(includesLst, dbContext);
                     if (expLst.FirstOrDefault() == "All")
                     {
@@ -212,7 +212,7 @@ namespace AllocationDS.Business.Services
             }
         }
 
-		public async Task<IEnumerable<AsycudaDocumentItemEntryDataDetails>> GetAsycudaDocumentItemEntryDataDetailsByExpressionNav(string exp,
+		public async Task<IEnumerable<ExistingAllocations>> GetExistingAllocationsByExpressionNav(string exp,
 																							  Dictionary<string, string> navExp,
 																							  List<string> includesLst = null, bool tracking = true)
         {
@@ -221,7 +221,7 @@ namespace AllocationDS.Business.Services
                 using (var dbContext = new AllocationDSContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-                    if (string.IsNullOrEmpty(exp) || exp == "None") return new List<AsycudaDocumentItemEntryDataDetails>();
+                    if (string.IsNullOrEmpty(exp) || exp == "None") return new List<ExistingAllocations>();
 
                     if (exp == "All" && navExp.Count == 0)
                     {
@@ -230,31 +230,6 @@ namespace AllocationDS.Business.Services
 												.ConfigureAwait(continueOnCapturedContext: false);
                         if(tracking) aentities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
                         return aentities; 
-                    }
-                    foreach (var itm in navExp)
-                    {
-                        switch (itm.Key)
-                        {
-                            case "EntryDataDetails":
-                                return
-                                    await
-                                        GetWhere<EntryDataDetails>(dbContext, exp, itm.Value, "AsycudaDocumentItemEntryDataDetails", "SelectMany", includesLst)
-										.ConfigureAwait(continueOnCapturedContext: false);
-
-                            case "AsycudaDocument":
-                                return
-                                    await
-                                        GetWhere<AsycudaDocument>(dbContext, exp, itm.Value, "AsycudaDocumentItemEntryDataDetails", "SelectMany", includesLst)
-										.ConfigureAwait(continueOnCapturedContext: false);
-
-                            case "xcuda_Item":
-                                return
-                                    await
-                                        GetWhere<xcuda_Item>(dbContext, exp, itm.Value, "AsycudaDocumentItemEntryDataDetails", "SelectMany", includesLst)
-										.ConfigureAwait(continueOnCapturedContext: false);
-
-                        }
-
                     }
 					var set = AddIncludes(includesLst, dbContext);
                     var entities = await set.AsNoTracking().Where(exp)
@@ -279,17 +254,17 @@ namespace AllocationDS.Business.Services
             }
         }
 
-        public async Task<IEnumerable<AsycudaDocumentItemEntryDataDetails>> GetAsycudaDocumentItemEntryDataDetailsByBatch(string exp,
+        public async Task<IEnumerable<ExistingAllocations>> GetExistingAllocationsByBatch(string exp,
             int totalrow, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
 
-                var res = new ConcurrentQueue<List<AsycudaDocumentItemEntryDataDetails>>();
+                var res = new ConcurrentQueue<List<ExistingAllocations>>();
 
 
 
-                if (string.IsNullOrEmpty(exp) || exp == "None") return new List<AsycudaDocumentItemEntryDataDetails>();
+                if (string.IsNullOrEmpty(exp) || exp == "None") return new List<ExistingAllocations>();
 
 
                 var batchSize = 500;
@@ -310,7 +285,7 @@ namespace AllocationDS.Business.Services
                                 dbContext.Configuration.AutoDetectChangesEnabled = false;
                                 //dbContext.Configuration.LazyLoadingEnabled = true;
                                 var set = AddIncludes(includesLst, dbContext);
-                                IQueryable<AsycudaDocumentItemEntryDataDetails> dset;
+                                IQueryable<ExistingAllocations> dset;
                                 if (exp == "All")
                                 {
                                     dset = set.OrderBy(x => x.EntryDataDetailsId);
@@ -354,17 +329,17 @@ namespace AllocationDS.Business.Services
                 throw new FaultException<ValidationFault>(fault);
             }
         }
-        public async Task<IEnumerable<AsycudaDocumentItemEntryDataDetails>> GetAsycudaDocumentItemEntryDataDetailsByBatchExpressionLst(List<string> expLst,
+        public async Task<IEnumerable<ExistingAllocations>> GetExistingAllocationsByBatchExpressionLst(List<string> expLst,
             int totalrow, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
 
-                var res = new ConcurrentQueue<List<AsycudaDocumentItemEntryDataDetails>>();
+                var res = new ConcurrentQueue<List<ExistingAllocations>>();
 
 
 
-                if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return new List<AsycudaDocumentItemEntryDataDetails>();
+                if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return new List<ExistingAllocations>();
 
 
                 var batchSize = 500;
@@ -385,7 +360,7 @@ namespace AllocationDS.Business.Services
                                 dbContext.Configuration.AutoDetectChangesEnabled = false;
                                 //dbContext.Configuration.LazyLoadingEnabled = true;
                                 var set = AddIncludes(includesLst, dbContext);
-                                IQueryable<AsycudaDocumentItemEntryDataDetails> dset;
+                                IQueryable<ExistingAllocations> dset;
                                 if (expLst.FirstOrDefault() == "All")
                                 {
                                     dset = set.OrderBy(x => x.EntryDataDetailsId);
@@ -430,13 +405,13 @@ namespace AllocationDS.Business.Services
         }
 
 
-        public async Task<AsycudaDocumentItemEntryDataDetails> UpdateAsycudaDocumentItemEntryDataDetails(AsycudaDocumentItemEntryDataDetails entity)
+        public async Task<ExistingAllocations> UpdateExistingAllocations(ExistingAllocations entity)
         { 
             using ( var dbContext = new AllocationDSContext(){StartTracking = StartTracking})
               {
                 try
                 {   
-                     var res = (AsycudaDocumentItemEntryDataDetails) entity;
+                     var res = (ExistingAllocations) entity;
                     if(res.TrackingState == TrackingState.Unchanged) res.TrackingState = TrackingState.Modified;                              
                     
                     dbContext.ApplyChanges(res);
@@ -512,14 +487,14 @@ namespace AllocationDS.Business.Services
            return entity;
         }
 
-        public async Task<AsycudaDocumentItemEntryDataDetails> CreateAsycudaDocumentItemEntryDataDetails(AsycudaDocumentItemEntryDataDetails entity)
+        public async Task<ExistingAllocations> CreateExistingAllocations(ExistingAllocations entity)
         {
             try
             {
-                var res = (AsycudaDocumentItemEntryDataDetails) entity;
+                var res = (ExistingAllocations) entity;
               using ( var dbContext = new AllocationDSContext(){StartTracking = StartTracking})
               {
-                dbContext.AsycudaDocumentItemEntryDataDetails.Add(res);
+                dbContext.ExistingAllocations.Add(res);
                 await dbContext.SaveChangesAsync().ConfigureAwait(continueOnCapturedContext: false);
                 res.AcceptChanges();
                 return res;
@@ -539,21 +514,21 @@ namespace AllocationDS.Business.Services
             }
         }
 
-        public async Task<bool> DeleteAsycudaDocumentItemEntryDataDetails(string EntryDataDetailsId)
+        public async Task<bool> DeleteExistingAllocations(string EntryDataDetailsId)
         {
             try
             {
               using ( var dbContext = new AllocationDSContext(){StartTracking = StartTracking})
               {
                 var i = Convert.ToInt32(EntryDataDetailsId);
-                AsycudaDocumentItemEntryDataDetails entity = await dbContext.AsycudaDocumentItemEntryDataDetails
+                ExistingAllocations entity = await dbContext.ExistingAllocations
 													.SingleOrDefaultAsync(x => x.EntryDataDetailsId == i)
 													.ConfigureAwait(continueOnCapturedContext: false);
                 if (entity == null)
                     return false;
 
-                    dbContext.AsycudaDocumentItemEntryDataDetails.Attach(entity);
-                    dbContext.AsycudaDocumentItemEntryDataDetails.Remove(entity);
+                    dbContext.ExistingAllocations.Attach(entity);
+                    dbContext.ExistingAllocations.Remove(entity);
                     await dbContext.SaveChangesAsync().ConfigureAwait(continueOnCapturedContext: false);
                     return true;
               }
@@ -572,19 +547,19 @@ namespace AllocationDS.Business.Services
             }
         }
 
-        public async Task<bool> RemoveSelectedAsycudaDocumentItemEntryDataDetails(IEnumerable<string> lst)
+        public async Task<bool> RemoveSelectedExistingAllocations(IEnumerable<string> lst)
         {
             try
             {
-                StatusModel.StartStatusUpdate("Removing AsycudaDocumentItemEntryDataDetails", lst.Count());
+                StatusModel.StartStatusUpdate("Removing ExistingAllocations", lst.Count());
                 var t = Task.Run(() =>
                 {
-                    using (var ctx = new AsycudaDocumentItemEntryDataDetailsService())
+                    using (var ctx = new ExistingAllocationsService())
                     {
                         foreach (var item in lst.ToList())
                         {
 
-                            ctx.DeleteAsycudaDocumentItemEntryDataDetails(item).Wait();
+                            ctx.DeleteExistingAllocations(item).Wait();
                             StatusModel.StatusUpdate();
                         }
                     }
@@ -619,7 +594,7 @@ namespace AllocationDS.Business.Services
                 {
                     dbContext.Database.CommandTimeout = 0;
                     if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return 0;
-                    var set = (IQueryable<AsycudaDocumentItemEntryDataDetails>)dbContext.AsycudaDocumentItemEntryDataDetails; 
+                    var set = (IQueryable<ExistingAllocations>)dbContext.ExistingAllocations; 
                     if (expLst.FirstOrDefault() == "All")
                     {
                         return await set.AsNoTracking().CountAsync()
@@ -657,7 +632,7 @@ namespace AllocationDS.Business.Services
                     if (string.IsNullOrEmpty(exp) || exp == "None") return 0;
                     if (exp == "All")
                     {
-                        return await dbContext.AsycudaDocumentItemEntryDataDetails
+                        return await dbContext.ExistingAllocations
                                     .AsNoTracking()
 									.CountAsync()
 									.ConfigureAwait(continueOnCapturedContext: false);
@@ -665,7 +640,7 @@ namespace AllocationDS.Business.Services
                     else
                     {
                         
-                        return await dbContext.AsycudaDocumentItemEntryDataDetails
+                        return await dbContext.ExistingAllocations
 									.AsNoTracking()
                                     .Where(exp)
 									.CountAsync()
@@ -687,17 +662,17 @@ namespace AllocationDS.Business.Services
             }
         }
         
-        public async Task<IEnumerable<AsycudaDocumentItemEntryDataDetails>> LoadRange(int startIndex, int count, string exp)
+        public async Task<IEnumerable<ExistingAllocations>> LoadRange(int startIndex, int count, string exp)
         {
             try
             {
                 using (var dbContext = new AllocationDSContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-                    if (string.IsNullOrEmpty(exp) || exp == "None") return new List<AsycudaDocumentItemEntryDataDetails>();
+                    if (string.IsNullOrEmpty(exp) || exp == "None") return new List<ExistingAllocations>();
                     if (exp == "All")
                     {
-                        return await dbContext.AsycudaDocumentItemEntryDataDetails
+                        return await dbContext.ExistingAllocations
 										.AsNoTracking()
                                         .OrderBy(y => y.EntryDataDetailsId)
 										.Skip(startIndex)
@@ -708,7 +683,7 @@ namespace AllocationDS.Business.Services
                     else
                     {
                         
-                        return await dbContext.AsycudaDocumentItemEntryDataDetails
+                        return await dbContext.ExistingAllocations
 										.AsNoTracking()
                                         .Where(exp)
 										.OrderBy(y => y.EntryDataDetailsId)
@@ -743,27 +718,12 @@ namespace AllocationDS.Business.Services
                     dbContext.Database.CommandTimeout = 0;
                     if (exp == "All" && navExp.Count == 0)
                     {
-                        return await dbContext.AsycudaDocumentItemEntryDataDetails
+                        return await dbContext.ExistingAllocations
 										.AsNoTracking()
                                         .CountAsync()
 										.ConfigureAwait(continueOnCapturedContext: false);
                     }
-                    foreach (var itm in navExp)
-                    {
-                        switch (itm.Key)
-                        {
-                            case "EntryDataDetails":
-                                return await CountWhere<EntryDataDetails>(dbContext, exp, itm.Value, "AsycudaDocumentItemEntryDataDetails", "SelectMany")
-											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "AsycudaDocument":
-                                return await CountWhere<AsycudaDocument>(dbContext, exp, itm.Value, "AsycudaDocumentItemEntryDataDetails", "SelectMany")
-											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "xcuda_Item":
-                                return await CountWhere<xcuda_Item>(dbContext, exp, itm.Value, "AsycudaDocumentItemEntryDataDetails", "SelectMany")
-											.ConfigureAwait(continueOnCapturedContext: false);
-						}
-                    }
-                    return await dbContext.AsycudaDocumentItemEntryDataDetails.Where(exp == "All" || exp == null ? "EntryDataDetailsId != null" : exp)
+                    return await dbContext.ExistingAllocations.Where(exp == "All" || exp == null ? "EntryDataDetailsId != null" : exp)
 											.AsNoTracking()
                                             .CountAsync()
 											.ConfigureAwait(continueOnCapturedContext: false);
@@ -805,7 +765,7 @@ namespace AllocationDS.Business.Services
             return await dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
-                .SelectMany(navProp).OfType<AsycudaDocumentItemEntryDataDetails>()
+                .SelectMany(navProp).OfType<ExistingAllocations>()
                 .Where(exp == "All" || exp == null ? "EntryDataDetailsId != null" : exp)
                 .Distinct()
                 .OrderBy("EntryDataDetailsId")
@@ -826,7 +786,7 @@ namespace AllocationDS.Business.Services
             return await dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
-                .Select(navProp).OfType<AsycudaDocumentItemEntryDataDetails>()
+                .Select(navProp).OfType<ExistingAllocations>()
                 .Where(exp == "All" || exp == null ? "EntryDataDetailsId != null" : exp)
                 .Distinct()
                 .OrderBy("EntryDataDetailsId")
@@ -840,7 +800,7 @@ namespace AllocationDS.Business.Services
 			}
         }
 
-		  public async Task<IEnumerable<AsycudaDocumentItemEntryDataDetails>> LoadRangeNav(int startIndex, int count, string exp,
+		  public async Task<IEnumerable<ExistingAllocations>> LoadRangeNav(int startIndex, int count, string exp,
                                                                                  Dictionary<string, string> navExp, IEnumerable<string> includeLst = null)
         {
             try
@@ -848,7 +808,7 @@ namespace AllocationDS.Business.Services
                 using (var dbContext = new AllocationDSContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-                    if ((string.IsNullOrEmpty(exp) && navExp.Count == 0) || exp == "None") return new List<AsycudaDocumentItemEntryDataDetails>();
+                    if ((string.IsNullOrEmpty(exp) && navExp.Count == 0) || exp == "None") return new List<ExistingAllocations>();
                     var set = AddIncludes(includeLst, dbContext);
 
                     if (exp == "All" && navExp.Count == 0)
@@ -863,35 +823,7 @@ namespace AllocationDS.Business.Services
 									.ToListAsync()
 									.ConfigureAwait(continueOnCapturedContext: false);
                     }
-                    foreach (var itm in navExp)
-                    {
-                        switch (itm.Key)
-                        {
-                            case "EntryDataDetails":
-                                return
-                                    await
-                                        LoadRangeWhere<EntryDataDetails>(startIndex, count, dbContext, exp, itm.Value, "AsycudaDocumentItemEntryDataDetails", "SelectMany")
-													.ConfigureAwait(continueOnCapturedContext: false);
-
-                            case "AsycudaDocument":
-                                return
-                                    await
-                                        LoadRangeWhere<AsycudaDocument>(startIndex, count, dbContext, exp, itm.Value, "AsycudaDocumentItemEntryDataDetails", "SelectMany")
-													.ConfigureAwait(continueOnCapturedContext: false);
-
-                            case "xcuda_Item":
-                                return
-                                    await
-                                        LoadRangeWhere<xcuda_Item>(startIndex, count, dbContext, exp, itm.Value, "AsycudaDocumentItemEntryDataDetails", "SelectMany")
-													.ConfigureAwait(continueOnCapturedContext: false);
-
-                          
-							default:
-                                throw new ArgumentException("No Navigation property found for " + itm.Key);
-						}
-
-                    }
-                    return await set//dbContext.AsycudaDocumentItemEntryDataDetails
+                    return await set//dbContext.ExistingAllocations
 								.AsNoTracking()
                                 .Where(exp == "All" || exp == null ? "EntryDataDetailsId != null" : exp)
 								.OrderBy(y => y.EntryDataDetailsId)
@@ -918,7 +850,7 @@ namespace AllocationDS.Business.Services
             }
         }
 
-		private static async Task<IEnumerable<AsycudaDocumentItemEntryDataDetails>> LoadRangeWhere<T>(int startIndex, int count,
+		private static async Task<IEnumerable<ExistingAllocations>> LoadRangeWhere<T>(int startIndex, int count,
             AllocationDSContext dbContext, string exp, string navExp, string navProp, string rel, IEnumerable<string> includeLst = null) where T : class
         {
              switch (rel)
@@ -933,7 +865,7 @@ namespace AllocationDS.Business.Services
 		    }
         }
 
-		private static async Task<IEnumerable<AsycudaDocumentItemEntryDataDetails>> LoadRangeSelectMany<T>(int startIndex, int count,
+		private static async Task<IEnumerable<ExistingAllocations>> LoadRangeSelectMany<T>(int startIndex, int count,
             AllocationDSContext dbContext, string exp, string navExp, string navProp, IEnumerable<string> includeLst = null) where T : class
         {
 			try
@@ -941,7 +873,7 @@ namespace AllocationDS.Business.Services
             var set = dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
-                .SelectMany(navProp).OfType<AsycudaDocumentItemEntryDataDetails>();
+                .SelectMany(navProp).OfType<ExistingAllocations>();
     
             if (includeLst != null) set = includeLst.Aggregate(set, (current, itm) => current.Include(itm));            
 
@@ -962,7 +894,7 @@ namespace AllocationDS.Business.Services
 			}
         }
 
-		private static async Task<IEnumerable<AsycudaDocumentItemEntryDataDetails>> LoadRangeSelect<T>(int startIndex, int count,
+		private static async Task<IEnumerable<ExistingAllocations>> LoadRangeSelect<T>(int startIndex, int count,
             AllocationDSContext dbContext, string exp, string navExp, string navProp, IEnumerable<string> includeLst = null) where T : class
         {
 			try
@@ -970,7 +902,7 @@ namespace AllocationDS.Business.Services
               var set = dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
-                .Select(navProp).OfType<AsycudaDocumentItemEntryDataDetails>();
+                .Select(navProp).OfType<ExistingAllocations>();
 
                if (includeLst != null) set = includeLst.Aggregate(set, (current, itm) => current.Include(itm)); 
                 
@@ -991,7 +923,7 @@ namespace AllocationDS.Business.Services
 			}
         }
 
-        private static async Task<IEnumerable<AsycudaDocumentItemEntryDataDetails>> GetWhere<T>(AllocationDSContext dbContext,
+        private static async Task<IEnumerable<ExistingAllocations>> GetWhere<T>(AllocationDSContext dbContext,
             string exp, string navExp, string navProp, string rel, List<string> includesLst = null) where T : class
         {
 			try
@@ -1015,7 +947,7 @@ namespace AllocationDS.Business.Services
 			}
         }
 
-		private static async Task<IEnumerable<AsycudaDocumentItemEntryDataDetails>> GetWhereSelectMany<T>(AllocationDSContext dbContext,
+		private static async Task<IEnumerable<ExistingAllocations>> GetWhereSelectMany<T>(AllocationDSContext dbContext,
             string exp, string navExp, string navProp, List<string> includesLst = null) where T : class
         {
 			try
@@ -1026,17 +958,17 @@ namespace AllocationDS.Business.Services
 				return await dbContext.Set<T>()
 							.AsNoTracking()
                             .Where(navExp)
-							.SelectMany(navProp).OfType<AsycudaDocumentItemEntryDataDetails>()
+							.SelectMany(navProp).OfType<ExistingAllocations>()
 							.Where(exp == "All" || exp == null?"EntryDataDetailsId != null":exp)
 							.Distinct()
 							.ToListAsync()
 							.ConfigureAwait(continueOnCapturedContext: false);
 			}
 
-			var set = (DbQuery<AsycudaDocumentItemEntryDataDetails>)dbContext.Set<T>()
+			var set = (DbQuery<ExistingAllocations>)dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
-                .SelectMany(navProp).OfType<AsycudaDocumentItemEntryDataDetails>()
+                .SelectMany(navProp).OfType<ExistingAllocations>()
                 .Where(exp == "All" || exp == null?"EntryDataDetailsId != null":exp)
                 .Distinct();
 
@@ -1052,7 +984,7 @@ namespace AllocationDS.Business.Services
 			}
         }
 
-		private static async Task<IEnumerable<AsycudaDocumentItemEntryDataDetails>> GetWhereSelect<T>(AllocationDSContext dbContext,
+		private static async Task<IEnumerable<ExistingAllocations>> GetWhereSelect<T>(AllocationDSContext dbContext,
             string exp, string navExp, string navProp, List<string> includesLst = null) where T : class
         {
 			try
@@ -1063,17 +995,17 @@ namespace AllocationDS.Business.Services
 				return await dbContext.Set<T>()
 							.AsNoTracking()
                             .Where(navExp)
-							.Select(navProp).OfType<AsycudaDocumentItemEntryDataDetails>()
+							.Select(navProp).OfType<ExistingAllocations>()
 							.Where(exp == "All" || exp == null?"EntryDataDetailsId != null":exp)
 							.Distinct()
 							.ToListAsync()
 							.ConfigureAwait(continueOnCapturedContext: false);
 			}
 
-			var set = (DbQuery<AsycudaDocumentItemEntryDataDetails>)dbContext.Set<T>()
+			var set = (DbQuery<ExistingAllocations>)dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
-                .Select(navProp).OfType<AsycudaDocumentItemEntryDataDetails>()
+                .Select(navProp).OfType<ExistingAllocations>()
                 .Where(exp == "All" || exp == null?"EntryDataDetailsId != null":exp)
                 .Distinct();
 
@@ -1089,7 +1021,94 @@ namespace AllocationDS.Business.Services
 			}
         }
 
-		
+			        public async Task<IEnumerable<ExistingAllocations>> GetExistingAllocationsByxAsycudaId(string xAsycudaId, List<string> includesLst = null)
+        {
+            try
+            {
+                using ( var dbContext = new AllocationDSContext(){StartTracking = StartTracking})
+              {
+                var i = Convert.ToInt32(xAsycudaId);
+                var set = AddIncludes(includesLst, dbContext);
+                IEnumerable<ExistingAllocations> entities = await set//dbContext.ExistingAllocations
+                                      .AsNoTracking()
+                                        .Where(x => x.xAsycudaId.ToString() == xAsycudaId.ToString())
+										.ToListAsync()
+										.ConfigureAwait(continueOnCapturedContext: false);
+                return entities;
+              }
+             }
+            catch (Exception updateEx)
+            {
+                System.Diagnostics.Debugger.Break();
+                //throw new FaultException(updateEx.Message);
+                    var fault = new ValidationFault
+                                {
+                                    Result = false,
+                                    Message = updateEx.Message,
+                                    Description = updateEx.StackTrace
+                                };
+                    throw new FaultException<ValidationFault>(fault);
+            }
+        }
+ 	        public async Task<IEnumerable<ExistingAllocations>> GetExistingAllocationsByApplicationSettingsId(string ApplicationSettingsId, List<string> includesLst = null)
+        {
+            try
+            {
+                using ( var dbContext = new AllocationDSContext(){StartTracking = StartTracking})
+              {
+                var i = Convert.ToInt32(ApplicationSettingsId);
+                var set = AddIncludes(includesLst, dbContext);
+                IEnumerable<ExistingAllocations> entities = await set//dbContext.ExistingAllocations
+                                      .AsNoTracking()
+                                        .Where(x => x.ApplicationSettingsId.ToString() == ApplicationSettingsId.ToString())
+										.ToListAsync()
+										.ConfigureAwait(continueOnCapturedContext: false);
+                return entities;
+              }
+             }
+            catch (Exception updateEx)
+            {
+                System.Diagnostics.Debugger.Break();
+                //throw new FaultException(updateEx.Message);
+                    var fault = new ValidationFault
+                                {
+                                    Result = false,
+                                    Message = updateEx.Message,
+                                    Description = updateEx.StackTrace
+                                };
+                    throw new FaultException<ValidationFault>(fault);
+            }
+        }
+ 	        public async Task<IEnumerable<ExistingAllocations>> GetExistingAllocationsByEntryDataId(string EntryDataId, List<string> includesLst = null)
+        {
+            try
+            {
+                using ( var dbContext = new AllocationDSContext(){StartTracking = StartTracking})
+              {
+                var i = EntryDataId;
+                var set = AddIncludes(includesLst, dbContext);
+                IEnumerable<ExistingAllocations> entities = await set//dbContext.ExistingAllocations
+                                      .AsNoTracking()
+                                        .Where(x => x.EntryDataId.ToString() == EntryDataId.ToString())
+										.ToListAsync()
+										.ConfigureAwait(continueOnCapturedContext: false);
+                return entities;
+              }
+             }
+            catch (Exception updateEx)
+            {
+                System.Diagnostics.Debugger.Break();
+                //throw new FaultException(updateEx.Message);
+                    var fault = new ValidationFault
+                                {
+                                    Result = false,
+                                    Message = updateEx.Message,
+                                    Description = updateEx.StackTrace
+                                };
+                    throw new FaultException<ValidationFault>(fault);
+            }
+        }
+ 
 		public decimal SumField(string whereExp, string field)
          {
              try
@@ -1101,11 +1120,11 @@ namespace AllocationDS.Business.Services
                      if (string.IsNullOrEmpty(whereExp) || whereExp == "None") return 0;
                      if (whereExp == "All")
                      {
-                          res = Convert.ToDecimal(dbContext.AsycudaDocumentItemEntryDataDetails.AsNoTracking().Sum(field));
+                          res = Convert.ToDecimal(dbContext.ExistingAllocations.AsNoTracking().Sum(field));
                      }
                      else
                      {
-                         res = Convert.ToDecimal(dbContext.AsycudaDocumentItemEntryDataDetails.AsNoTracking().Where(whereExp).Sum(field));
+                         res = Convert.ToDecimal(dbContext.ExistingAllocations.AsNoTracking().Where(whereExp).Sum(field));
                      }
                      
                      return res;
@@ -1133,29 +1152,14 @@ namespace AllocationDS.Business.Services
                 using (var dbContext = new AllocationDSContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-                    if (!dbContext.AsycudaDocumentItemEntryDataDetails.Any()) return 0;
+                    if (!dbContext.ExistingAllocations.Any()) return 0;
                     if (exp == "All" && navExp.Count == 0)
                     {
-                        return Convert.ToDecimal(dbContext.AsycudaDocumentItemEntryDataDetails
+                        return Convert.ToDecimal(dbContext.ExistingAllocations
 										.AsNoTracking()
                                         .Sum(field)??0);
                     }
-                    foreach (var itm in navExp)
-                    {
-                        switch (itm.Key)
-                        {
-                            case "EntryDataDetails":
-                                return await SumWhere<EntryDataDetails>(dbContext, exp, itm.Value, "AsycudaDocumentItemEntryDataDetails", field, "SelectMany")
-											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "AsycudaDocument":
-                                return await SumWhere<AsycudaDocument>(dbContext, exp, itm.Value, "AsycudaDocumentItemEntryDataDetails", field, "SelectMany")
-											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "xcuda_Item":
-                                return await SumWhere<xcuda_Item>(dbContext, exp, itm.Value, "AsycudaDocumentItemEntryDataDetails", field, "SelectMany")
-											.ConfigureAwait(continueOnCapturedContext: false);
-						}
-                    }
-                    return Convert.ToDecimal(dbContext.AsycudaDocumentItemEntryDataDetails.Where(exp == "All" || exp == null ? "EntryDataDetailsId != null" : exp)
+                    return Convert.ToDecimal(dbContext.ExistingAllocations.Where(exp == "All" || exp == null ? "EntryDataDetailsId != null" : exp)
 											.AsNoTracking()
                                             .Sum(field)??0);
                 }
@@ -1195,7 +1199,7 @@ namespace AllocationDS.Business.Services
             return Convert.ToDecimal(dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
-                .SelectMany(navProp).OfType<AsycudaDocumentItemEntryDataDetails>()
+                .SelectMany(navProp).OfType<ExistingAllocations>()
                 .Where(exp == "All" || exp == null ? "EntryDataDetailsId != null" : exp)
                 .Distinct()
                 .OrderBy("EntryDataDetailsId")
@@ -1215,7 +1219,7 @@ namespace AllocationDS.Business.Services
             return Convert.ToDecimal(dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
-                .Select(navProp).OfType<AsycudaDocumentItemEntryDataDetails>()
+                .Select(navProp).OfType<ExistingAllocations>()
                 .Where(exp == "All" || exp == null ? "EntryDataDetailsId != null" : exp)
                 .Distinct()
                 .OrderBy("EntryDataDetailsId")
@@ -1241,11 +1245,11 @@ namespace AllocationDS.Business.Services
                      if (string.IsNullOrEmpty(whereExp) || whereExp == "None") return res;
                      if (whereExp == "All")
                      {
-                          res = Convert.ToString(dbContext.AsycudaDocumentItemEntryDataDetails.AsNoTracking().Min(field));
+                          res = Convert.ToString(dbContext.ExistingAllocations.AsNoTracking().Min(field));
                      }
                      else
                      {
-                         res = Convert.ToString(dbContext.AsycudaDocumentItemEntryDataDetails.AsNoTracking().Where(whereExp).Min(field));
+                         res = Convert.ToString(dbContext.ExistingAllocations.AsNoTracking().Where(whereExp).Min(field));
                      }
                      
                      return res;
@@ -1266,12 +1270,12 @@ namespace AllocationDS.Business.Services
          }
 
 		 
-		private static IQueryable<AsycudaDocumentItemEntryDataDetails> AddIncludes(IEnumerable<string> includesLst, AllocationDSContext dbContext)
+		private static IQueryable<ExistingAllocations> AddIncludes(IEnumerable<string> includesLst, AllocationDSContext dbContext)
        {
 		 try
 			{
 			   if (includesLst == null) includesLst = new List<string>();
-			   var set =(DbQuery<AsycudaDocumentItemEntryDataDetails>) dbContext.AsycudaDocumentItemEntryDataDetails; 
+			   var set =(DbQuery<ExistingAllocations>) dbContext.ExistingAllocations; 
 			   set = includesLst.Where(x => !string.IsNullOrEmpty(x))
                                 .Aggregate(set, (current, itm) => current.Include(itm));
 			   return set;
@@ -1282,7 +1286,7 @@ namespace AllocationDS.Business.Services
 				throw;
 			}
        }
-	   private IQueryable<AsycudaDocumentItemEntryDataDetails> AddWheres(List<string> expLst, IQueryable<AsycudaDocumentItemEntryDataDetails> set)
+	   private IQueryable<ExistingAllocations> AddWheres(List<string> expLst, IQueryable<ExistingAllocations> set)
         {
             try
             {

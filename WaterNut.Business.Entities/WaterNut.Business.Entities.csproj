@@ -175,6 +175,7 @@
     <Compile Include="Generated Business Entities\AllocationDS\EntryPreviousItems.cs" />
     <Compile Include="Generated Business Entities\AllocationDS\Enums\CustomsOperations.cs" />
     <Compile Include="Generated Business Entities\AllocationDS\EX9AsycudaSalesAllocations.cs" />
+    <Compile Include="Generated Business Entities\AllocationDS\ExistingAllocations.cs" />
     <Compile Include="Generated Business Entities\AllocationDS\InventoryItem.cs" />
     <Compile Include="Generated Business Entities\AllocationDS\InventoryItemAlias.cs" />
     <Compile Include="Generated Business Entities\AllocationDS\ItemSalesAsycudaPiSummary.cs" />
@@ -583,6 +584,7 @@
     <Compile Include="Generated ChangeTracking Models\AllocationDS\EntryDataDetailsEx.cs" />
     <Compile Include="Generated ChangeTracking Models\AllocationDS\EntryPreviousItems.cs" />
     <Compile Include="Generated ChangeTracking Models\AllocationDS\EX9AsycudaSalesAllocations.cs" />
+    <Compile Include="Generated ChangeTracking Models\AllocationDS\ExistingAllocations.cs" />
     <Compile Include="Generated ChangeTracking Models\AllocationDS\InventoryItem.cs" />
     <Compile Include="Generated ChangeTracking Models\AllocationDS\InventoryItemAlias.cs" />
     <Compile Include="Generated ChangeTracking Models\AllocationDS\ItemSalesAsycudaPiSummary.cs" />
@@ -985,6 +987,7 @@
     <Compile Include="Generated Constructors Models\AllocationDS\EntryDataDetailsEx.cs" />
     <Compile Include="Generated Constructors Models\AllocationDS\EntryPreviousItems.cs" />
     <Compile Include="Generated Constructors Models\AllocationDS\EX9AsycudaSalesAllocations.cs" />
+    <Compile Include="Generated Constructors Models\AllocationDS\ExistingAllocations.cs" />
     <Compile Include="Generated Constructors Models\AllocationDS\InventoryItem.cs" />
     <Compile Include="Generated Constructors Models\AllocationDS\InventoryItemAlias.cs" />
     <Compile Include="Generated Constructors Models\AllocationDS\ItemSalesAsycudaPiSummary.cs" />
@@ -1387,6 +1390,7 @@
     <Compile Include="Generated IEntitiyWithKey Models\AllocationDS\EntryDataDetailsEx.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\AllocationDS\EntryPreviousItems.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\AllocationDS\EX9AsycudaSalesAllocations.cs" />
+    <Compile Include="Generated IEntitiyWithKey Models\AllocationDS\ExistingAllocations.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\AllocationDS\InventoryItem.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\AllocationDS\InventoryItemAlias.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\AllocationDS\ItemSalesAsycudaPiSummary.cs" />
@@ -1789,6 +1793,7 @@
     <Compile Include="Generated IIdentitfiableEntity Models\AllocationDS\EntryDataDetailsEx.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\AllocationDS\EntryPreviousItems.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\AllocationDS\EX9AsycudaSalesAllocations.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\AllocationDS\ExistingAllocations.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\AllocationDS\InventoryItem.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\AllocationDS\InventoryItemAlias.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\AllocationDS\ItemSalesAsycudaPiSummary.cs" />
@@ -2201,6 +2206,7 @@
     <Compile Include="Generated Mappings\AllocationDS\EntryDataDetailsEx.map.cs" />
     <Compile Include="Generated Mappings\AllocationDS\EntryPreviousItems.map.cs" />
     <Compile Include="Generated Mappings\AllocationDS\EX9AsycudaSalesAllocations.map.cs" />
+    <Compile Include="Generated Mappings\AllocationDS\ExistingAllocations.map.cs" />
     <Compile Include="Generated Mappings\AllocationDS\InventoryItem.map.cs" />
     <Compile Include="Generated Mappings\AllocationDS\InventoryItemAlias.map.cs" />
     <Compile Include="Generated Mappings\AllocationDS\ItemSalesAsycudaPiSummary.map.cs" />

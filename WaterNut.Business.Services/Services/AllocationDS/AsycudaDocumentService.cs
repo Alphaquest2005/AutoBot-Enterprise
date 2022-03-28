@@ -253,6 +253,12 @@ namespace AllocationDS.Business.Services
                                         GetWhere<Customs_Procedure>(dbContext, exp, itm.Value, "AsycudaDocument", "SelectMany", includesLst)
 										.ConfigureAwait(continueOnCapturedContext: false);
 
+                            case "AsycudaDocumentItemEntryDataDetails":
+                                return
+                                    await
+                                        GetWhere<AsycudaDocumentItemEntryDataDetails>(dbContext, exp, itm.Value, "AsycudaDocument", "Select", includesLst)
+										.ConfigureAwait(continueOnCapturedContext: false);
+
                         }
 
                     }
@@ -761,6 +767,9 @@ namespace AllocationDS.Business.Services
                             case "Customs_Procedure":
                                 return await CountWhere<Customs_Procedure>(dbContext, exp, itm.Value, "AsycudaDocument", "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "AsycudaDocumentItemEntryDataDetails":
+                                return await CountWhere<AsycudaDocumentItemEntryDataDetails>(dbContext, exp, itm.Value, "AsycudaDocument", "Select")
+											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }
                     return await dbContext.AsycudaDocument.Where(exp == "All" || exp == null ? "ASYCUDA_Id != null" : exp)
@@ -883,6 +892,12 @@ namespace AllocationDS.Business.Services
                                 return
                                     await
                                         LoadRangeWhere<Customs_Procedure>(startIndex, count, dbContext, exp, itm.Value, "AsycudaDocument", "SelectMany")
+													.ConfigureAwait(continueOnCapturedContext: false);
+
+                            case "AsycudaDocumentItemEntryDataDetails":
+                                return
+                                    await
+                                        LoadRangeWhere<AsycudaDocumentItemEntryDataDetails>(startIndex, count, dbContext, exp, itm.Value, "AsycudaDocument", "Select")
 													.ConfigureAwait(continueOnCapturedContext: false);
 
                           
@@ -1099,6 +1114,7 @@ namespace AllocationDS.Business.Services
                 var set = AddIncludes(includesLst, dbContext);
                 IEnumerable<AsycudaDocument> entities = await set//dbContext.AsycudaDocument
                                                     // .Include(x => x.xcuda_Item)									  
+                                                    // .Include(x => x.AsycudaDocumentItemEntryDataDetails)									  
                                       .AsNoTracking()
                                         .Where(x => x.AsycudaDocumentSetId.ToString() == AsycudaDocumentSetId.ToString())
 										.ToListAsync()
@@ -1129,6 +1145,7 @@ namespace AllocationDS.Business.Services
                 var set = AddIncludes(includesLst, dbContext);
                 IEnumerable<AsycudaDocument> entities = await set//dbContext.AsycudaDocument
                                                     // .Include(x => x.xcuda_Item)									  
+                                                    // .Include(x => x.AsycudaDocumentItemEntryDataDetails)									  
                                       .AsNoTracking()
                                         .Where(x => x.Customs_ProcedureId.ToString() == Customs_ProcedureId.ToString())
 										.ToListAsync()
@@ -1159,6 +1176,7 @@ namespace AllocationDS.Business.Services
                 var set = AddIncludes(includesLst, dbContext);
                 IEnumerable<AsycudaDocument> entities = await set//dbContext.AsycudaDocument
                                                     // .Include(x => x.xcuda_Item)									  
+                                                    // .Include(x => x.AsycudaDocumentItemEntryDataDetails)									  
                                       .AsNoTracking()
                                         .Where(x => x.Document_TypeId.ToString() == Document_TypeId.ToString())
 										.ToListAsync()
@@ -1189,6 +1207,7 @@ namespace AllocationDS.Business.Services
                 var set = AddIncludes(includesLst, dbContext);
                 IEnumerable<AsycudaDocument> entities = await set//dbContext.AsycudaDocument
                                                     // .Include(x => x.xcuda_Item)									  
+                                                    // .Include(x => x.AsycudaDocumentItemEntryDataDetails)									  
                                       .AsNoTracking()
                                         .Where(x => x.ApplicationSettingsId.ToString() == ApplicationSettingsId.ToString())
 										.ToListAsync()
@@ -1219,6 +1238,7 @@ namespace AllocationDS.Business.Services
                 var set = AddIncludes(includesLst, dbContext);
                 IEnumerable<AsycudaDocument> entities = await set//dbContext.AsycudaDocument
                                                     // .Include(x => x.xcuda_Item)									  
+                                                    // .Include(x => x.AsycudaDocumentItemEntryDataDetails)									  
                                       .AsNoTracking()
                                         .Where(x => x.CustomsOperationId.ToString() == CustomsOperationId.ToString())
 										.ToListAsync()
@@ -1302,6 +1322,9 @@ namespace AllocationDS.Business.Services
 											.ConfigureAwait(continueOnCapturedContext: false);
                             case "Customs_Procedure":
                                 return await SumWhere<Customs_Procedure>(dbContext, exp, itm.Value, "AsycudaDocument", field, "SelectMany")
+											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "AsycudaDocumentItemEntryDataDetails":
+                                return await SumWhere<AsycudaDocumentItemEntryDataDetails>(dbContext, exp, itm.Value, "AsycudaDocument", field, "Select")
 											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }

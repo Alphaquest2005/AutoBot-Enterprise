@@ -98,6 +98,8 @@ namespace WaterNut.DataSpace
 
 				PrepareDataForAllocation(applicationSettings);
 
+                //ReallocateExistingEx9(applicationSettings.ApplicationSettingsId); took this out because i don think it makes a difference for further thought
+
 
 				StatusModel.Timer("Auto Match Adjustments");
 				using (var ctx = new AdjustmentShortService())
@@ -122,7 +124,31 @@ namespace WaterNut.DataSpace
 
 		}
 
-		public static void PrepareDataForAllocation(ApplicationSettings applicationSettings)
+        private void ReallocateExistingEx9(int applicationSettingsApplicationSettingsId)
+        {
+            try
+            {
+                using (var ctx = new AllocationDSContext())
+                {
+                    var existingEx9s = ctx.ExistingAllocations.ToList();
+                    var alloLst = existingEx9s.Select(x => new AsycudaSalesAllocations()
+                        {
+                            EntryDataDetailsId = x.EntryDataDetailsId, PreviousItem_Id = x.pItemId,
+                            xEntryItem_Id = x.xItemId, TrackingState = TrackingState.Added
+                        })
+                        .ToList();
+                    ctx.AsycudaSalesAllocations.AddRange(alloLst);
+                    ctx.SaveChanges();
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+        }
+
+        public static void PrepareDataForAllocation(ApplicationSettings applicationSettings)
 		{
 			// update nonstock entrydetails status
 			using (var ctx = new EntryDataDSContext())

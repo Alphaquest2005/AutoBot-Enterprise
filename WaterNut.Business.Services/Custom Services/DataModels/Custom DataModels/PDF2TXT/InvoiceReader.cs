@@ -159,7 +159,7 @@ namespace WaterNut.DataSpace
                     z.FailedFields.Any() || (z.OCR_Lines.Fields.Any(f => f.IsRequired) && !z.Values.Any())).ToList();
                 if (!tmp.Parts.Any(x => x.AllLines.Any(z =>
                     z.Values.Values.Any(v =>
-                        v.Keys.Any(k => k.Field == "Name") && v.Values.Any(kv => kv == tmp.OcrInvoices.Name))))) return false;
+                        v.Keys.Any(k => k.fields.Field == "Name") && v.Values.Any(kv => kv == tmp.OcrInvoices.Name))))) return false;
                 if (failedlines.Any() && failedlines.Count < tmp.Lines.Count &&
                     (tmp.Parts.First().WasStarted || !tmp.Parts.First().OCR_Part.Start.Any()) && tmp.Lines.SelectMany(x => x.Values.Values).Any())
                 {
@@ -367,11 +367,11 @@ namespace WaterNut.DataSpace
                                 Resolved = false,
                                 OCR_FailedFields = x.FailedFields.SelectMany(z =>
                                         z.SelectMany(q => q.Value.Select(w => w.Key)))
-                                    .DistinctBy(z => z.Id)
+                                    .DistinctBy(z => z.fields.Id)
                                     .Select(z => new OCR_FailedFields(true)
                                     {
                                         TrackingState = TrackingState.Added,
-                                        FieldId = z.Id,
+                                        FieldId = z.fields.Id,
                                     })
                                     .ToList()
                             }).ToList()
@@ -391,11 +391,11 @@ namespace WaterNut.DataSpace
                             Resolved = false,
                             OCR_FailedFields = x.FailedFields.SelectMany(z =>
                                     z.SelectMany(q => q.Value.Select(w => w.Key)))
-                                .DistinctBy(z => z.Id)
+                                .DistinctBy(z => z.fields.Id)
                                 .Select(z => new OCR_FailedFields(true)
                                 {
                                     TrackingState = TrackingState.Added,
-                                    FieldId = z.Id,
+                                    FieldId = z.fields.Id,
                                 })
                                 .ToList()
                         }).ToList();
@@ -426,7 +426,7 @@ namespace WaterNut.DataSpace
             FileInfo fileInfo, string txtFile)
         {
             var body = $"Hey,\r\n\r\n {error}-'{fileInfo.Name}'.\r\n\r\n\r\n" +
-                       $"{failedlst.Select(x => $"Line:{x.OCR_Lines.Name} - RegId: {x.OCR_Lines.RegularExpressions.Id} - Regex: {x.OCR_Lines.RegularExpressions.RegEx} - Fields: {x.FailedFields.SelectMany(z => z.ToList()).SelectMany(z => z.Value.ToList()).Select(z => $"{z.Key.Key} - '{z.Key.Field}'").DefaultIfEmpty(string.Empty).Aggregate((o, c) => o + "\r\n\r\n" + c)}").DefaultIfEmpty(string.Empty).Aggregate((o, c) => o + "\r\n" + c)}\r\n\r\n" +
+                       $"{failedlst.Select(x => $"Line:{x.OCR_Lines.Name} - RegId: {x.OCR_Lines.RegularExpressions.Id} - Regex: {x.OCR_Lines.RegularExpressions.RegEx} - Fields: {x.FailedFields.SelectMany(z => z.ToList()).SelectMany(z => z.Value.ToList()).Select(z => $"{z.Key.fields.Key} - '{z.Key.fields.Field}'").DefaultIfEmpty(string.Empty).Aggregate((o, c) => o + "\r\n\r\n" + c)}").DefaultIfEmpty(string.Empty).Aggregate((o, c) => o + "\r\n" + c)}\r\n\r\n" +
                        "Thanks\r\n" +
                        "Thanks\r\n" +
                        $"AutoBot\r\n" +
@@ -552,6 +552,7 @@ namespace WaterNut.DataSpace
 
         public double MaxLinesCheckedToStart { get; set; } = 0.5;
         private static Dictionary<string, List<BetterExpando>> table = new Dictionary<string, List<BetterExpando>>();
+
         private List<IDictionary<string, object>> SetPartLineValues(Part part)
         {
             try
@@ -560,73 +561,64 @@ namespace WaterNut.DataSpace
 
                 var lst = new List<IDictionary<string, object>>();
                 var itm = new BetterExpando();
-                var ditm = ((IDictionary<string, object>) itm);
+                var ditm = ((IDictionary<string, object>)itm);
 
-                
+
 
                 foreach (var line in part.Lines)
                 {
                     if (!line.OCR_Lines.Fields.Any()) continue;
-                    var values = (line.OCR_Lines.DistinctValues == true 
+                    var values = (line.OCR_Lines.DistinctValues == true
                         ? DistinctValues(line.Values)
                         : line.Values).ToList();
 
                     if (!table.ContainsKey(line.OCR_Lines.Fields.First().EntityType) && line.OCR_Lines.IsColumn == true)
                         table.Add(line.OCR_Lines.Fields.First().EntityType, new List<BetterExpando>() { itm });
-                   
-                 
 
-                        for (int i = 0; i <= values.Count - 1; i++)
+
+
+                    for (int i = 0; i <= values.Count() - 1; i++)
                     {
                         var value = values[i];
-                        if (part.OCR_Part.RecuringPart != null && part.OCR_Part.RecuringPart.IsComposite == false)
+
+                        var instances = value.Value.GroupBy(x => x.Key.instance).ToList();
+                        foreach (var instance in instances)
                         {
-                            if (line.OCR_Lines.IsColumn != true || (line.OCR_Lines.IsColumn == true && i > table[line.OCR_Lines.Fields.First().EntityType].Count - 1))
+                            itm = CreateOrGetDitm(part, line, i, itm, ref ditm);
+
+                            ditm["FileLineNumber"] = value.Key.lineNumber + 1;
+                            ditm["Instance"] = instance.Key;
+                            ditm["Section"] = value.Key.section;
+
+
+
+
+                            foreach (var field in instance)
                             {
-                                itm = new BetterExpando();
-                                if(line.OCR_Lines.IsColumn == true)
+                                if (ditm.ContainsKey(field.Key.fields.Field + field.Key.instance) &&
+                                    (field.Key.fields.AppendValues == true || line.OCR_Lines.Fields.Select(z => z.Field)
+                                        .Count(f => f == field.Key.fields.Field) > 1))
                                 {
-                                   table[line.OCR_Lines.Fields.First().EntityType].Add(itm);
-                                    
+                                    ImportByDataType(field, ditm, value);
                                 }
-                            }
-                            else
-                            {
-                                itm = table[line.OCR_Lines.Fields.First().EntityType][i];
-                            } 
+                                else
+                                {
+                                    ditm[field.Key.fields.Field] = GetValue(value, field.Key);
+                                    //ImportByDataType(field, ditm, value);
+                                }
 
-                            ditm = ((IDictionary<string, object>)itm);
+                            }
+
+                            if (ditm.Count == 1) continue;
+                            if (part.OCR_Part.RecuringPart != null && part.OCR_Part.RecuringPart.IsComposite == false)
+                                lst.Add(itm);
                         }
-
-
-
-                        ditm["FileLineNumber"] = value.Key.lineNumber + 1;
-                        ditm["Instance"] = i+1;
-                        ditm["Section"] = value.Key.section;
-                        foreach (var field in value.Value)
-                        {
-                            if (ditm.ContainsKey(field.Key.Field) && (field.Key.AppendValues == true ||line.OCR_Lines.Fields.Select(z => z.Field)
-                                    .Count(f => f == field.Key.Field) > 1 ) )
-                            {
-                                ImportByDataType(field, ditm, value);
-                            }
-                            else
-                            {
-                                ditm[field.Key.Field] = GetValue(value, field.Key.Field);
-                               //ImportByDataType(field, ditm, value);
-                            }
-
-                        }
-
-                        if (ditm.Count == 1) continue;
-                        if (part.OCR_Part.RecuringPart != null && part.OCR_Part.RecuringPart.IsComposite == false)
-                            lst.Add(itm);
                     }
                 }
 
                 foreach (var childPart in part.ChildParts)
                 {
-                   // if (!childPart.Lines.Any()) continue;
+                    // if (!childPart.Lines.Any()) continue;
                     var childItms = SetPartLineValues(childPart);
                     var fieldname = childPart.AllLines.First().OCR_Lines.Fields.First().EntityType;
                     if (childPart.OCR_Part.RecuringPart != null || !childPart.Lines.Any())
@@ -639,15 +631,15 @@ namespace WaterNut.DataSpace
                         {
                             if (ditm.ContainsKey(fieldname))
                             {
-                                ((List<IDictionary<string, object>>) ditm[fieldname]).AddRange(childItms);
+                                ((List<IDictionary<string, object>>)ditm[fieldname]).AddRange(childItms);
                             }
                             else
                             {
-                               ditm[fieldname] = childItms; 
+                                ditm[fieldname] = childItms;
                             }
-                            
+
                         }
-                            
+
                     }
                     else
                     {
@@ -659,13 +651,14 @@ namespace WaterNut.DataSpace
                         {
                             ditm[fieldname] = childItms.FirstOrDefault();
                         }
-                        
+
                     }
 
                 }
 
 
-                if ((part.OCR_Part.RecuringPart == null || part.OCR_Part.RecuringPart.IsComposite) && ditm.Any()) lst.Add(itm);
+                if ((part.OCR_Part.RecuringPart == null || part.OCR_Part.RecuringPart.IsComposite) && ditm.Any())
+                    lst.Add(itm);
                 return lst;
             }
             catch (Exception e)
@@ -675,9 +668,34 @@ namespace WaterNut.DataSpace
             }
         }
 
-        private Dictionary<(int lineNumber, string section), Dictionary<Fields, string>> DistinctValues(Dictionary<(int lineNumber, string section), Dictionary<Fields, string>> lineValues)
+        private static BetterExpando CreateOrGetDitm(Part part, Line line, int i, BetterExpando itm, ref IDictionary<string, object> ditm)
         {
-            var res = new Dictionary<(int lineNumber, string section), Dictionary<Fields, string>>();
+            if (part.OCR_Part.RecuringPart != null && part.OCR_Part.RecuringPart.IsComposite == false)
+            {
+                if (line.OCR_Lines.IsColumn != true || (line.OCR_Lines.IsColumn == true &&
+                                                        i > table[line.OCR_Lines.Fields.First().EntityType]
+                                                            .Count - 1))
+                {
+                    itm = new BetterExpando();
+                    if (line.OCR_Lines.IsColumn == true)
+                    {
+                        table[line.OCR_Lines.Fields.First().EntityType].Add(itm);
+                    }
+                }
+                else
+                {
+                    itm = table[line.OCR_Lines.Fields.First().EntityType][i];
+                }
+
+                ditm = ((IDictionary<string, object>)itm);
+            }
+
+            return itm;
+        }
+
+        private Dictionary<(int lineNumber, string section), Dictionary<(Fields fields, int instance), string>> DistinctValues(Dictionary<(int lineNumber, string section), Dictionary<(Fields fields, int instance), string>> lineValues)
+        {
+            var res = new Dictionary<(int lineNumber, string section), Dictionary<(Fields fields, int instance), string>>();
             foreach (var val in lineValues.Where(val => !res.Values.Any(z => z.Values.Any(q => val.Value.ContainsValue(q)))))
             {
                 res.Add((val.Key.lineNumber, val.Key.section), val.Value);
@@ -685,45 +703,45 @@ namespace WaterNut.DataSpace
             return res;
         }
 
-        private void ImportByDataType(KeyValuePair<Fields, string> field, IDictionary<string, object> ditm, KeyValuePair<(int lineNumber, string section), Dictionary<Fields, string>> value)
+        private void ImportByDataType(KeyValuePair<(Fields fields, int instance), string> field, IDictionary<string, object> ditm, KeyValuePair<(int lineNumber, string section), Dictionary<(Fields fields, int instance), string>> value)
         {
-            switch (field.Key.DataType)
+            switch (field.Key.fields.DataType)
             {
                 case "String":
-                    ditm[field.Key.Field] =
-                        (ditm[field.Key.Field] + " " + GetValueByKey(value, field.Key.Key)).Trim();
+                    ditm[field.Key.fields.Field] =
+                        (ditm[field.Key.fields.Field] + " " + GetValueByKey(value, field.Key.fields.Key)).Trim();
                     break;
                 case "Number":
                 case "Numeric":
 
-                    if (field.Key.AppendValues == true)
+                    if (field.Key.fields.AppendValues == true)
                     {
-                        var val = GetValueByKey(value, field.Key.Key);
-                        if (ditm[field.Key.Field].ToString() !=  val.ToString())
-                            ditm[field.Key.Field] =
-                            Convert.ToDouble(ditm[field.Key.Field] ?? "0") +
-                            Convert.ToDouble(GetValueByKey(value, field.Key.Key));
+                        var val = GetValueByKey(value, field.Key.fields.Key);
+                        if (ditm[field.Key.fields.Field].ToString() !=  val.ToString())
+                            ditm[field.Key.fields.Field] =
+                            Convert.ToDouble(ditm[field.Key.fields.Field] ?? "0") +
+                            Convert.ToDouble(GetValueByKey(value, field.Key.fields.Key));
                     }
                     else
                     {
-                        ditm[field.Key.Field] =
-                        Convert.ToDouble(ditm[field.Key.Field] ?? "0") +
-                        Convert.ToDouble(GetValueByKey(value, field.Key.Key));
+                        ditm[field.Key.fields.Field] =
+                        Convert.ToDouble(ditm[field.Key.fields.Field] ?? "0") +
+                        Convert.ToDouble(GetValueByKey(value, field.Key.fields.Key));
                     }
                     
                     break;
                 default:
-                    ditm[field.Key.Field] = GetValueByKey(value, field.Key.Key);
+                    ditm[field.Key.fields.Field] = GetValueByKey(value, field.Key.fields.Key);
                     break;
             }
         }
 
-        private dynamic GetValue(KeyValuePair<(int lineNumber, string section), Dictionary<Fields, string>> z, string field)
+        private dynamic GetValue(KeyValuePair<(int lineNumber, string section), Dictionary<(Fields fields, int instance), string>> z, (Fields fields, int instance) field)
         {
             try
             {
-                var f = z.Value.FirstOrDefault(q => q.Key.Field == field);
-                return f.Key == null ? null : GetValue(f);
+                var f = z.Value.FirstOrDefault(q => q.Key == field);
+                return f.Key.fields == null ? null : GetValue(f);
             }
             catch (Exception e)
             {
@@ -733,12 +751,12 @@ namespace WaterNut.DataSpace
             }
 
         }
-        private dynamic GetValueByKey(KeyValuePair<(int lineNumber, string section), Dictionary<Fields, string>> z, string key)
+        private dynamic GetValueByKey(KeyValuePair<(int lineNumber, string section), Dictionary<(Fields fields, int instance), string>> z, string key)
         {
             try
             {
-                var f = z.Value.FirstOrDefault(q => q.Key.Key == key);
-                return f.Key == null ? null : GetValue(f);
+                var f = z.Value.FirstOrDefault(q => q.Key.fields.Key == key);
+                return f.Key.fields == null ? null : GetValue(f);
             }
             catch (Exception e)
             {
@@ -752,14 +770,14 @@ namespace WaterNut.DataSpace
         private dynamic GetValue(string field)
         {
             var f = Lines.Where(x => x.OCR_Lines.Parts.RecuringPart == null).SelectMany(x => x.Values.Values)
-                .SelectMany(x => x).FirstOrDefault(x => x.Key.Field == field);
-            return f.Key == null ? null : GetValue(f);
+                .SelectMany(x => x).FirstOrDefault(x => x.Key.fields.Field == field);
+            return f.Key.fields == null ? null : GetValue(f);
         }
 
-        private static dynamic GetValue(KeyValuePair<Fields, string> f)
+        private static dynamic GetValue(KeyValuePair<(Fields fields, int instance), string> f)
         {
-            if (f.Key == null) return null;
-            switch (f.Key.DataType)
+            if (f.Key.fields == null) return null;
+            switch (f.Key.fields.DataType)
             {
                 case "String":
                     return f.Value;
@@ -771,7 +789,7 @@ namespace WaterNut.DataSpace
                         return num;
                     else
                         throw new ApplicationException(
-                            $"{f.Key.Field} can not convert to {f.Key.DataType} for Value:{f.Value}");
+                            $"{f.Key.fields.Field} can not convert to {f.Key.fields.DataType} for Value:{f.Value}");
 
                 case "Date":
                     if (DateTime.TryParse(f.Value, out DateTime date))
@@ -789,7 +807,7 @@ namespace WaterNut.DataSpace
                             return edate;
                     }
                    throw new ApplicationException(
-                            $"{f.Key.Field} can not convert to {f.Key.DataType} for Value:{f.Value}");
+                            $"{f.Key.fields.Field} can not convert to {f.Key.fields.DataType} for Value:{f.Value}");
                 default:
                     return f.Value;
             }
@@ -860,7 +878,7 @@ namespace WaterNut.DataSpace
 
         public bool Success => Lines.All(x =>
                                    !x.Values.SelectMany(z => z.Value).Any(z =>
-                                       z.Key.IsRequired && string.IsNullOrEmpty(z.Value.ToString())))
+                                       z.Key.fields.IsRequired && string.IsNullOrEmpty(z.Value.ToString())))
                                //&& this.Lines.Any()
                                && !this.FailedLines.Any()
                                && ChildParts.All(x => x.Success == true);
@@ -869,7 +887,7 @@ namespace WaterNut.DataSpace
             .ToList()
             .Union(ChildParts.SelectMany(x => x.FailedLines)).ToList();
 
-        public List<Dictionary<string, List<KeyValuePair<Fields, string>>>> FailedFields =>
+        public List<Dictionary<string, List<KeyValuePair<(Fields fields, int instance), string>>>> FailedFields =>
             Lines.SelectMany(x => x.FailedFields).ToList();
         //public List<Dictionary<string, List<KeyValuePair<Fields, string>>>> FailedFields => Lines
         //                                                  .Where(x => x.Values.SelectMany(z => z.Value).Any(z => z.Key.IsRequired && string.IsNullOrEmpty(z.Value.ToString())))
@@ -1083,10 +1101,11 @@ namespace WaterNut.DataSpace
                         ? RegexOptions.Multiline
                         : RegexOptions.Singleline) | RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture);
                 if (matches.Count == 0) return false;
-                var values = new Dictionary<Fields, string>();
+                var values = new Dictionary<(Fields Fields, int Instance), string>();
+                var instance = 0;
                 foreach (Match match in matches)
                 {
-
+                    instance += 1;
 
                     
 
@@ -1104,23 +1123,35 @@ namespace WaterNut.DataSpace
                         }
 
 
-                        if (values.ContainsKey(field) )
+                        if (values.ContainsKey((field, instance)))
                         {
                             if (/*OCR_Lines.Parts.RecuringPart != null && OCR_Lines.Parts.RecuringPart.IsComposite == true && 
                                  Took this out becasue marineco has two details which combining
-                                 */ OCR_Lines.DistinctValues.GetValueOrDefault() != true) continue;
-                            values[field] = values[field] + " " + value.Trim(); 
+                                 */ OCR_Lines.DistinctValues.GetValueOrDefault() == true) continue;
+                            
+                            switch (field.DataType)
+                            {
+                                case "String":
+                                    values[(field, instance)] = values[(field, instance)] + " " + value.Trim();
+                                    break;
+                                case "Number":
+                                    values[(field, instance)] = (double.Parse(values[(field, instance)]) + double.Parse(value)).ToString();
+                                    break;
+                                case "Date":
+                                    values[(field, instance)] = value;
+                                    break;
+                            }
                         }
                         else
                         {
-                           values.Add(field, value.Trim()); 
+                           values.Add((field, instance), value.Trim()); 
                         }
                         
 
                         foreach (var childField in field.ChildFields)
                         {
                             ReadChildField(childField, values,
-                                values.Where(x => x.Key.Field == field.Field).Select(x => x.Value).DefaultIfEmpty("")
+                                values.Where(x => x.Key.Fields.Field == field.Field).Select(x => x.Value).DefaultIfEmpty("")
                                     .Aggregate((o, n) => o + " " + n));
                         }
 
@@ -1139,7 +1170,7 @@ namespace WaterNut.DataSpace
             }
         }
 
-        private void ReadChildField(Fields childField, Dictionary<Fields, string> values, string strValue)
+        private void ReadChildField(Fields childField, Dictionary<(Fields fields, int instance), string> values, string strValue)
         {
          
             var match = Regex.Match(strValue.Trim(), childField.Lines.RegularExpressions.RegEx,
@@ -1159,18 +1190,18 @@ namespace WaterNut.DataSpace
                             ? RegexOptions.Multiline
                             : RegexOptions.Singleline) | RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture);
                 }
-                values.Add(field, value.Trim());
+                values.Add((field, 1), value.Trim());
             }
         }
 
-        public Dictionary<(int lineNumber, string section), Dictionary<Fields, string>> Values { get; } = new Dictionary<(int lineNumber, string section), Dictionary<Fields, string>>();
+        public Dictionary<(int lineNumber, string section), Dictionary<(Fields fields, int instance), string>> Values { get; } = new Dictionary<(int lineNumber, string section), Dictionary<(Fields fields, int instance), string>>();
         //public bool MultiLine => OCR_Lines.MultiLine;
 
-        public List<Dictionary<string, List<KeyValuePair<Fields, string>>>> FailedFields => this.Values
-            .Where(x => x.Value.Any(z => z.Key.IsRequired && string.IsNullOrEmpty(z.Value.ToString())))
+        public List<Dictionary<string, List<KeyValuePair<(Fields fields, int instance), string>>>> FailedFields => this.Values
+            .Where(x => x.Value.Any(z => z.Key.fields.IsRequired && string.IsNullOrEmpty(z.Value.ToString())))
             .SelectMany(x => x.Value.ToList())
-            .DistinctBy(x => x.Key.Id)
-            .GroupBy(x => $"{x.Key.Field}-{x.Key.Key}")
+            .DistinctBy(x => x.Key.fields.Id)
+            .GroupBy(x => $"{x.Key.fields.Field}-{x.Key.fields.Key}")
             .DistinctBy(x => x.Key)
             .Select(x => x.ToDictionary(k => x.Key, v => x.ToList()))
             .ToList();

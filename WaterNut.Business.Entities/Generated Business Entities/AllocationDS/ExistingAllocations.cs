@@ -18,8 +18,23 @@ namespace AllocationDS.Business.Entities
 
     //[JsonObject(IsReference = true)]
     [DataContract(IsReference = true, Namespace="http://www.insight-software.com/WaterNut")]
-    public partial class AsycudaDocumentItemEntryDataDetails : BaseEntity<AsycudaDocumentItemEntryDataDetails>, ITrackable 
+    public partial class ExistingAllocations : BaseEntity<ExistingAllocations>, ITrackable 
     {
+        [DataMember]
+        public int xAsycudaId 
+        {
+            get
+            {
+                return _xasycudaid;
+            }
+            set
+            {
+                _xasycudaid = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        int _xasycudaid;
         [DataMember]
         public int EntryDataDetailsId 
         {
@@ -36,155 +51,80 @@ namespace AllocationDS.Business.Entities
         }
         int _entrydatadetailsid;
         [DataMember]
-        public int Item_Id 
+        public int xItemId 
         {
             get
             {
-                return _item_id;
+                return _xitemid;
             }
             set
             {
-                _item_id = value;
+                _xitemid = value;
                 //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
                 NotifyPropertyChanged();
             }
         }
-        int _item_id;
+        int _xitemid;
         [DataMember]
-        public string ItemNumber 
+        public int pItemId 
         {
             get
             {
-                return _itemnumber;
+                return _pitemid;
             }
             set
             {
-                _itemnumber = value;
+                _pitemid = value;
                 //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
                 NotifyPropertyChanged();
             }
         }
-        string _itemnumber;
+        int _pitemid;
         [DataMember]
-        public string key 
+        public string pCnumber 
         {
             get
             {
-                return _key;
+                return _pcnumber;
             }
             set
             {
-                _key = value;
+                _pcnumber = value;
                 //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
                 NotifyPropertyChanged();
             }
         }
-        string _key;
+        string _pcnumber;
         [DataMember]
-        public string DocumentType 
+        public Nullable<int> pLineNumber 
         {
             get
             {
-                return _documenttype;
+                return _plinenumber;
             }
             set
             {
-                _documenttype = value;
+                _plinenumber = value;
                 //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
                 NotifyPropertyChanged();
             }
         }
-        string _documenttype;
+        Nullable<int> _plinenumber;
         [DataMember]
-        public Nullable<double> Quantity 
+        public System.DateTime Date 
         {
             get
             {
-                return _quantity;
+                return _date;
             }
             set
             {
-                _quantity = value;
+                _date = value;
                 //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
                 NotifyPropertyChanged();
             }
         }
-        Nullable<double> _quantity;
-        [DataMember]
-        public bool ImportComplete 
-        {
-            get
-            {
-                return _importcomplete;
-            }
-            set
-            {
-                _importcomplete = value;
-                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
-                NotifyPropertyChanged();
-            }
-        }
-        bool _importcomplete;
-        [DataMember]
-        public int EntryData_Id 
-        {
-            get
-            {
-                return _entrydata_id;
-            }
-            set
-            {
-                _entrydata_id = value;
-                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
-                NotifyPropertyChanged();
-            }
-        }
-        int _entrydata_id;
-        [DataMember]
-        public string CustomsProcedure 
-        {
-            get
-            {
-                return _customsprocedure;
-            }
-            set
-            {
-                _customsprocedure = value;
-                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
-                NotifyPropertyChanged();
-            }
-        }
-        string _customsprocedure;
-        [DataMember]
-        public int Asycuda_id 
-        {
-            get
-            {
-                return _asycuda_id;
-            }
-            set
-            {
-                _asycuda_id = value;
-                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
-                NotifyPropertyChanged();
-            }
-        }
-        int _asycuda_id;
-        [DataMember]
-        public string EntryDataType 
-        {
-            get
-            {
-                return _entrydatatype;
-            }
-            set
-            {
-                _entrydatatype = value;
-                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
-                NotifyPropertyChanged();
-            }
-        }
-        string _entrydatatype;
+        System.DateTime _date;
         [DataMember]
         public int ApplicationSettingsId 
         {
@@ -201,26 +141,125 @@ namespace AllocationDS.Business.Entities
         }
         int _applicationsettingsid;
         [DataMember]
-        public int AsycudaDocumentSetId 
+        public string xCnumber 
         {
             get
             {
-                return _asycudadocumentsetid;
+                return _xcnumber;
             }
             set
             {
-                _asycudadocumentsetid = value;
+                _xcnumber = value;
                 //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
                 NotifyPropertyChanged();
             }
         }
-        int _asycudadocumentsetid;
+        string _xcnumber;
         [DataMember]
-        public EntryDataDetails EntryDataDetails { get; set; }
+        public int xLineNumber 
+        {
+            get
+            {
+                return _xlinenumber;
+            }
+            set
+            {
+                _xlinenumber = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        int _xlinenumber;
         [DataMember]
-        public AsycudaDocument AsycudaDocument { get; set; }
+        public string EntryDataId 
+        {
+            get
+            {
+                return _entrydataid;
+            }
+            set
+            {
+                _entrydataid = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _entrydataid;
         [DataMember]
-        public xcuda_Item xcuda_Item { get; set; }
+        public System.DateTime EntryDataDate 
+        {
+            get
+            {
+                return _entrydatadate;
+            }
+            set
+            {
+                _entrydatadate = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        System.DateTime _entrydatadate;
+        [DataMember]
+        public string ItemNumber 
+        {
+            get
+            {
+                return _itemnumber;
+            }
+            set
+            {
+                _itemnumber = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _itemnumber;
+        [DataMember]
+        public string ItemDescription 
+        {
+            get
+            {
+                return _itemdescription;
+            }
+            set
+            {
+                _itemdescription = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _itemdescription;
+        [DataMember]
+        public string DocumentType 
+        {
+            get
+            {
+                return _documenttype;
+            }
+            set
+            {
+                _documenttype = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _documenttype;
+        [DataMember]
+        public string CustomsProcedure 
+        {
+            get
+            {
+                return _customsprocedure;
+            }
+            set
+            {
+                _customsprocedure = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _customsprocedure;
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

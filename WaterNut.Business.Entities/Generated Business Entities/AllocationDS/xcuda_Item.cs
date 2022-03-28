@@ -30,6 +30,7 @@ namespace AllocationDS.Business.Entities
             this.EntryPreviousItems = new List<EntryPreviousItems>();
             this.AdjustmentShortAllocations = new List<AdjustmentShortAllocations>();
             this.ManualAllocations = new List<ManualAllocations>();
+            this.AsycudaDocumentItemEntryDataDetails = new List<AsycudaDocumentItemEntryDataDetails>();
         }
 
         [DataMember]
@@ -448,6 +449,8 @@ namespace AllocationDS.Business.Entities
         public List<AdjustmentShortAllocations> AdjustmentShortAllocations { get; set; }
         [DataMember]
         public List<ManualAllocations> ManualAllocations { get; set; }
+        [DataMember]
+        public List<AsycudaDocumentItemEntryDataDetails> AsycudaDocumentItemEntryDataDetails { get; set; }
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

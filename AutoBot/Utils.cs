@@ -5220,7 +5220,7 @@ namespace AutoBot
 
                     using (var ctx = new CoreEntitiesContext())
                     {
-                        ctx.Database.CommandTimeout = 10;
+                        ctx.Database.CommandTimeout = 20;
                         var keys = lst.SelectMany(x => x.Select(z => z.EntryDataDetailsKey)).ToList();
 
                         if (ctx.AsycudaDocumentItemEntryDataDetails.Any(x => keys.Contains(x.key)))
@@ -5677,8 +5677,11 @@ namespace AutoBot
         {
             try
             {
+                SQLBlackBox.RunSqlBlackBox();
+
                 Console.WriteLine("Allocate DocSet Discrepancies");
                 List<KeyValuePair<int, string>> lst;
+
 
 
                 var alst = new AdjustmentQSContext()

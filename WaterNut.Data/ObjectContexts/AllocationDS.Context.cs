@@ -133,6 +133,8 @@ namespace AllocationDS.Business.Entities
      
         public DbSet<LumpedItem> LumpedItems { get; set; }
      
+        public DbSet<ExistingAllocations> ExistingAllocations { get; set; }
+     
 
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
@@ -222,6 +224,8 @@ namespace AllocationDS.Business.Entities
             modelBuilder.Configurations.Add(new AllocationsTestCasesMap());
          
             modelBuilder.Configurations.Add(new LumpedItemMap());
+         
+            modelBuilder.Configurations.Add(new ExistingAllocationsMap());
          
             modelBuilder.Configurations.Add(new AdjustmentsMap());
       

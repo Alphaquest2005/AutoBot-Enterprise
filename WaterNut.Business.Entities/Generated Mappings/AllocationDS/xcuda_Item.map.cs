@@ -52,6 +52,7 @@
               this.HasMany(t => t.EntryPreviousItems).WithRequired(t => (xcuda_Item)t.xcuda_Item);
               this.HasMany(t => t.AdjustmentShortAllocations).WithOptional(t => t.PreviousDocumentItem).HasForeignKey(d => d.PreviousItem_Id);
               this.HasMany(t => t.ManualAllocations).WithRequired(t => (xcuda_Item)t.xcuda_Item);
+              this.HasMany(t => t.AsycudaDocumentItemEntryDataDetails).WithRequired(t => (xcuda_Item)t.xcuda_Item);
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);
     			this.Ignore(t => t.ModifiedProperties);
