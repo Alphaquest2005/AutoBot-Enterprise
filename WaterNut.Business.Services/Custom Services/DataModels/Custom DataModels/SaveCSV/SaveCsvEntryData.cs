@@ -503,8 +503,7 @@ namespace WaterNut.DataSpace
                     return true;
                 }
 
-
-
+                
 
                 await ImportInventory(eslst, docSet.First().ApplicationSettingsId, fileType).ConfigureAwait(false);
                 await ImportSuppliers(eslst, docSet.First().ApplicationSettingsId, fileType).ConfigureAwait(false);
@@ -1600,8 +1599,8 @@ namespace WaterNut.DataSpace
                                     Freight = e.Freight,
                                     Weight = e.Weight,
                                     InternalFreight = e.InternalFreight,
-                                    ReceivedQty = e.ReceivedQty,
-                                    InvoiceQty = e.InvoiceQty,
+                                    ReceivedQty =  e.ReceivedQty,
+                                    InvoiceQty = olded.EntryType == "ADJ" && e.InvoiceQty == 0 && e.ReceivedQty == 0 ? e.Quantity : e.InvoiceQty,
                                     CNumber = string.IsNullOrEmpty(e.CNumber) ? null : e.CNumber,
                                     CLineNumber = e.CLineNumber ,
                                     PreviousInvoiceNumber = string.IsNullOrEmpty(e.PreviousInvoiceNumber)
@@ -1610,7 +1609,7 @@ namespace WaterNut.DataSpace
                                     Comment = string.IsNullOrEmpty(e.Comment) ? null : e.Comment,
                                     FileLineNumber = e.FileLineNumber ?? lineNumber,
                                     LineNumber = e.EntryDataDetailsId == 0 ? lineNumber : e.LineNumber,
-                                    EffectiveDate = e.EffectiveDate,
+                                    EffectiveDate = olded.EntryType == "ADJ" ? e.EffectiveDate ?? olded.EntryDataDate : e.EffectiveDate,
                                     TaxAmount = e.TaxAmount,
                                     VolumeLiters = e.VolumeLiters,
                                 });
@@ -1890,7 +1889,7 @@ namespace WaterNut.DataSpace
                     "SupplierItemNumber",
                     (c, mapping, splits) =>
                     {
-                        c.ItemNumber = !string.IsNullOrEmpty(splits[mapping["POItemNumber"]])
+                        c.ItemNumber = mapping.ContainsKey("POItemNumber") &&!string.IsNullOrEmpty(splits[mapping["POItemNumber"]])
                             ? splits[mapping["POItemNumber"]]
                             : splits[mapping["SupplierItemNumber"]];
 
@@ -1902,7 +1901,7 @@ namespace WaterNut.DataSpace
                     (c, mapping, splits) =>
                     {
                         c.ItemDescription =
-                            !string.IsNullOrEmpty(splits[mapping["POItemDescription"]])
+                            mapping.ContainsKey("POItemDescription") && !string.IsNullOrEmpty(splits[mapping["POItemDescription"]])
                                 ? splits[mapping["POItemDescription"]]
                                 : splits[mapping["SupplierItemDescription"]];
                         c.SupplierItemDescription = splits[mapping["SupplierItemDescription"]];
@@ -1914,7 +1913,7 @@ namespace WaterNut.DataSpace
                     {
                         if (string.IsNullOrEmpty(c.EntryDataId))// do this incase entrydataid empty.. might nee to check order?
                         {
-                            c.EntryDataId = !string.IsNullOrEmpty(splits[mapping["EntryDataId"]])
+                            c.EntryDataId = mapping.ContainsKey("EntryDataId") &&!string.IsNullOrEmpty(splits[mapping["EntryDataId"]])
                                 ? splits[mapping["EntryDataId"]].Trim().Replace("PO/GD/", "").Replace("SHOP/GR_", "")
                                 : splits[mapping["SupplierInvoiceNo"]];
                         }

@@ -15,6 +15,31 @@ select * from [AsycudaSalesAllocations-ExpectedSales] where entrydataid = '14476
 select * from EntryDataDetailsEx where entrydataid = '144769' and ItemNumber = '14002-220'
 select * from AsycudaSalesAndAdjustmentAllocationsEx where InvoiceNo = '144769' and ItemNumber = '14002-220'
 
+select * from AsycudaItemPiQuantityData where pCNumber = '3791' and pLineNumber = '1'
+
+select * from EntryDataDetailsEx where entrydataid = '148175' and ItemNumber = '0757-123'
+
+select * from AsycudaDocumentItemEntryDataDetails where Item_Id = 30568
+
+select * from AsycudaSalesAndAdjustmentAllocationsEx where AllocationId = 861122
+
+
+select * from xcuda_item where item_id in (30568,
+30585,
+30620,
+30628,
+30681,
+30722,
+35858,
+35977,
+36008,
+36047,
+49101,
+49138,
+50512,
+50513,
+50514)
+
 
 
 select id from (select id, entrydataid, entrydatadate, itemnumber, row_number() over (partition by entrydataid, entrydatadate, itemnumber order by id) as row from [AsycudaSalesAllocations-ExpectedSales]) as t where row > 1

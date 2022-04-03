@@ -595,7 +595,7 @@ namespace WaterNut.DataSpace
 
                             foreach (var field in instance)
                             {
-                                if (ditm.ContainsKey(field.Key.fields.Field + field.Key.instance) &&
+                                if (ditm.ContainsKey(field.Key.fields.Field) &&
                                     (field.Key.fields.AppendValues == true || line.OCR_Lines.Fields.Select(z => z.Field)
                                         .Count(f => f == field.Key.fields.Field) > 1))
                                 {

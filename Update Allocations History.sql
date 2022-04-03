@@ -1,4 +1,7 @@
-declare @BatchNo int = 1
+declare @BatchNo int = 1,  @appSettingId int = 7
+
+
+delete from [History-Allocations] where batchno = @BatchNo and ApplicationSettingsId = @appSettingId
 
 -- insert into issues and automatically update allocations
 
@@ -10,8 +13,9 @@ SELECT        @BatchNo AS BatchNo, Status, QtyAllocated, xLineNumber, InvoiceDat
                          pQtyAllocated, PiQuantity, SalesFactor, xCNumber, xRegistrationDate, xQuantity, pReferenceNumber, pLineNumber, Cost, Total_CIF_itm, DutyLiability, TaxAmount, pIsAssessed, DoNotAllocateSales, 
                          DoNotAllocatePreviousEntry, WarehouseError, SANumber, xReferenceNumber, TariffCode, Invalid, pExpiryDate, pTariffCode, pItemNumber, GETDATE() AS EntryDateTime,xStatus , ApplicationSettingsId
 FROM            AsycudaSalesAndAdjustmentAllocationsEx
+where applicationsettingsid = @appSettingId
 --where ItemNumber = '320865'
 -- delete from [History-Allocations] where ItemNumber <> '320865'
 
 
-select itemnumber from AsycudaSalesAndAdjustmentAllocationsEx where status = 'Returned More than Sold' and ApplicationSettingsId = 6
+--select itemnumber from AsycudaSalesAndAdjustmentAllocationsEx where status = 'Returned More than Sold' and ApplicationSettingsId = 6

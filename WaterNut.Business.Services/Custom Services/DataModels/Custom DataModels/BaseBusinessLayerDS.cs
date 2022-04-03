@@ -93,7 +93,7 @@ namespace WaterNut.DataSpace
         private IEnumerable<ExportTemplate> _exportTemplates;
         private static double _minimumPossibleAsycudaWeight = .01;
         private static double _runningMiniumWeight = 0.0;
-        private static double _weightAsycudaNormallyOffBy = .2;
+        private static double _weightAsycudaNormallyOffBy = 0.5;
 
         static BaseDataModel()
         {
@@ -1529,6 +1529,8 @@ namespace WaterNut.DataSpace
                 }
             }
 
+            totalWeight -= _weightAsycudaNormallyOffBy;
+
             var freightRate = totalFreight != 0 ? totalFreight / totalfob : 0;
             var weightRate = totalWeight != 0 ? totalWeight / totalItemQuantity : 0;
             double weightUsed = 0;
@@ -1635,7 +1637,7 @@ namespace WaterNut.DataSpace
                             _runningMiniumWeight = 0;
                         }
 
-                        itm.Gross_weight_itm -= (itm == lst.First() ? _weightAsycudaNormallyOffBy : 0);
+                       // itm.Gross_weight_itm -= (itm == lst.First() ? _weightAsycudaNormallyOffBy : 0);
 
                         itm.Net_weight_itm =
                             itm.Gross_weight_itm;

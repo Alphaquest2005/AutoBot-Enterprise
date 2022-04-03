@@ -13,7 +13,7 @@
 --FROM    FileTypes AS FileTypes_1 
 --where ApplicationSettingsId = @oldCompany
 
-declare @newFileTypeId int = 1166
+declare @newFileTypeId int = 189
 
 --/////////////////////// make sure you put the old filetypeid in new filetype row
 ----------------------------------------------

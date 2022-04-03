@@ -664,6 +664,7 @@ namespace xlsxWriter
                 while (true)
                 {
                     if (i > summaryPkg.Invoices.Count() - 1) break;
+
                     foreach (var po in summaryPkg.Invoices[i].ShipmentInvoicePOs)
                     {
                        
@@ -733,6 +734,68 @@ namespace xlsxWriter
 
                         currentline++;
 
+                    }
+
+                    if (!summaryPkg.Invoices[i].ShipmentInvoicePOs.Any())
+                    {
+                        var importedVSExpectedTotal = summaryPkg.Invoices[i].InvoiceTotal.GetValueOrDefault()
+                                                      - (summaryPkg.Invoices[i].SubTotal.GetValueOrDefault()
+                                                         + summaryPkg.Invoices[i].TotalInternalFreight.GetValueOrDefault()
+                                                         + summaryPkg.Invoices[i].TotalOtherCost.GetValueOrDefault()
+                                                         + summaryPkg.Invoices[i].TotalInsurance.GetValueOrDefault()
+                                                         - summaryPkg.Invoices[i].TotalDeduction.GetValueOrDefault());
+
+                        var subTotal = Math.Round(summaryPkg.Invoices[i].SubTotal.GetValueOrDefault(), 2) - Math.Round(summaryPkg.Invoices[i].InvoiceDetails.Sum(x => x.Cost * x.Quantity), 2);
+                        var totalCost = Math.Round(summaryPkg.Invoices[i].InvoiceDetails.Sum(x => x.TotalCost ?? 0), 2) - Math.Round(summaryPkg.Invoices[i].InvoiceDetails.Sum(x => x.Cost * x.Quantity), 2);
+                        var importedTotalDifference = summaryPkg.Invoices[i].ImportedTotalDifference;
+                        
+
+
+                        if (summaryPkg.Invoices[i].ShipmentInvoicePOs.Count > 1)
+                            workbook.CurrentWorksheet.SetActiveStyle(duplicateStyle);
+                        else if (Math.Round(importedVSExpectedTotal, 2) != 0 || Math.Round(importedTotalDifference, 2) != 0 ||  totalCost != 0)
+                            workbook.CurrentWorksheet.SetActiveStyle(errStyle);
+                        else
+                        {
+                            workbook.CurrentWorksheet.ClearActiveStyle();
+                        }
+
+                        SetValue(workbook, currentline, invHeader.IndexOf(nameof(ShipmentInvoice.InvoiceNo)),
+                            summaryPkg.Invoices[i].InvoiceNo);
+                        
+                        SetValue(workbook, currentline, invHeader.IndexOf(nameof(ShipmentInvoice.InvoiceDate)),
+                            summaryPkg.Invoices[i].InvoiceDate);
+                        SetValue(workbook, currentline, invHeader.IndexOf(nameof(ShipmentInvoice.ImportedLines)),
+                            summaryPkg.Invoices[i].ImportedLines);
+                        SetValue(workbook, currentline, invHeader.IndexOf(nameof(ShipmentInvoice.SubTotal)),
+                            summaryPkg.Invoices[i].SubTotal);
+                        SetValue(workbook, currentline, invHeader.IndexOf(nameof(ShipmentInvoice.InvoiceTotal)),
+                            summaryPkg.Invoices[i].InvoiceTotal);
+
+                        SetValue(workbook, currentline,
+                            invHeader.IndexOf(nameof(ShipmentInvoice.ImportedTotalDifference)),
+                            importedTotalDifference);
+
+
+                        SetValue(workbook, currentline, invHeader.IndexOf("ImportedVSExpectedTotal"),
+                            importedVSExpectedTotal);
+
+
+
+                        SetValue(workbook, currentline, invHeader.IndexOf("PO/Inv Total Diff"),
+                            subTotal);
+
+
+                        
+
+                        SetValue(workbook, currentline, invHeader.IndexOf(nameof(ShipmentInvoice.SupplierCode)),
+                            summaryPkg.Invoices[i].SupplierCode);
+                        SetValue(workbook, currentline, invHeader.IndexOf(nameof(ShipmentInvoice.SourceFile)),
+                            new FileInfo(summaryPkg.Invoices[i].SourceFile).Name);
+
+
+
+                        currentline++;
                     }
 
                     i++;

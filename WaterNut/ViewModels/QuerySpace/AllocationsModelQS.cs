@@ -691,7 +691,8 @@ namespace WaterNut.QuerySpace.AllocationQS.ViewModels
                   ,
                             PerIM7,
                             Process7100,
-                            ApplyCurrentChecks, CoreEntities.ViewModels.BaseViewModel.Instance.CurrentAsycudaDocumentSetEx.AsycudaDocumentSetId, "Sales","Historic",true, true, true, true, true, false,true, true, true, true).ConfigureAwait(false);
+                            ApplyCurrentChecks, CoreEntities.ViewModels.BaseViewModel.Instance.CurrentAsycudaDocumentSetEx.AsycudaDocumentSetId, "Sales","Historic",
+                  CoreEntities.ViewModels.BaseViewModel.Instance.CurrentApplicationSettings.GroupEX9.GetValueOrDefault(), true, true, true, true, false,true, true, true, true).ConfigureAwait(false);
            MessageBus.Default.BeginNotify(CoreEntities.MessageToken.AsycudaDocumentSetExsChanged, this, new NotificationEventArgs(CoreEntities.MessageToken.AsycudaDocumentSetExsChanged));
           StatusModel.StopStatusUpdate();
             MessageBox.Show("Complete","Asycuda Toolkit", MessageBoxButton.OK, MessageBoxImage.Exclamation);
@@ -888,7 +889,7 @@ namespace WaterNut.QuerySpace.AllocationQS.ViewModels
 
 
 
-                    await AsycudaSalesAllocationsExRepository.Instance.CreateEx9(filterExpression, false, false, false, CoreEntities.ViewModels.BaseViewModel.Instance.CurrentAsycudaDocumentSetEx.AsycudaDocumentSetId, "Sales", "Historic", true, true, res == MessageBoxResult.Yes, false, false, false, true, true, true, true).ConfigureAwait(false);
+                    await AsycudaSalesAllocationsExRepository.Instance.CreateEx9(filterExpression, false, false, false, CoreEntities.ViewModels.BaseViewModel.Instance.CurrentAsycudaDocumentSetEx.AsycudaDocumentSetId, "Sales", "Historic", CoreEntities.ViewModels.BaseViewModel.Instance.CurrentApplicationSettings.GroupEX9.GetValueOrDefault(), true, res == MessageBoxResult.Yes, false, false, false, true, true, true, true).ConfigureAwait(false);
 
                 }
 
@@ -958,7 +959,7 @@ namespace WaterNut.QuerySpace.AllocationQS.ViewModels
 
 
 
-                    await AsycudaSalesAllocationsExRepository.Instance.CreateEx9(filterExpression, false, false, false, CoreEntities.ViewModels.BaseViewModel.Instance.CurrentAsycudaDocumentSetEx.AsycudaDocumentSetId, "Sales", "Historic", true, true, res == MessageBoxResult.Yes, false, false, false, true, false, false, false).ConfigureAwait(false);
+                    await AsycudaSalesAllocationsExRepository.Instance.CreateEx9(filterExpression, false, false, false, CoreEntities.ViewModels.BaseViewModel.Instance.CurrentAsycudaDocumentSetEx.AsycudaDocumentSetId, "Sales", "Historic", CoreEntities.ViewModels.BaseViewModel.Instance.CurrentApplicationSettings.GroupEX9.GetValueOrDefault(), true, res == MessageBoxResult.Yes, false, false, false, true, false, false, false).ConfigureAwait(false);
 
                 }
 

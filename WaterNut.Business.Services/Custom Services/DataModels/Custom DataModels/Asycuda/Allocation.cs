@@ -221,9 +221,9 @@ namespace WaterNut.DataSpace
 			var count = itemSetsValues.Count();
 			Parallel.ForEach(itemSetsValues.OrderBy(x => x.Key.EntryDataDate)
 									 //.ThenBy(x => x.Key.EntryDataId).ThenBy(x => x.Key.ItemNumber)
-									 //.Where(x => x.EntriesList.Any(z => z.TariffCode == "61091010")).ToList()
+									 //.Where(x => x.EntriesList.Any(z => z.TariffCode.Contains("61091010")))
 									// .Where(x => x.EntriesList.Any(z => z.AsycudaDocument.CNumber == "1523" && z.LineNumber == 45))
-                                    //.Where(x => x.Key.ItemNumber == "320865")
+                                    //.Where(x => x.Key.ItemNumber == "318451")
 									// .Where(x => x.SalesList.Any(z => z.EntryDataId.ToLower().Contains("O11-0004157-01")))
 									 // .Where(x => x.Key.ItemNumber.StartsWith("A")) //.Where(x => x.Key.Contains("255100")) // 
 									 // .Where(x => "337493".Contains(x.Key))
@@ -882,7 +882,7 @@ namespace WaterNut.DataSpace
 				var salesData =
 
 				await
-						ctx.GetEntryDataDetailsByExpressionNav(//"ItemNumber == \"AAA/13576\" &&" +
+						ctx.GetEntryDataDetailsByExpressionNav(//"ItemNumber == \"318451\" &&" +
 																($"Adjustments.EntryDataDate >= \"{BaseDataModel.Instance.CurrentApplicationSettings.OpeningStockDate}\" && ") +
 															   "QtyAllocated != Quantity && " +
 																$"Adjustments.ApplicationSettingsId == {applicationSettingsId} && " +
