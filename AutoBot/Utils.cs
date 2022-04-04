@@ -4108,7 +4108,7 @@ namespace AutoBot
             while (AssessComplete(instrFile, resultsFile, out lcont) == false)
             {
                 // RunSiKuLi(asycudaDocumentSetId, "AssessIM7", lcont.ToString());
-                RunSiKuLi(directoryName, "SaveIM7", lcont.ToString());
+                RunSiKuLi(directoryName, "AssessIM7", lcont.ToString());//SaveIM7
             }
         }
 
