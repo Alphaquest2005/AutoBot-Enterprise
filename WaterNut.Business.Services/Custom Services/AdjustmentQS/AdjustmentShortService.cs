@@ -91,13 +91,13 @@ namespace AdjustmentQS.Business.Services
                     new AdjustmentShortService()
                         .ProcessDISErrorsForAllocation(
                             BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId,
-                            lst.Select(x => $"{x.EntryDataDetailsId.ToString()}-{x.ItemNumber}")
+                            lst.Select(x => $"{x.EntryDataDetailsId}-{x.ItemNumber}")
                                 .Aggregate((o, n) => $"{o},{n}")).Wait();
 
                     new AllocationsBaseModel()
                         .AllocateSalesByMatchingSalestoAsycudaEntriesOnItemNumber(
                             BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId, false,
-                            lst.Select(x => $"{x.EntryDataDetailsId.ToString()}-{x.ItemNumber}")
+                            lst.Select(x => $"{x.EntryDataDetailsId}-{x.ItemNumber}")
                                 .Aggregate((o, n) => $"{o},{n}")).Wait();
 
                     new AllocationsBaseModel()

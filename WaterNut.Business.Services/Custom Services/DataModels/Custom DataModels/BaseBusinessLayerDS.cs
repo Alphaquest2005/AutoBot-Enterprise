@@ -82,7 +82,6 @@ namespace WaterNut.DataSpace
         public static DataCache<Document_Type> _document_TypeCache;
 
         private static List<FileTypes> _fileTypes;
-        private readonly CreateIM9 _createIm9;
 
         private readonly AsycudaDocumentSet _currentAsycudaDocumentSet = null;
 

@@ -5,34 +5,26 @@ using System.Data.Entity;
 using System.Data.SqlClient;
 using System.Diagnostics;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using System.Transactions;
 using AdjustmentQS.Business.Services;
 using AllocationDS.Business.Entities;
-using Core.Common.Data;
-using InventoryDS.Business.Entities;
-using Core.Common.UI;
 using AllocationDS.Business.Services;
+using Core.Common.Data;
+using Core.Common.UI;
 using CoreEntities.Business.Entities;
 using EntryDataDS.Business.Entities;
 using MoreLinq;
 using TrackableEntities;
-using TrackableEntities.Common;
-using TrackableEntities.EF6;
 using CustomsOperations = CoreEntities.Business.Enums.CustomsOperations;
 using EntryDataDetails = AllocationDS.Business.Entities.EntryDataDetails;
-using InventoryItem = AllocationDS.Business.Entities.InventoryItem;
 using InventoryItemAlias = AllocationDS.Business.Entities.InventoryItemAlias;
 using Sales = AllocationDS.Business.Entities.Sales;
 using SubItems = AllocationDS.Business.Entities.SubItems;
-using xcuda_Item = AllocationDS.Business.Entities.xcuda_Item;
 using xcuda_ItemService = AllocationDS.Business.Services.xcuda_ItemService;
-
 
 namespace WaterNut.DataSpace
 {
-	public partial class AllocationsBaseModel
+	public class AllocationsBaseModel
 	{
 
 		private static readonly AllocationsBaseModel instance;
@@ -57,7 +49,7 @@ namespace WaterNut.DataSpace
 					   (_inventoryAliasCache =
 						   new DataCache<InventoryItemAlias>(
 							   AllocationDS.DataModels.BaseDataModel.Instance.SearchInventoryItemAlias(
-								   new List<string>() { "All" }, new List<string>() { "InventoryItem.LumpedItem" }).Result));
+								   new List<string> { "All" }, new List<string> { "InventoryItem.LumpedItem" }).Result));
 			}
 			set { _inventoryAliasCache = value; }
 		}
@@ -90,9 +82,7 @@ namespace WaterNut.DataSpace
 
 		public async Task AllocateSales(ApplicationSettings applicationSettings, bool allocateToLastAdjustment)
 		{
-			var forceDiscrepancyExecution = true;
-
-			try
+            try
 			{
                 SQLBlackBox.RunSqlBlackBox();
 
@@ -131,7 +121,7 @@ namespace WaterNut.DataSpace
                 using (var ctx = new AllocationDSContext())
                 {
                     var existingEx9s = ctx.ExistingAllocations.ToList();
-                    var alloLst = existingEx9s.Select(x => new AsycudaSalesAllocations()
+                    var alloLst = existingEx9s.Select(x => new AsycudaSalesAllocations
                         {
                             EntryDataDetailsId = x.EntryDataDetailsId, PreviousItem_Id = x.pItemId,
                             xEntryItem_Id = x.xItemId, TrackingState = TrackingState.Added
@@ -165,18 +155,18 @@ namespace WaterNut.DataSpace
 					}) AND (EntryDataDetails.Status IS NULL)");
 
 				// Consider moving this this is shit code
-				ctx.Database.ExecuteSqlCommand($@"UPDATE EntryDataDetails
+				ctx.Database.ExecuteSqlCommand(@"UPDATE EntryDataDetails
 													SET         TaxAmount = CASE WHEN dutyfreepaid = 'Duty Paid' THEN 1 ELSE 0 END
 													--select EntryDataDetails.*, CASE WHEN dutyfreepaid = 'Duty Paid' THEN 1 ELSE 0 END as taxamount
 													FROM    EntryDataDetails INNER JOIN
 																	 EntryData_Adjustments ON EntryDataDetails.EntryData_Id = EntryData_Adjustments.EntryData_Id INNER JOIN
 																	 AdjustmentComments ON EntryDataDetails.Comment = AdjustmentComments.Comments");
 
-				ctx.Database.ExecuteSqlCommand($@"EXEC [dbo].[GetMappingFromInventory] @appsettingId
+				ctx.Database.ExecuteSqlCommand(@"EXEC [dbo].[GetMappingFromInventory] @appsettingId
 													 EXEC[dbo].[CreateInventoryAliasFromInventoryMapping]",
 					new SqlParameter("@appsettingId", applicationSettings.ApplicationSettingsId));
 
-				ctx.Database.ExecuteSqlCommand($@"WITH CTE AS(
+				ctx.Database.ExecuteSqlCommand(@"WITH CTE AS(
 													SELECT EntryDataDetails.EntryDataId, FileLineNumber,ItemNumber, Quantity, InvoiceQty, ReceivedQty,
 													RN = ROW_NUMBER()OVER(PARTITION BY EntryDataDetails.EntryDataId, FileLineNumber, ItemNumber, Quantity, InvoiceQty, ReceivedQty  ORDER BY EntryDataDetailsId desc)
 													FROM EntryDataDetails
@@ -228,7 +218,7 @@ namespace WaterNut.DataSpace
 									 // .Where(x => x.Key.ItemNumber.StartsWith("A")) //.Where(x => x.Key.Contains("255100")) // 
 									 // .Where(x => "337493".Contains(x.Key))
 									 //.Where(x => "FAA/SCPI18X112".Contains(x.ItemNumber))//SND/IVF1010MPSF,BRG/NAVICOTE-GL,
-									 , new ParallelOptions() { MaxDegreeOfParallelism = 1/*Dont change to paralell... double up on some transactions eg. 0212-0136MDAHE sandals*/ }, (itm, state) => //.Where(x => x.ItemNumber == "AT18547") Environment.ProcessorCount *
+									 , new ParallelOptions { MaxDegreeOfParallelism = 1/*Dont change to paralell... double up on some transactions eg. 0212-0136MDAHE sandals*/ }, (itm, state) => //.Where(x => x.ItemNumber == "AT18547") Environment.ProcessorCount *
 									 {
 										 //     foreach (var itm in itemSets.Values)//.Where(x => "FAA/SCPI18X112".Contains(x.ItemNumber))
 										 //{
@@ -278,309 +268,277 @@ namespace WaterNut.DataSpace
 
 
 		private void MarkOverAllocatedEntries(int applicationSettingsId, string shortlst)
-		{
+        {
+            List<xcuda_Item> IMAsycudaEntries; //"EX"
+
+            using (var ctx = new AllocationDSContext { StartTracking = false })
+            {
+                ctx.Database.CommandTimeout = 0;
+
+                IMAsycudaEntries = ctx.xcuda_Item.Include(x => x.AsycudaDocument)
+                    .Include(x => x.xcuda_Tarification.xcuda_HScode)
+                    .Include(x => x.xcuda_Tarification.xcuda_Supplementary_unit)
+                    .Include(x => x.SubItems)
+                    .Include(x => x.xcuda_Goods_description)
+                    .Where(x => x.AsycudaDocument.ApplicationSettingsId == applicationSettingsId)
+                    .Where(x => (x.DFQtyAllocated + x.DPQtyAllocated) > x.xcuda_Tarification.xcuda_Supplementary_unit.FirstOrDefault(z => z.IsFirstRow == true).Suppplementary_unit_quantity)
+                    .Where(x => (x.AsycudaDocument.CNumber != null || x.AsycudaDocument.IsManuallyAssessed == true) &&
+                                (x.AsycudaDocument.Customs_Procedure.CustomsOperationId == (int)CustomsOperations.Import
+                                 || x.AsycudaDocument.Customs_Procedure.CustomsOperationId == (int)CustomsOperations.Warehouse)
+                                //&& x.AsycudaDocument.Customs_Procedure.Sales == true 
+                                && x.AsycudaDocument.DoNotAllocate != true)
+                    .Where(x => x.AsycudaDocument.AssessmentDate >= (BaseDataModel.Instance.CurrentApplicationSettings.OpeningStockDate))
+                    .AsNoTracking()
+                    .ToList();
 
 
-			try
-			{
-				List<xcuda_Item> IMAsycudaEntries; //"EX"
-
-				using (var ctx = new AllocationDSContext() { StartTracking = false })
-				{
-					ctx.Database.CommandTimeout = 0;
-
-					IMAsycudaEntries = ctx.xcuda_Item.Include(x => x.AsycudaDocument)
-						.Include(x => x.xcuda_Tarification.xcuda_HScode)
-						.Include(x => x.xcuda_Tarification.xcuda_Supplementary_unit)
-						.Include(x => x.SubItems)
-						.Include(x => x.xcuda_Goods_description)
-						.Where(x => x.AsycudaDocument.ApplicationSettingsId == applicationSettingsId)
-                        .Where(x => (x.DFQtyAllocated + x.DPQtyAllocated) > x.xcuda_Tarification.xcuda_Supplementary_unit.FirstOrDefault(z => z.IsFirstRow == true).Suppplementary_unit_quantity)
-						.Where(x => (x.AsycudaDocument.CNumber != null || x.AsycudaDocument.IsManuallyAssessed == true) &&
-									(x.AsycudaDocument.Customs_Procedure.CustomsOperationId == (int)CustomsOperations.Import
-										|| x.AsycudaDocument.Customs_Procedure.CustomsOperationId == (int)CustomsOperations.Warehouse)
-									//&& x.AsycudaDocument.Customs_Procedure.Sales == true 
-									&& x.AsycudaDocument.DoNotAllocate != true)
-						.Where(x => x.AsycudaDocument.AssessmentDate >= (BaseDataModel.Instance.CurrentApplicationSettings.OpeningStockDate))
-						.AsNoTracking()
-						.ToList();
-
-
-				}
+            }
 
 
 
-				if (IMAsycudaEntries == null || !IMAsycudaEntries.Any()) return;
-				var alst = IMAsycudaEntries.Where(x => x != null
-										&& (x.DFQtyAllocated + x.DPQtyAllocated) > Convert.ToDouble(x.ItemQuantity)).ToList();
+            if (IMAsycudaEntries == null || !IMAsycudaEntries.Any()) return;
+            var alst = IMAsycudaEntries.Where(x => x != null
+                                                   && (x.DFQtyAllocated + x.DPQtyAllocated) > Convert.ToDouble(x.ItemQuantity)).ToList();
 
-				//var test = IMAsycudaEntries.Where(x => x.Item_Id == 27018).ToList();
-
-
-				if (alst.Any())
-					Parallel.ForEach(alst
-						,
-						new ParallelOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount * 1 }, i =>//
-						{
-							using (var ctx = new AllocationDSContext() { StartTracking = false })
-							{
-								var sql = "";
-
-								if (ctx.AsycudaSalesAllocations == null) return;
-
-								var lst =
-									ctx.AsycudaSalesAllocations
-										.Include(x => x.EntryDataDetails)
-										.Include(x => x.EntryDataDetails.EntryDataDetailsEx)
-										.Include(x => x.PreviousDocumentItem)
-										.Where(x => x != null && x.PreviousItem_Id == i.Item_Id)
-										.Where(x => x.EntryDataDetails.EntryDataDetailsEx.SystemDocumentSets != null)
-										.OrderByDescending(x => x.AllocationId)
-										.DistinctBy(x => x.AllocationId)
-										.ToList();
-
-								foreach (var allo in lst)
-								{
-									var tot = i.QtyAllocated - i.ItemQuantity;
-									var r = tot > allo.QtyAllocated ? allo.QtyAllocated : tot;
-									if (i.QtyAllocated > i.ItemQuantity)
-									{
+            //var test = IMAsycudaEntries.Where(x => x.Item_Id == 27018).ToList();
 
 
-										allo.QtyAllocated -= r;
-										sql += $@" UPDATE       AsycudaSalesAllocations
+            if (alst.Any())
+                Parallel.ForEach(alst
+                    ,
+                    new ParallelOptions { MaxDegreeOfParallelism = Environment.ProcessorCount * 1 }, i =>//
+                    {
+                        using (var ctx = new AllocationDSContext { StartTracking = false })
+                        {
+                            var sql = "";
+
+                            if (ctx.AsycudaSalesAllocations == null) return;
+
+                            var lst =
+                                ctx.AsycudaSalesAllocations
+                                    .Include(x => x.EntryDataDetails)
+                                    .Include(x => x.EntryDataDetails.EntryDataDetailsEx)
+                                    .Include(x => x.PreviousDocumentItem)
+                                    .Where(x => x != null && x.PreviousItem_Id == i.Item_Id)
+                                    .Where(x => x.EntryDataDetails.EntryDataDetailsEx.SystemDocumentSets != null)
+                                    .OrderByDescending(x => x.AllocationId)
+                                    .DistinctBy(x => x.AllocationId)
+                                    .ToList();
+
+                            foreach (var allo in lst)
+                            {
+                                var tot = i.QtyAllocated - i.ItemQuantity;
+                                var r = tot > allo.QtyAllocated ? allo.QtyAllocated : tot;
+                                if (i.QtyAllocated > i.ItemQuantity)
+                                {
+
+
+                                    allo.QtyAllocated -= r;
+                                    sql += $@" UPDATE       AsycudaSalesAllocations
 															SET                QtyAllocated =  QtyAllocated{(r >= 0 ? $"-{r}" : $"+{r * -1}")}
 															where	AllocationId = {allo.AllocationId}";
 
-										allo.EntryDataDetails.QtyAllocated -= r;
-										sql += $@" UPDATE       EntryDataDetails
+                                    allo.EntryDataDetails.QtyAllocated -= r;
+                                    sql += $@" UPDATE       EntryDataDetails
 															SET                QtyAllocated =  QtyAllocated{(r >= 0 ? $"-{r}" : $"+{r * -1}")}
 															where	EntryDataDetailsId = {allo.EntryDataDetails.EntryDataDetailsId}";
 
-										if (allo.EntryDataDetails.EntryDataDetailsEx.DutyFreePaid == "Duty Free")
-										{
-											allo.PreviousDocumentItem.DFQtyAllocated -= r;
-											i.DFQtyAllocated -= r;
+                                    if (allo.EntryDataDetails.EntryDataDetailsEx.DutyFreePaid == "Duty Free")
+                                    {
+                                        allo.PreviousDocumentItem.DFQtyAllocated -= r;
+                                        i.DFQtyAllocated -= r;
 
-											/////// is the same thing
+                                        /////// is the same thing
 
-											sql += $@" UPDATE       xcuda_Item
+                                        sql += $@" UPDATE       xcuda_Item
 															SET                DFQtyAllocated = (DFQtyAllocated{(r >= 0 ? $"-{r}" : $"+{r * -1}")})
 															where	item_id = {allo.PreviousDocumentItem.Item_Id}";
-										}
-										else
-										{
-											allo.PreviousDocumentItem.DPQtyAllocated -= r;
-											i.DPQtyAllocated -= r;
+                                    }
+                                    else
+                                    {
+                                        allo.PreviousDocumentItem.DPQtyAllocated -= r;
+                                        i.DPQtyAllocated -= r;
 
 
 
-											sql += $@" UPDATE       xcuda_Item
+                                        sql += $@" UPDATE       xcuda_Item
 															SET                DPQtyAllocated = (DPQtyAllocated{(r >= 0 ? $"-{r}" : $"+{r * -1}")})
 															where	item_id = {allo.PreviousDocumentItem.Item_Id}";
-										}
+                                    }
 
-										if (allo.QtyAllocated == 0)
-										{
-											allo.QtyAllocated = r; //add back so wont disturb calculations
-											allo.Status = $"Over Allocated Entry by {r}";
+                                    if (allo.QtyAllocated == 0)
+                                    {
+                                        allo.QtyAllocated = r; //add back so wont disturb calculations
+                                        allo.Status = $"Over Allocated Entry by {r}";
 
-											sql += $@"  Update AsycudaSalesAllocations
+                                        sql += $@"  Update AsycudaSalesAllocations
 														Set Status = '{allo.Status}', QtyAllocated = {r }
 														Where AllocationId = {allo.AllocationId}";
 
-										}
-										else
-										{
+                                    }
+                                    else
+                                    {
 
-											sql += $@" INSERT INTO AsycudaSalesAllocations
+                                        sql += $@" INSERT INTO AsycudaSalesAllocations
 														 (EntryDataDetailsId, PreviousItem_Id, QtyAllocated,Status, EANumber, SANumber)
 														VALUES        ({allo.EntryDataDetailsId},{allo.PreviousItem_Id},{r},'Over Allocated Entry by {r}',0,0)";
-											//ctx.ApplyChanges(nallo);
-											break;
-										}
+                                        //ctx.ApplyChanges(nallo);
+                                        break;
+                                    }
 
-									}
-									else
-									{
-										continue;
-									}
+                                }
+                            }
 
+                            if (!string.IsNullOrEmpty(sql))
+                                ctx.Database.ExecuteSqlCommand(TransactionalBehavior.EnsureTransaction, sql);
 
-
-
-								}
-
-								if (!string.IsNullOrEmpty(sql))
-									ctx.Database.ExecuteSqlCommand(TransactionalBehavior.EnsureTransaction, sql);
-
-							}
-						});
-				using (var ctx = new AllocationDSContext())
-				{
-					var sql = @" DELETE FROM AsycudaSalesAllocations
+                        }
+                    });
+            using (var ctx = new AllocationDSContext())
+            {
+                var sql = @" DELETE FROM AsycudaSalesAllocations
 								WHERE(Status IS NULL) AND(QtyAllocated = 0)";
 
-					ctx.Database.ExecuteSqlCommand(TransactionalBehavior.EnsureTransaction, sql);
-				}
-
-			}
-			catch (Exception)
-			{
-				throw;
-			}
-
-
-		}
+                ctx.Database.ExecuteSqlCommand(TransactionalBehavior.EnsureTransaction, sql);
+            }
+        }
 
 
 		private void MarkUnderAllocatedEntries(int applicationSettingsId, string shortlst)
-		{
+        {
+            List<xcuda_Item> IMAsycudaEntries; //"EX"
+
+            using (var ctx = new AllocationDSContext { StartTracking = false })
+            {
+                ctx.Database.CommandTimeout = 0;
+                IMAsycudaEntries = ctx.xcuda_Item.Include(x => x.AsycudaDocument)
+                    .Include(x => x.xcuda_Tarification.xcuda_HScode)
+                    .Include(x => x.xcuda_Tarification.xcuda_Supplementary_unit)
+                    .Include(x => x.SubItems)
+                    .Include(x => x.xcuda_Goods_description)
+                    .Where(x => x.AsycudaDocument.ApplicationSettingsId == applicationSettingsId)
+                    .Where(x => (x.DFQtyAllocated + x.DPQtyAllocated) < 0)
+                    .Where(x => (x.AsycudaDocument.CNumber != null || x.AsycudaDocument.IsManuallyAssessed == true) &&
+                                (x.AsycudaDocument.Customs_Procedure.CustomsOperationId == (int)CustomsOperations.Import
+                                 || x.AsycudaDocument.Customs_Procedure.CustomsOperationId == (int)CustomsOperations.Warehouse)
+                                && x.AsycudaDocument.Customs_Procedure.Sales == true
+                                && x.AsycudaDocument.DoNotAllocate != true)
+                    .Where(x => x.AsycudaDocument.AssessmentDate >= (BaseDataModel.Instance.CurrentApplicationSettings.OpeningStockDate))
+                    .AsNoTracking()
+                    .ToList();
 
 
-			try
-			{
-				List<xcuda_Item> IMAsycudaEntries; //"EX"
-
-				using (var ctx = new AllocationDSContext() { StartTracking = false })
-				{
-					ctx.Database.CommandTimeout = 0;
-					IMAsycudaEntries = ctx.xcuda_Item.Include(x => x.AsycudaDocument)
-						.Include(x => x.xcuda_Tarification.xcuda_HScode)
-						.Include(x => x.xcuda_Tarification.xcuda_Supplementary_unit)
-						.Include(x => x.SubItems)
-						.Include(x => x.xcuda_Goods_description)
-						.Where(x => x.AsycudaDocument.ApplicationSettingsId == applicationSettingsId)
-                        .Where(x => (x.DFQtyAllocated + x.DPQtyAllocated) < 0)
-						.Where(x => (x.AsycudaDocument.CNumber != null || x.AsycudaDocument.IsManuallyAssessed == true) &&
-									(x.AsycudaDocument.Customs_Procedure.CustomsOperationId == (int)CustomsOperations.Import
-									 || x.AsycudaDocument.Customs_Procedure.CustomsOperationId == (int)CustomsOperations.Warehouse)
-									&& x.AsycudaDocument.Customs_Procedure.Sales == true
-									&& x.AsycudaDocument.DoNotAllocate != true)
-						.Where(x => x.AsycudaDocument.AssessmentDate >= (BaseDataModel.Instance.CurrentApplicationSettings.OpeningStockDate))
-						.AsNoTracking()
-						.ToList();
-
-
-				}
+            }
 
 
 
-				if (IMAsycudaEntries == null || !IMAsycudaEntries.Any()) return;
-				var alst = IMAsycudaEntries.ToList();
-				if (alst.Any())
-					Parallel.ForEach(alst.Where(x => x != null
-										&& ((x.DFQtyAllocated + x.DPQtyAllocated) < 0))
-						,
-						new ParallelOptions() { MaxDegreeOfParallelism = 1 }, i =>//Environment.ProcessorCount*
-						{
-							using (var ctx = new AllocationDSContext() { StartTracking = false })
-							{
-								var sql = "";
+            if (IMAsycudaEntries == null || !IMAsycudaEntries.Any()) return;
+            var alst = IMAsycudaEntries.ToList();
+            if (alst.Any())
+                Parallel.ForEach(alst.Where(x => x != null
+                                                 && ((x.DFQtyAllocated + x.DPQtyAllocated) < 0))
+                    ,
+                    new ParallelOptions { MaxDegreeOfParallelism = 1 }, i =>//Environment.ProcessorCount*
+                    {
+                        using (var ctx = new AllocationDSContext { StartTracking = false })
+                        {
+                            var sql = "";
 
-								if (ctx.AsycudaSalesAllocations == null) return;
+                            if (ctx.AsycudaSalesAllocations == null) return;
 
-								var lst =
-									ctx.AsycudaSalesAllocations
-										.Include(x => x.EntryDataDetails)
-										.Include(x => x.EntryDataDetails.EntryDataDetailsEx)
-										.Include(x => x.PreviousDocumentItem)
-                                        .Where(x => x.EntryDataDetails.IsReconciled != true)
-										.Where(x => x != null && x.PreviousItem_Id == i.Item_Id)
-										.Where(x => x.EntryDataDetails.EntryDataDetailsEx.SystemDocumentSets != null)
-										.OrderBy(x => x.AllocationId)
-										.DistinctBy(x => x.AllocationId)
-										.ToList();
-								if (lst.Sum(x => x.QtyAllocated) < 0)
-									foreach (var allo in lst)
-									{
-										var tot = i.QtyAllocated * -1;
-										var r = tot > (allo.QtyAllocated * -1) ? allo.QtyAllocated * -1 : tot;
-										if (i.QtyAllocated < 0)
-										{
+                            var lst =
+                                ctx.AsycudaSalesAllocations
+                                    .Include(x => x.EntryDataDetails)
+                                    .Include(x => x.EntryDataDetails.EntryDataDetailsEx)
+                                    .Include(x => x.PreviousDocumentItem)
+                                    .Where(x => x.EntryDataDetails.IsReconciled != true)
+                                    .Where(x => x != null && x.PreviousItem_Id == i.Item_Id)
+                                    .Where(x => x.EntryDataDetails.EntryDataDetailsEx.SystemDocumentSets != null)
+                                    .OrderBy(x => x.AllocationId)
+                                    .DistinctBy(x => x.AllocationId)
+                                    .ToList();
+                            if (lst.Sum(x => x.QtyAllocated) < 0)
+                                foreach (var allo in lst)
+                                {
+                                    var tot = i.QtyAllocated * -1;
+                                    var r = tot > (allo.QtyAllocated * -1) ? allo.QtyAllocated * -1 : tot;
+                                    if (i.QtyAllocated < 0)
+                                    {
 
 
-											allo.QtyAllocated += r;
-											sql += $@" UPDATE       AsycudaSalesAllocations
+                                        allo.QtyAllocated += r;
+                                        sql += $@" UPDATE       AsycudaSalesAllocations
 															SET                QtyAllocated =  QtyAllocated{(r >= 0 ? $"+{r}" : $"-{r * -1}")}
 															where	AllocationId = {allo.AllocationId}";
 
-											allo.EntryDataDetails.QtyAllocated += r;
-											sql += $@" UPDATE       EntryDataDetails
+                                        allo.EntryDataDetails.QtyAllocated += r;
+                                        sql += $@" UPDATE       EntryDataDetails
 															SET                QtyAllocated =  QtyAllocated{(r >= 0 ? $"+{r}" : $"-{r * -1}")}
 															where	EntryDataDetailsId = {allo.EntryDataDetails.EntryDataDetailsId}";
 
-											if (allo.EntryDataDetails.EntryDataDetailsEx.DutyFreePaid == "Duty Free")
-											{
-												allo.PreviousDocumentItem.DFQtyAllocated += r;
-												i.DFQtyAllocated += r;
+                                        if (allo.EntryDataDetails.EntryDataDetailsEx.DutyFreePaid == "Duty Free")
+                                        {
+                                            allo.PreviousDocumentItem.DFQtyAllocated += r;
+                                            i.DFQtyAllocated += r;
 
-												/////// is the same thing
+                                            /////// is the same thing
 
-												sql += $@" UPDATE       xcuda_Item
+                                            sql += $@" UPDATE       xcuda_Item
 															SET                DFQtyAllocated = (DFQtyAllocated{(r >= 0 ? $"+{r}" : $"-{r * -1}")})
 															where	item_id = {allo.PreviousDocumentItem.Item_Id}";
-											}
-											else
-											{
-												allo.PreviousDocumentItem.DPQtyAllocated += r;
-												i.DPQtyAllocated += r;
+                                        }
+                                        else
+                                        {
+                                            allo.PreviousDocumentItem.DPQtyAllocated += r;
+                                            i.DPQtyAllocated += r;
 
 
 
-												sql += $@" UPDATE       xcuda_Item
+                                            sql += $@" UPDATE       xcuda_Item
 															SET                DPQtyAllocated = (DPQtyAllocated{(r >= 0 ? $"+{r}" : $"-{r * -1}")})
 															where	item_id = {allo.PreviousDocumentItem.Item_Id}";
-											}
+                                        }
 
-											if (allo.QtyAllocated == 0)
-											{
-												allo.QtyAllocated -= r; //add back so wont disturb calculations
-												allo.Status = $"Under Allocated by {r}";
+                                        if (allo.QtyAllocated == 0)
+                                        {
+                                            allo.QtyAllocated -= r; //add back so wont disturb calculations
+                                            allo.Status = $"Under Allocated by {r}";
 
-												sql += $@"  Update AsycudaSalesAllocations
+                                            sql += $@"  Update AsycudaSalesAllocations
 														Set Status = '{allo.Status}', QtyAllocated = (QtyAllocated{(r >= 0 ? $"-{r}" : $"+{r * -1}")})
 														Where AllocationId = {allo.AllocationId}";
 
-											}
-											else
-											{
+                                        }
+                                        else
+                                        {
 
-												sql += $@" INSERT INTO AsycudaSalesAllocations
+                                            sql += $@" INSERT INTO AsycudaSalesAllocations
 														 (EntryDataDetailsId, PreviousItem_Id, QtyAllocated,Status, EANumber, SANumber)
 														VALUES        ({allo.EntryDataDetailsId},{allo.PreviousItem_Id},{r},'Under Allocated by {r}',0,0)";
-												//ctx.ApplyChanges(nallo);
-												break;
-											}
+                                            //ctx.ApplyChanges(nallo);
+                                            break;
+                                        }
 
-										}
-
-
+                                    }
 
 
-									}
 
-								if (!string.IsNullOrEmpty(sql))
-									ctx.Database.ExecuteSqlCommand(TransactionalBehavior.EnsureTransaction, sql);
 
-							}
-						});
-				using (var ctx = new AllocationDSContext())
-				{
-					var sql = @" DELETE FROM AsycudaSalesAllocations
+                                }
+
+                            if (!string.IsNullOrEmpty(sql))
+                                ctx.Database.ExecuteSqlCommand(TransactionalBehavior.EnsureTransaction, sql);
+
+                        }
+                    });
+            using (var ctx = new AllocationDSContext())
+            {
+                var sql = @" DELETE FROM AsycudaSalesAllocations
 								WHERE(Status IS NULL) AND(QtyAllocated = 0)";
 
-					ctx.Database.ExecuteSqlCommand(TransactionalBehavior.EnsureTransaction, sql);
-				}
-
-			}
-			catch (Exception)
-			{
-				throw;
-			}
-
-
-		}
+                ctx.Database.ExecuteSqlCommand(TransactionalBehavior.EnsureTransaction, sql);
+            }
+        }
 
 
 
@@ -627,7 +585,7 @@ namespace WaterNut.DataSpace
 
 
 				var itmLst = from s in saleslst
-							 join a in asycudaEntries on s.Key.Item3 equals a.Key into j
+							 join a in asycudaEntries on s.Key.ItemNumber equals a.Key into j
 							 from a in j.DefaultIfEmpty()
 							 select new ItemSet
 							 {
@@ -660,7 +618,7 @@ namespace WaterNut.DataSpace
 						.Select(y => y.AliasName.ToUpper().Trim()).Distinct().ToList();
 
 
-					var lumpedAlias = alias.Join(lumpedItems, (x) => x, (y) => y.AliasName,
+					var lumpedAlias = alias.Join(lumpedItems, x => x, y => y.AliasName,
 						(x, y) => y.ItemNumber).Distinct().ToList();
 
 					if (!alias.Any() && !lumpedAlias.Any()) continue;
@@ -734,7 +692,7 @@ namespace WaterNut.DataSpace
 			StatusModel.Timer("Getting Data - Asycuda Entries...");
 			//string itmnumber = "WMHP24-72";
 			IEnumerable<ItemEntries> asycudaEntries = null;
-			using (var ctx = new AllocationDSContext() { StartTracking = false })
+			using (var ctx = new AllocationDSContext { StartTracking = false })
 			{
 				var lst = ctx.xcuda_Item.Include(x => x.AsycudaDocument.Customs_Procedure)
 					.Include(x => x.xcuda_Tarification.xcuda_HScode)
@@ -790,12 +748,14 @@ namespace WaterNut.DataSpace
 				var lst = await ctx.Getxcuda_ItemByExpressionNav(
 					"All",
 					// "xcuda_Tarification.xcuda_HScode.Precision_4 == \"1360\"",
-					new Dictionary<string, string>() { { "AsycudaDocument", ( $"AssessmentDate >= \"{BaseDataModel.Instance.CurrentApplicationSettings.OpeningStockDate}\" && ") +
-																			$"(pCNumber != null || IsManuallyAssessed == true) " +
-																			$"&& (Customs_Procedure.CustomsOperationId == {(int)CustomsOperations.Import} || Customs_Procedure.CustomsOperationId == {(int)CustomsOperations.Warehouse}) " +
-																			$"&& Customs_Procedure.Sales == true)" +
-																			$" && DoNotAllocate != true" } }
-					, new List<string>() { "AsycudaDocument",
+					new Dictionary<string, string>
+                    { { "AsycudaDocument", ( $"AssessmentDate >= \"{BaseDataModel.Instance.CurrentApplicationSettings.OpeningStockDate}\" && ") +
+                                           "(pCNumber != null || IsManuallyAssessed == true) " +
+                                           $"&& (Customs_Procedure.CustomsOperationId == {(int)CustomsOperations.Import} || Customs_Procedure.CustomsOperationId == {(int)CustomsOperations.Warehouse}) " +
+                                           "&& Customs_Procedure.Sales == true)" +
+                                           " && DoNotAllocate != true" } }
+					, new List<string>
+                    { "AsycudaDocument",
 						"xcuda_Tarification.xcuda_HScode", "xcuda_Tarification.xcuda_Supplementary_unit","SubItems", "xcuda_Goods_description",
 					}).ConfigureAwait(false);//"EX"
 
@@ -844,13 +804,13 @@ namespace WaterNut.DataSpace
 									$"&& Sales.ApplicationSettingsId == {applicationSettingsId} " +
 									//	$" && (\"{lst}\" == \"\" || \"{lst}\".Contains(ItemNumber)) " +
 									//"&& Cost > 0 " + --------Cost don't matter in allocations because it comes from previous doc
-									"&& DoNotAllocate != true", new Dictionary<string, string>()
-									{
+									"&& DoNotAllocate != true", new Dictionary<string, string>
+                                    {
 										{"Sales", "INVNumber != null"}
-									}, new List<string>() { "Sales", "AsycudaSalesAllocations", "ManualAllocations" }, false)
+									}, new List<string> { "Sales", "AsycudaSalesAllocations", "ManualAllocations" }, false)
 								.ConfigureAwait(false);
 					saleslst = salesData.Where(x => lst == null || lst.Contains(x.ItemNumber))
-						.GroupBy(d => (EntryDataDate: d.Sales.EntryDataDate, EntryDataId: d.EntryDataId, ItemNumber: d.ItemNumber.ToUpper().Trim()))
+						.GroupBy(d => (d.Sales.EntryDataDate, d.EntryDataId, d.ItemNumber.ToUpper().Trim()))
 						.Select(g => new ItemSales
 						{
 							Key = g.Key,
@@ -887,19 +847,19 @@ namespace WaterNut.DataSpace
 															   "QtyAllocated != Quantity && " +
 																$"Adjustments.ApplicationSettingsId == {applicationSettingsId} && " +
 																$"(\"{lst}\" == \"\" || \"{lst}\".Contains(ItemNumber)) && " +
-																$"Adjustments.Type == \"ADJ\" && " + /// Only Adjustments not DIS that should have pCNumber to get matched
+																"Adjustments.Type == \"ADJ\" && " + /// Only Adjustments not DIS that should have pCNumber to get matched
 																"((PreviousInvoiceNumber == null) ||" +//pCNumber == null && 
 																" (( PreviousInvoiceNumber != null) && QtyAllocated == 0))" + //trying to capture unallocated adjustments//pCNumber != null ||
 																" && (ReceivedQty - InvoiceQty) <= 0 && (EffectiveDate != null || " + ($"EffectiveDate >= \"{BaseDataModel.Instance.CurrentApplicationSettings.OpeningStockDate}\"") + ")" +
 															   //"&& Cost > 0 " + --------Cost don't matter in allocations because it comes from previous doc
-															   "&& DoNotAllocate != true", new Dictionary<string, string>()
-															   {
+															   "&& DoNotAllocate != true", new Dictionary<string, string>
+                                                                {
 																   { "Adjustments", "EntryDataId != null" }
-															   }, new List<string>() { "Adjustments", "AsycudaSalesAllocations" }, false)
+															   }, new List<string> { "Adjustments", "AsycudaSalesAllocations" }, false)
 							.ConfigureAwait(false);
 				adjlst = (salesData
 						.Where(x => lst == null || lst.Contains(x.ItemNumber))
-					  .GroupBy(d => (EntryDataDate: d.EffectiveDate ?? d.Adjustments.EntryDataDate, EntryDataId: d.EntryDataId, ItemNumber: d.ItemNumber.ToUpper().Trim()))
+					  .GroupBy(d => (EntryDataDate: d.EffectiveDate ?? d.Adjustments.EntryDataDate, d.EntryDataId, ItemNumber: d.ItemNumber.ToUpper().Trim()))
 					.Select(g => new ItemSales
 					{
 						Key = g.Key,
@@ -912,8 +872,8 @@ namespace WaterNut.DataSpace
 			}
 			adjlst.SelectMany(x => x.SalesList).ForEach(x =>
 			{
-				x.Sales = new Sales()
-				{
+				x.Sales = new Sales
+                {
 					EntryDataId = x.Adjustments.EntryDataId,
 					EntryDataDate = Convert.ToDateTime(x.EffectiveDate),
 					INVNumber = x.Adjustments.EntryDataId,
@@ -946,21 +906,21 @@ namespace WaterNut.DataSpace
 																   "(QtyAllocated != Quantity || EntryDataId.Contains(\"Asycuda\")) && " +
 																	$"Adjustments.ApplicationSettingsId == {applicationSettingsId} && " +
 																	$"(\"{lst}\" == \"\" || \"{lst}\".Contains(ItemNumber)) && " +
-																	$"Adjustments.Type == \"DIS\" && " + /// Only Discrepancies with Errors
-															   $"(Comment.StartsWith(\"DISERROR:\") || EntryDataId.Contains(\"Asycuda\")) && " +  //"Asycuda is for Sales treated as discrepancies"
+																	"Adjustments.Type == \"DIS\" && " + /// Only Discrepancies with Errors
+															   "(Comment.StartsWith(\"DISERROR:\") || EntryDataId.Contains(\"Asycuda\")) && " +  //"Asycuda is for Sales treated as discrepancies"
 																	"( PreviousInvoiceNumber == null) ||" +//pCNumber == null &&
 																	" ( PreviousInvoiceNumber != null &&  (QtyAllocated == 0 || EntryDataId.Contains(\"Asycuda\")))" + //trying to capture unallocated adjustments  // pCNumber != null ||
 																	" && (ReceivedQty - InvoiceQty < 0) && (EffectiveDate != null || " + ($"EffectiveDate >= \"{BaseDataModel.Instance.CurrentApplicationSettings.OpeningStockDate}\"") + ")" +
 																   //"&& Cost > 0 " + --------Cost don't matter in allocations because it comes from previous doc
-																   "&& DoNotAllocate != true", new Dictionary<string, string>()
-																   {
+																   "&& DoNotAllocate != true", new Dictionary<string, string>
+                                                                    {
 																   { "Adjustments", "EntryDataId != null" }
-																   }, new List<string>() { "Adjustments", "AsycudaSalesAllocations" }, false)
+																   }, new List<string> { "Adjustments", "AsycudaSalesAllocations" }, false)
 								.ConfigureAwait(false);
 					adjlst = (salesData
 						.Where(x => lst == null || lst.Contains(x.ItemNumber))
                         .Where(x => x.IsReconciled != true)
-						.GroupBy(d => (EntryDataDate: d.EffectiveDate ?? d.Adjustments.EntryDataDate, EntryDataId: d.EntryDataId, ItemNumber: d.ItemNumber.ToUpper().Trim()))
+						.GroupBy(d => (EntryDataDate: d.EffectiveDate ?? d.Adjustments.EntryDataDate, d.EntryDataId, ItemNumber: d.ItemNumber.ToUpper().Trim()))
 						.Select(g => new ItemSales
 						{
 							Key = g.Key,
@@ -973,8 +933,8 @@ namespace WaterNut.DataSpace
 				}
 				adjlst.SelectMany(x => x.SalesList).ForEach(x =>
 				{
-					x.Sales = new Sales()
-					{
+					x.Sales = new Sales
+                    {
 						EntryDataId = x.Adjustments.EntryDataId,
 						EntryDataDate = Convert.ToDateTime(x.EffectiveDate),
 						INVNumber = x.Adjustments.EntryDataId,
@@ -1376,9 +1336,7 @@ namespace WaterNut.DataSpace
 
 		private xcuda_Item GetAsycudaEntriesWithItemNumber(IList<xcuda_Item> asycudaEntries, int CurrentAsycudaItemIndex)
 		{
-			xcuda_Item cAsycudaItm;
-
-			_asycudaItems.TryGetValue(asycudaEntries.ElementAtOrDefault<xcuda_Item>(CurrentAsycudaItemIndex).Item_Id, out cAsycudaItm);
+            _asycudaItems.TryGetValue(asycudaEntries.ElementAtOrDefault(CurrentAsycudaItemIndex).Item_Id, out var cAsycudaItm);
 			///////////////////// took this out because returns cross thread with duty free and duty paid -- 'CRC/06037' 'GB00050065'
 			//if (cAsycudaItm.QtyAllocated == 0 && (cAsycudaItm.DFQtyAllocated != 0 || cAsycudaItm.DPQtyAllocated != 0))
 			//{
@@ -1392,159 +1350,148 @@ namespace WaterNut.DataSpace
 
 		private EntryDataDetails GetSaleEntries(IList<EntryDataDetails> SaleEntries, int CurrentSaleItemIndex)
 		{
-			return SaleEntries.ElementAtOrDefault<EntryDataDetails>(CurrentSaleItemIndex);
+			return SaleEntries.ElementAtOrDefault(CurrentSaleItemIndex);
 		}
 
 		private async Task<double> AllocateSaleItem(xcuda_Item cAsycudaItm, EntryDataDetails saleitm,
 											 double saleitmQtyToallocate, SubItems subitm)
-		{
-			try
-			{
-				//cAsycudaItm.StartTracking();
-				//saleitm.StartTracking();
-				if (cAsycudaItm.SalesFactor == 0) cAsycudaItm.SalesFactor = 1;
+        {
+            //cAsycudaItm.StartTracking();
+            //saleitm.StartTracking();
+            if (cAsycudaItm.SalesFactor == 0) cAsycudaItm.SalesFactor = 1;
 
-				var dfp = saleitm.DutyFreePaid;
-				// allocate Sale item
-				var ssa = new AsycudaSalesAllocations()
-				{
-					EntryDataDetailsId = saleitm.EntryDataDetailsId,
-					PreviousItem_Id = cAsycudaItm.Item_Id,
-					QtyAllocated = 0,
-					TrackingState = TrackingState.Added
-				};
+            var dfp = saleitm.DutyFreePaid;
+            // allocate Sale item
+            var ssa = new AsycudaSalesAllocations
+            {
+                EntryDataDetailsId = saleitm.EntryDataDetailsId,
+                PreviousItem_Id = cAsycudaItm.Item_Id,
+                QtyAllocated = 0,
+                TrackingState = TrackingState.Added
+            };
 
-				if (!string.IsNullOrEmpty(cAsycudaItm.WarehouseError))
-				{
-					ssa.Status = cAsycudaItm.WarehouseError;
-				}
+            if (!string.IsNullOrEmpty(cAsycudaItm.WarehouseError))
+            {
+                ssa.Status = cAsycudaItm.WarehouseError;
+            }
 
 
 
 
-				if (saleitmQtyToallocate != 0)//&& removed because of previous return//cAsycudaItm.QtyAllocated >= 0 && 
-											  // cAsycudaItm.QtyAllocated <= Convert.ToDouble(cAsycudaItm.ItemQuantity)
-				{
+            if (saleitmQtyToallocate != 0)//&& removed because of previous return//cAsycudaItm.QtyAllocated >= 0 && 
+                // cAsycudaItm.QtyAllocated <= Convert.ToDouble(cAsycudaItm.ItemQuantity)
+            {
 
 
-					if (saleitmQtyToallocate > 0)
-					{
+                if (saleitmQtyToallocate > 0)
+                {
 
-						if (subitm != null)
-						{
-							subitm.StartTracking();
-							subitm.QtyAllocated = subitm.QtyAllocated + saleitmQtyToallocate;
-						}
+                    if (subitm != null)
+                    {
+                        subitm.StartTracking();
+                        subitm.QtyAllocated += saleitmQtyToallocate;
+                    }
 
-						if (dfp == "Duty Free")
-						{
-							cAsycudaItm.DFQtyAllocated += saleitmQtyToallocate / cAsycudaItm.SalesFactor;
-						}
-						else
-						{
-							cAsycudaItm.DPQtyAllocated += saleitmQtyToallocate / cAsycudaItm.SalesFactor;
-						}
+                    if (dfp == "Duty Free")
+                    {
+                        cAsycudaItm.DFQtyAllocated += saleitmQtyToallocate / cAsycudaItm.SalesFactor;
+                    }
+                    else
+                    {
+                        cAsycudaItm.DPQtyAllocated += saleitmQtyToallocate / cAsycudaItm.SalesFactor;
+                    }
 
-						if (BaseDataModel.Instance.CurrentApplicationSettings.AllowEntryDoNotAllocate == "Visible")
-						{
-							SetPreviousItemXbond(ssa, cAsycudaItm, dfp, saleitmQtyToallocate / cAsycudaItm.SalesFactor);
-						}
-
-
-
-						saleitm.QtyAllocated += saleitmQtyToallocate;
-
-						ssa.QtyAllocated += saleitmQtyToallocate;
-
-						saleitmQtyToallocate = 0;
-					}
-					else
-					{
-						double mqty = saleitmQtyToallocate * -1;
-
-
-						if (subitm != null)
-						{
-							subitm.StartTracking();
-							subitm.QtyAllocated = subitm.QtyAllocated - mqty;
-						}
-
-						if (dfp == "Duty Free")
-						{
-
-							//if (cAsycudaItm.DFQtyAllocated !=/*> change to != 0 to match below to mark return more than sold like below*/ 0 && cAsycudaItm.DFQtyAllocated < mqty) mqty = cAsycudaItm.DFQtyAllocated;
-							cAsycudaItm.DFQtyAllocated -= mqty / cAsycudaItm.SalesFactor;
-						}
-						else
-						{
-							//if (cAsycudaItm.DPQtyAllocated != 0 && cAsycudaItm.DPQtyAllocated < mqty) mqty = cAsycudaItm.DPQtyAllocated;
-							cAsycudaItm.DPQtyAllocated -= mqty / cAsycudaItm.SalesFactor;
-						}
+                    if (BaseDataModel.Instance.CurrentApplicationSettings.AllowEntryDoNotAllocate == "Visible")
+                    {
+                        SetPreviousItemXbond(ssa, cAsycudaItm, dfp, saleitmQtyToallocate / cAsycudaItm.SalesFactor);
+                    }
 
 
 
-						if (BaseDataModel.Instance.CurrentApplicationSettings.AllowEntryDoNotAllocate == "Visible")
-						{
-							SetPreviousItemXbond(ssa, cAsycudaItm, dfp, -mqty / cAsycudaItm.SalesFactor);
-						}
-						saleitmQtyToallocate += mqty;
+                    saleitm.QtyAllocated += saleitmQtyToallocate;
 
-						saleitm.QtyAllocated -= mqty;
+                    ssa.QtyAllocated += saleitmQtyToallocate;
+
+                    saleitmQtyToallocate = 0;
+                }
+                else
+                {
+                    double mqty = saleitmQtyToallocate * -1;
 
 
-						ssa.QtyAllocated -= mqty;
+                    if (subitm != null)
+                    {
+                        subitm.StartTracking();
+                        subitm.QtyAllocated = subitm.QtyAllocated - mqty;
+                    }
 
-						//}
-					}
-				}
+                    if (dfp == "Duty Free")
+                    {
 
-				if (ssa.QtyAllocated == 0) return saleitmQtyToallocate;
-				using (var ctx = new AllocationDSContext() { StartTracking = false })
-				{
-					var sql = $@" INSERT INTO AsycudaSalesAllocations
+                        //if (cAsycudaItm.DFQtyAllocated !=/*> change to != 0 to match below to mark return more than sold like below*/ 0 && cAsycudaItm.DFQtyAllocated < mqty) mqty = cAsycudaItm.DFQtyAllocated;
+                        cAsycudaItm.DFQtyAllocated -= mqty / cAsycudaItm.SalesFactor;
+                    }
+                    else
+                    {
+                        //if (cAsycudaItm.DPQtyAllocated != 0 && cAsycudaItm.DPQtyAllocated < mqty) mqty = cAsycudaItm.DPQtyAllocated;
+                        cAsycudaItm.DPQtyAllocated -= mqty / cAsycudaItm.SalesFactor;
+                    }
+
+
+
+                    if (BaseDataModel.Instance.CurrentApplicationSettings.AllowEntryDoNotAllocate == "Visible")
+                    {
+                        SetPreviousItemXbond(ssa, cAsycudaItm, dfp, -mqty / cAsycudaItm.SalesFactor);
+                    }
+                    saleitmQtyToallocate += mqty;
+
+                    saleitm.QtyAllocated -= mqty;
+
+
+                    ssa.QtyAllocated -= mqty;
+
+                    //}
+                }
+            }
+
+            if (ssa.QtyAllocated == 0) return saleitmQtyToallocate;
+            using (var ctx = new AllocationDSContext { StartTracking = false })
+            {
+                var sql = $@" INSERT INTO AsycudaSalesAllocations
 														 (EntryDataDetailsId, PreviousItem_Id, QtyAllocated, EANumber, SANumber, Status)
 														VALUES        ({ssa.EntryDataDetailsId},{ssa.PreviousItem_Id},{
-									  ssa.QtyAllocated
-								  },0,0,{
-									  (ssa.Status == null ? "NULL" : $"'{ssa.Status}'")
-								  })                                                      
+                                                            ssa.QtyAllocated
+                                                        },0,0,{
+                                                            (ssa.Status == null ? "NULL" : $"'{ssa.Status}'")
+                                                        })                                                      
 														 
 														
 														 UPDATE       xcuda_Item
 															SET                DPQtyAllocated = {
-									  cAsycudaItm.DPQtyAllocated
-								  }, DFQtyAllocated = {cAsycudaItm.DFQtyAllocated}
+                                                                cAsycudaItm.DPQtyAllocated
+                                                            }, DFQtyAllocated = {cAsycudaItm.DFQtyAllocated}
 															where	item_id = {cAsycudaItm.Item_Id}
 														
 														UPDATE       EntryDataDetails
 															SET                QtyAllocated = {saleitm.QtyAllocated}
 															where	EntryDataDetailsId = {saleitm.EntryDataDetailsId} "
 
-							  + (subitm != null
-								  ? $@"UPDATE       SubItems
+                          + (subitm != null
+                              ? $@"UPDATE       SubItems
 															SET                QtyAllocated = {subitm.QtyAllocated}
 															where	SubItem_Id = {subitm.SubItem_Id}"
-								  : "");
-					ctx.Database.ExecuteSqlCommand(TransactionalBehavior.EnsureTransaction, sql);
+                              : "");
+                ctx.Database.ExecuteSqlCommand(TransactionalBehavior.EnsureTransaction, sql);
 
-					saleitm.AsycudaSalesAllocations.Add(ssa);
-					ssa.EntryDataDetails = saleitm;
-					ssa.PreviousDocumentItem = cAsycudaItm;
-					cAsycudaItm.AsycudaSalesAllocations.Add(ssa);
-					_asycudaItems.AddOrUpdate(cAsycudaItm.Item_Id, cAsycudaItm, (key, oldValue) => cAsycudaItm);
-				}
+                saleitm.AsycudaSalesAllocations.Add(ssa);
+                ssa.EntryDataDetails = saleitm;
+                ssa.PreviousDocumentItem = cAsycudaItm;
+                cAsycudaItm.AsycudaSalesAllocations.Add(ssa);
+                _asycudaItems.AddOrUpdate(cAsycudaItm.Item_Id, cAsycudaItm, (key, oldValue) => cAsycudaItm);
+            }
 
-				return saleitmQtyToallocate;
-
-
-
-			}
-			catch (Exception)
-			{
-
-				throw;
-			}
-		}
+            return saleitmQtyToallocate;
+        }
 
 		private async Task SaveAllocation(AsycudaSalesAllocations ssa)
 		{
@@ -1572,59 +1519,51 @@ namespace WaterNut.DataSpace
 		}
 
 		private void SetPreviousItemXbond(AsycudaSalesAllocations ssa, xcuda_Item cAsycudaItm, string dfp, double amt)
-		{
-			try
-			{
-				if (BaseDataModel.Instance.CurrentApplicationSettings.AllowEntryDoNotAllocate != "Visible") return;
+        {
+            if (BaseDataModel.Instance.CurrentApplicationSettings.AllowEntryDoNotAllocate != "Visible") return;
 
 
-				var alst = cAsycudaItm.EntryPreviousItems.Select(p => p.xcuda_PreviousItem)
-							.Where(x => x.DutyFreePaid == dfp && x.QtyAllocated <= (double)x.Suplementary_Quantity)
-							.Where(x => x.xcuda_Item != null && x.xcuda_Item.AsycudaDocument != null && x.xcuda_Item.AsycudaDocument.Cancelled != true)
-							.OrderBy(
-									x =>
-									x.xcuda_Item.AsycudaDocument.EffectiveRegistrationDate ?? Convert.ToDateTime(x.xcuda_Item.AsycudaDocument.RegistrationDate)).ToList();
-				foreach (var pitm in alst)
-				{
+            var alst = cAsycudaItm.EntryPreviousItems.Select(p => p.xcuda_PreviousItem)
+                .Where(x => x.DutyFreePaid == dfp && x.QtyAllocated <= (double)x.Suplementary_Quantity)
+                .Where(x => x.xcuda_Item != null && x.xcuda_Item.AsycudaDocument != null && x.xcuda_Item.AsycudaDocument.Cancelled != true)
+                .OrderBy(
+                    x =>
+                        x.xcuda_Item.AsycudaDocument.EffectiveRegistrationDate ?? Convert.ToDateTime(x.xcuda_Item.AsycudaDocument.RegistrationDate)).ToList();
+            foreach (var pitm in alst)
+            {
 
-					var atot = (double)pitm.Suplementary_Quantity - Convert.ToDouble(pitm.QtyAllocated);
-					if (atot == 0) continue;
-					if (amt <= atot)
-					{
-						pitm.QtyAllocated += amt;
-						var xbond = new xBondAllocations(true)
-						{
-							AllocationId = ssa.AllocationId,
-							xEntryItem_Id = pitm.xcuda_Item.Item_Id,
-							TrackingState = TrackingState.Added
-						};
+                var atot = (double)pitm.Suplementary_Quantity - Convert.ToDouble(pitm.QtyAllocated);
+                if (atot == 0) continue;
+                if (amt <= atot)
+                {
+                    pitm.QtyAllocated += amt;
+                    var xbond = new xBondAllocations(true)
+                    {
+                        AllocationId = ssa.AllocationId,
+                        xEntryItem_Id = pitm.xcuda_Item.Item_Id,
+                        TrackingState = TrackingState.Added
+                    };
 
-						ssa.xBondAllocations.Add(xbond);
-						pitm.xcuda_Item.xBondAllocations.Add(xbond);
-						break;
-					}
-					else
-					{
-						pitm.QtyAllocated += atot;
-						var xbond = new xBondAllocations(true)
-						{
-							AllocationId = ssa.AllocationId,
-							xEntryItem_Id = pitm.xcuda_Item.Item_Id,
-							TrackingState = TrackingState.Added
-						};
-						ssa.xBondAllocations.Add(xbond);
-						pitm.xcuda_Item.xBondAllocations.Add(xbond);
-						amt -= atot;
-					}
+                    ssa.xBondAllocations.Add(xbond);
+                    pitm.xcuda_Item.xBondAllocations.Add(xbond);
+                    break;
+                }
+                else
+                {
+                    pitm.QtyAllocated += atot;
+                    var xbond = new xBondAllocations(true)
+                    {
+                        AllocationId = ssa.AllocationId,
+                        xEntryItem_Id = pitm.xcuda_Item.Item_Id,
+                        TrackingState = TrackingState.Added
+                    };
+                    ssa.xBondAllocations.Add(xbond);
+                    pitm.xcuda_Item.xBondAllocations.Add(xbond);
+                    amt -= atot;
+                }
 
-				}
-
-			}
-			catch (Exception Ex)
-			{
-				throw;
-			}
-		}
+            }
+        }
 
 
 

@@ -164,6 +164,7 @@ namespace AutoBot
                 {"Kill", Kill},
                 {"LinkPDFs", (ft,fs) => LinkPDFs()},
                 {"DownloadPOFiles", (ft,fs) => DownloadPOFiles()},
+                {"SubmitDiscrepanciesToCustoms", SubmitDiscrepanciesToCustoms}
                 
 
 
@@ -1948,6 +1949,24 @@ namespace AutoBot
                 throw;
             }
 
+        }
+
+        private static void SubmitDiscrepanciesToCustoms(FileTypes ft, FileInfo[] fs)
+        {
+            using (var ctx = new CoreEntitiesContext())
+            {
+                ctx.Database.CommandTimeout = 20;
+
+                IEnumerable<IGrouping<string, TODO_SubmitDiscrepanciesToCustoms>> lst;
+                lst = ctx.TODO_SubmitDiscrepanciesToCustoms.Where(x => x.EmailId == ft.EmailId
+                        && x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId )
+
+                    .ToList()
+
+                    .GroupBy(x => x.EmailId);
+                SubmitDiscrepanciesToCustoms(lst);
+
+            }
         }
 
         private static void SubmitDiscrepanciesToCustoms()

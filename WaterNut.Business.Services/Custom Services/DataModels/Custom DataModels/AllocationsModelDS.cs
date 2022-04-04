@@ -20,7 +20,7 @@ namespace WaterNut.DataSpace
     public class AllocationsModel
     {
         // private readonly CreateIncompOPSClass _createIncompOpsClass = new CreateIncompOPSClass();
-        private readonly BuildSalesReportClass _buildSalesReportClass = new BuildSalesReportClass();
+        //private readonly BuildSalesReportClass _buildSalesReportClass = new BuildSalesReportClass();
 
 
         static AllocationsModel()
@@ -31,29 +31,7 @@ namespace WaterNut.DataSpace
         public static AllocationsModel Instance { get; }
 
 
-        //public List<AsycudaSalesAllocations> CurrentAllocations
-        //{
-        //    get
-        //    {
-        //        if (QuerySpace.AllocationQS.ViewModels.AllocationsModel.Instance.SelectedAsycudaSalesAllocationsExs != null)
-        //        {
-        //            var lst = QuerySpace.AllocationQS.ViewModels.AllocationsModel.Instance.SelectedAsycudaSalesAllocationsExs;
-        //            var res = new List<AsycudaSalesAllocations>();
-        //            using (var ctx = new AsycudaSalesAllocationsService())
-        //            {
-        //                foreach (var item in lst)
-        //                {
-        //                    res.Add(ctx.GetAsycudaSalesAllocations(item.AllocationId.ToString()).Result);
-        //                }
-        //            }
-        //            return res;
-        //        }
-        //        else
-        //        {
-        //            return null;
-        //        }
-        //    }
-        //}
+   
 
         public CreateEx9Class CreateEX9Class => CreateEx9Class.Instance;
 
@@ -188,14 +166,7 @@ namespace WaterNut.DataSpace
             // SaveAsycudaSalesAllocation(currentAsycudaSalesAllocation);
         }
 
-        private async void SaveAsycudaSalesAllocation(AsycudaSalesAllocations allo)
-        {
-            using (var ctx = new AsycudaSalesAllocationsService())
-            {
-                await ctx.UpdateAsycudaSalesAllocations(allo).ConfigureAwait(false);
-            }
-        }
-
+        
         public async Task ClearAllocations(string filterExpression)
         {
             var lst = await GetAsycudaSalesAllocations(filterExpression).ConfigureAwait(false);

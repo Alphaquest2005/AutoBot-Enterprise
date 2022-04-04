@@ -87,10 +87,11 @@ namespace EmailDownloader
 
             message.Subject = subject;
 
-            var builder = new BodyBuilder();
-
-            // Set the plain-text version of the message text
-            builder.TextBody = body;
+            var builder = new BodyBuilder
+            {
+                // Set the plain-text version of the message text
+                TextBody = body
+            };
 
             foreach (var attachment in attachments)
             {
@@ -324,8 +325,10 @@ namespace EmailDownloader
             message.Subject = "FWD: " + msg.Subject;
 
             // now to create our body...
-            var builder = new BodyBuilder();
-            builder.TextBody = errtxt;
+            var builder = new BodyBuilder
+            {
+                TextBody = errtxt
+            };
             builder.Attachments.Add(new MessagePart { Message = msg });
 
             message.Body = builder.ToMessageBody();
@@ -428,7 +431,6 @@ namespace EmailDownloader
             var imapClient = new ImapClient();
             imapClient.Connect("auto-brokerage.com", 993, SecureSocketOptions.SslOnConnect);
             imapClient.Authenticate(clientDetails.Email, clientDetails.Password);
-            var dataFolder = clientDetails.DataFolder;
             imapClient.Inbox.Open(FolderAccess.ReadWrite);
             var msg = imapClient.Inbox.GetMessage(new UniqueId(Convert.ToUInt16(uID)));
             imapClient.Disconnect(true);
@@ -461,8 +463,10 @@ namespace EmailDownloader
             message.Subject = subject;
 
             // now to create our body...
-            var builder = new BodyBuilder();
-            builder.TextBody = body;
+            var builder = new BodyBuilder
+            {
+                TextBody = body
+            };
             builder.Attachments.Add(new MessagePart { Message = msg });
             
 
