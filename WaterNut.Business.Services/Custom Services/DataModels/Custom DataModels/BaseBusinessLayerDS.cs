@@ -1292,7 +1292,7 @@ namespace WaterNut.DataSpace
             }
         }
 
-        private static void SetEffectiveAssessmentDate(DocumentCT cdoc)
+        public static void SetEffectiveAssessmentDate(DocumentCT cdoc)
         {
             var effectiveAssessmentDate = (DateTime)
                 cdoc.EntryDataDetails.Select(x => x.EffectiveDate).Min();
@@ -1308,46 +1308,51 @@ namespace WaterNut.DataSpace
         {
             var slst = slstSource
                 .Select(g =>
-                    new EntryLineData
-                    {
-                        ItemNumber = g.ItemNumber.Trim(),
-                        ItemDescription = g.ItemDescription.Trim(),
-                        TariffCode = g.TariffCode,
-                        Cost = g.Cost,
-                        Quantity = g.Quantity,
-                        EntryDataDetails = new List<EntryDataDetailSummary>
-                        {
-                            new EntryDataDetailSummary
-                            {
-                                EntryDataDetailsId = g.EntryDataDetailsId,
-                                EntryData_Id = g.EntryData_Id,
-                                EntryDataId = g.EntryDataId,
-                                EffectiveDate = g.EffectiveDate.GetValueOrDefault(),
-                                EntryDataDate = g.EntryData.EntryDataDate,
-                                QtyAllocated = g.QtyAllocated,
-                                Currency = g.EntryData.Currency,
-                                LineNumber = g.LineNumber,
-                                Comment = g.Comment
-                            }
-                        },
-                        EntryData = g.EntryData,
-
-                        Freight = Convert.ToDouble(g.Freight),
-                        Weight = Convert.ToDouble(g.Weight),
-                        InternalFreight = Convert.ToDouble(g.InternalFreight),
-                        TariffSupUnitLkps = g.InventoryItemEx.SuppUnitCode2 != null
-                            ? new List<ITariffSupUnitLkp>
-                            {
-                                new TariffSupUnitLkps
-                                {
-                                    SuppUnitCode2 = g.InventoryItemEx.SuppUnitCode2,
-                                    SuppQty = g.InventoryItemEx.SuppQty.GetValueOrDefault()
-                                }
-                            }
-                            : null,
-                        InventoryItemEx = g.InventoryItemEx
-                    });
+                    CreateEntryLineData(g));
             return slst;
+        }
+
+        public static EntryLineData CreateEntryLineData(EntryDataDetails g)
+        {
+            return new EntryLineData
+            {
+                ItemNumber = g.ItemNumber.Trim(),
+                ItemDescription = g.ItemDescription.Trim(),
+                TariffCode = g.TariffCode,
+                Cost = g.Cost,
+                Quantity = g.Quantity,
+                EntryDataDetails = new List<EntryDataDetailSummary>
+                {
+                    new EntryDataDetailSummary
+                    {
+                        EntryDataDetailsId = g.EntryDataDetailsId,
+                        EntryData_Id = g.EntryData_Id,
+                        EntryDataId = g.EntryDataId,
+                        EffectiveDate = g.EffectiveDate.GetValueOrDefault(),
+                        EntryDataDate = g.EntryData.EntryDataDate,
+                        QtyAllocated = g.QtyAllocated,
+                        Currency = g.EntryData.Currency,
+                        LineNumber = g.LineNumber,
+                        Comment = g.Comment
+                    }
+                },
+                EntryData = g.EntryData,
+
+                Freight = Convert.ToDouble(g.Freight),
+                Weight = Convert.ToDouble(g.Weight),
+                InternalFreight = Convert.ToDouble(g.InternalFreight),
+                TariffSupUnitLkps = g.InventoryItemEx.SuppUnitCode2 != null
+                    ? new List<ITariffSupUnitLkp>
+                    {
+                        new TariffSupUnitLkps
+                        {
+                            SuppUnitCode2 = g.InventoryItemEx.SuppUnitCode2,
+                            SuppQty = g.InventoryItemEx.SuppQty.GetValueOrDefault()
+                        }
+                    }
+                    : null,
+                InventoryItemEx = g.InventoryItemEx
+            };
         }
 
 

@@ -428,6 +428,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Custom DataLayer Classes\AsycudaSalesAndAdjustmentAllocationsExExcelLine.cs" />
     <Compile Include="ViewModels\Custom\MessageToken.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\AdjustmentQS\AdjustmentDetailViewModel.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\AdjustmentQS\AdjustmentExViewModel.cs" />

@@ -27,6 +27,7 @@
               this.HasMany(t => t.EntryDataDetailsEx).WithRequired(t => (InventoryItem)t.InventoryItemsEx);
               this.HasMany(t => t.InventoryItemAliasEx).WithRequired(t => (InventoryItem)t.InventoryItem);
               this.HasOptional(t => t.LumpedItem).WithRequired(t => (InventoryItem)t.InventoryItem);
+              this.HasMany(t => t.EntryDataDetails).WithRequired(t => (InventoryItem)t.InventoryItem);
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);
     			this.Ignore(t => t.ModifiedProperties);

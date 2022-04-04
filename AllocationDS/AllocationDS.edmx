@@ -2066,6 +2066,10 @@ FROM [dbo].[PreviousItemsEx] AS [PreviousItemsEx]</DefiningQuery>
             <End Role="AsycudaDocumentItemEntryDataDetails" EntitySet="AsycudaDocumentItemEntryDataDetails" />
           </AssociationSet>
           <EntitySet Name="ExistingAllocations" EntityType="WaterNutDBModel.ExistingAllocations" />
+          <AssociationSet Name="InventoryItemEntryDataDetails" Association="WaterNutDBModel.InventoryItemEntryDataDetails">
+            <End Role="InventoryItem" EntitySet="InventoryItems" />
+            <End Role="EntryDataDetails" EntitySet="EntryDataDetails" />
+          </AssociationSet>
           </EntityContainer>
         <EntityType Name="AsycudaSalesAllocations">
           <Key>
@@ -2134,6 +2138,7 @@ FROM [dbo].[PreviousItemsEx] AS [PreviousItemsEx]</DefiningQuery>
           <Property Name="EntryDataDetailsKey" Type="String" MaxLength="4000" FixedLength="false" Unicode="true" annotation:StoreGeneratedPattern="Computed" />
           <Property Name="TotalValue" Type="Double" Nullable="false" annotation:StoreGeneratedPattern="Computed" />
           <Property Name="CLineNumber" Type="Int32" />
+          <NavigationProperty Name="InventoryItem" Relationship="WaterNutDBModel.InventoryItemEntryDataDetails" FromRole="EntryDataDetails" ToRole="InventoryItem" />
           <a:DomainInterfaceProperty xmlns:a="http://schemas.tempuri.com/DomainInterfaceProperty">IEntryDataDetail</a:DomainInterfaceProperty>
           
         </EntityType>
@@ -3195,6 +3200,7 @@ FROM [dbo].[PreviousItemsEx] AS [PreviousItemsEx]</DefiningQuery>
           <NavigationProperty Name="InventoryItemAliasEx" Relationship="WaterNutDBModel.InventoryItemInventoryItemAliasEx" FromRole="InventoryItem" ToRole="InventoryItemAliasEx" />
           <Property Name="InventoryItemId" Type="Int32" Nullable="false" />
           <NavigationProperty Name="LumpedItem" Relationship="WaterNutDBModel.InventoryItemInventoryItems_Lumped" FromRole="InventoryItem" ToRole="InventoryItems_Lumped" />
+          <NavigationProperty Name="EntryDataDetails" Relationship="WaterNutDBModel.InventoryItemEntryDataDetails" FromRole="InventoryItem" ToRole="EntryDataDetails" />
         </EntityType>
         <Association Name="TariffCodesInventoryItemsEx">
           <End Type="WaterNutDBModel.TariffCodes" Role="TariffCodes" Multiplicity="0..1" />
@@ -3609,6 +3615,18 @@ FROM [dbo].[PreviousItemsEx] AS [PreviousItemsEx]</DefiningQuery>
           <Property Name="DocumentType" Type="String" MaxLength="40" FixedLength="false" Unicode="true" />
           <Property Name="CustomsProcedure" Type="String" MaxLength="11" FixedLength="false" Unicode="true" />
         </EntityType>
+        <Association Name="InventoryItemEntryDataDetails">
+          <End Type="WaterNutDBModel.InventoryItem" Role="InventoryItem" Multiplicity="1" />
+          <End Type="WaterNutDBModel.EntryDataDetails" Role="EntryDataDetails" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="InventoryItem">
+              <PropertyRef Name="InventoryItemId" />
+            </Principal>
+            <Dependent Role="EntryDataDetails">
+              <PropertyRef Name="InventoryItemId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->

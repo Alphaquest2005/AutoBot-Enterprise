@@ -29,55 +29,71 @@ namespace WaterNut.DataSpace
 
         public async Task CreateErrorOPS(string filterExpression, AsycudaDocumentSet docSet)
         {
-
-
-            var cdoc = new DocumentCT();
-            cdoc.Document = BaseDataModel.Instance.CreateNewAsycudaDocument(docSet);
-
-            StatusModel.Timer("Getting Data ...");
-
-            var itmcount = 0;
-            var slst = await GetErrOPSData(filterExpression).ConfigureAwait(false);
-
-
-            var cp =
-                BaseDataModel.Instance.Customs_Procedures
-                    .Single(x => x.CustomsOperationId == (int)CustomsOperations.Warehouse && x.Stock == true);
-
-            docSet.Customs_Procedure = cp;
-
-            ErrOpsIntializeCdoc(cdoc, docSet);
-
-            StatusModel.StartStatusUpdate("Creating Error OPS entries", slst.Count());
-
-
-            var cslst = AllocationEntryLine(slst);
-
-
-            foreach (var pod in cslst)
+            try
             {
-                StatusModel.StatusUpdate();
-
-                BaseDataModel.Instance.CreateItemFromEntryDataDetail(pod, cdoc);
 
 
-                itmcount += 1;
-                if (itmcount % BaseDataModel.Instance.CurrentApplicationSettings.MaxEntryLines == 0)
+
+                var cdoc = new DocumentCT();
+                cdoc.Document = BaseDataModel.Instance.CreateNewAsycudaDocument(docSet);
+
+                StatusModel.Timer("Getting Data ...");
+
+                var itmcount = 0;
+                var slst = await GetErrOPSData(filterExpression).ConfigureAwait(false);
+
+
+                var cp =
+                    BaseDataModel.Instance.Customs_Procedures
+                        .Single(x =>
+                            x.CustomsOperationId == (int)CustomsOperations.Warehouse && x.Stock == true &&
+                            x.IsDefault == true);
+
+                docSet.Customs_Procedure = cp;
+
+                ErrOpsIntializeCdoc(cdoc, docSet);
+
+                StatusModel.StartStatusUpdate("Creating Error OPS entries", slst.Count());
+
+
+                var cslst = AllocationEntryLine(slst);
+
+
+                foreach (var pod in cslst)
                 {
-                    await BaseDataModel.Instance.SaveDocumentCT(cdoc).ConfigureAwait(false);
-                    //dup new file
-                    cdoc = new DocumentCT();
-                    cdoc.Document = BaseDataModel.Instance.CreateNewAsycudaDocument(docSet);
+                    StatusModel.StatusUpdate();
 
-                    ErrOpsIntializeCdoc(cdoc, docSet);
+                    BaseDataModel.Instance.CreateItemFromEntryDataDetail(pod, cdoc);
+
+
+                    itmcount += 1;
+                    if (itmcount % BaseDataModel.Instance.CurrentApplicationSettings.MaxEntryLines == 0)
+                    {
+                        BaseDataModel.SetEffectiveAssessmentDate(cdoc);
+                        await BaseDataModel.Instance.SaveDocumentCT(cdoc).ConfigureAwait(false);
+                        //dup new file
+                        cdoc = new DocumentCT();
+                        cdoc.Document = BaseDataModel.Instance.CreateNewAsycudaDocument(docSet);
+
+                        ErrOpsIntializeCdoc(cdoc, docSet);
+                    }
+
                 }
 
+                if (cdoc.DocumentItems.Count == 0)
+                {
+                    cdoc = null;
+                    return;
+                }
+                BaseDataModel.SetEffectiveAssessmentDate(cdoc);
+                await BaseDataModel.Instance.SaveDocumentCT(cdoc).ConfigureAwait(false);
+                StatusModel.StopStatusUpdate();
             }
-            if (cdoc.DocumentItems.Count == 0) cdoc = null;
-
-            await BaseDataModel.Instance.SaveDocumentCT(cdoc).ConfigureAwait(false);
-            StatusModel.StopStatusUpdate();
-
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
 
         }
 
@@ -111,7 +127,12 @@ namespace WaterNut.DataSpace
                                 EntryDataDetailsId = (int) x.EntryDataDetailsId,
                                 EntryDataId = x.EntryDataDetails.EntryDataId,
                                 EntryData_Id = x.EntryDataDetails.EntryData_Id,
-                                QtyAllocated = x.QtyAllocated
+                                QtyAllocated = x.QtyAllocated,
+                                EffectiveDate = x.EntryDataDetails.EffectiveDate.GetValueOrDefault(),
+                                EntryDataDate = x.EntryDataDetails.Sales.EntryDataDate,
+                                LineNumber = x.EntryDataDetails.LineNumber,
+                                Comment = x.EntryDataDetails.Comment
+
                             }).ToList()
                         };
             return cslst.Where(x => x.Quantity > 0);
@@ -124,7 +145,7 @@ namespace WaterNut.DataSpace
         {
             var lst = await AllocationsModel.Instance.GetAsycudaSalesAllocations(filterExpression).ConfigureAwait(false);
             return lst.Where(x => !string.IsNullOrEmpty(x.Status) 
-                                  && (x.xStatus != "Net Weight < 0.01" && !string.IsNullOrEmpty(x.xStatus))).ToList();
+                                  || (x.xStatus != "Net Weight < 0.01" && !string.IsNullOrEmpty(x.xStatus))).ToList();
             //return lst.Where(x => x.PreviousDocumentItem == null 
             //                      && x.QtyAllocated == 0
             //                      && x.EntryDataDetails.Quantity > 0

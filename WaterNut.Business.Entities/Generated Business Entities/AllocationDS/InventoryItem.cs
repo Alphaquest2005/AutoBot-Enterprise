@@ -25,6 +25,7 @@ namespace AllocationDS.Business.Entities
             this.EX9AsycudaSalesAllocations = new List<EX9AsycudaSalesAllocations>();
             this.EntryDataDetailsEx = new List<EntryDataDetailsEx>();
             this.InventoryItemAliasEx = new List<InventoryItemAlias>();
+            this.EntryDataDetails = new List<EntryDataDetails>();
         }
 
         [DataMember]
@@ -172,6 +173,8 @@ namespace AllocationDS.Business.Entities
         public List<InventoryItemAlias> InventoryItemAliasEx { get; set; }
         [DataMember]
         public LumpedItem LumpedItem { get; set; }
+        [DataMember]
+        public List<EntryDataDetails> EntryDataDetails { get; set; }
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }
