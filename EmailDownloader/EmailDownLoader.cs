@@ -19,14 +19,16 @@ namespace EmailDownloader
 {
     public static partial class EmailDownloader
     {
+        private const int SizeinMB = 1048576;
+        private const int AsycudaMaxFileSize = 4;
 
         public static bool ReturnOnlyUnknownMails { get; set; } = false;
-        public static Dictionary<Tuple<string, Email, string>, List<string>> CheckEmails(Client client)
+        public static Dictionary<Tuple<string, Email, string>, List<FileInfo>> CheckEmails(Client client)
         {
-            var res = new Dictionary<Tuple<string, Email, string>, List<string>>();
+            var res = new Dictionary<Tuple<string, Email, string>, List<FileInfo>>();
             try
             {
-                if(string.IsNullOrEmpty(client.Email)) return new Dictionary<Tuple<string, Email, string>, List<string>>();
+                if(string.IsNullOrEmpty(client.Email)) return new Dictionary<Tuple<string, Email, string>, List<FileInfo>>();
                             var imapClient = new ImapClient();
                             imapClient.Connect("auto-brokerage.com", 993, SecureSocketOptions.SslOnConnect);
                             imapClient.Authenticate(client.Email, client.Password);
@@ -108,7 +110,7 @@ namespace EmailDownloader
         public static void DownloadAttachment(ImapClient imapClient,
             string dataFolder,
             List<EmailMapping> emailMappings, Client client,
-            ref Dictionary<Tuple<string, Email, string>, List<string>> msgFiles)
+            ref Dictionary<Tuple<string, Email, string>, List<FileInfo>> msgFiles)
         {
             try
             {
@@ -126,7 +128,7 @@ namespace EmailDownloader
 
                 foreach (var uid in uniqueIds)
                 {
-                    var lst = new List<string>();
+                    var lst = new List<FileInfo>();
                     var msg = imapClient.Inbox.GetMessage(uid);
 
                     if (ReturnOnlyUnknownMails)
@@ -185,9 +187,9 @@ namespace EmailDownloader
                         SaveBodyPart(desFolder, msg, lst);
 
                         var fileTypes = emailMapping.EmailFileTypes.Select(x => x.FileTypes)
-                            .Where(x => lst.Any(z => Regex.IsMatch(z, x.FilePattern, RegexOptions.IgnoreCase))).ToList();
+                            .Where(x => lst.Any(z => Regex.IsMatch(z.Name, x.FilePattern, RegexOptions.IgnoreCase))).ToList();
 
-                        if (lst.Any(x => x != "Info.txt") && !fileTypes.Any(x => x.Type != "Info"))
+                        if (lst.Any(x => x.Name != "Info.txt") && !fileTypes.Any(x => x.Type != "Info"))
                         {
                             imapClient.Inbox.AddFlags(uid, MessageFlags.Seen, true);
                             if (sendNotifications)
@@ -201,7 +203,7 @@ namespace EmailDownloader
                             }
                         }
 
-                        
+                        if(!CheckFileSizeLimit(client, fileTypes, lst, msg, dataFolder)) continue;
 
                         subject.Item2.FileTypes = fileTypes;
 
@@ -224,6 +226,32 @@ namespace EmailDownloader
                 Console.WriteLine(e);
                 throw;
             }
+        }
+
+        private static bool CheckFileSizeLimit(Client client, List<FileTypes> fileTypes, List<FileInfo> lst,
+            MimeMessage msg, string dataFolder)
+        {
+            var isGood = true;
+            foreach (var fileType in fileTypes)
+            {
+                var bigFiles = lst.Where(x =>
+                        Regex.IsMatch(x.Name, fileType.FilePattern, RegexOptions.IgnoreCase))
+                    .Where(x => (x.Length / SizeinMB) > (fileType.MaxFileSizeInMB ?? AsycudaMaxFileSize))
+                    .ToList();
+                if (bigFiles.Any())
+                {
+                    isGood = false;
+                    var errTxt =
+                        $"Hey,\r\n\r\n The following files exceed the Max File Size of {fileType.MaxFileSizeInMB ?? AsycudaMaxFileSize}MB the Attachments in this mail.\r\n" +
+                        $"{bigFiles.Select(x => x.Name).Aggregate((o, n) => $"{o}\r\n{n}\r\n")}\r\n" +
+                        "Check the file Name of attachments again or Check Joseph Bartholomew at Joseph@auto-brokerage.com to make the necessary changes.\r\n" +
+                        "Thanks\r\n" +
+                        "AutoBot";
+                    SendBackMsg(msg, client, errTxt);
+                }
+            }
+
+            return isGood;
         }
 
         private static Tuple<string, Email, string> GetSubject(MimeMessage msg, UniqueId uid, List<EmailMapping> emailMappings)
@@ -351,7 +379,7 @@ namespace EmailDownloader
 
        
 
-        private static void SaveAttachmentPart(string dataFolder,  MimeEntity a, List<string> lst)
+        private static void SaveAttachmentPart(string dataFolder,  MimeEntity a, List<FileInfo> lst)
         {
             var part = (MimePart) a;
             var fileName = CleanFileName(part.FileName);
@@ -360,7 +388,7 @@ namespace EmailDownloader
             
             using (var stream = File.Create(file))
                 part.Content.DecodeTo(stream);
-            lst.Add(fileName);
+            lst.Add( new FileInfo(file));
         }
 
         private static string GetNextFileName(string file)
@@ -383,13 +411,18 @@ namespace EmailDownloader
             return res;
         }
 
-        private static void SaveBodyPart(string dataFolder, MimeMessage a, List<string> lst)
+        private static void SaveBodyPart(string dataFolder, MimeMessage a, List<FileInfo> lst)
         {
             var part = a.BodyParts.OfType<TextPart>().FirstOrDefault();
             var fileName = "Info.txt";
+            var file = Path.Combine(dataFolder, fileName);
+            if (part != null)
+            {
+                
+                System.IO.File.WriteAllText(file, part.Text);
+            }
 
-            if (part != null) System.IO.File.WriteAllText(Path.Combine(dataFolder, fileName), part.Text);
-            lst.Add(fileName);
+            lst.Add(new FileInfo(file));
         }
 
         public static bool ForwardMsg(string emailId, Client clientDetails, string subject, string body,string[] contacts ,string[] attachments
