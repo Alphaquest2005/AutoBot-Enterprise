@@ -268,7 +268,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             }
         }
 
-        public class EntryPreviousItemsExcelLine
+        public partial class EntryPreviousItemsExcelLine
         {
 		        }
 

@@ -444,6 +444,7 @@
 ..\WaterNut.Business.Entities\Generated Business Entities\DocumentItemDS\xcuda_Weight_itm.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\EntryDataDS\Adjustments.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\EntryDataDS\AsycudaDocumentEntryData.cs
+..\WaterNut.Business.Entities\Generated Business Entities\EntryDataDS\AsycudaDocumentEntryDataLine.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\EntryDataDS\AsycudaDocumentSetEntryData.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\EntryDataDS\Attachments.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\EntryDataDS\EDDocumentTypes.cs
@@ -480,6 +481,8 @@
 ..\WaterNut.Business.Entities\Generated Business Entities\EntryDataDS\ShipmentBL.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\EntryDataDS\ShipmentBLDetails.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\EntryDataDS\ShipmentBLFreight.cs
+..\WaterNut.Business.Entities\Generated Business Entities\EntryDataDS\ShipmentErrors_RepeatInvoices.cs
+..\WaterNut.Business.Entities\Generated Business Entities\EntryDataDS\ShipmentErrors_RepeatMarks.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\EntryDataDS\ShipmentFreight.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\EntryDataDS\ShipmentFreightBLs.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\EntryDataDS\ShipmentFreightDetails.cs
@@ -506,9 +509,13 @@
 ..\WaterNut.Business.Entities\Generated Business Entities\EntryDataDS\ShipmentRiderInvoice.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\EntryDataDS\ShipmentRiderManifests.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\EntryDataDS\Suppliers.cs
+..\WaterNut.Business.Entities\Generated Business Entities\EntryDataDS\SupportingDetail.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\EntryDataDS\VolumeUnits.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\EntryDataDS\WarehouseInfo.cs
+..\WaterNut.Business.Entities\Generated Business Entities\EntryDataDS\xSalesDetails.cs
+..\WaterNut.Business.Entities\Generated Business Entities\EntryDataDS\xSalesFiles.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\EntryDataQS\AsycudaDocumentEntryData.cs
+..\WaterNut.Business.Entities\Generated Business Entities\EntryDataQS\AsycudaDocumentEntryDataLine.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\EntryDataQS\AsycudaDocumentItemEntryDataDetail.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\EntryDataQS\AsycudaDocumentSetEntryData.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\EntryDataQS\AsycudaDocumentSetEntryDataDetail.cs
@@ -861,6 +868,7 @@
 ..\WaterNut.Business.Entities\Generated Mappings\DocumentItemDS\xcuda_Weight_itm.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\Adjustments.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\AsycudaDocumentEntryData.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\AsycudaDocumentEntryDataLine.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\AsycudaDocumentSetEntryData.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\Attachments.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\EDDocumentTypes.map.cs
@@ -897,6 +905,8 @@
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentBL.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentBLDetails.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentBLFreight.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentErrors_RepeatInvoices.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentErrors_RepeatMarks.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentFreight.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentFreightBLs.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentFreightDetails.map.cs
@@ -923,9 +933,13 @@
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentRiderInvoice.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentRiderManifests.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\Suppliers.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\SupportingDetail.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\VolumeUnits.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\WarehouseInfo.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\xSalesDetails.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\xSalesFiles.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataQS\AsycudaDocumentEntryData.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataQS\AsycudaDocumentEntryDataLine.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataQS\AsycudaDocumentItemEntryDataDetail.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataQS\AsycudaDocumentSetEntryData.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataQS\AsycudaDocumentSetEntryDataDetail.map.cs
@@ -1286,6 +1300,7 @@
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\DocumentItemDS\xcuda_Weight_itm.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\EntryDataDS\Adjustments.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\EntryDataDS\AsycudaDocumentEntryData.cs
+..\WaterNut.Business.Entities\Generated ChangeTracking Models\EntryDataDS\AsycudaDocumentEntryDataLine.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\EntryDataDS\AsycudaDocumentSetEntryData.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\EntryDataDS\Attachments.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\EntryDataDS\EDDocumentTypes.cs
@@ -1322,6 +1337,8 @@
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\EntryDataDS\ShipmentBL.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\EntryDataDS\ShipmentBLDetails.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\EntryDataDS\ShipmentBLFreight.cs
+..\WaterNut.Business.Entities\Generated ChangeTracking Models\EntryDataDS\ShipmentErrors_RepeatInvoices.cs
+..\WaterNut.Business.Entities\Generated ChangeTracking Models\EntryDataDS\ShipmentErrors_RepeatMarks.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\EntryDataDS\ShipmentFreight.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\EntryDataDS\ShipmentFreightBLs.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\EntryDataDS\ShipmentFreightDetails.cs
@@ -1348,9 +1365,13 @@
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\EntryDataDS\ShipmentRiderInvoice.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\EntryDataDS\ShipmentRiderManifests.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\EntryDataDS\Suppliers.cs
+..\WaterNut.Business.Entities\Generated ChangeTracking Models\EntryDataDS\SupportingDetail.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\EntryDataDS\VolumeUnits.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\EntryDataDS\WarehouseInfo.cs
+..\WaterNut.Business.Entities\Generated ChangeTracking Models\EntryDataDS\xSalesDetails.cs
+..\WaterNut.Business.Entities\Generated ChangeTracking Models\EntryDataDS\xSalesFiles.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\EntryDataQS\AsycudaDocumentEntryData.cs
+..\WaterNut.Business.Entities\Generated ChangeTracking Models\EntryDataQS\AsycudaDocumentEntryDataLine.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\EntryDataQS\AsycudaDocumentItemEntryDataDetail.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\EntryDataQS\AsycudaDocumentSetEntryData.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\EntryDataQS\AsycudaDocumentSetEntryDataDetail.cs
@@ -1689,6 +1710,7 @@
 ..\WaterNut.Business.Entities\Generated Constructors Models\DocumentItemDS\xcuda_Weight_itm.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\EntryDataDS\Adjustments.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\EntryDataDS\AsycudaDocumentEntryData.cs
+..\WaterNut.Business.Entities\Generated Constructors Models\EntryDataDS\AsycudaDocumentEntryDataLine.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\EntryDataDS\AsycudaDocumentSetEntryData.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\EntryDataDS\Attachments.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\EntryDataDS\EDDocumentTypes.cs
@@ -1725,6 +1747,8 @@
 ..\WaterNut.Business.Entities\Generated Constructors Models\EntryDataDS\ShipmentBL.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\EntryDataDS\ShipmentBLDetails.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\EntryDataDS\ShipmentBLFreight.cs
+..\WaterNut.Business.Entities\Generated Constructors Models\EntryDataDS\ShipmentErrors_RepeatInvoices.cs
+..\WaterNut.Business.Entities\Generated Constructors Models\EntryDataDS\ShipmentErrors_RepeatMarks.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\EntryDataDS\ShipmentFreight.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\EntryDataDS\ShipmentFreightBLs.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\EntryDataDS\ShipmentFreightDetails.cs
@@ -1751,9 +1775,13 @@
 ..\WaterNut.Business.Entities\Generated Constructors Models\EntryDataDS\ShipmentRiderInvoice.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\EntryDataDS\ShipmentRiderManifests.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\EntryDataDS\Suppliers.cs
+..\WaterNut.Business.Entities\Generated Constructors Models\EntryDataDS\SupportingDetail.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\EntryDataDS\VolumeUnits.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\EntryDataDS\WarehouseInfo.cs
+..\WaterNut.Business.Entities\Generated Constructors Models\EntryDataDS\xSalesDetails.cs
+..\WaterNut.Business.Entities\Generated Constructors Models\EntryDataDS\xSalesFiles.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\EntryDataQS\AsycudaDocumentEntryData.cs
+..\WaterNut.Business.Entities\Generated Constructors Models\EntryDataQS\AsycudaDocumentEntryDataLine.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\EntryDataQS\AsycudaDocumentItemEntryDataDetail.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\EntryDataQS\AsycudaDocumentSetEntryData.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\EntryDataQS\AsycudaDocumentSetEntryDataDetail.cs
@@ -2092,6 +2120,7 @@
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\DocumentItemDS\xcuda_Weight_itm.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\EntryDataDS\Adjustments.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\EntryDataDS\AsycudaDocumentEntryData.cs
+..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\EntryDataDS\AsycudaDocumentEntryDataLine.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\EntryDataDS\AsycudaDocumentSetEntryData.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\EntryDataDS\Attachments.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\EntryDataDS\EDDocumentTypes.cs
@@ -2128,6 +2157,8 @@
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\EntryDataDS\ShipmentBL.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\EntryDataDS\ShipmentBLDetails.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\EntryDataDS\ShipmentBLFreight.cs
+..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\EntryDataDS\ShipmentErrors_RepeatInvoices.cs
+..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\EntryDataDS\ShipmentErrors_RepeatMarks.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\EntryDataDS\ShipmentFreight.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\EntryDataDS\ShipmentFreightBLs.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\EntryDataDS\ShipmentFreightDetails.cs
@@ -2154,9 +2185,13 @@
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\EntryDataDS\ShipmentRiderInvoice.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\EntryDataDS\ShipmentRiderManifests.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\EntryDataDS\Suppliers.cs
+..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\EntryDataDS\SupportingDetail.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\EntryDataDS\VolumeUnits.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\EntryDataDS\WarehouseInfo.cs
+..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\EntryDataDS\xSalesDetails.cs
+..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\EntryDataDS\xSalesFiles.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\EntryDataQS\AsycudaDocumentEntryData.cs
+..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\EntryDataQS\AsycudaDocumentEntryDataLine.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\EntryDataQS\AsycudaDocumentItemEntryDataDetail.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\EntryDataQS\AsycudaDocumentSetEntryData.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\EntryDataQS\AsycudaDocumentSetEntryDataDetail.cs
@@ -2495,6 +2530,7 @@
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\DocumentItemDS\xcuda_Weight_itm.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\EntryDataDS\Adjustments.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\EntryDataDS\AsycudaDocumentEntryData.cs
+..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\EntryDataDS\AsycudaDocumentEntryDataLine.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\EntryDataDS\AsycudaDocumentSetEntryData.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\EntryDataDS\Attachments.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\EntryDataDS\EDDocumentTypes.cs
@@ -2531,6 +2567,8 @@
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\EntryDataDS\ShipmentBL.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\EntryDataDS\ShipmentBLDetails.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\EntryDataDS\ShipmentBLFreight.cs
+..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\EntryDataDS\ShipmentErrors_RepeatInvoices.cs
+..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\EntryDataDS\ShipmentErrors_RepeatMarks.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\EntryDataDS\ShipmentFreight.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\EntryDataDS\ShipmentFreightBLs.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\EntryDataDS\ShipmentFreightDetails.cs
@@ -2557,9 +2595,13 @@
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\EntryDataDS\ShipmentRiderInvoice.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\EntryDataDS\ShipmentRiderManifests.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\EntryDataDS\Suppliers.cs
+..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\EntryDataDS\SupportingDetail.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\EntryDataDS\VolumeUnits.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\EntryDataDS\WarehouseInfo.cs
+..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\EntryDataDS\xSalesDetails.cs
+..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\EntryDataDS\xSalesFiles.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\EntryDataQS\AsycudaDocumentEntryData.cs
+..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\EntryDataQS\AsycudaDocumentEntryDataLine.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\EntryDataQS\AsycudaDocumentItemEntryDataDetail.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\EntryDataQS\AsycudaDocumentSetEntryData.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\EntryDataQS\AsycudaDocumentSetEntryDataDetail.cs
@@ -2765,6 +2807,7 @@
 ..\WaterNut.Client.DTO\Generated Client Entities\CounterPointQS\CounterPointSales.cs
 ..\WaterNut.Client.DTO\Generated Client Entities\CounterPointQS\CounterPointSalesDetails.cs
 ..\WaterNut.Client.DTO\Generated Client Entities\EntryDataQS\AsycudaDocumentEntryData.cs
+..\WaterNut.Client.DTO\Generated Client Entities\EntryDataQS\AsycudaDocumentEntryDataLine.cs
 ..\WaterNut.Client.DTO\Generated Client Entities\EntryDataQS\AsycudaDocumentItemEntryDataDetail.cs
 ..\WaterNut.Client.DTO\Generated Client Entities\EntryDataQS\AsycudaDocumentSetEntryData.cs
 ..\WaterNut.Client.DTO\Generated Client Entities\EntryDataQS\AsycudaDocumentSetEntryDataDetail.cs
@@ -2934,6 +2977,7 @@
 ..\WaterNut.Client.Entities\Generated Client Entities\CounterPointQS\CounterPointSales.cs
 ..\WaterNut.Client.Entities\Generated Client Entities\CounterPointQS\CounterPointSalesDetails.cs
 ..\WaterNut.Client.Entities\Generated Client Entities\EntryDataQS\AsycudaDocumentEntryData.cs
+..\WaterNut.Client.Entities\Generated Client Entities\EntryDataQS\AsycudaDocumentEntryDataLine.cs
 ..\WaterNut.Client.Entities\Generated Client Entities\EntryDataQS\AsycudaDocumentItemEntryDataDetail.cs
 ..\WaterNut.Client.Entities\Generated Client Entities\EntryDataQS\AsycudaDocumentSetEntryData.cs
 ..\WaterNut.Client.Entities\Generated Client Entities\EntryDataQS\AsycudaDocumentSetEntryDataDetail.cs
@@ -3108,6 +3152,7 @@
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\CounterPointQS\CounterPointSales.cs
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\CounterPointQS\CounterPointSalesDetails.cs
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\EntryDataQS\AsycudaDocumentEntryData.cs
+..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\EntryDataQS\AsycudaDocumentEntryDataLine.cs
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\EntryDataQS\AsycudaDocumentItemEntryDataDetail.cs
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\EntryDataQS\AsycudaDocumentSetEntryData.cs
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\EntryDataQS\AsycudaDocumentSetEntryDataDetail.cs
@@ -3275,6 +3320,7 @@
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\CounterPointQS\CounterPointSales.cs
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\CounterPointQS\CounterPointSalesDetails.cs
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\EntryDataQS\AsycudaDocumentEntryData.cs
+..\WaterNut.Client.DTO\Generated MyNavProp Models\EntryDataQS\AsycudaDocumentEntryDataLine.cs
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\EntryDataQS\AsycudaDocumentItemEntryDataDetail.cs
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\EntryDataQS\AsycudaDocumentSetEntryData.cs
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\EntryDataQS\AsycudaDocumentSetEntryDataDetail.cs
@@ -3442,6 +3488,7 @@
 ..\WaterNut.Client.Entities\Generated Constructors Models\CounterPointQS\CounterPointSales.cs
 ..\WaterNut.Client.Entities\Generated Constructors Models\CounterPointQS\CounterPointSalesDetails.cs
 ..\WaterNut.Client.Entities\Generated Constructors Models\EntryDataQS\AsycudaDocumentEntryData.cs
+..\WaterNut.Client.Entities\Generated Constructors Models\EntryDataQS\AsycudaDocumentEntryDataLine.cs
 ..\WaterNut.Client.Entities\Generated Constructors Models\EntryDataQS\AsycudaDocumentItemEntryDataDetail.cs
 ..\WaterNut.Client.Entities\Generated Constructors Models\EntryDataQS\AsycudaDocumentSetEntryData.cs
 ..\WaterNut.Client.Entities\Generated Constructors Models\EntryDataQS\AsycudaDocumentSetEntryDataDetail.cs
@@ -3609,6 +3656,7 @@
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\CounterPointQS\CounterPointSales.cs
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\CounterPointQS\CounterPointSalesDetails.cs
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\EntryDataQS\AsycudaDocumentEntryData.cs
+..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\EntryDataQS\AsycudaDocumentEntryDataLine.cs
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\EntryDataQS\AsycudaDocumentItemEntryDataDetail.cs
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\EntryDataQS\AsycudaDocumentSetEntryData.cs
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\EntryDataQS\AsycudaDocumentSetEntryDataDetail.cs
@@ -3776,6 +3824,7 @@
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\CounterPointQS\CounterPointSales.cs
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\CounterPointQS\CounterPointSalesDetails.cs
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\EntryDataQS\AsycudaDocumentEntryData.cs
+..\WaterNut.Client.Entities\Generated MyNavProp Models\EntryDataQS\AsycudaDocumentEntryDataLine.cs
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\EntryDataQS\AsycudaDocumentItemEntryDataDetail.cs
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\EntryDataQS\AsycudaDocumentSetEntryData.cs
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\EntryDataQS\AsycudaDocumentSetEntryDataDetail.cs
@@ -4123,6 +4172,7 @@
 ..\WaterNut.Business.Entities\Generated Mappings\DocumentItemDS\xcuda_Weight_itm.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\Adjustments.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\AsycudaDocumentEntryData.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\AsycudaDocumentEntryDataLine.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\AsycudaDocumentSetEntryData.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\Attachments.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\EDDocumentTypes.map.cs
@@ -4159,6 +4209,8 @@
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentBL.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentBLDetails.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentBLFreight.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentErrors_RepeatInvoices.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentErrors_RepeatMarks.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentFreight.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentFreightBLs.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentFreightDetails.map.cs
@@ -4185,9 +4237,13 @@
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentRiderInvoice.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentRiderManifests.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\Suppliers.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\SupportingDetail.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\VolumeUnits.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\WarehouseInfo.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\xSalesDetails.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\xSalesFiles.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataQS\AsycudaDocumentEntryData.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataQS\AsycudaDocumentEntryDataLine.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataQS\AsycudaDocumentItemEntryDataDetail.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataQS\AsycudaDocumentSetEntryData.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataQS\AsycudaDocumentSetEntryDataDetail.map.cs
@@ -4436,6 +4492,7 @@
 ..\WaterNut.Client.Repositories\Generated Repositories\CounterPointQS\CounterPointSalesDetailsRepository.cs
 ..\WaterNut.Client.Repositories\Generated Repositories\CounterPointQS\CounterPointSalesRepository.cs
 ..\WaterNut.Client.Repositories\Generated Repositories\CounterPointQSRepository.cs
+..\WaterNut.Client.Repositories\Generated Repositories\EntryDataQS\AsycudaDocumentEntryDataLineRepository.cs
 ..\WaterNut.Client.Repositories\Generated Repositories\EntryDataQS\AsycudaDocumentEntryDataRepository.cs
 ..\WaterNut.Client.Repositories\Generated Repositories\EntryDataQS\AsycudaDocumentItemEntryDataDetailRepository.cs
 ..\WaterNut.Client.Repositories\Generated Repositories\EntryDataQS\AsycudaDocumentSetEntryDataDetailRepository.cs
@@ -4618,6 +4675,7 @@
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_UnallocatedSalesViewModel.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_UnallocatedShortsViewModel.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\xcuda_Supplementary_unitViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\EntryDataQS\AsycudaDocumentEntryDataLineViewModel.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\EntryDataQS\AsycudaDocumentEntryDataViewModel.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\EntryDataQS\AsycudaDocumentItemEntryDataDetailViewModel.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\EntryDataQS\AsycudaDocumentSetEntryDataDetailViewModel.cs
@@ -4787,6 +4845,7 @@
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_UnallocatedSalesTotals.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_UnallocatedShortsTotals.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\xcuda_Supplementary_unitTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\EntryDataQS\AsycudaDocumentEntryDataLineTotals.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\EntryDataQS\AsycudaDocumentEntryDataTotals.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\EntryDataQS\AsycudaDocumentItemEntryDataDetailTotals.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\EntryDataQS\AsycudaDocumentSetEntryDataDetailTotals.cs
@@ -4944,6 +5003,7 @@
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_UnallocatedSalesVirturalListLoader.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_UnallocatedShortsVirturalListLoader.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\xcuda_Supplementary_unitVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\EntryDataQS\AsycudaDocumentEntryDataLineVirturalListLoader.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\EntryDataQS\AsycudaDocumentEntryDataVirturalListLoader.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\EntryDataQS\AsycudaDocumentItemEntryDataDetailVirturalListLoader.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\EntryDataQS\AsycudaDocumentSetEntryDataDetailVirturalListLoader.cs
@@ -5251,6 +5311,7 @@
 ..\WaterNut.Business.Services\Contracts\DocumentItemDS\Ixcuda_Valuation_itemService.cs
 ..\WaterNut.Business.Services\Contracts\DocumentItemDS\Ixcuda_Weight_itmService.cs
 ..\WaterNut.Business.Services\Contracts\EntryDataDS\IAdjustmentsService.cs
+..\WaterNut.Business.Services\Contracts\EntryDataDS\IAsycudaDocumentEntryDataLineService.cs
 ..\WaterNut.Business.Services\Contracts\EntryDataDS\IAsycudaDocumentEntryDataService.cs
 ..\WaterNut.Business.Services\Contracts\EntryDataDS\IAsycudaDocumentSetEntryDataService.cs
 ..\WaterNut.Business.Services\Contracts\EntryDataDS\IAttachmentsService.cs
@@ -5287,6 +5348,8 @@
 ..\WaterNut.Business.Services\Contracts\EntryDataDS\IShipmentBLDetailsService.cs
 ..\WaterNut.Business.Services\Contracts\EntryDataDS\IShipmentBLFreightService.cs
 ..\WaterNut.Business.Services\Contracts\EntryDataDS\IShipmentBLService.cs
+..\WaterNut.Business.Services\Contracts\EntryDataDS\IShipmentErrors_RepeatInvoicesService.cs
+..\WaterNut.Business.Services\Contracts\EntryDataDS\IShipmentErrors_RepeatMarksService.cs
 ..\WaterNut.Business.Services\Contracts\EntryDataDS\IShipmentFreightBLsService.cs
 ..\WaterNut.Business.Services\Contracts\EntryDataDS\IShipmentFreightDetailsService.cs
 ..\WaterNut.Business.Services\Contracts\EntryDataDS\IShipmentFreightManifestsService.cs
@@ -5314,8 +5377,12 @@
 ..\WaterNut.Business.Services\Contracts\EntryDataDS\IShipmentRiderService.cs
 ..\WaterNut.Business.Services\Contracts\EntryDataDS\IShipmentService.cs
 ..\WaterNut.Business.Services\Contracts\EntryDataDS\ISuppliersService.cs
+..\WaterNut.Business.Services\Contracts\EntryDataDS\ISupportingDetailService.cs
 ..\WaterNut.Business.Services\Contracts\EntryDataDS\IVolumeUnitsService.cs
 ..\WaterNut.Business.Services\Contracts\EntryDataDS\IWarehouseInfoService.cs
+..\WaterNut.Business.Services\Contracts\EntryDataDS\IxSalesDetailsService.cs
+..\WaterNut.Business.Services\Contracts\EntryDataDS\IxSalesFilesService.cs
+..\WaterNut.Business.Services\Contracts\EntryDataQS\IAsycudaDocumentEntryDataLineService.cs
 ..\WaterNut.Business.Services\Contracts\EntryDataQS\IAsycudaDocumentEntryDataService.cs
 ..\WaterNut.Business.Services\Contracts\EntryDataQS\IAsycudaDocumentItemEntryDataDetailService.cs
 ..\WaterNut.Business.Services\Contracts\EntryDataQS\IAsycudaDocumentSetEntryDataDetailService.cs
@@ -5654,6 +5721,7 @@
 ..\WaterNut.Business.Services\Services\DocumentItemDS\xcuda_Valuation_itemService.cs
 ..\WaterNut.Business.Services\Services\DocumentItemDS\xcuda_Weight_itmService.cs
 ..\WaterNut.Business.Services\Services\EntryDataDS\AdjustmentsService.cs
+..\WaterNut.Business.Services\Services\EntryDataDS\AsycudaDocumentEntryDataLineService.cs
 ..\WaterNut.Business.Services\Services\EntryDataDS\AsycudaDocumentEntryDataService.cs
 ..\WaterNut.Business.Services\Services\EntryDataDS\AsycudaDocumentSetEntryDataService.cs
 ..\WaterNut.Business.Services\Services\EntryDataDS\AttachmentsService.cs
@@ -5690,6 +5758,8 @@
 ..\WaterNut.Business.Services\Services\EntryDataDS\ShipmentBLDetailsService.cs
 ..\WaterNut.Business.Services\Services\EntryDataDS\ShipmentBLFreightService.cs
 ..\WaterNut.Business.Services\Services\EntryDataDS\ShipmentBLService.cs
+..\WaterNut.Business.Services\Services\EntryDataDS\ShipmentErrors_RepeatInvoicesService.cs
+..\WaterNut.Business.Services\Services\EntryDataDS\ShipmentErrors_RepeatMarksService.cs
 ..\WaterNut.Business.Services\Services\EntryDataDS\ShipmentFreightBLsService.cs
 ..\WaterNut.Business.Services\Services\EntryDataDS\ShipmentFreightDetailsService.cs
 ..\WaterNut.Business.Services\Services\EntryDataDS\ShipmentFreightManifestsService.cs
@@ -5717,8 +5787,12 @@
 ..\WaterNut.Business.Services\Services\EntryDataDS\ShipmentRiderService.cs
 ..\WaterNut.Business.Services\Services\EntryDataDS\ShipmentService.cs
 ..\WaterNut.Business.Services\Services\EntryDataDS\SuppliersService.cs
+..\WaterNut.Business.Services\Services\EntryDataDS\SupportingDetailService.cs
 ..\WaterNut.Business.Services\Services\EntryDataDS\VolumeUnitsService.cs
 ..\WaterNut.Business.Services\Services\EntryDataDS\WarehouseInfoService.cs
+..\WaterNut.Business.Services\Services\EntryDataDS\xSalesDetailsService.cs
+..\WaterNut.Business.Services\Services\EntryDataDS\xSalesFilesService.cs
+..\WaterNut.Business.Services\Services\EntryDataQS\AsycudaDocumentEntryDataLineService.cs
 ..\WaterNut.Business.Services\Services\EntryDataQS\AsycudaDocumentEntryDataService.cs
 ..\WaterNut.Business.Services\Services\EntryDataQS\AsycudaDocumentItemEntryDataDetailService.cs
 ..\WaterNut.Business.Services\Services\EntryDataQS\AsycudaDocumentSetEntryDataDetailService.cs
@@ -5917,6 +5991,7 @@
 ..\WaterNut.Client.Contracts\CounterPointQS\ICounterPointPOsService.cs
 ..\WaterNut.Client.Contracts\CounterPointQS\ICounterPointSalesDetailsService.cs
 ..\WaterNut.Client.Contracts\CounterPointQS\ICounterPointSalesService.cs
+..\WaterNut.Client.Contracts\EntryDataQS\IAsycudaDocumentEntryDataLineService.cs
 ..\WaterNut.Client.Contracts\EntryDataQS\IAsycudaDocumentEntryDataService.cs
 ..\WaterNut.Client.Contracts\EntryDataQS\IAsycudaDocumentItemEntryDataDetailService.cs
 ..\WaterNut.Client.Contracts\EntryDataQS\IAsycudaDocumentSetEntryDataDetailService.cs
@@ -6085,6 +6160,7 @@
 ..\WaterNut.Client.Services\CounterPointQS\CounterPointSalesClient.cs
 ..\WaterNut.Client.Services\CounterPointQS\CounterPointSalesDetailsClient.cs
 ..\WaterNut.Client.Services\EntryDataQS\AsycudaDocumentEntryDataClient.cs
+..\WaterNut.Client.Services\EntryDataQS\AsycudaDocumentEntryDataLineClient.cs
 ..\WaterNut.Client.Services\EntryDataQS\AsycudaDocumentItemEntryDataDetailClient.cs
 ..\WaterNut.Client.Services\EntryDataQS\AsycudaDocumentSetEntryDataClient.cs
 ..\WaterNut.Client.Services\EntryDataQS\AsycudaDocumentSetEntryDataDetailClient.cs

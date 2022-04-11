@@ -483,7 +483,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             }
         }
 
-        public class TODO_C71ToXMLExcelLine
+        public partial class TODO_C71ToXMLExcelLine
         {
 		 
                     public string Code { get; set; } 

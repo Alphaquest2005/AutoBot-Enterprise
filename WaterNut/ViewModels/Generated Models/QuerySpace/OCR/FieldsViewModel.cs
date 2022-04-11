@@ -459,7 +459,7 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
             }
         }
 
-        public class FieldsExcelLine
+        public partial class FieldsExcelLine
         {
 		 
                     public string Key { get; set; } 

@@ -580,6 +580,19 @@ namespace CoreEntities.Client.DTO
 		}
         private Nullable<bool> _RequirePOs;
 
+        [DataMember]
+        public Nullable<bool> ExportNullTariffCodes
+		{ 
+		    get { return _ExportNullTariffCodes; }
+			set
+			{
+			    if (value == _ExportNullTariffCodes) return;
+				_ExportNullTariffCodes = value;
+				NotifyPropertyChanged();//m => this.ExportNullTariffCodes
+			}
+		}
+        private Nullable<bool> _ExportNullTariffCodes;
+
        
         [DataMember]
         public ChangeTrackingCollection<AsycudaDocumentSetEx> AsycudaDocumentSetEx

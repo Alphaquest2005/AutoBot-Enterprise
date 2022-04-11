@@ -367,7 +367,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             }
         }
 
-        public class xcuda_Supplementary_unitExcelLine
+        public partial class xcuda_Supplementary_unitExcelLine
         {
 		 
                     public Nullable<double> Suppplementary_unit_quantity { get; set; } 

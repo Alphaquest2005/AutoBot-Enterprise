@@ -227,6 +227,7 @@
     <Compile Include="Custom Contracts\SalesDataQS\ISalesDataDetailService.cs" />
     <Compile Include="Custom Contracts\SalesDataQS\ISalesDataService.cs" />
     <Compile Include="Custom Contracts\EntryDataQS\IEntryDataDetailsExService.cs" />
+    <Compile Include="EntryDataQS\IAsycudaDocumentEntryDataLineService.cs" />
     <Compile Include="EntryDataQS\IAsycudaDocumentEntryDataService.cs" />
     <Compile Include="EntryDataQS\IAsycudaDocumentItemEntryDataDetailService.cs" />
     <Compile Include="EntryDataQS\IAsycudaDocumentSetEntryDataDetailService.cs" />

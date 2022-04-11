@@ -306,7 +306,7 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
             }
         }
 
-        public class EndExcelLine
+        public partial class EndExcelLine
         {
 		        }
 

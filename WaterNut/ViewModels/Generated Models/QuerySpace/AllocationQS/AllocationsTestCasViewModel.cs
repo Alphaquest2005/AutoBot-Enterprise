@@ -299,7 +299,7 @@ namespace WaterNut.QuerySpace.AllocationQS.ViewModels
             }
         }
 
-        public class AllocationsTestCasExcelLine
+        public partial class AllocationsTestCasExcelLine
         {
 		 
                     public string ItemNumber { get; set; } 

@@ -268,7 +268,7 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
             }
         }
 
-        public class OCRFileTypesExcelLine
+        public partial class OCRFileTypesExcelLine
         {
 		        }
 

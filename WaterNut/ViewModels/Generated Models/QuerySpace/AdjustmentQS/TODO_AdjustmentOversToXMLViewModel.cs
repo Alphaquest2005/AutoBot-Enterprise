@@ -1136,7 +1136,7 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
             }
         }
 
-        public class TODO_AdjustmentOversToXMLExcelLine
+        public partial class TODO_AdjustmentOversToXMLExcelLine
         {
 		 
                     public string EntryDataId { get; set; } 

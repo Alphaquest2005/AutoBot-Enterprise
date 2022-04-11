@@ -176,7 +176,7 @@ public string DutyFreePaid
        
        
                 
-                
+                [MaxLength(255, ErrorMessage = "EmailId has a max length of 255 letters ")]
 public string EmailId
 		{ 
 		    get { return this.entrydataex.EmailId; }

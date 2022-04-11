@@ -482,7 +482,7 @@ namespace WaterNut.DataSpace
             // public InventoryItem InventoryItem { get; set; }
 
             public EX9AsycudaSalesAllocations EX9Allocation { get; set; }
-            public string EntryData { get; set; }
+            public string MonthYear { get; set; }
             public string ItemNumber { get; set; }
             public string ItemDescription { get; set; }
             public string TariffCode { get; set; }
@@ -494,6 +494,8 @@ namespace WaterNut.DataSpace
             public double InternalFreight { get; set; }
             public double Freight { get; set; }
             public List<ITariffSupUnitLkp> TariffSupUnitLkps { get; set; }
+            public DateTime EntryDataDate { get; set; }
+            public int InventoryItemId { get; set; }
         }
     }
 }

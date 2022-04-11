@@ -427,7 +427,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             }
         }
 
-        public class TODO_Error_IncompleteItemsExcelLine
+        public partial class TODO_Error_IncompleteItemsExcelLine
         {
 		 
                     public string Error { get; set; } 

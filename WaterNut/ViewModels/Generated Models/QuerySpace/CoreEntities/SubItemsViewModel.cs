@@ -366,7 +366,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             }
         }
 
-        public class SubItemsExcelLine
+        public partial class SubItemsExcelLine
         {
 		 
                     public string ItemNumber { get; set; } 

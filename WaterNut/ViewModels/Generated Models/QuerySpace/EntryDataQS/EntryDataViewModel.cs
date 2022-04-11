@@ -722,7 +722,7 @@ namespace WaterNut.QuerySpace.EntryDataQS.ViewModels
             }
         }
 
-        public class EntryDataExcelLine
+        public partial class EntryDataExcelLine
         {
 		 
                     public string EntryDataId { get; set; } 

@@ -280,7 +280,7 @@ namespace WaterNut.QuerySpace.EntryDataQS.ViewModels
             }
         }
 
-        public class EmptyFullCodeExcelLine
+        public partial class EmptyFullCodeExcelLine
         {
 		 
                     public string EmptyFullCodeName { get; set; } 

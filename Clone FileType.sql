@@ -1,17 +1,17 @@
 
---declare @oldCompany int = 6, @newCompany int = 7
+declare @oldCompany int = 2, @newCompany int = 7, @oldFileTypeId int = 1168
 
 
 
 --delete from FileTypes where ApplicationSettingsId = @newCompany 
 
---INSERT INTO FileTypes
---                 (ApplicationSettingsId, FilePattern, Type, AsycudaDocumentSetId, CreateDocumentSet, DocumentSpecific, DocumentCode, ReplyToMail, FileGroupId, MergeEmails, CopyEntryData, ParentFileTypeId, OverwriteFiles, 
---                 HasFiles, Oldfiletypeid)
---SELECT @newCompany as  ApplicationSettingsId, FilePattern, Type, AsycudaDocumentSetId, CreateDocumentSet, DocumentSpecific, DocumentCode, ReplyToMail, FileGroupId, MergeEmails, CopyEntryData, ParentFileTypeId, OverwriteFiles, 
---                 HasFiles, id as Oldfiletypeid
---FROM    FileTypes AS FileTypes_1 
---where ApplicationSettingsId = @oldCompany
+INSERT INTO FileTypes
+                 (ApplicationSettingsId, FilePattern, Type, AsycudaDocumentSetId, CreateDocumentSet, DocumentSpecific, DocumentCode, ReplyToMail, FileGroupId, MergeEmails, CopyEntryData, ParentFileTypeId, OverwriteFiles, 
+                 HasFiles, Oldfiletypeid)
+SELECT @newCompany as  ApplicationSettingsId, FilePattern, Type, AsycudaDocumentSetId, CreateDocumentSet, DocumentSpecific, DocumentCode, ReplyToMail, FileGroupId, MergeEmails, CopyEntryData, ParentFileTypeId, OverwriteFiles, 
+                 HasFiles, id as Oldfiletypeid
+FROM    [BudgetMarine-AutoBot].dbo.FileTypes AS FileTypes_1 
+where ApplicationSettingsId = @oldCompany and FileTypes_1.Id = @oldFileTypeId
 
 declare @newFileTypeId int = 189
 

@@ -644,7 +644,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             }
         }
 
-        public class TODO_SubmitPOInfoExcelLine
+        public partial class TODO_SubmitPOInfoExcelLine
         {
 		 
                     public string Number { get; set; } 

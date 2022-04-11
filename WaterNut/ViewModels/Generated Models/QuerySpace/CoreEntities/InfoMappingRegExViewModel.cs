@@ -443,7 +443,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             }
         }
 
-        public class InfoMappingRegExExcelLine
+        public partial class InfoMappingRegExExcelLine
         {
 		 
                     public string KeyRegX { get; set; } 

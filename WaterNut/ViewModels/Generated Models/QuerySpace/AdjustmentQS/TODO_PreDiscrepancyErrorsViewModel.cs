@@ -1215,7 +1215,7 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
             }
         }
 
-        public class TODO_PreDiscrepancyErrorsExcelLine
+        public partial class TODO_PreDiscrepancyErrorsExcelLine
         {
 		 
                     public string EntryDataId { get; set; } 

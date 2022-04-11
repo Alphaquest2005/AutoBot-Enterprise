@@ -1775,7 +1775,7 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
             }
         }
 
-        public class ShortAllocationExcelLine
+        public partial class ShortAllocationExcelLine
         {
 		 
                     public double TotalValue { get; set; } 

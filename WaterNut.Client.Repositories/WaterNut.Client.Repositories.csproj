@@ -258,6 +258,7 @@
     <Compile Include="Generated Repositories\DocumentQSRepository.cs" />
     <Compile Include="Custom Repository\SalesDataQS\SalesDataDetailRepository.cs" />
     <Compile Include="Generated Repositories\EntryDataQSRepository.cs" />
+    <Compile Include="Generated Repositories\EntryDataQS\AsycudaDocumentEntryDataLineRepository.cs" />
     <Compile Include="Generated Repositories\EntryDataQS\AsycudaDocumentEntryDataRepository.cs" />
     <Compile Include="Generated Repositories\EntryDataQS\AsycudaDocumentItemEntryDataDetailRepository.cs" />
     <Compile Include="Generated Repositories\EntryDataQS\AsycudaDocumentSetEntryDataDetailRepository.cs" />

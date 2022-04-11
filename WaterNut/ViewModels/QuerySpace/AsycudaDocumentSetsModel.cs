@@ -233,8 +233,15 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                             //await Task.WhenAll(t1, t2).ConfigureAwait(false);
 
 
-                            await SalesReportModel.Instance.ExportDocSetSalesReport(docSet.AsycudaDocumentSetId, dir)
-                                .ConfigureAwait(false);
+                            //await SalesReportModel.Instance.ExportDocSetSalesReport(docSet.AsycudaDocumentSetId, dir)
+                            //    .ConfigureAwait(false);
+
+                            var docs = await AsycudaDocumentRepository.Instance.GetAsycudaDocumentByAsycudaDocumentSetId(docSet.AsycudaDocumentSetId.ToString()).ConfigureAwait(false);
+                            foreach (var doc in docs)
+                            {
+                                await SalesReportModel.Instance.Send2Excel(dir + "\\", doc).ConfigureAwait(false);
+                            }
+
                             await AsycudaDocumentSetExRepository.Instance.ExportDocSet(docSet.AsycudaDocumentSetId, dir)
                                 .ConfigureAwait(false);
 

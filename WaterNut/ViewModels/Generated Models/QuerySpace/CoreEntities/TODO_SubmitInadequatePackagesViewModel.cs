@@ -349,7 +349,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             }
         }
 
-        public class TODO_SubmitInadequatePackagesExcelLine
+        public partial class TODO_SubmitInadequatePackagesExcelLine
         {
 		 
                     public string Declarant_Reference_Number { get; set; } 

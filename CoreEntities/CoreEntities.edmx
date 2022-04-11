@@ -69,6 +69,7 @@
           <Property Name="TestMode" Type="bit" />
           <Property Name="BondTypeId" Type="int" Nullable="false" />
           <Property Name="RequirePOs" Type="bit" />
+          <Property Name="ExportNullTariffCodes" Type="bit" />
         </EntityType>
         <EntityType Name="ApplicationSettings-Declarants">
           <Key>
@@ -158,6 +159,7 @@
           <Property Name="CustomsOperationId" Type="int" Nullable="false" />
           <Property Name="SubmitToCustoms" Type="bit" />
           <Property Name="IsDefault" Type="bit" />
+          <Property Name="ExportSupportingEntryData" Type="bit" />
         </EntityType>
         <EntityType Name="CustomsOperations">
           <Key>
@@ -4050,7 +4052,8 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
           <Property Name="TestMode" Type="Boolean" />
           <Property Name="BondTypeId" Type="Int32" Nullable="false" />
           <Property Name="RequirePOs" Type="Boolean" />
-          <NavigationProperty Name="Declarants" Relationship="WaterNutDBModel.FK_ApplicationSettings_Declarants_ApplicationSettings" FromRole="ApplicationSettings" ToRole="ApplicationSettings_Declarants" /><a:MainEntityProperty xmlns:a="http://schemas.tempuri.com/MainEntityProperty">True</a:MainEntityProperty>
+          <NavigationProperty Name="Declarants" Relationship="WaterNutDBModel.FK_ApplicationSettings_Declarants_ApplicationSettings" FromRole="ApplicationSettings" ToRole="ApplicationSettings_Declarants" />
+          <Property Name="ExportNullTariffCodes" Type="Boolean" /><a:MainEntityProperty xmlns:a="http://schemas.tempuri.com/MainEntityProperty">True</a:MainEntityProperty>
         </EntityType>
         <EntityType Name="AsycudaDocument">
           <Key>
@@ -4197,6 +4200,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
           <NavigationProperty Name="AsycudaDocument" Relationship="WaterNutDBModel.Customs_ProcedureAsycudaDocument" FromRole="Customs_Procedure" ToRole="AsycudaDocument" />
           <Property Name="SubmitToCustoms" Type="Boolean" />
           <Property Name="IsDefault" Type="Boolean" />
+          <Property Name="ExportSupportingEntryData" Type="Boolean" />
         </EntityType>
         <EntityType Name="Document_Type">
           <Key>
@@ -6481,6 +6485,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
           <EntitySetMapping Name="ApplicationSettings">
             <EntityTypeMapping TypeName="WaterNutDBModel.ApplicationSettings">
               <MappingFragment StoreEntitySet="ApplicationSettings">
+                <ScalarProperty Name="ExportNullTariffCodes" ColumnName="ExportNullTariffCodes" />
                 <ScalarProperty Name="RequirePOs" ColumnName="RequirePOs" />
                 <ScalarProperty Name="BondTypeId" ColumnName="BondTypeId" />
                 <ScalarProperty Name="TestMode" ColumnName="TestMode" />
@@ -6631,6 +6636,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
           <EntitySetMapping Name="Customs_Procedure">
             <EntityTypeMapping TypeName="WaterNutDBModel.Customs_Procedure">
               <MappingFragment StoreEntitySet="Customs_Procedure">
+                <ScalarProperty Name="ExportSupportingEntryData" ColumnName="ExportSupportingEntryData" />
                 <ScalarProperty Name="IsDefault" ColumnName="IsDefault" />
                 <ScalarProperty Name="SubmitToCustoms" ColumnName="SubmitToCustoms" />
                 <ScalarProperty Name="CustomsOperationId" ColumnName="CustomsOperationId" />

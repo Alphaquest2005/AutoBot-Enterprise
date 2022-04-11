@@ -469,18 +469,59 @@ namespace xlsxWriter
         }
 
         public static string CreateUnattachedShipmentWorkBook(
-            Tuple<string, int, string> client, UnAttachedWorkBookPkg summaryPkg)
+            (string Code, int RiderId, string BLNumber) client, UnAttachedWorkBookPkg summaryPkg)
         {
-            var summaryWorkBook = Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder, "Imports",
-                $"Summary-{client.Item3}-{client.Item2}.xlsx");
-            if (File.Exists(summaryWorkBook)) File.Delete(summaryWorkBook);
-            var workbook = new Workbook(summaryWorkBook, "Summary");
-            CreateSummarySheet(summaryPkg, workbook);
-            CreateRiderInvoiceSheet(summaryPkg, workbook);
-            CreateUnMatchedWorkSheet(workbook, summaryPkg.UnMatchedPOs, summaryPkg.UnMatchedInvoices);
-            CreateClassificationsSheet(workbook, summaryPkg.Classifications);
-            workbook.Save();
-            return summaryWorkBook;
+            try
+            {
+
+
+                var summaryWorkBook = Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder,
+                    "Imports",
+                    $"Summary-{client.Item3}-{client.Item2}.xlsx");
+                if (File.Exists(summaryWorkBook)) File.Delete(summaryWorkBook);
+                var workbook = new Workbook(summaryWorkBook, "Summary");
+                CreateSummarySheet(summaryPkg, workbook);
+                CreateRiderInvoiceSheet(summaryPkg, workbook);
+                CreateUnMatchedWorkSheet(workbook, summaryPkg.UnMatchedPOs, summaryPkg.UnMatchedInvoices);
+                CreateClassificationsSheet(workbook, summaryPkg.Classifications);
+                CreateErrorDetails(workbook, summaryPkg);
+
+                workbook.Save();
+                return summaryWorkBook;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+        }
+
+        private static void CreateErrorDetails(Workbook workbook, UnAttachedWorkBookPkg summaryPkg)
+        {
+            try
+            {
+
+
+                workbook.AddWorksheet("Error Details");
+                var currentline = 0;
+
+                WriteTable( summaryPkg.RepeatInvoices.Select(x => (dynamic)x).ToList(), workbook, currentline,
+                    "WarehouseCode, InvoiceNumber, Packages",
+                    "Repeat Invoices:");
+
+                currentline += 2 + summaryPkg.RepeatInvoices.Count; ;
+
+                WriteTable(summaryPkg.RepeatMarks.Select(x => (dynamic)x).ToList(), workbook, currentline,
+                    "BLNumber, ETA, Marks, WarehouseCode, Quantity",
+                    "Repeat Marks:");
+
+                //currentline += 2 + summaryPkg.RepeatMarks.Count;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
         }
 
         private static void CreateClassificationsSheet(Workbook workbook,
@@ -509,6 +550,10 @@ namespace xlsxWriter
                 "BLPackages, RiderPackages, InvoicePackages, Diff", "Packages Summary");
 
             currentline += 3;
+            WriteTable(summaryPkg.UnMatchedBLDetails.Select(x => (dynamic)x).ToList(), workbook, currentline,
+                "Marks, PackageType, Quantity", "Unmatched BL Details");
+
+            currentline += 2 + summaryPkg.UnMatchedBLDetails.Count; 
             WriteTable(summaryPkg.RiderManualMatches.Select(x => (dynamic) x).ToList(), workbook, currentline,
                 RideManualMatchesHeader, "Manual Matches");
 
@@ -659,6 +704,9 @@ namespace xlsxWriter
                 Style errStyle = new Style();                                                                           // Create new style
                 errStyle.CurrentFill.SetColor("FFC0CB", Style.Fill.FillType.fillColor);
 
+
+                Style repeatStyle = new Style();                                                                           // Create new style
+                errStyle.CurrentFill.SetColor("ff0000", Style.Fill.FillType.fillColor);
 
                 var i = 0;
                 while (true)
@@ -1051,6 +1099,7 @@ namespace xlsxWriter
 
     public class UnAttachedWorkBookPkg
     {
+        public List<ShipmentBLDetails> UnMatchedBLDetails { get; set; }
         public List<ShipmentMIS_Invoices> UnMatchedInvoices { get; set; }
         public List<ShipmentMIS_POs> UnMatchedPOs { get; set; }
         public string Reference { get; set; }
@@ -1062,6 +1111,8 @@ namespace xlsxWriter
         public ShipmentRiderEx RiderSummary { get; set; }
         public List<ShipmentInvoicePOItemData> Classifications { get; set; }
         public PackagesSummary PackagesSummary { get; set; }
+        public List<ShipmentErrors_RepeatMarks> RepeatMarks { get; set; }
+        public List<ShipmentErrors_RepeatInvoices> RepeatInvoices { get; set; }
     }
 
     public class PackagesSummary

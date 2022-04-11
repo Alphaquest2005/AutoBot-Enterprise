@@ -15,8 +15,10 @@ using Core.Common.Converters;
 using Core.Common.UI;
 using CoreEntities.Client.Entities;
 using CoreEntities.Client.Repositories;
+using EntryDataQS.Client.Repositories;
 using SalesDataQS.Client.Repositories;
 using SimpleMvvmToolkit;
+using WaterNut.QuerySpace.CoreEntities.ViewModels;
 
 
 namespace WaterNut.QuerySpace.AllocationQS.ViewModels
@@ -218,6 +220,8 @@ namespace WaterNut.QuerySpace.AllocationQS.ViewModels
         }
 
 
+
+
         internal async Task Send2Excel(string path, DataGrid GridData)
         {
             using (var sta = new StaTaskScheduler(numberOfThreads: 1))
@@ -302,54 +306,162 @@ namespace WaterNut.QuerySpace.AllocationQS.ViewModels
 
         public async Task Send2Excel(string folder, AsycudaDocument doc)
         {
-            if (doc != null)
+            if (doc == null) return;
+
+
+            var cp = CoreEntities.ViewModels.BaseViewModel.Instance.CustomsProcedures.First(x =>
+                x.Customs_ProcedureId == doc.Customs_ProcedureId.GetValueOrDefault());
+
+            if (cp.ExportSupportingEntryData??false)
             {
-                using (var ctx = new AsycudaDocumentRepository ())
+                if (cp.CustomsOperations.Name == "Exwarehouse")
                 {
-                    var doctype = await ctx.GetAsycudaDocument(doc.ASYCUDA_Id.ToString()).ConfigureAwait(false);
-                    if (doctype.DocumentType == "IM7" || doctype.DocumentType == "OS7") return;
-
+                    await ExportSalesFile( folder, doc).ConfigureAwait(false);
                 }
-
+                else
+                {
+                    await ExportEntryData(folder, doc).ConfigureAwait(false);
+                }
             }
+            
+            
+        }
 
+        private static async Task ExportEntryData(string folder, AsycudaDocument doc)
+        {
             using (var sta = new StaTaskScheduler(numberOfThreads: 1))
             {
-
                 await Task.Factory.StartNew(() =>
                     {
-                        var s = new ExportToCSV<SaleReportLine, List<SaleReportLine>>();
+                        var s = new ExportToCSV<EntryDataLine, List<EntryDataLine>>();
                         s.StartUp();
-                       
-                            try
+
+                        try
+                        {
+                            folder = Path.GetDirectoryName(folder);
+                            var data = GetDocumentEntryData(doc.ASYCUDA_Id).Result.OrderBy(x => x.LineNumber);
+                            if (data != null)
                             {
-                                folder = Path.GetDirectoryName(folder);
-                                var data = GetDocumentSalesReport(doc.ASYCUDA_Id).Result;
-                                if (data != null)
-                                {
-                                    
-                                    string path = Path.Combine(folder,
-                                        !string.IsNullOrEmpty(doc.CNumber) ? doc.CNumber : doc.ReferenceNumber + ".csv");
-                                    
-                                    s.dataToPrint = data.ToList();
-                                    s.SaveReport(path);
-                                }
-                                else
-                                {
-                                s.dataToPrint = new List<SaleReportLine>();
+                                string path = Path.Combine(folder,
+                                    !string.IsNullOrEmpty(doc.CNumber) ? doc.CNumber : doc.ReferenceNumber + ".csv");
+
+                                s.dataToPrint = data.ToList();
+                                s.SaveReport(path);
+                            }
+                            else
+                            {
+                                s.dataToPrint = new List<EntryDataLine>();
                                 File.Create(Path.Combine(folder, doc.CNumber ?? doc.ReferenceNumber + ".csv"));
-                                }
-                                StatusModel.StatusUpdate();
                             }
-                            catch (Exception ex)
-                            {
+
+                            StatusModel.StatusUpdate();
+                        }
+                        catch (Exception ex)
+                        {
                             throw ex;
-                            }
-                        
+                        }
+
                         s.ShutDown();
                     },
                     CancellationToken.None, TaskCreationOptions.None, sta).ConfigureAwait(false);
             }
         }
+
+        private static async Task<ObservableCollection<EntryDataLine>> GetDocumentEntryData(int ASYCUDA_Id)
+        {
+            try
+            {
+                using (var ctx = new AsycudaDocumentEntryDataLineRepository())
+                {
+                    var alst =
+                        (await ctx.GetAsycudaDocumentEntryDataLinesByExpression(
+                                $"AsycudaDocumentId == {ASYCUDA_Id} ")
+                            .ConfigureAwait(false)).ToList();
+
+                    var d =
+                        alst
+                            .Select(s => new EntryDataLine()
+                            {
+                                LineNumber = s.LineNumber.GetValueOrDefault(),
+                                Date = Convert.ToDateTime(s.EntryDataDate),
+                                InvoiceNo = s.EntryDataId,
+                                
+                                ItemNumber = s.ItemNumber,
+                                ItemDescription = s.ItemDescription,
+                                Quantity = s.Quantity,
+                                Cost = s.Cost,
+                                PreviousInvoiceNumber = s.PreviousInvoiceNumber,
+                                EntryDataDetailsKey = s.EntryDataDetailsKey,
+                                Comment = s.Comment
+                            }).Distinct();
+
+
+
+                    return new ObservableCollection<EntryDataLine>(d);
+
+
+                }
+            }
+            catch (Exception Ex)
+            {
+            }
+
+            return null;
+
+        }
+
+        private static async Task ExportSalesFile(string folder, AsycudaDocument doc)
+        {
+            using (var sta = new StaTaskScheduler(numberOfThreads: 1))
+            {
+                await Task.Factory.StartNew(() =>
+                    {
+                        var s = new ExportToCSV<SaleReportLine, List<SaleReportLine>>();
+                        s.StartUp();
+
+                        try
+                        {
+                            folder = Path.GetDirectoryName(folder);
+                            var data = GetDocumentSalesReport(doc.ASYCUDA_Id).Result;
+                            if (data != null)
+                            {
+                                string path = Path.Combine(folder,
+                                    !string.IsNullOrEmpty(doc.CNumber) ? doc.CNumber : doc.ReferenceNumber + ".csv");
+
+                                s.dataToPrint = data.ToList();
+                                s.SaveReport(path);
+                            }
+                            else
+                            {
+                                s.dataToPrint = new List<SaleReportLine>();
+                                File.Create(Path.Combine(folder, doc.CNumber ?? doc.ReferenceNumber + ".csv"));
+                            }
+
+                            StatusModel.StatusUpdate();
+                        }
+                        catch (Exception ex)
+                        {
+                            throw ex;
+                        }
+
+                        s.ShutDown();
+                    },
+                    CancellationToken.None, TaskCreationOptions.None, sta).ConfigureAwait(false);
+            }
+        }
+    }
+    public class EntryDataLine
+    {
+        public int LineNumber { get; set; }
+        public DateTime Date { get; set; }
+        public string InvoiceNo { get; set; }
+        public string ItemNumber { get; set; }
+        public string ItemDescription { get; set; }
+        public double Quantity { get; set; }
+        public double Cost { get; set; }
+        public string EntryDataType { get; set; }
+        public string PreviousInvoiceNumber { get; set; }
+        public string Comment { get; set; }
+        public string EntryDataDetailsKey { get; set; }
     }
 }

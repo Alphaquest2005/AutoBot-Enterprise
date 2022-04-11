@@ -280,7 +280,7 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
             }
         }
 
-        public class RegularExpressionsExcelLine
+        public partial class RegularExpressionsExcelLine
         {
 		 
                     public string RegEx { get; set; } 

@@ -686,7 +686,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             }
         }
 
-        public class TODO_C71ToCreateExcelLine
+        public partial class TODO_C71ToCreateExcelLine
         {
 		 
                     public string Country_of_origin_code { get; set; } 

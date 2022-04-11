@@ -457,7 +457,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             }
         }
 
-        public class TODO_SubmitDocSetWithIncompleteInvoicesExcelLine
+        public partial class TODO_SubmitDocSetWithIncompleteInvoicesExcelLine
         {
 		 
                     public string Declarant_Reference_Number { get; set; } 

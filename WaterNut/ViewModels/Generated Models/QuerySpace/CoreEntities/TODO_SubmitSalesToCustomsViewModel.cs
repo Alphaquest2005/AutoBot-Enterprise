@@ -610,7 +610,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             }
         }
 
-        public class TODO_SubmitSalesToCustomsExcelLine
+        public partial class TODO_SubmitSalesToCustomsExcelLine
         {
 		 
                     public string CNumber { get; set; } 

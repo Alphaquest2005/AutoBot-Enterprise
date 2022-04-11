@@ -328,7 +328,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             }
         }
 
-        public class TODO_SubmitMissingInvoicePDFsExcelLine
+        public partial class TODO_SubmitMissingInvoicePDFsExcelLine
         {
 		 
                     public string InvoiceNo { get; set; } 

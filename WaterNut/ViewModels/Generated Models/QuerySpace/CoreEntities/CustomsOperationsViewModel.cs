@@ -253,7 +253,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             }
         }
 
-        public class CustomsOperationsExcelLine
+        public partial class CustomsOperationsExcelLine
         {
 		 
                     public string Name { get; set; } 

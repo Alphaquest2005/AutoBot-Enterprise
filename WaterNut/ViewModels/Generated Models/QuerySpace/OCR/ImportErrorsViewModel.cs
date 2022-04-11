@@ -362,7 +362,7 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
             }
         }
 
-        public class ImportErrorsExcelLine
+        public partial class ImportErrorsExcelLine
         {
 		 
                     public string PdfText { get; set; } 

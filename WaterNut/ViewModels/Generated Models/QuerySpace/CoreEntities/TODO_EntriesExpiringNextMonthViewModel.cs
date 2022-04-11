@@ -492,7 +492,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             }
         }
 
-        public class TODO_EntriesExpiringNextMonthExcelLine
+        public partial class TODO_EntriesExpiringNextMonthExcelLine
         {
 		 
                     public Nullable<System.DateTime> ExpiryDate { get; set; } 

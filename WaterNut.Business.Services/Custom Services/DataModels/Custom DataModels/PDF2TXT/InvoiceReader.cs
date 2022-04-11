@@ -205,7 +205,7 @@ namespace WaterNut.DataSpace
             var ripTask = Task.Run(() =>
             {
                 var txt = "------------------------------------------Ripped Text-------------------------\r\n";
-                txt += pdfPigText(file); //TODO: need to implement the layout logic
+                txt += PdfPigText(file); //TODO: need to implement the layout logic
                 return txt;
             });
 
@@ -261,10 +261,10 @@ namespace WaterNut.DataSpace
             return pdftxt;
         }
 
-        private static string pdfPigText(string file)
+        private static string PdfPigText(string file)
         {
          
-                var pdfText = "";
+                
                 var sb = new StringBuilder();
                 using (var pdf = PdfDocument.Open(file))
                 {
@@ -284,8 +284,7 @@ namespace WaterNut.DataSpace
 
                 }
 
-                pdfText = sb.ToString();
-                return pdfText;
+                return sb.ToString();
            
 
 
@@ -303,7 +302,7 @@ namespace WaterNut.DataSpace
             var txtFile = file + ".txt";
             //if (File.Exists(txtFile)) return;
             File.WriteAllText(txtFile, pdftxt);
-            var body = CreateEmail(file, emailId, client, error, failedlst, fileInfo, txtFile);
+            var body = CreateEmail(file, client, error, failedlst, fileInfo, txtFile);
             CreateTestCase(file, failedlst, txtFile, body);
 
 
@@ -422,7 +421,7 @@ namespace WaterNut.DataSpace
                 BaseDataModel.Instance.CurrentApplicationSettings.DataFolder, testCaseData);
         }
 
-        private static string CreateEmail(string file, string emailId, Client client, string error, List<Line> failedlst,
+        private static string CreateEmail(string file, Client client, string error, List<Line> failedlst,
             FileInfo fileInfo, string txtFile)
         {
             var body = $"Hey,\r\n\r\n {error}-'{fileInfo.Name}'.\r\n\r\n\r\n" +
@@ -551,7 +550,7 @@ namespace WaterNut.DataSpace
         }
 
         public double MaxLinesCheckedToStart { get; set; } = 0.5;
-        private static Dictionary<string, List<BetterExpando>> table = new Dictionary<string, List<BetterExpando>>();
+        private static readonly Dictionary<string, List<BetterExpando>> table = new Dictionary<string, List<BetterExpando>>();
 
         private List<IDictionary<string, object>> SetPartLineValues(Part part)
         {
@@ -854,8 +853,8 @@ namespace WaterNut.DataSpace
         private readonly List<InvoiceLine> _bodylines = new List<InvoiceLine>();
         private readonly List<InvoiceLine> _lines = new List<InvoiceLine>();
 
-        private StringBuilder _linesTxt = new StringBuilder();
-        private StringBuilder _bodyTxt = new StringBuilder();
+        private readonly StringBuilder _linesTxt = new StringBuilder();
+        private readonly StringBuilder _bodyTxt = new StringBuilder();
 
         public Parts OCR_Part;
 
@@ -903,7 +902,7 @@ namespace WaterNut.DataSpace
 
         private static int lastLineRead = 0;
 
-        private static Dictionary<string, string> Sections = new Dictionary<string, string>()
+        private static readonly Dictionary<string, string> Sections = new Dictionary<string, string>()
         {
             { "Single", "---Single Column---" },
             { "Sparse", "---SparseText---" },
@@ -1089,13 +1088,13 @@ namespace WaterNut.DataSpace
             OCR_Lines = lines;
         }
 
-        private int Instance { get; set; } = 0;
+        //private int Instance { get; set; } = 0;
 
         public bool Read(string line, int lineNumber, string section)
         {
             try
             {
-                Instance += 1;
+                //Instance += 1;
                 var matches = Regex.Matches(line, OCR_Lines.RegularExpressions.RegEx,
                     (OCR_Lines.RegularExpressions.MultiLine == true
                         ? RegexOptions.Multiline

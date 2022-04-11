@@ -1723,7 +1723,7 @@ namespace WaterNut.QuerySpace.AllocationQS.ViewModels
             }
         }
 
-        public class AsycudaSalesAllocationsExExcelLine
+        public partial class AsycudaSalesAllocationsExExcelLine
         {
 		 
                     public double TotalValue { get; set; } 

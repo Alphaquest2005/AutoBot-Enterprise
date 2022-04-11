@@ -1202,7 +1202,7 @@ namespace WaterNut.QuerySpace.PreviousDocumentQS.ViewModels
             }
         }
 
-        public class PreviousItemsExExcelLine
+        public partial class PreviousItemsExExcelLine
         {
 		 
                     public string Packages_number { get; set; } 

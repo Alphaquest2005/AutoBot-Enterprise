@@ -328,7 +328,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             }
         }
 
-        public class AttachmentsExcelLine
+        public partial class AttachmentsExcelLine
         {
 		 
                     public string FilePath { get; set; } 

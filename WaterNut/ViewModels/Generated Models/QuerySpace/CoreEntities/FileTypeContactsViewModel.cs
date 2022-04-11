@@ -308,7 +308,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             }
         }
 
-        public class FileTypeContactsExcelLine
+        public partial class FileTypeContactsExcelLine
         {
 		        }
 

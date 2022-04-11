@@ -222,6 +222,7 @@
     <Compile Include="Generated Client Entities\CounterPointQS\CounterPointSales.cs" />
     <Compile Include="Generated Client Entities\CounterPointQS\CounterPointSalesDetails.cs" />
     <Compile Include="Generated Client Entities\EntryDataQS\AsycudaDocumentEntryData.cs" />
+    <Compile Include="Generated Client Entities\EntryDataQS\AsycudaDocumentEntryDataLine.cs" />
     <Compile Include="Generated Client Entities\EntryDataQS\AsycudaDocumentItemEntryDataDetail.cs" />
     <Compile Include="Generated Client Entities\EntryDataQS\AsycudaDocumentSetEntryData.cs" />
     <Compile Include="Generated Client Entities\EntryDataQS\AsycudaDocumentSetEntryDataDetail.cs" />
@@ -389,6 +390,7 @@
     <Compile Include="Generated IIdentitfiableEntity Models\CounterPointQS\CounterPointSales.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CounterPointQS\CounterPointSalesDetails.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\EntryDataQS\AsycudaDocumentEntryData.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\EntryDataQS\AsycudaDocumentEntryDataLine.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\EntryDataQS\AsycudaDocumentItemEntryDataDetail.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\EntryDataQS\AsycudaDocumentSetEntryData.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\EntryDataQS\AsycudaDocumentSetEntryDataDetail.cs" />
@@ -556,6 +558,7 @@
     <Compile Include="Generated MyNavProp Models\CounterPointQS\CounterPointSales.cs" />
     <Compile Include="Generated MyNavProp Models\CounterPointQS\CounterPointSalesDetails.cs" />
     <Compile Include="Generated MyNavProp Models\EntryDataQS\AsycudaDocumentEntryData.cs" />
+    <Compile Include="Generated MyNavProp Models\EntryDataQS\AsycudaDocumentEntryDataLine.cs" />
     <Compile Include="Generated MyNavProp Models\EntryDataQS\AsycudaDocumentItemEntryDataDetail.cs" />
     <Compile Include="Generated MyNavProp Models\EntryDataQS\AsycudaDocumentSetEntryData.cs" />
     <Compile Include="Generated MyNavProp Models\EntryDataQS\AsycudaDocumentSetEntryDataDetail.cs" />

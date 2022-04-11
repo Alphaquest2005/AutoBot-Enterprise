@@ -474,7 +474,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             }
         }
 
-        public class AsycudaItemBasicInfoExcelLine
+        public partial class AsycudaItemBasicInfoExcelLine
         {
 		 
                     public string ItemNumber { get; set; } 

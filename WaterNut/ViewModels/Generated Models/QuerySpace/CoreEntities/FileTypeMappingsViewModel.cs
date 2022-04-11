@@ -393,7 +393,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             }
         }
 
-        public class FileTypeMappingsExcelLine
+        public partial class FileTypeMappingsExcelLine
         {
 		 
                     public string OriginalName { get; set; } 

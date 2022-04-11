@@ -653,7 +653,7 @@ namespace <#=projectName #>.QuerySpace.<#=conTextName #>.ViewModels
             }
         }
 
-        public class <#=mainEntity.Name#>ExcelLine
+        public partial class <#=mainEntity.Name#>ExcelLine
         {
 		<#+
 		foreach( var p in mainEntity.Properties.Where(x => (x.Name.EndsWith("Id")== false) || (x.Name.EndsWith("Id")== true && ef.UnderlyingClrType(x.TypeUsage.EdmType) == typeof(string))))

@@ -353,7 +353,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             }
         }
 
-        public class TODO_SubmitIncompleteSupplierInfoExcelLine
+        public partial class TODO_SubmitIncompleteSupplierInfoExcelLine
         {
 		 
                     public string SupplierCode { get; set; } 

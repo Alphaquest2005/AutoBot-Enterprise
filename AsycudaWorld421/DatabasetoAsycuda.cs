@@ -3,6 +3,7 @@ using System.Collections.ObjectModel;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Net.Mime;
 using System.Text.RegularExpressions;
 using Core.Common.Utils;
 using WaterNut.DataLayer;
@@ -648,11 +649,11 @@ namespace Asycuda421
                     {
                         var fileinfo = new FileInfo(filePath);
                         if (fileinfo.Extension != ".pdf" && File.Exists(filePath)) fileinfo = Change2Pdf(fileinfo);
-                        var desFile = DocSetPath != _destinatonFile.DirectoryName && DocSetPath != null
+                        var desFile = DocSetPath != null &&  DocSetPath != _destinatonFile.DirectoryName && fileinfo.DirectoryName + "\\" != AppDomain.CurrentDomain.BaseDirectory
                             ? fileinfo.FullName.Replace($"{DocSetPath}", _destinatonFile.DirectoryName)
                             : Path.Combine(_destinatonFile.DirectoryName, fileinfo.Name);
                         // var desFile = Path.Combine(desPath, fileinfo.Name);
-                        if (!File.Exists(desFile)) desFile = fileinfo.FullName; //create sales files first before entries// took out because of sales file not created yet
+                        if (!File.Exists(desFile) && fileinfo.DirectoryName + "\\" != AppDomain.CurrentDomain.BaseDirectory) desFile = fileinfo.FullName; //create sales files first before entries// took out because of sales file not created yet
                         File.AppendAllText(Path.Combine(_destinatonFile.DirectoryName, "Instructions.txt"),
                             $"{doc.Attached_documents_Id}\tAttachment\t{desFile}\r\n");
                     }

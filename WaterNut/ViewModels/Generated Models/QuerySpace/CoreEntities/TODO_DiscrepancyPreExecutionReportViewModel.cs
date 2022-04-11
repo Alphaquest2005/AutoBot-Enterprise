@@ -1116,7 +1116,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             }
         }
 
-        public class TODO_DiscrepancyPreExecutionReportExcelLine
+        public partial class TODO_DiscrepancyPreExecutionReportExcelLine
         {
 		 
                     public string EntryDataId { get; set; } 

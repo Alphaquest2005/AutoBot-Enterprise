@@ -1460,7 +1460,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             }
         }
 
-        public class AsycudaDocumentExcelLine
+        public partial class AsycudaDocumentExcelLine
         {
 		 
                     public string id { get; set; } 

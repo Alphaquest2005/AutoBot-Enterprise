@@ -318,7 +318,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             }
         }
 
-        public class ImportActionsExcelLine
+        public partial class ImportActionsExcelLine
         {
 		 
                     public string Name { get; set; } 

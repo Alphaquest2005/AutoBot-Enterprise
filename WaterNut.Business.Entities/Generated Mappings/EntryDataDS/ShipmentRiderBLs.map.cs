@@ -11,7 +11,7 @@
     {
         public ShipmentRiderBLsMap()
         {                        
-              this.HasKey(t => t.id);        
+              this.HasKey(t => new {t.id, t.WarehouseCode});        
               this.ToTable("ShipmentRiderBLs");
               this.Property(t => t.ETA).HasColumnName("ETA");
               this.Property(t => t.BLNumber).HasColumnName("BLNumber").IsRequired().HasMaxLength(50);
@@ -22,6 +22,7 @@
               this.Property(t => t.RiderDetailId).HasColumnName("RiderDetailId");
               this.Property(t => t.BLDetailId).HasColumnName("BLDetailId");
               this.Property(t => t.BLId).HasColumnName("BLId");
+              this.Property(t => t.WarehouseCode).HasColumnName("WarehouseCode").IsRequired().HasMaxLength(50);
               this.HasRequired(t => t.ShipmentRider).WithMany(t =>(ICollection<ShipmentRiderBLs>) t.ShipmentRiderBLs).HasForeignKey(d => d.RiderId);
               this.HasRequired(t => t.ShipmentBLDetails).WithMany(t =>(ICollection<ShipmentRiderBLs>) t.ShipmentRiderBLs).HasForeignKey(d => d.BLDetailId);
               this.HasRequired(t => t.ShipmentRiderDetails).WithMany(t =>(ICollection<ShipmentRiderBLs>) t.ShipmentRiderBLs).HasForeignKey(d => d.RiderDetailId);

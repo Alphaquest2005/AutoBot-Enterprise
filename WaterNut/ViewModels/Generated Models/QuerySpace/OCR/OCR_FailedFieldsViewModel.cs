@@ -306,7 +306,7 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
             }
         }
 
-        public class OCR_FailedFieldsExcelLine
+        public partial class OCR_FailedFieldsExcelLine
         {
 		        }
 

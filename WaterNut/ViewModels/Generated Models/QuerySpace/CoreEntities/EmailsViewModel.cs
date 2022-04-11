@@ -403,7 +403,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             }
         }
 
-        public class EmailsExcelLine
+        public partial class EmailsExcelLine
         {
 		 
                     public string Subject { get; set; } 

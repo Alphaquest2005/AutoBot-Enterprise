@@ -528,7 +528,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             }
         }
 
-        public class TODO_ERRReport_UnmappedItemsExcelLine
+        public partial class TODO_ERRReport_UnmappedItemsExcelLine
         {
 		 
                     public string CNumber { get; set; } 

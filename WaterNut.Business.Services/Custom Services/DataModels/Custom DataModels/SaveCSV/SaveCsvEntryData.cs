@@ -141,7 +141,7 @@ namespace WaterNut.DataSpace
 
                 var rawRiders = csvRiders
                     .Select(x => new{
-                        ETA = x.Key.ETA,
+                        x.Key.ETA,
                         DocumentDate = x.Key.Date,
                         ShipmentRiderDetails = x.Select(z => new 
                         {
@@ -166,12 +166,13 @@ namespace WaterNut.DataSpace
                     foreach (var rawRider in rawRiders)//.Where(x => x.ETA != null) // bad data duh make sense
                     {
                         DateTime eta = (DateTime) (rawRider.ETA ?? DateTime.MinValue);
-                        var existingRider = ctx.ShipmentRider.Where(x => x.ETA == eta).ToList();
+                        var existingRider = ctx.ShipmentRider.Where(x => x.ETA == eta).ToList()
+                            .Where(x => new FileInfo(x.SourceFile).Name == new FileInfo(droppedFilePath).Name);
                         if (existingRider.Any()) ctx.ShipmentRider.RemoveRange(existingRider);
                         
                         var invoiceLst = rawRider.ShipmentRiderDetails.Select(x => new
                             {
-                                WarehouseCode = x.WarehouseCode,
+                                x.WarehouseCode,
                                 Totalpkgs = x.Pieces,
                                 totalKgs = x.GrossWeightLB * kg,
                                 totalCF = x.CubicFeet,
@@ -899,7 +900,8 @@ namespace WaterNut.DataSpace
                                                                     Quantity = z.ContainsKey("Quantity") ? Convert.ToInt32(z["Quantity"].ToString()): 0,
                                                                     Marks = z.ContainsKey("Marks") ? z["Marks"].ToString(): "",
                                                                     PackageType = z.ContainsKey("PackageType") ? z["PackageType"].ToString(): "",
-                                                                    Section = z.ContainsKey("Section") ? z["Section"].ToString() : null,
+                                                                    Weight = z.ContainsKey("Weight") ? z["Weight"].ToString() : "",
+                                                    Section = z.ContainsKey("Section") ? z["Section"].ToString() : null,
                                                                     TrackingState = TrackingState.Added,
                                                                
                                                             }).ToList(),
@@ -955,7 +957,7 @@ namespace WaterNut.DataSpace
 
         private static List<ShipmentBLDetails> AutoFixShipmentBlDetails(ShipmentBL bl)
         {
-            var details = bl.ShipmentBLDetails.ToList();
+            var details = bl.ShipmentBLDetails.Any(x => !string.IsNullOrEmpty(x.Weight))? bl.ShipmentBLDetails.Where(x => !string.IsNullOrEmpty(x.Weight)).ToList() :bl.ShipmentBLDetails.ToList() ;
 
            
             var secList = details.GroupBy(x => x.Section).ToList();
@@ -1029,6 +1031,14 @@ namespace WaterNut.DataSpace
                         if (existingManifest != null)
                             ctx.ShipmentManifest.Remove(existingManifest);
                         ctx.ShipmentManifest.Add(manifest);
+                        var bls = ctx.ShipmentBL
+                            .Where(x => x.BLNumber == manifest.WayBill || x.Voyage == manifest.Voyage).ToList();
+                        if (bls.Any() && bls.All(x => x.PackagesNo != manifest.Packages))
+                        {
+                            throw new ApplicationException(
+                                $"Manifest:{manifest.RegistrationNumber} Packages <> BL:{bls.Select(x => x.BLNumber).Aggregate((o, n) => o + ", " + n)} Packages");
+                        }
+
 
                     }
 

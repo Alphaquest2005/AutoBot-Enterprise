@@ -535,7 +535,7 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
             }
         }
 
-        public class AsycudaSalesAllocationExcelLine
+        public partial class AsycudaSalesAllocationExcelLine
         {
 		 
                     public string Status { get; set; } 

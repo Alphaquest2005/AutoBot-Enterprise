@@ -359,7 +359,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             }
         }
 
-        public class EmailAttachmentsExcelLine
+        public partial class EmailAttachmentsExcelLine
         {
 		 
                     public string EmailId { get; set; } 

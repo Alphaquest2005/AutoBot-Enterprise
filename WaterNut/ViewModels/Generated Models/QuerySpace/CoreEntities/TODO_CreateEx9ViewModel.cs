@@ -301,7 +301,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             }
         }
 
-        public class TODO_CreateEx9ExcelLine
+        public partial class TODO_CreateEx9ExcelLine
         {
 		 
                     public string ItemNumber { get; set; } 
