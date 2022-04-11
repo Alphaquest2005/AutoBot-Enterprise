@@ -857,7 +857,7 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
             }
         }
 
-        public class xcuda_ItemExcelLine
+        public partial class xcuda_ItemExcelLine
         {
 		 
                     public string Amount_deducted_from_licence { get; set; } 

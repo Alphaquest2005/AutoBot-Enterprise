@@ -598,7 +598,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             }
         }
 
-        public class TODO_SubmitIncompleteEntryDataExcelLine
+        public partial class TODO_SubmitIncompleteEntryDataExcelLine
         {
 		 
                     public System.DateTime InvoiceDate { get; set; } 

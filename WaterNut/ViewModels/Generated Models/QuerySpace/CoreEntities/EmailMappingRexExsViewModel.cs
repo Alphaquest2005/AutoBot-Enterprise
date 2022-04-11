@@ -318,7 +318,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             }
         }
 
-        public class EmailMappingRexExsExcelLine
+        public partial class EmailMappingRexExsExcelLine
         {
 		 
                     public string ReplacementRegex { get; set; } 

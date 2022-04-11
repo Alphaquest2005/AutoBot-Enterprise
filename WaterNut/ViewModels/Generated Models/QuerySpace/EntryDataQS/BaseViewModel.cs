@@ -54,6 +54,7 @@ namespace WaterNut.QuerySpace.EntryDataQS.ViewModels
  
 
                         RegisterToReceiveMessages<string>(MessageToken.CurrentAsycudaDocumentEntryDataIDChanged, OnCurrentAsycudaDocumentEntryDataIDChanged);
+                        RegisterToReceiveMessages<string>(MessageToken.CurrentAsycudaDocumentEntryDataLineIDChanged, OnCurrentAsycudaDocumentEntryDataLineIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentAsycudaDocumentItemEntryDataDetailIDChanged, OnCurrentAsycudaDocumentItemEntryDataDetailIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentAsycudaDocumentSetEntryDataIDChanged, OnCurrentAsycudaDocumentSetEntryDataIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentAsycudaDocumentSetEntryDataDetailIDChanged, OnCurrentAsycudaDocumentSetEntryDataDetailIDChanged);
@@ -67,6 +68,7 @@ namespace WaterNut.QuerySpace.EntryDataQS.ViewModels
 
 			// Recieve messages for Current Object Changed
                         RegisterToReceiveMessages<AsycudaDocumentEntryData>(MessageToken.CurrentAsycudaDocumentEntryDataChanged, OnCurrentAsycudaDocumentEntryDataChanged);
+                        RegisterToReceiveMessages<AsycudaDocumentEntryDataLine>(MessageToken.CurrentAsycudaDocumentEntryDataLineChanged, OnCurrentAsycudaDocumentEntryDataLineChanged);
                         RegisterToReceiveMessages<AsycudaDocumentItemEntryDataDetail>(MessageToken.CurrentAsycudaDocumentItemEntryDataDetailChanged, OnCurrentAsycudaDocumentItemEntryDataDetailChanged);
                         RegisterToReceiveMessages<AsycudaDocumentSetEntryData>(MessageToken.CurrentAsycudaDocumentSetEntryDataChanged, OnCurrentAsycudaDocumentSetEntryDataChanged);
                         RegisterToReceiveMessages<AsycudaDocumentSetEntryDataDetail>(MessageToken.CurrentAsycudaDocumentSetEntryDataDetailChanged, OnCurrentAsycudaDocumentSetEntryDataDetailChanged);
@@ -119,6 +121,33 @@ namespace WaterNut.QuerySpace.EntryDataQS.ViewModels
                                     if (!string.IsNullOrEmpty(_currentAsycudaDocumentEntryDataID)) BeginSendMessage(MessageToken.CurrentAsycudaDocumentEntryDataIDChanged,
                                                      new NotificationEventArgs<string>(MessageToken.CurrentAsycudaDocumentEntryDataIDChanged, _currentAsycudaDocumentEntryDataID));
                                     NotifyPropertyChanged(x => this.CurrentAsycudaDocumentEntryDataID);  
+                                }
+                            }
+                        }
+                        internal async void OnCurrentAsycudaDocumentEntryDataLineIDChanged(object sender, NotificationEventArgs<string> e)
+                        {
+                            using (AsycudaDocumentEntryDataLineRepository ctx = new AsycudaDocumentEntryDataLineRepository())
+                            {
+                                CurrentAsycudaDocumentEntryDataLine = await ctx.GetAsycudaDocumentEntryDataLine(e.Data).ConfigureAwait(continueOnCapturedContext: false);
+                            }
+                            NotifyPropertyChanged(m => CurrentAsycudaDocumentEntryDataLine);
+                        }
+
+                        private  string _currentAsycudaDocumentEntryDataLineID = "";
+                        public string CurrentAsycudaDocumentEntryDataLineID
+                        {
+                            get
+                            {
+                                return _currentAsycudaDocumentEntryDataLineID;
+                            }
+                            set
+                            {
+                                if (_currentAsycudaDocumentEntryDataLineID != value)
+                                {
+                                    _currentAsycudaDocumentEntryDataLineID = value;
+                                    if (!string.IsNullOrEmpty(_currentAsycudaDocumentEntryDataLineID)) BeginSendMessage(MessageToken.CurrentAsycudaDocumentEntryDataLineIDChanged,
+                                                     new NotificationEventArgs<string>(MessageToken.CurrentAsycudaDocumentEntryDataLineIDChanged, _currentAsycudaDocumentEntryDataLineID));
+                                    NotifyPropertyChanged(x => this.CurrentAsycudaDocumentEntryDataLineID);  
                                 }
                             }
                         }
@@ -413,6 +442,56 @@ namespace WaterNut.QuerySpace.EntryDataQS.ViewModels
                     _vcurrentAsycudaDocumentEntryData = value;
 					if(_vcurrentAsycudaDocumentEntryData != null) CurrentAsycudaDocumentEntryData = value.Data;
                     NotifyPropertyChanged(x => this.VCurrentAsycudaDocumentEntryData);                    
+                }
+            }
+        }
+
+
+
+                     
+       
+
+        internal void OnCurrentAsycudaDocumentEntryDataLineChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<AsycudaDocumentEntryDataLine> e)
+        {
+            //CurrentAsycudaDocumentEntryDataLine = e.Data;
+            NotifyPropertyChanged(m => this.CurrentAsycudaDocumentEntryDataLine);
+        }
+
+        private  AsycudaDocumentEntryDataLine _currentAsycudaDocumentEntryDataLine;
+        public AsycudaDocumentEntryDataLine CurrentAsycudaDocumentEntryDataLine
+        {
+            get
+            {
+                return _currentAsycudaDocumentEntryDataLine;
+            }
+            set
+            {
+                if (_currentAsycudaDocumentEntryDataLine != value)
+                {
+                    _currentAsycudaDocumentEntryDataLine = value;
+                    BeginSendMessage(MessageToken.CurrentAsycudaDocumentEntryDataLineChanged,
+                                                     new NotificationEventArgs<AsycudaDocumentEntryDataLine>(MessageToken.CurrentAsycudaDocumentEntryDataLineChanged, _currentAsycudaDocumentEntryDataLine)); 
+                    NotifyPropertyChanged(x => this.CurrentAsycudaDocumentEntryDataLine);    
+                    // all current navigation properties = null
+   
+                }
+            }
+        }
+
+		VirtualListItem<AsycudaDocumentEntryDataLine> _vcurrentAsycudaDocumentEntryDataLine;
+        public VirtualListItem<AsycudaDocumentEntryDataLine> VCurrentAsycudaDocumentEntryDataLine
+        {
+            get
+            {
+                return _vcurrentAsycudaDocumentEntryDataLine;
+            }
+            set
+            {
+                if (_vcurrentAsycudaDocumentEntryDataLine != value)
+                {
+                    _vcurrentAsycudaDocumentEntryDataLine = value;
+					if(_vcurrentAsycudaDocumentEntryDataLine != null) CurrentAsycudaDocumentEntryDataLine = value.Data;
+                    NotifyPropertyChanged(x => this.VCurrentAsycudaDocumentEntryDataLine);                    
                 }
             }
         }

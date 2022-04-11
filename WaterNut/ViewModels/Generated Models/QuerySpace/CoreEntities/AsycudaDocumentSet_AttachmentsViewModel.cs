@@ -521,7 +521,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             }
         }
 
-        public class AsycudaDocumentSet_AttachmentsExcelLine
+        public partial class AsycudaDocumentSet_AttachmentsExcelLine
         {
 		 
                     public bool DocumentSpecific { get; set; } 

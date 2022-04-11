@@ -457,7 +457,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             }
         }
 
-        public class TODO_UnallocatedSalesExcelLine
+        public partial class TODO_UnallocatedSalesExcelLine
         {
 		 
                     public string EntryDataId { get; set; } 

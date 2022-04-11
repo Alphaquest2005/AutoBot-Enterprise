@@ -306,7 +306,7 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
             }
         }
 
-        public class AdjustmentOversAllocationExcelLine
+        public partial class AdjustmentOversAllocationExcelLine
         {
 		        }
 

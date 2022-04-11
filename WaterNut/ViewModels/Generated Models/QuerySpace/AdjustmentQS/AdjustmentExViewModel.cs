@@ -552,7 +552,7 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
             }
         }
 
-        public class AdjustmentExExcelLine
+        public partial class AdjustmentExExcelLine
         {
 		 
                     public System.DateTime InvoiceDate { get; set; } 

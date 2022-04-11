@@ -277,7 +277,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             }
         }
 
-        public class SessionsExcelLine
+        public partial class SessionsExcelLine
         {
 		 
                     public string Name { get; set; } 

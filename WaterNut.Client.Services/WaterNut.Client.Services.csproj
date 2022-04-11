@@ -235,6 +235,7 @@
     <Compile Include="Custom Services\SalesDataQS\SalesDataClient.cs" />
     <Compile Include="Custom Services\SalesDataQS\SalesDataDetailClient.cs" />
     <Compile Include="EntryDataQS\AsycudaDocumentEntryDataClient.cs" />
+    <Compile Include="EntryDataQS\AsycudaDocumentEntryDataLineClient.cs" />
     <Compile Include="EntryDataQS\AsycudaDocumentItemEntryDataDetailClient.cs" />
     <Compile Include="EntryDataQS\AsycudaDocumentSetEntryDataClient.cs" />
     <Compile Include="EntryDataQS\AsycudaDocumentSetEntryDataDetailClient.cs" />

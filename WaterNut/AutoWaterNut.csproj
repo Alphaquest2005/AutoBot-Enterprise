@@ -558,6 +558,7 @@
     <Compile Include="ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_UnallocatedShortsViewModel.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\CoreEntities\xcuda_Supplementary_unitViewModel.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\CounterPointQS\MessageToken.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\EntryDataQS\AsycudaDocumentEntryDataLineViewModel.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\EntryDataQS\AsycudaDocumentEntryDataViewModel.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\EntryDataQS\AsycudaDocumentItemEntryDataDetailViewModel.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\EntryDataQS\AsycudaDocumentSetEntryDataDetailViewModel.cs" />
@@ -740,6 +741,7 @@
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\CounterPointQS\CounterPointPOsTotals.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\CounterPointQS\CounterPointSalesDetailsTotals.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\CounterPointQS\CounterPointSalesTotals.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\EntryDataQS\AsycudaDocumentEntryDataLineTotals.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\EntryDataQS\AsycudaDocumentEntryDataTotals.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\EntryDataQS\AsycudaDocumentItemEntryDataDetailTotals.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\EntryDataQS\AsycudaDocumentSetEntryDataDetailTotals.cs" />
@@ -903,6 +905,7 @@
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_UnallocatedSalesVirturalListLoader.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_UnallocatedShortsVirturalListLoader.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\xcuda_Supplementary_unitVirturalListLoader.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\EntryDataQS\AsycudaDocumentEntryDataLineVirturalListLoader.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\EntryDataQS\AsycudaDocumentEntryDataVirturalListLoader.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\EntryDataQS\AsycudaDocumentItemEntryDataDetailVirturalListLoader.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\EntryDataQS\AsycudaDocumentSetEntryDataDetailVirturalListLoader.cs" />

@@ -296,7 +296,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             }
         }
 
-        public class TODO_ImportCompleteEntriesExcelLine
+        public partial class TODO_ImportCompleteEntriesExcelLine
         {
 		 
                     public string EmailId { get; set; } 

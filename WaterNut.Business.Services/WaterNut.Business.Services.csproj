@@ -619,6 +619,7 @@
     <Compile Include="Contracts\DocumentItemDS\Ixcuda_Valuation_itemService.cs" />
     <Compile Include="Contracts\DocumentItemDS\Ixcuda_Weight_itmService.cs" />
     <Compile Include="Contracts\EntryDataDS\IAdjustmentsService.cs" />
+    <Compile Include="Contracts\EntryDataDS\IAsycudaDocumentEntryDataLineService.cs" />
     <Compile Include="Contracts\EntryDataDS\IAsycudaDocumentEntryDataService.cs" />
     <Compile Include="Contracts\EntryDataDS\IAsycudaDocumentSetEntryDataService.cs" />
     <Compile Include="Contracts\EntryDataDS\IAttachmentsService.cs" />
@@ -655,6 +656,8 @@
     <Compile Include="Contracts\EntryDataDS\IShipmentBLDetailsService.cs" />
     <Compile Include="Contracts\EntryDataDS\IShipmentBLFreightService.cs" />
     <Compile Include="Contracts\EntryDataDS\IShipmentBLService.cs" />
+    <Compile Include="Contracts\EntryDataDS\IShipmentErrors_RepeatInvoicesService.cs" />
+    <Compile Include="Contracts\EntryDataDS\IShipmentErrors_RepeatMarksService.cs" />
     <Compile Include="Contracts\EntryDataDS\IShipmentFreightBLsService.cs" />
     <Compile Include="Contracts\EntryDataDS\IShipmentFreightDetailsService.cs" />
     <Compile Include="Contracts\EntryDataDS\IShipmentFreightManifestsService.cs" />
@@ -682,8 +685,12 @@
     <Compile Include="Contracts\EntryDataDS\IShipmentRiderService.cs" />
     <Compile Include="Contracts\EntryDataDS\IShipmentService.cs" />
     <Compile Include="Contracts\EntryDataDS\ISuppliersService.cs" />
+    <Compile Include="Contracts\EntryDataDS\ISupportingDetailService.cs" />
     <Compile Include="Contracts\EntryDataDS\IVolumeUnitsService.cs" />
     <Compile Include="Contracts\EntryDataDS\IWarehouseInfoService.cs" />
+    <Compile Include="Contracts\EntryDataDS\IxSalesDetailsService.cs" />
+    <Compile Include="Contracts\EntryDataDS\IxSalesFilesService.cs" />
+    <Compile Include="Contracts\EntryDataQS\IAsycudaDocumentEntryDataLineService.cs" />
     <Compile Include="Contracts\EntryDataQS\IAsycudaDocumentEntryDataService.cs" />
     <Compile Include="Contracts\EntryDataQS\IAsycudaDocumentItemEntryDataDetailService.cs" />
     <Compile Include="Contracts\EntryDataQS\IAsycudaDocumentSetEntryDataDetailService.cs" />
@@ -1233,6 +1240,7 @@
     <Compile Include="Services\DocumentItemDS\xcuda_Valuation_itemService.cs" />
     <Compile Include="Services\DocumentItemDS\xcuda_Weight_itmService.cs" />
     <Compile Include="Services\EntryDataDS\AdjustmentsService.cs" />
+    <Compile Include="Services\EntryDataDS\AsycudaDocumentEntryDataLineService.cs" />
     <Compile Include="Services\EntryDataDS\AsycudaDocumentEntryDataService.cs" />
     <Compile Include="Services\EntryDataDS\AsycudaDocumentSetEntryDataService.cs" />
     <Compile Include="Services\EntryDataDS\AttachmentsService.cs" />
@@ -1269,6 +1277,8 @@
     <Compile Include="Services\EntryDataDS\ShipmentBLDetailsService.cs" />
     <Compile Include="Services\EntryDataDS\ShipmentBLFreightService.cs" />
     <Compile Include="Services\EntryDataDS\ShipmentBLService.cs" />
+    <Compile Include="Services\EntryDataDS\ShipmentErrors_RepeatInvoicesService.cs" />
+    <Compile Include="Services\EntryDataDS\ShipmentErrors_RepeatMarksService.cs" />
     <Compile Include="Services\EntryDataDS\ShipmentFreightBLsService.cs" />
     <Compile Include="Services\EntryDataDS\ShipmentFreightDetailsService.cs" />
     <Compile Include="Services\EntryDataDS\ShipmentFreightManifestsService.cs" />
@@ -1296,8 +1306,12 @@
     <Compile Include="Services\EntryDataDS\ShipmentRiderService.cs" />
     <Compile Include="Services\EntryDataDS\ShipmentService.cs" />
     <Compile Include="Services\EntryDataDS\SuppliersService.cs" />
+    <Compile Include="Services\EntryDataDS\SupportingDetailService.cs" />
     <Compile Include="Services\EntryDataDS\VolumeUnitsService.cs" />
     <Compile Include="Services\EntryDataDS\WarehouseInfoService.cs" />
+    <Compile Include="Services\EntryDataDS\xSalesDetailsService.cs" />
+    <Compile Include="Services\EntryDataDS\xSalesFilesService.cs" />
+    <Compile Include="Services\EntryDataQS\AsycudaDocumentEntryDataLineService.cs" />
     <Compile Include="Services\EntryDataQS\AsycudaDocumentEntryDataService.cs" />
     <Compile Include="Services\EntryDataQS\AsycudaDocumentItemEntryDataDetailService.cs" />
     <Compile Include="Services\EntryDataQS\AsycudaDocumentSetEntryDataDetailService.cs" />

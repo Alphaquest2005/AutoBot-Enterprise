@@ -505,7 +505,7 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
             }
         }
 
-        public class OCR_PartLineFieldsExcelLine
+        public partial class OCR_PartLineFieldsExcelLine
         {
 		 
                     public string Invoice { get; set; } 

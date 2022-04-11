@@ -98,7 +98,7 @@ namespace AutoBot
                 {"ExportPOEntries",(ft, fs) => ExportPOEntries(ft.AsycudaDocumentSetId) },
                 {"AssessPOEntry",(ft, fs) => AssessPOEntry(ft.DocReference, ft.AsycudaDocumentSetId)},
                 {"EmailPOEntries",(ft, fs) => EmailPOEntries(ft.AsycudaDocumentSetId) },
-                {"DownloadSalesFiles",(ft, fs) => DownloadSalesFiles(3, "IM7History",false) },
+                {"DownloadSalesFiles",(ft, fs) => DownloadSalesFiles(10, "IM7History",false) },
                 {"Xlsx2csv",(ft, fs) => Xlsx2csv(fs, ft) },
                 {"SaveInfo",(ft, fs) => TrySaveFileInfo(fs, ft) },
                 {"CleanupEntries",(ft, fs) => CleanupEntries() },
@@ -163,7 +163,7 @@ namespace AutoBot
                 {"ImportWarehouseErrors", (ft,fs) => ImportWarehouseErrors()},
                 {"Kill", Kill},
                 {"LinkPDFs", (ft,fs) => LinkPDFs()},
-                {"DownloadPOFiles", (ft,fs) => DownloadPOFiles()},
+                {"DownloadPOFiles", (ft,fs) => DownloadSalesFiles(10, "IM7", false)},
                 {"SubmitDiscrepanciesToCustoms", SubmitDiscrepanciesToCustoms}
                 
 
@@ -274,7 +274,7 @@ namespace AutoBot
                 {"ExportPOEntries", ExportPOEntries },
                 {"AssessPOEntries",() =>  AssessPOEntries(new FileTypes()) },
                 { "AttachToDocSetByRef",  AttachToDocSetByRef },
-                {"DownloadPOFiles", DownloadPOFiles },
+                {"DownloadPOFiles",() =>  DownloadSalesFiles(10, "IM7", false) },
                 {"SubmitPOs", SubmitPOs },
                 {"RecreateEx9",() => CreateEx9(true) },
                 {"ReDownloadSalesFiles",ReDownloadSalesFiles },
@@ -557,8 +557,13 @@ namespace AutoBot
                 var reference = xlsxWriter.XlsxWriter.SaveUnAttachedSummary(file);
                 var res = reference.Split('-');
                 var riderId = int.Parse(res[1]);
-                ft.EmailId = new EntryDataDSContext().ShipmentRider.First(x => x.Id == riderId).EmailId;
-                CreateShipmentEmail(ft, fs);
+                var rider = new EntryDataDSContext().ShipmentRider.FirstOrDefault(x => x.Id == riderId);
+                if (rider != null)
+                {
+                    ft.EmailId = rider.EmailId;
+                    CreateShipmentEmail(ft, fs);
+                }
+
             }
 
         }
@@ -1102,11 +1107,6 @@ namespace AutoBot
             }
 
 
-        }
-
-        private static void DownloadPOFiles()
-        {
-            DownloadSalesFiles(3, "IM7", false); //download all for now
         }
 
         private static void ImportPDF()
@@ -7770,7 +7770,7 @@ namespace AutoBot
             else
             {
                 conn = new OleDbConnection(string.Format(
-                    @"Provider=Microsoft.ACE.OLEDB.12.0; Data Source={0};" +
+                    @"Provider=Microsoft.ACE.OLEDB.16.0; Data Source={0};" +
                     $"Extended Properties=\"Text;HDR={headers};FMT=Delimited;CharacterSet=65001\"",
                     file.DirectoryName));
             }

@@ -893,7 +893,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             }
         }
 
-        public class TODO_DiscrepanciesErrorsExcelLine
+        public partial class TODO_DiscrepanciesErrorsExcelLine
         {
 		 
                     public int Entrydatadetailsid { get; set; } 

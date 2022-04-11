@@ -253,7 +253,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             }
         }
 
-        public class FileGroupsExcelLine
+        public partial class FileGroupsExcelLine
         {
 		 
                     public string Name { get; set; } 

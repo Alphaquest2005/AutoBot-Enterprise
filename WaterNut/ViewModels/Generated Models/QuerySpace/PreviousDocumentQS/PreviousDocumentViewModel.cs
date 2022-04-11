@@ -709,7 +709,7 @@ namespace WaterNut.QuerySpace.PreviousDocumentQS.ViewModels
             }
         }
 
-        public class PreviousDocumentExcelLine
+        public partial class PreviousDocumentExcelLine
         {
 		 
                     public string id { get; set; } 

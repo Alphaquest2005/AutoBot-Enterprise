@@ -1213,7 +1213,7 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
             }
         }
 
-        public class AdjustmentShortExcelLine
+        public partial class AdjustmentShortExcelLine
         {
 		 
                     public string EntryDataId { get; set; } 

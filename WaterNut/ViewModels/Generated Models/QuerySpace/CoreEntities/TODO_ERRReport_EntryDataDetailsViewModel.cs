@@ -502,7 +502,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             }
         }
 
-        public class TODO_ERRReport_EntryDataDetailsExcelLine
+        public partial class TODO_ERRReport_EntryDataDetailsExcelLine
         {
 		 
                     public string InvoiceNo { get; set; } 

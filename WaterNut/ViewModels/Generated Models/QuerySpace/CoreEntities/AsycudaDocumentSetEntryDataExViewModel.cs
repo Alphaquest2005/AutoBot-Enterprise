@@ -424,7 +424,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             }
         }
 
-        public class AsycudaDocumentSetEntryDataExExcelLine
+        public partial class AsycudaDocumentSetEntryDataExExcelLine
         {
 		 
                     public string EntryDataId { get; set; } 

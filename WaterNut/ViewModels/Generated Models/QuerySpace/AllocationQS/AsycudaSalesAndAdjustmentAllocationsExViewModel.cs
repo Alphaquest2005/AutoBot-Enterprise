@@ -1701,7 +1701,7 @@ namespace WaterNut.QuerySpace.AllocationQS.ViewModels
                     public Nullable<System.DateTime> xRegistrationDate { get; set; } 
                     
  
-                    public Nullable<double> xQuantity { get; set; }
+                    public Nullable<double> xQuantity { get; set; } 
                     
         }
 

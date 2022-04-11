@@ -1066,7 +1066,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             }
         }
 
-        public class TODO_TotalAdjustmentsToProcessExcelLine
+        public partial class TODO_TotalAdjustmentsToProcessExcelLine
         {
 		 
                     public string EntryDataId { get; set; } 

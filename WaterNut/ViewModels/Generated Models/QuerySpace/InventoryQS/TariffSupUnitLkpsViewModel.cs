@@ -304,7 +304,7 @@ namespace WaterNut.QuerySpace.InventoryQS.ViewModels
             }
         }
 
-        public class TariffSupUnitLkpsExcelLine
+        public partial class TariffSupUnitLkpsExcelLine
         {
 		 
                     public string SuppUnitCode2 { get; set; } 

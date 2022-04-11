@@ -13,6 +13,7 @@ using System.Xml.Serialization;
 //using WaterNut.DataLayer;
 using TrackableEntities;
 using Asycuda421;
+using Core.Common.Utils;
 using CoreEntities.Business.Entities;
 using TrackableEntities.Common;
 using TrackableEntities.EF6;
@@ -1204,10 +1205,10 @@ private void Update_TarrifCodes(ASYCUDAItem ai)
             p.Number_of_packages = string.IsNullOrEmpty(ai.Packages.Number_of_packages)? 0 : Convert.ToSingle(ai.Packages.Number_of_packages);
 
             if (ai.Packages.Marks1_of_packages.Text.Count > 0)
-                p.Marks1_of_packages = ai.Packages.Marks1_of_packages.Text[0];
+                p.Marks1_of_packages = ai.Packages.Marks1_of_packages.Text[0].Truncate(40);
 
             if (ai.Packages.Marks2_of_packages.Text.Count > 0)
-                p.Marks2_of_packages = ai.Packages.Marks2_of_packages.Text[0];
+                p.Marks2_of_packages = ai.Packages.Marks2_of_packages.Text[0].Truncate(40);
 
             //await DIBaseDataModel.Instance.Savexcuda_Packages(p).ConfigureAwait(false);
         }

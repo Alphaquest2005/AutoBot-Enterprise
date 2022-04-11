@@ -1125,7 +1125,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             }
         }
 
-        public class TODO_DiscrepanciesAlreadyXMLedExcelLine
+        public partial class TODO_DiscrepanciesAlreadyXMLedExcelLine
         {
 		 
                     public Nullable<bool> IsClassified { get; set; } 

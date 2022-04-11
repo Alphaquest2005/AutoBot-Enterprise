@@ -676,7 +676,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             }
         }
 
-        public class FileTypesExcelLine
+        public partial class FileTypesExcelLine
         {
 		 
                     public string FilePattern { get; set; } 

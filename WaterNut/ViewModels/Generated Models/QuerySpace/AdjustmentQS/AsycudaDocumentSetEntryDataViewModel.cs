@@ -268,7 +268,7 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
             }
         }
 
-        public class AsycudaDocumentSetEntryDataExcelLine
+        public partial class AsycudaDocumentSetEntryDataExcelLine
         {
 		        }
 

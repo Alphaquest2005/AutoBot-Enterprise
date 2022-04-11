@@ -350,7 +350,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             }
         }
 
-        public class SessionScheduleExcelLine
+        public partial class SessionScheduleExcelLine
         {
 		 
                     public System.DateTime RunDateTime { get; set; } 

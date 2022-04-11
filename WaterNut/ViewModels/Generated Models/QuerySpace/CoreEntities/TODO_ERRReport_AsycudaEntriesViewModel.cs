@@ -453,7 +453,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             }
         }
 
-        public class TODO_ERRReport_AsycudaEntriesExcelLine
+        public partial class TODO_ERRReport_AsycudaEntriesExcelLine
         {
 		 
                     public string CNumber { get; set; } 

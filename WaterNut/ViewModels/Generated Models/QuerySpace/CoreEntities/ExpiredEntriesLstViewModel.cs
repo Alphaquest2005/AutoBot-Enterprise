@@ -571,7 +571,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             }
         }
 
-        public class ExpiredEntriesLstExcelLine
+        public partial class ExpiredEntriesLstExcelLine
         {
 		 
                     public string Office { get; set; } 

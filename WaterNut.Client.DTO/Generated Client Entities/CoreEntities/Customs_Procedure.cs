@@ -216,6 +216,19 @@ namespace CoreEntities.Client.DTO
 		}
         private Nullable<bool> _IsDefault;
 
+        [DataMember]
+        public Nullable<bool> ExportSupportingEntryData
+		{ 
+		    get { return _ExportSupportingEntryData; }
+			set
+			{
+			    if (value == _ExportSupportingEntryData) return;
+				_ExportSupportingEntryData = value;
+				NotifyPropertyChanged();//m => this.ExportSupportingEntryData
+			}
+		}
+        private Nullable<bool> _ExportSupportingEntryData;
+
        
         [DataMember]
         public Document_Type Document_Type

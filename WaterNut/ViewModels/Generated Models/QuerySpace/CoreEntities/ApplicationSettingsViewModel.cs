@@ -941,6 +941,24 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
         }	
 
  
+
+		private Boolean? _exportNullTariffCodesFilter;
+        public Boolean? ExportNullTariffCodesFilter
+        {
+            get
+            {
+                return _exportNullTariffCodesFilter;
+            }
+            set
+            {
+                _exportNullTariffCodesFilter = value;
+				NotifyPropertyChanged(x => ExportNullTariffCodesFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
 		internal bool DisableBaseFilterData = false;
         public virtual void FilterData()
 	    {
@@ -1156,6 +1174,10 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 
 									if(RequirePOsFilter.HasValue)
 						res.Append(" && " + string.Format("RequirePOs == {0}",  RequirePOsFilter));						
+ 
+
+									if(ExportNullTariffCodesFilter.HasValue)
+						res.Append(" && " + string.Format("ExportNullTariffCodes == {0}",  ExportNullTariffCodesFilter));						
 			return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
@@ -1299,7 +1321,10 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     TestMode = x.TestMode ,
                     
  
-                    RequirePOs = x.RequirePOs 
+                    RequirePOs = x.RequirePOs ,
+                    
+ 
+                    ExportNullTariffCodes = x.ExportNullTariffCodes 
                     
                 }).ToList()
             };
@@ -1309,7 +1334,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             }
         }
 
-        public class ApplicationSettingsExcelLine
+        public partial class ApplicationSettingsExcelLine
         {
 		 
                     public string Description { get; set; } 
@@ -1433,6 +1458,9 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     
  
                     public Nullable<bool> RequirePOs { get; set; } 
+                    
+ 
+                    public Nullable<bool> ExportNullTariffCodes { get; set; } 
                     
         }
 

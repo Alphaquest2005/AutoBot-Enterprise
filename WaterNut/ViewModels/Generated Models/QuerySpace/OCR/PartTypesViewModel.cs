@@ -255,7 +255,7 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
             }
         }
 
-        public class PartTypesExcelLine
+        public partial class PartTypesExcelLine
         {
 		 
                     public string Name { get; set; } 

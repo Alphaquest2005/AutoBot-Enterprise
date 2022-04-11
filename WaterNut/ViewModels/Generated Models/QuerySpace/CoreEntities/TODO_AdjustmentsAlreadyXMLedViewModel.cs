@@ -1125,7 +1125,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             }
         }
 
-        public class TODO_AdjustmentsAlreadyXMLedExcelLine
+        public partial class TODO_AdjustmentsAlreadyXMLedExcelLine
         {
 		 
                     public Nullable<bool> IsClassified { get; set; } 

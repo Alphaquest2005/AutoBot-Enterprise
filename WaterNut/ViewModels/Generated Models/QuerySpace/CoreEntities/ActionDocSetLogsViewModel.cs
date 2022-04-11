@@ -268,7 +268,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             }
         }
 
-        public class ActionDocSetLogsExcelLine
+        public partial class ActionDocSetLogsExcelLine
         {
 		        }
 

@@ -278,7 +278,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             }
         }
 
-        public class Document_TypeExcelLine
+        public partial class Document_TypeExcelLine
         {
 		 
                     public string Type_of_declaration { get; set; } 

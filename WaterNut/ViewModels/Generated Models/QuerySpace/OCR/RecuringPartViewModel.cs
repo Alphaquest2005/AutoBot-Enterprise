@@ -293,7 +293,7 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
             }
         }
 
-        public class RecuringPartExcelLine
+        public partial class RecuringPartExcelLine
         {
 		 
                     public bool IsComposite { get; set; } 

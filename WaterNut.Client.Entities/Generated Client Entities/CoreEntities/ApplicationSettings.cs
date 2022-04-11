@@ -750,6 +750,21 @@ public Nullable<bool> RequirePOs
 		}
      
 
+       
+       
+public Nullable<bool> ExportNullTariffCodes
+		{ 
+		    get { return this.applicationsettings.ExportNullTariffCodes; }
+			set
+			{
+			    if (value == this.applicationsettings.ExportNullTariffCodes) return;
+				this.applicationsettings.ExportNullTariffCodes = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("ExportNullTariffCodes");
+			}
+		}
+     
+
         ObservableCollection<AsycudaDocumentSetEx> _AsycudaDocumentSetEx = null;
         public  ObservableCollection<AsycudaDocumentSetEx> AsycudaDocumentSetEx
 		{

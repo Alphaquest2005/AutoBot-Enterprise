@@ -67,6 +67,8 @@ namespace EntryDataQS.Business.Entities
      
         public DbSet<AsycudaDocumentItemEntryDataDetail> AsycudaDocumentItemEntryDataDetails { get; set; }
      
+        public DbSet<AsycudaDocumentEntryDataLine> AsycudaDocumentEntryDataLines { get; set; }
+     
 
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
@@ -90,6 +92,8 @@ namespace EntryDataQS.Business.Entities
             modelBuilder.Configurations.Add(new EntryDataMap());
          
             modelBuilder.Configurations.Add(new AsycudaDocumentItemEntryDataDetailMap());
+         
+            modelBuilder.Configurations.Add(new AsycudaDocumentEntryDataLineMap());
          
 			OnModelCreatingExtentsion(modelBuilder);
 

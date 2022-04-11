@@ -156,6 +156,21 @@ namespace EntryDataDS.Business.Entities
         }
         int _blid;
         [DataMember]
+        public string WarehouseCode 
+        {
+            get
+            {
+                return _warehousecode;
+            }
+            set
+            {
+                _warehousecode = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _warehousecode;
+        [DataMember]
         public ShipmentRider ShipmentRider { get; set; }
         [DataMember]
         public ShipmentBLDetails ShipmentBLDetails { get; set; }

@@ -49,13 +49,17 @@
         <EntityTypeShape EntityType="WaterNutDBModel.WarehouseInfo" Width="1.5" PointX="15.375" PointY="4.25" />
         <AssociationConnector Association="WaterNutDBModel.FK_WarehouseInfo_EntryData_PurchaseOrders" />
         <AssociationConnector Association="WaterNutDBModel.FK_EntryData_Suppliers" />
-        <EntityTypeShape EntityType="WaterNutDBModel.ShipmentAttachedPOs" Width="1.5" PointX="7.875" PointY="16.125" />
+        <EntityTypeShape EntityType="WaterNutDBModel.ShipmentAttachedPOs" Width="1.5" PointX="12.375" PointY="16" />
         <AssociationConnector Association="WaterNutDBModel.FK_ShipmentAttachedPOs_EntryData_PurchaseOrders" />
         <EntityTypeShape EntityType="WaterNutDBModel.ShipmentInvoicePOItemQueryMatches" Width="1.5" PointX="5.625" PointY="15.25" />
         <AssociationConnector Association="WaterNutDBModel.EntryDataDetailsShipmentInvoicePOItemQueryMatches" />
         <EntityTypeShape EntityType="WaterNutDBModel.InventoryItemAlias" Width="2" PointX="3.125" PointY="17.375" />
         <AssociationConnector Association="WaterNutDBModel.FK_InventoryItemAlias_InventoryItems" />
         <AssociationConnector Association="WaterNutDBModel.InventoryItemsInventoryItemAlias" />
+        <EntityTypeShape EntityType="WaterNutDBModel.SupportingDetail" Width="1.5" PointX="11.5" PointY="19.625" />
+        <AssociationConnector Association="WaterNutDBModel.FK_EntryDataDetails_SupportingDetails_EntryDataDetails" />
+        <AssociationConnector Association="WaterNutDBModel.FK_EntryDataDetails_SupportingDetails_EntryDataDetails1" />
+        <EntityTypeShape EntityType="WaterNutDBModel.AsycudaDocumentEntryDataLine" Width="1.5" PointX="15.375" PointY="7.75" />
         </Diagram>
       <Diagram DiagramId="e6a676be76e44b88a3a806984a620f91" Name="Shipments" ZoomLevel="82" >
         <EntityTypeShape EntityType="WaterNutDBModel.ShipmentAttachedBL" Width="2.5" PointX="6.625" PointY="6.25" />
@@ -146,6 +150,11 @@
         <AssociationConnector Association="WaterNutDBModel.ShipmentFreightShipmentFreightManifests" />
         <AssociationConnector Association="WaterNutDBModel.ShipmentManifestShipmentFreightManifests" />
         <EntityTypeShape EntityType="WaterNutDBModel.ShipmentPOs" Width="1.5" PointX="21.375" PointY="0.75" />
+        <EntityTypeShape EntityType="WaterNutDBModel.ShipmentErrors_RepeatInvoices" Width="1.5" PointX="21.375" PointY="4.75" />
+        <EntityTypeShape EntityType="WaterNutDBModel.ShipmentErrors_RepeatMarks" Width="1.5" PointX="23.375" PointY="0.75" />
+        <EntityTypeShape EntityType="WaterNutDBModel.xSalesDetails" Width="1.5" PointX="3" PointY="24.125" />
+        <EntityTypeShape EntityType="WaterNutDBModel.xSalesFiles" Width="1.5" PointX="0.75" PointY="25.375" />
+        <AssociationConnector Association="WaterNutDBModel.FK_xSalesDetails_xSalesFiles" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

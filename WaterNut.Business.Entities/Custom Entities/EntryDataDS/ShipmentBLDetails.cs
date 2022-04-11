@@ -21,6 +21,11 @@ namespace EntryDataDS.Business.Entities
         [IgnoreDataMember]
         [NotMapped]
         public string Section { get; set; }
+
+
+        [IgnoreDataMember]
+        [NotMapped]
+        public string Weight { get; set; }
     }
 }
 

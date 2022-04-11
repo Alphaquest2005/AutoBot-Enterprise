@@ -527,7 +527,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             }
         }
 
-        public class TODO_ERRReport_ByItemNumberExcelLine
+        public partial class TODO_ERRReport_ByItemNumberExcelLine
         {
 		 
                     public string CNumber { get; set; } 

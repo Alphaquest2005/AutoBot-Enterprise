@@ -303,7 +303,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             }
         }
 
-        public class ActionsExcelLine
+        public partial class ActionsExcelLine
         {
 		 
                     public string Name { get; set; } 

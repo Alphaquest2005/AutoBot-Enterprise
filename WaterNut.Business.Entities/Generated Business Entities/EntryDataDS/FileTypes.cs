@@ -297,6 +297,21 @@ namespace EntryDataDS.Business.Entities
         }
         Nullable<bool> _isimportable;
         [DataMember]
+        public Nullable<int> MaxFileSizeInMB 
+        {
+            get
+            {
+                return _maxfilesizeinmb;
+            }
+            set
+            {
+                _maxfilesizeinmb = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<int> _maxfilesizeinmb;
+        [DataMember]
         public List<EntryData> EntryData { get; set; }
         [DataMember]
         public List<FileTypes> FileTypes1 { get; set; }

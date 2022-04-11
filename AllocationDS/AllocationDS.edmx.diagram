@@ -8,7 +8,7 @@
         <EntityTypeShape EntityType="WaterNutDBModel.AsycudaSalesAllocations" Width="2.5" PointX="18" PointY="10.375" IsExpanded="true" FillColor="Olive" />
         <EntityTypeShape EntityType="WaterNutDBModel.EntryDataDetails" Width="2.625" PointX="4.375" PointY="13.625" />
         <AssociationConnector Association="WaterNutDBModel.FK_AsycudaSalesAllocations_EntryDataDetails" />
-        <EntityTypeShape EntityType="WaterNutDBModel.xcuda_Item" Width="2.375" PointX="3" PointY="23.125" FillColor="Olive" />
+        <EntityTypeShape EntityType="WaterNutDBModel.xcuda_Item" Width="2.375" PointX="1.375" PointY="23.125" FillColor="Olive" />
         <AssociationConnector Association="WaterNutDBModel.FK_AsycudaSalesAllocations_xcuda_Item" />
         <EntityTypeShape EntityType="WaterNutDBModel.EntryDataDetailsEx" PointX="7.875" PointY="13.375" Width="2.5" />
         <AssociationConnector Association="WaterNutDBModel.EntryDataDetailsEntryDataDetailsEx" />

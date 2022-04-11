@@ -143,6 +143,27 @@
           <Property Name="TotalValue" Type="float" StoreGeneratedPattern="Computed" Nullable="false" />
           <Property Name="CLineNumber" Type="int" />
         </EntityType>
+        <EntityType Name="EntryDataDetails-SupportingDetails">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="EntryDataDetailsId" Type="int" Nullable="false" />
+          <Property Name="CLineNumber" Type="int" />
+          <Property Name="Quantity" Type="float" Nullable="false" />
+          <Property Name="Cost" Type="float" Nullable="false" />
+          <Property Name="PreviousInvoiceNumber" Type="nvarchar" MaxLength="50" />
+          <Property Name="CNumber" Type="nvarchar" MaxLength="50" />
+          <Property Name="EffectiveDate" Type="datetime2" Precision="7" />
+          <Property Name="TaxAmount" Type="float" />
+          <Property Name="FileLineNumber" Type="int" />
+          <Property Name="EntryDataDetailsKey" Type="nvarchar" MaxLength="4000" StoreGeneratedPattern="Computed" />
+          <Property Name="EntryDataId" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="EntryData_Id" Type="int" Nullable="false" />
+          <Property Name="PreviousEntryDataDetailsId" Type="int" Nullable="false" />
+          <Property Name="LineNumber" Type="int" />
+          <Property Name="Comment" Type="nvarchar" MaxLength="255" />
+        </EntityType>
         <EntityType Name="EntryDataFiles">
           <Key>
             <PropertyRef Name="Id" />
@@ -190,6 +211,7 @@
           <Property Name="OldFileTypeId" Type="int" />
           <Property Name="ReplicateHeaderRow" Type="bit" />
           <Property Name="IsImportable" Type="bit" />
+          <Property Name="MaxFileSizeInMB" Type="int" />
         </EntityType>
         <EntityType Name="InventoryItemAlias">
           <Key>
@@ -588,6 +610,74 @@
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Packages" Type="int" Nullable="false" />
         </EntityType>
+        <EntityType Name="xSalesDetails">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="xSalesFileId" Type="int" Nullable="false" />
+          <Property Name="FileLine" Type="int" Nullable="false" />
+          <Property Name="Line" Type="int" Nullable="false" />
+          <Property Name="Date" Type="datetime" Nullable="false" />
+          <Property Name="InvoiceNo" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="CustomerName" Type="nvarchar" MaxLength="50" />
+          <Property Name="ItemNumber" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="ItemDescription" Type="nvarchar" MaxLength="50" />
+          <Property Name="TariffCode" Type="nvarchar" MaxLength="50" />
+          <Property Name="SalesQuantity" Type="float" />
+          <Property Name="SalesFactor" Type="int" />
+          <Property Name="xQuantity" Type="float" Nullable="false" />
+          <Property Name="Price" Type="float" />
+          <Property Name="DutyFreePaid" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="pCNumber" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="pLineNumber" Type="int" Nullable="false" />
+          <Property Name="pRegDate" Type="datetime" Nullable="false" />
+          <Property Name="CIFValue" Type="float" />
+          <Property Name="DutyLiablity" Type="float" />
+          <Property Name="Comment" Type="nvarchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="xSalesFiles">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="StartDate" Type="datetime" Nullable="false" />
+          <Property Name="EndDate" Type="datetime" Nullable="false" />
+          <Property Name="SourceFile" Type="nvarchar" MaxLength="255" />
+          <Property Name="EmailId" Type="nvarchar" MaxLength="50" />
+          <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
+          <Property Name="Asycuda_Id" Type="int" />
+          <Property Name="IsImported" Type="bit" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AsycudaDocumentEntryDataLine' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="AsycudaDocumentEntryDataLine">
+          <Key>
+            <PropertyRef Name="ApplicationSettingsId" />
+            <PropertyRef Name="EntryDataId" />
+            <PropertyRef Name="EntryDataDate" />
+            <PropertyRef Name="ItemNumber" />
+            <PropertyRef Name="ItemDescription" />
+            <PropertyRef Name="Quantity" />
+            <PropertyRef Name="Cost" />
+            <PropertyRef Name="AsycudaDocumentId" />
+            <PropertyRef Name="EntryData_Id" />
+          </Key>
+          <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
+          <Property Name="EntryDataId" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="EntryDataDate" Type="datetime2" Precision="7" Nullable="false" />
+          <Property Name="EntryType" Type="nvarchar" MaxLength="50" />
+          <Property Name="ItemNumber" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="ItemDescription" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="Quantity" Type="float" Nullable="false" />
+          <Property Name="Cost" Type="float" Nullable="false" />
+          <Property Name="PreviousInvoiceNumber" Type="nvarchar" MaxLength="50" />
+          <Property Name="EntryDataDetailsKey" Type="nvarchar" MaxLength="4000" />
+          <Property Name="LineNumber" Type="int" />
+          <Property Name="Comment" Type="nvarchar" MaxLength="255" />
+          <Property Name="AsycudaDocumentId" Type="int" Nullable="false" />
+          <Property Name="EntryData_Id" Type="int" Nullable="false" />
+        </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.EntryDataDetailsEx' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="EntryDataDetailsEx">
@@ -741,6 +831,45 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ShipmentBLFreight' does n
           <Property Name="InvoiceTotal" Type="float" Nullable="false" />
           <Property Name="FreightInvoiceId" Type="int" Nullable="false" />
           <Property Name="BLId" Type="int" Nullable="false" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ShipmentErrors-RepeatInvoices' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="ShipmentErrors-RepeatInvoices">
+          <Key>
+            <PropertyRef Name="RiderID" />
+            <PropertyRef Name="WarehouseCode" />
+          </Key>
+          <Property Name="id" Type="int" />
+          <Property Name="RiderLineID" Type="int" />
+          <Property Name="RiderID" Type="int" Nullable="false" />
+          <Property Name="InvoiceId" Type="int" />
+          <Property Name="WarehouseCode" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="InvoiceNumber" Type="nvarchar" MaxLength="255" />
+          <Property Name="InvoiceNo" Type="nvarchar" MaxLength="50" />
+          <Property Name="Packages" Type="int" />
+          <Property Name="rowNumber" Type="bigint" />
+          <Property Name="RowNumber2" Type="bigint" />
+          <Property Name="count" Type="int" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ShipmentErrors-RepeatMarks' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="ShipmentErrors-RepeatMarks">
+          <Key>
+            <PropertyRef Name="RiderID" />
+            <PropertyRef Name="BLId" />
+            <PropertyRef Name="BLNumber" />
+            <PropertyRef Name="ETA" />
+            <PropertyRef Name="Marks" />
+            <PropertyRef Name="WarehouseCode" />
+          </Key>
+          <Property Name="RiderID" Type="int" Nullable="false" />
+          <Property Name="BLId" Type="int" Nullable="false" />
+          <Property Name="BLNumber" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="ETA" Type="date" Nullable="false" />
+          <Property Name="Marks" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="WarehouseCode" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Quantity" Type="int" />
+          <Property Name="count" Type="int" />
         </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ShipmentFreightBLs' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
@@ -963,6 +1092,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ShipmentRiderBLs' does no
             
             
             
+            <PropertyRef Name="WarehouseCode" />
             
             <PropertyRef Name="id" />
           </Key>
@@ -974,6 +1104,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ShipmentRiderBLs' does no
           <Property Name="BLNumber" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="Quantity" Type="int" Nullable="false" />
           <Property Name="Marks" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="WarehouseCode" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="BLDetailId" Type="int" Nullable="false" />
         </EntityType>
         <!--Errors Found During Generation:
@@ -1201,6 +1332,30 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ShipmentRiderManifests' d
             </Principal>
             <Dependent Role="EntryDataDetails">
               <PropertyRef Name="InventoryItemId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_EntryDataDetails-SupportingDetails_EntryDataDetails">
+          <End Role="EntryDataDetails" Type="Self.EntryDataDetails" Multiplicity="1" />
+          <End Role="EntryDataDetails-SupportingDetails" Type="Self.EntryDataDetails-SupportingDetails" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="EntryDataDetails">
+              <PropertyRef Name="EntryDataDetailsId" />
+            </Principal>
+            <Dependent Role="EntryDataDetails-SupportingDetails">
+              <PropertyRef Name="EntryDataDetailsId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_EntryDataDetails-SupportingDetails_EntryDataDetails1">
+          <End Role="EntryDataDetails" Type="Self.EntryDataDetails" Multiplicity="1" />
+          <End Role="EntryDataDetails-SupportingDetails" Type="Self.EntryDataDetails-SupportingDetails" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="EntryDataDetails">
+              <PropertyRef Name="EntryDataDetailsId" />
+            </Principal>
+            <Dependent Role="EntryDataDetails-SupportingDetails">
+              <PropertyRef Name="PreviousEntryDataDetailsId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -1650,6 +1805,20 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ShipmentRiderManifests' d
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_xSalesDetails_xSalesFiles">
+          <End Role="xSalesFiles" Type="Self.xSalesFiles" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="xSalesDetails" Type="Self.xSalesDetails" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="xSalesFiles">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="xSalesDetails">
+              <PropertyRef Name="xSalesFileId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <EntityContainer Name="WaterNutDBModelStoreContainer">
           <EntitySet Name="AsycudaDocumentEntryData" EntityType="Self.AsycudaDocumentEntryData" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="AsycudaDocumentSetEntryData" EntityType="Self.AsycudaDocumentSetEntryData" Schema="dbo" store:Type="Tables" />
@@ -1662,6 +1831,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ShipmentRiderManifests' d
           <EntitySet Name="EntryData_PurchaseOrders" EntityType="Self.EntryData_PurchaseOrders" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="EntryData_Sales" EntityType="Self.EntryData_Sales" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="EntryDataDetails" EntityType="Self.EntryDataDetails" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="EntryDataDetails-SupportingDetails" EntityType="Self.EntryDataDetails-SupportingDetails" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="EntryDataFiles" EntityType="Self.EntryDataFiles" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="FileTypes" EntityType="Self.FileTypes" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="InventoryItemAlias" EntityType="Self.InventoryItemAlias" Schema="dbo" store:Type="Tables" />
@@ -1698,6 +1868,26 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ShipmentRiderManifests' d
           <EntitySet Name="Suppliers" EntityType="Self.Suppliers" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="VolumeUnits" EntityType="Self.VolumeUnits" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="WarehouseInfo" EntityType="Self.WarehouseInfo" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="xSalesDetails" EntityType="Self.xSalesDetails" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="xSalesFiles" EntityType="Self.xSalesFiles" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="AsycudaDocumentEntryDataLine" EntityType="Self.AsycudaDocumentEntryDataLine" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+[AsycudaDocumentEntryDataLine].[ApplicationSettingsId] AS [ApplicationSettingsId], 
+[AsycudaDocumentEntryDataLine].[EntryDataId] AS [EntryDataId], 
+[AsycudaDocumentEntryDataLine].[EntryDataDate] AS [EntryDataDate], 
+[AsycudaDocumentEntryDataLine].[EntryType] AS [EntryType], 
+[AsycudaDocumentEntryDataLine].[ItemNumber] AS [ItemNumber], 
+[AsycudaDocumentEntryDataLine].[ItemDescription] AS [ItemDescription], 
+[AsycudaDocumentEntryDataLine].[Quantity] AS [Quantity], 
+[AsycudaDocumentEntryDataLine].[Cost] AS [Cost], 
+[AsycudaDocumentEntryDataLine].[PreviousInvoiceNumber] AS [PreviousInvoiceNumber], 
+[AsycudaDocumentEntryDataLine].[EntryDataDetailsKey] AS [EntryDataDetailsKey], 
+[AsycudaDocumentEntryDataLine].[LineNumber] AS [LineNumber], 
+[AsycudaDocumentEntryDataLine].[Comment] AS [Comment], 
+[AsycudaDocumentEntryDataLine].[AsycudaDocumentId] AS [AsycudaDocumentId], 
+[AsycudaDocumentEntryDataLine].[EntryData_Id] AS [EntryData_Id]
+FROM [dbo].[AsycudaDocumentEntryDataLine] AS [AsycudaDocumentEntryDataLine]</DefiningQuery>
+          </EntitySet>
           <EntitySet Name="EntryDataDetailsEx" EntityType="Self.EntryDataDetailsEx" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
 [EntryDataDetailsEx].[EntryDataDetailsId] AS [EntryDataDetailsId], 
@@ -1806,6 +1996,33 @@ FROM [dbo].[InventoryItemsEx] AS [InventoryItemsEx]</DefiningQuery>
 [ShipmentBLFreight].[FreightInvoiceId] AS [FreightInvoiceId], 
 [ShipmentBLFreight].[BLId] AS [BLId]
 FROM [dbo].[ShipmentBLFreight] AS [ShipmentBLFreight]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="ShipmentErrors-RepeatInvoices" EntityType="Self.ShipmentErrors-RepeatInvoices" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+[ShipmentErrors-RepeatInvoices].[id] AS [id], 
+[ShipmentErrors-RepeatInvoices].[RiderLineID] AS [RiderLineID], 
+[ShipmentErrors-RepeatInvoices].[RiderID] AS [RiderID], 
+[ShipmentErrors-RepeatInvoices].[InvoiceId] AS [InvoiceId], 
+[ShipmentErrors-RepeatInvoices].[WarehouseCode] AS [WarehouseCode], 
+[ShipmentErrors-RepeatInvoices].[InvoiceNumber] AS [InvoiceNumber], 
+[ShipmentErrors-RepeatInvoices].[InvoiceNo] AS [InvoiceNo], 
+[ShipmentErrors-RepeatInvoices].[Packages] AS [Packages], 
+[ShipmentErrors-RepeatInvoices].[rowNumber] AS [rowNumber], 
+[ShipmentErrors-RepeatInvoices].[RowNumber2] AS [RowNumber2], 
+[ShipmentErrors-RepeatInvoices].[count] AS [count]
+FROM [dbo].[ShipmentErrors-RepeatInvoices] AS [ShipmentErrors-RepeatInvoices]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="ShipmentErrors-RepeatMarks" EntityType="Self.ShipmentErrors-RepeatMarks" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+[ShipmentErrors-RepeatMarks].[RiderID] AS [RiderID], 
+[ShipmentErrors-RepeatMarks].[BLId] AS [BLId], 
+[ShipmentErrors-RepeatMarks].[BLNumber] AS [BLNumber], 
+[ShipmentErrors-RepeatMarks].[ETA] AS [ETA], 
+[ShipmentErrors-RepeatMarks].[Marks] AS [Marks], 
+[ShipmentErrors-RepeatMarks].[WarehouseCode] AS [WarehouseCode], 
+[ShipmentErrors-RepeatMarks].[Quantity] AS [Quantity], 
+[ShipmentErrors-RepeatMarks].[count] AS [count]
+FROM [dbo].[ShipmentErrors-RepeatMarks] AS [ShipmentErrors-RepeatMarks]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="ShipmentFreightBLs" EntityType="Self.ShipmentFreightBLs" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
@@ -1964,6 +2181,7 @@ FROM [dbo].[ShipmentPOs] AS [ShipmentPOs]</DefiningQuery>
 [ShipmentRiderBLs].[BLNumber] AS [BLNumber], 
 [ShipmentRiderBLs].[Quantity] AS [Quantity], 
 [ShipmentRiderBLs].[Marks] AS [Marks], 
+[ShipmentRiderBLs].[WarehouseCode] AS [WarehouseCode], 
 [ShipmentRiderBLs].[BLDetailId] AS [BLDetailId]
 FROM [dbo].[ShipmentRiderBLs] AS [ShipmentRiderBLs]</DefiningQuery>
           </EntitySet>
@@ -2055,6 +2273,14 @@ FROM [dbo].[ShipmentRiderManifests] AS [ShipmentRiderManifests]</DefiningQuery>
           <AssociationSet Name="FK_EntryDataDetails_InventoryItems" Association="Self.FK_EntryDataDetails_InventoryItems">
             <End Role="InventoryItems" EntitySet="InventoryItems" />
             <End Role="EntryDataDetails" EntitySet="EntryDataDetails" />
+          </AssociationSet>
+          <AssociationSet Name="FK_EntryDataDetails-SupportingDetails_EntryDataDetails" Association="Self.FK_EntryDataDetails-SupportingDetails_EntryDataDetails">
+            <End Role="EntryDataDetails" EntitySet="EntryDataDetails" />
+            <End Role="EntryDataDetails-SupportingDetails" EntitySet="EntryDataDetails-SupportingDetails" />
+          </AssociationSet>
+          <AssociationSet Name="FK_EntryDataDetails-SupportingDetails_EntryDataDetails1" Association="Self.FK_EntryDataDetails-SupportingDetails_EntryDataDetails1">
+            <End Role="EntryDataDetails" EntitySet="EntryDataDetails" />
+            <End Role="EntryDataDetails-SupportingDetails" EntitySet="EntryDataDetails-SupportingDetails" />
           </AssociationSet>
           <AssociationSet Name="FK_FileTypes_FileTypes" Association="Self.FK_FileTypes_FileTypes">
             <End Role="FileTypes" EntitySet="FileTypes" />
@@ -2183,6 +2409,10 @@ FROM [dbo].[ShipmentRiderManifests] AS [ShipmentRiderManifests]</DefiningQuery>
           <AssociationSet Name="FK_WarehouseInfo_EntryData_PurchaseOrders" Association="Self.FK_WarehouseInfo_EntryData_PurchaseOrders">
             <End Role="EntryData_PurchaseOrders" EntitySet="EntryData_PurchaseOrders" />
             <End Role="WarehouseInfo" EntitySet="WarehouseInfo" />
+          </AssociationSet>
+          <AssociationSet Name="FK_xSalesDetails_xSalesFiles" Association="Self.FK_xSalesDetails_xSalesFiles">
+            <End Role="xSalesFiles" EntitySet="xSalesFiles" />
+            <End Role="xSalesDetails" EntitySet="xSalesDetails" />
           </AssociationSet>
         </EntityContainer>
       </Schema></edmx:StorageModels>
@@ -2518,6 +2748,24 @@ FROM [dbo].[ShipmentRiderManifests] AS [ShipmentRiderManifests]</DefiningQuery>
             <End Role="ShipmentFreightManifests" EntitySet="ShipmentFreightManifests" />
           </AssociationSet>
           <EntitySet Name="ShipmentPOs" EntityType="WaterNutDBModel.ShipmentPOs" />
+          <EntitySet Name="ShipmentErrors_RepeatInvoices" EntityType="WaterNutDBModel.ShipmentErrors_RepeatInvoices" />
+          <EntitySet Name="ShipmentErrors_RepeatMarks" EntityType="WaterNutDBModel.ShipmentErrors_RepeatMarks" />
+          <EntitySet Name="xSalesDetails" EntityType="WaterNutDBModel.xSalesDetails" />
+          <EntitySet Name="xSalesFiles" EntityType="WaterNutDBModel.xSalesFiles" />
+          <AssociationSet Name="FK_xSalesDetails_xSalesFiles" Association="WaterNutDBModel.FK_xSalesDetails_xSalesFiles">
+            <End Role="xSalesFiles" EntitySet="xSalesFiles" />
+            <End Role="xSalesDetails" EntitySet="xSalesDetails" />
+          </AssociationSet>
+          <EntitySet Name="SupportingDetails" EntityType="WaterNutDBModel.SupportingDetail" />
+          <AssociationSet Name="FK_EntryDataDetails_SupportingDetails_EntryDataDetails" Association="WaterNutDBModel.FK_EntryDataDetails_SupportingDetails_EntryDataDetails">
+            <End Role="EntryDataDetails" EntitySet="EntryDataDetails" />
+            <End Role="EntryDataDetails_SupportingDetails" EntitySet="SupportingDetails" />
+          </AssociationSet>
+          <AssociationSet Name="FK_EntryDataDetails_SupportingDetails_EntryDataDetails1" Association="WaterNutDBModel.FK_EntryDataDetails_SupportingDetails_EntryDataDetails1">
+            <End Role="EntryDataDetails" EntitySet="EntryDataDetails" />
+            <End Role="EntryDataDetails_SupportingDetails" EntitySet="SupportingDetails" />
+          </AssociationSet>
+          <EntitySet Name="AsycudaDocumentEntryDataLine" EntityType="WaterNutDBModel.AsycudaDocumentEntryDataLine" />
           </EntityContainer>
         <EntityType Name="Sales" BaseType="WaterNutDBModel.EntryData">
           <Property Name="INVNumber" Type="String" Nullable="false" MaxLength="50" Unicode="true" FixedLength="false"><a:EntityNameProperty xmlns:a="http://schemas.tempuri.com/EntityNameProperty">False</a:EntityNameProperty></Property>
@@ -2613,6 +2861,8 @@ FROM [dbo].[ShipmentRiderManifests] AS [ShipmentRiderManifests]</DefiningQuery>
           <Property Name="EntryDataDetailsKey" Type="String" MaxLength="4000" FixedLength="false" Unicode="true" annotation:StoreGeneratedPattern="Computed" />
           <Property Name="TotalValue" Type="Double" Nullable="false" annotation:StoreGeneratedPattern="Computed" />
           <Property Name="CLineNumber" Type="Int32" />
+          <NavigationProperty Name="SupportingDetails" Relationship="WaterNutDBModel.FK_EntryDataDetails_SupportingDetails_EntryDataDetails" FromRole="EntryDataDetails" ToRole="EntryDataDetails_SupportingDetails" />
+          <NavigationProperty Name="PreviousSupportingDetails" Relationship="WaterNutDBModel.FK_EntryDataDetails_SupportingDetails_EntryDataDetails1" FromRole="EntryDataDetails" ToRole="EntryDataDetails_SupportingDetails" />
           <a:DomainInterfaceProperty xmlns:a="http://schemas.tempuri.com/DomainInterfaceProperty">IEntryDataDetail</a:DomainInterfaceProperty>
         </EntityType>
         <Association Name="FK_PurchaseOrderDetails_PurchaseOrders">
@@ -2808,6 +3058,7 @@ FROM [dbo].[ShipmentRiderManifests] AS [ShipmentRiderManifests]</DefiningQuery>
           <Property Name="OldFileTypeId" Type="Int32" />
           <Property Name="ReplicateHeaderRow" Type="Boolean" />
           <Property Name="IsImportable" Type="Boolean" />
+          <Property Name="MaxFileSizeInMB" Type="Int32" />
         </EntityType>
         <Association Name="FK_EntryData_FileTypes">
           <End Type="WaterNutDBModel.FileTypes" Role="FileTypes" Multiplicity="0..1" />
@@ -3340,6 +3591,7 @@ FROM [dbo].[ShipmentRiderManifests] AS [ShipmentRiderManifests]</DefiningQuery>
         <EntityType Name="ShipmentRiderBLs">
           <Key>
             <PropertyRef Name="id" />
+            <PropertyRef Name="WarehouseCode" />
           </Key>
           <Property Name="ETA" Type="DateTime" Nullable="false" Precision="0" />
           <Property Name="BLNumber" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
@@ -3354,6 +3606,7 @@ FROM [dbo].[ShipmentRiderManifests] AS [ShipmentRiderManifests]</DefiningQuery>
           <Property Name="BLDetailId" Type="Int32" Nullable="false" />
           <Property Name="BLId" Type="Int32" Nullable="false" />
           <NavigationProperty Name="ShipmentBL" Relationship="WaterNutDBModel.ShipmentBLShipmentRiderBLs" FromRole="ShipmentRiderBLs" ToRole="ShipmentBL" />
+          <Property Name="WarehouseCode" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="ShipmentRiderInvoice">
           <Key>
@@ -4421,6 +4674,170 @@ FROM [dbo].[ShipmentRiderManifests] AS [ShipmentRiderManifests]</DefiningQuery>
           <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
           <Property Name="EmailId" Type="String" MaxLength="255" Unicode="true" FixedLength="false" />
         </EntityType>
+        <EntityType Name="ShipmentErrors_RepeatInvoices">
+          <Key>
+            <PropertyRef Name="RiderID" />
+            <PropertyRef Name="WarehouseCode" />
+          </Key>
+          <Property Name="id" Type="Int32" />
+          <Property Name="RiderLineID" Type="Int32" />
+          <Property Name="RiderID" Type="Int32" Nullable="false" />
+          <Property Name="InvoiceId" Type="Int32" />
+          <Property Name="WarehouseCode" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="InvoiceNumber" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="InvoiceNo" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Packages" Type="Int32" />
+          <Property Name="rowNumber" Type="Int64" />
+          <Property Name="RowNumber2" Type="Int64" />
+          <Property Name="count" Type="Int32" />
+        </EntityType>
+        <EntityType Name="ShipmentErrors_RepeatMarks">
+          <Key>
+            <PropertyRef Name="RiderID" />
+            <PropertyRef Name="BLId" />
+            <PropertyRef Name="BLNumber" />
+            <PropertyRef Name="ETA" />
+            <PropertyRef Name="Marks" />
+            <PropertyRef Name="WarehouseCode" />
+          </Key>
+          <Property Name="RiderID" Type="Int32" Nullable="false" />
+          <Property Name="BLId" Type="Int32" Nullable="false" />
+          <Property Name="BLNumber" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ETA" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="Marks" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="WarehouseCode" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Quantity" Type="Int32" />
+          <Property Name="count" Type="Int32" />
+        </EntityType>
+        <EntityType Name="xSalesDetails">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="xSalesFileId" Type="Int32" Nullable="false" />
+          <Property Name="FileLine" Type="Int32" Nullable="false" />
+          <Property Name="Line" Type="Int32" Nullable="false" />
+          <Property Name="Date" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="InvoiceNo" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CustomerName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ItemNumber" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ItemDescription" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="TariffCode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="SalesQuantity" Type="Double" />
+          <Property Name="SalesFactor" Type="Int32" />
+          <Property Name="xQuantity" Type="Double" Nullable="false" />
+          <Property Name="Price" Type="Double" />
+          <Property Name="DutyFreePaid" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="pCNumber" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="pLineNumber" Type="Int32" Nullable="false" />
+          <Property Name="pRegDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="CIFValue" Type="Double" />
+          <Property Name="DutyLiablity" Type="Double" />
+          <Property Name="Comment" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="xSalesFiles" Relationship="WaterNutDBModel.FK_xSalesDetails_xSalesFiles" FromRole="xSalesDetails" ToRole="xSalesFiles" />
+        </EntityType>
+        <EntityType Name="xSalesFiles">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="StartDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="EndDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="SourceFile" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="EmailId" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
+          <Property Name="Asycuda_Id" Type="Int32" />
+          <Property Name="IsImported" Type="Boolean" />
+          <NavigationProperty Name="xSalesDetails" Relationship="WaterNutDBModel.FK_xSalesDetails_xSalesFiles" FromRole="xSalesFiles" ToRole="xSalesDetails" />
+        </EntityType>
+        <Association Name="FK_xSalesDetails_xSalesFiles">
+          <End Type="WaterNutDBModel.xSalesFiles" Role="xSalesFiles" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="WaterNutDBModel.xSalesDetails" Role="xSalesDetails" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="xSalesFiles">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="xSalesDetails">
+              <PropertyRef Name="xSalesFileId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="SupportingDetail">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="EntryDataDetailsId" Type="Int32" Nullable="false" />
+          <Property Name="CLineNumber" Type="Int32" />
+          <Property Name="Quantity" Type="Double" Nullable="false" />
+          <Property Name="Cost" Type="Double" Nullable="false" />
+          <Property Name="PreviousInvoiceNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="EffectiveDate" Type="DateTime" Precision="7" />
+          <Property Name="TaxAmount" Type="Double" />
+          <Property Name="FileLineNumber" Type="Int32" />
+          <Property Name="EntryDataDetailsKey" Type="String" MaxLength="4000" FixedLength="false" Unicode="true" annotation:StoreGeneratedPattern="Computed" />
+          <Property Name="EntryDataId" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="EntryData_Id" Type="Int32" Nullable="false" />
+          <Property Name="PreviousEntryDataDetailsId" Type="Int32" Nullable="false" />
+          <Property Name="LineNumber" Type="Int32" />
+          <NavigationProperty Name="EntryDataDetails" Relationship="WaterNutDBModel.FK_EntryDataDetails_SupportingDetails_EntryDataDetails" FromRole="EntryDataDetails_SupportingDetails" ToRole="EntryDataDetails" />
+          <NavigationProperty Name="PreviousDataDetails" Relationship="WaterNutDBModel.FK_EntryDataDetails_SupportingDetails_EntryDataDetails1" FromRole="EntryDataDetails_SupportingDetails" ToRole="EntryDataDetails" />
+          <Property Name="Comment" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <Association Name="FK_EntryDataDetails_SupportingDetails_EntryDataDetails">
+          <End Type="WaterNutDBModel.EntryDataDetails" Role="EntryDataDetails" Multiplicity="1" />
+          <End Type="WaterNutDBModel.SupportingDetail" Role="EntryDataDetails_SupportingDetails" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="EntryDataDetails">
+              <PropertyRef Name="EntryDataDetailsId" />
+            </Principal>
+            <Dependent Role="EntryDataDetails_SupportingDetails">
+              <PropertyRef Name="EntryDataDetailsId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_EntryDataDetails_SupportingDetails_EntryDataDetails1">
+          <End Type="WaterNutDBModel.EntryDataDetails" Role="EntryDataDetails" Multiplicity="1" />
+          <End Type="WaterNutDBModel.SupportingDetail" Role="EntryDataDetails_SupportingDetails" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="EntryDataDetails">
+              <PropertyRef Name="EntryDataDetailsId" />
+            </Principal>
+            <Dependent Role="EntryDataDetails_SupportingDetails">
+              <PropertyRef Name="PreviousEntryDataDetailsId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="AsycudaDocumentEntryDataLine">
+          <Key>
+            <PropertyRef Name="ApplicationSettingsId" />
+            <PropertyRef Name="EntryDataId" />
+            <PropertyRef Name="EntryDataDate" />
+            <PropertyRef Name="ItemNumber" />
+            <PropertyRef Name="Quantity" />
+            <PropertyRef Name="Cost" />
+            <PropertyRef Name="AsycudaDocumentId" />
+            <PropertyRef Name="EntryData_Id" />
+            <PropertyRef Name="ItemDescription" />
+          </Key>
+          <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
+          <Property Name="EntryDataId" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="EntryDataDate" Type="DateTime" Nullable="false" Precision="7" />
+          <Property Name="EntryType" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ItemNumber" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="Quantity" Type="Double" Nullable="false" />
+          <Property Name="Cost" Type="Double" Nullable="false" />
+          <Property Name="PreviousInvoiceNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="EntryDataDetailsKey" Type="String" MaxLength="4000" FixedLength="false" Unicode="true" />
+          <Property Name="LineNumber" Type="Int32" />
+          <Property Name="Comment" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="AsycudaDocumentId" Type="Int32" Nullable="false" />
+          <Property Name="EntryData_Id" Type="Int32" Nullable="false" />
+          <Property Name="ItemDescription" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+        </EntityType>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -4629,6 +5046,7 @@ FROM [dbo].[ShipmentRiderManifests] AS [ShipmentRiderManifests]</DefiningQuery>
           <EntitySetMapping Name="FileTypes">
             <EntityTypeMapping TypeName="WaterNutDBModel.FileTypes">
               <MappingFragment StoreEntitySet="FileTypes">
+                <ScalarProperty Name="MaxFileSizeInMB" ColumnName="MaxFileSizeInMB" />
                 <ScalarProperty Name="IsImportable" ColumnName="IsImportable" />
                 <ScalarProperty Name="ReplicateHeaderRow" ColumnName="ReplicateHeaderRow" />
                 <ScalarProperty Name="OldFileTypeId" ColumnName="OldFileTypeId" />
@@ -4947,6 +5365,7 @@ FROM [dbo].[ShipmentRiderManifests] AS [ShipmentRiderManifests]</DefiningQuery>
           <EntitySetMapping Name="ShipmentRiderBLs">
             <EntityTypeMapping TypeName="WaterNutDBModel.ShipmentRiderBLs">
               <MappingFragment StoreEntitySet="ShipmentRiderBLs">
+                <ScalarProperty Name="WarehouseCode" ColumnName="WarehouseCode" />
                 <ScalarProperty Name="BLId" ColumnName="BLId" />
                 <ScalarProperty Name="BLDetailId" ColumnName="BLDetailId" />
                 <ScalarProperty Name="RiderDetailId" ColumnName="RiderDetailId" />
@@ -5390,6 +5809,120 @@ FROM [dbo].[ShipmentRiderManifests] AS [ShipmentRiderManifests]</DefiningQuery>
                 <ScalarProperty Name="InvoiceDate" ColumnName="InvoiceDate" />
                 <ScalarProperty Name="InvoiceNo" ColumnName="InvoiceNo" />
                 <ScalarProperty Name="EntryData_Id" ColumnName="EntryData_Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ShipmentErrors_RepeatInvoices">
+            <EntityTypeMapping TypeName="WaterNutDBModel.ShipmentErrors_RepeatInvoices">
+              <MappingFragment StoreEntitySet="ShipmentErrors-RepeatInvoices">
+                <ScalarProperty Name="count" ColumnName="count" />
+                <ScalarProperty Name="RowNumber2" ColumnName="RowNumber2" />
+                <ScalarProperty Name="rowNumber" ColumnName="rowNumber" />
+                <ScalarProperty Name="Packages" ColumnName="Packages" />
+                <ScalarProperty Name="InvoiceNo" ColumnName="InvoiceNo" />
+                <ScalarProperty Name="InvoiceNumber" ColumnName="InvoiceNumber" />
+                <ScalarProperty Name="WarehouseCode" ColumnName="WarehouseCode" />
+                <ScalarProperty Name="InvoiceId" ColumnName="InvoiceId" />
+                <ScalarProperty Name="RiderID" ColumnName="RiderID" />
+                <ScalarProperty Name="RiderLineID" ColumnName="RiderLineID" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ShipmentErrors_RepeatMarks">
+            <EntityTypeMapping TypeName="WaterNutDBModel.ShipmentErrors_RepeatMarks">
+              <MappingFragment StoreEntitySet="ShipmentErrors-RepeatMarks">
+                <ScalarProperty Name="count" ColumnName="count" />
+                <ScalarProperty Name="Quantity" ColumnName="Quantity" />
+                <ScalarProperty Name="WarehouseCode" ColumnName="WarehouseCode" />
+                <ScalarProperty Name="Marks" ColumnName="Marks" />
+                <ScalarProperty Name="ETA" ColumnName="ETA" />
+                <ScalarProperty Name="BLNumber" ColumnName="BLNumber" />
+                <ScalarProperty Name="BLId" ColumnName="BLId" />
+                <ScalarProperty Name="RiderID" ColumnName="RiderID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="xSalesDetails">
+            <EntityTypeMapping TypeName="WaterNutDBModel.xSalesDetails">
+              <MappingFragment StoreEntitySet="xSalesDetails">
+                <ScalarProperty Name="Comment" ColumnName="Comment" />
+                <ScalarProperty Name="DutyLiablity" ColumnName="DutyLiablity" />
+                <ScalarProperty Name="CIFValue" ColumnName="CIFValue" />
+                <ScalarProperty Name="pRegDate" ColumnName="pRegDate" />
+                <ScalarProperty Name="pLineNumber" ColumnName="pLineNumber" />
+                <ScalarProperty Name="pCNumber" ColumnName="pCNumber" />
+                <ScalarProperty Name="DutyFreePaid" ColumnName="DutyFreePaid" />
+                <ScalarProperty Name="Price" ColumnName="Price" />
+                <ScalarProperty Name="xQuantity" ColumnName="xQuantity" />
+                <ScalarProperty Name="SalesFactor" ColumnName="SalesFactor" />
+                <ScalarProperty Name="SalesQuantity" ColumnName="SalesQuantity" />
+                <ScalarProperty Name="TariffCode" ColumnName="TariffCode" />
+                <ScalarProperty Name="ItemDescription" ColumnName="ItemDescription" />
+                <ScalarProperty Name="ItemNumber" ColumnName="ItemNumber" />
+                <ScalarProperty Name="CustomerName" ColumnName="CustomerName" />
+                <ScalarProperty Name="InvoiceNo" ColumnName="InvoiceNo" />
+                <ScalarProperty Name="Date" ColumnName="Date" />
+                <ScalarProperty Name="Line" ColumnName="Line" />
+                <ScalarProperty Name="FileLine" ColumnName="FileLine" />
+                <ScalarProperty Name="xSalesFileId" ColumnName="xSalesFileId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="xSalesFiles">
+            <EntityTypeMapping TypeName="WaterNutDBModel.xSalesFiles">
+              <MappingFragment StoreEntitySet="xSalesFiles">
+                <ScalarProperty Name="IsImported" ColumnName="IsImported" />
+                <ScalarProperty Name="Asycuda_Id" ColumnName="Asycuda_Id" />
+                <ScalarProperty Name="ApplicationSettingsId" ColumnName="ApplicationSettingsId" />
+                <ScalarProperty Name="EmailId" ColumnName="EmailId" />
+                <ScalarProperty Name="SourceFile" ColumnName="SourceFile" />
+                <ScalarProperty Name="EndDate" ColumnName="EndDate" />
+                <ScalarProperty Name="StartDate" ColumnName="StartDate" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SupportingDetails">
+            <EntityTypeMapping TypeName="WaterNutDBModel.SupportingDetail">
+              <MappingFragment StoreEntitySet="EntryDataDetails-SupportingDetails">
+                <ScalarProperty Name="Comment" ColumnName="Comment" />
+                <ScalarProperty Name="LineNumber" ColumnName="LineNumber" />
+                <ScalarProperty Name="PreviousEntryDataDetailsId" ColumnName="PreviousEntryDataDetailsId" />
+                <ScalarProperty Name="EntryData_Id" ColumnName="EntryData_Id" />
+                <ScalarProperty Name="EntryDataId" ColumnName="EntryDataId" />
+                <ScalarProperty Name="EntryDataDetailsKey" ColumnName="EntryDataDetailsKey" />
+                <ScalarProperty Name="FileLineNumber" ColumnName="FileLineNumber" />
+                <ScalarProperty Name="TaxAmount" ColumnName="TaxAmount" />
+                <ScalarProperty Name="EffectiveDate" ColumnName="EffectiveDate" />
+                <ScalarProperty Name="CNumber" ColumnName="CNumber" />
+                <ScalarProperty Name="PreviousInvoiceNumber" ColumnName="PreviousInvoiceNumber" />
+                <ScalarProperty Name="Cost" ColumnName="Cost" />
+                <ScalarProperty Name="Quantity" ColumnName="Quantity" />
+                <ScalarProperty Name="CLineNumber" ColumnName="CLineNumber" />
+                <ScalarProperty Name="EntryDataDetailsId" ColumnName="EntryDataDetailsId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="AsycudaDocumentEntryDataLine">
+            <EntityTypeMapping TypeName="WaterNutDBModel.AsycudaDocumentEntryDataLine">
+              <MappingFragment StoreEntitySet="AsycudaDocumentEntryDataLine">
+                <ScalarProperty Name="ItemDescription" ColumnName="ItemDescription" />
+                <ScalarProperty Name="EntryData_Id" ColumnName="EntryData_Id" />
+                <ScalarProperty Name="AsycudaDocumentId" ColumnName="AsycudaDocumentId" />
+                <ScalarProperty Name="Comment" ColumnName="Comment" />
+                <ScalarProperty Name="LineNumber" ColumnName="LineNumber" />
+                <ScalarProperty Name="EntryDataDetailsKey" ColumnName="EntryDataDetailsKey" />
+                <ScalarProperty Name="PreviousInvoiceNumber" ColumnName="PreviousInvoiceNumber" />
+                <ScalarProperty Name="Cost" ColumnName="Cost" />
+                <ScalarProperty Name="Quantity" ColumnName="Quantity" />
+                <ScalarProperty Name="ItemNumber" ColumnName="ItemNumber" />
+                <ScalarProperty Name="EntryType" ColumnName="EntryType" />
+                <ScalarProperty Name="EntryDataDate" ColumnName="EntryDataDate" />
+                <ScalarProperty Name="EntryDataId" ColumnName="EntryDataId" />
+                <ScalarProperty Name="ApplicationSettingsId" ColumnName="ApplicationSettingsId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

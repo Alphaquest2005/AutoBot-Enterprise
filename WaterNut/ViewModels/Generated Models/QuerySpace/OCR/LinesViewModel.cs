@@ -385,7 +385,7 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
             }
         }
 
-        public class LinesExcelLine
+        public partial class LinesExcelLine
         {
 		 
                     public string Name { get; set; } 

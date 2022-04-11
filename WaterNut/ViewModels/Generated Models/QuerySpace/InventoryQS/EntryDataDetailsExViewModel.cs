@@ -1107,7 +1107,7 @@ namespace WaterNut.QuerySpace.InventoryQS.ViewModels
             }
         }
 
-        public class EntryDataDetailsExExcelLine
+        public partial class EntryDataDetailsExExcelLine
         {
 		 
                     public string EntryDataId { get; set; } 

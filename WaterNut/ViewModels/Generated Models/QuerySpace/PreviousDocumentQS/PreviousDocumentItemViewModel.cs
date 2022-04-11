@@ -1066,7 +1066,7 @@ namespace WaterNut.QuerySpace.PreviousDocumentQS.ViewModels
             }
         }
 
-        public class PreviousDocumentItemExcelLine
+        public partial class PreviousDocumentItemExcelLine
         {
 		 
                     public string Amount_deducted_from_licence { get; set; } 

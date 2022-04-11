@@ -368,7 +368,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             }
         }
 
-        public class EmailMappingExcelLine
+        public partial class EmailMappingExcelLine
         {
 		 
                     public string Pattern { get; set; } 

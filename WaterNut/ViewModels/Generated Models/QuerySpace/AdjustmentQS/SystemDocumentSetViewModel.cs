@@ -230,7 +230,7 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
             }
         }
 
-        public class SystemDocumentSetExcelLine
+        public partial class SystemDocumentSetExcelLine
         {
 		        }
 

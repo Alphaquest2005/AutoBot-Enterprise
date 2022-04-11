@@ -1,7 +1,7 @@
 
 drop table #inventorywithRow
 
-select id,itemnumber, (ROW_NUMBER() over (partition by itemnumber order by id))  row
+select id,itemnumber, (ROW_NUMBER() over (partition by itemnumber order by id desc))  row
 into #inventorywithRow
 from InventoryItems
 

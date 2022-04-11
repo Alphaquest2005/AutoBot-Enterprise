@@ -1172,6 +1172,7 @@ namespace WaterNut.DataSpace
         {
             docSet.Customs_Procedure = Instance.Customs_Procedures.First(x =>
                 x.DisplayName == exportTemplate.Customs_Procedure);
+            docSet.Customs_ProcedureId = docSet.Customs_Procedure.Customs_ProcedureId;
             docSet.Document_Type = docSet.Customs_Procedure.Document_Type;
             docSet.BLNumber = exportTemplate.BL;
             docSet.Manifest_Number = exportTemplate.Manifest;
@@ -1210,6 +1211,17 @@ namespace WaterNut.DataSpace
             }
         }
 
+        //public static void AttachToDocument(List<string> attachments, xcuda_ASYCUDA doc, List<xcuda_Item> itms)
+        //{
+
+        //    var alst = new List<Attachment>();
+        //    using(var ctx = new CoreEntitiesContext())
+        //    foreach (var astr in attachments)
+        //    {
+        //        var att = ctx.Attachments.FirstOrDefault(x => x.FilePath)
+        //    }
+        //}
+
         public static void AttachToDocument(List<Attachment> alst, xcuda_ASYCUDA doc, List<xcuda_Item> itms)
         {
             try
@@ -1224,7 +1236,8 @@ namespace WaterNut.DataSpace
                         {
                             AttachmentId = att.Id,
                             AsycudaDocumentId = doc.ASYCUDA_Id,
-                            TrackingState = TrackingState.Added
+                            TrackingState = TrackingState.Added,
+                            Attachment = att
                         });
 
 
@@ -1242,7 +1255,17 @@ namespace WaterNut.DataSpace
                                 new xcuda_Attachments(true)
                                 {
                                     AttachmentId = att.Id,
-                                    TrackingState = TrackingState.Added
+                                    TrackingState = TrackingState.Added,
+                                    Attachments =  new global::DocumentItemDS.Business.Entities.Attachments()
+                                    {
+                                        TrackingState = (att.Id == 0 ? TrackingState.Added : att.TrackingState),
+                                        Id = att.Id,
+                                        EmailId = att.EmailId,
+                                        FilePath = att.FilePath,
+                                        Reference = att.Reference,
+                                        DocumentCode = att.DocumentCode
+
+                                    }
                                 }
                             },
                             TrackingState = TrackingState.Added
@@ -1355,7 +1378,7 @@ namespace WaterNut.DataSpace
         }
 
 
-        private IEnumerable<EntryLineData> CreateGroupEntryLineData(
+        public IEnumerable<EntryLineData> CreateGroupEntryLineData(
             IEnumerable<EntryDataDetails> slstSource)
         {
             var slst = from s in slstSource.AsEnumerable()
@@ -3731,5 +3754,11 @@ namespace WaterNut.DataSpace
         public string Currency { get; set; }
         public int? LineNumber { get; set; }
         public string Comment { get; set; }
+        public int AllocationId { get; set; }
+        public int InventoryItemId { get; set; }
+        public string ItemNumber { get; set; }
+        public string ItemDescription { get; set; }
+        public double Cost { get; set; }
+        public double Quantity { get; set; }
     }
 }

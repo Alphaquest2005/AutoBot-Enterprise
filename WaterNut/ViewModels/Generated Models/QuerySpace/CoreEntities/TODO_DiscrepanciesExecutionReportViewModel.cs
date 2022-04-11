@@ -650,7 +650,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             }
         }
 
-        public class TODO_DiscrepanciesExecutionReportExcelLine
+        public partial class TODO_DiscrepanciesExecutionReportExcelLine
         {
 		 
                     public Nullable<bool> IsClassified { get; set; } 

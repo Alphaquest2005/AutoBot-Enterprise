@@ -380,7 +380,7 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
             }
         }
 
-        public class OCR_FieldMappingsExcelLine
+        public partial class OCR_FieldMappingsExcelLine
         {
 		 
                     public string Key { get; set; } 

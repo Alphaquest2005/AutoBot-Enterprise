@@ -575,7 +575,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             }
         }
 
-        public class TODO_LicenseToXMLExcelLine
+        public partial class TODO_LicenseToXMLExcelLine
         {
 		 
                     public string TariffCode { get; set; } 
