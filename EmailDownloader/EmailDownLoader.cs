@@ -203,7 +203,12 @@ namespace EmailDownloader
                             }
                         }
 
-                        if(!CheckFileSizeLimit(client, fileTypes, lst, msg, dataFolder)) continue;
+                        if (!CheckFileSizeLimit(client, fileTypes, lst, msg, dataFolder))
+                        {
+                            imapClient.Inbox.AddFlags(uid, MessageFlags.Seen, true);
+                            imapClient.Inbox.AddFlags(uid, MessageFlags.Seen, true);
+                            continue;
+                        }
 
                         subject.Item2.FileTypes = fileTypes;
 
@@ -247,6 +252,7 @@ namespace EmailDownloader
                         "Check the file Name of attachments again or Check Joseph Bartholomew at Joseph@auto-brokerage.com to make the necessary changes.\r\n" +
                         "Thanks\r\n" +
                         "AutoBot";
+
                     SendBackMsg(msg, client, errTxt);
                 }
             }
