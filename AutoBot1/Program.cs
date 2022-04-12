@@ -134,7 +134,7 @@ namespace AutoBot
 
 
                                     var csvFiles = new DirectoryInfo(desFolder).GetFiles()
-                                        .Where(x => msg.Value.Contains(x) &&
+                                        .Where(x => msg.Value.Select(z => z.Name).Any(z => z == x.Name) &&
                                                     Regex.IsMatch(x.FullName, fileType.FilePattern,
                                                         RegexOptions.IgnoreCase) &&
                                                     x.LastWriteTime >= beforeImport).ToArray();
