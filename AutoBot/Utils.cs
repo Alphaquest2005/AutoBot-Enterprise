@@ -175,6 +175,30 @@ namespace AutoBot
             Application.Exit();
         }
 
+        private static void RecreateEx9()
+        {
+            var genDocs = CreateEx9(true);
+
+            if (genDocs.Any()) //reexwarehouse process
+            {
+                ExportEx9Entries();
+                AssessEx9Entries();
+                DownloadSalesFiles(10, "IM7", false);
+                    ImportSalesEntries();
+                ImportWarehouseErrors();
+                RecreateEx9();
+                Application.Exit();
+            }
+            else // reimport and submit to customs
+            {
+                LinkPDFs();
+                SubmitSalesXMLToCustoms();
+                CleanupEntries();
+                Application.Exit();
+            }
+        }
+
+
         private static void RecreateEx9(FileTypes filetype, FileInfo[] files)
         {
             var genDocs = CreateEx9(true);
@@ -276,7 +300,7 @@ namespace AutoBot
                 { "AttachToDocSetByRef",  AttachToDocSetByRef },
                 {"DownloadPOFiles",() =>  DownloadSalesFiles(10, "IM7", false) },
                 {"SubmitPOs", SubmitPOs },
-                {"RecreateEx9",() => CreateEx9(true) },
+                {"RecreateEx9", RecreateEx9 },
                 {"ReDownloadSalesFiles",ReDownloadSalesFiles },
                 {"CleanupDiscpancies", CleanupDiscpancies },
                 {"SubmitDiscrepanciesPreAssessmentReportToCustoms", SubmitDiscrepanciesPreAssessmentReportToCustoms },
@@ -1859,14 +1883,17 @@ namespace AutoBot
 
                 using (var ctx = new CoreEntitiesContext())
                 {
-                    ctx.Database.CommandTimeout = 10;
+                    ctx.Database.CommandTimeout = 60;
                     var contacts = ctx.Contacts.Where(x => x.Role == "Customs")
                         .Where(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)
                         .Select(x => x.EmailAddress).ToArray();
                     var lst = ctx.TODO_SubmitXMLToCustoms.Where(x =>
                                 x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings
                                     .ApplicationSettingsId
-                                && x.AssessmentDate >= salesinfo.Item1 && x.AssessmentDate <= salesinfo.Item2).ToList()
+                                && x.AssessmentDate >= salesinfo.Item1 && x.AssessmentDate <= salesinfo.Item2)
+                        .ToList()
+                        .Where(x =>  x.ReferenceNumber.Contains(salesinfo.Item3.Declarant_Reference_Number))
+                        .ToList()
                         .GroupBy(x => x.EmailId);
                     foreach (var emailIds in lst)
                     {
