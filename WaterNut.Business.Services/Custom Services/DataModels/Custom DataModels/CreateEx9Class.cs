@@ -2093,7 +2093,7 @@ namespace WaterNut.DataSpace
                 pitm.Previous_Packages_number = "0";
 
 
-                pitm.Suplementary_Quantity = Math.Round(Convert.ToDecimal(pod.Quantity), MidpointRounding.ToEven);
+                pitm.Suplementary_Quantity = Math.Round(Convert.ToDecimal(pod.Quantity), 2);
                 pitm.Preveious_suplementary_quantity = Convert.ToDouble(pod.EX9Allocation.pQuantity);
 
 
