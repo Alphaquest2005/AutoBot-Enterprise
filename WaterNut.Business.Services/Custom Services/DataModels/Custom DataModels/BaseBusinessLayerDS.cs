@@ -3535,8 +3535,8 @@ namespace WaterNut.DataSpace
                 using (var ctx = new DocumentDSContext())
                 {
                     docSet = ctx.AsycudaDocumentSets.First(x => x.AsycudaDocumentSetId == docKey);
-                    docSet.xcuda_ASYCUDA_ExtendedProperties =
-                        null; //loading property and creating trouble updating it think its a circular navigation property issue
+                    //docSet.xcuda_ASYCUDA_ExtendedProperties =
+                    //    null; //loading property and creating trouble updating it think its a circular navigation property issue
 
                     var res = ctx.xcuda_ASYCUDA
                         .Include(x => x.xcuda_ASYCUDA_ExtendedProperties)

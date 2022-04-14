@@ -108,6 +108,12 @@ namespace DocumentDS.Business.Entities
                     TrackingState = TrackingState.Added
                 };
 
+            if (AsycudaDocumentEntryDatas == null && this.ASYCUDA_Id == 0)
+                AsycudaDocumentEntryDatas = new List<AsycudaDocumentEntryData>();
+
+            if (AsycudaDocument_Attachments == null && this.ASYCUDA_Id == 0)
+                AsycudaDocument_Attachments = new List<AsycudaDocument_Attachments>();
+
         }
 
         //public ObservableCollection<xcuda_Item> xcuda_Item
