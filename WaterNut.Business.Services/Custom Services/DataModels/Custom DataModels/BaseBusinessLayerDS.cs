@@ -424,7 +424,7 @@ namespace WaterNut.DataSpace
         public xcuda_ASYCUDA CreateNewAsycudaDocument(AsycudaDocumentSet CurrentAsycudaDocumentSet)
         {
             var ndoc = new xcuda_ASYCUDA(true) {TrackingState = TrackingState.Added};
-
+            ndoc.SetupProperties();
 
             if (CurrentAsycudaDocumentSet != null)
             {

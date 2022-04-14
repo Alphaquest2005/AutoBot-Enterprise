@@ -67,7 +67,7 @@ using xcuda_Tarification = DocumentItemDS.Business.Entities.xcuda_Tarification;
 
 namespace AutoBot
 {
-    public class Utils
+    public partial class Utils
     {
         public const int _noOfCyclesBeforeHardExit = 60;
         public static int maxRowsToFindHeader = 10;
@@ -261,45 +261,6 @@ namespace AutoBot
 
 
 
-        public static List<Tuple<AsycudaDocumentSetEx, string>> CurrentPOInfo()
-        {
-            try
-            {
-                using (var ctx = new CoreEntitiesContext())
-                {
-                    ctx.Database.CommandTimeout = 10;
-                    var poDocSet = ctx.TODO_PODocSet.Where(x =>
-                        x.ApplicationSettingsId ==
-                        BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId).ToList();
-                    if (poDocSet.Any())
-                    {
-                        var itmlst = poDocSet.Select(x => x.AsycudaDocumentSetId).ToList();
-                        var docSet = ctx.AsycudaDocumentSetExs.Where(x =>
-                            itmlst.Any(z => z == x.AsycudaDocumentSetId)).ToList();
-                        var lst = new List<Tuple<AsycudaDocumentSetEx, string>>();
-                        foreach (var item in docSet)
-                        {
-
-                            var dirPath = StringExtensions.UpdateToCurrentUser(Path.Combine(
-                                BaseDataModel.Instance.CurrentApplicationSettings.DataFolder,
-                                item.Declarant_Reference_Number));
-                            lst.Add(new Tuple<AsycudaDocumentSetEx, string>(item, dirPath));
-                        }
-
-                        return lst;
-                    }
-
-                    return new List<Tuple<AsycudaDocumentSetEx, string>>();
-                }
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-                throw;
-            }
-
-        }
-
       
 
 
@@ -357,52 +318,7 @@ namespace AutoBot
 
         }
 
-        public class SaleReportLine
-        {
-            public int Line { get; set; }
-            public DateTime Date { get; set; }
-            public string InvoiceNo { get; set; }
-            public string CustomerName { get; set; }
-            public string ItemNumber { get; set; }
-            public string ItemDescription { get; set; }
-            public string TariffCode { get; set; }
-            public double SalesQuantity { get; set; }
 
-            public double SalesFactor { get; set; }
-            public double xQuantity { get; set; }
-            public double Price { get; set; }
-            public string SalesType { get; set; }
-            public double GrossSales { get; set; }
-            public string PreviousCNumber { get; set; }
-            public string PreviousLineNumber { get; set; }
-            public string PreviousRegDate { get; set; }
-            public double CIFValue { get; set; }
-            public double DutyLiablity { get; set; }
-            public string Comment { get; set; }
-        }
-
-        public class UnClassifiedItem
-        {
-            public string InvoiceNo { get; set; }
-            public int LineNumber { get; set; }
-            public string ItemNumber { get; set; }
-            public string ItemDescription { get; set; }
-            public string TariffCode { get; set; }
-
-        }
-
-        public class BlankLicenseDescription
-        {
-            public string InvoiceNo { get; set; }
-            public int LineNumber { get; set; }
-            public string ItemNumber { get; set; }
-            public string ItemDescription { get; set; }
-            public string TariffCode { get; set; }
-            public string LicenseDescription { get; set; }
-
-        }
-
-        
         public static void SaveAttachments(FileInfo[] csvFiles, FileTypes fileType, Email email)
         {
             try
@@ -561,145 +477,6 @@ namespace AutoBot
             ctx.SaveChanges();
         }
 
-        //public static void SaveInfo(FileInfo[] csvFiles, FileTypes fileType, List<EmailInfoMappings> emailMappings)
-        //{
-        //    foreach (var file in csvFiles.Where(x => x.Name == "Info.txt"))
-        //    {
-        //        var fileTxt = File.ReadAllLines(file.FullName);
-        //        SaveAsycudaDocumentSet(fileTxt, fileType,emailMappings);
-        //        // SaveEntryData(oldDocSet, fileTxt);
-        //    }
-        //}
-
-        //public static void SaveAsycudaDocumentSet(string[] fileTxt, FileTypes fileType, List<EmailInfoMappings> emailMappings)
-        //{
-        //    try
-        //    {
-
-
-        //        using (var ctx = new CoreEntitiesContext())
-        //        {
-        //            var res = emailMappings.Where(x => x.UpdateDatabase == true).ToList();
-        //            string dbStatement = "";
-        //            foreach (var line in fileTxt)
-        //            {
-
-        //                var im = res.SelectMany(x => x.InfoMapping.InfoMappingRegEx.Select(z => new
-        //                {
-        //                    Rx = z,
-        //                    Key = Regex.Match(line, z.KeyRegX, RegexOptions.IgnoreCase),
-        //                    Field = Regex.Match(line, z.FieldRx, RegexOptions.IgnoreCase)
-        //                }))
-        //                    .Where(z => z.Key.Success && z.Field.Success).ToList();
-
-        //                //match = Regex.Match(line,
-        //                //    @"[.]*((?<Key>[a-zA-Z\(\)]+)[:\s\#]+(?<Value>[a-zA-Z0-9\- :$,/\.]*))", RegexOptions.IgnoreCase);
-        //                //res.Where(x =>
-        //                //                            x.Key.ToLower() == match.Groups["Key"].Value.Trim().ToLower())
-
-        //                if (im.Any())
-        //                    foreach (var infoMapping in im)
-        //                    {
-        //                        var val = infoMapping.Rx.FieldReplaceRx == null
-        //                            ? infoMapping.Field.Groups["Value"].Value.Trim()
-        //                            : Regex.Match(
-        //                                    Regex.Replace(line, infoMapping.Rx.FieldRx, infoMapping.Rx.FieldReplaceRx,
-        //                                        RegexOptions.IgnoreCase), infoMapping.Rx.FieldRx,
-        //                                    RegexOptions.IgnoreCase)
-        //                                .Value.Trim();
-
-        //                        dbStatement +=
-        //                            $@" Update AsycudaDocumentSet Set {infoMapping.Rx.InfoMapping.Field} = '{
-        //                                    ReplaceSpecialChar(val,
-        //                                        "")
-        //                                }' Where AsycudaDocumentSetId = '{fileType.Data.First(z => z.Key == )}';";
-        //                    }
-        //            }
-
-        //            if (!string.IsNullOrEmpty(dbStatement)) ctx.Database.ExecuteSqlCommand(dbStatement);
-        //        }
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        Console.WriteLine(e);
-        //        throw;
-        //    }
-        //}
-
-        //public static void SaveEntryData(int oldDocSet, string[] fileTxt)
-        //{
-        //    using (var ctx = new CoreEntitiesContext())
-        //    {
-        //        var res = ctx.InfoMapping.Where(x => x.EntityType == "Discrepancy")
-        //            .ToList();
-        //        string dbStatement = "";
-        //        foreach (var line in fileTxt)
-        //        {
-        //            var match = Regex.Match(line,
-        //                @"((?<Key>.[a-zA-Z\s\(\)]*):(?<Value>.[a-zA-Z0-9\- :$.]*))", RegexOptions.IgnoreCase);
-        //            if (match.Success)
-        //                foreach (var infoMapping in res.Where(x =>
-        //                    x.Key.ToLower() == match.Groups["Key"].Value.Trim().ToLower()))
-        //                {
-        //                    dbStatement +=
-        //                        $@" Update AsycudaDocumentSet Set {infoMapping.Field} = '{
-        //                                ReplaceSpecialChar(match.Groups["Value"].Value.Trim(),
-        //                                    "")
-        //                            }' Where AsycudaDocumentSetId = '{oldDocSet}';";
-        //                }
-        //        }
-
-        //        if (!string.IsNullOrEmpty(dbStatement)) ctx.Database.ExecuteSqlCommand(dbStatement);
-        //    }
-        //}
-
-
-        public static bool VerifyCSVImport(FileInfo file)
-        {
-            var dt = FileUtils.CSV2DataTable(file, "NO");
-            if (dt.Rows.Count == 0) return false;
-            var fileRes = dt.AsEnumerable()
-                .Where(x => x[0] != DBNull.Value)
-                .Select(x => new
-                {
-                    Invoice = x.Table.Columns.Contains("Invoice #") ? x["Invoice #"].ToString() : x["Invoice#"].ToString(),
-                    Total = Convert.ToDouble(x["Quantity"]) * Convert.ToDouble(x["Cost"])
-                })
-                .GroupBy(x => x.Invoice)
-                .Select(x => new
-                {
-                    Invoice = x.Key,
-                    Total = Math.Round(x.Sum(z => z.Total), 2)
-                }).ToList();
-
-            using (var ctx = new EntryDataQSContext())
-            {
-                var dbres = ctx.EntryDataDetailsExes
-                    .Select(x => new
-                    {
-                        Invoice = x.EntryDataId,
-                        Total = x.Quantity * x.Cost
-                    })
-                    .GroupBy(x => x.Invoice)
-                    .Select(x => new
-                    {
-                        Invoice = x.Key,
-                        Total = Math.Round(x.Sum(z => z.Total), 2)
-                    }).ToList();
-                var res = fileRes.GroupJoin(dbres, x => x.Invoice, y => y.Invoice,
-                        (x, y) => new { file = x, db = y.SingleOrDefault() })
-                    .Where(x => x.file.Total != x.db.Total)
-                    .Select(x => new { x.file.Invoice, FileTotal = x.file.Total, dbTotal = x.db.Total })
-                    .ToList();
-
-                if (!res.Any())
-                {
-                    //TODO: Log Message
-                    return true;
-                }
-            }
-
-            return false;
-        }
+ 
     }
 }

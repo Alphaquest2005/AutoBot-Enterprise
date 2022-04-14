@@ -314,7 +314,10 @@
     <Compile Include="SubmitDiscrepanciesErrorReport.cs" />
     <Compile Include="SubmitEntryData.cs" />
     <Compile Include="UpdateInvoice.cs" />
+    <Compile Include="Utils.BlankLicenseDescription.cs" />
     <Compile Include="Utils.cs" />
+    <Compile Include="Utils.SaleReportLine.cs" />
+    <Compile Include="Utils.UnClassifiedItem.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config">

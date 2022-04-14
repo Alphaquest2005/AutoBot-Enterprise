@@ -36,7 +36,7 @@ namespace DocumentDS.Business.Entities
         //}
 
 
-        partial void SetupProperties()
+        public partial void SetupProperties()
         {
             if (xcuda_Identification == null && this.ASYCUDA_Id == 0)
                 xcuda_Identification = new xcuda_Identification(true) { TrackingState = TrackingState.Added };

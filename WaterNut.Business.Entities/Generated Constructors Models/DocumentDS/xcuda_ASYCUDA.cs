@@ -21,7 +21,7 @@
        {
           if(start) StartTracking();
        }
-    partial void SetupProperties();
+    public partial void SetupProperties();
     partial void AutoGenStartUp();
     partial void CustomClassStartUp();
     partial void MyNavPropStartUp();
