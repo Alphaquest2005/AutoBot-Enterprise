@@ -43,10 +43,8 @@ namespace WaterNut.Views
 
 		private async void DeleteAll(object sender, MouseButtonEventArgs e)
 		{
-			var frameworkElement = sender as FrameworkElement;
-			if (frameworkElement == null) return;
-			var asycudaDocumentSet = frameworkElement.DataContext as VirtualListItem<AsycudaDocumentSetEx>;
-			if (asycudaDocumentSet != null)
+            if (!(sender is FrameworkElement frameworkElement)) return;
+            if (frameworkElement.DataContext is VirtualListItem<AsycudaDocumentSetEx> asycudaDocumentSet)
 				await im.DeleteDocuments(asycudaDocumentSet.Data.AsycudaDocumentSetId).ConfigureAwait(false);
 			// BaseViewModel.Instance.CurrentAsycudaDocumentSet.Clear();
 		}
@@ -70,10 +68,8 @@ namespace WaterNut.Views
 
 		private async void ExportAll(object sender, MouseButtonEventArgs e)
 		{
-			var frameworkElement = sender as FrameworkElement;
-			if (frameworkElement == null) return;
-			var asycudaDocumentSet = (frameworkElement.DataContext) as VirtualListItem<AsycudaDocumentSetEx>;
-			if (asycudaDocumentSet != null)
+            if (!(sender is FrameworkElement frameworkElement)) return;
+            if ((frameworkElement.DataContext) is VirtualListItem<AsycudaDocumentSetEx> asycudaDocumentSet)
 				await im.ExportDocSet(asycudaDocumentSet.Data as AsycudaDocumentSetEx).ConfigureAwait(false);
 		    
             //  BaseViewModel.Instance.CurrentAsycudaDocumentSet.ExportDocSet();
@@ -100,17 +96,14 @@ namespace WaterNut.Views
 		{
 			if (e.Key == Key.Enter)
 			{
-				var textBox = sender as TextBox;
-				if (textBox != null)
+                if (sender is TextBox textBox)
 					textBox.GetBindingExpression(TextBox.TextProperty).UpdateSource();
 			}
 		}
 
 		private void DatePicker_OnSelectedDateChanged(object sender, SelectionChangedEventArgs e)
 		{
-		   
-				var datePicker = sender as DatePicker;
-				if (datePicker != null)
+            if (sender is DatePicker datePicker)
 					datePicker.GetBindingExpression(DatePicker.SelectedDateProperty).UpdateSource();
 		  
 		}

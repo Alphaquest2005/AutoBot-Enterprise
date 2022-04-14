@@ -48,17 +48,14 @@ namespace WaterNut.Views
         {
             if (e.Key == Key.Enter)
             {
-                var textBox = sender as TextBox;
-                if (textBox != null)
+                if (sender is TextBox textBox)
                     textBox.GetBindingExpression(TextBox.TextProperty).UpdateSource();
             }
         }
 
 	    private void DatePicker_OnSelectedDateChanged(object sender, SelectionChangedEventArgs e)
 	    {
-            
-                var textBox = sender as DatePicker;
-                if (textBox != null)
+            if (sender is DatePicker textBox)
                     textBox.GetBindingExpression(DatePicker.SelectedDateProperty).UpdateSource();
            
 	    }

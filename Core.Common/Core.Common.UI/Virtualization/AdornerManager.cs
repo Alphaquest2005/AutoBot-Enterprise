@@ -33,8 +33,7 @@ namespace Core.Common.UI.DataVirtualization
 
         private static void OnAdornerChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            var element = d as FrameworkElement;
-            if (element == null)
+            if (!(d is FrameworkElement element))
                 return;
 
             var oldDecorator = GetDecoratorAdorner(element);
@@ -48,12 +47,10 @@ namespace Core.Common.UI.DataVirtualization
 
         private static DecoratorAdorner GetNewDecorator(FrameworkElement element, object newValue)
         {
-            var newTemplate = newValue as DataTemplate;
-            if (newTemplate != null)
+            if (newValue is DataTemplate newTemplate)
                 return new DecoratorAdorner(element, newTemplate);
 
-            var newUIElement = newValue as UIElement;
-            if (newUIElement != null)
+            if (newValue is UIElement newUIElement)
                 return new DecoratorAdorner(element, newUIElement);
 
             return null;

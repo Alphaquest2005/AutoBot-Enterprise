@@ -535,39 +535,37 @@ namespace WaterNut.DataSpace
                           EntryData =
                               new
                               {
-                                  EntryDataId = g.Key.EntryDataId,
-                                  EntryDataDate = g.Key.EntryDataDate,
-                                  CustomerName = g.Key.CustomerName,
-                                  Tax = ((dynamic)g.FirstOrDefault())?.Tax,
+                                  g.Key.EntryDataId,
+                                  g.Key.EntryDataDate,
+                                  g.Key.CustomerName,
+                                  ((dynamic)g.FirstOrDefault())?.Tax,
 
                                   Supplier = string.IsNullOrEmpty(g.Max(x => ((dynamic)x).SupplierCode))
                                       ? null
                                       : g.Max(x => ((dynamic)x).SupplierCode?.ToUpper()),
-                                  Currency = ((dynamic)g.FirstOrDefault(x => ((dynamic)x).Currency != ""))?.Currency,
-                             
-                                  DocumentType = ((dynamic)g.FirstOrDefault(x => ((dynamic)x).DocumentType != ""))?.DocumentType,
-                                  SupplierInvoiceNo = ((dynamic)g.FirstOrDefault(x => ((dynamic)x).SupplierInvoiceNo != ""))?.SupplierInvoiceNo,
-                                  PreviousCNumber = ((dynamic)g.FirstOrDefault(x => ((dynamic)x).PreviousCNumber != ""))?.PreviousCNumber,
-                                  FinancialInformation = ((dynamic)g.FirstOrDefault(x => ((dynamic)x).FinancialInformation != ""))?.FinancialInformation,
-
-                                  PONumber = ((dynamic)g.FirstOrDefault(x => ((dynamic)x).PONumber != ""))?.PONumber,
+                                  ((dynamic)g.FirstOrDefault(x => ((dynamic)x).Currency != ""))?.Currency,
+                                  ((dynamic)g.FirstOrDefault(x => ((dynamic)x).DocumentType != ""))?.DocumentType,
+                                  ((dynamic)g.FirstOrDefault(x => ((dynamic)x).SupplierInvoiceNo != ""))?.SupplierInvoiceNo,
+                                  ((dynamic)g.FirstOrDefault(x => ((dynamic)x).PreviousCNumber != ""))?.PreviousCNumber,
+                                  ((dynamic)g.FirstOrDefault(x => ((dynamic)x).FinancialInformation != ""))?.FinancialInformation,
+                                  ((dynamic)g.FirstOrDefault(x => ((dynamic)x).PONumber != ""))?.PONumber,
                                   
 
                               },
                           EntryDataDetails = g.Where(x => !string.IsNullOrEmpty(x.ItemNumber)).Select(x =>
                               new 
                               {
-                                  EntryDataId = x.EntryDataId,
+                                  x.EntryDataId,
                                 //Can't set entrydata_id here cuz this is from data
                                 ItemNumber = ((string)x.ItemNumber.ToUpper()).Truncate(20),
-                                  ItemDescription = x.ItemDescription,
-                                  SupplierItemNumber = x.SupplierItemNumber,
-                                  SupplierItemDescription = x.SupplierItemDescription,
+                                x.ItemDescription,
+                                  x.SupplierItemNumber,
+                                  x.SupplierItemDescription,
                                   Cost = x.Cost ?? 0,
                                   TotalCost = Convert.ToDouble(x.TotalCost ?? 0.0),
                                   Quantity = Convert.ToDouble(x.Quantity ?? 0.0),
                                   FileLineNumber = x.LineNumber,
-                                  Units = x.Units,
+                                  x.Units,
                                   Freight = Convert.ToDouble(x.Freight ?? 0.0),
                                   Weight = Convert.ToDouble(x.Weight ?? 0.0),
                                   InternalFreight = Convert.ToDouble(x.InternalFreight ?? 0.0),
@@ -576,10 +574,10 @@ namespace WaterNut.DataSpace
                                   TaxAmount = x.Tax ?? 0,
                                   CNumber = x.PreviousCNumber,
                                   CLineNumber = (int?)x.PreviousCLineNumber,
-                                  PreviousInvoiceNumber = x.PreviousInvoiceNumber,
-                                  Comment = x.Comment,
+                                  x.PreviousInvoiceNumber,
+                                  x.Comment,
                                   InventoryItemId = x.InventoryItemId ?? 0,
-                                  EffectiveDate = x.EffectiveDate,
+                                  x.EffectiveDate,
                                   VolumeLiters = Convert.ToDouble(x.Gallons * GalToLtrRate ?? Convert.ToDouble(x.Liters ?? 0.0)),
 
                               }),
@@ -594,7 +592,7 @@ namespace WaterNut.DataSpace
                               InvoiceTotal = Convert.ToDouble(x.InvoiceTotal ?? 0.0),
                               TotalTax = Convert.ToDouble(x.TotalTax ?? 0.0),
                               Packages = Convert.ToInt32(x.Packages ?? 0),
-                              WarehouseNo = x.WarehouseNo,
+                              x.WarehouseNo,
 
 
 
@@ -1126,25 +1124,25 @@ namespace WaterNut.DataSpace
                         EntryData =
                             new
                             {
-                                EntryDataId = g.Key.EntryDataId,
-                                EntryDataDate = g.Key.EntryDataDate,
+                                g.Key.EntryDataId,
+                                g.Key.EntryDataDate,
                                 AsycudaDocumentSetId = docSet.FirstOrDefault(x => x.SystemDocumentSet == null)?.AsycudaDocumentSetId ?? docSet.First().AsycudaDocumentSetId,
                                 ApplicationSettingsId = docSet.FirstOrDefault(x => x.SystemDocumentSet == null)?.ApplicationSettingsId ?? docSet.First().ApplicationSettingsId,
-                                CustomerName = g.Key.CustomerName,
-                                Tax = ((dynamic)g.FirstOrDefault())?.Tax,
+                                g.Key.CustomerName,
+                                ((dynamic)g.FirstOrDefault())?.Tax,
                                 
                                 Supplier = string.IsNullOrEmpty(g.Max(x => ((dynamic)x).SupplierCode))
                                     ? null
                                     : g.Max(x => ((dynamic)x).SupplierCode?.ToUpper()),
-                                Currency = ((dynamic)g.FirstOrDefault(x => ((dynamic)x).Currency != ""))?.Currency,
+                                ((dynamic)g.FirstOrDefault(x => ((dynamic)x).Currency != ""))?.Currency,
                                 EmailId = emailId,
                                 FileTypeId = fileType.Id,
-                                DocumentType = ((dynamic)g.FirstOrDefault(x => ((dynamic)x).DocumentType != ""))?.DocumentType,
-                                SupplierInvoiceNo = ((dynamic)g.FirstOrDefault(x => ((dynamic)x).SupplierInvoiceNo != ""))?.SupplierInvoiceNo,
-                                PreviousCNumber = ((dynamic)g.FirstOrDefault(x => ((dynamic)x).PreviousCNumber != ""))?.PreviousCNumber,
-                                FinancialInformation = ((dynamic)g.FirstOrDefault(x => ((dynamic)x).FinancialInformation != ""))?.FinancialInformation,
-                                Vendor = ((dynamic)g.FirstOrDefault(x => ((dynamic)x).Vendor != ""))?.Vendor,
-                                PONumber = ((dynamic)g.FirstOrDefault(x => ((dynamic)x).PONumber != ""))?.PONumber,
+                                ((dynamic)g.FirstOrDefault(x => ((dynamic)x).DocumentType != ""))?.DocumentType,
+                                ((dynamic)g.FirstOrDefault(x => ((dynamic)x).SupplierInvoiceNo != ""))?.SupplierInvoiceNo,
+                                ((dynamic)g.FirstOrDefault(x => ((dynamic)x).PreviousCNumber != ""))?.PreviousCNumber,
+                                ((dynamic)g.FirstOrDefault(x => ((dynamic)x).FinancialInformation != ""))?.FinancialInformation,
+                                ((dynamic)g.FirstOrDefault(x => ((dynamic)x).Vendor != ""))?.Vendor,
+                                ((dynamic)g.FirstOrDefault(x => ((dynamic)x).PONumber != ""))?.PONumber,
                                 SourceFile = droppedFilePath,
                                 
                             },
@@ -1186,7 +1184,7 @@ namespace WaterNut.DataSpace
                             InvoiceTotal = Convert.ToDouble(x.InvoiceTotal ?? 0.0),
                             TotalTax = Convert.ToDouble(x.TotalTax ?? 0.0),
                             Packages = Convert.ToInt32(x.Packages ?? 0),
-                            WarehouseNo = x.WarehouseNo,
+                            x.WarehouseNo,
 
 
 

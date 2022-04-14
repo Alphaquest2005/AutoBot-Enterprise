@@ -57,6 +57,7 @@ using InventoryItemsEx = EntryDataDS.Business.Entities.InventoryItemsEx;
 using Registered = LicenseDS.Business.Entities.Registered;
 using TariffSupUnitLkps = AllocationDS.Business.Entities.TariffSupUnitLkps;
 using xcuda_ASYCUDA = DocumentDS.Business.Entities.xcuda_ASYCUDA;
+using xcuda_ASYCUDA_ExtendedProperties = DocumentDS.Business.Entities.xcuda_ASYCUDA_ExtendedProperties;
 using xcuda_Attached_documents = DocumentItemDS.Business.Entities.xcuda_Attached_documents;
 using xcuda_Attachments = DocumentItemDS.Business.Entities.xcuda_Attachments;
 using xcuda_Container = DocumentDS.Business.Entities.xcuda_Container;
@@ -90,9 +91,9 @@ namespace WaterNut.DataSpace
         private IEnumerable<Document_Type> _document_Types;
 
         private IEnumerable<ExportTemplate> _exportTemplates;
-        private static double _minimumPossibleAsycudaWeight = .01;
+        private static readonly double _minimumPossibleAsycudaWeight = .01;
         private static double _runningMiniumWeight = 0.0;
-        private static double _weightAsycudaNormallyOffBy = 0.5;
+        private static readonly double WeightAsycudaNormallyOffBy = 0.5;
 
         static BaseDataModel()
         {
@@ -403,10 +404,12 @@ namespace WaterNut.DataSpace
 
         public async Task<DocumentCT> CreateDocumentCt(AsycudaDocumentSet currentAsycudaDocumentSet)
         {
-            var cdoc = new DocumentCT();
-            cdoc.Document = CreateNewAsycudaDocument(currentAsycudaDocumentSet);
+            var cdoc = new DocumentCT
+            {
+                Document = CreateNewAsycudaDocument(currentAsycudaDocumentSet),
+                DocumentItems = new List<xcuda_Item>()
+            };
 
-            cdoc.DocumentItems = new List<xcuda_Item>();
             return cdoc;
         }
 
@@ -1556,7 +1559,7 @@ namespace WaterNut.DataSpace
                 }
             }
 
-            totalWeight -= _weightAsycudaNormallyOffBy;
+            totalWeight -= WeightAsycudaNormallyOffBy;
 
             var freightRate = totalFreight != 0 ? totalFreight / totalfob : 0;
             var weightRate = totalWeight != 0 ? totalWeight / totalItemQuantity : 0;
@@ -1723,14 +1726,15 @@ namespace WaterNut.DataSpace
                 Convert.ToSingle(Math.Round(Convert.ToDecimal(pod.Quantity) * Convert.ToDecimal(pod.Cost), 4));
 
 
-            var ivc = new xcuda_Item_Invoice(true) {TrackingState = TrackingState.Added};
-
-            ivc.Amount_national_currency = Convert.ToSingle(Math.Round(
-                Convert.ToDecimal(pod.Quantity) * Convert.ToDecimal(pod.Cost) *
-                Convert.ToDecimal(cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.AsycudaDocumentSet.Exchange_Rate),
-                4));
-            ivc.Amount_foreign_currency =
-                Convert.ToSingle(Math.Round(Convert.ToDecimal(pod.Quantity) * Convert.ToDecimal(pod.Cost), 4));
+            var ivc = new xcuda_Item_Invoice(true)
+            {
+                TrackingState = TrackingState.Added,
+                Amount_national_currency = Convert.ToSingle(Math.Round(
+                    Convert.ToDecimal(pod.Quantity) * Convert.ToDecimal(pod.Cost) *
+                    Convert.ToDecimal(cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.AsycudaDocumentSet.Exchange_Rate),
+                    4)),
+                Amount_foreign_currency = Convert.ToSingle(Math.Round(Convert.ToDecimal(pod.Quantity) * Convert.ToDecimal(pod.Cost), 4))
+            };
 
 
             if (cdoc.Document.xcuda_Valuation != null && cdoc.Document.xcuda_Valuation.xcuda_Gs_Invoice != null)
@@ -1766,13 +1770,12 @@ namespace WaterNut.DataSpace
                     {
                         itm.xcuda_Valuation_item.xcuda_Weight_itm = new xcuda_Weight_itm(true)
                         {
-                            TrackingState = TrackingState.Added
+                            TrackingState = TrackingState.Added,
+                            Gross_weight_itm = (float) pod.Quantity *
+                                               Convert.ToSingle(.1),
+                            Net_weight_itm = (float) pod.Quantity *
+                                             Convert.ToSingle(.1)
                         };
-                        itm.xcuda_Valuation_item.xcuda_Weight_itm.Gross_weight_itm = (float) pod.Quantity *
-                            Convert.ToSingle(.1);
-
-                        itm.xcuda_Valuation_item.xcuda_Weight_itm.Net_weight_itm = (float) pod.Quantity *
-                            Convert.ToSingle(.1);
                     }
 
                     if (pod.Weight != 0)
@@ -1894,12 +1897,12 @@ namespace WaterNut.DataSpace
         {
             itm.xcuda_Valuation_item.xcuda_Weight_itm = new xcuda_Weight_itm(true)
             {
-                TrackingState = TrackingState.Added
+                TrackingState = TrackingState.Added,
+                Gross_weight_itm = (float) pod.Quantity *
+                                   Convert.ToSingle(_minimumPossibleAsycudaWeight),
+                Net_weight_itm = (float) pod.Quantity *
+                                 Convert.ToSingle(_minimumPossibleAsycudaWeight)
             };
-            itm.xcuda_Valuation_item.xcuda_Weight_itm.Gross_weight_itm = (float) pod.Quantity *
-                                                                         Convert.ToSingle(_minimumPossibleAsycudaWeight);
-            itm.xcuda_Valuation_item.xcuda_Weight_itm.Net_weight_itm = (float) pod.Quantity *
-                                                                       Convert.ToSingle(_minimumPossibleAsycudaWeight);
         }
 
         public string CleanText(string p)
@@ -2323,12 +2326,14 @@ namespace WaterNut.DataSpace
 
                 if (a != null)
                 {
-                    var importer = new AsycudaToDataBase421();
-                    importer.UpdateItemsTariffCode = importTariffCodes;
-                    importer.ImportOnlyRegisteredDocuments = importOnlyRegisteredDocument;
-                    importer.OverwriteExisting = overwriteExisting;
-                    importer.NoMessages = noMessages;
-                    importer.LinkPi = linkPi;
+                    var importer = new AsycudaToDataBase421
+                    {
+                        UpdateItemsTariffCode = importTariffCodes,
+                        ImportOnlyRegisteredDocuments = importOnlyRegisteredDocument,
+                        OverwriteExisting = overwriteExisting,
+                        NoMessages = noMessages,
+                        LinkPi = linkPi
+                    };
                     importer.SaveToDatabase(a, docSet, new FileInfo(f)).Wait();
                 }
 
@@ -2394,22 +2399,22 @@ namespace WaterNut.DataSpace
 
                 i.Previous_doc.Summary_declaration.Text.Clear();
                 i.Previous_doc.Summary_declaration.Text.Add(
-                    $"{olddoc.Identification.Office_segment.Customs_clearance_office_code.Text[0]} {DateTime.Parse(olddoc.Identification.Registration.Date).Year.ToString()} C {olddoc.Identification.Registration.Number} art. {linenumber}");
+                    $"{olddoc.Identification.Office_segment.Customs_clearance_office_code.Text[0]} {DateTime.Parse(olddoc.Identification.Registration.Date).Year} C {olddoc.Identification.Registration.Number} art. {linenumber}");
 
 
                 // create previous item
 
 
-                var pitm = new ASYCUDAPrev_decl();
-                pitm.Prev_decl_HS_code = i.Tarification.HScode.Commodity_code.Text.FirstOrDefault();
-                pitm.Prev_decl_HS_prec = i.Tarification.HScode.Precision_1.Text.FirstOrDefault();
-                pitm.Prev_decl_current_item = linenumber.ToString(); // piggy back the previous item count
-                pitm.Prev_decl_item_number = linenumber.ToString();
-
-                pitm.Prev_decl_weight =
-                    olditem.Valuation_item.Weight_itm.Net_weight_itm
-                        .ToString();
-                pitm.Prev_decl_weight_written_off = olditem.Valuation_item.Weight_itm.Net_weight_itm.ToString();
+                var pitm = new ASYCUDAPrev_decl
+                {
+                    Prev_decl_HS_code = i.Tarification.HScode.Commodity_code.Text.FirstOrDefault(),
+                    Prev_decl_HS_prec = i.Tarification.HScode.Precision_1.Text.FirstOrDefault(),
+                    Prev_decl_current_item = linenumber.ToString(), // piggy back the previous item count
+                    Prev_decl_item_number = linenumber.ToString(),
+                    Prev_decl_weight = olditem.Valuation_item.Weight_itm.Net_weight_itm
+                        .ToString(),
+                    Prev_decl_weight_written_off = olditem.Valuation_item.Weight_itm.Net_weight_itm.ToString()
+                };
 
                 if (!string.IsNullOrEmpty(olditem.Packages.Number_of_packages))
                 {
@@ -2758,11 +2763,9 @@ namespace WaterNut.DataSpace
                                 .ToList().DistinctBy(x => x.EntryDataDetailsId);
 
                             var res1 = entryDataDetailses.Where(x =>
-                                Instance.CurrentApplicationSettings.AssessIM7 == true
-                                    ? Math.Abs(x.EntryData.EntryDataEx.ExpectedTotal -
-                                               (x.EntryData.InvoiceTotal ?? x.EntryData.EntryDataEx
-                                                   .ExpectedTotal)) < 0.01
-                                    : true);
+                                Instance.CurrentApplicationSettings.AssessIM7 != true || Math.Abs(x.EntryData.EntryDataEx.ExpectedTotal -
+                                    (x.EntryData.InvoiceTotal ?? x.EntryData.EntryDataEx
+                                        .ExpectedTotal)) < 0.01);
 
 
                             res.AddRange(res1);
@@ -2842,8 +2845,20 @@ namespace WaterNut.DataSpace
                 "xcuda_ASYCUDA_ExtendedProperties"
             }).ConfigureAwait(false);
             i.StartTracking();
-            // null for now cuz there are no navigation properties involved.
-            //i.InjectFrom(asycudaDocument);
+            //null for now cuz there are no navigation properties involved.
+           i.InjectFrom(asycudaDocument);
+
+            //var i = new xcuda_ASYCUDA()
+            //{
+            //    ASYCUDA_Id = asycudaDocument.ASYCUDA_Id,
+            //    xcuda_ASYCUDA_ExtendedProperties = new xcuda_ASYCUDA_ExtendedProperties()
+            //    {
+            //        ASYCUDA_Id = asycudaDocument.ASYCUDA_Id,
+            //        TrackingState = TrackingState.Unchanged
+            //    },
+            //    TrackingState = TrackingState.Unchanged
+            //};
+
             i.xcuda_ASYCUDA_ExtendedProperties.StartTracking();
             if (i.xcuda_ASYCUDA_ExtendedProperties.EffectiveRegistrationDate !=
                 asycudaDocument.EffectiveRegistrationDate)
@@ -2852,7 +2867,10 @@ namespace WaterNut.DataSpace
             if (i.xcuda_ASYCUDA_ExtendedProperties.DoNotAllocate != asycudaDocument.DoNotAllocate)
                 i.xcuda_ASYCUDA_ExtendedProperties.DoNotAllocate = asycudaDocument.DoNotAllocate;
             if (i.xcuda_ASYCUDA_ExtendedProperties.ModifiedProperties != null)
-                await Save_xcuda_ASYCUDA(i).ConfigureAwait(false);
+            {
+               await Save_xcuda_ASYCUDA(i).ConfigureAwait(false);
+            }
+                
         }
 
         private async Task Save_xcuda_ASYCUDA(xcuda_ASYCUDA i)

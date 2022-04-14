@@ -190,12 +190,12 @@ namespace Core.Common.UI
                     if (MouseFinal.X - MouseFirst.X > 0)
                     {
                         if (Math.Abs(MouseFinal.X - MouseFirst.X) > 50)
-                            Counter = Counter + 1;
+                            Counter += 1;
                     }
                     else
                     {
                         if (Math.Abs(MouseFinal.X - MouseFirst.X) > 50)
-                            Counter = Counter - 1;
+                            Counter -= 1;
                     }
                 }
                 else
@@ -203,12 +203,12 @@ namespace Core.Common.UI
                     if (MouseFinal.Y - MouseFirst.Y > 0)
                     {
                         if (Math.Abs(MouseFinal.Y - MouseFirst.Y) > 50)
-                            Counter = Counter + 1;
+                            Counter += 1;
                     }
                     else
                     {
                         if (Math.Abs(MouseFinal.Y - MouseFirst.Y) > 50)
-                            Counter = Counter - 1;
+                            Counter -= 1;
                     }
                 }
 
@@ -228,13 +228,13 @@ namespace Core.Common.UI
                     {
                         //  pTo = (Counter - 1) * this.DesiredSize.Width;
                         pTo = (Counter - 1) * (MouseFinal.X - MouseFirst.X);
-                        Counter = Counter - 1;
+                        Counter -= 1;
                     }
                     else if (Counter <= Children.Count * -1)
                     {
                         // pTo = (Counter + 1) * this.DesiredSize.Width;
                         pTo = (Counter + 1) * (MouseFirst.X - MouseFinal.X);
-                        Counter = Counter + 1;
+                        Counter += 1;
                     }
                 }
                 else
@@ -251,13 +251,13 @@ namespace Core.Common.UI
                     {
                         //  pTo = (Counter - 1) * this.DesiredSize.Width;
                         pTo = (Counter - 1) * (MouseFinal.Y - MouseFirst.Y);
-                        Counter = Counter - 1;
+                        Counter -= 1;
                     }
                     else if (Counter <= Children.Count * -1)
                     {
                         // pTo = (Counter + 1) * this.DesiredSize.Width;
                         pTo = (Counter + 1) * (MouseFirst.Y - MouseFinal.Y);
-                        Counter = Counter + 1;
+                        Counter += 1;
                     }
                 }
 
@@ -288,7 +288,15 @@ namespace Core.Common.UI
 
             foreach (UIElement child in Children)
             {
-                child.Measure(availableSize);
+                try
+                {
+                    child.Measure(availableSize);
+                }
+                catch (Exception)
+                {
+                    
+                }
+                
                 resultSize.Width = Math.Max(resultSize.Width, DesiredSize.Width);
                 resultSize.Height = Math.Max(resultSize.Height, child.DesiredSize.Height);
             }

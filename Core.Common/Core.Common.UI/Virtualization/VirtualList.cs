@@ -48,9 +48,9 @@ namespace Core.Common.UI.DataVirtualization
             
 
             if (loader == null)
-                throw new ArgumentNullException("loader");
+                throw new ArgumentNullException(nameof(loader));
             if (pageSize <= 0)
-                throw new ArgumentOutOfRangeException("pageSize");
+                throw new ArgumentOutOfRangeException(nameof(pageSize));
 
             _synchronizationContext = synchronizationContext;
             _pageRequests = new QueuedBackgroundWorker<int>(LoadPage, synchronizationContext);
@@ -188,9 +188,9 @@ namespace Core.Common.UI.DataVirtualization
         public void CopyTo(VirtualListItem<T>[] array, int arrayIndex)
         {
             if (array == null)
-                throw new ArgumentNullException("array");
+                throw new ArgumentNullException(nameof(array));
             if (arrayIndex < 0)
-                throw new ArgumentOutOfRangeException("arrayIndex");
+                throw new ArgumentOutOfRangeException(nameof(arrayIndex));
             if (arrayIndex >= array.Length)
                 throw new ArgumentException("arrayIndex is greater or equal than the array length");
             if (arrayIndex + Count > array.Length)

@@ -30,10 +30,7 @@ namespace Core.Common.UI.DataVirtualization
 
         public QueuedBackgroundWorker(Action<T> doWorkCallback, SynchronizationContext synchronizationContext)
         {
-            if (doWorkCallback == null)
-                throw new ArgumentNullException("doWorkCallback");
-
-            _doWorkCallback = doWorkCallback;
+            _doWorkCallback = doWorkCallback ?? throw new ArgumentNullException(nameof(doWorkCallback));
             _synchronizationContext = synchronizationContext;
         }
 

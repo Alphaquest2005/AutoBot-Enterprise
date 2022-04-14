@@ -263,11 +263,11 @@ namespace WaterNut.DataSpace
                 res.AddRange(allHistoricSales
                     .GroupBy(g => new
                     {
-                        PreviousItem_Id = g.Summary.PreviousItem_Id,
-                        pCNumber = g.Summary.pCNumber,
-                        pLineNumber = g.Summary.pLineNumber,
+                        g.Summary.PreviousItem_Id,
+                        g.Summary.pCNumber,
+                        g.Summary.pLineNumber,
                         //  ItemNumber = g.ItemNumber,
-                        DutyFreePaid = g.Summary.DutyFreePaid,
+                        g.Summary.DutyFreePaid,
                         EntryType = g.Summary.Type ?? g.Summary.EntryDataType
 
                     })
@@ -294,11 +294,11 @@ namespace WaterNut.DataSpace
                     .Where(x => x.Summary.EntryDataDate >= startDate /*&& x.Summary.EntryDataDate <= endDate*/)
                     .GroupBy(g => new
                     {
-                        PreviousItem_Id = g.Summary.PreviousItem_Id,
-                        pCNumber = g.Summary.pCNumber,
-                        pLineNumber = g.Summary.pLineNumber,
+                        g.Summary.PreviousItem_Id,
+                        g.Summary.pCNumber,
+                        g.Summary.pLineNumber,
                         //ItemNumber = g.ItemNumber,
-                        DutyFreePaid = g.Summary.DutyFreePaid
+                        g.Summary.DutyFreePaid
 
                     })
                     .Select(x => new ItemSalesPiSummary
@@ -343,9 +343,9 @@ namespace WaterNut.DataSpace
                 universalDataSummary = _universalData
                     .GroupBy(g => new
                     {
-                        PreviousItem_Id = g.Summary.PreviousItem_Id,
-                        pCNumber = g.Summary.pCNumber,
-                        pLineNumber = g.Summary.pLineNumber,
+                        g.Summary.PreviousItem_Id,
+                        g.Summary.pCNumber,
+                        g.Summary.pLineNumber,
                         // ItemNumber = g.ItemNumber, /// took out all itemnumber because the pos can have different itemnumbers in entrydatadetails... c#14280 - 64
                     })
                     .Select(x => new ItemSalesPiSummary
@@ -372,9 +372,9 @@ namespace WaterNut.DataSpace
                 allSalesSummary = allSales
                     .GroupBy(g => new
                     {
-                        PreviousItem_Id = g.Summary.PreviousItem_Id,
-                        pCNumber = g.Summary.pCNumber,
-                        pLineNumber = g.Summary.pLineNumber,
+                        g.Summary.PreviousItem_Id,
+                        g.Summary.pCNumber,
+                        g.Summary.pLineNumber,
                        // entryType = g.Summary.Type??"Sales",
                         
                         // ItemNumber = g.ItemNumber,
@@ -518,7 +518,7 @@ namespace WaterNut.DataSpace
 
                             //  if (cdoc.Document.xcuda_General_information == null) cdoc.Document.xcuda_General_information = new xcuda_General_information(true) {TrackingState = TrackingState.Added};
                             cdoc.Document.xcuda_General_information.Comments_free_text =
-                                $"EffectiveAssessmentDate:{effectiveAssessmentDate.GetValueOrDefault().ToString("MMM-dd-yyyy")}";
+                                $"EffectiveAssessmentDate:{effectiveAssessmentDate.GetValueOrDefault():MMM-dd-yyyy}";
                             cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.EffectiveRegistrationDate =
                                 effectiveAssessmentDate;
                             if (autoAssess) cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.IsManuallyAssessed = true;
@@ -653,41 +653,6 @@ namespace WaterNut.DataSpace
             }
         }
 
-        private async Task<Document_Type> GetDocumentType(string dfp)
-        {
-            try
-            {
-
-                Document_Type dt;
-                using (var ctx = new Document_TypeService())
-                {
-                    if (dfp == "Duty Free")
-                    {
-                        dt =
-                            (await
-                                ctx.GetDocument_TypeByExpression(
-                                        "Type_of_declaration + Declaration_gen_procedure_code == \"EX9\"")
-                                    .ConfigureAwait(false)).FirstOrDefault();
-                    }
-                    else
-                    {
-                        dt =
-                            (await
-                                ctx.GetDocument_TypeByExpression(
-                                        "Type_of_declaration + Declaration_gen_procedure_code == \"IM4\"")
-                                    .ConfigureAwait(false)).FirstOrDefault();
-                    }
-                }
-
-                return dt;
-
-            }
-            catch (Exception)
-            {
-                Debugger.Break();
-                throw;
-            }
-        }
 
 
 
@@ -1123,8 +1088,7 @@ namespace WaterNut.DataSpace
                     {
                         if (nlst.Sum(x => x.QtyAllocated) + itm.QtyAllocated > 0)
                         {
-                            nlst = new List<EX9Allocations>();
-                            nlst.Add(itm);
+                            nlst = new List<EX9Allocations> { itm };
                             lst.RemoveAt(0);
                         }
                         else
@@ -1138,8 +1102,7 @@ namespace WaterNut.DataSpace
                     {
                         if (nlst.Sum(x => x.QtyAllocated) + itm.QtyAllocated > 0)
                         {
-                            nlst = new List<EX9Allocations>();
-                            nlst.Add(itm);
+                            nlst = new List<EX9Allocations> { itm };
                             lst.RemoveAt(0);
                         }
                         else
@@ -1736,10 +1699,10 @@ namespace WaterNut.DataSpace
 
                     itm.xcuda_Valuation_item.xcuda_Weight_itm = new xcuda_Weight_itm(true)
                     {
-                        TrackingState = TrackingState.Added
+                        TrackingState = TrackingState.Added,
+                        Gross_weight_itm = (double) pitm.Net_weight,
+                        Net_weight_itm = (double) pitm.Net_weight
                     };
-                    itm.xcuda_Valuation_item.xcuda_Weight_itm.Gross_weight_itm = (double) pitm.Net_weight;
-                    itm.xcuda_Valuation_item.xcuda_Weight_itm.Net_weight_itm = (double) pitm.Net_weight;
                     // adjusting because not using real statistical value when calculating
                     itm.xcuda_Valuation_item.xcuda_Item_Invoice.Amount_foreign_currency =
                         Convert.ToDouble(Math.Round((pitm.Current_value * (double) pitm.Suplementary_Quantity), 2));
@@ -1858,8 +1821,6 @@ namespace WaterNut.DataSpace
                 ctx.SaveChanges();
             }
         }
-
-        private static pDocumentItem oldPDocumentItem = null;
 
         private static Dictionary<int, List<previousItems>> docPreviousItems = new Dictionary<int, List<previousItems>>();
 
@@ -2051,23 +2012,13 @@ namespace WaterNut.DataSpace
 
 
             }
-            catch (Exception Ex)
+            catch (Exception ex)
             {
                 throw;
             }
 
         }
 
-        private static double CalculateTakeOut(double totalAllocatedQty, double remainingQtyToBeTakenOut,
-            double qtyAllocated, double piData, double salesFactor)
-        {
-            var wantToTakeOut = totalAllocatedQty - remainingQtyToBeTakenOut;
-            var couldtakeOut = (qtyAllocated - piData) / salesFactor;
-            if (couldtakeOut > wantToTakeOut) couldtakeOut = wantToTakeOut;
-
-            if (remainingQtyToBeTakenOut > totalAllocatedQty) couldtakeOut = totalAllocatedQty;
-            return couldtakeOut;
-        }
 
         private global::DocumentItemDS.Business.Entities.xcuda_PreviousItem CreatePreviousItem(AlloEntryLineData pod, int itmcount, string dfp)
         {

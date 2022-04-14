@@ -203,7 +203,7 @@ namespace EmailDownloader
                             }
                         }
 
-                        if (!CheckFileSizeLimit(client, fileTypes, lst, msg, dataFolder))
+                        if (!CheckFileSizeLimit(client, fileTypes, lst, msg))
                         {
                             imapClient.Inbox.AddFlags(uid, MessageFlags.Seen, true);
                             imapClient.Inbox.AddFlags(uid, MessageFlags.Seen, true);
@@ -234,7 +234,7 @@ namespace EmailDownloader
         }
 
         private static bool CheckFileSizeLimit(Client client, List<FileTypes> fileTypes, List<FileInfo> lst,
-            MimeMessage msg, string dataFolder)
+            MimeMessage msg)
         {
             var isGood = true;
             foreach (var fileType in fileTypes)

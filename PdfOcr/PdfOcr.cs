@@ -129,10 +129,12 @@ namespace pdf_ocr
 
         private void PdfToPngWithGhostscriptPngDevice(string srcFile, int pageNo, int dpiX, int dpiY, string tgtFile)
         {
-            GhostscriptPngDevice dev = new GhostscriptPngDevice(GhostscriptPngDeviceType.PngGray);
-            dev.GraphicsAlphaBits = GhostscriptImageDeviceAlphaBits.V_4;
-            dev.TextAlphaBits = GhostscriptImageDeviceAlphaBits.V_4;
-            dev.ResolutionXY = new GhostscriptImageDeviceResolution(dpiX, dpiY);
+            GhostscriptPngDevice dev = new GhostscriptPngDevice(GhostscriptPngDeviceType.PngGray)
+ {
+     GraphicsAlphaBits = GhostscriptImageDeviceAlphaBits.V_4,
+     TextAlphaBits = GhostscriptImageDeviceAlphaBits.V_4,
+     ResolutionXY = new GhostscriptImageDeviceResolution(dpiX, dpiY)
+ };
             dev.InputFiles.Add(srcFile);
             dev.Pdf.FirstPage = pageNo;
             dev.Pdf.LastPage = pageNo;

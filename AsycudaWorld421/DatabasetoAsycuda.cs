@@ -63,12 +63,10 @@ namespace Asycuda421
                 a.Transport.Container_flag = true;
                 foreach (var cnt in da.xcuda_Container)
                 {
-                    ASYCUDAContainer ac = null;
-
                     a.Container = new ObservableCollection<ASYCUDAContainer>();
 
 
-                    ac = new ASYCUDAContainer();
+                    var ac = new ASYCUDAContainer();
                     a.Container.Add(ac);
 
                     ac.Item_Number = cnt.Item_Number;
@@ -130,7 +128,6 @@ namespace Asycuda421
             {
                 var t = new ASYCUDATraders();
 
-                var c = new ASYCUDATradersConsignee();
                 if (da.xcuda_Traders.xcuda_Consignee != null)
                 {
                     t.Consignee = new ASYCUDATradersConsignee();
@@ -182,9 +179,11 @@ namespace Asycuda421
         {
             if (df != null && df.Amount_foreign_currency != 0)
             {
-                var f = new ASYCUDAValuationGs_deduction();
-                f.Amount_foreign_currency = df.Amount_foreign_currency.ToString();
-                f.Amount_national_currency = df.Amount_national_currency.ToString();
+                var f = new ASYCUDAValuationGs_deduction
+                {
+                    Amount_foreign_currency = df.Amount_foreign_currency.ToString(),
+                    Amount_national_currency = df.Amount_national_currency.ToString()
+                };
                 if (df.Currency_code != null)
                     f.Currency_code.Text.Add(df.Currency_code.Trim());
                 f.Currency_rate = df.Currency_rate.ToString();
@@ -196,9 +195,11 @@ namespace Asycuda421
         {
             if (df != null && df.Amount_foreign_currency != 0)
             {
-                var f = new ASYCUDAValuationGs_insurance();
-                f.Amount_foreign_currency = df.Amount_foreign_currency.ToString();
-                f.Amount_national_currency = df.Amount_national_currency.ToString();
+                var f = new ASYCUDAValuationGs_insurance
+                {
+                    Amount_foreign_currency = df.Amount_foreign_currency.ToString(),
+                    Amount_national_currency = df.Amount_national_currency.ToString()
+                };
                 if (df.Currency_code != null)
                     f.Currency_code.Text.Add(df.Currency_code.Trim());
                 f.Currency_rate = df.Currency_rate.ToString();
@@ -210,9 +211,11 @@ namespace Asycuda421
         {
             if (df != null && df.Amount_foreign_currency != 0)
             {
-                var f = new ASYCUDAValuationGs_other_cost();
-                f.Amount_foreign_currency = df.Amount_foreign_currency.ToString();
-                f.Amount_national_currency = df.Amount_national_currency.ToString();
+                var f = new ASYCUDAValuationGs_other_cost
+                {
+                    Amount_foreign_currency = df.Amount_foreign_currency.ToString(),
+                    Amount_national_currency = df.Amount_national_currency.ToString()
+                };
                 if (df.Currency_code != null)
                     f.Currency_code.Text.Add(df.Currency_code.Trim());
                 f.Currency_rate = df.Currency_rate.ToString();
@@ -224,9 +227,11 @@ namespace Asycuda421
         {
             if (df != null && df.Amount_foreign_currency != 0)
             {
-                var f = new ASYCUDAValuationGs_internal_freight();
-                f.Amount_foreign_currency = df.Amount_foreign_currency.ToString();
-                f.Amount_national_currency = df.Amount_national_currency.ToString();
+                var f = new ASYCUDAValuationGs_internal_freight
+                {
+                    Amount_foreign_currency = df.Amount_foreign_currency.ToString(),
+                    Amount_national_currency = df.Amount_national_currency.ToString()
+                };
                 if (df.Currency_code != null)
                     f.Currency_code.Text.Add(df.Currency_code.Trim());
                 f.Currency_rate = df.Currency_rate.ToString();
@@ -238,8 +243,10 @@ namespace Asycuda421
         {
             if (dw != null)
             {
-                var w = new ASYCUDAValuationWeight();
-                w.Gross_weight = dw.Gross_weight.ToString();
+                var w = new ASYCUDAValuationWeight
+                {
+                    Gross_weight = dw.Gross_weight.ToString()
+                };
                 v.Weight = w;
             }
         }
@@ -248,9 +255,11 @@ namespace Asycuda421
         {
             if (df != null && df.Amount_foreign_currency != 0)
             {
-                var f = new ASYCUDAValuationGs_external_freight();
-                f.Amount_foreign_currency = df.Amount_foreign_currency.ToString();
-                f.Amount_national_currency = df.Amount_national_currency.ToString();
+                var f = new ASYCUDAValuationGs_external_freight
+                {
+                    Amount_foreign_currency = df.Amount_foreign_currency.ToString(),
+                    Amount_national_currency = df.Amount_national_currency.ToString()
+                };
                 if (df.Currency_code != null)
                     f.Currency_code.Text.Add(df.Currency_code.Trim());
 
@@ -333,25 +342,27 @@ namespace Asycuda421
                     //if (item.Prev_decl_HS_spec.Length > 17) continue;
                     if (string.IsNullOrEmpty(item.Prev_reg_nbr)) continue;
                     lncounter += 1;
-                    var pi = new ASYCUDAPrev_decl(); //ASYCUDAPreviousItem
-                    pi.Prev_decl_office_code = item.Prev_reg_cuo;
-                    pi.Prev_decl_reg_year = item.Prev_reg_dat;
-                    pi.Prev_decl_reg_serial = item.Prev_reg_ser;
-                    pi.Prev_decl_reg_number = item.Prev_reg_nbr;
-                    pi.Prev_decl_item_number = item.Previous_item_number;
-                    pi.Prev_decl_HS_code = item.Hs_code;
-                    pi.Prev_decl_HS_prec = item.Commodity_code;
-                    pi.Prev_decl_country_origin = item.Goods_origin;
-                    pi.Prev_decl_number_packages = item.Packages_number;
-                    pi.Prev_decl_weight = item.Net_weight.ToString();
-                    pi.Prev_decl_supp_quantity = item.Suplementary_Quantity.ToString();
-                    pi.Prev_decl_ref_value = Math.Round(item.Current_value, 4).ToString();
-                    pi.Prev_decl_current_item = lncounter.ToString(); //item.Current_item_number;
-                    pi.Prev_decl_number_packages_written_off = item.Previous_Packages_number;
-                    pi.Prev_decl_weight_written_off = item.Prev_net_weight.ToString();
-                    pi.Prev_decl_supp_quantity_written_off = item.Preveious_suplementary_quantity.ToString();
-                    pi.Prev_decl_ref_value_written_off = Math.Round(item.Previous_value, 4).ToString();
-                    pi.Prev_decl_HS_spec = item.Prev_decl_HS_spec.Length <= 20 ? item.Prev_decl_HS_spec : "";
+                    var pi = new ASYCUDAPrev_decl
+                    {
+                        Prev_decl_office_code = item.Prev_reg_cuo,
+                        Prev_decl_reg_year = item.Prev_reg_dat,
+                        Prev_decl_reg_serial = item.Prev_reg_ser,
+                        Prev_decl_reg_number = item.Prev_reg_nbr,
+                        Prev_decl_item_number = item.Previous_item_number,
+                        Prev_decl_HS_code = item.Hs_code,
+                        Prev_decl_HS_prec = item.Commodity_code,
+                        Prev_decl_country_origin = item.Goods_origin,
+                        Prev_decl_number_packages = item.Packages_number,
+                        Prev_decl_weight = item.Net_weight.ToString(),
+                        Prev_decl_supp_quantity = item.Suplementary_Quantity.ToString(),
+                        Prev_decl_ref_value = Math.Round(item.Current_value, 4).ToString(),
+                        Prev_decl_current_item = lncounter.ToString(), //item.Current_item_number;
+                        Prev_decl_number_packages_written_off = item.Previous_Packages_number,
+                        Prev_decl_weight_written_off = item.Prev_net_weight.ToString(),
+                        Prev_decl_supp_quantity_written_off = item.Preveious_suplementary_quantity.ToString(),
+                        Prev_decl_ref_value_written_off = Math.Round(item.Previous_value, 4).ToString(),
+                        Prev_decl_HS_spec = item.Prev_decl_HS_spec.Length <= 20 ? item.Prev_decl_HS_spec : ""
+                    }; //ASYCUDAPreviousItem
 
                     a.Prev_decl.Add(pi);
                 }
@@ -685,9 +696,14 @@ namespace Asycuda421
 
         private ASYCUDAItem SetupItemProperties(xcuda_ASYCUDA da)
         {
-            var ai = new ASYCUDAItem();
+            var ai = new ASYCUDAItem
+            {
+                Suppliers_link =
+                {
+                    Suppliers_link_code = "1"
+                }
+            };
 
-            ai.Suppliers_link.Suppliers_link_code = "1";
             ai.Tarification.HScode.Precision_1.Text.Add("00");
 
             ai.Packages.Number_of_packages = "0";
@@ -751,10 +767,11 @@ namespace Asycuda421
                 {
                     var ivc = item.xcuda_Valuation_item.xcuda_Item_Invoice;
 
-                    var av = new ASYCUDAItemValuation_itemItem_Invoice();
-                    av.Amount_foreign_currency =
-                        Math.Round(ivc.Amount_foreign_currency, 2)
-                            .ToString(); //Convert.ToDecimal(ivc.Amount_foreign_currency);
+                    var av = new ASYCUDAItemValuation_itemItem_Invoice
+                    {
+                        Amount_foreign_currency = Math.Round(ivc.Amount_foreign_currency, 2)
+                            .ToString() //Convert.ToDecimal(ivc.Amount_foreign_currency);
+                    };
                     if (ivc.Amount_national_currency != 0)
                         av.Amount_national_currency = ivc.Amount_national_currency.ToString();
                     if (ivc.Currency_code != null)

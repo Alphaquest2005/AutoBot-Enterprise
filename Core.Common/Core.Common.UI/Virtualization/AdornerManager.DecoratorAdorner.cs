@@ -19,9 +19,11 @@ namespace Core.Common.UI.DataVirtualization
             {
                 Debug.Assert(source != null);
                 Debug.Assert(adorner != null);
-                var contentPresenter = new ContentPresenter();
-                contentPresenter.Content = source;
-                contentPresenter.ContentTemplate = adorner;
+                var contentPresenter = new ContentPresenter
+                {
+                    Content = source,
+                    ContentTemplate = adorner
+                };
                 _child = contentPresenter;
                 AddLogicalChild(_child);
                 AddVisualChild(_child);
@@ -48,7 +50,7 @@ namespace Core.Common.UI.DataVirtualization
             protected override Visual GetVisualChild(int index)
             {
                 if (index != 0)
-                    throw new ArgumentOutOfRangeException("index");
+                    throw new ArgumentOutOfRangeException(nameof(index));
                 return _child;
             }
 

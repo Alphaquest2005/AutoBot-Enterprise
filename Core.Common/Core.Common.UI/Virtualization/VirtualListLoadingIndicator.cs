@@ -227,8 +227,7 @@ namespace Core.Common.UI.DataVirtualization
 
         private static void OnIsAttachedChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            var itemsControl = d as ItemsControl;
-            if (itemsControl == null)
+            if (!(d is ItemsControl itemsControl))
                 return;
             var oldValue = (bool) e.OldValue;
             var newValue = (bool) e.NewValue;

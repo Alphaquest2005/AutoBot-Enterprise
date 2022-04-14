@@ -20,7 +20,6 @@ using EntryDataDetails = AllocationDS.Business.Entities.EntryDataDetails;
 using InventoryItemAlias = AllocationDS.Business.Entities.InventoryItemAlias;
 using Sales = AllocationDS.Business.Entities.Sales;
 using SubItems = AllocationDS.Business.Entities.SubItems;
-using xcuda_ItemService = AllocationDS.Business.Services.xcuda_ItemService;
 
 namespace WaterNut.DataSpace
 {
@@ -114,30 +113,7 @@ namespace WaterNut.DataSpace
 
 		}
 
-        private void ReallocateExistingEx9(int applicationSettingsApplicationSettingsId)
-        {
-            try
-            {
-                using (var ctx = new AllocationDSContext())
-                {
-                    var existingEx9s = ctx.ExistingAllocations.ToList();
-                    var alloLst = existingEx9s.Select(x => new AsycudaSalesAllocations
-                        {
-                            EntryDataDetailsId = x.EntryDataDetailsId, PreviousItem_Id = x.pItemId,
-                            xEntryItem_Id = x.xItemId, TrackingState = TrackingState.Added
-                        })
-                        .ToList();
-                    ctx.AsycudaSalesAllocations.AddRange(alloLst);
-                    ctx.SaveChanges();
-                }
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-                throw;
-            }
-        }
-
+     
         public static void PrepareDataForAllocation(ApplicationSettings applicationSettings)
 		{
 			// update nonstock entrydetails status
@@ -190,9 +166,9 @@ namespace WaterNut.DataSpace
 		{
 			// MarkNoAsycudaEntry();
 
-			MarkOverAllocatedEntries(applicationSettingsId, shortlst);
+			MarkOverAllocatedEntries(applicationSettingsId);
 
-			MarkUnderAllocatedEntries(applicationSettingsId, shortlst);
+			MarkUnderAllocatedEntries(applicationSettingsId);
 
 
 		}
@@ -267,7 +243,7 @@ namespace WaterNut.DataSpace
 
 
 
-		private void MarkOverAllocatedEntries(int applicationSettingsId, string shortlst)
+		private void MarkOverAllocatedEntries(int applicationSettingsId)
         {
             List<xcuda_Item> IMAsycudaEntries; //"EX"
 
@@ -404,7 +380,7 @@ namespace WaterNut.DataSpace
         }
 
 
-		private void MarkUnderAllocatedEntries(int applicationSettingsId, string shortlst)
+		private void MarkUnderAllocatedEntries(int applicationSettingsId)
         {
             List<xcuda_Item> IMAsycudaEntries; //"EX"
 
@@ -653,40 +629,7 @@ namespace WaterNut.DataSpace
 
 		}
 
-		private static ConcurrentDictionary<(DateTime EntryDataDate, string EntryDataId, string ItemNumber), ItemSet> CreateItemSetsWithDescription(IEnumerable<ItemSales> saleslst, IEnumerable<ItemEntries> asycudaEntries)
-		{
-
-			var itmLst = from s in saleslst
-						 from a in asycudaEntries
-						 where s.Key.ItemNumber == a.Key || (s.Key.ItemNumber.Contains(a.Key) || a.Key.Contains(s.Key.ItemNumber))
-						 select new ItemSet
-						 {
-
-							 Key = s.Key,
-							 SalesList = s.SalesList,
-							 EntriesList = a?.EntriesList
-						 };
-
-
-			var res = new ConcurrentDictionary<(DateTime EntryDataDate, string EntryDataId, string ItemNumber), ItemSet>();
-			foreach (var itm in itmLst)
-			{
-
-				res.AddOrUpdate(itm.Key, itm, (key, value) => itm);
-			}
-
-
-			foreach (var r in res.Values.Where(x => x.EntriesList == null))
-			{
-				//var r = res.FirstOrDefault(x => x.Key == alias.AliasName);
-				var alias = Instance.InventoryAliasCache.Data.Where(x => x.ItemNumber == r.Key.ItemNumber).Select(y => y.AliasName).ToList();
-				var ae = asycudaEntries.Where(x => alias.Contains(x.Key)).SelectMany(y => y.EntriesList).ToList();
-				if (ae.Any()) r.EntriesList = ae;
-			}
-			return res;
-		}
-
-
+		
 		private static async Task<IEnumerable<ItemEntries>> GetAsycudaEntriesWithItemNumber(int applicationSettingsId, int? asycudaDocumentSetId)
 		{
 			StatusModel.Timer("Getting Data - Asycuda Entries...");
@@ -738,50 +681,7 @@ namespace WaterNut.DataSpace
 			return asycudaEntries;
 		}
 
-		private static async Task<IEnumerable<ItemEntries>> GetAsycudaEntriesWithDescription()
-		{
-			StatusModel.Timer("Getting Data - Asycuda Entries...");
-			//string itmnumber = "WMHP24-72";
-			IEnumerable<ItemEntries> asycudaEntries = null;
-			using (var ctx = new xcuda_ItemService())
-			{
-				var lst = await ctx.Getxcuda_ItemByExpressionNav(
-					"All",
-					// "xcuda_Tarification.xcuda_HScode.Precision_4 == \"1360\"",
-					new Dictionary<string, string>
-                    { { "AsycudaDocument", ( $"AssessmentDate >= \"{BaseDataModel.Instance.CurrentApplicationSettings.OpeningStockDate}\" && ") +
-                                           "(pCNumber != null || IsManuallyAssessed == true) " +
-                                           $"&& (Customs_Procedure.CustomsOperationId == {(int)CustomsOperations.Import} || Customs_Procedure.CustomsOperationId == {(int)CustomsOperations.Warehouse}) " +
-                                           "&& Customs_Procedure.Sales == true)" +
-                                           " && DoNotAllocate != true" } }
-					, new List<string>
-                    { "AsycudaDocument",
-						"xcuda_Tarification.xcuda_HScode", "xcuda_Tarification.xcuda_Supplementary_unit","SubItems", "xcuda_Goods_description",
-					}).ConfigureAwait(false);//"EX"
 
-
-
-				asycudaEntries = from s in lst.Where(x => x.xcuda_Tarification.xcuda_HScode.Precision_4 != null)
-									 //.Where(x => x.ItemDescription == "Hardener-Resin 'A' Slow .44Pt")
-									 //       .Where(x => x.AsycudaDocument.pCNumber != null).AsEnumerable()
-								 group s by s.ItemDescription.Trim()
-					into g
-								 select
-								 new ItemEntries
-								 {
-									 Key = g.Key.Trim(),
-									 EntriesList =
-										 g.AsEnumerable()
-											 .OrderBy(
-												 x =>
-													 x.AsycudaDocument.EffectiveRegistrationDate == null
-														 ? Convert.ToDateTime(x.AsycudaDocument.RegistrationDate)
-														 : x.AsycudaDocument.EffectiveRegistrationDate)
-											 .ToList()
-								 };
-			}
-			return asycudaEntries;
-		}
 
 		private static async Task<List<ItemSales>> GetSaleslstWithItemNumber(int applicationSettingsId,
 			string lst)
@@ -1247,14 +1147,6 @@ namespace WaterNut.DataSpace
 
 
 
-		private static async Task SaveEntryDataDetails(EntryDataDetails item)
-		{
-			if (item == null) return;
-			using (var ctx = new EntryDataDetailsService())
-			{
-				await ctx.UpdateEntryDataDetails(item).ConfigureAwait(false);
-			}
-		}
 
 
 		private double GetAsycudaItmQtyToAllocate(xcuda_Item cAsycudaItm, EntryDataDetails saleitm, out SubItems subitm)
@@ -1422,7 +1314,7 @@ namespace WaterNut.DataSpace
                     if (subitm != null)
                     {
                         subitm.StartTracking();
-                        subitm.QtyAllocated = subitm.QtyAllocated - mqty;
+                        subitm.QtyAllocated -= mqty;
                     }
 
                     if (dfp == "Duty Free")
@@ -1501,23 +1393,7 @@ namespace WaterNut.DataSpace
 			}
 		}
 
-		private static async Task SaveXcuda_Item(xcuda_Item cAsycudaItm)
-		{
-			using (var ctx = new xcuda_ItemService())
-			{
-				await ctx.Updatexcuda_Item(cAsycudaItm).ConfigureAwait(false);
-			}
-		}
-
-		private static async Task SaveSubItem(SubItems subitm)
-		{
-			if (subitm == null) return;
-			using (var ctx = new SubItemsService())
-			{
-				await ctx.UpdateSubItems(subitm).ConfigureAwait(false);
-			}
-		}
-
+      
 		private void SetPreviousItemXbond(AsycudaSalesAllocations ssa, xcuda_Item cAsycudaItm, string dfp, double amt)
         {
             if (BaseDataModel.Instance.CurrentApplicationSettings.AllowEntryDoNotAllocate != "Visible") return;

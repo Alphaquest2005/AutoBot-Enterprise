@@ -38,69 +38,69 @@ namespace DocumentDS.Business.Entities
 
         partial void SetupProperties()
         {
-            if (xcuda_Identification == null)
+            if (xcuda_Identification == null && this.ASYCUDA_Id == 0)
                 xcuda_Identification = new xcuda_Identification(true) { TrackingState = TrackingState.Added };
 
-            if (xcuda_Identification.xcuda_Type == null)
+            if (xcuda_Identification.xcuda_Type == null && this.ASYCUDA_Id == 0)
                 xcuda_Identification.xcuda_Type = new xcuda_Type(true) { TrackingState = TrackingState.Added };
 
-            if (xcuda_ASYCUDA_ExtendedProperties == null)
+            if (xcuda_ASYCUDA_ExtendedProperties == null && this.ASYCUDA_Id == 0)
                 xcuda_ASYCUDA_ExtendedProperties = new xcuda_ASYCUDA_ExtendedProperties(true) { TrackingState = TrackingState.Added };
 
-            if (xcuda_Declarant == null)
+            if (xcuda_Declarant == null && this.ASYCUDA_Id == 0)
                 xcuda_Declarant = new xcuda_Declarant(true) { TrackingState = TrackingState.Added };
 
-            if (xcuda_General_information == null)
+            if (xcuda_General_information == null && this.ASYCUDA_Id == 0)
                 xcuda_General_information = new xcuda_General_information(true) { TrackingState = TrackingState.Added };
 
-            if (xcuda_General_information.xcuda_Country == null)
+            if (xcuda_General_information.xcuda_Country == null && this.ASYCUDA_Id == 0)
                 xcuda_General_information.xcuda_Country = new xcuda_Country(true) { TrackingState = TrackingState.Added,
                                                                                     xcuda_Destination = new xcuda_Destination(true) {TrackingState = TrackingState.Added},
                                                                                     xcuda_Export = new xcuda_Export(true) {TrackingState = TrackingState.Added} };
 
-            if (xcuda_Identification.xcuda_Office_segment == null)
+            if (xcuda_Identification.xcuda_Office_segment == null && this.ASYCUDA_Id == 0)
                 xcuda_Identification.xcuda_Office_segment = new xcuda_Office_segment(true) { TrackingState = TrackingState.Added };
 
-            if (xcuda_Identification.xcuda_Registration == null)
+            if (xcuda_Identification.xcuda_Registration == null && this.ASYCUDA_Id == 0)
                 xcuda_Identification.xcuda_Registration = new xcuda_Registration(true) { TrackingState = TrackingState.Added };
 
-            if (xcuda_Identification.xcuda_Type == null)
+            if (xcuda_Identification.xcuda_Type == null && this.ASYCUDA_Id == 0)
                 xcuda_Identification.xcuda_Type = new xcuda_Type(true) { TrackingState = TrackingState.Added };
 
-            if (xcuda_Valuation == null)
+            if (xcuda_Valuation == null && this.ASYCUDA_Id == 0)
                 xcuda_Valuation = new xcuda_Valuation(true) { TrackingState = TrackingState.Added };
 
 
-            if (xcuda_Valuation.xcuda_Gs_Invoice == null)
+            if (xcuda_Valuation.xcuda_Gs_Invoice == null && this.ASYCUDA_Id == 0)
             {
                 xcuda_Valuation.Calculation_working_mode = "0";
                 xcuda_Valuation.xcuda_Gs_Invoice = new xcuda_Gs_Invoice(true) { TrackingState = TrackingState.Added };
             }
-            if (xcuda_Valuation.xcuda_Gs_other_cost == null)
+            if (xcuda_Valuation.xcuda_Gs_other_cost == null && this.ASYCUDA_Id == 0)
             {
                 
                 xcuda_Valuation.xcuda_Gs_other_cost = new xcuda_Gs_other_cost(true) { TrackingState = TrackingState.Added };
             }
-            if (xcuda_Valuation.xcuda_Gs_deduction == null)
+            if (xcuda_Valuation.xcuda_Gs_deduction == null && this.ASYCUDA_Id == 0)
             {
                 
                 xcuda_Valuation.xcuda_Gs_deduction = new xcuda_Gs_deduction(true) { TrackingState = TrackingState.Added };
             }
-            if (xcuda_Valuation.xcuda_Gs_insurance == null)
+            if (xcuda_Valuation.xcuda_Gs_insurance == null && this.ASYCUDA_Id == 0)
             {
                 
                 xcuda_Valuation.xcuda_Gs_insurance = new xcuda_Gs_insurance(true) { TrackingState = TrackingState.Added };
             }
-            if (xcuda_Valuation.xcuda_Gs_internal_freight == null)
+            if (xcuda_Valuation.xcuda_Gs_internal_freight == null && this.ASYCUDA_Id == 0)
             {
 
                 xcuda_Valuation.xcuda_Gs_internal_freight = new xcuda_Gs_internal_freight(true) { TrackingState = TrackingState.Added };
             }
 
-            if (xcuda_Property == null)
+            if (xcuda_Property == null && this.ASYCUDA_Id == 0)
                 xcuda_Property = new xcuda_Property(true) { TrackingState = TrackingState.Added };
 
-            if (xcuda_Traders == null)
+            if (xcuda_Traders == null && this.ASYCUDA_Id == 0)
                 xcuda_Traders = new xcuda_Traders(true)
                 {
                     xcuda_Exporter = new xcuda_Exporter(true) { TrackingState = TrackingState.Added},

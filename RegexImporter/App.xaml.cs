@@ -39,9 +39,11 @@ namespace RegexImporter
                 if (Core.Common.Utils.ProcessExtentions.IsProcessOpen("AutoWaterNutServer") == null)
                 {
                     Process p = new Process();
-                    p.StartInfo = new ProcessStartInfo("AutoWaterNutServer.exe");
-                    p.StartInfo.CreateNoWindow = true;
-                    p.StartInfo.UseShellExecute = false;
+                    p.StartInfo = new ProcessStartInfo("AutoWaterNutServer.exe")
+                    {
+                        CreateNoWindow = true,
+                        UseShellExecute = false
+                    };
                     p.Start();
                 }
                 // LoginRoutine();

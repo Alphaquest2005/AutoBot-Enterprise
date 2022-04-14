@@ -86,8 +86,7 @@ namespace WaterNut.Views
         {
             if (e.Key == Key.Enter)
             {
-                var textBox = sender as TextBox;
-                if (textBox != null)
+                if (sender is TextBox textBox)
                     textBox.GetBindingExpression(TextBox.TextProperty).UpdateSource();
             }
         }
@@ -178,7 +177,7 @@ namespace WaterNut.Views
 
 	    private void AutoImportSales(object sender, MouseButtonEventArgs e)
 	    {
-	        Utils.DownloadSalesFiles(2, "IM7History");
+	        FileUtils.DownloadSalesFiles(2, "IM7History");
         }
 	}
 }

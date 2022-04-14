@@ -85,8 +85,8 @@ namespace System.Linq.Dynamic
 
         public static object Sum(this IQueryable source, string member)
         {
-            if (source == null) throw new ArgumentNullException("source");
-            if (member == null) throw new ArgumentNullException("member");
+            if (source == null) throw new ArgumentNullException(nameof(source));
+            if (member == null) throw new ArgumentNullException(nameof(member));
 
             // Properties
             var property = source.ElementType.GetProperty(member);
@@ -110,8 +110,8 @@ namespace System.Linq.Dynamic
 
         public static object Min(this IQueryable source, string member)
         {
-            if (source == null) throw new ArgumentNullException("source");
-            if (member == null) throw new ArgumentNullException("member");
+            if (source == null) throw new ArgumentNullException(nameof(source));
+            if (member == null) throw new ArgumentNullException(nameof(member));
 
             // Properties
             var property = source.ElementType.GetProperty(member);
@@ -135,8 +135,8 @@ namespace System.Linq.Dynamic
 
         public static bool Any(this IQueryable source, string predicate, params object[] values)
         {
-            if (source == null) throw new ArgumentNullException("source");
-            if (predicate == null) throw new ArgumentNullException("predicate");
+            if (source == null) throw new ArgumentNullException(nameof(source));
+            if (predicate == null) throw new ArgumentNullException(nameof(predicate));
             var lambda = DynamicExpression.ParseLambda(source.ElementType, typeof(bool), predicate, values);
             return (bool) source.Provider.Execute(
                 Expression.Call(
@@ -148,8 +148,8 @@ namespace System.Linq.Dynamic
 
         public static IQueryable Where(this IQueryable source, string predicate, params object[] values)
         {
-            if (source == null) throw new ArgumentNullException("source");
-            if (predicate == null) throw new ArgumentNullException("predicate");
+            if (source == null) throw new ArgumentNullException(nameof(source));
+            if (predicate == null) throw new ArgumentNullException(nameof(predicate));
             var lambda = DynamicExpression.ParseLambda(source.ElementType, typeof(bool), predicate, values);
             return source.Provider.CreateQuery(
                 Expression.Call(
@@ -160,8 +160,8 @@ namespace System.Linq.Dynamic
 
         public static IQueryable Select(this IQueryable source, string selector, params object[] values)
         {
-            if (source == null) throw new ArgumentNullException("source");
-            if (selector == null) throw new ArgumentNullException("selector");
+            if (source == null) throw new ArgumentNullException(nameof(source));
+            if (selector == null) throw new ArgumentNullException(nameof(selector));
             var lambda = DynamicExpression.ParseLambda(source.ElementType, null, selector, values);
             return source.Provider.CreateQuery(
                 Expression.Call(
@@ -173,9 +173,9 @@ namespace System.Linq.Dynamic
         public static IQueryable SelectMany(this IQueryable source, string selector, params object[] values)
         {
             if (source == null)
-                throw new ArgumentNullException("source");
+                throw new ArgumentNullException(nameof(source));
             if (selector == null)
-                throw new ArgumentNullException("selector");
+                throw new ArgumentNullException(nameof(selector));
 
             // Parse the lambda
             var lambda =
@@ -207,8 +207,8 @@ namespace System.Linq.Dynamic
 
         public static IQueryable OrderBy(this IQueryable source, string ordering, params object[] values)
         {
-            if (source == null) throw new ArgumentNullException("source");
-            if (ordering == null) throw new ArgumentNullException("ordering");
+            if (source == null) throw new ArgumentNullException(nameof(source));
+            if (ordering == null) throw new ArgumentNullException(nameof(ordering));
             var parameters = new[]
             {
                 Expression.Parameter(source.ElementType, "")
@@ -233,7 +233,7 @@ namespace System.Linq.Dynamic
 
         public static IQueryable Take(this IQueryable source, int count)
         {
-            if (source == null) throw new ArgumentNullException("source");
+            if (source == null) throw new ArgumentNullException(nameof(source));
             return source.Provider.CreateQuery(
                 Expression.Call(
                     typeof(Queryable), "Take",
@@ -243,7 +243,7 @@ namespace System.Linq.Dynamic
 
         public static IQueryable Union(this IQueryable source, IQueryable other)
         {
-            if (source == null) throw new ArgumentNullException("source");
+            if (source == null) throw new ArgumentNullException(nameof(source));
             return source.Provider.CreateQuery(
                 Expression.Call(
                     typeof(Queryable), "Union",
@@ -253,7 +253,7 @@ namespace System.Linq.Dynamic
 
         public static IQueryable Skip(this IQueryable source, int count)
         {
-            if (source == null) throw new ArgumentNullException("source");
+            if (source == null) throw new ArgumentNullException(nameof(source));
             return source.Provider.CreateQuery(
                 Expression.Call(
                     typeof(Queryable), "Skip",
@@ -264,9 +264,9 @@ namespace System.Linq.Dynamic
         public static IQueryable GroupBy(this IQueryable source, string keySelector, string elementSelector,
             params object[] values)
         {
-            if (source == null) throw new ArgumentNullException("source");
-            if (keySelector == null) throw new ArgumentNullException("keySelector");
-            if (elementSelector == null) throw new ArgumentNullException("elementSelector");
+            if (source == null) throw new ArgumentNullException(nameof(source));
+            if (keySelector == null) throw new ArgumentNullException(nameof(keySelector));
+            if (elementSelector == null) throw new ArgumentNullException(nameof(elementSelector));
             var keyLambda = DynamicExpression.ParseLambda(source.ElementType, null, keySelector, values);
             var elementLambda = DynamicExpression.ParseLambda(source.ElementType, null, elementSelector, values);
             return source.Provider.CreateQuery(
@@ -278,7 +278,7 @@ namespace System.Linq.Dynamic
 
         public static bool Any(this IQueryable source)
         {
-            if (source == null) throw new ArgumentNullException("source");
+            if (source == null) throw new ArgumentNullException(nameof(source));
             return (bool) source.Provider.Execute(
                 Expression.Call(
                     typeof(Queryable), "Any",
@@ -287,7 +287,7 @@ namespace System.Linq.Dynamic
 
         public static int Count(this IQueryable source)
         {
-            if (source == null) throw new ArgumentNullException("source");
+            if (source == null) throw new ArgumentNullException(nameof(source));
             return (int) source.Provider.Execute(
                 Expression.Call(
                     typeof(Queryable), "Count",
@@ -319,10 +319,8 @@ namespace System.Linq.Dynamic
     {
         public DynamicProperty(string name, Type type)
         {
-            if (name == null) throw new ArgumentNullException("name");
-            if (type == null) throw new ArgumentNullException("type");
-            Name = name;
-            Type = type;
+            Name = name ?? throw new ArgumentNullException(nameof(name));
+            Type = type ?? throw new ArgumentNullException(nameof(type));
         }
 
         public string Name { get; }
@@ -652,7 +650,7 @@ namespace System.Linq.Dynamic
 
         public ExpressionParser(ParameterExpression[] parameters, string expression, object[] values)
         {
-            if (expression == null) throw new ArgumentNullException("expression");
+            if (expression == null) throw new ArgumentNullException(nameof(expression));
             if (keywords == null) keywords = CreateKeywords();
             symbols = new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
             literals = new Dictionary<Expression, string>();
@@ -1287,15 +1285,13 @@ namespace System.Linq.Dynamic
                 externals != null && externals.TryGetValue(token.text, out value) ||
                 internals.TryGetValue(token.text, out value))
             {
-                var expr = value as Expression;
-                if (expr == null)
+                if (!(value is Expression expr))
                 {
                     expr = Expression.Constant(value);
                 }
                 else
                 {
-                    var lambda = expr as LambdaExpression;
-                    if (lambda != null) return ParseLambdaInvocation(lambda);
+                    if (expr is LambdaExpression lambda) return ParseLambdaInvocation(lambda);
                 }
 
                 NextToken();
@@ -1373,8 +1369,7 @@ namespace System.Linq.Dynamic
                 }
                 else
                 {
-                    var me = expr as MemberExpression;
-                    if (me == null) throw ParseError(exprPos, Res.MissingAsClause);
+                    if (!(expr is MemberExpression me)) throw ParseError(exprPos, Res.MissingAsClause);
                     propName = me.Member.Name;
                 }
 
@@ -2545,13 +2540,15 @@ namespace System.Linq.Dynamic
 
         private static Dictionary<string, object> CreateKeywords()
         {
-            var d = new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
-            d.Add("true", trueLiteral);
-            d.Add("false", falseLiteral);
-            d.Add("null", nullLiteral);
-            d.Add(keywordIt, keywordIt);
-            d.Add(keywordIif, keywordIif);
-            d.Add(keywordNew, keywordNew);
+            var d = new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase)
+            {
+                { "true", trueLiteral },
+                { "false", falseLiteral },
+                { "null", nullLiteral },
+                { keywordIt, keywordIt },
+                { keywordIif, keywordIif },
+                { keywordNew, keywordNew }
+            };
             foreach (var type in predefinedTypes) d.Add(type.Name, type);
             return d;
         }

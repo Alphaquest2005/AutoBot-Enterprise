@@ -101,9 +101,10 @@ namespace WaterNut.DataSpace
                 return;
             }
 
-            var cdoc = new DocumentCT();
-            cdoc.Document = BaseDataModel.Instance.CreateNewAsycudaDocument(docSet);
-
+            var cdoc = new DocumentCT
+            {
+                Document = BaseDataModel.Instance.CreateNewAsycudaDocument(docSet)
+            };
 
 
             var itmcount = cdoc.DocumentItems.Count();
@@ -136,8 +137,10 @@ namespace WaterNut.DataSpace
                 {
                     await BaseDataModel.Instance.SaveDocumentCT(cdoc).ConfigureAwait(false);
                     //dup new file
-                    cdoc = new DocumentCT();
-                    cdoc.Document = BaseDataModel.Instance.CreateNewAsycudaDocument(docSet);
+                    cdoc = new DocumentCT
+                    {
+                        Document = BaseDataModel.Instance.CreateNewAsycudaDocument(docSet)
+                    };
 
                     OPSIntializeCdoc(cdoc, docSet);
                 }

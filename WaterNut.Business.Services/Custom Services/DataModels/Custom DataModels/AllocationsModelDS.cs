@@ -328,66 +328,68 @@ namespace WaterNut.DataSpace
 
         public void Send2Excel(List<AsycudaSalesAllocations> lst)
         {
-            var s = new ExportToCSV<AllocationsExcelLine, List<AllocationsExcelLine>>();
-            s.dataToPrint = (from sa in lst
-                let sales = sa.EntryDataDetails.Sales
-                let prevEntry = sa.PreviousDocumentItem
-                select new AllocationsExcelLine
-                {
-                    DutyFreePaid = sa.EntryDataDetails.DutyFreePaid,
-                    InvoiceNo = sales == null ? null : sales.INVNumber,
-                    InvoiceDate = sales == null ? DateTime.MinValue : sales.EntryDataDate,
-                    SalesAllocationNo = sales == null ? 0 : Convert.ToInt32(sa.SANumber),
-                    SalesQty = sales == null ? 0 : Convert.ToDouble(sa.EntryDataDetails.Quantity),
-                    SalesQtyAllocated = sales == null ? 0 : Convert.ToDouble(sa.EntryDataDetails.QtyAllocated),
-                    ItemNumber = sales == null ? null : sa.EntryDataDetails.ItemNumber,
-                    ItemDescription = sales == null ? null : sa.EntryDataDetails.ItemDescription,
-                    UnitCost = sales == null ? 0 : Convert.ToDouble(sa.EntryDataDetails.Cost),
-                    SalesValue = sales == null
-                        ? 0
-                        : Convert.ToDouble(sa.EntryDataDetails.Cost) * Convert.ToDouble(sa.EntryDataDetails.Quantity),
-                    AllocatedValue = sales == null
-                        ? 0
-                        : Convert.ToDouble(sa.EntryDataDetails.Cost) * Convert.ToDouble(sa.QtyAllocated),
-                    TariffCode = prevEntry == null ? null : prevEntry.TariffCode,
-                    CIF = prevEntry == null
-                        ? 0
-                        : sa.PreviousDocumentItem.xcuda_Valuation_item.Total_CIF_itm /
-                          Convert.ToDouble(sa.PreviousDocumentItem.ItemQuantity),
-                    DutyLiability = prevEntry == null ? 0 : Convert.ToDouble(sa.PreviousDocumentItem.DutyLiability),
-                    ItemQuantity = prevEntry == null ? 0 : Convert.ToDouble(sa.PreviousDocumentItem.ItemQuantity),
-                    AllocatedQty = sales == null ? 0 : Convert.ToDouble(sa.QtyAllocated),
-                    PreviousLineNumber = prevEntry == null ? 0 : sa.PreviousDocumentItem.LineNumber,
-                    PreviousCNumber = prevEntry == null ? null : sa.PreviousDocumentItem.AsycudaDocument.CNumber,
-                    PreviousRegDate = prevEntry == null
-                        ? DateTime.MinValue
-                        : Convert.ToDateTime(sa.PreviousDocumentItem.AsycudaDocument.RegistrationDate),
-                    AllocationStatus = sa.Status,
-                    PiQuantity = prevEntry == null
-                        ? 0
-                        : Convert.ToDouble(sa.PreviousDocumentItem.EntryPreviousItems.Select(p => p.xcuda_PreviousItem)
-                            .Sum(x => x.Suplementary_Quantity)),
-                    DutyFreePi =
-                        (double) (prevEntry == null ||
-                                  sa.PreviousDocumentItem.EntryPreviousItems.Select(p => p.xcuda_PreviousItem).Any() ==
-                                  false
+            var s = new ExportToCSV<AllocationsExcelLine, List<AllocationsExcelLine>>
+            {
+                dataToPrint = (from sa in lst
+                    let sales = sa.EntryDataDetails.Sales
+                    let prevEntry = sa.PreviousDocumentItem
+                    select new AllocationsExcelLine
+                    {
+                        DutyFreePaid = sa.EntryDataDetails.DutyFreePaid,
+                        InvoiceNo = sales?.INVNumber,
+                        InvoiceDate = sales == null ? DateTime.MinValue : sales.EntryDataDate,
+                        SalesAllocationNo = sales == null ? 0 : Convert.ToInt32(sa.SANumber),
+                        SalesQty = sales == null ? 0 : Convert.ToDouble(sa.EntryDataDetails.Quantity),
+                        SalesQtyAllocated = sales == null ? 0 : Convert.ToDouble(sa.EntryDataDetails.QtyAllocated),
+                        ItemNumber = sales == null ? null : sa.EntryDataDetails.ItemNumber,
+                        ItemDescription = sales == null ? null : sa.EntryDataDetails.ItemDescription,
+                        UnitCost = sales == null ? 0 : Convert.ToDouble(sa.EntryDataDetails.Cost),
+                        SalesValue = sales == null
                             ? 0
-                            : sa.PreviousDocumentItem.EntryPreviousItems.Select(p => p.xcuda_PreviousItem)
-                                .Where(x => x.DutyFreePaid == "Duty Free").Sum(x => x.Suplementary_Quantity)),
-                    DutyPaidPi =
-                        (double) (prevEntry == null ||
-                                  sa.PreviousDocumentItem.EntryPreviousItems.Select(p => p.xcuda_PreviousItem).Any() ==
-                                  false
+                            : Convert.ToDouble(sa.EntryDataDetails.Cost) * Convert.ToDouble(sa.EntryDataDetails.Quantity),
+                        AllocatedValue = sales == null
                             ? 0
-                            : sa.PreviousDocumentItem.EntryPreviousItems.Select(p => p.xcuda_PreviousItem)
-                                .Where(x => x.DutyFreePaid == "Duty Paid").Sum(x => x.Suplementary_Quantity)),
-                    DFQtyAllocated = prevEntry == null ? 0 : Convert.ToDouble(sa.PreviousDocumentItem.DFQtyAllocated),
-                    DPQtyAllocated = prevEntry == null ? 0 : Convert.ToDouble(sa.PreviousDocumentItem.DPQtyAllocated),
-                    Ex9Doc = sa.xBondEntry == null
-                        ? ""
-                        : BaseDataModel.Instance.GetDocument(sa.xBondEntry.ASYCUDA_Id).Result.ReferenceNumber,
-                    Ex9DocLine = sa.xBondEntry == null ? 0 : sa.xBondEntry.LineNumber
-                }).ToList();
+                            : Convert.ToDouble(sa.EntryDataDetails.Cost) * Convert.ToDouble(sa.QtyAllocated),
+                        TariffCode = prevEntry?.TariffCode,
+                        CIF = prevEntry == null
+                            ? 0
+                            : sa.PreviousDocumentItem.xcuda_Valuation_item.Total_CIF_itm /
+                              Convert.ToDouble(sa.PreviousDocumentItem.ItemQuantity),
+                        DutyLiability = prevEntry == null ? 0 : Convert.ToDouble(sa.PreviousDocumentItem.DutyLiability),
+                        ItemQuantity = prevEntry == null ? 0 : Convert.ToDouble(sa.PreviousDocumentItem.ItemQuantity),
+                        AllocatedQty = sales == null ? 0 : Convert.ToDouble(sa.QtyAllocated),
+                        PreviousLineNumber = prevEntry == null ? 0 : sa.PreviousDocumentItem.LineNumber,
+                        PreviousCNumber = prevEntry == null ? null : sa.PreviousDocumentItem.AsycudaDocument.CNumber,
+                        PreviousRegDate = prevEntry == null
+                            ? DateTime.MinValue
+                            : Convert.ToDateTime(sa.PreviousDocumentItem.AsycudaDocument.RegistrationDate),
+                        AllocationStatus = sa.Status,
+                        PiQuantity = prevEntry == null
+                            ? 0
+                            : Convert.ToDouble(sa.PreviousDocumentItem.EntryPreviousItems.Select(p => p.xcuda_PreviousItem)
+                                .Sum(x => x.Suplementary_Quantity)),
+                        DutyFreePi =
+                            (double) (prevEntry == null ||
+                                      sa.PreviousDocumentItem.EntryPreviousItems.Select(p => p.xcuda_PreviousItem).Any() ==
+                                      false
+                                ? 0
+                                : sa.PreviousDocumentItem.EntryPreviousItems.Select(p => p.xcuda_PreviousItem)
+                                    .Where(x => x.DutyFreePaid == "Duty Free").Sum(x => x.Suplementary_Quantity)),
+                        DutyPaidPi =
+                            (double) (prevEntry == null ||
+                                      sa.PreviousDocumentItem.EntryPreviousItems.Select(p => p.xcuda_PreviousItem).Any() ==
+                                      false
+                                ? 0
+                                : sa.PreviousDocumentItem.EntryPreviousItems.Select(p => p.xcuda_PreviousItem)
+                                    .Where(x => x.DutyFreePaid == "Duty Paid").Sum(x => x.Suplementary_Quantity)),
+                        DFQtyAllocated = prevEntry == null ? 0 : Convert.ToDouble(sa.PreviousDocumentItem.DFQtyAllocated),
+                        DPQtyAllocated = prevEntry == null ? 0 : Convert.ToDouble(sa.PreviousDocumentItem.DPQtyAllocated),
+                        Ex9Doc = sa.xBondEntry == null
+                            ? ""
+                            : BaseDataModel.Instance.GetDocument(sa.xBondEntry.ASYCUDA_Id).Result.ReferenceNumber,
+                        Ex9DocLine = sa.xBondEntry == null ? 0 : sa.xBondEntry.LineNumber
+                    }).ToList()
+            };
             s.GenerateReport();
         }
 

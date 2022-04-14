@@ -450,12 +450,12 @@ namespace WaterNut.DataSpace
            
                 itm.xcuda_Valuation_item.xcuda_Weight_itm = new xcuda_Weight_itm(true)
                 {
-                    TrackingState = TrackingState.Added
+                    TrackingState = TrackingState.Added,
+                    //TODO: Check the weight when creating was making weight zero
+                    Gross_weight_itm = (double) pitm.Net_weight,
+                    Net_weight_itm = (double) pitm.Net_weight
                 };
 
-                //TODO: Check the weight when creating was making weight zero
-                itm.xcuda_Valuation_item.xcuda_Weight_itm.Gross_weight_itm =(double) pitm.Net_weight;
-                itm.xcuda_Valuation_item.xcuda_Weight_itm.Net_weight_itm = (double) pitm.Net_weight;
                 // adjusting because not using real statistical value when calculating
                 itm.xcuda_Valuation_item.xcuda_Item_Invoice.Amount_foreign_currency =
                     Convert.ToDouble(Math.Round((pitm.Current_value * (double) pitm.Suplementary_Quantity), 2));

@@ -38,9 +38,8 @@ namespace Core.Common.Data
         public static void OnStaticPropertyChanged<T>(Expression<Func<T>> selectorExpression)
         {
             if (selectorExpression == null)
-                throw new ArgumentNullException("selectorExpression");
-            var body = selectorExpression.Body as MemberExpression;
-            if (body == null)
+                throw new ArgumentNullException(nameof(selectorExpression));
+            if (!(selectorExpression.Body is MemberExpression body))
                 throw new ArgumentException("The body must be a member expression");
             OnStaticPropertyChanged(body.Member.Name);
         }

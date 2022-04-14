@@ -36,7 +36,7 @@ namespace AutoBot
                     var cmdParams = Regex.Matches(cmdParamInfo, @"(?<Param>\w+):\s?(?<Value>.*?)((, )|($|\r))",
                         RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.ExplicitCapture);
                    
-                    var cmdparamDic = new Dictionary<string, string>(Utils.ignoreCase);
+                    var cmdparamDic = new Dictionary<string, string>(FileUtils.ignoreCase);
                     foreach (Match m in cmdParams)
                     {
                         cmdparamDic.Add(m.Groups["Param"].Value.Trim(',', ' ', '\''), m.Groups["Value"].Value.Trim(',',' ','\''));
@@ -52,7 +52,7 @@ namespace AutoBot
 
         private static Dictionary<string, (Action<Dictionary<string, string>> Action, string[] Params)> RegExCommands(FileTypes fileTypes)
         {
-            var regExCommands = new Dictionary<string, (Action<Dictionary<string, string>> Action, string[] Params)>(Utils.ignoreCase)
+            var regExCommands = new Dictionary<string, (Action<Dictionary<string, string>> Action, string[] Params)>(FileUtils.ignoreCase)
             {
                 {
                     "demo",
@@ -549,7 +549,7 @@ namespace AutoBot
                         var res1 = res.Select(x => x.Key + ".txt").ToList().Union(res.Select(x => x.Key).ToList()).ToArray();
                        
 
-                        EmailDownloader.EmailDownloader.SendEmail(Utils.Client,null, "Invoice Template Not found!",
+                        EmailDownloader.EmailDownloader.SendEmail(FileUtils.Client,null, "Invoice Template Not found!",
                             new[] { "Joseph@auto-brokerage.com" }, body, res1);
 
                         fileTypes.ProcessNextStep.Add("Kill");

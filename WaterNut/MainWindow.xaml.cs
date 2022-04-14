@@ -6,6 +6,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Linq;
+using AutoBot;
 using CoreEntities.Client.Entities;
 using Core.Common.UI;
 using Microsoft.Win32;
@@ -297,8 +298,7 @@ namespace WaterNut
 
         private void GotoInventory(object sender, MouseButtonEventArgs e)
         {
-            var im = ((sender as FrameworkElement).DataContext) as InventoryItemsModel;
-            if (im != null)
+            if (((sender as FrameworkElement).DataContext) is InventoryItemsModel im)
             {
                 im.ViewPOItems = false;
                 im.ViewUnknownTariff = false;
@@ -315,10 +315,12 @@ namespace WaterNut
 
         private async void IM72Ex9(object sender, MouseButtonEventArgs e)
         {
-            var od = new OpenFileDialog();
-            od.DefaultExt = ".xml";
-            od.Filter = "Xml Documents (.xml)|*.xml";
-            od.Multiselect = true;
+            var od = new OpenFileDialog
+            {
+                DefaultExt = ".xml",
+                Filter = "Xml Documents (.xml)|*.xml",
+                Multiselect = true
+            };
             var result = od.ShowDialog();
             if (result == true)
             {
@@ -393,10 +395,12 @@ namespace WaterNut
 
         private void ImportExpiredEntries(object sender, MouseButtonEventArgs e)
         {
-            var od = new OpenFileDialog();
-            od.DefaultExt = ".csv";
-            od.Filter = "CSV Documents (.csv)|*.csv";
-            
+            var od = new OpenFileDialog
+            {
+                DefaultExt = ".csv",
+                Filter = "CSV Documents (.csv)|*.csv"
+            };
+
             var result = od.ShowDialog();
             if (result == true)
             {
@@ -406,7 +410,7 @@ namespace WaterNut
                     StatusModel.StatusUpdate();
                     try
                     {
-                        AutoBot.Utils.ImportExpiredEntires(f);
+                        FileUtils.ImportExpiredEntires(f);
                     }
                     catch (Exception Ex)
                     {

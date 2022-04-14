@@ -22,17 +22,19 @@ namespace CoreEntities.Business.Services
 
         public async Task SaveDocumentCT(AsycudaDocument entity)
         {
-            var ct = new DocumentCT();
-            ct.Document =await WaterNut.DataSpace.BaseDataModel.Instance.GetDocument(entity.ASYCUDA_Id, new List<string>()
+            var ct = new DocumentCT
             {
-                "xcuda_ASYCUDA_ExtendedProperties",
-                "xcuda_Identification",
-                "xcuda_Valuation.xcuda_Gs_Invoice",
-                "xcuda_Declarant",
-                "xcuda_General_information.xcuda_Country",
-                "xcuda_Property"
+                Document = await WaterNut.DataSpace.BaseDataModel.Instance.GetDocument(entity.ASYCUDA_Id, new List<string>()
+                {
+                    "xcuda_ASYCUDA_ExtendedProperties",
+                    "xcuda_Identification",
+                    "xcuda_Valuation.xcuda_Gs_Invoice",
+                    "xcuda_Declarant",
+                    "xcuda_General_information.xcuda_Country",
+                    "xcuda_Property"
 
-            }).ConfigureAwait(false);
+                }).ConfigureAwait(false)
+            };
 
             using (var ctx = new xcuda_ItemService())
             {

@@ -36,10 +36,8 @@ namespace Core.Common.UI
         /// <param name="canExecuteDelegate">Predicate determining whether this command can currently execute</param>
         public RelayCommand(Action executeDelegate, Func<bool> canExecuteDelegate)
         {
-            if (null == executeDelegate) throw new ArgumentNullException("executeDelegate");
-
             this.canExecuteDelegate = canExecuteDelegate;
-            this.executeDelegate = executeDelegate;
+            this.executeDelegate = executeDelegate ?? throw new ArgumentNullException(nameof(executeDelegate));
         }
 
         /// <summary>
@@ -124,10 +122,8 @@ namespace Core.Common.UI
         /// <param name="canExecuteDelegate">Predicate determining whether this command can currently execute</param>
         public RelayCommand(Action<T> executeDelegate, Predicate<T> canExecuteDelegate)
         {
-            if (null == executeDelegate) throw new ArgumentNullException("executeDelegate");
-
             this.canExecuteDelegate = canExecuteDelegate;
-            this.executeDelegate = executeDelegate;
+            this.executeDelegate = executeDelegate ?? throw new ArgumentNullException(nameof(executeDelegate));
         }
 
         /// <summary>
@@ -167,13 +163,12 @@ namespace Core.Common.UI
             if (null == parameter)
             {
                 return true;
-                throw new ArgumentNullException("parameter");
+                throw new ArgumentNullException(nameof(parameter));
             }
 
             if (null == canExecuteDelegate) return true;
 
-            var castParameter = parameter as T;
-            if (null == castParameter)
+            if (!(parameter is T castParameter))
                 throw new InvalidCastException(string.Format(CultureInfo.InvariantCulture,
                     UIResources.DelegateCommandCastException, parameter.GetType().FullName, typeof(T).FullName));
 
@@ -186,10 +181,9 @@ namespace Core.Common.UI
         /// <param name="parameter">Parameter of type T passed to the associated delegate</param>
         public void Execute(object parameter)
         {
-            if (null == parameter) throw new ArgumentNullException("parameter");
+            if (null == parameter) throw new ArgumentNullException(nameof(parameter));
 
-            var castParameter = parameter as T;
-            if (null == castParameter)
+            if (!(parameter is T castParameter))
                 throw new InvalidCastException(string.Format(CultureInfo.InvariantCulture,
                     UIResources.DelegateCommandCastException, parameter.GetType().FullName, typeof(T).FullName));
 

@@ -47,8 +47,10 @@ namespace WaterNut.Views
             if (res == MessageBoxResult.Yes)
             {
 
-                var od = new SaveFileDialog();
-                od.FileName = BaseViewModel.Instance.CurrentAsycudaDocument.ReferenceNumber + ".csv";
+                var od = new SaveFileDialog
+                {
+                    FileName = BaseViewModel.Instance.CurrentAsycudaDocument.ReferenceNumber + ".csv"
+                };
                 var result = od.ShowDialog();
                 if (result == true)
                 {
@@ -81,8 +83,10 @@ namespace WaterNut.Views
             if (res == MessageBoxResult.Yes)
             {
 
-                var od = new SaveFileDialog();
-                od.FileName = BaseViewModel.Instance.CurrentAsycudaDocumentSetEx.Declarant_Reference_Number + ".csv";
+                var od = new SaveFileDialog
+                {
+                    FileName = BaseViewModel.Instance.CurrentAsycudaDocumentSetEx.Declarant_Reference_Number + ".csv"
+                };
                 var result = od.ShowDialog();
                 if (result == true)
                 {

@@ -108,10 +108,12 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             }
 
 
-            var od = new OpenFileDialog();
-            od.DefaultExt = ".xml";
-            od.Filter = "Xml Documents (.xml)|*.xml";
-            od.Multiselect = true;
+            var od = new OpenFileDialog
+            {
+                DefaultExt = ".xml",
+                Filter = "Xml Documents (.xml)|*.xml",
+                Multiselect = true
+            };
             var result = od.ShowDialog();
             if (result == true)
             {
@@ -160,8 +162,10 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             }
              
              StatusModel.Timer("Exporting Documents");
-            var od = new SaveFileDialog();
-            od.FileName = BaseViewModel.Instance.CurrentAsycudaDocument.ReferenceNumber + ".xml";
+            var od = new SaveFileDialog
+            {
+                FileName = BaseViewModel.Instance.CurrentAsycudaDocument.ReferenceNumber + ".xml"
+            };
             var result = od.ShowDialog();
             if (result == true)
             {
@@ -209,8 +213,10 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             if (res == MessageBoxResult.Yes)
             {
                 StatusModel.Timer("Exporting DocumentSet");
-                var od = new SaveFileDialog();
-                od.FileName = docSet.Declarant_Reference_Number + ".xml";
+                var od = new SaveFileDialog
+                {
+                    FileName = docSet.Declarant_Reference_Number + ".xml"
+                };
                 var result = od.ShowDialog();
                 if (result == true)
                 {
@@ -344,10 +350,12 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             }
 
 
-            var od = new OpenFileDialog();
-            od.DefaultExt = ".*";
-            od.Filter = "C71, LIC Documents (.xml)|*.xml|PDF Documents (.pdf)|*.pdf";
-            od.Multiselect = true;
+            var od = new OpenFileDialog
+            {
+                DefaultExt = ".*",
+                Filter = "C71, LIC Documents (.xml)|*.xml|PDF Documents (.pdf)|*.pdf",
+                Multiselect = true
+            };
             var result = od.ShowDialog();
             if (result == true)
             {

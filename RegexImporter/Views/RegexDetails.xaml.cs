@@ -83,17 +83,14 @@ namespace RegexImporter.Views
 		{
 			if (e.Key == Key.Enter)
 			{
-				var textBox = sender as TextBox;
-				if (textBox != null)
+                if (sender is TextBox textBox)
 					textBox.GetBindingExpression(TextBox.TextProperty).UpdateSource();
 			}
 		}
 
 		private void DatePicker_OnSelectedDateChanged(object sender, SelectionChangedEventArgs e)
 		{
-		   
-				var datePicker = sender as DatePicker;
-				if (datePicker != null)
+            if (sender is DatePicker datePicker)
 					datePicker.GetBindingExpression(DatePicker.SelectedDateProperty).UpdateSource();
 		  
 		}

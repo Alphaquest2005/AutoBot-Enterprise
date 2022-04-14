@@ -33,11 +33,13 @@ namespace WaterNut.QuerySpace
        public async Task SaveCSVFile(string fileType, int asycudaDocumentSetId)
         {
             //import asycuda xml id and details
-            var od = new OpenFileDialog();
-            od.Title = "Import Entry Data";
-            od.DefaultExt = ".csv";
-            od.Filter = "CSV Files (.csv)|*.csv|TXT Files (.txt)|*.txt|XLSX Files (.xlsx)|*.xlsx";
-            od.Multiselect = true;
+            var od = new OpenFileDialog
+            {
+                Title = "Import Entry Data",
+                DefaultExt = ".csv",
+                Filter = "CSV Files (.csv)|*.csv|TXT Files (.txt)|*.txt|XLSX Files (.xlsx)|*.xlsx",
+                Multiselect = true
+            };
             var result = od.ShowDialog();
             if (result == true)
             {
@@ -73,7 +75,7 @@ namespace WaterNut.QuerySpace
                     }
                     if (f.EndsWith(".xlsx"))
                     {
-                       Utils.Xlsx2csv(new FileInfo[]{ new FileInfo(f)}, new CoreEntitiesContext().FileTypes
+                       FileUtils.Xlsx2csv(new FileInfo[]{ new FileInfo(f)}, new CoreEntitiesContext().FileTypes
                                         .Include(x => x.ChildFileTypes)
                                         .Include(x => x.FileTypeMappings)
                                         .First(x => x.Type == "XLSX" 

@@ -113,20 +113,20 @@ namespace AutoWaterNutServer
         private static NetTcpBinding ConfigNetTcpBinding()
         {
           
-            var _netTcpBinding = new NetTcpBinding(SecurityMode.None, false);
+            var _netTcpBinding = new NetTcpBinding(SecurityMode.None, false)
+            {
+                MaxConnections = 1000,
+                TransactionFlow = false,
+                PortSharingEnabled = false,
+                ListenBacklog = 1000,
+                MaxReceivedMessageSize = Int32.MaxValue,
+                ReliableSession = new OptionalReliableSession(new ReliableSessionBindingElement(false)){Enabled = false},
+                CloseTimeout = new TimeSpan(0, 60, 0),
+                SendTimeout = new TimeSpan(0, 60, 0),
+                OpenTimeout = new TimeSpan(0, 60, 0),
+                ReceiveTimeout = new TimeSpan(0, 60, 0)
+            };
 
-            _netTcpBinding.MaxConnections = 1000;
-            _netTcpBinding.TransactionFlow = false;
-            _netTcpBinding.PortSharingEnabled = false;
-            _netTcpBinding.ListenBacklog = 1000;
-            _netTcpBinding.MaxReceivedMessageSize = Int32.MaxValue;
-            _netTcpBinding.ReliableSession = new OptionalReliableSession(new ReliableSessionBindingElement(false)){Enabled = false};
-            
-            _netTcpBinding.CloseTimeout = new TimeSpan(0, 60, 0);
-            _netTcpBinding.SendTimeout = new TimeSpan(0, 60, 0);
-            _netTcpBinding.OpenTimeout = new TimeSpan(0, 60, 0);
-            _netTcpBinding.ReceiveTimeout = new TimeSpan(0, 60, 0);
-           
             return _netTcpBinding;
 
         }

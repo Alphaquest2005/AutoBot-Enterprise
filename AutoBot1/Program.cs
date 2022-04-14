@@ -83,7 +83,7 @@ namespace AutoBot
                             {
                                 lastAction.Sessions.SessionActions
                                     .Where(x => lastAction.ActionId == null || x.ActionId == lastAction.ActionId)
-                                    .Select(x => Utils.SessionActions[x.Actions.Name])
+                                    .Select(x => FileUtils.SessionActions[x.Actions.Name])
                                     .ForEach(x => x.Invoke());
 
                                 continue;
@@ -94,7 +94,7 @@ namespace AutoBot
                         if (!string.IsNullOrEmpty(appSetting.Email))
                         {
                             //
-                            Utils.Client = new EmailDownloader.Client
+                            FileUtils.Client = new EmailDownloader.Client
                             {
                                 CompanyName = appSetting.CompanyName,
                                 DataFolder = appSetting.DataFolder,
@@ -105,7 +105,7 @@ namespace AutoBot
                                 DevMode = Settings.Default.DevMode
                             };
 
-                            var msgLst = Task.Run(() => EmailDownloader.EmailDownloader.CheckEmails(Utils.Client)).Result
+                            var msgLst = Task.Run(() => EmailDownloader.EmailDownloader.CheckEmails(FileUtils.Client)).Result
                                 .ToList();
                             // get downloads
                             Console.WriteLine($"{msgLst.Count()} Emails Processed");
@@ -195,11 +195,11 @@ namespace AutoBot
                                     Utils.SaveAttachments(csvFiles, fileType, msg.Key.Item2);
                                     if (!ReadOnlyMode)
                                     {
-                                        Utils.ExecuteDataSpecificFileActions(fileType, csvFiles, appSetting);
+                                        FileUtils.ExecuteDataSpecificFileActions(fileType, csvFiles, appSetting);
                                         //if (fileType.ProcessNextStep.FirstOrDefault() == "Kill") return;
                                         if (msg.Key.Item2.EmailMapping.IsSingleEmail == true)
                                         {
-                                            Utils.ExecuteNonSpecificFileActions(fileType, csvFiles, appSetting);
+                                            FileUtils.ExecuteNonSpecificFileActions(fileType, csvFiles, appSetting);
                                         }
                                         else
                                         {
@@ -233,7 +233,7 @@ namespace AutoBot
                                     {
                                         //if(t.Item1.ProcessNextStep == "Kill") return;
                                         t.Item1.AsycudaDocumentSetId = docSetId.Key;
-                                        Utils.ExecuteNonSpecificFileActions(t.Item1, t.Item2, appSetting);
+                                        FileUtils.ExecuteNonSpecificFileActions(t.Item1, t.Item2, appSetting);
                                     }
                                 }
                             
@@ -243,7 +243,7 @@ namespace AutoBot
                         ctx.SessionActions.OrderBy(x => x.Id)
                             .Include(x => x.Actions)
                             .Where(x => x.Sessions.Name == "End").ToList()
-                            .Select(x => Utils.SessionActions[x.Actions.Name])
+                            .Select(x => FileUtils.SessionActions[x.Actions.Name])
                             .ForEach(x =>
                                 x.Invoke());
 
@@ -268,7 +268,7 @@ namespace AutoBot
                                 item.Sessions.SessionActions
                                     .Where(x => item.ActionId == null || x.ActionId == item.ActionId)
                                     .Where(x => x.Actions.TestMode == (BaseDataModel.Instance.CurrentApplicationSettings.TestMode))
-                                    .Select(x => Utils.SessionActions[x.Actions.Name])
+                                    .Select(x => FileUtils.SessionActions[x.Actions.Name])
                                     .ForEach(x =>  x.Invoke());
                             }
 
@@ -280,7 +280,7 @@ namespace AutoBot
                                     .Include(x => x.Actions)
                                     .Where(x => x.Sessions.Name == "AssessIM7").ToList()
                                     .Where(x => x.Actions.TestMode == (BaseDataModel.Instance.CurrentApplicationSettings.TestMode))
-                                    .Select(x => Utils.SessionActions[x.Actions.Name])
+                                    .Select(x => FileUtils.SessionActions[x.Actions.Name])
                                     .ForEach(x =>
                                          x.Invoke());
 
@@ -289,7 +289,7 @@ namespace AutoBot
                                     .Include(x => x.Actions)
                                     .Where(x => x.Sessions.Name == "AssessEX").ToList()
                                     .Where(x => x.Actions.TestMode == (BaseDataModel.Instance.CurrentApplicationSettings.TestMode))
-                                    .Select(x => Utils.SessionActions[x.Actions.Name])
+                                    .Select(x => FileUtils.SessionActions[x.Actions.Name])
                                     .ForEach(x =>
                                         x.Invoke());
                         }
@@ -306,7 +306,7 @@ namespace AutoBot
             }
             catch (Exception e)
             {
-                EmailDownloader.EmailDownloader.SendEmail(Utils.Client, null, $"Bug Found",
+                EmailDownloader.EmailDownloader.SendEmail(FileUtils.Client, null, $"Bug Found",
                     new[] { "Joseph@auto-brokerage.com" }, $"{e.Message}\r\n{e.StackTrace}", Array.Empty<string>());
 
 

@@ -13,8 +13,7 @@ namespace Core.Common.UI.DataVirtualization
 
         private static void ColumnHeader_Click(object sender, RoutedEventArgs e)
         {
-            var headerClicked = e.OriginalSource as GridViewColumnHeader;
-            if (headerClicked != null && headerClicked.Column != null)
+            if (e.OriginalSource is GridViewColumnHeader headerClicked && headerClicked.Column != null)
             {
                 var propertyName = GetPropertyName(headerClicked.Column);
                 if (!string.IsNullOrEmpty(propertyName))
@@ -57,8 +56,7 @@ namespace Core.Common.UI.DataVirtualization
 
         private static void OnCommandPropertyChanged(DependencyObject o, DependencyPropertyChangedEventArgs e)
         {
-            var listView = o as ItemsControl;
-            if (listView != null)
+            if (o is ItemsControl listView)
                 if (!GetAutoSort(listView)) // Don't change click handler if AutoSort enabled
                 {
                     if (e.OldValue != null && e.NewValue == null)
@@ -84,8 +82,7 @@ namespace Core.Common.UI.DataVirtualization
 
         private static void OnAutoSortPropertyChanged(DependencyObject o, DependencyPropertyChangedEventArgs e)
         {
-            var listView = o as ListView;
-            if (listView != null)
+            if (o is ListView listView)
                 if (GetCommand(listView) == null) // Don't change click handler if a command is set
                 {
                     var oldValue = (bool) e.OldValue;

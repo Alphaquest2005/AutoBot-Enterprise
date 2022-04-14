@@ -74,8 +74,10 @@ namespace WaterNut.DataSpace
 
                 foreach (var lst in monthyearLst)
                 {
-                    var cdoc = new DocumentCT();
-                    cdoc.Document = BaseDataModel.Instance.CreateNewAsycudaDocument(docSet);
+                    var cdoc = new DocumentCT
+                    {
+                        Document = BaseDataModel.Instance.CreateNewAsycudaDocument(docSet)
+                    };
 
 
                     docSet.Customs_Procedure = cp;
@@ -112,8 +114,10 @@ namespace WaterNut.DataSpace
                                 cdoc.Document, cdoc.DocumentItems);
                             await BaseDataModel.Instance.SaveDocumentCT(cdoc).ConfigureAwait(false);
                             //dup new file
-                            cdoc = new DocumentCT();
-                            cdoc.Document = BaseDataModel.Instance.CreateNewAsycudaDocument(docSet);
+                            cdoc = new DocumentCT
+                            {
+                                Document = BaseDataModel.Instance.CreateNewAsycudaDocument(docSet)
+                            };
 
                             ErrOpsIntializeCdoc(cdoc, docSet);
 

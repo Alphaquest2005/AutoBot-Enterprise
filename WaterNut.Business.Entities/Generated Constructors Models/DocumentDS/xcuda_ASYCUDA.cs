@@ -11,7 +11,7 @@
         {
             CustomClassStartUp();
             MyNavPropStartUp();
-            SetupProperties();
+            //SetupProperties();
             IIdentifiableEntityStartUp();
             AutoGenStartUp();  
             TrackableStartUp();
