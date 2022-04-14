@@ -1127,7 +1127,7 @@ namespace AdjustmentQS.Business.Services
                 // get Discrepancy Allocation Errors && Discrepancies that can't be Exwarehoused
                 using (var ctx = new AdjustmentQSContext() { StartTracking = true })
                 {
-                    ctx.Database.CommandTimeout = 10;
+                    ctx.Database.CommandTimeout = 60;
 
 
 
