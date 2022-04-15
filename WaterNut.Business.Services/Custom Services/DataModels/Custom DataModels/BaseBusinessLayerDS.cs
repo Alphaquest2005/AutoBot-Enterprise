@@ -597,7 +597,7 @@ namespace WaterNut.DataSpace
                 .ConfigureAwait(false);
         }
 
-        public async Task AddToEntry(IEnumerable<int> entryDatalst, int docSetId, bool perInvoice,
+        public async Task<List<DocumentCT>> AddToEntry(IEnumerable<int> entryDatalst, int docSetId, bool perInvoice,
             bool combineEntryDataInSameFile, bool groupItems)
         {
             var docSet = await Instance.GetAsycudaDocumentSet(docSetId)
@@ -622,7 +622,7 @@ namespace WaterNut.DataSpace
             
             if (!IsValidEntryData(slstSource)) return;
 
-            await CreateEntryItems(slstSource, docSet, perInvoice, true, false, combineEntryDataInSameFile,
+          return  await CreateEntryItems(slstSource, docSet, perInvoice, true, false, combineEntryDataInSameFile,
                 groupItems, true).ConfigureAwait(false);
         }
 

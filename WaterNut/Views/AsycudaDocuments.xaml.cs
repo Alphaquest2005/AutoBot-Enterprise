@@ -167,7 +167,7 @@ namespace WaterNut.Views
 
 	    private void AutoDownload(object sender, MouseButtonEventArgs e)
 	    {
-	        FileUtils.DownloadSalesFiles(2, "IM7History");
+	        EX9Utils.DownloadSalesFiles(2, "IM7History");
 
 	    }
 	}

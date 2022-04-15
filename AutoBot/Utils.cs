@@ -72,68 +72,67 @@ namespace AutoBot
         public const int _noOfCyclesBeforeHardExit = 60;
         public static int maxRowsToFindHeader = 10;
         private static int _oneMegaByte = 1000000;
+        public static StringComparer ignoreCase = StringComparer.OrdinalIgnoreCase;
+        public static Client Client { get; set; }
 
 
-        public static void RecreateEx9()
+        public static void Kill(FileTypes arg1, FileInfo[] arg2)
         {
-            var genDocs = FileUtils.CreateEx9(true);
-
-            if (genDocs.Any()) //reexwarehouse process
-            {
-                FileUtils.ExportEx9Entries();
-                FileUtils.AssessEx9Entries();
-                FileUtils.DownloadSalesFiles(10, "IM7", false);
-                FileUtils.ImportSalesEntries();
-                FileUtils.ImportWarehouseErrors();
-                RecreateEx9();
-                Application.Exit();
-            }
-            else // reimport and submit to customs
-            {
-                FileUtils.LinkPDFs();
-                FileUtils.SubmitSalesXMLToCustoms();
-                FileUtils.CleanupEntries();
-                Application.Exit();
-            }
+            Application.Exit();
         }
 
 
-        public static void EmailSalesErrors()
+        public static void ImportAllFilesInDataFolder()
         {
-
-            var info = BaseDataModel.CurrentSalesInfo();
-            var directory = info.Item4;
-            var errorfile = Path.Combine(directory, "SalesErrors.csv");
-
-            using (var ctx = new AllocationQSContext())
+            try
             {
-                var errors = ctx.AsycudaSalesAndAdjustmentAllocationsExes
-                                .Where(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)
-                                .Where(x => x.Status != null)
-                                .Where(x => x.InvoiceDate >= info.Item1.Date && x.InvoiceDate <= info.Item2.Date).ToList();
 
-                var res = new ExportToCSV<AsycudaSalesAndAdjustmentAllocationsEx, List<AsycudaSalesAndAdjustmentAllocationsEx>>
-                    {
-                        dataToPrint = errors
-                    };
-                using (var sta = new StaTaskScheduler(numberOfThreads: 1))
+
+                Console.WriteLine("Import All Files in DataFolder");
+                var files = Directory.GetFiles(
+                    Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder, "Imports"), "*.xml");
+                var res = new List<string>();
+                AsycudaDocumentSetEx docSet;
+                using (var ctx = new CoreEntitiesContext())
                 {
-                    Task.Factory.StartNew(() => res.SaveReport(errorfile), CancellationToken.None, TaskCreationOptions.None, sta);
+                    var ifiles = ctx.AsycudaDocuments
+                        .Where(x => x.ApplicationSettingsId ==
+                                    BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId &&
+                                    x.ImportComplete == true).Select(x => new
+                        {
+                            Office = x.Customs_clearance_office_code,
+                            x.CNumber
+                        }).ToList();
+
+                    docSet = ctx.AsycudaDocumentSetExs.FirstOrDefault(x =>
+                        x.ApplicationSettingsId ==
+                        BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId &&
+                        x.Declarant_Reference_Number == "Imports");
+                    foreach (var file in files)
+                    {
+                        var f = Regex.Match(file, @"(?<Office>\w+)\-(?<CNumber>\d+).xml",
+                            RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture);
+                        if (f.Success == false) continue;
+                        var i = ifiles.FirstOrDefault(x =>
+                            x.CNumber == f.Groups["CNumber"].Value && x.Office == f.Groups["Office"].Value);
+                        if (i == null)
+                        {
+                            res.Add(file);
+                        }
+                    }
                 }
 
+                BaseDataModel.Instance.ImportDocuments(docSet.AsycudaDocumentSetId, res, true, true, true, true, true)
+                    .Wait();
             }
-
-            using (var ctx = new CoreEntitiesContext())
+            catch (Exception e)
             {
-                var contacts = ctx.Contacts
-                    .Where(x => x.Role == "Broker" || x.Role == "Customs" || x.Role == "Clerk")
-                    .Where(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)
-                    .ToList();
-                if (File.Exists(errorfile))
-                    EmailDownloader.EmailDownloader.SendEmail(FileUtils.Client, directory, $"Sales Errors for {info.Item1.ToString("yyyy-MM-dd")} - {info.Item2.ToString("yyyy-MM-dd")}", contacts.Select(x => x.EmailAddress).ToArray(), "Please see attached...", new string[] { errorfile });
+                Console.WriteLine(e);
+                throw;
             }
-
         }
+
+
         public static void EmailAdjustmentErrors()
         {
 
@@ -150,7 +149,7 @@ namespace AutoBot
                     .Where(x => x.InvoiceDate >= info.Item1.Date && x.InvoiceDate <= info.Item2.Date).ToList();
 
                 var res = new ExportToCSV<AsycudaSalesAndAdjustmentAllocationsEx, List<AsycudaSalesAndAdjustmentAllocationsEx>>
-                    {
+                {
                         dataToPrint = errors
                     };
                 using (var sta = new StaTaskScheduler(numberOfThreads: 1))
@@ -167,42 +166,12 @@ namespace AutoBot
                     .Where(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)
                     .ToList();
                 if (File.Exists(errorfile))
-                    EmailDownloader.EmailDownloader.SendEmail(FileUtils.Client, directory, $"Adjustment Errors for {info.Item1:yyyy-MM-dd} - {info.Item2:yyyy-MM-dd}", contacts.Select(x => x.EmailAddress).ToArray(), "Please see attached...", new string[] { errorfile });
+                    EmailDownloader.EmailDownloader.SendEmail(Client, directory, $"Adjustment Errors for {info.Item1:yyyy-MM-dd} - {info.Item2:yyyy-MM-dd}", contacts.Select(x => x.EmailAddress).ToArray(), "Please see attached...", new string[]
+                        {
+                            errorfile
+                        });
             }
 
-        }
-
-
-        public static void ClearDocSetEntryData(int asycudaDocumentSetId)
-        {
-            using (var dtx = new DocumentDSContext())
-            {
-                var res = dtx.AsycudaDocumentSetEntryDatas.Where(x =>
-                    x.AsycudaDocumentSet.SystemDocumentSet == null
-                    && x.AsycudaDocumentSetId == asycudaDocumentSetId);
-                if (res.Any())
-                {
-                    dtx.AsycudaDocumentSetEntryDatas.RemoveRange(res);
-                    dtx.SaveChanges();
-                }
-
-            }
-        }
-
-        public static void ClearDocSetAttachments(int asycudaDocumentSetId, string emailId = null)
-        {
-            using (var dtx = new DocumentDSContext())
-            {
-                var res = dtx.AsycudaDocumentSet_Attachments.Where(x =>
-                    x.AsycudaDocumentSet.SystemDocumentSet == null
-                    && x.AsycudaDocumentSetId == asycudaDocumentSetId && emailId == null || x.EmailId != emailId);
-                if (res.Any())
-                {
-                    dtx.AsycudaDocumentSet_Attachments.RemoveRange(res);
-                    dtx.SaveChanges();
-                }
-
-            }
         }
 
 
@@ -224,7 +193,7 @@ namespace AutoBot
                         .GroupBy(x => x.AsycudaDocumentSetId)
                         .ToList();
 
-                    FileUtils.CreateAdjustmentEntries(overwrite, adjustmentType, lst, fileType.EmailId);
+                    CreateAdjustmentEntries(overwrite, adjustmentType, lst, fileType.EmailId);
                 }
             }
             catch (Exception e)
@@ -235,6 +204,101 @@ namespace AutoBot
 
         }
 
+        public static void CreateAdjustmentEntries(bool overwrite, string adjustmentType,
+           List<IGrouping<int, TODO_AdjustmentsToXML>> lst, string emailId)
+        {
+            if (overwrite)
+            {
+                foreach (var doc in lst.Select(x => x.Key).Distinct<int>())
+                {
+
+
+                    using (var ctx = new CoreEntitiesContext())
+                    {
+                        ctx.Database.CommandTimeout = 20;
+                        var keys = lst.SelectMany(x => x.Select(z => z.EntryDataDetailsKey)).ToList();
+
+                        if (ctx.AsycudaDocumentItemEntryDataDetails.Any(x => keys.Contains(x.key)))
+                            BaseDataModel.Instance.UpdateAsycudaDocumentSetLastNumber(doc, 0);
+                    }
+
+                    BaseDataModel.Instance.ClearAsycudaDocumentSet(doc).Wait();
+                    //; // took it of so it would keep counting up
+                }
+            }
+
+            foreach (var doc in lst)
+            {
+                try
+                {
+                    // do duty Paid
+                    var itemFilter =
+                        $" && ({Enumerable.Select<TODO_AdjustmentsToXML, string>(doc, x => $"EntryDataDetailsId == {x.EntryDataDetailsId}").Distinct().Aggregate((old, current) => old + " || " + current)})";
+                    var entryDataDetailsIds = doc.Select(x => x.EntryDataDetailsId).ToList();
+                    var t1 = Task.Run(() =>
+                    {
+
+
+                        var filterExpressionp =
+                                $"(ApplicationSettingsId == \"{BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId}\")"
+
+                                //$"&& (InvoiceDate >= \"{saleInfo.Item1:MM/01/yyyy}\" " +
+                                //$" && InvoiceDate <= \"{saleInfo.Item2:MM/dd/yyyy HH:mm:ss}\")" +
+                                //+ $" && EntryDataId == \"{doc.InvoiceNo}\""
+                                + $" && DutyFreePaid == \"Duty Paid\""
+                                + itemFilter
+                            ;
+
+
+
+                        new AdjustmentShortService().CreateIM9(filterExpressionp, false,
+                            doc.Key, "Duty Paid", adjustmentType, entryDataDetailsIds, emailId).Wait();
+
+                    });
+                    var filterExpressionf =
+                            $"(ApplicationSettingsId == \"{BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId}\")"
+
+                            //$"&& (InvoiceDate >= \"{saleInfo.Item1:MM/01/yyyy}\" " +
+                            //$" && InvoiceDate <= \"{saleInfo.Item2:MM/dd/yyyy HH:mm:ss}\")" +
+                            // + $" && EntryDataId == \"ADJ-June 2019\""
+                            //+ $" && ItemNumber == \"7IT/PR-LBL-RBN\""
+                            + $" && DutyFreePaid == \"Duty Free\""
+                            + itemFilter
+                        // + $" && \"{Enumerable.Select<TODO_AdjustmentsToXML, string>(doc, x => x.InvoiceNo).Distinct().Aggregate((old, current) => old + "," + current)}\".Contains(EntryDataId)"
+                        ;
+                    var t2 = Task.Run(() =>
+                    {
+                        new AdjustmentShortService().CreateIM9(filterExpressionf, false,
+                            doc.Key, "Duty Free", adjustmentType, entryDataDetailsIds, emailId).Wait();
+                    });
+                    var t3 = Task.Run(() =>
+                    {
+                        new AdjustmentOverService()
+                            .CreateOPS(filterExpressionf, false, doc.Key, adjustmentType, entryDataDetailsIds, emailId)
+                            .Wait();
+                    });
+                    if (entryDataDetailsIds.Count > 7)
+                    {
+                        Task.WhenAll(t1, t3).Wait();
+                        // t1.Wait();
+                        t2.Wait();
+                        // t3.Wait();
+                    }
+                    else
+                    {
+                        Task.WhenAll(t1, t2, t3).Wait();
+                    }
+
+
+                    BaseDataModel.RenameDuplicateDocuments(doc.Key);
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                    throw;
+                }
+            }
+        }
 
         public static void SetCurrentApplicationSettings(int id)
         {
@@ -372,8 +436,7 @@ namespace AutoBot
 
                         AddUpdateEmailAttachments(fileType, email, oldemail, file, ctx, attachment, reference);
 
-                        if (fileType.AsycudaDocumentSetId != 0)
-                            AddUpdateDocSetAttachement(fileType, email, ctx, file, attachment, reference);
+                        if (fileType.AsycudaDocumentSetId != 0) EntryDocSetUtils.AddUpdateDocSetAttachement(fileType, email, ctx, file, attachment, reference);
 
                     }
 
@@ -396,7 +459,7 @@ namespace AutoBot
                     $@"Attachment: '{file.Name}' is too large to upload into Asycuda ({Math.Round((double)(file.Length / _oneMegaByte), 2)}). Please remove Formatting or Cut into Smaller chuncks and Resend!" +
                     "Thanks\r\n" +
                     "AutoBot";
-                EmailDownloader.EmailDownloader.SendBackMsg(fileType.EmailId, FileUtils.Client, errTxt);
+                EmailDownloader.EmailDownloader.SendBackMsg(fileType.EmailId, Client, errTxt);
             }
         }
 
@@ -441,42 +504,465 @@ namespace AutoBot
             return newReference;
         }
 
-        private static void AddUpdateDocSetAttachement(FileTypes fileType, Email email, CoreEntitiesContext ctx, FileInfo file,
-            Attachments attachment, string newReference)
+
+        public static bool AssessComplete(string instrFile, string resultsFile, out int lcont)
         {
-            var docSetAttachment =
-                ctx.AsycudaDocumentSet_Attachments
-                    .Include(x => x.Attachments)
-                    .FirstOrDefault(x => x.Attachments.FilePath == file.FullName
-                                         && x.AsycudaDocumentSetId == fileType.AsycudaDocumentSetId);
-            if (docSetAttachment == null)
+            try
             {
-                ctx.AsycudaDocumentSet_Attachments.Add(
-                    new AsycudaDocumentSet_Attachments(true)
+
+
+                lcont = 0;
+                var rcount = 0;
+
+                if (File.Exists(instrFile))
+                {
+                    if (!File.Exists(resultsFile)) return false;
+                    var lines = File.ReadAllLines(instrFile).Where(x => x.StartsWith("File\t")).ToArray();
+                    var res = File.ReadAllLines(resultsFile).Where(x => x.StartsWith("File\t")).ToArray();
+                    if (res.Length == 0)
                     {
-                        AsycudaDocumentSetId = fileType.AsycudaDocumentSetId,
-                        Attachments = attachment,
-                        DocumentSpecific = fileType.DocumentSpecific,
-                        FileDate = file.LastWriteTime,
-                        EmailId = email.EmailId,
-                        FileTypeId = fileType.Id,
-                        TrackingState = TrackingState.Added
+
+                        return false;
+                    }
+
+
+                    foreach (var line in lines)
+                    {
+                        var p = line.Split('\t');
+                        if (lcont >= res.Length) return false;
+                        if (string.IsNullOrEmpty(res[lcont])) return false;
+                        rcount += 1;
+                        var isSuccess = false;
+                        foreach (var rline in res)
+                        {
+                            var r = rline.Split('\t');
+
+                            if (r.Length == 3 && p[1] == r[1] && r[2] == "Success")
+                            {
+                                if (r[0] == "File") lcont = rcount - 1;
+                                isSuccess = true;
+                                break;
+                            }
+
+                            if (r.Length == 3 && p[1] == r[0] && r[2] == "Success") // for file
+                            {
+                                lcont += 1;
+                                isSuccess = true;
+                                break;
+                            }
+
+                            if (r.Length == 4 && p[2] == r[2] && r[3] == "Success") // for file
+                            {
+                                lcont += 1;
+                                isSuccess = true;
+                                break;
+                            }
+
+                            if (r.Length == 3 && p[1] != r[1] && r[2] == "Error")
+                            {
+
+                                if (r[0] == "Screenshot")
+                                {
+
+                                    SubmitScriptErrors(r[1]);
+                                    return true;
+                                }
+                                //isSuccess = true;
+                                //break;
+                            }
+
+                            if (r.Length == 3 && p[1] == r[1] && r[2] == "Error")
+                            {
+                                // email error
+                                //if (r[0] == "File") lcont = rcount - 1;
+                                //isSuccess = true;
+                                //break;
+                            }
+
+                        }
+
+                        if (isSuccess == true) continue;
+                        return false;
+                    }
+
+                    return true;
+                }
+                else
+                {
+
+                    return true;
+                }
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
+        public static void SubmitScriptErrors(string file)
+        {
+            try
+            {
+
+
+                Console.WriteLine("Submit Script Errors");
+
+                // var saleInfo = CurrentSalesInfo();
+
+
+                using (var ctx = new CoreEntitiesContext())
+                {
+                    ctx.Database.CommandTimeout = 10;
+                    var contacts = ctx.Contacts
+                        .Where(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId
+                                    && (x.Role == "Developer" || x.Role == "Broker")).Select(x => x.EmailAddress).ToArray();
+
+
+                    var body = $"Please see attached.\r\n" +
+                               $"Regards,\r\n" +
+                               $"AutoBot";
+
+                    var msg = EmailDownloader.EmailDownloader.CreateMessage(Client, "AutoBot Script Error", contacts, body, new string[]
+                    {
+                        file
                     });
+                    EmailDownloader.EmailDownloader.SendEmail(Client, msg);
+                }
+            }
+            catch (Exception e)
+            {
+
+                throw e;
+            }
+
+        }
+
+
+        public static void RunSiKuLi(string directoryName, string scriptName, string lastCNumber = "")
+        {
+            try
+            {
+
+                if (string.IsNullOrEmpty(directoryName)) return;
+
+                Console.WriteLine($"Executing {scriptName}");
+
+
+                Process process = new Process();
+                ProcessStartInfo startInfo = new ProcessStartInfo()
+                {
+                    WindowStyle = ProcessWindowStyle.Hidden,
+                    FileName = "java.exe",
+                    Arguments = $@"-jar C:\Users\{Environment.UserName}\OneDrive\Clients\AutoBot\sikulix-2.0.0.jar -r C:\Users\{
+                        // $@"-jar C:\Users\{Environment.UserName}\OneDrive\Clients\AutoBot\sikulix.jar -r C:\Users\{
+                        Environment.UserName
+                    }\OneDrive\Clients\AutoBot\Scripts\{scriptName}.sikuli --args {
+                        BaseDataModel.Instance.CurrentApplicationSettings.AsycudaLogin
+                    } {BaseDataModel.Instance.CurrentApplicationSettings.AsycudaPassword} {
+                        (string.IsNullOrEmpty(lastCNumber) ? "" : lastCNumber + " ")
+                    }""{directoryName + "\\"}",
+                    UseShellExecute = false
+                };
+                process.StartInfo = startInfo;
+                process.EnableRaisingEvents = true;
+
+                /// wait if instance already running 
+                foreach (var process1 in Process.GetProcesses().Where(x => x.MainWindowTitle.Contains("ASYCUDA"))
+                             .ToList())
+                {
+                    Thread.Sleep(1000 * 60);
+                }
+
+
+                process.Start();
+                var timeoutCycles = 0;
+                while (!process.HasExited && process.Responding)
+                {
+                    //if(File.Exists(Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder, $"{docRef}/I")))
+                    if (timeoutCycles > Utils._noOfCyclesBeforeHardExit) break;
+                    //Console.WriteLine($"Waiting {timeoutCycles} Minutes");
+                    Debug.WriteLine($"Waiting {timeoutCycles} Minutes");
+                    Thread.Sleep(1000 * 60);
+                    timeoutCycles += 1;
+                }
+
+                if (!process.HasExited) process.Kill();
+
+                foreach (var process1 in Process.GetProcesses().Where(x => x.MainWindowTitle.Contains("ASYCUDA") || x.MainWindowTitle.Contains("Acrobat Reader"))
+                             .ToList())
+                {
+                    process1.Kill();
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+        }
+
+        public static bool ImportComplete(string directoryName, bool redownload, out int lcont)
+        {
+            lcont = 0;
+
+            var desFolder = directoryName + (directoryName.EndsWith(@"\") ? "" : "\\");
+            var overviewFile = Path.Combine(desFolder, "OverView.txt");
+            if (File.Exists(overviewFile) || File.GetLastWriteTime(overviewFile) <= DateTime.Now.AddHours(-2))
+            {
+                if (File.GetLastWriteTime(overviewFile) <= DateTime.Now.AddHours(-1)) return false;
+                var lines = File.ReadAllText(overviewFile)
+                    .Split(new[] { $"\r\n{DateTime.Now.Year}\t" }, StringSplitOptions.RemoveEmptyEntries);
+                if (lines.Length == 0)
+                {
+
+                    return false;
+                }
+
+                var existingfiles = 0;
+
+                foreach (var line in lines)
+                {
+                    lcont += 1;
+
+                    var p = line.StartsWith($"{DateTime.Now.Year}\t")
+                        ? line.Replace($"{DateTime.Now.Year}\t", "").Split('\t')
+                        : line.Split('\t');
+                    if (p.Length < 8) continue;
+                    if (File.Exists(Path.Combine(desFolder, $"{p[7] + p[8]}-{p[0]}-{p[5]}.xml")))
+                    {
+                        existingfiles += 1;
+                        continue;
+                    }
+                    return false;
+                }
+
+                if (redownload && (DateTime.Now - new FileInfo(overviewFile).LastWriteTime).Minutes > 5) return false;
+                return existingfiles != 0;
             }
             else
             {
-                docSetAttachment.DocumentSpecific = fileType.DocumentSpecific;
-                docSetAttachment.FileDate = file.LastWriteTime;
-                docSetAttachment.EmailId = email.EmailId;
-                docSetAttachment.FileTypeId = fileType.Id;
-                docSetAttachment.Attachments.Reference = newReference;
-                docSetAttachment.Attachments.DocumentCode = fileType.DocumentCode;
-                docSetAttachment.Attachments.EmailId = email.EmailId;
-            }
 
-            ctx.SaveChanges();
+                return false;
+            }
         }
 
- 
+     
+        public static void SubmitMissingInvoices(FileTypes ft)
+        {
+            try
+            {
+
+
+                Console.WriteLine("Submit Missing Invoices");
+
+                // var saleInfo = CurrentSalesInfo();
+
+
+                using (var ctx = new CoreEntitiesContext())
+                {
+                    ctx.Database.CommandTimeout = 10;
+                    var contacts = ctx.Contacts.Where(x => x.Role == "PO Clerk" || x.Role == "Broker")
+                        .Where(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)
+                        .Select(x => x.EmailAddress)
+                        .Distinct()
+                        .ToArray();
+                    var lst = ctx.TODO_SubmitDocSetWithIncompleteInvoices
+                        //.Where(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId).ToList()
+                        .Where(x => x.AsycudaDocumentSetId == ft.AsycudaDocumentSetId)//ft.AsycudaDocumentSetId == 0 ||
+                        .ToList()
+                        .GroupBy(x => new { x.EmailId, x.AsycudaDocumentSetId });
+
+                    foreach (var emailIds in lst)
+                    {
+                        if (Utils.GetDocSetActions(emailIds.Key.AsycudaDocumentSetId, "SubmitMissingInvoices").Any<ActionDocSetLogs>()) continue;
+
+
+                        var body = $"The {emailIds.FirstOrDefault().Declarant_Reference_Number} is missing Invoices. {emailIds.FirstOrDefault().ImportedInvoices} were Imported out of {emailIds.FirstOrDefault().TotalInvoices} . \r\n" +
+                                   $"\t{"Invoice No.".FormatedSpace(20)}{"Invoice Date".FormatedSpace(20)}{"Invoice Value".FormatedSpace(20)}\r\n" +
+                                   $"{emailIds.Select(current => $"\t{current.InvoiceNo.FormatedSpace(20)}{current.InvoiceDate.ToShortDateString().FormatedSpace(20)}{current.InvoiceTotal.Value.ToString().FormatedSpace(20)} \r\n").Aggregate((old, current) => old + current)}" +
+                                   $"Please Check CSVs or Document Set Total Invoices\r\n" +
+                                   $"Any questions or concerns please contact Joseph Bartholomew at Joseph@auto-brokerage.com.\r\n" +
+                                   $"\r\n" +
+                                   $"Regards,\r\n" +
+                                   $"AutoBot";
+                        List<string> attlst = new List<string>();
+
+
+
+                        if (emailIds.Key == null)
+                        {
+                            EmailDownloader.EmailDownloader.SendEmail(Utils.Client, "", "Error:Missing Invoices",
+                                contacts, body, attlst.ToArray());
+                        }
+                        else
+                        {
+                            EmailDownloader.EmailDownloader.ForwardMsg(emailIds.Key.EmailId, Utils.Client, "Error:Missing Invoices", body, contacts, attlst.ToArray());
+                        }
+
+
+                        ctx.SaveChanges();
+
+
+                        //LogDocSetAction(emailIds.Key.AsycudaDocumentSetId, "SubmitMissingInvoices");
+
+
+                    }
+
+                }
+                SubmitMissingInvoicePDFs(ft);
+            }
+            catch (Exception e)
+            {
+
+                throw e;
+            }
+        }
+
+        public static List<ActionDocSetLogs> GetDocSetActions(int docSetId, string actionName)
+        {
+            using (var ctx = new CoreEntitiesContext())
+            {
+                return ctx.ActionDocSetLogs.Where(x => x.Actions.Name == actionName && x.AsycudaDocumentSetId == docSetId).ToList();
+
+            }
+        }
+
+        public static void SubmitMissingInvoicePDFs(FileTypes ft)
+        {
+            try
+            {
+
+
+                Console.WriteLine("Submit Missing Invoice PDFs");
+
+
+                // var saleInfo = CurrentSalesInfo();
+
+
+                using (var ctx = new CoreEntitiesContext())
+                {
+                    ctx.Database.CommandTimeout = 10;
+                    var contacts = ctx.Contacts.Where(x => x.Role == "PO Clerk" || x.Role == "Broker")
+                        .Where(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)
+                        .Select(x => x.EmailAddress)
+                        .Distinct()
+                        .ToArray();
+                    var lst = ctx.TODO_SubmitMissingInvoicePDFs
+                        //.Where(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId) // use the more precise filter
+                        .Where(x => x.AsycudaDocumentSetId == ft.AsycudaDocumentSetId)
+                        .ToList()
+                        .GroupBy(x => new { x.EmailId, x.AsycudaDocumentSetId });
+
+                    foreach (var emailIds in lst)
+                    {
+                        if (Enumerable.Any<ActionDocSetLogs>(Utils.GetDocSetActions(emailIds.Key.AsycudaDocumentSetId, "SubmitMissingInvoicePDFs"))) continue;
+
+
+                        var body = $"The {emailIds.FirstOrDefault().Declarant_Reference_Number} is missing Invoice PDF Attachments. \r\n" +
+                                   $"\t{"Invoice No.".FormatedSpace(20)}{"Source File".FormatedSpace(20)}\r\n" +
+                                   $"{emailIds.Select(current => $"\t{current.InvoiceNo.FormatedSpace(20)}{current.SourceFile.FormatedSpace(20)} \r\n").Aggregate((old, current) => old + current)}" +
+                                   $"Please email CSV with Coresponding PDF to prevent this error.\r\n" +
+                                   $"Any questions or concerns please contact Joseph Bartholomew at Joseph@auto-brokerage.com.\r\n" +
+                                   $"\r\n" +
+                                   $"Regards,\r\n" +
+                                   $"AutoBot";
+                        List<string> attlst = new List<string>();
+
+
+
+                        if (emailIds.Key == null)
+                        {
+                            EmailDownloader.EmailDownloader.SendEmail(Utils.Client, "", "Error:Missing Invoices PDF Attachments",
+                                contacts, body, attlst.ToArray());
+                        }
+                        else
+                        {
+                            EmailDownloader.EmailDownloader.ForwardMsg(emailIds.Key.EmailId, Utils.Client, "Error:Missing Invoices PDF Attachments", body, contacts, attlst.ToArray());
+                        }
+
+
+                        ctx.SaveChanges();
+
+
+                        //LogDocSetAction(emailIds.Key.AsycudaDocumentSetId, "SubmitMissingInvoicePDFs");
+
+
+                    }
+
+                }
+            }
+            catch (Exception e)
+            {
+
+                throw e;
+            }
+        }
+
+        public static void SubmitIncompleteEntryData(FileTypes ft)
+        {
+            try
+            {
+
+
+                Console.WriteLine("Submit Incomplete Entry Data");
+
+                // var saleInfo = CurrentSalesInfo();
+
+
+                using (var ctx = new CoreEntitiesContext())
+                {
+                    ctx.Database.CommandTimeout = 10;
+                    var contacts = ctx.Contacts
+                        .Where(x => x.Role == "PO Clerk" || x.Role == "Broker")
+                        .Where(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)
+                        .Select(x => x.EmailAddress)
+                        .Distinct()
+                        .ToArray();
+                    var lst = ctx.TODO_SubmitIncompleteEntryData
+                        //.Where(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)
+                        .Where(x => x.AsycudaDocumentSetId == ft.AsycudaDocumentSetId)// ft.AsycudaDocumentSetId == 0 ||
+                        .ToList()
+                        .GroupBy(x => x.EmailId);
+                    foreach (var emailIds in lst)
+                    {
+
+
+
+                        var body = "The Following Invoices Total do not match Imported Totals . \r\n" +
+                                   $"\t{"Invoice No.".FormatedSpace(20)}{"Supplier Code".FormatedSpace(20)}{"Invoice Total".FormatedSpace(20)}{"Imported Total".FormatedSpace(20)}\r\n" +
+                                   $"{emailIds.Select(current => $"\t{current.InvoiceNo.FormatedSpace(20)}{current.SupplierCode.FormatedSpace(20)}{current.InvoiceTotal.Value.ToString("C").FormatedSpace(20)}{current.ImportedTotal.Value.ToString("C").FormatedSpace(20)} \r\n").Aggregate((old, current) => old + current)}" +
+                                   $"Please Check CSVs or Document Set Total Invoices\r\n" +
+                                   $"Any questions or concerns please contact Joseph Bartholomew at Joseph@auto-brokerage.com.\r\n" +
+                                   $"\r\n" +
+                                   $"Regards,\r\n" +
+                                   $"AutoBot";
+                        List<string> attlst = new List<string>();
+
+
+
+                        if (emailIds.Key == null)
+                        {
+                            EmailDownloader.EmailDownloader.SendEmail(Utils.Client, "", "Error:Incomplete Invoice Data",
+                                contacts, body, attlst.ToArray());
+                        }
+                        else
+                        {
+                            EmailDownloader.EmailDownloader.ForwardMsg(emailIds.Key, Utils.Client, "Error:Incomplete Invoice Data", body, contacts, attlst.ToArray());
+                        }
+
+
+                        ctx.SaveChanges();
+
+                    }
+
+                }
+            }
+            catch (Exception e)
+            {
+
+                throw e;
+            }
+        }
     }
 }

@@ -410,7 +410,7 @@ namespace WaterNut
                     StatusModel.StatusUpdate();
                     try
                     {
-                        FileUtils.ImportExpiredEntires(f);
+                        EntryDocSetUtils.ImportExpiredEntires(f);
                     }
                     catch (Exception Ex)
                     {

@@ -75,7 +75,7 @@ namespace WaterNut.QuerySpace
                     }
                     if (f.EndsWith(".xlsx"))
                     {
-                       FileUtils.Xlsx2csv(new FileInfo[]{ new FileInfo(f)}, new CoreEntitiesContext().FileTypes
+                       CSVUtils.Xlsx2csv(new FileInfo[]{ new FileInfo(f)}, new CoreEntitiesContext().FileTypes
                                         .Include(x => x.ChildFileTypes)
                                         .Include(x => x.FileTypeMappings)
                                         .First(x => x.Type == "XLSX" 
