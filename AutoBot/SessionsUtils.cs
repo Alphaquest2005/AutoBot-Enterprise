@@ -48,7 +48,7 @@ namespace AutoBot
                 {"FixIncompleteEntries", EntryDocSetUtils.FixIncompleteEntries },
                 {"EmailEntriesExpiringNextMonth", EX9Utils.EmailEntriesExpiringNextMonth },
                 {"EmailWarehouseErrors", EX9Utils.EmailWarehouseErrors },
-                {"RecreateLatestPOEntries", POUtils.RecreateLatestPOEntries },
+                {"RecreateLatestPOEntries",() =>  POUtils.RecreateLatestPOEntries() },
                 {"ReImportC71", C71Utils.ReImportC71 },
                 {"ReImportLIC", LICUtils.ReImportLIC },
                

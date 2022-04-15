@@ -602,7 +602,7 @@ namespace WaterNut.DataSpace
         {
             var docSet = await Instance.GetAsycudaDocumentSet(docSetId)
                 .ConfigureAwait(false);
-            if (!IsValidDocument(docSet)) return;
+            if (!IsValidDocument(docSet)) return new List<DocumentCT>();
             if (perInvoice && combineEntryDataInSameFile == false)
                 using (var ctx = new CoreEntitiesContext())
                 {
@@ -620,7 +620,7 @@ namespace WaterNut.DataSpace
                         .ConfigureAwait(false)
                     select s).ToList();
             
-            if (!IsValidEntryData(slstSource)) return;
+            if (!IsValidEntryData(slstSource)) return new List<DocumentCT>();
 
           return  await CreateEntryItems(slstSource, docSet, perInvoice, true, false, combineEntryDataInSameFile,
                 groupItems, true).ConfigureAwait(false);
