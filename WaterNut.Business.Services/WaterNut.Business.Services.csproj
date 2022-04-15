@@ -771,6 +771,7 @@
     <Compile Include="Custom Contracts\Custom Contracts\AdjustmentQS\IAdjustmentShortService.cs" />
     <Compile Include="Custom Services\AdjustmentQS\AdjustmentOverService.cs" />
     <Compile Include="Custom Services\AdjustmentQS\AdjustmentShortService.cs" />
+    <Compile Include="Utils\EntryDocSetUtils.cs" />
     <Compile Include="Custom Services\DataModels\Custom DataModels\PDF2TXT\InvoiceReader.cs" />
     <Compile Include="Custom Services\DataModels\Custom DataModels\SQLBlackBox.cs" />
     <Compile Include="ExpressionCSharp60.cs" />

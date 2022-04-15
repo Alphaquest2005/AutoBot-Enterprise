@@ -337,16 +337,16 @@ namespace DocumentDS.Business.Services
                                         GetWhere<AsycudaDocument_Attachments>(dbContext, exp, itm.Value, "xcuda_ASYCUDA", "Select", includesLst)
 										.ConfigureAwait(continueOnCapturedContext: false);
 
-                            case "xcuda_ASYCUDA_ExtendedProperties":
-                                return
-                                    await
-                                        GetWhere<xcuda_ASYCUDA_ExtendedProperties>(dbContext, exp, itm.Value, "xcuda_ASYCUDA", "SelectMany", includesLst)
-										.ConfigureAwait(continueOnCapturedContext: false);
-
                             case "xcuda_Identification":
                                 return
                                     await
                                         GetWhere<xcuda_Identification>(dbContext, exp, itm.Value, "xcuda_ASYCUDA", "SelectMany", includesLst)
+										.ConfigureAwait(continueOnCapturedContext: false);
+
+                            case "xcuda_ASYCUDA_ExtendedProperties":
+                                return
+                                    await
+                                        GetWhere<xcuda_ASYCUDA_ExtendedProperties>(dbContext, exp, itm.Value, "xcuda_ASYCUDA", "SelectMany", includesLst)
 										.ConfigureAwait(continueOnCapturedContext: false);
 
                         }
@@ -575,7 +575,8 @@ namespace DocumentDS.Business.Services
                 {
                     
                    // Debugger.Break();
-                   if (e.InnerException.InnerException is SqlException s && s.Number == 2627)
+                    SqlException s = e.InnerException.InnerException as SqlException;
+                    if (s != null && s.Number == 2627)
                     {
                          
                     }
@@ -898,11 +899,11 @@ namespace DocumentDS.Business.Services
                             case "AsycudaDocument_Attachments":
                                 return await CountWhere<AsycudaDocument_Attachments>(dbContext, exp, itm.Value, "xcuda_ASYCUDA", "Select")
 											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "xcuda_ASYCUDA_ExtendedProperties":
-                                return await CountWhere<xcuda_ASYCUDA_ExtendedProperties>(dbContext, exp, itm.Value, "xcuda_ASYCUDA", "SelectMany")
-											.ConfigureAwait(continueOnCapturedContext: false);
                             case "xcuda_Identification":
                                 return await CountWhere<xcuda_Identification>(dbContext, exp, itm.Value, "xcuda_ASYCUDA", "SelectMany")
+											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "xcuda_ASYCUDA_ExtendedProperties":
+                                return await CountWhere<xcuda_ASYCUDA_ExtendedProperties>(dbContext, exp, itm.Value, "xcuda_ASYCUDA", "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }
@@ -1112,16 +1113,16 @@ namespace DocumentDS.Business.Services
                                         LoadRangeWhere<AsycudaDocument_Attachments>(startIndex, count, dbContext, exp, itm.Value, "xcuda_ASYCUDA", "Select")
 													.ConfigureAwait(continueOnCapturedContext: false);
 
-                            case "xcuda_ASYCUDA_ExtendedProperties":
-                                return
-                                    await
-                                        LoadRangeWhere<xcuda_ASYCUDA_ExtendedProperties>(startIndex, count, dbContext, exp, itm.Value, "xcuda_ASYCUDA", "SelectMany")
-													.ConfigureAwait(continueOnCapturedContext: false);
-
                             case "xcuda_Identification":
                                 return
                                     await
                                         LoadRangeWhere<xcuda_Identification>(startIndex, count, dbContext, exp, itm.Value, "xcuda_ASYCUDA", "SelectMany")
+													.ConfigureAwait(continueOnCapturedContext: false);
+
+                            case "xcuda_ASYCUDA_ExtendedProperties":
+                                return
+                                    await
+                                        LoadRangeWhere<xcuda_ASYCUDA_ExtendedProperties>(startIndex, count, dbContext, exp, itm.Value, "xcuda_ASYCUDA", "SelectMany")
 													.ConfigureAwait(continueOnCapturedContext: false);
 
                           
@@ -1434,11 +1435,11 @@ namespace DocumentDS.Business.Services
                             case "AsycudaDocument_Attachments":
                                 return await SumWhere<AsycudaDocument_Attachments>(dbContext, exp, itm.Value, "xcuda_ASYCUDA", field, "Select")
 											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "xcuda_ASYCUDA_ExtendedProperties":
-                                return await SumWhere<xcuda_ASYCUDA_ExtendedProperties>(dbContext, exp, itm.Value, "xcuda_ASYCUDA", field, "SelectMany")
-											.ConfigureAwait(continueOnCapturedContext: false);
                             case "xcuda_Identification":
                                 return await SumWhere<xcuda_Identification>(dbContext, exp, itm.Value, "xcuda_ASYCUDA", field, "SelectMany")
+											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "xcuda_ASYCUDA_ExtendedProperties":
+                                return await SumWhere<xcuda_ASYCUDA_ExtendedProperties>(dbContext, exp, itm.Value, "xcuda_ASYCUDA", field, "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }

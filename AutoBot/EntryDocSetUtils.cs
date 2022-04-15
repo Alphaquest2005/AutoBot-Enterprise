@@ -627,17 +627,6 @@ namespace AutoBot
             return res;
         }
 
-        public static AsycudaDocumentSetEx GetLatestDocSet()
-        {
-            using (var ctx = new CoreEntitiesContext())
-            {
-                var docSet = ctx.AsycudaDocumentSetExs.Where(x =>
-                        x.ApplicationSettingsId ==
-                        BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)
-                    .OrderByDescending(x => x.AsycudaDocumentSetId)
-                    .FirstOrDefault();
-                return docSet;
-            }
-        }
+
     }
 }

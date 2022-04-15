@@ -34,8 +34,8 @@
               this.HasOptional(t => t.Ex).WithRequired(t => (xcuda_ASYCUDA) t.xcuda_ASYCUDA);
               this.HasMany(t => t.AsycudaDocumentEntryDatas).WithRequired(t => (xcuda_ASYCUDA)t.xcuda_ASYCUDA);
               this.HasMany(t => t.AsycudaDocument_Attachments).WithRequired(t => (xcuda_ASYCUDA)t.xcuda_ASYCUDA);
-              this.HasOptional(t => t.xcuda_ASYCUDA_ExtendedProperties).WithRequired(t => (xcuda_ASYCUDA)t.xcuda_ASYCUDA);
               this.HasOptional(t => t.xcuda_Identification).WithRequired(t => (xcuda_ASYCUDA) t.xcuda_ASYCUDA);
+              this.HasOptional(t => t.xcuda_ASYCUDA_ExtendedProperties).WithRequired(t => (xcuda_ASYCUDA) t.xcuda_ASYCUDA);
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);
     			this.Ignore(t => t.ModifiedProperties);

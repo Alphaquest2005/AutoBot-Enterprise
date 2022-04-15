@@ -206,7 +206,7 @@ namespace AutoBot
         {
             Console.WriteLine("Create Latest PO Entries");
 
-            var docSet = EntryDocSetUtils.GetLatestDocSet();
+            var docSet = WaterNut.DataSpace.EntryDocSetUtils.GetLatestDocSet();
             var res = EntryDocSetUtils.GetDocSetEntryData(docSet.AsycudaDocumentSetId);
 
 

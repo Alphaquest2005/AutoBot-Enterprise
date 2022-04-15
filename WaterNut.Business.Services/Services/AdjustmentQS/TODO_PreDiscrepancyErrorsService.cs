@@ -454,7 +454,8 @@ namespace AdjustmentQS.Business.Services
                 {
                     
                    // Debugger.Break();
-                   if (e.InnerException.InnerException is SqlException s && s.Number == 2627)
+                    SqlException s = e.InnerException.InnerException as SqlException;
+                    if (s != null && s.Number == 2627)
                     {
                          
                     }

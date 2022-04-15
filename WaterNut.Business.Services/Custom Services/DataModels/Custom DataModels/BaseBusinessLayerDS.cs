@@ -99,7 +99,7 @@ namespace WaterNut.DataSpace
         {
             Instance = new BaseDataModel
             {
-                CurrentApplicationSettings = null
+                CurrentApplicationSettings = new CoreEntitiesContext().ApplicationSettings.First()
             };
 
             Initialization = InitializationAsync();
@@ -725,7 +725,7 @@ namespace WaterNut.DataSpace
             cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.AutoUpdate = autoUpdate;
             if (autoAssess) cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.IsManuallyAssessed = true;
             AttachCustomProcedure(cdoc, currentAsycudaDocumentSet.Customs_Procedure);
-            var entryLineDatas = slst as IList<EntryLineData> ?? slst.ToList();
+            var entryLineDatas = slst as IList<BaseDataModel.EntryLineData> ?? slst.ToList();
             StatusModel.StartStatusUpdate("Adding Entries to New Asycuda Document", entryLineDatas.Count());
 
 
@@ -914,7 +914,7 @@ namespace WaterNut.DataSpace
             return docList;
         }
 
-        private void LinkPreviousDocuments(EntryLineData pod, DocumentCT cdoc)
+        private void LinkPreviousDocuments(BaseDataModel.EntryLineData pod, DocumentCT cdoc)
         {
             if (pod.EntryData is PurchaseOrders p)
                 if (p.PreviousCNumber != null)
@@ -934,7 +934,7 @@ namespace WaterNut.DataSpace
                 }
         }
 
-        private static void SetPackages(ref int remainingPackages, ref double possibleEntries, EntryLineData pod,
+        private static void SetPackages(ref int remainingPackages, ref double possibleEntries, BaseDataModel.EntryLineData pod,
             DocumentCT cdoc)
         {
             if (remainingPackages > 0)
@@ -972,7 +972,7 @@ namespace WaterNut.DataSpace
             }
         }
 
-        private void AttachDocSetDocumentsToDocuments(AsycudaDocumentSet currentAsycudaDocumentSet, EntryLineData pod,
+        private void AttachDocSetDocumentsToDocuments(AsycudaDocumentSet currentAsycudaDocumentSet, BaseDataModel.EntryLineData pod,
             DocumentCT cdoc)
         {
             var alst = currentAsycudaDocumentSet.AsycudaDocumentSet_Attachments
@@ -1328,7 +1328,7 @@ namespace WaterNut.DataSpace
         }
 
 
-        private IEnumerable<EntryLineData> CreateSingleEntryLineData(
+        private IEnumerable<BaseDataModel.EntryLineData> CreateSingleEntryLineData(
             IEnumerable<EntryDataDetails> slstSource)
         {
             var slst = slstSource
@@ -1337,9 +1337,9 @@ namespace WaterNut.DataSpace
             return slst;
         }
 
-        public static EntryLineData CreateEntryLineData(EntryDataDetails g)
+        public static BaseDataModel.EntryLineData CreateEntryLineData(EntryDataDetails g)
         {
-            return new EntryLineData
+            return new BaseDataModel.EntryLineData
             {
                 ItemNumber = g.ItemNumber.Trim(),
                 ItemDescription = g.ItemDescription.Trim(),
@@ -1381,13 +1381,13 @@ namespace WaterNut.DataSpace
         }
 
 
-        public IEnumerable<EntryLineData> CreateGroupEntryLineData(
+        public IEnumerable<BaseDataModel.EntryLineData> CreateGroupEntryLineData(
             IEnumerable<EntryDataDetails> slstSource)
         {
             var slst = from s in slstSource.AsEnumerable()
                 group s by new {s.ItemNumber, s.ItemDescription, s.TariffCode, s.Cost, s.EntryData, s.InventoryItemEx}
                 into g
-                select new EntryLineData
+                select new BaseDataModel.EntryLineData
                 {
                     ItemNumber = g.Key.ItemNumber.Trim(),
                     ItemDescription = g.Key.ItemDescription.Trim(),
@@ -1694,7 +1694,7 @@ namespace WaterNut.DataSpace
             }
         }
 
-        internal xcuda_Item CreateItemFromEntryDataDetail(IEntryLineData pod, DocumentCT cdoc)
+        internal xcuda_Item CreateItemFromEntryDataDetail(BaseDataModel.IEntryLineData pod, DocumentCT cdoc)
         {
             var itm = CreateNewDocumentItem();
             cdoc.DocumentItems.Add(itm);
@@ -1893,7 +1893,7 @@ namespace WaterNut.DataSpace
                     : itm.Free_text_2.Substring(0, 20);
         }
 
-        private static void SetMinWeight(IEntryLineData pod, xcuda_Item itm)
+        private static void SetMinWeight(BaseDataModel.IEntryLineData pod, xcuda_Item itm)
         {
             itm.xcuda_Valuation_item.xcuda_Weight_itm = new xcuda_Weight_itm(true)
             {
@@ -1915,7 +1915,7 @@ namespace WaterNut.DataSpace
             return new xcuda_Item(true) {TrackingState = TrackingState.Added}; //
         }
 
-        public void ProcessItemTariff(IEntryLineData pod, xcuda_ASYCUDA cdoc, xcuda_Item itm)
+        public void ProcessItemTariff(BaseDataModel.IEntryLineData pod, xcuda_ASYCUDA cdoc, xcuda_Item itm)
         {
             if (pod.TariffCode != null)
             {
@@ -3218,7 +3218,9 @@ namespace WaterNut.DataSpace
                 List<Attachment> pdfs;
                 using (var ctx = new DocumentDSContext())
                 {
-                    docs = ctx.xcuda_ASYCUDA.Where(x => x.xcuda_ASYCUDA_ExtendedProperties.AsycudaDocumentSetId ==
+                    docs = ctx.xcuda_ASYCUDA
+                        .Include(x => x.AsycudaDocument_Attachments)
+                        .Where(x => x.xcuda_ASYCUDA_ExtendedProperties.AsycudaDocumentSetId ==
                                                         asycudaDocumentSetId).ToList();
                     pdfs = ctx.AsycudaDocumentSet_Attachments
                         .Include(x => x.Attachment)
@@ -3530,106 +3532,15 @@ namespace WaterNut.DataSpace
         {
             try
             {
-                List<IGrouping<string, xcuda_ASYCUDA>> lst;
-                AsycudaDocumentSet docSet;
-                using (var ctx = new DocumentDSContext())
-                {
-                    docSet = ctx.AsycudaDocumentSets.First(x => x.AsycudaDocumentSetId == docKey);
-                    //docSet.xcuda_ASYCUDA_ExtendedProperties =
-                    //    null; //loading property and creating trouble updating it think its a circular navigation property issue
+                var (docSet, lst) = EntryDocSetUtils.GetDuplicateDocuments(docKey);
+                if (!lst.Any()) return;
 
-                    var res = ctx.xcuda_ASYCUDA
-                        .Include(x => x.xcuda_ASYCUDA_ExtendedProperties)
-                        .Where(
-                            x => x != null && x.xcuda_Declarant != null &&
-                                 x.xcuda_Declarant.Number.Contains(docSet.Declarant_Reference_Number) &&
-                                 (x.xcuda_ASYCUDA_ExtendedProperties.AsycudaDocumentSetId == docKey &&
-                                  x.xcuda_ASYCUDA_ExtendedProperties.ImportComplete == false ||
-                                  x.xcuda_ASYCUDA_ExtendedProperties.AsycudaDocumentSetId != docKey &&
-                                  x.xcuda_ASYCUDA_ExtendedProperties.ImportComplete))
-                        .GroupBy(x => x.xcuda_Declarant.Number)
-                        .ToList();
-
-                    lst = res
-                        .Where(x => x.Key != null && x.Count() > 1 || x.Any(z =>
-                            z.xcuda_ASYCUDA_ExtendedProperties.FileNumber == docSet.LastFileNumber))
-                        .ToList();
-
-                    if (!lst.Any()) return;
-                }
-
-                RenameDuplicateDocuments(lst, ref docSet);
+                EntryDocSetUtils.RenameDuplicateDocuments(lst, ref  docSet);
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
                 throw;
-            }
-        }
-
-        private static void RenameDuplicateDocuments(List<IGrouping<string, xcuda_ASYCUDA>> lst,
-            ref AsycudaDocumentSet docSet)
-        {
-            try
-            {
-                var docSetAsycudaDocumentSetId = docSet.AsycudaDocumentSetId;
-                using (var ctx = new DocumentDSContext {StartTracking = true})
-                {
-                    foreach (var g in lst)
-                    foreach (var doc in g)
-                    {
-                        docSet.LastFileNumber += 1;
-                        docSet.TrackingState = TrackingState.Modified;
-                        var prop = ctx.xcuda_ASYCUDA_ExtendedProperties.FirstOrDefault(x =>
-                            x.ASYCUDA_Id == doc.ASYCUDA_Id && x.AsycudaDocumentSetId == docSetAsycudaDocumentSetId);
-                        if (prop == null) continue;
-
-                        var declarant = ctx.xcuda_Declarant.First(x => x.ASYCUDA_Id == doc.ASYCUDA_Id);
-                        var oldRef = declarant.Number;
-                        var letter = oldRef.Substring(oldRef.IndexOf(prop.FileNumber.ToString()) - 1, 1);
-                        declarant.Number =
-                            declarant.Number?.Replace(prop.FileNumber.ToString(), docSet.LastFileNumber.ToString());
-
-                        var newRef = declarant.Number;
-                        declarant.TrackingState = TrackingState.Modified;
-                        prop.FileNumber = docSet.LastFileNumber;
-                        ctx.SaveChanges();
-                        ctx.ApplyChanges(docSet);
-                        ctx.SaveChanges();
-
-                        UpdateNameDependentAttachments(prop.ASYCUDA_Id, oldRef, newRef);
-                    }
-                }
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-                throw;
-            }
-        }
-
-        private static void UpdateNameDependentAttachments(int asycudaId, string oldRef, string newRef)
-        {
-            using (var ctx = new DocumentItemDSContext {StartTracking = true})
-            {
-                var itms = ctx.xcuda_Attached_documents
-                    .Include("xcuda_Attachments.Attachments")
-                    .Where(x => x.Attached_document_reference == oldRef)
-                    .Where(x => x.xcuda_Item.ASYCUDA_Id == asycudaId)
-                    .ToList();
-
-                foreach (var itm in itms)
-                {
-                    itm.Attached_document_reference = newRef;
-                    foreach (var att in itm.xcuda_Attachments.Where(x => x.Attachments.Reference == oldRef)
-                        .ToList())
-                    {
-                        att.Attachments.Reference = newRef;
-                        att.Attachments.FilePath = att.Attachments.FilePath.Replace(oldRef, newRef);
-                    }
-                }
-
-                ctx.SaveChanges();
             }
         }
 
@@ -3662,7 +3573,7 @@ namespace WaterNut.DataSpace
             List<ITariffSupUnitLkp> TariffSupUnitLkps { get; set; }
         }
 
-        public class EntryLineData : IEntryLineData
+        public class EntryLineData : BaseDataModel.IEntryLineData
         {
             private string _itemNumber;
 
@@ -3683,7 +3594,7 @@ namespace WaterNut.DataSpace
                     {
                         if (_itemNumber != null)
                             InventoryItem = ctx.GetInventoryItemsByExpression(
-                                $"ItemNumber == \"{_itemNumber}\" && ApplicationSettingsId == {Instance.CurrentApplicationSettings.ApplicationSettingsId}"
+                                $"ItemNumber == \"{_itemNumber}\" && ApplicationSettingsId == {BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId}"
                                 , new List<string>
                                 {
                                     "TariffCodes.TariffCategory.TariffCategoryCodeSuppUnits.TariffSupUnitLkp"

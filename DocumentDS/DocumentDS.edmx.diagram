@@ -129,7 +129,6 @@
         <EntityTypeShape EntityType="WaterNutDBModel.SystemDocumentSet" Width="1.5" PointX="3.375" PointY="57.375" />
         <AssociationConnector Association="WaterNutDBModel.FK_SystemDocumentSets_AsycudaDocumentSet" />
         <AssociationConnector Association="WaterNutDBModel.FK_FileTypes_FileTypes" />
-        <AssociationConnector Association="WaterNutDBModel.FK_xcuda_ExtendedProperty_inherits_xcuda_ASYCUDA" />
         <EntityTypeShape EntityType="WaterNutDBModel.CustomsOperation" Width="2" PointX="7.875" PointY="73.25" />
         <AssociationConnector Association="WaterNutDBModel.FK_Customs_Procedure_CustomsOperations" />
         <EntityTypeShape EntityType="WaterNutDBModel.xcuda_Identification" Width="1.5" PointX="3.625" PointY="114" />
@@ -139,6 +138,7 @@
         <AssociationConnector Association="WaterNutDBModel.FK_Identification_receipt" />
         <AssociationConnector Association="WaterNutDBModel.FK_Identification_Registration" />
         <AssociationConnector Association="WaterNutDBModel.FK_Identification_Type" />
+        <AssociationConnector Association="WaterNutDBModel.xcuda_ASYCUDAxcuda_ASYCUDA_ExtendedProperties" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
