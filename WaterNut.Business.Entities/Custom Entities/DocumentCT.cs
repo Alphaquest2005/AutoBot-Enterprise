@@ -18,6 +18,7 @@ namespace WaterNut.Business.Entities
         {
             DocumentItems = new List<xcuda_Item>();
             Document = new xcuda_ASYCUDA(true);
+            Document.SetupProperties();
             EntryDataDetails= new List<EntryDataDetails>();
            
         }
