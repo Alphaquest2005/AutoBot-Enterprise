@@ -9,6 +9,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="Asycuda421.xsd" />
     <None Remove="SQLBlackBox\AddHighImpactIndexesStoredProc.txt" />
     <None Remove="SQLBlackBox\AdhocChange.sql" />
     <None Remove="SQLBlackBox\AdjustFileGrowth.sql" />
@@ -25,6 +26,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Include="Asycuda421.xsd">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="SQLBlackBox\AddHighImpactIndexesStoredProc.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

@@ -114,6 +114,40 @@ namespace DocumentDS.Business.Entities
             if (AsycudaDocument_Attachments == null && this.ASYCUDA_Id == 0)
                 AsycudaDocument_Attachments = new List<AsycudaDocument_Attachments>();
 
+
+            if (xcuda_Assessment_notice == null && this.ASYCUDA_Id == 0)
+                this.xcuda_Assessment_notice = new List<xcuda_Assessment_notice>();
+
+            if (xcuda_Container == null && this.ASYCUDA_Id == 0)
+                this.xcuda_Container = new List<xcuda_Container>();
+
+            if (xcuda_Export_release == null && this.ASYCUDA_Id == 0)
+                this.xcuda_Export_release = new List<xcuda_Export_release>();
+
+            if (xcuda_Financial == null && this.ASYCUDA_Id == 0)
+                this.xcuda_Financial = new List<xcuda_Financial>();
+
+            if (xcuda_Global_taxes == null && this.ASYCUDA_Id == 0)
+                this.xcuda_Global_taxes = new List<xcuda_Global_taxes>();
+
+            if (xcuda_Suppliers_documents == null && this.ASYCUDA_Id == 0)
+                this.xcuda_Suppliers_documents = new List<xcuda_Suppliers_documents>();
+
+            if (xcuda_Transit == null && this.ASYCUDA_Id == 0)
+                this.xcuda_Transit = new List<xcuda_Transit>();
+
+            if (xcuda_Transport == null && this.ASYCUDA_Id == 0)
+                this.xcuda_Transport = new List<xcuda_Transport>();
+
+            if (xcuda_Warehouse == null && this.ASYCUDA_Id == 0)
+                this.xcuda_Warehouse = new List<xcuda_Warehouse>();
+
+            if (AsycudaDocumentEntryDatas == null && this.ASYCUDA_Id == 0)
+                this.AsycudaDocumentEntryDatas = new List<AsycudaDocumentEntryData>();
+
+            if (AsycudaDocument_Attachments == null && this.ASYCUDA_Id == 0)
+                this.AsycudaDocument_Attachments = new List<AsycudaDocument_Attachments>();
+
         }
 
         //public ObservableCollection<xcuda_Item> xcuda_Item

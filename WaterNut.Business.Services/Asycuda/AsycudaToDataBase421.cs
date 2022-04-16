@@ -94,7 +94,6 @@ namespace WaterNut.DataSpace.Asycuda
 
                 // db = new WaterNutDBEntities();
                 a = adoc;
-                xcuda_ASYCUDA doc;
                 if (await DeleteExistingDocument().ConfigureAwait(false)) return;
 
                 var ads = docSet; //await GetAsycudaDocumentSet().ConfigureAwait(false);
