@@ -25,6 +25,8 @@ namespace AutoBot
 {
     public class DISUtils
     {
+        private static int _databaseCommandTimeout = 20;
+
         public static void AssessDiscrepancyExecutions(FileTypes ft, FileInfo[] fs)
         {
             try
@@ -80,7 +82,7 @@ namespace AutoBot
         {
             using (var ctx = new CoreEntitiesContext())
             {
-                ctx.Database.CommandTimeout = 20;
+                ctx.Database.CommandTimeout = _databaseCommandTimeout;
 
                 IEnumerable<IGrouping<string, TODO_SubmitDiscrepanciesToCustoms>> lst;
                 lst = ctx.TODO_SubmitDiscrepanciesToCustoms.Where(x => x.EmailId == ft.EmailId
@@ -98,7 +100,7 @@ namespace AutoBot
         {
             using (var ctx = new CoreEntitiesContext())
             {
-                ctx.Database.CommandTimeout = 20;
+                ctx.Database.CommandTimeout = _databaseCommandTimeout;
                
                 IEnumerable<IGrouping<string, TODO_SubmitDiscrepanciesToCustoms>> lst;
                 lst = ctx.TODO_SubmitDiscrepanciesToCustoms.Where(x =>
@@ -121,7 +123,7 @@ namespace AutoBot
 
                 using (var ctx = new CoreEntitiesContext())
                 {
-                    ctx.Database.CommandTimeout = 20;
+                    ctx.Database.CommandTimeout = _databaseCommandTimeout;
                     var cnumberList = ft.Data.Where(z => z.Key == "CNumber").Select(x => x.Value).ToList();
                     var cplst = BaseDataModel.Instance.Customs_Procedures
                         .Where(x => x.CustomsOperation.Name == "Exwarehouse").Select(x => x.CustomsProcedure).ToList();
@@ -212,8 +214,8 @@ namespace AutoBot
 
                         var body = "The Following Discrepancies Entries were Assessed. \r\n" +
 
-                                   $"\t{"pCNumber".FormatedSpace(20)}{"Reference".FormatedSpace(20)}{"To Be Paid".FormatedSpace(20)}{"AssessmentDate".FormatedSpace(20)}\r\n" +
-                                   $"{emailIds.Select(current => $"\t{current.CNumber.FormatedSpace(20)}{current.ReferenceNumber.FormatedSpace(20)}{current.ToBePaid.FormatedSpace(20)}{current.RegistrationDate.Value.ToString("yyyy-MM-dd").FormatedSpace(20)} \r\n").Aggregate((old, current) => old + current)}" +
+                                   $"\t{"pCNumber".FormatedSpace(_databaseCommandTimeout)}{"Reference".FormatedSpace(_databaseCommandTimeout)}{"To Be Paid".FormatedSpace(_databaseCommandTimeout)}{"AssessmentDate".FormatedSpace(_databaseCommandTimeout)}\r\n" +
+                                   $"{emailIds.Select(current => $"\t{current.CNumber.FormatedSpace(_databaseCommandTimeout)}{current.ReferenceNumber.FormatedSpace(_databaseCommandTimeout)}{current.ToBePaid.FormatedSpace(_databaseCommandTimeout)}{current.RegistrationDate.Value.ToString("yyyy-MM-dd").FormatedSpace(_databaseCommandTimeout)} \r\n").Aggregate((old, current) => old + current)}" +
                                    $"\r\n" +
                                    $"Please open the attached email to view Email Thread.\r\n" +
                                    $"Any questions or concerns please contact Joseph Bartholomew at Joseph@auto-brokerage.com.\r\n" +
@@ -478,9 +480,9 @@ namespace AutoBot
                         var body =
                             $"For the Effective Period From: {totaladjustments.Min(x => x.EffectiveDate)?.ToString("yyyy-MM-dd")} To: {totaladjustments.Max(x => x.EffectiveDate)?.ToString("yyyy-MM-dd")}. \r\n" +
                             $"\r\n" +
-                            $"\t{"Reason".FormatedSpace(40)}{"Count".FormatedSpace(20)}{"Percentage".FormatedSpace(20)}\r\n" +
-                            $"{string.Join(",", errBreakdown.Select(current => $"\t{current.Key.FormatedSpace(40)}{current.Count().ToString().FormatedSpace(20)}{(Math.Round((double)(((double)current.Count() / (double)totaladjustments.Count()) * 100), 0)).ToString().FormatedSpace(20)}% \r\n"))}" +
-                            $"\t{"Executions".FormatedSpace(40)}{goodadj.Count.ToString().FormatedSpace(20)}{(Math.Round((double)(((double)goodadj.Count() / (double)totaladjustments.Count()) * 100), 0)).ToString().FormatedSpace(20)}% \r\n" +
+                            $"\t{"Reason".FormatedSpace(40)}{"Count".FormatedSpace(_databaseCommandTimeout)}{"Percentage".FormatedSpace(_databaseCommandTimeout)}\r\n" +
+                            $"{string.Join(",", errBreakdown.Select(current => $"\t{current.Key.FormatedSpace(40)}{current.Count().ToString().FormatedSpace(_databaseCommandTimeout)}{(Math.Round((double)(((double)current.Count() / (double)totaladjustments.Count()) * 100), 0)).ToString().FormatedSpace(_databaseCommandTimeout)}% \r\n"))}" +
+                            $"\t{"Executions".FormatedSpace(40)}{goodadj.Count.ToString().FormatedSpace(_databaseCommandTimeout)}{(Math.Round((double)(((double)goodadj.Count() / (double)totaladjustments.Count()) * 100), 0)).ToString().FormatedSpace(_databaseCommandTimeout)}% \r\n" +
                             $"\r\n" +
                             $"Please see attached for list of Errors and Executions details.\r\n" +
                             $"Any questions or concerns please contact Joseph Bartholomew at Joseph@auto-brokerage.com.\r\n" +
@@ -543,7 +545,7 @@ namespace AutoBot
 
                 using (var ctx = new CoreEntitiesContext())
                 {
-                    ctx.Database.CommandTimeout = 20;
+                    ctx.Database.CommandTimeout = _databaseCommandTimeout;
                     var docset = ctx.AsycudaDocumentSetExs.FirstOrDefault(x =>
                         x.AsycudaDocumentSetId == fileType.AsycudaDocumentSetId);
                     if (docset == null) return;
@@ -669,8 +671,8 @@ namespace AutoBot
                         var errorBody = errors.Any()
                             ? "Discrepancies Found: \r\n" +
                               "System could not Generate Entries the following items on the CNumbers Stated: \r\n" +
-                              $"\t{"Item Number".FormatedSpace(20)}{"InvoiceQty".FormatedSpace(15)}{"Recieved Qty".FormatedSpace(15)}{"pCNumber".FormatedSpace(15)}{"Reason".FormatedSpace(30)}\r\n" +
-                              $"{errors.Select(current => $"\t{current.ItemNumber.FormatedSpace(20)}{current.InvoiceQty.ToString().FormatedSpace(15)}{current.ReceivedQty.ToString().FormatedSpace(15)}{current.PreviousCNumber.FormatedSpace(15)}{(current.Status+ " | "+current.comment).FormatedSpace(30)}\r\n").Aggregate((old, current) => old + current)}" +
+                              $"\t{"Item Number".FormatedSpace(_databaseCommandTimeout)}{"InvoiceQty".FormatedSpace(15)}{"Recieved Qty".FormatedSpace(15)}{"pCNumber".FormatedSpace(15)}{"Reason".FormatedSpace(30)}\r\n" +
+                              $"{errors.Select(current => $"\t{current.ItemNumber.FormatedSpace(_databaseCommandTimeout)}{current.InvoiceQty.ToString().FormatedSpace(15)}{current.ReceivedQty.ToString().FormatedSpace(15)}{current.PreviousCNumber.FormatedSpace(15)}{(current.Status+ " | "+current.comment).FormatedSpace(30)}\r\n").Aggregate((old, current) => old + current)}" +
                               "\r\n" +
                               "\r\n" +
                               " The Attached File contains details of errors found trying to assessed the attached email's Shipping Discrepancies \r\n"
@@ -679,9 +681,9 @@ namespace AutoBot
                         var body =
                             $"For the Effective Period From: {totaladjustments.Min(x => x.EffectiveDate)?.ToString("yyyy-MM-dd")} To: {totaladjustments.Max(x => x.EffectiveDate)?.ToString("yyyy-MM-dd")}. \r\n" +
                             $"\r\n" +
-                            $"\t{"Reason".FormatedSpace(40)}{"Count".FormatedSpace(20)}{"Percentage".FormatedSpace(20)}\r\n" +
-                            $"{string.Join(",", errBreakdown.Select(current => $"\t{current.Key.FormatedSpace(40)}{current.Count().ToString().FormatedSpace(20)}{(Math.Round((double)(((double)current.Count() / (double)totaladjustments.Count()) * 100), 0)).ToString().FormatedSpace(20)}% \r\n"))}" +
-                            $"\t{"Executions".FormatedSpace(40)}{goodadj.Count.ToString().FormatedSpace(20)}{(Math.Round((double)(((double)goodadj.Count() / (double)totaladjustments.Count()) * 100), 0)).ToString().FormatedSpace(20)}% \r\n" +
+                            $"\t{"Reason".FormatedSpace(40)}{"Count".FormatedSpace(_databaseCommandTimeout)}{"Percentage".FormatedSpace(_databaseCommandTimeout)}\r\n" +
+                            $"{string.Join(",", errBreakdown.Select(current => $"\t{current.Key.FormatedSpace(40)}{current.Count().ToString().FormatedSpace(_databaseCommandTimeout)}{(Math.Round((double)(((double)current.Count() / (double)totaladjustments.Count()) * 100), 0)).ToString().FormatedSpace(_databaseCommandTimeout)}% \r\n"))}" +
+                            $"\t{"Executions".FormatedSpace(40)}{goodadj.Count.ToString().FormatedSpace(_databaseCommandTimeout)}{(Math.Round((double)(((double)goodadj.Count() / (double)totaladjustments.Count()) * 100), 0)).ToString().FormatedSpace(_databaseCommandTimeout)}% \r\n" +
                             $"\r\n" +
                             $"{errorBody}"+
                             $"Please see attached for list of Errors and Executions details.\r\n" +
@@ -794,8 +796,8 @@ namespace AutoBot
                     {
                         var body = "Discrepancy Already Executed: \r\n" +
                                    "The following were already executed: \r\n" +
-                                   $"\t{"Item Number".FormatedSpace(20)}{"InvoiceQty".FormatedSpace(15)}{"Recieved Qty".FormatedSpace(15)}{"pCNumber".FormatedSpace(15)}{"Reason".FormatedSpace(30)}\r\n" +
-                                   $"{g.Select(current => $"\t{current.ItemNumber.FormatedSpace(20)}{current.InvoiceQty.ToString().FormatedSpace(15)}{current.ReceivedQty.ToString().FormatedSpace(15)}{current.pCNumber.FormatedSpace(15)}{current.Comment.FormatedSpace(30)}\r\n").Aggregate((old, current) => old + current)}" +
+                                   $"\t{"Item Number".FormatedSpace(_databaseCommandTimeout)}{"InvoiceQty".FormatedSpace(15)}{"Recieved Qty".FormatedSpace(15)}{"pCNumber".FormatedSpace(15)}{"Reason".FormatedSpace(30)}\r\n" +
+                                   $"{g.Select(current => $"\t{current.ItemNumber.FormatedSpace(_databaseCommandTimeout)}{current.InvoiceQty.ToString().FormatedSpace(15)}{current.ReceivedQty.ToString().FormatedSpace(15)}{current.pCNumber.FormatedSpace(15)}{current.Comment.FormatedSpace(30)}\r\n").Aggregate((old, current) => old + current)}" +
                                    $"Please Check the spreadsheet or inform Joseph Bartholomew if this is an Error.\r\n" +
                                    $"Regards,\r\n" +
                                    $"AutoBot";
@@ -844,7 +846,7 @@ namespace AutoBot
 
         public static void RecreateDocSetDiscrepanciesEntries(FileTypes fileType)
         {
-            Utils.CreateAdjustmentEntries(true,"DIS", fileType);
+            ADJUtils.CreateAdjustmentEntries(true,"DIS", fileType);
         }
 
         public static void AssessDiscpancyEntries(FileTypes ft, FileInfo[] fs)
@@ -942,61 +944,9 @@ namespace AutoBot
                 SQLBlackBox.RunSqlBlackBox();
 
                 Console.WriteLine("Allocate DocSet Discrepancies");
-                List<KeyValuePair<int, string>> lst;
 
 
-
-                var alst = new AdjustmentQSContext()
-                    .AdjustmentDetails
-                    .Where(x => x.AsycudaDocumentSetId == fileType.AsycudaDocumentSetId
-                                && x.Type == "DIS").ToList();
-                using (var ctx = new CoreEntitiesContext())
-                {
-                    ctx.Database.CommandTimeout = 20;
-
-
-                    lst = alst
-                        .Select(x => new { x.EntryDataDetailsId, x.ItemNumber })
-                        .Distinct()
-                        .ToList()
-                        .Select(x => new KeyValuePair<int, string>(x.EntryDataDetailsId, x.ItemNumber))
-                        .ToList();
-                    var ids = lst.Select(x => x.Key).ToList();
-                    var itemEntryDataDetails = ctx.AsycudaDocumentItemEntryDataDetails
-                        .Where(x => x.ImportComplete == true && ids.Contains(x.EntryDataDetailsId))
-                        .ToList()
-                        .Join(lst, x => x.EntryDataDetailsId, z => z.Key, (x, z) => new { key = z, doc = x })
-                        .ToList();
-                    foreach (var itm in itemEntryDataDetails)
-                    {
-                        var sourcefile = ctx.AsycudaDocuments.First(x => x.ASYCUDA_Id == itm.doc.Asycuda_id)
-                            .SourceFileName;
-                        if (ctx.AttachmentLog
-                                .FirstOrDefault(x =>
-                                    x.AsycudaDocumentSet_Attachments.Attachments.FilePath == sourcefile &&
-                                    x.Status == "Submit XML To Customs") == null)
-                        {
-                            fileType.ProcessNextStep = null;
-                            break;
-                        }
-                        else
-                        {
-                            fileType.ProcessNextStep.Add("ReSubmitDiscrepanciesToCustoms");
-                            continue;
-                        }
-
-
-
-                    }
-
-                    var alreadyExecuted = lst.Where(x => itemEntryDataDetails.Any(z => z.key.Key == x.Key)).ToList();
-                    foreach (var itm in alreadyExecuted)
-                    {
-                        lst.Remove(itm);
-                    }
-
-
-                }
+                var lst = GetDISList(fileType);
 
                 if (!lst.Any()) return;
 
@@ -1007,11 +957,7 @@ namespace AutoBot
 
                 AllocationsBaseModel.PrepareDataForAllocation(BaseDataModel.Instance.CurrentApplicationSettings);
 
-
-
-
-
-
+                
                 new AdjustmentShortService()
                     .AutoMatchDocSet(BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId,
                         fileType.AsycudaDocumentSetId).Wait();
@@ -1021,27 +967,19 @@ namespace AutoBot
                         BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId,
                         lst.Select(x => $"{x.Key}-{x.Value}").Aggregate((o, n) => $"{o},{n}")).Wait();
 
-                var ualst = new AdjustmentQSContext()
-                    .AdjustmentDetails
-                    .Where(x => x.AsycudaDocumentSetId == fileType.AsycudaDocumentSetId
-                                && x.Type == "DIS" && !x.ShortAllocations.Any()).ToList();
+               
 
-                var shortlst = lst
-                    .Where(x => ualst.Any(z =>
-                        z.EntryDataDetailsId == x.Key &&
-                        z.InvoiceQty.GetValueOrDefault() > z.ReceivedQty.GetValueOrDefault()))
-                    .Select(x => $"{x.Key}-{x.Value}").DefaultIfEmpty("").Aggregate((o, n) => $"{o},{n}");
-                if (!string.IsNullOrEmpty(shortlst))
-                {
-                    new AllocationsBaseModel()
-                        .AllocateSalesByMatchingSalestoAsycudaEntriesOnItemNumber(
-                            BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId, false,
-                            shortlst).Wait();
+                var shortlst = GetShorts(lst, fileType);
+                if (string.IsNullOrEmpty(shortlst)) return;
 
-                    new AllocationsBaseModel()
-                        .MarkErrors(BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId, shortlst)
-                        .Wait();
-                }
+                new AllocationsBaseModel()
+                    .AllocateSalesByMatchingSalestoAsycudaEntriesOnItemNumber(
+                        BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId, false,
+                        shortlst).Wait();
+
+                new AllocationsBaseModel()
+                    .MarkErrors(BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId, shortlst)
+                    .Wait();
             }
             catch (Exception e)
             {
@@ -1049,6 +987,113 @@ namespace AutoBot
                 throw;
             }
 
+        }
+
+        private static string GetShorts(List<KeyValuePair<int, string>> lst, FileTypes fileType)
+        {
+            var ualst = new AdjustmentQSContext()
+                .AdjustmentDetails
+                .Where(x => x.AsycudaDocumentSetId == fileType.AsycudaDocumentSetId
+                            && x.Type == "DIS" && !x.ShortAllocations.Any()).ToList();
+
+            var shortlst = lst
+                .Where(x => ualst.Any(z =>
+                    z.EntryDataDetailsId == x.Key &&
+                    z.InvoiceQty.GetValueOrDefault() > z.ReceivedQty.GetValueOrDefault()))
+                .Select(x => $"{x.Key}-{x.Value}").DefaultIfEmpty("").Aggregate((o, n) => $"{o},{n}");
+            return shortlst;
+        }
+
+        private static List<KeyValuePair<int, string>> GetDISList(FileTypes fileType)
+        {
+            List<KeyValuePair<int, string>> lst;
+            var alst = GetAdjustmentDetailsForFileType(fileType);
+
+
+            lst = GetDistinctKeyValuePairs(alst);
+
+            var ids = lst.Select(x => x.Key).ToList();
+
+            var itemEntryDataDetails = GetItemEntryDataDetails(ids, lst);
+            ProcessExistingItems(fileType, itemEntryDataDetails);
+
+            RemoveExistingItemsFromLst(lst, itemEntryDataDetails);
+
+
+            return lst;
+        }
+
+        private static void RemoveExistingItemsFromLst(List<KeyValuePair<int, string>> lst, List<(KeyValuePair<int, string> key, AsycudaDocumentItemEntryDataDetails doc)> itemEntryDataDetails)
+        {
+            var alreadyExecuted = lst.Where(x => itemEntryDataDetails.Any(z => z.key.Key == x.Key)).ToList();
+
+            foreach (var itm in alreadyExecuted)
+            {
+                lst.Remove(itm);
+            }
+        }
+
+        private static void ProcessExistingItems(FileTypes fileType, List<(KeyValuePair<int, string> key, AsycudaDocumentItemEntryDataDetails doc)> itemEntryDataDetails)
+        {
+            using (var ctx = new CoreEntitiesContext())
+            {
+                ctx.Database.CommandTimeout = _databaseCommandTimeout;
+
+                foreach (var itm in itemEntryDataDetails)
+                {
+                    var sourcefile = ctx.AsycudaDocuments.First(x => x.ASYCUDA_Id == itm.doc.Asycuda_id)
+                        .SourceFileName;
+                    if (ctx.AttachmentLog
+                            .FirstOrDefault(x =>
+                                x.AsycudaDocumentSet_Attachments.Attachments.FilePath == sourcefile &&
+                                x.Status == "Submit XML To Customs") == null)
+                    {
+                        fileType.ProcessNextStep = null;
+                        break;
+                    }
+                    else
+                    {
+                        fileType.ProcessNextStep.Add("ReSubmitDiscrepanciesToCustoms");
+                        continue;
+                    }
+                }
+            }
+        }
+
+        private static List<(KeyValuePair<int, string> key, AsycudaDocumentItemEntryDataDetails doc)> GetItemEntryDataDetails(List<int> ids, List<KeyValuePair<int, string>> lst)
+        {
+            using (var ctx = new CoreEntitiesContext())
+            {
+                ctx.Database.CommandTimeout = _databaseCommandTimeout;
+
+                var itemEntryDataDetails = ctx.AsycudaDocumentItemEntryDataDetails
+                    .Where(x => x.ImportComplete == true && ids.Contains(x.EntryDataDetailsId))
+                    .ToList()
+                    .Join(lst, x => x.EntryDataDetailsId, z => z.Key, (x, z) => (key: z, doc: x))
+                    .ToList();
+                return itemEntryDataDetails;
+            }
+        }
+
+        private static List<KeyValuePair<int, string>> GetDistinctKeyValuePairs(List<AdjustmentDetail> alst)
+        {
+            List<KeyValuePair<int, string>> lst;
+            lst = alst
+                .Select(x => new { x.EntryDataDetailsId, x.ItemNumber })
+                .Distinct()
+                .ToList()
+                .Select(x => new KeyValuePair<int, string>(x.EntryDataDetailsId, x.ItemNumber))
+                .ToList();
+            return lst;
+        }
+
+        private static List<AdjustmentDetail> GetAdjustmentDetailsForFileType(FileTypes fileType)
+        {
+            var alst = new AdjustmentQSContext()
+                .AdjustmentDetails
+                .Where(x => x.AsycudaDocumentSetId == fileType.AsycudaDocumentSetId
+                            && x.Type == "DIS").ToList();
+            return alst;
         }
 
         public static void ExportDiscpancyEntries(string adjustmentType)

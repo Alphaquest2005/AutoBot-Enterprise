@@ -37,44 +37,10 @@ namespace AdjustmentQS.Business.Services
             {
                 _itemCache = null;
 
-                using (var ctx = new AdjustmentQSContext() { StartTracking = true })
-                {
-                    ctx.Database.CommandTimeout = 10;
 
+                var lst = GetAllAdjustmentDetails(applicationSettingsId, overwriteExisting);
 
-
-                    var lst = ctx.AdjustmentDetails
-                        .Include(x => x.AdjustmentEx)
-                        .Where(x => x.ApplicationSettingsId == applicationSettingsId)
-                        .Where(x => x.SystemDocumentSet != null)
-                        .Where(x => x.Type == "DIS")
-                        //.Where(x => x.ItemNumber == "SH01053")
-                        //.Where(x => x.ItemNumber == "BS01016")
-                       // .Where(x => x.EntryDataId == "Asycuda-C#5062")
-                        //.Where( x => x.EntryDataDetailsId == 16569)
-                        .Where(x => x.DoNotAllocate == null || x.DoNotAllocate != true)
-                        .Where(x => overwriteExisting
-                            ? x != null
-                            : x.EffectiveDate == null) // take out other check cuz of existing entries 
-                        .Where(x => !x.ShortAllocations.Any())
-                        .OrderBy(x => x.EntryDataDetailsId)
-                        .DistinctBy(x => x.EntryDataDetailsId)
-                        .ToList();
-
-                    //var ids = lst.Select(x => x.EntryDataDetailsId).ToList();
-
-                    //var itemEntryDataDetails = ctx.AsycudaDocumentItemEntryDataDetails
-                    //    .Where(x => ids.Contains(x.EntryDataDetailsId))
-                    //    .ToList()
-                    //    .Join(lst, x => x.EntryDataDetailsId, z => z.EntryDataDetailsId, (x, z) => new { key = z, doc = x })
-                    //    .ToList();
-
-
-                    //var alreadyExecuted = lst.Where(x => itemEntryDataDetails.Any(z => z.key.EntryDataDetailsId == x.EntryDataDetailsId)).ToList();
-                    //foreach (var itm in alreadyExecuted)
-                    //{
-                    //    //lst.Remove(itm);
-                    //}
+                
                     if (!lst.Any()) return;
                     AllocationsModel.Instance
                         .ClearDocSetAllocations(lst.Select(x => $"'{x.ItemNumber}'").Aggregate((o, n) => $"{o},{n}"))
@@ -84,7 +50,7 @@ namespace AdjustmentQS.Business.Services
 
 
 
-                    await DoAutoMatch(applicationSettingsId, lst, ctx);
+                    await DoAutoMatch(applicationSettingsId, lst);
 
 
 
@@ -104,7 +70,7 @@ namespace AdjustmentQS.Business.Services
                         .MarkErrors(BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId).Wait();
 
 
-                }
+                
 
             }
             catch (Exception e)
@@ -113,6 +79,29 @@ namespace AdjustmentQS.Business.Services
                 throw;
             }
 
+        }
+
+        private static List<AdjustmentDetail> GetAllAdjustmentDetails(int applicationSettingsId, bool overwriteExisting)
+        {
+            using (var ctx = new AdjustmentQSContext() { StartTracking = true })
+            {
+                ctx.Database.CommandTimeout = 10;
+
+                var lst = ctx.AdjustmentDetails
+                    .Include(x => x.AdjustmentEx)
+                    .Where(x => x.ApplicationSettingsId == applicationSettingsId)
+                    .Where(x => x.SystemDocumentSet != null)
+                    .Where(x => x.Type == "DIS")
+                    .Where(x => x.DoNotAllocate == null || x.DoNotAllocate != true)
+                    .Where(x => overwriteExisting
+                        ? x != null
+                        : x.EffectiveDate == null) // take out other check cuz of existing entries 
+                    .Where(x => !x.ShortAllocations.Any())
+                    .OrderBy(x => x.EntryDataDetailsId)
+                    .DistinctBy(x => x.EntryDataDetailsId)
+                    .ToList();
+                return lst;
+            }
         }
 
 
@@ -121,29 +110,12 @@ namespace AdjustmentQS.Business.Services
             try
             {
 
-                using (var ctx = new AdjustmentQSContext() { StartTracking = true })
-                {
-                    ctx.Database.CommandTimeout = 10;
+            
 
+                    var lst = GetDocSetAdjustmentDetails(applicationSettingsId, docSetId);
 
-
-                    var lst = ctx.AdjustmentDetails
-                        //.Include(x => x.AdjustmentEx)
-                        .Where(x => x.ApplicationSettingsId == applicationSettingsId)
-                        .Where(x => x.AsycudaDocumentSetId == docSetId)
-                        //.Where(x => x.SystemDocumentSet != null)
-                        // .Where(x => x.ItemNumber == "HEL/003361001")
-                        //.Where(x => x.EntryDataId == "120902")
-                        //.Where( x => x.EntryDataDetailsId == 545303)
-                        .Where(x => x.DoNotAllocate == null || x.DoNotAllocate != true)
-                        .Where(x => x.EffectiveDate == null) // take out other check cuz of existing entries 
-
-                        .DistinctBy(x => x.EntryDataDetailsId)
-                        .OrderBy(x => x.EntryDataDetailsId)
-                        .ToList();
-
-                    await DoAutoMatch(applicationSettingsId, lst, ctx);
-                }
+                    await DoAutoMatch(applicationSettingsId, lst);
+                
             }
             catch (Exception e)
             {
@@ -151,6 +123,26 @@ namespace AdjustmentQS.Business.Services
                 throw;
             }
 
+        }
+
+        private static List<AdjustmentDetail> GetDocSetAdjustmentDetails(int applicationSettingsId, int docSetId)
+        {
+            using (var ctx = new AdjustmentQSContext() { StartTracking = true })
+            {
+                ctx.Database.CommandTimeout = 10;
+
+
+                var lst = ctx.AdjustmentDetails
+                    //.Include(x => x.AdjustmentEx)
+                    .Where(x => x.ApplicationSettingsId == applicationSettingsId)
+                    .Where(x => x.AsycudaDocumentSetId == docSetId)
+                    .Where(x => x.DoNotAllocate == null || x.DoNotAllocate != true)
+                    .Where(x => x.EffectiveDate == null) // take out other check cuz of existing entries 
+                    .DistinctBy(x => x.EntryDataDetailsId)
+                    .OrderBy(x => x.EntryDataDetailsId)
+                    .ToList();
+                return lst;
+            }
         }
 
         public async Task AutoMatchItems(int applicationSettingsId, int docSetId)
@@ -158,29 +150,9 @@ namespace AdjustmentQS.Business.Services
             try
             {
 
-                using (var ctx = new AdjustmentQSContext() { StartTracking = true })
-                {
-                    ctx.Database.CommandTimeout = 10;
-
-
-
-                    var lst = ctx.AdjustmentDetails
-                        //.Include(x => x.AdjustmentEx)
-                        .Where(x => x.ApplicationSettingsId == applicationSettingsId)
-                        .Where(x => x.AsycudaDocumentSetId == docSetId)
-                        //.Where(x => x.SystemDocumentSet != null)
-                        // .Where(x => x.ItemNumber == "HEL/003361001")
-                        //.Where(x => x.EntryDataId == "120902")
-                        //.Where( x => x.EntryDataDetailsId == 545303)
-                        .Where(x => x.DoNotAllocate == null || x.DoNotAllocate != true)
-                        .Where(x => x.EffectiveDate == null) // take out other check cuz of existing entries 
-
-                        .DistinctBy(x => x.EntryDataDetailsId)
-                        .OrderBy(x => x.EntryDataDetailsId)
-                        .ToList();
-
-                    await DoAutoMatch(applicationSettingsId, lst, ctx);
-                }
+                    var lst = GetDocSetAdjustmentDetails(applicationSettingsId, docSetId);
+                    await DoAutoMatch(applicationSettingsId, lst).ConfigureAwait(false);
+               
             }
             catch (Exception e)
             {
@@ -190,122 +162,134 @@ namespace AdjustmentQS.Business.Services
 
         }
 
-        public async Task DoAutoMatch(int applicationSettingsId, List<AdjustmentDetail> lst, AdjustmentQSContext ctx)
+        public async Task DoAutoMatch(int applicationSettingsId, List<AdjustmentDetail> lst)
         {
             try
             {
-
-                StatusModel.StartStatusUpdate("Matching Shorts To Asycuda Entries", lst.Count());
-                var edLst = new List<EntryDataDetail>();
-                DateTime? minEffectiveDate = null;
-                foreach (var s in lst)
+                using (var ctx = new AdjustmentQSContext() { StartTracking = true })
                 {
-                    //StatusModel.StatusUpdate("Matching Shorts To Asycuda Entries");
-                    var tryCNumber = false;
-                    try
+                    ctx.Database.CommandTimeout = 10;
+
+
+                    if (!lst.Any()) return;
+                    StatusModel.StartStatusUpdate("Matching Shorts To Asycuda Entries", lst.Count());
+                    var edLst = new List<EntryDataDetail>();
+                    DateTime? minEffectiveDate = null;
+                    foreach (var s in lst)
                     {
-                        ctx.SaveChanges();
-                        
-                        if (string.IsNullOrEmpty(s.ItemNumber)) continue;
-                        var ed = ctx.EntryDataDetails.Include(x => x.AdjustmentEx).First(x => x.EntryDataDetailsId == s.EntryDataDetailsId);
-                        edLst.Add(ed);
-                        ed.Comment = null;
-                        if (!string.IsNullOrEmpty(s.PreviousInvoiceNumber))
+                        //StatusModel.StatusUpdate("Matching Shorts To Asycuda Entries");
+                        var tryCNumber = false;
+                        try
                         {
-                            List<AsycudaDocumentItem> aItem;
-                            if (s.InvoiceQty > 0)
+                            ctx.SaveChanges();
+
+                            if (string.IsNullOrEmpty(s.ItemNumber)) continue;
+                            var ed = ctx.EntryDataDetails.Include(x => x.AdjustmentEx)
+                                .First(x => x.EntryDataDetailsId == s.EntryDataDetailsId);
+                            edLst.Add(ed);
+                            ed.Comment = null;
+                            if (!string.IsNullOrEmpty(s.PreviousInvoiceNumber))
                             {
-                                aItem = await GetAsycudaEntriesWithInvoiceNumber(applicationSettingsId,
-                                        s.PreviousInvoiceNumber, s.EntryDataId, s.ItemNumber)
+                                List<AsycudaDocumentItem> aItem;
+                                if (s.InvoiceQty > 0)
+                                {
+                                    aItem = await GetAsycudaEntriesWithInvoiceNumber(applicationSettingsId,
+                                            s.PreviousInvoiceNumber, s.EntryDataId, s.ItemNumber)
+                                        .ConfigureAwait(false);
+                                    if (aItem.Any()) MatchToAsycudaItem(s, aItem, ed, ctx);
+                                }
+                                else
+                                {
+                                    aItem = await GetAsycudaEntriesWithInvoiceNumber(applicationSettingsId,
+                                            s.PreviousInvoiceNumber, s.EntryDataId)
+                                        .ConfigureAwait(false);
+                                    if (aItem.Any()) MatchToAsycudaDocument(aItem.First().AsycudaDocument, ed);
+                                }
+
+                                if (!aItem.Any())
+                                {
+                                    tryCNumber = true;
+                                }
+                            }
+
+                            if ((tryCNumber || string.IsNullOrEmpty(s.PreviousInvoiceNumber)) &&
+                                s.InvoiceQty.GetValueOrDefault() > 0 && !string.IsNullOrEmpty(s.PreviousCNumber))
+                            {
+                                var aItem = await GetAsycudaEntriesInCNumber(s.PreviousCNumber, s.PreviousCLineNumber,
+                                        s.ItemNumber)
                                     .ConfigureAwait(false);
-                                if (aItem.Any()) MatchToAsycudaItem(s, aItem, ed, ctx);
-                            }
-                            else
-                            {
-                                aItem = await GetAsycudaEntriesWithInvoiceNumber(applicationSettingsId,
-                                        s.PreviousInvoiceNumber, s.EntryDataId)
-                                    .ConfigureAwait(false);
-                                if (aItem.Any()) MatchToAsycudaDocument(aItem.First().AsycudaDocument, ed);
+
+                                if (!aItem.Any())
+                                    aItem = await GetAsycudaEntriesInCNumberReference(applicationSettingsId,
+                                            s.PreviousCNumber, s.ItemNumber)
+                                        .ConfigureAwait(false);
+                                MatchToAsycudaItem(s, aItem.OrderBy(x => x.AsycudaDocument.AssessmentDate).ToList(), ed,
+                                    ctx);
+                                // continue;
                             }
 
-                            if (!aItem.Any())
+                            else if ((tryCNumber || string.IsNullOrEmpty(s.PreviousInvoiceNumber)) &&
+                                     s.InvoiceQty.GetValueOrDefault() <= 0 && !string.IsNullOrEmpty(s.PreviousCNumber))
                             {
-                                tryCNumber = true;
+                                var asycudaDocument =
+                                    GetAsycudaDocumentInCNumber(applicationSettingsId, s.PreviousCNumber);
+                                MatchToAsycudaDocument(asycudaDocument, ed);
                             }
+
+                            if (ed.EffectiveDate == null)
+                            {
+                                //Set Overs 1st and Shorts to Last of Month
+                                //Try match effective date if i find the invoice if not leave it blank
+
+                                // if (ed.EffectiveDate == null) ed.EffectiveDate = s.AdjustmentEx.InvoiceDate;
+                                if (s.Type == "DIS")
+                                {
+                                    var po = new EntryDataDSContext().EntryData.OfType<PurchaseOrders>()
+                                        .FirstOrDefault(x =>
+                                            x.EntryDataId ==
+                                            ed.EntryDataId); // || ed.PreviousInvoiceNumber.EndsWith(x.EntryDataId) Contains too random
+                                    ed.EffectiveDate = po?.EntryDataDate;
+                                }
+                                else
+                                {
+                                    ed.EffectiveDate = s.InvoiceDate;
+                                }
+                            }
+
+                            if (ed.Cost != 0) continue;
+                            if (s.InvoiceQty.GetValueOrDefault() > 0)
+                                continue; // if invoice > 0 it should have been imported
+
+                            //////////// only apply to Adjustments because they are after shipment... discrepancies have to be provided.
+                            if (s.Type != "ADJ") continue;
+                            var lastItemCost = ctx.AsycudaDocumentItemLastItemCosts
+                                .Where(x => x.assessmentdate <= ed.EffectiveDate)
+                                .OrderByDescending(x => x.assessmentdate)
+                                .FirstOrDefault(x =>
+                                    x.ItemNumber == ed.ItemNumber &&
+                                    x.applicationsettingsid == applicationSettingsId);
+                            if (lastItemCost != null)
+                                ed.LastCost = (double)lastItemCost.LocalItemCost.GetValueOrDefault();
                         }
-
-                        if ((tryCNumber || string.IsNullOrEmpty(s.PreviousInvoiceNumber)) &&
-                            s.InvoiceQty.GetValueOrDefault() > 0 && !string.IsNullOrEmpty(s.PreviousCNumber))
+                        catch (Exception ex)
                         {
-                            var aItem = await GetAsycudaEntriesInCNumber(s.PreviousCNumber, s.PreviousCLineNumber, s.ItemNumber)
-                                .ConfigureAwait(false);
-
-                            if (!aItem.Any())
-                                aItem = await GetAsycudaEntriesInCNumberReference(applicationSettingsId,
-                                        s.PreviousCNumber, s.ItemNumber)
-                                    .ConfigureAwait(false);
-                            MatchToAsycudaItem(s, aItem.OrderBy(x => x.AsycudaDocument.AssessmentDate).ToList(), ed, ctx);
-                            // continue;
+                            throw ex;
                         }
-
-                        else if ((tryCNumber || string.IsNullOrEmpty(s.PreviousInvoiceNumber)) &&
-                                 s.InvoiceQty.GetValueOrDefault() <= 0 && !string.IsNullOrEmpty(s.PreviousCNumber))
-                        {
-                            var asycudaDocument = GetAsycudaDocumentInCNumber(applicationSettingsId, s.PreviousCNumber);
-                            MatchToAsycudaDocument(asycudaDocument, ed);
-                        }
-
-                        if (ed.EffectiveDate == null)
-                        {
-                            //Set Overs 1st and Shorts to Last of Month
-                            //Try match effective date if i find the invoice if not leave it blank
-
-                            // if (ed.EffectiveDate == null) ed.EffectiveDate = s.AdjustmentEx.InvoiceDate;
-                            if (s.Type == "DIS")
-                            {
-                                var po = new EntryDataDSContext().EntryData.OfType<PurchaseOrders>()
-                                    .FirstOrDefault(x => x.EntryDataId == ed.EntryDataId);// || ed.PreviousInvoiceNumber.EndsWith(x.EntryDataId) Contains too random
-                                ed.EffectiveDate = po?.EntryDataDate;
-                            }
-                            else
-                            {
-                                ed.EffectiveDate = s.InvoiceDate;
-                            }
-                        }
-
-                        if (ed.Cost != 0) continue;
-                        if (s.InvoiceQty.GetValueOrDefault() > 0)
-                            continue; // if invoice > 0 it should have been imported
-
-                        //////////// only apply to Adjustments because they are after shipment... discrepancies have to be provided.
-                        if (s.Type != "ADJ") continue;
-                        var lastItemCost = ctx.AsycudaDocumentItemLastItemCosts
-                            .Where(x => x.assessmentdate <= ed.EffectiveDate)
-                            .OrderByDescending(x => x.assessmentdate)
-                            .FirstOrDefault(x =>
-                                x.ItemNumber == ed.ItemNumber &&
-                                x.applicationsettingsid == applicationSettingsId);
-                        if (lastItemCost != null)
-                            ed.LastCost = (double)lastItemCost.LocalItemCost.GetValueOrDefault();
                     }
-                    catch (Exception ex)
+
+
+                    minEffectiveDate = edLst.Min(x => x.EffectiveDate)
+                                       ?? edLst.Where(x => x.AdjustmentEx != null).Min(x => x.AdjustmentEx.InvoiceDate);
+
+                    foreach (var ed in edLst.Where(x => x.EffectiveDate == null))
                     {
-                        throw ex;
+                        ed.EffectiveDate = minEffectiveDate;
+                        ed.Status = null;
                     }
+
+                    ctx.SaveChanges();
+                    StatusModel.StopStatusUpdate();
                 }
-
-
-                minEffectiveDate = edLst.Min(x => x.EffectiveDate) 
-                                   ?? edLst.Where(x => x.AdjustmentEx != null).Min(x => x.AdjustmentEx.InvoiceDate);
-
-                foreach (var ed in edLst.Where(x => x.EffectiveDate == null))
-                {
-                    ed.EffectiveDate = minEffectiveDate;
-                    ed.Status = null;
-                }
-
-                ctx.SaveChanges();
-                StatusModel.StopStatusUpdate();
             }
             catch (Exception e)
             {
@@ -900,60 +884,7 @@ namespace AdjustmentQS.Business.Services
         }
 
 
-        //private void SetPreviousItemXbond(AsycudaSalesAllocations ssa, AsycudaDocumentItem cAsycudaItm, string dfp, double amt)
-        //{
-        //    try
-        //    {
-        //        if (BaseDataModel.Instance.CurrentApplicationSettings.AllowEntryDoNotAllocate != "Visible") return;
-
-
-        //        var alst = cAsycudaItm.EntryPreviousItems.Select(p => p.xcuda_PreviousItem)
-        //            .Where(x => x.DutyFreePaid == dfp && x.QtyAllocated <= (double)x.Suplementary_Quantity)
-        //            .Where(x => x.xcuda_Item != null && x.xcuda_Item.AsycudaDocument != null && x.xcuda_Item.AsycudaDocument.Cancelled != true)
-        //            .OrderBy(
-        //                x =>
-        //                    x.xcuda_Item.AsycudaDocument.EffectiveRegistrationDate ?? Convert.ToDateTime(x.xcuda_Item.AsycudaDocument.RegistrationDate)).ToList();
-        //        foreach (var pitm in alst)
-        //        {
-
-        //            var atot = (double)pitm.Suplementary_Quantity - Convert.ToDouble(pitm.QtyAllocated);
-        //            if (atot == 0) continue;
-        //            if (amt <= atot)
-        //            {
-        //                pitm.QtyAllocated += amt;
-        //                var xbond = new xBondAllocations(true)
-        //                {
-        //                    AllocationId = ssa.AllocationId,
-        //                    xEntryItem_Id = pitm.xcuda_Item.Item_Id,
-        //                    TrackingState = TrackingState.Added
-        //                };
-
-        //                ssa.xBondAllocations.Add(xbond);
-        //                pitm.xcuda_Item.xBondAllocations.Add(xbond);
-        //                break;
-        //            }
-        //            else
-        //            {
-        //                pitm.QtyAllocated += atot;
-        //                var xbond = new xBondAllocations(true)
-        //                {
-        //                    AllocationId = ssa.AllocationId,
-        //                    xEntryItem_Id = pitm.xcuda_Item.Item_Id,
-        //                    TrackingState = TrackingState.Added
-        //                };
-        //                ssa.xBondAllocations.Add(xbond);
-        //                pitm.xcuda_Item.xBondAllocations.Add(xbond);
-        //                amt -= atot;
-        //            }
-
-        //        }
-
-        //    }
-        //    catch (Exception Ex)
-        //    {
-        //        throw;
-        //    }
-        //}
+        
 
         private async Task<List<AsycudaDocumentItem>> GetAsycudaEntriesInCNumber(string cNumber,
             int? previousCLineNumber, string itemNumber)
@@ -1099,26 +1030,7 @@ namespace AdjustmentQS.Business.Services
             return res;
         }
 
-        public async Task ProcessDISErrorsForAllocation(int applicationSettingsId)
-        {
-            // get Discrepancy Allocation Errors && Discrepancies that can't be Exwarehoused
-            using (var ctx = new AdjustmentQSContext() { StartTracking = true })
-            {
-                ctx.Database.CommandTimeout = 10;
-
-
-
-                var lst = ctx.TODO_PreDiscrepancyErrors
-                    .Where(x => x.ApplicationSettingsId == applicationSettingsId)
-                    //.Where(x => x.ItemNumber == "HEL/003361001")
-                    .OrderBy(x => x.EntryDataDetailsId)
-                    .DistinctBy(x => x.EntryDataDetailsId)
-                    .ToList();
-                // looking for 'INT/YBA473/3GL'
-
-                ProcessDISErrorsForAllocation(lst, ctx);
-            }
-        }
+      
 
         public async Task ProcessDISErrorsForAllocation(int applicationSettingsId, string res)
         {
@@ -1173,34 +1085,34 @@ namespace AdjustmentQS.Business.Services
             try
             {
 
-                using (var ctx = new AdjustmentQSContext() { StartTracking = true })
-                {
-                    ctx.Database.CommandTimeout = 10;
+                var lst = GetSelectedAdjustmentDetails(applicationSettingsId, strLst);
 
+                await DoAutoMatch(applicationSettingsId, lst);
 
-
-                    var lst = ctx.AdjustmentDetails
-                        //.Include(x => x.AdjustmentEx)
-                        .Where(x => x.ApplicationSettingsId == applicationSettingsId
-                                    && strLst.Contains(x.EntryDataDetailsId.ToString()))
-                        //.Where(x => x.SystemDocumentSet != null)
-                        // .Where(x => x.ItemNumber == "HEL/003361001")
-                        //.Where(x => x.EntryDataId == "120902")
-                        //.Where( x => x.EntryDataDetailsId == 545303)
-                        .Where(x => x.DoNotAllocate == null || x.DoNotAllocate != true)
-                        .Where(x => x.EffectiveDate == null) // take out other check cuz of existing entries 
-
-                        .DistinctBy(x => x.EntryDataDetailsId)
-                        .OrderBy(x => x.EntryDataDetailsId)
-                        .ToList();
-
-                    await DoAutoMatch(applicationSettingsId, lst, ctx);
-                }
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
                 throw;
+            }
+        }
+
+        private static List<AdjustmentDetail> GetSelectedAdjustmentDetails(int applicationSettingsId, string strLst)
+        {
+            using (var ctx = new AdjustmentQSContext() { StartTracking = true })
+            {
+                ctx.Database.CommandTimeout = 10;
+
+                var lst = ctx.AdjustmentDetails
+                    //.Include(x => x.AdjustmentEx)
+                    .Where(x => x.ApplicationSettingsId == applicationSettingsId
+                                && strLst.Contains(x.EntryDataDetailsId.ToString()))
+                    .Where(x => x.DoNotAllocate == null || x.DoNotAllocate != true)
+                    .Where(x => x.EffectiveDate == null) // take out other check cuz of existing entries 
+                    .DistinctBy(x => x.EntryDataDetailsId)
+                    .OrderBy(x => x.EntryDataDetailsId)
+                    .ToList();
+                return lst;
             }
         }
     }
