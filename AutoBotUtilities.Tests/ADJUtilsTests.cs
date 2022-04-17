@@ -27,14 +27,14 @@ namespace AutoBotUtilities.Tests
 
         
 
-        [Test]
-        public void CanCallCreateAdjustmentEntriesWithOverwriteAndAdjustmentType()
-        {
-            var overwrite = true;
-            var adjustmentType = "DIS";
-            ADJUtils.CreateAdjustmentEntries(overwrite, adjustmentType);
-            Assert.Fail("Create or modify test");
-        }
+        //[Test]
+        //public void CanCallCreateAdjustmentEntriesWithOverwriteAndAdjustmentType()
+        //{
+        //    var overwrite = true;
+        //    var adjustmentType = "DIS";
+        //    ADJUtils.CreateAdjustmentEntries(overwrite, adjustmentType);
+        //    Assert.Fail("Create or modify test");
+        //}
 
         
     }

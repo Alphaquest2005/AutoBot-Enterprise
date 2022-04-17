@@ -28,7 +28,25 @@ namespace AutoBotUtilities.Tests
 
 
         [Test]
-        public void CanCallAllocateDocSetDiscrepancies()
+        public void CanCallGetSubmitEntryData()
+        {
+            var fileType = GetFileType();
+
+
+            try
+            {
+
+                DISUtils.GetSubmitEntryData(fileType);
+                Assert.IsTrue(true);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                Assert.IsTrue(false);
+            }
+        }
+
+        private static FileTypes GetFileType()
         {
             var fileType = new FileTypes()
             {
@@ -61,7 +79,6 @@ namespace AutoBotUtilities.Tests
                     ExpectedEntries = null,
                     FileTypes = new List<FileTypes>()
                     {
-
                     },
                     FreightCurrencyCode = "USD",
                     FreightCurrencyRate = 2.7169,
@@ -81,7 +98,6 @@ namespace AutoBotUtilities.Tests
                     TotalLines = 4603,
                     TotalPackages = null,
                     TotalWeight = null,
-
                 },
                 AsycudaDocumentSetId = 8064,
                 AsycudaDocumentSet_Attachments = new List<AsycudaDocumentSet_Attachments>() { },
@@ -132,7 +148,6 @@ namespace AutoBotUtilities.Tests
                         ReplicateHeaderRow = null,
                         ReplyToMail = false,
                         Type = "DIS",
-
                     }
                 },
                 CopyEntryData = false,
@@ -169,7 +184,6 @@ namespace AutoBotUtilities.Tests
                         {
                         },
                         Id = 1318,
-
                     },
                     new FileTypeActions()
                     {
@@ -180,7 +194,6 @@ namespace AutoBotUtilities.Tests
                         AssessEX = null,
                         AssessIM7 = null,
                     },
-
                 },
                 FileTypeReplaceRegex = new List<FileTypeReplaceRegex>() { },
                 HasFiles = null,
@@ -197,24 +210,8 @@ namespace AutoBotUtilities.Tests
                 ReplicateHeaderRow = null,
                 ReplyToMail = false,
                 Type = "XLSX",
-
             };
-
-
-
-            try
-            {
-
-                DISUtils.AllocateDocSetDiscrepancies(fileType);
-                Assert.IsTrue(true);
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-                Assert.IsTrue(false);
-            }
+            return fileType;
         }
-
-
     }
 }

@@ -119,56 +119,79 @@ namespace AutoBot
         {
             try
             {
-
-
-                using (var ctx = new CoreEntitiesContext())
-                {
-                    ctx.Database.CommandTimeout = _databaseCommandTimeout;
+                
                     var cnumberList = ft.Data.Where(z => z.Key == "CNumber").Select(x => x.Value).ToList();
+                    
                     var cplst = BaseDataModel.Instance.Customs_Procedures
                         .Where(x => x.CustomsOperation.Name == "Exwarehouse").Select(x => x.CustomsProcedure).ToList();
-                    IEnumerable<IGrouping<string, TODO_SubmitDiscrepanciesToCustoms>> lst;
-                    List<TODO_SubmitAllXMLToCustoms> res;
-                    if (cnumberList.Any())
-                    {
-                        res = ctx.TODO_SubmitAllXMLToCustoms.Where(x =>
-                                x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings
-                                    .ApplicationSettingsId && cnumberList.Contains(x.CNumber) && cplst.Any(z => z == x.CustomsProcedure))
-                            .ToList();
-                    }
-                    else
-                    {
-                        var docSet = BaseDataModel.Instance.GetAsycudaDocumentSet(ft.AsycudaDocumentSetId).Result;
-                        res = ctx.TODO_SubmitAllXMLToCustoms.Where(x =>
-                                x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings
-                                    .ApplicationSettingsId &&
-                                x.ReferenceNumber.Contains(docSet.Declarant_Reference_Number) && cplst.Any(z => z == x.CustomsProcedure))
-                            .ToList();
-                    }
 
-                    lst = res.Select(x => new TODO_SubmitDiscrepanciesToCustoms()
-                        {
-                            CNumber = x.CNumber,
-                            ApplicationSettingsId = x.ApplicationSettingsId,
-                            AssessmentDate = x.AssessmentDate,
-                            ASYCUDA_Id = x.ASYCUDA_Id,
-                            AsycudaDocumentSetId = x.AsycudaDocumentSetId,
-                            CustomsProcedure = x.CustomsProcedure,
-                            DocumentType = x.DocumentType,
-                            EmailId = x.EmailId,
-                            ReferenceNumber = x.ReferenceNumber,
-                            RegistrationDate = x.RegistrationDate,
-                            Status = x.Status,
-                            ToBePaid = x.ToBePaid
-                        })
-                        .GroupBy(x => x.EmailId);
+                    var res = cnumberList.Any() 
+                        ? GetSubmitEntryDataPerCNumber(cplst, cnumberList) 
+                        : GetSubmitEntryDataPerDocSet(ft, cplst);
+
+                    var lst = CreateDISEntryDataFromSubmitData(res);
                     return lst;
-                }
+                
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
                 throw;
+            }
+        }
+
+        private static IEnumerable<IGrouping<string, TODO_SubmitDiscrepanciesToCustoms>> CreateDISEntryDataFromSubmitData(List<TODO_SubmitAllXMLToCustoms> res)
+        {
+            IEnumerable<IGrouping<string, TODO_SubmitDiscrepanciesToCustoms>> lst;
+            lst = res.Select(x => new TODO_SubmitDiscrepanciesToCustoms()
+                {
+                    CNumber = x.CNumber,
+                    ApplicationSettingsId = x.ApplicationSettingsId,
+                    AssessmentDate = x.AssessmentDate,
+                    ASYCUDA_Id = x.ASYCUDA_Id,
+                    AsycudaDocumentSetId = x.AsycudaDocumentSetId,
+                    CustomsProcedure = x.CustomsProcedure,
+                    DocumentType = x.DocumentType,
+                    EmailId = x.EmailId,
+                    ReferenceNumber = x.ReferenceNumber,
+                    RegistrationDate = x.RegistrationDate,
+                    Status = x.Status,
+                    ToBePaid = x.ToBePaid
+                })
+                .GroupBy(x => x.EmailId);
+            return lst;
+        }
+
+        private static List<TODO_SubmitAllXMLToCustoms> GetSubmitEntryDataPerDocSet(FileTypes ft, List<string> cplst)
+        {
+            using (var ctx = new CoreEntitiesContext())
+            {
+                ctx.Database.CommandTimeout = _databaseCommandTimeout;
+                List<TODO_SubmitAllXMLToCustoms> res;
+                var docSet = BaseDataModel.Instance.GetAsycudaDocumentSet(ft.AsycudaDocumentSetId).Result;
+                res = ctx.TODO_SubmitAllXMLToCustoms.Where(x =>
+                        x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings
+                            .ApplicationSettingsId && cplst.Any(z => z == x.CustomsProcedure))
+                    .ToList()
+                    .Where(x => x.ReferenceNumber.Contains(docSet.Declarant_Reference_Number))
+                    .ToList();
+                return res;
+            }
+        }
+
+        private static List<TODO_SubmitAllXMLToCustoms> GetSubmitEntryDataPerCNumber(List<string> cplst, List<string> cnumberList)
+        {
+            using (var ctx = new CoreEntitiesContext())
+            {
+                ctx.Database.CommandTimeout = _databaseCommandTimeout;
+                List<TODO_SubmitAllXMLToCustoms> res;
+                res = ctx.TODO_SubmitAllXMLToCustoms.Where(x =>
+                        x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings
+                            .ApplicationSettingsId && cplst.Any(z => z == x.CustomsProcedure))
+                    .ToList()
+                    .Where(x => cnumberList.Contains(x.CNumber))
+                    .ToList();
+                return res;
             }
         }
 
