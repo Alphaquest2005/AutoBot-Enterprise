@@ -618,10 +618,7 @@ namespace AutoBot
             return mappingMailSent;
         }
 
-        private static IOrderedEnumerable<FileTypeMappings> OrderFileTypeMappingsByOriginalName(FileTypes fileType)
-        {
-            return fileType.FileTypeMappings.OrderBy(x => x.OriginalName);
-        }
+        private static IOrderedEnumerable<FileTypeMappings> OrderFileTypeMappingsByOriginalName(FileTypes fileType) => fileType.FileTypeMappings.OrderByDescending(x => x.OriginalName);
 
         private static Dictionary<string, string> UpdateRow(Dictionary<string, string> row, FileTypeMappings mapping, int row_no, string val)
         {
