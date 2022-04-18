@@ -589,7 +589,7 @@ namespace AutoBot
         private static bool UpdateRowWithFileMapping(FileInfo file, FileTypes fileType, Dictionary<string, Func<Dictionary<string, string>, DataRow, DataRow, string>> dic, bool mappingMailSent,
             DataRow header, int row_no, DataRow drow, ref Dictionary<string, string> row)
         {
-            foreach (var mapping in fileType.FileTypeMappings.OrderBy(x => x.Id))
+            foreach (var mapping in OrderFileTypeMappingsByOriginalName(fileType))
             {
                 var maps = mapping.OriginalName.Split('+');
                 string val = null;
@@ -616,6 +616,11 @@ namespace AutoBot
             }
 
             return mappingMailSent;
+        }
+
+        private static IOrderedEnumerable<FileTypeMappings> OrderFileTypeMappingsByOriginalName(FileTypes fileType)
+        {
+            return fileType.FileTypeMappings.OrderBy(x => x.OriginalName);
         }
 
         private static Dictionary<string, string> UpdateRow(Dictionary<string, string> row, FileTypeMappings mapping, int row_no, string val)

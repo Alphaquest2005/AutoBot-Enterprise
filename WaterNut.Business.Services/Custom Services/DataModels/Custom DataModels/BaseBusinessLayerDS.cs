@@ -368,6 +368,20 @@ namespace WaterNut.DataSpace
 
         public async Task ClearAsycudaDocumentSet(AsycudaDocumentSet docset)
         {
+            PreventDeletingFromSystemDocSet(docset);
+
+            StatusModel.StartStatusUpdate($"Deleting Documents from '{docset.Declarant_Reference_Number}' Document Set",
+                docset.xcuda_ASYCUDA_ExtendedProperties.Count());
+
+            ParalellDeleteDocSetDocuments(docset);
+
+            await CalculateDocumentSetFreight(docset.AsycudaDocumentSetId).ConfigureAwait(false);
+
+            StatusModel.StopStatusUpdate();
+        }
+
+        private static void PreventDeletingFromSystemDocSet(AsycudaDocumentSet docset)
+        {
             var sysDocSet =
                 new DocumentDSContext().SystemDocumentSets.FirstOrDefault(x => x.Id == docset.AsycudaDocumentSetId);
             if (sysDocSet != null)
@@ -375,12 +389,13 @@ namespace WaterNut.DataSpace
                 throw new ApplicationException(
                     "Trying to delete from System DocumentSet! General Policy this Cannot happen.");
             }
-            StatusModel.StartStatusUpdate($"Deleting Documents from '{docset.Declarant_Reference_Number}' Document Set",
-                docset.xcuda_ASYCUDA_ExtendedProperties.Count());
+        }
 
+        private void ParalellDeleteDocSetDocuments(AsycudaDocumentSet docset)
+        {
             var doclst = docset.xcuda_ASYCUDA_ExtendedProperties.Where(x => x.xcuda_ASYCUDA != null).ToList();
             var exceptions = new ConcurrentQueue<Exception>();
-            Parallel.ForEach(doclst, new ParallelOptions {MaxDegreeOfParallelism = 1}, //Environment.ProcessorCount * 2
+            Parallel.ForEach(doclst, new ParallelOptions { MaxDegreeOfParallelism = 1 }, //Environment.ProcessorCount * 2
                 item =>
                 {
                     StatusModel.StatusUpdate();
@@ -397,8 +412,6 @@ namespace WaterNut.DataSpace
                 }
             );
             if (exceptions.Count > 0) throw new AggregateException(exceptions);
-            await CalculateDocumentSetFreight(docset.AsycudaDocumentSetId).ConfigureAwait(false);
-            StatusModel.StopStatusUpdate();
         }
 
 
