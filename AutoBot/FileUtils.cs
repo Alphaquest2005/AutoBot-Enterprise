@@ -78,7 +78,6 @@ namespace AutoBot
                 {"CleanupDocSetDiscpancies",(ft, fs) => DISUtils.CleanupDocSetDiscpancies(ft) },
                 {"RecreateDocSetDiscrepanciesEntries",(ft, fs) => DISUtils.RecreateDocSetDiscrepanciesEntries(ft) },
                 {"ExportDocSetDiscpancyEntries",(ft, fs) => DISUtils.ExportDocSetDiscpancyEntries("DIS",ft) },
-                {"SubmitDocSetDiscrepancyErrors",(ft, fs) => DISUtils.SubmitDocSetDiscrepancyErrors(ft) },
                 {"SubmitDocSetDiscrepanciesPreAssessmentReportToCustoms",(ft, fs) => DISUtils.SubmitDocSetDiscrepanciesPreAssessmentReportToCustoms(ft) },
                 {"AssessDiscrepancyExecutions", DISUtils.AssessDiscrepancyExecutions },
                 {"AttachEmailPDF", PDFUtils.AttachEmailPDF },
