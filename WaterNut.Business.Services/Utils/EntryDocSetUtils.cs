@@ -36,11 +36,22 @@ namespace WaterNut.DataSpace
                                   x.xcuda_ASYCUDA_ExtendedProperties.AsycudaDocumentSetId != docKey &&
                                   x.xcuda_ASYCUDA_ExtendedProperties.ImportComplete))
                         .GroupBy(x => x.xcuda_Declarant.Number)
+                        
                         .ToList();
 
+                    // // because the include not loading the properties
+
+                    foreach (var asycuda in res.SelectMany(itm => itm))
+                    {
+                        asycuda.xcuda_ASYCUDA_ExtendedProperties =
+                            ctx.xcuda_ASYCUDA_ExtendedProperties.First(x => x.ASYCUDA_Id == asycuda.ASYCUDA_Id);
+                    }
+
                     lst = res
-                        .Where(x => x.Key != null && x.Count() > 1 || x.Any(z =>
-                            z.xcuda_ASYCUDA_ExtendedProperties.FileNumber == docSet.LastFileNumber))
+                        .Where(x => x.Key != null && x.Count() > 1
+                             || x.Any(z => z.xcuda_ASYCUDA_ExtendedProperties.FileNumber == docSet.LastFileNumber)  
+                            
+                            )
                         .ToList();
 
                     return (docSet, lst);

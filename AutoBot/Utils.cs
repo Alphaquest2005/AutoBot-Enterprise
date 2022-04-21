@@ -797,5 +797,12 @@ namespace AutoBot
                 throw e;
             }
         }
+        public static FileTypes GetFileType(string fileType)
+        {
+            return new CoreEntitiesContext().FileTypes.First(x =>
+                x.ApplicationSettingsId ==
+                BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId &&
+                x.Type == fileType);
+        }
     }
 }

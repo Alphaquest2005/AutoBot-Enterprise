@@ -1925,7 +1925,9 @@ namespace WaterNut.DataSpace
 
         private xcuda_Item CreateNewDocumentItem()
         {
-            return new xcuda_Item(true) {TrackingState = TrackingState.Added}; //
+            var item = new xcuda_Item(true) {TrackingState = TrackingState.Added};
+            item.SetupProperties();
+            return item; //
         }
 
         public void ProcessItemTariff(BaseDataModel.IEntryLineData pod, xcuda_ASYCUDA cdoc, xcuda_Item itm)

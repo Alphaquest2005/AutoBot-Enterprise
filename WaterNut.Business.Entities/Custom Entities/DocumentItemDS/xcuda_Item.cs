@@ -70,7 +70,7 @@ namespace DocumentItemDS.Business.Entities
 
 
 
-        partial void SetupProperties()
+        public void SetupProperties()
         {
             if (xcuda_Tarification == null) xcuda_Tarification = new xcuda_Tarification(true) { TrackingState = TrackingState.Added };
             if (xcuda_Tarification.xcuda_HScode == null) xcuda_Tarification.xcuda_HScode = new xcuda_HScode(true) { TrackingState = TrackingState.Added };
