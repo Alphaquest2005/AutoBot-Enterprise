@@ -101,63 +101,93 @@ namespace WaterNut.DataSpace
             return docSet;
         }
 
-        private  async Task SaveCSV(string droppedFilePath, FileTypes fileType, List<AsycudaDocumentSet> docSet, bool overWriteExisting)
+        private async Task SaveCSV(string droppedFilePath, FileTypes fileType, List<AsycudaDocumentSet> docSet,
+            bool overWriteExisting)
         {
-            try
+            var emailId = GetExistingEmailId(droppedFilePath, fileType);
+
+            var lines = GetFileLines(droppedFilePath, fileType);
+           
+            var fixedHeadings = GetHeadings(lines);
+
+            if (fileType.Type == "SI")
             {
-                string emailId = null;
-               
-                using (var ctx = new CoreEntitiesContext())
-                {
-                    
-                    var res = ctx.AsycudaDocumentSet_Attachments.Where(x => x.Attachments.FilePath.Replace(".xlsx", "-Fixed.csv") == droppedFilePath 
-                                                                            || x.Attachments.FilePath == droppedFilePath) 
-                        .Select(x => new{x.EmailId, x.FileTypeId}).FirstOrDefault();
-                    emailId = res?.EmailId ?? (fileType.EmailId == "0"  || fileType.EmailId == null ? null : fileType.EmailId);
-                   
-                }
-
-
-                var fileTxt = File.ReadAllText(droppedFilePath).Replace("�", " ");
-
-                foreach (var r in fileType.FileTypeReplaceRegex)
-                {
-                    var reg = new Regex(r.Regex, RegexOptions.IgnoreCase | RegexOptions.Multiline);
-                    fileTxt = reg.Replace(fileTxt, r.ReplacementRegEx, Int16.MaxValue);
-                }
-                
-               
-                var lines = fileTxt.Split(new string[] { "\n", "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
-                // identify header
-                var headerline = lines.FirstOrDefault();
-               
-
-                
-                if (headerline != null)
-                {
-                    var headings = headerline.CsvSplit();
-
-                    var headingswithnewLine = headings.Where(x => x.EndsWith("\r\n")).ToList();
-                    if (headingswithnewLine.Any())
-                        throw new ApplicationException(
-                            $"Headers contain New Line: {headingswithnewLine.Aggregate((o, n) => o + ", " + n)}");
-
-                    if (fileType.Type == "SI")
-                    {
-                        await SaveCsvSubItems.Instance.ExtractSubItems(fileType.Type, lines, headings).ConfigureAwait(false);
-                        return;
-                    }
-
-                    if (await SaveCsvEntryData.Instance.ExtractEntryData(fileType, lines, headings,  docSet, overWriteExisting, emailId, droppedFilePath).ConfigureAwait(false)) return;
-                }
+                await SaveCsvSubItems.Instance.ExtractSubItems(fileType.Type, lines, fixedHeadings)
+                    .ConfigureAwait(false);
             }
-            catch (Exception Ex)
+            else
             {
-                throw;
+                await SaveCsvEntryData.Instance
+                    .ExtractEntryData(fileType, lines, fixedHeadings, docSet, overWriteExisting, emailId,
+                        droppedFilePath).ConfigureAwait(false);
             }
+
         }
-     
+
+        private static string[] GetFileLines(string droppedFilePath, FileTypes fileType)
+        {
+            var rawFileTxt = GetRawFileText(droppedFilePath);
+
+            var fixedFileTxt = ApplyFileTypeTextReplacements(fileType, rawFileTxt);
 
 
+            var lines = GetLinesFromText(fixedFileTxt);
+            return lines;
+        }
+
+        private string[] GetHeadings(string[] lines)
+        {
+            var headerline = lines.FirstOrDefault();
+
+            if (headerline == null) return Array.Empty<string>();
+
+            var headings = headerline.CsvSplit();
+
+            return RemoveCarriageReturnFromHeadings(headings);
+        }
+
+        private string[] RemoveCarriageReturnFromHeadings(string[] headings)
+        {
+            return headings.Select(x => x.EndsWith("\r\n") ? x.Replace("\r\n", "") : x).ToArray();
+
+        }
+
+        private static string[] GetLinesFromText(string fixedFileTxt)
+        {
+            return fixedFileTxt.Split(new string[] { "\n", "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
+        }
+
+        private static string ApplyFileTypeTextReplacements(FileTypes fileType, string rawFileTxt)
+        {
+            var pTxt = rawFileTxt;
+            foreach (var r in fileType.FileTypeReplaceRegex)
+            {
+                var reg = new Regex(r.Regex, RegexOptions.IgnoreCase | RegexOptions.Multiline);
+                pTxt = reg.Replace(pTxt, r.ReplacementRegEx, Int16.MaxValue);
+            }
+
+            return pTxt;
+        }
+
+        private static string GetRawFileText(string droppedFilePath)
+        {
+            return File.ReadAllText(droppedFilePath).Replace("�", " ");
+        }
+
+        private static string GetExistingEmailId(string droppedFilePath, FileTypes fileType)
+        {
+            string emailId = null;
+
+            using (var ctx = new CoreEntitiesContext())
+            {
+                var res = ctx.AsycudaDocumentSet_Attachments.Where(x =>
+                        x.Attachments.FilePath.Replace(".xlsx", "-Fixed.csv") == droppedFilePath
+                        || x.Attachments.FilePath == droppedFilePath)
+                    .Select(x => new { x.EmailId, x.FileTypeId }).FirstOrDefault();
+                emailId = res?.EmailId ?? (fileType.EmailId == "0" || fileType.EmailId == null ? null : fileType.EmailId);
+            }
+
+            return emailId;
+        }
     }
 }
