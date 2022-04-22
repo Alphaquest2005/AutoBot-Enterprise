@@ -771,7 +771,7 @@
     <Compile Include="Custom Contracts\Custom Contracts\AdjustmentQS\IAdjustmentShortService.cs" />
     <Compile Include="Custom Services\AdjustmentQS\AdjustmentOverService.cs" />
     <Compile Include="Custom Services\AdjustmentQS\AdjustmentShortService.cs" />
-    <Compile Include="Utils\EntryDocSetUtils.cs" />
+    <Compile Include="EntryDocSetUtils.cs" />
     <Compile Include="Custom Services\DataModels\Custom DataModels\PDF2TXT\InvoiceReader.cs" />
     <Compile Include="Custom Services\DataModels\Custom DataModels\SQLBlackBox.cs" />
     <Compile Include="ExpressionCSharp60.cs" />
@@ -1389,6 +1389,7 @@
     <Compile Include="Services\ValuationDS\xC71_ItemService.cs" />
     <Compile Include="Services\ValuationDS\xC71_Seller_segmentService.cs" />
     <Compile Include="Services\ValuationDS\xC71_Value_declaration_formService.cs" />
+    <Compile Include="Utils\Utils.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

@@ -5,6 +5,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using CoreEntities.Business.Entities;
 using DocumentDS.Business.Entities;
+using EmailDownloader;
 using TrackableEntities.Client;
 using WaterNut.DataSpace;
 
@@ -56,20 +57,11 @@ namespace EntryDataQS.Business.Services
                 }
 
                 dfileType.AsycudaDocumentSetId = docSetId;
-                var client = new EmailDownloader.Client
-                {
-                    CompanyName = BaseDataModel.Instance.CurrentApplicationSettings.CompanyName,
-                    DataFolder = BaseDataModel.Instance.CurrentApplicationSettings.DataFolder,
-                    Password = BaseDataModel.Instance.CurrentApplicationSettings.EmailPassword,
-                    Email = BaseDataModel.Instance.CurrentApplicationSettings.Email,
-                    EmailMappings = BaseDataModel.Instance.CurrentApplicationSettings.EmailMapping.ToList()
-                };
+                var client = Utils.GetClient();
                 InvoiceReader.Import(droppedFilePath, fileTypeId.GetValueOrDefault(), emailId, overwrite, SaveCSVModel.Instance.GetDocSets(dfileType), dfileType, client);
             }
             
         }
-
-
     }
 }
 
