@@ -15,7 +15,9 @@ namespace AutoBotUtilities.Tests
         [SetUp]
         public void SetUp()
         {
+            Infrastructure.Utils.SetTestApplicationSettings(2);
             _testClass = new ADJUtils();
+
         }
 
         [Test]

@@ -33,6 +33,7 @@ using TrackableEntities;
 using TrackableEntities.EF6;
 using ValuationDS.Business.Entities;
 using WaterNut.Business.Entities;
+using WaterNut.Business.Services.Utils;
 using WaterNut.DataLayer;
 using WaterNut.DataSpace.Asycuda;
 using WaterNut.Interfaces;
@@ -77,13 +78,10 @@ namespace WaterNut.DataSpace
 {
     public class BaseDataModel
     {
-        public static DataCache<InventoryItem> _inventoryCache;
-
         public static DataCache<Customs_Procedure> _customs_ProcedureCache;
         public static DataCache<Document_Type> _document_TypeCache;
 
-        private static List<FileTypes> _fileTypes;
-
+        
         private readonly AsycudaDocumentSet _currentAsycudaDocumentSet = null;
 
         private IEnumerable<Customs_Procedure> _customs_Procedures;
@@ -108,7 +106,7 @@ namespace WaterNut.DataSpace
         public static BaseDataModel Instance { get; }
 
 
-        public DataCache<InventoryItem> InventoryCache => _inventoryCache;
+        
 
 
         public DataCache<Customs_Procedure> Customs_ProcedureCache => _customs_ProcedureCache;
@@ -179,11 +177,7 @@ namespace WaterNut.DataSpace
 
             SQLBlackBox.RunSqlBlackBox();
 
-            _inventoryCache =
-                new DataCache<InventoryItem>(
-                    new InventoryDSContext().InventoryItems.Include(x => x.InventoryItemAlias).ToList());
-
-
+            
             _document_TypeCache =
                 new DataCache<Document_Type>(
                     await
@@ -198,68 +192,6 @@ namespace WaterNut.DataSpace
 
 
             StatusModel.StopStatusUpdate();
-        }
-
-        public static FileTypes GetFileType(FileTypes fileTypes)
-        {
-            try
-            {
-                if (_fileTypes == null || Instance.CurrentApplicationSettings.ApplicationSettingsId !=
-                    _fileTypes.First().ApplicationSettingsId)
-                    using (var ctx = new CoreEntitiesContext())
-                    {
-                        _fileTypes = ctx.FileTypes
-                            .Include("FileTypeContacts.Contacts")
-                            .Include("FileTypeActions.Actions")
-                            .Include("AsycudaDocumentSetEx")
-                            .Include("ChildFileTypes")
-                            .Include("FileTypeMappings.FileTypeMappingRegExs")
-                            .Include(x => x.ImportActions)
-                            .Include(x => x.FileTypeReplaceRegex)
-                            .Where(x => x.ApplicationSettingsId ==
-                                        Instance.CurrentApplicationSettings.ApplicationSettingsId)
-                            .ToList();
-
-                    }
-
-                return _fileTypes.First(x => x.Id == fileTypes.Id);
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-                throw;
-            }
-        }
-
-        public static List<FileTypes> FileTypes()
-        {
-            try
-            {
-                if (_fileTypes == null || Instance.CurrentApplicationSettings.ApplicationSettingsId !=
-                    _fileTypes.First().ApplicationSettingsId)
-                    using (var ctx = new CoreEntitiesContext())
-                    {
-                        _fileTypes = ctx.FileTypes
-                            .Include("FileTypeContacts.Contacts")
-                            .Include("FileTypeActions.Actions")
-                            .Include("AsycudaDocumentSetEx")
-                            .Include("ChildFileTypes")
-                            .Include("FileTypeMappings.FileTypeMappingRegExs")
-                            .Include(x => x.ImportActions)
-                            .Include(x => x.FileTypeReplaceRegex)
-                            .Where(x => x.ApplicationSettingsId ==
-                                        Instance.CurrentApplicationSettings.ApplicationSettingsId)
-                            .ToList();
-
-                    }
-
-                return _fileTypes;
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-                throw;
-            }
         }
 
         public static Tuple<DateTime, DateTime, AsycudaDocumentSetEx, string> CurrentSalesInfo()
@@ -426,13 +358,7 @@ namespace WaterNut.DataSpace
             return cdoc;
         }
 
-        internal IInventoryItem GetInventoryItem(Func<IInventoryItem, bool> p)
-        {
-            using (var ctx = new InventoryDSContext())
-            {
-                return ctx.InventoryItems.FirstOrDefault(p);
-            }
-        }
+       
 
         public xcuda_ASYCUDA CreateNewAsycudaDocument(AsycudaDocumentSet CurrentAsycudaDocumentSet)
         {
@@ -3556,15 +3482,6 @@ namespace WaterNut.DataSpace
             {
                 Console.WriteLine(e);
                 throw;
-            }
-        }
-
-        public static FileTypes GetFileType(int ocrInvoicesFileTypeId)
-        {
-            using (var ctx = new CoreEntitiesContext())
-            {
-                var fileType = ctx.FileTypes.FirstOrDefault(x => x.Id == ocrInvoicesFileTypeId);
-                return fileType != null ? GetFileType(fileType) : null;
             }
         }
 

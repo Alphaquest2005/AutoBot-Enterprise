@@ -15,6 +15,7 @@ namespace AutoBotUtilities.Tests
         [SetUp]
         public void SetUp()
         {
+            Infrastructure.Utils.SetTestApplicationSettings(2);
             _testClass = new DISUtils();
         }
 
@@ -52,53 +53,7 @@ namespace AutoBotUtilities.Tests
             {
                 ApplicationSettings = null,
                 ApplicationSettingsId = 2,
-                AsycudaDocumentSetEx = new AsycudaDocumentSetEx()
-                {
-                    ApplicationSettings = null,
-                    ApplicationSettingsId = 2,
-                    ApportionMethod = null,
-                    AsycudaDocumentSetEntryDataEx = new List<AsycudaDocumentSetEntryDataEx>() { },
-                    AsycudaDocumentSetId = 8,
-                    AsycudaDocumentSet_Attachments = new List<AsycudaDocumentSet_Attachments>() { },
-                    AsycudaDocuments = new List<AsycudaDocument>() { },
-                    BLNumber = null,
-                    ClassifiedLines = 4597,
-                    Country_of_origin_code = "GD",
-                    CurrencyRate = 2.7169,
-                    Currency_Code = "USD",
-                    Customs_ProcedureId = 1,
-                    Declarant_Reference_Number = "Discrepancies",
-                    Description = null,
-                    Document_TypeId = 1,
-                    DocumentsCount = 0,
-                    EntityId = "8",
-                    EntityName = null,
-                    EntryPackages = null,
-                    EntryTimeStamp = null,
-                    Exchange_Rate = 0,
-                    ExpectedEntries = null,
-                    FileTypes = new List<FileTypes>()
-                    {
-                    },
-                    FreightCurrencyCode = "USD",
-                    FreightCurrencyRate = 2.7169,
-                    ImportedInvoices = 552,
-                    InvoiceTotal = 73917.069588789251,
-                    LastFileNumber = 54,
-                    LicenceSummary = new List<LicenceSummary>() { },
-                    LicenseLines = 176,
-                    LocationOfGoods = null,
-                    Manifest_Number = null,
-                    MaxLines = null,
-                    QtyLicensesRequired = 51,
-                    StartingFileCount = null,
-                    TotalCIF = null,
-                    TotalFreight = 0,
-                    TotalInvoices = null,
-                    TotalLines = 4603,
-                    TotalPackages = null,
-                    TotalWeight = null,
-                },
+               
                 AsycudaDocumentSetId = 8064,
                 AsycudaDocumentSet_Attachments = new List<AsycudaDocumentSet_Attachments>() { },
                 ChildFileTypes = new List<FileTypes>()

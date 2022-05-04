@@ -318,6 +318,21 @@ namespace CoreEntities.Business.Entities
         }
         Nullable<int> _maxfilesizeinmb;
         [DataMember]
+        public Nullable<int> FileInfoId 
+        {
+            get
+            {
+                return _fileinfoid;
+            }
+            set
+            {
+                _fileinfoid = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<int> _fileinfoid;
+        [DataMember]
         public ApplicationSettings ApplicationSettings { get; set; }
         [DataMember]
         public AsycudaDocumentSetEx AsycudaDocumentSetEx { get; set; }
@@ -341,6 +356,8 @@ namespace CoreEntities.Business.Entities
         public List<ImportActions> ImportActions { get; set; }
         [DataMember]
         public List<FileTypeReplaceRegex> FileTypeReplaceRegex { get; set; }
+        [DataMember]
+        public FileImporterInfo FileImporterInfos { get; set; }
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

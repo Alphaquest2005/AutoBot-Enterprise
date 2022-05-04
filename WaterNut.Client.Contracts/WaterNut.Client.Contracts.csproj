@@ -142,6 +142,7 @@
     <Compile Include="CoreEntities\IEntryPreviousItemsService.cs" />
     <Compile Include="CoreEntities\IExpiredEntriesLstService.cs" />
     <Compile Include="CoreEntities\IFileGroupsService.cs" />
+    <Compile Include="CoreEntities\IFileImporterInfoService.cs" />
     <Compile Include="CoreEntities\IFileTypeActionsService.cs" />
     <Compile Include="CoreEntities\IFileTypeContactsService.cs" />
     <Compile Include="CoreEntities\IFileTypeMappingRegExsService.cs" />

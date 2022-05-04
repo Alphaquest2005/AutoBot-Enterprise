@@ -32,10 +32,12 @@
               this.Property(t => t.ReplicateHeaderRow).HasColumnName("ReplicateHeaderRow");
               this.Property(t => t.IsImportable).HasColumnName("IsImportable");
               this.Property(t => t.MaxFileSizeInMB).HasColumnName("MaxFileSizeInMB");
+              this.Property(t => t.FileInfoId).HasColumnName("FileInfoId");
               this.HasRequired(t => t.ApplicationSettings).WithMany(t =>(ICollection<FileTypes>) t.FileTypes).HasForeignKey(d => d.ApplicationSettingsId);
               this.HasRequired(t => t.AsycudaDocumentSetEx).WithMany(t =>(ICollection<FileTypes>) t.FileTypes).HasForeignKey(d => d.AsycudaDocumentSetId);
               this.HasOptional(t => t.FileGroups).WithMany(t =>(ICollection<FileTypes>) t.FileTypes).HasForeignKey(d => d.FileGroupId);
               this.HasOptional(t => t.ParentFileTypes).WithMany(t =>(ICollection<FileTypes>) t.ChildFileTypes).HasForeignKey(d => d.ParentFileTypeId);
+              this.HasOptional(t => t.FileImporterInfos).WithMany(t =>(ICollection<FileTypes>) t.FileTypes).HasForeignKey(d => d.FileInfoId);
               this.HasMany(t => t.FileTypeMappings).WithRequired(t => (FileTypes)t.FileTypes);
               this.HasMany(t => t.FileTypeActions).WithRequired(t => (FileTypes)t.FileTypes);
               this.HasMany(t => t.FileTypeContacts).WithRequired(t => (FileTypes)t.FileTypes);

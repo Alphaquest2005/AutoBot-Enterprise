@@ -19,6 +19,7 @@ using AdjustmentQS.Business.Entities;
 using AdjustmentQS.Business.Services;
 using AllocationQS.Business.Entities;
 using Asycuda421;
+using AutoBotUtilities.CSV;
 using Core.Common.Converters;
 using Core.Common.Data.Contracts;
 using Core.Common.Utils;
@@ -59,7 +60,7 @@ namespace AutoBot
                 {"AssessPOEntry",(ft, fs) => POUtils.AssessPOEntry(ft.DocReference, ft.AsycudaDocumentSetId)},
                 {"EmailPOEntries",(ft, fs) => POUtils.EmailPOEntries(ft.AsycudaDocumentSetId) },
                 {"DownloadSalesFiles",(ft, fs) => EX9Utils.DownloadSalesFiles(10, "IM7History",false) },
-                {"Xlsx2csv",(ft, fs) => CSVUtils.Xlsx2csv(fs, ft) },
+                {"Xlsx2csv",(ft, fs) => XLSXImporter.Xlsx2csv(fs, ft) },
                 {"SaveInfo",(ft, fs) => ImportUtils.TrySaveFileInfo(fs, ft) },
                 {"CleanupEntries",(ft, fs) => EntryDocSetUtils.CleanupEntries() },
                 {"SubmitToCustoms",(ft, fs) => SalesUtils.SubmitSalesXMLToCustoms() },

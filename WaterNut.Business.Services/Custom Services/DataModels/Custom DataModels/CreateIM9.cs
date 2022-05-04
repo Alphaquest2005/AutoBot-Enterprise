@@ -11,6 +11,7 @@ using DocumentDS.Business.Entities;
 using DocumentItemDS.Business.Entities;
 using TrackableEntities;
 using WaterNut.Business.Entities;
+using WaterNut.Business.Services.Utils;
 using CustomsOperations = CoreEntities.Business.Enums.CustomsOperations;
 using xcuda_Item = DocumentItemDS.Business.Entities.xcuda_Item;
 using xcuda_PreviousItem = DocumentItemDS.Business.Entities.xcuda_PreviousItem;
@@ -445,7 +446,7 @@ namespace WaterNut.DataSpace
                 itm.xcuda_Tarification.xcuda_HScode.Commodity_code = pitm.Hs_code;
                 itm.xcuda_Tarification.xcuda_HScode.Precision_1 = pitm.Commodity_code;
                 itm.xcuda_Tarification.xcuda_HScode.InventoryItems =
-                    BaseDataModel.Instance.GetInventoryItem(x => x.ItemNumber == ditm.ItemNumber);
+                    InventoryItemUtils.GetInventoryItem(x => x.ItemNumber == ditm.ItemNumber);
                 itm.xcuda_Goods_description.Country_of_origin_code = pitm.Goods_origin;
            
                 itm.xcuda_Valuation_item.xcuda_Weight_itm = new xcuda_Weight_itm(true)

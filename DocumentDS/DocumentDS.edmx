@@ -2255,10 +2255,6 @@ FROM [dbo].[xcuda_ASYCUDAEx] AS [xcuda_ASYCUDAEx]</DefiningQuery>
             <End Role="AsycudaDocumentSet_Attachments" EntitySet="AsycudaDocumentSet_Attachments" />
           </AssociationSet>
           <EntitySet Name="FileTypes" EntityType="WaterNutDBModel.FileType" />
-          <AssociationSet Name="FK_FileTypes_AsycudaDocumentSet" Association="WaterNutDBModel.FK_FileTypes_AsycudaDocumentSet">
-            <End Role="AsycudaDocumentSet" EntitySet="AsycudaDocumentSets" />
-            <End Role="FileType" EntitySet="FileTypes" />
-          </AssociationSet>
           <AssociationSet Name="FK_AsycudaDocumentSet_Attachments_FileTypes" Association="WaterNutDBModel.FK_AsycudaDocumentSet_Attachments_FileTypes">
             <End Role="FileType" EntitySet="FileTypes" />
             <End Role="AsycudaDocumentSet_Attachments" EntitySet="AsycudaDocumentSet_Attachments" />
@@ -2339,7 +2335,6 @@ FROM [dbo].[xcuda_ASYCUDAEx] AS [xcuda_ASYCUDAEx]</DefiningQuery>
           <NavigationProperty Name="xcuda_ASYCUDA_ExtendedProperties" Relationship="WaterNutDBModel.FK_xcuda_ASYCUDA_ExtendedProperties_AsycudaDocumentSet" FromRole="AsycudaDocumentSet" ToRole="xcuda_ASYCUDA_ExtendedProperties" />
           <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
           <NavigationProperty Name="AsycudaDocumentSet_Attachments" Relationship="WaterNutDBModel.FK_AsycudaDocumentSet_Attachments_AsycudaDocumentSet" FromRole="AsycudaDocumentSet" ToRole="AsycudaDocumentSet_Attachments" />
-          <NavigationProperty Name="FileTypes" Relationship="WaterNutDBModel.FK_FileTypes_AsycudaDocumentSet" FromRole="AsycudaDocumentSet" ToRole="FileType" />
           <Property Name="LastFileNumber" Type="Int32" />
           <Property Name="TotalInvoices" Type="Int32" />
           <Property Name="MaxLines" Type="Int32" />
@@ -3843,7 +3838,6 @@ FROM [dbo].[xcuda_ASYCUDAEx] AS [xcuda_ASYCUDAEx]</DefiningQuery>
           <Property Name="ReplyToMail" Type="Boolean" Nullable="false" />
           <Property Name="FileGroupId" Type="Int32" />
           <Property Name="MergeEmails" Type="Boolean" Nullable="false" />
-          <NavigationProperty Name="AsycudaDocumentSet" Relationship="WaterNutDBModel.FK_FileTypes_AsycudaDocumentSet" FromRole="FileType" ToRole="AsycudaDocumentSet" />
           <NavigationProperty Name="AsycudaDocumentSet_Attachments" Relationship="WaterNutDBModel.FK_AsycudaDocumentSet_Attachments_FileTypes" FromRole="FileType" ToRole="AsycudaDocumentSet_Attachments" />
           <Property Name="CopyEntryData" Type="Boolean" Nullable="false" />
           <Property Name="ParentFileTypeId" Type="Int32" />
@@ -3856,20 +3850,6 @@ FROM [dbo].[xcuda_ASYCUDAEx] AS [xcuda_ASYCUDAEx]</DefiningQuery>
           <Property Name="IsImportable" Type="Boolean" />
           <Property Name="MaxFileSizeInMB" Type="Int32" />
         </EntityType>
-        <Association Name="FK_FileTypes_AsycudaDocumentSet">
-          <End Type="WaterNutDBModel.AsycudaDocumentSet" Role="AsycudaDocumentSet" Multiplicity="1">
-            <OnDelete Action="Cascade" />
-          </End>
-          <End Type="WaterNutDBModel.FileType" Role="FileType" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="AsycudaDocumentSet">
-              <PropertyRef Name="AsycudaDocumentSetId" />
-            </Principal>
-            <Dependent Role="FileType">
-              <PropertyRef Name="AsycudaDocumentSetId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK_AsycudaDocumentSet_Attachments_FileTypes">
           <End Type="WaterNutDBModel.FileType" Role="FileType" Multiplicity="0..1" />
           <End Type="WaterNutDBModel.AsycudaDocumentSet_Attachments" Role="AsycudaDocumentSet_Attachments" Multiplicity="*" />

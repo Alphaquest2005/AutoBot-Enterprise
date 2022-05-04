@@ -17,6 +17,7 @@ namespace AutoBotUtilities.Tests
         [SetUp]
         public void SetUp()
         {
+            Infrastructure.Utils.SetTestApplicationSettings(2);
             _testClass = new EntryDocSetUtils();
         }
 
@@ -32,11 +33,9 @@ namespace AutoBotUtilities.Tests
         [Test]
         public void CanCallGetRelatedDocuments()
         {
-            var docSet = EntryDocSetUtils.GetDocSet("xSales");
-            var res = EntryDocSetUtils.GetRelatedDocuments(docSet);
-            Assert.IsTrue(res.First().First().xcuda_ASYCUDA_ExtendedProperties != null);
-            
-
+            var docSets = EntryDocSetUtils.GetLatestModifiedDocSet();
+            foreach (var res in docSets.Select(EntryDocSetUtils.GetRelatedDocuments))
+                Assert.IsTrue(res.First().First().xcuda_ASYCUDA_ExtendedProperties != null);
         }
 
 

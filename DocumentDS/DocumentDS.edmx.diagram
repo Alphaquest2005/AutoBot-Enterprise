@@ -120,8 +120,7 @@
         <AssociationConnector Association="WaterNutDBModel.FK_AsycudaDocument_Attachments_xcuda_ASYCUDA" />
         <AssociationConnector Association="WaterNutDBModel.FK_AsycudaDocumentSet_Attachments_AsycudaDocumentSet" />
         <AssociationConnector Association="WaterNutDBModel.FK_AsycudaDocumentSet_Attachments_Attachments" />
-        <EntityTypeShape EntityType="WaterNutDBModel.FileType" Width="1.5" PointX="3.375" PointY="59.875" />
-        <AssociationConnector Association="WaterNutDBModel.FK_FileTypes_AsycudaDocumentSet" />
+        <EntityTypeShape EntityType="WaterNutDBModel.FileType" Width="3.25" PointX="3.375" PointY="59.875" />
         <AssociationConnector Association="WaterNutDBModel.FK_AsycudaDocumentSet_Attachments_FileTypes" />
         <EntityTypeShape EntityType="WaterNutDBModel.Container" Width="1.5" PointX="8.375" PointY="68" />
         <EntityTypeShape EntityType="WaterNutDBModel.PackageType" Width="1.5" PointX="6.125" PointY="68.25" />

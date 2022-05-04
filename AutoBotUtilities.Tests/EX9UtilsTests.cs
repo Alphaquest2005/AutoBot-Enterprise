@@ -1,4 +1,5 @@
 using System.IO;
+using Core.Common.Utils;
 using WaterNut.DataSpace;
 
 namespace AutoBotUtilities.Tests
@@ -18,6 +19,7 @@ namespace AutoBotUtilities.Tests
         [SetUp]
         public void SetUp()
         {
+            Infrastructure.Utils.SetTestApplicationSettings(2);
             _testClass = new EX9Utils();
         }
 
@@ -30,20 +32,13 @@ namespace AutoBotUtilities.Tests
 
 
 
-        [Test]
-        public void CanGetXSalesFileType()
-        {
-            var type = "XSales";
-            var fileType = Utils.GetFileType(type);
-            Assert.AreEqual(type, fileType.Type);
-        }
-
+       
         [Test]
         public void CanImportXSalesFile()
         {
             try
             {
-                var testFile = getTestSalesFile();
+                var testFile = Infrastructure.Utils.GetTestSalesFile("TestXSalesFile.csv");
                 EX9Utils.ImportXSalesFiles(testFile);
                 Assert.IsTrue(true);
             }
@@ -54,40 +49,40 @@ namespace AutoBotUtilities.Tests
             }
         }
 
-        private string getTestSalesFile()
+        [Test]
+        public void CanGetXSalesFileType()
         {
-            var testDirectory = GetTestDirectory();
-            var testSalesFile = GetTestSalesFile(testDirectory, "TestXSalesFile.csv");
-            return testSalesFile;
+            try
+            {
+                var fileType = EX9Utils.GetxSalesFileType();
+                Assert.AreEqual(fileType.Type, "xSales");
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                Assert.IsTrue(false);
+            }
         }
 
-        private static string GetTestSalesFile(string testDirectory, string testXSalesfile)
+        [Test]
+        public void GetXSalesTestFile()
         {
-            var testSalesFile = Path.Combine(testDirectory, testXSalesfile);
-            if (!File.Exists(testSalesFile)) throw new ApplicationException($"TestFile Dose not Exists: '{testSalesFile}'");
-            return testSalesFile;
+            try
+            {
+                var fileType = Infrastructure.Utils.GetTestSalesFile("TestXSalesFile.csv");
+                Assert.IsTrue(fileType.Contains("TestXSalesFile.csv"));
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                Assert.IsTrue(false);
+            }
         }
 
-        private static string GetTestDirectory()
-        {
 
-            var testDirectory = GetDirectory(new List<string>(){"Imports", "Test Folder"});
-            
 
-            return testDirectory;
-        }
 
-        private static void EnsureDirectoryExists(string testDirectory)
-        {
-            if (!Directory.Exists(testDirectory)) Directory.CreateDirectory(testDirectory);
-        }
 
-        private static string GetDirectory(List<string> folderPath)
-        {
-            folderPath.Insert(0,BaseDataModel.Instance.CurrentApplicationSettings.DataFolder);
-            var directory = Path.Combine(folderPath.ToArray());
-            EnsureDirectoryExists(directory);
-            return directory;
-        }
+      
     }
 }

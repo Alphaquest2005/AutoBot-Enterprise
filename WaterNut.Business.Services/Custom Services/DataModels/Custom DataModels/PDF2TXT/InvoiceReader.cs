@@ -33,6 +33,7 @@ using UglyToad.PdfPig.DocumentLayoutAnalysis.PageSegmenter;
 using UglyToad.PdfPig.DocumentLayoutAnalysis.ReadingOrderDetector;
 using UglyToad.PdfPig.DocumentLayoutAnalysis.TextExtractor;
 using UglyToad.PdfPig.DocumentLayoutAnalysis.WordExtractor;
+using WaterNut.Business.Services.Utils;
 using WaterNut.DataSpace;
 using AsycudaDocumentSet_Attachments = CoreEntities.Business.Entities.AsycudaDocumentSet_Attachments;
 using Attachments = CoreEntities.Business.Entities.Attachments;
@@ -68,7 +69,7 @@ namespace WaterNut.DataSpace
                 //Get Template
                 var templates = GetTemplates(x => true);
 
-                foreach (var tmp in templates.OrderBy(x => x.OcrInvoices.Id))//.Where(x => x.OcrInvoices.Id == 99)
+                foreach (var tmp in templates.OrderBy(x => x.OcrInvoices.Id))//.Where(x => x.OcrInvoices.Id == 21)
                     try
                     {
                         if(TryReadFile(file, emailId, fileType, pdfTxt, client, overWriteExisting, docSet, tmp, fileTypeId)) return true;
@@ -171,7 +172,7 @@ namespace WaterNut.DataSpace
             List<AsycudaDocumentSet> docSet, Invoice tmp, List<dynamic> csvLines)
         {
             if (fileType.Id != tmp.OcrInvoices.FileTypeId)
-                fileType = BaseDataModel.GetFileType(tmp.OcrInvoices.FileTypeId);
+                fileType = FileTypeManager.GetFileType(tmp.OcrInvoices.FileTypeId);
 
 
             SaveCsvEntryData.Instance.ProcessCsvSummaryData(fileType, docSet, overWriteExisting,
@@ -186,10 +187,16 @@ namespace WaterNut.DataSpace
         {
             var failedlines = tmp.Lines.DistinctBy(x => x.OCR_Lines.Id).Where(z =>
                 z.FailedFields.Any() || (z.OCR_Lines.Fields.Any(f => f.IsRequired) && !z.Values.Any())).ToList();
+
+            var allRequried = tmp.Lines.DistinctBy(x => x.OCR_Lines.Id).Where(z =>
+                z.OCR_Lines.Fields.Any(f => f.IsRequired && (f.Field != "SupplierCode" && f.Field != "Name"))).ToList();
+
+
+            
             if (!tmp.Parts.Any(x => x.AllLines.Any(z =>
                     z.Values.Values.Any(v =>
                         v.Keys.Any(k => k.fields.Field == "Name") &&
-                        v.Values.Any(kv => kv == tmp.OcrInvoices.Name))))) return false;
+                        v.Values.Any(kv => kv == tmp.OcrInvoices.Name)))) || failedlines.Count == allRequried.Count) return false;
             if (failedlines.Any() && failedlines.Count < tmp.Lines.Count &&
                 (tmp.Parts.First().WasStarted || !tmp.Parts.First().OCR_Part.Start.Any()) &&
                 tmp.Lines.SelectMany(x => x.Values.Values).Any())
@@ -211,9 +218,7 @@ namespace WaterNut.DataSpace
             return invoice.InvoiceIdentificatonRegEx.Any() && invoice.InvoiceIdentificatonRegEx.Any(x =>
                 Regex.IsMatch(fileText,
                     x.OCR_RegularExpressions.RegEx,
-                    RegexOptions.IgnoreCase | (x.OCR_RegularExpressions.MultiLine == true
-                        ? RegexOptions.Multiline
-                        : RegexOptions.Singleline) | RegexOptions.ExplicitCapture));
+                    RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.ExplicitCapture));
         }
 
         public static StringBuilder GetPdftxt(string file)

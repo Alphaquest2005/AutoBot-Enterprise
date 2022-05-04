@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Data.Entity.Core.Objects.DataClasses;
 using System.Data.OleDb;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -20,13 +21,17 @@ using ExcelDataReader;
 using SimpleMvvmToolkit.ModelExtensions;
 using TrackableEntities;
 using TrackableEntities.Client;
+using WaterNut.Business.Services.Utils;
 using WaterNut.DataSpace;
+using FileInfo = System.IO.FileInfo;
 using MoreEnumerable = MoreLinq.MoreEnumerable;
 
 namespace AutoBot
 {
     public class CSVUtils
     {
+        
+
         public static void ProcessUnknownCSVFileType(FileTypes ft, FileInfo[] fs)
         {
             throw new NotImplementedException();
@@ -48,57 +53,79 @@ namespace AutoBot
             }
         }
 
-        public static void SaveCsv(FileInfo[] csvFiles, FileTypes fileType)
+        public static void SaveCsv(IEnumerable<FileInfo> csvFiles, FileTypes fileType)
         {
             Console.WriteLine("Importing CSV " + fileType.Type);
-            foreach (var file in csvFiles)
+            foreach (var file in csvFiles) TryImportFile(fileType, file);
+        }
+
+        private static void TryImportFile(FileTypes fileType, FileInfo file)
+        {
+            try
             {
-
-                try
-                {
-                    
-                    SaveCSVModel.Instance.ProcessDroppedFile(file.FullName, fileType, fileType.OverwriteFiles ?? true)//set to false to merge
-                        .Wait();
-
-
-                    //if (VerifyCSVImport(file))
-                    //    return;
-                    //else
-                    //    continue;
-
-                }
-                catch (Exception e)
-                {
-
-                    using (var ctx = new CoreEntitiesContext())
-                    {
-                        if (ctx.AttachmentLog.FirstOrDefault(x =>
-                                x.AsycudaDocumentSet_Attachments.Attachments.FilePath == file.FullName
-                                && x.Status == "Sender Informed of Error") == null)
-                        {
-                            var att = ctx.AsycudaDocumentSet_Attachments.FirstOrDefault(x => x.Attachments.FilePath.Contains(file.FullName.Replace(file.Extension, "").Replace("-Fixed", "")));
-                            var body = "Error While Importing: \r\n" +
-                                       $"File: {file}\r\n" +
-                                       $"Error: {(e.InnerException ?? e).Message.Replace(file.FullName, file.Name)} \r\n" +
-                                       $"Please Check the spreadsheet or inform Joseph Bartholomew if this is an Error.\r\n" +
-                                       $"Regards,\r\n" +
-                                       $"AutoBot";
-                            var emailId = ctx.AsycudaDocumentSet_Attachments
-                                .FirstOrDefault(x => x.Attachments.FilePath.Contains(file.FullName.Replace(file.Extension, "").Replace("-Fixed", "")))?.EmailId;
-                            EmailDownloader.EmailDownloader.SendBackMsg(emailId, Utils.Client, body);
-                            ctx.AttachmentLog.Add(new AttachmentLog(true)
-                            {
-                                DocSetAttachment = att.Id,
-                                Status = "Sender Informed of Error",
-                                TrackingState = TrackingState.Added
-                            });
-                            ctx.SaveChanges();
-                        }
-                    }
-
-
-                }
+                SaveCSVModel.Instance.ProcessDroppedFile(file.FullName, fileType, fileType.OverwriteFiles ?? true)
+                    .Wait(); //set to false to merge
             }
+            catch (Exception e)
+            {
+                EmailCSVImportError(file, e);
+            }
+        }
+
+        private static void EmailCSVImportError(FileInfo file, Exception e)
+        {
+           
+                if (IsErrorLogSent(file)) return;
+                var att = GetCSVOriginalFileAttachments(file);
+                var body = CreateCSVErrorEmailBody(file, e);
+                EmailDownloader.EmailDownloader.SendBackMsg(att?.EmailId, Utils.Client, body);
+                SaveErrorLog(att);
+            
+        }
+
+        private static bool IsErrorLogSent(FileInfo file)
+        {
+            return GetSentErrorLog(file) != null;
+        }
+
+        private static void SaveErrorLog(AsycudaDocumentSet_Attachments att)
+        {
+            using (var ctx = new CoreEntitiesContext())
+            {
+                ctx.AttachmentLog.Add(new AttachmentLog(true)
+                {
+                    DocSetAttachment = att.Id,
+                    Status = "Sender Informed of Error",
+                    TrackingState = TrackingState.Added
+                });
+                ctx.SaveChanges();
+            }
+        }
+
+        private static string CreateCSVErrorEmailBody(FileInfo file, Exception e)
+        {
+            var body = "Error While Importing: \r\n" +
+                       $"File: {file}\r\n" +
+                       $"Error: {(e.InnerException ?? e).Message.Replace(file.FullName, file.Name)} \r\n" +
+                       $"Please Check the spreadsheet or inform Joseph Bartholomew if this is an Error.\r\n" +
+                       $"Regards,\r\n" +
+                       $"AutoBot";
+            return body;
+        }
+
+        private static AsycudaDocumentSet_Attachments GetCSVOriginalFileAttachments(FileInfo file)
+        {
+            
+            var att = new CoreEntitiesContext().AsycudaDocumentSet_Attachments.FirstOrDefault(x =>
+                x.Attachments.FilePath.Contains(file.FullName.Replace(file.Extension, "").Replace("-Fixed", "")));
+            return att;
+        }
+
+        private static AttachmentLog GetSentErrorLog(FileInfo file)
+        {
+            return new CoreEntitiesContext().AttachmentLog.FirstOrDefault(x =>
+                x.AsycudaDocumentSet_Attachments.Attachments.FilePath == file.FullName
+                && x.Status == "Sender Informed of Error");
         }
 
         public static void ReplaceCSV(FileInfo[] csvFiles, FileTypes fileType)
@@ -153,167 +180,7 @@ namespace AutoBot
             }
         }
 
-        public static void Xlsx2csv(FileInfo[] files, FileTypes fileType, bool? overwrite = null )
-        {
-            try
-            {
 
-                var adjReference = $"ADJ-{new CoreEntitiesContext().AsycudaDocumentSetExs.First(x => x.AsycudaDocumentSetId == fileType.AsycudaDocumentSetId).Declarant_Reference_Number}";
-                var disReference = $"DIS-{new CoreEntitiesContext().AsycudaDocumentSetExs.First(x => x.AsycudaDocumentSetId == fileType.AsycudaDocumentSetId).Declarant_Reference_Number}";
-                var dic = new Dictionary<string, Func<Dictionary<string, string>,DataRow,DataRow, string>>()
-                {
-                    {"CurrentDate", (dt, drow, header)=> DateTime.Now.Date.ToShortDateString() },
-                    { "DIS-Reference", (dt, drow, header) => disReference},
-                    { "ADJ-Reference", (dt, drow, header) => $"ADJ-{DateTime.Parse(drow[Array.LastIndexOf(header.ItemArray,"Date".ToUpper())].ToString()):MMM-yy}"},//adjReference
-                    {"Quantity", (dt, drow, header) => dt.ContainsKey("Received Quantity") && dt.ContainsKey("Invoice Quantity")? Convert.ToString(Math.Abs(Convert.ToDouble(dt["Received Quantity"].Replace("\"","")) - Convert.ToDouble(dt["Invoice Quantity"].Replace("\"",""))), CultureInfo.CurrentCulture) : Convert.ToDouble(dt["Quantity"].Replace("\"","")).ToString(CultureInfo.CurrentCulture) },
-                    {"ZeroCost", (x, drow, header) => "0" },
-                    {"ABS-Added", (dt, drow, header) =>  Math.Abs(Convert.ToDouble(dt["{Added}"].Replace("\"",""))).ToString(CultureInfo.CurrentCulture) },
-                    {"ABS-Removed", (dt, drow, header) => Math.Abs(Convert.ToDouble(dt["{Removed}"].Replace("\"",""))).ToString(CultureInfo.CurrentCulture) },
-                    {"ADJ-Quantity", (dt, drow, header) => Convert.ToString(Math.Abs((Math.Abs(Convert.ToDouble(dt["{Added}"].Replace("\"",""))) - Math.Abs(Convert.ToDouble(dt["{Removed}"].Replace("\"",""))))), CultureInfo.CurrentCulture) },
-                    {"Cost2USD", (dt, drow, header) => dt.ContainsKey("{XCDCost}") && Convert.ToDouble(dt["{XCDCost}"].Replace("\"","")) > 0 ? (Convert.ToDouble(dt["{XCDCost}"].Replace("\"",""))/2.7169).ToString(CultureInfo.CurrentCulture) : "{NULL}" },
-                };
-
-                foreach (var file in files)
-                {
-
-
-                    var dfile = new FileInfo($@"{file.DirectoryName}\{file.Name.Replace(file.Extension, ".csv")}");
-                    // if (dfile.Exists && dfile.LastWriteTime >= file.LastWriteTime.AddMinutes(5)) return;
-                    // Reading from a binary Excel file (format; *.xlsx)
-                    FileStream stream = File.Open(file.FullName, FileMode.Open, FileAccess.Read);
-                    var excelReader = ExcelReaderFactory.CreateReader(stream);
-                    var result = excelReader.AsDataSet();
-                    excelReader.Close();
-                
-
-                    int row_no = 0;
-
-                    if (result.Tables.Contains("MisMatches") && result.Tables.Contains("POTemplate")) ShipmentUtils.ReadMISMatches(result.Tables["MisMatches"], result.Tables["POTemplate"]);
-
-                    result.Tables[0].Columns.Add("LineNumber", typeof(int));
-
-                    var rows = new List<DataRow>();
-                    ///insert linenumber
-                    while (row_no < result.Tables[0].Rows.Count)
-                    {
-
-                        var dataRow = result.Tables[0].Rows[row_no];
-                        dataRow["LineNumber"] = row_no;
-                        rows.Add(dataRow);
-                        row_no++;
-                    }
-
-
-
-
-                    if (fileType.ChildFileTypes.FirstOrDefault()?.Type == "Unknown")
-                    {
-                        Utils.SendBackTooBigEmail(file, fileType);
-                    
-                        DetectFileType(fileType, file, rows);
-                        continue;
-                    }
-
-
-
-                    var table = new ConcurrentDictionary<int, string>();
-                    Parallel.ForEach(rows, new ParallelOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount * 1 },
-                        row =>
-                        {
-                            StringBuilder a = new StringBuilder();
-
-                            if (fileType.FileTypeMappings.Any() && fileType.FileTypeMappings.Select(x => x.OriginalName)
-                                    .All(x => row.ItemArray.Contains(x)))
-                            {
-                                //if(dic.ContainsKey())
-                                a.Append("");
-                            }
-
-                            for (int i = 0; i < result.Tables[0].Columns.Count - 1; i++)
-                            {
-
-                                a.Append(StringToCSVCell(row[i].ToString()) + ",");
-                            }
-
-
-                            a.Append("\n");
-                            table.GetOrAdd(Convert.ToInt32(row["LineNumber"]), a.ToString());
-                        });
-
-
-
-
-                    string output = Path.ChangeExtension(file.FullName, ".csv");
-                    StreamWriter csv = new StreamWriter(output, false);
-                    csv.Write(table.OrderBy(x => x.Key).Select(x => x.Value).Aggregate((a, x) => a + x));
-                    csv.Close();
-
-                    FixCsv(new FileInfo(output), fileType, dic, overwrite);
-
-                }
-
-            }
-            catch (Exception e)
-            {
-
-                throw;
-            }
-        }
-
-        private static void DetectFileType(FileTypes fileType, FileInfo file, List<DataRow> dataRows)
-        {
-            try
-            {
-
-                FileTypes rfileType = null;
-                var potentialsFileTypes = new List<FileTypes>();
-                var lastHeaderRow = dataRows[0].ItemArray.ToList();
-                int drow_no = 0;
-                List<object> headerRow;
-                var filetypes = BaseDataModel.FileTypes();
-                while (drow_no < dataRows.Take(Utils.maxRowsToFindHeader).ToList().Count)
-                {
-                    headerRow = dataRows[drow_no].ItemArray.ToList();
-                    
-                    foreach (var f in filetypes.Where(x => x.IsImportable != false && x.FileTypeMappings.Any()))
-                    {
-                        if (//headerRow.Any(x => f.FileTypeMappings.All(z => z.Required == false) && f.FileTypeMappings.All(z => z.OriginalName == x.ToString())) || // All False && all in header or all required in header
-                            headerRow.Any(x => f.FileTypeMappings.Where(z => z.Required == true).Any(z => z.OriginalName.ToUpper().Trim() == x.ToString().ToUpper().Trim() || z.DestinationName.ToUpper().Trim() == x.ToString().ToUpper().Trim())))
-                        {
-                            potentialsFileTypes.Add(f);
-                            lastHeaderRow = headerRow;
-                        }
-                    }
-
-                    drow_no++;
-                }
-
-                if (!potentialsFileTypes.Any()) return;
-                rfileType = potentialsFileTypes
-                    .OrderByDescending(x => x.FileTypeMappings.Where(z =>
-                        lastHeaderRow.Select(h => h.ToString().ToUpper().Trim())
-                            .Contains(z.OriginalName.ToUpper().Trim())).Count())
-                    .ThenByDescending(x => x.FileTypeActions.Count())
-                    .FirstOrDefault();
-                rfileType.AsycudaDocumentSetId = fileType.AsycudaDocumentSetId;
-                rfileType.Data = fileType.Data;
-                rfileType.EmailId = fileType.EmailId;
-                headerRow = lastHeaderRow;
-                drow_no = 0;
-
-                ImportUtils.ExecuteDataSpecificFileActions(rfileType, new FileInfo[] { file },
-                    BaseDataModel.Instance.CurrentApplicationSettings);
-                ImportUtils.ExecuteNonSpecificFileActions(rfileType, new FileInfo[] { file },
-                    BaseDataModel.Instance.CurrentApplicationSettings);
-                return;
-
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-                throw;
-            }
-        }
 
         public static string StringToCSVCell(string str)
         {
@@ -541,7 +408,7 @@ namespace AutoBot
         {
             foreach (var cfileType in fileType.ChildFileTypes)
             {
-                var cfileTypes = BaseDataModel.GetFileType(cfileType);
+                var cfileTypes = FileTypeManager.GetFileType(cfileType);
                 cfileTypes.AsycudaDocumentSetId = fileType.AsycudaDocumentSetId;
                 cfileTypes.EmailId = fileType.EmailId;
                 cfileTypes.OverwriteFiles = overwrite;
@@ -787,5 +654,7 @@ namespace AutoBot
 
             return dt;
         }
+
+        
     }
 }

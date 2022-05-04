@@ -184,6 +184,7 @@
     <Compile Include="Generated Repositories\CoreEntities\EntryPreviousItemsRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\ExpiredEntriesLstRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\FileGroupsRepository.cs" />
+    <Compile Include="Generated Repositories\CoreEntities\FileImporterInfoRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\FileTypeActionsRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\FileTypeContactsRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\FileTypeMappingRegExsRepository.cs" />

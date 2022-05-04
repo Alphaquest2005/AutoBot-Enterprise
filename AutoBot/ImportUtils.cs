@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using CoreEntities.Business.Entities;
 using WaterNut.DataSpace;
+using FileInfo = System.IO.FileInfo;
 
 namespace AutoBot
 {

@@ -22,7 +22,6 @@ namespace DocumentDS.Business.Entities
     {
         partial void AutoGenStartUp() //xcuda_ASYCUDA()
         {
-            
             this.xcuda_Assessment_notice = new List<xcuda_Assessment_notice>();
             this.xcuda_Container = new List<xcuda_Container>();
             this.xcuda_Export_release = new List<xcuda_Export_release>();

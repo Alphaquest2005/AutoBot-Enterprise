@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using AutoBot;
+using AutoBotUtilities.CSV;
 using Core.Common.UI;
 using CoreEntities.Business.Entities;
 using CoreEntities.Client.Entities;
@@ -75,7 +76,7 @@ namespace WaterNut.QuerySpace
                     }
                     if (f.EndsWith(".xlsx"))
                     {
-                       CSVUtils.Xlsx2csv(new FileInfo[]{ new FileInfo(f)}, new CoreEntitiesContext().FileTypes
+                       XLSXImporter.Xlsx2csv(new FileInfo[]{ new FileInfo(f)}, new CoreEntitiesContext().FileTypes
                                         .Include(x => x.ChildFileTypes)
                                         .Include(x => x.FileTypeMappings)
                                         .First(x => x.Type == "XLSX" 

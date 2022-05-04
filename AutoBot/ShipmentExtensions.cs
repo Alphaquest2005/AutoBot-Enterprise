@@ -796,8 +796,10 @@ namespace AutoBotUtilities
                         Reference = $"{client.Key.Code}-{client.Key.RiderId}-{masterShipment.EmailId}"
                     };
 
+                    var allShipmentRiderDetails = masterShipment.ShipmentAttachedRider
+                        .SelectMany(x => x.ShipmentRider.ShipmentRiderDetails).Where(x => x.RiderId == client.Key.RiderId).ToList();
 
-                    var invoices = DoRiderInvoices(masterShipment, client, bl.ShipmentBLDetails, summaryPkg, out var summaryFile);
+                    var invoices = DoRiderInvoices(masterShipment, client, bl.ShipmentBLDetails, allShipmentRiderDetails, summaryPkg, out var summaryFile);
 
 
                     attachments.Add(new Attachments
@@ -956,7 +958,7 @@ namespace AutoBotUtilities
                             .Select(x => x.ShipmentManifest)
                             .ToList();
 
-                        var invoices = DoRiderInvoices(masterShipment, client,new List<ShipmentBLDetails>(), summaryPkg, out var summaryFile);
+                        var invoices = DoRiderInvoices(masterShipment, client,new List<ShipmentBLDetails>(), rider.ShipmentRiderDetails, summaryPkg, out var summaryFile);
 
                         var attachments = new List<Attachments>
                         {
@@ -1094,7 +1096,7 @@ namespace AutoBotUtilities
                     .Select(x => x.ShipmentManifest)
                     .ToList();
 
-                var invoices = DoRiderInvoices(masterShipment, null, new List<ShipmentBLDetails>(), summaryPkg, out var summaryFile);
+                var invoices = DoRiderInvoices(masterShipment, null, new List<ShipmentBLDetails>(), new List<ShipmentRiderDetails>(), summaryPkg, out var summaryFile);
 
                 var attachments = new List<Attachments>
                 {
@@ -1190,7 +1192,8 @@ namespace AutoBotUtilities
 
         private static List<ShipmentInvoice> DoRiderInvoices(Shipment masterShipment,
             IGrouping<(string Code, int RiderId, string BLNumber), ShipmentRiderDetails> client,
-            List<ShipmentBLDetails> shipmentBlDetailsList, UnAttachedWorkBookPkg summaryPkg,
+            List<ShipmentBLDetails> shipmentBlDetailsList, List<ShipmentRiderDetails> allShipmentRiderDetailsList,
+            UnAttachedWorkBookPkg summaryPkg,
             out string summaryFile)
         {
             try
@@ -1232,7 +1235,8 @@ namespace AutoBotUtilities
                var repeatInvoices = new EntryDataDSContext().ShipmentErrors_RepeatInvoices
                    .Where(x => invoiceLst.Any(z => z == x.InvoiceId)).ToList();
 
-               var repeatMarks = new EntryDataDSContext().ShipmentErrors_RepeatMarks
+               var repeatMarks = client == null? new List<ShipmentErrors_RepeatMarks>()
+                   :new EntryDataDSContext().ShipmentErrors_RepeatMarks
                    .Where(x => x.BLNumber == client.Key.BLNumber || x.RiderID == client.Key.RiderId).ToList();
 
                 var invoiceNOs = invoices.Select(r => r.InvoiceNo).ToList();
@@ -1241,6 +1245,11 @@ namespace AutoBotUtilities
 
                 var unMatchedBLDetails = shipmentBlDetailsList.Where(x => client.All(z => z.WarehouseCode != x.Marks))
                     .ToList();
+
+
+                var unMatchedRiderDetails = allShipmentRiderDetailsList.Where(x => shipmentBlDetailsList.All(z => z.Marks != x.WarehouseCode))
+                    .ToList();
+
 
                 var poNOs = invoices.SelectMany(r => r.ShipmentInvoicePOs.Select(z => z.PurchaseOrders.PONumber))
                     .ToList();
@@ -1277,6 +1286,7 @@ namespace AutoBotUtilities
                 summaryPkg.RepeatInvoices = repeatInvoices;
                 summaryPkg.RepeatMarks = repeatMarks;
                 summaryPkg.UnMatchedBLDetails = unMatchedBLDetails;
+                summaryPkg.UnMatchedRiderDetails = unMatchedRiderDetails;
                 summaryPkg.UnAttachedInvoices = unAttachedInvoices;
                 summaryPkg.UnAttachedRiderDetails = unAttachedRiderDetails;
 

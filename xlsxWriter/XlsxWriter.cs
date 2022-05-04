@@ -553,7 +553,12 @@ namespace xlsxWriter
             WriteTable(summaryPkg.UnMatchedBLDetails.Select(x => (dynamic)x).ToList(), workbook, currentline,
                 "Marks, PackageType, Quantity", "Unmatched BL Details");
 
-            currentline += 2 + summaryPkg.UnMatchedBLDetails.Count; 
+            currentline += 3;
+            WriteTable(summaryPkg.UnMatchedRiderDetails.Select(x => (dynamic)x).ToList(), workbook, currentline,
+                "WarehouseCode, InvoiceNumber, Pieces", "Unmatched Rider Details");
+
+            currentline += 2 + summaryPkg.UnMatchedRiderDetails.Count;
+            
             WriteTable(summaryPkg.RiderManualMatches.Select(x => (dynamic) x).ToList(), workbook, currentline,
                 RideManualMatchesHeader, "Manual Matches");
 
@@ -699,14 +704,14 @@ namespace xlsxWriter
                 currentline++;
                
                 Style duplicateStyle = new Style();                                                                           // Create new style
-                duplicateStyle.CurrentFill.SetColor("FFFF00", Style.Fill.FillType.fillColor);
+                duplicateStyle.CurrentFill.SetColor("FFFFFF00", Style.Fill.FillType.fillColor);
 
                 Style errStyle = new Style();                                                                           // Create new style
-                errStyle.CurrentFill.SetColor("FFC0CB", Style.Fill.FillType.fillColor);
+                errStyle.CurrentFill.SetColor("FFFFC0CB", Style.Fill.FillType.fillColor);
 
 
                 Style repeatStyle = new Style();                                                                           // Create new style
-                errStyle.CurrentFill.SetColor("ff0000", Style.Fill.FillType.fillColor);
+                errStyle.CurrentFill.SetColor("FFff0000", Style.Fill.FillType.fillColor);
 
                 var i = 0;
                 while (true)
@@ -1113,6 +1118,7 @@ namespace xlsxWriter
         public PackagesSummary PackagesSummary { get; set; }
         public List<ShipmentErrors_RepeatMarks> RepeatMarks { get; set; }
         public List<ShipmentErrors_RepeatInvoices> RepeatInvoices { get; set; }
+        public List<ShipmentRiderDetails> UnMatchedRiderDetails { get; set; }
     }
 
     public class PackagesSummary

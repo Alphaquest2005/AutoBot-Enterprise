@@ -341,6 +341,15 @@
           <Property Name="ReplicateHeaderRow" Type="bit" />
           <Property Name="IsImportable" Type="bit" />
           <Property Name="MaxFileSizeInMB" Type="int" />
+          <Property Name="FileInfoId" Type="int" />
+        </EntityType>
+        <EntityType Name="FileTypes-FileImporterInfo">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="EntryType" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Format" Type="nvarchar" MaxLength="50" Nullable="false" />
         </EntityType>
         <EntityType Name="ImportActions">
           <Key>
@@ -2318,6 +2327,18 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_FileTypes_FileTypes-FileInfo">
+          <End Role="FileTypes-FileImporterInfo" Type="Self.FileTypes-FileImporterInfo" Multiplicity="0..1" />
+          <End Role="FileTypes" Type="Self.FileTypes" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="FileTypes-FileImporterInfo">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="FileTypes">
+              <PropertyRef Name="FileInfoId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_ImportActions_FileTypes">
           <End Role="FileTypes" Type="Self.FileTypes" Multiplicity="1">
             <OnDelete Action="Cascade" />
@@ -2428,6 +2449,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
           <EntitySet Name="FileTypeMappings" EntityType="Self.FileTypeMappings" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="FileTypeReplaceRegex" EntityType="Self.FileTypeReplaceRegex" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="FileTypes" EntityType="Self.FileTypes" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="FileTypes-FileImporterInfo" EntityType="Self.FileTypes-FileImporterInfo" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ImportActions" EntityType="Self.ImportActions" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="InfoMapping" EntityType="Self.InfoMapping" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="InfoMappingRegEx" EntityType="Self.InfoMappingRegEx" Schema="dbo" store:Type="Tables" />
@@ -3668,6 +3690,10 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
             <End Role="FileTypes" EntitySet="FileTypes" />
             <End Role="FileTypes1" EntitySet="FileTypes" />
           </AssociationSet>
+          <AssociationSet Name="FK_FileTypes_FileTypes-FileInfo" Association="Self.FK_FileTypes_FileTypes-FileInfo">
+            <End Role="FileTypes-FileImporterInfo" EntitySet="FileTypes-FileImporterInfo" />
+            <End Role="FileTypes" EntitySet="FileTypes" />
+          </AssociationSet>
           <AssociationSet Name="FK_ImportActions_FileTypes" Association="Self.FK_ImportActions_FileTypes">
             <End Role="FileTypes" EntitySet="FileTypes" />
             <End Role="ImportActions" EntitySet="ImportActions" />
@@ -3996,6 +4022,11 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
           <AssociationSet Name="FK_EmailAttachments_Emails" Association="WaterNutDBModel.FK_EmailAttachments_Emails">
             <End Role="Emails" EntitySet="Emails" />
             <End Role="EmailAttachments" EntitySet="EmailAttachments" />
+          </AssociationSet>
+          <EntitySet Name="FileImporterInfos" EntityType="WaterNutDBModel.FileImporterInfo" />
+          <AssociationSet Name="FK_FileTypes_FileTypes_FileInfo1" Association="WaterNutDBModel.FK_FileTypes_FileTypes_FileInfo1">
+            <End Role="FileTypes_FileImporterInfo" EntitySet="FileImporterInfos" />
+            <End Role="FileTypes" EntitySet="FileTypes" />
           </AssociationSet>
           </EntityContainer>
         <EntityType Name="ApplicationSettings">
@@ -4547,6 +4578,8 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
           <NavigationProperty Name="ImportActions" Relationship="WaterNutDBModel.FK_ImportActions_FileTypes" FromRole="FileTypes" ToRole="ImportActions" />
           <NavigationProperty Name="FileTypeReplaceRegex" Relationship="WaterNutDBModel.FK_FileTypeReplaceRegex_FileTypes" FromRole="FileTypes" ToRole="FileTypeReplaceRegex" />
           <Property Name="MaxFileSizeInMB" Type="Int32" />
+          <Property Name="FileInfoId" Type="Int32" />
+          <NavigationProperty Name="FileImporterInfos" Relationship="WaterNutDBModel.FK_FileTypes_FileTypes_FileInfo1" FromRole="FileTypes" ToRole="FileTypes_FileImporterInfo" />
         </EntityType>
         <Association Name="FK_FileTypes_ApplicationSettings">
           <End Type="WaterNutDBModel.ApplicationSettings" Role="ApplicationSettings" Multiplicity="1">
@@ -6476,6 +6509,27 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="FileImporterInfo">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="EntryType" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Format" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="FileTypes" Relationship="WaterNutDBModel.FK_FileTypes_FileTypes_FileInfo1" FromRole="FileTypes_FileImporterInfo" ToRole="FileTypes" />
+        </EntityType>
+        <Association Name="FK_FileTypes_FileTypes_FileInfo1">
+          <End Type="WaterNutDBModel.FileImporterInfo" Role="FileTypes_FileImporterInfo" Multiplicity="0..1" />
+          <End Type="WaterNutDBModel.FileTypes" Role="FileTypes" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="FileTypes_FileImporterInfo">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="FileTypes">
+              <PropertyRef Name="FileInfoId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -6798,6 +6852,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
           <EntitySetMapping Name="FileTypes">
             <EntityTypeMapping TypeName="WaterNutDBModel.FileTypes">
               <MappingFragment StoreEntitySet="FileTypes">
+                <ScalarProperty Name="FileInfoId" ColumnName="FileInfoId" />
                 <ScalarProperty Name="MaxFileSizeInMB" ColumnName="MaxFileSizeInMB" />
                 <ScalarProperty Name="IsImportable" ColumnName="IsImportable" />
                 <ScalarProperty Name="ReplicateHeaderRow" ColumnName="ReplicateHeaderRow" />
@@ -8171,6 +8226,15 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
                 <ScalarProperty Name="FileTypeId" ColumnName="FileTypeId" />
                 <ScalarProperty Name="AttachmentId" ColumnName="AttachmentId" />
                 <ScalarProperty Name="EmailId" ColumnName="EmailId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="FileImporterInfos">
+            <EntityTypeMapping TypeName="WaterNutDBModel.FileImporterInfo">
+              <MappingFragment StoreEntitySet="FileTypes-FileImporterInfo">
+                <ScalarProperty Name="Format" ColumnName="Format" />
+                <ScalarProperty Name="EntryType" ColumnName="EntryType" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>

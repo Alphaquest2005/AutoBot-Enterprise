@@ -239,6 +239,8 @@ namespace CoreEntities.Business.Entities
      
         public DbSet<EmailAttachments> EmailAttachments { get; set; }
      
+        public DbSet<FileImporterInfo> FileImporterInfos { get; set; }
+     
 
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
@@ -434,6 +436,8 @@ namespace CoreEntities.Business.Entities
             modelBuilder.Configurations.Add(new EmailMappingRexExsMap());
          
             modelBuilder.Configurations.Add(new EmailAttachmentsMap());
+         
+            modelBuilder.Configurations.Add(new FileImporterInfoMap());
          
 			OnModelCreatingExtentsion(modelBuilder);
 

@@ -49,13 +49,14 @@ namespace WaterNut.DataSpace
                 .ToList();
         }
 
-        private static List<IGrouping<string, xcuda_ASYCUDA>> GetRelatedDocuments(AsycudaDocumentSet docSet)
+        public static List<IGrouping<string, xcuda_ASYCUDA>> GetRelatedDocuments(AsycudaDocumentSet docSet)
         {
 
             using (var ctx = new DocumentDSContext())
             {
                 var res = ctx.xcuda_ASYCUDA
                     .Include(x => x.xcuda_ASYCUDA_ExtendedProperties)
+                    .Include(x => x.xcuda_Declarant)
                     .Where(
                         x => x != null && x.xcuda_Declarant != null &&
                              x.xcuda_Declarant.Number.Contains(docSet.Declarant_Reference_Number) &&
@@ -63,17 +64,9 @@ namespace WaterNut.DataSpace
                               x.xcuda_ASYCUDA_ExtendedProperties.ImportComplete == false ||
                               x.xcuda_ASYCUDA_ExtendedProperties.AsycudaDocumentSetId != docSet.AsycudaDocumentSetId &&
                               x.xcuda_ASYCUDA_ExtendedProperties.ImportComplete))
-                    .ToList()
-                    .GroupBy(x => x.xcuda_Declarant.Number)
+                    .ToList()// must load first to get the navigation properties
+                    .GroupBy(x => x.xcuda_Declarant.Number)//
                     .ToList();
-
-                // // because the include not loading the properties
-
-                foreach (var asycuda in res.SelectMany(itm => itm))
-                {
-                    asycuda.xcuda_ASYCUDA_ExtendedProperties =
-                        ctx.xcuda_ASYCUDA_ExtendedProperties.First(x => x.ASYCUDA_Id == asycuda.ASYCUDA_Id);
-                }
 
                 return res;
             }
@@ -91,7 +84,7 @@ namespace WaterNut.DataSpace
                     foreach (var doc in g)
                     {
                         AppendDocSetLastFileNumber(docSet);
-                        var prop = GetXcudaAsycudaExtendedProperties(ctx, doc, docSetAsycudaDocumentSetId);
+                        var prop = GetXcudaAsycudaExtendedProperties(doc, docSetAsycudaDocumentSetId);
                         var declarant = ctx.xcuda_Declarant.First(x => x.ASYCUDA_Id == doc.ASYCUDA_Id);
                         var oldRef = declarant.Number;
                         var letter = oldRef.Substring(oldRef.IndexOf(prop.FileNumber.ToString()) - 1, 1);
@@ -114,9 +107,9 @@ namespace WaterNut.DataSpace
             }
         }
 
-        private static xcuda_ASYCUDA_ExtendedProperties GetXcudaAsycudaExtendedProperties(DocumentDSContext ctx, xcuda_ASYCUDA doc, int docSetAsycudaDocumentSetId)
+        private static xcuda_ASYCUDA_ExtendedProperties GetXcudaAsycudaExtendedProperties( xcuda_ASYCUDA doc, int docSetAsycudaDocumentSetId)
         {
-            return ctx.xcuda_ASYCUDA_ExtendedProperties.First(x =>
+            return new DocumentDSContext { StartTracking = true }.xcuda_ASYCUDA_ExtendedProperties.First(x =>
                 x.ASYCUDA_Id == doc.ASYCUDA_Id && x.AsycudaDocumentSetId == docSetAsycudaDocumentSetId);
         }
 
@@ -161,15 +154,43 @@ namespace WaterNut.DataSpace
                 .ToList();
         }
 
-        public static AsycudaDocumentSetEx GetLatestDocSet()
+        public static AsycudaDocumentSet GetLatestDocSet()
         {
-            using (var ctx = new CoreEntitiesContext())
+            using (var ctx = new DocumentDSContext())
             {
-                var docSet = ctx.AsycudaDocumentSetExs.Where(x =>
+                var docSet = ctx.AsycudaDocumentSets.Where(x =>
                         x.ApplicationSettingsId ==
                         BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)
                     .OrderByDescending(x => x.AsycudaDocumentSetId)
                     .FirstOrDefault();
+                return docSet;
+            }
+        }
+
+        public static AsycudaDocumentSet GetDocSet(string Reference)
+        {
+            using (var ctx = new DocumentDSContext())
+            {
+                var docSet = ctx.AsycudaDocumentSets.Where(x =>
+                        x.ApplicationSettingsId ==
+                        BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)
+                    .Where(x => x.Declarant_Reference_Number.Contains(Reference))
+                    .OrderByDescending(x => x.AsycudaDocumentSetId)
+                    .FirstOrDefault();
+                return docSet;
+            }
+        }
+
+        public static List<AsycudaDocumentSet> GetLatestModifiedDocSet()
+        {
+            using (var ctx = new DocumentDSContext())
+            {
+                var docSet = ctx.AsycudaDocumentSets.Where(x =>
+                        x.ApplicationSettingsId ==
+                        BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)
+                    .Where(x => x.xcuda_ASYCUDA_ExtendedProperties.Any(z => z.ImportComplete == false))
+                    .OrderByDescending(x => x.xcuda_ASYCUDA_ExtendedProperties.Max(z => z.ASYCUDA_Id))
+                    .ToList();
                 return docSet;
             }
         }

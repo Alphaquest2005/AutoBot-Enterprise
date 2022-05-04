@@ -16,6 +16,7 @@ using AutoBot.Properties;
 using Core.Common.Utils;
 using EntryDataDS.Business.Entities;
 using MoreLinq.Extensions;
+using WaterNut.Business.Services.Utils;
 using WaterNut.DataSpace;
 using CustomsOperations = CoreEntities.Business.Enums.CustomsOperations;
 using xlsxWriter;
@@ -127,7 +128,7 @@ namespace AutoBot
                                 var emailFileTypes = msg.Key.Item2.EmailMapping.InfoFirst == true ? msg.Key.Item2.FileTypes.OrderByDescending(x => x.Type == "Info").ToList() : msg.Key.Item2.FileTypes.OrderBy(x => x.Type == "Info").ToList();
                                 foreach (var emailFileType in emailFileTypes)
                                 {
-                                    var fileType = BaseDataModel.GetFileType(emailFileType);
+                                    var fileType = FileTypeManager.GetFileType(emailFileType);
                                     fileType.Data
                                         .Clear(); // because i am using emailmapping from email, its not a lookup
                                     fileType.EmailInfoMappings = msg.Key.Item2.EmailMapping.EmailInfoMappings;

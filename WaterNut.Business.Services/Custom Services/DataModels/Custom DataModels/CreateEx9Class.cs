@@ -30,11 +30,13 @@ using java.security;
 using MoreLinq;
 using PreviousDocumentQS.Business.Entities;
 using TrackableEntities.EF6;
+using WaterNut.Business.Services.Utils;
 using CustomsOperations = CoreEntities.Business.Enums.CustomsOperations;
 using Customs_Procedure = DocumentDS.Business.Entities.Customs_Procedure;
 using EntryPreviousItems = DocumentItemDS.Business.Entities.EntryPreviousItems;
 using xcuda_Item = DocumentItemDS.Business.Entities.xcuda_Item;
 using Attachments = DocumentItemDS.Business.Entities.Attachments;
+using InventoryItem = InventoryDS.Business.Entities.InventoryItem;
 using xcuda_Supplementary_unit = DocumentItemDS.Business.Entities.xcuda_Supplementary_unit;
 
 //using xcuda_Item = AllocationDS.Business.Entities.xcuda_Item;
@@ -103,6 +105,9 @@ namespace WaterNut.DataSpace
                 //DocSetPi.Clear();// moved here because data is cached wont update automatically
                 freashStart = true;
                 _ex9AsycudaSalesAllocations = null;
+                InventoryDataCache =
+                    InventoryItemUtils.GetInventoryItems(BaseDataModel.Instance.CurrentApplicationSettings
+                        .ApplicationSettingsId);
                 var docs = new List<DocumentCT>();
                 //docPreviousItems = new Dictionary<int, List<previousItems>>();
                 //var dutylst = CreateDutyList(slst);
@@ -994,7 +999,7 @@ namespace WaterNut.DataSpace
 
                         }).ToList(),
                     AllNames = s.SelectMany(x =>
-                            MoreEnumerable.Append(BaseDataModel.Instance.InventoryCache.Data
+                            MoreEnumerable.Append(InventoryDataCache
                                 .Where(c => c.Id == x.InventoryItemId)
                                 .SelectMany(i => i.InventoryItemAlias.Select(a => a.AliasName)), x.ItemNumber))
                         .Distinct()
@@ -1064,6 +1069,8 @@ namespace WaterNut.DataSpace
                 throw;
             }
         }
+
+        public static List<InventoryItem> InventoryDataCache { get; private set; }
 
         private List<MyPodData> SingleAllocationPerPreviousItem(AllocationDataBlock monthyear)
         {
