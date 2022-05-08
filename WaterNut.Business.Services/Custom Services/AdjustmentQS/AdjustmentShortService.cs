@@ -59,15 +59,15 @@ namespace AdjustmentQS.Business.Services
                             BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId,
                             lst.Select(x => $"{x.EntryDataDetailsId}-{x.ItemNumber}")
                                 .Aggregate((o, n) => $"{o},{n}")).Wait();
+                ///// dont pre do discrepancies when allocating all sales... only for shipping discrepancies
+                    //new AllocationsBaseModel()
+                    //    .AllocateSalesByMatchingSalestoAsycudaEntriesOnItemNumber(
+                    //        BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId, false,
+                    //        lst.Select(x => $"{x.EntryDataDetailsId}-{x.ItemNumber}")
+                    //            .Aggregate((o, n) => $"{o},{n}")).Wait();
 
-                    new AllocationsBaseModel()
-                        .AllocateSalesByMatchingSalestoAsycudaEntriesOnItemNumber(
-                            BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId, false,
-                            lst.Select(x => $"{x.EntryDataDetailsId}-{x.ItemNumber}")
-                                .Aggregate((o, n) => $"{o},{n}")).Wait();
-
-                    new AllocationsBaseModel()
-                        .MarkErrors(BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId).Wait();
+                    //new AllocationsBaseModel()
+                    //    .MarkErrors(BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId).Wait();
 
 
                 

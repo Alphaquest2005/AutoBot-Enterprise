@@ -68,7 +68,7 @@ namespace WaterNut.DataSpace
                 //Get Template
                 var templates = GetTemplates(x => true);
 
-                foreach (var tmp in templates.OrderBy(x => x.OcrInvoices.Id))//.Where(x => x.OcrInvoices.Id == 99)
+                foreach (var tmp in templates.OrderBy(x => x.OcrInvoices.Id))//.Where(x => x.OcrInvoices.Id == 43)
                     try
                     {
                         if(TryReadFile(file, emailId, fileType, pdfTxt, client, overWriteExisting, docSet, tmp, fileTypeId)) return true;
@@ -191,9 +191,7 @@ namespace WaterNut.DataSpace
             return invoice.InvoiceIdentificatonRegEx.Any() && invoice.InvoiceIdentificatonRegEx.Any(x =>
                 Regex.IsMatch(fileText,
                     x.OCR_RegularExpressions.RegEx,
-                    RegexOptions.IgnoreCase | (x.OCR_RegularExpressions.MultiLine == true
-                        ? RegexOptions.Multiline
-                        : RegexOptions.Singleline) | RegexOptions.ExplicitCapture));
+                    RegexOptions.IgnoreCase |RegexOptions.Multiline | RegexOptions.ExplicitCapture));
         }
 
         public static StringBuilder GetPdftxt(string file)

@@ -190,7 +190,7 @@ namespace WaterNut.DataSpace
 									 //.Where(x => x.EntriesList.Any(z => z.TariffCode.Contains("61091010")))
 									// .Where(x => x.EntriesList.Any(z => z.AsycudaDocument.CNumber == "1523" && z.LineNumber == 45))
                                     //.Where(x => x.Key.ItemNumber == "318451")
-									// .Where(x => x.SalesList.Any(z => z.EntryDataId.ToLower().Contains("O11-0004157-01")))
+									//.Where(x => x.SalesList.Any(z => z.EntryDataId.ToLower().Contains("Short".ToLower())))
 									 // .Where(x => x.Key.ItemNumber.StartsWith("A")) //.Where(x => x.Key.Contains("255100")) // 
 									 // .Where(x => "337493".Contains(x.Key))
 									 //.Where(x => "FAA/SCPI18X112".Contains(x.ItemNumber))//SND/IVF1010MPSF,BRG/NAVICOTE-GL,
@@ -523,9 +523,10 @@ namespace WaterNut.DataSpace
 		{
 			try
 			{
-				var asycudaEntries = await GetAsycudaEntriesWithItemNumber(applicationSettingsId, null).ConfigureAwait(false);
+				
+					var asycudaEntries = await GetAsycudaEntriesWithItemNumber(applicationSettingsId, null).ConfigureAwait(false);
 				//var testr = asycudaEntries.Where(x => x.EntriesList.Any(z => z.ItemNumber == "BM/FGCM150-50")).ToList();
-
+				
 				var saleslst = await GetSaleslstWithItemNumber(applicationSettingsId, lst).ConfigureAwait(false);
 				//var test = saleslst.Where(x => x.SalesList.Any(z => z.ItemNumber == "BM/FGCM150-50")).ToList();
 
@@ -686,8 +687,10 @@ namespace WaterNut.DataSpace
 		private static async Task<List<ItemSales>> GetSaleslstWithItemNumber(int applicationSettingsId,
 			string lst)
 		{
+           
 
-			try
+
+				try
 			{
 				StatusModel.Timer("Getting Data - Sales Entries...");
 
@@ -734,6 +737,9 @@ namespace WaterNut.DataSpace
 		private static async Task<List<ItemSales>> GetAdjustmentslstWithItemNumber(int applicationSettingsId,
 			string lst)
 		{
+
+            
+
 			StatusModel.Timer("Getting Data - Adjustments Entries...");
 
 			List<ItemSales> adjlst = null;

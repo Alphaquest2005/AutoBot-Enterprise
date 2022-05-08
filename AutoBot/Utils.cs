@@ -543,14 +543,22 @@ namespace AutoBot
             var overviewFile = Path.Combine(desFolder, "OverView.txt");
             if (File.Exists(overviewFile) || File.GetLastWriteTime(overviewFile) <= DateTime.Now.AddHours(-2))
             {
+
+
                 if (File.GetLastWriteTime(overviewFile) <= DateTime.Now.AddHours(-1)) return false;
-                var lines = File.ReadAllText(overviewFile)
+                var readAllText = File.ReadAllText(overviewFile);
+
+                if (readAllText == "No Files Found") return true;
+
+                var lines = readAllText
                     .Split(new[] { $"\r\n{DateTime.Now.Year}\t" }, StringSplitOptions.RemoveEmptyEntries);
                 if (lines.Length == 0)
                 {
 
                     return false;
                 }
+
+
 
                 var existingfiles = 0;
 

@@ -1496,7 +1496,7 @@ namespace WaterNut.DataSpace
                     try
                     {
                         if (t.ChangeTracker != null)
-                            ctx.Updatexcuda_Item(t).Wait(); //.ChangeTracker.GetChanges().FirstOrDefault()
+                            ctx.Updatexcuda_Item(t.ChangeTracker.FirstOrDefault()).Wait(); //.ChangeTracker.GetChanges().FirstOrDefault()
                     }
                     catch (Exception ex)
                     {
