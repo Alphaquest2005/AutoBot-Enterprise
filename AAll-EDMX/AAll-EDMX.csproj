@@ -279,6 +279,7 @@
 ..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\EntryPreviousItems.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\ExpiredEntriesLst.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\FileGroups.cs
+..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\FileImporterInfo.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\FileTypeActions.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\FileTypeContacts.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\FileTypeMappingRegExs.cs
@@ -703,6 +704,7 @@
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\EntryPreviousItems.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\ExpiredEntriesLst.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\FileGroups.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\FileImporterInfo.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\FileTypeActions.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\FileTypeContacts.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\FileTypeMappingRegExs.map.cs
@@ -1135,6 +1137,7 @@
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\CoreEntities\EntryPreviousItems.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\CoreEntities\ExpiredEntriesLst.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\CoreEntities\FileGroups.cs
+..\WaterNut.Business.Entities\Generated ChangeTracking Models\CoreEntities\FileImporterInfo.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\CoreEntities\FileTypeActions.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\CoreEntities\FileTypeContacts.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\CoreEntities\FileTypeMappingRegExs.cs
@@ -1545,6 +1548,7 @@
 ..\WaterNut.Business.Entities\Generated Constructors Models\CoreEntities\EntryPreviousItems.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\CoreEntities\ExpiredEntriesLst.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\CoreEntities\FileGroups.cs
+..\WaterNut.Business.Entities\Generated Constructors Models\CoreEntities\FileImporterInfo.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\CoreEntities\FileTypeActions.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\CoreEntities\FileTypeContacts.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\CoreEntities\FileTypeMappingRegExs.cs
@@ -1955,6 +1959,7 @@
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\CoreEntities\EntryPreviousItems.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\CoreEntities\ExpiredEntriesLst.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\CoreEntities\FileGroups.cs
+..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\CoreEntities\FileImporterInfo.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\CoreEntities\FileTypeActions.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\CoreEntities\FileTypeContacts.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\CoreEntities\FileTypeMappingRegExs.cs
@@ -2365,6 +2370,7 @@
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\CoreEntities\EntryPreviousItems.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\CoreEntities\ExpiredEntriesLst.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\CoreEntities\FileGroups.cs
+..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\CoreEntities\FileImporterInfo.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\CoreEntities\FileTypeActions.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\CoreEntities\FileTypeContacts.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\CoreEntities\FileTypeMappingRegExs.cs
@@ -2736,6 +2742,7 @@
 ..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\EntryPreviousItems.cs
 ..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\ExpiredEntriesLst.cs
 ..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\FileGroups.cs
+..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\FileImporterInfo.cs
 ..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\FileTypeActions.cs
 ..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\FileTypeContacts.cs
 ..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\FileTypeMappingRegExs.cs
@@ -2906,6 +2913,7 @@
 ..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\Enums\FileGroups.cs
 ..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\ExpiredEntriesLst.cs
 ..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\FileGroups.cs
+..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\FileImporterInfo.cs
 ..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\FileTypeActions.cs
 ..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\FileTypeContacts.cs
 ..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\FileTypeMappingRegExs.cs
@@ -3081,6 +3089,7 @@
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\CoreEntities\EntryPreviousItems.cs
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\CoreEntities\ExpiredEntriesLst.cs
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\CoreEntities\FileGroups.cs
+..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\CoreEntities\FileImporterInfo.cs
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\CoreEntities\FileTypeActions.cs
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\CoreEntities\FileTypeContacts.cs
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\CoreEntities\FileTypeMappingRegExs.cs
@@ -3249,6 +3258,7 @@
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\CoreEntities\EntryPreviousItems.cs
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\CoreEntities\ExpiredEntriesLst.cs
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\CoreEntities\FileGroups.cs
+..\WaterNut.Client.DTO\Generated MyNavProp Models\CoreEntities\FileImporterInfo.cs
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\CoreEntities\FileTypeActions.cs
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\CoreEntities\FileTypeContacts.cs
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\CoreEntities\FileTypeMappingRegExs.cs
@@ -3417,6 +3427,7 @@
 ..\WaterNut.Client.Entities\Generated Constructors Models\CoreEntities\EntryPreviousItems.cs
 ..\WaterNut.Client.Entities\Generated Constructors Models\CoreEntities\ExpiredEntriesLst.cs
 ..\WaterNut.Client.Entities\Generated Constructors Models\CoreEntities\FileGroups.cs
+..\WaterNut.Client.Entities\Generated Constructors Models\CoreEntities\FileImporterInfo.cs
 ..\WaterNut.Client.Entities\Generated Constructors Models\CoreEntities\FileTypeActions.cs
 ..\WaterNut.Client.Entities\Generated Constructors Models\CoreEntities\FileTypeContacts.cs
 ..\WaterNut.Client.Entities\Generated Constructors Models\CoreEntities\FileTypeMappingRegExs.cs
@@ -3585,6 +3596,7 @@
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\CoreEntities\EntryPreviousItems.cs
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\CoreEntities\ExpiredEntriesLst.cs
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\CoreEntities\FileGroups.cs
+..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\CoreEntities\FileImporterInfo.cs
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\CoreEntities\FileTypeActions.cs
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\CoreEntities\FileTypeContacts.cs
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\CoreEntities\FileTypeMappingRegExs.cs
@@ -3753,6 +3765,7 @@
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\CoreEntities\EntryPreviousItems.cs
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\CoreEntities\ExpiredEntriesLst.cs
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\CoreEntities\FileGroups.cs
+..\WaterNut.Client.Entities\Generated MyNavProp Models\CoreEntities\FileImporterInfo.cs
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\CoreEntities\FileTypeActions.cs
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\CoreEntities\FileTypeContacts.cs
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\CoreEntities\FileTypeMappingRegExs.cs
@@ -4007,6 +4020,7 @@
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\EntryPreviousItems.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\ExpiredEntriesLst.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\FileGroups.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\FileImporterInfo.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\FileTypeActions.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\FileTypeContacts.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\FileTypeMappingRegExs.map.cs
@@ -4420,6 +4434,7 @@
 ..\WaterNut.Client.Repositories\Generated Repositories\CoreEntities\EntryPreviousItemsRepository.cs
 ..\WaterNut.Client.Repositories\Generated Repositories\CoreEntities\ExpiredEntriesLstRepository.cs
 ..\WaterNut.Client.Repositories\Generated Repositories\CoreEntities\FileGroupsRepository.cs
+..\WaterNut.Client.Repositories\Generated Repositories\CoreEntities\FileImporterInfoRepository.cs
 ..\WaterNut.Client.Repositories\Generated Repositories\CoreEntities\FileTypeActionsRepository.cs
 ..\WaterNut.Client.Repositories\Generated Repositories\CoreEntities\FileTypeContactsRepository.cs
 ..\WaterNut.Client.Repositories\Generated Repositories\CoreEntities\FileTypeMappingRegExsRepository.cs
@@ -4608,6 +4623,7 @@
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\EntryPreviousItemsViewModel.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\ExpiredEntriesLstViewModel.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\FileGroupsViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\FileImporterInfoViewModel.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\FileTypeActionsViewModel.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\FileTypeContactsViewModel.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\FileTypeMappingRegExsViewModel.cs
@@ -4779,6 +4795,7 @@
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\EntryPreviousItemsTotals.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\ExpiredEntriesLstTotals.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\FileGroupsTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\FileImporterInfoTotals.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\FileTypeActionsTotals.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\FileTypeContactsTotals.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\FileTypeMappingRegExsTotals.cs
@@ -4937,6 +4954,7 @@
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\EntryPreviousItemsVirturalListLoader.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\ExpiredEntriesLstVirturalListLoader.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\FileGroupsVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\FileImporterInfoVirturalListLoader.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\FileTypeActionsVirturalListLoader.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\FileTypeContactsVirturalListLoader.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\FileTypeMappingRegExsVirturalListLoader.cs
@@ -5147,6 +5165,7 @@
 ..\WaterNut.Business.Services\Contracts\CoreEntities\IEntryPreviousItemsService.cs
 ..\WaterNut.Business.Services\Contracts\CoreEntities\IExpiredEntriesLstService.cs
 ..\WaterNut.Business.Services\Contracts\CoreEntities\IFileGroupsService.cs
+..\WaterNut.Business.Services\Contracts\CoreEntities\IFileImporterInfoService.cs
 ..\WaterNut.Business.Services\Contracts\CoreEntities\IFileTypeActionsService.cs
 ..\WaterNut.Business.Services\Contracts\CoreEntities\IFileTypeContactsService.cs
 ..\WaterNut.Business.Services\Contracts\CoreEntities\IFileTypeMappingRegExsService.cs
@@ -5557,6 +5576,7 @@
 ..\WaterNut.Business.Services\Services\CoreEntities\EntryPreviousItemsService.cs
 ..\WaterNut.Business.Services\Services\CoreEntities\ExpiredEntriesLstService.cs
 ..\WaterNut.Business.Services\Services\CoreEntities\FileGroupsService.cs
+..\WaterNut.Business.Services\Services\CoreEntities\FileImporterInfoService.cs
 ..\WaterNut.Business.Services\Services\CoreEntities\FileTypeActionsService.cs
 ..\WaterNut.Business.Services\Services\CoreEntities\FileTypeContactsService.cs
 ..\WaterNut.Business.Services\Services\CoreEntities\FileTypeMappingRegExsService.cs
@@ -5921,6 +5941,7 @@
 ..\WaterNut.Client.Contracts\CoreEntities\IEntryPreviousItemsService.cs
 ..\WaterNut.Client.Contracts\CoreEntities\IExpiredEntriesLstService.cs
 ..\WaterNut.Client.Contracts\CoreEntities\IFileGroupsService.cs
+..\WaterNut.Client.Contracts\CoreEntities\IFileImporterInfoService.cs
 ..\WaterNut.Client.Contracts\CoreEntities\IFileTypeActionsService.cs
 ..\WaterNut.Client.Contracts\CoreEntities\IFileTypeContactsService.cs
 ..\WaterNut.Client.Contracts\CoreEntities\IFileTypeMappingRegExsService.cs
@@ -6089,6 +6110,7 @@
 ..\WaterNut.Client.Services\CoreEntities\EntryPreviousItemsClient.cs
 ..\WaterNut.Client.Services\CoreEntities\ExpiredEntriesLstClient.cs
 ..\WaterNut.Client.Services\CoreEntities\FileGroupsClient.cs
+..\WaterNut.Client.Services\CoreEntities\FileImporterInfoClient.cs
 ..\WaterNut.Client.Services\CoreEntities\FileTypeActionsClient.cs
 ..\WaterNut.Client.Services\CoreEntities\FileTypeContactsClient.cs
 ..\WaterNut.Client.Services\CoreEntities\FileTypeMappingRegExsClient.cs

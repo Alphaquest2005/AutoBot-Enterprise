@@ -1,44 +1,8 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Data.Entity.Core.Objects.DataClasses;
-using System.Data.OleDb;
-using System.Diagnostics;
-using System.Globalization;
 using System.IO;
-using System.Linq;
-using System.Linq.Dynamic;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Threading.Tasks.Schedulers;
-using System.Windows.Forms;
-using AdjustmentQS.Business.Entities;
-using AdjustmentQS.Business.Services;
-using AllocationQS.Business.Entities;
-using Asycuda421;
-using Core.Common.Converters;
-using Core.Common.Data.Contracts;
-using Core.Common.Utils;
-using CoreEntities.Business.Entities;
-using DocumentDS.Business.Entities;
-using DocumentItemDS.Business.Entities;
-using EntryDataDS.Business.Entities;
-using ExcelDataReader;
-using LicenseDS.Business.Entities;
-using SalesDataQS.Business.Services;
-using SimpleMvvmToolkit.ModelExtensions;
-using TrackableEntities.Client;
-using ValuationDS.Business.Entities;
-using WaterNut.Business.Entities;
-using WaterNut.DataSpace;
-using WaterNut.DataSpace.Asycuda;
-using AsycudaDocumentSet_Attachments = CoreEntities.Business.Entities.AsycudaDocumentSet_Attachments;
-using CustomsOperations = CoreEntities.Business.Enums.CustomsOperations;
+using AutoBotUtilities.CSV;
 using FileTypes = CoreEntities.Business.Entities.FileTypes;
-using MoreEnumerable = MoreLinq.MoreEnumerable;
 
 namespace AutoBot
 {
@@ -59,7 +23,7 @@ namespace AutoBot
                 {"AssessPOEntry",(ft, fs) => POUtils.AssessPOEntry(ft.DocReference, ft.AsycudaDocumentSetId)},
                 {"EmailPOEntries",(ft, fs) => POUtils.EmailPOEntries(ft.AsycudaDocumentSetId) },
                 {"DownloadSalesFiles",(ft, fs) => EX9Utils.DownloadSalesFiles(10, "IM7History",false) },
-                {"Xlsx2csv",(ft, fs) => CSVUtils.Xlsx2csv(fs, ft) },
+                {"Xlsx2csv",(ft, fs) => XLSXImporter.Xlsx2csv(fs, ft) },
                 {"SaveInfo",(ft, fs) => ImportUtils.TrySaveFileInfo(fs, ft) },
                 {"CleanupEntries",(ft, fs) => EntryDocSetUtils.CleanupEntries() },
                 {"SubmitToCustoms",(ft, fs) => SalesUtils.SubmitSalesXMLToCustoms() },

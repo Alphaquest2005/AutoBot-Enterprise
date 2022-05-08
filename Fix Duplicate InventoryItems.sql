@@ -72,3 +72,30 @@ FROM    [xcuda_Inventory_Item] INNER JOIN
 
 --select * from [xcuda_Inventory_Item] where InventoryItemId in (select id from #inventorywithRow where row > 1)
 delete from InventoryItems where id in (select id from #inventorywithRow where row > 1 )
+
+
+------------------------------------------------fix iww problem
+
+--drop table #descriptionwithRow
+
+--select EntryDataDetailsId, entrydataid, itemnumber,ItemDescription, (ROW_NUMBER() over (partition by itemnumber order by EntryDataDetailsId asc))  row
+--into #descriptionwithRow
+--from EntryDataDetails  
+
+--update EntryDataDetails
+--set ItemDescription = good.itemdescription
+--from
+----select entrydatadetails.ItemDescription, good.ItemDescription from
+--EntryDataDetails inner join 
+--(select * from #descriptionwithRow where row > 1 and entrydataid like 'A2O%') err on EntryDataDetails.EntryDataDetailsId = err.EntryDataDetailsId inner join 
+--(select * from #descriptionwithRow where row = 1 ) good on EntryDataDetails.ItemNumber = good.ItemNumber and EntryDataDetails.ItemDescription <> good.ItemDescription
+
+
+--update InventoryItems
+--set Description = good.itemdescription
+--from
+----select inventoryitems.Description ,entrydatadetails.ItemDescription, good.ItemDescription from
+--InventoryItems inner join 
+--EntryDataDetails on InventoryItems.id = EntryDataDetails.InventoryItemId inner join 
+--(select * from #descriptionwithRow where row > 1 and entrydataid like 'A2O%') err on EntryDataDetails.EntryDataDetailsId = err.EntryDataDetailsId inner join 
+--(select * from #descriptionwithRow where row = 1 ) good on EntryDataDetails.ItemNumber = good.ItemNumber 

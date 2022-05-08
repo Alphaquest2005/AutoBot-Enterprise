@@ -180,6 +180,44 @@ namespace CoreEntities.Client.Entities
             }
 
       }
+        public string FileImporterInfosEntityName
+        {
+            get
+            {
+                return this.FileImporterInfos == null ? "" : this.FileImporterInfos.EntityName;
+            }
+            set
+            {
+                                if (string.IsNullOrEmpty(value)) return;
+                string[] vals = value.Split(',');
+               
+                    using (FileImporterInfoClient ctx = new FileImporterInfoClient())
+                    {
+                        var dto = ctx.GetFileImporterInfos().Result.AsEnumerable().FirstOrDefault(x => x.EntityName == value);
+                        
+
+                        if ( dto == null)
+                        {
+                            this.FileImporterInfos = (FileImporterInfo)new FileImporterInfo().CreateEntityFromString(value);
+							
+							this.Id = Convert.ToInt32(this.FileImporterInfos.Id);
+                            this.TrackingState=TrackableEntities.TrackingState.Modified;
+                           NotifyPropertyChanged("AddFileImporterInfos");
+                        }
+                        else
+                        {
+                            var obj = new FileImporterInfo(dto);
+                           if (this.FileImporterInfos == null || this.FileImporterInfos.EntityId != obj.EntityId) this.FileImporterInfos = obj;
+                           
+                        }
+                         
+
+
+                    }
+            
+            }
+
+      }
 
 
 

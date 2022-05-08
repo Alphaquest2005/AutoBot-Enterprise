@@ -181,6 +181,7 @@
     <Compile Include="Generated Client Entities\CoreEntities\Enums\FileGroups.cs" />
     <Compile Include="Generated Client Entities\CoreEntities\ExpiredEntriesLst.cs" />
     <Compile Include="Generated Client Entities\CoreEntities\FileGroups.cs" />
+    <Compile Include="Generated Client Entities\CoreEntities\FileImporterInfo.cs" />
     <Compile Include="Generated Client Entities\CoreEntities\FileTypeActions.cs" />
     <Compile Include="Generated Client Entities\CoreEntities\FileTypeContacts.cs" />
     <Compile Include="Generated Client Entities\CoreEntities\FileTypeMappingRegExs.cs" />
@@ -350,6 +351,7 @@
     <Compile Include="Generated Constructors Models\CoreEntities\EntryPreviousItems.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\ExpiredEntriesLst.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\FileGroups.cs" />
+    <Compile Include="Generated Constructors Models\CoreEntities\FileImporterInfo.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\FileTypeActions.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\FileTypeContacts.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\FileTypeMappingRegExs.cs" />
@@ -518,6 +520,7 @@
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\EntryPreviousItems.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\ExpiredEntriesLst.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\FileGroups.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\FileImporterInfo.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\FileTypeActions.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\FileTypeContacts.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\FileTypeMappingRegExs.cs" />
@@ -690,6 +693,7 @@
     <Compile Include="Generated MyNavProp Models\CoreEntities\EntryPreviousItems.cs" />
     <Compile Include="Generated MyNavProp Models\CoreEntities\ExpiredEntriesLst.cs" />
     <Compile Include="Generated MyNavProp Models\CoreEntities\FileGroups.cs" />
+    <Compile Include="Generated MyNavProp Models\CoreEntities\FileImporterInfo.cs" />
     <Compile Include="Generated MyNavProp Models\CoreEntities\FileTypeActions.cs" />
     <Compile Include="Generated MyNavProp Models\CoreEntities\FileTypeContacts.cs" />
     <Compile Include="Generated MyNavProp Models\CoreEntities\FileTypeMappingRegExs.cs" />

@@ -33,6 +33,7 @@ using UglyToad.PdfPig.DocumentLayoutAnalysis.PageSegmenter;
 using UglyToad.PdfPig.DocumentLayoutAnalysis.ReadingOrderDetector;
 using UglyToad.PdfPig.DocumentLayoutAnalysis.TextExtractor;
 using UglyToad.PdfPig.DocumentLayoutAnalysis.WordExtractor;
+using WaterNut.Business.Services.Utils;
 using WaterNut.DataSpace;
 using AsycudaDocumentSet_Attachments = CoreEntities.Business.Entities.AsycudaDocumentSet_Attachments;
 using Attachments = CoreEntities.Business.Entities.Attachments;
@@ -145,45 +146,71 @@ namespace WaterNut.DataSpace
             return templates;
         }
 
-        public static bool TryReadFile(string file, string emailId, FileTypes fileType,StringBuilder pdftxt,Client client, bool overWriteExisting, List<AsycudaDocumentSet> docSet, 
-             Invoice tmp, int fileTypeId)
+        public static bool TryReadFile(string file, string emailId, FileTypes fileType, StringBuilder pdftxt,
+            Client client, bool overWriteExisting, List<AsycudaDocumentSet> docSet,
+            Invoice tmp, int fileTypeId)
         {
-            
+
             if (!IsInvoiceDocument(tmp.OcrInvoices, pdftxt.ToString())) return false;
 
             var formattedPdfTxt = tmp.Format(pdftxt.ToString());
-            var csvLines = tmp.Read(formattedPdfTxt.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None).ToList());
+            var csvLines = tmp.Read(formattedPdfTxt);
+
             if (csvLines.Count < 1 || !tmp.Success)
             {
-                var failedlines = tmp.Lines.DistinctBy(x => x.OCR_Lines.Id).Where(z =>
-                    z.FailedFields.Any() || (z.OCR_Lines.Fields.Any(f => f.IsRequired) && !z.Values.Any())).ToList();
-                if (!tmp.Parts.Any(x => x.AllLines.Any(z =>
-                    z.Values.Values.Any(v =>
-                        v.Keys.Any(k => k.fields.Field == "Name") && v.Values.Any(kv => kv == tmp.OcrInvoices.Name))))) return false;
-                if (failedlines.Any() && failedlines.Count < tmp.Lines.Count &&
-                    (tmp.Parts.First().WasStarted || !tmp.Parts.First().OCR_Part.Start.Any()) && tmp.Lines.SelectMany(x => x.Values.Values).Any())
-                {
-                    ReportUnImportedFile(docSet, file, emailId,fileTypeId, client, pdftxt.ToString(), "Following fields failed to import",
-                        failedlines);
-                    {
-                        return true;
-                    }
-                }
-
-                
-                return false;
+                return ErrorState(file, emailId, pdftxt, client, docSet, tmp, fileTypeId);
+            }
+            else
+            {
+                return ImportSuccessState(file, emailId, fileType, overWriteExisting, docSet, tmp, csvLines);
             }
 
-            if (fileType.Id != tmp.OcrInvoices.FileTypeId)
-                fileType = BaseDataModel.GetFileType(tmp.OcrInvoices.FileTypeId);
 
+        }
+
+        private static bool ImportSuccessState(string file, string emailId, FileTypes fileType, bool overWriteExisting,
+            List<AsycudaDocumentSet> docSet, Invoice tmp, List<dynamic> csvLines)
+        {
+            if (fileType.Id != tmp.OcrInvoices.FileTypeId)
+                fileType = FileTypeManager.GetFileType(tmp.OcrInvoices.FileTypeId);
 
 
             SaveCsvEntryData.Instance.ProcessCsvSummaryData(fileType, docSet, overWriteExisting,
                 emailId,
                 file, csvLines).Wait();
-           
+
             return true;
+        }
+
+        private static bool ErrorState(string file, string emailId, StringBuilder pdftxt, Client client, List<AsycudaDocumentSet> docSet,
+            Invoice tmp, int fileTypeId)
+        {
+            var failedlines = tmp.Lines.DistinctBy(x => x.OCR_Lines.Id).Where(z =>
+                z.FailedFields.Any() || (z.OCR_Lines.Fields.Any(f => f.IsRequired) && !z.Values.Any())).ToList();
+
+            var allRequried = tmp.Lines.DistinctBy(x => x.OCR_Lines.Id).Where(z =>
+                z.OCR_Lines.Fields.Any(f => f.IsRequired && (f.Field != "SupplierCode" && f.Field != "Name"))).ToList();
+
+
+            
+            if (!tmp.Parts.Any(x => x.AllLines.Any(z =>
+                    z.Values.Values.Any(v =>
+                        v.Keys.Any(k => k.fields.Field == "Name") &&
+                        v.Values.Any(kv => kv == tmp.OcrInvoices.Name)))) || failedlines.Count == allRequried.Count) return false;
+            if (failedlines.Any() && failedlines.Count < tmp.Lines.Count &&
+                (tmp.Parts.First().WasStarted || !tmp.Parts.First().OCR_Part.Start.Any()) &&
+                tmp.Lines.SelectMany(x => x.Values.Values).Any())
+            {
+                ReportUnImportedFile(docSet, file, emailId, fileTypeId, client, pdftxt.ToString(),
+                    "Following fields failed to import",
+                    failedlines);
+                {
+                    return true;
+                }
+            }
+
+
+            return false;
         }
 
         public static bool IsInvoiceDocument(Invoices invoice, string fileText)
@@ -310,39 +337,13 @@ namespace WaterNut.DataSpace
         private static void SaveImportError(List<AsycudaDocumentSet> asycudaDocumentSets, string file, string emailId, int fileTypeId, string pdftxt,
             string error, List<Line> failedlst, FileInfo fileInfo)
         {
-            List<AsycudaDocumentSet_Attachments> existingAttachment = new List<AsycudaDocumentSet_Attachments>();
-            using (var ctx = new CoreEntitiesContext())
-            {
-                foreach (var docSet in asycudaDocumentSets)
-                {
-                    existingAttachment.AddRange(ctx.AsycudaDocumentSet_Attachments
-                        .Include(x => x.Attachments)
-                        .Where(x =>
-                            x.AsycudaDocumentSetId == docSet.AsycudaDocumentSetId && x.Attachments.FilePath == file)
-                        .ToList());
-                    if (!existingAttachment.Any())
-                    {
-                        var newAttachment = new CoreEntities.Business.Entities.AsycudaDocumentSet_Attachments(true)
-                        {
-                            TrackingState = TrackingState.Added,
-                            AsycudaDocumentSetId = docSet.AsycudaDocumentSetId,
-                            Attachments = new Attachments(true)
-                            {
-                                TrackingState = TrackingState.Added,
-                                EmailId = emailId.ToString(),
-                                FilePath = file
-                            },
-                            DocumentSpecific = true,
-                            FileDate = fileInfo.CreationTime,
-                            FileTypeId = fileTypeId,
-                        };
-                        ctx.AsycudaDocumentSet_Attachments.Add(newAttachment);
-                        ctx.SaveChanges();
-                        existingAttachment.Add(newAttachment);
-                    }
-                }
-            }
+            var existingAttachment = GetOrSaveDocSetAttachmentsList(asycudaDocumentSets, file, emailId, fileTypeId, fileInfo);
 
+            SaveErrorDetails(pdftxt, error, failedlst, existingAttachment);
+        }
+
+        private static void SaveErrorDetails(string pdftxt, string error, List<Line> failedlst, List<AsycudaDocumentSet_Attachments> existingAttachment)
+        {
             using (var ctx = new OCRContext())
             {
                 foreach (var att in existingAttachment)
@@ -350,56 +351,108 @@ namespace WaterNut.DataSpace
                     var importErr = ctx.ImportErrors.FirstOrDefault(x => x.Id == att.Id);
                     if (importErr == null)
                     {
-                        importErr = new ImportErrors(true)
-                        {
-                            Id = att.Id,
-                            PdfText = pdftxt,
-                            Error = error,
-                            EntryDateTime = DateTime.Now,
-                            OCR_FailedLines = failedlst.Select(x => new OCR_FailedLines(true)
-                            {
-                                TrackingState = TrackingState.Added,
-                                DocSetAttachmentId = att.Id,
-                                LineId = x.OCR_Lines.Id,
-                                Resolved = false,
-                                OCR_FailedFields = x.FailedFields.SelectMany(z =>
-                                        z.SelectMany(q => q.Value.Select(w => w.Key)))
-                                    .DistinctBy(z => z.fields.Id)
-                                    .Select(z => new OCR_FailedFields(true)
-                                    {
-                                        TrackingState = TrackingState.Added,
-                                        FieldId = z.fields.Id,
-                                    })
-                                    .ToList()
-                            }).ToList()
-                        };
+                        importErr = CreateNewImportErrors(pdftxt, error, failedlst, att);
                         ctx.ImportErrors.Add(importErr);
                     }
                     else
                     {
-                        importErr.PdfText = pdftxt;
-                        importErr.Error = error;
-                        importErr.EntryDateTime = DateTime.Now;
-                        importErr.OCR_FailedLines = failedlst.Select(x => new OCR_FailedLines(true)
-                        {
-                            TrackingState = TrackingState.Added,
-                            DocSetAttachmentId = att.Id,
-                            LineId = x.OCR_Lines.Id,
-                            Resolved = false,
-                            OCR_FailedFields = x.FailedFields.SelectMany(z =>
-                                    z.SelectMany(q => q.Value.Select(w => w.Key)))
-                                .DistinctBy(z => z.fields.Id)
-                                .Select(z => new OCR_FailedFields(true)
-                                {
-                                    TrackingState = TrackingState.Added,
-                                    FieldId = z.fields.Id,
-                                })
-                                .ToList()
-                        }).ToList();
+                        UpdateImportError(pdftxt, error, failedlst, importErr, att);
                     }
 
                     ctx.SaveChanges();
                 }
+            }
+        }
+
+        private static void UpdateImportError(string pdftxt, string error, List<Line> failedlst, ImportErrors importErr,
+            AsycudaDocumentSet_Attachments att)
+        {
+            importErr.PdfText = pdftxt;
+            importErr.Error = error;
+            importErr.EntryDateTime = DateTime.Now;
+            importErr.OCR_FailedLines = failedlst.Select(x => CreateFailedLines(att, x)).ToList();
+        }
+
+        private static OCR_FailedLines CreateFailedLines(AsycudaDocumentSet_Attachments att, Line x)
+        {
+            return new OCR_FailedLines(true)
+            {
+                TrackingState = TrackingState.Added,
+                DocSetAttachmentId = att.Id,
+                LineId = x.OCR_Lines.Id,
+                Resolved = false,
+                OCR_FailedFields = x.FailedFields.SelectMany(z =>
+                        z.SelectMany(q => q.Value.Select(w => w.Key)))
+                    .DistinctBy(z => z.fields.Id)
+                    .Select(z => new OCR_FailedFields(true)
+                    {
+                        TrackingState = TrackingState.Added,
+                        FieldId = z.fields.Id,
+                    })
+                    .ToList()
+            };
+        }
+
+        private static ImportErrors CreateNewImportErrors(string pdftxt, string error, List<Line> failedlst,
+            AsycudaDocumentSet_Attachments att)
+        {
+            ImportErrors importErr;
+            importErr = new ImportErrors(true) { Id = att.Id };
+            UpdateImportError(pdftxt,error,failedlst,importErr, att);
+            return importErr;
+        }
+
+        private static List<AsycudaDocumentSet_Attachments> GetOrSaveDocSetAttachmentsList(List<AsycudaDocumentSet> asycudaDocumentSets, string file, string emailId,
+            int fileTypeId, FileInfo fileInfo) =>
+            asycudaDocumentSets.SelectMany(docSet => GetDocSetAttachements(file, emailId, fileTypeId, fileInfo, docSet)).ToList();
+
+        private static List<AsycudaDocumentSet_Attachments> GetDocSetAttachements(string file, string emailId, int fileTypeId, FileInfo fileInfo,
+            AsycudaDocumentSet docSet)
+        {
+            var existingAttachment = GetDocSetAttachments(file, docSet);
+           
+            if (existingAttachment.Any()) return existingAttachment;
+
+            existingAttachment.Add(CreateDocSetAttachment(file, emailId, fileTypeId, fileInfo, docSet));
+
+            return existingAttachment;
+        }
+
+        private static AsycudaDocumentSet_Attachments CreateDocSetAttachment(string file, string emailId, int fileTypeId,
+            FileInfo fileInfo, AsycudaDocumentSet docSet)
+        {
+            using (var ctx = new CoreEntitiesContext())
+            {
+                var newAttachment = new CoreEntities.Business.Entities.AsycudaDocumentSet_Attachments(true)
+                {
+                    TrackingState = TrackingState.Added,
+                    AsycudaDocumentSetId = docSet.AsycudaDocumentSetId,
+                    Attachments = new Attachments(true)
+                    {
+                        TrackingState = TrackingState.Added,
+                        EmailId = emailId.ToString(),
+                        FilePath = file
+                    },
+                    DocumentSpecific = true,
+                    FileDate = fileInfo.CreationTime,
+                    FileTypeId = fileTypeId,
+                };
+                ctx.AsycudaDocumentSet_Attachments.Add(newAttachment);
+                ctx.SaveChanges();
+                return newAttachment;
+            }
+        }
+
+        private static List<AsycudaDocumentSet_Attachments> GetDocSetAttachments(string file, AsycudaDocumentSet docSet)
+        {
+            using (var ctx = new CoreEntitiesContext())
+            {
+                var docSetAttachments = ctx.AsycudaDocumentSet_Attachments
+                    .Include(x => x.Attachments)
+                    .Where(x =>
+                        x.AsycudaDocumentSetId == docSet.AsycudaDocumentSetId && x.Attachments.FilePath == file)
+                    .ToList();
+                return docSetAttachments;
             }
         }
 
@@ -508,6 +561,11 @@ namespace WaterNut.DataSpace
                             (!x.ParentParts.Any() && !x.ChildParts.Any()))
                 //.Where(x => x.Id == 7)
                 .Select(z => new Part(z)).ToList();
+        }
+
+        public List<dynamic> Read(string text)
+        {
+            return Read(text.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None).ToList());
         }
 
         public List<dynamic> Read(List<string> text)

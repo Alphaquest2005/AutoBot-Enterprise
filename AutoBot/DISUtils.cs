@@ -755,7 +755,7 @@ namespace AutoBot
             var errorBody = errors.Any()
                 ? "Discrepancies Found: \r\n" +
                   "System could not Generate Entries the following items on the CNumbers Stated: \r\n" +
-                  $"\t{"Item Number".FormatedSpace(_databaseCommandTimeout)}{"InvoiceQty".FormatedSpace(15)}{"Recieved Qty".FormatedSpace(15)}{"pCNumber".FormatedSpace(15)}{"Reason".FormatedSpace(30)}\r\n" +
+                  $"\t{"Data Number".FormatedSpace(_databaseCommandTimeout)}{"InvoiceQty".FormatedSpace(15)}{"Recieved Qty".FormatedSpace(15)}{"pCNumber".FormatedSpace(15)}{"Reason".FormatedSpace(30)}\r\n" +
                   $"{errors.Select(current => $"\t{current.ItemNumber.FormatedSpace(_databaseCommandTimeout)}{current.InvoiceQty.ToString().FormatedSpace(15)}{current.ReceivedQty.ToString().FormatedSpace(15)}{current.PreviousCNumber.FormatedSpace(15)}{(current.Status + " | " + current.comment).FormatedSpace(30)}\r\n").Aggregate((old, current) => old + current)}" +
                   "\r\n" +
                   "\r\n" +
@@ -952,7 +952,7 @@ namespace AutoBot
                     {
                         var body = "Discrepancy Already Executed: \r\n" +
                                    "The following were already executed: \r\n" +
-                                   $"\t{"Item Number".FormatedSpace(_databaseCommandTimeout)}{"InvoiceQty".FormatedSpace(15)}{"Recieved Qty".FormatedSpace(15)}{"pCNumber".FormatedSpace(15)}{"Reason".FormatedSpace(30)}\r\n" +
+                                   $"\t{"Data Number".FormatedSpace(_databaseCommandTimeout)}{"InvoiceQty".FormatedSpace(15)}{"Recieved Qty".FormatedSpace(15)}{"pCNumber".FormatedSpace(15)}{"Reason".FormatedSpace(30)}\r\n" +
                                    $"{g.Select(current => $"\t{current.ItemNumber.FormatedSpace(_databaseCommandTimeout)}{current.InvoiceQty.ToString().FormatedSpace(15)}{current.ReceivedQty.ToString().FormatedSpace(15)}{current.pCNumber.FormatedSpace(15)}{current.Comment.FormatedSpace(30)}\r\n").Aggregate((old, current) => old + current)}" +
                                    $"Please Check the spreadsheet or inform Joseph Bartholomew if this is an Error.\r\n" +
                                    $"Regards,\r\n" +

@@ -423,6 +423,37 @@ namespace WaterNut
             
         }
 
+
+        private void ImportXSalesFiles(object sender, MouseButtonEventArgs e)
+        {
+            var od = new OpenFileDialog
+            {
+                DefaultExt = ".csv",
+                Filter = "CSV Documents (.csv)|*.csv"
+            };
+
+            var result = od.ShowDialog();
+            if (result == true)
+            {
+                StatusModel.StartStatusUpdate("Importing Expired Files files", od.FileNames.Count());
+                foreach (var f in od.FileNames)
+                {
+                    StatusModel.StatusUpdate();
+                    try
+                    {
+                        EX9Utils.ImportXSalesFiles(f);
+                    }
+                    catch (Exception Ex)
+                    {
+                        MessageBox.Show($"Could not Import file - '{f}. Error:{Ex.Message} Stacktrace:{Ex.StackTrace}");
+                    }
+
+                }
+                MessageBox.Show("Complete", "Asycuda Toolkit", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+            }
+
+        }
+
         private async void EX9AllAllocations(object sender, MouseButtonEventArgs e)
         {
             await AllocationsModel.Instance.EX9AllAllocations(true).ConfigureAwait(false);

@@ -148,6 +148,7 @@
     <Compile Include="CoreEntities\EntryPreviousItemsClient.cs" />
     <Compile Include="CoreEntities\ExpiredEntriesLstClient.cs" />
     <Compile Include="CoreEntities\FileGroupsClient.cs" />
+    <Compile Include="CoreEntities\FileImporterInfoClient.cs" />
     <Compile Include="CoreEntities\FileTypeActionsClient.cs" />
     <Compile Include="CoreEntities\FileTypeContactsClient.cs" />
     <Compile Include="CoreEntities\FileTypeMappingRegExsClient.cs" />

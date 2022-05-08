@@ -268,6 +268,19 @@ namespace CoreEntities.Client.DTO
 		}
         private Nullable<int> _MaxFileSizeInMB;
 
+        [DataMember]
+        public Nullable<int> FileInfoId
+		{ 
+		    get { return _FileInfoId; }
+			set
+			{
+			    if (value == _FileInfoId) return;
+				_FileInfoId = value;
+				NotifyPropertyChanged();//m => this.FileInfoId
+			}
+		}
+        private Nullable<int> _FileInfoId;
+
        
         [DataMember]
         public ApplicationSettings ApplicationSettings
@@ -436,6 +449,22 @@ namespace CoreEntities.Client.DTO
 			}
 		}
         private ChangeTrackingCollection<FileTypeReplaceRegex> _FileTypeReplaceRegex = new ChangeTrackingCollection<FileTypeReplaceRegex>();
+
+        [DataMember]
+        public FileImporterInfo FileImporterInfos
+		{
+		    get { return _FileImporterInfos; }
+			set
+			{
+			    if (value == _FileImporterInfos) return;
+				_FileImporterInfos = value;
+                FileImporterInfosChangeTracker = _FileImporterInfos == null ? null
+                    : new ChangeTrackingCollection<FileImporterInfo> { _FileImporterInfos };
+				NotifyPropertyChanged();//m => this.FileImporterInfos
+			}
+		}
+        private FileImporterInfo _FileImporterInfos;
+        private ChangeTrackingCollection<FileImporterInfo> FileImporterInfosChangeTracker { get; set; }
 
    //     [DataMember]
    //     public TrackingState TrackingState { get; set; }

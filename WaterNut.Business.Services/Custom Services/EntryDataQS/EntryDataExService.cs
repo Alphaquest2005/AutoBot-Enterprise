@@ -5,7 +5,9 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using CoreEntities.Business.Entities;
 using DocumentDS.Business.Entities;
+using EmailDownloader;
 using TrackableEntities.Client;
+using WaterNut.Business.Services.Utils;
 using WaterNut.DataSpace;
 
 namespace EntryDataQS.Business.Services
@@ -25,11 +27,11 @@ namespace EntryDataQS.Business.Services
         {
             var docSet = new List<AsycudaDocumentSet>() {await WaterNut.DataSpace.BaseDataModel.Instance.GetAsycudaDocumentSet(docSetId).ConfigureAwait(false)};
             
-                var dfileType = BaseDataModel.FileTypes().FirstOrDefault(x =>
+                var dfileType = FileTypeManager.FileTypes().FirstOrDefault(x =>
                     Regex.IsMatch(droppedFilePath, x.FilePattern, RegexOptions.IgnoreCase) && x.Type == fileType && x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId);
                 if (dfileType == null) // for filenames not in database
                 {
-                    dfileType = BaseDataModel.FileTypes().First(x => x.Type == fileType);
+                    dfileType = FileTypeManager.FileTypes().First(x => x.Type == fileType);
                 }
                 if(dfileType.CopyEntryData)docSet.Add(await WaterNut.DataSpace.BaseDataModel.Instance.GetAsycudaDocumentSet(dfileType.AsycudaDocumentSetId).ConfigureAwait(false));
                 await WaterNut.DataSpace.SaveCSVModel.Instance.ProcessDroppedFile(droppedFilePath, dfileType, docSet,
@@ -56,20 +58,11 @@ namespace EntryDataQS.Business.Services
                 }
 
                 dfileType.AsycudaDocumentSetId = docSetId;
-                var client = new EmailDownloader.Client
-                {
-                    CompanyName = BaseDataModel.Instance.CurrentApplicationSettings.CompanyName,
-                    DataFolder = BaseDataModel.Instance.CurrentApplicationSettings.DataFolder,
-                    Password = BaseDataModel.Instance.CurrentApplicationSettings.EmailPassword,
-                    Email = BaseDataModel.Instance.CurrentApplicationSettings.Email,
-                    EmailMappings = BaseDataModel.Instance.CurrentApplicationSettings.EmailMapping.ToList()
-                };
-                InvoiceReader.Import(droppedFilePath, fileTypeId.GetValueOrDefault(), emailId, overwrite, SaveCSVModel.Instance.GetDocSets(dfileType), dfileType, client);
+                var client = Utils.GetClient();
+                InvoiceReader.Import(droppedFilePath, fileTypeId.GetValueOrDefault(), emailId, overwrite, Utils.GetDocSets(dfileType), dfileType, client);
             }
             
         }
-
-
     }
 }
 

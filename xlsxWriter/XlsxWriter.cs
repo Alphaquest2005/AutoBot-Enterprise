@@ -553,7 +553,12 @@ namespace xlsxWriter
             WriteTable(summaryPkg.UnMatchedBLDetails.Select(x => (dynamic)x).ToList(), workbook, currentline,
                 "Marks, PackageType, Quantity", "Unmatched BL Details");
 
-            currentline += 2 + summaryPkg.UnMatchedBLDetails.Count; 
+            currentline += 3;
+            WriteTable(summaryPkg.UnMatchedRiderDetails.Select(x => (dynamic)x).ToList(), workbook, currentline,
+                "WarehouseCode, InvoiceNumber, Pieces", "Unmatched Rider Details");
+
+            currentline += 2 + summaryPkg.UnMatchedRiderDetails.Count;
+            
             WriteTable(summaryPkg.RiderManualMatches.Select(x => (dynamic) x).ToList(), workbook, currentline,
                 RideManualMatchesHeader, "Manual Matches");
 
@@ -699,14 +704,14 @@ namespace xlsxWriter
                 currentline++;
                
                 Style duplicateStyle = new Style();                                                                           // Create new style
-                duplicateStyle.CurrentFill.SetColor("FFFF00", Style.Fill.FillType.fillColor);
+                duplicateStyle.CurrentFill.SetColor("FFFFFF00", Style.Fill.FillType.fillColor);
 
                 Style errStyle = new Style();                                                                           // Create new style
-                errStyle.CurrentFill.SetColor("FFC0CB", Style.Fill.FillType.fillColor);
+                errStyle.CurrentFill.SetColor("FFFFC0CB", Style.Fill.FillType.fillColor);
 
 
                 Style repeatStyle = new Style();                                                                           // Create new style
-                errStyle.CurrentFill.SetColor("ff0000", Style.Fill.FillType.fillColor);
+                errStyle.CurrentFill.SetColor("FFff0000", Style.Fill.FillType.fillColor);
 
                 var i = 0;
                 while (true)
@@ -747,7 +752,7 @@ namespace xlsxWriter
                         SetValue(workbook, currentline, invHeader.IndexOf("PONumber"),
                             po.PurchaseOrders?.PONumber ?? "");
                         SetValue(workbook, currentline, invHeader.IndexOf(nameof(ShipmentInvoice.InvoiceDate)),
-                            summaryPkg.Invoices[i].InvoiceDate);
+                            summaryPkg.Invoices[i].InvoiceDate.GetValueOrDefault().ToString("yyyy-MM-dd"));
                         SetValue(workbook, currentline, invHeader.IndexOf(nameof(ShipmentInvoice.ImportedLines)),
                             summaryPkg.Invoices[i].ImportedLines);
                         SetValue(workbook, currentline, invHeader.IndexOf(nameof(ShipmentInvoice.SubTotal)),
@@ -812,7 +817,7 @@ namespace xlsxWriter
                             summaryPkg.Invoices[i].InvoiceNo);
                         
                         SetValue(workbook, currentline, invHeader.IndexOf(nameof(ShipmentInvoice.InvoiceDate)),
-                            summaryPkg.Invoices[i].InvoiceDate);
+                            summaryPkg.Invoices[i].InvoiceDate.GetValueOrDefault().ToString("yyyy-MM-dd"));
                         SetValue(workbook, currentline, invHeader.IndexOf(nameof(ShipmentInvoice.ImportedLines)),
                             summaryPkg.Invoices[i].ImportedLines);
                         SetValue(workbook, currentline, invHeader.IndexOf(nameof(ShipmentInvoice.SubTotal)),
@@ -884,7 +889,7 @@ namespace xlsxWriter
                         SetValue(workbook, i + 2, invHeader.IndexOf(nameof(ShipmentMIS_Invoices.InvoiceNo)),
                             unMatchedInvoices[i].InvoiceNo);
                         SetValue(workbook, i + 2, invHeader.IndexOf(nameof(ShipmentMIS_Invoices.InvoiceDate)),
-                            unMatchedInvoices[i].InvoiceDate);
+                            unMatchedInvoices[i].InvoiceDate.GetValueOrDefault().ToString("yyyy-MM-dd"));
                         SetValue(workbook, i + 2, invHeader.IndexOf(nameof(ShipmentMIS_Invoices.ImportedLines)),
                             unMatchedInvoices[i].ImportedLines);
                         SetValue(workbook, i + 2, invHeader.IndexOf(nameof(ShipmentMIS_Invoices.SubTotal)),
@@ -902,7 +907,7 @@ namespace xlsxWriter
                         SetValue(workbook, i + 2, poheader.IndexOf(nameof(ShipmentMIS_POs.InvoiceNo)),
                             unMatchedPOs[i].InvoiceNo);
                         SetValue(workbook, i + 2, poheader.IndexOf(nameof(ShipmentMIS_POs.InvoiceDate)),
-                            unMatchedPOs[i].InvoiceDate);
+                            unMatchedPOs[i].InvoiceDate.ToString("yyyy-MM-dd"));
                         SetValue(workbook, i + 2, poheader.IndexOf(nameof(ShipmentMIS_POs.ImportedLines)),
                             unMatchedPOs[i].ImportedLines);
                         SetValue(workbook, i + 2, poheader.IndexOf(nameof(ShipmentMIS_POs.SubTotal)),
@@ -984,7 +989,7 @@ namespace xlsxWriter
 
             SetValue(workbook, invoiceRow,
                 header.First(x => x.Key.Column == nameof(shipmentInvoice.InvoiceDate)).Key.Index,
-                shipmentInvoice.InvoiceDate.GetValueOrDefault());
+                shipmentInvoice.InvoiceDate.GetValueOrDefault().ToString("yyyy-MM-dd"));
 
             SetValue(workbook, invoiceRow,
                 header.First(x => x.Key.Column == nameof(shipmentInvoice.SupplierCode)).Key.Index,
@@ -1113,6 +1118,7 @@ namespace xlsxWriter
         public PackagesSummary PackagesSummary { get; set; }
         public List<ShipmentErrors_RepeatMarks> RepeatMarks { get; set; }
         public List<ShipmentErrors_RepeatInvoices> RepeatInvoices { get; set; }
+        public List<ShipmentRiderDetails> UnMatchedRiderDetails { get; set; }
     }
 
     public class PackagesSummary

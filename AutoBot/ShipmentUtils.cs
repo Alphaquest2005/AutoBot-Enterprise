@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.Entity;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -229,131 +230,11 @@ namespace AutoBot
                         row[poHeaderRow.IndexOf("Quantity")] = misMatch[misHeaderRow.IndexOf("POQuantity")];
                         row[poHeaderRow.IndexOf("Total Cost")] = misMatch[misHeaderRow.IndexOf("INVTotalCost")];
                         if (addrow) poTemplate.Rows.Add(row);
+
+                        ImportInventoryMapping(invItemCode, misMatch, misHeaderRow, poItemCode);
+
                     }
-
-                    //using (var ctx = new EntryDataDSContext())
-                    //{
-                    //    InvoiceDetails invRow;
-                    //    EntryDataDetails poRow;
-
-                    //    var invItm = ctx.InventoryItems.Include(x => x.AliasItems).FirstOrDefault(x =>
-                    //        x.ItemNumber == invItemCode
-                    //        && x.ApplicationSettingsId ==
-                    //        BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId);
-                    //    if (invItm == null)
-                    //    {
-                    //        invItm = new InventoryItems()
-                    //        {
-                    //            ApplicationSettingsId =
-                    //                BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId,
-                    //            Description = misMatch[misHeaderRow.IndexOf("INVDescription")].ToString(),
-                    //            ItemNumber = invItemCode,
-                    //            TrackingState = TrackingState.Added
-                    //        };
-                    //        ctx.InventoryItems.Add(invItm);
-                    //    }
-
-                    //    var poItm = ctx.InventoryItems.Include(x => x.AliasItems).FirstOrDefault(x =>
-                    //        x.ItemNumber == poItemCode && x.ApplicationSettingsId ==
-                    //        BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId);
-                    //    if (poItm == null)
-                    //    {
-                    //        poItm = new InventoryItems()
-                    //        {
-                    //            ApplicationSettingsId =
-                    //                BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId,
-                    //            Description = misMatch[misHeaderRow.IndexOf("PODescription")].ToString(),
-                    //            ItemNumber = poItemCode,
-                    //            TrackingState = TrackingState.Added
-                    //        };
-                    //        ctx.InventoryItems.Add(poItm);
-                    //    }
-
-                    //    if (!poItm.AliasItems.Any(x => x.AliasItemId == invItm.Id) &&
-                    //        !invItm.AliasItems.Any(x => x.InventoryItemId == poItm.Id))
-                    //    {
-                    //        ctx.InventoryItemAlias.Add(new InventoryItemAlias(true)
-                    //        {
-                    //            InventoryItems = poItm,
-                    //            AliasItem = invItm,
-                    //            AliasName = invItm.ItemNumber,
-                    //            TrackingState = TrackingState.Added
-                    //        });
-                    //    }
-
-                    //    //var itmAlias = ctx.InventoryItemAlias
-                    //    ctx.SaveChanges();
-
-
-                    //    var INVDetailsId = misMatch[misHeaderRow.IndexOf("INVDetailsId")].ToString();
-                    //    if (string.IsNullOrEmpty(INVDetailsId))
-                    //    {
-
-                    //        invRow = new InvoiceDetails() {TrackingState = TrackingState.Added};
-                    //        var inv = ctx.ShipmentInvoice.FirstOrDefault(x => x.InvoiceNo == InvoiceNo);
-                    //        if (inv == null) continue;
-                    //        invRow.ShipmentInvoiceId = inv.Id;
-                    //        ctx.ShipmentInvoiceDetails.Add(invRow);
-
-                    //    }
-                    //    else
-                    //    {
-
-                    //        invRow = ctx.ShipmentInvoiceDetails.FirstOrDefault(x =>
-                    //            x.Id.ToString() == INVDetailsId);
-                    //        if (invRow == null) continue;
-
-                    //    }
-
-                    //    invRow.ItemDescription = misMatch[misHeaderRow.IndexOf("INVDescription")].ToString();
-                    //    invRow.ItemNumber = misMatch[misHeaderRow.IndexOf("INVItemCode")].ToString();
-                    //    invRow.Cost = (double) misMatch[misHeaderRow.IndexOf("INVCost")];
-                    //    invRow.TotalCost = (double) misMatch[misHeaderRow.IndexOf("INVTotalCost")];
-                    //    if (misHeaderRow.IndexOf("INVSalesFactor") > -1 &&
-                    //        !string.IsNullOrEmpty(misMatch[misHeaderRow.IndexOf("INVSalesFactor")].ToString()))
-                    //        invRow.SalesFactor = Convert.ToDouble(misMatch[misHeaderRow.IndexOf("INVSalesFactor")].ToString());
-                    //    else
-                    //    {
-                    //        invRow.SalesFactor = 1;
-                    //    }
-
-                    //    invRow.Quantity = (double) misMatch[misHeaderRow.IndexOf("INVQuantity")];
-                    //    invRow.InventoryItemId = invItm.Id;
-                    //    ctx.SaveChanges();
-
-                    //    var PODetailsId = misMatch[misHeaderRow.IndexOf("PODetailsId")].ToString();
-                    //    if (string.IsNullOrEmpty(PODetailsId))
-                    //    {
-
-                    //        poRow = new EntryDataDetails() {TrackingState = TrackingState.Added};
-                    //        var pO = ctx.EntryData.FirstOrDefault(x =>
-                    //            x.EntryDataId == poNumber);
-                    //        if (pO == null) continue;
-                    //        poRow.EntryData_Id = pO.EntryData_Id;
-                    //        ctx.EntryDataDetails.Add(poRow);
-
-                    //    }
-                    //    else
-                    //    {
-
-                    //        poRow = ctx.EntryDataDetails.FirstOrDefault(x =>
-                    //            x.EntryDataDetailsId.ToString() == PODetailsId);
-                    //        if (poRow == null) continue;
-
-                    //    }
-
-                    //    poRow.ItemDescription = misMatch[misHeaderRow.IndexOf("PODescription")].ToString();
-                    //    poRow.ItemNumber = misMatch[misHeaderRow.IndexOf("POItemCode")].ToString();
-                    //    poRow.Cost = (double) misMatch[misHeaderRow.IndexOf("POCost")];
-                    //    poRow.TotalCost = (double) misMatch[misHeaderRow.IndexOf("POTotalCost")];
-                    //    //poRow.SalesFactor = (int)misMatch["INVSalesFactor"];
-                    //    poRow.Quantity = (double) misMatch[misHeaderRow.IndexOf("POQuantity")];
-                    //    poRow.InventoryItemId = poItm.Id;
-                    //    ctx.SaveChanges();
-                    //}
-
                 }
-
             }
             catch (Exception e)
             {
@@ -361,6 +242,63 @@ namespace AutoBot
                 throw;
             }
 
+        }
+
+        private static void ImportInventoryMapping(string invItemCode, DataRow misMatch, List<object> misHeaderRow, string poItemCode)
+        {
+            using (var ctx = new EntryDataDSContext())
+            {
+                InvoiceDetails invRow;
+                EntryDataDetails poRow;
+
+                var invItm = ctx.InventoryItems.Include(x => x.AliasItems).FirstOrDefault(x =>
+                    x.ItemNumber == invItemCode
+                    && x.ApplicationSettingsId ==
+                    BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId);
+                if (invItm == null)
+                {
+                    invItm = new InventoryItems()
+                    {
+                        ApplicationSettingsId =
+                            BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId,
+                        Description = misMatch[misHeaderRow.IndexOf("INVDescription")].ToString(),
+                        ItemNumber = invItemCode,
+                        TrackingState = TrackingState.Added
+                    };
+                    ctx.InventoryItems.Add(invItm);
+                }
+
+                var poItm = ctx.InventoryItems.Include(x => x.AliasItems).FirstOrDefault(x =>
+                    x.ItemNumber == poItemCode && x.ApplicationSettingsId ==
+                    BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId);
+                if (poItm == null)
+                {
+                    poItm = new InventoryItems()
+                    {
+                        ApplicationSettingsId =
+                            BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId,
+                        Description = misMatch[misHeaderRow.IndexOf("PODescription")].ToString(),
+                        ItemNumber = poItemCode,
+                        TrackingState = TrackingState.Added
+                    };
+                    ctx.InventoryItems.Add(poItm);
+                }
+
+                if (!poItm.AliasItems.Any(x => x.AliasItemId == invItm.Id) &&
+                    !invItm.AliasItems.Any(x => x.InventoryItemId == poItm.Id))
+                {
+                    ctx.InventoryItemAlias.Add(new InventoryItemAlias(true)
+                    {
+                        InventoryItems = poItm,
+                        AliasItem = invItm,
+                        AliasName = invItm.ItemNumber,
+                        TrackingState = TrackingState.Added
+                    });
+                }
+
+                //var itmAlias = ctx.InventoryItemAlias
+                ctx.SaveChanges();
+            }
         }
 
         public static void SubmitUnclassifiedItems(FileTypes ft)

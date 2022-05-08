@@ -84,7 +84,7 @@ namespace AutoBot
                     emailId = res?.EmailId;
                     fileTypeId = res?.FileTypeId;
                 }
-                var success = InvoiceReader.Import(file.FullName, fileTypeId.GetValueOrDefault(), emailId, true, SaveCSVModel.Instance.GetDocSets(fileType), fileType, Utils.Client);
+                var success = InvoiceReader.Import(file.FullName, fileTypeId.GetValueOrDefault(), emailId, true, WaterNut.DataSpace.Utils.GetDocSets(fileType), fileType, Utils.Client);
                
             }
         }

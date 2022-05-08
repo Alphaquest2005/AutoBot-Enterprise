@@ -532,6 +532,17 @@ namespace AutoBot
                 throw;
             }
         }
+
+        public static void ImportXSalesFiles(string testFile)
+        {
+            var fileType = GetxSalesFileType();
+            CSVUtils.SaveCsv(new FileInfo[] { new FileInfo(testFile) }, fileType);
+        }
+
+        public static FileTypes GetxSalesFileType()
+        {
+            return Utils.GetFileType("xSales");
+        }
     }
 
 }

@@ -113,8 +113,8 @@
     <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="BouncyCastle.Crypto, Version=1.8.10.0, Culture=neutral, PublicKeyToken=0e99375e54769942, processorArchitecture=MSIL">
-      <HintPath>..\packages\Portable.BouncyCastle.1.8.10\lib\net40\BouncyCastle.Crypto.dll</HintPath>
+    <Reference Include="BouncyCastle.Crypto, Version=1.9.0.0, Culture=neutral, PublicKeyToken=0e99375e54769942, processorArchitecture=MSIL">
+      <HintPath>..\packages\Portable.BouncyCastle.1.9.0\lib\net40\BouncyCastle.Crypto.dll</HintPath>
     </Reference>
     <Reference Include="commons-logging, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -147,8 +147,8 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\WaterNut.Business.Services\Custom Services\DataModels\Custom DataModels\PDF2TXT\IKVM.Runtime.dll</HintPath>
     </Reference>
-    <Reference Include="itextsharp, Version=5.5.13.2, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
-      <HintPath>..\packages\iTextSharp.5.5.13.2\lib\itextsharp.dll</HintPath>
+    <Reference Include="itextsharp, Version=5.5.13.3, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
+      <HintPath>..\packages\iTextSharp.5.5.13.3\lib\itextsharp.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Expression.Interactions">
       <HintPath>..\packages\SimpleMvvmToolkit.5.5.1.0\lib\net45\Microsoft.Expression.Interactions.dll</HintPath>
@@ -208,8 +208,8 @@
     <Reference Include="System.Data">
       <Private>True</Private>
     </Reference>
-    <Reference Include="System.Diagnostics.DiagnosticSource, Version=5.0.0.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Diagnostics.DiagnosticSource.5.0.1\lib\net46\System.Diagnostics.DiagnosticSource.dll</HintPath>
+    <Reference Include="System.Diagnostics.DiagnosticSource, Version=6.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Diagnostics.DiagnosticSource.6.0.0\lib\net461\System.Diagnostics.DiagnosticSource.dll</HintPath>
     </Reference>
     <Reference Include="System.Diagnostics.Tracing, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Diagnostics.Tracing.4.3.0\lib\net462\System.Diagnostics.Tracing.dll</HintPath>
@@ -217,8 +217,8 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="System.Drawing" />
-    <Reference Include="System.Drawing.Common, Version=4.0.0.2, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Drawing.Common.5.0.2\lib\net461\System.Drawing.Common.dll</HintPath>
+    <Reference Include="System.Drawing.Common, Version=6.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Drawing.Common.6.0.0\lib\net461\System.Drawing.Common.dll</HintPath>
     </Reference>
     <Reference Include="System.Globalization.Calendars, Version=4.0.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Globalization.Calendars.4.3.0\lib\net46\System.Globalization.Calendars.dll</HintPath>
@@ -288,8 +288,8 @@
       <Private>True</Private>
       <Private>True</Private>
     </Reference>
-    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.5.0.0\lib\net45\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.6.0.0\lib\net461\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
     </Reference>
     <Reference Include="System.Runtime.Extensions, Version=4.1.1.1, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Runtime.Extensions.4.3.1\lib\net462\System.Runtime.Extensions.dll</HintPath>
@@ -330,8 +330,8 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="System.ServiceModel" />
-    <Reference Include="System.Text.Encoding.CodePages, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Text.Encoding.CodePages.5.0.0\lib\net461\System.Text.Encoding.CodePages.dll</HintPath>
+    <Reference Include="System.Text.Encoding.CodePages, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Text.Encoding.CodePages.6.0.0\lib\net461\System.Text.Encoding.CodePages.dll</HintPath>
     </Reference>
     <Reference Include="System.Text.RegularExpressions, Version=4.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Text.RegularExpressions.4.3.1\lib\net463\System.Text.RegularExpressions.dll</HintPath>
@@ -374,11 +374,11 @@
     <Reference Include="Tesseract.Drawing, Version=4.1.1.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Tesseract.Drawing.4.1.1\lib\netstandard2.0\Tesseract.Drawing.dll</HintPath>
     </Reference>
-    <Reference Include="TesserNet, Version=0.3.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\TesserNet.0.3.0\lib\netstandard2.0\TesserNet.dll</HintPath>
+    <Reference Include="TesserNet, Version=0.7.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\TesserNet.0.7.0\lib\netstandard2.0\TesserNet.dll</HintPath>
     </Reference>
-    <Reference Include="TesserNet.System.Drawing, Version=0.3.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\TesserNet.System.Drawing.0.3.0\lib\netstandard2.0\TesserNet.System.Drawing.dll</HintPath>
+    <Reference Include="TesserNet.System.Drawing, Version=0.7.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\TesserNet.System.Drawing.0.7.0\lib\netstandard2.0\TesserNet.System.Drawing.dll</HintPath>
     </Reference>
     <Reference Include="TrackableEntities.Client, Version=2.5.0.0, Culture=neutral, PublicKeyToken=b10b51e7b9be6a2e, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -392,26 +392,26 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>Dlls2\TrackableEntities.EF.6.dll</HintPath>
     </Reference>
-    <Reference Include="UglyToad.PdfPig, Version=0.1.4.0, Culture=neutral, PublicKeyToken=605d367334e74123, processorArchitecture=MSIL">
-      <HintPath>..\packages\PdfPig.0.1.4\lib\net47\UglyToad.PdfPig.dll</HintPath>
+    <Reference Include="UglyToad.PdfPig, Version=0.1.6.0, Culture=neutral, PublicKeyToken=605d367334e74123, processorArchitecture=MSIL">
+      <HintPath>..\packages\PdfPig.0.1.6\lib\net47\UglyToad.PdfPig.dll</HintPath>
     </Reference>
-    <Reference Include="UglyToad.PdfPig.Core, Version=0.1.4.0, Culture=neutral, PublicKeyToken=605d367334e74123, processorArchitecture=MSIL">
-      <HintPath>..\packages\PdfPig.0.1.4\lib\net47\UglyToad.PdfPig.Core.dll</HintPath>
+    <Reference Include="UglyToad.PdfPig.Core, Version=0.1.6.0, Culture=neutral, PublicKeyToken=605d367334e74123, processorArchitecture=MSIL">
+      <HintPath>..\packages\PdfPig.0.1.6\lib\net47\UglyToad.PdfPig.Core.dll</HintPath>
     </Reference>
-    <Reference Include="UglyToad.PdfPig.DocumentLayoutAnalysis, Version=0.1.4.0, Culture=neutral, PublicKeyToken=605d367334e74123, processorArchitecture=MSIL">
-      <HintPath>..\packages\PdfPig.0.1.4\lib\net47\UglyToad.PdfPig.DocumentLayoutAnalysis.dll</HintPath>
+    <Reference Include="UglyToad.PdfPig.DocumentLayoutAnalysis, Version=0.1.6.0, Culture=neutral, PublicKeyToken=605d367334e74123, processorArchitecture=MSIL">
+      <HintPath>..\packages\PdfPig.0.1.6\lib\net47\UglyToad.PdfPig.DocumentLayoutAnalysis.dll</HintPath>
     </Reference>
-    <Reference Include="UglyToad.PdfPig.Fonts, Version=0.1.4.0, Culture=neutral, PublicKeyToken=605d367334e74123, processorArchitecture=MSIL">
-      <HintPath>..\packages\PdfPig.0.1.4\lib\net47\UglyToad.PdfPig.Fonts.dll</HintPath>
+    <Reference Include="UglyToad.PdfPig.Fonts, Version=0.1.6.0, Culture=neutral, PublicKeyToken=605d367334e74123, processorArchitecture=MSIL">
+      <HintPath>..\packages\PdfPig.0.1.6\lib\net47\UglyToad.PdfPig.Fonts.dll</HintPath>
     </Reference>
-    <Reference Include="UglyToad.PdfPig.Package, Version=0.1.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\PdfPig.0.1.4\lib\net47\UglyToad.PdfPig.Package.dll</HintPath>
+    <Reference Include="UglyToad.PdfPig.Package, Version=0.1.5.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\PdfPig.0.1.6\lib\net47\UglyToad.PdfPig.Package.dll</HintPath>
     </Reference>
-    <Reference Include="UglyToad.PdfPig.Tokenization, Version=0.1.4.0, Culture=neutral, PublicKeyToken=605d367334e74123, processorArchitecture=MSIL">
-      <HintPath>..\packages\PdfPig.0.1.4\lib\net47\UglyToad.PdfPig.Tokenization.dll</HintPath>
+    <Reference Include="UglyToad.PdfPig.Tokenization, Version=0.1.6.0, Culture=neutral, PublicKeyToken=605d367334e74123, processorArchitecture=MSIL">
+      <HintPath>..\packages\PdfPig.0.1.6\lib\net47\UglyToad.PdfPig.Tokenization.dll</HintPath>
     </Reference>
-    <Reference Include="UglyToad.PdfPig.Tokens, Version=0.1.4.0, Culture=neutral, PublicKeyToken=605d367334e74123, processorArchitecture=MSIL">
-      <HintPath>..\packages\PdfPig.0.1.4\lib\net47\UglyToad.PdfPig.Tokens.dll</HintPath>
+    <Reference Include="UglyToad.PdfPig.Tokens, Version=0.1.6.0, Culture=neutral, PublicKeyToken=605d367334e74123, processorArchitecture=MSIL">
+      <HintPath>..\packages\PdfPig.0.1.6\lib\net47\UglyToad.PdfPig.Tokens.dll</HintPath>
     </Reference>
     <Reference Include="WindowsBase">
       <Private>True</Private>
@@ -490,6 +490,7 @@
     <Compile Include="ViewModels\Generated Models\QuerySpace\CoreEntities\EntryPreviousItemsViewModel.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\CoreEntities\ExpiredEntriesLstViewModel.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\CoreEntities\FileGroupsViewModel.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\CoreEntities\FileImporterInfoViewModel.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\CoreEntities\FileTypeActionsViewModel.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\CoreEntities\FileTypeContactsViewModel.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\CoreEntities\FileTypeMappingRegExsViewModel.cs" />
@@ -671,6 +672,7 @@
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\EntryPreviousItemsTotals.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\ExpiredEntriesLstTotals.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\FileGroupsTotals.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\FileImporterInfoTotals.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\FileTypeActionsTotals.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\FileTypeContactsTotals.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\FileTypeMappingRegExsTotals.cs" />
@@ -839,6 +841,7 @@
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\EntryPreviousItemsVirturalListLoader.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\ExpiredEntriesLstVirturalListLoader.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\FileGroupsVirturalListLoader.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\FileImporterInfoVirturalListLoader.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\FileTypeActionsVirturalListLoader.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\FileTypeContactsVirturalListLoader.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\FileTypeMappingRegExsVirturalListLoader.cs" />

@@ -57,6 +57,8 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 			RegisterToReceiveMessages<AsycudaDocumentSetEx>(MessageToken.CurrentAsycudaDocumentSetExChanged, OnCurrentAsycudaDocumentSetExChanged);
  
 			RegisterToReceiveMessages<FileGroups>(MessageToken.CurrentFileGroupsChanged, OnCurrentFileGroupsChanged);
+ 
+			RegisterToReceiveMessages<FileImporterInfo>(MessageToken.CurrentFileImporterInfoChanged, OnCurrentFileImporterInfosChanged);
 
  			// Recieve messages for Core Current Entities Changed
  
@@ -156,6 +158,10 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                    // {
                    //    if(FileTypes.Contains(CurrentFileTypes.ParentFileTypes) == false) FileTypes.Add(CurrentFileTypes.ParentFileTypes);
                     //}
+                    //if (e.PropertyName == "AddFileImporterInfos")
+                   // {
+                   //    if(FileImporterInfos.Contains(CurrentFileTypes.FileImporterInfos) == false) FileImporterInfos.Add(CurrentFileTypes.FileImporterInfos);
+                    //}
                  } 
         internal virtual void OnFileTypesChanged(object sender, NotificationEventArgs e)
         {
@@ -221,6 +227,25 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                                           
                 BaseViewModel.Instance.CurrentFileTypes = null;
 			}
+	
+		 internal virtual void OnCurrentFileImporterInfosChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<FileImporterInfo> e)
+			{
+			if(ViewCurrentFileImporterInfos == false) return;
+			if (e.Data == null || e.Data.Id == null)
+                {
+                    vloader.FilterExpression = "None";
+                }
+                else
+                {
+				vloader.FilterExpression = string.Format("FileInfoId == {0}", e.Data.Id.ToString());
+                 }
+
+				FileTypes.Refresh();
+				NotifyPropertyChanged(x => this.FileTypes);
+                // SendMessage(MessageToken.FileTypesChanged, new NotificationEventArgs(MessageToken.FileTypesChanged));
+                                          
+                BaseViewModel.Instance.CurrentFileTypes = null;
+			}
 
   			// Core Current Entities Changed
 			// theorticall don't need this cuz i am inheriting from core entities baseview model so changes should flow up to here
@@ -268,6 +293,21 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
              {
                  _viewCurrentFileGroups = value;
                  NotifyPropertyChanged(x => x.ViewCurrentFileGroups);
+                FilterData();
+             }
+         }
+ 	
+		 bool _viewCurrentFileImporterInfos = false;
+         public bool ViewCurrentFileImporterInfos
+         {
+             get
+             {
+                 return _viewCurrentFileImporterInfos;
+             }
+             set
+             {
+                 _viewCurrentFileImporterInfos = value;
+                 NotifyPropertyChanged(x => x.ViewCurrentFileImporterInfos);
                 FilterData();
              }
          }

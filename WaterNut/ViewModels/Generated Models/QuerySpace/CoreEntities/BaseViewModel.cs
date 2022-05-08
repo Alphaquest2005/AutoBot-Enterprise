@@ -83,6 +83,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                         RegisterToReceiveMessages<string>(MessageToken.CurrentEntryPreviousItemsIDChanged, OnCurrentEntryPreviousItemsIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentExpiredEntriesLstIDChanged, OnCurrentExpiredEntriesLstIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentFileGroupsIDChanged, OnCurrentFileGroupsIDChanged);
+                        RegisterToReceiveMessages<string>(MessageToken.CurrentFileImporterInfoIDChanged, OnCurrentFileImporterInfoIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentFileTypeActionsIDChanged, OnCurrentFileTypeActionsIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentFileTypeContactsIDChanged, OnCurrentFileTypeContactsIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentFileTypeMappingRegExsIDChanged, OnCurrentFileTypeMappingRegExsIDChanged);
@@ -182,6 +183,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                         RegisterToReceiveMessages<EntryPreviousItems>(MessageToken.CurrentEntryPreviousItemsChanged, OnCurrentEntryPreviousItemsChanged);
                         RegisterToReceiveMessages<ExpiredEntriesLst>(MessageToken.CurrentExpiredEntriesLstChanged, OnCurrentExpiredEntriesLstChanged);
                         RegisterToReceiveMessages<FileGroups>(MessageToken.CurrentFileGroupsChanged, OnCurrentFileGroupsChanged);
+                        RegisterToReceiveMessages<FileImporterInfo>(MessageToken.CurrentFileImporterInfoChanged, OnCurrentFileImporterInfoChanged);
                         RegisterToReceiveMessages<FileTypeActions>(MessageToken.CurrentFileTypeActionsChanged, OnCurrentFileTypeActionsChanged);
                         RegisterToReceiveMessages<FileTypeContacts>(MessageToken.CurrentFileTypeContactsChanged, OnCurrentFileTypeContactsChanged);
                         RegisterToReceiveMessages<FileTypeMappingRegExs>(MessageToken.CurrentFileTypeMappingRegExsChanged, OnCurrentFileTypeMappingRegExsChanged);
@@ -1074,6 +1076,33 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                                     if (!string.IsNullOrEmpty(_currentFileGroupsID)) BeginSendMessage(MessageToken.CurrentFileGroupsIDChanged,
                                                      new NotificationEventArgs<string>(MessageToken.CurrentFileGroupsIDChanged, _currentFileGroupsID));
                                     NotifyPropertyChanged(x => this.CurrentFileGroupsID);  
+                                }
+                            }
+                        }
+                        internal async void OnCurrentFileImporterInfoIDChanged(object sender, NotificationEventArgs<string> e)
+                        {
+                            using (FileImporterInfoRepository ctx = new FileImporterInfoRepository())
+                            {
+                                CurrentFileImporterInfo = await ctx.GetFileImporterInfo(e.Data).ConfigureAwait(continueOnCapturedContext: false);
+                            }
+                            NotifyPropertyChanged(m => CurrentFileImporterInfo);
+                        }
+
+                        private  string _currentFileImporterInfoID = "";
+                        public string CurrentFileImporterInfoID
+                        {
+                            get
+                            {
+                                return _currentFileImporterInfoID;
+                            }
+                            set
+                            {
+                                if (_currentFileImporterInfoID != value)
+                                {
+                                    _currentFileImporterInfoID = value;
+                                    if (!string.IsNullOrEmpty(_currentFileImporterInfoID)) BeginSendMessage(MessageToken.CurrentFileImporterInfoIDChanged,
+                                                     new NotificationEventArgs<string>(MessageToken.CurrentFileImporterInfoIDChanged, _currentFileImporterInfoID));
+                                    NotifyPropertyChanged(x => this.CurrentFileImporterInfoID);  
                                 }
                             }
                         }
@@ -4392,6 +4421,57 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     _vcurrentFileGroups = value;
 					if(_vcurrentFileGroups != null) CurrentFileGroups = value.Data;
                     NotifyPropertyChanged(x => this.VCurrentFileGroups);                    
+                }
+            }
+        }
+
+
+
+                     
+       
+
+        internal void OnCurrentFileImporterInfoChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<FileImporterInfo> e)
+        {
+            //CurrentFileImporterInfo = e.Data;
+            NotifyPropertyChanged(m => this.CurrentFileImporterInfo);
+        }
+
+        private  FileImporterInfo _currentFileImporterInfo;
+        public FileImporterInfo CurrentFileImporterInfo
+        {
+            get
+            {
+                return _currentFileImporterInfo;
+            }
+            set
+            {
+                if (_currentFileImporterInfo != value)
+                {
+                    _currentFileImporterInfo = value;
+                    BeginSendMessage(MessageToken.CurrentFileImporterInfoChanged,
+                                                     new NotificationEventArgs<FileImporterInfo>(MessageToken.CurrentFileImporterInfoChanged, _currentFileImporterInfo)); 
+                    NotifyPropertyChanged(x => this.CurrentFileImporterInfo);    
+                    // all current navigation properties = null
+                 CurrentFileTypes = null;
+   
+                }
+            }
+        }
+
+		VirtualListItem<FileImporterInfo> _vcurrentFileImporterInfo;
+        public VirtualListItem<FileImporterInfo> VCurrentFileImporterInfo
+        {
+            get
+            {
+                return _vcurrentFileImporterInfo;
+            }
+            set
+            {
+                if (_vcurrentFileImporterInfo != value)
+                {
+                    _vcurrentFileImporterInfo = value;
+					if(_vcurrentFileImporterInfo != null) CurrentFileImporterInfo = value.Data;
+                    NotifyPropertyChanged(x => this.VCurrentFileImporterInfo);                    
                 }
             }
         }

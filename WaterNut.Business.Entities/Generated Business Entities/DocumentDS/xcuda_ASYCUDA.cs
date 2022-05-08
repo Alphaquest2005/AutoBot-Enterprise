@@ -20,20 +20,20 @@ namespace DocumentDS.Business.Entities
     [DataContract(IsReference = true, Namespace="http://www.insight-software.com/WaterNut")]
     public partial class xcuda_ASYCUDA : BaseEntity<xcuda_ASYCUDA>, ITrackable 
     {
-        //partial void AutoGenStartUp() //xcuda_ASYCUDA()
-        //{
-        //    this.xcuda_Assessment_notice = new List<xcuda_Assessment_notice>();
-        //    this.xcuda_Container = new List<xcuda_Container>();
-        //    this.xcuda_Export_release = new List<xcuda_Export_release>();
-        //    this.xcuda_Financial = new List<xcuda_Financial>();
-        //    this.xcuda_Global_taxes = new List<xcuda_Global_taxes>();
-        //    this.xcuda_Suppliers_documents = new List<xcuda_Suppliers_documents>();
-        //    this.xcuda_Transit = new List<xcuda_Transit>();
-        //    this.xcuda_Transport = new List<xcuda_Transport>();
-        //    this.xcuda_Warehouse = new List<xcuda_Warehouse>();
-        //    this.AsycudaDocumentEntryDatas = new List<AsycudaDocumentEntryData>();
-        //    this.AsycudaDocument_Attachments = new List<AsycudaDocument_Attachments>();
-        //}
+        partial void AutoGenStartUp() //xcuda_ASYCUDA()
+        {
+            this.xcuda_Assessment_notice = new List<xcuda_Assessment_notice>();
+            this.xcuda_Container = new List<xcuda_Container>();
+            this.xcuda_Export_release = new List<xcuda_Export_release>();
+            this.xcuda_Financial = new List<xcuda_Financial>();
+            this.xcuda_Global_taxes = new List<xcuda_Global_taxes>();
+            this.xcuda_Suppliers_documents = new List<xcuda_Suppliers_documents>();
+            this.xcuda_Transit = new List<xcuda_Transit>();
+            this.xcuda_Transport = new List<xcuda_Transport>();
+            this.xcuda_Warehouse = new List<xcuda_Warehouse>();
+            this.AsycudaDocumentEntryDatas = new List<AsycudaDocumentEntryData>();
+            this.AsycudaDocument_Attachments = new List<AsycudaDocument_Attachments>();
+        }
 
         [DataMember]
         public string id 

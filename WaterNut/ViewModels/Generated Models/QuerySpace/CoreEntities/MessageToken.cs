@@ -190,6 +190,12 @@ namespace WaterNut.QuerySpace.CoreEntities
 			public const string FileGroupsDeleted = "FileGroupsDeleted";
 			public const string FileGroupsCreated = "FileGroupsCreated";
 			public const string FileGroupsUpdated = "FileGroupsUpdated";
+			public const string FileImporterInfosFilterExpressionChanged = "FileImporterInfosFilterExpressionChanged";
+			public const string SelectedFileImporterInfosChanged = "SelectedFileImporterInfosChanged";
+            public const string FileImporterInfosChanged = "FileImporterInfosChanged";
+			public const string FileImporterInfosDeleted = "FileImporterInfosDeleted";
+			public const string FileImporterInfosCreated = "FileImporterInfosCreated";
+			public const string FileImporterInfosUpdated = "FileImporterInfosUpdated";
 			public const string FileTypeActionsFilterExpressionChanged = "FileTypeActionsFilterExpressionChanged";
 			public const string SelectedFileTypeActionsChanged = "SelectedFileTypeActionsChanged";
             public const string FileTypeActionsChanged = "FileTypeActionsChanged";
@@ -618,6 +624,7 @@ namespace WaterNut.QuerySpace.CoreEntities
           // public const string EntryPreviousItemsChanged = "EntryPreviousItemsChanged";
           // public const string ExpiredEntriesLstChanged = "ExpiredEntriesLstChanged";
           // public const string FileGroupsChanged = "FileGroupsChanged";
+          // public const string FileImporterInfoChanged = "FileImporterInfoChanged";
           // public const string FileTypeActionsChanged = "FileTypeActionsChanged";
           // public const string FileTypeContactsChanged = "FileTypeContactsChanged";
           // public const string FileTypeMappingRegExsChanged = "FileTypeMappingRegExsChanged";
@@ -746,6 +753,8 @@ namespace WaterNut.QuerySpace.CoreEntities
            public const string CurrentExpiredEntriesLstChanged = "CurrentExpiredEntriesLstChanged";
    
            public const string CurrentFileGroupsChanged = "CurrentFileGroupsChanged";
+   
+           public const string CurrentFileImporterInfoChanged = "CurrentFileImporterInfoChanged";
    
            public const string CurrentFileTypeActionsChanged = "CurrentFileTypeActionsChanged";
    
@@ -940,6 +949,8 @@ namespace WaterNut.QuerySpace.CoreEntities
            public const string CurrentExpiredEntriesLstIDChanged = "OnCurrentExpiredEntriesLstIDChanged";
    
            public const string CurrentFileGroupsIDChanged = "OnCurrentFileGroupsIDChanged";
+   
+           public const string CurrentFileImporterInfoIDChanged = "OnCurrentFileImporterInfoIDChanged";
    
            public const string CurrentFileTypeActionsIDChanged = "OnCurrentFileTypeActionsIDChanged";
    

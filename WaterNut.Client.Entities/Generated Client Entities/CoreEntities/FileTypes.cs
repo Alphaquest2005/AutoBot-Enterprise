@@ -336,6 +336,21 @@ public Nullable<int> MaxFileSizeInMB
 		}
      
 
+       
+       
+public Nullable<int> FileInfoId
+		{ 
+		    get { return this.filetypes.FileInfoId; }
+			set
+			{
+			    if (value == this.filetypes.FileInfoId) return;
+				this.filetypes.FileInfoId = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("FileInfoId");
+			}
+		}
+     
+
        private ApplicationSettings _ApplicationSettings;
         public  ApplicationSettings ApplicationSettings
 		{
@@ -979,6 +994,59 @@ public Nullable<int> MaxFileSizeInMB
                 
             }
         }
+
+       private FileImporterInfo _FileImporterInfos;
+        public  FileImporterInfo FileImporterInfos
+		{
+		    get
+               { 
+                  if (this.filetypes != null)
+                   {
+                       if (_FileImporterInfos != null)
+                       {
+                           if (this.filetypes.FileImporterInfos !=
+                               _FileImporterInfos.DTO)
+                           {
+                                if (this.filetypes.FileImporterInfos  != null)
+                               _FileImporterInfos = new FileImporterInfo(this.filetypes.FileImporterInfos);
+                           }
+                       }
+                       else
+                       {
+                             if (this.filetypes.FileImporterInfos  != null)
+                           _FileImporterInfos = new FileImporterInfo(this.filetypes.FileImporterInfos);
+                       }
+                   }
+
+
+             //       if (_FileImporterInfos != null) return _FileImporterInfos;
+                       
+             //       var i = new FileImporterInfo(){TrackingState = TrackingState.Added};
+			//		//if (this.filetypes.FileImporterInfos == null) Debugger.Break();
+			//		if (this.filetypes.FileImporterInfos != null)
+            //        {
+            //           i. = this.filetypes.FileImporterInfos;
+            //        }
+            //        else
+            //        {
+            //            this.filetypes.FileImporterInfos = i.;
+             //       }
+                           
+            //        _FileImporterInfos = i;
+                     
+                    return _FileImporterInfos;
+               }
+			set
+			{
+			    if (value == _FileImporterInfos) return;
+                _FileImporterInfos = value;
+                if(value != null)
+                     this.filetypes.FileImporterInfos = value.DTO;
+				if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+                NotifyPropertyChanged("FileImporterInfos");
+			}
+		}
+        
 
 
         ChangeTrackingCollection<DTO.FileTypes> _changeTracker;    

@@ -11,6 +11,9 @@ namespace Core.Common.Data
         private readonly ConcurrentDictionary<string, T> _innerData;
         //private Func<T, T> _cloner;
 
+
+
+
         public DataCache(IEnumerable<T> source) //, Func<T, T> cloner
         {
             _innerData = new ConcurrentDictionary<string, T>();
