@@ -2231,7 +2231,7 @@ FROM [dbo].[PreviousItemsEx] AS [PreviousItemsEx]</DefiningQuery>
     <!-- Diagram content (shape and connector positions) -->
     <Diagrams>
       <Diagram DiagramId="7ce1e594121c4cb6acf29ef651aff6fe" Name="Diagram1" ZoomLevel="88">
-        <EntityTypeShape EntityType="WaterNutDBModel.xcuda_Item" Width="2" PointX="0.5" PointY="27.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="WaterNutDBModel.xcuda_Item" Width="2" PointX="0.5" PointY="27.25" IsExpanded="true" />
         <EntityTypeShape EntityType="WaterNutDBModel.xcuda_item_deduction" Width="1.5" PointX="5.25" PointY="36" IsExpanded="true" />
         <EntityTypeShape EntityType="WaterNutDBModel.xcuda_item_external_freight" Width="1.5" PointX="5.25" PointY="39" IsExpanded="true" />
         <EntityTypeShape EntityType="WaterNutDBModel.xcuda_item_insurance" Width="1.5" PointX="5.25" PointY="41.875" IsExpanded="true" />
@@ -2242,13 +2242,13 @@ FROM [dbo].[PreviousItemsEx] AS [PreviousItemsEx]</DefiningQuery>
         <EntityTypeShape EntityType="WaterNutDBModel.xBondAllocations" Width="1.5" PointX="3" PointY="6.625" IsExpanded="true" />
         <EntityTypeShape EntityType="WaterNutDBModel.xcuda_Attached_documents" Width="1.5" PointX="3" PointY="9" IsExpanded="true" />
         <EntityTypeShape EntityType="WaterNutDBModel.xcuda_Goods_description" Width="1.5" PointX="3" PointY="12.25" IsExpanded="true" />
-        <EntityTypeShape EntityType="WaterNutDBModel.xcuda_HScode" Width="1.875" PointX="5.25" PointY="26.625" IsExpanded="true" />
-        <EntityTypeShape EntityType="WaterNutDBModel.xcuda_Inventory_Item" Width="2.125" PointX="11.625" PointY="27" IsExpanded="true" />
+        <EntityTypeShape EntityType="WaterNutDBModel.xcuda_HScode" Width="1.875" PointX="5.875" PointY="26.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="WaterNutDBModel.xcuda_Inventory_Item" Width="2.125" PointX="13" PointY="27" IsExpanded="true" />
         <EntityTypeShape EntityType="WaterNutDBModel.xcuda_Packages" Width="1.5" PointX="3" PointY="15" IsExpanded="true" />
         <EntityTypeShape EntityType="WaterNutDBModel.xcuda_Previous_doc" Width="1.5" PointX="3" PointY="18.375" IsExpanded="true" />
-        <EntityTypeShape EntityType="WaterNutDBModel.xcuda_PreviousItem" Width="2.5" PointX="3" PointY="20.625" IsExpanded="true" />
-        <EntityTypeShape EntityType="WaterNutDBModel.xcuda_Supplementary_unit" Width="4.375" PointX="5.25" PointY="29.625" IsExpanded="true" />
-        <EntityTypeShape EntityType="WaterNutDBModel.xcuda_Tarification" Width="2" PointX="2.625" PointY="27.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="WaterNutDBModel.xcuda_PreviousItem" Width="2.5" PointX="4.125" PointY="20.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="WaterNutDBModel.xcuda_Supplementary_unit" Width="4.375" PointX="8.5" PointY="29.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="WaterNutDBModel.xcuda_Tarification" Width="2" PointX="3.25" PointY="27.75" IsExpanded="true" />
         <EntityTypeShape EntityType="WaterNutDBModel.xcuda_Taxation" Width="1.5" PointX="3" PointY="32.5" IsExpanded="true" />
         <EntityTypeShape EntityType="WaterNutDBModel.xcuda_Taxation_line" Width="1.5" PointX="5.25" PointY="32.625" IsExpanded="true" />
         <EntityTypeShape EntityType="WaterNutDBModel.xcuda_Valuation_item" Width="1.5" PointX="3" PointY="43.875" IsExpanded="true" />
@@ -2277,7 +2277,7 @@ FROM [dbo].[PreviousItemsEx] AS [PreviousItemsEx]</DefiningQuery>
         <AssociationConnector Association="WaterNutDBModel.FK_xcuda_ItemEntryDataDetails_xcuda_Item" ManuallyRouted="false" />
         <EntityTypeShape EntityType="WaterNutDBModel.xcuda_Suppliers_link" Width="1.5" PointX="3.25" PointY="58.75" />
         <AssociationConnector Association="WaterNutDBModel.FK_Item_Suppliers_link" />
-        <EntityTypeShape EntityType="WaterNutDBModel.PreviousItemsEx" Width="2.625" PointX="7.625" PointY="20.5" />
+        <EntityTypeShape EntityType="WaterNutDBModel.PreviousItemsEx" Width="2.625" PointX="8.375" PointY="20.5" />
         <AssociationConnector Association="WaterNutDBModel.xcuda_PreviousItemPreviousItemsEx" />
         <EntityTypeShape EntityType="WaterNutDBModel.EntryPreviousItems" Width="3.375" PointX="3.25" PointY="0.875" />
         <AssociationConnector Association="WaterNutDBModel.FK_EntryPreviousItems_xcuda_Item" />

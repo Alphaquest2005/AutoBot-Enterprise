@@ -752,7 +752,7 @@ namespace xlsxWriter
                         SetValue(workbook, currentline, invHeader.IndexOf("PONumber"),
                             po.PurchaseOrders?.PONumber ?? "");
                         SetValue(workbook, currentline, invHeader.IndexOf(nameof(ShipmentInvoice.InvoiceDate)),
-                            summaryPkg.Invoices[i].InvoiceDate);
+                            summaryPkg.Invoices[i].InvoiceDate.GetValueOrDefault().ToString("yyyy-MM-dd"));
                         SetValue(workbook, currentline, invHeader.IndexOf(nameof(ShipmentInvoice.ImportedLines)),
                             summaryPkg.Invoices[i].ImportedLines);
                         SetValue(workbook, currentline, invHeader.IndexOf(nameof(ShipmentInvoice.SubTotal)),
@@ -817,7 +817,7 @@ namespace xlsxWriter
                             summaryPkg.Invoices[i].InvoiceNo);
                         
                         SetValue(workbook, currentline, invHeader.IndexOf(nameof(ShipmentInvoice.InvoiceDate)),
-                            summaryPkg.Invoices[i].InvoiceDate);
+                            summaryPkg.Invoices[i].InvoiceDate.GetValueOrDefault().ToString("yyyy-MM-dd"));
                         SetValue(workbook, currentline, invHeader.IndexOf(nameof(ShipmentInvoice.ImportedLines)),
                             summaryPkg.Invoices[i].ImportedLines);
                         SetValue(workbook, currentline, invHeader.IndexOf(nameof(ShipmentInvoice.SubTotal)),
@@ -889,7 +889,7 @@ namespace xlsxWriter
                         SetValue(workbook, i + 2, invHeader.IndexOf(nameof(ShipmentMIS_Invoices.InvoiceNo)),
                             unMatchedInvoices[i].InvoiceNo);
                         SetValue(workbook, i + 2, invHeader.IndexOf(nameof(ShipmentMIS_Invoices.InvoiceDate)),
-                            unMatchedInvoices[i].InvoiceDate);
+                            unMatchedInvoices[i].InvoiceDate.GetValueOrDefault().ToString("yyyy-MM-dd"));
                         SetValue(workbook, i + 2, invHeader.IndexOf(nameof(ShipmentMIS_Invoices.ImportedLines)),
                             unMatchedInvoices[i].ImportedLines);
                         SetValue(workbook, i + 2, invHeader.IndexOf(nameof(ShipmentMIS_Invoices.SubTotal)),
@@ -907,7 +907,7 @@ namespace xlsxWriter
                         SetValue(workbook, i + 2, poheader.IndexOf(nameof(ShipmentMIS_POs.InvoiceNo)),
                             unMatchedPOs[i].InvoiceNo);
                         SetValue(workbook, i + 2, poheader.IndexOf(nameof(ShipmentMIS_POs.InvoiceDate)),
-                            unMatchedPOs[i].InvoiceDate);
+                            unMatchedPOs[i].InvoiceDate.ToString("yyyy-MM-dd"));
                         SetValue(workbook, i + 2, poheader.IndexOf(nameof(ShipmentMIS_POs.ImportedLines)),
                             unMatchedPOs[i].ImportedLines);
                         SetValue(workbook, i + 2, poheader.IndexOf(nameof(ShipmentMIS_POs.SubTotal)),
@@ -989,7 +989,7 @@ namespace xlsxWriter
 
             SetValue(workbook, invoiceRow,
                 header.First(x => x.Key.Column == nameof(shipmentInvoice.InvoiceDate)).Key.Index,
-                shipmentInvoice.InvoiceDate.GetValueOrDefault());
+                shipmentInvoice.InvoiceDate.GetValueOrDefault().ToString("yyyy-MM-dd"));
 
             SetValue(workbook, invoiceRow,
                 header.First(x => x.Key.Column == nameof(shipmentInvoice.SupplierCode)).Key.Index,

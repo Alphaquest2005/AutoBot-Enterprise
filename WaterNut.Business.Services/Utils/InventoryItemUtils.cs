@@ -39,7 +39,7 @@ namespace WaterNut.Business.Services.Utils
          }
 
         public static List<InventoryItem> GetInventoryItems(List<string> itemNumbers, int applicationSettingsId) =>
-            itemNumbers.Select(itemNumber => GetInventoryItems().SingleOrDefault(x => x.ItemNumber == itemNumber && x.ApplicationSettingsId == applicationSettingsId))
+            itemNumbers.Select(itemNumber => GetInventoryItems().FirstOrDefault(x => x.ItemNumber == itemNumber && x.ApplicationSettingsId == applicationSettingsId))
                 .Where(x => x != null)
                 .ToList();
 

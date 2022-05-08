@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.Entity;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -214,11 +215,11 @@ namespace AutoBot
 
                         row[poHeaderRow.IndexOf("PO Number")] = misMatch[misHeaderRow.IndexOf("PONumber")];
                         row[poHeaderRow.IndexOf("Date")] = poTemplate.Rows[1][poHeaderRow.IndexOf("Date")];
-                        row[poHeaderRow.IndexOf("PO Data Number")] = poItemCode;
-                        row[poHeaderRow.IndexOf("Supplier Data Number")] = invItemCode;
-                        row[poHeaderRow.IndexOf("PO Data Description")] =
+                        row[poHeaderRow.IndexOf("PO Item Number")] = poItemCode;
+                        row[poHeaderRow.IndexOf("Supplier Item Number")] = invItemCode;
+                        row[poHeaderRow.IndexOf("PO Item Description")] =
                             misMatch[misHeaderRow.IndexOf("PODescription")];
-                        row[poHeaderRow.IndexOf("Supplier Data Description")] =
+                        row[poHeaderRow.IndexOf("Supplier Item Description")] =
                             misMatch[misHeaderRow.IndexOf("INVDescription")];
                         row[poHeaderRow.IndexOf("Cost")] =
                             ((double) misMatch[misHeaderRow.IndexOf("INVCost")] /
@@ -229,6 +230,9 @@ namespace AutoBot
                         row[poHeaderRow.IndexOf("Quantity")] = misMatch[misHeaderRow.IndexOf("POQuantity")];
                         row[poHeaderRow.IndexOf("Total Cost")] = misMatch[misHeaderRow.IndexOf("INVTotalCost")];
                         if (addrow) poTemplate.Rows.Add(row);
+
+                        ImportInventoryMapping(invItemCode, misMatch, misHeaderRow, poItemCode);
+
                     }
                 }
             }
@@ -238,6 +242,63 @@ namespace AutoBot
                 throw;
             }
 
+        }
+
+        private static void ImportInventoryMapping(string invItemCode, DataRow misMatch, List<object> misHeaderRow, string poItemCode)
+        {
+            using (var ctx = new EntryDataDSContext())
+            {
+                InvoiceDetails invRow;
+                EntryDataDetails poRow;
+
+                var invItm = ctx.InventoryItems.Include(x => x.AliasItems).FirstOrDefault(x =>
+                    x.ItemNumber == invItemCode
+                    && x.ApplicationSettingsId ==
+                    BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId);
+                if (invItm == null)
+                {
+                    invItm = new InventoryItems()
+                    {
+                        ApplicationSettingsId =
+                            BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId,
+                        Description = misMatch[misHeaderRow.IndexOf("INVDescription")].ToString(),
+                        ItemNumber = invItemCode,
+                        TrackingState = TrackingState.Added
+                    };
+                    ctx.InventoryItems.Add(invItm);
+                }
+
+                var poItm = ctx.InventoryItems.Include(x => x.AliasItems).FirstOrDefault(x =>
+                    x.ItemNumber == poItemCode && x.ApplicationSettingsId ==
+                    BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId);
+                if (poItm == null)
+                {
+                    poItm = new InventoryItems()
+                    {
+                        ApplicationSettingsId =
+                            BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId,
+                        Description = misMatch[misHeaderRow.IndexOf("PODescription")].ToString(),
+                        ItemNumber = poItemCode,
+                        TrackingState = TrackingState.Added
+                    };
+                    ctx.InventoryItems.Add(poItm);
+                }
+
+                if (!poItm.AliasItems.Any(x => x.AliasItemId == invItm.Id) &&
+                    !invItm.AliasItems.Any(x => x.InventoryItemId == poItm.Id))
+                {
+                    ctx.InventoryItemAlias.Add(new InventoryItemAlias(true)
+                    {
+                        InventoryItems = poItm,
+                        AliasItem = invItm,
+                        AliasName = invItm.ItemNumber,
+                        TrackingState = TrackingState.Added
+                    });
+                }
+
+                //var itmAlias = ctx.InventoryItemAlias
+                ctx.SaveChanges();
+            }
         }
 
         public static void SubmitUnclassifiedItems(FileTypes ft)

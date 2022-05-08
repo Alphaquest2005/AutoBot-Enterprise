@@ -1,5 +1,15 @@
 
-declare @oldCompany int = 2, @newCompany int = 7, @oldFileTypeId int = 1168
+declare @EntryType nvarchar(50) = 'Sales', 
+		@FormatType nvarchar(50) = 'CSV'
+drop table #oldFileTypeInfo
+select oldFileType.id, oldfiletype.FilePattern, oldfiletype.Type, oldFileInfo.EntryType, oldFileInfo.Format
+into #oldFileTypeInfo
+from [BudgetMarine-AutoBot].dbo.FileTypes oldFileType inner join [BudgetMarine-AutoBot].dbo.[FileTypes-FileImporterInfo] oldFileInfo on oldFileType.FileInfoId = oldFileInfo.Id where oldFileInfo.EntryType = @EntryType and oldFileInfo.Format = @FormatType 
+
+select * from #oldFileTypeInfo
+
+declare @oldCompany int = 2, @newCompany int = 7, 
+@oldFileTypeId int = 125
 
 
 
@@ -31,10 +41,12 @@ FROM    EmailFileTypes AS FileTypeActions_1 INNER JOIN
 
 -----------------------------------------------
 
+
+
 INSERT INTO FileTypeActions
                  (FileTypeId, ActionId, AssessIM7, AssessEX)
 SELECT pending.Id, ActionId, AssessIM7, AssessEX
-FROM    FileTypeActions AS FileTypeActions_1 inner join 
+FROM    [BudgetMarine-AutoBot].dbo.FileTypeActions AS FileTypeActions_1 inner join 
 (SELECT FileTypes.Id, oldFiletypeid
 FROM    FileTypes
 WHERE (id = @newFileTypeId) ) as pending on FileTypeActions_1.FileTypeId = pending.oldFiletypeid
@@ -78,3 +90,5 @@ FROM    FileTypeContacts AS FileTypeActions_1 INNER JOIN
 --)
 --DELETE FROM cte
 --WHERE row_num > 1;
+
+

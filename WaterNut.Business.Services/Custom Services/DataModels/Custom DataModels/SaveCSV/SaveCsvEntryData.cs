@@ -1063,7 +1063,7 @@ namespace WaterNut.DataSpace
                
 
 
-                if (fileType.Type == "Sales" && !(eslst.First().ContainsKey("Tax") || eslst.First().ContainsKey("TotalTax")))
+                if (fileType.Type == "Sales" && !(((IDictionary<string, object>)eslst.First()).ContainsKey("Tax") || ((IDictionary<string, object>)eslst.First()).ContainsKey("TotalTax")))
                     throw new ApplicationException("Sales file dose not contain Tax");
 
              

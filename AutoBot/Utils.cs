@@ -487,14 +487,11 @@ namespace AutoBot
                 {
                     WindowStyle = ProcessWindowStyle.Hidden,
                     FileName = "java.exe",
-                    Arguments = $@"-jar C:\Users\{Environment.UserName}\OneDrive\Clients\AutoBot\sikulix-2.0.0.jar -r C:\Users\{
-                        // $@"-jar C:\Users\{Environment.UserName}\OneDrive\Clients\AutoBot\sikulix.jar -r C:\Users\{
-                        Environment.UserName
+                    Arguments = $@"-jar C:\Users\{Environment.UserName}\OneDrive\Clients\AutoBot\sikulix-2.0.0.jar -r C:\Users\{Environment.UserName
                     }\OneDrive\Clients\AutoBot\Scripts\{scriptName}.sikuli --args {
-                        BaseDataModel.Instance.CurrentApplicationSettings.AsycudaLogin
-                    } {BaseDataModel.Instance.CurrentApplicationSettings.AsycudaPassword} {
+                        BaseDataModel.Instance.CurrentApplicationSettings.AsycudaLogin} {BaseDataModel.Instance.CurrentApplicationSettings.AsycudaPassword} {
                         (string.IsNullOrEmpty(lastCNumber) ? "" : lastCNumber + " ")
-                    }""{directoryName + "\\"}",
+                    } ""{directoryName + "\\"}",
                     UseShellExecute = false
                 };
                 process.StartInfo = startInfo;

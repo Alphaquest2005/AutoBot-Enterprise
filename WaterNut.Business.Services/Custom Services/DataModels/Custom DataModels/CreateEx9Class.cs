@@ -441,7 +441,9 @@ namespace WaterNut.DataSpace
                // applyHistoricChecks = false;
                // applyEx9Bucket = false;
                 //applyCurrentChecks = false;
-
+                if(InventoryDataCache == null) InventoryDataCache =
+                    InventoryItemUtils.GetInventoryItems(BaseDataModel.Instance.CurrentApplicationSettings
+                        .ApplicationSettingsId);
 
                 var itmcount = 0;
                 var docList = new List<DocumentCT>();
