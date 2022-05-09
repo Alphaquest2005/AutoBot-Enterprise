@@ -11,24 +11,23 @@ namespace WaterNut.Business.Services.Importers
 {
     public class FileTypeImporter : IFileTypeImporter
     {
-        public static FileTypes FileType { get; private set; }
+        public  FileTypes FileType { get; private set; }
 
         public FileTypeImporter(FileTypes fileType)
         {
             FileType = fileType;
-            
-        }
-        public void Import(string fileName)
-        {
-            var importer = Importers[FileType.FileImporterInfos.Format];
-            importer.Import(fileName, true);
-        }
-
-        private readonly Dictionary<string, IImporter> Importers =
-            new Dictionary<string, IImporter>()
+            _importers = new Dictionary<string, IImporter>()
             {
                 {FileTypeManager.FileFormats.CSV, new CSVImporter(FileType)},
             };
+        }
+        public void Import(string fileName)
+        {
+            var importer = _importers[FileType.FileImporterInfos.Format];
+            importer.Import(fileName, true);
+        }
+
+        private readonly Dictionary<string, IImporter> _importers;
 
     }
 }

@@ -41,9 +41,9 @@
           </Key>
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="FilePath" Type="nvarchar" MaxLength="255" Nullable="false" />
-          <Property Name="DocumentCode" Type="nvarchar" MaxLength="50" Nullable="false" />
-          <Property Name="Reference" Type="nvarchar" MaxLength="255" Nullable="false" />
-          <Property Name="EmailId" Type="nvarchar" MaxLength="10" />
+          <Property Name="DocumentCode" Type="nvarchar" MaxLength="50" />
+          <Property Name="Reference" Type="nvarchar" MaxLength="255" />
+          <Property Name="EmailId" Type="nvarchar" MaxLength="255" />
         </EntityType>
         <EntityType Name="Container">
           <Key>
@@ -78,6 +78,8 @@
           <Property Name="Sales" Type="bit" />
           <Property Name="CustomsOperationId" Type="int" Nullable="false" />
           <Property Name="SubmitToCustoms" Type="bit" />
+          <Property Name="IsDefault" Type="bit" />
+          <Property Name="ExportSupportingEntryData" Type="bit" />
         </EntityType>
         <EntityType Name="Document_Type">
           <Key>
@@ -566,6 +568,7 @@
           <Property Name="EntryDataType" Type="nvarchar" MaxLength="50" />
           <Property Name="UpgradeKey" Type="int" />
           <Property Name="PreviousInvoiceKey" Type="nvarchar" MaxLength="4000" StoreGeneratedPattern="Computed" />
+          <Property Name="xWarehouseError" Type="nvarchar" MaxLength="255" />
         </EntityType>
         <EntityType Name="xcuda_item_deduction">
           <Key>
@@ -703,7 +706,7 @@
           <Property Name="Prev_net_weight" Type="decimal" Precision="9" Scale="2" Nullable="false" />
           <Property Name="Prev_reg_ser" Type="nvarchar" MaxLength="20" />
           <Property Name="Prev_reg_nbr" Type="nvarchar" MaxLength="20" />
-          <Property Name="Prev_reg_dat" Type="nvarchar" MaxLength="20" />
+          <Property Name="Prev_reg_year" Type="int" />
           <Property Name="Prev_reg_cuo" Type="nvarchar" MaxLength="20" />
           <Property Name="Suplementary_Quantity" Type="decimal" Precision="9" Scale="2" Nullable="false" />
           <Property Name="Preveious_suplementary_quantity" Type="float" Nullable="false" />
@@ -745,7 +748,7 @@
             <PropertyRef Name="ASYCUDA_Id" />
           </Key>
           <Property Name="Number" Type="nvarchar" MaxLength="20" />
-          <Property Name="Date" Type="nvarchar" MaxLength="10" />
+          <Property Name="Date" Type="datetime2" Precision="7" />
           <Property Name="ASYCUDA_Id" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="xcuda_Seals">
@@ -3678,6 +3681,8 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does no
           <Property Name="Sales" Type="Boolean" />
           <Property Name="CustomsOperationId" Type="Int32" Nullable="false" />
           <Property Name="SubmitToCustoms" Type="Boolean" />
+          <Property Name="IsDefault" Type="Boolean" />
+          <Property Name="ExportSupportingEntryData" Type="Boolean" />
         </EntityType>
         <EntityType Name="Document_Type">
           <Key>
@@ -4070,6 +4075,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does no
           <Property Name="EntryDataType" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="UpgradeKey" Type="Int32" />
           <Property Name="PreviousInvoiceKey" Type="String" MaxLength="4000" FixedLength="false" Unicode="true" annotation:StoreGeneratedPattern="Computed" />
+          <Property Name="xWarehouseError" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="xcuda_item_deduction">
           <Key>
@@ -4164,13 +4170,12 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does no
           <Property Name="Commodity_code" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Name="Previous_item_number" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Name="Goods_origin" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
-          <Property Name="Net_weight" Type="Decimal" Nullable="false" />
-          <Property Name="Prev_net_weight" Type="Decimal" Nullable="false" />
+          <Property Name="Net_weight" Type="Decimal" Nullable="false" Precision="9" Scale="2" />
+          <Property Name="Prev_net_weight" Type="Decimal" Nullable="false" Precision="9" Scale="2" />
           <Property Name="Prev_reg_ser" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Name="Prev_reg_nbr" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
-          <Property Name="Prev_reg_dat" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Name="Prev_reg_cuo" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
-          <Property Name="Suplementary_Quantity" Type="Decimal" Nullable="false" />
+          <Property Name="Suplementary_Quantity" Type="Decimal" Nullable="false" Precision="9" Scale="2" />
           <Property Name="Preveious_suplementary_quantity" Type="Double" Nullable="false" />
           <Property Name="Current_value" Type="Double" Nullable="false" />
           <Property Name="Previous_value" Type="Double" Nullable="false" />
@@ -4181,6 +4186,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does no
           <NavigationProperty Name="xcuda_ASYCUDA" Relationship="WaterNutDB.DataLayer.FK_ASYCUDA_PreviousItem" FromRole="xcuda_PreviousItem" ToRole="xcuda_ASYCUDA" />
           <NavigationProperty Name="xcuda_Item" Relationship="WaterNutDB.DataLayer.FK_xcuda_PreviousItem_xcuda_Item" FromRole="xcuda_PreviousItem" ToRole="xcuda_Item" />
           <Property Name="Prev_decl_HS_spec" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="Prev_reg_year" Type="Int32" />
         </EntityType>
         <EntityType Name="xcuda_Principal">
           <Key>
@@ -4217,7 +4223,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does no
             <PropertyRef Name="ASYCUDA_Id" />
           </Key>
           <Property Name="Number" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
-          <Property Name="Date" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="Date" Type="DateTime" />
           <Property Name="ASYCUDA_Id" Type="Int32" Nullable="false" />
           <NavigationProperty Name="xcuda_Identification" Relationship="WaterNutDB.DataLayer.FK_Identification_Registration" FromRole="xcuda_Registration" ToRole="xcuda_Identification" />
         </EntityType>
@@ -5414,10 +5420,10 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does no
           </Key>
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="FilePath" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="DocumentCode" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="DocumentCode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="xcuda_Attachments" Relationship="WaterNutDB.DataLayer.FK_xcuda_Attachments_Attachments" FromRole="Attachments" ToRole="xcuda_Attachments" />
-          <Property Name="Reference" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="EmailId" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="Reference" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="EmailId" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="xcuda_Attachments">
           <Key>
@@ -5833,6 +5839,8 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does no
           <EntitySetMapping Name="Customs_Procedure">
             <EntityTypeMapping TypeName="WaterNutDB.DataLayer.Customs_Procedure">
               <MappingFragment StoreEntitySet="Customs_Procedure">
+                <ScalarProperty Name="ExportSupportingEntryData" ColumnName="ExportSupportingEntryData" />
+                <ScalarProperty Name="IsDefault" ColumnName="IsDefault" />
                 <ScalarProperty Name="SubmitToCustoms" ColumnName="SubmitToCustoms" />
                 <ScalarProperty Name="CustomsOperationId" ColumnName="CustomsOperationId" />
                 <ScalarProperty Name="Sales" ColumnName="Sales" />
@@ -6169,6 +6177,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does no
           <EntitySetMapping Name="xcuda_Item">
             <EntityTypeMapping TypeName="WaterNutDB.DataLayer.xcuda_Item">
               <MappingFragment StoreEntitySet="xcuda_Item">
+                <ScalarProperty Name="xWarehouseError" ColumnName="xWarehouseError" />
                 <ScalarProperty Name="PreviousInvoiceKey" ColumnName="PreviousInvoiceKey" />
                 <ScalarProperty Name="UpgradeKey" ColumnName="UpgradeKey" />
                 <ScalarProperty Name="EntryDataType" ColumnName="EntryDataType" />
@@ -6281,6 +6290,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does no
           <EntitySetMapping Name="xcuda_PreviousItem">
             <EntityTypeMapping TypeName="WaterNutDB.DataLayer.xcuda_PreviousItem">
               <MappingFragment StoreEntitySet="xcuda_PreviousItem">
+                <ScalarProperty Name="Prev_reg_year" ColumnName="Prev_reg_year" />
                 <ScalarProperty Name="Prev_decl_HS_spec" ColumnName="Prev_decl_HS_spec" />
                 <ScalarProperty Name="QtyAllocated" ColumnName="QtyAllocated" />
                 <ScalarProperty Name="ASYCUDA_Id" ColumnName="ASYCUDA_Id" />
@@ -6291,7 +6301,6 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does no
                 <ScalarProperty Name="Preveious_suplementary_quantity" ColumnName="Preveious_suplementary_quantity" />
                 <ScalarProperty Name="Suplementary_Quantity" ColumnName="Suplementary_Quantity" />
                 <ScalarProperty Name="Prev_reg_cuo" ColumnName="Prev_reg_cuo" />
-                <ScalarProperty Name="Prev_reg_dat" ColumnName="Prev_reg_dat" />
                 <ScalarProperty Name="Prev_reg_nbr" ColumnName="Prev_reg_nbr" />
                 <ScalarProperty Name="Prev_reg_ser" ColumnName="Prev_reg_ser" />
                 <ScalarProperty Name="Prev_net_weight" ColumnName="Prev_net_weight" />

@@ -345,7 +345,7 @@ namespace Asycuda421
                     var pi = new ASYCUDAPrev_decl
                     {
                         Prev_decl_office_code = item.Prev_reg_cuo,
-                        Prev_decl_reg_year = item.Prev_reg_dat,
+                        Prev_decl_reg_year = item.Prev_reg_year.ToString(),
                         Prev_decl_reg_serial = item.Prev_reg_ser,
                         Prev_decl_reg_number = item.Prev_reg_nbr,
                         Prev_decl_item_number = item.Previous_item_number,
@@ -909,7 +909,7 @@ namespace Asycuda421
             if (da.xcuda_Identification.xcuda_Registration != null)
             {
                 if (da.xcuda_Identification.xcuda_Registration.Date != null)
-                    a.Identification.Registration.Date = da.xcuda_Identification.xcuda_Registration.Date;
+                    a.Identification.Registration.Date = da.xcuda_Identification.xcuda_Registration.Date.ToString();
                 if (da.xcuda_Identification.xcuda_Registration.Number != null)
                     a.Identification.Registration.Number = da.xcuda_Identification.xcuda_Registration.Number;
             }

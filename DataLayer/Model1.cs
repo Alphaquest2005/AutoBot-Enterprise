@@ -3828,15 +3828,11 @@ namespace WaterNut.DataLayer
         /// </summary>
         /// <param name="id">Initial value of the Id property.</param>
         /// <param name="filePath">Initial value of the FilePath property.</param>
-        /// <param name="documentCode">Initial value of the DocumentCode property.</param>
-        /// <param name="reference">Initial value of the Reference property.</param>
-        public static Attachments CreateAttachments(global::System.Int32 id, global::System.String filePath, global::System.String documentCode, global::System.String reference)
+        public static Attachments CreateAttachments(global::System.Int32 id, global::System.String filePath)
         {
             Attachments attachments = new Attachments();
             attachments.Id = id;
             attachments.FilePath = filePath;
-            attachments.DocumentCode = documentCode;
-            attachments.Reference = reference;
             return attachments;
         }
 
@@ -3898,7 +3894,7 @@ namespace WaterNut.DataLayer
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String DocumentCode
         {
@@ -3910,7 +3906,7 @@ namespace WaterNut.DataLayer
             {
                 OnDocumentCodeChanging(value);
                 ReportPropertyChanging("DocumentCode");
-                _DocumentCode = StructuralObject.SetValidValue(value, false);
+                _DocumentCode = StructuralObject.SetValidValue(value, true);
                 ReportPropertyChanged("DocumentCode");
                 OnDocumentCodeChanged();
             }
@@ -3922,7 +3918,7 @@ namespace WaterNut.DataLayer
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Reference
         {
@@ -3934,7 +3930,7 @@ namespace WaterNut.DataLayer
             {
                 OnReferenceChanging(value);
                 ReportPropertyChanging("Reference");
-                _Reference = StructuralObject.SetValidValue(value, false);
+                _Reference = StructuralObject.SetValidValue(value, true);
                 ReportPropertyChanged("Reference");
                 OnReferenceChanged();
             }
@@ -4678,6 +4674,54 @@ namespace WaterNut.DataLayer
         private Nullable<global::System.Boolean> _SubmitToCustoms;
         partial void OnSubmitToCustomsChanging(Nullable<global::System.Boolean> value);
         partial void OnSubmitToCustomsChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
+        [DataMemberAttribute()]
+        public Nullable<global::System.Boolean> IsDefault
+        {
+            get
+            {
+                return _IsDefault;
+            }
+            set
+            {
+                OnIsDefaultChanging(value);
+                ReportPropertyChanging("IsDefault");
+                _IsDefault = StructuralObject.SetValidValue(value);
+                ReportPropertyChanged("IsDefault");
+                OnIsDefaultChanged();
+            }
+        }
+        private Nullable<global::System.Boolean> _IsDefault;
+        partial void OnIsDefaultChanging(Nullable<global::System.Boolean> value);
+        partial void OnIsDefaultChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
+        [DataMemberAttribute()]
+        public Nullable<global::System.Boolean> ExportSupportingEntryData
+        {
+            get
+            {
+                return _ExportSupportingEntryData;
+            }
+            set
+            {
+                OnExportSupportingEntryDataChanging(value);
+                ReportPropertyChanging("ExportSupportingEntryData");
+                _ExportSupportingEntryData = StructuralObject.SetValidValue(value);
+                ReportPropertyChanged("ExportSupportingEntryData");
+                OnExportSupportingEntryDataChanged();
+            }
+        }
+        private Nullable<global::System.Boolean> _ExportSupportingEntryData;
+        partial void OnExportSupportingEntryDataChanging(Nullable<global::System.Boolean> value);
+        partial void OnExportSupportingEntryDataChanged();
 
         #endregion
 
@@ -15967,6 +16011,30 @@ namespace WaterNut.DataLayer
         private global::System.String _PreviousInvoiceKey;
         partial void OnPreviousInvoiceKeyChanging(global::System.String value);
         partial void OnPreviousInvoiceKeyChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
+        [DataMemberAttribute()]
+        public global::System.String xWarehouseError
+        {
+            get
+            {
+                return _xWarehouseError;
+            }
+            set
+            {
+                OnxWarehouseErrorChanging(value);
+                ReportPropertyChanging("xWarehouseError");
+                _xWarehouseError = StructuralObject.SetValidValue(value, true);
+                ReportPropertyChanged("xWarehouseError");
+                OnxWarehouseErrorChanged();
+            }
+        }
+        private global::System.String _xWarehouseError;
+        partial void OnxWarehouseErrorChanging(global::System.String value);
+        partial void OnxWarehouseErrorChanged();
 
         #endregion
 
@@ -19006,30 +19074,6 @@ namespace WaterNut.DataLayer
         /// </summary>
         [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
-        public global::System.String Prev_reg_dat
-        {
-            get
-            {
-                return _Prev_reg_dat;
-            }
-            set
-            {
-                OnPrev_reg_datChanging(value);
-                ReportPropertyChanging("Prev_reg_dat");
-                _Prev_reg_dat = StructuralObject.SetValidValue(value, true);
-                ReportPropertyChanged("Prev_reg_dat");
-                OnPrev_reg_datChanged();
-            }
-        }
-        private global::System.String _Prev_reg_dat;
-        partial void OnPrev_reg_datChanging(global::System.String value);
-        partial void OnPrev_reg_datChanged();
-    
-        /// <summary>
-        /// No Metadata Documentation available.
-        /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
-        [DataMemberAttribute()]
         public global::System.String Prev_reg_cuo
         {
             get
@@ -19267,6 +19311,30 @@ namespace WaterNut.DataLayer
         private global::System.String _Prev_decl_HS_spec;
         partial void OnPrev_decl_HS_specChanging(global::System.String value);
         partial void OnPrev_decl_HS_specChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
+        [DataMemberAttribute()]
+        public Nullable<global::System.Int32> Prev_reg_year
+        {
+            get
+            {
+                return _Prev_reg_year;
+            }
+            set
+            {
+                OnPrev_reg_yearChanging(value);
+                ReportPropertyChanging("Prev_reg_year");
+                _Prev_reg_year = StructuralObject.SetValidValue(value);
+                ReportPropertyChanged("Prev_reg_year");
+                OnPrev_reg_yearChanged();
+            }
+        }
+        private Nullable<global::System.Int32> _Prev_reg_year;
+        partial void OnPrev_reg_yearChanging(Nullable<global::System.Int32> value);
+        partial void OnPrev_reg_yearChanged();
 
         #endregion
 
@@ -19944,7 +20012,7 @@ namespace WaterNut.DataLayer
         /// </summary>
         [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
-        public global::System.String Date
+        public Nullable<global::System.DateTime> Date
         {
             get
             {
@@ -19954,13 +20022,13 @@ namespace WaterNut.DataLayer
             {
                 OnDateChanging(value);
                 ReportPropertyChanging("Date");
-                _Date = StructuralObject.SetValidValue(value, true);
+                _Date = StructuralObject.SetValidValue(value);
                 ReportPropertyChanged("Date");
                 OnDateChanged();
             }
         }
-        private global::System.String _Date;
-        partial void OnDateChanging(global::System.String value);
+        private Nullable<global::System.DateTime> _Date;
+        partial void OnDateChanging(Nullable<global::System.DateTime> value);
         partial void OnDateChanged();
     
         /// <summary>

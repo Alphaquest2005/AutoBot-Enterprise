@@ -16,6 +16,7 @@ namespace WaterNut.Business.Services.Importers
 
         public CSVImporter(FileTypes fileType)
         {
+            if (fileType == null) throw new ApplicationException("FileType can not be null");
             FileType = fileType;
             
         }

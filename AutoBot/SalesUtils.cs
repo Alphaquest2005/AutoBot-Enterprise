@@ -13,6 +13,7 @@ using AllocationQS.Business.Entities;
 using Core.Common.Converters;
 using Core.Common.Utils;
 using CoreEntities.Business.Entities;
+using DocumentDS.Business.Entities;
 using MoreLinq;
 using SalesDataQS.Business.Services;
 using TrackableEntities;
@@ -403,9 +404,10 @@ namespace AutoBot
                         x.Type == "XML" && x.ApplicationSettingsId ==
                         BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId);
                     if (ft == null) return;
-                    var desFolder = Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder,
-                        ctx.AsycudaDocumentSetExs.First(x => x.AsycudaDocumentSetId == docSetId)
-                            .Declarant_Reference_Number);
+                    var docSetReference = new DocumentDSContext().AsycudaDocumentSets.Where(x => x.AsycudaDocumentSetId == docSetId)
+                        .Select(x => x.Declarant_Reference_Number).First();
+
+                    var desFolder = Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder, docSetReference);
                     var directoryInfo = new DirectoryInfo(desFolder);
                     directoryInfo.Refresh();
                     var csvFiles = directoryInfo.GetFiles()
