@@ -598,7 +598,7 @@ namespace AdjustmentQS.Business.Services
                         pres = ctx.AdjustmentShortAllocations
                             .Include(x => x.AsycudaSalesAllocationsPIData)
                             .OrderBy(x => x.AllocationId)
-                            .Where(x => x.pRegistrationDate == null || (DbFunctions.AddDays(((DateTime)x.pRegistrationDate), 730)) > DateTime.Now)
+                            .Where(x => x.pRegistrationDate == null || x.pExpiryDate > DateTime.Now)
                             .Where(x => x.EntryDataDetails.EntryDataDetailsEx.SystemDocumentSets != null)
                             .Where(x => x.xBond_Item_Id == 0);
                     }
@@ -606,7 +606,7 @@ namespace AdjustmentQS.Business.Services
                     {
                         pres = ctx.AdjustmentShortAllocations.OrderBy(x => x.AllocationId)
                             .Include(x => x.AsycudaSalesAllocationsPIData)
-                            .Where(x => x.pRegistrationDate == null || (DbFunctions.AddDays(((DateTime)x.pRegistrationDate), 730)) > DateTime.Now)
+                            .Where(x => x.pRegistrationDate == null || x.pExpiryDate > DateTime.Now)
                             .Where(x => x.EntryDataDetails.EntryDataDetailsEx.SystemDocumentSets != null);
 
                         //var pres1 = ctx.AdjustmentShortAllocations.OrderBy(x => x.AllocationId)

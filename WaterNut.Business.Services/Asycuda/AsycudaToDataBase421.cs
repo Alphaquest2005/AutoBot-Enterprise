@@ -411,7 +411,7 @@ namespace WaterNut.DataSpace.Asycuda
                         x =>
                             x.xcuda_Identification.xcuda_Registration.Date != null &&
                             ((DateTime)x.xcuda_Identification.xcuda_Registration.Date).Year.ToString() == ai.Prev_decl_reg_year
-                            ai.Prev_decl_reg_year.Substring(ai.Prev_decl_reg_year.Length - 2)
+                            
                             && x.xcuda_Identification.xcuda_Registration.Number == ai.Prev_decl_reg_number &&
                             x.xcuda_Identification.xcuda_Office_segment.Customs_clearance_office_code ==
                             ai.Prev_decl_office_code);

@@ -759,7 +759,9 @@ namespace WaterNut.DataSpace
                     if (itmcount == 0 && p.FinancialInformation != null)
                         cdoc.Document.xcuda_Traders.xcuda_Traders_Financial = new xcuda_Traders_Financial
                         {
-                            Financial_name = p.FinancialInformation
+                            Financial_name = p.FinancialInformation,
+                            TrackingState = TrackingState.Added,
+                            xcuda_Traders = cdoc.Document.xcuda_Traders
                         };
 
                     cdoc.Document.xcuda_Traders.xcuda_Exporter.Exporter_name =
@@ -1672,7 +1674,8 @@ namespace WaterNut.DataSpace
                     Convert.ToDecimal(pod.Quantity) * Convert.ToDecimal(pod.Cost) *
                     Convert.ToDecimal(cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.AsycudaDocumentSet.Exchange_Rate),
                     4)),
-                Amount_foreign_currency = Convert.ToSingle(Math.Round(Convert.ToDecimal(pod.Quantity) * Convert.ToDecimal(pod.Cost), 4))
+                Amount_foreign_currency = Convert.ToSingle(Math.Round(Convert.ToDecimal(pod.Quantity) * Convert.ToDecimal(pod.Cost), 4)),
+                xcuda_Valuation_item = itm.xcuda_Valuation_item
             };
 
 
@@ -1713,7 +1716,8 @@ namespace WaterNut.DataSpace
                             Gross_weight_itm = (float) pod.Quantity *
                                                Convert.ToSingle(.1),
                             Net_weight_itm = (float) pod.Quantity *
-                                             Convert.ToSingle(.1)
+                                             Convert.ToSingle(.1),
+                            xcuda_Valuation_item = itm.xcuda_Valuation_item
                         };
                     }
 
@@ -1782,7 +1786,8 @@ namespace WaterNut.DataSpace
                     {
                         Item_Id = itm.Item_Id,
                         EntryDataDetailsId = ed.EntryDataDetailsId,
-                        TrackingState = TrackingState.Added
+                        TrackingState = TrackingState.Added,
+                        xcuda_Item = itm
                     });
 
                 if (cdoc.Document.AsycudaDocumentEntryDatas.All(x => x.EntryData_Id != ed.EntryData_Id))
@@ -1790,7 +1795,8 @@ namespace WaterNut.DataSpace
                     {
                         AsycudaDocumentId = cdoc.Document.ASYCUDA_Id,
                         EntryData_Id = ed.EntryData_Id,
-                        TrackingState = TrackingState.Added
+                        TrackingState = TrackingState.Added,
+                        xcuda_ASYCUDA = cdoc.Document
                     });
 
                 cdoc.EntryDataDetails.Add(new EntryDataDetails
@@ -1798,7 +1804,9 @@ namespace WaterNut.DataSpace
                     EntryDataDetailsId = ed.EntryDataDetailsId,
                     EntryDataId = ed.EntryDataId,
                     EntryData_Id = ed.EntryData_Id,
-                    EffectiveDate = ed.EffectiveDate == DateTime.MinValue ? ed.EntryDataDate : ed.EffectiveDate
+                    EffectiveDate = ed.EffectiveDate == DateTime.MinValue ? ed.EntryDataDate : ed.EffectiveDate,
+
+                    
                 });
             }
 
@@ -1809,7 +1817,8 @@ namespace WaterNut.DataSpace
                 Suppplementary_unit_code = "NMB",
                 Suppplementary_unit_quantity = pod.Quantity,
                 IsFirstRow = true,
-                TrackingState = TrackingState.Added
+                TrackingState = TrackingState.Added,
+                xcuda_Tarification = itm.xcuda_Tarification
             });
 
             ProcessItemTariff(pod, cdoc.Document, itm);
@@ -1840,7 +1849,9 @@ namespace WaterNut.DataSpace
                 Gross_weight_itm = (float) pod.Quantity *
                                    Convert.ToSingle(_minimumPossibleAsycudaWeight),
                 Net_weight_itm = (float) pod.Quantity *
-                                 Convert.ToSingle(_minimumPossibleAsycudaWeight)
+                                 Convert.ToSingle(_minimumPossibleAsycudaWeight),
+                xcuda_Valuation_item = itm.xcuda_Valuation_item
+
             };
         }
 
@@ -1871,7 +1882,8 @@ namespace WaterNut.DataSpace
                             {
                                 Suppplementary_unit_code = item.SuppUnitCode2,
                                 Suppplementary_unit_quantity = pod.Quantity,
-                                TrackingState = TrackingState.Added
+                                TrackingState = TrackingState.Added,
+                                xcuda_Tarification = itm.xcuda_Tarification
                             });
             }
         }
