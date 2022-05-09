@@ -23,7 +23,6 @@
               this.Property(t => t.Prev_net_weight).HasColumnName("Prev_net_weight");
               this.Property(t => t.Prev_reg_ser).HasColumnName("Prev_reg_ser").HasMaxLength(20);
               this.Property(t => t.Prev_reg_nbr).HasColumnName("Prev_reg_nbr").HasMaxLength(20);
-              this.Property(t => t.Prev_reg_dat).HasColumnName("Prev_reg_dat").HasMaxLength(20);
               this.Property(t => t.Prev_reg_cuo).HasColumnName("Prev_reg_cuo").HasMaxLength(20);
               this.Property(t => t.Suplementary_Quantity).HasColumnName("Suplementary_Quantity");
               this.Property(t => t.Preveious_suplementary_quantity).HasColumnName("Preveious_suplementary_quantity");
@@ -49,6 +48,7 @@
               this.Property(t => t.ApplicationSettingsId).HasColumnName("ApplicationSettingsId");
               this.Property(t => t.TotalDutyLiablity).HasColumnName("TotalDutyLiablity");
               this.Property(t => t.DutyLiablity).HasColumnName("DutyLiablity");
+              this.Property(t => t.Prev_reg_year).HasColumnName("Prev_reg_year");
               this.HasOptional(t => t.PreviousDocumentItem).WithMany(t =>(ICollection<PreviousItemsEx>) t.PreviousItemsExes).HasForeignKey(d => d.PreviousDocumentItemId);
               this.HasRequired(t => t.AsycudaDocumentItem).WithMany(t =>(ICollection<PreviousItemsEx>) t.PreviousItemsExes1).HasForeignKey(d => d.AsycudaDocumentItemId);
              // Tracking Properties

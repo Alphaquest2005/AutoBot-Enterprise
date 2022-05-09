@@ -23,7 +23,6 @@
               this.Property(t => t.Prev_net_weight).HasColumnName("Prev_net_weight");
               this.Property(t => t.Prev_reg_ser).HasColumnName("Prev_reg_ser").HasMaxLength(20);
               this.Property(t => t.Prev_reg_nbr).HasColumnName("Prev_reg_nbr").HasMaxLength(20);
-              this.Property(t => t.Prev_reg_dat).HasColumnName("Prev_reg_dat").HasMaxLength(20);
               this.Property(t => t.Prev_reg_cuo).HasColumnName("Prev_reg_cuo").HasMaxLength(20);
               this.Property(t => t.Suplementary_Quantity).HasColumnName("Suplementary_Quantity");
               this.Property(t => t.Preveious_suplementary_quantity).HasColumnName("Preveious_suplementary_quantity");
@@ -34,6 +33,7 @@
               this.Property(t => t.ASYCUDA_Id).HasColumnName("ASYCUDA_Id");
               this.Property(t => t.QtyAllocated).HasColumnName("QtyAllocated");
               this.Property(t => t.Prev_decl_HS_spec).HasColumnName("Prev_decl_HS_spec").HasMaxLength(20);
+              this.Property(t => t.Prev_reg_year).HasColumnName("Prev_reg_year");
               this.HasRequired(t => t.xcuda_Item).WithOptional(t => (xcuda_PreviousItem)t.xcuda_PreviousItem);
               this.HasOptional(t => t.Ex).WithRequired(t => (xcuda_PreviousItem) t.xcuda_PreviousItem);
               this.HasMany(t => t.xcuda_Items).WithRequired(t => (xcuda_PreviousItem)t.xcuda_PreviousItem);

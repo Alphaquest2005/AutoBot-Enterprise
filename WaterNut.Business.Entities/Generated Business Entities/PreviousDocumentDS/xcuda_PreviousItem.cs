@@ -171,7 +171,7 @@ namespace PreviousDocumentDS.Business.Entities
         }
         string _prev_reg_nbr;
         [DataMember]
-        public string Prev_reg_dat 
+        public Nullable<System.DateTime> Prev_reg_dat 
         {
             get
             {
@@ -184,7 +184,7 @@ namespace PreviousDocumentDS.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        string _prev_reg_dat;
+        Nullable<System.DateTime> _prev_reg_dat;
         [DataMember]
         public string Prev_reg_cuo 
         {

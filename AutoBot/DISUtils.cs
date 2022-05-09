@@ -331,7 +331,7 @@ namespace AutoBot
                     Status = x.Status,
                     xCNumber = x.xCNumber,
                     xLineNumber = x.xLineNumber,
-                    xRegistrationDate = x.xRegistrationDate
+                    xRegistrationDate = x.xRegistrationDate.ToString()
                 })
                 .ToList();
 

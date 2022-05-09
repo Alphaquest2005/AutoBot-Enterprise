@@ -45,6 +45,7 @@
               this.Property(t => t.VolumeLiters).HasColumnName("VolumeLiters");
               this.Property(t => t.EntryDataDetailsKey).HasColumnName("EntryDataDetailsKey").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.Computed)).HasMaxLength(4000);
               this.Property(t => t.TotalValue).HasColumnName("TotalValue").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.Computed));
+              this.Property(t => t.CLineNumber).HasColumnName("CLineNumber");
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);
     			this.Ignore(t => t.ModifiedProperties);

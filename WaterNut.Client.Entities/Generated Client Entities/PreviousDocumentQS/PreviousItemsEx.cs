@@ -211,23 +211,6 @@ public string Prev_reg_nbr
        
        
                 
-                [MaxLength(20, ErrorMessage = "Prev_reg_dat has a max length of 20 letters ")]
-public string Prev_reg_dat
-		{ 
-		    get { return this.previousitemsex.Prev_reg_dat; }
-			set
-			{
-			    if (value == this.previousitemsex.Prev_reg_dat) return;
-				this.previousitemsex.Prev_reg_dat = value;
-                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
-				NotifyPropertyChanged("Prev_reg_dat");
-			}
-		}
-     
-
-       
-       
-                
                 [MaxLength(20, ErrorMessage = "Prev_reg_cuo has a max length of 20 letters ")]
 public string Prev_reg_cuo
 		{ 
@@ -612,6 +595,21 @@ public Nullable<double> DutyLiablity
 				this.previousitemsex.DutyLiablity = value;
                 if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
 				NotifyPropertyChanged("DutyLiablity");
+			}
+		}
+     
+
+       
+       [NumberValidationAttribute]
+public Nullable<int> Prev_reg_year
+		{ 
+		    get { return this.previousitemsex.Prev_reg_year; }
+			set
+			{
+			    if (value == this.previousitemsex.Prev_reg_year) return;
+				this.previousitemsex.Prev_reg_year = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("Prev_reg_year");
 			}
 		}
      

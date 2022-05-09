@@ -420,7 +420,7 @@ namespace WaterNut.DataSpace
                             Convert.ToDouble((ditm.Total_CIF_itm) / ditm.ItemQuantity),
                         Prev_reg_ser = "C",
                         Prev_reg_nbr = ditm.CNumber,
-                        Prev_reg_dat = ditm.RegistrationDate.Year.ToString(),
+                        Prev_reg_year = ditm.RegistrationDate.Year,
                         Prev_reg_cuo = ditm.Customs_clearance_office_code ?? "GDSGO",
                         Prev_decl_HS_spec = ditm.ItemNumber,
                     },

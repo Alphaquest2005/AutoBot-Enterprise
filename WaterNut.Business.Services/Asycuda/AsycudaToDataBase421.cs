@@ -346,7 +346,7 @@ namespace WaterNut.DataSpace.Asycuda
                     pi.Prev_net_weight = Convert.ToDecimal(ai.Prev_decl_weight_written_off);
                     pi.Prev_reg_cuo = ai.Prev_decl_office_code;
                     pi.Prev_decl_HS_spec = ai.Prev_decl_HS_spec;
-                    pi.Prev_reg_dat = ai.Prev_decl_reg_year;
+                    pi.Prev_reg_year = int.Parse(ai.Prev_decl_reg_year);
                     pi.Prev_reg_nbr = ai.Prev_decl_reg_number;
                     pi.Prev_reg_ser = ai.Prev_decl_reg_serial;
                     if (!string.IsNullOrEmpty(ai.Prev_decl_supp_quantity_written_off))
@@ -410,7 +410,7 @@ namespace WaterNut.DataSpace.Asycuda
                     pdoc = ctx.xcuda_ASYCUDA.FirstOrDefault(
                         x =>
                             x.xcuda_Identification.xcuda_Registration.Date != null &&
-                            ((DateTime)x.xcuda_Identification.xcuda_Registration.Date).Year.ToString().Substring(2) ==
+                            ((DateTime)x.xcuda_Identification.xcuda_Registration.Date).Year.ToString() == ai.Prev_decl_reg_year
                             ai.Prev_decl_reg_year.Substring(ai.Prev_decl_reg_year.Length - 2)
                             && x.xcuda_Identification.xcuda_Registration.Number == ai.Prev_decl_reg_number &&
                             x.xcuda_Identification.xcuda_Office_segment.Customs_clearance_office_code ==
@@ -1840,7 +1840,7 @@ private void Update_TarrifCodes(ASYCUDAItem ai)
                 // di.xcuda_Registration.Add(r);
             }
             if (a.Identification.Registration.Date != "1/1/0001")
-                r.Date = a.Identification.Registration.Date;
+                r.Date = DateTime.Parse(a.Identification.Registration.Date);
             if (a.Identification.Registration.Number != "")
                 r.Number = a.Identification.Registration.Number;
 

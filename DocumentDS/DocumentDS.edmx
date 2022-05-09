@@ -2809,7 +2809,7 @@ FROM [dbo].[xcuda_ASYCUDAEx] AS [xcuda_ASYCUDAEx]</DefiningQuery>
             <PropertyRef Name="ASYCUDA_Id" />
           </Key>
           <Property Name="Number" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
-          <Property Name="Date" Type="DateTime" />
+          <Property Name="Date" Type="DateTime" Precision="7" />
           <Property Name="ASYCUDA_Id" Type="Int32" Nullable="false" />
           <NavigationProperty Name="xcuda_Identification" Relationship="WaterNutDBModel.FK_Identification_Registration" FromRole="xcuda_Registration" ToRole="xcuda_Identification" />
         </EntityType>

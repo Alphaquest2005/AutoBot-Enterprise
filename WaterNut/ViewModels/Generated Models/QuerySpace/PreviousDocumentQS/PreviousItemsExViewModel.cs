@@ -448,24 +448,6 @@ namespace WaterNut.QuerySpace.PreviousDocumentQS.ViewModels
 
  
 
-		private string _prev_reg_datFilter;
-        public string Prev_reg_datFilter
-        {
-            get
-            {
-                return _prev_reg_datFilter;
-            }
-            set
-            {
-                _prev_reg_datFilter = value;
-				NotifyPropertyChanged(x => Prev_reg_datFilter);
-                FilterData();
-                
-            }
-        }	
-
- 
-
 		private string _prev_reg_cuoFilter;
         public string Prev_reg_cuoFilter
         {
@@ -889,6 +871,24 @@ namespace WaterNut.QuerySpace.PreviousDocumentQS.ViewModels
         }	
 
  
+
+		private Int32? _prev_reg_yearFilter;
+        public Int32? Prev_reg_yearFilter
+        {
+            get
+            {
+                return _prev_reg_yearFilter;
+            }
+            set
+            {
+                _prev_reg_yearFilter = value;
+				NotifyPropertyChanged(x => Prev_reg_yearFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
 		internal bool DisableBaseFilterData = false;
         public virtual void FilterData()
 	    {
@@ -955,10 +955,6 @@ namespace WaterNut.QuerySpace.PreviousDocumentQS.ViewModels
 
 									if(string.IsNullOrEmpty(Prev_reg_nbrFilter) == false)
 						res.Append(" && " + string.Format("Prev_reg_nbr.Contains(\"{0}\")",  Prev_reg_nbrFilter));						
- 
-
-									if(string.IsNullOrEmpty(Prev_reg_datFilter) == false)
-						res.Append(" && " + string.Format("Prev_reg_dat.Contains(\"{0}\")",  Prev_reg_datFilter));						
  
 
 									if(string.IsNullOrEmpty(Prev_reg_cuoFilter) == false)
@@ -1079,7 +1075,10 @@ namespace WaterNut.QuerySpace.PreviousDocumentQS.ViewModels
 						res.Append(" && " + string.Format("TotalDutyLiablity == {0}",  TotalDutyLiablityFilter.ToString()));				 
 
 					if(DutyLiablityFilter.HasValue)
-						res.Append(" && " + string.Format("DutyLiablity == {0}",  DutyLiablityFilter.ToString()));							return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
+						res.Append(" && " + string.Format("DutyLiablity == {0}",  DutyLiablityFilter.ToString()));				 
+
+					if(Prev_reg_yearFilter.HasValue)
+						res.Append(" && " + string.Format("Prev_reg_year == {0}",  Prev_reg_yearFilter.ToString()));							return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
 // Send to Excel Implementation
@@ -1130,9 +1129,6 @@ namespace WaterNut.QuerySpace.PreviousDocumentQS.ViewModels
                     
  
                     Prev_reg_nbr = x.Prev_reg_nbr ,
-                    
- 
-                    Prev_reg_dat = x.Prev_reg_dat ,
                     
  
                     Prev_reg_cuo = x.Prev_reg_cuo ,
@@ -1192,7 +1188,10 @@ namespace WaterNut.QuerySpace.PreviousDocumentQS.ViewModels
                     TotalDutyLiablity = x.TotalDutyLiablity ,
                     
  
-                    DutyLiablity = x.DutyLiablity 
+                    DutyLiablity = x.DutyLiablity ,
+                    
+ 
+                    Prev_reg_year = x.Prev_reg_year 
                     
                 }).ToList()
             };
@@ -1233,9 +1232,6 @@ namespace WaterNut.QuerySpace.PreviousDocumentQS.ViewModels
                     
  
                     public string Prev_reg_nbr { get; set; } 
-                    
- 
-                    public string Prev_reg_dat { get; set; } 
                     
  
                     public string Prev_reg_cuo { get; set; } 
@@ -1296,6 +1292,9 @@ namespace WaterNut.QuerySpace.PreviousDocumentQS.ViewModels
                     
  
                     public Nullable<double> DutyLiablity { get; set; } 
+                    
+ 
+                    public Nullable<int> Prev_reg_year { get; set; } 
                     
         }
 
