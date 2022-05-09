@@ -499,7 +499,7 @@ namespace WaterNut.DataSpace
 
 
             var ilst = piLst.GroupBy(x => new
-                {x.Prev_reg_nbr, x.Prev_reg_dat, x.Prev_reg_cuo, x.Previous_item_number, x.xcuda_Item});
+                {x.Prev_reg_nbr, x.Prev_reg_year, x.Prev_reg_cuo, x.Previous_item_number, x.xcuda_Item});
 
             // foreach (var g in ilst)
             var exceptions = new ConcurrentQueue<Exception>();
@@ -516,7 +516,7 @@ namespace WaterNut.DataSpace
                             try
                             {
                                 var bl =
-                                    $"{g.Key.Prev_reg_cuo} {g.Key.Prev_reg_dat} C {g.Key.Prev_reg_nbr} art. {g.Key.Previous_item_number}";
+                                    $"{g.Key.Prev_reg_cuo} {g.Key.Prev_reg_year} C {g.Key.Prev_reg_nbr} art. {g.Key.Previous_item_number}";
 
                                 var pLineNo = Convert.ToInt32(g.Key.Previous_item_number);
                                 // get document
@@ -529,8 +529,7 @@ namespace WaterNut.DataSpace
                                         BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId &&
                                         x.xcuda_Identification.xcuda_Registration.Date != null &&
                                         x.xcuda_ASYCUDA_ExtendedProperties.Cancelled != true &&
-                                        x.xcuda_Identification.xcuda_Registration.Date.EndsWith(
-                                            g.Key.Prev_reg_dat.Substring(2))
+                                        ((DateTime)x.xcuda_Identification.xcuda_Registration.Date).Year == g.Key.Prev_reg_year
                                         && x.xcuda_Identification.xcuda_Registration.Number == g.Key.Prev_reg_nbr &&
                                         x.xcuda_Identification.xcuda_Office_segment.Customs_clearance_office_code ==
                                         g.Key.Prev_reg_cuo);

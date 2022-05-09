@@ -6052,7 +6052,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
           </Key>
           <Property Name="Id" Type="Int32" Nullable="false" />
           <Property Name="Number" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
-          <Property Name="Date" Type="DateTime" />
+          <Property Name="Date" Type="DateTime" Precision="7" />
           <Property Name="SupplierInvoiceNo" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
           <Property Name="EmailId" Type="String" MaxLength="255" Unicode="true" FixedLength="false" />
@@ -6113,7 +6113,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
           <Property Name="IsAssessed" Type="Boolean" />
           <Property Name="LineNumber" Type="Int32" Nullable="false" />
           <Property Name="CNumber" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
-          <Property Name="RegistrationDate" Type="DateTime" />
+          <Property Name="RegistrationDate" Type="DateTime" Precision="7" />
           <Property Name="AsycudaDocumentSetId" Type="Int32" />
           <Property Name="Commercial_Description" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
           <Property Name="TariffCode" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
@@ -6263,7 +6263,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
           <Property Name="EmailId" Type="String" MaxLength="255" Unicode="true" FixedLength="false" />
           <Property Name="xCNumber" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Name="xLineNumber" Type="Int32" />
-          <Property Name="xRegistrationDate" Type="DateTime" />
+          <Property Name="xRegistrationDate" Type="DateTime" Precision="7" />
         </EntityType>
         <EntityType Name="TODO_LicenceAvailableQty">
           <Key>

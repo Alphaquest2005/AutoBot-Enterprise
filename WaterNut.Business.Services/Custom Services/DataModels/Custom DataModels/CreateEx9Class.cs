@@ -2063,7 +2063,7 @@ namespace WaterNut.DataSpace
                 pitm.Current_value = Convert.ToDouble((pval) / Convert.ToDouble(pod.EX9Allocation.pQuantity));
                 pitm.Prev_reg_ser = "C";
                 pitm.Prev_reg_nbr = pod.EX9Allocation.pCNumber;
-                pitm.Prev_reg_dat = pod.EX9Allocation.pRegistrationDate.Year.ToString();
+                pitm.Prev_reg_year = pod.EX9Allocation.pRegistrationDate.Year;
                 pitm.Prev_reg_cuo = pod.EX9Allocation.Customs_clearance_office_code;
                 pitm.Prev_decl_HS_spec = pod.pDocumentItem.ItemNumber;
 

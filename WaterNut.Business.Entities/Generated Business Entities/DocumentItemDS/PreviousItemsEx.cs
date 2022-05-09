@@ -171,21 +171,6 @@ namespace DocumentItemDS.Business.Entities
         }
         string _prev_reg_nbr;
         [DataMember]
-        public string Prev_reg_dat 
-        {
-            get
-            {
-                return _prev_reg_dat;
-            }
-            set
-            {
-                _prev_reg_dat = value;
-                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
-                NotifyPropertyChanged();
-            }
-        }
-        string _prev_reg_dat;
-        [DataMember]
         public string Prev_reg_cuo 
         {
             get
@@ -560,6 +545,21 @@ namespace DocumentItemDS.Business.Entities
             }
         }
         Nullable<double> _dutyliablity;
+        [DataMember]
+        public Nullable<int> Prev_reg_year 
+        {
+            get
+            {
+                return _prev_reg_year;
+            }
+            set
+            {
+                _prev_reg_year = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<int> _prev_reg_year;
         [DataMember]
         public xcuda_PreviousItem xcuda_PreviousItem { get; set; }
 

@@ -221,7 +221,7 @@ namespace WaterNut.QuerySpace.PreviousDocumentQS.ViewModels
                     Prev_reg_nbr = x.Prev_reg_nbr,
 
 
-                    Prev_reg_dat = x.Prev_reg_dat,
+                    Prev_reg_year = x.Prev_reg_year,
 
 
                     Prev_reg_cuo = x.Prev_reg_cuo,

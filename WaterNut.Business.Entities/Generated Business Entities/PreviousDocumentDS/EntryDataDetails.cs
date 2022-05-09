@@ -500,6 +500,21 @@ namespace PreviousDocumentDS.Business.Entities
             }
         }
         double _totalvalue;
+        [DataMember]
+        public Nullable<int> CLineNumber 
+        {
+            get
+            {
+                return _clinenumber;
+            }
+            set
+            {
+                _clinenumber = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<int> _clinenumber;
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }
