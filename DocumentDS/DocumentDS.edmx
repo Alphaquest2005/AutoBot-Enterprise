@@ -115,6 +115,7 @@
           <Property Name="CustomsOperationId" Type="int" Nullable="false" />
           <Property Name="SubmitToCustoms" Type="bit" />
           <Property Name="IsDefault" Type="bit" />
+          <Property Name="ExportSupportingEntryData" Type="bit" />
         </EntityType>
         <EntityType Name="CustomsOperations">
           <Key>
@@ -189,6 +190,7 @@
           <Property Name="ReplicateHeaderRow" Type="bit" />
           <Property Name="IsImportable" Type="bit" />
           <Property Name="MaxFileSizeInMB" Type="int" />
+          <Property Name="FileInfoId" Type="int" />
         </EntityType>
         <EntityType Name="PackageTypes">
           <Key>
@@ -562,7 +564,7 @@
             <PropertyRef Name="ASYCUDA_Id" />
           </Key>
           <Property Name="Number" Type="nvarchar" MaxLength="20" />
-          <Property Name="Date" Type="nvarchar" MaxLength="10" />
+          <Property Name="Date" Type="datetime2" Precision="7" />
           <Property Name="ASYCUDA_Id" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="xcuda_Seals">
@@ -2308,6 +2310,10 @@ FROM [dbo].[xcuda_ASYCUDAEx] AS [xcuda_ASYCUDAEx]</DefiningQuery>
             <End Role="xcuda_ASYCUDA" EntitySet="xcuda_ASYCUDA" />
             <End Role="xcuda_ASYCUDA_ExtendedProperties" EntitySet="xcuda_ASYCUDA_ExtendedProperties" />
           </AssociationSet>
+          <AssociationSet Name="FK_FileTypes_AsycudaDocumentSet" Association="WaterNutDBModel.FK_FileTypes_AsycudaDocumentSet">
+            <End Role="AsycudaDocumentSet" EntitySet="AsycudaDocumentSets" />
+            <End Role="FileType" EntitySet="FileTypes" />
+          </AssociationSet>
         </EntityContainer>
         <EntityType Name="AsycudaDocumentSet">
           <Key>
@@ -2345,6 +2351,7 @@ FROM [dbo].[xcuda_ASYCUDAEx] AS [xcuda_ASYCUDAEx]</DefiningQuery>
           <Property Name="Office" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="UpgradeKey" Type="Int32" />
           <Property Name="ExpectedEntries" Type="Int32" />
+          <NavigationProperty Name="FileTypes" Relationship="WaterNutDBModel.FK_FileTypes_AsycudaDocumentSet" FromRole="AsycudaDocumentSet" ToRole="FileType" />
         </EntityType>
         <EntityType Name="Customs_Procedure">
           <Key>
@@ -2369,6 +2376,7 @@ FROM [dbo].[xcuda_ASYCUDAEx] AS [xcuda_ASYCUDAEx]</DefiningQuery>
           <NavigationProperty Name="CustomsOperation" Relationship="WaterNutDBModel.FK_Customs_Procedure_CustomsOperations" FromRole="Customs_Procedure" ToRole="CustomsOperation" />
           <Property Name="SubmitToCustoms" Type="Boolean" />
           <Property Name="IsDefault" Type="Boolean" />
+          <Property Name="ExportSupportingEntryData" Type="Boolean" />
         </EntityType>
         <EntityType Name="Document_Type">
           <Key>
@@ -2801,7 +2809,7 @@ FROM [dbo].[xcuda_ASYCUDAEx] AS [xcuda_ASYCUDAEx]</DefiningQuery>
             <PropertyRef Name="ASYCUDA_Id" />
           </Key>
           <Property Name="Number" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
-          <Property Name="Date" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="Date" Type="DateTime" />
           <Property Name="ASYCUDA_Id" Type="Int32" Nullable="false" />
           <NavigationProperty Name="xcuda_Identification" Relationship="WaterNutDBModel.FK_Identification_Registration" FromRole="xcuda_Registration" ToRole="xcuda_Identification" />
         </EntityType>
@@ -3849,6 +3857,8 @@ FROM [dbo].[xcuda_ASYCUDAEx] AS [xcuda_ASYCUDAEx]</DefiningQuery>
           <Property Name="ReplicateHeaderRow" Type="Boolean" />
           <Property Name="IsImportable" Type="Boolean" />
           <Property Name="MaxFileSizeInMB" Type="Int32" />
+          <Property Name="FileInfoId" Type="Int32" />
+          <NavigationProperty Name="AsycudaDocumentSet" Relationship="WaterNutDBModel.FK_FileTypes_AsycudaDocumentSet" FromRole="FileType" ToRole="AsycudaDocumentSet" />
         </EntityType>
         <Association Name="FK_AsycudaDocumentSet_Attachments_FileTypes">
           <End Type="WaterNutDBModel.FileType" Role="FileType" Multiplicity="0..1" />
@@ -4059,6 +4069,18 @@ FROM [dbo].[xcuda_ASYCUDAEx] AS [xcuda_ASYCUDAEx]</DefiningQuery>
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_FileTypes_AsycudaDocumentSet">
+          <End Type="WaterNutDBModel.AsycudaDocumentSet" Role="AsycudaDocumentSet" Multiplicity="1" />
+          <End Type="WaterNutDBModel.FileType" Role="FileType" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AsycudaDocumentSet">
+              <PropertyRef Name="AsycudaDocumentSetId" />
+            </Principal>
+            <Dependent Role="FileType">
+              <PropertyRef Name="AsycudaDocumentSetId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -4099,6 +4121,7 @@ FROM [dbo].[xcuda_ASYCUDAEx] AS [xcuda_ASYCUDAEx]</DefiningQuery>
           <EntitySetMapping Name="Customs_Procedure">
             <EntityTypeMapping TypeName="WaterNutDBModel.Customs_Procedure">
               <MappingFragment StoreEntitySet="Customs_Procedure">
+                <ScalarProperty Name="ExportSupportingEntryData" ColumnName="ExportSupportingEntryData" />
                 <ScalarProperty Name="IsDefault" ColumnName="IsDefault" />
                 <ScalarProperty Name="SubmitToCustoms" ColumnName="SubmitToCustoms" />
                 <ScalarProperty Name="CustomsOperationId" ColumnName="CustomsOperationId" />
@@ -4746,6 +4769,7 @@ FROM [dbo].[xcuda_ASYCUDAEx] AS [xcuda_ASYCUDAEx]</DefiningQuery>
           <EntitySetMapping Name="FileTypes">
             <EntityTypeMapping TypeName="WaterNutDBModel.FileType">
               <MappingFragment StoreEntitySet="FileTypes">
+                <ScalarProperty Name="FileInfoId" ColumnName="FileInfoId" />
                 <ScalarProperty Name="MaxFileSizeInMB" ColumnName="MaxFileSizeInMB" />
                 <ScalarProperty Name="IsImportable" ColumnName="IsImportable" />
                 <ScalarProperty Name="ReplicateHeaderRow" ColumnName="ReplicateHeaderRow" />

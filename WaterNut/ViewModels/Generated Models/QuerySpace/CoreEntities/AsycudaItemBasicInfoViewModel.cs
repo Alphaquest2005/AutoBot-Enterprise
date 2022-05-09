@@ -296,9 +296,41 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
         }	
 
  
+		private DateTime? _startRegistrationDateFilter = DateTime.Parse(string.Format("{0}/1/{1}", DateTime.Now.Month ,DateTime.Now.Year));
+        public DateTime? StartRegistrationDateFilter
+        {
+            get
+            {
+                return _startRegistrationDateFilter;
+            }
+            set
+            {
+                _startRegistrationDateFilter = value;
+				NotifyPropertyChanged(x => StartRegistrationDateFilter);
+                FilterData();
+                
+            }
+        }	
 
-		private string _registrationDateFilter;
-        public string RegistrationDateFilter
+		private DateTime? _endRegistrationDateFilter = DateTime.Parse(string.Format("{1}/{0}/{2}", DateTime.DaysInMonth( DateTime.Now.Year,DateTime.Now.Month), DateTime.Now.Month, DateTime.Now.Year));
+        public DateTime? EndRegistrationDateFilter
+        {
+            get
+            {
+                return _endRegistrationDateFilter;
+            }
+            set
+            {
+                _endRegistrationDateFilter = value;
+				NotifyPropertyChanged(x => EndRegistrationDateFilter);
+                FilterData();
+                
+            }
+        }
+ 
+
+		private DateTime? _registrationDateFilter;
+        public DateTime? RegistrationDateFilter
         {
             get
             {
@@ -404,9 +436,34 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 						res.Append(" && " + string.Format("CNumber.Contains(\"{0}\")",  CNumberFilter));						
  
 
-									if(string.IsNullOrEmpty(RegistrationDateFilter) == false)
-						res.Append(" && " + string.Format("RegistrationDate.Contains(\"{0}\")",  RegistrationDateFilter));						
  
+
+				if (Convert.ToDateTime(StartRegistrationDateFilter).Date != DateTime.MinValue &&
+		        Convert.ToDateTime(EndRegistrationDateFilter).Date != DateTime.MinValue) res.Append(" && (");
+
+					if (Convert.ToDateTime(StartRegistrationDateFilter).Date != DateTime.MinValue)
+						{
+							if(StartRegistrationDateFilter.HasValue)
+								res.Append(
+                                            (Convert.ToDateTime(EndRegistrationDateFilter).Date != DateTime.MinValue?"":" && ") +
+                                            string.Format("RegistrationDate >= \"{0}\"",  Convert.ToDateTime(StartRegistrationDateFilter).Date.ToString("MM/dd/yyyy")));
+						}
+
+					if (Convert.ToDateTime(EndRegistrationDateFilter).Date != DateTime.MinValue)
+						{
+							if(EndRegistrationDateFilter.HasValue)
+								res.Append(" && " + string.Format("RegistrationDate <= \"{0}\"",  Convert.ToDateTime(EndRegistrationDateFilter).Date.AddHours(23).ToString("MM/dd/yyyy HH:mm:ss")));
+						}
+
+				if (Convert.ToDateTime(StartRegistrationDateFilter).Date != DateTime.MinValue &&
+		        Convert.ToDateTime(EndRegistrationDateFilter).Date != DateTime.MinValue) res.Append(" )");
+
+					if (Convert.ToDateTime(_registrationDateFilter).Date != DateTime.MinValue)
+						{
+							if(RegistrationDateFilter.HasValue)
+								res.Append(" && " + string.Format("RegistrationDate == \"{0}\"",  Convert.ToDateTime(RegistrationDateFilter).Date.ToString("MM/dd/yyyy")));
+						}
+				 
 
 									if(string.IsNullOrEmpty(Commercial_DescriptionFilter) == false)
 						res.Append(" && " + string.Format("Commercial_Description.Contains(\"{0}\")",  Commercial_DescriptionFilter));						
@@ -498,7 +555,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     public string CNumber { get; set; } 
                     
  
-                    public string RegistrationDate { get; set; } 
+                    public Nullable<System.DateTime> RegistrationDate { get; set; } 
                     
  
                     public string Commercial_Description { get; set; } 

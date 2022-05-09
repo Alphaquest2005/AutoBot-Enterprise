@@ -120,6 +120,9 @@ namespace DocumentDS.Business.Services
   		[OperationContract]
         [FaultContract(typeof(ValidationFault))]
         Task<IEnumerable<FileType>> GetFileTypeByOldFileTypeId(string OldFileTypeId, List<string> includesLst = null);
+  		[OperationContract]
+        [FaultContract(typeof(ValidationFault))]
+        Task<IEnumerable<FileType>> GetFileTypeByFileInfoId(string FileInfoId, List<string> includesLst = null);
   
 
 

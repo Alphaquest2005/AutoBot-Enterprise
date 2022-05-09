@@ -707,7 +707,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AsycudaItemBasicInfo' doe
           <Property Name="IsAssessed" Type="bit" />
           <Property Name="LineNumber" Type="int" Nullable="false" />
           <Property Name="CNumber" Type="nvarchar" MaxLength="20" />
-          <Property Name="RegistrationDate" Type="nvarchar" MaxLength="10" />
+          <Property Name="RegistrationDate" Type="datetime2" Precision="7" />
           <Property Name="AsycudaDocumentSetId" Type="int" />
         </EntityType>
         <!--Errors Found During Generation:
@@ -1045,7 +1045,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-DiscrepanciesExecuti
           <Property Name="EmailId" Type="nvarchar" MaxLength="255" />
           <Property Name="xCNumber" Type="nvarchar" MaxLength="20" />
           <Property Name="xLineNumber" Type="int" />
-          <Property Name="xRegistrationDate" Type="nvarchar" MaxLength="10" />
+          <Property Name="xRegistrationDate" Type="datetime2" Precision="7" />
         </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-DiscrepanciesToAssess' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
@@ -1204,7 +1204,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-ERRReport-Allocation
           <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
           <Property Name="CNumber" Type="nvarchar" MaxLength="20" />
           <Property Name="Reference" Type="nvarchar" MaxLength="30" />
-          <Property Name="RegistrationDate" Type="datetime" />
+          <Property Name="RegistrationDate" Type="datetime2" Precision="7" />
           <Property Name="DocumentType" Type="nvarchar" MaxLength="40" />
           <Property Name="LineNumber" Type="int" />
           <Property Name="ItemNumber" Type="nvarchar" MaxLength="50" />
@@ -1785,7 +1785,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-SubmitPOInfo' does n
           </Key>
           <Property Name="Id" Type="int" Nullable="false" />
           <Property Name="Number" Type="nvarchar" MaxLength="20" />
-          <Property Name="Date" Type="nvarchar" MaxLength="10" />
+          <Property Name="Date" Type="datetime2" Precision="7" />
           <Property Name="PONumber" Type="nvarchar" MaxLength="50" />
           <Property Name="SupplierInvoiceNo" Type="nvarchar" MaxLength="50" />
           <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
@@ -5184,7 +5184,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
           <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
           <Property Name="CNumber" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Name="Reference" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
-          <Property Name="RegistrationDate" Type="DateTime" Precision="3" />
+          <Property Name="RegistrationDate" Type="DateTime" Precision="7" />
           <Property Name="DocumentType" Type="String" MaxLength="40" FixedLength="false" Unicode="true" />
           <Property Name="LineNumber" Type="Int32" />
           <Property Name="ItemNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
@@ -6052,7 +6052,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
           </Key>
           <Property Name="Id" Type="Int32" Nullable="false" />
           <Property Name="Number" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
-          <Property Name="Date" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="Date" Type="DateTime" />
           <Property Name="SupplierInvoiceNo" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
           <Property Name="EmailId" Type="String" MaxLength="255" Unicode="true" FixedLength="false" />
@@ -6113,7 +6113,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
           <Property Name="IsAssessed" Type="Boolean" />
           <Property Name="LineNumber" Type="Int32" Nullable="false" />
           <Property Name="CNumber" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
-          <Property Name="RegistrationDate" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="RegistrationDate" Type="DateTime" />
           <Property Name="AsycudaDocumentSetId" Type="Int32" />
           <Property Name="Commercial_Description" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
           <Property Name="TariffCode" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
@@ -6263,7 +6263,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
           <Property Name="EmailId" Type="String" MaxLength="255" Unicode="true" FixedLength="false" />
           <Property Name="xCNumber" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Name="xLineNumber" Type="Int32" />
-          <Property Name="xRegistrationDate" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="xRegistrationDate" Type="DateTime" />
         </EntityType>
         <EntityType Name="TODO_LicenceAvailableQty">
           <Key>

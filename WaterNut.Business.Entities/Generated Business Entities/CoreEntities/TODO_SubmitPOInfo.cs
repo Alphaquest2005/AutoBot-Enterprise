@@ -51,7 +51,7 @@ namespace CoreEntities.Business.Entities
         }
         string _number;
         [DataMember]
-        public string Date 
+        public Nullable<System.DateTime> Date 
         {
             get
             {
@@ -64,7 +64,7 @@ namespace CoreEntities.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        string _date;
+        Nullable<System.DateTime> _date;
         [DataMember]
         public string SupplierInvoiceNo 
         {

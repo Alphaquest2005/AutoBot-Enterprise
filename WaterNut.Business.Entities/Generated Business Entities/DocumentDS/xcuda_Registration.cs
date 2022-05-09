@@ -36,7 +36,7 @@ namespace DocumentDS.Business.Entities
         }
         string _number;
         [DataMember]
-        public string Date 
+        public Nullable<System.DateTime> Date 
         {
             get
             {
@@ -49,7 +49,7 @@ namespace DocumentDS.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        string _date;
+        Nullable<System.DateTime> _date;
         [DataMember]
         public int ASYCUDA_Id 
         {

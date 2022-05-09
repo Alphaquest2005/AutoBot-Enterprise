@@ -212,6 +212,7 @@
           <Property Name="ReplicateHeaderRow" Type="bit" />
           <Property Name="IsImportable" Type="bit" />
           <Property Name="MaxFileSizeInMB" Type="int" />
+          <Property Name="FileInfoId" Type="int" />
         </EntityType>
         <EntityType Name="InventoryItemAlias">
           <Key>
@@ -1336,7 +1337,9 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ShipmentRiderManifests' d
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_EntryDataDetails-SupportingDetails_EntryDataDetails">
-          <End Role="EntryDataDetails" Type="Self.EntryDataDetails" Multiplicity="1" />
+          <End Role="EntryDataDetails" Type="Self.EntryDataDetails" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
           <End Role="EntryDataDetails-SupportingDetails" Type="Self.EntryDataDetails-SupportingDetails" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="EntryDataDetails">
@@ -3059,6 +3062,7 @@ FROM [dbo].[ShipmentRiderManifests] AS [ShipmentRiderManifests]</DefiningQuery>
           <Property Name="ReplicateHeaderRow" Type="Boolean" />
           <Property Name="IsImportable" Type="Boolean" />
           <Property Name="MaxFileSizeInMB" Type="Int32" />
+          <Property Name="FileInfoId" Type="Int32" />
         </EntityType>
         <Association Name="FK_EntryData_FileTypes">
           <End Type="WaterNutDBModel.FileTypes" Role="FileTypes" Multiplicity="0..1" />
@@ -5046,6 +5050,7 @@ FROM [dbo].[ShipmentRiderManifests] AS [ShipmentRiderManifests]</DefiningQuery>
           <EntitySetMapping Name="FileTypes">
             <EntityTypeMapping TypeName="WaterNutDBModel.FileTypes">
               <MappingFragment StoreEntitySet="FileTypes">
+                <ScalarProperty Name="FileInfoId" ColumnName="FileInfoId" />
                 <ScalarProperty Name="MaxFileSizeInMB" ColumnName="MaxFileSizeInMB" />
                 <ScalarProperty Name="IsImportable" ColumnName="IsImportable" />
                 <ScalarProperty Name="ReplicateHeaderRow" ColumnName="ReplicateHeaderRow" />

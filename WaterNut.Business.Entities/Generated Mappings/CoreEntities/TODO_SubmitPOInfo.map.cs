@@ -15,7 +15,7 @@
               this.ToTable("TODO-SubmitPOInfo");
               this.Property(t => t.Id).HasColumnName("Id").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.None));
               this.Property(t => t.Number).HasColumnName("Number").HasMaxLength(20);
-              this.Property(t => t.Date).HasColumnName("Date").HasMaxLength(10);
+              this.Property(t => t.Date).HasColumnName("Date");
               this.Property(t => t.SupplierInvoiceNo).HasColumnName("SupplierInvoiceNo").HasMaxLength(50);
               this.Property(t => t.ApplicationSettingsId).HasColumnName("ApplicationSettingsId");
               this.Property(t => t.EmailId).HasColumnName("EmailId").HasMaxLength(255);

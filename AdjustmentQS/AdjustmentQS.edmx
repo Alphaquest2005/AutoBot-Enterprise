@@ -294,13 +294,13 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AdjustmentShortAllocation
           <Property Name="EntryDataDetailsId" Type="int" Nullable="false" />
           <Property Name="xBond_Item_Id" Type="int" Nullable="false" />
           <Property Name="pCNumber" Type="nvarchar" MaxLength="20" />
-          <Property Name="pRegistrationDate" Type="datetime" />
+          <Property Name="pRegistrationDate" Type="datetime2" Precision="7" />
           <Property Name="pQuantity" Type="float" />
           <Property Name="pQtyAllocated" Type="float" />
           <Property Name="PiQuantity" Type="float" />
           <Property Name="SalesFactor" Type="float" />
           <Property Name="xCNumber" Type="nvarchar" MaxLength="20" />
-          <Property Name="xRegistrationDate" Type="datetime" />
+          <Property Name="xRegistrationDate" Type="datetime2" Precision="7" />
           <Property Name="xQuantity" Type="float" />
           <Property Name="pReferenceNumber" Type="nvarchar" MaxLength="30" />
           <Property Name="pLineNumber" Type="int" />
@@ -1333,13 +1333,13 @@ FROM [dbo].[TODO-PreDiscrepancyErrors] AS [TODO-PreDiscrepancyErrors]</DefiningQ
           <Property Name="EntryDataDetailsId" Type="Int32" Nullable="false" />
           <Property Name="xBond_Item_Id" Type="Int32" Nullable="false" />
           <Property Name="pCNumber" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
-          <Property Name="pRegistrationDate" Type="DateTime" Precision="3" />
+          <Property Name="pRegistrationDate" Type="DateTime" Precision="7" />
           <Property Name="pQuantity" Type="Double" />
           <Property Name="pQtyAllocated" Type="Double" />
           <Property Name="PiQuantity" Type="Double" />
           <Property Name="SalesFactor" Type="Double" />
           <Property Name="xCNumber" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
-          <Property Name="xRegistrationDate" Type="DateTime" Precision="3" />
+          <Property Name="xRegistrationDate" Type="DateTime" Precision="7" />
           <Property Name="xQuantity" Type="Double" />
           <Property Name="pReferenceNumber" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
           <Property Name="pLineNumber" Type="Int32" />

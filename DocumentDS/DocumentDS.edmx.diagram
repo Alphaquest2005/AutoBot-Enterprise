@@ -138,6 +138,7 @@
         <AssociationConnector Association="WaterNutDBModel.FK_Identification_Registration" />
         <AssociationConnector Association="WaterNutDBModel.FK_Identification_Type" />
         <AssociationConnector Association="WaterNutDBModel.xcuda_ASYCUDAxcuda_ASYCUDA_ExtendedProperties" />
+        <AssociationConnector Association="WaterNutDBModel.FK_FileTypes_AsycudaDocumentSet" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

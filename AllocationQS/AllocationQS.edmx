@@ -43,13 +43,13 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AdjustmentShortAllocation
           <Property Name="EntryDataDetailsId" Type="int" Nullable="false" />
           <Property Name="xBond_Item_Id" Type="int" Nullable="false" />
           <Property Name="pCNumber" Type="nvarchar" MaxLength="20" />
-          <Property Name="pRegistrationDate" Type="datetime" />
+          <Property Name="pRegistrationDate" Type="datetime2" Precision="7" />
           <Property Name="pQuantity" Type="float" />
           <Property Name="pQtyAllocated" Type="float" />
           <Property Name="PiQuantity" Type="float" />
           <Property Name="SalesFactor" Type="float" />
           <Property Name="xCNumber" Type="nvarchar" MaxLength="20" />
-          <Property Name="xRegistrationDate" Type="datetime" />
+          <Property Name="xRegistrationDate" Type="datetime2" Precision="7" />
           <Property Name="xQuantity" Type="float" />
           <Property Name="pReferenceNumber" Type="nvarchar" MaxLength="30" />
           <Property Name="pLineNumber" Type="int" />
@@ -139,13 +139,13 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AsycudaSalesAllocationsEx
           <Property Name="EntryDataDetailsId" Type="int" Nullable="false" />
           <Property Name="xBond_Item_Id" Type="int" Nullable="false" />
           <Property Name="pCNumber" Type="nvarchar" MaxLength="20" />
-          <Property Name="pRegistrationDate" Type="datetime" />
+          <Property Name="pRegistrationDate" Type="datetime2" Precision="7" />
           <Property Name="pQuantity" Type="float" />
           <Property Name="pQtyAllocated" Type="float" />
           <Property Name="PiQuantity" Type="float" />
           <Property Name="SalesFactor" Type="float" />
           <Property Name="xCNumber" Type="nvarchar" MaxLength="20" />
-          <Property Name="xRegistrationDate" Type="datetime" />
+          <Property Name="xRegistrationDate" Type="datetime2" Precision="7" />
           <Property Name="xQuantity" Type="float" />
           <Property Name="pReferenceNumber" Type="nvarchar" MaxLength="30" />
           <Property Name="pLineNumber" Type="int" />
@@ -219,7 +219,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AsycudaSalesAndAdjustment
           <Property Name="TaxAmount" Type="float" Nullable="false" />
           <Property Name="SalesFactor" Type="float" />
           <Property Name="pReferenceNumber" Type="nvarchar" MaxLength="30" />
-          <Property Name="pRegistrationDate" Type="datetime" />
+          <Property Name="pRegistrationDate" Type="datetime2" Precision="7" />
           <Property Name="pCNumber" Type="nvarchar" MaxLength="20" />
           <Property Name="pLineNumber" Type="int" />
           <Property Name="pQuantity" Type="float" />
@@ -240,7 +240,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AsycudaSalesAndAdjustment
           <Property Name="xReferenceNumber" Type="nvarchar" MaxLength="30" />
           <Property Name="xCNumber" Type="nvarchar" MaxLength="20" />
           <Property Name="xLineNumber" Type="int" />
-          <Property Name="xRegistrationDate" Type="datetime" />
+          <Property Name="xRegistrationDate" Type="datetime2" Precision="7" />
           <Property Name="xQuantity" Type="float" />
           <Property Name="AllocationId" Type="int" Nullable="false" />
           <Property Name="EntryDataDetailsId" Type="int" Nullable="false" />
@@ -465,12 +465,12 @@ FROM [dbo].[AsycudaSalesAndAdjustmentAllocationsEx] AS [AsycudaSalesAndAdjustmen
           <Property Name="xBond_Item_Id" Type="Int32" Nullable="false" />
           <Property Name="DutyFreePaid" Type="String" Nullable="false" MaxLength="9" FixedLength="false" Unicode="false" />
           <Property Name="pCNumber" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
-          <Property Name="pRegistrationDate" Type="DateTime" Precision="3" />
+          <Property Name="pRegistrationDate" Type="DateTime" Precision="7" />
           <Property Name="pQuantity" Type="Double" />
           <Property Name="pQtyAllocated" Type="Double" />
           <Property Name="PiQuantity" Type="Double" />
           <Property Name="xCNumber" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
-          <Property Name="xRegistrationDate" Type="DateTime" Precision="3" />
+          <Property Name="xRegistrationDate" Type="DateTime" Precision="7" />
           <Property Name="pLineNumber" Type="Int32" />
           <Property Name="xASYCUDA_Id" Type="Int32" />
           <Property Name="pASYCUDA_Id" Type="Int32" />
@@ -500,7 +500,7 @@ FROM [dbo].[AsycudaSalesAndAdjustmentAllocationsEx] AS [AsycudaSalesAndAdjustmen
           <Property Name="Comment" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="AsycudaDocumentSetId" Type="Int32" Nullable="false" />
           <Property Name="FileTypeId" Type="Int32" />
-          <Property Name="EmailId" Type="String" MaxLength="255" />
+          <Property Name="EmailId" Type="String" MaxLength="255" Unicode="true" FixedLength="false" />
           <Property Name="Type" Type="String" Nullable="false" MaxLength="5" FixedLength="false" Unicode="false" />
           <Property Name="CustomerName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
         </EntityType>
@@ -525,13 +525,13 @@ FROM [dbo].[AsycudaSalesAndAdjustmentAllocationsEx] AS [AsycudaSalesAndAdjustmen
           <Property Name="EntryDataDetailsId" Type="Int32" Nullable="false" />
           <Property Name="xBond_Item_Id" Type="Int32" Nullable="false" />
           <Property Name="pCNumber" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
-          <Property Name="pRegistrationDate" Type="DateTime" Precision="3" />
+          <Property Name="pRegistrationDate" Type="DateTime" Precision="7" />
           <Property Name="pQuantity" Type="Double" />
           <Property Name="pQtyAllocated" Type="Double" />
           <Property Name="PiQuantity" Type="Double" />
           <Property Name="SalesFactor" Type="Double" />
           <Property Name="xCNumber" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
-          <Property Name="xRegistrationDate" Type="DateTime" Precision="3" />
+          <Property Name="xRegistrationDate" Type="DateTime" Precision="7" />
           <Property Name="xQuantity" Type="Double" />
           <Property Name="pReferenceNumber" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
           <Property Name="pLineNumber" Type="Int32" />
@@ -558,7 +558,7 @@ FROM [dbo].[AsycudaSalesAndAdjustmentAllocationsEx] AS [AsycudaSalesAndAdjustmen
           <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
           <Property Name="AsycudaDocumentSetId" Type="Int32" Nullable="false" />
           <Property Name="FileTypeId" Type="Int32" />
-          <Property Name="EmailId" Type="String" MaxLength="255" />
+          <Property Name="EmailId" Type="String" MaxLength="255" Unicode="true" FixedLength="false" />
           <Property Name="xStatus" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="Type" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="SalesLineNumber" Type="Int32" />
@@ -603,7 +603,7 @@ FROM [dbo].[AsycudaSalesAndAdjustmentAllocationsEx] AS [AsycudaSalesAndAdjustmen
           <Property Name="TaxAmount" Type="Double" Nullable="false" />
           <Property Name="SalesFactor" Type="Double" />
           <Property Name="pReferenceNumber" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
-          <Property Name="pRegistrationDate" Type="DateTime" Precision="3" />
+          <Property Name="pRegistrationDate" Type="DateTime" Precision="7" />
           <Property Name="pCNumber" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Name="pLineNumber" Type="Int32" />
           <Property Name="pQuantity" Type="Double" />
@@ -624,7 +624,7 @@ FROM [dbo].[AsycudaSalesAndAdjustmentAllocationsEx] AS [AsycudaSalesAndAdjustmen
           <Property Name="xReferenceNumber" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
           <Property Name="xCNumber" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Name="xLineNumber" Type="Int32" />
-          <Property Name="xRegistrationDate" Type="DateTime" Precision="3" />
+          <Property Name="xRegistrationDate" Type="DateTime" Precision="7" />
           <Property Name="xQuantity" Type="Double" />
           <Property Name="AllocationId" Type="Int32" Nullable="false" />
           <Property Name="EntryDataDetailsId" Type="Int32" Nullable="false" />

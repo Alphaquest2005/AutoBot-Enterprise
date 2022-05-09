@@ -139,7 +139,7 @@ namespace CoreEntities.Client.DTO
         private string _CNumber;
 
         [DataMember]
-        public string RegistrationDate
+        public Nullable<System.DateTime> RegistrationDate
 		{ 
 		    get { return _RegistrationDate; }
 			set
@@ -149,7 +149,7 @@ namespace CoreEntities.Client.DTO
 				NotifyPropertyChanged();//m => this.RegistrationDate
 			}
 		}
-        private string _RegistrationDate;
+        private Nullable<System.DateTime> _RegistrationDate;
 
         [DataMember]
         public Nullable<int> AsycudaDocumentSetId

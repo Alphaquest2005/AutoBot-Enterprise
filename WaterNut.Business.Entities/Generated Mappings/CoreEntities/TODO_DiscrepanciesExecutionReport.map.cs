@@ -30,7 +30,7 @@
               this.Property(t => t.EmailId).HasColumnName("EmailId").HasMaxLength(255);
               this.Property(t => t.xCNumber).HasColumnName("xCNumber").HasMaxLength(20);
               this.Property(t => t.xLineNumber).HasColumnName("xLineNumber");
-              this.Property(t => t.xRegistrationDate).HasColumnName("xRegistrationDate").HasMaxLength(10);
+              this.Property(t => t.xRegistrationDate).HasColumnName("xRegistrationDate");
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);
     			this.Ignore(t => t.ModifiedProperties);

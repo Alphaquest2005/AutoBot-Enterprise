@@ -312,13 +312,28 @@ namespace DocumentDS.Business.Entities
         }
         Nullable<int> _maxfilesizeinmb;
         [DataMember]
-        public AsycudaDocumentSet AsycudaDocumentSet { get; set; }
+        public Nullable<int> FileInfoId 
+        {
+            get
+            {
+                return _fileinfoid;
+            }
+            set
+            {
+                _fileinfoid = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<int> _fileinfoid;
         [DataMember]
         public List<AsycudaDocumentSet_Attachments> AsycudaDocumentSet_Attachments { get; set; }
         [DataMember]
         public List<FileType> FileTypes1 { get; set; }
         [DataMember]
         public FileType FileType1 { get; set; }
+        [DataMember]
+        public AsycudaDocumentSet AsycudaDocumentSet { get; set; }
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

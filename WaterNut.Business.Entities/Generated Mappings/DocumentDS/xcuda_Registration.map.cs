@@ -14,7 +14,7 @@
               this.HasKey(t => t.ASYCUDA_Id);        
               this.ToTable("xcuda_Registration");
               this.Property(t => t.Number).HasColumnName("Number").HasMaxLength(20);
-              this.Property(t => t.Date).HasColumnName("Date").HasMaxLength(10);
+              this.Property(t => t.Date).HasColumnName("Date");
               this.Property(t => t.ASYCUDA_Id).HasColumnName("ASYCUDA_Id").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.None));
               this.HasRequired(t => t.xcuda_Identification).WithOptional(t => (xcuda_Registration)t.xcuda_Registration);
              // Tracking Properties

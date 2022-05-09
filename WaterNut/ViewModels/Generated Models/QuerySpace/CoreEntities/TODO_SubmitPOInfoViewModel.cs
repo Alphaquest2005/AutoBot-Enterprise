@@ -206,9 +206,41 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
         }	
 
  
+		private DateTime? _startDateFilter = DateTime.Parse(string.Format("{0}/1/{1}", DateTime.Now.Month ,DateTime.Now.Year));
+        public DateTime? StartDateFilter
+        {
+            get
+            {
+                return _startDateFilter;
+            }
+            set
+            {
+                _startDateFilter = value;
+				NotifyPropertyChanged(x => StartDateFilter);
+                FilterData();
+                
+            }
+        }	
 
-		private string _dateFilter;
-        public string DateFilter
+		private DateTime? _endDateFilter = DateTime.Parse(string.Format("{1}/{0}/{2}", DateTime.DaysInMonth( DateTime.Now.Year,DateTime.Now.Month), DateTime.Now.Month, DateTime.Now.Year));
+        public DateTime? EndDateFilter
+        {
+            get
+            {
+                return _endDateFilter;
+            }
+            set
+            {
+                _endDateFilter = value;
+				NotifyPropertyChanged(x => EndDateFilter);
+                FilterData();
+                
+            }
+        }
+ 
+
+		private DateTime? _dateFilter;
+        public DateTime? DateFilter
         {
             get
             {
@@ -510,9 +542,34 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 						res.Append(" && " + string.Format("Number.Contains(\"{0}\")",  NumberFilter));						
  
 
-									if(string.IsNullOrEmpty(DateFilter) == false)
-						res.Append(" && " + string.Format("Date.Contains(\"{0}\")",  DateFilter));						
  
+
+				if (Convert.ToDateTime(StartDateFilter).Date != DateTime.MinValue &&
+		        Convert.ToDateTime(EndDateFilter).Date != DateTime.MinValue) res.Append(" && (");
+
+					if (Convert.ToDateTime(StartDateFilter).Date != DateTime.MinValue)
+						{
+							if(StartDateFilter.HasValue)
+								res.Append(
+                                            (Convert.ToDateTime(EndDateFilter).Date != DateTime.MinValue?"":" && ") +
+                                            string.Format("Date >= \"{0}\"",  Convert.ToDateTime(StartDateFilter).Date.ToString("MM/dd/yyyy")));
+						}
+
+					if (Convert.ToDateTime(EndDateFilter).Date != DateTime.MinValue)
+						{
+							if(EndDateFilter.HasValue)
+								res.Append(" && " + string.Format("Date <= \"{0}\"",  Convert.ToDateTime(EndDateFilter).Date.AddHours(23).ToString("MM/dd/yyyy HH:mm:ss")));
+						}
+
+				if (Convert.ToDateTime(StartDateFilter).Date != DateTime.MinValue &&
+		        Convert.ToDateTime(EndDateFilter).Date != DateTime.MinValue) res.Append(" )");
+
+					if (Convert.ToDateTime(_dateFilter).Date != DateTime.MinValue)
+						{
+							if(DateFilter.HasValue)
+								res.Append(" && " + string.Format("Date == \"{0}\"",  Convert.ToDateTime(DateFilter).Date.ToString("MM/dd/yyyy")));
+						}
+				 
 
 									if(string.IsNullOrEmpty(SupplierInvoiceNoFilter) == false)
 						res.Append(" && " + string.Format("SupplierInvoiceNo.Contains(\"{0}\")",  SupplierInvoiceNoFilter));						
@@ -650,7 +707,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     public string Number { get; set; } 
                     
  
-                    public string Date { get; set; } 
+                    public Nullable<System.DateTime> Date { get; set; } 
                     
  
                     public string SupplierInvoiceNo { get; set; } 

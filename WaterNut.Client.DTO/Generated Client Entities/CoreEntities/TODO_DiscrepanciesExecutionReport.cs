@@ -243,7 +243,7 @@ namespace CoreEntities.Client.DTO
         private Nullable<int> _xLineNumber;
 
         [DataMember]
-        public string xRegistrationDate
+        public Nullable<System.DateTime> xRegistrationDate
 		{ 
 		    get { return _xRegistrationDate; }
 			set
@@ -253,7 +253,7 @@ namespace CoreEntities.Client.DTO
 				NotifyPropertyChanged();//m => this.xRegistrationDate
 			}
 		}
-        private string _xRegistrationDate;
+        private Nullable<System.DateTime> _xRegistrationDate;
 
        
    //     [DataMember]

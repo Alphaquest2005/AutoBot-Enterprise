@@ -414,11 +414,11 @@ namespace DocumentDS.Business.Entities
         [DataMember]
         public List<AsycudaDocumentSet_Attachments> AsycudaDocumentSet_Attachments { get; set; }
         [DataMember]
-        public List<FileType> FileTypes { get; set; }
-        [DataMember]
         public Container Container { get; set; }
         [DataMember]
         public SystemDocumentSet SystemDocumentSet { get; set; }
+        [DataMember]
+        public List<FileType> FileTypes { get; set; }
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

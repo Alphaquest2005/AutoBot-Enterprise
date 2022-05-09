@@ -183,9 +183,7 @@ public string CNumber
 
        
        
-                
-                [MaxLength(10, ErrorMessage = "RegistrationDate has a max length of 10 letters ")]
-public string RegistrationDate
+public Nullable<System.DateTime> RegistrationDate
 		{ 
 		    get { return this.asycudaitembasicinfo.RegistrationDate; }
 			set

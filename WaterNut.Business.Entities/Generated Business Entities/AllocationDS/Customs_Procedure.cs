@@ -251,6 +251,21 @@ namespace AllocationDS.Business.Entities
         }
         Nullable<bool> _isdefault;
         [DataMember]
+        public Nullable<bool> ExportSupportingEntryData 
+        {
+            get
+            {
+                return _exportsupportingentrydata;
+            }
+            set
+            {
+                _exportsupportingentrydata = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<bool> _exportsupportingentrydata;
+        [DataMember]
         public List<AsycudaDocument> AsycudaDocument { get; set; }
         [DataMember]
         public CustomsOperations CustomsOperations { get; set; }

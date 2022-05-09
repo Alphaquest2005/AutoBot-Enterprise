@@ -48,7 +48,7 @@ namespace CoreEntities.Client.DTO
         private string _Number;
 
         [DataMember]
-        public string Date
+        public Nullable<System.DateTime> Date
 		{ 
 		    get { return _Date; }
 			set
@@ -58,7 +58,7 @@ namespace CoreEntities.Client.DTO
 				NotifyPropertyChanged();//m => this.Date
 			}
 		}
-        private string _Date;
+        private Nullable<System.DateTime> _Date;
 
         [DataMember]
         public string SupplierInvoiceNo
