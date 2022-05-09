@@ -529,7 +529,7 @@ namespace WaterNut.DataSpace
                                         BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId &&
                                         x.xcuda_Identification.xcuda_Registration.Date != null &&
                                         x.xcuda_ASYCUDA_ExtendedProperties.Cancelled != true &&
-                                        x.xcuda_Identification.xcuda_Registration.Date.EndsWith(
+                                        ((DateTime)x.xcuda_Identification.xcuda_Registration.Date).Year.ToString().EndsWith(
                                             g.Key.Prev_reg_dat.Substring(2))
                                         && x.xcuda_Identification.xcuda_Registration.Number == g.Key.Prev_reg_nbr &&
                                         x.xcuda_Identification.xcuda_Office_segment.Customs_clearance_office_code ==

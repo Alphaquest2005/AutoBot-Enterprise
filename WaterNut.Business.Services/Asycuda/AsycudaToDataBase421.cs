@@ -410,8 +410,7 @@ namespace WaterNut.DataSpace.Asycuda
                     pdoc = ctx.xcuda_ASYCUDA.FirstOrDefault(
                         x =>
                             x.xcuda_Identification.xcuda_Registration.Date != null &&
-                            x.xcuda_Identification.xcuda_Registration.Date.Substring(
-                                x.xcuda_Identification.xcuda_Registration.Date.Length - 2) ==
+                            ((DateTime)x.xcuda_Identification.xcuda_Registration.Date).Year.ToString().Substring(2) ==
                             ai.Prev_decl_reg_year.Substring(ai.Prev_decl_reg_year.Length - 2)
                             && x.xcuda_Identification.xcuda_Registration.Number == ai.Prev_decl_reg_number &&
                             x.xcuda_Identification.xcuda_Office_segment.Customs_clearance_office_code ==

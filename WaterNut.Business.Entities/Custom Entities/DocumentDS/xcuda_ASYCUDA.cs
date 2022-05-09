@@ -256,7 +256,7 @@ namespace DocumentDS.Business.Entities
                 if (xcuda_ASYCUDA_ExtendedProperties != null)
                 {
 
-                    if (xcuda_Identification.xcuda_Registration.Date != "")
+                    if (xcuda_Identification.xcuda_Registration.Date != null)
                     {
                         _registrationDate = Convert.ToDateTime(xcuda_Identification.xcuda_Registration.Date);
                     }

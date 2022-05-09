@@ -379,7 +379,7 @@ namespace AutoBot
                             DocumentType = x.DocumentType,
                             CNumber = x.CNumber,
                             Reference = x.Reference,
-                            Date = x.Date,
+                            Date = x.Date.GetValueOrDefault().ToString("yyyy-MMM-dd"),
                             PONumber = x.PONumber,
                             Invoice = x.SupplierInvoiceNo,
                             Taxes = x.Totals_taxes.GetValueOrDefault().ToString("C"),
