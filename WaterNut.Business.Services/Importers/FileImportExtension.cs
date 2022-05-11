@@ -18,7 +18,7 @@ namespace WaterNut.Business.Services.Importers
             FileType = fileType;
             _importers = new Dictionary<string, IImporter>()
             {
-                {FileTypeManager.FileFormats.CSV, new CSVImporter(FileType)},
+                {FileTypeManager.FileFormats.Csv, new CSVImporter(FileType)},
             };
         }
         public void Import(string fileName)

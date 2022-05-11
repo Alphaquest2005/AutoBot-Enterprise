@@ -14,6 +14,7 @@ using CoreEntities.Business.Entities;
 using EntryDataDS.Business.Entities;
 using LicenseDS.Business.Entities;
 using MoreLinq;
+using WaterNut.Business.Services.Utils;
 using WaterNut.DataSpace;
 using WaterNut.DataSpace.Asycuda;
 using FileTypes = CoreEntities.Business.Entities.FileTypes;
@@ -53,11 +54,11 @@ namespace AutoBot
                 if (!Directory.Exists(directory)) return false;
 
                 var lastdbfile =
-                    ctx.AsycudaDocumentSet_Attachments.Include(x => x.Attachments).OrderByDescending(x => x.AttachmentId).FirstOrDefault(x => x.AsycudaDocumentSetId == asycudaDocumentSetId && x.FileTypes.Type == "LIC");
+                    ctx.AsycudaDocumentSet_Attachments.Include(x => x.Attachments).OrderByDescending(x => x.AttachmentId).FirstOrDefault(x => x.AsycudaDocumentSetId == asycudaDocumentSetId && x.FileTypes.FileImporterInfos.EntryType == FileTypeManager.EntryTypes.Lic);
                 var lastfiledate = lastdbfile  != null ? File.GetCreationTime(lastdbfile.Attachments.FilePath) : DateTime.Today.AddDays(-1);
 
                 var ft = ctx.FileTypes.FirstOrDefault(x =>
-                    x.Type == "LIC" && x.ApplicationSettingsId ==
+                    x.FileImporterInfos.EntryType == FileTypeManager.EntryTypes.Lic && x.ApplicationSettingsId ==
                     BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId);
                 if (ft == null) return true;
                 //var desFolder = Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder, ctx.AsycudaDocumentSetExs.First(x => x.AsycudaDocumentSetId == asycudaDocumentSetId).Declarant_Reference_Number);

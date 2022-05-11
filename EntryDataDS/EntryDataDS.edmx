@@ -128,8 +128,8 @@
           <Property Name="Status" Type="nvarchar" MaxLength="50" />
           <Property Name="InvoiceQty" Type="float" />
           <Property Name="ReceivedQty" Type="float" />
-          <Property Name="PreviousInvoiceNumber" Type="nvarchar" MaxLength="50" />
-          <Property Name="CNumber" Type="nvarchar" MaxLength="50" />
+          <Property Name="PreviousInvoiceNumber" Type="nvarchar" MaxLength="255" />
+          <Property Name="CNumber" Type="nvarchar" MaxLength="255" />
           <Property Name="Comment" Type="nvarchar" MaxLength="255" />
           <Property Name="EffectiveDate" Type="datetime2" Precision="7" />
           <Property Name="IsReconciled" Type="bit" />
@@ -195,8 +195,8 @@
           </Key>
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
+          <Property Name="Description" Type="nvarchar" MaxLength="50" />
           <Property Name="FilePattern" Type="nvarchar" MaxLength="255" Nullable="false" />
-          <Property Name="Type" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="AsycudaDocumentSetId" Type="int" Nullable="false" />
           <Property Name="CreateDocumentSet" Type="bit" Nullable="false" />
           <Property Name="DocumentSpecific" Type="bit" Nullable="false" />
@@ -672,7 +672,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AsycudaDocumentEntryDataL
           <Property Name="ItemDescription" Type="nvarchar" MaxLength="255" Nullable="false" />
           <Property Name="Quantity" Type="float" Nullable="false" />
           <Property Name="Cost" Type="float" Nullable="false" />
-          <Property Name="PreviousInvoiceNumber" Type="nvarchar" MaxLength="50" />
+          <Property Name="PreviousInvoiceNumber" Type="nvarchar" MaxLength="255" />
           <Property Name="EntryDataDetailsKey" Type="nvarchar" MaxLength="4000" />
           <Property Name="LineNumber" Type="int" />
           <Property Name="Comment" Type="nvarchar" MaxLength="255" />
@@ -719,8 +719,8 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.EntryDataDetailsEx' does 
           <Property Name="InvoiceQty" Type="float" />
           <Property Name="ReceivedQty" Type="float" />
           <Property Name="Status" Type="nvarchar" MaxLength="50" />
-          <Property Name="PreviousInvoiceNumber" Type="nvarchar" MaxLength="50" />
-          <Property Name="PreviousCNumber" Type="nvarchar" MaxLength="50" />
+          <Property Name="PreviousInvoiceNumber" Type="nvarchar" MaxLength="255" />
+          <Property Name="PreviousCNumber" Type="nvarchar" MaxLength="255" />
           <Property Name="PreviousCLineNumber" Type="int" />
           <Property Name="Comment" Type="nvarchar" MaxLength="255" />
           <Property Name="EffectiveDate" Type="datetime2" Precision="7" />
@@ -2846,8 +2846,8 @@ FROM [dbo].[ShipmentRiderManifests] AS [ShipmentRiderManifests]</DefiningQuery>
           <Property Name="Status" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="InvoiceQty" Type="Double" />
           <Property Name="ReceivedQty" Type="Double" />
-          <Property Name="PreviousInvoiceNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="CNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="PreviousInvoiceNumber" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="CNumber" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="Comment" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="EffectiveDate" Type="DateTime" Precision="7" />
           <Property Name="IsReconciled" Type="Boolean" />
@@ -2935,8 +2935,8 @@ FROM [dbo].[ShipmentRiderManifests] AS [ShipmentRiderManifests]</DefiningQuery>
           <Property Name="InvoiceQty" Type="Double" />
           <Property Name="ReceivedQty" Type="Double" />
           <Property Name="Status" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="PreviousInvoiceNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="PreviousCNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="PreviousInvoiceNumber" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="PreviousCNumber" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="Comment" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="EffectiveDate" Type="DateTime" Precision="7" />
           <Property Name="IsReconciled" Type="Boolean" />
@@ -3043,7 +3043,6 @@ FROM [dbo].[ShipmentRiderManifests] AS [ShipmentRiderManifests]</DefiningQuery>
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
           <Property Name="FilePattern" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="Type" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="AsycudaDocumentSetId" Type="Int32" Nullable="false" />
           <Property Name="CreateDocumentSet" Type="Boolean" Nullable="false" />
           <Property Name="DocumentSpecific" Type="Boolean" Nullable="false" />
@@ -3063,6 +3062,7 @@ FROM [dbo].[ShipmentRiderManifests] AS [ShipmentRiderManifests]</DefiningQuery>
           <Property Name="IsImportable" Type="Boolean" />
           <Property Name="MaxFileSizeInMB" Type="Int32" />
           <Property Name="FileInfoId" Type="Int32" />
+          <Property Name="Description" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
         </EntityType>
         <Association Name="FK_EntryData_FileTypes">
           <End Type="WaterNutDBModel.FileTypes" Role="FileTypes" Multiplicity="0..1" />
@@ -4834,7 +4834,7 @@ FROM [dbo].[ShipmentRiderManifests] AS [ShipmentRiderManifests]</DefiningQuery>
           <Property Name="ItemNumber" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Name="Quantity" Type="Double" Nullable="false" />
           <Property Name="Cost" Type="Double" Nullable="false" />
-          <Property Name="PreviousInvoiceNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="PreviousInvoiceNumber" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="EntryDataDetailsKey" Type="String" MaxLength="4000" FixedLength="false" Unicode="true" />
           <Property Name="LineNumber" Type="Int32" />
           <Property Name="Comment" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
@@ -5050,6 +5050,7 @@ FROM [dbo].[ShipmentRiderManifests] AS [ShipmentRiderManifests]</DefiningQuery>
           <EntitySetMapping Name="FileTypes">
             <EntityTypeMapping TypeName="WaterNutDBModel.FileTypes">
               <MappingFragment StoreEntitySet="FileTypes">
+                <ScalarProperty Name="Description" ColumnName="Description" />
                 <ScalarProperty Name="FileInfoId" ColumnName="FileInfoId" />
                 <ScalarProperty Name="MaxFileSizeInMB" ColumnName="MaxFileSizeInMB" />
                 <ScalarProperty Name="IsImportable" ColumnName="IsImportable" />
@@ -5066,7 +5067,6 @@ FROM [dbo].[ShipmentRiderManifests] AS [ShipmentRiderManifests]</DefiningQuery>
                 <ScalarProperty Name="DocumentSpecific" ColumnName="DocumentSpecific" />
                 <ScalarProperty Name="CreateDocumentSet" ColumnName="CreateDocumentSet" />
                 <ScalarProperty Name="AsycudaDocumentSetId" ColumnName="AsycudaDocumentSetId" />
-                <ScalarProperty Name="Type" ColumnName="Type" />
                 <ScalarProperty Name="FilePattern" ColumnName="FilePattern" />
                 <ScalarProperty Name="ApplicationSettingsId" ColumnName="ApplicationSettingsId" />
                 <ScalarProperty Name="Id" ColumnName="Id" />

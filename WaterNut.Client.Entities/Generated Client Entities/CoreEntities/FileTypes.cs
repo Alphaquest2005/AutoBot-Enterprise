@@ -92,23 +92,6 @@ public string FilePattern
 		}
      
 
-       [RequiredValidationAttribute(ErrorMessage= "Type is required")]
-       
-                
-                [MaxLength(50, ErrorMessage = "Type has a max length of 50 letters ")]
-public string Type
-		{ 
-		    get { return this.filetypes.Type; }
-			set
-			{
-			    if (value == this.filetypes.Type) return;
-				this.filetypes.Type = value;
-                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
-				NotifyPropertyChanged("Type");
-			}
-		}
-     
-
        [RequiredValidationAttribute(ErrorMessage= "AsycudaDocumentSet is required")]
        
 public int AsycudaDocumentSetId
@@ -347,6 +330,23 @@ public Nullable<int> FileInfoId
 				this.filetypes.FileInfoId = value;
                 if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
 				NotifyPropertyChanged("FileInfoId");
+			}
+		}
+     
+
+       
+       
+                
+                [MaxLength(50, ErrorMessage = "Description has a max length of 50 letters ")]
+public string Description
+		{ 
+		    get { return this.filetypes.Description; }
+			set
+			{
+			    if (value == this.filetypes.Description) return;
+				this.filetypes.Description = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("Description");
 			}
 		}
      

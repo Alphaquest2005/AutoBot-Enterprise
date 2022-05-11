@@ -48,6 +48,7 @@ using TrackableEntities;
 using TrackableEntities.Client;
 using ValuationDS.Business.Entities;
 using WaterNut.Business.Entities;
+using WaterNut.Business.Services.Utils;
 using WaterNut.DataSpace;
 using WaterNut.DataSpace.Asycuda;
 using ApplicationException = System.ApplicationException;
@@ -248,7 +249,7 @@ namespace AutoBot
                     foreach (var file in csvFiles)
                     {
 
-                        if (fileType.Type != "Unknown")
+                        if (fileType.FileImporterInfos.EntryType != FileTypeManager.EntryTypes.Unknown)
                         {
                             SendBackTooBigEmail(file, fileType);
                         }
@@ -807,7 +808,7 @@ namespace AutoBot
             return new CoreEntitiesContext().FileTypes.First(x =>
                 x.ApplicationSettingsId ==
                 BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId &&
-                x.Type == fileType);
+                x.FileImporterInfos.EntryType == fileType);
         }
     }
 }

@@ -48,7 +48,7 @@ namespace WaterNut.Business.Services.Utils
             InventorySource inventorySource;
             using (var dctx = new InventoryDSContext())
             {
-                switch (fileType.Type)
+                switch (fileType.FileImporterInfos.EntryType)
                 {
                     case "Shipment Invoice":
                     case "INV":
@@ -71,12 +71,12 @@ namespace WaterNut.Business.Services.Utils
                         inventorySource = dctx.InventorySources.First(x => x.Name == "POS");
                         break;
                     default:
-                        throw new ApplicationException("Unknown CSV FileType");
+                        throw new ApplicationException("Unknown FileType");
                 }
             }
 
             if (inventorySource == null)
-                throw new ApplicationException($"No Inventory source setup for FileType:{fileType.Type}");
+                throw new ApplicationException($"No Inventory source setup for FileType:{fileType.FileImporterInfos.EntryType}");
             return inventorySource;
         }
 

@@ -324,8 +324,8 @@
           </Key>
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
+          <Property Name="Description" Type="nvarchar" MaxLength="50" />
           <Property Name="FilePattern" Type="nvarchar" MaxLength="255" Nullable="false" />
-          <Property Name="Type" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="AsycudaDocumentSetId" Type="int" Nullable="false" />
           <Property Name="CreateDocumentSet" Type="bit" Nullable="false" />
           <Property Name="DocumentSpecific" Type="bit" Nullable="false" />
@@ -4550,7 +4550,6 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
           <Property Name="FilePattern" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="Type" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="AsycudaDocumentSetId" Type="Int32" Nullable="false" />
           <NavigationProperty Name="ApplicationSettings" Relationship="WaterNutDBModel.FK_FileTypes_ApplicationSettings" FromRole="FileTypes" ToRole="ApplicationSettings" />
           <NavigationProperty Name="AsycudaDocumentSetEx" Relationship="WaterNutDBModel.AsycudaDocumentSetExFileTypes" FromRole="FileTypes" ToRole="AsycudaDocumentSetEx" />
@@ -4580,6 +4579,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
           <Property Name="MaxFileSizeInMB" Type="Int32" />
           <Property Name="FileInfoId" Type="Int32" />
           <NavigationProperty Name="FileImporterInfos" Relationship="WaterNutDBModel.FK_FileTypes_FileTypes_FileInfo1" FromRole="FileTypes" ToRole="FileTypes_FileImporterInfo" />
+          <Property Name="Description" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
         </EntityType>
         <Association Name="FK_FileTypes_ApplicationSettings">
           <End Type="WaterNutDBModel.ApplicationSettings" Role="ApplicationSettings" Multiplicity="1">
@@ -6852,6 +6852,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
           <EntitySetMapping Name="FileTypes">
             <EntityTypeMapping TypeName="WaterNutDBModel.FileTypes">
               <MappingFragment StoreEntitySet="FileTypes">
+                <ScalarProperty Name="Description" ColumnName="Description" />
                 <ScalarProperty Name="FileInfoId" ColumnName="FileInfoId" />
                 <ScalarProperty Name="MaxFileSizeInMB" ColumnName="MaxFileSizeInMB" />
                 <ScalarProperty Name="IsImportable" ColumnName="IsImportable" />
@@ -6868,7 +6869,6 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
                 <ScalarProperty Name="DocumentSpecific" ColumnName="DocumentSpecific" />
                 <ScalarProperty Name="CreateDocumentSet" ColumnName="CreateDocumentSet" />
                 <ScalarProperty Name="AsycudaDocumentSetId" ColumnName="AsycudaDocumentSetId" />
-                <ScalarProperty Name="Type" ColumnName="Type" />
                 <ScalarProperty Name="FilePattern" ColumnName="FilePattern" />
                 <ScalarProperty Name="ApplicationSettingsId" ColumnName="ApplicationSettingsId" />
                 <ScalarProperty Name="Id" ColumnName="Id" />

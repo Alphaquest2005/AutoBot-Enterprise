@@ -61,19 +61,6 @@ namespace CoreEntities.Client.DTO
         private string _FilePattern;
 
         [DataMember]
-        public string Type
-		{ 
-		    get { return _Type; }
-			set
-			{
-			    if (value == _Type) return;
-				_Type = value;
-				NotifyPropertyChanged();//m => this.Type
-			}
-		}
-        private string _Type;
-
-        [DataMember]
         public int AsycudaDocumentSetId
 		{ 
 		    get { return _AsycudaDocumentSetId; }
@@ -280,6 +267,19 @@ namespace CoreEntities.Client.DTO
 			}
 		}
         private Nullable<int> _FileInfoId;
+
+        [DataMember]
+        public string Description
+		{ 
+		    get { return _Description; }
+			set
+			{
+			    if (value == _Description) return;
+				_Description = value;
+				NotifyPropertyChanged();//m => this.Description
+			}
+		}
+        private string _Description;
 
        
         [DataMember]

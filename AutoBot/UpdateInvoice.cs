@@ -8,6 +8,7 @@ using CoreEntities.Business.Entities;
 using MoreLinq;
 using OCR.Business.Entities;
 using TrackableEntities;
+using WaterNut.Business.Services.Utils;
 using WaterNut.DataSpace;
 
 namespace AutoBot
@@ -489,7 +490,7 @@ namespace AutoBot
                         , ApplicationSettingsId = BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId
                         , TrackingState = TrackingState.Added
                         , FileTypeId = new CoreEntitiesContext().FileTypes.First(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId 
-                            && x.Type == "Shipment Invoice").Id
+                            && x.FileImporterInfos.EntryType == FileTypeManager.EntryTypes.ShipmentInvoice).Id
 
                     };
                     ctx.Invoices.Add(invoice);

@@ -20,7 +20,7 @@
               this.Property(t => t.ItemNumber).HasColumnName("ItemNumber").IsRequired().HasMaxLength(20);
               this.Property(t => t.Quantity).HasColumnName("Quantity");
               this.Property(t => t.Cost).HasColumnName("Cost");
-              this.Property(t => t.PreviousInvoiceNumber).HasColumnName("PreviousInvoiceNumber").HasMaxLength(50);
+              this.Property(t => t.PreviousInvoiceNumber).HasColumnName("PreviousInvoiceNumber").HasMaxLength(255);
               this.Property(t => t.EntryDataDetailsKey).HasColumnName("EntryDataDetailsKey").HasMaxLength(4000);
               this.Property(t => t.LineNumber).HasColumnName("LineNumber");
               this.Property(t => t.Comment).HasColumnName("Comment").HasMaxLength(255);

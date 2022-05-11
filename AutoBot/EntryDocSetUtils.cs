@@ -13,6 +13,7 @@ using DocumentDS.Business.Entities;
 using EmailDownloader;
 using EntryDataDS.Business.Entities;
 using TrackableEntities;
+using WaterNut.Business.Services.Utils;
 using WaterNut.DataSpace;
 using AsycudaDocumentSet_Attachments = CoreEntities.Business.Entities.AsycudaDocumentSet_Attachments;
 using Attachments = CoreEntities.Business.Entities.Attachments;
@@ -160,7 +161,7 @@ namespace AutoBot
             var fileType = new CoreEntitiesContext().FileTypes.First(x =>
                 x.ApplicationSettingsId ==
                 BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId &&
-                x.Type == "ExpiredEntries");
+                x.FileImporterInfos.EntryType == FileTypeManager.EntryTypes.ExpiredEntries);
             CSVUtils.SaveCsv(new FileInfo[] {new FileInfo(expFile)}, fileType);
         }
 
@@ -194,7 +195,7 @@ namespace AutoBot
             var fileType = new CoreEntitiesContext().FileTypes.First(x =>
                 x.ApplicationSettingsId ==
                 BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId &&
-                x.Type == "CancelledEntries");
+                x.FileImporterInfos.EntryType == FileTypeManager.EntryTypes.CancelledEntries);
             CSVUtils.SaveCsv(new FileInfo[] { new FileInfo(expFile) }, fileType);
         }
 
@@ -396,7 +397,7 @@ namespace AutoBot
         public static void ClearDocSetEntries(FileTypes fileType)
         {
 
-            Console.WriteLine($"Clear {fileType.Type} Entries");
+            Console.WriteLine($"Clear {fileType.FileImporterInfos.EntryType} Entries");
 
             // var saleInfo = CurrentSalesInfo();
             var docSet = BaseDataModel.Instance.GetAsycudaDocumentSet(fileType.AsycudaDocumentSetId).Result;

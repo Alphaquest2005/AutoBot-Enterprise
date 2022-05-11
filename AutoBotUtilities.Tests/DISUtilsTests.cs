@@ -1,3 +1,5 @@
+using WaterNut.Business.Services.Utils;
+
 namespace AutoBotUtilities.Tests
 {
     using AutoBot;
@@ -102,7 +104,7 @@ namespace AutoBotUtilities.Tests
                         ProcessNextStep = new List<string>() { },
                         ReplicateHeaderRow = null,
                         ReplyToMail = false,
-                        Type = "DIS",
+                        FileImporterInfos = new FileImporterInfo(){EntryType =  FileTypeManager.EntryTypes.Dis},
                     }
                 },
                 CopyEntryData = false,
@@ -164,7 +166,8 @@ namespace AutoBotUtilities.Tests
                 ProcessNextStep = new List<string>() { },
                 ReplicateHeaderRow = null,
                 ReplyToMail = false,
-                Type = "XLSX",
+                FileImporterInfos = new FileImporterInfo() { EntryType = FileTypeManager.FileFormats.Xlsx },
+                
             };
             return fileType;
         }

@@ -565,7 +565,7 @@ namespace AdjustmentQS.Business.Services
         {
             FilterExpression =
                 FilterExpression.Replace("&& (pExpiryDate >= \"" + DateTime.Now.Date.ToShortDateString() + "\")", "");
-            var docsetid = new CoreEntitiesContext().FileTypes.First(x => x.Type == adjustmentType).AsycudaDocumentSetId;
+            var docsetid = new CoreEntitiesContext().FileTypes.First(x => x.FileImporterInfos.EntryType == adjustmentType).AsycudaDocumentSetId;
             FilterExpression =
                 Regex.Replace(FilterExpression, "AsycudaDocumentSetId == \"\\d+\"", $"AsycudaDocumentSetId == \"{docsetid}\"");
 
