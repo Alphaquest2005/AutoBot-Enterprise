@@ -201,7 +201,7 @@ namespace AutoBot
                                $"AutoBot";
 
 
-                    var info = Enumerable.FirstOrDefault<Tuple<AsycudaDocumentSetEx, string>>(POUtils.CurrentPOInfo(RES.First().AsycudaDocumentSetId));
+                    var info = Enumerable.FirstOrDefault<Tuple<AsycudaDocumentSet, string>>(POUtils.CurrentPOInfo(RES.First().AsycudaDocumentSetId));
                     var directory = info.Item2;
 
                     var summaryFile = Path.Combine(directory, $"SalesSummary.csv");

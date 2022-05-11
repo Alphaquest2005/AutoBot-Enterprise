@@ -107,18 +107,19 @@ namespace AutoBot
             }
         }
 
-        public static List<Tuple<AsycudaDocumentSetEx, string>> CurrentPOInfo(int docSetId)
+        public static List<Tuple<AsycudaDocumentSet, string>> CurrentPOInfo(int docSetId)
         {
             try
             {
-                using (var ctx = new CoreEntitiesContext())
+                using (var ctx = new DocumentDSContext())
                 {
-                    var docSet = ctx.AsycudaDocumentSetExs.First(x => x.AsycudaDocumentSetId == docSetId);
+                    var docSet = ctx.AsycudaDocumentSets.First(x => x.AsycudaDocumentSetId == docSetId);
+                     
                     var dirPath = StringExtensions.UpdateToCurrentUser(Path.Combine(
                         BaseDataModel.Instance.CurrentApplicationSettings.DataFolder,
                         docSet.Declarant_Reference_Number));
-                    return new List<Tuple<AsycudaDocumentSetEx, string>>()
-                        { new Tuple<AsycudaDocumentSetEx, string>(docSet, dirPath) };
+                    return new List<Tuple<AsycudaDocumentSet, string>>()
+                        { new Tuple<AsycudaDocumentSet, string>(docSet, dirPath) };
                 }
             }
             catch (Exception e)
@@ -319,7 +320,7 @@ namespace AutoBot
                     var pdfs = new List<string>();
 
                     var poInfo =
-                        Enumerable.FirstOrDefault<Tuple<AsycudaDocumentSetEx, string>>(
+                        Enumerable.FirstOrDefault<Tuple<AsycudaDocumentSet, string>>(
                             CurrentPOInfo(docSet.AsycudaDocumentSetId));
                     if (!Directory.Exists(poInfo.Item2)) return;
                     foreach (var itm in pOs)

@@ -11,6 +11,7 @@ using System.Threading.Tasks.Schedulers;
 using AutoBotUtilities;
 using Core.Common.Converters;
 using CoreEntities.Business.Entities;
+using DocumentDS.Business.Entities;
 using EntryDataDS.Business.Entities;
 using InventoryDS.Business.Entities;
 using TrackableEntities;
@@ -391,7 +392,7 @@ namespace AutoBot
                     {
 
                         // if (GetDocSetActions(email.Key.AsycudaDocumentSetId, "SubmitUnclassifiedItems").Any()) continue;
-                        var info = Enumerable.FirstOrDefault<Tuple<AsycudaDocumentSetEx, string>>(POUtils.CurrentPOInfo(email.Key.AsycudaDocumentSetId));
+                        var info = Enumerable.FirstOrDefault<Tuple<AsycudaDocumentSet, string>>(POUtils.CurrentPOInfo(email.Key.AsycudaDocumentSetId));
                         var directory = info.Item2;
 
                         var errorfile = Path.Combine(directory, $"UnclassifiedItems-{email.Key.AsycudaDocumentSetId}.csv");
