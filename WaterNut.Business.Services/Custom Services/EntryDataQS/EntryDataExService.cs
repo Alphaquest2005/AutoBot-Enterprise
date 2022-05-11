@@ -28,10 +28,10 @@ namespace EntryDataQS.Business.Services
             var docSet = new List<AsycudaDocumentSet>() {await WaterNut.DataSpace.BaseDataModel.Instance.GetAsycudaDocumentSet(docSetId).ConfigureAwait(false)};
             
                 var dfileType = FileTypeManager.FileTypes().FirstOrDefault(x =>
-                    Regex.IsMatch(droppedFilePath, x.FilePattern, RegexOptions.IgnoreCase) && x.Type == fileType && x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId);
+                    Regex.IsMatch(droppedFilePath, x.FilePattern, RegexOptions.IgnoreCase) && x.FileImporterInfos.EntryType == fileType && x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId);
                 if (dfileType == null) // for filenames not in database
                 {
-                    dfileType = FileTypeManager.FileTypes().First(x => x.Type == fileType);
+                    dfileType = FileTypeManager.FileTypes().First(x => x.FileImporterInfos.EntryType == fileType);
                 }
                 if(dfileType.CopyEntryData)docSet.Add(await WaterNut.DataSpace.BaseDataModel.Instance.GetAsycudaDocumentSet(dfileType.AsycudaDocumentSetId).ConfigureAwait(false));
                 await WaterNut.DataSpace.SaveCSVModel.Instance.ProcessDroppedFile(droppedFilePath, dfileType, docSet,
@@ -51,10 +51,10 @@ namespace EntryDataQS.Business.Services
                 var fileTypeId = res?.FileTypeId;
 
                 var dfileType = ctx.FileTypes.ToList().FirstOrDefault(x =>
-                    Regex.IsMatch(droppedFilePath, x.FilePattern, RegexOptions.IgnoreCase) && x.Type == fileType);
+                    Regex.IsMatch(droppedFilePath, x.FilePattern, RegexOptions.IgnoreCase) && x.FileImporterInfos.EntryType == fileType);
                 if (dfileType == null) // for filenames not in database
                 {
-                    dfileType = ctx.FileTypes.First(x => x.Type == fileType);
+                    dfileType = ctx.FileTypes.First(x => x.FileImporterInfos.EntryType == fileType);
                 }
 
                 dfileType.AsycudaDocumentSetId = docSetId;

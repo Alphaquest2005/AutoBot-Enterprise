@@ -122,8 +122,8 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
             await SaveCSV.Instance.SaveCSVFile(fileType,
                     CoreEntities.ViewModels.BaseViewModel.Instance.CurrentAsycudaDocumentSetEx.AsycudaDocumentSetId)
                 .ConfigureAwait(false);
-
-            await AdjustmentShortDetailsModel.Instance.AutoMatch().ConfigureAwait(false);
+            // only for DIS don't bother for ADJ
+           // await AdjustmentShortDetailsModel.Instance.AutoMatch().ConfigureAwait(false); 
 
             MessageBus.Default.BeginNotify(MessageToken.AdjustmentExesChanged, null,
                 new NotificationEventArgs(MessageToken.AdjustmentExesChanged));

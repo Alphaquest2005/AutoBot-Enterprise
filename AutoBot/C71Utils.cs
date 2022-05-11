@@ -7,6 +7,7 @@ using Core.Common.Utils;
 using CoreEntities.Business.Entities;
 using EntryDataDS.Business.Entities;
 using ValuationDS.Business.Entities;
+using WaterNut.Business.Services.Utils;
 using WaterNut.DataSpace;
 using WaterNut.DataSpace.Asycuda;
 using FileTypes = CoreEntities.Business.Entities.FileTypes;
@@ -49,16 +50,16 @@ namespace AutoBot
                     //if (!Directory.Exists(directory)) return false;
 
                     var lastdbfile =
-                        ctx.AsycudaDocumentSet_Attachments.Include(x => x.Attachments).OrderByDescending(x => x.AttachmentId).FirstOrDefault(x => x.AsycudaDocumentSetId == asycudaDocumentSetId && x.FileTypes.Type == "C71");
+                        ctx.AsycudaDocumentSet_Attachments.Include(x => x.Attachments).OrderByDescending(x => x.AttachmentId).FirstOrDefault(x => x.AsycudaDocumentSetId == asycudaDocumentSetId && x.FileTypes.FileImporterInfos.EntryType == FileTypeManager.EntryTypes.C71);
                     var lastfiledate = lastdbfile != null ? File.GetCreationTime(lastdbfile.Attachments.FilePath) : DateTime.Today.AddDays(-1);
 
 
                     var ft = ctx.FileTypes.FirstOrDefault(x =>
-                        x.Type == "C71" && x.ApplicationSettingsId ==
+                        x.FileImporterInfos.EntryType == FileTypeManager.EntryTypes.C71 && x.ApplicationSettingsId ==
                         BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId);
                     if (ft == null) return true;
                     //var desFolder = Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder, ctx.AsycudaDocumentSetExs.First(x => x.AsycudaDocumentSetId == asycudaDocumentSetId).Declarant_Reference_Number);
-                    var desFolder = Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder, "Imports", "C71");
+                    var desFolder = Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder, "Imports", FileTypeManager.EntryTypes.C71);
                     var csvFiles = new DirectoryInfo(desFolder).GetFiles()
                         .Where(x => x.LastWriteTime >= lastfiledate)
                         .Where(x => Regex.IsMatch(x.FullName, ft.FilePattern, RegexOptions.IgnoreCase) && x.Name != "C71.xml")

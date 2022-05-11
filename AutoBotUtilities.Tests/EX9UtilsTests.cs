@@ -1,5 +1,6 @@
 using System.IO;
 using Core.Common.Utils;
+using WaterNut.Business.Services.Utils;
 using WaterNut.DataSpace;
 
 namespace AutoBotUtilities.Tests
@@ -55,7 +56,7 @@ namespace AutoBotUtilities.Tests
             try
             {
                 var fileType = EX9Utils.GetxSalesFileType();
-                Assert.AreEqual(fileType.Type, "xSales");
+                Assert.AreEqual(fileType.FileImporterInfos.EntryType, FileTypeManager.EntryTypes.xSales);
             }
             catch (Exception e)
             {

@@ -70,7 +70,7 @@ namespace AutoBot
         public static void ImportPDF(FileInfo[] csvFiles, FileTypes fileType)
             //(int? fileTypeId, int? emailId, bool overWriteExisting, List<AsycudaDocumentSet> docSet, string fileType)
         {
-            Console.WriteLine("Importing PDF " + fileType.Type);
+            Console.WriteLine("Importing PDF " + fileType.FileImporterInfos.EntryType);
             var failedFiles = new List<string>();
             foreach (var file in csvFiles.Where(x => x.Extension.ToLower() == ".pdf"))
             {

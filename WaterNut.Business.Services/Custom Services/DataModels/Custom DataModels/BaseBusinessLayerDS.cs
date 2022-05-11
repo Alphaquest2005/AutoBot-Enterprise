@@ -3031,14 +3031,14 @@ namespace WaterNut.DataSpace
 
         private string GetReference(FileInfo file, FileTypes fileType)
         {
-            switch (fileType.Type)
+            switch (fileType.FileImporterInfos.EntryType)
             {
-                case "C71":
+                case FileTypeManager.EntryTypes.C71:
                 {
                     C71ToDataBase.GetRegNumber(file, out var regNumber);
                     return regNumber;
                 }
-                case "LIC":
+                case FileTypeManager.EntryTypes.Lic:
                 {
                     LicenseToDataBase.GetLicenceRegNumber(file, out var regNumber);
                     return regNumber;
@@ -3171,6 +3171,8 @@ namespace WaterNut.DataSpace
                 List<Attachment> pdfs;
                 using (var ctx = new DocumentDSContext())
                 {
+                    var pdfFileTypeInfo = new CoreEntitiesContext().FileImporterInfos.First(x =>
+                        x.EntryType == FileTypeManager.EntryTypes.Inv && x.Format == FileTypeManager.FileFormats.PDF);
                     docs = ctx.xcuda_ASYCUDA
                         .Include(x => x.AsycudaDocument_Attachments)
                         .Where(x => x.xcuda_ASYCUDA_ExtendedProperties.AsycudaDocumentSetId ==
@@ -3178,13 +3180,13 @@ namespace WaterNut.DataSpace
                     pdfs = ctx.AsycudaDocumentSet_Attachments
                         .Include(x => x.Attachment)
                         .Where(x => x.Attachment.FilePath.EndsWith("pdf")
-                                    && x.FileType.Type != "INV"
+                                    && x.FileType.FileInfoId  != pdfFileTypeInfo.Id
                                     && x.AsycudaDocumentSetId == asycudaDocumentSetId
                                     && x.EmailId == email)
                         .Select(x => x.Attachment).AsEnumerable().DistinctBy(x => x.FilePath).ToList();
 
                     var nonpdfs = ctx.AsycudaDocumentSet_Attachments.Include(x => x.Attachment).Where(x =>
-                            !x.Attachment.FilePath.EndsWith("pdf") && x.FileType.Type != "INV"
+                            !x.Attachment.FilePath.EndsWith("pdf") && x.FileType.FileInfoId != pdfFileTypeInfo.Id
                                                                    && x.AsycudaDocumentSetId == asycudaDocumentSetId
                                                                    && x.EmailId == email)
                         .Select(x => x.Attachment).AsEnumerable().DistinctBy(x => x.FilePath).ToList();
@@ -3315,9 +3317,9 @@ namespace WaterNut.DataSpace
                                 && x.AsycudaDocumentSetId ==
                                 asycudaDocumentSetId).ToList();
                 var c71Att = ctx.AsycudaDocumentSet_Attachments.Include(x => x.Attachments).Where(x =>
-                        x.FileTypes.Type == "C71" && x.AsycudaDocumentSetId == asycudaDocumentSetId)
+                        x.FileTypes.FileImporterInfos.EntryType == FileTypeManager.EntryTypes.C71 && x.AsycudaDocumentSetId == asycudaDocumentSetId)
                     .Select(x => x.Attachments).AsEnumerable().DistinctBy(x => x.FilePath).Where(x =>
-                        new FileInfo(x.FilePath).Name != "C71.xml" && x.Reference != "C71").ToList();
+                        new FileInfo(x.FilePath).Name != $"{FileTypeManager.EntryTypes.C71}.xml" && x.Reference != FileTypeManager.EntryTypes.C71).ToList();
 
                 if (!c71Att.Any())
                 {

@@ -11,6 +11,7 @@ using DocumentDS.Business.Entities;
 using MoreLinq;
 using MoreLinq.Extensions;
 using WaterNut.Business.Services.Importers;
+using WaterNut.Business.Services.Utils;
 
 
 namespace WaterNut.DataSpace
@@ -67,9 +68,9 @@ namespace WaterNut.DataSpace
            
             var fixedHeadings = csvImporter.GetHeadings(lines).ToArray();
 
-            if (fileType.Type == "SI")
+            if (fileType.FileImporterInfos.EntryType == FileTypeManager.EntryTypes.SubItems)
             {
-                await SaveCsvSubItems.Instance.ExtractSubItems(fileType.Type, lines, fixedHeadings)
+                await SaveCsvSubItems.Instance.ExtractSubItems(fileType.FileImporterInfos.EntryType, lines, fixedHeadings)
                     .ConfigureAwait(false);
             }
             else

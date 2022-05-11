@@ -15,7 +15,7 @@ namespace WaterNut.Business.Services.Importers.EntryData
             return new Dictionary<string, IDocumentProcessor>()
             {
 
-                { FileTypeManager.EntryTypes.PO, new DocumentProcessorPipline(new List<IDocumentProcessor>()
+                { FileTypeManager.EntryTypes.Po, new DocumentProcessorPipline(new List<IDocumentProcessor>()
                                                                     {
                                                                         new InventoryImporter(fileType, docSet, overWrite),
                                                                         new POProcessor(fileType, docSet, overWrite)

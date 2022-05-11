@@ -1302,6 +1302,10 @@
       <Project>{978B7943-BD11-41EB-91C9-59A09C6F0ECC}</Project>
       <Name>WaterNut.Business.Entities</Name>
     </ProjectReference>
+    <ProjectReference Include="..\WaterNut.Business.Services\WaterNut.Business.Services.csproj">
+      <Project>{02885F55-31E7-48FB-9944-DF99540F3270}</Project>
+      <Name>WaterNut.Business.Services</Name>
+    </ProjectReference>
     <ProjectReference Include="..\WaterNut.Client.Bootstraper\WaterNut.Client.Bootstraper.csproj">
       <Project>{6ed70b7d-cd5e-4bdd-9bcb-84f5fa2850a3}</Project>
       <Name>WaterNut.Client.Bootstraper</Name>

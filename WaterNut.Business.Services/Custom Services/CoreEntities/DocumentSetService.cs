@@ -12,6 +12,7 @@ using CoreEntities.Business.Entities;
 using DocumentDS.Business.Entities;
 using DocumentDS.Business.Services;
 using Omu.ValueInjecter;
+using WaterNut.Business.Services.Utils;
 using WaterNut.DataSpace;
 
 
@@ -144,11 +145,11 @@ namespace CoreEntities.Business.Services
 
 
 
-                if (fileType.Type == "LIC")
+                if (fileType.FileImporterInfos.EntryType == FileTypeManager.EntryTypes.Lic)
                     BaseDataModel.Instance.ImportLicense(fileType.AsycudaDocumentSetId,
                         csvFiles.Select(x => x.FullName).ToList());
 
-                if (fileType.Type == "C71")
+                if (fileType.FileImporterInfos.EntryType == FileTypeManager.EntryTypes.C71)
                     BaseDataModel.Instance.ImportC71(fileType.AsycudaDocumentSetId,
                         csvFiles.Select(x => x.FullName).ToList());
 

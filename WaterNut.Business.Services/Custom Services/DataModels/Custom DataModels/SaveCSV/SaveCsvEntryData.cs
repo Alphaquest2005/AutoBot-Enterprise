@@ -364,35 +364,35 @@ namespace WaterNut.DataSpace
                     throw new ApplicationException("Doc Set not belonging to Current Company");
 
 
-                if (fileType.Type == "Rider")
+                if (fileType.FileImporterInfos.EntryType == FileTypeManager.EntryTypes.Rider)
                 {
                     ProcessCsvRider(fileType, docSet, overWriteExisting, emailId,
                         droppedFilePath, eslst);
                     return true;
                 }
 
-                if (fileType.Type == "Manifest")
+                if (fileType.FileImporterInfos.EntryType == FileTypeManager.EntryTypes.Manifest)
                 {
                     ProcessManifest(fileType, docSet, overWriteExisting, emailId,
                         droppedFilePath, eslst);
                     return true;
                 }
 
-                if (fileType.Type == "BL")
+                if (fileType.FileImporterInfos.EntryType == FileTypeManager.EntryTypes.BL)
                 {
                     ProcessBL(fileType, docSet, overWriteExisting, emailId,
                         droppedFilePath, eslst);
                     return true;
                 }
 
-                if (fileType.Type == "Freight")
+                if (fileType.FileImporterInfos.EntryType == FileTypeManager.EntryTypes.Freight)
                 {
                     ProcessFreight(fileType, docSet, overWriteExisting, emailId,
                         droppedFilePath, eslst);
                     return true;
                 }
 
-                if (fileType.Type == "Shipment Invoice")
+                if (fileType.FileImporterInfos.EntryType == FileTypeManager.EntryTypes.ShipmentInvoice)
                 {
 
                     if (eslst.FirstOrDefault() is IDictionary<string, object> itm && itm.Keys.Contains("EntryDataId"))
@@ -439,14 +439,14 @@ namespace WaterNut.DataSpace
 
                 }
 
-                if (fileType.Type == "ExpiredEntries")
+                if (fileType.FileImporterInfos.EntryType == FileTypeManager.EntryTypes.ExpiredEntries)
                 {
                     ProcessCsvExpiredEntries(fileType, docSet, overWriteExisting, emailId,
                         droppedFilePath, eslst);
                     return true;
                 }
 
-                if (fileType.Type == "CancelledEntries")
+                if (fileType.FileImporterInfos.EntryType == FileTypeManager.EntryTypes.CancelledEntries)
                 {
                     ProcessCsvCancelledEntries(fileType, docSet, overWriteExisting, emailId,
                         droppedFilePath, eslst);
@@ -1024,7 +1024,7 @@ namespace WaterNut.DataSpace
                             SourceFile = droppedFilePath,
                             ApplicationSettingsId = applicationSettingsId,
                             SourceRow = line.SourceRow,
-                            FileType = fileType.Type,
+                            FileType = fileType.FileImporterInfos.EntryType,
                             EmailId = emailId,
                             FileTypeId = fileTypeId,
                             EntryDataId = line.EntryDataId,
@@ -1063,7 +1063,7 @@ namespace WaterNut.DataSpace
                
 
 
-                if (fileType.Type == "Sales" && !(((IDictionary<string, object>)eslst.First()).ContainsKey("Tax") || ((IDictionary<string, object>)eslst.First()).ContainsKey("TotalTax")))
+                if (fileType.FileImporterInfos.EntryType == FileTypeManager.EntryTypes.Sales && !(((IDictionary<string, object>)eslst.First()).ContainsKey("Tax") || ((IDictionary<string, object>)eslst.First()).ContainsKey("TotalTax")))
                     throw new ApplicationException("Sales file dose not contain Tax");
 
              
@@ -1106,10 +1106,10 @@ namespace WaterNut.DataSpace
             if (!item.EntryDataDetails.Any())
                 throw new ApplicationException(entryDataId + " has no details");
 
-            var data = await GetDataToUpDate(fileType, docSet, overWriteExisting, item);
+            var data = await GetDataToUpDate(fileType, docSet, overWriteExisting, item).ConfigureAwait(false);
 
 
-            await SaveEntryDataDetails(docSet, overWriteExisting, data);
+            await SaveEntryDataDetails(docSet, overWriteExisting, data).ConfigureAwait(false);
         }
 
         private async Task<(dynamic existingEntryData, List<EntryDataDetails> details)> GetDataToUpDate(FileTypes fileType, List<AsycudaDocumentSet> docSet, bool overWriteExisting,
@@ -1200,7 +1200,7 @@ namespace WaterNut.DataSpace
 
                     ctx.SaveChanges();
                     AddToDocSet(docSet, data.existingEntryData);
-                    await UpdateEntryData(data.existingEntryData).ConfigureAwait(false);
+                    await UpdateEntryData(data.existingEntryData).ConfigureAwait(false).ConfigureAwait(false);
                 }
             }
         }
@@ -1214,33 +1214,33 @@ namespace WaterNut.DataSpace
             int applicationSettingsId = item.EntryData.ApplicationSettingsId;
             string entryDataId = item.EntryData.EntryDataId;
             EntryData entryData = null;
-            switch (fileType.Type)
+            switch (fileType.FileImporterInfos.EntryType)
             {
-                case "Sales":
+                case FileTypeManager.EntryTypes.Sales:
 
 
-                    entryData = await CreateSales(docSet, item, applicationSettingsId, entryDataId);
+                    entryData = await CreateSales(docSet, item, applicationSettingsId, entryDataId).ConfigureAwait(false);
                     break;
-                case "INV":
-                    entryData = await CreateInvoice(docSet, item, entryDataId, applicationSettingsId);
+                case FileTypeManager.EntryTypes.Inv:
+                    entryData = await CreateInvoice(docSet, item, entryDataId, applicationSettingsId).ConfigureAwait(false);
 
                     break;
 
-                case "PO":
-                case "Shipment Invoice":
-                    entryData = await CreatePO(docSet, item, entryDataId, applicationSettingsId);
+                case FileTypeManager.EntryTypes.Po:
+                case FileTypeManager.EntryTypes.ShipmentInvoice:
+                    entryData = await CreatePO(docSet, item, entryDataId, applicationSettingsId).ConfigureAwait(false);
                     break;
-                case "OPS":
-                    entryData = await CreateOPS(docSet, item, applicationSettingsId, entryDataId);
+                case FileTypeManager.EntryTypes.Ops:
+                    entryData = await CreateOPS(docSet, item, applicationSettingsId, entryDataId).ConfigureAwait(false);
                     break;
-                case "ADJ":
-                    entryData = await CreateADJ(docSet, item, applicationSettingsId, entryDataId);
+                case FileTypeManager.EntryTypes.Adj:
+                    entryData = await CreateADJ(docSet, item, applicationSettingsId, entryDataId).ConfigureAwait(false);
                     break;
-                case "DIS":
-                    entryData = await CreateDIS(docSet, item, applicationSettingsId, entryDataId);
+                case FileTypeManager.EntryTypes.Dis:
+                    entryData = await CreateDIS(docSet, item, applicationSettingsId, entryDataId).ConfigureAwait(false);
                     break;
-                case "RCON":
-                    entryData = await CreateRCON(docSet, item, applicationSettingsId, entryDataId);
+                case FileTypeManager.EntryTypes.Rcon:
+                    entryData = await CreateRCON(docSet, item, applicationSettingsId, entryDataId).ConfigureAwait(false);
                     break;
                 default:
                     throw new ApplicationException("Unknown FileType");
@@ -1584,7 +1584,7 @@ namespace WaterNut.DataSpace
             {
                 if (overWriteExisting)
                 {
-                    await DeleteExistingEntryData(existingEntryDataList);
+                    await DeleteExistingEntryData(existingEntryDataList).ConfigureAwait(false);
 
                     details = item.EntryDataDetails.ToList();
                 }
@@ -1877,7 +1877,7 @@ namespace WaterNut.DataSpace
                     .GroupBy(x => new {x.SupplierCode, x.SupplierName, x.SupplierAddress, x.CountryCode})
                     .ToList();
 
-                if (BaseDataModel.Instance.CurrentApplicationSettings.AssessIM7 == true && fileType.Type == "PO")
+                if (BaseDataModel.Instance.CurrentApplicationSettings.AssessIM7 == true && fileType.FileImporterInfos.EntryType == FileTypeManager.EntryTypes.Po)
                 {
                     if (itmlst.All(x => string.IsNullOrEmpty(x.Key?.SupplierCode ?? x.Key?.SupplierName)))
                     {
@@ -2115,7 +2115,7 @@ namespace WaterNut.DataSpace
             InventorySource inventorySource;
             using (var dctx = new InventoryDSContext())
             {
-                switch (fileType.Type)
+                switch (fileType.FileImporterInfos.EntryType)
                 {
                     case "Shipment Invoice":
                     case "INV":
@@ -2143,7 +2143,7 @@ namespace WaterNut.DataSpace
             }
 
             if (inventorySource == null)
-                throw new ApplicationException($"No Inventory source setup for FileType:{fileType.Type}");
+                throw new ApplicationException($"No Inventory source setup for FileType:{fileType.FileImporterInfos.EntryType}");
             return inventorySource;
         }
 

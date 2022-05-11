@@ -31,3 +31,6 @@ INSERT INTO FileTypeActions
                  (FileTypeId, ActionId, AssessIM7, AssessEX)
 SELECT @newFileTypeId, ActionId, AssessIM7, AssessEX
 FROM    #oldFileTypeActions 
+
+
+select * from FileTypeActions

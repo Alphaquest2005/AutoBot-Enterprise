@@ -55,7 +55,7 @@ namespace AutoBot
 
         public static void SaveCsv(IEnumerable<FileInfo> csvFiles, FileTypes fileType)
         {
-            Console.WriteLine("Importing CSV " + fileType.Type);
+            Console.WriteLine($"Importing CSV {fileType.FileImporterInfos.EntryType}");
             foreach (var file in csvFiles) TryImportFile(fileType, file);
         }
 
@@ -130,7 +130,7 @@ namespace AutoBot
 
         public static void ReplaceCSV(FileInfo[] csvFiles, FileTypes fileType)
         {
-            Console.WriteLine("Importing CSV " + fileType.Type);
+            Console.WriteLine($"Importing CSV {fileType.FileImporterInfos.EntryType}");
             foreach (var file in csvFiles)
             {
 
@@ -406,7 +406,7 @@ namespace AutoBot
 
         private static void ImportChildFileTypes(FileTypes fileType, bool? overwrite, string output)
         {
-            foreach (var cfileType in fileType.ChildFileTypes)
+            foreach (var cfileType in fileType.ChildFileTypes.Where(x => x.FileTypeMappings.Any()))
             {
                 var cfileTypes = FileTypeManager.GetFileType(cfileType);
                 cfileTypes.AsycudaDocumentSetId = fileType.AsycudaDocumentSetId;

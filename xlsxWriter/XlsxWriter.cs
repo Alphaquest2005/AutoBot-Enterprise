@@ -8,6 +8,7 @@ using EntryDataDS.Business.Entities;
 using MoreLinq;
 using PicoXLSX;
 using TrackableEntities;
+using WaterNut.Business.Services.Utils;
 using WaterNut.DataSpace;
 using FormatException = PicoXLSX.FormatException;
 
@@ -39,7 +40,7 @@ namespace xlsxWriter
                     .Include(x => x.FileTypeMappings)
                     .First(x => x.ApplicationSettingsId ==
                                 BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId
-                                && x.Type == "POTemplate");
+                                && x.FileImporterInfos.EntryType == FileTypeManager.EntryTypes.POTemplate);
 
                 
 

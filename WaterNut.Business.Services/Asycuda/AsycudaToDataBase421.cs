@@ -18,6 +18,7 @@ using CoreEntities.Business.Entities;
 using TrackableEntities.Common;
 using TrackableEntities.EF6;
 using WaterNut.Business.Entities;
+using WaterNut.Business.Services.Utils;
 using WaterNut.Interfaces;
 using AsycudaDocumentSet_Attachments = CoreEntities.Business.Entities.AsycudaDocumentSet_Attachments;
 using Customs_Procedure = DocumentDS.Business.Entities.Customs_Procedure;
@@ -150,7 +151,7 @@ namespace WaterNut.DataSpace.Asycuda
                         FileTypeId = ctx.FileTypes.FirstOrDefault(x =>
                             x.ApplicationSettingsId ==
                             BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId &&
-                            x.Type == "XML")?.Id,
+                            x.FileImporterInfos.EntryType == FileTypeManager.EntryTypes.XML)?.Id,
                         TrackingState = TrackingState.Added,
                         Attachments = new Attachments(true)
                         {

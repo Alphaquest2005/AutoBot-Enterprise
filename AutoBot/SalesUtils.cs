@@ -17,6 +17,7 @@ using DocumentDS.Business.Entities;
 using MoreLinq;
 using SalesDataQS.Business.Services;
 using TrackableEntities;
+using WaterNut.Business.Services.Utils;
 using WaterNut.DataSpace;
 
 namespace AutoBot
@@ -286,7 +287,7 @@ namespace AutoBot
                         x.Declarant_Reference_Number == "Imports")?.AsycudaDocumentSetId ?? BaseDataModel.CurrentSalesInfo().Item3.AsycudaDocumentSetId;
 
                     var ft = ctx.FileTypes.FirstOrDefault(x =>
-                        x.Type == "XML" && x.ApplicationSettingsId ==
+                        x.FileImporterInfos.EntryType == FileTypeManager.EntryTypes.XML && x.ApplicationSettingsId ==
                         BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId);
                     if (ft == null) return;
                     var desFolder = Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder,
@@ -401,7 +402,7 @@ namespace AutoBot
                         ctx.AsycudaDocumentSet_Attachments.Include(x => x.Attachments).OrderByDescending(x => x.AttachmentId).FirstOrDefault(x => x.AsycudaDocumentSetId == docSetId);
                     var lastfiledate = lastdbfile != null ? File.GetCreationTime(lastdbfile.Attachments.FilePath) : DateTime.Today.AddDays(-1);
                     var ft = ctx.FileTypes.FirstOrDefault(x =>
-                        x.Type == "XML" && x.ApplicationSettingsId ==
+                        x.FileImporterInfos.EntryType == FileTypeManager.EntryTypes.XML && x.ApplicationSettingsId ==
                         BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId);
                     if (ft == null) return;
                     var docSetReference = new DocumentDSContext().AsycudaDocumentSets.Where(x => x.AsycudaDocumentSetId == docSetId)

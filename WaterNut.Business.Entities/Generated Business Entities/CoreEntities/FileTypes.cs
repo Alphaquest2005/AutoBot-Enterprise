@@ -78,21 +78,6 @@ namespace CoreEntities.Business.Entities
         }
         string _filepattern;
         [DataMember]
-        public string Type 
-        {
-            get
-            {
-                return _type;
-            }
-            set
-            {
-                _type = value;
-                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
-                NotifyPropertyChanged();
-            }
-        }
-        string _type;
-        [DataMember]
         public int AsycudaDocumentSetId 
         {
             get
@@ -332,6 +317,21 @@ namespace CoreEntities.Business.Entities
             }
         }
         Nullable<int> _fileinfoid;
+        [DataMember]
+        public string Description 
+        {
+            get
+            {
+                return _description;
+            }
+            set
+            {
+                _description = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _description;
         [DataMember]
         public ApplicationSettings ApplicationSettings { get; set; }
         [DataMember]

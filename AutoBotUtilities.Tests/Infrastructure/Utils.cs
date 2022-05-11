@@ -43,10 +43,10 @@ namespace AutoBotUtilities.Tests.Infrastructure
         }
 
         public static IEnumerable<FileTypes> GetUnknownCSVFileType() =>
-            FileTypeManager.GetImportableFileType(FileTypeManager.EntryTypes.Unknown, FileTypeManager.FileFormats.CSV);
+            FileTypeManager.GetImportableFileType(FileTypeManager.EntryTypes.Unknown, FileTypeManager.FileFormats.Csv);
 
         public static IEnumerable<FileTypes> GetPOCSVFileType() =>
-            FileTypeManager.GetImportableFileType(FileTypeManager.EntryTypes.PO, FileTypeManager.FileFormats.CSV);
+            FileTypeManager.GetImportableFileType(FileTypeManager.EntryTypes.Po, FileTypeManager.FileFormats.Csv);
 
         public static void ClearDataBase()
         {

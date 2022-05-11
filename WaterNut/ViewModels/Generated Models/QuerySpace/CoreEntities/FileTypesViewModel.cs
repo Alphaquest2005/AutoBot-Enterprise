@@ -353,24 +353,6 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 
  
 
-		private string _typeFilter;
-        public string TypeFilter
-        {
-            get
-            {
-                return _typeFilter;
-            }
-            set
-            {
-                _typeFilter = value;
-				NotifyPropertyChanged(x => TypeFilter);
-                FilterData();
-                
-            }
-        }	
-
- 
-
 		private Boolean? _createDocumentSetFilter;
         public Boolean? CreateDocumentSetFilter
         {
@@ -568,6 +550,24 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
         }	
 
  
+
+		private string _descriptionFilter;
+        public string DescriptionFilter
+        {
+            get
+            {
+                return _descriptionFilter;
+            }
+            set
+            {
+                _descriptionFilter = value;
+				NotifyPropertyChanged(x => DescriptionFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
 		internal bool DisableBaseFilterData = false;
         public virtual void FilterData()
 	    {
@@ -600,10 +600,6 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 
 									if(string.IsNullOrEmpty(FilePatternFilter) == false)
 						res.Append(" && " + string.Format("FilePattern.Contains(\"{0}\")",  FilePatternFilter));						
- 
-
-									if(string.IsNullOrEmpty(TypeFilter) == false)
-						res.Append(" && " + string.Format("Type.Contains(\"{0}\")",  TypeFilter));						
  
 
 									if(CreateDocumentSetFilter.HasValue)
@@ -647,7 +643,11 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
  
 
 					if(MaxFileSizeInMBFilter.HasValue)
-						res.Append(" && " + string.Format("MaxFileSizeInMB == {0}",  MaxFileSizeInMBFilter.ToString()));							return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
+						res.Append(" && " + string.Format("MaxFileSizeInMB == {0}",  MaxFileSizeInMBFilter.ToString()));				 
+
+									if(string.IsNullOrEmpty(DescriptionFilter) == false)
+						res.Append(" && " + string.Format("Description.Contains(\"{0}\")",  DescriptionFilter));						
+			return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
 // Send to Excel Implementation
@@ -671,9 +671,6 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                 {
  
                     FilePattern = x.FilePattern ,
-                    
- 
-                    Type = x.Type ,
                     
  
                     CreateDocumentSet = x.CreateDocumentSet ,
@@ -706,7 +703,10 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     IsImportable = x.IsImportable ,
                     
  
-                    MaxFileSizeInMB = x.MaxFileSizeInMB 
+                    MaxFileSizeInMB = x.MaxFileSizeInMB ,
+                    
+ 
+                    Description = x.Description 
                     
                 }).ToList()
             };
@@ -720,9 +720,6 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
         {
 		 
                     public string FilePattern { get; set; } 
-                    
- 
-                    public string Type { get; set; } 
                     
  
                     public bool CreateDocumentSet { get; set; } 
@@ -756,6 +753,9 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     
  
                     public Nullable<int> MaxFileSizeInMB { get; set; } 
+                    
+ 
+                    public string Description { get; set; } 
                     
         }
 

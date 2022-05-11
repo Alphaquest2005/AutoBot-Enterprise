@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using AutoBot;
 using CoreEntities.Business.Entities;
+using DocumentDS.Business.Entities;
 using ExcelDataReader;
 using WaterNut.Business.Services.Utils;
 using WaterNut.DataSpace;
@@ -23,8 +24,8 @@ namespace AutoBotUtilities.CSV
             try
             {
 
-                var adjReference = $"ADJ-{new CoreEntitiesContext().AsycudaDocumentSetExs.First(x => x.AsycudaDocumentSetId == fileType.AsycudaDocumentSetId).Declarant_Reference_Number}";
-                var disReference = $"DIS-{new CoreEntitiesContext().AsycudaDocumentSetExs.First(x => x.AsycudaDocumentSetId == fileType.AsycudaDocumentSetId).Declarant_Reference_Number}";
+                var adjReference = $"ADJ-{new DocumentDSContext().AsycudaDocumentSets.First(x => x.AsycudaDocumentSetId == fileType.AsycudaDocumentSetId).Declarant_Reference_Number}";
+                var disReference = $"DIS-{new DocumentDSContext().AsycudaDocumentSets.First(x => x.AsycudaDocumentSetId == fileType.AsycudaDocumentSetId).Declarant_Reference_Number}";
                 var dic = new Dictionary<string, Func<Dictionary<string, string>,DataRow,DataRow, string>>()
                 {
                     {"CurrentDate", (dt, drow, header)=> DateTime.Now.Date.ToShortDateString() },
@@ -137,7 +138,7 @@ namespace AutoBotUtilities.CSV
 
         private static bool ProcessUnknownFileType(FileTypes fileType, FileInfo file, List<DataRow> rows)
         {
-            if (fileType.ChildFileTypes.FirstOrDefault()?.Type == FileTypeManager.EntryTypes.Unknown)
+            if (fileType.ChildFileTypes.FirstOrDefault()?.FileImporterInfos.EntryType == FileTypeManager.EntryTypes.Unknown)
             {
                 Utils.SendBackTooBigEmail(file, fileType);
 
