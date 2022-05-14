@@ -298,7 +298,7 @@ public Nullable<double> ReceivedQty
        
        
                 
-                [MaxLength(50, ErrorMessage = "PreviousInvoiceNumber has a max length of 50 letters ")]
+                [MaxLength(255, ErrorMessage = "PreviousInvoiceNumber has a max length of 255 letters ")]
 public string PreviousInvoiceNumber
 		{ 
 		    get { return this.adjustmentdetail.PreviousInvoiceNumber; }
@@ -362,7 +362,7 @@ public Nullable<bool> Downloaded
        
        
                 
-                [MaxLength(50, ErrorMessage = "PreviousCNumber has a max length of 50 letters ")]
+                [MaxLength(255, ErrorMessage = "PreviousCNumber has a max length of 255 letters ")]
 public string PreviousCNumber
 		{ 
 		    get { return this.adjustmentdetail.PreviousCNumber; }

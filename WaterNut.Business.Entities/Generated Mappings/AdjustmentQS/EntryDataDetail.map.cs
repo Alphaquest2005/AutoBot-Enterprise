@@ -30,8 +30,8 @@
               this.Property(t => t.Status).HasColumnName("Status").HasMaxLength(50);
               this.Property(t => t.InvoiceQty).HasColumnName("InvoiceQty");
               this.Property(t => t.ReceivedQty).HasColumnName("ReceivedQty");
-              this.Property(t => t.PreviousInvoiceNumber).HasColumnName("PreviousInvoiceNumber").HasMaxLength(50);
-              this.Property(t => t.CNumber).HasColumnName("CNumber").HasMaxLength(50);
+              this.Property(t => t.PreviousInvoiceNumber).HasColumnName("PreviousInvoiceNumber").HasMaxLength(255);
+              this.Property(t => t.CNumber).HasColumnName("CNumber").HasMaxLength(255);
               this.Property(t => t.Comment).HasColumnName("Comment").HasMaxLength(255);
               this.Property(t => t.EffectiveDate).HasColumnName("EffectiveDate");
               this.Property(t => t.IsReconciled).HasColumnName("IsReconciled");

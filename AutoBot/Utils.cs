@@ -191,10 +191,10 @@ namespace AutoBot
                 var strLst = lst.Select(x => $"{x.Key.ToString()}-{x.Value}").Aggregate((o, n) => $"{o},{n}");
 
 
-                new AdjustmentShortService().AutoMatchItems(BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId, strLst).Wait();
+                new AdjustmentShortService().AutoMatchUtils.AutoMatchItems(BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId, strLst).Wait();
 
 
-                new AdjustmentShortService()
+                new AdjustmentShortService().AutoMatchUtils
                     .ProcessDISErrorsForAllocation(
                         BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId,
                         strLst).Wait();

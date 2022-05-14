@@ -4,13 +4,29 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using AutoBot;
 using CoreEntities.Business.Entities;
+using DocumentDS.Business.Entities;
+using EntryDataDS.Business.Entities;
+using WaterNut.Business.Services.Importers;
 using WaterNut.Business.Services.Utils;
+using WaterNut.DataSpace;
+using FileTypes = CoreEntities.Business.Entities.FileTypes;
 
 namespace AutoBotUtilities.Tests.Infrastructure
 {
     public static class Utils
     {
+
+    
+
+        public static bool IsTestApplicationSettings()
+        {
+            return 
+                System.Configuration.ConfigurationManager.
+                    ConnectionStrings["CoreEntities"].ConnectionString.Contains(@"JOSEPH-PC\SQLDEVELOPER2017"); ;
+        }
+
         public static string GetTestDirectory()
         {
 
@@ -22,16 +38,17 @@ namespace AutoBotUtilities.Tests.Infrastructure
             return testDirectory;
         }
 
-        public static string GetTestSalesFile(string testFile)
+        public static string GetTestSalesFile(List<string> testFile)
         {
             var testDirectory = Infrastructure.Utils.GetTestDirectory();
-            var testSalesFile = GetTestSalesFile(testDirectory, testFile);
+            var finalpaths = testFile.Prepend(testDirectory);
+            var testSalesFile = GetTestSalesFile(finalpaths);
             return testSalesFile;
         }
 
-        public static string GetTestSalesFile(string testDirectory, string testFile)
+        private static string GetTestSalesFile(IEnumerable<string> testFile)
         {
-            var testSalesFile = Path.Combine(testDirectory, testFile);
+            var testSalesFile = Path.Combine(testFile.ToArray());
             if (!File.Exists(testSalesFile))
                 throw new ApplicationException($"TestFile Dose not Exists: '{testSalesFile}'");
             return testSalesFile;
@@ -50,6 +67,7 @@ namespace AutoBotUtilities.Tests.Infrastructure
 
         public static void ClearDataBase()
         {
+            if (!Infrastructure.Utils.IsTestApplicationSettings()) return;
             using (var ctx = new CoreEntitiesContext())
             {
                 ctx.Database.ExecuteSqlCommand(@"delete from AsycudaSalesAllocations
@@ -63,6 +81,34 @@ namespace AutoBotUtilities.Tests.Infrastructure
                             delete from [InventoryItems-NonStock]
                             delete from InventoryItems
                             delete from EntryData");
+            }
+        }
+
+
+        public static void ImportDocuments(AsycudaDocumentSet docSet, List<string> fileNames)
+        {
+            bool importOnlyRegisteredDocument = true;
+
+            bool importTariffCodes = true;
+
+            bool noMessages = false;
+
+            bool overwriteExisting = true;
+
+            bool linkPi = true;
+
+            BaseDataModel.Instance.ImportDocuments(docSet, fileNames, importOnlyRegisteredDocument,
+                importTariffCodes, noMessages, overwriteExisting, linkPi).Wait();
+        }
+
+
+        public static void ImportEntryDataOldWay(List<string> files, string entryType, string fileFormat)
+        {
+            var testFile = Infrastructure.Utils.GetTestSalesFile(files);
+            var fileTypes = FileTypeManager.GetImportableFileType(entryType, fileFormat);
+            foreach (var fileType in fileTypes)
+            {
+                CSVUtils.SaveCsv(new List<FileInfo>() { new FileInfo(testFile) }, fileType);
             }
         }
     }

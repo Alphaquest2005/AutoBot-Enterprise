@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using DocumentDS.Business.Entities;
 using NUnit.Framework;
 using WaterNut.DataSpace;
 using EntryDocSetUtils = WaterNut.DataSpace.EntryDocSetUtils;
@@ -14,7 +16,7 @@ namespace AutoBotUtilities.Tests
         public void SetUp()
         {
             Infrastructure.Utils.SetTestApplicationSettings(3);
-            _testClass = new BaseDataModel();
+           _testClass = new BaseDataModel();
         }
 
         [Test]
@@ -22,6 +24,7 @@ namespace AutoBotUtilities.Tests
         {
             try
             {
+                if (!Infrastructure.Utils.IsTestApplicationSettings()) Assert.IsTrue(true);
                 var docSet = EntryDocSetUtils.GetLatestDocSet();
                 BaseDataModel.RenameDuplicateDocuments(docSet.AsycudaDocumentSetId);
                 Assert.IsTrue(true);
@@ -39,6 +42,7 @@ namespace AutoBotUtilities.Tests
         {
             try
             {
+                if (!Infrastructure.Utils.IsTestApplicationSettings()) Assert.IsTrue(true);
                 var docSet = EntryDocSetUtils.GetDocSet("Imports");
 
                 var fileNames = new System.Collections.Generic.List<string>()
@@ -46,18 +50,7 @@ namespace AutoBotUtilities.Tests
                     @"C:\Users\josep\OneDrive\Clients\Columbian\Emails\Imports\IM4-GDSGO-17482.xml"
                 };
 
-                bool importOnlyRegisteredDocument = true;
-
-                bool importTariffCodes = true;
-
-                bool noMessages = false;
-
-                bool overwriteExisting = true;
-
-                bool linkPi = true;
-
-                BaseDataModel.Instance.ImportDocuments(docSet, fileNames, importOnlyRegisteredDocument,
-                    importTariffCodes, noMessages, overwriteExisting, linkPi).Wait();
+                Infrastructure.Utils.ImportDocuments(docSet, fileNames);
 
                 Assert.IsTrue(true);
             }
@@ -69,5 +62,6 @@ namespace AutoBotUtilities.Tests
 
         }
 
+  
     }
 }

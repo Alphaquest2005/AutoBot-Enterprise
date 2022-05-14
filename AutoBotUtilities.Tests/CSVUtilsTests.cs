@@ -1,4 +1,5 @@
 using System.IO;
+using AdjustmentQS.Business.Entities;
 using EntryDataDS.Business.Entities;
 using OCR.Business.Services;
 using WaterNut.Business.Services.Importers;
@@ -22,12 +23,19 @@ namespace AutoBotUtilities.Tests
         [SetUp]
         public void SetUp()
         {
-            Infrastructure.Utils.ClearDataBase();
-            Infrastructure.Utils.SetTestApplicationSettings(2);
-            
+             Infrastructure.Utils.SetTestApplicationSettings(2);
+             SetupTest();
+
 
             _testClass = new CSVUtils();
            
+        }
+
+        private static void SetupTest()
+        {
+            
+            Infrastructure.Utils.ClearDataBase();
+            
         }
 
        
@@ -44,7 +52,8 @@ namespace AutoBotUtilities.Tests
         {
             try
             {
-                var testFile = Infrastructure.Utils.GetTestSalesFile("TestPOCSVFile.csv");
+                if (!Infrastructure.Utils.IsTestApplicationSettings()) Assert.IsTrue(true);
+                var testFile = Infrastructure.Utils.GetTestSalesFile(new List<string>(){ "TestPOCSVFile.csv" });
                 var fileTypes = Infrastructure.Utils.GetPOCSVFileType();
                 foreach (var fileType in fileTypes)
                 {
@@ -78,13 +87,8 @@ namespace AutoBotUtilities.Tests
         {
             try
             {
-                var testFile = Infrastructure.Utils.GetTestSalesFile("TestPOCSVFile.csv");
-                var fileTypes = Infrastructure.Utils.GetPOCSVFileType();
-                foreach (var fileType in fileTypes)
-                {
-                    new FileTypeImporter(fileType).Import(testFile);
-                   
-                } 
+                if (!Infrastructure.Utils.IsTestApplicationSettings()) Assert.IsTrue(true);
+                Infrastructure.Utils.ImportEntryDataOldWay(new List<string>() { "TestPOCSVFile.csv" }, FileTypeManager.EntryTypes.Po, FileTypeManager.FileFormats.Csv);
                 Assert.IsTrue(true);
             }
             catch (Exception e)
@@ -93,6 +97,8 @@ namespace AutoBotUtilities.Tests
                 Assert.IsTrue(false);
             }
         }
+
+       
 
         [Test]
         public void CanGetUnknownFileType()

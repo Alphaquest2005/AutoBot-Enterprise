@@ -775,6 +775,7 @@
     <Compile Include="Custom Contracts\Custom Contracts\AdjustmentQS\IAdjustmentShortService.cs" />
     <Compile Include="Custom Services\AdjustmentQS\AdjustmentOverService.cs" />
     <Compile Include="Custom Services\AdjustmentQS\AdjustmentShortService.cs" />
+    <Compile Include="Utils\AutoMatchUtils.cs" />
     <Compile Include="Importers\ChainedDataExtractor.cs" />
     <Compile Include="Importers\CSVDataExtractor.cs" />
     <Compile Include="Importers\CSVImporter.cs" />
@@ -804,6 +805,8 @@
     <Compile Include="Importers\IImporter.cs" />
     <Compile Include="Importers\StringTextSplitter.cs" />
     <Compile Include="Services\CoreEntities\FileImporterInfoService.cs" />
+    <Compile Include="Utils\Matching\CNumberMatcher.cs" />
+    <Compile Include="Utils\Matching\EffectiveDatefProcessor.cs" />
     <Compile Include="Utils\FileTypeManager.cs" />
     <Compile Include="Utils\DirectoryUtils.cs" />
     <Compile Include="Utils\EntryDocSetUtils.cs" />
@@ -1424,9 +1427,15 @@
     <Compile Include="Services\ValuationDS\xC71_ItemService.cs" />
     <Compile Include="Services\ValuationDS\xC71_Seller_segmentService.cs" />
     <Compile Include="Services\ValuationDS\xC71_Value_declaration_formService.cs" />
+    <Compile Include="Utils\Matching\IAutoMatchProcessor.cs" />
     <Compile Include="Utils\InventoryDataItem.cs" />
     <Compile Include="Utils\InventoryItemDataUtils.cs" />
     <Compile Include="Utils\InventoryItemUtils.cs" />
+    <Compile Include="Utils\Matching\MissingCostProcessor.cs" />
+    <Compile Include="Utils\Matching\OverCNumberMatcher.cs" />
+    <Compile Include="Utils\Matching\PreviousInvoiceNumberMatcher.cs" />
+    <Compile Include="Utils\Matching\ShortCNumberMatcher.cs" />
+    <Compile Include="Utils\Matching\ShortPreviousNumberMatcher.cs" />
     <Compile Include="Utils\Utils.cs" />
   </ItemGroup>
   <ItemGroup>

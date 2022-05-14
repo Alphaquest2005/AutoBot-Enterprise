@@ -39,7 +39,8 @@ namespace AutoBotUtilities.Tests
         {
             try
             {
-                var testFile = Infrastructure.Utils.GetTestSalesFile("TestXSalesFile.csv");
+                if (!Infrastructure.Utils.IsTestApplicationSettings()) Assert.IsTrue(true); 
+                var testFile = Infrastructure.Utils.GetTestSalesFile(new List<string>() { "TestXSalesFile.csv"});
                 EX9Utils.ImportXSalesFiles(testFile);
                 Assert.IsTrue(true);
             }
@@ -55,6 +56,7 @@ namespace AutoBotUtilities.Tests
         {
             try
             {
+
                 var fileType = EX9Utils.GetxSalesFileType();
                 Assert.AreEqual(fileType.FileImporterInfos.EntryType, FileTypeManager.EntryTypes.xSales);
             }
@@ -70,7 +72,7 @@ namespace AutoBotUtilities.Tests
         {
             try
             {
-                var fileType = Infrastructure.Utils.GetTestSalesFile("TestXSalesFile.csv");
+                var fileType = Infrastructure.Utils.GetTestSalesFile(new List<string>() { "TestXSalesFile.csv"});
                 Assert.IsTrue(fileType.Contains("TestXSalesFile.csv"));
             }
             catch (Exception e)

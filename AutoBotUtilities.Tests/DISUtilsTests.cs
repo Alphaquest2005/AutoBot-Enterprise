@@ -1,4 +1,9 @@
+using System.Threading.Tasks;
+using AdjustmentQS.Business.Entities;
+using AdjustmentQS.Business.Services;
 using WaterNut.Business.Services.Utils;
+using WaterNut.DataSpace;
+using EntryDocSetUtils = WaterNut.DataSpace.EntryDocSetUtils;
 
 namespace AutoBotUtilities.Tests
 {
@@ -13,10 +18,12 @@ namespace AutoBotUtilities.Tests
     public class DISUtilsTests
     {
         private DISUtils _testClass;
+        private readonly DoAutoMatchTest _doAutoMatchTest = new DoAutoMatchTest();
 
         [SetUp]
         public void SetUp()
         {
+            Infrastructure.Utils.ClearDataBase();
             Infrastructure.Utils.SetTestApplicationSettings(2);
             _testClass = new DISUtils();
         }

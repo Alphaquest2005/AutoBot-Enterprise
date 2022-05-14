@@ -1053,11 +1053,11 @@ namespace AutoBot
                 AllocationsBaseModel.PrepareDataForAllocation(BaseDataModel.Instance.CurrentApplicationSettings);
 
                 
-                new AdjustmentShortService()
+                new AdjustmentShortService().AutoMatchUtils
                     .AutoMatchDocSet(BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId,
                         fileType.AsycudaDocumentSetId).Wait();
 
-                new AdjustmentShortService()
+                new AdjustmentShortService().AutoMatchUtils
                     .ProcessDISErrorsForAllocation(
                         BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId,
                         lst.Select(x => $"{x.Key}-{x.Value}").Aggregate((o, n) => $"{o},{n}")).Wait();

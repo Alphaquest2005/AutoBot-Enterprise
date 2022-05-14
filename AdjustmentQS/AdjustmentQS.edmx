@@ -69,8 +69,8 @@
           <Property Name="Status" Type="nvarchar" MaxLength="50" />
           <Property Name="InvoiceQty" Type="float" />
           <Property Name="ReceivedQty" Type="float" />
-          <Property Name="PreviousInvoiceNumber" Type="nvarchar" MaxLength="50" />
-          <Property Name="CNumber" Type="nvarchar" MaxLength="50" />
+          <Property Name="PreviousInvoiceNumber" Type="nvarchar" MaxLength="255" />
+          <Property Name="CNumber" Type="nvarchar" MaxLength="255" />
           <Property Name="Comment" Type="nvarchar" MaxLength="255" />
           <Property Name="EffectiveDate" Type="datetime2" Precision="7" />
           <Property Name="IsReconciled" Type="bit" />
@@ -157,11 +157,11 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AdjustmentDetails' does n
           <Property Name="InvoiceQty" Type="float" />
           <Property Name="ReceivedQty" Type="float" />
           <Property Name="Status" Type="nvarchar" MaxLength="50" />
-          <Property Name="PreviousInvoiceNumber" Type="nvarchar" MaxLength="50" />
+          <Property Name="PreviousInvoiceNumber" Type="nvarchar" MaxLength="255" />
           <Property Name="CNumber" Type="nvarchar" MaxLength="20" />
           <Property Name="CLineNumber" Type="int" />
           <Property Name="Downloaded" Type="bit" />
-          <Property Name="PreviousCNumber" Type="nvarchar" MaxLength="50" />
+          <Property Name="PreviousCNumber" Type="nvarchar" MaxLength="255" />
           <Property Name="PreviousCLineNumber" Type="int" />
           <Property Name="DutyFreePaid" Type="nvarchar" MaxLength="50" />
           <Property Name="Type" Type="nvarchar" MaxLength="50" />
@@ -239,8 +239,8 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AdjustmentOvers' does not
           <Property Name="AsycudaDocumentSetId" Type="int" Nullable="false" />
           <Property Name="InvoiceQty" Type="float" />
           <Property Name="ReceivedQty" Type="float" />
-          <Property Name="PreviousInvoiceNumber" Type="nvarchar" MaxLength="50" />
-          <Property Name="PreviousCNumber" Type="nvarchar" MaxLength="50" />
+          <Property Name="PreviousInvoiceNumber" Type="nvarchar" MaxLength="255" />
+          <Property Name="PreviousCNumber" Type="nvarchar" MaxLength="255" />
           <Property Name="Comment" Type="nvarchar" MaxLength="255" />
           <Property Name="Status" Type="nvarchar" MaxLength="50" />
           <Property Name="EffectiveDate" Type="datetime2" Precision="7" />
@@ -367,12 +367,12 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AdjustmentShorts' does no
           <Property Name="InvoiceQty" Type="float" />
           <Property Name="ReceivedQty" Type="float" />
           <Property Name="Status" Type="nvarchar" MaxLength="50" />
-          <Property Name="PreviousInvoiceNumber" Type="nvarchar" MaxLength="50" />
+          <Property Name="PreviousInvoiceNumber" Type="nvarchar" MaxLength="255" />
           <Property Name="CNumber" Type="nvarchar" MaxLength="20" />
           <Property Name="CLineNumber" Type="int" />
           <Property Name="Downloaded" Type="bit" />
           <Property Name="IsReconciled" Type="bit" />
-          <Property Name="PreviousCNumber" Type="nvarchar" MaxLength="50" />
+          <Property Name="PreviousCNumber" Type="nvarchar" MaxLength="255" />
           <Property Name="DutyFreePaid" Type="nvarchar" MaxLength="50" />
           <Property Name="Comment" Type="nvarchar" MaxLength="255" />
           <Property Name="EffectiveDate" Type="datetime2" Precision="7" />
@@ -486,8 +486,8 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-AdjustmentOversToXML
           <Property Name="AsycudaDocumentSetId" Type="int" />
           <Property Name="InvoiceQty" Type="float" />
           <Property Name="ReceivedQty" Type="float" />
-          <Property Name="PreviousInvoiceNumber" Type="nvarchar" MaxLength="50" />
-          <Property Name="PreviousCNumber" Type="nvarchar" MaxLength="50" />
+          <Property Name="PreviousInvoiceNumber" Type="nvarchar" MaxLength="255" />
+          <Property Name="PreviousCNumber" Type="nvarchar" MaxLength="255" />
           <Property Name="Comment" Type="nvarchar" MaxLength="255" />
           <Property Name="Status" Type="nvarchar" MaxLength="50" />
           <Property Name="EffectiveDate" Type="datetime2" Precision="7" />
@@ -536,11 +536,11 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-PreDiscrepancyErrors
           <Property Name="InvoiceQty" Type="float" />
           <Property Name="ReceivedQty" Type="float" />
           <Property Name="Status" Type="nvarchar" MaxLength="50" />
-          <Property Name="PreviousInvoiceNumber" Type="nvarchar" MaxLength="50" />
+          <Property Name="PreviousInvoiceNumber" Type="nvarchar" MaxLength="255" />
           <Property Name="CNumber" Type="nvarchar" MaxLength="20" />
           <Property Name="CLineNumber" Type="int" />
           <Property Name="Downloaded" Type="bit" />
-          <Property Name="PreviousCNumber" Type="nvarchar" MaxLength="50" />
+          <Property Name="PreviousCNumber" Type="nvarchar" MaxLength="255" />
           <Property Name="DutyFreePaid" Type="nvarchar" MaxLength="50" />
           <Property Name="Type" Type="nvarchar" MaxLength="50" />
           <Property Name="Comment" Type="nvarchar" MaxLength="255" />
@@ -1170,8 +1170,8 @@ FROM [dbo].[TODO-PreDiscrepancyErrors] AS [TODO-PreDiscrepancyErrors]</DefiningQ
           <Property Name="ReceivedQty" Type="Double" />
           <Property Name="Status" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="AdjustmentEx" Relationship="Model.AdjustmentExAdjustmentOver" FromRole="AdjustmentOver" ToRole="AdjustmentEx" />
-          <Property Name="PreviousInvoiceNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="PreviousCNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="PreviousInvoiceNumber" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="PreviousCNumber" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="Comment" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="EffectiveDate" Type="DateTime" Precision="7" />
           <Property Name="Currency" Type="String" MaxLength="4" FixedLength="false" Unicode="true" />
@@ -1215,8 +1215,8 @@ FROM [dbo].[TODO-PreDiscrepancyErrors] AS [TODO-PreDiscrepancyErrors]</DefiningQ
           <Property Name="Status" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="AdjustmentEx" Relationship="Model.AdjustmentExAdjustmentShort" FromRole="AdjustmentShort" ToRole="AdjustmentEx" />
           <NavigationProperty Name="ShortAllocations" Relationship="Model.AdjustmentShortAdjustmentShortAllocation" FromRole="AdjustmentShort" ToRole="AdjustmentShortAllocation" />
-          <Property Name="PreviousInvoiceNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="PreviousCNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="PreviousInvoiceNumber" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="PreviousCNumber" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="Comment" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="EffectiveDate" Type="DateTime" Precision="7" />
           <Property Name="Currency" Type="String" MaxLength="4" FixedLength="false" Unicode="true" />
@@ -1279,8 +1279,8 @@ FROM [dbo].[TODO-PreDiscrepancyErrors] AS [TODO-PreDiscrepancyErrors]</DefiningQ
           <Property Name="InvoiceQty" Type="Double" />
           <Property Name="ReceivedQty" Type="Double" />
           <NavigationProperty Name="AsycudaSalesAllocations" Relationship="Model.FK_AsycudaSalesAllocations_EntryDataDetails" FromRole="EntryDataDetail" ToRole="AsycudaSalesAllocation" />
-          <Property Name="PreviousInvoiceNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="CNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="PreviousInvoiceNumber" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="CNumber" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="Comment" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="EffectiveDate" Type="DateTime" Precision="7" />
           <Property Name="IsReconciled" Type="Boolean" />
@@ -1451,11 +1451,11 @@ FROM [dbo].[TODO-PreDiscrepancyErrors] AS [TODO-PreDiscrepancyErrors]</DefiningQ
           <Property Name="AsycudaDocumentSetId" Type="Int32" Nullable="false" />
           <Property Name="InvoiceQty" Type="Double" />
           <Property Name="ReceivedQty" Type="Double" />
-          <Property Name="PreviousInvoiceNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="PreviousInvoiceNumber" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="CNumber" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Name="CLineNumber" Type="Int32" />
           <Property Name="Downloaded" Type="Boolean" />
-          <Property Name="PreviousCNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="PreviousCNumber" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="DutyFreePaid" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="Type" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="Comment" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
@@ -1745,11 +1745,11 @@ FROM [dbo].[TODO-PreDiscrepancyErrors] AS [TODO-PreDiscrepancyErrors]</DefiningQ
           <Property Name="InvoiceQty" Type="Double" />
           <Property Name="ReceivedQty" Type="Double" />
           <Property Name="Status" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="PreviousInvoiceNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="PreviousInvoiceNumber" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="CNumber" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Name="CLineNumber" Type="Int32" />
           <Property Name="Downloaded" Type="Boolean" />
-          <Property Name="PreviousCNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="PreviousCNumber" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="DutyFreePaid" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="Type" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="Comment" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
@@ -1789,8 +1789,8 @@ FROM [dbo].[TODO-PreDiscrepancyErrors] AS [TODO-PreDiscrepancyErrors]</DefiningQ
           <Property Name="AsycudaDocumentSetId" Type="Int32" />
           <Property Name="InvoiceQty" Type="Double" />
           <Property Name="ReceivedQty" Type="Double" />
-          <Property Name="PreviousInvoiceNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="PreviousCNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="PreviousInvoiceNumber" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="PreviousCNumber" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="Comment" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="Status" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="EffectiveDate" Type="DateTime" Precision="7" />
