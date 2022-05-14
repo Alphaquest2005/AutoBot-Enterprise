@@ -383,12 +383,12 @@ namespace WaterNut.DataSpace
 
         public int UpdateAsycudaDocumentSetLastNumber(int docSetId, int num)
         {
-            using (var ctx = new CoreEntitiesContext())
+            using (var ctx = new DocumentDSContext())
             {
-                var docSetRef = ctx.AsycudaDocumentSetExs.First(x => x.AsycudaDocumentSetId == docSetId)
+                var docSetRef = ctx.AsycudaDocumentSets.First(x => x.AsycudaDocumentSetId == docSetId)
                     .Declarant_Reference_Number;
-                while (ctx.AsycudaDocuments.FirstOrDefault(x =>
-                           x.ReferenceNumber.Contains(docSetRef) && x.ReferenceNumber.EndsWith((num + 1).ToString())) !=
+                while (ctx.xcuda_ASYCUDA.FirstOrDefault(x =>
+                           x.xcuda_Declarant.Number.Contains(docSetRef) && x.xcuda_Declarant.Number.EndsWith((num + 1).ToString())) !=
                        null)
                     num += 1;
 
@@ -3488,7 +3488,7 @@ namespace WaterNut.DataSpace
             try
             {
                 var (docSet, lst) = EntryDocSetUtils.GetDuplicateDocuments(docKey);
-                if (!lst.Any()) return;
+                if (!lst.Any() || !docSet.Documents.Any()) return;
 
                 EntryDocSetUtils.RenameDuplicateDocuments(lst, ref  docSet);
             }

@@ -338,7 +338,7 @@ namespace AutoBot
                                $"Regards,\r\n" +
                                $"AutoBot";
                     List<string> attlst = new List<string>();
-                    var poInfo = Enumerable.FirstOrDefault<Tuple<AsycudaDocumentSetEx, string>>(POUtils.CurrentPOInfo(ft.AsycudaDocumentSetId));
+                    var poInfo = Enumerable.FirstOrDefault<Tuple<AsycudaDocumentSet, string>>(POUtils.CurrentPOInfo(ft.AsycudaDocumentSetId));
 
                     var summaryFile = Path.Combine(poInfo.Item2, "CIFValues.csv");
                     if (File.Exists(summaryFile)) File.Delete(summaryFile);

@@ -309,7 +309,7 @@ namespace AutoBot
 
         private static string GetDiscrepancyDirectory(List<TODO_SubmitDiscrepanciesToCustoms> emailIds)
         {
-            var info = Enumerable.FirstOrDefault<Tuple<AsycudaDocumentSetEx, string>>(
+            var info = Enumerable.FirstOrDefault<Tuple<AsycudaDocumentSet, string>>(
                 POUtils.CurrentPOInfo(emailIds.First().AsycudaDocumentSetId));
             var directory = info.Item2;
             return directory;
@@ -707,7 +707,7 @@ namespace AutoBot
                     var docset = GetAsycudaDocumentSetEx(fileType);
                     if (docset == null) return;
 
-                    var info = Enumerable.FirstOrDefault<Tuple<AsycudaDocumentSetEx, string>>(POUtils.CurrentPOInfo(fileType.AsycudaDocumentSetId));
+                    var info = Enumerable.FirstOrDefault<Tuple<AsycudaDocumentSet, string>>(POUtils.CurrentPOInfo(fileType.AsycudaDocumentSetId));
                     var directory = info.Item2;
 
                     var contacts = GetContacts(new List<string>() { "Broker", "Clerk", "Customs" });

@@ -187,7 +187,9 @@ namespace EmailDownloader
                         SaveBodyPart(desFolder, msg, lst);
 
                         var fileTypes = emailMapping.EmailFileTypes.Select(x => x.FileTypes)
-                            .Where(x => lst.Any(z => Regex.IsMatch(z.Name, x.FilePattern, RegexOptions.IgnoreCase))).ToList();
+                            .Where(x => lst.Any(z => Regex.IsMatch(z.Name, x.FilePattern, RegexOptions.IgnoreCase)))
+                            .Where(x => x.FileImporterInfos != null)
+                            .ToList();
 
                         if (lst.Any(x => x.Name != "Info.txt") && fileTypes.All(x => x.FileImporterInfos.EntryType == "Info"))//TODO: take this out
                         {

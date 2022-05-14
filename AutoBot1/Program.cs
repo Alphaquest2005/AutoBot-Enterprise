@@ -53,7 +53,7 @@ namespace AutoBot
                         //.Include("EmailMapping.EmailFileTypes.FileTypes.AsycudaDocumentSetEx")
                         //.Include("EmailMapping.EmailFileTypes.FileTypes.FileTypeMappings")
                         //.Include("EmailMapping.EmailFileTypes.FileTypes.ChildFileTypes")
-                        .Include("EmailMapping.EmailFileTypes.FileTypes")
+                        .Include("EmailMapping.EmailFileTypes.FileTypes.FileImporterInfos")
                         .Include("EmailMapping.EmailMappingRexExs")
                         .Include("EmailMapping.EmailInfoMappings.InfoMapping.InfoMappingRegEx")
                         //.Include("FileTypes.ChildFileTypes")
