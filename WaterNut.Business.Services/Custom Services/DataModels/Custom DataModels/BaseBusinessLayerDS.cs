@@ -3488,7 +3488,7 @@ namespace WaterNut.DataSpace
             try
             {
                 var (docSet, lst) = EntryDocSetUtils.GetDuplicateDocuments(docKey);
-                if (!lst.Any()) return;
+                if (!lst.Any() || !docSet.Documents.Any()) return;
 
                 EntryDocSetUtils.RenameDuplicateDocuments(lst, ref  docSet);
             }

@@ -37,14 +37,14 @@ namespace WaterNut.DataSpace
         {
             using (var ctx = new DocumentDSContext())
             {
-                return ctx.AsycudaDocumentSets.First(x => x.AsycudaDocumentSetId == docKey);
+                return ctx.AsycudaDocumentSets.Include("xcuda_ASYCUDA_ExtendedProperties.xcuda_ASYCUDA").First(x => x.AsycudaDocumentSetId == docKey);
             }
         }
 
         private static List<IGrouping<string, xcuda_ASYCUDA>> FilterForDuplicateDocuments(List<IGrouping<string, xcuda_ASYCUDA>> res, AsycudaDocumentSet docSet)
         {
             return res
-                .Where(x => x.Key != null && x.Count() > 1
+                .Where(x => x.Key != null && x.Count() > 1 && x.Any(z => z.xcuda_ASYCUDA_ExtendedProperties.ImportComplete == false)
                             || x.Any(z => z.xcuda_ASYCUDA_ExtendedProperties.FileNumber == docSet.LastFileNumber))
                 .ToList();
         }
@@ -60,10 +60,9 @@ namespace WaterNut.DataSpace
                     .Where(
                         x => x != null && x.xcuda_Declarant != null &&
                              x.xcuda_Declarant.Number.Contains(docSet.Declarant_Reference_Number) &&
-                             (x.xcuda_ASYCUDA_ExtendedProperties.AsycudaDocumentSetId == docSet.AsycudaDocumentSetId &&
-                              x.xcuda_ASYCUDA_ExtendedProperties.ImportComplete == false ||
-                              x.xcuda_ASYCUDA_ExtendedProperties.AsycudaDocumentSetId != docSet.AsycudaDocumentSetId &&
-                              x.xcuda_ASYCUDA_ExtendedProperties.ImportComplete))
+                             ((x.xcuda_ASYCUDA_ExtendedProperties.AsycudaDocumentSetId == docSet.AsycudaDocumentSetId && x.xcuda_ASYCUDA_ExtendedProperties.ImportComplete == false) ||
+                              (x.xcuda_ASYCUDA_ExtendedProperties.AsycudaDocumentSetId != docSet.AsycudaDocumentSetId && x.xcuda_ASYCUDA_ExtendedProperties.ImportComplete))
+                             )
                     .ToList()// must load first to get the navigation properties
                     .GroupBy(x => x.xcuda_Declarant.Number)//
                     .ToList();
@@ -109,8 +108,17 @@ namespace WaterNut.DataSpace
 
         private static xcuda_ASYCUDA_ExtendedProperties GetXcudaAsycudaExtendedProperties( xcuda_ASYCUDA doc, int docSetAsycudaDocumentSetId)
         {
-            return new DocumentDSContext { StartTracking = true }.xcuda_ASYCUDA_ExtendedProperties.First(x =>
-                x.ASYCUDA_Id == doc.ASYCUDA_Id && x.AsycudaDocumentSetId == docSetAsycudaDocumentSetId);
+            try
+            {
+                return new DocumentDSContext { StartTracking = true }.xcuda_ASYCUDA_ExtendedProperties.First(x =>
+                    x.ASYCUDA_Id == doc.ASYCUDA_Id && x.AsycudaDocumentSetId == docSetAsycudaDocumentSetId);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+            
         }
 
         private static void AppendDocSetLastFileNumber(AsycudaDocumentSet docSet)
