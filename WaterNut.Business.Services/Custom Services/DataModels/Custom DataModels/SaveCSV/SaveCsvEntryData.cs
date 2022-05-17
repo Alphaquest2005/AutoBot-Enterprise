@@ -418,6 +418,7 @@ namespace WaterNut.DataSpace
                         ProcessShipmentInvoice(fileType, docSet, overWriteExisting, emailId,
                             xdroppedFilePath, xeslst, invoicePOs);
 
+                        return true;
                     }
                     else
                     {
@@ -2040,19 +2041,23 @@ namespace WaterNut.DataSpace
 
                     if (i.InventoryItemAlias.FirstOrDefault(x => x.AliasName == supplierItemNumber) == null)
                     {
-                        i.InventoryItemAlias.Add(new InventoryItemAlia(true)
+                        var inventoryItemAlia = new InventoryItemAlia(true)
                         {
                             InventoryItemId = i.Id,
                             AliasName = ((string)supplierItemNumber).Truncate(20),
                             AliasItemId = invItem.Id,
                             AliasId = invItem.Id,
                             TrackingState = TrackingState.Added
-                        });
+                        };
+                        ctx.InventoryItemAlias.Add(inventoryItemAlia);
+                        ctx.SaveChanges();
+
+                        i.InventoryItemAlias.Add(inventoryItemAlia);
                     }
 
                 }
 
-                ctx.SaveChanges();
+                
             }
         }
 

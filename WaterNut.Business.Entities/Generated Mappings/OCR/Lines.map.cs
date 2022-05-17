@@ -20,6 +20,7 @@
               this.Property(t => t.ParentId).HasColumnName("ParentId");
               this.Property(t => t.DistinctValues).HasColumnName("DistinctValues");
               this.Property(t => t.IsColumn).HasColumnName("IsColumn");
+              this.Property(t => t.IsActive).HasColumnName("IsActive");
               this.HasRequired(t => t.Parts).WithMany(t =>(ICollection<Lines>) t.Lines).HasForeignKey(d => d.PartId);
               this.HasRequired(t => t.RegularExpressions).WithMany(t =>(ICollection<Lines>) t.Lines).HasForeignKey(d => d.RegExId);
               this.HasOptional(t => t.ParentLine).WithMany(t =>(ICollection<Lines>) t.ChildLines).HasForeignKey(d => d.ParentId);

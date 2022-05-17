@@ -406,7 +406,7 @@ namespace AutoBot
 
         private static void ImportChildFileTypes(FileTypes fileType, bool? overwrite, string output)
         {
-            foreach (var cfileType in fileType.ChildFileTypes.Where(x => x.FileTypeMappings.Any()))
+            foreach (var cfileType in fileType.ChildFileTypes.Where(x => x.FileTypeMappings.Any() && x.FileImporterInfos.Format == FileTypeManager.FileFormats.Csv))
             {
                 var cfileTypes = FileTypeManager.GetFileType(cfileType);
                 cfileTypes.AsycudaDocumentSetId = fileType.AsycudaDocumentSetId;

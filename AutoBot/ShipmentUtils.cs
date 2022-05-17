@@ -196,6 +196,8 @@ namespace AutoBot
                     var invItemCode = misMatch[misHeaderRow.IndexOf("INVItemCode")].ToString();
                     var poItemCode = misMatch[misHeaderRow.IndexOf("POItemCode")].ToString();
                     var poNumber = misMatch[misHeaderRow.IndexOf("PONumber")].ToString();
+                    var invDetailId = misMatch[misHeaderRow.IndexOf("INVDetailsId")].ToString();
+                    //var poDetailId = misMatch[misHeaderRow.IndexOf("PODetailsId")].ToString();
                     if (!string.IsNullOrEmpty(poNumber) &&
                         !string.IsNullOrEmpty(InvoiceNo) &&
                         !string.IsNullOrEmpty(poItemCode) &&
@@ -214,6 +216,10 @@ namespace AutoBot
                             row = poTemplate.NewRow();
                         }
 
+                        
+                        
+
+
                         row[poHeaderRow.IndexOf("PO Number")] = misMatch[misHeaderRow.IndexOf("PONumber")];
                         row[poHeaderRow.IndexOf("Date")] = poTemplate.Rows[1][poHeaderRow.IndexOf("Date")];
                         row[poHeaderRow.IndexOf("PO Item Number")] = poItemCode;
@@ -230,6 +236,17 @@ namespace AutoBot
                                  : 1));
                         row[poHeaderRow.IndexOf("Quantity")] = misMatch[misHeaderRow.IndexOf("POQuantity")];
                         row[poHeaderRow.IndexOf("Total Cost")] = misMatch[misHeaderRow.IndexOf("INVTotalCost")];
+
+                        //if (!string.IsNullOrEmpty(invDetailId) && int.TryParse(invDetailId, out int invId))
+                        //{
+                        //    InvoiceDetails invDetail;
+                        //    invDetail = new EntryDataDSContext().ShipmentInvoiceDetails.FirstOrDefault(x => x.Id == invId);
+                        //    if (invDetail != null)
+                        //    {
+                        //        //row[poHeaderRow.IndexOf("FileLineNumber")] = invDetail.FileLineNumber;
+                        //    }
+                        //}
+
                         if (addrow) poTemplate.Rows.Add(row);
 
                         ImportInventoryMapping(invItemCode, misMatch, misHeaderRow, poItemCode);

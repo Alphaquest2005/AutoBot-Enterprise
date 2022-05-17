@@ -82,8 +82,10 @@ namespace WaterNut.Business.Services.Utils
         private static bool ItemInData(InventorySource inventorySource, List<InventoryItem> inventoryItems, string itemNumber)
         {
             return inventoryItems.Any(i =>
-                i.ItemNumber == itemNumber &&
-                i.InventoryItemSources.Any(z => z.InventorySourceId == inventorySource.Id));
+                i.ItemNumber == itemNumber 
+                // no need to compare cau duplicate item when importing shipment xlsx
+             // &&  i.InventoryItemSources.Any(z => z.InventorySourceId == inventorySource.Id)
+                );
         }
 
         public static List<InventoryData> CreateItemGroupList(List<dynamic> eslst)

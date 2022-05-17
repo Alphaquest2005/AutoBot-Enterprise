@@ -78,6 +78,21 @@ namespace OCR.Business.Entities
         }
         Nullable<bool> _multiline;
         [DataMember]
+        public Nullable<int> MaxLines 
+        {
+            get
+            {
+                return _maxlines;
+            }
+            set
+            {
+                _maxlines = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<int> _maxlines;
+        [DataMember]
         public List<End> End { get; set; }
         [DataMember]
         public List<Lines> Lines { get; set; }

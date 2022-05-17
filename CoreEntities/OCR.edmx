@@ -137,6 +137,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.OCRInvoicesFileTypes' doe
           <Property Name="ParentId" Type="int" />
           <Property Name="DistinctValues" Type="bit" />
           <Property Name="IsColumn" Type="bit" />
+          <Property Name="IsActive" Type="bit" />
         </EntityType>
         <EntityType Name="OCR-Parts">
           <Key>
@@ -167,6 +168,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.OCRInvoicesFileTypes' doe
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="RegEx" Type="nvarchar(max)" Nullable="false" />
           <Property Name="MultiLine" Type="bit" />
+          <Property Name="MaxLines" Type="int" />
         </EntityType>
         <EntityType Name="OCR-Start">
           <Key>
@@ -936,6 +938,7 @@ FROM [dbo].[OCR-PartLineFields] AS [OCR-PartLineFields]</DefiningQuery>
           <NavigationProperty Name="FieldFormatRepRegEx" Relationship="WaterNutDBModel.FK_OCR_FieldFormatRegEx_OCR_RegularExpressions1" FromRole="RegularExpressions" ToRole="OCR_FieldFormatRegEx" />
           <Property Name="MultiLine" Type="Boolean" />
           <NavigationProperty Name="InvoiceIdentificatonRegEx" Relationship="WaterNutDBModel.FK_OCR_InvoiceIdentificatonRegEx_OCR_RegularExpressions" FromRole="RegularExpressions" ToRole="OCR_InvoiceIdentificatonRegEx" />
+          <Property Name="MaxLines" Type="Int32" />
         </EntityType>
         <EntityType Name="Start">
           <Key>
@@ -1020,6 +1023,7 @@ FROM [dbo].[OCR-PartLineFields] AS [OCR-PartLineFields]</DefiningQuery>
           <NavigationProperty Name="FailedLines" Relationship="WaterNutDBModel.FK_OCR_FailedLines_OCR_Lines" FromRole="Lines" ToRole="OCR_FailedLines" />
           <Property Name="IsColumn" Type="Boolean" />
           <NavigationProperty Name="Fields" Relationship="WaterNutDBModel.FK_OCR_Fields_OCR_Lines" FromRole="Lines" ToRole="OCR_Fields" />
+          <Property Name="IsActive" Type="Boolean" />
         </EntityType>
         <Association Name="FK_OCR_Lines_OCR_Parts">
           <End Type="WaterNutDBModel.Parts" Role="Parts" Multiplicity="1" />
@@ -1536,6 +1540,7 @@ FROM [dbo].[OCR-PartLineFields] AS [OCR-PartLineFields]</DefiningQuery>
           <EntitySetMapping Name="RegularExpressions">
             <EntityTypeMapping TypeName="WaterNutDBModel.RegularExpressions">
               <MappingFragment StoreEntitySet="OCR-RegularExpressions">
+                <ScalarProperty Name="MaxLines" ColumnName="MaxLines" />
                 <ScalarProperty Name="MultiLine" ColumnName="MultiLine" />
                 <ScalarProperty Name="RegEx" ColumnName="RegEx" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
@@ -1554,6 +1559,7 @@ FROM [dbo].[OCR-PartLineFields] AS [OCR-PartLineFields]</DefiningQuery>
           <EntitySetMapping Name="Lines">
             <EntityTypeMapping TypeName="WaterNutDBModel.Lines">
               <MappingFragment StoreEntitySet="OCR-Lines">
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
                 <ScalarProperty Name="IsColumn" ColumnName="IsColumn" />
                 <ScalarProperty Name="DistinctValues" ColumnName="DistinctValues" />
                 <ScalarProperty Name="ParentId" ColumnName="ParentId" />

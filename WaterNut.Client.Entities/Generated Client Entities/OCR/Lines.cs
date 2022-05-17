@@ -152,6 +152,21 @@ public Nullable<bool> IsColumn
 		}
      
 
+       
+       
+public Nullable<bool> IsActive
+		{ 
+		    get { return this.lines.IsActive; }
+			set
+			{
+			    if (value == this.lines.IsActive) return;
+				this.lines.IsActive = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("IsActive");
+			}
+		}
+     
+
        private Parts _Parts;
         public  Parts Parts
 		{

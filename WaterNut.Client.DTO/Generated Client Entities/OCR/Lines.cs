@@ -112,6 +112,19 @@ namespace OCR.Client.DTO
 		}
         private Nullable<bool> _IsColumn;
 
+        [DataMember]
+        public Nullable<bool> IsActive
+		{ 
+		    get { return _IsActive; }
+			set
+			{
+			    if (value == _IsActive) return;
+				_IsActive = value;
+				NotifyPropertyChanged();//m => this.IsActive
+			}
+		}
+        private Nullable<bool> _IsActive;
+
        
         [DataMember]
         public Parts Parts

@@ -1243,11 +1243,11 @@ namespace AutoBotUtilities
                 invoiceNOs.AddRange(unAttachedInvoices.Select(x => x.InvoiceNo));
 
 
-                var unMatchedBLDetails = shipmentBlDetailsList.Where(x => client.All(z => z.WarehouseCode != x.Marks))
+                var unMatchedBLDetails = shipmentBlDetailsList.Where(x => client.All(z => z.WarehouseCode.ToUpper() != x.Marks.ToUpper()))
                     .ToList();
 
 
-                var unMatchedRiderDetails = allShipmentRiderDetailsList.Where(x => shipmentBlDetailsList.All(z => z.Marks != x.WarehouseCode))
+                var unMatchedRiderDetails = allShipmentRiderDetailsList.Where(x => shipmentBlDetailsList.All(z => z.Marks.ToUpper() != x.WarehouseCode.ToUpper()))
                     .ToList();
 
 

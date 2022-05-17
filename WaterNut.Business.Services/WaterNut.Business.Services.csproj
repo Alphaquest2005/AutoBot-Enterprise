@@ -775,6 +775,10 @@
     <Compile Include="Custom Contracts\Custom Contracts\AdjustmentQS\IAdjustmentShortService.cs" />
     <Compile Include="Custom Services\AdjustmentQS\AdjustmentOverService.cs" />
     <Compile Include="Custom Services\AdjustmentQS\AdjustmentShortService.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\PDF2TXT\Invoice.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\PDF2TXT\InvoiceLine.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\PDF2TXT\Line.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\PDF2TXT\Part.cs" />
     <Compile Include="Utils\AutoMatchUtils.cs" />
     <Compile Include="Importers\ChainedDataExtractor.cs" />
     <Compile Include="Importers\CSVDataExtractor.cs" />

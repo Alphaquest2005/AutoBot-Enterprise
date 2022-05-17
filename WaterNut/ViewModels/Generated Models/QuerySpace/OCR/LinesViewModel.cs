@@ -306,6 +306,24 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
         }	
 
  
+
+		private Boolean? _isActiveFilter;
+        public Boolean? IsActiveFilter
+        {
+            get
+            {
+                return _isActiveFilter;
+            }
+            set
+            {
+                _isActiveFilter = value;
+				NotifyPropertyChanged(x => IsActiveFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
 		internal bool DisableBaseFilterData = false;
         public virtual void FilterData()
 	    {
@@ -346,6 +364,10 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
 
 									if(IsColumnFilter.HasValue)
 						res.Append(" && " + string.Format("IsColumn == {0}",  IsColumnFilter));						
+ 
+
+									if(IsActiveFilter.HasValue)
+						res.Append(" && " + string.Format("IsActive == {0}",  IsActiveFilter));						
 			return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
@@ -375,7 +397,10 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
                     DistinctValues = x.DistinctValues ,
                     
  
-                    IsColumn = x.IsColumn 
+                    IsColumn = x.IsColumn ,
+                    
+ 
+                    IsActive = x.IsActive 
                     
                 }).ToList()
             };
@@ -395,6 +420,9 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
                     
  
                     public Nullable<bool> IsColumn { get; set; } 
+                    
+ 
+                    public Nullable<bool> IsActive { get; set; } 
                     
         }
 

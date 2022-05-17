@@ -92,6 +92,21 @@ public Nullable<bool> MultiLine
 		}
      
 
+       
+       [NumberValidationAttribute]
+public Nullable<int> MaxLines
+		{ 
+		    get { return this.regularexpressions.MaxLines; }
+			set
+			{
+			    if (value == this.regularexpressions.MaxLines) return;
+				this.regularexpressions.MaxLines = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("MaxLines");
+			}
+		}
+     
+
         ObservableCollection<End> _End = null;
         public  ObservableCollection<End> End
 		{
