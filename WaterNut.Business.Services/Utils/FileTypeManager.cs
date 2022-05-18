@@ -118,7 +118,6 @@ namespace WaterNut.Business.Services.Utils
             public const string Manifest = "Manifest";
             public const string Rider = "Rider";
             public const string SubItems = "SubItems";
-            public const string XML = "XML";
             public const string C71 = "C71";
             public const string Lic = "LIC";
             public const string POTemplate = "POTemplate";
@@ -132,6 +131,7 @@ namespace WaterNut.Business.Services.Utils
             public const string Csv = "CSV";
             public const string Xlsx = "XLSX";
             public const string PDF = "PDF";
+            public const string XML = "XML";
         }
 
         public static List<FileTypes> GetImportableFileType(string entryType, string fileFormat) =>

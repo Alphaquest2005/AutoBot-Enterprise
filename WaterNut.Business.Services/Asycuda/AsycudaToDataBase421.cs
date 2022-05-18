@@ -151,7 +151,7 @@ namespace WaterNut.DataSpace.Asycuda
                         FileTypeId = ctx.FileTypes.FirstOrDefault(x =>
                             x.ApplicationSettingsId ==
                             BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId &&
-                            x.FileImporterInfos.EntryType == FileTypeManager.EntryTypes.XML)?.Id,
+                            x.FileImporterInfos.Format == FileTypeManager.FileFormats.XML)?.Id,
                         TrackingState = TrackingState.Added,
                         Attachments = new Attachments(true)
                         {

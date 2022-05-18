@@ -287,7 +287,7 @@ namespace AutoBot
                         x.Declarant_Reference_Number == "Imports")?.AsycudaDocumentSetId ?? BaseDataModel.CurrentSalesInfo().Item3.AsycudaDocumentSetId;
 
                     var ft = ctx.FileTypes.FirstOrDefault(x =>
-                        x.FileImporterInfos.EntryType == FileTypeManager.EntryTypes.XML && x.ApplicationSettingsId ==
+                        x.FileImporterInfos.Format == FileTypeManager.FileFormats.XML && x.ApplicationSettingsId ==
                         BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId);
                     if (ft == null) return;
                     var desFolder = Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder,
@@ -401,24 +401,27 @@ namespace AutoBot
                     var lastdbfile =
                         ctx.AsycudaDocumentSet_Attachments.Include(x => x.Attachments).OrderByDescending(x => x.AttachmentId).FirstOrDefault(x => x.AsycudaDocumentSetId == docSetId);
                     var lastfiledate = lastdbfile != null ? File.GetCreationTime(lastdbfile.Attachments.FilePath) : DateTime.Today.AddDays(-1);
-                    var ft = ctx.FileTypes.FirstOrDefault(x =>
-                        x.FileImporterInfos.EntryType == FileTypeManager.EntryTypes.XML && x.ApplicationSettingsId ==
+                    var fileTypes = ctx.FileTypes.Where(x =>
+                        x.FileImporterInfos.Format == FileTypeManager.FileFormats.XML && x.ApplicationSettingsId ==
                         BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId);
-                    if (ft == null) return;
+                    if (fileTypes == null) return;
                     var docSetReference = new DocumentDSContext().AsycudaDocumentSets.Where(x => x.AsycudaDocumentSetId == docSetId)
                         .Select(x => x.Declarant_Reference_Number).First();
 
                     var desFolder = Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder, docSetReference);
                     var directoryInfo = new DirectoryInfo(desFolder);
                     directoryInfo.Refresh();
-                    var csvFiles = directoryInfo.GetFiles()
-                        .Where(x => Regex.IsMatch(x.FullName, ft.FilePattern, RegexOptions.IgnoreCase))
-                        .Where(x => x.LastWriteTime >= lastfiledate)
-                        .ToArray();
+                    foreach (var ft in fileTypes)
+                    {
+                        var csvFiles = directoryInfo.GetFiles()
+                            .Where(x => Regex.IsMatch(x.FullName, ft.FilePattern, RegexOptions.IgnoreCase))
+                            .Where(x => x.LastWriteTime >= lastfiledate)
+                            .ToArray();
 
-                    if (csvFiles.Length > 0)
-                        BaseDataModel.Instance.ImportDocuments(ft.AsycudaDocumentSetId,
-                            csvFiles.Select(x => x.FullName).ToList(), true, true, false, true, true).Wait();
+                        if (csvFiles.Length > 0)
+                            BaseDataModel.Instance.ImportDocuments(ft.AsycudaDocumentSetId,
+                                csvFiles.Select(x => x.FullName).ToList(), true, true, false, true, true).Wait();
+                    }
 
                     Utils.ImportAllFilesInDataFolder();
 
