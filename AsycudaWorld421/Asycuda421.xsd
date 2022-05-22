@@ -1057,6 +1057,7 @@
 						</xs:sequence>
 					</xs:complexType>
 				</xs:element>
+              
               <xs:element minOccurs="0" name="Packages_type" type="xs:string" />
               <xs:element minOccurs="0" name="Packages_number" type="xs:string" />
               <xs:element minOccurs="0" name="Packages_weight" type="xs:string" />
@@ -1068,13 +1069,47 @@
             <xs:sequence>
               <xs:element minOccurs="0" name="Prev_decl_office_code" type="xs:string" />
               <xs:element minOccurs="0" name="Prev_decl_reg_year" type="xs:string" />
-              <xs:element minOccurs="0" name="Prev_decl_reg_serial" type="xs:string" />
+				<xs:element minOccurs="0" name="Prev_decl_reg_serial">
+					<xs:complexType mixed="true">
+						<xs:sequence>
+							<xs:element minOccurs="0" name="null" />
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
               <xs:element minOccurs="0" name="Prev_decl_reg_number" type="xs:string" />
               <xs:element minOccurs="0" name="Prev_decl_item_number" type="xs:string" />
-              <xs:element minOccurs="0" name="Prev_decl_HS_code" type="xs:string" />
-              <xs:element minOccurs="0" name="Prev_decl_HS_prec" type="xs:string" />
-              <xs:element minOccurs="0" name="Prev_decl_HS_spec" type="xs:string" />
-              <xs:element minOccurs="0" name="Prev_decl_country_origin" type="xs:string" />
+              
+              <xs:element minOccurs="0" name="Prev_decl_HS_code">
+	              <xs:complexType mixed="true">
+		              <xs:sequence>
+			              <xs:element minOccurs="0" name="null" />
+		              </xs:sequence>
+	              </xs:complexType>
+              </xs:element>
+              
+              <xs:element minOccurs="0" name="Prev_decl_HS_prec">
+	              <xs:complexType mixed="true">
+		              <xs:sequence>
+			              <xs:element minOccurs="0" name="null" />
+		              </xs:sequence>
+	              </xs:complexType>
+              </xs:element>
+              
+              <xs:element minOccurs="0" name="Prev_decl_HS_spec">
+	              <xs:complexType mixed="true">
+		              <xs:sequence>
+			              <xs:element minOccurs="0" name="null" />
+		              </xs:sequence>
+	              </xs:complexType>
+              </xs:element>
+              
+              <xs:element minOccurs="0" name="Prev_decl_country_origin">
+	              <xs:complexType mixed="true">
+		              <xs:sequence>
+			              <xs:element minOccurs="0" name="null" />
+		              </xs:sequence>
+	              </xs:complexType>
+              </xs:element>
               <xs:element minOccurs="0" name="Prev_decl_number_packages" type="xs:string" />
               <xs:element minOccurs="0" name="Prev_decl_weight" type="xs:string" />
               <xs:element minOccurs="0" name="Prev_decl_supp_quantity" type="xs:string" />
