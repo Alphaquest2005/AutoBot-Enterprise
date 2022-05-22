@@ -337,19 +337,19 @@ namespace WaterNut.DataSpace.Asycuda
                         await LinkPIItem(ai, itm, pi).ConfigureAwait(false);
                     }
 
-                    pi.Commodity_code = ai.Prev_decl_HS_prec;
+                    pi.Commodity_code = ai.Prev_decl_HS_prec.Text.FirstOrDefault();
                     pi.Current_item_number = ai.Prev_decl_current_item;
                     pi.Current_value = Convert.ToSingle(Math.Round(Convert.ToDouble(ai.Prev_decl_ref_value), 2));
-                    pi.Goods_origin = ai.Prev_decl_country_origin;
-                    pi.Hs_code = ai.Prev_decl_HS_code;
+                    pi.Goods_origin = ai.Prev_decl_country_origin.Text.FirstOrDefault();
+                    pi.Hs_code = ai.Prev_decl_HS_code.Text.FirstOrDefault();
                     pi.Net_weight = Convert.ToDecimal(ai.Prev_decl_weight);
                     pi.Packages_number = ai.Prev_decl_number_packages;
                     pi.Prev_net_weight = Convert.ToDecimal(ai.Prev_decl_weight_written_off);
                     pi.Prev_reg_cuo = ai.Prev_decl_office_code;
-                    pi.Prev_decl_HS_spec = ai.Prev_decl_HS_spec;
+                    pi.Prev_decl_HS_spec = ai.Prev_decl_HS_spec.Text.FirstOrDefault();
                     pi.Prev_reg_year = int.Parse(ai.Prev_decl_reg_year);
                     pi.Prev_reg_nbr = ai.Prev_decl_reg_number;
-                    pi.Prev_reg_ser = ai.Prev_decl_reg_serial;
+                    pi.Prev_reg_ser = ai.Prev_decl_reg_serial.Text.FirstOrDefault();
                     if (!string.IsNullOrEmpty(ai.Prev_decl_supp_quantity_written_off))
                         pi.Preveious_suplementary_quantity = Convert.ToSingle(ai.Prev_decl_supp_quantity_written_off);
                     pi.Previous_item_number = ai.Prev_decl_item_number;

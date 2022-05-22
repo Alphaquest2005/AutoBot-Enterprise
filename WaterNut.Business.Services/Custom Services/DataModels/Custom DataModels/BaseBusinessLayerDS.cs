@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Data;
 using System.Data.Entity;
 using System.Data.SqlClient;
@@ -2360,8 +2361,8 @@ namespace WaterNut.DataSpace
 
                 var pitm = new ASYCUDAPrev_decl
                 {
-                    Prev_decl_HS_code = i.Tarification.HScode.Commodity_code.Text.FirstOrDefault(),
-                    Prev_decl_HS_prec = i.Tarification.HScode.Precision_1.Text.FirstOrDefault(),
+                    Prev_decl_HS_code = new ASYCUDAPrev_declPrev_decl_HS_code(){Text = new ObservableCollection<string>(){i.Tarification.HScode.Commodity_code.Text.FirstOrDefault()}} ,
+                    Prev_decl_HS_prec = new ASYCUDAPrev_declPrev_decl_HS_prec(){Text = new ObservableCollection<string>(){i.Tarification.HScode.Precision_1.Text.FirstOrDefault()}} ,
                     Prev_decl_current_item = linenumber.ToString(), // piggy back the previous item count
                     Prev_decl_item_number = linenumber.ToString(),
                     Prev_decl_weight = olditem.Valuation_item.Weight_itm.Net_weight_itm
@@ -2385,7 +2386,11 @@ namespace WaterNut.DataSpace
                     .Suppplementary_unit_quantity.ToString();
 
 
-                pitm.Prev_decl_country_origin = olditem.Goods_description.Country_of_origin_code.Text.FirstOrDefault();
+                pitm.Prev_decl_country_origin = new ASYCUDAPrev_declPrev_decl_country_origin()
+                {
+                    Text = new ObservableCollection<string>()
+                        { olditem.Goods_description.Country_of_origin_code.Text.FirstOrDefault() }
+                };
 
                 var oq = "";
 
@@ -2410,7 +2415,8 @@ namespace WaterNut.DataSpace
                         .ToString(); // * System.Convert.ToDecimal(fa.QUANTITY);
                 }
 
-                pitm.Prev_decl_reg_serial = "C";
+                pitm.Prev_decl_reg_serial = new ASYCUDAPrev_declPrev_decl_reg_serial()
+                    { Text = new ObservableCollection<string>() { "C" } };
                 pitm.Prev_decl_reg_number = olddoc.Identification.Registration.Number;
                 pitm.Prev_decl_reg_year = DateTime.Parse(olddoc.Identification.Registration.Date).Year.ToString();
                 pitm.Prev_decl_office_code =

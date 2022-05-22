@@ -49364,19 +49364,19 @@ namespace Asycuda421
 
         private string prev_decl_reg_yearField;
 
-        private string prev_decl_reg_serialField;
+        private ASYCUDAPrev_declPrev_decl_reg_serial prev_decl_reg_serialField;
 
         private string prev_decl_reg_numberField;
 
         private string prev_decl_item_numberField;
 
-        private string prev_decl_HS_codeField;
+        private ASYCUDAPrev_declPrev_decl_HS_code prev_decl_HS_codeField;
 
-        private string prev_decl_HS_precField;
+        private ASYCUDAPrev_declPrev_decl_HS_prec prev_decl_HS_precField;
 
-        private string prev_decl_HS_specField;
+        private ASYCUDAPrev_declPrev_decl_HS_spec prev_decl_HS_specField;
 
-        private string prev_decl_country_originField;
+        private ASYCUDAPrev_declPrev_decl_country_origin prev_decl_country_originField;
 
         private string prev_decl_number_packagesField;
 
@@ -49403,6 +49403,11 @@ namespace Asycuda421
         public ASYCUDAPrev_decl()
         {
             this.textField = new ObservableCollection<string>();
+            this.prev_decl_country_originField = new ASYCUDAPrev_declPrev_decl_country_origin();
+            this.prev_decl_HS_specField = new ASYCUDAPrev_declPrev_decl_HS_spec();
+            this.prev_decl_HS_precField = new ASYCUDAPrev_declPrev_decl_HS_prec();
+            this.prev_decl_HS_codeField = new ASYCUDAPrev_declPrev_decl_HS_code();
+            this.prev_decl_reg_serialField = new ASYCUDAPrev_declPrev_decl_reg_serial();
         }
 
         [System.Runtime.Serialization.DataMemberAttribute()]
@@ -49456,7 +49461,7 @@ namespace Asycuda421
         }
 
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public string Prev_decl_reg_serial
+        public ASYCUDAPrev_declPrev_decl_reg_serial Prev_decl_reg_serial
         {
             get
             {
@@ -49531,7 +49536,7 @@ namespace Asycuda421
         }
 
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public string Prev_decl_HS_code
+        public ASYCUDAPrev_declPrev_decl_HS_code Prev_decl_HS_code
         {
             get
             {
@@ -49556,7 +49561,7 @@ namespace Asycuda421
         }
 
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public string Prev_decl_HS_prec
+        public ASYCUDAPrev_declPrev_decl_HS_prec Prev_decl_HS_prec
         {
             get
             {
@@ -49581,7 +49586,7 @@ namespace Asycuda421
         }
 
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public string Prev_decl_HS_spec
+        public ASYCUDAPrev_declPrev_decl_HS_spec Prev_decl_HS_spec
         {
             get
             {
@@ -49606,7 +49611,7 @@ namespace Asycuda421
         }
 
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public string Prev_decl_country_origin
+        public ASYCUDAPrev_declPrev_decl_country_origin Prev_decl_country_origin
         {
             get
             {
@@ -50111,6 +50116,1526 @@ namespace Asycuda421
         public virtual ASYCUDAPrev_decl Clone()
         {
             return ((ASYCUDAPrev_decl)(this.MemberwiseClone()));
+        }
+        #endregion
+    }
+
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.SerializableAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
+    [System.Runtime.Serialization.DataContractAttribute(Name = "ASYCUDAPrev_declPrev_decl_reg_serial")]
+    public partial class ASYCUDAPrev_declPrev_decl_reg_serial : System.ComponentModel.INotifyPropertyChanged
+    {
+
+        private object nullField;
+
+        private ObservableCollection<string> textField;
+
+        private static System.Xml.Serialization.XmlSerializer serializer;
+
+        public ASYCUDAPrev_declPrev_decl_reg_serial()
+        {
+            this.textField = new ObservableCollection<string>();
+        }
+
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public object @null
+        {
+            get
+            {
+                return this.nullField;
+            }
+            set
+            {
+                if ((this.nullField != null))
+                {
+                    if ((nullField.Equals(value) != true))
+                    {
+                        this.nullField = value;
+                        this.OnPropertyChanged("null");
+                    }
+                }
+                else
+                {
+                    this.nullField = value;
+                    this.OnPropertyChanged("null");
+                }
+            }
+        }
+
+        [System.Xml.Serialization.XmlTextAttribute()]
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public ObservableCollection<string> Text
+        {
+            get
+            {
+                return this.textField;
+            }
+            set
+            {
+                if ((this.textField != null))
+                {
+                    if ((textField.Equals(value) != true))
+                    {
+                        this.textField = value;
+                        this.OnPropertyChanged("Text");
+                    }
+                }
+                else
+                {
+                    this.textField = value;
+                    this.OnPropertyChanged("Text");
+                }
+            }
+        }
+
+        private static System.Xml.Serialization.XmlSerializer Serializer
+        {
+            get
+            {
+                if ((serializer == null))
+                {
+                    serializer = new System.Xml.Serialization.XmlSerializer(typeof(ASYCUDAPrev_declPrev_decl_reg_serial));
+                }
+                return serializer;
+            }
+        }
+
+        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+
+        public virtual void OnPropertyChanged(string propertyName)
+        {
+            System.ComponentModel.PropertyChangedEventHandler handler = this.PropertyChanged;
+            if ((handler != null))
+            {
+                handler(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
+            }
+        }
+
+        #region Serialize/Deserialize
+        /// <summary>
+        /// Serializes current ASYCUDAPrev_declPrev_decl_reg_serial object into an XML document
+        /// </summary>
+        /// <returns>string XML value</returns>
+        public virtual string Serialize(System.Text.Encoding encoding)
+        {
+            System.IO.StreamReader streamReader = null;
+            System.IO.MemoryStream memoryStream = null;
+            try
+            {
+                memoryStream = new System.IO.MemoryStream();
+                System.Xml.XmlWriterSettings xmlWriterSettings = new System.Xml.XmlWriterSettings();
+                xmlWriterSettings.Encoding = encoding;
+                System.Xml.XmlWriter xmlWriter = XmlWriter.Create(memoryStream, xmlWriterSettings);
+                Serializer.Serialize(xmlWriter, this);
+                memoryStream.Seek(0, System.IO.SeekOrigin.Begin);
+                streamReader = new System.IO.StreamReader(memoryStream);
+                return streamReader.ReadToEnd();
+            }
+            finally
+            {
+                if ((streamReader != null))
+                {
+                    streamReader.Dispose();
+                }
+                if ((memoryStream != null))
+                {
+                    memoryStream.Dispose();
+                }
+            }
+        }
+
+        public virtual string Serialize()
+        {
+            return Serialize(Encoding.UTF8);
+        }
+
+        /// <summary>
+        /// Deserializes workflow markup into an ASYCUDAPrev_declPrev_decl_reg_serial object
+        /// </summary>
+        /// <param name="xml">string workflow markup to deserialize</param>
+        /// <param name="obj">Output ASYCUDAPrev_declPrev_decl_reg_serial object</param>
+        /// <param name="exception">output Exception value if deserialize failed</param>
+        /// <returns>true if this XmlSerializer can deserialize the object; otherwise, false</returns>
+        public static bool Deserialize(string xml, out ASYCUDAPrev_declPrev_decl_reg_serial obj, out System.Exception exception)
+        {
+            exception = null;
+            obj = default(ASYCUDAPrev_declPrev_decl_reg_serial);
+            try
+            {
+                obj = Deserialize(xml);
+                return true;
+            }
+            catch (System.Exception ex)
+            {
+                exception = ex;
+                return false;
+            }
+        }
+
+        public static bool Deserialize(string xml, out ASYCUDAPrev_declPrev_decl_reg_serial obj)
+        {
+            System.Exception exception = null;
+            return Deserialize(xml, out obj, out exception);
+        }
+
+        public static ASYCUDAPrev_declPrev_decl_reg_serial Deserialize(string xml)
+        {
+            System.IO.StringReader stringReader = null;
+            try
+            {
+                stringReader = new System.IO.StringReader(xml);
+                return ((ASYCUDAPrev_declPrev_decl_reg_serial)(Serializer.Deserialize(System.Xml.XmlReader.Create(stringReader))));
+            }
+            finally
+            {
+                if ((stringReader != null))
+                {
+                    stringReader.Dispose();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Serializes current ASYCUDAPrev_declPrev_decl_reg_serial object into file
+        /// </summary>
+        /// <param name="fileName">full path of outupt xml file</param>
+        /// <param name="exception">output Exception value if failed</param>
+        /// <returns>true if can serialize and save into file; otherwise, false</returns>
+        public virtual bool SaveToFile(string fileName, System.Text.Encoding encoding, out System.Exception exception)
+        {
+            exception = null;
+            try
+            {
+                SaveToFile(fileName, encoding);
+                return true;
+            }
+            catch (System.Exception e)
+            {
+                exception = e;
+                return false;
+            }
+        }
+
+        public virtual bool SaveToFile(string fileName, out System.Exception exception)
+        {
+            return SaveToFile(fileName, Encoding.UTF8, out exception);
+        }
+
+        public virtual void SaveToFile(string fileName)
+        {
+            SaveToFile(fileName, Encoding.UTF8);
+        }
+
+        public virtual void SaveToFile(string fileName, System.Text.Encoding encoding)
+        {
+            System.IO.StreamWriter streamWriter = null;
+            try
+            {
+                string xmlString = Serialize(encoding);
+                streamWriter = new System.IO.StreamWriter(fileName, false, Encoding.UTF8);
+                streamWriter.WriteLine(xmlString);
+                streamWriter.Close();
+            }
+            finally
+            {
+                if ((streamWriter != null))
+                {
+                    streamWriter.Dispose();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Deserializes xml markup from file into an ASYCUDAPrev_declPrev_decl_reg_serial object
+        /// </summary>
+        /// <param name="fileName">string xml file to load and deserialize</param>
+        /// <param name="obj">Output ASYCUDAPrev_declPrev_decl_reg_serial object</param>
+        /// <param name="exception">output Exception value if deserialize failed</param>
+        /// <returns>true if this XmlSerializer can deserialize the object; otherwise, false</returns>
+        public static bool LoadFromFile(string fileName, System.Text.Encoding encoding, out ASYCUDAPrev_declPrev_decl_reg_serial obj, out System.Exception exception)
+        {
+            exception = null;
+            obj = default(ASYCUDAPrev_declPrev_decl_reg_serial);
+            try
+            {
+                obj = LoadFromFile(fileName, encoding);
+                return true;
+            }
+            catch (System.Exception ex)
+            {
+                exception = ex;
+                return false;
+            }
+        }
+
+        public static bool LoadFromFile(string fileName, out ASYCUDAPrev_declPrev_decl_reg_serial obj, out System.Exception exception)
+        {
+            return LoadFromFile(fileName, Encoding.UTF8, out obj, out exception);
+        }
+
+        public static bool LoadFromFile(string fileName, out ASYCUDAPrev_declPrev_decl_reg_serial obj)
+        {
+            System.Exception exception = null;
+            return LoadFromFile(fileName, out obj, out exception);
+        }
+
+        public static ASYCUDAPrev_declPrev_decl_reg_serial LoadFromFile(string fileName)
+        {
+            return LoadFromFile(fileName, Encoding.UTF8);
+        }
+
+        public static ASYCUDAPrev_declPrev_decl_reg_serial LoadFromFile(string fileName, System.Text.Encoding encoding)
+        {
+            System.IO.FileStream file = null;
+            System.IO.StreamReader sr = null;
+            try
+            {
+                file = new System.IO.FileStream(fileName, FileMode.Open, FileAccess.Read);
+                sr = new System.IO.StreamReader(file, encoding);
+                string xmlString = sr.ReadToEnd();
+                sr.Close();
+                file.Close();
+                return Deserialize(xmlString);
+            }
+            finally
+            {
+                if ((file != null))
+                {
+                    file.Dispose();
+                }
+                if ((sr != null))
+                {
+                    sr.Dispose();
+                }
+            }
+        }
+        #endregion
+
+        #region Clone method
+        /// <summary>
+        /// Create a clone of this ASYCUDAPrev_declPrev_decl_reg_serial object
+        /// </summary>
+        public virtual ASYCUDAPrev_declPrev_decl_reg_serial Clone()
+        {
+            return ((ASYCUDAPrev_declPrev_decl_reg_serial)(this.MemberwiseClone()));
+        }
+        #endregion
+    }
+
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.SerializableAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
+    [System.Runtime.Serialization.DataContractAttribute(Name = "ASYCUDAPrev_declPrev_decl_HS_code")]
+    public partial class ASYCUDAPrev_declPrev_decl_HS_code : System.ComponentModel.INotifyPropertyChanged
+    {
+
+        private object nullField;
+
+        private ObservableCollection<string> textField;
+
+        private static System.Xml.Serialization.XmlSerializer serializer;
+
+        public ASYCUDAPrev_declPrev_decl_HS_code()
+        {
+            this.textField = new ObservableCollection<string>();
+        }
+
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public object @null
+        {
+            get
+            {
+                return this.nullField;
+            }
+            set
+            {
+                if ((this.nullField != null))
+                {
+                    if ((nullField.Equals(value) != true))
+                    {
+                        this.nullField = value;
+                        this.OnPropertyChanged("null");
+                    }
+                }
+                else
+                {
+                    this.nullField = value;
+                    this.OnPropertyChanged("null");
+                }
+            }
+        }
+
+        [System.Xml.Serialization.XmlTextAttribute()]
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public ObservableCollection<string> Text
+        {
+            get
+            {
+                return this.textField;
+            }
+            set
+            {
+                if ((this.textField != null))
+                {
+                    if ((textField.Equals(value) != true))
+                    {
+                        this.textField = value;
+                        this.OnPropertyChanged("Text");
+                    }
+                }
+                else
+                {
+                    this.textField = value;
+                    this.OnPropertyChanged("Text");
+                }
+            }
+        }
+
+        private static System.Xml.Serialization.XmlSerializer Serializer
+        {
+            get
+            {
+                if ((serializer == null))
+                {
+                    serializer = new System.Xml.Serialization.XmlSerializer(typeof(ASYCUDAPrev_declPrev_decl_HS_code));
+                }
+                return serializer;
+            }
+        }
+
+        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+
+        public virtual void OnPropertyChanged(string propertyName)
+        {
+            System.ComponentModel.PropertyChangedEventHandler handler = this.PropertyChanged;
+            if ((handler != null))
+            {
+                handler(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
+            }
+        }
+
+        #region Serialize/Deserialize
+        /// <summary>
+        /// Serializes current ASYCUDAPrev_declPrev_decl_HS_code object into an XML document
+        /// </summary>
+        /// <returns>string XML value</returns>
+        public virtual string Serialize(System.Text.Encoding encoding)
+        {
+            System.IO.StreamReader streamReader = null;
+            System.IO.MemoryStream memoryStream = null;
+            try
+            {
+                memoryStream = new System.IO.MemoryStream();
+                System.Xml.XmlWriterSettings xmlWriterSettings = new System.Xml.XmlWriterSettings();
+                xmlWriterSettings.Encoding = encoding;
+                System.Xml.XmlWriter xmlWriter = XmlWriter.Create(memoryStream, xmlWriterSettings);
+                Serializer.Serialize(xmlWriter, this);
+                memoryStream.Seek(0, System.IO.SeekOrigin.Begin);
+                streamReader = new System.IO.StreamReader(memoryStream);
+                return streamReader.ReadToEnd();
+            }
+            finally
+            {
+                if ((streamReader != null))
+                {
+                    streamReader.Dispose();
+                }
+                if ((memoryStream != null))
+                {
+                    memoryStream.Dispose();
+                }
+            }
+        }
+
+        public virtual string Serialize()
+        {
+            return Serialize(Encoding.UTF8);
+        }
+
+        /// <summary>
+        /// Deserializes workflow markup into an ASYCUDAPrev_declPrev_decl_HS_code object
+        /// </summary>
+        /// <param name="xml">string workflow markup to deserialize</param>
+        /// <param name="obj">Output ASYCUDAPrev_declPrev_decl_HS_code object</param>
+        /// <param name="exception">output Exception value if deserialize failed</param>
+        /// <returns>true if this XmlSerializer can deserialize the object; otherwise, false</returns>
+        public static bool Deserialize(string xml, out ASYCUDAPrev_declPrev_decl_HS_code obj, out System.Exception exception)
+        {
+            exception = null;
+            obj = default(ASYCUDAPrev_declPrev_decl_HS_code);
+            try
+            {
+                obj = Deserialize(xml);
+                return true;
+            }
+            catch (System.Exception ex)
+            {
+                exception = ex;
+                return false;
+            }
+        }
+
+        public static bool Deserialize(string xml, out ASYCUDAPrev_declPrev_decl_HS_code obj)
+        {
+            System.Exception exception = null;
+            return Deserialize(xml, out obj, out exception);
+        }
+
+        public static ASYCUDAPrev_declPrev_decl_HS_code Deserialize(string xml)
+        {
+            System.IO.StringReader stringReader = null;
+            try
+            {
+                stringReader = new System.IO.StringReader(xml);
+                return ((ASYCUDAPrev_declPrev_decl_HS_code)(Serializer.Deserialize(System.Xml.XmlReader.Create(stringReader))));
+            }
+            finally
+            {
+                if ((stringReader != null))
+                {
+                    stringReader.Dispose();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Serializes current ASYCUDAPrev_declPrev_decl_HS_code object into file
+        /// </summary>
+        /// <param name="fileName">full path of outupt xml file</param>
+        /// <param name="exception">output Exception value if failed</param>
+        /// <returns>true if can serialize and save into file; otherwise, false</returns>
+        public virtual bool SaveToFile(string fileName, System.Text.Encoding encoding, out System.Exception exception)
+        {
+            exception = null;
+            try
+            {
+                SaveToFile(fileName, encoding);
+                return true;
+            }
+            catch (System.Exception e)
+            {
+                exception = e;
+                return false;
+            }
+        }
+
+        public virtual bool SaveToFile(string fileName, out System.Exception exception)
+        {
+            return SaveToFile(fileName, Encoding.UTF8, out exception);
+        }
+
+        public virtual void SaveToFile(string fileName)
+        {
+            SaveToFile(fileName, Encoding.UTF8);
+        }
+
+        public virtual void SaveToFile(string fileName, System.Text.Encoding encoding)
+        {
+            System.IO.StreamWriter streamWriter = null;
+            try
+            {
+                string xmlString = Serialize(encoding);
+                streamWriter = new System.IO.StreamWriter(fileName, false, Encoding.UTF8);
+                streamWriter.WriteLine(xmlString);
+                streamWriter.Close();
+            }
+            finally
+            {
+                if ((streamWriter != null))
+                {
+                    streamWriter.Dispose();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Deserializes xml markup from file into an ASYCUDAPrev_declPrev_decl_HS_code object
+        /// </summary>
+        /// <param name="fileName">string xml file to load and deserialize</param>
+        /// <param name="obj">Output ASYCUDAPrev_declPrev_decl_HS_code object</param>
+        /// <param name="exception">output Exception value if deserialize failed</param>
+        /// <returns>true if this XmlSerializer can deserialize the object; otherwise, false</returns>
+        public static bool LoadFromFile(string fileName, System.Text.Encoding encoding, out ASYCUDAPrev_declPrev_decl_HS_code obj, out System.Exception exception)
+        {
+            exception = null;
+            obj = default(ASYCUDAPrev_declPrev_decl_HS_code);
+            try
+            {
+                obj = LoadFromFile(fileName, encoding);
+                return true;
+            }
+            catch (System.Exception ex)
+            {
+                exception = ex;
+                return false;
+            }
+        }
+
+        public static bool LoadFromFile(string fileName, out ASYCUDAPrev_declPrev_decl_HS_code obj, out System.Exception exception)
+        {
+            return LoadFromFile(fileName, Encoding.UTF8, out obj, out exception);
+        }
+
+        public static bool LoadFromFile(string fileName, out ASYCUDAPrev_declPrev_decl_HS_code obj)
+        {
+            System.Exception exception = null;
+            return LoadFromFile(fileName, out obj, out exception);
+        }
+
+        public static ASYCUDAPrev_declPrev_decl_HS_code LoadFromFile(string fileName)
+        {
+            return LoadFromFile(fileName, Encoding.UTF8);
+        }
+
+        public static ASYCUDAPrev_declPrev_decl_HS_code LoadFromFile(string fileName, System.Text.Encoding encoding)
+        {
+            System.IO.FileStream file = null;
+            System.IO.StreamReader sr = null;
+            try
+            {
+                file = new System.IO.FileStream(fileName, FileMode.Open, FileAccess.Read);
+                sr = new System.IO.StreamReader(file, encoding);
+                string xmlString = sr.ReadToEnd();
+                sr.Close();
+                file.Close();
+                return Deserialize(xmlString);
+            }
+            finally
+            {
+                if ((file != null))
+                {
+                    file.Dispose();
+                }
+                if ((sr != null))
+                {
+                    sr.Dispose();
+                }
+            }
+        }
+        #endregion
+
+        #region Clone method
+        /// <summary>
+        /// Create a clone of this ASYCUDAPrev_declPrev_decl_HS_code object
+        /// </summary>
+        public virtual ASYCUDAPrev_declPrev_decl_HS_code Clone()
+        {
+            return ((ASYCUDAPrev_declPrev_decl_HS_code)(this.MemberwiseClone()));
+        }
+        #endregion
+    }
+
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.SerializableAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
+    [System.Runtime.Serialization.DataContractAttribute(Name = "ASYCUDAPrev_declPrev_decl_HS_prec")]
+    public partial class ASYCUDAPrev_declPrev_decl_HS_prec : System.ComponentModel.INotifyPropertyChanged
+    {
+
+        private object nullField;
+
+        private ObservableCollection<string> textField;
+
+        private static System.Xml.Serialization.XmlSerializer serializer;
+
+        public ASYCUDAPrev_declPrev_decl_HS_prec()
+        {
+            this.textField = new ObservableCollection<string>();
+        }
+
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public object @null
+        {
+            get
+            {
+                return this.nullField;
+            }
+            set
+            {
+                if ((this.nullField != null))
+                {
+                    if ((nullField.Equals(value) != true))
+                    {
+                        this.nullField = value;
+                        this.OnPropertyChanged("null");
+                    }
+                }
+                else
+                {
+                    this.nullField = value;
+                    this.OnPropertyChanged("null");
+                }
+            }
+        }
+
+        [System.Xml.Serialization.XmlTextAttribute()]
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public ObservableCollection<string> Text
+        {
+            get
+            {
+                return this.textField;
+            }
+            set
+            {
+                if ((this.textField != null))
+                {
+                    if ((textField.Equals(value) != true))
+                    {
+                        this.textField = value;
+                        this.OnPropertyChanged("Text");
+                    }
+                }
+                else
+                {
+                    this.textField = value;
+                    this.OnPropertyChanged("Text");
+                }
+            }
+        }
+
+        private static System.Xml.Serialization.XmlSerializer Serializer
+        {
+            get
+            {
+                if ((serializer == null))
+                {
+                    serializer = new System.Xml.Serialization.XmlSerializer(typeof(ASYCUDAPrev_declPrev_decl_HS_prec));
+                }
+                return serializer;
+            }
+        }
+
+        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+
+        public virtual void OnPropertyChanged(string propertyName)
+        {
+            System.ComponentModel.PropertyChangedEventHandler handler = this.PropertyChanged;
+            if ((handler != null))
+            {
+                handler(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
+            }
+        }
+
+        #region Serialize/Deserialize
+        /// <summary>
+        /// Serializes current ASYCUDAPrev_declPrev_decl_HS_prec object into an XML document
+        /// </summary>
+        /// <returns>string XML value</returns>
+        public virtual string Serialize(System.Text.Encoding encoding)
+        {
+            System.IO.StreamReader streamReader = null;
+            System.IO.MemoryStream memoryStream = null;
+            try
+            {
+                memoryStream = new System.IO.MemoryStream();
+                System.Xml.XmlWriterSettings xmlWriterSettings = new System.Xml.XmlWriterSettings();
+                xmlWriterSettings.Encoding = encoding;
+                System.Xml.XmlWriter xmlWriter = XmlWriter.Create(memoryStream, xmlWriterSettings);
+                Serializer.Serialize(xmlWriter, this);
+                memoryStream.Seek(0, System.IO.SeekOrigin.Begin);
+                streamReader = new System.IO.StreamReader(memoryStream);
+                return streamReader.ReadToEnd();
+            }
+            finally
+            {
+                if ((streamReader != null))
+                {
+                    streamReader.Dispose();
+                }
+                if ((memoryStream != null))
+                {
+                    memoryStream.Dispose();
+                }
+            }
+        }
+
+        public virtual string Serialize()
+        {
+            return Serialize(Encoding.UTF8);
+        }
+
+        /// <summary>
+        /// Deserializes workflow markup into an ASYCUDAPrev_declPrev_decl_HS_prec object
+        /// </summary>
+        /// <param name="xml">string workflow markup to deserialize</param>
+        /// <param name="obj">Output ASYCUDAPrev_declPrev_decl_HS_prec object</param>
+        /// <param name="exception">output Exception value if deserialize failed</param>
+        /// <returns>true if this XmlSerializer can deserialize the object; otherwise, false</returns>
+        public static bool Deserialize(string xml, out ASYCUDAPrev_declPrev_decl_HS_prec obj, out System.Exception exception)
+        {
+            exception = null;
+            obj = default(ASYCUDAPrev_declPrev_decl_HS_prec);
+            try
+            {
+                obj = Deserialize(xml);
+                return true;
+            }
+            catch (System.Exception ex)
+            {
+                exception = ex;
+                return false;
+            }
+        }
+
+        public static bool Deserialize(string xml, out ASYCUDAPrev_declPrev_decl_HS_prec obj)
+        {
+            System.Exception exception = null;
+            return Deserialize(xml, out obj, out exception);
+        }
+
+        public static ASYCUDAPrev_declPrev_decl_HS_prec Deserialize(string xml)
+        {
+            System.IO.StringReader stringReader = null;
+            try
+            {
+                stringReader = new System.IO.StringReader(xml);
+                return ((ASYCUDAPrev_declPrev_decl_HS_prec)(Serializer.Deserialize(System.Xml.XmlReader.Create(stringReader))));
+            }
+            finally
+            {
+                if ((stringReader != null))
+                {
+                    stringReader.Dispose();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Serializes current ASYCUDAPrev_declPrev_decl_HS_prec object into file
+        /// </summary>
+        /// <param name="fileName">full path of outupt xml file</param>
+        /// <param name="exception">output Exception value if failed</param>
+        /// <returns>true if can serialize and save into file; otherwise, false</returns>
+        public virtual bool SaveToFile(string fileName, System.Text.Encoding encoding, out System.Exception exception)
+        {
+            exception = null;
+            try
+            {
+                SaveToFile(fileName, encoding);
+                return true;
+            }
+            catch (System.Exception e)
+            {
+                exception = e;
+                return false;
+            }
+        }
+
+        public virtual bool SaveToFile(string fileName, out System.Exception exception)
+        {
+            return SaveToFile(fileName, Encoding.UTF8, out exception);
+        }
+
+        public virtual void SaveToFile(string fileName)
+        {
+            SaveToFile(fileName, Encoding.UTF8);
+        }
+
+        public virtual void SaveToFile(string fileName, System.Text.Encoding encoding)
+        {
+            System.IO.StreamWriter streamWriter = null;
+            try
+            {
+                string xmlString = Serialize(encoding);
+                streamWriter = new System.IO.StreamWriter(fileName, false, Encoding.UTF8);
+                streamWriter.WriteLine(xmlString);
+                streamWriter.Close();
+            }
+            finally
+            {
+                if ((streamWriter != null))
+                {
+                    streamWriter.Dispose();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Deserializes xml markup from file into an ASYCUDAPrev_declPrev_decl_HS_prec object
+        /// </summary>
+        /// <param name="fileName">string xml file to load and deserialize</param>
+        /// <param name="obj">Output ASYCUDAPrev_declPrev_decl_HS_prec object</param>
+        /// <param name="exception">output Exception value if deserialize failed</param>
+        /// <returns>true if this XmlSerializer can deserialize the object; otherwise, false</returns>
+        public static bool LoadFromFile(string fileName, System.Text.Encoding encoding, out ASYCUDAPrev_declPrev_decl_HS_prec obj, out System.Exception exception)
+        {
+            exception = null;
+            obj = default(ASYCUDAPrev_declPrev_decl_HS_prec);
+            try
+            {
+                obj = LoadFromFile(fileName, encoding);
+                return true;
+            }
+            catch (System.Exception ex)
+            {
+                exception = ex;
+                return false;
+            }
+        }
+
+        public static bool LoadFromFile(string fileName, out ASYCUDAPrev_declPrev_decl_HS_prec obj, out System.Exception exception)
+        {
+            return LoadFromFile(fileName, Encoding.UTF8, out obj, out exception);
+        }
+
+        public static bool LoadFromFile(string fileName, out ASYCUDAPrev_declPrev_decl_HS_prec obj)
+        {
+            System.Exception exception = null;
+            return LoadFromFile(fileName, out obj, out exception);
+        }
+
+        public static ASYCUDAPrev_declPrev_decl_HS_prec LoadFromFile(string fileName)
+        {
+            return LoadFromFile(fileName, Encoding.UTF8);
+        }
+
+        public static ASYCUDAPrev_declPrev_decl_HS_prec LoadFromFile(string fileName, System.Text.Encoding encoding)
+        {
+            System.IO.FileStream file = null;
+            System.IO.StreamReader sr = null;
+            try
+            {
+                file = new System.IO.FileStream(fileName, FileMode.Open, FileAccess.Read);
+                sr = new System.IO.StreamReader(file, encoding);
+                string xmlString = sr.ReadToEnd();
+                sr.Close();
+                file.Close();
+                return Deserialize(xmlString);
+            }
+            finally
+            {
+                if ((file != null))
+                {
+                    file.Dispose();
+                }
+                if ((sr != null))
+                {
+                    sr.Dispose();
+                }
+            }
+        }
+        #endregion
+
+        #region Clone method
+        /// <summary>
+        /// Create a clone of this ASYCUDAPrev_declPrev_decl_HS_prec object
+        /// </summary>
+        public virtual ASYCUDAPrev_declPrev_decl_HS_prec Clone()
+        {
+            return ((ASYCUDAPrev_declPrev_decl_HS_prec)(this.MemberwiseClone()));
+        }
+        #endregion
+    }
+
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.SerializableAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
+    [System.Runtime.Serialization.DataContractAttribute(Name = "ASYCUDAPrev_declPrev_decl_HS_spec")]
+    public partial class ASYCUDAPrev_declPrev_decl_HS_spec : System.ComponentModel.INotifyPropertyChanged
+    {
+
+        private object nullField;
+
+        private ObservableCollection<string> textField;
+
+        private static System.Xml.Serialization.XmlSerializer serializer;
+
+        public ASYCUDAPrev_declPrev_decl_HS_spec()
+        {
+            this.textField = new ObservableCollection<string>();
+        }
+
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public object @null
+        {
+            get
+            {
+                return this.nullField;
+            }
+            set
+            {
+                if ((this.nullField != null))
+                {
+                    if ((nullField.Equals(value) != true))
+                    {
+                        this.nullField = value;
+                        this.OnPropertyChanged("null");
+                    }
+                }
+                else
+                {
+                    this.nullField = value;
+                    this.OnPropertyChanged("null");
+                }
+            }
+        }
+
+        [System.Xml.Serialization.XmlTextAttribute()]
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public ObservableCollection<string> Text
+        {
+            get
+            {
+                return this.textField;
+            }
+            set
+            {
+                if ((this.textField != null))
+                {
+                    if ((textField.Equals(value) != true))
+                    {
+                        this.textField = value;
+                        this.OnPropertyChanged("Text");
+                    }
+                }
+                else
+                {
+                    this.textField = value;
+                    this.OnPropertyChanged("Text");
+                }
+            }
+        }
+
+        private static System.Xml.Serialization.XmlSerializer Serializer
+        {
+            get
+            {
+                if ((serializer == null))
+                {
+                    serializer = new System.Xml.Serialization.XmlSerializer(typeof(ASYCUDAPrev_declPrev_decl_HS_spec));
+                }
+                return serializer;
+            }
+        }
+
+        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+
+        public virtual void OnPropertyChanged(string propertyName)
+        {
+            System.ComponentModel.PropertyChangedEventHandler handler = this.PropertyChanged;
+            if ((handler != null))
+            {
+                handler(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
+            }
+        }
+
+        #region Serialize/Deserialize
+        /// <summary>
+        /// Serializes current ASYCUDAPrev_declPrev_decl_HS_spec object into an XML document
+        /// </summary>
+        /// <returns>string XML value</returns>
+        public virtual string Serialize(System.Text.Encoding encoding)
+        {
+            System.IO.StreamReader streamReader = null;
+            System.IO.MemoryStream memoryStream = null;
+            try
+            {
+                memoryStream = new System.IO.MemoryStream();
+                System.Xml.XmlWriterSettings xmlWriterSettings = new System.Xml.XmlWriterSettings();
+                xmlWriterSettings.Encoding = encoding;
+                System.Xml.XmlWriter xmlWriter = XmlWriter.Create(memoryStream, xmlWriterSettings);
+                Serializer.Serialize(xmlWriter, this);
+                memoryStream.Seek(0, System.IO.SeekOrigin.Begin);
+                streamReader = new System.IO.StreamReader(memoryStream);
+                return streamReader.ReadToEnd();
+            }
+            finally
+            {
+                if ((streamReader != null))
+                {
+                    streamReader.Dispose();
+                }
+                if ((memoryStream != null))
+                {
+                    memoryStream.Dispose();
+                }
+            }
+        }
+
+        public virtual string Serialize()
+        {
+            return Serialize(Encoding.UTF8);
+        }
+
+        /// <summary>
+        /// Deserializes workflow markup into an ASYCUDAPrev_declPrev_decl_HS_spec object
+        /// </summary>
+        /// <param name="xml">string workflow markup to deserialize</param>
+        /// <param name="obj">Output ASYCUDAPrev_declPrev_decl_HS_spec object</param>
+        /// <param name="exception">output Exception value if deserialize failed</param>
+        /// <returns>true if this XmlSerializer can deserialize the object; otherwise, false</returns>
+        public static bool Deserialize(string xml, out ASYCUDAPrev_declPrev_decl_HS_spec obj, out System.Exception exception)
+        {
+            exception = null;
+            obj = default(ASYCUDAPrev_declPrev_decl_HS_spec);
+            try
+            {
+                obj = Deserialize(xml);
+                return true;
+            }
+            catch (System.Exception ex)
+            {
+                exception = ex;
+                return false;
+            }
+        }
+
+        public static bool Deserialize(string xml, out ASYCUDAPrev_declPrev_decl_HS_spec obj)
+        {
+            System.Exception exception = null;
+            return Deserialize(xml, out obj, out exception);
+        }
+
+        public static ASYCUDAPrev_declPrev_decl_HS_spec Deserialize(string xml)
+        {
+            System.IO.StringReader stringReader = null;
+            try
+            {
+                stringReader = new System.IO.StringReader(xml);
+                return ((ASYCUDAPrev_declPrev_decl_HS_spec)(Serializer.Deserialize(System.Xml.XmlReader.Create(stringReader))));
+            }
+            finally
+            {
+                if ((stringReader != null))
+                {
+                    stringReader.Dispose();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Serializes current ASYCUDAPrev_declPrev_decl_HS_spec object into file
+        /// </summary>
+        /// <param name="fileName">full path of outupt xml file</param>
+        /// <param name="exception">output Exception value if failed</param>
+        /// <returns>true if can serialize and save into file; otherwise, false</returns>
+        public virtual bool SaveToFile(string fileName, System.Text.Encoding encoding, out System.Exception exception)
+        {
+            exception = null;
+            try
+            {
+                SaveToFile(fileName, encoding);
+                return true;
+            }
+            catch (System.Exception e)
+            {
+                exception = e;
+                return false;
+            }
+        }
+
+        public virtual bool SaveToFile(string fileName, out System.Exception exception)
+        {
+            return SaveToFile(fileName, Encoding.UTF8, out exception);
+        }
+
+        public virtual void SaveToFile(string fileName)
+        {
+            SaveToFile(fileName, Encoding.UTF8);
+        }
+
+        public virtual void SaveToFile(string fileName, System.Text.Encoding encoding)
+        {
+            System.IO.StreamWriter streamWriter = null;
+            try
+            {
+                string xmlString = Serialize(encoding);
+                streamWriter = new System.IO.StreamWriter(fileName, false, Encoding.UTF8);
+                streamWriter.WriteLine(xmlString);
+                streamWriter.Close();
+            }
+            finally
+            {
+                if ((streamWriter != null))
+                {
+                    streamWriter.Dispose();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Deserializes xml markup from file into an ASYCUDAPrev_declPrev_decl_HS_spec object
+        /// </summary>
+        /// <param name="fileName">string xml file to load and deserialize</param>
+        /// <param name="obj">Output ASYCUDAPrev_declPrev_decl_HS_spec object</param>
+        /// <param name="exception">output Exception value if deserialize failed</param>
+        /// <returns>true if this XmlSerializer can deserialize the object; otherwise, false</returns>
+        public static bool LoadFromFile(string fileName, System.Text.Encoding encoding, out ASYCUDAPrev_declPrev_decl_HS_spec obj, out System.Exception exception)
+        {
+            exception = null;
+            obj = default(ASYCUDAPrev_declPrev_decl_HS_spec);
+            try
+            {
+                obj = LoadFromFile(fileName, encoding);
+                return true;
+            }
+            catch (System.Exception ex)
+            {
+                exception = ex;
+                return false;
+            }
+        }
+
+        public static bool LoadFromFile(string fileName, out ASYCUDAPrev_declPrev_decl_HS_spec obj, out System.Exception exception)
+        {
+            return LoadFromFile(fileName, Encoding.UTF8, out obj, out exception);
+        }
+
+        public static bool LoadFromFile(string fileName, out ASYCUDAPrev_declPrev_decl_HS_spec obj)
+        {
+            System.Exception exception = null;
+            return LoadFromFile(fileName, out obj, out exception);
+        }
+
+        public static ASYCUDAPrev_declPrev_decl_HS_spec LoadFromFile(string fileName)
+        {
+            return LoadFromFile(fileName, Encoding.UTF8);
+        }
+
+        public static ASYCUDAPrev_declPrev_decl_HS_spec LoadFromFile(string fileName, System.Text.Encoding encoding)
+        {
+            System.IO.FileStream file = null;
+            System.IO.StreamReader sr = null;
+            try
+            {
+                file = new System.IO.FileStream(fileName, FileMode.Open, FileAccess.Read);
+                sr = new System.IO.StreamReader(file, encoding);
+                string xmlString = sr.ReadToEnd();
+                sr.Close();
+                file.Close();
+                return Deserialize(xmlString);
+            }
+            finally
+            {
+                if ((file != null))
+                {
+                    file.Dispose();
+                }
+                if ((sr != null))
+                {
+                    sr.Dispose();
+                }
+            }
+        }
+        #endregion
+
+        #region Clone method
+        /// <summary>
+        /// Create a clone of this ASYCUDAPrev_declPrev_decl_HS_spec object
+        /// </summary>
+        public virtual ASYCUDAPrev_declPrev_decl_HS_spec Clone()
+        {
+            return ((ASYCUDAPrev_declPrev_decl_HS_spec)(this.MemberwiseClone()));
+        }
+        #endregion
+    }
+
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.SerializableAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
+    [System.Runtime.Serialization.DataContractAttribute(Name = "ASYCUDAPrev_declPrev_decl_country_origin")]
+    public partial class ASYCUDAPrev_declPrev_decl_country_origin : System.ComponentModel.INotifyPropertyChanged
+    {
+
+        private object nullField;
+
+        private ObservableCollection<string> textField;
+
+        private static System.Xml.Serialization.XmlSerializer serializer;
+
+        public ASYCUDAPrev_declPrev_decl_country_origin()
+        {
+            this.textField = new ObservableCollection<string>();
+        }
+
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public object @null
+        {
+            get
+            {
+                return this.nullField;
+            }
+            set
+            {
+                if ((this.nullField != null))
+                {
+                    if ((nullField.Equals(value) != true))
+                    {
+                        this.nullField = value;
+                        this.OnPropertyChanged("null");
+                    }
+                }
+                else
+                {
+                    this.nullField = value;
+                    this.OnPropertyChanged("null");
+                }
+            }
+        }
+
+        [System.Xml.Serialization.XmlTextAttribute()]
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public ObservableCollection<string> Text
+        {
+            get
+            {
+                return this.textField;
+            }
+            set
+            {
+                if ((this.textField != null))
+                {
+                    if ((textField.Equals(value) != true))
+                    {
+                        this.textField = value;
+                        this.OnPropertyChanged("Text");
+                    }
+                }
+                else
+                {
+                    this.textField = value;
+                    this.OnPropertyChanged("Text");
+                }
+            }
+        }
+
+        private static System.Xml.Serialization.XmlSerializer Serializer
+        {
+            get
+            {
+                if ((serializer == null))
+                {
+                    serializer = new System.Xml.Serialization.XmlSerializer(typeof(ASYCUDAPrev_declPrev_decl_country_origin));
+                }
+                return serializer;
+            }
+        }
+
+        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+
+        public virtual void OnPropertyChanged(string propertyName)
+        {
+            System.ComponentModel.PropertyChangedEventHandler handler = this.PropertyChanged;
+            if ((handler != null))
+            {
+                handler(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
+            }
+        }
+
+        #region Serialize/Deserialize
+        /// <summary>
+        /// Serializes current ASYCUDAPrev_declPrev_decl_country_origin object into an XML document
+        /// </summary>
+        /// <returns>string XML value</returns>
+        public virtual string Serialize(System.Text.Encoding encoding)
+        {
+            System.IO.StreamReader streamReader = null;
+            System.IO.MemoryStream memoryStream = null;
+            try
+            {
+                memoryStream = new System.IO.MemoryStream();
+                System.Xml.XmlWriterSettings xmlWriterSettings = new System.Xml.XmlWriterSettings();
+                xmlWriterSettings.Encoding = encoding;
+                System.Xml.XmlWriter xmlWriter = XmlWriter.Create(memoryStream, xmlWriterSettings);
+                Serializer.Serialize(xmlWriter, this);
+                memoryStream.Seek(0, System.IO.SeekOrigin.Begin);
+                streamReader = new System.IO.StreamReader(memoryStream);
+                return streamReader.ReadToEnd();
+            }
+            finally
+            {
+                if ((streamReader != null))
+                {
+                    streamReader.Dispose();
+                }
+                if ((memoryStream != null))
+                {
+                    memoryStream.Dispose();
+                }
+            }
+        }
+
+        public virtual string Serialize()
+        {
+            return Serialize(Encoding.UTF8);
+        }
+
+        /// <summary>
+        /// Deserializes workflow markup into an ASYCUDAPrev_declPrev_decl_country_origin object
+        /// </summary>
+        /// <param name="xml">string workflow markup to deserialize</param>
+        /// <param name="obj">Output ASYCUDAPrev_declPrev_decl_country_origin object</param>
+        /// <param name="exception">output Exception value if deserialize failed</param>
+        /// <returns>true if this XmlSerializer can deserialize the object; otherwise, false</returns>
+        public static bool Deserialize(string xml, out ASYCUDAPrev_declPrev_decl_country_origin obj, out System.Exception exception)
+        {
+            exception = null;
+            obj = default(ASYCUDAPrev_declPrev_decl_country_origin);
+            try
+            {
+                obj = Deserialize(xml);
+                return true;
+            }
+            catch (System.Exception ex)
+            {
+                exception = ex;
+                return false;
+            }
+        }
+
+        public static bool Deserialize(string xml, out ASYCUDAPrev_declPrev_decl_country_origin obj)
+        {
+            System.Exception exception = null;
+            return Deserialize(xml, out obj, out exception);
+        }
+
+        public static ASYCUDAPrev_declPrev_decl_country_origin Deserialize(string xml)
+        {
+            System.IO.StringReader stringReader = null;
+            try
+            {
+                stringReader = new System.IO.StringReader(xml);
+                return ((ASYCUDAPrev_declPrev_decl_country_origin)(Serializer.Deserialize(System.Xml.XmlReader.Create(stringReader))));
+            }
+            finally
+            {
+                if ((stringReader != null))
+                {
+                    stringReader.Dispose();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Serializes current ASYCUDAPrev_declPrev_decl_country_origin object into file
+        /// </summary>
+        /// <param name="fileName">full path of outupt xml file</param>
+        /// <param name="exception">output Exception value if failed</param>
+        /// <returns>true if can serialize and save into file; otherwise, false</returns>
+        public virtual bool SaveToFile(string fileName, System.Text.Encoding encoding, out System.Exception exception)
+        {
+            exception = null;
+            try
+            {
+                SaveToFile(fileName, encoding);
+                return true;
+            }
+            catch (System.Exception e)
+            {
+                exception = e;
+                return false;
+            }
+        }
+
+        public virtual bool SaveToFile(string fileName, out System.Exception exception)
+        {
+            return SaveToFile(fileName, Encoding.UTF8, out exception);
+        }
+
+        public virtual void SaveToFile(string fileName)
+        {
+            SaveToFile(fileName, Encoding.UTF8);
+        }
+
+        public virtual void SaveToFile(string fileName, System.Text.Encoding encoding)
+        {
+            System.IO.StreamWriter streamWriter = null;
+            try
+            {
+                string xmlString = Serialize(encoding);
+                streamWriter = new System.IO.StreamWriter(fileName, false, Encoding.UTF8);
+                streamWriter.WriteLine(xmlString);
+                streamWriter.Close();
+            }
+            finally
+            {
+                if ((streamWriter != null))
+                {
+                    streamWriter.Dispose();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Deserializes xml markup from file into an ASYCUDAPrev_declPrev_decl_country_origin object
+        /// </summary>
+        /// <param name="fileName">string xml file to load and deserialize</param>
+        /// <param name="obj">Output ASYCUDAPrev_declPrev_decl_country_origin object</param>
+        /// <param name="exception">output Exception value if deserialize failed</param>
+        /// <returns>true if this XmlSerializer can deserialize the object; otherwise, false</returns>
+        public static bool LoadFromFile(string fileName, System.Text.Encoding encoding, out ASYCUDAPrev_declPrev_decl_country_origin obj, out System.Exception exception)
+        {
+            exception = null;
+            obj = default(ASYCUDAPrev_declPrev_decl_country_origin);
+            try
+            {
+                obj = LoadFromFile(fileName, encoding);
+                return true;
+            }
+            catch (System.Exception ex)
+            {
+                exception = ex;
+                return false;
+            }
+        }
+
+        public static bool LoadFromFile(string fileName, out ASYCUDAPrev_declPrev_decl_country_origin obj, out System.Exception exception)
+        {
+            return LoadFromFile(fileName, Encoding.UTF8, out obj, out exception);
+        }
+
+        public static bool LoadFromFile(string fileName, out ASYCUDAPrev_declPrev_decl_country_origin obj)
+        {
+            System.Exception exception = null;
+            return LoadFromFile(fileName, out obj, out exception);
+        }
+
+        public static ASYCUDAPrev_declPrev_decl_country_origin LoadFromFile(string fileName)
+        {
+            return LoadFromFile(fileName, Encoding.UTF8);
+        }
+
+        public static ASYCUDAPrev_declPrev_decl_country_origin LoadFromFile(string fileName, System.Text.Encoding encoding)
+        {
+            System.IO.FileStream file = null;
+            System.IO.StreamReader sr = null;
+            try
+            {
+                file = new System.IO.FileStream(fileName, FileMode.Open, FileAccess.Read);
+                sr = new System.IO.StreamReader(file, encoding);
+                string xmlString = sr.ReadToEnd();
+                sr.Close();
+                file.Close();
+                return Deserialize(xmlString);
+            }
+            finally
+            {
+                if ((file != null))
+                {
+                    file.Dispose();
+                }
+                if ((sr != null))
+                {
+                    sr.Dispose();
+                }
+            }
+        }
+        #endregion
+
+        #region Clone method
+        /// <summary>
+        /// Create a clone of this ASYCUDAPrev_declPrev_decl_country_origin object
+        /// </summary>
+        public virtual ASYCUDAPrev_declPrev_decl_country_origin Clone()
+        {
+            return ((ASYCUDAPrev_declPrev_decl_country_origin)(this.MemberwiseClone()));
         }
         #endregion
     }

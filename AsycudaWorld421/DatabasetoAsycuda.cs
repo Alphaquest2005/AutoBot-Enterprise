@@ -346,12 +346,12 @@ namespace Asycuda421
                     {
                         Prev_decl_office_code = item.Prev_reg_cuo,
                         Prev_decl_reg_year = item.Prev_reg_year.ToString(),
-                        Prev_decl_reg_serial = item.Prev_reg_ser,
+                        Prev_decl_reg_serial = new ASYCUDAPrev_declPrev_decl_reg_serial(){Text = new ObservableCollection<string>(){ item.Prev_reg_ser } } ,
                         Prev_decl_reg_number = item.Prev_reg_nbr,
                         Prev_decl_item_number = item.Previous_item_number,
-                        Prev_decl_HS_code = item.Hs_code,
-                        Prev_decl_HS_prec = item.Commodity_code,
-                        Prev_decl_country_origin = item.Goods_origin,
+                        Prev_decl_HS_code = new ASYCUDAPrev_declPrev_decl_HS_code() {Text = new ObservableCollection<string>() {item.Hs_code}} ,
+                        Prev_decl_HS_prec = new ASYCUDAPrev_declPrev_decl_HS_prec() {Text = new ObservableCollection<string>(){ item.Commodity_code } } ,
+                        Prev_decl_country_origin = new ASYCUDAPrev_declPrev_decl_country_origin() {Text = new ObservableCollection<string>() {item.Goods_origin}} ,
                         Prev_decl_number_packages = item.Packages_number,
                         Prev_decl_weight = item.Net_weight.ToString(),
                         Prev_decl_supp_quantity = item.Suplementary_Quantity.ToString(),
@@ -361,7 +361,7 @@ namespace Asycuda421
                         Prev_decl_weight_written_off = item.Prev_net_weight.ToString(),
                         Prev_decl_supp_quantity_written_off = item.Preveious_suplementary_quantity.ToString(),
                         Prev_decl_ref_value_written_off = Math.Round(item.Previous_value, 4).ToString(),
-                        Prev_decl_HS_spec = item.Prev_decl_HS_spec.Length <= 20 ? item.Prev_decl_HS_spec : ""
+                        Prev_decl_HS_spec = new ASYCUDAPrev_declPrev_decl_HS_spec(){Text = new ObservableCollection<string>(){item.Prev_decl_HS_spec.Length <= 20 ? item.Prev_decl_HS_spec : ""}} 
                     }; //ASYCUDAPreviousItem
 
                     a.Prev_decl.Add(pi);
