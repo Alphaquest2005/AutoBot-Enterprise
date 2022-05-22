@@ -88,7 +88,7 @@ namespace WaterNut
                             lastexception = true;
                             errorMessage +=
                                 $"An unhandled Exception occurred!: {exp.Message} "; //---- {1}, exp.StackTrace
-                            MessageBox.Show(errorMessage, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                            ////////MessageBox.Show(errorMessage, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                             //e. = true;
                         }
 
