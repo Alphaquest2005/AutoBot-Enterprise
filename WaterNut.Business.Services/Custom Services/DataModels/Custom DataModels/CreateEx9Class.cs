@@ -265,6 +265,9 @@ namespace WaterNut.DataSpace
                     .Where(x => x.Summary.EntryDataDate <= endDate)
                     .Where(x => x.Summary.DutyFreePaid == dfp).ToList();
 
+                var test = allSales.Where(x => x.Summary.PreviousItem_Id == 16758);
+                var test2 = allHistoricSales.Where(x => x.Summary.PreviousItem_Id == 16758);
+
                 res.AddRange(allHistoricSales
                     .GroupBy(g => new
                     {
@@ -340,11 +343,16 @@ namespace WaterNut.DataSpace
             if (_universalData == null || freashStart)
             {
                 _universalData = ctx.ItemSalesAsycudaPiSummary
-                    .GroupJoin(ctx.AsycudaItemPiQuantityData, pis => new { PreviousItem_Id = (int) pis.PreviousItem_Id, pis.DutyFreePaid}, pid => new { PreviousItem_Id = pid.Item_Id, pid.DutyFreePaid},
+                    .GroupJoin(ctx.AsycudaItemPiQuantityData,
+                        pis => new {PreviousItem_Id = (int) pis.PreviousItem_Id, pis.DutyFreePaid},
+                        pid => new {PreviousItem_Id = pid.Item_Id, pid.DutyFreePaid},
                         (pis, pid) => new SummaryData {Summary = pis, pIData = pid})
                     //.Where(x => x.ItemNumber == "14479" || x.ItemNumber == "014479")
                     .Where(x => x.Summary.ApplicationSettingsId == applicationSettingsId)
                     .ToList();
+
+               var test = _universalData.Where(x => x.Summary.PreviousItem_Id == 16758);
+
                 universalDataSummary = _universalData
                     .GroupBy(g => new
                     {
