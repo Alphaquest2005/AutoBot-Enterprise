@@ -173,7 +173,7 @@ namespace WaterNut.DataSpace
                 fileType = FileTypeManager.GetFileType(tmp.OcrInvoices.FileTypeId);
 
 
-            SaveCsvEntryData.Instance.ProcessCsvSummaryData(fileType, docSet, overWriteExisting,
+            new CsvSummaryDataProcessor().ProcessCsvSummaryData(fileType, docSet, overWriteExisting,
                 emailId,
                 file, csvLines).Wait();
 
