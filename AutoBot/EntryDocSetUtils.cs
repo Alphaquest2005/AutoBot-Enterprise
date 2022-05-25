@@ -158,10 +158,13 @@ namespace AutoBot
         public static void ImportExpiredEntires(string expFile)
         {
             
-            var fileType = new CoreEntitiesContext().FileTypes.First(x =>
-                x.ApplicationSettingsId ==
-                BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId &&
-                x.FileImporterInfos.EntryType == FileTypeManager.EntryTypes.ExpiredEntries);
+            var fileType = new CoreEntitiesContext()
+                
+                .FileTypes
+                .Include(x => x.FileImporterInfos)
+                .First(x => x.ApplicationSettingsId ==
+                            BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId &&
+                            x.FileImporterInfos.EntryType == FileTypeManager.EntryTypes.ExpiredEntries);
             CSVUtils.SaveCsv(new FileInfo[] {new FileInfo(expFile)}, fileType);
         }
 
