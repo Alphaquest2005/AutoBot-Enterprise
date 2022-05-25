@@ -107,7 +107,7 @@ namespace WaterNut.DataSpace
                 _ex9AsycudaSalesAllocations = null;
                 InventoryDataCache =
                     InventoryItemUtils.GetInventoryItems(BaseDataModel.Instance.CurrentApplicationSettings
-                        .ApplicationSettingsId);
+                        .ApplicationSettingsId, true);
                 var docs = new List<DocumentCT>();
                 //docPreviousItems = new Dictionary<int, List<previousItems>>();
                 //var dutylst = CreateDutyList(slst);
@@ -451,7 +451,7 @@ namespace WaterNut.DataSpace
                 //applyCurrentChecks = false;
                 if(InventoryDataCache == null) InventoryDataCache =
                     InventoryItemUtils.GetInventoryItems(BaseDataModel.Instance.CurrentApplicationSettings
-                        .ApplicationSettingsId);
+                        .ApplicationSettingsId, false);
 
                 var itmcount = 0;
                 var docList = new List<DocumentCT>();

@@ -89,7 +89,7 @@ namespace WaterNut.Business.Services.Utils
                 }
                 else
                 {
-                    fileType = suggestedfileType;
+                    fileType = GetFileType(suggestedfileType);
                 }
 
                 return fileType;

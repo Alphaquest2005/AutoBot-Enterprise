@@ -7,14 +7,16 @@ using System.Threading.Tasks;
 using Core.Common.Data;
 using CoreEntities.Business.Entities;
 using InventoryDS.Business.Entities;
+using WaterNut.DataSpace;
 using WaterNut.Interfaces;
 
 namespace WaterNut.Business.Services.Utils
 {
     public static class InventoryItemUtils
     {
+        private static List<InventoryItem> _inventoryCache;
 
-         public static IInventoryItem GetInventoryItem(Func<IInventoryItem, bool> p)
+        public static IInventoryItem GetInventoryItem(Func<IInventoryItem, bool> p)
         {
             
                 return GetInventoryItems().FirstOrDefault(p);
@@ -29,17 +31,28 @@ namespace WaterNut.Business.Services.Utils
                  ;
          }
 
-
-         public static List<InventoryItem> GetInventoryItems(int applicationSettingsId)
+         private static List<InventoryItem> GetInventoryItemsCache(int applicationSettingsId, bool fresh)
          {
-             
-                 return GetInventoryItems()
-                     .Where(x => x.ApplicationSettingsId == applicationSettingsId).ToList();
-             
+             if(_inventoryCache == null || fresh)
+                 _inventoryCache = 
+              new InventoryDSContext().InventoryItems
+                     .Include("InventoryItemSources.InventorySource")
+                     .Include(x => x.InventoryItemAlias)
+                     .Where(x => x.ApplicationSettingsId == applicationSettingsId)
+                     .ToList() ;
+
+             return _inventoryCache;
          }
 
+        public static List<InventoryItem> GetInventoryItems(int applicationSettingsId, bool fresh)
+        {
+
+            return GetInventoryItemsCache(applicationSettingsId, fresh);
+
+        }
+
         public static List<InventoryItem> GetInventoryItems(List<string> itemNumbers, int applicationSettingsId) =>
-            itemNumbers.Select(itemNumber => GetInventoryItems().FirstOrDefault(x => x.ItemNumber == itemNumber && x.ApplicationSettingsId == applicationSettingsId))
+            itemNumbers.Select(itemNumber => GetInventoryItemsCache(BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId, false).FirstOrDefault(x => x.ItemNumber == itemNumber && x.ApplicationSettingsId == applicationSettingsId))
                 .Where(x => x != null)
                 .ToList();
 
