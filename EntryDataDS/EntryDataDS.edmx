@@ -139,7 +139,7 @@
           <Property Name="FileLineNumber" Type="int" />
           <Property Name="UpgradeKey" Type="int" />
           <Property Name="VolumeLiters" Type="float" />
-          <Property Name="EntryDataDetailsKey" Type="nvarchar" MaxLength="4000" StoreGeneratedPattern="Computed" />
+          <Property Name="EntryDataDetailsKey" Type="nvarchar" MaxLength="60" StoreGeneratedPattern="Computed" />
           <Property Name="TotalValue" Type="float" StoreGeneratedPattern="Computed" Nullable="false" />
           <Property Name="CLineNumber" Type="int" />
         </EntityType>
@@ -572,7 +572,7 @@
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Consignee" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="Code" Type="nvarchar" MaxLength="50" Nullable="false" />
-          <Property Name="Shipper" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Shipper" Type="nvarchar" MaxLength="50" />
           <Property Name="TrackingNumber" Type="nvarchar" MaxLength="255" />
           <Property Name="Pieces" Type="int" Nullable="false" />
           <Property Name="WarehouseCode" Type="nvarchar" MaxLength="50" Nullable="false" />
@@ -2861,7 +2861,7 @@ FROM [dbo].[ShipmentRiderManifests] AS [ShipmentRiderManifests]</DefiningQuery>
           <Property Name="UpgradeKey" Type="Int32" />
           <NavigationProperty Name="INVItems" Relationship="WaterNutDBModel.EntryDataDetailsShipmentInvoicePOItemQueryMatches" FromRole="EntryDataDetails" ToRole="ShipmentInvoicePOItemQueryMatches" />
           <Property Name="VolumeLiters" Type="Double" />
-          <Property Name="EntryDataDetailsKey" Type="String" MaxLength="4000" FixedLength="false" Unicode="true" annotation:StoreGeneratedPattern="Computed" />
+          <Property Name="EntryDataDetailsKey" Type="String" MaxLength="60" FixedLength="false" Unicode="true" annotation:StoreGeneratedPattern="Computed" />
           <Property Name="TotalValue" Type="Double" Nullable="false" annotation:StoreGeneratedPattern="Computed" />
           <Property Name="CLineNumber" Type="Int32" />
           <NavigationProperty Name="SupportingDetails" Relationship="WaterNutDBModel.FK_EntryDataDetails_SupportingDetails_EntryDataDetails" FromRole="EntryDataDetails" ToRole="EntryDataDetails_SupportingDetails" />
@@ -3448,7 +3448,7 @@ FROM [dbo].[ShipmentRiderManifests] AS [ShipmentRiderManifests]</DefiningQuery>
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Consignee" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="Code" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="Shipper" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Shipper" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="TrackingNumber" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="Pieces" Type="Int32" Nullable="false" />
           <Property Name="WarehouseCode" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />

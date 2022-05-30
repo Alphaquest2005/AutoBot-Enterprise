@@ -16,7 +16,7 @@
               this.Property(t => t.Id).HasColumnName("Id").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.Identity));
               this.Property(t => t.Consignee).HasColumnName("Consignee").IsRequired().HasMaxLength(50);
               this.Property(t => t.Code).HasColumnName("Code").IsRequired().HasMaxLength(50);
-              this.Property(t => t.Shipper).HasColumnName("Shipper").IsRequired().HasMaxLength(50);
+              this.Property(t => t.Shipper).HasColumnName("Shipper").HasMaxLength(50);
               this.Property(t => t.TrackingNumber).HasColumnName("TrackingNumber").HasMaxLength(255);
               this.Property(t => t.Pieces).HasColumnName("Pieces");
               this.Property(t => t.WarehouseCode).HasColumnName("WarehouseCode").IsRequired().HasMaxLength(50);
