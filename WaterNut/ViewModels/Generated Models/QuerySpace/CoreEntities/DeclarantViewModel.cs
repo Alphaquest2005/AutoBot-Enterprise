@@ -318,7 +318,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             }
         }
 
-        public class DeclarantExcelLine
+        public partial class DeclarantExcelLine
         {
 		 
                     public string DeclarantCode { get; set; } 

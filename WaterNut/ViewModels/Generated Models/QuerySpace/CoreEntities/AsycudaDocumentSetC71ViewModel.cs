@@ -327,7 +327,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             }
         }
 
-        public class AsycudaDocumentSetC71ExcelLine
+        public partial class AsycudaDocumentSetC71ExcelLine
         {
 		 
                     public string Address { get; set; } 

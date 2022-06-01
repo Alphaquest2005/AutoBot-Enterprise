@@ -365,6 +365,24 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 
  
 
+		private string _emailIdFilter;
+        public string EmailIdFilter
+        {
+            get
+            {
+                return _emailIdFilter;
+            }
+            set
+            {
+                _emailIdFilter = value;
+				NotifyPropertyChanged(x => EmailIdFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
+
 		private string _supplierCodeFilter;
         public string SupplierCodeFilter
         {
@@ -502,6 +520,10 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 						res.Append(" && " + string.Format("DutyFreePaid.Contains(\"{0}\")",  DutyFreePaidFilter));						
  
 
+									if(string.IsNullOrEmpty(EmailIdFilter) == false)
+						res.Append(" && " + string.Format("EmailId.Contains(\"{0}\")",  EmailIdFilter));						
+ 
+
 									if(string.IsNullOrEmpty(SupplierCodeFilter) == false)
 						res.Append(" && " + string.Format("SupplierCode.Contains(\"{0}\")",  SupplierCodeFilter));						
  
@@ -557,6 +579,9 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     DutyFreePaid = x.DutyFreePaid ,
                     
  
+                    EmailId = x.EmailId ,
+                    
+ 
                     SupplierCode = x.SupplierCode ,
                     
  
@@ -573,7 +598,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             }
         }
 
-        public class TODO_SubmitIncompleteEntryDataExcelLine
+        public partial class TODO_SubmitIncompleteEntryDataExcelLine
         {
 		 
                     public System.DateTime InvoiceDate { get; set; } 
@@ -598,6 +623,9 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     
  
                     public string DutyFreePaid { get; set; } 
+                    
+ 
+                    public string EmailId { get; set; } 
                     
  
                     public string SupplierCode { get; set; } 

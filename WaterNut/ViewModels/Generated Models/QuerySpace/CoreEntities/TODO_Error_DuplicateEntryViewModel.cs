@@ -484,7 +484,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             }
         }
 
-        public class TODO_Error_DuplicateEntryExcelLine
+        public partial class TODO_Error_DuplicateEntryExcelLine
         {
 		 
                     public string Type { get; set; } 

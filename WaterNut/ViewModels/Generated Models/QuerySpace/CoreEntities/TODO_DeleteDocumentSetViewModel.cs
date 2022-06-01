@@ -253,7 +253,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             }
         }
 
-        public class TODO_DeleteDocumentSetExcelLine
+        public partial class TODO_DeleteDocumentSetExcelLine
         {
 		 
                     public string Declarant_Reference_Number { get; set; } 

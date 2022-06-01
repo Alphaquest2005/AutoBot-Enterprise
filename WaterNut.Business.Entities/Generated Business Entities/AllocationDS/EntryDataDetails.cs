@@ -541,6 +541,8 @@ namespace AllocationDS.Business.Entities
         public EntryData EntryData { get; set; }
         [DataMember]
         public ManualAllocations ManualAllocations { get; set; }
+        [DataMember]
+        public InventoryItem InventoryItem { get; set; }
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

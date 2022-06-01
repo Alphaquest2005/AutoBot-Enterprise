@@ -24,7 +24,7 @@ public class EntityConstructorTPL : CSharpTemplate
         {
             CustomClassStartUp();
             MyNavPropStartUp();
-            SetupProperties();
+            //SetupProperties();
             IIdentifiableEntityStartUp();
             AutoGenStartUp();  
             TrackableStartUp();
@@ -34,7 +34,7 @@ public class EntityConstructorTPL : CSharpTemplate
        {
           if(start) StartTracking();
        }
-    partial void SetupProperties();
+    // partial void SetupProperties();
     partial void AutoGenStartUp();
     partial void CustomClassStartUp();
     partial void MyNavPropStartUp();

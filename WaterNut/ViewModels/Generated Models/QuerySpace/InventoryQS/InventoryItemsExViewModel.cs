@@ -522,7 +522,7 @@ namespace WaterNut.QuerySpace.InventoryQS.ViewModels
             }
         }
 
-        public class InventoryItemsExExcelLine
+        public partial class InventoryItemsExExcelLine
         {
 		 
                     public string ItemNumber { get; set; } 

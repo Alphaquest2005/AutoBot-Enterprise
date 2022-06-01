@@ -344,7 +344,7 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
             }
         }
 
-        public class InvoiceRegExExcelLine
+        public partial class InvoiceRegExExcelLine
         {
 		        }
 

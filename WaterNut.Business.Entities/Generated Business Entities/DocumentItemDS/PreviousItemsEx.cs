@@ -111,7 +111,7 @@ namespace DocumentItemDS.Business.Entities
         }
         string _goods_origin;
         [DataMember]
-        public double Net_weight 
+        public Nullable<decimal> Net_weight 
         {
             get
             {
@@ -124,9 +124,9 @@ namespace DocumentItemDS.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        double _net_weight;
+        Nullable<decimal> _net_weight;
         [DataMember]
-        public double Prev_net_weight 
+        public Nullable<decimal> Prev_net_weight 
         {
             get
             {
@@ -139,7 +139,7 @@ namespace DocumentItemDS.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        double _prev_net_weight;
+        Nullable<decimal> _prev_net_weight;
         [DataMember]
         public string Prev_reg_ser 
         {
@@ -171,21 +171,6 @@ namespace DocumentItemDS.Business.Entities
         }
         string _prev_reg_nbr;
         [DataMember]
-        public string Prev_reg_dat 
-        {
-            get
-            {
-                return _prev_reg_dat;
-            }
-            set
-            {
-                _prev_reg_dat = value;
-                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
-                NotifyPropertyChanged();
-            }
-        }
-        string _prev_reg_dat;
-        [DataMember]
         public string Prev_reg_cuo 
         {
             get
@@ -201,7 +186,7 @@ namespace DocumentItemDS.Business.Entities
         }
         string _prev_reg_cuo;
         [DataMember]
-        public double Suplementary_Quantity 
+        public decimal Suplementary_Quantity 
         {
             get
             {
@@ -214,7 +199,7 @@ namespace DocumentItemDS.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        double _suplementary_quantity;
+        decimal _suplementary_quantity;
         [DataMember]
         public double Preveious_suplementary_quantity 
         {
@@ -560,6 +545,21 @@ namespace DocumentItemDS.Business.Entities
             }
         }
         Nullable<double> _dutyliablity;
+        [DataMember]
+        public Nullable<int> Prev_reg_year 
+        {
+            get
+            {
+                return _prev_reg_year;
+            }
+            set
+            {
+                _prev_reg_year = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<int> _prev_reg_year;
         [DataMember]
         public xcuda_PreviousItem xcuda_PreviousItem { get; set; }
 

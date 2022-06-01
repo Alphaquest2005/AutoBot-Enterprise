@@ -156,7 +156,7 @@ namespace CoreEntities.Business.Entities
         }
         string _cnumber;
         [DataMember]
-        public string RegistrationDate 
+        public Nullable<System.DateTime> RegistrationDate 
         {
             get
             {
@@ -169,7 +169,7 @@ namespace CoreEntities.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        string _registrationdate;
+        Nullable<System.DateTime> _registrationdate;
         [DataMember]
         public Nullable<int> AsycudaDocumentSetId 
         {

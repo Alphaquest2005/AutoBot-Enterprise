@@ -1234,7 +1234,7 @@ namespace AllocationQS.Business.Services
             {
                 using ( var dbContext = new AllocationQSContext(){StartTracking = StartTracking})
               {
-                var i = Convert.ToInt32(EmailId);
+                var i = EmailId;
                 var set = AddIncludes(includesLst, dbContext);
                 IEnumerable<AsycudaSalesAllocationsEx> entities = await set//dbContext.AsycudaSalesAllocationsExs
                                       .AsNoTracking()

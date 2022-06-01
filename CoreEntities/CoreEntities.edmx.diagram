@@ -66,7 +66,6 @@
         <AssociationConnector Association="WaterNutDBModel.FK_AttachmentLog_AsycudaDocumentSet_Attachments" />
         <EntityTypeShape EntityType="WaterNutDBModel.TODO_CreateDiscrepancyEntries" Width="1.5" PointX="18.375" PointY="8.75" />
         <EntityTypeShape EntityType="WaterNutDBModel.Emails" Width="1.5" PointX="19.375" PointY="11.875" />
-        <AssociationConnector Association="WaterNutDBModel.FK_AsycudaDocumentSet_Attachments_Emails" />
         <EntityTypeShape EntityType="WaterNutDBModel.FileGroups" Width="1.5" PointX="0.5" PointY="17.875" />
         <AssociationConnector Association="WaterNutDBModel.FK_FileTypes_FileGroups" />
         <EntityTypeShape EntityType="WaterNutDBModel.SessionSchedule" Width="1.5" PointX="12.75" PointY="22.875" />
@@ -99,7 +98,7 @@
         <EntityTypeShape EntityType="WaterNutDBModel.TODO_ImportCompleteEntries" Width="2.625" PointX="13.375" PointY="26.75" />
         <EntityTypeShape EntityType="WaterNutDBModel.TODO_AdjustmentsAlreadyXMLed" Width="1.5" PointX="26.375" PointY="20.75" />
         <EntityTypeShape EntityType="WaterNutDBModel.TODO_DiscrepancyPreExecutionReport" Width="1.5" PointX="22.375" PointY="26.75" />
-        <EntityTypeShape EntityType="WaterNutDBModel.TODO_TotalAdjustmentsToProcess" Width="1.5" PointX="26.375" PointY="25.75" />
+        <EntityTypeShape EntityType="WaterNutDBModel.TODO_TotalAdjustmentsToProcess" Width="1.5" PointX="25.125" PointY="26.875" />
         <EntityTypeShape EntityType="WaterNutDBModel.TODO_DiscrepanciesAlreadyXMLed" Width="1.5" PointX="27.375" PointY="5.75" />
         <AssociationConnector Association="WaterNutDBModel.FK_FileTypes_FileTypes" />
         <EntityTypeShape EntityType="WaterNutDBModel.EmailFileTypes" Width="1.5" PointX="10" PointY="28.625" />
@@ -147,6 +146,14 @@
         <AssociationConnector Association="WaterNutDBModel.FK_ApplicationSettings_Declarants_ApplicationSettings" />
         <EntityTypeShape EntityType="WaterNutDBModel.FileTypeReplaceRegex" Width="1.5" PointX="5" PointY="43.375" />
         <AssociationConnector Association="WaterNutDBModel.FK_FileTypeReplaceRegex_FileTypes" />
+        <AssociationConnector Association="WaterNutDBModel.FK_AsycudaDocumentSet_Attachments_Emails1" />
+        <EntityTypeShape EntityType="WaterNutDBModel.EmailMappingRexExs" Width="1.5" PointX="6.75" PointY="36.625" />
+        <AssociationConnector Association="WaterNutDBModel.FK_EmailMappingRexExs_EmailMapping" />
+        <EntityTypeShape EntityType="WaterNutDBModel.EmailAttachments" Width="1.5" PointX="33.625" PointY="13.75" />
+        <AssociationConnector Association="WaterNutDBModel.FK_EmailAttachments_Attachments" />
+        <AssociationConnector Association="WaterNutDBModel.FK_EmailAttachments_Emails" />
+        <EntityTypeShape EntityType="WaterNutDBModel.FileImporterInfo" Width="1.5" PointX="33.375" PointY="20.875" />
+        <AssociationConnector Association="WaterNutDBModel.FK_FileTypes_FileTypes_FileInfo1" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

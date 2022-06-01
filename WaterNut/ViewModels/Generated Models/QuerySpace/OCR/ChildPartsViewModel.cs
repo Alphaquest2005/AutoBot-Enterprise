@@ -306,7 +306,7 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
             }
         }
 
-        public class ChildPartsExcelLine
+        public partial class ChildPartsExcelLine
         {
 		        }
 

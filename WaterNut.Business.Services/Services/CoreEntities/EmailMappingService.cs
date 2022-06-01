@@ -253,6 +253,12 @@ namespace CoreEntities.Business.Services
                                         GetWhere<EmailInfoMappings>(dbContext, exp, itm.Value, "EmailMapping", "Select", includesLst)
 										.ConfigureAwait(continueOnCapturedContext: false);
 
+                            case "EmailMappingRexExs":
+                                return
+                                    await
+                                        GetWhere<EmailMappingRexExs>(dbContext, exp, itm.Value, "EmailMapping", "Select", includesLst)
+										.ConfigureAwait(continueOnCapturedContext: false);
+
                         }
 
                     }
@@ -761,6 +767,9 @@ namespace CoreEntities.Business.Services
                             case "EmailInfoMappings":
                                 return await CountWhere<EmailInfoMappings>(dbContext, exp, itm.Value, "EmailMapping", "Select")
 											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "EmailMappingRexExs":
+                                return await CountWhere<EmailMappingRexExs>(dbContext, exp, itm.Value, "EmailMapping", "Select")
+											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }
                     return await dbContext.EmailMapping.Where(exp == "All" || exp == null ? "Id != null" : exp)
@@ -883,6 +892,12 @@ namespace CoreEntities.Business.Services
                                 return
                                     await
                                         LoadRangeWhere<EmailInfoMappings>(startIndex, count, dbContext, exp, itm.Value, "EmailMapping", "Select")
+													.ConfigureAwait(continueOnCapturedContext: false);
+
+                            case "EmailMappingRexExs":
+                                return
+                                    await
+                                        LoadRangeWhere<EmailMappingRexExs>(startIndex, count, dbContext, exp, itm.Value, "EmailMapping", "Select")
 													.ConfigureAwait(continueOnCapturedContext: false);
 
                           
@@ -1100,6 +1115,7 @@ namespace CoreEntities.Business.Services
                 IEnumerable<EmailMapping> entities = await set//dbContext.EmailMapping
                                                     // .Include(x => x.EmailFileTypes)									  
                                                     // .Include(x => x.EmailInfoMappings)									  
+                                                    // .Include(x => x.EmailMappingRexExs)									  
                                       .AsNoTracking()
                                         .Where(x => x.ApplicationSettingsId.ToString() == ApplicationSettingsId.ToString())
 										.ToListAsync()
@@ -1183,6 +1199,9 @@ namespace CoreEntities.Business.Services
 											.ConfigureAwait(continueOnCapturedContext: false);
                             case "EmailInfoMappings":
                                 return await SumWhere<EmailInfoMappings>(dbContext, exp, itm.Value, "EmailMapping", field, "Select")
+											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "EmailMappingRexExs":
+                                return await SumWhere<EmailMappingRexExs>(dbContext, exp, itm.Value, "EmailMapping", field, "Select")
 											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }

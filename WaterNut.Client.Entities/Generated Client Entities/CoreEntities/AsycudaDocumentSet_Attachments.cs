@@ -122,21 +122,6 @@ public System.DateTime FileDate
 
        
        
-public Nullable<int> EmailUniqueId
-		{ 
-		    get { return this.asycudadocumentset_attachments.EmailUniqueId; }
-			set
-			{
-			    if (value == this.asycudadocumentset_attachments.EmailUniqueId) return;
-				this.asycudadocumentset_attachments.EmailUniqueId = value;
-                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
-				NotifyPropertyChanged("EmailUniqueId");
-			}
-		}
-     
-
-       
-       
 public Nullable<int> FileTypeId
 		{ 
 		    get { return this.asycudadocumentset_attachments.FileTypeId; }
@@ -146,6 +131,23 @@ public Nullable<int> FileTypeId
 				this.asycudadocumentset_attachments.FileTypeId = value;
                 if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
 				NotifyPropertyChanged("FileTypeId");
+			}
+		}
+     
+
+       
+       
+                
+                [MaxLength(255, ErrorMessage = "EmailId has a max length of 255 letters ")]
+public string EmailId
+		{ 
+		    get { return this.asycudadocumentset_attachments.EmailId; }
+			set
+			{
+			    if (value == this.asycudadocumentset_attachments.EmailId) return;
+				this.asycudadocumentset_attachments.EmailId = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("EmailId");
 			}
 		}
      

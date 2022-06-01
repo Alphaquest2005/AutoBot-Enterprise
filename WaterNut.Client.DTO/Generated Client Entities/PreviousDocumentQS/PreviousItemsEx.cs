@@ -152,19 +152,6 @@ namespace PreviousDocumentQS.Client.DTO
         private string _Prev_reg_nbr;
 
         [DataMember]
-        public string Prev_reg_dat
-		{ 
-		    get { return _Prev_reg_dat; }
-			set
-			{
-			    if (value == _Prev_reg_dat) return;
-				_Prev_reg_dat = value;
-				NotifyPropertyChanged();//m => this.Prev_reg_dat
-			}
-		}
-        private string _Prev_reg_dat;
-
-        [DataMember]
         public string Prev_reg_cuo
 		{ 
 		    get { return _Prev_reg_cuo; }
@@ -488,6 +475,19 @@ namespace PreviousDocumentQS.Client.DTO
 			}
 		}
         private Nullable<double> _DutyLiablity;
+
+        [DataMember]
+        public Nullable<int> Prev_reg_year
+		{ 
+		    get { return _Prev_reg_year; }
+			set
+			{
+			    if (value == _Prev_reg_year) return;
+				_Prev_reg_year = value;
+				NotifyPropertyChanged();//m => this.Prev_reg_year
+			}
+		}
+        private Nullable<int> _Prev_reg_year;
 
        
         [DataMember]

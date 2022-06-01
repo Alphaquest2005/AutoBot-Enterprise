@@ -347,7 +347,7 @@ public string Status
        
        
                 
-                [MaxLength(50, ErrorMessage = "PreviousInvoiceNumber has a max length of 50 letters ")]
+                [MaxLength(255, ErrorMessage = "PreviousInvoiceNumber has a max length of 255 letters ")]
 public string PreviousInvoiceNumber
 		{ 
 		    get { return this.adjustmentshort.PreviousInvoiceNumber; }
@@ -364,7 +364,7 @@ public string PreviousInvoiceNumber
        
        
                 
-                [MaxLength(50, ErrorMessage = "PreviousCNumber has a max length of 50 letters ")]
+                [MaxLength(255, ErrorMessage = "PreviousCNumber has a max length of 255 letters ")]
 public string PreviousCNumber
 		{ 
 		    get { return this.adjustmentshort.PreviousCNumber; }
@@ -461,7 +461,9 @@ public string Type
 
        
        
-public Nullable<int> EmailId
+                
+                [MaxLength(255, ErrorMessage = "EmailId has a max length of 255 letters ")]
+public string EmailId
 		{ 
 		    get { return this.adjustmentshort.EmailId; }
 			set

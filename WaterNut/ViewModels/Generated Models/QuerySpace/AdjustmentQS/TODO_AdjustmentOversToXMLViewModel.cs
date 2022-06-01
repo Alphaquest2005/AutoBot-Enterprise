@@ -637,6 +637,24 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
         }	
 
  
+
+		private string _emailIdFilter;
+        public string EmailIdFilter
+        {
+            get
+            {
+                return _emailIdFilter;
+            }
+            set
+            {
+                _emailIdFilter = value;
+				NotifyPropertyChanged(x => EmailIdFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
 		private DateTime? _startInvoiceDateFilter = DateTime.Parse(string.Format("{0}/1/{1}", DateTime.Now.Month ,DateTime.Now.Year));
         public DateTime? StartInvoiceDateFilter
         {
@@ -767,6 +785,24 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
             {
                 _alreadyExecutedFilter = value;
 				NotifyPropertyChanged(x => AlreadyExecutedFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
+
+		private string _vendorFilter;
+        public string VendorFilter
+        {
+            get
+            {
+                return _vendorFilter;
+            }
+            set
+            {
+                _vendorFilter = value;
+				NotifyPropertyChanged(x => VendorFilter);
                 FilterData();
                 
             }
@@ -912,6 +948,10 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
 						res.Append(" && " + string.Format("DutyFreePaid.Contains(\"{0}\")",  DutyFreePaidFilter));						
  
 
+									if(string.IsNullOrEmpty(EmailIdFilter) == false)
+						res.Append(" && " + string.Format("EmailId.Contains(\"{0}\")",  EmailIdFilter));						
+ 
+
  
 
 				if (Convert.ToDateTime(StartInvoiceDateFilter).Date != DateTime.MinValue &&
@@ -975,7 +1015,11 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
 				 
 
 					if(AlreadyExecutedFilter.HasValue)
-						res.Append(" && " + string.Format("AlreadyExecuted == {0}",  AlreadyExecutedFilter.ToString()));							return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
+						res.Append(" && " + string.Format("AlreadyExecuted == {0}",  AlreadyExecutedFilter.ToString()));				 
+
+									if(string.IsNullOrEmpty(VendorFilter) == false)
+						res.Append(" && " + string.Format("Vendor.Contains(\"{0}\")",  VendorFilter));						
+			return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
 // Send to Excel Implementation
@@ -1067,6 +1111,9 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
                     DutyFreePaid = x.DutyFreePaid ,
                     
  
+                    EmailId = x.EmailId ,
+                    
+ 
                     InvoiceDate = x.InvoiceDate ,
                     
  
@@ -1076,7 +1123,10 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
                     EmailDate = x.EmailDate ,
                     
  
-                    AlreadyExecuted = x.AlreadyExecuted 
+                    AlreadyExecuted = x.AlreadyExecuted ,
+                    
+ 
+                    Vendor = x.Vendor 
                     
                 }).ToList()
             };
@@ -1086,7 +1136,7 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
             }
         }
 
-        public class TODO_AdjustmentOversToXMLExcelLine
+        public partial class TODO_AdjustmentOversToXMLExcelLine
         {
 		 
                     public string EntryDataId { get; set; } 
@@ -1158,6 +1208,9 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
                     public string DutyFreePaid { get; set; } 
                     
  
+                    public string EmailId { get; set; } 
+                    
+ 
                     public Nullable<System.DateTime> InvoiceDate { get; set; } 
                     
  
@@ -1168,6 +1221,9 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
                     
  
                     public int AlreadyExecuted { get; set; } 
+                    
+ 
+                    public string Vendor { get; set; } 
                     
         }
 

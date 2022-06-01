@@ -295,7 +295,7 @@ namespace CoreEntities.Client.DTO
         private System.DateTime _EmailDate;
 
         [DataMember]
-        public Nullable<int> EmailId
+        public string EmailId
 		{ 
 		    get { return _EmailId; }
 			set
@@ -305,7 +305,7 @@ namespace CoreEntities.Client.DTO
 				NotifyPropertyChanged();//m => this.EmailId
 			}
 		}
-        private Nullable<int> _EmailId;
+        private string _EmailId;
 
        
    //     [DataMember]

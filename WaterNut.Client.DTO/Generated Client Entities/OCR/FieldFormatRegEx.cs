@@ -75,22 +75,6 @@ namespace OCR.Client.DTO
 
        
         [DataMember]
-        public Fields Field
-		{
-		    get { return _Field; }
-			set
-			{
-			    if (value == _Field) return;
-				_Field = value;
-                FieldChangeTracker = _Field == null ? null
-                    : new ChangeTrackingCollection<Fields> { _Field };
-				NotifyPropertyChanged();//m => this.Field
-			}
-		}
-        private Fields _Field;
-        private ChangeTrackingCollection<Fields> FieldChangeTracker { get; set; }
-
-        [DataMember]
         public RegularExpressions RegEx
 		{
 		    get { return _RegEx; }
@@ -121,6 +105,22 @@ namespace OCR.Client.DTO
 		}
         private RegularExpressions _ReplacementRegEx;
         private ChangeTrackingCollection<RegularExpressions> ReplacementRegExChangeTracker { get; set; }
+
+        [DataMember]
+        public Fields Fields
+		{
+		    get { return _Fields; }
+			set
+			{
+			    if (value == _Fields) return;
+				_Fields = value;
+                FieldsChangeTracker = _Fields == null ? null
+                    : new ChangeTrackingCollection<Fields> { _Fields };
+				NotifyPropertyChanged();//m => this.Fields
+			}
+		}
+        private Fields _Fields;
+        private ChangeTrackingCollection<Fields> FieldsChangeTracker { get; set; }
 
    //     [DataMember]
    //     public TrackingState TrackingState { get; set; }

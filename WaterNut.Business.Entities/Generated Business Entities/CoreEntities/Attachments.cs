@@ -24,6 +24,7 @@ namespace CoreEntities.Business.Entities
         {
             this.AsycudaDocumentSet_Attachments = new List<AsycudaDocumentSet_Attachments>();
             this.AsycudaDocument_Attachments = new List<AsycudaDocument_Attachments>();
+            this.EmailAttachments = new List<EmailAttachments>();
         }
 
         [DataMember]
@@ -105,6 +106,8 @@ namespace CoreEntities.Business.Entities
         public List<AsycudaDocumentSet_Attachments> AsycudaDocumentSet_Attachments { get; set; }
         [DataMember]
         public List<AsycudaDocument_Attachments> AsycudaDocument_Attachments { get; set; }
+        [DataMember]
+        public List<EmailAttachments> EmailAttachments { get; set; }
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

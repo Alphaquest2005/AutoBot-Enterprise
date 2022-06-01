@@ -22,9 +22,9 @@ namespace OCR.Business.Entities
     {
         partial void AutoGenStartUp() //Lines()
         {
-            this.Fields = new List<Fields>();
             this.ChildLines = new List<Lines>();
-            this.OCR_FailedLines = new List<OCR_FailedLines>();
+            this.FailedLines = new List<OCR_FailedLines>();
+            this.Fields = new List<Fields>();
         }
 
         [DataMember]
@@ -118,7 +118,35 @@ namespace OCR.Business.Entities
         }
         Nullable<bool> _distinctvalues;
         [DataMember]
-        public List<Fields> Fields { get; set; }
+        public Nullable<bool> IsColumn 
+        {
+            get
+            {
+                return _iscolumn;
+            }
+            set
+            {
+                _iscolumn = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<bool> _iscolumn;
+        [DataMember]
+        public Nullable<bool> IsActive 
+        {
+            get
+            {
+                return _isactive;
+            }
+            set
+            {
+                _isactive = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<bool> _isactive;
         [DataMember]
         public Parts Parts { get; set; }
         [DataMember]
@@ -128,7 +156,9 @@ namespace OCR.Business.Entities
         [DataMember]
         public Lines ParentLine { get; set; }
         [DataMember]
-        public List<OCR_FailedLines> OCR_FailedLines { get; set; }
+        public List<OCR_FailedLines> FailedLines { get; set; }
+        [DataMember]
+        public List<Fields> Fields { get; set; }
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

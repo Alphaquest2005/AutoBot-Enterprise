@@ -346,7 +346,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             }
         }
 
-        public class CancelledEntriesLstExcelLine
+        public partial class CancelledEntriesLstExcelLine
         {
 		 
                     public string Office { get; set; } 

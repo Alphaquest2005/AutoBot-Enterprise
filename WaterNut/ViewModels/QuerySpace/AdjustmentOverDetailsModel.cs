@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -8,98 +8,106 @@ using AdjustmentQS.Client.Entities;
 using AdjustmentQS.Client.Repositories;
 using Core.Common.UI;
 using CoreEntities.Client.Enums;
-using EntryDataQS.Client.Repositories;
 using SimpleMvvmToolkit;
-
+using WaterNut.QuerySpace.CoreEntities.ViewModels;
 
 namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
 {
+    public partial class AdjustmentOverViewModel_AutoGen
+    {
+        partial void OnCreated()
+        {
+            EffectiveDateFilter = DateTime.MinValue;
+
+            _startEffectiveDateFilter = DateTime.MinValue;
+            _endEffectiveDateFilter = DateTime.MinValue;
+            EmailDateFilter = DateTime.MinValue;
+            _startEmailDateFilter = DateTime.MinValue;
+            _endEmailDateFilter = DateTime.MinValue;
+
+            InvoiceDateFilter = DateTime.MinValue;
+            _startInvoiceDateFilter = DateTime.MinValue;
+            _endInvoiceDateFilter = DateTime.MinValue;
+        }
+    }
+
     public class AdjustmentOverDetailsModel : AdjustmentOverViewModel_AutoGen
     {
-        private static readonly AdjustmentOverDetailsModel instance;
+        private bool _viewBadMatches;
+        private bool _viewDocSetData;
+
+        private bool _viewErrors;
+
+
+        private bool _viewMatches;
+
+
+        private bool _viewSelected;
+
         static AdjustmentOverDetailsModel()
         {
-            instance = new AdjustmentOverDetailsModel() { ViewCurrentAdjustmentEx = true };
+            Instance = new AdjustmentOverDetailsModel {ViewCurrentAdjustmentEx = true};
         }
 
-        
 
-        public static AdjustmentOverDetailsModel Instance
-        {
-            get { return instance; }
-        }
+        public static AdjustmentOverDetailsModel Instance { get; }
 
-        bool _viewErrors = false;
         public bool ViewErrors
         {
-            get
-            {
-                return _viewErrors;
-            }
+            get => _viewErrors;
             set
             {
                 _viewErrors = value;
                 FilterData();
-                NotifyPropertyChanged(x => this.ViewErrors);
+                NotifyPropertyChanged(x => ViewErrors);
             }
         }
 
-
-
-        bool _viewMatches = false;
         public bool ViewMatches
         {
-            get
-            {
-                return _viewMatches;
-            }
+            get => _viewMatches;
             set
             {
                 _viewMatches = value;
                 FilterData();
-                NotifyPropertyChanged(x => this.ViewMatches);
+                NotifyPropertyChanged(x => ViewMatches);
             }
         }
 
-
-
-        bool _viewSelected = false;
         public bool ViewSelected
         {
-            get
-            {
-                return _viewSelected;
-            }
+            get => _viewSelected;
             set
             {
                 _viewSelected = value;
                 FilterData();
-                NotifyPropertyChanged(x => this.ViewSelected);
+                NotifyPropertyChanged(x => ViewSelected);
             }
         }
 
-
-
-
-
-
-        bool _viewBadMatches = false;
-        private bool _viewDocSetData;
-
         public bool ViewBadMatches
         {
-            get
-            {
-                return _viewBadMatches;
-            }
+            get => _viewBadMatches;
             set
             {
                 _viewBadMatches = value;
                 FilterData();
-                NotifyPropertyChanged(x => this.ViewBadMatches);
+                NotifyPropertyChanged(x => ViewBadMatches);
             }
         }
 
+        public bool PerInvoice { get; set; }
+
+        public bool ViewDocSetData
+        {
+            get => _viewDocSetData;
+            set
+            {
+                _viewDocSetData = value;
+                FilterData();
+                NotifyPropertyChanged(x => ViewDocSetData);
+            }
+        }
 
 
         private async Task<IEnumerable<AdjustmentOver>> GetBadMatchLst()
@@ -107,7 +115,7 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
             using (var ctx = new AdjustmentOverRepository())
             {
                 var lst = await ctx.GetAdjustmentOversByExpressionNav("All",
-                    new Dictionary<string, string>()
+                    new Dictionary<string, string>
                     {
                         {
                             "EX", "(Duration > 15) || (AsycudaMonth != InvoiceMonth)"
@@ -119,13 +127,12 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
         }
 
 
-
         internal void ViewSuggestions(AdjustmentOver osd)
         {
-            QuerySpace.CoreEntities.ViewModels.AsycudaDocumentItemsModel.Instance.vloader.FilterExpression =
-                $"ItemNumber == \"{osd.ItemNumber}\" && (CustomsOperationId == { (int)CustomsOperations.Warehouse})";// i don't know what going on so left it
+            AsycudaDocumentItemsModel.Instance.vloader.FilterExpression =
+                $"ItemNumber == \"{osd.ItemNumber}\" && (CustomsOperationId == {(int) CustomsOperations.Warehouse})"; // i don't know what going on so left it
 
-            QuerySpace.CoreEntities.ViewModels.AsycudaDocumentItemsModel.Instance.AsycudaDocumentItems.OrderBy(
+            AsycudaDocumentItemsModel.Instance.AsycudaDocumentItems.OrderBy(
                 x => x.Data.AsycudaDocument.RegistrationDate - osd.AdjustmentEx.InvoiceDate);
 
             // OnStaticPropertyChanged("OSSuggestedAsycudaItemEntry");
@@ -143,30 +150,20 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
         }
 
 
-
         public override void FilterData()
         {
-
             var res = GetAutoPropertyFilterString();
-            res.Append($" && ApplicationSettingsId == {CoreEntities.ViewModels.BaseViewModel.Instance.CurrentApplicationSettings.ApplicationSettingsId}");
+            res.Append(
+                $" && ApplicationSettingsId == {CoreEntities.ViewModels.BaseViewModel.Instance.CurrentApplicationSettings.ApplicationSettingsId}");
             if (ViewDocSetData && CoreEntities.ViewModels.BaseViewModel.Instance?.CurrentAsycudaDocumentSetEx != null)
-            {
-                res.Append($@" && AsycudaDocumentSetId == ""{CoreEntities.ViewModels.BaseViewModel.Instance?.CurrentAsycudaDocumentSetEx.AsycudaDocumentSetId}""");
-            }
+                res.Append(
+                    $@" && AsycudaDocumentSetId == ""{CoreEntities.ViewModels.BaseViewModel.Instance?.CurrentAsycudaDocumentSetEx.AsycudaDocumentSetId}""");
 
             if (ViewCurrentAdjustmentEx && BaseViewModel.Instance?.CurrentAdjustmentEx != null)
-            {
                 res.Append($@" && EntryDataId == ""{BaseViewModel.Instance.CurrentAdjustmentEx.EntityId}""");
-            }
-            
-            if (_viewErrors)
-            {
-                res.Append(@" && Status != null");
-            }
-            if (_viewMatches)
-            {
-                res.Append(@" && EntryDataDetailAllocations.Any()");
-            }
+
+            if (_viewErrors) res.Append(@" && Status != null");
+            if (_viewMatches) res.Append(@" && Status == null");
 
             if (_viewSelected)
             {
@@ -176,27 +173,28 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
                     var slst = BuildOSLst(lst);
                     //remove comma
 
-                    res.Append(slst);
+                    res.Append($@" && ({slst})");
                 }
             }
 
             if (_viewBadMatches)
-            {
                 //vloader.SetNavigationExpression("EX");
                 res.Append(@" && EX.Duration > 15 && EX.InvoiceMonth != EX.AsycudaMonth");
 
-            }
-
             FilterData(res);
-
         }
 
-        private async Task BuildOSLst(List<AdjustmentEx> lst)
+        private string BuildOSLst(List<AdjustmentEx> lst)
         {
-           // await AdjustmentExRepository.Instance.BuildOSLst(lst.Select(x => x.AdjustmentsId).ToList()).ConfigureAwait(false);
+            // res.Append($@" && EntryDataId == ""{BaseViewModel.Instance.CurrentAdjustmentEx.EntityId}""")
+            return lst.Where(x => x?.EntryData_Id != 0).Select(x => x.EntryData_Id.ToString()).Aggregate(
+                new StringBuilder(), (o, n) =>
+                {
+                    //if (o.Length > 0) o.Append($"EntryDataId =={o}");
+                    o.Append($" EntryData_Id == {n} ||");
+                    return o;
+                }).ToString().TrimEnd('|', ' ');
         }
-
-
 
 
         internal async Task MatchToCurrentItem(AdjustmentOver entryDataDetailsEx)
@@ -207,31 +205,30 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
                 return;
             }
 
-            await AdjustmentShortRepository.Instance.MatchToAsycudaItem( entryDataDetailsEx.EntryDataDetailsId,
-                CoreEntities.ViewModels.BaseViewModel.Instance.CurrentAsycudaDocumentItem.Item_Id)
+            await AdjustmentShortRepository.Instance.MatchToAsycudaItem(entryDataDetailsEx.EntryDataDetailsId,
+                    CoreEntities.ViewModels.BaseViewModel.Instance.CurrentAsycudaDocumentItem.Item_Id)
                 .ConfigureAwait(false);
 
             MessageBus.Default.BeginNotify(MessageToken.CurrentAdjustmentOverChanged, this,
-              new NotificationEventArgs<AdjustmentOver>(
-                  QuerySpace.AdjustmentQS.MessageToken.CurrentAdjustmentOverChanged, entryDataDetailsEx));
+                new NotificationEventArgs<AdjustmentOver>(
+                    MessageToken.CurrentAdjustmentOverChanged, entryDataDetailsEx));
             MessageBox.Show("Manual Match Complete");
         }
 
         internal async Task RemoveEntryDataDetail(AdjustmentOver EntryDataDetailsEX)
         {
-            MessageBoxResult res = MessageBox.Show("Are you sure you want to delete this EntryData Detail?",
-               "Delete selected Items", MessageBoxButton.YesNo);
+            var res = MessageBox.Show("Are you sure you want to delete this EntryData Detail?",
+                "Delete selected Items", MessageBoxButton.YesNo);
             if (res == MessageBoxResult.Yes)
             {
-                await EntryDataDetailRepository.Instance.DeleteEntryDataDetail(EntryDataDetailsEX.EntityId).ConfigureAwait(false);
+                await EntryDataDetailRepository.Instance.DeleteEntryDataDetail(EntryDataDetailsEX.EntityId)
+                    .ConfigureAwait(false);
 
                 MessageBus.Default.BeginNotify(MessageToken.AdjustmentOversChanged, this,
                     new NotificationEventArgs(MessageToken.AdjustmentOversChanged));
                 BaseViewModel.Instance.CurrentAdjustmentOver = null;
-
             }
         }
-
 
 
         public async Task CreateOPS()
@@ -241,10 +238,13 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
                 MessageBox.Show("Please Select Asycuda Document Set!");
                 return;
             }
+
             StatusModel.Timer("Creating IM9");
             using (var ctx = new AdjustmentOverRepository())
             {
-                await ctx.CreateOPS(vloader.FilterExpression, PerInvoice, CoreEntities.ViewModels.BaseViewModel.Instance.CurrentAsycudaDocumentSetEx.AsycudaDocumentSetId).ConfigureAwait(false);
+                await ctx.CreateOPS(vloader.FilterExpression, PerInvoice, "DIS",
+                        CoreEntities.ViewModels.BaseViewModel.Instance.CurrentAsycudaDocumentSetEx.AsycudaDocumentSetId)
+                    .ConfigureAwait(false);
             }
 
             MessageBus.Default.BeginNotify(MessageToken.AdjustmentOversChanged, this,
@@ -254,20 +254,8 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
             MessageBus.Default.BeginNotify(CoreEntities.MessageToken.AsycudaDocumentSetExsChanged, null,
                 new NotificationEventArgs(CoreEntities.MessageToken.AsycudaDocumentSetExsChanged));
             StatusModel.StopStatusUpdate();
-            MessageBox.Show("ADJ OPS Entries Complete", "Asycuda Toolkit", MessageBoxButton.OK, MessageBoxImage.Exclamation);
-        }
-
-        public bool PerInvoice { get; set; }
-
-        public bool ViewDocSetData
-        {
-            get => _viewDocSetData;
-            set
-            {
-                _viewDocSetData = value;
-                FilterData();
-                NotifyPropertyChanged(x => this.ViewDocSetData);
-            }
+            MessageBox.Show("ADJ OPS Entries Complete", "Asycuda Toolkit", MessageBoxButton.OK,
+                MessageBoxImage.Exclamation);
         }
     }
 }

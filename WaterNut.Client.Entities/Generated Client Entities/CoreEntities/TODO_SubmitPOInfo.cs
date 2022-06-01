@@ -76,9 +76,7 @@ public string Number
 
        
        
-                
-                [MaxLength(10, ErrorMessage = "Date has a max length of 10 letters ")]
-public string Date
+public Nullable<System.DateTime> Date
 		{ 
 		    get { return this.todo_submitpoinfo.Date; }
 			set
@@ -125,7 +123,9 @@ public int ApplicationSettingsId
 
        
        
-public Nullable<int> EmailId
+                
+                [MaxLength(255, ErrorMessage = "EmailId has a max length of 255 letters ")]
+public string EmailId
 		{ 
 		    get { return this.todo_submitpoinfo.EmailId; }
 			set

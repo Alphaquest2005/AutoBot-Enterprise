@@ -1185,7 +1185,7 @@ namespace EntryDataQS.Business.Services
             {
                 using ( var dbContext = new EntryDataQSContext(){StartTracking = StartTracking})
               {
-                var i = Convert.ToInt32(EmailId);
+                var i = EmailId;
                 var set = AddIncludes(includesLst, dbContext);
                 IEnumerable<EntryDataDetailsEx> entities = await set//dbContext.EntryDataDetailsExes
                                                     // .Include(x => x.AsycudaDocumentSets)									  

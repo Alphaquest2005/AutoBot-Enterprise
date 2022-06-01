@@ -336,7 +336,7 @@ namespace WaterNut.QuerySpace.InventoryQS.ViewModels
             }
         }
 
-        public class TariffCategoryCodeSuppUnitExcelLine
+        public partial class TariffCategoryCodeSuppUnitExcelLine
         {
 		 
                     public string TariffCategoryCode { get; set; } 

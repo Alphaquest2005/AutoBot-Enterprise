@@ -208,6 +208,24 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
         }	
 
  
+
+		private Int32? _maxLinesFilter;
+        public Int32? MaxLinesFilter
+        {
+            get
+            {
+                return _maxLinesFilter;
+            }
+            set
+            {
+                _maxLinesFilter = value;
+				NotifyPropertyChanged(x => MaxLinesFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
 		internal bool DisableBaseFilterData = false;
         public virtual void FilterData()
 	    {
@@ -244,7 +262,10 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
 
 									if(MultiLineFilter.HasValue)
 						res.Append(" && " + string.Format("MultiLine == {0}",  MultiLineFilter));						
-			return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
+ 
+
+					if(MaxLinesFilter.HasValue)
+						res.Append(" && " + string.Format("MaxLines == {0}",  MaxLinesFilter.ToString()));							return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
 // Send to Excel Implementation
@@ -270,7 +291,10 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
                     RegEx = x.RegEx ,
                     
  
-                    MultiLine = x.MultiLine 
+                    MultiLine = x.MultiLine ,
+                    
+ 
+                    MaxLines = x.MaxLines 
                     
                 }).ToList()
             };
@@ -280,13 +304,16 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
             }
         }
 
-        public class RegularExpressionsExcelLine
+        public partial class RegularExpressionsExcelLine
         {
 		 
                     public string RegEx { get; set; } 
                     
  
                     public Nullable<bool> MultiLine { get; set; } 
+                    
+ 
+                    public Nullable<int> MaxLines { get; set; } 
                     
         }
 

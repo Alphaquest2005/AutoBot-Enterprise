@@ -12,9 +12,11 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using AutoBot.Properties;
 using Core.Common.Utils;
 using EntryDataDS.Business.Entities;
 using MoreLinq.Extensions;
+using WaterNut.Business.Services.Utils;
 using WaterNut.DataSpace;
 using CustomsOperations = CoreEntities.Business.Enums.CustomsOperations;
 using xlsxWriter;
@@ -25,6 +27,8 @@ namespace AutoBot
 
     partial class Program
     {
+        public static bool ReadOnlyMode { get; set; } = false;
+
         static void Main(string[] args)
         {
             try
@@ -40,6 +44,7 @@ namespace AutoBot
                     var applicationSettings = ctx.ApplicationSettings.AsNoTracking()
                         .Include(x => x.FileTypes)
                         .Include(x => x.Declarants)
+                        .Include("FileTypes.FileTypeReplaceRegex")
                         //.Include("FileTypes.FileTypeContacts.Contacts")
                         //.Include("FileTypes.FileTypeActions.Actions")
                         //.Include("FileTypes.AsycudaDocumentSetEx")
@@ -48,7 +53,8 @@ namespace AutoBot
                         //.Include("EmailMapping.EmailFileTypes.FileTypes.AsycudaDocumentSetEx")
                         //.Include("EmailMapping.EmailFileTypes.FileTypes.FileTypeMappings")
                         //.Include("EmailMapping.EmailFileTypes.FileTypes.ChildFileTypes")
-                        .Include("EmailMapping.EmailFileTypes.FileTypes")
+                        .Include("EmailMapping.EmailFileTypes.FileTypes.FileImporterInfos")
+                        .Include("EmailMapping.EmailMappingRexExs")
                         .Include("EmailMapping.EmailInfoMappings.InfoMapping.InfoMappingRegEx")
                         //.Include("FileTypes.ChildFileTypes")
                         //.Include("FileTypes.FileTypeMappings")
@@ -78,9 +84,9 @@ namespace AutoBot
                             {
                                 lastAction.Sessions.SessionActions
                                     .Where(x => lastAction.ActionId == null || x.ActionId == lastAction.ActionId)
-                                    .Select(x => Utils.SessionActions[x.Actions.Name])
+                                    .Select(x => SessionsUtils.SessionActions[x.Actions.Name])
                                     .ForEach(x => x.Invoke());
-                               
+
                                 continue;
                             }
 
@@ -95,21 +101,22 @@ namespace AutoBot
                                 DataFolder = appSetting.DataFolder,
                                 Password = appSetting.EmailPassword,
                                 Email = appSetting.Email,
-                                EmailMappings = appSetting.EmailMapping.ToList()
+                                ApplicationSettingsId = appSetting.ApplicationSettingsId,
+                                EmailMappings = appSetting.EmailMapping.ToList(),
+                                DevMode = Settings.Default.DevMode
                             };
 
-                            var msgLst = Task.Run(() => EmailDownloader.EmailDownloader.CheckEmails(Utils.Client)).Result/*.OrderBy(x =>
-                                    x.Key.Item2.EmailMapping.EmailFileTypes.Sum(z => z.FileTypes.FileTypeActions.Count))*/
+                            var msgLst = Task.Run(() => EmailDownloader.EmailDownloader.CheckEmails(Utils.Client)).Result
                                 .ToList();
                             // get downloads
                             Console.WriteLine($"{msgLst.Count()} Emails Processed");
 
                             var processedFileTypes = new List<Tuple<FileTypes, FileInfo[], int>>();
 
-                            foreach (var msg in msgLst)
+                            foreach (var msg in msgLst.OrderBy(x => x.Key.Item2.FileTypes.Any(z => z.CreateDocumentSet == true)).ThenBy(x => x.Key.Item2.EmailUniqueId))
                             {
                                 var desFolder = Path.Combine(appSetting.DataFolder, msg.Key.Item1,
-                                    msg.Key.Item2.EmailId.ToString());
+                                    msg.Key.Item2.EmailUniqueId.ToString());
 
                                 if (!msg.Key.Item2.EmailMapping.EmailFileTypes
                                     .All(x => x.IsRequired != true || new DirectoryInfo(desFolder).GetFiles()
@@ -117,23 +124,24 @@ namespace AutoBot
                                                       x.FileTypes.FilePattern,
                                                       RegexOptions.IgnoreCase) && z.LastWriteTime >= beforeImport))) continue;
 
-                                foreach (var emailFileType in msg.Key.Item2.FileTypes.OrderBy(x =>
-                                    x.Type == "Info"))
+
+                                var emailFileTypes = msg.Key.Item2.EmailMapping.InfoFirst == true ? msg.Key.Item2.FileTypes.OrderByDescending(x => x.FileImporterInfos.EntryType == FileTypeManager.EntryTypes.Info).ToList() : msg.Key.Item2.FileTypes.OrderBy(x => x.FileImporterInfos.EntryType == FileTypeManager.EntryTypes.Info).ToList();
+                                foreach (var emailFileType in emailFileTypes)
                                 {
-                                    var fileType = BaseDataModel.GetFileType(emailFileType);
+                                    var fileType = FileTypeManager.GetFileType(emailFileType);
                                     fileType.Data
                                         .Clear(); // because i am using emailmapping from email, its not a lookup
                                     fileType.EmailInfoMappings = msg.Key.Item2.EmailMapping.EmailInfoMappings;
 
 
                                     var csvFiles = new DirectoryInfo(desFolder).GetFiles()
-                                        .Where(x => msg.Value.Contains(x.Name) &&
+                                        .Where(x => msg.Value.Select(z => z.Name).Any(z => z == x.Name) &&
                                                     Regex.IsMatch(x.FullName, fileType.FilePattern,
                                                         RegexOptions.IgnoreCase) &&
                                                     x.LastWriteTime >= beforeImport).ToArray();
 
-                                    fileType.EmailId = msg.Key.Item3;
-
+                                    fileType.EmailId = msg.Key.Item2.EmailId;//msg.Key.Item3;
+                                    fileType.FilePath = desFolder;
                                     if (csvFiles.Length == 0)
                                     {
                                        // if (emailFileType.IsRequired == true) break;
@@ -183,25 +191,26 @@ namespace AutoBot
                                         fileType.AsycudaDocumentSetId = ndocSet.AsycudaDocumentSetId;
                                         fileType.Data.Add(new KeyValuePair<string, string>("AsycudaDocumentSetId",
                                             fileType.AsycudaDocumentSetId.ToString()));
-
-
-                                        Utils.SaveAttachments(csvFiles, fileType, msg.Key.Item2);
-
-
-
-                                    }
-
-                                    ExecuteDataSpecificFileActions(fileType, csvFiles, appSetting);
-
-                                    if (msg.Key.Item2.EmailMapping.IsSingleEmail == true)
-                                    {
-                                        ExecuteNonSpecificFileActions(fileType, csvFiles, appSetting);
-                                    }
-                                    else
-                                    {
-                                        processedFileTypes.Add(new Tuple<FileTypes, FileInfo[], int>(fileType, csvFiles, ndocSet?.AsycudaDocumentSetId??0));
                                     }
                                     
+                                    Utils.SaveAttachments(csvFiles, fileType, msg.Key.Item2);
+                                    if (!ReadOnlyMode)
+                                    {
+                                        ImportUtils.ExecuteDataSpecificFileActions(fileType, csvFiles, appSetting);
+                                        //if (fileType.ProcessNextStep.FirstOrDefault() == "Kill") return;
+                                        if (msg.Key.Item2.EmailMapping.IsSingleEmail == true)
+                                        {
+                                            ImportUtils.ExecuteNonSpecificFileActions(fileType, csvFiles, appSetting);
+                                        }
+                                        else
+                                        {
+                                            processedFileTypes.Add(new Tuple<FileTypes, FileInfo[], int>(fileType,
+                                                csvFiles, ndocSet?.AsycudaDocumentSetId ?? ctx.AsycudaDocumentSetExs.Where(x =>
+                                                        x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)
+                                                    .OrderByDescending(x => x.AsycudaDocumentSetId)
+                                                    .FirstOrDefault().AsycudaDocumentSetId));
+                                        }
+                                    }
 
 
 
@@ -210,28 +219,32 @@ namespace AutoBot
                                 }
                             }
 
-                            var pfg = processedFileTypes
-                                .Where(x => x.Item1.FileTypeActions.Any(z =>
-                                    z.Actions.IsDataSpecific == null || z.Actions.IsDataSpecific != true))
-                                .GroupBy(x => x.Item3).ToList();
+                            if (ReadOnlyMode) return;
+                            
+                                var pfg = processedFileTypes
+                                    .Where(x => x.Item1.FileTypeActions.Any(z =>
+                                        z.Actions.IsDataSpecific == null || z.Actions.IsDataSpecific != true))
+                                    .GroupBy(x => x.Item3).ToList();
 
-                            foreach (var docSetId in pfg)
-                            {
-                                var pf = docSetId.DistinctBy(x => x.Item1.Id).ToList();
-                                foreach (var t in pf)
+                                foreach (var docSetId in pfg)
                                 {
-                                    t.Item1.AsycudaDocumentSetId = docSetId.Key;
-                                    ExecuteNonSpecificFileActions(t.Item1, t.Item2, appSetting);
+                                    
+                                    var pf = docSetId.DistinctBy(x => x.Item1.Id).ToList();
+                                    foreach (var t in pf)
+                                    {
+                                        //if(t.Item1.ProcessNextStep == "Kill") return;
+                                        t.Item1.AsycudaDocumentSetId = docSetId.Key;
+                                        ImportUtils.ExecuteNonSpecificFileActions(t.Item1, t.Item2, appSetting);
+                                    }
                                 }
-                            }
-
+                            
 
                         }
 
                         ctx.SessionActions.OrderBy(x => x.Id)
                             .Include(x => x.Actions)
                             .Where(x => x.Sessions.Name == "End").ToList()
-                            .Select(x => Utils.SessionActions[x.Actions.Name])
+                            .Select(x => SessionsUtils.SessionActions[x.Actions.Name])
                             .ForEach(x =>
                                 x.Invoke());
 
@@ -244,6 +257,7 @@ namespace AutoBot
                             .Where(x =>
                                 (x.ApplicationSettingId == null || x.ApplicationSettingId ==
                                 BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId))
+                            .OrderBy(x => x.Id)
                             .ToList();
 
 
@@ -255,7 +269,7 @@ namespace AutoBot
                                 item.Sessions.SessionActions
                                     .Where(x => item.ActionId == null || x.ActionId == item.ActionId)
                                     .Where(x => x.Actions.TestMode == (BaseDataModel.Instance.CurrentApplicationSettings.TestMode))
-                                    .Select(x => Utils.SessionActions[x.Actions.Name])
+                                    .Select(x => SessionsUtils.SessionActions[x.Actions.Name])
                                     .ForEach(x =>  x.Invoke());
                             }
 
@@ -267,7 +281,7 @@ namespace AutoBot
                                     .Include(x => x.Actions)
                                     .Where(x => x.Sessions.Name == "AssessIM7").ToList()
                                     .Where(x => x.Actions.TestMode == (BaseDataModel.Instance.CurrentApplicationSettings.TestMode))
-                                    .Select(x => Utils.SessionActions[x.Actions.Name])
+                                    .Select(x => SessionsUtils.SessionActions[x.Actions.Name])
                                     .ForEach(x =>
                                          x.Invoke());
 
@@ -276,7 +290,7 @@ namespace AutoBot
                                     .Include(x => x.Actions)
                                     .Where(x => x.Sessions.Name == "AssessEX").ToList()
                                     .Where(x => x.Actions.TestMode == (BaseDataModel.Instance.CurrentApplicationSettings.TestMode))
-                                    .Select(x => Utils.SessionActions[x.Actions.Name])
+                                    .Select(x => SessionsUtils.SessionActions[x.Actions.Name])
                                     .ForEach(x =>
                                         x.Invoke());
                         }
@@ -303,55 +317,7 @@ namespace AutoBot
 
 
 
-        private static void ExecuteDataSpecificFileActions(FileTypes fileType, FileInfo[] files, ApplicationSettings appSetting)
-        {
-            try
-            {
-                var missingActions = fileType.FileTypeActions.Where(x => x.Actions.IsDataSpecific == true
-                                                    && !Utils.FileActions.ContainsKey(x.Actions.Name)).ToList();
-
-                if (missingActions.Any())
-                {
-                    throw new ApplicationException(
-                        $"The following actions were missing: {missingActions.Select(x => x.Actions.Name).Aggregate((old, current) => old + ", " + current)}");
-                }
-
-                fileType.FileTypeActions.Where(x => x.Actions.IsDataSpecific == true).OrderBy(x => x.Id)
-                    .Where(x => (x.AssessIM7.Equals(null) && x.AssessEX.Equals(null)) ||
-                                (appSetting.AssessIM7 == x.AssessIM7 ||
-                                 appSetting.AssessEX == x.AssessEX))
-                    .Where(x => x.Actions.TestMode ==
-                                (BaseDataModel.Instance.CurrentApplicationSettings.TestMode))
-                    .Select(x => Utils.FileActions[x.Actions.Name]).ToList()
-                    .ForEach(x => { x.Invoke(fileType, files); });
-            }
-            catch (Exception e)
-            {
-                EmailDownloader.EmailDownloader.SendEmail(Utils.Client, null, $"Bug Found",
-                    new[] { "Joseph@auto-brokerage.com" }, $"{e.Message}\r\n{e.StackTrace}",
-                    Array.Empty<string>());
-            }
-        }
-        private static void ExecuteNonSpecificFileActions(FileTypes fileType, FileInfo[] files, ApplicationSettings appSetting)
-        {
-            try
-            {
-                fileType.FileTypeActions.Where(x => x.Actions.IsDataSpecific == null || x.Actions.IsDataSpecific != true).OrderBy(x => x.Id)
-                    .Where(x => (x.AssessIM7.Equals(null) && x.AssessEX.Equals(null)) ||
-                                (appSetting.AssessIM7 == x.AssessIM7 ||
-                                 appSetting.AssessEX == x.AssessEX))
-                    .Where(x => x.Actions.TestMode ==
-                                (BaseDataModel.Instance.CurrentApplicationSettings.TestMode))
-                    .Select(x => Utils.FileActions[x.Actions.Name]).ToList()
-                    .ForEach(x => { x.Invoke(fileType, files); });
-            }
-            catch (Exception e)
-            {
-                EmailDownloader.EmailDownloader.SendEmail(Utils.Client, null, $"Bug Found",
-                    new[] {"Joseph@auto-brokerage.com"}, $"{e.Message}\r\n{e.StackTrace}",
-                    Array.Empty<string>());
-            }
-        }
+       
     }
 
 }

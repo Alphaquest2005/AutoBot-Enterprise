@@ -202,12 +202,12 @@ namespace OCR.Client.Repositories
                         {
                             return new Lines(res)
                     {
-                     // Fields = new System.Collections.ObjectModel.ObservableCollection<Fields>(res.Fields.Select(y => new Fields(y))),    
                   // Parts = (res.Parts != null?new Parts(res.Parts): null),    
                   // RegularExpressions = (res.RegularExpressions != null?new RegularExpressions(res.RegularExpressions): null),    
                      // ChildLines = new System.Collections.ObjectModel.ObservableCollection<Lines>(res.ChildLines.Select(y => new Lines(y))),    
                   // ParentLine = (res.ParentLine != null?new Lines(res.ParentLine): null),    
-                     // OCR_FailedLines = new System.Collections.ObjectModel.ObservableCollection<OCR_FailedLines>(res.OCR_FailedLines.Select(y => new OCR_FailedLines(y)))    
+                     // FailedLines = new System.Collections.ObjectModel.ObservableCollection<OCR_FailedLines>(res.FailedLines.Select(y => new OCR_FailedLines(y))),    
+                     // Fields = new System.Collections.ObjectModel.ObservableCollection<Fields>(res.Fields.Select(y => new Fields(y)))    
                   };
                     }
                     else

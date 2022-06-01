@@ -331,7 +331,7 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
             }
         }
 
-        public class OCR_FailedLinesExcelLine
+        public partial class OCR_FailedLinesExcelLine
         {
 		 
                     public bool Resolved { get; set; } 

@@ -11,7 +11,7 @@
         {
             CustomClassStartUp();
             MyNavPropStartUp();
-            SetupProperties();
+            //SetupProperties();
             IIdentifiableEntityStartUp();
             AutoGenStartUp();  
             TrackableStartUp();
@@ -21,7 +21,7 @@
        {
           if(start) StartTracking();
        }
-    partial void SetupProperties();
+    // partial void SetupProperties();
     partial void AutoGenStartUp();
     partial void CustomClassStartUp();
     partial void MyNavPropStartUp();

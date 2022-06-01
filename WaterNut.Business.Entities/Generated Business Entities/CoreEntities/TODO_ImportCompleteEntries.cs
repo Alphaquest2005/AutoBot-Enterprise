@@ -51,7 +51,7 @@ namespace CoreEntities.Business.Entities
         }
         Nullable<int> _applicationsettingsid;
         [DataMember]
-        public Nullable<int> EmailId 
+        public string EmailId 
         {
             get
             {
@@ -64,7 +64,7 @@ namespace CoreEntities.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        Nullable<int> _emailid;
+        string _emailid;
         [DataMember]
         public Nullable<int> FileTypeId 
         {

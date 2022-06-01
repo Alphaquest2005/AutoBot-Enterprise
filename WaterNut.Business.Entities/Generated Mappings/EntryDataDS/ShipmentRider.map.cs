@@ -16,7 +16,7 @@
               this.Property(t => t.Id).HasColumnName("Id").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.Identity));
               this.Property(t => t.ETA).HasColumnName("ETA");
               this.Property(t => t.DocumentDate).HasColumnName("DocumentDate");
-              this.Property(t => t.EmailId).HasColumnName("EmailId");
+              this.Property(t => t.EmailId).HasColumnName("EmailId").HasMaxLength(255);
               this.Property(t => t.SourceFile).HasColumnName("SourceFile").IsRequired();
               this.Property(t => t.FileTypeId).HasColumnName("FileTypeId");
               this.Property(t => t.ApplicationSettingsId).HasColumnName("ApplicationSettingsId");

@@ -280,7 +280,7 @@ namespace WaterNut.QuerySpace.EntryDataQS.ViewModels
             }
         }
 
-        public class PackageTypeExcelLine
+        public partial class PackageTypeExcelLine
         {
 		 
                     public string PackageCode { get; set; } 

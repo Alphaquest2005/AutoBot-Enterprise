@@ -114,6 +114,7 @@
     <Compile Include="AdjustmentQS\TODO_PreDiscrepancyErrorsClient.cs" />
     <Compile Include="AdjustmentQS\xcuda_ItemClient.cs" />
     <Compile Include="AllocationQS\AdjustmentShortAllocationClient.cs" />
+    <Compile Include="AllocationQS\AllocationsTestCasClient.cs" />
     <Compile Include="AllocationQS\AsycudaSalesAllocationsExClient.cs" />
     <Compile Include="AllocationQS\AsycudaSalesAndAdjustmentAllocationsExClient.cs" />
     <Compile Include="ClientService.cs" />
@@ -138,13 +139,16 @@
     <Compile Include="CoreEntities\Customs_ProcedureClient.cs" />
     <Compile Include="CoreEntities\DeclarantClient.cs" />
     <Compile Include="CoreEntities\Document_TypeClient.cs" />
+    <Compile Include="CoreEntities\EmailAttachmentsClient.cs" />
     <Compile Include="CoreEntities\EmailFileTypesClient.cs" />
     <Compile Include="CoreEntities\EmailInfoMappingsClient.cs" />
     <Compile Include="CoreEntities\EmailMappingClient.cs" />
+    <Compile Include="CoreEntities\EmailMappingRexExsClient.cs" />
     <Compile Include="CoreEntities\EmailsClient.cs" />
     <Compile Include="CoreEntities\EntryPreviousItemsClient.cs" />
     <Compile Include="CoreEntities\ExpiredEntriesLstClient.cs" />
     <Compile Include="CoreEntities\FileGroupsClient.cs" />
+    <Compile Include="CoreEntities\FileImporterInfoClient.cs" />
     <Compile Include="CoreEntities\FileTypeActionsClient.cs" />
     <Compile Include="CoreEntities\FileTypeContactsClient.cs" />
     <Compile Include="CoreEntities\FileTypeMappingRegExsClient.cs" />
@@ -232,6 +236,7 @@
     <Compile Include="Custom Services\SalesDataQS\SalesDataClient.cs" />
     <Compile Include="Custom Services\SalesDataQS\SalesDataDetailClient.cs" />
     <Compile Include="EntryDataQS\AsycudaDocumentEntryDataClient.cs" />
+    <Compile Include="EntryDataQS\AsycudaDocumentEntryDataLineClient.cs" />
     <Compile Include="EntryDataQS\AsycudaDocumentItemEntryDataDetailClient.cs" />
     <Compile Include="EntryDataQS\AsycudaDocumentSetEntryDataClient.cs" />
     <Compile Include="EntryDataQS\AsycudaDocumentSetEntryDataDetailClient.cs" />
@@ -259,7 +264,9 @@
     <Compile Include="OCR\OCRFileTypesClient.cs" />
     <Compile Include="OCR\OCR_FailedFieldsClient.cs" />
     <Compile Include="OCR\OCR_FailedLinesClient.cs" />
+    <Compile Include="OCR\OCR_FieldMappingsClient.cs" />
     <Compile Include="OCR\OCR_FieldValueClient.cs" />
+    <Compile Include="OCR\OCR_PartLineFieldsClient.cs" />
     <Compile Include="OCR\PartsClient.cs" />
     <Compile Include="OCR\PartTypesClient.cs" />
     <Compile Include="OCR\RecuringPartClient.cs" />

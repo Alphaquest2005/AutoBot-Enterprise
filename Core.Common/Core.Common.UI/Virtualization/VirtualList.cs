@@ -48,9 +48,9 @@ namespace Core.Common.UI.DataVirtualization
             
 
             if (loader == null)
-                throw new ArgumentNullException("loader");
+                throw new ArgumentNullException(nameof(loader));
             if (pageSize <= 0)
-                throw new ArgumentOutOfRangeException("pageSize");
+                throw new ArgumentOutOfRangeException(nameof(pageSize));
 
             _synchronizationContext = synchronizationContext;
             _pageRequests = new QueuedBackgroundWorker<int>(LoadPage, synchronizationContext);
@@ -188,9 +188,9 @@ namespace Core.Common.UI.DataVirtualization
         public void CopyTo(VirtualListItem<T>[] array, int arrayIndex)
         {
             if (array == null)
-                throw new ArgumentNullException("array");
+                throw new ArgumentNullException(nameof(array));
             if (arrayIndex < 0)
-                throw new ArgumentOutOfRangeException("arrayIndex");
+                throw new ArgumentOutOfRangeException(nameof(arrayIndex));
             if (arrayIndex >= array.Length)
                 throw new ArgumentException("arrayIndex is greater or equal than the array length");
             if (arrayIndex + Count > array.Length)
@@ -210,9 +210,10 @@ namespace Core.Common.UI.DataVirtualization
             {
                 try
                 {
-                    if (_list != null && _list[index] == null)// && _list.Length <= index
+                    if (index > _list.Count() - 1) return null;
+                    if (_list != null  && _list[index] == null)// && _list.Length <= index
                                         _list[index] = new VirtualListItem<T>(this, index);
-                                    return _list != null ? _list[index] : null;
+                                    return _list != null && _list.Any() ? _list[index] : null;
                 }
                 catch (Exception)
                 {

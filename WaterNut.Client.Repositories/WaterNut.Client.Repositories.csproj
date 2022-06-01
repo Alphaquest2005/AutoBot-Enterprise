@@ -150,6 +150,7 @@
     <Compile Include="Generated Repositories\AdjustmentQS\xcuda_ItemRepository.cs" />
     <Compile Include="Generated Repositories\AllocationQSRepository.cs" />
     <Compile Include="Generated Repositories\AllocationQS\AdjustmentShortAllocationRepository.cs" />
+    <Compile Include="Generated Repositories\AllocationQS\AllocationsTestCasRepository.cs" />
     <Compile Include="Generated Repositories\AllocationQS\AsycudaSalesAllocationsExRepository.cs" />
     <Compile Include="Generated Repositories\AllocationQS\AsycudaSalesAndAdjustmentAllocationsExRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntitiesRepository.cs" />
@@ -174,13 +175,16 @@
     <Compile Include="Generated Repositories\CoreEntities\Customs_ProcedureRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\DeclarantRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\Document_TypeRepository.cs" />
+    <Compile Include="Generated Repositories\CoreEntities\EmailAttachmentsRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\EmailFileTypesRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\EmailInfoMappingsRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\EmailMappingRepository.cs" />
+    <Compile Include="Generated Repositories\CoreEntities\EmailMappingRexExsRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\EmailsRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\EntryPreviousItemsRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\ExpiredEntriesLstRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\FileGroupsRepository.cs" />
+    <Compile Include="Generated Repositories\CoreEntities\FileImporterInfoRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\FileTypeActionsRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\FileTypeContactsRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\FileTypeMappingRegExsRepository.cs" />
@@ -255,6 +259,7 @@
     <Compile Include="Generated Repositories\DocumentQSRepository.cs" />
     <Compile Include="Custom Repository\SalesDataQS\SalesDataDetailRepository.cs" />
     <Compile Include="Generated Repositories\EntryDataQSRepository.cs" />
+    <Compile Include="Generated Repositories\EntryDataQS\AsycudaDocumentEntryDataLineRepository.cs" />
     <Compile Include="Generated Repositories\EntryDataQS\AsycudaDocumentEntryDataRepository.cs" />
     <Compile Include="Generated Repositories\EntryDataQS\AsycudaDocumentItemEntryDataDetailRepository.cs" />
     <Compile Include="Generated Repositories\EntryDataQS\AsycudaDocumentSetEntryDataDetailRepository.cs" />
@@ -285,7 +290,9 @@
     <Compile Include="Generated Repositories\OCR\OCRFileTypesRepository.cs" />
     <Compile Include="Generated Repositories\OCR\OCR_FailedFieldsRepository.cs" />
     <Compile Include="Generated Repositories\OCR\OCR_FailedLinesRepository.cs" />
+    <Compile Include="Generated Repositories\OCR\OCR_FieldMappingsRepository.cs" />
     <Compile Include="Generated Repositories\OCR\OCR_FieldValueRepository.cs" />
+    <Compile Include="Generated Repositories\OCR\OCR_PartLineFieldsRepository.cs" />
     <Compile Include="Generated Repositories\OCR\PartsRepository.cs" />
     <Compile Include="Generated Repositories\OCR\PartTypesRepository.cs" />
     <Compile Include="Generated Repositories\OCR\RecuringPartRepository.cs" />

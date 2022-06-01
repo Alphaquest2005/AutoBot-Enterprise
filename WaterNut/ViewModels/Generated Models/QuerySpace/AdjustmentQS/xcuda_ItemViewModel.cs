@@ -600,6 +600,24 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
         }	
 
  
+
+		private string _xWarehouseErrorFilter;
+        public string xWarehouseErrorFilter
+        {
+            get
+            {
+                return _xWarehouseErrorFilter;
+            }
+            set
+            {
+                _xWarehouseErrorFilter = value;
+				NotifyPropertyChanged(x => xWarehouseErrorFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
 		internal bool DisableBaseFilterData = false;
         public virtual void FilterData()
 	    {
@@ -736,6 +754,10 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
 
 									if(string.IsNullOrEmpty(PreviousInvoiceKeyFilter) == false)
 						res.Append(" && " + string.Format("PreviousInvoiceKey.Contains(\"{0}\")",  PreviousInvoiceKeyFilter));						
+ 
+
+									if(string.IsNullOrEmpty(xWarehouseErrorFilter) == false)
+						res.Append(" && " + string.Format("xWarehouseError.Contains(\"{0}\")",  xWarehouseErrorFilter));						
 			return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
@@ -822,7 +844,10 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
                     UpgradeKey = x.UpgradeKey ,
                     
  
-                    PreviousInvoiceKey = x.PreviousInvoiceKey 
+                    PreviousInvoiceKey = x.PreviousInvoiceKey ,
+                    
+ 
+                    xWarehouseError = x.xWarehouseError 
                     
                 }).ToList()
             };
@@ -832,7 +857,7 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
             }
         }
 
-        public class xcuda_ItemExcelLine
+        public partial class xcuda_ItemExcelLine
         {
 		 
                     public string Amount_deducted_from_licence { get; set; } 
@@ -899,6 +924,9 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
                     
  
                     public string PreviousInvoiceKey { get; set; } 
+                    
+ 
+                    public string xWarehouseError { get; set; } 
                     
         }
 

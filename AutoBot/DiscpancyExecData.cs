@@ -2,12 +2,8 @@
 
 namespace AutoBotUtilities
 {
-    class DiscpancyExecData
+    internal class DiscpancyExecData
     {
-        public DiscpancyExecData()
-        {
-        }
-
         public string InvoiceNo { get; internal set; }
         public DateTime InvoiceDate { get; internal set; }
         public string ItemNumber { get; internal set; }

@@ -308,7 +308,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             }
         }
 
-        public class SessionActionsExcelLine
+        public partial class SessionActionsExcelLine
         {
 		        }
 

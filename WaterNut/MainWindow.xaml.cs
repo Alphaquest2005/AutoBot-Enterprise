@@ -6,6 +6,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Linq;
+using AutoBot;
 using CoreEntities.Client.Entities;
 using Core.Common.UI;
 using Microsoft.Win32;
@@ -297,8 +298,7 @@ namespace WaterNut
 
         private void GotoInventory(object sender, MouseButtonEventArgs e)
         {
-            var im = ((sender as FrameworkElement).DataContext) as InventoryItemsModel;
-            if (im != null)
+            if (((sender as FrameworkElement).DataContext) is InventoryItemsModel im)
             {
                 im.ViewPOItems = false;
                 im.ViewUnknownTariff = false;
@@ -315,10 +315,12 @@ namespace WaterNut
 
         private async void IM72Ex9(object sender, MouseButtonEventArgs e)
         {
-            var od = new OpenFileDialog();
-            od.DefaultExt = ".xml";
-            od.Filter = "Xml Documents (.xml)|*.xml";
-            od.Multiselect = true;
+            var od = new OpenFileDialog
+            {
+                DefaultExt = ".xml",
+                Filter = "Xml Documents (.xml)|*.xml",
+                Multiselect = true
+            };
             var result = od.ShowDialog();
             if (result == true)
             {
@@ -393,10 +395,12 @@ namespace WaterNut
 
         private void ImportExpiredEntries(object sender, MouseButtonEventArgs e)
         {
-            var od = new OpenFileDialog();
-            od.DefaultExt = ".csv";
-            od.Filter = "CSV Documents (.csv)|*.csv";
-            
+            var od = new OpenFileDialog
+            {
+                DefaultExt = ".csv",
+                Filter = "CSV Documents (.csv)|*.csv"
+            };
+
             var result = od.ShowDialog();
             if (result == true)
             {
@@ -406,7 +410,7 @@ namespace WaterNut
                     StatusModel.StatusUpdate();
                     try
                     {
-                        AutoBot.Utils.ImportExpiredEntires(f);
+                        EntryDocSetUtils.ImportExpiredEntires(f);
                     }
                     catch (Exception Ex)
                     {
@@ -417,6 +421,42 @@ namespace WaterNut
                 MessageBox.Show("Complete", "Asycuda Toolkit", MessageBoxButton.OK, MessageBoxImage.Exclamation);
             }
             
+        }
+
+
+        private void ImportXSalesFiles(object sender, MouseButtonEventArgs e)
+        {
+            var od = new OpenFileDialog
+            {
+                DefaultExt = ".csv",
+                Filter = "CSV Documents (.csv)|*.csv"
+            };
+
+            var result = od.ShowDialog();
+            if (result == true)
+            {
+                StatusModel.StartStatusUpdate("Importing Expired Files files", od.FileNames.Count());
+                foreach (var f in od.FileNames)
+                {
+                    StatusModel.StatusUpdate();
+                    try
+                    {
+                        EX9Utils.ImportXSalesFiles(f);
+                    }
+                    catch (Exception Ex)
+                    {
+                        MessageBox.Show($"Could not Import file - '{f}. Error:{Ex.Message} Stacktrace:{Ex.StackTrace}");
+                    }
+
+                }
+                MessageBox.Show("Complete", "Asycuda Toolkit", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+            }
+
+        }
+
+        private async void EX9AllAllocations(object sender, MouseButtonEventArgs e)
+        {
+            await AllocationsModel.Instance.EX9AllAllocations(true).ConfigureAwait(false);
         }
     }
 }

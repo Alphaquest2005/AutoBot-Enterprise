@@ -26,6 +26,7 @@ namespace EntryDataDS.Business.Entities
             this.ShipmentManifestDetails = new List<ShipmentManifestDetails>();
             this.ShipmentManifestBLs = new List<ShipmentManifestBLs>();
             this.ShipmentRiderManifests = new List<ShipmentRiderManifests>();
+            this.ShipmentFreightManifests = new List<ShipmentFreightManifests>();
         }
 
         [DataMember]
@@ -419,7 +420,7 @@ namespace EntryDataDS.Business.Entities
         }
         Nullable<int> _containers;
         [DataMember]
-        public Nullable<int> EmailId 
+        public string EmailId 
         {
             get
             {
@@ -432,7 +433,7 @@ namespace EntryDataDS.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        Nullable<int> _emailid;
+        string _emailid;
         [DataMember]
         public string SourceFile 
         {
@@ -486,6 +487,8 @@ namespace EntryDataDS.Business.Entities
         public List<ShipmentManifestBLs> ShipmentManifestBLs { get; set; }
         [DataMember]
         public List<ShipmentRiderManifests> ShipmentRiderManifests { get; set; }
+        [DataMember]
+        public List<ShipmentFreightManifests> ShipmentFreightManifests { get; set; }
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

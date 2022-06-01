@@ -265,6 +265,12 @@ namespace AllocationDS.Business.Services
                                         GetWhere<LumpedItem>(dbContext, exp, itm.Value, "InventoryItem", "SelectMany", includesLst)
 										.ConfigureAwait(continueOnCapturedContext: false);
 
+                            case "EntryDataDetails":
+                                return
+                                    await
+                                        GetWhere<EntryDataDetails>(dbContext, exp, itm.Value, "InventoryItem", "Select", includesLst)
+										.ConfigureAwait(continueOnCapturedContext: false);
+
                         }
 
                     }
@@ -779,6 +785,9 @@ namespace AllocationDS.Business.Services
                             case "LumpedItem":
                                 return await CountWhere<LumpedItem>(dbContext, exp, itm.Value, "InventoryItem", "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "EntryDataDetails":
+                                return await CountWhere<EntryDataDetails>(dbContext, exp, itm.Value, "InventoryItem", "Select")
+											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }
                     return await dbContext.InventoryItems.Where(exp == "All" || exp == null ? "InventoryItemId != null" : exp)
@@ -913,6 +922,12 @@ namespace AllocationDS.Business.Services
                                 return
                                     await
                                         LoadRangeWhere<LumpedItem>(startIndex, count, dbContext, exp, itm.Value, "InventoryItem", "SelectMany")
+													.ConfigureAwait(continueOnCapturedContext: false);
+
+                            case "EntryDataDetails":
+                                return
+                                    await
+                                        LoadRangeWhere<EntryDataDetails>(startIndex, count, dbContext, exp, itm.Value, "InventoryItem", "Select")
 													.ConfigureAwait(continueOnCapturedContext: false);
 
                           
@@ -1131,6 +1146,7 @@ namespace AllocationDS.Business.Services
                                                     // .Include(x => x.EX9AsycudaSalesAllocations)									  
                                                     // .Include(x => x.EntryDataDetailsEx)									  
                                                     // .Include(x => x.InventoryItemAliasEx)									  
+                                                    // .Include(x => x.EntryDataDetails)									  
                                       .AsNoTracking()
                                         .Where(x => x.ApplicationSettingsId.ToString() == ApplicationSettingsId.ToString())
 										.ToListAsync()
@@ -1220,6 +1236,9 @@ namespace AllocationDS.Business.Services
 											.ConfigureAwait(continueOnCapturedContext: false);
                             case "LumpedItem":
                                 return await SumWhere<LumpedItem>(dbContext, exp, itm.Value, "InventoryItem", field, "SelectMany")
+											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "EntryDataDetails":
+                                return await SumWhere<EntryDataDetails>(dbContext, exp, itm.Value, "InventoryItem", field, "Select")
 											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }

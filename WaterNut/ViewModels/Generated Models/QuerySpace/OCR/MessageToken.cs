@@ -76,12 +76,24 @@ namespace WaterNut.QuerySpace.OCR
 			public const string OCR_FailedLinesDeleted = "OCR_FailedLinesDeleted";
 			public const string OCR_FailedLinesCreated = "OCR_FailedLinesCreated";
 			public const string OCR_FailedLinesUpdated = "OCR_FailedLinesUpdated";
+			public const string OCR_FieldMappingsFilterExpressionChanged = "OCR_FieldMappingsFilterExpressionChanged";
+			public const string SelectedOCR_FieldMappingsChanged = "SelectedOCR_FieldMappingsChanged";
+            public const string OCR_FieldMappingsChanged = "OCR_FieldMappingsChanged";
+			public const string OCR_FieldMappingsDeleted = "OCR_FieldMappingsDeleted";
+			public const string OCR_FieldMappingsCreated = "OCR_FieldMappingsCreated";
+			public const string OCR_FieldMappingsUpdated = "OCR_FieldMappingsUpdated";
 			public const string OCR_FieldValueFilterExpressionChanged = "OCR_FieldValueFilterExpressionChanged";
 			public const string SelectedOCR_FieldValueChanged = "SelectedOCR_FieldValueChanged";
             public const string OCR_FieldValueChanged = "OCR_FieldValueChanged";
 			public const string OCR_FieldValueDeleted = "OCR_FieldValueDeleted";
 			public const string OCR_FieldValueCreated = "OCR_FieldValueCreated";
 			public const string OCR_FieldValueUpdated = "OCR_FieldValueUpdated";
+			public const string OCR_PartLineFieldsFilterExpressionChanged = "OCR_PartLineFieldsFilterExpressionChanged";
+			public const string SelectedOCR_PartLineFieldsChanged = "SelectedOCR_PartLineFieldsChanged";
+            public const string OCR_PartLineFieldsChanged = "OCR_PartLineFieldsChanged";
+			public const string OCR_PartLineFieldsDeleted = "OCR_PartLineFieldsDeleted";
+			public const string OCR_PartLineFieldsCreated = "OCR_PartLineFieldsCreated";
+			public const string OCR_PartLineFieldsUpdated = "OCR_PartLineFieldsUpdated";
 			public const string OCRInvoicesFileTypesFilterExpressionChanged = "OCRInvoicesFileTypesFilterExpressionChanged";
 			public const string SelectedOCRInvoicesFileTypesChanged = "SelectedOCRInvoicesFileTypesChanged";
             public const string OCRInvoicesFileTypesChanged = "OCRInvoicesFileTypesChanged";
@@ -131,7 +143,9 @@ namespace WaterNut.QuerySpace.OCR
           // public const string LinesChanged = "LinesChanged";
           // public const string OCR_FailedFieldsChanged = "OCR_FailedFieldsChanged";
           // public const string OCR_FailedLinesChanged = "OCR_FailedLinesChanged";
+          // public const string OCR_FieldMappingsChanged = "OCR_FieldMappingsChanged";
           // public const string OCR_FieldValueChanged = "OCR_FieldValueChanged";
+          // public const string OCR_PartLineFieldsChanged = "OCR_PartLineFieldsChanged";
           // public const string OCRFileTypesChanged = "OCRFileTypesChanged";
           // public const string PartsChanged = "PartsChanged";
           // public const string PartTypesChanged = "PartTypesChanged";
@@ -163,7 +177,11 @@ namespace WaterNut.QuerySpace.OCR
    
            public const string CurrentOCR_FailedLinesChanged = "CurrentOCR_FailedLinesChanged";
    
+           public const string CurrentOCR_FieldMappingsChanged = "CurrentOCR_FieldMappingsChanged";
+   
            public const string CurrentOCR_FieldValueChanged = "CurrentOCR_FieldValueChanged";
+   
+           public const string CurrentOCR_PartLineFieldsChanged = "CurrentOCR_PartLineFieldsChanged";
    
            public const string CurrentOCRFileTypesChanged = "CurrentOCRFileTypesChanged";
    
@@ -201,7 +219,11 @@ namespace WaterNut.QuerySpace.OCR
    
            public const string CurrentOCR_FailedLinesIDChanged = "OnCurrentOCR_FailedLinesIDChanged";
    
+           public const string CurrentOCR_FieldMappingsIDChanged = "OnCurrentOCR_FieldMappingsIDChanged";
+   
            public const string CurrentOCR_FieldValueIDChanged = "OnCurrentOCR_FieldValueIDChanged";
+   
+           public const string CurrentOCR_PartLineFieldsIDChanged = "OnCurrentOCR_PartLineFieldsIDChanged";
    
            public const string CurrentOCRFileTypesIDChanged = "OnCurrentOCRFileTypesIDChanged";
    

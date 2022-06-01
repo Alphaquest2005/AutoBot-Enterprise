@@ -204,7 +204,7 @@ namespace CoreEntities.Client.DTO
         private string _Declarant_Reference_Number;
 
         [DataMember]
-        public Nullable<int> EmailId
+        public string EmailId
 		{ 
 		    get { return _EmailId; }
 			set
@@ -214,7 +214,7 @@ namespace CoreEntities.Client.DTO
 				NotifyPropertyChanged();//m => this.EmailId
 			}
 		}
-        private Nullable<int> _EmailId;
+        private string _EmailId;
 
         [DataMember]
         public string xCNumber
@@ -243,7 +243,7 @@ namespace CoreEntities.Client.DTO
         private Nullable<int> _xLineNumber;
 
         [DataMember]
-        public string xRegistrationDate
+        public Nullable<System.DateTime> xRegistrationDate
 		{ 
 		    get { return _xRegistrationDate; }
 			set
@@ -253,7 +253,7 @@ namespace CoreEntities.Client.DTO
 				NotifyPropertyChanged();//m => this.xRegistrationDate
 			}
 		}
-        private string _xRegistrationDate;
+        private Nullable<System.DateTime> _xRegistrationDate;
 
        
    //     [DataMember]

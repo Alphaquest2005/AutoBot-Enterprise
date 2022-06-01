@@ -835,7 +835,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             }
         }
 
-        public class AsycudaDocumentBasicInfoExcelLine
+        public partial class AsycudaDocumentBasicInfoExcelLine
         {
 		 
                     public string DocumentType { get; set; } 

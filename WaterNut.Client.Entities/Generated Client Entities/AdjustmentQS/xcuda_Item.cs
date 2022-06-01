@@ -442,6 +442,23 @@ public string PreviousInvoiceKey
 		}
      
 
+       
+       
+                
+                [MaxLength(255, ErrorMessage = "xWarehouseError has a max length of 255 letters ")]
+public string xWarehouseError
+		{ 
+		    get { return this.xcuda_item.xWarehouseError; }
+			set
+			{
+			    if (value == this.xcuda_item.xWarehouseError) return;
+				this.xcuda_item.xWarehouseError = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("xWarehouseError");
+			}
+		}
+     
+
         ObservableCollection<AsycudaSalesAllocation> _AsycudaSalesAllocations = null;
         public  ObservableCollection<AsycudaSalesAllocation> AsycudaSalesAllocations
 		{

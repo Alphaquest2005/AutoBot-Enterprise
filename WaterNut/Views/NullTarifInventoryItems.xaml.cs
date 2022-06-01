@@ -48,8 +48,7 @@ namespace WaterNut.Views
         {
             if (e.Key == Key.Enter)
             {
-                var textBox = sender as TextBox;
-                if (textBox != null)
+                if (sender is TextBox textBox)
                     textBox.GetBindingExpression(TextBox.TextProperty).UpdateSource();
             }
         }
@@ -58,8 +57,7 @@ namespace WaterNut.Views
         {
             if (e.Key == Key.Enter)
             {
-                var textBox = sender as TextBox;
-                if (textBox != null)
+                if (sender is TextBox textBox)
                 {
                     textBox.GetBindingExpression(TextBox.TextProperty).UpdateSource();
                     await

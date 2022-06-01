@@ -18,6 +18,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
     public partial class BaseViewModel 
     {
         private List<ApplicationSettings> _applicationSettings;
+        private List<Customs_Procedure> _customsProcedures;
 
         private BaseViewModel()
         {
@@ -54,6 +55,11 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             }
         }
 
-
+        public List<Customs_Procedure> CustomsProcedures =>
+            _customsProcedures ?? (_customsProcedures = new Customs_ProcedureRepository()
+                .Customs_Procedure(new List<string>() { "CustomsOperations" }).Result.ToList());
     }
+
+
+  
 }

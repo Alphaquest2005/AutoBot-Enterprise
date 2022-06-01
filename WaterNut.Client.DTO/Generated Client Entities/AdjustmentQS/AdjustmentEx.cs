@@ -126,7 +126,7 @@ namespace AdjustmentQS.Client.DTO
         private int _ApplicationSettingsId;
 
         [DataMember]
-        public Nullable<int> EmailId
+        public string EmailId
 		{ 
 		    get { return _EmailId; }
 			set
@@ -136,7 +136,7 @@ namespace AdjustmentQS.Client.DTO
 				NotifyPropertyChanged();//m => this.EmailId
 			}
 		}
-        private Nullable<int> _EmailId;
+        private string _EmailId;
 
         [DataMember]
         public Nullable<int> FileTypeId
@@ -255,6 +255,19 @@ namespace AdjustmentQS.Client.DTO
 			}
 		}
         private ChangeTrackingCollection<AdjustmentDetail> _AdjustmentDetails = new ChangeTrackingCollection<AdjustmentDetail>();
+
+        [DataMember]
+        public ChangeTrackingCollection<EntryDataDetail> EntryDataDetails
+		{
+		    get { return _EntryDataDetails; }
+			set
+			{
+			    if (Equals(value, _EntryDataDetails)) return;
+				_EntryDataDetails = value;
+				NotifyPropertyChanged();//m => this.EntryDataDetails
+			}
+		}
+        private ChangeTrackingCollection<EntryDataDetail> _EntryDataDetails = new ChangeTrackingCollection<EntryDataDetail>();
 
    //     [DataMember]
    //     public TrackingState TrackingState { get; set; }

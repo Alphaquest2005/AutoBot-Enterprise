@@ -426,7 +426,7 @@ namespace AdjustmentQS.Business.Entities
         }
         string _dutyfreepaid;
         [DataMember]
-        public Nullable<int> EmailId 
+        public string EmailId 
         {
             get
             {
@@ -439,7 +439,7 @@ namespace AdjustmentQS.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        Nullable<int> _emailid;
+        string _emailid;
         [DataMember]
         public Nullable<int> FileTypeId 
         {
@@ -515,6 +515,21 @@ namespace AdjustmentQS.Business.Entities
             }
         }
         int _alreadyexecuted;
+        [DataMember]
+        public string Vendor 
+        {
+            get
+            {
+                return _vendor;
+            }
+            set
+            {
+                _vendor = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _vendor;
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

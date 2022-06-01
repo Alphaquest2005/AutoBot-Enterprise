@@ -91,71 +91,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AdjustmentDetail.cs">
-      <DependentUpon>OversShortQS.tt</DependentUpon>
-    </Compile>
-    <Compile Include="AdjustmentEx.cs">
-      <DependentUpon>OversShortQS.tt</DependentUpon>
-    </Compile>
-    <Compile Include="AdjustmentOver.cs">
-      <DependentUpon>OversShortQS.tt</DependentUpon>
-    </Compile>
-    <Compile Include="AdjustmentOversAllocation.cs">
-      <DependentUpon>OversShortQS.tt</DependentUpon>
-    </Compile>
     <Compile Include="AdjustmentQS.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>AdjustmentQS.edmx</DependentUpon>
     </Compile>
-    <Compile Include="AdjustmentShort.cs">
-      <DependentUpon>OversShortQS.tt</DependentUpon>
-    </Compile>
-    <Compile Include="AsycudaDocumentEntryData.cs">
-      <DependentUpon>OversShortQS.tt</DependentUpon>
-    </Compile>
-    <Compile Include="AsycudaDocumentItemEntryDataDetail.cs">
-      <DependentUpon>OversShortQS.tt</DependentUpon>
-    </Compile>
-    <Compile Include="AsycudaDocumentItemLastItemCost.cs">
-      <DependentUpon>OversShortQS.tt</DependentUpon>
-    </Compile>
-    <Compile Include="AsycudaDocumentSetEntryData.cs">
-      <DependentUpon>OversShortQS.tt</DependentUpon>
-    </Compile>
-    <Compile Include="AsycudaSalesAllocation.cs">
-      <DependentUpon>OversShortQS.tt</DependentUpon>
-    </Compile>
-    <Compile Include="EntryDataDetail.cs">
-      <DependentUpon>OversShortQS.tt</DependentUpon>
-    </Compile>
-    <Compile Include="InventoryItemAliasEx.cs">
-      <DependentUpon>OversShortQS.tt</DependentUpon>
-    </Compile>
-    <Compile Include="InventoryItemsEx.cs">
-      <DependentUpon>OversShortQS.tt</DependentUpon>
-    </Compile>
-    <Compile Include="OversShortQS.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>OversShortQS.tt</DependentUpon>
-    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ShortAllocation.cs">
-      <DependentUpon>OversShortQS.tt</DependentUpon>
-    </Compile>
-    <Compile Include="SystemDocumentSet.cs">
-      <DependentUpon>OversShortQS.tt</DependentUpon>
-    </Compile>
-    <Compile Include="TODO_AdjustmentOversToXML.cs">
-      <DependentUpon>OversShortQS.tt</DependentUpon>
-    </Compile>
-    <Compile Include="TODO_PreDiscrepancyErrors.cs">
-      <DependentUpon>OversShortQS.tt</DependentUpon>
-    </Compile>
-    <Compile Include="xcuda_Item.cs">
-      <DependentUpon>OversShortQS.tt</DependentUpon>
-    </Compile>
   </ItemGroup>
   <ItemGroup>
     <EntityDeploy Include="AdjustmentQS.edmx">
@@ -168,11 +109,6 @@
       <SubType>Designer</SubType>
     </None>
     <None Include="AdjustmentQS.edmx.diagram">
-      <DependentUpon>AdjustmentQS.edmx</DependentUpon>
-    </None>
-    <None Include="OversShortQS.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>OversShortQS.cs</LastGenOutput>
       <DependentUpon>AdjustmentQS.edmx</DependentUpon>
     </None>
   </ItemGroup>

@@ -102,59 +102,6 @@ public int ReplacementRegExId
 		}
      
 
-       private Fields _Field;
-        public  Fields Field
-		{
-		    get
-               { 
-                  if (this.fieldformatregex != null)
-                   {
-                       if (_Field != null)
-                       {
-                           if (this.fieldformatregex.Field !=
-                               _Field.DTO)
-                           {
-                                if (this.fieldformatregex.Field  != null)
-                               _Field = new Fields(this.fieldformatregex.Field);
-                           }
-                       }
-                       else
-                       {
-                             if (this.fieldformatregex.Field  != null)
-                           _Field = new Fields(this.fieldformatregex.Field);
-                       }
-                   }
-
-
-             //       if (_Field != null) return _Field;
-                       
-             //       var i = new Fields(){TrackingState = TrackingState.Added};
-			//		//if (this.fieldformatregex.Field == null) Debugger.Break();
-			//		if (this.fieldformatregex.Field != null)
-            //        {
-            //           i. = this.fieldformatregex.Field;
-            //        }
-            //        else
-            //        {
-            //            this.fieldformatregex.Field = i.;
-             //       }
-                           
-            //        _Field = i;
-                     
-                    return _Field;
-               }
-			set
-			{
-			    if (value == _Field) return;
-                _Field = value;
-                if(value != null)
-                     this.fieldformatregex.Field = value.DTO;
-				if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
-                NotifyPropertyChanged("Field");
-			}
-		}
-        
-
        private RegularExpressions _RegEx;
         public  RegularExpressions RegEx
 		{
@@ -257,6 +204,59 @@ public int ReplacementRegExId
                      this.fieldformatregex.ReplacementRegEx = value.DTO;
 				if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
                 NotifyPropertyChanged("ReplacementRegEx");
+			}
+		}
+        
+
+       private Fields _Fields;
+        public  Fields Fields
+		{
+		    get
+               { 
+                  if (this.fieldformatregex != null)
+                   {
+                       if (_Fields != null)
+                       {
+                           if (this.fieldformatregex.Fields !=
+                               _Fields.DTO)
+                           {
+                                if (this.fieldformatregex.Fields  != null)
+                               _Fields = new Fields(this.fieldformatregex.Fields);
+                           }
+                       }
+                       else
+                       {
+                             if (this.fieldformatregex.Fields  != null)
+                           _Fields = new Fields(this.fieldformatregex.Fields);
+                       }
+                   }
+
+
+             //       if (_Fields != null) return _Fields;
+                       
+             //       var i = new Fields(){TrackingState = TrackingState.Added};
+			//		//if (this.fieldformatregex.Fields == null) Debugger.Break();
+			//		if (this.fieldformatregex.Fields != null)
+            //        {
+            //           i. = this.fieldformatregex.Fields;
+            //        }
+            //        else
+            //        {
+            //            this.fieldformatregex.Fields = i.;
+             //       }
+                           
+            //        _Fields = i;
+                     
+                    return _Fields;
+               }
+			set
+			{
+			    if (value == _Fields) return;
+                _Fields = value;
+                if(value != null)
+                     this.fieldformatregex.Fields = value.DTO;
+				if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+                NotifyPropertyChanged("Fields");
 			}
 		}
         

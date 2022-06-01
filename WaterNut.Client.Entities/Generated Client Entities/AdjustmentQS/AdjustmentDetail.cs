@@ -298,7 +298,7 @@ public Nullable<double> ReceivedQty
        
        
                 
-                [MaxLength(50, ErrorMessage = "PreviousInvoiceNumber has a max length of 50 letters ")]
+                [MaxLength(255, ErrorMessage = "PreviousInvoiceNumber has a max length of 255 letters ")]
 public string PreviousInvoiceNumber
 		{ 
 		    get { return this.adjustmentdetail.PreviousInvoiceNumber; }
@@ -362,7 +362,7 @@ public Nullable<bool> Downloaded
        
        
                 
-                [MaxLength(50, ErrorMessage = "PreviousCNumber has a max length of 50 letters ")]
+                [MaxLength(255, ErrorMessage = "PreviousCNumber has a max length of 255 letters ")]
 public string PreviousCNumber
 		{ 
 		    get { return this.adjustmentdetail.PreviousCNumber; }
@@ -491,7 +491,9 @@ public int ApplicationSettingsId
 
        
        
-public Nullable<int> EmailId
+                
+                [MaxLength(255, ErrorMessage = "EmailId has a max length of 255 letters ")]
+public string EmailId
 		{ 
 		    get { return this.adjustmentdetail.EmailId; }
 			set
@@ -639,6 +641,23 @@ public Nullable<int> PreviousCLineNumber
 				this.adjustmentdetail.PreviousCLineNumber = value;
                 if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
 				NotifyPropertyChanged("PreviousCLineNumber");
+			}
+		}
+     
+
+       
+       
+                
+                [MaxLength(50, ErrorMessage = "Vendor has a max length of 50 letters ")]
+public string Vendor
+		{ 
+		    get { return this.adjustmentdetail.Vendor; }
+			set
+			{
+			    if (value == this.adjustmentdetail.Vendor) return;
+				this.adjustmentdetail.Vendor = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("Vendor");
 			}
 		}
      

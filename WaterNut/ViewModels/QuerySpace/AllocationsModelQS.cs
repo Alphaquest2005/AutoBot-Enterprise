@@ -691,7 +691,8 @@ namespace WaterNut.QuerySpace.AllocationQS.ViewModels
                   ,
                             PerIM7,
                             Process7100,
-                            ApplyCurrentChecks, CoreEntities.ViewModels.BaseViewModel.Instance.CurrentAsycudaDocumentSetEx.AsycudaDocumentSetId, "Sales","Historic",true, true, true, true, true, false,true, true, true, true).ConfigureAwait(false);
+                            ApplyCurrentChecks, CoreEntities.ViewModels.BaseViewModel.Instance.CurrentAsycudaDocumentSetEx.AsycudaDocumentSetId, "Sales","Historic",
+                  CoreEntities.ViewModels.BaseViewModel.Instance.CurrentApplicationSettings.GroupEX9.GetValueOrDefault(), true, true, true, true, false,true, true, true, true).ConfigureAwait(false);
            MessageBus.Default.BeginNotify(CoreEntities.MessageToken.AsycudaDocumentSetExsChanged, this, new NotificationEventArgs(CoreEntities.MessageToken.AsycudaDocumentSetExsChanged));
           StatusModel.StopStatusUpdate();
             MessageBox.Show("Complete","Asycuda Toolkit", MessageBoxButton.OK, MessageBoxImage.Exclamation);
@@ -867,8 +868,8 @@ namespace WaterNut.QuerySpace.AllocationQS.ViewModels
 
                 //var saleInfo = BaseDataModel.CurrentSalesInfo();
                 //if (saleInfo.Item3.AsycudaDocumentSetId == 0) return;
-                var res = MessageBox.Show("Ex9 All Allocated Sales?", "Ex9 All Allocated Sales", MessageBoxButton.YesNoCancel);
-                if (res == MessageBoxResult.Yes)
+                var res = MessageBox.Show("Ex9 All Allocated Sales? 'Yes' for Per Month, 'NO' for No Month Processing, 'Cancel' to Abort", "Ex9 All Allocated Sales", MessageBoxButton.YesNoCancel);
+                if (res != MessageBoxResult.Cancel)
                 {
                     StatusModel.Timer("Ex9 All Allocated Sales");
                    
@@ -877,18 +878,18 @@ namespace WaterNut.QuerySpace.AllocationQS.ViewModels
                     // "&&  PreviousItem_Id == 388376" +
                     " && PreviousItem_Id != null" +
                     //"&& (xBond_Item_Id == 0)" + not relevant because it could be assigned to another sale but not exwarehoused
-                    " && (QtyAllocated != null && EntryDataDetailsId != null)" +
+                    " && (QtyAllocated != null && EntryDataDetailsId != null)" + 
                     " && (PiQuantity < pQtyAllocated)" +
                     //"&& (pQuantity - pQtyAllocated  < 0.001)" + // prevents spill over allocations
                     " && (Status == null || Status == \"\")" +
                     (CoreEntities.ViewModels.BaseViewModel.Instance.CurrentApplicationSettings.AllowNonXEntries == "Visible"
                         ? $" && (Invalid != true && (pExpiryDate >= \"{DateTime.Now.ToShortDateString()}\" || pExpiryDate == null) && (Status == null || Status == \"\"))"
                         : "") +
-                    ($" && pRegistrationDate >= \"{CoreEntities.ViewModels.BaseViewModel.Instance.CurrentApplicationSettings.OpeningStockDate}\"");
+                    $" && pRegistrationDate >= \"{CoreEntities.ViewModels.BaseViewModel.Instance.CurrentApplicationSettings.OpeningStockDate}\"";
 
 
 
-                    await AsycudaSalesAllocationsExRepository.Instance.CreateEx9(filterExpression, false, false, false, CoreEntities.ViewModels.BaseViewModel.Instance.CurrentAsycudaDocumentSetEx.AsycudaDocumentSetId, "Sales", "Historic", true, true, true, false, false, false, true, true, true, true).ConfigureAwait(false);
+                    await AsycudaSalesAllocationsExRepository.Instance.CreateEx9(filterExpression, false, false, false, CoreEntities.ViewModels.BaseViewModel.Instance.CurrentAsycudaDocumentSetEx.AsycudaDocumentSetId, "Sales", "Historic", CoreEntities.ViewModels.BaseViewModel.Instance.CurrentApplicationSettings.GroupEX9.GetValueOrDefault(), true, res == MessageBoxResult.Yes, false, false, false, true, true, true, true).ConfigureAwait(false);
 
                 }
 
@@ -922,7 +923,75 @@ namespace WaterNut.QuerySpace.AllocationQS.ViewModels
             }
         }
 
-       
+
+        public async Task EX9AllAllocations(bool overwrite)
+        {
+            try
+            {
+                if (CoreEntities.ViewModels.BaseViewModel.Instance.CurrentAsycudaDocumentSetEx == null)
+                {
+                    MessageBox.Show("Please select a Document Set before Continuing!");
+                    return;
+                }
+
+
+                //var saleInfo = BaseDataModel.CurrentSalesInfo();
+                //if (saleInfo.Item3.AsycudaDocumentSetId == 0) return;
+                var res = MessageBox.Show("Ex9 All Allocations- WARNING THIS WILL OVER TAKE? Click 'Yes' for Per Month, 'NO' for No Month Processing, 'Cancel' to Abort", "Ex9 All Allocations", MessageBoxButton.YesNoCancel);
+                if (res != MessageBoxResult.Cancel)
+                {
+                    StatusModel.Timer("Ex9 All Allocations");
+
+                    var filterExpression = vloader.FilterExpression +
+                   // "&& (ItemNumber == \"WA99004\")" +//A002416,A002402,X35019044,AB111510
+                   // "&&  PreviousItem_Id == 388376" +
+                   " && PreviousItem_Id != null" +
+                   //"&& (xBond_Item_Id == 0)" + not relevant because it could be assigned to another sale but not exwarehoused
+                   " && (QtyAllocated != null && EntryDataDetailsId != null)" +
+                   //  " && (PiQuantity < pQtyAllocated)" +
+                   " && (pQuantity > PiQuantity)" +
+                   //"&& (pQuantity - pQtyAllocated  < 0.001)" + // prevents spill over allocations
+                   " && (Status == null || Status == \"\")" +
+                   (CoreEntities.ViewModels.BaseViewModel.Instance.CurrentApplicationSettings.AllowNonXEntries == "Visible"
+                       ? $" && (Invalid != true && (pExpiryDate >= \"{DateTime.Now.ToShortDateString()}\" || pExpiryDate == null) && (Status == null || Status == \"\"))"
+                       : "") +
+                   $" && pRegistrationDate >= \"{CoreEntities.ViewModels.BaseViewModel.Instance.CurrentApplicationSettings.OpeningStockDate}\"";
+
+
+
+                    await AsycudaSalesAllocationsExRepository.Instance.CreateEx9(filterExpression, false, false, false, CoreEntities.ViewModels.BaseViewModel.Instance.CurrentAsycudaDocumentSetEx.AsycudaDocumentSetId, "Sales", "Historic", CoreEntities.ViewModels.BaseViewModel.Instance.CurrentApplicationSettings.GroupEX9.GetValueOrDefault(), true, res == MessageBoxResult.Yes, false, false, false, true, false, false, false).ConfigureAwait(false);
+
+                }
+
+                if (res == MessageBoxResult.Cancel)
+                {
+                    StatusModel.StopStatusUpdate();
+                    return;
+                }
+
+
+                MessageBus.Default.BeginNotify(MessageToken.AsycudaSalesAllocationsExsChanged, null,
+                    new NotificationEventArgs(MessageToken.AsycudaSalesAllocationsExsChanged));
+
+                MessageBus.Default.BeginNotify(CoreEntities.MessageToken.AsycudaDocumentSetExsChanged, this, new NotificationEventArgs(CoreEntities.MessageToken.AsycudaDocumentSetExsChanged));
+
+                MessageBus.Default.BeginNotify(QuerySpace.CoreEntities.MessageToken.AsycudaDocumentsChanged, null,
+                    new NotificationEventArgs(QuerySpace.CoreEntities.MessageToken.AsycudaDocumentsChanged));
+
+                MessageBus.Default.BeginNotify(QuerySpace.PreviousDocumentQS.MessageToken.PreviousDocumentItemsChanged, null,
+                    new NotificationEventArgs(QuerySpace.PreviousDocumentQS.MessageToken.PreviousDocumentItemsChanged));
+
+
+                StatusModel.StopStatusUpdate();
+                MessageBox.Show("Complete", "Asycuda Toolkit", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+        }
     }
 
     public partial class AsycudaSalesAndAdjustmentAllocationsExViewModel_AutoGen

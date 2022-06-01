@@ -45,21 +45,6 @@ namespace CoreEntities.Client.Entities
         
 
 
-       [RequiredValidationAttribute(ErrorMessage= "EmailUnique is required")]
-       
-public int EmailUniqueId
-		{ 
-		    get { return this.emails.EmailUniqueId; }
-			set
-			{
-			    if (value == this.emails.EmailUniqueId) return;
-				this.emails.EmailUniqueId = value;
-                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
-				NotifyPropertyChanged("EmailUniqueId");
-			}
-		}
-     
-
        [RequiredValidationAttribute(ErrorMessage= "Subject is required")]
        
                 
@@ -88,6 +73,70 @@ public System.DateTime EmailDate
 				this.emails.EmailDate = value;
                 if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
 				NotifyPropertyChanged("EmailDate");
+			}
+		}
+     
+
+       [RequiredValidationAttribute(ErrorMessage= "Email is required")]
+       
+                
+                [MaxLength(255, ErrorMessage = "EmailId has a max length of 255 letters ")]
+public string EmailId
+		{ 
+		    get { return this.emails.EmailId; }
+			set
+			{
+			    if (value == this.emails.EmailId) return;
+				this.emails.EmailId = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("EmailId");
+			}
+		}
+     
+
+       
+       
+                
+                [MaxLength(50, ErrorMessage = "MachineName has a max length of 50 letters ")]
+public string MachineName
+		{ 
+		    get { return this.emails.MachineName; }
+			set
+			{
+			    if (value == this.emails.MachineName) return;
+				this.emails.MachineName = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("MachineName");
+			}
+		}
+     
+
+       
+       
+public Nullable<int> EmailUniqueId
+		{ 
+		    get { return this.emails.EmailUniqueId; }
+			set
+			{
+			    if (value == this.emails.EmailUniqueId) return;
+				this.emails.EmailUniqueId = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("EmailUniqueId");
+			}
+		}
+     
+
+       
+       
+public Nullable<int> ApplicationSettingsId
+		{ 
+		    get { return this.emails.ApplicationSettingsId; }
+			set
+			{
+			    if (value == this.emails.ApplicationSettingsId) return;
+				this.emails.ApplicationSettingsId = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("ApplicationSettingsId");
 			}
 		}
      
@@ -139,6 +188,60 @@ public System.DateTime EmailDate
                     {
                         if (itm != null)
                         emails.AsycudaDocumentSet_Attachments.Remove(itm.DTO);
+                    }
+					if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+                    break;
+                
+            }
+        }
+
+        ObservableCollection<EmailAttachments> _EmailAttachments = null;
+        public  ObservableCollection<EmailAttachments> EmailAttachments
+		{
+            
+		    get 
+				{ 
+					if(_EmailAttachments != null) return _EmailAttachments;
+					//if (this.emails.EmailAttachments == null) Debugger.Break();
+					if(this.emails.EmailAttachments != null)
+					{
+						_EmailAttachments = new ObservableCollection<EmailAttachments>(this.emails.EmailAttachments.Select(x => new EmailAttachments(x)));
+					}
+					
+						_EmailAttachments.CollectionChanged += EmailAttachments_CollectionChanged; 
+					
+					return _EmailAttachments; 
+				}
+			set
+			{
+			    if (Equals(value, _EmailAttachments)) return;
+				if (value != null)
+					this.emails.EmailAttachments = new ChangeTrackingCollection<DTO.EmailAttachments>(value.Select(x => x.DTO).ToList());
+                _EmailAttachments = value;
+				if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				if (_EmailAttachments != null)
+				_EmailAttachments.CollectionChanged += EmailAttachments_CollectionChanged;               
+				NotifyPropertyChanged("EmailAttachments");
+			}
+		}
+        
+        void EmailAttachments_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            switch (e.Action)
+            {
+                case NotifyCollectionChangedAction.Add:
+                    foreach (EmailAttachments itm in e.NewItems)
+                    {
+                        if (itm != null)
+                        emails.EmailAttachments.Add(itm.DTO);
+                    }
+                    if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+                    break;
+                case NotifyCollectionChangedAction.Remove:
+                    foreach (EmailAttachments itm in e.OldItems)
+                    {
+                        if (itm != null)
+                        emails.EmailAttachments.Remove(itm.DTO);
                     }
 					if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
                     break;

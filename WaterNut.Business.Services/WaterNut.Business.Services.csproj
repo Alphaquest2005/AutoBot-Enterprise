@@ -82,8 +82,8 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="BouncyCastle.Crypto, Version=1.8.10.0, Culture=neutral, PublicKeyToken=0e99375e54769942, processorArchitecture=MSIL">
-      <HintPath>..\packages\Portable.BouncyCastle.1.8.10\lib\net40\BouncyCastle.Crypto.dll</HintPath>
+    <Reference Include="BouncyCastle.Crypto, Version=1.9.0.0, Culture=neutral, PublicKeyToken=0e99375e54769942, processorArchitecture=MSIL">
+      <HintPath>..\packages\Portable.BouncyCastle.1.9.0\lib\net40\BouncyCastle.Crypto.dll</HintPath>
     </Reference>
     <Reference Include="commons-logging">
       <HintPath>Custom Services\DataModels\Custom DataModels\PDF2TXT\commons-logging.dll</HintPath>
@@ -140,6 +140,9 @@
     <Reference Include="pdfbox-1.8.9">
       <HintPath>Custom Services\DataModels\Custom DataModels\PDF2TXT\pdfbox-1.8.9.dll</HintPath>
     </Reference>
+    <Reference Include="PipelineNet, Version=0.9.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\PipelineNet.0.9.0\lib\netstandard1.1\PipelineNet.dll</HintPath>
+    </Reference>
     <Reference Include="Serialize.Linq, Version=2.0.0.0, Culture=neutral, PublicKeyToken=25bcc11ba213b377, processorArchitecture=MSIL">
       <HintPath>..\packages\Serialize.Linq.2.0.0\lib\net45\Serialize.Linq.dll</HintPath>
     </Reference>
@@ -170,8 +173,8 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
     <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="System.Diagnostics.DiagnosticSource, Version=5.0.0.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Diagnostics.DiagnosticSource.5.0.1\lib\net46\System.Diagnostics.DiagnosticSource.dll</HintPath>
+    <Reference Include="System.Diagnostics.DiagnosticSource, Version=6.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Diagnostics.DiagnosticSource.6.0.0\lib\net461\System.Diagnostics.DiagnosticSource.dll</HintPath>
     </Reference>
     <Reference Include="System.Diagnostics.Tracing, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Diagnostics.Tracing.4.3.0\lib\net462\System.Diagnostics.Tracing.dll</HintPath>
@@ -179,8 +182,8 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="System.Drawing" />
-    <Reference Include="System.Drawing.Common, Version=4.0.0.2, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Drawing.Common.5.0.2\lib\net461\System.Drawing.Common.dll</HintPath>
+    <Reference Include="System.Drawing.Common, Version=6.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Drawing.Common.6.0.0\lib\net461\System.Drawing.Common.dll</HintPath>
     </Reference>
     <Reference Include="System.Globalization.Calendars, Version=4.0.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Globalization.Calendars.4.3.0\lib\net46\System.Globalization.Calendars.dll</HintPath>
@@ -250,8 +253,8 @@
       <Private>True</Private>
       <Private>True</Private>
     </Reference>
-    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.5.0.0\lib\net45\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.6.0.0\lib\net461\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
     </Reference>
     <Reference Include="System.Runtime.Extensions, Version=4.1.1.1, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Runtime.Extensions.4.3.1\lib\net462\System.Runtime.Extensions.dll</HintPath>
@@ -290,8 +293,8 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="System.ServiceModel" />
-    <Reference Include="System.Text.Encoding.CodePages, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Text.Encoding.CodePages.5.0.0\lib\net461\System.Text.Encoding.CodePages.dll</HintPath>
+    <Reference Include="System.Text.Encoding.CodePages, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Text.Encoding.CodePages.6.0.0\lib\net461\System.Text.Encoding.CodePages.dll</HintPath>
     </Reference>
     <Reference Include="System.Text.RegularExpressions, Version=4.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Text.RegularExpressions.4.3.1\lib\net463\System.Text.RegularExpressions.dll</HintPath>
@@ -316,11 +319,11 @@
     <Reference Include="Tesseract.Drawing, Version=4.1.1.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Tesseract.Drawing.4.1.1\lib\netstandard2.0\Tesseract.Drawing.dll</HintPath>
     </Reference>
-    <Reference Include="TesserNet, Version=0.3.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\TesserNet.0.3.0\lib\netstandard2.0\TesserNet.dll</HintPath>
+    <Reference Include="TesserNet, Version=0.7.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\TesserNet.0.7.0\lib\netstandard2.0\TesserNet.dll</HintPath>
     </Reference>
-    <Reference Include="TesserNet.System.Drawing, Version=0.3.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\TesserNet.System.Drawing.0.3.0\lib\netstandard2.0\TesserNet.System.Drawing.dll</HintPath>
+    <Reference Include="TesserNet.System.Drawing, Version=0.7.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\TesserNet.System.Drawing.0.7.0\lib\netstandard2.0\TesserNet.System.Drawing.dll</HintPath>
     </Reference>
     <Reference Include="TrackableEntities.Client">
       <HintPath>..\WaterNut\TrackableEntities.Client.dll</HintPath>
@@ -331,26 +334,26 @@
     <Reference Include="TrackableEntities.EF.6, Version=2.5.0.0, Culture=neutral, PublicKeyToken=b10b51e7b9be6a2e, processorArchitecture=MSIL">
       <HintPath>..\packages\TrackableEntities.EF.6.2.5.7\lib\net45\TrackableEntities.EF.6.dll</HintPath>
     </Reference>
-    <Reference Include="UglyToad.PdfPig, Version=0.1.4.0, Culture=neutral, PublicKeyToken=605d367334e74123, processorArchitecture=MSIL">
-      <HintPath>..\packages\PdfPig.0.1.4\lib\net47\UglyToad.PdfPig.dll</HintPath>
+    <Reference Include="UglyToad.PdfPig, Version=0.1.6.0, Culture=neutral, PublicKeyToken=605d367334e74123, processorArchitecture=MSIL">
+      <HintPath>..\packages\PdfPig.0.1.6\lib\net47\UglyToad.PdfPig.dll</HintPath>
     </Reference>
-    <Reference Include="UglyToad.PdfPig.Core, Version=0.1.4.0, Culture=neutral, PublicKeyToken=605d367334e74123, processorArchitecture=MSIL">
-      <HintPath>..\packages\PdfPig.0.1.4\lib\net47\UglyToad.PdfPig.Core.dll</HintPath>
+    <Reference Include="UglyToad.PdfPig.Core, Version=0.1.6.0, Culture=neutral, PublicKeyToken=605d367334e74123, processorArchitecture=MSIL">
+      <HintPath>..\packages\PdfPig.0.1.6\lib\net47\UglyToad.PdfPig.Core.dll</HintPath>
     </Reference>
-    <Reference Include="UglyToad.PdfPig.DocumentLayoutAnalysis, Version=0.1.4.0, Culture=neutral, PublicKeyToken=605d367334e74123, processorArchitecture=MSIL">
-      <HintPath>..\packages\PdfPig.0.1.4\lib\net47\UglyToad.PdfPig.DocumentLayoutAnalysis.dll</HintPath>
+    <Reference Include="UglyToad.PdfPig.DocumentLayoutAnalysis, Version=0.1.6.0, Culture=neutral, PublicKeyToken=605d367334e74123, processorArchitecture=MSIL">
+      <HintPath>..\packages\PdfPig.0.1.6\lib\net47\UglyToad.PdfPig.DocumentLayoutAnalysis.dll</HintPath>
     </Reference>
-    <Reference Include="UglyToad.PdfPig.Fonts, Version=0.1.4.0, Culture=neutral, PublicKeyToken=605d367334e74123, processorArchitecture=MSIL">
-      <HintPath>..\packages\PdfPig.0.1.4\lib\net47\UglyToad.PdfPig.Fonts.dll</HintPath>
+    <Reference Include="UglyToad.PdfPig.Fonts, Version=0.1.6.0, Culture=neutral, PublicKeyToken=605d367334e74123, processorArchitecture=MSIL">
+      <HintPath>..\packages\PdfPig.0.1.6\lib\net47\UglyToad.PdfPig.Fonts.dll</HintPath>
     </Reference>
-    <Reference Include="UglyToad.PdfPig.Package, Version=0.1.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\PdfPig.0.1.4\lib\net47\UglyToad.PdfPig.Package.dll</HintPath>
+    <Reference Include="UglyToad.PdfPig.Package, Version=0.1.5.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\PdfPig.0.1.6\lib\net47\UglyToad.PdfPig.Package.dll</HintPath>
     </Reference>
-    <Reference Include="UglyToad.PdfPig.Tokenization, Version=0.1.4.0, Culture=neutral, PublicKeyToken=605d367334e74123, processorArchitecture=MSIL">
-      <HintPath>..\packages\PdfPig.0.1.4\lib\net47\UglyToad.PdfPig.Tokenization.dll</HintPath>
+    <Reference Include="UglyToad.PdfPig.Tokenization, Version=0.1.6.0, Culture=neutral, PublicKeyToken=605d367334e74123, processorArchitecture=MSIL">
+      <HintPath>..\packages\PdfPig.0.1.6\lib\net47\UglyToad.PdfPig.Tokenization.dll</HintPath>
     </Reference>
-    <Reference Include="UglyToad.PdfPig.Tokens, Version=0.1.4.0, Culture=neutral, PublicKeyToken=605d367334e74123, processorArchitecture=MSIL">
-      <HintPath>..\packages\PdfPig.0.1.4\lib\net47\UglyToad.PdfPig.Tokens.dll</HintPath>
+    <Reference Include="UglyToad.PdfPig.Tokens, Version=0.1.6.0, Culture=neutral, PublicKeyToken=605d367334e74123, processorArchitecture=MSIL">
+      <HintPath>..\packages\PdfPig.0.1.6\lib\net47\UglyToad.PdfPig.Tokens.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -378,6 +381,7 @@
     <Compile Include="Contracts\AllocationDS\IAdjustmentShortAllocationsService.cs" />
     <Compile Include="Contracts\AllocationDS\IAdjustmentsService.cs" />
     <Compile Include="Contracts\AllocationDS\IAllocationErrorsService.cs" />
+    <Compile Include="Contracts\AllocationDS\IAllocationsTestCasesService.cs" />
     <Compile Include="Contracts\AllocationDS\IAscyudaItemPiQuantityService.cs" />
     <Compile Include="Contracts\AllocationDS\IAsycudaDocumentItemEntryDataDetailsService.cs" />
     <Compile Include="Contracts\AllocationDS\IAsycudaDocumentService.cs" />
@@ -392,6 +396,7 @@
     <Compile Include="Contracts\AllocationDS\IEntryDataService.cs" />
     <Compile Include="Contracts\AllocationDS\IEntryPreviousItemsService.cs" />
     <Compile Include="Contracts\AllocationDS\IEX9AsycudaSalesAllocationsService.cs" />
+    <Compile Include="Contracts\AllocationDS\IExistingAllocationsService.cs" />
     <Compile Include="Contracts\AllocationDS\IInventoryItemAliasService.cs" />
     <Compile Include="Contracts\AllocationDS\IInventoryItemService.cs" />
     <Compile Include="Contracts\AllocationDS\IItemSalesAsycudaPiSummaryService.cs" />
@@ -420,6 +425,7 @@
     <Compile Include="Contracts\AllocationDS\Ixcuda_WeightService.cs" />
     <Compile Include="Contracts\AllocationDS\Ixcuda_Weight_itmService.cs" />
     <Compile Include="Contracts\AllocationQS\IAdjustmentShortAllocationService.cs" />
+    <Compile Include="Contracts\AllocationQS\IAllocationsTestCasService.cs" />
     <Compile Include="Contracts\AllocationQS\IAsycudaSalesAllocationsExService.cs" />
     <Compile Include="Contracts\AllocationQS\IAsycudaSalesAndAdjustmentAllocationsExService.cs" />
     <Compile Include="Contracts\CoreEntities\IActionDocSetLogsService.cs" />
@@ -443,13 +449,16 @@
     <Compile Include="Contracts\CoreEntities\ICustoms_ProcedureService.cs" />
     <Compile Include="Contracts\CoreEntities\IDeclarantService.cs" />
     <Compile Include="Contracts\CoreEntities\IDocument_TypeService.cs" />
+    <Compile Include="Contracts\CoreEntities\IEmailAttachmentsService.cs" />
     <Compile Include="Contracts\CoreEntities\IEmailFileTypesService.cs" />
     <Compile Include="Contracts\CoreEntities\IEmailInfoMappingsService.cs" />
+    <Compile Include="Contracts\CoreEntities\IEmailMappingRexExsService.cs" />
     <Compile Include="Contracts\CoreEntities\IEmailMappingService.cs" />
     <Compile Include="Contracts\CoreEntities\IEmailsService.cs" />
     <Compile Include="Contracts\CoreEntities\IEntryPreviousItemsService.cs" />
     <Compile Include="Contracts\CoreEntities\IExpiredEntriesLstService.cs" />
     <Compile Include="Contracts\CoreEntities\IFileGroupsService.cs" />
+    <Compile Include="Contracts\CoreEntities\IFileImporterInfoService.cs" />
     <Compile Include="Contracts\CoreEntities\IFileTypeActionsService.cs" />
     <Compile Include="Contracts\CoreEntities\IFileTypeContactsService.cs" />
     <Compile Include="Contracts\CoreEntities\IFileTypeMappingRegExsService.cs" />
@@ -614,6 +623,7 @@
     <Compile Include="Contracts\DocumentItemDS\Ixcuda_Valuation_itemService.cs" />
     <Compile Include="Contracts\DocumentItemDS\Ixcuda_Weight_itmService.cs" />
     <Compile Include="Contracts\EntryDataDS\IAdjustmentsService.cs" />
+    <Compile Include="Contracts\EntryDataDS\IAsycudaDocumentEntryDataLineService.cs" />
     <Compile Include="Contracts\EntryDataDS\IAsycudaDocumentEntryDataService.cs" />
     <Compile Include="Contracts\EntryDataDS\IAsycudaDocumentSetEntryDataService.cs" />
     <Compile Include="Contracts\EntryDataDS\IAttachmentsService.cs" />
@@ -650,8 +660,11 @@
     <Compile Include="Contracts\EntryDataDS\IShipmentBLDetailsService.cs" />
     <Compile Include="Contracts\EntryDataDS\IShipmentBLFreightService.cs" />
     <Compile Include="Contracts\EntryDataDS\IShipmentBLService.cs" />
+    <Compile Include="Contracts\EntryDataDS\IShipmentErrors_RepeatInvoicesService.cs" />
+    <Compile Include="Contracts\EntryDataDS\IShipmentErrors_RepeatMarksService.cs" />
     <Compile Include="Contracts\EntryDataDS\IShipmentFreightBLsService.cs" />
     <Compile Include="Contracts\EntryDataDS\IShipmentFreightDetailsService.cs" />
+    <Compile Include="Contracts\EntryDataDS\IShipmentFreightManifestsService.cs" />
     <Compile Include="Contracts\EntryDataDS\IShipmentFreightService.cs" />
     <Compile Include="Contracts\EntryDataDS\IShipmentInvoiceDetailsItemAliasService.cs" />
     <Compile Include="Contracts\EntryDataDS\IShipmentInvoicePOItemDataService.cs" />
@@ -667,6 +680,7 @@
     <Compile Include="Contracts\EntryDataDS\IShipmentManifestService.cs" />
     <Compile Include="Contracts\EntryDataDS\IShipmentMIS_InvoicesService.cs" />
     <Compile Include="Contracts\EntryDataDS\IShipmentMIS_POsService.cs" />
+    <Compile Include="Contracts\EntryDataDS\IShipmentPOsService.cs" />
     <Compile Include="Contracts\EntryDataDS\IShipmentRiderBLsService.cs" />
     <Compile Include="Contracts\EntryDataDS\IShipmentRiderDetailsService.cs" />
     <Compile Include="Contracts\EntryDataDS\IShipmentRiderExService.cs" />
@@ -675,8 +689,12 @@
     <Compile Include="Contracts\EntryDataDS\IShipmentRiderService.cs" />
     <Compile Include="Contracts\EntryDataDS\IShipmentService.cs" />
     <Compile Include="Contracts\EntryDataDS\ISuppliersService.cs" />
+    <Compile Include="Contracts\EntryDataDS\ISupportingDetailService.cs" />
     <Compile Include="Contracts\EntryDataDS\IVolumeUnitsService.cs" />
     <Compile Include="Contracts\EntryDataDS\IWarehouseInfoService.cs" />
+    <Compile Include="Contracts\EntryDataDS\IxSalesDetailsService.cs" />
+    <Compile Include="Contracts\EntryDataDS\IxSalesFilesService.cs" />
+    <Compile Include="Contracts\EntryDataQS\IAsycudaDocumentEntryDataLineService.cs" />
     <Compile Include="Contracts\EntryDataQS\IAsycudaDocumentEntryDataService.cs" />
     <Compile Include="Contracts\EntryDataQS\IAsycudaDocumentItemEntryDataDetailService.cs" />
     <Compile Include="Contracts\EntryDataQS\IAsycudaDocumentSetEntryDataDetailService.cs" />
@@ -719,7 +737,9 @@
     <Compile Include="Contracts\OCR\IOCRFileTypesService.cs" />
     <Compile Include="Contracts\OCR\IOCR_FailedFieldsService.cs" />
     <Compile Include="Contracts\OCR\IOCR_FailedLinesService.cs" />
+    <Compile Include="Contracts\OCR\IOCR_FieldMappingsService.cs" />
     <Compile Include="Contracts\OCR\IOCR_FieldValueService.cs" />
+    <Compile Include="Contracts\OCR\IOCR_PartLineFieldsService.cs" />
     <Compile Include="Contracts\OCR\IPartsService.cs" />
     <Compile Include="Contracts\OCR\IPartTypesService.cs" />
     <Compile Include="Contracts\OCR\IRecuringPartService.cs" />
@@ -755,7 +775,65 @@
     <Compile Include="Custom Contracts\Custom Contracts\AdjustmentQS\IAdjustmentShortService.cs" />
     <Compile Include="Custom Services\AdjustmentQS\AdjustmentOverService.cs" />
     <Compile Include="Custom Services\AdjustmentQS\AdjustmentShortService.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\PDF2TXT\Invoice.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\PDF2TXT\InvoiceLine.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\PDF2TXT\Line.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\PDF2TXT\Part.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\BillOfLadenImporter.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\CancelledEntriesImporter.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\CSVShipmentImporter.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\CsvSummaryDataProcessor.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\CSVToShipmentInvoiceConverter.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\EntryDataFileImporter.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\EntryDataImporter.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\EntryDataProcessor.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\ExpiredEntriesImporter.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\FreightImporter.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\ImportData.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\ImportLibary.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\InventoryImporter.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\ManifestImporter.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\PDFShipmentInvoiceImporter.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\RiderImporter.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\ShipmentInvoiceImporter.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\SupplierImporter.cs" />
+    <Compile Include="Utils\AutoMatchUtils.cs" />
+    <Compile Include="Importers\ChainedDataExtractor.cs" />
+    <Compile Include="Importers\CSVDataExtractor.cs" />
+    <Compile Include="Importers\CSVImporter.cs" />
+    <Compile Include="Importers\EntryDataExtractor.cs" />
+    <Compile Include="Importers\EntryData\AddInventorySource.cs" />
+    <Compile Include="Importers\EntryData\ChainedDocumentProcessor.cs" />
+    <Compile Include="Importers\EntryData\CreateInventoryItems.cs" />
+    <Compile Include="Importers\EntryData\EntryDataManager.cs" />
+    <Compile Include="Importers\EntryData\GetInventoryItems.cs" />
+    <Compile Include="Importers\EntryData\GetItemAlias.cs" />
+    <Compile Include="Importers\EntryData\GetItemCode.cs" />
+    <Compile Include="Importers\EntryData\IDocumentProcessor.cs" />
+    <Compile Include="Importers\EntryData\InventoryImporter.cs" />
+    <Compile Include="Importers\EntryData\MergedDocumentProcessor.cs" />
+    <Compile Include="Importers\EntryData\DocumentProcessorPipline.cs" />
+    <Compile Include="Importers\EntryData\POProcessor.cs" />
+    <Compile Include="Importers\EntryData\SaveInventoryItems.cs" />
+    <Compile Include="Importers\EntryData\SaveItemAlias.cs" />
+    <Compile Include="Importers\EntryData\SaveItemCode.cs" />
+    <Compile Include="Importers\EntryData\UpdateItemDescription.cs" />
+    <Compile Include="Importers\EntryData\UpdateItemTariffCode.cs" />
+    <Compile Include="Importers\EntryData\UpdateLineDescription.cs" />
+    <Compile Include="Importers\EntryData\UpdateLineNumbers.cs" />
+    <Compile Include="Importers\FileImportExtension.cs" />
+    <Compile Include="Importers\IDataExtractor.cs" />
+    <Compile Include="Importers\IFileTypeImporter.cs" />
+    <Compile Include="Importers\IImporter.cs" />
+    <Compile Include="Importers\StringTextSplitter.cs" />
+    <Compile Include="Services\CoreEntities\FileImporterInfoService.cs" />
+    <Compile Include="Utils\Matching\CNumberMatcher.cs" />
+    <Compile Include="Utils\Matching\EffectiveDatefProcessor.cs" />
+    <Compile Include="Utils\FileTypeManager.cs" />
+    <Compile Include="Utils\DirectoryUtils.cs" />
+    <Compile Include="Utils\EntryDocSetUtils.cs" />
     <Compile Include="Custom Services\DataModels\Custom DataModels\PDF2TXT\InvoiceReader.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\SQLBlackBox.cs" />
     <Compile Include="ExpressionCSharp60.cs" />
     <Compile Include="Custom Contracts\Custom Contracts\EntryDataQS\IEntryDataDetailsExService.cs" />
     <Compile Include="Custom Contracts\AllocationQS\IAsycudaSalesAllocationsExService.cs" />
@@ -982,6 +1060,7 @@
     <Compile Include="Services\AllocationDS\AdjustmentShortAllocationsService.cs" />
     <Compile Include="Services\AllocationDS\AdjustmentsService.cs" />
     <Compile Include="Services\AllocationDS\AllocationErrorsService.cs" />
+    <Compile Include="Services\AllocationDS\AllocationsTestCasesService.cs" />
     <Compile Include="Services\AllocationDS\AscyudaItemPiQuantityService.cs" />
     <Compile Include="Services\AllocationDS\AsycudaDocumentItemEntryDataDetailsService.cs" />
     <Compile Include="Services\AllocationDS\AsycudaDocumentService.cs" />
@@ -996,6 +1075,7 @@
     <Compile Include="Services\AllocationDS\EntryDataService.cs" />
     <Compile Include="Services\AllocationDS\EntryPreviousItemsService.cs" />
     <Compile Include="Services\AllocationDS\EX9AsycudaSalesAllocationsService.cs" />
+    <Compile Include="Services\AllocationDS\ExistingAllocationsService.cs" />
     <Compile Include="Services\AllocationDS\InventoryItemAliasService.cs" />
     <Compile Include="Services\AllocationDS\InventoryItemService.cs" />
     <Compile Include="Services\AllocationDS\ItemSalesAsycudaPiSummaryService.cs" />
@@ -1024,6 +1104,7 @@
     <Compile Include="Services\AllocationDS\xcuda_WeightService.cs" />
     <Compile Include="Services\AllocationDS\xcuda_Weight_itmService.cs" />
     <Compile Include="Services\AllocationQS\AdjustmentShortAllocationService.cs" />
+    <Compile Include="Services\AllocationQS\AllocationsTestCasService.cs" />
     <Compile Include="Services\AllocationQS\AsycudaSalesAllocationsExService.cs" />
     <Compile Include="Services\AllocationQS\AsycudaSalesAndAdjustmentAllocationsExService.cs" />
     <Compile Include="Services\CoreEntities\ActionDocSetLogsService.cs" />
@@ -1047,8 +1128,10 @@
     <Compile Include="Services\CoreEntities\Customs_ProcedureService.cs" />
     <Compile Include="Services\CoreEntities\DeclarantService.cs" />
     <Compile Include="Services\CoreEntities\Document_TypeService.cs" />
+    <Compile Include="Services\CoreEntities\EmailAttachmentsService.cs" />
     <Compile Include="Services\CoreEntities\EmailFileTypesService.cs" />
     <Compile Include="Services\CoreEntities\EmailInfoMappingsService.cs" />
+    <Compile Include="Services\CoreEntities\EmailMappingRexExsService.cs" />
     <Compile Include="Services\CoreEntities\EmailMappingService.cs" />
     <Compile Include="Services\CoreEntities\EmailsService.cs" />
     <Compile Include="Services\CoreEntities\EntryPreviousItemsService.cs" />
@@ -1218,6 +1301,7 @@
     <Compile Include="Services\DocumentItemDS\xcuda_Valuation_itemService.cs" />
     <Compile Include="Services\DocumentItemDS\xcuda_Weight_itmService.cs" />
     <Compile Include="Services\EntryDataDS\AdjustmentsService.cs" />
+    <Compile Include="Services\EntryDataDS\AsycudaDocumentEntryDataLineService.cs" />
     <Compile Include="Services\EntryDataDS\AsycudaDocumentEntryDataService.cs" />
     <Compile Include="Services\EntryDataDS\AsycudaDocumentSetEntryDataService.cs" />
     <Compile Include="Services\EntryDataDS\AttachmentsService.cs" />
@@ -1254,8 +1338,11 @@
     <Compile Include="Services\EntryDataDS\ShipmentBLDetailsService.cs" />
     <Compile Include="Services\EntryDataDS\ShipmentBLFreightService.cs" />
     <Compile Include="Services\EntryDataDS\ShipmentBLService.cs" />
+    <Compile Include="Services\EntryDataDS\ShipmentErrors_RepeatInvoicesService.cs" />
+    <Compile Include="Services\EntryDataDS\ShipmentErrors_RepeatMarksService.cs" />
     <Compile Include="Services\EntryDataDS\ShipmentFreightBLsService.cs" />
     <Compile Include="Services\EntryDataDS\ShipmentFreightDetailsService.cs" />
+    <Compile Include="Services\EntryDataDS\ShipmentFreightManifestsService.cs" />
     <Compile Include="Services\EntryDataDS\ShipmentFreightService.cs" />
     <Compile Include="Services\EntryDataDS\ShipmentInvoiceDetailsItemAliasService.cs" />
     <Compile Include="Services\EntryDataDS\ShipmentInvoicePOItemDataService.cs" />
@@ -1271,6 +1358,7 @@
     <Compile Include="Services\EntryDataDS\ShipmentManifestService.cs" />
     <Compile Include="Services\EntryDataDS\ShipmentMIS_InvoicesService.cs" />
     <Compile Include="Services\EntryDataDS\ShipmentMIS_POsService.cs" />
+    <Compile Include="Services\EntryDataDS\ShipmentPOsService.cs" />
     <Compile Include="Services\EntryDataDS\ShipmentRiderBLsService.cs" />
     <Compile Include="Services\EntryDataDS\ShipmentRiderDetailsService.cs" />
     <Compile Include="Services\EntryDataDS\ShipmentRiderExService.cs" />
@@ -1279,8 +1367,12 @@
     <Compile Include="Services\EntryDataDS\ShipmentRiderService.cs" />
     <Compile Include="Services\EntryDataDS\ShipmentService.cs" />
     <Compile Include="Services\EntryDataDS\SuppliersService.cs" />
+    <Compile Include="Services\EntryDataDS\SupportingDetailService.cs" />
     <Compile Include="Services\EntryDataDS\VolumeUnitsService.cs" />
     <Compile Include="Services\EntryDataDS\WarehouseInfoService.cs" />
+    <Compile Include="Services\EntryDataDS\xSalesDetailsService.cs" />
+    <Compile Include="Services\EntryDataDS\xSalesFilesService.cs" />
+    <Compile Include="Services\EntryDataQS\AsycudaDocumentEntryDataLineService.cs" />
     <Compile Include="Services\EntryDataQS\AsycudaDocumentEntryDataService.cs" />
     <Compile Include="Services\EntryDataQS\AsycudaDocumentItemEntryDataDetailService.cs" />
     <Compile Include="Services\EntryDataQS\AsycudaDocumentSetEntryDataDetailService.cs" />
@@ -1323,7 +1415,9 @@
     <Compile Include="Services\OCR\OCRFileTypesService.cs" />
     <Compile Include="Services\OCR\OCR_FailedFieldsService.cs" />
     <Compile Include="Services\OCR\OCR_FailedLinesService.cs" />
+    <Compile Include="Services\OCR\OCR_FieldMappingsService.cs" />
     <Compile Include="Services\OCR\OCR_FieldValueService.cs" />
+    <Compile Include="Services\OCR\OCR_PartLineFieldsService.cs" />
     <Compile Include="Services\OCR\PartsService.cs" />
     <Compile Include="Services\OCR\PartTypesService.cs" />
     <Compile Include="Services\OCR\RecuringPartService.cs" />
@@ -1355,6 +1449,16 @@
     <Compile Include="Services\ValuationDS\xC71_ItemService.cs" />
     <Compile Include="Services\ValuationDS\xC71_Seller_segmentService.cs" />
     <Compile Include="Services\ValuationDS\xC71_Value_declaration_formService.cs" />
+    <Compile Include="Utils\Matching\IAutoMatchProcessor.cs" />
+    <Compile Include="Utils\InventoryDataItem.cs" />
+    <Compile Include="Utils\InventoryItemDataUtils.cs" />
+    <Compile Include="Utils\InventoryItemUtils.cs" />
+    <Compile Include="Utils\Matching\MissingCostProcessor.cs" />
+    <Compile Include="Utils\Matching\OverCNumberMatcher.cs" />
+    <Compile Include="Utils\Matching\PreviousInvoiceNumberMatcher.cs" />
+    <Compile Include="Utils\Matching\ShortCNumberMatcher.cs" />
+    <Compile Include="Utils\Matching\ShortPreviousNumberMatcher.cs" />
+    <Compile Include="Utils\Utils.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -1427,6 +1531,7 @@
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
+    <Error Condition="!Exists('..\packages\NETStandard.Library.2.0.3\build\netstandard2.0\NETStandard.Library.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\NETStandard.Library.2.0.3\build\netstandard2.0\NETStandard.Library.targets'))" />
     <!--<Error Condition="!Exists('$(SolutionDir)\.nuget\NuGet.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\.nuget\NuGet.targets'))" />
     <Error Condition="!Exists('..\packages\EntityFramework.6.4.4\build\EntityFramework.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\EntityFramework.6.4.4\build\EntityFramework.props'))" />
     <Error Condition="!Exists('..\packages\EntityFramework.6.4.4\build\EntityFramework.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\EntityFramework.6.4.4\build\EntityFramework.targets'))" />
@@ -1437,6 +1542,7 @@
   </Target>
   <Import Project="..\packages\EntityFramework.6.4.4\build\EntityFramework.targets" Condition="Exists('..\packages\EntityFramework.6.4.4\build\EntityFramework.targets')" />
   <Import Project="..\packages\Tesseract.4.1.1\build\Tesseract.targets" Condition="Exists('..\packages\Tesseract.4.1.1\build\Tesseract.targets')" />
+  <Import Project="..\packages\NETStandard.Library.2.0.3\build\netstandard2.0\NETStandard.Library.targets" Condition="Exists('..\packages\NETStandard.Library.2.0.3\build\netstandard2.0\NETStandard.Library.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

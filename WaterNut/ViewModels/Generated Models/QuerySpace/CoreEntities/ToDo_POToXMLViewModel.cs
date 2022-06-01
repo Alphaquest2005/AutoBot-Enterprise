@@ -253,7 +253,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             }
         }
 
-        public class ToDo_POToXMLExcelLine
+        public partial class ToDo_POToXMLExcelLine
         {
 		 
                     public Nullable<bool> IsClassified { get; set; } 

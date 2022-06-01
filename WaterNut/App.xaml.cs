@@ -47,9 +47,11 @@ namespace WaterNut
                 if (Core.Common.Utils.ProcessExtentions.IsProcessOpen("AutoWaterNutServer") == null)
                 {
                     Process p = new Process();
-                    p.StartInfo = new ProcessStartInfo("AutoWaterNutServer.exe");
-                    p.StartInfo.CreateNoWindow = true;
-                    p.StartInfo.UseShellExecute = false;
+                    p.StartInfo = new ProcessStartInfo("AutoWaterNutServer.exe")
+                    {
+                        CreateNoWindow = true,
+                        UseShellExecute = false
+                    };
                     p.Start();
                 }
                 // LoginRoutine();
@@ -86,7 +88,7 @@ namespace WaterNut
                             lastexception = true;
                             errorMessage +=
                                 $"An unhandled Exception occurred!: {exp.Message} "; //---- {1}, exp.StackTrace
-                            MessageBox.Show(errorMessage, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                            ////////MessageBox.Show(errorMessage, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                             //e. = true;
                         }
 

@@ -23,23 +23,9 @@ namespace CoreEntities.Business.Entities
         partial void AutoGenStartUp() //Emails()
         {
             this.AsycudaDocumentSet_Attachments = new List<AsycudaDocumentSet_Attachments>();
+            this.EmailAttachments = new List<EmailAttachments>();
         }
 
-        [DataMember]
-        public int EmailUniqueId 
-        {
-            get
-            {
-                return _emailuniqueid;
-            }
-            set
-            {
-                _emailuniqueid = value;
-                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
-                NotifyPropertyChanged();
-            }
-        }
-        int _emailuniqueid;
         [DataMember]
         public string Subject 
         {
@@ -71,7 +57,69 @@ namespace CoreEntities.Business.Entities
         }
         System.DateTime _emaildate;
         [DataMember]
+        public string EmailId 
+        {
+            get
+            {
+                return _emailid;
+            }
+            set
+            {
+                _emailid = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _emailid;
+        [DataMember]
+        public string MachineName 
+        {
+            get
+            {
+                return _machinename;
+            }
+            set
+            {
+                _machinename = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _machinename;
+        [DataMember]
+        public Nullable<int> EmailUniqueId 
+        {
+            get
+            {
+                return _emailuniqueid;
+            }
+            set
+            {
+                _emailuniqueid = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<int> _emailuniqueid;
+        [DataMember]
+        public Nullable<int> ApplicationSettingsId 
+        {
+            get
+            {
+                return _applicationsettingsid;
+            }
+            set
+            {
+                _applicationsettingsid = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<int> _applicationsettingsid;
+        [DataMember]
         public List<AsycudaDocumentSet_Attachments> AsycudaDocumentSet_Attachments { get; set; }
+        [DataMember]
+        public List<EmailAttachments> EmailAttachments { get; set; }
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

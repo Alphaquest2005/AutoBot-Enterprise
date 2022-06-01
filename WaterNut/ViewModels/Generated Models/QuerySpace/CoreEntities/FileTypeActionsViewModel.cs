@@ -358,7 +358,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             }
         }
 
-        public class FileTypeActionsExcelLine
+        public partial class FileTypeActionsExcelLine
         {
 		 
                     public Nullable<bool> AssessIM7 { get; set; } 

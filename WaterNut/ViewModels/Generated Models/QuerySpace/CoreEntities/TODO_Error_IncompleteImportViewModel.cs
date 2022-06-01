@@ -502,7 +502,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             }
         }
 
-        public class TODO_Error_IncompleteImportExcelLine
+        public partial class TODO_Error_IncompleteImportExcelLine
         {
 		 
                     public Nullable<bool> ImportComplete { get; set; } 

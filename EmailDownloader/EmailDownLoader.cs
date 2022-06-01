@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.Eventing.Reader;
 using System.IO;
 using System.Linq;
 using System.Net.Http.Headers;
@@ -18,17 +19,23 @@ namespace EmailDownloader
 {
     public static partial class EmailDownloader
     {
-        public static Dictionary<Tuple<string, Email, string>, List<string>> CheckEmails(Client client)
+        private const int SizeinMB = 1048576;
+        private const int AsycudaMaxFileSize = 4;
+
+        public static bool ReturnOnlyUnknownMails { get; set; } = false;
+        public static Dictionary<Tuple<string, Email, string>, List<FileInfo>> CheckEmails(Client client)
         {
+            var res = new Dictionary<Tuple<string, Email, string>, List<FileInfo>>();
             try
             {
-                if(string.IsNullOrEmpty(client.Email)) return new Dictionary<Tuple<string, Email, string>, List<string>>();
+                if(string.IsNullOrEmpty(client.Email)) return new Dictionary<Tuple<string, Email, string>, List<FileInfo>>();
                             var imapClient = new ImapClient();
                             imapClient.Connect("auto-brokerage.com", 993, SecureSocketOptions.SslOnConnect);
                             imapClient.Authenticate(client.Email, client.Password);
                             var dataFolder = client.DataFolder;
                             imapClient.Inbox.Open(FolderAccess.ReadWrite);
-                            var res = DownloadAttachment(imapClient, dataFolder, client.EmailMappings, client);
+                            
+                            DownloadAttachment(imapClient, dataFolder, client.EmailMappings, client,ref res);
 
                             imapClient.Disconnect(true);
                             return res;
@@ -37,7 +44,7 @@ namespace EmailDownloader
             {
                 
                 Console.WriteLine(e);
-                return new Dictionary<Tuple<string, Email, string>, List<string>>();
+                return res;
             }
             
         }
@@ -66,17 +73,27 @@ namespace EmailDownloader
         {
             var message = new MimeMessage();
             message.From.Add(new MailboxAddress($"{client.CompanyName}-AutoBot", client.Email));
-            foreach (var recipent in to)
+            if (!client.DevMode)
             {
-               message.To.Add(MailboxAddress.Parse(recipent)); 
+                foreach (var recipent in to)
+                {
+                    message.To.Add(MailboxAddress.Parse(recipent));
+                }
+                message.Cc.Add(new MailboxAddress("Joseph Bartholomew", "Joseph@auto-brokerage.com"));
             }
-            
+            else
+            {
+                message.To.Add(new MailboxAddress("Joseph Bartholomew", "Joseph@auto-brokerage.com"));
+            }
+
+
             message.Subject = subject;
 
-            var builder = new BodyBuilder();
-
-            // Set the plain-text version of the message text
-            builder.TextBody = body;
+            var builder = new BodyBuilder
+            {
+                // Set the plain-text version of the message text
+                TextBody = body
+            };
 
             foreach (var attachment in attachments)
             {
@@ -90,20 +107,35 @@ namespace EmailDownloader
         }
 
 
-        public static Dictionary<Tuple<string, Email, string>, List<string>> DownloadAttachment(ImapClient imapClient, string dataFolder,
-            List<EmailMapping> emailMappings, Client client)
+        public static void DownloadAttachment(ImapClient imapClient,
+            string dataFolder,
+            List<EmailMapping> emailMappings, Client client,
+            ref Dictionary<Tuple<string, Email, string>, List<FileInfo>> msgFiles)
         {
             try
             {
                 var sendNotifications = true;
 
-                var msgFiles = new Dictionary<Tuple<string, Email, string>, List<string>>();
+                //var msgFiles = new Dictionary<Tuple<string, Email, string>, List<string>>();
 
                 var uniqueIds = imapClient.Inbox.Search(SearchQuery.NotSeen).ToList();
+                var existingEmails = new List<Emails>();
+                if (ReturnOnlyUnknownMails)
+                {
+                    existingEmails = new CoreEntitiesContext().Emails
+                        .Where(x => x.ApplicationSettingsId == client.ApplicationSettingsId).ToList();
+                }
+
                 foreach (var uid in uniqueIds)
                 {
-                    var lst = new List<string>();
+                    var lst = new List<FileInfo>();
                     var msg = imapClient.Inbox.GetMessage(uid);
+
+                    if (ReturnOnlyUnknownMails)
+                    {
+                        if(existingEmails.FirstOrDefault(x => x.EmailDate == msg.Date.DateTime && x.Subject == msg.Subject) != null) continue;
+                    }
+
                     var emailsFound =
                         emailMappings.Where(x => Regex.IsMatch(msg.Subject, x.Pattern, RegexOptions.IgnoreCase | RegexOptions.Multiline))
                             .OrderByDescending(x => x.Pattern.Length)
@@ -148,14 +180,18 @@ namespace EmailDownloader
                         foreach (var a in msg.Attachments.Where(x => x.ContentType.MediaType != "message"))
                         {
                             if (!a.IsAttachment) continue;
+
+                           
                             SaveAttachmentPart(desFolder, a, lst);
                         }
                         SaveBodyPart(desFolder, msg, lst);
 
                         var fileTypes = emailMapping.EmailFileTypes.Select(x => x.FileTypes)
-                            .Where(x => lst.Any(z => Regex.IsMatch(z, x.FilePattern, RegexOptions.IgnoreCase))).ToList();
+                            .Where(x => lst.Any(z => Regex.IsMatch(z.Name, x.FilePattern, RegexOptions.IgnoreCase)))
+                            .Where(x => x.FileImporterInfos != null)
+                            .ToList();
 
-                        if (lst.Any(x => x != "Info.txt") && !fileTypes.Any(x => x.Type != "Info"))
+                        if (lst.Any(x => x.Name != "Info.txt") && fileTypes.All(x => x.FileImporterInfos.EntryType == "Info"))//TODO: take this out
                         {
                             imapClient.Inbox.AddFlags(uid, MessageFlags.Seen, true);
                             if (sendNotifications)
@@ -164,12 +200,17 @@ namespace EmailDownloader
                                     "Hey,\r\n\r\n The System is not configured for none of the Attachments in this mail.\r\n" +
                                     "Check the file Name of attachments again or Check Joseph Bartholomew at Joseph@auto-brokerage.com to make the necessary changes.\r\n" +
                                     "Thanks\r\n" +
-                                    "Ez-Asycuda-Toolkit";
+                                    "AutoBot";
                                 SendBackMsg(msg, client, errTxt);
                             }
                         }
 
-                        
+                        if (!CheckFileSizeLimit(client, fileTypes, lst, msg))
+                        {
+                            imapClient.Inbox.AddFlags(uid, MessageFlags.Seen, true);
+                            imapClient.Inbox.AddFlags(uid, MessageFlags.Seen, true);
+                            continue;
+                        }
 
                         subject.Item2.FileTypes = fileTypes;
 
@@ -185,13 +226,40 @@ namespace EmailDownloader
 
                 }
 
-                return msgFiles;
+                
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
                 throw;
             }
+        }
+
+        private static bool CheckFileSizeLimit(Client client, List<FileTypes> fileTypes, List<FileInfo> lst,
+            MimeMessage msg)
+        {
+            var isGood = true;
+            foreach (var fileType in fileTypes)
+            {
+                var bigFiles = lst.Where(x =>
+                        Regex.IsMatch(x.Name, fileType.FilePattern, RegexOptions.IgnoreCase))
+                    .Where(x => (x.Length / SizeinMB) > (fileType.MaxFileSizeInMB ?? AsycudaMaxFileSize))
+                    .ToList();
+                if (bigFiles.Any())
+                {
+                    isGood = false;
+                    var errTxt =
+                        $"Hey,\r\n\r\n The following files exceed the Max File Size of {fileType.MaxFileSizeInMB ?? AsycudaMaxFileSize}MB the Attachments in this mail.\r\n" +
+                        $"{bigFiles.Select(x => x.Name).Aggregate((o, n) => $"{o}\r\n{n}\r\n")}\r\n" +
+                        "Check the file Name of attachments again or Check Joseph Bartholomew at Joseph@auto-brokerage.com to make the necessary changes.\r\n" +
+                        "Thanks\r\n" +
+                        "AutoBot";
+
+                    SendBackMsg(msg, client, errTxt);
+                }
+            }
+
+            return isGood;
         }
 
         private static Tuple<string, Email, string> GetSubject(MimeMessage msg, UniqueId uid, List<EmailMapping> emailMappings)
@@ -222,16 +290,23 @@ namespace EmailDownloader
                             : emailMapping.ReplacementValue;
                     subject += " " + g.Trim();
                 }
-               
 
-                return new Tuple<string, Email, string>($"{subject.Trim()}", new Email(emailId: Convert.ToInt32(uid.ToString()), subject: msg.Subject, emailDate: msg.Date.DateTime, emailMapping: emailMapping), uid.ToString());
+                foreach (var regEx in emailMapping.EmailMappingRexExs)
+                {
+
+                    subject = Regex.Replace(subject, regEx.ReplacementRegex, regEx.ReplacementValue ?? "",
+                        RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture | RegexOptions.Multiline);
+                }
+
+
+                return new Tuple<string, Email, string>($"{subject.Trim()}", new Email(emailUniqueId: Convert.ToInt32(uid.ToString()), subject: msg.Subject, emailDate: msg.Date.DateTime, emailMapping: emailMapping), uid.ToString());
 
             }
 
             return null;
         }
 
-        public static bool SendBackMsg(int uID, Client clientDetails, string errtxt)
+        public static bool SendBackMsg(string emailId, Client clientDetails, string errtxt)
         {
             try
             {
@@ -240,6 +315,9 @@ namespace EmailDownloader
                 imapClient.Authenticate(clientDetails.Email, clientDetails.Password);
                 var dataFolder = clientDetails.DataFolder;
                 imapClient.Inbox.Open(FolderAccess.ReadWrite);
+
+                var uID = new CoreEntitiesContext().Emails.FirstOrDefault(x => x.EmailId == emailId && x.MachineName == Environment.MachineName)?.EmailUniqueId;
+                if (uID == null) return false;
                 var msg = imapClient.Inbox.GetMessage(new UniqueId(Convert.ToUInt16(uID)));
                 imapClient.Disconnect(true);
                 if (msg != null)
@@ -267,14 +345,26 @@ namespace EmailDownloader
             // construct a new message
             var message = new MimeMessage();
             message.From.Add(new MailboxAddress($"{clientDetails.CompanyName}-AutoBot", clientDetails.Email));
-            message.ReplyTo.Add(new MailboxAddress(msg.From.First().Name, msg.From.Mailboxes.FirstOrDefault().Address));
-            message.To.Add(new MailboxAddress(msg.From.First().Name, msg.From.Mailboxes.FirstOrDefault().Address));
-            message.To.Add(new MailboxAddress("Joseph Bartholomew", "Joseph@auto-brokerage.com"));
+            if (!clientDetails.DevMode)
+            {
+                message.ReplyTo.Add(new MailboxAddress(msg.From.First().Name,
+                    msg.From.Mailboxes.FirstOrDefault().Address));
+
+                message.To.Add(new MailboxAddress(msg.From.First().Name, msg.From.Mailboxes.FirstOrDefault().Address));
+                message.Cc.Add(new MailboxAddress("Joseph Bartholomew", "Joseph@auto-brokerage.com"));
+            }
+            else
+            {
+                message.To.Add(new MailboxAddress("Joseph Bartholomew", "Joseph@auto-brokerage.com"));
+            }
+
             message.Subject = "FWD: " + msg.Subject;
 
             // now to create our body...
-            var builder = new BodyBuilder();
-            builder.TextBody = errtxt;
+            var builder = new BodyBuilder
+            {
+                TextBody = errtxt
+            };
             builder.Attachments.Add(new MessagePart { Message = msg });
 
             message.Body = builder.ToMessageBody();
@@ -297,7 +387,7 @@ namespace EmailDownloader
 
        
 
-        private static void SaveAttachmentPart(string dataFolder,  MimeEntity a, List<string> lst)
+        private static void SaveAttachmentPart(string dataFolder,  MimeEntity a, List<FileInfo> lst)
         {
             var part = (MimePart) a;
             var fileName = CleanFileName(part.FileName);
@@ -306,7 +396,7 @@ namespace EmailDownloader
             
             using (var stream = File.Create(file))
                 part.Content.DecodeTo(stream);
-            lst.Add(fileName);
+            lst.Add( new FileInfo(file));
         }
 
         private static string GetNextFileName(string file)
@@ -329,21 +419,33 @@ namespace EmailDownloader
             return res;
         }
 
-        private static void SaveBodyPart(string dataFolder, MimeMessage a, List<string> lst)
+        private static void SaveBodyPart(string dataFolder, MimeMessage a, List<FileInfo> lst)
         {
             var part = a.BodyParts.OfType<TextPart>().FirstOrDefault();
             var fileName = "Info.txt";
+            var file = Path.Combine(dataFolder, fileName);
+            if (part != null)
+            {
+                
+                System.IO.File.WriteAllText(file, part.Text);
+            }
 
-            if (part != null) System.IO.File.WriteAllText(Path.Combine(dataFolder, fileName), part.Text);
-            lst.Add(fileName);
+            lst.Add(new FileInfo(file));
         }
 
-        public static bool ForwardMsg(int uID, Client clientDetails, string subject, string body,string[] contacts ,string[] attachments
+        public static bool ForwardMsg(string emailId, Client clientDetails, string subject, string body,string[] contacts ,string[] attachments
             )
         {
             try
             {
-               
+
+                var uID = new CoreEntitiesContext().Emails.FirstOrDefault(x => x.EmailId == emailId && x.MachineName == Environment.MachineName)?.EmailUniqueId??0;
+                if (uID == 0)
+                {
+                    //throw new ApplicationException($"Email not found for {emailId}");
+                    SendEmail(clientDetails,null, subject, contacts, body, attachments  );
+                    return true;
+                }
                 var msg = GetMsg(uID, clientDetails);
                 if (msg != null)
                 {
@@ -370,30 +472,42 @@ namespace EmailDownloader
             var imapClient = new ImapClient();
             imapClient.Connect("auto-brokerage.com", 993, SecureSocketOptions.SslOnConnect);
             imapClient.Authenticate(clientDetails.Email, clientDetails.Password);
-            var dataFolder = clientDetails.DataFolder;
             imapClient.Inbox.Open(FolderAccess.ReadWrite);
             var msg = imapClient.Inbox.GetMessage(new UniqueId(Convert.ToUInt16(uID)));
             imapClient.Disconnect(true);
             return msg;
         }
 
-        private static void ForwardMsg(MimeMessage msg, Client clientDetails,string subject, string body,string[] contacts , string[] attachments)
+        private static void ForwardMsg(MimeMessage msg, Client clientDetails, string subject, string body,
+            string[] contacts, string[] attachments)
         {
             // construct a new message
             var message = new MimeMessage();
             message.From.Add(new MailboxAddress($"{clientDetails.CompanyName}-AutoBot", clientDetails.Email));
-            message.ReplyTo.Add(new MailboxAddress(msg.From.First().Name, msg.From.Mailboxes.FirstOrDefault().Address));
-            message.Cc.Add(new MailboxAddress("Joseph Bartholomew", "Joseph@auto-brokerage.com"));
-
-            foreach (var recipent in contacts.Distinct())
+            if (!clientDetails.DevMode)
             {
-                message.To.Add(MailboxAddress.Parse(recipent));
+                message.ReplyTo.Add(new MailboxAddress(msg.From.First().Name,
+                    msg.From.Mailboxes.FirstOrDefault().Address));
+
+                foreach (var recipent in contacts.Distinct())
+                {
+                    message.To.Add(MailboxAddress.Parse(recipent));
+                }
+
+                message.Cc.Add(new MailboxAddress("Joseph Bartholomew", "Joseph@auto-brokerage.com"));
             }
+            else
+            {
+                message.To.Add(new MailboxAddress("Joseph Bartholomew", "Joseph@auto-brokerage.com"));
+            }
+
             message.Subject = subject;
 
             // now to create our body...
-            var builder = new BodyBuilder();
-            builder.TextBody = body;
+            var builder = new BodyBuilder
+            {
+                TextBody = body
+            };
             builder.Attachments.Add(new MessagePart { Message = msg });
             
 

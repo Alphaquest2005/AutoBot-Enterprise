@@ -626,7 +626,7 @@ namespace AllocationDS.Business.Entities
         }
         Nullable<bool> _invalid;
         [DataMember]
-        public System.DateTime pExpiryDate 
+        public Nullable<System.DateTime> pExpiryDate 
         {
             get
             {
@@ -639,7 +639,7 @@ namespace AllocationDS.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        System.DateTime _pexpirydate;
+        Nullable<System.DateTime> _pexpirydate;
         [DataMember]
         public int xBond_Item_Id 
         {
@@ -821,7 +821,7 @@ namespace AllocationDS.Business.Entities
         }
         string _documenttype;
         [DataMember]
-        public Nullable<int> EmailId 
+        public string EmailId 
         {
             get
             {
@@ -834,7 +834,7 @@ namespace AllocationDS.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        Nullable<int> _emailid;
+        string _emailid;
         [DataMember]
         public Nullable<int> FileTypeId 
         {

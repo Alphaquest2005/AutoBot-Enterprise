@@ -288,6 +288,42 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
         }	
 
  
+
+		private Boolean? _isColumnFilter;
+        public Boolean? IsColumnFilter
+        {
+            get
+            {
+                return _isColumnFilter;
+            }
+            set
+            {
+                _isColumnFilter = value;
+				NotifyPropertyChanged(x => IsColumnFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
+
+		private Boolean? _isActiveFilter;
+        public Boolean? IsActiveFilter
+        {
+            get
+            {
+                return _isActiveFilter;
+            }
+            set
+            {
+                _isActiveFilter = value;
+				NotifyPropertyChanged(x => IsActiveFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
 		internal bool DisableBaseFilterData = false;
         public virtual void FilterData()
 	    {
@@ -324,6 +360,14 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
 
 									if(DistinctValuesFilter.HasValue)
 						res.Append(" && " + string.Format("DistinctValues == {0}",  DistinctValuesFilter));						
+ 
+
+									if(IsColumnFilter.HasValue)
+						res.Append(" && " + string.Format("IsColumn == {0}",  IsColumnFilter));						
+ 
+
+									if(IsActiveFilter.HasValue)
+						res.Append(" && " + string.Format("IsActive == {0}",  IsActiveFilter));						
 			return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
@@ -350,7 +394,13 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
                     Name = x.Name ,
                     
  
-                    DistinctValues = x.DistinctValues 
+                    DistinctValues = x.DistinctValues ,
+                    
+ 
+                    IsColumn = x.IsColumn ,
+                    
+ 
+                    IsActive = x.IsActive 
                     
                 }).ToList()
             };
@@ -360,13 +410,19 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
             }
         }
 
-        public class LinesExcelLine
+        public partial class LinesExcelLine
         {
 		 
                     public string Name { get; set; } 
                     
  
                     public Nullable<bool> DistinctValues { get; set; } 
+                    
+ 
+                    public Nullable<bool> IsColumn { get; set; } 
+                    
+ 
+                    public Nullable<bool> IsActive { get; set; } 
                     
         }
 

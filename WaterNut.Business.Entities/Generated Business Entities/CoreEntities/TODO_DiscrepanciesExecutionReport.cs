@@ -231,7 +231,7 @@ namespace CoreEntities.Business.Entities
         }
         string _declarant_reference_number;
         [DataMember]
-        public Nullable<int> EmailId 
+        public string EmailId 
         {
             get
             {
@@ -244,7 +244,7 @@ namespace CoreEntities.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        Nullable<int> _emailid;
+        string _emailid;
         [DataMember]
         public string xCNumber 
         {
@@ -276,7 +276,7 @@ namespace CoreEntities.Business.Entities
         }
         Nullable<int> _xlinenumber;
         [DataMember]
-        public string xRegistrationDate 
+        public Nullable<System.DateTime> xRegistrationDate 
         {
             get
             {
@@ -289,7 +289,7 @@ namespace CoreEntities.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        string _xregistrationdate;
+        Nullable<System.DateTime> _xregistrationdate;
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

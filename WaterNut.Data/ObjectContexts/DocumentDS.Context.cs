@@ -109,8 +109,6 @@ namespace DocumentDS.Business.Entities
      
         public DbSet<xcuda_Gs_other_cost> xcuda_Gs_other_cost { get; set; }
      
-        public DbSet<xcuda_Identification> xcuda_Identification { get; set; }
-     
         public DbSet<xcuda_Means_of_transport> xcuda_Means_of_transport { get; set; }
      
         public DbSet<xcuda_Nbers> xcuda_Nbers { get; set; }
@@ -176,6 +174,8 @@ namespace DocumentDS.Business.Entities
         public DbSet<SystemDocumentSet> SystemDocumentSets { get; set; }
      
         public DbSet<CustomsOperation> CustomsOperations { get; set; }
+     
+        public DbSet<xcuda_Identification> xcuda_Identification { get; set; }
      
 
 
@@ -243,8 +243,6 @@ namespace DocumentDS.Business.Entities
          
             modelBuilder.Configurations.Add(new xcuda_Gs_other_costMap());
          
-            modelBuilder.Configurations.Add(new xcuda_IdentificationMap());
-         
             modelBuilder.Configurations.Add(new xcuda_Means_of_transportMap());
          
             modelBuilder.Configurations.Add(new xcuda_NbersMap());
@@ -310,6 +308,8 @@ namespace DocumentDS.Business.Entities
             modelBuilder.Configurations.Add(new SystemDocumentSetMap());
          
             modelBuilder.Configurations.Add(new CustomsOperationMap());
+         
+            modelBuilder.Configurations.Add(new xcuda_IdentificationMap());
          
 			OnModelCreatingExtentsion(modelBuilder);
 

@@ -34,6 +34,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <LangVersion>9</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -42,6 +43,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <LangVersion>9</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
     <DebugSymbols>true</DebugSymbols>
@@ -51,6 +53,7 @@
     <PlatformTarget>x64</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <LangVersion>9</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
     <OutputPath>bin\x64\Release\</OutputPath>
@@ -60,6 +63,7 @@
     <PlatformTarget>x64</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <LangVersion>9</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
     <DebugSymbols>true</DebugSymbols>
@@ -69,6 +73,7 @@
     <PlatformTarget>x86</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <LangVersion>9</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
     <OutputPath>bin\x86\Release\</OutputPath>
@@ -78,6 +83,7 @@
     <PlatformTarget>x86</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <LangVersion>9</LangVersion>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
@@ -133,6 +139,7 @@
     <Compile Include="Custom Entities\EntryDataDetails.cs" />
     <Compile Include="Custom Entities\EntryDataDS\EntryData.cs" />
     <Compile Include="Custom Entities\EntryDataDS\EntryDataDetail.cs" />
+    <Compile Include="Custom Entities\EntryDataDS\ShipmentBLDetails.cs" />
     <Compile Include="Custom Entities\EntryDataDS\ShipmentInvoice.cs" />
     <Compile Include="Custom Entities\EntryDataDS\Shipment.cs" />
     <Compile Include="Custom Entities\OverShortQS\OverShortDetailEx.cs" />
@@ -158,6 +165,7 @@
     <Compile Include="Generated Business Entities\AllocationDS\Adjustments.cs" />
     <Compile Include="Generated Business Entities\AllocationDS\AdjustmentShortAllocations.cs" />
     <Compile Include="Generated Business Entities\AllocationDS\AllocationErrors.cs" />
+    <Compile Include="Generated Business Entities\AllocationDS\AllocationsTestCases.cs" />
     <Compile Include="Generated Business Entities\AllocationDS\AscyudaItemPiQuantity.cs" />
     <Compile Include="Generated Business Entities\AllocationDS\AsycudaDocument.cs" />
     <Compile Include="Generated Business Entities\AllocationDS\AsycudaDocumentItemEntryDataDetails.cs" />
@@ -173,6 +181,7 @@
     <Compile Include="Generated Business Entities\AllocationDS\EntryPreviousItems.cs" />
     <Compile Include="Generated Business Entities\AllocationDS\Enums\CustomsOperations.cs" />
     <Compile Include="Generated Business Entities\AllocationDS\EX9AsycudaSalesAllocations.cs" />
+    <Compile Include="Generated Business Entities\AllocationDS\ExistingAllocations.cs" />
     <Compile Include="Generated Business Entities\AllocationDS\InventoryItem.cs" />
     <Compile Include="Generated Business Entities\AllocationDS\InventoryItemAlias.cs" />
     <Compile Include="Generated Business Entities\AllocationDS\ItemSalesAsycudaPiSummary.cs" />
@@ -201,6 +210,7 @@
     <Compile Include="Generated Business Entities\AllocationDS\xcuda_Weight.cs" />
     <Compile Include="Generated Business Entities\AllocationDS\xcuda_Weight_itm.cs" />
     <Compile Include="Generated Business Entities\AllocationQS\AdjustmentShortAllocation.cs" />
+    <Compile Include="Generated Business Entities\AllocationQS\AllocationsTestCas.cs" />
     <Compile Include="Generated Business Entities\AllocationQS\AsycudaSalesAllocationsEx.cs" />
     <Compile Include="Generated Business Entities\AllocationQS\AsycudaSalesAndAdjustmentAllocationsEx.cs" />
     <Compile Include="Generated Business Entities\CoreEntities\ActionDocSetLogs.cs" />
@@ -224,15 +234,18 @@
     <Compile Include="Generated Business Entities\CoreEntities\Customs_Procedure.cs" />
     <Compile Include="Generated Business Entities\CoreEntities\Declarant.cs" />
     <Compile Include="Generated Business Entities\CoreEntities\Document_Type.cs" />
+    <Compile Include="Generated Business Entities\CoreEntities\EmailAttachments.cs" />
     <Compile Include="Generated Business Entities\CoreEntities\EmailFileTypes.cs" />
     <Compile Include="Generated Business Entities\CoreEntities\EmailInfoMappings.cs" />
     <Compile Include="Generated Business Entities\CoreEntities\EmailMapping.cs" />
+    <Compile Include="Generated Business Entities\CoreEntities\EmailMappingRexExs.cs" />
     <Compile Include="Generated Business Entities\CoreEntities\Emails.cs" />
     <Compile Include="Generated Business Entities\CoreEntities\EntryPreviousItems.cs" />
     <Compile Include="Generated Business Entities\CoreEntities\Enums\CustomsOperations.cs" />
     <Compile Include="Generated Business Entities\CoreEntities\Enums\FileGroups.cs" />
     <Compile Include="Generated Business Entities\CoreEntities\ExpiredEntriesLst.cs" />
     <Compile Include="Generated Business Entities\CoreEntities\FileGroups.cs" />
+    <Compile Include="Generated Business Entities\CoreEntities\FileImporterInfo.cs" />
     <Compile Include="Generated Business Entities\CoreEntities\FileTypeActions.cs" />
     <Compile Include="Generated Business Entities\CoreEntities\FileTypeContacts.cs" />
     <Compile Include="Generated Business Entities\CoreEntities\FileTypeMappingRegExs.cs" />
@@ -399,6 +412,7 @@
     <Compile Include="Generated Business Entities\DocumentItemDS\xcuda_Weight_itm.cs" />
     <Compile Include="Generated Business Entities\EntryDataDS\Adjustments.cs" />
     <Compile Include="Generated Business Entities\EntryDataDS\AsycudaDocumentEntryData.cs" />
+    <Compile Include="Generated Business Entities\EntryDataDS\AsycudaDocumentEntryDataLine.cs" />
     <Compile Include="Generated Business Entities\EntryDataDS\AsycudaDocumentSetEntryData.cs" />
     <Compile Include="Generated Business Entities\EntryDataDS\Attachments.cs" />
     <Compile Include="Generated Business Entities\EntryDataDS\EDDocumentTypes.cs" />
@@ -436,9 +450,12 @@
     <Compile Include="Generated Business Entities\EntryDataDS\ShipmentBL.cs" />
     <Compile Include="Generated Business Entities\EntryDataDS\ShipmentBLDetails.cs" />
     <Compile Include="Generated Business Entities\EntryDataDS\ShipmentBLFreight.cs" />
+    <Compile Include="Generated Business Entities\EntryDataDS\ShipmentErrors_RepeatInvoices.cs" />
+    <Compile Include="Generated Business Entities\EntryDataDS\ShipmentErrors_RepeatMarks.cs" />
     <Compile Include="Generated Business Entities\EntryDataDS\ShipmentFreight.cs" />
     <Compile Include="Generated Business Entities\EntryDataDS\ShipmentFreightBLs.cs" />
     <Compile Include="Generated Business Entities\EntryDataDS\ShipmentFreightDetails.cs" />
+    <Compile Include="Generated Business Entities\EntryDataDS\ShipmentFreightManifests.cs" />
     <Compile Include="Generated Business Entities\EntryDataDS\ShipmentInvoice.cs" />
     <Compile Include="Generated Business Entities\EntryDataDS\ShipmentInvoiceDetailsItemAlias.cs" />
     <Compile Include="Generated Business Entities\EntryDataDS\ShipmentInvoicePOItemData.cs" />
@@ -453,6 +470,7 @@
     <Compile Include="Generated Business Entities\EntryDataDS\ShipmentManifestDetails.cs" />
     <Compile Include="Generated Business Entities\EntryDataDS\ShipmentMIS_Invoices.cs" />
     <Compile Include="Generated Business Entities\EntryDataDS\ShipmentMIS_POs.cs" />
+    <Compile Include="Generated Business Entities\EntryDataDS\ShipmentPOs.cs" />
     <Compile Include="Generated Business Entities\EntryDataDS\ShipmentRider.cs" />
     <Compile Include="Generated Business Entities\EntryDataDS\ShipmentRiderBLs.cs" />
     <Compile Include="Generated Business Entities\EntryDataDS\ShipmentRiderDetails.cs" />
@@ -460,9 +478,13 @@
     <Compile Include="Generated Business Entities\EntryDataDS\ShipmentRiderInvoice.cs" />
     <Compile Include="Generated Business Entities\EntryDataDS\ShipmentRiderManifests.cs" />
     <Compile Include="Generated Business Entities\EntryDataDS\Suppliers.cs" />
+    <Compile Include="Generated Business Entities\EntryDataDS\SupportingDetail.cs" />
     <Compile Include="Generated Business Entities\EntryDataDS\VolumeUnits.cs" />
     <Compile Include="Generated Business Entities\EntryDataDS\WarehouseInfo.cs" />
+    <Compile Include="Generated Business Entities\EntryDataDS\xSalesDetails.cs" />
+    <Compile Include="Generated Business Entities\EntryDataDS\xSalesFiles.cs" />
     <Compile Include="Generated Business Entities\EntryDataQS\AsycudaDocumentEntryData.cs" />
+    <Compile Include="Generated Business Entities\EntryDataQS\AsycudaDocumentEntryDataLine.cs" />
     <Compile Include="Generated Business Entities\EntryDataQS\AsycudaDocumentItemEntryDataDetail.cs" />
     <Compile Include="Generated Business Entities\EntryDataQS\AsycudaDocumentSetEntryData.cs" />
     <Compile Include="Generated Business Entities\EntryDataQS\AsycudaDocumentSetEntryDataDetail.cs" />
@@ -506,7 +528,9 @@
     <Compile Include="Generated Business Entities\OCR\OCRFileTypes.cs" />
     <Compile Include="Generated Business Entities\OCR\OCR_FailedFields.cs" />
     <Compile Include="Generated Business Entities\OCR\OCR_FailedLines.cs" />
+    <Compile Include="Generated Business Entities\OCR\OCR_FieldMappings.cs" />
     <Compile Include="Generated Business Entities\OCR\OCR_FieldValue.cs" />
+    <Compile Include="Generated Business Entities\OCR\OCR_PartLineFields.cs" />
     <Compile Include="Generated Business Entities\OCR\Parts.cs" />
     <Compile Include="Generated Business Entities\OCR\PartTypes.cs" />
     <Compile Include="Generated Business Entities\OCR\RecuringPart.cs" />
@@ -559,6 +583,7 @@
     <Compile Include="Generated ChangeTracking Models\AllocationDS\Adjustments.cs" />
     <Compile Include="Generated ChangeTracking Models\AllocationDS\AdjustmentShortAllocations.cs" />
     <Compile Include="Generated ChangeTracking Models\AllocationDS\AllocationErrors.cs" />
+    <Compile Include="Generated ChangeTracking Models\AllocationDS\AllocationsTestCases.cs" />
     <Compile Include="Generated ChangeTracking Models\AllocationDS\AscyudaItemPiQuantity.cs" />
     <Compile Include="Generated ChangeTracking Models\AllocationDS\AsycudaDocument.cs" />
     <Compile Include="Generated ChangeTracking Models\AllocationDS\AsycudaDocumentItemEntryDataDetails.cs" />
@@ -573,6 +598,7 @@
     <Compile Include="Generated ChangeTracking Models\AllocationDS\EntryDataDetailsEx.cs" />
     <Compile Include="Generated ChangeTracking Models\AllocationDS\EntryPreviousItems.cs" />
     <Compile Include="Generated ChangeTracking Models\AllocationDS\EX9AsycudaSalesAllocations.cs" />
+    <Compile Include="Generated ChangeTracking Models\AllocationDS\ExistingAllocations.cs" />
     <Compile Include="Generated ChangeTracking Models\AllocationDS\InventoryItem.cs" />
     <Compile Include="Generated ChangeTracking Models\AllocationDS\InventoryItemAlias.cs" />
     <Compile Include="Generated ChangeTracking Models\AllocationDS\ItemSalesAsycudaPiSummary.cs" />
@@ -601,6 +627,7 @@
     <Compile Include="Generated ChangeTracking Models\AllocationDS\xcuda_Weight.cs" />
     <Compile Include="Generated ChangeTracking Models\AllocationDS\xcuda_Weight_itm.cs" />
     <Compile Include="Generated ChangeTracking Models\AllocationQS\AdjustmentShortAllocation.cs" />
+    <Compile Include="Generated ChangeTracking Models\AllocationQS\AllocationsTestCas.cs" />
     <Compile Include="Generated ChangeTracking Models\AllocationQS\AsycudaSalesAllocationsEx.cs" />
     <Compile Include="Generated ChangeTracking Models\AllocationQS\AsycudaSalesAndAdjustmentAllocationsEx.cs" />
     <Compile Include="Generated ChangeTracking Models\CoreEntities\ActionDocSetLogs.cs" />
@@ -624,13 +651,16 @@
     <Compile Include="Generated ChangeTracking Models\CoreEntities\Customs_Procedure.cs" />
     <Compile Include="Generated ChangeTracking Models\CoreEntities\Declarant.cs" />
     <Compile Include="Generated ChangeTracking Models\CoreEntities\Document_Type.cs" />
+    <Compile Include="Generated ChangeTracking Models\CoreEntities\EmailAttachments.cs" />
     <Compile Include="Generated ChangeTracking Models\CoreEntities\EmailFileTypes.cs" />
     <Compile Include="Generated ChangeTracking Models\CoreEntities\EmailInfoMappings.cs" />
     <Compile Include="Generated ChangeTracking Models\CoreEntities\EmailMapping.cs" />
+    <Compile Include="Generated ChangeTracking Models\CoreEntities\EmailMappingRexExs.cs" />
     <Compile Include="Generated ChangeTracking Models\CoreEntities\Emails.cs" />
     <Compile Include="Generated ChangeTracking Models\CoreEntities\EntryPreviousItems.cs" />
     <Compile Include="Generated ChangeTracking Models\CoreEntities\ExpiredEntriesLst.cs" />
     <Compile Include="Generated ChangeTracking Models\CoreEntities\FileGroups.cs" />
+    <Compile Include="Generated ChangeTracking Models\CoreEntities\FileImporterInfo.cs" />
     <Compile Include="Generated ChangeTracking Models\CoreEntities\FileTypeActions.cs" />
     <Compile Include="Generated ChangeTracking Models\CoreEntities\FileTypeContacts.cs" />
     <Compile Include="Generated ChangeTracking Models\CoreEntities\FileTypeMappingRegExs.cs" />
@@ -796,6 +826,7 @@
     <Compile Include="Generated ChangeTracking Models\DocumentItemDS\xcuda_Weight_itm.cs" />
     <Compile Include="Generated ChangeTracking Models\EntryDataDS\Adjustments.cs" />
     <Compile Include="Generated ChangeTracking Models\EntryDataDS\AsycudaDocumentEntryData.cs" />
+    <Compile Include="Generated ChangeTracking Models\EntryDataDS\AsycudaDocumentEntryDataLine.cs" />
     <Compile Include="Generated ChangeTracking Models\EntryDataDS\AsycudaDocumentSetEntryData.cs" />
     <Compile Include="Generated ChangeTracking Models\EntryDataDS\Attachments.cs" />
     <Compile Include="Generated ChangeTracking Models\EntryDataDS\EDDocumentTypes.cs" />
@@ -832,9 +863,12 @@
     <Compile Include="Generated ChangeTracking Models\EntryDataDS\ShipmentBL.cs" />
     <Compile Include="Generated ChangeTracking Models\EntryDataDS\ShipmentBLDetails.cs" />
     <Compile Include="Generated ChangeTracking Models\EntryDataDS\ShipmentBLFreight.cs" />
+    <Compile Include="Generated ChangeTracking Models\EntryDataDS\ShipmentErrors_RepeatInvoices.cs" />
+    <Compile Include="Generated ChangeTracking Models\EntryDataDS\ShipmentErrors_RepeatMarks.cs" />
     <Compile Include="Generated ChangeTracking Models\EntryDataDS\ShipmentFreight.cs" />
     <Compile Include="Generated ChangeTracking Models\EntryDataDS\ShipmentFreightBLs.cs" />
     <Compile Include="Generated ChangeTracking Models\EntryDataDS\ShipmentFreightDetails.cs" />
+    <Compile Include="Generated ChangeTracking Models\EntryDataDS\ShipmentFreightManifests.cs" />
     <Compile Include="Generated ChangeTracking Models\EntryDataDS\ShipmentInvoice.cs" />
     <Compile Include="Generated ChangeTracking Models\EntryDataDS\ShipmentInvoiceDetailsItemAlias.cs" />
     <Compile Include="Generated ChangeTracking Models\EntryDataDS\ShipmentInvoicePOItemData.cs" />
@@ -849,6 +883,7 @@
     <Compile Include="Generated ChangeTracking Models\EntryDataDS\ShipmentManifestDetails.cs" />
     <Compile Include="Generated ChangeTracking Models\EntryDataDS\ShipmentMIS_Invoices.cs" />
     <Compile Include="Generated ChangeTracking Models\EntryDataDS\ShipmentMIS_POs.cs" />
+    <Compile Include="Generated ChangeTracking Models\EntryDataDS\ShipmentPOs.cs" />
     <Compile Include="Generated ChangeTracking Models\EntryDataDS\ShipmentRider.cs" />
     <Compile Include="Generated ChangeTracking Models\EntryDataDS\ShipmentRiderBLs.cs" />
     <Compile Include="Generated ChangeTracking Models\EntryDataDS\ShipmentRiderDetails.cs" />
@@ -856,9 +891,13 @@
     <Compile Include="Generated ChangeTracking Models\EntryDataDS\ShipmentRiderInvoice.cs" />
     <Compile Include="Generated ChangeTracking Models\EntryDataDS\ShipmentRiderManifests.cs" />
     <Compile Include="Generated ChangeTracking Models\EntryDataDS\Suppliers.cs" />
+    <Compile Include="Generated ChangeTracking Models\EntryDataDS\SupportingDetail.cs" />
     <Compile Include="Generated ChangeTracking Models\EntryDataDS\VolumeUnits.cs" />
     <Compile Include="Generated ChangeTracking Models\EntryDataDS\WarehouseInfo.cs" />
+    <Compile Include="Generated ChangeTracking Models\EntryDataDS\xSalesDetails.cs" />
+    <Compile Include="Generated ChangeTracking Models\EntryDataDS\xSalesFiles.cs" />
     <Compile Include="Generated ChangeTracking Models\EntryDataQS\AsycudaDocumentEntryData.cs" />
+    <Compile Include="Generated ChangeTracking Models\EntryDataQS\AsycudaDocumentEntryDataLine.cs" />
     <Compile Include="Generated ChangeTracking Models\EntryDataQS\AsycudaDocumentItemEntryDataDetail.cs" />
     <Compile Include="Generated ChangeTracking Models\EntryDataQS\AsycudaDocumentSetEntryData.cs" />
     <Compile Include="Generated ChangeTracking Models\EntryDataQS\AsycudaDocumentSetEntryDataDetail.cs" />
@@ -900,7 +939,9 @@
     <Compile Include="Generated ChangeTracking Models\OCR\OCRFileTypes.cs" />
     <Compile Include="Generated ChangeTracking Models\OCR\OCR_FailedFields.cs" />
     <Compile Include="Generated ChangeTracking Models\OCR\OCR_FailedLines.cs" />
+    <Compile Include="Generated ChangeTracking Models\OCR\OCR_FieldMappings.cs" />
     <Compile Include="Generated ChangeTracking Models\OCR\OCR_FieldValue.cs" />
+    <Compile Include="Generated ChangeTracking Models\OCR\OCR_PartLineFields.cs" />
     <Compile Include="Generated ChangeTracking Models\OCR\Parts.cs" />
     <Compile Include="Generated ChangeTracking Models\OCR\PartTypes.cs" />
     <Compile Include="Generated ChangeTracking Models\OCR\RecuringPart.cs" />
@@ -953,6 +994,7 @@
     <Compile Include="Generated Constructors Models\AllocationDS\Adjustments.cs" />
     <Compile Include="Generated Constructors Models\AllocationDS\AdjustmentShortAllocations.cs" />
     <Compile Include="Generated Constructors Models\AllocationDS\AllocationErrors.cs" />
+    <Compile Include="Generated Constructors Models\AllocationDS\AllocationsTestCases.cs" />
     <Compile Include="Generated Constructors Models\AllocationDS\AscyudaItemPiQuantity.cs" />
     <Compile Include="Generated Constructors Models\AllocationDS\AsycudaDocument.cs" />
     <Compile Include="Generated Constructors Models\AllocationDS\AsycudaDocumentItemEntryDataDetails.cs" />
@@ -967,6 +1009,7 @@
     <Compile Include="Generated Constructors Models\AllocationDS\EntryDataDetailsEx.cs" />
     <Compile Include="Generated Constructors Models\AllocationDS\EntryPreviousItems.cs" />
     <Compile Include="Generated Constructors Models\AllocationDS\EX9AsycudaSalesAllocations.cs" />
+    <Compile Include="Generated Constructors Models\AllocationDS\ExistingAllocations.cs" />
     <Compile Include="Generated Constructors Models\AllocationDS\InventoryItem.cs" />
     <Compile Include="Generated Constructors Models\AllocationDS\InventoryItemAlias.cs" />
     <Compile Include="Generated Constructors Models\AllocationDS\ItemSalesAsycudaPiSummary.cs" />
@@ -995,6 +1038,7 @@
     <Compile Include="Generated Constructors Models\AllocationDS\xcuda_Weight.cs" />
     <Compile Include="Generated Constructors Models\AllocationDS\xcuda_Weight_itm.cs" />
     <Compile Include="Generated Constructors Models\AllocationQS\AdjustmentShortAllocation.cs" />
+    <Compile Include="Generated Constructors Models\AllocationQS\AllocationsTestCas.cs" />
     <Compile Include="Generated Constructors Models\AllocationQS\AsycudaSalesAllocationsEx.cs" />
     <Compile Include="Generated Constructors Models\AllocationQS\AsycudaSalesAndAdjustmentAllocationsEx.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\ActionDocSetLogs.cs" />
@@ -1018,13 +1062,16 @@
     <Compile Include="Generated Constructors Models\CoreEntities\Customs_Procedure.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\Declarant.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\Document_Type.cs" />
+    <Compile Include="Generated Constructors Models\CoreEntities\EmailAttachments.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\EmailFileTypes.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\EmailInfoMappings.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\EmailMapping.cs" />
+    <Compile Include="Generated Constructors Models\CoreEntities\EmailMappingRexExs.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\Emails.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\EntryPreviousItems.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\ExpiredEntriesLst.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\FileGroups.cs" />
+    <Compile Include="Generated Constructors Models\CoreEntities\FileImporterInfo.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\FileTypeActions.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\FileTypeContacts.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\FileTypeMappingRegExs.cs" />
@@ -1190,6 +1237,7 @@
     <Compile Include="Generated Constructors Models\DocumentItemDS\xcuda_Weight_itm.cs" />
     <Compile Include="Generated Constructors Models\EntryDataDS\Adjustments.cs" />
     <Compile Include="Generated Constructors Models\EntryDataDS\AsycudaDocumentEntryData.cs" />
+    <Compile Include="Generated Constructors Models\EntryDataDS\AsycudaDocumentEntryDataLine.cs" />
     <Compile Include="Generated Constructors Models\EntryDataDS\AsycudaDocumentSetEntryData.cs" />
     <Compile Include="Generated Constructors Models\EntryDataDS\Attachments.cs" />
     <Compile Include="Generated Constructors Models\EntryDataDS\EDDocumentTypes.cs" />
@@ -1226,9 +1274,12 @@
     <Compile Include="Generated Constructors Models\EntryDataDS\ShipmentBL.cs" />
     <Compile Include="Generated Constructors Models\EntryDataDS\ShipmentBLDetails.cs" />
     <Compile Include="Generated Constructors Models\EntryDataDS\ShipmentBLFreight.cs" />
+    <Compile Include="Generated Constructors Models\EntryDataDS\ShipmentErrors_RepeatInvoices.cs" />
+    <Compile Include="Generated Constructors Models\EntryDataDS\ShipmentErrors_RepeatMarks.cs" />
     <Compile Include="Generated Constructors Models\EntryDataDS\ShipmentFreight.cs" />
     <Compile Include="Generated Constructors Models\EntryDataDS\ShipmentFreightBLs.cs" />
     <Compile Include="Generated Constructors Models\EntryDataDS\ShipmentFreightDetails.cs" />
+    <Compile Include="Generated Constructors Models\EntryDataDS\ShipmentFreightManifests.cs" />
     <Compile Include="Generated Constructors Models\EntryDataDS\ShipmentInvoice.cs" />
     <Compile Include="Generated Constructors Models\EntryDataDS\ShipmentInvoiceDetailsItemAlias.cs" />
     <Compile Include="Generated Constructors Models\EntryDataDS\ShipmentInvoicePOItemData.cs" />
@@ -1243,6 +1294,7 @@
     <Compile Include="Generated Constructors Models\EntryDataDS\ShipmentManifestDetails.cs" />
     <Compile Include="Generated Constructors Models\EntryDataDS\ShipmentMIS_Invoices.cs" />
     <Compile Include="Generated Constructors Models\EntryDataDS\ShipmentMIS_POs.cs" />
+    <Compile Include="Generated Constructors Models\EntryDataDS\ShipmentPOs.cs" />
     <Compile Include="Generated Constructors Models\EntryDataDS\ShipmentRider.cs" />
     <Compile Include="Generated Constructors Models\EntryDataDS\ShipmentRiderBLs.cs" />
     <Compile Include="Generated Constructors Models\EntryDataDS\ShipmentRiderDetails.cs" />
@@ -1250,9 +1302,13 @@
     <Compile Include="Generated Constructors Models\EntryDataDS\ShipmentRiderInvoice.cs" />
     <Compile Include="Generated Constructors Models\EntryDataDS\ShipmentRiderManifests.cs" />
     <Compile Include="Generated Constructors Models\EntryDataDS\Suppliers.cs" />
+    <Compile Include="Generated Constructors Models\EntryDataDS\SupportingDetail.cs" />
     <Compile Include="Generated Constructors Models\EntryDataDS\VolumeUnits.cs" />
     <Compile Include="Generated Constructors Models\EntryDataDS\WarehouseInfo.cs" />
+    <Compile Include="Generated Constructors Models\EntryDataDS\xSalesDetails.cs" />
+    <Compile Include="Generated Constructors Models\EntryDataDS\xSalesFiles.cs" />
     <Compile Include="Generated Constructors Models\EntryDataQS\AsycudaDocumentEntryData.cs" />
+    <Compile Include="Generated Constructors Models\EntryDataQS\AsycudaDocumentEntryDataLine.cs" />
     <Compile Include="Generated Constructors Models\EntryDataQS\AsycudaDocumentItemEntryDataDetail.cs" />
     <Compile Include="Generated Constructors Models\EntryDataQS\AsycudaDocumentSetEntryData.cs" />
     <Compile Include="Generated Constructors Models\EntryDataQS\AsycudaDocumentSetEntryDataDetail.cs" />
@@ -1294,7 +1350,9 @@
     <Compile Include="Generated Constructors Models\OCR\OCRFileTypes.cs" />
     <Compile Include="Generated Constructors Models\OCR\OCR_FailedFields.cs" />
     <Compile Include="Generated Constructors Models\OCR\OCR_FailedLines.cs" />
+    <Compile Include="Generated Constructors Models\OCR\OCR_FieldMappings.cs" />
     <Compile Include="Generated Constructors Models\OCR\OCR_FieldValue.cs" />
+    <Compile Include="Generated Constructors Models\OCR\OCR_PartLineFields.cs" />
     <Compile Include="Generated Constructors Models\OCR\Parts.cs" />
     <Compile Include="Generated Constructors Models\OCR\PartTypes.cs" />
     <Compile Include="Generated Constructors Models\OCR\RecuringPart.cs" />
@@ -1347,6 +1405,7 @@
     <Compile Include="Generated IEntitiyWithKey Models\AllocationDS\Adjustments.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\AllocationDS\AdjustmentShortAllocations.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\AllocationDS\AllocationErrors.cs" />
+    <Compile Include="Generated IEntitiyWithKey Models\AllocationDS\AllocationsTestCases.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\AllocationDS\AscyudaItemPiQuantity.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\AllocationDS\AsycudaDocument.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\AllocationDS\AsycudaDocumentItemEntryDataDetails.cs" />
@@ -1361,6 +1420,7 @@
     <Compile Include="Generated IEntitiyWithKey Models\AllocationDS\EntryDataDetailsEx.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\AllocationDS\EntryPreviousItems.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\AllocationDS\EX9AsycudaSalesAllocations.cs" />
+    <Compile Include="Generated IEntitiyWithKey Models\AllocationDS\ExistingAllocations.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\AllocationDS\InventoryItem.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\AllocationDS\InventoryItemAlias.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\AllocationDS\ItemSalesAsycudaPiSummary.cs" />
@@ -1389,6 +1449,7 @@
     <Compile Include="Generated IEntitiyWithKey Models\AllocationDS\xcuda_Weight.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\AllocationDS\xcuda_Weight_itm.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\AllocationQS\AdjustmentShortAllocation.cs" />
+    <Compile Include="Generated IEntitiyWithKey Models\AllocationQS\AllocationsTestCas.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\AllocationQS\AsycudaSalesAllocationsEx.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\AllocationQS\AsycudaSalesAndAdjustmentAllocationsEx.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\ActionDocSetLogs.cs" />
@@ -1412,13 +1473,16 @@
     <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\Customs_Procedure.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\Declarant.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\Document_Type.cs" />
+    <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\EmailAttachments.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\EmailFileTypes.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\EmailInfoMappings.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\EmailMapping.cs" />
+    <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\EmailMappingRexExs.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\Emails.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\EntryPreviousItems.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\ExpiredEntriesLst.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\FileGroups.cs" />
+    <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\FileImporterInfo.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\FileTypeActions.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\FileTypeContacts.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\FileTypeMappingRegExs.cs" />
@@ -1584,6 +1648,7 @@
     <Compile Include="Generated IEntitiyWithKey Models\DocumentItemDS\xcuda_Weight_itm.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\EntryDataDS\Adjustments.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\EntryDataDS\AsycudaDocumentEntryData.cs" />
+    <Compile Include="Generated IEntitiyWithKey Models\EntryDataDS\AsycudaDocumentEntryDataLine.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\EntryDataDS\AsycudaDocumentSetEntryData.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\EntryDataDS\Attachments.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\EntryDataDS\EDDocumentTypes.cs" />
@@ -1620,9 +1685,12 @@
     <Compile Include="Generated IEntitiyWithKey Models\EntryDataDS\ShipmentBL.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\EntryDataDS\ShipmentBLDetails.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\EntryDataDS\ShipmentBLFreight.cs" />
+    <Compile Include="Generated IEntitiyWithKey Models\EntryDataDS\ShipmentErrors_RepeatInvoices.cs" />
+    <Compile Include="Generated IEntitiyWithKey Models\EntryDataDS\ShipmentErrors_RepeatMarks.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\EntryDataDS\ShipmentFreight.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\EntryDataDS\ShipmentFreightBLs.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\EntryDataDS\ShipmentFreightDetails.cs" />
+    <Compile Include="Generated IEntitiyWithKey Models\EntryDataDS\ShipmentFreightManifests.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\EntryDataDS\ShipmentInvoice.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\EntryDataDS\ShipmentInvoiceDetailsItemAlias.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\EntryDataDS\ShipmentInvoicePOItemData.cs" />
@@ -1637,6 +1705,7 @@
     <Compile Include="Generated IEntitiyWithKey Models\EntryDataDS\ShipmentManifestDetails.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\EntryDataDS\ShipmentMIS_Invoices.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\EntryDataDS\ShipmentMIS_POs.cs" />
+    <Compile Include="Generated IEntitiyWithKey Models\EntryDataDS\ShipmentPOs.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\EntryDataDS\ShipmentRider.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\EntryDataDS\ShipmentRiderBLs.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\EntryDataDS\ShipmentRiderDetails.cs" />
@@ -1644,9 +1713,13 @@
     <Compile Include="Generated IEntitiyWithKey Models\EntryDataDS\ShipmentRiderInvoice.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\EntryDataDS\ShipmentRiderManifests.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\EntryDataDS\Suppliers.cs" />
+    <Compile Include="Generated IEntitiyWithKey Models\EntryDataDS\SupportingDetail.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\EntryDataDS\VolumeUnits.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\EntryDataDS\WarehouseInfo.cs" />
+    <Compile Include="Generated IEntitiyWithKey Models\EntryDataDS\xSalesDetails.cs" />
+    <Compile Include="Generated IEntitiyWithKey Models\EntryDataDS\xSalesFiles.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\EntryDataQS\AsycudaDocumentEntryData.cs" />
+    <Compile Include="Generated IEntitiyWithKey Models\EntryDataQS\AsycudaDocumentEntryDataLine.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\EntryDataQS\AsycudaDocumentItemEntryDataDetail.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\EntryDataQS\AsycudaDocumentSetEntryData.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\EntryDataQS\AsycudaDocumentSetEntryDataDetail.cs" />
@@ -1688,7 +1761,9 @@
     <Compile Include="Generated IEntitiyWithKey Models\OCR\OCRFileTypes.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\OCR\OCR_FailedFields.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\OCR\OCR_FailedLines.cs" />
+    <Compile Include="Generated IEntitiyWithKey Models\OCR\OCR_FieldMappings.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\OCR\OCR_FieldValue.cs" />
+    <Compile Include="Generated IEntitiyWithKey Models\OCR\OCR_PartLineFields.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\OCR\Parts.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\OCR\PartTypes.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\OCR\RecuringPart.cs" />
@@ -1741,6 +1816,7 @@
     <Compile Include="Generated IIdentitfiableEntity Models\AllocationDS\Adjustments.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\AllocationDS\AdjustmentShortAllocations.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\AllocationDS\AllocationErrors.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\AllocationDS\AllocationsTestCases.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\AllocationDS\AscyudaItemPiQuantity.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\AllocationDS\AsycudaDocument.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\AllocationDS\AsycudaDocumentItemEntryDataDetails.cs" />
@@ -1755,6 +1831,7 @@
     <Compile Include="Generated IIdentitfiableEntity Models\AllocationDS\EntryDataDetailsEx.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\AllocationDS\EntryPreviousItems.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\AllocationDS\EX9AsycudaSalesAllocations.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\AllocationDS\ExistingAllocations.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\AllocationDS\InventoryItem.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\AllocationDS\InventoryItemAlias.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\AllocationDS\ItemSalesAsycudaPiSummary.cs" />
@@ -1783,6 +1860,7 @@
     <Compile Include="Generated IIdentitfiableEntity Models\AllocationDS\xcuda_Weight.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\AllocationDS\xcuda_Weight_itm.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\AllocationQS\AdjustmentShortAllocation.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\AllocationQS\AllocationsTestCas.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\AllocationQS\AsycudaSalesAllocationsEx.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\AllocationQS\AsycudaSalesAndAdjustmentAllocationsEx.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\ActionDocSetLogs.cs" />
@@ -1806,13 +1884,16 @@
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\Customs_Procedure.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\Declarant.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\Document_Type.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\EmailAttachments.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\EmailFileTypes.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\EmailInfoMappings.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\EmailMapping.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\EmailMappingRexExs.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\Emails.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\EntryPreviousItems.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\ExpiredEntriesLst.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\FileGroups.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\FileImporterInfo.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\FileTypeActions.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\FileTypeContacts.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\FileTypeMappingRegExs.cs" />
@@ -1978,6 +2059,7 @@
     <Compile Include="Generated IIdentitfiableEntity Models\DocumentItemDS\xcuda_Weight_itm.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\EntryDataDS\Adjustments.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\EntryDataDS\AsycudaDocumentEntryData.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\EntryDataDS\AsycudaDocumentEntryDataLine.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\EntryDataDS\AsycudaDocumentSetEntryData.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\EntryDataDS\Attachments.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\EntryDataDS\EDDocumentTypes.cs" />
@@ -2014,9 +2096,12 @@
     <Compile Include="Generated IIdentitfiableEntity Models\EntryDataDS\ShipmentBL.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\EntryDataDS\ShipmentBLDetails.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\EntryDataDS\ShipmentBLFreight.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\EntryDataDS\ShipmentErrors_RepeatInvoices.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\EntryDataDS\ShipmentErrors_RepeatMarks.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\EntryDataDS\ShipmentFreight.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\EntryDataDS\ShipmentFreightBLs.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\EntryDataDS\ShipmentFreightDetails.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\EntryDataDS\ShipmentFreightManifests.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\EntryDataDS\ShipmentInvoice.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\EntryDataDS\ShipmentInvoiceDetailsItemAlias.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\EntryDataDS\ShipmentInvoicePOItemData.cs" />
@@ -2031,6 +2116,7 @@
     <Compile Include="Generated IIdentitfiableEntity Models\EntryDataDS\ShipmentManifestDetails.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\EntryDataDS\ShipmentMIS_Invoices.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\EntryDataDS\ShipmentMIS_POs.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\EntryDataDS\ShipmentPOs.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\EntryDataDS\ShipmentRider.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\EntryDataDS\ShipmentRiderBLs.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\EntryDataDS\ShipmentRiderDetails.cs" />
@@ -2038,9 +2124,13 @@
     <Compile Include="Generated IIdentitfiableEntity Models\EntryDataDS\ShipmentRiderInvoice.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\EntryDataDS\ShipmentRiderManifests.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\EntryDataDS\Suppliers.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\EntryDataDS\SupportingDetail.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\EntryDataDS\VolumeUnits.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\EntryDataDS\WarehouseInfo.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\EntryDataDS\xSalesDetails.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\EntryDataDS\xSalesFiles.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\EntryDataQS\AsycudaDocumentEntryData.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\EntryDataQS\AsycudaDocumentEntryDataLine.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\EntryDataQS\AsycudaDocumentItemEntryDataDetail.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\EntryDataQS\AsycudaDocumentSetEntryData.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\EntryDataQS\AsycudaDocumentSetEntryDataDetail.cs" />
@@ -2082,7 +2172,9 @@
     <Compile Include="Generated IIdentitfiableEntity Models\OCR\OCRFileTypes.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\OCR\OCR_FailedFields.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\OCR\OCR_FailedLines.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\OCR\OCR_FieldMappings.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\OCR\OCR_FieldValue.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\OCR\OCR_PartLineFields.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\OCR\Parts.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\OCR\PartTypes.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\OCR\RecuringPart.cs" />
@@ -2145,6 +2237,7 @@
     <Compile Include="Generated Mappings\AllocationDS\Adjustments.map.cs" />
     <Compile Include="Generated Mappings\AllocationDS\AdjustmentShortAllocations.map.cs" />
     <Compile Include="Generated Mappings\AllocationDS\AllocationErrors.map.cs" />
+    <Compile Include="Generated Mappings\AllocationDS\AllocationsTestCases.map.cs" />
     <Compile Include="Generated Mappings\AllocationDS\AscyudaItemPiQuantity.map.cs" />
     <Compile Include="Generated Mappings\AllocationDS\AsycudaDocument.map.cs" />
     <Compile Include="Generated Mappings\AllocationDS\AsycudaDocumentItemEntryDataDetails.map.cs" />
@@ -2159,6 +2252,7 @@
     <Compile Include="Generated Mappings\AllocationDS\EntryDataDetailsEx.map.cs" />
     <Compile Include="Generated Mappings\AllocationDS\EntryPreviousItems.map.cs" />
     <Compile Include="Generated Mappings\AllocationDS\EX9AsycudaSalesAllocations.map.cs" />
+    <Compile Include="Generated Mappings\AllocationDS\ExistingAllocations.map.cs" />
     <Compile Include="Generated Mappings\AllocationDS\InventoryItem.map.cs" />
     <Compile Include="Generated Mappings\AllocationDS\InventoryItemAlias.map.cs" />
     <Compile Include="Generated Mappings\AllocationDS\ItemSalesAsycudaPiSummary.map.cs" />
@@ -2187,6 +2281,7 @@
     <Compile Include="Generated Mappings\AllocationDS\xcuda_Weight.map.cs" />
     <Compile Include="Generated Mappings\AllocationDS\xcuda_Weight_itm.map.cs" />
     <Compile Include="Generated Mappings\AllocationQS\AdjustmentShortAllocation.map.cs" />
+    <Compile Include="Generated Mappings\AllocationQS\AllocationsTestCas.map.cs" />
     <Compile Include="Generated Mappings\AllocationQS\AsycudaSalesAllocationsEx.map.cs" />
     <Compile Include="Generated Mappings\AllocationQS\AsycudaSalesAndAdjustmentAllocationsEx.map.cs" />
     <Compile Include="Generated Mappings\CoreEntities\ActionDocSetLogs.map.cs" />
@@ -2210,13 +2305,16 @@
     <Compile Include="Generated Mappings\CoreEntities\Customs_Procedure.map.cs" />
     <Compile Include="Generated Mappings\CoreEntities\Declarant.map.cs" />
     <Compile Include="Generated Mappings\CoreEntities\Document_Type.map.cs" />
+    <Compile Include="Generated Mappings\CoreEntities\EmailAttachments.map.cs" />
     <Compile Include="Generated Mappings\CoreEntities\EmailFileTypes.map.cs" />
     <Compile Include="Generated Mappings\CoreEntities\EmailInfoMappings.map.cs" />
     <Compile Include="Generated Mappings\CoreEntities\EmailMapping.map.cs" />
+    <Compile Include="Generated Mappings\CoreEntities\EmailMappingRexExs.map.cs" />
     <Compile Include="Generated Mappings\CoreEntities\Emails.map.cs" />
     <Compile Include="Generated Mappings\CoreEntities\EntryPreviousItems.map.cs" />
     <Compile Include="Generated Mappings\CoreEntities\ExpiredEntriesLst.map.cs" />
     <Compile Include="Generated Mappings\CoreEntities\FileGroups.map.cs" />
+    <Compile Include="Generated Mappings\CoreEntities\FileImporterInfo.map.cs" />
     <Compile Include="Generated Mappings\CoreEntities\FileTypeActions.map.cs" />
     <Compile Include="Generated Mappings\CoreEntities\FileTypeContacts.map.cs" />
     <Compile Include="Generated Mappings\CoreEntities\FileTypeMappingRegExs.map.cs" />
@@ -2382,6 +2480,7 @@
     <Compile Include="Generated Mappings\DocumentItemDS\xcuda_Weight_itm.map.cs" />
     <Compile Include="Generated Mappings\EntryDataDS\Adjustments.map.cs" />
     <Compile Include="Generated Mappings\EntryDataDS\AsycudaDocumentEntryData.map.cs" />
+    <Compile Include="Generated Mappings\EntryDataDS\AsycudaDocumentEntryDataLine.map.cs" />
     <Compile Include="Generated Mappings\EntryDataDS\AsycudaDocumentSetEntryData.map.cs" />
     <Compile Include="Generated Mappings\EntryDataDS\Attachments.map.cs" />
     <Compile Include="Generated Mappings\EntryDataDS\EDDocumentTypes.map.cs" />
@@ -2418,9 +2517,12 @@
     <Compile Include="Generated Mappings\EntryDataDS\ShipmentBL.map.cs" />
     <Compile Include="Generated Mappings\EntryDataDS\ShipmentBLDetails.map.cs" />
     <Compile Include="Generated Mappings\EntryDataDS\ShipmentBLFreight.map.cs" />
+    <Compile Include="Generated Mappings\EntryDataDS\ShipmentErrors_RepeatInvoices.map.cs" />
+    <Compile Include="Generated Mappings\EntryDataDS\ShipmentErrors_RepeatMarks.map.cs" />
     <Compile Include="Generated Mappings\EntryDataDS\ShipmentFreight.map.cs" />
     <Compile Include="Generated Mappings\EntryDataDS\ShipmentFreightBLs.map.cs" />
     <Compile Include="Generated Mappings\EntryDataDS\ShipmentFreightDetails.map.cs" />
+    <Compile Include="Generated Mappings\EntryDataDS\ShipmentFreightManifests.map.cs" />
     <Compile Include="Generated Mappings\EntryDataDS\ShipmentInvoice.map.cs" />
     <Compile Include="Generated Mappings\EntryDataDS\ShipmentInvoiceDetailsItemAlias.map.cs" />
     <Compile Include="Generated Mappings\EntryDataDS\ShipmentInvoicePOItemData.map.cs" />
@@ -2435,6 +2537,7 @@
     <Compile Include="Generated Mappings\EntryDataDS\ShipmentManifestDetails.map.cs" />
     <Compile Include="Generated Mappings\EntryDataDS\ShipmentMIS_Invoices.map.cs" />
     <Compile Include="Generated Mappings\EntryDataDS\ShipmentMIS_POs.map.cs" />
+    <Compile Include="Generated Mappings\EntryDataDS\ShipmentPOs.map.cs" />
     <Compile Include="Generated Mappings\EntryDataDS\ShipmentRider.map.cs" />
     <Compile Include="Generated Mappings\EntryDataDS\ShipmentRiderBLs.map.cs" />
     <Compile Include="Generated Mappings\EntryDataDS\ShipmentRiderDetails.map.cs" />
@@ -2442,9 +2545,13 @@
     <Compile Include="Generated Mappings\EntryDataDS\ShipmentRiderInvoice.map.cs" />
     <Compile Include="Generated Mappings\EntryDataDS\ShipmentRiderManifests.map.cs" />
     <Compile Include="Generated Mappings\EntryDataDS\Suppliers.map.cs" />
+    <Compile Include="Generated Mappings\EntryDataDS\SupportingDetail.map.cs" />
     <Compile Include="Generated Mappings\EntryDataDS\VolumeUnits.map.cs" />
     <Compile Include="Generated Mappings\EntryDataDS\WarehouseInfo.map.cs" />
+    <Compile Include="Generated Mappings\EntryDataDS\xSalesDetails.map.cs" />
+    <Compile Include="Generated Mappings\EntryDataDS\xSalesFiles.map.cs" />
     <Compile Include="Generated Mappings\EntryDataQS\AsycudaDocumentEntryData.map.cs" />
+    <Compile Include="Generated Mappings\EntryDataQS\AsycudaDocumentEntryDataLine.map.cs" />
     <Compile Include="Generated Mappings\EntryDataQS\AsycudaDocumentItemEntryDataDetail.map.cs" />
     <Compile Include="Generated Mappings\EntryDataQS\AsycudaDocumentSetEntryData.map.cs" />
     <Compile Include="Generated Mappings\EntryDataQS\AsycudaDocumentSetEntryDataDetail.map.cs" />
@@ -2486,7 +2593,9 @@
     <Compile Include="Generated Mappings\OCR\OCRFileTypes.map.cs" />
     <Compile Include="Generated Mappings\OCR\OCR_FailedFields.map.cs" />
     <Compile Include="Generated Mappings\OCR\OCR_FailedLines.map.cs" />
+    <Compile Include="Generated Mappings\OCR\OCR_FieldMappings.map.cs" />
     <Compile Include="Generated Mappings\OCR\OCR_FieldValue.map.cs" />
+    <Compile Include="Generated Mappings\OCR\OCR_PartLineFields.map.cs" />
     <Compile Include="Generated Mappings\OCR\Parts.map.cs" />
     <Compile Include="Generated Mappings\OCR\PartTypes.map.cs" />
     <Compile Include="Generated Mappings\OCR\RecuringPart.map.cs" />

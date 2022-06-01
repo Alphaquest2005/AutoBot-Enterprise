@@ -293,7 +293,7 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
             }
         }
 
-        public class OCR_FieldValueExcelLine
+        public partial class OCR_FieldValueExcelLine
         {
 		 
                     public string Value { get; set; } 

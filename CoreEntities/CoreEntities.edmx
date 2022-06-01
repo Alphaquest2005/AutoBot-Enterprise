@@ -69,6 +69,7 @@
           <Property Name="TestMode" Type="bit" />
           <Property Name="BondTypeId" Type="int" Nullable="false" />
           <Property Name="RequirePOs" Type="bit" />
+          <Property Name="ExportNullTariffCodes" Type="bit" />
         </EntityType>
         <EntityType Name="ApplicationSettings-Declarants">
           <Key>
@@ -96,8 +97,8 @@
           <Property Name="AsycudaDocumentSetId" Type="int" Nullable="false" />
           <Property Name="DocumentSpecific" Type="bit" Nullable="false" />
           <Property Name="FileDate" Type="date" Nullable="false" />
-          <Property Name="EmailUniqueId" Type="int" />
           <Property Name="FileTypeId" Type="int" />
+          <Property Name="EmailId" Type="nvarchar" MaxLength="255" />
         </EntityType>
         <EntityType Name="AttachmentLog">
           <Key>
@@ -115,7 +116,7 @@
           <Property Name="FilePath" Type="nvarchar" MaxLength="255" Nullable="false" />
           <Property Name="DocumentCode" Type="nvarchar" MaxLength="50" />
           <Property Name="Reference" Type="nvarchar" MaxLength="255" />
-          <Property Name="EmailId" Type="nvarchar" MaxLength="10" />
+          <Property Name="EmailId" Type="nvarchar" MaxLength="255" />
         </EntityType>
         <EntityType Name="CancelledEntriesLst">
           <Key>
@@ -157,6 +158,8 @@
           <Property Name="Sales" Type="bit" />
           <Property Name="CustomsOperationId" Type="int" Nullable="false" />
           <Property Name="SubmitToCustoms" Type="bit" />
+          <Property Name="IsDefault" Type="bit" />
+          <Property Name="ExportSupportingEntryData" Type="bit" />
         </EntityType>
         <EntityType Name="CustomsOperations">
           <Key>
@@ -172,6 +175,16 @@
           <Property Name="Document_TypeId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Type_of_declaration" Type="nvarchar" MaxLength="10" />
           <Property Name="Declaration_gen_procedure_code" Type="nvarchar" MaxLength="10" />
+        </EntityType>
+        <EntityType Name="EmailAttachments">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="EmailId" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="AttachmentId" Type="int" Nullable="false" />
+          <Property Name="FileTypeId" Type="int" />
+          <Property Name="DocumentSpecific" Type="bit" Nullable="false" />
         </EntityType>
         <EntityType Name="EmailFileTypes">
           <Key>
@@ -200,14 +213,27 @@
           <Property Name="Pattern" Type="nvarchar(max)" Nullable="false" />
           <Property Name="IsSingleEmail" Type="bit" />
           <Property Name="ReplacementValue" Type="nvarchar" MaxLength="50" />
+          <Property Name="InfoFirst" Type="bit" />
+        </EntityType>
+        <EntityType Name="EmailMappingRexExs">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="EmailMappingId" Type="int" Nullable="false" />
+          <Property Name="ReplacementRegex" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="ReplacementValue" Type="nvarchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="Emails">
           <Key>
-            <PropertyRef Name="EmailUniqueId" />
+            <PropertyRef Name="EmailId" />
           </Key>
-          <Property Name="EmailUniqueId" Type="int" Nullable="false" />
           <Property Name="Subject" Type="nvarchar(max)" Nullable="false" />
           <Property Name="EmailDate" Type="datetime" Nullable="false" />
+          <Property Name="EmailId" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="MachineName" Type="nvarchar" MaxLength="50" />
+          <Property Name="EmailUniqueId" Type="int" />
+          <Property Name="ApplicationSettingsId" Type="int" />
         </EntityType>
         <EntityType Name="EntryPreviousItems">
           <Key>
@@ -281,6 +307,7 @@
           <Property Name="DestinationName" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="DataType" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="Required" Type="bit" Nullable="false" />
+          <Property Name="Comments" Type="nvarchar" MaxLength="255" />
         </EntityType>
         <EntityType Name="FileTypeReplaceRegex">
           <Key>
@@ -297,8 +324,8 @@
           </Key>
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
+          <Property Name="Description" Type="nvarchar" MaxLength="50" />
           <Property Name="FilePattern" Type="nvarchar" MaxLength="255" Nullable="false" />
-          <Property Name="Type" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="AsycudaDocumentSetId" Type="int" Nullable="false" />
           <Property Name="CreateDocumentSet" Type="bit" Nullable="false" />
           <Property Name="DocumentSpecific" Type="bit" Nullable="false" />
@@ -313,6 +340,16 @@
           <Property Name="OldFileTypeId" Type="int" />
           <Property Name="ReplicateHeaderRow" Type="bit" />
           <Property Name="IsImportable" Type="bit" />
+          <Property Name="MaxFileSizeInMB" Type="int" />
+          <Property Name="FileInfoId" Type="int" />
+        </EntityType>
+        <EntityType Name="FileTypes-FileImporterInfo">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="EntryType" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Format" Type="nvarchar" MaxLength="50" Nullable="false" />
         </EntityType>
         <EntityType Name="ImportActions">
           <Key>
@@ -670,7 +707,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AsycudaItemBasicInfo' doe
           <Property Name="IsAssessed" Type="bit" />
           <Property Name="LineNumber" Type="int" Nullable="false" />
           <Property Name="CNumber" Type="nvarchar" MaxLength="20" />
-          <Property Name="RegistrationDate" Type="nvarchar" MaxLength="10" />
+          <Property Name="RegistrationDate" Type="datetime2" Precision="7" />
           <Property Name="AsycudaDocumentSetId" Type="int" />
         </EntityType>
         <!--Errors Found During Generation:
@@ -765,7 +802,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-AdjustmentsAlreadyXM
           <Property Name="Type" Type="nvarchar" MaxLength="50" />
           <Property Name="EffectiveDate" Type="datetime2" Precision="7" />
           <Property Name="ItemDescription" Type="nvarchar" MaxLength="255" Nullable="false" />
-          <Property Name="EmailId" Type="int" />
+          <Property Name="EmailId" Type="nvarchar" MaxLength="255" />
           <Property Name="FileTypeId" Type="int" />
           <Property Name="Quantity" Type="float" Nullable="false" />
           <Property Name="Cost" Type="float" Nullable="false" />
@@ -929,7 +966,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-DiscrepanciesAlready
           <Property Name="Type" Type="nvarchar" MaxLength="50" />
           <Property Name="EffectiveDate" Type="datetime2" Precision="7" />
           <Property Name="ItemDescription" Type="nvarchar" MaxLength="255" Nullable="false" />
-          <Property Name="EmailId" Type="int" />
+          <Property Name="EmailId" Type="nvarchar" MaxLength="255" />
           <Property Name="FileTypeId" Type="int" />
           <Property Name="Quantity" Type="float" Nullable="false" />
           <Property Name="Cost" Type="float" Nullable="false" />
@@ -976,7 +1013,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-DiscrepanciesErrors'
           <Property Name="DutyFreePaid" Type="nvarchar" MaxLength="50" />
           <Property Name="Subject" Type="nvarchar(max)" Nullable="false" />
           <Property Name="EmailDate" Type="datetime" Nullable="false" />
-          <Property Name="EmailId" Type="int" />
+          <Property Name="EmailId" Type="nvarchar" MaxLength="255" />
           <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
         </EntityType>
         <!--Errors Found During Generation:
@@ -1005,10 +1042,10 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-DiscrepanciesExecuti
           <Property Name="Status" Type="nvarchar" MaxLength="50" />
           <Property Name="CNumber" Type="nvarchar" MaxLength="50" />
           <Property Name="Declarant_Reference_Number" Type="nvarchar" MaxLength="50" />
-          <Property Name="EmailId" Type="int" />
+          <Property Name="EmailId" Type="nvarchar" MaxLength="255" />
           <Property Name="xCNumber" Type="nvarchar" MaxLength="20" />
           <Property Name="xLineNumber" Type="int" />
-          <Property Name="xRegistrationDate" Type="nvarchar" MaxLength="10" />
+          <Property Name="xRegistrationDate" Type="datetime2" Precision="7" />
         </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-DiscrepanciesToAssess' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
@@ -1167,7 +1204,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-ERRReport-Allocation
           <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
           <Property Name="CNumber" Type="nvarchar" MaxLength="20" />
           <Property Name="Reference" Type="nvarchar" MaxLength="30" />
-          <Property Name="RegistrationDate" Type="datetime" />
+          <Property Name="RegistrationDate" Type="datetime2" Precision="7" />
           <Property Name="DocumentType" Type="nvarchar" MaxLength="40" />
           <Property Name="LineNumber" Type="int" />
           <Property Name="ItemNumber" Type="nvarchar" MaxLength="50" />
@@ -1296,7 +1333,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-ImportCompleteEntrie
           <Property Name="ApplicationSettingsId" Type="int" />
           <Property Name="EntryDataId" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="EntryData_Id" Type="int" Nullable="false" />
-          <Property Name="EmailId" Type="int" />
+          <Property Name="EmailId" Type="nvarchar" MaxLength="255" />
           <Property Name="FileTypeId" Type="int" />
           <Property Name="NewAsycuda_Id" Type="int" Nullable="false" />
           <Property Name="AssessedAsycuda_Id" Type="int" Nullable="false" />
@@ -1348,7 +1385,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-LicenseToXML' does n
           <Property Name="UOM" Type="nvarchar" MaxLength="50" />
           <Property Name="EntryDataId" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="SourceFile" Type="nvarchar(max)" />
-          <Property Name="EmailId" Type="int" />
+          <Property Name="EmailId" Type="nvarchar" MaxLength="255" />
           <Property Name="ItemNumber" Type="nvarchar" MaxLength="20" Nullable="false" />
           <Property Name="ItemDescription" Type="nvarchar" MaxLength="255" Nullable="false" />
           <Property Name="LineNumber" Type="int" />
@@ -1589,7 +1626,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-SubmitAllXMLToCustom
           <Property Name="DocumentType" Type="nvarchar" MaxLength="40" />
           <Property Name="AssessmentDate" Type="datetime2" Precision="7" />
           <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
-          <Property Name="EmailId" Type="int" />
+          <Property Name="EmailId" Type="nvarchar" MaxLength="255" />
           <Property Name="CustomsProcedure" Type="nvarchar" MaxLength="11" />
           <Property Name="FilePath" Type="nvarchar" MaxLength="255" />
           <Property Name="Status" Type="nvarchar" MaxLength="50" />
@@ -1615,7 +1652,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-SubmitDiscrepanciesT
           <Property Name="DocumentType" Type="nvarchar" MaxLength="40" />
           <Property Name="AssessmentDate" Type="datetime2" Precision="7" />
           <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
-          <Property Name="EmailId" Type="int" />
+          <Property Name="EmailId" Type="nvarchar" MaxLength="255" />
           <Property Name="CustomsProcedure" Type="nvarchar" MaxLength="11" />
           <Property Name="FilePath" Type="nvarchar" MaxLength="255" />
           <Property Name="Status" Type="nvarchar" MaxLength="50" />
@@ -1638,7 +1675,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-SubmitDocSetWithInco
           <Property Name="InvoiceNo" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="InvoiceTotal" Type="float" />
           <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
-          <Property Name="EmailId" Type="int" />
+          <Property Name="EmailId" Type="nvarchar" MaxLength="255" />
         </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-SubmitEntryCIF' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
@@ -1696,7 +1733,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-SubmitIncompleteEntr
           <Property Name="Currency" Type="nvarchar" MaxLength="4" />
           <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
           <Property Name="DutyFreePaid" Type="varchar" MaxLength="9" Nullable="false" />
-          <Property Name="EmailId" Type="int" />
+          <Property Name="EmailId" Type="nvarchar" MaxLength="255" />
           <Property Name="FileTypeId" Type="int" />
           <Property Name="SupplierCode" Type="nvarchar" MaxLength="100" />
           <Property Name="ExpectedTotal" Type="float" Nullable="false" />
@@ -1733,7 +1770,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-SubmitMissingInvoice
           <Property Name="AsycudaDocumentSetId" Type="int" Nullable="false" />
           <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
           <Property Name="Declarant_Reference_Number" Type="nvarchar" MaxLength="50" />
-          <Property Name="EmailId" Type="int" />
+          <Property Name="EmailId" Type="nvarchar" MaxLength="255" />
         </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-SubmitPOInfo' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
@@ -1748,11 +1785,11 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-SubmitPOInfo' does n
           </Key>
           <Property Name="Id" Type="int" Nullable="false" />
           <Property Name="Number" Type="nvarchar" MaxLength="20" />
-          <Property Name="Date" Type="nvarchar" MaxLength="10" />
+          <Property Name="Date" Type="datetime2" Precision="7" />
           <Property Name="PONumber" Type="nvarchar" MaxLength="50" />
           <Property Name="SupplierInvoiceNo" Type="nvarchar" MaxLength="50" />
           <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
-          <Property Name="EmailId" Type="int" />
+          <Property Name="EmailId" Type="nvarchar" MaxLength="255" />
           <Property Name="FileTypeId" Type="int" />
           <Property Name="ASYCUDA_Id" Type="int" Nullable="false" />
           <Property Name="Status" Type="varchar" MaxLength="11" Nullable="false" />
@@ -1788,7 +1825,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-SubmitSalesToCustoms
           <Property Name="DocumentType" Type="nvarchar" MaxLength="40" />
           <Property Name="AssessmentDate" Type="datetime2" Precision="7" />
           <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
-          <Property Name="EmailId" Type="int" />
+          <Property Name="EmailId" Type="nvarchar" MaxLength="255" />
           <Property Name="CustomsProcedure" Type="nvarchar" MaxLength="11" />
           <Property Name="FilePath" Type="nvarchar" MaxLength="255" />
           <Property Name="Status" Type="nvarchar" MaxLength="50" />
@@ -1809,7 +1846,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-SubmitUnclassifiedIt
           <Property Name="ItemNumber" Type="nvarchar" MaxLength="20" Nullable="false" />
           <Property Name="ItemDescription" Type="nvarchar" MaxLength="255" Nullable="false" />
           <Property Name="TariffCode" Type="nvarchar" MaxLength="50" />
-          <Property Name="EmailId" Type="int" />
+          <Property Name="EmailId" Type="nvarchar" MaxLength="255" />
           <Property Name="Type" Type="nvarchar" MaxLength="50" />
           <Property Name="AsycudaDocumentSetId" Type="int" Nullable="false" />
           <Property Name="Declarant_Reference_Number" Type="nvarchar" MaxLength="50" />
@@ -1834,7 +1871,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-SubmitXMLToCustoms' 
           <Property Name="DocumentType" Type="nvarchar" MaxLength="40" />
           <Property Name="AssessmentDate" Type="datetime2" Precision="7" />
           <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
-          <Property Name="EmailId" Type="int" />
+          <Property Name="EmailId" Type="nvarchar" MaxLength="255" />
           <Property Name="CustomsProcedure" Type="nvarchar" MaxLength="11" />
           <Property Name="FilePath" Type="nvarchar" MaxLength="255" />
           <Property Name="Status" Type="nvarchar" MaxLength="50" />
@@ -1845,19 +1882,16 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-TotalAdjustmentsToPr
         <EntityType Name="TODO-TotalAdjustmentsToProcess">
           <Key>
             <PropertyRef Name="EntryDataDetailsId" />
-            <PropertyRef Name="EntryDataId" />
-            <PropertyRef Name="ItemNumber" />
-            <PropertyRef Name="Quantity" />
-            <PropertyRef Name="ItemDescription" />
-            <PropertyRef Name="Cost" />
-            <PropertyRef Name="QtyAllocated" />
-            <PropertyRef Name="UnitWeight" />
+            
+            
+            
+            
+            
+            
+            
             
             <PropertyRef Name="ApplicationSettingsId" />
-            <PropertyRef Name="InvoiceDate" />
-            <PropertyRef Name="Subject" />
-            <PropertyRef Name="EmailDate" />
-            <PropertyRef Name="DutyFreePaid" />
+            
           </Key>
           <Property Name="EntryDataDetailsId" Type="int" Nullable="false" />
           <Property Name="EntryDataId" Type="nvarchar" MaxLength="50" Nullable="false" />
@@ -1886,9 +1920,9 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-TotalAdjustmentsToPr
           <Property Name="Type" Type="nvarchar" MaxLength="50" />
           <Property Name="Declarant_Reference_Number" Type="nvarchar" MaxLength="50" />
           <Property Name="InvoiceDate" Type="datetime2" Precision="7" Nullable="false" />
-          <Property Name="Subject" Type="nvarchar(max)" Nullable="false" />
-          <Property Name="EmailDate" Type="datetime" Nullable="false" />
-          <Property Name="DutyFreePaid" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Subject" Type="nvarchar(max)" />
+          <Property Name="EmailDate" Type="datetime" />
+          <Property Name="DutyFreePaid" Type="nvarchar" MaxLength="50" />
         </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedSales' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
@@ -1987,15 +2021,17 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_AsycudaDocumentSet_Attachments_Emails">
-          <End Role="Emails" Type="Self.Emails" Multiplicity="0..1" />
+        <Association Name="FK_AsycudaDocumentSet_Attachments_Emails1">
+          <End Role="Emails" Type="Self.Emails" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
           <End Role="AsycudaDocumentSet_Attachments" Type="Self.AsycudaDocumentSet_Attachments" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Emails">
-              <PropertyRef Name="EmailUniqueId" />
+              <PropertyRef Name="EmailId" />
             </Principal>
             <Dependent Role="AsycudaDocumentSet_Attachments">
-              <PropertyRef Name="EmailUniqueId" />
+              <PropertyRef Name="EmailId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -2046,6 +2082,34 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
             </Principal>
             <Dependent Role="Customs_Procedure">
               <PropertyRef Name="Document_TypeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_EmailAttachments_Attachments">
+          <End Role="Attachments" Type="Self.Attachments" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="EmailAttachments" Type="Self.EmailAttachments" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Attachments">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="EmailAttachments">
+              <PropertyRef Name="AttachmentId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_EmailAttachments_Emails">
+          <End Role="Emails" Type="Self.Emails" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="EmailAttachments" Type="Self.EmailAttachments" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Emails">
+              <PropertyRef Name="EmailId" />
+            </Principal>
+            <Dependent Role="EmailAttachments">
+              <PropertyRef Name="EmailId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -2112,6 +2176,20 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
             </Principal>
             <Dependent Role="EmailMapping">
               <PropertyRef Name="ApplicationSettingsId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_EmailMappingRexExs_EmailMapping">
+          <End Role="EmailMapping" Type="Self.EmailMapping" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="EmailMappingRexExs" Type="Self.EmailMappingRexExs" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="EmailMapping">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="EmailMappingRexExs">
+              <PropertyRef Name="EmailMappingId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -2249,6 +2327,18 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_FileTypes_FileTypes-FileInfo">
+          <End Role="FileTypes-FileImporterInfo" Type="Self.FileTypes-FileImporterInfo" Multiplicity="0..1" />
+          <End Role="FileTypes" Type="Self.FileTypes" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="FileTypes-FileImporterInfo">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="FileTypes">
+              <PropertyRef Name="FileInfoId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_ImportActions_FileTypes">
           <End Role="FileTypes" Type="Self.FileTypes" Multiplicity="1">
             <OnDelete Action="Cascade" />
@@ -2344,9 +2434,11 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
           <EntitySet Name="Customs_Procedure" EntityType="Self.Customs_Procedure" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CustomsOperations" EntityType="Self.CustomsOperations" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Document_Type" EntityType="Self.Document_Type" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="EmailAttachments" EntityType="Self.EmailAttachments" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="EmailFileTypes" EntityType="Self.EmailFileTypes" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="EmailInfoMappings" EntityType="Self.EmailInfoMappings" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="EmailMapping" EntityType="Self.EmailMapping" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="EmailMappingRexExs" EntityType="Self.EmailMappingRexExs" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Emails" EntityType="Self.Emails" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="EntryPreviousItems" EntityType="Self.EntryPreviousItems" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ExpiredEntriesLst" EntityType="Self.ExpiredEntriesLst" Schema="dbo" store:Type="Tables" />
@@ -2357,6 +2449,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
           <EntitySet Name="FileTypeMappings" EntityType="Self.FileTypeMappings" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="FileTypeReplaceRegex" EntityType="Self.FileTypeReplaceRegex" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="FileTypes" EntityType="Self.FileTypes" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="FileTypes-FileImporterInfo" EntityType="Self.FileTypes-FileImporterInfo" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ImportActions" EntityType="Self.ImportActions" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="InfoMapping" EntityType="Self.InfoMapping" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="InfoMappingRegEx" EntityType="Self.InfoMappingRegEx" Schema="dbo" store:Type="Tables" />
@@ -3505,7 +3598,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
             <End Role="Attachments" EntitySet="Attachments" />
             <End Role="AsycudaDocumentSet_Attachments" EntitySet="AsycudaDocumentSet_Attachments" />
           </AssociationSet>
-          <AssociationSet Name="FK_AsycudaDocumentSet_Attachments_Emails" Association="Self.FK_AsycudaDocumentSet_Attachments_Emails">
+          <AssociationSet Name="FK_AsycudaDocumentSet_Attachments_Emails1" Association="Self.FK_AsycudaDocumentSet_Attachments_Emails1">
             <End Role="Emails" EntitySet="Emails" />
             <End Role="AsycudaDocumentSet_Attachments" EntitySet="AsycudaDocumentSet_Attachments" />
           </AssociationSet>
@@ -3524,6 +3617,14 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
           <AssociationSet Name="FK_Customs_Procedure_Document_Type" Association="Self.FK_Customs_Procedure_Document_Type">
             <End Role="Document_Type" EntitySet="Document_Type" />
             <End Role="Customs_Procedure" EntitySet="Customs_Procedure" />
+          </AssociationSet>
+          <AssociationSet Name="FK_EmailAttachments_Attachments" Association="Self.FK_EmailAttachments_Attachments">
+            <End Role="Attachments" EntitySet="Attachments" />
+            <End Role="EmailAttachments" EntitySet="EmailAttachments" />
+          </AssociationSet>
+          <AssociationSet Name="FK_EmailAttachments_Emails" Association="Self.FK_EmailAttachments_Emails">
+            <End Role="Emails" EntitySet="Emails" />
+            <End Role="EmailAttachments" EntitySet="EmailAttachments" />
           </AssociationSet>
           <AssociationSet Name="FK_EmailFileTypes_EmailMapping" Association="Self.FK_EmailFileTypes_EmailMapping">
             <End Role="EmailMapping" EntitySet="EmailMapping" />
@@ -3544,6 +3645,10 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
           <AssociationSet Name="FK_EmailMapping_ApplicationSettings" Association="Self.FK_EmailMapping_ApplicationSettings">
             <End Role="ApplicationSettings" EntitySet="ApplicationSettings" />
             <End Role="EmailMapping" EntitySet="EmailMapping" />
+          </AssociationSet>
+          <AssociationSet Name="FK_EmailMappingRexExs_EmailMapping" Association="Self.FK_EmailMappingRexExs_EmailMapping">
+            <End Role="EmailMapping" EntitySet="EmailMapping" />
+            <End Role="EmailMappingRexExs" EntitySet="EmailMappingRexExs" />
           </AssociationSet>
           <AssociationSet Name="FK_FileTypeActions_Actions" Association="Self.FK_FileTypeActions_Actions">
             <End Role="Actions" EntitySet="Actions" />
@@ -3584,6 +3689,10 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
           <AssociationSet Name="FK_FileTypes_FileTypes" Association="Self.FK_FileTypes_FileTypes">
             <End Role="FileTypes" EntitySet="FileTypes" />
             <End Role="FileTypes1" EntitySet="FileTypes" />
+          </AssociationSet>
+          <AssociationSet Name="FK_FileTypes_FileTypes-FileInfo" Association="Self.FK_FileTypes_FileTypes-FileInfo">
+            <End Role="FileTypes-FileImporterInfo" EntitySet="FileTypes-FileImporterInfo" />
+            <End Role="FileTypes" EntitySet="FileTypes" />
           </AssociationSet>
           <AssociationSet Name="FK_ImportActions_FileTypes" Association="Self.FK_ImportActions_FileTypes">
             <End Role="FileTypes" EntitySet="FileTypes" />
@@ -3763,10 +3872,6 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
           </AssociationSet>
           <EntitySet Name="TODO_CreateDiscrepancyEntries" EntityType="WaterNutDBModel.TODO_CreateDiscrepancyEntries" />
           <EntitySet Name="Emails" EntityType="WaterNutDBModel.Emails" />
-          <AssociationSet Name="FK_AsycudaDocumentSet_Attachments_Emails" Association="WaterNutDBModel.FK_AsycudaDocumentSet_Attachments_Emails">
-            <End Role="Emails" EntitySet="Emails" />
-            <End Role="AsycudaDocumentSet_Attachments" EntitySet="AsycudaDocumentSet_Attachments" />
-          </AssociationSet>
           <EntitySet Name="FileGroups" EntityType="WaterNutDBModel.FileGroups" />
           <AssociationSet Name="FK_FileTypes_FileGroups" Association="WaterNutDBModel.FK_FileTypes_FileGroups">
             <End Role="FileGroups" EntitySet="FileGroups" />
@@ -3900,6 +4005,29 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
             <End Role="FileTypes" EntitySet="FileTypes" />
             <End Role="FileTypeReplaceRegex" EntitySet="FileTypeReplaceRegex" />
           </AssociationSet>
+          <AssociationSet Name="FK_AsycudaDocumentSet_Attachments_Emails1" Association="WaterNutDBModel.FK_AsycudaDocumentSet_Attachments_Emails1">
+            <End Role="Emails" EntitySet="Emails" />
+            <End Role="AsycudaDocumentSet_Attachments" EntitySet="AsycudaDocumentSet_Attachments" />
+          </AssociationSet>
+          <EntitySet Name="EmailMappingRexExs" EntityType="WaterNutDBModel.EmailMappingRexExs" />
+          <AssociationSet Name="FK_EmailMappingRexExs_EmailMapping" Association="WaterNutDBModel.FK_EmailMappingRexExs_EmailMapping">
+            <End Role="EmailMapping" EntitySet="EmailMapping" />
+            <End Role="EmailMappingRexExs" EntitySet="EmailMappingRexExs" />
+          </AssociationSet>
+          <EntitySet Name="EmailAttachments" EntityType="WaterNutDBModel.EmailAttachments" />
+          <AssociationSet Name="FK_EmailAttachments_Attachments" Association="WaterNutDBModel.FK_EmailAttachments_Attachments">
+            <End Role="Attachments" EntitySet="Attachments" />
+            <End Role="EmailAttachments" EntitySet="EmailAttachments" />
+          </AssociationSet>
+          <AssociationSet Name="FK_EmailAttachments_Emails" Association="WaterNutDBModel.FK_EmailAttachments_Emails">
+            <End Role="Emails" EntitySet="Emails" />
+            <End Role="EmailAttachments" EntitySet="EmailAttachments" />
+          </AssociationSet>
+          <EntitySet Name="FileImporterInfos" EntityType="WaterNutDBModel.FileImporterInfo" />
+          <AssociationSet Name="FK_FileTypes_FileTypes_FileInfo1" Association="WaterNutDBModel.FK_FileTypes_FileTypes_FileInfo1">
+            <End Role="FileTypes_FileImporterInfo" EntitySet="FileImporterInfos" />
+            <End Role="FileTypes" EntitySet="FileTypes" />
+          </AssociationSet>
           </EntityContainer>
         <EntityType Name="ApplicationSettings">
           <Key>
@@ -3955,7 +4083,8 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
           <Property Name="TestMode" Type="Boolean" />
           <Property Name="BondTypeId" Type="Int32" Nullable="false" />
           <Property Name="RequirePOs" Type="Boolean" />
-          <NavigationProperty Name="Declarants" Relationship="WaterNutDBModel.FK_ApplicationSettings_Declarants_ApplicationSettings" FromRole="ApplicationSettings" ToRole="ApplicationSettings_Declarants" /><a:MainEntityProperty xmlns:a="http://schemas.tempuri.com/MainEntityProperty">True</a:MainEntityProperty>
+          <NavigationProperty Name="Declarants" Relationship="WaterNutDBModel.FK_ApplicationSettings_Declarants_ApplicationSettings" FromRole="ApplicationSettings" ToRole="ApplicationSettings_Declarants" />
+          <Property Name="ExportNullTariffCodes" Type="Boolean" /><a:MainEntityProperty xmlns:a="http://schemas.tempuri.com/MainEntityProperty">True</a:MainEntityProperty>
         </EntityType>
         <EntityType Name="AsycudaDocument">
           <Key>
@@ -4101,6 +4230,8 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
           <NavigationProperty Name="CustomsOperations" Relationship="WaterNutDBModel.FK_Customs_Procedure_CustomsOperations" FromRole="Customs_Procedure" ToRole="CustomsOperations" />
           <NavigationProperty Name="AsycudaDocument" Relationship="WaterNutDBModel.Customs_ProcedureAsycudaDocument" FromRole="Customs_Procedure" ToRole="AsycudaDocument" />
           <Property Name="SubmitToCustoms" Type="Boolean" />
+          <Property Name="IsDefault" Type="Boolean" />
+          <Property Name="ExportSupportingEntryData" Type="Boolean" />
         </EntityType>
         <EntityType Name="Document_Type">
           <Key>
@@ -4419,7 +4550,6 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
           <Property Name="FilePattern" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="Type" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="AsycudaDocumentSetId" Type="Int32" Nullable="false" />
           <NavigationProperty Name="ApplicationSettings" Relationship="WaterNutDBModel.FK_FileTypes_ApplicationSettings" FromRole="FileTypes" ToRole="ApplicationSettings" />
           <NavigationProperty Name="AsycudaDocumentSetEx" Relationship="WaterNutDBModel.AsycudaDocumentSetExFileTypes" FromRole="FileTypes" ToRole="AsycudaDocumentSetEx" />
@@ -4446,6 +4576,10 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
           <Property Name="IsImportable" Type="Boolean" />
           <NavigationProperty Name="ImportActions" Relationship="WaterNutDBModel.FK_ImportActions_FileTypes" FromRole="FileTypes" ToRole="ImportActions" />
           <NavigationProperty Name="FileTypeReplaceRegex" Relationship="WaterNutDBModel.FK_FileTypeReplaceRegex_FileTypes" FromRole="FileTypes" ToRole="FileTypeReplaceRegex" />
+          <Property Name="MaxFileSizeInMB" Type="Int32" />
+          <Property Name="FileInfoId" Type="Int32" />
+          <NavigationProperty Name="FileImporterInfos" Relationship="WaterNutDBModel.FK_FileTypes_FileTypes_FileInfo1" FromRole="FileTypes" ToRole="FileTypes_FileImporterInfo" />
+          <Property Name="Description" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
         </EntityType>
         <Association Name="FK_FileTypes_ApplicationSettings">
           <End Type="WaterNutDBModel.ApplicationSettings" Role="ApplicationSettings" Multiplicity="1">
@@ -4485,6 +4619,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
           <Property Name="DataType" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="Required" Type="Boolean" Nullable="false" />
           <NavigationProperty Name="FileTypeMappingRegExs" Relationship="WaterNutDBModel.FK_FileTypeMappingRegExs_FileTypeMappings" FromRole="FileTypeMappings" ToRole="FileTypeMappingRegExs" />
+          <Property Name="Comments" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
         </EntityType>
         <Association Name="FK_FileTypeMappings_FileTypes">
           <End Type="WaterNutDBModel.FileTypes" Role="FileTypes" Multiplicity="1">
@@ -4511,11 +4646,11 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
           <NavigationProperty Name="AsycudaDocumentSetEx" Relationship="WaterNutDBModel.AsycudaDocumentSetExAsycudaDocumentSet_Attachments" FromRole="AsycudaDocumentSet_Attachments" ToRole="AsycudaDocumentSetEx" />
           <Property Name="DocumentSpecific" Type="Boolean" Nullable="false" />
           <Property Name="FileDate" Type="DateTime" Precision="0" Nullable="false" />
-          <Property Name="EmailUniqueId" Type="Int32" />
           <Property Name="FileTypeId" Type="Int32" />
           <NavigationProperty Name="FileTypes" Relationship="WaterNutDBModel.FK_AsycudaDocumentSet_Attachments_FileTypes" FromRole="AsycudaDocumentSet_Attachments" ToRole="FileTypes" />
           <NavigationProperty Name="AttachmentLog" Relationship="WaterNutDBModel.FK_AttachmentLog_AsycudaDocumentSet_Attachments" FromRole="AsycudaDocumentSet_Attachments" ToRole="AttachmentLog" />
-          <NavigationProperty Name="Emails" Relationship="WaterNutDBModel.FK_AsycudaDocumentSet_Attachments_Emails" FromRole="AsycudaDocumentSet_Attachments" ToRole="Emails" />
+          <Property Name="EmailId" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Emails" Relationship="WaterNutDBModel.FK_AsycudaDocumentSet_Attachments_Emails1" FromRole="AsycudaDocumentSet_Attachments" ToRole="Emails" />
         </EntityType>
         <EntityType Name="InfoMapping">
           <Key>
@@ -4555,7 +4690,8 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
           <Property Name="DocumentCode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="AsycudaDocument_Attachments" Relationship="WaterNutDBModel.FK_AsycudaDocument_Attachments_Attachments" FromRole="Attachments" ToRole="AsycudaDocument_Attachments" />
           <Property Name="Reference" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="EmailId" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="EmailId" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="EmailAttachments" Relationship="WaterNutDBModel.FK_EmailAttachments_Attachments" FromRole="Attachments" ToRole="EmailAttachments" />
         </EntityType>
         <Association Name="FK_AsycudaDocumentSet_Attachments_Attachments">
           <End Type="WaterNutDBModel.Attachments" Role="Attachments" Multiplicity="1">
@@ -4595,6 +4731,8 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
           <NavigationProperty Name="EmailInfoMappings" Relationship="WaterNutDBModel.FK_EmailInfoMappings_EmailMapping" FromRole="EmailMapping" ToRole="EmailInfoMappings" />
           <Property Name="IsSingleEmail" Type="Boolean" />
           <Property Name="ReplacementValue" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="EmailMappingRexExs" Relationship="WaterNutDBModel.FK_EmailMappingRexExs_EmailMapping" FromRole="EmailMapping" ToRole="EmailMappingRexExs" />
+          <Property Name="InfoFirst" Type="Boolean" />
         </EntityType>
         <Association Name="FK_EmailMapping_ApplicationSettings">
           <End Type="WaterNutDBModel.ApplicationSettings" Role="ApplicationSettings" Multiplicity="1">
@@ -4861,25 +4999,17 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
         </EntityType>
         <EntityType Name="Emails">
           <Key>
-            <PropertyRef Name="EmailUniqueId" />
+            <PropertyRef Name="EmailId" />
           </Key>
-          <Property Name="EmailUniqueId" Type="Int32" Nullable="false" />
           <Property Name="Subject" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="EmailDate" Type="DateTime" Nullable="false" Precision="3" />
-          <NavigationProperty Name="AsycudaDocumentSet_Attachments" Relationship="WaterNutDBModel.FK_AsycudaDocumentSet_Attachments_Emails" FromRole="Emails" ToRole="AsycudaDocumentSet_Attachments" />
+          <Property Name="EmailId" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="AsycudaDocumentSet_Attachments" Relationship="WaterNutDBModel.FK_AsycudaDocumentSet_Attachments_Emails1" FromRole="Emails" ToRole="AsycudaDocumentSet_Attachments" />
+          <Property Name="MachineName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="EmailUniqueId" Type="Int32" />
+          <Property Name="ApplicationSettingsId" Type="Int32" />
+          <NavigationProperty Name="EmailAttachments" Relationship="WaterNutDBModel.FK_EmailAttachments_Emails" FromRole="Emails" ToRole="EmailAttachments" />
         </EntityType>
-        <Association Name="FK_AsycudaDocumentSet_Attachments_Emails">
-          <End Type="WaterNutDBModel.Emails" Role="Emails" Multiplicity="0..1" />
-          <End Type="WaterNutDBModel.AsycudaDocumentSet_Attachments" Role="AsycudaDocumentSet_Attachments" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Emails">
-              <PropertyRef Name="EmailUniqueId" />
-            </Principal>
-            <Dependent Role="AsycudaDocumentSet_Attachments">
-              <PropertyRef Name="EmailUniqueId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <EntityType Name="FileGroups">
           <Key>
             <PropertyRef Name="Id" />
@@ -4937,7 +5067,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
           <Property Name="DocumentType" Type="String" MaxLength="40" FixedLength="false" Unicode="true" />
           <Property Name="AssessmentDate" Type="DateTime" Precision="7" />
           <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
-          <Property Name="EmailId" Type="Int32" />
+          <Property Name="EmailId" Type="String" MaxLength="255" Unicode="true" FixedLength="false" />
           <Property Name="ASYCUDA_Id" Type="Int32" Nullable="false" />
           <Property Name="FilePath" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="Status" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
@@ -4969,7 +5099,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
           <Property Name="DocumentType" Type="String" MaxLength="40" FixedLength="false" Unicode="true" />
           <Property Name="AssessmentDate" Type="DateTime" Precision="7" />
           <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
-          <Property Name="EmailId" Type="Int32" />
+          <Property Name="EmailId" Type="String" MaxLength="255" Unicode="true" FixedLength="false" />
           <Property Name="FilePath" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="Status" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="CustomsProcedure" Type="String" MaxLength="11" FixedLength="false" Unicode="true" />
@@ -5054,7 +5184,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
           <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
           <Property Name="CNumber" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Name="Reference" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
-          <Property Name="RegistrationDate" Type="DateTime" Precision="3" />
+          <Property Name="RegistrationDate" Type="DateTime" Precision="7" />
           <Property Name="DocumentType" Type="String" MaxLength="40" FixedLength="false" Unicode="true" />
           <Property Name="LineNumber" Type="Int32" />
           <Property Name="ItemNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
@@ -5219,7 +5349,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
           <Property Name="Currency" Type="String" MaxLength="4" FixedLength="false" Unicode="true" />
           <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
           <Property Name="DutyFreePaid" Type="String" Nullable="false" MaxLength="9" FixedLength="false" Unicode="false" />
-          <Property Name="EmailId" Type="Int32" />
+          <Property Name="EmailId" Type="String" MaxLength="255" Unicode="true" FixedLength="false" />
           <Property Name="FileTypeId" Type="Int32" />
           <Property Name="SupplierCode" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="ExpectedTotal" Type="Double" Nullable="false" />
@@ -5275,7 +5405,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
           <Property Name="InvoiceNo" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="InvoiceTotal" Type="Double" />
           <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
-          <Property Name="EmailId" Type="Int32" />
+          <Property Name="EmailId" Type="String" MaxLength="255" Unicode="true" FixedLength="false" />
         </EntityType>
         <EntityType Name="TODO_SubmitUnclassifiedItems">
           <Key>
@@ -5290,7 +5420,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
           <Property Name="ItemNumber" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Name="ItemDescription" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="TariffCode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="EmailId" Type="Int32" />
+          <Property Name="EmailId" Type="String" MaxLength="255" Unicode="true" FixedLength="false" />
           <Property Name="Type" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="AsycudaDocumentSetId" Type="Int32" Nullable="false" />
           <Property Name="Declarant_Reference_Number" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
@@ -5363,7 +5493,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
           </Key>
           <Property Name="AsycudaDocumentSetId" Type="Int32" Nullable="false" />
           <Property Name="ApplicationSettingsId" Type="Int32" />
-          <Property Name="EmailId" Type="Int32" />
+          <Property Name="EmailId" Type="String" MaxLength="255" Unicode="true" FixedLength="false" />
           <Property Name="FileTypeId" Type="Int32" />
           <Property Name="EntryDataId" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="NewAsycuda_Id" Type="Int32" Nullable="false" />
@@ -5407,7 +5537,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
           <Property Name="Type" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="EffectiveDate" Type="DateTime" Precision="7" />
           <Property Name="ItemDescription" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="EmailId" Type="Int32" />
+          <Property Name="EmailId" Type="String" MaxLength="255" Unicode="true" FixedLength="false" />
           <Property Name="FileTypeId" Type="Int32" />
           <Property Name="Quantity" Type="Double" Nullable="false" />
           <Property Name="Cost" Type="Double" Nullable="false" />
@@ -5461,18 +5591,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
         <EntityType Name="TODO_TotalAdjustmentsToProcess">
           <Key>
             <PropertyRef Name="EntryDataDetailsId" />
-            <PropertyRef Name="EntryDataId" />
-            <PropertyRef Name="ItemNumber" />
-            <PropertyRef Name="Quantity" />
-            <PropertyRef Name="ItemDescription" />
-            <PropertyRef Name="Cost" />
-            <PropertyRef Name="QtyAllocated" />
-            <PropertyRef Name="UnitWeight" />
             <PropertyRef Name="ApplicationSettingsId" />
-            <PropertyRef Name="InvoiceDate" />
-            <PropertyRef Name="Subject" />
-            <PropertyRef Name="EmailDate" />
-            <PropertyRef Name="DutyFreePaid" />
           </Key>
           <Property Name="EntryDataDetailsId" Type="Int32" Nullable="false" />
           <Property Name="EntryDataId" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
@@ -5495,15 +5614,15 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
           <Property Name="PreviousCNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="Comment" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="Status" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="EffectiveDate" Type="DateTime" Precision="7" />
+          <Property Name="EffectiveDate" Type="DateTime" Precision="7" Nullable="true" />
           <Property Name="Currency" Type="String" MaxLength="4" FixedLength="false" Unicode="true" />
           <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
           <Property Name="Type" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="Declarant_Reference_Number" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="InvoiceDate" Type="DateTime" Nullable="false" Precision="7" />
-          <Property Name="Subject" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="EmailDate" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="DutyFreePaid" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Subject" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="EmailDate" Type="DateTime" Precision="3" />
+          <Property Name="DutyFreePaid" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="TODO_DiscrepanciesAlreadyXMLed">
           <Key>
@@ -5541,7 +5660,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
           <Property Name="Type" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="EffectiveDate" Type="DateTime" Precision="7" />
           <Property Name="ItemDescription" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="EmailId" Type="Int32" />
+          <Property Name="EmailId" Type="String" MaxLength="255" Unicode="true" FixedLength="false" />
           <Property Name="FileTypeId" Type="Int32" />
           <Property Name="Quantity" Type="Double" Nullable="false" />
           <Property Name="Cost" Type="Double" Nullable="false" />
@@ -5698,7 +5817,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
           <Property Name="Comment" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="Subject" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="EmailDate" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="EmailId" Type="Int32" />
+          <Property Name="EmailId" Type="String" MaxLength="255" Unicode="true" FixedLength="false" />
         </EntityType>
         <EntityType Name="CustomsOperations">
           <Key>
@@ -5784,7 +5903,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
           <Property Name="DocumentType" Type="String" MaxLength="40" FixedLength="false" Unicode="true" />
           <Property Name="AssessmentDate" Type="DateTime" Precision="7" />
           <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
-          <Property Name="EmailId" Type="Int32" />
+          <Property Name="EmailId" Type="String" MaxLength="255" Unicode="true" FixedLength="false" />
           <Property Name="CustomsProcedure" Type="String" MaxLength="11" FixedLength="false" Unicode="true" />
           <Property Name="FilePath" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="Status" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
@@ -5904,7 +6023,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
           <Property Name="AsycudaDocumentSetId" Type="Int32" Nullable="false" />
           <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
           <Property Name="Declarant_Reference_Number" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="EmailId" Type="Int32" />
+          <Property Name="EmailId" Type="String" MaxLength="255" Unicode="true" FixedLength="false" />
         </EntityType>
         <EntityType Name="TODO_SubmitSalesToCustoms">
           <Key>
@@ -5921,7 +6040,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
           <Property Name="DocumentType" Type="String" MaxLength="40" FixedLength="false" Unicode="true" />
           <Property Name="AssessmentDate" Type="DateTime" Precision="7" />
           <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
-          <Property Name="EmailId" Type="Int32" />
+          <Property Name="EmailId" Type="String" MaxLength="255" Unicode="true" FixedLength="false" />
           <Property Name="CustomsProcedure" Type="String" MaxLength="11" FixedLength="false" Unicode="true" />
           <Property Name="FilePath" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="Status" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
@@ -5933,10 +6052,10 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
           </Key>
           <Property Name="Id" Type="Int32" Nullable="false" />
           <Property Name="Number" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
-          <Property Name="Date" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="Date" Type="DateTime" Precision="7" />
           <Property Name="SupplierInvoiceNo" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
-          <Property Name="EmailId" Type="Int32" />
+          <Property Name="EmailId" Type="String" MaxLength="255" Unicode="true" FixedLength="false" />
           <Property Name="FileTypeId" Type="Int32" />
           <Property Name="Status" Type="String" Nullable="false" MaxLength="11" FixedLength="false" Unicode="false" />
           <Property Name="CustomsProcedure" Type="String" MaxLength="11" FixedLength="false" Unicode="true" />
@@ -5994,7 +6113,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
           <Property Name="IsAssessed" Type="Boolean" />
           <Property Name="LineNumber" Type="Int32" Nullable="false" />
           <Property Name="CNumber" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
-          <Property Name="RegistrationDate" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="RegistrationDate" Type="DateTime" Precision="7" />
           <Property Name="AsycudaDocumentSetId" Type="Int32" />
           <Property Name="Commercial_Description" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
           <Property Name="TariffCode" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
@@ -6050,7 +6169,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
           <Property Name="UOM" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="EntryDataId" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="SourceFile" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="EmailId" Type="Int32" />
+          <Property Name="EmailId" Type="String" MaxLength="255" Unicode="true" FixedLength="false" />
           <Property Name="ItemNumber" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Name="ItemDescription" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="LineNumber" Type="Int32" />
@@ -6141,10 +6260,10 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
           <Property Name="Status" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="CNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="Declarant_Reference_Number" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="EmailId" Type="Int32" />
+          <Property Name="EmailId" Type="String" MaxLength="255" Unicode="true" FixedLength="false" />
           <Property Name="xCNumber" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Name="xLineNumber" Type="Int32" />
-          <Property Name="xRegistrationDate" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="xRegistrationDate" Type="DateTime" Precision="7" />
         </EntityType>
         <EntityType Name="TODO_LicenceAvailableQty">
           <Key>
@@ -6312,6 +6431,105 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_AsycudaDocumentSet_Attachments_Emails1">
+          <End Type="WaterNutDBModel.Emails" Role="Emails" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="WaterNutDBModel.AsycudaDocumentSet_Attachments" Role="AsycudaDocumentSet_Attachments" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Emails">
+              <PropertyRef Name="EmailId" />
+            </Principal>
+            <Dependent Role="AsycudaDocumentSet_Attachments">
+              <PropertyRef Name="EmailId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="EmailMappingRexExs">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="EmailMappingId" Type="Int32" Nullable="false" />
+          <Property Name="ReplacementRegex" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ReplacementValue" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="EmailMapping" Relationship="WaterNutDBModel.FK_EmailMappingRexExs_EmailMapping" FromRole="EmailMappingRexExs" ToRole="EmailMapping" />
+        </EntityType>
+        <Association Name="FK_EmailMappingRexExs_EmailMapping">
+          <End Type="WaterNutDBModel.EmailMapping" Role="EmailMapping" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="WaterNutDBModel.EmailMappingRexExs" Role="EmailMappingRexExs" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="EmailMapping">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="EmailMappingRexExs">
+              <PropertyRef Name="EmailMappingId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="EmailAttachments">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="EmailId" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="AttachmentId" Type="Int32" Nullable="false" />
+          <Property Name="FileTypeId" Type="Int32" />
+          <Property Name="DocumentSpecific" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="Attachments" Relationship="WaterNutDBModel.FK_EmailAttachments_Attachments" FromRole="EmailAttachments" ToRole="Attachments" />
+          <NavigationProperty Name="Emails" Relationship="WaterNutDBModel.FK_EmailAttachments_Emails" FromRole="EmailAttachments" ToRole="Emails" />
+        </EntityType>
+        <Association Name="FK_EmailAttachments_Attachments">
+          <End Type="WaterNutDBModel.Attachments" Role="Attachments" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="WaterNutDBModel.EmailAttachments" Role="EmailAttachments" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Attachments">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="EmailAttachments">
+              <PropertyRef Name="AttachmentId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_EmailAttachments_Emails">
+          <End Type="WaterNutDBModel.Emails" Role="Emails" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="WaterNutDBModel.EmailAttachments" Role="EmailAttachments" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Emails">
+              <PropertyRef Name="EmailId" />
+            </Principal>
+            <Dependent Role="EmailAttachments">
+              <PropertyRef Name="EmailId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="FileImporterInfo">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="EntryType" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Format" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="FileTypes" Relationship="WaterNutDBModel.FK_FileTypes_FileTypes_FileInfo1" FromRole="FileTypes_FileImporterInfo" ToRole="FileTypes" />
+        </EntityType>
+        <Association Name="FK_FileTypes_FileTypes_FileInfo1">
+          <End Type="WaterNutDBModel.FileImporterInfo" Role="FileTypes_FileImporterInfo" Multiplicity="0..1" />
+          <End Type="WaterNutDBModel.FileTypes" Role="FileTypes" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="FileTypes_FileImporterInfo">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="FileTypes">
+              <PropertyRef Name="FileInfoId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -6321,6 +6539,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
           <EntitySetMapping Name="ApplicationSettings">
             <EntityTypeMapping TypeName="WaterNutDBModel.ApplicationSettings">
               <MappingFragment StoreEntitySet="ApplicationSettings">
+                <ScalarProperty Name="ExportNullTariffCodes" ColumnName="ExportNullTariffCodes" />
                 <ScalarProperty Name="RequirePOs" ColumnName="RequirePOs" />
                 <ScalarProperty Name="BondTypeId" ColumnName="BondTypeId" />
                 <ScalarProperty Name="TestMode" ColumnName="TestMode" />
@@ -6471,6 +6690,8 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
           <EntitySetMapping Name="Customs_Procedure">
             <EntityTypeMapping TypeName="WaterNutDBModel.Customs_Procedure">
               <MappingFragment StoreEntitySet="Customs_Procedure">
+                <ScalarProperty Name="ExportSupportingEntryData" ColumnName="ExportSupportingEntryData" />
+                <ScalarProperty Name="IsDefault" ColumnName="IsDefault" />
                 <ScalarProperty Name="SubmitToCustoms" ColumnName="SubmitToCustoms" />
                 <ScalarProperty Name="CustomsOperationId" ColumnName="CustomsOperationId" />
                 <ScalarProperty Name="Sales" ColumnName="Sales" />
@@ -6631,6 +6852,9 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
           <EntitySetMapping Name="FileTypes">
             <EntityTypeMapping TypeName="WaterNutDBModel.FileTypes">
               <MappingFragment StoreEntitySet="FileTypes">
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="FileInfoId" ColumnName="FileInfoId" />
+                <ScalarProperty Name="MaxFileSizeInMB" ColumnName="MaxFileSizeInMB" />
                 <ScalarProperty Name="IsImportable" ColumnName="IsImportable" />
                 <ScalarProperty Name="ReplicateHeaderRow" ColumnName="ReplicateHeaderRow" />
                 <ScalarProperty Name="OldFileTypeId" ColumnName="OldFileTypeId" />
@@ -6645,7 +6869,6 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
                 <ScalarProperty Name="DocumentSpecific" ColumnName="DocumentSpecific" />
                 <ScalarProperty Name="CreateDocumentSet" ColumnName="CreateDocumentSet" />
                 <ScalarProperty Name="AsycudaDocumentSetId" ColumnName="AsycudaDocumentSetId" />
-                <ScalarProperty Name="Type" ColumnName="Type" />
                 <ScalarProperty Name="FilePattern" ColumnName="FilePattern" />
                 <ScalarProperty Name="ApplicationSettingsId" ColumnName="ApplicationSettingsId" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
@@ -6655,6 +6878,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
           <EntitySetMapping Name="FileTypeMappings">
             <EntityTypeMapping TypeName="WaterNutDBModel.FileTypeMappings">
               <MappingFragment StoreEntitySet="FileTypeMappings">
+                <ScalarProperty Name="Comments" ColumnName="Comments" />
                 <ScalarProperty Name="Required" ColumnName="Required" />
                 <ScalarProperty Name="DataType" ColumnName="DataType" />
                 <ScalarProperty Name="DestinationName" ColumnName="DestinationName" />
@@ -6667,8 +6891,8 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
           <EntitySetMapping Name="AsycudaDocumentSet_Attachments">
             <EntityTypeMapping TypeName="WaterNutDBModel.AsycudaDocumentSet_Attachments">
               <MappingFragment StoreEntitySet="AsycudaDocumentSet_Attachments">
+                <ScalarProperty Name="EmailId" ColumnName="EmailId" />
                 <ScalarProperty Name="FileTypeId" ColumnName="FileTypeId" />
-                <ScalarProperty Name="EmailUniqueId" ColumnName="EmailUniqueId" />
                 <ScalarProperty Name="FileDate" ColumnName="FileDate" />
                 <ScalarProperty Name="DocumentSpecific" ColumnName="DocumentSpecific" />
                 <ScalarProperty Name="AsycudaDocumentSetId" ColumnName="AsycudaDocumentSetId" />
@@ -6703,6 +6927,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
           <EntitySetMapping Name="EmailMapping">
             <EntityTypeMapping TypeName="WaterNutDBModel.EmailMapping">
               <MappingFragment StoreEntitySet="EmailMapping">
+                <ScalarProperty Name="InfoFirst" ColumnName="InfoFirst" />
                 <ScalarProperty Name="ReplacementValue" ColumnName="ReplacementValue" />
                 <ScalarProperty Name="IsSingleEmail" ColumnName="IsSingleEmail" />
                 <ScalarProperty Name="Pattern" ColumnName="Pattern" />
@@ -6845,9 +7070,12 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
           <EntitySetMapping Name="Emails">
             <EntityTypeMapping TypeName="WaterNutDBModel.Emails">
               <MappingFragment StoreEntitySet="Emails">
+                <ScalarProperty Name="ApplicationSettingsId" ColumnName="ApplicationSettingsId" />
+                <ScalarProperty Name="EmailUniqueId" ColumnName="EmailUniqueId" />
+                <ScalarProperty Name="MachineName" ColumnName="MachineName" />
+                <ScalarProperty Name="EmailId" ColumnName="EmailId" />
                 <ScalarProperty Name="EmailDate" ColumnName="EmailDate" />
                 <ScalarProperty Name="Subject" ColumnName="Subject" />
-                <ScalarProperty Name="EmailUniqueId" ColumnName="EmailUniqueId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -7977,6 +8205,36 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
                 <ScalarProperty Name="ReplacementRegEx" ColumnName="ReplacementRegEx" />
                 <ScalarProperty Name="Regex" ColumnName="Regex" />
                 <ScalarProperty Name="FileTypeId" ColumnName="FileTypeId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="EmailMappingRexExs">
+            <EntityTypeMapping TypeName="WaterNutDBModel.EmailMappingRexExs">
+              <MappingFragment StoreEntitySet="EmailMappingRexExs">
+                <ScalarProperty Name="ReplacementValue" ColumnName="ReplacementValue" />
+                <ScalarProperty Name="ReplacementRegex" ColumnName="ReplacementRegex" />
+                <ScalarProperty Name="EmailMappingId" ColumnName="EmailMappingId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="EmailAttachments">
+            <EntityTypeMapping TypeName="WaterNutDBModel.EmailAttachments">
+              <MappingFragment StoreEntitySet="EmailAttachments">
+                <ScalarProperty Name="DocumentSpecific" ColumnName="DocumentSpecific" />
+                <ScalarProperty Name="FileTypeId" ColumnName="FileTypeId" />
+                <ScalarProperty Name="AttachmentId" ColumnName="AttachmentId" />
+                <ScalarProperty Name="EmailId" ColumnName="EmailId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="FileImporterInfos">
+            <EntityTypeMapping TypeName="WaterNutDBModel.FileImporterInfo">
+              <MappingFragment StoreEntitySet="FileTypes-FileImporterInfo">
+                <ScalarProperty Name="Format" ColumnName="Format" />
+                <ScalarProperty Name="EntryType" ColumnName="EntryType" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>

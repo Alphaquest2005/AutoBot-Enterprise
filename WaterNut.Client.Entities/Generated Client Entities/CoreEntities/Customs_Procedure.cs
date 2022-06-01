@@ -261,6 +261,36 @@ public Nullable<bool> SubmitToCustoms
 		}
      
 
+       
+       
+public Nullable<bool> IsDefault
+		{ 
+		    get { return this.customs_procedure.IsDefault; }
+			set
+			{
+			    if (value == this.customs_procedure.IsDefault) return;
+				this.customs_procedure.IsDefault = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("IsDefault");
+			}
+		}
+     
+
+       
+       
+public Nullable<bool> ExportSupportingEntryData
+		{ 
+		    get { return this.customs_procedure.ExportSupportingEntryData; }
+			set
+			{
+			    if (value == this.customs_procedure.ExportSupportingEntryData) return;
+				this.customs_procedure.ExportSupportingEntryData = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("ExportSupportingEntryData");
+			}
+		}
+     
+
        private Document_Type _Document_Type;
         public  Document_Type Document_Type
 		{

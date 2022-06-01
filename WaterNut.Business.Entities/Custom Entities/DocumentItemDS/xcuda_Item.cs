@@ -70,30 +70,30 @@ namespace DocumentItemDS.Business.Entities
 
 
 
-        partial void SetupProperties()
+        public void SetupProperties()
         {
-            if (xcuda_Tarification == null) xcuda_Tarification = new xcuda_Tarification(true) { TrackingState = TrackingState.Added };
-            if (xcuda_Tarification.xcuda_HScode == null) xcuda_Tarification.xcuda_HScode = new xcuda_HScode(true) { TrackingState = TrackingState.Added };
-            if (xcuda_Valuation_item == null) xcuda_Valuation_item = new xcuda_Valuation_item(true) { TrackingState = TrackingState.Added };
-            if (xcuda_Valuation_item.xcuda_Weight_itm == null) xcuda_Valuation_item.xcuda_Weight_itm = new xcuda_Weight_itm(true) { TrackingState = TrackingState.Added };
+            if (xcuda_Tarification == null) xcuda_Tarification = new xcuda_Tarification(true) { TrackingState = TrackingState.Added, xcuda_Item = this };
+            if (xcuda_Tarification.xcuda_HScode == null) xcuda_Tarification.xcuda_HScode = new xcuda_HScode(true) { TrackingState = TrackingState.Added , xcuda_Tarification = this.xcuda_Tarification };
+            if (xcuda_Valuation_item == null) xcuda_Valuation_item = new xcuda_Valuation_item(true) { TrackingState = TrackingState.Added, xcuda_Item = this };
+            if (xcuda_Valuation_item.xcuda_Weight_itm == null) xcuda_Valuation_item.xcuda_Weight_itm = new xcuda_Weight_itm(true) { TrackingState = TrackingState.Added, xcuda_Valuation_item = this.xcuda_Valuation_item};
 
-            if (xcuda_Goods_description == null) xcuda_Goods_description = new xcuda_Goods_description(true) { TrackingState = TrackingState.Added };
-            if (xcuda_Previous_doc == null) xcuda_Previous_doc = new xcuda_Previous_doc(true) { TrackingState = TrackingState.Added };
-            if (xcuda_Packages == null) xcuda_Packages = new List<xcuda_Packages>() { new xcuda_Packages(true) { TrackingState = TrackingState.Added } };
+            if (xcuda_Goods_description == null) xcuda_Goods_description = new xcuda_Goods_description(true) { TrackingState = TrackingState.Added, xcuda_Item = this };
+            if (xcuda_Previous_doc == null) xcuda_Previous_doc = new xcuda_Previous_doc(true) { TrackingState = TrackingState.Added, xcuda_Item = this };
+            if (xcuda_Packages == null) xcuda_Packages = new List<xcuda_Packages>() { new xcuda_Packages(true) { TrackingState = TrackingState.Added, xcuda_Item = this } };
 
 
-            if (xcuda_Tarification == null) xcuda_Tarification = new xcuda_Tarification(true) { TrackingState = TrackingState.Added };
-            if (xcuda_Tarification.xcuda_HScode == null) xcuda_Tarification.xcuda_HScode = new xcuda_HScode(true) { TrackingState = TrackingState.Added };
-            if (xcuda_Tarification.Unordered_xcuda_Supplementary_unit == null) xcuda_Tarification.Unordered_xcuda_Supplementary_unit = new List<xcuda_Supplementary_unit>()  {new xcuda_Supplementary_unit(true) {TrackingState = TrackingState.Added}};
-            if (xcuda_Valuation_item == null) xcuda_Valuation_item = new xcuda_Valuation_item(true) { TrackingState = TrackingState.Added };
+            if (xcuda_Tarification == null) xcuda_Tarification = new xcuda_Tarification(true) { TrackingState = TrackingState.Added, xcuda_Item = this };
+            if (xcuda_Tarification.xcuda_HScode == null) xcuda_Tarification.xcuda_HScode = new xcuda_HScode(true) { TrackingState = TrackingState.Added, xcuda_Tarification = this.xcuda_Tarification };
+            if (xcuda_Tarification.Unordered_xcuda_Supplementary_unit == null) xcuda_Tarification.Unordered_xcuda_Supplementary_unit = new List<xcuda_Supplementary_unit>()  {new xcuda_Supplementary_unit(true) {TrackingState = TrackingState.Added, xcuda_Tarification = this.xcuda_Tarification}};
+            if (xcuda_Valuation_item == null) xcuda_Valuation_item = new xcuda_Valuation_item(true) { TrackingState = TrackingState.Added, xcuda_Item = this };
 
-            if (xcuda_Valuation_item.xcuda_Item_Invoice == null) xcuda_Valuation_item.xcuda_Item_Invoice = new xcuda_Item_Invoice(true){TrackingState = TrackingState.Added};
+            if (xcuda_Valuation_item.xcuda_Item_Invoice == null) xcuda_Valuation_item.xcuda_Item_Invoice = new xcuda_Item_Invoice(true){TrackingState = TrackingState.Added, xcuda_Valuation_item = this.xcuda_Valuation_item};
             if (xcuda_Valuation_item.xcuda_Weight_itm == null)
-                xcuda_Valuation_item.xcuda_Weight_itm = new xcuda_Weight_itm(true) { TrackingState = TrackingState.Added };
+                xcuda_Valuation_item.xcuda_Weight_itm = new xcuda_Weight_itm(true) { TrackingState = TrackingState.Added, xcuda_Valuation_item = this.xcuda_Valuation_item};
             if (xcuda_Valuation_item.xcuda_item_internal_freight == null)
-                xcuda_Valuation_item.xcuda_item_internal_freight = new xcuda_item_internal_freight(true) { TrackingState = TrackingState.Added };
+                xcuda_Valuation_item.xcuda_item_internal_freight = new xcuda_item_internal_freight(true) { TrackingState = TrackingState.Added, xcuda_Valuation_item = this.xcuda_Valuation_item};
             if (xcuda_Valuation_item.xcuda_item_external_freight == null)
-                xcuda_Valuation_item.xcuda_item_external_freight = new xcuda_item_external_freight(true) { TrackingState = TrackingState.Added };
+                xcuda_Valuation_item.xcuda_item_external_freight = new xcuda_item_external_freight(true) { TrackingState = TrackingState.Added, xcuda_Valuation_item = this.xcuda_Valuation_item};
             
         }
 
@@ -158,16 +158,15 @@ namespace DocumentItemDS.Business.Entities
             {
                 if (xcuda_Tarification != null)
                 {
-                    var xcudaSupplementaryUnit = xcuda_Tarification.xcuda_Supplementary_unit.FirstOrDefault();
+                    var xcudaSupplementaryUnit = xcuda_Tarification.xcuda_Supplementary_unit.FirstOrDefault(x => x.IsFirstRow == true);
                     if (xcudaSupplementaryUnit == null)
                     {
 
-                        xcuda_Tarification.Unordered_xcuda_Supplementary_unit.Add(new xcuda_Supplementary_unit(true){ Suppplementary_unit_quantity = value, TrackingState = TrackingState.Added});
+                        xcuda_Tarification.Unordered_xcuda_Supplementary_unit.Add(new xcuda_Supplementary_unit(true){ Suppplementary_unit_quantity = value, TrackingState = TrackingState.Added, IsFirstRow = true});
                     }
                     if (xcudaSupplementaryUnit != null)
                     {
-                        xcudaSupplementaryUnit.Suppplementary_unit_quantity =
-                           xcudaSupplementaryUnit.Suppplementary_unit_quantity + value;
+                        xcudaSupplementaryUnit.Suppplementary_unit_quantity = value;
                     }
                 }
             }
@@ -224,6 +223,6 @@ namespace DocumentItemDS.Business.Entities
         }
         [IgnoreDataMember]
         [NotMapped]
-        public int? EmailId { get; set; }
+        public string EmailId { get; set; }
     }
 }

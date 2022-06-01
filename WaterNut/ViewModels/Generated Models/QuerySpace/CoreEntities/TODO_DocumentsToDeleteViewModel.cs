@@ -278,7 +278,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             }
         }
 
-        public class TODO_DocumentsToDeleteExcelLine
+        public partial class TODO_DocumentsToDeleteExcelLine
         {
 		 
                     public string DocumentType { get; set; } 

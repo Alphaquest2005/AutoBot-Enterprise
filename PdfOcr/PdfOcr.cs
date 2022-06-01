@@ -62,16 +62,21 @@ namespace pdf_ocr
                 }
                 GetImageFromPdf(processFile, TempDir);
                 //Recognizing text from the generated image
-                var recognizedText = GetTextFromImage(pagemode, TempDir);
-                File.WriteAllText(processFile + ".txt", recognizedText);
-                Directory.Delete(TempDir, true);
-                return recognizedText;
+                return GetTextFromImage(pagemode, TempDir, processFile, true);
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
                 throw;
             }
+        }
+
+        public static string GetTextFromImage(PageSegMode pagemode, string TempDir, string processFile, bool deleteFolder)
+        {
+            var recognizedText = GetTextFromImage(pagemode, TempDir);
+            File.WriteAllText(processFile + ".txt", recognizedText);
+            if(deleteFolder) Directory.Delete(TempDir, true);
+            return recognizedText;
         }
 
         /// <summary>
@@ -124,10 +129,12 @@ namespace pdf_ocr
 
         private void PdfToPngWithGhostscriptPngDevice(string srcFile, int pageNo, int dpiX, int dpiY, string tgtFile)
         {
-            GhostscriptPngDevice dev = new GhostscriptPngDevice(GhostscriptPngDeviceType.PngGray);
-            dev.GraphicsAlphaBits = GhostscriptImageDeviceAlphaBits.V_4;
-            dev.TextAlphaBits = GhostscriptImageDeviceAlphaBits.V_4;
-            dev.ResolutionXY = new GhostscriptImageDeviceResolution(dpiX, dpiY);
+            GhostscriptPngDevice dev = new GhostscriptPngDevice(GhostscriptPngDeviceType.PngGray)
+ {
+     GraphicsAlphaBits = GhostscriptImageDeviceAlphaBits.V_4,
+     TextAlphaBits = GhostscriptImageDeviceAlphaBits.V_4,
+     ResolutionXY = new GhostscriptImageDeviceResolution(dpiX, dpiY)
+ };
             dev.InputFiles.Add(srcFile);
             dev.Pdf.FirstPage = pageNo;
             dev.Pdf.LastPage = pageNo;
@@ -143,13 +150,13 @@ namespace pdf_ocr
         /// <param name="TempDir"></param>
         /// <param name="imagePath"></param>
         /// <returns></returns>
-        private string GetTextFromImage(PageSegMode pagemode, string TempDir)
+        private static string GetTextFromImage(PageSegMode pagemode, string TempDir)
         {
             var result = new StringBuilder();
-            foreach (var file in new DirectoryInfo(TempDir).GetFiles().Where(x => x.Extension == ".png").OrderBy(x => x.LastWriteTime))
+
+            var files = new DirectoryInfo(TempDir).GetFiles().Where(x => x.Extension == ".png").OrderBy(x => x.LastWriteTime).ToList();
+            foreach (var file in files)
             {
-
-
                 using (var img = Pix.LoadFromFile(file.FullName))
                 {
                     using (var tesseractEngine = new TesseractEngine(Path.Combine(Environment.CurrentDirectory, "tessdata"), ocrLanguage, EngineMode.Default))

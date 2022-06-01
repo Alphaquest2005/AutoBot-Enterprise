@@ -265,6 +265,12 @@ namespace AdjustmentQS.Business.Services
                                         GetWhere<AdjustmentDetail>(dbContext, exp, itm.Value, "AdjustmentEx", "Select", includesLst)
 										.ConfigureAwait(continueOnCapturedContext: false);
 
+                            case "EntryDataDetails":
+                                return
+                                    await
+                                        GetWhere<EntryDataDetail>(dbContext, exp, itm.Value, "AdjustmentEx", "Select", includesLst)
+										.ConfigureAwait(continueOnCapturedContext: false);
+
                         }
 
                     }
@@ -779,6 +785,9 @@ namespace AdjustmentQS.Business.Services
                             case "AdjustmentDetails":
                                 return await CountWhere<AdjustmentDetail>(dbContext, exp, itm.Value, "AdjustmentEx", "Select")
 											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "EntryDataDetails":
+                                return await CountWhere<EntryDataDetail>(dbContext, exp, itm.Value, "AdjustmentEx", "Select")
+											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }
                     return await dbContext.AdjustmentExes.Where(exp == "All" || exp == null ? "EntryData_Id != null" : exp)
@@ -913,6 +922,12 @@ namespace AdjustmentQS.Business.Services
                                 return
                                     await
                                         LoadRangeWhere<AdjustmentDetail>(startIndex, count, dbContext, exp, itm.Value, "AdjustmentEx", "Select")
+													.ConfigureAwait(continueOnCapturedContext: false);
+
+                            case "EntryDataDetails":
+                                return
+                                    await
+                                        LoadRangeWhere<EntryDataDetail>(startIndex, count, dbContext, exp, itm.Value, "AdjustmentEx", "Select")
 													.ConfigureAwait(continueOnCapturedContext: false);
 
                           
@@ -1133,6 +1148,7 @@ namespace AdjustmentQS.Business.Services
                                                     // .Include(x => x.AdjustmentOvers)									  
                                                     // .Include(x => x.AdjustmentShorts)									  
                                                     // .Include(x => x.AdjustmentDetails)									  
+                                                    // .Include(x => x.EntryDataDetails)									  
                                       .AsNoTracking()
                                         .Where(x => x.ApplicationSettingsId.ToString() == ApplicationSettingsId.ToString())
 										.ToListAsync()
@@ -1159,7 +1175,7 @@ namespace AdjustmentQS.Business.Services
             {
                 using ( var dbContext = new AdjustmentQSContext(){StartTracking = StartTracking})
               {
-                var i = Convert.ToInt32(EmailId);
+                var i = EmailId;
                 var set = AddIncludes(includesLst, dbContext);
                 IEnumerable<AdjustmentEx> entities = await set//dbContext.AdjustmentExes
                                                     // .Include(x => x.AsycudaDocumentSets)									  
@@ -1167,6 +1183,7 @@ namespace AdjustmentQS.Business.Services
                                                     // .Include(x => x.AdjustmentOvers)									  
                                                     // .Include(x => x.AdjustmentShorts)									  
                                                     // .Include(x => x.AdjustmentDetails)									  
+                                                    // .Include(x => x.EntryDataDetails)									  
                                       .AsNoTracking()
                                         .Where(x => x.EmailId.ToString() == EmailId.ToString())
 										.ToListAsync()
@@ -1201,6 +1218,7 @@ namespace AdjustmentQS.Business.Services
                                                     // .Include(x => x.AdjustmentOvers)									  
                                                     // .Include(x => x.AdjustmentShorts)									  
                                                     // .Include(x => x.AdjustmentDetails)									  
+                                                    // .Include(x => x.EntryDataDetails)									  
                                       .AsNoTracking()
                                         .Where(x => x.FileTypeId.ToString() == FileTypeId.ToString())
 										.ToListAsync()
@@ -1290,6 +1308,9 @@ namespace AdjustmentQS.Business.Services
 											.ConfigureAwait(continueOnCapturedContext: false);
                             case "AdjustmentDetails":
                                 return await SumWhere<AdjustmentDetail>(dbContext, exp, itm.Value, "AdjustmentEx", field, "Select")
+											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "EntryDataDetails":
+                                return await SumWhere<EntryDataDetail>(dbContext, exp, itm.Value, "AdjustmentEx", field, "Select")
 											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }

@@ -10,6 +10,8 @@ using CoreEntities.Business.Entities;
 using DocumentDS.Business.Entities;
 using MoreLinq;
 using MoreLinq.Extensions;
+using WaterNut.Business.Services.Importers;
+using WaterNut.Business.Services.Utils;
 
 
 namespace WaterNut.DataSpace
@@ -25,25 +27,6 @@ namespace WaterNut.DataSpace
         public static SaveCSVModel Instance
         {
             get { return instance; }
-        }
-        internal  async Task GetFile(string filetype)
-        {
-
-            ////import asycuda xml id and details
-            //var od = new OpenFileDialog();
-            //od.Title = "Import Sales";
-            //od.DefaultExt = ".csv";
-            //od.Filter = "CSV Files (.csv)|*.csv";
-            //od.Multiselect = true;
-            //var result = od.ShowDialog();
-            //if (result == true)
-            //{
-            //    foreach (var f in od.FileNames)
-            //    {
-                   // await ProcessDroppedFile(f, filetype).ConfigureAwait(false);
-            //    }
-            //}
-            //MessageBox.Show("Complete","Asycuda Toolkit", MessageBoxButton.OK, MessageBoxImage.Exclamation);
         }
 
         public async Task ProcessDroppedFile(string droppedFilePath, FileTypes fileType, List<AsycudaDocumentSet> docSet, bool overWriteExisting)
@@ -63,7 +46,7 @@ namespace WaterNut.DataSpace
         {
             try
             {
-                var docSet = GetDocSets(fileType);
+                var docSet = Utils.GetDocSets(fileType);
                 await SaveCSV(droppedFilePath, fileType, docSet, overWriteExisting).ConfigureAwait(false);
             }
             catch (Exception Ex)
@@ -73,92 +56,33 @@ namespace WaterNut.DataSpace
 
         }
 
-        public List<AsycudaDocumentSet> GetDocSets(FileTypes fileType)
-        {
-            List<AsycudaDocumentSet> docSet;
-            using (var ctx = new DocumentDSContext())
-            {
-                docSet = new List<AsycudaDocumentSet>()
-                {
-                    ctx.AsycudaDocumentSets.Include(x => x.SystemDocumentSet).FirstOrDefault(x => x.AsycudaDocumentSetId == fileType.AsycudaDocumentSetId)
-                };
-                var ddocset = ctx.FileTypes.First(x => x.Id == fileType.Id).AsycudaDocumentSetId;
-                if (fileType.CopyEntryData)
-                    docSet.Add(ctx.AsycudaDocumentSets.Include(x => x.SystemDocumentSet).FirstOrDefault(x => x.AsycudaDocumentSetId == ddocset));
-                else
-                {
-                    if (ctx.SystemDocumentSets.FirstOrDefault(x => x.Id == ddocset) != null)
-                    {
-                        docSet.Clear();
-                        docSet.Add(ctx.AsycudaDocumentSets.Include(x => x.SystemDocumentSet).FirstOrDefault(x => x.AsycudaDocumentSetId == ddocset));
+        
 
-                    }
-                    
-                }
-                if (!docSet.Any()) throw new ApplicationException("Document Set with reference not found");
+        private async Task SaveCSV(string droppedFilePath, FileTypes fileType, List<AsycudaDocumentSet> docSet,
+            bool overWriteExisting)
+        {
+            var csvImporter = new CSVImporter(fileType);
+            var emailId = Utils.GetExistingEmailId(droppedFilePath, fileType);
+
+            var lines = csvImporter.GetFileLines(droppedFilePath).ToArray();
+           
+            var fixedHeadings = csvImporter.GetHeadings(lines).ToArray();
+
+            if (fileType.FileImporterInfos.EntryType == FileTypeManager.EntryTypes.SubItems)
+            {
+                await SaveCsvSubItems.Instance.ExtractSubItems(fileType.FileImporterInfos.EntryType, lines, fixedHeadings)
+                    .ConfigureAwait(false);
+            }
+            else
+            {
+                await SaveCsvEntryData.Instance
+                    .ExtractEntryData(fileType, lines, fixedHeadings, docSet, overWriteExisting, emailId,
+                        droppedFilePath).ConfigureAwait(false);
             }
 
-            return docSet;
         }
 
-        private  async Task SaveCSV(string droppedFilePath, FileTypes fileType, List<AsycudaDocumentSet> docSet, bool overWriteExisting)
-        {
-            try
-            {
-                int? emailId = null;
-               
-                using (var ctx = new CoreEntitiesContext())
-                {
-                    
-                    var res = ctx.AsycudaDocumentSet_Attachments.Where(x => x.Attachments.FilePath.Replace(".xlsx", "-Fixed.csv") == droppedFilePath 
-                                                                            || x.Attachments.FilePath == droppedFilePath) 
-                        .Select(x => new{x.EmailUniqueId, x.FileTypeId}).FirstOrDefault();
-                    emailId = res?.EmailUniqueId ?? Convert.ToInt32(fileType.EmailId == "0"  || fileType.EmailId == null ? null : fileType.EmailId);
-                   
-                }
-
-
-                var fileTxt = File.ReadAllText(droppedFilePath).Replace("�", " ");
-
-                foreach (var r in fileType.FileTypeReplaceRegex)
-                {
-                    var reg = new Regex(r.Regex, RegexOptions.IgnoreCase | RegexOptions.Multiline);
-                    fileTxt = reg.Replace(fileTxt, r.ReplacementRegEx, Int16.MaxValue);
-                }
-
-                var fixedtxt = Regex.Replace(fileTxt, ",\"[^\"\n]*\n", "");
-
-               
-                var lines = fixedtxt.Split(new string[] { "\n", "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
-                // identify header
-                var headerline = lines.FirstOrDefault();
-               
-
-                
-                if (headerline != null)
-                {
-                    var headings = headerline.CsvSplit();
-
-                    var headingswithnewLine = headings.Where(x => x.EndsWith("\r\n")).ToList();
-                    if (headingswithnewLine.Any())
-                        throw new ApplicationException(
-                            $"Headers contain New Line: {headingswithnewLine.Aggregate((o, n) => o + ", " + n)}");
-
-                    if (fileType.Type == "SI")
-                    {
-                        await SaveCsvSubItems.Instance.ExtractSubItems(fileType.Type, lines, headings).ConfigureAwait(false);
-                        return;
-                    }
-
-                    if (await SaveCsvEntryData.Instance.ExtractEntryData(fileType, lines, headings,  docSet, overWriteExisting, emailId.GetValueOrDefault(), droppedFilePath).ConfigureAwait(false)) return;
-                }
-            }
-            catch (Exception Ex)
-            {
-                throw;
-            }
-        }
-     
+        
 
 
     }

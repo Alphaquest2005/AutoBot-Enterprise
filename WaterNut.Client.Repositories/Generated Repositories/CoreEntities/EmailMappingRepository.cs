@@ -204,7 +204,8 @@ namespace CoreEntities.Client.Repositories
                     {
                   // ApplicationSettings = (res.ApplicationSettings != null?new ApplicationSettings(res.ApplicationSettings): null),    
                      // EmailFileTypes = new System.Collections.ObjectModel.ObservableCollection<EmailFileTypes>(res.EmailFileTypes.Select(y => new EmailFileTypes(y))),    
-                     // EmailInfoMappings = new System.Collections.ObjectModel.ObservableCollection<EmailInfoMappings>(res.EmailInfoMappings.Select(y => new EmailInfoMappings(y)))    
+                     // EmailInfoMappings = new System.Collections.ObjectModel.ObservableCollection<EmailInfoMappings>(res.EmailInfoMappings.Select(y => new EmailInfoMappings(y))),    
+                     // EmailMappingRexExs = new System.Collections.ObjectModel.ObservableCollection<EmailMappingRexExs>(res.EmailMappingRexExs.Select(y => new EmailMappingRexExs(y)))    
                   };
                     }
                     else

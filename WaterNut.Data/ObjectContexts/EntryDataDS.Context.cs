@@ -165,6 +165,22 @@ namespace EntryDataDS.Business.Entities
      
         public DbSet<ShipmentRiderManifests> ShipmentRiderManifests { get; set; }
      
+        public DbSet<ShipmentFreightManifests> ShipmentFreightManifests { get; set; }
+     
+        public DbSet<ShipmentPOs> ShipmentPOs { get; set; }
+     
+        public DbSet<ShipmentErrors_RepeatInvoices> ShipmentErrors_RepeatInvoices { get; set; }
+     
+        public DbSet<ShipmentErrors_RepeatMarks> ShipmentErrors_RepeatMarks { get; set; }
+     
+        public DbSet<xSalesDetails> xSalesDetails { get; set; }
+     
+        public DbSet<xSalesFiles> xSalesFiles { get; set; }
+     
+        public DbSet<SupportingDetail> SupportingDetails { get; set; }
+     
+        public DbSet<AsycudaDocumentEntryDataLine> AsycudaDocumentEntryDataLine { get; set; }
+     
 
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
@@ -286,6 +302,22 @@ namespace EntryDataDS.Business.Entities
             modelBuilder.Configurations.Add(new VolumeUnitsMap());
          
             modelBuilder.Configurations.Add(new ShipmentRiderManifestsMap());
+         
+            modelBuilder.Configurations.Add(new ShipmentFreightManifestsMap());
+         
+            modelBuilder.Configurations.Add(new ShipmentPOsMap());
+         
+            modelBuilder.Configurations.Add(new ShipmentErrors_RepeatInvoicesMap());
+         
+            modelBuilder.Configurations.Add(new ShipmentErrors_RepeatMarksMap());
+         
+            modelBuilder.Configurations.Add(new xSalesDetailsMap());
+         
+            modelBuilder.Configurations.Add(new xSalesFilesMap());
+         
+            modelBuilder.Configurations.Add(new SupportingDetailMap());
+         
+            modelBuilder.Configurations.Add(new AsycudaDocumentEntryDataLineMap());
          
             modelBuilder.Configurations.Add(new AdjustmentsMap());
       

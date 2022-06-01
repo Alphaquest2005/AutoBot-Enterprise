@@ -327,7 +327,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             }
         }
 
-        public class TODO_DiscrepanciesToAssessExcelLine
+        public partial class TODO_DiscrepanciesToAssessExcelLine
         {
 		 
                     public string Declarant_Reference_Number { get; set; } 

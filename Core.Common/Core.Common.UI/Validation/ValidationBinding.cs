@@ -46,8 +46,7 @@ namespace Core.Common.UI.Validation
                     GetValidationRulesFromDataContext(element.DataContext);
 
                     // Set the template
-                    var controlTemplate = element.TryFindResource("validationTemplate") as ControlTemplate;
-                    if (controlTemplate != null)
+                    if (element.TryFindResource("validationTemplate") is ControlTemplate controlTemplate)
                         System.Windows.Controls.Validation.SetErrorTemplate(element, controlTemplate);
                 }
             }

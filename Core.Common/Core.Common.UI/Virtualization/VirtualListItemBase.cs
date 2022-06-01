@@ -35,8 +35,7 @@ namespace Core.Common.UI.DataVirtualization
 
         private static void OnContentChanged(object sender, EventArgs e)
         {
-            var item = ((DependencyObject) sender).GetValue(ContentControl.ContentProperty) as VirtualListItemBase;
-            if (item != null)
+            if (((DependencyObject) sender).GetValue(ContentControl.ContentProperty) is VirtualListItemBase item)
                 item.LoadAsync();
         }
 

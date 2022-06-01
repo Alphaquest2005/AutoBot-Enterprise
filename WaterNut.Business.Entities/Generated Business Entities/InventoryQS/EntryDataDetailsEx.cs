@@ -471,7 +471,7 @@ namespace InventoryQS.Business.Entities
         }
         int _entrydata_id;
         [DataMember]
-        public Nullable<int> EmailId 
+        public string EmailId 
         {
             get
             {
@@ -484,7 +484,7 @@ namespace InventoryQS.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        Nullable<int> _emailid;
+        string _emailid;
         [DataMember]
         public Nullable<int> FileTypeId 
         {
@@ -560,6 +560,21 @@ namespace InventoryQS.Business.Entities
             }
         }
         Nullable<double> _volumeliters;
+        [DataMember]
+        public Nullable<int> PreviousCLineNumber 
+        {
+            get
+            {
+                return _previousclinenumber;
+            }
+            set
+            {
+                _previousclinenumber = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<int> _previousclinenumber;
         [DataMember]
         public InventoryItemsEx InventoryItemsEx { get; set; }
 

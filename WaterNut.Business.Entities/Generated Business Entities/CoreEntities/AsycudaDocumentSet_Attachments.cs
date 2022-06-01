@@ -101,21 +101,6 @@ namespace CoreEntities.Business.Entities
         }
         System.DateTime _filedate;
         [DataMember]
-        public Nullable<int> EmailUniqueId 
-        {
-            get
-            {
-                return _emailuniqueid;
-            }
-            set
-            {
-                _emailuniqueid = value;
-                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
-                NotifyPropertyChanged();
-            }
-        }
-        Nullable<int> _emailuniqueid;
-        [DataMember]
         public Nullable<int> FileTypeId 
         {
             get
@@ -130,6 +115,21 @@ namespace CoreEntities.Business.Entities
             }
         }
         Nullable<int> _filetypeid;
+        [DataMember]
+        public string EmailId 
+        {
+            get
+            {
+                return _emailid;
+            }
+            set
+            {
+                _emailid = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _emailid;
         [DataMember]
         public Attachments Attachments { get; set; }
         [DataMember]

@@ -24,6 +24,7 @@ namespace CoreEntities.Business.Entities
         {
             this.EmailFileTypes = new List<EmailFileTypes>();
             this.EmailInfoMappings = new List<EmailInfoMappings>();
+            this.EmailMappingRexExs = new List<EmailMappingRexExs>();
         }
 
         [DataMember]
@@ -102,11 +103,28 @@ namespace CoreEntities.Business.Entities
         }
         string _replacementvalue;
         [DataMember]
+        public Nullable<bool> InfoFirst 
+        {
+            get
+            {
+                return _infofirst;
+            }
+            set
+            {
+                _infofirst = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<bool> _infofirst;
+        [DataMember]
         public ApplicationSettings ApplicationSettings { get; set; }
         [DataMember]
         public List<EmailFileTypes> EmailFileTypes { get; set; }
         [DataMember]
         public List<EmailInfoMappings> EmailInfoMappings { get; set; }
+        [DataMember]
+        public List<EmailMappingRexExs> EmailMappingRexExs { get; set; }
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

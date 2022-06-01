@@ -573,6 +573,24 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 
  
 
+		private string _emailIdFilter;
+        public string EmailIdFilter
+        {
+            get
+            {
+                return _emailIdFilter;
+            }
+            set
+            {
+                _emailIdFilter = value;
+				NotifyPropertyChanged(x => EmailIdFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
+
 		private Double? _quantityFilter;
         public Double? QuantityFilter
         {
@@ -937,6 +955,10 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 						res.Append(" && " + string.Format("ItemDescription.Contains(\"{0}\")",  ItemDescriptionFilter));						
  
 
+									if(string.IsNullOrEmpty(EmailIdFilter) == false)
+						res.Append(" && " + string.Format("EmailId.Contains(\"{0}\")",  EmailIdFilter));						
+ 
+
 					if(QuantityFilter.HasValue)
 						res.Append(" && " + string.Format("Quantity == {0}",  QuantityFilter.ToString()));				 
 
@@ -1066,6 +1088,9 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     ItemDescription = x.ItemDescription ,
                     
  
+                    EmailId = x.EmailId ,
+                    
+ 
                     Quantity = x.Quantity ,
                     
  
@@ -1100,7 +1125,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             }
         }
 
-        public class TODO_DiscrepanciesAlreadyXMLedExcelLine
+        public partial class TODO_DiscrepanciesAlreadyXMLedExcelLine
         {
 		 
                     public Nullable<bool> IsClassified { get; set; } 
@@ -1152,6 +1177,9 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     
  
                     public string ItemDescription { get; set; } 
+                    
+ 
+                    public string EmailId { get; set; } 
                     
  
                     public double Quantity { get; set; } 

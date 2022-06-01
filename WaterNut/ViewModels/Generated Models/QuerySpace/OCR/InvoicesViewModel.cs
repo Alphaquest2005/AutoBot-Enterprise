@@ -299,7 +299,7 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
             }
         }
 
-        public class InvoicesExcelLine
+        public partial class InvoicesExcelLine
         {
 		 
                     public string Name { get; set; } 

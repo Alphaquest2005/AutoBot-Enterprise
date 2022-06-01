@@ -678,6 +678,21 @@ namespace CoreEntities.Business.Entities
         }
         Nullable<bool> _requirepos;
         [DataMember]
+        public Nullable<bool> ExportNullTariffCodes 
+        {
+            get
+            {
+                return _exportnulltariffcodes;
+            }
+            set
+            {
+                _exportnulltariffcodes = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<bool> _exportnulltariffcodes;
+        [DataMember]
         public List<AsycudaDocumentSetEx> AsycudaDocumentSetEx { get; set; }
         [DataMember]
         public List<AsycudaDocument> AsycudaDocument { get; set; }

@@ -134,6 +134,10 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 
             void CurrentEmails__propertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
                 {
+                    //if (e.PropertyName == "AddApplicationSettings")
+                   // {
+                   //    if(ApplicationSettings.Contains(CurrentEmails.ApplicationSettings) == false) ApplicationSettings.Add(CurrentEmails.ApplicationSettings);
+                    //}
                  } 
         internal virtual void OnEmailsChanged(object sender, NotificationEventArgs e)
         {
@@ -145,11 +149,25 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
  
   			// Core Current Entities Changed
 			// theorticall don't need this cuz i am inheriting from core entities baseview model so changes should flow up to here
+                internal virtual void OnCurrentApplicationSettingsChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<ApplicationSettings> e)
+				{
+				if (e.Data == null || e.Data.ApplicationSettingsId == null)
+                {
+                    vloader.FilterExpression = null;
+                }
+                else
+                {
+                    vloader.FilterExpression = string.Format("ApplicationSettingsId == {0}", e.Data.ApplicationSettingsId.ToString());
+                }
+					
+                    Emails.Refresh();
+					NotifyPropertyChanged(x => this.Emails);
+				}
   
 // Filtering Each Field except IDs
 		public void ViewAll()
         {
-		vloader.FilterExpression = "All";
+			vloader.FilterExpression = $"ApplicationSettingsId == {CoreEntities.ViewModels.BaseViewModel.Instance.CurrentApplicationSettings.ApplicationSettingsId}";
 
 
 
@@ -238,6 +256,42 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
         }	
 
  
+
+		private string _emailIdFilter;
+        public string EmailIdFilter
+        {
+            get
+            {
+                return _emailIdFilter;
+            }
+            set
+            {
+                _emailIdFilter = value;
+				NotifyPropertyChanged(x => EmailIdFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
+
+		private string _machineNameFilter;
+        public string MachineNameFilter
+        {
+            get
+            {
+                return _machineNameFilter;
+            }
+            set
+            {
+                _machineNameFilter = value;
+				NotifyPropertyChanged(x => MachineNameFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
 		internal bool DisableBaseFilterData = false;
         public virtual void FilterData()
 	    {
@@ -299,7 +353,15 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 							if(EmailDateFilter.HasValue)
 								res.Append(" && " + string.Format("EmailDate == \"{0}\"",  Convert.ToDateTime(EmailDateFilter).Date.ToString("MM/dd/yyyy")));
 						}
-							return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
+				 
+
+									if(string.IsNullOrEmpty(EmailIdFilter) == false)
+						res.Append(" && " + string.Format("EmailId.Contains(\"{0}\")",  EmailIdFilter));						
+ 
+
+									if(string.IsNullOrEmpty(MachineNameFilter) == false)
+						res.Append(" && " + string.Format("MachineName.Contains(\"{0}\")",  MachineNameFilter));						
+			return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
 // Send to Excel Implementation
@@ -325,7 +387,13 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     Subject = x.Subject ,
                     
  
-                    EmailDate = x.EmailDate 
+                    EmailDate = x.EmailDate ,
+                    
+ 
+                    EmailId = x.EmailId ,
+                    
+ 
+                    MachineName = x.MachineName 
                     
                 }).ToList()
             };
@@ -335,13 +403,19 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             }
         }
 
-        public class EmailsExcelLine
+        public partial class EmailsExcelLine
         {
 		 
                     public string Subject { get; set; } 
                     
  
                     public System.DateTime EmailDate { get; set; } 
+                    
+ 
+                    public string EmailId { get; set; } 
+                    
+ 
+                    public string MachineName { get; set; } 
                     
         }
 

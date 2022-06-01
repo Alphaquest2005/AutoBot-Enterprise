@@ -241,6 +241,18 @@ namespace AllocationDS.Business.Services
                                         GetWhere<EntryDataDetails>(dbContext, exp, itm.Value, "AsycudaDocumentItemEntryDataDetails", "SelectMany", includesLst)
 										.ConfigureAwait(continueOnCapturedContext: false);
 
+                            case "AsycudaDocument":
+                                return
+                                    await
+                                        GetWhere<AsycudaDocument>(dbContext, exp, itm.Value, "AsycudaDocumentItemEntryDataDetails", "SelectMany", includesLst)
+										.ConfigureAwait(continueOnCapturedContext: false);
+
+                            case "xcuda_Item":
+                                return
+                                    await
+                                        GetWhere<xcuda_Item>(dbContext, exp, itm.Value, "AsycudaDocumentItemEntryDataDetails", "SelectMany", includesLst)
+										.ConfigureAwait(continueOnCapturedContext: false);
+
                         }
 
                     }
@@ -743,6 +755,12 @@ namespace AllocationDS.Business.Services
                             case "EntryDataDetails":
                                 return await CountWhere<EntryDataDetails>(dbContext, exp, itm.Value, "AsycudaDocumentItemEntryDataDetails", "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "AsycudaDocument":
+                                return await CountWhere<AsycudaDocument>(dbContext, exp, itm.Value, "AsycudaDocumentItemEntryDataDetails", "SelectMany")
+											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "xcuda_Item":
+                                return await CountWhere<xcuda_Item>(dbContext, exp, itm.Value, "AsycudaDocumentItemEntryDataDetails", "SelectMany")
+											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }
                     return await dbContext.AsycudaDocumentItemEntryDataDetails.Where(exp == "All" || exp == null ? "EntryDataDetailsId != null" : exp)
@@ -853,6 +871,18 @@ namespace AllocationDS.Business.Services
                                 return
                                     await
                                         LoadRangeWhere<EntryDataDetails>(startIndex, count, dbContext, exp, itm.Value, "AsycudaDocumentItemEntryDataDetails", "SelectMany")
+													.ConfigureAwait(continueOnCapturedContext: false);
+
+                            case "AsycudaDocument":
+                                return
+                                    await
+                                        LoadRangeWhere<AsycudaDocument>(startIndex, count, dbContext, exp, itm.Value, "AsycudaDocumentItemEntryDataDetails", "SelectMany")
+													.ConfigureAwait(continueOnCapturedContext: false);
+
+                            case "xcuda_Item":
+                                return
+                                    await
+                                        LoadRangeWhere<xcuda_Item>(startIndex, count, dbContext, exp, itm.Value, "AsycudaDocumentItemEntryDataDetails", "SelectMany")
 													.ConfigureAwait(continueOnCapturedContext: false);
 
                           
@@ -1116,6 +1146,12 @@ namespace AllocationDS.Business.Services
                         {
                             case "EntryDataDetails":
                                 return await SumWhere<EntryDataDetails>(dbContext, exp, itm.Value, "AsycudaDocumentItemEntryDataDetails", field, "SelectMany")
+											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "AsycudaDocument":
+                                return await SumWhere<AsycudaDocument>(dbContext, exp, itm.Value, "AsycudaDocumentItemEntryDataDetails", field, "SelectMany")
+											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "xcuda_Item":
+                                return await SumWhere<xcuda_Item>(dbContext, exp, itm.Value, "AsycudaDocumentItemEntryDataDetails", field, "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }

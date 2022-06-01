@@ -11,7 +11,7 @@
     {
         public TODO_TotalAdjustmentsToProcessMap()
         {                        
-              this.HasKey(t => new {t.EntryDataDetailsId, t.EntryDataId, t.ItemNumber, t.Quantity, t.ItemDescription, t.Cost, t.QtyAllocated, t.UnitWeight, t.ApplicationSettingsId, t.InvoiceDate, t.Subject, t.EmailDate, t.DutyFreePaid});        
+              this.HasKey(t => new {t.EntryDataDetailsId, t.ApplicationSettingsId});        
               this.ToTable("TODO-TotalAdjustmentsToProcess");
               this.Property(t => t.EntryDataDetailsId).HasColumnName("EntryDataDetailsId").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.None));
               this.Property(t => t.EntryDataId).HasColumnName("EntryDataId").IsRequired().HasMaxLength(50);
@@ -40,9 +40,9 @@
               this.Property(t => t.Type).HasColumnName("Type").HasMaxLength(50);
               this.Property(t => t.Declarant_Reference_Number).HasColumnName("Declarant_Reference_Number").HasMaxLength(50);
               this.Property(t => t.InvoiceDate).HasColumnName("InvoiceDate");
-              this.Property(t => t.Subject).HasColumnName("Subject").IsRequired();
+              this.Property(t => t.Subject).HasColumnName("Subject");
               this.Property(t => t.EmailDate).HasColumnName("EmailDate");
-              this.Property(t => t.DutyFreePaid).HasColumnName("DutyFreePaid").IsRequired().HasMaxLength(50);
+              this.Property(t => t.DutyFreePaid).HasColumnName("DutyFreePaid").HasMaxLength(50);
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);
     			this.Ignore(t => t.ModifiedProperties);

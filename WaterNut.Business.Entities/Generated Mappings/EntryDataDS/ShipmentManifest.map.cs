@@ -39,7 +39,7 @@
               this.Property(t => t.Goods).HasColumnName("Goods").IsRequired().HasMaxLength(1000);
               this.Property(t => t.Marks).HasColumnName("Marks").IsRequired().HasMaxLength(1000);
               this.Property(t => t.Containers).HasColumnName("Containers");
-              this.Property(t => t.EmailId).HasColumnName("EmailId");
+              this.Property(t => t.EmailId).HasColumnName("EmailId").HasMaxLength(255);
               this.Property(t => t.SourceFile).HasColumnName("SourceFile").IsRequired();
               this.Property(t => t.ApplicationSettingsId).HasColumnName("ApplicationSettingsId");
               this.Property(t => t.FileTypeId).HasColumnName("FileTypeId");
@@ -47,6 +47,7 @@
               this.HasMany(t => t.ShipmentManifestDetails).WithRequired(t => (ShipmentManifest)t.ShipmentManifest);
               this.HasMany(t => t.ShipmentManifestBLs).WithRequired(t => (ShipmentManifest)t.ShipmentManifest);
               this.HasMany(t => t.ShipmentRiderManifests).WithRequired(t => (ShipmentManifest)t.ShipmentManifest);
+              this.HasMany(t => t.ShipmentFreightManifests).WithRequired(t => (ShipmentManifest)t.ShipmentManifest);
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);
     			this.Ignore(t => t.ModifiedProperties);

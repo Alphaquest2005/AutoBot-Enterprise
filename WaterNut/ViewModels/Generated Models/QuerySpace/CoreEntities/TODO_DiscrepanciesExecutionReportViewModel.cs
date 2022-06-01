@@ -401,6 +401,24 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 
  
 
+		private string _emailIdFilter;
+        public string EmailIdFilter
+        {
+            get
+            {
+                return _emailIdFilter;
+            }
+            set
+            {
+                _emailIdFilter = value;
+				NotifyPropertyChanged(x => EmailIdFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
+
 		private string _xCNumberFilter;
         public string xCNumberFilter
         {
@@ -436,9 +454,41 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
         }	
 
  
+		private DateTime? _startxRegistrationDateFilter = DateTime.Parse(string.Format("{0}/1/{1}", DateTime.Now.Month ,DateTime.Now.Year));
+        public DateTime? StartxRegistrationDateFilter
+        {
+            get
+            {
+                return _startxRegistrationDateFilter;
+            }
+            set
+            {
+                _startxRegistrationDateFilter = value;
+				NotifyPropertyChanged(x => StartxRegistrationDateFilter);
+                FilterData();
+                
+            }
+        }	
 
-		private string _xRegistrationDateFilter;
-        public string xRegistrationDateFilter
+		private DateTime? _endxRegistrationDateFilter = DateTime.Parse(string.Format("{1}/{0}/{2}", DateTime.DaysInMonth( DateTime.Now.Year,DateTime.Now.Month), DateTime.Now.Month, DateTime.Now.Year));
+        public DateTime? EndxRegistrationDateFilter
+        {
+            get
+            {
+                return _endxRegistrationDateFilter;
+            }
+            set
+            {
+                _endxRegistrationDateFilter = value;
+				NotifyPropertyChanged(x => EndxRegistrationDateFilter);
+                FilterData();
+                
+            }
+        }
+ 
+
+		private DateTime? _xRegistrationDateFilter;
+        public DateTime? xRegistrationDateFilter
         {
             get
             {
@@ -547,6 +597,10 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 						res.Append(" && " + string.Format("Declarant_Reference_Number.Contains(\"{0}\")",  Declarant_Reference_NumberFilter));						
  
 
+									if(string.IsNullOrEmpty(EmailIdFilter) == false)
+						res.Append(" && " + string.Format("EmailId.Contains(\"{0}\")",  EmailIdFilter));						
+ 
+
 									if(string.IsNullOrEmpty(xCNumberFilter) == false)
 						res.Append(" && " + string.Format("xCNumber.Contains(\"{0}\")",  xCNumberFilter));						
  
@@ -554,9 +608,34 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 					if(xLineNumberFilter.HasValue)
 						res.Append(" && " + string.Format("xLineNumber == {0}",  xLineNumberFilter.ToString()));				 
 
-									if(string.IsNullOrEmpty(xRegistrationDateFilter) == false)
-						res.Append(" && " + string.Format("xRegistrationDate.Contains(\"{0}\")",  xRegistrationDateFilter));						
-			return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
+ 
+
+				if (Convert.ToDateTime(StartxRegistrationDateFilter).Date != DateTime.MinValue &&
+		        Convert.ToDateTime(EndxRegistrationDateFilter).Date != DateTime.MinValue) res.Append(" && (");
+
+					if (Convert.ToDateTime(StartxRegistrationDateFilter).Date != DateTime.MinValue)
+						{
+							if(StartxRegistrationDateFilter.HasValue)
+								res.Append(
+                                            (Convert.ToDateTime(EndxRegistrationDateFilter).Date != DateTime.MinValue?"":" && ") +
+                                            string.Format("xRegistrationDate >= \"{0}\"",  Convert.ToDateTime(StartxRegistrationDateFilter).Date.ToString("MM/dd/yyyy")));
+						}
+
+					if (Convert.ToDateTime(EndxRegistrationDateFilter).Date != DateTime.MinValue)
+						{
+							if(EndxRegistrationDateFilter.HasValue)
+								res.Append(" && " + string.Format("xRegistrationDate <= \"{0}\"",  Convert.ToDateTime(EndxRegistrationDateFilter).Date.AddHours(23).ToString("MM/dd/yyyy HH:mm:ss")));
+						}
+
+				if (Convert.ToDateTime(StartxRegistrationDateFilter).Date != DateTime.MinValue &&
+		        Convert.ToDateTime(EndxRegistrationDateFilter).Date != DateTime.MinValue) res.Append(" )");
+
+					if (Convert.ToDateTime(_xRegistrationDateFilter).Date != DateTime.MinValue)
+						{
+							if(xRegistrationDateFilter.HasValue)
+								res.Append(" && " + string.Format("xRegistrationDate == \"{0}\"",  Convert.ToDateTime(xRegistrationDateFilter).Date.ToString("MM/dd/yyyy")));
+						}
+							return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
 // Send to Excel Implementation
@@ -609,6 +688,9 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     Declarant_Reference_Number = x.Declarant_Reference_Number ,
                     
  
+                    EmailId = x.EmailId ,
+                    
+ 
                     xCNumber = x.xCNumber ,
                     
  
@@ -625,7 +707,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             }
         }
 
-        public class TODO_DiscrepanciesExecutionReportExcelLine
+        public partial class TODO_DiscrepanciesExecutionReportExcelLine
         {
 		 
                     public Nullable<bool> IsClassified { get; set; } 
@@ -658,13 +740,16 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     public string Declarant_Reference_Number { get; set; } 
                     
  
+                    public string EmailId { get; set; } 
+                    
+ 
                     public string xCNumber { get; set; } 
                     
  
                     public Nullable<int> xLineNumber { get; set; } 
                     
  
-                    public string xRegistrationDate { get; set; } 
+                    public Nullable<System.DateTime> xRegistrationDate { get; set; } 
                     
         }
 

@@ -732,6 +732,24 @@ namespace WaterNut.QuerySpace.InventoryQS.ViewModels
 
  
 
+		private string _emailIdFilter;
+        public string EmailIdFilter
+        {
+            get
+            {
+                return _emailIdFilter;
+            }
+            set
+            {
+                _emailIdFilter = value;
+				NotifyPropertyChanged(x => EmailIdFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
+
 		private string _nameFilter;
         public string NameFilter
         {
@@ -779,6 +797,24 @@ namespace WaterNut.QuerySpace.InventoryQS.ViewModels
             {
                 _volumeLitersFilter = value;
 				NotifyPropertyChanged(x => VolumeLitersFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
+
+		private Int32? _previousCLineNumberFilter;
+        public Int32? PreviousCLineNumberFilter
+        {
+            get
+            {
+                return _previousCLineNumberFilter;
+            }
+            set
+            {
+                _previousCLineNumberFilter = value;
+				NotifyPropertyChanged(x => PreviousCLineNumberFilter);
                 FilterData();
                 
             }
@@ -933,6 +969,10 @@ namespace WaterNut.QuerySpace.InventoryQS.ViewModels
 					if(TaxAmountFilter.HasValue)
 						res.Append(" && " + string.Format("TaxAmount == {0}",  TaxAmountFilter.ToString()));				 
 
+									if(string.IsNullOrEmpty(EmailIdFilter) == false)
+						res.Append(" && " + string.Format("EmailId.Contains(\"{0}\")",  EmailIdFilter));						
+ 
+
 									if(string.IsNullOrEmpty(NameFilter) == false)
 						res.Append(" && " + string.Format("Name.Contains(\"{0}\")",  NameFilter));						
  
@@ -941,7 +981,10 @@ namespace WaterNut.QuerySpace.InventoryQS.ViewModels
 						res.Append(" && " + string.Format("FileLineNumber == {0}",  FileLineNumberFilter.ToString()));				 
 
 					if(VolumeLitersFilter.HasValue)
-						res.Append(" && " + string.Format("VolumeLiters == {0}",  VolumeLitersFilter.ToString()));							return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
+						res.Append(" && " + string.Format("VolumeLiters == {0}",  VolumeLitersFilter.ToString()));				 
+
+					if(PreviousCLineNumberFilter.HasValue)
+						res.Append(" && " + string.Format("PreviousCLineNumber == {0}",  PreviousCLineNumberFilter.ToString()));							return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
 // Send to Excel Implementation
@@ -1042,13 +1085,19 @@ namespace WaterNut.QuerySpace.InventoryQS.ViewModels
                     TaxAmount = x.TaxAmount ,
                     
  
+                    EmailId = x.EmailId ,
+                    
+ 
                     Name = x.Name ,
                     
  
                     FileLineNumber = x.FileLineNumber ,
                     
  
-                    VolumeLiters = x.VolumeLiters 
+                    VolumeLiters = x.VolumeLiters ,
+                    
+ 
+                    PreviousCLineNumber = x.PreviousCLineNumber 
                     
                 }).ToList()
             };
@@ -1058,7 +1107,7 @@ namespace WaterNut.QuerySpace.InventoryQS.ViewModels
             }
         }
 
-        public class EntryDataDetailsExExcelLine
+        public partial class EntryDataDetailsExExcelLine
         {
 		 
                     public string EntryDataId { get; set; } 
@@ -1139,6 +1188,9 @@ namespace WaterNut.QuerySpace.InventoryQS.ViewModels
                     public Nullable<double> TaxAmount { get; set; } 
                     
  
+                    public string EmailId { get; set; } 
+                    
+ 
                     public string Name { get; set; } 
                     
  
@@ -1146,6 +1198,9 @@ namespace WaterNut.QuerySpace.InventoryQS.ViewModels
                     
  
                     public Nullable<double> VolumeLiters { get; set; } 
+                    
+ 
+                    public Nullable<int> PreviousCLineNumber { get; set; } 
                     
         }
 

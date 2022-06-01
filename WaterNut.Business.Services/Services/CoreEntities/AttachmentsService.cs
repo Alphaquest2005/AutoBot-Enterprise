@@ -247,6 +247,12 @@ namespace CoreEntities.Business.Services
                                         GetWhere<AsycudaDocument_Attachments>(dbContext, exp, itm.Value, "Attachments", "Select", includesLst)
 										.ConfigureAwait(continueOnCapturedContext: false);
 
+                            case "EmailAttachments":
+                                return
+                                    await
+                                        GetWhere<EmailAttachments>(dbContext, exp, itm.Value, "Attachments", "Select", includesLst)
+										.ConfigureAwait(continueOnCapturedContext: false);
+
                         }
 
                     }
@@ -752,6 +758,9 @@ namespace CoreEntities.Business.Services
                             case "AsycudaDocument_Attachments":
                                 return await CountWhere<AsycudaDocument_Attachments>(dbContext, exp, itm.Value, "Attachments", "Select")
 											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "EmailAttachments":
+                                return await CountWhere<EmailAttachments>(dbContext, exp, itm.Value, "Attachments", "Select")
+											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }
                     return await dbContext.Attachments.Where(exp == "All" || exp == null ? "Id != null" : exp)
@@ -868,6 +877,12 @@ namespace CoreEntities.Business.Services
                                 return
                                     await
                                         LoadRangeWhere<AsycudaDocument_Attachments>(startIndex, count, dbContext, exp, itm.Value, "Attachments", "Select")
+													.ConfigureAwait(continueOnCapturedContext: false);
+
+                            case "EmailAttachments":
+                                return
+                                    await
+                                        LoadRangeWhere<EmailAttachments>(startIndex, count, dbContext, exp, itm.Value, "Attachments", "Select")
 													.ConfigureAwait(continueOnCapturedContext: false);
 
                           
@@ -1085,6 +1100,7 @@ namespace CoreEntities.Business.Services
                 IEnumerable<Attachments> entities = await set//dbContext.Attachments
                                                     // .Include(x => x.AsycudaDocumentSet_Attachments)									  
                                                     // .Include(x => x.AsycudaDocument_Attachments)									  
+                                                    // .Include(x => x.EmailAttachments)									  
                                       .AsNoTracking()
                                         .Where(x => x.EmailId.ToString() == EmailId.ToString())
 										.ToListAsync()
@@ -1165,6 +1181,9 @@ namespace CoreEntities.Business.Services
 											.ConfigureAwait(continueOnCapturedContext: false);
                             case "AsycudaDocument_Attachments":
                                 return await SumWhere<AsycudaDocument_Attachments>(dbContext, exp, itm.Value, "Attachments", field, "Select")
+											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "EmailAttachments":
+                                return await SumWhere<EmailAttachments>(dbContext, exp, itm.Value, "Attachments", field, "Select")
 											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }

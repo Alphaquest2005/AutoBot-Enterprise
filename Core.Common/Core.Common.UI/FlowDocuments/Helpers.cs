@@ -28,9 +28,11 @@ namespace Core.Common.UI.FlowDocuments
         /// <param name="element"></param>
         public static void FixupDataContext(FrameworkContentElement element)
         {
-            var b = new Binding(FrameworkContentElement.DataContextProperty.Name);
-            // another approach (if this one has problems) is to bind to an ancestor by ElementName
-            b.RelativeSource = new RelativeSource(RelativeSourceMode.FindAncestor, typeof(FrameworkElement), 1);
+            var b = new Binding(FrameworkContentElement.DataContextProperty.Name)
+            {
+                // another approach (if this one has problems) is to bind to an ancestor by ElementName
+                RelativeSource = new RelativeSource(RelativeSourceMode.FindAncestor, typeof(FrameworkElement), 1)
+            };
             element.SetBinding(FrameworkContentElement.DataContextProperty, b);
         }
 
@@ -55,8 +57,8 @@ namespace Core.Common.UI.FlowDocuments
 
             // as soon as we have disconnected a binding, return. Don't continue the enumeration, since the collection may have changed
             foreach (var child in LogicalTreeHelper.GetChildren(dp))
-                if (child is DependencyObject)
-                    if (InternalUnFixupDataContext((DependencyObject) child))
+                if (child is DependencyObject dependencyObject)
+                    if (InternalUnFixupDataContext(dependencyObject))
                         return true;
             return false;
         }
@@ -77,24 +79,26 @@ namespace Core.Common.UI.FlowDocuments
         /// <returns></returns>
         public static Block ConvertToBlock(object dataContext, object data)
         {
-            if (data is Block) return (Block) data;
+            if (data is Block block) return block;
 
-            if (data is Inline) return new Paragraph((Inline) data);
+            if (data is Inline inline) return new Paragraph(inline);
 
-            if (data is BindingBase)
+            if (data is BindingBase @base)
             {
                 var run = new Run();
-                if (dataContext is BindingBase)
-                    run.SetBinding(FrameworkContentElement.DataContextProperty, (BindingBase) dataContext);
+                if (dataContext is BindingBase context)
+                    run.SetBinding(FrameworkContentElement.DataContextProperty, context);
                 else
                     run.DataContext = dataContext;
-                run.SetBinding(Run.TextProperty, (BindingBase) data);
+                run.SetBinding(Run.TextProperty, @base);
                 return new Paragraph(run);
             }
             else
             {
-                var run = new Run();
-                run.Text = data == null ? string.Empty : data.ToString();
+                var run = new Run
+                {
+                    Text = data == null ? string.Empty : data.ToString()
+                };
                 return new Paragraph(run);
             }
         }
@@ -103,11 +107,11 @@ namespace Core.Common.UI.FlowDocuments
         public static FrameworkContentElement LoadDataTemplate(DataTemplate dataTemplate)
         {
             object content = dataTemplate.LoadContent();
-            if (content is Fragment) return ((Fragment) content).Content;
+            if (content is Fragment fragment) return fragment.Content;
 
-            if (content is TextBlock)
+            if (content is TextBlock block)
             {
-                var inlines = ((TextBlock) content).Inlines;
+                var inlines = block.Inlines;
                 if (inlines.Count == 1) return inlines.FirstInline;
 
                 var paragraph = new Paragraph();

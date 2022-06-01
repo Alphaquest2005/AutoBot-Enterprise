@@ -23,7 +23,7 @@
               this.Property(t => t.Prev_net_weight).HasColumnName("Prev_net_weight");
               this.Property(t => t.Prev_reg_ser).HasColumnName("Prev_reg_ser").HasMaxLength(20);
               this.Property(t => t.Prev_reg_nbr).HasColumnName("Prev_reg_nbr").HasMaxLength(20);
-              this.Property(t => t.Prev_reg_dat).HasColumnName("Prev_reg_dat").HasMaxLength(20);
+              this.Property(t => t.Prev_reg_dat).HasColumnName("Prev_reg_dat");
               this.Property(t => t.Prev_reg_cuo).HasColumnName("Prev_reg_cuo").HasMaxLength(20);
               this.Property(t => t.Suplementary_Quantity).HasColumnName("Suplementary_Quantity");
               this.Property(t => t.Preveious_suplementary_quantity).HasColumnName("Preveious_suplementary_quantity");

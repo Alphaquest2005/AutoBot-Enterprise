@@ -87,19 +87,6 @@ namespace CoreEntities.Client.DTO
         private System.DateTime _FileDate;
 
         [DataMember]
-        public Nullable<int> EmailUniqueId
-		{ 
-		    get { return _EmailUniqueId; }
-			set
-			{
-			    if (value == _EmailUniqueId) return;
-				_EmailUniqueId = value;
-				NotifyPropertyChanged();//m => this.EmailUniqueId
-			}
-		}
-        private Nullable<int> _EmailUniqueId;
-
-        [DataMember]
         public Nullable<int> FileTypeId
 		{ 
 		    get { return _FileTypeId; }
@@ -111,6 +98,19 @@ namespace CoreEntities.Client.DTO
 			}
 		}
         private Nullable<int> _FileTypeId;
+
+        [DataMember]
+        public string EmailId
+		{ 
+		    get { return _EmailId; }
+			set
+			{
+			    if (value == _EmailId) return;
+				_EmailId = value;
+				NotifyPropertyChanged();//m => this.EmailId
+			}
+		}
+        private string _EmailId;
 
        
         [DataMember]

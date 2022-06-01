@@ -20,6 +20,8 @@ namespace AllocationDS.Business.Entities
         //{
         //    get { return this.TaxAmount == 0 ? "Duty Free" : "Duty Paid"; }
         //}
+
+        [IgnoreDataMember] [NotMapped] public string EntryDataType { get; set; } = "Sales";
     }
 }
 

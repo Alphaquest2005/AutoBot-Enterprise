@@ -18,8 +18,8 @@
               this.Property(t => t.AsycudaDocumentSetId).HasColumnName("AsycudaDocumentSetId");
               this.Property(t => t.DocumentSpecific).HasColumnName("DocumentSpecific");
               this.Property(t => t.FileDate).HasColumnName("FileDate");
-              this.Property(t => t.EmailUniqueId).HasColumnName("EmailUniqueId");
               this.Property(t => t.FileTypeId).HasColumnName("FileTypeId");
+              this.Property(t => t.EmailId).HasColumnName("EmailId").HasMaxLength(255);
               this.HasRequired(t => t.AsycudaDocumentSet).WithMany(t =>(ICollection<AsycudaDocumentSet_Attachments>) t.AsycudaDocumentSet_Attachments).HasForeignKey(d => d.AsycudaDocumentSetId);
               this.HasRequired(t => t.Attachment).WithMany(t =>(ICollection<AsycudaDocumentSet_Attachments>) t.AsycudaDocumentSet_Attachments).HasForeignKey(d => d.AttachmentId);
               this.HasOptional(t => t.FileType).WithMany(t =>(ICollection<AsycudaDocumentSet_Attachments>) t.AsycudaDocumentSet_Attachments).HasForeignKey(d => d.FileTypeId);

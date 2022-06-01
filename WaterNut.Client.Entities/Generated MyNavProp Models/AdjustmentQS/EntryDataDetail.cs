@@ -13,26 +13,6 @@ namespace AdjustmentQS.Client.Entities
 {
     public partial class EntryDataDetail
     {
-        
-            partial void MyNavPropStartUp()
-            {
-
-              PropertyChanged += UpdateMyNavProp;
-
-            }
-
-
-      
-       #region MyNavProp Entities
-      
-      
-
-        void UpdateMyNavProp(object sender, System.ComponentModel.PropertyChangedEventArgs e)
-        {
-        }
-       
-
-         #endregion
  
     }
    

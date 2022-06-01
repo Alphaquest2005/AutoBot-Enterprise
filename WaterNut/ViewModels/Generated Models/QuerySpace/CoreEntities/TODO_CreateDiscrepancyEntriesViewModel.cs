@@ -385,7 +385,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             }
         }
 
-        public class TODO_CreateDiscrepancyEntriesExcelLine
+        public partial class TODO_CreateDiscrepancyEntriesExcelLine
         {
 		 
                     public string AdjustmentType { get; set; } 

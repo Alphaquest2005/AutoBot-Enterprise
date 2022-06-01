@@ -96,7 +96,7 @@ namespace CoreEntities.Business.Entities
         }
         string _declarant_reference_number;
         [DataMember]
-        public Nullable<int> EmailId 
+        public string EmailId 
         {
             get
             {
@@ -109,7 +109,7 @@ namespace CoreEntities.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        Nullable<int> _emailid;
+        string _emailid;
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

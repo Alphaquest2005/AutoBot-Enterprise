@@ -30,11 +30,11 @@
               this.Property(t => t.InvoiceQty).HasColumnName("InvoiceQty");
               this.Property(t => t.ReceivedQty).HasColumnName("ReceivedQty");
               this.Property(t => t.Status).HasColumnName("Status").HasMaxLength(50);
-              this.Property(t => t.PreviousInvoiceNumber).HasColumnName("PreviousInvoiceNumber").HasMaxLength(50);
+              this.Property(t => t.PreviousInvoiceNumber).HasColumnName("PreviousInvoiceNumber").HasMaxLength(255);
               this.Property(t => t.CNumber).HasColumnName("CNumber").HasMaxLength(20);
               this.Property(t => t.CLineNumber).HasColumnName("CLineNumber");
               this.Property(t => t.Downloaded).HasColumnName("Downloaded");
-              this.Property(t => t.PreviousCNumber).HasColumnName("PreviousCNumber").HasMaxLength(50);
+              this.Property(t => t.PreviousCNumber).HasColumnName("PreviousCNumber").HasMaxLength(255);
               this.Property(t => t.DutyFreePaid).HasColumnName("DutyFreePaid").HasMaxLength(50);
               this.Property(t => t.Type).HasColumnName("Type").HasMaxLength(50);
               this.Property(t => t.Comment).HasColumnName("Comment").HasMaxLength(255);
@@ -43,7 +43,7 @@
               this.Property(t => t.IsReconciled).HasColumnName("IsReconciled");
               this.Property(t => t.ApplicationSettingsId).HasColumnName("ApplicationSettingsId").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.None));
               this.Property(t => t.FileTypeId).HasColumnName("FileTypeId");
-              this.Property(t => t.EmailId).HasColumnName("EmailId");
+              this.Property(t => t.EmailId).HasColumnName("EmailId").HasMaxLength(255);
               this.Property(t => t.Declarant_Reference_Number).HasColumnName("Declarant_Reference_Number").HasMaxLength(50);
               this.Property(t => t.InvoiceDate).HasColumnName("InvoiceDate");
               this.Property(t => t.Subject).HasColumnName("Subject");

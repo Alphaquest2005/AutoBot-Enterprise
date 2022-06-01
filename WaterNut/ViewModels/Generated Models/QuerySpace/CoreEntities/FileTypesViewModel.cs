@@ -57,6 +57,8 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 			RegisterToReceiveMessages<AsycudaDocumentSetEx>(MessageToken.CurrentAsycudaDocumentSetExChanged, OnCurrentAsycudaDocumentSetExChanged);
  
 			RegisterToReceiveMessages<FileGroups>(MessageToken.CurrentFileGroupsChanged, OnCurrentFileGroupsChanged);
+ 
+			RegisterToReceiveMessages<FileImporterInfo>(MessageToken.CurrentFileImporterInfoChanged, OnCurrentFileImporterInfosChanged);
 
  			// Recieve messages for Core Current Entities Changed
  
@@ -156,6 +158,10 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                    // {
                    //    if(FileTypes.Contains(CurrentFileTypes.ParentFileTypes) == false) FileTypes.Add(CurrentFileTypes.ParentFileTypes);
                     //}
+                    //if (e.PropertyName == "AddFileImporterInfos")
+                   // {
+                   //    if(FileImporterInfos.Contains(CurrentFileTypes.FileImporterInfos) == false) FileImporterInfos.Add(CurrentFileTypes.FileImporterInfos);
+                    //}
                  } 
         internal virtual void OnFileTypesChanged(object sender, NotificationEventArgs e)
         {
@@ -221,6 +227,25 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                                           
                 BaseViewModel.Instance.CurrentFileTypes = null;
 			}
+	
+		 internal virtual void OnCurrentFileImporterInfosChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<FileImporterInfo> e)
+			{
+			if(ViewCurrentFileImporterInfos == false) return;
+			if (e.Data == null || e.Data.Id == null)
+                {
+                    vloader.FilterExpression = "None";
+                }
+                else
+                {
+				vloader.FilterExpression = string.Format("FileInfoId == {0}", e.Data.Id.ToString());
+                 }
+
+				FileTypes.Refresh();
+				NotifyPropertyChanged(x => this.FileTypes);
+                // SendMessage(MessageToken.FileTypesChanged, new NotificationEventArgs(MessageToken.FileTypesChanged));
+                                          
+                BaseViewModel.Instance.CurrentFileTypes = null;
+			}
 
   			// Core Current Entities Changed
 			// theorticall don't need this cuz i am inheriting from core entities baseview model so changes should flow up to here
@@ -271,6 +296,21 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                 FilterData();
              }
          }
+ 	
+		 bool _viewCurrentFileImporterInfos = false;
+         public bool ViewCurrentFileImporterInfos
+         {
+             get
+             {
+                 return _viewCurrentFileImporterInfos;
+             }
+             set
+             {
+                 _viewCurrentFileImporterInfos = value;
+                 NotifyPropertyChanged(x => x.ViewCurrentFileImporterInfos);
+                FilterData();
+             }
+         }
 		public void ViewAll()
         {
 			vloader.FilterExpression = $"ApplicationSettingsId == {CoreEntities.ViewModels.BaseViewModel.Instance.CurrentApplicationSettings.ApplicationSettingsId}";
@@ -306,24 +346,6 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             {
                 _filePatternFilter = value;
 				NotifyPropertyChanged(x => FilePatternFilter);
-                FilterData();
-                
-            }
-        }	
-
- 
-
-		private string _typeFilter;
-        public string TypeFilter
-        {
-            get
-            {
-                return _typeFilter;
-            }
-            set
-            {
-                _typeFilter = value;
-				NotifyPropertyChanged(x => TypeFilter);
                 FilterData();
                 
             }
@@ -510,6 +532,42 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
         }	
 
  
+
+		private Int32? _maxFileSizeInMBFilter;
+        public Int32? MaxFileSizeInMBFilter
+        {
+            get
+            {
+                return _maxFileSizeInMBFilter;
+            }
+            set
+            {
+                _maxFileSizeInMBFilter = value;
+				NotifyPropertyChanged(x => MaxFileSizeInMBFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
+
+		private string _descriptionFilter;
+        public string DescriptionFilter
+        {
+            get
+            {
+                return _descriptionFilter;
+            }
+            set
+            {
+                _descriptionFilter = value;
+				NotifyPropertyChanged(x => DescriptionFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
 		internal bool DisableBaseFilterData = false;
         public virtual void FilterData()
 	    {
@@ -542,10 +600,6 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 
 									if(string.IsNullOrEmpty(FilePatternFilter) == false)
 						res.Append(" && " + string.Format("FilePattern.Contains(\"{0}\")",  FilePatternFilter));						
- 
-
-									if(string.IsNullOrEmpty(TypeFilter) == false)
-						res.Append(" && " + string.Format("Type.Contains(\"{0}\")",  TypeFilter));						
  
 
 									if(CreateDocumentSetFilter.HasValue)
@@ -586,6 +640,13 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 
 									if(IsImportableFilter.HasValue)
 						res.Append(" && " + string.Format("IsImportable == {0}",  IsImportableFilter));						
+ 
+
+					if(MaxFileSizeInMBFilter.HasValue)
+						res.Append(" && " + string.Format("MaxFileSizeInMB == {0}",  MaxFileSizeInMBFilter.ToString()));				 
+
+									if(string.IsNullOrEmpty(DescriptionFilter) == false)
+						res.Append(" && " + string.Format("Description.Contains(\"{0}\")",  DescriptionFilter));						
 			return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
@@ -610,9 +671,6 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                 {
  
                     FilePattern = x.FilePattern ,
-                    
- 
-                    Type = x.Type ,
                     
  
                     CreateDocumentSet = x.CreateDocumentSet ,
@@ -642,7 +700,13 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     ReplicateHeaderRow = x.ReplicateHeaderRow ,
                     
  
-                    IsImportable = x.IsImportable 
+                    IsImportable = x.IsImportable ,
+                    
+ 
+                    MaxFileSizeInMB = x.MaxFileSizeInMB ,
+                    
+ 
+                    Description = x.Description 
                     
                 }).ToList()
             };
@@ -652,13 +716,10 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             }
         }
 
-        public class FileTypesExcelLine
+        public partial class FileTypesExcelLine
         {
 		 
                     public string FilePattern { get; set; } 
-                    
- 
-                    public string Type { get; set; } 
                     
  
                     public bool CreateDocumentSet { get; set; } 
@@ -689,6 +750,12 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     
  
                     public Nullable<bool> IsImportable { get; set; } 
+                    
+ 
+                    public Nullable<int> MaxFileSizeInMB { get; set; } 
+                    
+ 
+                    public string Description { get; set; } 
                     
         }
 

@@ -81,11 +81,11 @@ namespace OCR.Business.Entities
         }
         int _replacementregexid;
         [DataMember]
-        public Fields Field { get; set; }
-        [DataMember]
         public RegularExpressions RegEx { get; set; }
         [DataMember]
         public RegularExpressions ReplacementRegEx { get; set; }
+        [DataMember]
+        public Fields Fields { get; set; }
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

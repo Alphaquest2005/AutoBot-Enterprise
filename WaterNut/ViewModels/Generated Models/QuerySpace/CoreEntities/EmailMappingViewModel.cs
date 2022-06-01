@@ -264,6 +264,24 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
         }	
 
  
+
+		private Boolean? _infoFirstFilter;
+        public Boolean? InfoFirstFilter
+        {
+            get
+            {
+                return _infoFirstFilter;
+            }
+            set
+            {
+                _infoFirstFilter = value;
+				NotifyPropertyChanged(x => InfoFirstFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
 		internal bool DisableBaseFilterData = false;
         public virtual void FilterData()
 	    {
@@ -304,6 +322,10 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 
 									if(string.IsNullOrEmpty(ReplacementValueFilter) == false)
 						res.Append(" && " + string.Format("ReplacementValue.Contains(\"{0}\")",  ReplacementValueFilter));						
+ 
+
+									if(InfoFirstFilter.HasValue)
+						res.Append(" && " + string.Format("InfoFirst == {0}",  InfoFirstFilter));						
 			return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
@@ -333,7 +355,10 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     IsSingleEmail = x.IsSingleEmail ,
                     
  
-                    ReplacementValue = x.ReplacementValue 
+                    ReplacementValue = x.ReplacementValue ,
+                    
+ 
+                    InfoFirst = x.InfoFirst 
                     
                 }).ToList()
             };
@@ -343,7 +368,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             }
         }
 
-        public class EmailMappingExcelLine
+        public partial class EmailMappingExcelLine
         {
 		 
                     public string Pattern { get; set; } 
@@ -353,6 +378,9 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     
  
                     public string ReplacementValue { get; set; } 
+                    
+ 
+                    public Nullable<bool> InfoFirst { get; set; } 
                     
         }
 

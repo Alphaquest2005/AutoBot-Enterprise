@@ -41,8 +41,7 @@ namespace RegexImporter.Views
 
 		private async void DeleteAll(object sender, MouseButtonEventArgs e)
 		{
-			var frameworkElement = sender as FrameworkElement;
-			if (frameworkElement == null) return;
+            if (!(sender is FrameworkElement frameworkElement)) return;
 			var asycudaDocumentSet = frameworkElement.DataContext as VirtualListItem<AsycudaDocumentSetEx>;
 			//if (asycudaDocumentSet != null)
 				//await im.DeleteDocuments(asycudaDocumentSet.Data.AsycudaDocumentSetId).ConfigureAwait(false);
@@ -79,17 +78,14 @@ namespace RegexImporter.Views
 		{
 			if (e.Key == Key.Enter)
 			{
-				var textBox = sender as TextBox;
-				if (textBox != null)
+                if (sender is TextBox textBox)
 					textBox.GetBindingExpression(TextBox.TextProperty).UpdateSource();
 			}
 		}
 
 		private void DatePicker_OnSelectedDateChanged(object sender, SelectionChangedEventArgs e)
 		{
-		   
-				var datePicker = sender as DatePicker;
-				if (datePicker != null)
+            if (sender is DatePicker datePicker)
 					datePicker.GetBindingExpression(DatePicker.SelectedDateProperty).UpdateSource();
 		  
 		}

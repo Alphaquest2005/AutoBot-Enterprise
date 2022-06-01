@@ -13,21 +13,21 @@
         {                        
               this.HasKey(t => t.Id);        
               this.ToTable("OCR-Fields");
-              this.Property(t => t.Id).HasColumnName("Id").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.None));
+              this.Property(t => t.Id).HasColumnName("Id").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.Identity));
+              this.Property(t => t.LineId).HasColumnName("LineId");
+              this.Property(t => t.Key).HasColumnName("Key").IsRequired().HasMaxLength(50);
               this.Property(t => t.Field).HasColumnName("Field").IsRequired().HasMaxLength(50);
               this.Property(t => t.EntityType).HasColumnName("EntityType").IsRequired().HasMaxLength(50);
               this.Property(t => t.IsRequired).HasColumnName("IsRequired");
               this.Property(t => t.DataType).HasColumnName("DataType").IsRequired().HasMaxLength(50);
-              this.Property(t => t.LineId).HasColumnName("LineId");
-              this.Property(t => t.Key).HasColumnName("Key").IsRequired().HasMaxLength(50);
               this.Property(t => t.ParentId).HasColumnName("ParentId");
               this.Property(t => t.AppendValues).HasColumnName("AppendValues");
-              this.HasRequired(t => t.Lines).WithMany(t =>(ICollection<Fields>) t.Fields).HasForeignKey(d => d.LineId);
               this.HasOptional(t => t.ParentField).WithMany(t =>(ICollection<Fields>) t.ChildFields).HasForeignKey(d => d.ParentId);
-              this.HasOptional(t => t.FieldValue).WithRequired(t => (Fields)t.Field);
-              this.HasMany(t => t.FormatRegEx).WithRequired(t => (Fields)t.Field);
+              this.HasRequired(t => t.Lines).WithMany(t =>(ICollection<Fields>) t.Fields).HasForeignKey(d => d.LineId);
+              this.HasMany(t => t.FailedFields).WithRequired(t => (Fields)t.OCR_Fields);
+              this.HasMany(t => t.FormatRegEx).WithRequired(t => (Fields)t.Fields);
               this.HasMany(t => t.ChildFields).WithOptional(t => t.ParentField).HasForeignKey(d => d.ParentId);
-              this.HasMany(t => t.OCR_FailedFields).WithRequired(t => (Fields)t.OCR_Fields);
+              this.HasOptional(t => t.FieldValue).WithRequired(t => (Fields)t.Field);
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);
     			this.Ignore(t => t.ModifiedProperties);

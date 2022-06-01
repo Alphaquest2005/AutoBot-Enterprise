@@ -21,13 +21,51 @@ namespace CoreEntities.Client.Entities
         {
             get
             {
-                return this.EmailUniqueId.ToString();//this.EmailUniqueId == null?"0":			
+                return this.EmailId.ToString();//this.EmailId == null?"0":			
             }
             set
             {
-                this.EmailUniqueId = Convert.ToInt32(value);
+                this.EmailId = Convert.ToString(value);
             }
         }
+        public string ApplicationSettingsEntityName
+        {
+            get
+            {
+                return this.ApplicationSettings == null ? "" : this.ApplicationSettings.EntityName;
+            }
+            set
+            {
+                                if (string.IsNullOrEmpty(value)) return;
+                string[] vals = value.Split(',');
+               
+                    using (ApplicationSettingsClient ctx = new ApplicationSettingsClient())
+                    {
+                        var dto = ctx.GetApplicationSettings().Result.AsEnumerable().FirstOrDefault(x => x.EntityName == value);
+                        
+
+                        if ( dto == null)
+                        {
+                            this.ApplicationSettings = (ApplicationSettings)new ApplicationSettings().CreateEntityFromString(value);
+							
+							this.ApplicationSettingsId = Convert.ToInt32(this.ApplicationSettings.ApplicationSettingsId);
+                            this.TrackingState=TrackableEntities.TrackingState.Modified;
+                           NotifyPropertyChanged("AddApplicationSettings");
+                        }
+                        else
+                        {
+                            var obj = new ApplicationSettings(dto);
+                           if (this.ApplicationSettings == null || this.ApplicationSettings.EntityId != obj.EntityId) this.ApplicationSettings = obj;
+                           
+                        }
+                         
+
+
+                    }
+            
+            }
+
+      }
 
 
 

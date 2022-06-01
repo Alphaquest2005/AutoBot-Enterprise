@@ -307,6 +307,12 @@ namespace CoreEntities.Business.Services
                                         GetWhere<FileTypeReplaceRegex>(dbContext, exp, itm.Value, "FileTypes", "Select", includesLst)
 										.ConfigureAwait(continueOnCapturedContext: false);
 
+                            case "FileImporterInfos":
+                                return
+                                    await
+                                        GetWhere<FileImporterInfo>(dbContext, exp, itm.Value, "FileTypes", "SelectMany", includesLst)
+										.ConfigureAwait(continueOnCapturedContext: false);
+
                         }
 
                     }
@@ -842,6 +848,9 @@ namespace CoreEntities.Business.Services
                             case "FileTypeReplaceRegex":
                                 return await CountWhere<FileTypeReplaceRegex>(dbContext, exp, itm.Value, "FileTypes", "Select")
 											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "FileImporterInfos":
+                                return await CountWhere<FileImporterInfo>(dbContext, exp, itm.Value, "FileTypes", "SelectMany")
+											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }
                     return await dbContext.FileTypes.Where(exp == "All" || exp == null ? "Id != null" : exp)
@@ -1018,6 +1027,12 @@ namespace CoreEntities.Business.Services
                                 return
                                     await
                                         LoadRangeWhere<FileTypeReplaceRegex>(startIndex, count, dbContext, exp, itm.Value, "FileTypes", "Select")
+													.ConfigureAwait(continueOnCapturedContext: false);
+
+                            case "FileImporterInfos":
+                                return
+                                    await
+                                        LoadRangeWhere<FileImporterInfo>(startIndex, count, dbContext, exp, itm.Value, "FileTypes", "SelectMany")
 													.ConfigureAwait(continueOnCapturedContext: false);
 
                           
@@ -1409,6 +1424,43 @@ namespace CoreEntities.Business.Services
                     throw new FaultException<ValidationFault>(fault);
             }
         }
+ 	        public async Task<IEnumerable<FileTypes>> GetFileTypesByFileInfoId(string FileInfoId, List<string> includesLst = null)
+        {
+            try
+            {
+                using ( var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
+              {
+                var i = Convert.ToInt32(FileInfoId);
+                var set = AddIncludes(includesLst, dbContext);
+                IEnumerable<FileTypes> entities = await set//dbContext.FileTypes
+                                                    // .Include(x => x.FileTypeMappings)									  
+                                                    // .Include(x => x.FileTypeActions)									  
+                                                    // .Include(x => x.FileTypeContacts)									  
+                                                    // .Include(x => x.AsycudaDocumentSet_Attachments)									  
+                                                    // .Include(x => x.ChildFileTypes)									  
+                                                    // .Include(x => x.EmailFileTypes)									  
+                                                    // .Include(x => x.ImportActions)									  
+                                                    // .Include(x => x.FileTypeReplaceRegex)									  
+                                      .AsNoTracking()
+                                        .Where(x => x.FileInfoId.ToString() == FileInfoId.ToString())
+										.ToListAsync()
+										.ConfigureAwait(continueOnCapturedContext: false);
+                return entities;
+              }
+             }
+            catch (Exception updateEx)
+            {
+                System.Diagnostics.Debugger.Break();
+                //throw new FaultException(updateEx.Message);
+                    var fault = new ValidationFault
+                                {
+                                    Result = false,
+                                    Message = updateEx.Message,
+                                    Description = updateEx.StackTrace
+                                };
+                    throw new FaultException<ValidationFault>(fault);
+            }
+        }
  
 		public decimal SumField(string whereExp, string field)
          {
@@ -1499,6 +1551,9 @@ namespace CoreEntities.Business.Services
 											.ConfigureAwait(continueOnCapturedContext: false);
                             case "FileTypeReplaceRegex":
                                 return await SumWhere<FileTypeReplaceRegex>(dbContext, exp, itm.Value, "FileTypes", field, "Select")
+											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "FileImporterInfos":
+                                return await SumWhere<FileImporterInfo>(dbContext, exp, itm.Value, "FileTypes", field, "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }

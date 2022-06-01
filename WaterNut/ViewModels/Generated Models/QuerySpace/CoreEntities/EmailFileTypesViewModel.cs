@@ -333,7 +333,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             }
         }
 
-        public class EmailFileTypesExcelLine
+        public partial class EmailFileTypesExcelLine
         {
 		 
                     public Nullable<bool> IsRequired { get; set; } 

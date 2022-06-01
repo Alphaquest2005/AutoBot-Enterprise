@@ -313,7 +313,7 @@ public Nullable<double> ReceivedQty
        
        
                 
-                [MaxLength(50, ErrorMessage = "PreviousInvoiceNumber has a max length of 50 letters ")]
+                [MaxLength(255, ErrorMessage = "PreviousInvoiceNumber has a max length of 255 letters ")]
 public string PreviousInvoiceNumber
 		{ 
 		    get { return this.entrydatadetail.PreviousInvoiceNumber; }
@@ -330,7 +330,7 @@ public string PreviousInvoiceNumber
        
        
                 
-                [MaxLength(50, ErrorMessage = "CNumber has a max length of 50 letters ")]
+                [MaxLength(255, ErrorMessage = "CNumber has a max length of 255 letters ")]
 public string CNumber
 		{ 
 		    get { return this.entrydatadetail.CNumber; }
@@ -718,6 +718,59 @@ public Nullable<int> CLineNumber
                 
             }
         }
+
+       private AdjustmentEx _AdjustmentEx;
+        public  AdjustmentEx AdjustmentEx
+		{
+		    get
+               { 
+                  if (this.entrydatadetail != null)
+                   {
+                       if (_AdjustmentEx != null)
+                       {
+                           if (this.entrydatadetail.AdjustmentEx !=
+                               _AdjustmentEx.DTO)
+                           {
+                                if (this.entrydatadetail.AdjustmentEx  != null)
+                               _AdjustmentEx = new AdjustmentEx(this.entrydatadetail.AdjustmentEx);
+                           }
+                       }
+                       else
+                       {
+                             if (this.entrydatadetail.AdjustmentEx  != null)
+                           _AdjustmentEx = new AdjustmentEx(this.entrydatadetail.AdjustmentEx);
+                       }
+                   }
+
+
+             //       if (_AdjustmentEx != null) return _AdjustmentEx;
+                       
+             //       var i = new AdjustmentEx(){TrackingState = TrackingState.Added};
+			//		//if (this.entrydatadetail.AdjustmentEx == null) Debugger.Break();
+			//		if (this.entrydatadetail.AdjustmentEx != null)
+            //        {
+            //           i. = this.entrydatadetail.AdjustmentEx;
+            //        }
+            //        else
+            //        {
+            //            this.entrydatadetail.AdjustmentEx = i.;
+             //       }
+                           
+            //        _AdjustmentEx = i;
+                     
+                    return _AdjustmentEx;
+               }
+			set
+			{
+			    if (value == _AdjustmentEx) return;
+                _AdjustmentEx = value;
+                if(value != null)
+                     this.entrydatadetail.AdjustmentEx = value.DTO;
+				if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+                NotifyPropertyChanged("AdjustmentEx");
+			}
+		}
+        
 
 
         ChangeTrackingCollection<DTO.EntryDataDetail> _changeTracker;    

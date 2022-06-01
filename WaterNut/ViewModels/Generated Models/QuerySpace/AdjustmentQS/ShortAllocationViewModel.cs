@@ -1180,6 +1180,24 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
 
  
 
+		private string _emailIdFilter;
+        public string EmailIdFilter
+        {
+            get
+            {
+                return _emailIdFilter;
+            }
+            set
+            {
+                _emailIdFilter = value;
+				NotifyPropertyChanged(x => EmailIdFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
+
 		private string _xStatusFilter;
         public string xStatusFilter
         {
@@ -1575,6 +1593,10 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
 						res.Append(" && " + string.Format("DutyFreePaid.Contains(\"{0}\")",  DutyFreePaidFilter));						
  
 
+									if(string.IsNullOrEmpty(EmailIdFilter) == false)
+						res.Append(" && " + string.Format("EmailId.Contains(\"{0}\")",  EmailIdFilter));						
+ 
+
 									if(string.IsNullOrEmpty(xStatusFilter) == false)
 						res.Append(" && " + string.Format("xStatus.Contains(\"{0}\")",  xStatusFilter));						
  
@@ -1731,6 +1753,9 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
                     DutyFreePaid = x.DutyFreePaid ,
                     
  
+                    EmailId = x.EmailId ,
+                    
+ 
                     xStatus = x.xStatus ,
                     
  
@@ -1750,7 +1775,7 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
             }
         }
 
-        public class ShortAllocationExcelLine
+        public partial class ShortAllocationExcelLine
         {
 		 
                     public double TotalValue { get; set; } 
@@ -1871,6 +1896,9 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
                     
  
                     public string DutyFreePaid { get; set; } 
+                    
+ 
+                    public string EmailId { get; set; } 
                     
  
                     public string xStatus { get; set; } 

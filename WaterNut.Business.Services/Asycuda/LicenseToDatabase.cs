@@ -16,6 +16,7 @@ using LicenseDS.Business.Entities;
 using TrackableEntities;
 using TrackableEntities.EF6;
 using ValuationDS.Business.Entities;
+using WaterNut.Business.Services.Utils;
 using AsycudaDocumentSet_Attachments = CoreEntities.Business.Entities.AsycudaDocumentSet_Attachments;
 using Registered = LicenseDS.Business.Entities.Registered;
 
@@ -279,8 +280,9 @@ namespace WaterNut.DataSpace.Asycuda
             using (var cctx = new CoreEntitiesContext())
             {
                 var fileType = cctx.FileTypes.First(x =>
-                    x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId &&
-                    x.Type == "LIC");
+                    x.ApplicationSettingsId ==
+                    BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId &&
+                    x.FileImporterInfos.EntryType == FileTypeManager.EntryTypes.Lic);
                 var res = cctx.AsycudaDocumentSet_Attachments.Include(x => x.Attachments).FirstOrDefault(x =>
 
                     x.AsycudaDocumentSetId == docSet.AsycudaDocumentSetId
@@ -292,7 +294,7 @@ namespace WaterNut.DataSpace.Asycuda
                         AsycudaDocumentSetId = docSet.AsycudaDocumentSetId,
                         DocumentSpecific = true,
                         FileDate = file.LastWriteTime,
-                        EmailUniqueId = null,
+                        EmailId = null,
                         FileTypeId = fileType.Id,
                         TrackingState = TrackingState.Added,
                         Attachments = new CoreEntities.Business.Entities.Attachments(true)

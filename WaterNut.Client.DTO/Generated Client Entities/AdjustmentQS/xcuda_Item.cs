@@ -346,6 +346,19 @@ namespace AdjustmentQS.Client.DTO
 		}
         private string _PreviousInvoiceKey;
 
+        [DataMember]
+        public string xWarehouseError
+		{ 
+		    get { return _xWarehouseError; }
+			set
+			{
+			    if (value == _xWarehouseError) return;
+				_xWarehouseError = value;
+				NotifyPropertyChanged();//m => this.xWarehouseError
+			}
+		}
+        private string _xWarehouseError;
+
        
         [DataMember]
         public ChangeTrackingCollection<AsycudaSalesAllocation> AsycudaSalesAllocations

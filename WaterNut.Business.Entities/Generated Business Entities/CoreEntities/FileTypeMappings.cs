@@ -116,6 +116,21 @@ namespace CoreEntities.Business.Entities
         }
         bool _required;
         [DataMember]
+        public string Comments 
+        {
+            get
+            {
+                return _comments;
+            }
+            set
+            {
+                _comments = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _comments;
+        [DataMember]
         public FileTypes FileTypes { get; set; }
         [DataMember]
         public List<FileTypeMappingRegExs> FileTypeMappingRegExs { get; set; }

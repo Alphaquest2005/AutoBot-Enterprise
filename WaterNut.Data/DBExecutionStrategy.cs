@@ -33,8 +33,7 @@ namespace WaterNut.Data
         {
             bool retry = false;
 
-            SqlException sqlException = ex as SqlException;
-            if (sqlException != null)
+            if (ex is SqlException sqlException)
             {
                 int[] errorsToRetry =
                 {

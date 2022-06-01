@@ -162,7 +162,7 @@ namespace CoreEntities.Client.Entities
                         {
                             this.Emails = (Emails)new Emails().CreateEntityFromString(value);
 							
-							this.Id = Convert.ToInt32(this.Emails.EmailUniqueId);
+							this.Id = Convert.ToInt32(this.Emails.EmailId);
                             this.TrackingState=TrackableEntities.TrackingState.Modified;
                            NotifyPropertyChanged("AddEmails");
                         }

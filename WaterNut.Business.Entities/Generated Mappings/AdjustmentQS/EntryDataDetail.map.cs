@@ -30,8 +30,8 @@
               this.Property(t => t.Status).HasColumnName("Status").HasMaxLength(50);
               this.Property(t => t.InvoiceQty).HasColumnName("InvoiceQty");
               this.Property(t => t.ReceivedQty).HasColumnName("ReceivedQty");
-              this.Property(t => t.PreviousInvoiceNumber).HasColumnName("PreviousInvoiceNumber").HasMaxLength(50);
-              this.Property(t => t.CNumber).HasColumnName("CNumber").HasMaxLength(50);
+              this.Property(t => t.PreviousInvoiceNumber).HasColumnName("PreviousInvoiceNumber").HasMaxLength(255);
+              this.Property(t => t.CNumber).HasColumnName("CNumber").HasMaxLength(255);
               this.Property(t => t.Comment).HasColumnName("Comment").HasMaxLength(255);
               this.Property(t => t.EffectiveDate).HasColumnName("EffectiveDate");
               this.Property(t => t.IsReconciled).HasColumnName("IsReconciled");
@@ -47,6 +47,7 @@
               this.Property(t => t.TotalValue).HasColumnName("TotalValue").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.Computed));
               this.Property(t => t.CLineNumber).HasColumnName("CLineNumber");
               this.HasRequired(t => t.InventoryItemsEx).WithMany(t =>(ICollection<EntryDataDetail>) t.EntryDataDetails).HasForeignKey(d => d.InventoryItemId);
+              this.HasRequired(t => t.AdjustmentEx).WithMany(t =>(ICollection<EntryDataDetail>) t.EntryDataDetails).HasForeignKey(d => d.EntryData_Id);
               this.HasMany(t => t.AsycudaSalesAllocations).WithOptional(t => t.EntryDataDetail).HasForeignKey(d => d.EntryDataDetailsId);
               this.HasMany(t => t.AdjustmentOversAllocations).WithRequired(t => (EntryDataDetail)t.EntryDataDetail);
              // Tracking Properties

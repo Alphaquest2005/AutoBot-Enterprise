@@ -368,7 +368,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             }
         }
 
-        public class InfoMappingExcelLine
+        public partial class InfoMappingExcelLine
         {
 		 
                     public string Key { get; set; } 

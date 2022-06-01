@@ -823,6 +823,24 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
         }	
 
  
+
+		private string _emailIdFilter;
+        public string EmailIdFilter
+        {
+            get
+            {
+                return _emailIdFilter;
+            }
+            set
+            {
+                _emailIdFilter = value;
+				NotifyPropertyChanged(x => EmailIdFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
 		private DateTime? _startInvoiceDateFilter = DateTime.Parse(string.Format("{0}/1/{1}", DateTime.Now.Month ,DateTime.Now.Year));
         public DateTime? StartInvoiceDateFilter
         {
@@ -995,6 +1013,24 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
         }	
 
  
+
+		private string _vendorFilter;
+        public string VendorFilter
+        {
+            get
+            {
+                return _vendorFilter;
+            }
+            set
+            {
+                _vendorFilter = value;
+				NotifyPropertyChanged(x => VendorFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
 		internal bool DisableBaseFilterData = false;
         public virtual void FilterData()
 	    {
@@ -1141,6 +1177,10 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
 						res.Append(" && " + string.Format("IsReconciled == {0}",  IsReconciledFilter));						
  
 
+									if(string.IsNullOrEmpty(EmailIdFilter) == false)
+						res.Append(" && " + string.Format("EmailId.Contains(\"{0}\")",  EmailIdFilter));						
+ 
+
  
 
 				if (Convert.ToDateTime(StartInvoiceDateFilter).Date != DateTime.MinValue &&
@@ -1211,7 +1251,11 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
  
 
 					if(PreviousCLineNumberFilter.HasValue)
-						res.Append(" && " + string.Format("PreviousCLineNumber == {0}",  PreviousCLineNumberFilter.ToString()));							return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
+						res.Append(" && " + string.Format("PreviousCLineNumber == {0}",  PreviousCLineNumberFilter.ToString()));				 
+
+									if(string.IsNullOrEmpty(VendorFilter) == false)
+						res.Append(" && " + string.Format("Vendor.Contains(\"{0}\")",  VendorFilter));						
+			return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
 // Send to Excel Implementation
@@ -1309,6 +1353,9 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
                     IsReconciled = x.IsReconciled ,
                     
  
+                    EmailId = x.EmailId ,
+                    
+ 
                     InvoiceDate = x.InvoiceDate ,
                     
  
@@ -1324,7 +1371,10 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
                     Status = x.Status ,
                     
  
-                    PreviousCLineNumber = x.PreviousCLineNumber 
+                    PreviousCLineNumber = x.PreviousCLineNumber ,
+                    
+ 
+                    Vendor = x.Vendor 
                     
                 }).ToList()
             };
@@ -1334,7 +1384,7 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
             }
         }
 
-        public class AdjustmentDetailExcelLine
+        public partial class AdjustmentDetailExcelLine
         {
 		 
                     public string EntryDataId { get; set; } 
@@ -1412,6 +1462,9 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
                     public Nullable<bool> IsReconciled { get; set; } 
                     
  
+                    public string EmailId { get; set; } 
+                    
+ 
                     public System.DateTime InvoiceDate { get; set; } 
                     
  
@@ -1428,6 +1481,9 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
                     
  
                     public Nullable<int> PreviousCLineNumber { get; set; } 
+                    
+ 
+                    public string Vendor { get; set; } 
                     
         }
 

@@ -122,14 +122,14 @@ namespace CoreEntities.Client.Services
             return  await Channel.GetAsycudaDocumentSet_AttachmentsByAsycudaDocumentSetId(AsycudaDocumentSetId, includesLst).ConfigureAwait(false);
         }
 			 
-  		public async Task<IEnumerable<AsycudaDocumentSet_Attachments>> GetAsycudaDocumentSet_AttachmentsByEmailUniqueId(string EmailUniqueId, List<string> includesLst = null)
-        {
-            return  await Channel.GetAsycudaDocumentSet_AttachmentsByEmailUniqueId(EmailUniqueId, includesLst).ConfigureAwait(false);
-        }
-			 
   		public async Task<IEnumerable<AsycudaDocumentSet_Attachments>> GetAsycudaDocumentSet_AttachmentsByFileTypeId(string FileTypeId, List<string> includesLst = null)
         {
             return  await Channel.GetAsycudaDocumentSet_AttachmentsByFileTypeId(FileTypeId, includesLst).ConfigureAwait(false);
+        }
+			 
+  		public async Task<IEnumerable<AsycudaDocumentSet_Attachments>> GetAsycudaDocumentSet_AttachmentsByEmailId(string EmailId, List<string> includesLst = null)
+        {
+            return  await Channel.GetAsycudaDocumentSet_AttachmentsByEmailId(EmailId, includesLst).ConfigureAwait(false);
         }
 			 
           public decimal SumField(string whereExp, string sumExp)

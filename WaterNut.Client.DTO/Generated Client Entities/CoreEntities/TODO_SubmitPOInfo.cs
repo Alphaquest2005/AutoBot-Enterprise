@@ -48,7 +48,7 @@ namespace CoreEntities.Client.DTO
         private string _Number;
 
         [DataMember]
-        public string Date
+        public Nullable<System.DateTime> Date
 		{ 
 		    get { return _Date; }
 			set
@@ -58,7 +58,7 @@ namespace CoreEntities.Client.DTO
 				NotifyPropertyChanged();//m => this.Date
 			}
 		}
-        private string _Date;
+        private Nullable<System.DateTime> _Date;
 
         [DataMember]
         public string SupplierInvoiceNo
@@ -87,7 +87,7 @@ namespace CoreEntities.Client.DTO
         private int _ApplicationSettingsId;
 
         [DataMember]
-        public Nullable<int> EmailId
+        public string EmailId
 		{ 
 		    get { return _EmailId; }
 			set
@@ -97,7 +97,7 @@ namespace CoreEntities.Client.DTO
 				NotifyPropertyChanged();//m => this.EmailId
 			}
 		}
-        private Nullable<int> _EmailId;
+        private string _EmailId;
 
         [DataMember]
         public Nullable<int> FileTypeId

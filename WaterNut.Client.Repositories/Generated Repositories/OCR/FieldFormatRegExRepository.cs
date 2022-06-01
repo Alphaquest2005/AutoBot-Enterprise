@@ -202,9 +202,9 @@ namespace OCR.Client.Repositories
                         {
                             return new FieldFormatRegEx(res)
                     {
-                  // Field = (res.Field != null?new Fields(res.Field): null),    
                   // RegEx = (res.RegEx != null?new RegularExpressions(res.RegEx): null),    
-                  // ReplacementRegEx = (res.ReplacementRegEx != null?new RegularExpressions(res.ReplacementRegEx): null)    
+                  // ReplacementRegEx = (res.ReplacementRegEx != null?new RegularExpressions(res.ReplacementRegEx): null),    
+                  // Fields = (res.Fields != null?new Fields(res.Fields): null)    
                   };
                     }
                     else

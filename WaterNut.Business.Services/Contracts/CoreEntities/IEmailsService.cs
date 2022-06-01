@@ -105,7 +105,13 @@ namespace CoreEntities.Business.Services
         [FaultContract(typeof(ValidationFault))]
 		string MinField(string whereExp, string field);
 
-		
+				[OperationContract]
+        [FaultContract(typeof(ValidationFault))]
+        Task<IEnumerable<Emails>> GetEmailsByEmailUniqueId(string EmailUniqueId, List<string> includesLst = null);
+  		[OperationContract]
+        [FaultContract(typeof(ValidationFault))]
+        Task<IEnumerable<Emails>> GetEmailsByApplicationSettingsId(string ApplicationSettingsId, List<string> includesLst = null);
+  
 
 
 

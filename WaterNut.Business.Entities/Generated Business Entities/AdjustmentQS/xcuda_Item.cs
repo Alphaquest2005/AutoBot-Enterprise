@@ -402,6 +402,21 @@ namespace AdjustmentQS.Business.Entities
         }
         string _previousinvoicekey;
         [DataMember]
+        public string xWarehouseError 
+        {
+            get
+            {
+                return _xwarehouseerror;
+            }
+            set
+            {
+                _xwarehouseerror = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _xwarehouseerror;
+        [DataMember]
         public List<AsycudaSalesAllocation> AsycudaSalesAllocations { get; set; }
         [DataMember]
         public List<AdjustmentOversAllocation> AdjustmentOversAllocations { get; set; }

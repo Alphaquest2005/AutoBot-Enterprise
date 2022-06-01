@@ -317,7 +317,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             }
         }
 
-        public class AttachmentLogExcelLine
+        public partial class AttachmentLogExcelLine
         {
 		 
                     public int DocSetAttachment { get; set; } 

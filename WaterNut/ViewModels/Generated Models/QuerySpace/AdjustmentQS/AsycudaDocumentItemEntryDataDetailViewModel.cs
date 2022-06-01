@@ -542,7 +542,7 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
             }
         }
 
-        public class AsycudaDocumentItemEntryDataDetailExcelLine
+        public partial class AsycudaDocumentItemEntryDataDetailExcelLine
         {
 		 
                     public string ItemNumber { get; set; } 

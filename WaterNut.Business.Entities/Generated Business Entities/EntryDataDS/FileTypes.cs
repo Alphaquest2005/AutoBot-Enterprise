@@ -72,21 +72,6 @@ namespace EntryDataDS.Business.Entities
         }
         string _filepattern;
         [DataMember]
-        public string Type 
-        {
-            get
-            {
-                return _type;
-            }
-            set
-            {
-                _type = value;
-                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
-                NotifyPropertyChanged();
-            }
-        }
-        string _type;
-        [DataMember]
         public int AsycudaDocumentSetId 
         {
             get
@@ -296,6 +281,51 @@ namespace EntryDataDS.Business.Entities
             }
         }
         Nullable<bool> _isimportable;
+        [DataMember]
+        public Nullable<int> MaxFileSizeInMB 
+        {
+            get
+            {
+                return _maxfilesizeinmb;
+            }
+            set
+            {
+                _maxfilesizeinmb = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<int> _maxfilesizeinmb;
+        [DataMember]
+        public Nullable<int> FileInfoId 
+        {
+            get
+            {
+                return _fileinfoid;
+            }
+            set
+            {
+                _fileinfoid = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<int> _fileinfoid;
+        [DataMember]
+        public string Description 
+        {
+            get
+            {
+                return _description;
+            }
+            set
+            {
+                _description = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _description;
         [DataMember]
         public List<EntryData> EntryData { get; set; }
         [DataMember]

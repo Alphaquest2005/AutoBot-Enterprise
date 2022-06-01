@@ -23,6 +23,7 @@ namespace AllocationDS.Business.Entities
         partial void AutoGenStartUp() //AsycudaDocument()
         {
             this.xcuda_Item = new List<xcuda_Item>();
+            this.AsycudaDocumentItemEntryDataDetails = new List<AsycudaDocumentItemEntryDataDetails>();
         }
 
         [DataMember]
@@ -646,6 +647,8 @@ namespace AllocationDS.Business.Entities
         public SystemDocumentSets SystemDocumentSets { get; set; }
         [DataMember]
         public Customs_Procedure Customs_Procedure { get; set; }
+        [DataMember]
+        public List<AsycudaDocumentItemEntryDataDetails> AsycudaDocumentItemEntryDataDetails { get; set; }
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

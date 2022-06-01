@@ -217,6 +217,10 @@ namespace AllocationDS.Business.Entities
         int _asycudadocumentsetid;
         [DataMember]
         public EntryDataDetails EntryDataDetails { get; set; }
+        [DataMember]
+        public AsycudaDocument AsycudaDocument { get; set; }
+        [DataMember]
+        public xcuda_Item xcuda_Item { get; set; }
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

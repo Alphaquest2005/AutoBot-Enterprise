@@ -99,20 +99,33 @@ namespace OCR.Client.DTO
 		}
         private Nullable<bool> _DistinctValues;
 
-       
         [DataMember]
-        public ChangeTrackingCollection<Fields> Fields
-		{
-		    get { return _Fields; }
+        public Nullable<bool> IsColumn
+		{ 
+		    get { return _IsColumn; }
 			set
 			{
-			    if (Equals(value, _Fields)) return;
-				_Fields = value;
-				NotifyPropertyChanged();//m => this.Fields
+			    if (value == _IsColumn) return;
+				_IsColumn = value;
+				NotifyPropertyChanged();//m => this.IsColumn
 			}
 		}
-        private ChangeTrackingCollection<Fields> _Fields = new ChangeTrackingCollection<Fields>();
+        private Nullable<bool> _IsColumn;
 
+        [DataMember]
+        public Nullable<bool> IsActive
+		{ 
+		    get { return _IsActive; }
+			set
+			{
+			    if (value == _IsActive) return;
+				_IsActive = value;
+				NotifyPropertyChanged();//m => this.IsActive
+			}
+		}
+        private Nullable<bool> _IsActive;
+
+       
         [DataMember]
         public Parts Parts
 		{
@@ -175,17 +188,30 @@ namespace OCR.Client.DTO
         private ChangeTrackingCollection<Lines> ParentLineChangeTracker { get; set; }
 
         [DataMember]
-        public ChangeTrackingCollection<OCR_FailedLines> OCR_FailedLines
+        public ChangeTrackingCollection<OCR_FailedLines> FailedLines
 		{
-		    get { return _OCR_FailedLines; }
+		    get { return _FailedLines; }
 			set
 			{
-			    if (Equals(value, _OCR_FailedLines)) return;
-				_OCR_FailedLines = value;
-				NotifyPropertyChanged();//m => this.OCR_FailedLines
+			    if (Equals(value, _FailedLines)) return;
+				_FailedLines = value;
+				NotifyPropertyChanged();//m => this.FailedLines
 			}
 		}
-        private ChangeTrackingCollection<OCR_FailedLines> _OCR_FailedLines = new ChangeTrackingCollection<OCR_FailedLines>();
+        private ChangeTrackingCollection<OCR_FailedLines> _FailedLines = new ChangeTrackingCollection<OCR_FailedLines>();
+
+        [DataMember]
+        public ChangeTrackingCollection<Fields> Fields
+		{
+		    get { return _Fields; }
+			set
+			{
+			    if (Equals(value, _Fields)) return;
+				_Fields = value;
+				NotifyPropertyChanged();//m => this.Fields
+			}
+		}
+        private ChangeTrackingCollection<Fields> _Fields = new ChangeTrackingCollection<Fields>();
 
    //     [DataMember]
    //     public TrackingState TrackingState { get; set; }

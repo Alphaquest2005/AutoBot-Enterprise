@@ -1,6 +1,4 @@
-﻿
-
-//using System;
+﻿//using System;
 //using System.Collections.ObjectModel;
 //using System.Data.Entity.Core.Metadata.Edm;
 //using System.Linq;
@@ -28,7 +26,7 @@
 //                 EndDeliveryDateFilter = DateTime.MinValue,
 //                 StartShipDateFilter = DateTime.MinValue,
 //                 EndShipDateFilter = DateTime.MinValue
-                 
+
 //             };//ViewCurrentContainer = true
 //         }
 
@@ -142,7 +140,7 @@
 //        }
 
 //        private DateTime endDateFilter;
-       
+
 
 //        public DateTime EndDateFilter
 //        {
@@ -154,7 +152,7 @@
 //                NotifyPropertyChanged(x => this.EndDateFilter);
 //            }
 //        }
-       
+
 //         public override void FilterData()
 //         {
 //             var res = GetAutoPropertyFilterString();
@@ -179,13 +177,13 @@
 //             {
 //                 res.Append(string.Format("&& DeliveryDate <= \"{0}\" || ShipDate <= \"{0}\"", EndDateFilter.ToShortDateString()));
 //             }
-              
+
 //             //if (res.Length == 0 && vloader.NavigationExpression.Count != 0) res.Append("&& All");
 //             FilterData(res);
 
 //         }
-        
-        
+
+
 //         internal async Task SaveContainer(global::EntryDataQS.Client.Entities.ContainerEx container)
 //         {
 //             if (container == null) return;
@@ -204,7 +202,7 @@
 //             else
 //             {
 //                 MessageBox.Show("Please Select Document Set then try again.");
-                 
+
 //             }
 
 //         }
@@ -253,3 +251,4 @@
 //         }
 //    }
 //}
+

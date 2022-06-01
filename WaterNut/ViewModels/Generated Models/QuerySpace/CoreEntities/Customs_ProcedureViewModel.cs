@@ -430,6 +430,42 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
         }	
 
  
+
+		private Boolean? _isDefaultFilter;
+        public Boolean? IsDefaultFilter
+        {
+            get
+            {
+                return _isDefaultFilter;
+            }
+            set
+            {
+                _isDefaultFilter = value;
+				NotifyPropertyChanged(x => IsDefaultFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
+
+		private Boolean? _exportSupportingEntryDataFilter;
+        public Boolean? ExportSupportingEntryDataFilter
+        {
+            get
+            {
+                return _exportSupportingEntryDataFilter;
+            }
+            set
+            {
+                _exportSupportingEntryDataFilter = value;
+				NotifyPropertyChanged(x => ExportSupportingEntryDataFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
 		internal bool DisableBaseFilterData = false;
         public virtual void FilterData()
 	    {
@@ -498,6 +534,14 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 
 									if(SubmitToCustomsFilter.HasValue)
 						res.Append(" && " + string.Format("SubmitToCustoms == {0}",  SubmitToCustomsFilter));						
+ 
+
+									if(IsDefaultFilter.HasValue)
+						res.Append(" && " + string.Format("IsDefault == {0}",  IsDefaultFilter));						
+ 
+
+									if(ExportSupportingEntryDataFilter.HasValue)
+						res.Append(" && " + string.Format("ExportSupportingEntryData == {0}",  ExportSupportingEntryDataFilter));						
 			return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
@@ -548,7 +592,13 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     Sales = x.Sales ,
                     
  
-                    SubmitToCustoms = x.SubmitToCustoms 
+                    SubmitToCustoms = x.SubmitToCustoms ,
+                    
+ 
+                    IsDefault = x.IsDefault ,
+                    
+ 
+                    ExportSupportingEntryData = x.ExportSupportingEntryData 
                     
                 }).ToList()
             };
@@ -558,7 +608,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             }
         }
 
-        public class Customs_ProcedureExcelLine
+        public partial class Customs_ProcedureExcelLine
         {
 		 
                     public string Extended_customs_procedure { get; set; } 
@@ -589,6 +639,12 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     
  
                     public Nullable<bool> SubmitToCustoms { get; set; } 
+                    
+ 
+                    public Nullable<bool> IsDefault { get; set; } 
+                    
+ 
+                    public Nullable<bool> ExportSupportingEntryData { get; set; } 
                     
         }
 

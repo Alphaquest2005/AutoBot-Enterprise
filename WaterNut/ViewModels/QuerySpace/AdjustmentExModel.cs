@@ -1,80 +1,68 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using AdjustmentQS.Client.Entities;
-using CoreEntities.Client.Entities;
-using CoreEntities.Client.Repositories;
-using AdjustmentQS.Client.Repositories;
 using Core.Common.UI;
+using CoreEntities.Client.Entities;
 using EntryDataQS.Client.Repositories;
-using Microsoft.Win32;
 using SimpleMvvmToolkit;
 
 namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
 {
-    public partial class AdjustmentExModel : AdjustmentExViewModel_AutoGen
+    public class AdjustmentExModel : AdjustmentExViewModel_AutoGen
     {
-        private static readonly AdjustmentExModel instance;
-        static AdjustmentExModel()
-        {
-            instance = new AdjustmentExModel();
-
-        }
-
-        public static AdjustmentExModel Instance
-        {
-            get { return instance; }
-        }
-
-      
         private string _entryDataDateFilter;
         private bool _viewOvers;
         private bool _viewShorts;
-        
+
+        static AdjustmentExModel()
+        {
+            Instance = new AdjustmentExModel();
+        }
+
+
+        private AdjustmentExModel()
+        {
+            RegisterToReceiveMessages<AsycudaDocumentSetEx>(
+                CoreEntities.MessageToken.CurrentAsycudaDocumentSetExChanged, OnCurrentAsycudaDocumentSetExChanged);
+            RegisterToReceiveMessages<AsycudaDocument>(CoreEntities.MessageToken.CurrentAsycudaDocumentChanged,
+                OnCurrentAsycudaDocumentChanged);
+            RegisterToReceiveMessages<AdjustmentShort>(MessageToken.CurrentAdjustmentShortChanged,
+                OnCurrentAdjustmentShortChanged);
+            RegisterToReceiveMessages<AdjustmentOver>(MessageToken.CurrentAdjustmentOverChanged,
+                OnCurrentAdjustmentOverChanged);
+        }
+
+        public static AdjustmentExModel Instance { get; }
+
 
         public string EntryDataDateFilter
         {
-            get
-            {
-                return _entryDataDateFilter;
-            }
+            get => _entryDataDateFilter;
             set
             {
                 _entryDataDateFilter = value;
                 NotifyPropertyChanged(x => EntryDataDateFilter);
                 FilterData();
-
             }
-        }
-
-        
-
-
-        private AdjustmentExModel()
-        {
-            RegisterToReceiveMessages<AsycudaDocumentSetEx>(CoreEntities.MessageToken.CurrentAsycudaDocumentSetExChanged, OnCurrentAsycudaDocumentSetExChanged);
-            RegisterToReceiveMessages<AsycudaDocument>(CoreEntities.MessageToken.CurrentAsycudaDocumentChanged, OnCurrentAsycudaDocumentChanged);
-            RegisterToReceiveMessages<AdjustmentShort>(MessageToken.CurrentAdjustmentShortChanged, OnCurrentAdjustmentShortChanged);
-            RegisterToReceiveMessages<AdjustmentOver>(MessageToken.CurrentAdjustmentOverChanged, OnCurrentAdjustmentOverChanged);
-
         }
 
         private void OnCurrentAdjustmentOverChanged(object sender, NotificationEventArgs<AdjustmentOver> e)
         {
             if (e.Data == null) return;
-            vloader.FilterExpression = $"ApplicationSettingsId == {CoreEntities.ViewModels.BaseViewModel.Instance.CurrentApplicationSettings.ApplicationSettingsId} " +
-                                       $"&& InvoiceNo == \"{e.Data.EntryDataId}\"";
+            vloader.FilterExpression =
+                $"ApplicationSettingsId == {CoreEntities.ViewModels.BaseViewModel.Instance.CurrentApplicationSettings.ApplicationSettingsId} " +
+                $"&& InvoiceNo == \"{e.Data.EntryDataId}\"";
             AdjustmentExes.Refresh();
         }
 
         private void OnCurrentAdjustmentShortChanged(object sender, NotificationEventArgs<AdjustmentShort> e)
         {
             if (e.Data == null) return;
-            vloader.FilterExpression = $"ApplicationSettingsId == {CoreEntities.ViewModels.BaseViewModel.Instance.CurrentApplicationSettings.ApplicationSettingsId} " +
-                                       $"&& InvoiceNo == \"{e.Data.EntryDataId}\"";
+            vloader.FilterExpression =
+                $"ApplicationSettingsId == {CoreEntities.ViewModels.BaseViewModel.Instance.CurrentApplicationSettings.ApplicationSettingsId} " +
+                $"&& InvoiceNo == \"{e.Data.EntryDataId}\"";
             AdjustmentExes.Refresh();
         }
 
@@ -82,7 +70,8 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
         {
             if (e.Data != null)
             {
-                vloader.FilterExpression = $"ApplicationSettingsId == {CoreEntities.ViewModels.BaseViewModel.Instance.CurrentApplicationSettings.ApplicationSettingsId}";
+                vloader.FilterExpression =
+                    $"ApplicationSettingsId == {CoreEntities.ViewModels.BaseViewModel.Instance.CurrentApplicationSettings.ApplicationSettingsId}";
                 // vloader.NavExpression = string.Format("AsycudaDocumentSetId = {0}", e.Data.AsycudaDocumentSetId);
                 vloader.SetNavigationExpression("AsycudaDocuments", $"AsycudaDocumentId == {e.Data.ASYCUDA_Id}");
                 AdjustmentExes.Refresh();
@@ -90,13 +79,12 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
         }
 
 
-
-        private new void OnCurrentAsycudaDocumentSetExChanged(object sender, NotificationEventArgs<AsycudaDocumentSetEx> e)
+        private void OnCurrentAsycudaDocumentSetExChanged(object sender, NotificationEventArgs<AsycudaDocumentSetEx> e)
         {
-
             if (e.Data != null)
             {
-                vloader.FilterExpression = $"ApplicationSettingsId == {CoreEntities.ViewModels.BaseViewModel.Instance.CurrentApplicationSettings.ApplicationSettingsId}";
+                vloader.FilterExpression =
+                    $"ApplicationSettingsId == {CoreEntities.ViewModels.BaseViewModel.Instance.CurrentApplicationSettings.ApplicationSettingsId}";
                 vloader.SetNavigationExpression("AsycudaDocumentSets",
                     $"AsycudaDocumentSetId == {e.Data.AsycudaDocumentSetId}");
                 AdjustmentExes.Refresh();
@@ -104,26 +92,23 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
         }
 
 
-
-
-        internal async Task RemoveAdjustment(global::AdjustmentQS.Client.Entities.AdjustmentEx adjustment)
+        internal async Task RemoveAdjustment(AdjustmentEx adjustment)
         {
             await EntryDataRepository.Instance.DeleteEntryData(adjustment.EntityId).ConfigureAwait(false);
 
             MessageBus.Default.BeginNotify(CoreEntities.MessageToken.AsycudaDocumentsChanged, null,
-                       new NotificationEventArgs(CoreEntities.MessageToken.AsycudaDocumentsChanged));
+                new NotificationEventArgs(CoreEntities.MessageToken.AsycudaDocumentsChanged));
 
             MessageBus.Default.BeginNotify(CoreEntities.MessageToken.AsycudaDocumentSetExsChanged, null,
-                            new NotificationEventArgs(CoreEntities.MessageToken.AsycudaDocumentSetExsChanged));
+                new NotificationEventArgs(CoreEntities.MessageToken.AsycudaDocumentSetExsChanged));
 
             MessageBus.Default.BeginNotify(CounterPointQS.MessageToken.CounterPointPOsChanged, null,
-                           new NotificationEventArgs(CounterPointQS.MessageToken.CounterPointPOsChanged));
+                new NotificationEventArgs(CounterPointQS.MessageToken.CounterPointPOsChanged));
 
             MessageBus.Default.BeginNotify(MessageToken.AdjustmentExesChanged, null,
-                            new NotificationEventArgs(MessageToken.AdjustmentExesChanged));
+                new NotificationEventArgs(MessageToken.AdjustmentExesChanged));
         }
 
-        
 
         public async Task Import(string fileType)
         {
@@ -133,21 +118,23 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
                 MessageBox.Show("Please Select Adjustment DocumentSet.");
                 return;
             }
-            await QuerySpace.SaveCSV.Instance.SaveCSVFile(fileType,
-                CoreEntities.ViewModels.BaseViewModel.Instance.CurrentAsycudaDocumentSetEx.AsycudaDocumentSetId).ConfigureAwait(false);
 
-            await AdjustmentShortDetailsModel.Instance.AutoMatch().ConfigureAwait(false);
+            await SaveCSV.Instance.SaveCSVFile(fileType,
+                    CoreEntities.ViewModels.BaseViewModel.Instance.CurrentAsycudaDocumentSetEx.AsycudaDocumentSetId)
+                .ConfigureAwait(false);
+            // only for DIS don't bother for ADJ
+           // await AdjustmentShortDetailsModel.Instance.AutoMatch().ConfigureAwait(false); 
 
             MessageBus.Default.BeginNotify(MessageToken.AdjustmentExesChanged, null,
-                         new NotificationEventArgs(MessageToken.AdjustmentExesChanged));
-         
+                new NotificationEventArgs(MessageToken.AdjustmentExesChanged));
+
 
             MessageBus.Default.BeginNotify(CoreEntities.MessageToken.AsycudaDocumentsChanged, null,
                 new NotificationEventArgs(CoreEntities.MessageToken.AsycudaDocumentsChanged));
             MessageBus.Default.BeginNotify(CoreEntities.MessageToken.AsycudaDocumentSetExsChanged, null,
                 new NotificationEventArgs(CoreEntities.MessageToken.AsycudaDocumentSetExsChanged));
             StatusModel.StopStatusUpdate();
-            MessageBox.Show("Complete","Asycuda Toolkit", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+            MessageBox.Show("Complete", "Asycuda Toolkit", MessageBoxButton.OK, MessageBoxImage.Exclamation);
         }
 
         internal async Task RemoveSelectedAdjustment(
@@ -157,7 +144,8 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
                 MessageBoxButton.YesNo);
             if (res == MessageBoxResult.Yes)
             {
-                await EntryDataRepository.Instance.RemoveSelectedEntryData(SelectedAdjustmentExes.Select(x => x.EntityId)).ConfigureAwait(false);
+                await EntryDataRepository.Instance
+                    .RemoveSelectedEntryData(SelectedAdjustmentExes.Select(x => x.EntityId)).ConfigureAwait(false);
 
                 MessageBus.Default.BeginNotify(CoreEntities.MessageToken.AsycudaDocumentsChanged, null,
                     new NotificationEventArgs(CoreEntities.MessageToken.AsycudaDocumentsChanged));
@@ -172,9 +160,9 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
                     new NotificationEventArgs(MessageToken.AdjustmentExesChanged));
 
                 MessageBus.Default.BeginNotify(MessageToken.AdjustmentExesFilterExpressionChanged, null,
-                   new NotificationEventArgs(MessageToken.AdjustmentExesFilterExpressionChanged));
+                    new NotificationEventArgs(MessageToken.AdjustmentExesFilterExpressionChanged));
 
-                MessageBox.Show("Complete","Asycuda Toolkit", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                MessageBox.Show("Complete", "Asycuda Toolkit", MessageBoxButton.OK, MessageBoxImage.Exclamation);
 
                 //adjustment.Refresh();
             }
@@ -195,7 +183,6 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
 
 //using WaterNut.QuerySpace.OversShortQS.ViewModels;
 //using System.Windows;
-
 
 
 //namespace WaterNut.QuerySpace.OversShortQS.ViewModels

@@ -64,7 +64,9 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
                         RegisterToReceiveMessages<string>(MessageToken.CurrentLinesIDChanged, OnCurrentLinesIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentOCR_FailedFieldsIDChanged, OnCurrentOCR_FailedFieldsIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentOCR_FailedLinesIDChanged, OnCurrentOCR_FailedLinesIDChanged);
+                        RegisterToReceiveMessages<string>(MessageToken.CurrentOCR_FieldMappingsIDChanged, OnCurrentOCR_FieldMappingsIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentOCR_FieldValueIDChanged, OnCurrentOCR_FieldValueIDChanged);
+                        RegisterToReceiveMessages<string>(MessageToken.CurrentOCR_PartLineFieldsIDChanged, OnCurrentOCR_PartLineFieldsIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentOCRFileTypesIDChanged, OnCurrentOCRFileTypesIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentPartsIDChanged, OnCurrentPartsIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentPartTypesIDChanged, OnCurrentPartTypesIDChanged);
@@ -85,7 +87,9 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
                         RegisterToReceiveMessages<Lines>(MessageToken.CurrentLinesChanged, OnCurrentLinesChanged);
                         RegisterToReceiveMessages<OCR_FailedFields>(MessageToken.CurrentOCR_FailedFieldsChanged, OnCurrentOCR_FailedFieldsChanged);
                         RegisterToReceiveMessages<OCR_FailedLines>(MessageToken.CurrentOCR_FailedLinesChanged, OnCurrentOCR_FailedLinesChanged);
+                        RegisterToReceiveMessages<OCR_FieldMappings>(MessageToken.CurrentOCR_FieldMappingsChanged, OnCurrentOCR_FieldMappingsChanged);
                         RegisterToReceiveMessages<OCR_FieldValue>(MessageToken.CurrentOCR_FieldValueChanged, OnCurrentOCR_FieldValueChanged);
+                        RegisterToReceiveMessages<OCR_PartLineFields>(MessageToken.CurrentOCR_PartLineFieldsChanged, OnCurrentOCR_PartLineFieldsChanged);
                         RegisterToReceiveMessages<OCRFileTypes>(MessageToken.CurrentOCRFileTypesChanged, OnCurrentOCRFileTypesChanged);
                         RegisterToReceiveMessages<Parts>(MessageToken.CurrentPartsChanged, OnCurrentPartsChanged);
                         RegisterToReceiveMessages<PartTypes>(MessageToken.CurrentPartTypesChanged, OnCurrentPartTypesChanged);
@@ -408,6 +412,33 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
                                 }
                             }
                         }
+                        internal async void OnCurrentOCR_FieldMappingsIDChanged(object sender, NotificationEventArgs<string> e)
+                        {
+                            using (OCR_FieldMappingsRepository ctx = new OCR_FieldMappingsRepository())
+                            {
+                                CurrentOCR_FieldMappings = await ctx.GetOCR_FieldMappings(e.Data).ConfigureAwait(continueOnCapturedContext: false);
+                            }
+                            NotifyPropertyChanged(m => CurrentOCR_FieldMappings);
+                        }
+
+                        private  string _currentOCR_FieldMappingsID = "";
+                        public string CurrentOCR_FieldMappingsID
+                        {
+                            get
+                            {
+                                return _currentOCR_FieldMappingsID;
+                            }
+                            set
+                            {
+                                if (_currentOCR_FieldMappingsID != value)
+                                {
+                                    _currentOCR_FieldMappingsID = value;
+                                    if (!string.IsNullOrEmpty(_currentOCR_FieldMappingsID)) BeginSendMessage(MessageToken.CurrentOCR_FieldMappingsIDChanged,
+                                                     new NotificationEventArgs<string>(MessageToken.CurrentOCR_FieldMappingsIDChanged, _currentOCR_FieldMappingsID));
+                                    NotifyPropertyChanged(x => this.CurrentOCR_FieldMappingsID);  
+                                }
+                            }
+                        }
                         internal async void OnCurrentOCR_FieldValueIDChanged(object sender, NotificationEventArgs<string> e)
                         {
                             using (OCR_FieldValueRepository ctx = new OCR_FieldValueRepository())
@@ -432,6 +463,33 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
                                     if (!string.IsNullOrEmpty(_currentOCR_FieldValueID)) BeginSendMessage(MessageToken.CurrentOCR_FieldValueIDChanged,
                                                      new NotificationEventArgs<string>(MessageToken.CurrentOCR_FieldValueIDChanged, _currentOCR_FieldValueID));
                                     NotifyPropertyChanged(x => this.CurrentOCR_FieldValueID);  
+                                }
+                            }
+                        }
+                        internal async void OnCurrentOCR_PartLineFieldsIDChanged(object sender, NotificationEventArgs<string> e)
+                        {
+                            using (OCR_PartLineFieldsRepository ctx = new OCR_PartLineFieldsRepository())
+                            {
+                                CurrentOCR_PartLineFields = await ctx.GetOCR_PartLineFields(e.Data).ConfigureAwait(continueOnCapturedContext: false);
+                            }
+                            NotifyPropertyChanged(m => CurrentOCR_PartLineFields);
+                        }
+
+                        private  string _currentOCR_PartLineFieldsID = "";
+                        public string CurrentOCR_PartLineFieldsID
+                        {
+                            get
+                            {
+                                return _currentOCR_PartLineFieldsID;
+                            }
+                            set
+                            {
+                                if (_currentOCR_PartLineFieldsID != value)
+                                {
+                                    _currentOCR_PartLineFieldsID = value;
+                                    if (!string.IsNullOrEmpty(_currentOCR_PartLineFieldsID)) BeginSendMessage(MessageToken.CurrentOCR_PartLineFieldsIDChanged,
+                                                     new NotificationEventArgs<string>(MessageToken.CurrentOCR_PartLineFieldsIDChanged, _currentOCR_PartLineFieldsID));
+                                    NotifyPropertyChanged(x => this.CurrentOCR_PartLineFieldsID);  
                                 }
                             }
                         }
@@ -776,9 +834,9 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
                                                      new NotificationEventArgs<Fields>(MessageToken.CurrentFieldsChanged, _currentFields)); 
                     NotifyPropertyChanged(x => this.CurrentFields);    
                     // all current navigation properties = null
-                 CurrentOCR_FieldValue = null;
-                 CurrentFieldFormatRegEx = null;
                  CurrentOCR_FailedFields = null;
+                 CurrentFieldFormatRegEx = null;
+                 CurrentOCR_FieldValue = null;
    
                 }
             }
@@ -1034,8 +1092,8 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
                                                      new NotificationEventArgs<Lines>(MessageToken.CurrentLinesChanged, _currentLines)); 
                     NotifyPropertyChanged(x => this.CurrentLines);    
                     // all current navigation properties = null
-                 CurrentFields = null;
                  CurrentOCR_FailedLines = null;
+                 CurrentFields = null;
    
                 }
             }
@@ -1165,6 +1223,56 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
                      
        
 
+        internal void OnCurrentOCR_FieldMappingsChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<OCR_FieldMappings> e)
+        {
+            //CurrentOCR_FieldMappings = e.Data;
+            NotifyPropertyChanged(m => this.CurrentOCR_FieldMappings);
+        }
+
+        private  OCR_FieldMappings _currentOCR_FieldMappings;
+        public OCR_FieldMappings CurrentOCR_FieldMappings
+        {
+            get
+            {
+                return _currentOCR_FieldMappings;
+            }
+            set
+            {
+                if (_currentOCR_FieldMappings != value)
+                {
+                    _currentOCR_FieldMappings = value;
+                    BeginSendMessage(MessageToken.CurrentOCR_FieldMappingsChanged,
+                                                     new NotificationEventArgs<OCR_FieldMappings>(MessageToken.CurrentOCR_FieldMappingsChanged, _currentOCR_FieldMappings)); 
+                    NotifyPropertyChanged(x => this.CurrentOCR_FieldMappings);    
+                    // all current navigation properties = null
+   
+                }
+            }
+        }
+
+		VirtualListItem<OCR_FieldMappings> _vcurrentOCR_FieldMappings;
+        public VirtualListItem<OCR_FieldMappings> VCurrentOCR_FieldMappings
+        {
+            get
+            {
+                return _vcurrentOCR_FieldMappings;
+            }
+            set
+            {
+                if (_vcurrentOCR_FieldMappings != value)
+                {
+                    _vcurrentOCR_FieldMappings = value;
+					if(_vcurrentOCR_FieldMappings != null) CurrentOCR_FieldMappings = value.Data;
+                    NotifyPropertyChanged(x => this.VCurrentOCR_FieldMappings);                    
+                }
+            }
+        }
+
+
+
+                     
+       
+
         internal void OnCurrentOCR_FieldValueChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<OCR_FieldValue> e)
         {
             //CurrentOCR_FieldValue = e.Data;
@@ -1207,6 +1315,56 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
                     _vcurrentOCR_FieldValue = value;
 					if(_vcurrentOCR_FieldValue != null) CurrentOCR_FieldValue = value.Data;
                     NotifyPropertyChanged(x => this.VCurrentOCR_FieldValue);                    
+                }
+            }
+        }
+
+
+
+                     
+       
+
+        internal void OnCurrentOCR_PartLineFieldsChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<OCR_PartLineFields> e)
+        {
+            //CurrentOCR_PartLineFields = e.Data;
+            NotifyPropertyChanged(m => this.CurrentOCR_PartLineFields);
+        }
+
+        private  OCR_PartLineFields _currentOCR_PartLineFields;
+        public OCR_PartLineFields CurrentOCR_PartLineFields
+        {
+            get
+            {
+                return _currentOCR_PartLineFields;
+            }
+            set
+            {
+                if (_currentOCR_PartLineFields != value)
+                {
+                    _currentOCR_PartLineFields = value;
+                    BeginSendMessage(MessageToken.CurrentOCR_PartLineFieldsChanged,
+                                                     new NotificationEventArgs<OCR_PartLineFields>(MessageToken.CurrentOCR_PartLineFieldsChanged, _currentOCR_PartLineFields)); 
+                    NotifyPropertyChanged(x => this.CurrentOCR_PartLineFields);    
+                    // all current navigation properties = null
+   
+                }
+            }
+        }
+
+		VirtualListItem<OCR_PartLineFields> _vcurrentOCR_PartLineFields;
+        public VirtualListItem<OCR_PartLineFields> VCurrentOCR_PartLineFields
+        {
+            get
+            {
+                return _vcurrentOCR_PartLineFields;
+            }
+            set
+            {
+                if (_vcurrentOCR_PartLineFields != value)
+                {
+                    _vcurrentOCR_PartLineFields = value;
+					if(_vcurrentOCR_PartLineFields != null) CurrentOCR_PartLineFields = value.Data;
+                    NotifyPropertyChanged(x => this.VCurrentOCR_PartLineFields);                    
                 }
             }
         }

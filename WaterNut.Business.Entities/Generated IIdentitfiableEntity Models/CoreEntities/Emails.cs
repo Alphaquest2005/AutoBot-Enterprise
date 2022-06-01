@@ -18,11 +18,11 @@ namespace CoreEntities.Business.Entities
         {
             get
             {
-                return this.EmailUniqueId.ToString();  // this.EmailUniqueId == null?"0":
+                return this.EmailId.ToString();  // this.EmailId == null?"0":
             }
             set
             {
-                this.EmailUniqueId = Convert.ToInt32(value);
+                this.EmailId = Convert.ToString(value);
             }
         }
 

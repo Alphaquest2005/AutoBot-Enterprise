@@ -203,7 +203,8 @@ namespace CoreEntities.Client.Repositories
                             return new Attachments(res)
                     {
                      // AsycudaDocumentSet_Attachments = new System.Collections.ObjectModel.ObservableCollection<AsycudaDocumentSet_Attachments>(res.AsycudaDocumentSet_Attachments.Select(y => new AsycudaDocumentSet_Attachments(y))),    
-                     // AsycudaDocument_Attachments = new System.Collections.ObjectModel.ObservableCollection<AsycudaDocument_Attachments>(res.AsycudaDocument_Attachments.Select(y => new AsycudaDocument_Attachments(y)))    
+                     // AsycudaDocument_Attachments = new System.Collections.ObjectModel.ObservableCollection<AsycudaDocument_Attachments>(res.AsycudaDocument_Attachments.Select(y => new AsycudaDocument_Attachments(y))),    
+                     // EmailAttachments = new System.Collections.ObjectModel.ObservableCollection<EmailAttachments>(res.EmailAttachments.Select(y => new EmailAttachments(y)))    
                   };
                     }
                     else

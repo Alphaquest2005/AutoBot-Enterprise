@@ -310,6 +310,24 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
         }	
 
  
+
+		private string _emailIdFilter;
+        public string EmailIdFilter
+        {
+            get
+            {
+                return _emailIdFilter;
+            }
+            set
+            {
+                _emailIdFilter = value;
+				NotifyPropertyChanged(x => EmailIdFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
 		internal bool DisableBaseFilterData = false;
         public virtual void FilterData()
 	    {
@@ -384,7 +402,11 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
  
 
 					if(InvoiceTotalFilter.HasValue)
-						res.Append(" && " + string.Format("InvoiceTotal == {0}",  InvoiceTotalFilter.ToString()));							return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
+						res.Append(" && " + string.Format("InvoiceTotal == {0}",  InvoiceTotalFilter.ToString()));				 
+
+									if(string.IsNullOrEmpty(EmailIdFilter) == false)
+						res.Append(" && " + string.Format("EmailId.Contains(\"{0}\")",  EmailIdFilter));						
+			return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
 // Send to Excel Implementation
@@ -422,7 +444,10 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     InvoiceNo = x.InvoiceNo ,
                     
  
-                    InvoiceTotal = x.InvoiceTotal 
+                    InvoiceTotal = x.InvoiceTotal ,
+                    
+ 
+                    EmailId = x.EmailId 
                     
                 }).ToList()
             };
@@ -432,7 +457,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             }
         }
 
-        public class TODO_SubmitDocSetWithIncompleteInvoicesExcelLine
+        public partial class TODO_SubmitDocSetWithIncompleteInvoicesExcelLine
         {
 		 
                     public string Declarant_Reference_Number { get; set; } 
@@ -451,6 +476,9 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     
  
                     public Nullable<double> InvoiceTotal { get; set; } 
+                    
+ 
+                    public string EmailId { get; set; } 
                     
         }
 

@@ -108,10 +108,12 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             }
 
 
-            var od = new OpenFileDialog();
-            od.DefaultExt = ".xml";
-            od.Filter = "Xml Documents (.xml)|*.xml";
-            od.Multiselect = true;
+            var od = new OpenFileDialog
+            {
+                DefaultExt = ".xml",
+                Filter = "Xml Documents (.xml)|*.xml",
+                Multiselect = true
+            };
             var result = od.ShowDialog();
             if (result == true)
             {
@@ -160,8 +162,10 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             }
              
              StatusModel.Timer("Exporting Documents");
-            var od = new SaveFileDialog();
-            od.FileName = BaseViewModel.Instance.CurrentAsycudaDocument.ReferenceNumber + ".xml";
+            var od = new SaveFileDialog
+            {
+                FileName = BaseViewModel.Instance.CurrentAsycudaDocument.ReferenceNumber + ".xml"
+            };
             var result = od.ShowDialog();
             if (result == true)
             {
@@ -204,12 +208,15 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 
         internal async Task ExportDocSet(AsycudaDocumentSetEx docSet)
         {
-            var res = MessageBox.Show("Do you want to Export ALL Documents in this Document Set?", "Export Document Set", MessageBoxButton.YesNo);
+            var res = MessageBox.Show("Do you want to Export ALL Documents in this Document Set?",
+                "Export Document Set", MessageBoxButton.YesNo);
             if (res == MessageBoxResult.Yes)
             {
                 StatusModel.Timer("Exporting DocumentSet");
-                var od = new SaveFileDialog();
-                od.FileName = docSet.Declarant_Reference_Number + ".xml";
+                var od = new SaveFileDialog
+                {
+                    FileName = docSet.Declarant_Reference_Number + ".xml"
+                };
                 var result = od.ShowDialog();
                 if (result == true)
                 {
@@ -219,6 +226,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                         first = name;
                         break;
                     }
+
                     if (first != null)
                     {
                         var directoryInfo = new DirectoryInfo(first).Parent;
@@ -230,8 +238,19 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                             //var t2 = SalesReportModel.Instance.ExportDocSetSalesReport(docSet.AsycudaDocumentSetId, dir);
                             //await Task.WhenAll(t1, t2).ConfigureAwait(false);
 
-                            await AsycudaDocumentSetExRepository.Instance.ExportDocSet(docSet.AsycudaDocumentSetId, dir).ConfigureAwait(false);
-                            await SalesReportModel.Instance.ExportDocSetSalesReport(docSet.AsycudaDocumentSetId, dir).ConfigureAwait(false);
+
+                            //await SalesReportModel.Instance.ExportDocSetSalesReport(docSet.AsycudaDocumentSetId, dir)
+                            //    .ConfigureAwait(false);
+
+                            var docs = await AsycudaDocumentRepository.Instance.GetAsycudaDocumentByAsycudaDocumentSetId(docSet.AsycudaDocumentSetId.ToString()).ConfigureAwait(false);
+                            foreach (var doc in docs)
+                            {
+                                await SalesReportModel.Instance.Send2Excel(dir + "\\", doc).ConfigureAwait(false);
+                            }
+
+                            await AsycudaDocumentSetExRepository.Instance.ExportDocSet(docSet.AsycudaDocumentSetId, dir)
+                                .ConfigureAwait(false);
+
 
 
 
@@ -239,8 +258,9 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                         }
                     }
                 }
+
                 StatusModel.StopStatusUpdate();
-                MessageBox.Show("Complete","Asycuda Toolkit", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                MessageBox.Show("Complete", "Asycuda Toolkit", MessageBoxButton.OK, MessageBoxImage.Exclamation);
 
             }
         }
@@ -330,10 +350,12 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             }
 
 
-            var od = new OpenFileDialog();
-            od.DefaultExt = ".*";
-            od.Filter = "C71, LIC Documents (.xml)|*.xml|PDF Documents (.pdf)|*.pdf";
-            od.Multiselect = true;
+            var od = new OpenFileDialog
+            {
+                DefaultExt = ".*",
+                Filter = "C71, LIC Documents (.xml)|*.xml|PDF Documents (.pdf)|*.pdf",
+                Multiselect = true
+            };
             var result = od.ShowDialog();
             if (result == true)
             {

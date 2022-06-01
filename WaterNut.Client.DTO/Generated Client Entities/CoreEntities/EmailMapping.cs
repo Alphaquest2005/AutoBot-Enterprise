@@ -86,6 +86,19 @@ namespace CoreEntities.Client.DTO
 		}
         private string _ReplacementValue;
 
+        [DataMember]
+        public Nullable<bool> InfoFirst
+		{ 
+		    get { return _InfoFirst; }
+			set
+			{
+			    if (value == _InfoFirst) return;
+				_InfoFirst = value;
+				NotifyPropertyChanged();//m => this.InfoFirst
+			}
+		}
+        private Nullable<bool> _InfoFirst;
+
        
         [DataMember]
         public ApplicationSettings ApplicationSettings
@@ -128,6 +141,19 @@ namespace CoreEntities.Client.DTO
 			}
 		}
         private ChangeTrackingCollection<EmailInfoMappings> _EmailInfoMappings = new ChangeTrackingCollection<EmailInfoMappings>();
+
+        [DataMember]
+        public ChangeTrackingCollection<EmailMappingRexExs> EmailMappingRexExs
+		{
+		    get { return _EmailMappingRexExs; }
+			set
+			{
+			    if (Equals(value, _EmailMappingRexExs)) return;
+				_EmailMappingRexExs = value;
+				NotifyPropertyChanged();//m => this.EmailMappingRexExs
+			}
+		}
+        private ChangeTrackingCollection<EmailMappingRexExs> _EmailMappingRexExs = new ChangeTrackingCollection<EmailMappingRexExs>();
 
    //     [DataMember]
    //     public TrackingState TrackingState { get; set; }

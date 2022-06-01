@@ -1572,7 +1572,7 @@ namespace WaterNut.QuerySpace.AllocationQS.ViewModels
             }
         }
 
-        public class AsycudaSalesAndAdjustmentAllocationsExExcelLine
+        public partial class AsycudaSalesAndAdjustmentAllocationsExExcelLine
         {
 		 
                     public double TotalValue { get; set; } 
@@ -1701,8 +1701,8 @@ namespace WaterNut.QuerySpace.AllocationQS.ViewModels
                     public Nullable<System.DateTime> xRegistrationDate { get; set; } 
                     
  
-                    public Nullable<double> xQuantity { get; set; }
-                    public int AllocationId { get; set; }
+                    public Nullable<double> xQuantity { get; set; } 
+                    
         }
 
 		

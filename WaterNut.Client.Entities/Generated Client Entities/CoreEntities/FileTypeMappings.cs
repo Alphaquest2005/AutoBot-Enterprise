@@ -141,6 +141,23 @@ public bool Required
 		}
      
 
+       
+       
+                
+                [MaxLength(255, ErrorMessage = "Comments has a max length of 255 letters ")]
+public string Comments
+		{ 
+		    get { return this.filetypemappings.Comments; }
+			set
+			{
+			    if (value == this.filetypemappings.Comments) return;
+				this.filetypemappings.Comments = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("Comments");
+			}
+		}
+     
+
        private FileTypes _FileTypes;
         public  FileTypes FileTypes
 		{

@@ -282,6 +282,24 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
         }	
 
  
+
+		private string _commentsFilter;
+        public string CommentsFilter
+        {
+            get
+            {
+                return _commentsFilter;
+            }
+            set
+            {
+                _commentsFilter = value;
+				NotifyPropertyChanged(x => CommentsFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
 		internal bool DisableBaseFilterData = false;
         public virtual void FilterData()
 	    {
@@ -326,6 +344,10 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 
 									if(RequiredFilter.HasValue)
 						res.Append(" && " + string.Format("Required == {0}",  RequiredFilter));						
+ 
+
+									if(string.IsNullOrEmpty(CommentsFilter) == false)
+						res.Append(" && " + string.Format("Comments.Contains(\"{0}\")",  CommentsFilter));						
 			return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
@@ -358,7 +380,10 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     DataType = x.DataType ,
                     
  
-                    Required = x.Required 
+                    Required = x.Required ,
+                    
+ 
+                    Comments = x.Comments 
                     
                 }).ToList()
             };
@@ -368,7 +393,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             }
         }
 
-        public class FileTypeMappingsExcelLine
+        public partial class FileTypeMappingsExcelLine
         {
 		 
                     public string OriginalName { get; set; } 
@@ -381,6 +406,9 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     
  
                     public bool Required { get; set; } 
+                    
+ 
+                    public string Comments { get; set; } 
                     
         }
 

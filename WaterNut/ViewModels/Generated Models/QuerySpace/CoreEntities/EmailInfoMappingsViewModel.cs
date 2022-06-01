@@ -333,7 +333,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             }
         }
 
-        public class EmailInfoMappingsExcelLine
+        public partial class EmailInfoMappingsExcelLine
         {
 		 
                     public Nullable<bool> UpdateDatabase { get; set; } 

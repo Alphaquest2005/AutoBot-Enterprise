@@ -60,6 +60,19 @@ namespace OCR.Client.DTO
 		}
         private Nullable<bool> _MultiLine;
 
+        [DataMember]
+        public Nullable<int> MaxLines
+		{ 
+		    get { return _MaxLines; }
+			set
+			{
+			    if (value == _MaxLines) return;
+				_MaxLines = value;
+				NotifyPropertyChanged();//m => this.MaxLines
+			}
+		}
+        private Nullable<int> _MaxLines;
+
        
         [DataMember]
         public ChangeTrackingCollection<End> End

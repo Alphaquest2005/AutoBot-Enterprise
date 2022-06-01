@@ -88,8 +88,7 @@ namespace WaterNut.Views
             var c = ((FrameworkElement) sender).DataContext;
             if (c != null)
             {
-                var v = c as VirtualListItem<AsycudaDocumentItem>;
-                if (v != null)
+                if (c is VirtualListItem<AsycudaDocumentItem> v)
                 {
                     var vi = v.Data;
                     if(vi != null)
@@ -110,8 +109,7 @@ namespace WaterNut.Views
         {
             if (e.Key == Key.Enter)
             {
-                var textBox = sender as TextBox;
-                if (textBox != null)
+                if (sender is TextBox textBox)
                     textBox.GetBindingExpression(TextBox.TextProperty).UpdateSource();
             }
         }

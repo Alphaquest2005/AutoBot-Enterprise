@@ -19,7 +19,7 @@
               this.Property(t => t.SupplierCode).HasColumnName("SupplierCode").HasMaxLength(100);
               this.Property(t => t.TotalInternalFreight).HasColumnName("TotalInternalFreight");
               this.Property(t => t.Currency).HasColumnName("Currency").HasMaxLength(4);
-              this.Property(t => t.EmailId).HasColumnName("EmailId");
+              this.Property(t => t.EmailId).HasColumnName("EmailId").HasMaxLength(255);
               this.Property(t => t.FileTypeId).HasColumnName("FileTypeId");
               this.Property(t => t.TotalOtherCost).HasColumnName("TotalOtherCost");
               this.Property(t => t.TotalInsurance).HasColumnName("TotalInsurance");

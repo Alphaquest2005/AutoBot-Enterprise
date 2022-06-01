@@ -265,6 +265,18 @@ namespace EntryDataDS.Business.Services
                                         GetWhere<ShipmentInvoicePOItemQueryMatches>(dbContext, exp, itm.Value, "EntryDataDetails", "Select", includesLst)
 										.ConfigureAwait(continueOnCapturedContext: false);
 
+                            case "SupportingDetails":
+                                return
+                                    await
+                                        GetWhere<SupportingDetail>(dbContext, exp, itm.Value, "EntryDataDetails", "Select", includesLst)
+										.ConfigureAwait(continueOnCapturedContext: false);
+
+                            case "PreviousSupportingDetails":
+                                return
+                                    await
+                                        GetWhere<SupportingDetail>(dbContext, exp, itm.Value, "EntryDataDetails", "Select", includesLst)
+										.ConfigureAwait(continueOnCapturedContext: false);
+
                         }
 
                     }
@@ -779,6 +791,12 @@ namespace EntryDataDS.Business.Services
                             case "INVItems":
                                 return await CountWhere<ShipmentInvoicePOItemQueryMatches>(dbContext, exp, itm.Value, "EntryDataDetails", "Select")
 											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "SupportingDetails":
+                                return await CountWhere<SupportingDetail>(dbContext, exp, itm.Value, "EntryDataDetails", "Select")
+											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "PreviousSupportingDetails":
+                                return await CountWhere<SupportingDetail>(dbContext, exp, itm.Value, "EntryDataDetails", "Select")
+											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }
                     return await dbContext.EntryDataDetails.Where(exp == "All" || exp == null ? "EntryDataDetailsId != null" : exp)
@@ -913,6 +931,18 @@ namespace EntryDataDS.Business.Services
                                 return
                                     await
                                         LoadRangeWhere<ShipmentInvoicePOItemQueryMatches>(startIndex, count, dbContext, exp, itm.Value, "EntryDataDetails", "Select")
+													.ConfigureAwait(continueOnCapturedContext: false);
+
+                            case "SupportingDetails":
+                                return
+                                    await
+                                        LoadRangeWhere<SupportingDetail>(startIndex, count, dbContext, exp, itm.Value, "EntryDataDetails", "Select")
+													.ConfigureAwait(continueOnCapturedContext: false);
+
+                            case "PreviousSupportingDetails":
+                                return
+                                    await
+                                        LoadRangeWhere<SupportingDetail>(startIndex, count, dbContext, exp, itm.Value, "EntryDataDetails", "Select")
 													.ConfigureAwait(continueOnCapturedContext: false);
 
                           
@@ -1129,6 +1159,8 @@ namespace EntryDataDS.Business.Services
                 var set = AddIncludes(includesLst, dbContext);
                 IEnumerable<EntryDataDetails> entities = await set//dbContext.EntryDataDetails
                                                     // .Include(x => x.INVItems)									  
+                                                    // .Include(x => x.SupportingDetails)									  
+                                                    // .Include(x => x.PreviousSupportingDetails)									  
                                       .AsNoTracking()
                                         .Where(x => x.EntryDataId.ToString() == EntryDataId.ToString())
 										.ToListAsync()
@@ -1159,6 +1191,8 @@ namespace EntryDataDS.Business.Services
                 var set = AddIncludes(includesLst, dbContext);
                 IEnumerable<EntryDataDetails> entities = await set//dbContext.EntryDataDetails
                                                     // .Include(x => x.INVItems)									  
+                                                    // .Include(x => x.SupportingDetails)									  
+                                                    // .Include(x => x.PreviousSupportingDetails)									  
                                       .AsNoTracking()
                                         .Where(x => x.InventoryItemId.ToString() == InventoryItemId.ToString())
 										.ToListAsync()
@@ -1189,6 +1223,8 @@ namespace EntryDataDS.Business.Services
                 var set = AddIncludes(includesLst, dbContext);
                 IEnumerable<EntryDataDetails> entities = await set//dbContext.EntryDataDetails
                                                     // .Include(x => x.INVItems)									  
+                                                    // .Include(x => x.SupportingDetails)									  
+                                                    // .Include(x => x.PreviousSupportingDetails)									  
                                       .AsNoTracking()
                                         .Where(x => x.EntryData_Id.ToString() == EntryData_Id.ToString())
 										.ToListAsync()
@@ -1278,6 +1314,12 @@ namespace EntryDataDS.Business.Services
 											.ConfigureAwait(continueOnCapturedContext: false);
                             case "INVItems":
                                 return await SumWhere<ShipmentInvoicePOItemQueryMatches>(dbContext, exp, itm.Value, "EntryDataDetails", field, "Select")
+											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "SupportingDetails":
+                                return await SumWhere<SupportingDetail>(dbContext, exp, itm.Value, "EntryDataDetails", field, "Select")
+											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "PreviousSupportingDetails":
+                                return await SumWhere<SupportingDetail>(dbContext, exp, itm.Value, "EntryDataDetails", field, "Select")
 											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }

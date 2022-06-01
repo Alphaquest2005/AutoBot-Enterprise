@@ -425,7 +425,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             }
         }
 
-        public class TODO_SubmitEntryCIFExcelLine
+        public partial class TODO_SubmitEntryCIFExcelLine
         {
 		 
                     public string Type { get; set; } 

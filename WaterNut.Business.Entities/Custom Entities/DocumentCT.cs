@@ -18,6 +18,7 @@ namespace WaterNut.Business.Entities
         {
             DocumentItems = new List<xcuda_Item>();
             Document = new xcuda_ASYCUDA(true);
+            Document.SetupProperties();
             EntryDataDetails= new List<EntryDataDetails>();
            
         }
@@ -31,6 +32,6 @@ namespace WaterNut.Business.Entities
         [NotMapped]
         public List<EntryDataDetails> EntryDataDetails { get; set; }
 
-        public List<int?> EmailIds { get; set; } = new List<int?>();
+        public List<string> EmailIds { get; set; } = new List<string>();
     }
 }

@@ -120,6 +120,9 @@ namespace CoreEntities.Business.Services
   		[OperationContract]
         [FaultContract(typeof(ValidationFault))]
         Task<IEnumerable<FileTypes>> GetFileTypesByOldFileTypeId(string OldFileTypeId, List<string> includesLst = null);
+  		[OperationContract]
+        [FaultContract(typeof(ValidationFault))]
+        Task<IEnumerable<FileTypes>> GetFileTypesByFileInfoId(string FileInfoId, List<string> includesLst = null);
   
 
 

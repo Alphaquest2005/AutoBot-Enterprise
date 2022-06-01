@@ -55,8 +55,7 @@ namespace Core.Common.Client.DTO
 
         public override bool Equals(object obj)
         {
-            var other = obj as BaseEntity<T>;
-            if (ReferenceEquals(other, null)) return false;
+            if (!(obj is BaseEntity<T> other)) return false;
             if (ReferenceEquals(this, other)) return true;
             if (GetType() != other.GetType()) return false;
             if (EntityId == "0" || other.EntityId == "0") return false;

@@ -79,7 +79,13 @@ namespace CoreEntities.Client.Contracts
 		[OperationContract]
 		string MinField(string whereExp, string field);
 
-				
+				[OperationContract]
+		Task<IEnumerable<Emails>> GetEmailsByEmailUniqueId(string EmailUniqueId, List<string> includesLst = null);
+        
+  		[OperationContract]
+		Task<IEnumerable<Emails>> GetEmailsByApplicationSettingsId(string ApplicationSettingsId, List<string> includesLst = null);
+        
+  		
     }
 }
 

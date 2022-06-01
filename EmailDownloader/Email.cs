@@ -6,19 +6,21 @@ namespace EmailDownloader
 {
     public class Email
     {
-        public int EmailId { get; }
+        public int EmailUniqueId { get; }
         public string Subject { get; }
         public DateTime EmailDate { get; }
 
-        public Email(int emailId, string subject, DateTime emailDate, EmailMapping emailMapping)
+        public Email(int emailUniqueId, string subject, DateTime emailDate, EmailMapping emailMapping)
         {
-            this.EmailId = emailId;
+            this.EmailUniqueId = emailUniqueId;
             this.Subject = subject;
             this.EmailDate = emailDate;
             this.EmailMapping = emailMapping;
           
 
         }
+
+        public string EmailId => Subject + "--" + EmailDate.ToString("yyyy-MM-dd-HH:mm:ss");
 
         public List<FileTypes> FileTypes { get; set; }
         

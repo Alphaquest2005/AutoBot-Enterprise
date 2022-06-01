@@ -590,7 +590,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             }
         }
 
-        public class TODO_LicenceAvailableQtyExcelLine
+        public partial class TODO_LicenceAvailableQtyExcelLine
         {
 		 
                     public string RegistrationNumber { get; set; } 

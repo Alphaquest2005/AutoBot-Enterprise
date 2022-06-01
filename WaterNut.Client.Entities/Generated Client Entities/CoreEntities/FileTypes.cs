@@ -92,23 +92,6 @@ public string FilePattern
 		}
      
 
-       [RequiredValidationAttribute(ErrorMessage= "Type is required")]
-       
-                
-                [MaxLength(50, ErrorMessage = "Type has a max length of 50 letters ")]
-public string Type
-		{ 
-		    get { return this.filetypes.Type; }
-			set
-			{
-			    if (value == this.filetypes.Type) return;
-				this.filetypes.Type = value;
-                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
-				NotifyPropertyChanged("Type");
-			}
-		}
-     
-
        [RequiredValidationAttribute(ErrorMessage= "AsycudaDocumentSet is required")]
        
 public int AsycudaDocumentSetId
@@ -317,6 +300,53 @@ public Nullable<bool> IsImportable
 				this.filetypes.IsImportable = value;
                 if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
 				NotifyPropertyChanged("IsImportable");
+			}
+		}
+     
+
+       
+       [NumberValidationAttribute]
+public Nullable<int> MaxFileSizeInMB
+		{ 
+		    get { return this.filetypes.MaxFileSizeInMB; }
+			set
+			{
+			    if (value == this.filetypes.MaxFileSizeInMB) return;
+				this.filetypes.MaxFileSizeInMB = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("MaxFileSizeInMB");
+			}
+		}
+     
+
+       
+       
+public Nullable<int> FileInfoId
+		{ 
+		    get { return this.filetypes.FileInfoId; }
+			set
+			{
+			    if (value == this.filetypes.FileInfoId) return;
+				this.filetypes.FileInfoId = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("FileInfoId");
+			}
+		}
+     
+
+       
+       
+                
+                [MaxLength(50, ErrorMessage = "Description has a max length of 50 letters ")]
+public string Description
+		{ 
+		    get { return this.filetypes.Description; }
+			set
+			{
+			    if (value == this.filetypes.Description) return;
+				this.filetypes.Description = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("Description");
 			}
 		}
      
@@ -964,6 +994,59 @@ public Nullable<bool> IsImportable
                 
             }
         }
+
+       private FileImporterInfo _FileImporterInfos;
+        public  FileImporterInfo FileImporterInfos
+		{
+		    get
+               { 
+                  if (this.filetypes != null)
+                   {
+                       if (_FileImporterInfos != null)
+                       {
+                           if (this.filetypes.FileImporterInfos !=
+                               _FileImporterInfos.DTO)
+                           {
+                                if (this.filetypes.FileImporterInfos  != null)
+                               _FileImporterInfos = new FileImporterInfo(this.filetypes.FileImporterInfos);
+                           }
+                       }
+                       else
+                       {
+                             if (this.filetypes.FileImporterInfos  != null)
+                           _FileImporterInfos = new FileImporterInfo(this.filetypes.FileImporterInfos);
+                       }
+                   }
+
+
+             //       if (_FileImporterInfos != null) return _FileImporterInfos;
+                       
+             //       var i = new FileImporterInfo(){TrackingState = TrackingState.Added};
+			//		//if (this.filetypes.FileImporterInfos == null) Debugger.Break();
+			//		if (this.filetypes.FileImporterInfos != null)
+            //        {
+            //           i. = this.filetypes.FileImporterInfos;
+            //        }
+            //        else
+            //        {
+            //            this.filetypes.FileImporterInfos = i.;
+             //       }
+                           
+            //        _FileImporterInfos = i;
+                     
+                    return _FileImporterInfos;
+               }
+			set
+			{
+			    if (value == _FileImporterInfos) return;
+                _FileImporterInfos = value;
+                if(value != null)
+                     this.filetypes.FileImporterInfos = value.DTO;
+				if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+                NotifyPropertyChanged("FileImporterInfos");
+			}
+		}
+        
 
 
         ChangeTrackingCollection<DTO.FileTypes> _changeTracker;    

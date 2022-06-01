@@ -527,6 +527,8 @@ namespace AdjustmentQS.Business.Entities
         public InventoryItemsEx InventoryItemsEx { get; set; }
         [DataMember]
         public List<AdjustmentOversAllocation> AdjustmentOversAllocations { get; set; }
+        [DataMember]
+        public AdjustmentEx AdjustmentEx { get; set; }
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

@@ -350,6 +350,24 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
 
  
 
+		private string _emailIdFilter;
+        public string EmailIdFilter
+        {
+            get
+            {
+                return _emailIdFilter;
+            }
+            set
+            {
+                _emailIdFilter = value;
+				NotifyPropertyChanged(x => EmailIdFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
+
 		private Double? _invoiceTotalFilter;
         public Double? InvoiceTotalFilter
         {
@@ -466,6 +484,10 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
 						res.Append(" && " + string.Format("Currency.Contains(\"{0}\")",  CurrencyFilter));						
  
 
+									if(string.IsNullOrEmpty(EmailIdFilter) == false)
+						res.Append(" && " + string.Format("EmailId.Contains(\"{0}\")",  EmailIdFilter));						
+ 
+
 					if(InvoiceTotalFilter.HasValue)
 						res.Append(" && " + string.Format("InvoiceTotal == {0}",  InvoiceTotalFilter.ToString()));				 
 
@@ -514,6 +536,9 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
                     Currency = x.Currency ,
                     
  
+                    EmailId = x.EmailId ,
+                    
+ 
                     InvoiceTotal = x.InvoiceTotal ,
                     
  
@@ -527,7 +552,7 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
             }
         }
 
-        public class AdjustmentExExcelLine
+        public partial class AdjustmentExExcelLine
         {
 		 
                     public System.DateTime InvoiceDate { get; set; } 
@@ -549,6 +574,9 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
                     
  
                     public string Currency { get; set; } 
+                    
+ 
+                    public string EmailId { get; set; } 
                     
  
                     public Nullable<double> InvoiceTotal { get; set; } 

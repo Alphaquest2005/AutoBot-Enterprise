@@ -1158,6 +1158,24 @@ namespace WaterNut.QuerySpace.AllocationQS.ViewModels
 
  
 
+		private string _emailIdFilter;
+        public string EmailIdFilter
+        {
+            get
+            {
+                return _emailIdFilter;
+            }
+            set
+            {
+                _emailIdFilter = value;
+				NotifyPropertyChanged(x => EmailIdFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
+
 		private string _typeFilter;
         public string TypeFilter
         {
@@ -1527,6 +1545,10 @@ namespace WaterNut.QuerySpace.AllocationQS.ViewModels
 						res.Append(" && " + string.Format("Comment.Contains(\"{0}\")",  CommentFilter));						
  
 
+									if(string.IsNullOrEmpty(EmailIdFilter) == false)
+						res.Append(" && " + string.Format("EmailId.Contains(\"{0}\")",  EmailIdFilter));						
+ 
+
 									if(string.IsNullOrEmpty(TypeFilter) == false)
 						res.Append(" && " + string.Format("Type.Contains(\"{0}\")",  TypeFilter));						
  
@@ -1685,6 +1707,9 @@ namespace WaterNut.QuerySpace.AllocationQS.ViewModels
                     Comment = x.Comment ,
                     
  
+                    EmailId = x.EmailId ,
+                    
+ 
                     Type = x.Type ,
                     
  
@@ -1698,7 +1723,7 @@ namespace WaterNut.QuerySpace.AllocationQS.ViewModels
             }
         }
 
-        public class AsycudaSalesAllocationsExExcelLine
+        public partial class AsycudaSalesAllocationsExExcelLine
         {
 		 
                     public double TotalValue { get; set; } 
@@ -1828,6 +1853,9 @@ namespace WaterNut.QuerySpace.AllocationQS.ViewModels
                     
  
                     public string Comment { get; set; } 
+                    
+ 
+                    public string EmailId { get; set; } 
                     
  
                     public string Type { get; set; } 

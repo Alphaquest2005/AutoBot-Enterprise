@@ -811,7 +811,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             }
         }
 
-        public class TODO_PODocSetToAssessExcelLine
+        public partial class TODO_PODocSetToAssessExcelLine
         {
 		 
                     public string Country_of_origin_code { get; set; } 

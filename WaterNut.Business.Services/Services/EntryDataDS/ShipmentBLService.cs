@@ -1140,7 +1140,7 @@ namespace EntryDataDS.Business.Services
             {
                 using ( var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
               {
-                var i = Convert.ToInt32(EmailId);
+                var i = EmailId;
                 var set = AddIncludes(includesLst, dbContext);
                 IEnumerable<ShipmentBL> entities = await set//dbContext.ShipmentBL
                                                     // .Include(x => x.ShimentBLCharges)									  

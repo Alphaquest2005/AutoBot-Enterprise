@@ -74,13 +74,16 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                         RegisterToReceiveMessages<string>(MessageToken.CurrentCustomsOperationsIDChanged, OnCurrentCustomsOperationsIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentDeclarantIDChanged, OnCurrentDeclarantIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentDocument_TypeIDChanged, OnCurrentDocument_TypeIDChanged);
+                        RegisterToReceiveMessages<string>(MessageToken.CurrentEmailAttachmentsIDChanged, OnCurrentEmailAttachmentsIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentEmailFileTypesIDChanged, OnCurrentEmailFileTypesIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentEmailInfoMappingsIDChanged, OnCurrentEmailInfoMappingsIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentEmailMappingIDChanged, OnCurrentEmailMappingIDChanged);
+                        RegisterToReceiveMessages<string>(MessageToken.CurrentEmailMappingRexExsIDChanged, OnCurrentEmailMappingRexExsIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentEmailsIDChanged, OnCurrentEmailsIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentEntryPreviousItemsIDChanged, OnCurrentEntryPreviousItemsIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentExpiredEntriesLstIDChanged, OnCurrentExpiredEntriesLstIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentFileGroupsIDChanged, OnCurrentFileGroupsIDChanged);
+                        RegisterToReceiveMessages<string>(MessageToken.CurrentFileImporterInfoIDChanged, OnCurrentFileImporterInfoIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentFileTypeActionsIDChanged, OnCurrentFileTypeActionsIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentFileTypeContactsIDChanged, OnCurrentFileTypeContactsIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentFileTypeMappingRegExsIDChanged, OnCurrentFileTypeMappingRegExsIDChanged);
@@ -171,13 +174,16 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                         RegisterToReceiveMessages<CustomsOperations>(MessageToken.CurrentCustomsOperationsChanged, OnCurrentCustomsOperationsChanged);
                         RegisterToReceiveMessages<Declarant>(MessageToken.CurrentDeclarantChanged, OnCurrentDeclarantChanged);
                         RegisterToReceiveMessages<Document_Type>(MessageToken.CurrentDocument_TypeChanged, OnCurrentDocument_TypeChanged);
+                        RegisterToReceiveMessages<EmailAttachments>(MessageToken.CurrentEmailAttachmentsChanged, OnCurrentEmailAttachmentsChanged);
                         RegisterToReceiveMessages<EmailFileTypes>(MessageToken.CurrentEmailFileTypesChanged, OnCurrentEmailFileTypesChanged);
                         RegisterToReceiveMessages<EmailInfoMappings>(MessageToken.CurrentEmailInfoMappingsChanged, OnCurrentEmailInfoMappingsChanged);
                         RegisterToReceiveMessages<EmailMapping>(MessageToken.CurrentEmailMappingChanged, OnCurrentEmailMappingChanged);
+                        RegisterToReceiveMessages<EmailMappingRexExs>(MessageToken.CurrentEmailMappingRexExsChanged, OnCurrentEmailMappingRexExsChanged);
                         RegisterToReceiveMessages<Emails>(MessageToken.CurrentEmailsChanged, OnCurrentEmailsChanged);
                         RegisterToReceiveMessages<EntryPreviousItems>(MessageToken.CurrentEntryPreviousItemsChanged, OnCurrentEntryPreviousItemsChanged);
                         RegisterToReceiveMessages<ExpiredEntriesLst>(MessageToken.CurrentExpiredEntriesLstChanged, OnCurrentExpiredEntriesLstChanged);
                         RegisterToReceiveMessages<FileGroups>(MessageToken.CurrentFileGroupsChanged, OnCurrentFileGroupsChanged);
+                        RegisterToReceiveMessages<FileImporterInfo>(MessageToken.CurrentFileImporterInfoChanged, OnCurrentFileImporterInfoChanged);
                         RegisterToReceiveMessages<FileTypeActions>(MessageToken.CurrentFileTypeActionsChanged, OnCurrentFileTypeActionsChanged);
                         RegisterToReceiveMessages<FileTypeContacts>(MessageToken.CurrentFileTypeContactsChanged, OnCurrentFileTypeContactsChanged);
                         RegisterToReceiveMessages<FileTypeMappingRegExs>(MessageToken.CurrentFileTypeMappingRegExsChanged, OnCurrentFileTypeMappingRegExsChanged);
@@ -830,6 +836,33 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                                 }
                             }
                         }
+                        internal async void OnCurrentEmailAttachmentsIDChanged(object sender, NotificationEventArgs<string> e)
+                        {
+                            using (EmailAttachmentsRepository ctx = new EmailAttachmentsRepository())
+                            {
+                                CurrentEmailAttachments = await ctx.GetEmailAttachments(e.Data).ConfigureAwait(continueOnCapturedContext: false);
+                            }
+                            NotifyPropertyChanged(m => CurrentEmailAttachments);
+                        }
+
+                        private  string _currentEmailAttachmentsID = "";
+                        public string CurrentEmailAttachmentsID
+                        {
+                            get
+                            {
+                                return _currentEmailAttachmentsID;
+                            }
+                            set
+                            {
+                                if (_currentEmailAttachmentsID != value)
+                                {
+                                    _currentEmailAttachmentsID = value;
+                                    if (!string.IsNullOrEmpty(_currentEmailAttachmentsID)) BeginSendMessage(MessageToken.CurrentEmailAttachmentsIDChanged,
+                                                     new NotificationEventArgs<string>(MessageToken.CurrentEmailAttachmentsIDChanged, _currentEmailAttachmentsID));
+                                    NotifyPropertyChanged(x => this.CurrentEmailAttachmentsID);  
+                                }
+                            }
+                        }
                         internal async void OnCurrentEmailFileTypesIDChanged(object sender, NotificationEventArgs<string> e)
                         {
                             using (EmailFileTypesRepository ctx = new EmailFileTypesRepository())
@@ -908,6 +941,33 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                                     if (!string.IsNullOrEmpty(_currentEmailMappingID)) BeginSendMessage(MessageToken.CurrentEmailMappingIDChanged,
                                                      new NotificationEventArgs<string>(MessageToken.CurrentEmailMappingIDChanged, _currentEmailMappingID));
                                     NotifyPropertyChanged(x => this.CurrentEmailMappingID);  
+                                }
+                            }
+                        }
+                        internal async void OnCurrentEmailMappingRexExsIDChanged(object sender, NotificationEventArgs<string> e)
+                        {
+                            using (EmailMappingRexExsRepository ctx = new EmailMappingRexExsRepository())
+                            {
+                                CurrentEmailMappingRexExs = await ctx.GetEmailMappingRexExs(e.Data).ConfigureAwait(continueOnCapturedContext: false);
+                            }
+                            NotifyPropertyChanged(m => CurrentEmailMappingRexExs);
+                        }
+
+                        private  string _currentEmailMappingRexExsID = "";
+                        public string CurrentEmailMappingRexExsID
+                        {
+                            get
+                            {
+                                return _currentEmailMappingRexExsID;
+                            }
+                            set
+                            {
+                                if (_currentEmailMappingRexExsID != value)
+                                {
+                                    _currentEmailMappingRexExsID = value;
+                                    if (!string.IsNullOrEmpty(_currentEmailMappingRexExsID)) BeginSendMessage(MessageToken.CurrentEmailMappingRexExsIDChanged,
+                                                     new NotificationEventArgs<string>(MessageToken.CurrentEmailMappingRexExsIDChanged, _currentEmailMappingRexExsID));
+                                    NotifyPropertyChanged(x => this.CurrentEmailMappingRexExsID);  
                                 }
                             }
                         }
@@ -1016,6 +1076,33 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                                     if (!string.IsNullOrEmpty(_currentFileGroupsID)) BeginSendMessage(MessageToken.CurrentFileGroupsIDChanged,
                                                      new NotificationEventArgs<string>(MessageToken.CurrentFileGroupsIDChanged, _currentFileGroupsID));
                                     NotifyPropertyChanged(x => this.CurrentFileGroupsID);  
+                                }
+                            }
+                        }
+                        internal async void OnCurrentFileImporterInfoIDChanged(object sender, NotificationEventArgs<string> e)
+                        {
+                            using (FileImporterInfoRepository ctx = new FileImporterInfoRepository())
+                            {
+                                CurrentFileImporterInfo = await ctx.GetFileImporterInfo(e.Data).ConfigureAwait(continueOnCapturedContext: false);
+                            }
+                            NotifyPropertyChanged(m => CurrentFileImporterInfo);
+                        }
+
+                        private  string _currentFileImporterInfoID = "";
+                        public string CurrentFileImporterInfoID
+                        {
+                            get
+                            {
+                                return _currentFileImporterInfoID;
+                            }
+                            set
+                            {
+                                if (_currentFileImporterInfoID != value)
+                                {
+                                    _currentFileImporterInfoID = value;
+                                    if (!string.IsNullOrEmpty(_currentFileImporterInfoID)) BeginSendMessage(MessageToken.CurrentFileImporterInfoIDChanged,
+                                                     new NotificationEventArgs<string>(MessageToken.CurrentFileImporterInfoIDChanged, _currentFileImporterInfoID));
+                                    NotifyPropertyChanged(x => this.CurrentFileImporterInfoID);  
                                 }
                             }
                         }
@@ -3554,6 +3641,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     // all current navigation properties = null
                  CurrentAsycudaDocumentSet_Attachments = null;
                  CurrentAsycudaDocument_Attachments = null;
+                 CurrentEmailAttachments = null;
    
                 }
             }
@@ -3886,6 +3974,56 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                      
        
 
+        internal void OnCurrentEmailAttachmentsChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<EmailAttachments> e)
+        {
+            //CurrentEmailAttachments = e.Data;
+            NotifyPropertyChanged(m => this.CurrentEmailAttachments);
+        }
+
+        private  EmailAttachments _currentEmailAttachments;
+        public EmailAttachments CurrentEmailAttachments
+        {
+            get
+            {
+                return _currentEmailAttachments;
+            }
+            set
+            {
+                if (_currentEmailAttachments != value)
+                {
+                    _currentEmailAttachments = value;
+                    BeginSendMessage(MessageToken.CurrentEmailAttachmentsChanged,
+                                                     new NotificationEventArgs<EmailAttachments>(MessageToken.CurrentEmailAttachmentsChanged, _currentEmailAttachments)); 
+                    NotifyPropertyChanged(x => this.CurrentEmailAttachments);    
+                    // all current navigation properties = null
+   
+                }
+            }
+        }
+
+		VirtualListItem<EmailAttachments> _vcurrentEmailAttachments;
+        public VirtualListItem<EmailAttachments> VCurrentEmailAttachments
+        {
+            get
+            {
+                return _vcurrentEmailAttachments;
+            }
+            set
+            {
+                if (_vcurrentEmailAttachments != value)
+                {
+                    _vcurrentEmailAttachments = value;
+					if(_vcurrentEmailAttachments != null) CurrentEmailAttachments = value.Data;
+                    NotifyPropertyChanged(x => this.VCurrentEmailAttachments);                    
+                }
+            }
+        }
+
+
+
+                     
+       
+
         internal void OnCurrentEmailFileTypesChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<EmailFileTypes> e)
         {
             //CurrentEmailFileTypes = e.Data;
@@ -4010,6 +4148,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     // all current navigation properties = null
                  CurrentEmailFileTypes = null;
                  CurrentEmailInfoMappings = null;
+                 CurrentEmailMappingRexExs = null;
    
                 }
             }
@@ -4029,6 +4168,56 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     _vcurrentEmailMapping = value;
 					if(_vcurrentEmailMapping != null) CurrentEmailMapping = value.Data;
                     NotifyPropertyChanged(x => this.VCurrentEmailMapping);                    
+                }
+            }
+        }
+
+
+
+                     
+       
+
+        internal void OnCurrentEmailMappingRexExsChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<EmailMappingRexExs> e)
+        {
+            //CurrentEmailMappingRexExs = e.Data;
+            NotifyPropertyChanged(m => this.CurrentEmailMappingRexExs);
+        }
+
+        private  EmailMappingRexExs _currentEmailMappingRexExs;
+        public EmailMappingRexExs CurrentEmailMappingRexExs
+        {
+            get
+            {
+                return _currentEmailMappingRexExs;
+            }
+            set
+            {
+                if (_currentEmailMappingRexExs != value)
+                {
+                    _currentEmailMappingRexExs = value;
+                    BeginSendMessage(MessageToken.CurrentEmailMappingRexExsChanged,
+                                                     new NotificationEventArgs<EmailMappingRexExs>(MessageToken.CurrentEmailMappingRexExsChanged, _currentEmailMappingRexExs)); 
+                    NotifyPropertyChanged(x => this.CurrentEmailMappingRexExs);    
+                    // all current navigation properties = null
+   
+                }
+            }
+        }
+
+		VirtualListItem<EmailMappingRexExs> _vcurrentEmailMappingRexExs;
+        public VirtualListItem<EmailMappingRexExs> VCurrentEmailMappingRexExs
+        {
+            get
+            {
+                return _vcurrentEmailMappingRexExs;
+            }
+            set
+            {
+                if (_vcurrentEmailMappingRexExs != value)
+                {
+                    _vcurrentEmailMappingRexExs = value;
+					if(_vcurrentEmailMappingRexExs != null) CurrentEmailMappingRexExs = value.Data;
+                    NotifyPropertyChanged(x => this.VCurrentEmailMappingRexExs);                    
                 }
             }
         }
@@ -4061,6 +4250,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     NotifyPropertyChanged(x => this.CurrentEmails);    
                     // all current navigation properties = null
                  CurrentAsycudaDocumentSet_Attachments = null;
+                 CurrentEmailAttachments = null;
    
                 }
             }
@@ -4231,6 +4421,57 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     _vcurrentFileGroups = value;
 					if(_vcurrentFileGroups != null) CurrentFileGroups = value.Data;
                     NotifyPropertyChanged(x => this.VCurrentFileGroups);                    
+                }
+            }
+        }
+
+
+
+                     
+       
+
+        internal void OnCurrentFileImporterInfoChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<FileImporterInfo> e)
+        {
+            //CurrentFileImporterInfo = e.Data;
+            NotifyPropertyChanged(m => this.CurrentFileImporterInfo);
+        }
+
+        private  FileImporterInfo _currentFileImporterInfo;
+        public FileImporterInfo CurrentFileImporterInfo
+        {
+            get
+            {
+                return _currentFileImporterInfo;
+            }
+            set
+            {
+                if (_currentFileImporterInfo != value)
+                {
+                    _currentFileImporterInfo = value;
+                    BeginSendMessage(MessageToken.CurrentFileImporterInfoChanged,
+                                                     new NotificationEventArgs<FileImporterInfo>(MessageToken.CurrentFileImporterInfoChanged, _currentFileImporterInfo)); 
+                    NotifyPropertyChanged(x => this.CurrentFileImporterInfo);    
+                    // all current navigation properties = null
+                 CurrentFileTypes = null;
+   
+                }
+            }
+        }
+
+		VirtualListItem<FileImporterInfo> _vcurrentFileImporterInfo;
+        public VirtualListItem<FileImporterInfo> VCurrentFileImporterInfo
+        {
+            get
+            {
+                return _vcurrentFileImporterInfo;
+            }
+            set
+            {
+                if (_vcurrentFileImporterInfo != value)
+                {
+                    _vcurrentFileImporterInfo = value;
+					if(_vcurrentFileImporterInfo != null) CurrentFileImporterInfo = value.Data;
+                    NotifyPropertyChanged(x => this.VCurrentFileImporterInfo);                    
                 }
             }
         }

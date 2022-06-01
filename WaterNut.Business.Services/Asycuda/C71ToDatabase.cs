@@ -15,6 +15,7 @@ using EntryDataDS.Business.Entities;
 using TrackableEntities;
 using TrackableEntities.EF6;
 using ValuationDS.Business.Entities;
+using WaterNut.Business.Services.Utils;
 using AsycudaDocumentSet_Attachments = CoreEntities.Business.Entities.AsycudaDocumentSet_Attachments;
 
 
@@ -385,7 +386,7 @@ namespace WaterNut.DataSpace.Asycuda
                     var fileType = cctx.FileTypes.First(x =>
                         x.ApplicationSettingsId ==
                         BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId &&
-                        x.Type == "C71");
+                        x.FileImporterInfos.EntryType == FileTypeManager.EntryTypes.C71);
 
                     var elst = ndoc?.xC71_Item.Select(x => x.Invoice_Number).ToList();
 
@@ -430,7 +431,7 @@ namespace WaterNut.DataSpace.Asycuda
                         AsycudaDocumentSetId = docSet.AsycudaDocumentSetId,
                         DocumentSpecific = true,
                         FileDate = file.LastWriteTime,
-                        EmailUniqueId = null,
+                        EmailId = null,
                         FileTypeId = fileType.Id,
                         TrackingState = TrackingState.Added,
                         Attachments = new CoreEntities.Business.Entities.Attachments(true)

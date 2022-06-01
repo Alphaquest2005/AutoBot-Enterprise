@@ -136,6 +136,12 @@ namespace WaterNut.QuerySpace.CoreEntities
 			public const string Document_TypeDeleted = "Document_TypeDeleted";
 			public const string Document_TypeCreated = "Document_TypeCreated";
 			public const string Document_TypeUpdated = "Document_TypeUpdated";
+			public const string EmailAttachmentsFilterExpressionChanged = "EmailAttachmentsFilterExpressionChanged";
+			public const string SelectedEmailAttachmentsChanged = "SelectedEmailAttachmentsChanged";
+            public const string EmailAttachmentsChanged = "EmailAttachmentsChanged";
+			public const string EmailAttachmentsDeleted = "EmailAttachmentsDeleted";
+			public const string EmailAttachmentsCreated = "EmailAttachmentsCreated";
+			public const string EmailAttachmentsUpdated = "EmailAttachmentsUpdated";
 			public const string EmailFileTypesFilterExpressionChanged = "EmailFileTypesFilterExpressionChanged";
 			public const string SelectedEmailFileTypesChanged = "SelectedEmailFileTypesChanged";
             public const string EmailFileTypesChanged = "EmailFileTypesChanged";
@@ -154,6 +160,12 @@ namespace WaterNut.QuerySpace.CoreEntities
 			public const string EmailMappingDeleted = "EmailMappingDeleted";
 			public const string EmailMappingCreated = "EmailMappingCreated";
 			public const string EmailMappingUpdated = "EmailMappingUpdated";
+			public const string EmailMappingRexExsFilterExpressionChanged = "EmailMappingRexExsFilterExpressionChanged";
+			public const string SelectedEmailMappingRexExsChanged = "SelectedEmailMappingRexExsChanged";
+            public const string EmailMappingRexExsChanged = "EmailMappingRexExsChanged";
+			public const string EmailMappingRexExsDeleted = "EmailMappingRexExsDeleted";
+			public const string EmailMappingRexExsCreated = "EmailMappingRexExsCreated";
+			public const string EmailMappingRexExsUpdated = "EmailMappingRexExsUpdated";
 			public const string EmailsFilterExpressionChanged = "EmailsFilterExpressionChanged";
 			public const string SelectedEmailsChanged = "SelectedEmailsChanged";
             public const string EmailsChanged = "EmailsChanged";
@@ -178,6 +190,12 @@ namespace WaterNut.QuerySpace.CoreEntities
 			public const string FileGroupsDeleted = "FileGroupsDeleted";
 			public const string FileGroupsCreated = "FileGroupsCreated";
 			public const string FileGroupsUpdated = "FileGroupsUpdated";
+			public const string FileImporterInfosFilterExpressionChanged = "FileImporterInfosFilterExpressionChanged";
+			public const string SelectedFileImporterInfosChanged = "SelectedFileImporterInfosChanged";
+            public const string FileImporterInfosChanged = "FileImporterInfosChanged";
+			public const string FileImporterInfosDeleted = "FileImporterInfosDeleted";
+			public const string FileImporterInfosCreated = "FileImporterInfosCreated";
+			public const string FileImporterInfosUpdated = "FileImporterInfosUpdated";
 			public const string FileTypeActionsFilterExpressionChanged = "FileTypeActionsFilterExpressionChanged";
 			public const string SelectedFileTypeActionsChanged = "SelectedFileTypeActionsChanged";
             public const string FileTypeActionsChanged = "FileTypeActionsChanged";
@@ -597,13 +615,16 @@ namespace WaterNut.QuerySpace.CoreEntities
           // public const string CustomsOperationsChanged = "CustomsOperationsChanged";
           // public const string DeclarantChanged = "DeclarantChanged";
           // public const string Document_TypeChanged = "Document_TypeChanged";
+          // public const string EmailAttachmentsChanged = "EmailAttachmentsChanged";
           // public const string EmailFileTypesChanged = "EmailFileTypesChanged";
           // public const string EmailInfoMappingsChanged = "EmailInfoMappingsChanged";
           // public const string EmailMappingChanged = "EmailMappingChanged";
+          // public const string EmailMappingRexExsChanged = "EmailMappingRexExsChanged";
           // public const string EmailsChanged = "EmailsChanged";
           // public const string EntryPreviousItemsChanged = "EntryPreviousItemsChanged";
           // public const string ExpiredEntriesLstChanged = "ExpiredEntriesLstChanged";
           // public const string FileGroupsChanged = "FileGroupsChanged";
+          // public const string FileImporterInfoChanged = "FileImporterInfoChanged";
           // public const string FileTypeActionsChanged = "FileTypeActionsChanged";
           // public const string FileTypeContactsChanged = "FileTypeContactsChanged";
           // public const string FileTypeMappingRegExsChanged = "FileTypeMappingRegExsChanged";
@@ -715,11 +736,15 @@ namespace WaterNut.QuerySpace.CoreEntities
    
            public const string CurrentDocument_TypeChanged = "CurrentDocument_TypeChanged";
    
+           public const string CurrentEmailAttachmentsChanged = "CurrentEmailAttachmentsChanged";
+   
            public const string CurrentEmailFileTypesChanged = "CurrentEmailFileTypesChanged";
    
            public const string CurrentEmailInfoMappingsChanged = "CurrentEmailInfoMappingsChanged";
    
            public const string CurrentEmailMappingChanged = "CurrentEmailMappingChanged";
+   
+           public const string CurrentEmailMappingRexExsChanged = "CurrentEmailMappingRexExsChanged";
    
            public const string CurrentEmailsChanged = "CurrentEmailsChanged";
    
@@ -728,6 +753,8 @@ namespace WaterNut.QuerySpace.CoreEntities
            public const string CurrentExpiredEntriesLstChanged = "CurrentExpiredEntriesLstChanged";
    
            public const string CurrentFileGroupsChanged = "CurrentFileGroupsChanged";
+   
+           public const string CurrentFileImporterInfoChanged = "CurrentFileImporterInfoChanged";
    
            public const string CurrentFileTypeActionsChanged = "CurrentFileTypeActionsChanged";
    
@@ -905,11 +932,15 @@ namespace WaterNut.QuerySpace.CoreEntities
    
            public const string CurrentDocument_TypeIDChanged = "OnCurrentDocument_TypeIDChanged";
    
+           public const string CurrentEmailAttachmentsIDChanged = "OnCurrentEmailAttachmentsIDChanged";
+   
            public const string CurrentEmailFileTypesIDChanged = "OnCurrentEmailFileTypesIDChanged";
    
            public const string CurrentEmailInfoMappingsIDChanged = "OnCurrentEmailInfoMappingsIDChanged";
    
            public const string CurrentEmailMappingIDChanged = "OnCurrentEmailMappingIDChanged";
+   
+           public const string CurrentEmailMappingRexExsIDChanged = "OnCurrentEmailMappingRexExsIDChanged";
    
            public const string CurrentEmailsIDChanged = "OnCurrentEmailsIDChanged";
    
@@ -918,6 +949,8 @@ namespace WaterNut.QuerySpace.CoreEntities
            public const string CurrentExpiredEntriesLstIDChanged = "OnCurrentExpiredEntriesLstIDChanged";
    
            public const string CurrentFileGroupsIDChanged = "OnCurrentFileGroupsIDChanged";
+   
+           public const string CurrentFileImporterInfoIDChanged = "OnCurrentFileImporterInfoIDChanged";
    
            public const string CurrentFileTypeActionsIDChanged = "OnCurrentFileTypeActionsIDChanged";
    

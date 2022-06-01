@@ -189,7 +189,7 @@ namespace WaterNut.DataSpace
 	                //{
 
 	                var c = new Customs_Procedure();
-	                c = BaseDataModel.Instance.Customs_Procedures.Single(x =>
+	                c = BaseDataModel.GetCustoms_Procedure(x =>
 	                    x != null && x.Customs_ProcedureId == docInfo.Customs_ProcedureId);
 
 	                doc.xcuda_ASYCUDA_ExtendedProperties.Customs_Procedure = c;

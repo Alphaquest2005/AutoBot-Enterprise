@@ -18,9 +18,11 @@
               this.Property(t => t.Pattern).HasColumnName("Pattern").IsRequired();
               this.Property(t => t.IsSingleEmail).HasColumnName("IsSingleEmail");
               this.Property(t => t.ReplacementValue).HasColumnName("ReplacementValue").HasMaxLength(50);
+              this.Property(t => t.InfoFirst).HasColumnName("InfoFirst");
               this.HasRequired(t => t.ApplicationSettings).WithMany(t =>(ICollection<EmailMapping>) t.EmailMapping).HasForeignKey(d => d.ApplicationSettingsId);
               this.HasMany(t => t.EmailFileTypes).WithRequired(t => (EmailMapping)t.EmailMapping);
               this.HasMany(t => t.EmailInfoMappings).WithRequired(t => (EmailMapping)t.EmailMapping);
+              this.HasMany(t => t.EmailMappingRexExs).WithRequired(t => (EmailMapping)t.EmailMapping);
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);
     			this.Ignore(t => t.ModifiedProperties);

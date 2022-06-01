@@ -401,6 +401,21 @@ namespace PreviousDocumentDS.Business.Entities
         }
         string _previousinvoicekey;
         [DataMember]
+        public string xWarehouseError 
+        {
+            get
+            {
+                return _xwarehouseerror;
+            }
+            set
+            {
+                _xwarehouseerror = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _xwarehouseerror;
+        [DataMember]
         public xcuda_Tarification xcuda_Tarification { get; set; }
         [DataMember]
         public xcuda_Valuation_item xcuda_Valuation_item { get; set; }

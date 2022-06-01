@@ -346,7 +346,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             }
         }
 
-        public class ContactsExcelLine
+        public partial class ContactsExcelLine
         {
 		 
                     public string Role { get; set; } 

@@ -616,7 +616,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             }
         }
 
-        public class TODO_ERRReport_AllocationsExcelLine
+        public partial class TODO_ERRReport_AllocationsExcelLine
         {
 		 
                     public string CNumber { get; set; } 

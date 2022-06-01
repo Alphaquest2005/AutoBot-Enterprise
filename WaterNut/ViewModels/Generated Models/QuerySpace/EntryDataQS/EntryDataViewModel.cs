@@ -350,6 +350,24 @@ namespace WaterNut.QuerySpace.EntryDataQS.ViewModels
 
  
 
+		private string _emailIdFilter;
+        public string EmailIdFilter
+        {
+            get
+            {
+                return _emailIdFilter;
+            }
+            set
+            {
+                _emailIdFilter = value;
+				NotifyPropertyChanged(x => EmailIdFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
+
 		private string _supplierCodeFilter;
         public string SupplierCodeFilter
         {
@@ -590,6 +608,10 @@ namespace WaterNut.QuerySpace.EntryDataQS.ViewModels
 						res.Append(" && " + string.Format("Currency.Contains(\"{0}\")",  CurrencyFilter));						
  
 
+									if(string.IsNullOrEmpty(EmailIdFilter) == false)
+						res.Append(" && " + string.Format("EmailId.Contains(\"{0}\")",  EmailIdFilter));						
+ 
+
 									if(string.IsNullOrEmpty(SupplierCodeFilter) == false)
 						res.Append(" && " + string.Format("SupplierCode.Contains(\"{0}\")",  SupplierCodeFilter));						
  
@@ -663,6 +685,9 @@ namespace WaterNut.QuerySpace.EntryDataQS.ViewModels
                     Currency = x.Currency ,
                     
  
+                    EmailId = x.EmailId ,
+                    
+ 
                     SupplierCode = x.SupplierCode ,
                     
  
@@ -697,7 +722,7 @@ namespace WaterNut.QuerySpace.EntryDataQS.ViewModels
             }
         }
 
-        public class EntryDataExcelLine
+        public partial class EntryDataExcelLine
         {
 		 
                     public string EntryDataId { get; set; } 
@@ -719,6 +744,9 @@ namespace WaterNut.QuerySpace.EntryDataQS.ViewModels
                     
  
                     public string Currency { get; set; } 
+                    
+ 
+                    public string EmailId { get; set; } 
                     
  
                     public string SupplierCode { get; set; } 

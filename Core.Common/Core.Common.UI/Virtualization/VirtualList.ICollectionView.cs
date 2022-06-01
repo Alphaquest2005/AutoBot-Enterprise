@@ -167,7 +167,7 @@ namespace Core.Common.UI.DataVirtualization
             set
             {
                 if (value == null)
-                    throw new ArgumentNullException("value");
+                    throw new ArgumentNullException(nameof(value));
                 if (_cultureInfo != value)
                 {
                     _cultureInfo = value;
@@ -303,7 +303,7 @@ namespace Core.Common.UI.DataVirtualization
         {
             ThrowIfDeferred();
             if (position < -1 || position > Count)
-                throw new ArgumentOutOfRangeException("position");
+                throw new ArgumentOutOfRangeException(nameof(position));
 
             if (position != _currentPosition && OnCurrentChanging())
             {

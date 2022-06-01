@@ -343,7 +343,7 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
             }
         }
 
-        public class PartsExcelLine
+        public partial class PartsExcelLine
         {
 		        }
 

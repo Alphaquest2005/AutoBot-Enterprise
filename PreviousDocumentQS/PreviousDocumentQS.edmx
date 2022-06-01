@@ -99,7 +99,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.PreviousItemsEx' does not
           <Property Name="Prev_net_weight" Type="decimal" Precision="9" Scale="2" />
           <Property Name="Prev_reg_ser" Type="nvarchar" MaxLength="20" />
           <Property Name="Prev_reg_nbr" Type="nvarchar" MaxLength="20" />
-          <Property Name="Prev_reg_dat" Type="nvarchar" MaxLength="20" />
+          <Property Name="Prev_reg_year" Type="int" />
           <Property Name="Prev_reg_cuo" Type="nvarchar" MaxLength="20" />
           <Property Name="Suplementary_Quantity" Type="decimal" Precision="9" Scale="2" Nullable="false" />
           <Property Name="Preveious_suplementary_quantity" Type="float" Nullable="false" />
@@ -113,7 +113,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.PreviousItemsEx' does not
           <Property Name="RndCurrent_Value" Type="float" Nullable="false" />
           <Property Name="ReferenceNumber" Type="nvarchar" MaxLength="30" />
           <Property Name="CNumber" Type="nvarchar" MaxLength="20" />
-          <Property Name="RegistrationDate" Type="datetime" />
+          <Property Name="RegistrationDate" Type="datetime2" Precision="7" />
           <Property Name="AsycudaDocumentItemId" Type="int" Nullable="false" />
           <Property Name="AssessmentDate" Type="datetime2" Precision="7" />
           <Property Name="Prev_decl_HS_spec" Type="nvarchar" MaxLength="20" />
@@ -196,7 +196,7 @@ FROM [dbo].[PreviousDocumentItem] AS [PreviousDocumentItem]</DefiningQuery>
 [PreviousItemsEx].[Prev_net_weight] AS [Prev_net_weight], 
 [PreviousItemsEx].[Prev_reg_ser] AS [Prev_reg_ser], 
 [PreviousItemsEx].[Prev_reg_nbr] AS [Prev_reg_nbr], 
-[PreviousItemsEx].[Prev_reg_dat] AS [Prev_reg_dat], 
+[PreviousItemsEx].[Prev_reg_year] AS [Prev_reg_year], 
 [PreviousItemsEx].[Prev_reg_cuo] AS [Prev_reg_cuo], 
 [PreviousItemsEx].[Suplementary_Quantity] AS [Suplementary_Quantity], 
 [PreviousItemsEx].[Preveious_suplementary_quantity] AS [Preveious_suplementary_quantity], 
@@ -330,13 +330,12 @@ FROM [dbo].[PreviousItemsEx] AS [PreviousItemsEx]</DefiningQuery>
           <Property Name="Commodity_code" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Name="Previous_item_number" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Name="Goods_origin" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
-          <Property Name="Net_weight" Type="Decimal" />
-          <Property Name="Prev_net_weight" Type="Decimal" />
+          <Property Name="Net_weight" Type="Decimal" Precision="9" Scale="2" />
+          <Property Name="Prev_net_weight" Type="Decimal" Precision="9" Scale="2" />
           <Property Name="Prev_reg_ser" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Name="Prev_reg_nbr" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
-          <Property Name="Prev_reg_dat" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Name="Prev_reg_cuo" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
-          <Property Name="Suplementary_Quantity" Type="Decimal" Nullable="false" />
+          <Property Name="Suplementary_Quantity" Type="Decimal" Nullable="false" Precision="9" Scale="2" />
           <Property Name="Preveious_suplementary_quantity" Type="Double" Nullable="false" />
           <Property Name="Current_value" Type="Double" Nullable="false" />
           <Property Name="Previous_value" Type="Double" Nullable="false" />
@@ -348,7 +347,7 @@ FROM [dbo].[PreviousItemsEx] AS [PreviousItemsEx]</DefiningQuery>
           <Property Name="RndCurrent_Value" Type="Double" Nullable="false" />
           <Property Name="ReferenceNumber" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
           <Property Name="CNumber" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
-          <Property Name="RegistrationDate" Type="DateTime" Precision="3" />
+          <Property Name="RegistrationDate" Type="DateTime" Precision="7" />
           <Property Name="AsycudaDocumentItemId" Type="Int32" Nullable="false" />
           <Property Name="AssessmentDate" Type="DateTime" Precision="7" />
           <Property Name="Prev_decl_HS_spec" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
@@ -362,6 +361,7 @@ FROM [dbo].[PreviousItemsEx] AS [PreviousItemsEx]</DefiningQuery>
           <Property Name="DutyLiablity" Type="Double" />
           <NavigationProperty Name="PreviousDocumentItem" Relationship="WaterNutDBModel.PreviousDocumentItemPreviousItemsEx" FromRole="PreviousItemsEx" ToRole="PreviousDocumentItem" />
           <NavigationProperty Name="AsycudaDocumentItem" Relationship="WaterNutDBModel.PreviousDocumentItemPreviousItemsEx1" FromRole="PreviousItemsEx" ToRole="PreviousDocumentItem" />
+          <Property Name="Prev_reg_year" Type="Int32" />
         </EntityType>
         <Association Name="PreviousDocumentItemPreviousItemsEx">
           <End Type="WaterNutDBModel.PreviousDocumentItem" Role="PreviousDocumentItem" Multiplicity="0..1" />
@@ -456,6 +456,7 @@ FROM [dbo].[PreviousItemsEx] AS [PreviousItemsEx]</DefiningQuery>
           <EntitySetMapping Name="PreviousItemsExes">
             <EntityTypeMapping TypeName="WaterNutDBModel.PreviousItemsEx">
               <MappingFragment StoreEntitySet="PreviousItemsEx">
+                <ScalarProperty Name="Prev_reg_year" ColumnName="Prev_reg_year" />
                 <ScalarProperty Name="DutyLiablity" ColumnName="DutyLiablity" />
                 <ScalarProperty Name="TotalDutyLiablity" ColumnName="TotalDutyLiablity" />
                 <ScalarProperty Name="ApplicationSettingsId" ColumnName="ApplicationSettingsId" />
@@ -481,7 +482,6 @@ FROM [dbo].[PreviousItemsEx] AS [PreviousItemsEx]</DefiningQuery>
                 <ScalarProperty Name="Preveious_suplementary_quantity" ColumnName="Preveious_suplementary_quantity" />
                 <ScalarProperty Name="Suplementary_Quantity" ColumnName="Suplementary_Quantity" />
                 <ScalarProperty Name="Prev_reg_cuo" ColumnName="Prev_reg_cuo" />
-                <ScalarProperty Name="Prev_reg_dat" ColumnName="Prev_reg_dat" />
                 <ScalarProperty Name="Prev_reg_nbr" ColumnName="Prev_reg_nbr" />
                 <ScalarProperty Name="Prev_reg_ser" ColumnName="Prev_reg_ser" />
                 <ScalarProperty Name="Prev_net_weight" ColumnName="Prev_net_weight" />

@@ -1066,7 +1066,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             }
         }
 
-        public class TODO_TotalAdjustmentsToProcessExcelLine
+        public partial class TODO_TotalAdjustmentsToProcessExcelLine
         {
 		 
                     public string EntryDataId { get; set; } 
@@ -1144,7 +1144,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     public string Subject { get; set; } 
                     
  
-                    public System.DateTime EmailDate { get; set; } 
+                    public Nullable<System.DateTime> EmailDate { get; set; } 
                     
  
                     public string DutyFreePaid { get; set; } 

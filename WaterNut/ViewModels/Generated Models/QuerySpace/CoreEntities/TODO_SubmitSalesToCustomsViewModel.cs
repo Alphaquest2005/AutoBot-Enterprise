@@ -343,6 +343,24 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 
  
 
+		private string _emailIdFilter;
+        public string EmailIdFilter
+        {
+            get
+            {
+                return _emailIdFilter;
+            }
+            set
+            {
+                _emailIdFilter = value;
+				NotifyPropertyChanged(x => EmailIdFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
+
 		private string _customsProcedureFilter;
         public string CustomsProcedureFilter
         {
@@ -514,6 +532,10 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 						}
 				 
 
+									if(string.IsNullOrEmpty(EmailIdFilter) == false)
+						res.Append(" && " + string.Format("EmailId.Contains(\"{0}\")",  EmailIdFilter));						
+ 
+
 									if(string.IsNullOrEmpty(CustomsProcedureFilter) == false)
 						res.Append(" && " + string.Format("CustomsProcedure.Contains(\"{0}\")",  CustomsProcedureFilter));						
  
@@ -566,6 +588,9 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     AssessmentDate = x.AssessmentDate ,
                     
  
+                    EmailId = x.EmailId ,
+                    
+ 
                     CustomsProcedure = x.CustomsProcedure ,
                     
  
@@ -585,7 +610,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             }
         }
 
-        public class TODO_SubmitSalesToCustomsExcelLine
+        public partial class TODO_SubmitSalesToCustomsExcelLine
         {
 		 
                     public string CNumber { get; set; } 
@@ -601,6 +626,9 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     
  
                     public Nullable<System.DateTime> AssessmentDate { get; set; } 
+                    
+ 
+                    public string EmailId { get; set; } 
                     
  
                     public string CustomsProcedure { get; set; } 

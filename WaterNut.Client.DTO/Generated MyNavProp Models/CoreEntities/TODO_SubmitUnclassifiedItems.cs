@@ -14,9 +14,6 @@ namespace CoreEntities.Client.DTO
     {
        #region MyNavProp Entities
 
-       
-
-        
  
  #endregion
     }

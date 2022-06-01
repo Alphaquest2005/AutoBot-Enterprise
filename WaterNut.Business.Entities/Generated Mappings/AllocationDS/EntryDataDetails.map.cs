@@ -49,6 +49,7 @@
               this.HasRequired(t => t.Sales).WithMany(t =>(ICollection<EntryDataDetails>) t.EntryDataDetails).HasForeignKey(d => d.EntryData_Id);
               this.HasRequired(t => t.Adjustments).WithMany(t =>(ICollection<EntryDataDetails>) t.EntryDataDetails).HasForeignKey(d => d.EntryData_Id);
               this.HasRequired(t => t.EntryData).WithMany(t =>(ICollection<EntryDataDetails>) t.EntryDataDetails1).HasForeignKey(d => d.EntryData_Id);
+              this.HasRequired(t => t.InventoryItem).WithMany(t =>(ICollection<EntryDataDetails>) t.EntryDataDetails).HasForeignKey(d => d.InventoryItemId);
               this.HasMany(t => t.AsycudaSalesAllocations).WithOptional(t => t.EntryDataDetails).HasForeignKey(d => d.EntryDataDetailsId);
               this.HasOptional(t => t.EntryDataDetailsEx).WithRequired(t => (EntryDataDetails) t.EntryDataDetails);
               this.HasMany(t => t.AdjustmentShortAllocations).WithRequired(t => (EntryDataDetails)t.EntryDataDetails);

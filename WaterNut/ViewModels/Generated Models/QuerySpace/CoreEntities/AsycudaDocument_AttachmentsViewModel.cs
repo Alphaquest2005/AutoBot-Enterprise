@@ -286,7 +286,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             }
         }
 
-        public class AsycudaDocument_AttachmentsExcelLine
+        public partial class AsycudaDocument_AttachmentsExcelLine
         {
 		        }
 

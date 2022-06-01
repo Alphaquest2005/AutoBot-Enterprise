@@ -266,7 +266,9 @@ public string Declarant_Reference_Number
 
        
        
-public Nullable<int> EmailId
+                
+                [MaxLength(255, ErrorMessage = "EmailId has a max length of 255 letters ")]
+public string EmailId
 		{ 
 		    get { return this.todo_discrepanciesexecutionreport.EmailId; }
 			set
@@ -313,9 +315,7 @@ public Nullable<int> xLineNumber
 
        
        
-                
-                [MaxLength(10, ErrorMessage = "xRegistrationDate has a max length of 10 letters ")]
-public string xRegistrationDate
+public Nullable<System.DateTime> xRegistrationDate
 		{ 
 		    get { return this.todo_discrepanciesexecutionreport.xRegistrationDate; }
 			set

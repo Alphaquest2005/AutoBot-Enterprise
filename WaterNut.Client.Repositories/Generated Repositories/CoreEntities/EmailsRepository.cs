@@ -202,7 +202,8 @@ namespace CoreEntities.Client.Repositories
                         {
                             return new Emails(res)
                     {
-                     // AsycudaDocumentSet_Attachments = new System.Collections.ObjectModel.ObservableCollection<AsycudaDocumentSet_Attachments>(res.AsycudaDocumentSet_Attachments.Select(y => new AsycudaDocumentSet_Attachments(y)))    
+                     // AsycudaDocumentSet_Attachments = new System.Collections.ObjectModel.ObservableCollection<AsycudaDocumentSet_Attachments>(res.AsycudaDocumentSet_Attachments.Select(y => new AsycudaDocumentSet_Attachments(y))),    
+                     // EmailAttachments = new System.Collections.ObjectModel.ObservableCollection<EmailAttachments>(res.EmailAttachments.Select(y => new EmailAttachments(y)))    
                   };
                     }
                     else
@@ -364,7 +365,63 @@ namespace CoreEntities.Client.Repositories
             }
         }
 
-        
+	 public async Task<IEnumerable<Emails>> GetEmailsByEmailUniqueId(string EmailUniqueId, List<string> includesLst = null)
+        {
+             if (EmailUniqueId == "0") return null;
+            try
+            {
+                 using (EmailsClient t = new EmailsClient())
+                    {
+                        var res = await t.GetEmailsByEmailUniqueId(EmailUniqueId, includesLst).ConfigureAwait(continueOnCapturedContext: false);
+                         if(res != null)
+                        {
+                            return res.Select(x => new Emails(x)).AsEnumerable();
+					    }                
+					    else
+					    {
+						    return null;
+					    }                    
+                    }
+            }
+            catch (FaultException<ValidationFault> e)
+            {
+                throw new Exception(e.Detail.Message, e.InnerException);
+            }
+            catch (Exception)
+            {
+                Debugger.Break();
+                throw;
+            }
+        } 
+ 	 public async Task<IEnumerable<Emails>> GetEmailsByApplicationSettingsId(string ApplicationSettingsId, List<string> includesLst = null)
+        {
+             if (ApplicationSettingsId == "0") return null;
+            try
+            {
+                 using (EmailsClient t = new EmailsClient())
+                    {
+                        var res = await t.GetEmailsByApplicationSettingsId(ApplicationSettingsId, includesLst).ConfigureAwait(continueOnCapturedContext: false);
+                         if(res != null)
+                        {
+                            return res.Select(x => new Emails(x)).AsEnumerable();
+					    }                
+					    else
+					    {
+						    return null;
+					    }                    
+                    }
+            }
+            catch (FaultException<ValidationFault> e)
+            {
+                throw new Exception(e.Detail.Message, e.InnerException);
+            }
+            catch (Exception)
+            {
+                Debugger.Break();
+                throw;
+            }
+        } 
+         
 		public decimal SumField(string whereExp, string sumExp)
         {
             try

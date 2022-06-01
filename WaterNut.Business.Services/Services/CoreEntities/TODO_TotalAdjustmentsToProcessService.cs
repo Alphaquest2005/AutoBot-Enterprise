@@ -1021,7 +1021,36 @@ namespace CoreEntities.Business.Services
 			}
         }
 
-			        public async Task<IEnumerable<TODO_TotalAdjustmentsToProcess>> GetTODO_TotalAdjustmentsToProcessByAsycudaDocumentSetId(string AsycudaDocumentSetId, List<string> includesLst = null)
+			        public async Task<IEnumerable<TODO_TotalAdjustmentsToProcess>> GetTODO_TotalAdjustmentsToProcessByEntryDataId(string EntryDataId, List<string> includesLst = null)
+        {
+            try
+            {
+                using ( var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
+              {
+                var i = EntryDataId;
+                var set = AddIncludes(includesLst, dbContext);
+                IEnumerable<TODO_TotalAdjustmentsToProcess> entities = await set//dbContext.TODO_TotalAdjustmentsToProcess
+                                      .AsNoTracking()
+                                        .Where(x => x.EntryDataId.ToString() == EntryDataId.ToString())
+										.ToListAsync()
+										.ConfigureAwait(continueOnCapturedContext: false);
+                return entities;
+              }
+             }
+            catch (Exception updateEx)
+            {
+                System.Diagnostics.Debugger.Break();
+                //throw new FaultException(updateEx.Message);
+                    var fault = new ValidationFault
+                                {
+                                    Result = false,
+                                    Message = updateEx.Message,
+                                    Description = updateEx.StackTrace
+                                };
+                    throw new FaultException<ValidationFault>(fault);
+            }
+        }
+ 	        public async Task<IEnumerable<TODO_TotalAdjustmentsToProcess>> GetTODO_TotalAdjustmentsToProcessByAsycudaDocumentSetId(string AsycudaDocumentSetId, List<string> includesLst = null)
         {
             try
             {

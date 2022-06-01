@@ -175,7 +175,9 @@ public int ApplicationSettingsId
 
        
        
-public Nullable<int> EmailId
+                
+                [MaxLength(255, ErrorMessage = "EmailId has a max length of 255 letters ")]
+public string EmailId
 		{ 
 		    get { return this.adjustmentex.EmailId; }
 			set
@@ -511,6 +513,60 @@ public int EntryData_Id
                     {
                         if (itm != null)
                         adjustmentex.AdjustmentDetails.Remove(itm.DTO);
+                    }
+					if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+                    break;
+                
+            }
+        }
+
+        ObservableCollection<EntryDataDetail> _EntryDataDetails = null;
+        public  ObservableCollection<EntryDataDetail> EntryDataDetails
+		{
+            
+		    get 
+				{ 
+					if(_EntryDataDetails != null) return _EntryDataDetails;
+					//if (this.adjustmentex.EntryDataDetails == null) Debugger.Break();
+					if(this.adjustmentex.EntryDataDetails != null)
+					{
+						_EntryDataDetails = new ObservableCollection<EntryDataDetail>(this.adjustmentex.EntryDataDetails.Select(x => new EntryDataDetail(x)));
+					}
+					
+						_EntryDataDetails.CollectionChanged += EntryDataDetails_CollectionChanged; 
+					
+					return _EntryDataDetails; 
+				}
+			set
+			{
+			    if (Equals(value, _EntryDataDetails)) return;
+				if (value != null)
+					this.adjustmentex.EntryDataDetails = new ChangeTrackingCollection<DTO.EntryDataDetail>(value.Select(x => x.DTO).ToList());
+                _EntryDataDetails = value;
+				if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				if (_EntryDataDetails != null)
+				_EntryDataDetails.CollectionChanged += EntryDataDetails_CollectionChanged;               
+				NotifyPropertyChanged("EntryDataDetails");
+			}
+		}
+        
+        void EntryDataDetails_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            switch (e.Action)
+            {
+                case NotifyCollectionChangedAction.Add:
+                    foreach (EntryDataDetail itm in e.NewItems)
+                    {
+                        if (itm != null)
+                        adjustmentex.EntryDataDetails.Add(itm.DTO);
+                    }
+                    if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+                    break;
+                case NotifyCollectionChangedAction.Remove:
+                    foreach (EntryDataDetail itm in e.OldItems)
+                    {
+                        if (itm != null)
+                        adjustmentex.EntryDataDetails.Remove(itm.DTO);
                     }
 					if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
                     break;

@@ -13,10 +13,12 @@ using System.Xml.Serialization;
 //using WaterNut.DataLayer;
 using TrackableEntities;
 using Asycuda421;
+using Core.Common.Utils;
 using CoreEntities.Business.Entities;
 using TrackableEntities.Common;
 using TrackableEntities.EF6;
 using WaterNut.Business.Entities;
+using WaterNut.Business.Services.Utils;
 using WaterNut.Interfaces;
 using AsycudaDocumentSet_Attachments = CoreEntities.Business.Entities.AsycudaDocumentSet_Attachments;
 using Customs_Procedure = DocumentDS.Business.Entities.Customs_Procedure;
@@ -93,7 +95,6 @@ namespace WaterNut.DataSpace.Asycuda
 
                 // db = new WaterNutDBEntities();
                 a = adoc;
-                xcuda_ASYCUDA doc;
                 if (await DeleteExistingDocument().ConfigureAwait(false)) return;
 
                 var ads = docSet; //await GetAsycudaDocumentSet().ConfigureAwait(false);
@@ -122,11 +123,11 @@ namespace WaterNut.DataSpace.Asycuda
                     return;
                 }
 
-                if (LinkPi) await BaseDataModel.Instance.LinkExistingPreviousItems(da).ConfigureAwait(false);
+                if (LinkPi) await BaseDataModel.Instance.LinkExistingPreviousItems(da.Document, da.DocumentItems, false).ConfigureAwait(false);
 
-                //if ( da.Document.xcuda_ASYCUDA_ExtendedProperties.Customs_ProcedureId.DocumentItems.FirstOrDefault().xcuda_Tarification.Extended_customs_procedure != "7000" &&
-                //    da.DocumentItems.FirstOrDefault().xcuda_Tarification.Extended_customs_procedure != "7400")
-                    await SavePreviousItem().ConfigureAwait(false);
+               
+                if (da.Document.xcuda_Identification.xcuda_Type.DisplayName != "IM7")
+                     await SavePreviousItem().ConfigureAwait(false);
 
                 await Save_Suppliers_Documents().ConfigureAwait(false);
 
@@ -146,11 +147,11 @@ namespace WaterNut.DataSpace.Asycuda
                         AsycudaDocumentSetId = docSet.AsycudaDocumentSetId,
                         DocumentSpecific = true,
                         FileDate = file.LastWriteTime,
-                        EmailUniqueId = null,
+                        EmailId = null,
                         FileTypeId = ctx.FileTypes.FirstOrDefault(x =>
                             x.ApplicationSettingsId ==
                             BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId &&
-                            x.Type == "XML")?.Id,
+                            x.FileImporterInfos.Format == FileTypeManager.FileFormats.XML)?.Id,
                         TrackingState = TrackingState.Added,
                         Attachments = new Attachments(true)
                         {
@@ -336,19 +337,19 @@ namespace WaterNut.DataSpace.Asycuda
                         await LinkPIItem(ai, itm, pi).ConfigureAwait(false);
                     }
 
-                    pi.Commodity_code = ai.Prev_decl_HS_prec;
+                    pi.Commodity_code = ai.Prev_decl_HS_prec.Text.FirstOrDefault();
                     pi.Current_item_number = ai.Prev_decl_current_item;
                     pi.Current_value = Convert.ToSingle(Math.Round(Convert.ToDouble(ai.Prev_decl_ref_value), 2));
-                    pi.Goods_origin = ai.Prev_decl_country_origin;
-                    pi.Hs_code = ai.Prev_decl_HS_code;
+                    pi.Goods_origin = ai.Prev_decl_country_origin.Text.FirstOrDefault();
+                    pi.Hs_code = ai.Prev_decl_HS_code.Text.FirstOrDefault();
                     pi.Net_weight = Convert.ToDecimal(ai.Prev_decl_weight);
                     pi.Packages_number = ai.Prev_decl_number_packages;
                     pi.Prev_net_weight = Convert.ToDecimal(ai.Prev_decl_weight_written_off);
                     pi.Prev_reg_cuo = ai.Prev_decl_office_code;
-                    pi.Prev_decl_HS_spec = ai.Prev_decl_HS_spec;
-                    pi.Prev_reg_dat = ai.Prev_decl_reg_year;
+                    pi.Prev_decl_HS_spec = ai.Prev_decl_HS_spec.Text.FirstOrDefault();
+                    pi.Prev_reg_year = int.Parse(ai.Prev_decl_reg_year);
                     pi.Prev_reg_nbr = ai.Prev_decl_reg_number;
-                    pi.Prev_reg_ser = ai.Prev_decl_reg_serial;
+                    pi.Prev_reg_ser = ai.Prev_decl_reg_serial.Text.FirstOrDefault();
                     if (!string.IsNullOrEmpty(ai.Prev_decl_supp_quantity_written_off))
                         pi.Preveious_suplementary_quantity = Convert.ToSingle(ai.Prev_decl_supp_quantity_written_off);
                     pi.Previous_item_number = ai.Prev_decl_item_number;
@@ -410,9 +411,8 @@ namespace WaterNut.DataSpace.Asycuda
                     pdoc = ctx.xcuda_ASYCUDA.FirstOrDefault(
                         x =>
                             x.xcuda_Identification.xcuda_Registration.Date != null &&
-                            x.xcuda_Identification.xcuda_Registration.Date.Substring(
-                                x.xcuda_Identification.xcuda_Registration.Date.Length - 2) ==
-                            ai.Prev_decl_reg_year.Substring(ai.Prev_decl_reg_year.Length - 2)
+                            ((DateTime)x.xcuda_Identification.xcuda_Registration.Date).Year.ToString() == ai.Prev_decl_reg_year
+                            
                             && x.xcuda_Identification.xcuda_Registration.Number == ai.Prev_decl_reg_number &&
                             x.xcuda_Identification.xcuda_Office_segment.Customs_clearance_office_code ==
                             ai.Prev_decl_office_code);
@@ -1204,10 +1204,10 @@ private void Update_TarrifCodes(ASYCUDAItem ai)
             p.Number_of_packages = string.IsNullOrEmpty(ai.Packages.Number_of_packages)? 0 : Convert.ToSingle(ai.Packages.Number_of_packages);
 
             if (ai.Packages.Marks1_of_packages.Text.Count > 0)
-                p.Marks1_of_packages = ai.Packages.Marks1_of_packages.Text[0];
+                p.Marks1_of_packages = ai.Packages.Marks1_of_packages.Text[0].Truncate(40);
 
             if (ai.Packages.Marks2_of_packages.Text.Count > 0)
-                p.Marks2_of_packages = ai.Packages.Marks2_of_packages.Text[0];
+                p.Marks2_of_packages = ai.Packages.Marks2_of_packages.Text[0].Truncate(40);
 
             //await DIBaseDataModel.Instance.Savexcuda_Packages(p).ConfigureAwait(false);
         }
@@ -1274,7 +1274,7 @@ private void Update_TarrifCodes(ASYCUDAItem ai)
                         c.Container_identity = ac.Container_identity;
                         c.Container_type = ac.Container_type;
                         c.Empty_full_indicator = ac.Empty_full_indicator;
-                        c.Goods_description = ac.Goods_description;
+                        c.Goods_description = ac.Goods_description.Text.FirstOrDefault();
                         c.Gross_weight = Convert.ToSingle(ac.Gross_weight.Text.FirstOrDefault());
                         c.Item_Number = ac.Item_Number;
                         c.Packages_number = ac.Packages_number;
@@ -1841,7 +1841,7 @@ private void Update_TarrifCodes(ASYCUDAItem ai)
                 // di.xcuda_Registration.Add(r);
             }
             if (a.Identification.Registration.Date != "1/1/0001")
-                r.Date = a.Identification.Registration.Date;
+                r.Date = DateTime.Parse(a.Identification.Registration.Date);
             if (a.Identification.Registration.Number != "")
                 r.Number = a.Identification.Registration.Number;
 

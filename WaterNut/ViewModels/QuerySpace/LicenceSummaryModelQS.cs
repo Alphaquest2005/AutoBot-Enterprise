@@ -130,8 +130,10 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
         
         public void Send2Excel()
         {
-            var s = new ExportToCSV<LicenceSummaryLine, List<LicenceSummaryLine>>();
-            s.dataToPrint = _licenceSummaryData.ToList();
+            var s = new ExportToCSV<LicenceSummaryLine, List<LicenceSummaryLine>>
+            {
+                dataToPrint = _licenceSummaryData.ToList()
+            };
             s.GenerateReport();
         }
     }

@@ -343,6 +343,24 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 
  
 
+		private string _emailIdFilter;
+        public string EmailIdFilter
+        {
+            get
+            {
+                return _emailIdFilter;
+            }
+            set
+            {
+                _emailIdFilter = value;
+				NotifyPropertyChanged(x => EmailIdFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
+
 		private string _filePathFilter;
         public string FilePathFilter
         {
@@ -514,6 +532,10 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 						}
 				 
 
+									if(string.IsNullOrEmpty(EmailIdFilter) == false)
+						res.Append(" && " + string.Format("EmailId.Contains(\"{0}\")",  EmailIdFilter));						
+ 
+
 									if(string.IsNullOrEmpty(FilePathFilter) == false)
 						res.Append(" && " + string.Format("FilePath.Contains(\"{0}\")",  FilePathFilter));						
  
@@ -566,6 +588,9 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     AssessmentDate = x.AssessmentDate ,
                     
  
+                    EmailId = x.EmailId ,
+                    
+ 
                     FilePath = x.FilePath ,
                     
  
@@ -585,7 +610,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             }
         }
 
-        public class TODO_SubmitXMLToCustomsExcelLine
+        public partial class TODO_SubmitXMLToCustomsExcelLine
         {
 		 
                     public string CNumber { get; set; } 
@@ -601,6 +626,9 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     
  
                     public Nullable<System.DateTime> AssessmentDate { get; set; } 
+                    
+ 
+                    public string EmailId { get; set; } 
                     
  
                     public string FilePath { get; set; } 

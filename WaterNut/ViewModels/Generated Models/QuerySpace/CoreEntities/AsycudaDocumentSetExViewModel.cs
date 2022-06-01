@@ -1092,7 +1092,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             }
         }
 
-        public class AsycudaDocumentSetExExcelLine
+        public partial class AsycudaDocumentSetExExcelLine
         {
 		 
                     public string Declarant_Reference_Number { get; set; } 

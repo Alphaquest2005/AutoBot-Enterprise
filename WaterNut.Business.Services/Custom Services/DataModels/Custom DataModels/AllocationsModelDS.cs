@@ -1,55 +1,45 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text.RegularExpressions;
-using System.Linq;
 using System.Data.Entity;
-using Core.Common.Converters;
-using DocumentDS.Business.Entities;
+using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using AllocationDS.Business.Entities;
-
-using Core.Common.UI;
 using AllocationDS.Business.Services;
+using Core.Common.Converters;
+using Core.Common.UI;
+using DocumentDS.Business.Entities;
 using TrackableEntities;
 using TrackableEntities.Common;
 using WaterNut.Business.Entities;
 using WaterNut.Interfaces;
-using xcuda_Item = AllocationDS.Business.Entities.xcuda_Item;
 using xcuda_ItemService = DocumentItemDS.Business.Services.xcuda_ItemService;
-
 
 namespace WaterNut.DataSpace
 {
     public class AllocationsModel
     {
-        
-        
-        private readonly CreateOPSClass _createOpsClassClass = new CreateOPSClass();
-       // private readonly CreateIncompOPSClass _createIncompOpsClass = new CreateIncompOPSClass();
-        private readonly BuildSalesReportClass _buildSalesReportClass = new BuildSalesReportClass();
+        // private readonly CreateIncompOPSClass _createIncompOpsClass = new CreateIncompOPSClass();
+        //private readonly BuildSalesReportClass _buildSalesReportClass = new BuildSalesReportClass();
 
-        private static readonly AllocationsModel _instance;
+
         static AllocationsModel()
         {
-            _instance = new AllocationsModel();
+            Instance = new AllocationsModel();
         }
 
-        public static AllocationsModel Instance
-        {
-            get { return _instance; }
-        }
-        
-       
+        public static AllocationsModel Instance { get; }
 
-        public class MyPodData
-        {
-            public List<AsycudaSalesAllocations> Allocations { get; set; }
-            public AlloEntryLineData EntlnData { get; set; }
-        }
+
+   
+
+        public CreateEx9Class CreateEX9Class => CreateEx9Class.Instance;
+
+        public CreateOPSClass CreateOpsClassClass { get; } = new CreateOPSClass();
 
 
         //TODO: Refactor this
-        private  string CleanText(string p)
+        private string CleanText(string p)
         {
             p = Regex.Replace(p, @"[\-0]+", "");
             return p;
@@ -58,98 +48,75 @@ namespace WaterNut.DataSpace
 
         public void AddDutyFreePaidtoRef(DocumentCT cdoc, string dfp, AsycudaDocumentSet docSet)
         {
-            try
+            switch (dfp)
             {
+                case "Duty Free":
 
-
-                switch (dfp)
-                {
-                    case "Duty Free":
-
-                        cdoc.Document.xcuda_Declarant.Number = docSet.Declarant_Reference_Number
-                                                                + "-F" +//+ "-DF"
-                                                               cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.FileNumber
-                                                                   .ToString();
-                        break;
-                    case "Duty Paid":
-                        cdoc.Document.xcuda_Declarant.Number = docSet.Declarant_Reference_Number
-                                                               + "-P" +// + "-DP"
-                                                               cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.FileNumber
-                                                                   .ToString();
-                        break;
-                    default:
-                        break;
-                }
-            }
-            catch (Exception)
-            {
-
-                throw;
+                    cdoc.Document.xcuda_Declarant.Number = docSet.Declarant_Reference_Number
+                                                           + "-F" + //+ "-DF"
+                                                           cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.FileNumber;
+                    break;
+                case "Duty Paid":
+                    cdoc.Document.xcuda_Declarant.Number = docSet.Declarant_Reference_Number
+                                                           + "-P" + // + "-DP"
+                                                           cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.FileNumber;
+                    break;
             }
         }
 
         public async Task<IEnumerable<AsycudaSalesAllocations>> GetAsycudaSalesAllocations(string FilterExpression)
         {
-            try
+            // create dictionary map and run replace
+            var exp = TranslateAllocationWhereExpression(FilterExpression);
+
+
+            using (var ctx = new AsycudaSalesAllocationsService())
             {
-                // create dictionary map and run replace
-                var exp = TranslateAllocationWhereExpression(FilterExpression);
+                var res = await ctx.GetAsycudaSalesAllocationsByExpression(exp,
+                    new List<string>
+                    {
+                        "xBondAllocations",
+                        // "EntryDataDetails",
+                         "EntryDataDetails.EntryDataDetailsEx.InventoryItemsEx",
+                        // "EntryDataDetails.InventoryItem",
+                        //"EntryDataDetails.InventoryItem.TariffCodes.TariffCategory.TariffCategoryCodeSuppUnit.TariffSupUnitLkps",
+                        "EntryDataDetails.Sales",
+                        // "PreviousDocumentItem",
+                        //"PreviousDocumentItem.EX",
+                        "PreviousDocumentItem.xcuda_Goods_description",
+                        "PreviousDocumentItem.xcuda_Tarification.xcuda_HScode",
+                        "PreviousDocumentItem.xcuda_Tarification.xcuda_Supplementary_unit",
+                        "PreviousDocumentItem.xcuda_Taxation.xcuda_Taxation_line",
+                        "PreviousDocumentItem.xcuda_Valuation_item.xcuda_Item_Invoice",
+                        "PreviousDocumentItem.xcuda_Valuation_item.xcuda_Weight_itm",
+                        "PreviousDocumentItem.AsycudaDocument",
+                        //"PreviousDocumentItem.xcuda_PreviousItems",
+                        "PreviousDocumentItem.EntryPreviousItems.xcuda_PreviousItem.xcuda_Item.AsycudaDocument"
+                        // "PreviousDocumentItem.xcuda_PreviousItems.xcuda_Item"
+                    }).ConfigureAwait(false);
 
-
-                using (var ctx = new AsycudaSalesAllocationsService())
-                {
-                       
-                       var res =  await ctx.GetAsycudaSalesAllocationsByExpression(exp, 
-                            new List<string>()
-                            {
-                                "xBondAllocations",
-                               // "EntryDataDetails",
-                               // "EntryDataDetails.EntryDataDetailsEx",
-                               // "EntryDataDetails.InventoryItem",
-                                "EntryDataDetails.InventoryItem.TariffCodes.TariffCategory.TariffSupUnitLkps",
-                                "EntryDataDetails.Sales",
-                               // "PreviousDocumentItem",
-                                //"PreviousDocumentItem.EX",
-                                "PreviousDocumentItem.xcuda_Goods_description",
-                                "PreviousDocumentItem.xcuda_Tarification.xcuda_HScode",
-                                "PreviousDocumentItem.xcuda_Tarification.xcuda_Supplementary_unit",
-                                "PreviousDocumentItem.xcuda_Taxation.xcuda_Taxation_line",
-                                "PreviousDocumentItem.xcuda_Valuation_item.xcuda_Item_Invoice",
-                                "PreviousDocumentItem.xcuda_Valuation_item.xcuda_Weight_itm",
-                                "PreviousDocumentItem.AsycudaDocument",
-                                //"PreviousDocumentItem.xcuda_PreviousItems",
-                                "PreviousDocumentItem.EntryPreviousItems.xcuda_PreviousItem.xcuda_Item.AsycudaDocument"
-                               // "PreviousDocumentItem.xcuda_PreviousItems.xcuda_Item"
-                            }).ConfigureAwait(false);
-
-                    return res;
-
-                }
-            }
-            catch (Exception)
-            {
-
-                throw;
+                return res;
             }
         }
 
 
         public string TranslateAllocationWhereExpression(string FilterExpression)
         {
-            var map = new Dictionary<string, string>()
+            var map = new Dictionary<string, string>
             {
                 {"InvoiceDate", "EntryDataDetails.Sales.EntryDataDate"},
                 {"InvoiceNo", "EntryDataDetails.EntryDataId"},
                 {"SalesQtyAllocated", "EntryDataDetails.QtyAllocated"},
                 {"SalesQuantity", "EntryDataDetails.Quantity"},
                 {"Cost", "EntryDataDetails.Cost"},
-                {"TaxAmount", "EntryDataDetails.Sales.TaxAmount"},
+                {"TaxAmount", "EntryDataDetails.TaxAmount"},
                 {"ItemNumber", "EntryDataDetails.ItemNumber"},
                 {"ItemDescription", "EntryDataDetails.ItemDescription"},
                 {"TariffCode", "EntryDataDetails.InventoryItem.TariffCode"},
                 {"pCNumber", "PreviousDocumentItem.AsycudaDocument.pCNumber"},
                 {"pLineNumber", "PreviousDocumentItem.LineNumber"},
-                {"PreviousItem_Id == 0", "PreviousItem_Id == null"}
+                {"PreviousItem_Id == 0", "PreviousItem_Id == null"},
+                {"(ApplicationSettingsId", "(EntryDataDetails.Sales.ApplicationSettingsId"},
             };
 
 
@@ -161,41 +128,35 @@ namespace WaterNut.DataSpace
         //System.Windows.Forms.MessageBox.
 
 
-        public async Task ManuallyAllocate(AsycudaSalesAllocations currentAsycudaSalesAllocation ,xcuda_Item PreviousItemEx)
+        public async Task ManuallyAllocate(AsycudaSalesAllocations currentAsycudaSalesAllocation,
+            xcuda_Item PreviousItemEx)
         {
             double aqty;
-            using (var ctx = new AllocationDSContext() {StartTracking = true})
+            using (var ctx = new AllocationDSContext {StartTracking = true})
             {
                 var entryDataDetails =
                     ctx.EntryDataDetails.Include(x => x.Sales).Include(x => x.Adjustments)
-                     .First(
-                        x => x.EntryDataDetailsId == currentAsycudaSalesAllocation.EntryDataDetailsId.Value);
+                        .First(
+                            x => x.EntryDataDetailsId == currentAsycudaSalesAllocation.EntryDataDetailsId.Value);
 
-               var asycudaItem = ctx.xcuda_Item.Include(x => x.xcuda_Tarification.xcuda_Supplementary_unit).First(x => x.Item_Id == PreviousItemEx.Item_Id);
+                var asycudaItem = ctx.xcuda_Item.Include(x => x.xcuda_Tarification.xcuda_Supplementary_unit)
+                    .First(x => x.Item_Id == PreviousItemEx.Item_Id);
                 ctx.AsycudaSalesAllocations.Attach(currentAsycudaSalesAllocation);
 
                 if (entryDataDetails.Quantity >=
-                    (asycudaItem.ItemQuantity - asycudaItem.QtyAllocated))
-                {
+                    asycudaItem.ItemQuantity - asycudaItem.QtyAllocated)
                     aqty = asycudaItem.ItemQuantity - asycudaItem.QtyAllocated;
-                }
                 else
-                {
                     aqty = entryDataDetails.Quantity;
-                }
                 currentAsycudaSalesAllocation.PreviousItem_Id = asycudaItem.Item_Id;
 
                 currentAsycudaSalesAllocation.QtyAllocated = aqty;
                 entryDataDetails.QtyAllocated += aqty;
-                if ((entryDataDetails.Sales == null && entryDataDetails.Adjustments != null) || entryDataDetails.DutyFreePaid == "Duty Free")
-                    
-                {
+                if (entryDataDetails.Sales == null && entryDataDetails.Adjustments != null ||
+                    entryDataDetails.DutyFreePaid == "Duty Free")
                     asycudaItem.DFQtyAllocated += aqty;
-                }
                 else
-                {
                     asycudaItem.DPQtyAllocated += aqty;
-                }
 
                 currentAsycudaSalesAllocation.Status = "Manual Allocation";
 
@@ -203,17 +164,9 @@ namespace WaterNut.DataSpace
                 currentAsycudaSalesAllocation.AcceptChanges();
             }
             // SaveAsycudaSalesAllocation(currentAsycudaSalesAllocation);
-            
         }
 
-        private async  void SaveAsycudaSalesAllocation(AsycudaSalesAllocations allo)
-        {
-            using (var ctx = new AsycudaSalesAllocationsService())
-            {
-                await ctx.UpdateAsycudaSalesAllocations(allo).ConfigureAwait(false);
-            }
-        }
-
+        
         public async Task ClearAllocations(string filterExpression)
         {
             var lst = await GetAsycudaSalesAllocations(filterExpression).ConfigureAwait(false);
@@ -224,8 +177,6 @@ namespace WaterNut.DataSpace
         {
             try
             {
-
-
                 StatusModel.Timer("Clear All Existing Allocations");
 
                 using (var ctx = new AllocationDSContext())
@@ -283,14 +234,10 @@ namespace WaterNut.DataSpace
         }
 
 
-      
-
         public async Task ClearDocSetAllocations(string lst)
         {
             try
             {
-
-
                 StatusModel.Timer("Clear DocSet Existing Allocations");
 
                 using (var ctx = new AllocationDSContext())
@@ -342,7 +289,8 @@ namespace WaterNut.DataSpace
                                                   FROM     InventoryItems INNER JOIN
                                                                    InventoryItemsWithAlias ON InventoryItems.Id = InventoryItemsWithAlias.Id
                                                   WHERE  (InventoryItems.ItemNumber IN ({lst}))) AS items ON xcuda_HScode.Precision_4 = items.ItemNumber";
-                    await ctx.Database.ExecuteSqlCommandAsync(TransactionalBehavior.EnsureTransaction, sql).ConfigureAwait(false);
+                    await ctx.Database.ExecuteSqlCommandAsync(TransactionalBehavior.EnsureTransaction, sql)
+                        .ConfigureAwait(false);
                 }
             }
             catch (Exception e)
@@ -353,83 +301,149 @@ namespace WaterNut.DataSpace
         }
 
 
-        public  async Task ClearAllocations(IEnumerable<AsycudaSalesAllocations> alst)
+        public async Task ClearAllocations(IEnumerable<AsycudaSalesAllocations> alst)
         {
+            foreach (var allo in alst)
+            {
+                await ClearAllocation(allo).ConfigureAwait(false);
+                StatusModel.StatusUpdate();
+            }
 
 
-                    foreach (var allo in alst)
-                    {
+            var neAllo = alst.Where(x => x.EntryDataDetails == null && x.PreviousDocumentItem != null).ToList();
+            StatusModel.StartStatusUpdate("Deleting Null EntryData Allocations", neAllo.Count());
 
-                        await ClearAllocation(allo).ConfigureAwait(false);
-                        StatusModel.StatusUpdate();
-                    }
+            foreach (var allo in neAllo)
+            {
+                await ClearAllocation(allo).ConfigureAwait(false);
+                StatusModel.StatusUpdate();
+            }
+
+            StatusModel.Timer("ReLoading Data..");
 
 
-                    var neAllo = alst.Where(x => x.EntryDataDetails == null && x.PreviousDocumentItem != null).ToList();
-                    StatusModel.StartStatusUpdate("Deleting Null EntryData Allocations", neAllo.Count());
-
-                    foreach (var allo in neAllo)
-                    {
-                        await ClearAllocation(allo).ConfigureAwait(false);
-                        StatusModel.StatusUpdate();
-                    }
-                
-                StatusModel.Timer("ReLoading Data..");
-
-                
-                
-                StatusModel.StopStatusUpdate();
-                
-
+            StatusModel.StopStatusUpdate();
         }
 
 
-
-
-
-
-
-        public  void Send2Excel(List<AsycudaSalesAllocations> lst)
+        public void Send2Excel(List<AsycudaSalesAllocations> lst)
         {
-            var s = new ExportToCSV<AllocationsModel.AllocationsExcelLine, List<AllocationsModel.AllocationsExcelLine>>();
-            s.dataToPrint = (from sa in lst
-                             let sales = sa.EntryDataDetails.Sales as Sales
-                             let prevEntry = sa.PreviousDocumentItem
-
-                             select new AllocationsModel.AllocationsExcelLine
-                             {
-                                 DutyFreePaid = sa.EntryDataDetails.DutyFreePaid,
-                                 InvoiceNo = sales == null ? null : sales.INVNumber,
-                                 InvoiceDate = sales == null ? DateTime.MinValue : sales.EntryDataDate,
-                                 SalesAllocationNo = sales == null ? 0 : Convert.ToInt32(sa.SANumber),
-                                 SalesQty = sales == null ? 0 : Convert.ToDouble(sa.EntryDataDetails.Quantity),
-                                 SalesQtyAllocated = sales == null ? 0 : Convert.ToDouble(sa.EntryDataDetails.QtyAllocated),
-                                 ItemNumber = sales == null ? null : sa.EntryDataDetails.ItemNumber,
-                                 ItemDescription = sales == null ? null : sa.EntryDataDetails.ItemDescription,
-                                 UnitCost = sales == null ? 0 : Convert.ToDouble(sa.EntryDataDetails.Cost),
-                                 SalesValue = sales == null ? 0 : Convert.ToDouble(sa.EntryDataDetails.Cost) * Convert.ToDouble(sa.EntryDataDetails.Quantity),
-                                 AllocatedValue = sales == null ? 0 : Convert.ToDouble(sa.EntryDataDetails.Cost) * Convert.ToDouble(sa.QtyAllocated),
-                                 TariffCode = prevEntry == null ? null : prevEntry.TariffCode,
-                                 CIF = prevEntry == null ? 0 : sa.PreviousDocumentItem.xcuda_Valuation_item.Total_CIF_itm / Convert.ToDouble(sa.PreviousDocumentItem.ItemQuantity),
-                                 DutyLiability = prevEntry == null ? 0 : Convert.ToDouble(sa.PreviousDocumentItem.DutyLiability),
-                                 ItemQuantity = prevEntry == null ? 0 : Convert.ToDouble(sa.PreviousDocumentItem.ItemQuantity),
-                                 AllocatedQty = sales == null ? 0 : Convert.ToDouble(sa.QtyAllocated),
-                                 PreviousLineNumber = prevEntry == null ? 0 : sa.PreviousDocumentItem.LineNumber,
-                                 PreviousCNumber = prevEntry == null ? null : sa.PreviousDocumentItem.AsycudaDocument.CNumber,
-                                 PreviousRegDate = prevEntry == null ? DateTime.MinValue : Convert.ToDateTime(sa.PreviousDocumentItem.AsycudaDocument.RegistrationDate),
-                                 AllocationStatus = sa.Status,
-                                 PiQuantity = prevEntry == null ? 0 : Convert.ToDouble(sa.PreviousDocumentItem.EntryPreviousItems.Select(p => p.xcuda_PreviousItem).Sum(x => x.Suplementary_Quantity)),
-                                 DutyFreePi = (double) (prevEntry == null || sa.PreviousDocumentItem.EntryPreviousItems.Select(p => p.xcuda_PreviousItem).Any() == false ? 0 : sa.PreviousDocumentItem.EntryPreviousItems.Select(p => p.xcuda_PreviousItem).Where(x => x.DutyFreePaid == "Duty Free").Sum(x => x.Suplementary_Quantity)),
-                                 DutyPaidPi = (double) (prevEntry == null || sa.PreviousDocumentItem.EntryPreviousItems.Select(p => p.xcuda_PreviousItem).Any() == false ? 0 : sa.PreviousDocumentItem.EntryPreviousItems.Select(p => p.xcuda_PreviousItem).Where(x => x.DutyFreePaid == "Duty Paid").Sum(x => x.Suplementary_Quantity)),
-                                 DFQtyAllocated = prevEntry == null ? 0 : Convert.ToDouble(sa.PreviousDocumentItem.DFQtyAllocated),
-                                 DPQtyAllocated = prevEntry == null ? 0 : Convert.ToDouble(sa.PreviousDocumentItem.DPQtyAllocated),
-                                 Ex9Doc = sa.xBondEntry == null ? "" : BaseDataModel.Instance.GetDocument(sa.xBondEntry.ASYCUDA_Id).Result.ReferenceNumber,
-                                 Ex9DocLine = sa.xBondEntry == null ? 0 : sa.xBondEntry.LineNumber
-                             }).ToList();
+            var s = new ExportToCSV<AllocationsExcelLine, List<AllocationsExcelLine>>
+            {
+                dataToPrint = (from sa in lst
+                    let sales = sa.EntryDataDetails.Sales
+                    let prevEntry = sa.PreviousDocumentItem
+                    select new AllocationsExcelLine
+                    {
+                        DutyFreePaid = sa.EntryDataDetails.DutyFreePaid,
+                        InvoiceNo = sales?.INVNumber,
+                        InvoiceDate = sales == null ? DateTime.MinValue : sales.EntryDataDate,
+                        SalesAllocationNo = sales == null ? 0 : Convert.ToInt32(sa.SANumber),
+                        SalesQty = sales == null ? 0 : Convert.ToDouble(sa.EntryDataDetails.Quantity),
+                        SalesQtyAllocated = sales == null ? 0 : Convert.ToDouble(sa.EntryDataDetails.QtyAllocated),
+                        ItemNumber = sales == null ? null : sa.EntryDataDetails.ItemNumber,
+                        ItemDescription = sales == null ? null : sa.EntryDataDetails.ItemDescription,
+                        UnitCost = sales == null ? 0 : Convert.ToDouble(sa.EntryDataDetails.Cost),
+                        SalesValue = sales == null
+                            ? 0
+                            : Convert.ToDouble(sa.EntryDataDetails.Cost) * Convert.ToDouble(sa.EntryDataDetails.Quantity),
+                        AllocatedValue = sales == null
+                            ? 0
+                            : Convert.ToDouble(sa.EntryDataDetails.Cost) * Convert.ToDouble(sa.QtyAllocated),
+                        TariffCode = prevEntry?.TariffCode,
+                        CIF = prevEntry == null
+                            ? 0
+                            : sa.PreviousDocumentItem.xcuda_Valuation_item.Total_CIF_itm /
+                              Convert.ToDouble(sa.PreviousDocumentItem.ItemQuantity),
+                        DutyLiability = prevEntry == null ? 0 : Convert.ToDouble(sa.PreviousDocumentItem.DutyLiability),
+                        ItemQuantity = prevEntry == null ? 0 : Convert.ToDouble(sa.PreviousDocumentItem.ItemQuantity),
+                        AllocatedQty = sales == null ? 0 : Convert.ToDouble(sa.QtyAllocated),
+                        PreviousLineNumber = prevEntry == null ? 0 : sa.PreviousDocumentItem.LineNumber,
+                        PreviousCNumber = prevEntry == null ? null : sa.PreviousDocumentItem.AsycudaDocument.CNumber,
+                        PreviousRegDate = prevEntry == null
+                            ? DateTime.MinValue
+                            : Convert.ToDateTime(sa.PreviousDocumentItem.AsycudaDocument.RegistrationDate),
+                        AllocationStatus = sa.Status,
+                        PiQuantity = prevEntry == null
+                            ? 0
+                            : Convert.ToDouble(sa.PreviousDocumentItem.EntryPreviousItems.Select(p => p.xcuda_PreviousItem)
+                                .Sum(x => x.Suplementary_Quantity)),
+                        DutyFreePi =
+                            (double) (prevEntry == null ||
+                                      sa.PreviousDocumentItem.EntryPreviousItems.Select(p => p.xcuda_PreviousItem).Any() ==
+                                      false
+                                ? 0
+                                : sa.PreviousDocumentItem.EntryPreviousItems.Select(p => p.xcuda_PreviousItem)
+                                    .Where(x => x.DutyFreePaid == "Duty Free").Sum(x => x.Suplementary_Quantity)),
+                        DutyPaidPi =
+                            (double) (prevEntry == null ||
+                                      sa.PreviousDocumentItem.EntryPreviousItems.Select(p => p.xcuda_PreviousItem).Any() ==
+                                      false
+                                ? 0
+                                : sa.PreviousDocumentItem.EntryPreviousItems.Select(p => p.xcuda_PreviousItem)
+                                    .Where(x => x.DutyFreePaid == "Duty Paid").Sum(x => x.Suplementary_Quantity)),
+                        DFQtyAllocated = prevEntry == null ? 0 : Convert.ToDouble(sa.PreviousDocumentItem.DFQtyAllocated),
+                        DPQtyAllocated = prevEntry == null ? 0 : Convert.ToDouble(sa.PreviousDocumentItem.DPQtyAllocated),
+                        Ex9Doc = sa.xBondEntry == null
+                            ? ""
+                            : BaseDataModel.Instance.GetDocument(sa.xBondEntry.ASYCUDA_Id).Result.ReferenceNumber,
+                        Ex9DocLine = sa.xBondEntry == null ? 0 : sa.xBondEntry.LineNumber
+                    }).ToList()
+            };
             s.GenerateReport();
         }
 
-        
+        //public CreateErrOPS CreateErrOps
+        //{
+        //    get { return CreateErrOPS.Instance; }
+        //}
+
+        //public CreateIncompOPSClass CreateIncompOpsClass
+        //{
+        //    get { return _createIncompOpsClass; }
+        //}
+
+        public async Task ClearAllocation(AsycudaSalesAllocations allo)
+        {
+            /////////// took out entrydatadetails update
+
+            if (allo.EntryDataDetails != null && allo.EntryDataDetails.TrackingState != TrackingState.Deleted)
+            {
+                allo.EntryDataDetails.QtyAllocated = 0;
+                allo.EntryDataDetails = null;
+            }
+
+            if (allo.PreviousDocumentItem != null)
+            {
+                using (var ctx = new xcuda_ItemService())
+                {
+                    var res = await ctx.Getxcuda_ItemByKey(allo.PreviousItem_Id.ToString()).ConfigureAwait(false);
+                    res.DFQtyAllocated = 0;
+                    res.DPQtyAllocated = 0;
+
+                    foreach (var sitm in res.SubItems) sitm.QtyAllocated = 0;
+
+                    foreach (var ed in res.xcuda_PreviousItems.Select(x => x.xcuda_PreviousItem)) ed.QtyAllocated = 0;
+                    await ctx.Updatexcuda_Item(res).ConfigureAwait(false);
+                }
+
+                allo.PreviousDocumentItem = null;
+            }
+
+
+            using (var ctx = new AsycudaSalesAllocationsService())
+            {
+                await ctx.DeleteAsycudaSalesAllocations(allo.AllocationId.ToString()).ConfigureAwait(false);
+            }
+        }
+
+
+        public class MyPodData
+        {
+            public List<AsycudaSalesAllocations> Allocations { get; set; }
+            public AlloEntryLineData EntlnData { get; set; }
+        }
+
 
         public class AllocationsExcelLine
         {
@@ -465,6 +479,12 @@ namespace WaterNut.DataSpace
 
         public class AlloEntryLineData : BaseDataModel.IEntryLineData
         {
+            // public IDocumentItem PreviousDocumentItem { get; set; }
+            public IInventoryItem InventoryItem { get; set; }
+            // public InventoryItem InventoryItem { get; set; }
+
+            public EX9AsycudaSalesAllocations EX9Allocation { get; set; }
+            public string MonthYear { get; set; }
             public string ItemNumber { get; set; }
             public string ItemDescription { get; set; }
             public string TariffCode { get; set; }
@@ -472,109 +492,12 @@ namespace WaterNut.DataSpace
             public int PreviousDocumentItemId { get; set; }
             public double Quantity { get; set; }
             public List<EntryDataDetailSummary> EntryDataDetails { get; set; }
-           // public IDocumentItem PreviousDocumentItem { get; set; }
-            public IInventoryItem InventoryItem { get; set; }
             public double Weight { get; set; }
             public double InternalFreight { get; set; }
             public double Freight { get; set; }
             public List<ITariffSupUnitLkp> TariffSupUnitLkps { get; set; }
-            // public InventoryItem InventoryItem { get; set; }
-          
-           public EX9AsycudaSalesAllocations EX9Allocation { get; set; }
-            public string EntryData { get; set; }
+            public DateTime EntryDataDate { get; set; }
+            public int InventoryItemId { get; set; }
         }
-
-
-        
-
-        //public List<AsycudaSalesAllocations> CurrentAllocations
-        //{
-        //    get
-        //    {
-        //        if (QuerySpace.AllocationQS.ViewModels.AllocationsModel.Instance.SelectedAsycudaSalesAllocationsExs != null)
-        //        {
-        //            var lst = QuerySpace.AllocationQS.ViewModels.AllocationsModel.Instance.SelectedAsycudaSalesAllocationsExs;
-        //            var res = new List<AsycudaSalesAllocations>();
-        //            using (var ctx = new AsycudaSalesAllocationsService())
-        //            {
-        //                foreach (var item in lst)
-        //                {
-        //                    res.Add(ctx.GetAsycudaSalesAllocations(item.AllocationId.ToString()).Result);
-        //                }
-        //            }
-        //            return res;
-        //        }
-        //        else
-        //        {
-        //            return null;
-        //        }
-        //    }
-        //}
-
-        public CreateEx9Class CreateEX9Class
-        {
-            get { return CreateEx9Class.Instance; }
-        }
-
-        public CreateOPSClass CreateOpsClassClass
-        {
-            get { return _createOpsClassClass; }
-        }
-
-        //public CreateErrOPS CreateErrOps
-        //{
-        //    get { return CreateErrOPS.Instance; }
-        //}
-
-        //public CreateIncompOPSClass CreateIncompOpsClass
-        //{
-        //    get { return _createIncompOpsClass; }
-        //}
-
-        public async Task ClearAllocation(AsycudaSalesAllocations allo)
-        {
-            /////////// took out entrydatadetails update
-
-            if (allo.EntryDataDetails != null && (allo.EntryDataDetails.TrackingState != TrackingState.Deleted))
-            {
-                allo.EntryDataDetails.QtyAllocated = 0;
-                allo.EntryDataDetails = null;
-            }
-
-            if (allo.PreviousDocumentItem != null)
-            {
-
-                using (var ctx = new xcuda_ItemService())
-                {
-
-                    var res = await ctx.Getxcuda_ItemByKey(allo.PreviousItem_Id.ToString()).ConfigureAwait(false);
-                    res.DFQtyAllocated = 0;
-                    res.DPQtyAllocated = 0;
-
-                    foreach (var sitm in res.SubItems)
-                    {
-                        sitm.QtyAllocated = 0;
-                    }
-
-                    foreach (var ed in res.xcuda_PreviousItems.Select(x => x.xcuda_PreviousItem))
-                    {
-
-                        ed.QtyAllocated = 0;
-                    }
-                    await ctx.Updatexcuda_Item(res).ConfigureAwait(false);
-
-                }
-
-                allo.PreviousDocumentItem = null;
-            }
-
-
-            using (var ctx = new AsycudaSalesAllocationsService())
-            {
-                await ctx.DeleteAsycudaSalesAllocations(allo.AllocationId.ToString()).ConfigureAwait(false);
-            }
-
-        }
-       
     }
 }

@@ -61,19 +61,6 @@ namespace CoreEntities.Client.DTO
         private string _FilePattern;
 
         [DataMember]
-        public string Type
-		{ 
-		    get { return _Type; }
-			set
-			{
-			    if (value == _Type) return;
-				_Type = value;
-				NotifyPropertyChanged();//m => this.Type
-			}
-		}
-        private string _Type;
-
-        [DataMember]
         public int AsycudaDocumentSetId
 		{ 
 		    get { return _AsycudaDocumentSetId; }
@@ -255,6 +242,45 @@ namespace CoreEntities.Client.DTO
 		}
         private Nullable<bool> _IsImportable;
 
+        [DataMember]
+        public Nullable<int> MaxFileSizeInMB
+		{ 
+		    get { return _MaxFileSizeInMB; }
+			set
+			{
+			    if (value == _MaxFileSizeInMB) return;
+				_MaxFileSizeInMB = value;
+				NotifyPropertyChanged();//m => this.MaxFileSizeInMB
+			}
+		}
+        private Nullable<int> _MaxFileSizeInMB;
+
+        [DataMember]
+        public Nullable<int> FileInfoId
+		{ 
+		    get { return _FileInfoId; }
+			set
+			{
+			    if (value == _FileInfoId) return;
+				_FileInfoId = value;
+				NotifyPropertyChanged();//m => this.FileInfoId
+			}
+		}
+        private Nullable<int> _FileInfoId;
+
+        [DataMember]
+        public string Description
+		{ 
+		    get { return _Description; }
+			set
+			{
+			    if (value == _Description) return;
+				_Description = value;
+				NotifyPropertyChanged();//m => this.Description
+			}
+		}
+        private string _Description;
+
        
         [DataMember]
         public ApplicationSettings ApplicationSettings
@@ -423,6 +449,22 @@ namespace CoreEntities.Client.DTO
 			}
 		}
         private ChangeTrackingCollection<FileTypeReplaceRegex> _FileTypeReplaceRegex = new ChangeTrackingCollection<FileTypeReplaceRegex>();
+
+        [DataMember]
+        public FileImporterInfo FileImporterInfos
+		{
+		    get { return _FileImporterInfos; }
+			set
+			{
+			    if (value == _FileImporterInfos) return;
+				_FileImporterInfos = value;
+                FileImporterInfosChangeTracker = _FileImporterInfos == null ? null
+                    : new ChangeTrackingCollection<FileImporterInfo> { _FileImporterInfos };
+				NotifyPropertyChanged();//m => this.FileImporterInfos
+			}
+		}
+        private FileImporterInfo _FileImporterInfos;
+        private ChangeTrackingCollection<FileImporterInfo> FileImporterInfosChangeTracker { get; set; }
 
    //     [DataMember]
    //     public TrackingState TrackingState { get; set; }

@@ -51,7 +51,7 @@ namespace CoreEntities.Business.Entities
         }
         string _number;
         [DataMember]
-        public string Date 
+        public Nullable<System.DateTime> Date 
         {
             get
             {
@@ -64,7 +64,7 @@ namespace CoreEntities.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        string _date;
+        Nullable<System.DateTime> _date;
         [DataMember]
         public string SupplierInvoiceNo 
         {
@@ -96,7 +96,7 @@ namespace CoreEntities.Business.Entities
         }
         int _applicationsettingsid;
         [DataMember]
-        public Nullable<int> EmailId 
+        public string EmailId 
         {
             get
             {
@@ -109,7 +109,7 @@ namespace CoreEntities.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        Nullable<int> _emailid;
+        string _emailid;
         [DataMember]
         public Nullable<int> FileTypeId 
         {

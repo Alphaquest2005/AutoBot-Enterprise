@@ -385,7 +385,7 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
             }
         }
 
-        public class AsycudaDocumentItemLastItemCostExcelLine
+        public partial class AsycudaDocumentItemLastItemCostExcelLine
         {
 		 
                     public int applicationsettingsid { get; set; } 

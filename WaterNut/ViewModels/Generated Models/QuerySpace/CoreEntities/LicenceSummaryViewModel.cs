@@ -407,7 +407,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             }
         }
 
-        public class LicenceSummaryExcelLine
+        public partial class LicenceSummaryExcelLine
         {
 		 
                     public string TariffCode { get; set; } 
