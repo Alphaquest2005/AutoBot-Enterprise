@@ -188,12 +188,13 @@ namespace WaterNut.DataSpace
 
                 foreach (var z in OCR_Part.Start)
                 {
+                    var val = _linesTxt.ToString().TrimEnd("\r\n".ToArray());
                     var match = Regex
-                        .Match(_linesTxt.ToString().TrimEnd('\r'),
+                        .Match(val,
                             z.RegularExpressions.RegEx,
                             (z.RegularExpressions.MultiLine == true
                                 ? RegexOptions.Multiline
-                                : RegexOptions.Singleline) | RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture);
+                                : RegexOptions.Singleline) | RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture, TimeSpan.FromSeconds(5));
                     if (match.Success)
                     {
 

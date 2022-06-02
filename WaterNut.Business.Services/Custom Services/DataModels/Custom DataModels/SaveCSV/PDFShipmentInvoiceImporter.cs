@@ -14,10 +14,10 @@ namespace WaterNut.DataSpace
         private ShipmentInvoiceImporter _shipmentInvoiceImporter = new ShipmentInvoiceImporter();
 
 
-        public async Task<bool> ImportPDFShipmentInvoice(FileTypes fileType, List<AsycudaDocumentSet> docSet, bool overWriteExisting, string emailId, List<object> eslst, string droppedFilePath)
+        public async Task<bool> ImportPDFShipmentInvoice(FileTypes fileType, List<AsycudaDocumentSet> docSet, bool overWriteExisting, string emailId, List<dynamic> eslst, string droppedFilePath)
         {
             if (fileType.FileImporterInfos.EntryType == FileTypeManager.EntryTypes.ShipmentInvoice &&
-                fileType.FileImporterInfos.Format == FileTypeManager.FileFormats.Csv)
+                fileType.FileImporterInfos.Format == FileTypeManager.FileFormats.PDF)
             {
                 await _inventoryImporter.ImportInventory(
                     Enumerable.SelectMany<dynamic, object>(eslst, x =>
