@@ -24,7 +24,14 @@ namespace DocumentDS.Business.Services
                     res.xcuda_ASYCUDA_ExtendedProperties.Document_Type = null;
                     res.AsycudaDocument_Attachments.ForEach(x =>
                     {
-                        x.Attachment.AsycudaDocumentSet_Attachments.ForEach(z => z.AsycudaDocumentSet = null);
+                        //x.Attachment.AsycudaDocumentSet_Attachments.ForEach(z =>
+                        //{
+                        //    z.AsycudaDocumentSet = null;
+                        //    z.Attachment = null;
+                        //});
+
+                        x.Attachment = null;
+
                     });
                     //res.xcuda_ASYCUDA_ExtendedProperties.ExportTemplate = null;
                     //res.xcuda_General_information = null;
