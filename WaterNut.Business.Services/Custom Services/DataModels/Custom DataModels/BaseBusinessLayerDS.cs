@@ -1654,7 +1654,7 @@ namespace WaterNut.DataSpace
                 .Customs_Procedure
                 .Extended_customs_procedure;
 
-            itm.xcuda_Tarification.xcuda_HScode.Commodity_code = pod.TariffCode ?? "NULL";
+            itm.xcuda_Tarification.xcuda_HScode.Commodity_code = pod.TariffCode.Trim() ?? "NULL";
             itm.xcuda_Tarification.xcuda_HScode.Precision_4 =
                 pod.ItemNumber;
 
