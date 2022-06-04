@@ -22,8 +22,7 @@ namespace DocumentDS.Business.Entities
     {
         partial void AutoGenStartUp() //FileType()
         {
-            this.AsycudaDocumentSet_Attachments = new List<AsycudaDocumentSet_Attachments>();
-            this.FileTypes1 = new List<FileType>();
+           
         }
 
         [DataMember]

@@ -57,7 +57,9 @@ namespace AutoBot
                     ctx.AsycudaDocumentSet_Attachments.Include(x => x.Attachments).OrderByDescending(x => x.AttachmentId).FirstOrDefault(x => x.AsycudaDocumentSetId == asycudaDocumentSetId && x.FileTypes.FileImporterInfos.EntryType == FileTypeManager.EntryTypes.Lic);
                 var lastfiledate = lastdbfile  != null ? File.GetCreationTime(lastdbfile.Attachments.FilePath) : DateTime.Today.AddDays(-1);
 
-                var ft = ctx.FileTypes.FirstOrDefault(x =>
+                var ft = ctx.FileTypes
+                    .Include(x => x.FileImporterInfos)
+                    .FirstOrDefault(x =>
                     x.FileImporterInfos.EntryType == FileTypeManager.EntryTypes.Lic && x.ApplicationSettingsId ==
                     BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId);
                 if (ft == null) return true;
