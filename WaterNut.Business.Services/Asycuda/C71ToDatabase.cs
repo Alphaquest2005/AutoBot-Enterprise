@@ -383,7 +383,9 @@ namespace WaterNut.DataSpace.Asycuda
             {
                 try
                 {
-                    var fileType = cctx.FileTypes.First(x =>
+                    var fileType = cctx.FileTypes
+                        .Include(x => x.FileImporterInfos)
+                        .First(x =>
                         x.ApplicationSettingsId ==
                         BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId &&
                         x.FileImporterInfos.EntryType == FileTypeManager.EntryTypes.C71);
