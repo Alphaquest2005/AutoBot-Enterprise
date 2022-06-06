@@ -121,6 +121,21 @@ public string AliasName
 		}
      
 
+       
+       
+public Nullable<int> AliasItemId
+		{ 
+		    get { return this.inventoryitemaliasx.AliasItemId; }
+			set
+			{
+			    if (value == this.inventoryitemaliasx.AliasItemId) return;
+				this.inventoryitemaliasx.AliasItemId = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("AliasItemId");
+			}
+		}
+     
+
        private InventoryItemX _InventoryItemsEx;
         public  InventoryItemX InventoryItemsEx
 		{

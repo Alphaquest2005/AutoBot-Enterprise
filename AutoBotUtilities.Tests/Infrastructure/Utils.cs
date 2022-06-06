@@ -1,14 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using AutoBot;
+﻿using AutoBot;
 using CoreEntities.Business.Entities;
 using DocumentDS.Business.Entities;
-using EntryDataDS.Business.Entities;
-using WaterNut.Business.Services.Importers;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
 using WaterNut.Business.Services.Utils;
 using WaterNut.DataSpace;
 using FileTypes = CoreEntities.Business.Entities.FileTypes;
@@ -18,13 +15,13 @@ namespace AutoBotUtilities.Tests.Infrastructure
     public static class Utils
     {
 
-    
+
 
         public static bool IsTestApplicationSettings()
         {
-            return 
-                System.Configuration.ConfigurationManager.
-                    ConnectionStrings["CoreEntities"].ConnectionString.Contains(@"JOSEPH-PC\SQLDEVELOPER2017"); ;
+            return
+                System.Configuration.ConfigurationManager.ConnectionStrings["CoreEntities"].ConnectionString.Contains(@"JOEXPS\SQLDEVELOPER2019") 
+                && System.Configuration.ConfigurationManager.ConnectionStrings["CoreEntities"].ConnectionString.Contains(@"AutoBot-EnterpriseDB");
         }
 
         public static string GetTestDirectory()
@@ -65,7 +62,8 @@ namespace AutoBotUtilities.Tests.Infrastructure
         public static IEnumerable<FileTypes> GetPOCSVFileType() =>
             FileTypeManager.GetImportableFileType(FileTypeManager.EntryTypes.Po, FileTypeManager.FileFormats.Csv);
 
-        public static void ClearDataBase()
+        public static void 
+            ClearDataBase()
         {
             if (!Infrastructure.Utils.IsTestApplicationSettings()) return;
             using (var ctx = new CoreEntitiesContext())
@@ -73,9 +71,9 @@ namespace AutoBotUtilities.Tests.Infrastructure
                 ctx.Database.ExecuteSqlCommand(@"delete from AsycudaSalesAllocations
                             DELETE FROM AsycudaDocumentSet
                             FROM    AsycudaDocumentSet LEFT OUTER JOIN
-                                             FileTypes ON AsycudaDocumentSet.AsycudaDocumentSetId = FileTypes.AsycudaDocumentSetId LEFT OUTER JOIN
+                                             FileTypes ON AsycudaDocumentSet.Declarant_Reference_Number = FileTypes.DocSetRefernece LEFT OUTER JOIN
                                              SystemDocumentSets ON AsycudaDocumentSet.AsycudaDocumentSetId = SystemDocumentSets.Id
-                            WHERE (SystemDocumentSets.Id IS NULL) and filetypes.AsycudaDocumentSetId is null
+                            WHERE (SystemDocumentSets.Id IS NULL) --and filetypes.AsycudaDocumentSetId is null
                             delete from xcuda_Item
                             delete from xcuda_ASYCUDA
                             delete from [InventoryItems-NonStock]
@@ -85,13 +83,11 @@ namespace AutoBotUtilities.Tests.Infrastructure
         }
 
 
-        public static void ImportDocuments(AsycudaDocumentSet docSet, List<string> fileNames)
+        public static void ImportDocuments(AsycudaDocumentSet docSet, List<string> fileNames, bool noMessages = false)
         {
             bool importOnlyRegisteredDocument = true;
 
             bool importTariffCodes = true;
-
-            bool noMessages = false;
 
             bool overwriteExisting = true;
 
@@ -110,6 +106,14 @@ namespace AutoBotUtilities.Tests.Infrastructure
             {
                 CSVUtils.SaveCsv(new List<FileInfo>() { new FileInfo(testFile) }, fileType);
             }
+        }
+
+        public static TimeSpan Time(Action toTime)
+        {
+            var timer = Stopwatch.StartNew();
+            toTime();
+            timer.Stop();
+            return timer.Elapsed;
         }
     }
 }

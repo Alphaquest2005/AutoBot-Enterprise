@@ -111,6 +111,9 @@ namespace CoreEntities.Business.Services
   		[OperationContract]
         [FaultContract(typeof(ValidationFault))]
         Task<IEnumerable<InventoryItemAliasX>> GetInventoryItemAliasXByInventoryItemId(string InventoryItemId, List<string> includesLst = null);
+  		[OperationContract]
+        [FaultContract(typeof(ValidationFault))]
+        Task<IEnumerable<InventoryItemAliasX>> GetInventoryItemAliasXByAliasItemId(string AliasItemId, List<string> includesLst = null);
   
 
 

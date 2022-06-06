@@ -96,6 +96,21 @@ namespace CoreEntities.Business.Entities
         }
         string _aliasname;
         [DataMember]
+        public Nullable<int> AliasItemId 
+        {
+            get
+            {
+                return _aliasitemid;
+            }
+            set
+            {
+                _aliasitemid = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<int> _aliasitemid;
+        [DataMember]
         public InventoryItemX InventoryItemsEx { get; set; }
 
  //       [DataMember]

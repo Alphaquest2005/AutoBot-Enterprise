@@ -85,6 +85,9 @@ namespace CoreEntities.Client.Contracts
   		[OperationContract]
 		Task<IEnumerable<InventoryItemAliasX>> GetInventoryItemAliasXByInventoryItemId(string InventoryItemId, List<string> includesLst = null);
         
+  		[OperationContract]
+		Task<IEnumerable<InventoryItemAliasX>> GetInventoryItemAliasXByAliasItemId(string AliasItemId, List<string> includesLst = null);
+        
   		
     }
 }

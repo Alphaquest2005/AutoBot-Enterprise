@@ -195,36 +195,10 @@ namespace WaterNut.DataSpace
             StatusModel.StopStatusUpdate();
         }
 
-        public static Tuple<DateTime, DateTime, AsycudaDocumentSetEx, string> CurrentSalesInfo()
+        public static Tuple<DateTime, DateTime, AsycudaDocumentSet, string> CurrentSalesInfo()
         {
             var startDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1).AddMonths(-1);
-            var endDate = startDate.AddMonths(1).AddDays(-1).AddHours(23);
-            var docRef = startDate.ToString("MMMM") + " " + startDate.Year;
-            AsycudaDocumentSetEx docSet;
-            docSet = new CoreEntitiesContext().AsycudaDocumentSetExs.FirstOrDefault(x =>
-                x.Declarant_Reference_Number == docRef && x.ApplicationSettingsId ==
-                Instance.CurrentApplicationSettings.ApplicationSettingsId);
-            if (docSet == null)
-                using (var ctx = new DocumentDSContext())
-                {
-                    var doctype = Instance.Customs_Procedures
-                        .Single(x => x.CustomsOperationId == (int) CustomsOperations.Warehouse
-                                     && x.Sales == true && x.Discrepancy != true);
-                    ctx.Database.ExecuteSqlCommand($@"INSERT INTO AsycudaDocumentSet
-                                        (ApplicationSettingsId, Declarant_Reference_Number, Document_TypeId, Customs_ProcedureId, Exchange_Rate)
-                                    VALUES({Instance.CurrentApplicationSettings.ApplicationSettingsId},'{docRef}',{
-                                        doctype.Document_TypeId
-                                    },{doctype.Customs_ProcedureId},0)");
-                    docSet = new CoreEntitiesContext().AsycudaDocumentSetExs.FirstOrDefault(x =>
-                        x.Declarant_Reference_Number == docRef && x.ApplicationSettingsId ==
-                        Instance.CurrentApplicationSettings.ApplicationSettingsId);
-                }
-
-            var dirPath =
-                StringExtensions.UpdateToCurrentUser(
-                    Path.Combine(Instance.CurrentApplicationSettings.DataFolder, docRef));
-            if (!Directory.Exists(dirPath)) Directory.CreateDirectory(dirPath);
-            return new Tuple<DateTime, DateTime, AsycudaDocumentSetEx, string>(startDate, endDate, docSet, dirPath);
+            return EntryDocSetUtils.CreateMonthYearAsycudaDocSet(startDate);
         }
 
 
@@ -472,9 +446,9 @@ namespace WaterNut.DataSpace
                     .Where(x => x.ApplicationSettingsId ==
                                 cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.AsycudaDocumentSet
                                     .ApplicationSettingsId)
-                    .FirstOrDefault(x =>
-                        x.Description == cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.Document_Type
-                            .DisplayName);
+                    .First(x =>
+                        x.Customs_Procedure == cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.Customs_Procedure.CustomsProcedure);
+                
                 cdoc.Document.xcuda_General_information.xcuda_Country.xcuda_Destination.Destination_country_code =
                     Exp.Destination_country_code;
                 cdoc.Document.xcuda_General_information.xcuda_Country.xcuda_Export.Export_country_region =

@@ -507,19 +507,6 @@ namespace CoreEntities.Client.DTO
         private ChangeTrackingCollection<ApplicationSettings> ApplicationSettingsChangeTracker { get; set; }
 
         [DataMember]
-        public ChangeTrackingCollection<FileTypes> FileTypes
-		{
-		    get { return _FileTypes; }
-			set
-			{
-			    if (Equals(value, _FileTypes)) return;
-				_FileTypes = value;
-				NotifyPropertyChanged();//m => this.FileTypes
-			}
-		}
-        private ChangeTrackingCollection<FileTypes> _FileTypes = new ChangeTrackingCollection<FileTypes>();
-
-        [DataMember]
         public ChangeTrackingCollection<AsycudaDocumentSet_Attachments> AsycudaDocumentSet_Attachments
 		{
 		    get { return _AsycudaDocumentSet_Attachments; }

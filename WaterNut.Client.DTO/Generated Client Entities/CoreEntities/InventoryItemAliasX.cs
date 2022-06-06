@@ -86,6 +86,19 @@ namespace CoreEntities.Client.DTO
 		}
         private string _AliasName;
 
+        [DataMember]
+        public Nullable<int> AliasItemId
+		{ 
+		    get { return _AliasItemId; }
+			set
+			{
+			    if (value == _AliasItemId) return;
+				_AliasItemId = value;
+				NotifyPropertyChanged();//m => this.AliasItemId
+			}
+		}
+        private Nullable<int> _AliasItemId;
+
        
         [DataMember]
         public InventoryItemX InventoryItemsEx

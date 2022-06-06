@@ -175,7 +175,6 @@
           <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
           <Property Name="Description" Type="nvarchar" MaxLength="50" />
           <Property Name="FilePattern" Type="nvarchar" MaxLength="255" Nullable="false" />
-          <Property Name="AsycudaDocumentSetId" Type="int" Nullable="false" />
           <Property Name="CreateDocumentSet" Type="bit" Nullable="false" />
           <Property Name="DocumentSpecific" Type="bit" Nullable="false" />
           <Property Name="DocumentCode" Type="nvarchar" MaxLength="50" Nullable="false" />
@@ -191,6 +190,7 @@
           <Property Name="IsImportable" Type="bit" />
           <Property Name="MaxFileSizeInMB" Type="int" />
           <Property Name="FileInfoId" Type="int" />
+          <Property Name="DocSetRefernece" Type="nvarchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="PackageTypes">
           <Key>
@@ -1048,18 +1048,6 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.xcuda_ASYCUDAEx' does not
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_FileTypes_AsycudaDocumentSet">
-          <End Role="AsycudaDocumentSet" Type="Self.AsycudaDocumentSet" Multiplicity="1" />
-          <End Role="FileTypes" Type="Self.FileTypes" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="AsycudaDocumentSet">
-              <PropertyRef Name="AsycudaDocumentSetId" />
-            </Principal>
-            <Dependent Role="FileTypes">
-              <PropertyRef Name="AsycudaDocumentSetId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK_FileTypes_FileTypes">
           <End Role="FileTypes" Type="Self.FileTypes" Multiplicity="0..1" />
           <End Role="FileTypes1" Type="Self.FileTypes" Multiplicity="*" />
@@ -1799,10 +1787,6 @@ FROM [dbo].[xcuda_ASYCUDAEx] AS [xcuda_ASYCUDAEx]</DefiningQuery>
             <End Role="Document_Type" EntitySet="Document_Type" />
             <End Role="Customs_Procedure" EntitySet="Customs_Procedure" />
           </AssociationSet>
-          <AssociationSet Name="FK_FileTypes_AsycudaDocumentSet" Association="Self.FK_FileTypes_AsycudaDocumentSet">
-            <End Role="AsycudaDocumentSet" EntitySet="AsycudaDocumentSet" />
-            <End Role="FileTypes" EntitySet="FileTypes" />
-          </AssociationSet>
           <AssociationSet Name="FK_FileTypes_FileTypes" Association="Self.FK_FileTypes_FileTypes">
             <End Role="FileTypes" EntitySet="FileTypes" />
             <End Role="FileTypes1" EntitySet="FileTypes" />
@@ -2310,10 +2294,6 @@ FROM [dbo].[xcuda_ASYCUDAEx] AS [xcuda_ASYCUDAEx]</DefiningQuery>
             <End Role="xcuda_ASYCUDA" EntitySet="xcuda_ASYCUDA" />
             <End Role="xcuda_ASYCUDA_ExtendedProperties" EntitySet="xcuda_ASYCUDA_ExtendedProperties" />
           </AssociationSet>
-          <AssociationSet Name="FK_FileTypes_AsycudaDocumentSet" Association="WaterNutDBModel.FK_FileTypes_AsycudaDocumentSet">
-            <End Role="AsycudaDocumentSet" EntitySet="AsycudaDocumentSets" />
-            <End Role="FileType" EntitySet="FileTypes" />
-          </AssociationSet>
         </EntityContainer>
         <EntityType Name="AsycudaDocumentSet">
           <Key>
@@ -2351,7 +2331,6 @@ FROM [dbo].[xcuda_ASYCUDAEx] AS [xcuda_ASYCUDAEx]</DefiningQuery>
           <Property Name="Office" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="UpgradeKey" Type="Int32" />
           <Property Name="ExpectedEntries" Type="Int32" />
-          <NavigationProperty Name="FileTypes" Relationship="WaterNutDBModel.FK_FileTypes_AsycudaDocumentSet" FromRole="AsycudaDocumentSet" ToRole="FileType" />
         </EntityType>
         <EntityType Name="Customs_Procedure">
           <Key>
@@ -3838,7 +3817,6 @@ FROM [dbo].[xcuda_ASYCUDAEx] AS [xcuda_ASYCUDAEx]</DefiningQuery>
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
           <Property Name="FilePattern" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="AsycudaDocumentSetId" Type="Int32" Nullable="false" />
           <Property Name="CreateDocumentSet" Type="Boolean" Nullable="false" />
           <Property Name="DocumentSpecific" Type="Boolean" Nullable="false" />
           <Property Name="DocumentCode" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
@@ -3857,8 +3835,8 @@ FROM [dbo].[xcuda_ASYCUDAEx] AS [xcuda_ASYCUDAEx]</DefiningQuery>
           <Property Name="IsImportable" Type="Boolean" />
           <Property Name="MaxFileSizeInMB" Type="Int32" />
           <Property Name="FileInfoId" Type="Int32" />
-          <NavigationProperty Name="AsycudaDocumentSet" Relationship="WaterNutDBModel.FK_FileTypes_AsycudaDocumentSet" FromRole="FileType" ToRole="AsycudaDocumentSet" />
           <Property Name="Description" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="DocSetRefernece" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
         </EntityType>
         <Association Name="FK_AsycudaDocumentSet_Attachments_FileTypes">
           <End Type="WaterNutDBModel.FileType" Role="FileType" Multiplicity="0..1" />
@@ -4066,18 +4044,6 @@ FROM [dbo].[xcuda_ASYCUDAEx] AS [xcuda_ASYCUDAEx]</DefiningQuery>
             </Principal>
             <Dependent Role="xcuda_ASYCUDA_ExtendedProperties">
               <PropertyRef Name="ASYCUDA_Id" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_FileTypes_AsycudaDocumentSet">
-          <End Type="WaterNutDBModel.AsycudaDocumentSet" Role="AsycudaDocumentSet" Multiplicity="1" />
-          <End Type="WaterNutDBModel.FileType" Role="FileType" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="AsycudaDocumentSet">
-              <PropertyRef Name="AsycudaDocumentSetId" />
-            </Principal>
-            <Dependent Role="FileType">
-              <PropertyRef Name="AsycudaDocumentSetId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -4769,6 +4735,7 @@ FROM [dbo].[xcuda_ASYCUDAEx] AS [xcuda_ASYCUDAEx]</DefiningQuery>
           <EntitySetMapping Name="FileTypes">
             <EntityTypeMapping TypeName="WaterNutDBModel.FileType">
               <MappingFragment StoreEntitySet="FileTypes">
+                <ScalarProperty Name="DocSetRefernece" ColumnName="DocSetRefernece" />
                 <ScalarProperty Name="Description" ColumnName="Description" />
                 <ScalarProperty Name="FileInfoId" ColumnName="FileInfoId" />
                 <ScalarProperty Name="MaxFileSizeInMB" ColumnName="MaxFileSizeInMB" />
@@ -4785,7 +4752,6 @@ FROM [dbo].[xcuda_ASYCUDAEx] AS [xcuda_ASYCUDAEx]</DefiningQuery>
                 <ScalarProperty Name="DocumentCode" ColumnName="DocumentCode" />
                 <ScalarProperty Name="DocumentSpecific" ColumnName="DocumentSpecific" />
                 <ScalarProperty Name="CreateDocumentSet" ColumnName="CreateDocumentSet" />
-                <ScalarProperty Name="AsycudaDocumentSetId" ColumnName="AsycudaDocumentSetId" />
                 <ScalarProperty Name="FilePattern" ColumnName="FilePattern" />
                 <ScalarProperty Name="ApplicationSettingsId" ColumnName="ApplicationSettingsId" />
                 <ScalarProperty Name="Id" ColumnName="Id" />

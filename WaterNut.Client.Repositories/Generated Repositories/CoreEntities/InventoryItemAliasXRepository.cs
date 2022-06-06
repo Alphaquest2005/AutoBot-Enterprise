@@ -420,6 +420,34 @@ namespace CoreEntities.Client.Repositories
                 throw;
             }
         } 
+ 	 public async Task<IEnumerable<InventoryItemAliasX>> GetInventoryItemAliasXByAliasItemId(string AliasItemId, List<string> includesLst = null)
+        {
+             if (AliasItemId == "0") return null;
+            try
+            {
+                 using (InventoryItemAliasXClient t = new InventoryItemAliasXClient())
+                    {
+                        var res = await t.GetInventoryItemAliasXByAliasItemId(AliasItemId, includesLst).ConfigureAwait(continueOnCapturedContext: false);
+                         if(res != null)
+                        {
+                            return res.Select(x => new InventoryItemAliasX(x)).AsEnumerable();
+					    }                
+					    else
+					    {
+						    return null;
+					    }                    
+                    }
+            }
+            catch (FaultException<ValidationFault> e)
+            {
+                throw new Exception(e.Detail.Message, e.InnerException);
+            }
+            catch (Exception)
+            {
+                Debugger.Break();
+                throw;
+            }
+        } 
          
 		public decimal SumField(string whereExp, string sumExp)
         {

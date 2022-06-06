@@ -24,7 +24,6 @@ namespace CoreEntities.Business.Entities
         {
             this.AsycudaDocuments = new List<AsycudaDocument>();
             this.LicenceSummary = new List<LicenceSummary>();
-            this.FileTypes = new List<FileTypes>();
             this.AsycudaDocumentSet_Attachments = new List<AsycudaDocumentSet_Attachments>();
             this.AsycudaDocumentSetEntryDataEx = new List<AsycudaDocumentSetEntryDataEx>();
         }
@@ -545,8 +544,6 @@ namespace CoreEntities.Business.Entities
         public List<LicenceSummary> LicenceSummary { get; set; }
         [DataMember]
         public ApplicationSettings ApplicationSettings { get; set; }
-        [DataMember]
-        public List<FileTypes> FileTypes { get; set; }
         [DataMember]
         public List<AsycudaDocumentSet_Attachments> AsycudaDocumentSet_Attachments { get; set; }
         [DataMember]

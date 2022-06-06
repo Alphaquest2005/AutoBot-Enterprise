@@ -241,12 +241,6 @@ namespace CoreEntities.Business.Services
                                         GetWhere<ApplicationSettings>(dbContext, exp, itm.Value, "FileTypes", "SelectMany", includesLst)
 										.ConfigureAwait(continueOnCapturedContext: false);
 
-                            case "AsycudaDocumentSetEx":
-                                return
-                                    await
-                                        GetWhere<AsycudaDocumentSetEx>(dbContext, exp, itm.Value, "FileTypes", "SelectMany", includesLst)
-										.ConfigureAwait(continueOnCapturedContext: false);
-
                             case "FileTypeMappings":
                                 return
                                     await
@@ -815,9 +809,6 @@ namespace CoreEntities.Business.Services
                             case "ApplicationSettings":
                                 return await CountWhere<ApplicationSettings>(dbContext, exp, itm.Value, "FileTypes", "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "AsycudaDocumentSetEx":
-                                return await CountWhere<AsycudaDocumentSetEx>(dbContext, exp, itm.Value, "FileTypes", "SelectMany")
-											.ConfigureAwait(continueOnCapturedContext: false);
                             case "FileTypeMappings":
                                 return await CountWhere<FileTypeMappings>(dbContext, exp, itm.Value, "FileTypes", "Select")
 											.ConfigureAwait(continueOnCapturedContext: false);
@@ -961,12 +952,6 @@ namespace CoreEntities.Business.Services
                                 return
                                     await
                                         LoadRangeWhere<ApplicationSettings>(startIndex, count, dbContext, exp, itm.Value, "FileTypes", "SelectMany")
-													.ConfigureAwait(continueOnCapturedContext: false);
-
-                            case "AsycudaDocumentSetEx":
-                                return
-                                    await
-                                        LoadRangeWhere<AsycudaDocumentSetEx>(startIndex, count, dbContext, exp, itm.Value, "FileTypes", "SelectMany")
 													.ConfigureAwait(continueOnCapturedContext: false);
 
                             case "FileTypeMappings":
@@ -1276,43 +1261,6 @@ namespace CoreEntities.Business.Services
                     throw new FaultException<ValidationFault>(fault);
             }
         }
- 	        public async Task<IEnumerable<FileTypes>> GetFileTypesByAsycudaDocumentSetId(string AsycudaDocumentSetId, List<string> includesLst = null)
-        {
-            try
-            {
-                using ( var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
-              {
-                var i = Convert.ToInt32(AsycudaDocumentSetId);
-                var set = AddIncludes(includesLst, dbContext);
-                IEnumerable<FileTypes> entities = await set//dbContext.FileTypes
-                                                    // .Include(x => x.FileTypeMappings)									  
-                                                    // .Include(x => x.FileTypeActions)									  
-                                                    // .Include(x => x.FileTypeContacts)									  
-                                                    // .Include(x => x.AsycudaDocumentSet_Attachments)									  
-                                                    // .Include(x => x.ChildFileTypes)									  
-                                                    // .Include(x => x.EmailFileTypes)									  
-                                                    // .Include(x => x.ImportActions)									  
-                                                    // .Include(x => x.FileTypeReplaceRegex)									  
-                                      .AsNoTracking()
-                                        .Where(x => x.AsycudaDocumentSetId.ToString() == AsycudaDocumentSetId.ToString())
-										.ToListAsync()
-										.ConfigureAwait(continueOnCapturedContext: false);
-                return entities;
-              }
-             }
-            catch (Exception updateEx)
-            {
-                System.Diagnostics.Debugger.Break();
-                //throw new FaultException(updateEx.Message);
-                    var fault = new ValidationFault
-                                {
-                                    Result = false,
-                                    Message = updateEx.Message,
-                                    Description = updateEx.StackTrace
-                                };
-                    throw new FaultException<ValidationFault>(fault);
-            }
-        }
  	        public async Task<IEnumerable<FileTypes>> GetFileTypesByFileGroupId(string FileGroupId, List<string> includesLst = null)
         {
             try
@@ -1518,9 +1466,6 @@ namespace CoreEntities.Business.Services
                         {
                             case "ApplicationSettings":
                                 return await SumWhere<ApplicationSettings>(dbContext, exp, itm.Value, "FileTypes", field, "SelectMany")
-											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "AsycudaDocumentSetEx":
-                                return await SumWhere<AsycudaDocumentSetEx>(dbContext, exp, itm.Value, "FileTypes", field, "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
                             case "FileTypeMappings":
                                 return await SumWhere<FileTypeMappings>(dbContext, exp, itm.Value, "FileTypes", field, "Select")

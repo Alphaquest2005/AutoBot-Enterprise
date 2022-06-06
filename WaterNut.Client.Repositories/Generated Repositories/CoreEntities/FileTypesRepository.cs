@@ -203,7 +203,6 @@ namespace CoreEntities.Client.Repositories
                             return new FileTypes(res)
                     {
                   // ApplicationSettings = (res.ApplicationSettings != null?new ApplicationSettings(res.ApplicationSettings): null),    
-                  // AsycudaDocumentSetEx = (res.AsycudaDocumentSetEx != null?new AsycudaDocumentSetEx(res.AsycudaDocumentSetEx): null),    
                      // FileTypeMappings = new System.Collections.ObjectModel.ObservableCollection<FileTypeMappings>(res.FileTypeMappings.Select(y => new FileTypeMappings(y))),    
                      // FileTypeActions = new System.Collections.ObjectModel.ObservableCollection<FileTypeActions>(res.FileTypeActions.Select(y => new FileTypeActions(y))),    
                      // FileTypeContacts = new System.Collections.ObjectModel.ObservableCollection<FileTypeContacts>(res.FileTypeContacts.Select(y => new FileTypeContacts(y))),    
@@ -384,34 +383,6 @@ namespace CoreEntities.Client.Repositories
                  using (FileTypesClient t = new FileTypesClient())
                     {
                         var res = await t.GetFileTypesByApplicationSettingsId(ApplicationSettingsId, includesLst).ConfigureAwait(continueOnCapturedContext: false);
-                         if(res != null)
-                        {
-                            return res.Select(x => new FileTypes(x)).AsEnumerable();
-					    }                
-					    else
-					    {
-						    return null;
-					    }                    
-                    }
-            }
-            catch (FaultException<ValidationFault> e)
-            {
-                throw new Exception(e.Detail.Message, e.InnerException);
-            }
-            catch (Exception)
-            {
-                Debugger.Break();
-                throw;
-            }
-        } 
- 	 public async Task<IEnumerable<FileTypes>> GetFileTypesByAsycudaDocumentSetId(string AsycudaDocumentSetId, List<string> includesLst = null)
-        {
-             if (AsycudaDocumentSetId == "0") return null;
-            try
-            {
-                 using (FileTypesClient t = new FileTypesClient())
-                    {
-                        var res = await t.GetFileTypesByAsycudaDocumentSetId(AsycudaDocumentSetId, includesLst).ConfigureAwait(continueOnCapturedContext: false);
                          if(res != null)
                         {
                             return res.Select(x => new FileTypes(x)).AsEnumerable();

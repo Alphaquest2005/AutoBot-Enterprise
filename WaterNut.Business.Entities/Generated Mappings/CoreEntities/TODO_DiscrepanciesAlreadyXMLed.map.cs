@@ -28,7 +28,7 @@
               this.Property(t => t.pCNumber).HasColumnName("pCNumber").HasMaxLength(20);
               this.Property(t => t.RegistrationDate).HasColumnName("RegistrationDate");
               this.Property(t => t.ReferenceNumber).HasColumnName("ReferenceNumber").HasMaxLength(30);
-              this.Property(t => t.PreviousCNumber).HasColumnName("PreviousCNumber").HasMaxLength(50);
+              this.Property(t => t.PreviousCNumber).HasColumnName("PreviousCNumber").HasMaxLength(255);
               this.Property(t => t.DocumentType).HasColumnName("DocumentType").HasMaxLength(40);
               this.Property(t => t.Type).HasColumnName("Type").HasMaxLength(50);
               this.Property(t => t.EffectiveDate).HasColumnName("EffectiveDate");
@@ -40,7 +40,7 @@
               this.Property(t => t.Subject).HasColumnName("Subject").IsRequired();
               this.Property(t => t.EmailDate).HasColumnName("EmailDate");
               this.Property(t => t.LineNumber).HasColumnName("LineNumber");
-              this.Property(t => t.PreviousInvoiceNumber).HasColumnName("PreviousInvoiceNumber").HasMaxLength(50);
+              this.Property(t => t.PreviousInvoiceNumber).HasColumnName("PreviousInvoiceNumber").HasMaxLength(255);
               this.Property(t => t.Comment).HasColumnName("Comment").HasMaxLength(255);
               this.Property(t => t.DutyFreePaid).HasColumnName("DutyFreePaid").IsRequired().IsUnicode(false).HasMaxLength(9);
               this.Property(t => t.EntryData_Id).HasColumnName("EntryData_Id").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.None));

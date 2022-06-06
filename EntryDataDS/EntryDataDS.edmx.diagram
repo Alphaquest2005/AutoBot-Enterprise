@@ -4,7 +4,7 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="830e4acdfbed420fa8c846dbc7f9f89f" Name="Diagram1" ZoomLevel="72">
+      <Diagram DiagramId="830e4acdfbed420fa8c846dbc7f9f89f" Name="Diagram1" ZoomLevel="82">
         <EntityTypeShape EntityType="WaterNutDBModel.Sales" Width="1.5" PointX="5.625" PointY="3.25" IsExpanded="true" />
         <EntityTypeShape EntityType="WaterNutDBModel.EntryData" Width="3.625" PointX="7.875" PointY="0.75" />
         <InheritanceConnector EntityType="WaterNutDBModel.Sales" />

@@ -26,8 +26,8 @@
               this.Property(t => t.ReceivedQty).HasColumnName("ReceivedQty");
               this.Property(t => t.Quantity).HasColumnName("Quantity");
               this.Property(t => t.Cost).HasColumnName("Cost");
-              this.Property(t => t.PreviousCNumber).HasColumnName("PreviousCNumber").HasMaxLength(50);
-              this.Property(t => t.PreviousInvoiceNumber).HasColumnName("PreviousInvoiceNumber").HasMaxLength(50);
+              this.Property(t => t.PreviousCNumber).HasColumnName("PreviousCNumber").HasMaxLength(255);
+              this.Property(t => t.PreviousInvoiceNumber).HasColumnName("PreviousInvoiceNumber").HasMaxLength(255);
               this.Property(t => t.Status).HasColumnName("Status").HasMaxLength(306);
               this.Property(t => t.DutyFreePaid).HasColumnName("DutyFreePaid").HasMaxLength(50);
               this.Property(t => t.ApplicationSettingsId).HasColumnName("ApplicationSettingsId").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.None));

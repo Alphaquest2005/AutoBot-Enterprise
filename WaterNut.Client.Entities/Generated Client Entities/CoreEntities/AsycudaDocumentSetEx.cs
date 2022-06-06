@@ -734,60 +734,6 @@ public Nullable<int> ExpectedEntries
 		}
         
 
-        ObservableCollection<FileTypes> _FileTypes = null;
-        public  ObservableCollection<FileTypes> FileTypes
-		{
-            
-		    get 
-				{ 
-					if(_FileTypes != null) return _FileTypes;
-					//if (this.asycudadocumentsetex.FileTypes == null) Debugger.Break();
-					if(this.asycudadocumentsetex.FileTypes != null)
-					{
-						_FileTypes = new ObservableCollection<FileTypes>(this.asycudadocumentsetex.FileTypes.Select(x => new FileTypes(x)));
-					}
-					
-						_FileTypes.CollectionChanged += FileTypes_CollectionChanged; 
-					
-					return _FileTypes; 
-				}
-			set
-			{
-			    if (Equals(value, _FileTypes)) return;
-				if (value != null)
-					this.asycudadocumentsetex.FileTypes = new ChangeTrackingCollection<DTO.FileTypes>(value.Select(x => x.DTO).ToList());
-                _FileTypes = value;
-				if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
-				if (_FileTypes != null)
-				_FileTypes.CollectionChanged += FileTypes_CollectionChanged;               
-				NotifyPropertyChanged("FileTypes");
-			}
-		}
-        
-        void FileTypes_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
-        {
-            switch (e.Action)
-            {
-                case NotifyCollectionChangedAction.Add:
-                    foreach (FileTypes itm in e.NewItems)
-                    {
-                        if (itm != null)
-                        asycudadocumentsetex.FileTypes.Add(itm.DTO);
-                    }
-                    if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
-                    break;
-                case NotifyCollectionChangedAction.Remove:
-                    foreach (FileTypes itm in e.OldItems)
-                    {
-                        if (itm != null)
-                        asycudadocumentsetex.FileTypes.Remove(itm.DTO);
-                    }
-					if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
-                    break;
-                
-            }
-        }
-
         ObservableCollection<AsycudaDocumentSet_Attachments> _AsycudaDocumentSet_Attachments = null;
         public  ObservableCollection<AsycudaDocumentSet_Attachments> AsycudaDocumentSet_Attachments
 		{

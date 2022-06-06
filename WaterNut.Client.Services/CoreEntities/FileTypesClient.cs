@@ -117,11 +117,6 @@ namespace CoreEntities.Client.Services
             return  await Channel.GetFileTypesByApplicationSettingsId(ApplicationSettingsId, includesLst).ConfigureAwait(false);
         }
 			 
-  		public async Task<IEnumerable<FileTypes>> GetFileTypesByAsycudaDocumentSetId(string AsycudaDocumentSetId, List<string> includesLst = null)
-        {
-            return  await Channel.GetFileTypesByAsycudaDocumentSetId(AsycudaDocumentSetId, includesLst).ConfigureAwait(false);
-        }
-			 
   		public async Task<IEnumerable<FileTypes>> GetFileTypesByFileGroupId(string FileGroupId, List<string> includesLst = null)
         {
             return  await Channel.GetFileTypesByFileGroupId(FileGroupId, includesLst).ConfigureAwait(false);

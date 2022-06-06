@@ -8,7 +8,7 @@ namespace Core.Common.UI
     {
         public static SliderPanel Slider { get; set; }
 
-        public static bool IsMyComputer => "JOSEPH-PC|AUTOBROKER-PC".Contains(Environment.MachineName);
+        public static bool IsMyComputer => "JOSEPH-PC|AUTOBROKER-PC|JOEXPS".Contains(Environment.MachineName);
 
         private static readonly BaseViewModel _instance;
         static BaseViewModel()

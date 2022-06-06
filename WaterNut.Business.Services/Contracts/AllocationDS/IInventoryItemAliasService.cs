@@ -111,6 +111,9 @@ namespace AllocationDS.Business.Services
   		[OperationContract]
         [FaultContract(typeof(ValidationFault))]
         Task<IEnumerable<InventoryItemAlias>> GetInventoryItemAliasByApplicationSettingsId(string ApplicationSettingsId, List<string> includesLst = null);
+  		[OperationContract]
+        [FaultContract(typeof(ValidationFault))]
+        Task<IEnumerable<InventoryItemAlias>> GetInventoryItemAliasByAliasItemId(string AliasItemId, List<string> includesLst = null);
   
 
 

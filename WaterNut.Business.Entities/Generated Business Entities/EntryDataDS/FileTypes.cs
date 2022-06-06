@@ -72,21 +72,6 @@ namespace EntryDataDS.Business.Entities
         }
         string _filepattern;
         [DataMember]
-        public int AsycudaDocumentSetId 
-        {
-            get
-            {
-                return _asycudadocumentsetid;
-            }
-            set
-            {
-                _asycudadocumentsetid = value;
-                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
-                NotifyPropertyChanged();
-            }
-        }
-        int _asycudadocumentsetid;
-        [DataMember]
         public bool CreateDocumentSet 
         {
             get
@@ -326,6 +311,21 @@ namespace EntryDataDS.Business.Entities
             }
         }
         string _description;
+        [DataMember]
+        public string DocSetRefernece 
+        {
+            get
+            {
+                return _docsetrefernece;
+            }
+            set
+            {
+                _docsetrefernece = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _docsetrefernece;
         [DataMember]
         public List<EntryData> EntryData { get; set; }
         [DataMember]

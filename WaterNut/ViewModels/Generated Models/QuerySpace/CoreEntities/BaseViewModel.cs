@@ -3486,7 +3486,6 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     // all current navigation properties = null
                  CurrentAsycudaDocument = null;
                  CurrentLicenceSummary = null;
-                 CurrentFileTypes = null;
                  CurrentAsycudaDocumentSet_Attachments = null;
                  CurrentAsycudaDocumentSetEntryDataEx = null;
    

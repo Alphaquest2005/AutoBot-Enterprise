@@ -66,44 +66,6 @@ namespace CoreEntities.Client.Entities
             }
 
       }
-        public string AsycudaDocumentSetExEntityName
-        {
-            get
-            {
-                return this.AsycudaDocumentSetEx == null ? "" : this.AsycudaDocumentSetEx.EntityName;
-            }
-            set
-            {
-                                if (string.IsNullOrEmpty(value)) return;
-                string[] vals = value.Split(',');
-               
-                    using (AsycudaDocumentSetExClient ctx = new AsycudaDocumentSetExClient())
-                    {
-                        var dto = ctx.GetAsycudaDocumentSetExs().Result.AsEnumerable().FirstOrDefault(x => x.EntityName == value);
-                        
-
-                        if ( dto == null)
-                        {
-                            this.AsycudaDocumentSetEx = (AsycudaDocumentSetEx)new AsycudaDocumentSetEx().CreateEntityFromString(value);
-							
-							this.Id = Convert.ToInt32(this.AsycudaDocumentSetEx.AsycudaDocumentSetId);
-                            this.TrackingState=TrackableEntities.TrackingState.Modified;
-                           NotifyPropertyChanged("AddAsycudaDocumentSetEx");
-                        }
-                        else
-                        {
-                            var obj = new AsycudaDocumentSetEx(dto);
-                           if (this.AsycudaDocumentSetEx == null || this.AsycudaDocumentSetEx.EntityId != obj.EntityId) this.AsycudaDocumentSetEx = obj;
-                           
-                        }
-                         
-
-
-                    }
-            
-            }
-
-      }
         public string FileGroupsEntityName
         {
             get

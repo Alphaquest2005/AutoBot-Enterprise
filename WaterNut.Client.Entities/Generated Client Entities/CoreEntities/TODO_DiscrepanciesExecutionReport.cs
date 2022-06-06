@@ -233,7 +233,7 @@ public string Status
        
        
                 
-                [MaxLength(50, ErrorMessage = "CNumber has a max length of 50 letters ")]
+                [MaxLength(255, ErrorMessage = "CNumber has a max length of 255 letters ")]
 public string CNumber
 		{ 
 		    get { return this.todo_discrepanciesexecutionreport.CNumber; }

@@ -110,9 +110,6 @@ namespace DocumentDS.Business.Services
         Task<IEnumerable<FileType>> GetFileTypeByApplicationSettingsId(string ApplicationSettingsId, List<string> includesLst = null);
   		[OperationContract]
         [FaultContract(typeof(ValidationFault))]
-        Task<IEnumerable<FileType>> GetFileTypeByAsycudaDocumentSetId(string AsycudaDocumentSetId, List<string> includesLst = null);
-  		[OperationContract]
-        [FaultContract(typeof(ValidationFault))]
         Task<IEnumerable<FileType>> GetFileTypeByFileGroupId(string FileGroupId, List<string> includesLst = null);
   		[OperationContract]
         [FaultContract(typeof(ValidationFault))]

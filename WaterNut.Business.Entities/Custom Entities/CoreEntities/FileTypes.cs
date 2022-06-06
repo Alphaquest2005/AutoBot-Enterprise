@@ -34,5 +34,9 @@ namespace CoreEntities.Business.Entities
         [IgnoreDataMember]
         [NotMapped]
         public string FilePath { get; set; }
+
+        [IgnoreDataMember]
+        [NotMapped]
+        public int AsycudaDocumentSetId { get; set; }
     }
 }

@@ -334,7 +334,7 @@ namespace WaterNut.DataSpace.Asycuda
 
                     if (LinkPi)
                     {
-                        await LinkPIItem(ai, itm, pi).ConfigureAwait(false);
+                        await LinkPIItem(ai, itm, pi, NoMessages).ConfigureAwait(false);
                     }
 
                     pi.Commodity_code = ai.Prev_decl_HS_prec.Text.FirstOrDefault();
@@ -370,9 +370,9 @@ namespace WaterNut.DataSpace.Asycuda
             }
         }
 
-        private async Task LinkPIItem(ASYCUDAPrev_decl ai, xcuda_Item itm, xcuda_PreviousItem pi)
+        private async Task LinkPIItem(ASYCUDAPrev_decl ai, xcuda_Item itm, xcuda_PreviousItem pi, bool noMessages)
         {
-            var itemId = await GetOriginalEntryItemId(ai, itm.ItemNumber).ConfigureAwait(false);
+            var itemId = await GetOriginalEntryItemId(ai, itm.ItemNumber, noMessages).ConfigureAwait(false);
 
             var bl =
                 $"{ai.Prev_decl_office_code} {ai.Prev_decl_reg_year} C {ai.Prev_decl_reg_number} art. {ai.Prev_decl_item_number}";
@@ -401,7 +401,7 @@ namespace WaterNut.DataSpace.Asycuda
             }
         }
 
-        private async Task<int> GetOriginalEntryItemId(ASYCUDAPrev_decl ai, string itemNumber)
+        private async Task<int> GetOriginalEntryItemId(ASYCUDAPrev_decl ai, string itemNumber, bool noMessages)
         {
             try
             {
@@ -419,6 +419,9 @@ namespace WaterNut.DataSpace.Asycuda
                 }
 
                 if (pdoc == null)
+                    if (noMessages)
+                        return 0;
+                    else
                     throw new ApplicationException(
                         $"Please Import pCNumber {ai.Prev_decl_reg_number} Year {ai.Prev_decl_reg_year} Office {ai.Prev_decl_office_code} before importing this file {a.Identification.Registration.Number}-{a.Identification.Registration.Date}");
                 using (var ctx = new DocumentItemDSContext())

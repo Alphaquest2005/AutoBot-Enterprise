@@ -4,7 +4,7 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="854f53cbf00c44538b256d1947980b44" Name="Diagram1" ZoomLevel="68">
+      <Diagram DiagramId="854f53cbf00c44538b256d1947980b44" Name="Diagram1" ZoomLevel="89">
         <EntityTypeShape EntityType="WaterNutDBModel.ApplicationSettings" Width="1.5" PointX="0.5" PointY="1.125" IsExpanded="true" />
         <EntityTypeShape EntityType="WaterNutDBModel.AsycudaDocument" Width="2.375" PointX="7.75" PointY="1.375" />
         <EntityTypeShape EntityType="WaterNutDBModel.AsycudaDocumentItem" Width="2.375" PointX="11.25" PointY="1.5" />
@@ -34,7 +34,6 @@
         <AssociationConnector Association="WaterNutDBModel.InventoryItemsExAsycudaDocumentItem" />
         <EntityTypeShape EntityType="WaterNutDBModel.FileTypes" Width="2.125" PointX="2.125" PointY="13.875" />
         <AssociationConnector Association="WaterNutDBModel.FK_FileTypes_ApplicationSettings" />
-        <AssociationConnector Association="WaterNutDBModel.AsycudaDocumentSetExFileTypes" />
         <EntityTypeShape EntityType="WaterNutDBModel.FileTypeMappings" Width="2.875" PointX="5" PointY="14.125" />
         <AssociationConnector Association="WaterNutDBModel.FK_FileTypeMappings_FileTypes" />
         <EntityTypeShape EntityType="WaterNutDBModel.AsycudaDocumentSet_Attachments" Width="1.5" PointX="15.375" PointY="12.75" />

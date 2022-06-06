@@ -4,7 +4,7 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="d2df53f1a16547b1ae489592c6eb455f" Name="Diagram1" ZoomLevel="67">
+      <Diagram DiagramId="d2df53f1a16547b1ae489592c6eb455f" Name="Diagram1" ZoomLevel="88">
         <EntityTypeShape EntityType="WaterNutDBModel.AsycudaDocumentSet" Width="2.125" PointX="0.5" PointY="63.75" />
         <EntityTypeShape EntityType="WaterNutDBModel.Customs_Procedure" Width="3.125" PointX="0.875" PointY="72.25" />
         <EntityTypeShape EntityType="WaterNutDBModel.Document_Type" Width="1.5" PointX="1.5" PointY="80.375" />
@@ -138,7 +138,6 @@
         <AssociationConnector Association="WaterNutDBModel.FK_Identification_Registration" />
         <AssociationConnector Association="WaterNutDBModel.FK_Identification_Type" />
         <AssociationConnector Association="WaterNutDBModel.xcuda_ASYCUDAxcuda_ASYCUDA_ExtendedProperties" />
-        <AssociationConnector Association="WaterNutDBModel.FK_FileTypes_AsycudaDocumentSet" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

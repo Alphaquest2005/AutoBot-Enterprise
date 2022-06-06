@@ -248,7 +248,7 @@ public double Cost
        
        
                 
-                [MaxLength(50, ErrorMessage = "PreviousCNumber has a max length of 50 letters ")]
+                [MaxLength(255, ErrorMessage = "PreviousCNumber has a max length of 255 letters ")]
 public string PreviousCNumber
 		{ 
 		    get { return this.todo_discrepancieserrors.PreviousCNumber; }
@@ -265,7 +265,7 @@ public string PreviousCNumber
        
        
                 
-                [MaxLength(50, ErrorMessage = "PreviousInvoiceNumber has a max length of 50 letters ")]
+                [MaxLength(255, ErrorMessage = "PreviousInvoiceNumber has a max length of 255 letters ")]
 public string PreviousInvoiceNumber
 		{ 
 		    get { return this.todo_discrepancieserrors.PreviousInvoiceNumber; }

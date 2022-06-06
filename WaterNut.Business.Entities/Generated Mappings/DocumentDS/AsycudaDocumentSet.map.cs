@@ -45,7 +45,6 @@
               this.HasMany(t => t.AsycudaDocumentSet_Attachments).WithRequired(t => (AsycudaDocumentSet)t.AsycudaDocumentSet);
               this.HasOptional(t => t.Container).WithRequired(t => (AsycudaDocumentSet)t.AsycudaDocumentSet);
               this.HasOptional(t => t.SystemDocumentSet).WithRequired(t => (AsycudaDocumentSet)t.AsycudaDocumentSet);
-              this.HasMany(t => t.FileTypes).WithRequired(t => (AsycudaDocumentSet)t.AsycudaDocumentSet);
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);
     			this.Ignore(t => t.ModifiedProperties);

@@ -16,7 +16,6 @@
               this.Property(t => t.Id).HasColumnName("Id").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.Identity));
               this.Property(t => t.ApplicationSettingsId).HasColumnName("ApplicationSettingsId");
               this.Property(t => t.FilePattern).HasColumnName("FilePattern").IsRequired().HasMaxLength(255);
-              this.Property(t => t.AsycudaDocumentSetId).HasColumnName("AsycudaDocumentSetId");
               this.Property(t => t.CreateDocumentSet).HasColumnName("CreateDocumentSet");
               this.Property(t => t.DocumentSpecific).HasColumnName("DocumentSpecific");
               this.Property(t => t.DocumentCode).HasColumnName("DocumentCode").IsRequired().HasMaxLength(50);
@@ -33,6 +32,7 @@
               this.Property(t => t.MaxFileSizeInMB).HasColumnName("MaxFileSizeInMB");
               this.Property(t => t.FileInfoId).HasColumnName("FileInfoId");
               this.Property(t => t.Description).HasColumnName("Description").HasMaxLength(50);
+              this.Property(t => t.DocSetRefernece).HasColumnName("DocSetRefernece").HasMaxLength(50);
               this.HasOptional(t => t.FileTypes2).WithMany(t =>(ICollection<FileTypes>) t.FileTypes1).HasForeignKey(d => d.ParentFileTypeId);
               this.HasMany(t => t.EntryData).WithOptional(t => t.FileTypes).HasForeignKey(d => d.FileTypeId);
               this.HasMany(t => t.FileTypes1).WithOptional(t => t.FileTypes2).HasForeignKey(d => d.ParentFileTypeId);

@@ -96,6 +96,21 @@ namespace AllocationDS.Business.Entities
         }
         int _applicationsettingsid;
         [DataMember]
+        public Nullable<int> AliasItemId 
+        {
+            get
+            {
+                return _aliasitemid;
+            }
+            set
+            {
+                _aliasitemid = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<int> _aliasitemid;
+        [DataMember]
         public InventoryItem InventoryItem { get; set; }
 
  //       [DataMember]

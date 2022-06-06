@@ -197,7 +197,6 @@
           <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
           <Property Name="Description" Type="nvarchar" MaxLength="50" />
           <Property Name="FilePattern" Type="nvarchar" MaxLength="255" Nullable="false" />
-          <Property Name="AsycudaDocumentSetId" Type="int" Nullable="false" />
           <Property Name="CreateDocumentSet" Type="bit" Nullable="false" />
           <Property Name="DocumentSpecific" Type="bit" Nullable="false" />
           <Property Name="DocumentCode" Type="nvarchar" MaxLength="50" Nullable="false" />
@@ -213,6 +212,7 @@
           <Property Name="IsImportable" Type="bit" />
           <Property Name="MaxFileSizeInMB" Type="int" />
           <Property Name="FileInfoId" Type="int" />
+          <Property Name="DocSetRefernece" Type="nvarchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="InventoryItemAlias">
           <Key>
@@ -3043,7 +3043,6 @@ FROM [dbo].[ShipmentRiderManifests] AS [ShipmentRiderManifests]</DefiningQuery>
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
           <Property Name="FilePattern" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="AsycudaDocumentSetId" Type="Int32" Nullable="false" />
           <Property Name="CreateDocumentSet" Type="Boolean" Nullable="false" />
           <Property Name="DocumentSpecific" Type="Boolean" Nullable="false" />
           <Property Name="DocumentCode" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
@@ -3063,6 +3062,7 @@ FROM [dbo].[ShipmentRiderManifests] AS [ShipmentRiderManifests]</DefiningQuery>
           <Property Name="MaxFileSizeInMB" Type="Int32" />
           <Property Name="FileInfoId" Type="Int32" />
           <Property Name="Description" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="DocSetRefernece" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
         </EntityType>
         <Association Name="FK_EntryData_FileTypes">
           <End Type="WaterNutDBModel.FileTypes" Role="FileTypes" Multiplicity="0..1" />
@@ -5050,6 +5050,7 @@ FROM [dbo].[ShipmentRiderManifests] AS [ShipmentRiderManifests]</DefiningQuery>
           <EntitySetMapping Name="FileTypes">
             <EntityTypeMapping TypeName="WaterNutDBModel.FileTypes">
               <MappingFragment StoreEntitySet="FileTypes">
+                <ScalarProperty Name="DocSetRefernece" ColumnName="DocSetRefernece" />
                 <ScalarProperty Name="Description" ColumnName="Description" />
                 <ScalarProperty Name="FileInfoId" ColumnName="FileInfoId" />
                 <ScalarProperty Name="MaxFileSizeInMB" ColumnName="MaxFileSizeInMB" />
@@ -5066,7 +5067,6 @@ FROM [dbo].[ShipmentRiderManifests] AS [ShipmentRiderManifests]</DefiningQuery>
                 <ScalarProperty Name="DocumentCode" ColumnName="DocumentCode" />
                 <ScalarProperty Name="DocumentSpecific" ColumnName="DocumentSpecific" />
                 <ScalarProperty Name="CreateDocumentSet" ColumnName="CreateDocumentSet" />
-                <ScalarProperty Name="AsycudaDocumentSetId" ColumnName="AsycudaDocumentSetId" />
                 <ScalarProperty Name="FilePattern" ColumnName="FilePattern" />
                 <ScalarProperty Name="ApplicationSettingsId" ColumnName="ApplicationSettingsId" />
                 <ScalarProperty Name="Id" ColumnName="Id" />

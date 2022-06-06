@@ -71,9 +71,6 @@ namespace AutoBotUtilities.Tests
                     {
                         ApplicationSettings = null,
                         ApplicationSettingsId = 2,
-                        AsycudaDocumentSetEx = new AsycudaDocumentSetEx()
-                        {
-                        },
                         AsycudaDocumentSetId = 8064,
                         AsycudaDocumentSet_Attachments = new List<AsycudaDocumentSet_Attachments>() { },
                         ChildFileTypes = new List<FileTypes>() { },

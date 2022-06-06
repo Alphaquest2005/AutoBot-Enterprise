@@ -136,6 +136,7 @@ namespace WaterNut.Business.Services.Utils
 
         public static List<FileTypes> GetImportableFileType(string entryType, string fileFormat) =>
             FileTypes()
+                .Where(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)
                 .Where(x => x.FileImporterInfos?.EntryType == entryType && x.FileImporterInfos?.Format == fileFormat)
                 .Where(x => x.FileTypeMappings.Any() || entryType == EntryTypes.Unknown).ToList();
     }

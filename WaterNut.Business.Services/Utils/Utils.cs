@@ -5,6 +5,7 @@ using System.Linq;
 using CoreEntities.Business.Entities;
 using DocumentDS.Business.Entities;
 using EmailDownloader;
+using MoreLinq.Extensions;
 
 namespace WaterNut.DataSpace
 {
@@ -25,30 +26,55 @@ namespace WaterNut.DataSpace
 
         public static List<AsycudaDocumentSet> GetDocSets(FileTypes fileType)
         {
-            List<AsycudaDocumentSet> docSet;
-            using (var ctx = new DocumentDSContext())
-            {
-                docSet = new List<AsycudaDocumentSet>()
-                {
-                    ctx.AsycudaDocumentSets.Include(x => x.SystemDocumentSet).FirstOrDefault(x => x.AsycudaDocumentSetId == fileType.AsycudaDocumentSetId)
-                };
-                var ddocset = ctx.FileTypes.First(x => x.Id == fileType.Id).AsycudaDocumentSetId;
-                if (fileType.CopyEntryData)
-                    docSet.Add(ctx.AsycudaDocumentSets.Include(x => x.SystemDocumentSet).FirstOrDefault(x => x.AsycudaDocumentSetId == ddocset));
-                else
-                {
-                    if (ctx.SystemDocumentSets.FirstOrDefault(x => x.Id == ddocset) != null)
-                    {
-                        docSet.Clear();
-                        docSet.Add(ctx.AsycudaDocumentSets.Include(x => x.SystemDocumentSet).FirstOrDefault(x => x.AsycudaDocumentSetId == ddocset));
+            HashSet<AsycudaDocumentSet> docSet;
+            var asycudaDocumentSet = EntryDocSetUtils.GetAsycudaDocumentSet(fileType.DocSetRefernece, true);
 
-                    }
+            docSet = new HashSet<AsycudaDocumentSet>();
+            
+            var originaldocSetRefernece = GetFileTypeOriginalReference(fileType);
+            if (fileType.CopyEntryData)
+            {
+                docSet.Add(asycudaDocumentSet);
+                GetAsycudaDocumentSets(originaldocSetRefernece).ForEach(x => docSet.Add(x));
+            }
+            else
+            {
+                if (IsSystemDocSet(asycudaDocumentSet))
+                {
+                    docSet.Clear();
+                    GetAsycudaDocumentSets(originaldocSetRefernece).ForEach(x => docSet.Add(x));
 
                 }
-                if (!docSet.Any()) throw new ApplicationException("Document Set with reference not found");
+
             }
 
-            return docSet;
+            if (!docSet.Any()) throw new ApplicationException("Document Set with reference not found");
+
+
+            return docSet.DistinctBy(x => x.AsycudaDocumentSetId).ToList();
+        }
+
+        private static bool IsSystemDocSet(AsycudaDocumentSet asycudaDocumentSet) =>
+            new DocumentDSContext().SystemDocumentSets.FirstOrDefault(x => x.Id == asycudaDocumentSet.AsycudaDocumentSetId) != null;
+
+        private static string GetFileTypeOriginalReference(FileTypes fileType)
+        {
+            using (var ctx = new DocumentDSContext())
+            {
+                return ctx.FileTypes.First(x => x.Id == fileType.Id).DocSetRefernece;
+            }
+        }
+
+        private static List<AsycudaDocumentSet> GetAsycudaDocumentSets(string docSetRefernece)
+        {
+            using (var ctx = new DocumentDSContext())
+            {
+                return ctx.AsycudaDocumentSets
+                    .Include(x => x.SystemDocumentSet)
+                    .Where(x => x.ApplicationSettingsId ==
+                                BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)
+                    .Where(x => x.Declarant_Reference_Number == docSetRefernece).ToList();
+            }
         }
 
         public static string GetExistingEmailId(string droppedFilePath, FileTypes fileType)

@@ -22,7 +22,8 @@ namespace DocumentDS.Business.Entities
     {
         partial void AutoGenStartUp() //FileType()
         {
-           
+            this.AsycudaDocumentSet_Attachments = new List<AsycudaDocumentSet_Attachments>();
+            this.FileTypes1 = new List<FileType>();
         }
 
         [DataMember]
@@ -70,21 +71,6 @@ namespace DocumentDS.Business.Entities
             }
         }
         string _filepattern;
-        [DataMember]
-        public int AsycudaDocumentSetId 
-        {
-            get
-            {
-                return _asycudadocumentsetid;
-            }
-            set
-            {
-                _asycudadocumentsetid = value;
-                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
-                NotifyPropertyChanged();
-            }
-        }
-        int _asycudadocumentsetid;
         [DataMember]
         public bool CreateDocumentSet 
         {
@@ -326,13 +312,26 @@ namespace DocumentDS.Business.Entities
         }
         string _description;
         [DataMember]
+        public string DocSetRefernece 
+        {
+            get
+            {
+                return _docsetrefernece;
+            }
+            set
+            {
+                _docsetrefernece = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _docsetrefernece;
+        [DataMember]
         public List<AsycudaDocumentSet_Attachments> AsycudaDocumentSet_Attachments { get; set; }
         [DataMember]
         public List<FileType> FileTypes1 { get; set; }
         [DataMember]
         public FileType FileType1 { get; set; }
-        [DataMember]
-        public AsycudaDocumentSet AsycudaDocumentSet { get; set; }
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

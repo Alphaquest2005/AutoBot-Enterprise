@@ -277,12 +277,6 @@ namespace DocumentDS.Business.Services
                                         GetWhere<SystemDocumentSet>(dbContext, exp, itm.Value, "AsycudaDocumentSet", "SelectMany", includesLst)
 										.ConfigureAwait(continueOnCapturedContext: false);
 
-                            case "FileTypes":
-                                return
-                                    await
-                                        GetWhere<FileType>(dbContext, exp, itm.Value, "AsycudaDocumentSet", "Select", includesLst)
-										.ConfigureAwait(continueOnCapturedContext: false);
-
                         }
 
                     }
@@ -803,9 +797,6 @@ namespace DocumentDS.Business.Services
                             case "SystemDocumentSet":
                                 return await CountWhere<SystemDocumentSet>(dbContext, exp, itm.Value, "AsycudaDocumentSet", "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "FileTypes":
-                                return await CountWhere<FileType>(dbContext, exp, itm.Value, "AsycudaDocumentSet", "Select")
-											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }
                     return await dbContext.AsycudaDocumentSets.Where(exp == "All" || exp == null ? "AsycudaDocumentSetId != null" : exp)
@@ -952,12 +943,6 @@ namespace DocumentDS.Business.Services
                                 return
                                     await
                                         LoadRangeWhere<SystemDocumentSet>(startIndex, count, dbContext, exp, itm.Value, "AsycudaDocumentSet", "SelectMany")
-													.ConfigureAwait(continueOnCapturedContext: false);
-
-                            case "FileTypes":
-                                return
-                                    await
-                                        LoadRangeWhere<FileType>(startIndex, count, dbContext, exp, itm.Value, "AsycudaDocumentSet", "Select")
 													.ConfigureAwait(continueOnCapturedContext: false);
 
                           
@@ -1176,7 +1161,6 @@ namespace DocumentDS.Business.Services
                                                     // .Include(x => x.AsycudaDocumentSetEntryDatas)									  
                                                     // .Include(x => x.xcuda_ASYCUDA_ExtendedProperties)									  
                                                     // .Include(x => x.AsycudaDocumentSet_Attachments)									  
-                                                    // .Include(x => x.FileTypes)									  
                                       .AsNoTracking()
                                         .Where(x => x.Customs_ProcedureId.ToString() == Customs_ProcedureId.ToString())
 										.ToListAsync()
@@ -1209,7 +1193,6 @@ namespace DocumentDS.Business.Services
                                                     // .Include(x => x.AsycudaDocumentSetEntryDatas)									  
                                                     // .Include(x => x.xcuda_ASYCUDA_ExtendedProperties)									  
                                                     // .Include(x => x.AsycudaDocumentSet_Attachments)									  
-                                                    // .Include(x => x.FileTypes)									  
                                       .AsNoTracking()
                                         .Where(x => x.Document_TypeId.ToString() == Document_TypeId.ToString())
 										.ToListAsync()
@@ -1242,7 +1225,6 @@ namespace DocumentDS.Business.Services
                                                     // .Include(x => x.AsycudaDocumentSetEntryDatas)									  
                                                     // .Include(x => x.xcuda_ASYCUDA_ExtendedProperties)									  
                                                     // .Include(x => x.AsycudaDocumentSet_Attachments)									  
-                                                    // .Include(x => x.FileTypes)									  
                                       .AsNoTracking()
                                         .Where(x => x.ApplicationSettingsId.ToString() == ApplicationSettingsId.ToString())
 										.ToListAsync()
@@ -1338,9 +1320,6 @@ namespace DocumentDS.Business.Services
 											.ConfigureAwait(continueOnCapturedContext: false);
                             case "SystemDocumentSet":
                                 return await SumWhere<SystemDocumentSet>(dbContext, exp, itm.Value, "AsycudaDocumentSet", field, "SelectMany")
-											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "FileTypes":
-                                return await SumWhere<FileType>(dbContext, exp, itm.Value, "AsycudaDocumentSet", field, "Select")
 											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }

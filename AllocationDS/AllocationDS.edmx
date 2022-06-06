@@ -121,8 +121,8 @@
           <Property Name="Status" Type="nvarchar" MaxLength="50" />
           <Property Name="InvoiceQty" Type="float" />
           <Property Name="ReceivedQty" Type="float" />
-          <Property Name="PreviousInvoiceNumber" Type="nvarchar" MaxLength="50" />
-          <Property Name="CNumber" Type="nvarchar" MaxLength="50" />
+          <Property Name="PreviousInvoiceNumber" Type="nvarchar" MaxLength="255" />
+          <Property Name="CNumber" Type="nvarchar" MaxLength="255" />
           <Property Name="Comment" Type="nvarchar" MaxLength="255" />
           <Property Name="EffectiveDate" Type="datetime2" Precision="7" />
           <Property Name="IsReconciled" Type="bit" />
@@ -132,7 +132,7 @@
           <Property Name="FileLineNumber" Type="int" />
           <Property Name="UpgradeKey" Type="int" />
           <Property Name="VolumeLiters" Type="float" />
-          <Property Name="EntryDataDetailsKey" Type="nvarchar" MaxLength="4000" StoreGeneratedPattern="Computed" />
+          <Property Name="EntryDataDetailsKey" Type="nvarchar" MaxLength="60" StoreGeneratedPattern="Computed" />
           <Property Name="TotalValue" Type="float" StoreGeneratedPattern="Computed" Nullable="false" />
           <Property Name="CLineNumber" Type="int" />
         </EntityType>
@@ -665,8 +665,8 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.EntryDataDetailsEx' does 
           <Property Name="InvoiceQty" Type="float" />
           <Property Name="ReceivedQty" Type="float" />
           <Property Name="Status" Type="nvarchar" MaxLength="50" />
-          <Property Name="PreviousInvoiceNumber" Type="nvarchar" MaxLength="50" />
-          <Property Name="PreviousCNumber" Type="nvarchar" MaxLength="50" />
+          <Property Name="PreviousInvoiceNumber" Type="nvarchar" MaxLength="255" />
+          <Property Name="PreviousCNumber" Type="nvarchar" MaxLength="255" />
           <Property Name="PreviousCLineNumber" Type="int" />
           <Property Name="Comment" Type="nvarchar" MaxLength="255" />
           <Property Name="EffectiveDate" Type="datetime2" Precision="7" />
@@ -814,6 +814,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemAliasEx' doe
           <Property Name="InventoryItemId" Type="int" Nullable="false" />
           <Property Name="ItemNumber" Type="nvarchar" MaxLength="20" Nullable="false" />
           <Property Name="AliasName" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="AliasItemId" Type="int" />
         </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
@@ -1633,7 +1634,8 @@ FROM [dbo].[ExistingAllocations] AS [ExistingAllocations]</DefiningQuery>
 [InventoryItemAliasEx].[ApplicationSettingsId] AS [ApplicationSettingsId], 
 [InventoryItemAliasEx].[InventoryItemId] AS [InventoryItemId], 
 [InventoryItemAliasEx].[ItemNumber] AS [ItemNumber], 
-[InventoryItemAliasEx].[AliasName] AS [AliasName]
+[InventoryItemAliasEx].[AliasName] AS [AliasName], 
+[InventoryItemAliasEx].[AliasItemId] AS [AliasItemId]
 FROM [dbo].[InventoryItemAliasEx] AS [InventoryItemAliasEx]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="InventoryItemsEx" EntityType="Self.InventoryItemsEx" store:Type="Views" store:Schema="dbo">
@@ -2125,8 +2127,8 @@ FROM [dbo].[PreviousItemsEx] AS [PreviousItemsEx]</DefiningQuery>
           <Property Name="Status" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="InvoiceQty" Type="Double" />
           <Property Name="ReceivedQty" Type="Double" />
-          <Property Name="PreviousInvoiceNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="CNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="PreviousInvoiceNumber" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="CNumber" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="Comment" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="EffectiveDate" Type="DateTime" Precision="7" />
           <NavigationProperty Name="AdjustmentShortAllocations" Relationship="WaterNutDBModel.EntryDataDetailsAdjustmentShortAllocations" FromRole="EntryDataDetails" ToRole="AdjustmentShortAllocations" />
@@ -2144,7 +2146,7 @@ FROM [dbo].[PreviousItemsEx] AS [PreviousItemsEx]</DefiningQuery>
           <NavigationProperty Name="ManualAllocations" Relationship="WaterNutDBModel.EntryDataDetailsAllocations" FromRole="EntryDataDetails" ToRole="Allocations" />
           <Property Name="UpgradeKey" Type="Int32" />
           <Property Name="VolumeLiters" Type="Double" />
-          <Property Name="EntryDataDetailsKey" Type="String" MaxLength="4000" FixedLength="false" Unicode="true" annotation:StoreGeneratedPattern="Computed" />
+          <Property Name="EntryDataDetailsKey" Type="String" MaxLength="60" FixedLength="false" Unicode="true" annotation:StoreGeneratedPattern="Computed" />
           <Property Name="TotalValue" Type="Double" Nullable="false" annotation:StoreGeneratedPattern="Computed" />
           <Property Name="CLineNumber" Type="Int32" />
           <NavigationProperty Name="InventoryItem" Relationship="WaterNutDBModel.InventoryItemEntryDataDetails" FromRole="EntryDataDetails" ToRole="InventoryItem" />
@@ -2250,8 +2252,8 @@ FROM [dbo].[PreviousItemsEx] AS [PreviousItemsEx]</DefiningQuery>
           <Property Name="InvoiceQty" Type="Double" />
           <Property Name="ReceivedQty" Type="Double" />
           <Property Name="Status" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="PreviousInvoiceNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="PreviousCNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="PreviousInvoiceNumber" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="PreviousCNumber" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="Comment" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="EffectiveDate" Type="DateTime" Precision="7" />
           <Property Name="IsReconciled" Type="Boolean" />
@@ -3257,6 +3259,7 @@ FROM [dbo].[PreviousItemsEx] AS [PreviousItemsEx]</DefiningQuery>
           <Property Name="AliasName" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
           <NavigationProperty Name="InventoryItem" Relationship="WaterNutDBModel.InventoryItemInventoryItemAliasEx" FromRole="InventoryItemAliasEx" ToRole="InventoryItem" />
+          <Property Name="AliasItemId" Type="Int32" />
         </EntityType>
         <Association Name="InventoryItemInventoryItemAliasEx">
           <End Type="WaterNutDBModel.InventoryItem" Role="InventoryItem" Multiplicity="1" />
@@ -4329,6 +4332,7 @@ FROM [dbo].[PreviousItemsEx] AS [PreviousItemsEx]</DefiningQuery>
           <EntitySetMapping Name="InventoryItemAlias">
             <EntityTypeMapping TypeName="WaterNutDBModel.InventoryItemAlias">
               <MappingFragment StoreEntitySet="InventoryItemAliasEx">
+                <ScalarProperty Name="AliasItemId" ColumnName="AliasItemId" />
                 <ScalarProperty Name="ApplicationSettingsId" ColumnName="ApplicationSettingsId" />
                 <ScalarProperty Name="AliasName" ColumnName="AliasName" />
                 <ScalarProperty Name="ItemNumber" ColumnName="ItemNumber" />

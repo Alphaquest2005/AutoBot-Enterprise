@@ -92,21 +92,6 @@ public string FilePattern
 		}
      
 
-       [RequiredValidationAttribute(ErrorMessage= "AsycudaDocumentSet is required")]
-       
-public int AsycudaDocumentSetId
-		{ 
-		    get { return this.filetypes.AsycudaDocumentSetId; }
-			set
-			{
-			    if (value == this.filetypes.AsycudaDocumentSetId) return;
-				this.filetypes.AsycudaDocumentSetId = value;
-                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
-				NotifyPropertyChanged("AsycudaDocumentSetId");
-			}
-		}
-     
-
        [RequiredValidationAttribute(ErrorMessage= "CreateDocumentSet is required")]
        
 public bool CreateDocumentSet
@@ -351,6 +336,23 @@ public string Description
 		}
      
 
+       
+       
+                
+                [MaxLength(50, ErrorMessage = "DocSetRefernece has a max length of 50 letters ")]
+public string DocSetRefernece
+		{ 
+		    get { return this.filetypes.DocSetRefernece; }
+			set
+			{
+			    if (value == this.filetypes.DocSetRefernece) return;
+				this.filetypes.DocSetRefernece = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("DocSetRefernece");
+			}
+		}
+     
+
        private ApplicationSettings _ApplicationSettings;
         public  ApplicationSettings ApplicationSettings
 		{
@@ -400,59 +402,6 @@ public string Description
                      this.filetypes.ApplicationSettings = value.DTO;
 				if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
                 NotifyPropertyChanged("ApplicationSettings");
-			}
-		}
-        
-
-       private AsycudaDocumentSetEx _AsycudaDocumentSetEx;
-        public  AsycudaDocumentSetEx AsycudaDocumentSetEx
-		{
-		    get
-               { 
-                  if (this.filetypes != null)
-                   {
-                       if (_AsycudaDocumentSetEx != null)
-                       {
-                           if (this.filetypes.AsycudaDocumentSetEx !=
-                               _AsycudaDocumentSetEx.DTO)
-                           {
-                                if (this.filetypes.AsycudaDocumentSetEx  != null)
-                               _AsycudaDocumentSetEx = new AsycudaDocumentSetEx(this.filetypes.AsycudaDocumentSetEx);
-                           }
-                       }
-                       else
-                       {
-                             if (this.filetypes.AsycudaDocumentSetEx  != null)
-                           _AsycudaDocumentSetEx = new AsycudaDocumentSetEx(this.filetypes.AsycudaDocumentSetEx);
-                       }
-                   }
-
-
-             //       if (_AsycudaDocumentSetEx != null) return _AsycudaDocumentSetEx;
-                       
-             //       var i = new AsycudaDocumentSetEx(){TrackingState = TrackingState.Added};
-			//		//if (this.filetypes.AsycudaDocumentSetEx == null) Debugger.Break();
-			//		if (this.filetypes.AsycudaDocumentSetEx != null)
-            //        {
-            //           i. = this.filetypes.AsycudaDocumentSetEx;
-            //        }
-            //        else
-            //        {
-            //            this.filetypes.AsycudaDocumentSetEx = i.;
-             //       }
-                           
-            //        _AsycudaDocumentSetEx = i;
-                     
-                    return _AsycudaDocumentSetEx;
-               }
-			set
-			{
-			    if (value == _AsycudaDocumentSetEx) return;
-                _AsycudaDocumentSetEx = value;
-                if(value != null)
-                     this.filetypes.AsycudaDocumentSetEx = value.DTO;
-				if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
-                NotifyPropertyChanged("AsycudaDocumentSetEx");
 			}
 		}
         

@@ -47,7 +47,7 @@ namespace AutoBotUtilities.Tests
             var entryDataDetailsIdLst = lst.Select(x => x.EntryDataDetailsId).ToList();
 
 
-            var elapsed = Time(async () => await AutoMatchUtils.DoAutoMatch(2, lst).ConfigureAwait(false));
+            var elapsed = Infrastructure.Utils.Time(async () => await AutoMatchUtils.DoAutoMatch(2, lst).ConfigureAwait(false));
 
 
             var res = new AdjustmentQSContext().EntryDataDetails
@@ -73,15 +73,15 @@ namespace AutoBotUtilities.Tests
 
             if (Infrastructure.Utils.IsTestApplicationSettings()) Assert.IsTrue(true);
             List<AdjustmentDetail> lst = null;
-            var elapsedGetAdjustmentDetails = Time(() => lst = new AdjustmentQSContext().AdjustmentDetails.Take(1000).ToList());
+            var elapsedGetAdjustmentDetails = Infrastructure.Utils.Time(() => lst = new AdjustmentQSContext().AdjustmentDetails.Take(1000).ToList());
 
 
-            var elapsedClearDocSetAllocations = Time(() => AllocationsModel.Instance.ClearDocSetAllocations(lst.Select(x => $"'{x.ItemNumber}'").Aggregate((o, n) => $"{o},{n}")).ConfigureAwait(false));
+            var elapsedClearDocSetAllocations = Infrastructure.Utils.Time(() => AllocationsModel.Instance.ClearDocSetAllocations(lst.Select(x => $"'{x.ItemNumber}'").Aggregate((o, n) => $"{o},{n}")).ConfigureAwait(false));
 
-            var elapsedPrepareDataForAllocation = Time(() => AllocationsBaseModel.PrepareDataForAllocation(BaseDataModel.Instance.CurrentApplicationSettings));
+            var elapsedPrepareDataForAllocation = Infrastructure.Utils.Time(() => AllocationsBaseModel.PrepareDataForAllocation(BaseDataModel.Instance.CurrentApplicationSettings));
 
 
-            var elapsedAutoMatch = Time(async () => await AutoMatchUtils.DoAutoMatch(2, lst).ConfigureAwait(false));
+            var elapsedAutoMatch = Infrastructure.Utils.Time(async () => await AutoMatchUtils.DoAutoMatch(2, lst).ConfigureAwait(false));
 
 
          
@@ -96,13 +96,7 @@ namespace AutoBotUtilities.Tests
 
         }
 
-        private TimeSpan Time(Action toTime)
-        {
-            var timer = Stopwatch.StartNew();
-            toTime();
-            timer.Stop();
-            return timer.Elapsed;
-        }
+    
 
 
 

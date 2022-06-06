@@ -74,10 +74,19 @@ namespace AutoBot
         public static int maxRowsToFindHeader = 10;
         private static int _oneMegaByte = 1000000;
         public static StringComparer ignoreCase = StringComparer.OrdinalIgnoreCase;
-        public static Client Client { get; set; }
+        public static Client Client { get; set; } = new Client
+        {
+            CompanyName = BaseDataModel.Instance.CurrentApplicationSettings.CompanyName,
+            DataFolder = BaseDataModel.Instance.CurrentApplicationSettings.DataFolder,
+            Password = BaseDataModel.Instance.CurrentApplicationSettings.EmailPassword,
+            Email = BaseDataModel.Instance.CurrentApplicationSettings.Email,
+            ApplicationSettingsId = BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId,
+            EmailMappings = BaseDataModel.Instance.CurrentApplicationSettings.EmailMapping.ToList(),
+            DevMode = true
+        };
 
 
-        public static void Kill(FileTypes arg1, FileInfo[] arg2)
+    public static void Kill(FileTypes arg1, FileInfo[] arg2)
         {
             Application.Exit();
         }

@@ -61,19 +61,6 @@ namespace CoreEntities.Client.DTO
         private string _FilePattern;
 
         [DataMember]
-        public int AsycudaDocumentSetId
-		{ 
-		    get { return _AsycudaDocumentSetId; }
-			set
-			{
-			    if (value == _AsycudaDocumentSetId) return;
-				_AsycudaDocumentSetId = value;
-				NotifyPropertyChanged();//m => this.AsycudaDocumentSetId
-			}
-		}
-        private int _AsycudaDocumentSetId;
-
-        [DataMember]
         public bool CreateDocumentSet
 		{ 
 		    get { return _CreateDocumentSet; }
@@ -281,6 +268,19 @@ namespace CoreEntities.Client.DTO
 		}
         private string _Description;
 
+        [DataMember]
+        public string DocSetRefernece
+		{ 
+		    get { return _DocSetRefernece; }
+			set
+			{
+			    if (value == _DocSetRefernece) return;
+				_DocSetRefernece = value;
+				NotifyPropertyChanged();//m => this.DocSetRefernece
+			}
+		}
+        private string _DocSetRefernece;
+
        
         [DataMember]
         public ApplicationSettings ApplicationSettings
@@ -297,22 +297,6 @@ namespace CoreEntities.Client.DTO
 		}
         private ApplicationSettings _ApplicationSettings;
         private ChangeTrackingCollection<ApplicationSettings> ApplicationSettingsChangeTracker { get; set; }
-
-        [DataMember]
-        public AsycudaDocumentSetEx AsycudaDocumentSetEx
-		{
-		    get { return _AsycudaDocumentSetEx; }
-			set
-			{
-			    if (value == _AsycudaDocumentSetEx) return;
-				_AsycudaDocumentSetEx = value;
-                AsycudaDocumentSetExChangeTracker = _AsycudaDocumentSetEx == null ? null
-                    : new ChangeTrackingCollection<AsycudaDocumentSetEx> { _AsycudaDocumentSetEx };
-				NotifyPropertyChanged();//m => this.AsycudaDocumentSetEx
-			}
-		}
-        private AsycudaDocumentSetEx _AsycudaDocumentSetEx;
-        private ChangeTrackingCollection<AsycudaDocumentSetEx> AsycudaDocumentSetExChangeTracker { get; set; }
 
         [DataMember]
         public ChangeTrackingCollection<FileTypeMappings> FileTypeMappings

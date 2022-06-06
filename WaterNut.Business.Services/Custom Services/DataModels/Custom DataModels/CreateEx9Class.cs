@@ -1091,44 +1091,51 @@ namespace WaterNut.DataSpace
                 //              .GroupBy(x =>  (int?)x.AllocationId )
                 //              .Select(s => CreateMyPodData(s)).ToList();
 
-                var lst = monthyear.Allocations
-                    .OrderBy(x => x.AllocationId).ToList();
+                var groupedlst = monthyear.Allocations
+                    .OrderBy(x => x.AllocationId)
+                    .GroupBy(x => x.PreviousItem_Id)
+                    .ToList();
 
                 var elst = new List<List<EX9Allocations>>();
                 var nlst = new List<EX9Allocations>();
-                while (lst.Any())
+                foreach (var group in groupedlst)
                 {
-                    // focus on returns ignore weight for now
-                    
-                    var itm = lst.First();
-                    if (itm.QtyAllocated > 0)
+                    var lst = group.ToList();
+                    while (lst.Any())
                     {
-                        if (nlst.Sum(x => x.QtyAllocated) + itm.QtyAllocated > 0)
+                        // focus on returns ignore weight for now
+
+                        var itm = lst.First();
+                        if (itm.QtyAllocated > 0)
                         {
-                            nlst = new List<EX9Allocations> { itm };
-                            lst.RemoveAt(0);
+                            if (nlst.Sum(x => x.QtyAllocated) + itm.QtyAllocated > 0)
+                            {
+                                nlst = new List<EX9Allocations> { itm };
+                                lst.RemoveAt(0);
+                            }
+                            else
+                            {
+                                nlst.Add(itm);
+                                lst.RemoveAt(0);
+                            }
+
                         }
                         else
                         {
-                            nlst.Add(itm);
-                            lst.RemoveAt(0);
+                            if (nlst.Sum(x => x.QtyAllocated) + itm.QtyAllocated > 0)
+                            {
+                                nlst = new List<EX9Allocations> { itm };
+                                lst.RemoveAt(0);
+                            }
+                            else
+                            {
+                                nlst.Add(itm);
+                                lst.RemoveAt(0);
+                            }
                         }
-                        
+
+                        if (nlst.Any() && nlst.Sum(x => x.QtyAllocated) > 0) elst.Add(nlst);
                     }
-                    else
-                    {
-                        if (nlst.Sum(x => x.QtyAllocated) + itm.QtyAllocated > 0)
-                        {
-                            nlst = new List<EX9Allocations> { itm };
-                            lst.RemoveAt(0);
-                        }
-                        else
-                        {
-                            nlst.Add(itm);
-                            lst.RemoveAt(0);
-                        }
-                    }
-                    if(nlst.Any() && nlst.Sum(x => x.QtyAllocated) > 0) elst.Add(nlst);
                 }
 
                 var res = elst.Select(CreateMyPodData).ToList();
@@ -1315,13 +1322,19 @@ namespace WaterNut.DataSpace
                     }
                     else
                     {
-                        await Ex9Bucket(mypod, dfp, docPi,
-                            salesPiHistoric //i assume once you not doing historic checks especially for adjustments just use the specific item history
-                        ).ConfigureAwait(false); //historic = 'HCLAMP/060'
+                        //await Ex9Bucket(mypod, dfp, docPi,
+                        //    salesPiHistoric //i assume once you not doing historic checks especially for adjustments just use the specific item history
+                        //).ConfigureAwait(false); //historic = 'HCLAMP/060'
 
-                        await Ex9Bucket(mypod, dfp, docPi,
-                            salesPiCurrent //i assume once you not doing historic checks especially for adjustments just use the specific item history
-                        ).ConfigureAwait(false); //historic = 'HCLAMP/060'
+                        //await Ex9Bucket(mypod, dfp, docPi,
+                        //    salesPiCurrent //i assume once you not doing historic checks especially for adjustments just use the specific item history
+                        //).ConfigureAwait(false); //historic = 'HCLAMP/060'
+
+                        Ex9Bucket(mypod, mypod.EntlnData.Quantity, totalSalesHistoric, totalPiHistoric, "Historic");
+                        Ex9Bucket(mypod, mypod.EntlnData.Quantity, totalSalesCurrent, totalPiCurrent, "Current");
+
+
+
                     }
 
                 var salesFactor = Math.Abs(mypod.EntlnData.EX9Allocation.SalesFactor) < 0.0001
@@ -1778,7 +1791,7 @@ namespace WaterNut.DataSpace
                             $@"Failed All Sales Check:: {type} Sales:{Math.Round(totalSalesAll, 2)}
                                             {type} PI: {totalPiAll}
                                             xQuantity:{mypod.EntlnData.Quantity}");
-                        mypod.EntlnData.Quantity = availibleQty;
+                        mypod.EntlnData.Quantity = mypod.Allocations.Sum(x => x.QtyAllocated); 
                         return;
                     }
                     var ssa = mypod.Allocations.ElementAt(i-1);
@@ -1788,19 +1801,20 @@ namespace WaterNut.DataSpace
                     if (nr < availibleQty && (nr + (ssa.QtyAllocated- piData)) >= availibleQty)
                     {
                         ssa.QtyAllocated = availibleQty - nr;
-                        mypod.EntlnData.Quantity = availibleQty;
+                        mypod.EntlnData.Quantity = mypod.Allocations.Sum(x => x.QtyAllocated);
                         break;//put back break because its finished reducing allocations and need to exit --- gonna bug somewhere can't remember
                     }
-                    if (nr > availibleQty)
+                    if (nr >= availibleQty)
                     {
                         ssa.QtyAllocated = availibleQty;
-                        mypod.EntlnData.Quantity = availibleQty;
+                        mypod.EntlnData.Quantity = mypod.Allocations.Sum(x => x.QtyAllocated); ;
                         break;
                     }
                     else
                     {
                         mypod.Allocations.RemoveAt(i-1);
                         rejects.Add(ssa);
+                        mypod.EntlnData.Quantity = mypod.Allocations.Sum(x => x.QtyAllocated);
                     }
                     //}
                     //else
@@ -1813,7 +1827,7 @@ namespace WaterNut.DataSpace
                                             $@"Failed All Sales Check:: {type} Sales:{Math.Round(totalSalesAll, 2)}
                                             {type} PI: {totalPiAll}
                                             xQuantity:{mypod.EntlnData.Quantity}");
-                mypod.EntlnData.Quantity =  availibleQty;
+                mypod.EntlnData.Quantity = mypod.Allocations.Sum(x => x.QtyAllocated);
                
             }
             catch (Exception e)
@@ -2149,9 +2163,8 @@ namespace WaterNut.DataSpace
                             .Where(x => x.ApplicationSettingsId ==
                                         cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.AsycudaDocumentSet
                                             .ApplicationSettingsId)
-                            .FirstOrDefault(x =>
-                                x.Description == cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.Document_Type
-                                    .DisplayName);
+                            .First(x =>
+                                x.Customs_Procedure == cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.Customs_Procedure.CustomsProcedure);
                     cdoc.Document.xcuda_General_information.xcuda_Country.xcuda_Destination.Destination_country_code =
                         Exp.Destination_country_code;
                     cdoc.Document.xcuda_General_information.xcuda_Country.xcuda_Export.Export_country_region =

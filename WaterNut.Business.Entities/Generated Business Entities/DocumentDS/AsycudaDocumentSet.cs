@@ -25,7 +25,6 @@ namespace DocumentDS.Business.Entities
             this.AsycudaDocumentSetEntryDatas = new List<AsycudaDocumentSetEntryData>();
             this.xcuda_ASYCUDA_ExtendedProperties = new List<xcuda_ASYCUDA_ExtendedProperties>();
             this.AsycudaDocumentSet_Attachments = new List<AsycudaDocumentSet_Attachments>();
-            this.FileTypes = new List<FileType>();
         }
 
         [DataMember]
@@ -417,8 +416,6 @@ namespace DocumentDS.Business.Entities
         public Container Container { get; set; }
         [DataMember]
         public SystemDocumentSet SystemDocumentSet { get; set; }
-        [DataMember]
-        public List<FileType> FileTypes { get; set; }
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

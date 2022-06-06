@@ -54,8 +54,6 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
  
 			RegisterToReceiveMessages<ApplicationSettings>(MessageToken.CurrentApplicationSettingsChanged, OnCurrentApplicationSettingsChanged);
  
-			RegisterToReceiveMessages<AsycudaDocumentSetEx>(MessageToken.CurrentAsycudaDocumentSetExChanged, OnCurrentAsycudaDocumentSetExChanged);
- 
 			RegisterToReceiveMessages<FileGroups>(MessageToken.CurrentFileGroupsChanged, OnCurrentFileGroupsChanged);
  
 			RegisterToReceiveMessages<FileImporterInfo>(MessageToken.CurrentFileImporterInfoChanged, OnCurrentFileImporterInfosChanged);
@@ -146,10 +144,6 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                    // {
                    //    if(ApplicationSettings.Contains(CurrentFileTypes.ApplicationSettings) == false) ApplicationSettings.Add(CurrentFileTypes.ApplicationSettings);
                     //}
-                    //if (e.PropertyName == "AddAsycudaDocumentSetEx")
-                   // {
-                   //    if(AsycudaDocumentSetExs.Contains(CurrentFileTypes.AsycudaDocumentSetEx) == false) AsycudaDocumentSetExs.Add(CurrentFileTypes.AsycudaDocumentSetEx);
-                    //}
                     //if (e.PropertyName == "AddFileGroups")
                    // {
                    //    if(FileGroups.Contains(CurrentFileTypes.FileGroups) == false) FileGroups.Add(CurrentFileTypes.FileGroups);
@@ -181,25 +175,6 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                 else
                 {
 				vloader.FilterExpression = string.Format("ApplicationSettingsId == {0}", e.Data.ApplicationSettingsId.ToString());
-                 }
-
-				FileTypes.Refresh();
-				NotifyPropertyChanged(x => this.FileTypes);
-                // SendMessage(MessageToken.FileTypesChanged, new NotificationEventArgs(MessageToken.FileTypesChanged));
-                                          
-                BaseViewModel.Instance.CurrentFileTypes = null;
-			}
-	
-		 internal virtual void OnCurrentAsycudaDocumentSetExChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<AsycudaDocumentSetEx> e)
-			{
-			if(ViewCurrentAsycudaDocumentSetEx == false) return;
-			if (e.Data == null || e.Data.AsycudaDocumentSetId == null)
-                {
-                    vloader.FilterExpression = "None";
-                }
-                else
-                {
-				vloader.FilterExpression = string.Format("AsycudaDocumentSetId == {0}", e.Data.AsycudaDocumentSetId.ToString());
                  }
 
 				FileTypes.Refresh();
@@ -263,21 +238,6 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
              {
                  _viewCurrentApplicationSettings = value;
                  NotifyPropertyChanged(x => x.ViewCurrentApplicationSettings);
-                FilterData();
-             }
-         }
- 	
-		 bool _viewCurrentAsycudaDocumentSetEx = false;
-         public bool ViewCurrentAsycudaDocumentSetEx
-         {
-             get
-             {
-                 return _viewCurrentAsycudaDocumentSetEx;
-             }
-             set
-             {
-                 _viewCurrentAsycudaDocumentSetEx = value;
-                 NotifyPropertyChanged(x => x.ViewCurrentAsycudaDocumentSetEx);
                 FilterData();
              }
          }
@@ -568,6 +528,24 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
         }	
 
  
+
+		private string _docSetReferneceFilter;
+        public string DocSetReferneceFilter
+        {
+            get
+            {
+                return _docSetReferneceFilter;
+            }
+            set
+            {
+                _docSetReferneceFilter = value;
+				NotifyPropertyChanged(x => DocSetReferneceFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
 		internal bool DisableBaseFilterData = false;
         public virtual void FilterData()
 	    {
@@ -647,6 +625,10 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 
 									if(string.IsNullOrEmpty(DescriptionFilter) == false)
 						res.Append(" && " + string.Format("Description.Contains(\"{0}\")",  DescriptionFilter));						
+ 
+
+									if(string.IsNullOrEmpty(DocSetReferneceFilter) == false)
+						res.Append(" && " + string.Format("DocSetRefernece.Contains(\"{0}\")",  DocSetReferneceFilter));						
 			return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
@@ -706,7 +688,10 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     MaxFileSizeInMB = x.MaxFileSizeInMB ,
                     
  
-                    Description = x.Description 
+                    Description = x.Description ,
+                    
+ 
+                    DocSetRefernece = x.DocSetRefernece 
                     
                 }).ToList()
             };
@@ -756,6 +741,9 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     
  
                     public string Description { get; set; } 
+                    
+ 
+                    public string DocSetRefernece { get; set; } 
                     
         }
 

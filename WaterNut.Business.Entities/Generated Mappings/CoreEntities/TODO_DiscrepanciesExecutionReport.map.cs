@@ -25,7 +25,7 @@
               this.Property(t => t.InvoiceDate).HasColumnName("InvoiceDate");
               this.Property(t => t.ItemNumber).HasColumnName("ItemNumber").IsRequired().HasMaxLength(20);
               this.Property(t => t.Status).HasColumnName("Status").HasMaxLength(50);
-              this.Property(t => t.CNumber).HasColumnName("CNumber").HasMaxLength(50);
+              this.Property(t => t.CNumber).HasColumnName("CNumber").HasMaxLength(255);
               this.Property(t => t.Declarant_Reference_Number).HasColumnName("Declarant_Reference_Number").HasMaxLength(50);
               this.Property(t => t.EmailId).HasColumnName("EmailId").HasMaxLength(255);
               this.Property(t => t.xCNumber).HasColumnName("xCNumber").HasMaxLength(20);

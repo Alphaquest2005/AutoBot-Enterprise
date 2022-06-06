@@ -1,12 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity;
+using System.IO;
 using System.Linq;
+using Core.Common.Utils;
 using CoreEntities.Business.Entities;
 using DocumentDS.Business.Entities;
 using DocumentItemDS.Business.Entities;
 using TrackableEntities;
 using TrackableEntities.EF6;
+using CustomsOperations = CoreEntities.Business.Enums.CustomsOperations;
 
 namespace WaterNut.DataSpace
 {
@@ -201,6 +204,56 @@ namespace WaterNut.DataSpace
                     .ToList();
                 return docSet;
             }
+        }
+
+        public static Tuple<DateTime, DateTime, AsycudaDocumentSet, string> CreateMonthYearAsycudaDocSet(DateTime startDate)
+        {
+            var endDate = startDate.AddMonths(1).AddDays(-1).AddHours(23);
+            var docRef = startDate.ToString("MMMM") + " " + startDate.Year;
+            var docSet = GetAsycudaDocumentSet(docRef, false);
+
+            var dirPath =
+                StringExtensions.UpdateToCurrentUser(
+                    Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder, docRef));
+            if (!Directory.Exists(dirPath)) Directory.CreateDirectory(dirPath);
+            return new Tuple<DateTime, DateTime, AsycudaDocumentSet, string>(startDate, endDate, docSet, dirPath);
+        }
+
+        public static AsycudaDocumentSet GetAsycudaDocumentSet(string docRef, bool isSystemDocSet)
+        {
+            AsycudaDocumentSet docSet;
+            docSet = new DocumentDSContext().AsycudaDocumentSets.FirstOrDefault(x =>
+                x.Declarant_Reference_Number == docRef && x.ApplicationSettingsId ==
+                BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId);
+            if (docSet == null) docSet = CreateAsycudaDocumentSet(docRef, isSystemDocSet);
+            return docSet;
+        }
+
+        public static AsycudaDocumentSet CreateAsycudaDocumentSet(string docRef, bool isSystemDocSet)
+        {
+            AsycudaDocumentSet docSet;
+            using (var ctx = new DocumentDSContext())
+            {
+                var doctype = BaseDataModel.Instance.Customs_Procedures
+                    .Single(x => x.CustomsOperationId == (int)CustomsOperations.Warehouse
+                                 && x.Sales == true );//&& x.Discrepancy != true
+                ctx.Database.ExecuteSqlCommand($@"INSERT INTO AsycudaDocumentSet
+                                        (ApplicationSettingsId, Declarant_Reference_Number, Document_TypeId, Customs_ProcedureId, Exchange_Rate)
+                                    VALUES({BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId},'{docRef}',{
+                                        doctype.Document_TypeId
+                                    },{doctype.Customs_ProcedureId},0)");
+                
+                docSet = ctx.AsycudaDocumentSets.FirstOrDefault(x =>
+                    x.Declarant_Reference_Number == docRef && x.ApplicationSettingsId ==
+                    BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId);
+
+                if (!isSystemDocSet) return docSet;
+                ctx.SystemDocumentSets.Add(new SystemDocumentSet(true)
+                    { AsycudaDocumentSet = docSet, TrackingState = TrackingState.Added });
+                ctx.SaveChanges();
+            }
+
+            return docSet;
         }
     }
 }
