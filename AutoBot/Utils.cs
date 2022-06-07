@@ -577,7 +577,8 @@ namespace AutoBot
                         ? line.Replace($"{DateTime.Now.Year}\t", "").Split('\t')
                         : line.Split('\t');
                     if (p.Length < 8) continue;
-                    if (File.Exists(Path.Combine(desFolder, $"{p[7] + p[8]}-{p[0]}-{p[5]}.xml")))
+                    var fileName = Path.Combine(desFolder, $"{p[7] + p[8]}-{p[0]}-{DateTime.Parse(p[6]).Year}-{p[5]}.xml");
+                    if (File.Exists(fileName))
                     {
                         existingfiles += 1;
                         continue;

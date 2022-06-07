@@ -404,6 +404,7 @@ namespace AutoBot
                     var fileTypes = ctx.FileTypes.Where(x =>
                         x.FileImporterInfos.Format == FileTypeManager.FileFormats.XML && x.ApplicationSettingsId ==
                         BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId);
+
                     if (fileTypes == null) return;
                     var docSetReference = new DocumentDSContext().AsycudaDocumentSets.Where(x => x.AsycudaDocumentSetId == docSetId)
                         .Select(x => x.Declarant_Reference_Number).First();
@@ -419,8 +420,11 @@ namespace AutoBot
                             .ToArray();
 
                         if (csvFiles.Length > 0)
-                            BaseDataModel.Instance.ImportDocuments(ft.AsycudaDocumentSetId,
+                        {
+                            var docSet = WaterNut.DataSpace.EntryDocSetUtils.GetAsycudaDocumentSet(ft.DocSetRefernece, true);
+                            BaseDataModel.Instance.ImportDocuments(docSet.AsycudaDocumentSetId,
                                 csvFiles.Select(x => x.FullName).ToList(), true, true, false, true, true).Wait();
+                        }
                     }
 
                     Utils.ImportAllFilesInDataFolder();
