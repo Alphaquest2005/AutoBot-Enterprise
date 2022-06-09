@@ -83,20 +83,32 @@ namespace AutoBot
 
         public static void SubmitDiscrepanciesToCustoms(FileTypes ft, FileInfo[] fs)
         {
-            using (var ctx = new CoreEntitiesContext())
+            try
             {
-                ctx.Database.CommandTimeout = _databaseCommandTimeout;
+                using (var ctx = new CoreEntitiesContext())
+                {
+                    ctx.Database.CommandTimeout = _databaseCommandTimeout;
 
-                IEnumerable<IGrouping<string, TODO_SubmitDiscrepanciesToCustoms>> lst;
-                lst = ctx.TODO_SubmitDiscrepanciesToCustoms.Where(x => x.EmailId == ft.EmailId
-                                                                       && x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId )
+                    IEnumerable<IGrouping<string, TODO_SubmitDiscrepanciesToCustoms>> lst;
+                    lst = ctx.TODO_SubmitDiscrepanciesToCustoms.Where(x => x.EmailId == ft.EmailId
+                                                                           && x.ApplicationSettingsId ==
+                                                                           BaseDataModel.Instance
+                                                                               .CurrentApplicationSettings
+                                                                               .ApplicationSettingsId)
 
-                    .ToList()
+                        .ToList()
 
-                    .GroupBy(x => x.EmailId);
-                SubmitDiscrepanciesToCustoms(lst);
+                        .GroupBy(x => x.EmailId);
+                    SubmitDiscrepanciesToCustoms(lst);
 
+                }
             }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+
         }
 
         public static void SubmitDiscrepanciesToCustoms()
