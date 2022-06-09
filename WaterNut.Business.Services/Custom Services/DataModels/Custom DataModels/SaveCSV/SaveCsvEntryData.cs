@@ -36,10 +36,9 @@ namespace WaterNut.DataSpace
 
                 if (data == null) return true;
 
+                var dataFile = new DataFile(fileType, docSet, overWriteExisting, emailId, droppedFilePath, data);
 
-                
-                return await _csvSummaryDataProcessor.ProcessCsvSummaryData(fileType, docSet, overWriteExisting, emailId, 
-                    droppedFilePath, data).ConfigureAwait(false);
+                return await _summaryDataProcessor.ProcessCsvSummaryData(dataFile).ConfigureAwait(false);
             }
             catch (Exception e)
             {
@@ -53,12 +52,12 @@ namespace WaterNut.DataSpace
         // new List<IDictionary<string, object>>(){(IDictionary<string, object>) header
 
 
-        private readonly CsvSummaryDataProcessor _csvSummaryDataProcessor;
+        private readonly SummaryDataProcessor _summaryDataProcessor;
 
         public SaveCsvEntryData()
         {
     
-            _csvSummaryDataProcessor = new CsvSummaryDataProcessor();
+            _summaryDataProcessor = new SummaryDataProcessor();
         }
     }
 }

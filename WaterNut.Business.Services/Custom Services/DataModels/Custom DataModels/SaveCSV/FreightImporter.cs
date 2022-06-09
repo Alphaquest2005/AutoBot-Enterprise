@@ -19,12 +19,12 @@ namespace WaterNut.DataSpace
         {
         }
 
-        public void ProcessFreight(FileTypes fileType, List<AsycudaDocumentSet> docSet, bool overWriteExisting, string emailId, string droppedFilePath, List<object> eslst)
+        public void Process(DataFile dataFile)
         {
             try
             {
                 
-                var lst = eslst.Cast<List<IDictionary<string, object>>>().SelectMany(x => x.ToList()).Select(x => ((IDictionary<string, object>)x))
+                var lst = dataFile.Data.Cast<List<IDictionary<string, object>>>().SelectMany(x => x.ToList()).Select(x => ((IDictionary<string, object>)x))
                     .Select(x => new ShipmentFreight()
                     {
 
@@ -49,9 +49,9 @@ namespace WaterNut.DataSpace
 
                             }).ToList(),
 
-                        EmailId = emailId,
+                        EmailId = dataFile.EmailId,
                         // SourceFile = filename,
-                        FileTypeId = fileType.Id,
+                        FileTypeId = dataFile.FileType.Id,
                         TrackingState = TrackingState.Added,
 
                     }).ToList();
@@ -60,7 +60,7 @@ namespace WaterNut.DataSpace
                 {
                     foreach (var manifest in lst)
                     {
-                        var filename = BaseDataModel.SetFilename(droppedFilePath, manifest.BLNumber, "-Freight.pdf");
+                        var filename = BaseDataModel.SetFilename(dataFile.DroppedFilePath, manifest.BLNumber, "-Freight.pdf");
                         manifest.SourceFile = filename;
                         var existingManifest =
                             ctx.ShipmentFreight.FirstOrDefault(

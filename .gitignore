@@ -264,3 +264,53 @@ paket-files/
 __pycache__/
 *.pyc
 /WaterNut-Enterprise.v11.zip
+/AutoBot/Utils-Joseph-PC-2.cs
+/AutoBotUtilities.Tests/AutoBotUtilities.Tests-Joseph-PC.csproj
+/CoreEntities/CoreEntities.edmx-Joseph-PC-2.diagram
+/CoreEntities/CoreEntities-Joseph-PC-2.edmx
+/DocumentDS/DocumentDS.edmx-Joseph-PC.diagram
+/DocumentDS/DocumentDS-Joseph-PC.edmx
+/EntryDataDS/EntryDataDS.edmx-Joseph-PC.diagram
+/EntryDataDS/EntryDataDS-Joseph-PC.edmx
+/WaterNut/ViewModels/Generated Models/QuerySpace/CoreEntities/FileTypesViewModel-Joseph-PC.cs
+/WaterNut/ViewModels/Generated Models/QuerySpace/CoreEntities/BaseViewModel-Joseph-PC-3.cs
+/WaterNut.Business.Entities/Custom Entities/CoreEntities/FileTypes-Joseph-PC.cs
+/WaterNut.Business.Services/Asycuda/C71ToDatabase-Joseph-PC.cs
+/WaterNut.Business.Services/Asycuda/AsycudaToDataBase421-Joseph-PC.cs
+/WaterNut.Business.Entities/WaterNut.Business.Entities-Joseph-PC-3.csproj
+/WaterNut.Business.Entities/Generated Interface Implementation/AllocationDS/IEntryDataDetail/EntryDataDetails-Joseph-PC-3.cs
+/WaterNut.Business.Entities/Generated Business Entities/EntryDataDS/FileTypes-Joseph-PC.cs
+/WaterNut.Business.Entities/Generated Business Entities/DocumentDS/FileType-Joseph-PC.cs
+/WaterNut.Business.Entities/Generated Business Entities/DocumentDS/AsycudaDocumentSet-Joseph-PC.cs
+/WaterNut.Business.Entities/Generated Business Entities/CoreEntities/FileTypes-Joseph-PC.cs
+/WaterNut.Business.Entities/Generated Business Entities/CoreEntities/AsycudaDocumentSetEx-Joseph-PC.cs
+/WaterNut.Business.Entities/Generated Business Entities/CoreEntities/Actions-Joseph-PC.cs
+/WaterNut.Business.Entities/Generated Business Entities/CoreEntities/Actions-Joseph-PC-2.cs
+/WaterNut.Business.Services/Services/DocumentDS/FileTypeService-Joseph-PC.cs
+/WaterNut.Business.Services/Services/DocumentDS/AsycudaDocumentSetService-Joseph-PC.cs
+/WaterNut.Business.Services/Services/CoreEntities/InventoryItemAliasXService-Joseph-PC.cs
+/WaterNut.Business.Services/Services/CoreEntities/FileTypesService-Joseph-PC.cs
+/WaterNut.Business.Services/Services/CoreEntities/AsycudaDocumentSetExService-Joseph-PC.cs
+/WaterNut.Business.Services/Services/AllocationDS/InventoryItemAliasService-Joseph-PC.cs
+/WaterNut.Business.Services/Custom Services/DocumentDS/xcuda_ASYCUDAService-Joseph-PC.cs
+/WaterNut.Business.Services/Custom Services/DataModels/Custom DataModels/SaveCSV/CSVShipmentImporter-Joseph-PC.cs
+/WaterNut.Business.Services/Custom Services/DataModels/Custom DataModels/CreateEx9Class-Joseph-PC.cs
+/WaterNut.Business.Services/Custom Services/DataModels/Custom DataModels/BaseBusinessLayerDS-Joseph-PC-3.cs
+/WaterNut.Business.Services/Contracts/EntryDataDS/IFileTypesService-Joseph-PC.cs
+/WaterNut.Business.Services/Contracts/DocumentDS/IFileTypeService-Joseph-PC.cs
+/WaterNut.Business.Services/Contracts/CoreEntities/IFileTypesService-Joseph-PC.cs
+/WaterNut/ViewModels/Generated Models/QuerySpace/AllocationQS/AsycudaSalesAndAdjustmentAllocationsExViewModel-Joseph-PC.cs
+/WCFConsoleHost/WaterNut-EnterpriseDB_log.ldf1
+/WCFConsoleHost/WaterNut-EnterpriseDB.mdf1
+/WaterNut.Data/WaterNut.Data-Joseph-PC.csproj
+/WaterNut.Client.Services/CoreEntities/FileTypesClient-Joseph-PC.cs
+/WaterNut.Client.Repositories/Generated Repositories/CoreEntities/FileTypesRepository-Joseph-PC.cs
+/WaterNut.Client.Entities/Generated IIdentitfiableEntity Models/CoreEntities/FileTypes-Joseph-PC.cs
+/WaterNut.Client.DTO/WaterNut.Client.DTO-Joseph-PC-3.csproj
+/WaterNut.Client.Contracts/CoreEntities/IFileTypesService-Joseph-PC.cs
+/WaterNut.Client.Entities/WaterNut.Client.Entities-Joseph-PC-3.csproj
+/WaterNut.Business.Services/Services/EntryDataDS/FileTypesService-Joseph-PC.cs
+/AllocationDS/AllocationDS.edmx-Joseph-PC.diagram
+/AllocationDS/AllocationDS-Joseph-PC.edmx
+/AAll-EDMX/AAll-EDMX-Joseph-PC-4.csproj
+/AAll-EDMX/AAll-EDMX-Joseph-PC-3.csproj

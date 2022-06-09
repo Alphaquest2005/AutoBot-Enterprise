@@ -23,12 +23,12 @@ namespace WaterNut.DataSpace
         {
         }
 
-        public void ProcessBL(FileTypes fileType, List<AsycudaDocumentSet> docSet, bool overWriteExisting, string emailId,  string droppedFilePath, List<object> eslst)
+        public void Process(DataFile dataFile)
         {
             try
             {
                 
-                var lst = eslst.Cast<List<IDictionary<string, object>>>().SelectMany(x => x.ToList()).Select(x => ((IDictionary<string, object>)x))
+                var lst = dataFile.Data.Cast<List<IDictionary<string, object>>>().SelectMany(x => x.ToList()).Select(x => ((IDictionary<string, object>)x))
                     .Select(x => new ShipmentBL()
                     {
                         ApplicationSettingsId = BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId,
@@ -76,9 +76,9 @@ namespace WaterNut.DataSpace
                                                                
                             }).ToList(),
 
-                        EmailId = emailId,
+                        EmailId = dataFile.EmailId,
                         // SourceFile = droppedFilePath,
-                        FileTypeId = fileType.Id,
+                        FileTypeId = dataFile.FileType.Id,
                         TrackingState = TrackingState.Added,
 
                     }).ToList();
@@ -96,8 +96,8 @@ namespace WaterNut.DataSpace
                         var detailsQty = bl.ShipmentBLDetails.Sum(x => x.Quantity);
 
 
-                        var filename = BaseDataModel.SetFilename(droppedFilePath, bl.BLNumber, "-BL.pdf");
-                        if (!File.Exists(filename)) File.Copy(droppedFilePath, filename);
+                        var filename = BaseDataModel.SetFilename(dataFile.DroppedFilePath, bl.BLNumber, "-BL.pdf");
+                        if (!File.Exists(filename)) File.Copy(dataFile.DroppedFilePath, filename);
                         bl.SourceFile = filename;
                         var existingBl =
                             ctx.ShipmentBL.FirstOrDefault(

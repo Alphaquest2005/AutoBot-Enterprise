@@ -16,20 +16,19 @@ namespace WaterNut.DataSpace
 
         
         
-        public async Task<bool> ImportEntryData(FileTypes fileType, List<AsycudaDocumentSet> docSet, bool overWriteExisting, string emailId,
-            string droppedFilePath, List<dynamic> eslst)
+        public async Task<bool> Process(DataFile dataFile)
         {
-            await _inventoryImporter.ImportInventory(eslst, docSet.First().ApplicationSettingsId, fileType)
+            await _inventoryImporter.ImportInventory(dataFile.Data, dataFile.DocSet.First().ApplicationSettingsId, dataFile.FileType)
                 .ConfigureAwait(false);
-            await _supplierImporter.ImportSuppliers(eslst, docSet.First().ApplicationSettingsId, fileType)
+            await _supplierImporter.ImportSuppliers(dataFile.Data, dataFile.DocSet.First().ApplicationSettingsId, dataFile.FileType)
                 .ConfigureAwait(false);
-            await _entryDataFileImporter.ImportEntryDataFile(fileType,
-                    eslst.Where(x => !string.IsNullOrEmpty(x.SourceRow)).ToList(),
-                    emailId, fileType.Id, droppedFilePath, docSet.First().ApplicationSettingsId)
+            await _entryDataFileImporter.ImportEntryDataFile(dataFile.FileType,
+                    dataFile.Data.Where(x => !string.IsNullOrEmpty(x.SourceRow)).ToList(),
+                    dataFile.EmailId, dataFile.FileType.Id, dataFile.DroppedFilePath, dataFile.DocSet.First().ApplicationSettingsId)
                 .ConfigureAwait(false);
-            if (await _csvToShipmentInvoiceConverter._entryDataImporter.ImportEntryData(fileType, eslst, docSet,
-                        overWriteExisting, emailId,
-                        droppedFilePath)
+            if (await _csvToShipmentInvoiceConverter._entryDataImporter.ImportEntryData(dataFile.FileType, dataFile.Data, dataFile.DocSet,
+                        dataFile.OverWriteExisting, dataFile.EmailId,
+                        dataFile.DroppedFilePath)
                     .ConfigureAwait(false)) return true;
             return false;
         }

@@ -2466,7 +2466,8 @@ namespace WaterNut.DataSpace
                         "AsycudaDocumentSet_Attachments.FileType",
                         "Customs_Procedure.Document_Type",
                         "Document_Type"
-                    }).ConfigureAwait(false);
+                    })
+                    .ConfigureAwait(false);
             }
         }
 

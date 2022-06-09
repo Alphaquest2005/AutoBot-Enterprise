@@ -16,7 +16,7 @@ namespace WaterNut.DataSpace
         {
         }
 
-        public void ProcessCsvCancelledEntries(FileTypes fileType, List<AsycudaDocumentSet> docSet, bool overWriteExisting, string emailId, string droppedFilePath, List<dynamic> eslst)
+        public void Process(DataFile dataFile)
         {
             try
             {
@@ -25,7 +25,7 @@ namespace WaterNut.DataSpace
                 using (var ctx = new CoreEntitiesContext())
                 {
                     ctx.Database.ExecuteSqlCommand("delete from CancelledEntriesLst");
-                    foreach (var itm in eslst)
+                    foreach (var itm in dataFile.Data)
                     {
                         var expireditm = new CancelledEntriesLst(true)
                         {
