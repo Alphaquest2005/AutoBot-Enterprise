@@ -102,7 +102,7 @@ namespace WaterNut.DataSpace
 
 
             data.existingInventoryItem
-                .Where(i => i.Item.InventoryItemSources.All(x => x.InventorySource.Id != inventorySource.Id))
+                .Where(i => i.Item.InventoryItemSources.All(x => x.InventorySourceId != inventorySource.Id))
                 .ForEach(x =>
                     x.Item.InventoryItemSources.Add(CreateItemSource(inventorySource, x.Item)));
 

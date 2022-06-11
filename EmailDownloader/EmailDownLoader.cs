@@ -97,7 +97,15 @@ namespace EmailDownloader
 
             foreach (var attachment in attachments)
             {
-                if(File.Exists(attachment)) builder.Attachments.Add(attachment);
+                try
+                {
+                    if (File.Exists(attachment)) builder.Attachments.Add(attachment);
+                }
+                catch (Exception)
+                {
+
+                }
+
             }
 
 

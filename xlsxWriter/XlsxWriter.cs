@@ -57,6 +57,9 @@ namespace xlsxWriter
                 var doRider = false;
                 foreach (var shipmentInvoice in shipmentInvoices)
                 {
+                    try
+                    {
+
                     var pdfFile = new FileInfo(shipmentInvoice.SourceFile);
 
                     if (shipmentInvoice.ShipmentRiderInvoice.Any() &&
@@ -150,10 +153,15 @@ namespace xlsxWriter
                             File.Copy(pdfFile.FullName, pdfFilePath, true);
                         csvs.Add((shipmentInvoice.InvoiceNo, pdfFilePath));
                     }
-                }
+                    }
+                    catch (Exception)
+                    {
+                       
+                    }
+                }           
 
 
-                return csvs;
+            return csvs;
             }
             catch (Exception e)
             {
