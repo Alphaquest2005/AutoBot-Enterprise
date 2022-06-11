@@ -12,25 +12,20 @@ namespace WaterNut.DataSpace
         private InventoryImporter _inventoryImporter = new InventoryImporter();
         private SupplierImporter _supplierImporter = new SupplierImporter();
         private EntryDataFileImporter _entryDataFileImporter = new EntryDataFileImporter();
-        private CSVToShipmentInvoiceConverter _csvToShipmentInvoiceConverter = new CSVToShipmentInvoiceConverter();
+        private EntryDataImporter _entryDataImporter = new EntryDataImporter();
 
         
         
-        public async Task<bool> Process(DataFile dataFile)
+        public async Task Process(DataFile dataFile)
         {
-            await _inventoryImporter.ImportInventory(dataFile.Data, dataFile.DocSet.First().ApplicationSettingsId, dataFile.FileType)
+            await _inventoryImporter.ImportInventory(dataFile)
                 .ConfigureAwait(false);
-            await _supplierImporter.ImportSuppliers(dataFile.Data, dataFile.DocSet.First().ApplicationSettingsId, dataFile.FileType)
+            await _supplierImporter.ImportSuppliers(dataFile)
                 .ConfigureAwait(false);
-            await _entryDataFileImporter.ImportEntryDataFile(dataFile.FileType,
-                    dataFile.Data.Where(x => !string.IsNullOrEmpty(x.SourceRow)).ToList(),
-                    dataFile.EmailId, dataFile.FileType.Id, dataFile.DroppedFilePath, dataFile.DocSet.First().ApplicationSettingsId)
+            await _entryDataFileImporter.ImportEntryDataFile(dataFile)
                 .ConfigureAwait(false);
-            if (await _csvToShipmentInvoiceConverter._entryDataImporter.ImportEntryData(dataFile.FileType, dataFile.Data, dataFile.DocSet,
-                        dataFile.OverWriteExisting, dataFile.EmailId,
-                        dataFile.DroppedFilePath)
-                    .ConfigureAwait(false)) return true;
-            return false;
+            await _entryDataImporter.ImportEntryData(dataFile).ConfigureAwait(false);
+            
         }
     }
 }

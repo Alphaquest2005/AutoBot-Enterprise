@@ -20,27 +20,18 @@ namespace WaterNut.DataSpace
     {
         public dynamic GalToLtrRate = 3.785;
 
-        static EntryDataImporter()
-        {
-        }
 
-        public EntryDataImporter()
-        {
-        }
-
-        public async Task<bool> ImportEntryData(FileTypes fileType, List<dynamic> eslst,
-            List<AsycudaDocumentSet> docSet,
-            bool overWriteExisting, string emailId, string droppedFilePath)
+        public async Task<bool> ImportEntryData(DataFile dataFile)
         {
             try
             {
-                if (fileType.FileImporterInfos.EntryType == FileTypeManager.EntryTypes.Sales &&
-                    !(((IDictionary<string, object>)eslst.First()).ContainsKey("Tax") ||
-                      ((IDictionary<string, object>)eslst.First()).ContainsKey("TotalTax")))
+                if (dataFile.FileType.FileImporterInfos.EntryType == FileTypeManager.EntryTypes.Sales &&
+                    !(((IDictionary<string, object>)dataFile.Data.First()).ContainsKey("Tax") ||
+                      ((IDictionary<string, object>)dataFile.Data.First()).ContainsKey("TotalTax")))
                     throw new ApplicationException("Sales file dose not contain Tax");
 
 
-                var ed = GetRawEntryData(fileType, eslst, docSet, emailId, droppedFilePath);
+                var ed = GetRawEntryData(dataFile.FileType, dataFile.Data, dataFile.DocSet, dataFile.EmailId, dataFile.DroppedFilePath);
 
                 if (ed == null) return true;
 
@@ -60,7 +51,7 @@ namespace WaterNut.DataSpace
                                  x.EntryData.EntryDataId != null && x.EntryData.EntryDataDate != null))
 
                 {
-                    await SaveEntryData(fileType, docSet, overWriteExisting, emailId, item).ConfigureAwait(false);
+                    await SaveEntryData(dataFile.FileType, dataFile.DocSet, dataFile.OverWriteExisting, dataFile.EmailId, item).ConfigureAwait(false);
 
                     UpdateInventoryItems(item);
                 } //);

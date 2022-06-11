@@ -14,7 +14,7 @@ using SubItemsService = DocumentItemDS.Business.Services.SubItemsService;
 
 namespace WaterNut.DataSpace
 {
-    public class SaveCsvSubItems
+    public class SaveCsvSubItems: IRawDataExtractor
     {
         static SaveCsvSubItems()
         {
@@ -24,18 +24,16 @@ namespace WaterNut.DataSpace
         public static SaveCsvSubItems Instance { get; }
 
 
-        internal async Task<bool> ExtractSubItems(string fileType, string[] lines, string[] headings)
+        public async Task Extract(RawDataFile rawDataFile)
         {
             var mapping = new Dictionary<string, int>();
-            GetMappings(mapping, headings);
-            var eslst = GetSubItemData(lines, mapping);
-
-            if (eslst == null) return false;
+            GetMappings(mapping, rawDataFile.Headings);
+            var eslst = GetSubItemData(rawDataFile.Lines, mapping);
 
             await ImportInventory(eslst).ConfigureAwait(false);
 
-            if (await ImportSubItems(eslst).ConfigureAwait(false)) return true;
-            return false;
+            await ImportSubItems(eslst).ConfigureAwait(false);
+            
         }
 
         private async Task<bool> ImportSubItems(List<SubItemData> eslst)

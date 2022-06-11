@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Core.Common.Utils;
 using EntryDataDS.Business.Entities;
+using MoreLinq;
 using TrackableEntities;
 using FileTypes = CoreEntities.Business.Entities.FileTypes;
 
@@ -10,21 +12,16 @@ namespace WaterNut.DataSpace
 {
     public class EntryDataFileImporter
     {
-        static EntryDataFileImporter()
-        {
-        }
-
-        public EntryDataFileImporter()
-        {
-        }
-
-        public async Task ImportEntryDataFile(FileTypes fileType, List<dynamic> eslst, string emailId,
-            int? fileTypeId, string droppedFilePath, int applicationSettingsId)
+      
+        public async Task ImportEntryDataFile(DataFile dataFile)
         {
             try
             {
+
+
                 using (var ctx = new EntryDataDSContext())
                 {
+                    var eslst = dataFile.Data.Where(x => !string.IsNullOrEmpty(x.SourceRow));
                     eslst.ForEach(x =>
                     {
                         if (!((IDictionary<string, object>)x).ContainsKey("InvoiceQuantity")) x.InvoiceQuantity = 0;
@@ -34,18 +31,18 @@ namespace WaterNut.DataSpace
                        
                     });
 
-                    ctx.Database.ExecuteSqlCommand($@"delete from EntryDataFiles where SourceFile = '{droppedFilePath}'");
+                    ctx.Database.ExecuteSqlCommand($@"delete from EntryDataFiles where SourceFile = '{dataFile.DroppedFilePath}'");
                     foreach (var line in eslst)
                     {
                         var drow = new EntryDataFiles(true)
                         {
                             TrackingState = TrackingState.Added,
-                            SourceFile = droppedFilePath,
-                            ApplicationSettingsId = applicationSettingsId,
+                            SourceFile = dataFile.DroppedFilePath,
+                            ApplicationSettingsId = dataFile.DocSet.First().ApplicationSettingsId,
                             SourceRow = line.SourceRow,
-                            FileType = fileType.FileImporterInfos.EntryType,
-                            EmailId = emailId,
-                            FileTypeId = fileTypeId,
+                            FileType = dataFile.FileType.FileImporterInfos.EntryType,
+                            EmailId = dataFile.EmailId,
+                            FileTypeId = dataFile.FileType.Id,
                             EntryDataId = line.EntryDataId,
                             EntryDataDate = line.EntryDataDate,
                             Cost = line.Cost,

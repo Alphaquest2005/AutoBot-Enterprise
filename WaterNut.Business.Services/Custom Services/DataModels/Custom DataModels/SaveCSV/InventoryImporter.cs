@@ -22,19 +22,19 @@ namespace WaterNut.DataSpace
         {
         }
 
-        public async Task ImportInventory(List<dynamic> data, int applicationSettingsId, FileTypes fileType)
+        public async Task ImportInventory(DataFile dataFile)
         {
             try
             {
 
 
 
-                var itmlst = InventoryItemDataUtils.CreateItemGroupList(data);
+                var itmlst = InventoryItemDataUtils.CreateItemGroupList(dataFile.Data);
 
 
-                var inventorySource = GetInventorySource(fileType);
+                var inventorySource = GetInventorySource(dataFile.FileType);
 
-                ProcessInventoryItemLst(applicationSettingsId, itmlst, inventorySource);
+                ProcessInventoryItemLst(dataFile.DocSet.First().ApplicationSettingsId, itmlst, inventorySource);
 
             }
             catch (Exception e)
