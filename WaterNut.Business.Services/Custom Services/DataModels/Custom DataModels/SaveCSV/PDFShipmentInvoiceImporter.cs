@@ -19,11 +19,12 @@ namespace WaterNut.DataSpace
             if (dataFile.FileType.FileImporterInfos.EntryType == FileTypeManager.EntryTypes.ShipmentInvoice &&
                 dataFile.FileType.FileImporterInfos.Format == FileTypeManager.FileFormats.PDF)
             {
-                await _inventoryImporter.ImportInventory(
+                var file = new DataFile(dataFile.FileType, dataFile.DocSet,dataFile.OverWriteExisting, dataFile.EmailId, dataFile.DroppedFilePath,
                     Enumerable.SelectMany<dynamic, object>(dataFile.Data, x =>
                         ((List<IDictionary<string, object>>)x).Select(z => z["InvoiceDetails"])).SelectMany(x =>
-                        ((List<IDictionary<string, object>>)x).Select(z => (dynamic)z)).ToList(),
-                    Enumerable.First<AsycudaDocumentSet>(dataFile.DocSet).ApplicationSettingsId, dataFile.FileType).ConfigureAwait(false);
+                        ((List<IDictionary<string, object>>)x).Select(z => (dynamic)z)).ToList());
+
+                await _inventoryImporter.ImportInventory( file).ConfigureAwait(false);
 
 
                 _shipmentInvoiceImporter.ProcessShipmentInvoice(dataFile.FileType, dataFile.DocSet, dataFile.OverWriteExisting, dataFile.EmailId,

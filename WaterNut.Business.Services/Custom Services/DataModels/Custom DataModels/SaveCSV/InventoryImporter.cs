@@ -14,13 +14,7 @@ namespace WaterNut.DataSpace
 {
     public class InventoryImporter
     {
-        static InventoryImporter()
-        {
-        }
-
-        public InventoryImporter()
-        {
-        }
+       
 
         public async Task ImportInventory(DataFile dataFile)
         {
@@ -238,5 +232,7 @@ namespace WaterNut.DataSpace
                 return inventoryItemSource;
             }
         }
+
+    
     }
 }

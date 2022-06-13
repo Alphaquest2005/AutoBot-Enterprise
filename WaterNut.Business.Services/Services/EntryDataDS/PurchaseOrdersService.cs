@@ -25,6 +25,7 @@ using Core.Common.UI;
 
 using System.Data.Entity;
 using System.Linq;
+using System.Threading;
 using TrackableEntities;
 using TrackableEntities.Common;
 using TrackableEntities.EF6;
@@ -568,11 +569,12 @@ namespace EntryDataDS.Business.Services
               using ( var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
               {
                 dbContext.Set<PurchaseOrders>().Add(res);
-                await dbContext.SaveChangesAsync().ConfigureAwait(continueOnCapturedContext: false);
+                await dbContext.SaveChangesAsync().ConfigureAwait(false);
                 res.AcceptChanges();
                 return res;
               }
             }
+            
             catch (Exception updateEx)
             {
                     System.Diagnostics.Debugger.Break();

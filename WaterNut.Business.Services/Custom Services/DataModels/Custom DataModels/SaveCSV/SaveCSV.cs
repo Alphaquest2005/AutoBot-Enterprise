@@ -60,6 +60,7 @@ namespace WaterNut.DataSpace
         {
             {FileTypeManager.EntryTypes.SubItems, new SaveCsvSubItems()},
             {FileTypeManager.EntryTypes.Po, new SaveCsvEntryData()},
+            {FileTypeManager.EntryTypes.Unknown, new SaveCsvEntryData()},
         };
 
 

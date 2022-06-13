@@ -138,6 +138,8 @@ namespace WaterNut.Business.Services.Utils
             FileTypes()
                 .Where(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)
                 .Where(x => x.FileImporterInfos?.EntryType == entryType && x.FileImporterInfos?.Format == fileFormat)
-                .Where(x => x.FileTypeMappings.Any() || entryType == EntryTypes.Unknown || x.FileImporterInfos?.Format == FileTypeManager.FileFormats.PDF).ToList();
+                .Where(x => x.FileTypeMappings.Any() || entryType == EntryTypes.Unknown || x.FileImporterInfos?.Format == FileTypeManager.FileFormats.PDF)
+                .Where(x => x.ParentFileTypeId == null)
+                .ToList();
     }
 }

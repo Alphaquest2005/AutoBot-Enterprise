@@ -146,9 +146,7 @@ namespace EntryDataDS.Business.Services
                     }
 					else
 					{
-						var entities = await set.AsNoTracking().Where(exp)
-											.ToListAsync() 
-											.ConfigureAwait(continueOnCapturedContext: false);
+						var entities = set.AsNoTracking().Where(exp).ToList();
                         if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
                         return entities; 
 											

@@ -18,12 +18,9 @@ namespace WaterNut.DataSpace
         
         public async Task Process(DataFile dataFile)
         {
-            await _inventoryImporter.ImportInventory(dataFile)
-                .ConfigureAwait(false);
-            await _supplierImporter.ImportSuppliers(dataFile)
-                .ConfigureAwait(false);
-            await _entryDataFileImporter.ImportEntryDataFile(dataFile)
-                .ConfigureAwait(false);
+            await _inventoryImporter.ImportInventory(dataFile).ConfigureAwait(false);
+            await _supplierImporter.ImportSuppliers(dataFile).ConfigureAwait(false);
+            await _entryDataFileImporter.ImportEntryDataFile(dataFile).ConfigureAwait(false);
             await _entryDataImporter.ImportEntryData(dataFile).ConfigureAwait(false);
             
         }

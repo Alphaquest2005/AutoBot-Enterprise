@@ -59,18 +59,18 @@ namespace AutoBotUtilities.Tests
                 {
                     CSVUtils.SaveCsv(new List<FileInfo>(){new FileInfo(testFile)}, fileType);
 
-                    
-                        using (var ctx = new EntryDataDSContext())
+
+                    using (var ctx = new EntryDataDSContext())
+                    {
+                        Assert.Multiple(() =>
                         {
-                            Assert.Multiple(() =>
-                            {
 
-                                Assert.AreEqual(ctx.EntryData.Count(), 1);
-                                Assert.AreEqual(ctx.EntryDataDetails.Count(), 10);
-                            });
-                        }
+                            Assert.AreEqual(ctx.EntryData.Count(), 1);
+                            Assert.AreEqual(ctx.EntryDataDetails.Count(), 10);
+                        });
+                    }
 
-                    
+
                 }
 
                 Assert.IsTrue(true);

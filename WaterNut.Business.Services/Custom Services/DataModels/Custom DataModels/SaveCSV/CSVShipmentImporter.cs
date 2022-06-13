@@ -32,11 +32,14 @@ namespace WaterNut.DataSpace
                         x.FilePath.Contains(entrydataid + ".pdf")).OrderByDescending(x => x.Id).FirstOrDefault()
                     ?.FilePath;
                 if (xeslst == null) return false;
-                await _inventoryImporter.ImportInventory(
-                    xeslst.SelectMany(x =>
+
+
+                var file = new DataFile(
+                    dataFile.FileType, dataFile.DocSet, dataFile.OverWriteExisting, dataFile.EmailId, dataFile.DroppedFilePath, xeslst.SelectMany(x =>
                         ((List<IDictionary<string, object>>)x).Select(z => z["InvoiceDetails"])).SelectMany(x =>
-                        ((List<IDictionary<string, object>>)x).Select(z => (dynamic)z)).ToList(),
-                    dataFile.DocSet.First().ApplicationSettingsId, dataFile.FileType).ConfigureAwait(false);
+                        ((List<IDictionary<string, object>>)x).Select(z => (dynamic)z)).ToList());
+
+                await _inventoryImporter.ImportInventory(file).ConfigureAwait(false);
                 var invoicePOs = xeslst.SelectMany(x =>
                         ((List<IDictionary<string, object>>)x).Select(z =>
                             new { InvoiceNo = z["InvoiceNo"], PONumber = z["PONumber"] }))

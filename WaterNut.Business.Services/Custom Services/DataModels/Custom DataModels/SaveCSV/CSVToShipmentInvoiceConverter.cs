@@ -64,7 +64,7 @@ namespace WaterNut.DataSpace
                             x.EffectiveDate,
                             VolumeLiters =
                                 Convert.ToDouble(
-                                    x.Gallons * _entryDataImporter.GalToLtrRate ?? Convert.ToDouble((double)(x.Liters ?? 0.0))),
+                                    x.Gallons * DomainFactLibary.GalToLtrRate ?? Convert.ToDouble((double)(x.Liters ?? 0.0))),
                         }),
                     f = g.Select(x => new
                     {
