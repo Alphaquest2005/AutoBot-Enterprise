@@ -74,9 +74,10 @@ namespace WaterNut.Business.Services.Utils
                         .GroupBy(x => x.FileTypes)
                         .OrderByDescending(x => x.Count())
                         .Where(x => x.Key.IsImportable == null || x.Key.IsImportable == true)
+                        .Where(x => x.Key.FileImporterInfos.Format == suggestedfileType.FileImporterInfos.Format)
                         .FirstOrDefault(x =>
                             suggestedfileType.FileImporterInfos.EntryType == EntryTypes.Unknown
-                                ? x.Key.FileImporterInfos.EntryType != null
+                                ?( x.Key.FileImporterInfos.EntryType != null )
                                 : x.Key.FileImporterInfos.EntryType == suggestedfileType.FileImporterInfos.EntryType)?.Key;
 
 

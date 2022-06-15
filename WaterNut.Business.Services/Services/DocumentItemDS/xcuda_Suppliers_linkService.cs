@@ -75,8 +75,7 @@ namespace DocumentItemDS.Business.Services
                   using ( var dbContext = new DocumentItemDSContext(){StartTracking = StartTracking})
                   {
 				    var set = AddIncludes(includesLst, dbContext);
-                    IEnumerable<xcuda_Suppliers_link> entities = await set.AsNoTracking().ToListAsync()
-													       .ConfigureAwait(continueOnCapturedContext: false);
+                    IEnumerable<xcuda_Suppliers_link> entities = set.AsNoTracking().ToList();
                            //scope.Complete();
                             if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
                             return entities;
@@ -107,7 +106,7 @@ namespace DocumentItemDS.Business.Services
               {
                 var i = Convert.ToInt32(Suppliers_link_Id);
 				var set = AddIncludes(includesLst, dbContext);
-                xcuda_Suppliers_link entity = await set.AsNoTracking().SingleOrDefaultAsync(x => x.Suppliers_link_Id == i).ConfigureAwait(continueOnCapturedContext: false);
+                xcuda_Suppliers_link entity = set.AsNoTracking().SingleOrDefault(x => x.Suppliers_link_Id == i);
                 if(tracking && entity != null) entity.StartTracking();
                 return entity;
               }
@@ -138,17 +137,15 @@ namespace DocumentItemDS.Business.Services
 					var set = AddIncludes(includesLst, dbContext);
                     if (exp == "All")
                     {
-						var entities = await set.AsNoTracking().ToListAsync()
-											.ConfigureAwait(continueOnCapturedContext: false);
+						var entities = set.AsNoTracking().ToList();
 
                         if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
                         return entities; 
                     }
 					else
 					{
-						var entities = await set.AsNoTracking().Where(exp)
-											.ToListAsync() 
-											.ConfigureAwait(continueOnCapturedContext: false);
+						var entities = set.AsNoTracking().Where(exp)
+											.ToList();
                         if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
                         return entities; 
 											
@@ -181,16 +178,14 @@ namespace DocumentItemDS.Business.Services
 					var set = AddIncludes(includesLst, dbContext);
                     if (expLst.FirstOrDefault() == "All")
                     {
-						var entities = await set.AsNoTracking().ToListAsync()
-											.ConfigureAwait(continueOnCapturedContext: false); 
+						var entities = set.AsNoTracking().ToList(); 
                         if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
                         return entities; 
                     }
 					else
 					{
 						set = AddWheres(expLst, set);
-						var entities = await set.AsNoTracking().ToListAsync() 
-										.ConfigureAwait(continueOnCapturedContext: false);
+						var entities = set.AsNoTracking().ToList();
                         if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
                         return entities; 
 											
@@ -225,9 +220,8 @@ namespace DocumentItemDS.Business.Services
 
                     if (exp == "All" && navExp.Count == 0)
                     {
-                        var aentities = await AddIncludes(includesLst, dbContext)
-												.ToListAsync()
-												.ConfigureAwait(continueOnCapturedContext: false);
+                        var aentities = AddIncludes(includesLst, dbContext)
+												.ToList();
                         if(tracking) aentities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
                         return aentities; 
                     }
@@ -245,9 +239,8 @@ namespace DocumentItemDS.Business.Services
 
                     }
 					var set = AddIncludes(includesLst, dbContext);
-                    var entities = await set.AsNoTracking().Where(exp)
-									.ToListAsync()
-									.ConfigureAwait(continueOnCapturedContext: false);
+                    var entities = set.AsNoTracking().Where(exp)
+									.ToList();
                     if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
                         return entities; 
 
@@ -428,19 +421,10 @@ namespace DocumentItemDS.Business.Services
                     if(res.TrackingState == TrackingState.Unchanged) res.TrackingState = TrackingState.Modified;                              
                     
                     dbContext.ApplyChanges(res);
-                    await dbContext.SaveChangesAsync().ConfigureAwait(continueOnCapturedContext: false);
+                    dbContext.SaveChanges();
                     res.AcceptChanges();
                     return res;      
-
-                   // var entitychanges = entity.ChangeTracker.GetChanges();
-                   // if (entitychanges != null && entitychanges.FirstOrDefault() != null)
-                   // {
-                   //     dbContext.ApplyChanges(entitychanges);
-                   //     await dbContext.SaveChangesAsync().ConfigureAwait(continueOnCapturedContext: false);
-                   //     entity.EntityId = entitychanges.FirstOrDefault().EntityId;
-                   //     entity.AcceptChanges();     
-                   // }
-                   // return entity;        
+      
                 }
                 catch (DbUpdateConcurrencyException dce)
                 {
@@ -508,7 +492,7 @@ namespace DocumentItemDS.Business.Services
               using ( var dbContext = new DocumentItemDSContext(){StartTracking = StartTracking})
               {
                 dbContext.xcuda_Suppliers_link.Add(res);
-                await dbContext.SaveChangesAsync().ConfigureAwait(continueOnCapturedContext: false);
+                dbContext.SaveChanges();
                 res.AcceptChanges();
                 return res;
               }
@@ -534,15 +518,14 @@ namespace DocumentItemDS.Business.Services
               using ( var dbContext = new DocumentItemDSContext(){StartTracking = StartTracking})
               {
                 var i = Convert.ToInt32(Suppliers_link_Id);
-                xcuda_Suppliers_link entity = await dbContext.xcuda_Suppliers_link
-													.SingleOrDefaultAsync(x => x.Suppliers_link_Id == i)
-													.ConfigureAwait(continueOnCapturedContext: false);
+                xcuda_Suppliers_link entity = dbContext.xcuda_Suppliers_link
+													.SingleOrDefault(x => x.Suppliers_link_Id == i);
                 if (entity == null)
                     return false;
 
                     dbContext.xcuda_Suppliers_link.Attach(entity);
                     dbContext.xcuda_Suppliers_link.Remove(entity);
-                    await dbContext.SaveChangesAsync().ConfigureAwait(continueOnCapturedContext: false);
+                    dbContext.SaveChanges();
                     return true;
               }
             }
@@ -610,14 +593,12 @@ namespace DocumentItemDS.Business.Services
                     var set = (IQueryable<xcuda_Suppliers_link>)dbContext.xcuda_Suppliers_link; 
                     if (expLst.FirstOrDefault() == "All")
                     {
-                        return await set.AsNoTracking().CountAsync()
-                                            .ConfigureAwait(continueOnCapturedContext: false);
+                        return set.AsNoTracking().Count();
                     }
                     else
                     {
                         set = AddWheres(expLst, set);
-                        return await set.AsNoTracking().CountAsync()
-                                        .ConfigureAwait(continueOnCapturedContext: false);
+                        return set.AsNoTracking().Count();
                     }
                     
                 }
@@ -645,19 +626,17 @@ namespace DocumentItemDS.Business.Services
                     if (string.IsNullOrEmpty(exp) || exp == "None") return 0;
                     if (exp == "All")
                     {
-                        return await dbContext.xcuda_Suppliers_link
+                        return dbContext.xcuda_Suppliers_link
                                     .AsNoTracking()
-									.CountAsync()
-									.ConfigureAwait(continueOnCapturedContext: false);
+									.Count();
                     }
                     else
                     {
                         
-                        return await dbContext.xcuda_Suppliers_link
+                        return dbContext.xcuda_Suppliers_link
 									.AsNoTracking()
                                     .Where(exp)
-									.CountAsync()
-									.ConfigureAwait(continueOnCapturedContext: false);
+									.Count();
                     }
                 }
             }
@@ -685,25 +664,23 @@ namespace DocumentItemDS.Business.Services
                     if (string.IsNullOrEmpty(exp) || exp == "None") return new List<xcuda_Suppliers_link>();
                     if (exp == "All")
                     {
-                        return await dbContext.xcuda_Suppliers_link
+                        return dbContext.xcuda_Suppliers_link
 										.AsNoTracking()
                                         .OrderBy(y => y.Suppliers_link_Id)
 										.Skip(startIndex)
 										.Take(count)
-										.ToListAsync()
-										.ConfigureAwait(continueOnCapturedContext: false);
+										.ToList();
                     }
                     else
                     {
                         
-                        return await dbContext.xcuda_Suppliers_link
+                        return dbContext.xcuda_Suppliers_link
 										.AsNoTracking()
                                         .Where(exp)
 										.OrderBy(y => y.Suppliers_link_Id)
 										.Skip(startIndex)
 										.Take(count)
-										.ToListAsync()
-										.ConfigureAwait(continueOnCapturedContext: false);
+										.ToList();
                     }
                 }
             }
@@ -731,10 +708,9 @@ namespace DocumentItemDS.Business.Services
                     dbContext.Database.CommandTimeout = 0;
                     if (exp == "All" && navExp.Count == 0)
                     {
-                        return await dbContext.xcuda_Suppliers_link
+                        return dbContext.xcuda_Suppliers_link
 										.AsNoTracking()
-                                        .CountAsync()
-										.ConfigureAwait(continueOnCapturedContext: false);
+                                        .Count();
                     }
                     foreach (var itm in navExp)
                     {
@@ -745,10 +721,9 @@ namespace DocumentItemDS.Business.Services
 											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }
-                    return await dbContext.xcuda_Suppliers_link.Where(exp == "All" || exp == null ? "Suppliers_link_Id != null" : exp)
+                    return dbContext.xcuda_Suppliers_link.Where(exp == "All" || exp == null ? "Suppliers_link_Id != null" : exp)
 											.AsNoTracking()
-                                            .CountAsync()
-											.ConfigureAwait(continueOnCapturedContext: false);
+                                            .Count();
                 }
                 
             }
@@ -784,15 +759,14 @@ namespace DocumentItemDS.Business.Services
         {
 			try
 			{
-            return await dbContext.Set<T>()
+            return dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
                 .SelectMany(navProp).OfType<xcuda_Suppliers_link>()
                 .Where(exp == "All" || exp == null ? "Suppliers_link_Id != null" : exp)
                 .Distinct()
                 .OrderBy("Suppliers_link_Id")
-                .CountAsync()
-				.ConfigureAwait(continueOnCapturedContext: false);
+                .Count();
 			}
 			catch (Exception)
 			{
@@ -805,15 +779,14 @@ namespace DocumentItemDS.Business.Services
         {
 			try
 			{
-            return await dbContext.Set<T>()
+            return dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
                 .Select(navProp).OfType<xcuda_Suppliers_link>()
                 .Where(exp == "All" || exp == null ? "Suppliers_link_Id != null" : exp)
                 .Distinct()
                 .OrderBy("Suppliers_link_Id")
-                .CountAsync()
-				.ConfigureAwait(continueOnCapturedContext: false);
+                .Count();
 			}
 			catch (Exception)
 			{
@@ -836,14 +809,13 @@ namespace DocumentItemDS.Business.Services
                     if (exp == "All" && navExp.Count == 0)
                     {
                        
-                        return await set
+                        return set
 									.AsNoTracking()
                                     .OrderBy(y => y.Suppliers_link_Id)
  
                                     .Skip(startIndex)
                                     .Take(count)
-									.ToListAsync()
-									.ConfigureAwait(continueOnCapturedContext: false);
+									.ToList();
                     }
                     foreach (var itm in navExp)
                     {
@@ -861,15 +833,14 @@ namespace DocumentItemDS.Business.Services
 						}
 
                     }
-                    return await set//dbContext.xcuda_Suppliers_link
+                    return set//dbContext.xcuda_Suppliers_link
 								.AsNoTracking()
                                 .Where(exp == "All" || exp == null ? "Suppliers_link_Id != null" : exp)
 								.OrderBy(y => y.Suppliers_link_Id)
  
                                 .Skip(startIndex)
                                 .Take(count)
-								.ToListAsync()
-								.ConfigureAwait(continueOnCapturedContext: false);
+								.ToList();
 
 
                 }
@@ -915,15 +886,14 @@ namespace DocumentItemDS.Business.Services
     
             if (includeLst != null) set = includeLst.Aggregate(set, (current, itm) => current.Include(itm));            
 
-            return await set
+            return set
                 .Where(exp == "All" || exp == null ? "Suppliers_link_Id != null" : exp)
                 .Distinct()
                 .OrderBy(y => y.Suppliers_link_Id)
  
                 .Skip(startIndex)
                 .Take(count)
-                .ToListAsync()
-				.ConfigureAwait(continueOnCapturedContext: false);
+                .ToList();
 			}
 			catch (Exception)
 			{
@@ -944,15 +914,14 @@ namespace DocumentItemDS.Business.Services
 
                if (includeLst != null) set = includeLst.Aggregate(set, (current, itm) => current.Include(itm)); 
                 
-               return await set
+               return set
                 .Where(exp == "All" || exp == null ? "Suppliers_link_Id != null" : exp)
                 .Distinct()
                 .OrderBy(y => y.Suppliers_link_Id)
  
                 .Skip(startIndex)
                 .Take(count)
-                .ToListAsync()
-				.ConfigureAwait(continueOnCapturedContext: false);
+                .ToList();
 							 }
 			catch (Exception)
 			{
@@ -993,14 +962,13 @@ namespace DocumentItemDS.Business.Services
 
 			if (includesLst == null)
 			{
-				return await dbContext.Set<T>()
+				return dbContext.Set<T>()
 							.AsNoTracking()
                             .Where(navExp)
 							.SelectMany(navProp).OfType<xcuda_Suppliers_link>()
 							.Where(exp == "All" || exp == null?"Suppliers_link_Id != null":exp)
 							.Distinct()
-							.ToListAsync()
-							.ConfigureAwait(continueOnCapturedContext: false);
+							.ToList();
 			}
 
 			var set = (DbQuery<xcuda_Suppliers_link>)dbContext.Set<T>()
@@ -1012,8 +980,7 @@ namespace DocumentItemDS.Business.Services
 
 			set = includesLst.Aggregate(set, (current, itm) => current.Include(itm));
 
-            return await set.ToListAsync()
-							.ConfigureAwait(continueOnCapturedContext: false);
+            return set.ToList();
 			}
 			catch (Exception)
 			{
@@ -1030,14 +997,13 @@ namespace DocumentItemDS.Business.Services
 
 			if (includesLst == null)
 			{
-				return await dbContext.Set<T>()
+				return dbContext.Set<T>()
 							.AsNoTracking()
                             .Where(navExp)
 							.Select(navProp).OfType<xcuda_Suppliers_link>()
 							.Where(exp == "All" || exp == null?"Suppliers_link_Id != null":exp)
 							.Distinct()
-							.ToListAsync()
-							.ConfigureAwait(continueOnCapturedContext: false);
+							.ToList();
 			}
 
 			var set = (DbQuery<xcuda_Suppliers_link>)dbContext.Set<T>()
@@ -1049,8 +1015,7 @@ namespace DocumentItemDS.Business.Services
 
 			set = includesLst.Aggregate(set, (current, itm) => current.Include(itm));
 
-            return await set.ToListAsync()
-							.ConfigureAwait(continueOnCapturedContext: false);
+            return set.ToList();
 			}
 			catch (Exception)
 			{
@@ -1067,11 +1032,10 @@ namespace DocumentItemDS.Business.Services
               {
                 var i = Convert.ToInt32(Item_Id);
                 var set = AddIncludes(includesLst, dbContext);
-                IEnumerable<xcuda_Suppliers_link> entities = await set//dbContext.xcuda_Suppliers_link
+                IEnumerable<xcuda_Suppliers_link> entities = set//dbContext.xcuda_Suppliers_link
                                       .AsNoTracking()
                                         .Where(x => x.Item_Id.ToString() == Item_Id.ToString())
-										.ToListAsync()
-										.ConfigureAwait(continueOnCapturedContext: false);
+										.ToList();
                 return entities;
               }
              }

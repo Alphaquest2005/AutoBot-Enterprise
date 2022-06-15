@@ -75,8 +75,7 @@ namespace EntryDataDS.Business.Services
                   using ( var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
                   {
 				    var set = AddIncludes(includesLst, dbContext);
-                    IEnumerable<ShipmentRiderBLs> entities = await set.AsNoTracking().ToListAsync()
-													       .ConfigureAwait(continueOnCapturedContext: false);
+                    IEnumerable<ShipmentRiderBLs> entities = set.AsNoTracking().ToList();
                            //scope.Complete();
                             if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
                             return entities;
@@ -107,7 +106,7 @@ namespace EntryDataDS.Business.Services
               {
                 var i = Convert.ToInt32(id);
 				var set = AddIncludes(includesLst, dbContext);
-                ShipmentRiderBLs entity = await set.AsNoTracking().SingleOrDefaultAsync(x => x.id == i).ConfigureAwait(continueOnCapturedContext: false);
+                ShipmentRiderBLs entity = set.AsNoTracking().SingleOrDefault(x => x.id == i);
                 if(tracking && entity != null) entity.StartTracking();
                 return entity;
               }
@@ -138,17 +137,15 @@ namespace EntryDataDS.Business.Services
 					var set = AddIncludes(includesLst, dbContext);
                     if (exp == "All")
                     {
-						var entities = await set.AsNoTracking().ToListAsync()
-											.ConfigureAwait(continueOnCapturedContext: false);
+						var entities = set.AsNoTracking().ToList();
 
                         if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
                         return entities; 
                     }
 					else
 					{
-						var entities = await set.AsNoTracking().Where(exp)
-											.ToListAsync() 
-											.ConfigureAwait(continueOnCapturedContext: false);
+						var entities = set.AsNoTracking().Where(exp)
+											.ToList();
                         if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
                         return entities; 
 											
@@ -181,16 +178,14 @@ namespace EntryDataDS.Business.Services
 					var set = AddIncludes(includesLst, dbContext);
                     if (expLst.FirstOrDefault() == "All")
                     {
-						var entities = await set.AsNoTracking().ToListAsync()
-											.ConfigureAwait(continueOnCapturedContext: false); 
+						var entities = set.AsNoTracking().ToList(); 
                         if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
                         return entities; 
                     }
 					else
 					{
 						set = AddWheres(expLst, set);
-						var entities = await set.AsNoTracking().ToListAsync() 
-										.ConfigureAwait(continueOnCapturedContext: false);
+						var entities = set.AsNoTracking().ToList();
                         if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
                         return entities; 
 											
@@ -225,9 +220,8 @@ namespace EntryDataDS.Business.Services
 
                     if (exp == "All" && navExp.Count == 0)
                     {
-                        var aentities = await AddIncludes(includesLst, dbContext)
-												.ToListAsync()
-												.ConfigureAwait(continueOnCapturedContext: false);
+                        var aentities = AddIncludes(includesLst, dbContext)
+												.ToList();
                         if(tracking) aentities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
                         return aentities; 
                     }
@@ -263,9 +257,8 @@ namespace EntryDataDS.Business.Services
 
                     }
 					var set = AddIncludes(includesLst, dbContext);
-                    var entities = await set.AsNoTracking().Where(exp)
-									.ToListAsync()
-									.ConfigureAwait(continueOnCapturedContext: false);
+                    var entities = set.AsNoTracking().Where(exp)
+									.ToList();
                     if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
                         return entities; 
 
@@ -446,19 +439,10 @@ namespace EntryDataDS.Business.Services
                     if(res.TrackingState == TrackingState.Unchanged) res.TrackingState = TrackingState.Modified;                              
                     
                     dbContext.ApplyChanges(res);
-                    await dbContext.SaveChangesAsync().ConfigureAwait(continueOnCapturedContext: false);
+                    dbContext.SaveChanges();
                     res.AcceptChanges();
                     return res;      
-
-                   // var entitychanges = entity.ChangeTracker.GetChanges();
-                   // if (entitychanges != null && entitychanges.FirstOrDefault() != null)
-                   // {
-                   //     dbContext.ApplyChanges(entitychanges);
-                   //     await dbContext.SaveChangesAsync().ConfigureAwait(continueOnCapturedContext: false);
-                   //     entity.EntityId = entitychanges.FirstOrDefault().EntityId;
-                   //     entity.AcceptChanges();     
-                   // }
-                   // return entity;        
+      
                 }
                 catch (DbUpdateConcurrencyException dce)
                 {
@@ -526,7 +510,7 @@ namespace EntryDataDS.Business.Services
               using ( var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
               {
                 dbContext.ShipmentRiderBLs.Add(res);
-                await dbContext.SaveChangesAsync().ConfigureAwait(continueOnCapturedContext: false);
+                dbContext.SaveChanges();
                 res.AcceptChanges();
                 return res;
               }
@@ -552,15 +536,14 @@ namespace EntryDataDS.Business.Services
               using ( var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
               {
                 var i = Convert.ToInt32(id);
-                ShipmentRiderBLs entity = await dbContext.ShipmentRiderBLs
-													.SingleOrDefaultAsync(x => x.id == i)
-													.ConfigureAwait(continueOnCapturedContext: false);
+                ShipmentRiderBLs entity = dbContext.ShipmentRiderBLs
+													.SingleOrDefault(x => x.id == i);
                 if (entity == null)
                     return false;
 
                     dbContext.ShipmentRiderBLs.Attach(entity);
                     dbContext.ShipmentRiderBLs.Remove(entity);
-                    await dbContext.SaveChangesAsync().ConfigureAwait(continueOnCapturedContext: false);
+                    dbContext.SaveChanges();
                     return true;
               }
             }
@@ -628,14 +611,12 @@ namespace EntryDataDS.Business.Services
                     var set = (IQueryable<ShipmentRiderBLs>)dbContext.ShipmentRiderBLs; 
                     if (expLst.FirstOrDefault() == "All")
                     {
-                        return await set.AsNoTracking().CountAsync()
-                                            .ConfigureAwait(continueOnCapturedContext: false);
+                        return set.AsNoTracking().Count();
                     }
                     else
                     {
                         set = AddWheres(expLst, set);
-                        return await set.AsNoTracking().CountAsync()
-                                        .ConfigureAwait(continueOnCapturedContext: false);
+                        return set.AsNoTracking().Count();
                     }
                     
                 }
@@ -663,19 +644,17 @@ namespace EntryDataDS.Business.Services
                     if (string.IsNullOrEmpty(exp) || exp == "None") return 0;
                     if (exp == "All")
                     {
-                        return await dbContext.ShipmentRiderBLs
+                        return dbContext.ShipmentRiderBLs
                                     .AsNoTracking()
-									.CountAsync()
-									.ConfigureAwait(continueOnCapturedContext: false);
+									.Count();
                     }
                     else
                     {
                         
-                        return await dbContext.ShipmentRiderBLs
+                        return dbContext.ShipmentRiderBLs
 									.AsNoTracking()
                                     .Where(exp)
-									.CountAsync()
-									.ConfigureAwait(continueOnCapturedContext: false);
+									.Count();
                     }
                 }
             }
@@ -703,25 +682,23 @@ namespace EntryDataDS.Business.Services
                     if (string.IsNullOrEmpty(exp) || exp == "None") return new List<ShipmentRiderBLs>();
                     if (exp == "All")
                     {
-                        return await dbContext.ShipmentRiderBLs
+                        return dbContext.ShipmentRiderBLs
 										.AsNoTracking()
                                         .OrderBy(y => y.id)
 										.Skip(startIndex)
 										.Take(count)
-										.ToListAsync()
-										.ConfigureAwait(continueOnCapturedContext: false);
+										.ToList();
                     }
                     else
                     {
                         
-                        return await dbContext.ShipmentRiderBLs
+                        return dbContext.ShipmentRiderBLs
 										.AsNoTracking()
                                         .Where(exp)
 										.OrderBy(y => y.id)
 										.Skip(startIndex)
 										.Take(count)
-										.ToListAsync()
-										.ConfigureAwait(continueOnCapturedContext: false);
+										.ToList();
                     }
                 }
             }
@@ -749,10 +726,9 @@ namespace EntryDataDS.Business.Services
                     dbContext.Database.CommandTimeout = 0;
                     if (exp == "All" && navExp.Count == 0)
                     {
-                        return await dbContext.ShipmentRiderBLs
+                        return dbContext.ShipmentRiderBLs
 										.AsNoTracking()
-                                        .CountAsync()
-										.ConfigureAwait(continueOnCapturedContext: false);
+                                        .Count();
                     }
                     foreach (var itm in navExp)
                     {
@@ -772,10 +748,9 @@ namespace EntryDataDS.Business.Services
 											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }
-                    return await dbContext.ShipmentRiderBLs.Where(exp == "All" || exp == null ? "id != null" : exp)
+                    return dbContext.ShipmentRiderBLs.Where(exp == "All" || exp == null ? "id != null" : exp)
 											.AsNoTracking()
-                                            .CountAsync()
-											.ConfigureAwait(continueOnCapturedContext: false);
+                                            .Count();
                 }
                 
             }
@@ -811,15 +786,14 @@ namespace EntryDataDS.Business.Services
         {
 			try
 			{
-            return await dbContext.Set<T>()
+            return dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
                 .SelectMany(navProp).OfType<ShipmentRiderBLs>()
                 .Where(exp == "All" || exp == null ? "id != null" : exp)
                 .Distinct()
                 .OrderBy("id")
-                .CountAsync()
-				.ConfigureAwait(continueOnCapturedContext: false);
+                .Count();
 			}
 			catch (Exception)
 			{
@@ -832,15 +806,14 @@ namespace EntryDataDS.Business.Services
         {
 			try
 			{
-            return await dbContext.Set<T>()
+            return dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
                 .Select(navProp).OfType<ShipmentRiderBLs>()
                 .Where(exp == "All" || exp == null ? "id != null" : exp)
                 .Distinct()
                 .OrderBy("id")
-                .CountAsync()
-				.ConfigureAwait(continueOnCapturedContext: false);
+                .Count();
 			}
 			catch (Exception)
 			{
@@ -863,14 +836,13 @@ namespace EntryDataDS.Business.Services
                     if (exp == "All" && navExp.Count == 0)
                     {
                        
-                        return await set
+                        return set
 									.AsNoTracking()
                                     .OrderBy(y => y.id)
  
                                     .Skip(startIndex)
                                     .Take(count)
-									.ToListAsync()
-									.ConfigureAwait(continueOnCapturedContext: false);
+									.ToList();
                     }
                     foreach (var itm in navExp)
                     {
@@ -906,15 +878,14 @@ namespace EntryDataDS.Business.Services
 						}
 
                     }
-                    return await set//dbContext.ShipmentRiderBLs
+                    return set//dbContext.ShipmentRiderBLs
 								.AsNoTracking()
                                 .Where(exp == "All" || exp == null ? "id != null" : exp)
 								.OrderBy(y => y.id)
  
                                 .Skip(startIndex)
                                 .Take(count)
-								.ToListAsync()
-								.ConfigureAwait(continueOnCapturedContext: false);
+								.ToList();
 
 
                 }
@@ -960,15 +931,14 @@ namespace EntryDataDS.Business.Services
     
             if (includeLst != null) set = includeLst.Aggregate(set, (current, itm) => current.Include(itm));            
 
-            return await set
+            return set
                 .Where(exp == "All" || exp == null ? "id != null" : exp)
                 .Distinct()
                 .OrderBy(y => y.id)
  
                 .Skip(startIndex)
                 .Take(count)
-                .ToListAsync()
-				.ConfigureAwait(continueOnCapturedContext: false);
+                .ToList();
 			}
 			catch (Exception)
 			{
@@ -989,15 +959,14 @@ namespace EntryDataDS.Business.Services
 
                if (includeLst != null) set = includeLst.Aggregate(set, (current, itm) => current.Include(itm)); 
                 
-               return await set
+               return set
                 .Where(exp == "All" || exp == null ? "id != null" : exp)
                 .Distinct()
                 .OrderBy(y => y.id)
  
                 .Skip(startIndex)
                 .Take(count)
-                .ToListAsync()
-				.ConfigureAwait(continueOnCapturedContext: false);
+                .ToList();
 							 }
 			catch (Exception)
 			{
@@ -1038,14 +1007,13 @@ namespace EntryDataDS.Business.Services
 
 			if (includesLst == null)
 			{
-				return await dbContext.Set<T>()
+				return dbContext.Set<T>()
 							.AsNoTracking()
                             .Where(navExp)
 							.SelectMany(navProp).OfType<ShipmentRiderBLs>()
 							.Where(exp == "All" || exp == null?"id != null":exp)
 							.Distinct()
-							.ToListAsync()
-							.ConfigureAwait(continueOnCapturedContext: false);
+							.ToList();
 			}
 
 			var set = (DbQuery<ShipmentRiderBLs>)dbContext.Set<T>()
@@ -1057,8 +1025,7 @@ namespace EntryDataDS.Business.Services
 
 			set = includesLst.Aggregate(set, (current, itm) => current.Include(itm));
 
-            return await set.ToListAsync()
-							.ConfigureAwait(continueOnCapturedContext: false);
+            return set.ToList();
 			}
 			catch (Exception)
 			{
@@ -1075,14 +1042,13 @@ namespace EntryDataDS.Business.Services
 
 			if (includesLst == null)
 			{
-				return await dbContext.Set<T>()
+				return dbContext.Set<T>()
 							.AsNoTracking()
                             .Where(navExp)
 							.Select(navProp).OfType<ShipmentRiderBLs>()
 							.Where(exp == "All" || exp == null?"id != null":exp)
 							.Distinct()
-							.ToListAsync()
-							.ConfigureAwait(continueOnCapturedContext: false);
+							.ToList();
 			}
 
 			var set = (DbQuery<ShipmentRiderBLs>)dbContext.Set<T>()
@@ -1094,8 +1060,7 @@ namespace EntryDataDS.Business.Services
 
 			set = includesLst.Aggregate(set, (current, itm) => current.Include(itm));
 
-            return await set.ToListAsync()
-							.ConfigureAwait(continueOnCapturedContext: false);
+            return set.ToList();
 			}
 			catch (Exception)
 			{
@@ -1112,11 +1077,10 @@ namespace EntryDataDS.Business.Services
               {
                 var i = Convert.ToInt32(RiderId);
                 var set = AddIncludes(includesLst, dbContext);
-                IEnumerable<ShipmentRiderBLs> entities = await set//dbContext.ShipmentRiderBLs
+                IEnumerable<ShipmentRiderBLs> entities = set//dbContext.ShipmentRiderBLs
                                       .AsNoTracking()
                                         .Where(x => x.RiderId.ToString() == RiderId.ToString())
-										.ToListAsync()
-										.ConfigureAwait(continueOnCapturedContext: false);
+										.ToList();
                 return entities;
               }
              }
@@ -1141,11 +1105,10 @@ namespace EntryDataDS.Business.Services
               {
                 var i = Convert.ToInt32(RiderDetailId);
                 var set = AddIncludes(includesLst, dbContext);
-                IEnumerable<ShipmentRiderBLs> entities = await set//dbContext.ShipmentRiderBLs
+                IEnumerable<ShipmentRiderBLs> entities = set//dbContext.ShipmentRiderBLs
                                       .AsNoTracking()
                                         .Where(x => x.RiderDetailId.ToString() == RiderDetailId.ToString())
-										.ToListAsync()
-										.ConfigureAwait(continueOnCapturedContext: false);
+										.ToList();
                 return entities;
               }
              }
@@ -1170,11 +1133,10 @@ namespace EntryDataDS.Business.Services
               {
                 var i = Convert.ToInt32(BLDetailId);
                 var set = AddIncludes(includesLst, dbContext);
-                IEnumerable<ShipmentRiderBLs> entities = await set//dbContext.ShipmentRiderBLs
+                IEnumerable<ShipmentRiderBLs> entities = set//dbContext.ShipmentRiderBLs
                                       .AsNoTracking()
                                         .Where(x => x.BLDetailId.ToString() == BLDetailId.ToString())
-										.ToListAsync()
-										.ConfigureAwait(continueOnCapturedContext: false);
+										.ToList();
                 return entities;
               }
              }
@@ -1199,11 +1161,10 @@ namespace EntryDataDS.Business.Services
               {
                 var i = Convert.ToInt32(BLId);
                 var set = AddIncludes(includesLst, dbContext);
-                IEnumerable<ShipmentRiderBLs> entities = await set//dbContext.ShipmentRiderBLs
+                IEnumerable<ShipmentRiderBLs> entities = set//dbContext.ShipmentRiderBLs
                                       .AsNoTracking()
                                         .Where(x => x.BLId.ToString() == BLId.ToString())
-										.ToListAsync()
-										.ConfigureAwait(continueOnCapturedContext: false);
+										.ToList();
                 return entities;
               }
              }

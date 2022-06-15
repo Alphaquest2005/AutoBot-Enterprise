@@ -75,8 +75,7 @@ namespace ValuationDS.Business.Services
                   using ( var dbContext = new ValuationDSContext(){StartTracking = StartTracking})
                   {
 				    var set = AddIncludes(includesLst, dbContext);
-                    IEnumerable<xC71_Declarant_segment> entities = await set.AsNoTracking().ToListAsync()
-													       .ConfigureAwait(continueOnCapturedContext: false);
+                    IEnumerable<xC71_Declarant_segment> entities = set.AsNoTracking().ToList();
                            //scope.Complete();
                             if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
                             return entities;
@@ -107,7 +106,7 @@ namespace ValuationDS.Business.Services
               {
                 var i = Convert.ToInt32(Identification_segment_Id);
 				var set = AddIncludes(includesLst, dbContext);
-                xC71_Declarant_segment entity = await set.AsNoTracking().SingleOrDefaultAsync(x => x.Identification_segment_Id == i).ConfigureAwait(continueOnCapturedContext: false);
+                xC71_Declarant_segment entity = set.AsNoTracking().SingleOrDefault(x => x.Identification_segment_Id == i);
                 if(tracking && entity != null) entity.StartTracking();
                 return entity;
               }
@@ -138,17 +137,15 @@ namespace ValuationDS.Business.Services
 					var set = AddIncludes(includesLst, dbContext);
                     if (exp == "All")
                     {
-						var entities = await set.AsNoTracking().ToListAsync()
-											.ConfigureAwait(continueOnCapturedContext: false);
+						var entities = set.AsNoTracking().ToList();
 
                         if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
                         return entities; 
                     }
 					else
 					{
-						var entities = await set.AsNoTracking().Where(exp)
-											.ToListAsync() 
-											.ConfigureAwait(continueOnCapturedContext: false);
+						var entities = set.AsNoTracking().Where(exp)
+											.ToList();
                         if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
                         return entities; 
 											
@@ -181,16 +178,14 @@ namespace ValuationDS.Business.Services
 					var set = AddIncludes(includesLst, dbContext);
                     if (expLst.FirstOrDefault() == "All")
                     {
-						var entities = await set.AsNoTracking().ToListAsync()
-											.ConfigureAwait(continueOnCapturedContext: false); 
+						var entities = set.AsNoTracking().ToList(); 
                         if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
                         return entities; 
                     }
 					else
 					{
 						set = AddWheres(expLst, set);
-						var entities = await set.AsNoTracking().ToListAsync() 
-										.ConfigureAwait(continueOnCapturedContext: false);
+						var entities = set.AsNoTracking().ToList();
                         if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
                         return entities; 
 											
@@ -225,9 +220,8 @@ namespace ValuationDS.Business.Services
 
                     if (exp == "All" && navExp.Count == 0)
                     {
-                        var aentities = await AddIncludes(includesLst, dbContext)
-												.ToListAsync()
-												.ConfigureAwait(continueOnCapturedContext: false);
+                        var aentities = AddIncludes(includesLst, dbContext)
+												.ToList();
                         if(tracking) aentities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
                         return aentities; 
                     }
@@ -245,9 +239,8 @@ namespace ValuationDS.Business.Services
 
                     }
 					var set = AddIncludes(includesLst, dbContext);
-                    var entities = await set.AsNoTracking().Where(exp)
-									.ToListAsync()
-									.ConfigureAwait(continueOnCapturedContext: false);
+                    var entities = set.AsNoTracking().Where(exp)
+									.ToList();
                     if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
                         return entities; 
 
@@ -428,19 +421,10 @@ namespace ValuationDS.Business.Services
                     if(res.TrackingState == TrackingState.Unchanged) res.TrackingState = TrackingState.Modified;                              
                     
                     dbContext.ApplyChanges(res);
-                    await dbContext.SaveChangesAsync().ConfigureAwait(continueOnCapturedContext: false);
+                    dbContext.SaveChanges();
                     res.AcceptChanges();
                     return res;      
-
-                   // var entitychanges = entity.ChangeTracker.GetChanges();
-                   // if (entitychanges != null && entitychanges.FirstOrDefault() != null)
-                   // {
-                   //     dbContext.ApplyChanges(entitychanges);
-                   //     await dbContext.SaveChangesAsync().ConfigureAwait(continueOnCapturedContext: false);
-                   //     entity.EntityId = entitychanges.FirstOrDefault().EntityId;
-                   //     entity.AcceptChanges();     
-                   // }
-                   // return entity;        
+      
                 }
                 catch (DbUpdateConcurrencyException dce)
                 {
@@ -508,7 +492,7 @@ namespace ValuationDS.Business.Services
               using ( var dbContext = new ValuationDSContext(){StartTracking = StartTracking})
               {
                 dbContext.xC71_Declarant_segment.Add(res);
-                await dbContext.SaveChangesAsync().ConfigureAwait(continueOnCapturedContext: false);
+                dbContext.SaveChanges();
                 res.AcceptChanges();
                 return res;
               }
@@ -534,15 +518,14 @@ namespace ValuationDS.Business.Services
               using ( var dbContext = new ValuationDSContext(){StartTracking = StartTracking})
               {
                 var i = Convert.ToInt32(Identification_segment_Id);
-                xC71_Declarant_segment entity = await dbContext.xC71_Declarant_segment
-													.SingleOrDefaultAsync(x => x.Identification_segment_Id == i)
-													.ConfigureAwait(continueOnCapturedContext: false);
+                xC71_Declarant_segment entity = dbContext.xC71_Declarant_segment
+													.SingleOrDefault(x => x.Identification_segment_Id == i);
                 if (entity == null)
                     return false;
 
                     dbContext.xC71_Declarant_segment.Attach(entity);
                     dbContext.xC71_Declarant_segment.Remove(entity);
-                    await dbContext.SaveChangesAsync().ConfigureAwait(continueOnCapturedContext: false);
+                    dbContext.SaveChanges();
                     return true;
               }
             }
@@ -610,14 +593,12 @@ namespace ValuationDS.Business.Services
                     var set = (IQueryable<xC71_Declarant_segment>)dbContext.xC71_Declarant_segment; 
                     if (expLst.FirstOrDefault() == "All")
                     {
-                        return await set.AsNoTracking().CountAsync()
-                                            .ConfigureAwait(continueOnCapturedContext: false);
+                        return set.AsNoTracking().Count();
                     }
                     else
                     {
                         set = AddWheres(expLst, set);
-                        return await set.AsNoTracking().CountAsync()
-                                        .ConfigureAwait(continueOnCapturedContext: false);
+                        return set.AsNoTracking().Count();
                     }
                     
                 }
@@ -645,19 +626,17 @@ namespace ValuationDS.Business.Services
                     if (string.IsNullOrEmpty(exp) || exp == "None") return 0;
                     if (exp == "All")
                     {
-                        return await dbContext.xC71_Declarant_segment
+                        return dbContext.xC71_Declarant_segment
                                     .AsNoTracking()
-									.CountAsync()
-									.ConfigureAwait(continueOnCapturedContext: false);
+									.Count();
                     }
                     else
                     {
                         
-                        return await dbContext.xC71_Declarant_segment
+                        return dbContext.xC71_Declarant_segment
 									.AsNoTracking()
                                     .Where(exp)
-									.CountAsync()
-									.ConfigureAwait(continueOnCapturedContext: false);
+									.Count();
                     }
                 }
             }
@@ -685,25 +664,23 @@ namespace ValuationDS.Business.Services
                     if (string.IsNullOrEmpty(exp) || exp == "None") return new List<xC71_Declarant_segment>();
                     if (exp == "All")
                     {
-                        return await dbContext.xC71_Declarant_segment
+                        return dbContext.xC71_Declarant_segment
 										.AsNoTracking()
                                         .OrderBy(y => y.Identification_segment_Id)
 										.Skip(startIndex)
 										.Take(count)
-										.ToListAsync()
-										.ConfigureAwait(continueOnCapturedContext: false);
+										.ToList();
                     }
                     else
                     {
                         
-                        return await dbContext.xC71_Declarant_segment
+                        return dbContext.xC71_Declarant_segment
 										.AsNoTracking()
                                         .Where(exp)
 										.OrderBy(y => y.Identification_segment_Id)
 										.Skip(startIndex)
 										.Take(count)
-										.ToListAsync()
-										.ConfigureAwait(continueOnCapturedContext: false);
+										.ToList();
                     }
                 }
             }
@@ -731,10 +708,9 @@ namespace ValuationDS.Business.Services
                     dbContext.Database.CommandTimeout = 0;
                     if (exp == "All" && navExp.Count == 0)
                     {
-                        return await dbContext.xC71_Declarant_segment
+                        return dbContext.xC71_Declarant_segment
 										.AsNoTracking()
-                                        .CountAsync()
-										.ConfigureAwait(continueOnCapturedContext: false);
+                                        .Count();
                     }
                     foreach (var itm in navExp)
                     {
@@ -745,10 +721,9 @@ namespace ValuationDS.Business.Services
 											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }
-                    return await dbContext.xC71_Declarant_segment.Where(exp == "All" || exp == null ? "Identification_segment_Id != null" : exp)
+                    return dbContext.xC71_Declarant_segment.Where(exp == "All" || exp == null ? "Identification_segment_Id != null" : exp)
 											.AsNoTracking()
-                                            .CountAsync()
-											.ConfigureAwait(continueOnCapturedContext: false);
+                                            .Count();
                 }
                 
             }
@@ -784,15 +759,14 @@ namespace ValuationDS.Business.Services
         {
 			try
 			{
-            return await dbContext.Set<T>()
+            return dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
                 .SelectMany(navProp).OfType<xC71_Declarant_segment>()
                 .Where(exp == "All" || exp == null ? "Identification_segment_Id != null" : exp)
                 .Distinct()
                 .OrderBy("Identification_segment_Id")
-                .CountAsync()
-				.ConfigureAwait(continueOnCapturedContext: false);
+                .Count();
 			}
 			catch (Exception)
 			{
@@ -805,15 +779,14 @@ namespace ValuationDS.Business.Services
         {
 			try
 			{
-            return await dbContext.Set<T>()
+            return dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
                 .Select(navProp).OfType<xC71_Declarant_segment>()
                 .Where(exp == "All" || exp == null ? "Identification_segment_Id != null" : exp)
                 .Distinct()
                 .OrderBy("Identification_segment_Id")
-                .CountAsync()
-				.ConfigureAwait(continueOnCapturedContext: false);
+                .Count();
 			}
 			catch (Exception)
 			{
@@ -836,14 +809,13 @@ namespace ValuationDS.Business.Services
                     if (exp == "All" && navExp.Count == 0)
                     {
                        
-                        return await set
+                        return set
 									.AsNoTracking()
                                     .OrderBy(y => y.Identification_segment_Id)
  
                                     .Skip(startIndex)
                                     .Take(count)
-									.ToListAsync()
-									.ConfigureAwait(continueOnCapturedContext: false);
+									.ToList();
                     }
                     foreach (var itm in navExp)
                     {
@@ -861,15 +833,14 @@ namespace ValuationDS.Business.Services
 						}
 
                     }
-                    return await set//dbContext.xC71_Declarant_segment
+                    return set//dbContext.xC71_Declarant_segment
 								.AsNoTracking()
                                 .Where(exp == "All" || exp == null ? "Identification_segment_Id != null" : exp)
 								.OrderBy(y => y.Identification_segment_Id)
  
                                 .Skip(startIndex)
                                 .Take(count)
-								.ToListAsync()
-								.ConfigureAwait(continueOnCapturedContext: false);
+								.ToList();
 
 
                 }
@@ -915,15 +886,14 @@ namespace ValuationDS.Business.Services
     
             if (includeLst != null) set = includeLst.Aggregate(set, (current, itm) => current.Include(itm));            
 
-            return await set
+            return set
                 .Where(exp == "All" || exp == null ? "Identification_segment_Id != null" : exp)
                 .Distinct()
                 .OrderBy(y => y.Identification_segment_Id)
  
                 .Skip(startIndex)
                 .Take(count)
-                .ToListAsync()
-				.ConfigureAwait(continueOnCapturedContext: false);
+                .ToList();
 			}
 			catch (Exception)
 			{
@@ -944,15 +914,14 @@ namespace ValuationDS.Business.Services
 
                if (includeLst != null) set = includeLst.Aggregate(set, (current, itm) => current.Include(itm)); 
                 
-               return await set
+               return set
                 .Where(exp == "All" || exp == null ? "Identification_segment_Id != null" : exp)
                 .Distinct()
                 .OrderBy(y => y.Identification_segment_Id)
  
                 .Skip(startIndex)
                 .Take(count)
-                .ToListAsync()
-				.ConfigureAwait(continueOnCapturedContext: false);
+                .ToList();
 							 }
 			catch (Exception)
 			{
@@ -993,14 +962,13 @@ namespace ValuationDS.Business.Services
 
 			if (includesLst == null)
 			{
-				return await dbContext.Set<T>()
+				return dbContext.Set<T>()
 							.AsNoTracking()
                             .Where(navExp)
 							.SelectMany(navProp).OfType<xC71_Declarant_segment>()
 							.Where(exp == "All" || exp == null?"Identification_segment_Id != null":exp)
 							.Distinct()
-							.ToListAsync()
-							.ConfigureAwait(continueOnCapturedContext: false);
+							.ToList();
 			}
 
 			var set = (DbQuery<xC71_Declarant_segment>)dbContext.Set<T>()
@@ -1012,8 +980,7 @@ namespace ValuationDS.Business.Services
 
 			set = includesLst.Aggregate(set, (current, itm) => current.Include(itm));
 
-            return await set.ToListAsync()
-							.ConfigureAwait(continueOnCapturedContext: false);
+            return set.ToList();
 			}
 			catch (Exception)
 			{
@@ -1030,14 +997,13 @@ namespace ValuationDS.Business.Services
 
 			if (includesLst == null)
 			{
-				return await dbContext.Set<T>()
+				return dbContext.Set<T>()
 							.AsNoTracking()
                             .Where(navExp)
 							.Select(navProp).OfType<xC71_Declarant_segment>()
 							.Where(exp == "All" || exp == null?"Identification_segment_Id != null":exp)
 							.Distinct()
-							.ToListAsync()
-							.ConfigureAwait(continueOnCapturedContext: false);
+							.ToList();
 			}
 
 			var set = (DbQuery<xC71_Declarant_segment>)dbContext.Set<T>()
@@ -1049,8 +1015,7 @@ namespace ValuationDS.Business.Services
 
 			set = includesLst.Aggregate(set, (current, itm) => current.Include(itm));
 
-            return await set.ToListAsync()
-							.ConfigureAwait(continueOnCapturedContext: false);
+            return set.ToList();
 			}
 			catch (Exception)
 			{

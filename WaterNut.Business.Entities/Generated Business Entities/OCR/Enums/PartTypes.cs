@@ -57,7 +57,16 @@ namespace OCR.Business.Enums
         Marks = 19,
 
       
-        Invoiceline2 = 20
+        Invoiceline2 = 20,
+
+      
+        Column1 = 21,
+
+      
+        Column2 = 22,
+
+      
+        Details2 = 23
   }
 }
 

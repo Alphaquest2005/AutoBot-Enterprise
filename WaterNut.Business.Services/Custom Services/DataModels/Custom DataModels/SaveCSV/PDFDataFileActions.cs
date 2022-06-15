@@ -17,4 +17,18 @@ namespace WaterNut.DataSpace
             
         };
     }
+
+    public class XLSXDataFileActions
+    {
+        public static Dictionary<string, Action<DataFile>> Actions = new Dictionary<string, Action<DataFile>>()
+        {
+
+            {FileTypeManager.EntryTypes.Dis, (dataFile) => new ManifestImporter().Process(dataFile)},
+            {FileTypeManager.EntryTypes.Po, (dataFile) => new BillOfLadenImporter().Process(dataFile)},
+            {FileTypeManager.EntryTypes.Sales, (dataFile) => new FreightImporter().Process(dataFile)},
+            {FileTypeManager.EntryTypes.Rider, async (dataFile) => await new PDFShipmentInvoiceImporter().Process(dataFile).ConfigureAwait(false)},
+
+
+        };
+    }
 }
