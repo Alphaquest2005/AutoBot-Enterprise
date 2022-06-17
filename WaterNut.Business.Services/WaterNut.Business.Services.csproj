@@ -226,8 +226,8 @@
       <Private>True</Private>
       <Private>True</Private>
     </Reference>
-    <Reference Include="System.Memory, Version=4.0.1.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Memory.4.5.4\lib\net461\System.Memory.dll</HintPath>
+    <Reference Include="System.Memory, Version=4.0.1.2, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Memory.4.5.5\lib\net461\System.Memory.dll</HintPath>
     </Reference>
     <Reference Include="System.Net.Http, Version=4.1.1.3, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Net.Http.4.3.4\lib\net46\System.Net.Http.dll</HintPath>
@@ -779,11 +779,24 @@
     <Compile Include="Custom Services\DataModels\Custom DataModels\PDF2TXT\InvoiceLine.cs" />
     <Compile Include="Custom Services\DataModels\Custom DataModels\PDF2TXT\Line.cs" />
     <Compile Include="Custom Services\DataModels\Custom DataModels\PDF2TXT\Part.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\ADJCreator.cs" />
     <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\BillOfLadenImporter.cs" />
     <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\CancelledEntriesImporter.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\CSVDataFileActions.cs" />
     <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\CSVShipmentImporter.cs" />
-    <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\CsvSummaryDataProcessor.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\EntryDataCreator.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\EntryDataDetailsCreator.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\ExistingEntryDataProcessor.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\IEntryDataCreator.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\InventoryItemsProcessor.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\InvoiceCreator.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\IRawDataExtractor.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\NewEntryDataProcessor.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\OPSCreator.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\PDFDataFileActions.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\DataFileProcessor.cs" />
     <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\CSVToShipmentInvoiceConverter.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\DataFile.cs" />
     <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\EntryDataFileImporter.cs" />
     <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\EntryDataImporter.cs" />
     <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\EntryDataProcessor.cs" />
@@ -794,9 +807,14 @@
     <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\InventoryImporter.cs" />
     <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\ManifestImporter.cs" />
     <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\PDFShipmentInvoiceImporter.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\POCreator.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\RawDataFile.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\RawEntryDataExtractor.cs" />
     <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\RiderImporter.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\SalesCreator.cs" />
     <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\ShipmentInvoiceImporter.cs" />
     <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\SupplierImporter.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\ValidateEntryDataProcessor.cs" />
     <Compile Include="Utils\AutoMatchUtils.cs" />
     <Compile Include="Importers\ChainedDataExtractor.cs" />
     <Compile Include="Importers\CSVDataExtractor.cs" />
@@ -827,6 +845,7 @@
     <Compile Include="Importers\IImporter.cs" />
     <Compile Include="Importers\StringTextSplitter.cs" />
     <Compile Include="Services\CoreEntities\FileImporterInfoService.cs" />
+    <Compile Include="Utils\DomainFactLibary.cs" />
     <Compile Include="Utils\Matching\CNumberMatcher.cs" />
     <Compile Include="Utils\Matching\EffectiveDatefProcessor.cs" />
     <Compile Include="Utils\FileTypeManager.cs" />

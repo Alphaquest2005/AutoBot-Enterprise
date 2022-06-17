@@ -12,26 +12,17 @@ namespace WaterNut.DataSpace
         private InventoryImporter _inventoryImporter = new InventoryImporter();
         private SupplierImporter _supplierImporter = new SupplierImporter();
         private EntryDataFileImporter _entryDataFileImporter = new EntryDataFileImporter();
-        private CSVToShipmentInvoiceConverter _csvToShipmentInvoiceConverter = new CSVToShipmentInvoiceConverter();
+        private EntryDataImporter _entryDataImporter = new EntryDataImporter();
 
         
         
-        public async Task<bool> ImportEntryData(FileTypes fileType, List<AsycudaDocumentSet> docSet, bool overWriteExisting, string emailId,
-            string droppedFilePath, List<dynamic> eslst)
+        public async Task Process(DataFile dataFile)
         {
-            await _inventoryImporter.ImportInventory(eslst, docSet.First().ApplicationSettingsId, fileType)
-                .ConfigureAwait(false);
-            await _supplierImporter.ImportSuppliers(eslst, docSet.First().ApplicationSettingsId, fileType)
-                .ConfigureAwait(false);
-            await _entryDataFileImporter.ImportEntryDataFile(fileType,
-                    eslst.Where(x => !string.IsNullOrEmpty(x.SourceRow)).ToList(),
-                    emailId, fileType.Id, droppedFilePath, docSet.First().ApplicationSettingsId)
-                .ConfigureAwait(false);
-            if (await _csvToShipmentInvoiceConverter._entryDataImporter.ImportEntryData(fileType, eslst, docSet,
-                        overWriteExisting, emailId,
-                        droppedFilePath)
-                    .ConfigureAwait(false)) return true;
-            return false;
+            await _inventoryImporter.ImportInventory(dataFile).ConfigureAwait(false);
+            await _supplierImporter.ImportSuppliers(dataFile).ConfigureAwait(false);
+            await _entryDataFileImporter.ImportEntryDataFile(dataFile).ConfigureAwait(false);
+            await _entryDataImporter.ImportEntryData(dataFile).ConfigureAwait(false);
+            
         }
     }
 }

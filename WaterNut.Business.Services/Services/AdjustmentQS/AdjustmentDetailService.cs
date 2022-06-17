@@ -75,8 +75,7 @@ namespace AdjustmentQS.Business.Services
                   using ( var dbContext = new AdjustmentQSContext(){StartTracking = StartTracking})
                   {
 				    var set = AddIncludes(includesLst, dbContext);
-                    IEnumerable<AdjustmentDetail> entities = await set.AsNoTracking().ToListAsync()
-													       .ConfigureAwait(continueOnCapturedContext: false);
+                    IEnumerable<AdjustmentDetail> entities = set.AsNoTracking().ToList();
                            //scope.Complete();
                             if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
                             return entities;
@@ -107,7 +106,7 @@ namespace AdjustmentQS.Business.Services
               {
                 var i = Convert.ToInt32(EntryDataDetailsId);
 				var set = AddIncludes(includesLst, dbContext);
-                AdjustmentDetail entity = await set.AsNoTracking().SingleOrDefaultAsync(x => x.EntryDataDetailsId == i).ConfigureAwait(continueOnCapturedContext: false);
+                AdjustmentDetail entity = set.AsNoTracking().SingleOrDefault(x => x.EntryDataDetailsId == i);
                 if(tracking && entity != null) entity.StartTracking();
                 return entity;
               }
@@ -138,17 +137,15 @@ namespace AdjustmentQS.Business.Services
 					var set = AddIncludes(includesLst, dbContext);
                     if (exp == "All")
                     {
-						var entities = await set.AsNoTracking().ToListAsync()
-											.ConfigureAwait(continueOnCapturedContext: false);
+						var entities = set.AsNoTracking().ToList();
 
                         if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
                         return entities; 
                     }
 					else
 					{
-						var entities = await set.AsNoTracking().Where(exp)
-											.ToListAsync() 
-											.ConfigureAwait(continueOnCapturedContext: false);
+						var entities = set.AsNoTracking().Where(exp)
+											.ToList();
                         if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
                         return entities; 
 											
@@ -181,16 +178,14 @@ namespace AdjustmentQS.Business.Services
 					var set = AddIncludes(includesLst, dbContext);
                     if (expLst.FirstOrDefault() == "All")
                     {
-						var entities = await set.AsNoTracking().ToListAsync()
-											.ConfigureAwait(continueOnCapturedContext: false); 
+						var entities = set.AsNoTracking().ToList(); 
                         if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
                         return entities; 
                     }
 					else
 					{
 						set = AddWheres(expLst, set);
-						var entities = await set.AsNoTracking().ToListAsync() 
-										.ConfigureAwait(continueOnCapturedContext: false);
+						var entities = set.AsNoTracking().ToList();
                         if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
                         return entities; 
 											
@@ -225,9 +220,8 @@ namespace AdjustmentQS.Business.Services
 
                     if (exp == "All" && navExp.Count == 0)
                     {
-                        var aentities = await AddIncludes(includesLst, dbContext)
-												.ToListAsync()
-												.ConfigureAwait(continueOnCapturedContext: false);
+                        var aentities = AddIncludes(includesLst, dbContext)
+												.ToList();
                         if(tracking) aentities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
                         return aentities; 
                     }
@@ -275,9 +269,8 @@ namespace AdjustmentQS.Business.Services
 
                     }
 					var set = AddIncludes(includesLst, dbContext);
-                    var entities = await set.AsNoTracking().Where(exp)
-									.ToListAsync()
-									.ConfigureAwait(continueOnCapturedContext: false);
+                    var entities = set.AsNoTracking().Where(exp)
+									.ToList();
                     if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
                         return entities; 
 
@@ -458,19 +451,10 @@ namespace AdjustmentQS.Business.Services
                     if(res.TrackingState == TrackingState.Unchanged) res.TrackingState = TrackingState.Modified;                              
                     
                     dbContext.ApplyChanges(res);
-                    await dbContext.SaveChangesAsync().ConfigureAwait(continueOnCapturedContext: false);
+                    dbContext.SaveChanges();
                     res.AcceptChanges();
                     return res;      
-
-                   // var entitychanges = entity.ChangeTracker.GetChanges();
-                   // if (entitychanges != null && entitychanges.FirstOrDefault() != null)
-                   // {
-                   //     dbContext.ApplyChanges(entitychanges);
-                   //     await dbContext.SaveChangesAsync().ConfigureAwait(continueOnCapturedContext: false);
-                   //     entity.EntityId = entitychanges.FirstOrDefault().EntityId;
-                   //     entity.AcceptChanges();     
-                   // }
-                   // return entity;        
+      
                 }
                 catch (DbUpdateConcurrencyException dce)
                 {
@@ -538,7 +522,7 @@ namespace AdjustmentQS.Business.Services
               using ( var dbContext = new AdjustmentQSContext(){StartTracking = StartTracking})
               {
                 dbContext.AdjustmentDetails.Add(res);
-                await dbContext.SaveChangesAsync().ConfigureAwait(continueOnCapturedContext: false);
+                dbContext.SaveChanges();
                 res.AcceptChanges();
                 return res;
               }
@@ -564,15 +548,14 @@ namespace AdjustmentQS.Business.Services
               using ( var dbContext = new AdjustmentQSContext(){StartTracking = StartTracking})
               {
                 var i = Convert.ToInt32(EntryDataDetailsId);
-                AdjustmentDetail entity = await dbContext.AdjustmentDetails
-													.SingleOrDefaultAsync(x => x.EntryDataDetailsId == i)
-													.ConfigureAwait(continueOnCapturedContext: false);
+                AdjustmentDetail entity = dbContext.AdjustmentDetails
+													.SingleOrDefault(x => x.EntryDataDetailsId == i);
                 if (entity == null)
                     return false;
 
                     dbContext.AdjustmentDetails.Attach(entity);
                     dbContext.AdjustmentDetails.Remove(entity);
-                    await dbContext.SaveChangesAsync().ConfigureAwait(continueOnCapturedContext: false);
+                    dbContext.SaveChanges();
                     return true;
               }
             }
@@ -640,14 +623,12 @@ namespace AdjustmentQS.Business.Services
                     var set = (IQueryable<AdjustmentDetail>)dbContext.AdjustmentDetails; 
                     if (expLst.FirstOrDefault() == "All")
                     {
-                        return await set.AsNoTracking().CountAsync()
-                                            .ConfigureAwait(continueOnCapturedContext: false);
+                        return set.AsNoTracking().Count();
                     }
                     else
                     {
                         set = AddWheres(expLst, set);
-                        return await set.AsNoTracking().CountAsync()
-                                        .ConfigureAwait(continueOnCapturedContext: false);
+                        return set.AsNoTracking().Count();
                     }
                     
                 }
@@ -675,19 +656,17 @@ namespace AdjustmentQS.Business.Services
                     if (string.IsNullOrEmpty(exp) || exp == "None") return 0;
                     if (exp == "All")
                     {
-                        return await dbContext.AdjustmentDetails
+                        return dbContext.AdjustmentDetails
                                     .AsNoTracking()
-									.CountAsync()
-									.ConfigureAwait(continueOnCapturedContext: false);
+									.Count();
                     }
                     else
                     {
                         
-                        return await dbContext.AdjustmentDetails
+                        return dbContext.AdjustmentDetails
 									.AsNoTracking()
                                     .Where(exp)
-									.CountAsync()
-									.ConfigureAwait(continueOnCapturedContext: false);
+									.Count();
                     }
                 }
             }
@@ -715,25 +694,23 @@ namespace AdjustmentQS.Business.Services
                     if (string.IsNullOrEmpty(exp) || exp == "None") return new List<AdjustmentDetail>();
                     if (exp == "All")
                     {
-                        return await dbContext.AdjustmentDetails
+                        return dbContext.AdjustmentDetails
 										.AsNoTracking()
                                         .OrderBy(y => y.EntryDataDetailsId)
 										.Skip(startIndex)
 										.Take(count)
-										.ToListAsync()
-										.ConfigureAwait(continueOnCapturedContext: false);
+										.ToList();
                     }
                     else
                     {
                         
-                        return await dbContext.AdjustmentDetails
+                        return dbContext.AdjustmentDetails
 										.AsNoTracking()
                                         .Where(exp)
 										.OrderBy(y => y.EntryDataDetailsId)
 										.Skip(startIndex)
 										.Take(count)
-										.ToListAsync()
-										.ConfigureAwait(continueOnCapturedContext: false);
+										.ToList();
                     }
                 }
             }
@@ -761,10 +738,9 @@ namespace AdjustmentQS.Business.Services
                     dbContext.Database.CommandTimeout = 0;
                     if (exp == "All" && navExp.Count == 0)
                     {
-                        return await dbContext.AdjustmentDetails
+                        return dbContext.AdjustmentDetails
 										.AsNoTracking()
-                                        .CountAsync()
-										.ConfigureAwait(continueOnCapturedContext: false);
+                                        .Count();
                     }
                     foreach (var itm in navExp)
                     {
@@ -790,10 +766,9 @@ namespace AdjustmentQS.Business.Services
 											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }
-                    return await dbContext.AdjustmentDetails.Where(exp == "All" || exp == null ? "EntryDataDetailsId != null" : exp)
+                    return dbContext.AdjustmentDetails.Where(exp == "All" || exp == null ? "EntryDataDetailsId != null" : exp)
 											.AsNoTracking()
-                                            .CountAsync()
-											.ConfigureAwait(continueOnCapturedContext: false);
+                                            .Count();
                 }
                 
             }
@@ -829,15 +804,14 @@ namespace AdjustmentQS.Business.Services
         {
 			try
 			{
-            return await dbContext.Set<T>()
+            return dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
                 .SelectMany(navProp).OfType<AdjustmentDetail>()
                 .Where(exp == "All" || exp == null ? "EntryDataDetailsId != null" : exp)
                 .Distinct()
                 .OrderBy("EntryDataDetailsId")
-                .CountAsync()
-				.ConfigureAwait(continueOnCapturedContext: false);
+                .Count();
 			}
 			catch (Exception)
 			{
@@ -850,15 +824,14 @@ namespace AdjustmentQS.Business.Services
         {
 			try
 			{
-            return await dbContext.Set<T>()
+            return dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
                 .Select(navProp).OfType<AdjustmentDetail>()
                 .Where(exp == "All" || exp == null ? "EntryDataDetailsId != null" : exp)
                 .Distinct()
                 .OrderBy("EntryDataDetailsId")
-                .CountAsync()
-				.ConfigureAwait(continueOnCapturedContext: false);
+                .Count();
 			}
 			catch (Exception)
 			{
@@ -881,14 +854,13 @@ namespace AdjustmentQS.Business.Services
                     if (exp == "All" && navExp.Count == 0)
                     {
                        
-                        return await set
+                        return set
 									.AsNoTracking()
                                     .OrderBy(y => y.EntryDataDetailsId)
  
                                     .Skip(startIndex)
                                     .Take(count)
-									.ToListAsync()
-									.ConfigureAwait(continueOnCapturedContext: false);
+									.ToList();
                     }
                     foreach (var itm in navExp)
                     {
@@ -936,15 +908,14 @@ namespace AdjustmentQS.Business.Services
 						}
 
                     }
-                    return await set//dbContext.AdjustmentDetails
+                    return set//dbContext.AdjustmentDetails
 								.AsNoTracking()
                                 .Where(exp == "All" || exp == null ? "EntryDataDetailsId != null" : exp)
 								.OrderBy(y => y.EntryDataDetailsId)
  
                                 .Skip(startIndex)
                                 .Take(count)
-								.ToListAsync()
-								.ConfigureAwait(continueOnCapturedContext: false);
+								.ToList();
 
 
                 }
@@ -990,15 +961,14 @@ namespace AdjustmentQS.Business.Services
     
             if (includeLst != null) set = includeLst.Aggregate(set, (current, itm) => current.Include(itm));            
 
-            return await set
+            return set
                 .Where(exp == "All" || exp == null ? "EntryDataDetailsId != null" : exp)
                 .Distinct()
                 .OrderBy(y => y.EntryDataDetailsId)
  
                 .Skip(startIndex)
                 .Take(count)
-                .ToListAsync()
-				.ConfigureAwait(continueOnCapturedContext: false);
+                .ToList();
 			}
 			catch (Exception)
 			{
@@ -1019,15 +989,14 @@ namespace AdjustmentQS.Business.Services
 
                if (includeLst != null) set = includeLst.Aggregate(set, (current, itm) => current.Include(itm)); 
                 
-               return await set
+               return set
                 .Where(exp == "All" || exp == null ? "EntryDataDetailsId != null" : exp)
                 .Distinct()
                 .OrderBy(y => y.EntryDataDetailsId)
  
                 .Skip(startIndex)
                 .Take(count)
-                .ToListAsync()
-				.ConfigureAwait(continueOnCapturedContext: false);
+                .ToList();
 							 }
 			catch (Exception)
 			{
@@ -1068,14 +1037,13 @@ namespace AdjustmentQS.Business.Services
 
 			if (includesLst == null)
 			{
-				return await dbContext.Set<T>()
+				return dbContext.Set<T>()
 							.AsNoTracking()
                             .Where(navExp)
 							.SelectMany(navProp).OfType<AdjustmentDetail>()
 							.Where(exp == "All" || exp == null?"EntryDataDetailsId != null":exp)
 							.Distinct()
-							.ToListAsync()
-							.ConfigureAwait(continueOnCapturedContext: false);
+							.ToList();
 			}
 
 			var set = (DbQuery<AdjustmentDetail>)dbContext.Set<T>()
@@ -1087,8 +1055,7 @@ namespace AdjustmentQS.Business.Services
 
 			set = includesLst.Aggregate(set, (current, itm) => current.Include(itm));
 
-            return await set.ToListAsync()
-							.ConfigureAwait(continueOnCapturedContext: false);
+            return set.ToList();
 			}
 			catch (Exception)
 			{
@@ -1105,14 +1072,13 @@ namespace AdjustmentQS.Business.Services
 
 			if (includesLst == null)
 			{
-				return await dbContext.Set<T>()
+				return dbContext.Set<T>()
 							.AsNoTracking()
                             .Where(navExp)
 							.Select(navProp).OfType<AdjustmentDetail>()
 							.Where(exp == "All" || exp == null?"EntryDataDetailsId != null":exp)
 							.Distinct()
-							.ToListAsync()
-							.ConfigureAwait(continueOnCapturedContext: false);
+							.ToList();
 			}
 
 			var set = (DbQuery<AdjustmentDetail>)dbContext.Set<T>()
@@ -1124,8 +1090,7 @@ namespace AdjustmentQS.Business.Services
 
 			set = includesLst.Aggregate(set, (current, itm) => current.Include(itm));
 
-            return await set.ToListAsync()
-							.ConfigureAwait(continueOnCapturedContext: false);
+            return set.ToList();
 			}
 			catch (Exception)
 			{
@@ -1142,13 +1107,12 @@ namespace AdjustmentQS.Business.Services
               {
                 var i = EntryDataId;
                 var set = AddIncludes(includesLst, dbContext);
-                IEnumerable<AdjustmentDetail> entities = await set//dbContext.AdjustmentDetails
+                IEnumerable<AdjustmentDetail> entities = set//dbContext.AdjustmentDetails
                                                     // .Include(x => x.AsycudaDocumentItemEntryDataDetails)									  
                                                     // .Include(x => x.ShortAllocations)									  
                                       .AsNoTracking()
                                         .Where(x => x.EntryDataId.ToString() == EntryDataId.ToString())
-										.ToListAsync()
-										.ConfigureAwait(continueOnCapturedContext: false);
+										.ToList();
                 return entities;
               }
              }
@@ -1173,13 +1137,12 @@ namespace AdjustmentQS.Business.Services
               {
                 var i = Convert.ToInt32(AsycudaDocumentSetId);
                 var set = AddIncludes(includesLst, dbContext);
-                IEnumerable<AdjustmentDetail> entities = await set//dbContext.AdjustmentDetails
+                IEnumerable<AdjustmentDetail> entities = set//dbContext.AdjustmentDetails
                                                     // .Include(x => x.AsycudaDocumentItemEntryDataDetails)									  
                                                     // .Include(x => x.ShortAllocations)									  
                                       .AsNoTracking()
                                         .Where(x => x.AsycudaDocumentSetId.ToString() == AsycudaDocumentSetId.ToString())
-										.ToListAsync()
-										.ConfigureAwait(continueOnCapturedContext: false);
+										.ToList();
                 return entities;
               }
              }
@@ -1204,13 +1167,12 @@ namespace AdjustmentQS.Business.Services
               {
                 var i = Convert.ToInt32(ApplicationSettingsId);
                 var set = AddIncludes(includesLst, dbContext);
-                IEnumerable<AdjustmentDetail> entities = await set//dbContext.AdjustmentDetails
+                IEnumerable<AdjustmentDetail> entities = set//dbContext.AdjustmentDetails
                                                     // .Include(x => x.AsycudaDocumentItemEntryDataDetails)									  
                                                     // .Include(x => x.ShortAllocations)									  
                                       .AsNoTracking()
                                         .Where(x => x.ApplicationSettingsId.ToString() == ApplicationSettingsId.ToString())
-										.ToListAsync()
-										.ConfigureAwait(continueOnCapturedContext: false);
+										.ToList();
                 return entities;
               }
              }
@@ -1235,13 +1197,12 @@ namespace AdjustmentQS.Business.Services
               {
                 var i = EmailId;
                 var set = AddIncludes(includesLst, dbContext);
-                IEnumerable<AdjustmentDetail> entities = await set//dbContext.AdjustmentDetails
+                IEnumerable<AdjustmentDetail> entities = set//dbContext.AdjustmentDetails
                                                     // .Include(x => x.AsycudaDocumentItemEntryDataDetails)									  
                                                     // .Include(x => x.ShortAllocations)									  
                                       .AsNoTracking()
                                         .Where(x => x.EmailId.ToString() == EmailId.ToString())
-										.ToListAsync()
-										.ConfigureAwait(continueOnCapturedContext: false);
+										.ToList();
                 return entities;
               }
              }
@@ -1266,13 +1227,12 @@ namespace AdjustmentQS.Business.Services
               {
                 var i = Convert.ToInt32(FileTypeId);
                 var set = AddIncludes(includesLst, dbContext);
-                IEnumerable<AdjustmentDetail> entities = await set//dbContext.AdjustmentDetails
+                IEnumerable<AdjustmentDetail> entities = set//dbContext.AdjustmentDetails
                                                     // .Include(x => x.AsycudaDocumentItemEntryDataDetails)									  
                                                     // .Include(x => x.ShortAllocations)									  
                                       .AsNoTracking()
                                         .Where(x => x.FileTypeId.ToString() == FileTypeId.ToString())
-										.ToListAsync()
-										.ConfigureAwait(continueOnCapturedContext: false);
+										.ToList();
                 return entities;
               }
              }
@@ -1297,13 +1257,12 @@ namespace AdjustmentQS.Business.Services
               {
                 var i = Convert.ToInt32(EntryData_Id);
                 var set = AddIncludes(includesLst, dbContext);
-                IEnumerable<AdjustmentDetail> entities = await set//dbContext.AdjustmentDetails
+                IEnumerable<AdjustmentDetail> entities = set//dbContext.AdjustmentDetails
                                                     // .Include(x => x.AsycudaDocumentItemEntryDataDetails)									  
                                                     // .Include(x => x.ShortAllocations)									  
                                       .AsNoTracking()
                                         .Where(x => x.EntryData_Id.ToString() == EntryData_Id.ToString())
-										.ToListAsync()
-										.ConfigureAwait(continueOnCapturedContext: false);
+										.ToList();
                 return entities;
               }
              }
@@ -1328,13 +1287,12 @@ namespace AdjustmentQS.Business.Services
               {
                 var i = Convert.ToInt32(InventoryItemId);
                 var set = AddIncludes(includesLst, dbContext);
-                IEnumerable<AdjustmentDetail> entities = await set//dbContext.AdjustmentDetails
+                IEnumerable<AdjustmentDetail> entities = set//dbContext.AdjustmentDetails
                                                     // .Include(x => x.AsycudaDocumentItemEntryDataDetails)									  
                                                     // .Include(x => x.ShortAllocations)									  
                                       .AsNoTracking()
                                         .Where(x => x.InventoryItemId.ToString() == InventoryItemId.ToString())
-										.ToListAsync()
-										.ConfigureAwait(continueOnCapturedContext: false);
+										.ToList();
                 return entities;
               }
              }

@@ -8,7 +8,7 @@ using FileTypes = CoreEntities.Business.Entities.FileTypes;
 
 namespace WaterNut.DataSpace
 {
-    public class SaveCsvEntryData
+    public class SaveCsvEntryData : IRawDataExtractor
     {
         private static readonly SaveCsvEntryData instance;
 
@@ -24,41 +24,31 @@ namespace WaterNut.DataSpace
 
         
 
-        public async Task<bool> ExtractEntryData(FileTypes suggestedfileType, string[] lines, string[] headings, 
-            List<AsycudaDocumentSet> docSet, bool overWriteExisting, string emailId, 
-            string droppedFilePath)
+        public async Task Extract(RawDataFile rawDataFile)
         {
             try
             {
-                var fileType =FileTypeManager.GetHeadingFileType(headings, suggestedfileType);
+                var dataFile = CreateCSVDataFile(rawDataFile);
 
-                var data = new CSVDataExtractor(fileType, lines, headings, emailId).Execute();
-
-                if (data == null) return true;
-
-
-                
-                return await _csvSummaryDataProcessor.ProcessCsvSummaryData(fileType, docSet, overWriteExisting, emailId, 
-                    droppedFilePath, data).ConfigureAwait(false);
+                await new DataFileProcessor().Process(dataFile).ConfigureAwait(false);
             }
             catch (Exception e)
             {
-                var nex = new ApplicationException($"Error Importing File: {droppedFilePath} - {e.Message}", e);
+                var nex = new ApplicationException($"Error Importing File: {rawDataFile.DroppedFilePath} - {e.Message}", e);
                 Console.WriteLine(nex);
                 throw nex;
             }
         }
 
-
-        // new List<IDictionary<string, object>>(){(IDictionary<string, object>) header
-
-
-        private readonly CsvSummaryDataProcessor _csvSummaryDataProcessor;
-
-        public SaveCsvEntryData()
+        private static DataFile CreateCSVDataFile(RawDataFile rawDataFile)
         {
-    
-            _csvSummaryDataProcessor = new CsvSummaryDataProcessor();
+            
+            var fileType = FileTypeManager.GetHeadingFileType(rawDataFile.Headings, rawDataFile.FileType);
+
+            var data = new CSVDataExtractor(fileType, rawDataFile.Lines, rawDataFile.Headings, rawDataFile.EmailId).Execute();
+
+            var dataFile = new DataFile(fileType, rawDataFile.DocSet, rawDataFile.OverWriteExisting, rawDataFile.EmailId, rawDataFile.DroppedFilePath, data);
+            return dataFile;
         }
     }
 }

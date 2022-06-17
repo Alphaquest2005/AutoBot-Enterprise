@@ -75,8 +75,7 @@ namespace DocumentDS.Business.Services
                   using ( var dbContext = new DocumentDSContext(){StartTracking = StartTracking})
                   {
 				    var set = AddIncludes(includesLst, dbContext);
-                    IEnumerable<AsycudaDocumentSet> entities = await set.AsNoTracking().ToListAsync()
-													       .ConfigureAwait(continueOnCapturedContext: false);
+                    IEnumerable<AsycudaDocumentSet> entities = set.AsNoTracking().ToList();
                            //scope.Complete();
                             if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
                             return entities;
@@ -107,7 +106,7 @@ namespace DocumentDS.Business.Services
               {
                 var i = Convert.ToInt32(AsycudaDocumentSetId);
 				var set = AddIncludes(includesLst, dbContext);
-                AsycudaDocumentSet entity = await set.AsNoTracking().SingleOrDefaultAsync(x => x.AsycudaDocumentSetId == i).ConfigureAwait(continueOnCapturedContext: false);
+                AsycudaDocumentSet entity = set.AsNoTracking().SingleOrDefault(x => x.AsycudaDocumentSetId == i);
                 if(tracking && entity != null) entity.StartTracking();
                 return entity;
               }
@@ -138,17 +137,15 @@ namespace DocumentDS.Business.Services
 					var set = AddIncludes(includesLst, dbContext);
                     if (exp == "All")
                     {
-						var entities = await set.AsNoTracking().ToListAsync()
-											.ConfigureAwait(continueOnCapturedContext: false);
+						var entities = set.AsNoTracking().ToList();
 
                         if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
                         return entities; 
                     }
 					else
 					{
-						var entities = await set.AsNoTracking().Where(exp)
-											.ToListAsync() 
-											.ConfigureAwait(continueOnCapturedContext: false);
+						var entities = set.AsNoTracking().Where(exp)
+											.ToList();
                         if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
                         return entities; 
 											
@@ -181,16 +178,14 @@ namespace DocumentDS.Business.Services
 					var set = AddIncludes(includesLst, dbContext);
                     if (expLst.FirstOrDefault() == "All")
                     {
-						var entities = await set.AsNoTracking().ToListAsync()
-											.ConfigureAwait(continueOnCapturedContext: false); 
+						var entities = set.AsNoTracking().ToList(); 
                         if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
                         return entities; 
                     }
 					else
 					{
 						set = AddWheres(expLst, set);
-						var entities = await set.AsNoTracking().ToListAsync() 
-										.ConfigureAwait(continueOnCapturedContext: false);
+						var entities = set.AsNoTracking().ToList();
                         if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
                         return entities; 
 											
@@ -225,9 +220,8 @@ namespace DocumentDS.Business.Services
 
                     if (exp == "All" && navExp.Count == 0)
                     {
-                        var aentities = await AddIncludes(includesLst, dbContext)
-												.ToListAsync()
-												.ConfigureAwait(continueOnCapturedContext: false);
+                        var aentities = AddIncludes(includesLst, dbContext)
+												.ToList();
                         if(tracking) aentities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
                         return aentities; 
                     }
@@ -281,9 +275,8 @@ namespace DocumentDS.Business.Services
 
                     }
 					var set = AddIncludes(includesLst, dbContext);
-                    var entities = await set.AsNoTracking().Where(exp)
-									.ToListAsync()
-									.ConfigureAwait(continueOnCapturedContext: false);
+                    var entities = set.AsNoTracking().Where(exp)
+									.ToList();
                     if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
                         return entities; 
 
@@ -464,19 +457,10 @@ namespace DocumentDS.Business.Services
                     if(res.TrackingState == TrackingState.Unchanged) res.TrackingState = TrackingState.Modified;                              
                     
                     dbContext.ApplyChanges(res);
-                    await dbContext.SaveChangesAsync().ConfigureAwait(continueOnCapturedContext: false);
+                    dbContext.SaveChanges();
                     res.AcceptChanges();
                     return res;      
-
-                   // var entitychanges = entity.ChangeTracker.GetChanges();
-                   // if (entitychanges != null && entitychanges.FirstOrDefault() != null)
-                   // {
-                   //     dbContext.ApplyChanges(entitychanges);
-                   //     await dbContext.SaveChangesAsync().ConfigureAwait(continueOnCapturedContext: false);
-                   //     entity.EntityId = entitychanges.FirstOrDefault().EntityId;
-                   //     entity.AcceptChanges();     
-                   // }
-                   // return entity;        
+      
                 }
                 catch (DbUpdateConcurrencyException dce)
                 {
@@ -544,7 +528,7 @@ namespace DocumentDS.Business.Services
               using ( var dbContext = new DocumentDSContext(){StartTracking = StartTracking})
               {
                 dbContext.AsycudaDocumentSets.Add(res);
-                await dbContext.SaveChangesAsync().ConfigureAwait(continueOnCapturedContext: false);
+                dbContext.SaveChanges();
                 res.AcceptChanges();
                 return res;
               }
@@ -570,15 +554,14 @@ namespace DocumentDS.Business.Services
               using ( var dbContext = new DocumentDSContext(){StartTracking = StartTracking})
               {
                 var i = Convert.ToInt32(AsycudaDocumentSetId);
-                AsycudaDocumentSet entity = await dbContext.AsycudaDocumentSets
-													.SingleOrDefaultAsync(x => x.AsycudaDocumentSetId == i)
-													.ConfigureAwait(continueOnCapturedContext: false);
+                AsycudaDocumentSet entity = dbContext.AsycudaDocumentSets
+													.SingleOrDefault(x => x.AsycudaDocumentSetId == i);
                 if (entity == null)
                     return false;
 
                     dbContext.AsycudaDocumentSets.Attach(entity);
                     dbContext.AsycudaDocumentSets.Remove(entity);
-                    await dbContext.SaveChangesAsync().ConfigureAwait(continueOnCapturedContext: false);
+                    dbContext.SaveChanges();
                     return true;
               }
             }
@@ -646,14 +629,12 @@ namespace DocumentDS.Business.Services
                     var set = (IQueryable<AsycudaDocumentSet>)dbContext.AsycudaDocumentSets; 
                     if (expLst.FirstOrDefault() == "All")
                     {
-                        return await set.AsNoTracking().CountAsync()
-                                            .ConfigureAwait(continueOnCapturedContext: false);
+                        return set.AsNoTracking().Count();
                     }
                     else
                     {
                         set = AddWheres(expLst, set);
-                        return await set.AsNoTracking().CountAsync()
-                                        .ConfigureAwait(continueOnCapturedContext: false);
+                        return set.AsNoTracking().Count();
                     }
                     
                 }
@@ -681,19 +662,17 @@ namespace DocumentDS.Business.Services
                     if (string.IsNullOrEmpty(exp) || exp == "None") return 0;
                     if (exp == "All")
                     {
-                        return await dbContext.AsycudaDocumentSets
+                        return dbContext.AsycudaDocumentSets
                                     .AsNoTracking()
-									.CountAsync()
-									.ConfigureAwait(continueOnCapturedContext: false);
+									.Count();
                     }
                     else
                     {
                         
-                        return await dbContext.AsycudaDocumentSets
+                        return dbContext.AsycudaDocumentSets
 									.AsNoTracking()
                                     .Where(exp)
-									.CountAsync()
-									.ConfigureAwait(continueOnCapturedContext: false);
+									.Count();
                     }
                 }
             }
@@ -721,25 +700,23 @@ namespace DocumentDS.Business.Services
                     if (string.IsNullOrEmpty(exp) || exp == "None") return new List<AsycudaDocumentSet>();
                     if (exp == "All")
                     {
-                        return await dbContext.AsycudaDocumentSets
+                        return dbContext.AsycudaDocumentSets
 										.AsNoTracking()
                                         .OrderBy(y => y.AsycudaDocumentSetId)
 										.Skip(startIndex)
 										.Take(count)
-										.ToListAsync()
-										.ConfigureAwait(continueOnCapturedContext: false);
+										.ToList();
                     }
                     else
                     {
                         
-                        return await dbContext.AsycudaDocumentSets
+                        return dbContext.AsycudaDocumentSets
 										.AsNoTracking()
                                         .Where(exp)
 										.OrderBy(y => y.AsycudaDocumentSetId)
 										.Skip(startIndex)
 										.Take(count)
-										.ToListAsync()
-										.ConfigureAwait(continueOnCapturedContext: false);
+										.ToList();
                     }
                 }
             }
@@ -767,10 +744,9 @@ namespace DocumentDS.Business.Services
                     dbContext.Database.CommandTimeout = 0;
                     if (exp == "All" && navExp.Count == 0)
                     {
-                        return await dbContext.AsycudaDocumentSets
+                        return dbContext.AsycudaDocumentSets
 										.AsNoTracking()
-                                        .CountAsync()
-										.ConfigureAwait(continueOnCapturedContext: false);
+                                        .Count();
                     }
                     foreach (var itm in navExp)
                     {
@@ -799,10 +775,9 @@ namespace DocumentDS.Business.Services
 											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }
-                    return await dbContext.AsycudaDocumentSets.Where(exp == "All" || exp == null ? "AsycudaDocumentSetId != null" : exp)
+                    return dbContext.AsycudaDocumentSets.Where(exp == "All" || exp == null ? "AsycudaDocumentSetId != null" : exp)
 											.AsNoTracking()
-                                            .CountAsync()
-											.ConfigureAwait(continueOnCapturedContext: false);
+                                            .Count();
                 }
                 
             }
@@ -838,15 +813,14 @@ namespace DocumentDS.Business.Services
         {
 			try
 			{
-            return await dbContext.Set<T>()
+            return dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
                 .SelectMany(navProp).OfType<AsycudaDocumentSet>()
                 .Where(exp == "All" || exp == null ? "AsycudaDocumentSetId != null" : exp)
                 .Distinct()
                 .OrderBy("AsycudaDocumentSetId")
-                .CountAsync()
-				.ConfigureAwait(continueOnCapturedContext: false);
+                .Count();
 			}
 			catch (Exception)
 			{
@@ -859,15 +833,14 @@ namespace DocumentDS.Business.Services
         {
 			try
 			{
-            return await dbContext.Set<T>()
+            return dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
                 .Select(navProp).OfType<AsycudaDocumentSet>()
                 .Where(exp == "All" || exp == null ? "AsycudaDocumentSetId != null" : exp)
                 .Distinct()
                 .OrderBy("AsycudaDocumentSetId")
-                .CountAsync()
-				.ConfigureAwait(continueOnCapturedContext: false);
+                .Count();
 			}
 			catch (Exception)
 			{
@@ -890,14 +863,13 @@ namespace DocumentDS.Business.Services
                     if (exp == "All" && navExp.Count == 0)
                     {
                        
-                        return await set
+                        return set
 									.AsNoTracking()
                                     .OrderBy(y => y.AsycudaDocumentSetId)
  
                                     .Skip(startIndex)
                                     .Take(count)
-									.ToListAsync()
-									.ConfigureAwait(continueOnCapturedContext: false);
+									.ToList();
                     }
                     foreach (var itm in navExp)
                     {
@@ -951,15 +923,14 @@ namespace DocumentDS.Business.Services
 						}
 
                     }
-                    return await set//dbContext.AsycudaDocumentSets
+                    return set//dbContext.AsycudaDocumentSets
 								.AsNoTracking()
                                 .Where(exp == "All" || exp == null ? "AsycudaDocumentSetId != null" : exp)
 								.OrderBy(y => y.AsycudaDocumentSetId)
  
                                 .Skip(startIndex)
                                 .Take(count)
-								.ToListAsync()
-								.ConfigureAwait(continueOnCapturedContext: false);
+								.ToList();
 
 
                 }
@@ -1005,15 +976,14 @@ namespace DocumentDS.Business.Services
     
             if (includeLst != null) set = includeLst.Aggregate(set, (current, itm) => current.Include(itm));            
 
-            return await set
+            return set
                 .Where(exp == "All" || exp == null ? "AsycudaDocumentSetId != null" : exp)
                 .Distinct()
                 .OrderBy(y => y.AsycudaDocumentSetId)
  
                 .Skip(startIndex)
                 .Take(count)
-                .ToListAsync()
-				.ConfigureAwait(continueOnCapturedContext: false);
+                .ToList();
 			}
 			catch (Exception)
 			{
@@ -1034,15 +1004,14 @@ namespace DocumentDS.Business.Services
 
                if (includeLst != null) set = includeLst.Aggregate(set, (current, itm) => current.Include(itm)); 
                 
-               return await set
+               return set
                 .Where(exp == "All" || exp == null ? "AsycudaDocumentSetId != null" : exp)
                 .Distinct()
                 .OrderBy(y => y.AsycudaDocumentSetId)
  
                 .Skip(startIndex)
                 .Take(count)
-                .ToListAsync()
-				.ConfigureAwait(continueOnCapturedContext: false);
+                .ToList();
 							 }
 			catch (Exception)
 			{
@@ -1083,14 +1052,13 @@ namespace DocumentDS.Business.Services
 
 			if (includesLst == null)
 			{
-				return await dbContext.Set<T>()
+				return dbContext.Set<T>()
 							.AsNoTracking()
                             .Where(navExp)
 							.SelectMany(navProp).OfType<AsycudaDocumentSet>()
 							.Where(exp == "All" || exp == null?"AsycudaDocumentSetId != null":exp)
 							.Distinct()
-							.ToListAsync()
-							.ConfigureAwait(continueOnCapturedContext: false);
+							.ToList();
 			}
 
 			var set = (DbQuery<AsycudaDocumentSet>)dbContext.Set<T>()
@@ -1102,8 +1070,7 @@ namespace DocumentDS.Business.Services
 
 			set = includesLst.Aggregate(set, (current, itm) => current.Include(itm));
 
-            return await set.ToListAsync()
-							.ConfigureAwait(continueOnCapturedContext: false);
+            return set.ToList();
 			}
 			catch (Exception)
 			{
@@ -1120,14 +1087,13 @@ namespace DocumentDS.Business.Services
 
 			if (includesLst == null)
 			{
-				return await dbContext.Set<T>()
+				return dbContext.Set<T>()
 							.AsNoTracking()
                             .Where(navExp)
 							.Select(navProp).OfType<AsycudaDocumentSet>()
 							.Where(exp == "All" || exp == null?"AsycudaDocumentSetId != null":exp)
 							.Distinct()
-							.ToListAsync()
-							.ConfigureAwait(continueOnCapturedContext: false);
+							.ToList();
 			}
 
 			var set = (DbQuery<AsycudaDocumentSet>)dbContext.Set<T>()
@@ -1139,8 +1105,7 @@ namespace DocumentDS.Business.Services
 
 			set = includesLst.Aggregate(set, (current, itm) => current.Include(itm));
 
-            return await set.ToListAsync()
-							.ConfigureAwait(continueOnCapturedContext: false);
+            return set.ToList();
 			}
 			catch (Exception)
 			{
@@ -1157,14 +1122,13 @@ namespace DocumentDS.Business.Services
               {
                 var i = Convert.ToInt32(Customs_ProcedureId);
                 var set = AddIncludes(includesLst, dbContext);
-                IEnumerable<AsycudaDocumentSet> entities = await set//dbContext.AsycudaDocumentSets
+                IEnumerable<AsycudaDocumentSet> entities = set//dbContext.AsycudaDocumentSets
                                                     // .Include(x => x.AsycudaDocumentSetEntryDatas)									  
                                                     // .Include(x => x.xcuda_ASYCUDA_ExtendedProperties)									  
                                                     // .Include(x => x.AsycudaDocumentSet_Attachments)									  
                                       .AsNoTracking()
                                         .Where(x => x.Customs_ProcedureId.ToString() == Customs_ProcedureId.ToString())
-										.ToListAsync()
-										.ConfigureAwait(continueOnCapturedContext: false);
+										.ToList();
                 return entities;
               }
              }
@@ -1189,14 +1153,13 @@ namespace DocumentDS.Business.Services
               {
                 var i = Convert.ToInt32(Document_TypeId);
                 var set = AddIncludes(includesLst, dbContext);
-                IEnumerable<AsycudaDocumentSet> entities = await set//dbContext.AsycudaDocumentSets
+                IEnumerable<AsycudaDocumentSet> entities = set//dbContext.AsycudaDocumentSets
                                                     // .Include(x => x.AsycudaDocumentSetEntryDatas)									  
                                                     // .Include(x => x.xcuda_ASYCUDA_ExtendedProperties)									  
                                                     // .Include(x => x.AsycudaDocumentSet_Attachments)									  
                                       .AsNoTracking()
                                         .Where(x => x.Document_TypeId.ToString() == Document_TypeId.ToString())
-										.ToListAsync()
-										.ConfigureAwait(continueOnCapturedContext: false);
+										.ToList();
                 return entities;
               }
              }
@@ -1221,14 +1184,13 @@ namespace DocumentDS.Business.Services
               {
                 var i = Convert.ToInt32(ApplicationSettingsId);
                 var set = AddIncludes(includesLst, dbContext);
-                IEnumerable<AsycudaDocumentSet> entities = await set//dbContext.AsycudaDocumentSets
+                IEnumerable<AsycudaDocumentSet> entities = set//dbContext.AsycudaDocumentSets
                                                     // .Include(x => x.AsycudaDocumentSetEntryDatas)									  
                                                     // .Include(x => x.xcuda_ASYCUDA_ExtendedProperties)									  
                                                     // .Include(x => x.AsycudaDocumentSet_Attachments)									  
                                       .AsNoTracking()
                                         .Where(x => x.ApplicationSettingsId.ToString() == ApplicationSettingsId.ToString())
-										.ToListAsync()
-										.ConfigureAwait(continueOnCapturedContext: false);
+										.ToList();
                 return entities;
               }
              }

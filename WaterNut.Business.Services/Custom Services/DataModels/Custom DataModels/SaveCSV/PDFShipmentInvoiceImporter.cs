@@ -14,20 +14,21 @@ namespace WaterNut.DataSpace
         private ShipmentInvoiceImporter _shipmentInvoiceImporter = new ShipmentInvoiceImporter();
 
 
-        public async Task<bool> ImportPDFShipmentInvoice(FileTypes fileType, List<AsycudaDocumentSet> docSet, bool overWriteExisting, string emailId, List<dynamic> eslst, string droppedFilePath)
+        public async Task<bool> Process(DataFile dataFile)
         {
-            if (fileType.FileImporterInfos.EntryType == FileTypeManager.EntryTypes.ShipmentInvoice &&
-                fileType.FileImporterInfos.Format == FileTypeManager.FileFormats.PDF)
+            if (dataFile.FileType.FileImporterInfos.EntryType == FileTypeManager.EntryTypes.ShipmentInvoice &&
+                dataFile.FileType.FileImporterInfos.Format == FileTypeManager.FileFormats.PDF)
             {
-                await _inventoryImporter.ImportInventory(
-                    Enumerable.SelectMany<dynamic, object>(eslst, x =>
+                var file = new DataFile(dataFile.FileType, dataFile.DocSet,dataFile.OverWriteExisting, dataFile.EmailId, dataFile.DroppedFilePath,
+                    Enumerable.SelectMany<dynamic, object>(dataFile.Data, x =>
                         ((List<IDictionary<string, object>>)x).Select(z => z["InvoiceDetails"])).SelectMany(x =>
-                        ((List<IDictionary<string, object>>)x).Select(z => (dynamic)z)).ToList(),
-                    Enumerable.First<AsycudaDocumentSet>(docSet).ApplicationSettingsId, fileType).ConfigureAwait(false);
+                        ((List<IDictionary<string, object>>)x).Select(z => (dynamic)z)).ToList());
+
+                await _inventoryImporter.ImportInventory( file).ConfigureAwait(false);
 
 
-                _shipmentInvoiceImporter.ProcessShipmentInvoice(fileType, docSet, overWriteExisting, emailId,
-                    droppedFilePath, eslst, null);
+                _shipmentInvoiceImporter.ProcessShipmentInvoice(dataFile.FileType, dataFile.DocSet, dataFile.OverWriteExisting, dataFile.EmailId,
+                    dataFile.DroppedFilePath, dataFile.Data, null);
 
                 return true;
             }

@@ -33,7 +33,11 @@ namespace EntryDataQS.Business.Services
                 {
                     dfileType = FileTypeManager.FileTypes().First(x => x.FileImporterInfos.EntryType == fileType);
                 }
-                if(dfileType.CopyEntryData)docSet.Add(await WaterNut.DataSpace.BaseDataModel.Instance.GetAsycudaDocumentSet(dfileType.AsycudaDocumentSetId).ConfigureAwait(false));
+
+                if (dfileType.CopyEntryData)
+                {
+                    docSet.Add(EntryDocSetUtils.GetAsycudaDocumentSet(dfileType.DocSetRefernece, true));
+                }
                 await WaterNut.DataSpace.SaveCSVModel.Instance.ProcessDroppedFile(droppedFilePath, dfileType, docSet,
                    overWriteExisting).ConfigureAwait(false);
             

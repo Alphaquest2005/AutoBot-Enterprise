@@ -75,8 +75,7 @@ namespace CoreEntities.Business.Services
                   using ( var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
                   {
 				    var set = AddIncludes(includesLst, dbContext);
-                    IEnumerable<FileTypes> entities = await set.AsNoTracking().ToListAsync()
-													       .ConfigureAwait(continueOnCapturedContext: false);
+                    IEnumerable<FileTypes> entities = set.AsNoTracking().ToList();
                            //scope.Complete();
                             if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
                             return entities;
@@ -107,7 +106,7 @@ namespace CoreEntities.Business.Services
               {
                 var i = Convert.ToInt32(Id);
 				var set = AddIncludes(includesLst, dbContext);
-                FileTypes entity = await set.AsNoTracking().SingleOrDefaultAsync(x => x.Id == i).ConfigureAwait(continueOnCapturedContext: false);
+                FileTypes entity = set.AsNoTracking().SingleOrDefault(x => x.Id == i);
                 if(tracking && entity != null) entity.StartTracking();
                 return entity;
               }
@@ -138,17 +137,15 @@ namespace CoreEntities.Business.Services
 					var set = AddIncludes(includesLst, dbContext);
                     if (exp == "All")
                     {
-						var entities = await set.AsNoTracking().ToListAsync()
-											.ConfigureAwait(continueOnCapturedContext: false);
+						var entities = set.AsNoTracking().ToList();
 
                         if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
                         return entities; 
                     }
 					else
 					{
-						var entities = await set.AsNoTracking().Where(exp)
-											.ToListAsync() 
-											.ConfigureAwait(continueOnCapturedContext: false);
+						var entities = set.AsNoTracking().Where(exp)
+											.ToList();
                         if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
                         return entities; 
 											
@@ -181,16 +178,14 @@ namespace CoreEntities.Business.Services
 					var set = AddIncludes(includesLst, dbContext);
                     if (expLst.FirstOrDefault() == "All")
                     {
-						var entities = await set.AsNoTracking().ToListAsync()
-											.ConfigureAwait(continueOnCapturedContext: false); 
+						var entities = set.AsNoTracking().ToList(); 
                         if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
                         return entities; 
                     }
 					else
 					{
 						set = AddWheres(expLst, set);
-						var entities = await set.AsNoTracking().ToListAsync() 
-										.ConfigureAwait(continueOnCapturedContext: false);
+						var entities = set.AsNoTracking().ToList();
                         if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
                         return entities; 
 											
@@ -225,9 +220,8 @@ namespace CoreEntities.Business.Services
 
                     if (exp == "All" && navExp.Count == 0)
                     {
-                        var aentities = await AddIncludes(includesLst, dbContext)
-												.ToListAsync()
-												.ConfigureAwait(continueOnCapturedContext: false);
+                        var aentities = AddIncludes(includesLst, dbContext)
+												.ToList();
                         if(tracking) aentities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
                         return aentities; 
                     }
@@ -311,9 +305,8 @@ namespace CoreEntities.Business.Services
 
                     }
 					var set = AddIncludes(includesLst, dbContext);
-                    var entities = await set.AsNoTracking().Where(exp)
-									.ToListAsync()
-									.ConfigureAwait(continueOnCapturedContext: false);
+                    var entities = set.AsNoTracking().Where(exp)
+									.ToList();
                     if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
                         return entities; 
 
@@ -494,19 +487,10 @@ namespace CoreEntities.Business.Services
                     if(res.TrackingState == TrackingState.Unchanged) res.TrackingState = TrackingState.Modified;                              
                     
                     dbContext.ApplyChanges(res);
-                    await dbContext.SaveChangesAsync().ConfigureAwait(continueOnCapturedContext: false);
+                    dbContext.SaveChanges();
                     res.AcceptChanges();
                     return res;      
-
-                   // var entitychanges = entity.ChangeTracker.GetChanges();
-                   // if (entitychanges != null && entitychanges.FirstOrDefault() != null)
-                   // {
-                   //     dbContext.ApplyChanges(entitychanges);
-                   //     await dbContext.SaveChangesAsync().ConfigureAwait(continueOnCapturedContext: false);
-                   //     entity.EntityId = entitychanges.FirstOrDefault().EntityId;
-                   //     entity.AcceptChanges();     
-                   // }
-                   // return entity;        
+      
                 }
                 catch (DbUpdateConcurrencyException dce)
                 {
@@ -574,7 +558,7 @@ namespace CoreEntities.Business.Services
               using ( var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
               {
                 dbContext.FileTypes.Add(res);
-                await dbContext.SaveChangesAsync().ConfigureAwait(continueOnCapturedContext: false);
+                dbContext.SaveChanges();
                 res.AcceptChanges();
                 return res;
               }
@@ -600,15 +584,14 @@ namespace CoreEntities.Business.Services
               using ( var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
               {
                 var i = Convert.ToInt32(Id);
-                FileTypes entity = await dbContext.FileTypes
-													.SingleOrDefaultAsync(x => x.Id == i)
-													.ConfigureAwait(continueOnCapturedContext: false);
+                FileTypes entity = dbContext.FileTypes
+													.SingleOrDefault(x => x.Id == i);
                 if (entity == null)
                     return false;
 
                     dbContext.FileTypes.Attach(entity);
                     dbContext.FileTypes.Remove(entity);
-                    await dbContext.SaveChangesAsync().ConfigureAwait(continueOnCapturedContext: false);
+                    dbContext.SaveChanges();
                     return true;
               }
             }
@@ -676,14 +659,12 @@ namespace CoreEntities.Business.Services
                     var set = (IQueryable<FileTypes>)dbContext.FileTypes; 
                     if (expLst.FirstOrDefault() == "All")
                     {
-                        return await set.AsNoTracking().CountAsync()
-                                            .ConfigureAwait(continueOnCapturedContext: false);
+                        return set.AsNoTracking().Count();
                     }
                     else
                     {
                         set = AddWheres(expLst, set);
-                        return await set.AsNoTracking().CountAsync()
-                                        .ConfigureAwait(continueOnCapturedContext: false);
+                        return set.AsNoTracking().Count();
                     }
                     
                 }
@@ -711,19 +692,17 @@ namespace CoreEntities.Business.Services
                     if (string.IsNullOrEmpty(exp) || exp == "None") return 0;
                     if (exp == "All")
                     {
-                        return await dbContext.FileTypes
+                        return dbContext.FileTypes
                                     .AsNoTracking()
-									.CountAsync()
-									.ConfigureAwait(continueOnCapturedContext: false);
+									.Count();
                     }
                     else
                     {
                         
-                        return await dbContext.FileTypes
+                        return dbContext.FileTypes
 									.AsNoTracking()
                                     .Where(exp)
-									.CountAsync()
-									.ConfigureAwait(continueOnCapturedContext: false);
+									.Count();
                     }
                 }
             }
@@ -751,25 +730,23 @@ namespace CoreEntities.Business.Services
                     if (string.IsNullOrEmpty(exp) || exp == "None") return new List<FileTypes>();
                     if (exp == "All")
                     {
-                        return await dbContext.FileTypes
+                        return dbContext.FileTypes
 										.AsNoTracking()
                                         .OrderBy(y => y.Id)
 										.Skip(startIndex)
 										.Take(count)
-										.ToListAsync()
-										.ConfigureAwait(continueOnCapturedContext: false);
+										.ToList();
                     }
                     else
                     {
                         
-                        return await dbContext.FileTypes
+                        return dbContext.FileTypes
 										.AsNoTracking()
                                         .Where(exp)
 										.OrderBy(y => y.Id)
 										.Skip(startIndex)
 										.Take(count)
-										.ToListAsync()
-										.ConfigureAwait(continueOnCapturedContext: false);
+										.ToList();
                     }
                 }
             }
@@ -797,10 +774,9 @@ namespace CoreEntities.Business.Services
                     dbContext.Database.CommandTimeout = 0;
                     if (exp == "All" && navExp.Count == 0)
                     {
-                        return await dbContext.FileTypes
+                        return dbContext.FileTypes
 										.AsNoTracking()
-                                        .CountAsync()
-										.ConfigureAwait(continueOnCapturedContext: false);
+                                        .Count();
                     }
                     foreach (var itm in navExp)
                     {
@@ -844,10 +820,9 @@ namespace CoreEntities.Business.Services
 											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }
-                    return await dbContext.FileTypes.Where(exp == "All" || exp == null ? "Id != null" : exp)
+                    return dbContext.FileTypes.Where(exp == "All" || exp == null ? "Id != null" : exp)
 											.AsNoTracking()
-                                            .CountAsync()
-											.ConfigureAwait(continueOnCapturedContext: false);
+                                            .Count();
                 }
                 
             }
@@ -883,15 +858,14 @@ namespace CoreEntities.Business.Services
         {
 			try
 			{
-            return await dbContext.Set<T>()
+            return dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
                 .SelectMany(navProp).OfType<FileTypes>()
                 .Where(exp == "All" || exp == null ? "Id != null" : exp)
                 .Distinct()
                 .OrderBy("Id")
-                .CountAsync()
-				.ConfigureAwait(continueOnCapturedContext: false);
+                .Count();
 			}
 			catch (Exception)
 			{
@@ -904,15 +878,14 @@ namespace CoreEntities.Business.Services
         {
 			try
 			{
-            return await dbContext.Set<T>()
+            return dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
                 .Select(navProp).OfType<FileTypes>()
                 .Where(exp == "All" || exp == null ? "Id != null" : exp)
                 .Distinct()
                 .OrderBy("Id")
-                .CountAsync()
-				.ConfigureAwait(continueOnCapturedContext: false);
+                .Count();
 			}
 			catch (Exception)
 			{
@@ -935,14 +908,13 @@ namespace CoreEntities.Business.Services
                     if (exp == "All" && navExp.Count == 0)
                     {
                        
-                        return await set
+                        return set
 									.AsNoTracking()
                                     .OrderBy(y => y.Id)
  
                                     .Skip(startIndex)
                                     .Take(count)
-									.ToListAsync()
-									.ConfigureAwait(continueOnCapturedContext: false);
+									.ToList();
                     }
                     foreach (var itm in navExp)
                     {
@@ -1026,15 +998,14 @@ namespace CoreEntities.Business.Services
 						}
 
                     }
-                    return await set//dbContext.FileTypes
+                    return set//dbContext.FileTypes
 								.AsNoTracking()
                                 .Where(exp == "All" || exp == null ? "Id != null" : exp)
 								.OrderBy(y => y.Id)
  
                                 .Skip(startIndex)
                                 .Take(count)
-								.ToListAsync()
-								.ConfigureAwait(continueOnCapturedContext: false);
+								.ToList();
 
 
                 }
@@ -1080,15 +1051,14 @@ namespace CoreEntities.Business.Services
     
             if (includeLst != null) set = includeLst.Aggregate(set, (current, itm) => current.Include(itm));            
 
-            return await set
+            return set
                 .Where(exp == "All" || exp == null ? "Id != null" : exp)
                 .Distinct()
                 .OrderBy(y => y.Id)
  
                 .Skip(startIndex)
                 .Take(count)
-                .ToListAsync()
-				.ConfigureAwait(continueOnCapturedContext: false);
+                .ToList();
 			}
 			catch (Exception)
 			{
@@ -1109,15 +1079,14 @@ namespace CoreEntities.Business.Services
 
                if (includeLst != null) set = includeLst.Aggregate(set, (current, itm) => current.Include(itm)); 
                 
-               return await set
+               return set
                 .Where(exp == "All" || exp == null ? "Id != null" : exp)
                 .Distinct()
                 .OrderBy(y => y.Id)
  
                 .Skip(startIndex)
                 .Take(count)
-                .ToListAsync()
-				.ConfigureAwait(continueOnCapturedContext: false);
+                .ToList();
 							 }
 			catch (Exception)
 			{
@@ -1158,14 +1127,13 @@ namespace CoreEntities.Business.Services
 
 			if (includesLst == null)
 			{
-				return await dbContext.Set<T>()
+				return dbContext.Set<T>()
 							.AsNoTracking()
                             .Where(navExp)
 							.SelectMany(navProp).OfType<FileTypes>()
 							.Where(exp == "All" || exp == null?"Id != null":exp)
 							.Distinct()
-							.ToListAsync()
-							.ConfigureAwait(continueOnCapturedContext: false);
+							.ToList();
 			}
 
 			var set = (DbQuery<FileTypes>)dbContext.Set<T>()
@@ -1177,8 +1145,7 @@ namespace CoreEntities.Business.Services
 
 			set = includesLst.Aggregate(set, (current, itm) => current.Include(itm));
 
-            return await set.ToListAsync()
-							.ConfigureAwait(continueOnCapturedContext: false);
+            return set.ToList();
 			}
 			catch (Exception)
 			{
@@ -1195,14 +1162,13 @@ namespace CoreEntities.Business.Services
 
 			if (includesLst == null)
 			{
-				return await dbContext.Set<T>()
+				return dbContext.Set<T>()
 							.AsNoTracking()
                             .Where(navExp)
 							.Select(navProp).OfType<FileTypes>()
 							.Where(exp == "All" || exp == null?"Id != null":exp)
 							.Distinct()
-							.ToListAsync()
-							.ConfigureAwait(continueOnCapturedContext: false);
+							.ToList();
 			}
 
 			var set = (DbQuery<FileTypes>)dbContext.Set<T>()
@@ -1214,8 +1180,7 @@ namespace CoreEntities.Business.Services
 
 			set = includesLst.Aggregate(set, (current, itm) => current.Include(itm));
 
-            return await set.ToListAsync()
-							.ConfigureAwait(continueOnCapturedContext: false);
+            return set.ToList();
 			}
 			catch (Exception)
 			{
@@ -1232,7 +1197,7 @@ namespace CoreEntities.Business.Services
               {
                 var i = Convert.ToInt32(ApplicationSettingsId);
                 var set = AddIncludes(includesLst, dbContext);
-                IEnumerable<FileTypes> entities = await set//dbContext.FileTypes
+                IEnumerable<FileTypes> entities = set//dbContext.FileTypes
                                                     // .Include(x => x.FileTypeMappings)									  
                                                     // .Include(x => x.FileTypeActions)									  
                                                     // .Include(x => x.FileTypeContacts)									  
@@ -1243,8 +1208,7 @@ namespace CoreEntities.Business.Services
                                                     // .Include(x => x.FileTypeReplaceRegex)									  
                                       .AsNoTracking()
                                         .Where(x => x.ApplicationSettingsId.ToString() == ApplicationSettingsId.ToString())
-										.ToListAsync()
-										.ConfigureAwait(continueOnCapturedContext: false);
+										.ToList();
                 return entities;
               }
              }
@@ -1269,7 +1233,7 @@ namespace CoreEntities.Business.Services
               {
                 var i = Convert.ToInt32(FileGroupId);
                 var set = AddIncludes(includesLst, dbContext);
-                IEnumerable<FileTypes> entities = await set//dbContext.FileTypes
+                IEnumerable<FileTypes> entities = set//dbContext.FileTypes
                                                     // .Include(x => x.FileTypeMappings)									  
                                                     // .Include(x => x.FileTypeActions)									  
                                                     // .Include(x => x.FileTypeContacts)									  
@@ -1280,8 +1244,7 @@ namespace CoreEntities.Business.Services
                                                     // .Include(x => x.FileTypeReplaceRegex)									  
                                       .AsNoTracking()
                                         .Where(x => x.FileGroupId.ToString() == FileGroupId.ToString())
-										.ToListAsync()
-										.ConfigureAwait(continueOnCapturedContext: false);
+										.ToList();
                 return entities;
               }
              }
@@ -1306,7 +1269,7 @@ namespace CoreEntities.Business.Services
               {
                 var i = Convert.ToInt32(ParentFileTypeId);
                 var set = AddIncludes(includesLst, dbContext);
-                IEnumerable<FileTypes> entities = await set//dbContext.FileTypes
+                IEnumerable<FileTypes> entities = set//dbContext.FileTypes
                                                     // .Include(x => x.FileTypeMappings)									  
                                                     // .Include(x => x.FileTypeActions)									  
                                                     // .Include(x => x.FileTypeContacts)									  
@@ -1317,8 +1280,7 @@ namespace CoreEntities.Business.Services
                                                     // .Include(x => x.FileTypeReplaceRegex)									  
                                       .AsNoTracking()
                                         .Where(x => x.ParentFileTypeId.ToString() == ParentFileTypeId.ToString())
-										.ToListAsync()
-										.ConfigureAwait(continueOnCapturedContext: false);
+										.ToList();
                 return entities;
               }
              }
@@ -1343,7 +1305,7 @@ namespace CoreEntities.Business.Services
               {
                 var i = Convert.ToInt32(OldFileTypeId);
                 var set = AddIncludes(includesLst, dbContext);
-                IEnumerable<FileTypes> entities = await set//dbContext.FileTypes
+                IEnumerable<FileTypes> entities = set//dbContext.FileTypes
                                                     // .Include(x => x.FileTypeMappings)									  
                                                     // .Include(x => x.FileTypeActions)									  
                                                     // .Include(x => x.FileTypeContacts)									  
@@ -1354,8 +1316,7 @@ namespace CoreEntities.Business.Services
                                                     // .Include(x => x.FileTypeReplaceRegex)									  
                                       .AsNoTracking()
                                         .Where(x => x.OldFileTypeId.ToString() == OldFileTypeId.ToString())
-										.ToListAsync()
-										.ConfigureAwait(continueOnCapturedContext: false);
+										.ToList();
                 return entities;
               }
              }
@@ -1380,7 +1341,7 @@ namespace CoreEntities.Business.Services
               {
                 var i = Convert.ToInt32(FileInfoId);
                 var set = AddIncludes(includesLst, dbContext);
-                IEnumerable<FileTypes> entities = await set//dbContext.FileTypes
+                IEnumerable<FileTypes> entities = set//dbContext.FileTypes
                                                     // .Include(x => x.FileTypeMappings)									  
                                                     // .Include(x => x.FileTypeActions)									  
                                                     // .Include(x => x.FileTypeContacts)									  
@@ -1391,8 +1352,7 @@ namespace CoreEntities.Business.Services
                                                     // .Include(x => x.FileTypeReplaceRegex)									  
                                       .AsNoTracking()
                                         .Where(x => x.FileInfoId.ToString() == FileInfoId.ToString())
-										.ToListAsync()
-										.ConfigureAwait(continueOnCapturedContext: false);
+										.ToList();
                 return entities;
               }
              }

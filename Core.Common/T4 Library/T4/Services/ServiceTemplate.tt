@@ -99,8 +99,7 @@ namespace <#=container.Name#>.Business.Services
                   using ( var dbContext = new <#=container.Name#>Context(){StartTracking = StartTracking})
                   {
 				    var set = AddIncludes(includesLst, dbContext);
-                    IEnumerable<<#=entity.Name#>> entities = await set.AsNoTracking().ToListAsync()
-													       .ConfigureAwait(continueOnCapturedContext: false);
+                    IEnumerable<<#=entity.Name#>> entities = set.AsNoTracking().ToList();
                            //scope.Complete();
                             if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
                             return entities;
@@ -131,7 +130,7 @@ namespace <#=container.Name#>.Business.Services
               {
                 <#+WriteStringToIdType(entity.KeyMembers.FirstOrDefault() as EdmProperty); #>
 				var set = AddIncludes(includesLst, dbContext);
-                <#=entity.Name#> entity = await set.AsNoTracking().SingleOrDefaultAsync(x => x.<#=entity.KeyMembers.FirstOrDefault().Name #> == i).ConfigureAwait(continueOnCapturedContext: false);
+                <#=entity.Name#> entity = set.AsNoTracking().SingleOrDefault(x => x.<#=entity.KeyMembers.FirstOrDefault().Name #> == i);
                 if(tracking && entity != null) entity.StartTracking();
                 return entity;
               }
@@ -162,17 +161,15 @@ namespace <#=container.Name#>.Business.Services
 					var set = AddIncludes(includesLst, dbContext);
                     if (exp == "All")
                     {
-						var entities = await set.AsNoTracking().ToListAsync()
-											.ConfigureAwait(continueOnCapturedContext: false);
+						var entities = set.AsNoTracking().ToList();
 
                         if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
                         return entities; 
                     }
 					else
 					{
-						var entities = await set.AsNoTracking().Where(exp)
-											.ToListAsync() 
-											.ConfigureAwait(continueOnCapturedContext: false);
+						var entities = set.AsNoTracking().Where(exp)
+											.ToList();
                         if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
                         return entities; 
 											
@@ -205,16 +202,14 @@ namespace <#=container.Name#>.Business.Services
 					var set = AddIncludes(includesLst, dbContext);
                     if (expLst.FirstOrDefault() == "All")
                     {
-						var entities = await set.AsNoTracking().ToListAsync()
-											.ConfigureAwait(continueOnCapturedContext: false); 
+						var entities = set.AsNoTracking().ToList(); 
                         if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
                         return entities; 
                     }
 					else
 					{
 						set = AddWheres(expLst, set);
-						var entities = await set.AsNoTracking().ToListAsync() 
-										.ConfigureAwait(continueOnCapturedContext: false);
+						var entities = set.AsNoTracking().ToList();
                         if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
                         return entities; 
 											
@@ -249,9 +244,8 @@ namespace <#=container.Name#>.Business.Services
 
                     if (exp == "All" && navExp.Count == 0)
                     {
-                        var aentities = await AddIncludes(includesLst, dbContext)
-												.ToListAsync()
-												.ConfigureAwait(continueOnCapturedContext: false);
+                        var aentities = AddIncludes(includesLst, dbContext)
+												.ToList();
                         if(tracking) aentities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
                         return aentities; 
                     }
@@ -292,9 +286,8 @@ namespace <#=container.Name#>.Business.Services
 } 
 #>
 					var set = AddIncludes(includesLst, dbContext);
-                    var entities = await set.AsNoTracking().Where(exp)
-									.ToListAsync()
-									.ConfigureAwait(continueOnCapturedContext: false);
+                    var entities = set.AsNoTracking().Where(exp)
+									.ToList();
                     if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
                         return entities; 
 
@@ -475,19 +468,10 @@ namespace <#=container.Name#>.Business.Services
                     if(res.TrackingState == TrackingState.Unchanged) res.TrackingState = TrackingState.Modified;                              
                     
                     dbContext.ApplyChanges(res);
-                    await dbContext.SaveChangesAsync().ConfigureAwait(continueOnCapturedContext: false);
+                    dbContext.SaveChanges();
                     res.AcceptChanges();
                     return res;      
-
-                   // var entitychanges = entity.ChangeTracker.GetChanges();
-                   // if (entitychanges != null && entitychanges.FirstOrDefault() != null)
-                   // {
-                   //     dbContext.ApplyChanges(entitychanges);
-                   //     await dbContext.SaveChangesAsync().ConfigureAwait(continueOnCapturedContext: false);
-                   //     entity.EntityId = entitychanges.FirstOrDefault().EntityId;
-                   //     entity.AcceptChanges();     
-                   // }
-                   // return entity;        
+      
                 }
                 catch (DbUpdateConcurrencyException dce)
                 {
@@ -555,7 +539,7 @@ namespace <#=container.Name#>.Business.Services
               using ( var dbContext = new <#=container.Name#>Context(){StartTracking = StartTracking})
               {
                 dbContext.<#=(entity.BaseType == null?entitySet:"Set<" + entity.Name + ">()")#>.Add(res);
-                await dbContext.SaveChangesAsync().ConfigureAwait(continueOnCapturedContext: false);
+                dbContext.SaveChanges();
                 res.AcceptChanges();
                 return res;
               }
@@ -581,15 +565,14 @@ namespace <#=container.Name#>.Business.Services
               using ( var dbContext = new <#=container.Name#>Context(){StartTracking = StartTracking})
               {
                 <#+WriteStringToIdType(entity.KeyMembers.FirstOrDefault() as EdmProperty); #>
-                <#=entity.Name#> entity = await dbContext.<#=(entity.BaseType == null?entitySet:entitySet + ".OfType<" + entity.Name + ">()")#>
-													.SingleOrDefaultAsync(x => x.<#=entity.KeyMembers.FirstOrDefault().Name #> == i)
-													.ConfigureAwait(continueOnCapturedContext: false);
+                <#=entity.Name#> entity = dbContext.<#=(entity.BaseType == null?entitySet:entitySet + ".OfType<" + entity.Name + ">()")#>
+													.SingleOrDefault(x => x.<#=entity.KeyMembers.FirstOrDefault().Name #> == i);
                 if (entity == null)
                     return false;
 
                     dbContext.<#=(entity.BaseType == null?entitySet:"Set<" + entity.Name + ">()")#>.Attach(entity);
                     dbContext.<#=(entity.BaseType == null?entitySet:"Set<" + entity.Name + ">()")#>.Remove(entity);
-                    await dbContext.SaveChangesAsync().ConfigureAwait(continueOnCapturedContext: false);
+                    dbContext.SaveChanges();
                     return true;
               }
             }
@@ -657,14 +640,12 @@ namespace <#=container.Name#>.Business.Services
                     var set = (IQueryable<<#=entity.Name#>>)dbContext.<#=(entity.BaseType == null?entitySet:"Set<" + entity.Name + ">()")#>; 
                     if (expLst.FirstOrDefault() == "All")
                     {
-                        return await set.AsNoTracking().CountAsync()
-                                            .ConfigureAwait(continueOnCapturedContext: false);
+                        return set.AsNoTracking().Count();
                     }
                     else
                     {
                         set = AddWheres(expLst, set);
-                        return await set.AsNoTracking().CountAsync()
-                                        .ConfigureAwait(continueOnCapturedContext: false);
+                        return set.AsNoTracking().Count();
                     }
                     
                 }
@@ -692,19 +673,17 @@ namespace <#=container.Name#>.Business.Services
                     if (string.IsNullOrEmpty(exp) || exp == "None") return 0;
                     if (exp == "All")
                     {
-                        return await dbContext.<#=(entity.BaseType == null?entitySet:"Set<" + entity.Name + ">()")#>
+                        return dbContext.<#=(entity.BaseType == null?entitySet:"Set<" + entity.Name + ">()")#>
                                     .AsNoTracking()
-									.CountAsync()
-									.ConfigureAwait(continueOnCapturedContext: false);
+									.Count();
                     }
                     else
                     {
                         
-                        return await dbContext.<#=(entity.BaseType == null?entitySet:"Set<" + entity.Name + ">()")#>
+                        return dbContext.<#=(entity.BaseType == null?entitySet:"Set<" + entity.Name + ">()")#>
 									.AsNoTracking()
                                     .Where(exp)
-									.CountAsync()
-									.ConfigureAwait(continueOnCapturedContext: false);
+									.Count();
                     }
                 }
             }
@@ -732,25 +711,23 @@ namespace <#=container.Name#>.Business.Services
                     if (string.IsNullOrEmpty(exp) || exp == "None") return new List<<#=entity.Name#>>();
                     if (exp == "All")
                     {
-                        return await dbContext.<#=(entity.BaseType == null?entitySet:"Set<" + entity.Name + ">()")#>
+                        return dbContext.<#=(entity.BaseType == null?entitySet:"Set<" + entity.Name + ">()")#>
 										.AsNoTracking()
                                         .OrderBy(y => y.<#=entity.KeyMembers[0].Name#>)
 										.Skip(startIndex)
 										.Take(count)
-										.ToListAsync()
-										.ConfigureAwait(continueOnCapturedContext: false);
+										.ToList();
                     }
                     else
                     {
                         
-                        return await dbContext.<#=(entity.BaseType == null?entitySet:"Set<" + entity.Name + ">()")#>
+                        return dbContext.<#=(entity.BaseType == null?entitySet:"Set<" + entity.Name + ">()")#>
 										.AsNoTracking()
                                         .Where(exp)
 										.OrderBy(y => y.<#=entity.KeyMembers[0].Name#>)
 										.Skip(startIndex)
 										.Take(count)
-										.ToListAsync()
-										.ConfigureAwait(continueOnCapturedContext: false);
+										.ToList();
                     }
                 }
             }
@@ -778,10 +755,9 @@ namespace <#=container.Name#>.Business.Services
                     dbContext.Database.CommandTimeout = 0;
                     if (exp == "All" && navExp.Count == 0)
                     {
-                        return await dbContext.<#=(entity.BaseType == null?entitySet:"Set<" + entity.Name + ">()")#>
+                        return dbContext.<#=(entity.BaseType == null?entitySet:"Set<" + entity.Name + ">()")#>
 										.AsNoTracking()
-                                        .CountAsync()
-										.ConfigureAwait(continueOnCapturedContext: false);
+                                        .Count();
                     }
 <#+if (entity.NavigationProperties.Any())
 { #>
@@ -815,10 +791,9 @@ namespace <#=container.Name#>.Business.Services
 <#+ 
 } 
 #>
-                    return await dbContext.<#=(entity.BaseType == null?entitySet:"Set<" + entity.Name + ">()")#>.Where(exp == "All" || exp == null ? "<#=entity.KeyMembers[0].Name#> != null" : exp)
+                    return dbContext.<#=(entity.BaseType == null?entitySet:"Set<" + entity.Name + ">()")#>.Where(exp == "All" || exp == null ? "<#=entity.KeyMembers[0].Name#> != null" : exp)
 											.AsNoTracking()
-                                            .CountAsync()
-											.ConfigureAwait(continueOnCapturedContext: false);
+                                            .Count();
                 }
                 
             }
@@ -854,15 +829,14 @@ namespace <#=container.Name#>.Business.Services
         {
 			try
 			{
-            return await dbContext.Set<T>()
+            return dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
                 .SelectMany(navProp).OfType<<#=entity.Name#>>()
                 .Where(exp == "All" || exp == null ? "<#=entity.KeyMembers[0].Name#> != null" : exp)
                 .Distinct()
                 .OrderBy("<#=entity.KeyMembers[0].Name#>")
-                .CountAsync()
-				.ConfigureAwait(continueOnCapturedContext: false);
+                .Count();
 			}
 			catch (Exception)
 			{
@@ -875,15 +849,14 @@ namespace <#=container.Name#>.Business.Services
         {
 			try
 			{
-            return await dbContext.Set<T>()
+            return dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
                 .Select(navProp).OfType<<#=entity.Name#>>()
                 .Where(exp == "All" || exp == null ? "<#=entity.KeyMembers[0].Name#> != null" : exp)
                 .Distinct()
                 .OrderBy("<#=entity.KeyMembers[0].Name#>")
-                .CountAsync()
-				.ConfigureAwait(continueOnCapturedContext: false);
+                .Count();
 			}
 			catch (Exception)
 			{
@@ -906,13 +879,12 @@ namespace <#=container.Name#>.Business.Services
                     if (exp == "All" && navExp.Count == 0)
                     {
                        
-                        return await set
+                        return set
 									.AsNoTracking()
                                     <#+ WriteOrderBy(orderByLst); #> 
                                     .Skip(startIndex)
                                     .Take(count)
-									.ToListAsync()
-									.ConfigureAwait(continueOnCapturedContext: false);
+									.ToList();
                     }
 <#+if (entity.NavigationProperties.Any())
 { #>
@@ -952,14 +924,13 @@ namespace <#=container.Name#>.Business.Services
 <#+ 
 } 
 #>
-                    return await set//dbContext.<#=(entity.BaseType == null?entitySet:"Set<" + entity.Name + ">()")#>
+                    return set//dbContext.<#=(entity.BaseType == null?entitySet:"Set<" + entity.Name + ">()")#>
 								.AsNoTracking()
                                 .Where(exp == "All" || exp == null ? "<#=entity.KeyMembers[0].Name#> != null" : exp)
 								<#+ WriteOrderBy(orderByLst); #> 
                                 .Skip(startIndex)
                                 .Take(count)
-								.ToListAsync()
-								.ConfigureAwait(continueOnCapturedContext: false);
+								.ToList();
 
 
                 }
@@ -1005,14 +976,13 @@ namespace <#=container.Name#>.Business.Services
     
             if (includeLst != null) set = includeLst.Aggregate(set, (current, itm) => current.Include(itm));            
 
-            return await set
+            return set
                 .Where(exp == "All" || exp == null ? "<#=entity.KeyMembers[0].Name#> != null" : exp)
                 .Distinct()
                 <#+ WriteOrderBy(orderByLst); #> 
                 .Skip(startIndex)
                 .Take(count)
-                .ToListAsync()
-				.ConfigureAwait(continueOnCapturedContext: false);
+                .ToList();
 			}
 			catch (Exception)
 			{
@@ -1033,14 +1003,13 @@ namespace <#=container.Name#>.Business.Services
 
                if (includeLst != null) set = includeLst.Aggregate(set, (current, itm) => current.Include(itm)); 
                 
-               return await set
+               return set
                 .Where(exp == "All" || exp == null ? "<#=entity.KeyMembers[0].Name#> != null" : exp)
                 .Distinct()
                 <#+ WriteOrderBy(orderByLst); #> 
                 .Skip(startIndex)
                 .Take(count)
-                .ToListAsync()
-				.ConfigureAwait(continueOnCapturedContext: false);
+                .ToList();
 							 }
 			catch (Exception)
 			{
@@ -1081,14 +1050,13 @@ namespace <#=container.Name#>.Business.Services
 
 			if (includesLst == null)
 			{
-				return await dbContext.Set<T>()
+				return dbContext.Set<T>()
 							.AsNoTracking()
                             .Where(navExp)
 							.SelectMany(navProp).OfType<<#=entity.Name#>>()
 							.Where(exp == "All" || exp == null?"<#=entity.KeyMembers[0].Name#> != null":exp)
 							.Distinct()
-							.ToListAsync()
-							.ConfigureAwait(continueOnCapturedContext: false);
+							.ToList();
 			}
 
 			var set = (DbQuery<<#=entity.Name#>>)dbContext.Set<T>()
@@ -1100,8 +1068,7 @@ namespace <#=container.Name#>.Business.Services
 
 			set = includesLst.Aggregate(set, (current, itm) => current.Include(itm));
 
-            return await set.ToListAsync()
-							.ConfigureAwait(continueOnCapturedContext: false);
+            return set.ToList();
 			}
 			catch (Exception)
 			{
@@ -1118,14 +1085,13 @@ namespace <#=container.Name#>.Business.Services
 
 			if (includesLst == null)
 			{
-				return await dbContext.Set<T>()
+				return dbContext.Set<T>()
 							.AsNoTracking()
                             .Where(navExp)
 							.Select(navProp).OfType<<#=entity.Name#>>()
 							.Where(exp == "All" || exp == null?"<#=entity.KeyMembers[0].Name#> != null":exp)
 							.Distinct()
-							.ToListAsync()
-							.ConfigureAwait(continueOnCapturedContext: false);
+							.ToList();
 			}
 
 			var set = (DbQuery<<#=entity.Name#>>)dbContext.Set<T>()
@@ -1137,8 +1103,7 @@ namespace <#=container.Name#>.Business.Services
 
 			set = includesLst.Aggregate(set, (current, itm) => current.Include(itm));
 
-            return await set.ToListAsync()
-							.ConfigureAwait(continueOnCapturedContext: false);
+            return set.ToList();
 			}
 			catch (Exception)
 			{
@@ -1163,7 +1128,7 @@ namespace <#=container.Name#>.Business.Services
               {
                 <#+WriteStringToIdType(p); #>
                 var set = AddIncludes(includesLst, dbContext);
-                IEnumerable<<#=entity.Name#>> entities = await set//dbContext.<#=(entity.BaseType == null?entitySet:entitySet + ".OfType<" + entity.Name + ">()")#>
+                IEnumerable<<#=entity.Name#>> entities = set//dbContext.<#=(entity.BaseType == null?entitySet:entitySet + ".OfType<" + entity.Name + ">()")#>
 <#+
         foreach (var navProperty in entity.NavigationProperties.Where(np => np.DeclaringType == entity))
             {
@@ -1175,8 +1140,7 @@ namespace <#=container.Name#>.Business.Services
             }
 #>                                      .AsNoTracking()
                                         .Where(x => x.<#= p.Name #>.ToString() == <#= p.Name #>.ToString())
-										.ToListAsync()
-										.ConfigureAwait(continueOnCapturedContext: false);
+										.ToList();
                 return entities;
               }
              }

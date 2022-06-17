@@ -56,34 +56,43 @@ namespace WaterNut.DataSpace
 
         }
 
-        
+        Dictionary<string, IRawDataExtractor> extractors = new Dictionary<string, IRawDataExtractor>()
+        {
+            {FileTypeManager.EntryTypes.SubItems, new SaveCsvSubItems()},
+            {FileTypeManager.EntryTypes.Po, new SaveCsvEntryData()},
+            {FileTypeManager.EntryTypes.Unknown, new SaveCsvEntryData()},
+            {FileTypeManager.EntryTypes.ShipmentInvoice, new SaveCsvEntryData()},
+            {FileTypeManager.EntryTypes.Sales, new SaveCsvEntryData()},
+            {FileTypeManager.EntryTypes.Dis, new SaveCsvEntryData()},
+            {FileTypeManager.EntryTypes.Adj, new SaveCsvEntryData()},
+            {FileTypeManager.EntryTypes.Ops, new SaveCsvEntryData()},
+            {FileTypeManager.EntryTypes.Rider, new SaveCsvEntryData()},
+
+        };
+
 
         private async Task SaveCSV(string droppedFilePath, FileTypes fileType, List<AsycudaDocumentSet> docSet,
+            bool overWriteExisting)
+        {
+            var rawDataFile = CreateRawDataFile(droppedFilePath, fileType, docSet, overWriteExisting);
+
+            await extractors[fileType.FileImporterInfos.EntryType].Extract(rawDataFile).ConfigureAwait(false);
+
+        }
+
+        private static RawDataFile CreateRawDataFile(string droppedFilePath, FileTypes fileType, List<AsycudaDocumentSet> docSet,
             bool overWriteExisting)
         {
             var csvImporter = new CSVImporter(fileType);
             var emailId = Utils.GetExistingEmailId(droppedFilePath, fileType);
 
             var lines = csvImporter.GetFileLines(droppedFilePath).ToArray();
-           
+
             var fixedHeadings = csvImporter.GetHeadings(lines).ToArray();
 
-            if (fileType.FileImporterInfos.EntryType == FileTypeManager.EntryTypes.SubItems)
-            {
-                await SaveCsvSubItems.Instance.ExtractSubItems(fileType.FileImporterInfos.EntryType, lines, fixedHeadings)
-                    .ConfigureAwait(false);
-            }
-            else
-            {
-                await SaveCsvEntryData.Instance
-                    .ExtractEntryData(fileType, lines, fixedHeadings, docSet, overWriteExisting, emailId,
-                        droppedFilePath).ConfigureAwait(false);
-            }
-
+            var rawDataFile =
+                new RawDataFile(fileType, lines, fixedHeadings, docSet, overWriteExisting, emailId, droppedFilePath);
+            return rawDataFile;
         }
-
-        
-
-
     }
 }

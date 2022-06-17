@@ -92,6 +92,8 @@
     <Compile Include="Extensions\Dictionary2CSV.cs" />
     <Compile Include="Extensions\DynamicExtensions.cs" />
     <Compile Include="Extensions\MefExtensions.cs" />
+    <Compile Include="Extensions\Result.cs" />
+    <Compile Include="Extensions\ResultExtensions.cs" />
     <Compile Include="IAsyncInitialization.cs" />
     <Compile Include="Model.Validation\AddressValidationAttribute.cs" />
     <Compile Include="Model.Validation\RequiredValidationAttribute.cs" />
@@ -108,6 +110,10 @@
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Microsoft.Office.Interop.Excel, Version=15.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Microsoft.Office.Interop.Excel.15.0.4795.1001\lib\net20\Microsoft.Office.Interop.Excel.dll</HintPath>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="System" />

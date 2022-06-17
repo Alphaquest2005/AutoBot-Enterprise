@@ -72,12 +72,18 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="BouncyCastle" Version="1.8.9" />
+    <PackageReference Include="BouncyCastle.Crypto.dll" Version="1.8.1" />
     <PackageReference Include="EntityFramework" Version="6.4.4" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="NSubstitute" Version="4.3.0" />
     <PackageReference Include="NUnit" Version="3.13.3" />
+    <PackageReference Include="PdfPig" Version="0.1.6" />
     <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="6.0.0" />
     <PackageReference Include="System.Threading.Tasks.Extensions" Version="4.5.4" />
+    <PackageReference Include="Tesseract" Version="4.1.1" />
+    <PackageReference Include="TesserNet" Version="0.7.0" />
+    <PackageReference Include="TesserNet.System.Drawing" Version="0.7.0" />
     <PackageReference Include="TrackableEntities.Client" Version="2.5.7" />
     <PackageReference Include="TrackableEntities.Common" Version="2.5.7" />
   </ItemGroup>

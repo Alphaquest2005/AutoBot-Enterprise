@@ -74,9 +74,10 @@ namespace WaterNut.Business.Services.Utils
                         .GroupBy(x => x.FileTypes)
                         .OrderByDescending(x => x.Count())
                         .Where(x => x.Key.IsImportable == null || x.Key.IsImportable == true)
+                        .Where(x => x.Key.FileImporterInfos.Format == suggestedfileType.FileImporterInfos.Format)
                         .FirstOrDefault(x =>
                             suggestedfileType.FileImporterInfos.EntryType == EntryTypes.Unknown
-                                ? x.Key.FileImporterInfos.EntryType != null
+                                ?( x.Key.FileImporterInfos.EntryType != null )
                                 : x.Key.FileImporterInfos.EntryType == suggestedfileType.FileImporterInfos.EntryType)?.Key;
 
 
@@ -138,6 +139,8 @@ namespace WaterNut.Business.Services.Utils
             FileTypes()
                 .Where(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)
                 .Where(x => x.FileImporterInfos?.EntryType == entryType && x.FileImporterInfos?.Format == fileFormat)
-                .Where(x => x.FileTypeMappings.Any() || entryType == EntryTypes.Unknown).ToList();
+                .Where(x => x.FileTypeMappings.Any() || entryType == EntryTypes.Unknown || x.FileImporterInfos?.Format == FileTypeManager.FileFormats.PDF)
+                .Where(x => x.ParentFileTypeId == null)
+                .ToList();
     }
 }

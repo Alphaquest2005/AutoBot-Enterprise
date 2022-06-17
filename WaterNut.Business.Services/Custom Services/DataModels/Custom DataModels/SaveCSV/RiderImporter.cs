@@ -12,14 +12,13 @@ namespace WaterNut.DataSpace
 {
     public class RiderImporter
     {
-        public void ProcessCsvRider(FileTypes fileType, List<AsycudaDocumentSet> docSet, bool overWriteExisting,
-            string emailId,  string droppedFilePath, List<dynamic> eslst)
+        public void Process(DataFile dataFile)
         {
             try
             {
                 
 
-                var csvRiders = eslst.Select(x => ((IDictionary<string, object>) x))
+                var csvRiders = dataFile.Data.Select(x => ((IDictionary<string, object>) x))
                     .GroupBy(x => new
                     {
                         ETA = x[nameof(ShipmentRider.ETA)],
@@ -57,7 +56,7 @@ namespace WaterNut.DataSpace
                     {
                         DateTime eta = (DateTime) (rawRider.ETA ?? DateTime.MinValue);
                         var existingRider = ctx.ShipmentRider.Where(x => x.ETA == eta).ToList()
-                            .Where(x => new FileInfo(x.SourceFile).Name == new FileInfo(droppedFilePath).Name);
+                            .Where(x => new FileInfo(x.SourceFile).Name == new FileInfo(dataFile.DroppedFilePath).Name);
                         if (existingRider.Any()) ctx.ShipmentRider.RemoveRange(existingRider);
                         
                         var invoiceLst = rawRider.ShipmentRiderDetails.Select(x => new
@@ -184,9 +183,9 @@ namespace WaterNut.DataSpace
                             ApplicationSettingsId = BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId,
                             ETA = (DateTime)(rawRider.ETA ?? DateTime.MinValue),
                             DocumentDate = (DateTime)(rawRider.DocumentDate ?? DateTime.MinValue),
-                            FileTypeId =fileType.Id,
-                            EmailId = emailId,
-                            SourceFile = droppedFilePath,
+                            FileTypeId =dataFile.FileType.Id,
+                            EmailId = dataFile.EmailId,
+                            SourceFile = dataFile.DroppedFilePath,
                             TrackingState = TrackingState.Added,
                             ShipmentRiderDetails = riderDetails
                         });

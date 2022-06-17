@@ -235,8 +235,8 @@ namespace WaterNut.DataSpace
             using (var ctx = new DocumentDSContext())
             {
                 var doctype = BaseDataModel.Instance.Customs_Procedures
-                    .Single(x => x.CustomsOperationId == (int)CustomsOperations.Warehouse
-                                 && x.Sales == true );//&& x.Discrepancy != true
+                    .First(x => x.CustomsOperationId == (int)CustomsOperations.Warehouse
+                                 && x.IsDefault == true );//&& x.Discrepancy != true
                 ctx.Database.ExecuteSqlCommand($@"INSERT INTO AsycudaDocumentSet
                                         (ApplicationSettingsId, Declarant_Reference_Number, Document_TypeId, Customs_ProcedureId, Exchange_Rate)
                                     VALUES({BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId},'{docRef}',{

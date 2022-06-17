@@ -57,6 +57,9 @@ namespace xlsxWriter
                 var doRider = false;
                 foreach (var shipmentInvoice in shipmentInvoices)
                 {
+                    try
+                    {
+
                     var pdfFile = new FileInfo(shipmentInvoice.SourceFile);
 
                     if (shipmentInvoice.ShipmentRiderInvoice.Any() &&
@@ -64,8 +67,8 @@ namespace xlsxWriter
                     {
                         parent = shipmentInvoice;
 
-
-                        if (parent.ShipmentInvoicePOs.Any())
+                            
+                        if (parent.ShipmentInvoicePOs.Any(x => !String.Equals(x.PurchaseOrders.PONumber, "Null", StringComparison.CurrentCultureIgnoreCase)))
                         {
                             csvFilePath = Path.Combine(pdfFile.DirectoryName,
                                 $"{parent.ShipmentInvoicePOs.First().PurchaseOrders.PONumber.Replace("/", "-")}.xlsx");
@@ -86,7 +89,7 @@ namespace xlsxWriter
                         parent = shipmentInvoice;
 
 
-                        if (parent.ShipmentInvoicePOs.Any())
+                        if (parent.ShipmentInvoicePOs.Any(x => !String.Equals(x.PurchaseOrders.PONumber, "Null", StringComparison.CurrentCultureIgnoreCase)))
                         {
                             csvFilePath = Path.Combine(pdfFile.DirectoryName,
                                 $"{parent.ShipmentInvoicePOs.First().PurchaseOrders.PONumber.Replace("/", "-")}.xlsx");
@@ -105,7 +108,7 @@ namespace xlsxWriter
                     if (workbook == null) continue;
                     WriteInvHeader(shipmentInvoice, header, workbook);
 
-                    if (shipmentInvoice.ShipmentInvoicePOs.Any())
+                    if (shipmentInvoice.ShipmentInvoicePOs.Any(x => !String.Equals(x.PurchaseOrders.PONumber, "Null", StringComparison.CurrentCultureIgnoreCase)))
                     {
                         foreach (var pO in shipmentInvoice.ShipmentInvoicePOs)
                         {
@@ -150,10 +153,15 @@ namespace xlsxWriter
                             File.Copy(pdfFile.FullName, pdfFilePath, true);
                         csvs.Add((shipmentInvoice.InvoiceNo, pdfFilePath));
                     }
-                }
+                    }
+                    catch (Exception)
+                    {
+                       
+                    }
+                }           
 
 
-                return csvs;
+            return csvs;
             }
             catch (Exception e)
             {
@@ -162,72 +170,6 @@ namespace xlsxWriter
             }
         }
 
-        //public static List<(string reference, string filepath)> CreateCSV(ShipmentInvoice shipmentInvoice, int riderId)
-        //{
-
-        //    try
-        //    {
-
-        //        var pdfFile = new FileInfo(shipmentInvoice.SourceFile);
-        //        var pdfFilePath = "";
-        //        var csvFilePath = "";
-        //        var csvs = new List<(string reference, string filepath)>();
-        //        var poTemplate = new CoreEntitiesContext().FileTypes
-        //            .Include(x => x.FileTypeMappings)
-        //            .First(x => x.ApplicationSettingsId ==
-        //                        BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId
-        //                        && x.Type == "POTemplate");
-
-
-        //        var header = poTemplate.FileTypeMappings.OrderBy(x => x.Id).Select((x) => new { value = x, index = poTemplate.FileTypeMappings.IndexOf(x) })
-        //            .ToDictionary(x => (Column: x.value.OriginalName,Index: x.index ), v => v.value);
-
-
-        //            if (shipmentInvoice.ShipmentInvoicePOs.Any())
-        //            {
-
-        //                foreach (var pO in shipmentInvoice.ShipmentInvoicePOs)
-        //                {
-        //                    pdfFilePath = Path.Combine(pdfFile.DirectoryName, $"{pO.PurchaseOrders.PONumber}.pdf");
-        //                    csvFilePath = Path.Combine(pdfFile.DirectoryName, $"{pO.PurchaseOrders.PONumber}.xlsx");
-        //                    var workbook = CreateShipmentWorkBook(riderId, shipmentInvoice, csvFilePath, header,
-        //                        out var invoiceRow, out var riderdetails, out var doRider);
-        //                    var i = 1;
-        //                    WritePOToFile(pO, workbook, i, header, doRider, riderdetails, invoiceRow);
-
-        //                    DoMisMatches(shipmentInvoice, workbook);
-        //                    workbook.Save();
-        //                    if (!File.Exists(pdfFilePath)) File.Copy(pdfFile.FullName, pdfFilePath);
-        //                    csvs.Add((pO.PurchaseOrders.PONumber, pdfFilePath));
-        //                    csvs.Add((pO.PurchaseOrders.PONumber, csvFilePath));
-        //                }
-        //            }
-        //            else
-        //            {
-        //                pdfFilePath = Path.Combine(pdfFile.DirectoryName, $"{shipmentInvoice.InvoiceNo}.pdf");
-        //                csvFilePath = Path.Combine(pdfFile.DirectoryName, $"{shipmentInvoice.InvoiceNo}.xlsx");
-        //                var workbook = CreateShipmentWorkBook(riderId, shipmentInvoice, csvFilePath, header,
-        //                    out var invoiceRow, out var riderdetails, out var doRider);
-        //                var i = 1;
-
-        //                WriteInvToFile(shipmentInvoice, workbook, i, header, doRider, riderdetails);
-
-        //                DoMisMatches(shipmentInvoice, workbook);
-        //                workbook.Save();
-        //                if (!File.Exists(pdfFilePath)) File.Copy(pdfFile.FullName, pdfFilePath);
-        //                csvs.Add((shipmentInvoice.InvoiceNo, pdfFilePath));
-        //                csvs.Add((shipmentInvoice.InvoiceNo, csvFilePath));
-        //            }
-
-
-        //        return csvs;
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        Console.WriteLine(e);
-        //        throw;
-        //    }
-        //}
 
         private static void WriteInvToFile(ShipmentInvoice shipmentInvoice, Workbook workbook,
             Dictionary<(string Column, int Index), FileTypeMappings> header,
@@ -789,8 +731,8 @@ namespace xlsxWriter
                         currentline++;
 
                     }
-
-                    if (!summaryPkg.Invoices[i].ShipmentInvoicePOs.Any())
+                    
+                    if (summaryPkg.Invoices[i].ShipmentInvoicePOs.All(x => String.Equals(x.PurchaseOrders.PONumber, "Null", StringComparison.CurrentCultureIgnoreCase)))
                     {
                         var importedVSExpectedTotal = summaryPkg.Invoices[i].InvoiceTotal.GetValueOrDefault()
                                                       - (summaryPkg.Invoices[i].SubTotal.GetValueOrDefault()

@@ -59,18 +59,53 @@ namespace AutoBotUtilities.Tests
                 {
                     CSVUtils.SaveCsv(new List<FileInfo>(){new FileInfo(testFile)}, fileType);
 
-                    
-                        using (var ctx = new EntryDataDSContext())
+
+                    using (var ctx = new EntryDataDSContext())
+                    {
+                        Assert.Multiple(() =>
                         {
-                            Assert.Multiple(() =>
-                            {
 
-                                Assert.AreEqual(ctx.EntryData.Count(), 1);
-                                Assert.AreEqual(ctx.EntryDataDetails.Count(), 10);
-                            });
-                        }
+                            Assert.AreEqual(ctx.EntryData.Count(), 1);
+                            Assert.AreEqual(ctx.EntryDataDetails.Count(), 10);
+                        });
+                    }
 
-                    
+
+                }
+
+                Assert.IsTrue(true);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                Assert.IsTrue(false);
+            }
+        }
+
+        [Test]
+        public void CanImportShipmentInvoice()
+        {
+            try
+            {
+                if (!Infrastructure.Utils.IsTestApplicationSettings()) Assert.IsTrue(true);
+                var testFile = Infrastructure.Utils.GetTestSalesFile(new List<string>() { "01987.pdf" });
+                var fileTypes = (IEnumerable<FileTypes>)FileTypeManager.GetImportableFileType(FileTypeManager.EntryTypes.ShipmentInvoice, FileTypeManager.FileFormats.PDF);
+                foreach (var fileType in fileTypes)
+                {
+                    PDFUtils.ImportPDF(new FileInfo[]{new FileInfo(testFile)}, fileType);
+
+
+                    using (var ctx = new EntryDataDSContext())
+                    {
+                        Assert.Multiple(() =>
+                        {
+
+                            Assert.AreEqual(ctx.ShipmentInvoice.Count(), 1);
+                            Assert.AreEqual(ctx.ShipmentInvoiceDetails.Count(), 10);
+                        });
+                    }
+
+
                 }
 
                 Assert.IsTrue(true);
@@ -88,7 +123,15 @@ namespace AutoBotUtilities.Tests
             try
             {
                 if (!Infrastructure.Utils.IsTestApplicationSettings()) Assert.IsTrue(true);
-                Infrastructure.Utils.ImportEntryDataOldWay(new List<string>() { "TestPOCSVFile.csv" }, FileTypeManager.EntryTypes.Po, FileTypeManager.FileFormats.Csv);
+                // Infrastructure.Utils.ImportEntryDataOldWay(new List<string>() { "TestPOCSVFile.csv" }, FileTypeManager.EntryTypes.Po, FileTypeManager.FileFormats.Csv);
+                var testFile = Infrastructure.Utils.GetTestSalesFile(new List<string>() { "TestPOCSVFile.csv" });
+                var fileTypes = Infrastructure.Utils.GetPOCSVFileType();
+                foreach (var fileType in fileTypes)
+                {
+                    new FileTypeImporter(fileType).Import(testFile);
+
+                }
+
                 Assert.IsTrue(true);
             }
             catch (Exception e)

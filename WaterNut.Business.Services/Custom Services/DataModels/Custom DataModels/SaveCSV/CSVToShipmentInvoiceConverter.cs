@@ -11,15 +11,6 @@ namespace WaterNut.DataSpace
     {
         public readonly EntryDataImporter _entryDataImporter;
 
-        static CSVToShipmentInvoiceConverter()
-        {
-        }
-
-        public CSVToShipmentInvoiceConverter()
-        {
-            _entryDataImporter = new EntryDataImporter();
-        }
-
         public List<dynamic> ConvertCSVToShipmentInvoice(List<dynamic> eslst)
         {
            
@@ -73,7 +64,7 @@ namespace WaterNut.DataSpace
                             x.EffectiveDate,
                             VolumeLiters =
                                 Convert.ToDouble(
-                                    x.Gallons * _entryDataImporter.GalToLtrRate ?? Convert.ToDouble((double)(x.Liters ?? 0.0))),
+                                    x.Gallons * DomainFactLibary.GalToLtrRate ?? Convert.ToDouble((double)(x.Liters ?? 0.0))),
                         }),
                     f = g.Select(x => new
                     {

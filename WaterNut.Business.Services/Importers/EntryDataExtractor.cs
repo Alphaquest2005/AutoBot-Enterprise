@@ -6,6 +6,7 @@ using Core.Common.Utils;
 using DocumentDS.Business.Entities;
 using EntryDataDS.Business.Entities;
 using MoreLinq.Extensions;
+using WaterNut.DataSpace;
 using FileTypes = CoreEntities.Business.Entities.FileTypes;
 
 namespace WaterNut.Business.Services.Importers
@@ -16,7 +17,7 @@ namespace WaterNut.Business.Services.Importers
         private readonly List<AsycudaDocumentSet> _docSet;
         private readonly string _emailId;
         private readonly string _droppedFilePath;
-        private dynamic GalToLtrRate = 3.785;
+        
 
         public EntryDataExtractor(FileTypes fileType, List<AsycudaDocumentSet> docSet,
             string emailId, string droppedFilePath)
@@ -96,7 +97,7 @@ namespace WaterNut.Business.Services.Importers
                               InventoryItemId = x.InventoryItemId ?? 0,
                               EffectiveDate = x.EffectiveDate,
                               VolumeLiters =
-                                  Convert.ToDouble(x.Gallons * GalToLtrRate ??
+                                  Convert.ToDouble(x.Gallons * DomainFactLibary.GalToLtrRate ??
                                                    Convert.ToDouble((double)(x.Liters ?? 0.0))),
                           }),
                       f: g.Select(x => (
