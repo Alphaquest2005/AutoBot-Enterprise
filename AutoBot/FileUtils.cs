@@ -11,7 +11,7 @@ namespace AutoBot
         public static Dictionary<string, Action<FileTypes, FileInfo[]>> FileActions =>
             new Dictionary<string, Action<FileTypes, FileInfo[]>>(Utils.ignoreCase)
             {
-                {"ImportSalesEntries",(ft, fs) => SalesUtils.ImportSalesEntries() },
+                {"ImportSalesEntries",(ft, fs) => SalesUtils.ImportSalesEntries(false) },
                 {"AllocateSales",(ft, fs) => SalesUtils.AllocateSales() },
                 {"CreateEx9",(ft, fs) => EX9Utils.CreateEx9(false) },
                 {"ExportEx9Entries",(ft, fs) => EX9Utils.ExportEx9Entries() },

@@ -40,7 +40,7 @@ namespace AutoBot
                 {"AssessDISEntries",() => DISUtils.AssessDISEntries("DIS") },
                 {"AssessADJEntries",() => DISUtils.AssessDISEntries("ADJ") },
                 {"DownloadSalesFiles",() => EX9Utils.DownloadSalesFiles(20,"IM7History") },
-                {"ImportSalesEntries", SalesUtils.ImportSalesEntries },
+                {"ImportSalesEntries", () => SalesUtils.ImportSalesEntries(true) },
                 {"SubmitDiscrepanciesToCustoms", DISUtils.SubmitDiscrepanciesToCustoms },
                 {"DownloadPDFs", PDFUtils.DownloadPDFs },
                 {"LinkPDFs", PDFUtils.LinkPDFs },

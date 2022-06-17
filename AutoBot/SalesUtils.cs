@@ -387,7 +387,7 @@ namespace AutoBot
             return alst;
         }
 
-        public static void ImportSalesEntries()
+        public static void ImportSalesEntries(bool overwriteExisting)
         {
             try
             {
@@ -401,6 +401,7 @@ namespace AutoBot
                     var lastdbfile =
                         ctx.AsycudaDocumentSet_Attachments.Include(x => x.Attachments).OrderByDescending(x => x.AttachmentId).FirstOrDefault(x => x.AsycudaDocumentSetId == docSetId);
                     var lastfiledate = lastdbfile != null ? File.GetCreationTime(lastdbfile.Attachments.FilePath) : DateTime.Today.AddDays(-1);
+
                     var fileTypes = ctx.FileTypes.Where(x =>
                         x.FileImporterInfos.Format == FileTypeManager.FileFormats.XML && x.ApplicationSettingsId ==
                         BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId);
@@ -423,7 +424,7 @@ namespace AutoBot
                         {
                             var docSet = WaterNut.DataSpace.EntryDocSetUtils.GetAsycudaDocumentSet(ft.DocSetRefernece, true);
                             BaseDataModel.Instance.ImportDocuments(docSet.AsycudaDocumentSetId,
-                                csvFiles.Select(x => x.FullName).ToList(), true, true, false, true, true).Wait();
+                                csvFiles.Select(x => x.FullName).ToList(), true, true, false, overwriteExisting, true).Wait();
                         }
                     }
 

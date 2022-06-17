@@ -36,7 +36,7 @@ namespace AutoBot
                 ExportEx9Entries();
                 AssessEx9Entries();
                 DownloadSalesFiles(10, "IM7", false);
-                SalesUtils.ImportSalesEntries();
+                SalesUtils.ImportSalesEntries(true);
                 ImportWarehouseErrorsUtils.ImportWarehouseErrors();
                 RecreateEx9();
                 Application.Exit();
