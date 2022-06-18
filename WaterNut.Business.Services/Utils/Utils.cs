@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
+using System.Linq.Expressions;
 using CoreEntities.Business.Entities;
 using DocumentDS.Business.Entities;
 using EmailDownloader;
@@ -26,23 +27,22 @@ namespace WaterNut.DataSpace
 
         public static List<AsycudaDocumentSet> GetDocSets(FileTypes fileType)
         {
-            HashSet<AsycudaDocumentSet> docSet;
-            var asycudaDocumentSet = EntryDocSetUtils.GetAsycudaDocumentSet(fileType.DocSetRefernece, true);
-
-            docSet = new HashSet<AsycudaDocumentSet>();
+            HashSet<AsycudaDocumentSet> docSet = new HashSet<AsycudaDocumentSet>();
+            var sysDocSet = EntryDocSetUtils.GetAsycudaDocumentSet(fileType.DocSetRefernece, true);
             
+            GetAsycudaDocumentSets(x => x.AsycudaDocumentSetId == fileType.AsycudaDocumentSetId && fileType.AsycudaDocumentSetId != 0).ForEach(x => docSet.Add(x));
+
             var originaldocSetRefernece = GetFileTypeOriginalReference(fileType);
             if (fileType.CopyEntryData)
             {
-                docSet.Add(asycudaDocumentSet);
-                GetAsycudaDocumentSets(originaldocSetRefernece).ForEach(x => docSet.Add(x));
+                GetAsycudaDocumentSets( x => x.Declarant_Reference_Number == originaldocSetRefernece).ForEach(x => docSet.Add(x));
             }
             else
             {
-                if (IsSystemDocSet(asycudaDocumentSet))
+                if (IsSystemDocSet(sysDocSet))
                 {
                     docSet.Clear();
-                    GetAsycudaDocumentSets(originaldocSetRefernece).ForEach(x => docSet.Add(x));
+                    GetAsycudaDocumentSets(x => x.Declarant_Reference_Number == originaldocSetRefernece).ForEach(x => docSet.Add(x));
 
                 }
 
@@ -65,7 +65,7 @@ namespace WaterNut.DataSpace
             }
         }
 
-        private static List<AsycudaDocumentSet> GetAsycudaDocumentSets(string docSetRefernece)
+        private static List<AsycudaDocumentSet> GetAsycudaDocumentSets( Expression<Func<AsycudaDocumentSet, bool>> predicate)
         {
             using (var ctx = new DocumentDSContext())
             {
@@ -73,7 +73,7 @@ namespace WaterNut.DataSpace
                     .Include(x => x.SystemDocumentSet)
                     .Where(x => x.ApplicationSettingsId ==
                                 BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)
-                    .Where(x => x.Declarant_Reference_Number == docSetRefernece).ToList();
+                    .Where(predicate).ToList();
             }
         }
 

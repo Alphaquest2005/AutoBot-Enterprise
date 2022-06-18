@@ -18,8 +18,11 @@ namespace WaterNut.DataSpace
 
                 
                 var emptyDetailsLst = entryDataLst.Where(x => !x.EntryDataDetails.Any()).ToList();
-                emptyDetailsLst.ForEach(x =>  throw new ApplicationException(x.EntryData.EntryDataId + " has no details"));
+                var errlst = emptyDetailsLst.Select(x => new { DataFile = x ,Error = new ApplicationException(x.EntryData.EntryDataId + " has no details")}).ToList();
+                if (errlst.Any())
+                {
 
+                }
 
                 var goodLst = entryDataLst
                     .Where(x => x.EntryDataDetails.Any())
