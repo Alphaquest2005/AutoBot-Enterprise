@@ -77,13 +77,10 @@ namespace WaterNut.QuerySpace
                     }
                     if (f.EndsWith(".xlsx"))
                     {
-                        var fileTypes = FileTypeManager.FileTypes()
-                            .First(x => x.FileImporterInfos.EntryType == FileTypeManager.EntryTypes.Unknown && x.FileImporterInfos.Format == FileTypeManager.FileFormats.Xlsx
-                                //&& x.ChildFileTypes.Any(z => z.Type == fileType)
-                                
-                                && x.ApplicationSettingsId == WaterNut.QuerySpace.CoreEntities.ViewModels.BaseViewModel.Instance.CurrentApplicationSettings.ApplicationSettingsId);
+                        var fileTypes = FileTypeManager.GetImportableFileType(fileType,
+                            FileTypeManager.FileFormats.Xlsx);
 
-                        XLSXImporter.Xlsx2csv(new FileInfo[]{ new FileInfo(f)}, fileTypes, overwrite);
+                        XLSXImporter.Xlsx2csv(new FileInfo[]{ new FileInfo(f)}, fileTypes.FirstOrDefault(), overwrite);
                     }
 
                 }

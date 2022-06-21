@@ -361,7 +361,8 @@ SELECT       coalesce([#StockDifferences].InvoiceNo, [#OPS to Zero - Overs].Invo
 			 AVG(isnull(AsycudaCost,0)) AS AsycudaCost,
 			 (isnull(avg([#StockDifferences].[OPS-Quantity]),0) +  avg(isnull(Adj.Quantity,0)) + avg(isnull([#P2O-Returns].Quantity,0)) + avg(isnull([#OPS to Zero - Overs].Quantity,0))) AS [OPS-Quantity],
 			 sum(isnull([Asycuda-Quantity],0)) AS [Asycuda-Quantity],
-			 (isnull(avg([#StockDifferences].[OPS-Quantity]),0) +  avg(isnull(Adj.Quantity,0)) + avg(isnull([#P2O-Returns].Quantity,0)) + avg(isnull([#OPS to Zero - Overs].Quantity,0)) - (isnull(sum([Asycuda-Quantity]), 0)/* -  isnull(sum([Asycuda-PiQuantity]), 0)*/)) AS Diff,
+			 (sum(isnull([Asycuda-Quantity],0)) - sum(isnull([Asycuda-PiQuantity],0))) AS [Asycuda-QuantityOnHand],
+			 isnull(avg([OPS-QuantityOnHand]),0) -(sum(isnull([Asycuda-Quantity],0)) - sum(isnull([Asycuda-PiQuantity],0))) AS Diff,
 			 AVG(isnull([#StockDifferences].Cost,0)) AS Cost,
 			 AVG(isnull(TotalCost,0)) AS TotalCost
 into #Results
@@ -408,7 +409,7 @@ where --not ((isnull([Asycuda-Quantity], 0) = 0 and isnull([OPS-QuantityOnHand],
 
 
 drop table [#P2O-Overs]
-SELECT  distinct 'P2O-Overs-' + FORMAT(@startdate, 'MMMyy') + '-' + FORMAT(@endDate, 'MMMyy') as [Invoice #], @startdate as [Date],[#Results].InvoiceNo, [#Results].ItemNumber,[#Results].InventoryItemId ,[#Results].Description, [#Results].[Asycuda-Quantity] as [From Quantity], [#Results].OPSCost, [#Results].[Quantity] as [To Quantity], [#Results].AsycudaCost, abs([#Results].Diff) as Quantity, [#Results].Cost, 'XCD' as Currency
+SELECT  distinct 'P2O-Overs-' + FORMAT(@startdate, 'MMMyy') + '-' + FORMAT(@endDate, 'MMMyy') as [Invoice #], @startdate as [Date],[#Results].InvoiceNo, [#Results].ItemNumber,[#Results].InventoryItemId ,[#Results].Description, [#Results].[Asycuda-QuantityOnHand] as [From Quantity], [#Results].OPSCost, [#Results].[OPS-QuantityOnHand] as [To Quantity], [#Results].AsycudaCost, abs([#Results].Diff) as Quantity, [#Results].Cost, 'XCD' as Currency
 into [#P2O-Overs]
 FROM     [#InComplete] as [#Results]       left outer join [InventoryItems-NonStock] on [#Results].InventoryItemId = [InventoryItems-NonStock].InventoryItemId    
 			                 
@@ -424,7 +425,7 @@ WHERE        ([#Results].InvoiceNo <> 'Asycuda') and cost <> 0 and [#Results].[A
 
 
 drop table [#P2O-Shorts]
-SELECT  distinct  'P2O-Shorts-' + FORMAT(@startdate, 'MMMyy') + '-' + FORMAT(@endDate, 'MMMyy') as [Invoice #], @endDate as [Date], [#Results].InvoiceNo, [#Results].ItemNumber, [#Results].InventoryItemId,[#Results].Description, [#Results].[Asycuda-Quantity] as [From Quantity], [#Results].OPSCost, [#Results].[Quantity] as [To Quantity], [#Results].AsycudaCost, [#Results].Diff * -1 as Quantity, [#Results].Cost, 'XCD' as Currency
+SELECT  distinct  'P2O-Shorts-' + FORMAT(@startdate, 'MMMyy') + '-' + FORMAT(@endDate, 'MMMyy') as [Invoice #], @endDate as [Date], [#Results].InvoiceNo, [#Results].ItemNumber, [#Results].InventoryItemId,[#Results].Description, [#Results].[Asycuda-QuantityOnHand] as [From Quantity], [#Results].OPSCost, [#Results].[OPS-QuantityOnHand] as [To Quantity], [#Results].AsycudaCost, [#Results].Diff * -1 as Quantity, [#Results].Cost, 'XCD' as Currency
 into [#P2O-Shorts]
 FROM     [#InComplete] as [#Results]   left outer join [InventoryItems-NonStock] on [#Results].InventoryItemId = [InventoryItems-NonStock].InventoryItemId   
 			
@@ -437,7 +438,7 @@ WHERE        ([#Results].InvoiceNo <> 'Asycuda') AND (diff < 0 and [Quantity] >=
 
 
 drop table  [#A2O-Overs]
-SELECT  distinct      'A2O-Overs-' + FORMAT(@startdate, 'MMMyy') + '-' + FORMAT(@endDate, 'MMMyy') as [Invoice #], @startdate as [Date], [#Results].InvoiceNo, [#Results].ItemNumber, [#Results].InventoryItemId,[#Results].Description,[#Results].Returns,[#Results].OPS2Zero,[#Results].Adjustments , [#Results].[Asycuda-Quantity] as [From Quantity], [#Results].OPSCost, [#Results].[Quantity] as [To Quantity], [#Results].AsycudaCost, [#Results].Diff as Quantity, [#Results].Cost, 'XCD' as Currency
+SELECT  distinct      'A2O-Overs-' + FORMAT(@startdate, 'MMMyy') + '-' + FORMAT(@endDate, 'MMMyy') as [Invoice #], @startdate as [Date], [#Results].InvoiceNo, [#Results].ItemNumber, [#Results].InventoryItemId,[#Results].Description,[#Results].Returns,[#Results].OPS2Zero,[#Results].Adjustments , [#Results].[Asycuda-QuantityOnHand] as [From Quantity], [#Results].OPSCost, [#Results].[OPS-QuantityOnHand] as [To Quantity], [#Results].AsycudaCost, [#Results].Diff as Quantity, [#Results].Cost, 'XCD' as Currency
 into [#A2O-Overs]
 FROM     [#InComplete] as [#Results]       left outer join [InventoryItems-NonStock] on [#Results].InventoryItemId = [InventoryItems-NonStock].InventoryItemId                 
 WHERE       ([#Results].InvoiceNo <> 'Asycuda' and [#Results].[Asycuda-Quantity] = 0)  and cost <> 0 and (diff > 0) and [InventoryItems-NonStock].InventoryItemId is null
@@ -449,7 +450,7 @@ WHERE       ([#Results].InvoiceNo <> 'Asycuda' and [#Results].[Asycuda-Quantity]
 
 
 drop table  [#A2O-Shorts]
-SELECT  distinct    'A2O-Shorts-' + FORMAT(@startdate, 'MMMyy') + '-' + FORMAT(@endDate, 'MMMyy') as [Invoice #], @endDate as [Date], [#Results].InvoiceNo, [#Results].ItemNumber, [#Results].InventoryItemId,[#Results].Description, [#Results].[Asycuda-Quantity] as [From Quantity], [#Results].OPSCost, [#Results].[OPS-Quantity] as [To Quantity], [#Results].AsycudaCost, [#Results].Diff * -1 as Quantity, [#Results].Cost, 'XCD' as Currency
+SELECT  distinct    'A2O-Shorts-' + FORMAT(@startdate, 'MMMyy') + '-' + FORMAT(@endDate, 'MMMyy') as [Invoice #], @endDate as [Date], [#Results].InvoiceNo, [#Results].ItemNumber, [#Results].InventoryItemId,[#Results].Description, [#Results].[Asycuda-QuantityOnHand] as [From Quantity], [#Results].OPSCost, [#Results].[OPS-QuantityOnHand] as [To Quantity], [#Results].AsycudaCost, [#Results].Diff * -1 as Quantity, [#Results].Cost, 'XCD' as Currency
 into [#A2O-Shorts]
 FROM   [#InComplete] as   [#Results]   left outer join [InventoryItems-NonStock] on [#Results].InventoryItemId = [InventoryItems-NonStock].InventoryItemId                       
 WHERE        ([#Results].InvoiceNo = 'Asycuda') AND (diff < 0 and [OPS-Quantity] <= 0) and [InventoryItems-NonStock].InventoryItemId is null

@@ -17,19 +17,19 @@ namespace WaterNut.DataSpace
                 var entryDataLst = new RawEntryDataExtractor().GetRawEntryData(dataFile);
 
                 
-                var emptyDetailsLst = entryDataLst.Where(x => !x.EntryDataDetails.Any()).ToList();
-                var errlst = emptyDetailsLst.Select(x => new { DataFile = x ,Error = new ApplicationException(x.EntryData.EntryDataId + " has no details")}).ToList();
+                var emptyDetailsLst = entryDataLst.Where(x => !x.Item.EntryDataDetails.Any()).ToList();
+                var errlst = emptyDetailsLst.Select(x => new { DataFile = x ,Error = new ApplicationException(x.Item.EntryData.EntryDataId + " has no details")}).ToList();
                 if (errlst.Any())
                 {
 
                 }
 
                 var goodLst = entryDataLst
-                    .Where(x => x.EntryDataDetails.Any())
-                    .Where(x => x.EntryData.EntryDataId != null && x.EntryData.EntryDataDate != null)
+                    .Where(x => x.Item.EntryDataDetails.Any())
+                    .Where(x => x.Item.EntryData.EntryDataId != null && x.Item.EntryData.EntryDataDate != null)
                     .ToList();
 
-                foreach (var item in goodLst)
+                foreach (RawEntryData item in goodLst)
                 {
                     var entryData = await  new EntryDataCreator().GetSaveEntryData(dataFile.FileType, dataFile.DocSet, dataFile.OverWriteExisting, item).ConfigureAwait(false);
 

@@ -78,7 +78,8 @@ namespace AutoBotUtilities.Tests.Infrastructure
                             delete from xcuda_ASYCUDA
                             delete from [InventoryItems-NonStock]
                             delete from InventoryItems
-                            delete from EntryData");
+                            delete from EntryData
+                            delete from ShipmentInvoice");
             }
         }
 

@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using CoreEntities.Business.Entities;
+using MoreLinq;
 using WaterNut.DataSpace;
 
 namespace WaterNut.Business.Services.Utils
@@ -15,7 +16,7 @@ namespace WaterNut.Business.Services.Utils
         private static List<FileTypes> _fileTypes;
         public static FileTypes GetFileType(FileTypes fileTypes) => Enumerable.First<FileTypes>(FileTypes(), x => x.Id == fileTypes.Id);
 
-        public static List<FileTypes> FileTypes()
+        private static List<FileTypes> FileTypes()
         {
             try
             {
@@ -141,6 +142,12 @@ namespace WaterNut.Business.Services.Utils
                 .Where(x => x.FileImporterInfos?.EntryType == entryType && x.FileImporterInfos?.Format == fileFormat)
                 .Where(x => x.FileTypeMappings.Any() || entryType == EntryTypes.Unknown || x.FileImporterInfos?.Format == FileTypeManager.FileFormats.PDF)
                 .Where(x => x.ParentFileTypeId == null)
+                .Select(x =>
+                {
+                    x.AsycudaDocumentSetId = EntryDocSetUtils.GetAsycudaDocumentSet(x.DocSetRefernece, true)
+                            .AsycudaDocumentSetId;
+                    return x;
+                })
                 .ToList();
     }
 }

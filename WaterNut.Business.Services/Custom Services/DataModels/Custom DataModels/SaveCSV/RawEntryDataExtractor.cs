@@ -12,15 +12,7 @@ namespace WaterNut.DataSpace
     public class RawEntryDataExtractor
     {
         
-        public List<((dynamic EntryDataId, dynamic EntryDataDate, int AsycudaDocumentSetId, int ApplicationSettingsId,
-                dynamic CustomerName, dynamic Tax, dynamic Supplier, dynamic Currency, string EmailId, int FileTypeId,
-                dynamic DocumentType, dynamic SupplierInvoiceNo, dynamic PreviousCNumber, dynamic FinancialInformation,
-                dynamic Vendor, dynamic PONumber, string SourceFile) EntryData, IEnumerable<EntryDataDetails>
-                EntryDataDetails,
-                IEnumerable<(double TotalWeight, double TotalFreight, double TotalInternalFreight, double TotalOtherCost
-                    ,
-                    double TotalInsurance, double TotalDeductions, double InvoiceTotal, double TotalTax, int Packages,
-                    dynamic WarehouseNo)> f, IEnumerable<(dynamic ItemNumber, dynamic ItemAlias)> InventoryItems)>
+        public List<RawEntryData>
             GetRawEntryData(DataFile dataFile)
         {
             var ed = dataFile.Data.Select(x => (dynamic)x)
@@ -95,7 +87,9 @@ namespace WaterNut.DataSpace
                     )),
                     InventoryItems: g.DistinctBy(x => (x.ItemNumber, x.ItemAlias))
                         .Select(x => (x.ItemNumber, x.ItemAlias))
-                )).ToList();
+                ))
+                .Select( x => new RawEntryData(x))
+                .ToList();
 
 
             return ed;

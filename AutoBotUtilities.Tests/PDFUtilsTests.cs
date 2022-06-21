@@ -68,7 +68,7 @@ namespace AutoBotUtilities.Tests
                         {
 
                             Assert.AreEqual(ctx.ShipmentInvoice.Count(), 1);
-                            Assert.AreEqual(ctx.ShipmentInvoiceDetails.Count(), 10);
+                            Assert.AreEqual(ctx.ShipmentInvoiceDetails.Count(), 8);
                         });
                     }
 

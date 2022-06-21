@@ -10,19 +10,23 @@ using System.Threading.Tasks;
 using AutoBot;
 using CoreEntities.Business.Entities;
 using DocumentDS.Business.Entities;
+//using EntryDataDS.Business.Entities;
 using ExcelDataReader;
 using WaterNut.Business.Services.Utils;
 using WaterNut.DataSpace;
+using EntryDocSetUtils = WaterNut.DataSpace.EntryDocSetUtils;
 using Utils = AutoBot.Utils;
 
 namespace AutoBotUtilities.CSV
 {
     public static class XLSXImporter
     {
-        public static void Xlsx2csv(FileInfo[] files, FileTypes fileType, bool? overwrite = null )
+        public static void Xlsx2csv(FileInfo[] files, CoreEntities.Business.Entities.FileTypes fileType, bool? overwrite = null )
         {
             try
             {
+
+               
 
                 var adjReference = $"ADJ-{new DocumentDSContext().AsycudaDocumentSets.First(x => x.AsycudaDocumentSetId == fileType.AsycudaDocumentSetId).Declarant_Reference_Number}";
                 var disReference = $"DIS-{new DocumentDSContext().AsycudaDocumentSets.First(x => x.AsycudaDocumentSetId == fileType.AsycudaDocumentSetId).Declarant_Reference_Number}";
@@ -159,7 +163,7 @@ namespace AutoBotUtilities.CSV
                 var lastHeaderRow = dataRows[0].ItemArray.ToList();
                 int drow_no = 0;
                 List<object> headerRow;
-                var filetypes = FileTypeManager.FileTypes();
+                var filetypes = FileTypeManager.GetImportableFileType(fileType.FileImporterInfos.EntryType, fileType.FileImporterInfos.Format);
                 while (drow_no < dataRows.Take(Utils.maxRowsToFindHeader).ToList().Count)
                 {
                     headerRow = dataRows[drow_no].ItemArray.ToList();

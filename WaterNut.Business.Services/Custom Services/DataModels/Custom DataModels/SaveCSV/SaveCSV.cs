@@ -84,12 +84,12 @@ namespace WaterNut.DataSpace
             bool overWriteExisting)
         {
             var csvImporter = new CSVImporter(fileType);
-            var emailId = Utils.GetExistingEmailId(droppedFilePath, fileType);
-
+            
             var lines = csvImporter.GetFileLines(droppedFilePath).ToArray();
 
             var fixedHeadings = csvImporter.GetHeadings(lines).ToArray();
-
+            
+            var emailId = Utils.GetExistingEmailId(droppedFilePath, fileType);
             var rawDataFile =
                 new RawDataFile(fileType, lines, fixedHeadings, docSet, overWriteExisting, emailId, droppedFilePath);
             return rawDataFile;

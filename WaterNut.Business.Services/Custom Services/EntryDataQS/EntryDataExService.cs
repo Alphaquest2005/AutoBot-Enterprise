@@ -27,11 +27,11 @@ namespace EntryDataQS.Business.Services
         {
             var docSet = new List<AsycudaDocumentSet>() {await WaterNut.DataSpace.BaseDataModel.Instance.GetAsycudaDocumentSet(docSetId).ConfigureAwait(false)};
             
-                var dfileType = FileTypeManager.FileTypes().FirstOrDefault(x =>
-                    Regex.IsMatch(droppedFilePath, x.FilePattern, RegexOptions.IgnoreCase) && x.FileImporterInfos.EntryType == fileType && x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId);
+                var dfileType = FileTypeManager.GetImportableFileType(fileType, FileTypeManager.FileFormats.Csv).FirstOrDefault(x =>
+                    Regex.IsMatch(droppedFilePath, x.FilePattern, RegexOptions.IgnoreCase) && x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId);
                 if (dfileType == null) // for filenames not in database
                 {
-                    dfileType = FileTypeManager.FileTypes().First(x => x.FileImporterInfos.EntryType == fileType);
+                    dfileType = FileTypeManager.GetImportableFileType(fileType, FileTypeManager.FileFormats.Csv).First();
                 }
 
                 if (dfileType.CopyEntryData)
@@ -46,25 +46,23 @@ namespace EntryDataQS.Business.Services
 
         public async Task SavePDF(string droppedFilePath, string fileType, int docSetId, bool overwrite)
         {
-            using (var ctx = new CoreEntitiesContext())
-            {
-
-                var res = ctx.AsycudaDocumentSet_Attachments.Where(x => x.Attachments.FilePath == droppedFilePath)
+            
+                var res = new CoreEntitiesContext().AsycudaDocumentSet_Attachments.Where(x => x.Attachments.FilePath == droppedFilePath)
                     .Select(x => new { x.EmailId, x.FileTypeId }).FirstOrDefault();
                 var emailId = res?.EmailId;
                 var fileTypeId = res?.FileTypeId;
 
-                var dfileType = ctx.FileTypes.ToList().FirstOrDefault(x =>
-                    Regex.IsMatch(droppedFilePath, x.FilePattern, RegexOptions.IgnoreCase) && x.FileImporterInfos.EntryType == fileType);
+                var dfileType = FileTypeManager.GetImportableFileType(fileType, FileTypeManager.FileFormats.PDF).ToList().FirstOrDefault(x =>
+                    Regex.IsMatch(droppedFilePath, x.FilePattern, RegexOptions.IgnoreCase));
                 if (dfileType == null) // for filenames not in database
                 {
-                    dfileType = ctx.FileTypes.First(x => x.FileImporterInfos.EntryType == fileType);
+                    dfileType = FileTypeManager.GetImportableFileType(fileType, FileTypeManager.FileFormats.PDF).First();
                 }
 
                 dfileType.AsycudaDocumentSetId = docSetId;
                 var client = Utils.GetClient();
                 InvoiceReader.Import(droppedFilePath, fileTypeId.GetValueOrDefault(), emailId, overwrite, Utils.GetDocSets(dfileType), dfileType, client);
-            }
+            
             
         }
     }

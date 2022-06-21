@@ -88,7 +88,7 @@ namespace AutoBotUtilities.Tests
             try
             {
                 if (!Infrastructure.Utils.IsTestApplicationSettings()) Assert.IsTrue(true);
-                var testFile = Infrastructure.Utils.GetTestSalesFile(new List<string>() { "01987.pdf" });
+                var testFile = Infrastructure.Utils.GetTestSalesFile(new List<string>() { "02679.pdf" });
                 var fileTypes = (IEnumerable<FileTypes>)FileTypeManager.GetImportableFileType(FileTypeManager.EntryTypes.ShipmentInvoice, FileTypeManager.FileFormats.PDF);
                 foreach (var fileType in fileTypes)
                 {

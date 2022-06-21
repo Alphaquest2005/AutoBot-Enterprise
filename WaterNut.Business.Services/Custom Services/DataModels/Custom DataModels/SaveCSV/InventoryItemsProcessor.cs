@@ -10,19 +10,12 @@ namespace WaterNut.DataSpace
     public class InventoryItemsProcessor
     {
         public static void UpdateInventoryItems(
-            ((dynamic EntryDataId, dynamic EntryDataDate, int AsycudaDocumentSetId, int ApplicationSettingsId, dynamic
-                CustomerName, dynamic Tax, dynamic Supplier, dynamic Currency, string EmailId, int FileTypeId, dynamic
-                DocumentType, dynamic SupplierInvoiceNo, dynamic PreviousCNumber, dynamic FinancialInformation, dynamic
-                Vendor,
-                dynamic PONumber, string SourceFile) EntryData, IEnumerable<EntryDataDetails> EntryDataDetails,
-                IEnumerable<(double TotalWeight, double TotalFreight, double TotalInternalFreight, double TotalOtherCost
-                    , double TotalInsurance, double TotalDeductions, double InvoiceTotal, double TotalTax, int Packages,
-                    dynamic WarehouseNo)> f, IEnumerable<(dynamic ItemNumber, dynamic ItemAlias)> InventoryItems) item)
+            RawEntryData item)
         {
-            int applicationSettingsId = item.EntryData.ApplicationSettingsId;
+            int applicationSettingsId = item.Item.EntryData.ApplicationSettingsId;
             using (var ctx = new InventoryDSContext() { StartTracking = true })
             {
-                foreach (var e in item.InventoryItems
+                foreach (var e in item.Item.InventoryItems
                              .Where(x => !string.IsNullOrEmpty(x.ItemAlias) && x.ItemAlias != x.ItemNumber &&
                                          x.ItemAlias != null).ToList())
                 {
