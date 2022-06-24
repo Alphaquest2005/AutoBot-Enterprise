@@ -9,53 +9,47 @@ using InventoryDS.Business.Entities;
 using TrackableEntities;
 using TrackableEntities.Common;
 using TrackableEntities.EF6;
+using WaterNut.DataSpace;
 
 namespace WaterNut.Business.Services.Utils
 {
-    public class InventoryData
-    {
-        public (dynamic ItemNumber, dynamic ItemDescription, dynamic TariffCode) Key { get; }
-        public List<dynamic> Data { get; }
-
-        public InventoryData((dynamic ItemNumber, dynamic ItemDescription, dynamic TariffCode) key, List<dynamic> data)
-        {
-            Key = key;
-            Data = data;
-        }
-    }
     public static class InventoryItemDataUtils
     {
-        //(List<(IGrouping<(dynamic ItemNumber, dynamic ItemDescription, dynamic TariffCode), dynamic> Data, InventoryItem InventoryItem)> existingInventoryItem,
-        //    List<IGrouping<(dynamic ItemNumber, dynamic ItemDescription, dynamic TariffCode), dynamic>> newInventoryItem)
-        //    GetInventoryItemFromData(int applicationSettingsId, List<IGrouping<(dynamic ItemNumber, dynamic ItemDescription, dynamic TariffCode), dynamic>> inventoryDataList,
-        //        InventorySource inventorySource)
-
-
+       
         public static
-            (List<InventoryDataItem> existingInventoryItem, List<InventoryDataItem> newInventoryItems)
-            GetInventoryItemFromData(int applicationSettingsId, List<InventoryData> inventoryDataList,
+            List<InventoryDataItem> 
+            GetExistingInventoryItemFromData(List<InventoryData> inventoryDataList,
                 InventorySource inventorySource)
         {
             var inventoryItems =
-                InventoryItemUtils.GetInventoryItems(inventoryDataList.Select(x => (string)x.Key.ItemNumber).ToList(), applicationSettingsId);
+                InventoryItemUtils.GetInventoryItems(inventoryDataList.Select(x => (string)x.Key.ItemNumber).ToList());
 
 
-            var validItems = inventoryDataList.Where(x => !string.IsNullOrEmpty(x.Key.ItemDescription)).ToList();
+            var existingInventoryItem = CreateExistingInventoryData(inventorySource, inventoryDataList, inventoryItems);
 
 
-            var existingInventoryItem = CreateExistingInventoryData(inventorySource, validItems, inventoryItems);
-
-            var newInventoryItems = CreateNewInventoryData(inventorySource, validItems, inventoryItems, applicationSettingsId);
-
-
-            return (existingInventoryItem, newInventoryItems);
+            return existingInventoryItem;
         }
 
-        public static List<InventoryDataItem> CreateNewInventoryData(InventorySource inventorySource, List<InventoryData> validItems, List<InventoryItem> inventoryItems, int applicationSettingsId)
+
+        public static List<InventoryDataItem> GetNewInventoryItemFromData(List<InventoryData> inventoryDataList,
+                InventorySource inventorySource)
+        {
+            var inventoryItems =
+                InventoryItemUtils.GetInventoryItems(inventoryDataList.Select(x => (string)x.Key.ItemNumber).ToList());
+
+            
+            var newInventoryItems = CreateNewInventoryData(inventorySource, inventoryDataList, inventoryItems);
+
+
+            return newInventoryItems;
+        }
+
+        public static List<InventoryDataItem> CreateNewInventoryData(InventorySource inventorySource, List<InventoryData> validItems, List<InventoryItem> inventoryItems)
         {
             var newInventoryItem = GetNewInventoryItems(inventorySource, validItems, inventoryItems);
             var newInventoryItems = newInventoryItem
-                .Select(item => CreateInventoryItem(applicationSettingsId, inventorySource, item))
+                .Select(item => CreateInventoryItem(inventorySource, item))
                 .ToList();
 
             SaveInventoryItems(newInventoryItems);
@@ -93,17 +87,18 @@ namespace WaterNut.Business.Services.Utils
             return eslst.Where(x => x.ItemNumber != null)
                 .GroupBy(g => ( g.ItemNumber.ToUpper(), g.ItemDescription, g.TariffCode))
                 .Select(g => new InventoryData(g.Key,g.ToList()))
+                .Where(x => !string.IsNullOrEmpty(x.Key.ItemDescription))
                 .ToList();
         }
 
-        public static InventoryDataItem CreateInventoryItem(int applicationSettingsId, InventorySource inventorySource,
+        public static InventoryDataItem CreateInventoryItem(InventorySource inventorySource,
             InventoryData item)
         {
 
 
             var i = new InventoryItem(true)
             {
-                ApplicationSettingsId = applicationSettingsId,
+                ApplicationSettingsId = BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId,
                 Description = item.Key.ItemDescription, // quicker trust database than file
                 ItemNumber = ((string)item.Key.ItemNumber).Truncate(20),
                 InventoryItemSources = new List<InventoryItemSource>()

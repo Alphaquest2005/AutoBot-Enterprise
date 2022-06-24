@@ -626,7 +626,7 @@
           <Property Name="ItemDescription" Type="nvarchar" MaxLength="50" />
           <Property Name="TariffCode" Type="nvarchar" MaxLength="50" />
           <Property Name="SalesQuantity" Type="float" />
-          <Property Name="SalesFactor" Type="int" />
+          <Property Name="SalesFactor" Type="float" />
           <Property Name="xQuantity" Type="float" Nullable="false" />
           <Property Name="Price" Type="float" />
           <Property Name="DutyFreePaid" Type="nvarchar" MaxLength="50" Nullable="false" />
@@ -943,6 +943,9 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ShipmentInvoicePOItemData
           <Property Name="INVQuantity" Type="float" />
           <Property Name="POTotalCost" Type="float" />
           <Property Name="INVTotalCost" Type="float" />
+          <Property Name="AliasItemId" Type="int" />
+          <Property Name="POInventoryItemId" Type="int" />
+          <Property Name="InventoryItemId" Type="int" />
         </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ShipmentInvoicePOItemMISMatches' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
@@ -2076,7 +2079,10 @@ FROM [dbo].[ShipmentInvoiceDetailsItemAlias] AS [ShipmentInvoiceDetailsItemAlias
 [ShipmentInvoicePOItemData].[POQuantity] AS [POQuantity], 
 [ShipmentInvoicePOItemData].[INVQuantity] AS [INVQuantity], 
 [ShipmentInvoicePOItemData].[POTotalCost] AS [POTotalCost], 
-[ShipmentInvoicePOItemData].[INVTotalCost] AS [INVTotalCost]
+[ShipmentInvoicePOItemData].[INVTotalCost] AS [INVTotalCost], 
+[ShipmentInvoicePOItemData].[AliasItemId] AS [AliasItemId], 
+[ShipmentInvoicePOItemData].[POInventoryItemId] AS [POInventoryItemId], 
+[ShipmentInvoicePOItemData].[InventoryItemId] AS [InventoryItemId]
 FROM [dbo].[ShipmentInvoicePOItemData] AS [ShipmentInvoicePOItemData]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="ShipmentInvoicePOItemMISMatches" EntityType="Self.ShipmentInvoicePOItemMISMatches" store:Type="Views" store:Schema="dbo">
@@ -4525,6 +4531,9 @@ FROM [dbo].[ShipmentRiderManifests] AS [ShipmentRiderManifests]</DefiningQuery>
           <Property Name="INVQuantity" Type="Double" />
           <Property Name="POTotalCost" Type="Double" />
           <Property Name="INVTotalCost" Type="Double" />
+          <Property Name="AliasItemId" Type="Int32" />
+          <Property Name="POInventoryItemId" Type="Int32" />
+          <Property Name="InventoryItemId" Type="Int32" />
         </EntityType>
         <EntityType Name="ShipmentInvoiceDetailsItemAlias">
           <Key>
@@ -4728,7 +4737,7 @@ FROM [dbo].[ShipmentRiderManifests] AS [ShipmentRiderManifests]</DefiningQuery>
           <Property Name="ItemDescription" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="TariffCode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="SalesQuantity" Type="Double" />
-          <Property Name="SalesFactor" Type="Int32" />
+          <Property Name="SalesFactor" Type="Single" />
           <Property Name="xQuantity" Type="Double" Nullable="false" />
           <Property Name="Price" Type="Double" />
           <Property Name="DutyFreePaid" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
@@ -5725,6 +5734,9 @@ FROM [dbo].[ShipmentRiderManifests] AS [ShipmentRiderManifests]</DefiningQuery>
           <EntitySetMapping Name="ShipmentInvoicePOItemData">
             <EntityTypeMapping TypeName="WaterNutDBModel.ShipmentInvoicePOItemData">
               <MappingFragment StoreEntitySet="ShipmentInvoicePOItemData">
+                <ScalarProperty Name="InventoryItemId" ColumnName="InventoryItemId" />
+                <ScalarProperty Name="POInventoryItemId" ColumnName="POInventoryItemId" />
+                <ScalarProperty Name="AliasItemId" ColumnName="AliasItemId" />
                 <ScalarProperty Name="INVTotalCost" ColumnName="INVTotalCost" />
                 <ScalarProperty Name="POTotalCost" ColumnName="POTotalCost" />
                 <ScalarProperty Name="INVQuantity" ColumnName="INVQuantity" />

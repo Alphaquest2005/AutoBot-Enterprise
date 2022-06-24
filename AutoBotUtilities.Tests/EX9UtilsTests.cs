@@ -1,5 +1,6 @@
 using System.IO;
 using Core.Common.Utils;
+using EntryDataDS.Business.Entities;
 using WaterNut.Business.Services.Utils;
 using WaterNut.DataSpace;
 
@@ -21,6 +22,7 @@ namespace AutoBotUtilities.Tests
         public void SetUp()
         {
             Infrastructure.Utils.SetTestApplicationSettings(2);
+            Infrastructure.Utils.ClearDataBase();
             _testClass = new EX9Utils();
         }
 
@@ -42,7 +44,14 @@ namespace AutoBotUtilities.Tests
                 if (!Infrastructure.Utils.IsTestApplicationSettings()) Assert.IsTrue(true); 
                 var testFile = Infrastructure.Utils.GetTestSalesFile(new List<string>() { "TestXSalesFile.csv"});
                 EX9Utils.ImportXSalesFiles(testFile);
-                Assert.IsTrue(true);
+                using (var ctx = new EntryDataDSContext())
+                {
+                    Assert.Multiple(() =>
+                    {
+                        Assert.AreEqual(ctx.xSalesFiles.Count(), 1);
+                        Assert.AreEqual(ctx.xSalesDetails.Count(), 1);
+                    });
+                }
             }
             catch (Exception e)
             {
@@ -58,7 +67,7 @@ namespace AutoBotUtilities.Tests
             {
 
                 var fileType = EX9Utils.GetxSalesFileType();
-                Assert.AreEqual(fileType.FileImporterInfos.EntryType, FileTypeManager.EntryTypes.xSales);
+                Assert.AreEqual(fileType.First().FileImporterInfos.EntryType, FileTypeManager.EntryTypes.xSales);
             }
             catch (Exception e)
             {

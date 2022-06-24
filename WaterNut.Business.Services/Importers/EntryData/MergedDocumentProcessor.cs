@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Core.Common.Extensions;
 using WaterNut.Business.Services.Utils;
 
 namespace WaterNut.Business.Services.Importers.EntryData
@@ -21,20 +22,25 @@ namespace WaterNut.Business.Services.Importers.EntryData
         }
     }
 
-    public class MergedInventoryProcessor : IInventoryProcessor
+    public class MergedProcessor<T> : IProcessor<T>
     {
-        private readonly IInventoryProcessor _first;
-        private readonly IInventoryProcessor _second;
+        private readonly IProcessor<T> _first;
+        private readonly IProcessor<T> _second;
 
-        public MergedInventoryProcessor(IInventoryProcessor first, IInventoryProcessor second)
+        public MergedProcessor(IProcessor<T> first, IProcessor<T> second)
         {
             _first = first;
             _second = second;
         }
 
-        public List<InventoryDataItem> Execute(List<InventoryDataItem> list)
+        public Result<List<T>> Execute(List<T> data)
         {
-            return _first.Execute(list).Union(_second.Execute(list)).ToList();
+            var secondResults = _second.Execute(data);
+            var firstResults = _first.Execute(data);
+            if (firstResults.IsSuccess && secondResults.IsSuccess) return new Result<List<T>>(firstResults.Value.Union(secondResults.Value).ToList(),true, "");
+            if (firstResults.IsSuccess) return firstResults;
+            if (secondResults.IsSuccess) return secondResults;
+            return new Result<List<T>>(new List<T>(), false, $"{firstResults.Error} & {secondResults.Error}");
         }
     }
 }

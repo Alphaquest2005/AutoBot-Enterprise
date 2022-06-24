@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace DesigningTypes {
+namespace Core.Common.Extensions {
     public class Result {
         public bool IsSuccess { get; }
         public string Error { get; }

@@ -60,17 +60,7 @@ namespace AutoBotUtilities.Tests
                     CSVUtils.SaveCsv(new List<FileInfo>(){new FileInfo(testFile)}, fileType);
 
 
-                    using (var ctx = new EntryDataDSContext())
-                    {
-                        Assert.Multiple(() =>
-                        {
-
-                            Assert.AreEqual(ctx.EntryData.Count(), 1);
-                            Assert.AreEqual(ctx.EntryDataDetails.Count(), 10);
-                        });
-                    }
-
-
+                    AssertPOExists();
                 }
 
                 Assert.IsTrue(true);
@@ -79,6 +69,18 @@ namespace AutoBotUtilities.Tests
             {
                 Console.WriteLine(e);
                 Assert.IsTrue(false);
+            }
+        }
+
+        private static void AssertPOExists()
+        {
+            using (var ctx = new EntryDataDSContext())
+            {
+                Assert.Multiple(() =>
+                {
+                    Assert.AreEqual(ctx.EntryData.Count(), 1);
+                    Assert.AreEqual(ctx.EntryDataDetails.Count(), 10);
+                });
             }
         }
 
@@ -108,7 +110,7 @@ namespace AutoBotUtilities.Tests
 
                 }
 
-                Assert.IsTrue(true);
+                //Assert.IsTrue(true);
             }
             catch (Exception e)
             {
@@ -131,8 +133,8 @@ namespace AutoBotUtilities.Tests
                     new FileTypeImporter(fileType).Import(testFile);
 
                 }
-
-                Assert.IsTrue(true);
+                AssertPOExists();
+               //Assert.IsTrue(true);
             }
             catch (Exception e)
             {

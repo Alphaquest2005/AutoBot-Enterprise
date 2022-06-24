@@ -10,18 +10,23 @@ namespace WaterNut.Business.Services.Importers.EntryData
     public class EntryDataManager
     {
 
-        public static Dictionary<string, IDocumentProcessor> DocumentProcessors(FileTypes fileType, List<AsycudaDocumentSet> docSet, bool overWrite)
+        public static Dictionary<string, IDocumentProcessor> DocumentProcessors(ImportSettings importSettings)
         {
             return new Dictionary<string, IDocumentProcessor>()
             {
 
                 { FileTypeManager.EntryTypes.Po, new DocumentProcessorPipline(new List<IDocumentProcessor>()
                                                                     {
-                                                                        new InventoryImporter(fileType, docSet, overWrite),
-                                                                        new POProcessor(fileType, docSet, overWrite)
-                                                                    }
-                                                            )
-                }
+                                                                        new InventoryImporter(importSettings),
+                                                                        new SupplierPipeline(),
+                                                                        new SaveEntryDataFile(importSettings),
+                                                                        new EntryDataProcessor(importSettings)
+                                                                    })},
+                { FileTypeManager.EntryTypes.xSales, new DocumentProcessorPipline(new List<IDocumentProcessor>()
+                {
+                    new xsalesProcessor(importSettings)
+                })},
+
             };
         }
 

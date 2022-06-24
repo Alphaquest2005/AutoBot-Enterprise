@@ -1,13 +1,23 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
+using Core.Common.Extensions;
 using WaterNut.Business.Services.Utils;
 
 namespace WaterNut.Business.Services.Importers.EntryData
 {
-    public class UpdateItemTariffCode : IInventoryProcessor
+    public class UpdateItemTariffCode : IProcessor<InventoryDataItem>
     {
-        public List<InventoryDataItem> Execute(List<InventoryDataItem> lines)
+        public Result<List<InventoryDataItem>> Execute(List<InventoryDataItem> data)
         {
-            throw new System.NotImplementedException();
+            var inventoryDataItems = data.Where(x => x.Item.TariffCode != x.Data.Key.TariffCode)
+                .Where(x => !string.IsNullOrEmpty(x.Data.Key.TariffCode))
+                .Select(x =>
+                {
+                    x.Item.TariffCode = x.Data.Key.TariffCode;
+                    return x;
+                })
+                .ToList();
+            return new Result<List<InventoryDataItem>>(inventoryDataItems, true, "") ;
         }
     }
 }

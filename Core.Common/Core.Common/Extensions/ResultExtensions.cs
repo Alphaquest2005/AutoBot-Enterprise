@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace DesigningTypes {
+namespace Core.Common.Extensions {
     public static class ResultExtensions {
         public static Result OnSuccess(this Result result, Func<Result> func) {
             if (result.Failure) {

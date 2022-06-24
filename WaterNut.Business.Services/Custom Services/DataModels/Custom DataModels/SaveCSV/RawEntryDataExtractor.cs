@@ -15,18 +15,23 @@ namespace WaterNut.DataSpace
         public List<RawEntryData>
             GetRawEntryData(DataFile dataFile)
         {
-            var ed = dataFile.Data.Select(x => (dynamic)x)
+            return CreateRawEntryData(dataFile.Data, dataFile.DocSet, dataFile.EmailId, dataFile.FileType, dataFile.DroppedFilePath);
+        }
+
+        public static List<RawEntryData> CreateRawEntryData(List<dynamic> data, List<AsycudaDocumentSet> docSet, string emailId, FileTypes fileType, string droppedFilePath)
+        {
+            var ed = data.Select(x => (dynamic)x)
                 .GroupBy(es => (es.EntryDataId, es.EntryDataDate, es.CustomerName))
                 .Select(g => (
                     EntryData: (
                         g.Key.EntryDataId,
                         g.Key.EntryDataDate,
                         AsycudaDocumentSetId:
-                        dataFile.DocSet.FirstOrDefault(x => x.SystemDocumentSet == null)?.AsycudaDocumentSetId ??
-                        dataFile.DocSet.First().AsycudaDocumentSetId,
+                        docSet.FirstOrDefault(x => x.SystemDocumentSet == null)?.AsycudaDocumentSetId ??
+                        docSet.First().AsycudaDocumentSetId,
                         ApplicationSettingsId:
-                        dataFile.DocSet.FirstOrDefault(x => x.SystemDocumentSet == null)?.ApplicationSettingsId ??
-                        dataFile.DocSet.First().ApplicationSettingsId,
+                        docSet.FirstOrDefault(x => x.SystemDocumentSet == null)?.ApplicationSettingsId ??
+                        docSet.First().ApplicationSettingsId,
                         g.Key.CustomerName,
                         ((dynamic)g.FirstOrDefault())?.Tax,
                         Supplier:
@@ -34,8 +39,8 @@ namespace WaterNut.DataSpace
                             ? null
                             : g.Max(x => ((dynamic)x).SupplierCode?.ToUpper()),
                         ((dynamic)g.FirstOrDefault(x => ((dynamic)x).Currency != ""))?.Currency,
-                        EmailId: dataFile.EmailId,
-                        FileTypeId: dataFile.FileType.Id,
+                        EmailId: emailId,
+                        FileTypeId: fileType.Id,
                         ((dynamic)g.FirstOrDefault(x => ((dynamic)x).DocumentType != ""))?.DocumentType,
                         ((dynamic)g.FirstOrDefault(x => ((dynamic)x).SupplierInvoiceNo != ""))?.SupplierInvoiceNo,
                         ((dynamic)g.FirstOrDefault(x => ((dynamic)x).PreviousCNumber != ""))?.PreviousCNumber,
@@ -43,7 +48,7 @@ namespace WaterNut.DataSpace
                         ?.FinancialInformation,
                         ((dynamic)g.FirstOrDefault(x => ((dynamic)x).Vendor != ""))?.Vendor,
                         ((dynamic)g.FirstOrDefault(x => ((dynamic)x).PONumber != ""))?.PONumber,
-                        SourceFile: dataFile.DroppedFilePath
+                        SourceFile: droppedFilePath
                     ),
                     EntryDataDetails: g.Where(x => !string.IsNullOrEmpty(x.ItemNumber))
                         .Select(x => new EntryDataDetails()
@@ -88,7 +93,7 @@ namespace WaterNut.DataSpace
                     InventoryItems: g.DistinctBy(x => (x.ItemNumber, x.ItemAlias))
                         .Select(x => (x.ItemNumber, x.ItemAlias))
                 ))
-                .Select( x => new RawEntryData(x))
+                .Select(x => new RawEntryData(x))
                 .ToList();
 
 

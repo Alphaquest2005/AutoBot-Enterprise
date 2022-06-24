@@ -31,6 +31,9 @@
               this.Property(t => t.INVQuantity).HasColumnName("INVQuantity");
               this.Property(t => t.POTotalCost).HasColumnName("POTotalCost");
               this.Property(t => t.INVTotalCost).HasColumnName("INVTotalCost");
+              this.Property(t => t.AliasItemId).HasColumnName("AliasItemId");
+              this.Property(t => t.POInventoryItemId).HasColumnName("POInventoryItemId");
+              this.Property(t => t.InventoryItemId).HasColumnName("InventoryItemId");
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);
     			this.Ignore(t => t.ModifiedProperties);

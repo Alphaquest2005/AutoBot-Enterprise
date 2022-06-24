@@ -117,6 +117,15 @@ namespace EntryDataDS.Business.Services
   		[OperationContract]
         [FaultContract(typeof(ValidationFault))]
         Task<IEnumerable<ShipmentInvoicePOItemData>> GetShipmentInvoicePOItemDataByINVId(string INVId, List<string> includesLst = null);
+  		[OperationContract]
+        [FaultContract(typeof(ValidationFault))]
+        Task<IEnumerable<ShipmentInvoicePOItemData>> GetShipmentInvoicePOItemDataByAliasItemId(string AliasItemId, List<string> includesLst = null);
+  		[OperationContract]
+        [FaultContract(typeof(ValidationFault))]
+        Task<IEnumerable<ShipmentInvoicePOItemData>> GetShipmentInvoicePOItemDataByPOInventoryItemId(string POInventoryItemId, List<string> includesLst = null);
+  		[OperationContract]
+        [FaultContract(typeof(ValidationFault))]
+        Task<IEnumerable<ShipmentInvoicePOItemData>> GetShipmentInvoicePOItemDataByInventoryItemId(string InventoryItemId, List<string> includesLst = null);
   
 
 

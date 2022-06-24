@@ -51,8 +51,8 @@ namespace WaterNut.Business.Services.Utils
 
         }
 
-        public static List<InventoryItem> GetInventoryItems(List<string> itemNumbers, int applicationSettingsId) =>
-            itemNumbers.Select(itemNumber => GetInventoryItemsCache(BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId, false).FirstOrDefault(x => x.ItemNumber == itemNumber && x.ApplicationSettingsId == applicationSettingsId))
+        public static List<InventoryItem> GetInventoryItems(List<string> itemNumbers) =>
+            itemNumbers.Select(itemNumber => GetInventoryItemsCache(BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId, false).FirstOrDefault(x => x.ItemNumber == itemNumber && x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId))
                 .Where(x => x != null)
                 .ToList();
 

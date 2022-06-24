@@ -38,7 +38,7 @@ namespace WaterNut.DataSpace
 
     public class NewEntryDataProcessor
     {
-        private EntryDataCreator _entryDataCreator;
+        
 
         private Dictionary<string, IEntryDataCreator> entryDataCreators = new Dictionary<string, IEntryDataCreator>()
         {

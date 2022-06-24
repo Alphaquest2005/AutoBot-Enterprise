@@ -813,12 +813,9 @@ namespace AutoBot
                 throw e;
             }
         }
-        public static FileTypes GetFileType(string fileType)
+        public static List<FileTypes> GetFileType(string entryType, string format)
         {
-            return new CoreEntitiesContext().FileTypes.First(x =>
-                x.ApplicationSettingsId ==
-                BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId &&
-                x.FileImporterInfos.EntryType == fileType);
+            return FileTypeManager.GetImportableFileType(entryType, format);
         }
     }
 }

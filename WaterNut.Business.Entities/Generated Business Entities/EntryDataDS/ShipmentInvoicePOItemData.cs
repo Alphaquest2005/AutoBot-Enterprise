@@ -290,6 +290,51 @@ namespace EntryDataDS.Business.Entities
             }
         }
         Nullable<double> _invtotalcost;
+        [DataMember]
+        public Nullable<int> AliasItemId 
+        {
+            get
+            {
+                return _aliasitemid;
+            }
+            set
+            {
+                _aliasitemid = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<int> _aliasitemid;
+        [DataMember]
+        public Nullable<int> POInventoryItemId 
+        {
+            get
+            {
+                return _poinventoryitemid;
+            }
+            set
+            {
+                _poinventoryitemid = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<int> _poinventoryitemid;
+        [DataMember]
+        public Nullable<int> InventoryItemId 
+        {
+            get
+            {
+                return _inventoryitemid;
+            }
+            set
+            {
+                _inventoryitemid = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<int> _inventoryitemid;
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

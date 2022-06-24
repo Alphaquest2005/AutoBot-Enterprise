@@ -31,13 +31,13 @@ namespace WaterNut.Business.Services.Importers
             var fileType = FileTypeManager.GetHeadingFileType(header, FileType);
 
             var data = new CSVDataExtractor(fileType, lines, header, emailId)
-                .Then(new EntryDataExtractor(fileType, docSet, emailId,fileName))
+                //.Then(new EntryDataExtractor(fileType, docSet, emailId,fileName))
                 .Execute();
 
             fileType.EmailId = emailId;
-            
+            var importSettings  = new ImportSettings(fileType, docSet, overWrite,fileName ,emailId);
 
-            EntryDataManager.DocumentProcessors(fileType, docSet, overWrite)[fileType.FileImporterInfos.EntryType].Execute(data);
+            EntryDataManager.DocumentProcessors(importSettings)[fileType.FileImporterInfos.EntryType].Execute(data);
 
         }
 

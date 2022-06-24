@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using CoreEntities.Business.Entities;
 using DocumentDS.Business.Entities;
 using WaterNut.Business.Services.Utils;
@@ -7,71 +8,62 @@ namespace WaterNut.Business.Services.Importers.EntryData
 {
     public class InventoryImporter : IDocumentProcessor
     {
-        private readonly FileTypes _fileType;
-        private readonly List<AsycudaDocumentSet> _docSet;
-        private readonly bool _overWrite;
-        private InventoryProcessorPipline _importer;
+        private readonly ImportSettings _importSettings;
+   
+        private ProcessorPipline<InventoryDataItem> _importer;
 
-        public InventoryImporter(FileTypes fileType, List<AsycudaDocumentSet> docSet, bool overWrite)
+        public InventoryImporter(ImportSettings importSettings)
         {
-            _fileType = fileType;
-            _docSet = docSet;
-            _overWrite = overWrite; 
-            
-          
+            _importSettings = importSettings;
         }
 
-        public List<dynamic> Execute (List<dynamic> lines)
+        public List<dynamic> Execute(List<dynamic> lines)
         {
-            _importer = new InventoryProcessorPipline(new List<IInventoryProcessor>()
+
+            _importer = new ProcessorPipline<InventoryDataItem>(new List<IProcessor<InventoryDataItem>>()
             {
-                new GetInventoryItems(_fileType, _docSet, lines),
-                new MergedInventoryProcessor
-                (new InventoryProcessorPipline (new List<IInventoryProcessor>()
+                new GetInventoryItems(_importSettings.FileType, _importSettings.DocSet, lines),
+                new MergedProcessor<InventoryDataItem>
+                (
+                    new ProcessorPipline<InventoryDataItem>(new List<IProcessor<InventoryDataItem>>()
                     {
-                        new GetExistingInventoryItems(),
+
+                        new GetExistingInventoryItems(_importSettings.FileType, _importSettings.DocSet),
                         new UpdateItemTariffCode(),
                         new UpdateItemDescription(),
                         new UpdateLineDescription(),
-                        new AddInventorySource(),
-                        new SaveInventoryItems()
-                    }),
-                    new InventoryProcessorPipline(new List<IInventoryProcessor>()
-                    {
-                        new CreateInventoryItems(),
+                        new AddInventorySource(_importSettings.FileType),
                         new SaveInventoryItems(),
-                    })
-                ),
-                new UpdateLineNumbers(),
-                new MergedInventoryProcessor
-                (new InventoryProcessorPipline (new List<IInventoryProcessor>()
-                    {
-                        new GetItemAlias(),
-                        new SaveItemAlias(),
+                        new UpdateLineInventoryItemId(),
+                        new SaveInventoryCodes(_importSettings.FileType),
+                        new SaveInventoryAlias(_importSettings.FileType),
+
+
 
                     }),
-                    new InventoryProcessorPipline(new List<IInventoryProcessor>()
+                    new ProcessorPipline<InventoryDataItem>(new List<IProcessor<InventoryDataItem>>()
                     {
-                        new GetItemCode(),
-                        new SaveItemCode(),
+                        new GetNewInventoryItems(_importSettings.FileType, _importSettings.DocSet),
+                        new UpdateLineInventoryItemId(),
+                        new SaveInventoryItems(),
+                        new SaveInventoryCodes(_importSettings.FileType),
+                        new SaveInventoryAlias(_importSettings.FileType),
                     })
                 ),
-
-
             });
 
-            _importer.Execute(new List<InventoryDataItem>());
+            var res = _importer.Execute(new List<InventoryDataItem>());
+            if (res.IsSuccess)
+            {
+                var lst = res.Value.SelectMany(x => x.Data.Data).ToList();
+                return lst;
+            }
+
             return lines;
 
-          
         }
-    }
 
-    public class GetExistingInventoryItems : IInventoryProcessor
-    {
-        public List<InventoryDataItem> Execute(List<InventoryDataItem> lines)
-        {
-            throw new System.NotImplementedException();
-        }
+
+    
     }
 }

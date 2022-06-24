@@ -186,7 +186,7 @@ namespace EntryDataDS.Business.Entities
         }
         Nullable<double> _salesquantity;
         [DataMember]
-        public Nullable<int> SalesFactor 
+        public Nullable<float> SalesFactor 
         {
             get
             {
@@ -199,7 +199,7 @@ namespace EntryDataDS.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        Nullable<int> _salesfactor;
+        Nullable<float> _salesfactor;
         [DataMember]
         public double xQuantity 
         {

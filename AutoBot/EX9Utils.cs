@@ -20,6 +20,8 @@ using DocumentItemDS.Business.Entities;
 using TrackableEntities;
 using TrackableEntities.Client;
 using WaterNut.Business.Entities;
+using WaterNut.Business.Services.Importers;
+using WaterNut.Business.Services.Utils;
 using WaterNut.DataSpace;
 using CustomsOperations = CoreEntities.Business.Enums.CustomsOperations;
 
@@ -535,13 +537,17 @@ namespace AutoBot
 
         public static void ImportXSalesFiles(string testFile)
         {
-            var fileType = GetxSalesFileType();
-            CSVUtils.SaveCsv(new FileInfo[] { new FileInfo(testFile) }, fileType);
+            var fileTypes = GetxSalesFileType();
+            foreach (var fileType in fileTypes)
+            {
+                new FileTypeImporter(fileType).Import(testFile);
+            }
+           
         }
 
-        public static FileTypes GetxSalesFileType()
+        public static List<FileTypes> GetxSalesFileType()
         {
-            return Utils.GetFileType("xSales");
+            return Utils.GetFileType(FileTypeManager.EntryTypes.xSales, FileTypeManager.FileFormats.Csv);
         }
     }
 

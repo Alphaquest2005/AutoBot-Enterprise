@@ -1,13 +1,15 @@
 ﻿using System.Collections.Generic;
+using Core.Common.Extensions;
 using WaterNut.Business.Services.Utils;
 
 namespace WaterNut.Business.Services.Importers.EntryData
 {
-    public class SaveInventoryItems : IInventoryProcessor
+    public class SaveInventoryItems : IProcessor<InventoryDataItem>
     {
-        public List<InventoryDataItem> Execute(List<InventoryDataItem> lines)
+        public Result<List<InventoryDataItem>> Execute(List<InventoryDataItem> data)
         {
-            throw new System.NotImplementedException();
+            InventoryItemDataUtils.SaveInventoryItems(data);
+            return new Result<List<InventoryDataItem>>(data, true, "") ;
         }
     }
 }

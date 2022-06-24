@@ -5,11 +5,13 @@ using Core.Common.Extensions;
 using CoreEntities.Business.Entities;
 using DocumentDS.Business.Entities;
 using InventoryDS.Business.Entities;
+using MoreLinq;
+using MoreLinq.Extensions;
 using WaterNut.Business.Services.Utils;
 
 namespace WaterNut.Business.Services.Importers.EntryData
 {
-    public class GetInventoryItems : IInventoryProcessor
+    public class GetInventoryItems : IProcessor<InventoryDataItem>
     {
         public readonly List<dynamic> _lines;
         private readonly FileTypes _fileType;
@@ -22,27 +24,28 @@ namespace WaterNut.Business.Services.Importers.EntryData
             _docSet = docSet;
         }
 
-        public List<InventoryDataItem> Execute(List<InventoryDataItem> lines)
+        public Result<List<InventoryDataItem>> Execute(List<InventoryDataItem> data)
         {
-            var data = InventoryItemDataUtils.CreateItemGroupList(_lines);
-            var inventorySource = InventoryItemUtils.GetInventorySource(_fileType);
-            int applicationSettingsId = _docSet.First().ApplicationSettingsId;
+            var rawData = InventoryItemDataUtils.CreateItemGroupList(_lines);
+
             var inventoryItems =
-                InventoryItemUtils.GetInventoryItems(data.Select(x => (string)x.Key.ItemNumber).ToList(), applicationSettingsId);
+                InventoryItemUtils.GetInventoryItems(rawData.Select(x => (string)x.Key.ItemNumber).ToList());
 
+            var left = rawData.GroupJoin(
+                    inventoryItems,
+                    r => r.Key.ItemNumber,
+                    i => i.ItemNumber,
+                    (r, i) => new InventoryDataItem(r, i.FirstOrDefault()));
 
-            var validItems = data.Where(x => !string.IsNullOrEmpty(x.Key.ItemDescription)).ToList();
-            var existingInventoryItem = InventoryItemDataUtils.CreateExistingInventoryData(inventorySource, validItems, inventoryItems);
+            var right = inventoryItems.GroupJoin(
+                rawData,
+                i => i.ItemNumber,
+                r => r.Key.ItemNumber,
+                (i, r) => new InventoryDataItem(r.FirstOrDefault(), i));
 
-            var newInventoryItems = InventoryItemDataUtils.CreateNewInventoryData(inventorySource, validItems, inventoryItems, applicationSettingsId);
+            return new Result<List<InventoryDataItem>>(left.Union(right).ToList(), true, "") ;
 
-            return existingInventoryItem.Union(newInventoryItems).ToList();
 
         }
-    }
-
-    public interface IInventoryProcessor
-    {
-        List<InventoryDataItem> Execute(List<InventoryDataItem> lines);
     }
 }

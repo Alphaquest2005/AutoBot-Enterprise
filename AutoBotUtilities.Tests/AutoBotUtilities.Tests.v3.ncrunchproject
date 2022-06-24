@@ -5,7 +5,10 @@
     </HiddenComponentWarnings>
     <IgnoredTests>
       <NamedTestSelector>
-        <TestName>AutoBotUtilities.Tests.DISUtilsTests.CanCallGetSubmitEntryData</TestName>
+        <TestName>AutoBotUtilities.Tests.DoAutoMatchTest.CanDoAutoMatchAllPerformance</TestName>
+      </NamedTestSelector>
+      <NamedTestSelector>
+        <TestName>AutoBotUtilities.Tests.PDFUtilsTests.CanImportShipmentInvoice</TestName>
       </NamedTestSelector>
     </IgnoredTests>
   </Settings>
