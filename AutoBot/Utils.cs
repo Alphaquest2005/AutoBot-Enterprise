@@ -70,10 +70,7 @@ namespace AutoBot
 {
     public partial class Utils
     {
-        public const int _noOfCyclesBeforeHardExit = 60;
-        public static int maxRowsToFindHeader = 10;
-        private static int _oneMegaByte = 1000000;
-        public static StringComparer ignoreCase = StringComparer.OrdinalIgnoreCase;
+       
         public static Client Client { get; set; } = new Client
         {
             CompanyName = BaseDataModel.Instance.CurrentApplicationSettings.CompanyName,
@@ -260,7 +257,7 @@ namespace AutoBot
 
                         if (fileType.FileImporterInfos.EntryType != FileTypeManager.EntryTypes.Unknown)
                         {
-                            SendBackTooBigEmail(file, fileType);
+                            FileTypeManager.SendBackTooBigEmail(file, fileType);
                         }
 
                         var reference = GetReference(file, ctx);
@@ -293,18 +290,7 @@ namespace AutoBot
             }
         }
 
-        public static void SendBackTooBigEmail(FileInfo file, FileTypes fileType)
-        {
-            if (fileType.MaxFileSizeInMB != null && (file.Length / _oneMegaByte) > fileType.MaxFileSizeInMB)
-            {
-                var errTxt =
-                    "Hey,\r\n\r\n" +
-                    $@"Attachment: '{file.Name}' is too large to upload into Asycuda ({Math.Round((double)(file.Length / _oneMegaByte), 2)}). Please remove Formatting or Cut into Smaller chuncks and Resend!" +
-                    "Thanks\r\n" +
-                    "AutoBot";
-                EmailDownloader.EmailDownloader.SendBackMsg(fileType.EmailId, Client, errTxt);
-            }
-        }
+
 
         private static void AddUpdateEmailAttachments(FileTypes fileType, Email email, Emails oldemail, FileInfo file,
             CoreEntitiesContext ctx, Attachments attachment, string reference)
@@ -520,7 +506,7 @@ namespace AutoBot
                 while (!process.HasExited && process.Responding)
                 {
                     //if(File.Exists(Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder, $"{docRef}/I")))
-                    if (timeoutCycles > Utils._noOfCyclesBeforeHardExit) break;
+                    if (timeoutCycles > WaterNut.DataSpace.Utils._noOfCyclesBeforeHardExit) break;
                     //Console.WriteLine($"Waiting {timeoutCycles} Minutes");
                     Debug.WriteLine($"Waiting {timeoutCycles} Minutes");
                     Thread.Sleep(1000 * 60);
@@ -813,9 +799,9 @@ namespace AutoBot
                 throw e;
             }
         }
-        public static List<FileTypes> GetFileType(string entryType, string format)
+        public static List<FileTypes> GetFileType(string entryType, string format, string fileName)
         {
-            return FileTypeManager.GetImportableFileType(entryType, format);
+            return FileTypeManager.GetImportableFileType(entryType, format, fileName);
         }
     }
 }

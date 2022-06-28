@@ -3,11 +3,12 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using AutoBot;
 using CoreEntities.Business.Entities;
 using WaterNut.DataSpace;
 using FileInfo = System.IO.FileInfo;
 
-namespace AutoBot
+namespace AutoBotUtilities
 {
     public class ImportUtils
     {
@@ -119,13 +120,13 @@ namespace AutoBot
                                  appSetting.AssessEX == x.AssessEX))
                     .Where(x => x.Actions.TestMode ==
                                 (BaseDataModel.Instance.CurrentApplicationSettings.TestMode))
-                    .Select(x =>  (x.Actions.Name, FileUtils.FileActions[x.Actions.Name])).ToList()
+                    .Select<FileTypeActions, (string Name, Action<FileTypes, FileInfo[]>)>(x =>  (x.Actions.Name, FileUtils.FileActions[x.Actions.Name])).ToList()
                     .ForEach(x => { ExecuteActions(fileType, files, x); });
 
             }
             catch (Exception e)
             {
-                EmailDownloader.EmailDownloader.ForwardMsg(fileType.EmailId,Utils.Client, $"Bug Found",
+                EmailDownloader.EmailDownloader.ForwardMsg(fileType.EmailId,BaseDataModel.GetClient(), $"Bug Found",
                     $"{e.Message}\r\n{e.StackTrace}",new[] { "Joseph@auto-brokerage.com" },
                     Array.Empty<string>());
             }
@@ -169,12 +170,12 @@ namespace AutoBot
                                  appSetting.AssessEX == x.AssessEX))
                     .Where(x => x.Actions.TestMode ==
                                 (BaseDataModel.Instance.CurrentApplicationSettings.TestMode))
-                    .Select(x => (x.Actions.Name , FileUtils.FileActions[x.Actions.Name])).ToList()
+                    .Select<FileTypeActions, (string Name, Action<FileTypes, FileInfo[]>)>(x => (x.Actions.Name , FileUtils.FileActions[x.Actions.Name])).ToList()
                     .ForEach(x =>  ExecuteActions(fileType, files, x));
             }
             catch (Exception e)
             {
-                EmailDownloader.EmailDownloader.SendEmail(Utils.Client, null, $"Bug Found",
+                EmailDownloader.EmailDownloader.SendEmail(BaseDataModel.GetClient(), null, $"Bug Found",
                     new[] { "Joseph@auto-brokerage.com" }, $"{e.Message}\r\n{e.StackTrace}",
                     Array.Empty<string>());
             }

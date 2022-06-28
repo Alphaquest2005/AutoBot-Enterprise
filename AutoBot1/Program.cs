@@ -13,6 +13,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using AutoBot.Properties;
+using AutoBotUtilities;
 using Core.Common.Utils;
 using EntryDataDS.Business.Entities;
 using MoreLinq.Extensions;

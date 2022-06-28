@@ -23,6 +23,7 @@ using DocumentDS.Business.Entities;
 using DocumentDS.Business.Services;
 using DocumentItemDS.Business.Entities;
 using DocumentItemDS.Business.Services;
+using EmailDownloader;
 using EntryDataDS.Business.Entities;
 using EntryDataDS.Business.Services;
 using InventoryDS.Business.Entities;
@@ -166,6 +167,18 @@ namespace WaterNut.DataSpace
         #region IAsyncInitialization Members
 
         public static Task Initialization { get; }
+
+        public static Client GetClient()
+        {
+            return new EmailDownloader.Client
+            {
+                CompanyName = BaseDataModel.Instance.CurrentApplicationSettings.CompanyName,
+                DataFolder = BaseDataModel.Instance.CurrentApplicationSettings.DataFolder,
+                Password = BaseDataModel.Instance.CurrentApplicationSettings.EmailPassword,
+                Email = BaseDataModel.Instance.CurrentApplicationSettings.Email,
+                EmailMappings = BaseDataModel.Instance.CurrentApplicationSettings.EmailMapping.ToList()
+            };
+        }
 
         #endregion
 

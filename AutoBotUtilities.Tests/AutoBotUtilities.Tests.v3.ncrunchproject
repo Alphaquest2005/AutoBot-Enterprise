@@ -10,6 +10,12 @@
       <NamedTestSelector>
         <TestName>AutoBotUtilities.Tests.PDFUtilsTests.CanImportShipmentInvoice</TestName>
       </NamedTestSelector>
+      <NamedTestSelector>
+        <TestName>AutoBotUtilities.Tests.DoAutoMatchTest.CanDoAutoMatch</TestName>
+      </NamedTestSelector>
+      <NamedTestSelector>
+        <TestName>AutoBotUtilities.Tests.XlsxUtilsTests.CanImportXSLXSalesFile</TestName>
+      </NamedTestSelector>
     </IgnoredTests>
   </Settings>
 </ProjectConfiguration>

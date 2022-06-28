@@ -229,34 +229,9 @@ namespace WaterNut.Business.Services.Importers
 
 
                 var val = splits[index];
-                foreach (var regEx in key.FileTypeMappingRegExs)
-                {
+                val = FileTypeManager.ApplyFileMapRegEx(key, val);
 
-                    val = Regex.Replace(val, regEx.ReplacementRegex, regEx.ReplacementValue ?? "",
-                        RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture | RegexOptions.Multiline);
-                }
-
-                if (key.DataType == "Date")
-                {
-                    DateTime rdate;
-                    if (DateTime.TryParse(val, out rdate))
-                    {
-                        return rdate;
-                    }
-
-                    var formatStrings = new List<string>() { "M/y", "M/d/y", "M-d-y", "dd/MM/yyyy", "dd/M/yyyy", "dddd dd MMMM yyyy" };
-                    foreach (String formatString in formatStrings)
-                    {
-                        if (DateTime.TryParseExact(val, formatString, CultureInfo.InvariantCulture, DateTimeStyles.None,
-                                out rdate))
-                            return rdate;
-                    }
-
-                    return rdate; //DateTime.Parse(val);
-                }
-
-                if (key.DataType == "Number") return Convert.ToSingle(string.IsNullOrEmpty(val) ? "0" : val);
-                return val;
+                return FileTypeManager.MappingValueToType(key, val);
             }
             catch (Exception)
             {
@@ -264,6 +239,8 @@ namespace WaterNut.Business.Services.Importers
                 throw;
             }
         }
+
+
 
 
         public static Dictionary<string, Action<dynamic, Dictionary<string, int>, string[]>> ImportActions = new Dictionary<string, Action<dynamic, Dictionary<string, int>, string[]>>()

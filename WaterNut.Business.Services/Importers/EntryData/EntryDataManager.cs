@@ -10,7 +10,7 @@ namespace WaterNut.Business.Services.Importers.EntryData
     public class EntryDataManager
     {
 
-        public static Dictionary<string, IDocumentProcessor> DocumentProcessors(ImportSettings importSettings)
+        public static Dictionary<string, IDocumentProcessor> CSVDocumentProcessors(ImportSettings importSettings)
         {
             return new Dictionary<string, IDocumentProcessor>()
             {
@@ -22,6 +22,27 @@ namespace WaterNut.Business.Services.Importers.EntryData
                                                                         new SaveEntryDataFile(importSettings),
                                                                         new EntryDataProcessor(importSettings)
                                                                     })},
+                { FileTypeManager.EntryTypes.Sales, new DocumentProcessorPipline(new List<IDocumentProcessor>()
+                {
+                    new InventoryImporter(importSettings),
+                    new SupplierPipeline(),
+                    new SaveEntryDataFile(importSettings),
+                    new EntryDataProcessor(importSettings)
+                })},
+                { FileTypeManager.EntryTypes.Dis, new DocumentProcessorPipline(new List<IDocumentProcessor>()
+                {
+                    new InventoryImporter(importSettings),
+                    new SupplierPipeline(),
+                    new SaveEntryDataFile(importSettings),
+                    new EntryDataProcessor(importSettings)
+                })},
+                { FileTypeManager.EntryTypes.Adj, new DocumentProcessorPipline(new List<IDocumentProcessor>()
+                {
+                    new InventoryImporter(importSettings),
+                    new SupplierPipeline(),
+                    new SaveEntryDataFile(importSettings),
+                    new EntryDataProcessor(importSettings)
+                })},
                 { FileTypeManager.EntryTypes.xSales, new DocumentProcessorPipline(new List<IDocumentProcessor>()
                 {
                     new xsalesProcessor(importSettings)
@@ -30,6 +51,7 @@ namespace WaterNut.Business.Services.Importers.EntryData
             };
         }
 
-        
+
+
     }
 }

@@ -16,32 +16,40 @@ namespace WaterNut.Business.Services.Importers
 
         public CSVImporter(FileTypes fileType)
         {
-            if (fileType == null) throw new ApplicationException("FileType can not be null");
             FileType = fileType;
-            
         }
 
         public void Import(string fileName, bool overWrite)
         {
-            var docSet = DataSpace.Utils.GetDocSets(FileType);
-            var lines = GetFileLines(fileName);
-            var header = GetHeadings(lines);
-            var emailId = DataSpace.Utils.GetExistingEmailId(fileName, FileType);
+            try
+            {
+                var docSet = DataSpace.Utils.GetDocSets(FileType);
+                var lines = GetFileLines(fileName);
+                var header = GetHeadings(lines);
+                var emailId = DataSpace.Utils.GetExistingEmailId(fileName, FileType);
 
-            var fileType = FileTypeManager.GetHeadingFileType(header, FileType);
+                var fileType = FileTypeManager.GetHeadingFileType(header, FileType);
 
-            var data = new CSVDataExtractor(fileType, lines, header, emailId)
-                //.Then(new EntryDataExtractor(fileType, docSet, emailId,fileName))
-                .Execute();
+                var data = new CSVDataExtractor(fileType, lines, header, emailId)
+                    //.Then(new EntryDataExtractor(fileType, docSet, emailId,fileName))
+                    .Execute();
 
-            fileType.EmailId = emailId;
-            var importSettings  = new ImportSettings(fileType, docSet, overWrite,fileName ,emailId);
+                fileType.EmailId = emailId;
+                var importSettings = new ImportSettings(fileType, docSet, overWrite, fileName, emailId);
 
-            EntryDataManager.DocumentProcessors(importSettings)[fileType.FileImporterInfos.EntryType].Execute(data);
+                EntryDataManager.CSVDocumentProcessors(importSettings)[fileType.FileImporterInfos.EntryType]
+                    .Execute(data);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+
 
         }
 
-     
+
 
         public IEnumerable<string> GetFileLines(string droppedFilePath)
         {

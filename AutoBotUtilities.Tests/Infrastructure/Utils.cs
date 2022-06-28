@@ -56,11 +56,11 @@ namespace AutoBotUtilities.Tests.Infrastructure
             AutoBot.Utils.SetCurrentApplicationSettings(appId);
         }
 
-        public static IEnumerable<FileTypes> GetUnknownCSVFileType() =>
-            FileTypeManager.GetImportableFileType(FileTypeManager.EntryTypes.Unknown, FileTypeManager.FileFormats.Csv);
+        public static IEnumerable<FileTypes> GetUnknownCSVFileType(string fileName) =>
+            FileTypeManager.GetImportableFileType(FileTypeManager.EntryTypes.Unknown, FileTypeManager.FileFormats.Csv, fileName);
 
-        public static IEnumerable<FileTypes> GetPOCSVFileType() =>
-            FileTypeManager.GetImportableFileType(FileTypeManager.EntryTypes.Po, FileTypeManager.FileFormats.Csv);
+        public static IEnumerable<FileTypes> GetPOCSVFileType(string testFile) =>
+            FileTypeManager.GetImportableFileType(FileTypeManager.EntryTypes.Po, FileTypeManager.FileFormats.Csv, testFile);
 
         public static void 
             ClearDataBase()
@@ -103,7 +103,7 @@ namespace AutoBotUtilities.Tests.Infrastructure
         public static void ImportEntryDataOldWay(List<string> files, string entryType, string fileFormat)
         {
             var testFile = Infrastructure.Utils.GetTestSalesFile(files);
-            var fileTypes = FileTypeManager.GetImportableFileType(entryType, fileFormat);
+            var fileTypes = FileTypeManager.GetImportableFileType(entryType, fileFormat, testFile);
             foreach (var fileType in fileTypes)
             {
                 CSVUtils.SaveCsv(new List<FileInfo>() { new FileInfo(testFile) }, fileType);

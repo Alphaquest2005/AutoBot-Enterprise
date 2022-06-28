@@ -12,17 +12,11 @@ namespace WaterNut.DataSpace
 {
     public class Utils
     {
-        public static Client GetClient()
-        {
-            return new EmailDownloader.Client
-            {
-                CompanyName = BaseDataModel.Instance.CurrentApplicationSettings.CompanyName,
-                DataFolder = BaseDataModel.Instance.CurrentApplicationSettings.DataFolder,
-                Password = BaseDataModel.Instance.CurrentApplicationSettings.EmailPassword,
-                Email = BaseDataModel.Instance.CurrentApplicationSettings.Email,
-                EmailMappings = BaseDataModel.Instance.CurrentApplicationSettings.EmailMapping.ToList()
-            };
-        }
+        public const int maxRowsToFindHeader = 10;
+        public const int _noOfCyclesBeforeHardExit = 60;
+        public static int _oneMegaByte = 1000000;
+        public static StringComparer ignoreCase = StringComparer.OrdinalIgnoreCase;
+
 
 
         public static List<AsycudaDocumentSet> GetDocSets(FileTypes fileType)

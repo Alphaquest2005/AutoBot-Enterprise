@@ -42,7 +42,7 @@ namespace AutoBotUtilities.Tests
             try
             {
                 if (!Infrastructure.Utils.IsTestApplicationSettings()) Assert.IsTrue(true); 
-                var testFile = Infrastructure.Utils.GetTestSalesFile(new List<string>() { "TestXSalesFile.csv"});
+                var testFile = Infrastructure.Utils.GetTestSalesFile(new List<string>() { "Sales-TestXSalesFile.csv" });
                 EX9Utils.ImportXSalesFiles(testFile);
                 using (var ctx = new EntryDataDSContext())
                 {
@@ -65,8 +65,8 @@ namespace AutoBotUtilities.Tests
         {
             try
             {
-
-                var fileType = EX9Utils.GetxSalesFileType();
+                var testFile = Infrastructure.Utils.GetTestSalesFile(new List<string>() { "Sales-TestXSalesFile.csv" });
+                var fileType = EX9Utils.GetxSalesFileType(testFile);
                 Assert.AreEqual(fileType.First().FileImporterInfos.EntryType, FileTypeManager.EntryTypes.xSales);
             }
             catch (Exception e)

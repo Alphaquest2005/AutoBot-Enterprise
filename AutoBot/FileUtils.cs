@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using AutoBotUtilities;
 using AutoBotUtilities.CSV;
+using WaterNut.Business.Services.Importers;
+using WaterNut.Business.Services.Utils;
 using FileTypes = CoreEntities.Business.Entities.FileTypes;
 
 namespace AutoBot
@@ -9,7 +12,7 @@ namespace AutoBot
     public class FileUtils
     {
         public static Dictionary<string, Action<FileTypes, FileInfo[]>> FileActions =>
-            new Dictionary<string, Action<FileTypes, FileInfo[]>>(Utils.ignoreCase)
+            new Dictionary<string, Action<FileTypes, FileInfo[]>>(WaterNut.DataSpace.Utils.ignoreCase)
             {
                 {"ImportSalesEntries",(ft, fs) => SalesUtils.ImportSalesEntries(false) },
                 {"AllocateSales",(ft, fs) => SalesUtils.AllocateSales() },
@@ -23,7 +26,7 @@ namespace AutoBot
                 {"AssessPOEntry",(ft, fs) => POUtils.AssessPOEntry(ft.DocReference, ft.AsycudaDocumentSetId)},
                 {"EmailPOEntries",(ft, fs) => POUtils.EmailPOEntries(ft.AsycudaDocumentSetId) },
                 {"DownloadSalesFiles",(ft, fs) => EX9Utils.DownloadSalesFiles(10, "IM7History",false) },
-                {"Xlsx2csv",(ft, fs) => XLSXImporter.Xlsx2csv(fs, ft) },
+                {"Xlsx2csv",(ft, fs) => XLSXProcessor.Xlsx2csv(fs, ft) },
                 {"SaveInfo",(ft, fs) => ImportUtils.TrySaveFileInfo(fs, ft) },
                 {"CleanupEntries",(ft, fs) => EntryDocSetUtils.CleanupEntries() },
                 {"SubmitToCustoms",(ft, fs) => SalesUtils.SubmitSalesXMLToCustoms() },
@@ -80,7 +83,7 @@ namespace AutoBot
                 {"EmailWarehouseErrors", EntryDocSetUtils.EmailWarehouseErrors },
                 {"ImportExpiredEntires", EntryDocSetUtils.ImportExpiredEntires },
                 {"ImportCancelledEntries", EntryDocSetUtils.ImportCancelledEntries },
-                {"EmailEntriesExpiringNextMonth", EntryDocSetUtils.EmailEntriesExpiringNextMonth },
+                {"EmailEntriesExpiringNextMonth", (ft,fs) => EntryDocSetUtils.EmailEntriesExpiringNextMonth() },
                 {"RecreateEx9", EX9Utils.RecreateEx9 },//
                 {"UpdateRegEx", UpdateInvoice.UpdateRegEx},
                 {"ImportWarehouseErrors", (ft,fs) => ImportWarehouseErrorsUtils.ImportWarehouseErrors()},

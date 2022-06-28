@@ -18,7 +18,7 @@ namespace AutoBot
     public class SessionsUtils
     {
         public static Dictionary<string, Action> SessionActions =>
-            new Dictionary<string, Action>(Utils.ignoreCase)
+            new Dictionary<string, Action>(WaterNut.DataSpace.Utils.ignoreCase)
             {
 
                 {"CreateDiscpancyEntries",() => ADJUtils.CreateAdjustmentEntries(false, "DIS") },

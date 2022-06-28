@@ -97,6 +97,9 @@
     <Reference Include="ExcelDataReader, Version=3.6.0.0, Culture=neutral, PublicKeyToken=93517dbe6a4012fa, processorArchitecture=MSIL">
       <HintPath>..\packages\ExcelDataReader.3.6.0\lib\net45\ExcelDataReader.dll</HintPath>
     </Reference>
+    <Reference Include="ExcelDataReader.DataSet, Version=3.6.0.0, Culture=neutral, PublicKeyToken=93517dbe6a4012fa, processorArchitecture=MSIL">
+      <HintPath>..\packages\ExcelDataReader.DataSet.3.6.0\lib\net35\ExcelDataReader.DataSet.dll</HintPath>
+    </Reference>
     <Reference Include="fontbox-1.8.9">
       <HintPath>Custom Services\DataModels\Custom DataModels\PDF2TXT\fontbox-1.8.9.dll</HintPath>
     </Reference>
@@ -841,7 +844,11 @@
     <Compile Include="Importers\EntryData\SupplierPipeline.cs" />
     <Compile Include="Importers\EntryData\UpdateLineInventoryItemId.cs" />
     <Compile Include="Importers\EntryData\xsalesProcessor.cs" />
+    <Compile Include="Importers\IDataSetProcessor.cs" />
     <Compile Include="Importers\ImportSettings.cs" />
+    <Compile Include="Importers\MisMatchesProcessor.cs" />
+    <Compile Include="Importers\XlsxEntryDataProcessor.cs" />
+    <Compile Include="Importers\XLSXUtils.cs" />
     <Compile Include="Utils\AutoMatchUtils.cs" />
     <Compile Include="Importers\ChainedDataExtractor.cs" />
     <Compile Include="Importers\CSVDataExtractor.cs" />
@@ -867,6 +874,7 @@
     <Compile Include="Importers\IImporter.cs" />
     <Compile Include="Importers\StringTextSplitter.cs" />
     <Compile Include="Services\CoreEntities\FileImporterInfoService.cs" />
+    <Compile Include="Utils\CSVUtils.cs" />
     <Compile Include="Utils\DomainFactLibary.cs" />
     <Compile Include="Utils\InventoryData.cs" />
     <Compile Include="Utils\Matching\CNumberMatcher.cs" />

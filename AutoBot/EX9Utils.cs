@@ -537,7 +537,7 @@ namespace AutoBot
 
         public static void ImportXSalesFiles(string testFile)
         {
-            var fileTypes = GetxSalesFileType();
+            var fileTypes = GetxSalesFileType(testFile);
             foreach (var fileType in fileTypes)
             {
                 new FileTypeImporter(fileType).Import(testFile);
@@ -545,9 +545,9 @@ namespace AutoBot
            
         }
 
-        public static List<FileTypes> GetxSalesFileType()
+        public static List<FileTypes> GetxSalesFileType(string fileName)
         {
-            return Utils.GetFileType(FileTypeManager.EntryTypes.xSales, FileTypeManager.FileFormats.Csv);
+            return Utils.GetFileType(FileTypeManager.EntryTypes.xSales, FileTypeManager.FileFormats.Csv, fileName);
         }
     }
 

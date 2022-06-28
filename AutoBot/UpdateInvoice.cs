@@ -37,7 +37,7 @@ namespace AutoBot
                     var cmdParams = Regex.Matches(cmdParamInfo, @"(?<Param>\w+):\s?(?<Value>.*?)((, )|($|\r))",
                         RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.ExplicitCapture);
                    
-                    var cmdparamDic = new Dictionary<string, string>(Utils.ignoreCase);
+                    var cmdparamDic = new Dictionary<string, string>(WaterNut.DataSpace.Utils.ignoreCase);
                     foreach (Match m in cmdParams)
                     {
                         cmdparamDic.Add(m.Groups["Param"].Value.Trim(',', ' ', '\''), m.Groups["Value"].Value.Trim(',',' ','\''));
@@ -53,7 +53,7 @@ namespace AutoBot
 
         private static Dictionary<string, (Action<Dictionary<string, string>> Action, string[] Params)> RegExCommands(FileTypes fileTypes)
         {
-            var regExCommands = new Dictionary<string, (Action<Dictionary<string, string>> Action, string[] Params)>(Utils.ignoreCase)
+            var regExCommands = new Dictionary<string, (Action<Dictionary<string, string>> Action, string[] Params)>(WaterNut.DataSpace.Utils.ignoreCase)
             {
                 {
                     "demo",

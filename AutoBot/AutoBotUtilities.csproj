@@ -301,8 +301,7 @@
     <Compile Include="AssessedEntryInfo.cs" />
     <Compile Include="C71Utils.cs" />
     <Compile Include="Client.cs" />
-    <Compile Include="CSV\CSVUtils.cs" />
-    <Compile Include="CSV\XLSXImporter.cs" />
+    <Compile Include="CSV\CSVUtilities.cs" />
     <Compile Include="DiscpancyExecData.cs" />
     <Compile Include="DiscrepancyPreExecutionReport.cs" />
     <Compile Include="DISUtils.cs" />
@@ -333,6 +332,7 @@
     <Compile Include="Utils.cs" />
     <Compile Include="Utils.SaleReportLine.cs" />
     <Compile Include="Utils.UnClassifiedItem.cs" />
+    <Compile Include="XLSXProcessor.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config">

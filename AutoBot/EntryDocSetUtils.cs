@@ -23,7 +23,7 @@ namespace AutoBot
 {
     public class EntryDocSetUtils
     {
-        public static void EmailEntriesExpiringNextMonth(FileTypes arg1, FileInfo[] arg2)
+        public static void EmailEntriesExpiringNextMonth()
         {
             EX9Utils.EmailEntriesExpiringNextMonth();
         }

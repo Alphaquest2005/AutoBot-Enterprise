@@ -54,7 +54,7 @@ namespace AutoBotUtilities.Tests
             {
                 if (!Infrastructure.Utils.IsTestApplicationSettings()) Assert.IsTrue(true);
                 var testFile = Infrastructure.Utils.GetTestSalesFile(new List<string>(){ "TestPOCSVFile.csv" });
-                var fileTypes = Infrastructure.Utils.GetPOCSVFileType();
+                var fileTypes = Infrastructure.Utils.GetPOCSVFileType(testFile);
                 foreach (var fileType in fileTypes)
                 {
                     CSVUtils.SaveCsv(new List<FileInfo>(){new FileInfo(testFile)}, fileType);
@@ -85,13 +85,13 @@ namespace AutoBotUtilities.Tests
         }
 
         [Test]
-        public void CanImportShipmentInvoice()
+        public void CanImportShipmentInvoiceOldWay()
         {
             try
             {
                 if (!Infrastructure.Utils.IsTestApplicationSettings()) Assert.IsTrue(true);
                 var testFile = Infrastructure.Utils.GetTestSalesFile(new List<string>() { "02679.pdf" });
-                var fileTypes = (IEnumerable<FileTypes>)FileTypeManager.GetImportableFileType(FileTypeManager.EntryTypes.ShipmentInvoice, FileTypeManager.FileFormats.PDF);
+                var fileTypes = (IEnumerable<FileTypes>)FileTypeManager.GetImportableFileType(FileTypeManager.EntryTypes.ShipmentInvoice, FileTypeManager.FileFormats.PDF, testFile);
                 foreach (var fileType in fileTypes)
                 {
                     PDFUtils.ImportPDF(new FileInfo[]{new FileInfo(testFile)}, fileType);
@@ -127,7 +127,7 @@ namespace AutoBotUtilities.Tests
                 if (!Infrastructure.Utils.IsTestApplicationSettings()) Assert.IsTrue(true);
                 // Infrastructure.Utils.ImportEntryDataOldWay(new List<string>() { "TestPOCSVFile.csv" }, FileTypeManager.EntryTypes.Po, FileTypeManager.FileFormats.Csv);
                 var testFile = Infrastructure.Utils.GetTestSalesFile(new List<string>() { "TestPOCSVFile.csv" });
-                var fileTypes = Infrastructure.Utils.GetPOCSVFileType();
+                var fileTypes = Infrastructure.Utils.GetPOCSVFileType(testFile);
                 foreach (var fileType in fileTypes)
                 {
                     new FileTypeImporter(fileType).Import(testFile);
@@ -143,15 +143,15 @@ namespace AutoBotUtilities.Tests
             }
         }
 
-       
+
 
         [Test]
         public void CanGetUnknownFileType()
         {
             try
             {
-                
-                var fileTypes = Infrastructure.Utils.GetUnknownCSVFileType();
+                var testFile = Infrastructure.Utils.GetTestSalesFile(new List<string>() { "TestPOCSVFile.csv" });
+                var fileTypes = Infrastructure.Utils.GetUnknownCSVFileType(testFile);
                 Assert.IsTrue(fileTypes.Any());
             }
             catch (Exception e)
@@ -167,8 +167,8 @@ namespace AutoBotUtilities.Tests
         {
             try
             {
-
-                var fileTypes = Infrastructure.Utils.GetPOCSVFileType();
+                var testFile = Infrastructure.Utils.GetTestSalesFile(new List<string>() { "TestPOCSVFile.csv" });
+                var fileTypes = Infrastructure.Utils.GetPOCSVFileType(testFile);
                 Assert.IsTrue(fileTypes.Any());
             }
             catch (Exception e)

@@ -7,12 +7,14 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using AutoBot;
+using AutoBotUtilities;
 using AutoBotUtilities.CSV;
 using Core.Common.UI;
 using CoreEntities.Business.Entities;
 using CoreEntities.Client.Entities;
 using EntryDataQS.Client.Repositories;
 using Microsoft.Win32;
+using WaterNut.Business.Services.Importers;
 using WaterNut.Business.Services.Utils;
 using xcuda_Supplementary_unit = CoreEntities.Business.Entities.xcuda_Supplementary_unit;
 
@@ -78,9 +80,9 @@ namespace WaterNut.QuerySpace
                     if (f.EndsWith(".xlsx"))
                     {
                         var fileTypes = FileTypeManager.GetImportableFileType(fileType,
-                            FileTypeManager.FileFormats.Xlsx);
+                            FileTypeManager.FileFormats.Xlsx, f);
 
-                        XLSXImporter.Xlsx2csv(new FileInfo[]{ new FileInfo(f)}, fileTypes.FirstOrDefault(), overwrite);
+                        XLSXProcessor.Xlsx2csv(new FileInfo[]{ new FileInfo(f)}, fileTypes.FirstOrDefault(), overwrite);
                     }
 
                 }

@@ -91,6 +91,7 @@
     <Compile Include="Extensions\BetterExpando.cs" />
     <Compile Include="Extensions\Dictionary2CSV.cs" />
     <Compile Include="Extensions\DynamicExtensions.cs" />
+    <Compile Include="Extensions\IEnumeratorToList.cs" />
     <Compile Include="Extensions\MefExtensions.cs" />
     <Compile Include="Extensions\Result.cs" />
     <Compile Include="Extensions\ResultExtensions.cs" />

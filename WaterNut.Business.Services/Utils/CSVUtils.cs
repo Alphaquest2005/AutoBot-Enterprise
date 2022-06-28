@@ -5,8 +5,6 @@ using System.ComponentModel;
 using System.Data;
 using System.Data.Entity.Core.Objects.DataClasses;
 using System.Data.OleDb;
-using System.Diagnostics;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -16,17 +14,16 @@ using System.Threading.Tasks;
 using System.Threading.Tasks.Schedulers;
 using Core.Common.Converters;
 using Core.Common.Data.Contracts;
+using Core.Common.Extensions;
 using CoreEntities.Business.Entities;
-using ExcelDataReader;
 using SimpleMvvmToolkit.ModelExtensions;
 using TrackableEntities;
 using TrackableEntities.Client;
-using WaterNut.Business.Services.Utils;
 using WaterNut.DataSpace;
 using FileInfo = System.IO.FileInfo;
 using MoreEnumerable = MoreLinq.MoreEnumerable;
 
-namespace AutoBot
+namespace WaterNut.Business.Services.Utils
 {
     public class CSVUtils
     {
@@ -78,7 +75,7 @@ namespace AutoBot
                 if (IsErrorLogSent(file)) return;
                 var att = GetCSVOriginalFileAttachments(file);
                 var body = CreateCSVErrorEmailBody(file, e);
-                EmailDownloader.EmailDownloader.SendBackMsg(att?.EmailId, Utils.Client, body);
+                EmailDownloader.EmailDownloader.SendBackMsg(att?.EmailId, BaseDataModel.GetClient(), body);
                 SaveErrorLog(att);
             
         }
@@ -164,7 +161,7 @@ namespace AutoBot
                                        $"AutoBot";
                             var emailId = ctx.AsycudaDocumentSet_Attachments
                                 .FirstOrDefault(x => x.Attachments.FilePath.Contains(file.FullName.Replace(file.Extension, "").Replace("-Fixed", "")))?.EmailId;
-                            EmailDownloader.EmailDownloader.SendBackMsg(emailId, Utils.Client, body);
+                            EmailDownloader.EmailDownloader.SendBackMsg(emailId, BaseDataModel.GetClient(), body);
                             ctx.AttachmentLog.Add(new AttachmentLog(true)
                             {
                                 DocSetAttachment = att.Id,
@@ -206,9 +203,10 @@ namespace AutoBot
             //return str;
         }
 
-        public static void FixCsv(FileInfo file, FileTypes fileType,
-            Dictionary<string, Func<Dictionary<string, string>, DataRow, DataRow, string>> dic, bool? overwrite)
+        public static void FixCsv(FileInfo file, FileTypes fileType, bool? overwrite)
         {
+
+            var dic = FileTypeManager.PreCalculatedFileTypeMappings(fileType);
             try
             {
 
@@ -355,7 +353,7 @@ namespace AutoBot
                 .ToList(); // !headerlst  (item.OriginalName.ToUpper())
             if (missingMaps.Any())
             {
-                EmailDownloader.EmailDownloader.SendEmail(Utils.Client, null, $"Bug Found",
+                EmailDownloader.EmailDownloader.SendEmail(BaseDataModel.GetClient(), null, $"Bug Found",
                     new[] { "Joseph@auto-brokerage.com" },
                     $"Required Field - '{missingMaps.Select(x => x.Key).Aggregate((o, n) => o + "," + n)}' in File: {file.Name} dose not exists.",
                     Array.Empty<string>());
@@ -378,7 +376,7 @@ namespace AutoBot
             }
         }
 
-        private static void ImportRows(FileInfo file, FileTypes fileType, Dictionary<string, Func<Dictionary<string, string>, DataRow, DataRow, string>> dic, List<DataRow> dRows, DataRow header,
+        private static void ImportRows(FileInfo file, FileTypes fileType, Dictionary<string, Func<IDictionary<string, object>, IDictionary<string, object>, IDictionary<string, object>, string>> dic, List<DataRow> dRows, DataRow header,
             ConcurrentDictionary<int, string> table)
         {
             var mappingMailSent = false;
@@ -453,7 +451,7 @@ namespace AutoBot
             }
         }
 
-        private static bool UpdateRowWithFileMapping(FileInfo file, FileTypes fileType, Dictionary<string, Func<Dictionary<string, string>, DataRow, DataRow, string>> dic, bool mappingMailSent,
+        private static bool UpdateRowWithFileMapping(FileInfo file, FileTypes fileType, Dictionary<string, Func<IDictionary<string, object>, IDictionary<string, object>, IDictionary<string, object>, string>> dic, bool mappingMailSent,
             DataRow header, int row_no, DataRow drow, ref Dictionary<string, string> row)
         {
             foreach (var mapping in OrderFileTypeMappingsByOriginalName(fileType))
@@ -514,7 +512,7 @@ namespace AutoBot
             return row;
         }
 
-        private static string ProcessValue(FileInfo file, FileTypes fileType, Dictionary<string, Func<Dictionary<string, string>, DataRow, DataRow, string>> dic, string val, int row_no,
+        private static string ProcessValue(FileInfo file, FileTypes fileType, Dictionary<string, Func<IDictionary<string, object>, IDictionary<string, object>, IDictionary<string, object>, string>> dic, string val, int row_no,
             DataRow header, FileTypeMappings mapping, Dictionary<string, string> row, DataRow drow)
         {
             var errLst = new List<string>();
@@ -530,7 +528,7 @@ namespace AutoBot
                 {
                     if (mapping.DestinationName == "Invoice #")
                     {
-                        val += dic["DIS-Reference"].Invoke(row, drow, header);
+                        val += dic["DIS-Reference"].Invoke(row.ToDynamic(), drow.ToDynamic(), header.ToDynamic());
                     }
                     else
                     {
@@ -567,7 +565,7 @@ namespace AutoBot
                 }
             if(errLst.Any())
                 EmailDownloader.EmailDownloader.ForwardMsg(fileType.EmailId,
-                    Utils.Client, $"Bug Found",
+                    BaseDataModel.GetClient(), $"Bug Found",
                     errLst.Aggregate((o,n) => o + "\r\n" + n),
                     new[] { "Joseph@auto-brokerage.com" }, Array.Empty<string>()
                 );
@@ -575,7 +573,7 @@ namespace AutoBot
             return val;
         }
 
-        private static bool GetRawValue(Dictionary<string, Func<Dictionary<string, string>, DataRow, DataRow, string>> dic, int row_no, FileTypeMappings mapping, string[] maps, string map,
+        private static bool GetRawValue(Dictionary<string, Func<IDictionary<string, object>, IDictionary<string, object>, IDictionary<string, object>, string>> dic, int row_no, FileTypeMappings mapping, string[] maps, string map,
             Dictionary<string, string> row, DataRow drow, DataRow header, ref string val)
         {
             if (row_no == 0)
@@ -588,7 +586,7 @@ namespace AutoBot
                 //if (string.IsNullOrEmpty(dt.Rows[row_no][map].ToString())) continue;
                 if (map.Contains("{") && dic.ContainsKey(map.Replace("{", "").Replace("}", "")))
                 {
-                    val += dic[map.Replace("{", "").Replace("}", "")].Invoke(row, drow, header);
+                    val += dic[map.Replace("{", "").Replace("}", "")].Invoke(row.ToDynamic(), drow.ToDynamic(), header.ToDynamic());
                 }
                 else
                 {
@@ -604,7 +602,7 @@ namespace AutoBot
             return false;
         }
 
-        private static bool CheckingRequiredFields(FileInfo file, FileTypes fileType, Dictionary<string, Func<Dictionary<string, string>, DataRow, DataRow, string>> dic, DataRow header,
+        private static bool CheckingRequiredFields(FileInfo file, FileTypes fileType, Dictionary<string, Func<IDictionary<string, object>, IDictionary<string, object>, IDictionary<string, object>, string>> dic, DataRow header,
             string map, FileTypeMappings mapping, bool mappingMailSent, int row_no)
         {
             if (!header.ItemArray.Contains(map.ToUpper()) &&
@@ -614,7 +612,7 @@ namespace AutoBot
                 {
                     if (mappingMailSent) return mappingMailSent;
                     EmailDownloader.EmailDownloader.ForwardMsg(fileType.EmailId,
-                        Utils.Client, $"Bug Found",
+                        BaseDataModel.GetClient(), $"Bug Found",
                         $"Required Field - '{mapping.OriginalName}' on Line:{row_no} in File: {file.Name} dose not exists.",
                         new[] { "Joseph@auto-brokerage.com" }, Array.Empty<string>()
                     );

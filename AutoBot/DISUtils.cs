@@ -18,6 +18,7 @@ using DocumentDS.Business.Entities;
 using EntryDataDS.Business.Entities;
 using MoreLinq;
 using TrackableEntities;
+using WaterNut.Business.Services.Utils;
 using WaterNut.DataSpace;
 using AsycudaDocumentSet_Attachments = CoreEntities.Business.Entities.AsycudaDocumentSet_Attachments;
 using FileTypes = CoreEntities.Business.Entities.FileTypes;
