@@ -33,6 +33,15 @@ namespace WaterNut.DataSpace
                     ?.FilePath;
                 if (xeslst == null) return false;
 
+                var invoicePOs = xeslst.SelectMany(x =>
+                        ((List<IDictionary<string, object>>)x).Select(z =>
+                            new { InvoiceNo = z["InvoiceNo"], PONumber = z["PONumber"] }))
+                    .Distinct()
+                    .Where(x => !string.IsNullOrEmpty(x.InvoiceNo?.ToString()))
+                    .ToDictionary(x => x.InvoiceNo.ToString(), x => x.PONumber?.ToString() ?? "");
+
+                if(!invoicePOs.Any()) return false;
+
 
                 var file = new DataFile(
                     dataFile.FileType, dataFile.DocSet, dataFile.OverWriteExisting, dataFile.EmailId, dataFile.DroppedFilePath, xeslst.SelectMany(x =>
@@ -40,11 +49,10 @@ namespace WaterNut.DataSpace
                         ((List<IDictionary<string, object>>)x).Select(z => (dynamic)z)).ToList());
 
                 await _inventoryImporter.ImportInventory(file).ConfigureAwait(false);
-                var invoicePOs = xeslst.SelectMany(x =>
-                        ((List<IDictionary<string, object>>)x).Select(z =>
-                            new { InvoiceNo = z["InvoiceNo"], PONumber = z["PONumber"] }))
-                    .Distinct()
-                    .ToDictionary(x => x.InvoiceNo.ToString(), x => x.PONumber?.ToString() ?? "");
+               
+
+
+
                 _shipmentInvoiceImporter.ProcessShipmentInvoice(dataFile.FileType, dataFile.DocSet, dataFile.OverWriteExisting, dataFile.EmailId,
                     xdroppedFilePath, xeslst, invoicePOs);
 

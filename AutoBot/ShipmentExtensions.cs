@@ -7,6 +7,7 @@ using MoreLinq;
 using TrackableEntities;
 using WaterNut.DataSpace;
 using xlsxWriter;
+using static System.String;
 
 namespace AutoBotUtilities
 {
@@ -733,7 +734,7 @@ namespace AutoBotUtilities
                 {
                     var manifests = masterShipment.ShipmentAttachedManifest
                         .Where(x => x.ShipmentManifest.WayBill == bl.BLNumber ||
-                                    (!string.IsNullOrEmpty(bl.Voyage) && x.ShipmentManifest.Voyage.Contains(bl.Voyage)) ||
+                                    (!IsNullOrEmpty(bl.Voyage) && x.ShipmentManifest.Voyage.Contains(bl.Voyage)) ||
                                     x.ShipmentManifest.ShipmentRiderManifests.Any(z =>
                                         z.RiderId == client.First().RiderId)).Select(x => x.ShipmentManifest)
                         .OrderByDescending(x => x.WayBill == bl.BLNumber)
@@ -1202,7 +1203,9 @@ namespace AutoBotUtilities
                     .Where(x => client == null 
                                 ||  (x.ShipmentInvoice.ShipmentInvoiceRiderDetails.Any(z => z.ShipmentRiderDetails.RiderId == client.Key.RiderId) || !x.ShipmentInvoice.ShipmentInvoiceRiderDetails.Any())
                                 || (x.ShipmentInvoice.ShipmentRiderInvoice.Any(z => z.RiderID == client.Key.RiderId) || !x.ShipmentInvoice.ShipmentRiderInvoice.Any()))
-                    .Select(x => x.ShipmentInvoice).ToList();
+                    .Select(x => x.ShipmentInvoice)
+                    .Where(x => !String.Equals(x.InvoiceNo, "Null", StringComparison.CurrentCultureIgnoreCase))
+                    .ToList();
 
                 var invoices = rawInvoices
                         .DistinctBy(x =>
@@ -1220,7 +1223,7 @@ namespace AutoBotUtilities
 
                 var unAttachedRiderDetails = client != null
                     ? client.Where(x =>
-                       !x.ShipmentRiderInvoice.Any() || x.ShipmentRiderInvoice.Any(z => string.IsNullOrEmpty(z.InvoiceNo)) ).ToList()
+                       !x.ShipmentRiderInvoice.Any() || x.ShipmentRiderInvoice.Any(z => IsNullOrEmpty(z.InvoiceNo)) ).ToList()
                     : new List<ShipmentRiderDetails>();
 
 
@@ -1305,7 +1308,7 @@ namespace AutoBotUtilities
                             x.Quantity),
                         RiderPackages = client.Sum(x => x.Pieces),
                         InvoicePackages = client.Sum(x =>
-                            x.ShipmentRiderInvoice.Where(i => !string.IsNullOrEmpty(i.InvoiceNo))
+                            x.ShipmentRiderInvoice.Where(i => !IsNullOrEmpty(i.InvoiceNo))
                                 .Sum(i => i.Packages.GetValueOrDefault()))
                     };
 

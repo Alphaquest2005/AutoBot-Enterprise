@@ -857,8 +857,17 @@ namespace xlsxWriter
                             unMatchedPOs[i].SubTotal);
                         SetValue(workbook, i + 2, poheader.IndexOf(nameof(ShipmentMIS_POs.SupplierCode)),
                             unMatchedPOs[i].SupplierCode);
+
+                        if (unMatchedPOs[i].SourceFile == null)
+                        {
+                            i++;
+                            continue;
+                        }
+
+                        var fileInfo = new FileInfo(unMatchedPOs[i].SourceFile);
+
                         SetValue(workbook, i + 2, poheader.IndexOf(nameof(ShipmentMIS_POs.SourceFile)),
-                            new FileInfo(unMatchedPOs[i].SourceFile).Name);
+                            fileInfo == null ? unMatchedPOs[i].SourceFile : fileInfo.Name);
                     }
 
                     i++;
