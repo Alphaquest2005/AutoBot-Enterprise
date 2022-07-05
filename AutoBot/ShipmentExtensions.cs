@@ -1219,6 +1219,7 @@ namespace AutoBotUtilities
 
                 var unAttachedInvoices = rawInvoices
                     .Where(x => !invoiceLst.Contains(x.Id))
+                    .Where(x => x.Id > 6155)// just trying to limit useless recommendations
                     .ToList().DistinctBy(x => x.InvoiceNo).ToList(); // distinct by bug
 
                 var unAttachedRiderDetails = client != null

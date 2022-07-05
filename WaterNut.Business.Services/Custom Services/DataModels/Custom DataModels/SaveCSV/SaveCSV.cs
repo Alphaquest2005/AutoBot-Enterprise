@@ -67,6 +67,8 @@ namespace WaterNut.DataSpace
             {FileTypeManager.EntryTypes.Adj, new SaveCsvEntryData()},
             {FileTypeManager.EntryTypes.Ops, new SaveCsvEntryData()},
             {FileTypeManager.EntryTypes.Rider, new SaveCsvEntryData()},
+            {FileTypeManager.EntryTypes.ExpiredEntries, new SaveCsvEntryData()},
+            {FileTypeManager.EntryTypes.CancelledEntries, new SaveCsvEntryData()},
 
         };
 
@@ -80,19 +82,30 @@ namespace WaterNut.DataSpace
 
         }
 
-        private static RawDataFile CreateRawDataFile(string droppedFilePath, FileTypes fileType, List<AsycudaDocumentSet> docSet,
+        private static RawDataFile CreateRawDataFile(string droppedFilePath, FileTypes fileType,
+            List<AsycudaDocumentSet> docSet,
             bool overWriteExisting)
         {
-            var csvImporter = new CSVImporter(fileType);
-            
-            var lines = csvImporter.GetFileLines(droppedFilePath).ToArray();
+            try
+            {
+                var csvImporter = new CSVImporter(fileType);
 
-            var fixedHeadings = csvImporter.GetHeadings(lines).ToArray();
-            
-            var emailId = Utils.GetExistingEmailId(droppedFilePath, fileType);
-            var rawDataFile =
-                new RawDataFile(fileType, lines, fixedHeadings, docSet, overWriteExisting, emailId, droppedFilePath);
-            return rawDataFile;
+                var lines = csvImporter.GetFileLines(droppedFilePath).ToArray();
+
+                var fixedHeadings = csvImporter.GetHeadings(lines).ToArray();
+
+                var emailId = Utils.GetExistingEmailId(droppedFilePath, fileType);
+                var rawDataFile =
+                    new RawDataFile(fileType, lines, fixedHeadings, docSet, overWriteExisting, emailId,
+                        droppedFilePath);
+                return rawDataFile;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+
         }
     }
 }
