@@ -76,7 +76,7 @@ namespace WaterNut.Business.Services.Utils
                 var att = GetCSVOriginalFileAttachments(file);
                 var body = CreateCSVErrorEmailBody(file, e);
                 EmailDownloader.EmailDownloader.SendBackMsg(att?.EmailId, BaseDataModel.GetClient(), body);
-                SaveErrorLog(att);
+                if(att != null) SaveErrorLog(att);
             
         }
 
@@ -586,7 +586,7 @@ namespace WaterNut.Business.Services.Utils
                 //if (string.IsNullOrEmpty(dt.Rows[row_no][map].ToString())) continue;
                 if (map.Contains("{") && dic.ContainsKey(map.Replace("{", "").Replace("}", "")))
                 {
-                    val += dic[map.Replace("{", "").Replace("}", "")].Invoke(row.ToDynamic(), drow.ToDynamic(), header.ToDynamic());
+                    val += dic[map.Replace("{", "").Replace("}", "")].Invoke(ToBetterExpando(row), ToBetterExpando(drow), ToBetterExpando(header));
                 }
                 else
                 {
@@ -600,6 +600,27 @@ namespace WaterNut.Business.Services.Utils
             }
 
             return false;
+        }
+
+        private static IDictionary<string, object> ToBetterExpando(DataRow drow)
+        {
+            IDictionary<string, object> res = new BetterExpando();
+            for (int i = 0; i < drow.Table.Columns.Count - 1; i++)
+            {
+                res[drow.Table.Columns[i].ColumnName] = drow.ItemArray[i];
+            }
+            
+            return res;
+        }
+
+        private static IDictionary<string, object> ToBetterExpando(Dictionary<string, string> row)
+        {
+            IDictionary<string, object> res = new BetterExpando();
+            foreach (var itm in row)
+            {
+                res[itm.Key] = itm.Value;
+            }
+            return res;
         }
 
         private static bool CheckingRequiredFields(FileInfo file, FileTypes fileType, Dictionary<string, Func<IDictionary<string, object>, IDictionary<string, object>, IDictionary<string, object>, string>> dic, DataRow header,

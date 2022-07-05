@@ -1560,7 +1560,7 @@ private void Update_TarrifCodes(ASYCUDAItem ai)
             if (string.IsNullOrEmpty(commentsFreeText) || !commentsFreeText.Contains("EffectiveAssessmentDate:")) return;
             var strlst = commentsFreeText.Split(new string[] { "\n\n" }, StringSplitOptions.RemoveEmptyEntries);
             var res = strlst.First(x => x.Contains("EffectiveAssessmentDate:"));
-            documentCt.Document.xcuda_ASYCUDA_ExtendedProperties.EffectiveRegistrationDate = DateTime.ParseExact(res.Replace("EffectiveAssessmentDate:",""),"MMM-dd-yyyy",null);
+            documentCt.Document.xcuda_ASYCUDA_ExtendedProperties.EffectiveRegistrationDate = FileTypeManager.ImportAnyDate(res.Replace("EffectiveAssessmentDate:",""));
         }
 
         private void SaveCountry(xcuda_General_information gi)

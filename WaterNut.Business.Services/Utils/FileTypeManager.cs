@@ -173,26 +173,31 @@ namespace WaterNut.Business.Services.Utils
             if(val == "{NULL}") return null;
             if (key.DataType == "Date")
             {
-                DateTime rdate;
-                if (DateTime.TryParse(val, out rdate))
-                {
-                    return rdate;
-                }
-
-                var formatStrings = new List<string>()
-                    { "M/y", "M/d/y", "M-d-y", "dd/MM/yyyy", "dd/M/yyyy", "dddd dd MMMM yyyy" };
-                foreach (String formatString in formatStrings)
-                {
-                    if (DateTime.TryParseExact(val, formatString, CultureInfo.InvariantCulture, DateTimeStyles.None,
-                            out rdate))
-                        return rdate;
-                }
-
-                return rdate; //DateTime.Parse(val);
+                return ImportAnyDate(val);
             }
 
             if (key.DataType == "Number") return Convert.ToSingle(string.IsNullOrEmpty(val) ? "0" : val);
             return val;
+        }
+
+        public static DateTime ImportAnyDate(string val)
+        {
+            DateTime rdate;
+            if (DateTime.TryParse(val, out rdate))
+            {
+                return rdate;
+            }
+
+            var formatStrings = new List<string>()
+                {"M/y", "M/d/y", "M-d-y", "dd/MM/yyyy", "dd/M/yyyy", "dddd dd MMMM yyyy", "MMM-d-yyyy"};
+            foreach (String formatString in formatStrings)
+            {
+                if (DateTime.TryParseExact(val, formatString, CultureInfo.InvariantCulture, DateTimeStyles.None,
+                        out rdate))
+                    return rdate;
+            }
+
+            return rdate; //DateTime.Parse(val);
         }
 
 
