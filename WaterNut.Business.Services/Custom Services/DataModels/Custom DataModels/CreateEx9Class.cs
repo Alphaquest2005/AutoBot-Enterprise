@@ -739,6 +739,7 @@ namespace WaterNut.DataSpace
                             pCNumber = x.pCNumber,
                             pItemCost = x.pItemCost,
                             Status = x.Status,
+                            EntryDataDetails = x.EntryDataDetails,
                             PreviousItem_Id = x.PreviousItem_Id,
                             QtyAllocated = x.QtyAllocated,
                             SalesFactor = x.SalesFactor,
@@ -829,6 +830,7 @@ namespace WaterNut.DataSpace
                     //////////////////////Cant load all data in memory too much
                         _ex9AsycudaSalesAllocations = ctx.EX9AsycudaSalesAllocations
                             .Include(x => x.AsycudaSalesAllocationsPIData)
+                            .Include("EntryDataDetails.AsycudaDocumentItemEntryDataDetails")
                             .Include("PreviousDocumentItem.EntryPreviousItems.xcuda_PreviousItem.xcuda_Item.AsycudaDocument.Customs_Procedure")
                             .Include("PreviousDocumentItem.AsycudaDocument.Customs_Procedure.CustomsOperations")
                             .Include("PreviousDocumentItem.xcuda_Tarification.xcuda_HScode.TariffCodes.TariffCategory.TariffCategoryCodeSuppUnit.TariffSupUnitLkps")
@@ -994,17 +996,18 @@ namespace WaterNut.DataSpace
                             Status = x.Status,
                             QtyAllocated = x.QtyAllocated,
                             PIData = x.PIData,
-                            EntryDataDetails = new EntryDataDetails()
-                            {
-                                EntryDataDetailsId = x.EntryDataDetailsId.GetValueOrDefault(),
-                                EntryData_Id = x.EntryData_Id,
-                                EntryDataId = x.InvoiceNo,
-                                Quantity = x.SalesQuantity,
-                                QtyAllocated = x.SalesQtyAllocated,
-                                EffectiveDate = x.EffectiveDate,
-                                LineNumber = x.LineNumber,
-                                Comment = x.Comment
-                            },
+                            //EntryDataDetails = new EntryDataDetails()
+                            //{
+                            //    EntryDataDetailsId = x.EntryDataDetailsId.GetValueOrDefault(),
+                            //    EntryData_Id = x.EntryData_Id,
+                            //    EntryDataId = x.InvoiceNo,
+                            //    Quantity = x.SalesQuantity,
+                            //    QtyAllocated = x.SalesQtyAllocated,
+                            //    EffectiveDate = x.EffectiveDate,
+                            //    LineNumber = x.LineNumber,
+                            //    Comment = x.Comment
+                            //},
+                            EntryDataDetails = x.EntryDataDetails,
 
 
                         }).ToList(),
@@ -1526,7 +1529,8 @@ namespace WaterNut.DataSpace
                         }
                     }
 
-                    ////////////////////////////////////////////////////////////////////////
+                   
+                     ////////////////////////////////////////////////////////////////////////
                     //// Cap to prevent over creation of ex9 vs Item Quantity espectially if creating Duty paid and Duty Free at same time
 
                     if (mypod.EntlnData.pDocumentItem.ItemQuantity <
@@ -1540,20 +1544,41 @@ namespace WaterNut.DataSpace
                         if (mypod.EntlnData.Quantity == 0)
                         {
                             updateXStatus(mypod.Allocations,
-                                $@"Failed ItemQuantity < ItemPIHistoric & xQuantity:{
-                                    mypod.EntlnData.pDocumentItem.ItemQuantity
-                                }
+                                $@"Failed ItemQuantity < ItemPIHistoric & xQuantity:{mypod.EntlnData.pDocumentItem.ItemQuantity}
                                Item Historic PI: {itemPiHistoric}
                                xQuantity:{mypod.EntlnData.Quantity}");
                             return 0;
                         }
                     }
 
-                   
+
+                  
 
                 }
+                
+                ////////////////////////////////////////////////////////////////////////
+                    //// Sales dependent check to prevent sales overexwarehouse even when Allocations changed. all other checks are previous document dependent
+                            var xSalesPi = mypod.Allocations
+                        .Select(x => new {e = x.EntryDataDetails.Quantity,pi = x.EntryDataDetails.AsycudaDocumentItemEntryDataDetails.Sum(z => z.Quantity)?? 0}).Sum(x => x.e - x.pi) ;
+                    ///// the DONT FORGET WE TAKING JUST REMAINING SALES SO IT WILL BE ZERO EVEN IF ITS ALREADY DOUBLE EX-WAREHOUSED
+                    if (xSalesPi < Math.Round(itemDocPi + mypod.EntlnData.Quantity, 2))
+                    {
 
-                if (mypod.EntlnData.Quantity <= 0) return 0;
+                        var availibleQty = xSalesPi - Math.Round(itemDocPi + mypod.EntlnData.Quantity, 2);
+                        /// pass item quantity to ex9 bucket
+                       if (availibleQty >= 0)
+                            Ex9Bucket(mypod, availibleQty, itemSalesHistoric, itemPiHistoric, "Historic");
+                        if (mypod.EntlnData.Quantity <= 0 || availibleQty <= 0)
+                        {
+                            updateXStatus(mypod.Allocations,
+                                $@"Failed Existing xSales already taken out..:{mypod.EntlnData.pDocumentItem.ItemQuantity}
+                               Item Historic PI: {itemPiHistoric}
+                               xQuantity:{mypod.EntlnData.Quantity}");
+                            return 0;
+                        }
+                    }
+
+                    if (mypod.EntlnData.Quantity <= 0) return 0;
                 //////////////////// can't delump allocations because of returns and 1kg weights issue too much items wont be able to exwarehouse
                 var itmsToBeCreated = 1;
                 var itmsCreated = 0;
@@ -2348,6 +2373,7 @@ namespace WaterNut.DataSpace
         public string pPrecision1 { get; set; }
         public List<AsycudaSalesAllocationsPIData> PIData { get; set; }
         public DateTime pExpiryDate { get; set; }
+        public EntryDataDetails EntryDataDetails { get; set; }
     }
 
     public class AllocationDataBlock
