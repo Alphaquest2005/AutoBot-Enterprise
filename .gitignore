@@ -314,3 +314,15 @@ __pycache__/
 /AllocationDS/AllocationDS-Joseph-PC.edmx
 /AAll-EDMX/AAll-EDMX-Joseph-PC-4.csproj
 /AAll-EDMX/AAll-EDMX-Joseph-PC-3.csproj
+/WaterNut.Business.Services/Utils/FileTypeManager-Joseph-PC.cs
+/WaterNut.Business.Services/Importers/EntryData/SaveItemCode.cs
+/WaterNut.Business.Services/Importers/EntryData/POProcessor.cs
+/WaterNut.Business.Services/Importers/EntryData/SaveItemAlias.cs
+/WaterNut.Business.Services/Importers/EntryData/InventoryProcessorPipline.cs
+/WaterNut.Business.Services/Importers/EntryData/GetItemCode.cs
+/WaterNut.Business.Services/Importers/EntryData/GetItemAlias.cs
+/WaterNut.Business.Services/Importers/EntryData/CreateInventoryItems.cs
+/WaterNut.Business.Services/Custom Services/DataModels/Custom DataModels/SaveCSV/SummaryDataProcessor.cs
+/WaterNut.Business.Services/Custom Services/DataModels/Custom DataModels/SaveCSV/SaveEntryDataProcessor.cs
+/WaterNut.Business.Services/Custom Services/DataModels/Custom DataModels/SaveCSV/CsvSummaryDataProcessor.cs
+/sync.ffs_lock
