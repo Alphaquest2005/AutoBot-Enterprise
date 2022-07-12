@@ -87,7 +87,7 @@ namespace WaterNut.DataSpace
 
 				PrepareDataForAllocation(applicationSettings);
 
-                //ReallocateExistingEx9(applicationSettings.ApplicationSettingsId); took this out because i don think it makes a difference for further thought
+                ReallocateExistingEx9(applicationSettings.ApplicationSettingsId); // to prevent changing allocations when im7 info changes
 
 
 				StatusModel.Timer("Auto Match Adjustments");
@@ -112,7 +112,52 @@ namespace WaterNut.DataSpace
 
 		}
 
-     
+        private void ReallocateExistingEx9(int applicationSettingsApplicationSettingsId)
+        {
+            if (BaseDataModel.Instance.CurrentApplicationSettings.PreAllocateEx9s != true) return;
+            using (var ctx = new AllocationDSContext(){StartTracking = true})
+            {
+                var existingAllocations = ctx.ExistingAllocations.Where(x =>
+                        x.ApplicationSettingsId ==
+                        BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)
+                    .ToList();
+
+                foreach (var allocation in existingAllocations)
+                {
+                    var allo = new AsycudaSalesAllocations()
+                    {
+                        EntryDataDetailsId = allocation.EntryDataDetailsId,
+                        PreviousItem_Id = allocation.pItemId,
+                        xEntryItem_Id = allocation.xItemId,
+                        QtyAllocated = allocation.xQuantity??0,
+                        TrackingState = TrackingState.Added
+                    };
+
+                    var entrydataDetails = ctx.EntryDataDetails.First(x => x.EntryDataDetailsId == allocation.EntryDataDetailsId);
+                   entrydataDetails.QtyAllocated += allocation.xQuantity ?? 0;
+
+                    var pitem = ctx.xcuda_Item.First(x => x.Item_Id == allocation.pItemId);
+
+                    if (allocation.DutyFreePaid == "Duty Free")
+                    {
+                        pitem.DFQtyAllocated += allocation.xQuantity ?? 0;
+					}
+                    else
+                    {
+						pitem.DPQtyAllocated += allocation.xQuantity ?? 0;
+					}
+                    
+
+
+					ctx.AsycudaSalesAllocations.Add(allo);
+
+                }
+
+                ctx.SaveChanges();
+            }
+        }
+
+
         public static void PrepareDataForAllocation(ApplicationSettings applicationSettings)
 		{
 			// update nonstock entrydetails status

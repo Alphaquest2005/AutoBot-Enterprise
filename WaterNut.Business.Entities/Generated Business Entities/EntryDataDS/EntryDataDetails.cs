@@ -24,7 +24,6 @@ namespace EntryDataDS.Business.Entities
         {
             this.INVItems = new List<ShipmentInvoicePOItemQueryMatches>();
             this.SupportingDetails = new List<SupportingDetail>();
-            this.PreviousSupportingDetails = new List<SupportingDetail>();
         }
 
         [DataMember]
@@ -534,8 +533,6 @@ namespace EntryDataDS.Business.Entities
         public List<ShipmentInvoicePOItemQueryMatches> INVItems { get; set; }
         [DataMember]
         public List<SupportingDetail> SupportingDetails { get; set; }
-        [DataMember]
-        public List<SupportingDetail> PreviousSupportingDetails { get; set; }
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

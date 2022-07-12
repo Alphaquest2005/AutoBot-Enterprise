@@ -247,6 +247,38 @@ public int AsycudaDocumentSetId
 		}
      
 
+       
+       
+                
+                [MaxLength(20, ErrorMessage = "CNumber has a max length of 20 letters ")]
+public string CNumber
+		{ 
+		    get { return this.asycudadocumentitementrydatadetails.CNumber; }
+			set
+			{
+			    if (value == this.asycudadocumentitementrydatadetails.CNumber) return;
+				this.asycudadocumentitementrydatadetails.CNumber = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("CNumber");
+			}
+		}
+     
+
+       [RequiredValidationAttribute(ErrorMessage= "LineNumber is required")]
+       [NumberValidationAttribute]
+public int LineNumber
+		{ 
+		    get { return this.asycudadocumentitementrydatadetails.LineNumber; }
+			set
+			{
+			    if (value == this.asycudadocumentitementrydatadetails.LineNumber) return;
+				this.asycudadocumentitementrydatadetails.LineNumber = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("LineNumber");
+			}
+		}
+     
+
        private AsycudaDocumentItem _AsycudaDocumentItem;
         public  AsycudaDocumentItem AsycudaDocumentItem
 		{

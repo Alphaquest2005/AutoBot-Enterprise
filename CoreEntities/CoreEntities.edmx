@@ -70,6 +70,7 @@
           <Property Name="BondTypeId" Type="int" Nullable="false" />
           <Property Name="RequirePOs" Type="bit" />
           <Property Name="ExportNullTariffCodes" Type="bit" />
+          <Property Name="PreAllocateEx9s" Type="bit" />
         </EntityType>
         <EntityType Name="ApplicationSettings-Declarants">
           <Key>
@@ -581,6 +582,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AsycudaDocumentItemEntryD
             
             <PropertyRef Name="ImportComplete" />
             <PropertyRef Name="Asycuda_id" />
+            <PropertyRef Name="LineNumber" />
           </Key>
           <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
           <Property Name="AsycudaDocumentSetId" Type="int" Nullable="false" />
@@ -595,6 +597,8 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AsycudaDocumentItemEntryD
           <Property Name="ImportComplete" Type="bit" Nullable="false" />
           <Property Name="Asycuda_id" Type="int" Nullable="false" />
           <Property Name="EntryDataType" Type="nvarchar" MaxLength="50" />
+          <Property Name="CNumber" Type="nvarchar" MaxLength="20" />
+          <Property Name="LineNumber" Type="int" Nullable="false" />
         </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AsycudaDocumentSetC71' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
@@ -2594,7 +2598,9 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
     [AsycudaDocumentItemEntryDataDetails].[Quantity] AS [Quantity], 
     [AsycudaDocumentItemEntryDataDetails].[ImportComplete] AS [ImportComplete], 
     [AsycudaDocumentItemEntryDataDetails].[Asycuda_id] AS [Asycuda_id], 
-    [AsycudaDocumentItemEntryDataDetails].[EntryDataType] AS [EntryDataType]
+    [AsycudaDocumentItemEntryDataDetails].[EntryDataType] AS [EntryDataType], 
+    [AsycudaDocumentItemEntryDataDetails].[CNumber] AS [CNumber], 
+    [AsycudaDocumentItemEntryDataDetails].[LineNumber] AS [LineNumber]
     FROM [dbo].[AsycudaDocumentItemEntryDataDetails] AS [AsycudaDocumentItemEntryDataDetails]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="AsycudaDocumentSetC71" EntityType="Self.AsycudaDocumentSetC71" store:Type="Views" store:Schema="dbo">
@@ -4082,7 +4088,8 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
           <Property Name="BondTypeId" Type="Int32" Nullable="false" />
           <Property Name="RequirePOs" Type="Boolean" />
           <NavigationProperty Name="Declarants" Relationship="WaterNutDBModel.FK_ApplicationSettings_Declarants_ApplicationSettings" FromRole="ApplicationSettings" ToRole="ApplicationSettings_Declarants" />
-          <Property Name="ExportNullTariffCodes" Type="Boolean" /><a:MainEntityProperty xmlns:a="http://schemas.tempuri.com/MainEntityProperty">True</a:MainEntityProperty>
+          <Property Name="ExportNullTariffCodes" Type="Boolean" />
+          <Property Name="PreAllocateEx9s" Type="Boolean" /><a:MainEntityProperty xmlns:a="http://schemas.tempuri.com/MainEntityProperty">True</a:MainEntityProperty>
         </EntityType>
         <EntityType Name="AsycudaDocument">
           <Key>
@@ -4412,6 +4419,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
             <PropertyRef Name="Asycuda_id" />
             <PropertyRef Name="ApplicationSettingsId" />
             <PropertyRef Name="AsycudaDocumentSetId" />
+            <PropertyRef Name="LineNumber" />
           </Key>
           <Property Name="EntryDataDetailsId" Type="Int32" Nullable="false" />
           <Property Name="Item_Id" Type="Int32" Nullable="false" />
@@ -4427,6 +4435,8 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
           <Property Name="EntryDataType" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
           <Property Name="AsycudaDocumentSetId" Type="Int32" Nullable="false" />
+          <Property Name="CNumber" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="LineNumber" Type="Int32" Nullable="false" />
         </EntityType>
         <Association Name="AsycudaDocumentItemAsycudaDocumentItemEntryDataDetails">
           <End Type="WaterNutDBModel.AsycudaDocumentItem" Role="AsycudaDocumentItem" Multiplicity="1" />
@@ -6524,6 +6534,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
           <EntitySetMapping Name="ApplicationSettings">
             <EntityTypeMapping TypeName="WaterNutDBModel.ApplicationSettings">
               <MappingFragment StoreEntitySet="ApplicationSettings">
+                <ScalarProperty Name="PreAllocateEx9s" ColumnName="PreAllocateEx9s" />
                 <ScalarProperty Name="ExportNullTariffCodes" ColumnName="ExportNullTariffCodes" />
                 <ScalarProperty Name="RequirePOs" ColumnName="RequirePOs" />
                 <ScalarProperty Name="BondTypeId" ColumnName="BondTypeId" />
@@ -6792,6 +6803,8 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
           <EntitySetMapping Name="AsycudaDocumentItemEntryDataDetails">
             <EntityTypeMapping TypeName="WaterNutDBModel.AsycudaDocumentItemEntryDataDetails">
               <MappingFragment StoreEntitySet="AsycudaDocumentItemEntryDataDetails">
+                <ScalarProperty Name="LineNumber" ColumnName="LineNumber" />
+                <ScalarProperty Name="CNumber" ColumnName="CNumber" />
                 <ScalarProperty Name="AsycudaDocumentSetId" ColumnName="AsycudaDocumentSetId" />
                 <ScalarProperty Name="ApplicationSettingsId" ColumnName="ApplicationSettingsId" />
                 <ScalarProperty Name="EntryDataType" ColumnName="EntryDataType" />

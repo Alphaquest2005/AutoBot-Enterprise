@@ -765,6 +765,21 @@ public Nullable<bool> ExportNullTariffCodes
 		}
      
 
+       
+       
+public Nullable<bool> PreAllocateEx9s
+		{ 
+		    get { return this.applicationsettings.PreAllocateEx9s; }
+			set
+			{
+			    if (value == this.applicationsettings.PreAllocateEx9s) return;
+				this.applicationsettings.PreAllocateEx9s = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("PreAllocateEx9s");
+			}
+		}
+     
+
         ObservableCollection<AsycudaDocumentSetEx> _AsycudaDocumentSetEx = null;
         public  ObservableCollection<AsycudaDocumentSetEx> AsycudaDocumentSetEx
 		{

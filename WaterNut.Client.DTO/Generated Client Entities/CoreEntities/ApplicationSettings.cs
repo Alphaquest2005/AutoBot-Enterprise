@@ -593,6 +593,19 @@ namespace CoreEntities.Client.DTO
 		}
         private Nullable<bool> _ExportNullTariffCodes;
 
+        [DataMember]
+        public Nullable<bool> PreAllocateEx9s
+		{ 
+		    get { return _PreAllocateEx9s; }
+			set
+			{
+			    if (value == _PreAllocateEx9s) return;
+				_PreAllocateEx9s = value;
+				NotifyPropertyChanged();//m => this.PreAllocateEx9s
+			}
+		}
+        private Nullable<bool> _PreAllocateEx9s;
+
        
         [DataMember]
         public ChangeTrackingCollection<AsycudaDocumentSetEx> AsycudaDocumentSetEx

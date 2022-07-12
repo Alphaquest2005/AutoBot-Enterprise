@@ -554,13 +554,14 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AsycudaDocumentItemEntryD
         <EntityType Name="AsycudaDocumentItemEntryDataDetails">
           <Key>
             <PropertyRef Name="ApplicationSettingsId" />
-            <PropertyRef Name="AsycudaDocumentSetId" />
+            
             <PropertyRef Name="EntryDataDetailsId" />
-            <PropertyRef Name="EntryData_Id" />
+            
             <PropertyRef Name="Item_Id" />
             
             
-            <PropertyRef Name="Asycuda_id" />
+            
+            
           </Key>
           <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
           <Property Name="AsycudaDocumentSetId" Type="int" Nullable="false" />
@@ -575,6 +576,8 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AsycudaDocumentItemEntryD
           <Property Name="ImportComplete" Type="bit" Nullable="false" />
           <Property Name="Asycuda_id" Type="int" Nullable="false" />
           <Property Name="EntryDataType" Type="nvarchar" MaxLength="50" />
+          <Property Name="CNumber" Type="nvarchar" MaxLength="20" />
+          <Property Name="LineNumber" Type="int" Nullable="false" />
         </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AsycudaItemPiQuantityData' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
@@ -773,13 +776,6 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ExistingAllocations' does
             
             <PropertyRef Name="EntryDataDetailsId" />
             <PropertyRef Name="xItemId" />
-            
-            
-            
-            
-            
-            
-            
             <PropertyRef Name="pItemId" />
           </Key>
           <Property Name="xAsycudaId" Type="int" Nullable="false" />
@@ -798,6 +794,9 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ExistingAllocations' does
           <Property Name="ItemDescription" Type="nvarchar" MaxLength="255" Nullable="false" />
           <Property Name="DocumentType" Type="nvarchar" MaxLength="40" />
           <Property Name="CustomsProcedure" Type="nvarchar" MaxLength="11" />
+          <Property Name="xQuantity" Type="float" />
+          <Property Name="Suplementary_Quantity" Type="decimal" Precision="9" Scale="2" Nullable="false" />
+          <Property Name="DutyFreePaid" Type="varchar" MaxLength="9" Nullable="false" />
         </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemAliasEx' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
@@ -1462,7 +1461,9 @@ FROM [dbo].[AsycudaDocument] AS [AsycudaDocument]</DefiningQuery>
 [AsycudaDocumentItemEntryDataDetails].[Quantity] AS [Quantity], 
 [AsycudaDocumentItemEntryDataDetails].[ImportComplete] AS [ImportComplete], 
 [AsycudaDocumentItemEntryDataDetails].[Asycuda_id] AS [Asycuda_id], 
-[AsycudaDocumentItemEntryDataDetails].[EntryDataType] AS [EntryDataType]
+[AsycudaDocumentItemEntryDataDetails].[EntryDataType] AS [EntryDataType], 
+[AsycudaDocumentItemEntryDataDetails].[CNumber] AS [CNumber], 
+[AsycudaDocumentItemEntryDataDetails].[LineNumber] AS [LineNumber]
 FROM [dbo].[AsycudaDocumentItemEntryDataDetails] AS [AsycudaDocumentItemEntryDataDetails]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="AsycudaItemPiQuantityData" EntityType="Self.AsycudaItemPiQuantityData" store:Type="Views" store:Schema="dbo">
@@ -1625,7 +1626,10 @@ FROM [dbo].[EX9AsycudaSalesAllocations] AS [EX9AsycudaSalesAllocations]</Definin
 [ExistingAllocations].[ItemNumber] AS [ItemNumber], 
 [ExistingAllocations].[ItemDescription] AS [ItemDescription], 
 [ExistingAllocations].[DocumentType] AS [DocumentType], 
-[ExistingAllocations].[CustomsProcedure] AS [CustomsProcedure]
+[ExistingAllocations].[CustomsProcedure] AS [CustomsProcedure], 
+[ExistingAllocations].[xQuantity] AS [xQuantity], 
+[ExistingAllocations].[Suplementary_Quantity] AS [Suplementary_Quantity], 
+[ExistingAllocations].[DutyFreePaid] AS [DutyFreePaid]
 FROM [dbo].[ExistingAllocations] AS [ExistingAllocations]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="InventoryItemAliasEx" EntityType="Self.InventoryItemAliasEx" store:Type="Views" store:Schema="dbo">
@@ -3071,10 +3075,7 @@ FROM [dbo].[PreviousItemsEx] AS [PreviousItemsEx]</DefiningQuery>
           <Key>
             <PropertyRef Name="EntryDataDetailsId" />
             <PropertyRef Name="Item_Id" />
-            <PropertyRef Name="EntryData_Id" />
-            <PropertyRef Name="Asycuda_id" />
             <PropertyRef Name="ApplicationSettingsId" />
-            <PropertyRef Name="AsycudaDocumentSetId" />
           </Key>
           <Property Name="EntryDataDetailsId" Type="Int32" Nullable="false" />
           <Property Name="Item_Id" Type="Int32" Nullable="false" />
@@ -3092,6 +3093,8 @@ FROM [dbo].[PreviousItemsEx] AS [PreviousItemsEx]</DefiningQuery>
           <Property Name="AsycudaDocumentSetId" Type="Int32" Nullable="false" />
           <NavigationProperty Name="AsycudaDocument" Relationship="WaterNutDBModel.AsycudaDocumentAsycudaDocumentItemEntryDataDetails" FromRole="AsycudaDocumentItemEntryDataDetails" ToRole="AsycudaDocument" />
           <NavigationProperty Name="xcuda_Item" Relationship="WaterNutDBModel.xcuda_ItemAsycudaDocumentItemEntryDataDetails" FromRole="AsycudaDocumentItemEntryDataDetails" ToRole="xcuda_Item" />
+          <Property Name="CNumber" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="LineNumber" Type="Int32" Nullable="false" />
         </EntityType>
         <Association Name="EntryDataDetailsAsycudaDocumentItemEntryDataDetails">
           <End Type="WaterNutDBModel.EntryDataDetails" Role="EntryDataDetails" Multiplicity="1" />
@@ -3627,6 +3630,9 @@ FROM [dbo].[PreviousItemsEx] AS [PreviousItemsEx]</DefiningQuery>
           <Property Name="ItemDescription" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="DocumentType" Type="String" MaxLength="40" FixedLength="false" Unicode="true" />
           <Property Name="CustomsProcedure" Type="String" MaxLength="11" FixedLength="false" Unicode="true" />
+          <Property Name="xQuantity" Type="Double" />
+          <Property Name="Suplementary_Quantity" Type="Decimal" Nullable="false" Precision="9" Scale="2" />
+          <Property Name="DutyFreePaid" Type="String" Nullable="false" MaxLength="9" FixedLength="false" Unicode="false" />
         </EntityType>
         <Association Name="InventoryItemEntryDataDetails">
           <End Type="WaterNutDBModel.InventoryItem" Role="InventoryItem" Multiplicity="1" />
@@ -4222,6 +4228,8 @@ FROM [dbo].[PreviousItemsEx] AS [PreviousItemsEx]</DefiningQuery>
           <EntitySetMapping Name="AsycudaDocumentItemEntryDataDetails">
             <EntityTypeMapping TypeName="WaterNutDBModel.AsycudaDocumentItemEntryDataDetails">
               <MappingFragment StoreEntitySet="AsycudaDocumentItemEntryDataDetails">
+                <ScalarProperty Name="LineNumber" ColumnName="LineNumber" />
+                <ScalarProperty Name="CNumber" ColumnName="CNumber" />
                 <ScalarProperty Name="AsycudaDocumentSetId" ColumnName="AsycudaDocumentSetId" />
                 <ScalarProperty Name="ApplicationSettingsId" ColumnName="ApplicationSettingsId" />
                 <ScalarProperty Name="EntryDataType" ColumnName="EntryDataType" />
@@ -4474,6 +4482,9 @@ FROM [dbo].[PreviousItemsEx] AS [PreviousItemsEx]</DefiningQuery>
           <EntitySetMapping Name="ExistingAllocations">
             <EntityTypeMapping TypeName="WaterNutDBModel.ExistingAllocations">
               <MappingFragment StoreEntitySet="ExistingAllocations">
+                <ScalarProperty Name="DutyFreePaid" ColumnName="DutyFreePaid" />
+                <ScalarProperty Name="Suplementary_Quantity" ColumnName="Suplementary_Quantity" />
+                <ScalarProperty Name="xQuantity" ColumnName="xQuantity" />
                 <ScalarProperty Name="CustomsProcedure" ColumnName="CustomsProcedure" />
                 <ScalarProperty Name="DocumentType" ColumnName="DocumentType" />
                 <ScalarProperty Name="ItemDescription" ColumnName="ItemDescription" />

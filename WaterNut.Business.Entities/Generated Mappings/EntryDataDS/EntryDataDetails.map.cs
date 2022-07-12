@@ -52,7 +52,6 @@
               this.HasOptional(t => t.EntryDataDetailsEx).WithRequired(t => (EntryDataDetails) t.EntryDataDetails);
               this.HasMany(t => t.INVItems).WithRequired(t => (EntryDataDetails)t.EntryDataDetails);
               this.HasMany(t => t.SupportingDetails).WithRequired(t => (EntryDataDetails)t.EntryDataDetails);
-              this.HasMany(t => t.PreviousSupportingDetails).WithRequired(t => (EntryDataDetails)t.PreviousDataDetails);
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);
     			this.Ignore(t => t.ModifiedProperties);

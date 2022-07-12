@@ -235,12 +235,6 @@ namespace EntryDataDS.Business.Services
                                         GetWhere<EntryDataDetails>(dbContext, exp, itm.Value, "SupportingDetails", "SelectMany", includesLst)
 										.ConfigureAwait(continueOnCapturedContext: false);
 
-                            case "PreviousDataDetails":
-                                return
-                                    await
-                                        GetWhere<EntryDataDetails>(dbContext, exp, itm.Value, "SupportingDetails", "SelectMany", includesLst)
-										.ConfigureAwait(continueOnCapturedContext: false);
-
                         }
 
                     }
@@ -725,9 +719,6 @@ namespace EntryDataDS.Business.Services
                             case "EntryDataDetails":
                                 return await CountWhere<EntryDataDetails>(dbContext, exp, itm.Value, "SupportingDetails", "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "PreviousDataDetails":
-                                return await CountWhere<EntryDataDetails>(dbContext, exp, itm.Value, "SupportingDetails", "SelectMany")
-											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }
                     return dbContext.SupportingDetails.Where(exp == "All" || exp == null ? "Id != null" : exp)
@@ -831,12 +822,6 @@ namespace EntryDataDS.Business.Services
                         switch (itm.Key)
                         {
                             case "EntryDataDetails":
-                                return
-                                    await
-                                        LoadRangeWhere<EntryDataDetails>(startIndex, count, dbContext, exp, itm.Value, "SupportingDetails", "SelectMany")
-													.ConfigureAwait(continueOnCapturedContext: false);
-
-                            case "PreviousDataDetails":
                                 return
                                     await
                                         LoadRangeWhere<EntryDataDetails>(startIndex, count, dbContext, exp, itm.Value, "SupportingDetails", "SelectMany")
@@ -1207,9 +1192,6 @@ namespace EntryDataDS.Business.Services
                         switch (itm.Key)
                         {
                             case "EntryDataDetails":
-                                return await SumWhere<EntryDataDetails>(dbContext, exp, itm.Value, "SupportingDetails", field, "SelectMany")
-											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "PreviousDataDetails":
                                 return await SumWhere<EntryDataDetails>(dbContext, exp, itm.Value, "SupportingDetails", field, "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
 						}

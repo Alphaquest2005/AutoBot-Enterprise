@@ -57,6 +57,7 @@
               this.Property(t => t.BondTypeId).HasColumnName("BondTypeId");
               this.Property(t => t.RequirePOs).HasColumnName("RequirePOs");
               this.Property(t => t.ExportNullTariffCodes).HasColumnName("ExportNullTariffCodes");
+              this.Property(t => t.PreAllocateEx9s).HasColumnName("PreAllocateEx9s");
               this.HasMany(t => t.AsycudaDocumentSetEx).WithRequired(t => (ApplicationSettings)t.ApplicationSettings);
               this.HasMany(t => t.AsycudaDocument).WithOptional(t => t.ApplicationSettings).HasForeignKey(d => d.ApplicationSettingsId);
               this.HasMany(t => t.AsycudaDocumentItem).WithOptional(t => t.ApplicationSettings).HasForeignKey(d => d.ApplicationSettingsId);

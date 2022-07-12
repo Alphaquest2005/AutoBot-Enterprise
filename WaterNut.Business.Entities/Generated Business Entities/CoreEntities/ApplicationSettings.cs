@@ -693,6 +693,21 @@ namespace CoreEntities.Business.Entities
         }
         Nullable<bool> _exportnulltariffcodes;
         [DataMember]
+        public Nullable<bool> PreAllocateEx9s 
+        {
+            get
+            {
+                return _preallocateex9s;
+            }
+            set
+            {
+                _preallocateex9s = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<bool> _preallocateex9s;
+        [DataMember]
         public List<AsycudaDocumentSetEx> AsycudaDocumentSetEx { get; set; }
         [DataMember]
         public List<AsycudaDocument> AsycudaDocument { get; set; }

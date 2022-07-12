@@ -56,9 +56,8 @@
         <EntityTypeShape EntityType="WaterNutDBModel.InventoryItemAlias" Width="2" PointX="3.125" PointY="17.375" />
         <AssociationConnector Association="WaterNutDBModel.FK_InventoryItemAlias_InventoryItems" />
         <AssociationConnector Association="WaterNutDBModel.InventoryItemsInventoryItemAlias" />
-        <EntityTypeShape EntityType="WaterNutDBModel.SupportingDetail" Width="1.5" PointX="11.5" PointY="19.625" />
+        <EntityTypeShape EntityType="WaterNutDBModel.SupportingDetail" Width="2.25" PointX="11.5" PointY="19.625" />
         <AssociationConnector Association="WaterNutDBModel.FK_EntryDataDetails_SupportingDetails_EntryDataDetails" />
-        <AssociationConnector Association="WaterNutDBModel.FK_EntryDataDetails_SupportingDetails_EntryDataDetails1" />
         <EntityTypeShape EntityType="WaterNutDBModel.AsycudaDocumentEntryDataLine" Width="1.5" PointX="15.375" PointY="7.75" />
         </Diagram>
       <Diagram DiagramId="e6a676be76e44b88a3a806984a620f91" Name="Shipments" ZoomLevel="82" >

@@ -216,6 +216,36 @@ namespace CoreEntities.Business.Entities
         }
         int _asycudadocumentsetid;
         [DataMember]
+        public string CNumber 
+        {
+            get
+            {
+                return _cnumber;
+            }
+            set
+            {
+                _cnumber = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _cnumber;
+        [DataMember]
+        public int LineNumber 
+        {
+            get
+            {
+                return _linenumber;
+            }
+            set
+            {
+                _linenumber = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        int _linenumber;
+        [DataMember]
         public AsycudaDocumentItem AsycudaDocumentItem { get; set; }
 
  //       [DataMember]

@@ -51,11 +51,17 @@ namespace AutoBotUtilities
                 FileTypeManager.SendBackTooBigEmail(file, fileType);
 
                 var rFileType = XLSXUtils.DetectFileType(fileType, file, rows);
-
-                ImportUtils.ExecuteDataSpecificFileActions(rFileType, new FileInfo[] { file },
-                    BaseDataModel.Instance.CurrentApplicationSettings);
-                ImportUtils.ExecuteNonSpecificFileActions(rFileType, new FileInfo[] { file },
-                    BaseDataModel.Instance.CurrentApplicationSettings);
+                if (fileType.Id != rFileType.Id)
+                {
+                    ImportUtils.ExecuteDataSpecificFileActions(rFileType, new FileInfo[] { file },
+                        BaseDataModel.Instance.CurrentApplicationSettings);
+                    ImportUtils.ExecuteNonSpecificFileActions(rFileType, new FileInfo[] { file },
+                        BaseDataModel.Instance.CurrentApplicationSettings);
+                }
+                else
+                {
+                    return false;
+                }
 
                 return true;
             }

@@ -260,6 +260,51 @@ namespace AllocationDS.Business.Entities
             }
         }
         string _customsprocedure;
+        [DataMember]
+        public Nullable<double> xQuantity 
+        {
+            get
+            {
+                return _xquantity;
+            }
+            set
+            {
+                _xquantity = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<double> _xquantity;
+        [DataMember]
+        public decimal Suplementary_Quantity 
+        {
+            get
+            {
+                return _suplementary_quantity;
+            }
+            set
+            {
+                _suplementary_quantity = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        decimal _suplementary_quantity;
+        [DataMember]
+        public string DutyFreePaid 
+        {
+            get
+            {
+                return _dutyfreepaid;
+            }
+            set
+            {
+                _dutyfreepaid = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _dutyfreepaid;
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

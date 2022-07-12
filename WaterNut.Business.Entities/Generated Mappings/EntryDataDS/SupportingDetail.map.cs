@@ -30,7 +30,6 @@
               this.Property(t => t.LineNumber).HasColumnName("LineNumber");
               this.Property(t => t.Comment).HasColumnName("Comment").HasMaxLength(255);
               this.HasRequired(t => t.EntryDataDetails).WithMany(t =>(ICollection<SupportingDetail>) t.SupportingDetails).HasForeignKey(d => d.EntryDataDetailsId);
-              this.HasRequired(t => t.PreviousDataDetails).WithMany(t =>(ICollection<SupportingDetail>) t.PreviousSupportingDetails).HasForeignKey(d => d.PreviousEntryDataDetailsId);
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);
     			this.Ignore(t => t.ModifiedProperties);

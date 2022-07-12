@@ -959,6 +959,24 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
         }	
 
  
+
+		private Boolean? _preAllocateEx9sFilter;
+        public Boolean? PreAllocateEx9sFilter
+        {
+            get
+            {
+                return _preAllocateEx9sFilter;
+            }
+            set
+            {
+                _preAllocateEx9sFilter = value;
+				NotifyPropertyChanged(x => PreAllocateEx9sFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
 		internal bool DisableBaseFilterData = false;
         public virtual void FilterData()
 	    {
@@ -1178,6 +1196,10 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 
 									if(ExportNullTariffCodesFilter.HasValue)
 						res.Append(" && " + string.Format("ExportNullTariffCodes == {0}",  ExportNullTariffCodesFilter));						
+ 
+
+									if(PreAllocateEx9sFilter.HasValue)
+						res.Append(" && " + string.Format("PreAllocateEx9s == {0}",  PreAllocateEx9sFilter));						
 			return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
@@ -1324,7 +1346,10 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     RequirePOs = x.RequirePOs ,
                     
  
-                    ExportNullTariffCodes = x.ExportNullTariffCodes 
+                    ExportNullTariffCodes = x.ExportNullTariffCodes ,
+                    
+ 
+                    PreAllocateEx9s = x.PreAllocateEx9s 
                     
                 }).ToList()
             };
@@ -1461,6 +1486,9 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     
  
                     public Nullable<bool> ExportNullTariffCodes { get; set; } 
+                    
+ 
+                    public Nullable<bool> PreAllocateEx9s { get; set; } 
                     
         }
 

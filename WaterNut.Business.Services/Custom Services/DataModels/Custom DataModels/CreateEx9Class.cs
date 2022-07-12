@@ -1005,7 +1005,8 @@ namespace WaterNut.DataSpace
                             //    QtyAllocated = x.SalesQtyAllocated,
                             //    EffectiveDate = x.EffectiveDate,
                             //    LineNumber = x.LineNumber,
-                            //    Comment = x.Comment
+                            //    Comment = x.Comment,
+                            //    AsycudaDocumentItemEntryDataDetails = x.EntryDataDetails.AsycudaDocumentItemEntryDataDetails
                             //},
                             EntryDataDetails = x.EntryDataDetails,
 
@@ -1316,7 +1317,7 @@ namespace WaterNut.DataSpace
 
               
 
-                var preEx9Bucket = mypod.EntlnData.Quantity;
+                    var preEx9Bucket = mypod.EntlnData.Quantity;
                 if (applyEx9Bucket)
                     if (ex9BucketType == "Current")
                     {
@@ -1571,9 +1572,7 @@ namespace WaterNut.DataSpace
                         if (mypod.EntlnData.Quantity <= 0 || availibleQty <= 0)
                         {
                             updateXStatus(mypod.Allocations,
-                                $@"Failed Existing xSales already taken out..:{mypod.EntlnData.pDocumentItem.ItemQuantity}
-                               Item Historic PI: {itemPiHistoric}
-                               xQuantity:{mypod.EntlnData.Quantity}");
+                                $@"Failed Existing xSales already taken out..:{mypod.Allocations.SelectMany(x => x.EntryDataDetails.AsycudaDocumentItemEntryDataDetails.Select(n => $"c#{n.CNumber}|{n.LineNumber}").ToList()).DefaultIfEmpty("").Aggregate((o,n) => $"{o}, {n}")}");
                             return 0;
                         }
                     }
@@ -1831,7 +1830,7 @@ namespace WaterNut.DataSpace
                     }
                     if (nr >= availibleQty)
                     {
-                        ssa.QtyAllocated = availibleQty;
+                        //ssa.QtyAllocated = availibleQty; this increased the qty because its referenced in next line below.
                         mypod.EntlnData.Quantity = mypod.Allocations.Sum(x => x.QtyAllocated); ;
                         break;
                     }

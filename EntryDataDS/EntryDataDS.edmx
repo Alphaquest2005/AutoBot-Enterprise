@@ -1353,18 +1353,6 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ShipmentRiderManifests' d
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_EntryDataDetails-SupportingDetails_EntryDataDetails1">
-          <End Role="EntryDataDetails" Type="Self.EntryDataDetails" Multiplicity="1" />
-          <End Role="EntryDataDetails-SupportingDetails" Type="Self.EntryDataDetails-SupportingDetails" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="EntryDataDetails">
-              <PropertyRef Name="EntryDataDetailsId" />
-            </Principal>
-            <Dependent Role="EntryDataDetails-SupportingDetails">
-              <PropertyRef Name="PreviousEntryDataDetailsId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK_FileTypes_FileTypes">
           <End Role="FileTypes" Type="Self.FileTypes" Multiplicity="0..1" />
           <End Role="FileTypes1" Type="Self.FileTypes" Multiplicity="*" />
@@ -2287,10 +2275,6 @@ FROM [dbo].[ShipmentRiderManifests] AS [ShipmentRiderManifests]</DefiningQuery>
             <End Role="EntryDataDetails" EntitySet="EntryDataDetails" />
             <End Role="EntryDataDetails-SupportingDetails" EntitySet="EntryDataDetails-SupportingDetails" />
           </AssociationSet>
-          <AssociationSet Name="FK_EntryDataDetails-SupportingDetails_EntryDataDetails1" Association="Self.FK_EntryDataDetails-SupportingDetails_EntryDataDetails1">
-            <End Role="EntryDataDetails" EntitySet="EntryDataDetails" />
-            <End Role="EntryDataDetails-SupportingDetails" EntitySet="EntryDataDetails-SupportingDetails" />
-          </AssociationSet>
           <AssociationSet Name="FK_FileTypes_FileTypes" Association="Self.FK_FileTypes_FileTypes">
             <End Role="FileTypes" EntitySet="FileTypes" />
             <End Role="FileTypes1" EntitySet="FileTypes" />
@@ -2770,10 +2754,6 @@ FROM [dbo].[ShipmentRiderManifests] AS [ShipmentRiderManifests]</DefiningQuery>
             <End Role="EntryDataDetails" EntitySet="EntryDataDetails" />
             <End Role="EntryDataDetails_SupportingDetails" EntitySet="SupportingDetails" />
           </AssociationSet>
-          <AssociationSet Name="FK_EntryDataDetails_SupportingDetails_EntryDataDetails1" Association="WaterNutDBModel.FK_EntryDataDetails_SupportingDetails_EntryDataDetails1">
-            <End Role="EntryDataDetails" EntitySet="EntryDataDetails" />
-            <End Role="EntryDataDetails_SupportingDetails" EntitySet="SupportingDetails" />
-          </AssociationSet>
           <EntitySet Name="AsycudaDocumentEntryDataLine" EntityType="WaterNutDBModel.AsycudaDocumentEntryDataLine" />
           </EntityContainer>
         <EntityType Name="Sales" BaseType="WaterNutDBModel.EntryData">
@@ -2871,7 +2851,6 @@ FROM [dbo].[ShipmentRiderManifests] AS [ShipmentRiderManifests]</DefiningQuery>
           <Property Name="TotalValue" Type="Double" Nullable="false" annotation:StoreGeneratedPattern="Computed" />
           <Property Name="CLineNumber" Type="Int32" />
           <NavigationProperty Name="SupportingDetails" Relationship="WaterNutDBModel.FK_EntryDataDetails_SupportingDetails_EntryDataDetails" FromRole="EntryDataDetails" ToRole="EntryDataDetails_SupportingDetails" />
-          <NavigationProperty Name="PreviousSupportingDetails" Relationship="WaterNutDBModel.FK_EntryDataDetails_SupportingDetails_EntryDataDetails1" FromRole="EntryDataDetails" ToRole="EntryDataDetails_SupportingDetails" />
           <a:DomainInterfaceProperty xmlns:a="http://schemas.tempuri.com/DomainInterfaceProperty">IEntryDataDetail</a:DomainInterfaceProperty>
         </EntityType>
         <Association Name="FK_PurchaseOrderDetails_PurchaseOrders">
@@ -4797,7 +4776,6 @@ FROM [dbo].[ShipmentRiderManifests] AS [ShipmentRiderManifests]</DefiningQuery>
           <Property Name="PreviousEntryDataDetailsId" Type="Int32" Nullable="false" />
           <Property Name="LineNumber" Type="Int32" />
           <NavigationProperty Name="EntryDataDetails" Relationship="WaterNutDBModel.FK_EntryDataDetails_SupportingDetails_EntryDataDetails" FromRole="EntryDataDetails_SupportingDetails" ToRole="EntryDataDetails" />
-          <NavigationProperty Name="PreviousDataDetails" Relationship="WaterNutDBModel.FK_EntryDataDetails_SupportingDetails_EntryDataDetails1" FromRole="EntryDataDetails_SupportingDetails" ToRole="EntryDataDetails" />
           <Property Name="Comment" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
         </EntityType>
         <Association Name="FK_EntryDataDetails_SupportingDetails_EntryDataDetails">
@@ -4809,18 +4787,6 @@ FROM [dbo].[ShipmentRiderManifests] AS [ShipmentRiderManifests]</DefiningQuery>
             </Principal>
             <Dependent Role="EntryDataDetails_SupportingDetails">
               <PropertyRef Name="EntryDataDetailsId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_EntryDataDetails_SupportingDetails_EntryDataDetails1">
-          <End Type="WaterNutDBModel.EntryDataDetails" Role="EntryDataDetails" Multiplicity="1" />
-          <End Type="WaterNutDBModel.SupportingDetail" Role="EntryDataDetails_SupportingDetails" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="EntryDataDetails">
-              <PropertyRef Name="EntryDataDetailsId" />
-            </Principal>
-            <Dependent Role="EntryDataDetails_SupportingDetails">
-              <PropertyRef Name="PreviousEntryDataDetailsId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>

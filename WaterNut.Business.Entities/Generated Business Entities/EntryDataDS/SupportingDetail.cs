@@ -262,8 +262,6 @@ namespace EntryDataDS.Business.Entities
         string _comment;
         [DataMember]
         public EntryDataDetails EntryDataDetails { get; set; }
-        [DataMember]
-        public EntryDataDetails PreviousDataDetails { get; set; }
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

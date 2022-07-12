@@ -354,6 +354,42 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
         }	
 
  
+
+		private string _cNumberFilter;
+        public string CNumberFilter
+        {
+            get
+            {
+                return _cNumberFilter;
+            }
+            set
+            {
+                _cNumberFilter = value;
+				NotifyPropertyChanged(x => CNumberFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
+
+		private Int32? _lineNumberFilter;
+        public Int32? LineNumberFilter
+        {
+            get
+            {
+                return _lineNumberFilter;
+            }
+            set
+            {
+                _lineNumberFilter = value;
+				NotifyPropertyChanged(x => LineNumberFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
 		internal bool DisableBaseFilterData = false;
         public virtual void FilterData()
 	    {
@@ -412,7 +448,14 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 
 									if(string.IsNullOrEmpty(EntryDataTypeFilter) == false)
 						res.Append(" && " + string.Format("EntryDataType.Contains(\"{0}\")",  EntryDataTypeFilter));						
-			return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
+ 
+
+									if(string.IsNullOrEmpty(CNumberFilter) == false)
+						res.Append(" && " + string.Format("CNumber.Contains(\"{0}\")",  CNumberFilter));						
+ 
+
+					if(LineNumberFilter.HasValue)
+						res.Append(" && " + string.Format("LineNumber == {0}",  LineNumberFilter.ToString()));							return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
 // Send to Excel Implementation
@@ -456,7 +499,13 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     Asycuda_id = x.Asycuda_id ,
                     
  
-                    EntryDataType = x.EntryDataType 
+                    EntryDataType = x.EntryDataType ,
+                    
+ 
+                    CNumber = x.CNumber ,
+                    
+ 
+                    LineNumber = x.LineNumber 
                     
                 }).ToList()
             };
@@ -491,6 +540,12 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     
  
                     public string EntryDataType { get; set; } 
+                    
+ 
+                    public string CNumber { get; set; } 
+                    
+ 
+                    public int LineNumber { get; set; } 
                     
         }
 
