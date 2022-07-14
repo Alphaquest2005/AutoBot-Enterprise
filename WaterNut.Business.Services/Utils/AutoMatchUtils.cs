@@ -5,6 +5,7 @@ using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
 using AdjustmentQS.Business.Entities;
+using AllocationDS.Business.Entities;
 using Core.Common.UI;
 using CoreEntities.Business.Entities;
 using EntryDataDS.Business.Entities;
@@ -12,7 +13,9 @@ using MoreLinq;
 using TrackableEntities;
 using TrackableEntities.EF6;
 using WaterNut.DataSpace;
+using AsycudaDocument = CoreEntities.Business.Entities.AsycudaDocument;
 using CustomsOperations = CoreEntities.Business.Enums.CustomsOperations;
+using xcuda_Item = AdjustmentQS.Business.Entities.xcuda_Item;
 
 namespace AdjustmentQS.Business.Services
 {
@@ -79,7 +82,7 @@ namespace AdjustmentQS.Business.Services
                 _itemCache = null;
 
 
-                var lst = GetAllAdjustmentDetails(applicationSettingsId, overwriteExisting);
+                var lst = GetAllAdjustmentDetails(applicationSettingsId, overwriteExisting);//.Where(x => x.EntryDataId == "Asycuda-C#33687-24").ToList();
 
                 
                 if (!lst.Any()) return;
@@ -501,7 +504,7 @@ namespace AdjustmentQS.Business.Services
                 //    return;
 
                 var asycudaQty =
-                    Convert.ToDouble(aItem.ItemQuantity.GetValueOrDefault() - pitm.DFQtyAllocated);
+                    Convert.ToDouble(aItem.ItemQuantity.GetValueOrDefault() - pitm.DFQtyAllocated);///??TODO: why only dfq?
 
                 if (asycudaQty <= 0) continue;
 
@@ -513,6 +516,8 @@ namespace AdjustmentQS.Business.Services
                     ed.QtyAllocated += remainingShortQty;
                     pitm.DFQtyAllocated += remainingShortQty;
                     aItem.DFQtyAllocated += remainingShortQty;
+                    SaveAsycudaSalesAllocation(osa);
+                    SaveAsycudaDocumentItem(pitm);
                     break;
                 }
                 else
@@ -523,12 +528,38 @@ namespace AdjustmentQS.Business.Services
                     pitm.DFQtyAllocated += asycudaQty;
                     aItem.DFQtyAllocated += asycudaQty;
                     remainingShortQty -= asycudaQty;
+                    SaveAsycudaSalesAllocation(osa);
+                    SaveAsycudaDocumentItem(pitm);
                 }
 
             }
-
+            
 
             return minEffectiveDate;
+
+        }
+
+        private static void SaveAsycudaDocumentItem(xcuda_Item pitm)
+        {
+            using (var ctx = new AdjustmentQSContext())
+            {
+                ctx.Database.CommandTimeout = 10;
+                var res = ctx.xcuda_Item.First(x => x.Item_Id == pitm.Item_Id);
+                res.DFQtyAllocated = pitm.DFQtyAllocated;
+                res.DPQtyAllocated = pitm.DPQtyAllocated;
+                ctx.SaveChanges();
+            }
+        }
+
+        private static void SaveAsycudaSalesAllocation(AsycudaSalesAllocation osa)
+        {
+            using (var ctx = new AdjustmentQSContext())
+            {
+                ctx.Database.CommandTimeout = 10;
+                var res = ctx.AsycudaSalesAllocations.First(x => x.AllocationId == osa.AllocationId);
+                res.QtyAllocated = osa.QtyAllocated;
+                ctx.SaveChanges();
+            }
 
         }
 

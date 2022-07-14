@@ -326,3 +326,8 @@ __pycache__/
 /WaterNut.Business.Services/Custom Services/DataModels/Custom DataModels/SaveCSV/SaveEntryDataProcessor.cs
 /WaterNut.Business.Services/Custom Services/DataModels/Custom DataModels/SaveCSV/CsvSummaryDataProcessor.cs
 /sync.ffs_lock
+/EntryDataDS/EntryDataDS-Joseph-PC-2.edmx
+/WaterNut/AutoWaterNut-Joseph-PC-3.csproj
+/WaterNut.Business.Services/Services/EntryDataDS/EntryDataDetailsService-Joseph-PC.cs
+/WaterNut.Business.Services/Services/EntryDataDS/SupportingDetailService-Joseph-PC.cs
+/WaterNut.Business.Services/Services/AllocationDS/AsycudaDocumentItemEntryDataDetailsService-Joseph-PC.cs
