@@ -108,7 +108,8 @@ namespace AutoBot
                                     x.ImportComplete == true).Select(x => new
                         {
                             Office = x.Customs_clearance_office_code,
-                            x.CNumber
+                            x.CNumber,
+                            Year = (x.RegistrationDate??DateTime.MinValue).Year.ToString()
                         }).ToList();
 
                     docSet = ctx.AsycudaDocumentSetExs.FirstOrDefault(x =>
@@ -117,11 +118,11 @@ namespace AutoBot
                         x.Declarant_Reference_Number == "Imports");
                     foreach (var file in files)
                     {
-                        var f = Regex.Match(file, @"(?<Office>\w+)\-(?<CNumber>\d+).xml",
+                        var f = Regex.Match(file, @"(?<Office>[A-Z]+)(\-(?<Year>\d{4}))?\-(?<CNumber>\d+).xml",
                             RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture);
                         if (f.Success == false) continue;
                         var i = ifiles.FirstOrDefault(x =>
-                            x.CNumber == f.Groups["CNumber"].Value && x.Office == f.Groups["Office"].Value);
+                            x.CNumber == f.Groups["CNumber"].Value && x.Office == f.Groups["Office"].Value  && (string.IsNullOrEmpty(f.Groups["Year"].ToString()) || x.Year == f.Groups["Year"].ToString()));
                         if (i == null)
                         {
                             res.Add(file);
