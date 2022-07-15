@@ -1224,7 +1224,7 @@ namespace WaterNut.DataSpace
                 List<ItemSalesPiSummary> itemSalesPiHistoric = new List<ItemSalesPiSummary>();
                 List<ItemSalesPiSummary> itemSalesPiCurrent = new List<ItemSalesPiSummary>();
 
-                universalData = itemSalesPiSummaryLst.Where(x => mypod.AllNames.Contains(x.ItemNumber) || x.PreviousItem_Id == mypod.EntlnData.PreviousDocumentItemId
+                universalData = itemSalesPiSummaryLst.Where(x => (mypod.AllNames.Contains(x.ItemNumber) || x.PreviousItem_Id == mypod.EntlnData.PreviousDocumentItemId)
                                                               && x.Type == "Universal").ToList();
 
                 salesPiAll = itemSalesPiSummaryLst.Where(x => x.PreviousItem_Id == mypod.EntlnData.PreviousDocumentItemId
