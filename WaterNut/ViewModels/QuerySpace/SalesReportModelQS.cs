@@ -86,6 +86,7 @@ namespace WaterNut.QuerySpace.AllocationQS.ViewModels
                                 Line = Convert.ToInt32(s.xLineNumber),
                                 Date = Convert.ToDateTime(s.InvoiceDate),
                                 InvoiceNo = s.InvoiceNo,
+                                InvoiceLineNumber = s.SalesLineNumber,
                                 Comment = s.Comment,
                                 ItemNumber = s.ItemNumber,
                                 ItemDescription = s.ItemDescription,
@@ -145,6 +146,7 @@ namespace WaterNut.QuerySpace.AllocationQS.ViewModels
                                 Line = Convert.ToInt32(s.xLineNumber),
                                 Date = Convert.ToDateTime(s.InvoiceDate),
                                 InvoiceNo = s.InvoiceNo,
+                                InvoiceLineNumber = s.SalesLineNumber,
                                 CustomerName = s.CustomerName,
                                 ItemNumber = s.ItemNumber,
                                 ItemDescription = s.ItemDescription,
@@ -200,6 +202,9 @@ namespace WaterNut.QuerySpace.AllocationQS.ViewModels
             public int Line { get; set; }
             public DateTime Date { get; set; }
             public string InvoiceNo { get; set; }
+
+            public int? InvoiceLineNumber { get; set; }
+
             public string CustomerName { get; set; }
             public string ItemNumber { get; set; }
             public string ItemDescription { get; set; }

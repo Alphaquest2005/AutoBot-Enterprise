@@ -776,6 +776,15 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ExistingAllocations' does
             
             <PropertyRef Name="EntryDataDetailsId" />
             <PropertyRef Name="xItemId" />
+            
+            
+            
+            
+            
+            
+            
+            
+            
             <PropertyRef Name="pItemId" />
           </Key>
           <Property Name="xAsycudaId" Type="int" Nullable="false" />
@@ -793,7 +802,6 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ExistingAllocations' does
           <Property Name="ItemNumber" Type="nvarchar" MaxLength="20" Nullable="false" />
           <Property Name="ItemDescription" Type="nvarchar" MaxLength="255" Nullable="false" />
           <Property Name="DocumentType" Type="nvarchar" MaxLength="40" />
-          <Property Name="CustomsProcedure" Type="nvarchar" MaxLength="11" />
           <Property Name="xQuantity" Type="float" />
           <Property Name="Suplementary_Quantity" Type="decimal" Precision="9" Scale="2" Nullable="false" />
           <Property Name="DutyFreePaid" Type="varchar" MaxLength="9" Nullable="false" />
@@ -944,6 +952,50 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.PreviousItemsEx' does not
           <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
           <Property Name="TotalDutyLiablity" Type="float" />
           <Property Name="DutyLiablity" Type="float" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.XSales-UnAllocated' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="XSales-UnAllocated">
+          <Key>
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            <PropertyRef Name="EntryDataDetailsId" />
+            <PropertyRef Name="xItemId" />
+            <PropertyRef Name="pItemId" />
+          </Key>
+          <Property Name="Line" Type="int" Nullable="false" />
+          <Property Name="Date" Type="datetime" Nullable="false" />
+          <Property Name="InvoiceNo" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="CustomerName" Type="nvarchar" MaxLength="50" />
+          <Property Name="ItemNumber" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="ItemDescription" Type="nvarchar" MaxLength="50" />
+          <Property Name="TariffCode" Type="nvarchar" MaxLength="50" />
+          <Property Name="SalesQuantity" Type="float" />
+          <Property Name="SalesFactor" Type="float" />
+          <Property Name="xQuantity" Type="float" Nullable="false" />
+          <Property Name="Price" Type="float" />
+          <Property Name="DutyFreePaid" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="pCNumber" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="pLineNumber" Type="int" Nullable="false" />
+          <Property Name="pRegDate" Type="datetime" Nullable="false" />
+          <Property Name="CIFValue" Type="float" />
+          <Property Name="DutyLiablity" Type="float" />
+          <Property Name="Comment" Type="nvarchar" MaxLength="50" />
+          <Property Name="CNumber" Type="nvarchar" MaxLength="20" />
+          <Property Name="RegistrationDate" Type="datetime2" Precision="7" />
+          <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
+          <Property Name="EntryDataDetailsId" Type="int" Nullable="false" />
+          <Property Name="SalesLineNumber" Type="int" />
+          <Property Name="xItemId" Type="int" Nullable="false" />
+          <Property Name="pItemId" Type="int" Nullable="false" />
         </EntityType>
         <Association Name="FK_AsycudaSalesAllocations_EntryDataDetails">
           <End Role="EntryDataDetails" Type="Self.EntryDataDetails" Multiplicity="0..1">
@@ -1626,7 +1678,6 @@ FROM [dbo].[EX9AsycudaSalesAllocations] AS [EX9AsycudaSalesAllocations]</Definin
 [ExistingAllocations].[ItemNumber] AS [ItemNumber], 
 [ExistingAllocations].[ItemDescription] AS [ItemDescription], 
 [ExistingAllocations].[DocumentType] AS [DocumentType], 
-[ExistingAllocations].[CustomsProcedure] AS [CustomsProcedure], 
 [ExistingAllocations].[xQuantity] AS [xQuantity], 
 [ExistingAllocations].[Suplementary_Quantity] AS [Suplementary_Quantity], 
 [ExistingAllocations].[DutyFreePaid] AS [DutyFreePaid]
@@ -1733,6 +1784,35 @@ FROM [dbo].[ItemSalesPiSummary] AS [ItemSalesPiSummary]</DefiningQuery>
 [PreviousItemsEx].[TotalDutyLiablity] AS [TotalDutyLiablity], 
 [PreviousItemsEx].[DutyLiablity] AS [DutyLiablity]
 FROM [dbo].[PreviousItemsEx] AS [PreviousItemsEx]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="XSales-UnAllocated" EntityType="Self.XSales-UnAllocated" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+[XSales-UnAllocated].[Line] AS [Line], 
+[XSales-UnAllocated].[Date] AS [Date], 
+[XSales-UnAllocated].[InvoiceNo] AS [InvoiceNo], 
+[XSales-UnAllocated].[CustomerName] AS [CustomerName], 
+[XSales-UnAllocated].[ItemNumber] AS [ItemNumber], 
+[XSales-UnAllocated].[ItemDescription] AS [ItemDescription], 
+[XSales-UnAllocated].[TariffCode] AS [TariffCode], 
+[XSales-UnAllocated].[SalesQuantity] AS [SalesQuantity], 
+[XSales-UnAllocated].[SalesFactor] AS [SalesFactor], 
+[XSales-UnAllocated].[xQuantity] AS [xQuantity], 
+[XSales-UnAllocated].[Price] AS [Price], 
+[XSales-UnAllocated].[DutyFreePaid] AS [DutyFreePaid], 
+[XSales-UnAllocated].[pCNumber] AS [pCNumber], 
+[XSales-UnAllocated].[pLineNumber] AS [pLineNumber], 
+[XSales-UnAllocated].[pRegDate] AS [pRegDate], 
+[XSales-UnAllocated].[CIFValue] AS [CIFValue], 
+[XSales-UnAllocated].[DutyLiablity] AS [DutyLiablity], 
+[XSales-UnAllocated].[Comment] AS [Comment], 
+[XSales-UnAllocated].[CNumber] AS [CNumber], 
+[XSales-UnAllocated].[RegistrationDate] AS [RegistrationDate], 
+[XSales-UnAllocated].[ApplicationSettingsId] AS [ApplicationSettingsId], 
+[XSales-UnAllocated].[EntryDataDetailsId] AS [EntryDataDetailsId], 
+[XSales-UnAllocated].[SalesLineNumber] AS [SalesLineNumber], 
+[XSales-UnAllocated].[xItemId] AS [xItemId], 
+[XSales-UnAllocated].[pItemId] AS [pItemId]
+FROM [dbo].[XSales-UnAllocated] AS [XSales-UnAllocated]</DefiningQuery>
           </EntitySet>
           <AssociationSet Name="FK_AsycudaSalesAllocations_EntryDataDetails" Association="Self.FK_AsycudaSalesAllocations_EntryDataDetails">
             <End Role="EntryDataDetails" EntitySet="EntryDataDetails" />
@@ -2085,6 +2165,7 @@ FROM [dbo].[PreviousItemsEx] AS [PreviousItemsEx]</DefiningQuery>
             <End Role="InventoryItem" EntitySet="InventoryItems" />
             <End Role="EntryDataDetails" EntitySet="EntryDataDetails" />
           </AssociationSet>
+          <EntitySet Name="XSales_UnAllocated" EntityType="WaterNutDBModel.XSales_UnAllocated" />
           </EntityContainer>
         <EntityType Name="AsycudaSalesAllocations">
           <Key>
@@ -3629,7 +3710,6 @@ FROM [dbo].[PreviousItemsEx] AS [PreviousItemsEx]</DefiningQuery>
           <Property Name="ItemNumber" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Name="ItemDescription" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="DocumentType" Type="String" MaxLength="40" FixedLength="false" Unicode="true" />
-          <Property Name="CustomsProcedure" Type="String" MaxLength="11" FixedLength="false" Unicode="true" />
           <Property Name="xQuantity" Type="Double" />
           <Property Name="Suplementary_Quantity" Type="Decimal" Nullable="false" Precision="9" Scale="2" />
           <Property Name="DutyFreePaid" Type="String" Nullable="false" MaxLength="9" FixedLength="false" Unicode="false" />
@@ -3646,6 +3726,38 @@ FROM [dbo].[PreviousItemsEx] AS [PreviousItemsEx]</DefiningQuery>
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="XSales_UnAllocated">
+          <Key>
+            <PropertyRef Name="pItemId" />
+            <PropertyRef Name="xItemId" />
+            <PropertyRef Name="EntryDataDetailsId" />
+          </Key>
+          <Property Name="Line" Type="Int32" Nullable="false" />
+          <Property Name="Date" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="InvoiceNo" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CustomerName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ItemNumber" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ItemDescription" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="TariffCode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="SalesQuantity" Type="Double" />
+          <Property Name="SalesFactor" Type="Double" />
+          <Property Name="xQuantity" Type="Double" Nullable="false" />
+          <Property Name="Price" Type="Double" />
+          <Property Name="DutyFreePaid" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="pCNumber" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="pLineNumber" Type="Int32" Nullable="false" />
+          <Property Name="pRegDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="CIFValue" Type="Double" />
+          <Property Name="DutyLiablity" Type="Double" />
+          <Property Name="Comment" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CNumber" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="RegistrationDate" Type="DateTime" Precision="7" />
+          <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
+          <Property Name="EntryDataDetailsId" Type="Int32" Nullable="false" />
+          <Property Name="SalesLineNumber" Type="Int32" />
+          <Property Name="xItemId" Type="Int32" Nullable="false" />
+          <Property Name="pItemId" Type="Int32" Nullable="false" />
+        </EntityType>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -4485,7 +4597,6 @@ FROM [dbo].[PreviousItemsEx] AS [PreviousItemsEx]</DefiningQuery>
                 <ScalarProperty Name="DutyFreePaid" ColumnName="DutyFreePaid" />
                 <ScalarProperty Name="Suplementary_Quantity" ColumnName="Suplementary_Quantity" />
                 <ScalarProperty Name="xQuantity" ColumnName="xQuantity" />
-                <ScalarProperty Name="CustomsProcedure" ColumnName="CustomsProcedure" />
                 <ScalarProperty Name="DocumentType" ColumnName="DocumentType" />
                 <ScalarProperty Name="ItemDescription" ColumnName="ItemDescription" />
                 <ScalarProperty Name="ItemNumber" ColumnName="ItemNumber" />
@@ -4502,6 +4613,37 @@ FROM [dbo].[PreviousItemsEx] AS [PreviousItemsEx]</DefiningQuery>
                 <ScalarProperty Name="EntryDataDetailsId" ColumnName="EntryDataDetailsId" />
                 <ScalarProperty Name="xAsycudaId" ColumnName="xAsycudaId" />
               </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="XSales_UnAllocated">
+            <EntityTypeMapping TypeName="WaterNutDBModel.XSales_UnAllocated">
+              <MappingFragment StoreEntitySet="XSales-UnAllocated">
+                <ScalarProperty Name="pItemId" ColumnName="pItemId" />
+                <ScalarProperty Name="xItemId" ColumnName="xItemId" />
+                <ScalarProperty Name="SalesLineNumber" ColumnName="SalesLineNumber" />
+                <ScalarProperty Name="EntryDataDetailsId" ColumnName="EntryDataDetailsId" />
+                <ScalarProperty Name="ApplicationSettingsId" ColumnName="ApplicationSettingsId" />
+                <ScalarProperty Name="RegistrationDate" ColumnName="RegistrationDate" />
+                <ScalarProperty Name="CNumber" ColumnName="CNumber" />
+                <ScalarProperty Name="Comment" ColumnName="Comment" />
+                <ScalarProperty Name="DutyLiablity" ColumnName="DutyLiablity" />
+                <ScalarProperty Name="CIFValue" ColumnName="CIFValue" />
+                <ScalarProperty Name="pRegDate" ColumnName="pRegDate" />
+                <ScalarProperty Name="pLineNumber" ColumnName="pLineNumber" />
+                <ScalarProperty Name="pCNumber" ColumnName="pCNumber" />
+                <ScalarProperty Name="DutyFreePaid" ColumnName="DutyFreePaid" />
+                <ScalarProperty Name="Price" ColumnName="Price" />
+                <ScalarProperty Name="xQuantity" ColumnName="xQuantity" />
+                <ScalarProperty Name="SalesFactor" ColumnName="SalesFactor" />
+                <ScalarProperty Name="SalesQuantity" ColumnName="SalesQuantity" />
+                <ScalarProperty Name="TariffCode" ColumnName="TariffCode" />
+                <ScalarProperty Name="ItemDescription" ColumnName="ItemDescription" />
+                <ScalarProperty Name="ItemNumber" ColumnName="ItemNumber" />
+                <ScalarProperty Name="CustomerName" ColumnName="CustomerName" />
+                <ScalarProperty Name="InvoiceNo" ColumnName="InvoiceNo" />
+                <ScalarProperty Name="Date" ColumnName="Date" />
+                <ScalarProperty Name="Line" ColumnName="Line" />
+                </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           </EntityContainerMapping>

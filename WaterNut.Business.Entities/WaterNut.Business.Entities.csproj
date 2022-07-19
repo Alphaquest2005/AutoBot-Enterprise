@@ -209,6 +209,7 @@
     <Compile Include="Generated Business Entities\AllocationDS\xcuda_Valuation_item.cs" />
     <Compile Include="Generated Business Entities\AllocationDS\xcuda_Weight.cs" />
     <Compile Include="Generated Business Entities\AllocationDS\xcuda_Weight_itm.cs" />
+    <Compile Include="Generated Business Entities\AllocationDS\XSales_UnAllocated.cs" />
     <Compile Include="Generated Business Entities\AllocationQS\AdjustmentShortAllocation.cs" />
     <Compile Include="Generated Business Entities\AllocationQS\AllocationsTestCas.cs" />
     <Compile Include="Generated Business Entities\AllocationQS\AsycudaSalesAllocationsEx.cs" />
@@ -626,6 +627,7 @@
     <Compile Include="Generated ChangeTracking Models\AllocationDS\xcuda_Valuation_item.cs" />
     <Compile Include="Generated ChangeTracking Models\AllocationDS\xcuda_Weight.cs" />
     <Compile Include="Generated ChangeTracking Models\AllocationDS\xcuda_Weight_itm.cs" />
+    <Compile Include="Generated ChangeTracking Models\AllocationDS\XSales_UnAllocated.cs" />
     <Compile Include="Generated ChangeTracking Models\AllocationQS\AdjustmentShortAllocation.cs" />
     <Compile Include="Generated ChangeTracking Models\AllocationQS\AllocationsTestCas.cs" />
     <Compile Include="Generated ChangeTracking Models\AllocationQS\AsycudaSalesAllocationsEx.cs" />
@@ -1037,6 +1039,7 @@
     <Compile Include="Generated Constructors Models\AllocationDS\xcuda_Valuation_item.cs" />
     <Compile Include="Generated Constructors Models\AllocationDS\xcuda_Weight.cs" />
     <Compile Include="Generated Constructors Models\AllocationDS\xcuda_Weight_itm.cs" />
+    <Compile Include="Generated Constructors Models\AllocationDS\XSales_UnAllocated.cs" />
     <Compile Include="Generated Constructors Models\AllocationQS\AdjustmentShortAllocation.cs" />
     <Compile Include="Generated Constructors Models\AllocationQS\AllocationsTestCas.cs" />
     <Compile Include="Generated Constructors Models\AllocationQS\AsycudaSalesAllocationsEx.cs" />
@@ -1448,6 +1451,7 @@
     <Compile Include="Generated IEntitiyWithKey Models\AllocationDS\xcuda_Valuation_item.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\AllocationDS\xcuda_Weight.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\AllocationDS\xcuda_Weight_itm.cs" />
+    <Compile Include="Generated IEntitiyWithKey Models\AllocationDS\XSales_UnAllocated.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\AllocationQS\AdjustmentShortAllocation.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\AllocationQS\AllocationsTestCas.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\AllocationQS\AsycudaSalesAllocationsEx.cs" />
@@ -1859,6 +1863,7 @@
     <Compile Include="Generated IIdentitfiableEntity Models\AllocationDS\xcuda_Valuation_item.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\AllocationDS\xcuda_Weight.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\AllocationDS\xcuda_Weight_itm.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\AllocationDS\XSales_UnAllocated.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\AllocationQS\AdjustmentShortAllocation.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\AllocationQS\AllocationsTestCas.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\AllocationQS\AsycudaSalesAllocationsEx.cs" />
@@ -2280,6 +2285,7 @@
     <Compile Include="Generated Mappings\AllocationDS\xcuda_Valuation_item.map.cs" />
     <Compile Include="Generated Mappings\AllocationDS\xcuda_Weight.map.cs" />
     <Compile Include="Generated Mappings\AllocationDS\xcuda_Weight_itm.map.cs" />
+    <Compile Include="Generated Mappings\AllocationDS\XSales_UnAllocated.map.cs" />
     <Compile Include="Generated Mappings\AllocationQS\AdjustmentShortAllocation.map.cs" />
     <Compile Include="Generated Mappings\AllocationQS\AllocationsTestCas.map.cs" />
     <Compile Include="Generated Mappings\AllocationQS\AsycudaSalesAllocationsEx.map.cs" />

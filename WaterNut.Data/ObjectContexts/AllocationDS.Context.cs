@@ -135,6 +135,8 @@ namespace AllocationDS.Business.Entities
      
         public DbSet<ExistingAllocations> ExistingAllocations { get; set; }
      
+        public DbSet<XSales_UnAllocated> XSales_UnAllocated { get; set; }
+     
 
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
@@ -226,6 +228,8 @@ namespace AllocationDS.Business.Entities
             modelBuilder.Configurations.Add(new LumpedItemMap());
          
             modelBuilder.Configurations.Add(new ExistingAllocationsMap());
+         
+            modelBuilder.Configurations.Add(new XSales_UnAllocatedMap());
          
             modelBuilder.Configurations.Add(new AdjustmentsMap());
       

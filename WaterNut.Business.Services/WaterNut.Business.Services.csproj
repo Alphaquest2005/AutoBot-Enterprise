@@ -427,6 +427,7 @@
     <Compile Include="Contracts\AllocationDS\Ixcuda_Valuation_itemService.cs" />
     <Compile Include="Contracts\AllocationDS\Ixcuda_WeightService.cs" />
     <Compile Include="Contracts\AllocationDS\Ixcuda_Weight_itmService.cs" />
+    <Compile Include="Contracts\AllocationDS\IXSales_UnAllocatedService.cs" />
     <Compile Include="Contracts\AllocationQS\IAdjustmentShortAllocationService.cs" />
     <Compile Include="Contracts\AllocationQS\IAllocationsTestCasService.cs" />
     <Compile Include="Contracts\AllocationQS\IAsycudaSalesAllocationsExService.cs" />
@@ -849,6 +850,7 @@
     <Compile Include="Importers\MisMatchesProcessor.cs" />
     <Compile Include="Importers\XlsxEntryDataProcessor.cs" />
     <Compile Include="Importers\XLSXUtils.cs" />
+    <Compile Include="Services\AllocationDS\XSales_UnAllocatedService.cs" />
     <Compile Include="Utils\AutoMatchUtils.cs" />
     <Compile Include="Importers\ChainedDataExtractor.cs" />
     <Compile Include="Importers\CSVDataExtractor.cs" />

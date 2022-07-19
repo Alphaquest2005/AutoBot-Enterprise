@@ -87,59 +87,59 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AllBusinessEntities.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
       <DependentUpon>AllBusinessEntities.tt</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
     </Compile>
     <Compile Include="AllBusinessMappings.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
       <DependentUpon>AllBusinessMappings.tt</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
     </Compile>
     <Compile Include="AllBusinessModels.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
       <DependentUpon>AllBusinessModels.tt</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
     </Compile>
     <Compile Include="AllClientEntities.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
       <DependentUpon>AllClientEntities.tt</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
     </Compile>
     <Compile Include="AllClientModels1.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
       <DependentUpon>AllClientModels.tt</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
     </Compile>
     <Compile Include="AllDomainInterface.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
       <DependentUpon>AllDomainInterface.tt</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
     </Compile>
     <Compile Include="AllMapping1.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
       <DependentUpon>AllMapping.tt</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
     </Compile>
     <Compile Include="AllObjectContext1.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
       <DependentUpon>AllObjectContext.tt</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
     </Compile>
     <Compile Include="AllRepository1.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
       <DependentUpon>AllRepository.tt</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
     </Compile>
     <Compile Include="AllServices.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
       <DependentUpon>AllServices.tt</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
     </Compile>
     <Compile Include="AllViewModels.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
       <DependentUpon>AllViewModels.tt</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
     </Compile>
     <Compile Include="EF6\AllBusinessEntities1.cs">
       <AutoGen>True</AutoGen>
@@ -180,6 +180,7 @@
   <ItemGroup>
     <Content Include="AllBusinessEntities.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>AllBusinessEntities.cs</LastGenOutput>
       <LastOutputs>
 ..\WaterNut.Business.Entities\Generated Business Entities\AdjustmentQS\AdjustmentDetail.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\AdjustmentQS\AdjustmentEx.cs
@@ -245,6 +246,7 @@
 ..\WaterNut.Business.Entities\Generated Business Entities\AllocationDS\xcuda_Valuation_item.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\AllocationDS\xcuda_Weight.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\AllocationDS\xcuda_Weight_itm.cs
+..\WaterNut.Business.Entities\Generated Business Entities\AllocationDS\XSales_UnAllocated.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\AllocationQS\AdjustmentShortAllocation.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\AllocationQS\AllocationsTestCas.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\AllocationQS\AsycudaSalesAllocationsEx.cs
@@ -593,7 +595,6 @@
 ..\WaterNut.Business.Entities\Generated Business Entities\ValuationDS\xC71_Seller_segment.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\ValuationDS\xC71_Value_declaration_form.cs
 </LastOutputs>
-      <LastGenOutput>AllBusinessEntities.cs</LastGenOutput>
     </Content>
     <Content Include="AllBusinessMappings.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
@@ -670,6 +671,7 @@
 ..\WaterNut.Business.Entities\Generated Mappings\AllocationDS\xcuda_Valuation_item.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\AllocationDS\xcuda_Weight.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\AllocationDS\xcuda_Weight_itm.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\AllocationDS\XSales_UnAllocated.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\AllocationQS\AdjustmentShortAllocation.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\AllocationQS\AllocationsTestCas.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\AllocationQS\AsycudaSalesAllocationsEx.map.cs
@@ -1038,6 +1040,7 @@
     </Content>
     <Content Include="AllBusinessModels.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>AllBusinessModels.cs</LastGenOutput>
       <LastOutputs>
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\AdjustmentQS\AdjustmentDetail.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\AdjustmentQS\AdjustmentEx.cs
@@ -1103,6 +1106,7 @@
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\AllocationDS\xcuda_Valuation_item.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\AllocationDS\xcuda_Weight.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\AllocationDS\xcuda_Weight_itm.cs
+..\WaterNut.Business.Entities\Generated ChangeTracking Models\AllocationDS\XSales_UnAllocated.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\AllocationQS\AdjustmentShortAllocation.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\AllocationQS\AllocationsTestCas.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\AllocationQS\AsycudaSalesAllocationsEx.cs
@@ -1514,6 +1518,7 @@
 ..\WaterNut.Business.Entities\Generated Constructors Models\AllocationDS\xcuda_Valuation_item.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\AllocationDS\xcuda_Weight.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\AllocationDS\xcuda_Weight_itm.cs
+..\WaterNut.Business.Entities\Generated Constructors Models\AllocationDS\XSales_UnAllocated.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\AllocationQS\AdjustmentShortAllocation.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\AllocationQS\AllocationsTestCas.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\AllocationQS\AsycudaSalesAllocationsEx.cs
@@ -1925,6 +1930,7 @@
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\AllocationDS\xcuda_Valuation_item.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\AllocationDS\xcuda_Weight.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\AllocationDS\xcuda_Weight_itm.cs
+..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\AllocationDS\XSales_UnAllocated.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\AllocationQS\AdjustmentShortAllocation.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\AllocationQS\AllocationsTestCas.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\AllocationQS\AsycudaSalesAllocationsEx.cs
@@ -2336,6 +2342,7 @@
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\AllocationDS\xcuda_Valuation_item.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\AllocationDS\xcuda_Weight.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\AllocationDS\xcuda_Weight_itm.cs
+..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\AllocationDS\XSales_UnAllocated.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\AllocationQS\AdjustmentShortAllocation.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\AllocationQS\AllocationsTestCas.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\AllocationQS\AsycudaSalesAllocationsEx.cs
@@ -2684,7 +2691,6 @@
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\ValuationDS\xC71_Seller_segment.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\ValuationDS\xC71_Value_declaration_form.cs
 </LastOutputs>
-      <LastGenOutput>AllBusinessModels.cs</LastGenOutput>
     </Content>
     <Content Include="AllClientEntities.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
@@ -3886,6 +3892,7 @@
     </Content>
     <Content Include="AllDomainInterface.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>AllDomainInterface.cs</LastGenOutput>
       <LastOutputs>
 ..\DomainInterfaces\Generated Interfaces\IDocument.cs
 ..\DomainInterfaces\Generated Interfaces\IDocumentItem.cs
@@ -3909,7 +3916,6 @@
 ..\WaterNut.Client.Entities\Generated Interface Implementation\CoreEntities\IWeightItem\AsycudaDocumentItem.cs
 ..\WaterNut.Client.Entities\Generated Interface Implementation\EntryDataQS\IEntryDataDetail\EntryDataDetailsEx.cs
 </LastOutputs>
-      <LastGenOutput>AllDomainInterface.cs</LastGenOutput>
     </Content>
     <Content Include="AllMapping.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
@@ -3986,6 +3992,7 @@
 ..\WaterNut.Business.Entities\Generated Mappings\AllocationDS\xcuda_Valuation_item.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\AllocationDS\xcuda_Weight.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\AllocationDS\xcuda_Weight_itm.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\AllocationDS\XSales_UnAllocated.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\AllocationQS\AdjustmentShortAllocation.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\AllocationQS\AllocationsTestCas.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\AllocationQS\AsycudaSalesAllocationsEx.map.cs
@@ -4560,512 +4567,9 @@
 ..\WaterNut.Client.Repositories\Generated Repositories\SalesDataQSRepository.cs
 </LastOutputs>
     </Content>
-    <Content Include="AllViewModels.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastOutputs>
-..\WaterNut\ViewModels\Generated Models\QuerySpace\AdjustmentQS\AdjustmentDetailViewModel.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\AdjustmentQS\AdjustmentExViewModel.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\AdjustmentQS\AdjustmentOversAllocationViewModel.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\AdjustmentQS\AdjustmentOverViewModel.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\AdjustmentQS\AdjustmentShortViewModel.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\AdjustmentQS\AsycudaDocumentEntryDataViewModel.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\AdjustmentQS\AsycudaDocumentItemEntryDataDetailViewModel.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\AdjustmentQS\AsycudaDocumentItemLastItemCostViewModel.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\AdjustmentQS\AsycudaDocumentSetEntryDataViewModel.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\AdjustmentQS\AsycudaSalesAllocationViewModel.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\AdjustmentQS\BaseViewModel.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\AdjustmentQS\EntryDataDetailViewModel.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\AdjustmentQS\InventoryItemAliasExViewModel.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\AdjustmentQS\InventoryItemsExViewModel.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\AdjustmentQS\MessageToken.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\AdjustmentQS\ShortAllocationViewModel.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\AdjustmentQS\SummaryListViewModel.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\AdjustmentQS\SystemDocumentSetViewModel.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\AdjustmentQS\TODO_AdjustmentOversToXMLViewModel.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\AdjustmentQS\TODO_PreDiscrepancyErrorsViewModel.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\AdjustmentQS\xcuda_ItemViewModel.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\AllocationQS\AdjustmentShortAllocationViewModel.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\AllocationQS\AllocationsTestCasViewModel.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\AllocationQS\AsycudaSalesAllocationsExViewModel.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\AllocationQS\AsycudaSalesAndAdjustmentAllocationsExViewModel.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\AllocationQS\BaseViewModel.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\AllocationQS\MessageToken.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\AllocationQS\SummaryListViewModel.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\ActionDocSetLogsViewModel.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\ActionsViewModel.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\ApplicationSettingsSummaryListViewModel.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\ApplicationSettingsViewModel.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\AsycudaDocument_AttachmentsViewModel.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\AsycudaDocumentBasicInfoViewModel.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\AsycudaDocumentItemEntryDataDetailsViewModel.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\AsycudaDocumentItemViewModel.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\AsycudaDocumentSet_AttachmentsViewModel.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\AsycudaDocumentSetC71ViewModel.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\AsycudaDocumentSetEntryDataExViewModel.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\AsycudaDocumentSetExViewModel.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\AsycudaDocumentViewModel.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\AsycudaItemBasicInfoViewModel.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\AttachmentLogViewModel.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\AttachmentsViewModel.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\BaseViewModel.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\CancelledEntriesLstViewModel.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\ContactsViewModel.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\Customs_ProcedureViewModel.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\CustomsOperationsViewModel.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\DeclarantViewModel.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\Document_TypeViewModel.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\EmailAttachmentsViewModel.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\EmailFileTypesViewModel.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\EmailInfoMappingsViewModel.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\EmailMappingRexExsViewModel.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\EmailMappingViewModel.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\EmailsViewModel.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\EntryPreviousItemsViewModel.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\ExpiredEntriesLstViewModel.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\FileGroupsViewModel.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\FileImporterInfoViewModel.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\FileTypeActionsViewModel.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\FileTypeContactsViewModel.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\FileTypeMappingRegExsViewModel.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\FileTypeMappingsViewModel.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\FileTypeReplaceRegexViewModel.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\FileTypesViewModel.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\ImportActionsViewModel.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\InfoMappingRegExViewModel.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\InfoMappingViewModel.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\InventoryItemAliasXViewModel.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\InventoryItemXViewModel.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\LicenceSummaryViewModel.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\MessageToken.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\SessionActionsViewModel.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\SessionScheduleViewModel.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\SessionsViewModel.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\SubItemsViewModel.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_AdjustmentsAlreadyXMLedViewModel.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_AssessDiscrepancyEntriesViewModel.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_C71ToCreateViewModel.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_C71ToXMLViewModel.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_CreateDiscrepancyEntriesViewModel.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_CreateEx9ViewModel.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_DeleteDocumentSetViewModel.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_DiscrepanciesAlreadyXMLedViewModel.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_DiscrepanciesErrorsViewModel.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_DiscrepanciesExecutionReportViewModel.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_DiscrepanciesToAssessViewModel.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_DiscrepancyPreExecutionReportViewModel.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_DocumentsToDeleteViewModel.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_EntriesExpiringNextMonthViewModel.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_Error_DuplicateEntryViewModel.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_Error_IncompleteImportViewModel.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_Error_IncompleteItemsViewModel.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_ERRReport_AllocationsViewModel.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_ERRReport_AsycudaEntriesViewModel.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_ERRReport_AsycudaLinesViewModel.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_ERRReport_ByItemNumberViewModel.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_ERRReport_EntryDataDetailsViewModel.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_ERRReport_SubmitWarehouseErrorsViewModel.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_ERRReport_UnmappedItemsViewModel.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_ImportCompleteEntriesViewModel.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_LicenceAvailableQtyViewModel.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_LicenseToXMLViewModel.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_LICToAssessViewModel.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_LICToCreateViewModel.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_PODocSetToAssessErrorsViewModel.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_PODocSetToAssessViewModel.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_PODocSetToExportViewModel.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_PODocSetViewModel.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\ToDo_POToXMLViewModel.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_SubmitAllXMLToCustomsViewModel.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_SubmitDiscrepanciesToCustomsViewModel.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_SubmitDocSetWithIncompleteInvoicesViewModel.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_SubmitEntryCIFViewModel.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_SubmitInadequatePackagesViewModel.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_SubmitIncompleteEntryDataViewModel.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_SubmitIncompleteSupplierInfoViewModel.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_SubmitMissingInvoicePDFsViewModel.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_SubmitPOInfoViewModel.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_SubmitSalesToCustomsViewModel.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_SubmitUnclassifiedItemsViewModel.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_SubmitXMLToCustomsViewModel.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_TotalAdjustmentsToProcessViewModel.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_UnallocatedSalesViewModel.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_UnallocatedShortsViewModel.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\xcuda_Supplementary_unitViewModel.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\EntryDataQS\AsycudaDocumentEntryDataLineViewModel.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\EntryDataQS\AsycudaDocumentEntryDataViewModel.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\EntryDataQS\AsycudaDocumentItemEntryDataDetailViewModel.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\EntryDataQS\AsycudaDocumentSetEntryDataDetailViewModel.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\EntryDataQS\AsycudaDocumentSetEntryDataViewModel.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\EntryDataQS\BaseViewModel.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\EntryDataQS\EmptyFullCodeViewModel.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\EntryDataQS\EntryDataDetailsExViewModel.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\EntryDataQS\EntryDataExViewModel.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\EntryDataQS\EntryDataViewModel.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\EntryDataQS\InventoryItemsExViewModel.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\EntryDataQS\MessageToken.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\EntryDataQS\PackageTypeViewModel.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\EntryDataQS\SummaryListViewModel.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\InventoryQS\BaseViewModel.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\InventoryQS\EntryDataDetailsExViewModel.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\InventoryQS\InventoryItemsExViewModel.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\InventoryQS\MessageToken.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\InventoryQS\TariffCategoryCodeSuppUnitViewModel.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\InventoryQS\TariffCategorySummaryListViewModel.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\InventoryQS\TariffCategoryViewModel.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\InventoryQS\TariffCodesViewModel.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\InventoryQS\TariffSupUnitLkpsViewModel.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\OCR\BaseViewModel.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\OCR\ChildPartsViewModel.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\OCR\EndViewModel.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\OCR\FieldFormatRegExViewModel.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\OCR\FieldsViewModel.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\OCR\ImportErrorsViewModel.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\OCR\InvoiceIdentificatonRegExViewModel.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\OCR\InvoiceRegExViewModel.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\OCR\InvoicesViewModel.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\OCR\LinesViewModel.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\OCR\MessageToken.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\OCR\OCR_FailedFieldsViewModel.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\OCR\OCR_FailedLinesViewModel.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\OCR\OCR_FieldMappingsViewModel.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\OCR\OCR_FieldValueViewModel.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\OCR\OCR_PartLineFieldsViewModel.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\OCR\OCRFileTypesViewModel.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\OCR\PartsViewModel.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\OCR\PartTypesViewModel.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\OCR\RecuringPartViewModel.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\OCR\RegularExpressionsViewModel.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\OCR\StartViewModel.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\OCR\SummaryListViewModel.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\PreviousDocumentQS\BaseViewModel.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\PreviousDocumentQS\MessageToken.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\PreviousDocumentQS\PreviousDocumentItemViewModel.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\PreviousDocumentQS\PreviousDocumentViewModel.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\PreviousDocumentQS\PreviousItemsExViewModel.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\PreviousDocumentQS\SummaryListViewModel.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\AdjustmentQS\AdjustmentDetailTotals.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\AdjustmentQS\AdjustmentExTotals.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\AdjustmentQS\AdjustmentOversAllocationTotals.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\AdjustmentQS\AdjustmentOverTotals.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\AdjustmentQS\AdjustmentShortTotals.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\AdjustmentQS\AsycudaDocumentEntryDataTotals.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\AdjustmentQS\AsycudaDocumentItemEntryDataDetailTotals.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\AdjustmentQS\AsycudaDocumentItemLastItemCostTotals.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\AdjustmentQS\AsycudaDocumentSetEntryDataTotals.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\AdjustmentQS\AsycudaSalesAllocationTotals.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\AdjustmentQS\EntryDataDetailTotals.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\AdjustmentQS\InventoryItemAliasExTotals.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\AdjustmentQS\InventoryItemsExTotals.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\AdjustmentQS\ShortAllocationTotals.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\AdjustmentQS\SystemDocumentSetTotals.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\AdjustmentQS\TODO_AdjustmentOversToXMLTotals.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\AdjustmentQS\TODO_PreDiscrepancyErrorsTotals.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\AdjustmentQS\xcuda_ItemTotals.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\AllocationQS\AdjustmentShortAllocationTotals.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\AllocationQS\AllocationsTestCasTotals.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\AllocationQS\AsycudaSalesAllocationsExTotals.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\AllocationQS\AsycudaSalesAndAdjustmentAllocationsExTotals.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\ActionDocSetLogsTotals.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\ActionsTotals.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\ApplicationSettingsTotals.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\AsycudaDocument_AttachmentsTotals.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\AsycudaDocumentBasicInfoTotals.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\AsycudaDocumentItemEntryDataDetailsTotals.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\AsycudaDocumentItemTotals.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\AsycudaDocumentSet_AttachmentsTotals.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\AsycudaDocumentSetC71Totals.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\AsycudaDocumentSetEntryDataExTotals.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\AsycudaDocumentSetExTotals.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\AsycudaDocumentTotals.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\AsycudaItemBasicInfoTotals.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\AttachmentLogTotals.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\AttachmentsTotals.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\CancelledEntriesLstTotals.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\ContactsTotals.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\Customs_ProcedureTotals.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\CustomsOperationsTotals.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\DeclarantTotals.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\Document_TypeTotals.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\EmailAttachmentsTotals.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\EmailFileTypesTotals.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\EmailInfoMappingsTotals.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\EmailMappingRexExsTotals.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\EmailMappingTotals.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\EmailsTotals.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\EntryPreviousItemsTotals.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\ExpiredEntriesLstTotals.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\FileGroupsTotals.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\FileImporterInfoTotals.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\FileTypeActionsTotals.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\FileTypeContactsTotals.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\FileTypeMappingRegExsTotals.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\FileTypeMappingsTotals.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\FileTypeReplaceRegexTotals.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\FileTypesTotals.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\ImportActionsTotals.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\InfoMappingRegExTotals.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\InfoMappingTotals.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\InventoryItemAliasXTotals.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\InventoryItemXTotals.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\LicenceSummaryTotals.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\SessionActionsTotals.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\SessionScheduleTotals.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\SessionsTotals.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\SubItemsTotals.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_AdjustmentsAlreadyXMLedTotals.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_AssessDiscrepancyEntriesTotals.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_C71ToCreateTotals.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_C71ToXMLTotals.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_CreateDiscrepancyEntriesTotals.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_CreateEx9Totals.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_DeleteDocumentSetTotals.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_DiscrepanciesAlreadyXMLedTotals.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_DiscrepanciesErrorsTotals.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_DiscrepanciesExecutionReportTotals.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_DiscrepanciesToAssessTotals.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_DiscrepancyPreExecutionReportTotals.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_DocumentsToDeleteTotals.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_EntriesExpiringNextMonthTotals.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_Error_DuplicateEntryTotals.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_Error_IncompleteImportTotals.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_Error_IncompleteItemsTotals.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_ERRReport_AllocationsTotals.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_ERRReport_AsycudaEntriesTotals.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_ERRReport_AsycudaLinesTotals.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_ERRReport_ByItemNumberTotals.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_ERRReport_EntryDataDetailsTotals.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_ERRReport_SubmitWarehouseErrorsTotals.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_ERRReport_UnmappedItemsTotals.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_ImportCompleteEntriesTotals.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_LicenceAvailableQtyTotals.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_LicenseToXMLTotals.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_LICToAssessTotals.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_LICToCreateTotals.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_PODocSetToAssessErrorsTotals.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_PODocSetToAssessTotals.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_PODocSetToExportTotals.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_PODocSetTotals.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\ToDo_POToXMLTotals.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_SubmitAllXMLToCustomsTotals.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_SubmitDiscrepanciesToCustomsTotals.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_SubmitDocSetWithIncompleteInvoicesTotals.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_SubmitEntryCIFTotals.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_SubmitInadequatePackagesTotals.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_SubmitIncompleteEntryDataTotals.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_SubmitIncompleteSupplierInfoTotals.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_SubmitMissingInvoicePDFsTotals.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_SubmitPOInfoTotals.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_SubmitSalesToCustomsTotals.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_SubmitUnclassifiedItemsTotals.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_SubmitXMLToCustomsTotals.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_TotalAdjustmentsToProcessTotals.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_UnallocatedSalesTotals.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_UnallocatedShortsTotals.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\xcuda_Supplementary_unitTotals.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\EntryDataQS\AsycudaDocumentEntryDataLineTotals.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\EntryDataQS\AsycudaDocumentEntryDataTotals.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\EntryDataQS\AsycudaDocumentItemEntryDataDetailTotals.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\EntryDataQS\AsycudaDocumentSetEntryDataDetailTotals.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\EntryDataQS\AsycudaDocumentSetEntryDataTotals.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\EntryDataQS\EmptyFullCodeTotals.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\EntryDataQS\EntryDataDetailsExTotals.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\EntryDataQS\EntryDataExTotals.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\EntryDataQS\EntryDataTotals.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\EntryDataQS\InventoryItemsExTotals.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\EntryDataQS\PackageTypeTotals.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\InventoryQS\EntryDataDetailsExTotals.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\InventoryQS\InventoryItemsExTotals.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\InventoryQS\TariffCategoryCodeSuppUnitTotals.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\InventoryQS\TariffCategoryTotals.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\InventoryQS\TariffCodesTotals.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\InventoryQS\TariffSupUnitLkpsTotals.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\OCR\ChildPartsTotals.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\OCR\EndTotals.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\OCR\FieldFormatRegExTotals.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\OCR\FieldsTotals.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\OCR\ImportErrorsTotals.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\OCR\InvoiceIdentificatonRegExTotals.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\OCR\InvoiceRegExTotals.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\OCR\InvoicesTotals.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\OCR\LinesTotals.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\OCR\OCR_FailedFieldsTotals.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\OCR\OCR_FailedLinesTotals.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\OCR\OCR_FieldMappingsTotals.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\OCR\OCR_FieldValueTotals.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\OCR\OCR_PartLineFieldsTotals.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\OCR\OCRFileTypesTotals.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\OCR\PartsTotals.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\OCR\PartTypesTotals.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\OCR\RecuringPartTotals.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\OCR\RegularExpressionsTotals.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\OCR\StartTotals.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\PreviousDocumentQS\PreviousDocumentItemTotals.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\PreviousDocumentQS\PreviousDocumentTotals.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\PreviousDocumentQS\PreviousItemsExTotals.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\AdjustmentQS\AdjustmentDetailVirturalListLoader.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\AdjustmentQS\AdjustmentExVirturalListLoader.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\AdjustmentQS\AdjustmentOversAllocationVirturalListLoader.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\AdjustmentQS\AdjustmentOverVirturalListLoader.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\AdjustmentQS\AdjustmentShortVirturalListLoader.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\AdjustmentQS\AsycudaDocumentEntryDataVirturalListLoader.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\AdjustmentQS\AsycudaDocumentItemEntryDataDetailVirturalListLoader.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\AdjustmentQS\AsycudaDocumentItemLastItemCostVirturalListLoader.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\AdjustmentQS\AsycudaDocumentSetEntryDataVirturalListLoader.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\AdjustmentQS\AsycudaSalesAllocationVirturalListLoader.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\AdjustmentQS\EntryDataDetailVirturalListLoader.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\AdjustmentQS\InventoryItemAliasExVirturalListLoader.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\AdjustmentQS\InventoryItemsExVirturalListLoader.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\AdjustmentQS\ShortAllocationVirturalListLoader.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\AdjustmentQS\SystemDocumentSetVirturalListLoader.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\AdjustmentQS\TODO_AdjustmentOversToXMLVirturalListLoader.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\AdjustmentQS\TODO_PreDiscrepancyErrorsVirturalListLoader.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\AdjustmentQS\xcuda_ItemVirturalListLoader.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\AllocationQS\AdjustmentShortAllocationVirturalListLoader.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\AllocationQS\AllocationsTestCasVirturalListLoader.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\AllocationQS\AsycudaSalesAllocationsExVirturalListLoader.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\AllocationQS\AsycudaSalesAndAdjustmentAllocationsExVirturalListLoader.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\ActionDocSetLogsVirturalListLoader.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\ActionsVirturalListLoader.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\ApplicationSettingsVirturalListLoader.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\AsycudaDocument_AttachmentsVirturalListLoader.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\AsycudaDocumentBasicInfoVirturalListLoader.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\AsycudaDocumentItemEntryDataDetailsVirturalListLoader.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\AsycudaDocumentItemVirturalListLoader.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\AsycudaDocumentSet_AttachmentsVirturalListLoader.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\AsycudaDocumentSetC71VirturalListLoader.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\AsycudaDocumentSetEntryDataExVirturalListLoader.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\AsycudaDocumentSetExVirturalListLoader.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\AsycudaDocumentVirturalListLoader.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\AsycudaItemBasicInfoVirturalListLoader.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\AttachmentLogVirturalListLoader.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\AttachmentsVirturalListLoader.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\CancelledEntriesLstVirturalListLoader.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\ContactsVirturalListLoader.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\Customs_ProcedureVirturalListLoader.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\CustomsOperationsVirturalListLoader.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\DeclarantVirturalListLoader.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\Document_TypeVirturalListLoader.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\EmailAttachmentsVirturalListLoader.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\EmailFileTypesVirturalListLoader.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\EmailInfoMappingsVirturalListLoader.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\EmailMappingRexExsVirturalListLoader.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\EmailMappingVirturalListLoader.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\EmailsVirturalListLoader.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\EntryPreviousItemsVirturalListLoader.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\ExpiredEntriesLstVirturalListLoader.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\FileGroupsVirturalListLoader.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\FileImporterInfoVirturalListLoader.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\FileTypeActionsVirturalListLoader.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\FileTypeContactsVirturalListLoader.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\FileTypeMappingRegExsVirturalListLoader.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\FileTypeMappingsVirturalListLoader.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\FileTypeReplaceRegexVirturalListLoader.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\FileTypesVirturalListLoader.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\ImportActionsVirturalListLoader.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\InfoMappingRegExVirturalListLoader.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\InfoMappingVirturalListLoader.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\InventoryItemAliasXVirturalListLoader.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\InventoryItemXVirturalListLoader.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\LicenceSummaryVirturalListLoader.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\SessionActionsVirturalListLoader.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\SessionScheduleVirturalListLoader.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\SessionsVirturalListLoader.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\SubItemsVirturalListLoader.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_AdjustmentsAlreadyXMLedVirturalListLoader.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_AssessDiscrepancyEntriesVirturalListLoader.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_C71ToCreateVirturalListLoader.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_C71ToXMLVirturalListLoader.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_CreateDiscrepancyEntriesVirturalListLoader.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_CreateEx9VirturalListLoader.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_DeleteDocumentSetVirturalListLoader.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_DiscrepanciesAlreadyXMLedVirturalListLoader.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_DiscrepanciesErrorsVirturalListLoader.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_DiscrepanciesExecutionReportVirturalListLoader.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_DiscrepanciesToAssessVirturalListLoader.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_DiscrepancyPreExecutionReportVirturalListLoader.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_DocumentsToDeleteVirturalListLoader.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_EntriesExpiringNextMonthVirturalListLoader.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_Error_DuplicateEntryVirturalListLoader.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_Error_IncompleteImportVirturalListLoader.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_Error_IncompleteItemsVirturalListLoader.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_ERRReport_AllocationsVirturalListLoader.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_ERRReport_AsycudaEntriesVirturalListLoader.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_ERRReport_AsycudaLinesVirturalListLoader.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_ERRReport_ByItemNumberVirturalListLoader.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_ERRReport_EntryDataDetailsVirturalListLoader.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_ERRReport_SubmitWarehouseErrorsVirturalListLoader.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_ERRReport_UnmappedItemsVirturalListLoader.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_ImportCompleteEntriesVirturalListLoader.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_LicenceAvailableQtyVirturalListLoader.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_LicenseToXMLVirturalListLoader.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_LICToAssessVirturalListLoader.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_LICToCreateVirturalListLoader.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_PODocSetToAssessErrorsVirturalListLoader.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_PODocSetToAssessVirturalListLoader.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_PODocSetToExportVirturalListLoader.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_PODocSetVirturalListLoader.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\ToDo_POToXMLVirturalListLoader.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_SubmitAllXMLToCustomsVirturalListLoader.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_SubmitDiscrepanciesToCustomsVirturalListLoader.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_SubmitDocSetWithIncompleteInvoicesVirturalListLoader.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_SubmitEntryCIFVirturalListLoader.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_SubmitInadequatePackagesVirturalListLoader.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_SubmitIncompleteEntryDataVirturalListLoader.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_SubmitIncompleteSupplierInfoVirturalListLoader.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_SubmitMissingInvoicePDFsVirturalListLoader.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_SubmitPOInfoVirturalListLoader.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_SubmitSalesToCustomsVirturalListLoader.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_SubmitUnclassifiedItemsVirturalListLoader.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_SubmitXMLToCustomsVirturalListLoader.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_TotalAdjustmentsToProcessVirturalListLoader.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_UnallocatedSalesVirturalListLoader.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_UnallocatedShortsVirturalListLoader.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\xcuda_Supplementary_unitVirturalListLoader.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\EntryDataQS\AsycudaDocumentEntryDataLineVirturalListLoader.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\EntryDataQS\AsycudaDocumentEntryDataVirturalListLoader.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\EntryDataQS\AsycudaDocumentItemEntryDataDetailVirturalListLoader.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\EntryDataQS\AsycudaDocumentSetEntryDataDetailVirturalListLoader.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\EntryDataQS\AsycudaDocumentSetEntryDataVirturalListLoader.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\EntryDataQS\EmptyFullCodeVirturalListLoader.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\EntryDataQS\EntryDataDetailsExVirturalListLoader.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\EntryDataQS\EntryDataExVirturalListLoader.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\EntryDataQS\EntryDataVirturalListLoader.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\EntryDataQS\InventoryItemsExVirturalListLoader.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\EntryDataQS\PackageTypeVirturalListLoader.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\InventoryQS\EntryDataDetailsExVirturalListLoader.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\InventoryQS\InventoryItemsExVirturalListLoader.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\InventoryQS\TariffCategoryCodeSuppUnitVirturalListLoader.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\InventoryQS\TariffCategoryVirturalListLoader.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\InventoryQS\TariffCodesVirturalListLoader.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\InventoryQS\TariffSupUnitLkpsVirturalListLoader.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\OCR\ChildPartsVirturalListLoader.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\OCR\EndVirturalListLoader.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\OCR\FieldFormatRegExVirturalListLoader.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\OCR\FieldsVirturalListLoader.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\OCR\ImportErrorsVirturalListLoader.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\OCR\InvoiceIdentificatonRegExVirturalListLoader.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\OCR\InvoiceRegExVirturalListLoader.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\OCR\InvoicesVirturalListLoader.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\OCR\LinesVirturalListLoader.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\OCR\OCR_FailedFieldsVirturalListLoader.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\OCR\OCR_FailedLinesVirturalListLoader.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\OCR\OCR_FieldMappingsVirturalListLoader.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\OCR\OCR_FieldValueVirturalListLoader.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\OCR\OCR_PartLineFieldsVirturalListLoader.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\OCR\OCRFileTypesVirturalListLoader.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\OCR\PartsVirturalListLoader.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\OCR\PartTypesVirturalListLoader.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\OCR\RecuringPartVirturalListLoader.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\OCR\RegularExpressionsVirturalListLoader.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\OCR\StartVirturalListLoader.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\PreviousDocumentQS\PreviousDocumentItemVirturalListLoader.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\PreviousDocumentQS\PreviousDocumentVirturalListLoader.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\PreviousDocumentQS\PreviousItemsExVirturalListLoader.cs
-</LastOutputs>
-      <LastGenOutput>AllViewModels.cs</LastGenOutput>
-    </Content>
     <Content Include="AllServices.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>AllServices.cs</LastGenOutput>
       <LastOutputs>
 ..\WaterNut.Business.Services\Contracts\AdjustmentQS\IAdjustmentDetailService.cs
 ..\WaterNut.Business.Services\Contracts\AdjustmentQS\IAdjustmentExService.cs
@@ -5131,6 +4635,7 @@
 ..\WaterNut.Business.Services\Contracts\AllocationDS\Ixcuda_Valuation_itemService.cs
 ..\WaterNut.Business.Services\Contracts\AllocationDS\Ixcuda_Weight_itmService.cs
 ..\WaterNut.Business.Services\Contracts\AllocationDS\Ixcuda_WeightService.cs
+..\WaterNut.Business.Services\Contracts\AllocationDS\IXSales_UnAllocatedService.cs
 ..\WaterNut.Business.Services\Contracts\AllocationQS\IAdjustmentShortAllocationService.cs
 ..\WaterNut.Business.Services\Contracts\AllocationQS\IAllocationsTestCasService.cs
 ..\WaterNut.Business.Services\Contracts\AllocationQS\IAsycudaSalesAllocationsExService.cs
@@ -5542,6 +5047,7 @@
 ..\WaterNut.Business.Services\Services\AllocationDS\xcuda_Valuation_itemService.cs
 ..\WaterNut.Business.Services\Services\AllocationDS\xcuda_Weight_itmService.cs
 ..\WaterNut.Business.Services\Services\AllocationDS\xcuda_WeightService.cs
+..\WaterNut.Business.Services\Services\AllocationDS\XSales_UnAllocatedService.cs
 ..\WaterNut.Business.Services\Services\AllocationQS\AdjustmentShortAllocationService.cs
 ..\WaterNut.Business.Services\Services\AllocationQS\AllocationsTestCasService.cs
 ..\WaterNut.Business.Services\Services\AllocationQS\AsycudaSalesAllocationsExService.cs
@@ -6228,7 +5734,510 @@
 ..\WaterNut.Client.Services\SalesDataQS\SalesDataClient.cs
 ..\WaterNut.Client.Services\SalesDataQS\SalesDataDetailClient.cs
 </LastOutputs>
-      <LastGenOutput>AllServices.cs</LastGenOutput>
+    </Content>
+    <Content Include="AllViewModels.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>AllViewModels.cs</LastGenOutput>
+      <LastOutputs>
+..\WaterNut\ViewModels\Generated Models\QuerySpace\AdjustmentQS\AdjustmentDetailViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\AdjustmentQS\AdjustmentExViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\AdjustmentQS\AdjustmentOversAllocationViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\AdjustmentQS\AdjustmentOverViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\AdjustmentQS\AdjustmentShortViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\AdjustmentQS\AsycudaDocumentEntryDataViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\AdjustmentQS\AsycudaDocumentItemEntryDataDetailViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\AdjustmentQS\AsycudaDocumentItemLastItemCostViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\AdjustmentQS\AsycudaDocumentSetEntryDataViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\AdjustmentQS\AsycudaSalesAllocationViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\AdjustmentQS\BaseViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\AdjustmentQS\EntryDataDetailViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\AdjustmentQS\InventoryItemAliasExViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\AdjustmentQS\InventoryItemsExViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\AdjustmentQS\MessageToken.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\AdjustmentQS\ShortAllocationViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\AdjustmentQS\SummaryListViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\AdjustmentQS\SystemDocumentSetViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\AdjustmentQS\TODO_AdjustmentOversToXMLViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\AdjustmentQS\TODO_PreDiscrepancyErrorsViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\AdjustmentQS\xcuda_ItemViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\AllocationQS\AdjustmentShortAllocationViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\AllocationQS\AllocationsTestCasViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\AllocationQS\AsycudaSalesAllocationsExViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\AllocationQS\AsycudaSalesAndAdjustmentAllocationsExViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\AllocationQS\BaseViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\AllocationQS\MessageToken.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\AllocationQS\SummaryListViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\ActionDocSetLogsViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\ActionsViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\ApplicationSettingsSummaryListViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\ApplicationSettingsViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\AsycudaDocument_AttachmentsViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\AsycudaDocumentBasicInfoViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\AsycudaDocumentItemEntryDataDetailsViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\AsycudaDocumentItemViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\AsycudaDocumentSet_AttachmentsViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\AsycudaDocumentSetC71ViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\AsycudaDocumentSetEntryDataExViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\AsycudaDocumentSetExViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\AsycudaDocumentViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\AsycudaItemBasicInfoViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\AttachmentLogViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\AttachmentsViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\BaseViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\CancelledEntriesLstViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\ContactsViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\Customs_ProcedureViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\CustomsOperationsViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\DeclarantViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\Document_TypeViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\EmailAttachmentsViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\EmailFileTypesViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\EmailInfoMappingsViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\EmailMappingRexExsViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\EmailMappingViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\EmailsViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\EntryPreviousItemsViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\ExpiredEntriesLstViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\FileGroupsViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\FileImporterInfoViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\FileTypeActionsViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\FileTypeContactsViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\FileTypeMappingRegExsViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\FileTypeMappingsViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\FileTypeReplaceRegexViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\FileTypesViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\ImportActionsViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\InfoMappingRegExViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\InfoMappingViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\InventoryItemAliasXViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\InventoryItemXViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\LicenceSummaryViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\MessageToken.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\SessionActionsViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\SessionScheduleViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\SessionsViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\SubItemsViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_AdjustmentsAlreadyXMLedViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_AssessDiscrepancyEntriesViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_C71ToCreateViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_C71ToXMLViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_CreateDiscrepancyEntriesViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_CreateEx9ViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_DeleteDocumentSetViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_DiscrepanciesAlreadyXMLedViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_DiscrepanciesErrorsViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_DiscrepanciesExecutionReportViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_DiscrepanciesToAssessViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_DiscrepancyPreExecutionReportViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_DocumentsToDeleteViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_EntriesExpiringNextMonthViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_Error_DuplicateEntryViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_Error_IncompleteImportViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_Error_IncompleteItemsViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_ERRReport_AllocationsViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_ERRReport_AsycudaEntriesViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_ERRReport_AsycudaLinesViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_ERRReport_ByItemNumberViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_ERRReport_EntryDataDetailsViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_ERRReport_SubmitWarehouseErrorsViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_ERRReport_UnmappedItemsViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_ImportCompleteEntriesViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_LicenceAvailableQtyViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_LicenseToXMLViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_LICToAssessViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_LICToCreateViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_PODocSetToAssessErrorsViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_PODocSetToAssessViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_PODocSetToExportViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_PODocSetViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\ToDo_POToXMLViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_SubmitAllXMLToCustomsViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_SubmitDiscrepanciesToCustomsViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_SubmitDocSetWithIncompleteInvoicesViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_SubmitEntryCIFViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_SubmitInadequatePackagesViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_SubmitIncompleteEntryDataViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_SubmitIncompleteSupplierInfoViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_SubmitMissingInvoicePDFsViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_SubmitPOInfoViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_SubmitSalesToCustomsViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_SubmitUnclassifiedItemsViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_SubmitXMLToCustomsViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_TotalAdjustmentsToProcessViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_UnallocatedSalesViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_UnallocatedShortsViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\xcuda_Supplementary_unitViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\EntryDataQS\AsycudaDocumentEntryDataLineViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\EntryDataQS\AsycudaDocumentEntryDataViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\EntryDataQS\AsycudaDocumentItemEntryDataDetailViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\EntryDataQS\AsycudaDocumentSetEntryDataDetailViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\EntryDataQS\AsycudaDocumentSetEntryDataViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\EntryDataQS\BaseViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\EntryDataQS\EmptyFullCodeViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\EntryDataQS\EntryDataDetailsExViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\EntryDataQS\EntryDataExViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\EntryDataQS\EntryDataViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\EntryDataQS\InventoryItemsExViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\EntryDataQS\MessageToken.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\EntryDataQS\PackageTypeViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\EntryDataQS\SummaryListViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\InventoryQS\BaseViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\InventoryQS\EntryDataDetailsExViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\InventoryQS\InventoryItemsExViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\InventoryQS\MessageToken.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\InventoryQS\TariffCategoryCodeSuppUnitViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\InventoryQS\TariffCategorySummaryListViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\InventoryQS\TariffCategoryViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\InventoryQS\TariffCodesViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\InventoryQS\TariffSupUnitLkpsViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\OCR\BaseViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\OCR\ChildPartsViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\OCR\EndViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\OCR\FieldFormatRegExViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\OCR\FieldsViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\OCR\ImportErrorsViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\OCR\InvoiceIdentificatonRegExViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\OCR\InvoiceRegExViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\OCR\InvoicesViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\OCR\LinesViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\OCR\MessageToken.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\OCR\OCR_FailedFieldsViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\OCR\OCR_FailedLinesViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\OCR\OCR_FieldMappingsViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\OCR\OCR_FieldValueViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\OCR\OCR_PartLineFieldsViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\OCR\OCRFileTypesViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\OCR\PartsViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\OCR\PartTypesViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\OCR\RecuringPartViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\OCR\RegularExpressionsViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\OCR\StartViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\OCR\SummaryListViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\PreviousDocumentQS\BaseViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\PreviousDocumentQS\MessageToken.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\PreviousDocumentQS\PreviousDocumentItemViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\PreviousDocumentQS\PreviousDocumentViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\PreviousDocumentQS\PreviousItemsExViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\PreviousDocumentQS\SummaryListViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\AdjustmentQS\AdjustmentDetailTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\AdjustmentQS\AdjustmentExTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\AdjustmentQS\AdjustmentOversAllocationTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\AdjustmentQS\AdjustmentOverTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\AdjustmentQS\AdjustmentShortTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\AdjustmentQS\AsycudaDocumentEntryDataTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\AdjustmentQS\AsycudaDocumentItemEntryDataDetailTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\AdjustmentQS\AsycudaDocumentItemLastItemCostTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\AdjustmentQS\AsycudaDocumentSetEntryDataTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\AdjustmentQS\AsycudaSalesAllocationTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\AdjustmentQS\EntryDataDetailTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\AdjustmentQS\InventoryItemAliasExTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\AdjustmentQS\InventoryItemsExTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\AdjustmentQS\ShortAllocationTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\AdjustmentQS\SystemDocumentSetTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\AdjustmentQS\TODO_AdjustmentOversToXMLTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\AdjustmentQS\TODO_PreDiscrepancyErrorsTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\AdjustmentQS\xcuda_ItemTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\AllocationQS\AdjustmentShortAllocationTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\AllocationQS\AllocationsTestCasTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\AllocationQS\AsycudaSalesAllocationsExTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\AllocationQS\AsycudaSalesAndAdjustmentAllocationsExTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\ActionDocSetLogsTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\ActionsTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\ApplicationSettingsTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\AsycudaDocument_AttachmentsTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\AsycudaDocumentBasicInfoTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\AsycudaDocumentItemEntryDataDetailsTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\AsycudaDocumentItemTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\AsycudaDocumentSet_AttachmentsTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\AsycudaDocumentSetC71Totals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\AsycudaDocumentSetEntryDataExTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\AsycudaDocumentSetExTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\AsycudaDocumentTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\AsycudaItemBasicInfoTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\AttachmentLogTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\AttachmentsTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\CancelledEntriesLstTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\ContactsTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\Customs_ProcedureTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\CustomsOperationsTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\DeclarantTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\Document_TypeTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\EmailAttachmentsTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\EmailFileTypesTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\EmailInfoMappingsTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\EmailMappingRexExsTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\EmailMappingTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\EmailsTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\EntryPreviousItemsTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\ExpiredEntriesLstTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\FileGroupsTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\FileImporterInfoTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\FileTypeActionsTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\FileTypeContactsTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\FileTypeMappingRegExsTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\FileTypeMappingsTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\FileTypeReplaceRegexTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\FileTypesTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\ImportActionsTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\InfoMappingRegExTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\InfoMappingTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\InventoryItemAliasXTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\InventoryItemXTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\LicenceSummaryTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\SessionActionsTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\SessionScheduleTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\SessionsTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\SubItemsTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_AdjustmentsAlreadyXMLedTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_AssessDiscrepancyEntriesTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_C71ToCreateTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_C71ToXMLTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_CreateDiscrepancyEntriesTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_CreateEx9Totals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_DeleteDocumentSetTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_DiscrepanciesAlreadyXMLedTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_DiscrepanciesErrorsTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_DiscrepanciesExecutionReportTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_DiscrepanciesToAssessTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_DiscrepancyPreExecutionReportTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_DocumentsToDeleteTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_EntriesExpiringNextMonthTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_Error_DuplicateEntryTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_Error_IncompleteImportTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_Error_IncompleteItemsTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_ERRReport_AllocationsTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_ERRReport_AsycudaEntriesTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_ERRReport_AsycudaLinesTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_ERRReport_ByItemNumberTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_ERRReport_EntryDataDetailsTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_ERRReport_SubmitWarehouseErrorsTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_ERRReport_UnmappedItemsTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_ImportCompleteEntriesTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_LicenceAvailableQtyTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_LicenseToXMLTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_LICToAssessTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_LICToCreateTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_PODocSetToAssessErrorsTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_PODocSetToAssessTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_PODocSetToExportTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_PODocSetTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\ToDo_POToXMLTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_SubmitAllXMLToCustomsTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_SubmitDiscrepanciesToCustomsTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_SubmitDocSetWithIncompleteInvoicesTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_SubmitEntryCIFTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_SubmitInadequatePackagesTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_SubmitIncompleteEntryDataTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_SubmitIncompleteSupplierInfoTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_SubmitMissingInvoicePDFsTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_SubmitPOInfoTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_SubmitSalesToCustomsTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_SubmitUnclassifiedItemsTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_SubmitXMLToCustomsTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_TotalAdjustmentsToProcessTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_UnallocatedSalesTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_UnallocatedShortsTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\xcuda_Supplementary_unitTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\EntryDataQS\AsycudaDocumentEntryDataLineTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\EntryDataQS\AsycudaDocumentEntryDataTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\EntryDataQS\AsycudaDocumentItemEntryDataDetailTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\EntryDataQS\AsycudaDocumentSetEntryDataDetailTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\EntryDataQS\AsycudaDocumentSetEntryDataTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\EntryDataQS\EmptyFullCodeTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\EntryDataQS\EntryDataDetailsExTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\EntryDataQS\EntryDataExTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\EntryDataQS\EntryDataTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\EntryDataQS\InventoryItemsExTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\EntryDataQS\PackageTypeTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\InventoryQS\EntryDataDetailsExTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\InventoryQS\InventoryItemsExTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\InventoryQS\TariffCategoryCodeSuppUnitTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\InventoryQS\TariffCategoryTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\InventoryQS\TariffCodesTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\InventoryQS\TariffSupUnitLkpsTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\OCR\ChildPartsTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\OCR\EndTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\OCR\FieldFormatRegExTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\OCR\FieldsTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\OCR\ImportErrorsTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\OCR\InvoiceIdentificatonRegExTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\OCR\InvoiceRegExTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\OCR\InvoicesTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\OCR\LinesTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\OCR\OCR_FailedFieldsTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\OCR\OCR_FailedLinesTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\OCR\OCR_FieldMappingsTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\OCR\OCR_FieldValueTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\OCR\OCR_PartLineFieldsTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\OCR\OCRFileTypesTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\OCR\PartsTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\OCR\PartTypesTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\OCR\RecuringPartTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\OCR\RegularExpressionsTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\OCR\StartTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\PreviousDocumentQS\PreviousDocumentItemTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\PreviousDocumentQS\PreviousDocumentTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\PreviousDocumentQS\PreviousItemsExTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\AdjustmentQS\AdjustmentDetailVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\AdjustmentQS\AdjustmentExVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\AdjustmentQS\AdjustmentOversAllocationVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\AdjustmentQS\AdjustmentOverVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\AdjustmentQS\AdjustmentShortVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\AdjustmentQS\AsycudaDocumentEntryDataVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\AdjustmentQS\AsycudaDocumentItemEntryDataDetailVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\AdjustmentQS\AsycudaDocumentItemLastItemCostVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\AdjustmentQS\AsycudaDocumentSetEntryDataVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\AdjustmentQS\AsycudaSalesAllocationVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\AdjustmentQS\EntryDataDetailVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\AdjustmentQS\InventoryItemAliasExVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\AdjustmentQS\InventoryItemsExVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\AdjustmentQS\ShortAllocationVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\AdjustmentQS\SystemDocumentSetVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\AdjustmentQS\TODO_AdjustmentOversToXMLVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\AdjustmentQS\TODO_PreDiscrepancyErrorsVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\AdjustmentQS\xcuda_ItemVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\AllocationQS\AdjustmentShortAllocationVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\AllocationQS\AllocationsTestCasVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\AllocationQS\AsycudaSalesAllocationsExVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\AllocationQS\AsycudaSalesAndAdjustmentAllocationsExVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\ActionDocSetLogsVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\ActionsVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\ApplicationSettingsVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\AsycudaDocument_AttachmentsVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\AsycudaDocumentBasicInfoVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\AsycudaDocumentItemEntryDataDetailsVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\AsycudaDocumentItemVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\AsycudaDocumentSet_AttachmentsVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\AsycudaDocumentSetC71VirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\AsycudaDocumentSetEntryDataExVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\AsycudaDocumentSetExVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\AsycudaDocumentVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\AsycudaItemBasicInfoVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\AttachmentLogVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\AttachmentsVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\CancelledEntriesLstVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\ContactsVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\Customs_ProcedureVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\CustomsOperationsVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\DeclarantVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\Document_TypeVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\EmailAttachmentsVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\EmailFileTypesVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\EmailInfoMappingsVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\EmailMappingRexExsVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\EmailMappingVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\EmailsVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\EntryPreviousItemsVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\ExpiredEntriesLstVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\FileGroupsVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\FileImporterInfoVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\FileTypeActionsVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\FileTypeContactsVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\FileTypeMappingRegExsVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\FileTypeMappingsVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\FileTypeReplaceRegexVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\FileTypesVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\ImportActionsVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\InfoMappingRegExVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\InfoMappingVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\InventoryItemAliasXVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\InventoryItemXVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\LicenceSummaryVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\SessionActionsVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\SessionScheduleVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\SessionsVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\SubItemsVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_AdjustmentsAlreadyXMLedVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_AssessDiscrepancyEntriesVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_C71ToCreateVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_C71ToXMLVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_CreateDiscrepancyEntriesVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_CreateEx9VirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_DeleteDocumentSetVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_DiscrepanciesAlreadyXMLedVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_DiscrepanciesErrorsVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_DiscrepanciesExecutionReportVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_DiscrepanciesToAssessVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_DiscrepancyPreExecutionReportVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_DocumentsToDeleteVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_EntriesExpiringNextMonthVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_Error_DuplicateEntryVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_Error_IncompleteImportVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_Error_IncompleteItemsVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_ERRReport_AllocationsVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_ERRReport_AsycudaEntriesVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_ERRReport_AsycudaLinesVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_ERRReport_ByItemNumberVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_ERRReport_EntryDataDetailsVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_ERRReport_SubmitWarehouseErrorsVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_ERRReport_UnmappedItemsVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_ImportCompleteEntriesVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_LicenceAvailableQtyVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_LicenseToXMLVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_LICToAssessVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_LICToCreateVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_PODocSetToAssessErrorsVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_PODocSetToAssessVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_PODocSetToExportVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_PODocSetVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\ToDo_POToXMLVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_SubmitAllXMLToCustomsVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_SubmitDiscrepanciesToCustomsVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_SubmitDocSetWithIncompleteInvoicesVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_SubmitEntryCIFVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_SubmitInadequatePackagesVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_SubmitIncompleteEntryDataVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_SubmitIncompleteSupplierInfoVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_SubmitMissingInvoicePDFsVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_SubmitPOInfoVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_SubmitSalesToCustomsVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_SubmitUnclassifiedItemsVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_SubmitXMLToCustomsVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_TotalAdjustmentsToProcessVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_UnallocatedSalesVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_UnallocatedShortsVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\xcuda_Supplementary_unitVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\EntryDataQS\AsycudaDocumentEntryDataLineVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\EntryDataQS\AsycudaDocumentEntryDataVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\EntryDataQS\AsycudaDocumentItemEntryDataDetailVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\EntryDataQS\AsycudaDocumentSetEntryDataDetailVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\EntryDataQS\AsycudaDocumentSetEntryDataVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\EntryDataQS\EmptyFullCodeVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\EntryDataQS\EntryDataDetailsExVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\EntryDataQS\EntryDataExVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\EntryDataQS\EntryDataVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\EntryDataQS\InventoryItemsExVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\EntryDataQS\PackageTypeVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\InventoryQS\EntryDataDetailsExVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\InventoryQS\InventoryItemsExVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\InventoryQS\TariffCategoryCodeSuppUnitVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\InventoryQS\TariffCategoryVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\InventoryQS\TariffCodesVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\InventoryQS\TariffSupUnitLkpsVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\OCR\ChildPartsVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\OCR\EndVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\OCR\FieldFormatRegExVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\OCR\FieldsVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\OCR\ImportErrorsVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\OCR\InvoiceIdentificatonRegExVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\OCR\InvoiceRegExVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\OCR\InvoicesVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\OCR\LinesVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\OCR\OCR_FailedFieldsVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\OCR\OCR_FailedLinesVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\OCR\OCR_FieldMappingsVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\OCR\OCR_FieldValueVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\OCR\OCR_PartLineFieldsVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\OCR\OCRFileTypesVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\OCR\PartsVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\OCR\PartTypesVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\OCR\RecuringPartVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\OCR\RegularExpressionsVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\OCR\StartVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\PreviousDocumentQS\PreviousDocumentItemVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\PreviousDocumentQS\PreviousDocumentVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\PreviousDocumentQS\PreviousItemsExVirturalListLoader.cs
+</LastOutputs>
     </Content>
     <Content Include="RunAll.tt">
       <LastOutputs>

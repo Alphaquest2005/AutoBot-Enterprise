@@ -63,7 +63,7 @@ public int ApplicationSettingsId
        
        
                 
-                
+                [MaxLength(255, ErrorMessage = "Description has a max length of 255 letters ")]
 public string Description
 		{ 
 		    get { return this.applicationsettings.Description; }
@@ -95,7 +95,7 @@ public Nullable<int> MaxEntryLines
        
        
                 
-                
+                [MaxLength(100, ErrorMessage = "SoftwareName has a max length of 100 letters ")]
 public string SoftwareName
 		{ 
 		    get { return this.applicationsettings.SoftwareName; }
@@ -112,7 +112,7 @@ public string SoftwareName
        
        
                 
-                
+                [MaxLength(10, ErrorMessage = "AllowCounterPoint has a max length of 10 letters ")]
 public string AllowCounterPoint
 		{ 
 		    get { return this.applicationsettings.AllowCounterPoint; }
@@ -159,7 +159,7 @@ public Nullable<bool> InvoicePerEntry
        
        
                 
-                
+                [MaxLength(10, ErrorMessage = "AllowTariffCodes has a max length of 10 letters ")]
 public string AllowTariffCodes
 		{ 
 		    get { return this.applicationsettings.AllowTariffCodes; }
@@ -176,7 +176,7 @@ public string AllowTariffCodes
        
        
                 
-                
+                [MaxLength(10, ErrorMessage = "AllowWareHouse has a max length of 10 letters ")]
 public string AllowWareHouse
 		{ 
 		    get { return this.applicationsettings.AllowWareHouse; }
@@ -193,7 +193,7 @@ public string AllowWareHouse
        
        
                 
-                
+                [MaxLength(10, ErrorMessage = "AllowXBond has a max length of 10 letters ")]
 public string AllowXBond
 		{ 
 		    get { return this.applicationsettings.AllowXBond; }
@@ -210,7 +210,7 @@ public string AllowXBond
        
        
                 
-                
+                [MaxLength(10, ErrorMessage = "AllowAsycudaManager has a max length of 10 letters ")]
 public string AllowAsycudaManager
 		{ 
 		    get { return this.applicationsettings.AllowAsycudaManager; }
@@ -227,7 +227,7 @@ public string AllowAsycudaManager
        
        
                 
-                
+                [MaxLength(10, ErrorMessage = "AllowQuickBooks has a max length of 10 letters ")]
 public string AllowQuickBooks
 		{ 
 		    get { return this.applicationsettings.AllowQuickBooks; }
@@ -259,7 +259,7 @@ public Nullable<bool> ItemDescriptionContainsAsycudaAttribute
        
        
                 
-                
+                [MaxLength(10, ErrorMessage = "AllowExportToExcel has a max length of 10 letters ")]
 public string AllowExportToExcel
 		{ 
 		    get { return this.applicationsettings.AllowExportToExcel; }
@@ -776,6 +776,23 @@ public Nullable<bool> PreAllocateEx9s
 				this.applicationsettings.PreAllocateEx9s = value;
                 if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
 				NotifyPropertyChanged("PreAllocateEx9s");
+			}
+		}
+     
+
+       
+       
+                
+                [MaxLength(10, ErrorMessage = "AllowImportXSales has a max length of 10 letters ")]
+public string AllowImportXSales
+		{ 
+		    get { return this.applicationsettings.AllowImportXSales; }
+			set
+			{
+			    if (value == this.applicationsettings.AllowImportXSales) return;
+				this.applicationsettings.AllowImportXSales = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("AllowImportXSales");
 			}
 		}
      

@@ -27,19 +27,19 @@
             <PropertyRef Name="ApplicationSettingsId" />
           </Key>
           <Property Name="ApplicationSettingsId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="Description" Type="nvarchar(max)" />
+          <Property Name="Description" Type="nvarchar" MaxLength="255" />
           <Property Name="MaxEntryLines" Type="int" />
-          <Property Name="SoftwareName" Type="nvarchar(max)" />
-          <Property Name="AllowCounterPoint" Type="nvarchar(max)" />
+          <Property Name="SoftwareName" Type="nvarchar" MaxLength="100" />
+          <Property Name="AllowCounterPoint" Type="nvarchar" MaxLength="10" />
           <Property Name="GroupEX9" Type="bit" />
           <Property Name="InvoicePerEntry" Type="bit" />
-          <Property Name="AllowTariffCodes" Type="nvarchar(max)" />
-          <Property Name="AllowWareHouse" Type="nvarchar(max)" />
-          <Property Name="AllowXBond" Type="nvarchar(max)" />
-          <Property Name="AllowAsycudaManager" Type="nvarchar(max)" />
-          <Property Name="AllowQuickBooks" Type="nvarchar(max)" />
+          <Property Name="AllowTariffCodes" Type="nvarchar" MaxLength="10" />
+          <Property Name="AllowWareHouse" Type="nvarchar" MaxLength="10" />
+          <Property Name="AllowXBond" Type="nvarchar" MaxLength="10" />
+          <Property Name="AllowAsycudaManager" Type="nvarchar" MaxLength="10" />
+          <Property Name="AllowQuickBooks" Type="nvarchar" MaxLength="10" />
           <Property Name="ItemDescriptionContainsAsycudaAttribute" Type="bit" />
-          <Property Name="AllowExportToExcel" Type="nvarchar(max)" />
+          <Property Name="AllowExportToExcel" Type="nvarchar" MaxLength="10" />
           <Property Name="AllowAutoWeightCalculation" Type="nvarchar" MaxLength="50" />
           <Property Name="AllowEntryPerIM7" Type="nvarchar" MaxLength="50" />
           <Property Name="AllowSalesToPI" Type="nvarchar" MaxLength="50" />
@@ -71,6 +71,7 @@
           <Property Name="RequirePOs" Type="bit" />
           <Property Name="ExportNullTariffCodes" Type="bit" />
           <Property Name="PreAllocateEx9s" Type="bit" />
+          <Property Name="AllowImportXSales" Type="nvarchar" MaxLength="10" />
         </EntityType>
         <EntityType Name="ApplicationSettings-Declarants">
           <Key>
@@ -4038,19 +4039,19 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
             <PropertyRef Name="ApplicationSettingsId" />
           </Key>
           <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" p1:StoreGeneratedPattern="Identity" />
-          <Property Name="Description" Type="String" MaxLength="Max" Unicode="true" FixedLength="false" />
+          <Property Name="Description" Type="String" MaxLength="255" Unicode="true" FixedLength="false" />
           <Property Name="MaxEntryLines" Type="Int32" />
-          <Property Name="SoftwareName" Type="String" MaxLength="Max" Unicode="true" FixedLength="false" />
-          <Property Name="AllowCounterPoint" Type="String" MaxLength="Max" Unicode="true" FixedLength="false" />
+          <Property Name="SoftwareName" Type="String" MaxLength="100" Unicode="true" FixedLength="false" />
+          <Property Name="AllowCounterPoint" Type="String" MaxLength="10" Unicode="true" FixedLength="false" />
           <Property Name="GroupEX9" Type="Boolean" />
           <Property Name="InvoicePerEntry" Type="Boolean" />
-          <Property Name="AllowTariffCodes" Type="String" MaxLength="Max" Unicode="true" FixedLength="false" />
-          <Property Name="AllowWareHouse" Type="String" MaxLength="Max" Unicode="true" FixedLength="false" />
-          <Property Name="AllowXBond" Type="String" MaxLength="Max" Unicode="true" FixedLength="false" />
-          <Property Name="AllowAsycudaManager" Type="String" MaxLength="Max" Unicode="true" FixedLength="false" />
-          <Property Name="AllowQuickBooks" Type="String" MaxLength="Max" Unicode="true" FixedLength="false" />
+          <Property Name="AllowTariffCodes" Type="String" MaxLength="10" Unicode="true" FixedLength="false" />
+          <Property Name="AllowWareHouse" Type="String" MaxLength="10" Unicode="true" FixedLength="false" />
+          <Property Name="AllowXBond" Type="String" MaxLength="10" Unicode="true" FixedLength="false" />
+          <Property Name="AllowAsycudaManager" Type="String" MaxLength="10" Unicode="true" FixedLength="false" />
+          <Property Name="AllowQuickBooks" Type="String" MaxLength="10" Unicode="true" FixedLength="false" />
           <Property Name="ItemDescriptionContainsAsycudaAttribute" Type="Boolean" />
-          <Property Name="AllowExportToExcel" Type="String" MaxLength="Max" Unicode="true" FixedLength="false" />
+          <Property Name="AllowExportToExcel" Type="String" MaxLength="10" Unicode="true" FixedLength="false" />
           <Property Name="AllowAutoWeightCalculation" Type="String" MaxLength="50" Unicode="true" FixedLength="false" />
           <Property Name="AllowEntryPerIM7" Type="String" MaxLength="50" Unicode="true" FixedLength="false" />
           <Property Name="AllowSalesToPI" Type="String" MaxLength="50" Unicode="true" FixedLength="false" />
@@ -4089,7 +4090,8 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
           <Property Name="RequirePOs" Type="Boolean" />
           <NavigationProperty Name="Declarants" Relationship="WaterNutDBModel.FK_ApplicationSettings_Declarants_ApplicationSettings" FromRole="ApplicationSettings" ToRole="ApplicationSettings_Declarants" />
           <Property Name="ExportNullTariffCodes" Type="Boolean" />
-          <Property Name="PreAllocateEx9s" Type="Boolean" /><a:MainEntityProperty xmlns:a="http://schemas.tempuri.com/MainEntityProperty">True</a:MainEntityProperty>
+          <Property Name="PreAllocateEx9s" Type="Boolean" />
+          <Property Name="AllowImportXSales" Type="String" MaxLength="10" FixedLength="false" Unicode="true" /><a:MainEntityProperty xmlns:a="http://schemas.tempuri.com/MainEntityProperty">True</a:MainEntityProperty>
         </EntityType>
         <EntityType Name="AsycudaDocument">
           <Key>
@@ -6534,6 +6536,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
           <EntitySetMapping Name="ApplicationSettings">
             <EntityTypeMapping TypeName="WaterNutDBModel.ApplicationSettings">
               <MappingFragment StoreEntitySet="ApplicationSettings">
+                <ScalarProperty Name="AllowImportXSales" ColumnName="AllowImportXSales" />
                 <ScalarProperty Name="PreAllocateEx9s" ColumnName="PreAllocateEx9s" />
                 <ScalarProperty Name="ExportNullTariffCodes" ColumnName="ExportNullTariffCodes" />
                 <ScalarProperty Name="RequirePOs" ColumnName="RequirePOs" />

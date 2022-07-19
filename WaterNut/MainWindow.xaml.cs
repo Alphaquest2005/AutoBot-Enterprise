@@ -424,18 +424,20 @@ namespace WaterNut
         }
 
 
-        private void ImportXSalesFiles(object sender, MouseButtonEventArgs e)
+        private void ImportXSales(object sender, MouseButtonEventArgs e)
         {
             var od = new OpenFileDialog
             {
                 DefaultExt = ".csv",
-                Filter = "CSV Documents (.csv)|*.csv"
+                Filter = "CSV Documents (.csv)|*.csv",
+                Multiselect = true
+
             };
 
             var result = od.ShowDialog();
             if (result == true)
             {
-                StatusModel.StartStatusUpdate("Importing Expired Files files", od.FileNames.Count());
+                StatusModel.StartStatusUpdate("Importing XSales files", od.FileNames.Count());
                 foreach (var f in od.FileNames)
                 {
                     StatusModel.StatusUpdate();
@@ -458,5 +460,7 @@ namespace WaterNut
         {
             await AllocationsModel.Instance.EX9AllAllocations(true).ConfigureAwait(false);
         }
+
+     
     }
 }

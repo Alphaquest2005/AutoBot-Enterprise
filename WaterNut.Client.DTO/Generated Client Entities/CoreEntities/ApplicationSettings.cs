@@ -606,6 +606,19 @@ namespace CoreEntities.Client.DTO
 		}
         private Nullable<bool> _PreAllocateEx9s;
 
+        [DataMember]
+        public string AllowImportXSales
+		{ 
+		    get { return _AllowImportXSales; }
+			set
+			{
+			    if (value == _AllowImportXSales) return;
+				_AllowImportXSales = value;
+				NotifyPropertyChanged();//m => this.AllowImportXSales
+			}
+		}
+        private string _AllowImportXSales;
+
        
         [DataMember]
         public ChangeTrackingCollection<AsycudaDocumentSetEx> AsycudaDocumentSetEx

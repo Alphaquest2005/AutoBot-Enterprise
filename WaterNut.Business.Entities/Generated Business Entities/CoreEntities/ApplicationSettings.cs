@@ -708,6 +708,21 @@ namespace CoreEntities.Business.Entities
         }
         Nullable<bool> _preallocateex9s;
         [DataMember]
+        public string AllowImportXSales 
+        {
+            get
+            {
+                return _allowimportxsales;
+            }
+            set
+            {
+                _allowimportxsales = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _allowimportxsales;
+        [DataMember]
         public List<AsycudaDocumentSetEx> AsycudaDocumentSetEx { get; set; }
         [DataMember]
         public List<AsycudaDocument> AsycudaDocument { get; set; }

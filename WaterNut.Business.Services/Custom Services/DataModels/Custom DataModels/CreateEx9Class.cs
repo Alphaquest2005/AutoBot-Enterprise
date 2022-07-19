@@ -1316,7 +1316,7 @@ namespace WaterNut.DataSpace
 
               
 
-                    var preEx9Bucket = mypod.EntlnData.Quantity;
+                var preEx9Bucket = mypod.EntlnData.Quantity;
                 if (applyEx9Bucket)
                     if (ex9BucketType == "Current")
                     {

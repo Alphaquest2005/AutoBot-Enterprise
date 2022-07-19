@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Core.Common.Extensions;
 using WaterNut.DataSpace;
@@ -18,6 +19,10 @@ namespace WaterNut.Business.Services.Importers.EntryData
 
         public Result<List<BetterExpando>> Execute(List<BetterExpando> data)
         {
+            try
+            {
+
+           
             dynamic xsale = new BetterExpando();
             xsale.EmailId = _importSettings.EmailId;
             xsale.StartDate = _lines.Min(x => x.Date);
@@ -29,31 +34,45 @@ namespace WaterNut.Business.Services.Importers.EntryData
             var details = _lines.Select(x =>
             {
                 dynamic itm = new BetterExpando();
-                itm.FileLineNumber = (int)x.LineNumber;
-                itm.Line = (int)x.Line;
-                itm.Date = x.Date;
-                itm.InvoiceNo = x.InvoiceNo;
-                itm.CustomerName = x.CustomerName;
-                itm.ItemNumber = x.ItemNumber;
-                itm.ItemDescription = x.ItemDescription;
-                itm.TariffCode = x.TariffCode;
-                itm.SalesQuantity = x.SalesQuantity;
-                itm.SalesFactor = x.SalesFactor;
-                itm.xQuantity = x.xQuantity;
-                itm.Price = x.Price;
-                itm.DutyFreePaid = x.SalesType;
-                itm.pCNumber = x.PreviousCNumber;
-                itm.pLineNumber = (int)x.PreviousLineNumber;
-                itm.pRegDate = x.PreviousRegDate;
-                itm.CIFValue = x.CIFValue;
-                itm.DutyLiablity = x.DutyLiablity;
-                itm.Comment = x.Comment;
-                return itm;
+                try
+                {
+                    itm.FileLineNumber = (int)x.LineNumber;
+                    itm.Line = (int)x.Line;
+                    itm.Date = x.Date;
+                    itm.InvoiceNo = x.InvoiceNo;
+                    itm.CustomerName = x.CustomerName;
+                    itm.ItemNumber = x.ItemNumber;
+                    itm.ItemDescription = x.ItemDescription;
+                    itm.TariffCode = x.TariffCode;
+                    itm.SalesQuantity = x.SalesQuantity;
+                    itm.SalesFactor = x.SalesFactor;
+                    itm.xQuantity = x.xQuantity;
+                    itm.Price = x.Price;
+                    itm.DutyFreePaid = x.DutyFreePaid;
+                    itm.pCNumber = x.pCNumber;
+                    itm.pLineNumber = (int)x.pLineNumber;
+                    itm.pRegDate = x.pRegDate;
+                    itm.CIFValue = x.CIFValue;
+                    itm.DutyLiablity = x.DutyLiablity;
+                    itm.Comment = x.Comment;
+                    return itm;
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                    throw;
+                }
             }).ToList();
 
             xsale.xSalesDetails = details;
 
             return new Result<List<BetterExpando>>(new List<BetterExpando>(){xsale}, true,"");
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
         }
     }
 }

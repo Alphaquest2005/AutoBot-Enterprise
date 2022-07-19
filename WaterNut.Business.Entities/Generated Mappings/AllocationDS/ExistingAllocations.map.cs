@@ -28,7 +28,6 @@
               this.Property(t => t.ItemNumber).HasColumnName("ItemNumber").IsRequired().HasMaxLength(20);
               this.Property(t => t.ItemDescription).HasColumnName("ItemDescription").IsRequired().HasMaxLength(255);
               this.Property(t => t.DocumentType).HasColumnName("DocumentType").HasMaxLength(40);
-              this.Property(t => t.CustomsProcedure).HasColumnName("CustomsProcedure").HasMaxLength(11);
               this.Property(t => t.xQuantity).HasColumnName("xQuantity");
               this.Property(t => t.Suplementary_Quantity).HasColumnName("Suplementary_Quantity");
               this.Property(t => t.DutyFreePaid).HasColumnName("DutyFreePaid").IsRequired().IsUnicode(false).HasMaxLength(9);

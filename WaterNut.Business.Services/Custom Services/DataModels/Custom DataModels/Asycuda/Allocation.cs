@@ -86,8 +86,12 @@ namespace WaterNut.DataSpace
                 SQLBlackBox.RunSqlBlackBox();
 
 				PrepareDataForAllocation(applicationSettings);
+                
+                ReallocateExistingxSales();
 
-                ReallocateExistingEx9(applicationSettings.ApplicationSettingsId); // to prevent changing allocations when im7 info changes
+                ReallocateExistingEx9(); // to prevent changing allocations when im7 info changes
+
+               
 
 
 				StatusModel.Timer("Auto Match Adjustments");
@@ -112,7 +116,53 @@ namespace WaterNut.DataSpace
 
 		}
 
-        private void ReallocateExistingEx9(int applicationSettingsApplicationSettingsId)
+        private void ReallocateExistingxSales()
+        {
+			if (BaseDataModel.Instance.CurrentApplicationSettings.PreAllocateEx9s != true) return;
+            using (var ctx = new AllocationDSContext() { StartTracking = true })
+            {
+                var existingAllocations = ctx.XSales_UnAllocated.Where(x =>
+                        x.ApplicationSettingsId ==
+                        BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)
+                  // .Where(x => x.pItemId == 31702 )//&& x.xItemId == 30700
+					.ToList();
+
+                foreach (var allocation in existingAllocations)
+                {
+                    var allo = new AsycudaSalesAllocations()		
+                    {
+                        EntryDataDetailsId = allocation.EntryDataDetailsId,
+                        PreviousItem_Id = allocation.pItemId,
+                        xEntryItem_Id = allocation.xItemId,
+                        QtyAllocated = allocation.SalesQuantity??0,
+                        TrackingState = TrackingState.Added
+                    };
+
+                    var entrydataDetails = ctx.EntryDataDetails.First(x => x.EntryDataDetailsId == allocation.EntryDataDetailsId);
+                    entrydataDetails.QtyAllocated += allocation.SalesQuantity ?? 0;
+
+                    var pitem = ctx.xcuda_Item.First(x => x.Item_Id == allocation.pItemId);
+
+                    if (allocation.DutyFreePaid == "Duty Free")
+                    {
+                        pitem.DFQtyAllocated += allocation.SalesQuantity ?? 0;
+                    }
+                    else
+                    {
+                        pitem.DPQtyAllocated += allocation.SalesQuantity ?? 0;
+                    }
+
+
+
+                    ctx.AsycudaSalesAllocations.Add(allo);
+
+                }
+
+                ctx.SaveChanges();
+            }
+		}
+
+        private void ReallocateExistingEx9()
         {
             if (BaseDataModel.Instance.CurrentApplicationSettings.PreAllocateEx9s != true) return;
             using (var ctx = new AllocationDSContext(){StartTracking = true})
@@ -326,7 +376,7 @@ namespace WaterNut.DataSpace
             if (alst.Any())
                 Parallel.ForEach(alst
                     ,
-                    new ParallelOptions { MaxDegreeOfParallelism = Environment.ProcessorCount * 1 }, i =>//
+                    new ParallelOptions { MaxDegreeOfParallelism = 1 }, i =>//Environment.ProcessorCount * 1
                     {
                         using (var ctx = new AllocationDSContext { StartTracking = false })
                         {
