@@ -776,15 +776,6 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ExistingAllocations' does
             
             <PropertyRef Name="EntryDataDetailsId" />
             <PropertyRef Name="xItemId" />
-            
-            
-            
-            
-            
-            
-            
-            
-            
             <PropertyRef Name="pItemId" />
           </Key>
           <Property Name="xAsycudaId" Type="int" Nullable="false" />

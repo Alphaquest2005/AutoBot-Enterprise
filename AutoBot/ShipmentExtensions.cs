@@ -615,8 +615,7 @@ namespace AutoBotUtilities
                             .Include(z => z.ShipmentRiderBLs)
                             .Include(z => z.ShipmentManifestBLs)
                             .Include(z => z.ShipmentAttachedBL)
-                            .Where(z => z.BLNumber == x && z.ApplicationSettingsId ==
-                                BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId))
+                            .Where(z =>  z.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId))//z.BLNumber == x &&
                         .ToList();
                     bls.AddRange(manifestBls);
 

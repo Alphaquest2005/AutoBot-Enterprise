@@ -48,7 +48,7 @@ namespace WaterNut.DataSpace
                         //Exporter = x["Exporter"].ToString(),
                         //Consignee = x["Consignee"].ToString(),
                         //Notify = x["Notify"].ToString(),
-                        PackagesNo = Convert.ToInt32(x["PackagesNo"].ToString()),
+                        PackagesNo = x.ContainsKey("PackagesNo") ? Convert.ToInt32(x["PackagesNo"].ToString()) : 0,
                         PackagesType = x.ContainsKey("PackagesType") ? x["PackagesType"].ToString().Truncate(10): "PK",
                         WeightKG = x.ContainsKey("WeightKG") ? Convert.ToDouble(x["WeightKG"].ToString()): x.ContainsKey("WeightLB") ? Convert.ToDouble(x["WeightLB"].ToString())* lb2Kg : 0,
                         VolumeM3 = x.ContainsKey("VolumeM3") ? Convert.ToDouble(x["VolumeM3"].ToString()) : x.ContainsKey("VolumeCF") ? Convert.ToDouble(x["VolumeCF"].ToString())* CF2M3 : 0,

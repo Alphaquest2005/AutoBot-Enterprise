@@ -8,16 +8,16 @@ declare @startdate datetime, @endDate datetime,@asycudaEndDate datetime, @OPSNum
 --set @startdate = '1/1/2019'
 --set @endDate = '2/28/2019'
 --set @OPSNumber = 'OPS-02-28-2019'
-set @ApplicationSettingsId = 2
-set @startdate = '1/1/2018'
-set @endDate = '05/31/2022'
-set @OPSNumber = 'OPS-May22'
+set @ApplicationSettingsId = 6
+set @startdate = '10/1/2020'
+set @endDate = '06/30/2022'
+set @OPSNumber = 'CEI-OPS-20220630'
 set @lastCnumber = (SELECT CNumber
 					FROM     AsycudaDocument
-					WHERE  (AssessmentDate <= @endDate)
+					WHERE  (AssessmentDate <= @endDate and ApplicationSettingsId = @ApplicationSettingsId)
 					GROUP BY CNumber, AssessmentDate
 					HAVING (AssessmentDate = MAX(AssessmentDate)))
-set @asycudaEndDate = '5/31/2022' --isnull((select AssessmentDate from AsycudaDocumentBasicInfo where CNumber = @lastCnumber),@endDate) 
+set @asycudaEndDate = '6/30/2022' --isnull((select AssessmentDate from AsycudaDocumentBasicInfo where CNumber = @lastCnumber),@endDate) 
 select @asycudaEndDate
 select @lastCnumber
 							
@@ -671,13 +671,13 @@ select * from [#Sales Errors -> to A2O - Overs]
 
 --go
 select '#P2O-Overs'
-select * from [#P2O-Overs]
+select * from [#P2O-Overs] order by OPSCost desc
 select 'P2O-Shorts'
-select * from [#P2O-Shorts]
+select * from [#P2O-Shorts] order by OPSCost desc
 select 'A2O Overs'
-select * from  [#A2O-Overs] 
+select * from  [#A2O-Overs]  order by Cost desc
 select 'A2O Shorts'
-select * from  [#A2O-Shorts]
+select * from  [#A2O-Shorts] order by Cost  desc
 
 
 
@@ -747,7 +747,7 @@ go
 							-------------Diff <> piquantity
 							---  XAN/813-0400-01 +1
 							---- vs SPY/0799320 0
-declare @ItemNumber varchar(50) = 'AAA/53572'
+declare @ItemNumber varchar(50) = '318155'
 select 'Unexecuted Adjustments'
 select * from [#Unexecuted Adjustments] where itemnumber = @ItemNumber
 select 'Adjustments-Shorts Data'

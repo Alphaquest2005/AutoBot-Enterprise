@@ -171,7 +171,7 @@ namespace WaterNut.DataSpace
                         x.ApplicationSettingsId ==
                         BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)
                     .ToList();
-
+                var cnt = 0;
                 foreach (var allocation in existingAllocations)
                 {
                     var allo = new AsycudaSalesAllocations()
@@ -200,6 +200,9 @@ namespace WaterNut.DataSpace
 
 
 					ctx.AsycudaSalesAllocations.Add(allo);
+					cnt++;
+                    if (cnt % 10 == 0) ctx.SaveChanges();
+
 
                 }
 
