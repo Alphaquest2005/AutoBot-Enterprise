@@ -234,6 +234,13 @@ namespace AdjustmentQS.Business.Services
             };
             var exp = map.Aggregate(exp1, (current, m) => current.Replace(m.Key, m.Value));
             var res = new List<EX9Allocations>();
+            return GetEx9AllocationsListOldway(FilterExpression, exp);
+
+        }
+
+        private static List<EX9Allocations> GetEx9AllocationsListNewWay(string FilterExpression, string exp)
+        {
+            List<EX9Allocations> res;
             using (var ctx = new AllocationDSContext())
             {
                 ctx.Database.CommandTimeout = (60 * 30);
@@ -245,6 +252,7 @@ namespace AdjustmentQS.Business.Services
                         //TODO: use expirydate in asycuda document
                         pres = ctx.AdjustmentShortAllocations
                             .Include(x => x.AsycudaSalesAllocationsPIData)
+                            .Include("EntryDataDetails.AsycudaDocumentItemEntryDataDetails")
                             .OrderBy(x => x.AllocationId)
                             .Where(x => x.pRegistrationDate == null || x.pExpiryDate > DateTime.Now)
                             .Where(x => x.EntryDataDetails.EntryDataDetailsEx.SystemDocumentSets != null)
@@ -253,6 +261,7 @@ namespace AdjustmentQS.Business.Services
                     else
                     {
                         pres = ctx.AdjustmentShortAllocations.OrderBy(x => x.AllocationId)
+                            .Include("EntryDataDetails.AsycudaDocumentItemEntryDataDetails")
                             .Include(x => x.AsycudaSalesAllocationsPIData)
                             .Where(x => x.pRegistrationDate == null || x.pExpiryDate > DateTime.Now)
                             .Where(x => x.EntryDataDetails.EntryDataDetailsEx.SystemDocumentSets != null);
@@ -260,18 +269,16 @@ namespace AdjustmentQS.Business.Services
                         //var pres1 = ctx.AdjustmentShortAllocations.OrderBy(x => x.AllocationId)
                         //     .Where(x => x.pRegistrationDate == null || (DbFunctions.AddDays(((DateTime)x.pRegistrationDate), 730)) > DateTime.Now)
                         //     .Where(x => x.EntryDataDetails.EntryDataDetailsEx.SystemDocumentSets != null).ToList();
-
                     }
 
                     // entryDataDetailsIds = entryDataDetailsIds ?? new List<int>();
 
                     res = pres
                         .Where(exp)
-                        .Where(x => x.Status == null)//|| x.Status == "Short Shipped"
+                        .Where(x => x.Status == null) //|| x.Status == "Short Shipped"
                         .Where(x => x.xBond_Item_Id == 0 //&& x.pQuantity != 0
-                            )
+                        )
                         // .Where(x => !entryDataDetailsIds.Any()|| entryDataDetailsIds.Contains(x.EntryDataDetailsId))//entryDataDetailsIds.Any(z => z == x.EntryDataDetailsId)
-
                         .GroupJoin(ctx.xcuda_Weight_itm, x => x.PreviousItem_Id, q => q.Valuation_item_Id,
                             (x, w) => new { x, w })
                         // took this out to allow creating entries on is manually assessed entries 
@@ -281,12 +288,9 @@ namespace AdjustmentQS.Business.Services
                         {
                             AllocationId = c.x.AllocationId,
                             EntryData_Id = c.x.EntryDataDetails.EntryData_Id,
-                            Commercial_Description =
-                                c.x.PreviousDocumentItem == null
-                                    ? null
-                                    : c.x.PreviousDocumentItem.xcuda_Goods_description.Commercial_Description,
                             DutyFreePaid = c.x.DutyFreePaid,
                             EntryDataDetailsId = (int)c.x.EntryDataDetailsId,
+                            EntryDataDetails = c.x.EntryDataDetails,
                             InvoiceDate = c.x.InvoiceDate,
                             EffectiveDate = (DateTime)c.x.EffectiveDate,
                             InvoiceNo = c.x.InvoiceNo,
@@ -294,9 +298,9 @@ namespace AdjustmentQS.Business.Services
                             ItemNumber = c.x.ItemNumber,
                             pCNumber = c.x.pCNumber,
                             pItemCost = (double)
-                                        (c.x.PreviousDocumentItem.xcuda_Tarification.Item_price /
-                                         c.x.PreviousDocumentItem.xcuda_Tarification.xcuda_Supplementary_unit
-                                             .FirstOrDefault(z => z.IsFirstRow == true).Suppplementary_unit_quantity),
+                                    (c.x.PreviousDocumentItem.xcuda_Tarification.Item_price /
+                                     c.x.PreviousDocumentItem.xcuda_Tarification.xcuda_Supplementary_unit
+                                         .FirstOrDefault(z => z.IsFirstRow == true).Suppplementary_unit_quantity),
                             Status = c.x.Status,
                             PreviousItem_Id = c.x.PreviousItem_Id,
                             QtyAllocated = (double)c.x.QtyAllocated,
@@ -313,13 +317,15 @@ namespace AdjustmentQS.Business.Services
                             Comment = c.x.EntryDataDetails.Comment,
                             pLineNumber = c.x.PreviousDocumentItem.LineNumber,
                             // Currency don't matter for im9 or exwarehouse
-                            Customs_clearance_office_code = c.x.PreviousDocumentItem.AsycudaDocument.Customs_clearance_office_code,
+                            Customs_clearance_office_code =
+                                    c.x.PreviousDocumentItem.AsycudaDocument.Customs_clearance_office_code,
                             pQuantity = (double)c.x.pQuantity,
-                            pRegistrationDate = (DateTime)(c.x.pRegistrationDate ?? c.x.PreviousDocumentItem.AsycudaDocument.AssessmentDate),
+                            pRegistrationDate = (DateTime)(c.x.pRegistrationDate ??
+                                                                c.x.PreviousDocumentItem.AsycudaDocument.AssessmentDate),
                             pAssessmentDate = (DateTime)c.x.PreviousDocumentItem.AsycudaDocument.AssessmentDate,
                             pExpiryDate = (DateTime)c.x.PreviousDocumentItem.AsycudaDocument.ExpiryDate,
                             Country_of_origin_code =
-                                c.x.PreviousDocumentItem.xcuda_Goods_description.Country_of_origin_code,
+                                    c.x.PreviousDocumentItem.xcuda_Goods_description.Country_of_origin_code,
                             Total_CIF_itm = c.x.PreviousDocumentItem.xcuda_Valuation_item.Total_CIF_itm,
                             Net_weight_itm = c.w.FirstOrDefault().Net_weight_itm,
                             InventoryItemId = c.x.EntryDataDetails.InventoryItemId,
@@ -327,38 +333,169 @@ namespace AdjustmentQS.Business.Services
                             PIData = c.x.AsycudaSalesAllocationsPIData,
                             previousItems = c.x.PreviousDocumentItem.EntryPreviousItems
                                     .Select(y => y.xcuda_PreviousItem)
-                                    .Where(y => (y.xcuda_Item.AsycudaDocument.CNumber != null || y.xcuda_Item.AsycudaDocument.IsManuallyAssessed == true) && y.xcuda_Item.AsycudaDocument.Cancelled != true)
+                                    .Where(y => (y.xcuda_Item.AsycudaDocument.CNumber != null ||
+                                                 y.xcuda_Item.AsycudaDocument.IsManuallyAssessed == true) &&
+                                                y.xcuda_Item.AsycudaDocument.Cancelled != true)
                                     .Select(z => new previousItems()
                                     {
                                         PreviousItem_Id = z.PreviousItem_Id,
                                         DutyFreePaid =
-                                            z.xcuda_Item.AsycudaDocument.Extended_customs_procedure == "4074" || z.xcuda_Item.AsycudaDocument.Extended_customs_procedure == "4070"
+                                            z.xcuda_Item.AsycudaDocument.Extended_customs_procedure == "4074" ||
+                                            z.xcuda_Item.AsycudaDocument.Extended_customs_procedure == "4070" ||
+                                            z.xcuda_Item.AsycudaDocument.Extended_customs_procedure == "4075"
                                                 ? "Duty Paid"
                                                 : "Duty Free",
                                         Net_weight = (double)z.Net_weight,
                                         Suplementary_Quantity = (double)z.Suplementary_Quantity
                                     }).ToList(),
                             TariffSupUnitLkps =
-                                c.x.EntryDataDetails.EntryDataDetailsEx.InventoryItemsEx.TariffCodes.TariffCategory.TariffCategoryCodeSuppUnit.Select(x => x.TariffSupUnitLkps).ToList(),
+                                    c.x.EntryDataDetails.EntryDataDetailsEx.InventoryItemsEx.TariffCodes.TariffCategory
+                                        .TariffCategoryCodeSuppUnit.Select(x => x.TariffSupUnitLkps).ToList(),
                             FileTypeId = c.x.FileTypeId,
                             EmailId = c.x.EmailId,
                             //.Select(x => (ITariffSupUnitLkp)x)
-
                         }
                         )
                         //////////// prevent exwarehouse of item whos piQuantity > than AllocatedQuantity//////////
-
                         .ToList();
 
                     return res;
-
                 }
                 catch (Exception)
                 {
                     throw;
                 }
             }
+        }
 
+        private static List<EX9Allocations> GetEx9AllocationsListOldway(string FilterExpression, string exp)
+        {
+            List<EX9Allocations> res;
+            using (var ctx = new AllocationDSContext())
+            {
+                ctx.Database.CommandTimeout = (60 * 30);
+                try
+                {
+                    IQueryable<AdjustmentShortAllocations> pres;
+                    if (FilterExpression.Contains("xBond_Item_Id == 0"))
+                    {
+                        //TODO: use expirydate in asycuda document
+                        pres = ctx.AdjustmentShortAllocations
+                            .Include(x => x.AsycudaSalesAllocationsPIData)
+                            .Include("EntryDataDetails.AsycudaDocumentItemEntryDataDetails")
+                            .OrderBy(x => x.AllocationId)
+                            .Where(x => x.pRegistrationDate == null || x.pExpiryDate > DateTime.Now)
+                            .Where(x => x.EntryDataDetails.EntryDataDetailsEx.SystemDocumentSets != null)
+                            .Where(x => x.xBond_Item_Id == 0);
+                    }
+                    else
+                    {
+                        pres = ctx.AdjustmentShortAllocations.OrderBy(x => x.AllocationId)
+                            .Include("EntryDataDetails.AsycudaDocumentItemEntryDataDetails")
+                            .Include(x => x.AsycudaSalesAllocationsPIData)
+                            .Where(x => x.pRegistrationDate == null || x.pExpiryDate > DateTime.Now)
+                            .Where(x => x.EntryDataDetails.EntryDataDetailsEx.SystemDocumentSets != null);
+
+                        //var pres1 = ctx.AdjustmentShortAllocations.OrderBy(x => x.AllocationId)
+                        //     .Where(x => x.pRegistrationDate == null || (DbFunctions.AddDays(((DateTime)x.pRegistrationDate), 730)) > DateTime.Now)
+                        //     .Where(x => x.EntryDataDetails.EntryDataDetailsEx.SystemDocumentSets != null).ToList();
+                    }
+
+                    // entryDataDetailsIds = entryDataDetailsIds ?? new List<int>();
+
+                    res = pres
+                        .Where(exp)
+                        .Where(x => x.Status == null) //|| x.Status == "Short Shipped"
+                        .Where(x => x.xBond_Item_Id == 0 //&& x.pQuantity != 0
+                        )
+                        // .Where(x => !entryDataDetailsIds.Any()|| entryDataDetailsIds.Contains(x.EntryDataDetailsId))//entryDataDetailsIds.Any(z => z == x.EntryDataDetailsId)
+                        .GroupJoin(ctx.xcuda_Weight_itm, x => x.PreviousItem_Id, q => q.Valuation_item_Id,
+                            (x, w) => new {x, w})
+                        // took this out to allow creating entries on is manually assessed entries 
+                        //.Where(g => g.x.pCNumber != null) 
+                        .Where(g => g.w.Any())
+                        .Select(c => new EX9Allocations
+                            {
+                                AllocationId = c.x.AllocationId,
+                                EntryData_Id = c.x.EntryDataDetails.EntryData_Id,
+                                DutyFreePaid = c.x.DutyFreePaid,
+                                EntryDataDetailsId = (int) c.x.EntryDataDetailsId,
+                                EntryDataDetails = c.x.EntryDataDetails,
+                                InvoiceDate = c.x.InvoiceDate,
+                                EffectiveDate = (DateTime) c.x.EffectiveDate,
+                                InvoiceNo = c.x.InvoiceNo,
+                                ItemDescription = c.x.ItemDescription,
+                                ItemNumber = c.x.ItemNumber,
+                                pCNumber = c.x.pCNumber,
+                                pItemCost = (double)
+                                    (c.x.PreviousDocumentItem.xcuda_Tarification.Item_price /
+                                     c.x.PreviousDocumentItem.xcuda_Tarification.xcuda_Supplementary_unit
+                                         .FirstOrDefault(z => z.IsFirstRow == true).Suppplementary_unit_quantity),
+                                Status = c.x.Status,
+                                PreviousItem_Id = c.x.PreviousItem_Id,
+                                QtyAllocated = (double) c.x.QtyAllocated,
+                                SalesFactor = c.x.PreviousDocumentItem.SalesFactor,
+                                SalesQtyAllocated = (double) c.x.SalesQtyAllocated,
+                                SalesQuantity = (int) c.x.SalesQuantity,
+                                pItemNumber = c.x.pItemNumber,
+                                pItemDescription = c.x.PreviousDocumentItem.xcuda_Goods_description.Commercial_Description,
+                                pTariffCode = c.x.pTariffCode,
+                                pPrecision1 = c.x.pPrecision1,
+                                DFQtyAllocated = c.x.PreviousDocumentItem.DFQtyAllocated,
+                                DPQtyAllocated = c.x.PreviousDocumentItem.DPQtyAllocated,
+                                LineNumber = (int) c.x.EntryDataDetails.LineNumber,
+                                Comment = c.x.EntryDataDetails.Comment,
+                                pLineNumber = c.x.PreviousDocumentItem.LineNumber,
+                                // Currency don't matter for im9 or exwarehouse
+                                Customs_clearance_office_code =
+                                    c.x.PreviousDocumentItem.AsycudaDocument.Customs_clearance_office_code,
+                                pQuantity = (double) c.x.pQuantity,
+                                pRegistrationDate = (DateTime) (c.x.pRegistrationDate ??
+                                                                c.x.PreviousDocumentItem.AsycudaDocument.AssessmentDate),
+                                pAssessmentDate = (DateTime) c.x.PreviousDocumentItem.AsycudaDocument.AssessmentDate,
+                                pExpiryDate = (DateTime) c.x.PreviousDocumentItem.AsycudaDocument.ExpiryDate,
+                                Country_of_origin_code =
+                                    c.x.PreviousDocumentItem.xcuda_Goods_description.Country_of_origin_code,
+                                Total_CIF_itm = c.x.PreviousDocumentItem.xcuda_Valuation_item.Total_CIF_itm,
+                                Net_weight_itm = c.w.FirstOrDefault().Net_weight_itm,
+                                InventoryItemId = c.x.EntryDataDetails.InventoryItemId,
+                                // Net_weight_itm = c.x.PreviousDocumentItem != null ? ctx.xcuda_Weight_itm.FirstOrDefault(q => q.Valuation_item_Id == x.PreviousItem_Id).Net_weight_itm: 0,
+                                PIData = c.x.AsycudaSalesAllocationsPIData,
+                                previousItems = c.x.PreviousDocumentItem.EntryPreviousItems
+                                    .Select(y => y.xcuda_PreviousItem)
+                                    .Where(y => (y.xcuda_Item.AsycudaDocument.CNumber != null ||
+                                                 y.xcuda_Item.AsycudaDocument.IsManuallyAssessed == true) &&
+                                                y.xcuda_Item.AsycudaDocument.Cancelled != true)
+                                    .Select(z => new previousItems()
+                                    {
+                                        PreviousItem_Id = z.PreviousItem_Id,
+                                        DutyFreePaid =
+                                            z.xcuda_Item.AsycudaDocument.Extended_customs_procedure == "4074" ||
+                                            z.xcuda_Item.AsycudaDocument.Extended_customs_procedure == "4070" ||
+                                            z.xcuda_Item.AsycudaDocument.Extended_customs_procedure == "4075"
+                                                ? "Duty Paid"
+                                                : "Duty Free",
+                                        Net_weight = (double) z.Net_weight,
+                                        Suplementary_Quantity = (double) z.Suplementary_Quantity
+                                    }).ToList(),
+                                TariffSupUnitLkps =
+                                    c.x.EntryDataDetails.EntryDataDetailsEx.InventoryItemsEx.TariffCodes.TariffCategory
+                                        .TariffCategoryCodeSuppUnit.Select(x => x.TariffSupUnitLkps).ToList(),
+                                FileTypeId = c.x.FileTypeId,
+                                EmailId = c.x.EmailId,
+                                //.Select(x => (ITariffSupUnitLkp)x)
+                            }
+                        )
+                        //////////// prevent exwarehouse of item whos piQuantity > than AllocatedQuantity//////////
+                        .ToList();
+
+                    return res;
+                }
+                catch (Exception)
+                {
+                    throw;
+                }
+            }
         }
 
 

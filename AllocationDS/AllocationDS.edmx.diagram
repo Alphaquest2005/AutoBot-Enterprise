@@ -104,6 +104,7 @@
         <EntityTypeShape EntityType="WaterNutDBModel.ExistingAllocations" Width="2.375" PointX="27.375" PointY="1.625" />
         <AssociationConnector Association="WaterNutDBModel.InventoryItemEntryDataDetails" />
         <EntityTypeShape EntityType="WaterNutDBModel.XSales_UnAllocated" Width="2.125" PointX="18.375" PointY="0.75" />
+        <EntityTypeShape EntityType="WaterNutDBModel.AdjustmentShort_IM9Data" Width="1.5" PointX="21.375" PointY="23.75" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
