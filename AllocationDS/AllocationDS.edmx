@@ -462,6 +462,47 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AdjustmentShortAllocation
           <Property Name="SANumber" Type="int" Nullable="false" />
         </EntityType>
         <!--Errors Found During Generation:
+warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AdjustmentShort-IM9Data' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="AdjustmentShort-IM9Data">
+          <Key>
+            <PropertyRef Name="AllocationId" />
+          </Key>
+          <Property Name="AllocationId" Type="int" Nullable="false" />
+          <Property Name="EntryDataDetailsId" Type="int" />
+          <Property Name="pItemDescription" Type="varchar" MaxLength="255" />
+          <Property Name="DutyFreePaid" Type="varchar" MaxLength="9" Nullable="false" />
+          <Property Name="EffectiveDate" Type="datetime2" Precision="7" />
+          <Property Name="InvoiceDate" Type="datetime2" Precision="7" Nullable="false" />
+          <Property Name="InvoiceNo" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="ItemNumber" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="ItemDescription" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="pCNumber" Type="nvarchar" MaxLength="20" />
+          <Property Name="pLineNumber" Type="int" Nullable="false" />
+          <Property Name="pItemNumber" Type="nvarchar" MaxLength="50" />
+          <Property Name="pItemCost" Type="float" />
+          <Property Name="Status" Type="nvarchar" MaxLength="255" />
+          <Property Name="PreviousItem_Id" Type="int" />
+          <Property Name="SalesFactor" Type="float" Nullable="false" />
+          <Property Name="QtyAllocated" Type="float" Nullable="false" />
+          <Property Name="SalesQtyAllocated" Type="float" Nullable="false" />
+          <Property Name="SalesQuantity" Type="float" Nullable="false" />
+          <Property Name="pPrecision1" Type="nvarchar" MaxLength="255" />
+          <Property Name="DFQtyAllocated" Type="float" Nullable="false" />
+          <Property Name="DPQtyAllocated" Type="float" Nullable="false" />
+          <Property Name="pTariffCode" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="LineNumber" Type="int" />
+          <Property Name="Comment" Type="nvarchar" MaxLength="255" />
+          <Property Name="Customs_clearance_office_code" Type="nvarchar" MaxLength="10" />
+          <Property Name="pQuantity" Type="float" />
+          <Property Name="pRegistrationDate" Type="datetime2" Precision="7" />
+          <Property Name="pAssessmentDate" Type="datetime2" Precision="7" />
+          <Property Name="ExpiryDate" Type="datetime2" Precision="7" />
+          <Property Name="Country_of_origin_code" Type="varchar" MaxLength="50" />
+          <Property Name="FileTypeId" Type="int" />
+          <Property Name="EmailId" Type="nvarchar" MaxLength="255" />
+          <Property Name="InventoryItemId" Type="int" Nullable="false" />
+        </EntityType>
+        <!--Errors Found During Generation:
 warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AllocationErrors' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="AllocationErrors">
           <Key>
@@ -890,6 +931,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ItemSalesPiSummary' does 
           <Property Name="Type" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="AllocationId" Type="int" Nullable="false" />
           <Property Name="Status" Type="nvarchar" MaxLength="255" />
+          <Property Name="xEntryItem_Id" Type="int" />
         </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.PreviousItemsEx' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
@@ -1421,6 +1463,44 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.XSales-UnAllocated' does 
 [AdjustmentShortAllocations].[SANumber] AS [SANumber]
 FROM [dbo].[AdjustmentShortAllocations] AS [AdjustmentShortAllocations]</DefiningQuery>
           </EntitySet>
+          <EntitySet Name="AdjustmentShort-IM9Data" EntityType="Self.AdjustmentShort-IM9Data" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+[AdjustmentShort-IM9Data].[AllocationId] AS [AllocationId], 
+[AdjustmentShort-IM9Data].[EntryDataDetailsId] AS [EntryDataDetailsId], 
+[AdjustmentShort-IM9Data].[pItemDescription] AS [pItemDescription], 
+[AdjustmentShort-IM9Data].[DutyFreePaid] AS [DutyFreePaid], 
+[AdjustmentShort-IM9Data].[EffectiveDate] AS [EffectiveDate], 
+[AdjustmentShort-IM9Data].[InvoiceDate] AS [InvoiceDate], 
+[AdjustmentShort-IM9Data].[InvoiceNo] AS [InvoiceNo], 
+[AdjustmentShort-IM9Data].[ItemNumber] AS [ItemNumber], 
+[AdjustmentShort-IM9Data].[ItemDescription] AS [ItemDescription], 
+[AdjustmentShort-IM9Data].[pCNumber] AS [pCNumber], 
+[AdjustmentShort-IM9Data].[pLineNumber] AS [pLineNumber], 
+[AdjustmentShort-IM9Data].[pItemNumber] AS [pItemNumber], 
+[AdjustmentShort-IM9Data].[pItemCost] AS [pItemCost], 
+[AdjustmentShort-IM9Data].[Status] AS [Status], 
+[AdjustmentShort-IM9Data].[PreviousItem_Id] AS [PreviousItem_Id], 
+[AdjustmentShort-IM9Data].[SalesFactor] AS [SalesFactor], 
+[AdjustmentShort-IM9Data].[QtyAllocated] AS [QtyAllocated], 
+[AdjustmentShort-IM9Data].[SalesQtyAllocated] AS [SalesQtyAllocated], 
+[AdjustmentShort-IM9Data].[SalesQuantity] AS [SalesQuantity], 
+[AdjustmentShort-IM9Data].[pPrecision1] AS [pPrecision1], 
+[AdjustmentShort-IM9Data].[DFQtyAllocated] AS [DFQtyAllocated], 
+[AdjustmentShort-IM9Data].[DPQtyAllocated] AS [DPQtyAllocated], 
+[AdjustmentShort-IM9Data].[pTariffCode] AS [pTariffCode], 
+[AdjustmentShort-IM9Data].[LineNumber] AS [LineNumber], 
+[AdjustmentShort-IM9Data].[Comment] AS [Comment], 
+[AdjustmentShort-IM9Data].[Customs_clearance_office_code] AS [Customs_clearance_office_code], 
+[AdjustmentShort-IM9Data].[pQuantity] AS [pQuantity], 
+[AdjustmentShort-IM9Data].[pRegistrationDate] AS [pRegistrationDate], 
+[AdjustmentShort-IM9Data].[pAssessmentDate] AS [pAssessmentDate], 
+[AdjustmentShort-IM9Data].[ExpiryDate] AS [ExpiryDate], 
+[AdjustmentShort-IM9Data].[Country_of_origin_code] AS [Country_of_origin_code], 
+[AdjustmentShort-IM9Data].[FileTypeId] AS [FileTypeId], 
+[AdjustmentShort-IM9Data].[EmailId] AS [EmailId], 
+[AdjustmentShort-IM9Data].[InventoryItemId] AS [InventoryItemId]
+FROM [dbo].[AdjustmentShort-IM9Data] AS [AdjustmentShort-IM9Data]</DefiningQuery>
+          </EntitySet>
           <EntitySet Name="AllocationErrors" EntityType="Self.AllocationErrors" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
 [AllocationErrors].[ItemNumber] AS [ItemNumber], 
@@ -1733,7 +1813,8 @@ FROM [dbo].[ItemSalesAsycudaPiSummary] AS [ItemSalesAsycudaPiSummary]</DefiningQ
 [ItemSalesPiSummary].[ApplicationSettingsId] AS [ApplicationSettingsId], 
 [ItemSalesPiSummary].[Type] AS [Type], 
 [ItemSalesPiSummary].[AllocationId] AS [AllocationId], 
-[ItemSalesPiSummary].[Status] AS [Status]
+[ItemSalesPiSummary].[Status] AS [Status], 
+[ItemSalesPiSummary].[xEntryItem_Id] AS [xEntryItem_Id]
 FROM [dbo].[ItemSalesPiSummary] AS [ItemSalesPiSummary]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="PreviousItemsEx" EntityType="Self.PreviousItemsEx" store:Type="Views" store:Schema="dbo">
@@ -2157,6 +2238,7 @@ FROM [dbo].[XSales-UnAllocated] AS [XSales-UnAllocated]</DefiningQuery>
             <End Role="EntryDataDetails" EntitySet="EntryDataDetails" />
           </AssociationSet>
           <EntitySet Name="XSales_UnAllocated" EntityType="WaterNutDBModel.XSales_UnAllocated" />
+          <EntitySet Name="AdjustmentShort_IM9Data" EntityType="WaterNutDBModel.AdjustmentShort_IM9Data" />
           </EntityContainer>
         <EntityType Name="AsycudaSalesAllocations">
           <Key>
@@ -3407,6 +3489,7 @@ FROM [dbo].[XSales-UnAllocated] AS [XSales-UnAllocated]</DefiningQuery>
           <Property Name="Status" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="SalesQty" Type="Double" Nullable="false" />
           <Property Name="SalesAllocatedQty" Type="Double" Nullable="false" />
+          <Property Name="xEntryItem_Id" Type="Int32" />
         </EntityType>
         <EntityType Name="SystemDocumentSets">
           <Key>
@@ -3748,6 +3831,45 @@ FROM [dbo].[XSales-UnAllocated] AS [XSales-UnAllocated]</DefiningQuery>
           <Property Name="SalesLineNumber" Type="Int32" />
           <Property Name="xItemId" Type="Int32" Nullable="false" />
           <Property Name="pItemId" Type="Int32" Nullable="false" />
+        </EntityType>
+        <EntityType Name="AdjustmentShort_IM9Data">
+          <Key>
+            <PropertyRef Name="AllocationId" />
+          </Key>
+          <Property Name="AllocationId" Type="Int32" Nullable="false" />
+          <Property Name="EntryDataDetailsId" Type="Int32" />
+          <Property Name="pItemDescription" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="DutyFreePaid" Type="String" Nullable="false" MaxLength="9" FixedLength="false" Unicode="false" />
+          <Property Name="EffectiveDate" Type="DateTime" Precision="7" />
+          <Property Name="InvoiceDate" Type="DateTime" Nullable="false" Precision="7" />
+          <Property Name="InvoiceNo" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ItemNumber" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="ItemDescription" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="pCNumber" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="pLineNumber" Type="Int32" Nullable="false" />
+          <Property Name="pItemNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="pItemCost" Type="Double" />
+          <Property Name="Status" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="PreviousItem_Id" Type="Int32" />
+          <Property Name="SalesFactor" Type="Double" Nullable="false" />
+          <Property Name="QtyAllocated" Type="Double" Nullable="false" />
+          <Property Name="SalesQtyAllocated" Type="Double" Nullable="false" />
+          <Property Name="SalesQuantity" Type="Double" Nullable="false" />
+          <Property Name="pPrecision1" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="DFQtyAllocated" Type="Double" Nullable="false" />
+          <Property Name="DPQtyAllocated" Type="Double" Nullable="false" />
+          <Property Name="pTariffCode" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="LineNumber" Type="Int32" />
+          <Property Name="Comment" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Customs_clearance_office_code" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="pQuantity" Type="Double" />
+          <Property Name="pRegistrationDate" Type="DateTime" Precision="7" />
+          <Property Name="pAssessmentDate" Type="DateTime" Precision="7" />
+          <Property Name="ExpiryDate" Type="DateTime" Precision="7" />
+          <Property Name="Country_of_origin_code" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="FileTypeId" Type="Int32" />
+          <Property Name="EmailId" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="InventoryItemId" Type="Int32" Nullable="false" />
         </EntityType>
         </Schema>
     </edmx:ConceptualModels>
@@ -4464,6 +4586,7 @@ FROM [dbo].[XSales-UnAllocated] AS [XSales-UnAllocated]</DefiningQuery>
           <EntitySetMapping Name="ItemSalesPiSummary">
             <EntityTypeMapping TypeName="WaterNutDBModel.ItemSalesPiSummary">
               <MappingFragment StoreEntitySet="ItemSalesPiSummary">
+                <ScalarProperty Name="xEntryItem_Id" ColumnName="xEntryItem_Id" />
                 <ScalarProperty Name="SalesAllocatedQty" ColumnName="SalesAllocatedQty" />
                 <ScalarProperty Name="SalesQty" ColumnName="SalesQty" />
                 <ScalarProperty Name="Status" ColumnName="Status" />
@@ -4635,6 +4758,46 @@ FROM [dbo].[XSales-UnAllocated] AS [XSales-UnAllocated]</DefiningQuery>
                 <ScalarProperty Name="Date" ColumnName="Date" />
                 <ScalarProperty Name="Line" ColumnName="Line" />
                 </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="AdjustmentShort_IM9Data">
+            <EntityTypeMapping TypeName="WaterNutDBModel.AdjustmentShort_IM9Data">
+              <MappingFragment StoreEntitySet="AdjustmentShort-IM9Data">
+                <ScalarProperty Name="InventoryItemId" ColumnName="InventoryItemId" />
+                <ScalarProperty Name="EmailId" ColumnName="EmailId" />
+                <ScalarProperty Name="FileTypeId" ColumnName="FileTypeId" />
+                <ScalarProperty Name="Country_of_origin_code" ColumnName="Country_of_origin_code" />
+                <ScalarProperty Name="ExpiryDate" ColumnName="ExpiryDate" />
+                <ScalarProperty Name="pAssessmentDate" ColumnName="pAssessmentDate" />
+                <ScalarProperty Name="pRegistrationDate" ColumnName="pRegistrationDate" />
+                <ScalarProperty Name="pQuantity" ColumnName="pQuantity" />
+                <ScalarProperty Name="Customs_clearance_office_code" ColumnName="Customs_clearance_office_code" />
+                <ScalarProperty Name="Comment" ColumnName="Comment" />
+                <ScalarProperty Name="LineNumber" ColumnName="LineNumber" />
+                <ScalarProperty Name="pTariffCode" ColumnName="pTariffCode" />
+                <ScalarProperty Name="DPQtyAllocated" ColumnName="DPQtyAllocated" />
+                <ScalarProperty Name="DFQtyAllocated" ColumnName="DFQtyAllocated" />
+                <ScalarProperty Name="pPrecision1" ColumnName="pPrecision1" />
+                <ScalarProperty Name="SalesQuantity" ColumnName="SalesQuantity" />
+                <ScalarProperty Name="SalesQtyAllocated" ColumnName="SalesQtyAllocated" />
+                <ScalarProperty Name="QtyAllocated" ColumnName="QtyAllocated" />
+                <ScalarProperty Name="SalesFactor" ColumnName="SalesFactor" />
+                <ScalarProperty Name="PreviousItem_Id" ColumnName="PreviousItem_Id" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="pItemCost" ColumnName="pItemCost" />
+                <ScalarProperty Name="pItemNumber" ColumnName="pItemNumber" />
+                <ScalarProperty Name="pLineNumber" ColumnName="pLineNumber" />
+                <ScalarProperty Name="pCNumber" ColumnName="pCNumber" />
+                <ScalarProperty Name="ItemDescription" ColumnName="ItemDescription" />
+                <ScalarProperty Name="ItemNumber" ColumnName="ItemNumber" />
+                <ScalarProperty Name="InvoiceNo" ColumnName="InvoiceNo" />
+                <ScalarProperty Name="InvoiceDate" ColumnName="InvoiceDate" />
+                <ScalarProperty Name="EffectiveDate" ColumnName="EffectiveDate" />
+                <ScalarProperty Name="DutyFreePaid" ColumnName="DutyFreePaid" />
+                <ScalarProperty Name="pItemDescription" ColumnName="pItemDescription" />
+                <ScalarProperty Name="EntryDataDetailsId" ColumnName="EntryDataDetailsId" />
+                <ScalarProperty Name="AllocationId" ColumnName="AllocationId" />
+              </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           </EntityContainerMapping>

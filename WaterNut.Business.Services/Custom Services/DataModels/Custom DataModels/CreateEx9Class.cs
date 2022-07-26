@@ -2341,7 +2341,6 @@ namespace WaterNut.DataSpace
         public string ItemDescription { get; set; }
         public double? pItemCost { get; set; }
         public double QtyAllocated { get; set; }
-        public string Commercial_Description { get; set; }
         public double SalesQtyAllocated { get; set; }
         public double DFQtyAllocated { get; set; }
         public double DPQtyAllocated { get; set; }
