@@ -1014,6 +1014,34 @@ namespace AllocationDS.Business.Services
                     throw new FaultException<ValidationFault>(fault);
             }
         }
+ 	        public async Task<IEnumerable<ItemSalesPiSummary>> GetItemSalesPiSummaryByxEntryItem_Id(string xEntryItem_Id, List<string> includesLst = null)
+        {
+            try
+            {
+                using ( var dbContext = new AllocationDSContext(){StartTracking = StartTracking})
+              {
+                var i = Convert.ToInt32(xEntryItem_Id);
+                var set = AddIncludes(includesLst, dbContext);
+                IEnumerable<ItemSalesPiSummary> entities = set//dbContext.ItemSalesPiSummary
+                                      .AsNoTracking()
+                                        .Where(x => x.xEntryItem_Id.ToString() == xEntryItem_Id.ToString())
+										.ToList();
+                return entities;
+              }
+             }
+            catch (Exception updateEx)
+            {
+                System.Diagnostics.Debugger.Break();
+                //throw new FaultException(updateEx.Message);
+                    var fault = new ValidationFault
+                                {
+                                    Result = false,
+                                    Message = updateEx.Message,
+                                    Description = updateEx.StackTrace
+                                };
+                    throw new FaultException<ValidationFault>(fault);
+            }
+        }
  
 		public decimal SumField(string whereExp, string field)
          {

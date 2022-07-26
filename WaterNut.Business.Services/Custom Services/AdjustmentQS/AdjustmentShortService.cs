@@ -234,7 +234,11 @@ namespace AdjustmentQS.Business.Services
             };
             var exp = map.Aggregate(exp1, (current, m) => current.Replace(m.Key, m.Value));
             var res = new List<EX9Allocations>();
-            return GetEx9AllocationsListOldway(FilterExpression, exp);
+
+            var oldData = GetEx9AllocationsListOldway(FilterExpression, exp);
+            var newData = GetEx9AllocationsListNewWay(FilterExpression, exp);
+
+            return newData;
 
         }
 
@@ -246,24 +250,24 @@ namespace AdjustmentQS.Business.Services
                 ctx.Database.CommandTimeout = (60 * 30);
                 try
                 {
-                    IQueryable<AdjustmentShortAllocations> pres;
+                    IQueryable<AdjustmentShort_IM9Data> pres;
                     if (FilterExpression.Contains("xBond_Item_Id == 0"))
                     {
                         //TODO: use expirydate in asycuda document
-                        pres = ctx.AdjustmentShortAllocations
+                        pres = ctx.AdjustmentShort_IM9Data
                             .Include(x => x.AsycudaSalesAllocationsPIData)
                             .Include("EntryDataDetails.AsycudaDocumentItemEntryDataDetails")
                             .OrderBy(x => x.AllocationId)
-                            .Where(x => x.pRegistrationDate == null || x.pExpiryDate > DateTime.Now)
+                            .Where(x => x.pRegistrationDate == null || x.ExpiryDate > DateTime.Now)
                             .Where(x => x.EntryDataDetails.EntryDataDetailsEx.SystemDocumentSets != null)
                             .Where(x => x.xBond_Item_Id == 0);
                     }
                     else
                     {
-                        pres = ctx.AdjustmentShortAllocations.OrderBy(x => x.AllocationId)
+                        pres = ctx.AdjustmentShort_IM9Data.OrderBy(x => x.AllocationId)
                             .Include("EntryDataDetails.AsycudaDocumentItemEntryDataDetails")
                             .Include(x => x.AsycudaSalesAllocationsPIData)
-                            .Where(x => x.pRegistrationDate == null || x.pExpiryDate > DateTime.Now)
+                            .Where(x => x.pRegistrationDate == null || x.ExpiryDate > DateTime.Now)
                             .Where(x => x.EntryDataDetails.EntryDataDetailsEx.SystemDocumentSets != null);
 
                         //var pres1 = ctx.AdjustmentShortAllocations.OrderBy(x => x.AllocationId)

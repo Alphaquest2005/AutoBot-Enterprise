@@ -29,6 +29,7 @@
               this.Property(t => t.Status).HasColumnName("Status").HasMaxLength(255);
               this.Property(t => t.SalesQty).HasColumnName("SalesQty");
               this.Property(t => t.SalesAllocatedQty).HasColumnName("SalesAllocatedQty");
+              this.Property(t => t.xEntryItem_Id).HasColumnName("xEntryItem_Id");
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);
     			this.Ignore(t => t.ModifiedProperties);

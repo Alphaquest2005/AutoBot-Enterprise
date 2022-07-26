@@ -730,7 +730,6 @@ namespace WaterNut.DataSpace
                             allocations.Type = x.Type;
                             allocations.AllocationId = x.AllocationId;
                             allocations.EntryData_Id = (int)x.EntryData_Id;
-                            allocations.Commercial_Description = x.Commercial_Description;
                             allocations.DutyFreePaid = x.DutyFreePaid;
                             allocations.EntryDataDetailsId = x.EntryDataDetailsId;
                             allocations.InvoiceDate = (DateTime)(x.EffectiveDate == null || x.EffectiveDate == DateTime.MinValue

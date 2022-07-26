@@ -247,6 +247,12 @@ namespace AllocationDS.Business.Services
                                         GetWhere<AsycudaSalesAllocations>(dbContext, exp, itm.Value, "PIData", "SelectMany", includesLst)
 										.ConfigureAwait(continueOnCapturedContext: false);
 
+                            case "AdjustmentShort_IM9Data":
+                                return
+                                    await
+                                        GetWhere<AdjustmentShort_IM9Data>(dbContext, exp, itm.Value, "AsycudaSalesAllocationsPIData", "SelectMany", includesLst)
+										.ConfigureAwait(continueOnCapturedContext: false);
+
                         }
 
                     }
@@ -737,6 +743,9 @@ namespace AllocationDS.Business.Services
                             case "AsycudaSalesAllocations":
                                 return await CountWhere<AsycudaSalesAllocations>(dbContext, exp, itm.Value, "PIData", "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "AdjustmentShort_IM9Data":
+                                return await CountWhere<AdjustmentShort_IM9Data>(dbContext, exp, itm.Value, "AsycudaSalesAllocationsPIData", "SelectMany")
+											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }
                     return dbContext.AsycudaSalesAllocationsPIData.Where(exp == "All" || exp == null ? "Id != null" : exp)
@@ -855,6 +864,12 @@ namespace AllocationDS.Business.Services
                                 return
                                     await
                                         LoadRangeWhere<AsycudaSalesAllocations>(startIndex, count, dbContext, exp, itm.Value, "PIData", "SelectMany")
+													.ConfigureAwait(continueOnCapturedContext: false);
+
+                            case "AdjustmentShort_IM9Data":
+                                return
+                                    await
+                                        LoadRangeWhere<AdjustmentShort_IM9Data>(startIndex, count, dbContext, exp, itm.Value, "AsycudaSalesAllocationsPIData", "SelectMany")
 													.ConfigureAwait(continueOnCapturedContext: false);
 
                           
@@ -1201,6 +1216,9 @@ namespace AllocationDS.Business.Services
 											.ConfigureAwait(continueOnCapturedContext: false);
                             case "AsycudaSalesAllocations":
                                 return await SumWhere<AsycudaSalesAllocations>(dbContext, exp, itm.Value, "PIData", field, "SelectMany")
+											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "AdjustmentShort_IM9Data":
+                                return await SumWhere<AdjustmentShort_IM9Data>(dbContext, exp, itm.Value, "AsycudaSalesAllocationsPIData", field, "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }

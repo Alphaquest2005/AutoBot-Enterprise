@@ -25,6 +25,7 @@
               this.HasRequired(t => t.EX9AsycudaSalesAllocations).WithMany(t =>(ICollection<AsycudaSalesAllocationsPIData>) t.AsycudaSalesAllocationsPIData).HasForeignKey(d => d.AllocationId);
               this.HasRequired(t => t.AdjustmentShortAllocations).WithMany(t =>(ICollection<AsycudaSalesAllocationsPIData>) t.AsycudaSalesAllocationsPIData).HasForeignKey(d => d.AllocationId);
               this.HasRequired(t => t.AsycudaSalesAllocations).WithMany(t =>(ICollection<AsycudaSalesAllocationsPIData>) t.PIData).HasForeignKey(d => d.AllocationId);
+              this.HasRequired(t => t.AdjustmentShort_IM9Data).WithMany(t =>(ICollection<AsycudaSalesAllocationsPIData>) t.AsycudaSalesAllocationsPIData).HasForeignKey(d => d.AllocationId);
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);
     			this.Ignore(t => t.ModifiedProperties);

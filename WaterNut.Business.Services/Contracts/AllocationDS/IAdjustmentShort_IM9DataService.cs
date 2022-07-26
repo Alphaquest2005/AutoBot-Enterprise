@@ -20,54 +20,54 @@ using WaterNut.Interfaces;
 namespace AllocationDS.Business.Services
 {
     [ServiceContract (Namespace="http://www.insight-software.com/WaterNut")]
-    public partial interface IManualAllocationsService : IBusinessService
+    public partial interface IAdjustmentShort_IM9DataService : IBusinessService
     {
         [OperationContract]
         [FaultContract(typeof(ValidationFault))]
-        Task<IEnumerable<ManualAllocations>> GetManualAllocationsSet(List<string> includesLst = null, bool tracking = true);
+        Task<IEnumerable<AdjustmentShort_IM9Data>> GetAdjustmentShort_IM9Data(List<string> includesLst = null, bool tracking = true);
 
         [OperationContract]
         [FaultContract(typeof(ValidationFault))]
-        Task<ManualAllocations> GetManualAllocationsByKey(string id, List<string> includesLst = null, bool tracking = true);
+        Task<AdjustmentShort_IM9Data> GetAdjustmentShort_IM9DataByKey(string id, List<string> includesLst = null, bool tracking = true);
 
 		[OperationContract]
         [FaultContract(typeof(ValidationFault))]
-        Task<IEnumerable<ManualAllocations>> GetManualAllocationsSetByExpression(string exp, List<string> includesLst = null, bool tracking = true);
+        Task<IEnumerable<AdjustmentShort_IM9Data>> GetAdjustmentShort_IM9DataByExpression(string exp, List<string> includesLst = null, bool tracking = true);
 
 		[OperationContract]
         [FaultContract(typeof(ValidationFault))]
-        Task<IEnumerable<ManualAllocations>> GetManualAllocationsSetByExpressionLst(List<string> expLst, List<string> includesLst = null, bool tracking = true);
+        Task<IEnumerable<AdjustmentShort_IM9Data>> GetAdjustmentShort_IM9DataByExpressionLst(List<string> expLst, List<string> includesLst = null, bool tracking = true);
 
 		[OperationContract]
         [FaultContract(typeof(ValidationFault))]
-		Task<IEnumerable<ManualAllocations>> GetManualAllocationsSetByExpressionNav(string exp,
+		Task<IEnumerable<AdjustmentShort_IM9Data>> GetAdjustmentShort_IM9DataByExpressionNav(string exp,
             Dictionary<string, string> navExp, List<string> includesLst = null, bool tracking = true);
 
         [OperationContract]
         [FaultContract(typeof(ValidationFault))]
-        Task<IEnumerable<ManualAllocations>> GetManualAllocationsSetByBatch(string exp,
+        Task<IEnumerable<AdjustmentShort_IM9Data>> GetAdjustmentShort_IM9DataByBatch(string exp,
             int totalrow, List<string> includesLst = null, bool tracking = true);
 
         [OperationContract]
         [FaultContract(typeof(ValidationFault))]
-        Task<IEnumerable<ManualAllocations>> GetManualAllocationsSetByBatchExpressionLst(List<string> exp,
+        Task<IEnumerable<AdjustmentShort_IM9Data>> GetAdjustmentShort_IM9DataByBatchExpressionLst(List<string> exp,
             int totalrow, List<string> includesLst = null, bool tracking = true);
 
         [OperationContract]
         [FaultContract(typeof(ValidationFault))]
-        Task<ManualAllocations> UpdateManualAllocations(ManualAllocations entity);
+        Task<AdjustmentShort_IM9Data> UpdateAdjustmentShort_IM9Data(AdjustmentShort_IM9Data entity);
 
         [OperationContract]
         [FaultContract(typeof(ValidationFault))]
-        Task<ManualAllocations> CreateManualAllocations(ManualAllocations entity);
+        Task<AdjustmentShort_IM9Data> CreateAdjustmentShort_IM9Data(AdjustmentShort_IM9Data entity);
 
         [OperationContract]
         [FaultContract(typeof(ValidationFault))]
-        Task<bool> DeleteManualAllocations(string id);
+        Task<bool> DeleteAdjustmentShort_IM9Data(string id);
 
         [OperationContract]
         [FaultContract(typeof(ValidationFault))]
-        Task<bool> RemoveSelectedManualAllocations(IEnumerable<string> selectedManualAllocations);
+        Task<bool> RemoveSelectedAdjustmentShort_IM9Data(IEnumerable<string> selectedAdjustmentShort_IM9Data);
 	
 		//Virtural list implementation
         [OperationContract]
@@ -84,13 +84,13 @@ namespace AllocationDS.Business.Services
 
         [OperationContract]
         [FaultContract(typeof(ValidationFault))]
-        Task<IEnumerable<ManualAllocations>> LoadRange(int startIndex, int count, string exp);
+        Task<IEnumerable<AdjustmentShort_IM9Data>> LoadRange(int startIndex, int count, string exp);
 
 
 
 		[OperationContract]
         [FaultContract(typeof(ValidationFault))]
-		Task<IEnumerable<ManualAllocations>> LoadRangeNav(int startIndex, int count, string exp,
+		Task<IEnumerable<AdjustmentShort_IM9Data>> LoadRangeNav(int startIndex, int count, string exp,
                                                                                  Dictionary<string, string> navExp, IEnumerable<string> includeLst = null);
 
 		[OperationContract]
@@ -107,7 +107,22 @@ namespace AllocationDS.Business.Services
 
 				[OperationContract]
         [FaultContract(typeof(ValidationFault))]
-        Task<IEnumerable<ManualAllocations>> GetManualAllocationsByItem_Id(string Item_Id, List<string> includesLst = null);
+        Task<IEnumerable<AdjustmentShort_IM9Data>> GetAdjustmentShort_IM9DataByEntryDataDetailsId(string EntryDataDetailsId, List<string> includesLst = null);
+  		[OperationContract]
+        [FaultContract(typeof(ValidationFault))]
+        Task<IEnumerable<AdjustmentShort_IM9Data>> GetAdjustmentShort_IM9DataByPreviousItem_Id(string PreviousItem_Id, List<string> includesLst = null);
+  		[OperationContract]
+        [FaultContract(typeof(ValidationFault))]
+        Task<IEnumerable<AdjustmentShort_IM9Data>> GetAdjustmentShort_IM9DataByFileTypeId(string FileTypeId, List<string> includesLst = null);
+  		[OperationContract]
+        [FaultContract(typeof(ValidationFault))]
+        Task<IEnumerable<AdjustmentShort_IM9Data>> GetAdjustmentShort_IM9DataByEmailId(string EmailId, List<string> includesLst = null);
+  		[OperationContract]
+        [FaultContract(typeof(ValidationFault))]
+        Task<IEnumerable<AdjustmentShort_IM9Data>> GetAdjustmentShort_IM9DataByInventoryItemId(string InventoryItemId, List<string> includesLst = null);
+  		[OperationContract]
+        [FaultContract(typeof(ValidationFault))]
+        Task<IEnumerable<AdjustmentShort_IM9Data>> GetAdjustmentShort_IM9DataByxBond_Item_Id(string xBond_Item_Id, List<string> includesLst = null);
   
 
 

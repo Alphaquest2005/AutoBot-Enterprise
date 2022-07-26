@@ -164,6 +164,7 @@
     <Compile Include="Generated Business Entities\AdjustmentQS\xcuda_Item.cs" />
     <Compile Include="Generated Business Entities\AllocationDS\Adjustments.cs" />
     <Compile Include="Generated Business Entities\AllocationDS\AdjustmentShortAllocations.cs" />
+    <Compile Include="Generated Business Entities\AllocationDS\AdjustmentShort_IM9Data.cs" />
     <Compile Include="Generated Business Entities\AllocationDS\AllocationErrors.cs" />
     <Compile Include="Generated Business Entities\AllocationDS\AllocationsTestCases.cs" />
     <Compile Include="Generated Business Entities\AllocationDS\AscyudaItemPiQuantity.cs" />
@@ -583,6 +584,7 @@
     <Compile Include="Generated ChangeTracking Models\AdjustmentQS\xcuda_Item.cs" />
     <Compile Include="Generated ChangeTracking Models\AllocationDS\Adjustments.cs" />
     <Compile Include="Generated ChangeTracking Models\AllocationDS\AdjustmentShortAllocations.cs" />
+    <Compile Include="Generated ChangeTracking Models\AllocationDS\AdjustmentShort_IM9Data.cs" />
     <Compile Include="Generated ChangeTracking Models\AllocationDS\AllocationErrors.cs" />
     <Compile Include="Generated ChangeTracking Models\AllocationDS\AllocationsTestCases.cs" />
     <Compile Include="Generated ChangeTracking Models\AllocationDS\AscyudaItemPiQuantity.cs" />
@@ -995,6 +997,7 @@
     <Compile Include="Generated Constructors Models\AdjustmentQS\xcuda_Item.cs" />
     <Compile Include="Generated Constructors Models\AllocationDS\Adjustments.cs" />
     <Compile Include="Generated Constructors Models\AllocationDS\AdjustmentShortAllocations.cs" />
+    <Compile Include="Generated Constructors Models\AllocationDS\AdjustmentShort_IM9Data.cs" />
     <Compile Include="Generated Constructors Models\AllocationDS\AllocationErrors.cs" />
     <Compile Include="Generated Constructors Models\AllocationDS\AllocationsTestCases.cs" />
     <Compile Include="Generated Constructors Models\AllocationDS\AscyudaItemPiQuantity.cs" />
@@ -1407,6 +1410,7 @@
     <Compile Include="Generated IEntitiyWithKey Models\AdjustmentQS\xcuda_Item.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\AllocationDS\Adjustments.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\AllocationDS\AdjustmentShortAllocations.cs" />
+    <Compile Include="Generated IEntitiyWithKey Models\AllocationDS\AdjustmentShort_IM9Data.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\AllocationDS\AllocationErrors.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\AllocationDS\AllocationsTestCases.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\AllocationDS\AscyudaItemPiQuantity.cs" />
@@ -1819,6 +1823,7 @@
     <Compile Include="Generated IIdentitfiableEntity Models\AdjustmentQS\xcuda_Item.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\AllocationDS\Adjustments.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\AllocationDS\AdjustmentShortAllocations.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\AllocationDS\AdjustmentShort_IM9Data.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\AllocationDS\AllocationErrors.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\AllocationDS\AllocationsTestCases.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\AllocationDS\AscyudaItemPiQuantity.cs" />
@@ -2241,6 +2246,7 @@
     <Compile Include="Generated Mappings\AdjustmentQS\xcuda_Item.map.cs" />
     <Compile Include="Generated Mappings\AllocationDS\Adjustments.map.cs" />
     <Compile Include="Generated Mappings\AllocationDS\AdjustmentShortAllocations.map.cs" />
+    <Compile Include="Generated Mappings\AllocationDS\AdjustmentShort_IM9Data.map.cs" />
     <Compile Include="Generated Mappings\AllocationDS\AllocationErrors.map.cs" />
     <Compile Include="Generated Mappings\AllocationDS\AllocationsTestCases.map.cs" />
     <Compile Include="Generated Mappings\AllocationDS\AscyudaItemPiQuantity.map.cs" />

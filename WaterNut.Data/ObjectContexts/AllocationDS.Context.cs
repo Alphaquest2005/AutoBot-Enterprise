@@ -137,6 +137,8 @@ namespace AllocationDS.Business.Entities
      
         public DbSet<XSales_UnAllocated> XSales_UnAllocated { get; set; }
      
+        public DbSet<AdjustmentShort_IM9Data> AdjustmentShort_IM9Data { get; set; }
+     
 
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
@@ -230,6 +232,8 @@ namespace AllocationDS.Business.Entities
             modelBuilder.Configurations.Add(new ExistingAllocationsMap());
          
             modelBuilder.Configurations.Add(new XSales_UnAllocatedMap());
+         
+            modelBuilder.Configurations.Add(new AdjustmentShort_IM9DataMap());
          
             modelBuilder.Configurations.Add(new AdjustmentsMap());
       

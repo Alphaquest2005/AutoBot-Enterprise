@@ -32,19 +32,19 @@ using WaterNut.Interfaces;
 
 namespace AllocationDS.Business.Services
 {
-   [Export (typeof(Ixcuda_ItemService))]
+   [Export (typeof(IAdjustmentShort_IM9DataService))]
    [Export(typeof(IBusinessService))]
    [PartCreationPolicy(CreationPolicy.NonShared)]
    [ServiceBehavior(InstanceContextMode = InstanceContextMode.PerCall,
                     ConcurrencyMode = ConcurrencyMode.Multiple)]
    
-    public partial class xcuda_ItemService : Ixcuda_ItemService, IDisposable
+    public partial class AdjustmentShort_IM9DataService : IAdjustmentShort_IM9DataService, IDisposable
     {
         //private readonly AllocationDSContext dbContext;
 
         public bool StartTracking { get; set; }
 
-        public xcuda_ItemService()
+        public AdjustmentShort_IM9DataService()
         {
             try
             {
@@ -65,7 +65,7 @@ namespace AllocationDS.Business.Services
             }
         }
 
-        public async Task<IEnumerable<xcuda_Item>> Getxcuda_Item(List<string> includesLst = null, bool tracking = true)
+        public async Task<IEnumerable<AdjustmentShort_IM9Data>> GetAdjustmentShort_IM9Data(List<string> includesLst = null, bool tracking = true)
         {
             try
             {
@@ -75,7 +75,7 @@ namespace AllocationDS.Business.Services
                   using ( var dbContext = new AllocationDSContext(){StartTracking = StartTracking})
                   {
 				    var set = AddIncludes(includesLst, dbContext);
-                    IEnumerable<xcuda_Item> entities = set.AsNoTracking().ToList();
+                    IEnumerable<AdjustmentShort_IM9Data> entities = set.AsNoTracking().ToList();
                            //scope.Complete();
                             if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
                             return entities;
@@ -97,16 +97,16 @@ namespace AllocationDS.Business.Services
         }
 
 
-        public async Task<xcuda_Item> Getxcuda_ItemByKey(string Item_Id, List<string> includesLst = null, bool tracking = true)
+        public async Task<AdjustmentShort_IM9Data> GetAdjustmentShort_IM9DataByKey(string AllocationId, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
-			   if(string.IsNullOrEmpty(Item_Id))return null; 
+			   if(string.IsNullOrEmpty(AllocationId))return null; 
               using ( var dbContext = new AllocationDSContext(){StartTracking = StartTracking})
               {
-                var i = Convert.ToInt32(Item_Id);
+                var i = Convert.ToInt32(AllocationId);
 				var set = AddIncludes(includesLst, dbContext);
-                xcuda_Item entity = set.AsNoTracking().SingleOrDefault(x => x.Item_Id == i);
+                AdjustmentShort_IM9Data entity = set.AsNoTracking().SingleOrDefault(x => x.AllocationId == i);
                 if(tracking && entity != null) entity.StartTracking();
                 return entity;
               }
@@ -126,14 +126,14 @@ namespace AllocationDS.Business.Services
         }
 
 
-		 public async Task<IEnumerable<xcuda_Item>> Getxcuda_ItemByExpression(string exp, List<string> includesLst = null, bool tracking = true)
+		 public async Task<IEnumerable<AdjustmentShort_IM9Data>> GetAdjustmentShort_IM9DataByExpression(string exp, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
                 using (var dbContext = new AllocationDSContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-					if (string.IsNullOrEmpty(exp) || exp == "None") return new List<xcuda_Item>();
+					if (string.IsNullOrEmpty(exp) || exp == "None") return new List<AdjustmentShort_IM9Data>();
 					var set = AddIncludes(includesLst, dbContext);
                     if (exp == "All")
                     {
@@ -167,14 +167,14 @@ namespace AllocationDS.Business.Services
             }
         }
 
-		 public async Task<IEnumerable<xcuda_Item>> Getxcuda_ItemByExpressionLst(List<string> expLst, List<string> includesLst = null, bool tracking = true)
+		 public async Task<IEnumerable<AdjustmentShort_IM9Data>> GetAdjustmentShort_IM9DataByExpressionLst(List<string> expLst, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
                 using (var dbContext = new AllocationDSContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-					if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return new List<xcuda_Item>();
+					if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return new List<AdjustmentShort_IM9Data>();
 					var set = AddIncludes(includesLst, dbContext);
                     if (expLst.FirstOrDefault() == "All")
                     {
@@ -207,7 +207,7 @@ namespace AllocationDS.Business.Services
             }
         }
 
-		public async Task<IEnumerable<xcuda_Item>> Getxcuda_ItemByExpressionNav(string exp,
+		public async Task<IEnumerable<AdjustmentShort_IM9Data>> GetAdjustmentShort_IM9DataByExpressionNav(string exp,
 																							  Dictionary<string, string> navExp,
 																							  List<string> includesLst = null, bool tracking = true)
         {
@@ -216,7 +216,7 @@ namespace AllocationDS.Business.Services
                 using (var dbContext = new AllocationDSContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-                    if (string.IsNullOrEmpty(exp) || exp == "None") return new List<xcuda_Item>();
+                    if (string.IsNullOrEmpty(exp) || exp == "None") return new List<AdjustmentShort_IM9Data>();
 
                     if (exp == "All" && navExp.Count == 0)
                     {
@@ -229,94 +229,22 @@ namespace AllocationDS.Business.Services
                     {
                         switch (itm.Key)
                         {
-                            case "AsycudaSalesAllocations":
+                            case "PreviousDocumentItem":
                                 return
                                     await
-                                        GetWhere<AsycudaSalesAllocations>(dbContext, exp, itm.Value, "PreviousDocumentItem", "Select", includesLst)
+                                        GetWhere<xcuda_Item>(dbContext, exp, itm.Value, "AdjustmentShort_IM9Data", "SelectMany", includesLst)
 										.ConfigureAwait(continueOnCapturedContext: false);
 
-                            case "xcuda_PreviousItem":
+                            case "AsycudaSalesAllocationsPIData":
                                 return
                                     await
-                                        GetWhere<xcuda_PreviousItem>(dbContext, exp, itm.Value, "xcuda_Item", "SelectMany", includesLst)
+                                        GetWhere<AsycudaSalesAllocationsPIData>(dbContext, exp, itm.Value, "AdjustmentShort_IM9Data", "Select", includesLst)
 										.ConfigureAwait(continueOnCapturedContext: false);
 
-                            case "AsycudaDocument":
+                            case "EntryDataDetails":
                                 return
                                     await
-                                        GetWhere<AsycudaDocument>(dbContext, exp, itm.Value, "xcuda_Item", "SelectMany", includesLst)
-										.ConfigureAwait(continueOnCapturedContext: false);
-
-                            case "SubItems":
-                                return
-                                    await
-                                        GetWhere<SubItems>(dbContext, exp, itm.Value, "xcuda_Item", "Select", includesLst)
-										.ConfigureAwait(continueOnCapturedContext: false);
-
-                            case "xcuda_Goods_description":
-                                return
-                                    await
-                                        GetWhere<xcuda_Goods_description>(dbContext, exp, itm.Value, "xcuda_Item", "SelectMany", includesLst)
-										.ConfigureAwait(continueOnCapturedContext: false);
-
-                            case "xcuda_Tarification":
-                                return
-                                    await
-                                        GetWhere<xcuda_Tarification>(dbContext, exp, itm.Value, "xcuda_Item", "SelectMany", includesLst)
-										.ConfigureAwait(continueOnCapturedContext: false);
-
-                            case "xcuda_Taxation":
-                                return
-                                    await
-                                        GetWhere<xcuda_Taxation>(dbContext, exp, itm.Value, "xcuda_Item", "Select", includesLst)
-										.ConfigureAwait(continueOnCapturedContext: false);
-
-                            case "xcuda_Valuation_item":
-                                return
-                                    await
-                                        GetWhere<xcuda_Valuation_item>(dbContext, exp, itm.Value, "xcuda_Item", "SelectMany", includesLst)
-										.ConfigureAwait(continueOnCapturedContext: false);
-
-                            case "xBondAllocations":
-                                return
-                                    await
-                                        GetWhere<xBondAllocations>(dbContext, exp, itm.Value, "xcuda_Item", "Select", includesLst)
-										.ConfigureAwait(continueOnCapturedContext: false);
-
-                            case "EX9AsycudaSalesAllocations":
-                                return
-                                    await
-                                        GetWhere<EX9AsycudaSalesAllocations>(dbContext, exp, itm.Value, "PreviousDocumentItem", "Select", includesLst)
-										.ConfigureAwait(continueOnCapturedContext: false);
-
-                            case "EntryPreviousItems":
-                                return
-                                    await
-                                        GetWhere<EntryPreviousItems>(dbContext, exp, itm.Value, "xcuda_Item", "Select", includesLst)
-										.ConfigureAwait(continueOnCapturedContext: false);
-
-                            case "AdjustmentShortAllocations":
-                                return
-                                    await
-                                        GetWhere<AdjustmentShortAllocations>(dbContext, exp, itm.Value, "PreviousDocumentItem", "Select", includesLst)
-										.ConfigureAwait(continueOnCapturedContext: false);
-
-                            case "ManualAllocations":
-                                return
-                                    await
-                                        GetWhere<ManualAllocations>(dbContext, exp, itm.Value, "xcuda_Item", "Select", includesLst)
-										.ConfigureAwait(continueOnCapturedContext: false);
-
-                            case "AsycudaDocumentItemEntryDataDetails":
-                                return
-                                    await
-                                        GetWhere<AsycudaDocumentItemEntryDataDetails>(dbContext, exp, itm.Value, "xcuda_Item", "Select", includesLst)
-										.ConfigureAwait(continueOnCapturedContext: false);
-
-                            case "AdjustmentShort_IM9Data":
-                                return
-                                    await
-                                        GetWhere<AdjustmentShort_IM9Data>(dbContext, exp, itm.Value, "PreviousDocumentItem", "Select", includesLst)
+                                        GetWhere<EntryDataDetails>(dbContext, exp, itm.Value, "AdjustmentShort_IM9Data", "SelectMany", includesLst)
 										.ConfigureAwait(continueOnCapturedContext: false);
 
                         }
@@ -344,17 +272,17 @@ namespace AllocationDS.Business.Services
             }
         }
 
-        public async Task<IEnumerable<xcuda_Item>> Getxcuda_ItemByBatch(string exp,
+        public async Task<IEnumerable<AdjustmentShort_IM9Data>> GetAdjustmentShort_IM9DataByBatch(string exp,
             int totalrow, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
 
-                var res = new ConcurrentQueue<List<xcuda_Item>>();
+                var res = new ConcurrentQueue<List<AdjustmentShort_IM9Data>>();
 
 
 
-                if (string.IsNullOrEmpty(exp) || exp == "None") return new List<xcuda_Item>();
+                if (string.IsNullOrEmpty(exp) || exp == "None") return new List<AdjustmentShort_IM9Data>();
 
 
                 var batchSize = 500;
@@ -375,14 +303,14 @@ namespace AllocationDS.Business.Services
                                 dbContext.Configuration.AutoDetectChangesEnabled = false;
                                 //dbContext.Configuration.LazyLoadingEnabled = true;
                                 var set = AddIncludes(includesLst, dbContext);
-                                IQueryable<xcuda_Item> dset;
+                                IQueryable<AdjustmentShort_IM9Data> dset;
                                 if (exp == "All")
                                 {
-                                    dset = set.OrderBy(x => x.Item_Id);
+                                    dset = set.OrderBy(x => x.AllocationId);
                                 }
                                 else
                                 {
-                                    dset = set.OrderBy(x => x.Item_Id).Where(exp);
+                                    dset = set.OrderBy(x => x.AllocationId).Where(exp);
                                 }
 
                                 var lst = dset.AsNoTracking()
@@ -419,17 +347,17 @@ namespace AllocationDS.Business.Services
                 throw new FaultException<ValidationFault>(fault);
             }
         }
-        public async Task<IEnumerable<xcuda_Item>> Getxcuda_ItemByBatchExpressionLst(List<string> expLst,
+        public async Task<IEnumerable<AdjustmentShort_IM9Data>> GetAdjustmentShort_IM9DataByBatchExpressionLst(List<string> expLst,
             int totalrow, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
 
-                var res = new ConcurrentQueue<List<xcuda_Item>>();
+                var res = new ConcurrentQueue<List<AdjustmentShort_IM9Data>>();
 
 
 
-                if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return new List<xcuda_Item>();
+                if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return new List<AdjustmentShort_IM9Data>();
 
 
                 var batchSize = 500;
@@ -450,15 +378,15 @@ namespace AllocationDS.Business.Services
                                 dbContext.Configuration.AutoDetectChangesEnabled = false;
                                 //dbContext.Configuration.LazyLoadingEnabled = true;
                                 var set = AddIncludes(includesLst, dbContext);
-                                IQueryable<xcuda_Item> dset;
+                                IQueryable<AdjustmentShort_IM9Data> dset;
                                 if (expLst.FirstOrDefault() == "All")
                                 {
-                                    dset = set.OrderBy(x => x.Item_Id);
+                                    dset = set.OrderBy(x => x.AllocationId);
                                 }
                                 else
                                 {
                                     set = AddWheres(expLst, set);
-                                    dset = set.OrderBy(x => x.Item_Id);
+                                    dset = set.OrderBy(x => x.AllocationId);
                                 }
 
                                 var lst = dset.AsNoTracking()
@@ -495,13 +423,13 @@ namespace AllocationDS.Business.Services
         }
 
 
-        public async Task<xcuda_Item> Updatexcuda_Item(xcuda_Item entity)
+        public async Task<AdjustmentShort_IM9Data> UpdateAdjustmentShort_IM9Data(AdjustmentShort_IM9Data entity)
         { 
             using ( var dbContext = new AllocationDSContext(){StartTracking = StartTracking})
               {
                 try
                 {   
-                     var res = (xcuda_Item) entity;
+                     var res = (AdjustmentShort_IM9Data) entity;
                     if(res.TrackingState == TrackingState.Unchanged) res.TrackingState = TrackingState.Modified;                              
                     
                     dbContext.ApplyChanges(res);
@@ -568,14 +496,14 @@ namespace AllocationDS.Business.Services
            return entity;
         }
 
-        public async Task<xcuda_Item> Createxcuda_Item(xcuda_Item entity)
+        public async Task<AdjustmentShort_IM9Data> CreateAdjustmentShort_IM9Data(AdjustmentShort_IM9Data entity)
         {
             try
             {
-                var res = (xcuda_Item) entity;
+                var res = (AdjustmentShort_IM9Data) entity;
               using ( var dbContext = new AllocationDSContext(){StartTracking = StartTracking})
               {
-                dbContext.xcuda_Item.Add(res);
+                dbContext.AdjustmentShort_IM9Data.Add(res);
                 dbContext.SaveChanges();
                 res.AcceptChanges();
                 return res;
@@ -595,20 +523,20 @@ namespace AllocationDS.Business.Services
             }
         }
 
-        public async Task<bool> Deletexcuda_Item(string Item_Id)
+        public async Task<bool> DeleteAdjustmentShort_IM9Data(string AllocationId)
         {
             try
             {
               using ( var dbContext = new AllocationDSContext(){StartTracking = StartTracking})
               {
-                var i = Convert.ToInt32(Item_Id);
-                xcuda_Item entity = dbContext.xcuda_Item
-													.SingleOrDefault(x => x.Item_Id == i);
+                var i = Convert.ToInt32(AllocationId);
+                AdjustmentShort_IM9Data entity = dbContext.AdjustmentShort_IM9Data
+													.SingleOrDefault(x => x.AllocationId == i);
                 if (entity == null)
                     return false;
 
-                    dbContext.xcuda_Item.Attach(entity);
-                    dbContext.xcuda_Item.Remove(entity);
+                    dbContext.AdjustmentShort_IM9Data.Attach(entity);
+                    dbContext.AdjustmentShort_IM9Data.Remove(entity);
                     dbContext.SaveChanges();
                     return true;
               }
@@ -627,19 +555,19 @@ namespace AllocationDS.Business.Services
             }
         }
 
-        public async Task<bool> RemoveSelectedxcuda_Item(IEnumerable<string> lst)
+        public async Task<bool> RemoveSelectedAdjustmentShort_IM9Data(IEnumerable<string> lst)
         {
             try
             {
-                StatusModel.StartStatusUpdate("Removing xcuda_Item", lst.Count());
+                StatusModel.StartStatusUpdate("Removing AdjustmentShort_IM9Data", lst.Count());
                 var t = Task.Run(() =>
                 {
-                    using (var ctx = new xcuda_ItemService())
+                    using (var ctx = new AdjustmentShort_IM9DataService())
                     {
                         foreach (var item in lst.ToList())
                         {
 
-                            ctx.Deletexcuda_Item(item).Wait();
+                            ctx.DeleteAdjustmentShort_IM9Data(item).Wait();
                             StatusModel.StatusUpdate();
                         }
                     }
@@ -674,7 +602,7 @@ namespace AllocationDS.Business.Services
                 {
                     dbContext.Database.CommandTimeout = 0;
                     if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return 0;
-                    var set = (IQueryable<xcuda_Item>)dbContext.xcuda_Item; 
+                    var set = (IQueryable<AdjustmentShort_IM9Data>)dbContext.AdjustmentShort_IM9Data; 
                     if (expLst.FirstOrDefault() == "All")
                     {
                         return set.AsNoTracking().Count();
@@ -710,14 +638,14 @@ namespace AllocationDS.Business.Services
                     if (string.IsNullOrEmpty(exp) || exp == "None") return 0;
                     if (exp == "All")
                     {
-                        return dbContext.xcuda_Item
+                        return dbContext.AdjustmentShort_IM9Data
                                     .AsNoTracking()
 									.Count();
                     }
                     else
                     {
                         
-                        return dbContext.xcuda_Item
+                        return dbContext.AdjustmentShort_IM9Data
 									.AsNoTracking()
                                     .Where(exp)
 									.Count();
@@ -738,19 +666,19 @@ namespace AllocationDS.Business.Services
             }
         }
         
-        public async Task<IEnumerable<xcuda_Item>> LoadRange(int startIndex, int count, string exp)
+        public async Task<IEnumerable<AdjustmentShort_IM9Data>> LoadRange(int startIndex, int count, string exp)
         {
             try
             {
                 using (var dbContext = new AllocationDSContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-                    if (string.IsNullOrEmpty(exp) || exp == "None") return new List<xcuda_Item>();
+                    if (string.IsNullOrEmpty(exp) || exp == "None") return new List<AdjustmentShort_IM9Data>();
                     if (exp == "All")
                     {
-                        return dbContext.xcuda_Item
+                        return dbContext.AdjustmentShort_IM9Data
 										.AsNoTracking()
-                                        .OrderBy(y => y.Item_Id)
+                                        .OrderBy(y => y.AllocationId)
 										.Skip(startIndex)
 										.Take(count)
 										.ToList();
@@ -758,10 +686,10 @@ namespace AllocationDS.Business.Services
                     else
                     {
                         
-                        return dbContext.xcuda_Item
+                        return dbContext.AdjustmentShort_IM9Data
 										.AsNoTracking()
                                         .Where(exp)
-										.OrderBy(y => y.Item_Id)
+										.OrderBy(y => y.AllocationId)
 										.Skip(startIndex)
 										.Take(count)
 										.ToList();
@@ -792,7 +720,7 @@ namespace AllocationDS.Business.Services
                     dbContext.Database.CommandTimeout = 0;
                     if (exp == "All" && navExp.Count == 0)
                     {
-                        return dbContext.xcuda_Item
+                        return dbContext.AdjustmentShort_IM9Data
 										.AsNoTracking()
                                         .Count();
                     }
@@ -800,54 +728,18 @@ namespace AllocationDS.Business.Services
                     {
                         switch (itm.Key)
                         {
-                            case "AsycudaSalesAllocations":
-                                return await CountWhere<AsycudaSalesAllocations>(dbContext, exp, itm.Value, "PreviousDocumentItem", "Select")
+                            case "PreviousDocumentItem":
+                                return await CountWhere<xcuda_Item>(dbContext, exp, itm.Value, "AdjustmentShort_IM9Data", "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "xcuda_PreviousItem":
-                                return await CountWhere<xcuda_PreviousItem>(dbContext, exp, itm.Value, "xcuda_Item", "SelectMany")
+                            case "AsycudaSalesAllocationsPIData":
+                                return await CountWhere<AsycudaSalesAllocationsPIData>(dbContext, exp, itm.Value, "AdjustmentShort_IM9Data", "Select")
 											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "AsycudaDocument":
-                                return await CountWhere<AsycudaDocument>(dbContext, exp, itm.Value, "xcuda_Item", "SelectMany")
-											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "SubItems":
-                                return await CountWhere<SubItems>(dbContext, exp, itm.Value, "xcuda_Item", "Select")
-											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "xcuda_Goods_description":
-                                return await CountWhere<xcuda_Goods_description>(dbContext, exp, itm.Value, "xcuda_Item", "SelectMany")
-											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "xcuda_Tarification":
-                                return await CountWhere<xcuda_Tarification>(dbContext, exp, itm.Value, "xcuda_Item", "SelectMany")
-											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "xcuda_Taxation":
-                                return await CountWhere<xcuda_Taxation>(dbContext, exp, itm.Value, "xcuda_Item", "Select")
-											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "xcuda_Valuation_item":
-                                return await CountWhere<xcuda_Valuation_item>(dbContext, exp, itm.Value, "xcuda_Item", "SelectMany")
-											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "xBondAllocations":
-                                return await CountWhere<xBondAllocations>(dbContext, exp, itm.Value, "xcuda_Item", "Select")
-											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "EX9AsycudaSalesAllocations":
-                                return await CountWhere<EX9AsycudaSalesAllocations>(dbContext, exp, itm.Value, "PreviousDocumentItem", "Select")
-											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "EntryPreviousItems":
-                                return await CountWhere<EntryPreviousItems>(dbContext, exp, itm.Value, "xcuda_Item", "Select")
-											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "AdjustmentShortAllocations":
-                                return await CountWhere<AdjustmentShortAllocations>(dbContext, exp, itm.Value, "PreviousDocumentItem", "Select")
-											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "ManualAllocations":
-                                return await CountWhere<ManualAllocations>(dbContext, exp, itm.Value, "xcuda_Item", "Select")
-											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "AsycudaDocumentItemEntryDataDetails":
-                                return await CountWhere<AsycudaDocumentItemEntryDataDetails>(dbContext, exp, itm.Value, "xcuda_Item", "Select")
-											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "AdjustmentShort_IM9Data":
-                                return await CountWhere<AdjustmentShort_IM9Data>(dbContext, exp, itm.Value, "PreviousDocumentItem", "Select")
+                            case "EntryDataDetails":
+                                return await CountWhere<EntryDataDetails>(dbContext, exp, itm.Value, "AdjustmentShort_IM9Data", "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }
-                    return dbContext.xcuda_Item.Where(exp == "All" || exp == null ? "Item_Id != null" : exp)
+                    return dbContext.AdjustmentShort_IM9Data.Where(exp == "All" || exp == null ? "AllocationId != null" : exp)
 											.AsNoTracking()
                                             .Count();
                 }
@@ -888,10 +780,10 @@ namespace AllocationDS.Business.Services
             return dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
-                .SelectMany(navProp).OfType<xcuda_Item>()
-                .Where(exp == "All" || exp == null ? "Item_Id != null" : exp)
+                .SelectMany(navProp).OfType<AdjustmentShort_IM9Data>()
+                .Where(exp == "All" || exp == null ? "AllocationId != null" : exp)
                 .Distinct()
-                .OrderBy("Item_Id")
+                .OrderBy("AllocationId")
                 .Count();
 			}
 			catch (Exception)
@@ -908,10 +800,10 @@ namespace AllocationDS.Business.Services
             return dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
-                .Select(navProp).OfType<xcuda_Item>()
-                .Where(exp == "All" || exp == null ? "Item_Id != null" : exp)
+                .Select(navProp).OfType<AdjustmentShort_IM9Data>()
+                .Where(exp == "All" || exp == null ? "AllocationId != null" : exp)
                 .Distinct()
-                .OrderBy("Item_Id")
+                .OrderBy("AllocationId")
                 .Count();
 			}
 			catch (Exception)
@@ -921,7 +813,7 @@ namespace AllocationDS.Business.Services
 			}
         }
 
-		  public async Task<IEnumerable<xcuda_Item>> LoadRangeNav(int startIndex, int count, string exp,
+		  public async Task<IEnumerable<AdjustmentShort_IM9Data>> LoadRangeNav(int startIndex, int count, string exp,
                                                                                  Dictionary<string, string> navExp, IEnumerable<string> includeLst = null)
         {
             try
@@ -929,7 +821,7 @@ namespace AllocationDS.Business.Services
                 using (var dbContext = new AllocationDSContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-                    if ((string.IsNullOrEmpty(exp) && navExp.Count == 0) || exp == "None") return new List<xcuda_Item>();
+                    if ((string.IsNullOrEmpty(exp) && navExp.Count == 0) || exp == "None") return new List<AdjustmentShort_IM9Data>();
                     var set = AddIncludes(includeLst, dbContext);
 
                     if (exp == "All" && navExp.Count == 0)
@@ -937,7 +829,7 @@ namespace AllocationDS.Business.Services
                        
                         return set
 									.AsNoTracking()
-                                    .OrderBy(y => y.Item_Id)
+                                    .OrderBy(y => y.AllocationId)
  
                                     .Skip(startIndex)
                                     .Take(count)
@@ -947,94 +839,22 @@ namespace AllocationDS.Business.Services
                     {
                         switch (itm.Key)
                         {
-                            case "AsycudaSalesAllocations":
+                            case "PreviousDocumentItem":
                                 return
                                     await
-                                        LoadRangeWhere<AsycudaSalesAllocations>(startIndex, count, dbContext, exp, itm.Value, "PreviousDocumentItem", "Select")
+                                        LoadRangeWhere<xcuda_Item>(startIndex, count, dbContext, exp, itm.Value, "AdjustmentShort_IM9Data", "SelectMany")
 													.ConfigureAwait(continueOnCapturedContext: false);
 
-                            case "xcuda_PreviousItem":
+                            case "AsycudaSalesAllocationsPIData":
                                 return
                                     await
-                                        LoadRangeWhere<xcuda_PreviousItem>(startIndex, count, dbContext, exp, itm.Value, "xcuda_Item", "SelectMany")
+                                        LoadRangeWhere<AsycudaSalesAllocationsPIData>(startIndex, count, dbContext, exp, itm.Value, "AdjustmentShort_IM9Data", "Select")
 													.ConfigureAwait(continueOnCapturedContext: false);
 
-                            case "AsycudaDocument":
+                            case "EntryDataDetails":
                                 return
                                     await
-                                        LoadRangeWhere<AsycudaDocument>(startIndex, count, dbContext, exp, itm.Value, "xcuda_Item", "SelectMany")
-													.ConfigureAwait(continueOnCapturedContext: false);
-
-                            case "SubItems":
-                                return
-                                    await
-                                        LoadRangeWhere<SubItems>(startIndex, count, dbContext, exp, itm.Value, "xcuda_Item", "Select")
-													.ConfigureAwait(continueOnCapturedContext: false);
-
-                            case "xcuda_Goods_description":
-                                return
-                                    await
-                                        LoadRangeWhere<xcuda_Goods_description>(startIndex, count, dbContext, exp, itm.Value, "xcuda_Item", "SelectMany")
-													.ConfigureAwait(continueOnCapturedContext: false);
-
-                            case "xcuda_Tarification":
-                                return
-                                    await
-                                        LoadRangeWhere<xcuda_Tarification>(startIndex, count, dbContext, exp, itm.Value, "xcuda_Item", "SelectMany")
-													.ConfigureAwait(continueOnCapturedContext: false);
-
-                            case "xcuda_Taxation":
-                                return
-                                    await
-                                        LoadRangeWhere<xcuda_Taxation>(startIndex, count, dbContext, exp, itm.Value, "xcuda_Item", "Select")
-													.ConfigureAwait(continueOnCapturedContext: false);
-
-                            case "xcuda_Valuation_item":
-                                return
-                                    await
-                                        LoadRangeWhere<xcuda_Valuation_item>(startIndex, count, dbContext, exp, itm.Value, "xcuda_Item", "SelectMany")
-													.ConfigureAwait(continueOnCapturedContext: false);
-
-                            case "xBondAllocations":
-                                return
-                                    await
-                                        LoadRangeWhere<xBondAllocations>(startIndex, count, dbContext, exp, itm.Value, "xcuda_Item", "Select")
-													.ConfigureAwait(continueOnCapturedContext: false);
-
-                            case "EX9AsycudaSalesAllocations":
-                                return
-                                    await
-                                        LoadRangeWhere<EX9AsycudaSalesAllocations>(startIndex, count, dbContext, exp, itm.Value, "PreviousDocumentItem", "Select")
-													.ConfigureAwait(continueOnCapturedContext: false);
-
-                            case "EntryPreviousItems":
-                                return
-                                    await
-                                        LoadRangeWhere<EntryPreviousItems>(startIndex, count, dbContext, exp, itm.Value, "xcuda_Item", "Select")
-													.ConfigureAwait(continueOnCapturedContext: false);
-
-                            case "AdjustmentShortAllocations":
-                                return
-                                    await
-                                        LoadRangeWhere<AdjustmentShortAllocations>(startIndex, count, dbContext, exp, itm.Value, "PreviousDocumentItem", "Select")
-													.ConfigureAwait(continueOnCapturedContext: false);
-
-                            case "ManualAllocations":
-                                return
-                                    await
-                                        LoadRangeWhere<ManualAllocations>(startIndex, count, dbContext, exp, itm.Value, "xcuda_Item", "Select")
-													.ConfigureAwait(continueOnCapturedContext: false);
-
-                            case "AsycudaDocumentItemEntryDataDetails":
-                                return
-                                    await
-                                        LoadRangeWhere<AsycudaDocumentItemEntryDataDetails>(startIndex, count, dbContext, exp, itm.Value, "xcuda_Item", "Select")
-													.ConfigureAwait(continueOnCapturedContext: false);
-
-                            case "AdjustmentShort_IM9Data":
-                                return
-                                    await
-                                        LoadRangeWhere<AdjustmentShort_IM9Data>(startIndex, count, dbContext, exp, itm.Value, "PreviousDocumentItem", "Select")
+                                        LoadRangeWhere<EntryDataDetails>(startIndex, count, dbContext, exp, itm.Value, "AdjustmentShort_IM9Data", "SelectMany")
 													.ConfigureAwait(continueOnCapturedContext: false);
 
                           
@@ -1043,10 +863,10 @@ namespace AllocationDS.Business.Services
 						}
 
                     }
-                    return set//dbContext.xcuda_Item
+                    return set//dbContext.AdjustmentShort_IM9Data
 								.AsNoTracking()
-                                .Where(exp == "All" || exp == null ? "Item_Id != null" : exp)
-								.OrderBy(y => y.Item_Id)
+                                .Where(exp == "All" || exp == null ? "AllocationId != null" : exp)
+								.OrderBy(y => y.AllocationId)
  
                                 .Skip(startIndex)
                                 .Take(count)
@@ -1069,7 +889,7 @@ namespace AllocationDS.Business.Services
             }
         }
 
-		private static async Task<IEnumerable<xcuda_Item>> LoadRangeWhere<T>(int startIndex, int count,
+		private static async Task<IEnumerable<AdjustmentShort_IM9Data>> LoadRangeWhere<T>(int startIndex, int count,
             AllocationDSContext dbContext, string exp, string navExp, string navProp, string rel, IEnumerable<string> includeLst = null) where T : class
         {
              switch (rel)
@@ -1084,7 +904,7 @@ namespace AllocationDS.Business.Services
 		    }
         }
 
-		private static async Task<IEnumerable<xcuda_Item>> LoadRangeSelectMany<T>(int startIndex, int count,
+		private static async Task<IEnumerable<AdjustmentShort_IM9Data>> LoadRangeSelectMany<T>(int startIndex, int count,
             AllocationDSContext dbContext, string exp, string navExp, string navProp, IEnumerable<string> includeLst = null) where T : class
         {
 			try
@@ -1092,14 +912,14 @@ namespace AllocationDS.Business.Services
             var set = dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
-                .SelectMany(navProp).OfType<xcuda_Item>();
+                .SelectMany(navProp).OfType<AdjustmentShort_IM9Data>();
     
             if (includeLst != null) set = includeLst.Aggregate(set, (current, itm) => current.Include(itm));            
 
             return set
-                .Where(exp == "All" || exp == null ? "Item_Id != null" : exp)
+                .Where(exp == "All" || exp == null ? "AllocationId != null" : exp)
                 .Distinct()
-                .OrderBy(y => y.Item_Id)
+                .OrderBy(y => y.AllocationId)
  
                 .Skip(startIndex)
                 .Take(count)
@@ -1112,7 +932,7 @@ namespace AllocationDS.Business.Services
 			}
         }
 
-		private static async Task<IEnumerable<xcuda_Item>> LoadRangeSelect<T>(int startIndex, int count,
+		private static async Task<IEnumerable<AdjustmentShort_IM9Data>> LoadRangeSelect<T>(int startIndex, int count,
             AllocationDSContext dbContext, string exp, string navExp, string navProp, IEnumerable<string> includeLst = null) where T : class
         {
 			try
@@ -1120,14 +940,14 @@ namespace AllocationDS.Business.Services
               var set = dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
-                .Select(navProp).OfType<xcuda_Item>();
+                .Select(navProp).OfType<AdjustmentShort_IM9Data>();
 
                if (includeLst != null) set = includeLst.Aggregate(set, (current, itm) => current.Include(itm)); 
                 
                return set
-                .Where(exp == "All" || exp == null ? "Item_Id != null" : exp)
+                .Where(exp == "All" || exp == null ? "AllocationId != null" : exp)
                 .Distinct()
-                .OrderBy(y => y.Item_Id)
+                .OrderBy(y => y.AllocationId)
  
                 .Skip(startIndex)
                 .Take(count)
@@ -1140,7 +960,7 @@ namespace AllocationDS.Business.Services
 			}
         }
 
-        private static async Task<IEnumerable<xcuda_Item>> GetWhere<T>(AllocationDSContext dbContext,
+        private static async Task<IEnumerable<AdjustmentShort_IM9Data>> GetWhere<T>(AllocationDSContext dbContext,
             string exp, string navExp, string navProp, string rel, List<string> includesLst = null) where T : class
         {
 			try
@@ -1164,7 +984,7 @@ namespace AllocationDS.Business.Services
 			}
         }
 
-		private static async Task<IEnumerable<xcuda_Item>> GetWhereSelectMany<T>(AllocationDSContext dbContext,
+		private static async Task<IEnumerable<AdjustmentShort_IM9Data>> GetWhereSelectMany<T>(AllocationDSContext dbContext,
             string exp, string navExp, string navProp, List<string> includesLst = null) where T : class
         {
 			try
@@ -1175,17 +995,17 @@ namespace AllocationDS.Business.Services
 				return dbContext.Set<T>()
 							.AsNoTracking()
                             .Where(navExp)
-							.SelectMany(navProp).OfType<xcuda_Item>()
-							.Where(exp == "All" || exp == null?"Item_Id != null":exp)
+							.SelectMany(navProp).OfType<AdjustmentShort_IM9Data>()
+							.Where(exp == "All" || exp == null?"AllocationId != null":exp)
 							.Distinct()
 							.ToList();
 			}
 
-			var set = (DbQuery<xcuda_Item>)dbContext.Set<T>()
+			var set = (DbQuery<AdjustmentShort_IM9Data>)dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
-                .SelectMany(navProp).OfType<xcuda_Item>()
-                .Where(exp == "All" || exp == null?"Item_Id != null":exp)
+                .SelectMany(navProp).OfType<AdjustmentShort_IM9Data>()
+                .Where(exp == "All" || exp == null?"AllocationId != null":exp)
                 .Distinct();
 
 			set = includesLst.Aggregate(set, (current, itm) => current.Include(itm));
@@ -1199,7 +1019,7 @@ namespace AllocationDS.Business.Services
 			}
         }
 
-		private static async Task<IEnumerable<xcuda_Item>> GetWhereSelect<T>(AllocationDSContext dbContext,
+		private static async Task<IEnumerable<AdjustmentShort_IM9Data>> GetWhereSelect<T>(AllocationDSContext dbContext,
             string exp, string navExp, string navProp, List<string> includesLst = null) where T : class
         {
 			try
@@ -1210,17 +1030,17 @@ namespace AllocationDS.Business.Services
 				return dbContext.Set<T>()
 							.AsNoTracking()
                             .Where(navExp)
-							.Select(navProp).OfType<xcuda_Item>()
-							.Where(exp == "All" || exp == null?"Item_Id != null":exp)
+							.Select(navProp).OfType<AdjustmentShort_IM9Data>()
+							.Where(exp == "All" || exp == null?"AllocationId != null":exp)
 							.Distinct()
 							.ToList();
 			}
 
-			var set = (DbQuery<xcuda_Item>)dbContext.Set<T>()
+			var set = (DbQuery<AdjustmentShort_IM9Data>)dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
-                .Select(navProp).OfType<xcuda_Item>()
-                .Where(exp == "All" || exp == null?"Item_Id != null":exp)
+                .Select(navProp).OfType<AdjustmentShort_IM9Data>()
+                .Where(exp == "All" || exp == null?"AllocationId != null":exp)
                 .Distinct();
 
 			set = includesLst.Aggregate(set, (current, itm) => current.Include(itm));
@@ -1234,27 +1054,18 @@ namespace AllocationDS.Business.Services
 			}
         }
 
-			        public async Task<IEnumerable<xcuda_Item>> Getxcuda_ItemByASYCUDA_Id(string ASYCUDA_Id, List<string> includesLst = null)
+			        public async Task<IEnumerable<AdjustmentShort_IM9Data>> GetAdjustmentShort_IM9DataByEntryDataDetailsId(string EntryDataDetailsId, List<string> includesLst = null)
         {
             try
             {
                 using ( var dbContext = new AllocationDSContext(){StartTracking = StartTracking})
               {
-                var i = Convert.ToInt32(ASYCUDA_Id);
+                var i = Convert.ToInt32(EntryDataDetailsId);
                 var set = AddIncludes(includesLst, dbContext);
-                IEnumerable<xcuda_Item> entities = set//dbContext.xcuda_Item
-                                                    // .Include(x => x.AsycudaSalesAllocations)									  
-                                                    // .Include(x => x.SubItems)									  
-                                                    // .Include(x => x.xcuda_Taxation)									  
-                                                    // .Include(x => x.xBondAllocations)									  
-                                                    // .Include(x => x.EX9AsycudaSalesAllocations)									  
-                                                    // .Include(x => x.EntryPreviousItems)									  
-                                                    // .Include(x => x.AdjustmentShortAllocations)									  
-                                                    // .Include(x => x.ManualAllocations)									  
-                                                    // .Include(x => x.AsycudaDocumentItemEntryDataDetails)									  
-                                                    // .Include(x => x.AdjustmentShort_IM9Data)									  
+                IEnumerable<AdjustmentShort_IM9Data> entities = set//dbContext.AdjustmentShort_IM9Data
+                                                    // .Include(x => x.AsycudaSalesAllocationsPIData)									  
                                       .AsNoTracking()
-                                        .Where(x => x.ASYCUDA_Id.ToString() == ASYCUDA_Id.ToString())
+                                        .Where(x => x.EntryDataDetailsId.ToString() == EntryDataDetailsId.ToString())
 										.ToList();
                 return entities;
               }
@@ -1272,27 +1083,134 @@ namespace AllocationDS.Business.Services
                     throw new FaultException<ValidationFault>(fault);
             }
         }
- 	        public async Task<IEnumerable<xcuda_Item>> Getxcuda_ItemByEntryDataDetailsId(string EntryDataDetailsId, List<string> includesLst = null)
+ 	        public async Task<IEnumerable<AdjustmentShort_IM9Data>> GetAdjustmentShort_IM9DataByPreviousItem_Id(string PreviousItem_Id, List<string> includesLst = null)
         {
             try
             {
                 using ( var dbContext = new AllocationDSContext(){StartTracking = StartTracking})
               {
-                var i = Convert.ToInt32(EntryDataDetailsId);
+                var i = Convert.ToInt32(PreviousItem_Id);
                 var set = AddIncludes(includesLst, dbContext);
-                IEnumerable<xcuda_Item> entities = set//dbContext.xcuda_Item
-                                                    // .Include(x => x.AsycudaSalesAllocations)									  
-                                                    // .Include(x => x.SubItems)									  
-                                                    // .Include(x => x.xcuda_Taxation)									  
-                                                    // .Include(x => x.xBondAllocations)									  
-                                                    // .Include(x => x.EX9AsycudaSalesAllocations)									  
-                                                    // .Include(x => x.EntryPreviousItems)									  
-                                                    // .Include(x => x.AdjustmentShortAllocations)									  
-                                                    // .Include(x => x.ManualAllocations)									  
-                                                    // .Include(x => x.AsycudaDocumentItemEntryDataDetails)									  
-                                                    // .Include(x => x.AdjustmentShort_IM9Data)									  
+                IEnumerable<AdjustmentShort_IM9Data> entities = set//dbContext.AdjustmentShort_IM9Data
+                                                    // .Include(x => x.AsycudaSalesAllocationsPIData)									  
                                       .AsNoTracking()
-                                        .Where(x => x.EntryDataDetailsId.ToString() == EntryDataDetailsId.ToString())
+                                        .Where(x => x.PreviousItem_Id.ToString() == PreviousItem_Id.ToString())
+										.ToList();
+                return entities;
+              }
+             }
+            catch (Exception updateEx)
+            {
+                System.Diagnostics.Debugger.Break();
+                //throw new FaultException(updateEx.Message);
+                    var fault = new ValidationFault
+                                {
+                                    Result = false,
+                                    Message = updateEx.Message,
+                                    Description = updateEx.StackTrace
+                                };
+                    throw new FaultException<ValidationFault>(fault);
+            }
+        }
+ 	        public async Task<IEnumerable<AdjustmentShort_IM9Data>> GetAdjustmentShort_IM9DataByFileTypeId(string FileTypeId, List<string> includesLst = null)
+        {
+            try
+            {
+                using ( var dbContext = new AllocationDSContext(){StartTracking = StartTracking})
+              {
+                var i = Convert.ToInt32(FileTypeId);
+                var set = AddIncludes(includesLst, dbContext);
+                IEnumerable<AdjustmentShort_IM9Data> entities = set//dbContext.AdjustmentShort_IM9Data
+                                                    // .Include(x => x.AsycudaSalesAllocationsPIData)									  
+                                      .AsNoTracking()
+                                        .Where(x => x.FileTypeId.ToString() == FileTypeId.ToString())
+										.ToList();
+                return entities;
+              }
+             }
+            catch (Exception updateEx)
+            {
+                System.Diagnostics.Debugger.Break();
+                //throw new FaultException(updateEx.Message);
+                    var fault = new ValidationFault
+                                {
+                                    Result = false,
+                                    Message = updateEx.Message,
+                                    Description = updateEx.StackTrace
+                                };
+                    throw new FaultException<ValidationFault>(fault);
+            }
+        }
+ 	        public async Task<IEnumerable<AdjustmentShort_IM9Data>> GetAdjustmentShort_IM9DataByEmailId(string EmailId, List<string> includesLst = null)
+        {
+            try
+            {
+                using ( var dbContext = new AllocationDSContext(){StartTracking = StartTracking})
+              {
+                var i = EmailId;
+                var set = AddIncludes(includesLst, dbContext);
+                IEnumerable<AdjustmentShort_IM9Data> entities = set//dbContext.AdjustmentShort_IM9Data
+                                                    // .Include(x => x.AsycudaSalesAllocationsPIData)									  
+                                      .AsNoTracking()
+                                        .Where(x => x.EmailId.ToString() == EmailId.ToString())
+										.ToList();
+                return entities;
+              }
+             }
+            catch (Exception updateEx)
+            {
+                System.Diagnostics.Debugger.Break();
+                //throw new FaultException(updateEx.Message);
+                    var fault = new ValidationFault
+                                {
+                                    Result = false,
+                                    Message = updateEx.Message,
+                                    Description = updateEx.StackTrace
+                                };
+                    throw new FaultException<ValidationFault>(fault);
+            }
+        }
+ 	        public async Task<IEnumerable<AdjustmentShort_IM9Data>> GetAdjustmentShort_IM9DataByInventoryItemId(string InventoryItemId, List<string> includesLst = null)
+        {
+            try
+            {
+                using ( var dbContext = new AllocationDSContext(){StartTracking = StartTracking})
+              {
+                var i = Convert.ToInt32(InventoryItemId);
+                var set = AddIncludes(includesLst, dbContext);
+                IEnumerable<AdjustmentShort_IM9Data> entities = set//dbContext.AdjustmentShort_IM9Data
+                                                    // .Include(x => x.AsycudaSalesAllocationsPIData)									  
+                                      .AsNoTracking()
+                                        .Where(x => x.InventoryItemId.ToString() == InventoryItemId.ToString())
+										.ToList();
+                return entities;
+              }
+             }
+            catch (Exception updateEx)
+            {
+                System.Diagnostics.Debugger.Break();
+                //throw new FaultException(updateEx.Message);
+                    var fault = new ValidationFault
+                                {
+                                    Result = false,
+                                    Message = updateEx.Message,
+                                    Description = updateEx.StackTrace
+                                };
+                    throw new FaultException<ValidationFault>(fault);
+            }
+        }
+ 	        public async Task<IEnumerable<AdjustmentShort_IM9Data>> GetAdjustmentShort_IM9DataByxBond_Item_Id(string xBond_Item_Id, List<string> includesLst = null)
+        {
+            try
+            {
+                using ( var dbContext = new AllocationDSContext(){StartTracking = StartTracking})
+              {
+                var i = Convert.ToInt32(xBond_Item_Id);
+                var set = AddIncludes(includesLst, dbContext);
+                IEnumerable<AdjustmentShort_IM9Data> entities = set//dbContext.AdjustmentShort_IM9Data
+                                                    // .Include(x => x.AsycudaSalesAllocationsPIData)									  
+                                      .AsNoTracking()
+                                        .Where(x => x.xBond_Item_Id.ToString() == xBond_Item_Id.ToString())
 										.ToList();
                 return entities;
               }
@@ -1322,11 +1240,11 @@ namespace AllocationDS.Business.Services
                      if (string.IsNullOrEmpty(whereExp) || whereExp == "None") return 0;
                      if (whereExp == "All")
                      {
-                          res = Convert.ToDecimal(dbContext.xcuda_Item.AsNoTracking().Sum(field));
+                          res = Convert.ToDecimal(dbContext.AdjustmentShort_IM9Data.AsNoTracking().Sum(field));
                      }
                      else
                      {
-                         res = Convert.ToDecimal(dbContext.xcuda_Item.AsNoTracking().Where(whereExp).Sum(field));
+                         res = Convert.ToDecimal(dbContext.AdjustmentShort_IM9Data.AsNoTracking().Where(whereExp).Sum(field));
                      }
                      
                      return res;
@@ -1354,10 +1272,10 @@ namespace AllocationDS.Business.Services
                 using (var dbContext = new AllocationDSContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-                    if (!dbContext.xcuda_Item.Any()) return 0;
+                    if (!dbContext.AdjustmentShort_IM9Data.Any()) return 0;
                     if (exp == "All" && navExp.Count == 0)
                     {
-                        return Convert.ToDecimal(dbContext.xcuda_Item
+                        return Convert.ToDecimal(dbContext.AdjustmentShort_IM9Data
 										.AsNoTracking()
                                         .Sum(field)??0);
                     }
@@ -1365,54 +1283,18 @@ namespace AllocationDS.Business.Services
                     {
                         switch (itm.Key)
                         {
-                            case "AsycudaSalesAllocations":
-                                return await SumWhere<AsycudaSalesAllocations>(dbContext, exp, itm.Value, "PreviousDocumentItem", field, "Select")
+                            case "PreviousDocumentItem":
+                                return await SumWhere<xcuda_Item>(dbContext, exp, itm.Value, "AdjustmentShort_IM9Data", field, "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "xcuda_PreviousItem":
-                                return await SumWhere<xcuda_PreviousItem>(dbContext, exp, itm.Value, "xcuda_Item", field, "SelectMany")
+                            case "AsycudaSalesAllocationsPIData":
+                                return await SumWhere<AsycudaSalesAllocationsPIData>(dbContext, exp, itm.Value, "AdjustmentShort_IM9Data", field, "Select")
 											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "AsycudaDocument":
-                                return await SumWhere<AsycudaDocument>(dbContext, exp, itm.Value, "xcuda_Item", field, "SelectMany")
-											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "SubItems":
-                                return await SumWhere<SubItems>(dbContext, exp, itm.Value, "xcuda_Item", field, "Select")
-											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "xcuda_Goods_description":
-                                return await SumWhere<xcuda_Goods_description>(dbContext, exp, itm.Value, "xcuda_Item", field, "SelectMany")
-											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "xcuda_Tarification":
-                                return await SumWhere<xcuda_Tarification>(dbContext, exp, itm.Value, "xcuda_Item", field, "SelectMany")
-											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "xcuda_Taxation":
-                                return await SumWhere<xcuda_Taxation>(dbContext, exp, itm.Value, "xcuda_Item", field, "Select")
-											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "xcuda_Valuation_item":
-                                return await SumWhere<xcuda_Valuation_item>(dbContext, exp, itm.Value, "xcuda_Item", field, "SelectMany")
-											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "xBondAllocations":
-                                return await SumWhere<xBondAllocations>(dbContext, exp, itm.Value, "xcuda_Item", field, "Select")
-											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "EX9AsycudaSalesAllocations":
-                                return await SumWhere<EX9AsycudaSalesAllocations>(dbContext, exp, itm.Value, "PreviousDocumentItem", field, "Select")
-											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "EntryPreviousItems":
-                                return await SumWhere<EntryPreviousItems>(dbContext, exp, itm.Value, "xcuda_Item", field, "Select")
-											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "AdjustmentShortAllocations":
-                                return await SumWhere<AdjustmentShortAllocations>(dbContext, exp, itm.Value, "PreviousDocumentItem", field, "Select")
-											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "ManualAllocations":
-                                return await SumWhere<ManualAllocations>(dbContext, exp, itm.Value, "xcuda_Item", field, "Select")
-											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "AsycudaDocumentItemEntryDataDetails":
-                                return await SumWhere<AsycudaDocumentItemEntryDataDetails>(dbContext, exp, itm.Value, "xcuda_Item", field, "Select")
-											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "AdjustmentShort_IM9Data":
-                                return await SumWhere<AdjustmentShort_IM9Data>(dbContext, exp, itm.Value, "PreviousDocumentItem", field, "Select")
+                            case "EntryDataDetails":
+                                return await SumWhere<EntryDataDetails>(dbContext, exp, itm.Value, "AdjustmentShort_IM9Data", field, "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }
-                    return Convert.ToDecimal(dbContext.xcuda_Item.Where(exp == "All" || exp == null ? "Item_Id != null" : exp)
+                    return Convert.ToDecimal(dbContext.AdjustmentShort_IM9Data.Where(exp == "All" || exp == null ? "AllocationId != null" : exp)
 											.AsNoTracking()
                                             .Sum(field)??0);
                 }
@@ -1452,10 +1334,10 @@ namespace AllocationDS.Business.Services
             return Convert.ToDecimal(dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
-                .SelectMany(navProp).OfType<xcuda_Item>()
-                .Where(exp == "All" || exp == null ? "Item_Id != null" : exp)
+                .SelectMany(navProp).OfType<AdjustmentShort_IM9Data>()
+                .Where(exp == "All" || exp == null ? "AllocationId != null" : exp)
                 .Distinct()
-                .OrderBy("Item_Id")
+                .OrderBy("AllocationId")
                 .Sum(field));
 			}
 			catch (Exception)
@@ -1472,10 +1354,10 @@ namespace AllocationDS.Business.Services
             return Convert.ToDecimal(dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
-                .Select(navProp).OfType<xcuda_Item>()
-                .Where(exp == "All" || exp == null ? "Item_Id != null" : exp)
+                .Select(navProp).OfType<AdjustmentShort_IM9Data>()
+                .Where(exp == "All" || exp == null ? "AllocationId != null" : exp)
                 .Distinct()
-                .OrderBy("Item_Id")
+                .OrderBy("AllocationId")
                 .Sum(field));
 			}
 			catch (Exception)
@@ -1498,11 +1380,11 @@ namespace AllocationDS.Business.Services
                      if (string.IsNullOrEmpty(whereExp) || whereExp == "None") return res;
                      if (whereExp == "All")
                      {
-                          res = Convert.ToString(dbContext.xcuda_Item.AsNoTracking().Min(field));
+                          res = Convert.ToString(dbContext.AdjustmentShort_IM9Data.AsNoTracking().Min(field));
                      }
                      else
                      {
-                         res = Convert.ToString(dbContext.xcuda_Item.AsNoTracking().Where(whereExp).Min(field));
+                         res = Convert.ToString(dbContext.AdjustmentShort_IM9Data.AsNoTracking().Where(whereExp).Min(field));
                      }
                      
                      return res;
@@ -1523,12 +1405,12 @@ namespace AllocationDS.Business.Services
          }
 
 		 
-		private static IQueryable<xcuda_Item> AddIncludes(IEnumerable<string> includesLst, AllocationDSContext dbContext)
+		private static IQueryable<AdjustmentShort_IM9Data> AddIncludes(IEnumerable<string> includesLst, AllocationDSContext dbContext)
        {
 		 try
 			{
 			   if (includesLst == null) includesLst = new List<string>();
-			   var set =(DbQuery<xcuda_Item>) dbContext.xcuda_Item; 
+			   var set =(DbQuery<AdjustmentShort_IM9Data>) dbContext.AdjustmentShort_IM9Data; 
 			   set = includesLst.Where(x => !string.IsNullOrEmpty(x))
                                 .Aggregate(set, (current, itm) => current.Include(itm));
 			   return set;
@@ -1539,7 +1421,7 @@ namespace AllocationDS.Business.Services
 				throw;
 			}
        }
-	   private IQueryable<xcuda_Item> AddWheres(List<string> expLst, IQueryable<xcuda_Item> set)
+	   private IQueryable<AdjustmentShort_IM9Data> AddWheres(List<string> expLst, IQueryable<AdjustmentShort_IM9Data> set)
         {
             try
             {

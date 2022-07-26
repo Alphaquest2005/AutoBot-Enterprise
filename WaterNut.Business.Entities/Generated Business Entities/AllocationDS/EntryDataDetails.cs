@@ -26,6 +26,7 @@ namespace AllocationDS.Business.Entities
             this.AdjustmentShortAllocations = new List<AdjustmentShortAllocations>();
             this.AsycudaDocumentItemEntryDataDetails = new List<AsycudaDocumentItemEntryDataDetails>();
             this.EX9AsycudaSalesAllocations = new List<EX9AsycudaSalesAllocations>();
+            this.AdjustmentShort_IM9Data = new List<AdjustmentShort_IM9Data>();
         }
 
         [DataMember]
@@ -543,6 +544,8 @@ namespace AllocationDS.Business.Entities
         public ManualAllocations ManualAllocations { get; set; }
         [DataMember]
         public InventoryItem InventoryItem { get; set; }
+        [DataMember]
+        public List<AdjustmentShort_IM9Data> AdjustmentShort_IM9Data { get; set; }
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

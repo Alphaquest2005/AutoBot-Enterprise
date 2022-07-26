@@ -260,6 +260,21 @@ namespace AllocationDS.Business.Entities
             }
         }
         double _salesallocatedqty;
+        [DataMember]
+        public Nullable<int> xEntryItem_Id 
+        {
+            get
+            {
+                return _xentryitem_id;
+            }
+            set
+            {
+                _xentryitem_id = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<int> _xentryitem_id;
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

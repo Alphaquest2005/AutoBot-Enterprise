@@ -289,6 +289,12 @@ namespace AllocationDS.Business.Services
                                         GetWhere<InventoryItem>(dbContext, exp, itm.Value, "EntryDataDetails", "SelectMany", includesLst)
 										.ConfigureAwait(continueOnCapturedContext: false);
 
+                            case "AdjustmentShort_IM9Data":
+                                return
+                                    await
+                                        GetWhere<AdjustmentShort_IM9Data>(dbContext, exp, itm.Value, "EntryDataDetails", "Select", includesLst)
+										.ConfigureAwait(continueOnCapturedContext: false);
+
                         }
 
                     }
@@ -800,6 +806,9 @@ namespace AllocationDS.Business.Services
                             case "InventoryItem":
                                 return await CountWhere<InventoryItem>(dbContext, exp, itm.Value, "EntryDataDetails", "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "AdjustmentShort_IM9Data":
+                                return await CountWhere<AdjustmentShort_IM9Data>(dbContext, exp, itm.Value, "EntryDataDetails", "Select")
+											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }
                     return dbContext.EntryDataDetails.Where(exp == "All" || exp == null ? "EntryDataDetailsId != null" : exp)
@@ -960,6 +969,12 @@ namespace AllocationDS.Business.Services
                                 return
                                     await
                                         LoadRangeWhere<InventoryItem>(startIndex, count, dbContext, exp, itm.Value, "EntryDataDetails", "SelectMany")
+													.ConfigureAwait(continueOnCapturedContext: false);
+
+                            case "AdjustmentShort_IM9Data":
+                                return
+                                    await
+                                        LoadRangeWhere<AdjustmentShort_IM9Data>(startIndex, count, dbContext, exp, itm.Value, "EntryDataDetails", "Select")
 													.ConfigureAwait(continueOnCapturedContext: false);
 
                           
@@ -1172,6 +1187,7 @@ namespace AllocationDS.Business.Services
                                                     // .Include(x => x.AdjustmentShortAllocations)									  
                                                     // .Include(x => x.AsycudaDocumentItemEntryDataDetails)									  
                                                     // .Include(x => x.EX9AsycudaSalesAllocations)									  
+                                                    // .Include(x => x.AdjustmentShort_IM9Data)									  
                                       .AsNoTracking()
                                         .Where(x => x.EntryDataId.ToString() == EntryDataId.ToString())
 										.ToList();
@@ -1204,6 +1220,7 @@ namespace AllocationDS.Business.Services
                                                     // .Include(x => x.AdjustmentShortAllocations)									  
                                                     // .Include(x => x.AsycudaDocumentItemEntryDataDetails)									  
                                                     // .Include(x => x.EX9AsycudaSalesAllocations)									  
+                                                    // .Include(x => x.AdjustmentShort_IM9Data)									  
                                       .AsNoTracking()
                                         .Where(x => x.InventoryItemId.ToString() == InventoryItemId.ToString())
 										.ToList();
@@ -1236,6 +1253,7 @@ namespace AllocationDS.Business.Services
                                                     // .Include(x => x.AdjustmentShortAllocations)									  
                                                     // .Include(x => x.AsycudaDocumentItemEntryDataDetails)									  
                                                     // .Include(x => x.EX9AsycudaSalesAllocations)									  
+                                                    // .Include(x => x.AdjustmentShort_IM9Data)									  
                                       .AsNoTracking()
                                         .Where(x => x.EntryData_Id.ToString() == EntryData_Id.ToString())
 										.ToList();
@@ -1339,6 +1357,9 @@ namespace AllocationDS.Business.Services
 											.ConfigureAwait(continueOnCapturedContext: false);
                             case "InventoryItem":
                                 return await SumWhere<InventoryItem>(dbContext, exp, itm.Value, "EntryDataDetails", field, "SelectMany")
+											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "AdjustmentShort_IM9Data":
+                                return await SumWhere<AdjustmentShort_IM9Data>(dbContext, exp, itm.Value, "EntryDataDetails", field, "Select")
 											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }

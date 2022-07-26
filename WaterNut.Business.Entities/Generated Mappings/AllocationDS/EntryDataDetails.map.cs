@@ -56,6 +56,7 @@
               this.HasMany(t => t.AsycudaDocumentItemEntryDataDetails).WithRequired(t => (EntryDataDetails)t.EntryDataDetails);
               this.HasMany(t => t.EX9AsycudaSalesAllocations).WithOptional(t => t.EntryDataDetails).HasForeignKey(d => d.EntryDataDetailsId);
               this.HasOptional(t => t.ManualAllocations).WithRequired(t => (EntryDataDetails)t.EntryDataDetails);
+              this.HasMany(t => t.AdjustmentShort_IM9Data).WithOptional(t => t.EntryDataDetails).HasForeignKey(d => d.EntryDataDetailsId);
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);
     			this.Ignore(t => t.ModifiedProperties);

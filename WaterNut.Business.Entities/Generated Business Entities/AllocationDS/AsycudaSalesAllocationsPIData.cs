@@ -161,6 +161,8 @@ namespace AllocationDS.Business.Entities
         public AdjustmentShortAllocations AdjustmentShortAllocations { get; set; }
         [DataMember]
         public AsycudaSalesAllocations AsycudaSalesAllocations { get; set; }
+        [DataMember]
+        public AdjustmentShort_IM9Data AdjustmentShort_IM9Data { get; set; }
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }
