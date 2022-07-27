@@ -332,7 +332,7 @@ namespace AdjustmentQS.Business.Services
                             Country_of_origin_code =
                                     c.PreviousDocumentItem.xcuda_Goods_description.Country_of_origin_code,
                             Total_CIF_itm = c.PreviousDocumentItem.xcuda_Valuation_item.Total_CIF_itm,
-                            //Net_weight_itm = c.w.FirstOrDefault().Net_weight_itm,
+                            Net_weight_itm = c.Net_weight_itm,
                             InventoryItemId = c.EntryDataDetails.InventoryItemId,
                             // Net_weight_itm = c.x.PreviousDocumentItem != null ? ctx.xcuda_Weight_itm.FirstOrDefault(q => q.Valuation_item_Id == x.PreviousItem_Id).Net_weight_itm: 0,
                             PIData = c.AsycudaSalesAllocationsPIData,

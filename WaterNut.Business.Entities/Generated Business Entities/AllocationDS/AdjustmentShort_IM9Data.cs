@@ -566,6 +566,21 @@ namespace AllocationDS.Business.Entities
         }
         int _applicationsettingsid;
         [DataMember]
+        public double Net_weight_itm 
+        {
+            get
+            {
+                return _net_weight_itm;
+            }
+            set
+            {
+                _net_weight_itm = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        double _net_weight_itm;
+        [DataMember]
         public xcuda_Item PreviousDocumentItem { get; set; }
         [DataMember]
         public List<AsycudaSalesAllocationsPIData> AsycudaSalesAllocationsPIData { get; set; }
