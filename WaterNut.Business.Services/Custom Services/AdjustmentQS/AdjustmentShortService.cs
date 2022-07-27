@@ -235,7 +235,7 @@ namespace AdjustmentQS.Business.Services
             var exp = map.Aggregate(exp1, (current, m) => current.Replace(m.Key, m.Value));
             var res = new List<EX9Allocations>();
 
-            var oldData = GetEx9AllocationsListOldway(FilterExpression, exp);
+            //var oldData = GetEx9AllocationsListOldway(FilterExpression, exp);
             var newData = GetEx9AllocationsListNewWay(FilterExpression, exp);
 
             return newData;
