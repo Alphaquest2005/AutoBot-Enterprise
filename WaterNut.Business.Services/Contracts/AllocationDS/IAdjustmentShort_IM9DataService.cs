@@ -123,6 +123,9 @@ namespace AllocationDS.Business.Services
   		[OperationContract]
         [FaultContract(typeof(ValidationFault))]
         Task<IEnumerable<AdjustmentShort_IM9Data>> GetAdjustmentShort_IM9DataByxBond_Item_Id(string xBond_Item_Id, List<string> includesLst = null);
+  		[OperationContract]
+        [FaultContract(typeof(ValidationFault))]
+        Task<IEnumerable<AdjustmentShort_IM9Data>> GetAdjustmentShort_IM9DataByApplicationSettingsId(string ApplicationSettingsId, List<string> includesLst = null);
   
 
 

@@ -48,6 +48,7 @@
               this.Property(t => t.EmailId).HasColumnName("EmailId").HasMaxLength(255);
               this.Property(t => t.InventoryItemId).HasColumnName("InventoryItemId");
               this.Property(t => t.xBond_Item_Id).HasColumnName("xBond_Item_Id");
+              this.Property(t => t.ApplicationSettingsId).HasColumnName("ApplicationSettingsId");
               this.HasOptional(t => t.PreviousDocumentItem).WithMany(t =>(ICollection<AdjustmentShort_IM9Data>) t.AdjustmentShort_IM9Data).HasForeignKey(d => d.PreviousItem_Id);
               this.HasOptional(t => t.EntryDataDetails).WithMany(t =>(ICollection<AdjustmentShort_IM9Data>) t.AdjustmentShort_IM9Data).HasForeignKey(d => d.EntryDataDetailsId);
               this.HasMany(t => t.AsycudaSalesAllocationsPIData).WithRequired(t => (AdjustmentShort_IM9Data)t.AdjustmentShort_IM9Data);

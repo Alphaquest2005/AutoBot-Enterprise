@@ -536,7 +536,7 @@ namespace AllocationDS.Business.Entities
         }
         int _inventoryitemid;
         [DataMember]
-        public Nullable<int> xBond_Item_Id 
+        public int xBond_Item_Id 
         {
             get
             {
@@ -549,7 +549,22 @@ namespace AllocationDS.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        Nullable<int> _xbond_item_id;
+        int _xbond_item_id;
+        [DataMember]
+        public int ApplicationSettingsId 
+        {
+            get
+            {
+                return _applicationsettingsid;
+            }
+            set
+            {
+                _applicationsettingsid = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        int _applicationsettingsid;
         [DataMember]
         public xcuda_Item PreviousDocumentItem { get; set; }
         [DataMember]
