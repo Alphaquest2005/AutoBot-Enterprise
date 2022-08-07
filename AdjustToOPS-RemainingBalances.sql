@@ -8,16 +8,16 @@ declare @startdate datetime, @endDate datetime,@asycudaEndDate datetime, @OPSNum
 --set @startdate = '1/1/2019'
 --set @endDate = '2/28/2019'
 --set @OPSNumber = 'OPS-02-28-2019'
-set @ApplicationSettingsId = 6
-set @startdate = '10/1/2020'
-set @endDate = '06/30/2022'
-set @OPSNumber = 'CEI-OPS-20220630'
+set @ApplicationSettingsId = 5
+set @startdate = '11/30/2021'
+set @endDate = '11/30/2021'
+set @OPSNumber = 'OPS-30-Nov-2021'
 set @lastCnumber = (SELECT CNumber
 					FROM     AsycudaDocument
 					WHERE  (AssessmentDate <= @endDate and ApplicationSettingsId = @ApplicationSettingsId)
 					GROUP BY CNumber, AssessmentDate
 					HAVING (AssessmentDate = MAX(AssessmentDate)))
-set @asycudaEndDate = '6/30/2022' --isnull((select AssessmentDate from AsycudaDocumentBasicInfo where CNumber = @lastCnumber),@endDate) 
+set @asycudaEndDate = '11/30/2021' --isnull((select AssessmentDate from AsycudaDocumentBasicInfo where CNumber = @lastCnumber),@endDate) 
 select @asycudaEndDate
 select @lastCnumber
 							
@@ -747,7 +747,7 @@ go
 							-------------Diff <> piquantity
 							---  XAN/813-0400-01 +1
 							---- vs SPY/0799320 0
-declare @ItemNumber varchar(50) = '318155'
+declare @ItemNumber varchar(50) = 'A003101'
 select 'Unexecuted Adjustments'
 select * from [#Unexecuted Adjustments] where itemnumber = @ItemNumber
 select 'Adjustments-Shorts Data'

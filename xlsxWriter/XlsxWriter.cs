@@ -247,6 +247,13 @@ namespace xlsxWriter
                 i += 1;
             }
 
+            //var isPOTotalCostZero = Math.Round(pO.PurchaseOrders.EntryDataDetails.Sum(x => x.TotalCost) - pO.ShipmentInvoice.SubTotal??0,2) == 0;
+            var isPOTotalZero = Math.Round(pO.PurchaseOrders.EntryDataDetails.Sum(x => x.Cost * x.Quantity) - pO.ShipmentInvoice.SubTotal ?? 0, 2) == 0;
+
+            var isINVTotalCostZero = Math.Round(pO.PurchaseOrders.EntryDataDetails.Sum(x => x.INVItems.Sum(z => z.INVTotalCost)) - pO.ShipmentInvoice.SubTotal ?? 0, 2) == 0;
+            //var isINVTotalZero = Math.Round(pO.PurchaseOrders.EntryDataDetails.Sum(x => x.INVItems.Sum(z => z.INVCost * z.INVQuantity)) - pO.ShipmentInvoice.SubTotal ?? 0, 2) == 0;
+
+
             var starti = i;
             foreach (var itm in pO.PurchaseOrders.EntryDataDetails
                 .OrderBy(x =>
@@ -266,8 +273,56 @@ namespace xlsxWriter
                 SetValue(workbook, i,
                     header.First(x => x.Key.Column == nameof(ShipmentInvoice.InvoiceDate)).Key.Index,
                     pO.PurchaseOrders.EntryDataDate.ToString("yyyy-MM-dd"));
-                SetValue(workbook, i, header.First(x => x.Key.Column == nameof(itm.Cost)).Key.Index,
-                    pOItem?.INVQuantity == itm.Quantity && pOItem?.INVCost != null ? pOItem?.INVCost : itm.Cost);
+
+                //if (isPOTotalCostZero)
+                //{
+                //    SetValue(workbook, i, header.First(x => x.Key.Column == nameof(itm.Cost)).Key.Index,
+                //        pOItem?.INVQuantity == itm.Quantity && pOItem?.INVCost != null ? pOItem?.POTotalCost/pOItem.POQuantity : itm.Cost);
+
+                //    SetValue(workbook, i,
+                //        header.First(x => x.Key.Column == nameof(itm.TotalCost)).Key.Index,
+                //        pOItem.POTotalCost);
+                //}
+
+                
+                if(isINVTotalCostZero)
+                {
+                    
+                    SetValue(workbook, i, header.First(x => x.Key.Column == nameof(itm.Cost)).Key.Index,
+                    pOItem?.INVQuantity == itm.Quantity && pOItem?.INVCost != null ? pOItem.INVTotalCost / pOItem.POQuantity : itm.Cost);
+
+                    SetValue(workbook, i,
+                        header.First(x => x.Key.Column == nameof(itm.TotalCost)).Key.Index,
+                        invTotalCost);
+                }
+                else
+                //if (isPOTotalZero)
+                {
+                    SetValue(workbook, i, header.First(x => x.Key.Column == nameof(itm.Cost)).Key.Index,
+                        pOItem?.INVQuantity == itm.Quantity && pOItem?.INVCost != null ? itm.Cost : itm.Cost);
+
+                    SetValue(workbook, i,
+                        header.First(x => x.Key.Column == nameof(itm.TotalCost)).Key.Index,
+                        itm.Cost * itm.Quantity);
+                }
+
+                //if (isINVTotalZero)
+                //{
+                //    SetValue(workbook, i, header.First(x => x.Key.Column == nameof(itm.Cost)).Key.Index,
+                //        pOItem?.INVQuantity == itm.Quantity && pOItem?.INVCost != null ? pOItem?.INVCost : itm.Cost);
+
+                //    SetValue(workbook, i,
+                //        header.First(x => x.Key.Column == nameof(itm.TotalCost)).Key.Index,
+                //        pOItem.INVCost * pOItem.INVQuantity);
+                //}
+                SetValue(workbook, i,
+                    header.First(x => x.Key.Column == "INVTotalCost").Key.Index,
+                    invTotalCost);
+
+                SetValue(workbook, i,
+                    header.First(x => x.Key.Column == "POTotalCost").Key.Index,
+                    pOItem?.POTotalCost ?? 0);
+
                 SetValue(workbook, i, header.First(x => x.Key.Column == "POItemDescription").Key.Index,
                     itm.ItemDescription);
                 SetValue(workbook, i,
@@ -286,9 +341,7 @@ namespace xlsxWriter
 
                 SetValue(workbook, i, header.First(x => x.Key.Column == "POItemNumber").Key.Index,
                     itm.ItemNumber);
-                SetValue(workbook, i,
-                    header.First(x => x.Key.Column == nameof(itm.TotalCost)).Key.Index,
-                    invTotalCost);
+                
 
                 SetFormula(workbook, i, header.First(x => x.Key.Column == "Total").Key.Index,
                     $"=O{i + 1}*K{i + 1}");

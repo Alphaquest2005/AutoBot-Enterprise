@@ -624,8 +624,8 @@ namespace WaterNut.DataSpace.Asycuda
                     if (!string.IsNullOrEmpty(ai.Quantity_deducted_from_licence))
                     {
                         if(ai.Licence_number.Text.Any()) di.Licence_number = ai.Licence_number.Text[0];
-                        di.Amount_deducted_from_licence = ai.Amount_deducted_from_licence;
-                        di.Quantity_deducted_from_licence = ai.Quantity_deducted_from_licence;
+                        di.Amount_deducted_from_licence = Math.Round(double.Parse(ai.Amount_deducted_from_licence == "" ? "0" : ai.Amount_deducted_from_licence), 4).ToString();
+                        di.Quantity_deducted_from_licence = Math.Round(double.Parse(ai.Quantity_deducted_from_licence == "" ? "0" : ai.Quantity_deducted_from_licence), 4).ToString(); 
                     }
 
                     await Save_PreviousInvoiceInfo(di, ai).ConfigureAwait(false);

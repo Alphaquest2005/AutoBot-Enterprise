@@ -80,8 +80,9 @@ namespace AutoBotUtilities
         private static List<ShipmentInvoice> GetShipmentInvoices()
         {
             if (shipmentInvoices == null)
-
-                shipmentInvoices = new EntryDataDSContext().ShipmentInvoice
+                using (var ctx = new EntryDataDSContext())
+                {
+                    shipmentInvoices = ctx.ShipmentInvoice
                     .Include(x => x.ShipmentRiderInvoice)
                     .Include("ShipmentRiderInvoice.ShipmentRider")
                     .Include("ShipmentRiderInvoice.ShipmentRiderDetails")
@@ -93,7 +94,10 @@ namespace AutoBotUtilities
                     .Include("InvoiceDetails.ItemAlias")
                     .Include("InvoiceDetails.POItems")
                     .ToList();
-            return shipmentInvoices;
+                    
+                    
+                }
+            return shipmentInvoices;    
         }
 
         public static Shipment LoadEmailRiders(this Shipment shipment)
