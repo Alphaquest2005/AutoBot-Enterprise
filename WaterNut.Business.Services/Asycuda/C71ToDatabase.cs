@@ -536,7 +536,7 @@ namespace WaterNut.DataSpace.Asycuda
                 if (File.Exists(instructionsFile)) File.Delete(instructionsFile);
                 
                 File.WriteAllText(instructionsFile,
-                    $"File\t{fileInfo.FullName}\t{c71.xC71_Identification_segment.xC71_Seller_segment.Address.Replace("\r\n","|")}\t{c71.xC71_Identification_segment.xC71_Seller_segment.CountryCode}\r\n");
+                    $"File\t{fileInfo.FullName}\t{c71.xC71_Identification_segment.xC71_Seller_segment.Address.Replace("\r","").Replace("\n", "")}\t{c71.xC71_Identification_segment.xC71_Seller_segment.CountryCode}\r\n");
                 return true;
             }
             catch (Exception e)

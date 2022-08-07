@@ -511,6 +511,7 @@ namespace AdjustmentQS.Business.Services
 
         public async Task CreateIM9(string filterExpression, bool perInvoice, bool process7100, int asycudaDocumentSetId, string ex9Type, string dutyFreePaid)
         {
+            CreateEx9Class.freashStart = true;
             await CreateIM9(filterExpression, perInvoice, asycudaDocumentSetId, dutyFreePaid,
                 ex9Type, null, null).ConfigureAwait(false);
         }

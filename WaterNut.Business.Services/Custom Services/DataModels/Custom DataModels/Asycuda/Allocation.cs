@@ -101,7 +101,10 @@ namespace WaterNut.DataSpace
 				
 
 
-				await AllocateSalesByMatchingSalestoAsycudaEntriesOnItemNumber(applicationSettings.ApplicationSettingsId, allocateToLastAdjustment, null).ConfigureAwait(false);
+				await AllocateSalesByMatchingSalestoAsycudaEntriesOnItemNumber(applicationSettings.ApplicationSettingsId, allocateToLastAdjustment,
+					//"1852995-LUC/1003"
+					null
+					).ConfigureAwait(false);
 
 
 				await MarkErrors(applicationSettings.ApplicationSettingsId).ConfigureAwait(false);
@@ -124,7 +127,8 @@ namespace WaterNut.DataSpace
                 var existingAllocations = ctx.XSales_UnAllocated.Where(x =>
                         x.ApplicationSettingsId ==
                         BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)
-                  // .Where(x => x.pItemId == 31702 )//&& x.xItemId == 30700
+					// .Where(x => x.pItemId == 31702 )//&& x.xItemId == 30700
+					// .Where(x => x.EntryDataDetailsId == 1852995)//&& x.xItemId == 30700
 					.ToList();
 
                 foreach (var allocation in existingAllocations)
@@ -167,9 +171,9 @@ namespace WaterNut.DataSpace
             if (BaseDataModel.Instance.CurrentApplicationSettings.PreAllocateEx9s != true) return;
             using (var ctx = new AllocationDSContext(){StartTracking = true})
             {
-                var existingAllocations = ctx.ExistingAllocations.Where(x =>
-                        x.ApplicationSettingsId ==
-                        BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)
+                var existingAllocations = ctx.ExistingAllocations
+                    .Where(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)
+                   // .Where(x => x.EntryDataDetailsId == 1852995)
                     .ToList();
                 var cnt = 0;
                 foreach (var allocation in existingAllocations)
@@ -283,7 +287,11 @@ namespace WaterNut.DataSpace
 
 			var count = itemSetsValues.Count();
 			Parallel.ForEach(itemSetsValues.OrderBy(x => x.Key.EntryDataDate)
+                                        
 									 //.ThenBy(x => x.Key.EntryDataId).ThenBy(x => x.Key.ItemNumber)
+
+                                    // .Where(x => x.Key.EntryDataId == "DEC21-DES" && x.Key.ItemNumber == "LUC/1003")
+
 									 //.Where(x => x.EntriesList.Any(z => z.TariffCode.Contains("61091010")))
 									// .Where(x => x.EntriesList.Any(z => z.AsycudaDocument.CNumber == "1523" && z.LineNumber == 45))
                                     //.Where(x => x.Key.ItemNumber == "318451")
@@ -862,6 +870,7 @@ namespace WaterNut.DataSpace
 							.ConfigureAwait(false);
 				adjlst = (salesData
 						.Where(x => lst == null || lst.Contains(x.ItemNumber))
+                        .Where(x => x.Adjustments.Type == "ADJ")
 					  .GroupBy(d => (EntryDataDate: d.EffectiveDate ?? d.Adjustments.EntryDataDate, d.EntryDataId, ItemNumber: d.ItemNumber.ToUpper().Trim()))
 					.Select(g => new ItemSales
 					{
@@ -922,6 +931,7 @@ namespace WaterNut.DataSpace
 								.ConfigureAwait(false);
 					adjlst = (salesData
 						.Where(x => lst == null || lst.Contains(x.ItemNumber))
+                        .Where(x => x.Adjustments.Type == "DIS")
                         .Where(x => x.IsReconciled != true)
 						.GroupBy(d => (EntryDataDate: d.EffectiveDate ?? d.Adjustments.EntryDataDate, d.EntryDataId, ItemNumber: d.ItemNumber.ToUpper().Trim()))
 						.Select(g => new ItemSales
