@@ -240,7 +240,7 @@ namespace WaterNut.DataSpace
         private static List<ItemSalesPiSummary> universalDataSummary = null;
         private static List<ItemSalesPiSummary> allSalesSummary = null;
         private static List<SummaryData> allSales = null;
-        private static bool freashStart = true;
+        public static bool freashStart = true;
         private static List<ItemSalesPiSummary> GetPiSummary(int applicationSettingsId, DateTime startDate,
             DateTime endDate, string dfp,
             AllocationDSContext ctx, string entryType)
@@ -351,7 +351,7 @@ namespace WaterNut.DataSpace
                     .Where(x => x.Summary.ApplicationSettingsId == applicationSettingsId)
                     .ToList();
 
-               var test = _universalData.Where(x => x.Summary.PreviousItem_Id == 16758);
+               var test = _universalData.Where(x => x.Summary.PreviousItem_Id == 1178474);
 
                 universalDataSummary = _universalData
                     .GroupBy(g => new

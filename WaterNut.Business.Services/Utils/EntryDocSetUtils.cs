@@ -89,7 +89,7 @@ namespace WaterNut.DataSpace
                         var prop = GetXcudaAsycudaExtendedProperties(doc, docSetAsycudaDocumentSetId);
                         var declarant = ctx.xcuda_Declarant.First(x => x.ASYCUDA_Id == doc.ASYCUDA_Id);
                         var oldRef = declarant.Number;
-                        var letter = oldRef.Substring(oldRef.IndexOf(prop.FileNumber.ToString()) - 1, 1);
+                        //var letter = oldRef.Substring(oldRef.IndexOf(prop.FileNumber.ToString()) - 1, 1);
                         var newRef = declarant.Number?.Replace(prop.FileNumber.ToString(), docSet.LastFileNumber.ToString());
                         declarant.Number = newRef;
                         declarant.TrackingState = TrackingState.Modified;
@@ -114,7 +114,7 @@ namespace WaterNut.DataSpace
             try
             {
                 return new DocumentDSContext { StartTracking = true }.xcuda_ASYCUDA_ExtendedProperties.First(x =>
-                    x.ASYCUDA_Id == doc.ASYCUDA_Id && x.AsycudaDocumentSetId == docSetAsycudaDocumentSetId);
+                    x.ASYCUDA_Id == doc.ASYCUDA_Id );//&& x.AsycudaDocumentSetId == docSetAsycudaDocumentSetId
             }
             catch (Exception e)
             {
