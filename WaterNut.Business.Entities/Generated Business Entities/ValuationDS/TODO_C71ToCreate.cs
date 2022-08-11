@@ -290,6 +290,51 @@ namespace ValuationDS.Business.Entities
             }
         }
         Nullable<double> _generatedc71total;
+        [DataMember]
+        public string Address 
+        {
+            get
+            {
+                return _address;
+            }
+            set
+            {
+                _address = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _address;
+        [DataMember]
+        public Nullable<int> Value_declaration_form_Id 
+        {
+            get
+            {
+                return _value_declaration_form_id;
+            }
+            set
+            {
+                _value_declaration_form_id = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<int> _value_declaration_form_id;
+        [DataMember]
+        public Nullable<int> RegisteredID 
+        {
+            get
+            {
+                return _registeredid;
+            }
+            set
+            {
+                _registeredid = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<int> _registeredid;
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }
