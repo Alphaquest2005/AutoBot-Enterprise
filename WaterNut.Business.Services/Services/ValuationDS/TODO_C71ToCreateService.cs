@@ -1014,6 +1014,34 @@ namespace ValuationDS.Business.Services
                     throw new FaultException<ValidationFault>(fault);
             }
         }
+ 	        public async Task<IEnumerable<TODO_C71ToCreate>> GetTODO_C71ToCreateByValue_declaration_form_Id(string Value_declaration_form_Id, List<string> includesLst = null)
+        {
+            try
+            {
+                using ( var dbContext = new ValuationDSContext(){StartTracking = StartTracking})
+              {
+                var i = Convert.ToInt32(Value_declaration_form_Id);
+                var set = AddIncludes(includesLst, dbContext);
+                IEnumerable<TODO_C71ToCreate> entities = set//dbContext.TODO_C71ToCreate
+                                      .AsNoTracking()
+                                        .Where(x => x.Value_declaration_form_Id.ToString() == Value_declaration_form_Id.ToString())
+										.ToList();
+                return entities;
+              }
+             }
+            catch (Exception updateEx)
+            {
+                System.Diagnostics.Debugger.Break();
+                //throw new FaultException(updateEx.Message);
+                    var fault = new ValidationFault
+                                {
+                                    Result = false,
+                                    Message = updateEx.Message,
+                                    Description = updateEx.StackTrace
+                                };
+                    throw new FaultException<ValidationFault>(fault);
+            }
+        }
  
 		public decimal SumField(string whereExp, string field)
          {

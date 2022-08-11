@@ -31,6 +31,9 @@
               this.Property(t => t.Rate).HasColumnName("Rate");
               this.Property(t => t.ExpectedEntries).HasColumnName("ExpectedEntries");
               this.Property(t => t.GeneratedC71Total).HasColumnName("GeneratedC71Total");
+              this.Property(t => t.Address).HasColumnName("Address").HasMaxLength(255);
+              this.Property(t => t.Value_declaration_form_Id).HasColumnName("Value_declaration_form_Id");
+              this.Property(t => t.RegisteredID).HasColumnName("RegisteredID");
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);
     			this.Ignore(t => t.ModifiedProperties);

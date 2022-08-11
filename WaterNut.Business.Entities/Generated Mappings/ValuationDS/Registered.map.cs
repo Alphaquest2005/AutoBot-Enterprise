@@ -17,7 +17,7 @@
               this.Property(t => t.id).HasColumnName("id").IsRequired().HasMaxLength(50);
               this.Property(t => t.RegNumber).HasColumnName("RegNumber").IsRequired().HasMaxLength(50);
               this.Property(t => t.SourceFile).HasColumnName("SourceFile").IsRequired().HasMaxLength(300);
-              this.Property(t => t.DocumentReference).HasColumnName("DocumentReference").HasMaxLength(50);
+              this.Property(t => t.DocumentReference).HasColumnName("DocumentReference").HasMaxLength(300);
               this.Property(t => t.ApplicationSettingsId).HasColumnName("ApplicationSettingsId");
              // Nav Property Names
                   

@@ -32,5 +32,8 @@ namespace ValuationDS
         public double Rate { get; set; }
         public Nullable<int> ExpectedEntries { get; set; }
         public Nullable<double> GeneratedC71Total { get; set; }
+        public string Address { get; set; }
+        public Nullable<int> Value_declaration_form_Id { get; set; }
+        public Nullable<int> RegisteredID { get; set; }
     }
 }

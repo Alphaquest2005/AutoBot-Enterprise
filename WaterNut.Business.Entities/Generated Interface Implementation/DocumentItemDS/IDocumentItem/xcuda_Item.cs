@@ -15,19 +15,16 @@ using WaterNut.Interfaces;
 
 namespace DocumentItemDS.Business.Entities
 {
-    public partial class xcuda_Item : IDocumentItem //DocumentItemDS
-    {  // please don't expect properties here, they are implict, only multilayer will appear here
-        [IgnoreDataMember]
-        [NotMapped]
-        public String ItemNumber
-        {
-            get { return this.xcuda_Tarification.xcuda_HScode.Precision_4; }
-            set
-            {
-                this.xcuda_Tarification.xcuda_HScode.Precision_4 = value;
-            }
+		public partial class xcuda_Item: IDocumentItem //DocumentItemDS
+		{  // please don't expect properties here, they are implict, only multilayer will appear here
+                 [IgnoreDataMember]
+                 [NotMapped]
+                 public String ItemNumber 
+                {
+                    get{ return this.xcuda_Tarification.xcuda_HScode.Precision_4; }                
+                    set { this.xcuda_Tarification.xcuda_HScode.Precision_4 = value;}
+                }
+                          
         }
-
-    }
 }
 
