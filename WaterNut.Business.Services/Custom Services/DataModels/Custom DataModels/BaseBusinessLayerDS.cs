@@ -2100,14 +2100,17 @@ namespace WaterNut.DataSpace
                 {
                     if (Value_declaration_form.CanLoadFromFile(file))
                         LoadC71(docSet, file, ref exceptions);
-
                     else
                         throw new ApplicationException($"Can not Load file '{file}'");
+
+
                 }
                 catch (Exception ex)
                 {
                     exceptions.Enqueue(ex);
                 }
+
+            if (exceptions.Count > 0) throw new AggregateException(exceptions);
         }
 
         public void ImportLicense(int asycudaDocumentSetId, List<string> files)
