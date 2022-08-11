@@ -181,6 +181,10 @@ namespace EntryDataDS.Business.Entities
      
         public DbSet<AsycudaDocumentEntryDataLine> AsycudaDocumentEntryDataLine { get; set; }
      
+        public DbSet<SupplierItemDescription> SupplierItemDescription { get; set; }
+     
+        public DbSet<SupplierItemDescriptionRegEx> SupplierItemDescriptionRegEx { get; set; }
+     
 
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
@@ -318,6 +322,10 @@ namespace EntryDataDS.Business.Entities
             modelBuilder.Configurations.Add(new SupportingDetailMap());
          
             modelBuilder.Configurations.Add(new AsycudaDocumentEntryDataLineMap());
+         
+            modelBuilder.Configurations.Add(new SupplierItemDescriptionMap());
+         
+            modelBuilder.Configurations.Add(new SupplierItemDescriptionRegExMap());
          
             modelBuilder.Configurations.Add(new AdjustmentsMap());
       

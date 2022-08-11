@@ -5,6 +5,7 @@ using System.Data.Entity;
 using System.Data.SqlClient;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using AdjustmentQS.Business.Services;
 using AllocationDS.Business.Entities;
@@ -55,7 +56,7 @@ namespace WaterNut.DataSpace
 
 		internal class ItemSales
 		{
-			public (DateTime EntryDataDate, string EntryDataId, string ItemNumber) Key { get; set; }
+			public (DateTime EntryDataDate, string EntryDataId, string ItemNumber, int InventoryItemId) Key { get; set; }
 			public List<EntryDataDetails> SalesList { get; set; }
 		}
 
@@ -73,7 +74,7 @@ namespace WaterNut.DataSpace
 
 		internal class ItemSet
 		{
-			public (DateTime EntryDataDate, string EntryDataId, string ItemNumber) Key { get; set; }
+			public (DateTime EntryDataDate, string EntryDataId, string ItemNumber, int InventoryItemId) Key { get; set; }
 			public List<EntryDataDetails> SalesList { get; set; }
 			public List<xcuda_Item> EntriesList { get; set; }
 		}
@@ -122,27 +123,86 @@ namespace WaterNut.DataSpace
         private void ReallocateExistingxSales()
         {
 			if (BaseDataModel.Instance.CurrentApplicationSettings.PreAllocateEx9s != true) return;
+            
+            List<XSales_UnAllocated> unAllocatedxSales;
+            unAllocatedxSales = GetUnAllocatedxSales();
+
+            var xSalesByItemId = unAllocatedxSales.Select(x => (Item: (x.ItemNumber, x.InventoryItemId), xSale:(dynamic) x))
+                .GroupBy(x => x.Item)
+                .Select(x => (Key: x.Key, Value: x.Select(i => i.xSale).ToList()))
+                .ToList();
+
+           var itemGroups = CreateItemSet(xSalesByItemId);
+
+           
+           Parallel.ForEach(itemGroups, new ParallelOptions(){MaxDegreeOfParallelism = Convert.ToInt32(Environment.ProcessorCount * BaseDataModel.Instance.ResourcePercentage)}, x =>
+           {
+                 AllocateXSales(x.Value.SelectMany(z => z.Value.Select(v => (XSales_UnAllocated)v).ToList()).ToList());
+           });
+
+
+           
+		}
+
+      
+
+        private static Dictionary<int, List<((string ItemNumber, int InventoryItemId) Key, List<dynamic> Value)>> CreateItemSet(List<((string ItemNumber, int InventoryItemId) Key, List<dynamic> Value)> items)
+        {
+            var res = new Dictionary<int, List<((string ItemNumber, int InventoryItemId) Key, List<dynamic> Value)>>();
+            var set = 0;
+			using (var ctx = new AllocationDSContext())
+            {
+                var itemsList = items.ToList();
+             
+                while (itemsList.Any())
+                {
+                    set += 1;
+                    var lst = new List<((string ItemNumber, int InventoryItemId) Key, List<dynamic> Value)>();
+                    var inventoryItem = itemsList.First();
+                    lst.Add(inventoryItem);
+
+					var aliaslst = ctx.InventoryItemAlias.Where(x => x.InventoryItemId == inventoryItem.Key.InventoryItemId || x.AliasItemId == inventoryItem.Key.InventoryItemId)
+                        .ToList()
+                        .Where(x => lst.All(z => z.Key.InventoryItemId != x.InventoryItemId))
+                        .Where(x => itemsList.Any(z => z.Key.InventoryItemId == x.InventoryItemId))
+                        .Select(x => (Key: (x.ItemNumber, x.InventoryItemId),
+                            Value: itemsList.Where(i => i.Key.InventoryItemId == x.InventoryItemId).SelectMany(v => v.Value)
+                                .ToList()))
+                        .ToList();
+                    if (aliaslst.Any())
+                    {
+                       // var AliasSetChildren = CreateItemSet(aliaslst);
+                       // aliaslst.AddRange(AliasSetChildren.SelectMany(x => x.Value).ToList());
+                        lst.AddRange(aliaslst);
+                    }
+
+                    
+                    itemsList = itemsList.ExceptBy(lst, x => x.Key).ToList();
+                    res.Add(set, lst);
+				}
+
+                
+               return res ;
+            }
+        }
+
+        private static void AllocateXSales(List<XSales_UnAllocated> unAllocatedxSales)
+        {
             using (var ctx = new AllocationDSContext() { StartTracking = true })
             {
-                var existingAllocations = ctx.XSales_UnAllocated.Where(x =>
-                        x.ApplicationSettingsId ==
-                        BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)
-					// .Where(x => x.pItemId == 31702 )//&& x.xItemId == 30700
-					// .Where(x => x.EntryDataDetailsId == 1852995)//&& x.xItemId == 30700
-					.ToList();
-
-                foreach (var allocation in existingAllocations)
+                foreach (var allocation in unAllocatedxSales)
                 {
-                    var allo = new AsycudaSalesAllocations()		
+                    var allo = new AsycudaSalesAllocations()
                     {
                         EntryDataDetailsId = allocation.EntryDataDetailsId,
                         PreviousItem_Id = allocation.pItemId,
                         xEntryItem_Id = allocation.xItemId,
-                        QtyAllocated = allocation.SalesQuantity??0,
+                        QtyAllocated = allocation.SalesQuantity ?? 0,
                         TrackingState = TrackingState.Added
                     };
 
-                    var entrydataDetails = ctx.EntryDataDetails.First(x => x.EntryDataDetailsId == allocation.EntryDataDetailsId);
+                    var entrydataDetails =
+                        ctx.EntryDataDetails.First(x => x.EntryDataDetailsId == allocation.EntryDataDetailsId);
                     entrydataDetails.QtyAllocated += allocation.SalesQuantity ?? 0;
 
                     var pitem = ctx.xcuda_Item.First(x => x.Item_Id == allocation.pItemId);
@@ -157,24 +217,53 @@ namespace WaterNut.DataSpace
                     }
 
 
-
                     ctx.AsycudaSalesAllocations.Add(allo);
-
                 }
 
                 ctx.SaveChanges();
             }
-		}
+        }
+
+        private static List<XSales_UnAllocated> GetUnAllocatedxSales()
+        {
+            List<XSales_UnAllocated> existingAllocations;
+            using (var ctx = new AllocationDSContext() { StartTracking = true })
+            {
+                existingAllocations = ctx.XSales_UnAllocated.Where(x =>
+                        x.ApplicationSettingsId ==
+                        BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)
+                    // .Where(x => x.pItemId == 31702 )//&& x.xItemId == 30700
+                    // .Where(x => x.EntryDataDetailsId == 1852995)//&& x.xItemId == 30700
+                    .ToList();
+            }
+
+            return existingAllocations;
+        }
 
         private void ReallocateExistingEx9()
         {
             if (BaseDataModel.Instance.CurrentApplicationSettings.PreAllocateEx9s != true) return;
-            using (var ctx = new AllocationDSContext(){StartTracking = true})
+            var existingAllocations = GetExistingEx9s();
+
+            var rawSet = existingAllocations.Select(x => (Item: (x.ItemNumber, x.InventoryItemId), xSale: (dynamic)x))
+                .GroupBy(x => x.Item)
+                .Select(x => (Key: x.Key, Value: x.Select(i => i.xSale).ToList()))
+                .ToList();
+
+            var itemGroups = CreateItemSet(rawSet);
+
+            Parallel.ForEach(itemGroups, new ParallelOptions() { MaxDegreeOfParallelism = Convert.ToInt32(Environment.ProcessorCount * BaseDataModel.Instance.ResourcePercentage) }, x =>
             {
-                var existingAllocations = ctx.ExistingAllocations
-                    .Where(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)
-                   // .Where(x => x.EntryDataDetailsId == 1852995)
-                    .ToList();
+                AllocateExistingEx9s(x.Value.SelectMany(z => z.Value.Select(v => (ExistingAllocations)v).ToList()).ToList());
+            });
+
+			
+        }
+
+        private static void AllocateExistingEx9s(List<ExistingAllocations> existingAllocations)
+        {
+            using (var ctx = new AllocationDSContext() { StartTracking = true })
+            {
                 var cnt = 0;
                 foreach (var allocation in existingAllocations)
                 {
@@ -183,34 +272,44 @@ namespace WaterNut.DataSpace
                         EntryDataDetailsId = allocation.EntryDataDetailsId,
                         PreviousItem_Id = allocation.pItemId,
                         xEntryItem_Id = allocation.xItemId,
-                        QtyAllocated = allocation.xQuantity??0,
+                        QtyAllocated = allocation.xQuantity ?? 0,
                         TrackingState = TrackingState.Added
                     };
 
-                    var entrydataDetails = ctx.EntryDataDetails.First(x => x.EntryDataDetailsId == allocation.EntryDataDetailsId);
-                   entrydataDetails.QtyAllocated += allocation.xQuantity ?? 0;
+                    var entrydataDetails =
+                        ctx.EntryDataDetails.First(x => x.EntryDataDetailsId == allocation.EntryDataDetailsId);
+                    entrydataDetails.QtyAllocated += allocation.xQuantity ?? 0;
 
                     var pitem = ctx.xcuda_Item.First(x => x.Item_Id == allocation.pItemId);
 
                     if (allocation.DutyFreePaid == "Duty Free")
                     {
                         pitem.DFQtyAllocated += allocation.xQuantity ?? 0;
-					}
+                    }
                     else
                     {
-						pitem.DPQtyAllocated += allocation.xQuantity ?? 0;
-					}
-                    
+                        pitem.DPQtyAllocated += allocation.xQuantity ?? 0;
+                    }
 
 
-					ctx.AsycudaSalesAllocations.Add(allo);
-					cnt++;
+                    ctx.AsycudaSalesAllocations.Add(allo);
+                    cnt++;
                     if (cnt % 10 == 0) ctx.SaveChanges();
-
-
                 }
 
                 ctx.SaveChanges();
+            }
+        }
+
+        private static List<ExistingAllocations> GetExistingEx9s()
+        {
+            using (var ctx = new AllocationDSContext() { StartTracking = true })
+            {
+               return  ctx.ExistingAllocations
+                    .Where(x => x.ApplicationSettingsId ==
+                                BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)
+                    // .Where(x => x.EntryDataDetailsId == 1852995)
+                    .ToList();
             }
         }
 
@@ -280,75 +379,191 @@ namespace WaterNut.DataSpace
 			var itemSets = await MatchSalestoAsycudaEntriesOnItemNumber(applicationSettingsId, lst).ConfigureAwait(false);
 			StatusModel.StopStatusUpdate();
 
-			StatusModel.StartStatusUpdate("Allocating Item Sales", itemSets.Count());
-			var t = 0;
-			var exceptions = new ConcurrentQueue<Exception>();
-			var itemSetsValues = itemSets.Values;
+            var rawSet = itemSets.Select(x => (Item: (x.Key.ItemNumber, x.Key.InventoryItemId), xSale: (dynamic)x))
+                .GroupBy(x => x.Item)
+                .Select(x => (Key: x.Key, Value: x.Select(i => i.xSale).ToList()))
+                .ToList();
 
-			var count = itemSetsValues.Count();
-			Parallel.ForEach(itemSetsValues.OrderBy(x => x.Key.EntryDataDate)
-                                        
-									 //.ThenBy(x => x.Key.EntryDataId).ThenBy(x => x.Key.ItemNumber)
+            
 
-                                    // .Where(x => x.Key.EntryDataId == "DEC21-DES" && x.Key.ItemNumber == "LUC/1003")
-
-									 //.Where(x => x.EntriesList.Any(z => z.TariffCode.Contains("61091010")))
-									// .Where(x => x.EntriesList.Any(z => z.AsycudaDocument.CNumber == "1523" && z.LineNumber == 45))
-                                    //.Where(x => x.Key.ItemNumber == "318451")
-									//.Where(x => x.SalesList.Any(z => z.EntryDataId.ToLower().Contains("Short".ToLower())))
-									 // .Where(x => x.Key.ItemNumber.StartsWith("A")) //.Where(x => x.Key.Contains("255100")) // 
-									 // .Where(x => "337493".Contains(x.Key))
-									 //.Where(x => "FAA/SCPI18X112".Contains(x.ItemNumber))//SND/IVF1010MPSF,BRG/NAVICOTE-GL,
-									 , new ParallelOptions { MaxDegreeOfParallelism = 1/*Dont change to paralell... double up on some transactions eg. 0212-0136MDAHE sandals*/ }, (itm, state) => //.Where(x => x.ItemNumber == "AT18547") Environment.ProcessorCount *
-									 {
-										 //     foreach (var itm in itemSets.Values)//.Where(x => "FAA/SCPI18X112".Contains(x.ItemNumber))
-										 //{
-										 try
-										 {
-											 t += 1;
-											 // Debug.WriteLine($"Processing {itm.Key} - {t} with {itm.SalesList.Count} Sales: {0} of {itm.SalesList.Count}");
-											 //StatusModel.Refresh();
-											 var sales = itm.SalesList
-												 .OrderBy(x => x.Sales.EntryDataDate)
-												 .ThenBy(x => x.EntryDataId)
-												 .ThenBy(x => x.LineNumber ?? x.EntryDataDetailsId)
-												 .ThenByDescending(x => x.Quantity)/**/.ToList();
-											 var asycudaItems = itm.EntriesList.OrderBy(x => x.AsycudaDocument.AssessmentDate)
-
-												 .ThenBy(x => x.IsAssessed == null).ThenBy(x => x.AsycudaDocument.RegistrationDate)
-												 .ThenBy(x => Convert.ToInt32(x.AsycudaDocument.CNumber))
-												 .ThenByDescending(x => x.EntryPreviousItems.Select(z => z.xcuda_PreviousItem.Suplementary_Quantity).DefaultIfEmpty(0).Sum())//NUO/44545 2 items with same date choose pIed one first
-												 .ThenBy(x => x.AsycudaDocument.ReferenceNumber)
-												 .DistinctBy(x => x.Item_Id)
-												 .ToList();
-
-											 AllocateSalestoAsycudaByKey(sales, asycudaItems, t, count, allocateToLastAdjustment).Wait();
-											 //.SalesList.Where(x => x.DoNotAllocate != true).ToList()
+			var itemGroups = CreateItemSet(rawSet);
 
 
-										 }
-										 catch (Exception ex)
-										 {
+            var ggitms = GroupOfGroups(itemGroups);
 
-											 exceptions.Enqueue(
-														 new ApplicationException(
-															 $"Could not Allocate - '{itm.Key}. Error:{ex.Message} Stacktrace:{ex.StackTrace}"));
-										 }
-
-										 //   };
-
-
-									 });
+            var tList = ggitms.Where(x =>
+                x.Value.group.Value.Any(z => z.Value.Any(q => ((ItemSet)q.Value).EntriesList.Any(a => a.Item_Id == 32207))))
+                    .ToList();
 
 
 
+			Parallel.ForEach(ggitms, new ParallelOptions() { MaxDegreeOfParallelism = Convert.ToInt32(Environment.ProcessorCount * BaseDataModel.Instance.ResourcePercentage) }, x =>
+            {
+                AllocateSales(allocateToLastAdjustment, x.Value.group.Value.SelectMany(z => z.Value.Select(v => (ItemSet)v.Value).ToList()).ToList());
+            });
+			
+        }
 
-			if (exceptions.Count > 0) throw new AggregateException(exceptions);
-		}
+        private Dictionary<int, (List<int> Lst, KeyValuePair<int, List<((string ItemNumber, int InventoryItemId) Key, List<dynamic> Value)>> group)> GroupOfGroups(
+                Dictionary<int, List<((string ItemNumber, int InventoryItemId) Key, List<dynamic> Value)>> itemGroups)
+        {
+
+            var workingitemGroups = itemGroups.Select(parentgroup => (Lst: parentgroup.Value.SelectMany(x =>
+                    x.Value.SelectMany(z => ((ItemSet)z.Value).EntriesList.Select(a => a.Item_Id).ToList()).Distinct()
+                        .ToList()).ToList(),
+                group: parentgroup)).ToList();
+            //.Where(x =>
+            //                x.group.Value.Any(z => z.Value.Any(q => ((ItemSet)q.Value).EntriesList.Any(a => a.Item_Id == 32207))))
+            //            .ToList();
+
+            var res =
+                new Dictionary<int, (List<int> Lst, KeyValuePair<int,
+                    List<((string ItemNumber, int InventoryItemId) Key, List<dynamic> Value)>> group)>();
+
+            var set = 0;
+            while (workingitemGroups.Any())
+            {
+                var parentgroup = workingitemGroups.First();
 
 
+                workingitemGroups.Remove(parentgroup);
+                var childlst = workingitemGroups.Where(x => x.Lst.Any(z => parentgroup.Lst.Contains(z))).ToList();
+				var clst = childlst.SelectMany(c => c.Lst).ToList();
 
-		private void MarkOverAllocatedEntries(int applicationSettingsId)
+				var resLst = res.Where(x => x.Value.Lst.Any(z => parentgroup.Lst.Contains(z)) || x.Value.Lst.Any(z => clst.Contains(z))).ToList();
+
+                if (resLst.Any())
+                {
+                    resLst.First().Value.group.Value.AddRange(childlst.SelectMany(x => x.group.Value));
+                    resLst.First().Value.Lst.AddRange(childlst.SelectMany(x => x.Lst));
+					resLst.First().Value.group.Value.AddRange(parentgroup.group.Value);
+					resLst.First().Value.Lst.AddRange(parentgroup.Lst);
+
+				}
+				else
+                {
+                    //var childlst =
+                    //    new List<(IEnumerable<int> Lst,
+                    //        KeyValuePair<int, List<((string ItemNumber, int InventoryItemId) Key, List<dynamic> Value)>>
+                    //        group)>();
+                    //foreach (var itmGroup in workingitemGroups)
+                    //{
+                    //    if(itmGroup.)
+                    //}
+                    //var cList = childlst.Where(x =>
+                    //        x.group.Value.Any(z =>
+                    //            z.Value.Any(q => ((ItemSet)q.Value).EntriesList.Any(a => a.Item_Id == 32207))))
+                    //    .ToList();
+                    //if (cList.Any()) Debugger.Break();
+
+                    parentgroup.group.Value.AddRange(childlst.SelectMany(x => x.group.Value));
+					parentgroup.Lst.AddRange(childlst.SelectMany(x => x.Lst));
+				}
+
+                workingitemGroups = workingitemGroups.ExceptBy(childlst, x => x.group.Key).ToList();
+
+
+                set++;
+                res.Add(parentgroup.group.Key, parentgroup);
+
+
+                //if (parentgroup.Lst.Contains(32207))
+                //{
+                //    Debugger.Break();
+                //    var tList = workingitemGroups.Where(x =>
+                //            x.group.Value.Any(z =>
+                //                z.Value.Any(q => ((ItemSet)q.Value).EntriesList.Any(a => a.Item_Id == 32207))))
+                //        .ToList();
+
+                //}
+
+            }
+
+            return res;
+        }
+
+        private ConcurrentDictionary<int, xcuda_Item> currentItems = new ConcurrentDictionary<int, xcuda_Item>();
+        private void AllocateSales(bool allocateToLastAdjustment, List<ItemSet> itemSets)
+        {
+            StatusModel.StartStatusUpdate("Allocating Item Sales", itemSets.Count());
+            var t = 0;
+            var exceptions = new ConcurrentQueue<Exception>();
+            var itemSetsValues = itemSets.ToList();
+
+            var count = itemSetsValues.Count();
+            foreach (var itm in itemSetsValues.OrderBy(x => x.Key.EntryDataDate))
+                ///Parallel.ForEach(itemSetsValues.OrderBy(x => x.Key.EntryDataDate)
+
+                //.ThenBy(x => x.Key.EntryDataId).ThenBy(x => x.Key.ItemNumber)
+
+                // .Where(x => x.Key.EntryDataId == "DEC21-DES" && x.Key.ItemNumber == "LUC/1003")
+
+                //.Where(x => x.EntriesList.Any(z => z.TariffCode.Contains("61091010")))
+                // .Where(x => x.EntriesList.Any(z => z.AsycudaDocument.CNumber == "1523" && z.LineNumber == 45))
+                //.Where(x => x.Key.ItemNumber == "318451")
+                //.Where(x => x.SalesList.Any(z => z.EntryDataId.ToLower().Contains("Short".ToLower())))
+                // .Where(x => x.Key.ItemNumber.StartsWith("A")) //.Where(x => x.Key.Contains("255100")) // 
+                // .Where(x => "337493".Contains(x.Key))
+                //.Where(x => "FAA/SCPI18X112".Contains(x.ItemNumber))//SND/IVF1010MPSF,BRG/NAVICOTE-GL,
+                //	 , new ParallelOptions { MaxDegreeOfParallelism = Convert.ToInt32( Environment.ProcessorCount * BaseDataModel.Instance.ResourcePercentage)/*Dont change to paralell... double up on some transactions eg. 0212-0136MDAHE sandals*/ }, (itm, state) => //.Where(x => x.ItemNumber == "AT18547") Environment.ProcessorCount *
+                //	 {
+                //     foreach (var itm in itemSets.Values)//.Where(x => "FAA/SCPI18X112".Contains(x.ItemNumber))
+                //{
+                try
+                {
+                    t += 1;
+                    // Debug.WriteLine($"Processing {itm.Key} - {t} with {itm.SalesList.Count} Sales: {0} of {itm.SalesList.Count}");
+                    //StatusModel.Refresh();
+                    var sales = itm.SalesList
+                        .OrderBy(x => x.Sales.EntryDataDate)
+                        .ThenBy(x => x.EntryDataId)
+                        .ThenBy(x => x.LineNumber ?? x.EntryDataDetailsId)
+                        .ThenByDescending(x => x.Quantity) /**/.ToList();
+                    var asycudaItems = itm.EntriesList.OrderBy(x => x.AsycudaDocument.AssessmentDate)
+                        .ThenBy(x => x.IsAssessed == null).ThenBy(x => x.AsycudaDocument.RegistrationDate)
+                        .ThenBy(x => Convert.ToInt32(x.AsycudaDocument.CNumber))
+                        .ThenByDescending(x =>
+                            x.EntryPreviousItems.Select(z => z.xcuda_PreviousItem.Suplementary_Quantity)
+                                .DefaultIfEmpty(0).Sum()) //NUO/44545 2 items with same date choose pIed one first
+                        .ThenBy(x => x.AsycudaDocument.ReferenceNumber)
+                        .DistinctBy(x => x.Item_Id)
+                        .ToList();
+
+       //             foreach (var citm in asycudaItems)
+       //             {
+       //                 while (currentItems.TryGetValue(citm.Item_Id, out xcuda_Item nitm))
+       //                 {
+							//Thread.Sleep(5);
+       //                 }
+
+       //                 currentItems.TryAdd(citm.Item_Id, citm);
+       //             }
+
+                    AllocateSalestoAsycudaByKey(sales, asycudaItems, t, count, allocateToLastAdjustment).Wait();
+
+                    //foreach (var citm in asycudaItems)
+                    //{
+                    //   currentItems.TryRemove(citm.Item_Id, out xcuda_Item ccitm);
+                    //}
+
+					//.SalesList.Where(x => x.DoNotAllocate != true).ToList()
+				}
+                catch (Exception ex)
+                {
+                    exceptions.Enqueue(
+                        new ApplicationException(
+                            $"Could not Allocate - '{itm.Key}. Error:{ex.Message} Stacktrace:{ex.StackTrace}"));
+                }
+
+            //   };
+            //);
+
+
+            if (exceptions.Count > 0) throw new AggregateException(exceptions);
+        }
+
+
+        private void MarkOverAllocatedEntries(int applicationSettingsId)
         {
             List<xcuda_Item> IMAsycudaEntries; //"EX"
 
@@ -623,25 +838,41 @@ namespace WaterNut.DataSpace
 
 
 
-		private async Task<ConcurrentDictionary<(DateTime EntryDataDate, string EntryDataId, string ItemNumber), ItemSet>> MatchSalestoAsycudaEntriesOnItemNumber(
+		private async Task<ConcurrentDictionary<(DateTime EntryDataDate, string EntryDataId, string ItemNumber, int InventoryItemId), ItemSet>> MatchSalestoAsycudaEntriesOnItemNumber(
 			int applicationSettingsId, string lst)
 		{
 			try
 			{
-				
-					var asycudaEntries = await GetAsycudaEntriesWithItemNumber(applicationSettingsId, null).ConfigureAwait(false);
-				//var testr = asycudaEntries.Where(x => x.EntriesList.Any(z => z.ItemNumber == "BM/FGCM150-50")).ToList();
-				
-				var saleslst = await GetSaleslstWithItemNumber(applicationSettingsId, lst).ConfigureAwait(false);
-				//var test = saleslst.Where(x => x.SalesList.Any(z => z.ItemNumber == "BM/FGCM150-50")).ToList();
+                var asycudaEntriesTask = Task.Run(async () => await GetAsycudaEntriesWithItemNumber(applicationSettingsId, null).ConfigureAwait(false));
+				var saleslstTask = Task.Run(async () => await GetSaleslstWithItemNumber(applicationSettingsId, lst).ConfigureAwait(false));
+                var adjlstTask = Task.Run(async () => await GetAdjustmentslstWithItemNumber(applicationSettingsId, lst).ConfigureAwait(false));
+                var dislstTask = Task.Run(async () => await GetDiscrepancieslstWithItemNumber(applicationSettingsId, lst).ConfigureAwait(false));
 
-				var adjlst = await GetAdjustmentslstWithItemNumber(applicationSettingsId, lst).ConfigureAwait(false);
-				saleslst.AddRange(adjlst);
+                Task.WaitAll(asycudaEntriesTask, saleslstTask, adjlstTask, dislstTask);
 
-				var dislst = await GetDiscrepancieslstWithItemNumber(applicationSettingsId, lst).ConfigureAwait(false);
-				saleslst.AddRange(dislst);
+				var asycudaEntries = asycudaEntriesTask.Result;
+                var saleslst = saleslstTask.Result;
+                var adjlst = adjlstTask.Result;
+                var dislst = dislstTask.Result;
+
+                saleslst.AddRange(adjlst);
+                saleslst.AddRange(dislst);
 
 				var itmLst = CreateItemSetsWithItemNumbers(saleslst.OrderBy(x => x.Key.EntryDataDate).ToList(), asycudaEntries);
+
+				//var asycudaEntries = await GetAsycudaEntriesWithItemNumber(applicationSettingsId, null).ConfigureAwait(false);
+				////var testr = asycudaEntries.Where(x => x.EntriesList.Any(z => z.ItemNumber == "BM/FGCM150-50")).ToList();
+
+				//var saleslst = await GetSaleslstWithItemNumber(applicationSettingsId, lst).ConfigureAwait(false);
+				////var test = saleslst.Where(x => x.SalesList.Any(z => z.ItemNumber == "BM/FGCM150-50")).ToList();
+
+				//var adjlst = await GetAdjustmentslstWithItemNumber(applicationSettingsId, lst).ConfigureAwait(false);
+				//saleslst.AddRange(adjlst);
+
+				//var dislst = await GetDiscrepancieslstWithItemNumber(applicationSettingsId, lst).ConfigureAwait(false);
+				//saleslst.AddRange(dislst);
+
+				//var itmLst = CreateItemSetsWithItemNumbers(saleslst.OrderBy(x => x.Key.EntryDataDate).ToList(), asycudaEntries);
 
 				//var test = itmLst.Where(x => x.Key.EntryDataId == "Asycuda-C#33687-19").ToList();
 
@@ -656,7 +887,7 @@ namespace WaterNut.DataSpace
 		}
 
 
-		private static ConcurrentDictionary<(DateTime EntryDataDate, string EntryDataId, string ItemNumber), ItemSet> CreateItemSetsWithItemNumbers(
+		private static ConcurrentDictionary<(DateTime EntryDataDate, string EntryDataId, string ItemNumber, int InventoryItemId), ItemSet> CreateItemSetsWithItemNumbers(
 			IEnumerable<ItemSales> saleslst, IEnumerable<ItemEntries> asycudaEntries)
 		{
 			try
@@ -677,7 +908,7 @@ namespace WaterNut.DataSpace
 								 EntriesList = a?.EntriesList ?? new List<xcuda_Item>()
 							 };
 
-				var res = new ConcurrentDictionary<(DateTime EntryDataDate, string EntryDataId, string ItemNumber), ItemSet>();
+				var res = new ConcurrentDictionary<(DateTime EntryDataDate, string EntryDataId, string ItemNumber, int InventoryItemId), ItemSet>();
 				foreach (var itm in itmLst) //.Where(x => x.Key.ItemNumber == "TRC/1206-QC").ToList()//.Where(x => x.Key.ItemNumber.StartsWith("T")).ToList()//.Where(x => x.SalesList.Any(z => z.EntryDataId == "61091010")).ToList()
 				{
 
@@ -818,7 +1049,7 @@ namespace WaterNut.DataSpace
 									}, new List<string> { "Sales", "AsycudaSalesAllocations", "ManualAllocations" }, false)
 								.ConfigureAwait(false);
 					saleslst = salesData.Where(x => lst == null || lst.Contains(x.ItemNumber))
-						.GroupBy(d => (d.Sales.EntryDataDate, d.EntryDataId, d.ItemNumber.ToUpper().Trim()))
+						.GroupBy(d => (d.Sales.EntryDataDate, d.EntryDataId, d.ItemNumber.ToUpper().Trim(), d.InventoryItemId))
 						.Select(g => new ItemSales
 						{
 							Key = g.Key,
@@ -871,7 +1102,7 @@ namespace WaterNut.DataSpace
 				adjlst = (salesData
 						.Where(x => lst == null || lst.Contains(x.ItemNumber))
                         .Where(x => x.Adjustments.Type == "ADJ")
-					  .GroupBy(d => (EntryDataDate: d.EffectiveDate ?? d.Adjustments.EntryDataDate, d.EntryDataId, ItemNumber: d.ItemNumber.ToUpper().Trim()))
+					  .GroupBy(d => (EntryDataDate: d.EffectiveDate ?? d.Adjustments.EntryDataDate, d.EntryDataId, ItemNumber: d.ItemNumber.ToUpper().Trim(), d.InventoryItemId))
 					.Select(g => new ItemSales
 					{
 						Key = g.Key,
@@ -933,7 +1164,7 @@ namespace WaterNut.DataSpace
 						.Where(x => lst == null || lst.Contains(x.ItemNumber))
                         .Where(x => x.Adjustments.Type == "DIS")
                         .Where(x => x.IsReconciled != true)
-						.GroupBy(d => (EntryDataDate: d.EffectiveDate ?? d.Adjustments.EntryDataDate, d.EntryDataId, ItemNumber: d.ItemNumber.ToUpper().Trim()))
+						.GroupBy(d => (EntryDataDate: d.EffectiveDate ?? d.Adjustments.EntryDataDate, d.EntryDataId, ItemNumber: d.ItemNumber.ToUpper().Trim(), d.InventoryItemId))
 						.Select(g => new ItemSales
 						{
 							Key = g.Key,
@@ -1298,12 +1529,15 @@ namespace WaterNut.DataSpace
 		private static double CalculateAsycudaItmQtyToAllocate(xcuda_Item cAsycudaItm,
 			EntryDataDetails saleItem)
 		{
+            try
+            {
 
+          
 
-			var TotalAvailabletoAllocate = cAsycudaItm.ItemQuantity - cAsycudaItm.QtyAllocated;
-			var TotalPiQty = (double)cAsycudaItm.EntryPreviousItems
-				.Select(x => x.xcuda_PreviousItem)
-				.Sum(x => x.Suplementary_Quantity);
+			var totalAvailableToAllocate = cAsycudaItm.ItemQuantity - cAsycudaItm.QtyAllocated;
+			//var TotalPiQty = (double)cAsycudaItm.EntryPreviousItems
+			//	.Select(x => x.xcuda_PreviousItem)
+			//	.Sum(x => x.Suplementary_Quantity);
 			var nonDFPQty = cAsycudaItm.EntryPreviousItems.Any() ? (double)cAsycudaItm.EntryPreviousItems
 				.Select(x => x.xcuda_PreviousItem)
 				.Where(x => x.DutyFreePaid != saleItem.DutyFreePaid || (x.xcuda_Item.EntryDataType ?? "Sales") != saleItem.Sales.EntryDataType)
@@ -1311,20 +1545,20 @@ namespace WaterNut.DataSpace
 
 
 
-			var previousItems = cAsycudaItm.EntryPreviousItems
-				.Select(x => x.xcuda_PreviousItem)
-				.Where(x => x.DutyFreePaid == saleItem.DutyFreePaid).ToList();
+			//var previousItems = cAsycudaItm.EntryPreviousItems
+			//	.Select(x => x.xcuda_PreviousItem)
+			//	.Where(x => x.DutyFreePaid == saleItem.DutyFreePaid).ToList();
 
 			var totalDfPQtyAllocated = saleItem.DutyFreePaid == "Duty Free" ? cAsycudaItm.DFQtyAllocated : cAsycudaItm.DPQtyAllocated;
 
-			var TotalDFPtoAllocate = previousItems.Any() ? (double)previousItems
-				.Sum(x => x.Suplementary_Quantity) : totalDfPQtyAllocated;
-			var TotalDFPAllocatedQty = previousItems.Any() ? previousItems
-				.Sum(x => x.QtyAllocated) : totalDfPQtyAllocated;
-			var remainingDFPAllocation = TotalDFPtoAllocate - TotalDFPAllocatedQty;
-			var freeToAllocate = cAsycudaItm.ItemQuantity - TotalDFPtoAllocate; //TotalDFPAllocatedQty + nonDFPQty + cAsycudaItm.QtyAllocated;
+			//var TotalDFPtoAllocate = previousItems.Any() ? (double)previousItems
+			//	.Sum(x => x.Suplementary_Quantity) : totalDfPQtyAllocated;
+			//var TotalDFPAllocatedQty = previousItems.Any() ? previousItems
+			//	.Sum(x => x.QtyAllocated) : totalDfPQtyAllocated;
+			//var remainingDFPAllocation = TotalDFPtoAllocate - TotalDFPAllocatedQty;
+			//var freeToAllocate = cAsycudaItm.ItemQuantity - TotalDFPtoAllocate; //TotalDFPAllocatedQty + nonDFPQty + cAsycudaItm.QtyAllocated;
 
-			var allocatedQty = cAsycudaItm.AsycudaSalesAllocations.Where(x => x.DutyFreePaid == saleItem.DutyFreePaid).Sum(x => x.QtyAllocated);
+			//var allocatedQty = cAsycudaItm.AsycudaSalesAllocations.Where(x => x.DutyFreePaid == saleItem.DutyFreePaid).Sum(x => x.QtyAllocated);
 			var nonAllocatedQty = cAsycudaItm.AsycudaSalesAllocations.Where(x => x.DutyFreePaid != saleItem.DutyFreePaid).Sum(x => x.QtyAllocated);
 
 			var finalNonDFPQty = nonDFPQty > nonAllocatedQty ? nonDFPQty : nonAllocatedQty;
@@ -1335,8 +1569,14 @@ namespace WaterNut.DataSpace
 
 
 			var res = cAsycudaItm.ItemQuantity - TakeOut;
-			if (TotalAvailabletoAllocate == 0) res = 0;
+			if (totalAvailableToAllocate == 0) res = 0;
 			return res * cAsycudaItm.SalesFactor;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
 		}
 
 		private xcuda_Item GetAsycudaEntriesWithItemNumber(IList<xcuda_Item> asycudaEntries, int CurrentAsycudaItemIndex)

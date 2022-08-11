@@ -693,6 +693,8 @@
     <Compile Include="Contracts\EntryDataDS\IShipmentRiderManifestsService.cs" />
     <Compile Include="Contracts\EntryDataDS\IShipmentRiderService.cs" />
     <Compile Include="Contracts\EntryDataDS\IShipmentService.cs" />
+    <Compile Include="Contracts\EntryDataDS\ISupplierItemDescriptionRegExService.cs" />
+    <Compile Include="Contracts\EntryDataDS\ISupplierItemDescriptionService.cs" />
     <Compile Include="Contracts\EntryDataDS\ISuppliersService.cs" />
     <Compile Include="Contracts\EntryDataDS\ISupportingDetailService.cs" />
     <Compile Include="Contracts\EntryDataDS\IVolumeUnitsService.cs" />
@@ -899,6 +901,8 @@
     <Compile Include="Services\AllocationDS\xcuda_WeightService.cs" />
     <Compile Include="Services\AllocationDS\xcuda_Weight_itmService.cs" />
     <Compile Include="Services\AllocationDS\XSales_UnAllocatedService.cs" />
+    <Compile Include="Services\EntryDataDS\SupplierItemDescriptionRegExService.cs" />
+    <Compile Include="Services\EntryDataDS\SupplierItemDescriptionService.cs" />
     <Compile Include="Utils\AutoMatchUtils.cs" />
     <Compile Include="Importers\ChainedDataExtractor.cs" />
     <Compile Include="Importers\CSVDataExtractor.cs" />

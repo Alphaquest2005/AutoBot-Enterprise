@@ -167,6 +167,7 @@ namespace WaterNut.DataSpace
         #region IAsyncInitialization Members
 
         public static Task Initialization { get; }
+        public double ResourcePercentage { get; } = 0.8;
 
         public static Client GetClient()
         {

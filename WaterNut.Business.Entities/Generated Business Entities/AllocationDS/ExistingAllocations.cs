@@ -290,6 +290,21 @@ namespace AllocationDS.Business.Entities
             }
         }
         string _dutyfreepaid;
+        [DataMember]
+        public int InventoryItemId 
+        {
+            get
+            {
+                return _inventoryitemid;
+            }
+            set
+            {
+                _inventoryitemid = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        int _inventoryitemid;
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

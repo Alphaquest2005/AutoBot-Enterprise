@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.IO;
@@ -428,6 +429,9 @@ namespace xlsxWriter
                 .DistinctBy(x => new {x.INVDetailsId, x.PODetailsId})// re intro this because multiple pos to one invoice
                 .ToList();
             if (!shipmentInvoicePoItemMisMatchesList.Any()) return;
+
+            var rematched = ReMatchOnItemDescription(shipmentInvoicePoItemMisMatchesList);
+
             var header =
                 "PONumber,POItemCode,PODescription,POCost,POQuantity,POTotalCost,PODetailsId,InvoiceNo,INVItemCode,INVDescription,INVCost,INVQuantity,INVSalesFactor,INVTotalCost,INVDetailsId"
                     .Split(',').ToList();
@@ -443,7 +447,7 @@ namespace xlsxWriter
             }
 
             var i = workbook.CurrentWorksheet.GetLastRowNumber() + 1;
-            foreach (var mis in shipmentInvoicePoItemMisMatchesList)
+            foreach (var mis in rematched)
             {
                 SetValue(workbook, i, header.IndexOf("PONumber"), mis.PONumber);
                 SetValue(workbook, i, header.IndexOf("InvoiceNo"), mis.InvoiceNo);
@@ -462,6 +466,11 @@ namespace xlsxWriter
                 SetValue(workbook, i, header.IndexOf("PODetailsId"), mis.PODetailsId);
                 i++;
             }
+        }
+
+        private static List<ShipmentInvoicePOItemMISMatches> ReMatchOnItemDescription(List<ShipmentInvoicePOItemMISMatches> shipmentInvoicePoItemMisMatchesList)
+        {
+            return shipmentInvoicePoItemMisMatchesList;
         }
 
         public static string CreateUnattachedShipmentWorkBook(

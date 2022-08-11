@@ -395,6 +395,36 @@ namespace AllocationDS.Business.Entities
             }
         }
         int _pitemid;
+        [DataMember]
+        public int InventoryItemId 
+        {
+            get
+            {
+                return _inventoryitemid;
+            }
+            set
+            {
+                _inventoryitemid = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        int _inventoryitemid;
+        [DataMember]
+        public int PreviousDocumentInventoryItemId 
+        {
+            get
+            {
+                return _previousdocumentinventoryitemid;
+            }
+            set
+            {
+                _previousdocumentinventoryitemid = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        int _previousdocumentinventoryitemid;
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

@@ -34,6 +34,7 @@
               this.Property(t => t.CIFValue).HasColumnName("CIFValue");
               this.Property(t => t.DutyLiablity).HasColumnName("DutyLiablity");
               this.Property(t => t.Comment).HasColumnName("Comment").HasMaxLength(50);
+              this.Property(t => t.InvoiceLineNumber).HasColumnName("InvoiceLineNumber");
               this.HasRequired(t => t.xSalesFiles).WithMany(t =>(ICollection<xSalesDetails>) t.xSalesDetails).HasForeignKey(d => d.xSalesFileId);
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);

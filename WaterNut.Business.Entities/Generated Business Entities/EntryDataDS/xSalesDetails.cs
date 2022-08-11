@@ -336,6 +336,21 @@ namespace EntryDataDS.Business.Entities
         }
         string _comment;
         [DataMember]
+        public Nullable<int> InvoiceLineNumber 
+        {
+            get
+            {
+                return _invoicelinenumber;
+            }
+            set
+            {
+                _invoicelinenumber = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<int> _invoicelinenumber;
+        [DataMember]
         public xSalesFiles xSalesFiles { get; set; }
 
  //       [DataMember]

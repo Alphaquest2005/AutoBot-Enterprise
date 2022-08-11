@@ -1,66 +1,77 @@
---declare @BatchNo int = 1, @itemNumber varchar(50), @appSettingId int = 7
---set @itemNumber = '14002-220'
+////////////////////////////////////Batch vs Current Allocations comparison
+
+declare @BatchNo int = 2, @itemNumber varchar(50), @appSettingId int = 7
+set @itemNumber = '14002-220'
 
 
---select * from  AsycudaSalesAndAdjustmentAllocationsEx where ItemNumber LIKE '%' + @ItemNumber + '%' and applicationsettingsid = @appSettingId 
+select * from  AsycudaSalesAndAdjustmentAllocationsEx where ItemNumber LIKE '%' + @ItemNumber + '%' and applicationsettingsid = @appSettingId 
 
---select * from  [History-Allocations] where ItemNumber LIKE '%' + @ItemNumber + '%' and applicationsettingsid = @appSettingId 
+select * from  [History-Allocations] where ItemNumber LIKE '%' + @ItemNumber + '%' and applicationsettingsid = @appSettingId 
 
---select 'allocation Differences'
+select 'allocation Differences'
 
---drop table #his
---SELECT BatchNo, Status, QtyAllocated, InvoiceDate, CustomerName, SalesQuantity, SalesQtyAllocated, InvoiceNo, InvoiceLineNumber, ItemNumber, ItemDescription, DutyFreePaid, pCNumber, pRegistrationDate, 
---                 pQuantity, pQtyAllocated, PiQuantity, SalesFactor, pReferenceNumber, pLineNumber, Cost, Total_CIF_itm, DutyLiability, TaxAmount, pIsAssessed, DoNotAllocateSales, 
---                 DoNotAllocatePreviousEntry, WarehouseError, SANumber, TariffCode, Invalid, pExpiryDate, pTariffCode, pItemNumber, ApplicationSettingsId
---into #his
---FROM    [History-Allocations]
---where (ItemNumber LIKE '%' + @ItemNumber + '%') and applicationsettingsid = @appSettingId and ([History-Allocations].BatchNo = @BatchNo) 
+drop table #his
+SELECT BatchNo, Status, QtyAllocated, InvoiceDate, CustomerName, SalesQuantity, SalesQtyAllocated, InvoiceNo, InvoiceLineNumber, ItemNumber, ItemDescription, DutyFreePaid, pCNumber, pRegistrationDate, 
+                 pQuantity, pQtyAllocated, PiQuantity, SalesFactor, pReferenceNumber, pLineNumber, Cost, Total_CIF_itm, DutyLiability, TaxAmount, pIsAssessed, DoNotAllocateSales, 
+                 DoNotAllocatePreviousEntry, WarehouseError, SANumber, TariffCode, Invalid, pExpiryDate, pTariffCode, pItemNumber, ApplicationSettingsId
+into #his
+FROM    [History-Allocations]
+where (ItemNumber LIKE '%' + @ItemNumber + '%') and applicationsettingsid = @appSettingId and ([History-Allocations].BatchNo = @BatchNo) 
 
---drop table #allo
---SELECT        @BatchNo AS BatchNo, Status, QtyAllocated,  InvoiceDate, CustomerName, SalesQuantity, SalesQtyAllocated, InvoiceNo, SalesLineNumber, ItemNumber, ItemDescription, DutyFreePaid, pCNumber, pRegistrationDate, pQuantity, 
---                         pQtyAllocated, PiQuantity, SalesFactor,  pReferenceNumber, pLineNumber, Cost, Total_CIF_itm, DutyLiability, TaxAmount, pIsAssessed, DoNotAllocateSales, 
---                         DoNotAllocatePreviousEntry, WarehouseError, SANumber, TariffCode, Invalid, pExpiryDate, pTariffCode, pItemNumber, ApplicationSettingsId
---into #allo
---FROM            AsycudaSalesAndAdjustmentAllocationsEx
---where (ItemNumber LIKE '%' + @ItemNumber + '%') and applicationsettingsid = @appSettingId
+drop table #allo
+SELECT        @BatchNo AS BatchNo, Status, QtyAllocated,  InvoiceDate, CustomerName, SalesQuantity, SalesQtyAllocated, InvoiceNo, SalesLineNumber, ItemNumber, ItemDescription, DutyFreePaid, pCNumber, pRegistrationDate, pQuantity, 
+                         pQtyAllocated, PiQuantity, SalesFactor,  pReferenceNumber, pLineNumber, Cost, Total_CIF_itm, DutyLiability, TaxAmount, pIsAssessed, DoNotAllocateSales, 
+                         DoNotAllocatePreviousEntry, WarehouseError, SANumber, TariffCode, Invalid, pExpiryDate, pTariffCode, pItemNumber, ApplicationSettingsId
+into #allo
+FROM            AsycudaSalesAndAdjustmentAllocationsEx
+where (ItemNumber LIKE '%' + @ItemNumber + '%') and applicationsettingsid = @appSettingId
 
---(   SELECT * FROM #allo
---    EXCEPT
---    SELECT * FROM #his)  
---UNION ALL
---(   SELECT * FROM #his
---    EXCEPT
---    SELECT * FROM #allo) 
+(   SELECT * FROM #allo
+    EXCEPT
+    SELECT * FROM #his)  
+UNION ALL
+(   SELECT * FROM #his
+    EXCEPT
+    SELECT * FROM #allo) 
 
---select 'All Allocation Differences'
+select 'All Allocation Differences'
 
---drop table #Allhis
---SELECT BatchNo, Status, QtyAllocated, InvoiceDate, CustomerName, SalesQuantity, SalesQtyAllocated, InvoiceNo, InvoiceLineNumber, ItemNumber, ItemDescription, DutyFreePaid, pCNumber, pRegistrationDate, 
---                 pQuantity, pQtyAllocated, PiQuantity, SalesFactor, pReferenceNumber, pLineNumber, Cost, Total_CIF_itm, DutyLiability, TaxAmount, pIsAssessed, DoNotAllocateSales, 
---                 DoNotAllocatePreviousEntry, WarehouseError, SANumber, TariffCode, Invalid, pExpiryDate, pTariffCode, pItemNumber, ApplicationSettingsId
---into #Allhis
---FROM    [History-Allocations]
---where  applicationsettingsid = @appSettingId and ([History-Allocations].BatchNo = 1) 
+drop table #Allhis
+SELECT BatchNo, Status, QtyAllocated, InvoiceDate, CustomerName, SalesQuantity, SalesQtyAllocated, InvoiceNo, InvoiceLineNumber, ItemNumber, ItemDescription, DutyFreePaid, pCNumber, pRegistrationDate, 
+                 pQuantity, pQtyAllocated, PiQuantity, SalesFactor, pReferenceNumber, pLineNumber, Cost, Total_CIF_itm, DutyLiability, TaxAmount, pIsAssessed, DoNotAllocateSales, 
+                 DoNotAllocatePreviousEntry, WarehouseError, SANumber, TariffCode, Invalid, pExpiryDate, pTariffCode, pItemNumber, ApplicationSettingsId
+into #Allhis
+FROM    [History-Allocations]
+where  applicationsettingsid = @appSettingId and ([History-Allocations].BatchNo = 1) 
 
---drop table #Allallo
---SELECT        1 AS BatchNo, Status, QtyAllocated,  InvoiceDate, CustomerName, SalesQuantity, SalesQtyAllocated, InvoiceNo, SalesLineNumber, ItemNumber, ItemDescription, DutyFreePaid, pCNumber, pRegistrationDate, pQuantity, 
---                         pQtyAllocated, PiQuantity, SalesFactor,  pReferenceNumber, pLineNumber, Cost, Total_CIF_itm, DutyLiability, TaxAmount, pIsAssessed, DoNotAllocateSales, 
---                         DoNotAllocatePreviousEntry, WarehouseError, SANumber, TariffCode, Invalid, pExpiryDate, pTariffCode, pItemNumber, ApplicationSettingsId
---into #Allallo
---FROM            AsycudaSalesAndAdjustmentAllocationsEx
---where applicationsettingsid = @appSettingId
+drop table #Allallo
+SELECT        1 AS BatchNo, Status, QtyAllocated,  InvoiceDate, CustomerName, SalesQuantity, SalesQtyAllocated, InvoiceNo, SalesLineNumber, ItemNumber, ItemDescription, DutyFreePaid, pCNumber, pRegistrationDate, pQuantity, 
+                         pQtyAllocated, PiQuantity, SalesFactor,  pReferenceNumber, pLineNumber, Cost, Total_CIF_itm, DutyLiability, TaxAmount, pIsAssessed, DoNotAllocateSales, 
+                         DoNotAllocatePreviousEntry, WarehouseError, SANumber, TariffCode, Invalid, pExpiryDate, pTariffCode, pItemNumber, ApplicationSettingsId
+into #Allallo
+FROM            AsycudaSalesAndAdjustmentAllocationsEx
+where applicationsettingsid = @appSettingId
 
---(   SELECT * FROM #Allallo
---    EXCEPT
---    SELECT * FROM #Allhis)  
---UNION ALL
---(   SELECT * FROM #Allhis
---    EXCEPT
---    SELECT * FROM #Allallo) 
+(   SELECT * FROM #Allallo
+    EXCEPT
+    SELECT * FROM #Allhis)  
+UNION ALL
+(   SELECT * FROM #Allhis
+    EXCEPT
+    SELECT * FROM #Allallo) 
 
 
 
-declare @BatchNo int = 1, @itemNumber varchar(50), @appSettingId int = 7
+
+
+////////////////////////////////////issues comparison
+
+
+
+
+
+
+declare @BatchNo int = 2, @itemNumber varchar(50), @appSettingId int = 7
 --set @itemNumber = '14002-220'
 drop table #issueHis
 SELECT BatchNo, Status, QtyAllocated, InvoiceDate, CustomerName, SalesQuantity, SalesQtyAllocated, InvoiceNo, InvoiceLineNumber, isnull([History-Allocations].ItemNumber, issues.ItemNumber) as ItemNumber, ItemDescription, DutyFreePaid, pCNumber, pRegistrationDate, 

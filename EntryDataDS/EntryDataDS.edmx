@@ -582,6 +582,24 @@
           <Property Name="CubicFeet" Type="float" Nullable="false" />
           <Property Name="RiderId" Type="int" Nullable="false" />
         </EntityType>
+        <EntityType Name="SupplierItemDescription">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="SupplierCode" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="Item" Type="nvarchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="SupplierItemDescriptionRegEx">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="SupplierItemDescriptionId" Type="int" Nullable="false" />
+          <Property Name="Attribute" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="RegEx" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="POSRegEx" Type="nvarchar" MaxLength="50" Nullable="false" />
+        </EntityType>
         <EntityType Name="Suppliers">
           <Key>
             <PropertyRef Name="SupplierCode" />
@@ -636,6 +654,7 @@
           <Property Name="CIFValue" Type="float" />
           <Property Name="DutyLiablity" Type="float" />
           <Property Name="Comment" Type="nvarchar" MaxLength="50" />
+          <Property Name="InvoiceLineNumber" Type="int" />
         </EntityType>
         <EntityType Name="xSalesFiles">
           <Key>
@@ -1785,6 +1804,20 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ShipmentRiderManifests' d
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_SupplierItemDescriptionRegEx_SupplierItemDescription">
+          <End Role="SupplierItemDescription" Type="Self.SupplierItemDescription" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="SupplierItemDescriptionRegEx" Type="Self.SupplierItemDescriptionRegEx" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="SupplierItemDescription">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="SupplierItemDescriptionRegEx">
+              <PropertyRef Name="SupplierItemDescriptionId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_WarehouseInfo_EntryData_PurchaseOrders">
           <End Role="EntryData_PurchaseOrders" Type="Self.EntryData_PurchaseOrders" Multiplicity="1">
             <OnDelete Action="Cascade" />
@@ -1859,6 +1892,8 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ShipmentRiderManifests' d
           <EntitySet Name="ShipmentManifestDetails" EntityType="Self.ShipmentManifestDetails" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ShipmentRider" EntityType="Self.ShipmentRider" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ShipmentRiderDetails" EntityType="Self.ShipmentRiderDetails" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="SupplierItemDescription" EntityType="Self.SupplierItemDescription" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="SupplierItemDescriptionRegEx" EntityType="Self.SupplierItemDescriptionRegEx" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Suppliers" EntityType="Self.Suppliers" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="VolumeUnits" EntityType="Self.VolumeUnits" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="WarehouseInfo" EntityType="Self.WarehouseInfo" Schema="dbo" store:Type="Tables" />
@@ -2399,6 +2434,10 @@ FROM [dbo].[ShipmentRiderManifests] AS [ShipmentRiderManifests]</DefiningQuery>
             <End Role="ShipmentRider" EntitySet="ShipmentRider" />
             <End Role="ShipmentRiderDetails" EntitySet="ShipmentRiderDetails" />
           </AssociationSet>
+          <AssociationSet Name="FK_SupplierItemDescriptionRegEx_SupplierItemDescription" Association="Self.FK_SupplierItemDescriptionRegEx_SupplierItemDescription">
+            <End Role="SupplierItemDescription" EntitySet="SupplierItemDescription" />
+            <End Role="SupplierItemDescriptionRegEx" EntitySet="SupplierItemDescriptionRegEx" />
+          </AssociationSet>
           <AssociationSet Name="FK_WarehouseInfo_EntryData_PurchaseOrders" Association="Self.FK_WarehouseInfo_EntryData_PurchaseOrders">
             <End Role="EntryData_PurchaseOrders" EntitySet="EntryData_PurchaseOrders" />
             <End Role="WarehouseInfo" EntitySet="WarehouseInfo" />
@@ -2755,6 +2794,12 @@ FROM [dbo].[ShipmentRiderManifests] AS [ShipmentRiderManifests]</DefiningQuery>
             <End Role="EntryDataDetails_SupportingDetails" EntitySet="SupportingDetails" />
           </AssociationSet>
           <EntitySet Name="AsycudaDocumentEntryDataLine" EntityType="WaterNutDBModel.AsycudaDocumentEntryDataLine" />
+          <EntitySet Name="SupplierItemDescription" EntityType="WaterNutDBModel.SupplierItemDescription" />
+          <EntitySet Name="SupplierItemDescriptionRegEx" EntityType="WaterNutDBModel.SupplierItemDescriptionRegEx" />
+          <AssociationSet Name="FK_SupplierItemDescriptionRegEx_SupplierItemDescription" Association="WaterNutDBModel.FK_SupplierItemDescriptionRegEx_SupplierItemDescription">
+            <End Role="SupplierItemDescription" EntitySet="SupplierItemDescription" />
+            <End Role="SupplierItemDescriptionRegEx" EntitySet="SupplierItemDescriptionRegEx" />
+          </AssociationSet>
           </EntityContainer>
         <EntityType Name="Sales" BaseType="WaterNutDBModel.EntryData">
           <Property Name="INVNumber" Type="String" Nullable="false" MaxLength="50" Unicode="true" FixedLength="false"><a:EntityNameProperty xmlns:a="http://schemas.tempuri.com/EntityNameProperty">False</a:EntityNameProperty></Property>
@@ -4727,6 +4772,7 @@ FROM [dbo].[ShipmentRiderManifests] AS [ShipmentRiderManifests]</DefiningQuery>
           <Property Name="DutyLiablity" Type="Double" />
           <Property Name="Comment" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="xSalesFiles" Relationship="WaterNutDBModel.FK_xSalesDetails_xSalesFiles" FromRole="xSalesDetails" ToRole="xSalesFiles" />
+          <Property Name="InvoiceLineNumber" Type="Int32" />
         </EntityType>
         <EntityType Name="xSalesFiles">
           <Key>
@@ -4817,6 +4863,40 @@ FROM [dbo].[ShipmentRiderManifests] AS [ShipmentRiderManifests]</DefiningQuery>
           <Property Name="EntryData_Id" Type="Int32" Nullable="false" />
           <Property Name="ItemDescription" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
         </EntityType>
+        <EntityType Name="SupplierItemDescription">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="SupplierCode" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Item" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="SupplierItemDescriptionRegEx" Relationship="WaterNutDBModel.FK_SupplierItemDescriptionRegEx_SupplierItemDescription" FromRole="SupplierItemDescription" ToRole="SupplierItemDescriptionRegEx" />
+        </EntityType>
+        <EntityType Name="SupplierItemDescriptionRegEx">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="SupplierItemDescriptionId" Type="Int32" Nullable="false" />
+          <Property Name="Attribute" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="RegEx" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="POSRegEx" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="SupplierItemDescription" Relationship="WaterNutDBModel.FK_SupplierItemDescriptionRegEx_SupplierItemDescription" FromRole="SupplierItemDescriptionRegEx" ToRole="SupplierItemDescription" />
+        </EntityType>
+        <Association Name="FK_SupplierItemDescriptionRegEx_SupplierItemDescription">
+          <End Type="WaterNutDBModel.SupplierItemDescription" Role="SupplierItemDescription" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="WaterNutDBModel.SupplierItemDescriptionRegEx" Role="SupplierItemDescriptionRegEx" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="SupplierItemDescription">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="SupplierItemDescriptionRegEx">
+              <PropertyRef Name="SupplierItemDescriptionId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -5829,6 +5909,7 @@ FROM [dbo].[ShipmentRiderManifests] AS [ShipmentRiderManifests]</DefiningQuery>
           <EntitySetMapping Name="xSalesDetails">
             <EntityTypeMapping TypeName="WaterNutDBModel.xSalesDetails">
               <MappingFragment StoreEntitySet="xSalesDetails">
+                <ScalarProperty Name="InvoiceLineNumber" ColumnName="InvoiceLineNumber" />
                 <ScalarProperty Name="Comment" ColumnName="Comment" />
                 <ScalarProperty Name="DutyLiablity" ColumnName="DutyLiablity" />
                 <ScalarProperty Name="CIFValue" ColumnName="CIFValue" />
@@ -5906,6 +5987,26 @@ FROM [dbo].[ShipmentRiderManifests] AS [ShipmentRiderManifests]</DefiningQuery>
                 <ScalarProperty Name="EntryDataDate" ColumnName="EntryDataDate" />
                 <ScalarProperty Name="EntryDataId" ColumnName="EntryDataId" />
                 <ScalarProperty Name="ApplicationSettingsId" ColumnName="ApplicationSettingsId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SupplierItemDescription">
+            <EntityTypeMapping TypeName="WaterNutDBModel.SupplierItemDescription">
+              <MappingFragment StoreEntitySet="SupplierItemDescription">
+                <ScalarProperty Name="Item" ColumnName="Item" />
+                <ScalarProperty Name="SupplierCode" ColumnName="SupplierCode" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SupplierItemDescriptionRegEx">
+            <EntityTypeMapping TypeName="WaterNutDBModel.SupplierItemDescriptionRegEx">
+              <MappingFragment StoreEntitySet="SupplierItemDescriptionRegEx">
+                <ScalarProperty Name="POSRegEx" ColumnName="POSRegEx" />
+                <ScalarProperty Name="RegEx" ColumnName="RegEx" />
+                <ScalarProperty Name="Attribute" ColumnName="Attribute" />
+                <ScalarProperty Name="SupplierItemDescriptionId" ColumnName="SupplierItemDescriptionId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

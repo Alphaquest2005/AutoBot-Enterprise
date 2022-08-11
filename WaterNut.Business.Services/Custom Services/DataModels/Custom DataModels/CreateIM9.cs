@@ -41,12 +41,14 @@ namespace WaterNut.DataSpace
             try
             {
                 var alst = await GetAllIM9Data().ConfigureAwait(false);
-                var grp = alst.GroupBy(x => x.CNumber);
-                foreach (var item in grp)
-                {
-                    await CreateIM9Entries(docSet, PerIM7, item).ConfigureAwait(false);
-                }
-                
+                //var grp = alst.GroupBy(x => x.CNumber);
+                //foreach (var item in grp)
+                //{
+                //   await CreateIM9Entries(docSet, PerIM7, item).ConfigureAwait(false);
+                //}
+
+                await CreateIM9Entries(docSet, PerIM7, alst).ConfigureAwait(false);
+
             }
             catch (Exception)
             {
@@ -146,10 +148,10 @@ namespace WaterNut.DataSpace
                 alst.AddRange(
                     ctx.xcuda_Item
                                 
-                                .Where(x => x.AsycudaDocument.RegistrationDate <= BaseDataModel.Instance.CurrentApplicationSettings.OpeningStockDate)
+                                .Where(x => x.AsycudaDocument.RegistrationDate >= BaseDataModel.Instance.CurrentApplicationSettings.OpeningStockDate)
                                 .Where(x => x.AsycudaDocument.CustomsOperationId == (int) CustomsOperations.Warehouse)
                                 .Where(x => x.WarehouseError == null)
-                                .Where(x => x.xcuda_Tarification.Item_price > 0)
+                                //.Where(x => x.xcuda_Tarification.Item_price > 0)
                                 .Where(x => x.xcuda_Tarification.xcuda_Supplementary_unit.Any())
                                 .Where(x => x.xcuda_Tarification.xcuda_Supplementary_unit.FirstOrDefault()
                                             .Suppplementary_unit_quantity > (double?) x.EntryPreviousItems.Select(y => y.xcuda_PreviousItem)
@@ -392,41 +394,43 @@ namespace WaterNut.DataSpace
         {
             try
             {
-                var itm = new xcuda_Item(true)
+
+                var itm = new xcuda_Item(true) { };
+                itm.SetupProperties();
+
+                itm.ItemNumber = ditm.ItemNumber;
+                itm.ItemQuantity = Convert.ToDouble(ditm.ItemQuantity - ditm.PiQuantity);
+                itm.SalesFactor = ditm.SalesFactor;
+                itm.xcuda_PreviousItem = new xcuda_PreviousItem(true)
                 {
-                    ItemNumber = ditm.ItemNumber,
-                    ItemQuantity = Convert.ToDouble(ditm.ItemQuantity - ditm.PiQuantity),
-                    SalesFactor = ditm.SalesFactor,
-                    xcuda_PreviousItem = new xcuda_PreviousItem(true)
-                    {
-                        TrackingState = TrackingState.Added,
-                        Hs_code = ditm.TariffCode,
-                        Commodity_code = "00",
-                        Current_item_number = (itmcount + 1).ToString(), // piggy back the previous item count
-                        Previous_item_number = ditm.LineNumber.ToString(),
-                        Previous_Packages_number = ditm.Number_of_packages.ToString(),
-                        Suplementary_Quantity = Convert.ToDecimal(ditm.ItemQuantity - ditm.PiQuantity),
-                        Preveious_suplementary_quantity = Convert.ToDouble(ditm.ItemQuantity),
-                        Prev_net_weight = (decimal)ditm.Net_weight,
+                    TrackingState = TrackingState.Added,
+                    Hs_code = ditm.TariffCode,
+                    Commodity_code = "00",
+                    Current_item_number = (itmcount + 1).ToString(), // piggy back the previous item count
+                    Previous_item_number = ditm.LineNumber.ToString(),
+                    Previous_Packages_number = ditm.Number_of_packages.ToString(),
+                    Suplementary_Quantity = Convert.ToDecimal(ditm.ItemQuantity - ditm.PiQuantity),
+                    Preveious_suplementary_quantity = Convert.ToDouble(ditm.ItemQuantity),
+                    Prev_net_weight = (decimal)ditm.Net_weight,
 
-                        //////////////////////////todo///////////////////////////
+                    //////////////////////////todo///////////////////////////
 
 
-                        Net_weight = Convert.ToDecimal(ditm.Net_weight - ditm.PiWeight),
-                        Goods_origin = ditm.Country_of_origin_code,
-                        Previous_value =
-                            Convert.ToDouble((ditm.Total_CIF_itm / ditm.ItemQuantity)),
-                        Current_value =
-                            Convert.ToDouble((ditm.Total_CIF_itm) / ditm.ItemQuantity),
-                        Prev_reg_ser = "C",
-                        Prev_reg_nbr = ditm.CNumber,
-                        Prev_reg_year = ditm.RegistrationDate.Year,
-                        Prev_reg_cuo = ditm.Customs_clearance_office_code ?? "GDSGO",
-                        Prev_decl_HS_spec = ditm.ItemNumber,
-                    },
-                    ASYCUDA_Id = cdoc.Document.ASYCUDA_Id,
-                    TrackingState = TrackingState.Added
+                    Net_weight = Convert.ToDecimal(ditm.Net_weight - ditm.PiWeight),
+                    Goods_origin = ditm.Country_of_origin_code,
+                    Previous_value =
+                        Convert.ToDouble((ditm.Total_CIF_itm / ditm.ItemQuantity)),
+                    Current_value =
+                        Convert.ToDouble((ditm.Total_CIF_itm) / ditm.ItemQuantity),
+                    Prev_reg_ser = "C",
+                    Prev_reg_nbr = ditm.CNumber,
+                    Prev_reg_year = ditm.RegistrationDate.Year,
+                    Prev_reg_cuo = ditm.Customs_clearance_office_code ?? "GDSGO",
+                    Prev_decl_HS_spec = ditm.ItemNumber,
                 };
+                itm.ASYCUDA_Id = cdoc.Document.ASYCUDA_Id;
+                itm.TrackingState = TrackingState.Added;
+                
                 var pitm = itm.xcuda_PreviousItem;
                 pitm.xcuda_Item = itm;
                 if (ditm.Number_of_packages != 0)

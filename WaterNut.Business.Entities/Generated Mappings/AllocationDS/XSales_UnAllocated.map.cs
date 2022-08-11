@@ -11,7 +11,7 @@
     {
         public XSales_UnAllocatedMap()
         {                        
-              this.HasKey(t => new {t.pItemId, t.xItemId, t.EntryDataDetailsId});        
+              this.HasKey(t => new {t.pItemId, t.xItemId, t.EntryDataDetailsId, t.InventoryItemId, t.PreviousDocumentInventoryItemId});        
               this.ToTable("XSales-UnAllocated");
               this.Property(t => t.Line).HasColumnName("Line");
               this.Property(t => t.Date).HasColumnName("Date");
@@ -38,6 +38,8 @@
               this.Property(t => t.SalesLineNumber).HasColumnName("SalesLineNumber");
               this.Property(t => t.xItemId).HasColumnName("xItemId").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.None));
               this.Property(t => t.pItemId).HasColumnName("pItemId").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.None));
+              this.Property(t => t.InventoryItemId).HasColumnName("InventoryItemId").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.None));
+              this.Property(t => t.PreviousDocumentInventoryItemId).HasColumnName("PreviousDocumentInventoryItemId").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.None));
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);
     			this.Ignore(t => t.ModifiedProperties);
