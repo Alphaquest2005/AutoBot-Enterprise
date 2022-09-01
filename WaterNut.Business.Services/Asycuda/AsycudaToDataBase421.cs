@@ -695,7 +695,7 @@ namespace WaterNut.DataSpace.Asycuda
 
             if (!string.IsNullOrEmpty(di.Free_text_2))
             {
-                var lst = di.Free_text_1.Split('|');
+                var lst = di.Free_text_2.Split('|');
                 if (lst.Length == 2) di.PreviousInvoiceItemNumber = di.Free_text_2.Trim();
                 // think about saving comment
                 // if (lst.Length == 3) di.c = di.Free_text_2.Trim();

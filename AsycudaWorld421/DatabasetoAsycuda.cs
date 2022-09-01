@@ -869,18 +869,27 @@ namespace Asycuda421
             if (item.xcuda_Tarification.xcuda_HScode != null)
             {
                 if (item.xcuda_Tarification.xcuda_HScode.Commodity_code != null)
-                    ai.Tarification.HScode.Commodity_code.Text.Add(item.xcuda_Tarification.xcuda_HScode
-                        .Commodity_code); // item.xcuda_Tarification.xcuda_HScode.Commodity_code;
-                if (item.xcuda_Tarification.xcuda_HScode.Precision_1 != null)
                 {
-                    ai.Tarification.HScode.Precision_1.Text.Clear();
-                    ai.Tarification.HScode.Precision_1.Text.Add(item.xcuda_Tarification.xcuda_HScode.Precision_1);
-                }
+                    if (!item.xcuda_Tarification.xcuda_HScode.Commodity_code.EndsWith("00") && item.xcuda_Tarification.xcuda_HScode.Commodity_code.Length == 10)
+                    {
+                        ai.Tarification.HScode.Precision_1.Text.Clear();
+                        ai.Tarification.HScode.Precision_1.Text.Add(item.xcuda_Tarification.xcuda_HScode.Commodity_code.Substring(8,2));
+                    }
 
-                if (item.xcuda_Tarification.xcuda_HScode.Precision_4 != null && item.ItemNumber.Length <= 20) //
-                    ai.Tarification.HScode.Precision_4.Text.Add(item.xcuda_Tarification.xcuda_HScode.Precision_4.Trim()
-                        .Truncate(20));
+                    ai.Tarification.HScode.Commodity_code.Text.Add(item.xcuda_Tarification.xcuda_HScode.Commodity_code.Truncate(8));
+                } // item.xcuda_Tarification.xcuda_HScode.Commodity_code;
             }
+
+            if (item.xcuda_Tarification.xcuda_HScode.Precision_1 != null)
+            {
+                ai.Tarification.HScode.Precision_1.Text.Clear();
+                ai.Tarification.HScode.Precision_1.Text.Add(item.xcuda_Tarification.xcuda_HScode.Precision_1);
+            }
+
+            if (item.xcuda_Tarification.xcuda_HScode.Precision_4 != null && item.ItemNumber.Length <= 20) //
+                ai.Tarification.HScode.Precision_4.Text.Add(item.xcuda_Tarification.xcuda_HScode.Precision_4.Trim()
+                    .Truncate(20));
+
         }
 
         private void SaveSupplementaryUnit(xcuda_Item item, ASYCUDAItem ai)

@@ -19,15 +19,27 @@ namespace WaterNut.DataSpace
 
             existingInventoryItem.Where(x => x.Item.TariffCode != x.Data.Key.TariffCode)
                 .Where(x => !string.IsNullOrEmpty(x.Data.Key.TariffCode))
-                .ForEach(x => x.Item.TariffCode = x.Data.Key.TariffCode);
+                .ForEach(x =>
+                {
+                    x.Item.StartTracking();
+                    x.Item.TariffCode = x.Data.Key.TariffCode;
+                });
 
             existingInventoryItem.Where(x => x.Item.TariffCode != x.Data.Key.TariffCode)
                 .Where(x => string.IsNullOrEmpty(x.Data.Key.ItemDescription))
-                .ForEach(x => x.Data.Data.ForEach(z => z.ItemDescription = x.Item.Description));
+                .ForEach(x => x.Data.Data.ForEach(z =>
+                {
+                    x.Item.StartTracking();
+                    z.ItemDescription = x.Item.Description;
+                }));
 
             existingInventoryItem.Where(x => x.Item.TariffCode != x.Data.Key.TariffCode)
                 .Where(x => !string.IsNullOrEmpty(x.Data.Key.ItemDescription))
-                .ForEach(x => x.Item.Description = x.Data.Key.ItemDescription);
+                .ForEach(x =>
+                {
+                    x.Item.StartTracking();
+                    x.Item.Description = x.Data.Key.ItemDescription;
+                });
 
 
             existingInventoryItem
