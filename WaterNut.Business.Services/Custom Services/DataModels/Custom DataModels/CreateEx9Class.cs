@@ -1292,8 +1292,11 @@ namespace WaterNut.DataSpace
                     .DefaultIfEmpty(0).Sum();
 
                 // var universalSalesAll = (double)universalData.GroupBy(x => x.PreviousItem_Id).Select(x => x.FirstOrDefault()?.pQtyAllocated).DefaultIfEmpty(0.0).Sum();
-                var universalSalesAll = (double) universalData.GroupBy(x => x.PreviousItem_Id).Select(x => x.FirstOrDefault(q => q.pQtyAllocated > 0)?.pQtyAllocated).DefaultIfEmpty(0.0).Sum();
-                var universalPiAll = (double) universalData.GroupBy(x => x.PreviousItem_Id).Select(x => x.FirstOrDefault(q => q.PiQuantity > 0)?.PiQuantity)
+
+                var previousItemUniversalData = universalData.GroupBy(x => x.PreviousItem_Id).ToList();
+
+                var universalSalesAll = (double) previousItemUniversalData.Select(x => x.FirstOrDefault(q => q.pQtyAllocated > 0)?.pQtyAllocated).DefaultIfEmpty(0.0).Sum();
+                var universalPiAll = (double) previousItemUniversalData.Select(x => x.FirstOrDefault(q => q.PiQuantity > 0)?.PiQuantity)
                     .DefaultIfEmpty(0.0).Sum();
 
                // var totalSalesAll = (double)salesPiAll.GroupBy(x => x.PreviousItem_Id).SelectMany(x => x.Select(z => z.QtyAllocated)).DefaultIfEmpty(0.0).Sum();
