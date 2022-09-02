@@ -5,7 +5,7 @@ FROM    InventoryItems INNER JOIN
                  [InventoryItems-Lumped] ON InventoryItems.Id = [InventoryItems-Lumped].InventoryItemId INNER JOIN
                  PreviousItemsEx ON InventoryItems.ApplicationSettingsId = PreviousItemsEx.ApplicationSettingsId AND InventoryItems.ItemNumber = PreviousItemsEx.Prev_decl_HS_spec INNER JOIN
                  AsycudaDocument ON PreviousItemsEx.ASYCUDA_Id = AsycudaDocument.ASYCUDA_Id
-WHERE (PreviousItemsEx.ApplicationSettingsId = 6) and AsycudaDocument.EffectiveRegistrationDate is null--AND (AsycudaDocument.RegistrationDate <= '10/1/2021')
+WHERE (PreviousItemsEx.ApplicationSettingsId = 7) and AsycudaDocument.EffectiveRegistrationDate is null--AND (AsycudaDocument.RegistrationDate <= '10/1/2021')
 GROUP BY PreviousItemsEx.Prev_reg_nbr, PreviousItemsEx.CNumber, PreviousItemsEx.Current_item_number, PreviousItemsEx.Previous_item_number, PreviousItemsEx.Prev_decl_HS_spec, InventoryItems.Description, 
                  PreviousItemsEx.Suplementary_Quantity, PreviousItemsEx.Current_value, AsycudaDocument.RegistrationDate
 ORDER BY Date
@@ -17,7 +17,7 @@ FROM    InventoryItems INNER JOIN
                  [InventoryItems-Lumped] ON InventoryItems.Id = [InventoryItems-Lumped].InventoryItemId INNER JOIN
                  PreviousItemsEx ON InventoryItems.ApplicationSettingsId = PreviousItemsEx.ApplicationSettingsId AND InventoryItems.ItemNumber = PreviousItemsEx.Prev_decl_HS_spec INNER JOIN
                  AsycudaDocument ON PreviousItemsEx.ASYCUDA_Id = AsycudaDocument.ASYCUDA_Id
-WHERE (PreviousItemsEx.ApplicationSettingsId = 6) AND (AsycudaDocument.DocumentType = 'IM9') --AND (AsycudaDocument.RegistrationDate >= '10/1/2021')
+WHERE (PreviousItemsEx.ApplicationSettingsId = 7) AND (AsycudaDocument.DocumentType = 'IM9') --AND (AsycudaDocument.RegistrationDate >= '10/1/2021')
 GROUP BY PreviousItemsEx.Prev_reg_nbr, PreviousItemsEx.CNumber, PreviousItemsEx.Current_item_number, PreviousItemsEx.Previous_item_number, PreviousItemsEx.Prev_decl_HS_spec, InventoryItems.Description, 
                  PreviousItemsEx.Suplementary_Quantity, PreviousItemsEx.Current_value, AsycudaDocument.RegistrationDate
 ORDER BY Date
@@ -25,7 +25,7 @@ ORDER BY Date
 ------------------------------------------------------------------------
 
 
-select * from PreviousItemsEx where ApplicationSettingsId = 6
+select * from PreviousItemsEx where ApplicationSettingsId = 7
 
 SELECT EntryDataDetails.EntryDataId, EntryData.EntryDataDate, EntryDataDetails.ItemNumber, EntryDataDetails.ItemDescription, EntryDataDetails.Quantity, EntryDataDetails.Cost, 
                  PreviousItemsEx.Prev_reg_nbr AS CNumber, PreviousItemsEx.Previous_item_number AS pLineNumber, PreviousItemsEx.CNumber AS xCNumber, PreviousItemsEx.Current_item_number AS xLineNumber, 
@@ -34,7 +34,7 @@ FROM    InventoryItems INNER JOIN
                  [InventoryItems-Lumped] ON InventoryItems.Id = [InventoryItems-Lumped].InventoryItemId INNER JOIN
                  EntryData INNER JOIN
                  EntryDataDetails ON EntryData.EntryData_Id = EntryDataDetails.EntryData_Id INNER JOIN
-                 PreviousItemsEx ON EntryData.EntryDataId LIKE '%' + PreviousItemsEx.CNumber + '-' + PreviousItemsEx.Current_item_number AND EntryData.ApplicationSettingsId = PreviousItemsEx.ApplicationSettingsId INNER JOIN
+                 PreviousItemsEx ON EntryData.EntryDataId = 'Asycuda-C#' + PreviousItemsEx.CNumber + '-' + PreviousItemsEx.Current_item_number AND EntryData.ApplicationSettingsId = PreviousItemsEx.ApplicationSettingsId INNER JOIN
                  EntryData_Adjustments ON EntryData.EntryData_Id = EntryData_Adjustments.EntryData_Id ON InventoryItems.ItemNumber = PreviousItemsEx.ItemNumber AND 
                  InventoryItems.ApplicationSettingsId = PreviousItemsEx.ApplicationSettingsId
 WHERE (PreviousItemsEx.ApplicationSettingsId = 6) AND (EntryData.ApplicationSettingsId = 6) AND (EntryDataDetails.EntryDataId LIKE N'Asycuda-C#%')
@@ -85,7 +85,7 @@ FROM    InventoryItems INNER JOIN
                  [InventoryItems-Lumped] ON InventoryItems.Id = [InventoryItems-Lumped].InventoryItemId INNER JOIN
                  EntryData INNER JOIN
                  EntryDataDetails ON EntryData.EntryData_Id = EntryDataDetails.EntryData_Id INNER JOIN
-                 PreviousItemsEx ON EntryData.EntryDataId LIKE '%' + PreviousItemsEx.CNumber + '-' + PreviousItemsEx.Current_item_number AND EntryData.ApplicationSettingsId = PreviousItemsEx.ApplicationSettingsId INNER JOIN
+                 PreviousItemsEx ON EntryData.EntryDataId = 'Asycuda-C#' + PreviousItemsEx.CNumber + '-' + PreviousItemsEx.Current_item_number AND EntryData.ApplicationSettingsId = PreviousItemsEx.ApplicationSettingsId INNER JOIN
                  EntryData_Adjustments ON EntryData.EntryData_Id = EntryData_Adjustments.EntryData_Id ON InventoryItems.ItemNumber = PreviousItemsEx.ItemNumber AND 
                  InventoryItems.ApplicationSettingsId = PreviousItemsEx.ApplicationSettingsId
 WHERE (PreviousItemsEx.ApplicationSettingsId = 7) AND (EntryData.ApplicationSettingsId = 7) AND (EntryDataDetails.EntryDataId LIKE N'Asycuda-C#%')
@@ -116,3 +116,48 @@ SELECT InventoryItems.Description, InventoryItems.ItemNumber, InventoryItems.App
 FROM    InventoryItems INNER JOIN
                  [InventoryItems-Lumped] ON InventoryItems.Id = [InventoryItems-Lumped].InventoryItemId
 GROUP BY InventoryItems.Description, InventoryItems.ItemNumber, InventoryItems.ApplicationSettingsId
+
+
+-----------------------------Set the duty free paid to same as entry
+
+SELECT        EntryDataDetails.EntryDataId, EntryData.EntryDataDate, EntryDataDetails.ItemNumber, EntryDataDetails.ItemDescription, EntryDataDetails.Quantity, EntryDataDetails.Cost, PreviousItemsEx.Prev_reg_nbr AS CNumber, 
+                         PreviousItemsEx.Previous_item_number AS pLineNumber, PreviousItemsEx.CNumber AS xCNumber, PreviousItemsEx.Current_item_number AS xLineNumber, EntryDataDetails.LineNumber, 
+                         EntryDataDetails.EntryDataDetailsId, PreviousItemsEx.DutyFreePaid
+FROM            InventoryItems INNER JOIN
+                         EntryData INNER JOIN
+                         EntryDataDetails ON EntryData.EntryData_Id = EntryDataDetails.EntryData_Id INNER JOIN
+                         PreviousItemsEx ON EntryData.EntryDataId = 'Asycuda-C#' + PreviousItemsEx.CNumber + '-' + PreviousItemsEx.Current_item_number AND EntryData.ApplicationSettingsId = PreviousItemsEx.ApplicationSettingsId INNER JOIN
+                         EntryData_Adjustments ON EntryData.EntryData_Id = EntryData_Adjustments.EntryData_Id ON InventoryItems.ItemNumber = PreviousItemsEx.ItemNumber AND 
+                         InventoryItems.ApplicationSettingsId = PreviousItemsEx.ApplicationSettingsId
+WHERE        (PreviousItemsEx.ApplicationSettingsId = 7) AND (EntryData.ApplicationSettingsId = 7) AND (LEFT(EntryDataDetails.EntryDataId, 10) = N'Asycuda-C#')
+GROUP BY EntryDataDetails.EntryDataId, EntryData.EntryDataDate, EntryDataDetails.ItemNumber, EntryDataDetails.ItemDescription, EntryDataDetails.Quantity, EntryDataDetails.Cost, PreviousItemsEx.Prev_reg_nbr, 
+                         PreviousItemsEx.CNumber, PreviousItemsEx.Current_item_number, EntryDataDetails.LineNumber, EntryDataDetails.EntryDataDetailsId, PreviousItemsEx.Previous_item_number, PreviousItemsEx.DutyFreePaid
+
+
+
+
+
+UPDATE       EntryDataDetails
+SET                TaxAmount = CASE WHEN previousitemsex.dutyfreepaid = 'Duty Paid' THEN 1 ELSE 0 END
+FROM            InventoryItems INNER JOIN
+                         EntryData INNER JOIN
+                         EntryDataDetails ON EntryData.EntryData_Id = EntryDataDetails.EntryData_Id INNER JOIN
+                         PreviousItemsEx ON EntryData.EntryDataId = 'Asycuda-C#' + PreviousItemsEx.CNumber + '-' + PreviousItemsEx.Current_item_number AND EntryData.ApplicationSettingsId = PreviousItemsEx.ApplicationSettingsId INNER JOIN
+                         EntryData_Adjustments ON EntryData.EntryData_Id = EntryData_Adjustments.EntryData_Id ON InventoryItems.ItemNumber = PreviousItemsEx.ItemNumber AND 
+                         InventoryItems.ApplicationSettingsId = PreviousItemsEx.ApplicationSettingsId
+WHERE        (PreviousItemsEx.ApplicationSettingsId = 7) AND (EntryData.ApplicationSettingsId = 7) AND (LEFT(EntryDataDetails.EntryDataId, 10) = N'Asycuda-C#')
+
+
+
+
+
+UPDATE       EntryDataDetails
+SET                TaxAmount = CASE WHEN previousitemsex.dutyfreepaid = 'Duty Paid' THEN 1 ELSE 0 END
+select EntryDataDetails.EntryDataId, EntryData.EntryDataDate, previousitemsex.dutyfreepaid, CASE WHEN previousitemsex.dutyfreepaid = 'Duty Paid' THEN 1 ELSE 0 END
+FROM            InventoryItems INNER JOIN
+                         EntryData INNER JOIN
+                         EntryDataDetails ON EntryData.EntryData_Id = EntryDataDetails.EntryData_Id INNER JOIN
+                         PreviousItemsEx ON EntryData.EntryDataId = 'Asycuda-C#' + PreviousItemsEx.CNumber + '-' + PreviousItemsEx.Current_item_number AND EntryData.ApplicationSettingsId = PreviousItemsEx.ApplicationSettingsId INNER JOIN
+                         EntryData_Adjustments ON EntryData.EntryData_Id = EntryData_Adjustments.EntryData_Id ON InventoryItems.ItemNumber = PreviousItemsEx.ItemNumber AND 
+                         InventoryItems.ApplicationSettingsId = PreviousItemsEx.ApplicationSettingsId
+WHERE        (PreviousItemsEx.ApplicationSettingsId = 7) AND (EntryData.ApplicationSettingsId = 7) AND (LEFT(EntryDataDetails.EntryDataId, 10) = N'Asycuda-C#')

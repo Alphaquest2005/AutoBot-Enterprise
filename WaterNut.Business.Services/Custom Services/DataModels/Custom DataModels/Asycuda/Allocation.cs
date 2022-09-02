@@ -391,9 +391,9 @@ namespace WaterNut.DataSpace
 
             var ggitms = GroupOfGroups(itemGroups);
 
-            var tList = ggitms.Where(x =>
-                x.Value.group.Value.Any(z => z.Value.Any(q => ((ItemSet)q.Value).EntriesList.Any(a => a.Item_Id == 32207))))
-                    .ToList();
+            //var tList = ggitms.Where(x =>
+            //    x.Value.group.Value.Any(z => z.Value.Any(q => ((ItemSet)q.Value).EntriesList.Any(a => a.Item_Id == 32207))))
+            //        .ToList();
 
 
 
