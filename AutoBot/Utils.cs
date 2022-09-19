@@ -531,6 +531,9 @@ namespace AutoBot
 
         public static bool ImportComplete(string directoryName, bool redownload, out int lcont)
         {
+            try
+            {
+
             lcont = 0;
 
             var desFolder = directoryName + (directoryName.EndsWith(@"\") ? "" : "\\");
@@ -560,10 +563,17 @@ namespace AutoBot
                 {
                     lcont += 1;
 
-                    var p = line.StartsWith($"{DateTime.Now.Year}\t")
-                        ? line.Replace($"{DateTime.Now.Year}\t", "").Split('\t')
-                        : line.Split('\t');
-                    if (p.Length < 8) continue;
+                    //var p = line.StartsWith($"{DateTime.Now.Year}\t")
+                    //    ? line.Replace($"{DateTime.Now.Year}\t", "").Split('\t')
+                    //    : line.Split('\t');
+                    var p = line.Split('\t').ToList();
+                    if (p[0] == DateTime.Now.Year.ToString())
+                    {
+                            p.RemoveAt(0);
+                    }
+
+
+                    if (p.Count < 8) continue;
                     var fileName = Path.Combine(desFolder, $"{p[7] + p[8]}-{p[0]}-{DateTime.Parse(p[6]).Year}-{p[5]}.xml");
                     if (File.Exists(fileName))
                     {
@@ -580,6 +590,13 @@ namespace AutoBot
             {
 
                 return false;
+            }
+
+            }
+            catch (Exception)
+            {
+
+                throw;
             }
         }
 
