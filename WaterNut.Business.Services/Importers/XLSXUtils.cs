@@ -105,66 +105,90 @@ namespace WaterNut.Business.Services.Importers
 
         }
 
-        private static void ImportInventoryMapping(string invItemCode, DataRow misMatch, List<object> misHeaderRow, string poItemCode)
+        private static void ImportInventoryMapping(string invItemCode, DataRow misMatch, List<object> misHeaderRow,
+            string poItemCode)
         {
-            using (var ctx = new EntryDataDSContext())
+            try
             {
-                InvoiceDetails invRow;
-                EntryDataDetails poRow;
 
-                if (invItemCode == poItemCode)
-                {
-                    // this should not happen write code to deal with it
-                    Debugger.Break();
-                }
 
-                var invItm = ctx.InventoryItems.Include(x => x.AliasItems).FirstOrDefault(x =>
-                    x.ItemNumber == invItemCode
-                    && x.ApplicationSettingsId ==
-                    BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId);
-                if (invItm == null)
+                using (var ctx = new EntryDataDSContext())
                 {
-                    invItm = new InventoryItems()
+                    InvoiceDetails invRow;
+                    EntryDataDetails poRow;
+
+                    if (invItemCode == poItemCode)
                     {
-                        ApplicationSettingsId =
-                            BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId,
-                        Description = misMatch[misHeaderRow.IndexOf("INVDescription")].ToString(),
-                        ItemNumber = invItemCode,
-                        TrackingState = TrackingState.Added
-                    };
-                    ctx.InventoryItems.Add(invItm);
-                }
+                        // this should not happen write code to deal with it
+                        Debugger.Break();
+                    }
 
-                var poItm = ctx.InventoryItems.Include(x => x.AliasItems).FirstOrDefault(x =>
-                    x.ItemNumber == poItemCode && x.ApplicationSettingsId ==
-                    BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId);
-                if (poItm == null)
-                {
-                    poItm = new InventoryItems()
+                    var invItm = ctx.InventoryItems.Include(x => x.AliasItems).FirstOrDefault(x =>
+                        x.ItemNumber == invItemCode
+                        && x.ApplicationSettingsId ==
+                        BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId);
+                    if (invItm == null)
                     {
-                        ApplicationSettingsId =
-                            BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId,
-                        Description = misMatch[misHeaderRow.IndexOf("PODescription")].ToString(),
-                        ItemNumber = poItemCode,
-                        TrackingState = TrackingState.Added
-                    };
-                    ctx.InventoryItems.Add(poItm);
-                }
+                        invItm = new InventoryItems()
+                        {
+                            ApplicationSettingsId =
+                                BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId,
+                            Description = misMatch[misHeaderRow.IndexOf("INVDescription")].ToString(),
+                            ItemNumber = invItemCode,
+                            TrackingState = TrackingState.Added
+                        };
+                        ctx.InventoryItems.Add(invItm);
+                    }
 
-                if (!poItm.AliasItems.Any(x => x.AliasItemId == invItm.Id) &&
-                    !invItm.AliasItems.Any(x => x.InventoryItemId == poItm.Id))
-                {
-                    ctx.InventoryItemAlias.Add(new InventoryItemAlias(true)
+                    var poItm = ctx.InventoryItems.Include(x => x.AliasItems).FirstOrDefault(x =>
+                        x.ItemNumber == poItemCode && x.ApplicationSettingsId ==
+                        BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId);
+                    if (poItm == null)
                     {
-                        InventoryItems = poItm,
-                        AliasItem = invItm,
-                        AliasName = invItm.ItemNumber,
-                        TrackingState = TrackingState.Added
-                    });
-                }
+                        poItm = new InventoryItems()
+                        {
+                            ApplicationSettingsId =
+                                BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId,
+                            Description = misMatch[misHeaderRow.IndexOf("PODescription")].ToString(),
+                            ItemNumber = poItemCode,
+                            TrackingState = TrackingState.Added
+                        };
+                        ctx.InventoryItems.Add(poItm);
+                    }
+                    ctx.SaveChanges();
 
-                //var itmAlias = ctx.InventoryItemAlias
-                ctx.SaveChanges();
+                    if (!poItm.AliasItems.Any(x => x.AliasItemId == invItm.Id) //&& !invItm.AliasItems.Any(x => x.InventoryItemId == poItm.Id)
+                       )
+                    {
+                        ctx.InventoryItemAlias.Add(new InventoryItemAlias(true)
+                        {
+                            InventoryItems = poItm,
+                            AliasItem = invItm,
+                            AliasName = invItm.ItemNumber,
+                            TrackingState = TrackingState.Added
+                        });
+                    }
+
+                    if (!invItm.AliasItems.Any(x => x.AliasItemId == poItm.Id) //&&!poItm.AliasItems.Any(x => x.InventoryItemId == invItm.Id)
+                        )
+                    {
+                        ctx.InventoryItemAlias.Add(new InventoryItemAlias(true)
+                        {
+                            InventoryItems = invItm,
+                            AliasItem = poItm,
+                            AliasName = poItm.ItemNumber,
+                            TrackingState = TrackingState.Added
+                        });
+                    }
+
+                    //var itmAlias = ctx.InventoryItemAlias
+                    ctx.SaveChanges();
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
             }
         }
 
