@@ -66,7 +66,7 @@ namespace InventoryDS.Business.Entities
         }
         int _inventoryitemid;
         [DataMember]
-        public Nullable<int> AliasItemId 
+        public int AliasItemId 
         {
             get
             {
@@ -79,7 +79,7 @@ namespace InventoryDS.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        Nullable<int> _aliasitemid;
+        int _aliasitemid;
         [DataMember]
         public InventoryItem InventoryItem { get; set; }
 

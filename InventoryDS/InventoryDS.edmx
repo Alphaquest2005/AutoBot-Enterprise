@@ -12,7 +12,7 @@
           <Property Name="AliasId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="InventoryItemId" Type="int" Nullable="false" />
           <Property Name="AliasName" Type="nvarchar" MaxLength="20" Nullable="false" />
-          <Property Name="AliasItemId" Type="int" />
+          <Property Name="AliasItemId" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="InventoryItems">
           <Key>
@@ -351,7 +351,7 @@
           <Property Name="AliasName" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Name="InventoryItemId" Type="Int32" Nullable="false" />
           <NavigationProperty Name="InventoryItem" Relationship="Model.FK_InventoryItemAlias_InventoryItems1" FromRole="InventoryItemAlia" ToRole="InventoryItem" />
-          <Property Name="AliasItemId" Type="Int32" />
+          <Property Name="AliasItemId" Type="Int32" Nullable="false" />
         </EntityType>
         <EntityType Name="TariffCategoryCodeSuppUnit">
           <Key>

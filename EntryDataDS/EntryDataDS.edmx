@@ -221,7 +221,7 @@
           <Property Name="AliasId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="InventoryItemId" Type="int" Nullable="false" />
           <Property Name="AliasName" Type="nvarchar" MaxLength="20" Nullable="false" />
-          <Property Name="AliasItemId" Type="int" />
+          <Property Name="AliasItemId" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="InventoryItems">
           <Key>
@@ -4503,7 +4503,7 @@ FROM [dbo].[ShipmentRiderManifests] AS [ShipmentRiderManifests]</DefiningQuery>
           <Property Name="AliasId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="InventoryItemId" Type="Int32" Nullable="false" />
           <Property Name="AliasName" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
-          <Property Name="AliasItemId" Type="Int32" />
+          <Property Name="AliasItemId" Type="Int32" Nullable="false" />
           <NavigationProperty Name="InventoryItems" Relationship="WaterNutDBModel.FK_InventoryItemAlias_InventoryItems" FromRole="InventoryItemAlias" ToRole="InventoryItems" />
           <NavigationProperty Name="AliasItem" Relationship="WaterNutDBModel.InventoryItemsInventoryItemAlias" FromRole="InventoryItemAlias" ToRole="InventoryItems" />
         </EntityType>
