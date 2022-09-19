@@ -82,6 +82,8 @@ namespace InventoryDS.Business.Entities
         int _aliasitemid;
         [DataMember]
         public InventoryItem InventoryItem { get; set; }
+        [DataMember]
+        public InventoryItem AliasItem { get; set; }
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

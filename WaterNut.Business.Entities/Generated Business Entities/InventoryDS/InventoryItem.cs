@@ -24,6 +24,7 @@ namespace InventoryDS.Business.Entities
         {
             this.InventoryItemAlias = new List<InventoryItemAlia>();
             this.InventoryItemSources = new List<InventoryItemSource>();
+            this.AliasInventoryItem = new List<InventoryItemAlia>();
         }
 
         [DataMember]
@@ -152,6 +153,8 @@ namespace InventoryDS.Business.Entities
         public List<InventoryItemAlia> InventoryItemAlias { get; set; }
         [DataMember]
         public List<InventoryItemSource> InventoryItemSources { get; set; }
+        [DataMember]
+        public List<InventoryItemAlia> AliasInventoryItem { get; set; }
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

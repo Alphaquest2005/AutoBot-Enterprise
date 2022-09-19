@@ -18,6 +18,7 @@
               this.Property(t => t.InventoryItemId).HasColumnName("InventoryItemId");
               this.Property(t => t.AliasItemId).HasColumnName("AliasItemId");
               this.HasRequired(t => t.InventoryItem).WithMany(t =>(ICollection<InventoryItemAlia>) t.InventoryItemAlias).HasForeignKey(d => d.InventoryItemId);
+              this.HasRequired(t => t.AliasItem).WithMany(t =>(ICollection<InventoryItemAlia>) t.AliasInventoryItem).HasForeignKey(d => d.AliasItemId);
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);
     			this.Ignore(t => t.ModifiedProperties);

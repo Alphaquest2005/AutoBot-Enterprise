@@ -1398,6 +1398,18 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ShipmentRiderManifests' d
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_InventoryItemAlias_InventoryItems1">
+          <End Role="InventoryItems" Type="Self.InventoryItems" Multiplicity="1" />
+          <End Role="InventoryItemAlias" Type="Self.InventoryItemAlias" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="InventoryItems">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="InventoryItemAlias">
+              <PropertyRef Name="AliasItemId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_InventoryItems-NonStock_InventoryItems">
           <End Role="InventoryItems" Type="Self.InventoryItems" Multiplicity="1">
             <OnDelete Action="Cascade" />
@@ -2318,6 +2330,10 @@ FROM [dbo].[ShipmentRiderManifests] AS [ShipmentRiderManifests]</DefiningQuery>
             <End Role="InventoryItems" EntitySet="InventoryItems" />
             <End Role="InventoryItemAlias" EntitySet="InventoryItemAlias" />
           </AssociationSet>
+          <AssociationSet Name="FK_InventoryItemAlias_InventoryItems1" Association="Self.FK_InventoryItemAlias_InventoryItems1">
+            <End Role="InventoryItems" EntitySet="InventoryItems" />
+            <End Role="InventoryItemAlias" EntitySet="InventoryItemAlias" />
+          </AssociationSet>
           <AssociationSet Name="FK_InventoryItems-NonStock_InventoryItems" Association="Self.FK_InventoryItems-NonStock_InventoryItems">
             <End Role="InventoryItems" EntitySet="InventoryItems" />
             <End Role="InventoryItems-NonStock" EntitySet="InventoryItems-NonStock" />
@@ -2745,10 +2761,6 @@ FROM [dbo].[ShipmentRiderManifests] AS [ShipmentRiderManifests]</DefiningQuery>
             <End Role="InventoryItems" EntitySet="InventoryItems" />
             <End Role="InventoryItemAlias" EntitySet="InventoryItemAlias" />
           </AssociationSet>
-          <AssociationSet Name="InventoryItemsInventoryItemAlias" Association="WaterNutDBModel.InventoryItemsInventoryItemAlias">
-            <End Role="InventoryItems" EntitySet="InventoryItems" />
-            <End Role="InventoryItemAlias" EntitySet="InventoryItemAlias" />
-          </AssociationSet>
           <EntitySet Name="ShipmentInvoicePOItemData" EntityType="WaterNutDBModel.ShipmentInvoicePOItemData" />
           <EntitySet Name="ShipmentInvoiceDetailsItemAlias" EntityType="WaterNutDBModel.ShipmentInvoiceDetailsItemAlias" />
           <AssociationSet Name="InvoiceDetailsShipmentInvoiceDetailsItemAlias" Association="WaterNutDBModel.InvoiceDetailsShipmentInvoiceDetailsItemAlias">
@@ -2799,6 +2811,10 @@ FROM [dbo].[ShipmentRiderManifests] AS [ShipmentRiderManifests]</DefiningQuery>
           <AssociationSet Name="FK_SupplierItemDescriptionRegEx_SupplierItemDescription" Association="WaterNutDBModel.FK_SupplierItemDescriptionRegEx_SupplierItemDescription">
             <End Role="SupplierItemDescription" EntitySet="SupplierItemDescription" />
             <End Role="SupplierItemDescriptionRegEx" EntitySet="SupplierItemDescriptionRegEx" />
+          </AssociationSet>
+          <AssociationSet Name="FK_InventoryItemAlias_InventoryItems1" Association="WaterNutDBModel.FK_InventoryItemAlias_InventoryItems1">
+            <End Role="InventoryItems" EntitySet="InventoryItems" />
+            <End Role="InventoryItemAlias" EntitySet="InventoryItemAlias" />
           </AssociationSet>
           </EntityContainer>
         <EntityType Name="Sales" BaseType="WaterNutDBModel.EntryData">
@@ -3129,7 +3145,7 @@ FROM [dbo].[ShipmentRiderManifests] AS [ShipmentRiderManifests]</DefiningQuery>
           <NavigationProperty Name="InventoryItemSource" Relationship="WaterNutDBModel.FK_InventoryItemSource_InventoryItems" FromRole="InventoryItems" ToRole="InventoryItemSource" />
           <Property Name="UpgradeKey" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="InventoryItemAlias" Relationship="WaterNutDBModel.FK_InventoryItemAlias_InventoryItems" FromRole="InventoryItems" ToRole="InventoryItemAlias" />
-          <NavigationProperty Name="AliasItems" Relationship="WaterNutDBModel.InventoryItemsInventoryItemAlias" FromRole="InventoryItems" ToRole="InventoryItemAlias" />
+          <NavigationProperty Name="AliasInventoryItems" Relationship="WaterNutDBModel.FK_InventoryItemAlias_InventoryItems1" FromRole="InventoryItems" ToRole="InventoryItemAlias" />
         </EntityType>
         <Association Name="FK_InventoryItems_NonStock_InventoryItems">
           <End Type="WaterNutDBModel.InventoryItems" Role="InventoryItems" Multiplicity="1">
@@ -4504,25 +4520,13 @@ FROM [dbo].[ShipmentRiderManifests] AS [ShipmentRiderManifests]</DefiningQuery>
           <Property Name="InventoryItemId" Type="Int32" Nullable="false" />
           <Property Name="AliasName" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Name="AliasItemId" Type="Int32" Nullable="false" />
-          <NavigationProperty Name="InventoryItems" Relationship="WaterNutDBModel.FK_InventoryItemAlias_InventoryItems" FromRole="InventoryItemAlias" ToRole="InventoryItems" />
-          <NavigationProperty Name="AliasItem" Relationship="WaterNutDBModel.InventoryItemsInventoryItemAlias" FromRole="InventoryItemAlias" ToRole="InventoryItems" />
+          <NavigationProperty Name="InventoryItem" Relationship="WaterNutDBModel.FK_InventoryItemAlias_InventoryItems" FromRole="InventoryItemAlias" ToRole="InventoryItems" />
+          <NavigationProperty Name="AliasItem" Relationship="WaterNutDBModel.FK_InventoryItemAlias_InventoryItems1" FromRole="InventoryItemAlias" ToRole="InventoryItems" />
         </EntityType>
         <Association Name="FK_InventoryItemAlias_InventoryItems">
           <End Type="WaterNutDBModel.InventoryItems" Role="InventoryItems" Multiplicity="1">
             <OnDelete Action="Cascade" />
           </End>
-          <End Type="WaterNutDBModel.InventoryItemAlias" Role="InventoryItemAlias" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="InventoryItems">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="InventoryItemAlias">
-              <PropertyRef Name="InventoryItemId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="InventoryItemsInventoryItemAlias">
-          <End Type="WaterNutDBModel.InventoryItems" Role="InventoryItems" Multiplicity="1" />
           <End Type="WaterNutDBModel.InventoryItemAlias" Role="InventoryItemAlias" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="InventoryItems">
@@ -4894,6 +4898,18 @@ FROM [dbo].[ShipmentRiderManifests] AS [ShipmentRiderManifests]</DefiningQuery>
             </Principal>
             <Dependent Role="SupplierItemDescriptionRegEx">
               <PropertyRef Name="SupplierItemDescriptionId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_InventoryItemAlias_InventoryItems1">
+          <End Type="WaterNutDBModel.InventoryItems" Role="InventoryItems" Multiplicity="1" />
+          <End Type="WaterNutDBModel.InventoryItemAlias" Role="InventoryItemAlias" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="InventoryItems">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="InventoryItemAlias">
+              <PropertyRef Name="AliasItemId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>

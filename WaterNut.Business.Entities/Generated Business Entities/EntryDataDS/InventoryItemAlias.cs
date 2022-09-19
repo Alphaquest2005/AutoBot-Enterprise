@@ -81,7 +81,7 @@ namespace EntryDataDS.Business.Entities
         }
         int _aliasitemid;
         [DataMember]
-        public InventoryItems InventoryItems { get; set; }
+        public InventoryItems InventoryItem { get; set; }
         [DataMember]
         public InventoryItems AliasItem { get; set; }
 

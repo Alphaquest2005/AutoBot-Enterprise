@@ -101,6 +101,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_InventoryItemAlias_InventoryItems1">
+          <End Role="InventoryItems" Type="Self.InventoryItems" Multiplicity="1" />
+          <End Role="InventoryItemAlias" Type="Self.InventoryItemAlias" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="InventoryItems">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="InventoryItemAlias">
+              <PropertyRef Name="AliasItemId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_InventoryItems_TariffCodes">
           <End Role="TariffCodes" Type="Self.TariffCodes" Multiplicity="0..1" />
           <End Role="InventoryItems" Type="Self.InventoryItems" Multiplicity="*" />
@@ -194,6 +206,10 @@
             <End Role="InventoryItems" EntitySet="InventoryItems" />
             <End Role="InventoryItemAlias" EntitySet="InventoryItemAlias" />
           </AssociationSet>
+          <AssociationSet Name="FK_InventoryItemAlias_InventoryItems1" Association="Self.FK_InventoryItemAlias_InventoryItems1">
+            <End Role="InventoryItems" EntitySet="InventoryItems" />
+            <End Role="InventoryItemAlias" EntitySet="InventoryItemAlias" />
+          </AssociationSet>
           <AssociationSet Name="FK_InventoryItems_TariffCodes" Association="Self.FK_InventoryItems_TariffCodes">
             <End Role="TariffCodes" EntitySet="TariffCodes" />
             <End Role="InventoryItems" EntitySet="InventoryItems" />
@@ -237,7 +253,8 @@
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <NavigationProperty Name="InventoryItemAlias" Relationship="Model.FK_InventoryItemAlias_InventoryItems1" FromRole="InventoryItem" ToRole="InventoryItemAlia" />
           <NavigationProperty Name="InventoryItemSources" Relationship="Model.FK_InventoryItemSource_InventoryItems" FromRole="InventoryItem" ToRole="InventoryItemSource" />
-          <Property Name="UpgradeKey" Type="String" MaxLength="20" FixedLength="false" Unicode="true" /><a:MainEntityProperty xmlns:a="http://schemas.tempuri.com/MainEntityProperty">True</a:MainEntityProperty><a:DomainInterfaceProperty xmlns:a="http://schemas.tempuri.com/DomainInterfaceProperty">IInventoryItem,ITariffUnit</a:DomainInterfaceProperty>
+          <Property Name="UpgradeKey" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="AliasInventoryItem" Relationship="Model.FK_InventoryItemAlias_InventoryItems11" FromRole="InventoryItem" ToRole="InventoryItemAlia" /><a:MainEntityProperty xmlns:a="http://schemas.tempuri.com/MainEntityProperty">True</a:MainEntityProperty><a:DomainInterfaceProperty xmlns:a="http://schemas.tempuri.com/DomainInterfaceProperty">IInventoryItem,ITariffUnit</a:DomainInterfaceProperty>
         </EntityType>
         <EntityType Name="TariffCategory">
           <Key>
@@ -342,6 +359,10 @@
             <End Role="InventoryItem" EntitySet="InventoryItems" />
             <End Role="InventoryItemSource" EntitySet="InventoryItemSources" />
           </AssociationSet>
+          <AssociationSet Name="FK_InventoryItemAlias_InventoryItems11" Association="Model.FK_InventoryItemAlias_InventoryItems11">
+            <End Role="InventoryItem" EntitySet="InventoryItems" />
+            <End Role="InventoryItemAlia" EntitySet="InventoryItemAlias" />
+          </AssociationSet>
         </EntityContainer>
         <EntityType Name="InventoryItemAlia">
           <Key>
@@ -352,6 +373,7 @@
           <Property Name="InventoryItemId" Type="Int32" Nullable="false" />
           <NavigationProperty Name="InventoryItem" Relationship="Model.FK_InventoryItemAlias_InventoryItems1" FromRole="InventoryItemAlia" ToRole="InventoryItem" />
           <Property Name="AliasItemId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="AliasItem" Relationship="Model.FK_InventoryItemAlias_InventoryItems11" FromRole="InventoryItemAlia" ToRole="InventoryItem" />
         </EntityType>
         <EntityType Name="TariffCategoryCodeSuppUnit">
           <Key>
@@ -446,6 +468,18 @@
             </Principal>
             <Dependent Role="InventoryItemSource">
               <PropertyRef Name="InventoryId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_InventoryItemAlias_InventoryItems11">
+          <End Type="Model.InventoryItem" Role="InventoryItem" Multiplicity="1" />
+          <End Type="Model.InventoryItemAlia" Role="InventoryItemAlia" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="InventoryItem">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="InventoryItemAlia">
+              <PropertyRef Name="AliasItemId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>

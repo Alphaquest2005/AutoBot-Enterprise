@@ -123,7 +123,7 @@ namespace WaterNut.Business.Services.Importers
                         Debugger.Break();
                     }
 
-                    var invItm = ctx.InventoryItems.Include(x => x.AliasItems).FirstOrDefault(x =>
+                    var invItm = ctx.InventoryItems.Include(x => x.InventoryItemAlias).FirstOrDefault(x =>
                         x.ItemNumber == invItemCode
                         && x.ApplicationSettingsId ==
                         BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId);
@@ -140,7 +140,7 @@ namespace WaterNut.Business.Services.Importers
                         ctx.InventoryItems.Add(invItm);
                     }
 
-                    var poItm = ctx.InventoryItems.Include(x => x.AliasItems).FirstOrDefault(x =>
+                    var poItm = ctx.InventoryItems.Include(x => x.InventoryItemAlias).FirstOrDefault(x =>
                         x.ItemNumber == poItemCode && x.ApplicationSettingsId ==
                         BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId);
                     if (poItm == null)
@@ -157,24 +157,24 @@ namespace WaterNut.Business.Services.Importers
                     }
                     ctx.SaveChanges();
 
-                    if (!poItm.AliasItems.Any(x => x.AliasItemId == invItm.Id) //&& !invItm.AliasItems.Any(x => x.InventoryItemId == poItm.Id)
+                    if (!poItm.InventoryItemAlias.Any(x => x.AliasItemId == invItm.Id) //&& !invItm.AliasItems.Any(x => x.InventoryItemId == poItm.Id)
                        )
                     {
                         ctx.InventoryItemAlias.Add(new InventoryItemAlias(true)
                         {
-                            InventoryItems = poItm,
+                            InventoryItem = poItm,
                             AliasItem = invItm,
                             AliasName = invItm.ItemNumber,
                             TrackingState = TrackingState.Added
                         });
                     }
 
-                    if (!invItm.AliasItems.Any(x => x.AliasItemId == poItm.Id) //&&!poItm.AliasItems.Any(x => x.InventoryItemId == invItm.Id)
+                    if (!invItm.InventoryItemAlias.Any(x => x.AliasItemId == poItm.Id) //&&!poItm.AliasItems.Any(x => x.InventoryItemId == invItm.Id)
                         )
                     {
                         ctx.InventoryItemAlias.Add(new InventoryItemAlias(true)
                         {
-                            InventoryItems = invItm,
+                            InventoryItem = invItm,
                             AliasItem = poItm,
                             AliasName = poItm.ItemNumber,
                             TrackingState = TrackingState.Added
