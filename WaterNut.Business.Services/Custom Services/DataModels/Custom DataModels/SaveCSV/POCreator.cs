@@ -28,7 +28,7 @@ namespace WaterNut.DataSpace
             {
                 ApplicationSettingsId = applicationSettingsId,
                 EntryDataId = entryDataId,
-                EntryDataDate = (DateTime)item.EntryData.EntryDataDate,
+                EntryDataDate = (DateTime)(item.EntryData.EntryDataDate??DateTime.Now),
                 PONumber = entryDataId,
                 EntryType = "PO",
                 SupplierCode = item.EntryData.Supplier,

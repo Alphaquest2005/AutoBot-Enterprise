@@ -122,8 +122,8 @@
       <DependentUpon>ValuationDS.Context.tt</DependentUpon>
     </Compile>
     <Compile Include="ValuationDS.cs">
-      <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
       <DependentUpon>ValuationDS.tt</DependentUpon>
     </Compile>
     <Compile Include="ValuationDS.Designer.cs">
@@ -184,8 +184,8 @@
     </Content>
     <Content Include="ValuationDS.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>ValuationDS.cs</LastGenOutput>
       <DependentUpon>ValuationDS.edmx</DependentUpon>
+      <LastGenOutput>ValuationDS.cs</LastGenOutput>
     </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

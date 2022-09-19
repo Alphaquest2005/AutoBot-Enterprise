@@ -8,9 +8,10 @@ namespace WaterNut.DataSpace
     {
         public static List<RawEntryData> GetValidRawEntryData(List<RawEntryData> entryDataLst)
         {
+            var allowNullEntryDataDate = true;
             var goodLst = entryDataLst
                 .Where(x => x.Item.EntryDataDetails.Any())
-                .Where(x => x.Item.EntryData.EntryDataId != null && x.Item.EntryData.EntryDataDate != null)
+                .Where(x => x.Item.EntryData.EntryDataId != null && (allowNullEntryDataDate || x.Item.EntryData.EntryDataDate != null))
                 .ToList();
             return goodLst;
         }

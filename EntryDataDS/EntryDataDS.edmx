@@ -4522,14 +4522,14 @@ FROM [dbo].[ShipmentRiderManifests] AS [ShipmentRiderManifests]</DefiningQuery>
           </ReferentialConstraint>
         </Association>
         <Association Name="InventoryItemsInventoryItemAlias">
-          <End Type="WaterNutDBModel.InventoryItems" Role="InventoryItems" Multiplicity="0..1" />
+          <End Type="WaterNutDBModel.InventoryItems" Role="InventoryItems" Multiplicity="1" />
           <End Type="WaterNutDBModel.InventoryItemAlias" Role="InventoryItemAlias" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="InventoryItems">
               <PropertyRef Name="Id" />
             </Principal>
             <Dependent Role="InventoryItemAlias">
-              <PropertyRef Name="AliasItemId" />
+              <PropertyRef Name="InventoryItemId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>

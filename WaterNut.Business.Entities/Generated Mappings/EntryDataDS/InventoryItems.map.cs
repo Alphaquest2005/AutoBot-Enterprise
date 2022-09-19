@@ -25,7 +25,7 @@
               this.HasMany(t => t.EntryDataDetails).WithRequired(t => (InventoryItems)t.InventoryItems);
               this.HasMany(t => t.InventoryItemSource).WithRequired(t => (InventoryItems)t.InventoryItems);
               this.HasMany(t => t.InventoryItemAlias).WithRequired(t => (InventoryItems)t.InventoryItems);
-              this.HasMany(t => t.AliasItems).WithOptional(t => t.AliasItem).HasForeignKey(d => d.AliasItemId);
+              this.HasMany(t => t.AliasItems).WithRequired(t => (InventoryItems)t.AliasItem);
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);
     			this.Ignore(t => t.ModifiedProperties);

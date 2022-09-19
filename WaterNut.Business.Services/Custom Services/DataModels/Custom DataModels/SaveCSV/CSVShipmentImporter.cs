@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Core.Common.Extensions;
 using CoreEntities.Business.Entities;
 using DocumentDS.Business.Entities;
 using WaterNut.Business.Services.Utils;
@@ -27,18 +28,33 @@ namespace WaterNut.DataSpace
             {
                 var itm = (IDictionary<string, object>)dataFile.Data.FirstOrDefault(); //&& itm.Keys.Contains("EntryDataId")
                 var entrydataid = itm["EntryDataId"];
+                
                 var xeslst = _csvToShipmentInvoiceConverter.ConvertCSVToShipmentInvoice(dataFile.Data);
+
                 var xdroppedFilePath = new CoreEntitiesContext().Attachments.Where(x =>
                         x.FilePath.Contains(entrydataid + ".pdf")).OrderByDescending(x => x.Id).FirstOrDefault()
                     ?.FilePath;
                 if (xeslst == null) return false;
 
-                var invoicePOs = xeslst.SelectMany(x =>
+                var invoicePOsData = xeslst.SelectMany(x =>
                         ((List<IDictionary<string, object>>)x).Select(z =>
                             new { InvoiceNo = z["InvoiceNo"], PONumber = z["PONumber"] }))
                     .Distinct()
                     .Where(x => !string.IsNullOrEmpty(x.InvoiceNo?.ToString()))
-                    .ToDictionary(x => x.InvoiceNo.ToString(), x => x.PONumber?.ToString() ?? "");
+                    .ToList();
+
+
+
+                var invoicePOs = new Dictionary<string, string>();
+
+                foreach (var ip in invoicePOsData.GroupBy(x => x.InvoiceNo))
+                {
+                    foreach (var a in ip)
+                    {
+                        if (ip.Count() > 1 && a.InvoiceNo == a.PONumber) continue;
+                        invoicePOs.Add(a.InvoiceNo.ToString(), a.PONumber?.ToString() ?? "");
+                    }
+                } 
 
                 if(!invoicePOs.Any()) return false;
 
@@ -61,5 +77,7 @@ namespace WaterNut.DataSpace
 
             return false;
         }
+
+
     }
 }

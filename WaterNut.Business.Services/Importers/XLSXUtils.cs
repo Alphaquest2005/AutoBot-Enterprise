@@ -3,6 +3,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -32,6 +33,7 @@ namespace WaterNut.Business.Services.Importers
 
                 var misHeaderRow = misMatches.Rows[0].ItemArray.ToList();
                 var poHeaderRow = poTemplate.Rows[0].ItemArray.ToList();
+                string oldInvoiceNo = "";
                 foreach (DataRow misMatch in misMatches.Rows)
                 {
                     if (misMatch == misMatches.Rows[0]) continue;
@@ -59,6 +61,7 @@ namespace WaterNut.Business.Services.Importers
                             row = poTemplate.NewRow();
                         }
 
+                       if(oldInvoiceNo != InvoiceNo) row[poHeaderRow.IndexOf("Supplier Invoice#")] = InvoiceNo;
                         row[poHeaderRow.IndexOf("PO Number")] = misMatch[misHeaderRow.IndexOf("PONumber")];
                         row[poHeaderRow.IndexOf("Date")] = poTemplate.Rows[1][poHeaderRow.IndexOf("Date")];
                         row[poHeaderRow.IndexOf("PO Item Number")] = poItemCode;
@@ -87,6 +90,7 @@ namespace WaterNut.Business.Services.Importers
                         //}
 
                         if (addrow) poTemplate.Rows.Add(row);
+                        oldInvoiceNo = InvoiceNo;
 
                         ImportInventoryMapping(invItemCode, misMatch, misHeaderRow, poItemCode);
 
@@ -107,6 +111,12 @@ namespace WaterNut.Business.Services.Importers
             {
                 InvoiceDetails invRow;
                 EntryDataDetails poRow;
+
+                if (invItemCode == poItemCode)
+                {
+                    // this should not happen write code to deal with it
+                    Debugger.Break();
+                }
 
                 var invItm = ctx.InventoryItems.Include(x => x.AliasItems).FirstOrDefault(x =>
                     x.ItemNumber == invItemCode
