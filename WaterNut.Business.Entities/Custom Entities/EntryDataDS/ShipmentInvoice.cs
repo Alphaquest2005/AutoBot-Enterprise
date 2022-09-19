@@ -46,6 +46,10 @@ namespace EntryDataDS.Business.Entities
             }
 
         }
+
+        [IgnoreDataMember]
+        [NotMapped]
+        public string PONumber { get; set; }
     }
 
     public partial class InvoiceDetails

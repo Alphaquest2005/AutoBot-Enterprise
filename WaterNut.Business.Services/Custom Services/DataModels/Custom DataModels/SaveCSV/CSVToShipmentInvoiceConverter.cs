@@ -9,8 +9,6 @@ namespace WaterNut.DataSpace
 {
     public class CSVToShipmentInvoiceConverter
     {
-        public readonly EntryDataImporter _entryDataImporter;
-
         public List<dynamic> ConvertCSVToShipmentInvoice(List<dynamic> eslst)
         {
            

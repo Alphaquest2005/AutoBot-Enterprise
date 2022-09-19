@@ -1011,9 +1011,27 @@ namespace WaterNut.DataSpace
 
                         }).ToList(),
                     AllNames = s.SelectMany(x =>
-                            MoreEnumerable.Append(InventoryDataCache
+                        {
+                            var alias = InventoryDataCache
                                 .Where(c => c.Id == x.InventoryItemId)
-                                .SelectMany(i => i.InventoryItemAlias.Select(a => a.AliasName)), x.ItemNumber))
+                                .SelectMany(i => i.InventoryItemAlias)
+                                .ToList();
+                            
+                            var aliasNames = alias.Select(a => a.AliasName).ToList();
+
+                            var aliasAlias = InventoryDataCache.Where(z => z.InventoryItemAlias.Any(a => aliasNames.Contains(a.AliasName)) ).SelectMany(z => z.InventoryItemAlias).ToList();
+                            //.Where(c => alias.Select(z => z.AliasItemId).ToList().Any(z => z == c.Id))
+                            //.SelectMany(i => i.InventoryItemAlias);
+                            var aaNames = aliasAlias.Select(a => a.AliasName).ToList();
+
+                            
+
+                            var firstLst = aliasNames.Union(aaNames).ToList();
+
+                            var secondLst = MoreEnumerable.Append(firstLst, x.ItemNumber);
+
+                            return secondLst;
+                        })
                         .Distinct()
                         .ToList(),
                     EntlnData = new AlloEntryLineData
