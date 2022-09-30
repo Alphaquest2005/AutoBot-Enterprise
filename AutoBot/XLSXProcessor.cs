@@ -46,7 +46,7 @@ namespace AutoBotUtilities
 
         public static bool ProcessUnknownFileType(FileTypes fileType, FileInfo file, List<DataRow> rows)
         {
-            if (fileType.ChildFileTypes.FirstOrDefault()?.FileImporterInfos.EntryType == FileTypeManager.EntryTypes.Unknown)
+            if (fileType.ChildFileTypes.FirstOrDefault(x => x.FileImporterInfos.EntryType == FileTypeManager.EntryTypes.Unknown) != null)
             {
                 FileTypeManager.SendBackTooBigEmail(file, fileType);
 

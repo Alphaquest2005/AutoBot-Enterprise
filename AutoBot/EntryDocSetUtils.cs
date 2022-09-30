@@ -399,45 +399,54 @@ namespace AutoBot
 
         public static void ClearDocSetEntries(FileTypes fileType)
         {
-
-            Console.WriteLine($"Clear {fileType.FileImporterInfos.EntryType} Entries");
-
-            // var saleInfo = CurrentSalesInfo();
-            var docSet = BaseDataModel.Instance.GetAsycudaDocumentSet(fileType.AsycudaDocumentSetId).Result;
-            string directoryName = Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder,
-                docSet.Declarant_Reference_Number);
-
-            var instFile = Path.Combine(directoryName, "Instructions.txt");
-            var resFile = Path.Combine(directoryName, "InstructionResults.txt");
-            if (File.Exists(resFile))
+            try
             {
 
 
-                var resTxt = File.ReadAllText(resFile);
+                Console.WriteLine($"Clear {fileType.FileImporterInfos.EntryType} Entries");
 
-                foreach (var doc in docSet.Documents.ToList())
+                // var saleInfo = CurrentSalesInfo();
+                var docSet = BaseDataModel.Instance.GetAsycudaDocumentSet(fileType.AsycudaDocumentSetId).Result;
+                string directoryName = Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder,
+                    docSet.Declarant_Reference_Number);
+
+                var instFile = Path.Combine(directoryName, "Instructions.txt");
+                var resFile = Path.Combine(directoryName, "InstructionResults.txt");
+                if (File.Exists(resFile))
                 {
-                    if (!resTxt.Contains(doc.ReferenceNumber)) BaseDataModel.Instance.DeleteAsycudaDocument(doc).Wait();
+
+
+                    var resTxt = File.ReadAllText(resFile);
+
+                    foreach (var doc in docSet.Documents.ToList())
+                    {
+                        if (!resTxt.Contains(doc.ReferenceNumber))
+                            BaseDataModel.Instance.DeleteAsycudaDocument(doc).Wait();
+                    }
+
+                    BaseDataModel.Instance.UpdateAsycudaDocumentSetLastNumber(fileType.AsycudaDocumentSetId,
+                        docSet.Documents.Count());
+                }
+                else
+                {
+
+                    BaseDataModel.Instance.ClearAsycudaDocumentSet(fileType.AsycudaDocumentSetId).Wait();
+                    BaseDataModel.Instance.UpdateAsycudaDocumentSetLastNumber(fileType.AsycudaDocumentSetId, 0);
+
+                    //if (File.Exists(resFile)) File.Delete(resFile);
+
                 }
 
-                BaseDataModel.Instance.UpdateAsycudaDocumentSetLastNumber(fileType.AsycudaDocumentSetId,
-                    docSet.Documents.Count());
+                ClearDocSetEntryData(fileType.AsycudaDocumentSetId);
+                ClearDocSetAttachments(fileType.AsycudaDocumentSetId, fileType.EmailId);
+                if (File.Exists(instFile)) File.Delete(instFile);
+
             }
-            else
+            catch (Exception e)
             {
-
-                BaseDataModel.Instance.ClearAsycudaDocumentSet(fileType.AsycudaDocumentSetId).Wait();
-                BaseDataModel.Instance.UpdateAsycudaDocumentSetLastNumber(fileType.AsycudaDocumentSetId, 0);
-
-                //if (File.Exists(resFile)) File.Delete(resFile);
-
+                Console.WriteLine(e);
+                throw;
             }
-
-            ClearDocSetEntryData(fileType.AsycudaDocumentSetId);
-            ClearDocSetAttachments(fileType.AsycudaDocumentSetId, fileType.EmailId);
-            if (File.Exists(instFile)) File.Delete(instFile);
-
-
 
 
         }

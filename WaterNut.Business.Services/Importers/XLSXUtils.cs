@@ -157,7 +157,7 @@ namespace WaterNut.Business.Services.Importers
                     }
                     ctx.SaveChanges();
 
-                    if (!poItm.InventoryItemAlias.Any(x => x.AliasItemId == invItm.Id) //&& !invItm.AliasItems.Any(x => x.InventoryItemId == poItm.Id)
+                    if (poItm.InventoryItemAlias.All(x => x.AliasItemId != invItm.Id) //&& !invItm.AliasItems.Any(x => x.InventoryItemId == poItm.Id)
                        )
                     {
                         ctx.InventoryItemAlias.Add(new InventoryItemAlias(true)
@@ -169,7 +169,7 @@ namespace WaterNut.Business.Services.Importers
                         });
                     }
 
-                    if (!invItm.InventoryItemAlias.Any(x => x.AliasItemId == poItm.Id) //&&!poItm.AliasItems.Any(x => x.InventoryItemId == invItm.Id)
+                    if (invItm.InventoryItemAlias.All(x => x.AliasItemId != poItm.Id) //&&!poItm.AliasItems.Any(x => x.InventoryItemId == invItm.Id)
                         )
                     {
                         ctx.InventoryItemAlias.Add(new InventoryItemAlias(true)
@@ -330,7 +330,7 @@ namespace WaterNut.Business.Services.Importers
         {
             try
             {
-
+                var originalDocSetId = fileType.AsycudaDocumentSetId;
                 FileTypes rfileType = null;
                 var potentialsFileTypes = new List<FileTypes>();
                 var lastHeaderRow = dataRows[0].ItemArray.ToList();
@@ -354,6 +354,7 @@ namespace WaterNut.Business.Services.Importers
                     drow_no++;
                 }
 
+                fileType.AsycudaDocumentSetId = originalDocSetId; // changing when retriving list - sideeffect
                 if (!potentialsFileTypes.Any()) return fileType;
                 rfileType = potentialsFileTypes
                     .OrderByDescending(x => x.FileTypeMappings.Where(z =>
@@ -361,7 +362,7 @@ namespace WaterNut.Business.Services.Importers
                             .Contains(z.OriginalName.ToUpper().Trim())).Count())
                     .ThenByDescending(x => x.FileTypeActions.Count())
                     .FirstOrDefault();
-                rfileType.AsycudaDocumentSetId = fileType.AsycudaDocumentSetId;
+                rfileType.AsycudaDocumentSetId = originalDocSetId;
                 rfileType.Data = fileType.Data;
                 rfileType.EmailId = fileType.EmailId;
                
