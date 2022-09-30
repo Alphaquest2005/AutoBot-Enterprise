@@ -619,6 +619,19 @@ namespace CoreEntities.Client.DTO
 		}
         private string _AllowImportXSales;
 
+        [DataMember]
+        public Nullable<bool> NotifyUnknownMessages
+		{ 
+		    get { return _NotifyUnknownMessages; }
+			set
+			{
+			    if (value == _NotifyUnknownMessages) return;
+				_NotifyUnknownMessages = value;
+				NotifyPropertyChanged();//m => this.NotifyUnknownMessages
+			}
+		}
+        private Nullable<bool> _NotifyUnknownMessages;
+
        
         [DataMember]
         public ChangeTrackingCollection<AsycudaDocumentSetEx> AsycudaDocumentSetEx

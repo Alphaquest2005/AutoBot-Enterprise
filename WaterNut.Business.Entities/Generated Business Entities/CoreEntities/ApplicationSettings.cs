@@ -723,6 +723,21 @@ namespace CoreEntities.Business.Entities
         }
         string _allowimportxsales;
         [DataMember]
+        public Nullable<bool> NotifyUnknownMessages 
+        {
+            get
+            {
+                return _notifyunknownmessages;
+            }
+            set
+            {
+                _notifyunknownmessages = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<bool> _notifyunknownmessages;
+        [DataMember]
         public List<AsycudaDocumentSetEx> AsycudaDocumentSetEx { get; set; }
         [DataMember]
         public List<AsycudaDocument> AsycudaDocument { get; set; }

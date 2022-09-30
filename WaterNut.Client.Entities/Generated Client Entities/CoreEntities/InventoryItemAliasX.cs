@@ -121,9 +121,9 @@ public string AliasName
 		}
      
 
+       [RequiredValidationAttribute(ErrorMessage= "AliasItem is required")]
        
-       
-public Nullable<int> AliasItemId
+public int AliasItemId
 		{ 
 		    get { return this.inventoryitemaliasx.AliasItemId; }
 			set

@@ -12,5 +12,6 @@ namespace EmailDownloader
         public string CompanyName { get; set; }
         public int ApplicationSettingsId { get; set; }
         public bool DevMode { get; set; }
+        public bool NotifyUnknownMessages { get; set; }
     }
 }

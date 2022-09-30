@@ -188,13 +188,13 @@ namespace WaterNut.DataSpace
                             DELETE FROM AdjustmentOversAllocations
                             FROM    AdjustmentOversAllocations INNER JOIN
                                              EntryDataDetails ON AdjustmentOversAllocations.EntryDataDetailsId = EntryDataDetails.EntryDataDetailsId INNER JOIN
-                                             EntryData ON EntryDataDetails.EntryDataId = EntryData.EntryDataId
+                                             EntryData ON EntryDataDetails.EntryData_Id = EntryData.EntryData_Id
                             WHERE (EntryData.ApplicationSettingsId = {appSettingsId})
 
                             DELETE FROM AsycudaSalesAllocations
                             FROM    AsycudaSalesAllocations INNER JOIN
                                              EntryDataDetails ON AsycudaSalesAllocations.EntryDataDetailsId = EntryDataDetails.EntryDataDetailsId INNER JOIN
-                                             EntryData ON EntryDataDetails.EntryDataId = EntryData.EntryDataId
+                                             EntryData ON EntryDataDetails.EntryData_Id = EntryData.EntryData_Id
                             WHERE (EntryData.ApplicationSettingsId = {appSettingsId})
 
                             UPDATE xcuda_Item
@@ -208,7 +208,7 @@ namespace WaterNut.DataSpace
                             UPDATE EntryDataDetails
                             SET         QtyAllocated = 0, Status = NULL--, EffectiveDate = NULL
                             FROM    EntryDataDetails INNER JOIN
-                                             EntryData ON EntryDataDetails.EntryDataId = EntryData.EntryDataId
+                                             EntryData ON EntryDataDetails.EntryData_Id = EntryData.EntryData_Id
                             WHERE (EntryData.ApplicationSettingsId = {appSettingsId})
 
                             UPDATE xcuda_PreviousItem
