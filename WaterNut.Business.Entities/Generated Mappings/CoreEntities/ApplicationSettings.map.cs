@@ -59,6 +59,7 @@
               this.Property(t => t.ExportNullTariffCodes).HasColumnName("ExportNullTariffCodes");
               this.Property(t => t.PreAllocateEx9s).HasColumnName("PreAllocateEx9s");
               this.Property(t => t.AllowImportXSales).HasColumnName("AllowImportXSales").HasMaxLength(10);
+              this.Property(t => t.NotifyUnknownMessages).HasColumnName("NotifyUnknownMessages");
               this.HasMany(t => t.AsycudaDocumentSetEx).WithRequired(t => (ApplicationSettings)t.ApplicationSettings);
               this.HasMany(t => t.AsycudaDocument).WithOptional(t => t.ApplicationSettings).HasForeignKey(d => d.ApplicationSettingsId);
               this.HasMany(t => t.AsycudaDocumentItem).WithOptional(t => t.ApplicationSettings).HasForeignKey(d => d.ApplicationSettingsId);

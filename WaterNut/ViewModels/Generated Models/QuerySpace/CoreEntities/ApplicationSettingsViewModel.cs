@@ -995,6 +995,24 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
         }	
 
  
+
+		private Boolean? _notifyUnknownMessagesFilter;
+        public Boolean? NotifyUnknownMessagesFilter
+        {
+            get
+            {
+                return _notifyUnknownMessagesFilter;
+            }
+            set
+            {
+                _notifyUnknownMessagesFilter = value;
+				NotifyPropertyChanged(x => NotifyUnknownMessagesFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
 		internal bool DisableBaseFilterData = false;
         public virtual void FilterData()
 	    {
@@ -1222,6 +1240,10 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 
 									if(string.IsNullOrEmpty(AllowImportXSalesFilter) == false)
 						res.Append(" && " + string.Format("AllowImportXSales.Contains(\"{0}\")",  AllowImportXSalesFilter));						
+ 
+
+									if(NotifyUnknownMessagesFilter.HasValue)
+						res.Append(" && " + string.Format("NotifyUnknownMessages == {0}",  NotifyUnknownMessagesFilter));						
 			return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
@@ -1374,7 +1396,10 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     PreAllocateEx9s = x.PreAllocateEx9s ,
                     
  
-                    AllowImportXSales = x.AllowImportXSales 
+                    AllowImportXSales = x.AllowImportXSales ,
+                    
+ 
+                    NotifyUnknownMessages = x.NotifyUnknownMessages 
                     
                 }).ToList()
             };
@@ -1517,6 +1542,9 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     
  
                     public string AllowImportXSales { get; set; } 
+                    
+ 
+                    public Nullable<bool> NotifyUnknownMessages { get; set; } 
                     
         }
 

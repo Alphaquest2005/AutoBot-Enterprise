@@ -72,6 +72,7 @@
           <Property Name="ExportNullTariffCodes" Type="bit" />
           <Property Name="PreAllocateEx9s" Type="bit" />
           <Property Name="AllowImportXSales" Type="nvarchar" MaxLength="10" />
+          <Property Name="NotifyUnknownMessages" Type="bit" />
         </EntityType>
         <EntityType Name="ApplicationSettings-Declarants">
           <Key>
@@ -724,13 +725,14 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemAliasEx' doe
             
             
             
+            
           </Key>
           <Property Name="AliasId" Type="int" Nullable="false" />
           <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
           <Property Name="InventoryItemId" Type="int" Nullable="false" />
           <Property Name="ItemNumber" Type="nvarchar" MaxLength="20" Nullable="false" />
           <Property Name="AliasName" Type="nvarchar" MaxLength="20" Nullable="false" />
-          <Property Name="AliasItemId" Type="int" />
+          <Property Name="AliasItemId" Type="int" Nullable="false" />
         </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
@@ -4091,7 +4093,8 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
           <NavigationProperty Name="Declarants" Relationship="WaterNutDBModel.FK_ApplicationSettings_Declarants_ApplicationSettings" FromRole="ApplicationSettings" ToRole="ApplicationSettings_Declarants" />
           <Property Name="ExportNullTariffCodes" Type="Boolean" />
           <Property Name="PreAllocateEx9s" Type="Boolean" />
-          <Property Name="AllowImportXSales" Type="String" MaxLength="10" FixedLength="false" Unicode="true" /><a:MainEntityProperty xmlns:a="http://schemas.tempuri.com/MainEntityProperty">True</a:MainEntityProperty>
+          <Property Name="AllowImportXSales" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="NotifyUnknownMessages" Type="Boolean" /><a:MainEntityProperty xmlns:a="http://schemas.tempuri.com/MainEntityProperty">True</a:MainEntityProperty>
         </EntityType>
         <EntityType Name="AsycudaDocument">
           <Key>
@@ -4515,7 +4518,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
           <Property Name="ItemNumber" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Name="AliasName" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="InventoryItemsEx" Relationship="WaterNutDBModel.InventoryItemsExInventoryItemAliasEx" FromRole="InventoryItemAliasEx" ToRole="InventoryItemsEx" />
-          <Property Name="AliasItemId" Type="Int32" />
+          <Property Name="AliasItemId" Type="Int32" Nullable="false" />
         </EntityType>
         <Association Name="InventoryItemsExInventoryItemAliasEx">
           <End Type="WaterNutDBModel.InventoryItemX" Role="InventoryItemsEx" Multiplicity="1" />
@@ -6536,6 +6539,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
           <EntitySetMapping Name="ApplicationSettings">
             <EntityTypeMapping TypeName="WaterNutDBModel.ApplicationSettings">
               <MappingFragment StoreEntitySet="ApplicationSettings">
+                <ScalarProperty Name="NotifyUnknownMessages" ColumnName="NotifyUnknownMessages" />
                 <ScalarProperty Name="AllowImportXSales" ColumnName="AllowImportXSales" />
                 <ScalarProperty Name="PreAllocateEx9s" ColumnName="PreAllocateEx9s" />
                 <ScalarProperty Name="ExportNullTariffCodes" ColumnName="ExportNullTariffCodes" />

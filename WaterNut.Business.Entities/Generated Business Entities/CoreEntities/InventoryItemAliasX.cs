@@ -96,7 +96,7 @@ namespace CoreEntities.Business.Entities
         }
         string _aliasname;
         [DataMember]
-        public Nullable<int> AliasItemId 
+        public int AliasItemId 
         {
             get
             {
@@ -109,7 +109,7 @@ namespace CoreEntities.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        Nullable<int> _aliasitemid;
+        int _aliasitemid;
         [DataMember]
         public InventoryItemX InventoryItemsEx { get; set; }
 

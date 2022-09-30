@@ -797,6 +797,21 @@ public string AllowImportXSales
 		}
      
 
+       
+       
+public Nullable<bool> NotifyUnknownMessages
+		{ 
+		    get { return this.applicationsettings.NotifyUnknownMessages; }
+			set
+			{
+			    if (value == this.applicationsettings.NotifyUnknownMessages) return;
+				this.applicationsettings.NotifyUnknownMessages = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("NotifyUnknownMessages");
+			}
+		}
+     
+
         ObservableCollection<AsycudaDocumentSetEx> _AsycudaDocumentSetEx = null;
         public  ObservableCollection<AsycudaDocumentSetEx> AsycudaDocumentSetEx
 		{

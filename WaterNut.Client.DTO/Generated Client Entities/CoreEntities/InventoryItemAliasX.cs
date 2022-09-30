@@ -87,7 +87,7 @@ namespace CoreEntities.Client.DTO
         private string _AliasName;
 
         [DataMember]
-        public Nullable<int> AliasItemId
+        public int AliasItemId
 		{ 
 		    get { return _AliasItemId; }
 			set
@@ -97,7 +97,7 @@ namespace CoreEntities.Client.DTO
 				NotifyPropertyChanged();//m => this.AliasItemId
 			}
 		}
-        private Nullable<int> _AliasItemId;
+        private int _AliasItemId;
 
        
         [DataMember]
