@@ -243,7 +243,9 @@ namespace WaterNut.DataSpace
         private void ReallocateExistingEx9()
         {
             if (BaseDataModel.Instance.CurrentApplicationSettings.PreAllocateEx9s != true) return;
-            var existingAllocations = GetExistingEx9s();
+            var existingAllocations = GetExistingEx9s()
+                                                                //.Where(x => x.EntryDataDetailsId == 0)
+                                                                ;
 
             var rawSet = existingAllocations.Select(x => (Item: (x.ItemNumber, x.InventoryItemId), xSale: (dynamic)x))
                 .GroupBy(x => x.Item)

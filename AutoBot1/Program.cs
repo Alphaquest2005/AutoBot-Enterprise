@@ -104,7 +104,8 @@ namespace AutoBot
                                 Email = appSetting.Email,
                                 ApplicationSettingsId = appSetting.ApplicationSettingsId,
                                 EmailMappings = appSetting.EmailMapping.ToList(),
-                                DevMode = Settings.Default.DevMode
+                                DevMode = Settings.Default.DevMode,
+                                NotifyUnknownMessages = appSetting.NotifyUnknownMessages
                             };
 
                             var msgLst = Task.Run(() => EmailDownloader.EmailDownloader.CheckEmails(Utils.Client)).Result

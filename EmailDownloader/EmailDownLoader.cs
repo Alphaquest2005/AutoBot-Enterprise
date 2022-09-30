@@ -122,7 +122,7 @@ namespace EmailDownloader
         {
             try
             {
-                var sendNotifications = true;
+                var sendNotifications = client.NotifyUnknownMessages ;
 
                 //var msgFiles = new Dictionary<Tuple<string, Email, string>, List<string>>();
 
