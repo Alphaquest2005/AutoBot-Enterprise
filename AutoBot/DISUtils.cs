@@ -28,7 +28,7 @@ namespace AutoBot
     public class DISUtils
     {
         private static readonly int _databaseCommandTimeout = 20;
-        private static readonly int __ColumnWidth = 10;
+        private static readonly int __ColumnWidth = 15;
         private static readonly int _tripleLongDatabaseCommandTimeout = _databaseCommandTimeout* 3;
 
         public static void AssessDiscrepancyExecutions(FileTypes ft, FileInfo[] fs)
@@ -139,7 +139,7 @@ namespace AutoBot
                     var cnumberList = ft.Data.Where(z => z.Key == "CNumber").Select(x => x.Value).ToList();
                     
                     var cplst = BaseDataModel.Instance.Customs_Procedures
-                        .Where(x => x.CustomsOperation.Name == "Exwarehouse").Select(x => x.CustomsProcedure).ToList();
+                        .Where(x => x.CustomsOperation.Name == "Exwarehouse" || (x.CustomsOperation.Name == "Warehouse" && x.Stock == true)).Select(x => x.CustomsProcedure).ToList();
 
                     var res = cnumberList.Any() 
                         ? GetSubmitEntryDataPerCNumber(cplst, cnumberList) 
