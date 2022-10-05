@@ -230,6 +230,9 @@ namespace WaterNut.Business.Services.Utils
         private static bool GetDataRows(FileInfo file, FileTypes fileType, out ConcurrentDictionary<int, string> table, out List<DataRow> dRows,
             out DataRow header)
         {
+            table = new ConcurrentDictionary<int, string>();
+            dRows = new List<DataRow>();
+
             if (fileType.FileTypeMappings.Count == 0 && fileType.ReplicateHeaderRow == false)
             {
                 throw new ApplicationException($"Missing File Type Mappings for {fileType.FilePattern}");
@@ -241,89 +244,57 @@ namespace WaterNut.Business.Services.Utils
             if (File.Exists(dfile.FullName)) File.Delete(dfile.FullName);
             // Reading from a binary Excel file (format; *.xlsx)
             var dt = CSV2DataTable(file, "NO");
-            var executeFileActions = false;
-
-            table = new System.Collections.Concurrent.ConcurrentDictionary<int, string>();
-            int drow_no = 0;
-            dRows = new List<DataRow>();
 
             dt.Columns.Add("LineNumber", typeof(string));
-            List<DataColumn> deleteColumns = new List<DataColumn>();
 
+            LoadDataRows(fileType, dRows, dt);
 
-            //delete rows till header
-            DataRow currentReplicatedHeading = null;
-            var headerRow = Enumerable.ToList<object>(dt.Rows[0].ItemArray);
-
-
-            while (drow_no < dt.Rows.Count)
-            {
-                if (fileType.ReplicateHeaderRow == true)
-                {
-                    if (fileType.FileTypeMappings.Where(x => x.Required).All(x =>
-                            !string.IsNullOrEmpty(dt.Rows[drow_no][headerRow.IndexOf(x.OriginalName)].ToString())))
-                    {
-                        if (Enumerable.Count<object>(dt.Rows[drow_no].ItemArray, x => !string.IsNullOrEmpty(x.ToString())) >=
-                            (fileType.FileTypeMappings.Any()
-                                ? fileType.FileTypeMappings.Count(x => x.Required)
-                                : 1))
-                        {
-                            currentReplicatedHeading = dt.Rows[drow_no];
-                            dRows.Add(dt.Rows[drow_no]);
-                        }
-                    }
-                    else
-                    {
-                        if (Enumerable.Count<object>(dt.Rows[drow_no].ItemArray, x => !string.IsNullOrEmpty(x.ToString())) >=
-                            (fileType.FileTypeMappings.Any() ? fileType.FileTypeMappings.Count(x => x.Required) : 1))
-                        {
-                            var row = dt.NewRow();
-                            foreach (DataColumn col in dt.Columns)
-                            {
-                                var val = dt.Rows[drow_no][col.ColumnName].ToString();
-                                if (!string.IsNullOrEmpty(val) &&
-                                    string.IsNullOrEmpty(row[col.ColumnName].ToString()))
-                                    row[col.ColumnName] = val;
-                                if (string.IsNullOrEmpty(val) &&
-                                    !string.IsNullOrEmpty(currentReplicatedHeading[col.ColumnName].ToString()))
-                                    row[col.ColumnName] = currentReplicatedHeading[col.ColumnName].ToString();
-                            }
-
-                            dRows.Add(row);
-                        }
-                    }
-                    //dRows.Add(dt.Rows[drow_no]);
-                }
-                else
-                {
-                    if (Enumerable.Count<object>(dt.Rows[drow_no].ItemArray, x => !string.IsNullOrEmpty(x.ToString())) >=
-                        fileType.FileTypeMappings.Count(x => x.Required))
-                    {
-                        //dt.Rows[drow_no]["LineNumber"] = drow_no;// give value to prevent upper from bugging later
-                        dRows.Add(dt.Rows[drow_no]);
-                    }
-                }
-                //else
-                //    throw new ApplicationException(
-                //        $"Missing Required Field on Line {row_no + 1} in File:'{file.FullName}'");
-
-                drow_no++;
-            }
-
-            // delete duplicate headers
-            if (fileType.FileTypeMappings.Any())
-            {
-                var dupheaders = dRows.Where(x =>
-                        x.ItemArray.Contains(fileType.FileTypeMappings.OrderBy(z => z.Id)
-                            .First(z => !z.OriginalName.Contains("{")).OriginalName)).Skip(1)
-                    .ToList();
-                foreach (var row in dupheaders)
-                {
-                    dRows.Remove(row);
-                }
-            }
+            RemoveDuplicateHeaders(fileType, dRows);
 
             header = dRows[0];
+            header["LineNumber"] = "LineNumber".ToUpper();
+
+            RemoveUnmappedColumns(header, dt);
+
+            AddLineNumbers(dRows);
+
+            
+            return CheckMissingMappings(file, fileType, header);
+        }
+
+        private static bool CheckMissingMappings(FileInfo file, FileTypes fileType, DataRow header)
+        {
+            var headerlst = header.ItemArray.ToList();
+
+            var missingMaps = fileType.FileTypeMappings.Where(x => x.Required && !x.OriginalName.Contains("{"))
+                .GroupBy(x => x.DestinationName)
+                .Where(item => item.All(z =>
+                    !headerlst.Any(q =>
+                        String.Equals(q.ToString(), z.OriginalName, StringComparison.CurrentCultureIgnoreCase))))
+                .ToList(); // !headerlst  (item.OriginalName.ToUpper())
+            if (missingMaps.Any())
+            {
+                EmailDownloader.EmailDownloader.SendEmail(BaseDataModel.GetClient(), null, $"Bug Found",
+                    new[] {"Joseph@auto-brokerage.com"},
+                    $"Required Field - '{missingMaps.Select(x => x.Key).Aggregate((o, n) => o + "," + n)}' in File: {file.Name} dose not exists.",
+                    Array.Empty<string>());
+                return true;
+            }
+
+            return false;
+        }
+
+        private static void AddLineNumbers(List<DataRow> dRows)
+        {
+            for (int i = 0; i < dRows.Count; i++)
+            {
+                dRows[i]["LineNumber"] = i;
+            }
+        }
+
+        private static void RemoveUnmappedColumns(DataRow header, DataTable dt)
+        {
+            List<DataColumn> deleteColumns = new List<DataColumn>();
             for (int i = 0; i < header.ItemArray.Length - 1; i++)
             {
                 if (string.IsNullOrEmpty(header[i].ToString()))
@@ -336,31 +307,89 @@ namespace WaterNut.Business.Services.Utils
             }
 
             deleteColumns.ForEach(x => dt.Columns.Remove(x));
+        }
 
-            for (int i = 0; i < dRows.Count; i++)
+        private static void RemoveDuplicateHeaders(FileTypes fileType, List<DataRow> dRows)
+        {
+            if (fileType.FileTypeMappings.Any())
             {
-                dRows[i]["LineNumber"] = i;
+                var dupheaders = dRows.Where(x =>
+                        x.ItemArray.Contains(fileType.FileTypeMappings.OrderBy(z => z.Id)
+                            .First(z => !z.OriginalName.Contains("{")).OriginalName)).Skip(1)
+                    .ToList();
+                foreach (var row in dupheaders)
+                {
+                    dRows.Remove(row);
+                }
+            }
+        }
+
+        private static void LoadDataRows(FileTypes fileType, List<DataRow> dRows, DataTable dt)
+        {
+            var headerRow = Enumerable.ToList<object>(dt.Rows[0].ItemArray);
+            int drow_no = 0;
+            DataRow currentReplicatedHeading = null;
+            while (drow_no < dt.Rows.Count)
+            {
+                if (fileType.ReplicateHeaderRow == true)
+                    currentReplicatedHeading = ProcessReplicatedHeaderRows(fileType, dRows, dt, drow_no, headerRow, currentReplicatedHeading);
+                else
+                    ProcessHeaderRows(fileType, dRows, dt, drow_no);
+
+                drow_no++;
+            }
+        }
+
+        private static void ProcessHeaderRows(FileTypes fileType, List<DataRow> dRows, DataTable dt, int drow_no)
+        {
+            if (Enumerable.Count<object>(dt.Rows[drow_no].ItemArray, x => !string.IsNullOrEmpty(x.ToString())) >=
+                fileType.FileTypeMappings.Count(x => x.Required))
+            {
+                //dt.Rows[drow_no]["LineNumber"] = drow_no;// give value to prevent upper from bugging later
+                dRows.Add(dt.Rows[drow_no]);
+            }
+        }
+
+        private static DataRow ProcessReplicatedHeaderRows(FileTypes fileType, List<DataRow> dRows, DataTable dt,
+            int drow_no,
+            List<object> headerRow, DataRow currentReplicatedHeading)
+        {
+            
+            if (fileType.FileTypeMappings.Where(x => x.Required).All(x =>
+                    !string.IsNullOrEmpty(dt.Rows[drow_no][headerRow.IndexOf(x.OriginalName)].ToString())))
+            {
+                if (Enumerable.Count<object>(dt.Rows[drow_no].ItemArray, x => !string.IsNullOrEmpty(x.ToString())) >=
+                    (fileType.FileTypeMappings.Any()
+                        ? fileType.FileTypeMappings.Count(x => x.Required)
+                        : 1))
+                {
+                    currentReplicatedHeading = dt.Rows[drow_no];
+                    dRows.Add(dt.Rows[drow_no]);
+                }
+            }
+            else
+            {
+                if (Enumerable.Count<object>(dt.Rows[drow_no].ItemArray, x => !string.IsNullOrEmpty(x.ToString())) >=
+                    (fileType.FileTypeMappings.Any() ? fileType.FileTypeMappings.Count(x => x.Required) : 1))
+                {
+                    var row = dt.NewRow();
+                    foreach (DataColumn col in dt.Columns)
+                    {
+                        var val = dt.Rows[drow_no][col.ColumnName].ToString();
+                        if (!string.IsNullOrEmpty(val) &&
+                            string.IsNullOrEmpty(row[col.ColumnName].ToString()))
+                            row[col.ColumnName] = val;
+                        if (string.IsNullOrEmpty(val) &&
+                            !string.IsNullOrEmpty(currentReplicatedHeading[col.ColumnName].ToString()))
+                            row[col.ColumnName] = currentReplicatedHeading[col.ColumnName].ToString();
+                    }
+
+                    dRows.Add(row);
+                }
             }
 
-            header["LineNumber"] = "LineNumber".ToUpper();
-            var headerlst = header.ItemArray.ToList();
+            return currentReplicatedHeading;
 
-            var missingMaps = fileType.FileTypeMappings.Where(x => x.Required && !x.OriginalName.Contains("{"))
-                .GroupBy(x => x.DestinationName)
-                .Where(item => item.All(z =>
-                    !headerlst.Any(q =>
-                        String.Equals(q.ToString(), z.OriginalName, StringComparison.CurrentCultureIgnoreCase))))
-                .ToList(); // !headerlst  (item.OriginalName.ToUpper())
-            if (missingMaps.Any())
-            {
-                EmailDownloader.EmailDownloader.SendEmail(BaseDataModel.GetClient(), null, $"Bug Found",
-                    new[] { "Joseph@auto-brokerage.com" },
-                    $"Required Field - '{missingMaps.Select(x => x.Key).Aggregate((o, n) => o + "," + n)}' in File: {file.Name} dose not exists.",
-                    Array.Empty<string>());
-                return true;
-            }
-
-            return false;
         }
 
         private static void ImportFile(FileInfo file, FileTypes fileType, bool? overwrite, ConcurrentDictionary<int, string> table)
