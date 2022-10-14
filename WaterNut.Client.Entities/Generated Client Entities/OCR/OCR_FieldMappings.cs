@@ -155,6 +155,21 @@ public Nullable<bool> AppendValues
 		}
      
 
+       [RequiredValidationAttribute(ErrorMessage= "FileType is required")]
+       
+public int FileTypeId
+		{ 
+		    get { return this.ocr_fieldmappings.FileTypeId; }
+			set
+			{
+			    if (value == this.ocr_fieldmappings.FileTypeId) return;
+				this.ocr_fieldmappings.FileTypeId = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("FileTypeId");
+			}
+		}
+     
+
 
         ChangeTrackingCollection<DTO.OCR_FieldMappings> _changeTracker;    
         public ChangeTrackingCollection<DTO.OCR_FieldMappings> ChangeTracker

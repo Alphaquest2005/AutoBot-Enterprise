@@ -338,17 +338,20 @@ namespace AutoBot
         {
             try
             {
-                using (var ctx = new OCRContext(){StartTracking = true})
+                using (var ctx = new OCRContext() { StartTracking = true })
                 {
                     var pInvoice = paramInfo["Invoice"];
                     var pPart = paramInfo["Part"];
                     var pLine = paramInfo["Name"];
                     var pRegex = paramInfo["Regex"];
-                    var pIsMultiLine = paramInfo.ContainsKey("IsMultiLine") ? bool.Parse(paramInfo["IsMultiLine"]) : (bool?)null;
+                    var pIsMultiLine = paramInfo.ContainsKey("IsMultiLine")
+                        ? bool.Parse(paramInfo["IsMultiLine"])
+                        : (bool?)null;
 
                     var line = ctx.Lines.FirstOrDefault(x =>
                         x.Parts.Invoices.Name == pInvoice && x.Parts.PartTypes.Name == pPart && x.Name == pLine);
-                    if (line != null) return;
+
+
                     var part = ctx.Parts.FirstOrDefault(x => x.Invoices.Name == pInvoice && x.PartTypes.Name == pPart);
                     var invoice = ctx.Invoices.FirstOrDefault(x => x.Name == pInvoice);
 
@@ -359,10 +362,22 @@ namespace AutoBot
                     if (regex == null)
                         regex = new RegularExpressions(true)
                             { TrackingState = TrackingState.Added, RegEx = pRegex, MultiLine = pIsMultiLine };
-                    line = new Lines(true)
-                        { TrackingState = TrackingState.Added, Parts = part, Name = pLine, RegularExpressions = regex, Fields = new List<Fields>()};
-                    
-                    ctx.Lines.Add(line);
+                    if (line == null)
+                    {
+                        line = new Lines(true)
+                        {
+                            TrackingState = TrackingState.Added, Parts = part, Name = pLine, RegularExpressions = regex,
+                            Fields = new List<Fields>()
+                        };
+                        ctx.Lines.Add(line);
+                    }
+                    else
+                    {
+                        line.Parts = part;
+                        line.RegularExpressions = regex;
+                    }
+
+
 
                     ctx.SaveChanges();
 
@@ -372,10 +387,15 @@ namespace AutoBot
                     foreach (Match fieldMatch in fields)
                     {
                         var keyWord = fieldMatch.Groups["Keyword"].Value;
-                        var fieldMappingsList = ctx.OCR_FieldMappings.Where(x => x.Key == keyWord).ToList();
+                        var fieldMappingsList = ctx.OCR_FieldMappings.Where(x => x.Key == keyWord && x.FileTypeId == invoice.FileTypeId).ToList();
                         foreach (var fieldMap in fieldMappingsList)
                         {
-                            var field = new Fields(true){
+                            var field = ctx.Fields.FirstOrDefault(x =>
+                                x.Key == fieldMap.Key && x.Field == fieldMap.Field &&
+                                x.EntityType == fieldMap.EntityType && x.LineId == line.Id);
+                            if (field != null) continue;
+                            field = new Fields(true)
+                            {
                                 Key = keyWord,
                                 Field = fieldMap.Field,
                                 AppendValues = fieldMap.AppendValues,
@@ -383,15 +403,16 @@ namespace AutoBot
                                 DataType = fieldMap.DataType,
                                 IsRequired = fieldMap.IsRequired,
                                 LineId = line.Id,
-                                TrackingState = TrackingState.Added};
+                                TrackingState = TrackingState.Added
+                            };
                             ctx.Fields.Add(field);
-                            ctx.SaveChanges(); 
-                            
+                            ctx.SaveChanges();
+
                         }
 
                     }
 
-                    
+
 
 
                 }
@@ -452,6 +473,9 @@ namespace AutoBot
                         ctx.ChildParts.Add(new ChildParts(true){ChildPart = part, ParentPart = parentPart, TrackingState = TrackingState.Added});
 
                     ctx.SaveChanges();
+
+                    
+
                 }
             }
             catch (Exception e)
@@ -495,6 +519,8 @@ namespace AutoBot
                     };
                     ctx.Invoices.Add(invoice);
                     ctx.SaveChanges();
+
+                    
                 }
             }
             catch (Exception e)

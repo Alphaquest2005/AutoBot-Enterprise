@@ -105,7 +105,10 @@ namespace OCR.Business.Services
         [FaultContract(typeof(ValidationFault))]
 		string MinField(string whereExp, string field);
 
-		
+				[OperationContract]
+        [FaultContract(typeof(ValidationFault))]
+        Task<IEnumerable<OCR_FieldMappings>> GetOCR_FieldMappingsByFileTypeId(string FileTypeId, List<string> includesLst = null);
+  
 
 
 

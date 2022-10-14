@@ -986,7 +986,35 @@ namespace OCR.Business.Services
 			}
         }
 
-		
+			        public async Task<IEnumerable<OCR_FieldMappings>> GetOCR_FieldMappingsByFileTypeId(string FileTypeId, List<string> includesLst = null)
+        {
+            try
+            {
+                using ( var dbContext = new OCRContext(){StartTracking = StartTracking})
+              {
+                var i = Convert.ToInt32(FileTypeId);
+                var set = AddIncludes(includesLst, dbContext);
+                IEnumerable<OCR_FieldMappings> entities = set//dbContext.OCR_FieldMappings
+                                      .AsNoTracking()
+                                        .Where(x => x.FileTypeId.ToString() == FileTypeId.ToString())
+										.ToList();
+                return entities;
+              }
+             }
+            catch (Exception updateEx)
+            {
+                System.Diagnostics.Debugger.Break();
+                //throw new FaultException(updateEx.Message);
+                    var fault = new ValidationFault
+                                {
+                                    Result = false,
+                                    Message = updateEx.Message,
+                                    Description = updateEx.StackTrace
+                                };
+                    throw new FaultException<ValidationFault>(fault);
+            }
+        }
+ 
 		public decimal SumField(string whereExp, string field)
          {
              try

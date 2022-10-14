@@ -125,6 +125,21 @@ namespace OCR.Business.Entities
             }
         }
         Nullable<bool> _appendvalues;
+        [DataMember]
+        public int FileTypeId 
+        {
+            get
+            {
+                return _filetypeid;
+            }
+            set
+            {
+                _filetypeid = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        int _filetypeid;
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

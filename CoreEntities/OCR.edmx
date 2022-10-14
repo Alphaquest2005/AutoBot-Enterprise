@@ -67,6 +67,7 @@
           <Property Name="IsRequired" Type="bit" Nullable="false" />
           <Property Name="DataType" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="AppendValues" Type="bit" />
+          <Property Name="FileTypeId" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="OCR-Fields">
           <Key>
@@ -1385,6 +1386,7 @@ FROM [dbo].[OCR-PartLineFields] AS [OCR-PartLineFields]</DefiningQuery>
           <Property Name="IsRequired" Type="Boolean" Nullable="false" />
           <Property Name="DataType" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="AppendValues" Type="Boolean" />
+          <Property Name="FileTypeId" Type="Int32" Nullable="false" />
         </EntityType>
         <EntityType Name="OCR_PartLineFields">
           <Key>
@@ -1664,6 +1666,7 @@ FROM [dbo].[OCR-PartLineFields] AS [OCR-PartLineFields]</DefiningQuery>
           <EntitySetMapping Name="OCR_FieldMappings">
             <EntityTypeMapping TypeName="WaterNutDBModel.OCR_FieldMappings">
               <MappingFragment StoreEntitySet="OCR-FieldMappings">
+                <ScalarProperty Name="FileTypeId" ColumnName="FileTypeId" />
                 <ScalarProperty Name="AppendValues" ColumnName="AppendValues" />
                 <ScalarProperty Name="DataType" ColumnName="DataType" />
                 <ScalarProperty Name="IsRequired" ColumnName="IsRequired" />

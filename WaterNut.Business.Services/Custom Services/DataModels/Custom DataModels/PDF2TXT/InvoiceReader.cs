@@ -154,6 +154,13 @@ namespace WaterNut.DataSpace
             var formattedPdfTxt = tmp.Format(pdftxt.ToString());
             var csvLines = tmp.Read(formattedPdfTxt);
 
+            if (csvLines.Count == 1 && tmp.Lines.All(x => !"Name, SupplierCode".Contains(x.OCR_Lines.Name)))
+            {
+                var doc = ((List<IDictionary<string, object>>)csvLines.First()).First();
+                doc.Add( "SupplierCode", tmp.OcrInvoices.Name );
+                doc.Add( "Name", tmp.OcrInvoices.Name);
+            }
+
             if (csvLines.Count < 1 || !tmp.Success)
             {
                 return ErrorState(file, emailId, pdftxt, client, docSet, tmp, fileTypeId);
@@ -191,10 +198,14 @@ namespace WaterNut.DataSpace
 
 
             
-            if (!tmp.Parts.Any(x => x.AllLines.Any(z =>
-                    z.Values.Values.Any(v =>
-                        v.Keys.Any(k => k.fields.Field == "Name") &&
-                        v.Values.Any(kv => kv == tmp.OcrInvoices.Name)))) || failedlines.Count == allRequried.Count) return false;
+            if (
+                //---------Auto Add name and supplier code make this check redundant
+                //!tmp.Parts.Any(x => x.AllLines.Any(z =>
+                //    z.Values.Values.Any(v =>
+                //        v.Keys.Any(k => k.fields.Field == "Name") &&
+                //        v.Values.Any(kv => kv == tmp.OcrInvoices.Name))))) ||
+                failedlines.Count == allRequried.Count) return false;
+
             if (failedlines.Any() && failedlines.Count < tmp.Lines.Count &&
                 (tmp.Parts.First().WasStarted || !tmp.Parts.First().OCR_Part.Start.Any()) &&
                 tmp.Lines.SelectMany(x => x.Values.Values).Any())

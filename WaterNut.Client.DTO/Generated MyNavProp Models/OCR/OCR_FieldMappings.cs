@@ -14,6 +14,9 @@ namespace OCR.Client.DTO
     {
        #region MyNavProp Entities
 
+       
+
+        
  
  #endregion
     }

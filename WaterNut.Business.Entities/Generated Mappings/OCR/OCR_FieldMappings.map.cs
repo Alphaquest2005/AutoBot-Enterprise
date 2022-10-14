@@ -20,6 +20,7 @@
               this.Property(t => t.IsRequired).HasColumnName("IsRequired");
               this.Property(t => t.DataType).HasColumnName("DataType").IsRequired().HasMaxLength(50);
               this.Property(t => t.AppendValues).HasColumnName("AppendValues");
+              this.Property(t => t.FileTypeId).HasColumnName("FileTypeId");
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);
     			this.Ignore(t => t.ModifiedProperties);

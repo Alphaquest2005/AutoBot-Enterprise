@@ -112,6 +112,19 @@ namespace OCR.Client.DTO
 		}
         private Nullable<bool> _AppendValues;
 
+        [DataMember]
+        public int FileTypeId
+		{ 
+		    get { return _FileTypeId; }
+			set
+			{
+			    if (value == _FileTypeId) return;
+				_FileTypeId = value;
+				NotifyPropertyChanged();//m => this.FileTypeId
+			}
+		}
+        private int _FileTypeId;
+
        
    //     [DataMember]
    //     public TrackingState TrackingState { get; set; }
