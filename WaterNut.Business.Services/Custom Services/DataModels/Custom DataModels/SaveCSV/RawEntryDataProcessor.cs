@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -18,17 +19,19 @@ namespace WaterNut.DataSpace
 
         public static async Task CreateEntryData(DataFile dataFile, List<RawEntryData> goodLst)
         {
-            foreach (RawEntryData item in goodLst)
-            {
-                var entryData = await new EntryDataCreator()
-                    .GetSaveEntryData(dataFile.FileType, dataFile.DocSet, dataFile.OverWriteExisting, item)
-                    .ConfigureAwait(false);
+            Parallel.ForEach(goodLst, new ParallelLinqOptions(){MaxDegreeOfParallelism = Environment.ProcessorCount},
+                async item => // foreach (RawEntryData item in goodLst)
+                {
+                    var entryData = await new EntryDataCreator()
+                        .GetSaveEntryData(dataFile.FileType, dataFile.DocSet, dataFile.OverWriteExisting, item)
+                        .ConfigureAwait(false);
 
-                await new EntryDataDetailsCreator().SaveEntryDataDetails(dataFile.DocSet, dataFile.OverWriteExisting, entryData)
-                    .ConfigureAwait(false);
+                    await new EntryDataDetailsCreator()
+                        .SaveEntryDataDetails(dataFile.DocSet, dataFile.OverWriteExisting, entryData)
+                        .ConfigureAwait(false);
 
-                InventoryItemsProcessor.UpdateInventoryItems(item);
-            }
+                    InventoryItemsProcessor.UpdateInventoryItems(item);
+                });
         }
     }
 }
