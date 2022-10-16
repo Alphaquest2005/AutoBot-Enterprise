@@ -60,6 +60,9 @@ namespace AutoBot
                     if (ft == null) return true;
                     //var desFolder = Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder, ctx.AsycudaDocumentSetExs.First(x => x.AsycudaDocumentSetId == asycudaDocumentSetId).Declarant_Reference_Number);
                     var desFolder = Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder, "Imports", FileTypeManager.EntryTypes.C71);
+
+                    if (!Directory.Exists(desFolder)) Directory.CreateDirectory(desFolder);
+
                     var csvFiles = new DirectoryInfo(desFolder).GetFiles()
                         .Where(x => x.LastWriteTime >= lastfiledate)
                         .Where(x => Regex.IsMatch(x.FullName, ft.FilePattern, RegexOptions.IgnoreCase) && x.Name != "C71.xml")
