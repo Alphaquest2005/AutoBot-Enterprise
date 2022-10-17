@@ -171,7 +171,7 @@ namespace WaterNut.DataSpace
 
         public static Client GetClient()
         {
-            return new EmailDownloader.Client
+            return new Client
             {
                 CompanyName = BaseDataModel.Instance.CurrentApplicationSettings.CompanyName,
                 DataFolder = BaseDataModel.Instance.CurrentApplicationSettings.DataFolder,
@@ -653,7 +653,7 @@ namespace WaterNut.DataSpace
             cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.AutoUpdate = autoUpdate;
             if (autoAssess) cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.IsManuallyAssessed = true;
             AttachCustomProcedure(cdoc, currentAsycudaDocumentSet.Customs_Procedure);
-            var entryLineDatas = slst as IList<BaseDataModel.EntryLineData> ?? slst.ToList();
+            var entryLineDatas = slst as IList<EntryLineData> ?? slst.ToList();
             StatusModel.StartStatusUpdate("Adding Entries to New Asycuda Document", entryLineDatas.Count());
 
 
@@ -928,7 +928,7 @@ namespace WaterNut.DataSpace
             var pCnumber = new Regex(@"[C\#]+").Replace(p.PreviousCNumber, "");
 
 
-            LinkPDFs(new List<string> { pCnumber }, "DO02");
+            LinkPDFs(new List<string> {pCnumber}, "DO02");
             var pdf = $"{pCnumber}.pdf";
             List<Attachment> previousDocuments;
 
@@ -1258,7 +1258,7 @@ namespace WaterNut.DataSpace
         }
 
 
-        private IEnumerable<BaseDataModel.EntryLineData> CreateSingleEntryLineData(
+        private IEnumerable<EntryLineData> CreateSingleEntryLineData(
             IEnumerable<EntryDataDetails> slstSource)
         {
             var slst = slstSource
@@ -1311,7 +1311,7 @@ namespace WaterNut.DataSpace
         }
 
 
-        public IEnumerable<BaseDataModel.EntryLineData> CreateGroupEntryLineData(
+        public IEnumerable<EntryLineData> CreateGroupEntryLineData(
             IEnumerable<EntryDataDetails> slstSource)
         {
             var slst = from s in slstSource.AsEnumerable()
@@ -1497,14 +1497,22 @@ namespace WaterNut.DataSpace
 
             using (var ctx = new DocumentDSContext {StartTracking = true})
             {
+                var weightmsgSent = false;
                 foreach (var doc in doclst)
                 {
                     //calulate frieght based on value, calculate weight based on quantity to prevent the minimm weight per value issue
                     var cif = CIFValues.FirstOrDefault(x => x.Value > 0 && x.Key == doc);
                     var totalItems = ItemQuantities.FirstOrDefault(x => x.Value > 0 && x.Key == doc);
-
-                    if (weightUsed > totalWeight)
-                        throw new ApplicationException("Weight Used Exceed Total Weight!");
+                    // refactor this in to a sub
+                    if (weightUsed > totalWeight && !weightmsgSent)
+                    {
+                        //throw new ApplicationException("Weight Used Exceed Total Weight!");
+                        EmailDownloader.EmailDownloader.SendEmail(BaseDataModel.GetClient(), null, $"Bug Found",
+                            new[] { "Joseph@auto-brokerage.com" }, $"Weight Used Exceed Total Weight! - DocSet:{asycudaDocumentSet?.Declarant_Reference_Number} TotalWeight:{totalWeight}",
+                            Array.Empty<string>());
+                        weightmsgSent = true;
+                    }
+                        
 
                     if (asycudaDocumentSet.ApportionMethod == "Equal")
                     {
@@ -3581,7 +3589,34 @@ namespace WaterNut.DataSpace
             public double InternalFreight { get; set; }
         }
 
-       
+        private static HashSet<string> emailedMessagesList = new HashSet<string>();
+
+        public static void EmailExceptionHandler(Exception e, bool sendOnlyOnce = true )
+        {
+            var lastexception = false;
+            var errorMessage = "Loading components";
+            Exception exp = e;
+            while (lastexception == false)
+            {
+                if (exp.InnerException == null)
+                {
+                    lastexception = true;
+
+
+                    if (sendOnlyOnce == false || !emailedMessagesList.Contains(exp.Message))
+                    {
+                        EmailDownloader.EmailDownloader.SendEmail(BaseDataModel.GetClient(), null, $"Bug Found",
+                            new[] {"Joseph@auto-brokerage.com"}, $"{exp.Message}\r\n{exp.StackTrace}",
+                            Array.Empty<string>());
+                        emailedMessagesList.Add(exp.Message);
+                    }
+
+                }
+
+                errorMessage += $"An unhandled Exception occurred!: {exp.Message}"; //---- {1}
+                exp = exp.InnerException;
+            }
+        }
     }
 
     internal class LicenceDocItem

@@ -677,9 +677,10 @@ namespace AutoBot
                         }
                     }
                 }
-                catch (Exception e)
+                catch (Exception ex)
                 {
-                    Console.WriteLine(e);
+                    Console.WriteLine(ex);
+                    BaseDataModel.EmailExceptionHandler(ex);
                     throw;
                 }
             }
@@ -789,8 +790,11 @@ namespace AutoBot
                 return BaseDataModel.Instance.AddToEntry(entrylst, docSetId,
                     (BaseDataModel.Instance.CurrentApplicationSettings.InvoicePerEntry ?? true), true, false).Result;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                EmailDownloader.EmailDownloader.SendEmail(BaseDataModel.GetClient(), null, $"Bug Found",
+                    new[] { "Joseph@auto-brokerage.com" }, $"{ex.Message}\r\n{ex.StackTrace}",
+                    Array.Empty<string>());
                 throw;
             }
         }
