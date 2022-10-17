@@ -204,7 +204,7 @@ namespace WaterNut.DataSpace
                 //    z.Values.Values.Any(v =>
                 //        v.Keys.Any(k => k.fields.Field == "Name") &&
                 //        v.Values.Any(kv => kv == tmp.OcrInvoices.Name))))) ||
-                failedlines.Count == allRequried.Count) return false;
+                failedlines.Count >= allRequried.Count) return false;
 
             if (failedlines.Any() && failedlines.Count < tmp.Lines.Count &&
                 (tmp.Parts.First().WasStarted || !tmp.Parts.First().OCR_Part.Start.Any()) &&
