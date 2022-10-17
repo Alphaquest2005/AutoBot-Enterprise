@@ -70,24 +70,7 @@ namespace RegexImporter
                 }
                 catch (Exception e)
                 {
-                    var lastexception = false;
-                    var errorMessage = "Loading components";
-                    Exception exp = e;
-                    while (lastexception == false)
-                    {
-                        if (exp.InnerException == null)
-                        {
-                            lastexception = true;
-                            errorMessage +=
-                                $"An unhandled Exception occurred!: {exp.Message} "; //---- {1}, exp.StackTrace
-                            MessageBox.Show(errorMessage, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                            //e. = true;
-                        }
-
-                        errorMessage += $"An unhandled Exception occurred!: {exp.Message}"; //---- {1}
-                        exp = exp.InnerException;
-
-                    }
+                    ExceptionHandler(e);
                 }
 
 
@@ -98,6 +81,27 @@ namespace RegexImporter
                 MessageBox.Show(ex.Message + "|" + ex.StackTrace);
             }
 
+        }
+
+        private static void ExceptionHandler(Exception e)
+        {
+            var lastexception = false;
+            var errorMessage = "Loading components";
+            Exception exp = e;
+            while (lastexception == false)
+            {
+                if (exp.InnerException == null)
+                {
+                    lastexception = true;
+                    errorMessage +=
+                        $"An unhandled Exception occurred!: {exp.Message} "; //---- {1}, exp.StackTrace
+                    MessageBox.Show(errorMessage, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    //e. = true;
+                }
+
+                errorMessage += $"An unhandled Exception occurred!: {exp.Message}"; //---- {1}
+                exp = exp.InnerException;
+            }
         }
 
         private void Current_Exit(object sender, ExitEventArgs e)
