@@ -131,7 +131,7 @@ namespace AutoBot
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                BaseDataModel.Instance.exc
+                BaseDataModel.EmailExceptionHandler(e);
                 throw;
             }
         }

@@ -154,11 +154,11 @@ namespace WaterNut.DataSpace
             var formattedPdfTxt = tmp.Format(pdftxt.ToString());
             var csvLines = tmp.Read(formattedPdfTxt);
 
-            if (csvLines.Count == 1 && tmp.Lines.All(x => !"Name, SupplierCode".Contains(x.OCR_Lines.Name)))
+            if (csvLines.Count == 1 && tmp.Lines.All(x => "Name, SupplierCode".Contains(x.OCR_Lines.Name)))
             {
                 var doc = ((List<IDictionary<string, object>>)csvLines.First()).First();
-                doc.Add( "SupplierCode", tmp.OcrInvoices.Name );
-                doc.Add( "Name", tmp.OcrInvoices.Name);
+                if(!doc.Keys.Contains("SupplierCode")) doc.Add( "SupplierCode", tmp.OcrInvoices.Name );
+                if (!doc.Keys.Contains("Name")) doc.Add( "Name", tmp.OcrInvoices.Name);
             }
 
             if (csvLines.Count < 1 || !tmp.Success)

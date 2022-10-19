@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using MoreLinq;
 
 namespace WaterNut.DataSpace
 {
@@ -13,6 +14,7 @@ namespace WaterNut.DataSpace
             var goodLst = entryDataLst
                 .Where(x => x.Item.EntryDataDetails.Any())
                 .Where(x => x.Item.EntryData.EntryDataId != null && (allowNullEntryDataDate || x.Item.EntryData.EntryDataDate != null))
+                .DistinctBy(x => x.Item.EntryData.EntryDataId)
                 .ToList();
             return goodLst;
         }
@@ -22,7 +24,9 @@ namespace WaterNut.DataSpace
             Parallel.ForEach(goodLst, new ParallelLinqOptions(){MaxDegreeOfParallelism = Environment.ProcessorCount},
                 async item => // foreach (RawEntryData item in goodLst)
                 {
-                    var entryData = await new EntryDataCreator()
+                    try
+                    {
+                        var entryData = await new EntryDataCreator()
                         .GetSaveEntryData(dataFile.FileType, dataFile.DocSet, dataFile.OverWriteExisting, item)
                         .ConfigureAwait(false);
 
@@ -31,6 +35,14 @@ namespace WaterNut.DataSpace
                         .ConfigureAwait(false);
 
                     InventoryItemsProcessor.UpdateInventoryItems(item);
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine(e);
+                        BaseDataModel.EmailExceptionHandler(e);
+
+                    }
+                    
                 });
         }
     }

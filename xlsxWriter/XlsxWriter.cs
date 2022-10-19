@@ -716,7 +716,7 @@ namespace xlsxWriter
 
 
                 Style repeatStyle = new Style();                                                                           // Create new style
-                errStyle.CurrentFill.SetColor("FFff0000", Style.Fill.FillType.fillColor);
+                repeatStyle.CurrentFill.SetColor("FFFFA500", Style.Fill.FillType.fillColor);
 
                 var i = 0;
                 while (true)
@@ -745,6 +745,8 @@ namespace xlsxWriter
 
                         if (summaryPkg.Invoices[i].ShipmentInvoicePOs.Count > 1)
                             workbook.CurrentWorksheet.SetActiveStyle(duplicateStyle);
+                        else if (summaryPkg.Invoices[i].ShipmentInvoicePOs.Any(x => x.PurchaseOrders.ShipmentInvoicePOs.Count > 1))
+                            workbook.CurrentWorksheet.SetActiveStyle(repeatStyle);
                         else if(Math.Round(importedVSExpectedTotal,2) != 0 || Math.Round(importedTotalDifference,2) != 0 || (poInvMismatch??0) != 0 || totalCost != 0)
                             workbook.CurrentWorksheet.SetActiveStyle(errStyle);
                         else
