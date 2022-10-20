@@ -583,7 +583,7 @@ namespace xlsxWriter
             {
                 z.InvoiceNo, z.ShipmentInvoicePOs.FirstOrDefault()?.PurchaseOrders?.PONumber, z.InvoiceTotal,
                 z.ImportedLines, z.SupplierCode,
-                Packages = z.ShipmentRiderInvoice.Where(r => r.RiderID == summaryPkg.RiderSummary.Id)
+                Packages = z.ShipmentRiderInvoice.Where(r => r.RiderID == summaryPkg.RiderSummary?.Id)
                     .Sum(w => w.Packages)
             });
 

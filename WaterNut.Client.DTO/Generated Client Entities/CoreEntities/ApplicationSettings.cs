@@ -632,6 +632,19 @@ namespace CoreEntities.Client.DTO
 		}
         private Nullable<bool> _NotifyUnknownMessages;
 
+        [DataMember]
+        public Nullable<bool> ExportExpiredEntries
+		{ 
+		    get { return _ExportExpiredEntries; }
+			set
+			{
+			    if (value == _ExportExpiredEntries) return;
+				_ExportExpiredEntries = value;
+				NotifyPropertyChanged();//m => this.ExportExpiredEntries
+			}
+		}
+        private Nullable<bool> _ExportExpiredEntries;
+
        
         [DataMember]
         public ChangeTrackingCollection<AsycudaDocumentSetEx> AsycudaDocumentSetEx

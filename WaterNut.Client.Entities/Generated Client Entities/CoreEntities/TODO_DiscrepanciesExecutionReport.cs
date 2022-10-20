@@ -216,7 +216,7 @@ public string ItemNumber
        
        
                 
-                [MaxLength(50, ErrorMessage = "Status has a max length of 50 letters ")]
+                [MaxLength(255, ErrorMessage = "Status has a max length of 255 letters ")]
 public string Status
 		{ 
 		    get { return this.todo_discrepanciesexecutionreport.Status; }

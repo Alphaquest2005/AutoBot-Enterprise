@@ -738,6 +738,21 @@ namespace CoreEntities.Business.Entities
         }
         Nullable<bool> _notifyunknownmessages;
         [DataMember]
+        public Nullable<bool> ExportExpiredEntries 
+        {
+            get
+            {
+                return _exportexpiredentries;
+            }
+            set
+            {
+                _exportexpiredentries = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<bool> _exportexpiredentries;
+        [DataMember]
         public List<AsycudaDocumentSetEx> AsycudaDocumentSetEx { get; set; }
         [DataMember]
         public List<AsycudaDocument> AsycudaDocument { get; set; }

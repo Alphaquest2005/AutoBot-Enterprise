@@ -206,17 +206,17 @@ namespace WaterNut.DataSpace
                 //        v.Values.Any(kv => kv == tmp.OcrInvoices.Name))))) ||
                 failedlines.Count >= allRequried.Count) return false;
 
-            if (failedlines.Any() && failedlines.Count < tmp.Lines.Count &&
-                (tmp.Parts.First().WasStarted || !tmp.Parts.First().OCR_Part.Start.Any()) &&
-                tmp.Lines.SelectMany(x => x.Values.Values).Any())
-            {
-                ReportUnImportedFile(docSet, file, emailId, fileTypeId, client, pdftxt.ToString(),
-                    "Following fields failed to import",
-                    failedlines);
-                {
-                    return true;
-                }
-            }
+            //if (failedlines.Any() && failedlines.Count < tmp.Lines.Count &&
+            //    (tmp.Parts.First().WasStarted || !tmp.Parts.First().OCR_Part.Start.Any()) &&
+            //    tmp.Lines.SelectMany(x => x.Values.Values).Any())
+            //{
+            //    ReportUnImportedFile(docSet, file, emailId, fileTypeId, client, pdftxt.ToString(),
+            //        "Following fields failed to import",
+            //        failedlines);
+            //    {
+            //        return true;
+            //    }
+            //}
 
 
             return false;

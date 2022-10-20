@@ -1013,6 +1013,24 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
         }	
 
  
+
+		private Boolean? _exportExpiredEntriesFilter;
+        public Boolean? ExportExpiredEntriesFilter
+        {
+            get
+            {
+                return _exportExpiredEntriesFilter;
+            }
+            set
+            {
+                _exportExpiredEntriesFilter = value;
+				NotifyPropertyChanged(x => ExportExpiredEntriesFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
 		internal bool DisableBaseFilterData = false;
         public virtual void FilterData()
 	    {
@@ -1244,6 +1262,10 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 
 									if(NotifyUnknownMessagesFilter.HasValue)
 						res.Append(" && " + string.Format("NotifyUnknownMessages == {0}",  NotifyUnknownMessagesFilter));						
+ 
+
+									if(ExportExpiredEntriesFilter.HasValue)
+						res.Append(" && " + string.Format("ExportExpiredEntries == {0}",  ExportExpiredEntriesFilter));						
 			return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
@@ -1399,7 +1421,10 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     AllowImportXSales = x.AllowImportXSales ,
                     
  
-                    NotifyUnknownMessages = x.NotifyUnknownMessages 
+                    NotifyUnknownMessages = x.NotifyUnknownMessages ,
+                    
+ 
+                    ExportExpiredEntries = x.ExportExpiredEntries 
                     
                 }).ToList()
             };
@@ -1545,6 +1570,9 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     
  
                     public Nullable<bool> NotifyUnknownMessages { get; set; } 
+                    
+ 
+                    public Nullable<bool> ExportExpiredEntries { get; set; } 
                     
         }
 

@@ -812,6 +812,21 @@ public Nullable<bool> NotifyUnknownMessages
 		}
      
 
+       
+       
+public Nullable<bool> ExportExpiredEntries
+		{ 
+		    get { return this.applicationsettings.ExportExpiredEntries; }
+			set
+			{
+			    if (value == this.applicationsettings.ExportExpiredEntries) return;
+				this.applicationsettings.ExportExpiredEntries = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("ExportExpiredEntries");
+			}
+		}
+     
+
         ObservableCollection<AsycudaDocumentSetEx> _AsycudaDocumentSetEx = null;
         public  ObservableCollection<AsycudaDocumentSetEx> AsycudaDocumentSetEx
 		{

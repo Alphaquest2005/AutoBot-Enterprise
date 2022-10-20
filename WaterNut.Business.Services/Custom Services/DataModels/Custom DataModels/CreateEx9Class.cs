@@ -696,10 +696,10 @@ namespace WaterNut.DataSpace
             try
             {
 
-
+                if((BaseDataModel.Instance.CurrentApplicationSettings.ExportExpiredEntries ?? true))
                 FilterExpression =
                     FilterExpression.Replace(
-                        "&& (pExpiryDate >= \"" + DateTime.Now.Date.ToShortDateString() + "\" || pExpiryDate == null)",
+                        $"&& (pExpiryDate >= \"{ DateTime.Now.Date.ToShortDateString()}\" || pExpiryDate == null)",
                         "");
                 FilterExpression =
                     FilterExpression.Replace("TariffCode.Contains", "TariffCode != null && TariffCode.Contains");
@@ -1201,7 +1201,7 @@ namespace WaterNut.DataSpace
                 // clear all xstatus so know what happened
                 updateXStatus(mypod.Allocations,null);
 
-                if (mypod.EntlnData.pDocumentItem.ExpiryDate <= DateTime.Now)
+                if (mypod.EntlnData.pDocumentItem.ExpiryDate <= DateTime.Now && (BaseDataModel.Instance.CurrentApplicationSettings.ExportExpiredEntries??true) == false)
                 {
                     updateXStatus(mypod.Allocations,
                         $@"Expired Entry: '{
