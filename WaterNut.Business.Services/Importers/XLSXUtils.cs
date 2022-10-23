@@ -34,6 +34,8 @@ namespace WaterNut.Business.Services.Importers
                 var misHeaderRow = misMatches.Rows[0].ItemArray.ToList();
                 var poHeaderRow = poTemplate.Rows[0].ItemArray.ToList();
                 string oldInvoiceNo = "";
+                DataRow poTemplateRow = null;
+                var addrow = true;
                 foreach (DataRow misMatch in misMatches.Rows)
                 {
                     if (misMatch == misMatches.Rows[0]) continue;
@@ -41,41 +43,52 @@ namespace WaterNut.Business.Services.Importers
                     var invItemCode = misMatch[misHeaderRow.IndexOf("INVItemCode")].ToString();
                     var poItemCode = misMatch[misHeaderRow.IndexOf("POItemCode")].ToString();
                     var poNumber = misMatch[misHeaderRow.IndexOf("PONumber")].ToString();
-                    var invDetailId = misMatch[misHeaderRow.IndexOf("INVDetailsId")].ToString();
+                    //var invDetailId = misMatch[misHeaderRow.IndexOf("INVDetailsId")].ToString();
                     //var poDetailId = misMatch[misHeaderRow.IndexOf("PODetailsId")].ToString();
+                   
+
+
+
+
                     if (!string.IsNullOrEmpty(poNumber) &&
                         !string.IsNullOrEmpty(InvoiceNo) &&
                         !string.IsNullOrEmpty(poItemCode) &&
                         !string.IsNullOrEmpty(invItemCode))
                     {
 
+                        
+                        foreach (DataRow prow in poTemplate.Rows)
+                        {
+                            if (prow[poHeaderRow.IndexOf("PO Number")].ToString() == poNumber &&
+                                prow[poHeaderRow.IndexOf("Supplier Invoice#")].ToString() == InvoiceNo)
+                            {
+                                if (prow == poTemplateRow)
+                                {
+                                    addrow = true;
+                                    break;
+                                }
+                                poTemplateRow = prow;
+                                addrow = false;
+                                break;
+                            }
+                        }
+
                         DataRow row;
-                        var addrow = true;// changed to false because when importing in portage it doubling the errors because they get imported in importData function
-                        if (string.IsNullOrEmpty(poTemplate.Rows[1][poHeaderRow.IndexOf("PO Number")].ToString()))
-                        {
-                            row = poTemplate.Rows[1];
-                            addrow = false;
-                        }
-                        else
-                        {
-                            row = poTemplate.NewRow();
-                        }
+                        // changed to false because when importing in portage it doubling the errors because they get imported in importData function
+                        row = addrow == false ? poTemplateRow : poTemplate.NewRow();
 
                        if(oldInvoiceNo != InvoiceNo) row[poHeaderRow.IndexOf("Supplier Invoice#")] = InvoiceNo;
                         row[poHeaderRow.IndexOf("PO Number")] = misMatch[misHeaderRow.IndexOf("PONumber")];
-                        row[poHeaderRow.IndexOf("Date")] = poTemplate.Rows[1][poHeaderRow.IndexOf("Date")];
+                        row[poHeaderRow.IndexOf("Date")] = poTemplateRow[poHeaderRow.IndexOf("Date")];
                         row[poHeaderRow.IndexOf("PO Item Number")] = poItemCode;
                         row[poHeaderRow.IndexOf("Supplier Item Number")] = invItemCode;
-                        row[poHeaderRow.IndexOf("PO Item Description")] =
-                            misMatch[misHeaderRow.IndexOf("PODescription")];
-                        row[poHeaderRow.IndexOf("Supplier Item Description")] =
-                            misMatch[misHeaderRow.IndexOf("INVDescription")];
-                        row[poHeaderRow.IndexOf("Cost")] =
-                            ((double)misMatch[misHeaderRow.IndexOf("INVCost")] /
-                             ((misHeaderRow.IndexOf("INVSalesFactor") > -1
-                               && !string.IsNullOrEmpty(misMatch[misHeaderRow.IndexOf("INVSalesFactor")].ToString()))
-                                 ? Convert.ToInt32(misMatch[misHeaderRow.IndexOf("INVSalesFactor")])
-                                 : 1));
+                        row[poHeaderRow.IndexOf("PO Item Description")] = misMatch[misHeaderRow.IndexOf("PODescription")];
+                        row[poHeaderRow.IndexOf("Supplier Item Description")] = misMatch[misHeaderRow.IndexOf("INVDescription")];
+                        row[poHeaderRow.IndexOf("Cost")] = ((double)misMatch[misHeaderRow.IndexOf("INVCost")] /
+                                                            ((misHeaderRow.IndexOf("INVSalesFactor") > -1
+                                                              && !string.IsNullOrEmpty(misMatch[misHeaderRow.IndexOf("INVSalesFactor")].ToString()))
+                                                                ? Convert.ToInt32(misMatch[misHeaderRow.IndexOf("INVSalesFactor")])
+                                                                : 1));
                         row[poHeaderRow.IndexOf("Quantity")] = misMatch[misHeaderRow.IndexOf("POQuantity")];
                         row[poHeaderRow.IndexOf("Total Cost")] = misMatch[misHeaderRow.IndexOf("INVTotalCost")];
 

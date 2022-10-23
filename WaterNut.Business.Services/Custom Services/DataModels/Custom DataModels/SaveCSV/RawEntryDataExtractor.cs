@@ -77,7 +77,7 @@ namespace WaterNut.DataSpace
                             VolumeLiters =
                                 Convert.ToDouble((double)(x.Gallons * DomainFactLibary.GalToLtrRate ??
                                                           Convert.ToDouble((double)(x.Liters ?? 0.0)))),
-                        }),
+                        }).ToList(),
                     f: g.Select(x => (
                         TotalWeight: Convert.ToDouble((double)(x.TotalWeight ?? 0.0)),
                         TotalFreight: Convert.ToDouble((double)(x.TotalFreight ?? 0.0)),
@@ -89,13 +89,12 @@ namespace WaterNut.DataSpace
                         TotalTax: Convert.ToDouble((double)(x.TotalTax ?? 0.0)),
                         Packages: Convert.ToInt32((int)(x.Packages ?? 0)),
                         x.WarehouseNo
-                    )),
+                    )).Where(f => f.InvoiceTotal > 0).ToList(),
                     InventoryItems: g.DistinctBy(x => (x.ItemNumber, x.ItemAlias))
                         .Select(x => (x.ItemNumber, x.ItemAlias))
                 ))
                 .Select(x => new RawEntryData(x))
                 .ToList();
-
 
             return ed;
         }
