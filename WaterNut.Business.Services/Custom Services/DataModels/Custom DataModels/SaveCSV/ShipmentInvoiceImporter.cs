@@ -107,8 +107,7 @@ namespace WaterNut.DataSpace
                         }
 
                         if (!invoice.InvoiceDetails.Any())
-                            throw new ApplicationException(
-                                $"No Invoice Details");
+                            continue;
 
                         if (invoicePOs != null && lst.Count > 1 && invoice != lst.First())
                         {

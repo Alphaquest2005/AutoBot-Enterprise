@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Data.Entity;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using CoreEntities.Business.Entities;
 using EntryDataDS.Business.Entities;
 using MoreLinq;
@@ -420,14 +421,25 @@ namespace xlsxWriter
         }
 
         private static void DoMisMatches(ShipmentInvoice shipmentInvoice, Workbook workbook)
-        {
-            var shipmentInvoicePoItemMisMatchesList = shipmentInvoice
-                .ShipmentInvoicePOs
-                .SelectMany(x => x.POMISMatches)
-                //.Where(x => (x.INVQuantity != 0 && x.INVQuantity != null) && (x.POQuantity != 0 && x.POQuantity != null))
-                .OrderBy(x => x.INVTotalCost).ThenBy(x => x.POTotalCost)
-                .DistinctBy(x => new {x.INVDetailsId, x.PODetailsId})// re intro this because multiple pos to one invoice
-                .ToList();
+        { 
+            var pOs = shipmentInvoice.ShipmentInvoicePOs.Select(x => x.EntryData_Id).ToList();
+            var shipmentInvoicePoItemMisMatchesList = new EntryDataDSContext().ShipmentInvoicePOItemMISMatches
+                .Where(x => x.INVId == shipmentInvoice.Id || pOs.Contains(x.POId ?? 0)).ToList();
+
+            ///////////////// replace this because the keys not working properly with nulls
+
+            //var shipmentInvoicePoItemMisMatchesList = shipmentInvoice
+            //    .ShipmentInvoicePOs
+            //    .SelectMany(x => x.POMISMatches)
+            //    //.Where(x => (x.INVQuantity != 0 && x.INVQuantity != null) && (x.POQuantity != 0 && x.POQuantity != null))
+            //    .OrderBy(x => x.INVTotalCost).ThenBy(x => x.POTotalCost)
+            //    .DistinctBy(x => new {x.INVDetailsId, x.PODetailsId})// re intro this because multiple pos to one invoice
+            //    .ToList();
+            
+
+           
+
+
             if (!shipmentInvoicePoItemMisMatchesList.Any()) return;
 
             var rematched = ReMatchOnItemDescription(shipmentInvoicePoItemMisMatchesList);
@@ -470,7 +482,46 @@ namespace xlsxWriter
 
         private static List<ShipmentInvoicePOItemMISMatches> ReMatchOnItemDescription(List<ShipmentInvoicePOItemMISMatches> shipmentInvoicePoItemMisMatchesList)
         {
+            var POItems = shipmentInvoicePoItemMisMatchesList
+                                                .Where(x => !string.IsNullOrEmpty(x.PONumber) && string.IsNullOrEmpty(x.InvoiceNo))
+                                                .Select(x => (x.PONumber, x.POItemCode, x.PODescription, x.POCost, x.POQuantity, x.POTotalCost, x.PODetailsId, WordLst: GetWords(x.PODescription)))
+                                                .ToList();
+
+            var INVItems = shipmentInvoicePoItemMisMatchesList
+                                                    .Where(x => string.IsNullOrEmpty(x.PONumber) && !string.IsNullOrEmpty(x.InvoiceNo))
+                                                    .Select(x => ( x.InvoiceNo, x.INVItemCode, x.INVDescription, x.INVCost, x.INVQuantity, x.INVTotalCost, x.INVDetailsId, WordLst: GetWords(x.INVDescription)))
+                                                    .ToList();
+            foreach (var poItem in POItems)
+            {
+                var match = INVItems. Select(x => new {itm = x, matches = poItem.WordLst.Intersect(x.WordLst).ToList() })
+                    .Where(x => x.matches.Count >= 1)
+                    .OrderBy(x => Math.Abs(poItem.POCost.GetValueOrDefault() - x.itm.INVCost.GetValueOrDefault()))
+                    .OrderBy(x => Math.Abs(poItem.POQuantity.GetValueOrDefault() - x.itm.INVQuantity.GetValueOrDefault()))
+                    //.OrderBy(x => Math.Abs(poItem.POTotalCost.GetValueOrDefault() - x.itm.INVTotalCost.GetValueOrDefault()))
+                    .ThenByDescending(x => x.matches.Count).ToList();
+                if (!match.Any()) continue;
+
+                var po = shipmentInvoicePoItemMisMatchesList.First(x => x.PODetailsId == poItem.PODetailsId);
+                var inv = shipmentInvoicePoItemMisMatchesList.First(x => x.INVDetailsId == match.First().itm.INVDetailsId);
+                po.InvoiceNo = inv.InvoiceNo;
+                po.INVTotalCost = inv.INVTotalCost;
+                po.INVQuantity = inv.INVQuantity;
+                po.INVDetailsId = inv.INVDetailsId;
+                po.INVItemCode = inv.INVItemCode;
+                po.INVDescription = inv.INVDescription;
+                po.INVCost = inv.INVCost;
+                INVItems.Remove(match.First().itm);
+                shipmentInvoicePoItemMisMatchesList.Remove(inv);
+
+            }
+
+
             return shipmentInvoicePoItemMisMatchesList;
+        }
+
+        private static List<string> GetWords(string description)
+        {
+            return Regex.Matches(description, @"([A-Z]+)|([\d/]+)", RegexOptions.IgnoreCase | RegexOptions.Multiline).Cast<Match>().Select(match => match.Value.ToUpper()).ToList();
         }
 
         public static string CreateUnattachedShipmentWorkBook(

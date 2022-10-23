@@ -693,6 +693,8 @@ namespace AutoBotUtilities
 
         private static void CreateShipmentFromBLsNoRider(Shipment masterShipment, List<Shipment> shipments)
         {
+            if (!masterShipment.ShipmentAttachedBL.Any()  || masterShipment.ShipmentAttachedRider.Any()) return;
+
             var HasMasterBL = false;
             var bls = masterShipment.ShipmentAttachedBL.Select(x => x.ShipmentBL)
                 .OrderByDescending(x => x.ShipmentBLDetails.Count).ToList();
@@ -1165,6 +1167,8 @@ namespace AutoBotUtilities
 
         private static void CreateShipmentFromNoBLAndRider(Shipment masterShipment,  List<Shipment> shipments)
         {
+            if ( masterShipment.ShipmentAttachedBL.Any() || !masterShipment.ShipmentAttachedRider.Any()) return;
+
             var bls = masterShipment.ShipmentAttachedBL.Select(x => x.ShipmentBL)
                 .OrderByDescending(x => x.ShipmentBLDetails.Count).ToList();
             var ridersWithNoBLs = masterShipment.ShipmentAttachedRider.Where(x =>
