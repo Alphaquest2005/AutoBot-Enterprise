@@ -297,8 +297,11 @@ namespace WaterNut.DataSpace
 
         private static string PdfPigText(string file)
         {
-         
-                
+            try
+            {
+
+
+
                 var sb = new StringBuilder();
                 using (var pdf = PdfDocument.Open(file))
                 {
@@ -319,12 +322,19 @@ namespace WaterNut.DataSpace
                 }
 
                 return sb.ToString();
-           
+            }
+            catch (Exception e)
+            {
+                //Console.WriteLine(e);
+                //throw;
+                
+            }
 
+            return null;
 
         }
 
-   
+
 
         private static void ReportUnImportedFile(List<AsycudaDocumentSet> asycudaDocumentSets, string file, string emailId,
             int fileTypeId,

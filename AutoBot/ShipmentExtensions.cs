@@ -314,6 +314,7 @@ namespace AutoBotUtilities
                     .SelectMany(x => x.ShipmentInvoice.ShipmentRiderInvoice.Select(z => z.RiderID))
                     .Distinct()
                     .Where(x => riders.All(z => z.Id != x))
+                    .Where(x => x != 0)
                     .Select(x => ctx.ShipmentRider
                         .Include(z => z.ShipmentRiderBLs)
                         .Include("ShipmentRiderDetails.ShipmentRiderBLs")
@@ -330,6 +331,7 @@ namespace AutoBotUtilities
                     .SelectMany(x => x.ShipmentBL.ShipmentRiderBLs.Select(z => z.RiderId))
                     .Distinct()
                     .Where(x => riders.All(z => z.Id != x))
+                    .Where(x => x != 0)
                     .Select(x => ctx.ShipmentRider
                         .Include(z => z.ShipmentRiderBLs)
                         .Include("ShipmentRiderDetails.ShipmentRiderBLs")
@@ -347,6 +349,7 @@ namespace AutoBotUtilities
                     .SelectMany(x => x.ShipmentManifest.ShipmentRiderManifests.Select(z => z.RiderId))
                     .Distinct()
                     .Where(x => riders.All(z => z.Id != x))
+                    .Where(x => x != 0)
                     .Select(x => ctx.ShipmentRider
                         .Include(z => z.ShipmentRiderBLs)
                         .Include("ShipmentRiderDetails.ShipmentRiderBLs")
@@ -371,6 +374,7 @@ namespace AutoBotUtilities
                                 .SelectMany(i => i.ShipmentRiderInvoice.Select(ri => ri.RiderID)).ToList()).Distinct()
                         .ToList()
                         .Where(x => riders.All(z => z.Id != x))
+                        .Where(x => x != 0)
                         .Select(x => ctx.ShipmentRider
                             .Include(z => z.ShipmentRiderBLs)
                             .Include("ShipmentRiderDetails.ShipmentRiderBLs")
@@ -400,7 +404,7 @@ namespace AutoBotUtilities
                 //    .ToList();
                 //riders.AddRange(invoiceRiders);
 
-                shipment.ShipmentAttachedRider.AddRange(newriders.Select(x => new ShipmentAttachedRider
+                shipment.ShipmentAttachedRider.AddRange(newriders.Where(x => x.Id != 0).Select(x => new ShipmentAttachedRider
                 {
                     ShipmentRider = x,
                     Shipment = shipment,
@@ -503,6 +507,7 @@ namespace AutoBotUtilities
                         .SelectMany(x => x.ShipmentBL.ShipmentManifestBLs)
                         .DistinctBy(x => x.ManifestId)
                         .Where(x => manifests.All(z => z.Id != x.ManifestId))
+                        .Where(x => x.Id != 0)
                         .Select(x => ctx.ShipmentManifest
                             .Include("ShipmentManifestBLs.ShipmentBL")
                             .Include(z => z.ShipmentRiderManifests)
@@ -514,6 +519,7 @@ namespace AutoBotUtilities
                         .SelectMany(x => x.ShipmentRider.ShipmentRiderManifests)
                         .DistinctBy(x => x.ManifestId)
                         .Where(x => manifests.All(z => z.Id != x.ManifestId))
+                        .Where(x => x.ManifestId != 0)
                         .Select(x => ctx.ShipmentManifest
                             .Include("ShipmentManifestBLs.ShipmentBL")
                             .Include(z => z.ShipmentRiderManifests)
@@ -526,6 +532,7 @@ namespace AutoBotUtilities
                         .SelectMany(x => x.ShipmentFreight.ShipmentFreightManifests)
                         .DistinctBy(x => x.ManifestId)
                         .Where(x => manifests.All(z => z.Id != x.ManifestId))
+                        .Where(x => x.ManifestId != 0)
                         .Select(x => ctx.ShipmentManifest
                             .Include("ShipmentManifestBLs.ShipmentBL")
                             .Include(z => z.ShipmentRiderManifests)
@@ -567,6 +574,7 @@ namespace AutoBotUtilities
                         .SelectMany(x => x.ShipmentRider.ShipmentRiderBLs.Select(z => z.BLId))
                         .Distinct()
                         .Where(x => shipment.ShipmentAttachedBL.All(z => z.ShipmentBL.Id != x))
+                        .Where(x => x != 0)
                         .Select(x => ctx.ShipmentBL
                             .Include("ShipmentBLDetails.ShipmentRiderBLs.ShipmentBLDetails")
                             .Include(
@@ -588,6 +596,7 @@ namespace AutoBotUtilities
                         .Select(x => x.ShipmentFreight.BLNumber)
                         .Distinct()
                         .Where(x => bls.All(z => z.BLNumber != x))
+                        .Where(x => !string.IsNullOrEmpty(x))
                         .SelectMany(x => ctx.ShipmentBL
                             .Include("ShipmentBLDetails.ShipmentRiderBLs.ShipmentBLDetails")
                             .Include(
@@ -607,6 +616,7 @@ namespace AutoBotUtilities
                         .SelectMany(x => x.ShipmentFreight.ShipmentFreightDetails.SelectMany(z => z.ShipmentFreightBLs))
                         .DistinctBy(x => x.BLNumber)
                         .Where(x => bls.All(z => z.BLNumber != x.BLNumber))
+                        .Where(x => x.Id != 0 )
                         .SelectMany(x => ctx.ShipmentBL
                             .Include("ShipmentBLDetails.ShipmentRiderBLs.ShipmentBLDetails")
                             .Include(
@@ -623,9 +633,11 @@ namespace AutoBotUtilities
                     bls.AddRange(frightDetailBls);
 
                     var manifestBls = shipment.ShipmentAttachedManifest
+                        .Where(x => x.ManifestId != 0)
                         .Select(x => x.ShipmentManifest.WayBill)
                         .Distinct()
                         .Where(x => bls.All(z => z.BLNumber != x))
+                        .Where(x => !string.IsNullOrEmpty(x))
                         .SelectMany(x => ctx.ShipmentBL
                             .Include("ShipmentBLDetails.ShipmentRiderBLs.ShipmentBLDetails")
                             .Include(
@@ -636,7 +648,7 @@ namespace AutoBotUtilities
                             .Include(z => z.ShipmentRiderBLs)
                             .Include(z => z.ShipmentManifestBLs)
                             .Include(z => z.ShipmentAttachedBL)
-                            .Where(z =>  z.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId))//z.BLNumber == x &&
+                            .Where(z =>  z.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId && z.BLNumber == x))// &&
                         .ToList();
                     bls.AddRange(manifestBls);
 

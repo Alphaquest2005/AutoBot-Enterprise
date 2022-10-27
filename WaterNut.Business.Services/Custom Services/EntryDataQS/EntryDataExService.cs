@@ -1,4 +1,5 @@
 ﻿
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -25,23 +26,42 @@ namespace EntryDataQS.Business.Services
 
         public async Task SaveCSV(string droppedFilePath, string fileType, int docSetId, bool overWriteExisting)
         {
-            var docSet = new List<AsycudaDocumentSet>() {await WaterNut.DataSpace.BaseDataModel.Instance.GetAsycudaDocumentSet(docSetId).ConfigureAwait(false)};
-            
-                var dfileType = FileTypeManager.GetImportableFileType(fileType, FileTypeManager.FileFormats.Csv, droppedFilePath).FirstOrDefault(x =>
-                    Regex.IsMatch(droppedFilePath, x.FilePattern, RegexOptions.IgnoreCase) && x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId);
+            try
+            {
+
+
+                var docSet = new List<AsycudaDocumentSet>()
+                {
+                    await WaterNut.DataSpace.BaseDataModel.Instance.GetAsycudaDocumentSet(docSetId)
+                        .ConfigureAwait(false)
+                };
+
+                var dfileType = FileTypeManager
+                    .GetImportableFileType(fileType, FileTypeManager.FileFormats.Csv, droppedFilePath).FirstOrDefault(
+                        x =>
+                            Regex.IsMatch(droppedFilePath, x.FilePattern, RegexOptions.IgnoreCase) &&
+                            x.ApplicationSettingsId ==
+                            BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId);
                 if (dfileType == null) // for filenames not in database
                 {
-                    dfileType = FileTypeManager.GetImportableFileType(fileType, FileTypeManager.FileFormats.Csv, droppedFilePath).First();
+                    dfileType = FileTypeManager
+                        .GetImportableFileType(fileType, FileTypeManager.FileFormats.Csv, droppedFilePath).First();
                 }
 
                 if (dfileType.CopyEntryData)
                 {
                     docSet.Add(EntryDocSetUtils.GetAsycudaDocumentSet(dfileType.DocSetRefernece, true));
                 }
+
                 await WaterNut.DataSpace.SaveCSVModel.Instance.ProcessDroppedFile(droppedFilePath, dfileType, docSet,
-                   overWriteExisting).ConfigureAwait(false);
-            
-                
+                    overWriteExisting).ConfigureAwait(false);
+
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
         }
 
         public async Task SavePDF(string droppedFilePath, string fileType, int docSetId, bool overwrite)

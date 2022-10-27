@@ -511,47 +511,64 @@ namespace WaterNut.DataSpace
         public async Task AddToEntry(IEnumerable<string> entryDatalst, AsycudaDocumentSet currentAsycudaDocumentSet,
             bool perInvoice, bool combineEntryDataInSameFile, bool groupItems, bool checkPackages)
         {
-            if (!IsValidDocument(currentAsycudaDocumentSet)) return;
+            try
+            {
 
-            var slstSource =
-                (from s in await GetSelectedPODetails(entryDatalst.Distinct().ToList(),
-                        currentAsycudaDocumentSet.AsycudaDocumentSetId).ConfigureAwait(false)
-                    select s).ToList();
-            ;
-            if (!IsValidEntryData(slstSource)) return;
+                if (!IsValidDocument(currentAsycudaDocumentSet)) return;
 
-            await CreateEntryItems(slstSource, currentAsycudaDocumentSet, perInvoice, true, false,
-                    combineEntryDataInSameFile, groupItems, checkPackages)
-                .ConfigureAwait(false);
+                var slstSource =
+                    (from s in await GetSelectedPODetails(entryDatalst.Distinct().ToList(),
+                            currentAsycudaDocumentSet.AsycudaDocumentSetId).ConfigureAwait(false)
+                        select s).ToList();
+                ;
+                if (!IsValidEntryData(slstSource)) return;
+
+                await CreateEntryItems(slstSource, currentAsycudaDocumentSet, perInvoice, true, false,
+                        combineEntryDataInSameFile, groupItems, checkPackages)
+                    .ConfigureAwait(false);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
         }
 
         public async Task<List<DocumentCT>> AddToEntry(IEnumerable<int> entryDatalst, int docSetId, bool perInvoice,
             bool combineEntryDataInSameFile, bool groupItems)
         {
-            var docSet = await Instance.GetAsycudaDocumentSet(docSetId)
-                .ConfigureAwait(false);
-            if (!IsValidDocument(docSet)) return new List<DocumentCT>();
-            if (perInvoice && combineEntryDataInSameFile == false)
-                using (var ctx = new CoreEntitiesContext())
-                {
-                    var ds = ctx.AsycudaDocumentSetExs.First(x => x.AsycudaDocumentSetId == docSetId);
-                    if (ds.TotalInvoices.GetValueOrDefault() > ds.TotalPackages.GetValueOrDefault())
-                        perInvoice = false;
-                }
+            try
+            {
+                var docSet = await Instance.GetAsycudaDocumentSet(docSetId)
+                    .ConfigureAwait(false);
+                if (!IsValidDocument(docSet)) return new List<DocumentCT>();
+                if (perInvoice && combineEntryDataInSameFile == false)
+                    using (var ctx = new CoreEntitiesContext())
+                    {
+                        var ds = ctx.AsycudaDocumentSetExs.First(x => x.AsycudaDocumentSetId == docSetId);
+                        if (ds.TotalInvoices.GetValueOrDefault() > ds.TotalPackages.GetValueOrDefault())
+                            perInvoice = false;
+                    }
 
-            var cp = GetCustomsProcedure("Duty Paid", "PO");
-            docSet.Customs_Procedure = cp;
-            docSet.Customs_ProcedureId = cp.Customs_ProcedureId;
+                var cp = GetCustomsProcedure("Duty Paid", "PO");
+                docSet.Customs_Procedure = cp;
+                docSet.Customs_ProcedureId = cp.Customs_ProcedureId;
 
-            var slstSource =
-                (from s in await GetSelectedPODetails(entryDatalst.Distinct().ToList(), docSetId)
-                        .ConfigureAwait(false)
-                    select s).ToList();
-            
-            if (!IsValidEntryData(slstSource)) return new List<DocumentCT>();
+                var slstSource =
+                    (from s in await GetSelectedPODetails(entryDatalst.Distinct().ToList(), docSetId)
+                            .ConfigureAwait(false)
+                        select s).ToList();
 
-          return  await CreateEntryItems(slstSource, docSet, perInvoice, true, false, combineEntryDataInSameFile,
-                groupItems, true).ConfigureAwait(false);
+                if (!IsValidEntryData(slstSource)) return new List<DocumentCT>();
+
+                return await CreateEntryItems(slstSource, docSet, perInvoice, true, false, combineEntryDataInSameFile,
+                    groupItems, true).ConfigureAwait(false);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
         }
 
         public async Task ValidateExistingTariffCodes(AsycudaDocumentSet currentAsycudaDocumentSet)
@@ -1507,7 +1524,8 @@ namespace WaterNut.DataSpace
                     if (weightUsed > totalWeight && !weightmsgSent)
                     {
                         //throw new ApplicationException("Weight Used Exceed Total Weight!");
-                        EmailDownloader.EmailDownloader.SendEmail(BaseDataModel.GetClient(), null, $"Bug Found",
+                        if(!string.IsNullOrEmpty(BaseDataModel.GetClient().Email))
+                            EmailDownloader.EmailDownloader.SendEmail(BaseDataModel.GetClient(), null, $"Bug Found",
                             new[] { "Joseph@auto-brokerage.com" }, $"Weight Used Exceed Total Weight! - DocSet:{asycudaDocumentSet?.Declarant_Reference_Number} TotalWeight:{totalWeight}",
                             Array.Empty<string>());
                         weightmsgSent = true;

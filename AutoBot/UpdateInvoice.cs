@@ -493,6 +493,7 @@ namespace AutoBot
                 {
                     var pInvoice = paramInfo["Name"];
                     var pIDRegex = paramInfo["IDRegex"];
+                    var pDocumentType = paramInfo.ContainsKey("DocumentType") ? paramInfo["DocumentType"]: null;
                     var invoice = ctx.Invoices.Include(x => x.InvoiceIdentificatonRegEx)
                         .FirstOrDefault(x => x.Name == pInvoice);
                     if (invoice != null) return;
@@ -514,7 +515,7 @@ namespace AutoBot
                         , ApplicationSettingsId = BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId
                         , TrackingState = TrackingState.Added
                         , FileTypeId = new CoreEntitiesContext().FileTypes.First(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId 
-                            && x.FileImporterInfos.EntryType == FileTypeManager.EntryTypes.ShipmentInvoice).Id
+                            && x.FileImporterInfos.EntryType == (pDocumentType??FileTypeManager.EntryTypes.ShipmentInvoice) && x.FileImporterInfos.Format == FileTypeManager.FileFormats.PDF).Id
 
                     };
                     ctx.Invoices.Add(invoice);
