@@ -188,6 +188,11 @@ namespace xlsxWriter
                 SetValue(workbook, i,
                     header.First(x => x.Key.Column == nameof(shipmentInvoice.InvoiceDate)).Key.Index,
                     shipmentInvoice.InvoiceDate.GetValueOrDefault().ToString("yyyy-MM-dd"));
+
+                SetValue(workbook, i,
+                    header.First(x => x.Key.Column == nameof(shipmentInvoice.PONumber)).Key.Index,
+                    shipmentInvoice.PONumber);
+
                 SetValue(workbook, i, header.First(x => x.Key.Column == nameof(itm.Cost)).Key.Index,
                     itm.Cost);
                 SetValue(workbook, i,
@@ -276,6 +281,8 @@ namespace xlsxWriter
                     header.First(x => x.Key.Column == nameof(ShipmentInvoice.InvoiceDate)).Key.Index,
                     pO.PurchaseOrders.EntryDataDate.ToString("yyyy-MM-dd"));
 
+               
+
                 //if (isPOTotalCostZero)
                 //{
                 //    SetValue(workbook, i, header.First(x => x.Key.Column == nameof(itm.Cost)).Key.Index,
@@ -286,8 +293,8 @@ namespace xlsxWriter
                 //        pOItem.POTotalCost);
                 //}
 
-                
-                if(isINVTotalCostZero)
+
+                if (isINVTotalCostZero)
                 {
                     
                     SetValue(workbook, i, header.First(x => x.Key.Column == nameof(itm.Cost)).Key.Index,
@@ -1071,6 +1078,10 @@ namespace xlsxWriter
                 shipmentInvoice.InvoiceNo);
 
             SetValue(workbook, invoiceRow,
+                header.First(x => x.Key.Column == nameof(shipmentInvoice.PONumber)).Key.Index,
+                shipmentInvoice.ShipmentInvoicePOs.FirstOrDefault()?.PurchaseOrders?.PONumber);
+
+            SetValue(workbook, invoiceRow,
                 header.First(x => x.Key.Column == nameof(shipmentInvoice.TotalInternalFreight)).Key.Index,
                 shipmentInvoice.TotalInternalFreight ??0);
             SetValue(workbook, invoiceRow,
@@ -1114,6 +1125,7 @@ namespace xlsxWriter
         {
             try
             {
+                if (workBook.Worksheets.All(x => x.SheetName != "UnMatchedInvoicePOs")) return;
                 workBook.SetCurrentWorksheet("UnMatchedInvoicePOs");
                 var isEnd = false;
                 var matches = new List<ShipmentInvoicePOManualMatches>();

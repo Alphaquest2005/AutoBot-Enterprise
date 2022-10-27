@@ -824,6 +824,7 @@
     <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\RawEntryDataExtractor.cs" />
     <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\RawEntryDataProcessor.cs" />
     <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\RiderImporter.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\RiderPdfImporter.cs" />
     <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\SalesCreator.cs" />
     <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\ShipmentInvoiceImporter.cs" />
     <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\SupplierImporter.cs" />
