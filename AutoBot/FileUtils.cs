@@ -16,9 +16,9 @@ namespace AutoBot
             {
                 {"ImportSalesEntries",(ft, fs) => SalesUtils.ImportSalesEntries(false) },
                 {"AllocateSales",(ft, fs) => SalesUtils.AllocateSales() },
-                {"CreateEx9",(ft, fs) => EX9Utils.CreateEx9(false) },
-                {"ExportEx9Entries",(ft, fs) => EX9Utils.ExportEx9Entries() },
-                {"AssessEx9Entries",(ft, fs) => EX9Utils.AssessEx9Entries() },
+                {"CreateEx9",(ft, fs) => EX9Utils.CreateEx9(false, -1) },
+                {"ExportEx9Entries",(ft, fs) => EX9Utils.ExportEx9Entries(-1) },
+                {"AssessEx9Entries",(ft, fs) => EX9Utils.AssessEx9Entries(-1) },
                 {"SaveCsv",(ft, fs) => CSVUtils.SaveCsv(fs, ft) },
                 {"ReplaceCSV",(ft, fs) => CSVUtils.ReplaceCSV(fs, ft) },
                 {"RecreatePOEntries",(ft, fs) => POUtils.RecreatePOEntries(ft.AsycudaDocumentSetId) },
@@ -86,7 +86,7 @@ namespace AutoBot
                 {"EmailEntriesExpiringNextMonth", (ft,fs) => EntryDocSetUtils.EmailEntriesExpiringNextMonth() },
                 {"RecreateEx9", EX9Utils.RecreateEx9 },//
                 {"UpdateRegEx", UpdateInvoice.UpdateRegEx},
-                {"ImportWarehouseErrors", (ft,fs) => ImportWarehouseErrorsUtils.ImportWarehouseErrors()},
+                {"ImportWarehouseErrors", (ft,fs) => ImportWarehouseErrorsUtils.ImportWarehouseErrors(-1)},
                 {"Kill", Utils.Kill},
                 {"LinkPDFs", (ft,fs) => PDFUtils.LinkPDFs()},
                 {"DownloadPOFiles", (ft,fs) => EX9Utils.DownloadSalesFiles(10, "IM7", false)},

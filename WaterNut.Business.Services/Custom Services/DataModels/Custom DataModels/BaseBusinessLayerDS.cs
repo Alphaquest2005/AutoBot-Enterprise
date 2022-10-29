@@ -209,9 +209,9 @@ namespace WaterNut.DataSpace
             StatusModel.StopStatusUpdate();
         }
 
-        public static Tuple<DateTime, DateTime, AsycudaDocumentSet, string> CurrentSalesInfo()
+        public static Tuple<DateTime, DateTime, AsycudaDocumentSet, string> CurrentSalesInfo(int months)
         {
-            var startDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1).AddMonths(-1);
+            var startDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1).AddMonths(months);
             return EntryDocSetUtils.CreateMonthYearAsycudaDocSet(startDate);
         }
 

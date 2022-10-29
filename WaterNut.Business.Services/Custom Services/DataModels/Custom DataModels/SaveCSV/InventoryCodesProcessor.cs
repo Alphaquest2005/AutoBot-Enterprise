@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Core.Common.Utils;
 using InventoryDS.Business.Entities;
@@ -10,59 +11,74 @@ namespace WaterNut.DataSpace
 {
     public class InventoryCodesProcessor
     {
-        public static void SaveInventoryCodes( InventorySource inventorySource,
+        public static void SaveInventoryCodes(InventorySource inventorySource,
             List<(string SupplierItemNumber, string SupplierItemDescription)> itemCodes,
             InventoryItem i)
         {
-            using (var ctx = new InventoryDSContext() { StartTracking = true })
+            try
             {
-                foreach (var invItemCode in itemCodes)
+
+
+
+                using (var ctx = new InventoryDSContext() {StartTracking = true})
                 {
-
-
-                    var supplierItemNumber = invItemCode.SupplierItemNumber.ToString();
-                    var invItem = ctx.InventoryItems.FirstOrDefault(x =>
-                        x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId && x.ItemNumber == supplierItemNumber);
-                    if (invItem == null)
+                    foreach (var invItemCode in itemCodes)
                     {
-                        invItem = new InventoryItem(true)
+
+
+                        var supplierItemNumber = invItemCode.SupplierItemNumber.ToString();
+                        var invItem = ctx.InventoryItems.FirstOrDefault(x =>
+                            x.ApplicationSettingsId ==
+                            BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId &&
+                            x.ItemNumber == supplierItemNumber);
+                        if (invItem == null)
                         {
-                            ApplicationSettingsId = BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId,
-                            Description = invItemCode.SupplierItemDescription,
-                            ItemNumber = ((string)invItemCode.SupplierItemNumber).Truncate(20),
-                            InventoryItemSources = new List<InventoryItemSource>()
+                            invItem = new InventoryItem(true)
                             {
-                                new InventoryItemSource(true)
+                                ApplicationSettingsId = BaseDataModel.Instance.CurrentApplicationSettings
+                                    .ApplicationSettingsId,
+                                Description = invItemCode.SupplierItemDescription,
+                                ItemNumber = ((string) invItemCode.SupplierItemNumber).Truncate(20),
+                                InventoryItemSources = new List<InventoryItemSource>()
                                 {
-                                    InventorySourceId = inventorySource.Id,
-                                    TrackingState = TrackingState.Added
-                                }
-                            },
-                            TrackingState = TrackingState.Added
-                        };
-                        ctx.InventoryItems.Add(invItem);
-                        ctx.SaveChanges();
-                    }
+                                    new InventoryItemSource(true)
+                                    {
+                                        InventorySourceId = inventorySource.Id,
+                                        TrackingState = TrackingState.Added
+                                    }
+                                },
+                                TrackingState = TrackingState.Added
+                            };
+                            ctx.InventoryItems.Add(invItem);
+                            ctx.SaveChanges();
+                        }
 
-                    if (i.InventoryItemAlias.FirstOrDefault(x => x.AliasName == supplierItemNumber) == null)
-                    {
-                        var inventoryItemAlia = new InventoryItemAlia(true)
+                        if (i.InventoryItemAlias.FirstOrDefault(x => x.AliasName == supplierItemNumber) == null &&
+                            supplierItemNumber.ToUpper() != i.ItemNumber.ToUpper() && !string.IsNullOrEmpty(i.ItemNumber))
                         {
-                            InventoryItemId = i.Id,
-                            AliasName = ((string)supplierItemNumber).Truncate(20),
-                            AliasItemId = invItem.Id,
-                            AliasId = invItem.Id,
-                            TrackingState = TrackingState.Added
-                        };
-                        ctx.InventoryItemAlias.Add(inventoryItemAlia);
-                        ctx.SaveChanges();
+                            var inventoryItemAlia = new InventoryItemAlia(true)
+                            {
+                                InventoryItemId = i.Id,
+                                AliasName = ((string) supplierItemNumber).Truncate(20),
+                                AliasItemId = invItem.Id,
+                                AliasId = invItem.Id,
+                                TrackingState = TrackingState.Added
+                            };
+                            ctx.InventoryItemAlias.Add(inventoryItemAlia);
+                            ctx.SaveChanges();
 
-                        i.InventoryItemAlias.Add(inventoryItemAlia);
+                            i.InventoryItemAlias.Add(inventoryItemAlia);
+                        }
+
                     }
+
 
                 }
-
-                
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
             }
         }
 

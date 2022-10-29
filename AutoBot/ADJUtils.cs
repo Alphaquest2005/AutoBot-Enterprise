@@ -204,7 +204,7 @@ namespace AutoBot
         public static void EmailAdjustmentErrors()
         {
 
-            var info = BaseDataModel.CurrentSalesInfo();
+            var info = BaseDataModel.CurrentSalesInfo(-1);
             var directory = info.Item4;
             var errorfile = Path.Combine(directory, "AdjustmentErrors.csv");
 

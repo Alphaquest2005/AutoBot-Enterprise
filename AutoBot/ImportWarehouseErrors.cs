@@ -10,7 +10,7 @@ namespace AutoBot
 {
     public class ImportWarehouseErrorsUtils
     {
-        public static void ImportWarehouseErrors()
+        public static void ImportWarehouseErrors(int months)
         {
             try
             {
@@ -38,7 +38,7 @@ namespace AutoBot
 
 
                 Console.WriteLine("Importing Warehouse errors");
-                var directoryName = BaseDataModel.CurrentSalesInfo().Item4;
+                var directoryName = BaseDataModel.CurrentSalesInfo(months).Item4;
                 var attachments = Directory.GetFiles(directoryName, "*.png").ToArray();
                 if (!attachments.Any()) return;
 
@@ -66,7 +66,22 @@ namespace AutoBot
                                $"Regards,\r\n" +
                                $"AutoBot";
                     var contacts = new CoreEntitiesContext().Contacts.Where(x => x.Role == "Broker" && x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId).Select(x => x.EmailAddress).ToArray();
-                    EmailDownloader.EmailDownloader.SendEmail(Utils.Client, directoryName, $"Exwarehouse Errors Found for: {BaseDataModel.CurrentSalesInfo().Item3.Declarant_Reference_Number}", contacts, body, attachments);
+                    EmailDownloader.EmailDownloader.SendEmail(Utils.Client, directoryName, $"Exwarehouse Errors Found for: {BaseDataModel.CurrentSalesInfo(months).Item3.Declarant_Reference_Number}", contacts, body, attachments);
+                    foreach (var att in attachments)
+                    {
+                        File.Delete(att);
+                    }
+                }
+                else
+                {
+                    var body = "Unhandled Ex-Warehouse Errors Found: \r\n" +
+                               "Unhandled Errors are as follows: \r\n" +
+                               $"\t {imageTxt}\r\n" +
+                               $"\r\nPlease Check the spreadsheet or inform Joseph Bartholomew if this is an Error.\r\n" +
+                               $"Regards,\r\n" +
+                               $"AutoBot";
+                    var contacts = new CoreEntitiesContext().Contacts.Where(x => x.Role == "Broker" && x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId).Select(x => x.EmailAddress).ToArray();
+                    EmailDownloader.EmailDownloader.SendEmail(Utils.Client, directoryName, $"Exwarehouse Unhandled Errors Found for: {BaseDataModel.CurrentSalesInfo(months).Item3.Declarant_Reference_Number}", contacts, body, attachments);
                     foreach (var att in attachments)
                     {
                         File.Delete(att);

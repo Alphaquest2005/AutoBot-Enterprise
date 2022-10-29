@@ -135,10 +135,11 @@ namespace CoreEntities.Business.Services
 
         public async Task AttachDocuments(int asycudaDocumentSetId, List<string> files)
         {
-            foreach (var fileType in new CoreEntitiesContext().FileTypes
-                         .Where(x => x.FileImporterInfos != null)
-                         .Where(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)
-                .ToList())
+            var fileTypes = new CoreEntitiesContext().FileTypes
+                .Where(x => x.FileImporterInfos != null)
+                .Where(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)
+                .ToList();
+            foreach (var fileType in fileTypes)
             {
                 var csvFiles = files.Where(x => Regex.IsMatch(x, fileType.FilePattern, RegexOptions.IgnoreCase))
                     .Select(x => new FileInfo(x)).ToArray();

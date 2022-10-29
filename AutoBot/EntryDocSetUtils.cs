@@ -136,7 +136,7 @@ namespace AutoBot
 
             try
             {
-                var docSet = BaseDataModel.CurrentSalesInfo();
+                var docSet = BaseDataModel.CurrentSalesInfo(-1);
                 var directoryName = Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder,
                     docSet.Item3.Declarant_Reference_Number);
                 var expFile = Path.Combine(directoryName, "ExpiredEntries.csv");
@@ -173,7 +173,7 @@ namespace AutoBot
 
             try
             {
-                var docSet = BaseDataModel.CurrentSalesInfo();
+                var docSet = BaseDataModel.CurrentSalesInfo(-1);
                 var directoryName = Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder,
                     docSet.Item3.Declarant_Reference_Number);
                 var expFile = Path.Combine(directoryName, "CancelledEntries.csv");

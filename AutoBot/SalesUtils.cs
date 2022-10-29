@@ -284,7 +284,7 @@ namespace AutoBot
                 {
                     //var docSetId = BaseDataModel.CurrentSalesInfo().Item3.AsycudaDocumentSetId;
                     var docSetId = ctx.AsycudaDocumentSetExs.FirstOrDefault(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId &&
-                        x.Declarant_Reference_Number == "Imports")?.AsycudaDocumentSetId ?? BaseDataModel.CurrentSalesInfo().Item3.AsycudaDocumentSetId;
+                        x.Declarant_Reference_Number == "Imports")?.AsycudaDocumentSetId ?? BaseDataModel.CurrentSalesInfo(-1).Item3.AsycudaDocumentSetId;
 
                     var ft = ctx.FileTypes.FirstOrDefault(x =>
                         x.FileImporterInfos.Format == FileTypeManager.FileFormats.XML && x.ApplicationSettingsId ==
@@ -396,7 +396,7 @@ namespace AutoBot
                 {
                     //var docSetId = BaseDataModel.CurrentSalesInfo().Item3.AsycudaDocumentSetId;
                     var docSetId = ctx.AsycudaDocumentSetExs.FirstOrDefault(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId &&
-                        x.Declarant_Reference_Number == "Imports")?.AsycudaDocumentSetId ?? BaseDataModel.CurrentSalesInfo().Item3.AsycudaDocumentSetId;
+                        x.Declarant_Reference_Number == "Imports")?.AsycudaDocumentSetId ?? BaseDataModel.CurrentSalesInfo(-1).Item3.AsycudaDocumentSetId;
 
                     var lastdbfile =
                         ctx.AsycudaDocumentSet_Attachments.Include(x => x.Attachments).OrderByDescending(x => x.AttachmentId).FirstOrDefault(x => x.AsycudaDocumentSetId == docSetId);
@@ -445,7 +445,7 @@ namespace AutoBot
         public static void EmailSalesErrors()
         {
 
-            var info = BaseDataModel.CurrentSalesInfo();
+            var info = BaseDataModel.CurrentSalesInfo(-1);
             var directory = info.Item4;
             var errorfile = Path.Combine(directory, "SalesErrors.csv");
 
@@ -556,7 +556,7 @@ namespace AutoBot
                 Console.WriteLine("Submit XML To Customs");
 
                 // var saleInfo = CurrentSalesInfo();
-                var salesinfo = BaseDataModel.CurrentSalesInfo();
+                var salesinfo = BaseDataModel.CurrentSalesInfo(-1);
 
                 using (var ctx = new CoreEntitiesContext())
                 {

@@ -5,6 +5,7 @@ using DocumentItemDS.Business.Services;
 using InventoryDS.Business.Entities;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -715,6 +716,7 @@ private void Update_TarrifCodes(ASYCUDAItem ai)
                 {
                     var tariffCode = ctx.TariffCodes
                         .Include("TariffCategory.TariffCategoryCodeSuppUnits.TariffSupUnitLkp")
+                        .Include(x => x.TariffCategory)
                         .FirstOrDefault(x => x.TariffCodeName == ai.Tarification.HScode.Commodity_code.Text.FirstOrDefault());
                         if(tariffCode == null)
                         tariffCode = new TariffCode(true)
@@ -730,13 +732,22 @@ private void Update_TarrifCodes(ASYCUDAItem ai)
 
                     if (tariffCode.TariffCategory == null)
                     {
-                        tariffCode.TariffCategory = new TariffCategory(true)
+                        var cat = ai.Tarification.HScode.Commodity_code.Text.FirstOrDefault().Substring(0, 4);
+                        var tariffCategory = ctx.TariffCategories
+                            .Include("TariffCategoryCodeSuppUnits.TariffSupUnitLkp")
+                            .FirstOrDefault(x => x.TariffCategoryCode == cat);
+                        if (tariffCategory == null)
                         {
-                            TariffCategoryCode =
-                                ai.Tarification.HScode.Commodity_code.Text.FirstOrDefault().Substring(0, 4),
-                            Description = ai.Goods_description.Description_of_goods.Text.Any()?ai.Goods_description.Description_of_goods.Text[0]:"",
-                        TrackingState = TrackingState.Added
-                        };
+                            tariffCategory = new TariffCategory(true)
+                            {
+                                TariffCategoryCode = cat,
+                                Description = ai.Goods_description.Description_of_goods.Text.Any() ? ai.Goods_description.Description_of_goods.Text[0] : ""
+                                ,
+                                TrackingState = TrackingState.Added
+                            };
+                        }
+
+                        tariffCode.TariffCategory = tariffCategory;
                     }
 
                     for (var i = 0;
