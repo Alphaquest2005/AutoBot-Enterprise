@@ -136,6 +136,7 @@
     <Compile Include="CoreEntities\IEmailAttachmentsService.cs" />
     <Compile Include="CoreEntities\IEmailFileTypesService.cs" />
     <Compile Include="CoreEntities\IEmailInfoMappingsService.cs" />
+    <Compile Include="CoreEntities\IEmailMappingActionsService.cs" />
     <Compile Include="CoreEntities\IEmailMappingRexExsService.cs" />
     <Compile Include="CoreEntities\IEmailMappingService.cs" />
     <Compile Include="CoreEntities\IEmailsService.cs" />

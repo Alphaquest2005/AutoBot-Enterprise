@@ -78,6 +78,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                         RegisterToReceiveMessages<string>(MessageToken.CurrentEmailFileTypesIDChanged, OnCurrentEmailFileTypesIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentEmailInfoMappingsIDChanged, OnCurrentEmailInfoMappingsIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentEmailMappingIDChanged, OnCurrentEmailMappingIDChanged);
+                        RegisterToReceiveMessages<string>(MessageToken.CurrentEmailMappingActionsIDChanged, OnCurrentEmailMappingActionsIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentEmailMappingRexExsIDChanged, OnCurrentEmailMappingRexExsIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentEmailsIDChanged, OnCurrentEmailsIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentEntryPreviousItemsIDChanged, OnCurrentEntryPreviousItemsIDChanged);
@@ -178,6 +179,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                         RegisterToReceiveMessages<EmailFileTypes>(MessageToken.CurrentEmailFileTypesChanged, OnCurrentEmailFileTypesChanged);
                         RegisterToReceiveMessages<EmailInfoMappings>(MessageToken.CurrentEmailInfoMappingsChanged, OnCurrentEmailInfoMappingsChanged);
                         RegisterToReceiveMessages<EmailMapping>(MessageToken.CurrentEmailMappingChanged, OnCurrentEmailMappingChanged);
+                        RegisterToReceiveMessages<EmailMappingActions>(MessageToken.CurrentEmailMappingActionsChanged, OnCurrentEmailMappingActionsChanged);
                         RegisterToReceiveMessages<EmailMappingRexExs>(MessageToken.CurrentEmailMappingRexExsChanged, OnCurrentEmailMappingRexExsChanged);
                         RegisterToReceiveMessages<Emails>(MessageToken.CurrentEmailsChanged, OnCurrentEmailsChanged);
                         RegisterToReceiveMessages<EntryPreviousItems>(MessageToken.CurrentEntryPreviousItemsChanged, OnCurrentEntryPreviousItemsChanged);
@@ -941,6 +943,33 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                                     if (!string.IsNullOrEmpty(_currentEmailMappingID)) BeginSendMessage(MessageToken.CurrentEmailMappingIDChanged,
                                                      new NotificationEventArgs<string>(MessageToken.CurrentEmailMappingIDChanged, _currentEmailMappingID));
                                     NotifyPropertyChanged(x => this.CurrentEmailMappingID);  
+                                }
+                            }
+                        }
+                        internal async void OnCurrentEmailMappingActionsIDChanged(object sender, NotificationEventArgs<string> e)
+                        {
+                            using (EmailMappingActionsRepository ctx = new EmailMappingActionsRepository())
+                            {
+                                CurrentEmailMappingActions = await ctx.GetEmailMappingActions(e.Data).ConfigureAwait(continueOnCapturedContext: false);
+                            }
+                            NotifyPropertyChanged(m => CurrentEmailMappingActions);
+                        }
+
+                        private  string _currentEmailMappingActionsID = "";
+                        public string CurrentEmailMappingActionsID
+                        {
+                            get
+                            {
+                                return _currentEmailMappingActionsID;
+                            }
+                            set
+                            {
+                                if (_currentEmailMappingActionsID != value)
+                                {
+                                    _currentEmailMappingActionsID = value;
+                                    if (!string.IsNullOrEmpty(_currentEmailMappingActionsID)) BeginSendMessage(MessageToken.CurrentEmailMappingActionsIDChanged,
+                                                     new NotificationEventArgs<string>(MessageToken.CurrentEmailMappingActionsIDChanged, _currentEmailMappingActionsID));
+                                    NotifyPropertyChanged(x => this.CurrentEmailMappingActionsID);  
                                 }
                             }
                         }
@@ -2970,6 +2999,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                  CurrentFileTypeActions = null;
                  CurrentSessionActions = null;
                  CurrentActionDocSetLogs = null;
+                 CurrentEmailMappingActions = null;
    
                 }
             }
@@ -4148,6 +4178,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                  CurrentEmailFileTypes = null;
                  CurrentEmailInfoMappings = null;
                  CurrentEmailMappingRexExs = null;
+                 CurrentEmailMappingActions = null;
    
                 }
             }
@@ -4167,6 +4198,56 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     _vcurrentEmailMapping = value;
 					if(_vcurrentEmailMapping != null) CurrentEmailMapping = value.Data;
                     NotifyPropertyChanged(x => this.VCurrentEmailMapping);                    
+                }
+            }
+        }
+
+
+
+                     
+       
+
+        internal void OnCurrentEmailMappingActionsChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<EmailMappingActions> e)
+        {
+            //CurrentEmailMappingActions = e.Data;
+            NotifyPropertyChanged(m => this.CurrentEmailMappingActions);
+        }
+
+        private  EmailMappingActions _currentEmailMappingActions;
+        public EmailMappingActions CurrentEmailMappingActions
+        {
+            get
+            {
+                return _currentEmailMappingActions;
+            }
+            set
+            {
+                if (_currentEmailMappingActions != value)
+                {
+                    _currentEmailMappingActions = value;
+                    BeginSendMessage(MessageToken.CurrentEmailMappingActionsChanged,
+                                                     new NotificationEventArgs<EmailMappingActions>(MessageToken.CurrentEmailMappingActionsChanged, _currentEmailMappingActions)); 
+                    NotifyPropertyChanged(x => this.CurrentEmailMappingActions);    
+                    // all current navigation properties = null
+   
+                }
+            }
+        }
+
+		VirtualListItem<EmailMappingActions> _vcurrentEmailMappingActions;
+        public VirtualListItem<EmailMappingActions> VCurrentEmailMappingActions
+        {
+            get
+            {
+                return _vcurrentEmailMappingActions;
+            }
+            set
+            {
+                if (_vcurrentEmailMappingActions != value)
+                {
+                    _vcurrentEmailMappingActions = value;
+					if(_vcurrentEmailMappingActions != null) CurrentEmailMappingActions = value.Data;
+                    NotifyPropertyChanged(x => this.VCurrentEmailMappingActions);                    
                 }
             }
         }

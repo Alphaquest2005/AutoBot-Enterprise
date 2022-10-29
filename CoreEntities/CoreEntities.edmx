@@ -219,6 +219,14 @@
           <Property Name="ReplacementValue" Type="nvarchar" MaxLength="50" />
           <Property Name="InfoFirst" Type="bit" />
         </EntityType>
+        <EntityType Name="EmailMappingActions">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="EmailMappingId" Type="int" Nullable="false" />
+          <Property Name="ActionId" Type="int" Nullable="false" />
+        </EntityType>
         <EntityType Name="EmailMappingRexExs">
           <Key>
             <PropertyRef Name="Id" />
@@ -2188,6 +2196,34 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_EmailMappingActions_Actions">
+          <End Role="Actions" Type="Self.Actions" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="EmailMappingActions" Type="Self.EmailMappingActions" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Actions">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="EmailMappingActions">
+              <PropertyRef Name="ActionId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_EmailMappingActions_EmailMapping">
+          <End Role="EmailMapping" Type="Self.EmailMapping" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="EmailMappingActions" Type="Self.EmailMappingActions" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="EmailMapping">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="EmailMappingActions">
+              <PropertyRef Name="EmailMappingId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_EmailMappingRexExs_EmailMapping">
           <End Role="EmailMapping" Type="Self.EmailMapping" Multiplicity="1">
             <OnDelete Action="Cascade" />
@@ -2447,6 +2483,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
           <EntitySet Name="EmailFileTypes" EntityType="Self.EmailFileTypes" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="EmailInfoMappings" EntityType="Self.EmailInfoMappings" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="EmailMapping" EntityType="Self.EmailMapping" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="EmailMappingActions" EntityType="Self.EmailMappingActions" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="EmailMappingRexExs" EntityType="Self.EmailMappingRexExs" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Emails" EntityType="Self.Emails" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="EntryPreviousItems" EntityType="Self.EntryPreviousItems" Schema="dbo" store:Type="Tables" />
@@ -3658,6 +3695,14 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
             <End Role="ApplicationSettings" EntitySet="ApplicationSettings" />
             <End Role="EmailMapping" EntitySet="EmailMapping" />
           </AssociationSet>
+          <AssociationSet Name="FK_EmailMappingActions_Actions" Association="Self.FK_EmailMappingActions_Actions">
+            <End Role="Actions" EntitySet="Actions" />
+            <End Role="EmailMappingActions" EntitySet="EmailMappingActions" />
+          </AssociationSet>
+          <AssociationSet Name="FK_EmailMappingActions_EmailMapping" Association="Self.FK_EmailMappingActions_EmailMapping">
+            <End Role="EmailMapping" EntitySet="EmailMapping" />
+            <End Role="EmailMappingActions" EntitySet="EmailMappingActions" />
+          </AssociationSet>
           <AssociationSet Name="FK_EmailMappingRexExs_EmailMapping" Association="Self.FK_EmailMappingRexExs_EmailMapping">
             <End Role="EmailMapping" EntitySet="EmailMapping" />
             <End Role="EmailMappingRexExs" EntitySet="EmailMappingRexExs" />
@@ -4035,6 +4080,15 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
           <AssociationSet Name="FK_FileTypes_FileTypes_FileInfo1" Association="WaterNutDBModel.FK_FileTypes_FileTypes_FileInfo1">
             <End Role="FileTypes_FileImporterInfo" EntitySet="FileImporterInfos" />
             <End Role="FileTypes" EntitySet="FileTypes" />
+          </AssociationSet>
+          <EntitySet Name="EmailMappingActions" EntityType="WaterNutDBModel.EmailMappingActions" />
+          <AssociationSet Name="FK_EmailMappingActions_Actions" Association="WaterNutDBModel.FK_EmailMappingActions_Actions">
+            <End Role="Actions" EntitySet="Actions" />
+            <End Role="EmailMappingActions" EntitySet="EmailMappingActions" />
+          </AssociationSet>
+          <AssociationSet Name="FK_EmailMappingActions_EmailMapping" Association="WaterNutDBModel.FK_EmailMappingActions_EmailMapping">
+            <End Role="EmailMapping" EntitySet="EmailMapping" />
+            <End Role="EmailMappingActions" EntitySet="EmailMappingActions" />
           </AssociationSet>
           </EntityContainer>
         <EntityType Name="ApplicationSettings">
@@ -4735,6 +4789,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
           <Property Name="ReplacementValue" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="EmailMappingRexExs" Relationship="WaterNutDBModel.FK_EmailMappingRexExs_EmailMapping" FromRole="EmailMapping" ToRole="EmailMappingRexExs" />
           <Property Name="InfoFirst" Type="Boolean" />
+          <NavigationProperty Name="EmailMappingActions" Relationship="WaterNutDBModel.FK_EmailMappingActions_EmailMapping" FromRole="EmailMapping" ToRole="EmailMappingActions" />
         </EntityType>
         <Association Name="FK_EmailMapping_ApplicationSettings">
           <End Type="WaterNutDBModel.ApplicationSettings" Role="ApplicationSettings" Multiplicity="1">
@@ -4813,6 +4868,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
           <Property Name="TestMode" Type="Boolean" Nullable="false" />
           <NavigationProperty Name="ActionDocSetLogs" Relationship="WaterNutDBModel.FK_ActionDocSetLogs_Actions" FromRole="Actions" ToRole="ActionDocSetLogs" />
           <Property Name="IsDataSpecific" Type="Boolean" />
+          <NavigationProperty Name="EmailMappingActions" Relationship="WaterNutDBModel.FK_EmailMappingActions_Actions" FromRole="Actions" ToRole="EmailMappingActions" />
         </EntityType>
         <EntityType Name="FileTypeActions">
           <Key>
@@ -6532,6 +6588,44 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="EmailMappingActions">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="EmailMappingId" Type="Int32" Nullable="false" />
+          <Property Name="ActionId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Actions" Relationship="WaterNutDBModel.FK_EmailMappingActions_Actions" FromRole="EmailMappingActions" ToRole="Actions" />
+          <NavigationProperty Name="EmailMapping" Relationship="WaterNutDBModel.FK_EmailMappingActions_EmailMapping" FromRole="EmailMappingActions" ToRole="EmailMapping" />
+        </EntityType>
+        <Association Name="FK_EmailMappingActions_Actions">
+          <End Type="WaterNutDBModel.Actions" Role="Actions" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="WaterNutDBModel.EmailMappingActions" Role="EmailMappingActions" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Actions">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="EmailMappingActions">
+              <PropertyRef Name="ActionId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_EmailMappingActions_EmailMapping">
+          <End Type="WaterNutDBModel.EmailMapping" Role="EmailMapping" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="WaterNutDBModel.EmailMappingActions" Role="EmailMappingActions" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="EmailMapping">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="EmailMappingActions">
+              <PropertyRef Name="EmailMappingId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -8244,6 +8338,15 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
               <MappingFragment StoreEntitySet="FileTypes-FileImporterInfo">
                 <ScalarProperty Name="Format" ColumnName="Format" />
                 <ScalarProperty Name="EntryType" ColumnName="EntryType" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="EmailMappingActions">
+            <EntityTypeMapping TypeName="WaterNutDBModel.EmailMappingActions">
+              <MappingFragment StoreEntitySet="EmailMappingActions">
+                <ScalarProperty Name="ActionId" ColumnName="ActionId" />
+                <ScalarProperty Name="EmailMappingId" ColumnName="EmailMappingId" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>

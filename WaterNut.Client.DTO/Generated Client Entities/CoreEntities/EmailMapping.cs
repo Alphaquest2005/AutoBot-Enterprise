@@ -155,6 +155,19 @@ namespace CoreEntities.Client.DTO
 		}
         private ChangeTrackingCollection<EmailMappingRexExs> _EmailMappingRexExs = new ChangeTrackingCollection<EmailMappingRexExs>();
 
+        [DataMember]
+        public ChangeTrackingCollection<EmailMappingActions> EmailMappingActions
+		{
+		    get { return _EmailMappingActions; }
+			set
+			{
+			    if (Equals(value, _EmailMappingActions)) return;
+				_EmailMappingActions = value;
+				NotifyPropertyChanged();//m => this.EmailMappingActions
+			}
+		}
+        private ChangeTrackingCollection<EmailMappingActions> _EmailMappingActions = new ChangeTrackingCollection<EmailMappingActions>();
+
    //     [DataMember]
    //     public TrackingState TrackingState { get; set; }
 

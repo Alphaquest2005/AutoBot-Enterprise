@@ -145,7 +145,8 @@ namespace EmailDownloader
                     }
 
                     var emailsFound =
-                        emailMappings.Where(x => Regex.IsMatch(msg.Subject, x.Pattern, RegexOptions.IgnoreCase | RegexOptions.Multiline))
+                        emailMappings
+                            .Where(x => Regex.IsMatch(msg.Subject, x.Pattern, RegexOptions.IgnoreCase | RegexOptions.Multiline))
                             .OrderByDescending(x => x.Pattern.Length)
                             .ToList();
 

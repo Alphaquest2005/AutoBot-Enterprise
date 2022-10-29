@@ -132,6 +132,34 @@ namespace AutoBotUtilities
             }
         }
 
+
+        public static void ExecuteEmailMappingActions(EmailMapping emailMapping, FileTypes fileType, FileInfo[] files, ApplicationSettings appSetting)
+        {
+            try
+            {
+                var missingActions = emailMapping.EmailMappingActions.Where(x => x.Actions.IsDataSpecific == true
+                                                                             && !FileUtils.FileActions.ContainsKey(x.Actions.Name)).ToList();
+
+                if (missingActions.Any())
+                {
+                    throw new ApplicationException(
+                        $"The following actions were missing: {missingActions.Select(x => x.Actions.Name).Aggregate((old, current) => old + ", " + current)}");
+                }
+
+                emailMapping.EmailMappingActions.OrderBy(x => x.Id)
+                    .Where(x => x.Actions.TestMode == BaseDataModel.Instance.CurrentApplicationSettings.TestMode)
+                    .Select(x => (x.Actions.Name, FileUtils.FileActions[x.Actions.Name])).ToList()
+                    .ForEach(x => { ExecuteActions(fileType, files, x); });
+
+            }
+            catch (Exception e)
+            {
+                EmailDownloader.EmailDownloader.ForwardMsg(fileType.EmailId, BaseDataModel.GetClient(), $"Bug Found",
+                    $"{e.Message}\r\n{e.StackTrace}", new[] { "Joseph@auto-brokerage.com" },
+                    Array.Empty<string>());
+            }
+        }
+
         private static void ExecuteActions(FileTypes fileType, FileInfo[] files,
             (string Name, Action<FileTypes, FileInfo[]> Action) x)
         {

@@ -204,7 +204,8 @@ namespace CoreEntities.Client.Repositories
                     {
                      // FileTypeActions = new System.Collections.ObjectModel.ObservableCollection<FileTypeActions>(res.FileTypeActions.Select(y => new FileTypeActions(y))),    
                      // SessionActions = new System.Collections.ObjectModel.ObservableCollection<SessionActions>(res.SessionActions.Select(y => new SessionActions(y))),    
-                     // ActionDocSetLogs = new System.Collections.ObjectModel.ObservableCollection<ActionDocSetLogs>(res.ActionDocSetLogs.Select(y => new ActionDocSetLogs(y)))    
+                     // ActionDocSetLogs = new System.Collections.ObjectModel.ObservableCollection<ActionDocSetLogs>(res.ActionDocSetLogs.Select(y => new ActionDocSetLogs(y))),    
+                     // EmailMappingActions = new System.Collections.ObjectModel.ObservableCollection<EmailMappingActions>(res.EmailMappingActions.Select(y => new EmailMappingActions(y)))    
                   };
                     }
                     else

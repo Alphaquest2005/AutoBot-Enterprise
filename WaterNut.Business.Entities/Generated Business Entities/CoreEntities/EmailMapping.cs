@@ -25,6 +25,7 @@ namespace CoreEntities.Business.Entities
             this.EmailFileTypes = new List<EmailFileTypes>();
             this.EmailInfoMappings = new List<EmailInfoMappings>();
             this.EmailMappingRexExs = new List<EmailMappingRexExs>();
+            this.EmailMappingActions = new List<EmailMappingActions>();
         }
 
         [DataMember]
@@ -125,6 +126,8 @@ namespace CoreEntities.Business.Entities
         public List<EmailInfoMappings> EmailInfoMappings { get; set; }
         [DataMember]
         public List<EmailMappingRexExs> EmailMappingRexExs { get; set; }
+        [DataMember]
+        public List<EmailMappingActions> EmailMappingActions { get; set; }
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

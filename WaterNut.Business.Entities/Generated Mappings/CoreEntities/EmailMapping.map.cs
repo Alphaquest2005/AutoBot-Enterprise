@@ -23,6 +23,7 @@
               this.HasMany(t => t.EmailFileTypes).WithRequired(t => (EmailMapping)t.EmailMapping);
               this.HasMany(t => t.EmailInfoMappings).WithRequired(t => (EmailMapping)t.EmailMapping);
               this.HasMany(t => t.EmailMappingRexExs).WithRequired(t => (EmailMapping)t.EmailMapping);
+              this.HasMany(t => t.EmailMappingActions).WithRequired(t => (EmailMapping)t.EmailMapping);
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);
     			this.Ignore(t => t.ModifiedProperties);

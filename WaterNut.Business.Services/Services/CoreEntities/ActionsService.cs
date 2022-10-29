@@ -247,6 +247,12 @@ namespace CoreEntities.Business.Services
                                         GetWhere<ActionDocSetLogs>(dbContext, exp, itm.Value, "Actions", "Select", includesLst)
 										.ConfigureAwait(continueOnCapturedContext: false);
 
+                            case "EmailMappingActions":
+                                return
+                                    await
+                                        GetWhere<EmailMappingActions>(dbContext, exp, itm.Value, "Actions", "Select", includesLst)
+										.ConfigureAwait(continueOnCapturedContext: false);
+
                         }
 
                     }
@@ -737,6 +743,9 @@ namespace CoreEntities.Business.Services
                             case "ActionDocSetLogs":
                                 return await CountWhere<ActionDocSetLogs>(dbContext, exp, itm.Value, "Actions", "Select")
 											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "EmailMappingActions":
+                                return await CountWhere<EmailMappingActions>(dbContext, exp, itm.Value, "Actions", "Select")
+											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }
                     return dbContext.Actions.Where(exp == "All" || exp == null ? "Id != null" : exp)
@@ -855,6 +864,12 @@ namespace CoreEntities.Business.Services
                                 return
                                     await
                                         LoadRangeWhere<ActionDocSetLogs>(startIndex, count, dbContext, exp, itm.Value, "Actions", "Select")
+													.ConfigureAwait(continueOnCapturedContext: false);
+
+                            case "EmailMappingActions":
+                                return
+                                    await
+                                        LoadRangeWhere<EmailMappingActions>(startIndex, count, dbContext, exp, itm.Value, "Actions", "Select")
 													.ConfigureAwait(continueOnCapturedContext: false);
 
                           
@@ -1117,6 +1132,9 @@ namespace CoreEntities.Business.Services
 											.ConfigureAwait(continueOnCapturedContext: false);
                             case "ActionDocSetLogs":
                                 return await SumWhere<ActionDocSetLogs>(dbContext, exp, itm.Value, "Actions", field, "Select")
+											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "EmailMappingActions":
+                                return await SumWhere<EmailMappingActions>(dbContext, exp, itm.Value, "Actions", field, "Select")
 											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }

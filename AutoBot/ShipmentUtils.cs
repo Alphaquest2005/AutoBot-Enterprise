@@ -451,5 +451,16 @@ namespace AutoBot
                 throw e;
             }
         }
+
+        public static void ClearShipmentData(FileTypes fileType, FileInfo[] fileInfos)
+        {
+            using (var ctx = new EntryDataDSContext())
+            {
+                ctx.Database.ExecuteSqlCommand($@"DELETE FROM ShipmentBL WHERE (EmailId = N'{fileType.EmailId}')
+                                                    delete from ShipmentInvoice WHERE (EmailId = N'{fileType.EmailId}')
+                                                    delete from entrydata WHERE (EmailId = N'{fileType.EmailId}')
+                                                    delete from ShipmentManifest WHERE (EmailId = N'{fileType.EmailId}')");
+            }
+        }
     }
 }

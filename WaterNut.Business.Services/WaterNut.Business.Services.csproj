@@ -457,6 +457,7 @@
     <Compile Include="Contracts\CoreEntities\IEmailAttachmentsService.cs" />
     <Compile Include="Contracts\CoreEntities\IEmailFileTypesService.cs" />
     <Compile Include="Contracts\CoreEntities\IEmailInfoMappingsService.cs" />
+    <Compile Include="Contracts\CoreEntities\IEmailMappingActionsService.cs" />
     <Compile Include="Contracts\CoreEntities\IEmailMappingRexExsService.cs" />
     <Compile Include="Contracts\CoreEntities\IEmailMappingService.cs" />
     <Compile Include="Contracts\CoreEntities\IEmailsService.cs" />
@@ -902,6 +903,7 @@
     <Compile Include="Services\AllocationDS\xcuda_WeightService.cs" />
     <Compile Include="Services\AllocationDS\xcuda_Weight_itmService.cs" />
     <Compile Include="Services\AllocationDS\XSales_UnAllocatedService.cs" />
+    <Compile Include="Services\CoreEntities\EmailMappingActionsService.cs" />
     <Compile Include="Services\EntryDataDS\SupplierItemDescriptionRegExService.cs" />
     <Compile Include="Services\EntryDataDS\SupplierItemDescriptionService.cs" />
     <Compile Include="Utils\AutoMatchUtils.cs" />

@@ -240,6 +240,7 @@
     <Compile Include="Generated Business Entities\CoreEntities\EmailFileTypes.cs" />
     <Compile Include="Generated Business Entities\CoreEntities\EmailInfoMappings.cs" />
     <Compile Include="Generated Business Entities\CoreEntities\EmailMapping.cs" />
+    <Compile Include="Generated Business Entities\CoreEntities\EmailMappingActions.cs" />
     <Compile Include="Generated Business Entities\CoreEntities\EmailMappingRexExs.cs" />
     <Compile Include="Generated Business Entities\CoreEntities\Emails.cs" />
     <Compile Include="Generated Business Entities\CoreEntities\EntryPreviousItems.cs" />
@@ -661,6 +662,7 @@
     <Compile Include="Generated ChangeTracking Models\CoreEntities\EmailFileTypes.cs" />
     <Compile Include="Generated ChangeTracking Models\CoreEntities\EmailInfoMappings.cs" />
     <Compile Include="Generated ChangeTracking Models\CoreEntities\EmailMapping.cs" />
+    <Compile Include="Generated ChangeTracking Models\CoreEntities\EmailMappingActions.cs" />
     <Compile Include="Generated ChangeTracking Models\CoreEntities\EmailMappingRexExs.cs" />
     <Compile Include="Generated ChangeTracking Models\CoreEntities\Emails.cs" />
     <Compile Include="Generated ChangeTracking Models\CoreEntities\EntryPreviousItems.cs" />
@@ -1076,6 +1078,7 @@
     <Compile Include="Generated Constructors Models\CoreEntities\EmailFileTypes.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\EmailInfoMappings.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\EmailMapping.cs" />
+    <Compile Include="Generated Constructors Models\CoreEntities\EmailMappingActions.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\EmailMappingRexExs.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\Emails.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\EntryPreviousItems.cs" />
@@ -1491,6 +1494,7 @@
     <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\EmailFileTypes.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\EmailInfoMappings.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\EmailMapping.cs" />
+    <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\EmailMappingActions.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\EmailMappingRexExs.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\Emails.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\EntryPreviousItems.cs" />
@@ -1906,6 +1910,7 @@
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\EmailFileTypes.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\EmailInfoMappings.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\EmailMapping.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\EmailMappingActions.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\EmailMappingRexExs.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\Emails.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\EntryPreviousItems.cs" />
@@ -2331,6 +2336,7 @@
     <Compile Include="Generated Mappings\CoreEntities\EmailFileTypes.map.cs" />
     <Compile Include="Generated Mappings\CoreEntities\EmailInfoMappings.map.cs" />
     <Compile Include="Generated Mappings\CoreEntities\EmailMapping.map.cs" />
+    <Compile Include="Generated Mappings\CoreEntities\EmailMappingActions.map.cs" />
     <Compile Include="Generated Mappings\CoreEntities\EmailMappingRexExs.map.cs" />
     <Compile Include="Generated Mappings\CoreEntities\Emails.map.cs" />
     <Compile Include="Generated Mappings\CoreEntities\EntryPreviousItems.map.cs" />

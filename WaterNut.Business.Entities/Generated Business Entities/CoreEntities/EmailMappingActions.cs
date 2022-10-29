@@ -18,16 +18,8 @@ namespace CoreEntities.Business.Entities
 
     //[JsonObject(IsReference = true)]
     [DataContract(IsReference = true, Namespace="http://www.insight-software.com/WaterNut")]
-    public partial class Actions : BaseEntity<Actions>, ITrackable 
+    public partial class EmailMappingActions : BaseEntity<EmailMappingActions>, ITrackable 
     {
-        partial void AutoGenStartUp() //Actions()
-        {
-            this.FileTypeActions = new List<FileTypeActions>();
-            this.SessionActions = new List<SessionActions>();
-            this.ActionDocSetLogs = new List<ActionDocSetLogs>();
-            this.EmailMappingActions = new List<EmailMappingActions>();
-        }
-
         [DataMember]
         public int Id 
         {
@@ -44,58 +36,39 @@ namespace CoreEntities.Business.Entities
         }
         int _id;
         [DataMember]
-        public string Name 
+        public int EmailMappingId 
         {
             get
             {
-                return _name;
+                return _emailmappingid;
             }
             set
             {
-                _name = value;
+                _emailmappingid = value;
                 //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
                 NotifyPropertyChanged();
             }
         }
-        string _name;
+        int _emailmappingid;
         [DataMember]
-        public bool TestMode 
+        public int ActionId 
         {
             get
             {
-                return _testmode;
+                return _actionid;
             }
             set
             {
-                _testmode = value;
+                _actionid = value;
                 //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
                 NotifyPropertyChanged();
             }
         }
-        bool _testmode;
+        int _actionid;
         [DataMember]
-        public Nullable<bool> IsDataSpecific 
-        {
-            get
-            {
-                return _isdataspecific;
-            }
-            set
-            {
-                _isdataspecific = value;
-                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
-                NotifyPropertyChanged();
-            }
-        }
-        Nullable<bool> _isdataspecific;
+        public Actions Actions { get; set; }
         [DataMember]
-        public List<FileTypeActions> FileTypeActions { get; set; }
-        [DataMember]
-        public List<SessionActions> SessionActions { get; set; }
-        [DataMember]
-        public List<ActionDocSetLogs> ActionDocSetLogs { get; set; }
-        [DataMember]
-        public List<EmailMappingActions> EmailMappingActions { get; set; }
+        public EmailMapping EmailMapping { get; set; }
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

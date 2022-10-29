@@ -7,20 +7,17 @@
     using System.ComponentModel.DataAnnotations.Schema;
     using System.Collections.Generic;
     
-    public partial class ActionsMap : EntityTypeConfiguration<Actions>
+    public partial class EmailMappingActionsMap : EntityTypeConfiguration<EmailMappingActions>
     {
-        public ActionsMap()
+        public EmailMappingActionsMap()
         {                        
               this.HasKey(t => t.Id);        
-              this.ToTable("Actions");
+              this.ToTable("EmailMappingActions");
               this.Property(t => t.Id).HasColumnName("Id").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.Identity));
-              this.Property(t => t.Name).HasColumnName("Name").IsRequired().HasMaxLength(100);
-              this.Property(t => t.TestMode).HasColumnName("TestMode");
-              this.Property(t => t.IsDataSpecific).HasColumnName("IsDataSpecific");
-              this.HasMany(t => t.FileTypeActions).WithRequired(t => (Actions)t.Actions);
-              this.HasMany(t => t.SessionActions).WithRequired(t => (Actions)t.Actions);
-              this.HasMany(t => t.ActionDocSetLogs).WithRequired(t => (Actions)t.Actions);
-              this.HasMany(t => t.EmailMappingActions).WithRequired(t => (Actions)t.Actions);
+              this.Property(t => t.EmailMappingId).HasColumnName("EmailMappingId");
+              this.Property(t => t.ActionId).HasColumnName("ActionId");
+              this.HasRequired(t => t.Actions).WithMany(t =>(ICollection<EmailMappingActions>) t.EmailMappingActions).HasForeignKey(d => d.ActionId);
+              this.HasRequired(t => t.EmailMapping).WithMany(t =>(ICollection<EmailMappingActions>) t.EmailMappingActions).HasForeignKey(d => d.EmailMappingId);
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);
     			this.Ignore(t => t.ModifiedProperties);

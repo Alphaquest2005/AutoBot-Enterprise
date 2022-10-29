@@ -8,3 +8,9 @@ select * from ShipmentBL
 select * from ShipmentInvoice
 select * from entrydata
 select * from ShipmentManifest
+
+
+DELETE FROM ShipmentBL WHERE (EmailId = N'1')
+delete from ShipmentInvoice WHERE (EmailId = N'1')
+delete from entrydata WHERE (EmailId = N'1')
+delete from ShipmentManifest WHERE (EmailId = N'1')

@@ -354,6 +354,60 @@ public Nullable<bool> InfoFirst
             }
         }
 
+        ObservableCollection<EmailMappingActions> _EmailMappingActions = null;
+        public  ObservableCollection<EmailMappingActions> EmailMappingActions
+		{
+            
+		    get 
+				{ 
+					if(_EmailMappingActions != null) return _EmailMappingActions;
+					//if (this.emailmapping.EmailMappingActions == null) Debugger.Break();
+					if(this.emailmapping.EmailMappingActions != null)
+					{
+						_EmailMappingActions = new ObservableCollection<EmailMappingActions>(this.emailmapping.EmailMappingActions.Select(x => new EmailMappingActions(x)));
+					}
+					
+						_EmailMappingActions.CollectionChanged += EmailMappingActions_CollectionChanged; 
+					
+					return _EmailMappingActions; 
+				}
+			set
+			{
+			    if (Equals(value, _EmailMappingActions)) return;
+				if (value != null)
+					this.emailmapping.EmailMappingActions = new ChangeTrackingCollection<DTO.EmailMappingActions>(value.Select(x => x.DTO).ToList());
+                _EmailMappingActions = value;
+				if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				if (_EmailMappingActions != null)
+				_EmailMappingActions.CollectionChanged += EmailMappingActions_CollectionChanged;               
+				NotifyPropertyChanged("EmailMappingActions");
+			}
+		}
+        
+        void EmailMappingActions_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            switch (e.Action)
+            {
+                case NotifyCollectionChangedAction.Add:
+                    foreach (EmailMappingActions itm in e.NewItems)
+                    {
+                        if (itm != null)
+                        emailmapping.EmailMappingActions.Add(itm.DTO);
+                    }
+                    if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+                    break;
+                case NotifyCollectionChangedAction.Remove:
+                    foreach (EmailMappingActions itm in e.OldItems)
+                    {
+                        if (itm != null)
+                        emailmapping.EmailMappingActions.Remove(itm.DTO);
+                    }
+					if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+                    break;
+                
+            }
+        }
+
 
         ChangeTrackingCollection<DTO.EmailMapping> _changeTracker;    
         public ChangeTrackingCollection<DTO.EmailMapping> ChangeTracker

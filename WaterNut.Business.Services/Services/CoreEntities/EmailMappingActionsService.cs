@@ -32,19 +32,19 @@ using WaterNut.Interfaces;
 
 namespace CoreEntities.Business.Services
 {
-   [Export (typeof(IEmailMappingService))]
+   [Export (typeof(IEmailMappingActionsService))]
    [Export(typeof(IBusinessService))]
    [PartCreationPolicy(CreationPolicy.NonShared)]
    [ServiceBehavior(InstanceContextMode = InstanceContextMode.PerCall,
                     ConcurrencyMode = ConcurrencyMode.Multiple)]
    
-    public partial class EmailMappingService : IEmailMappingService, IDisposable
+    public partial class EmailMappingActionsService : IEmailMappingActionsService, IDisposable
     {
         //private readonly CoreEntitiesContext dbContext;
 
         public bool StartTracking { get; set; }
 
-        public EmailMappingService()
+        public EmailMappingActionsService()
         {
             try
             {
@@ -65,7 +65,7 @@ namespace CoreEntities.Business.Services
             }
         }
 
-        public async Task<IEnumerable<EmailMapping>> GetEmailMapping(List<string> includesLst = null, bool tracking = true)
+        public async Task<IEnumerable<EmailMappingActions>> GetEmailMappingActions(List<string> includesLst = null, bool tracking = true)
         {
             try
             {
@@ -75,7 +75,7 @@ namespace CoreEntities.Business.Services
                   using ( var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
                   {
 				    var set = AddIncludes(includesLst, dbContext);
-                    IEnumerable<EmailMapping> entities = set.AsNoTracking().ToList();
+                    IEnumerable<EmailMappingActions> entities = set.AsNoTracking().ToList();
                            //scope.Complete();
                             if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
                             return entities;
@@ -97,7 +97,7 @@ namespace CoreEntities.Business.Services
         }
 
 
-        public async Task<EmailMapping> GetEmailMappingByKey(string Id, List<string> includesLst = null, bool tracking = true)
+        public async Task<EmailMappingActions> GetEmailMappingActionsByKey(string Id, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
@@ -106,7 +106,7 @@ namespace CoreEntities.Business.Services
               {
                 var i = Convert.ToInt32(Id);
 				var set = AddIncludes(includesLst, dbContext);
-                EmailMapping entity = set.AsNoTracking().SingleOrDefault(x => x.Id == i);
+                EmailMappingActions entity = set.AsNoTracking().SingleOrDefault(x => x.Id == i);
                 if(tracking && entity != null) entity.StartTracking();
                 return entity;
               }
@@ -126,14 +126,14 @@ namespace CoreEntities.Business.Services
         }
 
 
-		 public async Task<IEnumerable<EmailMapping>> GetEmailMappingByExpression(string exp, List<string> includesLst = null, bool tracking = true)
+		 public async Task<IEnumerable<EmailMappingActions>> GetEmailMappingActionsByExpression(string exp, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
                 using (var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-					if (string.IsNullOrEmpty(exp) || exp == "None") return new List<EmailMapping>();
+					if (string.IsNullOrEmpty(exp) || exp == "None") return new List<EmailMappingActions>();
 					var set = AddIncludes(includesLst, dbContext);
                     if (exp == "All")
                     {
@@ -167,14 +167,14 @@ namespace CoreEntities.Business.Services
             }
         }
 
-		 public async Task<IEnumerable<EmailMapping>> GetEmailMappingByExpressionLst(List<string> expLst, List<string> includesLst = null, bool tracking = true)
+		 public async Task<IEnumerable<EmailMappingActions>> GetEmailMappingActionsByExpressionLst(List<string> expLst, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
                 using (var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-					if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return new List<EmailMapping>();
+					if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return new List<EmailMappingActions>();
 					var set = AddIncludes(includesLst, dbContext);
                     if (expLst.FirstOrDefault() == "All")
                     {
@@ -207,7 +207,7 @@ namespace CoreEntities.Business.Services
             }
         }
 
-		public async Task<IEnumerable<EmailMapping>> GetEmailMappingByExpressionNav(string exp,
+		public async Task<IEnumerable<EmailMappingActions>> GetEmailMappingActionsByExpressionNav(string exp,
 																							  Dictionary<string, string> navExp,
 																							  List<string> includesLst = null, bool tracking = true)
         {
@@ -216,7 +216,7 @@ namespace CoreEntities.Business.Services
                 using (var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-                    if (string.IsNullOrEmpty(exp) || exp == "None") return new List<EmailMapping>();
+                    if (string.IsNullOrEmpty(exp) || exp == "None") return new List<EmailMappingActions>();
 
                     if (exp == "All" && navExp.Count == 0)
                     {
@@ -229,34 +229,16 @@ namespace CoreEntities.Business.Services
                     {
                         switch (itm.Key)
                         {
-                            case "ApplicationSettings":
+                            case "Actions":
                                 return
                                     await
-                                        GetWhere<ApplicationSettings>(dbContext, exp, itm.Value, "EmailMapping", "SelectMany", includesLst)
+                                        GetWhere<Actions>(dbContext, exp, itm.Value, "EmailMappingActions", "SelectMany", includesLst)
 										.ConfigureAwait(continueOnCapturedContext: false);
 
-                            case "EmailFileTypes":
+                            case "EmailMapping":
                                 return
                                     await
-                                        GetWhere<EmailFileTypes>(dbContext, exp, itm.Value, "EmailMapping", "Select", includesLst)
-										.ConfigureAwait(continueOnCapturedContext: false);
-
-                            case "EmailInfoMappings":
-                                return
-                                    await
-                                        GetWhere<EmailInfoMappings>(dbContext, exp, itm.Value, "EmailMapping", "Select", includesLst)
-										.ConfigureAwait(continueOnCapturedContext: false);
-
-                            case "EmailMappingRexExs":
-                                return
-                                    await
-                                        GetWhere<EmailMappingRexExs>(dbContext, exp, itm.Value, "EmailMapping", "Select", includesLst)
-										.ConfigureAwait(continueOnCapturedContext: false);
-
-                            case "EmailMappingActions":
-                                return
-                                    await
-                                        GetWhere<EmailMappingActions>(dbContext, exp, itm.Value, "EmailMapping", "Select", includesLst)
+                                        GetWhere<EmailMapping>(dbContext, exp, itm.Value, "EmailMappingActions", "SelectMany", includesLst)
 										.ConfigureAwait(continueOnCapturedContext: false);
 
                         }
@@ -284,17 +266,17 @@ namespace CoreEntities.Business.Services
             }
         }
 
-        public async Task<IEnumerable<EmailMapping>> GetEmailMappingByBatch(string exp,
+        public async Task<IEnumerable<EmailMappingActions>> GetEmailMappingActionsByBatch(string exp,
             int totalrow, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
 
-                var res = new ConcurrentQueue<List<EmailMapping>>();
+                var res = new ConcurrentQueue<List<EmailMappingActions>>();
 
 
 
-                if (string.IsNullOrEmpty(exp) || exp == "None") return new List<EmailMapping>();
+                if (string.IsNullOrEmpty(exp) || exp == "None") return new List<EmailMappingActions>();
 
 
                 var batchSize = 500;
@@ -315,7 +297,7 @@ namespace CoreEntities.Business.Services
                                 dbContext.Configuration.AutoDetectChangesEnabled = false;
                                 //dbContext.Configuration.LazyLoadingEnabled = true;
                                 var set = AddIncludes(includesLst, dbContext);
-                                IQueryable<EmailMapping> dset;
+                                IQueryable<EmailMappingActions> dset;
                                 if (exp == "All")
                                 {
                                     dset = set.OrderBy(x => x.Id);
@@ -359,17 +341,17 @@ namespace CoreEntities.Business.Services
                 throw new FaultException<ValidationFault>(fault);
             }
         }
-        public async Task<IEnumerable<EmailMapping>> GetEmailMappingByBatchExpressionLst(List<string> expLst,
+        public async Task<IEnumerable<EmailMappingActions>> GetEmailMappingActionsByBatchExpressionLst(List<string> expLst,
             int totalrow, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
 
-                var res = new ConcurrentQueue<List<EmailMapping>>();
+                var res = new ConcurrentQueue<List<EmailMappingActions>>();
 
 
 
-                if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return new List<EmailMapping>();
+                if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return new List<EmailMappingActions>();
 
 
                 var batchSize = 500;
@@ -390,7 +372,7 @@ namespace CoreEntities.Business.Services
                                 dbContext.Configuration.AutoDetectChangesEnabled = false;
                                 //dbContext.Configuration.LazyLoadingEnabled = true;
                                 var set = AddIncludes(includesLst, dbContext);
-                                IQueryable<EmailMapping> dset;
+                                IQueryable<EmailMappingActions> dset;
                                 if (expLst.FirstOrDefault() == "All")
                                 {
                                     dset = set.OrderBy(x => x.Id);
@@ -435,13 +417,13 @@ namespace CoreEntities.Business.Services
         }
 
 
-        public async Task<EmailMapping> UpdateEmailMapping(EmailMapping entity)
+        public async Task<EmailMappingActions> UpdateEmailMappingActions(EmailMappingActions entity)
         { 
             using ( var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
               {
                 try
                 {   
-                     var res = (EmailMapping) entity;
+                     var res = (EmailMappingActions) entity;
                     if(res.TrackingState == TrackingState.Unchanged) res.TrackingState = TrackingState.Modified;                              
                     
                     dbContext.ApplyChanges(res);
@@ -508,14 +490,14 @@ namespace CoreEntities.Business.Services
            return entity;
         }
 
-        public async Task<EmailMapping> CreateEmailMapping(EmailMapping entity)
+        public async Task<EmailMappingActions> CreateEmailMappingActions(EmailMappingActions entity)
         {
             try
             {
-                var res = (EmailMapping) entity;
+                var res = (EmailMappingActions) entity;
               using ( var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
               {
-                dbContext.EmailMapping.Add(res);
+                dbContext.EmailMappingActions.Add(res);
                 dbContext.SaveChanges();
                 res.AcceptChanges();
                 return res;
@@ -535,20 +517,20 @@ namespace CoreEntities.Business.Services
             }
         }
 
-        public async Task<bool> DeleteEmailMapping(string Id)
+        public async Task<bool> DeleteEmailMappingActions(string Id)
         {
             try
             {
               using ( var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
               {
                 var i = Convert.ToInt32(Id);
-                EmailMapping entity = dbContext.EmailMapping
+                EmailMappingActions entity = dbContext.EmailMappingActions
 													.SingleOrDefault(x => x.Id == i);
                 if (entity == null)
                     return false;
 
-                    dbContext.EmailMapping.Attach(entity);
-                    dbContext.EmailMapping.Remove(entity);
+                    dbContext.EmailMappingActions.Attach(entity);
+                    dbContext.EmailMappingActions.Remove(entity);
                     dbContext.SaveChanges();
                     return true;
               }
@@ -567,19 +549,19 @@ namespace CoreEntities.Business.Services
             }
         }
 
-        public async Task<bool> RemoveSelectedEmailMapping(IEnumerable<string> lst)
+        public async Task<bool> RemoveSelectedEmailMappingActions(IEnumerable<string> lst)
         {
             try
             {
-                StatusModel.StartStatusUpdate("Removing EmailMapping", lst.Count());
+                StatusModel.StartStatusUpdate("Removing EmailMappingActions", lst.Count());
                 var t = Task.Run(() =>
                 {
-                    using (var ctx = new EmailMappingService())
+                    using (var ctx = new EmailMappingActionsService())
                     {
                         foreach (var item in lst.ToList())
                         {
 
-                            ctx.DeleteEmailMapping(item).Wait();
+                            ctx.DeleteEmailMappingActions(item).Wait();
                             StatusModel.StatusUpdate();
                         }
                     }
@@ -614,7 +596,7 @@ namespace CoreEntities.Business.Services
                 {
                     dbContext.Database.CommandTimeout = 0;
                     if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return 0;
-                    var set = (IQueryable<EmailMapping>)dbContext.EmailMapping; 
+                    var set = (IQueryable<EmailMappingActions>)dbContext.EmailMappingActions; 
                     if (expLst.FirstOrDefault() == "All")
                     {
                         return set.AsNoTracking().Count();
@@ -650,14 +632,14 @@ namespace CoreEntities.Business.Services
                     if (string.IsNullOrEmpty(exp) || exp == "None") return 0;
                     if (exp == "All")
                     {
-                        return dbContext.EmailMapping
+                        return dbContext.EmailMappingActions
                                     .AsNoTracking()
 									.Count();
                     }
                     else
                     {
                         
-                        return dbContext.EmailMapping
+                        return dbContext.EmailMappingActions
 									.AsNoTracking()
                                     .Where(exp)
 									.Count();
@@ -678,17 +660,17 @@ namespace CoreEntities.Business.Services
             }
         }
         
-        public async Task<IEnumerable<EmailMapping>> LoadRange(int startIndex, int count, string exp)
+        public async Task<IEnumerable<EmailMappingActions>> LoadRange(int startIndex, int count, string exp)
         {
             try
             {
                 using (var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-                    if (string.IsNullOrEmpty(exp) || exp == "None") return new List<EmailMapping>();
+                    if (string.IsNullOrEmpty(exp) || exp == "None") return new List<EmailMappingActions>();
                     if (exp == "All")
                     {
-                        return dbContext.EmailMapping
+                        return dbContext.EmailMappingActions
 										.AsNoTracking()
                                         .OrderBy(y => y.Id)
 										.Skip(startIndex)
@@ -698,7 +680,7 @@ namespace CoreEntities.Business.Services
                     else
                     {
                         
-                        return dbContext.EmailMapping
+                        return dbContext.EmailMappingActions
 										.AsNoTracking()
                                         .Where(exp)
 										.OrderBy(y => y.Id)
@@ -732,7 +714,7 @@ namespace CoreEntities.Business.Services
                     dbContext.Database.CommandTimeout = 0;
                     if (exp == "All" && navExp.Count == 0)
                     {
-                        return dbContext.EmailMapping
+                        return dbContext.EmailMappingActions
 										.AsNoTracking()
                                         .Count();
                     }
@@ -740,24 +722,15 @@ namespace CoreEntities.Business.Services
                     {
                         switch (itm.Key)
                         {
-                            case "ApplicationSettings":
-                                return await CountWhere<ApplicationSettings>(dbContext, exp, itm.Value, "EmailMapping", "SelectMany")
+                            case "Actions":
+                                return await CountWhere<Actions>(dbContext, exp, itm.Value, "EmailMappingActions", "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "EmailFileTypes":
-                                return await CountWhere<EmailFileTypes>(dbContext, exp, itm.Value, "EmailMapping", "Select")
-											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "EmailInfoMappings":
-                                return await CountWhere<EmailInfoMappings>(dbContext, exp, itm.Value, "EmailMapping", "Select")
-											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "EmailMappingRexExs":
-                                return await CountWhere<EmailMappingRexExs>(dbContext, exp, itm.Value, "EmailMapping", "Select")
-											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "EmailMappingActions":
-                                return await CountWhere<EmailMappingActions>(dbContext, exp, itm.Value, "EmailMapping", "Select")
+                            case "EmailMapping":
+                                return await CountWhere<EmailMapping>(dbContext, exp, itm.Value, "EmailMappingActions", "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }
-                    return dbContext.EmailMapping.Where(exp == "All" || exp == null ? "Id != null" : exp)
+                    return dbContext.EmailMappingActions.Where(exp == "All" || exp == null ? "Id != null" : exp)
 											.AsNoTracking()
                                             .Count();
                 }
@@ -798,7 +771,7 @@ namespace CoreEntities.Business.Services
             return dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
-                .SelectMany(navProp).OfType<EmailMapping>()
+                .SelectMany(navProp).OfType<EmailMappingActions>()
                 .Where(exp == "All" || exp == null ? "Id != null" : exp)
                 .Distinct()
                 .OrderBy("Id")
@@ -818,7 +791,7 @@ namespace CoreEntities.Business.Services
             return dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
-                .Select(navProp).OfType<EmailMapping>()
+                .Select(navProp).OfType<EmailMappingActions>()
                 .Where(exp == "All" || exp == null ? "Id != null" : exp)
                 .Distinct()
                 .OrderBy("Id")
@@ -831,7 +804,7 @@ namespace CoreEntities.Business.Services
 			}
         }
 
-		  public async Task<IEnumerable<EmailMapping>> LoadRangeNav(int startIndex, int count, string exp,
+		  public async Task<IEnumerable<EmailMappingActions>> LoadRangeNav(int startIndex, int count, string exp,
                                                                                  Dictionary<string, string> navExp, IEnumerable<string> includeLst = null)
         {
             try
@@ -839,7 +812,7 @@ namespace CoreEntities.Business.Services
                 using (var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-                    if ((string.IsNullOrEmpty(exp) && navExp.Count == 0) || exp == "None") return new List<EmailMapping>();
+                    if ((string.IsNullOrEmpty(exp) && navExp.Count == 0) || exp == "None") return new List<EmailMappingActions>();
                     var set = AddIncludes(includeLst, dbContext);
 
                     if (exp == "All" && navExp.Count == 0)
@@ -857,34 +830,16 @@ namespace CoreEntities.Business.Services
                     {
                         switch (itm.Key)
                         {
-                            case "ApplicationSettings":
+                            case "Actions":
                                 return
                                     await
-                                        LoadRangeWhere<ApplicationSettings>(startIndex, count, dbContext, exp, itm.Value, "EmailMapping", "SelectMany")
+                                        LoadRangeWhere<Actions>(startIndex, count, dbContext, exp, itm.Value, "EmailMappingActions", "SelectMany")
 													.ConfigureAwait(continueOnCapturedContext: false);
 
-                            case "EmailFileTypes":
+                            case "EmailMapping":
                                 return
                                     await
-                                        LoadRangeWhere<EmailFileTypes>(startIndex, count, dbContext, exp, itm.Value, "EmailMapping", "Select")
-													.ConfigureAwait(continueOnCapturedContext: false);
-
-                            case "EmailInfoMappings":
-                                return
-                                    await
-                                        LoadRangeWhere<EmailInfoMappings>(startIndex, count, dbContext, exp, itm.Value, "EmailMapping", "Select")
-													.ConfigureAwait(continueOnCapturedContext: false);
-
-                            case "EmailMappingRexExs":
-                                return
-                                    await
-                                        LoadRangeWhere<EmailMappingRexExs>(startIndex, count, dbContext, exp, itm.Value, "EmailMapping", "Select")
-													.ConfigureAwait(continueOnCapturedContext: false);
-
-                            case "EmailMappingActions":
-                                return
-                                    await
-                                        LoadRangeWhere<EmailMappingActions>(startIndex, count, dbContext, exp, itm.Value, "EmailMapping", "Select")
+                                        LoadRangeWhere<EmailMapping>(startIndex, count, dbContext, exp, itm.Value, "EmailMappingActions", "SelectMany")
 													.ConfigureAwait(continueOnCapturedContext: false);
 
                           
@@ -893,7 +848,7 @@ namespace CoreEntities.Business.Services
 						}
 
                     }
-                    return set//dbContext.EmailMapping
+                    return set//dbContext.EmailMappingActions
 								.AsNoTracking()
                                 .Where(exp == "All" || exp == null ? "Id != null" : exp)
 								.OrderBy(y => y.Id)
@@ -919,7 +874,7 @@ namespace CoreEntities.Business.Services
             }
         }
 
-		private static async Task<IEnumerable<EmailMapping>> LoadRangeWhere<T>(int startIndex, int count,
+		private static async Task<IEnumerable<EmailMappingActions>> LoadRangeWhere<T>(int startIndex, int count,
             CoreEntitiesContext dbContext, string exp, string navExp, string navProp, string rel, IEnumerable<string> includeLst = null) where T : class
         {
              switch (rel)
@@ -934,7 +889,7 @@ namespace CoreEntities.Business.Services
 		    }
         }
 
-		private static async Task<IEnumerable<EmailMapping>> LoadRangeSelectMany<T>(int startIndex, int count,
+		private static async Task<IEnumerable<EmailMappingActions>> LoadRangeSelectMany<T>(int startIndex, int count,
             CoreEntitiesContext dbContext, string exp, string navExp, string navProp, IEnumerable<string> includeLst = null) where T : class
         {
 			try
@@ -942,7 +897,7 @@ namespace CoreEntities.Business.Services
             var set = dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
-                .SelectMany(navProp).OfType<EmailMapping>();
+                .SelectMany(navProp).OfType<EmailMappingActions>();
     
             if (includeLst != null) set = includeLst.Aggregate(set, (current, itm) => current.Include(itm));            
 
@@ -962,7 +917,7 @@ namespace CoreEntities.Business.Services
 			}
         }
 
-		private static async Task<IEnumerable<EmailMapping>> LoadRangeSelect<T>(int startIndex, int count,
+		private static async Task<IEnumerable<EmailMappingActions>> LoadRangeSelect<T>(int startIndex, int count,
             CoreEntitiesContext dbContext, string exp, string navExp, string navProp, IEnumerable<string> includeLst = null) where T : class
         {
 			try
@@ -970,7 +925,7 @@ namespace CoreEntities.Business.Services
               var set = dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
-                .Select(navProp).OfType<EmailMapping>();
+                .Select(navProp).OfType<EmailMappingActions>();
 
                if (includeLst != null) set = includeLst.Aggregate(set, (current, itm) => current.Include(itm)); 
                 
@@ -990,7 +945,7 @@ namespace CoreEntities.Business.Services
 			}
         }
 
-        private static async Task<IEnumerable<EmailMapping>> GetWhere<T>(CoreEntitiesContext dbContext,
+        private static async Task<IEnumerable<EmailMappingActions>> GetWhere<T>(CoreEntitiesContext dbContext,
             string exp, string navExp, string navProp, string rel, List<string> includesLst = null) where T : class
         {
 			try
@@ -1014,7 +969,7 @@ namespace CoreEntities.Business.Services
 			}
         }
 
-		private static async Task<IEnumerable<EmailMapping>> GetWhereSelectMany<T>(CoreEntitiesContext dbContext,
+		private static async Task<IEnumerable<EmailMappingActions>> GetWhereSelectMany<T>(CoreEntitiesContext dbContext,
             string exp, string navExp, string navProp, List<string> includesLst = null) where T : class
         {
 			try
@@ -1025,16 +980,16 @@ namespace CoreEntities.Business.Services
 				return dbContext.Set<T>()
 							.AsNoTracking()
                             .Where(navExp)
-							.SelectMany(navProp).OfType<EmailMapping>()
+							.SelectMany(navProp).OfType<EmailMappingActions>()
 							.Where(exp == "All" || exp == null?"Id != null":exp)
 							.Distinct()
 							.ToList();
 			}
 
-			var set = (DbQuery<EmailMapping>)dbContext.Set<T>()
+			var set = (DbQuery<EmailMappingActions>)dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
-                .SelectMany(navProp).OfType<EmailMapping>()
+                .SelectMany(navProp).OfType<EmailMappingActions>()
                 .Where(exp == "All" || exp == null?"Id != null":exp)
                 .Distinct();
 
@@ -1049,7 +1004,7 @@ namespace CoreEntities.Business.Services
 			}
         }
 
-		private static async Task<IEnumerable<EmailMapping>> GetWhereSelect<T>(CoreEntitiesContext dbContext,
+		private static async Task<IEnumerable<EmailMappingActions>> GetWhereSelect<T>(CoreEntitiesContext dbContext,
             string exp, string navExp, string navProp, List<string> includesLst = null) where T : class
         {
 			try
@@ -1060,16 +1015,16 @@ namespace CoreEntities.Business.Services
 				return dbContext.Set<T>()
 							.AsNoTracking()
                             .Where(navExp)
-							.Select(navProp).OfType<EmailMapping>()
+							.Select(navProp).OfType<EmailMappingActions>()
 							.Where(exp == "All" || exp == null?"Id != null":exp)
 							.Distinct()
 							.ToList();
 			}
 
-			var set = (DbQuery<EmailMapping>)dbContext.Set<T>()
+			var set = (DbQuery<EmailMappingActions>)dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
-                .Select(navProp).OfType<EmailMapping>()
+                .Select(navProp).OfType<EmailMappingActions>()
                 .Where(exp == "All" || exp == null?"Id != null":exp)
                 .Distinct();
 
@@ -1084,21 +1039,45 @@ namespace CoreEntities.Business.Services
 			}
         }
 
-			        public async Task<IEnumerable<EmailMapping>> GetEmailMappingByApplicationSettingsId(string ApplicationSettingsId, List<string> includesLst = null)
+			        public async Task<IEnumerable<EmailMappingActions>> GetEmailMappingActionsByEmailMappingId(string EmailMappingId, List<string> includesLst = null)
         {
             try
             {
                 using ( var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
               {
-                var i = Convert.ToInt32(ApplicationSettingsId);
+                var i = Convert.ToInt32(EmailMappingId);
                 var set = AddIncludes(includesLst, dbContext);
-                IEnumerable<EmailMapping> entities = set//dbContext.EmailMapping
-                                                    // .Include(x => x.EmailFileTypes)									  
-                                                    // .Include(x => x.EmailInfoMappings)									  
-                                                    // .Include(x => x.EmailMappingRexExs)									  
-                                                    // .Include(x => x.EmailMappingActions)									  
+                IEnumerable<EmailMappingActions> entities = set//dbContext.EmailMappingActions
                                       .AsNoTracking()
-                                        .Where(x => x.ApplicationSettingsId.ToString() == ApplicationSettingsId.ToString())
+                                        .Where(x => x.EmailMappingId.ToString() == EmailMappingId.ToString())
+										.ToList();
+                return entities;
+              }
+             }
+            catch (Exception updateEx)
+            {
+                System.Diagnostics.Debugger.Break();
+                //throw new FaultException(updateEx.Message);
+                    var fault = new ValidationFault
+                                {
+                                    Result = false,
+                                    Message = updateEx.Message,
+                                    Description = updateEx.StackTrace
+                                };
+                    throw new FaultException<ValidationFault>(fault);
+            }
+        }
+ 	        public async Task<IEnumerable<EmailMappingActions>> GetEmailMappingActionsByActionId(string ActionId, List<string> includesLst = null)
+        {
+            try
+            {
+                using ( var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
+              {
+                var i = Convert.ToInt32(ActionId);
+                var set = AddIncludes(includesLst, dbContext);
+                IEnumerable<EmailMappingActions> entities = set//dbContext.EmailMappingActions
+                                      .AsNoTracking()
+                                        .Where(x => x.ActionId.ToString() == ActionId.ToString())
 										.ToList();
                 return entities;
               }
@@ -1128,11 +1107,11 @@ namespace CoreEntities.Business.Services
                      if (string.IsNullOrEmpty(whereExp) || whereExp == "None") return 0;
                      if (whereExp == "All")
                      {
-                          res = Convert.ToDecimal(dbContext.EmailMapping.AsNoTracking().Sum(field));
+                          res = Convert.ToDecimal(dbContext.EmailMappingActions.AsNoTracking().Sum(field));
                      }
                      else
                      {
-                         res = Convert.ToDecimal(dbContext.EmailMapping.AsNoTracking().Where(whereExp).Sum(field));
+                         res = Convert.ToDecimal(dbContext.EmailMappingActions.AsNoTracking().Where(whereExp).Sum(field));
                      }
                      
                      return res;
@@ -1160,10 +1139,10 @@ namespace CoreEntities.Business.Services
                 using (var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-                    if (!dbContext.EmailMapping.Any()) return 0;
+                    if (!dbContext.EmailMappingActions.Any()) return 0;
                     if (exp == "All" && navExp.Count == 0)
                     {
-                        return Convert.ToDecimal(dbContext.EmailMapping
+                        return Convert.ToDecimal(dbContext.EmailMappingActions
 										.AsNoTracking()
                                         .Sum(field)??0);
                     }
@@ -1171,24 +1150,15 @@ namespace CoreEntities.Business.Services
                     {
                         switch (itm.Key)
                         {
-                            case "ApplicationSettings":
-                                return await SumWhere<ApplicationSettings>(dbContext, exp, itm.Value, "EmailMapping", field, "SelectMany")
+                            case "Actions":
+                                return await SumWhere<Actions>(dbContext, exp, itm.Value, "EmailMappingActions", field, "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "EmailFileTypes":
-                                return await SumWhere<EmailFileTypes>(dbContext, exp, itm.Value, "EmailMapping", field, "Select")
-											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "EmailInfoMappings":
-                                return await SumWhere<EmailInfoMappings>(dbContext, exp, itm.Value, "EmailMapping", field, "Select")
-											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "EmailMappingRexExs":
-                                return await SumWhere<EmailMappingRexExs>(dbContext, exp, itm.Value, "EmailMapping", field, "Select")
-											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "EmailMappingActions":
-                                return await SumWhere<EmailMappingActions>(dbContext, exp, itm.Value, "EmailMapping", field, "Select")
+                            case "EmailMapping":
+                                return await SumWhere<EmailMapping>(dbContext, exp, itm.Value, "EmailMappingActions", field, "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }
-                    return Convert.ToDecimal(dbContext.EmailMapping.Where(exp == "All" || exp == null ? "Id != null" : exp)
+                    return Convert.ToDecimal(dbContext.EmailMappingActions.Where(exp == "All" || exp == null ? "Id != null" : exp)
 											.AsNoTracking()
                                             .Sum(field)??0);
                 }
@@ -1228,7 +1198,7 @@ namespace CoreEntities.Business.Services
             return Convert.ToDecimal(dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
-                .SelectMany(navProp).OfType<EmailMapping>()
+                .SelectMany(navProp).OfType<EmailMappingActions>()
                 .Where(exp == "All" || exp == null ? "Id != null" : exp)
                 .Distinct()
                 .OrderBy("Id")
@@ -1248,7 +1218,7 @@ namespace CoreEntities.Business.Services
             return Convert.ToDecimal(dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
-                .Select(navProp).OfType<EmailMapping>()
+                .Select(navProp).OfType<EmailMappingActions>()
                 .Where(exp == "All" || exp == null ? "Id != null" : exp)
                 .Distinct()
                 .OrderBy("Id")
@@ -1274,11 +1244,11 @@ namespace CoreEntities.Business.Services
                      if (string.IsNullOrEmpty(whereExp) || whereExp == "None") return res;
                      if (whereExp == "All")
                      {
-                          res = Convert.ToString(dbContext.EmailMapping.AsNoTracking().Min(field));
+                          res = Convert.ToString(dbContext.EmailMappingActions.AsNoTracking().Min(field));
                      }
                      else
                      {
-                         res = Convert.ToString(dbContext.EmailMapping.AsNoTracking().Where(whereExp).Min(field));
+                         res = Convert.ToString(dbContext.EmailMappingActions.AsNoTracking().Where(whereExp).Min(field));
                      }
                      
                      return res;
@@ -1299,12 +1269,12 @@ namespace CoreEntities.Business.Services
          }
 
 		 
-		private static IQueryable<EmailMapping> AddIncludes(IEnumerable<string> includesLst, CoreEntitiesContext dbContext)
+		private static IQueryable<EmailMappingActions> AddIncludes(IEnumerable<string> includesLst, CoreEntitiesContext dbContext)
        {
 		 try
 			{
 			   if (includesLst == null) includesLst = new List<string>();
-			   var set =(DbQuery<EmailMapping>) dbContext.EmailMapping; 
+			   var set =(DbQuery<EmailMappingActions>) dbContext.EmailMappingActions; 
 			   set = includesLst.Where(x => !string.IsNullOrEmpty(x))
                                 .Aggregate(set, (current, itm) => current.Include(itm));
 			   return set;
@@ -1315,7 +1285,7 @@ namespace CoreEntities.Business.Services
 				throw;
 			}
        }
-	   private IQueryable<EmailMapping> AddWheres(List<string> expLst, IQueryable<EmailMapping> set)
+	   private IQueryable<EmailMappingActions> AddWheres(List<string> expLst, IQueryable<EmailMappingActions> set)
         {
             try
             {

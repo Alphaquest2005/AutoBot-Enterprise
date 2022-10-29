@@ -142,6 +142,7 @@
     <Compile Include="CoreEntities\EmailAttachmentsClient.cs" />
     <Compile Include="CoreEntities\EmailFileTypesClient.cs" />
     <Compile Include="CoreEntities\EmailInfoMappingsClient.cs" />
+    <Compile Include="CoreEntities\EmailMappingActionsClient.cs" />
     <Compile Include="CoreEntities\EmailMappingClient.cs" />
     <Compile Include="CoreEntities\EmailMappingRexExsClient.cs" />
     <Compile Include="CoreEntities\EmailsClient.cs" />

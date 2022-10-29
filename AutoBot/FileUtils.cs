@@ -90,8 +90,9 @@ namespace AutoBot
                 {"Kill", Utils.Kill},
                 {"LinkPDFs", (ft,fs) => PDFUtils.LinkPDFs()},
                 {"DownloadPOFiles", (ft,fs) => EX9Utils.DownloadSalesFiles(10, "IM7", false)},
-                {"SubmitDiscrepanciesToCustoms", DISUtils.SubmitDiscrepanciesToCustoms}
-                
+                {"SubmitDiscrepanciesToCustoms", DISUtils.SubmitDiscrepanciesToCustoms},
+                {"ClearShipmentData", ShipmentUtils.ClearShipmentData},
+
 
 
             };

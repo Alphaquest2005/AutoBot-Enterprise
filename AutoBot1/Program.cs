@@ -56,6 +56,7 @@ namespace AutoBot
                         //.Include("EmailMapping.EmailFileTypes.FileTypes.ChildFileTypes")
                         .Include("EmailMapping.EmailFileTypes.FileTypes.FileImporterInfos")
                         .Include("EmailMapping.EmailMappingRexExs")
+                        .Include("EmailMapping.EmailMappingActions.Actions")
                         .Include("EmailMapping.EmailInfoMappings.InfoMapping.InfoMappingRegEx")
                         //.Include("FileTypes.ChildFileTypes")
                         //.Include("FileTypes.FileTypeMappings")
@@ -115,6 +116,12 @@ namespace AutoBot
 
                             var processedFileTypes = new List<Tuple<FileTypes, FileInfo[], int>>();
 
+                            foreach (var msg in msgLst.OrderBy(x => x.Key.Item2.EmailMapping))
+                            {
+
+                                ImportUtils.ExecuteEmailMappingActions(msg.Key.Item2.EmailMapping, new FileTypes(), new FileInfo[]{}, appSetting);
+                            }
+
                             foreach (var msg in msgLst.OrderBy(x => x.Key.Item2.FileTypes.Any(z => z.CreateDocumentSet == true)).ThenBy(x => x.Key.Item2.EmailUniqueId))
                             {
                                 var desFolder = Path.Combine(appSetting.DataFolder, msg.Key.Item1,
@@ -150,6 +157,8 @@ namespace AutoBot
                                         continue;
                                     }
 
+                                    
+                                    
                                     var docSetLst = 
                                             ctx.AsycudaDocumentSetExs
                                                 .Where(x =>

@@ -32,36 +32,36 @@ using System;
 using System.ServiceModel;
 using TrackableEntities.Common;
 
-using EmailMapping = CoreEntities.Client.Entities.EmailMapping;
+using EmailMappingActions = CoreEntities.Client.Entities.EmailMappingActions;
 
 namespace CoreEntities.Client.Repositories 
 {
    
-    public partial class EmailMappingRepository : BaseRepository<EmailMappingRepository>
+    public partial class EmailMappingActionsRepository : BaseRepository<EmailMappingActionsRepository>
     {
 
-       private static readonly EmailMappingRepository instance;
-       static EmailMappingRepository()
+       private static readonly EmailMappingActionsRepository instance;
+       static EmailMappingActionsRepository()
         {
-            instance = new EmailMappingRepository();
+            instance = new EmailMappingActionsRepository();
         }
 
-       public static EmailMappingRepository Instance
+       public static EmailMappingActionsRepository Instance
         {
             get { return instance; }
         }
         
-        public async Task<IEnumerable<EmailMapping>> EmailMapping(List<string> includesLst = null)
+        public async Task<IEnumerable<EmailMappingActions>> EmailMappingActions(List<string> includesLst = null)
         {
-            if (System.ComponentModel.LicenseManager.UsageMode == LicenseUsageMode.Designtime) return new List<EmailMapping>().AsEnumerable();
+            if (System.ComponentModel.LicenseManager.UsageMode == LicenseUsageMode.Designtime) return new List<EmailMappingActions>().AsEnumerable();
             try
             {
-                using (var t = new EmailMappingClient())
+                using (var t = new EmailMappingActionsClient())
                     {
-                        var res = await t.GetEmailMapping(includesLst).ConfigureAwait(continueOnCapturedContext: false);
+                        var res = await t.GetEmailMappingActions(includesLst).ConfigureAwait(continueOnCapturedContext: false);
                         if (res != null)
                         {
-                            return res.Select(x => new EmailMapping(x)).AsEnumerable();
+                            return res.Select(x => new EmailMappingActions(x)).AsEnumerable();
                         }
                         else
                         {
@@ -80,26 +80,26 @@ namespace CoreEntities.Client.Repositories
             }
         }
 
-		 public async Task<IEnumerable<EmailMapping>> GetEmailMappingByExpression(string exp, List<string> includesLst = null)
+		 public async Task<IEnumerable<EmailMappingActions>> GetEmailMappingActionsByExpression(string exp, List<string> includesLst = null)
         {
-            if (System.ComponentModel.LicenseManager.UsageMode == LicenseUsageMode.Designtime || exp == null || exp == "None") return new List<EmailMapping>().AsEnumerable();
+            if (System.ComponentModel.LicenseManager.UsageMode == LicenseUsageMode.Designtime || exp == null || exp == "None") return new List<EmailMappingActions>().AsEnumerable();
             try
             {
-                using (var t = new EmailMappingClient())
+                using (var t = new EmailMappingActionsClient())
                     {
-					    IEnumerable<DTO.EmailMapping> res = null;
+					    IEnumerable<DTO.EmailMappingActions> res = null;
                         if(exp == "All")
                         {                       
-						    res = await t.GetEmailMapping(includesLst).ConfigureAwait(continueOnCapturedContext: false);					
+						    res = await t.GetEmailMappingActions(includesLst).ConfigureAwait(continueOnCapturedContext: false);					
                         }
                         else
                         {
-                             res = await t.GetEmailMappingByExpression(exp, includesLst).ConfigureAwait(continueOnCapturedContext: false);	                         
+                             res = await t.GetEmailMappingActionsByExpression(exp, includesLst).ConfigureAwait(continueOnCapturedContext: false);	                         
                         }
                     
                         if (res != null)
                         {
-                            return res.Select(x => new EmailMapping(x)).AsEnumerable();
+                            return res.Select(x => new EmailMappingActions(x)).AsEnumerable();
                         }
                         else
                         {
@@ -118,21 +118,21 @@ namespace CoreEntities.Client.Repositories
             }
         }
 
-		 public async Task<IEnumerable<EmailMapping>> GetEmailMappingByExpressionLst(List<string> expLst, List<string> includesLst = null)
+		 public async Task<IEnumerable<EmailMappingActions>> GetEmailMappingActionsByExpressionLst(List<string> expLst, List<string> includesLst = null)
         {
-            if (System.ComponentModel.LicenseManager.UsageMode == LicenseUsageMode.Designtime || expLst.Count == 0 || expLst.FirstOrDefault() == "None") return new List<EmailMapping>().AsEnumerable();
+            if (System.ComponentModel.LicenseManager.UsageMode == LicenseUsageMode.Designtime || expLst.Count == 0 || expLst.FirstOrDefault() == "None") return new List<EmailMappingActions>().AsEnumerable();
             try
             {
-                using (var t = new EmailMappingClient())
+                using (var t = new EmailMappingActionsClient())
                     {
-					    IEnumerable<DTO.EmailMapping> res = null;
+					    IEnumerable<DTO.EmailMappingActions> res = null;
                        
-                        res = await t.GetEmailMappingByExpressionLst(expLst, includesLst).ConfigureAwait(continueOnCapturedContext: false);	                         
+                        res = await t.GetEmailMappingActionsByExpressionLst(expLst, includesLst).ConfigureAwait(continueOnCapturedContext: false);	                         
                       
                     
                         if (res != null)
                         {
-                            return res.Select(x => new EmailMapping(x)).AsEnumerable();
+                            return res.Select(x => new EmailMappingActions(x)).AsEnumerable();
                         }
                         else
                         {
@@ -152,26 +152,26 @@ namespace CoreEntities.Client.Repositories
         }
 
 
-		 public async Task<IEnumerable<EmailMapping>> GetEmailMappingByExpressionNav(string exp, Dictionary<string, string> navExp, List<string> includesLst = null)
+		 public async Task<IEnumerable<EmailMappingActions>> GetEmailMappingActionsByExpressionNav(string exp, Dictionary<string, string> navExp, List<string> includesLst = null)
         {
-            if (System.ComponentModel.LicenseManager.UsageMode == LicenseUsageMode.Designtime || exp == null || exp == "None") return new List<EmailMapping>().AsEnumerable();
+            if (System.ComponentModel.LicenseManager.UsageMode == LicenseUsageMode.Designtime || exp == null || exp == "None") return new List<EmailMappingActions>().AsEnumerable();
             try
             {
-                using (var t = new EmailMappingClient())
+                using (var t = new EmailMappingActionsClient())
                     {
-					    IEnumerable<DTO.EmailMapping> res = null;
+					    IEnumerable<DTO.EmailMappingActions> res = null;
                         if(exp == "All" && navExp.Count == 0)
                         {                       
-						    res = await t.GetEmailMapping(includesLst).ConfigureAwait(continueOnCapturedContext: false);					
+						    res = await t.GetEmailMappingActions(includesLst).ConfigureAwait(continueOnCapturedContext: false);					
                         }
                         else
                         {
-                             res = await t.GetEmailMappingByExpressionNav(exp, navExp, includesLst).ConfigureAwait(continueOnCapturedContext: false);	                         
+                             res = await t.GetEmailMappingActionsByExpressionNav(exp, navExp, includesLst).ConfigureAwait(continueOnCapturedContext: false);	                         
                         }
                     
                         if (res != null)
                         {
-                            return res.Select(x => new EmailMapping(x)).AsEnumerable();
+                            return res.Select(x => new EmailMappingActions(x)).AsEnumerable();
                         }
                         else
                         {
@@ -191,22 +191,19 @@ namespace CoreEntities.Client.Repositories
         }
 
 
-        public async Task<EmailMapping> GetEmailMapping(string id, List<string> includesLst = null)
+        public async Task<EmailMappingActions> GetEmailMappingActions(string id, List<string> includesLst = null)
         {
              try
              {   
-                 using (var t = new EmailMappingClient())
+                 using (var t = new EmailMappingActionsClient())
                     {
-                        var res = await t.GetEmailMappingByKey(id,includesLst).ConfigureAwait(continueOnCapturedContext: false);
+                        var res = await t.GetEmailMappingActionsByKey(id,includesLst).ConfigureAwait(continueOnCapturedContext: false);
                          if(res != null)
                         {
-                            return new EmailMapping(res)
+                            return new EmailMappingActions(res)
                     {
-                  // ApplicationSettings = (res.ApplicationSettings != null?new ApplicationSettings(res.ApplicationSettings): null),    
-                     // EmailFileTypes = new System.Collections.ObjectModel.ObservableCollection<EmailFileTypes>(res.EmailFileTypes.Select(y => new EmailFileTypes(y))),    
-                     // EmailInfoMappings = new System.Collections.ObjectModel.ObservableCollection<EmailInfoMappings>(res.EmailInfoMappings.Select(y => new EmailInfoMappings(y))),    
-                     // EmailMappingRexExs = new System.Collections.ObjectModel.ObservableCollection<EmailMappingRexExs>(res.EmailMappingRexExs.Select(y => new EmailMappingRexExs(y))),    
-                     // EmailMappingActions = new System.Collections.ObjectModel.ObservableCollection<EmailMappingActions>(res.EmailMappingActions.Select(y => new EmailMappingActions(y)))    
+                  // Actions = (res.Actions != null?new Actions(res.Actions): null),    
+                  // EmailMapping = (res.EmailMapping != null?new EmailMapping(res.EmailMapping): null)    
                   };
                     }
                     else
@@ -226,7 +223,7 @@ namespace CoreEntities.Client.Repositories
             }
         }
 
-        public async Task<EmailMapping> UpdateEmailMapping(EmailMapping entity)
+        public async Task<EmailMappingActions> UpdateEmailMappingActions(EmailMappingActions entity)
         {
             if (entity == null) return entity;
             var entitychanges = entity.ChangeTracker.GetChanges().FirstOrDefault();
@@ -234,10 +231,10 @@ namespace CoreEntities.Client.Repositories
             {
                 try
                 {
-                    using (var t = new EmailMappingClient())
+                    using (var t = new EmailMappingActionsClient())
                     {
      
-                        var updatedEntity =  await t.UpdateEmailMapping(entitychanges).ConfigureAwait(false);
+                        var updatedEntity =  await t.UpdateEmailMappingActions(entitychanges).ConfigureAwait(false);
                         entity.EntityId = updatedEntity.EntityId;
                         entity.DTO.AcceptChanges();
                          //var  = entity.;
@@ -263,13 +260,13 @@ namespace CoreEntities.Client.Repositories
 
         }
 
-        public async Task<EmailMapping> CreateEmailMapping(EmailMapping entity)
+        public async Task<EmailMappingActions> CreateEmailMappingActions(EmailMappingActions entity)
         {
             try
             {   
-                using (var t = new EmailMappingClient())
+                using (var t = new EmailMappingActionsClient())
                     {
-                        return new EmailMapping(await t.CreateEmailMapping(entity.DTO).ConfigureAwait(continueOnCapturedContext: false));
+                        return new EmailMappingActions(await t.CreateEmailMappingActions(entity.DTO).ConfigureAwait(continueOnCapturedContext: false));
                     }
             }
             catch (FaultException<ValidationFault> e)
@@ -283,13 +280,13 @@ namespace CoreEntities.Client.Repositories
             }
         }
 
-        public async Task<bool> DeleteEmailMapping(string id)
+        public async Task<bool> DeleteEmailMappingActions(string id)
         {
             try
             {
-             using (var t = new EmailMappingClient())
+             using (var t = new EmailMappingActionsClient())
                 {
-                    return await t.DeleteEmailMapping(id).ConfigureAwait(continueOnCapturedContext: false);
+                    return await t.DeleteEmailMappingActions(id).ConfigureAwait(continueOnCapturedContext: false);
                 }
             }
             catch (FaultException<ValidationFault> e)
@@ -303,13 +300,13 @@ namespace CoreEntities.Client.Repositories
             }         
         }
 
-        public async Task<bool> RemoveSelectedEmailMapping(IEnumerable<string> selectedEmailMapping)
+        public async Task<bool> RemoveSelectedEmailMappingActions(IEnumerable<string> selectedEmailMappingActions)
         {
             try
             {
-                using (var ctx = new EmailMappingClient())
+                using (var ctx = new EmailMappingActionsClient())
                 {
-                    return await ctx.RemoveSelectedEmailMapping(selectedEmailMapping).ConfigureAwait(false);
+                    return await ctx.RemoveSelectedEmailMappingActions(selectedEmailMappingActions).ConfigureAwait(false);
                 }
             }
             catch (FaultException<ValidationFault> e)
@@ -326,21 +323,21 @@ namespace CoreEntities.Client.Repositories
 
 		//Virtural List Implementation
 
-		public async Task<Tuple<IEnumerable<EmailMapping>, int>> LoadRange(int startIndex, int count, string exp, Dictionary<string, string> navExp, IEnumerable<string> includeLst = null)
+		public async Task<Tuple<IEnumerable<EmailMappingActions>, int>> LoadRange(int startIndex, int count, string exp, Dictionary<string, string> navExp, IEnumerable<string> includeLst = null)
         {
 			var overallCount = 0;
             if (System.ComponentModel.LicenseManager.UsageMode == LicenseUsageMode.Designtime || exp == null || exp == "None")
             {
                 
-                return new Tuple<IEnumerable<EmailMapping>, int>(new List<EmailMapping>().AsEnumerable(), overallCount);
+                return new Tuple<IEnumerable<EmailMappingActions>, int>(new List<EmailMappingActions>().AsEnumerable(), overallCount);
             }
             
             try
             {
-                using (var t = new EmailMappingClient())
+                using (var t = new EmailMappingActionsClient())
                 {
 
-                    IEnumerable<DTO.EmailMapping> res = null;
+                    IEnumerable<DTO.EmailMappingActions> res = null;
                                          
 						    res = await t.LoadRangeNav(startIndex, count, exp, navExp, includeLst).ConfigureAwait(continueOnCapturedContext: false);
 						    overallCount = await t.CountNav(exp, navExp).ConfigureAwait(continueOnCapturedContext: false);
@@ -349,7 +346,7 @@ namespace CoreEntities.Client.Repositories
                                 
                     if (res != null)
                     {
-                        return new Tuple<IEnumerable<EmailMapping>, int>(res.Select(x => new EmailMapping(x)).AsEnumerable(), overallCount);
+                        return new Tuple<IEnumerable<EmailMappingActions>, int>(res.Select(x => new EmailMappingActions(x)).AsEnumerable(), overallCount);
                     }
                     else
                     {
@@ -368,17 +365,45 @@ namespace CoreEntities.Client.Repositories
             }
         }
 
-	 public async Task<IEnumerable<EmailMapping>> GetEmailMappingByApplicationSettingsId(string ApplicationSettingsId, List<string> includesLst = null)
+	 public async Task<IEnumerable<EmailMappingActions>> GetEmailMappingActionsByEmailMappingId(string EmailMappingId, List<string> includesLst = null)
         {
-             if (ApplicationSettingsId == "0") return null;
+             if (EmailMappingId == "0") return null;
             try
             {
-                 using (EmailMappingClient t = new EmailMappingClient())
+                 using (EmailMappingActionsClient t = new EmailMappingActionsClient())
                     {
-                        var res = await t.GetEmailMappingByApplicationSettingsId(ApplicationSettingsId, includesLst).ConfigureAwait(continueOnCapturedContext: false);
+                        var res = await t.GetEmailMappingActionsByEmailMappingId(EmailMappingId, includesLst).ConfigureAwait(continueOnCapturedContext: false);
                          if(res != null)
                         {
-                            return res.Select(x => new EmailMapping(x)).AsEnumerable();
+                            return res.Select(x => new EmailMappingActions(x)).AsEnumerable();
+					    }                
+					    else
+					    {
+						    return null;
+					    }                    
+                    }
+            }
+            catch (FaultException<ValidationFault> e)
+            {
+                throw new Exception(e.Detail.Message, e.InnerException);
+            }
+            catch (Exception)
+            {
+                Debugger.Break();
+                throw;
+            }
+        } 
+ 	 public async Task<IEnumerable<EmailMappingActions>> GetEmailMappingActionsByActionId(string ActionId, List<string> includesLst = null)
+        {
+             if (ActionId == "0") return null;
+            try
+            {
+                 using (EmailMappingActionsClient t = new EmailMappingActionsClient())
+                    {
+                        var res = await t.GetEmailMappingActionsByActionId(ActionId, includesLst).ConfigureAwait(continueOnCapturedContext: false);
+                         if(res != null)
+                        {
+                            return res.Select(x => new EmailMappingActions(x)).AsEnumerable();
 					    }                
 					    else
 					    {
@@ -401,7 +426,7 @@ namespace CoreEntities.Client.Repositories
         {
             try
             {
-                using (var t = new EmailMappingClient())
+                using (var t = new EmailMappingActionsClient())
                 {
                     return t.SumField(whereExp,sumExp);
                 }
@@ -422,7 +447,7 @@ namespace CoreEntities.Client.Repositories
         {
             try
             {
-                using (var t = new EmailMappingClient())
+                using (var t = new EmailMappingActionsClient())
                 {
                     return await t.SumNav(whereExp,navExp,sumExp).ConfigureAwait(false);
                 }

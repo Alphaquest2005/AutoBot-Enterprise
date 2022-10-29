@@ -153,6 +153,9 @@
         <AssociationConnector Association="WaterNutDBModel.FK_EmailAttachments_Emails" />
         <EntityTypeShape EntityType="WaterNutDBModel.FileImporterInfo" Width="1.5" PointX="33.375" PointY="20.875" />
         <AssociationConnector Association="WaterNutDBModel.FK_FileTypes_FileTypes_FileInfo1" />
+        <EntityTypeShape EntityType="WaterNutDBModel.EmailMappingActions" Width="1.5" PointX="16.75" PointY="28.5" />
+        <AssociationConnector Association="WaterNutDBModel.FK_EmailMappingActions_Actions" />
+        <AssociationConnector Association="WaterNutDBModel.FK_EmailMappingActions_EmailMapping" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

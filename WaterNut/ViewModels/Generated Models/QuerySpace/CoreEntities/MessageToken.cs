@@ -160,6 +160,12 @@ namespace WaterNut.QuerySpace.CoreEntities
 			public const string EmailMappingDeleted = "EmailMappingDeleted";
 			public const string EmailMappingCreated = "EmailMappingCreated";
 			public const string EmailMappingUpdated = "EmailMappingUpdated";
+			public const string EmailMappingActionsFilterExpressionChanged = "EmailMappingActionsFilterExpressionChanged";
+			public const string SelectedEmailMappingActionsChanged = "SelectedEmailMappingActionsChanged";
+            public const string EmailMappingActionsChanged = "EmailMappingActionsChanged";
+			public const string EmailMappingActionsDeleted = "EmailMappingActionsDeleted";
+			public const string EmailMappingActionsCreated = "EmailMappingActionsCreated";
+			public const string EmailMappingActionsUpdated = "EmailMappingActionsUpdated";
 			public const string EmailMappingRexExsFilterExpressionChanged = "EmailMappingRexExsFilterExpressionChanged";
 			public const string SelectedEmailMappingRexExsChanged = "SelectedEmailMappingRexExsChanged";
             public const string EmailMappingRexExsChanged = "EmailMappingRexExsChanged";
@@ -619,6 +625,7 @@ namespace WaterNut.QuerySpace.CoreEntities
           // public const string EmailFileTypesChanged = "EmailFileTypesChanged";
           // public const string EmailInfoMappingsChanged = "EmailInfoMappingsChanged";
           // public const string EmailMappingChanged = "EmailMappingChanged";
+          // public const string EmailMappingActionsChanged = "EmailMappingActionsChanged";
           // public const string EmailMappingRexExsChanged = "EmailMappingRexExsChanged";
           // public const string EmailsChanged = "EmailsChanged";
           // public const string EntryPreviousItemsChanged = "EntryPreviousItemsChanged";
@@ -743,6 +750,8 @@ namespace WaterNut.QuerySpace.CoreEntities
            public const string CurrentEmailInfoMappingsChanged = "CurrentEmailInfoMappingsChanged";
    
            public const string CurrentEmailMappingChanged = "CurrentEmailMappingChanged";
+   
+           public const string CurrentEmailMappingActionsChanged = "CurrentEmailMappingActionsChanged";
    
            public const string CurrentEmailMappingRexExsChanged = "CurrentEmailMappingRexExsChanged";
    
@@ -939,6 +948,8 @@ namespace WaterNut.QuerySpace.CoreEntities
            public const string CurrentEmailInfoMappingsIDChanged = "OnCurrentEmailInfoMappingsIDChanged";
    
            public const string CurrentEmailMappingIDChanged = "OnCurrentEmailMappingIDChanged";
+   
+           public const string CurrentEmailMappingActionsIDChanged = "OnCurrentEmailMappingActionsIDChanged";
    
            public const string CurrentEmailMappingRexExsIDChanged = "OnCurrentEmailMappingRexExsIDChanged";
    
