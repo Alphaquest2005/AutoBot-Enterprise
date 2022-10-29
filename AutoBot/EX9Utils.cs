@@ -29,18 +29,18 @@ namespace AutoBot
 {
     public class EX9Utils
     {
-        public static void RecreateEx9()
+        public static void RecreateEx9(int months)
         {
-            var genDocs = CreateEx9(true);
+            var genDocs = CreateEx9(true, months);
 
             if (Enumerable.Any<DocumentCT>(genDocs)) //reexwarehouse process
             {
-                ExportEx9Entries();
-                AssessEx9Entries();
+                ExportEx9Entries(-1);
+                AssessEx9Entries(-1);
                 DownloadSalesFiles(10, "IM7", false);
                 SalesUtils.ImportSalesEntries(true);
-                ImportWarehouseErrorsUtils.ImportWarehouseErrors();
-                RecreateEx9();
+                ImportWarehouseErrorsUtils.ImportWarehouseErrors(-1);
+                RecreateEx9(-1);
                 Application.Exit();
             }
             else // reimport and submit to customs
@@ -52,7 +52,7 @@ namespace AutoBot
             }
         }
 
-        public static List<DocumentCT> CreateEx9(bool overwrite)
+        public static List<DocumentCT> CreateEx9(bool overwrite, int months)
         {
             try
             {
@@ -60,7 +60,7 @@ namespace AutoBot
 
                 Console.WriteLine("Create Ex9");
 
-                var saleInfo = BaseDataModel.CurrentSalesInfo();
+                var saleInfo = BaseDataModel.CurrentSalesInfo(months);
                 if (saleInfo.Item3.AsycudaDocumentSetId == 0) return new List<DocumentCT>();
 
                 var docset = BaseDataModel.Instance.GetAsycudaDocumentSet(saleInfo.Item3.AsycudaDocumentSetId).Result;
@@ -127,12 +127,12 @@ namespace AutoBot
 
         }
 
-        public static void ExportEx9Entries()
+        public static void ExportEx9Entries(int months)
         {
             Console.WriteLine("Export EX9 Entries");
             try
             {
-                var i = BaseDataModel.CurrentSalesInfo();
+                var i = BaseDataModel.CurrentSalesInfo(months);
 
                 SalesUtils.ExportDocSetSalesReport(i.Item3.AsycudaDocumentSetId,
                     Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder,
@@ -152,10 +152,10 @@ namespace AutoBot
 
         }
 
-        public static void AssessEx9Entries()
+        public static void AssessEx9Entries(int months)
         {
             Console.WriteLine("Assessing Ex9 Entries");
-            var saleinfo = BaseDataModel.CurrentSalesInfo();
+            var saleinfo = BaseDataModel.CurrentSalesInfo(months);
             AssessSalesEntry(saleinfo.Item3.Declarant_Reference_Number, saleinfo.Item3.AsycudaDocumentSetId);
         }
 
@@ -230,7 +230,7 @@ namespace AutoBot
 
         public static void RecreateEx9(FileTypes filetype, FileInfo[] files)
         {
-            var genDocs = EX9Utils.CreateEx9(true);
+            var genDocs = EX9Utils.CreateEx9(true, -1);
 
             if (Enumerable.Any<DocumentCT>(genDocs)) //reexwarehouse process
             {
@@ -372,7 +372,7 @@ namespace AutoBot
         public static void EmailEntriesExpiringNextMonth()
         {
 
-            var info = BaseDataModel.CurrentSalesInfo();
+            var info = BaseDataModel.CurrentSalesInfo(-1);
             var directory = info.Item4;
             var errorfile = Path.Combine(directory, "EntriesExpiringNextMonth.csv");
 
@@ -414,7 +414,7 @@ namespace AutoBot
         public static void EmailWarehouseErrors()
         {
 
-            var info = BaseDataModel.CurrentSalesInfo();
+            var info = BaseDataModel.CurrentSalesInfo(-1);
             var directory = info.Item4;
             var errorfile = Path.Combine(directory, "WarehouseErrors.csv");
             if (File.Exists(errorfile)) return;

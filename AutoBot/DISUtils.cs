@@ -485,7 +485,7 @@ namespace AutoBot
                 Console.WriteLine("Submit Discrepancies PreAssessment Report to Customs");
 
 
-                var info = BaseDataModel.CurrentSalesInfo();
+                var info = BaseDataModel.CurrentSalesInfo(-1);
                 var directory = info.Item4;
 
                

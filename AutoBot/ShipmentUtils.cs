@@ -194,7 +194,7 @@ namespace AutoBot
 
             try
             {
-                var info = BaseDataModel.CurrentSalesInfo();
+                var info = BaseDataModel.CurrentSalesInfo(-1);
                 var directory = info.Item4;
 
 
@@ -336,7 +336,7 @@ namespace AutoBot
             {
 
 
-                var info = BaseDataModel.CurrentSalesInfo();
+                var info = BaseDataModel.CurrentSalesInfo(-1);
                 var directory = info.Item4;
 
 

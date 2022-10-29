@@ -68,16 +68,33 @@ namespace WaterNut.Business.Services.Importers
                                     break;
                                 }
                                 poTemplateRow = prow;
-                                addrow = false;
+                                if (string.IsNullOrEmpty(
+                                        poTemplateRow[poHeaderRow.IndexOf("PO Item Number")].ToString())
+                                    && string.IsNullOrEmpty(poTemplateRow[poHeaderRow.IndexOf("Supplier Item Number")]
+                                        .ToString()))
+                                {
+                                    addrow = false;
+                                }
+                                else
+                                {
+                                    addrow = true;
+                                }
                                 break;
                             }
+                        }
+
+                        if (poTemplateRow == null)
+                        {
+                            BaseDataModel.EmailExceptionHandler(new ApplicationException(
+                                $"Mismatch PO:{poNumber} and SupplierNo{InvoiceNo} on template and mismatch sheet."));
+                            return;
                         }
 
                         DataRow row;
                         // changed to false because when importing in portage it doubling the errors because they get imported in importData function
                         row = addrow == false ? poTemplateRow : poTemplate.NewRow();
 
-                       if(oldInvoiceNo != InvoiceNo) row[poHeaderRow.IndexOf("Supplier Invoice#")] = InvoiceNo;
+                       if(oldInvoiceNo != InvoiceNo && !addrow) row[poHeaderRow.IndexOf("Supplier Invoice#")] = InvoiceNo;
                         row[poHeaderRow.IndexOf("PO Number")] = misMatch[misHeaderRow.IndexOf("PONumber")];
                         row[poHeaderRow.IndexOf("Date")] = poTemplateRow[poHeaderRow.IndexOf("Date")];
                         row[poHeaderRow.IndexOf("PO Item Number")] = poItemCode;
@@ -132,6 +149,7 @@ namespace WaterNut.Business.Services.Importers
 
                     if (invItemCode == poItemCode)
                     {
+                        return;
                         // this should not happen write code to deal with it
                         Debugger.Break();
                     }
