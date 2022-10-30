@@ -35,12 +35,12 @@ namespace AutoBot
 
             if (Enumerable.Any<DocumentCT>(genDocs)) //reexwarehouse process
             {
-                ExportEx9Entries(-1);
-                AssessEx9Entries(-1);
+                ExportEx9Entries(months);
+                AssessEx9Entries(months);
                 DownloadSalesFiles(10, "IM7", false);
                 SalesUtils.ImportSalesEntries(true);
-                ImportWarehouseErrorsUtils.ImportWarehouseErrors(-1);
-                RecreateEx9(-1);
+                ImportWarehouseErrorsUtils.ImportWarehouseErrors(months);
+                RecreateEx9(months);
                 Application.Exit();
             }
             else // reimport and submit to customs
