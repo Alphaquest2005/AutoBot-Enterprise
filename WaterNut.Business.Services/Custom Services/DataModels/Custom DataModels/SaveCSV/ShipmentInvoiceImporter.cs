@@ -49,7 +49,9 @@ namespace WaterNut.DataSpace
                             .Select(z =>
                             {
                                 var details = new InvoiceDetails();
-                                details.Quantity = Convert.ToDouble(z["Quantity"].ToString());
+                                details.Quantity = z.ContainsKey("Quantity")
+                                    ? Convert.ToDouble(z["Quantity"].ToString())
+                                    : 0;
                                 details.ItemNumber = z.ContainsKey("ItemNumber") ? z["ItemNumber"].ToString().ToUpper().Truncate(20): null;
                                 details.ItemDescription = z["ItemDescription"].ToString().Truncate(255);
                                 details.Units = z.ContainsKey("Units") ? z["Units"].ToString() : null;

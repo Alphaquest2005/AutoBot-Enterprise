@@ -119,7 +119,7 @@ namespace AutoBot
                             foreach (var msg in msgLst.OrderBy(x => x.Key.Item2.EmailMapping))
                             {
 
-                                ImportUtils.ExecuteEmailMappingActions(msg.Key.Item2.EmailMapping, new FileTypes(), new FileInfo[]{}, appSetting);
+                                ImportUtils.ExecuteEmailMappingActions(msg.Key.Item2.EmailMapping, new FileTypes(){EmailId = msg.Key.Item2.EmailId}, new FileInfo[]{}, appSetting);
                             }
 
                             foreach (var msg in msgLst.OrderBy(x => x.Key.Item2.FileTypes.Any(z => z.CreateDocumentSet == true)).ThenBy(x => x.Key.Item2.EmailUniqueId))

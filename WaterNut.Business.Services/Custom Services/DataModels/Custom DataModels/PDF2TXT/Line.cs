@@ -42,16 +42,17 @@ namespace WaterNut.DataSpace
 
                     foreach (var field in OCR_Lines.Fields.Where(x => x.ParentField == null))
                     {
-                        var value = field.FieldValue?.Value ?? match.Groups[field.Key].Value.Trim();
+                        var value = field.FieldValue?.Value.Trim() ?? match.Groups[field.Key].Value.Trim();
                         foreach (var reg in field.FormatRegEx)
                         {
-                            value = Regex.Replace(value, reg.RegEx.RegEx, reg.ReplacementRegEx.RegEx,
+                            value = (Regex.Replace(value, reg.RegEx.RegEx, reg.ReplacementRegEx.RegEx,
                                 (OCR_Lines.RegularExpressions.MultiLine == true
                                     ? RegexOptions.Multiline
                                     : RegexOptions.Singleline) | RegexOptions.IgnoreCase |
-                                RegexOptions.ExplicitCapture);
+                                RegexOptions.ExplicitCapture)).Trim();
                         }
 
+                        if(string.IsNullOrEmpty(value)) continue;
 
                         if (values.ContainsKey((field, instance)))
                         {
@@ -74,7 +75,7 @@ namespace WaterNut.DataSpace
                         }
                         else
                         {
-                            values.Add((field, instance), value.Trim()); 
+                            values.Add((field, instance), value); 
                         }
                         
 
