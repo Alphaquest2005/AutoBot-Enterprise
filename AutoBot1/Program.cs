@@ -116,7 +116,7 @@ namespace AutoBot
 
                             var processedFileTypes = new List<Tuple<FileTypes, FileInfo[], int>>();
 
-                            foreach (var msg in msgLst.OrderBy(x => x.Key.Item2.EmailMapping))
+                            foreach (var msg in msgLst.OrderBy(x => x.Key.Item2.EmailMapping.Id))
                             {
 
                                 ImportUtils.ExecuteEmailMappingActions(msg.Key.Item2.EmailMapping, new FileTypes(){EmailId = msg.Key.Item2.EmailId}, new FileInfo[]{}, appSetting);

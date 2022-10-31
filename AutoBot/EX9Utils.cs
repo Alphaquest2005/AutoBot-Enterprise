@@ -102,19 +102,19 @@ namespace AutoBot
                     $" && InvoiceDate <= \"{saleInfo.Item2:MM/dd/yyyy HH:mm:ss}\")" +
                     //  $"&& (AllocationErrors == null)" +// || (AllocationErrors.EntryDataDate  >= \"{saleInfo.Item1:MM/01/yyyy}\" &&  AllocationErrors.EntryDataDate <= \"{saleInfo.Item2:MM/dd/yyyy HH:mm:ss}\"))" +
                     "&& ( TaxAmount == 0 ||  TaxAmount != 0)" +
-                    "&& PreviousItem_Id != null" +
-                    "&& (xBond_Item_Id == 0 )" +
-                    "&& (QtyAllocated != null && EntryDataDetailsId != null)" +
-                    "&& (PiQuantity < pQtyAllocated)" +
-                    "&& (Status == null || Status == \"\")" +
-                    (BaseDataModel.Instance.CurrentApplicationSettings.AllowNonXEntries == "Visible"
-                        ? $"&& (Invalid != true && (pExpiryDate >= \"{DateTime.Now.ToShortDateString()}\" || pExpiryDate == null) && (Status == null || Status == \"\"))"
-                        : "") +
+                    //"&& PreviousItem_Id != null" +
+                    //"&& (xBond_Item_Id == 0 )" +
+                    //"&& (QtyAllocated != null && EntryDataDetailsId != null)" +
+                    //"&& (PiQuantity < pQtyAllocated)" +
+                    //"&& (Status == null || Status == \"\")" +
+                    //(BaseDataModel.Instance.CurrentApplicationSettings.AllowNonXEntries == "Visible"
+                    //    ? $"&& (Invalid != true && (pExpiryDate >= \"{DateTime.Now.ToShortDateString()}\" || pExpiryDate == null) && (Status == null || Status == \"\"))"
+                    //    : "") +
                     ($" && pRegistrationDate >= \"{BaseDataModel.Instance.CurrentApplicationSettings.OpeningStockDate}\"");
 
 
 
-                return AllocationsModel.Instance.CreateEX9Class.CreateEx9(filterExpression, false, false, true, docset, "Sales", "Historic", true, true, true, true, true, false, true, true, true, true).Result;
+                return AllocationsModel.Instance.CreateEX9Class.CreateEx9(filterExpression, false, false, true, docset, "Sales", "Historic", BaseDataModel.Instance.CurrentApplicationSettings.GroupEX9.GetValueOrDefault(), true, true, true, true, false, true, true, true, true).Result;
 
 
 

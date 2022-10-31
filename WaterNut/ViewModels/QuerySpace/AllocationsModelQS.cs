@@ -41,7 +41,7 @@ namespace WaterNut.QuerySpace.AllocationQS.ViewModels
         {
 
             Process7100 = false;
-            ApplyCurrentChecks = false;            
+            ApplyCurrentChecks = true;            
             //FilterData();
 
             RegisterToReceiveMessages<SalesDataDetail>(SalesDataQS.MessageToken.CurrentSalesDataDetailChanged, OnCurrentSalesDataDetailChanged);
