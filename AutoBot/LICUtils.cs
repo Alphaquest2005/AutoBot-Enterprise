@@ -128,14 +128,8 @@ namespace AutoBot
                 foreach (var file in csvFiles.ToList())
                 {
                     var match = Regex.Match(file.FullName, ft.FilePattern, RegexOptions.IgnoreCase).Groups["RegNumber"].Value;
-                    if (ifiles.Contains(match))
-                    {
-                        csvFiles.Remove(file);
-                        continue;
-                    }
-                    var a = Licence.LoadFromFile(file.FullName);
-                    
-                        
+                    if (!ifiles.Contains(match)) continue;
+                    csvFiles.Remove(file);
                 }
 
                 BaseDataModel.Instance.ImportLicense(docSet.AsycudaDocumentSetId,
