@@ -3312,7 +3312,7 @@ namespace WaterNut.DataSpace
 
                         double rtotal = lic.TODO_LicenceAvailableQty == null
                             ? lic.Quantity_to_approve // assume all so it wont pass later 
-                            : lic.Quantity_to_approve - lic.TODO_LicenceAvailableQty.Balance.GetValueOrDefault();
+                            : lic.Quantity_to_approve - lic.TODO_LicenceAvailableQty.Balance;
 
 
                         foreach (var itm in itms)
