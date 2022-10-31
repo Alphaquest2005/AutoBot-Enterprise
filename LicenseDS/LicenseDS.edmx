@@ -341,13 +341,13 @@ FROM [dbo].[TODO-LICToCreate] AS [TODO-LICToCreate]</DefiningQuery>
           <Property Name="Application_date" Type="DateTime" Precision="0" />
           <Property Name="Importation_date" Type="DateTime" Precision="0" />
           <Property Name="Key" Type="String" MaxLength="55" FixedLength="false" Unicode="true" />
-          <Property Name="Balance" Type="Int32" Nullable="false" />
+          <Property Name="Balance" Type="Double" Nullable="false" />
           <Property Name="LicenseId" Type="Int32" Nullable="false" />
           <Property Name="SourceFile" Type="String" Nullable="false" MaxLength="300" FixedLength="false" Unicode="true" />
           <Property Name="DocumentReference" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="xLIC_Lic_item_segment" Relationship="WaterNutDBModel.xLIC_Lic_item_segmentTODO_LicenceAvailableQty" FromRole="TODO_LicenceAvailableQty" ToRole="xLIC_Lic_item_segment" />
           <Property Name="SegmentId" Type="Int32" Nullable="false" />
-          <Property Name="Quantity_to_approve" Type="Int32" Nullable="false" />
+          <Property Name="Quantity_to_approve" Type="Double" Nullable="false" />
         </EntityType>
         <Association Name="xLIC_Lic_item_segmentTODO_LicenceAvailableQty">
           <End Type="WaterNutDBModel.xLIC_Lic_item_segment" Role="xLIC_Lic_item_segment" Multiplicity="1" />

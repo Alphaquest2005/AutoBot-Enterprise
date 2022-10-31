@@ -134,7 +134,7 @@
         <AssociationConnector Association="WaterNutDBModel.FK_FileTypeMappingRegExs_FileTypeMappings" />
         <EntityTypeShape EntityType="WaterNutDBModel.ExpiredEntriesLst" Width="1.5" PointX="17.375" PointY="19.75" />
         <EntityTypeShape EntityType="WaterNutDBModel.TODO_DiscrepanciesExecutionReport" Width="1.5" PointX="0.75" PointY="33.75" />
-        <EntityTypeShape EntityType="WaterNutDBModel.TODO_LicenceAvailableQty" Width="1.5" PointX="31.375" PointY="20.75" />
+        <EntityTypeShape EntityType="WaterNutDBModel.TODO_LicenceAvailableQty" Width="2.375" PointX="30.5" PointY="20.75" />
         <EntityTypeShape EntityType="WaterNutDBModel.TODO_AssessDiscrepancyEntries" Width="1.5" PointX="28.375" PointY="20.75" />
         <EntityTypeShape EntityType="WaterNutDBModel.TODO_C71ToCreate" Width="1.5" PointX="3.375" PointY="33.75" />
         <EntityTypeShape EntityType="WaterNutDBModel.ImportActions" Width="1.5" PointX="5.125" PointY="40.25" />

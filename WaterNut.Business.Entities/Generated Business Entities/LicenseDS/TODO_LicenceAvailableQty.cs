@@ -126,7 +126,7 @@ namespace LicenseDS.Business.Entities
         }
         string _key;
         [DataMember]
-        public int Balance 
+        public double Balance 
         {
             get
             {
@@ -139,7 +139,7 @@ namespace LicenseDS.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        int _balance;
+        double _balance;
         [DataMember]
         public int LicenseId 
         {
@@ -201,7 +201,7 @@ namespace LicenseDS.Business.Entities
         }
         int _segmentid;
         [DataMember]
-        public int Quantity_to_approve 
+        public double Quantity_to_approve 
         {
             get
             {
@@ -214,7 +214,7 @@ namespace LicenseDS.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        int _quantity_to_approve;
+        double _quantity_to_approve;
         [DataMember]
         public xLIC_Lic_item_segment xLIC_Lic_item_segment { get; set; }
 
