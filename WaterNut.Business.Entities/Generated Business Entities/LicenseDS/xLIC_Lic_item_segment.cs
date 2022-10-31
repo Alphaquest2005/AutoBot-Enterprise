@@ -51,7 +51,7 @@ namespace LicenseDS.Business.Entities
         }
         string _commodity_code;
         [DataMember]
-        public int Quantity_requested 
+        public double Quantity_requested 
         {
             get
             {
@@ -64,7 +64,7 @@ namespace LicenseDS.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        int _quantity_requested;
+        double _quantity_requested;
         [DataMember]
         public string Origin 
         {
@@ -96,7 +96,7 @@ namespace LicenseDS.Business.Entities
         }
         string _unit_of_measurement;
         [DataMember]
-        public int Quantity_to_approve 
+        public double Quantity_to_approve 
         {
             get
             {
@@ -109,7 +109,7 @@ namespace LicenseDS.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        int _quantity_to_approve;
+        double _quantity_to_approve;
         [DataMember]
         public int LicenseId 
         {

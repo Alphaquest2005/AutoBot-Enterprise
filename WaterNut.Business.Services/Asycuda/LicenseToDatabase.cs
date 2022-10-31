@@ -132,10 +132,10 @@ namespace WaterNut.DataSpace.Asycuda
 
                     ditem.Description = aitem.Description;
                     ditem.Commodity_code = aitem.Commodity_code;
-                    ditem.Quantity_requested = Convert.ToInt32(aitem.Quantity_requested);
+                    ditem.Quantity_requested = Convert.ToDouble(aitem.Quantity_requested);
                     ditem.Origin = aitem.Origin;
                     ditem.Unit_of_measurement = aitem.Unit_of_measurement;
-                    ditem.Quantity_to_approve = Convert.ToInt32(aitem.Quantity_to_approve);
+                    ditem.Quantity_to_approve = Convert.ToDouble(aitem.Quantity_to_approve);
 
 
 

@@ -35,10 +35,10 @@
           </Key>
           <Property Name="Description" Type="nvarchar" MaxLength="255" />
           <Property Name="Commodity_code" Type="nvarchar" MaxLength="255" Nullable="false" />
-          <Property Name="Quantity_requested" Type="int" Nullable="false" />
+          <Property Name="Quantity_requested" Type="float" Nullable="false" />
           <Property Name="Origin" Type="nvarchar" MaxLength="255" />
           <Property Name="Unit_of_measurement" Type="nvarchar" MaxLength="255" />
-          <Property Name="Quantity_to_approve" Type="int" Nullable="false" />
+          <Property Name="Quantity_to_approve" Type="float" Nullable="false" />
           <Property Name="LicenseId" Type="int" Nullable="false" />
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
         </EntityType>
@@ -67,17 +67,18 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-LicenceAvailableQty'
             
             
             
+            
             <PropertyRef Name="SegmentId" />
           </Key>
           <Property Name="RegistrationNumber" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
           <Property Name="TariffCode" Type="nvarchar" MaxLength="8" />
           <Property Name="Origin" Type="nvarchar" MaxLength="255" />
-          <Property Name="Quantity_to_approve" Type="int" Nullable="false" />
+          <Property Name="Quantity_to_approve" Type="float" Nullable="false" />
           <Property Name="Application_date" Type="date" />
           <Property Name="Importation_date" Type="date" />
           <Property Name="Key" Type="nvarchar" MaxLength="55" />
-          <Property Name="Balance" Type="int" />
+          <Property Name="Balance" Type="float" Nullable="false" />
           <Property Name="LicenseId" Type="int" Nullable="false" />
           <Property Name="SourceFile" Type="nvarchar" MaxLength="300" Nullable="false" />
           <Property Name="DocumentReference" Type="nvarchar" MaxLength="50" />
@@ -257,10 +258,10 @@ FROM [dbo].[TODO-LICToCreate] AS [TODO-LICToCreate]</DefiningQuery>
           </Key>
           <Property Name="Description" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="Commodity_code" Type="String" Nullable="false" MaxLength="255" Unicode="true" FixedLength="false" />
-          <Property Name="Quantity_requested" Type="Int32" Nullable="false" />
+          <Property Name="Quantity_requested" Type="Double" Nullable="false" />
           <Property Name="Origin" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="Unit_of_measurement" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="Quantity_to_approve" Type="Int32" Nullable="false" />
+          <Property Name="Quantity_to_approve" Type="Double" Nullable="false" />
           <Property Name="LicenseId" Type="Int32" Nullable="false" />
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <NavigationProperty Name="xLIC_License" Relationship="WaterNutDBModel.FK_xLIC_Lic_item_segment_xLIC_License" FromRole="xLIC_Lic_item_segment" ToRole="xLIC_License" />
@@ -340,7 +341,7 @@ FROM [dbo].[TODO-LICToCreate] AS [TODO-LICToCreate]</DefiningQuery>
           <Property Name="Application_date" Type="DateTime" Precision="0" />
           <Property Name="Importation_date" Type="DateTime" Precision="0" />
           <Property Name="Key" Type="String" MaxLength="55" FixedLength="false" Unicode="true" />
-          <Property Name="Balance" Type="Int32" />
+          <Property Name="Balance" Type="Int32" Nullable="false" />
           <Property Name="LicenseId" Type="Int32" Nullable="false" />
           <Property Name="SourceFile" Type="String" Nullable="false" MaxLength="300" FixedLength="false" Unicode="true" />
           <Property Name="DocumentReference" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
