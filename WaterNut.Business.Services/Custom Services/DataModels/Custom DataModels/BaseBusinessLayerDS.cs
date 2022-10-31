@@ -1181,7 +1181,7 @@ namespace WaterNut.DataSpace
                 {
                     if (att.Reference == "Info") continue;
                     if (doc.AsycudaDocument_Attachments.FirstOrDefault(x =>
-                        x.AsycudaDocumentId == doc.ASYCUDA_Id && x.AttachmentId == att.Id) == null)
+                            x.AsycudaDocumentId == doc.ASYCUDA_Id && x.AttachmentId == att.Id) == null)
                         doc.AsycudaDocument_Attachments.Add(new AsycudaDocument_Attachments(true)
                         {
                             AttachmentId = att.Id,
@@ -1206,7 +1206,7 @@ namespace WaterNut.DataSpace
                                 {
                                     AttachmentId = att.Id,
                                     TrackingState = TrackingState.Added,
-                                    Attachments =  new global::DocumentItemDS.Business.Entities.Attachments()
+                                    Attachments = new global::DocumentItemDS.Business.Entities.Attachments()
                                     {
                                         TrackingState = (att.Id == 0 ? TrackingState.Added : att.TrackingState),
                                         Id = att.Id,
@@ -1225,37 +1225,37 @@ namespace WaterNut.DataSpace
                 }
 
                 if (doc.ASYCUDA_Id == 0) return;
-                {
-                    foreach (var itm in itms)
-                        using (var docItemCtx = new DocumentItemDSContext {StartTracking = true})
-                        {
-                            foreach (var ad in itm.xcuda_Attached_documents)
-                            {
-                                if (docItemCtx.xcuda_Attached_documents.FirstOrDefault(x =>
-                                        x.Item_Id == itm.Item_Id &&
-                                        x.Attached_document_reference == ad.Attached_document_reference) !=
-                                    null) continue;
-                                ad.Item_Id = itm.Item_Id;
-                                docItemCtx.xcuda_Attached_documents.Add(ad);
-                            }
 
-                            docItemCtx.SaveChanges();
-                        }
-
-                    using (var ctx = new DocumentDSContext {StartTracking = true})
+                foreach (var itm in itms)
+                    using (var docItemCtx = new DocumentItemDSContext {StartTracking = true})
                     {
-                        foreach (var at in doc.AsycudaDocument_Attachments)
+                        foreach (var ad in itm.xcuda_Attached_documents)
                         {
-                            if (ctx.AsycudaDocument_Attachments.FirstOrDefault(x =>
-                                    x.AsycudaDocumentId == doc.ASYCUDA_Id && x.AttachmentId == at.AttachmentId) !=
+                            if (docItemCtx.xcuda_Attached_documents.FirstOrDefault(x =>
+                                    x.Item_Id == itm.Item_Id &&
+                                    x.Attached_document_reference == ad.Attached_document_reference) !=
                                 null) continue;
-                            at.AsycudaDocumentId = doc.ASYCUDA_Id;
-                            ctx.AsycudaDocument_Attachments.Add(at);
+                            ad.Item_Id = itm.Item_Id;
+                            docItemCtx.xcuda_Attached_documents.Add(ad);
                         }
 
-                        ctx.SaveChanges();
+                        docItemCtx.SaveChanges();
                     }
+
+                using (var ctx = new DocumentDSContext {StartTracking = true})
+                {
+                    foreach (var at in doc.AsycudaDocument_Attachments)
+                    {
+                        if (ctx.AsycudaDocument_Attachments.FirstOrDefault(x =>
+                                x.AsycudaDocumentId == doc.ASYCUDA_Id && x.AttachmentId == at.AttachmentId) !=
+                            null) continue;
+                        at.AsycudaDocumentId = doc.ASYCUDA_Id;
+                        ctx.AsycudaDocument_Attachments.Add(at);
+                    }
+
+                    ctx.SaveChanges();
                 }
+
             }
             catch (Exception e)
             {
@@ -3377,30 +3377,37 @@ namespace WaterNut.DataSpace
                 }
 
 
-                var res = new Dictionary<Attachments, ValuationDS.Business.Entities.Registered>();
-                foreach (var i in c71Att)
-                {
-                    var c71 = new ValuationDSContext().xC71_Value_declaration_form
+                var res = new Dictionary<Attachments, ValuationDS.Business.Entities.Registered>(); 
+                var registeredC71s = new ValuationDSContext().xC71_Value_declaration_form
                         .OfType<ValuationDS.Business.Entities.Registered>()
                         .Include(x => x.xC71_Item)
-                        .Include(x => x.xC71_Identification_segment)
+                        .Include(x => x.xC71_Identification_segment).ToList();
+                var asycudaDocumentItemEntryDataDetails = lst.GroupJoin(ctx.AsycudaDocumentItemEntryDataDetails,
+                    x => x.Item_Id, e => e.Item_Id,
+                    (x, e) => new {x.Item_Id, x.LineNumber, x.ASYCUDA_Id, data = e.Select(z => z.key)}).ToList();
+                foreach (var i in c71Att)
+                {
+                   
+                    var c71 = registeredC71s
                         .FirstOrDefault(x => x.SourceFile == i.FilePath);
                     if (c71 != null) res.Add(i, c71);
                 }
 
                 foreach (var al in res)
-                foreach (var c71Item in al.Value.xC71_Item)
                 {
-                    var itms = lst.GroupJoin(ctx.AsycudaDocumentItemEntryDataDetails, x => x.Item_Id, e => e.Item_Id,
-                            (x, e) => new {x.Item_Id, x.LineNumber, x.ASYCUDA_Id, data = e.Select(z => z.key)})
-                        .Where(x =>
-                            x.data.Any(z =>
-                                z.Contains(c71Item.Invoice_Number)) &&
-                            x.LineNumber == 1).ToList();
+                    foreach (var c71Item in al.Value.xC71_Item)
+                    {
+                       
+                        var itms = asycudaDocumentItemEntryDataDetails
+                            .Where(x =>
+                                x.data.Any(z =>
+                                    z.Contains(c71Item.Invoice_Number)) &&
+                                x.LineNumber == 1).ToList();
 
-                    foreach (var itm in itms)
-                        AttachToDocument(new List<int> {al.Key.Id},
-                            itm.ASYCUDA_Id, itm.Item_Id);
+                        foreach (var itm in itms)
+                            AttachToDocument(new List<int> {al.Key.Id},
+                                itm.ASYCUDA_Id, itm.Item_Id);
+                    }
                 }
             }
         }
