@@ -126,7 +126,7 @@ namespace CoreEntities.Client.DTO
         private string _Key;
 
         [DataMember]
-        public int Balance
+        public double Balance
 		{ 
 		    get { return _Balance; }
 			set
@@ -136,7 +136,7 @@ namespace CoreEntities.Client.DTO
 				NotifyPropertyChanged();//m => this.Balance
 			}
 		}
-        private int _Balance;
+        private double _Balance;
 
         [DataMember]
         public int LicenseId

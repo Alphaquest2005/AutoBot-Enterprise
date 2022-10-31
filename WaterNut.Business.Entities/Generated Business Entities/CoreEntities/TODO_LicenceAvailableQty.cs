@@ -141,7 +141,7 @@ namespace CoreEntities.Business.Entities
         }
         string _key;
         [DataMember]
-        public int Balance 
+        public double Balance 
         {
             get
             {
@@ -154,7 +154,7 @@ namespace CoreEntities.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        int _balance;
+        double _balance;
         [DataMember]
         public int LicenseId 
         {

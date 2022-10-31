@@ -6341,7 +6341,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
           <Property Name="Application_date" Type="DateTime" Precision="0" />
           <Property Name="Importation_date" Type="DateTime" Precision="0" />
           <Property Name="Key" Type="String" MaxLength="55" FixedLength="false" Unicode="true" />
-          <Property Name="Balance" Type="Int32" Nullable="false" />
+          <Property Name="Balance" Type="Double" Nullable="false" />
           <Property Name="LicenseId" Type="Int32" Nullable="false" />
           <Property Name="SourceFile" Type="String" Nullable="false" MaxLength="300" FixedLength="false" Unicode="true" />
           <Property Name="DocumentReference" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />

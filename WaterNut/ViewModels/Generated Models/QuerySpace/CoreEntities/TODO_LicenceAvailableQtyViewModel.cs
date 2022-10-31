@@ -361,8 +361,8 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 
  
 
-		private Int32? _balanceFilter;
-        public Int32? BalanceFilter
+		private Double? _balanceFilter;
+        public Double? BalanceFilter
         {
             get
             {
@@ -614,7 +614,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     public string Key { get; set; } 
                     
  
-                    public int Balance { get; set; } 
+                    public double Balance { get; set; } 
                     
  
                     public string SourceFile { get; set; } 
