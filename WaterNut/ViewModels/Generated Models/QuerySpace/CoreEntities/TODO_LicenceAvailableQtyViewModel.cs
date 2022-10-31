@@ -614,7 +614,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     public string Key { get; set; } 
                     
  
-                    public Nullable<int> Balance { get; set; } 
+                    public int Balance { get; set; } 
                     
  
                     public string SourceFile { get; set; } 

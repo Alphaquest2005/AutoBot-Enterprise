@@ -170,9 +170,9 @@ public string Key
 		}
      
 
-       
+       [RequiredValidationAttribute(ErrorMessage= "Balance is required")]
        [NumberValidationAttribute]
-public Nullable<int> Balance
+public int Balance
 		{ 
 		    get { return this.todo_licenceavailableqty.Balance; }
 			set

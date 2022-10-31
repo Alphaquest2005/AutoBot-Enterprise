@@ -141,7 +141,7 @@ namespace CoreEntities.Business.Entities
         }
         string _key;
         [DataMember]
-        public Nullable<int> Balance 
+        public int Balance 
         {
             get
             {
@@ -154,7 +154,7 @@ namespace CoreEntities.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        Nullable<int> _balance;
+        int _balance;
         [DataMember]
         public int LicenseId 
         {
