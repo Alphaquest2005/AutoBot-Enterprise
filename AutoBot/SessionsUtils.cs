@@ -57,7 +57,10 @@ namespace AutoBot
                 {"CreateC71", () => C71Utils.CreateC71(new FileTypes()) },
                 {"CreateLicense",() => LICUtils.CreateLicence(new FileTypes()) },
                 { "ImportC71", () => C71Utils.ImportC71(new FileTypes()) },
+
                 {"ImportLicense", () => LICUtils.ImportLicense(new FileTypes()) },
+                {"ImportAllLicense", () => LICUtils.ImportAllLicense() },
+
                 {"DownLoadC71", () => C71Utils.DownLoadC71(new FileTypes()) },
                 {"SubmitMissingInvoices", () => Utils.SubmitMissingInvoices(new FileTypes()) },
                 {"SubmitIncompleteEntryData",() => Utils.SubmitIncompleteEntryData(new FileTypes()) },
@@ -97,7 +100,7 @@ namespace AutoBot
                 {"SubmitSalesToCustoms", SalesUtils.SubmitSalesToCustoms },
                 {"ImportExpiredEntires", EntryDocSetUtils.ImportExpiredEntires },
                 {"ImportCancelledEntries", EntryDocSetUtils.ImportCancelledEntries },
-                {"ImportAllFilesInDataFolder", Utils.ImportAllFilesInDataFolder},
+                {"ImportAllFilesInDataFolder", Utils.ImportAllAsycudaDocumentsInDataFolder},
                 {"relinkAllPreviousItems", EX9Utils.relinkAllPreviousItems},
                 {"ImportWarehouseErrors", () => ImportWarehouseErrorsUtils.ImportWarehouseErrors(-1)},
                 {"RunSQLBlackBox", SQLBlackBox.RunSqlBlackBox},

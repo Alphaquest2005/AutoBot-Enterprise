@@ -12,7 +12,7 @@
         <AssociationConnector Association="WaterNutDBModel.FK_xLIC_Lic_item_segment_xLIC_License" />
         <EntityTypeShape EntityType="WaterNutDBModel.Registered" Width="4" PointX="3" PointY="10.75" />
         <InheritanceConnector EntityType="WaterNutDBModel.Registered" />
-        <EntityTypeShape EntityType="WaterNutDBModel.TODO_LICToCreate" Width="1.5" PointX="5.375" PointY="0.75" />
+        <EntityTypeShape EntityType="WaterNutDBModel.TODO_LICToCreate" Width="2.125" PointX="5.375" PointY="0.75" />
         <EntityTypeShape EntityType="WaterNutDBModel.TODO_LicenceAvailableQty" Width="1.5" PointX="8" PointY="1.125" />
         <AssociationConnector Association="WaterNutDBModel.xLIC_Lic_item_segmentTODO_LicenceAvailableQty" />
       </Diagram>

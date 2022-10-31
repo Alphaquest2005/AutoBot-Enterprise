@@ -94,6 +94,93 @@ namespace AutoBot
             }
         }
 
+        public static bool ImportAllLicense()
+        {
+            using (var ctx = new CoreEntitiesContext())
+            {
+                ctx.Database.CommandTimeout = 10;
+
+                var docSet = ctx.AsycudaDocumentSetExs.First(x =>
+                                    x.ApplicationSettingsId ==
+                                    BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId &&
+                                    x.Declarant_Reference_Number == "Imports");
+                
+                var ft = ctx.FileTypes
+                    .Include(x => x.FileImporterInfos)
+                    .FirstOrDefault(x =>
+                    x.FileImporterInfos.EntryType == FileTypeManager.EntryTypes.Lic && x.ApplicationSettingsId ==
+                    BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId);
+                if (ft == null) return true;
+              
+                var desFolder = Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder, "Imports", "LIC");
+                if (!Directory.Exists(desFolder)) Directory.CreateDirectory(desFolder);
+
+
+                var csvFiles = new DirectoryInfo(desFolder).GetFiles()
+                    .Where(x => Regex.IsMatch(x.FullName, ft.FilePattern, RegexOptions.IgnoreCase))
+                    .ToList();
+                if (!csvFiles.Any()) return false;
+
+                var ifiles = new LicenseDSContext().xLIC_License.OfType<Registered>()
+                    .Where(x => x.ApplicationSettingsId ==
+                                BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId).Select(x =>  x.RegistrationNumber).ToList();
+                
+                foreach (var file in csvFiles.ToList())
+                {
+                    var match = Regex.Match(file.FullName, ft.FilePattern, RegexOptions.IgnoreCase).Groups["RegNumber"].Value;
+                    if (ifiles.Contains(match))
+                    {
+                        csvFiles.Remove(file);
+                        continue;
+                    }
+                    var a = Licence.LoadFromFile(file.FullName);
+                    
+                        
+                }
+
+                BaseDataModel.Instance.ImportLicense(docSet.AsycudaDocumentSetId,
+                    csvFiles.Select(x => x.FullName).ToList());
+                
+                BaseDataModel.Instance.SaveAttachedDocuments(csvFiles.ToArray(), ft).Wait();
+                return false;
+            }
+        }
+
+        //    Console.WriteLine("Import All Files in DataFolder");
+        //            var files = Directory.GetFiles(
+        //                Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder, "Imports"), "*.xml");
+        //    var res = new List<string>();
+        //    AsycudaDocumentSetEx docSet;
+        //            using (var ctx = new CoreEntitiesContext())
+        //            {
+        //                var ifiles = ctx.AsycudaDocuments
+        //                    .Where(x => x.ApplicationSettingsId ==
+        //                                BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId &&
+        //                                x.ImportComplete == true).Select(x => new
+        //                                {
+        //                                    Office = x.Customs_clearance_office_code,
+        //                                    x.CNumber,
+        //                                    Year = (x.RegistrationDate ?? DateTime.MinValue).Year.ToString()
+        //                                }).ToList();
+
+        //docSet = ctx.AsycudaDocumentSetExs.FirstOrDefault(x =>
+        //                    x.ApplicationSettingsId ==
+        //                    BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId &&
+        //                    x.Declarant_Reference_Number == "Imports");
+        //                foreach (var file in files)
+        //                {
+        //                    var f = Regex.Match(file, @"(?<Office>[A-Z]+)(\-(?<Year>\d{4}))?\-(?<CNumber>\d+).xml",
+        //                        RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture);
+        //                    if (f.Success == false) continue;
+        //                    var i = ifiles.FirstOrDefault(x =>
+        //                        x.CNumber == f.Groups["CNumber"].Value && x.Office == f.Groups["Office"].Value && (string.IsNullOrEmpty(f.Groups["Year"].ToString()) || x.Year == f.Groups["Year"].ToString()));
+        //                    if (i == null)
+        //                    {
+        //                        res.Add(file);
+        //                    }
+        //                }
+        //            }
+
         public static void DownLoadLicence(bool redownload, FileTypes ft)
         {
             try

@@ -89,13 +89,13 @@ namespace AutoBot
         }
 
 
-        public static void ImportAllFilesInDataFolder()
+        public static void ImportAllAsycudaDocumentsInDataFolder()
         {
             try
             {
 
 
-                Console.WriteLine("Import All Files in DataFolder");
+                Console.WriteLine("Import All Asycuda Documents in DataFolder");
                 var files = Directory.GetFiles(
                     Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder, "Imports"), "*.xml");
                 var res = new List<string>();

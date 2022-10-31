@@ -300,7 +300,7 @@ namespace AutoBot
                         BaseDataModel.Instance.ImportDocuments(ft.AsycudaDocumentSetId,
                             csvFiles.Select(x => x.FullName).ToList(), true, true, false, false, true).Wait();
 
-                    Utils.ImportAllFilesInDataFolder();
+                    Utils.ImportAllAsycudaDocumentsInDataFolder();
 
                     EntryDocSetUtils.RemoveDuplicateEntries();
                     EntryDocSetUtils.FixIncompleteEntries();
@@ -428,7 +428,7 @@ namespace AutoBot
                         }
                     }
 
-                    Utils.ImportAllFilesInDataFolder();
+                    Utils.ImportAllAsycudaDocumentsInDataFolder();
 
                     EntryDocSetUtils.RemoveDuplicateEntries();
                     EntryDocSetUtils.FixIncompleteEntries();
