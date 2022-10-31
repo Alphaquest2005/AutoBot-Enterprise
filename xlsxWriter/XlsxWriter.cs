@@ -8,6 +8,7 @@ using System.Text.RegularExpressions;
 using CoreEntities.Business.Entities;
 using EntryDataDS.Business.Entities;
 using MoreLinq;
+using MoreLinq.Extensions;
 using PicoXLSX;
 using TrackableEntities;
 using WaterNut.Business.Services.Utils;
@@ -430,9 +431,17 @@ namespace xlsxWriter
         private static void DoMisMatches(ShipmentInvoice shipmentInvoice, Workbook workbook)
         { 
             var pOs = shipmentInvoice.ShipmentInvoicePOs.Select(x => x.EntryData_Id).ToList();
-            var shipmentInvoicePoItemMisMatchesList = new EntryDataDSContext().ShipmentInvoicePOItemMISMatches
+
+            var matchesList = new EntryDataDSContext().ShipmentInvoicePOItemMISMatches
+                .Where(x => x.INVId == shipmentInvoice.Id && pOs.Contains(x.POId ?? 0)).ToList();
+
+
+            var preMisMatchesList = new EntryDataDSContext().ShipmentInvoicePOItemMISMatches
                 .Where(x => x.INVId == shipmentInvoice.Id || pOs.Contains(x.POId ?? 0)).ToList();
 
+            var shipmentInvoicePoItemMisMatchesList = preMisMatchesList.Where(x =>
+                matchesList.All(z => z.PODetailsId != x.PODetailsId || z.INVDetailsId != x.INVDetailsId)).ToList();
+            
             ///////////////// replace this because the keys not working properly with nulls
 
             //var shipmentInvoicePoItemMisMatchesList = shipmentInvoice
@@ -510,6 +519,10 @@ namespace xlsxWriter
 
                 var po = shipmentInvoicePoItemMisMatchesList.First(x => x.PODetailsId == poItem.PODetailsId);
                 var inv = shipmentInvoicePoItemMisMatchesList.First(x => x.INVDetailsId == match.First().itm.INVDetailsId);
+
+                if(shipmentInvoicePoItemMisMatchesList.Any(x => x.INVDetailsId == inv.INVDetailsId && x.PODetailsId == po.PODetailsId)) continue;
+
+
                 po.InvoiceNo = inv.InvoiceNo;
                 po.INVTotalCost = inv.INVTotalCost;
                 po.INVQuantity = inv.INVQuantity;
@@ -517,6 +530,7 @@ namespace xlsxWriter
                 po.INVItemCode = inv.INVItemCode;
                 po.INVDescription = inv.INVDescription;
                 po.INVCost = inv.INVCost;
+                po.INVSalesFactor = po.POQuantity / inv.INVQuantity;
                 INVItems.Remove(match.First().itm);
                 shipmentInvoicePoItemMisMatchesList.Remove(inv);
 
@@ -1013,7 +1027,7 @@ namespace xlsxWriter
                     new Workbook(csvFilePath, "POTemplate"); // Create new workbook with a worksheet called Sheet1
                 var headerRow = 0;
 
-                header.ForEach(x => { SetValue(workbook, headerRow, x.Key.Index, x.Value.DestinationName); });
+                MoreEnumerable.ForEach(header, x => { SetValue(workbook, headerRow, x.Key.Index, x.Value.DestinationName); });
                 invoiceRow = 1;
 
 
