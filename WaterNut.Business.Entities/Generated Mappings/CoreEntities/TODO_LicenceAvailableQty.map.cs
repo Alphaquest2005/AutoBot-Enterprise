@@ -17,7 +17,7 @@
               this.Property(t => t.ApplicationSettingsId).HasColumnName("ApplicationSettingsId").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.None));
               this.Property(t => t.TariffCode).HasColumnName("TariffCode").HasMaxLength(8);
               this.Property(t => t.Origin).HasColumnName("Origin").HasMaxLength(255);
-              this.Property(t => t.Quantity_to_approve).HasColumnName("Quantity_to_approve").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.None));
+              this.Property(t => t.Quantity_to_approve).HasColumnName("Quantity_to_approve");
               this.Property(t => t.Application_date).HasColumnName("Application_date");
               this.Property(t => t.Importation_date).HasColumnName("Importation_date");
               this.Property(t => t.Key).HasColumnName("Key").HasMaxLength(55);

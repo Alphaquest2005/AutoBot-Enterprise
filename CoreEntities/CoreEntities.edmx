@@ -6337,7 +6337,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
           <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
           <Property Name="TariffCode" Type="String" MaxLength="8" FixedLength="false" Unicode="true" />
           <Property Name="Origin" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="Quantity_to_approve" Type="Int32" Nullable="false" />
+          <Property Name="Quantity_to_approve" Type="Double" Nullable="false" />
           <Property Name="Application_date" Type="DateTime" Precision="0" />
           <Property Name="Importation_date" Type="DateTime" Precision="0" />
           <Property Name="Key" Type="String" MaxLength="55" FixedLength="false" Unicode="true" />

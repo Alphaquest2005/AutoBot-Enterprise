@@ -110,7 +110,7 @@ public string Origin
 
        [RequiredValidationAttribute(ErrorMessage= "Quantity_to_approve is required")]
        [NumberValidationAttribute]
-public int Quantity_to_approve
+public double Quantity_to_approve
 		{ 
 		    get { return this.todo_licenceavailableqty.Quantity_to_approve; }
 			set

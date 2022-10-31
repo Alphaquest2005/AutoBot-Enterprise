@@ -74,7 +74,7 @@ namespace CoreEntities.Client.DTO
         private string _Origin;
 
         [DataMember]
-        public int Quantity_to_approve
+        public double Quantity_to_approve
 		{ 
 		    get { return _Quantity_to_approve; }
 			set
@@ -84,7 +84,7 @@ namespace CoreEntities.Client.DTO
 				NotifyPropertyChanged();//m => this.Quantity_to_approve
 			}
 		}
-        private int _Quantity_to_approve;
+        private double _Quantity_to_approve;
 
         [DataMember]
         public Nullable<System.DateTime> Application_date
