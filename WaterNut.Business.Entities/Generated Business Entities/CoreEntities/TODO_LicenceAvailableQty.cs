@@ -81,7 +81,7 @@ namespace CoreEntities.Business.Entities
         }
         string _origin;
         [DataMember]
-        public int Quantity_to_approve 
+        public double Quantity_to_approve 
         {
             get
             {
@@ -94,7 +94,7 @@ namespace CoreEntities.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        int _quantity_to_approve;
+        double _quantity_to_approve;
         [DataMember]
         public Nullable<System.DateTime> Application_date 
         {

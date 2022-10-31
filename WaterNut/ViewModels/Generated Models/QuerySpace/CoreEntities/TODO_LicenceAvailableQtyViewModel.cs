@@ -225,8 +225,8 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 
  
 
-		private Int32? _quantity_to_approveFilter;
-        public Int32? Quantity_to_approveFilter
+		private Double? _quantity_to_approveFilter;
+        public Double? Quantity_to_approveFilter
         {
             get
             {
@@ -602,7 +602,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     public string Origin { get; set; } 
                     
  
-                    public int Quantity_to_approve { get; set; } 
+                    public double Quantity_to_approve { get; set; } 
                     
  
                     public Nullable<System.DateTime> Application_date { get; set; } 
