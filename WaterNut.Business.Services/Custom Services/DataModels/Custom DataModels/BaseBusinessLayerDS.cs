@@ -2234,11 +2234,12 @@ namespace WaterNut.DataSpace
             bool overwriteExisting, bool linkPi, IEnumerable<string> fileNames)
         {
             var exceptions = new ConcurrentQueue<Exception>();
-            Parallel.ForEach(fileNames,
-                new ParallelOptions
-                    {MaxDegreeOfParallelism = 1}, // Environment.ProcessorCount * // have to fix deadlock issue first
-                f => //
-                {
+            //Parallel.ForEach(fileNames,
+            //    new ParallelOptions
+            //        {MaxDegreeOfParallelism = 1}, // Environment.ProcessorCount * // have to fix deadlock issue first
+            //    f => //
+            foreach (var f in fileNames)
+           {
                     try
                     {
                         if (ASYCUDA.CanLoadFromFile(f))
@@ -2264,8 +2265,8 @@ namespace WaterNut.DataSpace
                     {
                         exceptions.Enqueue(ex);
                     }
-                }
-            );
+           }
+            // );
 
             if (exceptions.Count > 0)
                 throw new ApplicationException(exceptions.FirstOrDefault().Message + "|" +
