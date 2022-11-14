@@ -386,6 +386,8 @@
           <Property Name="PackageType" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="Marks" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="Comments" Type="nvarchar" MaxLength="1000" />
+          <Property Name="GrossWeightKg" Type="float" />
+          <Property Name="CubicFeet" Type="float" />
         </EntityType>
         <EntityType Name="ShipmentFreight">
           <Key>
@@ -438,6 +440,16 @@
           <Property Name="FileLineNumber" Type="int" />
           <Property Name="SubTotal" Type="float" />
           <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="ShipmentInvoiceBLManualMatches">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="WarehouseCode" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="BLInvoiceNumber" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="InvoiceNo" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Packages" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="ShipmentInvoiceDetails">
           <Key>
@@ -853,6 +865,24 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ShipmentBLFreight' does n
           <Property Name="BLId" Type="int" Nullable="false" />
         </EntityType>
         <!--Errors Found During Generation:
+warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ShipmentBLInvoice' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="ShipmentBLInvoice">
+          <Key>
+            
+            
+            
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" Nullable="false" />
+          <Property Name="BLDetailsLineID" Type="int" />
+          <Property Name="BLID" Type="int" Nullable="false" />
+          <Property Name="BLNumber" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="InvoiceId" Type="int" />
+          <Property Name="WarehouseCode" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="InvoiceNo" Type="nvarchar" MaxLength="50" />
+          <Property Name="Packages" Type="int" />
+        </EntityType>
+        <!--Errors Found During Generation:
 warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ShipmentErrors-RepeatInvoices' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="ShipmentErrors-RepeatInvoices">
           <Key>
@@ -1030,6 +1060,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ShipmentInvoicePOItemQuer
           <Property Name="INVInventoryItemId" Type="int" />
           <Property Name="POInventoryItemId" Type="int" Nullable="false" />
           <Property Name="RankNo" Type="int" />
+          <Property Name="rn" Type="bigint" />
         </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ShipmentManifestBLs' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
@@ -1893,6 +1924,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ShipmentRiderManifests' d
           <EntitySet Name="ShipmentFreight" EntityType="Self.ShipmentFreight" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ShipmentFreightDetails" EntityType="Self.ShipmentFreightDetails" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ShipmentInvoice" EntityType="Self.ShipmentInvoice" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ShipmentInvoiceBLManualMatches" EntityType="Self.ShipmentInvoiceBLManualMatches" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ShipmentInvoiceDetails" EntityType="Self.ShipmentInvoiceDetails" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ShipmentInvoiceDetails-Volume" EntityType="Self.ShipmentInvoiceDetails-Volume" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ShipmentInvoiceExtraInfo" EntityType="Self.ShipmentInvoiceExtraInfo" Schema="dbo" store:Type="Tables" />
@@ -2038,6 +2070,18 @@ FROM [dbo].[InventoryItemsEx] AS [InventoryItemsEx]</DefiningQuery>
 [ShipmentBLFreight].[BLId] AS [BLId]
 FROM [dbo].[ShipmentBLFreight] AS [ShipmentBLFreight]</DefiningQuery>
           </EntitySet>
+          <EntitySet Name="ShipmentBLInvoice" EntityType="Self.ShipmentBLInvoice" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+[ShipmentBLInvoice].[id] AS [id], 
+[ShipmentBLInvoice].[BLDetailsLineID] AS [BLDetailsLineID], 
+[ShipmentBLInvoice].[BLID] AS [BLID], 
+[ShipmentBLInvoice].[BLNumber] AS [BLNumber], 
+[ShipmentBLInvoice].[InvoiceId] AS [InvoiceId], 
+[ShipmentBLInvoice].[WarehouseCode] AS [WarehouseCode], 
+[ShipmentBLInvoice].[InvoiceNo] AS [InvoiceNo], 
+[ShipmentBLInvoice].[Packages] AS [Packages]
+FROM [dbo].[ShipmentBLInvoice] AS [ShipmentBLInvoice]</DefiningQuery>
+          </EntitySet>
           <EntitySet Name="ShipmentErrors-RepeatInvoices" EntityType="Self.ShipmentErrors-RepeatInvoices" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
 [ShipmentErrors-RepeatInvoices].[id] AS [id], 
@@ -2163,7 +2207,8 @@ FROM [dbo].[ShipmentInvoicePOItemMISMatches] AS [ShipmentInvoicePOItemMISMatches
 [ShipmentInvoicePOItemQueryMatches].[INVTotalCost] AS [INVTotalCost], 
 [ShipmentInvoicePOItemQueryMatches].[INVInventoryItemId] AS [INVInventoryItemId], 
 [ShipmentInvoicePOItemQueryMatches].[POInventoryItemId] AS [POInventoryItemId], 
-[ShipmentInvoicePOItemQueryMatches].[RankNo] AS [RankNo]
+[ShipmentInvoicePOItemQueryMatches].[RankNo] AS [RankNo], 
+[ShipmentInvoicePOItemQueryMatches].[rn] AS [rn]
 FROM [dbo].[ShipmentInvoicePOItemQueryMatches] AS [ShipmentInvoicePOItemQueryMatches]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="ShipmentManifestBLs" EntityType="Self.ShipmentManifestBLs" store:Type="Views" store:Schema="dbo">
@@ -2716,11 +2761,6 @@ FROM [dbo].[ShipmentRiderManifests] AS [ShipmentRiderManifests]</DefiningQuery>
             <End Role="ShipmentInvoicePOs" EntitySet="ShipmentInvoicePOs" />
           </AssociationSet>
           <EntitySet Name="ShipmentInvoicePOItemQueryMatches" EntityType="WaterNutDBModel.ShipmentInvoicePOItemQueryMatches" />
-          <EntitySet Name="ShipmentInvoicePOItemMISMatches" EntityType="WaterNutDBModel.ShipmentInvoicePOItemMISMatches" />
-          <AssociationSet Name="ShipmentInvoicePOsShipmentInvoicePOItemMISMatches" Association="WaterNutDBModel.ShipmentInvoicePOsShipmentInvoicePOItemMISMatches">
-            <End Role="ShipmentInvoicePOs" EntitySet="ShipmentInvoicePOs" />
-            <End Role="ShipmentInvoicePOItemMISMatches" EntitySet="ShipmentInvoicePOItemMISMatches" />
-          </AssociationSet>
           <EntitySet Name="ShipmentAttachedPOs" EntityType="WaterNutDBModel.ShipmentAttachedPOs" />
           <EntitySet Name="ShipmentInvoicePOManualMatches" EntityType="WaterNutDBModel.ShipmentInvoicePOManualMatches" />
           <EntitySet Name="ShipmentInvoiceRiderDetails" EntityType="WaterNutDBModel.ShipmentInvoiceRiderDetails" />
@@ -2815,6 +2855,25 @@ FROM [dbo].[ShipmentRiderManifests] AS [ShipmentRiderManifests]</DefiningQuery>
           <AssociationSet Name="FK_InventoryItemAlias_InventoryItems1" Association="WaterNutDBModel.FK_InventoryItemAlias_InventoryItems1">
             <End Role="InventoryItems" EntitySet="InventoryItems" />
             <End Role="InventoryItemAlias" EntitySet="InventoryItemAlias" />
+          </AssociationSet>
+          <EntitySet Name="ShipmentInvoiceBLManualMatches" EntityType="WaterNutDBModel.ShipmentInvoiceBLManualMatches" />
+          <EntitySet Name="ShipmentBLInvoice" EntityType="WaterNutDBModel.ShipmentBLInvoice" />
+          <AssociationSet Name="ShipmentInvoiceShipmentBLInvoice" Association="WaterNutDBModel.ShipmentInvoiceShipmentBLInvoice">
+            <End Role="ShipmentInvoice" EntitySet="ShipmentInvoice" />
+            <End Role="ShipmentBLInvoice" EntitySet="ShipmentBLInvoice" />
+          </AssociationSet>
+          <AssociationSet Name="ShipmentBLDetailsShipmentBLInvoice" Association="WaterNutDBModel.ShipmentBLDetailsShipmentBLInvoice">
+            <End Role="ShipmentBLDetails" EntitySet="ShipmentBLDetails" />
+            <End Role="ShipmentBLInvoice" EntitySet="ShipmentBLInvoice" />
+          </AssociationSet>
+          <AssociationSet Name="ShipmentBLShipmentBLInvoice" Association="WaterNutDBModel.ShipmentBLShipmentBLInvoice">
+            <End Role="ShipmentBL" EntitySet="ShipmentBL" />
+            <End Role="ShipmentBLInvoice" EntitySet="ShipmentBLInvoice" />
+          </AssociationSet>
+          <EntitySet Name="ShipmentInvoicePOItemMISMatches" EntityType="WaterNutDBModel.ShipmentInvoicePOItemMISMatches" />
+          <AssociationSet Name="ShipmentInvoicePOsShipmentInvoicePOItemMISMatches" Association="WaterNutDBModel.ShipmentInvoicePOsShipmentInvoicePOItemMISMatches">
+            <End Role="ShipmentInvoicePOs" EntitySet="ShipmentInvoicePOs" />
+            <End Role="ShipmentInvoicePOItemMISMatches" EntitySet="ShipmentInvoicePOItemMISMatches" />
           </AssociationSet>
           </EntityContainer>
         <EntityType Name="Sales" BaseType="WaterNutDBModel.EntryData">
@@ -3432,6 +3491,7 @@ FROM [dbo].[ShipmentRiderManifests] AS [ShipmentRiderManifests]</DefiningQuery>
           <NavigationProperty Name="ShipmentBLFreight" Relationship="WaterNutDBModel.ShipmentBLShipmentBLFreight" FromRole="ShipmentBL" ToRole="ShipmentBLFreight" />
           <Property Name="Freight" Type="Double" />
           <Property Name="FreightCurrency" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="ShipmentBLInvoice" Relationship="WaterNutDBModel.ShipmentBLShipmentBLInvoice" FromRole="ShipmentBL" ToRole="ShipmentBLInvoice" />
         </EntityType>
         <EntityType Name="ShipmentBLDetails">
           <Key>
@@ -3446,6 +3506,9 @@ FROM [dbo].[ShipmentRiderManifests] AS [ShipmentRiderManifests]</DefiningQuery>
           <NavigationProperty Name="ShipmentFreightBLs" Relationship="WaterNutDBModel.ShipmentBLDetailsShipmentFreightBLs" FromRole="ShipmentBLDetails" ToRole="ShipmentFreightBLs" />
           <Property Name="BLId" Type="Int32" Nullable="false" />
           <NavigationProperty Name="ShipmentBL" Relationship="WaterNutDBModel.FK_ShipmentBLDetails_ShipmentBL1" FromRole="ShipmentBLDetails" ToRole="ShipmentBL" />
+          <NavigationProperty Name="ShipmentBLInvoice" Relationship="WaterNutDBModel.ShipmentBLDetailsShipmentBLInvoice" FromRole="ShipmentBLDetails" ToRole="ShipmentBLInvoice" />
+          <Property Name="GrossWeightKg" Type="Double" />
+          <Property Name="CubicFeet" Type="Double" />
         </EntityType>
         <EntityType Name="ShipmentRider">
           <Key>
@@ -3577,6 +3640,7 @@ FROM [dbo].[ShipmentRiderManifests] AS [ShipmentRiderManifests]</DefiningQuery>
           <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
           <NavigationProperty Name="ShipmentInvoicePOs" Relationship="WaterNutDBModel.FK_ShipmentInvoicePOs_ShipmentInvoice" FromRole="ShipmentInvoice" ToRole="ShipmentInvoicePOs" />
           <NavigationProperty Name="ShipmentInvoiceRiderDetails" Relationship="WaterNutDBModel.FK_ShipmentInvoiceRiderDetails_ShipmentInvoice" FromRole="ShipmentInvoice" ToRole="ShipmentInvoiceRiderDetails" />
+          <NavigationProperty Name="ShipmentBLInvoice" Relationship="WaterNutDBModel.ShipmentInvoiceShipmentBLInvoice" FromRole="ShipmentInvoice" ToRole="ShipmentBLInvoice" />
         </EntityType>
         <EntityType Name="InvoiceDetails">
           <Key>
@@ -4298,45 +4362,8 @@ FROM [dbo].[ShipmentRiderManifests] AS [ShipmentRiderManifests]</DefiningQuery>
           <NavigationProperty Name="EntryDataDetails" Relationship="WaterNutDBModel.EntryDataDetailsShipmentInvoicePOItemQueryMatches" FromRole="ShipmentInvoicePOItemQueryMatches" ToRole="EntryDataDetails" />
           <Property Name="Gallons" Type="Double" />
           <Property Name="RankNo" Type="Int32" />
+          <Property Name="rn" Type="Int64" />
         </EntityType>
-        <EntityType Name="ShipmentInvoicePOItemMISMatches">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="Int32" Nullable="false" />
-          <Property Name="PODetailsId" Type="Int32" />
-          <Property Name="INVDetailsId" Type="Int32" />
-          <Property Name="POId" Type="Int32" />
-          <Property Name="INVId" Type="Int32" />
-          <Property Name="PONumber" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="InvoiceNo" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="POItemCode" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
-          <Property Name="INVItemCode" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
-          <Property Name="PODescription" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="INVDescription" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="POCost" Type="Double" />
-          <Property Name="INVCost" Type="Double" />
-          <Property Name="POQuantity" Type="Double" />
-          <Property Name="INVQuantity" Type="Double" />
-          <Property Name="POTotalCost" Type="Double" />
-          <Property Name="INVTotalCost" Type="Double" />
-          <NavigationProperty Name="ShipmentInvoicePOs" Relationship="WaterNutDBModel.ShipmentInvoicePOsShipmentInvoicePOItemMISMatches" FromRole="ShipmentInvoicePOItemMISMatches" ToRole="ShipmentInvoicePOs" />
-          <Property Name="INVSalesFactor" Type="Double" />
-        </EntityType>
-        <Association Name="ShipmentInvoicePOsShipmentInvoicePOItemMISMatches">
-          <End Type="WaterNutDBModel.ShipmentInvoicePOs" Role="ShipmentInvoicePOs" Multiplicity="0..1" />
-          <End Type="WaterNutDBModel.ShipmentInvoicePOItemMISMatches" Role="ShipmentInvoicePOItemMISMatches" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="ShipmentInvoicePOs">
-              <PropertyRef Name="InvoiceId" />
-              <PropertyRef Name="EntryData_Id" />
-            </Principal>
-            <Dependent Role="ShipmentInvoicePOItemMISMatches">
-              <PropertyRef Name="INVId" />
-              <PropertyRef Name="POId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <EntityType Name="ShipmentAttachedPOs">
           <Key>
             <PropertyRef Name="Id" />
@@ -4913,6 +4940,106 @@ FROM [dbo].[ShipmentRiderManifests] AS [ShipmentRiderManifests]</DefiningQuery>
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="ShipmentInvoiceBLManualMatches">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="WarehouseCode" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="BLInvoiceNumber" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="InvoiceNo" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Packages" Type="Int32" Nullable="false" />
+        </EntityType>
+        <EntityType Name="ShipmentBLInvoice">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" />
+          <Property Name="BLDetailsLineID" Type="Int32" />
+          <Property Name="BLID" Type="Int32" Nullable="false" />
+          <Property Name="BLNumber" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="InvoiceId" Type="Int32" />
+          <Property Name="WarehouseCode" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="InvoiceNo" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Packages" Type="Int32" />
+          <NavigationProperty Name="ShipmentInvoice" Relationship="WaterNutDBModel.ShipmentInvoiceShipmentBLInvoice" FromRole="ShipmentBLInvoice" ToRole="ShipmentInvoice" />
+          <NavigationProperty Name="ShipmentBLDetails" Relationship="WaterNutDBModel.ShipmentBLDetailsShipmentBLInvoice" FromRole="ShipmentBLInvoice" ToRole="ShipmentBLDetails" />
+          <NavigationProperty Name="ShipmentBL" Relationship="WaterNutDBModel.ShipmentBLShipmentBLInvoice" FromRole="ShipmentBLInvoice" ToRole="ShipmentBL" />
+        </EntityType>
+        <Association Name="ShipmentInvoiceShipmentBLInvoice">
+          <End Type="WaterNutDBModel.ShipmentInvoice" Role="ShipmentInvoice" Multiplicity="0..1" />
+          <End Type="WaterNutDBModel.ShipmentBLInvoice" Role="ShipmentBLInvoice" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ShipmentInvoice">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ShipmentBLInvoice">
+              <PropertyRef Name="InvoiceId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="ShipmentBLDetailsShipmentBLInvoice">
+          <End Type="WaterNutDBModel.ShipmentBLDetails" Role="ShipmentBLDetails" Multiplicity="0..1" />
+          <End Type="WaterNutDBModel.ShipmentBLInvoice" Role="ShipmentBLInvoice" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ShipmentBLDetails">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ShipmentBLInvoice">
+              <PropertyRef Name="BLDetailsLineID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="ShipmentBLShipmentBLInvoice">
+          <End Type="WaterNutDBModel.ShipmentBL" Role="ShipmentBL" Multiplicity="1" />
+          <End Type="WaterNutDBModel.ShipmentBLInvoice" Role="ShipmentBLInvoice" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ShipmentBL">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ShipmentBLInvoice">
+              <PropertyRef Name="BLID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="ShipmentInvoicePOItemMISMatches">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" />
+          <Property Name="PODetailsId" Type="Int32" />
+          <Property Name="INVDetailsId" Type="Int32" />
+          <Property Name="POId" Type="Int32" />
+          <Property Name="INVId" Type="Int32" />
+          <Property Name="PONumber" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="InvoiceNo" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="POItemCode" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="INVItemCode" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="PODescription" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="INVDescription" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="POCost" Type="Double" />
+          <Property Name="INVCost" Type="Double" />
+          <Property Name="POQuantity" Type="Double" />
+          <Property Name="INVQuantity" Type="Double" />
+          <Property Name="INVSalesFactor" Type="Double" />
+          <Property Name="POTotalCost" Type="Double" />
+          <Property Name="INVTotalCost" Type="Double" />
+          <NavigationProperty Name="ShipmentInvoicePOs" Relationship="WaterNutDBModel.ShipmentInvoicePOsShipmentInvoicePOItemMISMatches" FromRole="ShipmentInvoicePOItemMISMatches" ToRole="ShipmentInvoicePOs" />
+        </EntityType>
+        <Association Name="ShipmentInvoicePOsShipmentInvoicePOItemMISMatches">
+          <End Type="WaterNutDBModel.ShipmentInvoicePOs" Role="ShipmentInvoicePOs" Multiplicity="0..1" />
+          <End Type="WaterNutDBModel.ShipmentInvoicePOItemMISMatches" Role="ShipmentInvoicePOItemMISMatches" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ShipmentInvoicePOs">
+              <PropertyRef Name="InvoiceId" />
+              <PropertyRef Name="EntryData_Id" />
+            </Principal>
+            <Dependent Role="ShipmentInvoicePOItemMISMatches">
+              <PropertyRef Name="INVId" />
+              <PropertyRef Name="POId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -5314,6 +5441,8 @@ FROM [dbo].[ShipmentRiderManifests] AS [ShipmentRiderManifests]</DefiningQuery>
           <EntitySetMapping Name="ShipmentBLDetails">
             <EntityTypeMapping TypeName="WaterNutDBModel.ShipmentBLDetails">
               <MappingFragment StoreEntitySet="ShipmentBLDetails">
+                <ScalarProperty Name="CubicFeet" ColumnName="CubicFeet" />
+                <ScalarProperty Name="GrossWeightKg" ColumnName="GrossWeightKg" />
                 <ScalarProperty Name="BLId" ColumnName="BLId" />
                 <ScalarProperty Name="Comments" ColumnName="Comments" />
                 <ScalarProperty Name="Marks" ColumnName="Marks" />
@@ -5652,6 +5781,7 @@ FROM [dbo].[ShipmentRiderManifests] AS [ShipmentRiderManifests]</DefiningQuery>
           <EntitySetMapping Name="ShipmentInvoicePOItemQueryMatches">
             <EntityTypeMapping TypeName="WaterNutDBModel.ShipmentInvoicePOItemQueryMatches">
               <MappingFragment StoreEntitySet="ShipmentInvoicePOItemQueryMatches">
+                <ScalarProperty Name="rn" ColumnName="rn" />
                 <ScalarProperty Name="RankNo" ColumnName="RankNo" />
                 <ScalarProperty Name="Gallons" ColumnName="Gallons" />
                 <ScalarProperty Name="POInventoryItemId" ColumnName="POInventoryItemId" />
@@ -5672,30 +5802,6 @@ FROM [dbo].[ShipmentRiderManifests] AS [ShipmentRiderManifests]</DefiningQuery>
                 <ScalarProperty Name="POId" ColumnName="POId" />
                 <ScalarProperty Name="INVDetailsId" ColumnName="INVDetailsId" />
                 <ScalarProperty Name="PODetailsId" ColumnName="PODetailsId" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="ShipmentInvoicePOItemMISMatches">
-            <EntityTypeMapping TypeName="WaterNutDBModel.ShipmentInvoicePOItemMISMatches">
-              <MappingFragment StoreEntitySet="ShipmentInvoicePOItemMISMatches">
-                <ScalarProperty Name="INVSalesFactor" ColumnName="INVSalesFactor" />
-                <ScalarProperty Name="INVTotalCost" ColumnName="INVTotalCost" />
-                <ScalarProperty Name="POTotalCost" ColumnName="POTotalCost" />
-                <ScalarProperty Name="INVQuantity" ColumnName="INVQuantity" />
-                <ScalarProperty Name="POQuantity" ColumnName="POQuantity" />
-                <ScalarProperty Name="INVCost" ColumnName="INVCost" />
-                <ScalarProperty Name="POCost" ColumnName="POCost" />
-                <ScalarProperty Name="INVDescription" ColumnName="INVDescription" />
-                <ScalarProperty Name="PODescription" ColumnName="PODescription" />
-                <ScalarProperty Name="INVItemCode" ColumnName="INVItemCode" />
-                <ScalarProperty Name="POItemCode" ColumnName="POItemCode" />
-                <ScalarProperty Name="InvoiceNo" ColumnName="InvoiceNo" />
-                <ScalarProperty Name="PONumber" ColumnName="PONumber" />
-                <ScalarProperty Name="INVId" ColumnName="INVId" />
-                <ScalarProperty Name="POId" ColumnName="POId" />
-                <ScalarProperty Name="INVDetailsId" ColumnName="INVDetailsId" />
-                <ScalarProperty Name="PODetailsId" ColumnName="PODetailsId" />
-                <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -6022,6 +6128,55 @@ FROM [dbo].[ShipmentRiderManifests] AS [ShipmentRiderManifests]</DefiningQuery>
                 <ScalarProperty Name="RegEx" ColumnName="RegEx" />
                 <ScalarProperty Name="Attribute" ColumnName="Attribute" />
                 <ScalarProperty Name="SupplierItemDescriptionId" ColumnName="SupplierItemDescriptionId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ShipmentInvoiceBLManualMatches">
+            <EntityTypeMapping TypeName="WaterNutDBModel.ShipmentInvoiceBLManualMatches">
+              <MappingFragment StoreEntitySet="ShipmentInvoiceBLManualMatches">
+                <ScalarProperty Name="Packages" ColumnName="Packages" />
+                <ScalarProperty Name="InvoiceNo" ColumnName="InvoiceNo" />
+                <ScalarProperty Name="BLInvoiceNumber" ColumnName="BLInvoiceNumber" />
+                <ScalarProperty Name="WarehouseCode" ColumnName="WarehouseCode" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ShipmentBLInvoice">
+            <EntityTypeMapping TypeName="WaterNutDBModel.ShipmentBLInvoice">
+              <MappingFragment StoreEntitySet="ShipmentBLInvoice">
+                <ScalarProperty Name="Packages" ColumnName="Packages" />
+                <ScalarProperty Name="InvoiceNo" ColumnName="InvoiceNo" />
+                <ScalarProperty Name="WarehouseCode" ColumnName="WarehouseCode" />
+                <ScalarProperty Name="InvoiceId" ColumnName="InvoiceId" />
+                <ScalarProperty Name="BLNumber" ColumnName="BLNumber" />
+                <ScalarProperty Name="BLID" ColumnName="BLID" />
+                <ScalarProperty Name="BLDetailsLineID" ColumnName="BLDetailsLineID" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ShipmentInvoicePOItemMISMatches">
+            <EntityTypeMapping TypeName="WaterNutDBModel.ShipmentInvoicePOItemMISMatches">
+              <MappingFragment StoreEntitySet="ShipmentInvoicePOItemMISMatches">
+                <ScalarProperty Name="INVTotalCost" ColumnName="INVTotalCost" />
+                <ScalarProperty Name="POTotalCost" ColumnName="POTotalCost" />
+                <ScalarProperty Name="INVSalesFactor" ColumnName="INVSalesFactor" />
+                <ScalarProperty Name="INVQuantity" ColumnName="INVQuantity" />
+                <ScalarProperty Name="POQuantity" ColumnName="POQuantity" />
+                <ScalarProperty Name="INVCost" ColumnName="INVCost" />
+                <ScalarProperty Name="POCost" ColumnName="POCost" />
+                <ScalarProperty Name="INVDescription" ColumnName="INVDescription" />
+                <ScalarProperty Name="PODescription" ColumnName="PODescription" />
+                <ScalarProperty Name="INVItemCode" ColumnName="INVItemCode" />
+                <ScalarProperty Name="POItemCode" ColumnName="POItemCode" />
+                <ScalarProperty Name="InvoiceNo" ColumnName="InvoiceNo" />
+                <ScalarProperty Name="PONumber" ColumnName="PONumber" />
+                <ScalarProperty Name="INVId" ColumnName="INVId" />
+                <ScalarProperty Name="POId" ColumnName="POId" />
+                <ScalarProperty Name="INVDetailsId" ColumnName="INVDetailsId" />
+                <ScalarProperty Name="PODetailsId" ColumnName="PODetailsId" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>

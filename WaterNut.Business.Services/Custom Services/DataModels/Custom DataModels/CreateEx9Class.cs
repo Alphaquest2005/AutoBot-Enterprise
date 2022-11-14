@@ -1106,21 +1106,25 @@ namespace WaterNut.DataSpace
         {
             try
             {
-                //var elst = monthyear.Allocations
-                //              .OrderBy(x => x.AllocationId)
-                //              .GroupBy(x =>  (int?)x.AllocationId )
-                //              .Select(s => CreateMyPodData(s)).ToList();
-
-                var groupedlst = monthyear.Allocations
-                    .OrderBy(x => x.AllocationId)
-                    .GroupBy(x => x.PreviousItem_Id)
+                var xSalesByItemId = monthyear.Allocations
+                    .OrderBy(x => x.AllocationId).Select(x => (Item: (x.ItemNumber, x.InventoryItemId), xSale: x))
+                    .GroupBy(x => x.Item)
+                    .Select(x => (Key: x.Key, Value: x.Select(i => i.xSale).ToList()))
                     .ToList();
 
+                var groupedlst = Utils.CreateItemSet<EX9Allocations>(xSalesByItemId);
+
+                //var groupedlst = monthyear.Allocations
+                //    .OrderBy(x => x.AllocationId)
+                //    .GroupBy(x => x.PreviousItem_Id)
+                //    .ToList();
+
                 var elst = new List<List<EX9Allocations>>();
-                var nlst = new List<EX9Allocations>();
+
                 foreach (var group in groupedlst)
                 {
-                    var lst = group.ToList();
+                    var lst = group.Value.SelectMany(z => z.Value.Select(v => v).ToList()).ToList();
+                    var nlst = new List<EX9Allocations>();
                     while (lst.Any())
                     {
                         // focus on returns ignore weight for now
@@ -1144,6 +1148,7 @@ namespace WaterNut.DataSpace
                         {
                             if (nlst.Sum(x => x.QtyAllocated) + itm.QtyAllocated > 0)
                             {
+                                if (nlst.Any() && nlst.Sum(x => x.QtyAllocated) > 0) elst.Add(nlst);
                                 nlst = new List<EX9Allocations> { itm };
                                 lst.RemoveAt(0);
                             }
@@ -1156,12 +1161,19 @@ namespace WaterNut.DataSpace
 
                         if (nlst.Any() && nlst.Sum(x => x.QtyAllocated) > 0) elst.Add(nlst);
                     }
+
+                    if (nlst.Any() && nlst.Sum(x => x.QtyAllocated) < 0)
+                        updateXStatus(
+                            nlst.Select(x => new AsycudaSalesAllocations()
+                            {
+                                AllocationId = x.AllocationId, EntryDataDetailsId = x.EntryDataDetailsId,
+                                PreviousItem_Id = x.PreviousItem_Id
+                            }).ToList(), $"Set < 0: {nlst.Sum(x => x.QtyAllocated)}");
                 }
 
                 var res = elst.Select(CreateMyPodData).ToList();
 
-                if(nlst.Any() && !elst.Any())
-                    updateXStatus(nlst.Select(x => new AsycudaSalesAllocations(){AllocationId = x.AllocationId, EntryDataDetailsId = x.EntryDataDetailsId, PreviousItem_Id = x.PreviousItem_Id}).ToList(), $"Set < 0: {nlst.Sum(x => x.QtyAllocated)}");
+              
                 return res;
             }
             catch (Exception)

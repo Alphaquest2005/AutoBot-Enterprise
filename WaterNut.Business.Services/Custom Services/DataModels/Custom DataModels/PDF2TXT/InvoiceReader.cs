@@ -67,7 +67,7 @@ namespace WaterNut.DataSpace
                 //Get Template
                 var templates = GetTemplates(x => true);
 
-                foreach (var tmp in templates.OrderBy(x => x.OcrInvoices.Id))//.Where(x => x.OcrInvoices.Id == 43)
+                foreach (var tmp in templates.OrderBy(x => x.OcrInvoices.Id))//.Where(x => x.OcrInvoices.Id == 117)
                     try
                     {
                         if(TryReadFile(file, emailId, fileType, pdfTxt, client, overWriteExisting, docSet, tmp, fileTypeId)) return true;
@@ -330,7 +330,7 @@ namespace WaterNut.DataSpace
                 
             }
 
-            return null;
+            return "Error readying Ripped Text";
 
         }
 

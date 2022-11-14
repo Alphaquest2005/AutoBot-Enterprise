@@ -137,8 +137,6 @@ namespace EntryDataDS.Business.Entities
      
         public DbSet<ShipmentInvoicePOItemQueryMatches> ShipmentInvoicePOItemQueryMatches { get; set; }
      
-        public DbSet<ShipmentInvoicePOItemMISMatches> ShipmentInvoicePOItemMISMatches { get; set; }
-     
         public DbSet<ShipmentAttachedPOs> ShipmentAttachedPOs { get; set; }
      
         public DbSet<ShipmentInvoicePOManualMatches> ShipmentInvoicePOManualMatches { get; set; }
@@ -184,6 +182,12 @@ namespace EntryDataDS.Business.Entities
         public DbSet<SupplierItemDescription> SupplierItemDescription { get; set; }
      
         public DbSet<SupplierItemDescriptionRegEx> SupplierItemDescriptionRegEx { get; set; }
+     
+        public DbSet<ShipmentInvoiceBLManualMatches> ShipmentInvoiceBLManualMatches { get; set; }
+     
+        public DbSet<ShipmentBLInvoice> ShipmentBLInvoice { get; set; }
+     
+        public DbSet<ShipmentInvoicePOItemMISMatches> ShipmentInvoicePOItemMISMatches { get; set; }
      
 
 
@@ -279,8 +283,6 @@ namespace EntryDataDS.Business.Entities
          
             modelBuilder.Configurations.Add(new ShipmentInvoicePOItemQueryMatchesMap());
          
-            modelBuilder.Configurations.Add(new ShipmentInvoicePOItemMISMatchesMap());
-         
             modelBuilder.Configurations.Add(new ShipmentAttachedPOsMap());
          
             modelBuilder.Configurations.Add(new ShipmentInvoicePOManualMatchesMap());
@@ -326,6 +328,12 @@ namespace EntryDataDS.Business.Entities
             modelBuilder.Configurations.Add(new SupplierItemDescriptionMap());
          
             modelBuilder.Configurations.Add(new SupplierItemDescriptionRegExMap());
+         
+            modelBuilder.Configurations.Add(new ShipmentInvoiceBLManualMatchesMap());
+         
+            modelBuilder.Configurations.Add(new ShipmentBLInvoiceMap());
+         
+            modelBuilder.Configurations.Add(new ShipmentInvoicePOItemMISMatchesMap());
          
             modelBuilder.Configurations.Add(new AdjustmentsMap());
       

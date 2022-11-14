@@ -486,6 +486,7 @@
 ..\WaterNut.Business.Entities\Generated Business Entities\EntryDataDS\ShipmentBL.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\EntryDataDS\ShipmentBLDetails.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\EntryDataDS\ShipmentBLFreight.cs
+..\WaterNut.Business.Entities\Generated Business Entities\EntryDataDS\ShipmentBLInvoice.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\EntryDataDS\ShipmentErrors_RepeatInvoices.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\EntryDataDS\ShipmentErrors_RepeatMarks.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\EntryDataDS\ShipmentFreight.cs
@@ -493,6 +494,7 @@
 ..\WaterNut.Business.Entities\Generated Business Entities\EntryDataDS\ShipmentFreightDetails.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\EntryDataDS\ShipmentFreightManifests.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\EntryDataDS\ShipmentInvoice.cs
+..\WaterNut.Business.Entities\Generated Business Entities\EntryDataDS\ShipmentInvoiceBLManualMatches.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\EntryDataDS\ShipmentInvoiceDetailsItemAlias.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\EntryDataDS\ShipmentInvoicePOItemData.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\EntryDataDS\ShipmentInvoicePOItemMISMatches.cs
@@ -915,6 +917,7 @@
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentBL.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentBLDetails.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentBLFreight.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentBLInvoice.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentErrors_RepeatInvoices.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentErrors_RepeatMarks.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentFreight.map.cs
@@ -922,6 +925,7 @@
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentFreightDetails.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentFreightManifests.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentInvoice.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentInvoiceBLManualMatches.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentInvoiceDetailsItemAlias.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentInvoicePOItemData.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentInvoicePOItemMISMatches.map.cs
@@ -1354,6 +1358,7 @@
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\EntryDataDS\ShipmentBL.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\EntryDataDS\ShipmentBLDetails.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\EntryDataDS\ShipmentBLFreight.cs
+..\WaterNut.Business.Entities\Generated ChangeTracking Models\EntryDataDS\ShipmentBLInvoice.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\EntryDataDS\ShipmentErrors_RepeatInvoices.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\EntryDataDS\ShipmentErrors_RepeatMarks.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\EntryDataDS\ShipmentFreight.cs
@@ -1361,6 +1366,7 @@
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\EntryDataDS\ShipmentFreightDetails.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\EntryDataDS\ShipmentFreightManifests.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\EntryDataDS\ShipmentInvoice.cs
+..\WaterNut.Business.Entities\Generated ChangeTracking Models\EntryDataDS\ShipmentInvoiceBLManualMatches.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\EntryDataDS\ShipmentInvoiceDetailsItemAlias.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\EntryDataDS\ShipmentInvoicePOItemData.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\EntryDataDS\ShipmentInvoicePOItemMISMatches.cs
@@ -1770,6 +1776,7 @@
 ..\WaterNut.Business.Entities\Generated Constructors Models\EntryDataDS\ShipmentBL.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\EntryDataDS\ShipmentBLDetails.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\EntryDataDS\ShipmentBLFreight.cs
+..\WaterNut.Business.Entities\Generated Constructors Models\EntryDataDS\ShipmentBLInvoice.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\EntryDataDS\ShipmentErrors_RepeatInvoices.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\EntryDataDS\ShipmentErrors_RepeatMarks.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\EntryDataDS\ShipmentFreight.cs
@@ -1777,6 +1784,7 @@
 ..\WaterNut.Business.Entities\Generated Constructors Models\EntryDataDS\ShipmentFreightDetails.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\EntryDataDS\ShipmentFreightManifests.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\EntryDataDS\ShipmentInvoice.cs
+..\WaterNut.Business.Entities\Generated Constructors Models\EntryDataDS\ShipmentInvoiceBLManualMatches.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\EntryDataDS\ShipmentInvoiceDetailsItemAlias.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\EntryDataDS\ShipmentInvoicePOItemData.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\EntryDataDS\ShipmentInvoicePOItemMISMatches.cs
@@ -2186,6 +2194,7 @@
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\EntryDataDS\ShipmentBL.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\EntryDataDS\ShipmentBLDetails.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\EntryDataDS\ShipmentBLFreight.cs
+..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\EntryDataDS\ShipmentBLInvoice.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\EntryDataDS\ShipmentErrors_RepeatInvoices.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\EntryDataDS\ShipmentErrors_RepeatMarks.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\EntryDataDS\ShipmentFreight.cs
@@ -2193,6 +2202,7 @@
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\EntryDataDS\ShipmentFreightDetails.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\EntryDataDS\ShipmentFreightManifests.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\EntryDataDS\ShipmentInvoice.cs
+..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\EntryDataDS\ShipmentInvoiceBLManualMatches.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\EntryDataDS\ShipmentInvoiceDetailsItemAlias.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\EntryDataDS\ShipmentInvoicePOItemData.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\EntryDataDS\ShipmentInvoicePOItemMISMatches.cs
@@ -2602,6 +2612,7 @@
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\EntryDataDS\ShipmentBL.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\EntryDataDS\ShipmentBLDetails.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\EntryDataDS\ShipmentBLFreight.cs
+..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\EntryDataDS\ShipmentBLInvoice.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\EntryDataDS\ShipmentErrors_RepeatInvoices.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\EntryDataDS\ShipmentErrors_RepeatMarks.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\EntryDataDS\ShipmentFreight.cs
@@ -2609,6 +2620,7 @@
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\EntryDataDS\ShipmentFreightDetails.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\EntryDataDS\ShipmentFreightManifests.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\EntryDataDS\ShipmentInvoice.cs
+..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\EntryDataDS\ShipmentInvoiceBLManualMatches.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\EntryDataDS\ShipmentInvoiceDetailsItemAlias.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\EntryDataDS\ShipmentInvoicePOItemData.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\EntryDataDS\ShipmentInvoicePOItemMISMatches.cs
@@ -4263,6 +4275,7 @@
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentBL.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentBLDetails.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentBLFreight.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentBLInvoice.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentErrors_RepeatInvoices.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentErrors_RepeatMarks.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentFreight.map.cs
@@ -4270,6 +4283,7 @@
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentFreightDetails.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentFreightManifests.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentInvoice.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentInvoiceBLManualMatches.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentInvoiceDetailsItemAlias.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentInvoicePOItemData.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentInvoicePOItemMISMatches.map.cs
@@ -4909,6 +4923,7 @@
 ..\WaterNut.Business.Services\Contracts\EntryDataDS\IShipmentAttachmentsService.cs
 ..\WaterNut.Business.Services\Contracts\EntryDataDS\IShipmentBLDetailsService.cs
 ..\WaterNut.Business.Services\Contracts\EntryDataDS\IShipmentBLFreightService.cs
+..\WaterNut.Business.Services\Contracts\EntryDataDS\IShipmentBLInvoiceService.cs
 ..\WaterNut.Business.Services\Contracts\EntryDataDS\IShipmentBLService.cs
 ..\WaterNut.Business.Services\Contracts\EntryDataDS\IShipmentErrors_RepeatInvoicesService.cs
 ..\WaterNut.Business.Services\Contracts\EntryDataDS\IShipmentErrors_RepeatMarksService.cs
@@ -4916,6 +4931,7 @@
 ..\WaterNut.Business.Services\Contracts\EntryDataDS\IShipmentFreightDetailsService.cs
 ..\WaterNut.Business.Services\Contracts\EntryDataDS\IShipmentFreightManifestsService.cs
 ..\WaterNut.Business.Services\Contracts\EntryDataDS\IShipmentFreightService.cs
+..\WaterNut.Business.Services\Contracts\EntryDataDS\IShipmentInvoiceBLManualMatchesService.cs
 ..\WaterNut.Business.Services\Contracts\EntryDataDS\IShipmentInvoiceDetailsItemAliasService.cs
 ..\WaterNut.Business.Services\Contracts\EntryDataDS\IShipmentInvoicePOItemDataService.cs
 ..\WaterNut.Business.Services\Contracts\EntryDataDS\IShipmentInvoicePOItemMISMatchesService.cs
@@ -5325,6 +5341,7 @@
 ..\WaterNut.Business.Services\Services\EntryDataDS\ShipmentAttachmentsService.cs
 ..\WaterNut.Business.Services\Services\EntryDataDS\ShipmentBLDetailsService.cs
 ..\WaterNut.Business.Services\Services\EntryDataDS\ShipmentBLFreightService.cs
+..\WaterNut.Business.Services\Services\EntryDataDS\ShipmentBLInvoiceService.cs
 ..\WaterNut.Business.Services\Services\EntryDataDS\ShipmentBLService.cs
 ..\WaterNut.Business.Services\Services\EntryDataDS\ShipmentErrors_RepeatInvoicesService.cs
 ..\WaterNut.Business.Services\Services\EntryDataDS\ShipmentErrors_RepeatMarksService.cs
@@ -5332,6 +5349,7 @@
 ..\WaterNut.Business.Services\Services\EntryDataDS\ShipmentFreightDetailsService.cs
 ..\WaterNut.Business.Services\Services\EntryDataDS\ShipmentFreightManifestsService.cs
 ..\WaterNut.Business.Services\Services\EntryDataDS\ShipmentFreightService.cs
+..\WaterNut.Business.Services\Services\EntryDataDS\ShipmentInvoiceBLManualMatchesService.cs
 ..\WaterNut.Business.Services\Services\EntryDataDS\ShipmentInvoiceDetailsItemAliasService.cs
 ..\WaterNut.Business.Services\Services\EntryDataDS\ShipmentInvoicePOItemDataService.cs
 ..\WaterNut.Business.Services\Services\EntryDataDS\ShipmentInvoicePOItemMISMatchesService.cs

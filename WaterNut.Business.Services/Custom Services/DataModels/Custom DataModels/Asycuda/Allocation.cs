@@ -127,64 +127,23 @@ namespace WaterNut.DataSpace
             List<XSales_UnAllocated> unAllocatedxSales;
             unAllocatedxSales = GetUnAllocatedxSales();
 
-            var xSalesByItemId = unAllocatedxSales.Select(x => (Item: (x.ItemNumber, x.InventoryItemId), xSale:(dynamic) x))
+            var xSalesByItemId = unAllocatedxSales.Select(x => (Item: (x.ItemNumber, x.InventoryItemId), xSale:x))
                 .GroupBy(x => x.Item)
                 .Select(x => (Key: x.Key, Value: x.Select(i => i.xSale).ToList()))
                 .ToList();
 
-           var itemGroups = CreateItemSet(xSalesByItemId);
+           var itemGroups = Utils.CreateItemSet(xSalesByItemId);
 
            
            Parallel.ForEach(itemGroups, new ParallelOptions(){MaxDegreeOfParallelism = Convert.ToInt32(Environment.ProcessorCount * BaseDataModel.Instance.ResourcePercentage)}, x =>
            {
-                 AllocateXSales(x.Value.SelectMany(z => z.Value.Select(v => (XSales_UnAllocated)v).ToList()).ToList());
+                 AllocateXSales(x.Value.SelectMany(z => z.Value.Select(v => v).ToList()).ToList());
            });
 
 
            
 		}
 
-      
-
-        private static Dictionary<int, List<((string ItemNumber, int InventoryItemId) Key, List<dynamic> Value)>> CreateItemSet(List<((string ItemNumber, int InventoryItemId) Key, List<dynamic> Value)> items)
-        {
-            var res = new Dictionary<int, List<((string ItemNumber, int InventoryItemId) Key, List<dynamic> Value)>>();
-            var set = 0;
-			using (var ctx = new AllocationDSContext())
-            {
-                var itemsList = items.ToList();
-             
-                while (itemsList.Any())
-                {
-                    set += 1;
-                    var lst = new List<((string ItemNumber, int InventoryItemId) Key, List<dynamic> Value)>();
-                    var inventoryItem = itemsList.First();
-                    lst.Add(inventoryItem);
-
-					var aliaslst = ctx.InventoryItemAlias.Where(x => x.InventoryItemId == inventoryItem.Key.InventoryItemId || x.AliasItemId == inventoryItem.Key.InventoryItemId)
-                        .ToList()
-                        .Where(x => lst.All(z => z.Key.InventoryItemId != x.InventoryItemId))
-                        .Where(x => itemsList.Any(z => z.Key.InventoryItemId == x.InventoryItemId))
-                        .Select(x => (Key: (x.ItemNumber, x.InventoryItemId),
-                            Value: itemsList.Where(i => i.Key.InventoryItemId == x.InventoryItemId).SelectMany(v => v.Value)
-                                .ToList()))
-                        .ToList();
-                    if (aliaslst.Any())
-                    {
-                       // var AliasSetChildren = CreateItemSet(aliaslst);
-                       // aliaslst.AddRange(AliasSetChildren.SelectMany(x => x.Value).ToList());
-                        lst.AddRange(aliaslst);
-                    }
-
-                    
-                    itemsList = itemsList.ExceptBy(lst, x => x.Key).ToList();
-                    res.Add(set, lst);
-				}
-
-                
-               return res ;
-            }
-        }
 
         private static void AllocateXSales(List<XSales_UnAllocated> unAllocatedxSales)
         {
@@ -252,7 +211,7 @@ namespace WaterNut.DataSpace
                 .Select(x => (Key: x.Key, Value: x.Select(i => i.xSale).ToList()))
                 .ToList();
 
-            var itemGroups = CreateItemSet(rawSet);
+            var itemGroups = Utils.CreateItemSet(rawSet);
 
             Parallel.ForEach(itemGroups, new ParallelOptions() { MaxDegreeOfParallelism = Convert.ToInt32(Environment.ProcessorCount * BaseDataModel.Instance.ResourcePercentage) }, x =>
             {
@@ -388,7 +347,7 @@ namespace WaterNut.DataSpace
 
             
 
-			var itemGroups = CreateItemSet(rawSet);
+			var itemGroups = Utils.CreateItemSet(rawSet);
 
 
             var ggitms = GroupOfGroups(itemGroups);
@@ -493,12 +452,13 @@ namespace WaterNut.DataSpace
             var itemSetsValues = itemSets.ToList();
 
             var count = itemSetsValues.Count();
-            foreach (var itm in itemSetsValues.OrderBy(x => x.Key.EntryDataDate))
+            foreach (var itm in itemSetsValues.OrderBy(x => x.Key.EntryDataDate)
                 ///Parallel.ForEach(itemSetsValues.OrderBy(x => x.Key.EntryDataDate)
 
                 //.ThenBy(x => x.Key.EntryDataId).ThenBy(x => x.Key.ItemNumber)
 
-                // .Where(x => x.Key.EntryDataId == "DEC21-DES" && x.Key.ItemNumber == "LUC/1003")
+                // .Where(x => x.Key.EntryDataId == "29119-7644")// && x.Key.ItemNumber == "LUC/1003"
+                )
 
                 //.Where(x => x.EntriesList.Any(z => z.TariffCode.Contains("61091010")))
                 // .Where(x => x.EntriesList.Any(z => z.AsycudaDocument.CNumber == "1523" && z.LineNumber == 45))

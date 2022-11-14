@@ -124,9 +124,7 @@
         <AssociationConnector Association="WaterNutDBModel.FK_ShipmentInvoiceDetails_ShipmentInvoice1" />
         <EntityTypeShape EntityType="WaterNutDBModel.ShipmentInvoicePOs" Width="2.375" PointX="14.375" PointY="11.125" />
         <AssociationConnector Association="WaterNutDBModel.FK_ShipmentInvoicePOs_ShipmentInvoice" />
-        <EntityTypeShape EntityType="WaterNutDBModel.ShipmentInvoicePOItemQueryMatches" Width="1.5" PointX="17.125" PointY="16.75" />
-        <EntityTypeShape EntityType="WaterNutDBModel.ShipmentInvoicePOItemMISMatches" Width="2.75" PointX="20" PointY="11.75" />
-        <AssociationConnector Association="WaterNutDBModel.ShipmentInvoicePOsShipmentInvoicePOItemMISMatches" />
+        <EntityTypeShape EntityType="WaterNutDBModel.ShipmentInvoicePOItemQueryMatches" Width="2.125" PointX="17.125" PointY="16.75" />
         <EntityTypeShape EntityType="WaterNutDBModel.ShipmentAttachedPOs" Width="1.5" PointX="9.375" PointY="21.25" />
         <EntityTypeShape EntityType="WaterNutDBModel.ShipmentInvoicePOManualMatches" Width="1.5" PointX="17.375" PointY="5.75" />
         <EntityTypeShape EntityType="WaterNutDBModel.ShipmentInvoiceRiderDetails" Width="1.5" PointX="10.125" PointY="13.875" />
@@ -157,6 +155,13 @@
         <EntityTypeShape EntityType="WaterNutDBModel.xSalesDetails" Width="1.5" PointX="3" PointY="24.125" />
         <EntityTypeShape EntityType="WaterNutDBModel.xSalesFiles" Width="1.5" PointX="0.75" PointY="25.375" />
         <AssociationConnector Association="WaterNutDBModel.FK_xSalesDetails_xSalesFiles" />
+        <EntityTypeShape EntityType="WaterNutDBModel.ShipmentInvoiceBLManualMatches" Width="2.875" PointX="22.375" PointY="8.75" />
+        <EntityTypeShape EntityType="WaterNutDBModel.ShipmentBLInvoice" Width="2.25" PointX="23.375" PointY="4.75" />
+        <AssociationConnector Association="WaterNutDBModel.ShipmentInvoiceShipmentBLInvoice" />
+        <AssociationConnector Association="WaterNutDBModel.ShipmentBLDetailsShipmentBLInvoice" />
+        <AssociationConnector Association="WaterNutDBModel.ShipmentBLShipmentBLInvoice" />
+        <EntityTypeShape EntityType="WaterNutDBModel.ShipmentInvoicePOItemMISMatches" Width="2" PointX="22.5" PointY="11.375" />
+        <AssociationConnector Association="WaterNutDBModel.ShipmentInvoicePOsShipmentInvoicePOItemMISMatches" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

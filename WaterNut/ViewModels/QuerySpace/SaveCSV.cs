@@ -81,7 +81,7 @@ namespace WaterNut.QuerySpace
                     {
                         var fileTypes = FileTypeManager.GetImportableFileType(fileType,
                             FileTypeManager.FileFormats.Xlsx, f);
-
+                        fileTypes.ForEach(x => x.AsycudaDocumentSetId = asycudaDocumentSetId);
                         XLSXProcessor.Xlsx2csv(new FileInfo[]{ new FileInfo(f)}, fileTypes.FirstOrDefault(), overwrite);
                     }
 

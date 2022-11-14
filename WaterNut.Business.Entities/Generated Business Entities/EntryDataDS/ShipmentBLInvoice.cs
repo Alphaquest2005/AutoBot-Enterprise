@@ -18,17 +18,10 @@ namespace EntryDataDS.Business.Entities
 
     //[JsonObject(IsReference = true)]
     [DataContract(IsReference = true, Namespace="http://www.insight-software.com/WaterNut")]
-    public partial class ShipmentBLDetails : BaseEntity<ShipmentBLDetails>, ITrackable 
+    public partial class ShipmentBLInvoice : BaseEntity<ShipmentBLInvoice>, ITrackable 
     {
-        partial void AutoGenStartUp() //ShipmentBLDetails()
-        {
-            this.ShipmentRiderBLs = new List<ShipmentRiderBLs>();
-            this.ShipmentFreightBLs = new List<ShipmentFreightBLs>();
-            this.ShipmentBLInvoice = new List<ShipmentBLInvoice>();
-        }
-
         [DataMember]
-        public int Id 
+        public int id 
         {
             get
             {
@@ -43,67 +36,22 @@ namespace EntryDataDS.Business.Entities
         }
         int _id;
         [DataMember]
-        public int Quantity 
+        public Nullable<int> BLDetailsLineID 
         {
             get
             {
-                return _quantity;
+                return _bldetailslineid;
             }
             set
             {
-                _quantity = value;
+                _bldetailslineid = value;
                 //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
                 NotifyPropertyChanged();
             }
         }
-        int _quantity;
+        Nullable<int> _bldetailslineid;
         [DataMember]
-        public string PackageType 
-        {
-            get
-            {
-                return _packagetype;
-            }
-            set
-            {
-                _packagetype = value;
-                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
-                NotifyPropertyChanged();
-            }
-        }
-        string _packagetype;
-        [DataMember]
-        public string Marks 
-        {
-            get
-            {
-                return _marks;
-            }
-            set
-            {
-                _marks = value;
-                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
-                NotifyPropertyChanged();
-            }
-        }
-        string _marks;
-        [DataMember]
-        public string Comments 
-        {
-            get
-            {
-                return _comments;
-            }
-            set
-            {
-                _comments = value;
-                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
-                NotifyPropertyChanged();
-            }
-        }
-        string _comments;
-        [DataMember]
-        public int BLId 
+        public int BLID 
         {
             get
             {
@@ -118,43 +66,86 @@ namespace EntryDataDS.Business.Entities
         }
         int _blid;
         [DataMember]
-        public Nullable<double> GrossWeightKg 
+        public string BLNumber 
         {
             get
             {
-                return _grossweightkg;
+                return _blnumber;
             }
             set
             {
-                _grossweightkg = value;
+                _blnumber = value;
                 //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
                 NotifyPropertyChanged();
             }
         }
-        Nullable<double> _grossweightkg;
+        string _blnumber;
         [DataMember]
-        public Nullable<double> CubicFeet 
+        public Nullable<int> InvoiceId 
         {
             get
             {
-                return _cubicfeet;
+                return _invoiceid;
             }
             set
             {
-                _cubicfeet = value;
+                _invoiceid = value;
                 //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
                 NotifyPropertyChanged();
             }
         }
-        Nullable<double> _cubicfeet;
+        Nullable<int> _invoiceid;
         [DataMember]
-        public List<ShipmentRiderBLs> ShipmentRiderBLs { get; set; }
+        public string WarehouseCode 
+        {
+            get
+            {
+                return _warehousecode;
+            }
+            set
+            {
+                _warehousecode = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _warehousecode;
         [DataMember]
-        public List<ShipmentFreightBLs> ShipmentFreightBLs { get; set; }
+        public string InvoiceNo 
+        {
+            get
+            {
+                return _invoiceno;
+            }
+            set
+            {
+                _invoiceno = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _invoiceno;
+        [DataMember]
+        public Nullable<int> Packages 
+        {
+            get
+            {
+                return _packages;
+            }
+            set
+            {
+                _packages = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<int> _packages;
+        [DataMember]
+        public ShipmentInvoice ShipmentInvoice { get; set; }
+        [DataMember]
+        public ShipmentBLDetails ShipmentBLDetails { get; set; }
         [DataMember]
         public ShipmentBL ShipmentBL { get; set; }
-        [DataMember]
-        public List<ShipmentBLInvoice> ShipmentBLInvoice { get; set; }
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

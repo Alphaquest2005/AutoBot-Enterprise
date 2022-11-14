@@ -25,14 +25,16 @@ namespace xlsxWriter
         private static readonly string RiderManualMatchesTag = "Manual Matches";
 
         public static List<(string reference, string filepath)> CreateCSV(string shipmentInvoiceKey,
-                List<ShipmentInvoice> shipmentInvoices, string emailId)
+            List<ShipmentInvoice> shipmentInvoices, string emailId,
+            List<(string WarehouseCode, int Packages, string InvoiceNo)> packingDetails)
         {
             var riderId = new CoreEntitiesContext().Emails.FirstOrDefault(x => x.EmailId == emailId && x.MachineName == Environment.MachineName)?.EmailUniqueId ?? 0;
-            return CreateCSV(shipmentInvoiceKey, shipmentInvoices, riderId);
+            return CreateCSV(shipmentInvoiceKey, shipmentInvoices, riderId,packingDetails);
         }
 
         public static List<(string reference, string filepath)> CreateCSV(string shipmentInvoiceKey,
-            List<ShipmentInvoice> shipmentInvoices, int riderId)
+            List<ShipmentInvoice> shipmentInvoices, int riderId,
+            List<(string WarehouseCode, int Packages, string InvoiceNo)> packingDetails)
         {
             try
             {
@@ -45,126 +47,105 @@ namespace xlsxWriter
                                 BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId
                                 && x.FileImporterInfos.EntryType == FileTypeManager.EntryTypes.POTemplate);
 
-                
+
 
 
                 var header = poTemplate.FileTypeMappings.OrderBy(x => x.Id)
-                    .Select(x => new {value = x, index = poTemplate.FileTypeMappings.IndexOf(x)})
+                    .Select(x => new { value = x, index = poTemplate.FileTypeMappings.IndexOf(x) })
                     .ToDictionary(x => (Column: x.value.OriginalName, Index: x.index), v => v.value);
 
 
                 ShipmentInvoice parent = null;
                 Workbook workbook = null;
                 var invoiceRow = 0;
-                List<ShipmentRiderInvoice> riderdetails = null;
                 var doRider = false;
                 foreach (var shipmentInvoice in shipmentInvoices)
                 {
+
+
                     try
                     {
 
-                    var pdfFile = new FileInfo(shipmentInvoice.SourceFile);
+                        var pdfFile = new FileInfo(shipmentInvoice.SourceFile);
 
-                    if (shipmentInvoice.ShipmentRiderInvoice.Any() &&
-                        shipmentInvoice.ShipmentRiderInvoice.First().Packages > 0)
-                    {
-                        parent = shipmentInvoice;
+                        var packingLst = packingDetails.Where(x =>
+                                shipmentInvoice.ShipmentInvoicePOs.Any(z => z.ShipmentInvoice.InvoiceNo == x.InvoiceNo))
+                            .ToList();
 
-                            
-                        if (parent.ShipmentInvoicePOs.Any(x => !String.Equals(x.PurchaseOrders.PONumber, "Null", StringComparison.CurrentCultureIgnoreCase)))
+                        var isCombined = (packingLst.FirstOrDefault(x => x.InvoiceNo == shipmentInvoice.InvoiceNo).Packages) == 0;
+
+
+                        if (packingLst.Any() && !isCombined)
                         {
-                            csvFilePath = Path.Combine(pdfFile.DirectoryName,
-                                $"{parent.ShipmentInvoicePOs.First().PurchaseOrders.PONumber.Replace("/", "-")}.xlsx");
-                            csvs.Add((parent.ShipmentInvoicePOs.First().PurchaseOrders.PONumber, csvFilePath));
+                            parent = shipmentInvoice;
+
+
+                            if (parent.ShipmentInvoicePOs.Any(x => !String.Equals(x.PurchaseOrders.PONumber, "Null",
+                                    StringComparison.CurrentCultureIgnoreCase)))
+                            {
+                                csvFilePath = Path.Combine(pdfFile.DirectoryName,
+                                    $"{parent.ShipmentInvoicePOs.First().PurchaseOrders.PONumber.Replace("/", "-")}.xlsx");
+                                csvs.Add((parent.ShipmentInvoicePOs.First().PurchaseOrders.PONumber, csvFilePath));
+                            }
+                            else
+                            {
+                                csvFilePath = Path.Combine(pdfFile.DirectoryName,
+                                    $"{parent.InvoiceNo.Replace("/", "-")}.xlsx");
+                                csvs.Add((parent.InvoiceNo, csvFilePath));
+                            }
+
+                            workbook = CreateShipmentWorkBook(riderId, parent, csvFilePath, header,
+                                out invoiceRow, packingLst, out doRider);
+                        }
+
+                        if (workbook == null) continue;
+
+                        WriteInvHeader(shipmentInvoice, header, workbook, isCombined);
+
+                        if (shipmentInvoice.ShipmentInvoicePOs.Any(x => !String.Equals(x.PurchaseOrders.PONumber,
+                                "Null", StringComparison.CurrentCultureIgnoreCase)))
+                        {
+                            foreach (var pO in shipmentInvoice.ShipmentInvoicePOs)
+                            {
+                                pdfFilePath = Path.Combine(pdfFile.DirectoryName,
+                                    $"{pO.PurchaseOrders.PONumber.Replace("/", "-")}.pdf");
+
+
+                                WritePOToFile(pO, workbook, header, doRider, packingLst, invoiceRow,
+                                    (shipmentInvoice.ShipmentInvoicePOs.Count > 1));
+
+
+                                if (pdfFile.FullName != pdfFilePath)
+                                    File.Copy(pdfFile.FullName, pdfFilePath, true);
+                                csvs.Add((pO.PurchaseOrders.PONumber, pdfFilePath));
+                            }
+
+                            DoMisMatches(shipmentInvoice, workbook);
+                            workbook.Save();
                         }
                         else
                         {
-                            csvFilePath = Path.Combine(pdfFile.DirectoryName, $"{parent.InvoiceNo.Replace("/", "-")}.xlsx");
-                            csvs.Add((parent.InvoiceNo, csvFilePath));
-                        }
-
-                        workbook = CreateShipmentWorkBook(riderId, parent, csvFilePath, header,
-                            out invoiceRow, out riderdetails, out doRider);
-                    }
-
-                    if (!shipmentInvoice.ShipmentRiderInvoice.Any())
-                    {
-                        parent = shipmentInvoice;
+                            pdfFilePath = Path.Combine(pdfFile.DirectoryName,
+                                $"{shipmentInvoice.InvoiceNo.Replace("/", "-")}.pdf");
 
 
-                        if (parent.ShipmentInvoicePOs.Any(x => !String.Equals(x.PurchaseOrders.PONumber, "Null", StringComparison.CurrentCultureIgnoreCase)))
-                        {
-                            csvFilePath = Path.Combine(pdfFile.DirectoryName,
-                                $"{parent.ShipmentInvoicePOs.First().PurchaseOrders.PONumber.Replace("/", "-")}.xlsx");
-                            csvs.Add((parent.ShipmentInvoicePOs.First().PurchaseOrders.PONumber, csvFilePath));
-                        }
-                        else
-                        {
-                            csvFilePath = Path.Combine(pdfFile.DirectoryName, $"{parent.InvoiceNo.Replace("/","-")}.xlsx");
-                            csvs.Add((parent.InvoiceNo, csvFilePath));
-                        }
+                            WriteInvToFile(shipmentInvoice, workbook, header, doRider, packingLst);
 
-                        workbook = CreateShipmentWorkBook(riderId, parent, csvFilePath, header,
-                            out invoiceRow, out riderdetails, out doRider);
-                    }
-
-                    if (workbook == null) continue;
-                    WriteInvHeader(shipmentInvoice, header, workbook);
-
-                    if (shipmentInvoice.ShipmentInvoicePOs.Any(x => !String.Equals(x.PurchaseOrders.PONumber, "Null", StringComparison.CurrentCultureIgnoreCase)))
-                    {
-                        foreach (var pO in shipmentInvoice.ShipmentInvoicePOs)
-                        {
-                            pdfFilePath = Path.Combine(pdfFile.DirectoryName, $"{pO.PurchaseOrders.PONumber.Replace("/", "-")}.pdf");
-
-
-                            WritePOToFile(pO, workbook, header, doRider, riderdetails, invoiceRow,
-                                ( shipmentInvoice.ShipmentInvoicePOs.Count > 1));//shipmentInvoice.ShipmentRiderInvoice.FirstOrDefault()?.Packages ?? 0) == 0 ||
-
-                            //DoMisMatches(shipmentInvoice, workbook);
-                            //workbook.Save();
-
-                            if (pdfFile.FullName != pdfFilePath)
+                            DoMisMatches(shipmentInvoice, workbook);
+                            workbook.Save();
+                            if (pdfFile.FullName.ToUpper() != pdfFilePath.ToUpper())
                                 File.Copy(pdfFile.FullName, pdfFilePath, true);
-                            csvs.Add((pO.PurchaseOrders.PONumber, pdfFilePath));
+                            csvs.Add((shipmentInvoice.InvoiceNo, pdfFilePath));
                         }
-                        //if(shipmentInvoice.InvoiceTotal - Math.Round(shipmentInvoice.ShipmentInvoicePOs.SelectMany(x => x.PurchaseOrders.EntryDataDetails).Sum(x => x.Cost * x.Quantity), 2) > 0)
-                        //if(Math.Round((double)(shipmentInvoice.InvoiceTotal 
-                        //                       - (shipmentInvoice.InvoiceDetails.Sum(x => x.Cost * x.Quantity) 
-                        //                           + shipmentInvoice.TotalInternalFreight ?? 0 
-                        //                           + shipmentInvoice.TotalInsurance ?? 0 
-                        //                           + shipmentInvoice.TotalOtherCost ?? 
-                        //                           - shipmentInvoice.TotalDeduction ??0)), 2) > 0)
-                            DoMisMatches(shipmentInvoice, workbook);
-                        workbook.Save();
-                    }
-                    else
-                    {
-                        pdfFilePath = Path.Combine(pdfFile.DirectoryName, $"{shipmentInvoice.InvoiceNo.Replace("/", "-")}.pdf");
-
-
-                        WriteInvToFile(shipmentInvoice, workbook, header, doRider, riderdetails);
-                        //if (Math.Round((double)(shipmentInvoice.InvoiceTotal
-                        //                        - (shipmentInvoice.InvoiceDetails.Sum(x => x.Cost * x.Quantity)
-                        //                            + shipmentInvoice.TotalInternalFreight ?? 0
-                        //                            + shipmentInvoice.TotalInsurance ?? 0
-                        //                            + shipmentInvoice.TotalOtherCost ??
-                        //                            -shipmentInvoice.TotalDeduction ?? 0)), 2) > 0)
-                            DoMisMatches(shipmentInvoice, workbook);
-                        workbook.Save();
-                        if (pdfFile.FullName.ToUpper() != pdfFilePath.ToUpper())
-                            File.Copy(pdfFile.FullName, pdfFilePath, true);
-                        csvs.Add((shipmentInvoice.InvoiceNo, pdfFilePath));
-                    }
                     }
                     catch (Exception)
                     {
-                       
+
                     }
-                }           
+                }
 
 
-            return csvs;
+                return csvs;
             }
             catch (Exception e)
             {
@@ -176,7 +157,7 @@ namespace xlsxWriter
 
         private static void WriteInvToFile(ShipmentInvoice shipmentInvoice, Workbook workbook,
             Dictionary<(string Column, int Index), FileTypeMappings> header,
-            bool doRider, List<ShipmentRiderInvoice> riderdetails)
+            bool doRider, List<(string WarehouseCode, int Packages, string InvoiceNo)> packageDetails)
         {
             workbook.SetCurrentWorksheet("POTemplate");
             var i = workbook.CurrentWorksheet
@@ -225,8 +206,8 @@ namespace xlsxWriter
                 SetValue(workbook, i, header.First(x => x.Key.Column == nameof(itm.Units)).Key.Index,
                     itm.Units);
 
-                if (doRider && i < riderdetails.Count)
-                    foreach (var riderdetail in riderdetails)
+                if (doRider && i < packageDetails.Count)
+                    foreach (var riderdetail in packageDetails)
                     {
                         SetValue(workbook, i, header.First(x => x.Key.Column == "Packages").Key.Index,
                             riderdetail.Packages);
@@ -243,7 +224,7 @@ namespace xlsxWriter
 
         private static void WritePOToFile(ShipmentInvoicePOs pO, Workbook workbook,
             Dictionary<(string Column, int Index), FileTypeMappings> header, bool doRider,
-            List<ShipmentRiderInvoice> riderdetails, int invoiceRow, bool combineedFile)
+            List<(string WarehouseCode, int Packages, string InvoiceNo)> packageDetails, int invoiceRow, bool combineedFile)
         {
             workbook.SetCurrentWorksheet("POTemplate");
             var i = workbook.CurrentWorksheet
@@ -266,10 +247,9 @@ namespace xlsxWriter
             foreach (var itm in pO.PurchaseOrders.EntryDataDetails
                 .OrderBy(x =>
                     x.INVItems.FirstOrDefault()?.InvoiceDetails?.FileLineNumber ?? x.FileLineNumber)
-                .Where(x => pO.POMISMatches.All(
-                    m => m.POItemCode != x.ItemNumber &&
-                         m.PODescription !=
-                         x.ItemDescription /* m.PODetailsId != x.EntryDataDetailsId ---- Took this out because it Allowed the grouped po items to still show*/)))
+                .Where(x => x.INVItems.Any() || (!x.INVItems.Any() &&
+                                             pO.POMISMatches.All(m => m.POItemCode != x.ItemNumber &&
+                                                                      m.PODescription != x.ItemDescription /* m.PODetailsId != x.EntryDataDetailsId ---- Took this out because it Allowed the grouped po items to still show*/))))
             {
                 var pOItem = itm.INVItems.OrderByDescending(x => x.RankNo).FirstOrDefault();
 
@@ -360,15 +340,15 @@ namespace xlsxWriter
 
                 SetValue(workbook, i, header.First(x => x.Key.Column == nameof(itm.Units)).Key.Index,
                     itm.Units);
-                if (doRider && i < riderdetails.Count) //
-                    foreach (var riderdetail in riderdetails)
+                if (doRider && i < packageDetails.Count) //
+                    foreach (var riderdetail in packageDetails)
                     {
                         SetValue(workbook, i + invoiceRow,
                             header.First(x => x.Key.Column == "Packages").Key.Index,
-                            riderdetail.ShipmentRiderDetails.Pieces);
+                            riderdetail.Packages);
                         SetValue(workbook, i + invoiceRow,
                             header.First(x => x.Key.Column == "Warehouse").Key.Index,
-                            riderdetail.ShipmentRiderDetails.WarehouseCode);
+                            riderdetail.WarehouseCode);
                     }
 
                 i++;
@@ -432,12 +412,16 @@ namespace xlsxWriter
         { 
             var pOs = shipmentInvoice.ShipmentInvoicePOs.Select(x => x.EntryData_Id).ToList();
 
-            var matchesList = new EntryDataDSContext().ShipmentInvoicePOItemMISMatches
+            var shipmentInvoicePoItemMisMatchesEnumerable = GetMisMatches();
+            var matchesList = shipmentInvoicePoItemMisMatchesEnumerable
                 .Where(x => x.INVId == shipmentInvoice.Id && pOs.Contains(x.POId ?? 0)).ToList();
 
 
-            var preMisMatchesList = new EntryDataDSContext().ShipmentInvoicePOItemMISMatches
-                .Where(x => x.INVId == shipmentInvoice.Id || pOs.Contains(x.POId ?? 0)).ToList();
+            var preMisMatchesList = shipmentInvoicePoItemMisMatchesEnumerable
+                .Where(x => x != null && ((x.INVId == shipmentInvoice.Id && (x.ShipmentInvoicePOs == null || (x.ShipmentInvoicePOs != null && x.ShipmentInvoicePOs.ShipmentInvoice.InvoiceDetails.Any(z => !z.POItems.Any() && (x.INVDetailsId == null || z.Id == x.INVDetailsId))))))
+                            ||
+                             (pOs.Contains(x.POId ?? 0) && (x.ShipmentInvoicePOs == null || (x.ShipmentInvoicePOs != null && x.ShipmentInvoicePOs.PurchaseOrders.EntryDataDetails.Any(z => !z.INVItems.Any() && (x.PODetailsId == null || z.EntryDataDetailsId == x.PODetailsId))))
+                                 /* ------put back because it suggest bad matches be imported ..*/)).ToList();
 
             var shipmentInvoicePoItemMisMatchesList = preMisMatchesList.Where(x =>
                 matchesList.All(z => z.PODetailsId != x.PODetailsId || z.INVDetailsId != x.INVDetailsId)).ToList();
@@ -494,6 +478,12 @@ namespace xlsxWriter
                 SetValue(workbook, i, header.IndexOf("PODetailsId"), mis.PODetailsId);
                 i++;
             }
+        }
+
+        private static List<ShipmentInvoicePOItemMISMatches> misMatches = null;
+        private static List<ShipmentInvoicePOItemMISMatches> GetMisMatches()
+        {
+            return misMatches ?? (misMatches = new EntryDataDSContext().ShipmentInvoicePOItemMISMatches.ToList());
         }
 
         private static List<ShipmentInvoicePOItemMISMatches> ReMatchOnItemDescription(List<ShipmentInvoicePOItemMISMatches> shipmentInvoicePoItemMisMatchesList)
@@ -554,7 +544,7 @@ namespace xlsxWriter
 
                 var summaryWorkBook = Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder,
                     "Imports",
-                    $"Summary-{client.Item3}-{client.Item2}.xlsx");
+                    $"Summary-{client.BLNumber}-{client.RiderId}.xlsx");
                 if (File.Exists(summaryWorkBook)) File.Delete(summaryWorkBook);
                 var workbook = new Workbook(summaryWorkBook, "Summary");
                 CreateSummarySheet(summaryPkg, workbook);
@@ -655,13 +645,13 @@ namespace xlsxWriter
             {
                 z.InvoiceNo, z.ShipmentInvoicePOs.FirstOrDefault()?.PurchaseOrders?.PONumber, z.InvoiceTotal,
                 z.ImportedLines, z.SupplierCode,
-                Packages = z.ShipmentRiderInvoice.Where(r => r.RiderID == summaryPkg.RiderSummary?.Id)
-                    .Sum(w => w.Packages)
+                Packages = summaryPkg.PackingDetails.Where(r => r.InvoiceNumber == z.InvoiceNo).Select(r => r.Packages).DefaultIfEmpty(0).Sum(),//z.ShipmentRiderInvoice.Where(r => r.RiderID == summaryPkg.RiderSummary?.Id).Sum(w => w.Packages)
+                WarehouseCode = summaryPkg.PackingDetails.Where(r => r.InvoiceNumber == z.InvoiceNo).Select(x => x.Marks).DefaultIfEmpty("SAME").Aggregate((o,n) => $"{o},{n}")
             });
 
             currentline += 2 + summaryPkg.RiderDetails.Count;
             WriteTable(pkgInvoices.Select(x => (dynamic) x).ToList(), workbook, currentline,
-                "InvoiceNo, PONumber, InvoiceTotal, ImportedLines, SupplierCode, Packages", "All Invoices");
+                "InvoiceNo, PONumber, InvoiceTotal, ImportedLines, SupplierCode, Packages, WarehouseCode", "All Invoices");
         }
 
         private static void WriteTable(List<dynamic> table, Workbook workbook, int currentline, string headerString,
@@ -1019,7 +1009,7 @@ namespace xlsxWriter
 
         private static Workbook CreateShipmentWorkBook(int riderId, ShipmentInvoice shipmentInvoice, string csvFilePath,
             Dictionary<(string Column, int Index), FileTypeMappings> header,
-            out int invoiceRow, out List<ShipmentRiderInvoice> riderdetails, out bool doRider)
+            out int invoiceRow,  List<(string WarehouseCode, int Packages, string InvoiceNo)> packingDetails, out bool doRider)
         {
             try
             {
@@ -1027,32 +1017,26 @@ namespace xlsxWriter
                     new Workbook(csvFilePath, "POTemplate"); // Create new workbook with a worksheet called Sheet1
                 var headerRow = 0;
 
-                MoreEnumerable.ForEach(header, x => { SetValue(workbook, headerRow, x.Key.Index, x.Value.DestinationName); });
+                MoreEnumerable.ForEach(header,
+                    x => { SetValue(workbook, headerRow, x.Key.Index, x.Value.DestinationName); });
                 invoiceRow = 1;
 
 
-                riderdetails = shipmentInvoice.ShipmentRiderInvoice
-                    .Where(x => x.ShipmentRiderDetails != null && x.RiderID == riderId && x.Packages > 0).ToList();
+
+
                 doRider = false;
-                if (riderdetails.Any())
-                    if (shipmentInvoice.ShipmentInvoicePOs.Sum(x => x.PurchaseOrders.EntryDataDetails.Count()) <
-                        riderdetails.Count())
-                    {
-                        doRider = false;
-                        SetValue(workbook, invoiceRow, header.First(x => x.Key.Column == "Packages").Key.Index,
-                            riderdetails.Sum(x => x.Packages));
-                        SetValue(workbook, invoiceRow, header.First(x => x.Key.Column == "Warehouse").Key.Index,
-                            riderdetails.Select(x => x.WarehouseCode).DefaultIfEmpty("")
-                                .Aggregate((o, c) => o + "," + c));
-                    }
-                    else
-                    {
-                        doRider = true;
-                        SetValue(workbook, invoiceRow, header.First(x => x.Key.Column == "Packages").Key.Index,
-                            riderdetails.First().Packages);
-                        SetValue(workbook, invoiceRow, header.First(x => x.Key.Column == "Warehouse").Key.Index,
-                            riderdetails.First().WarehouseCode);
-                    }
+
+                if (!packingDetails.Any()) return workbook;
+             
+                doRider = shipmentInvoice.ShipmentInvoicePOs.Sum(x => x.PurchaseOrders.EntryDataDetails.Count()) >= packingDetails.Count();
+
+              
+                SetValue(workbook, invoiceRow, header.First(x => x.Key.Column == "Packages").Key.Index,
+                    packingDetails.Sum(x => x.Packages));
+                SetValue(workbook, invoiceRow, header.First(x => x.Key.Column == "Warehouse").Key.Index,
+                    packingDetails.Select(x => x.WarehouseCode).DefaultIfEmpty("")
+                        .Aggregate((o, c) => o + "," + c));
+
 
                 return workbook;
             }
@@ -1064,10 +1048,10 @@ namespace xlsxWriter
         }
 
         private static void WriteInvHeader(ShipmentInvoice shipmentInvoice,
-            Dictionary<(string Column, int Index), FileTypeMappings> header, Workbook workbook)
+            Dictionary<(string Column, int Index), FileTypeMappings> header, Workbook workbook, bool IsCombined)
         {
             workbook.SetCurrentWorksheet("POTemplate");
-            var invoiceRow = (shipmentInvoice.ShipmentRiderInvoice.FirstOrDefault()?.Packages ?? 0) == 0
+            var invoiceRow = IsCombined
                 ? workbook.CurrentWorksheet.GetLastRowNumber() + 1
                 : workbook.CurrentWorksheet.GetLastRowNumber();
 
@@ -1197,6 +1181,7 @@ namespace xlsxWriter
 
     public class UnAttachedWorkBookPkg
     {
+        public List<ShipmentInvoiceBLManualMatches> BLManualMatches;
         public List<ShipmentBLDetails> UnMatchedBLDetails { get; set; }
         public List<ShipmentMIS_Invoices> UnMatchedInvoices { get; set; }
         public List<ShipmentMIS_POs> UnMatchedPOs { get; set; }
@@ -1212,6 +1197,8 @@ namespace xlsxWriter
         public List<ShipmentErrors_RepeatMarks> RepeatMarks { get; set; }
         public List<ShipmentErrors_RepeatInvoices> RepeatInvoices { get; set; }
         public List<ShipmentRiderDetails> UnMatchedRiderDetails { get; set; }
+        public List<ShipmentBLDetails> BlDetails { get; set; }
+        public List<(string Marks, int Packages, string InvoiceNumber)> PackingDetails { get; set; }
     }
 
     public class PackagesSummary

@@ -265,6 +265,12 @@ namespace EntryDataDS.Business.Services
                                         GetWhere<ShipmentBLFreight>(dbContext, exp, itm.Value, "ShipmentBL", "Select", includesLst)
 										.ConfigureAwait(continueOnCapturedContext: false);
 
+                            case "ShipmentBLInvoice":
+                                return
+                                    await
+                                        GetWhere<ShipmentBLInvoice>(dbContext, exp, itm.Value, "ShipmentBL", "Select", includesLst)
+										.ConfigureAwait(continueOnCapturedContext: false);
+
                         }
 
                     }
@@ -764,6 +770,9 @@ namespace EntryDataDS.Business.Services
                             case "ShipmentBLFreight":
                                 return await CountWhere<ShipmentBLFreight>(dbContext, exp, itm.Value, "ShipmentBL", "Select")
 											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "ShipmentBLInvoice":
+                                return await CountWhere<ShipmentBLInvoice>(dbContext, exp, itm.Value, "ShipmentBL", "Select")
+											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }
                     return dbContext.ShipmentBL.Where(exp == "All" || exp == null ? "Id != null" : exp)
@@ -900,6 +909,12 @@ namespace EntryDataDS.Business.Services
                                 return
                                     await
                                         LoadRangeWhere<ShipmentBLFreight>(startIndex, count, dbContext, exp, itm.Value, "ShipmentBL", "Select")
+													.ConfigureAwait(continueOnCapturedContext: false);
+
+                            case "ShipmentBLInvoice":
+                                return
+                                    await
+                                        LoadRangeWhere<ShipmentBLInvoice>(startIndex, count, dbContext, exp, itm.Value, "ShipmentBL", "Select")
 													.ConfigureAwait(continueOnCapturedContext: false);
 
                           
@@ -1114,6 +1129,7 @@ namespace EntryDataDS.Business.Services
                                                     // .Include(x => x.ShipmentManifestBLs)									  
                                                     // .Include(x => x.ShipmentRiderBLs)									  
                                                     // .Include(x => x.ShipmentBLFreight)									  
+                                                    // .Include(x => x.ShipmentBLInvoice)									  
                                       .AsNoTracking()
                                         .Where(x => x.EmailId.ToString() == EmailId.ToString())
 										.ToList();
@@ -1148,6 +1164,7 @@ namespace EntryDataDS.Business.Services
                                                     // .Include(x => x.ShipmentManifestBLs)									  
                                                     // .Include(x => x.ShipmentRiderBLs)									  
                                                     // .Include(x => x.ShipmentBLFreight)									  
+                                                    // .Include(x => x.ShipmentBLInvoice)									  
                                       .AsNoTracking()
                                         .Where(x => x.FileTypeId.ToString() == FileTypeId.ToString())
 										.ToList();
@@ -1182,6 +1199,7 @@ namespace EntryDataDS.Business.Services
                                                     // .Include(x => x.ShipmentManifestBLs)									  
                                                     // .Include(x => x.ShipmentRiderBLs)									  
                                                     // .Include(x => x.ShipmentBLFreight)									  
+                                                    // .Include(x => x.ShipmentBLInvoice)									  
                                       .AsNoTracking()
                                         .Where(x => x.ApplicationSettingsId.ToString() == ApplicationSettingsId.ToString())
 										.ToList();
@@ -1273,6 +1291,9 @@ namespace EntryDataDS.Business.Services
 											.ConfigureAwait(continueOnCapturedContext: false);
                             case "ShipmentBLFreight":
                                 return await SumWhere<ShipmentBLFreight>(dbContext, exp, itm.Value, "ShipmentBL", field, "Select")
+											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "ShipmentBLInvoice":
+                                return await SumWhere<ShipmentBLInvoice>(dbContext, exp, itm.Value, "ShipmentBL", field, "Select")
 											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }

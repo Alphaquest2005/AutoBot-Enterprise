@@ -1,6 +1,7 @@
 delete from ShipmentBL
 delete from ShipmentInvoice
 delete from entrydata
+delete from ShipmentRider
 delete from ShipmentManifest
 delete from inventoryitemalias
 

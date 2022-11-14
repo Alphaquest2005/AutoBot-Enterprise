@@ -308,7 +308,7 @@ namespace EmailDownloader
                 }
 
 
-                return new Tuple<string, Email, string>($"{subject.Trim()}", new Email(emailUniqueId: Convert.ToInt32(uid.ToString()), subject: msg.Subject, emailDate: msg.Date.DateTime, emailMapping: emailMapping), uid.ToString());
+                return new Tuple<string, Email, string>($"{subject.Trim().Replace("'", "")}", new Email(emailUniqueId: Convert.ToInt32(uid.ToString()), subject: msg.Subject.Replace("'", ""), emailDate: msg.Date.DateTime, emailMapping: emailMapping), uid.ToString());
 
             }
 
