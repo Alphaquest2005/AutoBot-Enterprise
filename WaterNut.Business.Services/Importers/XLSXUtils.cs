@@ -103,8 +103,9 @@ namespace WaterNut.Business.Services.Importers
                         row[poHeaderRow.IndexOf("Supplier Item Description")] = misMatch[misHeaderRow.IndexOf("INVDescription")];
                         row[poHeaderRow.IndexOf("Cost")] = ((double)misMatch[misHeaderRow.IndexOf("INVCost")] /
                                                             ((misHeaderRow.IndexOf("INVSalesFactor") > -1
-                                                              && !string.IsNullOrEmpty(misMatch[misHeaderRow.IndexOf("INVSalesFactor")].ToString()))
-                                                                ? Convert.ToInt32(misMatch[misHeaderRow.IndexOf("INVSalesFactor")])
+                                                              && !string.IsNullOrEmpty(misMatch[misHeaderRow.IndexOf("INVSalesFactor")].ToString()) && 
+                                                              misMatch[misHeaderRow.IndexOf("INVSalesFactor")].ToString() != "Infinity")
+                                                                ? Convert.ToDouble(misMatch[misHeaderRow.IndexOf("INVSalesFactor")])
                                                                 : 1));
                         row[poHeaderRow.IndexOf("Quantity")] = misMatch[misHeaderRow.IndexOf("POQuantity")];
                         row[poHeaderRow.IndexOf("Total Cost")] = misMatch[misHeaderRow.IndexOf("INVTotalCost")];
