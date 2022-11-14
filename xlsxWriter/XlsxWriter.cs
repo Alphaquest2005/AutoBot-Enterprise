@@ -72,33 +72,10 @@ namespace xlsxWriter
                                 shipmentInvoice.ShipmentInvoicePOs.Any(z => z.ShipmentInvoice.InvoiceNo == x.InvoiceNo))
                             .ToList();
 
-                        var isCombined = (packingLst.FirstOrDefault().Packages) == 0;
+                        var isCombined = (packingLst.FirstOrDefault(x => x.InvoiceNo == shipmentInvoice.InvoiceNo).Packages) == 0;
 
 
                         if (packingLst.Any() && !isCombined)
-                        {
-                            parent = shipmentInvoice;
-
-
-                            if (parent.ShipmentInvoicePOs.Any(x => !String.Equals(x.PurchaseOrders.PONumber, "Null",
-                                    StringComparison.CurrentCultureIgnoreCase)))
-                            {
-                                csvFilePath = Path.Combine(pdfFile.DirectoryName,
-                                    $"{parent.ShipmentInvoicePOs.First().PurchaseOrders.PONumber.Replace("/", "-")}.xlsx");
-                                csvs.Add((parent.ShipmentInvoicePOs.First().PurchaseOrders.PONumber, csvFilePath));
-                            }
-                            else
-                            {
-                                csvFilePath = Path.Combine(pdfFile.DirectoryName,
-                                    $"{parent.InvoiceNo.Replace("/", "-")}.xlsx");
-                                csvs.Add((parent.InvoiceNo, csvFilePath));
-                            }
-
-                            workbook = CreateShipmentWorkBook(riderId, parent, csvFilePath, header,
-                                out invoiceRow, packingLst, out doRider);
-                        }
-
-                        if (!packingLst.Any())
                         {
                             parent = shipmentInvoice;
 
@@ -435,14 +412,15 @@ namespace xlsxWriter
         { 
             var pOs = shipmentInvoice.ShipmentInvoicePOs.Select(x => x.EntryData_Id).ToList();
 
-            var matchesList = new EntryDataDSContext().ShipmentInvoicePOItemMISMatches
+            var shipmentInvoicePoItemMisMatchesEnumerable = GetMisMatches();
+            var matchesList = shipmentInvoicePoItemMisMatchesEnumerable
                 .Where(x => x.INVId == shipmentInvoice.Id && pOs.Contains(x.POId ?? 0)).ToList();
 
 
-            var preMisMatchesList = new EntryDataDSContext().ShipmentInvoicePOItemMISMatches
-                .Where(x => (x.INVId == shipmentInvoice.Id && x.ShipmentInvoicePOs.ShipmentInvoice.InvoiceDetails.Any(z => !z.POItems.Any() && z.Id == x.INVDetailsId))
+            var preMisMatchesList = shipmentInvoicePoItemMisMatchesEnumerable
+                .Where(x => x != null && ((x.INVId == shipmentInvoice.Id && (x.ShipmentInvoicePOs == null || (x.ShipmentInvoicePOs != null && x.ShipmentInvoicePOs.ShipmentInvoice.InvoiceDetails.Any(z => !z.POItems.Any() && (x.INVDetailsId == null || z.Id == x.INVDetailsId))))))
                             ||
-                             (pOs.Contains(x.POId ?? 0) && x.ShipmentInvoicePOs.PurchaseOrders.EntryDataDetails.Any(z => !z.INVItems.Any() && z.EntryDataDetailsId == x.PODetailsId)
+                             (pOs.Contains(x.POId ?? 0) && (x.ShipmentInvoicePOs == null || (x.ShipmentInvoicePOs != null && x.ShipmentInvoicePOs.PurchaseOrders.EntryDataDetails.Any(z => !z.INVItems.Any() && (x.PODetailsId == null || z.EntryDataDetailsId == x.PODetailsId))))
                                  /* ------put back because it suggest bad matches be imported ..*/)).ToList();
 
             var shipmentInvoicePoItemMisMatchesList = preMisMatchesList.Where(x =>
@@ -500,6 +478,12 @@ namespace xlsxWriter
                 SetValue(workbook, i, header.IndexOf("PODetailsId"), mis.PODetailsId);
                 i++;
             }
+        }
+
+        private static List<ShipmentInvoicePOItemMISMatches> misMatches = null;
+        private static List<ShipmentInvoicePOItemMISMatches> GetMisMatches()
+        {
+            return misMatches ?? (misMatches = new EntryDataDSContext().ShipmentInvoicePOItemMISMatches.ToList());
         }
 
         private static List<ShipmentInvoicePOItemMISMatches> ReMatchOnItemDescription(List<ShipmentInvoicePOItemMISMatches> shipmentInvoicePoItemMisMatchesList)
@@ -661,8 +645,8 @@ namespace xlsxWriter
             {
                 z.InvoiceNo, z.ShipmentInvoicePOs.FirstOrDefault()?.PurchaseOrders?.PONumber, z.InvoiceTotal,
                 z.ImportedLines, z.SupplierCode,
-                Packages = summaryPkg.PackingDetails.Where(r => r.InvoiceNumber == z.InvoiceNo).Sum(w => w.Packages),//z.ShipmentRiderInvoice.Where(r => r.RiderID == summaryPkg.RiderSummary?.Id).Sum(w => w.Packages)
-                WarehouseCode = summaryPkg.PackingDetails.Where(r => r.InvoiceNumber == z.InvoiceNo).Select(x => x.Marks).Aggregate((o,n) => $"{o},{n}")
+                Packages = summaryPkg.PackingDetails.Where(r => r.InvoiceNumber == z.InvoiceNo).Select(r => r.Packages).DefaultIfEmpty(0).Sum(),//z.ShipmentRiderInvoice.Where(r => r.RiderID == summaryPkg.RiderSummary?.Id).Sum(w => w.Packages)
+                WarehouseCode = summaryPkg.PackingDetails.Where(r => r.InvoiceNumber == z.InvoiceNo).Select(x => x.Marks).DefaultIfEmpty("SAME").Aggregate((o,n) => $"{o},{n}")
             });
 
             currentline += 2 + summaryPkg.RiderDetails.Count;
