@@ -72,6 +72,7 @@ namespace WaterNut.DataSpace
                                 PackageType = z.ContainsKey("PackageType") ? z["PackageType"].ToString().Truncate(10): "",
                                 Weight = z.ContainsKey("Weight") ? z["Weight"].ToString() : "",
                                 Section = z.ContainsKey("Section") ? z["Section"].ToString() : null,
+                                Comments = z.ContainsKey("Comments") ? z["Comments"].ToString() : null,
                                 TrackingState = TrackingState.Added,
                                                                
                             }).ToList(),
@@ -93,7 +94,8 @@ namespace WaterNut.DataSpace
 
                         bl.ShipmentBLDetails = blDetails;
 
-                        var detailsQty = bl.ShipmentBLDetails.Sum(x => x.Quantity);
+                      
+                       var detailsQty = bl.ShipmentBLDetails.Sum(x => x.Quantity);
 
 
                         var filename = BaseDataModel.SetFilename(dataFile.DroppedFilePath, bl.BLNumber, "-BL.pdf");
@@ -107,11 +109,11 @@ namespace WaterNut.DataSpace
                         ctx.ShipmentBL.Add(bl);
 
                         ctx.SaveChanges();
-                        if (bl.PackagesNo != detailsQty)
-                        {
-                            throw new ApplicationException(
-                                $"BL Details Quantity don't add up to BL Total Packages! - BL{bl.PackagesNo} vs Details{detailsQty}");
-                        }
+                        //if (bl.PackagesNo != detailsQty)
+                        //{
+                        //    throw new ApplicationException(
+                        //        $"BL Details Quantity don't add up to BL Total Packages! - BL{bl.PackagesNo} vs Details{detailsQty}");
+                        //}
 
                     }
 

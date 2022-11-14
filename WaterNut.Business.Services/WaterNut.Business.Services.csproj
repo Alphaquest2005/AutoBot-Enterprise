@@ -665,6 +665,7 @@
     <Compile Include="Contracts\EntryDataDS\IShipmentAttachmentsService.cs" />
     <Compile Include="Contracts\EntryDataDS\IShipmentBLDetailsService.cs" />
     <Compile Include="Contracts\EntryDataDS\IShipmentBLFreightService.cs" />
+    <Compile Include="Contracts\EntryDataDS\IShipmentBLInvoiceService.cs" />
     <Compile Include="Contracts\EntryDataDS\IShipmentBLService.cs" />
     <Compile Include="Contracts\EntryDataDS\IShipmentErrors_RepeatInvoicesService.cs" />
     <Compile Include="Contracts\EntryDataDS\IShipmentErrors_RepeatMarksService.cs" />
@@ -672,6 +673,7 @@
     <Compile Include="Contracts\EntryDataDS\IShipmentFreightDetailsService.cs" />
     <Compile Include="Contracts\EntryDataDS\IShipmentFreightManifestsService.cs" />
     <Compile Include="Contracts\EntryDataDS\IShipmentFreightService.cs" />
+    <Compile Include="Contracts\EntryDataDS\IShipmentInvoiceBLManualMatchesService.cs" />
     <Compile Include="Contracts\EntryDataDS\IShipmentInvoiceDetailsItemAliasService.cs" />
     <Compile Include="Contracts\EntryDataDS\IShipmentInvoicePOItemDataService.cs" />
     <Compile Include="Contracts\EntryDataDS\IShipmentInvoicePOItemMISMatchesService.cs" />
@@ -904,6 +906,8 @@
     <Compile Include="Services\AllocationDS\xcuda_Weight_itmService.cs" />
     <Compile Include="Services\AllocationDS\XSales_UnAllocatedService.cs" />
     <Compile Include="Services\CoreEntities\EmailMappingActionsService.cs" />
+    <Compile Include="Services\EntryDataDS\ShipmentBLInvoiceService.cs" />
+    <Compile Include="Services\EntryDataDS\ShipmentInvoiceBLManualMatchesService.cs" />
     <Compile Include="Services\EntryDataDS\SupplierItemDescriptionRegExService.cs" />
     <Compile Include="Services\EntryDataDS\SupplierItemDescriptionService.cs" />
     <Compile Include="Utils\AutoMatchUtils.cs" />

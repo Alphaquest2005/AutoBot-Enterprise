@@ -26,18 +26,21 @@ namespace AutoBot
     {
         public static void ImportUnAttachedSummary(FileTypes ft, FileInfo[] fs)
         {
-            foreach (var file in fs)
+            try
             {
-                var reference = XlsxWriter.SaveUnAttachedSummary(file);
-                var res = reference.Split('-');
-                var riderId = int.Parse(res[1]);
-                var rider = new EntryDataDSContext().ShipmentRider.FirstOrDefault(x => x.Id == riderId);
-                if (rider != null)
+                foreach (var file in fs)
                 {
-                    ft.EmailId = rider.EmailId;
+                    var reference = XlsxWriter.SaveUnAttachedSummary(file);
+                    ft.EmailId = reference;
                     CreateShipmentEmail(ft, fs);
-                }
+                    //}
 
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
             }
 
         }

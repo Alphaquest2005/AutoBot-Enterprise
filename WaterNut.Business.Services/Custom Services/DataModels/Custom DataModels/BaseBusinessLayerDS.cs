@@ -1656,7 +1656,7 @@ namespace WaterNut.DataSpace
             cdoc.DocumentItems.Add(itm);
 
 
-            itm.xcuda_Goods_description.Commercial_Description = CleanText(pod.ItemDescription);
+            itm.xcuda_Goods_description.Commercial_Description = CleanText(pod.ItemDescription).Truncate(159);
             if (cdoc.Document.xcuda_General_information != null)
                 itm.xcuda_Goods_description.Country_of_origin_code = cdoc.Document.xcuda_General_information
                     .xcuda_Country.Country_first_destination;

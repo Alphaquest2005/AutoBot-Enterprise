@@ -28,9 +28,9 @@
               this.Property(t => t.INVCost).HasColumnName("INVCost");
               this.Property(t => t.POQuantity).HasColumnName("POQuantity");
               this.Property(t => t.INVQuantity).HasColumnName("INVQuantity");
+              this.Property(t => t.INVSalesFactor).HasColumnName("INVSalesFactor");
               this.Property(t => t.POTotalCost).HasColumnName("POTotalCost");
               this.Property(t => t.INVTotalCost).HasColumnName("INVTotalCost");
-              this.Property(t => t.INVSalesFactor).HasColumnName("INVSalesFactor");
               this.HasOptional(t => t.ShipmentInvoicePOs).WithMany(t =>(ICollection<ShipmentInvoicePOItemMISMatches>) t.POMISMatches).HasForeignKey(d => new {d.INVId, d.POId});
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);

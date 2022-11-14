@@ -19,9 +19,12 @@
               this.Property(t => t.Marks).HasColumnName("Marks").IsRequired().HasMaxLength(50);
               this.Property(t => t.Comments).HasColumnName("Comments").HasMaxLength(1000);
               this.Property(t => t.BLId).HasColumnName("BLId");
+              this.Property(t => t.GrossWeightKg).HasColumnName("GrossWeightKg");
+              this.Property(t => t.CubicFeet).HasColumnName("CubicFeet");
               this.HasRequired(t => t.ShipmentBL).WithMany(t =>(ICollection<ShipmentBLDetails>) t.ShipmentBLDetails).HasForeignKey(d => d.BLId);
               this.HasMany(t => t.ShipmentRiderBLs).WithRequired(t => (ShipmentBLDetails)t.ShipmentBLDetails);
               this.HasMany(t => t.ShipmentFreightBLs).WithRequired(t => (ShipmentBLDetails)t.ShipmentBLDetails);
+              this.HasMany(t => t.ShipmentBLInvoice).WithOptional(t => t.ShipmentBLDetails).HasForeignKey(d => d.BLDetailsLineID);
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);
     			this.Ignore(t => t.ModifiedProperties);

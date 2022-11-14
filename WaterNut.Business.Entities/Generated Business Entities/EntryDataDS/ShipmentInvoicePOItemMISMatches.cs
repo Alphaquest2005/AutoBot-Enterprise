@@ -246,6 +246,21 @@ namespace EntryDataDS.Business.Entities
         }
         Nullable<double> _invquantity;
         [DataMember]
+        public Nullable<double> INVSalesFactor 
+        {
+            get
+            {
+                return _invsalesfactor;
+            }
+            set
+            {
+                _invsalesfactor = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<double> _invsalesfactor;
+        [DataMember]
         public Nullable<double> POTotalCost 
         {
             get
@@ -275,21 +290,6 @@ namespace EntryDataDS.Business.Entities
             }
         }
         Nullable<double> _invtotalcost;
-        [DataMember]
-        public Nullable<double> INVSalesFactor 
-        {
-            get
-            {
-                return _invsalesfactor;
-            }
-            set
-            {
-                _invsalesfactor = value;
-                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
-                NotifyPropertyChanged();
-            }
-        }
-        Nullable<double> _invsalesfactor;
         [DataMember]
         public ShipmentInvoicePOs ShipmentInvoicePOs { get; set; }
 

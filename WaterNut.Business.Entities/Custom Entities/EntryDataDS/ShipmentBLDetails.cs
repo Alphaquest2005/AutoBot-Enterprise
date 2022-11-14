@@ -5,6 +5,7 @@
 
 
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
 using System.Runtime.Serialization;
 //using Newtonsoft.Json;
 
@@ -18,6 +19,8 @@ namespace EntryDataDS.Business.Entities
     
     public partial class ShipmentBLDetails 
     {
+        private string _invoiceNumber;
+
         [IgnoreDataMember]
         [NotMapped]
         public string Section { get; set; }
@@ -26,6 +29,23 @@ namespace EntryDataDS.Business.Entities
         [IgnoreDataMember]
         [NotMapped]
         public string Weight { get; set; }
+
+        [IgnoreDataMember]
+        [NotMapped]
+        public string InvoiceNumber
+        {
+            get
+            {
+                if (_invoiceNumber == null && this.ShipmentBLInvoice.Any())
+                {
+                    _invoiceNumber = this.ShipmentBLInvoice.Select(x => x.InvoiceNo).Aggregate((o, n) => $"{o}, {n}");
+                }
+                return _invoiceNumber;
+            }
+            set => _invoiceNumber = value;
+        }
+
+       
     }
 }
 
