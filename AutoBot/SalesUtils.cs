@@ -442,6 +442,58 @@ namespace AutoBot
 
         }
 
+        public static void ImportPOEntries(bool overwriteExisting)
+        {
+            try
+            {
+                Console.WriteLine("Import Entries");
+                using (var ctx = new CoreEntitiesContext())
+                {
+                    //var docSetId = BaseDataModel.CurrentSalesInfo().Item3.AsycudaDocumentSetId;
+                    var docSetId = ctx.AsycudaDocumentSetExs.FirstOrDefault(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId &&
+                        x.Declarant_Reference_Number == "Imports")?.AsycudaDocumentSetId ?? BaseDataModel.CurrentSalesInfo(-1).Item3.AsycudaDocumentSetId;
+
+                    
+                    var fileTypes = ctx.FileTypes.Where(x =>
+                        x.FileImporterInfos.Format == FileTypeManager.FileFormats.XML && x.ApplicationSettingsId ==
+                        BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId);
+
+                    if (fileTypes == null) return;
+                    var docSetReference = new DocumentDSContext().AsycudaDocumentSets.Where(x => x.AsycudaDocumentSetId == docSetId)
+                        .Select(x => x.Declarant_Reference_Number).First();
+
+                    var desFolder = Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder, docSetReference);
+                    var directoryInfo = new DirectoryInfo(desFolder);
+                    directoryInfo.Refresh();
+                    foreach (var ft in fileTypes)
+                    {
+                        var csvFiles = directoryInfo.GetFiles()
+                            .Where(x => Regex.IsMatch(x.FullName, ft.FilePattern, RegexOptions.IgnoreCase))
+                            .Where(x => x.LastWriteTime >= DateTime.Today.AddHours(-12))
+                            .ToArray();
+
+                        if (csvFiles.Length > 0)
+                        {
+                            var docSet = WaterNut.DataSpace.EntryDocSetUtils.GetAsycudaDocumentSet(ft.DocSetRefernece, true);
+                            BaseDataModel.Instance.ImportDocuments(docSet.AsycudaDocumentSetId,
+                                csvFiles.Select(x => x.FullName).ToList(), true, true, false, overwriteExisting, true).Wait();
+                        }
+                    }
+
+                    Utils.ImportAllAsycudaDocumentsInDataFolder();
+
+                    EntryDocSetUtils.RemoveDuplicateEntries();
+                    EntryDocSetUtils.FixIncompleteEntries();
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+
+        }
+
         public static void EmailSalesErrors()
         {
 
