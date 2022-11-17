@@ -65,7 +65,7 @@ namespace WaterNut.DataSpace
                             var details = new ShipmentRiderDetails();
                             details.Pieces = string.IsNullOrEmpty(z["Pieces"].ToString()) ? 0 : Convert.ToInt32(z["Pieces"].ToString());
                             details.InvoiceNumber = z.ContainsKey("InvoiceNumber") ? z["InvoiceNumber"].ToString().ToUpper().PadLeft(6,'0').Truncate(20) : null;
-                            details.TrackingNumber = z["PONumber"].ToString().PadLeft(5, '0').Truncate(255);//TODO: move this formating out
+                            details.TrackingNumber = z.ContainsKey("PONumber") ? z["PONumber"].ToString().PadLeft(5, '0').Truncate(255): null;//TODO: move this formating out
                             details.Consignee = z.ContainsKey("Consignee") ? z["Consignee"].ToString().ToUpper().Truncate(20) : "Budget Marine";
                             details.Code = z.ContainsKey("Code") ? z["Code"].ToString().ToUpper().Truncate(20) : details.Consignee;
                             details.InvoiceTotal =  Convert.ToDouble(z["InvoiceTotal"].ToString()) ;
