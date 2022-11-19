@@ -78,7 +78,7 @@ namespace AutoBot
 
                 using (var ctx = new CoreEntitiesContext())
                 {
-                    ctx.Database.CommandTimeout = 60;
+                    ctx.Database.CommandTimeout = 360;
                     var str = $@"SELECT EX9AsycudaSalesAllocations.ItemNumber
                     FROM    EX9AsycudaSalesAllocations INNER JOIN
                                      ApplicationSettings ON EX9AsycudaSalesAllocations.ApplicationSettingsId = ApplicationSettings.ApplicationSettingsId AND 
