@@ -79,7 +79,7 @@ namespace AutoBot
                 {"DownloadPOFiles",() => EX9Utils.DownloadSalesFiles(10, "IM7", false) },
                 {"SubmitPOs", POUtils.SubmitPOs },
                 {"RecreateEx9", () => EX9Utils.RecreateEx9(-1) },
-                {"RecreateCurrentEx9", () => EX9Utils.RecreateEx9(0) },
+                
                 {"ReDownloadSalesFiles", SalesUtils.ReDownloadSalesFiles },
                 {"CleanupDiscpancies", DISUtils.CleanupDiscpancies },
                 {"SubmitDiscrepanciesPreAssessmentReportToCustoms", DISUtils.SubmitDiscrepanciesPreAssessmentReportToCustoms },
@@ -106,6 +106,8 @@ namespace AutoBot
                 {"relinkAllPreviousItems", EX9Utils.relinkAllPreviousItems},
                 {"ImportWarehouseErrors", () => ImportWarehouseErrorsUtils.ImportWarehouseErrors(-1)},
                 {"RunSQLBlackBox", SQLBlackBox.RunSqlBlackBox},
+
+                {"RecreateCurrentEx9", () => EX9Utils.RecreateEx9(0) },
                 {"ExportCurrentEx9Entries", () => EX9Utils.ExportEx9Entries(0) },
                 {"AssessCurrentEx9Entries", () => EX9Utils.AssessEx9Entries(0) },
                 {"ImportCurrentWarehouseErrors", () => ImportWarehouseErrorsUtils.ImportWarehouseErrors(0)},

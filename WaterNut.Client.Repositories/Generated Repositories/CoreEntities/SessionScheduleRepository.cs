@@ -202,7 +202,8 @@ namespace CoreEntities.Client.Repositories
                         {
                             return new SessionSchedule(res)
                     {
-                  // Sessions = (res.Sessions != null?new Sessions(res.Sessions): null)    
+                  // Sessions = (res.Sessions != null?new Sessions(res.Sessions): null),    
+                  // ParameterSet = (res.ParameterSet != null?new ParameterSet(res.ParameterSet): null)    
                   };
                     }
                     else
@@ -428,6 +429,34 @@ namespace CoreEntities.Client.Repositories
                  using (SessionScheduleClient t = new SessionScheduleClient())
                     {
                         var res = await t.GetSessionScheduleByActionId(ActionId, includesLst).ConfigureAwait(continueOnCapturedContext: false);
+                         if(res != null)
+                        {
+                            return res.Select(x => new SessionSchedule(x)).AsEnumerable();
+					    }                
+					    else
+					    {
+						    return null;
+					    }                    
+                    }
+            }
+            catch (FaultException<ValidationFault> e)
+            {
+                throw new Exception(e.Detail.Message, e.InnerException);
+            }
+            catch (Exception)
+            {
+                Debugger.Break();
+                throw;
+            }
+        } 
+ 	 public async Task<IEnumerable<SessionSchedule>> GetSessionScheduleByParameterSetId(string ParameterSetId, List<string> includesLst = null)
+        {
+             if (ParameterSetId == "0") return null;
+            try
+            {
+                 using (SessionScheduleClient t = new SessionScheduleClient())
+                    {
+                        var res = await t.GetSessionScheduleByParameterSetId(ParameterSetId, includesLst).ConfigureAwait(continueOnCapturedContext: false);
                          if(res != null)
                         {
                             return res.Select(x => new SessionSchedule(x)).AsEnumerable();

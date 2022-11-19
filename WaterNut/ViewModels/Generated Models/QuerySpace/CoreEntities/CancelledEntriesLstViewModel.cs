@@ -207,24 +207,6 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 
  
 
-		private string _generalProcedureFilter;
-        public string GeneralProcedureFilter
-        {
-            get
-            {
-                return _generalProcedureFilter;
-            }
-            set
-            {
-                _generalProcedureFilter = value;
-				NotifyPropertyChanged(x => GeneralProcedureFilter);
-                FilterData();
-                
-            }
-        }	
-
- 
-
 		private string _registrationNumberFilter;
         public string RegistrationNumberFilter
         {
@@ -294,10 +276,6 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 						res.Append(" && " + string.Format("Office.Contains(\"{0}\")",  OfficeFilter));						
  
 
-									if(string.IsNullOrEmpty(GeneralProcedureFilter) == false)
-						res.Append(" && " + string.Format("GeneralProcedure.Contains(\"{0}\")",  GeneralProcedureFilter));						
- 
-
 									if(string.IsNullOrEmpty(RegistrationNumberFilter) == false)
 						res.Append(" && " + string.Format("RegistrationNumber.Contains(\"{0}\")",  RegistrationNumberFilter));						
  
@@ -330,9 +308,6 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     Office = x.Office ,
                     
  
-                    GeneralProcedure = x.GeneralProcedure ,
-                    
- 
                     RegistrationNumber = x.RegistrationNumber ,
                     
  
@@ -350,9 +325,6 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
         {
 		 
                     public string Office { get; set; } 
-                    
- 
-                    public string GeneralProcedure { get; set; } 
                     
  
                     public string RegistrationNumber { get; set; } 

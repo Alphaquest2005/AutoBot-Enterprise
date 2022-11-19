@@ -296,6 +296,9 @@
 ..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\InventoryItemAliasX.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\InventoryItemX.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\LicenceSummary.cs
+..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\Parameters.cs
+..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\ParameterSet.cs
+..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\ParameterSetParameters.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\SessionActions.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\Sessions.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\SessionSchedule.cs
@@ -609,6 +612,7 @@
 ..\WaterNut.Business.Entities\Generated Business Entities\AllocationDS\Enums\CustomsOperations.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\Enums\CustomsOperations.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\Enums\FileGroups.cs
+..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\Enums\ParameterSet.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\DocumentDS\Enums\CustomsOperation.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\EntryDataDS\Enums\InventorySources.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\InventoryDS\Enums\InventorySource.cs
@@ -727,6 +731,9 @@
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\InventoryItemAliasX.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\InventoryItemX.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\LicenceSummary.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\Parameters.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\ParameterSet.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\ParameterSetParameters.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\SessionActions.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\Sessions.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\SessionSchedule.map.cs
@@ -1168,6 +1175,9 @@
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\CoreEntities\InventoryItemAliasX.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\CoreEntities\InventoryItemX.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\CoreEntities\LicenceSummary.cs
+..\WaterNut.Business.Entities\Generated ChangeTracking Models\CoreEntities\Parameters.cs
+..\WaterNut.Business.Entities\Generated ChangeTracking Models\CoreEntities\ParameterSet.cs
+..\WaterNut.Business.Entities\Generated ChangeTracking Models\CoreEntities\ParameterSetParameters.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\CoreEntities\SessionActions.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\CoreEntities\Sessions.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\CoreEntities\SessionSchedule.cs
@@ -1586,6 +1596,9 @@
 ..\WaterNut.Business.Entities\Generated Constructors Models\CoreEntities\InventoryItemAliasX.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\CoreEntities\InventoryItemX.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\CoreEntities\LicenceSummary.cs
+..\WaterNut.Business.Entities\Generated Constructors Models\CoreEntities\Parameters.cs
+..\WaterNut.Business.Entities\Generated Constructors Models\CoreEntities\ParameterSet.cs
+..\WaterNut.Business.Entities\Generated Constructors Models\CoreEntities\ParameterSetParameters.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\CoreEntities\SessionActions.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\CoreEntities\Sessions.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\CoreEntities\SessionSchedule.cs
@@ -2004,6 +2017,9 @@
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\CoreEntities\InventoryItemAliasX.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\CoreEntities\InventoryItemX.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\CoreEntities\LicenceSummary.cs
+..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\CoreEntities\Parameters.cs
+..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\CoreEntities\ParameterSet.cs
+..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\CoreEntities\ParameterSetParameters.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\CoreEntities\SessionActions.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\CoreEntities\Sessions.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\CoreEntities\SessionSchedule.cs
@@ -2422,6 +2438,9 @@
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\CoreEntities\InventoryItemAliasX.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\CoreEntities\InventoryItemX.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\CoreEntities\LicenceSummary.cs
+..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\CoreEntities\Parameters.cs
+..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\CoreEntities\ParameterSet.cs
+..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\CoreEntities\ParameterSetParameters.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\CoreEntities\SessionActions.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\CoreEntities\Sessions.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\CoreEntities\SessionSchedule.cs
@@ -2798,6 +2817,9 @@
 ..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\InventoryItemAliasX.cs
 ..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\InventoryItemX.cs
 ..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\LicenceSummary.cs
+..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\Parameters.cs
+..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\ParameterSet.cs
+..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\ParameterSetParameters.cs
 ..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\SessionActions.cs
 ..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\Sessions.cs
 ..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\SessionSchedule.cs
@@ -2955,6 +2977,7 @@
 ..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\EntryPreviousItems.cs
 ..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\Enums\CustomsOperations.cs
 ..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\Enums\FileGroups.cs
+..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\Enums\ParameterSet.cs
 ..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\ExpiredEntriesLst.cs
 ..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\FileGroups.cs
 ..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\FileImporterInfo.cs
@@ -2970,6 +2993,9 @@
 ..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\InventoryItemAliasX.cs
 ..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\InventoryItemX.cs
 ..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\LicenceSummary.cs
+..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\Parameters.cs
+..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\ParameterSet.cs
+..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\ParameterSetParameters.cs
 ..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\SessionActions.cs
 ..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\Sessions.cs
 ..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\SessionSchedule.cs
@@ -3147,6 +3173,9 @@
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\CoreEntities\InventoryItemAliasX.cs
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\CoreEntities\InventoryItemX.cs
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\CoreEntities\LicenceSummary.cs
+..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\CoreEntities\Parameters.cs
+..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\CoreEntities\ParameterSet.cs
+..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\CoreEntities\ParameterSetParameters.cs
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\CoreEntities\SessionActions.cs
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\CoreEntities\Sessions.cs
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\CoreEntities\SessionSchedule.cs
@@ -3317,6 +3346,9 @@
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\CoreEntities\InventoryItemAliasX.cs
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\CoreEntities\InventoryItemX.cs
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\CoreEntities\LicenceSummary.cs
+..\WaterNut.Client.DTO\Generated MyNavProp Models\CoreEntities\Parameters.cs
+..\WaterNut.Client.DTO\Generated MyNavProp Models\CoreEntities\ParameterSet.cs
+..\WaterNut.Client.DTO\Generated MyNavProp Models\CoreEntities\ParameterSetParameters.cs
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\CoreEntities\SessionActions.cs
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\CoreEntities\Sessions.cs
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\CoreEntities\SessionSchedule.cs
@@ -3487,6 +3519,9 @@
 ..\WaterNut.Client.Entities\Generated Constructors Models\CoreEntities\InventoryItemAliasX.cs
 ..\WaterNut.Client.Entities\Generated Constructors Models\CoreEntities\InventoryItemX.cs
 ..\WaterNut.Client.Entities\Generated Constructors Models\CoreEntities\LicenceSummary.cs
+..\WaterNut.Client.Entities\Generated Constructors Models\CoreEntities\Parameters.cs
+..\WaterNut.Client.Entities\Generated Constructors Models\CoreEntities\ParameterSet.cs
+..\WaterNut.Client.Entities\Generated Constructors Models\CoreEntities\ParameterSetParameters.cs
 ..\WaterNut.Client.Entities\Generated Constructors Models\CoreEntities\SessionActions.cs
 ..\WaterNut.Client.Entities\Generated Constructors Models\CoreEntities\Sessions.cs
 ..\WaterNut.Client.Entities\Generated Constructors Models\CoreEntities\SessionSchedule.cs
@@ -3657,6 +3692,9 @@
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\CoreEntities\InventoryItemAliasX.cs
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\CoreEntities\InventoryItemX.cs
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\CoreEntities\LicenceSummary.cs
+..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\CoreEntities\Parameters.cs
+..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\CoreEntities\ParameterSet.cs
+..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\CoreEntities\ParameterSetParameters.cs
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\CoreEntities\SessionActions.cs
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\CoreEntities\Sessions.cs
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\CoreEntities\SessionSchedule.cs
@@ -3827,6 +3865,9 @@
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\CoreEntities\InventoryItemAliasX.cs
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\CoreEntities\InventoryItemX.cs
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\CoreEntities\LicenceSummary.cs
+..\WaterNut.Client.Entities\Generated MyNavProp Models\CoreEntities\Parameters.cs
+..\WaterNut.Client.Entities\Generated MyNavProp Models\CoreEntities\ParameterSet.cs
+..\WaterNut.Client.Entities\Generated MyNavProp Models\CoreEntities\ParameterSetParameters.cs
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\CoreEntities\SessionActions.cs
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\CoreEntities\Sessions.cs
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\CoreEntities\SessionSchedule.cs
@@ -3967,6 +4008,7 @@
 ..\WaterNut.Business.Entities\Generated Business Entities\AllocationDS\Enums\CustomsOperations.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\Enums\CustomsOperations.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\Enums\FileGroups.cs
+..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\Enums\ParameterSet.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\DocumentDS\Enums\CustomsOperation.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\EntryDataDS\Enums\InventorySources.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\InventoryDS\Enums\InventorySource.cs
@@ -4085,6 +4127,9 @@
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\InventoryItemAliasX.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\InventoryItemX.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\LicenceSummary.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\Parameters.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\ParameterSet.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\ParameterSetParameters.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\SessionActions.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\Sessions.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\SessionSchedule.map.cs
@@ -4504,6 +4549,9 @@
 ..\WaterNut.Client.Repositories\Generated Repositories\CoreEntities\InventoryItemAliasXRepository.cs
 ..\WaterNut.Client.Repositories\Generated Repositories\CoreEntities\InventoryItemXRepository.cs
 ..\WaterNut.Client.Repositories\Generated Repositories\CoreEntities\LicenceSummaryRepository.cs
+..\WaterNut.Client.Repositories\Generated Repositories\CoreEntities\ParameterSetParametersRepository.cs
+..\WaterNut.Client.Repositories\Generated Repositories\CoreEntities\ParameterSetRepository.cs
+..\WaterNut.Client.Repositories\Generated Repositories\CoreEntities\ParametersRepository.cs
 ..\WaterNut.Client.Repositories\Generated Repositories\CoreEntities\SessionActionsRepository.cs
 ..\WaterNut.Client.Repositories\Generated Repositories\CoreEntities\SessionScheduleRepository.cs
 ..\WaterNut.Client.Repositories\Generated Repositories\CoreEntities\SessionsRepository.cs
@@ -4735,6 +4783,9 @@
 ..\WaterNut.Business.Services\Contracts\CoreEntities\IInventoryItemAliasXService.cs
 ..\WaterNut.Business.Services\Contracts\CoreEntities\IInventoryItemXService.cs
 ..\WaterNut.Business.Services\Contracts\CoreEntities\ILicenceSummaryService.cs
+..\WaterNut.Business.Services\Contracts\CoreEntities\IParameterSetParametersService.cs
+..\WaterNut.Business.Services\Contracts\CoreEntities\IParameterSetService.cs
+..\WaterNut.Business.Services\Contracts\CoreEntities\IParametersService.cs
 ..\WaterNut.Business.Services\Contracts\CoreEntities\ISessionActionsService.cs
 ..\WaterNut.Business.Services\Contracts\CoreEntities\ISessionScheduleService.cs
 ..\WaterNut.Business.Services\Contracts\CoreEntities\ISessionsService.cs
@@ -5153,6 +5204,9 @@
 ..\WaterNut.Business.Services\Services\CoreEntities\InventoryItemAliasXService.cs
 ..\WaterNut.Business.Services\Services\CoreEntities\InventoryItemXService.cs
 ..\WaterNut.Business.Services\Services\CoreEntities\LicenceSummaryService.cs
+..\WaterNut.Business.Services\Services\CoreEntities\ParameterSetParametersService.cs
+..\WaterNut.Business.Services\Services\CoreEntities\ParameterSetService.cs
+..\WaterNut.Business.Services\Services\CoreEntities\ParametersService.cs
 ..\WaterNut.Business.Services\Services\CoreEntities\SessionActionsService.cs
 ..\WaterNut.Business.Services\Services\CoreEntities\SessionScheduleService.cs
 ..\WaterNut.Business.Services\Services\CoreEntities\SessionsService.cs
@@ -5523,6 +5577,9 @@
 ..\WaterNut.Client.Contracts\CoreEntities\IInventoryItemAliasXService.cs
 ..\WaterNut.Client.Contracts\CoreEntities\IInventoryItemXService.cs
 ..\WaterNut.Client.Contracts\CoreEntities\ILicenceSummaryService.cs
+..\WaterNut.Client.Contracts\CoreEntities\IParameterSetParametersService.cs
+..\WaterNut.Client.Contracts\CoreEntities\IParameterSetService.cs
+..\WaterNut.Client.Contracts\CoreEntities\IParametersService.cs
 ..\WaterNut.Client.Contracts\CoreEntities\ISessionActionsService.cs
 ..\WaterNut.Client.Contracts\CoreEntities\ISessionScheduleService.cs
 ..\WaterNut.Client.Contracts\CoreEntities\ISessionsService.cs
@@ -5693,6 +5750,9 @@
 ..\WaterNut.Client.Services\CoreEntities\InventoryItemAliasXClient.cs
 ..\WaterNut.Client.Services\CoreEntities\InventoryItemXClient.cs
 ..\WaterNut.Client.Services\CoreEntities\LicenceSummaryClient.cs
+..\WaterNut.Client.Services\CoreEntities\ParametersClient.cs
+..\WaterNut.Client.Services\CoreEntities\ParameterSetClient.cs
+..\WaterNut.Client.Services\CoreEntities\ParameterSetParametersClient.cs
 ..\WaterNut.Client.Services\CoreEntities\SessionActionsClient.cs
 ..\WaterNut.Client.Services\CoreEntities\SessionScheduleClient.cs
 ..\WaterNut.Client.Services\CoreEntities\SessionsClient.cs
@@ -5878,6 +5938,9 @@
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\InventoryItemXViewModel.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\LicenceSummaryViewModel.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\MessageToken.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\ParameterSetParametersViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\ParameterSetViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\ParametersViewModel.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\SessionActionsViewModel.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\SessionScheduleViewModel.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\SessionsViewModel.cs
@@ -6050,6 +6113,9 @@
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\InventoryItemAliasXTotals.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\InventoryItemXTotals.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\LicenceSummaryTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\ParameterSetParametersTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\ParameterSetTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\ParametersTotals.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\SessionActionsTotals.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\SessionScheduleTotals.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\SessionsTotals.cs
@@ -6210,6 +6276,9 @@
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\InventoryItemAliasXVirturalListLoader.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\InventoryItemXVirturalListLoader.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\LicenceSummaryVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\ParameterSetParametersVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\ParameterSetVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\ParametersVirturalListLoader.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\SessionActionsVirturalListLoader.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\SessionScheduleVirturalListLoader.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\SessionsVirturalListLoader.cs

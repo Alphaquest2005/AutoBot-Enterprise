@@ -86,6 +86,19 @@ namespace CoreEntities.Client.DTO
 		}
         private Nullable<int> _ActionId;
 
+        [DataMember]
+        public Nullable<int> ParameterSetId
+		{ 
+		    get { return _ParameterSetId; }
+			set
+			{
+			    if (value == _ParameterSetId) return;
+				_ParameterSetId = value;
+				NotifyPropertyChanged();//m => this.ParameterSetId
+			}
+		}
+        private Nullable<int> _ParameterSetId;
+
        
         [DataMember]
         public Sessions Sessions
@@ -102,6 +115,22 @@ namespace CoreEntities.Client.DTO
 		}
         private Sessions _Sessions;
         private ChangeTrackingCollection<Sessions> SessionsChangeTracker { get; set; }
+
+        [DataMember]
+        public ParameterSet ParameterSet
+		{
+		    get { return _ParameterSet; }
+			set
+			{
+			    if (value == _ParameterSet) return;
+				_ParameterSet = value;
+                ParameterSetChangeTracker = _ParameterSet == null ? null
+                    : new ChangeTrackingCollection<ParameterSet> { _ParameterSet };
+				NotifyPropertyChanged();//m => this.ParameterSet
+			}
+		}
+        private ParameterSet _ParameterSet;
+        private ChangeTrackingCollection<ParameterSet> ParameterSetChangeTracker { get; set; }
 
    //     [DataMember]
    //     public TrackingState TrackingState { get; set; }

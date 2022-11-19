@@ -51,21 +51,6 @@ namespace CoreEntities.Business.Entities
         }
         string _office;
         [DataMember]
-        public string GeneralProcedure 
-        {
-            get
-            {
-                return _generalprocedure;
-            }
-            set
-            {
-                _generalprocedure = value;
-                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
-                NotifyPropertyChanged();
-            }
-        }
-        string _generalprocedure;
-        [DataMember]
         public string RegistrationNumber 
         {
             get

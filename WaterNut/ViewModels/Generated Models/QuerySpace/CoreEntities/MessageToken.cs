@@ -274,6 +274,24 @@ namespace WaterNut.QuerySpace.CoreEntities
 			public const string LicenceSummaryDeleted = "LicenceSummaryDeleted";
 			public const string LicenceSummaryCreated = "LicenceSummaryCreated";
 			public const string LicenceSummaryUpdated = "LicenceSummaryUpdated";
+			public const string ParametersFilterExpressionChanged = "ParametersFilterExpressionChanged";
+			public const string SelectedParametersChanged = "SelectedParametersChanged";
+            public const string ParametersChanged = "ParametersChanged";
+			public const string ParametersDeleted = "ParametersDeleted";
+			public const string ParametersCreated = "ParametersCreated";
+			public const string ParametersUpdated = "ParametersUpdated";
+			public const string ParameterSetFilterExpressionChanged = "ParameterSetFilterExpressionChanged";
+			public const string SelectedParameterSetChanged = "SelectedParameterSetChanged";
+            public const string ParameterSetChanged = "ParameterSetChanged";
+			public const string ParameterSetDeleted = "ParameterSetDeleted";
+			public const string ParameterSetCreated = "ParameterSetCreated";
+			public const string ParameterSetUpdated = "ParameterSetUpdated";
+			public const string ParameterSetParametersFilterExpressionChanged = "ParameterSetParametersFilterExpressionChanged";
+			public const string SelectedParameterSetParametersChanged = "SelectedParameterSetParametersChanged";
+            public const string ParameterSetParametersChanged = "ParameterSetParametersChanged";
+			public const string ParameterSetParametersDeleted = "ParameterSetParametersDeleted";
+			public const string ParameterSetParametersCreated = "ParameterSetParametersCreated";
+			public const string ParameterSetParametersUpdated = "ParameterSetParametersUpdated";
 			public const string SessionActionsFilterExpressionChanged = "SessionActionsFilterExpressionChanged";
 			public const string SelectedSessionActionsChanged = "SelectedSessionActionsChanged";
             public const string SessionActionsChanged = "SessionActionsChanged";
@@ -644,6 +662,9 @@ namespace WaterNut.QuerySpace.CoreEntities
           // public const string InventoryItemAliasXChanged = "InventoryItemAliasXChanged";
           // public const string InventoryItemXChanged = "InventoryItemXChanged";
           // public const string LicenceSummaryChanged = "LicenceSummaryChanged";
+          // public const string ParametersChanged = "ParametersChanged";
+          // public const string ParameterSetChanged = "ParameterSetChanged";
+          // public const string ParameterSetParametersChanged = "ParameterSetParametersChanged";
           // public const string SessionActionsChanged = "SessionActionsChanged";
           // public const string SessionsChanged = "SessionsChanged";
           // public const string SessionScheduleChanged = "SessionScheduleChanged";
@@ -788,6 +809,12 @@ namespace WaterNut.QuerySpace.CoreEntities
            public const string CurrentInventoryItemXChanged = "CurrentInventoryItemXChanged";
    
            public const string CurrentLicenceSummaryChanged = "CurrentLicenceSummaryChanged";
+   
+           public const string CurrentParametersChanged = "CurrentParametersChanged";
+   
+           public const string CurrentParameterSetChanged = "CurrentParameterSetChanged";
+   
+           public const string CurrentParameterSetParametersChanged = "CurrentParameterSetParametersChanged";
    
            public const string CurrentSessionActionsChanged = "CurrentSessionActionsChanged";
    
@@ -986,6 +1013,12 @@ namespace WaterNut.QuerySpace.CoreEntities
            public const string CurrentInventoryItemXIDChanged = "OnCurrentInventoryItemXIDChanged";
    
            public const string CurrentLicenceSummaryIDChanged = "OnCurrentLicenceSummaryIDChanged";
+   
+           public const string CurrentParametersIDChanged = "OnCurrentParametersIDChanged";
+   
+           public const string CurrentParameterSetIDChanged = "OnCurrentParameterSetIDChanged";
+   
+           public const string CurrentParameterSetParametersIDChanged = "OnCurrentParameterSetParametersIDChanged";
    
            public const string CurrentSessionActionsIDChanged = "OnCurrentSessionActionsIDChanged";
    

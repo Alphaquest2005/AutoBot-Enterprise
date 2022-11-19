@@ -15,7 +15,6 @@
               this.ToTable("CancelledEntriesLst");
               this.Property(t => t.Id).HasColumnName("Id").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.Identity));
               this.Property(t => t.Office).HasColumnName("Office").IsRequired().HasMaxLength(50);
-              this.Property(t => t.GeneralProcedure).HasColumnName("GeneralProcedure").IsRequired().HasMaxLength(1);
               this.Property(t => t.RegistrationNumber).HasColumnName("RegistrationNumber").IsRequired().HasMaxLength(8);
               this.Property(t => t.RegistrationDate).HasColumnName("RegistrationDate").IsRequired().HasMaxLength(50);
               this.Property(t => t.ApplicationSettingsId).HasColumnName("ApplicationSettingsId");

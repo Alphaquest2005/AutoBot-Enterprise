@@ -162,6 +162,9 @@
     <Compile Include="CoreEntities\InventoryItemAliasXClient.cs" />
     <Compile Include="CoreEntities\InventoryItemXClient.cs" />
     <Compile Include="CoreEntities\LicenceSummaryClient.cs" />
+    <Compile Include="CoreEntities\ParametersClient.cs" />
+    <Compile Include="CoreEntities\ParameterSetClient.cs" />
+    <Compile Include="CoreEntities\ParameterSetParametersClient.cs" />
     <Compile Include="CoreEntities\SessionActionsClient.cs" />
     <Compile Include="CoreEntities\SessionScheduleClient.cs" />
     <Compile Include="CoreEntities\SessionsClient.cs" />

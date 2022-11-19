@@ -261,6 +261,7 @@ namespace AutoBot
 
 
                         var sLst = ctx.SessionSchedule.Include("Sessions.SessionActions.Actions")
+                            .Include("ParameterSet.ParameterSetParameters.Parameters")
                             .Where(x => x.RunDateTime >= SqlFunctions.DateAdd("MINUTE", x.Sessions.WindowInMinutes * -1,
                                             DateTime.Now)
                                         && x.RunDateTime <= SqlFunctions.DateAdd("MINUTE", x.Sessions.WindowInMinutes,
@@ -271,6 +272,7 @@ namespace AutoBot
                             .OrderBy(x => x.Id)
                             .ToList();
 
+                        BaseDataModel.Instance.CurrentSessionSchedule = sLst;
 
                         if (sLst.Any())
                         {
@@ -280,9 +282,15 @@ namespace AutoBot
                                 item.Sessions.SessionActions
                                     .Where(x => item.ActionId == null || x.ActionId == item.ActionId)
                                     .Where(x => x.Actions.TestMode == (BaseDataModel.Instance.CurrentApplicationSettings.TestMode))
-                                    .Select(x => SessionsUtils.SessionActions[x.Actions.Name])
-                                    .ForEach(x =>  x.Invoke());
+                                    .Select(x => (SessionAction: x, Action:SessionsUtils.SessionActions[x.Actions.Name]))
+                                    .ForEach(x =>
+                                    {
+                                        BaseDataModel.Instance.CurrentSessionAction = x.SessionAction;
+                                        x.Action.Invoke();
+                                    });
                             }
+                            BaseDataModel.Instance.CurrentSessionAction = null;
+                            BaseDataModel.Instance.CurrentSessionSchedule = new List<SessionSchedule>();
 
                         }
                         else

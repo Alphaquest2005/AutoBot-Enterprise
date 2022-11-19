@@ -74,23 +74,6 @@ public string Office
 		}
      
 
-       [RequiredValidationAttribute(ErrorMessage= "GeneralProcedure is required")]
-       
-                
-                [MaxLength(1, ErrorMessage = "GeneralProcedure has a max length of 1 letters ")]
-public string GeneralProcedure
-		{ 
-		    get { return this.cancelledentrieslst.GeneralProcedure; }
-			set
-			{
-			    if (value == this.cancelledentrieslst.GeneralProcedure) return;
-				this.cancelledentrieslst.GeneralProcedure = value;
-                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
-				NotifyPropertyChanged("GeneralProcedure");
-			}
-		}
-     
-
        [RequiredValidationAttribute(ErrorMessage= "RegistrationNumber is required")]
        
                 

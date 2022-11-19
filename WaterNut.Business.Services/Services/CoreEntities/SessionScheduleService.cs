@@ -235,6 +235,12 @@ namespace CoreEntities.Business.Services
                                         GetWhere<Sessions>(dbContext, exp, itm.Value, "SessionSchedule", "SelectMany", includesLst)
 										.ConfigureAwait(continueOnCapturedContext: false);
 
+                            case "ParameterSet":
+                                return
+                                    await
+                                        GetWhere<ParameterSet>(dbContext, exp, itm.Value, "SessionSchedule", "SelectMany", includesLst)
+										.ConfigureAwait(continueOnCapturedContext: false);
+
                         }
 
                     }
@@ -719,6 +725,9 @@ namespace CoreEntities.Business.Services
                             case "Sessions":
                                 return await CountWhere<Sessions>(dbContext, exp, itm.Value, "SessionSchedule", "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "ParameterSet":
+                                return await CountWhere<ParameterSet>(dbContext, exp, itm.Value, "SessionSchedule", "SelectMany")
+											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }
                     return dbContext.SessionSchedule.Where(exp == "All" || exp == null ? "Id != null" : exp)
@@ -825,6 +834,12 @@ namespace CoreEntities.Business.Services
                                 return
                                     await
                                         LoadRangeWhere<Sessions>(startIndex, count, dbContext, exp, itm.Value, "SessionSchedule", "SelectMany")
+													.ConfigureAwait(continueOnCapturedContext: false);
+
+                            case "ParameterSet":
+                                return
+                                    await
+                                        LoadRangeWhere<ParameterSet>(startIndex, count, dbContext, exp, itm.Value, "SessionSchedule", "SelectMany")
 													.ConfigureAwait(continueOnCapturedContext: false);
 
                           
@@ -1108,6 +1123,34 @@ namespace CoreEntities.Business.Services
                     throw new FaultException<ValidationFault>(fault);
             }
         }
+ 	        public async Task<IEnumerable<SessionSchedule>> GetSessionScheduleByParameterSetId(string ParameterSetId, List<string> includesLst = null)
+        {
+            try
+            {
+                using ( var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
+              {
+                var i = Convert.ToInt32(ParameterSetId);
+                var set = AddIncludes(includesLst, dbContext);
+                IEnumerable<SessionSchedule> entities = set//dbContext.SessionSchedule
+                                      .AsNoTracking()
+                                        .Where(x => x.ParameterSetId.ToString() == ParameterSetId.ToString())
+										.ToList();
+                return entities;
+              }
+             }
+            catch (Exception updateEx)
+            {
+                System.Diagnostics.Debugger.Break();
+                //throw new FaultException(updateEx.Message);
+                    var fault = new ValidationFault
+                                {
+                                    Result = false,
+                                    Message = updateEx.Message,
+                                    Description = updateEx.StackTrace
+                                };
+                    throw new FaultException<ValidationFault>(fault);
+            }
+        }
  
 		public decimal SumField(string whereExp, string field)
          {
@@ -1165,6 +1208,9 @@ namespace CoreEntities.Business.Services
                         {
                             case "Sessions":
                                 return await SumWhere<Sessions>(dbContext, exp, itm.Value, "SessionSchedule", field, "SelectMany")
+											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "ParameterSet":
+                                return await SumWhere<ParameterSet>(dbContext, exp, itm.Value, "SessionSchedule", field, "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }

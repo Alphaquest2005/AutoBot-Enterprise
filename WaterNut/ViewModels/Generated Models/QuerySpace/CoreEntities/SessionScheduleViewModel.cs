@@ -53,6 +53,8 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 
  
 			RegisterToReceiveMessages<Sessions>(MessageToken.CurrentSessionsChanged, OnCurrentSessionsChanged);
+ 
+			RegisterToReceiveMessages<ParameterSet>(MessageToken.CurrentParameterSetChanged, OnCurrentParameterSetChanged);
 
  			// Recieve messages for Core Current Entities Changed
  
@@ -140,6 +142,10 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                    // {
                    //    if(Sessions.Contains(CurrentSessionSchedule.Sessions) == false) Sessions.Add(CurrentSessionSchedule.Sessions);
                     //}
+                    //if (e.PropertyName == "AddParameterSet")
+                   // {
+                   //    if(ParameterSet.Contains(CurrentSessionSchedule.ParameterSet) == false) ParameterSet.Add(CurrentSessionSchedule.ParameterSet);
+                    //}
                  } 
         internal virtual void OnSessionScheduleChanged(object sender, NotificationEventArgs e)
         {
@@ -167,6 +173,25 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                                           
                 BaseViewModel.Instance.CurrentSessionSchedule = null;
 			}
+	
+		 internal virtual void OnCurrentParameterSetChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<ParameterSet> e)
+			{
+			if(ViewCurrentParameterSet == false) return;
+			if (e.Data == null || e.Data.Id == null)
+                {
+                    vloader.FilterExpression = "None";
+                }
+                else
+                {
+				vloader.FilterExpression = string.Format("ParameterSetId == {0}", e.Data.Id.ToString());
+                 }
+
+				SessionSchedule.Refresh();
+				NotifyPropertyChanged(x => this.SessionSchedule);
+                // SendMessage(MessageToken.SessionScheduleChanged, new NotificationEventArgs(MessageToken.SessionScheduleChanged));
+                                          
+                BaseViewModel.Instance.CurrentSessionSchedule = null;
+			}
 
   			// Core Current Entities Changed
 			// theorticall don't need this cuz i am inheriting from core entities baseview model so changes should flow up to here
@@ -184,6 +209,21 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
              {
                  _viewCurrentSessions = value;
                  NotifyPropertyChanged(x => x.ViewCurrentSessions);
+                FilterData();
+             }
+         }
+ 	
+		 bool _viewCurrentParameterSet = false;
+         public bool ViewCurrentParameterSet
+         {
+             get
+             {
+                 return _viewCurrentParameterSet;
+             }
+             set
+             {
+                 _viewCurrentParameterSet = value;
+                 NotifyPropertyChanged(x => x.ViewCurrentParameterSet);
                 FilterData();
              }
          }
