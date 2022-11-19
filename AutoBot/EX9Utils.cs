@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Data.Entity;
 using System.Data.Entity.Core.Objects.DataClasses;
+using System.Dynamic;
 using System.IO;
 using System.Linq;
 using System.Linq.Dynamic;
@@ -17,6 +18,7 @@ using Core.Common.Utils;
 using CoreEntities.Business.Entities;
 using DocumentDS.Business.Entities;
 using DocumentItemDS.Business.Entities;
+using Newtonsoft.Json.Linq;
 using TrackableEntities;
 using TrackableEntities.Client;
 using WaterNut.Business.Entities;
@@ -32,6 +34,8 @@ namespace AutoBot
         public static void RecreateEx9(int months)
         {
             var genDocs = CreateEx9(true, months);
+            var saleInfo = BaseDataModel.CurrentSalesInfo(months);
+           
 
             if (Enumerable.Any<DocumentCT>(genDocs)) //reexwarehouse process
             {
@@ -60,10 +64,12 @@ namespace AutoBot
 
                 Console.WriteLine("Create Ex9");
 
-                var saleInfo = BaseDataModel.CurrentSalesInfo(months);
+               var saleInfo = BaseDataModel.CurrentSalesInfo(months);
+
+
                 if (saleInfo.Item3.AsycudaDocumentSetId == 0) return new List<DocumentCT>();
 
-                var docset = BaseDataModel.Instance.GetAsycudaDocumentSet(saleInfo.Item3.AsycudaDocumentSetId).Result;
+                var docset = BaseDataModel.Instance.GetAsycudaDocumentSet(saleInfo.DocSet.AsycudaDocumentSetId).Result;
                 if (overwrite)
                 {
                     BaseDataModel.Instance.ClearAsycudaDocumentSet(docset.AsycudaDocumentSetId).Wait();
@@ -87,7 +93,7 @@ namespace AutoBot
                           }) AND (EX9AsycudaSalesAllocations.InvoiceDate >= '{
                               saleInfo.Item1.ToShortDateString()
                           }') AND 
-                                     (EX9AsycudaSalesAllocations.InvoiceDate <= '{saleInfo.Item2.ToShortDateString()}')
+                                     (EX9AsycudaSalesAllocations.InvoiceDate <= '{saleInfo.EndDate.ToShortDateString()}')
                     GROUP BY EX9AsycudaSalesAllocations.ItemNumber, ApplicationSettings.ApplicationSettingsId--, EX9AsycudaSalesAllocations.pQuantity, EX9AsycudaSalesAllocations.PreviousItem_Id
                     HAVING (SUM(EX9AsycudaSalesAllocations.PiQuantity) < SUM(EX9AsycudaSalesAllocations.pQtyAllocated)) AND (SUM(EX9AsycudaSalesAllocations.QtyAllocated) > 0) AND (MAX(EX9AsycudaSalesAllocations.xStatus) IS NULL)";
 
@@ -127,20 +133,22 @@ namespace AutoBot
 
         }
 
+
+
         public static void ExportEx9Entries(int months)
         {
             Console.WriteLine("Export EX9 Entries");
             try
             {
-                var i = BaseDataModel.CurrentSalesInfo(months);
+                var saleInfo =  BaseDataModel.CurrentSalesInfo(months);
 
-                SalesUtils.ExportDocSetSalesReport(i.Item3.AsycudaDocumentSetId,
+                SalesUtils.ExportDocSetSalesReport(saleInfo.DocSet.AsycudaDocumentSetId,
                     Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder,
-                        i.Item3.Declarant_Reference_Number)).Wait();
+                        saleInfo.DocSet.Declarant_Reference_Number)).Wait();
 
-                BaseDataModel.Instance.ExportDocSet(i.Item3.AsycudaDocumentSetId,
+                BaseDataModel.Instance.ExportDocSet(saleInfo.DocSet.AsycudaDocumentSetId,
                     Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder,
-                        i.Item3.Declarant_Reference_Number), true).Wait();
+                        saleInfo.DocSet.Declarant_Reference_Number), true).Wait();
 
 
             }
@@ -231,7 +239,8 @@ namespace AutoBot
         public static void RecreateEx9(FileTypes filetype, FileInfo[] files)
         {
             var genDocs = EX9Utils.CreateEx9(true, -1);
-
+            var saleInfo = BaseDataModel.CurrentSalesInfo(-1);
+            filetype.AsycudaDocumentSetId = saleInfo.DocSet.AsycudaDocumentSetId;
             if (Enumerable.Any<DocumentCT>(genDocs)) //reexwarehouse process
             {
                 filetype.ProcessNextStep.AddRange(new List<string>() { "ExportEx9Entries", "AssessEx9Entries", "DownloadPOFiles", "ImportSalesEntries", "ImportWarehouseErrors", "RecreateEx9" });

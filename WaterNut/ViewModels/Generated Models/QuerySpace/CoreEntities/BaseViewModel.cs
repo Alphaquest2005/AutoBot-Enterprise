@@ -97,6 +97,9 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                         RegisterToReceiveMessages<string>(MessageToken.CurrentInventoryItemAliasXIDChanged, OnCurrentInventoryItemAliasXIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentInventoryItemXIDChanged, OnCurrentInventoryItemXIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentLicenceSummaryIDChanged, OnCurrentLicenceSummaryIDChanged);
+                        RegisterToReceiveMessages<string>(MessageToken.CurrentParametersIDChanged, OnCurrentParametersIDChanged);
+                        RegisterToReceiveMessages<string>(MessageToken.CurrentParameterSetIDChanged, OnCurrentParameterSetIDChanged);
+                        RegisterToReceiveMessages<string>(MessageToken.CurrentParameterSetParametersIDChanged, OnCurrentParameterSetParametersIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentSessionActionsIDChanged, OnCurrentSessionActionsIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentSessionsIDChanged, OnCurrentSessionsIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentSessionScheduleIDChanged, OnCurrentSessionScheduleIDChanged);
@@ -198,6 +201,9 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                         RegisterToReceiveMessages<InventoryItemAliasX>(MessageToken.CurrentInventoryItemAliasXChanged, OnCurrentInventoryItemAliasXChanged);
                         RegisterToReceiveMessages<InventoryItemX>(MessageToken.CurrentInventoryItemXChanged, OnCurrentInventoryItemXChanged);
                         RegisterToReceiveMessages<LicenceSummary>(MessageToken.CurrentLicenceSummaryChanged, OnCurrentLicenceSummaryChanged);
+                        RegisterToReceiveMessages<Parameters>(MessageToken.CurrentParametersChanged, OnCurrentParametersChanged);
+                        RegisterToReceiveMessages<ParameterSet>(MessageToken.CurrentParameterSetChanged, OnCurrentParameterSetChanged);
+                        RegisterToReceiveMessages<ParameterSetParameters>(MessageToken.CurrentParameterSetParametersChanged, OnCurrentParameterSetParametersChanged);
                         RegisterToReceiveMessages<SessionActions>(MessageToken.CurrentSessionActionsChanged, OnCurrentSessionActionsChanged);
                         RegisterToReceiveMessages<Sessions>(MessageToken.CurrentSessionsChanged, OnCurrentSessionsChanged);
                         RegisterToReceiveMessages<SessionSchedule>(MessageToken.CurrentSessionScheduleChanged, OnCurrentSessionScheduleChanged);
@@ -1456,6 +1462,87 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                                     if (!string.IsNullOrEmpty(_currentLicenceSummaryID)) BeginSendMessage(MessageToken.CurrentLicenceSummaryIDChanged,
                                                      new NotificationEventArgs<string>(MessageToken.CurrentLicenceSummaryIDChanged, _currentLicenceSummaryID));
                                     NotifyPropertyChanged(x => this.CurrentLicenceSummaryID);  
+                                }
+                            }
+                        }
+                        internal async void OnCurrentParametersIDChanged(object sender, NotificationEventArgs<string> e)
+                        {
+                            using (ParametersRepository ctx = new ParametersRepository())
+                            {
+                                CurrentParameters = await ctx.GetParameters(e.Data).ConfigureAwait(continueOnCapturedContext: false);
+                            }
+                            NotifyPropertyChanged(m => CurrentParameters);
+                        }
+
+                        private  string _currentParametersID = "";
+                        public string CurrentParametersID
+                        {
+                            get
+                            {
+                                return _currentParametersID;
+                            }
+                            set
+                            {
+                                if (_currentParametersID != value)
+                                {
+                                    _currentParametersID = value;
+                                    if (!string.IsNullOrEmpty(_currentParametersID)) BeginSendMessage(MessageToken.CurrentParametersIDChanged,
+                                                     new NotificationEventArgs<string>(MessageToken.CurrentParametersIDChanged, _currentParametersID));
+                                    NotifyPropertyChanged(x => this.CurrentParametersID);  
+                                }
+                            }
+                        }
+                        internal async void OnCurrentParameterSetIDChanged(object sender, NotificationEventArgs<string> e)
+                        {
+                            using (ParameterSetRepository ctx = new ParameterSetRepository())
+                            {
+                                CurrentParameterSet = await ctx.GetParameterSet(e.Data).ConfigureAwait(continueOnCapturedContext: false);
+                            }
+                            NotifyPropertyChanged(m => CurrentParameterSet);
+                        }
+
+                        private  string _currentParameterSetID = "";
+                        public string CurrentParameterSetID
+                        {
+                            get
+                            {
+                                return _currentParameterSetID;
+                            }
+                            set
+                            {
+                                if (_currentParameterSetID != value)
+                                {
+                                    _currentParameterSetID = value;
+                                    if (!string.IsNullOrEmpty(_currentParameterSetID)) BeginSendMessage(MessageToken.CurrentParameterSetIDChanged,
+                                                     new NotificationEventArgs<string>(MessageToken.CurrentParameterSetIDChanged, _currentParameterSetID));
+                                    NotifyPropertyChanged(x => this.CurrentParameterSetID);  
+                                }
+                            }
+                        }
+                        internal async void OnCurrentParameterSetParametersIDChanged(object sender, NotificationEventArgs<string> e)
+                        {
+                            using (ParameterSetParametersRepository ctx = new ParameterSetParametersRepository())
+                            {
+                                CurrentParameterSetParameters = await ctx.GetParameterSetParameters(e.Data).ConfigureAwait(continueOnCapturedContext: false);
+                            }
+                            NotifyPropertyChanged(m => CurrentParameterSetParameters);
+                        }
+
+                        private  string _currentParameterSetParametersID = "";
+                        public string CurrentParameterSetParametersID
+                        {
+                            get
+                            {
+                                return _currentParameterSetParametersID;
+                            }
+                            set
+                            {
+                                if (_currentParameterSetParametersID != value)
+                                {
+                                    _currentParameterSetParametersID = value;
+                                    if (!string.IsNullOrEmpty(_currentParameterSetParametersID)) BeginSendMessage(MessageToken.CurrentParameterSetParametersIDChanged,
+                                                     new NotificationEventArgs<string>(MessageToken.CurrentParameterSetParametersIDChanged, _currentParameterSetParametersID));
+                                    NotifyPropertyChanged(x => this.CurrentParameterSetParametersID);  
                                 }
                             }
                         }
@@ -5164,6 +5251,159 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     _vcurrentLicenceSummary = value;
 					if(_vcurrentLicenceSummary != null) CurrentLicenceSummary = value.Data;
                     NotifyPropertyChanged(x => this.VCurrentLicenceSummary);                    
+                }
+            }
+        }
+
+
+
+                     
+       
+
+        internal void OnCurrentParametersChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<Parameters> e)
+        {
+            //CurrentParameters = e.Data;
+            NotifyPropertyChanged(m => this.CurrentParameters);
+        }
+
+        private  Parameters _currentParameters;
+        public Parameters CurrentParameters
+        {
+            get
+            {
+                return _currentParameters;
+            }
+            set
+            {
+                if (_currentParameters != value)
+                {
+                    _currentParameters = value;
+                    BeginSendMessage(MessageToken.CurrentParametersChanged,
+                                                     new NotificationEventArgs<Parameters>(MessageToken.CurrentParametersChanged, _currentParameters)); 
+                    NotifyPropertyChanged(x => this.CurrentParameters);    
+                    // all current navigation properties = null
+                 CurrentParameterSetParameters = null;
+   
+                }
+            }
+        }
+
+		VirtualListItem<Parameters> _vcurrentParameters;
+        public VirtualListItem<Parameters> VCurrentParameters
+        {
+            get
+            {
+                return _vcurrentParameters;
+            }
+            set
+            {
+                if (_vcurrentParameters != value)
+                {
+                    _vcurrentParameters = value;
+					if(_vcurrentParameters != null) CurrentParameters = value.Data;
+                    NotifyPropertyChanged(x => this.VCurrentParameters);                    
+                }
+            }
+        }
+
+
+
+                     
+       
+
+        internal void OnCurrentParameterSetChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<ParameterSet> e)
+        {
+            //CurrentParameterSet = e.Data;
+            NotifyPropertyChanged(m => this.CurrentParameterSet);
+        }
+
+        private  ParameterSet _currentParameterSet;
+        public ParameterSet CurrentParameterSet
+        {
+            get
+            {
+                return _currentParameterSet;
+            }
+            set
+            {
+                if (_currentParameterSet != value)
+                {
+                    _currentParameterSet = value;
+                    BeginSendMessage(MessageToken.CurrentParameterSetChanged,
+                                                     new NotificationEventArgs<ParameterSet>(MessageToken.CurrentParameterSetChanged, _currentParameterSet)); 
+                    NotifyPropertyChanged(x => this.CurrentParameterSet);    
+                    // all current navigation properties = null
+                 CurrentParameterSetParameters = null;
+                 CurrentSessionSchedule = null;
+   
+                }
+            }
+        }
+
+		VirtualListItem<ParameterSet> _vcurrentParameterSet;
+        public VirtualListItem<ParameterSet> VCurrentParameterSet
+        {
+            get
+            {
+                return _vcurrentParameterSet;
+            }
+            set
+            {
+                if (_vcurrentParameterSet != value)
+                {
+                    _vcurrentParameterSet = value;
+					if(_vcurrentParameterSet != null) CurrentParameterSet = value.Data;
+                    NotifyPropertyChanged(x => this.VCurrentParameterSet);                    
+                }
+            }
+        }
+
+
+
+                     
+       
+
+        internal void OnCurrentParameterSetParametersChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<ParameterSetParameters> e)
+        {
+            //CurrentParameterSetParameters = e.Data;
+            NotifyPropertyChanged(m => this.CurrentParameterSetParameters);
+        }
+
+        private  ParameterSetParameters _currentParameterSetParameters;
+        public ParameterSetParameters CurrentParameterSetParameters
+        {
+            get
+            {
+                return _currentParameterSetParameters;
+            }
+            set
+            {
+                if (_currentParameterSetParameters != value)
+                {
+                    _currentParameterSetParameters = value;
+                    BeginSendMessage(MessageToken.CurrentParameterSetParametersChanged,
+                                                     new NotificationEventArgs<ParameterSetParameters>(MessageToken.CurrentParameterSetParametersChanged, _currentParameterSetParameters)); 
+                    NotifyPropertyChanged(x => this.CurrentParameterSetParameters);    
+                    // all current navigation properties = null
+   
+                }
+            }
+        }
+
+		VirtualListItem<ParameterSetParameters> _vcurrentParameterSetParameters;
+        public VirtualListItem<ParameterSetParameters> VCurrentParameterSetParameters
+        {
+            get
+            {
+                return _vcurrentParameterSetParameters;
+            }
+            set
+            {
+                if (_vcurrentParameterSetParameters != value)
+                {
+                    _vcurrentParameterSetParameters = value;
+					if(_vcurrentParameterSetParameters != null) CurrentParameterSetParameters = value.Data;
+                    NotifyPropertyChanged(x => this.VCurrentParameterSetParameters);                    
                 }
             }
         }

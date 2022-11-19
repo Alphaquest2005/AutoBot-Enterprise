@@ -66,6 +66,44 @@ namespace CoreEntities.Client.Entities
             }
 
       }
+        public string ParameterSetEntityName
+        {
+            get
+            {
+                return this.ParameterSet == null ? "" : this.ParameterSet.EntityName;
+            }
+            set
+            {
+                                if (string.IsNullOrEmpty(value)) return;
+                string[] vals = value.Split(',');
+               
+                    using (ParameterSetClient ctx = new ParameterSetClient())
+                    {
+                        var dto = ctx.GetParameterSet().Result.AsEnumerable().FirstOrDefault(x => x.EntityName == value);
+                        
+
+                        if ( dto == null)
+                        {
+                            this.ParameterSet = (ParameterSet)new ParameterSet().CreateEntityFromString(value);
+							
+							this.Id = Convert.ToInt32(this.ParameterSet.Id);
+                            this.TrackingState=TrackableEntities.TrackingState.Modified;
+                           NotifyPropertyChanged("AddParameterSet");
+                        }
+                        else
+                        {
+                            var obj = new ParameterSet(dto);
+                           if (this.ParameterSet == null || this.ParameterSet.EntityId != obj.EntityId) this.ParameterSet = obj;
+                           
+                        }
+                         
+
+
+                    }
+            
+            }
+
+      }
 
 
 

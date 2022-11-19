@@ -165,6 +165,9 @@
     <Compile Include="Generated Client Entities\CoreEntities\InventoryItemAliasX.cs" />
     <Compile Include="Generated Client Entities\CoreEntities\InventoryItemX.cs" />
     <Compile Include="Generated Client Entities\CoreEntities\LicenceSummary.cs" />
+    <Compile Include="Generated Client Entities\CoreEntities\Parameters.cs" />
+    <Compile Include="Generated Client Entities\CoreEntities\ParameterSet.cs" />
+    <Compile Include="Generated Client Entities\CoreEntities\ParameterSetParameters.cs" />
     <Compile Include="Generated Client Entities\CoreEntities\SessionActions.cs" />
     <Compile Include="Generated Client Entities\CoreEntities\Sessions.cs" />
     <Compile Include="Generated Client Entities\CoreEntities\SessionSchedule.cs" />
@@ -335,6 +338,9 @@
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\InventoryItemAliasX.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\InventoryItemX.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\LicenceSummary.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\Parameters.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\ParameterSet.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\ParameterSetParameters.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\SessionActions.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\Sessions.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\SessionSchedule.cs" />
@@ -505,6 +511,9 @@
     <Compile Include="Generated MyNavProp Models\CoreEntities\InventoryItemAliasX.cs" />
     <Compile Include="Generated MyNavProp Models\CoreEntities\InventoryItemX.cs" />
     <Compile Include="Generated MyNavProp Models\CoreEntities\LicenceSummary.cs" />
+    <Compile Include="Generated MyNavProp Models\CoreEntities\Parameters.cs" />
+    <Compile Include="Generated MyNavProp Models\CoreEntities\ParameterSet.cs" />
+    <Compile Include="Generated MyNavProp Models\CoreEntities\ParameterSetParameters.cs" />
     <Compile Include="Generated MyNavProp Models\CoreEntities\SessionActions.cs" />
     <Compile Include="Generated MyNavProp Models\CoreEntities\Sessions.cs" />
     <Compile Include="Generated MyNavProp Models\CoreEntities\SessionSchedule.cs" />

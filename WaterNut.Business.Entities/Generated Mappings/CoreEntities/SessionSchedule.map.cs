@@ -18,7 +18,9 @@
               this.Property(t => t.RunDateTime).HasColumnName("RunDateTime");
               this.Property(t => t.ApplicationSettingId).HasColumnName("ApplicationSettingId");
               this.Property(t => t.ActionId).HasColumnName("ActionId");
+              this.Property(t => t.ParameterSetId).HasColumnName("ParameterSetId");
               this.HasRequired(t => t.Sessions).WithMany(t =>(ICollection<SessionSchedule>) t.SessionSchedule).HasForeignKey(d => d.SesseionId);
+              this.HasOptional(t => t.ParameterSet).WithMany(t =>(ICollection<SessionSchedule>) t.SessionSchedule).HasForeignKey(d => d.ParameterSetId);
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);
     			this.Ignore(t => t.ModifiedProperties);

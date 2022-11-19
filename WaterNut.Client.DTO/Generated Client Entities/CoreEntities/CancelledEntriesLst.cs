@@ -48,19 +48,6 @@ namespace CoreEntities.Client.DTO
         private string _Office;
 
         [DataMember]
-        public string GeneralProcedure
-		{ 
-		    get { return _GeneralProcedure; }
-			set
-			{
-			    if (value == _GeneralProcedure) return;
-				_GeneralProcedure = value;
-				NotifyPropertyChanged();//m => this.GeneralProcedure
-			}
-		}
-        private string _GeneralProcedure;
-
-        [DataMember]
         public string RegistrationNumber
 		{ 
 		    get { return _RegistrationNumber; }

@@ -128,7 +128,6 @@
           </Key>
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Office" Type="nvarchar" MaxLength="50" Nullable="false" />
-          <Property Name="GeneralProcedure" Type="nvarchar" MaxLength="1" Nullable="false" />
           <Property Name="RegistrationNumber" Type="nvarchar" MaxLength="8" Nullable="false" />
           <Property Name="RegistrationDate" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
@@ -397,6 +396,29 @@
           <Property Name="KeyValue" Type="nvarchar" MaxLength="50" />
           <Property Name="FieldValue" Type="nvarchar" MaxLength="1000" />
         </EntityType>
+        <EntityType Name="Parameters">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Value" Type="nvarchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="ParameterSet">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="ParameterSetParameters">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ParameterSetId" Type="int" Nullable="false" />
+          <Property Name="ParameterId" Type="int" Nullable="false" />
+        </EntityType>
         <EntityType Name="SessionActions">
           <Key>
             <PropertyRef Name="Id" />
@@ -422,6 +444,7 @@
           <Property Name="RunDateTime" Type="datetime" Nullable="false" />
           <Property Name="ApplicationSettingId" Type="int" />
           <Property Name="ActionId" Type="int" />
+          <Property Name="ParameterSetId" Type="int" />
         </EntityType>
         <EntityType Name="SubItems">
           <Key>
@@ -2427,6 +2450,34 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_ParameterSetParameters_Parameters">
+          <End Role="Parameters" Type="Self.Parameters" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="ParameterSetParameters" Type="Self.ParameterSetParameters" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Parameters">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ParameterSetParameters">
+              <PropertyRef Name="ParameterId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ParameterSetParameters_ParameterSet">
+          <End Role="ParameterSet" Type="Self.ParameterSet" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="ParameterSetParameters" Type="Self.ParameterSetParameters" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ParameterSet">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ParameterSetParameters">
+              <PropertyRef Name="ParameterSetId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_SessionActions_Actions">
           <End Role="Actions" Type="Self.Actions" Multiplicity="1" />
           <End Role="SessionActions" Type="Self.SessionActions" Multiplicity="*" />
@@ -2448,6 +2499,18 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
             </Principal>
             <Dependent Role="SessionActions">
               <PropertyRef Name="SessionId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_SessionSchedule_ParameterSet">
+          <End Role="ParameterSet" Type="Self.ParameterSet" Multiplicity="0..1" />
+          <End Role="SessionSchedule" Type="Self.SessionSchedule" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ParameterSet">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="SessionSchedule">
+              <PropertyRef Name="ParameterSetId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -2500,6 +2563,9 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
           <EntitySet Name="ImportActions" EntityType="Self.ImportActions" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="InfoMapping" EntityType="Self.InfoMapping" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="InfoMappingRegEx" EntityType="Self.InfoMappingRegEx" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Parameters" EntityType="Self.Parameters" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ParameterSet" EntityType="Self.ParameterSet" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ParameterSetParameters" EntityType="Self.ParameterSetParameters" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="SessionActions" EntityType="Self.SessionActions" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Sessions" EntityType="Self.Sessions" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="SessionSchedule" EntityType="Self.SessionSchedule" Schema="dbo" store:Type="Tables" />
@@ -3764,6 +3830,14 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
             <End Role="InfoMapping" EntitySet="InfoMapping" />
             <End Role="InfoMappingRegEx" EntitySet="InfoMappingRegEx" />
           </AssociationSet>
+          <AssociationSet Name="FK_ParameterSetParameters_Parameters" Association="Self.FK_ParameterSetParameters_Parameters">
+            <End Role="Parameters" EntitySet="Parameters" />
+            <End Role="ParameterSetParameters" EntitySet="ParameterSetParameters" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ParameterSetParameters_ParameterSet" Association="Self.FK_ParameterSetParameters_ParameterSet">
+            <End Role="ParameterSet" EntitySet="ParameterSet" />
+            <End Role="ParameterSetParameters" EntitySet="ParameterSetParameters" />
+          </AssociationSet>
           <AssociationSet Name="FK_SessionActions_Actions" Association="Self.FK_SessionActions_Actions">
             <End Role="Actions" EntitySet="Actions" />
             <End Role="SessionActions" EntitySet="SessionActions" />
@@ -3771,6 +3845,10 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
           <AssociationSet Name="FK_SessionActions_Sessions" Association="Self.FK_SessionActions_Sessions">
             <End Role="Sessions" EntitySet="Sessions" />
             <End Role="SessionActions" EntitySet="SessionActions" />
+          </AssociationSet>
+          <AssociationSet Name="FK_SessionSchedule_ParameterSet" Association="Self.FK_SessionSchedule_ParameterSet">
+            <End Role="ParameterSet" EntitySet="ParameterSet" />
+            <End Role="SessionSchedule" EntitySet="SessionSchedule" />
           </AssociationSet>
           <AssociationSet Name="FK_SessionSchedule_Sessions" Association="Self.FK_SessionSchedule_Sessions">
             <End Role="Sessions" EntitySet="Sessions" />
@@ -4090,6 +4168,21 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
           <AssociationSet Name="FK_EmailMappingActions_EmailMapping" Association="WaterNutDBModel.FK_EmailMappingActions_EmailMapping">
             <End Role="EmailMapping" EntitySet="EmailMapping" />
             <End Role="EmailMappingActions" EntitySet="EmailMappingActions" />
+          </AssociationSet>
+          <EntitySet Name="Parameters" EntityType="WaterNutDBModel.Parameters" />
+          <EntitySet Name="ParameterSet" EntityType="WaterNutDBModel.ParameterSet" />
+          <EntitySet Name="ParameterSetParameters" EntityType="WaterNutDBModel.ParameterSetParameters" />
+          <AssociationSet Name="FK_ParameterSetParameters_Parameters" Association="WaterNutDBModel.FK_ParameterSetParameters_Parameters">
+            <End Role="Parameters" EntitySet="Parameters" />
+            <End Role="ParameterSetParameters" EntitySet="ParameterSetParameters" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ParameterSetParameters_ParameterSet" Association="WaterNutDBModel.FK_ParameterSetParameters_ParameterSet">
+            <End Role="ParameterSet" EntitySet="ParameterSet" />
+            <End Role="ParameterSetParameters" EntitySet="ParameterSetParameters" />
+          </AssociationSet>
+          <AssociationSet Name="FK_SessionSchedule_ParameterSet" Association="WaterNutDBModel.FK_SessionSchedule_ParameterSet">
+            <End Role="ParameterSet" EntitySet="ParameterSet" />
+            <End Role="SessionSchedule" EntitySet="SessionSchedule" />
           </AssociationSet>
           </EntityContainer>
         <EntityType Name="ApplicationSettings">
@@ -5099,6 +5192,8 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
           <NavigationProperty Name="Sessions" Relationship="WaterNutDBModel.FK_SessionSchedule_Sessions" FromRole="SessionSchedule" ToRole="Sessions" />
           <Property Name="ApplicationSettingId" Type="Int32" />
           <Property Name="ActionId" Type="Int32" />
+          <Property Name="ParameterSetId" Type="Int32" />
+          <NavigationProperty Name="ParameterSet" Relationship="WaterNutDBModel.FK_SessionSchedule_ParameterSet" FromRole="SessionSchedule" ToRole="ParameterSet" />
         </EntityType>
         <Association Name="FK_SessionSchedule_Sessions">
           <End Type="WaterNutDBModel.Sessions" Role="Sessions" Multiplicity="1" />
@@ -6417,7 +6512,6 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
           </Key>
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Office" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="GeneralProcedure" Type="String" Nullable="false" MaxLength="1" FixedLength="false" Unicode="true" />
           <Property Name="RegistrationNumber" Type="String" Nullable="false" MaxLength="8" FixedLength="false" Unicode="true" />
           <Property Name="RegistrationDate" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
@@ -6624,6 +6718,74 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
             </Principal>
             <Dependent Role="EmailMappingActions">
               <PropertyRef Name="EmailMappingId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="Parameters">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Value" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="ParameterSetParameters" Relationship="WaterNutDBModel.FK_ParameterSetParameters_Parameters" FromRole="Parameters" ToRole="ParameterSetParameters" />
+        </EntityType>
+        <EntityType Name="ParameterSet">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="ParameterSetParameters" Relationship="WaterNutDBModel.FK_ParameterSetParameters_ParameterSet" FromRole="ParameterSet" ToRole="ParameterSetParameters" />
+          <NavigationProperty Name="SessionSchedule" Relationship="WaterNutDBModel.FK_SessionSchedule_ParameterSet" FromRole="ParameterSet" ToRole="SessionSchedule" />
+        </EntityType>
+        <EntityType Name="ParameterSetParameters">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ParameterSetId" Type="Int32" Nullable="false" />
+          <Property Name="ParameterId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Parameters" Relationship="WaterNutDBModel.FK_ParameterSetParameters_Parameters" FromRole="ParameterSetParameters" ToRole="Parameters" />
+          <NavigationProperty Name="ParameterSet" Relationship="WaterNutDBModel.FK_ParameterSetParameters_ParameterSet" FromRole="ParameterSetParameters" ToRole="ParameterSet" />
+        </EntityType>
+        <Association Name="FK_ParameterSetParameters_Parameters">
+          <End Type="WaterNutDBModel.Parameters" Role="Parameters" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="WaterNutDBModel.ParameterSetParameters" Role="ParameterSetParameters" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Parameters">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ParameterSetParameters">
+              <PropertyRef Name="ParameterId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ParameterSetParameters_ParameterSet">
+          <End Type="WaterNutDBModel.ParameterSet" Role="ParameterSet" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="WaterNutDBModel.ParameterSetParameters" Role="ParameterSetParameters" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ParameterSet">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ParameterSetParameters">
+              <PropertyRef Name="ParameterSetId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_SessionSchedule_ParameterSet">
+          <End Type="WaterNutDBModel.ParameterSet" Role="ParameterSet" Multiplicity="0..1" />
+          <End Type="WaterNutDBModel.SessionSchedule" Role="SessionSchedule" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ParameterSet">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="SessionSchedule">
+              <PropertyRef Name="ParameterSetId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -7194,6 +7356,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
           <EntitySetMapping Name="SessionSchedule">
             <EntityTypeMapping TypeName="WaterNutDBModel.SessionSchedule">
               <MappingFragment StoreEntitySet="SessionSchedule">
+                <ScalarProperty Name="ParameterSetId" ColumnName="ParameterSetId" />
                 <ScalarProperty Name="ActionId" ColumnName="ActionId" />
                 <ScalarProperty Name="ApplicationSettingId" ColumnName="ApplicationSettingId" />
                 <ScalarProperty Name="RunDateTime" ColumnName="RunDateTime" />
@@ -8266,7 +8429,6 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
                 <ScalarProperty Name="ApplicationSettingsId" ColumnName="ApplicationSettingsId" />
                 <ScalarProperty Name="RegistrationDate" ColumnName="RegistrationDate" />
                 <ScalarProperty Name="RegistrationNumber" ColumnName="RegistrationNumber" />
-                <ScalarProperty Name="GeneralProcedure" ColumnName="GeneralProcedure" />
                 <ScalarProperty Name="Office" ColumnName="Office" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
@@ -8348,6 +8510,32 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
               <MappingFragment StoreEntitySet="EmailMappingActions">
                 <ScalarProperty Name="ActionId" ColumnName="ActionId" />
                 <ScalarProperty Name="EmailMappingId" ColumnName="EmailMappingId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Parameters">
+            <EntityTypeMapping TypeName="WaterNutDBModel.Parameters">
+              <MappingFragment StoreEntitySet="Parameters">
+                <ScalarProperty Name="Value" ColumnName="Value" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ParameterSet">
+            <EntityTypeMapping TypeName="WaterNutDBModel.ParameterSet">
+              <MappingFragment StoreEntitySet="ParameterSet">
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ParameterSetParameters">
+            <EntityTypeMapping TypeName="WaterNutDBModel.ParameterSetParameters">
+              <MappingFragment StoreEntitySet="ParameterSetParameters">
+                <ScalarProperty Name="ParameterId" ColumnName="ParameterId" />
+                <ScalarProperty Name="ParameterSetId" ColumnName="ParameterSetId" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>

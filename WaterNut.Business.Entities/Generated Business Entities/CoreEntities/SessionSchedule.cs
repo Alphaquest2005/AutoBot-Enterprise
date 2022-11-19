@@ -96,7 +96,24 @@ namespace CoreEntities.Business.Entities
         }
         Nullable<int> _actionid;
         [DataMember]
+        public Nullable<int> ParameterSetId 
+        {
+            get
+            {
+                return _parametersetid;
+            }
+            set
+            {
+                _parametersetid = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<int> _parametersetid;
+        [DataMember]
         public Sessions Sessions { get; set; }
+        [DataMember]
+        public ParameterSet ParameterSet { get; set; }
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

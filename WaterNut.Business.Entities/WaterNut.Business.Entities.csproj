@@ -246,6 +246,7 @@
     <Compile Include="Generated Business Entities\CoreEntities\EntryPreviousItems.cs" />
     <Compile Include="Generated Business Entities\CoreEntities\Enums\CustomsOperations.cs" />
     <Compile Include="Generated Business Entities\CoreEntities\Enums\FileGroups.cs" />
+    <Compile Include="Generated Business Entities\CoreEntities\Enums\ParameterSet.cs" />
     <Compile Include="Generated Business Entities\CoreEntities\ExpiredEntriesLst.cs" />
     <Compile Include="Generated Business Entities\CoreEntities\FileGroups.cs" />
     <Compile Include="Generated Business Entities\CoreEntities\FileImporterInfo.cs" />
@@ -261,6 +262,9 @@
     <Compile Include="Generated Business Entities\CoreEntities\InventoryItemAliasX.cs" />
     <Compile Include="Generated Business Entities\CoreEntities\InventoryItemX.cs" />
     <Compile Include="Generated Business Entities\CoreEntities\LicenceSummary.cs" />
+    <Compile Include="Generated Business Entities\CoreEntities\Parameters.cs" />
+    <Compile Include="Generated Business Entities\CoreEntities\ParameterSet.cs" />
+    <Compile Include="Generated Business Entities\CoreEntities\ParameterSetParameters.cs" />
     <Compile Include="Generated Business Entities\CoreEntities\SessionActions.cs" />
     <Compile Include="Generated Business Entities\CoreEntities\Sessions.cs" />
     <Compile Include="Generated Business Entities\CoreEntities\SessionSchedule.cs" />
@@ -683,6 +687,9 @@
     <Compile Include="Generated ChangeTracking Models\CoreEntities\InventoryItemAliasX.cs" />
     <Compile Include="Generated ChangeTracking Models\CoreEntities\InventoryItemX.cs" />
     <Compile Include="Generated ChangeTracking Models\CoreEntities\LicenceSummary.cs" />
+    <Compile Include="Generated ChangeTracking Models\CoreEntities\Parameters.cs" />
+    <Compile Include="Generated ChangeTracking Models\CoreEntities\ParameterSet.cs" />
+    <Compile Include="Generated ChangeTracking Models\CoreEntities\ParameterSetParameters.cs" />
     <Compile Include="Generated ChangeTracking Models\CoreEntities\SessionActions.cs" />
     <Compile Include="Generated ChangeTracking Models\CoreEntities\Sessions.cs" />
     <Compile Include="Generated ChangeTracking Models\CoreEntities\SessionSchedule.cs" />
@@ -1101,6 +1108,9 @@
     <Compile Include="Generated Constructors Models\CoreEntities\InventoryItemAliasX.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\InventoryItemX.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\LicenceSummary.cs" />
+    <Compile Include="Generated Constructors Models\CoreEntities\Parameters.cs" />
+    <Compile Include="Generated Constructors Models\CoreEntities\ParameterSet.cs" />
+    <Compile Include="Generated Constructors Models\CoreEntities\ParameterSetParameters.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\SessionActions.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\Sessions.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\SessionSchedule.cs" />
@@ -1519,6 +1529,9 @@
     <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\InventoryItemAliasX.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\InventoryItemX.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\LicenceSummary.cs" />
+    <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\Parameters.cs" />
+    <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\ParameterSet.cs" />
+    <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\ParameterSetParameters.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\SessionActions.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\Sessions.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\SessionSchedule.cs" />
@@ -1937,6 +1950,9 @@
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\InventoryItemAliasX.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\InventoryItemX.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\LicenceSummary.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\Parameters.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\ParameterSet.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\ParameterSetParameters.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\SessionActions.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\Sessions.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\SessionSchedule.cs" />
@@ -2365,6 +2381,9 @@
     <Compile Include="Generated Mappings\CoreEntities\InventoryItemAliasX.map.cs" />
     <Compile Include="Generated Mappings\CoreEntities\InventoryItemX.map.cs" />
     <Compile Include="Generated Mappings\CoreEntities\LicenceSummary.map.cs" />
+    <Compile Include="Generated Mappings\CoreEntities\Parameters.map.cs" />
+    <Compile Include="Generated Mappings\CoreEntities\ParameterSet.map.cs" />
+    <Compile Include="Generated Mappings\CoreEntities\ParameterSetParameters.map.cs" />
     <Compile Include="Generated Mappings\CoreEntities\SessionActions.map.cs" />
     <Compile Include="Generated Mappings\CoreEntities\Sessions.map.cs" />
     <Compile Include="Generated Mappings\CoreEntities\SessionSchedule.map.cs" />

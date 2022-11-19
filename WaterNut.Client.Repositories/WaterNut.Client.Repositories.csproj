@@ -198,6 +198,9 @@
     <Compile Include="Generated Repositories\CoreEntities\InventoryItemAliasXRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\InventoryItemXRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\LicenceSummaryRepository.cs" />
+    <Compile Include="Generated Repositories\CoreEntities\ParameterSetParametersRepository.cs" />
+    <Compile Include="Generated Repositories\CoreEntities\ParameterSetRepository.cs" />
+    <Compile Include="Generated Repositories\CoreEntities\ParametersRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\SessionActionsRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\SessionScheduleRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\SessionsRepository.cs" />

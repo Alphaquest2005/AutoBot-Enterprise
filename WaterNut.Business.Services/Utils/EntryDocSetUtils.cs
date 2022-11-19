@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data.Entity;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices.ComTypes;
 using Core.Common.Utils;
 using CoreEntities.Business.Entities;
 using DocumentDS.Business.Entities;
@@ -215,7 +216,7 @@ namespace WaterNut.DataSpace
             }
         }
 
-        public static Tuple<DateTime, DateTime, AsycudaDocumentSet, string> CreateMonthYearAsycudaDocSet(
+        public static (DateTime StartDate, DateTime EndDate, AsycudaDocumentSet DocSet, string DirPath) CreateMonthYearAsycudaDocSet(
             DateTime startDate)
         {
             var endDate = startDate.AddMonths(1).AddDays(-1).AddHours(23);
@@ -226,7 +227,7 @@ namespace WaterNut.DataSpace
                 StringExtensions.UpdateToCurrentUser(
                     Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder, docRef));
             if (!Directory.Exists(dirPath)) Directory.CreateDirectory(dirPath);
-            return new Tuple<DateTime, DateTime, AsycudaDocumentSet, string>(startDate, endDate, docSet, dirPath);
+            return (StartDate: startDate, EndDate: endDate, DocSet: docSet, DirPath: dirPath);
         }
 
         public static AsycudaDocumentSet GetAsycudaDocumentSet(string docRef, bool isSystemDocSet)

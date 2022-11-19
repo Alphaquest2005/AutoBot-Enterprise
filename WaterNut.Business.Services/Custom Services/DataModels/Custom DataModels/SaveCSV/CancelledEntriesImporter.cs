@@ -30,7 +30,6 @@ namespace WaterNut.DataSpace
                         var expireditm = new CancelledEntriesLst(true)
                         {
                             Office = itm.Office,
-                            GeneralProcedure = itm.GeneralProcedure,
                             ApplicationSettingsId = BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId,
                             RegistrationDate = itm.RegistrationDate,
                             RegistrationNumber = itm.RegistrationNumber,

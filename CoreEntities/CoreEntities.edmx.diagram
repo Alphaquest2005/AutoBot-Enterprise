@@ -156,6 +156,12 @@
         <EntityTypeShape EntityType="WaterNutDBModel.EmailMappingActions" Width="1.5" PointX="16.75" PointY="28.5" />
         <AssociationConnector Association="WaterNutDBModel.FK_EmailMappingActions_Actions" />
         <AssociationConnector Association="WaterNutDBModel.FK_EmailMappingActions_EmailMapping" />
+        <EntityTypeShape EntityType="WaterNutDBModel.Parameters" Width="1.5" PointX="33.375" PointY="33" />
+        <EntityTypeShape EntityType="WaterNutDBModel.ParameterSet" Width="1.5" PointX="33.375" PointY="18" />
+        <EntityTypeShape EntityType="WaterNutDBModel.ParameterSetParameters" Width="3.5" PointX="35.625" PointY="17.875" />
+        <AssociationConnector Association="WaterNutDBModel.FK_ParameterSetParameters_Parameters" />
+        <AssociationConnector Association="WaterNutDBModel.FK_ParameterSetParameters_ParameterSet" />
+        <AssociationConnector Association="WaterNutDBModel.FK_SessionSchedule_ParameterSet" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

@@ -477,6 +477,9 @@
     <Compile Include="Contracts\CoreEntities\IInventoryItemAliasXService.cs" />
     <Compile Include="Contracts\CoreEntities\IInventoryItemXService.cs" />
     <Compile Include="Contracts\CoreEntities\ILicenceSummaryService.cs" />
+    <Compile Include="Contracts\CoreEntities\IParameterSetParametersService.cs" />
+    <Compile Include="Contracts\CoreEntities\IParameterSetService.cs" />
+    <Compile Include="Contracts\CoreEntities\IParametersService.cs" />
     <Compile Include="Contracts\CoreEntities\ISessionActionsService.cs" />
     <Compile Include="Contracts\CoreEntities\ISessionScheduleService.cs" />
     <Compile Include="Contracts\CoreEntities\ISessionsService.cs" />
@@ -906,6 +909,9 @@
     <Compile Include="Services\AllocationDS\xcuda_Weight_itmService.cs" />
     <Compile Include="Services\AllocationDS\XSales_UnAllocatedService.cs" />
     <Compile Include="Services\CoreEntities\EmailMappingActionsService.cs" />
+    <Compile Include="Services\CoreEntities\ParameterSetParametersService.cs" />
+    <Compile Include="Services\CoreEntities\ParameterSetService.cs" />
+    <Compile Include="Services\CoreEntities\ParametersService.cs" />
     <Compile Include="Services\EntryDataDS\ShipmentBLInvoiceService.cs" />
     <Compile Include="Services\EntryDataDS\ShipmentInvoiceBLManualMatchesService.cs" />
     <Compile Include="Services\EntryDataDS\SupplierItemDescriptionRegExService.cs" />

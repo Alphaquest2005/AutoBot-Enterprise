@@ -243,6 +243,12 @@ namespace CoreEntities.Business.Entities
      
         public DbSet<EmailMappingActions> EmailMappingActions { get; set; }
      
+        public DbSet<Parameters> Parameters { get; set; }
+     
+        public DbSet<ParameterSet> ParameterSet { get; set; }
+     
+        public DbSet<ParameterSetParameters> ParameterSetParameters { get; set; }
+     
 
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
@@ -442,6 +448,12 @@ namespace CoreEntities.Business.Entities
             modelBuilder.Configurations.Add(new FileImporterInfoMap());
          
             modelBuilder.Configurations.Add(new EmailMappingActionsMap());
+         
+            modelBuilder.Configurations.Add(new ParametersMap());
+         
+            modelBuilder.Configurations.Add(new ParameterSetMap());
+         
+            modelBuilder.Configurations.Add(new ParameterSetParametersMap());
          
 			OnModelCreatingExtentsion(modelBuilder);
 

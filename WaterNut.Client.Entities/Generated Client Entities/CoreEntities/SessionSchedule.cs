@@ -117,6 +117,21 @@ public Nullable<int> ActionId
 		}
      
 
+       
+       
+public Nullable<int> ParameterSetId
+		{ 
+		    get { return this.sessionschedule.ParameterSetId; }
+			set
+			{
+			    if (value == this.sessionschedule.ParameterSetId) return;
+				this.sessionschedule.ParameterSetId = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("ParameterSetId");
+			}
+		}
+     
+
        private Sessions _Sessions;
         public  Sessions Sessions
 		{
@@ -166,6 +181,59 @@ public Nullable<int> ActionId
                      this.sessionschedule.Sessions = value.DTO;
 				if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
                 NotifyPropertyChanged("Sessions");
+			}
+		}
+        
+
+       private ParameterSet _ParameterSet;
+        public  ParameterSet ParameterSet
+		{
+		    get
+               { 
+                  if (this.sessionschedule != null)
+                   {
+                       if (_ParameterSet != null)
+                       {
+                           if (this.sessionschedule.ParameterSet !=
+                               _ParameterSet.DTO)
+                           {
+                                if (this.sessionschedule.ParameterSet  != null)
+                               _ParameterSet = new ParameterSet(this.sessionschedule.ParameterSet);
+                           }
+                       }
+                       else
+                       {
+                             if (this.sessionschedule.ParameterSet  != null)
+                           _ParameterSet = new ParameterSet(this.sessionschedule.ParameterSet);
+                       }
+                   }
+
+
+             //       if (_ParameterSet != null) return _ParameterSet;
+                       
+             //       var i = new ParameterSet(){TrackingState = TrackingState.Added};
+			//		//if (this.sessionschedule.ParameterSet == null) Debugger.Break();
+			//		if (this.sessionschedule.ParameterSet != null)
+            //        {
+            //           i. = this.sessionschedule.ParameterSet;
+            //        }
+            //        else
+            //        {
+            //            this.sessionschedule.ParameterSet = i.;
+             //       }
+                           
+            //        _ParameterSet = i;
+                     
+                    return _ParameterSet;
+               }
+			set
+			{
+			    if (value == _ParameterSet) return;
+                _ParameterSet = value;
+                if(value != null)
+                     this.sessionschedule.ParameterSet = value.DTO;
+				if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+                NotifyPropertyChanged("ParameterSet");
 			}
 		}
         

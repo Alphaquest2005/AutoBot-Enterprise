@@ -168,6 +168,8 @@ namespace WaterNut.DataSpace
 
         public static Task Initialization { get; }
         public double ResourcePercentage { get; } = 0.8;
+        public List<SessionSchedule> CurrentSessionSchedule { get; set; } = new List<SessionSchedule>();
+        public SessionActions CurrentSessionAction { get; set; }
 
         public static Client GetClient()
         {
@@ -209,12 +211,40 @@ namespace WaterNut.DataSpace
             StatusModel.StopStatusUpdate();
         }
 
-        public static Tuple<DateTime, DateTime, AsycudaDocumentSet, string> CurrentSalesInfo(int months)
+        public static (DateTime StartDate, DateTime EndDate, AsycudaDocumentSet DocSet, string DirPath) CurrentSalesInfo(int months)
+        {
+            return  GetSessionParameterMonths() ?? GetCurrentSalesInfo(months);
+        }
+
+        private static (DateTime StartDate, DateTime EndDate, AsycudaDocumentSet DocSet, string DirPath) GetCurrentSalesInfo(int months)
         {
             var startDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1).AddMonths(months);
             return EntryDocSetUtils.CreateMonthYearAsycudaDocSet(startDate);
         }
 
+
+        private static (DateTime StartDate, DateTime EndDate, AsycudaDocumentSet DocSet, string DirPath)? GetSessionParameterMonths()
+        {
+
+            var parameterSet = BaseDataModel.Instance.CurrentSessionSchedule.FirstOrDefault(x =>
+                x.ActionId == BaseDataModel.Instance.CurrentSessionAction.ActionId &&
+                x.SesseionId == BaseDataModel.Instance.CurrentSessionAction.SessionId)?.ParameterSet;
+            if (BaseDataModel.Instance.CurrentSessionAction == null || parameterSet == null) return null;
+
+            var startDate = DateTime.Parse(parameterSet.ParameterSetParameters.Select(x => x.Parameters).FirstOrDefault(x => x.Name == "StartDate")?.Value);
+
+            var endDate = DateTime.Parse(parameterSet.ParameterSetParameters.Select(x => x.Parameters).FirstOrDefault(x => x.Name == "EndDate")?.Value);
+
+            var docSet = WaterNut.DataSpace.EntryDocSetUtils.GetAsycudaDocumentSet(parameterSet.ParameterSetParameters.Select(x => x.Parameters).FirstOrDefault(x => x.Name == "AsycudaDocumentSet")?.Value ?? "Unknown", false);
+
+            var dirPath =
+                StringExtensions.UpdateToCurrentUser(
+                    Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder, docSet.Declarant_Reference_Number));
+            if (!Directory.Exists(dirPath)) Directory.CreateDirectory(dirPath);
+
+
+            return (StartDate: startDate, EndDate: endDate, DocSet: docSet, DirPath: dirPath);
+        }
 
         public bool ValidateInstallation()
         {
