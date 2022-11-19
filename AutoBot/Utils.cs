@@ -484,7 +484,7 @@ namespace AutoBot
                 {
                     WindowStyle = ProcessWindowStyle.Hidden,
                     FileName = "java.exe",
-                    Arguments = $@"-jar C:\Users\{Environment.UserName}\OneDrive\Clients\AutoBot\sikulixide-2.0.5.jar -r C:\Users\{Environment.UserName
+                    Arguments = $@"-jar C:\Users\{Environment.UserName}\OneDrive\Clients\AutoBot\sikulix-2.0.0.jar -r C:\Users\{Environment.UserName
                     }\OneDrive\Clients\AutoBot\Scripts\{scriptName}.sikuli --args {
                         BaseDataModel.Instance.CurrentApplicationSettings.AsycudaLogin} {BaseDataModel.Instance.CurrentApplicationSettings.AsycudaPassword} {
                         (string.IsNullOrEmpty(lastCNumber) ? "" : lastCNumber + " ")
