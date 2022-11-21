@@ -408,6 +408,14 @@ namespace xlsxWriter
             return workbook.CurrentWorksheet.GetCell(header.First(x => x.Key.Column == ColName).Key.Index, row);
         }
 
+        private static Cell GetOrAddCell(Workbook workbook, List<string> header, int row, string ColName)
+        {
+            if (!workbook.CurrentWorksheet.HasCell(header.IndexOf(ColName), row))
+                workbook.CurrentWorksheet.AddCell("", header.IndexOf(ColName), row);
+
+            return workbook.CurrentWorksheet.GetCell(header.IndexOf(ColName), row);
+        }
+
         private static void DoMisMatches(ShipmentInvoice shipmentInvoice, Workbook workbook)
         { 
             var pOs = shipmentInvoice.ShipmentInvoicePOs.Select(x => x.EntryData_Id).ToList();
@@ -459,6 +467,7 @@ namespace xlsxWriter
             }
 
             var i = workbook.CurrentWorksheet.GetLastRowNumber() + 1;
+            var startRow = i;
             foreach (var mis in rematched)
             {
                 SetValue(workbook, i, header.IndexOf("PONumber"), mis.PONumber);
@@ -476,8 +485,18 @@ namespace xlsxWriter
                 SetValue(workbook, i, header.IndexOf("INVTotalCost"), mis.INVTotalCost);
                 SetValue(workbook, i, header.IndexOf("INVDetailsId"), mis.INVDetailsId);
                 SetValue(workbook, i, header.IndexOf("PODetailsId"), mis.PODetailsId);
+
+                SetFormula(workbook, i, header.Count + 1,
+                    $"={GetOrAddCell(workbook, header, i, "POTotalCost").CellAddress}-{GetOrAddCell(workbook, header, i, "INVTotalCost").CellAddress}");
+
                 i++;
             }
+
+            SetFormula(workbook, i + 2, header.IndexOf("POTotalCost"),
+                $"=Sum({GetOrAddCell(workbook, header, startRow, "POTotalCost").CellAddress}:{GetOrAddCell(workbook, header, i, "POTotalCost").CellAddress})");
+
+            SetFormula(workbook, i + 2, header.IndexOf("INVTotalCost"),
+                $"=Sum({GetOrAddCell(workbook, header, startRow, "INVTotalCost").CellAddress}:{GetOrAddCell(workbook, header, i, "INVTotalCost").CellAddress})");
         }
 
         private static List<ShipmentInvoicePOItemMISMatches> misMatches = null;
