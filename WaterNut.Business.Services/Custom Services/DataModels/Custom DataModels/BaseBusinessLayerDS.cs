@@ -227,7 +227,6 @@ namespace WaterNut.DataSpace
         {
 
             var parameterSet = BaseDataModel.Instance.CurrentSessionSchedule.FirstOrDefault(x =>
-                x.ActionId == BaseDataModel.Instance.CurrentSessionAction.ActionId &&
                 x.SesseionId == BaseDataModel.Instance.CurrentSessionAction.SessionId)?.ParameterSet;
             if (BaseDataModel.Instance.CurrentSessionAction == null || parameterSet == null) return null;
 
