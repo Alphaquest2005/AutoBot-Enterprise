@@ -62,7 +62,7 @@ namespace WaterNut.DataSpace
 
         public bool WasStarted => this._startlines.Any();//{ get; set; } //;
 
-        private static int lastLineRead = 0;
+        private int lastLineRead = 0;
 
 
 
