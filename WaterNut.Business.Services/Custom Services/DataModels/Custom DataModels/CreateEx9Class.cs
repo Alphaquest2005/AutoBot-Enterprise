@@ -37,6 +37,7 @@ using EntryPreviousItems = DocumentItemDS.Business.Entities.EntryPreviousItems;
 using xcuda_Item = DocumentItemDS.Business.Entities.xcuda_Item;
 using Attachments = DocumentItemDS.Business.Entities.Attachments;
 using InventoryItem = InventoryDS.Business.Entities.InventoryItem;
+using xcuda_PreviousItem = DocumentItemDS.Business.Entities.xcuda_PreviousItem;
 using xcuda_Supplementary_unit = DocumentItemDS.Business.Entities.xcuda_Supplementary_unit;
 
 //using xcuda_Item = AllocationDS.Business.Entities.xcuda_Item;
@@ -1622,7 +1623,7 @@ namespace WaterNut.DataSpace
 
                     global::DocumentItemDS.Business.Entities.xcuda_PreviousItem pitm = CreatePreviousItem(
                         lineData,
-                        itmcount + i, dfp);
+                        itmcount + i, dfp, docPreviousItems);
                     if (Math.Round(pitm.Net_weight, 2) < (decimal) 0.01)
                     {
                         updateXStatus(mypod.Allocations,
@@ -2106,7 +2107,8 @@ namespace WaterNut.DataSpace
         }
 
 
-        private global::DocumentItemDS.Business.Entities.xcuda_PreviousItem CreatePreviousItem(AlloEntryLineData pod, int itmcount, string dfp)
+        private xcuda_PreviousItem CreatePreviousItem(AlloEntryLineData pod, int itmcount, string dfp,
+            Dictionary<int, List<previousItems>> previousItems)
         {
 
             try
@@ -2124,7 +2126,7 @@ namespace WaterNut.DataSpace
                 pitm.Previous_item_number = previousItem.LineNumber.ToString();
 
 
-                SetWeights(pod, pitm, dfp);
+                SetWeights(pod, pitm, dfp, docPreviousItems);
 
 
                 pitm.Previous_Packages_number = "0";
@@ -2153,18 +2155,21 @@ namespace WaterNut.DataSpace
             }
         }
 
-        private void SetWeights(AlloEntryLineData pod, global::DocumentItemDS.Business.Entities.xcuda_PreviousItem pitm, string dfp)
+        private void SetWeights(AlloEntryLineData pod, xcuda_PreviousItem pitm, string dfp,
+            Dictionary<int, List<previousItems>> previousItems)
         {
             try
             {
                 var previousItem = pod.pDocumentItem;
+                var docSetPreviousItems = previousItems.Keys.Contains(pod.PreviousDocumentItemId)? previousItems[pod.PreviousDocumentItemId] : new List<previousItems>();
                 if (previousItem == null) return;
                 var plst = previousItem.previousItems.DistinctBy(x => x.PreviousItem_Id);
                 var pw = Convert.ToDecimal(Math.Round(pod.EX9Allocation.Net_weight_itm,2));
 
-                var rw =(decimal) plst.ToList().Sum(x => Math.Round(x.Net_weight,2));
+                var rw = (decimal)(plst.ToList().Sum(x => Math.Round(x.Net_weight, 2)) +
+                         docSetPreviousItems.Sum(x => x.Net_weight));
 
-                var ra = plst.Sum(x => x.Suplementary_Quantity);
+                var ra = plst.Sum(x => x.Suplementary_Quantity) + docSetPreviousItems.Sum(x => x.Suplementary_Quantity);
 
                 var iw = ((pw - (decimal) rw) / (decimal) (pod.EX9Allocation.pQuantity - ra)) * Convert.ToDecimal(pod.Quantity);
 
@@ -2174,10 +2179,10 @@ namespace WaterNut.DataSpace
 
 
 
-                if ((pod.EX9Allocation.pQuantity - (plst.Sum(x => x.Suplementary_Quantity) + pod.Quantity))  <= 0 && pod.EX9Allocation.pQuantity > 1)
+                if ((pod.EX9Allocation.pQuantity - (plst.Sum(x => x.Suplementary_Quantity) + pod.Quantity + docSetPreviousItems.Sum(x => x.Suplementary_Quantity)))  <= 0 && pod.EX9Allocation.pQuantity > 1)
                 {
 
-                    pitm.Net_weight = Math.Round(Convert.ToDecimal(pw - rw), 2, MidpointRounding.ToEven);
+                    pitm.Net_weight = Math.Round(Convert.ToDecimal(pw - rw), 2, MidpointRounding.AwayFromZero);
                 }
                 else
                 {
