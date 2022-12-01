@@ -299,6 +299,7 @@
   <ItemGroup>
     <Compile Include="ADJUtils.cs" />
     <Compile Include="AssessedEntryInfo.cs" />
+    <Compile Include="BlandRiderCreator.cs" />
     <Compile Include="C71Utils.cs" />
     <Compile Include="Client.cs" />
     <Compile Include="CSV\CSVUtilities.cs" />

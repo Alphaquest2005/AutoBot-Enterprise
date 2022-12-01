@@ -43,7 +43,7 @@ namespace WaterNut.DataSpace
                     foreach (var field in OCR_Lines.Fields.Where(x => x.ParentField == null))
                     {
                         var value = field.FieldValue?.Value.Trim() ?? match.Groups[field.Key].Value.Trim();
-                        foreach (var reg in field.FormatRegEx)
+                        foreach (var reg in field.FormatRegEx.OrderBy(x => x.Id))
                         {
                             value = (Regex.Replace(value, reg.RegEx.RegEx, reg.ReplacementRegEx.RegEx,
                                 (OCR_Lines.RegularExpressions.MultiLine == true

@@ -139,6 +139,7 @@
     <Compile Include="Custom Entities\EntryDataDetails.cs" />
     <Compile Include="Custom Entities\EntryDataDS\EntryData.cs" />
     <Compile Include="Custom Entities\EntryDataDS\EntryDataDetail.cs" />
+    <Compile Include="Custom Entities\EntryDataDS\ShipmentBl.cs" />
     <Compile Include="Custom Entities\EntryDataDS\ShipmentBLDetails.cs" />
     <Compile Include="Custom Entities\EntryDataDS\ShipmentInvoice.cs" />
     <Compile Include="Custom Entities\EntryDataDS\Shipment.cs" />
