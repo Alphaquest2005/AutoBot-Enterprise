@@ -18,7 +18,7 @@ namespace AllocationQS.Business.Services
             bool applyHistoricChecks, bool perInvoice, bool autoAssess, bool overPIcheck, bool universalPIcheck,
             bool itemPIcheck);
         [OperationContract][FaultContract(typeof(ValidationFault))]
-        Task CreateOPS(string filterExpression, int AsycudaDocumentSetId);
+        Task CreateOPS(string filterExpression, int AsycudaDocumentSetId, bool perInvoice);
         [OperationContract][FaultContract(typeof(ValidationFault))]
         Task ManuallyAllocate(int AllocationId, int PreviousItem_Id);
         [OperationContract][FaultContract(typeof(ValidationFault))]

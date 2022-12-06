@@ -45,11 +45,11 @@ namespace AllocationQS.Client.Repositories
 
 
 
-        public async Task CreateOPS(string filterExpression, int asycudaDocumentSetId)
+        public async Task CreateOPS(string filterExpression, int asycudaDocumentSetId, bool perInvoice)
         {
             using (var t = new AllocationsClient())
             {
-                await t.CreateOPS(filterExpression, asycudaDocumentSetId).ConfigureAwait(false);
+                await t.CreateOPS(filterExpression, asycudaDocumentSetId, perInvoice).ConfigureAwait(false);
             }
         }
 

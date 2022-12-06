@@ -12,6 +12,7 @@ using System.Linq;
 using System.ServiceModel;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using AllocationDS.Business.Entities;
 using Asycuda421;
 using Core.Common.Business.Services;
 using Core.Common.Data;
@@ -39,6 +40,7 @@ using WaterNut.Business.Services.Utils;
 using WaterNut.DataLayer;
 using WaterNut.DataSpace.Asycuda;
 using WaterNut.Interfaces;
+using Adjustments = EntryDataDS.Business.Entities.Adjustments;
 using AsycudaDocument = CoreEntities.Business.Entities.AsycudaDocument;
 using AsycudaDocument_Attachments = DocumentDS.Business.Entities.AsycudaDocument_Attachments;
 using AsycudaDocumentEntryData = DocumentDS.Business.Entities.AsycudaDocumentEntryData;
@@ -1940,6 +1942,35 @@ namespace WaterNut.DataSpace
             }
         }
 
+        public bool IsPerIM7( bool PerIM7, string prevIM7, string CNumber)
+        {
+            return (PerIM7 == true &&
+                    (string.IsNullOrEmpty(prevIM7) ||
+                     (!string.IsNullOrEmpty(prevIM7) && prevIM7 != CNumber)));
+        }
+
+        public bool InvoicePerEntry(bool perInvoice, string prevEntryId, string entryDataId)
+        {
+            return (//BaseDataModel.Instance.CurrentApplicationSettings.InvoicePerEntry == true &&
+                perInvoice == true &&
+                //prevEntryId != "" &&
+                prevEntryId != entryDataId);
+        }
+
+        public bool MaxLineCount(int itmcount)
+        {
+            return (itmcount != 0 &&
+                    itmcount %
+                    BaseDataModel.Instance.CurrentApplicationSettings.MaxEntryLines ==
+                    0);
+        }
+
+        public class MyPodData
+        {
+            public List<AsycudaSalesAllocations> Allocations { get; set; }
+            public CreateEx9Class.AlloEntryLineData EntlnData { get; set; }
+            public List<string> AllNames { get; set; }
+        }
 
         public async Task RemoveItem(int id)
         {
@@ -2236,8 +2267,13 @@ namespace WaterNut.DataSpace
                         .First(x => x.ApplicationSettingsId == docSet.ApplicationSettingsId).Declarants;
                     var fileCode = a.Identification_segment.Declarant_segment.Code.Text.FirstOrDefault();
                     if (!declarants.Any(x => fileCode.Contains(x.DeclarantCode)))
-                        throw new ApplicationException(
-                            $"Could not import file - '{file} - The file is for another warehouse{fileCode}. While this Warehouse is {declarants.First().DeclarantCode}");
+                    {
+
+
+                        BaseDataModel.EmailExceptionHandler(new ApplicationException(
+                            $"Could not import file - '{file} - The file is for another warehouse{fileCode}. While this Warehouse is {declarants.First().DeclarantCode}"), true);
+                        return;
+                    }
                 }
 
 
@@ -3733,5 +3769,6 @@ namespace WaterNut.DataSpace
         public string ItemDescription { get; set; }
         public double Cost { get; set; }
         public double Quantity { get; set; }
+        public string SourceFile { get; set; }
     }
 }

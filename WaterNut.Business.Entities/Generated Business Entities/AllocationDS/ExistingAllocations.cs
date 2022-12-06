@@ -21,7 +21,7 @@ namespace AllocationDS.Business.Entities
     public partial class ExistingAllocations : BaseEntity<ExistingAllocations>, ITrackable 
     {
         [DataMember]
-        public int xAsycudaId 
+        public Nullable<int> xAsycudaId 
         {
             get
             {
@@ -34,7 +34,7 @@ namespace AllocationDS.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        int _xasycudaid;
+        Nullable<int> _xasycudaid;
         [DataMember]
         public int EntryDataDetailsId 
         {
@@ -111,7 +111,7 @@ namespace AllocationDS.Business.Entities
         }
         Nullable<int> _plinenumber;
         [DataMember]
-        public System.DateTime Date 
+        public Nullable<System.DateTime> Date 
         {
             get
             {
@@ -124,7 +124,7 @@ namespace AllocationDS.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        System.DateTime _date;
+        Nullable<System.DateTime> _date;
         [DataMember]
         public int ApplicationSettingsId 
         {
@@ -156,7 +156,7 @@ namespace AllocationDS.Business.Entities
         }
         string _xcnumber;
         [DataMember]
-        public int xLineNumber 
+        public Nullable<int> xLineNumber 
         {
             get
             {
@@ -169,7 +169,7 @@ namespace AllocationDS.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        int _xlinenumber;
+        Nullable<int> _xlinenumber;
         [DataMember]
         public string EntryDataId 
         {
@@ -186,7 +186,7 @@ namespace AllocationDS.Business.Entities
         }
         string _entrydataid;
         [DataMember]
-        public System.DateTime EntryDataDate 
+        public Nullable<System.DateTime> EntryDataDate 
         {
             get
             {
@@ -199,7 +199,7 @@ namespace AllocationDS.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        System.DateTime _entrydatadate;
+        Nullable<System.DateTime> _entrydatadate;
         [DataMember]
         public string ItemNumber 
         {

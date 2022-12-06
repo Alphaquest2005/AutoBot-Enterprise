@@ -663,6 +663,8 @@ namespace WaterNut.QuerySpace.AllocationQS.ViewModels
         public bool ApplyCurrentChecks { get; set; }
         public  bool PerIM7 { get; set; }
 
+        public bool PerInvoice { get; set; }
+
 
 
         public async Task GoToxBondEntry(string xBond_Item_Id)
@@ -692,7 +694,7 @@ namespace WaterNut.QuerySpace.AllocationQS.ViewModels
                             PerIM7,
                             Process7100,
                             ApplyCurrentChecks, CoreEntities.ViewModels.BaseViewModel.Instance.CurrentAsycudaDocumentSetEx.AsycudaDocumentSetId, "Sales","Historic",
-                  CoreEntities.ViewModels.BaseViewModel.Instance.CurrentApplicationSettings.GroupEX9.GetValueOrDefault(), true, true, true, true, false,true, true, true, true).ConfigureAwait(false);
+                  CoreEntities.ViewModels.BaseViewModel.Instance.CurrentApplicationSettings.GroupEX9.GetValueOrDefault(), true, true, true, true, PerInvoice,true, true, true, true).ConfigureAwait(false);
            MessageBus.Default.BeginNotify(CoreEntities.MessageToken.AsycudaDocumentSetExsChanged, this, new NotificationEventArgs(CoreEntities.MessageToken.AsycudaDocumentSetExsChanged));
           StatusModel.StopStatusUpdate();
             MessageBox.Show("Complete","Asycuda Toolkit", MessageBoxButton.OK, MessageBoxImage.Exclamation);
@@ -702,7 +704,7 @@ namespace WaterNut.QuerySpace.AllocationQS.ViewModels
         internal async Task CreateOPS()
         {
             StatusModel.Timer("Creating OPS");
-            await AsycudaSalesAllocationsExRepository.Instance.CreateOPS(vloader.FilterExpression, CoreEntities.ViewModels.BaseViewModel.Instance.CurrentAsycudaDocumentSetEx.AsycudaDocumentSetId).ConfigureAwait(false);
+            await AsycudaSalesAllocationsExRepository.Instance.CreateOPS(vloader.FilterExpression, CoreEntities.ViewModels.BaseViewModel.Instance.CurrentAsycudaDocumentSetEx.AsycudaDocumentSetId, PerInvoice).ConfigureAwait(false);
            
             ViewAll();
             MessageBus.Default.BeginNotify(CoreEntities.MessageToken.AsycudaDocumentsChanged, null,
@@ -725,7 +727,7 @@ namespace WaterNut.QuerySpace.AllocationQS.ViewModels
 
             await
                 AsycudaSalesAllocationsExRepository.Instance.CreateOPS(vloader.FilterExpression,
-                    CoreEntities.ViewModels.BaseViewModel.Instance.CurrentAsycudaDocumentSetEx.AsycudaDocumentSetId).ConfigureAwait(false);
+                    CoreEntities.ViewModels.BaseViewModel.Instance.CurrentAsycudaDocumentSetEx.AsycudaDocumentSetId, PerInvoice).ConfigureAwait(false);
 
            ViewAll();
 

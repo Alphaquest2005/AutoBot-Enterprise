@@ -119,10 +119,9 @@ namespace WaterNut.Views
                await im.ReBuildSalesReports().ConfigureAwait(false);
         }
 
-      
+        private void MultiSelectChk_Copy8_Checked(object sender, RoutedEventArgs e)
+        {
 
-    
-
-        
-	}
+        }
+    }
 }

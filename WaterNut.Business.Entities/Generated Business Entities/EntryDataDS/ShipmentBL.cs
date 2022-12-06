@@ -346,9 +346,7 @@ namespace EntryDataDS.Business.Entities
         [DataMember]
         public List<ShipmentBLInvoice> ShipmentBLInvoice { get; set; }
 
-        
-
-        //       [DataMember]
+ //       [DataMember]
  //       public TrackingState TrackingState { get; set; }
  //       [DataMember]
  //       public ICollection<string> ModifiedProperties { get; set; }

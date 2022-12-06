@@ -35,14 +35,14 @@ namespace AllocationQS.Business.Services
                     applyEx9Bucket, applyHistoricChecks, perInvoice, autoAssess, overPIcheck, universalPIcheck, itemPIcheck).ConfigureAwait(false);
         }
 
-        public async Task CreateOPS(string filterExpression, int AsycudaDocumentSetId)
+        public async Task CreateOPS(string filterExpression, int AsycudaDocumentSetId, bool perInvoice)
         {
             var docset =
                await WaterNut.DataSpace.BaseDataModel.Instance.GetAsycudaDocumentSet(AsycudaDocumentSetId)
                    .ConfigureAwait(false);
 
             //await WaterNut.DataSpace.CreateOPSClass.Instance.CreateOPS(filterExpression, docset).ConfigureAwait(false);
-            await WaterNut.DataSpace.CreateErrOPS.Instance.CreateErrorOPS(filterExpression, docset).ConfigureAwait(false);
+            await WaterNut.DataSpace.CreateErrOPS.Instance.CreateErrorOPS(filterExpression, docset, perInvoice).ConfigureAwait(false);
 
         }
 

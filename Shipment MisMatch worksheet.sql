@@ -1,5 +1,5 @@
 
-declare @poNumber nvarchar(50) =  '03525', @invNumber nvarchar(50) = '9419009575'
+declare @poNumber nvarchar(50) =  '03565', @invNumber nvarchar(50) = '2143965150'
 select 'ShipmentInvoiceDetailsEx'
 select * from ShipmentInvoiceDetailsEx where InvoiceNo = @invNumber
 
@@ -31,4 +31,8 @@ select * from [ShipmentInvoicePOItemQueryMatches-Alias]  where  PONumber = @poNu
 select '[ShipmentInvoicePOItemQueryMatches-Match]'
 select * from [ShipmentInvoicePOItemQueryMatches-Match]  where  PONumber = @poNumber or InvoiceNo = @invNumber
 
-select * from InventoryItemAliasEx where AliasItemId in (45501, 61112)
+
+select '[ShipmentInvoicePOItemQueryMatches]'
+select * from [ShipmentInvoicePOItemQueryMatches]  where  PONumber = @poNumber or InvoiceNo = @invNumber
+
+select * from InventoryItemAliasEx where AliasItemId in (56662, 56743)

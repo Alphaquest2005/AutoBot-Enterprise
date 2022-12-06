@@ -96,7 +96,7 @@ namespace AllocationDS.Business.Entities
         }
         int _applicationsettingsid;
         [DataMember]
-        public Nullable<int> AliasItemId 
+        public int AliasItemId 
         {
             get
             {
@@ -109,7 +109,7 @@ namespace AllocationDS.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        Nullable<int> _aliasitemid;
+        int _aliasitemid;
         [DataMember]
         public InventoryItem InventoryItem { get; set; }
 

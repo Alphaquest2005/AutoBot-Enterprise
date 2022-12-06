@@ -39,9 +39,9 @@ namespace AllocationQS.Client.Services
             applyHistoricChecks, perInvoice, autoAssess, overPIcheck, universalPIcheck, itemPIcheck).ConfigureAwait(false);
         }
 
-        public async Task CreateOPS(string filterExpression, int AsycudaDocumentSetId)
+        public async Task CreateOPS(string filterExpression, int AsycudaDocumentSetId, bool perInvoice)
         {
-             await Channel.CreateOPS(filterExpression, AsycudaDocumentSetId).ConfigureAwait(false);
+             await Channel.CreateOPS(filterExpression, AsycudaDocumentSetId, perInvoice).ConfigureAwait(false);
         }
 
         public async Task ManuallyAllocate(int AllocationId, int PreviousItem_Id)

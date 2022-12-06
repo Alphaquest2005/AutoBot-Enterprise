@@ -25,7 +25,7 @@
               this.Property(t => t.xLineNumber).HasColumnName("xLineNumber");
               this.Property(t => t.EntryDataId).HasColumnName("EntryDataId").IsRequired().HasMaxLength(50);
               this.Property(t => t.EntryDataDate).HasColumnName("EntryDataDate");
-              this.Property(t => t.ItemNumber).HasColumnName("ItemNumber").IsRequired().HasMaxLength(20);
+              this.Property(t => t.ItemNumber).HasColumnName("ItemNumber").HasMaxLength(20);
               this.Property(t => t.ItemDescription).HasColumnName("ItemDescription").IsRequired().HasMaxLength(255);
               this.Property(t => t.DocumentType).HasColumnName("DocumentType").HasMaxLength(40);
               this.Property(t => t.xQuantity).HasColumnName("xQuantity");

@@ -798,7 +798,7 @@ namespace AutoBotUtilities
             var bls = masterShipment.ShipmentAttachedBL.Select(x => x.ShipmentBL)
                 .OrderByDescending(x => x.ShipmentBLDetails.Count).ToList();
             ShipmentBL masterBL = null;
-            bool sendMaster = true;
+            bool sendMaster = true; 
             if (HasMasterBL && bls.Count > 1)
                 foreach (var bl in bls.OrderBy(x => x.BLNumber))
                 {

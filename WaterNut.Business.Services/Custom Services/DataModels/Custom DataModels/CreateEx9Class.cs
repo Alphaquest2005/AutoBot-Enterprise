@@ -307,7 +307,8 @@ namespace WaterNut.DataSpace
                         g.Summary.pCNumber,
                         g.Summary.pLineNumber,
                         //ItemNumber = g.ItemNumber,
-                        g.Summary.DutyFreePaid
+                        g.Summary.DutyFreePaid,
+                        EntryType = g.Summary.Type ?? g.Summary.EntryDataType
 
                     })
                     .Select(x => new ItemSalesPiSummary
@@ -318,7 +319,7 @@ namespace WaterNut.DataSpace
                         pQtyAllocated = x.Select(z => z.Summary.pQtyAllocated).Distinct().DefaultIfEmpty(0).Sum(),
                         PiQuantity =
                             (double) x.DistinctBy(q => q.Summary.PreviousItem_Id)
-                                .SelectMany(z => z.pIData.Where(zz => zz.AssessmentDate >= startDate && zz.AssessmentDate <= endDate).Select(zz => zz.PiQuantity))
+                                .SelectMany(z => z.pIData.Where(zz => zz.AssessmentDate >= startDate && zz.AssessmentDate <= endDate && zz.EntryDataType == entryType).Select(zz => zz.PiQuantity))
                                 .DefaultIfEmpty(0)
                                 .Sum(), // x.Select(z => z.Summary.PiQuantity).DefaultIfEmpty(0).Sum(),
                         pCNumber = x.Key.pCNumber,
@@ -485,7 +486,7 @@ namespace WaterNut.DataSpace
                     var prevIM7 = "";
                     var elst = PrepareAllocationsData(monthyear, isGrouped);
 
-                    
+                    if (perInvoice) elst = elst.OrderBy(x => x.EntlnData.EntryDataDetails.First().EntryDataId);
                     
                     foreach (var mypod in elst)
                     {
@@ -495,10 +496,10 @@ namespace WaterNut.DataSpace
 
 
                         if (!(mypod.EntlnData.Quantity > 0)) continue;
-                        if (MaxLineCount(itmcount)
-                            || InvoicePerEntry(perInvoice, prevEntryId, mypod)
+                        if (BaseDataModel.Instance.MaxLineCount(itmcount)
+                            || BaseDataModel.Instance.InvoicePerEntry(perInvoice, prevEntryId, mypod.EntlnData.EntryDataDetails[0].EntryDataId)
                             || (cdoc.Document == null || itmcount == 0)
-                            || IsPerIM7(prevIM7, monthyear))
+                            || BaseDataModel.Instance.IsPerIM7(PerIM7,prevIM7, monthyear.CNumber))
                         {
                             if (itmcount != 0)
                             {
@@ -606,28 +607,7 @@ namespace WaterNut.DataSpace
         }
 
 
-        private bool IsPerIM7(string prevIM7, AllocationDataBlock monthyear)
-        {
-            return (PerIM7 == true &&
-                    (string.IsNullOrEmpty(prevIM7) ||
-                     (!string.IsNullOrEmpty(prevIM7) && prevIM7 != monthyear.CNumber)));
-        }
 
-        private bool InvoicePerEntry(bool perInvoice,string prevEntryId, MyPodData mypod)
-        {
-            return (//BaseDataModel.Instance.CurrentApplicationSettings.InvoicePerEntry == true &&
-                    perInvoice == true &&
-                    //prevEntryId != "" &&
-                    prevEntryId != mypod.EntlnData.EntryDataDetails[0].EntryDataId);
-        }
-
-        public bool MaxLineCount(int itmcount)
-        {
-            return (itmcount != 0 &&
-                    itmcount %
-                    BaseDataModel.Instance.CurrentApplicationSettings.MaxEntryLines ==
-                    0);
-        }
 
         private async Task SaveDocumentCT(DocumentCT cdoc)
         {
@@ -738,6 +718,7 @@ namespace WaterNut.DataSpace
                                 : x.EffectiveDate.Value);
                             allocations.EffectiveDate = x.EffectiveDate;
                             allocations.InvoiceNo = x.InvoiceNo;
+                            allocations.SourceFile = x.SourceFile;
                             allocations.ItemDescription = x.ItemDescription;
                             allocations.ItemNumber = x.ItemNumber;
                             allocations.pCNumber = x.pCNumber;
@@ -931,11 +912,11 @@ namespace WaterNut.DataSpace
 
 
 
-        private IEnumerable<MyPodData> PrepareAllocationsData(AllocationDataBlock monthyear, bool isGrouped)
+        private IEnumerable<BaseDataModel.MyPodData> PrepareAllocationsData(AllocationDataBlock monthyear, bool isGrouped)
         {
             try
             {
-                List<MyPodData> elst;
+                List<BaseDataModel.MyPodData> elst;
                 //if (BaseDataModel.Instance.CurrentApplicationSettings.GroupEX9 == true)
                 //{
                 elst = isGrouped 
@@ -959,7 +940,7 @@ namespace WaterNut.DataSpace
 
         
 
-        private List<MyPodData> GroupAllocationsByPreviousItem(AllocationDataBlock monthyear)
+        private List<BaseDataModel.MyPodData> GroupAllocationsByPreviousItem(AllocationDataBlock monthyear)
         {
             try
             {
@@ -979,12 +960,12 @@ namespace WaterNut.DataSpace
             }
         }
 
-        private static MyPodData CreateMyPodData(List<EX9Allocations> s)
+        private static BaseDataModel.MyPodData CreateMyPodData(List<EX9Allocations> s)
         {
             try
             {
 
-                return new MyPodData
+                return new BaseDataModel.MyPodData
                 {
                     Allocations = s.OrderByDescending(x => x.AllocationId).Select(x =>
                         new AsycudaSalesAllocations()
@@ -1050,6 +1031,7 @@ namespace WaterNut.DataSpace
                                 EntryDataDetailsId = z.EntryDataDetailsId.GetValueOrDefault(),
                                 EntryDataId = z.InvoiceNo,
                                 EntryData_Id = z.EntryData_Id,
+                                SourceFile = z.SourceFile,
                                 QtyAllocated = z.SalesQuantity,
                                 EntryDataDate = z.InvoiceDate,
                                 EffectiveDate = z.EffectiveDate.GetValueOrDefault(),
@@ -1103,7 +1085,7 @@ namespace WaterNut.DataSpace
 
         public static List<InventoryItem> InventoryDataCache { get; private set; }
 
-        private List<MyPodData> SingleAllocationPerPreviousItem(AllocationDataBlock monthyear)
+        private List<BaseDataModel.MyPodData> SingleAllocationPerPreviousItem(AllocationDataBlock monthyear)
         {
             try
             {
@@ -1202,7 +1184,7 @@ namespace WaterNut.DataSpace
 
         }
 
-        public async Task<int> CreateEx9EntryAsync(MyPodData mypod, DocumentCT cdoc, int itmcount, string dfp,
+        public async Task<int> CreateEx9EntryAsync(BaseDataModel.MyPodData mypod, DocumentCT cdoc, int itmcount, string dfp,
             string monthyear,
             string documentType, List<ItemSalesPiSummary> itemSalesPiSummaryLst,
             bool checkQtyAllocatedGreaterThanPiQuantity,
@@ -1742,6 +1724,34 @@ namespace WaterNut.DataSpace
                             TrackingState = TrackingState.Added
                         });
 
+                        var sourceFile = new FileInfo(mypod.EntlnData.EntryDataDetails[0].SourceFile);
+                        var sourceFilePdf = sourceFile.FullName.Replace(sourceFile.Extension,".pdf");
+                        sourceFilePdf = sourceFilePdf.Replace("-Fixed", "");
+                        if (File.Exists(sourceFilePdf))
+                            itm.xcuda_Attached_documents.Add(new xcuda_Attached_documents(true)
+                            {
+                                Attached_document_code = "IV05",
+                                Attached_document_date = DateTime.Today.Date.ToShortDateString(),
+                                Attached_document_reference = cdoc.Document.ReferenceNumber + ".pdf",
+                                xcuda_Attachments = new List<xcuda_Attachments>()
+                                {
+                                    new xcuda_Attachments(true)
+                                    {
+                                        Attachments = new Attachments(true)
+                                        {
+                                            FilePath = sourceFilePdf,
+                                            TrackingState = TrackingState.Added,
+                                            DocumentCode = @"IV05",
+                                            EmailId = lineData.EmailId?.ToString(),
+                                            Reference = cdoc.Document.ReferenceNumber,
+                                        },
+
+                                        TrackingState = TrackingState.Added
+                                    }
+                                },
+                                TrackingState = TrackingState.Added
+                            });
+
 
 
 
@@ -1828,7 +1838,7 @@ namespace WaterNut.DataSpace
         }
 
 
-        private void Ex9Bucket(MyPodData mypod, double availibleQty, double totalSalesAll, double totalPiAll,
+        private void Ex9Bucket(BaseDataModel.MyPodData mypod, double availibleQty, double totalSalesAll, double totalPiAll,
             string type)
         {
             try
@@ -1933,7 +1943,7 @@ namespace WaterNut.DataSpace
         
 
 
-        private  async Task Ex9Bucket(MyPodData mypod, string dfp,  double docPi, List<ItemSalesPiSummary> itemSalesPiSummaryLst)
+        private  async Task Ex9Bucket(BaseDataModel.MyPodData mypod, string dfp,  double docPi, List<ItemSalesPiSummary> itemSalesPiSummaryLst)
         {
             // prevent over draw down of pqty == quantity allocated
             try
@@ -2408,6 +2418,8 @@ namespace WaterNut.DataSpace
         public List<AsycudaSalesAllocationsPIData> PIData { get; set; }
         public DateTime pExpiryDate { get; set; }
         public EntryDataDetails EntryDataDetails { get; set; }
+        public string SourceFile
+        { get; set; }
     }
 
     public class AllocationDataBlock
@@ -2419,14 +2431,7 @@ namespace WaterNut.DataSpace
         public string Type { get; set; }
     }
 
-    public class MyPodData
-    {
-        public List<AsycudaSalesAllocations> Allocations { get; set; }
-        public CreateEx9Class.AlloEntryLineData EntlnData { get; set; }
-        public List<string> AllNames { get; set; }
-    }
 
-    public class AlloEntryLineData
-    {
-    }
+
+    
 }

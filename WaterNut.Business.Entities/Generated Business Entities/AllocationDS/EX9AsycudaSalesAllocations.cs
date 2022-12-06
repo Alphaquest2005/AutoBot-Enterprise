@@ -971,6 +971,21 @@ namespace AllocationDS.Business.Entities
         }
         string _pprecision1;
         [DataMember]
+        public string SourceFile 
+        {
+            get
+            {
+                return _sourcefile;
+            }
+            set
+            {
+                _sourcefile = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _sourcefile;
+        [DataMember]
         public xcuda_Item PreviousDocumentItem { get; set; }
         [DataMember]
         public InventoryItem InventoryItemsEx { get; set; }

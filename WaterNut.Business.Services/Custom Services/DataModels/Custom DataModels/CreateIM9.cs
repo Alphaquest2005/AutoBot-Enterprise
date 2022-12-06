@@ -108,7 +108,7 @@ namespace WaterNut.DataSpace
                         //.Where(x => x.pCNumber == "24985" && x.LineNumber == 5)
                     {
                         if (ditm.ItemQuantity == ditm.PiQuantity) continue;
-                        if (CreateEx9Class.Instance.MaxLineCount(itmcount) || itmcount == 0)
+                        if (BaseDataModel.Instance.MaxLineCount(itmcount) || itmcount == 0)
                         {
                             cdoc = await SaveAndCreateIM9Doc(docSet, cdoc).ConfigureAwait(false);
                         }

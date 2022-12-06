@@ -29,9 +29,14 @@ namespace AutoBotUtilities
                     var fileText = XLSXUtils.GetText(fileType, rows, result.Tables[0]);
 
                     if (ProcessUnknownFileType(fileType, file, rows)) continue;
+
+                    // all xlsx suppose to have child filetypes
+                    if (!fileType.ChildFileTypes.Any())
+                        throw new ApplicationException("XLSX Filetypes supposed to have children");
                     
                     var output = XLSXUtils.CreateCSVFile(file, fileText);
 
+                   
 
                     XLSXUtils.FixCSVFile(fileType, overwrite, output);
                 }

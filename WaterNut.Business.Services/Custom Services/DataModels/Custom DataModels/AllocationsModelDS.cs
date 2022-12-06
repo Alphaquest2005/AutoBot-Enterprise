@@ -80,7 +80,7 @@ namespace WaterNut.DataSpace
                          "EntryDataDetails.EntryDataDetailsEx.InventoryItemsEx",
                         // "EntryDataDetails.InventoryItem",
                         //"EntryDataDetails.InventoryItem.TariffCodes.TariffCategory.TariffCategoryCodeSuppUnit.TariffSupUnitLkps",
-                        "EntryDataDetails.Sales",
+                        "EntryDataDetails.EntryData",
                         // "PreviousDocumentItem",
                         //"PreviousDocumentItem.EX",
                         "PreviousDocumentItem.xcuda_Goods_description",
@@ -104,8 +104,9 @@ namespace WaterNut.DataSpace
         {
             var map = new Dictionary<string, string>
             {
-                {"InvoiceDate", "EntryDataDetails.Sales.EntryDataDate"},
+                {"InvoiceDate", "EntryDataDetails.EntryData.EntryDataDate"},
                 {"InvoiceNo", "EntryDataDetails.EntryDataId"},
+                {"Type", "EntryDataDetails.EntryData.EntryType"},
                 {"SalesQtyAllocated", "EntryDataDetails.QtyAllocated"},
                 {"SalesQuantity", "EntryDataDetails.Quantity"},
                 {"Cost", "EntryDataDetails.Cost"},
@@ -116,7 +117,7 @@ namespace WaterNut.DataSpace
                 {"pCNumber", "PreviousDocumentItem.AsycudaDocument.pCNumber"},
                 {"pLineNumber", "PreviousDocumentItem.LineNumber"},
                 {"PreviousItem_Id == 0", "PreviousItem_Id == null"},
-                {"(ApplicationSettingsId", "(EntryDataDetails.Sales.ApplicationSettingsId"},
+                {"(ApplicationSettingsId", "(EntryDataDetails.EntryData.ApplicationSettingsId"},
             };
 
 
@@ -440,12 +441,7 @@ namespace WaterNut.DataSpace
         }
 
 
-        public class MyPodData
-        {
-            public List<AsycudaSalesAllocations> Allocations { get; set; }
-            public AlloEntryLineData EntlnData { get; set; }
-        }
-
+       
 
         public class AllocationsExcelLine
         {
@@ -485,7 +481,7 @@ namespace WaterNut.DataSpace
             public IInventoryItem InventoryItem { get; set; }
             // public InventoryItem InventoryItem { get; set; }
 
-            public EX9AsycudaSalesAllocations EX9Allocation { get; set; }
+            
             public string MonthYear { get; set; }
             public string ItemNumber { get; set; }
             public string ItemDescription { get; set; }
@@ -500,6 +496,8 @@ namespace WaterNut.DataSpace
             public List<ITariffSupUnitLkp> TariffSupUnitLkps { get; set; }
             public DateTime EntryDataDate { get; set; }
             public int InventoryItemId { get; set; }
+            public string EntryDataId { get; set; }
+            public string SourceFile { get; set; }
         }
     }
 }

@@ -12,6 +12,7 @@ using Core.Common.UI;
 using CoreEntities.Business.Enums;
 using DocumentDS.Business.Entities;
 using EntryDataDS.Business.Entities;
+using java.lang.@ref;
 using TrackableEntities;
 using WaterNut.Business.Entities;
 using WaterNut.Interfaces;
@@ -36,7 +37,7 @@ namespace WaterNut.DataSpace
         }
 
 
-        public async Task CreateErrorOPS(string filterExpression, AsycudaDocumentSet docSet)
+        public async Task CreateErrorOPS(string filterExpression, AsycudaDocumentSet docSet,  bool perInvoice)
         {
             try
             {
@@ -51,7 +52,7 @@ namespace WaterNut.DataSpace
                             x.CustomsOperationId == (int)CustomsOperations.Warehouse && x.Stock == true &&
                             x.IsDefault == true);
 
-               
+
 
                 var exportTemplate =
                     BaseDataModel.Instance.ExportTemplates.First(z => z.Customs_Procedure == cp.CustomsProcedure);
@@ -67,36 +68,46 @@ namespace WaterNut.DataSpace
                 StatusModel.StartStatusUpdate("Creating Error OPS entries", slst.Count());
 
 
-                var cslst = AllocationEntryLine(slst);
+                var cslst = perInvoice ? AllocationEntryLinePerInvoice(slst) : AllocationEntryLine(slst);
 
-                var monthyearLst = cslst
-                    .GroupBy(x => x.MonthYear).ToList();
+
+                var monthyearLst = perInvoice
+                    ? cslst
+                        .GroupBy(x => (x.MonthYear, x.EntryDataId, x.SourceFile))
+                        .OrderBy(x => x.Key.MonthYear)
+                        .ThenBy(x => x.Key.EntryDataId)
+                        .ToList()
+                    : cslst
+                        .GroupBy(x => (x.MonthYear, EntryDataId: x.MonthYear, x.SourceFile))
+                        .OrderBy(x => x.Key.MonthYear)
+                        .ToList();
+
+                string prevEntryId = "";
+
+                var cdoc = new DocumentCT
+                {
+                    Document = BaseDataModel.Instance.CreateNewAsycudaDocument(docSet)
+                };
+
+
+                docSet.Customs_Procedure = cp;
+
+                ErrOpsIntializeCdoc(cdoc, docSet);
+                var itmcount = 0;
+
+                List<Attachment> attachments = new List<Attachment>();
+
+
 
                 foreach (var lst in monthyearLst)
                 {
-                    var cdoc = new DocumentCT
-                    {
-                        Document = BaseDataModel.Instance.CreateNewAsycudaDocument(docSet)
-                    };
 
 
-                    docSet.Customs_Procedure = cp;
+                    cdoc = CreateEntry(docSet);
 
-                    ErrOpsIntializeCdoc(cdoc, docSet);
-                    var itmcount = 0;
+                    var savedEntryData = CreateOPSEntryData(lst, perInvoice);
 
-
-                    var savedEntryData = CreateOPSEntryData(lst);
-
-                    var attachments = new List<Attachment>() { new Attachment()
-                    {
-                        FilePath = $"{savedEntryData.First().EntryDataDetails.First().EntryDataId}.csv.pdf",
-                        DocumentCode = exportTemplate.AttachedDocumentCode,
-                        Reference = savedEntryData.First().EntryDataDetails.First().EntryDataId,
-                        TrackingState = TrackingState.Added,
-
-                    }};
-
+                    attachments = AddAttachments(cdoc, exportTemplate, lst);
 
                     foreach (var pod in savedEntryData)
                     {
@@ -106,22 +117,25 @@ namespace WaterNut.DataSpace
 
 
                         itmcount += 1;
-                        if (itmcount % BaseDataModel.Instance.CurrentApplicationSettings.MaxEntryLines == 0)
+
+                        if ((BaseDataModel.Instance.MaxLineCount(itmcount)
+                                // || (!string.IsNullOrEmpty(prevEntryId) && BaseDataModel.Instance.InvoicePerEntry(perInvoice, prevEntryId, pod.EntryDataId))
+                            )
+
+                           )
                         {
-                            BaseDataModel.SetEffectiveAssessmentDate(cdoc);
-                            
-                            BaseDataModel.AttachToDocument(attachments,
-                                cdoc.Document, cdoc.DocumentItems);
-                            await BaseDataModel.Instance.SaveDocumentCT(cdoc).ConfigureAwait(false);
-                            //dup new file
-                            cdoc = new DocumentCT
-                            {
-                                Document = BaseDataModel.Instance.CreateNewAsycudaDocument(docSet)
-                            };
+                            await SaveEntry(attachments, cdoc).ConfigureAwait(false);
 
-                            ErrOpsIntializeCdoc(cdoc, docSet);
-
+                            cdoc = CreateEntry(docSet);
                         }
+
+
+
+
+
+                        prevEntryId = pod.EntryDataDetails.Count() > 0
+                            ? pod.EntryDataId
+                            : "";
 
                     }
 
@@ -131,12 +145,19 @@ namespace WaterNut.DataSpace
                         return;
                     }
 
-                    BaseDataModel.SetEffectiveAssessmentDate(cdoc);
-                    BaseDataModel.AttachToDocument(attachments,
-                        cdoc.Document, cdoc.DocumentItems);
-                    await BaseDataModel.Instance.SaveDocumentCT(cdoc).ConfigureAwait(false);
-                    StatusModel.StopStatusUpdate();
+                    await SaveEntry(attachments, cdoc).ConfigureAwait(false);
+
                 }
+
+                //await SaveEntry(attachments, cdoc).ConfigureAwait(false);
+
+                //BaseDataModel.SetEffectiveAssessmentDate(cdoc);
+                //BaseDataModel.AttachToDocument(attachments,
+                //    cdoc.Document, cdoc.DocumentItems);
+                //await BaseDataModel.Instance.SaveDocumentCT(cdoc).ConfigureAwait(false);
+                //StatusModel.StopStatusUpdate();
+
+
             }
             catch (Exception e)
             {
@@ -146,32 +167,81 @@ namespace WaterNut.DataSpace
 
         }
 
+     
+
+        private DocumentCT CreateEntry(AsycudaDocumentSet docSet)
+        {
+            var cdoc = new DocumentCT
+            {
+                Document = BaseDataModel.Instance.CreateNewAsycudaDocument(docSet)
+            };
+
+            ErrOpsIntializeCdoc(cdoc, docSet);
+            return cdoc;
+        }
+
+        private static async Task SaveEntry(List<Attachment> attachments, DocumentCT cdoc)
+        {
+            if (cdoc.DocumentItems.Any() && cdoc.Document != null)
+            {
+                BaseDataModel.SetEffectiveAssessmentDate(cdoc);
+                //attachments = AddAttachments(savedEntryData, exportTemplate, lst);
+                BaseDataModel.AttachToDocument(attachments,
+                    cdoc.Document, cdoc.DocumentItems);
+                await BaseDataModel.Instance.SaveDocumentCT(cdoc).ConfigureAwait(false);
+                //dup new file
+            }
+        }
+
+        private static List<Attachment> AddAttachments(DocumentCT cdoc, ExportTemplate exportTemplate, IGrouping<(string MonthYear, string EntryDataId, string SourceFile), AllocationsModel.AlloEntryLineData> lst)
+        {
+            var attachments = new List<Attachment>()
+            {
+                new Attachment()
+                {
+                    FilePath = $"{cdoc.Document.ReferenceNumber}.csv.pdf",
+                    DocumentCode = exportTemplate.AttachedDocumentCode,
+                    Reference = cdoc.Document.ReferenceNumber,
+                    TrackingState = TrackingState.Added,
+                }
+            };
+
+            var sourceFile = new FileInfo(lst.Key.SourceFile);
+            var sourceFilePdf = sourceFile.FullName.Replace(sourceFile.Extension, ".pdf");
+            sourceFilePdf = sourceFilePdf.Replace("-Fixed", "");
+            if (File.Exists(sourceFilePdf))
+                attachments.Add(new Attachment(true)
+                {
+                    FilePath = sourceFilePdf,
+                    TrackingState = TrackingState.Added,
+                    DocumentCode = @"IV05",
+                    //EmailId = lineData.EmailId?.ToString(),
+                    Reference = lst.Key.EntryDataId + ".pdf",
+                });
+            return attachments;
+        }
+
         private List<AllocationsModel.AlloEntryLineData> CreateOPSEntryData(
-            IGrouping<string, AllocationsModel.AlloEntryLineData> lst)
+            IGrouping<(string MonthYear, string EntryDataId, string SourceFile), AllocationsModel.AlloEntryLineData>
+                lst, bool perInvoice)
         {
             using (var ctx = new EntryDataDSContext())
             {
                 var lines = lst.ToList();
-                var opsNumber = $"ERROPS-{lst.Key}";
+                var opsNumber = $"ERROPS-{(perInvoice == true ? lst.Key.EntryDataId : lst.Key.MonthYear)}";
 
                 var oops = ctx.EntryData.OfType<OpeningStock>().FirstOrDefault(x => x.OPSNumber == opsNumber);
 
-                if (oops != null)
-                {
-                    ctx.EntryData.Remove(oops);
-                }
+                var ops = new OpeningStock();
 
-                var ops = new OpeningStock(true)
+                    if(oops != null)
                     {
-                        OPSNumber = opsNumber,
-                        EntryDataId = opsNumber,
-                        EntryDataDate = lst.Min(x => x.EntryDataDate),
-                        ApplicationSettingsId = BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId,
-                        EntryType = "OPS",
-                        TrackingState = TrackingState.Added,
-
-                    };
-                    ctx.EntryData.Add(ops);
+                        ctx.EntryData.Remove(oops);
+                    }
+                 
+                    ops = CreateOpeningStock(lst, opsNumber, ctx);
+              
+                
                 
 
                 foreach (var line in lines)
@@ -187,7 +257,7 @@ namespace WaterNut.DataSpace
                         Quantity = line.Quantity,
                         LineNumber = lines.IndexOf(line) + 1,
                         InventoryItemId = line.InventoryItemId,
-                        EntryDataDetailsKey = $"ERROPS-{lst.Key}|{lines.IndexOf(line) + 1}",
+                        EntryDataDetailsKey = $"ERROPS-{lst.Key.EntryDataId}|{lines.IndexOf(line) + 1}",
                         EntryData = ops
 
 
@@ -235,7 +305,24 @@ namespace WaterNut.DataSpace
             }
         }
 
-        private IEnumerable<AllocationsModel.AlloEntryLineData> AllocationEntryLine(List<AsycudaSalesAllocations> slst)
+        private static OpeningStock CreateOpeningStock(IGrouping<(string MonthYear, string EntryDataId, string SourceFile), AllocationsModel.AlloEntryLineData> lst, string opsNumber, EntryDataDSContext ctx)
+        {
+            OpeningStock ops;
+            ops = new OpeningStock(true)
+            {
+                OPSNumber = opsNumber,
+                EntryDataId = opsNumber,
+                EntryDataDate = lst.Min(x => x.EntryDataDate),
+                ApplicationSettingsId =
+                    BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId,
+                EntryType = "OPS",
+                TrackingState = TrackingState.Added,
+            };
+            ctx.EntryData.Add(ops);
+            return ops;
+        }
+
+        private IEnumerable<AllocationsModel.AlloEntryLineData> AllocationEntryLinePerInvoice(List<AsycudaSalesAllocations> slst)
         {
             var cslst = from s in slst
                         where
@@ -250,7 +337,9 @@ namespace WaterNut.DataSpace
                             s.EntryDataDetails.Cost,
                             s.EntryDataDetails.EntryDataDetailsEx.InventoryItemsEx.TariffCode,
                             s.EntryDataDetails.EntryDataDetailsEx.InventoryItemsEx.InventoryItemId,
-                            MonthYear = s.EntryDataDetails.Sales.EntryDataDate.ToString("MM-yyyy")
+                            s.EntryDataDetails.EntryData.EntryDataId,
+                            s.EntryDataDetails.EntryData.SourceFile,
+                            MonthYear = s.EntryDataDetails.EntryData.EntryDataDate.ToString("MM-yyyy")
                             //,
                             //  s.EntryDataDetails.InventoryItem
                         }
@@ -258,10 +347,71 @@ namespace WaterNut.DataSpace
                         select new AllocationsModel.AlloEntryLineData
                         {
                             MonthYear = g.Key.MonthYear,
+                            EntryDataId = g.Key.EntryDataId,
+                            SourceFile = g.Key.SourceFile,
                             ItemNumber = g.Key.ItemNumber,
                             ItemDescription = g.Key.ItemDescription,
                             Cost = g.Key.Cost,
-                            EntryDataDate = g.Min(x => x.EntryDataDetails.Sales.EntryDataDate),
+                            EntryDataDate = g.Min(x => x.EntryDataDetails.EntryData.EntryDataDate),
+                            TariffCode = g.Key.TariffCode,
+                            InventoryItem = g.First().EntryDataDetails.EntryDataDetailsEx.InventoryItemsEx as IInventoryItem,
+                            InventoryItemId = g.First().EntryDataDetails.EntryDataDetailsEx.InventoryItemsEx.InventoryItemId,
+                            
+
+                            Quantity = g.Sum(x => x.QtyAllocated),
+                            EntryDataDetails = g.Select(x => new EntryDataDetailSummary()
+                            {
+                                AllocationId = x.AllocationId,
+                                EntryDataDetailsId = x.EntryDataDetailsId.GetValueOrDefault(),
+                                EntryDataId = x.EntryDataDetails.EntryDataId,
+                                EntryData_Id = x.EntryDataDetails.EntryData_Id,
+                                SourceFile =x.EntryDataDetails.EntryData.SourceFile,
+                                ItemNumber = x.EntryDataDetails.ItemNumber,
+                                ItemDescription = x.EntryDataDetails.ItemDescription,
+                                Cost = x.EntryDataDetails.Cost,
+                                Quantity = x.QtyAllocated,
+                                EffectiveDate = x.EntryDataDetails.EffectiveDate.GetValueOrDefault(),
+                                EntryDataDate = x.EntryDataDetails.EntryData.EntryDataDate,
+                                LineNumber = x.EntryDataDetails.LineNumber,
+                                InventoryItemId = x.EntryDataDetails.InventoryItemId,
+                                Comment = $"{x.Status}-{x.xStatus}"
+
+                            }).ToList()
+                        };
+            return cslst.Where(x => x.Quantity > 0);
+        }
+
+        private IEnumerable<AllocationsModel.AlloEntryLineData> AllocationEntryLine(List<AsycudaSalesAllocations> slst)
+        {
+            var cslst = from s in slst
+                        where
+                            s.EntryDataDetails.EntryDataId != null
+                        //||
+                        //s.EntryDataDetails.Quantity != s.EntryDataDetails.QtyAllocated
+                        group s by new
+                        {
+
+                            s.EntryDataDetails.ItemNumber,
+                            s.EntryDataDetails.ItemDescription,
+                            s.EntryDataDetails.Cost,
+                            s.EntryDataDetails.EntryDataDetailsEx.InventoryItemsEx.TariffCode,
+                            s.EntryDataDetails.EntryDataDetailsEx.InventoryItemsEx.InventoryItemId,
+                           // s.EntryDataDetails.EntryData.EntryDataId,
+                           // s.EntryDataDetails.EntryData.SourceFile,
+                            MonthYear = s.EntryDataDetails.EntryData.EntryDataDate.ToString("MM-yyyy")
+                            //,
+                            //  s.EntryDataDetails.InventoryItem
+                        }
+                into g
+                        select new AllocationsModel.AlloEntryLineData
+                        {
+                            MonthYear = g.Key.MonthYear,
+                            EntryDataId = g.First().EntryDataDetails.EntryData.EntryDataId,
+                            SourceFile = g.First().EntryDataDetails.EntryData.SourceFile,
+                            ItemNumber = g.Key.ItemNumber,
+                            ItemDescription = g.Key.ItemDescription,
+                            Cost = g.Key.Cost,
+                            EntryDataDate = g.Min(x => x.EntryDataDetails.EntryData.EntryDataDate),
                             TariffCode = g.Key.TariffCode,
                             InventoryItem = g.First().EntryDataDetails.EntryDataDetailsEx.InventoryItemsEx as IInventoryItem,
                             InventoryItemId = g.First().EntryDataDetails.EntryDataDetailsEx.InventoryItemsEx.InventoryItemId,
@@ -274,12 +424,13 @@ namespace WaterNut.DataSpace
                                 EntryDataDetailsId = x.EntryDataDetailsId.GetValueOrDefault(),
                                 EntryDataId = x.EntryDataDetails.EntryDataId,
                                 EntryData_Id = x.EntryDataDetails.EntryData_Id,
+                                SourceFile = x.EntryDataDetails.EntryData.SourceFile,
                                 ItemNumber = x.EntryDataDetails.ItemNumber,
                                 ItemDescription = x.EntryDataDetails.ItemDescription,
                                 Cost = x.EntryDataDetails.Cost,
                                 Quantity = x.QtyAllocated,
                                 EffectiveDate = x.EntryDataDetails.EffectiveDate.GetValueOrDefault(),
-                                EntryDataDate = x.EntryDataDetails.Sales.EntryDataDate,
+                                EntryDataDate = x.EntryDataDetails.EntryData.EntryDataDate,
                                 LineNumber = x.EntryDataDetails.LineNumber,
                                 InventoryItemId = x.EntryDataDetails.InventoryItemId,
                                 Comment = $"{x.Status}-{x.xStatus}"
@@ -289,8 +440,6 @@ namespace WaterNut.DataSpace
             return cslst.Where(x => x.Quantity > 0);
         }
 
-
-       
 
         private async Task<List<AsycudaSalesAllocations>> GetErrOPSData(string filterExpression)
         {
