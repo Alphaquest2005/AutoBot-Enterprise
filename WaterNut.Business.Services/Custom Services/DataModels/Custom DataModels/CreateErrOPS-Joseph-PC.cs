@@ -218,16 +218,6 @@ namespace WaterNut.DataSpace
                     //EmailId = lineData.EmailId?.ToString(),
                     Reference = lst.Key.EntryDataId + ".pdf",
                 });
-
-            attachments.Add(   new Attachment()
-                {
-                    FilePath = $"",
-                    DocumentCode = "DC05",
-                    Reference = "NA",
-                    TrackingState = TrackingState.Added,
-                 });
-
-
             return attachments;
         }
 

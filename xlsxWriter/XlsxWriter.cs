@@ -72,31 +72,33 @@ namespace xlsxWriter
                                 shipmentInvoice.ShipmentInvoicePOs.Any(z => z.ShipmentInvoice.InvoiceNo == x.InvoiceNo))
                             .ToList();
 
-                        var isCombined = (packingLst.FirstOrDefault(x => x.InvoiceNo == shipmentInvoice.InvoiceNo).Packages) == 0;
+                        var isCombined = !packingLst.Any() ||  packingLst.FirstOrDefault(x => x.InvoiceNo == shipmentInvoice.InvoiceNo).Packages == 0;
 
 
-                        if (packingLst.Any() && !isCombined)
-                        {
-                            parent = shipmentInvoice;
-
-
-                            if (parent.ShipmentInvoicePOs.Any(x => !String.Equals(x.PurchaseOrders.PONumber, "Null",
-                                    StringComparison.CurrentCultureIgnoreCase)))
+                        
+                            if (!isCombined)
                             {
-                                csvFilePath = Path.Combine(pdfFile.DirectoryName,
-                                    $"{parent.ShipmentInvoicePOs.First().PurchaseOrders.PONumber.Replace("/", "-")}.xlsx");
-                                csvs.Add((parent.ShipmentInvoicePOs.First().PurchaseOrders.PONumber, csvFilePath));
-                            }
-                            else
-                            {
-                                csvFilePath = Path.Combine(pdfFile.DirectoryName,
-                                    $"{parent.InvoiceNo.Replace("/", "-")}.xlsx");
-                                csvs.Add((parent.InvoiceNo, csvFilePath));
-                            }
+                                parent = shipmentInvoice;
 
-                            workbook = CreateShipmentWorkBook(riderId, parent, csvFilePath, header,
-                                out invoiceRow, packingLst, out doRider);
-                        }
+
+                                if (parent.ShipmentInvoicePOs.Any(x => !String.Equals(x.PurchaseOrders.PONumber, "Null",
+                                        StringComparison.CurrentCultureIgnoreCase)))
+                                {
+                                    csvFilePath = Path.Combine(pdfFile.DirectoryName,
+                                        $"{parent.ShipmentInvoicePOs.First().PurchaseOrders.PONumber.Replace("/", "-")}.xlsx");
+                                    csvs.Add((parent.ShipmentInvoicePOs.First().PurchaseOrders.PONumber, csvFilePath));
+                                }
+                                else
+                                {
+                                    csvFilePath = Path.Combine(pdfFile.DirectoryName,
+                                        $"{parent.InvoiceNo.Replace("/", "-")}.xlsx");
+                                    csvs.Add((parent.InvoiceNo, csvFilePath));
+                                }
+
+                                workbook = CreateShipmentWorkBook(riderId, parent, csvFilePath, header,
+                                    out invoiceRow, packingLst, out doRider);
+                            }
+                       
 
                         if (workbook == null) continue;
 
@@ -1045,13 +1047,13 @@ namespace xlsxWriter
 
                 doRider = false;
 
-                if (!packingDetails.Any()) return workbook;
+                //if (!packingDetails.Any()) return workbook;
              
-                doRider = shipmentInvoice.ShipmentInvoicePOs.Sum(x => x.PurchaseOrders.EntryDataDetails.Count()) >= packingDetails.Count();
+               doRider = shipmentInvoice.ShipmentInvoicePOs.Sum(x => x.PurchaseOrders.EntryDataDetails.Count()) >= packingDetails.Count();
 
               
                 SetValue(workbook, invoiceRow, header.First(x => x.Key.Column == "Packages").Key.Index,
-                    packingDetails.Sum(x => x.Packages));
+                    packingDetails.Select(x => x.Packages).DefaultIfEmpty(0).Sum());
                 SetValue(workbook, invoiceRow, header.First(x => x.Key.Column == "Warehouse").Key.Index,
                     packingDetails.Select(x => x.WarehouseCode).DefaultIfEmpty("")
                         .Aggregate((o, c) => o + "," + c));

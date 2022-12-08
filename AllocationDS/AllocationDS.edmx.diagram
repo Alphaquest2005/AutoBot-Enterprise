@@ -108,6 +108,7 @@
         <AssociationConnector Association="WaterNutDBModel.xcuda_ItemAdjustmentShort_IM9Data" />
         <AssociationConnector Association="WaterNutDBModel.AdjustmentShort_IM9DataAsycudaSalesAllocationsPIData" />
         <AssociationConnector Association="WaterNutDBModel.EntryDataDetailsAdjustmentShort_IM9Data" />
+        <EntityTypeShape EntityType="WaterNutDBModel.AsycudaItemRemainingQuantities" Width="1.5" PointX="22.375" PointY="0.875" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

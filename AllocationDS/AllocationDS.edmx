@@ -673,6 +673,30 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AsycudaItemPiQuantityData
           <Property Name="xLineNumber" Type="int" Nullable="false" />
         </EntityType>
         <!--Errors Found During Generation:
+warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AsycudaItemRemainingQuantities' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="AsycudaItemRemainingQuantities">
+          <Key>
+            
+            
+            <PropertyRef Name="Item_Id" />
+          </Key>
+          <Property Name="Item_Id" Type="int" Nullable="false" />
+          <Property Name="CNumber" Type="nvarchar" MaxLength="20" />
+          <Property Name="LineNumber" Type="nvarchar" MaxLength="50" />
+          <Property Name="RegistrationDate" Type="datetime" />
+          <Property Name="AssessmentDate" Type="datetime2" Precision="7" />
+          <Property Name="ItemNumber" Type="nvarchar" MaxLength="50" />
+          <Property Name="Commercial_Description" Type="varchar" MaxLength="255" />
+          <Property Name="ItemQuantity" Type="float" />
+          <Property Name="DPQtyAllocated" Type="float" />
+          <Property Name="DFQtyAllocated" Type="float" />
+          <Property Name="QtyAllocated" Type="float" />
+          <Property Name="PiQuantity" Type="float" Nullable="false" />
+          <Property Name="RemainingBalance" Type="float" Nullable="false" />
+          <Property Name="xRemainingBalance" Type="float" />
+          <Property Name="ApplicationSettingsId" Type="int" />
+        </EntityType>
+        <!--Errors Found During Generation:
 warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AsycudaSalesAllocationsPIData' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="AsycudaSalesAllocationsPIData">
           
@@ -1646,6 +1670,25 @@ FROM [dbo].[AsycudaDocumentItemEntryDataDetails] AS [AsycudaDocumentItemEntryDat
 [AsycudaItemPiQuantityData].[xLineNumber] AS [xLineNumber]
 FROM [dbo].[AsycudaItemPiQuantityData] AS [AsycudaItemPiQuantityData]</DefiningQuery>
           </EntitySet>
+          <EntitySet Name="AsycudaItemRemainingQuantities" EntityType="Self.AsycudaItemRemainingQuantities" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+[AsycudaItemRemainingQuantities].[Item_Id] AS [Item_Id], 
+[AsycudaItemRemainingQuantities].[CNumber] AS [CNumber], 
+[AsycudaItemRemainingQuantities].[LineNumber] AS [LineNumber], 
+[AsycudaItemRemainingQuantities].[RegistrationDate] AS [RegistrationDate], 
+[AsycudaItemRemainingQuantities].[AssessmentDate] AS [AssessmentDate], 
+[AsycudaItemRemainingQuantities].[ItemNumber] AS [ItemNumber], 
+[AsycudaItemRemainingQuantities].[Commercial_Description] AS [Commercial_Description], 
+[AsycudaItemRemainingQuantities].[ItemQuantity] AS [ItemQuantity], 
+[AsycudaItemRemainingQuantities].[DPQtyAllocated] AS [DPQtyAllocated], 
+[AsycudaItemRemainingQuantities].[DFQtyAllocated] AS [DFQtyAllocated], 
+[AsycudaItemRemainingQuantities].[QtyAllocated] AS [QtyAllocated], 
+[AsycudaItemRemainingQuantities].[PiQuantity] AS [PiQuantity], 
+[AsycudaItemRemainingQuantities].[RemainingBalance] AS [RemainingBalance], 
+[AsycudaItemRemainingQuantities].[xRemainingBalance] AS [xRemainingBalance], 
+[AsycudaItemRemainingQuantities].[ApplicationSettingsId] AS [ApplicationSettingsId]
+FROM [dbo].[AsycudaItemRemainingQuantities] AS [AsycudaItemRemainingQuantities]</DefiningQuery>
+          </EntitySet>
           <EntitySet Name="AsycudaSalesAllocationsPIData" EntityType="Self.AsycudaSalesAllocationsPIData" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
 [AsycudaSalesAllocationsPIData].[AllocationId] AS [AllocationId], 
@@ -2290,6 +2333,7 @@ FROM [dbo].[XSales-UnAllocated] AS [XSales-UnAllocated]</DefiningQuery>
             <End Role="EntryDataDetails" EntitySet="EntryDataDetails" />
             <End Role="AdjustmentShort_IM9Data" EntitySet="AdjustmentShort_IM9Data" />
           </AssociationSet>
+          <EntitySet Name="AsycudaItemRemainingQuantities" EntityType="WaterNutDBModel.AsycudaItemRemainingQuantities" />
           </EntityContainer>
         <EntityType Name="AsycudaSalesAllocations">
           <Key>
@@ -3974,6 +4018,26 @@ FROM [dbo].[XSales-UnAllocated] AS [XSales-UnAllocated]</DefiningQuery>
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="AsycudaItemRemainingQuantities">
+          <Key>
+            <PropertyRef Name="Item_Id" />
+          </Key>
+          <Property Name="Item_Id" Type="Int32" Nullable="false" />
+          <Property Name="CNumber" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="LineNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="RegistrationDate" Type="DateTime" Precision="3" />
+          <Property Name="AssessmentDate" Type="DateTime" Precision="7" />
+          <Property Name="ItemNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Commercial_Description" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="ItemQuantity" Type="Double" />
+          <Property Name="DPQtyAllocated" Type="Double" />
+          <Property Name="DFQtyAllocated" Type="Double" />
+          <Property Name="QtyAllocated" Type="Double" />
+          <Property Name="PiQuantity" Type="Double" Nullable="false" />
+          <Property Name="RemainingBalance" Type="Double" Nullable="false" />
+          <Property Name="xRemainingBalance" Type="Double" />
+          <Property Name="ApplicationSettingsId" Type="Int32" />
+        </EntityType>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -4907,6 +4971,27 @@ FROM [dbo].[XSales-UnAllocated] AS [XSales-UnAllocated]</DefiningQuery>
                 <ScalarProperty Name="pItemDescription" ColumnName="pItemDescription" />
                 <ScalarProperty Name="EntryDataDetailsId" ColumnName="EntryDataDetailsId" />
                 <ScalarProperty Name="AllocationId" ColumnName="AllocationId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="AsycudaItemRemainingQuantities">
+            <EntityTypeMapping TypeName="WaterNutDBModel.AsycudaItemRemainingQuantities">
+              <MappingFragment StoreEntitySet="AsycudaItemRemainingQuantities">
+                <ScalarProperty Name="ApplicationSettingsId" ColumnName="ApplicationSettingsId" />
+                <ScalarProperty Name="xRemainingBalance" ColumnName="xRemainingBalance" />
+                <ScalarProperty Name="RemainingBalance" ColumnName="RemainingBalance" />
+                <ScalarProperty Name="PiQuantity" ColumnName="PiQuantity" />
+                <ScalarProperty Name="QtyAllocated" ColumnName="QtyAllocated" />
+                <ScalarProperty Name="DFQtyAllocated" ColumnName="DFQtyAllocated" />
+                <ScalarProperty Name="DPQtyAllocated" ColumnName="DPQtyAllocated" />
+                <ScalarProperty Name="ItemQuantity" ColumnName="ItemQuantity" />
+                <ScalarProperty Name="Commercial_Description" ColumnName="Commercial_Description" />
+                <ScalarProperty Name="ItemNumber" ColumnName="ItemNumber" />
+                <ScalarProperty Name="AssessmentDate" ColumnName="AssessmentDate" />
+                <ScalarProperty Name="RegistrationDate" ColumnName="RegistrationDate" />
+                <ScalarProperty Name="LineNumber" ColumnName="LineNumber" />
+                <ScalarProperty Name="CNumber" ColumnName="CNumber" />
+                <ScalarProperty Name="Item_Id" ColumnName="Item_Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

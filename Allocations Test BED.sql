@@ -1,7 +1,7 @@
-////////////////////////////////////Batch vs Current Allocations comparison
+--////////////////////////////////////Batch vs Current Allocations comparison
 
-declare @BatchNo int = 2, @itemNumber varchar(50), @appSettingId int = 7
-set @itemNumber = '14002-220'
+declare @BatchNo int = 4, @itemNumber varchar(50), @appSettingId int = 6
+set @itemNumber = '320834'
 
 
 select * from  AsycudaSalesAndAdjustmentAllocationsEx where ItemNumber LIKE '%' + @ItemNumber + '%' and applicationsettingsid = @appSettingId 
@@ -42,10 +42,10 @@ SELECT BatchNo, Status, QtyAllocated, InvoiceDate, CustomerName, SalesQuantity, 
                  DoNotAllocatePreviousEntry, WarehouseError, SANumber, TariffCode, Invalid, pExpiryDate, pTariffCode, pItemNumber, ApplicationSettingsId
 into #Allhis
 FROM    [History-Allocations]
-where  applicationsettingsid = @appSettingId and ([History-Allocations].BatchNo = 1) 
+where  applicationsettingsid = @appSettingId and ([History-Allocations].BatchNo = @BatchNo) 
 
 drop table #Allallo
-SELECT        1 AS BatchNo, Status, QtyAllocated,  InvoiceDate, CustomerName, SalesQuantity, SalesQtyAllocated, InvoiceNo, SalesLineNumber, ItemNumber, ItemDescription, DutyFreePaid, pCNumber, pRegistrationDate, pQuantity, 
+SELECT        @BatchNo AS BatchNo, Status, QtyAllocated,  InvoiceDate, CustomerName, SalesQuantity, SalesQtyAllocated, InvoiceNo, SalesLineNumber, ItemNumber, ItemDescription, DutyFreePaid, pCNumber, pRegistrationDate, pQuantity, 
                          pQtyAllocated, PiQuantity, SalesFactor,  pReferenceNumber, pLineNumber, Cost, Total_CIF_itm, DutyLiability, TaxAmount, pIsAssessed, DoNotAllocateSales, 
                          DoNotAllocatePreviousEntry, WarehouseError, SANumber, TariffCode, Invalid, pExpiryDate, pTariffCode, pItemNumber, ApplicationSettingsId
 into #Allallo
@@ -64,14 +64,14 @@ UNION ALL
 
 
 
-////////////////////////////////////issues comparison
+--////////////////////////////////////issues comparison
 
 
 
 
 
 
-declare @BatchNo int = 2, @itemNumber varchar(50), @appSettingId int = 7
+declare @BatchNo int = 4, @itemNumber varchar(50), @appSettingId int = 6
 --set @itemNumber = '14002-220'
 drop table #issueHis
 SELECT BatchNo, Status, QtyAllocated, InvoiceDate, CustomerName, SalesQuantity, SalesQtyAllocated, InvoiceNo, InvoiceLineNumber, isnull([History-Allocations].ItemNumber, issues.ItemNumber) as ItemNumber, ItemDescription, DutyFreePaid, pCNumber, pRegistrationDate, 
@@ -86,7 +86,7 @@ SELECT        @BatchNo AS BatchNo, Status, QtyAllocated,  InvoiceDate, CustomerN
                          pQtyAllocated, PiQuantity, SalesFactor,  pReferenceNumber, pLineNumber, Cost, Total_CIF_itm, DutyLiability, TaxAmount, pIsAssessed, DoNotAllocateSales, 
                          DoNotAllocatePreviousEntry, WarehouseError, SANumber, TariffCode, Invalid, pExpiryDate, pTariffCode, pItemNumber, issues.ApplicationSettingsId, xCNumber, xLineNumber,xRegistrationDate,  xReferenceNumber, xStatus, xQuantity
 into #issueAllo
-FROM            AsycudaSalesAndAdjustmentAllocationsEx right outer join [History-Batch-Issues] issues on  AsycudaSalesAndAdjustmentAllocationsEx.ItemNumber = issues.ItemNumber and AsycudaSalesAndAdjustmentAllocationsEx.ApplicationSettingsId = issues.ApplicationSettingsId
+FROM            AsycudaSalesAndAdjustmentAllocationsEx right outer join (select * from [History-Batch-Issues] where BatchId = @BatchNo) issues on  AsycudaSalesAndAdjustmentAllocationsEx.ItemNumber = issues.ItemNumber and AsycudaSalesAndAdjustmentAllocationsEx.ApplicationSettingsId = issues.ApplicationSettingsId
 where issues.applicationsettingsid = @appSettingId
 select 'Existing Row Differences Differences'
 select 'Issues Allocation'

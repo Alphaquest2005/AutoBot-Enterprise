@@ -172,6 +172,7 @@
     <Compile Include="Generated Business Entities\AllocationDS\AsycudaDocument.cs" />
     <Compile Include="Generated Business Entities\AllocationDS\AsycudaDocumentItemEntryDataDetails.cs" />
     <Compile Include="Generated Business Entities\AllocationDS\AsycudaItemPiQuantityData.cs" />
+    <Compile Include="Generated Business Entities\AllocationDS\AsycudaItemRemainingQuantities.cs" />
     <Compile Include="Generated Business Entities\AllocationDS\AsycudaLkpLst.cs" />
     <Compile Include="Generated Business Entities\AllocationDS\AsycudaSalesAllocations.cs" />
     <Compile Include="Generated Business Entities\AllocationDS\AsycudaSalesAllocationsPIData.cs" />
@@ -601,6 +602,7 @@
     <Compile Include="Generated ChangeTracking Models\AllocationDS\AsycudaDocument.cs" />
     <Compile Include="Generated ChangeTracking Models\AllocationDS\AsycudaDocumentItemEntryDataDetails.cs" />
     <Compile Include="Generated ChangeTracking Models\AllocationDS\AsycudaItemPiQuantityData.cs" />
+    <Compile Include="Generated ChangeTracking Models\AllocationDS\AsycudaItemRemainingQuantities.cs" />
     <Compile Include="Generated ChangeTracking Models\AllocationDS\AsycudaLkpLst.cs" />
     <Compile Include="Generated ChangeTracking Models\AllocationDS\AsycudaSalesAllocations.cs" />
     <Compile Include="Generated ChangeTracking Models\AllocationDS\AsycudaSalesAllocationsPIData.cs" />
@@ -1022,6 +1024,7 @@
     <Compile Include="Generated Constructors Models\AllocationDS\AsycudaDocument.cs" />
     <Compile Include="Generated Constructors Models\AllocationDS\AsycudaDocumentItemEntryDataDetails.cs" />
     <Compile Include="Generated Constructors Models\AllocationDS\AsycudaItemPiQuantityData.cs" />
+    <Compile Include="Generated Constructors Models\AllocationDS\AsycudaItemRemainingQuantities.cs" />
     <Compile Include="Generated Constructors Models\AllocationDS\AsycudaLkpLst.cs" />
     <Compile Include="Generated Constructors Models\AllocationDS\AsycudaSalesAllocations.cs" />
     <Compile Include="Generated Constructors Models\AllocationDS\AsycudaSalesAllocationsPIData.cs" />
@@ -1443,6 +1446,7 @@
     <Compile Include="Generated IEntitiyWithKey Models\AllocationDS\AsycudaDocument.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\AllocationDS\AsycudaDocumentItemEntryDataDetails.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\AllocationDS\AsycudaItemPiQuantityData.cs" />
+    <Compile Include="Generated IEntitiyWithKey Models\AllocationDS\AsycudaItemRemainingQuantities.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\AllocationDS\AsycudaLkpLst.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\AllocationDS\AsycudaSalesAllocations.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\AllocationDS\AsycudaSalesAllocationsPIData.cs" />
@@ -1864,6 +1868,7 @@
     <Compile Include="Generated IIdentitfiableEntity Models\AllocationDS\AsycudaDocument.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\AllocationDS\AsycudaDocumentItemEntryDataDetails.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\AllocationDS\AsycudaItemPiQuantityData.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\AllocationDS\AsycudaItemRemainingQuantities.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\AllocationDS\AsycudaLkpLst.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\AllocationDS\AsycudaSalesAllocations.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\AllocationDS\AsycudaSalesAllocationsPIData.cs" />
@@ -2295,6 +2300,7 @@
     <Compile Include="Generated Mappings\AllocationDS\AsycudaDocument.map.cs" />
     <Compile Include="Generated Mappings\AllocationDS\AsycudaDocumentItemEntryDataDetails.map.cs" />
     <Compile Include="Generated Mappings\AllocationDS\AsycudaItemPiQuantityData.map.cs" />
+    <Compile Include="Generated Mappings\AllocationDS\AsycudaItemRemainingQuantities.map.cs" />
     <Compile Include="Generated Mappings\AllocationDS\AsycudaLkpLst.map.cs" />
     <Compile Include="Generated Mappings\AllocationDS\AsycudaSalesAllocations.map.cs" />
     <Compile Include="Generated Mappings\AllocationDS\AsycudaSalesAllocationsPIData.map.cs" />

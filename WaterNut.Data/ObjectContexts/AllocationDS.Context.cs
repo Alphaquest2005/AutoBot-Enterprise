@@ -139,6 +139,8 @@ namespace AllocationDS.Business.Entities
      
         public DbSet<AdjustmentShort_IM9Data> AdjustmentShort_IM9Data { get; set; }
      
+        public DbSet<AsycudaItemRemainingQuantities> AsycudaItemRemainingQuantities { get; set; }
+     
 
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
@@ -234,6 +236,8 @@ namespace AllocationDS.Business.Entities
             modelBuilder.Configurations.Add(new XSales_UnAllocatedMap());
          
             modelBuilder.Configurations.Add(new AdjustmentShort_IM9DataMap());
+         
+            modelBuilder.Configurations.Add(new AsycudaItemRemainingQuantitiesMap());
          
             modelBuilder.Configurations.Add(new AdjustmentsMap());
       

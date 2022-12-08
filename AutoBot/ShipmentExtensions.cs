@@ -896,7 +896,7 @@ namespace AutoBotUtilities
                 var allShipmentRiderDetails = new List<ShipmentRiderDetails>();
 
                 
-                var invoices = DoRiderInvoices(masterShipment, null, bl.ShipmentBLDetails, allShipmentRiderDetails, packingDetails,
+                var invoices = GetInvoicesAndCreateSummaryFile(masterShipment, null, bl.ShipmentBLDetails, allShipmentRiderDetails, packingDetails,
                     summaryPkg, out var summaryFile);
 
                
@@ -1067,7 +1067,7 @@ namespace AutoBotUtilities
                             .Select(x => x.ShipmentManifest)
                             .ToList();
 
-                        var invoices = DoRiderInvoices(masterShipment, client,new List<ShipmentBLDetails>(), rider.ShipmentRiderDetails, packingDetails, summaryPkg, out var summaryFile);
+                        var invoices = GetInvoicesAndCreateSummaryFile(masterShipment, client,new List<ShipmentBLDetails>(), rider.ShipmentRiderDetails, packingDetails, summaryPkg, out var summaryFile);
 
                         var attachments = new List<Attachments>
                         {
@@ -1213,7 +1213,7 @@ namespace AutoBotUtilities
                     .Select(x => x.ShipmentManifest)
                     .ToList();
 
-                var invoices = DoRiderInvoices(masterShipment, null, new List<ShipmentBLDetails>(), new List<ShipmentRiderDetails>(), packingDetails, summaryPkg, out var summaryFile);
+                var invoices = GetInvoicesAndCreateSummaryFile(masterShipment, null, new List<ShipmentBLDetails>(), new List<ShipmentRiderDetails>(), packingDetails, summaryPkg, out var summaryFile);
 
                 var attachments = new List<Attachments>
                 {
@@ -1308,7 +1308,7 @@ namespace AutoBotUtilities
             }
         }
 
-        public static List<ShipmentInvoice> DoRiderInvoices(Shipment masterShipment,
+        public static List<ShipmentInvoice> GetInvoicesAndCreateSummaryFile(Shipment masterShipment,
             IGrouping<(string Code, int RiderId, string BLNumber), ShipmentRiderDetails> client,
             List<ShipmentBLDetails> shipmentBlDetailsList, List<ShipmentRiderDetails> allShipmentRiderDetailsList,
             List<(string Marks, int Packages, string InvoiceNumber)> packingDetails,
@@ -1346,7 +1346,7 @@ namespace AutoBotUtilities
                         .Any(q => x.ShipmentBLInvoice.Any(z => z.InvoiceId == q.InvoiceId))) // 
                     .ToList();
 
-                invoiceLst.AddRange(blInvoices.Select(r => r.Id).ToList());
+                invoiceLst.AddRange(blInvoices.Where(x => !invoiceLst.Contains(x.Id)).Select(r => r.Id).ToList());
 
                 if (!invoiceLst.Any())
                     invoiceLst.AddRange(rawInvoices.Where(x => packingDetails.Any(z => z.InvoiceNumber == x.InvoiceNo))

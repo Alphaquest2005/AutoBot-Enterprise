@@ -1,4 +1,4 @@
-declare @BatchNo int = 3,  @appSettingId int = 2
+declare @BatchNo int = 4,  @appSettingId int = 6
 
 
 delete from [History-Allocations] where batchno = @BatchNo and ApplicationSettingsId = @appSettingId

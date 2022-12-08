@@ -184,7 +184,7 @@ namespace AutoBotUtilities
             var allShipmentRiderDetails = masterShipment.ShipmentAttachedRider
                 .SelectMany(x => x.ShipmentRider.ShipmentRiderDetails).Where(x => x.RiderId == client.Key.RiderId).ToList();
 
-            var invoices = ShipmentExtensions.DoRiderInvoices(masterShipment, client, bl.ShipmentBLDetails,
+            var invoices = ShipmentExtensions.GetInvoicesAndCreateSummaryFile(masterShipment, client, bl.ShipmentBLDetails,
                 allShipmentRiderDetails, packingDetails, summaryPkg, out var summaryFile);
 
 

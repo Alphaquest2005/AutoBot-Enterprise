@@ -10,11 +10,13 @@ using System.Threading.Tasks;
 using AdjustmentQS.Business.Services;
 using AllocationDS.Business.Entities;
 using AllocationDS.Business.Services;
+using Asycuda421;
 using Core.Common.Data;
 using Core.Common.UI;
 using CoreEntities.Business.Entities;
 using EntryDataDS.Business.Entities;
 using MoreLinq;
+using sun.invoke.util;
 using TrackableEntities;
 using CustomsOperations = CoreEntities.Business.Enums.CustomsOperations;
 using EntryDataDetails = AllocationDS.Business.Entities.EntryDataDetails;
@@ -103,9 +105,9 @@ namespace WaterNut.DataSpace
 
 
 				await AllocateSalesByMatchingSalestoAsycudaEntriesOnItemNumber(applicationSettings.ApplicationSettingsId, allocateToLastAdjustment,
-					//"1852995-LUC/1003"
-					null
-					).ConfigureAwait(false);
+                  //  "320834"
+                    null
+                    ).ConfigureAwait(false);
 
 
 				await MarkErrors(applicationSettings.ApplicationSettingsId).ConfigureAwait(false);
@@ -444,6 +446,8 @@ namespace WaterNut.DataSpace
         }
 
         private ConcurrentDictionary<int, xcuda_Item> currentItems = new ConcurrentDictionary<int, xcuda_Item>();
+      
+
         private void AllocateSales(bool allocateToLastAdjustment, List<ItemSet> itemSets)
         {
             StatusModel.StartStatusUpdate("Allocating Item Sales", itemSets.Count());
@@ -576,7 +580,8 @@ namespace WaterNut.DataSpace
                                 ctx.AsycudaSalesAllocations
                                     .Include(x => x.EntryDataDetails)
                                     .Include(x => x.EntryDataDetails.EntryDataDetailsEx)
-                                    .Include(x => x.PreviousDocumentItem)
+                                    .Include(x => x.PreviousDocumentItem.xcuda_Tarification.xcuda_HScode)
+                           
                                     .Where(x => x != null && x.PreviousItem_Id == i.Item_Id)
                                     .Where(x => x.EntryDataDetails.EntryDataDetailsEx.SystemDocumentSets != null)
                                     .OrderByDescending(x => x.AllocationId)
@@ -623,11 +628,11 @@ namespace WaterNut.DataSpace
 															SET                DPQtyAllocated = (DPQtyAllocated{(r >= 0 ? $"-{r}" : $"+{r * -1}")})
 															where	item_id = {allo.PreviousDocumentItem.Item_Id}";
                                     }
-
+                                    var existingStock = CheckExistingStock(allo.PreviousDocumentItem.ItemNumber, allo.EntryDataDetails.Sales.EntryDataDate);
                                     if (allo.QtyAllocated == 0)
                                     {
                                         allo.QtyAllocated = r; //add back so wont disturb calculations
-                                        allo.Status = $"Over Allocated Entry by {r}";
+                                        allo.Status = $"Over Allocated Entry by {r}{existingStock}";
 
                                         sql += $@"  Update AsycudaSalesAllocations
 														Set Status = '{allo.Status}', QtyAllocated = {r }
@@ -639,7 +644,7 @@ namespace WaterNut.DataSpace
 
                                         sql += $@" INSERT INTO AsycudaSalesAllocations
 														 (EntryDataDetailsId, PreviousItem_Id, QtyAllocated,Status, EANumber, SANumber)
-														VALUES        ({allo.EntryDataDetailsId},{allo.PreviousItem_Id},{r},'Over Allocated Entry by {r}',0,0)";
+														VALUES        ({allo.EntryDataDetailsId},{allo.PreviousItem_Id},{r},'Over Allocated Entry by {r}{existingStock}',0,0)";
                                         //ctx.ApplyChanges(nallo);
                                         break;
                                     }
@@ -1231,8 +1236,9 @@ namespace WaterNut.DataSpace
 						(cAsycudaItm.AsycudaDocument.AssessmentDate > saleitm.Sales.EntryDataDate))
 					{
 						if (CurrentAsycudaItemIndex == 0)
-						{
-							await AddExceptionAllocation(saleitm, "Early Sales").ConfigureAwait(false);
+                        {
+                           
+							await AddExceptionAllocation(saleitm, cAsycudaItm, "Early Sales" ).ConfigureAwait(false);
 							continue;
 						}
 					}
@@ -1269,9 +1275,9 @@ namespace WaterNut.DataSpace
 
 						if (cAsycudaItm.AsycudaDocument.CustomsOperationId == (int)CustomsOperations.Warehouse && (cAsycudaItm.AsycudaDocument.AssessmentDate > saleitm.Sales.EntryDataDate))
 						{
-							//if (CurrentAsycudaItemIndex == 0)
-							//{
-							await AddExceptionAllocation(saleitm, "Early Sales").ConfigureAwait(false);
+                            //if (CurrentAsycudaItemIndex == 0)
+                            //{
+                            await AddExceptionAllocation(saleitm, "Early Sales").ConfigureAwait(false);
 							break;
 							//}
 
@@ -1402,7 +1408,22 @@ namespace WaterNut.DataSpace
 			}
 		}
 
-		private async Task<int> GetPreviousAllocatedAsycudaItem(List<xcuda_Item> asycudaEntries, EntryDataDetails saleitm, int i)
+        private string CheckExistingStock(string itemNumber, DateTime salesEntryDataDate)
+        {
+            var itm = new AllocationDSContext().AsycudaItemRemainingQuantities.FirstOrDefault(x =>
+                x.ItemNumber == itemNumber && x.AssessmentDate <= salesEntryDataDate && x.xRemainingBalance > 0);
+           return  itm == null
+                ? ""
+                : $": Last Available Qty on C#{itm.CNumber}-{itm.LineNumber} RegDate:{itm.RegistrationDate} AstDate:{itm.AssessmentDate} AlloQty:{itm.QtyAllocated} piQty:{itm.PiQuantity}";
+        }
+
+        private List<AsycudaItemRemainingQuantities> _existingStock = null;
+        public List<AsycudaItemRemainingQuantities> ExistingStock =>
+            _existingStock ?? (_existingStock = new AllocationDSContext().AsycudaItemRemainingQuantities
+                .Where(x => x.ApplicationSettingsId ==
+                            BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId).ToList());
+
+        private async Task<int> GetPreviousAllocatedAsycudaItem(List<xcuda_Item> asycudaEntries, EntryDataDetails saleitm, int i)
 		{
 			var previousI = 0;
 			var pitmsIds = asycudaEntries.Select(x => x.Item_Id).ToList();
@@ -1433,12 +1454,17 @@ namespace WaterNut.DataSpace
 			return previousI;
 		}
 
+        private async Task AddExceptionAllocation(EntryDataDetails saleitm, xcuda_Item cAsycudaItm, string error)
+        {
+            var existingStock = CheckExistingStock(cAsycudaItm.ItemNumber, saleitm.Sales.EntryDataDate);
+            await AddExceptionAllocation(saleitm, error + existingStock).ConfigureAwait(false);
+        }
 
-		private async Task AddExceptionAllocation(EntryDataDetails saleitm, string error)
+        private async Task AddExceptionAllocation(EntryDataDetails saleitm,  string error)
 		{
 			if (saleitm.AsycudaSalesAllocations.FirstOrDefault(x => x.Status == error) == null)
 			{
-				var ssa = new AsycudaSalesAllocations(true)
+                var ssa = new AsycudaSalesAllocations(true)
 				{
 					EntryDataDetailsId = saleitm.EntryDataDetailsId,
 					//EntryDataDetails = saleitm,
