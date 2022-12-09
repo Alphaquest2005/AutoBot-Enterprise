@@ -2,10 +2,7 @@ UPDATE       xcuda_ASYCUDA_ExtendedProperties
 SET                Cancelled = 1
 FROM            AsycudaDocumentBasicInfo INNER JOIN
                          xcuda_ASYCUDA_ExtendedProperties ON AsycudaDocumentBasicInfo.ASYCUDA_Id = xcuda_ASYCUDA_ExtendedProperties.ASYCUDA_Id
-WHERE        (AsycudaDocumentBasicInfo.CNumber in (16934,
-18281,
-18283,
-23916
+WHERE        (AsycudaDocumentBasicInfo.CNumber in (57972,57975,57976,57977,57978,57979,57980,57981,57982,57983,57984
 ) and AsycudaDocumentBasicInfo.ApplicationSettingsId = 6)
 --WHERE        ( AsycudaDocumentBasicInfo.RegistrationDate <= '9/24/2018' and AsycudaDocumentBasicInfo.IsManuallyAssessed is null )
 

@@ -82,7 +82,7 @@ namespace AdjustmentQS.Business.Services
                 _itemCache = null;
 
 
-                var lst = GetAllAdjustmentDetails(applicationSettingsId, overwriteExisting);//.Where(x => x.EntryDataId == "Asycuda-C#33687-24").ToList();
+                var lst = GetAllDiscrepancyDetails(applicationSettingsId, overwriteExisting);//.Where(x => x.EntryDataId == "Asycuda-C#33687-24").ToList();
 
                 
                 if (!lst.Any()) return;
@@ -147,7 +147,7 @@ namespace AdjustmentQS.Business.Services
 
         }
 
-        private static List<AdjustmentDetail> GetAllAdjustmentDetails(int applicationSettingsId, bool overwriteExisting)
+        private static List<AdjustmentDetail> GetAllDiscrepancyDetails(int applicationSettingsId, bool overwriteExisting)
         {
             using (var ctx = new AdjustmentQSContext())
             {

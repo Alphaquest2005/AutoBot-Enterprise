@@ -187,16 +187,27 @@ namespace WaterNut.DataSpace
                     await ctx.Database.ExecuteSqlCommandAsync(TransactionalBehavior.EnsureTransaction,
                         $@"
                             DELETE FROM AdjustmentOversAllocations
-                            FROM    AdjustmentOversAllocations INNER JOIN
-                                             EntryDataDetails ON AdjustmentOversAllocations.EntryDataDetailsId = EntryDataDetails.EntryDataDetailsId INNER JOIN
-                                             EntryData ON EntryDataDetails.EntryData_Id = EntryData.EntryData_Id
-                            WHERE (EntryData.ApplicationSettingsId = {appSettingsId})
+                            FROM            AdjustmentOversAllocations LEFT OUTER JOIN
+                                                     EntryData INNER JOIN
+                                                     EntryDataDetails ON EntryData.EntryDataId = EntryDataDetails.EntryDataId ON AdjustmentOversAllocations.EntryDataDetailsId = EntryDataDetails.EntryDataDetailsId 
+                            WHERE        ApplicationSettingsId = {appSettingsId}
+
+                            DELETE FROM AdjustmentOversAllocations
+                            FROM            AsycudaItemBasicInfo INNER JOIN
+                                                     AdjustmentOversAllocations ON AsycudaItemBasicInfo.Item_Id = AdjustmentOversAllocations.PreviousItem_Id
+                            WHERE        ApplicationSettingsId = {appSettingsId}
 
                             DELETE FROM AsycudaSalesAllocations
-                            FROM    AsycudaSalesAllocations INNER JOIN
-                                             EntryDataDetails ON AsycudaSalesAllocations.EntryDataDetailsId = EntryDataDetails.EntryDataDetailsId INNER JOIN
-                                             EntryData ON EntryDataDetails.EntryData_Id = EntryData.EntryData_Id
-                            WHERE (EntryData.ApplicationSettingsId = {appSettingsId})
+                            FROM            EntryData INNER JOIN
+                                                     EntryDataDetails ON EntryData.EntryDataId = EntryDataDetails.EntryDataId RIGHT OUTER JOIN
+                                                     AsycudaSalesAllocations ON EntryDataDetails.EntryDataDetailsId = AsycudaSalesAllocations.EntryDataDetailsId
+                            WHERE        ApplicationSettingsId = {appSettingsId}
+
+
+                            DELETE FROM AsycudaSalesAllocations
+                            FROM            AsycudaItemBasicInfo inner JOIN
+                                                     AsycudaSalesAllocations ON AsycudaItemBasicInfo.Item_Id = AsycudaSalesAllocations.PreviousItem_Id
+                            WHERE        ApplicationSettingsId = {appSettingsId}
 
                             UPDATE xcuda_Item
                             SET         DFQtyAllocated = 0, DPQtyAllocated = 0

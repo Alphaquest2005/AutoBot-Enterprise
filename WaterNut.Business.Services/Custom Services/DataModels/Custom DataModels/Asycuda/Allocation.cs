@@ -105,8 +105,8 @@ namespace WaterNut.DataSpace
 
 
 				await AllocateSalesByMatchingSalestoAsycudaEntriesOnItemNumber(applicationSettings.ApplicationSettingsId, allocateToLastAdjustment,
-                  //  "320834"
-                    null
+                   //"317229"
+                      null
                     ).ConfigureAwait(false);
 
 
@@ -238,6 +238,8 @@ namespace WaterNut.DataSpace
                         QtyAllocated = allocation.xQuantity ?? 0,
                         TrackingState = TrackingState.Added
                     };
+
+					if(allocation.EntryDataDetailsId == 0) continue;
 
                     var entrydataDetails =
                         ctx.EntryDataDetails.First(x => x.EntryDataDetailsId == allocation.EntryDataDetailsId);
@@ -578,7 +580,7 @@ namespace WaterNut.DataSpace
 
                             var lst =
                                 ctx.AsycudaSalesAllocations
-                                    .Include(x => x.EntryDataDetails)
+                                    .Include(x => x.EntryDataDetails.EntryData)
                                     .Include(x => x.EntryDataDetails.EntryDataDetailsEx)
                                     .Include(x => x.PreviousDocumentItem.xcuda_Tarification.xcuda_HScode)
                            
@@ -628,7 +630,7 @@ namespace WaterNut.DataSpace
 															SET                DPQtyAllocated = (DPQtyAllocated{(r >= 0 ? $"-{r}" : $"+{r * -1}")})
 															where	item_id = {allo.PreviousDocumentItem.Item_Id}";
                                     }
-                                    var existingStock = CheckExistingStock(allo.PreviousDocumentItem.ItemNumber, allo.EntryDataDetails.Sales.EntryDataDate);
+                                    var existingStock = CheckExistingStock(allo.PreviousDocumentItem.ItemNumber, allo.EntryDataDetails.EntryData.EntryDataDate);
                                     if (allo.QtyAllocated == 0)
                                     {
                                         allo.QtyAllocated = r; //add back so wont disturb calculations
@@ -1277,7 +1279,7 @@ namespace WaterNut.DataSpace
 						{
                             //if (CurrentAsycudaItemIndex == 0)
                             //{
-                            await AddExceptionAllocation(saleitm, "Early Sales").ConfigureAwait(false);
+                            await AddExceptionAllocation(saleitm, cAsycudaItm , "Early Sales").ConfigureAwait(false);
 							break;
 							//}
 
@@ -1414,7 +1416,7 @@ namespace WaterNut.DataSpace
                 x.ItemNumber == itemNumber && x.AssessmentDate <= salesEntryDataDate && x.xRemainingBalance > 0);
            return  itm == null
                 ? ""
-                : $": Last Available Qty on C#{itm.CNumber}-{itm.LineNumber} RegDate:{itm.RegistrationDate} AstDate:{itm.AssessmentDate} AlloQty:{itm.QtyAllocated} piQty:{itm.PiQuantity}";
+                : $": Last Available Qty on C#{itm.CNumber}-{itm.LineNumber} RegDate:{itm.RegistrationDate.GetValueOrDefault().ToShortDateString()} AstDate:{itm.AssessmentDate.GetValueOrDefault().ToShortDateString()} ItemQty:{itm.ItemQuantity}, AlloQty:{itm.QtyAllocated}, piQty:{itm.PiQuantity}";
         }
 
         private List<AsycudaItemRemainingQuantities> _existingStock = null;
@@ -1551,7 +1553,7 @@ namespace WaterNut.DataSpace
 
 			var finalNonDFPQty = nonDFPQty > nonAllocatedQty ? nonDFPQty : nonAllocatedQty;
 
-			var TakeOut = (finalNonDFPQty + totalDfPQtyAllocated) > cAsycudaItm.ItemQuantity 
+			var TakeOut = (finalNonDFPQty + totalDfPQtyAllocated) >= cAsycudaItm.ItemQuantity 
 								? finalNonDFPQty >= cAsycudaItm.ItemQuantity ? cAsycudaItm.ItemQuantity : cAsycudaItm.QtyAllocated 
 								: (finalNonDFPQty + totalDfPQtyAllocated);
 

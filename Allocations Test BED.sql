@@ -1,7 +1,7 @@
 --////////////////////////////////////Batch vs Current Allocations comparison
 
 declare @BatchNo int = 4, @itemNumber varchar(50), @appSettingId int = 6
-set @itemNumber = '320834'
+set @itemNumber = '291324'
 
 
 select * from  AsycudaSalesAndAdjustmentAllocationsEx where ItemNumber LIKE '%' + @ItemNumber + '%' and applicationsettingsid = @appSettingId 
@@ -60,6 +60,21 @@ UNION ALL
     EXCEPT
     SELECT * FROM #Allallo) 
 
+
+select 'p Differences'
+
+SELECT [History-Allocations].InvoiceNo, [History-Allocations].InvoiceDate, [History-Allocations].ItemNumber, [History-Allocations].SANumber, [History-Allocations].pCNumber AS [pCNumber-History], 
+                 [History-Allocations].pRegistrationDate, AsycudaSalesAllocationsEx.pCNumber AS [pCNumber-Current], AsycudaSalesAllocationsEx.pRegistrationDate AS Expr1, 
+                 [History-Allocations].QtyAllocated AS [QuantityAllocated-History], AsycudaSalesAllocationsEx.QtyAllocated AS [QuantityAllocated-Current]
+FROM     #Allhis as [History-Allocations] INNER JOIN
+         #Allallo as  AsycudaSalesAllocationsEx ON [History-Allocations].InvoiceDate = AsycudaSalesAllocationsEx.InvoiceDate 
+																				AND [History-Allocations].InvoiceNo = AsycudaSalesAllocationsEx.InvoiceNo AND 
+																				 [History-Allocations].InvoiceLineNumber = AsycudaSalesAllocationsEx.SalesLineNumber AND 
+                 [History-Allocations].ItemNumber = AsycudaSalesAllocationsEx.ItemNumber AND ( [History-Allocations].pCNumber <> AsycudaSalesAllocationsEx.pCNumber
+				 or [History-Allocations].pLineNumber <> AsycudaSalesAllocationsEx.pLineNumber
+				 or [History-Allocations].QtyAllocated <> AsycudaSalesAllocationsEx.QtyAllocated 
+								  or [History-Allocations].Status <> AsycudaSalesAllocationsEx.Status  )
+WHERE ([History-Allocations].BatchNo = @BatchNo) AND AsycudaSalesAllocationsEx.applicationsettingsid = @appSettingId and [History-Allocations].applicationsettingsid = @appSettingId 
 
 
 

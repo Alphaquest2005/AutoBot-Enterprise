@@ -1,16 +1,20 @@
 
-delete from entrydata where ApplicationSettingsId <> 5
+declare @appSettingsId int =6
+
+delete from entrydata where ApplicationSettingsId = @appSettingsId
 
 
-delete from SystemDocumentSets where id in (select Asycudadocumentsetid from AsycudaDocumentSet where ApplicationSettingsId <> 5)
+delete from SystemDocumentSets where id in (select Asycudadocumentsetid from AsycudaDocumentSet where ApplicationSettingsId = @appSettingsId)
 
-delete from AsycudaDocumentSet where ApplicationSettingsId <> 5
+delete from AsycudaDocumentSet where ApplicationSettingsId = @appSettingsId
+delete from InventoryItems where ApplicationSettingsId = @appSettingsId
 
-delete from InventoryItems where ApplicationSettingsId <> 5
+delete from FileTypes where ApplicationSettingsId = @appSettingsId
 
-delete from FileTypes where ApplicationSettingsId <> 5
+delete from [Ocr-invoices] where ApplicationSettingsId = @appSettingsId
 
-delete from ApplicationSettings where ApplicationSettingsId <> 5
+delete from ApplicationSettings where ApplicationSettingsId = @appSettingsId
 
-delete from Attachments
-delete from [History-Allocations]
+--delete from Attachments where ApplicationSettingsId = @appSettingsId
+
+delete from [History-Allocations] where ApplicationSettingsId = @appSettingsId
