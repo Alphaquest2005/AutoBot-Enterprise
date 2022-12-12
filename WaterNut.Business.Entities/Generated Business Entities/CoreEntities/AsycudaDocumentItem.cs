@@ -584,7 +584,7 @@ namespace CoreEntities.Business.Entities
         }
         string _warehouseerror;
         [DataMember]
-        public Nullable<bool> Cancelled 
+        public bool Cancelled 
         {
             get
             {
@@ -597,7 +597,7 @@ namespace CoreEntities.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        Nullable<bool> _cancelled;
+        bool _cancelled;
         [DataMember]
         public Nullable<double> SalesFactor 
         {

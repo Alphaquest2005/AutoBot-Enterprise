@@ -113,9 +113,6 @@ namespace DocumentDS.Business.Services
         Task<IEnumerable<xcuda_ASYCUDA_ExtendedProperties>> Getxcuda_ASYCUDA_ExtendedPropertiesByCustoms_ProcedureId(string Customs_ProcedureId, List<string> includesLst = null);
   		[OperationContract]
         [FaultContract(typeof(ValidationFault))]
-        Task<IEnumerable<xcuda_ASYCUDA_ExtendedProperties>> Getxcuda_ASYCUDA_ExtendedPropertiesByDocument_TypeId(string Document_TypeId, List<string> includesLst = null);
-  		[OperationContract]
-        [FaultContract(typeof(ValidationFault))]
         Task<IEnumerable<xcuda_ASYCUDA_ExtendedProperties>> Getxcuda_ASYCUDA_ExtendedPropertiesByExportTemplateId(string ExportTemplateId, List<string> includesLst = null);
   
 

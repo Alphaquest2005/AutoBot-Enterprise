@@ -110,9 +110,6 @@ namespace DocumentDS.Business.Services
         Task<IEnumerable<AsycudaDocumentSet>> GetAsycudaDocumentSetByCustoms_ProcedureId(string Customs_ProcedureId, List<string> includesLst = null);
   		[OperationContract]
         [FaultContract(typeof(ValidationFault))]
-        Task<IEnumerable<AsycudaDocumentSet>> GetAsycudaDocumentSetByDocument_TypeId(string Document_TypeId, List<string> includesLst = null);
-  		[OperationContract]
-        [FaultContract(typeof(ValidationFault))]
         Task<IEnumerable<AsycudaDocumentSet>> GetAsycudaDocumentSetByApplicationSettingsId(string ApplicationSettingsId, List<string> includesLst = null);
   
 

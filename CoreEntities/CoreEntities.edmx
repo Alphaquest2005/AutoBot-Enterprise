@@ -553,6 +553,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AsycudaDocumentItem' does
           <Key>
             
             
+            
             <PropertyRef Name="Item_Id" />
           </Key>
           <Property Name="Item_Id" Type="int" Nullable="false" />
@@ -598,7 +599,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AsycudaDocumentItem' does
           <Property Name="PreviousInvoiceLineNumber" Type="nvarchar" MaxLength="50" />
           <Property Name="PreviousInvoiceItemNumber" Type="nvarchar" MaxLength="50" />
           <Property Name="ApplicationSettingsId" Type="int" />
-          <Property Name="Cancelled" Type="bit" />
+          <Property Name="Cancelled" Type="bit" Nullable="false" />
           <Property Name="ExpiryDate" Type="datetime2" Precision="7" />
           <Property Name="InventoryItemId" Type="int" />
           <Property Name="CustomsProcedure" Type="nvarchar" MaxLength="41" />
@@ -747,6 +748,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AsycudaItemBasicInfo' doe
           <Property Name="CNumber" Type="nvarchar" MaxLength="20" />
           <Property Name="RegistrationDate" Type="datetime2" Precision="7" />
           <Property Name="AsycudaDocumentSetId" Type="int" />
+          <Property Name="ApplicationSettingsId" Type="int" />
         </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemAliasEx' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
@@ -2023,7 +2025,9 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_ApplicationSettings-Declarants_ApplicationSettings">
-          <End Role="ApplicationSettings" Type="Self.ApplicationSettings" Multiplicity="1" />
+          <End Role="ApplicationSettings" Type="Self.ApplicationSettings" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
           <End Role="ApplicationSettings-Declarants" Type="Self.ApplicationSettings-Declarants" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="ApplicationSettings">
@@ -2077,7 +2081,9 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_AsycudaDocumentSet_Attachments_FileTypes">
-          <End Role="FileTypes" Type="Self.FileTypes" Multiplicity="0..1" />
+          <End Role="FileTypes" Type="Self.FileTypes" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
           <End Role="AsycudaDocumentSet_Attachments" Type="Self.AsycudaDocumentSet_Attachments" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="FileTypes">
@@ -2791,7 +2797,8 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
     [AsycudaItemBasicInfo].[LineNumber] AS [LineNumber], 
     [AsycudaItemBasicInfo].[CNumber] AS [CNumber], 
     [AsycudaItemBasicInfo].[RegistrationDate] AS [RegistrationDate], 
-    [AsycudaItemBasicInfo].[AsycudaDocumentSetId] AS [AsycudaDocumentSetId]
+    [AsycudaItemBasicInfo].[AsycudaDocumentSetId] AS [AsycudaDocumentSetId], 
+    [AsycudaItemBasicInfo].[ApplicationSettingsId] AS [ApplicationSettingsId]
     FROM [dbo].[AsycudaItemBasicInfo] AS [AsycudaItemBasicInfo]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="InventoryItemAliasEx" EntityType="Self.InventoryItemAliasEx" store:Type="Views" store:Schema="dbo">
@@ -4342,7 +4349,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
           <NavigationProperty Name="xcuda_Supplementary_unit" Relationship="WaterNutDBModel.AsycudaDocumentItemxcuda_Supplementary_unit" FromRole="AsycudaDocumentItem" ToRole="xcuda_Supplementary_unit" />
           <Property Name="InvalidHSCode" Type="Boolean" />
           <Property Name="WarehouseError" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="Cancelled" Type="Boolean" />
+          <Property Name="Cancelled" Type="Boolean" Nullable="false" />
           <Property Name="SalesFactor" Type="Double" />
           <Property Name="ReferenceNumber" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
           <Property Name="ExpiryDate" Type="DateTime" Precision="7" />
@@ -6271,6 +6278,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
           <Property Name="AsycudaDocumentSetId" Type="Int32" />
           <Property Name="Commercial_Description" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
           <Property Name="TariffCode" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="ApplicationSettingsId" Type="Int32" />
         </EntityType>
         <EntityType Name="TODO_SubmitEntryCIF">
           <Key>
@@ -8211,6 +8219,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
           <EntitySetMapping Name="AsycudaItemBasicInfo">
             <EntityTypeMapping TypeName="WaterNutDBModel.AsycudaItemBasicInfo">
               <MappingFragment StoreEntitySet="AsycudaItemBasicInfo">
+                <ScalarProperty Name="ApplicationSettingsId" ColumnName="ApplicationSettingsId" />
                 <ScalarProperty Name="TariffCode" ColumnName="TariffCode" />
                 <ScalarProperty Name="Commercial_Description" ColumnName="Commercial_Description" />
                 <ScalarProperty Name="AsycudaDocumentSetId" ColumnName="AsycudaDocumentSetId" />

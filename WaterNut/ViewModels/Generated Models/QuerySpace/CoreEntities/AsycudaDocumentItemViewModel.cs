@@ -1684,7 +1684,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     public string WarehouseError { get; set; } 
                     
  
-                    public Nullable<bool> Cancelled { get; set; } 
+                    public bool Cancelled { get; set; } 
                     
  
                     public Nullable<double> SalesFactor { get; set; } 

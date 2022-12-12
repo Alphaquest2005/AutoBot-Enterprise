@@ -32,7 +32,6 @@
           <Property Name="Customs_ProcedureId" Type="int" />
           <Property Name="Country_of_origin_code" Type="nvarchar" MaxLength="3" />
           <Property Name="Currency_Code" Type="nvarchar" MaxLength="3" Nullable="false" />
-          <Property Name="Document_TypeId" Type="int" />
           <Property Name="Description" Type="nvarchar" MaxLength="255" />
           <Property Name="Manifest_Number" Type="nvarchar" MaxLength="50" />
           <Property Name="BLNumber" Type="nvarchar" MaxLength="50" />
@@ -241,7 +240,6 @@
           <Property Name="RegistrationDate" Type="datetime2" Precision="7" />
           <Property Name="ReferenceNumber" Type="nvarchar" MaxLength="50" />
           <Property Name="Customs_ProcedureId" Type="int" />
-          <Property Name="Document_TypeId" Type="int" />
           <Property Name="Description" Type="nvarchar" MaxLength="255" />
           <Property Name="ExportTemplateId" Type="int" />
           <Property Name="BLNumber" Type="nvarchar" MaxLength="50" />
@@ -961,7 +959,9 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.xcuda_ASYCUDAEx' does not
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_AsycudaDocumentSet_Attachments_FileTypes">
-          <End Role="FileTypes" Type="Self.FileTypes" Multiplicity="0..1" />
+          <End Role="FileTypes" Type="Self.FileTypes" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
           <End Role="AsycudaDocumentSet_Attachments" Type="Self.AsycudaDocumentSet_Attachments" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="FileTypes">
@@ -981,18 +981,6 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.xcuda_ASYCUDAEx' does not
             </Principal>
             <Dependent Role="AsycudaDocumentSet">
               <PropertyRef Name="Customs_ProcedureId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_AsycudaDocumentSet_Document_Type">
-          <End Role="Document_Type" Type="Self.Document_Type" Multiplicity="0..1" />
-          <End Role="AsycudaDocumentSet" Type="Self.AsycudaDocumentSet" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Document_Type">
-              <PropertyRef Name="Document_TypeId" />
-            </Principal>
-            <Dependent Role="AsycudaDocumentSet">
-              <PropertyRef Name="Document_TypeId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -1347,18 +1335,6 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.xcuda_ASYCUDAEx' does not
             </Principal>
             <Dependent Role="xcuda_ASYCUDA_ExtendedProperties">
               <PropertyRef Name="Customs_ProcedureId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_xcuda_ASYCUDA_ExtendedProperties_Document_Type">
-          <End Role="Document_Type" Type="Self.Document_Type" Multiplicity="0..1" />
-          <End Role="xcuda_ASYCUDA_ExtendedProperties" Type="Self.xcuda_ASYCUDA_ExtendedProperties" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Document_Type">
-              <PropertyRef Name="Document_TypeId" />
-            </Principal>
-            <Dependent Role="xcuda_ASYCUDA_ExtendedProperties">
-              <PropertyRef Name="Document_TypeId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -1767,10 +1743,6 @@ FROM [dbo].[xcuda_ASYCUDAEx] AS [xcuda_ASYCUDAEx]</DefiningQuery>
             <End Role="Customs_Procedure" EntitySet="Customs_Procedure" />
             <End Role="AsycudaDocumentSet" EntitySet="AsycudaDocumentSet" />
           </AssociationSet>
-          <AssociationSet Name="FK_AsycudaDocumentSet_Document_Type" Association="Self.FK_AsycudaDocumentSet_Document_Type">
-            <End Role="Document_Type" EntitySet="Document_Type" />
-            <End Role="AsycudaDocumentSet" EntitySet="AsycudaDocumentSet" />
-          </AssociationSet>
           <AssociationSet Name="FK_AsycudaDocumentSetEntryData_AsycudaDocumentSet" Association="Self.FK_AsycudaDocumentSetEntryData_AsycudaDocumentSet">
             <End Role="AsycudaDocumentSet" EntitySet="AsycudaDocumentSet" />
             <End Role="AsycudaDocumentSetEntryData" EntitySet="AsycudaDocumentSetEntryData" />
@@ -1873,10 +1845,6 @@ FROM [dbo].[xcuda_ASYCUDAEx] AS [xcuda_ASYCUDAEx]</DefiningQuery>
           </AssociationSet>
           <AssociationSet Name="FK_xcuda_ASYCUDA_ExtendedProperties_Customs_Procedure" Association="Self.FK_xcuda_ASYCUDA_ExtendedProperties_Customs_Procedure">
             <End Role="Customs_Procedure" EntitySet="Customs_Procedure" />
-            <End Role="xcuda_ASYCUDA_ExtendedProperties" EntitySet="xcuda_ASYCUDA_ExtendedProperties" />
-          </AssociationSet>
-          <AssociationSet Name="FK_xcuda_ASYCUDA_ExtendedProperties_Document_Type" Association="Self.FK_xcuda_ASYCUDA_ExtendedProperties_Document_Type">
-            <End Role="Document_Type" EntitySet="Document_Type" />
             <End Role="xcuda_ASYCUDA_ExtendedProperties" EntitySet="xcuda_ASYCUDA_ExtendedProperties" />
           </AssociationSet>
           <AssociationSet Name="FK_xcuda_ASYCUDA_ExtendedProperties_ExportTemplate" Association="Self.FK_xcuda_ASYCUDA_ExtendedProperties_ExportTemplate">
@@ -2011,10 +1979,6 @@ FROM [dbo].[xcuda_ASYCUDAEx] AS [xcuda_ASYCUDAEx]</DefiningQuery>
           <EntitySet Name="xcuda_Weight" EntityType="WaterNutDBModel.xcuda_Weight" />
           <AssociationSet Name="FK_AsycudaDocumentSet_Customs_Procedure" Association="WaterNutDBModel.FK_AsycudaDocumentSet_Customs_Procedure">
             <End Role="Customs_Procedure" EntitySet="Customs_Procedure" />
-            <End Role="AsycudaDocumentSet" EntitySet="AsycudaDocumentSets" />
-          </AssociationSet>
-          <AssociationSet Name="FK_AsycudaDocumentSet_Document_Type" Association="WaterNutDBModel.FK_AsycudaDocumentSet_Document_Type">
-            <End Role="Document_Type" EntitySet="Document_Type" />
             <End Role="AsycudaDocumentSet" EntitySet="AsycudaDocumentSets" />
           </AssociationSet>
           <AssociationSet Name="FK_Customs_Procedure_Document_Type" Association="WaterNutDBModel.FK_Customs_Procedure_Document_Type">
@@ -2213,10 +2177,6 @@ FROM [dbo].[xcuda_ASYCUDAEx] AS [xcuda_ASYCUDAEx]</DefiningQuery>
             <End Role="Customs_Procedure" EntitySet="Customs_Procedure" />
             <End Role="xcuda_ASYCUDA_ExtendedProperties" EntitySet="xcuda_ASYCUDA_ExtendedProperties" />
           </AssociationSet>
-          <AssociationSet Name="FK_xcuda_ASYCUDA_ExtendedProperties_Document_Type" Association="WaterNutDBModel.FK_xcuda_ASYCUDA_ExtendedProperties_Document_Type">
-            <End Role="Document_Type" EntitySet="Document_Type" />
-            <End Role="xcuda_ASYCUDA_ExtendedProperties" EntitySet="xcuda_ASYCUDA_ExtendedProperties" />
-          </AssociationSet>
           <AssociationSet Name="FK_xcuda_ASYCUDA_ExtendedProperties_ExportTemplate" Association="WaterNutDBModel.FK_xcuda_ASYCUDA_ExtendedProperties_ExportTemplate">
             <End Role="ExportTemplate" EntitySet="ExportTemplates" />
             <End Role="xcuda_ASYCUDA_ExtendedProperties" EntitySet="xcuda_ASYCUDA_ExtendedProperties" />
@@ -2305,14 +2265,12 @@ FROM [dbo].[xcuda_ASYCUDAEx] AS [xcuda_ASYCUDAEx]</DefiningQuery>
           <Property Name="Customs_ProcedureId" Type="Int32" />
           <Property Name="Country_of_origin_code" Type="String" MaxLength="3" FixedLength="false" Unicode="true" />
           <Property Name="Currency_Code" Type="String" MaxLength="3" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="Document_TypeId" Type="Int32" />
           <Property Name="Description" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="Manifest_Number" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="BLNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="EntryTimeStamp" Type="DateTime" Precision="7" />
           <Property Name="StartingFileCount" Type="Int32" />
           <NavigationProperty Name="Customs_Procedure" Relationship="WaterNutDBModel.FK_AsycudaDocumentSet_Customs_Procedure" FromRole="AsycudaDocumentSet" ToRole="Customs_Procedure" />
-          <NavigationProperty Name="Document_Type" Relationship="WaterNutDBModel.FK_AsycudaDocumentSet_Document_Type" FromRole="AsycudaDocumentSet" ToRole="Document_Type" />
           <Property Name="ApportionMethod" Type="String" MaxLength="50" Unicode="true" FixedLength="false" />
           <Property Name="TotalWeight" Type="Double" />
           <Property Name="TotalFreight" Type="Double" />
@@ -2364,9 +2322,7 @@ FROM [dbo].[xcuda_ASYCUDAEx] AS [xcuda_ASYCUDAEx]</DefiningQuery>
           <Property Name="Document_TypeId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Type_of_declaration" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
           <Property Name="Declaration_gen_procedure_code" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="AsycudaDocumentSets" Relationship="WaterNutDBModel.FK_AsycudaDocumentSet_Document_Type" FromRole="Document_Type" ToRole="AsycudaDocumentSet" />
           <NavigationProperty Name="Customs_Procedure" Relationship="WaterNutDBModel.FK_Customs_Procedure_Document_Type" FromRole="Document_Type" ToRole="Customs_Procedure" />
-          <NavigationProperty Name="xcuda_ASYCUDA_ExtendedProperties" Relationship="WaterNutDBModel.FK_xcuda_ASYCUDA_ExtendedProperties_Document_Type" FromRole="Document_Type" ToRole="xcuda_ASYCUDA_ExtendedProperties" />
         </EntityType>
         <EntityType Name="ExportTemplate">
           <Key>
@@ -2951,18 +2907,6 @@ FROM [dbo].[xcuda_ASYCUDAEx] AS [xcuda_ASYCUDAEx]</DefiningQuery>
             </Principal>
             <Dependent Role="AsycudaDocumentSet">
               <PropertyRef Name="Customs_ProcedureId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_AsycudaDocumentSet_Document_Type">
-          <End Type="WaterNutDBModel.Document_Type" Role="Document_Type" Multiplicity="0..1" />
-          <End Type="WaterNutDBModel.AsycudaDocumentSet" Role="AsycudaDocumentSet" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Document_Type">
-              <PropertyRef Name="Document_TypeId" />
-            </Principal>
-            <Dependent Role="AsycudaDocumentSet">
-              <PropertyRef Name="Document_TypeId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -3644,7 +3588,6 @@ FROM [dbo].[xcuda_ASYCUDAEx] AS [xcuda_ASYCUDAEx]</DefiningQuery>
           <Property Name="RegistrationDate" Type="DateTime" Precision="7" />
           <Property Name="ReferenceNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="Customs_ProcedureId" Type="Int32" />
-          <Property Name="Document_TypeId" Type="Int32" />
           <Property Name="Description" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="ExportTemplateId" Type="Int32" />
           <Property Name="BLNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
@@ -3661,7 +3604,6 @@ FROM [dbo].[xcuda_ASYCUDAEx] AS [xcuda_ASYCUDAEx]</DefiningQuery>
           <Property Name="TotalPackages" Type="Int32" />
           <NavigationProperty Name="AsycudaDocumentSet" Relationship="WaterNutDBModel.FK_xcuda_ASYCUDA_ExtendedProperties_AsycudaDocumentSet" FromRole="xcuda_ASYCUDA_ExtendedProperties" ToRole="AsycudaDocumentSet" />
           <NavigationProperty Name="Customs_Procedure" Relationship="WaterNutDBModel.FK_xcuda_ASYCUDA_ExtendedProperties_Customs_Procedure" FromRole="xcuda_ASYCUDA_ExtendedProperties" ToRole="Customs_Procedure" />
-          <NavigationProperty Name="Document_Type" Relationship="WaterNutDBModel.FK_xcuda_ASYCUDA_ExtendedProperties_Document_Type" FromRole="xcuda_ASYCUDA_ExtendedProperties" ToRole="Document_Type" />
           <NavigationProperty Name="ExportTemplate" Relationship="WaterNutDBModel.FK_xcuda_ASYCUDA_ExtendedProperties_ExportTemplate" FromRole="xcuda_ASYCUDA_ExtendedProperties" ToRole="ExportTemplate" />
           <Property Name="EffectiveExpiryDate" Type="DateTime" Precision="7" />
           <Property Name="SourceFileName" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
@@ -3690,18 +3632,6 @@ FROM [dbo].[xcuda_ASYCUDAEx] AS [xcuda_ASYCUDAEx]</DefiningQuery>
             </Principal>
             <Dependent Role="xcuda_ASYCUDA_ExtendedProperties">
               <PropertyRef Name="Customs_ProcedureId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_xcuda_ASYCUDA_ExtendedProperties_Document_Type">
-          <End Type="WaterNutDBModel.Document_Type" Role="Document_Type" Multiplicity="0..1" />
-          <End Type="WaterNutDBModel.xcuda_ASYCUDA_ExtendedProperties" Role="xcuda_ASYCUDA_ExtendedProperties" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Document_Type">
-              <PropertyRef Name="Document_TypeId" />
-            </Principal>
-            <Dependent Role="xcuda_ASYCUDA_ExtendedProperties">
-              <PropertyRef Name="Document_TypeId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -4074,7 +4004,6 @@ FROM [dbo].[xcuda_ASYCUDAEx] AS [xcuda_ASYCUDAEx]</DefiningQuery>
                 <ScalarProperty Name="BLNumber" ColumnName="BLNumber" />
                 <ScalarProperty Name="Manifest_Number" ColumnName="Manifest_Number" />
                 <ScalarProperty Name="Description" ColumnName="Description" />
-                <ScalarProperty Name="Document_TypeId" ColumnName="Document_TypeId" />
                 <ScalarProperty Name="Currency_Code" ColumnName="Currency_Code" />
                 <ScalarProperty Name="Country_of_origin_code" ColumnName="Country_of_origin_code" />
                 <ScalarProperty Name="Customs_ProcedureId" ColumnName="Customs_ProcedureId" />
@@ -4687,7 +4616,6 @@ FROM [dbo].[xcuda_ASYCUDAEx] AS [xcuda_ASYCUDAEx]</DefiningQuery>
                 <ScalarProperty Name="BLNumber" ColumnName="BLNumber" />
                 <ScalarProperty Name="ExportTemplateId" ColumnName="ExportTemplateId" />
                 <ScalarProperty Name="Description" ColumnName="Description" />
-                <ScalarProperty Name="Document_TypeId" ColumnName="Document_TypeId" />
                 <ScalarProperty Name="Customs_ProcedureId" ColumnName="Customs_ProcedureId" />
                 <ScalarProperty Name="ReferenceNumber" ColumnName="ReferenceNumber" />
                 <ScalarProperty Name="RegistrationDate" ColumnName="RegistrationDate" />

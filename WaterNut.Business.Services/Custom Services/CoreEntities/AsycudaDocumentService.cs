@@ -58,7 +58,6 @@ namespace CoreEntities.Business.Services
             ct.Document.xcuda_Valuation.xcuda_Gs_Invoice.Currency_rate = entity.Currency_rate.GetValueOrDefault();
             ct.Document.xcuda_ASYCUDA_ExtendedProperties.StartTracking();
             ct.Document.xcuda_ASYCUDA_ExtendedProperties.Description = entity.Description;
-            ct.Document.xcuda_ASYCUDA_ExtendedProperties.Document_TypeId = entity.Document_TypeId;
             ct.Document.xcuda_ASYCUDA_ExtendedProperties.Customs_ProcedureId = entity.Customs_ProcedureId;
             ct.Document.xcuda_Declarant.StartTracking();
             ct.Document.xcuda_Declarant.Number =

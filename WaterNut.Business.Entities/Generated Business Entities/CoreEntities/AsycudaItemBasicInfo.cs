@@ -215,6 +215,21 @@ namespace CoreEntities.Business.Entities
             }
         }
         string _tariffcode;
+        [DataMember]
+        public Nullable<int> ApplicationSettingsId 
+        {
+            get
+            {
+                return _applicationsettingsid;
+            }
+            set
+            {
+                _applicationsettingsid = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<int> _applicationsettingsid;
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

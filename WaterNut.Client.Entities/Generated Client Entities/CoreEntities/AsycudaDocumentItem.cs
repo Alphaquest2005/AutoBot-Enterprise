@@ -622,9 +622,9 @@ public string WarehouseError
 		}
      
 
+       [RequiredValidationAttribute(ErrorMessage= "Cancelled is required")]
        
-       
-public Nullable<bool> Cancelled
+public bool Cancelled
 		{ 
 		    get { return this.asycudadocumentitem.Cancelled; }
 			set

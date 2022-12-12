@@ -22,9 +22,7 @@ namespace DocumentDS.Business.Entities
     {
         partial void AutoGenStartUp() //Document_Type()
         {
-            this.AsycudaDocumentSets = new List<AsycudaDocumentSet>();
             this.Customs_Procedure = new List<Customs_Procedure>();
-            this.xcuda_ASYCUDA_ExtendedProperties = new List<xcuda_ASYCUDA_ExtendedProperties>();
         }
 
         [DataMember]
@@ -73,11 +71,7 @@ namespace DocumentDS.Business.Entities
         }
         string _declaration_gen_procedure_code;
         [DataMember]
-        public List<AsycudaDocumentSet> AsycudaDocumentSets { get; set; }
-        [DataMember]
         public List<Customs_Procedure> Customs_Procedure { get; set; }
-        [DataMember]
-        public List<xcuda_ASYCUDA_ExtendedProperties> xcuda_ASYCUDA_ExtendedProperties { get; set; }
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

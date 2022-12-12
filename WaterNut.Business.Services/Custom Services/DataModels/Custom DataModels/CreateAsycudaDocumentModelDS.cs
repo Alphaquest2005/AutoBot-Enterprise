@@ -165,15 +165,8 @@ namespace WaterNut.DataSpace
 	                    doc.xcuda_ASYCUDA_ExtendedProperties.Description = docInfo.Description;
 	                if (docInfo.Currency_Code != null)
 	                    doc.xcuda_Valuation.xcuda_Gs_Invoice.Currency_code = docInfo.Currency_Code;
-	                doc.xcuda_ASYCUDA_ExtendedProperties.Document_TypeId = docInfo.Document_TypeId;
-	                var dt = BaseDataModel.Instance.Document_Types.FirstOrDefault(x =>
-	                    x.Document_TypeId == docInfo.Document_TypeId);
-	                if (dt != null)
-	                {
-	                    doc.xcuda_Identification.xcuda_Type.Declaration_gen_procedure_code =
-	                        dt.Declaration_gen_procedure_code;
-	                    doc.xcuda_Identification.xcuda_Type.Type_of_declaration = dt.Type_of_declaration;
-	                }
+	                
+	              
 
 	                doc.xcuda_Valuation.xcuda_Gs_Invoice.Currency_rate = (float) docInfo.Exchange_Rate;
 	                if (docInfo.Country_of_origin_code != null)
@@ -195,7 +188,11 @@ namespace WaterNut.DataSpace
 	                doc.xcuda_ASYCUDA_ExtendedProperties.Customs_Procedure = c;
 	                doc.xcuda_ASYCUDA_ExtendedProperties.Customs_ProcedureId = docInfo.Customs_ProcedureId;
 
-	                var b = docInfo.BlNumber;
+                    doc.xcuda_Identification.xcuda_Type.Declaration_gen_procedure_code =
+                        c.Document_Type.Declaration_gen_procedure_code;
+                    doc.xcuda_Identification.xcuda_Type.Type_of_declaration = c.Document_Type.Type_of_declaration;
+
+                    var b = docInfo.BlNumber;
 	                //TODO: Implement this
 	                //foreach (var item in doc.PreviousDocumentItem.Where(x => x.xcuda_Previous_doc.Summary_declaration != b).ToList())
 	                //{

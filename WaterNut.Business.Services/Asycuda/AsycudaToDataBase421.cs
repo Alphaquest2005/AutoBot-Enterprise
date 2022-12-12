@@ -474,27 +474,11 @@ namespace WaterNut.DataSpace.Asycuda
                     TrackingState = TrackingState.Added,
                     Declarant_Reference_Number = a.Declarant.Reference.Number.Text.FirstOrDefault(),
                     Currency_Code = a.Valuation.Gs_Invoice.Currency_code.Text.FirstOrDefault(),
-                    Document_Type =
-                        BaseDataModel.Instance.Document_Types
-                            .FirstOrDefault(
-                                d =>
-                                    d.Type_of_declaration == a.Identification.Type.Type_of_declaration &&
-                                    d.Declaration_gen_procedure_code ==
-                                    a.Identification.Type.Declaration_gen_procedure_code)
+                   
                 };
 
 
-                if (ads.Document_Type == null)
-                {
-                    var dt = new Document_Type(true)
-                    {
-                        Declaration_gen_procedure_code = a.Identification.Type.Declaration_gen_procedure_code,
-                        Type_of_declaration = a.Identification.Type.Type_of_declaration,
-                        TrackingState = TrackingState.Added
-                    };
-                    //await DBaseDataModel.Instance.SaveDocument_Type(dt).ConfigureAwait(false);
-                    ads.Document_Type = dt;
-                }
+             
 
                 ads.Customs_Procedure = BaseDataModel.Instance.Customs_Procedures
                     .FirstOrDefault(cp =>
@@ -504,13 +488,26 @@ namespace WaterNut.DataSpace.Asycuda
                             .Extended_customs_procedure.Text.FirstOrDefault());
                 if (ads.Customs_Procedure == null)
                 {
+                    var dt =
+                        new DocumentDSContext().Document_Type
+                            .FirstOrDefault(
+                                d =>
+                                    d.Type_of_declaration == a.Identification.Type.Type_of_declaration &&
+                                    d.Declaration_gen_procedure_code ==
+                                    a.Identification.Type.Declaration_gen_procedure_code) 
+                        ?? new Document_Type(true)
+                            {
+                                Declaration_gen_procedure_code = a.Identification.Type.Declaration_gen_procedure_code,
+                                Type_of_declaration = a.Identification.Type.Type_of_declaration,
+                                TrackingState = TrackingState.Added
+                            }; 
                     var cp = new Customs_Procedure(true)
                     {
                         Extended_customs_procedure =
                             a.Item[0].Tarification.Extended_customs_procedure.Text.FirstOrDefault(),
                         National_customs_procedure =
                             a.Item[0].Tarification.National_customs_procedure.Text.FirstOrDefault(),
-                        Document_Type = ads.Document_Type,
+                        Document_Type = dt,
                         TrackingState = TrackingState.Added
                     };
                     //await DBaseDataModel.Instance.SaveCustoms_Procedure(cp).ConfigureAwait(false);
@@ -1091,8 +1088,7 @@ private void Update_TarrifCodes(ASYCUDAItem ai)
         private async Task<Customs_Procedure> SaveCustomsProcedure(xcuda_Tarification t)
         {
             var cp = BaseDataModel.Instance.Customs_ProcedureCache.Data.FirstOrDefault(x => x.Extended_customs_procedure == t.Extended_customs_procedure
-                                                            && x.National_customs_procedure == t.National_customs_procedure 
-                                                            && x.Document_TypeId == da.Document.xcuda_ASYCUDA_ExtendedProperties.Document_Type.Document_TypeId);
+                                                            && x.National_customs_procedure == t.National_customs_procedure);
             //    (await DBaseDataModel.Instance.SearchCustoms_Procedure(new List<string>()
             //{
             //    string.Format("Extended_customs_procedure == \"{0}\"", t.Extended_customs_procedure),
@@ -1101,7 +1097,7 @@ private void Update_TarrifCodes(ASYCUDAItem ai)
             if (cp == null)
             {
                 var scp = BaseDataModel.Instance.Customs_ProcedureCache.Data.FirstOrDefault(x => x.Extended_customs_procedure == t.Extended_customs_procedure
-                                                           && x.Document_TypeId == da.Document.xcuda_ASYCUDA_ExtendedProperties.Document_Type.Document_TypeId);
+                                                           && x.National_customs_procedure == t.National_customs_procedure);
 
                 cp = new Customs_Procedure(true)
                 {
@@ -1112,29 +1108,17 @@ private void Update_TarrifCodes(ASYCUDAItem ai)
                     TrackingState = TrackingState.Added
                 };
                 
-                    if (da.Document.xcuda_ASYCUDA_ExtendedProperties.Document_Type != null)
-                    {
-                        //if (da.Document.xcuda_ASYCUDA_ExtendedProperties.Document_Type
-                        //    .DefaultCustoms_Procedure == null)
-                        //    da.Document.xcuda_ASYCUDA_ExtendedProperties.Document_Type
-                        //        .DefaultCustoms_Procedure = cp;
-
-                        cp.Document_TypeId = da.Document.xcuda_ASYCUDA_ExtendedProperties.Document_Type.Document_TypeId;
-                    }
-
+            
                 using (var ctx = new Customs_ProcedureService())
                 {
                     cp = await ctx.UpdateCustoms_Procedure(cp).ConfigureAwait(false);
                 }
-                    //await DBaseDataModel.Instance.SaveCustoms_Procedure(cp).ConfigureAwait(false);
+                    
                     BaseDataModel.Instance.Customs_ProcedureCache.AddItem(cp);
                 
             }
             da.Document.xcuda_ASYCUDA_ExtendedProperties.Customs_ProcedureId = cp.Customs_ProcedureId;
             da.Document.xcuda_ASYCUDA_ExtendedProperties.Customs_Procedure = cp;
-            //await
-            //    DBaseDataModel.Instance.Savexcuda_ASYCUDA_ExtendedProperties(
-            //        da.Document.xcuda_ASYCUDA_ExtendedProperties).ConfigureAwait(false);
             return cp;
         }
 
@@ -1780,42 +1764,10 @@ private void Update_TarrifCodes(ASYCUDAItem ai)
             t.Declaration_gen_procedure_code = a.Identification.Type.Declaration_gen_procedure_code;
             t.Type_of_declaration = a.Identification.Type.Type_of_declaration;
 
-            var dt = await GetDocumentType(t).ConfigureAwait(false);
-            da.Document.xcuda_ASYCUDA_ExtendedProperties.Document_TypeId = dt.Document_TypeId;
-            da.Document.xcuda_ASYCUDA_ExtendedProperties.Document_Type = dt;
-
-            //await
-            //    DBaseDataModel.Instance.Savexcuda_ASYCUDA_ExtendedProperties(
-            //        da.Document.xcuda_ASYCUDA_ExtendedProperties).ConfigureAwait(false);
+         
         }
 
-        private async Task<Document_Type> GetDocumentType(xcuda_Type t)
-        {
-            var dt =
-                 BaseDataModel.Instance.Document_TypeCache.GetSingle(x => x.Declaration_gen_procedure_code == t.Declaration_gen_procedure_code
-                                                   && x.Type_of_declaration == t.Type_of_declaration );
-            ////    (await DBaseDataModel.Instance.SearchDocument_Type(new List<string>()
-            ////{
-            ////    string.Format("Declaration_gen_procedure_code == \"{0}\"", t.Declaration_gen_procedure_code),
-            ////    string.Format("Type_of_declaration == \"{0}\"", t.Type_of_declaration)
-            ////}).ConfigureAwait(false)).FirstOrDefault();
 
-            if (dt == null)
-            {
-
-                dt = new Document_Type(true)
-                {
-                    Type_of_declaration = t.Type_of_declaration,
-                    Declaration_gen_procedure_code = t.Declaration_gen_procedure_code,
-                    TrackingState = TrackingState.Added
-                };
-               
-                await DBaseDataModel.Instance.SaveDocument_Type(dt).ConfigureAwait(false);
-                BaseDataModel.Instance.Document_TypeCache.AddItem(dt);
-               
-            }
-            return dt;
-        }
 
         private void SaveManifestReferenceNumber(xcuda_Identification di)
         {

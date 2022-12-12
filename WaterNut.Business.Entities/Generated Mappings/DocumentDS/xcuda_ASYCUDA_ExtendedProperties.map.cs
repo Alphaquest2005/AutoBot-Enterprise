@@ -21,7 +21,6 @@
               this.Property(t => t.RegistrationDate).HasColumnName("RegistrationDate");
               this.Property(t => t.ReferenceNumber).HasColumnName("ReferenceNumber").HasMaxLength(50);
               this.Property(t => t.Customs_ProcedureId).HasColumnName("Customs_ProcedureId");
-              this.Property(t => t.Document_TypeId).HasColumnName("Document_TypeId");
               this.Property(t => t.Description).HasColumnName("Description").HasMaxLength(255);
               this.Property(t => t.ExportTemplateId).HasColumnName("ExportTemplateId");
               this.Property(t => t.BLNumber).HasColumnName("BLNumber").HasMaxLength(50);
@@ -40,7 +39,6 @@
               this.Property(t => t.SourceFileName).HasColumnName("SourceFileName").HasMaxLength(500);
               this.HasRequired(t => t.AsycudaDocumentSet).WithMany(t =>(ICollection<xcuda_ASYCUDA_ExtendedProperties>) t.xcuda_ASYCUDA_ExtendedProperties).HasForeignKey(d => d.AsycudaDocumentSetId);
               this.HasOptional(t => t.Customs_Procedure).WithMany(t =>(ICollection<xcuda_ASYCUDA_ExtendedProperties>) t.xcuda_ASYCUDA_ExtendedProperties).HasForeignKey(d => d.Customs_ProcedureId);
-              this.HasOptional(t => t.Document_Type).WithMany(t =>(ICollection<xcuda_ASYCUDA_ExtendedProperties>) t.xcuda_ASYCUDA_ExtendedProperties).HasForeignKey(d => d.Document_TypeId);
               this.HasOptional(t => t.ExportTemplate).WithMany(t =>(ICollection<xcuda_ASYCUDA_ExtendedProperties>) t.xcuda_ASYCUDA_ExtendedProperties).HasForeignKey(d => d.ExportTemplateId);
               this.HasRequired(t => t.xcuda_ASYCUDA).WithOptional(t => (xcuda_ASYCUDA_ExtendedProperties)t.xcuda_ASYCUDA_ExtendedProperties);
              // Tracking Properties

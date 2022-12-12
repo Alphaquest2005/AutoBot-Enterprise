@@ -26,6 +26,7 @@
               this.Property(t => t.AsycudaDocumentSetId).HasColumnName("AsycudaDocumentSetId");
               this.Property(t => t.Commercial_Description).HasColumnName("Commercial_Description").IsUnicode(false).HasMaxLength(255);
               this.Property(t => t.TariffCode).HasColumnName("TariffCode").HasMaxLength(20);
+              this.Property(t => t.ApplicationSettingsId).HasColumnName("ApplicationSettingsId");
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);
     			this.Ignore(t => t.ModifiedProperties);

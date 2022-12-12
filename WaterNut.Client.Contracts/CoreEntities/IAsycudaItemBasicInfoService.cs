@@ -85,6 +85,9 @@ namespace CoreEntities.Client.Contracts
   		[OperationContract]
 		Task<IEnumerable<AsycudaItemBasicInfo>> GetAsycudaItemBasicInfoByAsycudaDocumentSetId(string AsycudaDocumentSetId, List<string> includesLst = null);
         
+  		[OperationContract]
+		Task<IEnumerable<AsycudaItemBasicInfo>> GetAsycudaItemBasicInfoByApplicationSettingsId(string ApplicationSettingsId, List<string> includesLst = null);
+        
   		
     }
 }

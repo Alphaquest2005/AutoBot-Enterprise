@@ -118,21 +118,6 @@ namespace DocumentDS.Business.Entities
         }
         string _currency_code;
         [DataMember]
-        public Nullable<int> Document_TypeId 
-        {
-            get
-            {
-                return _document_typeid;
-            }
-            set
-            {
-                _document_typeid = value;
-                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
-                NotifyPropertyChanged();
-            }
-        }
-        Nullable<int> _document_typeid;
-        [DataMember]
         public string Description 
         {
             get
@@ -404,8 +389,6 @@ namespace DocumentDS.Business.Entities
         Nullable<int> _expectedentries;
         [DataMember]
         public Customs_Procedure Customs_Procedure { get; set; }
-        [DataMember]
-        public Document_Type Document_Type { get; set; }
         [DataMember]
         public List<AsycudaDocumentSetEntryData> AsycudaDocumentSetEntryDatas { get; set; }
         [DataMember]

@@ -229,22 +229,10 @@ namespace DocumentDS.Business.Services
                     {
                         switch (itm.Key)
                         {
-                            case "AsycudaDocumentSets":
-                                return
-                                    await
-                                        GetWhere<AsycudaDocumentSet>(dbContext, exp, itm.Value, "Document_Type", "Select", includesLst)
-										.ConfigureAwait(continueOnCapturedContext: false);
-
                             case "Customs_Procedure":
                                 return
                                     await
                                         GetWhere<Customs_Procedure>(dbContext, exp, itm.Value, "Document_Type", "Select", includesLst)
-										.ConfigureAwait(continueOnCapturedContext: false);
-
-                            case "xcuda_ASYCUDA_ExtendedProperties":
-                                return
-                                    await
-                                        GetWhere<xcuda_ASYCUDA_ExtendedProperties>(dbContext, exp, itm.Value, "Document_Type", "Select", includesLst)
 										.ConfigureAwait(continueOnCapturedContext: false);
 
                         }
@@ -728,14 +716,8 @@ namespace DocumentDS.Business.Services
                     {
                         switch (itm.Key)
                         {
-                            case "AsycudaDocumentSets":
-                                return await CountWhere<AsycudaDocumentSet>(dbContext, exp, itm.Value, "Document_Type", "Select")
-											.ConfigureAwait(continueOnCapturedContext: false);
                             case "Customs_Procedure":
                                 return await CountWhere<Customs_Procedure>(dbContext, exp, itm.Value, "Document_Type", "Select")
-											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "xcuda_ASYCUDA_ExtendedProperties":
-                                return await CountWhere<xcuda_ASYCUDA_ExtendedProperties>(dbContext, exp, itm.Value, "Document_Type", "Select")
 											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }
@@ -839,22 +821,10 @@ namespace DocumentDS.Business.Services
                     {
                         switch (itm.Key)
                         {
-                            case "AsycudaDocumentSets":
-                                return
-                                    await
-                                        LoadRangeWhere<AsycudaDocumentSet>(startIndex, count, dbContext, exp, itm.Value, "Document_Type", "Select")
-													.ConfigureAwait(continueOnCapturedContext: false);
-
                             case "Customs_Procedure":
                                 return
                                     await
                                         LoadRangeWhere<Customs_Procedure>(startIndex, count, dbContext, exp, itm.Value, "Document_Type", "Select")
-													.ConfigureAwait(continueOnCapturedContext: false);
-
-                            case "xcuda_ASYCUDA_ExtendedProperties":
-                                return
-                                    await
-                                        LoadRangeWhere<xcuda_ASYCUDA_ExtendedProperties>(startIndex, count, dbContext, exp, itm.Value, "Document_Type", "Select")
 													.ConfigureAwait(continueOnCapturedContext: false);
 
                           
@@ -1109,14 +1079,8 @@ namespace DocumentDS.Business.Services
                     {
                         switch (itm.Key)
                         {
-                            case "AsycudaDocumentSets":
-                                return await SumWhere<AsycudaDocumentSet>(dbContext, exp, itm.Value, "Document_Type", field, "Select")
-											.ConfigureAwait(continueOnCapturedContext: false);
                             case "Customs_Procedure":
                                 return await SumWhere<Customs_Procedure>(dbContext, exp, itm.Value, "Document_Type", field, "Select")
-											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "xcuda_ASYCUDA_ExtendedProperties":
-                                return await SumWhere<xcuda_ASYCUDA_ExtendedProperties>(dbContext, exp, itm.Value, "Document_Type", field, "Select")
 											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }

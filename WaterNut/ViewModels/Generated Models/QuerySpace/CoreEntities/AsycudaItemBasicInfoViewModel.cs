@@ -134,6 +134,10 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 
             void CurrentAsycudaItemBasicInfo__propertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
                 {
+                    //if (e.PropertyName == "AddApplicationSettings")
+                   // {
+                   //    if(ApplicationSettings.Contains(CurrentAsycudaItemBasicInfo.ApplicationSettings) == false) ApplicationSettings.Add(CurrentAsycudaItemBasicInfo.ApplicationSettings);
+                    //}
                  } 
         internal virtual void OnAsycudaItemBasicInfoChanged(object sender, NotificationEventArgs e)
         {
@@ -145,11 +149,25 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
  
   			// Core Current Entities Changed
 			// theorticall don't need this cuz i am inheriting from core entities baseview model so changes should flow up to here
+                internal virtual void OnCurrentApplicationSettingsChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<ApplicationSettings> e)
+				{
+				if (e.Data == null || e.Data.ApplicationSettingsId == null)
+                {
+                    vloader.FilterExpression = null;
+                }
+                else
+                {
+                    vloader.FilterExpression = string.Format("ApplicationSettingsId == {0}", e.Data.ApplicationSettingsId.ToString());
+                }
+					
+                    AsycudaItemBasicInfo.Refresh();
+					NotifyPropertyChanged(x => this.AsycudaItemBasicInfo);
+				}
   
 // Filtering Each Field except IDs
 		public void ViewAll()
         {
-		vloader.FilterExpression = "All";
+			vloader.FilterExpression = $"ApplicationSettingsId == {CoreEntities.ViewModels.BaseViewModel.Instance.CurrentApplicationSettings.ApplicationSettingsId}";
 
 
 

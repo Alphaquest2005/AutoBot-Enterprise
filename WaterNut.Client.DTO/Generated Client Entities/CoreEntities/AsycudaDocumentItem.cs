@@ -503,7 +503,7 @@ namespace CoreEntities.Client.DTO
         private string _WarehouseError;
 
         [DataMember]
-        public Nullable<bool> Cancelled
+        public bool Cancelled
 		{ 
 		    get { return _Cancelled; }
 			set
@@ -513,7 +513,7 @@ namespace CoreEntities.Client.DTO
 				NotifyPropertyChanged();//m => this.Cancelled
 			}
 		}
-        private Nullable<bool> _Cancelled;
+        private bool _Cancelled;
 
         [DataMember]
         public Nullable<double> SalesFactor

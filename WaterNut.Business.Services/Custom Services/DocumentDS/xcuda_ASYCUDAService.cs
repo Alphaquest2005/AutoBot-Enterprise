@@ -22,7 +22,7 @@ namespace DocumentDS.Business.Services
                     res.xcuda_ASYCUDA_ExtendedProperties.AsycudaDocumentSet =
                         null; //its a shared resource in multi threading
                     res.xcuda_ASYCUDA_ExtendedProperties.Customs_Procedure = null;
-                    res.xcuda_ASYCUDA_ExtendedProperties.Document_Type = null;
+                  
                     res.AsycudaDocument_Attachments.Where(x => x.TrackingState != TrackingState.Added).ForEach(x =>
                     {
                         //x.Attachment.AsycudaDocumentSet_Attachments.ForEach(z =>

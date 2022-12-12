@@ -245,6 +245,21 @@ public string TariffCode
 		}
      
 
+       
+       
+public Nullable<int> ApplicationSettingsId
+		{ 
+		    get { return this.asycudaitembasicinfo.ApplicationSettingsId; }
+			set
+			{
+			    if (value == this.asycudaitembasicinfo.ApplicationSettingsId) return;
+				this.asycudaitembasicinfo.ApplicationSettingsId = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("ApplicationSettingsId");
+			}
+		}
+     
+
 
         ChangeTrackingCollection<DTO.AsycudaItemBasicInfo> _changeTracker;    
         public ChangeTrackingCollection<DTO.AsycudaItemBasicInfo> ChangeTracker

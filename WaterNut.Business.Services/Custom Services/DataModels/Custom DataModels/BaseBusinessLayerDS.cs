@@ -83,14 +83,14 @@ namespace WaterNut.DataSpace
     public class BaseDataModel
     {
         public static DataCache<Customs_Procedure> _customs_ProcedureCache;
-        public static DataCache<Document_Type> _document_TypeCache;
+        
 
         
         private readonly AsycudaDocumentSet _currentAsycudaDocumentSet = null;
 
         private IEnumerable<Customs_Procedure> _customs_Procedures;
 
-        private IEnumerable<Document_Type> _document_Types;
+        
 
         private IEnumerable<ExportTemplate> _exportTemplates;
         private static readonly double _minimumPossibleAsycudaWeight = .01;
@@ -115,7 +115,7 @@ namespace WaterNut.DataSpace
 
         public DataCache<Customs_Procedure> Customs_ProcedureCache => _customs_ProcedureCache;
 
-        public DataCache<Document_Type> Document_TypeCache => _document_TypeCache;
+       
 
 
         public ApplicationSettings CurrentApplicationSettings { get; set; }
@@ -152,19 +152,7 @@ namespace WaterNut.DataSpace
             }
         }
 
-        public IEnumerable<Document_Type> Document_Types
-        {
-            get
-            {
-                if (_document_Types == null)
-                    using (var ctx = new Document_TypeService())
-                    {
-                        _document_Types = ctx.GetDocument_Type().Result;
-                    }
-
-                return _document_Types;
-            }
-        }
+       
 
         #region IAsyncInitialization Members
 
@@ -191,18 +179,13 @@ namespace WaterNut.DataSpace
         private static async Task InitializationAsync()
         {
             StatusModel.Timer("Loading Data");
-            var tasks = new List<Task>();
+            
 
 
             SQLBlackBox.RunSqlBlackBox();
 
             
-            _document_TypeCache =
-                new DataCache<Document_Type>(
-                    await
-                        DocumentDS.DataModels.BaseDataModel.Instance.SearchDocument_Type(new List<string> {"All"})
-                            .ConfigureAwait(false));
-
+           
             _customs_ProcedureCache =
                 new DataCache<Customs_Procedure>(
                     await
@@ -310,8 +293,6 @@ namespace WaterNut.DataSpace
 
             cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.Customs_ProcedureId = cp.Customs_ProcedureId;
             cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.Customs_Procedure = cp;
-            cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.Document_TypeId = cp.Document_TypeId;
-            cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.Document_Type = cp.Document_Type;
             cdoc.Document.xcuda_Identification.xcuda_Type.Declaration_gen_procedure_code =
                 cp.Document_Type.Declaration_gen_procedure_code;
             cdoc.Document.xcuda_Identification.xcuda_Type.Type_of_declaration =
@@ -430,9 +411,7 @@ namespace WaterNut.DataSpace
             cdoc.Document.xcuda_Identification.Manifest_reference_number = ads.Manifest_Number;
             cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.AsycudaDocumentSetId = ads.AsycudaDocumentSetId;
 
-            cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.Document_Type = ads.Customs_Procedure.Document_Type;
-            cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.Document_TypeId =
-                ads.Customs_Procedure.Document_Type.Document_TypeId;
+            
             cdoc.Document.xcuda_Identification.xcuda_Type.Declaration_gen_procedure_code =
                 ads.Customs_Procedure.Document_Type.Declaration_gen_procedure_code;
             cdoc.Document.xcuda_Identification.xcuda_Type.Type_of_declaration =
@@ -677,10 +656,9 @@ namespace WaterNut.DataSpace
             if (currentAsycudaDocumentSet == null)
                 throw new ApplicationException("Please Select a Asycuda Document Set before proceeding");
 
-            if (currentAsycudaDocumentSet.Document_Type == null ||
-                currentAsycudaDocumentSet.Customs_Procedure == null)
+            if (currentAsycudaDocumentSet.Customs_Procedure == null)
                 throw new ApplicationException(
-                    "Please Select Document Type & Customs Procedure for selected Asycuda Document Set before proceeding");
+                    "Please Select Customs Procedure for selected Asycuda Document Set before proceeding");
 
             return true;
         }
@@ -1154,7 +1132,6 @@ namespace WaterNut.DataSpace
             docSet.Customs_Procedure = Instance.Customs_Procedures.First(x =>
                 x.DisplayName == exportTemplate.Customs_Procedure);
             docSet.Customs_ProcedureId = docSet.Customs_Procedure.Customs_ProcedureId;
-            docSet.Document_Type = docSet.Customs_Procedure.Document_Type;
             docSet.BLNumber = exportTemplate.BL;
             docSet.Manifest_Number = exportTemplate.Manifest;
             docSet.Currency_Code = exportTemplate.Gs_Invoice_Currency_code;
