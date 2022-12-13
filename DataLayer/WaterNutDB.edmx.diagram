@@ -4,7 +4,7 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="f32200512a8740a58b3d2ed4e56b5dcb" Name="xcuda" ZoomLevel="68" >
+      <Diagram DiagramId="f32200512a8740a58b3d2ed4e56b5dcb" Name="xcuda" ZoomLevel="101" >
         <EntityTypeShape EntityType="WaterNutDB.DataLayer.xcuda_Manifest_reference_number" Width="1.5" PointX="5.25" PointY="39.75" />
         <AssociationConnector Association="WaterNutDB.DataLayer.FK_Identification_Manifest_reference_number" />
         <EntityTypeShape EntityType="WaterNutDB.DataLayer.AsycudaDocumentSet" Width="1.5" PointX="3.75" PointY="20.5" />
@@ -63,11 +63,9 @@
         <EntityTypeShape EntityType="WaterNutDB.DataLayer.xcuda_Valuation" Width="1.5" PointX="3" PointY="124.375" />
         <EntityTypeShape EntityType="WaterNutDB.DataLayer.xcuda_Warehouse" Width="1.5" PointX="3" PointY="121.625" />
         <AssociationConnector Association="WaterNutDB.DataLayer.FK_AsycudaDocumentSet_Customs_Procedure" />
-        <AssociationConnector Association="WaterNutDB.DataLayer.FK_AsycudaDocumentSet_Document_Type" />
         <AssociationConnector Association="WaterNutDB.DataLayer.FK_xcuda_ASYCUDA_ExtendedProperties_AsycudaDocumentSet" />
         <AssociationConnector Association="WaterNutDB.DataLayer.FK_Customs_Procedure_Document_Type" />
         <AssociationConnector Association="WaterNutDB.DataLayer.FK_xcuda_ASYCUDA_ExtendedProperties_Customs_Procedure" />
-        <AssociationConnector Association="WaterNutDB.DataLayer.FK_xcuda_ASYCUDA_ExtendedProperties_Document_Type" />
         <AssociationConnector Association="WaterNutDB.DataLayer.FK_xcuda_ASYCUDA_ExtendedProperties_ExportTemplate" />
         <AssociationConnector Association="WaterNutDB.DataLayer.FK_TariffCodes_TariffCategory" />
         <AssociationConnector Association="WaterNutDB.DataLayer.FK_Identification_Assessment" />

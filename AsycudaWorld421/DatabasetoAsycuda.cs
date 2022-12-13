@@ -375,7 +375,7 @@ namespace Asycuda421
         private void SetupProperties(ASYCUDA a, xcuda_ASYCUDA da)
         {
             ExportTemplate Exp = null;
-            if (da.xcuda_ASYCUDA_ExtendedProperties.Document_Type != null)
+            if (da.xcuda_ASYCUDA_ExtendedProperties.Customs_Procedure != null)
                 Exp = db.ExportTemplate
                     .Where(x => x.ApplicationSettingsId ==
                                 da.xcuda_ASYCUDA_ExtendedProperties.AsycudaDocumentSet.ApplicationSettingsId)
@@ -389,7 +389,7 @@ namespace Asycuda421
 
             if (Exp == null)
                 throw new ApplicationException(
-                    $"Export Template is Null for {da.xcuda_ASYCUDA_ExtendedProperties.Document_Type.DisplayName}");
+                    $"Export Template is Null for {da.xcuda_ASYCUDA_ExtendedProperties.Customs_Procedure?.Document_Type.DisplayName}");
             a.Financial = new ASYCUDAFinancial();
 
             if (Exp.Deffered_payment_reference != null)
