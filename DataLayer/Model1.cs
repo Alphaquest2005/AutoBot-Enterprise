@@ -32,11 +32,9 @@ using System.Xml.Serialization;
 [assembly: EdmRelationshipAttribute("WaterNutDB.DataLayer", "FK_Traders_Exporter", "xcuda_Traders", System.Data.Entity.Core.Metadata.Edm.RelationshipMultiplicity.One, typeof(WaterNut.DataLayer.xcuda_Traders), "xcuda_Exporter", System.Data.Entity.Core.Metadata.Edm.RelationshipMultiplicity.ZeroOrOne, typeof(WaterNut.DataLayer.xcuda_Exporter), true)]
 [assembly: EdmRelationshipAttribute("WaterNutDB.DataLayer", "FK_Traders_Financial", "xcuda_Traders", System.Data.Entity.Core.Metadata.Edm.RelationshipMultiplicity.One, typeof(WaterNut.DataLayer.xcuda_Traders), "xcuda_Traders_Financial", System.Data.Entity.Core.Metadata.Edm.RelationshipMultiplicity.ZeroOrOne, typeof(WaterNut.DataLayer.xcuda_Traders_Financial), true)]
 [assembly: EdmRelationshipAttribute("WaterNutDB.DataLayer", "FK_AsycudaDocumentSet_Customs_Procedure", "Customs_Procedure", System.Data.Entity.Core.Metadata.Edm.RelationshipMultiplicity.ZeroOrOne, typeof(WaterNut.DataLayer.Customs_Procedure), "AsycudaDocumentSet", System.Data.Entity.Core.Metadata.Edm.RelationshipMultiplicity.Many, typeof(WaterNut.DataLayer.AsycudaDocumentSet), true)]
-[assembly: EdmRelationshipAttribute("WaterNutDB.DataLayer", "FK_AsycudaDocumentSet_Document_Type", "Document_Type", System.Data.Entity.Core.Metadata.Edm.RelationshipMultiplicity.ZeroOrOne, typeof(WaterNut.DataLayer.Document_Type), "AsycudaDocumentSet", System.Data.Entity.Core.Metadata.Edm.RelationshipMultiplicity.Many, typeof(WaterNut.DataLayer.AsycudaDocumentSet), true)]
 [assembly: EdmRelationshipAttribute("WaterNutDB.DataLayer", "FK_xcuda_ASYCUDA_ExtendedProperties_AsycudaDocumentSet", "AsycudaDocumentSet", System.Data.Entity.Core.Metadata.Edm.RelationshipMultiplicity.One, typeof(WaterNut.DataLayer.AsycudaDocumentSet), "xcuda_ASYCUDA_ExtendedProperties", System.Data.Entity.Core.Metadata.Edm.RelationshipMultiplicity.Many, typeof(WaterNut.DataLayer.xcuda_ASYCUDA_ExtendedProperties), true)]
 [assembly: EdmRelationshipAttribute("WaterNutDB.DataLayer", "FK_Customs_Procedure_Document_Type", "Document_Type", System.Data.Entity.Core.Metadata.Edm.RelationshipMultiplicity.One, typeof(WaterNut.DataLayer.Document_Type), "Customs_Procedure", System.Data.Entity.Core.Metadata.Edm.RelationshipMultiplicity.Many, typeof(WaterNut.DataLayer.Customs_Procedure), true)]
 [assembly: EdmRelationshipAttribute("WaterNutDB.DataLayer", "FK_xcuda_ASYCUDA_ExtendedProperties_Customs_Procedure", "Customs_Procedure", System.Data.Entity.Core.Metadata.Edm.RelationshipMultiplicity.ZeroOrOne, typeof(WaterNut.DataLayer.Customs_Procedure), "xcuda_ASYCUDA_ExtendedProperties", System.Data.Entity.Core.Metadata.Edm.RelationshipMultiplicity.Many, typeof(WaterNut.DataLayer.xcuda_ASYCUDA_ExtendedProperties), true)]
-[assembly: EdmRelationshipAttribute("WaterNutDB.DataLayer", "FK_xcuda_ASYCUDA_ExtendedProperties_Document_Type", "Document_Type", System.Data.Entity.Core.Metadata.Edm.RelationshipMultiplicity.ZeroOrOne, typeof(WaterNut.DataLayer.Document_Type), "xcuda_ASYCUDA_ExtendedProperties", System.Data.Entity.Core.Metadata.Edm.RelationshipMultiplicity.Many, typeof(WaterNut.DataLayer.xcuda_ASYCUDA_ExtendedProperties), true)]
 [assembly: EdmRelationshipAttribute("WaterNutDB.DataLayer", "FK_xcuda_ASYCUDA_ExtendedProperties_ExportTemplate", "ExportTemplate", System.Data.Entity.Core.Metadata.Edm.RelationshipMultiplicity.ZeroOrOne, typeof(WaterNut.DataLayer.ExportTemplate), "xcuda_ASYCUDA_ExtendedProperties", System.Data.Entity.Core.Metadata.Edm.RelationshipMultiplicity.Many, typeof(WaterNut.DataLayer.xcuda_ASYCUDA_ExtendedProperties), true)]
 [assembly: EdmRelationshipAttribute("WaterNutDB.DataLayer", "FK_TariffCodes_TariffCategory", "TariffCategory", System.Data.Entity.Core.Metadata.Edm.RelationshipMultiplicity.ZeroOrOne, typeof(WaterNut.DataLayer.TariffCategory), "TariffCodes", System.Data.Entity.Core.Metadata.Edm.RelationshipMultiplicity.Many, typeof(WaterNut.DataLayer.TariffCodes), true)]
 [assembly: EdmRelationshipAttribute("WaterNutDB.DataLayer", "FK_Identification_Assessment", "xcuda_Identification", System.Data.Entity.Core.Metadata.Edm.RelationshipMultiplicity.One, typeof(WaterNut.DataLayer.xcuda_Identification), "xcuda_Assessment", System.Data.Entity.Core.Metadata.Edm.RelationshipMultiplicity.ZeroOrOne, typeof(WaterNut.DataLayer.xcuda_Assessment), true)]
@@ -3218,30 +3216,6 @@ namespace WaterNut.DataLayer
         /// </summary>
         [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
-        public Nullable<global::System.Int32> Document_TypeId
-        {
-            get
-            {
-                return _Document_TypeId;
-            }
-            set
-            {
-                OnDocument_TypeIdChanging(value);
-                ReportPropertyChanging("Document_TypeId");
-                _Document_TypeId = StructuralObject.SetValidValue(value);
-                ReportPropertyChanged("Document_TypeId");
-                OnDocument_TypeIdChanged();
-            }
-        }
-        private Nullable<global::System.Int32> _Document_TypeId;
-        partial void OnDocument_TypeIdChanging(Nullable<global::System.Int32> value);
-        partial void OnDocument_TypeIdChanged();
-    
-        /// <summary>
-        /// No Metadata Documentation available.
-        /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
-        [DataMemberAttribute()]
         public global::System.String Description
         {
             get
@@ -3707,44 +3681,6 @@ namespace WaterNut.DataLayer
                 if ((value != null))
                 {
                     ((IEntityWithRelationships)this).RelationshipManager.InitializeRelatedReference<Customs_Procedure>("WaterNutDB.DataLayer.FK_AsycudaDocumentSet_Customs_Procedure", "Customs_Procedure", value);
-                }
-            }
-        }
-    
-        /// <summary>
-        /// No Metadata Documentation available.
-        /// </summary>
-        [XmlIgnoreAttribute()]
-        [SoapIgnoreAttribute()]
-        [DataMemberAttribute()]
-        [EdmRelationshipNavigationPropertyAttribute("WaterNutDB.DataLayer", "FK_AsycudaDocumentSet_Document_Type", "Document_Type")]
-        public Document_Type Document_Type
-        {
-            get
-            {
-                return ((IEntityWithRelationships)this).RelationshipManager.GetRelatedReference<Document_Type>("WaterNutDB.DataLayer.FK_AsycudaDocumentSet_Document_Type", "Document_Type").Value;
-            }
-            set
-            {
-                ((IEntityWithRelationships)this).RelationshipManager.GetRelatedReference<Document_Type>("WaterNutDB.DataLayer.FK_AsycudaDocumentSet_Document_Type", "Document_Type").Value = value;
-            }
-        }
-        /// <summary>
-        /// No Metadata Documentation available.
-        /// </summary>
-        [BrowsableAttribute(false)]
-        [DataMemberAttribute()]
-        public EntityReference<Document_Type> Document_TypeReference
-        {
-            get
-            {
-                return ((IEntityWithRelationships)this).RelationshipManager.GetRelatedReference<Document_Type>("WaterNutDB.DataLayer.FK_AsycudaDocumentSet_Document_Type", "Document_Type");
-            }
-            set
-            {
-                if ((value != null))
-                {
-                    ((IEntityWithRelationships)this).RelationshipManager.InitializeRelatedReference<Document_Type>("WaterNutDB.DataLayer.FK_AsycudaDocumentSet_Document_Type", "Document_Type", value);
                 }
             }
         }
@@ -4923,28 +4859,6 @@ namespace WaterNut.DataLayer
         [XmlIgnoreAttribute()]
         [SoapIgnoreAttribute()]
         [DataMemberAttribute()]
-        [EdmRelationshipNavigationPropertyAttribute("WaterNutDB.DataLayer", "FK_AsycudaDocumentSet_Document_Type", "AsycudaDocumentSet")]
-        public EntityCollection<AsycudaDocumentSet> AsycudaDocumentSet
-        {
-            get
-            {
-                return ((IEntityWithRelationships)this).RelationshipManager.GetRelatedCollection<AsycudaDocumentSet>("WaterNutDB.DataLayer.FK_AsycudaDocumentSet_Document_Type", "AsycudaDocumentSet");
-            }
-            set
-            {
-                if ((value != null))
-                {
-                    ((IEntityWithRelationships)this).RelationshipManager.InitializeRelatedCollection<AsycudaDocumentSet>("WaterNutDB.DataLayer.FK_AsycudaDocumentSet_Document_Type", "AsycudaDocumentSet", value);
-                }
-            }
-        }
-    
-        /// <summary>
-        /// No Metadata Documentation available.
-        /// </summary>
-        [XmlIgnoreAttribute()]
-        [SoapIgnoreAttribute()]
-        [DataMemberAttribute()]
         [EdmRelationshipNavigationPropertyAttribute("WaterNutDB.DataLayer", "FK_Customs_Procedure_Document_Type", "Customs_Procedure")]
         public EntityCollection<Customs_Procedure> Customs_Procedures
         {
@@ -4957,28 +4871,6 @@ namespace WaterNut.DataLayer
                 if ((value != null))
                 {
                     ((IEntityWithRelationships)this).RelationshipManager.InitializeRelatedCollection<Customs_Procedure>("WaterNutDB.DataLayer.FK_Customs_Procedure_Document_Type", "Customs_Procedure", value);
-                }
-            }
-        }
-    
-        /// <summary>
-        /// No Metadata Documentation available.
-        /// </summary>
-        [XmlIgnoreAttribute()]
-        [SoapIgnoreAttribute()]
-        [DataMemberAttribute()]
-        [EdmRelationshipNavigationPropertyAttribute("WaterNutDB.DataLayer", "FK_xcuda_ASYCUDA_ExtendedProperties_Document_Type", "xcuda_ASYCUDA_ExtendedProperties")]
-        public EntityCollection<xcuda_ASYCUDA_ExtendedProperties> xcuda_ASYCUDA_ExtendedProperties
-        {
-            get
-            {
-                return ((IEntityWithRelationships)this).RelationshipManager.GetRelatedCollection<xcuda_ASYCUDA_ExtendedProperties>("WaterNutDB.DataLayer.FK_xcuda_ASYCUDA_ExtendedProperties_Document_Type", "xcuda_ASYCUDA_ExtendedProperties");
-            }
-            set
-            {
-                if ((value != null))
-                {
-                    ((IEntityWithRelationships)this).RelationshipManager.InitializeRelatedCollection<xcuda_ASYCUDA_ExtendedProperties>("WaterNutDB.DataLayer.FK_xcuda_ASYCUDA_ExtendedProperties_Document_Type", "xcuda_ASYCUDA_ExtendedProperties", value);
                 }
             }
         }
@@ -8703,30 +8595,6 @@ namespace WaterNut.DataLayer
         /// </summary>
         [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
-        public Nullable<global::System.Int32> Document_TypeId
-        {
-            get
-            {
-                return _Document_TypeId;
-            }
-            set
-            {
-                OnDocument_TypeIdChanging(value);
-                ReportPropertyChanging("Document_TypeId");
-                _Document_TypeId = StructuralObject.SetValidValue(value);
-                ReportPropertyChanged("Document_TypeId");
-                OnDocument_TypeIdChanged();
-            }
-        }
-        private Nullable<global::System.Int32> _Document_TypeId;
-        partial void OnDocument_TypeIdChanging(Nullable<global::System.Int32> value);
-        partial void OnDocument_TypeIdChanged();
-    
-        /// <summary>
-        /// No Metadata Documentation available.
-        /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
-        [DataMemberAttribute()]
         public global::System.String Description
         {
             get
@@ -9182,44 +9050,6 @@ namespace WaterNut.DataLayer
                 if ((value != null))
                 {
                     ((IEntityWithRelationships)this).RelationshipManager.InitializeRelatedReference<Customs_Procedure>("WaterNutDB.DataLayer.FK_xcuda_ASYCUDA_ExtendedProperties_Customs_Procedure", "Customs_Procedure", value);
-                }
-            }
-        }
-    
-        /// <summary>
-        /// No Metadata Documentation available.
-        /// </summary>
-        [XmlIgnoreAttribute()]
-        [SoapIgnoreAttribute()]
-        [DataMemberAttribute()]
-        [EdmRelationshipNavigationPropertyAttribute("WaterNutDB.DataLayer", "FK_xcuda_ASYCUDA_ExtendedProperties_Document_Type", "Document_Type")]
-        public Document_Type Document_Type
-        {
-            get
-            {
-                return ((IEntityWithRelationships)this).RelationshipManager.GetRelatedReference<Document_Type>("WaterNutDB.DataLayer.FK_xcuda_ASYCUDA_ExtendedProperties_Document_Type", "Document_Type").Value;
-            }
-            set
-            {
-                ((IEntityWithRelationships)this).RelationshipManager.GetRelatedReference<Document_Type>("WaterNutDB.DataLayer.FK_xcuda_ASYCUDA_ExtendedProperties_Document_Type", "Document_Type").Value = value;
-            }
-        }
-        /// <summary>
-        /// No Metadata Documentation available.
-        /// </summary>
-        [BrowsableAttribute(false)]
-        [DataMemberAttribute()]
-        public EntityReference<Document_Type> Document_TypeReference
-        {
-            get
-            {
-                return ((IEntityWithRelationships)this).RelationshipManager.GetRelatedReference<Document_Type>("WaterNutDB.DataLayer.FK_xcuda_ASYCUDA_ExtendedProperties_Document_Type", "Document_Type");
-            }
-            set
-            {
-                if ((value != null))
-                {
-                    ((IEntityWithRelationships)this).RelationshipManager.InitializeRelatedReference<Document_Type>("WaterNutDB.DataLayer.FK_xcuda_ASYCUDA_ExtendedProperties_Document_Type", "Document_Type", value);
                 }
             }
         }
