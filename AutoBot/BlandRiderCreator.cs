@@ -22,13 +22,20 @@ namespace AutoBotUtilities
 
             foreach (var bl in bls)
             {
-                var blPackingDetails = GetManifestBlPackingDetails(masterShipment, bl);
+                var riderDetails = masterShipment.ShipmentAttachedRider.Where(x =>
+                    x.ShipmentRider.ShipmentRiderDetails.Any(z =>
+                        z.ShipmentRiderBLs.Any(b => bls.Any(r => r.Id == b.BLId))))
+                    .SelectMany(x => x.ShipmentRider.ShipmentRiderDetails)
+                    .ToList();
+                var packingDetails = riderDetails;
 
+                if (!packingDetails.Any()) packingDetails = GetManifestBlPackingDetails(masterShipment, bl);
 
-                if (!blPackingDetails.Any())  blPackingDetails = GetBlPackingDetails(bl); 
+                
+                if (!packingDetails.Any())  packingDetails = GetBlPackingDetails(bl); 
 
-                if (!blPackingDetails.Any()) continue;
-                var clients = GetPackageSetsList(masterShipment, blPackingDetails, bl);
+                if (!packingDetails.Any()) continue;
+                var clients = GetPackageSetsList(masterShipment, packingDetails, bl);
 
                 shipments.AddRange(clients.Select(client => CreateShipment(masterShipment, client, bl)));
             }

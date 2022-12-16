@@ -1574,7 +1574,7 @@ namespace WaterNut.DataSpace
                 ////////////////////////////////////////////////////////////////////////
                     //// Sales dependent check to prevent sales overexwarehouse even when Allocations changed. all other checks are previous document dependent
                             var xSalesPi = mypod.Allocations
-                        .Select(x => new {e = x.EntryDataDetails.Quantity,pi = x.EntryDataDetails.AsycudaDocumentItemEntryDataDetails.Sum(z => z.Quantity)?? 0}).Sum(x => x.e - x.pi) ;
+                        .Select(x => new {e = x.EntryDataDetails.Quantity,pi = x.EntryDataDetails.AsycudaDocumentItemEntryDataDetails.Where(z => z.CustomsOperation == "Exwarehouse").Sum(z => z.Quantity)?? 0}).Sum(x => x.e - x.pi) ;
                     ///// the DONT FORGET WE TAKING JUST REMAINING SALES SO IT WILL BE ZERO EVEN IF ITS ALREADY DOUBLE EX-WAREHOUSED
                     if (xSalesPi < Math.Round(mypod.EntlnData.Quantity, 2))//take out docpi its throwing it ouff   //itemDocPi + 
                     {

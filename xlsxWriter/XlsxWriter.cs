@@ -69,7 +69,8 @@ namespace xlsxWriter
                         var pdfFile = new FileInfo(shipmentInvoice.SourceFile);
 
                         var packingLst = packingDetails.Where(x =>
-                                shipmentInvoice.ShipmentInvoicePOs.Any(z => z.ShipmentInvoice.InvoiceNo == x.InvoiceNo))
+                                (shipmentInvoice.ShipmentInvoicePOs.Any() && shipmentInvoice.ShipmentInvoicePOs.Any(z => z.ShipmentInvoice.InvoiceNo == x.InvoiceNo)
+                                || (!shipmentInvoice.ShipmentInvoicePOs.Any() && x.InvoiceNo == shipmentInvoice.InvoiceNo)))
                             .ToList();
 
                         var isCombined = !packingLst.Any() ||  packingLst.FirstOrDefault(x => x.InvoiceNo == shipmentInvoice.InvoiceNo).Packages == 0;

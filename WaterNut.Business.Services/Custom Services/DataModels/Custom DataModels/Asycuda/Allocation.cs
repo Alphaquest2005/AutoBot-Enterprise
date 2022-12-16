@@ -239,7 +239,9 @@ namespace WaterNut.DataSpace
                         TrackingState = TrackingState.Added
                     };
 
-					if(allocation.EntryDataDetailsId == 0) continue;
+					if(allocation.EntryDataDetailsId == 0 && ctx.EntryDataDetails.Any(x => x.EntryData.EntryType == "Sales" || x.EntryData.EntryType == "ADJ" 
+                                                                                                        &&  (x.EntryData.EntryDataDate >=  BaseDataModel.Instance.CurrentApplicationSettings.OpeningStockDate && x.EntryData.EntryDataDate <= allocation.EntryDataDate)
+                                                                                                        && (allocation.ItemNumber.Contains(x.ItemNumber) || x.ItemNumber.Contains(allocation.ItemNumber))) ) continue;
 
                     var entrydataDetails =
                         ctx.EntryDataDetails.First(x => x.EntryDataDetailsId == allocation.EntryDataDetailsId);

@@ -28,6 +28,7 @@
               this.Property(t => t.AsycudaDocumentSetId).HasColumnName("AsycudaDocumentSetId");
               this.Property(t => t.CNumber).HasColumnName("CNumber").HasMaxLength(20);
               this.Property(t => t.LineNumber).HasColumnName("LineNumber");
+              this.Property(t => t.CustomsOperation).HasColumnName("CustomsOperation").HasMaxLength(50);
               this.HasRequired(t => t.EntryDataDetails).WithMany(t =>(ICollection<AsycudaDocumentItemEntryDataDetails>) t.AsycudaDocumentItemEntryDataDetails).HasForeignKey(d => d.EntryDataDetailsId);
               this.HasRequired(t => t.AsycudaDocument).WithMany(t =>(ICollection<AsycudaDocumentItemEntryDataDetails>) t.AsycudaDocumentItemEntryDataDetails).HasForeignKey(d => d.Asycuda_id);
               this.HasRequired(t => t.xcuda_Item).WithMany(t =>(ICollection<AsycudaDocumentItemEntryDataDetails>) t.AsycudaDocumentItemEntryDataDetails).HasForeignKey(d => d.Item_Id);

@@ -1676,7 +1676,7 @@ namespace WaterNut.DataSpace
                 .Customs_Procedure
                 .Extended_customs_procedure;
 
-            itm.xcuda_Tarification.xcuda_HScode.Commodity_code = pod.TariffCode.Trim() ?? "NULL";
+            itm.xcuda_Tarification.xcuda_HScode.Commodity_code = pod.TariffCode?.Trim() ?? "NULL";
             itm.xcuda_Tarification.xcuda_HScode.Precision_4 =
                 pod.ItemNumber;
 
@@ -2551,7 +2551,6 @@ namespace WaterNut.DataSpace
                         "AsycudaDocumentSet_Attachments.Attachment",
                         "AsycudaDocumentSet_Attachments.FileType",
                         "Customs_Procedure.Document_Type",
-                        "Document_Type"
                     })
                     .ConfigureAwait(false);
             }

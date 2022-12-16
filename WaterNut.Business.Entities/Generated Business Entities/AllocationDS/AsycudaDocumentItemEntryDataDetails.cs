@@ -246,6 +246,21 @@ namespace AllocationDS.Business.Entities
         }
         int _linenumber;
         [DataMember]
+        public string CustomsOperation 
+        {
+            get
+            {
+                return _customsoperation;
+            }
+            set
+            {
+                _customsoperation = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _customsoperation;
+        [DataMember]
         public EntryDataDetails EntryDataDetails { get; set; }
         [DataMember]
         public AsycudaDocument AsycudaDocument { get; set; }

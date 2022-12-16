@@ -639,6 +639,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AsycudaDocumentItemEntryD
           <Property Name="EntryDataType" Type="nvarchar" MaxLength="50" />
           <Property Name="CNumber" Type="nvarchar" MaxLength="20" />
           <Property Name="LineNumber" Type="int" Nullable="false" />
+          <Property Name="CustomsOperation" Type="nvarchar" MaxLength="50" />
         </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AsycudaItemPiQuantityData' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
@@ -1645,7 +1646,8 @@ FROM [dbo].[AsycudaDocument] AS [AsycudaDocument]</DefiningQuery>
 [AsycudaDocumentItemEntryDataDetails].[Asycuda_id] AS [Asycuda_id], 
 [AsycudaDocumentItemEntryDataDetails].[EntryDataType] AS [EntryDataType], 
 [AsycudaDocumentItemEntryDataDetails].[CNumber] AS [CNumber], 
-[AsycudaDocumentItemEntryDataDetails].[LineNumber] AS [LineNumber]
+[AsycudaDocumentItemEntryDataDetails].[LineNumber] AS [LineNumber], 
+[AsycudaDocumentItemEntryDataDetails].[CustomsOperation] AS [CustomsOperation]
 FROM [dbo].[AsycudaDocumentItemEntryDataDetails] AS [AsycudaDocumentItemEntryDataDetails]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="AsycudaItemPiQuantityData" EntityType="Self.AsycudaItemPiQuantityData" store:Type="Views" store:Schema="dbo">
@@ -3347,6 +3349,7 @@ FROM [dbo].[XSales-UnAllocated] AS [XSales-UnAllocated]</DefiningQuery>
           <NavigationProperty Name="xcuda_Item" Relationship="WaterNutDBModel.xcuda_ItemAsycudaDocumentItemEntryDataDetails" FromRole="AsycudaDocumentItemEntryDataDetails" ToRole="xcuda_Item" />
           <Property Name="CNumber" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Name="LineNumber" Type="Int32" Nullable="false" />
+          <Property Name="CustomsOperation" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
         </EntityType>
         <Association Name="EntryDataDetailsAsycudaDocumentItemEntryDataDetails">
           <End Type="WaterNutDBModel.EntryDataDetails" Role="EntryDataDetails" Multiplicity="1" />
@@ -4621,6 +4624,7 @@ FROM [dbo].[XSales-UnAllocated] AS [XSales-UnAllocated]</DefiningQuery>
           <EntitySetMapping Name="AsycudaDocumentItemEntryDataDetails">
             <EntityTypeMapping TypeName="WaterNutDBModel.AsycudaDocumentItemEntryDataDetails">
               <MappingFragment StoreEntitySet="AsycudaDocumentItemEntryDataDetails">
+                <ScalarProperty Name="CustomsOperation" ColumnName="CustomsOperation" />
                 <ScalarProperty Name="LineNumber" ColumnName="LineNumber" />
                 <ScalarProperty Name="CNumber" ColumnName="CNumber" />
                 <ScalarProperty Name="AsycudaDocumentSetId" ColumnName="AsycudaDocumentSetId" />
