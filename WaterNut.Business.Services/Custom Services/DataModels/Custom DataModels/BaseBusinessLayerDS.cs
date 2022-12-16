@@ -2550,7 +2550,7 @@ namespace WaterNut.DataSpace
                         "xcuda_ASYCUDA_ExtendedProperties.xcuda_ASYCUDA.xcuda_Declarant",
                         "AsycudaDocumentSet_Attachments.Attachment",
                         "AsycudaDocumentSet_Attachments.FileType",
-                        "Customs_Procedure.Document_Type",
+                        "Customs_Procedure.Document_Type"
                     })
                     .ConfigureAwait(false);
             }
