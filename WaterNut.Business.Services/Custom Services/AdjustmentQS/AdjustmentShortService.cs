@@ -299,6 +299,7 @@ namespace AdjustmentQS.Business.Services
                             InvoiceDate = c.InvoiceDate,
                             EffectiveDate = (DateTime)c.EffectiveDate,
                             InvoiceNo = c.InvoiceNo,
+                            SourceFile = c.SourceFile,
                             ItemDescription = c.ItemDescription,
                             ItemNumber = c.ItemNumber,
                             pCNumber = c.pCNumber,

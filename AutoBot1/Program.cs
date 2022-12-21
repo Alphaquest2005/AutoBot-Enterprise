@@ -182,10 +182,10 @@ namespace AutoBot
                                             var cp = BaseDataModel.Instance.Customs_Procedures.First(x =>
                                                 x.CustomsOperationId == (int) CustomsOperations.Warehouse && x.IsDefault == true);
                                             ctx.Database.ExecuteSqlCommand($@"INSERT INTO AsycudaDocumentSet
-                                        (ApplicationSettingsId, Declarant_Reference_Number, Document_TypeId, Customs_ProcedureId, Exchange_Rate)
+                                        (ApplicationSettingsId, Declarant_Reference_Number, Customs_ProcedureId, Exchange_Rate)
                                     VALUES({BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId},'{
                                                     reference
-                                                }',{cp.Document_TypeId},{cp.Customs_ProcedureId},0)");
+                                                }',{cp.Customs_ProcedureId},0)");
 
                                         }
                                     }
