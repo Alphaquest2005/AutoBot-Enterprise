@@ -521,6 +521,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AdjustmentShort-IM9Data' 
           <Property Name="xBond_Item_Id" Type="int" Nullable="false" />
           <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
           <Property Name="Net_weight_itm" Type="float" Nullable="false" />
+          <Property Name="SourceFile" Type="nvarchar(max)" />
         </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AllocationErrors' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
@@ -1558,7 +1559,8 @@ FROM [dbo].[AdjustmentShortAllocations] AS [AdjustmentShortAllocations]</Definin
 [AdjustmentShort-IM9Data].[InventoryItemId] AS [InventoryItemId], 
 [AdjustmentShort-IM9Data].[xBond_Item_Id] AS [xBond_Item_Id], 
 [AdjustmentShort-IM9Data].[ApplicationSettingsId] AS [ApplicationSettingsId], 
-[AdjustmentShort-IM9Data].[Net_weight_itm] AS [Net_weight_itm]
+[AdjustmentShort-IM9Data].[Net_weight_itm] AS [Net_weight_itm], 
+[AdjustmentShort-IM9Data].[SourceFile] AS [SourceFile]
 FROM [dbo].[AdjustmentShort-IM9Data] AS [AdjustmentShort-IM9Data]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="AllocationErrors" EntityType="Self.AllocationErrors" store:Type="Views" store:Schema="dbo">
@@ -3984,6 +3986,7 @@ FROM [dbo].[XSales-UnAllocated] AS [XSales-UnAllocated]</DefiningQuery>
           <Property Name="xBond_Item_Id" Type="Int32" Nullable="false" />
           <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
           <Property Name="Net_weight_itm" Type="Double" Nullable="false" />
+          <Property Name="SourceFile" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
         </EntityType>
         <Association Name="xcuda_ItemAdjustmentShort_IM9Data">
           <End Type="WaterNutDBModel.xcuda_Item" Role="xcuda_Item" Multiplicity="0..1" />
@@ -4938,6 +4941,7 @@ FROM [dbo].[XSales-UnAllocated] AS [XSales-UnAllocated]</DefiningQuery>
           <EntitySetMapping Name="AdjustmentShort_IM9Data">
             <EntityTypeMapping TypeName="WaterNutDBModel.AdjustmentShort_IM9Data">
               <MappingFragment StoreEntitySet="AdjustmentShort-IM9Data">
+                <ScalarProperty Name="SourceFile" ColumnName="SourceFile" />
                 <ScalarProperty Name="Net_weight_itm" ColumnName="Net_weight_itm" />
                 <ScalarProperty Name="ApplicationSettingsId" ColumnName="ApplicationSettingsId" />
                 <ScalarProperty Name="xBond_Item_Id" ColumnName="xBond_Item_Id" />

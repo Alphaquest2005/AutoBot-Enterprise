@@ -581,6 +581,21 @@ namespace AllocationDS.Business.Entities
         }
         double _net_weight_itm;
         [DataMember]
+        public string SourceFile 
+        {
+            get
+            {
+                return _sourcefile;
+            }
+            set
+            {
+                _sourcefile = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _sourcefile;
+        [DataMember]
         public xcuda_Item PreviousDocumentItem { get; set; }
         [DataMember]
         public List<AsycudaSalesAllocationsPIData> AsycudaSalesAllocationsPIData { get; set; }
