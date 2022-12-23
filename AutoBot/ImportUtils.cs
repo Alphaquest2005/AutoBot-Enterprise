@@ -167,18 +167,23 @@ namespace AutoBotUtilities
             {
                 if (fileType.ProcessNextStep != null && fileType.ProcessNextStep.Any())
                 {
+                    var isContinue = false;
                     while (fileType.ProcessNextStep.Any())
                     {
                         var res = fileType.ProcessNextStep.Select(z => new {Name = z, Action = FileUtils.FileActions[z]})
                             .ToList();
+                        if (res.First().Name == "Continue")
+                        {
+                            isContinue = true;
+                            break;
+                        }
                         res.First().Action.Invoke(fileType, files);
                         fileType.ProcessNextStep.RemoveAt(0);
                     }
-
-                    return;
+                    if(!isContinue) return;
                 }
 
-
+                Console.WriteLine($"Executing -->> {x.Name}");
                 x.Action.Invoke(fileType, files);
             }
             catch (Exception e)

@@ -199,9 +199,9 @@ namespace AutoBot
 
                 for (int i = 0; i < trytimes; i++)
                 {
-                    if (Utils.ImportComplete(directoryName, false, out lcont)) break;//ImportComplete(directoryName,false, out lcont);
+                    if (Utils.ImportComplete(directoryName, redownload, out lcont)) break;//ImportComplete(directoryName,false, out lcont);
                     Utils.RunSiKuLi(directoryName, script, lcont.ToString());
-                    if (Utils.ImportComplete(directoryName, false, out lcont)) break;
+                    if (Utils.ImportComplete(directoryName, redownload, out lcont)) break;
                 }
 
             }

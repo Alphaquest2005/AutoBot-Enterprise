@@ -1785,7 +1785,7 @@ namespace WaterNut.DataSpace
                     if (fr.Comment == null)
                     {
                         itm.Free_text_1 = $"{fr.EntryDataId}|{fr.LineNumber}";
-                        itm.Free_text_2 = pod.ItemNumber;
+                        itm.Free_text_2 = $"{pod.ItemNumber}| ";
                     }
                     else
                     {
