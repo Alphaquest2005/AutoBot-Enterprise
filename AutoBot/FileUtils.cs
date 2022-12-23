@@ -88,8 +88,10 @@ namespace AutoBot
                 {"UpdateRegEx", UpdateInvoice.UpdateRegEx},
                 {"ImportWarehouseErrors", (ft,fs) => ImportWarehouseErrorsUtils.ImportWarehouseErrors(-1)},
                 {"Kill", Utils.Kill},
+                {"Continue", (ft, fs) => { }},
                 {"LinkPDFs", (ft,fs) => PDFUtils.LinkPDFs()},
                 {"DownloadPOFiles", (ft,fs) => EX9Utils.DownloadSalesFiles(10, "IM7", false)},
+                {"ReDownloadPOFiles", (ft,fs) => EX9Utils.DownloadSalesFiles(10, "IM7", true)},
                 {"SubmitDiscrepanciesToCustoms", DISUtils.SubmitDiscrepanciesToCustoms},
                 {"ClearShipmentData", ShipmentUtils.ClearShipmentData},
 

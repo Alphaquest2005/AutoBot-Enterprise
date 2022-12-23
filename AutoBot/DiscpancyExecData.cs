@@ -14,5 +14,8 @@ namespace AutoBotUtilities
         public string xCNumber { get; internal set; }
         public int? xLineNumber { get; internal set; }
         public string xRegistrationDate { get; internal set; }
+        public string EmailId { get; set; }
+        public int ApplicationSettingsId { get; set; }
+        public int AsycudaDocumentSetId { get; set; }
     }
 }

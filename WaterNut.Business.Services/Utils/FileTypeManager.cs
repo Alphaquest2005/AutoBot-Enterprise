@@ -249,6 +249,13 @@ namespace WaterNut.Business.Services.Utils
                         ? (Convert.ToDouble(dt["{XCDCost}"].ToString().Replace("\"", "")) / 2.7169).ToString(CultureInfo.CurrentCulture)
                         : "{NULL}"
                 },
+                {
+                    "COST TTD",
+                    (dt, drow, header) => dt.ContainsKey("Cost") && Convert.ToDouble(dt["Cost"].ToString().Replace("\"", "")) > 0
+                        ? "TTD"
+                        : "{NULL}"
+                },
+                
             };
             return dic;
         }

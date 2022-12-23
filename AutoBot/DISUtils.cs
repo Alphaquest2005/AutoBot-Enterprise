@@ -27,7 +27,7 @@ namespace AutoBot
 {
     public class DISUtils
     {
-        private static readonly int _databaseCommandTimeout = 20;
+        private static readonly int _databaseCommandTimeout = 30;
         private static readonly int __ColumnWidth = 15;
         private static readonly int _tripleLongDatabaseCommandTimeout = _databaseCommandTimeout* 3;
 
@@ -246,19 +246,42 @@ namespace AutoBot
         {
             
                 var cNumbers = GetCNumbers(data);
+                var directory = GetDiscrepancyDirectory(cNumbers);
+                var executionFile = CreateExecutionFile(directory, data);
 
-                var pdfs = AttachDiscrepancyPdfs(cNumbers);
+                var otherCNumbers = executionFile.execData
+                    .Where(x => cNumbers.All(z => z.CNumber != x.xCNumber))
+                    .Select(x => new TODO_SubmitDiscrepanciesToCustoms()
+                    {
+                        CNumber = x.xCNumber,
+                        ApplicationSettingsId = x.ApplicationSettingsId,
+                        AssessmentDate = x.xRegistrationDate,
+                        ASYCUDA_Id = x.ASYCUDA_Id,
+                        AsycudaDocumentSetId = x.AsycudaDocumentSetId,
+                        CustomsProcedure = x.CustomsProcedure,
+                        DocumentType = x.DocumentType,
+                        EmailId = x.EmailId,
+                        ReferenceNumber = x.ReferenceNumber,
+                        RegistrationDate = x.xRegistrationDate,
+                        Status = x.Status,
+                        ToBePaid = x.ToBePaid
+                    })
+                    .GroupBy(x => x.EmailId);
 
-                if (pdfs.Count == 0) return;
+
+            var pdfs = AttachDiscrepancyPdfs(cNumbers);
+
+                //if (pdfs.Count == 0) return;
 
                 var body = CreateEmailBody(cNumbers);
 
+            if (pdfs.Count == 0) body = body + $"\r\n Sorry no pdfs were downloaded for this discrepancy.";
 
-                var directory = GetDiscrepancyDirectory(cNumbers);
+           
 
 
-                var executionFile = CreateExecutionFile(directory, data);
-                pdfs.Add(executionFile);
+                
+                pdfs.Add(executionFile.executionFile);
 
                 var summaryFile = CreateSummaryFile(cNumbers, directory);
                 pdfs.Add(summaryFile);
@@ -328,7 +351,7 @@ namespace AutoBot
             return directory;
         }
 
-        private static string CreateExecutionFile(string directory, IGrouping<string, TODO_SubmitDiscrepanciesToCustoms> data)
+        private static (string executionFile, List<DiscpancyExecData> execData) CreateExecutionFile(string directory, IGrouping<string, TODO_SubmitDiscrepanciesToCustoms> data)
         {
             var executionFile = Path.Combine(directory, $"ExecutionReport.csv");
             var execData = new CoreEntitiesContext().TODO_DiscrepanciesExecutionReport
@@ -344,7 +367,11 @@ namespace AutoBot
                     Status = x.Status,
                     xCNumber = x.xCNumber,
                     xLineNumber = x.xLineNumber,
-                    xRegistrationDate = x.xRegistrationDate.ToString()
+                    xRegistrationDate = x.xRegistrationDate.ToString(),
+                    EmailId = x.EmailId,
+                    ApplicationSettingsId = x.ApplicationSettingsId,
+                    AsycudaDocumentSetId = x.AsycudaDocumentSetId,
+                    Status = x.Doc,
                 })
                 .ToList();
 
@@ -359,7 +386,7 @@ namespace AutoBot
                     TaskCreationOptions.None, sta);
             }
 
-            return executionFile;
+            return (executionFile, execData);
         }
 
         private static string CreateSummaryFile(List<TODO_SubmitDiscrepanciesToCustoms> emailIds, string directory)
@@ -1146,7 +1173,7 @@ namespace AutoBot
             using (var ctx = new CoreEntitiesContext())
             {
                 ctx.Database.CommandTimeout = _databaseCommandTimeout;
-
+                var sourceFileLst = new List<string>();
                 foreach (var itm in itemEntryDataDetails)
                 {
                     var sourcefile = ctx.AsycudaDocuments.First(x => x.ASYCUDA_Id == itm.doc.Asycuda_id)
@@ -1161,8 +1188,10 @@ namespace AutoBot
                     }
                     else
                     {
+                        if(sourceFileLst.Contains(sourcefile) && fileType.ProcessNextStep.Contains("ReSubmitDiscrepanciesToCustoms")) continue;
                         fileType.ProcessNextStep.Add("ReSubmitDiscrepanciesToCustoms");
-                        continue;
+                        fileType.ProcessNextStep.Add("Continue");
+                        sourceFileLst.Add(sourcefile);
                     }
                 }
             }
@@ -1170,17 +1199,26 @@ namespace AutoBot
 
         private static List<(KeyValuePair<int, string> key, AsycudaDocumentItemEntryDataDetails doc)> GetItemEntryDataDetails(List<int> ids, List<KeyValuePair<int, string>> lst)
         {
-            using (var ctx = new CoreEntitiesContext())
+            try
             {
-                ctx.Database.CommandTimeout = _databaseCommandTimeout;
+                using (var ctx = new CoreEntitiesContext())
+                {
+                    ctx.Database.CommandTimeout = _databaseCommandTimeout;
 
-                var itemEntryDataDetails = ctx.AsycudaDocumentItemEntryDataDetails
-                    .Where(x => x.ImportComplete == true && ids.Contains(x.EntryDataDetailsId))
-                    .ToList()
-                    .Join(lst, x => x.EntryDataDetailsId, z => z.Key, (x, z) => (key: z, doc: x))
-                    .ToList();
-                return itemEntryDataDetails;
+                    var itemEntryDataDetails = ctx.AsycudaDocumentItemEntryDataDetails
+                        .Where(x => x.ImportComplete == true && ids.Contains(x.EntryDataDetailsId))
+                        .ToList()
+                        .Join(lst, x => x.EntryDataDetailsId, z => z.Key, (x, z) => (key: z, doc: x))
+                        .ToList();
+                    return itemEntryDataDetails;
+                }
             }
+            catch (Exception)
+            {
+
+                throw;
+            }
+           
         }
 
         private static List<KeyValuePair<int, string>> GetDistinctKeyValuePairs(List<AdjustmentDetail> alst)
@@ -1270,7 +1308,7 @@ namespace AutoBot
                     foreach (var doc in lst)
                     {
                         var docSetEx = ctx.AsycudaDocumentSetExs.First(x => x.AsycudaDocumentSetId == doc.Key.AsycudaDocumentSetId);
-                        if (docSetEx.ClassifiedLines != docSetEx.TotalLines) continue;
+                        //if (docSetEx.ClassifiedLines != docSetEx.TotalLines) continue;
 
                         BaseDataModel.Instance.ExportLastDocumentInDocSet(doc.Key.AsycudaDocumentSetId,
                             Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder,
