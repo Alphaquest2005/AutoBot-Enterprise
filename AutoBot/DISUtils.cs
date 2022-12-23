@@ -251,6 +251,7 @@ namespace AutoBot
 
                 var otherCNumbers = executionFile.execData
                     .Where(x => cNumbers.All(z => z.CNumber != x.xCNumber))
+                    .DistinctBy(x => x.CNumber)
                     .Select(x => new TODO_SubmitDiscrepanciesToCustoms()
                     {
                         CNumber = x.xCNumber,
@@ -265,14 +266,14 @@ namespace AutoBot
                         Status = x.Status,
                         
                     })
-                    .GroupBy(x => x.EmailId);
+                    .ToList();
 
-
+            cNumbers.AddRange(otherCNumbers);
             var pdfs = AttachDiscrepancyPdfs(cNumbers);
+            
+            //if (pdfs.Count == 0) return;
 
-                //if (pdfs.Count == 0) return;
-
-                var body = CreateEmailBody(cNumbers);
+            var body = CreateEmailBody(cNumbers);
 
             if (pdfs.Count == 0) body = body + $"\r\n Sorry no pdfs were downloaded for this discrepancy.";
 
