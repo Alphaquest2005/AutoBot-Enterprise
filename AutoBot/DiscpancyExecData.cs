@@ -17,5 +17,8 @@ namespace AutoBotUtilities
         public string EmailId { get; set; }
         public int ApplicationSettingsId { get; set; }
         public int AsycudaDocumentSetId { get; set; }
+        public string DocumentType { get; set; }
+        public string ReferenceNumber { get; set; }
+        public string CustomsProcedure { get; set; }
     }
 }

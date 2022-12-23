@@ -255,16 +255,15 @@ namespace AutoBot
                     {
                         CNumber = x.xCNumber,
                         ApplicationSettingsId = x.ApplicationSettingsId,
-                        AssessmentDate = x.xRegistrationDate,
-                        ASYCUDA_Id = x.ASYCUDA_Id,
+                        AssessmentDate = DateTime.Parse(x.xRegistrationDate),
                         AsycudaDocumentSetId = x.AsycudaDocumentSetId,
                         CustomsProcedure = x.CustomsProcedure,
                         DocumentType = x.DocumentType,
                         EmailId = x.EmailId,
                         ReferenceNumber = x.ReferenceNumber,
-                        RegistrationDate = x.xRegistrationDate,
+                        RegistrationDate = DateTime.Parse(x.xRegistrationDate),
                         Status = x.Status,
-                        ToBePaid = x.ToBePaid
+                        
                     })
                     .GroupBy(x => x.EmailId);
 
@@ -371,7 +370,10 @@ namespace AutoBot
                     EmailId = x.EmailId,
                     ApplicationSettingsId = x.ApplicationSettingsId,
                     AsycudaDocumentSetId = x.AsycudaDocumentSetId,
-                    Status = x.Doc,
+                    DocumentType = x.DocumentType,
+                    ReferenceNumber = x.Declarant_Reference_Number,
+                    CustomsProcedure = x.CustomsProcedure,
+                    
                 })
                 .ToList();
 
