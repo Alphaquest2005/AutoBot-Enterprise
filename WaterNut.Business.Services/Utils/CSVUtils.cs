@@ -483,7 +483,9 @@ namespace WaterNut.Business.Services.Utils
         private static bool UpdateRowWithFileMapping(FileInfo file, FileTypes fileType, Dictionary<string, Func<IDictionary<string, object>, IDictionary<string, object>, IDictionary<string, object>, string>> dic, bool mappingMailSent,
             DataRow header, int row_no, DataRow drow, ref Dictionary<string, string> row)
         {
-            foreach (var mapping in OrderFileTypeMappingsByOriginalName(fileType).Where(x => header.ItemArray.Contains(x.OriginalName) || x.OriginalName.StartsWith("{")))
+            var fileTypeMappingsByOriginalName = OrderFileTypeMappingsByOriginalName(fileType).ToList();
+            var fileTypeMappings = fileTypeMappingsByOriginalName.Where(x => header.ItemArray.Select(z => z.ToString().ToUpper()).Contains(x.OriginalName.ToUpper()) || x.OriginalName.StartsWith("{")).ToList();
+            foreach (var mapping in fileTypeMappings)
             {
                 var maps = mapping.OriginalName.Split('+');
                 string val = null;

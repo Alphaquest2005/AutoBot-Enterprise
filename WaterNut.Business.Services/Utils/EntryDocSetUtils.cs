@@ -253,10 +253,8 @@ namespace WaterNut.DataSpace
                         .First(x => x.CustomsOperationId == (int)CustomsOperations.Warehouse
                                     && x.IsDefault == true); //&& x.Discrepancy != true
                     ctx.Database.ExecuteSqlCommand($@"INSERT INTO AsycudaDocumentSet
-                                        (ApplicationSettingsId, Declarant_Reference_Number, Document_TypeId, Customs_ProcedureId, Exchange_Rate)
-                                    VALUES({BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId},'{docRef}',{
-                                        doctype.Document_TypeId
-                                    },{doctype.Customs_ProcedureId},0)");
+                                        (ApplicationSettingsId, Declarant_Reference_Number, Customs_ProcedureId, Exchange_Rate)
+                                    VALUES({BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId},'{docRef}',{doctype.Customs_ProcedureId},0)");
 
                     docSet = ctx.AsycudaDocumentSets.FirstOrDefault(x =>
                         x.Declarant_Reference_Number == docRef && x.ApplicationSettingsId ==
