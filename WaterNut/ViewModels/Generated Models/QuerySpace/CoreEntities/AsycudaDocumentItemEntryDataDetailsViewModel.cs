@@ -390,6 +390,24 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
         }	
 
  
+
+		private string _customsOperationFilter;
+        public string CustomsOperationFilter
+        {
+            get
+            {
+                return _customsOperationFilter;
+            }
+            set
+            {
+                _customsOperationFilter = value;
+				NotifyPropertyChanged(x => CustomsOperationFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
 		internal bool DisableBaseFilterData = false;
         public virtual void FilterData()
 	    {
@@ -455,7 +473,11 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
  
 
 					if(LineNumberFilter.HasValue)
-						res.Append(" && " + string.Format("LineNumber == {0}",  LineNumberFilter.ToString()));							return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
+						res.Append(" && " + string.Format("LineNumber == {0}",  LineNumberFilter.ToString()));				 
+
+									if(string.IsNullOrEmpty(CustomsOperationFilter) == false)
+						res.Append(" && " + string.Format("CustomsOperation.Contains(\"{0}\")",  CustomsOperationFilter));						
+			return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
 // Send to Excel Implementation
@@ -505,7 +527,10 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     CNumber = x.CNumber ,
                     
  
-                    LineNumber = x.LineNumber 
+                    LineNumber = x.LineNumber ,
+                    
+ 
+                    CustomsOperation = x.CustomsOperation 
                     
                 }).ToList()
             };
@@ -546,6 +571,9 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     
  
                     public int LineNumber { get; set; } 
+                    
+ 
+                    public string CustomsOperation { get; set; } 
                     
         }
 

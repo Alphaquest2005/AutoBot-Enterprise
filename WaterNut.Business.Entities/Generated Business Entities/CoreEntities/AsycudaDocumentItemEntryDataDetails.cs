@@ -246,6 +246,21 @@ namespace CoreEntities.Business.Entities
         }
         int _linenumber;
         [DataMember]
+        public string CustomsOperation 
+        {
+            get
+            {
+                return _customsoperation;
+            }
+            set
+            {
+                _customsoperation = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _customsoperation;
+        [DataMember]
         public AsycudaDocumentItem AsycudaDocumentItem { get; set; }
 
  //       [DataMember]

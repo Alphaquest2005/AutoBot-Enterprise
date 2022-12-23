@@ -255,6 +255,32 @@ namespace CoreEntities.Client.DTO
 		}
         private Nullable<System.DateTime> _xRegistrationDate;
 
+        [DataMember]
+        public string DocumentType
+		{ 
+		    get { return _DocumentType; }
+			set
+			{
+			    if (value == _DocumentType) return;
+				_DocumentType = value;
+				NotifyPropertyChanged();//m => this.DocumentType
+			}
+		}
+        private string _DocumentType;
+
+        [DataMember]
+        public string CustomsProcedure
+		{ 
+		    get { return _CustomsProcedure; }
+			set
+			{
+			    if (value == _CustomsProcedure) return;
+				_CustomsProcedure = value;
+				NotifyPropertyChanged();//m => this.CustomsProcedure
+			}
+		}
+        private string _CustomsProcedure;
+
        
    //     [DataMember]
    //     public TrackingState TrackingState { get; set; }

@@ -328,6 +328,40 @@ public Nullable<System.DateTime> xRegistrationDate
 		}
      
 
+       
+       
+                
+                [MaxLength(40, ErrorMessage = "DocumentType has a max length of 40 letters ")]
+public string DocumentType
+		{ 
+		    get { return this.todo_discrepanciesexecutionreport.DocumentType; }
+			set
+			{
+			    if (value == this.todo_discrepanciesexecutionreport.DocumentType) return;
+				this.todo_discrepanciesexecutionreport.DocumentType = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("DocumentType");
+			}
+		}
+     
+
+       
+       
+                
+                [MaxLength(11, ErrorMessage = "CustomsProcedure has a max length of 11 letters ")]
+public string CustomsProcedure
+		{ 
+		    get { return this.todo_discrepanciesexecutionreport.CustomsProcedure; }
+			set
+			{
+			    if (value == this.todo_discrepanciesexecutionreport.CustomsProcedure) return;
+				this.todo_discrepanciesexecutionreport.CustomsProcedure = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("CustomsProcedure");
+			}
+		}
+     
+
 
         ChangeTrackingCollection<DTO.TODO_DiscrepanciesExecutionReport> _changeTracker;    
         public ChangeTrackingCollection<DTO.TODO_DiscrepanciesExecutionReport> ChangeTracker

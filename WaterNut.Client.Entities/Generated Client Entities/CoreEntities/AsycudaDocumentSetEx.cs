@@ -141,9 +141,9 @@ public string Currency_Code
 		}
      
 
+       [RequiredValidationAttribute(ErrorMessage= "Document_Type is required")]
        
-       
-public Nullable<int> Document_TypeId
+public int Document_TypeId
 		{ 
 		    get { return this.asycudadocumentsetex.Document_TypeId; }
 			set

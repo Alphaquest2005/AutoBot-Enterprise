@@ -216,6 +216,19 @@ namespace CoreEntities.Client.DTO
 		}
         private int _LineNumber;
 
+        [DataMember]
+        public string CustomsOperation
+		{ 
+		    get { return _CustomsOperation; }
+			set
+			{
+			    if (value == _CustomsOperation) return;
+				_CustomsOperation = value;
+				NotifyPropertyChanged();//m => this.CustomsOperation
+			}
+		}
+        private string _CustomsOperation;
+
        
         [DataMember]
         public AsycudaDocumentItem AsycudaDocumentItem

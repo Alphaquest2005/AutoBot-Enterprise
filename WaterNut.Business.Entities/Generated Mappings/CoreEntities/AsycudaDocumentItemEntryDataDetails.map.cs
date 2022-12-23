@@ -28,6 +28,7 @@
               this.Property(t => t.AsycudaDocumentSetId).HasColumnName("AsycudaDocumentSetId").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.None));
               this.Property(t => t.CNumber).HasColumnName("CNumber").HasMaxLength(20);
               this.Property(t => t.LineNumber).HasColumnName("LineNumber").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.None));
+              this.Property(t => t.CustomsOperation).HasColumnName("CustomsOperation").HasMaxLength(50);
               this.HasRequired(t => t.AsycudaDocumentItem).WithMany(t =>(ICollection<AsycudaDocumentItemEntryDataDetails>) t.AsycudaDocumentItemEntryDataDetails).HasForeignKey(d => d.Item_Id);
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);

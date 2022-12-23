@@ -119,7 +119,7 @@ namespace CoreEntities.Business.Entities
         }
         string _currency_code;
         [DataMember]
-        public Nullable<int> Document_TypeId 
+        public int Document_TypeId 
         {
             get
             {
@@ -132,7 +132,7 @@ namespace CoreEntities.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        Nullable<int> _document_typeid;
+        int _document_typeid;
         [DataMember]
         public string Description 
         {

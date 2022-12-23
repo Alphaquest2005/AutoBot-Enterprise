@@ -31,6 +31,8 @@
               this.Property(t => t.xCNumber).HasColumnName("xCNumber").HasMaxLength(20);
               this.Property(t => t.xLineNumber).HasColumnName("xLineNumber");
               this.Property(t => t.xRegistrationDate).HasColumnName("xRegistrationDate");
+              this.Property(t => t.DocumentType).HasColumnName("DocumentType").HasMaxLength(40);
+              this.Property(t => t.CustomsProcedure).HasColumnName("CustomsProcedure").HasMaxLength(11);
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);
     			this.Ignore(t => t.ModifiedProperties);

@@ -504,6 +504,42 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
         }	
 
  
+
+		private string _documentTypeFilter;
+        public string DocumentTypeFilter
+        {
+            get
+            {
+                return _documentTypeFilter;
+            }
+            set
+            {
+                _documentTypeFilter = value;
+				NotifyPropertyChanged(x => DocumentTypeFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
+
+		private string _customsProcedureFilter;
+        public string CustomsProcedureFilter
+        {
+            get
+            {
+                return _customsProcedureFilter;
+            }
+            set
+            {
+                _customsProcedureFilter = value;
+				NotifyPropertyChanged(x => CustomsProcedureFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
 		internal bool DisableBaseFilterData = false;
         public virtual void FilterData()
 	    {
@@ -635,7 +671,15 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 							if(xRegistrationDateFilter.HasValue)
 								res.Append(" && " + string.Format("xRegistrationDate == \"{0}\"",  Convert.ToDateTime(xRegistrationDateFilter).Date.ToString("MM/dd/yyyy")));
 						}
-							return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
+				 
+
+									if(string.IsNullOrEmpty(DocumentTypeFilter) == false)
+						res.Append(" && " + string.Format("DocumentType.Contains(\"{0}\")",  DocumentTypeFilter));						
+ 
+
+									if(string.IsNullOrEmpty(CustomsProcedureFilter) == false)
+						res.Append(" && " + string.Format("CustomsProcedure.Contains(\"{0}\")",  CustomsProcedureFilter));						
+			return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
 // Send to Excel Implementation
@@ -697,7 +741,13 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     xLineNumber = x.xLineNumber ,
                     
  
-                    xRegistrationDate = x.xRegistrationDate 
+                    xRegistrationDate = x.xRegistrationDate ,
+                    
+ 
+                    DocumentType = x.DocumentType ,
+                    
+ 
+                    CustomsProcedure = x.CustomsProcedure 
                     
                 }).ToList()
             };
@@ -750,6 +800,12 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     
  
                     public Nullable<System.DateTime> xRegistrationDate { get; set; } 
+                    
+ 
+                    public string DocumentType { get; set; } 
+                    
+ 
+                    public string CustomsProcedure { get; set; } 
                     
         }
 

@@ -279,6 +279,23 @@ public int LineNumber
 		}
      
 
+       
+       
+                
+                [MaxLength(50, ErrorMessage = "CustomsOperation has a max length of 50 letters ")]
+public string CustomsOperation
+		{ 
+		    get { return this.asycudadocumentitementrydatadetails.CustomsOperation; }
+			set
+			{
+			    if (value == this.asycudadocumentitementrydatadetails.CustomsOperation) return;
+				this.asycudadocumentitementrydatadetails.CustomsOperation = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("CustomsOperation");
+			}
+		}
+     
+
        private AsycudaDocumentItem _AsycudaDocumentItem;
         public  AsycudaDocumentItem AsycudaDocumentItem
 		{

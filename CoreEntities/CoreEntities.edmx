@@ -634,6 +634,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AsycudaDocumentItemEntryD
           <Property Name="EntryDataType" Type="nvarchar" MaxLength="50" />
           <Property Name="CNumber" Type="nvarchar" MaxLength="20" />
           <Property Name="LineNumber" Type="int" Nullable="false" />
+          <Property Name="CustomsOperation" Type="nvarchar" MaxLength="50" />
         </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AsycudaDocumentSetC71' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
@@ -689,6 +690,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AsycudaDocumentSetEx' doe
             
             
             
+            
           </Key>
           <Property Name="AsycudaDocumentSetId" Type="int" Nullable="false" />
           <Property Name="Declarant_Reference_Number" Type="nvarchar" MaxLength="50" />
@@ -696,7 +698,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AsycudaDocumentSetEx' doe
           <Property Name="Customs_ProcedureId" Type="int" />
           <Property Name="Country_of_origin_code" Type="nvarchar" MaxLength="3" />
           <Property Name="Currency_Code" Type="nvarchar" MaxLength="3" Nullable="false" />
-          <Property Name="Document_TypeId" Type="int" />
+          <Property Name="Document_TypeId" Type="int" Nullable="false" />
           <Property Name="Description" Type="nvarchar" MaxLength="255" />
           <Property Name="Manifest_Number" Type="nvarchar" MaxLength="50" />
           <Property Name="BLNumber" Type="nvarchar" MaxLength="50" />
@@ -1087,6 +1089,8 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-DiscrepanciesExecuti
           <Property Name="EmailId" Type="nvarchar" MaxLength="255" />
           <Property Name="xCNumber" Type="nvarchar" MaxLength="20" />
           <Property Name="xLineNumber" Type="int" />
+          <Property Name="DocumentType" Type="nvarchar" MaxLength="40" />
+          <Property Name="CustomsProcedure" Type="nvarchar" MaxLength="11" />
           <Property Name="xRegistrationDate" Type="datetime2" Precision="7" />
         </EntityType>
         <!--Errors Found During Generation:
@@ -2714,7 +2718,8 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
     [AsycudaDocumentItemEntryDataDetails].[Asycuda_id] AS [Asycuda_id], 
     [AsycudaDocumentItemEntryDataDetails].[EntryDataType] AS [EntryDataType], 
     [AsycudaDocumentItemEntryDataDetails].[CNumber] AS [CNumber], 
-    [AsycudaDocumentItemEntryDataDetails].[LineNumber] AS [LineNumber]
+    [AsycudaDocumentItemEntryDataDetails].[LineNumber] AS [LineNumber], 
+    [AsycudaDocumentItemEntryDataDetails].[CustomsOperation] AS [CustomsOperation]
     FROM [dbo].[AsycudaDocumentItemEntryDataDetails] AS [AsycudaDocumentItemEntryDataDetails]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="AsycudaDocumentSetC71" EntityType="Self.AsycudaDocumentSetC71" store:Type="Views" store:Schema="dbo">
@@ -3028,6 +3033,8 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
     [TODO-DiscrepanciesExecutionReport].[EmailId] AS [EmailId], 
     [TODO-DiscrepanciesExecutionReport].[xCNumber] AS [xCNumber], 
     [TODO-DiscrepanciesExecutionReport].[xLineNumber] AS [xLineNumber], 
+    [TODO-DiscrepanciesExecutionReport].[DocumentType] AS [DocumentType], 
+    [TODO-DiscrepanciesExecutionReport].[CustomsProcedure] AS [CustomsProcedure], 
     [TODO-DiscrepanciesExecutionReport].[xRegistrationDate] AS [xRegistrationDate]
     FROM [dbo].[TODO-DiscrepanciesExecutionReport] AS [TODO-DiscrepanciesExecutionReport]</DefiningQuery>
           </EntitySet>
@@ -4431,7 +4438,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
           <Property Name="Customs_ProcedureId" Type="Int32" />
           <Property Name="Country_of_origin_code" Type="String" MaxLength="3" FixedLength="false" Unicode="true" />
           <Property Name="Currency_Code" Type="String" MaxLength="3" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="Document_TypeId" Type="Int32" />
+          <Property Name="Document_TypeId" Type="Int32" Nullable="false" />
           <Property Name="Description" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="Manifest_Number" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="BLNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
@@ -4599,6 +4606,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
           <Property Name="AsycudaDocumentSetId" Type="Int32" Nullable="false" />
           <Property Name="CNumber" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Name="LineNumber" Type="Int32" Nullable="false" />
+          <Property Name="CustomsOperation" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
         </EntityType>
         <Association Name="AsycudaDocumentItemAsycudaDocumentItemEntryDataDetails">
           <End Type="WaterNutDBModel.AsycudaDocumentItem" Role="AsycudaDocumentItem" Multiplicity="1" />
@@ -6426,6 +6434,8 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
           <Property Name="xCNumber" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Name="xLineNumber" Type="Int32" />
           <Property Name="xRegistrationDate" Type="DateTime" Precision="7" />
+          <Property Name="DocumentType" Type="String" MaxLength="40" FixedLength="false" Unicode="true" />
+          <Property Name="CustomsProcedure" Type="String" MaxLength="11" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="TODO_LicenceAvailableQty">
           <Key>
@@ -7078,6 +7088,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
           <EntitySetMapping Name="AsycudaDocumentItemEntryDataDetails">
             <EntityTypeMapping TypeName="WaterNutDBModel.AsycudaDocumentItemEntryDataDetails">
               <MappingFragment StoreEntitySet="AsycudaDocumentItemEntryDataDetails">
+                <ScalarProperty Name="CustomsOperation" ColumnName="CustomsOperation" />
                 <ScalarProperty Name="LineNumber" ColumnName="LineNumber" />
                 <ScalarProperty Name="CNumber" ColumnName="CNumber" />
                 <ScalarProperty Name="AsycudaDocumentSetId" ColumnName="AsycudaDocumentSetId" />
@@ -8342,6 +8353,8 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
           <EntitySetMapping Name="TODO_DiscrepanciesExecutionReport">
             <EntityTypeMapping TypeName="WaterNutDBModel.TODO_DiscrepanciesExecutionReport">
               <MappingFragment StoreEntitySet="TODO-DiscrepanciesExecutionReport">
+                <ScalarProperty Name="CustomsProcedure" ColumnName="CustomsProcedure" />
+                <ScalarProperty Name="DocumentType" ColumnName="DocumentType" />
                 <ScalarProperty Name="xRegistrationDate" ColumnName="xRegistrationDate" />
                 <ScalarProperty Name="xLineNumber" ColumnName="xLineNumber" />
                 <ScalarProperty Name="xCNumber" ColumnName="xCNumber" />

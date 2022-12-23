@@ -290,6 +290,36 @@ namespace CoreEntities.Business.Entities
             }
         }
         Nullable<System.DateTime> _xregistrationdate;
+        [DataMember]
+        public string DocumentType 
+        {
+            get
+            {
+                return _documenttype;
+            }
+            set
+            {
+                _documenttype = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _documenttype;
+        [DataMember]
+        public string CustomsProcedure 
+        {
+            get
+            {
+                return _customsprocedure;
+            }
+            set
+            {
+                _customsprocedure = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _customsprocedure;
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

@@ -100,7 +100,7 @@ namespace CoreEntities.Client.DTO
         private string _Currency_Code;
 
         [DataMember]
-        public Nullable<int> Document_TypeId
+        public int Document_TypeId
 		{ 
 		    get { return _Document_TypeId; }
 			set
@@ -110,7 +110,7 @@ namespace CoreEntities.Client.DTO
 				NotifyPropertyChanged();//m => this.Document_TypeId
 			}
 		}
-        private Nullable<int> _Document_TypeId;
+        private int _Document_TypeId;
 
         [DataMember]
         public string Description
