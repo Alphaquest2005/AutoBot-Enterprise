@@ -320,6 +320,21 @@ namespace CoreEntities.Business.Entities
             }
         }
         string _customsprocedure;
+        [DataMember]
+        public Nullable<int> ASYCUDA_Id 
+        {
+            get
+            {
+                return _asycuda_id;
+            }
+            set
+            {
+                _asycuda_id = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<int> _asycuda_id;
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

@@ -263,7 +263,9 @@ namespace AutoBot
                         ReferenceNumber = x.ReferenceNumber,
                         RegistrationDate = DateTime.Parse(x.xRegistrationDate),
                         Status = x.Status,
-                        
+                        ToBePaid = "",
+                        ASYCUDA_Id = x.ASYCUDA_Id.GetValueOrDefault()
+
                     })
                     .GroupBy(x => x.EmailId);
 
@@ -373,7 +375,8 @@ namespace AutoBot
                     DocumentType = x.DocumentType,
                     ReferenceNumber = x.Declarant_Reference_Number,
                     CustomsProcedure = x.CustomsProcedure,
-                    
+                    ASYCUDA_Id = x.ASYCUDA_Id
+
                 })
                 .ToList();
 

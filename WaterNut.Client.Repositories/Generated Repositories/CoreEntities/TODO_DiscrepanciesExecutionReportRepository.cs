@@ -473,6 +473,34 @@ namespace CoreEntities.Client.Repositories
                 throw;
             }
         } 
+ 	 public async Task<IEnumerable<TODO_DiscrepanciesExecutionReport>> GetTODO_DiscrepanciesExecutionReportByASYCUDA_Id(string ASYCUDA_Id, List<string> includesLst = null)
+        {
+             if (ASYCUDA_Id == "0") return null;
+            try
+            {
+                 using (TODO_DiscrepanciesExecutionReportClient t = new TODO_DiscrepanciesExecutionReportClient())
+                    {
+                        var res = await t.GetTODO_DiscrepanciesExecutionReportByASYCUDA_Id(ASYCUDA_Id, includesLst).ConfigureAwait(continueOnCapturedContext: false);
+                         if(res != null)
+                        {
+                            return res.Select(x => new TODO_DiscrepanciesExecutionReport(x)).AsEnumerable();
+					    }                
+					    else
+					    {
+						    return null;
+					    }                    
+                    }
+            }
+            catch (FaultException<ValidationFault> e)
+            {
+                throw new Exception(e.Detail.Message, e.InnerException);
+            }
+            catch (Exception)
+            {
+                Debugger.Break();
+                throw;
+            }
+        } 
          
 		public decimal SumField(string whereExp, string sumExp)
         {

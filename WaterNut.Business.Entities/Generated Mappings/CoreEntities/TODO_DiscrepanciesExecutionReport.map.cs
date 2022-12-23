@@ -33,6 +33,7 @@
               this.Property(t => t.xRegistrationDate).HasColumnName("xRegistrationDate");
               this.Property(t => t.DocumentType).HasColumnName("DocumentType").HasMaxLength(40);
               this.Property(t => t.CustomsProcedure).HasColumnName("CustomsProcedure").HasMaxLength(11);
+              this.Property(t => t.ASYCUDA_Id).HasColumnName("ASYCUDA_Id");
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);
     			this.Ignore(t => t.ModifiedProperties);
