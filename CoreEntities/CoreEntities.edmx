@@ -1092,6 +1092,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-DiscrepanciesExecuti
           <Property Name="DocumentType" Type="nvarchar" MaxLength="40" />
           <Property Name="CustomsProcedure" Type="nvarchar" MaxLength="11" />
           <Property Name="xRegistrationDate" Type="datetime2" Precision="7" />
+          <Property Name="ASYCUDA_Id" Type="int" />
         </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-DiscrepanciesToAssess' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
@@ -3035,7 +3036,8 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
     [TODO-DiscrepanciesExecutionReport].[xLineNumber] AS [xLineNumber], 
     [TODO-DiscrepanciesExecutionReport].[DocumentType] AS [DocumentType], 
     [TODO-DiscrepanciesExecutionReport].[CustomsProcedure] AS [CustomsProcedure], 
-    [TODO-DiscrepanciesExecutionReport].[xRegistrationDate] AS [xRegistrationDate]
+    [TODO-DiscrepanciesExecutionReport].[xRegistrationDate] AS [xRegistrationDate], 
+    [TODO-DiscrepanciesExecutionReport].[ASYCUDA_Id] AS [ASYCUDA_Id]
     FROM [dbo].[TODO-DiscrepanciesExecutionReport] AS [TODO-DiscrepanciesExecutionReport]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="TODO-DiscrepanciesToAssess" EntityType="Self.TODO-DiscrepanciesToAssess" store:Type="Views" store:Schema="dbo">
@@ -6436,6 +6438,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
           <Property Name="xRegistrationDate" Type="DateTime" Precision="7" />
           <Property Name="DocumentType" Type="String" MaxLength="40" FixedLength="false" Unicode="true" />
           <Property Name="CustomsProcedure" Type="String" MaxLength="11" FixedLength="false" Unicode="true" />
+          <Property Name="ASYCUDA_Id" Type="Int32" />
         </EntityType>
         <EntityType Name="TODO_LicenceAvailableQty">
           <Key>
@@ -8353,6 +8356,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
           <EntitySetMapping Name="TODO_DiscrepanciesExecutionReport">
             <EntityTypeMapping TypeName="WaterNutDBModel.TODO_DiscrepanciesExecutionReport">
               <MappingFragment StoreEntitySet="TODO-DiscrepanciesExecutionReport">
+                <ScalarProperty Name="ASYCUDA_Id" ColumnName="ASYCUDA_Id" />
                 <ScalarProperty Name="CustomsProcedure" ColumnName="CustomsProcedure" />
                 <ScalarProperty Name="DocumentType" ColumnName="DocumentType" />
                 <ScalarProperty Name="xRegistrationDate" ColumnName="xRegistrationDate" />

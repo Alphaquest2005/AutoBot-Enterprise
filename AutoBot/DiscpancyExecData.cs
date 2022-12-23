@@ -20,5 +20,6 @@ namespace AutoBotUtilities
         public string DocumentType { get; set; }
         public string ReferenceNumber { get; set; }
         public string CustomsProcedure { get; set; }
+        public int? ASYCUDA_Id { get; set; }
     }
 }

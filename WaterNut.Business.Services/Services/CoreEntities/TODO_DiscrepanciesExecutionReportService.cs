@@ -1098,6 +1098,34 @@ namespace CoreEntities.Business.Services
                     throw new FaultException<ValidationFault>(fault);
             }
         }
+ 	        public async Task<IEnumerable<TODO_DiscrepanciesExecutionReport>> GetTODO_DiscrepanciesExecutionReportByASYCUDA_Id(string ASYCUDA_Id, List<string> includesLst = null)
+        {
+            try
+            {
+                using ( var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
+              {
+                var i = Convert.ToInt32(ASYCUDA_Id);
+                var set = AddIncludes(includesLst, dbContext);
+                IEnumerable<TODO_DiscrepanciesExecutionReport> entities = set//dbContext.TODO_DiscrepanciesExecutionReport
+                                      .AsNoTracking()
+                                        .Where(x => x.ASYCUDA_Id.ToString() == ASYCUDA_Id.ToString())
+										.ToList();
+                return entities;
+              }
+             }
+            catch (Exception updateEx)
+            {
+                System.Diagnostics.Debugger.Break();
+                //throw new FaultException(updateEx.Message);
+                    var fault = new ValidationFault
+                                {
+                                    Result = false,
+                                    Message = updateEx.Message,
+                                    Description = updateEx.StackTrace
+                                };
+                    throw new FaultException<ValidationFault>(fault);
+            }
+        }
  
 		public decimal SumField(string whereExp, string field)
          {

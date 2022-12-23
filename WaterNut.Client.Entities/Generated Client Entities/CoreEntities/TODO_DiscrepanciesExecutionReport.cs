@@ -362,6 +362,21 @@ public string CustomsProcedure
 		}
      
 
+       
+       
+public Nullable<int> ASYCUDA_Id
+		{ 
+		    get { return this.todo_discrepanciesexecutionreport.ASYCUDA_Id; }
+			set
+			{
+			    if (value == this.todo_discrepanciesexecutionreport.ASYCUDA_Id) return;
+				this.todo_discrepanciesexecutionreport.ASYCUDA_Id = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("ASYCUDA_Id");
+			}
+		}
+     
+
 
         ChangeTrackingCollection<DTO.TODO_DiscrepanciesExecutionReport> _changeTracker;    
         public ChangeTrackingCollection<DTO.TODO_DiscrepanciesExecutionReport> ChangeTracker

@@ -281,6 +281,19 @@ namespace CoreEntities.Client.DTO
 		}
         private string _CustomsProcedure;
 
+        [DataMember]
+        public Nullable<int> ASYCUDA_Id
+		{ 
+		    get { return _ASYCUDA_Id; }
+			set
+			{
+			    if (value == _ASYCUDA_Id) return;
+				_ASYCUDA_Id = value;
+				NotifyPropertyChanged();//m => this.ASYCUDA_Id
+			}
+		}
+        private Nullable<int> _ASYCUDA_Id;
+
        
    //     [DataMember]
    //     public TrackingState TrackingState { get; set; }
