@@ -70,7 +70,9 @@ namespace AutoBot
             {
                 var emailId = ft.EmailId;
                 var lst = GetSubmitEntryData(ft);
-                SubmitDiscrepanciesToCustoms(Enumerable.Where<IGrouping<string, TODO_SubmitDiscrepanciesToCustoms>>(lst, x => x.Key == emailId));
+                var toBeProcessed =
+                    Enumerable.Where<IGrouping<string, TODO_SubmitDiscrepanciesToCustoms>>(lst, x => x.Key == emailId || ft.Data.Any(z => x.Any(q => q.CNumber == z.Value )));
+                SubmitDiscrepanciesToCustoms(toBeProcessed);
 
                
             }
@@ -250,7 +252,7 @@ namespace AutoBot
                 var executionFile = CreateExecutionFile(directory, data);
 
                 var otherCNumbers = executionFile.execData
-                    .Where(x => cNumbers.All(z => z.CNumber != x.xCNumber))
+                    .Where(x => !string.IsNullOrEmpty(x.xCNumber) && cNumbers.All(z => z.CNumber != x.xCNumber))
                     .DistinctBy(x => x.CNumber)
                     .Select(x => new TODO_SubmitDiscrepanciesToCustoms()
                     {
