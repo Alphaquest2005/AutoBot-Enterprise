@@ -24,7 +24,7 @@ namespace AutoBotUtilities
             {
                 var riderDetails = masterShipment.ShipmentAttachedRider.Where(x =>
                     x.ShipmentRider.ShipmentRiderDetails.Any(z =>
-                        z.ShipmentRiderBLs.Any(b => bls.Any(r => r.Id == b.BLId))))
+                        z.ShipmentRiderBLs.Any(b => bls.Any(r => r.Id == b.BLId)) || !bl.ShipmentBLDetails.Any()))
                     .SelectMany(x => x.ShipmentRider.ShipmentRiderDetails)
                     .ToList();
                 var packingDetails = riderDetails;

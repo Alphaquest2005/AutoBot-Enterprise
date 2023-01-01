@@ -306,6 +306,7 @@
     <Compile Include="DiscpancyExecData.cs" />
     <Compile Include="DiscrepancyPreExecutionReport.cs" />
     <Compile Include="DISUtils.cs" />
+    <Compile Include="DocumentUtils.cs" />
     <Compile Include="EntryDocSetUtils.cs" />
     <Compile Include="EX9Utils.cs" />
     <Compile Include="FileUtils.cs" />

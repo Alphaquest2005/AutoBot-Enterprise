@@ -97,16 +97,16 @@ namespace EntryDataDS.Business.Services
         }
 
 
-        public async Task<PackageTypes> GetPackageTypesByKey(string PackageType, List<string> includesLst = null, bool tracking = true)
+        public async Task<PackageTypes> GetPackageTypesByKey(string PackageDescription, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
-			   if(string.IsNullOrEmpty(PackageType))return null; 
+			   if(string.IsNullOrEmpty(PackageDescription))return null; 
               using ( var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
               {
-                var i = PackageType;
+                var i = PackageDescription;
 				var set = AddIncludes(includesLst, dbContext);
-                PackageTypes entity = set.AsNoTracking().SingleOrDefault(x => x.PackageType == i);
+                PackageTypes entity = set.AsNoTracking().SingleOrDefault(x => x.PackageDescription == i);
                 if(tracking && entity != null) entity.StartTracking();
                 return entity;
               }
@@ -281,11 +281,11 @@ namespace EntryDataDS.Business.Services
                                 IQueryable<PackageTypes> dset;
                                 if (exp == "All")
                                 {
-                                    dset = set.OrderBy(x => x.PackageType);
+                                    dset = set.OrderBy(x => x.PackageDescription);
                                 }
                                 else
                                 {
-                                    dset = set.OrderBy(x => x.PackageType).Where(exp);
+                                    dset = set.OrderBy(x => x.PackageDescription).Where(exp);
                                 }
 
                                 var lst = dset.AsNoTracking()
@@ -356,12 +356,12 @@ namespace EntryDataDS.Business.Services
                                 IQueryable<PackageTypes> dset;
                                 if (expLst.FirstOrDefault() == "All")
                                 {
-                                    dset = set.OrderBy(x => x.PackageType);
+                                    dset = set.OrderBy(x => x.PackageDescription);
                                 }
                                 else
                                 {
                                     set = AddWheres(expLst, set);
-                                    dset = set.OrderBy(x => x.PackageType);
+                                    dset = set.OrderBy(x => x.PackageDescription);
                                 }
 
                                 var lst = dset.AsNoTracking()
@@ -498,15 +498,15 @@ namespace EntryDataDS.Business.Services
             }
         }
 
-        public async Task<bool> DeletePackageTypes(string PackageType)
+        public async Task<bool> DeletePackageTypes(string PackageDescription)
         {
             try
             {
               using ( var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
               {
-                var i = PackageType;
+                var i = PackageDescription;
                 PackageTypes entity = dbContext.PackageTypes
-													.SingleOrDefault(x => x.PackageType == i);
+													.SingleOrDefault(x => x.PackageDescription == i);
                 if (entity == null)
                     return false;
 
@@ -653,7 +653,7 @@ namespace EntryDataDS.Business.Services
                     {
                         return dbContext.PackageTypes
 										.AsNoTracking()
-                                        .OrderBy(y => y.PackageType)
+                                        .OrderBy(y => y.PackageDescription)
 										.Skip(startIndex)
 										.Take(count)
 										.ToList();
@@ -664,7 +664,7 @@ namespace EntryDataDS.Business.Services
                         return dbContext.PackageTypes
 										.AsNoTracking()
                                         .Where(exp)
-										.OrderBy(y => y.PackageType)
+										.OrderBy(y => y.PackageDescription)
 										.Skip(startIndex)
 										.Take(count)
 										.ToList();
@@ -699,7 +699,7 @@ namespace EntryDataDS.Business.Services
 										.AsNoTracking()
                                         .Count();
                     }
-                    return dbContext.PackageTypes.Where(exp == "All" || exp == null ? "PackageType != null" : exp)
+                    return dbContext.PackageTypes.Where(exp == "All" || exp == null ? "PackageDescription != null" : exp)
 											.AsNoTracking()
                                             .Count();
                 }
@@ -741,9 +741,9 @@ namespace EntryDataDS.Business.Services
 				.AsNoTracking()
                 .Where(navExp)
                 .SelectMany(navProp).OfType<PackageTypes>()
-                .Where(exp == "All" || exp == null ? "PackageType != null" : exp)
+                .Where(exp == "All" || exp == null ? "PackageDescription != null" : exp)
                 .Distinct()
-                .OrderBy("PackageType")
+                .OrderBy("PackageDescription")
                 .Count();
 			}
 			catch (Exception)
@@ -761,9 +761,9 @@ namespace EntryDataDS.Business.Services
 				.AsNoTracking()
                 .Where(navExp)
                 .Select(navProp).OfType<PackageTypes>()
-                .Where(exp == "All" || exp == null ? "PackageType != null" : exp)
+                .Where(exp == "All" || exp == null ? "PackageDescription != null" : exp)
                 .Distinct()
-                .OrderBy("PackageType")
+                .OrderBy("PackageDescription")
                 .Count();
 			}
 			catch (Exception)
@@ -789,7 +789,7 @@ namespace EntryDataDS.Business.Services
                        
                         return set
 									.AsNoTracking()
-                                    .OrderBy(y => y.PackageType)
+                                    .OrderBy(y => y.PackageDescription)
  
                                     .Skip(startIndex)
                                     .Take(count)
@@ -797,8 +797,8 @@ namespace EntryDataDS.Business.Services
                     }
                     return set//dbContext.PackageTypes
 								.AsNoTracking()
-                                .Where(exp == "All" || exp == null ? "PackageType != null" : exp)
-								.OrderBy(y => y.PackageType)
+                                .Where(exp == "All" || exp == null ? "PackageDescription != null" : exp)
+								.OrderBy(y => y.PackageDescription)
  
                                 .Skip(startIndex)
                                 .Take(count)
@@ -849,9 +849,9 @@ namespace EntryDataDS.Business.Services
             if (includeLst != null) set = includeLst.Aggregate(set, (current, itm) => current.Include(itm));            
 
             return set
-                .Where(exp == "All" || exp == null ? "PackageType != null" : exp)
+                .Where(exp == "All" || exp == null ? "PackageDescription != null" : exp)
                 .Distinct()
-                .OrderBy(y => y.PackageType)
+                .OrderBy(y => y.PackageDescription)
  
                 .Skip(startIndex)
                 .Take(count)
@@ -877,9 +877,9 @@ namespace EntryDataDS.Business.Services
                if (includeLst != null) set = includeLst.Aggregate(set, (current, itm) => current.Include(itm)); 
                 
                return set
-                .Where(exp == "All" || exp == null ? "PackageType != null" : exp)
+                .Where(exp == "All" || exp == null ? "PackageDescription != null" : exp)
                 .Distinct()
-                .OrderBy(y => y.PackageType)
+                .OrderBy(y => y.PackageDescription)
  
                 .Skip(startIndex)
                 .Take(count)
@@ -928,7 +928,7 @@ namespace EntryDataDS.Business.Services
 							.AsNoTracking()
                             .Where(navExp)
 							.SelectMany(navProp).OfType<PackageTypes>()
-							.Where(exp == "All" || exp == null?"PackageType != null":exp)
+							.Where(exp == "All" || exp == null?"PackageDescription != null":exp)
 							.Distinct()
 							.ToList();
 			}
@@ -937,7 +937,7 @@ namespace EntryDataDS.Business.Services
 				.AsNoTracking()
                 .Where(navExp)
                 .SelectMany(navProp).OfType<PackageTypes>()
-                .Where(exp == "All" || exp == null?"PackageType != null":exp)
+                .Where(exp == "All" || exp == null?"PackageDescription != null":exp)
                 .Distinct();
 
 			set = includesLst.Aggregate(set, (current, itm) => current.Include(itm));
@@ -963,7 +963,7 @@ namespace EntryDataDS.Business.Services
 							.AsNoTracking()
                             .Where(navExp)
 							.Select(navProp).OfType<PackageTypes>()
-							.Where(exp == "All" || exp == null?"PackageType != null":exp)
+							.Where(exp == "All" || exp == null?"PackageDescription != null":exp)
 							.Distinct()
 							.ToList();
 			}
@@ -972,7 +972,7 @@ namespace EntryDataDS.Business.Services
 				.AsNoTracking()
                 .Where(navExp)
                 .Select(navProp).OfType<PackageTypes>()
-                .Where(exp == "All" || exp == null?"PackageType != null":exp)
+                .Where(exp == "All" || exp == null?"PackageDescription != null":exp)
                 .Distinct();
 
 			set = includesLst.Aggregate(set, (current, itm) => current.Include(itm));
@@ -1037,7 +1037,7 @@ namespace EntryDataDS.Business.Services
 										.AsNoTracking()
                                         .Sum(field)??0);
                     }
-                    return Convert.ToDecimal(dbContext.PackageTypes.Where(exp == "All" || exp == null ? "PackageType != null" : exp)
+                    return Convert.ToDecimal(dbContext.PackageTypes.Where(exp == "All" || exp == null ? "PackageDescription != null" : exp)
 											.AsNoTracking()
                                             .Sum(field)??0);
                 }
@@ -1078,9 +1078,9 @@ namespace EntryDataDS.Business.Services
 				.AsNoTracking()
                 .Where(navExp)
                 .SelectMany(navProp).OfType<PackageTypes>()
-                .Where(exp == "All" || exp == null ? "PackageType != null" : exp)
+                .Where(exp == "All" || exp == null ? "PackageDescription != null" : exp)
                 .Distinct()
-                .OrderBy("PackageType")
+                .OrderBy("PackageDescription")
                 .Sum(field));
 			}
 			catch (Exception)
@@ -1098,9 +1098,9 @@ namespace EntryDataDS.Business.Services
 				.AsNoTracking()
                 .Where(navExp)
                 .Select(navProp).OfType<PackageTypes>()
-                .Where(exp == "All" || exp == null ? "PackageType != null" : exp)
+                .Where(exp == "All" || exp == null ? "PackageDescription != null" : exp)
                 .Distinct()
-                .OrderBy("PackageType")
+                .OrderBy("PackageDescription")
                 .Sum(field));
 			}
 			catch (Exception)

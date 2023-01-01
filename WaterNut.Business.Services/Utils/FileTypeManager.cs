@@ -138,6 +138,11 @@ namespace WaterNut.Business.Services.Utils
             public const string Xlsx = "XLSX";
             public const string PDF = "PDF";
             public const string XML = "XML";
+
+            public static List<FileTypes> GetFileTypes(string fileFormat) =>
+                new CoreEntitiesContext().FileTypes.Where(x =>
+                    x.FileImporterInfos.Format == fileFormat && x.ApplicationSettingsId ==
+                    BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId).ToList();
         }
 
         public static List<FileTypes> GetImportableFileType(string entryType, string fileFormat, string fileName) =>

@@ -82,7 +82,7 @@ namespace xlsxWriter
                                 parent = shipmentInvoice;
 
 
-                                if (parent.ShipmentInvoicePOs.Any(x => !String.Equals(x.PurchaseOrders.PONumber, "Null",
+                                if (parent.ShipmentInvoicePOs.Where(x => x.EntryData_Id != 0).Any(x => !String.Equals(x.PurchaseOrders.PONumber, "Null",
                                         StringComparison.CurrentCultureIgnoreCase)))
                                 {
                                     csvFilePath = Path.Combine(pdfFile.DirectoryName,
@@ -105,7 +105,7 @@ namespace xlsxWriter
 
                         WriteInvHeader(shipmentInvoice, header, workbook, isCombined);
 
-                        if (shipmentInvoice.ShipmentInvoicePOs.Any(x => !String.Equals(x.PurchaseOrders.PONumber,
+                        if (shipmentInvoice.ShipmentInvoicePOs.Where(x => x.EntryData_Id != 0).Any(x => !String.Equals(x.PurchaseOrders.PONumber,
                                 "Null", StringComparison.CurrentCultureIgnoreCase)))
                         {
                             foreach (var pO in shipmentInvoice.ShipmentInvoicePOs)

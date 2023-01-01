@@ -14,7 +14,7 @@ namespace AutoBot
         public static Dictionary<string, Action<FileTypes, FileInfo[]>> FileActions =>
             new Dictionary<string, Action<FileTypes, FileInfo[]>>(WaterNut.DataSpace.Utils.ignoreCase)
             {
-                {"ImportSalesEntries",(ft, fs) => SalesUtils.ImportSalesEntries(false) },
+                {"ImportSalesEntries",(ft, fs) => DocumentUtils.ImportSalesEntries(false) },
                 {"AllocateSales",(ft, fs) => SalesUtils.AllocateSales() },
                 {"CreateEx9",(ft, fs) => EX9Utils.CreateEx9(false, -1) },
                 {"ExportEx9Entries",(ft, fs) => EX9Utils.ExportEx9Entries(-1) },
@@ -27,7 +27,7 @@ namespace AutoBot
                 {"EmailPOEntries",(ft, fs) => POUtils.EmailPOEntries(ft.AsycudaDocumentSetId) },
                 {"DownloadSalesFiles",(ft, fs) => EX9Utils.DownloadSalesFiles(10, "IM7History",false) },
                 {"Xlsx2csv",(ft, fs) => XLSXProcessor.Xlsx2csv(fs, ft) },
-                {"SaveInfo",(ft, fs) => ImportUtils.TrySaveFileInfo(fs, ft) },
+                {"SaveInfo",(ft, fs) => EmailTextProcessor.Execute(fs, ft) },
                 {"CleanupEntries",(ft, fs) => EntryDocSetUtils.CleanupEntries() },
                 {"SubmitToCustoms",(ft, fs) => SalesUtils.SubmitSalesXMLToCustoms() },
                 {"MapUnClassifiedItems", (ft, fs) => ShipmentUtils.MapUnClassifiedItems(ft,fs) },

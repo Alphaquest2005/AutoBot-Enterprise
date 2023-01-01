@@ -42,7 +42,7 @@ namespace AutoBot
                 ExportEx9Entries(months);
                 AssessEx9Entries(months);
                 DownloadSalesFiles(10, "IM7", false);
-                SalesUtils.ImportSalesEntries(true);
+                DocumentUtils.ImportSalesEntries(true);
                 ImportWarehouseErrorsUtils.ImportWarehouseErrors(months);
                 RecreateEx9(months);
                 Application.Exit();

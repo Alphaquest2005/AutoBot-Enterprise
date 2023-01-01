@@ -18,11 +18,11 @@ namespace EntryDataDS.Business.Entities
         {
             get
             {
-                return this.PackageType.ToString();  // this.PackageType == null?"0":
+                return this.PackageDescription.ToString();  // this.PackageDescription == null?"0":
             }
             set
             {
-                this.PackageType = Convert.ToString(value);
+                this.PackageDescription = Convert.ToString(value);
             }
         }
 

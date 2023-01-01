@@ -634,13 +634,22 @@ namespace WaterNut.DataSpace
 
         public static string SetFilename(string droppedFilePath, string targetFileName, string nameExtension)
         {
-            string filename;
+            try
+            {
+                string filename;
 
-            var file = new FileInfo(droppedFilePath);
-            filename = $"{Path.Combine(file.DirectoryName)}\\{targetFileName}{nameExtension}";
-            if (!File.Exists(filename)) File.Copy(droppedFilePath, filename);
+                var file = new FileInfo(droppedFilePath);
+                filename = $"{Path.Combine(file.DirectoryName)}\\{targetFileName}{nameExtension}";
+                if (!File.Exists(filename)) File.Copy(droppedFilePath, filename);
 
-            return filename;
+                return filename;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return null;
+            }
+            
         }
 
 

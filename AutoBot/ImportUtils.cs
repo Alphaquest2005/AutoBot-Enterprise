@@ -10,97 +10,120 @@ using FileInfo = System.IO.FileInfo;
 
 namespace AutoBotUtilities
 {
-    public class ImportUtils
+    public class EmailTextProcessor
     {
-        public static FileInfo[] TrySaveFileInfo(FileInfo[] csvFiles, FileTypes fileType)
+        public static FileInfo[] Execute(FileInfo[] csvFiles, FileTypes fileType)
         {
             try
             {
 
                 var res = new List<FileInfo>();
+
                 foreach (var file in csvFiles)
                 {
-                    var fileTxt = File.ReadAllLines(file.FullName);
-                    string dbStatement = "";
-                    foreach (var line in fileTxt)
-                    {
-                        if (line.ToLower().Contains("Not Found".ToLower())) continue;
-                        var im = fileType.EmailInfoMappings.SelectMany(x => x.InfoMapping.InfoMappingRegEx.Select(z => new
-                            {
-                                Em = x,
-                                Rx = z,
-                                Key = Regex.Match(line, z.KeyRegX, RegexOptions.IgnoreCase | RegexOptions.Multiline),
-                                Field = Regex.Match(line, z.FieldRx, RegexOptions.IgnoreCase | RegexOptions.Multiline)
-                            }))
-                            .Where(z => z.Key.Success && z.Field.Success).ToList();
+                    var emailMappings = File.ReadAllLines(file.FullName)
+                        .Where(line => !line.ToLower().Contains("Not Found".ToLower()))
+                        .Select(line => GetEmailMappings(fileType, line))
+                        .ToList();
 
-                        if (!im.Any()) continue;
-                        if (!res.Contains(file)) res.Add(file);
-
-                        im.ForEach(x =>
+                    if (emailMappings.Any()) res.Add(file);
+                    var dbStatement = emailMappings.Select(linex =>
                         {
-                            try
-                            {
-                                var key = string.IsNullOrEmpty(x.Key.Groups["Key"].Value.Trim())
-                                    ? x.Rx.InfoMapping.Key
-                                    : x.Rx.KeyReplaceRx == null
-                                        ? x.Key.Groups["Key"].Value.Trim()
-                                        : Regex.Match(
-                                                Regex.Replace(line, x.Rx.KeyRegX, x.Rx.KeyReplaceRx,
-                                                    RegexOptions.IgnoreCase), x.Rx.KeyRegX,
-                                                RegexOptions.IgnoreCase)
-                                            .Value.Trim();
 
-                                var value = string.IsNullOrEmpty(x.Field.Groups["Value"].Value.Trim())
-                                    ? x.Field.Groups[0].Value.Trim()
-                                    : x.Rx.FieldReplaceRx == null
-                                        ? x.Field.Groups["Value"].Value.Trim()
-                                        : Regex.Match(
-                                                Regex.Replace(line, x.Rx.FieldRx, x.Rx.FieldReplaceRx,
-                                                    RegexOptions.IgnoreCase), x.Rx.FieldRx,
-                                                RegexOptions.IgnoreCase)
-                                            .Value.Trim();
-                                fileType.Data.Add(
-                                    new KeyValuePair<string, string>(key, value));
-
-                                if (x.Em.UpdateDatabase == true)
+                            var str = linex.im.Select(im => GetMappingData(fileType, im, linex.line))
+                                .Select(kp =>
                                 {
-                                    dbStatement +=
-                                        $@" Update {x.Rx.InfoMapping.EntityType} Set {x.Rx.InfoMapping.Field} = '{
-                                            ReplaceSpecialChar(value,
-                                                "")
-                                        }' Where {x.Rx.InfoMapping.EntityKeyField} = '{
-                                            fileType.Data.First(z => z.Key == x.Rx.InfoMapping.EntityKeyField).Value}';";
-                                }
-                            }
-                            catch (Exception)
-                            {
+                                    fileType.Data.Add(kp.InfoData);
 
-                                throw;
-                            }
-                        });
+                                    return kp;
+                                })
+                                .Select(kp => GetDbStatement(fileType, kp))
+                                .DefaultIfEmpty("")
+                                .Aggregate((o, n) => $"{o}\r\n{n}");
+                            return str;
 
 
-                    }
+                        })
+                        .DefaultIfEmpty("")
+                        .Aggregate((o, n) => $"{o}\r\n{n}");
+
 
                     if (!string.IsNullOrEmpty(dbStatement))
+                    {
                         new CoreEntitiesContext().Database.ExecuteSqlCommand(dbStatement);
+                    }
+
                 }
 
                 return res.ToArray();
             }
             catch (Exception)
             {
-
                 throw;
             }
         }
+
+        private static (string line, List<(EmailInfoMappings EmailMapping, InfoMappingRegEx RegEx, Match Key, Match Field)> im) GetEmailMappings(FileTypes fileType, string line)
+        {
+            var im = fileType.EmailInfoMappings.SelectMany(x => x.InfoMapping.InfoMappingRegEx.Select(z =>
+                (
+                    EmailMapping: x,
+                    RegEx: z,
+                    Key: Regex.Match(line, z.KeyRegX, RegexOptions.IgnoreCase | RegexOptions.Multiline),
+                    Field: Regex.Match(line, z.FieldRx, RegexOptions.IgnoreCase | RegexOptions.Multiline)
+                )))
+                .Where(z => z.Key.Success && z.Field.Success).ToList();
+            return (line,im);
+        }
+
+        private static ((EmailInfoMappings EmailMapping, InfoMappingRegEx RegEx, Match Key, Match Field) InfoMapping, KeyValuePair<string, string> InfoData) GetMappingData(FileTypes fileType, (EmailInfoMappings EmailMapping, InfoMappingRegEx RegEx, Match Key, Match Field) x, string line)
+        {
+                try
+                {
+                    var key = string.IsNullOrEmpty(x.Key.Groups["Key"].Value.Trim())
+                        ? x.RegEx.InfoMapping.Key
+                        : x.RegEx.KeyReplaceRx == null
+                            ? x.Key.Groups["Key"].Value.Trim()
+                            : Regex.Match(
+                                    Regex.Replace(line, x.RegEx.KeyRegX, x.RegEx.KeyReplaceRx,
+                                        RegexOptions.IgnoreCase), x.RegEx.KeyRegX,
+                                    RegexOptions.IgnoreCase)
+                                .Value.Trim();
+
+                    var value = string.IsNullOrEmpty(x.Field.Groups["Value"].Value.Trim())
+                        ? x.Field.Groups[0].Value.Trim()
+                        : x.RegEx.FieldReplaceRx == null
+                            ? x.Field.Groups["Value"].Value.Trim()
+                            : Regex.Match(
+                                    Regex.Replace(line, x.RegEx.FieldRx, x.RegEx.FieldReplaceRx,
+                                        RegexOptions.IgnoreCase), x.RegEx.FieldRx,
+                                    RegexOptions.IgnoreCase)
+                                .Value.Trim();
+
+                    return (InfoMapping: x,InfoData:  new KeyValuePair<string, string>(key, value));
+
+
+                }
+                catch (Exception)
+                {
+                    throw;
+                }
+            
+            
+        }
+
+        private static string GetDbStatement(FileTypes fileType, ((EmailInfoMappings EmailMapping, InfoMappingRegEx RegEx, Match Key, Match Field) InfoMapping, KeyValuePair<string, string> InfoData) ikp) =>
+            $@" Update {ikp.InfoMapping.RegEx.InfoMapping.EntityType} Set {ikp.InfoMapping.RegEx.InfoMapping.Field} = '{ReplaceSpecialChar(ikp.InfoData.Value,
+                "")}' Where {ikp.InfoMapping.RegEx.InfoMapping.EntityKeyField} = '{fileType.Data.First(z => z.Key == ikp.InfoMapping.RegEx.InfoMapping.EntityKeyField).Value}';";
 
         public static string ReplaceSpecialChar(string msgSubject, string rstring)
         {
             return Regex.Replace(msgSubject, @"[^0-9a-zA-Z.\s\-]+", rstring);
         }
+    }
 
+    public class ImportUtils
+    {
         public static void ExecuteDataSpecificFileActions(FileTypes fileType, FileInfo[] files, ApplicationSettings appSetting)
         {
             try

@@ -259,10 +259,10 @@
         </EntityType>
         <EntityType Name="PackageTypes">
           <Key>
-            <PropertyRef Name="PackageType" />
+            <PropertyRef Name="PackageDescription" />
           </Key>
           <Property Name="PackageType" Type="nvarchar" MaxLength="4" Nullable="false" />
-          <Property Name="PackageDescription" Type="nvarchar" MaxLength="50" />
+          <Property Name="PackageDescription" Type="nvarchar" MaxLength="50" Nullable="false" />
         </EntityType>
         <EntityType Name="ShimentBLCharges">
           <Key>
@@ -1280,7 +1280,9 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ShipmentRiderManifests' d
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_EntryData_FileTypes1">
-          <End Role="FileTypes" Type="Self.FileTypes" Multiplicity="0..1" />
+          <End Role="FileTypes" Type="Self.FileTypes" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
           <End Role="EntryData" Type="Self.EntryData" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="FileTypes">
@@ -3117,10 +3119,10 @@ FROM [dbo].[ShipmentRiderManifests] AS [ShipmentRiderManifests]</DefiningQuery>
         </Association>
         <EntityType Name="PackageTypes">
           <Key>
-            <PropertyRef Name="PackageType" />
+            <PropertyRef Name="PackageDescription" />
           </Key>
           <Property Name="PackageType" Type="String" Nullable="false" MaxLength="4" FixedLength="false" Unicode="true" />
-          <Property Name="PackageDescription" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="PackageDescription" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
         </EntityType>
         <EntityType Name="Suppliers">
           <Key>
