@@ -246,13 +246,15 @@ namespace AutoBot
                     var rlst = ctx.TODO_SubmitPOInfo
                         .Where(x => x.ApplicationSettingsId ==
                                     BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)
-                        .Where(x => x.Reference.Contains(docSet.Declarant_Reference_Number))
+                        .Where(x => x.Reference.Contains(docSet.Declarant_Reference_Number) || poList.Contains(x.CNumber))
                         .ToList();
                     List<TODO_SubmitPOInfo> lst;
                     if (rlst.Any())
                     {
-                        lst = rlst.Where(x => x.Reference.Contains(docSet.Declarant_Reference_Number))
-                            .ToList();
+                        lst = poList.Any()
+                            ? rlst.Where(x => poList.Contains(x.CNumber)).ToList()
+                            : rlst.Where(x => x.Reference.Contains(docSet.Declarant_Reference_Number)).ToList();
+
                     }
                     else
                     {
