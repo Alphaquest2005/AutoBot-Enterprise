@@ -15,8 +15,8 @@ namespace AutoBot
             new Dictionary<string, Action<FileTypes, FileInfo[]>>(WaterNut.DataSpace.Utils.ignoreCase)
             {
                 {"ImportSalesEntries",(ft, fs) => DocumentUtils.ImportSalesEntries(false) },
-                {"AllocateSales",(ft, fs) => SalesUtils.AllocateSales() },
-                {"CreateEx9",(ft, fs) => EX9Utils.CreateEx9(false, -1) },
+                {"AllocateSales",(ft, fs) => AllocateSalesUtils.AllocateSales() },
+                {"CreateEx9",(ft, fs) => CreateEX9Utils.CreateEx9(false, -1) },
                 {"ExportEx9Entries",(ft, fs) => EX9Utils.ExportEx9Entries(-1) },
                 {"AssessEx9Entries",(ft, fs) => EX9Utils.AssessEx9Entries(-1) },
                 {"SaveCsv",(ft, fs) => CSVUtils.SaveCsv(fs, ft) },
@@ -29,7 +29,7 @@ namespace AutoBot
                 {"Xlsx2csv",(ft, fs) => XLSXProcessor.Xlsx2csv(fs, ft) },
                 {"SaveInfo",(ft, fs) => EmailTextProcessor.Execute(fs, ft) },
                 {"CleanupEntries",(ft, fs) => EntryDocSetUtils.CleanupEntries() },
-                {"SubmitToCustoms",(ft, fs) => SalesUtils.SubmitSalesXMLToCustoms() },
+                {"SubmitToCustoms",(ft, fs) => SubmitSalesXmlToCustomsUtils.SubmitSalesXMLToCustoms() },
                 {"MapUnClassifiedItems", (ft, fs) => ShipmentUtils.MapUnClassifiedItems(ft,fs) },
                 {"UpdateSupplierInfo", (ft, fs) => ShipmentUtils.UpdateSupplierInfo(ft,fs) },
                 {"ImportPDF", (ft, fs) => PDFUtils.ImportPDF(fs,ft) },
@@ -49,7 +49,7 @@ namespace AutoBot
                 {"AssessDiscrepancyExecutions", DISUtils.AssessDiscrepancyExecutions },
                 {"AttachEmailPDF", PDFUtils.AttachEmailPDF },
                 {"ReSubmitDiscrepanciesToCustoms", DISUtils.ReSubmitDiscrepanciesToCustoms },
-                {"ReSubmitSalesToCustoms", SalesUtils.ReSubmitSalesToCustoms },
+                {"ReSubmitSalesToCustoms", SubmitSalesToCustomsUtils.ReSubmitSalesToCustoms },
 
 
                 {"SubmitMissingInvoices",  (ft, fs) => Utils.SubmitMissingInvoices(ft) },

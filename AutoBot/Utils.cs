@@ -68,6 +68,8 @@ using xcuda_Tarification = DocumentItemDS.Business.Entities.xcuda_Tarification;
 
 namespace AutoBot
 {
+   
+
     public partial class Utils
     {
        
@@ -89,59 +91,7 @@ namespace AutoBot
         }
 
 
-        public static void ImportAllAsycudaDocumentsInDataFolder()
-        {
-            try
-            {
-
-
-                Console.WriteLine("Import All Asycuda Documents in DataFolder");
-                var files = Directory.GetFiles(
-                    Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder, "Imports"), "*.xml");
-                var res = new List<string>();
-                AsycudaDocumentSetEx docSet;
-                using (var ctx = new CoreEntitiesContext())
-                {
-                    var ifiles = ctx.AsycudaDocuments
-                        .Where(x => x.ApplicationSettingsId ==
-                                    BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId &&
-                                    x.ImportComplete == true).Select(x => new
-                        {
-                            Office = x.Customs_clearance_office_code,
-                            x.CNumber,
-                            Year = (x.RegistrationDate??DateTime.MinValue).Year.ToString()
-                        }).ToList();
-
-                    docSet = ctx.AsycudaDocumentSetExs.FirstOrDefault(x =>
-                        x.ApplicationSettingsId ==
-                        BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId &&
-                        x.Declarant_Reference_Number == "Imports");
-                    foreach (var file in files)
-                    {
-                        var f = Regex.Match(file, @"(?<Office>[A-Z]+)(\-(?<Year>\d{4}))?\-(?<CNumber>\d+).xml",
-                            RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture);
-                        if (f.Success == false) continue;
-                        var i = ifiles.FirstOrDefault(x =>
-                            x.CNumber == f.Groups["CNumber"].Value && x.Office == f.Groups["Office"].Value  && (string.IsNullOrEmpty(f.Groups["Year"].ToString()) || x.Year == f.Groups["Year"].ToString()));
-                        if (i == null)
-                        {
-                            res.Add(file);
-                        }
-                    }
-                }
-
-                BaseDataModel.Instance.ImportDocuments(docSet.AsycudaDocumentSetId, res, true, true, true, true, true)
-                    .Wait();
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-                throw;
-            }
-        }
-
-
-        public static void SetCurrentApplicationSettings(int id)
+    public static void SetCurrentApplicationSettings(int id)
         {
             using (var ctx = new CoreEntitiesContext() { })
             {
@@ -417,11 +367,8 @@ namespace AutoBot
 
                     return true;
                 }
-                else
-                {
 
-                    return true;
-                }
+                return true;
             }
             catch (Exception)
             {

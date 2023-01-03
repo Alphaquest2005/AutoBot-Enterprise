@@ -33,8 +33,7 @@ namespace AutoBot
     {
         public static void RecreateEx9(int months)
         {
-            var genDocs = CreateEx9(true, months);
-            var saleInfo = BaseDataModel.CurrentSalesInfo(months);
+            var genDocs = CreateEX9Utils.CreateEx9(true, months);
            
 
             if (Enumerable.Any<DocumentCT>(genDocs)) //reexwarehouse process
@@ -50,89 +49,11 @@ namespace AutoBot
             else // reimport and submit to customs
             {
                 PDFUtils.LinkPDFs();
-                SalesUtils.SubmitSalesXMLToCustoms();
+                SubmitSalesXmlToCustomsUtils.SubmitSalesXMLToCustoms();
                 EntryDocSetUtils.CleanupEntries();
                 Application.Exit();
             }
         }
-
-        public static List<DocumentCT> CreateEx9(bool overwrite, int months)
-        {
-            try
-            {
-                SQLBlackBox.RunSqlBlackBox();
-
-                Console.WriteLine("Create Ex9");
-
-               var saleInfo = BaseDataModel.CurrentSalesInfo(months);
-
-
-                if (saleInfo.Item3.AsycudaDocumentSetId == 0) return new List<DocumentCT>();
-
-                var docset = BaseDataModel.Instance.GetAsycudaDocumentSet(saleInfo.DocSet.AsycudaDocumentSetId).Result;
-                if (overwrite)
-                {
-                    BaseDataModel.Instance.ClearAsycudaDocumentSet(docset.AsycudaDocumentSetId).Wait();
-                    //BaseDataModel.Instance.UpdateAsycudaDocumentSetLastNumber(docset.AsycudaDocumentSetId, 0); don't overwrite previous entries
-                }
-
-                using (var ctx = new CoreEntitiesContext())
-                {
-                    ctx.Database.CommandTimeout = 0;
-                    var str = $@"SELECT EX9AsycudaSalesAllocations.ItemNumber
-                    FROM    EX9AsycudaSalesAllocations INNER JOIN
-                                     ApplicationSettings ON EX9AsycudaSalesAllocations.ApplicationSettingsId = ApplicationSettings.ApplicationSettingsId AND 
-                                     EX9AsycudaSalesAllocations.pRegistrationDate >= ApplicationSettings.OpeningStockDate LEFT OUTER JOIN
-                                     AllocationErrors ON ApplicationSettings.ApplicationSettingsId = AllocationErrors.ApplicationSettingsId AND EX9AsycudaSalesAllocations.ItemNumber = AllocationErrors.ItemNumber
-                    WHERE (EX9AsycudaSalesAllocations.PreviousItem_Id IS NOT NULL) AND (EX9AsycudaSalesAllocations.xBond_Item_Id = 0) AND (EX9AsycudaSalesAllocations.QtyAllocated IS NOT NULL) AND 
-                                     (EX9AsycudaSalesAllocations.EntryDataDetailsId IS NOT NULL) AND (EX9AsycudaSalesAllocations.Status IS NULL OR
-                                     EX9AsycudaSalesAllocations.Status = '') AND (ISNULL(EX9AsycudaSalesAllocations.DoNotAllocateSales, 0) <> 1) AND (ISNULL(EX9AsycudaSalesAllocations.DoNotAllocatePreviousEntry, 0) <> 1) AND 
-                                     (ISNULL(EX9AsycudaSalesAllocations.DoNotEX, 0) <> 1) AND (EX9AsycudaSalesAllocations.WarehouseError IS NULL) AND (EX9AsycudaSalesAllocations.CustomsOperationId = {(int)CustomsOperations.Warehouse}) AND (AllocationErrors.ItemNumber IS NULL) 
-                          AND (ApplicationSettings.ApplicationSettingsId = {
-                              BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId
-                          }) AND (EX9AsycudaSalesAllocations.InvoiceDate >= '{
-                              saleInfo.Item1.ToShortDateString()
-                          }') AND 
-                                     (EX9AsycudaSalesAllocations.InvoiceDate <= '{saleInfo.EndDate.ToShortDateString()}')
-                    GROUP BY EX9AsycudaSalesAllocations.ItemNumber, ApplicationSettings.ApplicationSettingsId--, EX9AsycudaSalesAllocations.pQuantity, EX9AsycudaSalesAllocations.PreviousItem_Id
-                    HAVING (SUM(EX9AsycudaSalesAllocations.PiQuantity) < SUM(EX9AsycudaSalesAllocations.pQtyAllocated)) AND (SUM(EX9AsycudaSalesAllocations.QtyAllocated) > 0) AND (MAX(EX9AsycudaSalesAllocations.xStatus) IS NULL)";
-
-                    var res = ctx.Database.SqlQuery<string>(str);
-                    if (!res.Any()) return new List<DocumentCT>();
-                }
-
-
-                var filterExpression =
-                    $"(ApplicationSettingsId == \"{BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId}\")" +
-                    $"&& (InvoiceDate >= \"{saleInfo.Item1:MM/01/yyyy}\" " +
-                    $" && InvoiceDate <= \"{saleInfo.Item2:MM/dd/yyyy HH:mm:ss}\")" +
-                    //  $"&& (AllocationErrors == null)" +// || (AllocationErrors.EntryDataDate  >= \"{saleInfo.Item1:MM/01/yyyy}\" &&  AllocationErrors.EntryDataDate <= \"{saleInfo.Item2:MM/dd/yyyy HH:mm:ss}\"))" +
-                    "&& ( TaxAmount == 0 ||  TaxAmount != 0)" +
-                    //"&& PreviousItem_Id != null" +
-                    //"&& (xBond_Item_Id == 0 )" +
-                    //"&& (QtyAllocated != null && EntryDataDetailsId != null)" +
-                    //"&& (PiQuantity < pQtyAllocated)" +
-                    //"&& (Status == null || Status == \"\")" +
-                    //(BaseDataModel.Instance.CurrentApplicationSettings.AllowNonXEntries == "Visible"
-                    //    ? $"&& (Invalid != true && (pExpiryDate >= \"{DateTime.Now.ToShortDateString()}\" || pExpiryDate == null) && (Status == null || Status == \"\"))"
-                    //    : "") +
-                    ($" && pRegistrationDate >= \"{BaseDataModel.Instance.CurrentApplicationSettings.OpeningStockDate}\"");
-
-
-
-                return AllocationsModel.Instance.CreateEX9Class.CreateEx9(filterExpression, false, false, true, docset, "Sales", "Historic", BaseDataModel.Instance.CurrentApplicationSettings.GroupEX9.GetValueOrDefault(), true, true, true, true, false, true, true, true, true).Result;
-
-
-
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-                throw;
-            }
-
-        }
-
 
 
         public static void ExportEx9Entries(int months)
@@ -142,7 +63,7 @@ namespace AutoBot
             {
                 var saleInfo =  BaseDataModel.CurrentSalesInfo(months);
 
-                SalesUtils.ExportDocSetSalesReport(saleInfo.DocSet.AsycudaDocumentSetId,
+                ExportDocSetSalesReportUtils.ExportDocSetSalesReport(saleInfo.DocSet.AsycudaDocumentSetId,
                     Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder,
                         saleInfo.DocSet.Declarant_Reference_Number)).Wait();
 
@@ -160,46 +81,49 @@ namespace AutoBot
 
         }
 
-        public static void AssessEx9Entries(int months)
+        public static void AssessEx9Entries(int months) => AssessSalesEntry(BaseDataModel.CurrentSalesInfo(months).Item3.Declarant_Reference_Number);
+
+        public static void AssessSalesEntry(string docReference)
         {
-            Console.WriteLine("Assessing Ex9 Entries");
-            var saleinfo = BaseDataModel.CurrentSalesInfo(months);
-            AssessSalesEntry(saleinfo.Item3.Declarant_Reference_Number, saleinfo.Item3.AsycudaDocumentSetId);
+            while (docReference != null && Utils.AssessComplete(GetInstructionFile(docReference),
+                       GetInstructionResultsFile(docReference), out var lcont) == false)
+                Utils.RunSiKuLi(GetDirectoryName(docReference), "AssessIM7",
+                    lcont.ToString()); //RunSiKuLi(directoryName, "SaveIM7", lcont.ToString());
         }
 
-        public static void AssessSalesEntry(string docReference, int asycudaDocumentSetId)
+        private static string GetDirectoryName(string docReference)
         {
-            if (docReference == null) return;
             var directoryName = Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder,
                 docReference);
+            return directoryName;
+        }
+
+        private static string GetInstructionResultsFile(string docReference)
+        {
             var resultsFile = Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder,
                 docReference, "InstructionResults.txt");
+            return resultsFile;
+        }
+
+        private static string GetInstructionFile(string docReference)
+        {
             var instrFile = Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder,
                 docReference, "Instructions.txt");
-
-            var lcont = 0;
-            while (Utils.AssessComplete(instrFile, resultsFile, out lcont) == false)
-            {
-                Utils.RunSiKuLi(directoryName, "AssessIM7", lcont.ToString());
-                //RunSiKuLi(directoryName, "SaveIM7", lcont.ToString());
-            }
-
-
+            return instrFile;
         }
 
         public static void DownloadSalesFiles(int trytimes, string script, bool redownload = false)
         {
             try
-
             {
                 var directoryName = $@"{Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder, "Imports")}";
-                // var directoryName = BaseDataModel.CurrentSalesInfo().Item4;//$@"{Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder, "Imports")}\";
                 Console.WriteLine("Download Entries");
                 var lcont = 0;
 
                 for (int i = 0; i < trytimes; i++)
                 {
-                    if (Utils.ImportComplete(directoryName, redownload, out lcont)) break;//ImportComplete(directoryName,false, out lcont);
+                    if (Utils.ImportComplete(directoryName, redownload, out lcont))
+                        break; //ImportComplete(directoryName,false, out lcont);
                     Utils.RunSiKuLi(directoryName, script, lcont.ToString());
                     if (Utils.ImportComplete(directoryName, redownload, out lcont)) break;
                 }
@@ -238,7 +162,7 @@ namespace AutoBot
 
         public static void RecreateEx9(FileTypes filetype, FileInfo[] files)
         {
-            var genDocs = EX9Utils.CreateEx9(true, -1);
+            var genDocs = CreateEX9Utils.CreateEx9(true, -1);
             var saleInfo = BaseDataModel.CurrentSalesInfo(-1);
             filetype.AsycudaDocumentSetId = saleInfo.DocSet.AsycudaDocumentSetId;
             if (Enumerable.Any<DocumentCT>(genDocs)) //reexwarehouse process
@@ -249,67 +173,6 @@ namespace AutoBot
             {
                 filetype.ProcessNextStep.AddRange(new List<string>() { "LinkPDFs", "SubmitToCustoms", "CleanupEntries", "Kill" });
             }
-        }
-
-        public static async Task<ObservableCollection<SaleReportLine>> Ex9SalesReport(int ASYCUDA_Id)
-        {
-            try
-            {
-                using (var ctx = new AllocationQSContext())
-                {
-                    var alst =
-                        ctx.AsycudaSalesAllocationsExs.Where(
-                            $"xASYCUDA_Id == {ASYCUDA_Id} " + "&& EntryDataDetailsId != null " +
-                            "&& PreviousItem_Id != null" + "&& pRegistrationDate != null").ToList();
-
-                    var d =
-                        alst.Where(x => x.xLineNumber != null)
-                            .Where(x => !string.IsNullOrEmpty(x.pCNumber))// prevent pre assessed entries
-                            .Where(x => x.pItemNumber.Length <= 20) // to match the entry
-                            .OrderBy(s => s.xLineNumber)
-                            .ThenBy(s => s.InvoiceNo)
-                            .Select(s => new EX9Utils.SaleReportLine
-                            {
-                                Line = Convert.ToInt32(s.xLineNumber),
-                                Date = Convert.ToDateTime(s.InvoiceDate),
-                                InvoiceNo = s.InvoiceNo,
-                                CustomerName = s.CustomerName.StartsWith("- ") ? s.CustomerName.Substring("- ".Length) : s.CustomerName,
-                                ItemNumber = s.ItemNumber,
-                                ItemDescription = s.ItemDescription,
-                                TariffCode = s.TariffCode,
-                                SalesFactor = Convert.ToDouble(s.SalesFactor),
-                                SalesQuantity = Convert.ToDouble(s.QtyAllocated),
-
-                                xQuantity = Convert.ToDouble(s.xQuantity), // Convert.ToDouble(s.QtyAllocated),
-                                Price = Convert.ToDouble(s.Cost),
-                                SalesType = s.DutyFreePaid,
-                                GrossSales = Convert.ToDouble(s.TotalValue),
-                                PreviousCNumber = s.pCNumber,
-                                PreviousLineNumber = s.pLineNumber.ToString(),
-                                PreviousRegDate = Convert.ToDateTime(s.pRegistrationDate).ToShortDateString(),
-                                CIFValue =
-                                    (Convert.ToDouble(s.Total_CIF_itm) / Convert.ToDouble(s.pQuantity)) *
-                                    Convert.ToDouble(s.QtyAllocated),
-                                DutyLiablity =
-                                    (Convert.ToDouble(s.DutyLiability) / Convert.ToDouble(s.pQuantity)) *
-                                    Convert.ToDouble(s.QtyAllocated),
-                                //Comments = s.Comments
-                            }).Distinct();
-
-
-
-                    return new ObservableCollection<SaleReportLine>(d);
-
-
-                }
-            }
-            catch (Exception Ex)
-            {
-
-            }
-
-            return null;
-
         }
 
         public static void Ex9AllAllocatedSales(bool overwrite)
