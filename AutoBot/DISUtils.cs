@@ -1275,7 +1275,7 @@ namespace AutoBot
 
                         string directoryName = Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder,
                             doc.Key.Declarant_Reference_Number);
-                        SalesUtils.ExportLastDocSetSalesReport(doc.Key.AsycudaDocumentSetId,
+                        ExportDocSetSalesReportUtils.ExportLastDocSetSalesReport(doc.Key.AsycudaDocumentSetId,
                             directoryName).Wait();
                         BaseDataModel.Instance.ExportLastDocumentInDocSet(doc.Key.AsycudaDocumentSetId,
                             directoryName, true).Wait();
@@ -1321,7 +1321,7 @@ namespace AutoBot
                         BaseDataModel.Instance.ExportLastDocumentInDocSet(doc.Key.AsycudaDocumentSetId,
                             Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder,
                                 doc.Key.Declarant_Reference_Number), true).Wait();
-                        SalesUtils.ExportLastDocSetSalesReport(doc.Key.AsycudaDocumentSetId,
+                        ExportDocSetSalesReportUtils.ExportLastDocSetSalesReport(doc.Key.AsycudaDocumentSetId,
                             Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder,
                                 doc.Key.Declarant_Reference_Number)).Wait();
 

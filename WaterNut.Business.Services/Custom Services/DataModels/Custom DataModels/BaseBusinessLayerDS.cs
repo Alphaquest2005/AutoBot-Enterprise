@@ -1042,8 +1042,7 @@ namespace WaterNut.DataSpace
             Console.WriteLine("Link PDF Files");
             var directoryName = StringExtensions.UpdateToCurrentUser(
                     Path.Combine(Instance.CurrentApplicationSettings.DataFolder,
-                        "Imports")) //doc.z.Declarant_Reference_Number));
-                ;
+                        "Imports"));
 
             using (var ctx = new CoreEntitiesContext())
             {

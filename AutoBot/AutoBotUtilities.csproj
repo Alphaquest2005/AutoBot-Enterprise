@@ -298,17 +298,23 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ADJUtils.cs" />
+    <Compile Include="AllocateSalesUtils.cs" />
     <Compile Include="AssessedEntryInfo.cs" />
     <Compile Include="BlandRiderCreator.cs" />
     <Compile Include="C71Utils.cs" />
+    <Compile Include="ImportAllAsycudaDocumentsInDataFolderUtils.cs" />
     <Compile Include="Client.cs" />
+    <Compile Include="CreateEX9Utils.cs" />
     <Compile Include="CSV\CSVUtilities.cs" />
     <Compile Include="DiscpancyExecData.cs" />
     <Compile Include="DiscrepancyPreExecutionReport.cs" />
     <Compile Include="DISUtils.cs" />
     <Compile Include="DocumentUtils.cs" />
+    <Compile Include="EmailSalesErrorsUtils.cs" />
     <Compile Include="EntryDocSetUtils.cs" />
+    <Compile Include="Ex9SalesReportUtils.cs" />
     <Compile Include="EX9Utils.cs" />
+    <Compile Include="ExportDocSetSalesReportUtils.cs" />
     <Compile Include="FileUtils.cs" />
     <Compile Include="ImportUtils.cs" />
     <Compile Include="ImportWarehouseErrors.cs" />
@@ -329,6 +335,8 @@
     <Compile Include="ShipmentUtils.cs" />
     <Compile Include="SubmitDiscrepanciesErrorReport.cs" />
     <Compile Include="SubmitEntryData.cs" />
+    <Compile Include="SubmitSalesToCustomsUtils.cs" />
+    <Compile Include="SubmitSalesXmlToCustomsUtils.cs" />
     <Compile Include="UpdateInvoice.cs" />
     <Compile Include="Utils.BlankLicenseDescription.cs" />
     <Compile Include="Utils.cs" />
