@@ -574,7 +574,9 @@ namespace AutoBot
 
 
                     if (p.Count < 8) continue;
-                    var fileName = Path.Combine(desFolder, $"{p[7] + p[8]}-{p[0]}-{DateTime.Parse(p[6]).Year}-{p[5]}.xml");
+                    if(!DateTime.TryParse(p[6], out var regDate)) continue;
+
+                    var fileName = Path.Combine(desFolder, $"{p[7] + p[8]}-{p[0]}-{regDate.Year}-{p[5]}.xml");
                     if (File.Exists(fileName))
                     {
                         existingfiles += 1;
