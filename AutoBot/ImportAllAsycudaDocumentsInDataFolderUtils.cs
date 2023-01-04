@@ -10,13 +10,13 @@ namespace AutoBot
 {
     public class ImportAllAsycudaDocumentsInDataFolderUtils
     {
-        public static void ImportAllAsycudaDocumentsInDataFolder()
+        public static void ImportAllAsycudaDocumentsInDataFolder(bool overwriteExisting)
         {
             try
             {
                 Console.WriteLine("Import All Asycuda Documents in DataFolder");
 
-                BaseDataModel.Instance.ImportDocuments(GetAsycudaDocumentSetEx("Imports").AsycudaDocumentSetId, GetImportFileList(), true, true, true, true, true)
+                BaseDataModel.Instance.ImportDocuments(GetAsycudaDocumentSetEx("Imports").AsycudaDocumentSetId, GetImportFileList(), true, true, true, overwriteExisting, true)
                     .Wait();
             }
             catch (Exception e)

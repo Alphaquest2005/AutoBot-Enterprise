@@ -25,7 +25,7 @@ namespace AutoBot
 
                 if (ImportEntries(overwriteExisting, fileTypes, DateTime.Today.AddHours(-12))) return;
 
-                ImportAllAsycudaDocumentsInDataFolderUtils.ImportAllAsycudaDocumentsInDataFolder();
+                ImportAllAsycudaDocumentsInDataFolderUtils.ImportAllAsycudaDocumentsInDataFolder(overwriteExisting);
 
                 EntryDocSetUtils.RemoveDuplicateEntries();
                 EntryDocSetUtils.FixIncompleteEntries();
@@ -38,7 +38,7 @@ namespace AutoBot
             }
         }
 
-        public static void ImportAllSalesEntries()
+        public static void ImportAllSalesEntries(bool overwriteExisting)
         {
             try
             {
@@ -46,9 +46,9 @@ namespace AutoBot
 
                 var fileTypes = FileTypeManager.FileFormats.GetFileTypes(FileTypeManager.FileFormats.XML);
 
-                if (ImportEntries(false, fileTypes, DateTime.MinValue)) return;
+                if (ImportEntries(overwriteExisting, fileTypes, DateTime.MinValue)) return;
 
-                ImportAllAsycudaDocumentsInDataFolderUtils.ImportAllAsycudaDocumentsInDataFolder();
+                ImportAllAsycudaDocumentsInDataFolderUtils.ImportAllAsycudaDocumentsInDataFolder(overwriteExisting);
 
                 EntryDocSetUtils.RemoveDuplicateEntries();
                 EntryDocSetUtils.FixIncompleteEntries();
@@ -71,7 +71,7 @@ namespace AutoBot
 
                 if (ImportEntries(overwriteExisting, fileTypes)) return;
 
-                ImportAllAsycudaDocumentsInDataFolderUtils.ImportAllAsycudaDocumentsInDataFolder();
+                ImportAllAsycudaDocumentsInDataFolderUtils.ImportAllAsycudaDocumentsInDataFolder(overwriteExisting);
 
                 EntryDocSetUtils.RemoveDuplicateEntries();
                 EntryDocSetUtils.FixIncompleteEntries();
