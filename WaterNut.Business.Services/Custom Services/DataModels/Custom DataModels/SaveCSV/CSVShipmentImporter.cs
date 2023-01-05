@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using Core.Common.Extensions;
 using CoreEntities.Business.Entities;
@@ -34,6 +35,8 @@ namespace WaterNut.DataSpace
                 var xdroppedFilePath = new CoreEntitiesContext().Attachments.Where(x =>
                         x.FilePath.Contains(entrydataid + ".pdf")).OrderByDescending(x => x.Id).FirstOrDefault()
                     ?.FilePath;
+
+                //if (string.IsNullOrEmpty(xdroppedFilePath)) return false;
                 if (xeslst == null) return false;
 
                 var invoicePOsData = xeslst.SelectMany(x =>
@@ -70,7 +73,7 @@ namespace WaterNut.DataSpace
 
 
                 _shipmentInvoiceImporter.ProcessShipmentInvoice(dataFile.FileType, dataFile.DocSet, dataFile.OverWriteExisting, dataFile.EmailId,
-                    xdroppedFilePath, xeslst, invoicePOs);
+                    xdroppedFilePath ?? dataFile.DroppedFilePath, xeslst, invoicePOs);
 
                 return true;
             }

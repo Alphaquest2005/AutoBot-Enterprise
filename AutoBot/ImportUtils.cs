@@ -45,7 +45,7 @@ namespace AutoBotUtilities
 
                         })
                         .DefaultIfEmpty("")
-                        .Aggregate((o, n) => $"{o}\r\n{n}");
+                        .Aggregate((o, n) => $"{o}\r\n{n}").Trim();
 
 
                     if (!string.IsNullOrEmpty(dbStatement))
