@@ -37,6 +37,7 @@ using AsycudaDocumentSet_Attachments = CoreEntities.Business.Entities.AsycudaDoc
 using Attachments = CoreEntities.Business.Entities.Attachments;
 using FileTypes = CoreEntities.Business.Entities.FileTypes;
 using Invoices = OCR.Business.Entities.Invoices;
+using org.apache.pdfbox.pdmodel.font;
 
 namespace WaterNut.DataSpace
 {
@@ -67,7 +68,8 @@ namespace WaterNut.DataSpace
                 //Get Template
                 var templates = GetTemplates(x => true);
 
-                foreach (var tmp in templates.OrderBy(x => x.OcrInvoices.Id))//.Where(x => x.OcrInvoices.Id == 117)
+                var possibleInvoices = GetPossibleInvoices(templates, pdfTxt);
+                foreach (var tmp in possibleInvoices)//.Where(x => x.OcrInvoices.Id == 117)
                     try
                     {
                         if(TryReadFile(file, emailId, fileType, pdfTxt, client, overWriteExisting, docSet, tmp, fileTypeId)) return true;
@@ -85,7 +87,8 @@ namespace WaterNut.DataSpace
 
                         var ex = new ApplicationException($"Problem importing file:{file} --- {realerror.Message}", e);
                         Console.WriteLine(ex);
-                        return false;
+                        continue;
+                        // return false;
                     }
 
                 ReportUnImportedFile(docSet,file, emailId,fileTypeId, client, pdfTxt.ToString(), "No template found for this File", new List<Line>());
@@ -108,6 +111,15 @@ namespace WaterNut.DataSpace
                 
                 return false;
             }
+        }
+
+        private static IEnumerable<Invoice> GetPossibleInvoices(List<Invoice> templates, StringBuilder pdfTxt)
+        {
+            return
+                templates
+                    .OrderBy(x => !x.OcrInvoices.Name.ToUpper().Contains("Tropical".ToUpper()))
+                    .ThenBy(x => x.OcrInvoices.Id)
+                    .ToList(); //.Where(tmp => IsInvoiceDocument(tmp.OcrInvoices, pdfTxt.ToString()));
         }
 
         public static List<Invoice> GetTemplates(Expression<Func<Invoices, bool>> filter)
@@ -149,12 +161,12 @@ namespace WaterNut.DataSpace
             Invoice tmp, int fileTypeId)
         {
 
-            if (!IsInvoiceDocument(tmp.OcrInvoices, pdftxt.ToString())) return false;
+           // if (!IsInvoiceDocument(tmp.OcrInvoices, pdftxt.ToString())) return false;
 
             var formattedPdfTxt = tmp.Format(pdftxt.ToString());
             var csvLines = tmp.Read(formattedPdfTxt);
             
-            var doc = ((List<IDictionary<string, object>>)csvLines.First()).First();
+            var doc = ((List<IDictionary<string, object>>)csvLines.FirstOrDefault())?.FirstOrDefault();
             
             if (csvLines.Count == 1 && !tmp.Lines.All(x => "Name, SupplierCode".Contains(x.OCR_Lines.Name)))
             {
