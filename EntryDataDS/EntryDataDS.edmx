@@ -625,6 +625,12 @@
           <Property Name="Country" Type="nvarchar" MaxLength="100" />
           <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
         </EntityType>
+        <EntityType Name="SystemDocumentSets">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" />
+        </EntityType>
         <EntityType Name="VolumeUnits">
           <Key>
             <PropertyRef Name="Name" />
@@ -1941,6 +1947,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ShipmentRiderManifests' d
           <EntitySet Name="SupplierItemDescription" EntityType="Self.SupplierItemDescription" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="SupplierItemDescriptionRegEx" EntityType="Self.SupplierItemDescriptionRegEx" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Suppliers" EntityType="Self.Suppliers" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="SystemDocumentSets" EntityType="Self.SystemDocumentSets" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="VolumeUnits" EntityType="Self.VolumeUnits" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="WarehouseInfo" EntityType="Self.WarehouseInfo" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="xSalesDetails" EntityType="Self.xSalesDetails" Schema="dbo" store:Type="Tables" />
@@ -2877,6 +2884,11 @@ FROM [dbo].[ShipmentRiderManifests] AS [ShipmentRiderManifests]</DefiningQuery>
             <End Role="ShipmentInvoicePOs" EntitySet="ShipmentInvoicePOs" />
             <End Role="ShipmentInvoicePOItemMISMatches" EntitySet="ShipmentInvoicePOItemMISMatches" />
           </AssociationSet>
+          <EntitySet Name="SystemDocumentSets" EntityType="WaterNutDBModel.SystemDocumentSets" />
+          <AssociationSet Name="SystemDocumentSetsEntryDataDetailsEx" Association="WaterNutDBModel.SystemDocumentSetsEntryDataDetailsEx">
+            <End Role="SystemDocumentSets" EntitySet="SystemDocumentSets" />
+            <End Role="EntryDataDetailsEx" EntitySet="EntryDataDetailsEx" />
+          </AssociationSet>
           </EntityContainer>
         <EntityType Name="Sales" BaseType="WaterNutDBModel.EntryData">
           <Property Name="INVNumber" Type="String" Nullable="false" MaxLength="50" Unicode="true" FixedLength="false"><a:EntityNameProperty xmlns:a="http://schemas.tempuri.com/EntityNameProperty">False</a:EntityNameProperty></Property>
@@ -3058,6 +3070,7 @@ FROM [dbo].[ShipmentRiderManifests] AS [ShipmentRiderManifests]</DefiningQuery>
           <Property Name="FileLineNumber" Type="Int32" />
           <Property Name="VolumeLiters" Type="Double" />
           <Property Name="PreviousCLineNumber" Type="Int32" />
+          <NavigationProperty Name="SystemDocumentSets" Relationship="WaterNutDBModel.SystemDocumentSetsEntryDataDetailsEx" FromRole="EntryDataDetailsEx" ToRole="SystemDocumentSets" />
         </EntityType>
         <Association Name="EntryDataDetailsEntryDataDetailsEx">
           <End Type="WaterNutDBModel.EntryDataDetails" Role="EntryDataDetails" Multiplicity="1" />
@@ -5042,6 +5055,25 @@ FROM [dbo].[ShipmentRiderManifests] AS [ShipmentRiderManifests]</DefiningQuery>
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="SystemDocumentSets">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="EntryDataDetailsEx" Relationship="WaterNutDBModel.SystemDocumentSetsEntryDataDetailsEx" FromRole="SystemDocumentSets" ToRole="EntryDataDetailsEx" />
+        </EntityType>
+        <Association Name="SystemDocumentSetsEntryDataDetailsEx">
+          <End Type="WaterNutDBModel.SystemDocumentSets" Role="SystemDocumentSets" Multiplicity="1" />
+          <End Type="WaterNutDBModel.EntryDataDetailsEx" Role="EntryDataDetailsEx" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="SystemDocumentSets">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="EntryDataDetailsEx">
+              <PropertyRef Name="AsycudaDocumentSetId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -6179,6 +6211,13 @@ FROM [dbo].[ShipmentRiderManifests] AS [ShipmentRiderManifests]</DefiningQuery>
                 <ScalarProperty Name="POId" ColumnName="POId" />
                 <ScalarProperty Name="INVDetailsId" ColumnName="INVDetailsId" />
                 <ScalarProperty Name="PODetailsId" ColumnName="PODetailsId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SystemDocumentSets">
+            <EntityTypeMapping TypeName="WaterNutDBModel.SystemDocumentSets">
+              <MappingFragment StoreEntitySet="SystemDocumentSets">
                 <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>

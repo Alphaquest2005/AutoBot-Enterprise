@@ -32,19 +32,19 @@ using WaterNut.Interfaces;
 
 namespace EntryDataDS.Business.Services
 {
-   [Export (typeof(IEntryDataDetailsExService))]
+   [Export (typeof(ISystemDocumentSetsService))]
    [Export(typeof(IBusinessService))]
    [PartCreationPolicy(CreationPolicy.NonShared)]
    [ServiceBehavior(InstanceContextMode = InstanceContextMode.PerCall,
                     ConcurrencyMode = ConcurrencyMode.Multiple)]
    
-    public partial class EntryDataDetailsExService : IEntryDataDetailsExService, IDisposable
+    public partial class SystemDocumentSetsService : ISystemDocumentSetsService, IDisposable
     {
         //private readonly EntryDataDSContext dbContext;
 
         public bool StartTracking { get; set; }
 
-        public EntryDataDetailsExService()
+        public SystemDocumentSetsService()
         {
             try
             {
@@ -65,7 +65,7 @@ namespace EntryDataDS.Business.Services
             }
         }
 
-        public async Task<IEnumerable<EntryDataDetailsEx>> GetEntryDataDetailsEx(List<string> includesLst = null, bool tracking = true)
+        public async Task<IEnumerable<SystemDocumentSets>> GetSystemDocumentSets(List<string> includesLst = null, bool tracking = true)
         {
             try
             {
@@ -75,7 +75,7 @@ namespace EntryDataDS.Business.Services
                   using ( var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
                   {
 				    var set = AddIncludes(includesLst, dbContext);
-                    IEnumerable<EntryDataDetailsEx> entities = set.AsNoTracking().ToList();
+                    IEnumerable<SystemDocumentSets> entities = set.AsNoTracking().ToList();
                            //scope.Complete();
                             if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
                             return entities;
@@ -97,16 +97,16 @@ namespace EntryDataDS.Business.Services
         }
 
 
-        public async Task<EntryDataDetailsEx> GetEntryDataDetailsExByKey(string EntryDataDetailsId, List<string> includesLst = null, bool tracking = true)
+        public async Task<SystemDocumentSets> GetSystemDocumentSetsByKey(string Id, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
-			   if(string.IsNullOrEmpty(EntryDataDetailsId))return null; 
+			   if(string.IsNullOrEmpty(Id))return null; 
               using ( var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
               {
-                var i = Convert.ToInt32(EntryDataDetailsId);
+                var i = Convert.ToInt32(Id);
 				var set = AddIncludes(includesLst, dbContext);
-                EntryDataDetailsEx entity = set.AsNoTracking().SingleOrDefault(x => x.EntryDataDetailsId == i);
+                SystemDocumentSets entity = set.AsNoTracking().SingleOrDefault(x => x.Id == i);
                 if(tracking && entity != null) entity.StartTracking();
                 return entity;
               }
@@ -126,14 +126,14 @@ namespace EntryDataDS.Business.Services
         }
 
 
-		 public async Task<IEnumerable<EntryDataDetailsEx>> GetEntryDataDetailsExByExpression(string exp, List<string> includesLst = null, bool tracking = true)
+		 public async Task<IEnumerable<SystemDocumentSets>> GetSystemDocumentSetsByExpression(string exp, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
                 using (var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-					if (string.IsNullOrEmpty(exp) || exp == "None") return new List<EntryDataDetailsEx>();
+					if (string.IsNullOrEmpty(exp) || exp == "None") return new List<SystemDocumentSets>();
 					var set = AddIncludes(includesLst, dbContext);
                     if (exp == "All")
                     {
@@ -167,14 +167,14 @@ namespace EntryDataDS.Business.Services
             }
         }
 
-		 public async Task<IEnumerable<EntryDataDetailsEx>> GetEntryDataDetailsExByExpressionLst(List<string> expLst, List<string> includesLst = null, bool tracking = true)
+		 public async Task<IEnumerable<SystemDocumentSets>> GetSystemDocumentSetsByExpressionLst(List<string> expLst, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
                 using (var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-					if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return new List<EntryDataDetailsEx>();
+					if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return new List<SystemDocumentSets>();
 					var set = AddIncludes(includesLst, dbContext);
                     if (expLst.FirstOrDefault() == "All")
                     {
@@ -207,7 +207,7 @@ namespace EntryDataDS.Business.Services
             }
         }
 
-		public async Task<IEnumerable<EntryDataDetailsEx>> GetEntryDataDetailsExByExpressionNav(string exp,
+		public async Task<IEnumerable<SystemDocumentSets>> GetSystemDocumentSetsByExpressionNav(string exp,
 																							  Dictionary<string, string> navExp,
 																							  List<string> includesLst = null, bool tracking = true)
         {
@@ -216,7 +216,7 @@ namespace EntryDataDS.Business.Services
                 using (var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-                    if (string.IsNullOrEmpty(exp) || exp == "None") return new List<EntryDataDetailsEx>();
+                    if (string.IsNullOrEmpty(exp) || exp == "None") return new List<SystemDocumentSets>();
 
                     if (exp == "All" && navExp.Count == 0)
                     {
@@ -229,16 +229,10 @@ namespace EntryDataDS.Business.Services
                     {
                         switch (itm.Key)
                         {
-                            case "EntryDataDetails":
+                            case "EntryDataDetailsEx":
                                 return
                                     await
-                                        GetWhere<EntryDataDetails>(dbContext, exp, itm.Value, "EntryDataDetailsEx", "SelectMany", includesLst)
-										.ConfigureAwait(continueOnCapturedContext: false);
-
-                            case "SystemDocumentSets":
-                                return
-                                    await
-                                        GetWhere<SystemDocumentSets>(dbContext, exp, itm.Value, "EntryDataDetailsEx", "SelectMany", includesLst)
+                                        GetWhere<EntryDataDetailsEx>(dbContext, exp, itm.Value, "SystemDocumentSets", "Select", includesLst)
 										.ConfigureAwait(continueOnCapturedContext: false);
 
                         }
@@ -266,17 +260,17 @@ namespace EntryDataDS.Business.Services
             }
         }
 
-        public async Task<IEnumerable<EntryDataDetailsEx>> GetEntryDataDetailsExByBatch(string exp,
+        public async Task<IEnumerable<SystemDocumentSets>> GetSystemDocumentSetsByBatch(string exp,
             int totalrow, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
 
-                var res = new ConcurrentQueue<List<EntryDataDetailsEx>>();
+                var res = new ConcurrentQueue<List<SystemDocumentSets>>();
 
 
 
-                if (string.IsNullOrEmpty(exp) || exp == "None") return new List<EntryDataDetailsEx>();
+                if (string.IsNullOrEmpty(exp) || exp == "None") return new List<SystemDocumentSets>();
 
 
                 var batchSize = 500;
@@ -297,14 +291,14 @@ namespace EntryDataDS.Business.Services
                                 dbContext.Configuration.AutoDetectChangesEnabled = false;
                                 //dbContext.Configuration.LazyLoadingEnabled = true;
                                 var set = AddIncludes(includesLst, dbContext);
-                                IQueryable<EntryDataDetailsEx> dset;
+                                IQueryable<SystemDocumentSets> dset;
                                 if (exp == "All")
                                 {
-                                    dset = set.OrderBy(x => x.EntryDataDetailsId);
+                                    dset = set.OrderBy(x => x.Id);
                                 }
                                 else
                                 {
-                                    dset = set.OrderBy(x => x.EntryDataDetailsId).Where(exp);
+                                    dset = set.OrderBy(x => x.Id).Where(exp);
                                 }
 
                                 var lst = dset.AsNoTracking()
@@ -341,17 +335,17 @@ namespace EntryDataDS.Business.Services
                 throw new FaultException<ValidationFault>(fault);
             }
         }
-        public async Task<IEnumerable<EntryDataDetailsEx>> GetEntryDataDetailsExByBatchExpressionLst(List<string> expLst,
+        public async Task<IEnumerable<SystemDocumentSets>> GetSystemDocumentSetsByBatchExpressionLst(List<string> expLst,
             int totalrow, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
 
-                var res = new ConcurrentQueue<List<EntryDataDetailsEx>>();
+                var res = new ConcurrentQueue<List<SystemDocumentSets>>();
 
 
 
-                if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return new List<EntryDataDetailsEx>();
+                if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return new List<SystemDocumentSets>();
 
 
                 var batchSize = 500;
@@ -372,15 +366,15 @@ namespace EntryDataDS.Business.Services
                                 dbContext.Configuration.AutoDetectChangesEnabled = false;
                                 //dbContext.Configuration.LazyLoadingEnabled = true;
                                 var set = AddIncludes(includesLst, dbContext);
-                                IQueryable<EntryDataDetailsEx> dset;
+                                IQueryable<SystemDocumentSets> dset;
                                 if (expLst.FirstOrDefault() == "All")
                                 {
-                                    dset = set.OrderBy(x => x.EntryDataDetailsId);
+                                    dset = set.OrderBy(x => x.Id);
                                 }
                                 else
                                 {
                                     set = AddWheres(expLst, set);
-                                    dset = set.OrderBy(x => x.EntryDataDetailsId);
+                                    dset = set.OrderBy(x => x.Id);
                                 }
 
                                 var lst = dset.AsNoTracking()
@@ -417,13 +411,13 @@ namespace EntryDataDS.Business.Services
         }
 
 
-        public async Task<EntryDataDetailsEx> UpdateEntryDataDetailsEx(EntryDataDetailsEx entity)
+        public async Task<SystemDocumentSets> UpdateSystemDocumentSets(SystemDocumentSets entity)
         { 
             using ( var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
               {
                 try
                 {   
-                     var res = (EntryDataDetailsEx) entity;
+                     var res = (SystemDocumentSets) entity;
                     if(res.TrackingState == TrackingState.Unchanged) res.TrackingState = TrackingState.Modified;                              
                     
                     dbContext.ApplyChanges(res);
@@ -490,14 +484,14 @@ namespace EntryDataDS.Business.Services
            return entity;
         }
 
-        public async Task<EntryDataDetailsEx> CreateEntryDataDetailsEx(EntryDataDetailsEx entity)
+        public async Task<SystemDocumentSets> CreateSystemDocumentSets(SystemDocumentSets entity)
         {
             try
             {
-                var res = (EntryDataDetailsEx) entity;
+                var res = (SystemDocumentSets) entity;
               using ( var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
               {
-                dbContext.EntryDataDetailsEx.Add(res);
+                dbContext.SystemDocumentSets.Add(res);
                 dbContext.SaveChanges();
                 res.AcceptChanges();
                 return res;
@@ -517,20 +511,20 @@ namespace EntryDataDS.Business.Services
             }
         }
 
-        public async Task<bool> DeleteEntryDataDetailsEx(string EntryDataDetailsId)
+        public async Task<bool> DeleteSystemDocumentSets(string Id)
         {
             try
             {
               using ( var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
               {
-                var i = Convert.ToInt32(EntryDataDetailsId);
-                EntryDataDetailsEx entity = dbContext.EntryDataDetailsEx
-													.SingleOrDefault(x => x.EntryDataDetailsId == i);
+                var i = Convert.ToInt32(Id);
+                SystemDocumentSets entity = dbContext.SystemDocumentSets
+													.SingleOrDefault(x => x.Id == i);
                 if (entity == null)
                     return false;
 
-                    dbContext.EntryDataDetailsEx.Attach(entity);
-                    dbContext.EntryDataDetailsEx.Remove(entity);
+                    dbContext.SystemDocumentSets.Attach(entity);
+                    dbContext.SystemDocumentSets.Remove(entity);
                     dbContext.SaveChanges();
                     return true;
               }
@@ -549,19 +543,19 @@ namespace EntryDataDS.Business.Services
             }
         }
 
-        public async Task<bool> RemoveSelectedEntryDataDetailsEx(IEnumerable<string> lst)
+        public async Task<bool> RemoveSelectedSystemDocumentSets(IEnumerable<string> lst)
         {
             try
             {
-                StatusModel.StartStatusUpdate("Removing EntryDataDetailsEx", lst.Count());
+                StatusModel.StartStatusUpdate("Removing SystemDocumentSets", lst.Count());
                 var t = Task.Run(() =>
                 {
-                    using (var ctx = new EntryDataDetailsExService())
+                    using (var ctx = new SystemDocumentSetsService())
                     {
                         foreach (var item in lst.ToList())
                         {
 
-                            ctx.DeleteEntryDataDetailsEx(item).Wait();
+                            ctx.DeleteSystemDocumentSets(item).Wait();
                             StatusModel.StatusUpdate();
                         }
                     }
@@ -596,7 +590,7 @@ namespace EntryDataDS.Business.Services
                 {
                     dbContext.Database.CommandTimeout = 0;
                     if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return 0;
-                    var set = (IQueryable<EntryDataDetailsEx>)dbContext.EntryDataDetailsEx; 
+                    var set = (IQueryable<SystemDocumentSets>)dbContext.SystemDocumentSets; 
                     if (expLst.FirstOrDefault() == "All")
                     {
                         return set.AsNoTracking().Count();
@@ -632,14 +626,14 @@ namespace EntryDataDS.Business.Services
                     if (string.IsNullOrEmpty(exp) || exp == "None") return 0;
                     if (exp == "All")
                     {
-                        return dbContext.EntryDataDetailsEx
+                        return dbContext.SystemDocumentSets
                                     .AsNoTracking()
 									.Count();
                     }
                     else
                     {
                         
-                        return dbContext.EntryDataDetailsEx
+                        return dbContext.SystemDocumentSets
 									.AsNoTracking()
                                     .Where(exp)
 									.Count();
@@ -660,19 +654,19 @@ namespace EntryDataDS.Business.Services
             }
         }
         
-        public async Task<IEnumerable<EntryDataDetailsEx>> LoadRange(int startIndex, int count, string exp)
+        public async Task<IEnumerable<SystemDocumentSets>> LoadRange(int startIndex, int count, string exp)
         {
             try
             {
                 using (var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-                    if (string.IsNullOrEmpty(exp) || exp == "None") return new List<EntryDataDetailsEx>();
+                    if (string.IsNullOrEmpty(exp) || exp == "None") return new List<SystemDocumentSets>();
                     if (exp == "All")
                     {
-                        return dbContext.EntryDataDetailsEx
+                        return dbContext.SystemDocumentSets
 										.AsNoTracking()
-                                        .OrderBy(y => y.EntryDataDetailsId)
+                                        .OrderBy(y => y.Id)
 										.Skip(startIndex)
 										.Take(count)
 										.ToList();
@@ -680,10 +674,10 @@ namespace EntryDataDS.Business.Services
                     else
                     {
                         
-                        return dbContext.EntryDataDetailsEx
+                        return dbContext.SystemDocumentSets
 										.AsNoTracking()
                                         .Where(exp)
-										.OrderBy(y => y.EntryDataDetailsId)
+										.OrderBy(y => y.Id)
 										.Skip(startIndex)
 										.Take(count)
 										.ToList();
@@ -714,7 +708,7 @@ namespace EntryDataDS.Business.Services
                     dbContext.Database.CommandTimeout = 0;
                     if (exp == "All" && navExp.Count == 0)
                     {
-                        return dbContext.EntryDataDetailsEx
+                        return dbContext.SystemDocumentSets
 										.AsNoTracking()
                                         .Count();
                     }
@@ -722,15 +716,12 @@ namespace EntryDataDS.Business.Services
                     {
                         switch (itm.Key)
                         {
-                            case "EntryDataDetails":
-                                return await CountWhere<EntryDataDetails>(dbContext, exp, itm.Value, "EntryDataDetailsEx", "SelectMany")
-											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "SystemDocumentSets":
-                                return await CountWhere<SystemDocumentSets>(dbContext, exp, itm.Value, "EntryDataDetailsEx", "SelectMany")
+                            case "EntryDataDetailsEx":
+                                return await CountWhere<EntryDataDetailsEx>(dbContext, exp, itm.Value, "SystemDocumentSets", "Select")
 											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }
-                    return dbContext.EntryDataDetailsEx.Where(exp == "All" || exp == null ? "EntryDataDetailsId != null" : exp)
+                    return dbContext.SystemDocumentSets.Where(exp == "All" || exp == null ? "Id != null" : exp)
 											.AsNoTracking()
                                             .Count();
                 }
@@ -771,10 +762,10 @@ namespace EntryDataDS.Business.Services
             return dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
-                .SelectMany(navProp).OfType<EntryDataDetailsEx>()
-                .Where(exp == "All" || exp == null ? "EntryDataDetailsId != null" : exp)
+                .SelectMany(navProp).OfType<SystemDocumentSets>()
+                .Where(exp == "All" || exp == null ? "Id != null" : exp)
                 .Distinct()
-                .OrderBy("EntryDataDetailsId")
+                .OrderBy("Id")
                 .Count();
 			}
 			catch (Exception)
@@ -791,10 +782,10 @@ namespace EntryDataDS.Business.Services
             return dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
-                .Select(navProp).OfType<EntryDataDetailsEx>()
-                .Where(exp == "All" || exp == null ? "EntryDataDetailsId != null" : exp)
+                .Select(navProp).OfType<SystemDocumentSets>()
+                .Where(exp == "All" || exp == null ? "Id != null" : exp)
                 .Distinct()
-                .OrderBy("EntryDataDetailsId")
+                .OrderBy("Id")
                 .Count();
 			}
 			catch (Exception)
@@ -804,7 +795,7 @@ namespace EntryDataDS.Business.Services
 			}
         }
 
-		  public async Task<IEnumerable<EntryDataDetailsEx>> LoadRangeNav(int startIndex, int count, string exp,
+		  public async Task<IEnumerable<SystemDocumentSets>> LoadRangeNav(int startIndex, int count, string exp,
                                                                                  Dictionary<string, string> navExp, IEnumerable<string> includeLst = null)
         {
             try
@@ -812,7 +803,7 @@ namespace EntryDataDS.Business.Services
                 using (var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-                    if ((string.IsNullOrEmpty(exp) && navExp.Count == 0) || exp == "None") return new List<EntryDataDetailsEx>();
+                    if ((string.IsNullOrEmpty(exp) && navExp.Count == 0) || exp == "None") return new List<SystemDocumentSets>();
                     var set = AddIncludes(includeLst, dbContext);
 
                     if (exp == "All" && navExp.Count == 0)
@@ -820,7 +811,7 @@ namespace EntryDataDS.Business.Services
                        
                         return set
 									.AsNoTracking()
-                                    .OrderBy(y => y.EntryDataDetailsId)
+                                    .OrderBy(y => y.Id)
  
                                     .Skip(startIndex)
                                     .Take(count)
@@ -830,16 +821,10 @@ namespace EntryDataDS.Business.Services
                     {
                         switch (itm.Key)
                         {
-                            case "EntryDataDetails":
+                            case "EntryDataDetailsEx":
                                 return
                                     await
-                                        LoadRangeWhere<EntryDataDetails>(startIndex, count, dbContext, exp, itm.Value, "EntryDataDetailsEx", "SelectMany")
-													.ConfigureAwait(continueOnCapturedContext: false);
-
-                            case "SystemDocumentSets":
-                                return
-                                    await
-                                        LoadRangeWhere<SystemDocumentSets>(startIndex, count, dbContext, exp, itm.Value, "EntryDataDetailsEx", "SelectMany")
+                                        LoadRangeWhere<EntryDataDetailsEx>(startIndex, count, dbContext, exp, itm.Value, "SystemDocumentSets", "Select")
 													.ConfigureAwait(continueOnCapturedContext: false);
 
                           
@@ -848,10 +833,10 @@ namespace EntryDataDS.Business.Services
 						}
 
                     }
-                    return set//dbContext.EntryDataDetailsEx
+                    return set//dbContext.SystemDocumentSets
 								.AsNoTracking()
-                                .Where(exp == "All" || exp == null ? "EntryDataDetailsId != null" : exp)
-								.OrderBy(y => y.EntryDataDetailsId)
+                                .Where(exp == "All" || exp == null ? "Id != null" : exp)
+								.OrderBy(y => y.Id)
  
                                 .Skip(startIndex)
                                 .Take(count)
@@ -874,7 +859,7 @@ namespace EntryDataDS.Business.Services
             }
         }
 
-		private static async Task<IEnumerable<EntryDataDetailsEx>> LoadRangeWhere<T>(int startIndex, int count,
+		private static async Task<IEnumerable<SystemDocumentSets>> LoadRangeWhere<T>(int startIndex, int count,
             EntryDataDSContext dbContext, string exp, string navExp, string navProp, string rel, IEnumerable<string> includeLst = null) where T : class
         {
              switch (rel)
@@ -889,7 +874,7 @@ namespace EntryDataDS.Business.Services
 		    }
         }
 
-		private static async Task<IEnumerable<EntryDataDetailsEx>> LoadRangeSelectMany<T>(int startIndex, int count,
+		private static async Task<IEnumerable<SystemDocumentSets>> LoadRangeSelectMany<T>(int startIndex, int count,
             EntryDataDSContext dbContext, string exp, string navExp, string navProp, IEnumerable<string> includeLst = null) where T : class
         {
 			try
@@ -897,14 +882,14 @@ namespace EntryDataDS.Business.Services
             var set = dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
-                .SelectMany(navProp).OfType<EntryDataDetailsEx>();
+                .SelectMany(navProp).OfType<SystemDocumentSets>();
     
             if (includeLst != null) set = includeLst.Aggregate(set, (current, itm) => current.Include(itm));            
 
             return set
-                .Where(exp == "All" || exp == null ? "EntryDataDetailsId != null" : exp)
+                .Where(exp == "All" || exp == null ? "Id != null" : exp)
                 .Distinct()
-                .OrderBy(y => y.EntryDataDetailsId)
+                .OrderBy(y => y.Id)
  
                 .Skip(startIndex)
                 .Take(count)
@@ -917,7 +902,7 @@ namespace EntryDataDS.Business.Services
 			}
         }
 
-		private static async Task<IEnumerable<EntryDataDetailsEx>> LoadRangeSelect<T>(int startIndex, int count,
+		private static async Task<IEnumerable<SystemDocumentSets>> LoadRangeSelect<T>(int startIndex, int count,
             EntryDataDSContext dbContext, string exp, string navExp, string navProp, IEnumerable<string> includeLst = null) where T : class
         {
 			try
@@ -925,14 +910,14 @@ namespace EntryDataDS.Business.Services
               var set = dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
-                .Select(navProp).OfType<EntryDataDetailsEx>();
+                .Select(navProp).OfType<SystemDocumentSets>();
 
                if (includeLst != null) set = includeLst.Aggregate(set, (current, itm) => current.Include(itm)); 
                 
                return set
-                .Where(exp == "All" || exp == null ? "EntryDataDetailsId != null" : exp)
+                .Where(exp == "All" || exp == null ? "Id != null" : exp)
                 .Distinct()
-                .OrderBy(y => y.EntryDataDetailsId)
+                .OrderBy(y => y.Id)
  
                 .Skip(startIndex)
                 .Take(count)
@@ -945,7 +930,7 @@ namespace EntryDataDS.Business.Services
 			}
         }
 
-        private static async Task<IEnumerable<EntryDataDetailsEx>> GetWhere<T>(EntryDataDSContext dbContext,
+        private static async Task<IEnumerable<SystemDocumentSets>> GetWhere<T>(EntryDataDSContext dbContext,
             string exp, string navExp, string navProp, string rel, List<string> includesLst = null) where T : class
         {
 			try
@@ -969,7 +954,7 @@ namespace EntryDataDS.Business.Services
 			}
         }
 
-		private static async Task<IEnumerable<EntryDataDetailsEx>> GetWhereSelectMany<T>(EntryDataDSContext dbContext,
+		private static async Task<IEnumerable<SystemDocumentSets>> GetWhereSelectMany<T>(EntryDataDSContext dbContext,
             string exp, string navExp, string navProp, List<string> includesLst = null) where T : class
         {
 			try
@@ -980,17 +965,17 @@ namespace EntryDataDS.Business.Services
 				return dbContext.Set<T>()
 							.AsNoTracking()
                             .Where(navExp)
-							.SelectMany(navProp).OfType<EntryDataDetailsEx>()
-							.Where(exp == "All" || exp == null?"EntryDataDetailsId != null":exp)
+							.SelectMany(navProp).OfType<SystemDocumentSets>()
+							.Where(exp == "All" || exp == null?"Id != null":exp)
 							.Distinct()
 							.ToList();
 			}
 
-			var set = (DbQuery<EntryDataDetailsEx>)dbContext.Set<T>()
+			var set = (DbQuery<SystemDocumentSets>)dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
-                .SelectMany(navProp).OfType<EntryDataDetailsEx>()
-                .Where(exp == "All" || exp == null?"EntryDataDetailsId != null":exp)
+                .SelectMany(navProp).OfType<SystemDocumentSets>()
+                .Where(exp == "All" || exp == null?"Id != null":exp)
                 .Distinct();
 
 			set = includesLst.Aggregate(set, (current, itm) => current.Include(itm));
@@ -1004,7 +989,7 @@ namespace EntryDataDS.Business.Services
 			}
         }
 
-		private static async Task<IEnumerable<EntryDataDetailsEx>> GetWhereSelect<T>(EntryDataDSContext dbContext,
+		private static async Task<IEnumerable<SystemDocumentSets>> GetWhereSelect<T>(EntryDataDSContext dbContext,
             string exp, string navExp, string navProp, List<string> includesLst = null) where T : class
         {
 			try
@@ -1015,17 +1000,17 @@ namespace EntryDataDS.Business.Services
 				return dbContext.Set<T>()
 							.AsNoTracking()
                             .Where(navExp)
-							.Select(navProp).OfType<EntryDataDetailsEx>()
-							.Where(exp == "All" || exp == null?"EntryDataDetailsId != null":exp)
+							.Select(navProp).OfType<SystemDocumentSets>()
+							.Where(exp == "All" || exp == null?"Id != null":exp)
 							.Distinct()
 							.ToList();
 			}
 
-			var set = (DbQuery<EntryDataDetailsEx>)dbContext.Set<T>()
+			var set = (DbQuery<SystemDocumentSets>)dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
-                .Select(navProp).OfType<EntryDataDetailsEx>()
-                .Where(exp == "All" || exp == null?"EntryDataDetailsId != null":exp)
+                .Select(navProp).OfType<SystemDocumentSets>()
+                .Where(exp == "All" || exp == null?"Id != null":exp)
                 .Distinct();
 
 			set = includesLst.Aggregate(set, (current, itm) => current.Include(itm));
@@ -1039,203 +1024,7 @@ namespace EntryDataDS.Business.Services
 			}
         }
 
-			        public async Task<IEnumerable<EntryDataDetailsEx>> GetEntryDataDetailsExByEntryDataId(string EntryDataId, List<string> includesLst = null)
-        {
-            try
-            {
-                using ( var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
-              {
-                var i = EntryDataId;
-                var set = AddIncludes(includesLst, dbContext);
-                IEnumerable<EntryDataDetailsEx> entities = set//dbContext.EntryDataDetailsEx
-                                      .AsNoTracking()
-                                        .Where(x => x.EntryDataId.ToString() == EntryDataId.ToString())
-										.ToList();
-                return entities;
-              }
-             }
-            catch (Exception updateEx)
-            {
-                System.Diagnostics.Debugger.Break();
-                //throw new FaultException(updateEx.Message);
-                    var fault = new ValidationFault
-                                {
-                                    Result = false,
-                                    Message = updateEx.Message,
-                                    Description = updateEx.StackTrace
-                                };
-                    throw new FaultException<ValidationFault>(fault);
-            }
-        }
- 	        public async Task<IEnumerable<EntryDataDetailsEx>> GetEntryDataDetailsExByAsycudaDocumentSetId(string AsycudaDocumentSetId, List<string> includesLst = null)
-        {
-            try
-            {
-                using ( var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
-              {
-                var i = Convert.ToInt32(AsycudaDocumentSetId);
-                var set = AddIncludes(includesLst, dbContext);
-                IEnumerable<EntryDataDetailsEx> entities = set//dbContext.EntryDataDetailsEx
-                                      .AsNoTracking()
-                                        .Where(x => x.AsycudaDocumentSetId.ToString() == AsycudaDocumentSetId.ToString())
-										.ToList();
-                return entities;
-              }
-             }
-            catch (Exception updateEx)
-            {
-                System.Diagnostics.Debugger.Break();
-                //throw new FaultException(updateEx.Message);
-                    var fault = new ValidationFault
-                                {
-                                    Result = false,
-                                    Message = updateEx.Message,
-                                    Description = updateEx.StackTrace
-                                };
-                    throw new FaultException<ValidationFault>(fault);
-            }
-        }
- 	        public async Task<IEnumerable<EntryDataDetailsEx>> GetEntryDataDetailsExByApplicationSettingsId(string ApplicationSettingsId, List<string> includesLst = null)
-        {
-            try
-            {
-                using ( var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
-              {
-                var i = Convert.ToInt32(ApplicationSettingsId);
-                var set = AddIncludes(includesLst, dbContext);
-                IEnumerable<EntryDataDetailsEx> entities = set//dbContext.EntryDataDetailsEx
-                                      .AsNoTracking()
-                                        .Where(x => x.ApplicationSettingsId.ToString() == ApplicationSettingsId.ToString())
-										.ToList();
-                return entities;
-              }
-             }
-            catch (Exception updateEx)
-            {
-                System.Diagnostics.Debugger.Break();
-                //throw new FaultException(updateEx.Message);
-                    var fault = new ValidationFault
-                                {
-                                    Result = false,
-                                    Message = updateEx.Message,
-                                    Description = updateEx.StackTrace
-                                };
-                    throw new FaultException<ValidationFault>(fault);
-            }
-        }
- 	        public async Task<IEnumerable<EntryDataDetailsEx>> GetEntryDataDetailsExByEmailId(string EmailId, List<string> includesLst = null)
-        {
-            try
-            {
-                using ( var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
-              {
-                var i = EmailId;
-                var set = AddIncludes(includesLst, dbContext);
-                IEnumerable<EntryDataDetailsEx> entities = set//dbContext.EntryDataDetailsEx
-                                      .AsNoTracking()
-                                        .Where(x => x.EmailId.ToString() == EmailId.ToString())
-										.ToList();
-                return entities;
-              }
-             }
-            catch (Exception updateEx)
-            {
-                System.Diagnostics.Debugger.Break();
-                //throw new FaultException(updateEx.Message);
-                    var fault = new ValidationFault
-                                {
-                                    Result = false,
-                                    Message = updateEx.Message,
-                                    Description = updateEx.StackTrace
-                                };
-                    throw new FaultException<ValidationFault>(fault);
-            }
-        }
- 	        public async Task<IEnumerable<EntryDataDetailsEx>> GetEntryDataDetailsExByFileTypeId(string FileTypeId, List<string> includesLst = null)
-        {
-            try
-            {
-                using ( var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
-              {
-                var i = Convert.ToInt32(FileTypeId);
-                var set = AddIncludes(includesLst, dbContext);
-                IEnumerable<EntryDataDetailsEx> entities = set//dbContext.EntryDataDetailsEx
-                                      .AsNoTracking()
-                                        .Where(x => x.FileTypeId.ToString() == FileTypeId.ToString())
-										.ToList();
-                return entities;
-              }
-             }
-            catch (Exception updateEx)
-            {
-                System.Diagnostics.Debugger.Break();
-                //throw new FaultException(updateEx.Message);
-                    var fault = new ValidationFault
-                                {
-                                    Result = false,
-                                    Message = updateEx.Message,
-                                    Description = updateEx.StackTrace
-                                };
-                    throw new FaultException<ValidationFault>(fault);
-            }
-        }
- 	        public async Task<IEnumerable<EntryDataDetailsEx>> GetEntryDataDetailsExByEntryData_Id(string EntryData_Id, List<string> includesLst = null)
-        {
-            try
-            {
-                using ( var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
-              {
-                var i = Convert.ToInt32(EntryData_Id);
-                var set = AddIncludes(includesLst, dbContext);
-                IEnumerable<EntryDataDetailsEx> entities = set//dbContext.EntryDataDetailsEx
-                                      .AsNoTracking()
-                                        .Where(x => x.EntryData_Id.ToString() == EntryData_Id.ToString())
-										.ToList();
-                return entities;
-              }
-             }
-            catch (Exception updateEx)
-            {
-                System.Diagnostics.Debugger.Break();
-                //throw new FaultException(updateEx.Message);
-                    var fault = new ValidationFault
-                                {
-                                    Result = false,
-                                    Message = updateEx.Message,
-                                    Description = updateEx.StackTrace
-                                };
-                    throw new FaultException<ValidationFault>(fault);
-            }
-        }
- 	        public async Task<IEnumerable<EntryDataDetailsEx>> GetEntryDataDetailsExByInventoryItemId(string InventoryItemId, List<string> includesLst = null)
-        {
-            try
-            {
-                using ( var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
-              {
-                var i = Convert.ToInt32(InventoryItemId);
-                var set = AddIncludes(includesLst, dbContext);
-                IEnumerable<EntryDataDetailsEx> entities = set//dbContext.EntryDataDetailsEx
-                                      .AsNoTracking()
-                                        .Where(x => x.InventoryItemId.ToString() == InventoryItemId.ToString())
-										.ToList();
-                return entities;
-              }
-             }
-            catch (Exception updateEx)
-            {
-                System.Diagnostics.Debugger.Break();
-                //throw new FaultException(updateEx.Message);
-                    var fault = new ValidationFault
-                                {
-                                    Result = false,
-                                    Message = updateEx.Message,
-                                    Description = updateEx.StackTrace
-                                };
-                    throw new FaultException<ValidationFault>(fault);
-            }
-        }
- 
+		
 		public decimal SumField(string whereExp, string field)
          {
              try
@@ -1247,11 +1036,11 @@ namespace EntryDataDS.Business.Services
                      if (string.IsNullOrEmpty(whereExp) || whereExp == "None") return 0;
                      if (whereExp == "All")
                      {
-                          res = Convert.ToDecimal(dbContext.EntryDataDetailsEx.AsNoTracking().Sum(field));
+                          res = Convert.ToDecimal(dbContext.SystemDocumentSets.AsNoTracking().Sum(field));
                      }
                      else
                      {
-                         res = Convert.ToDecimal(dbContext.EntryDataDetailsEx.AsNoTracking().Where(whereExp).Sum(field));
+                         res = Convert.ToDecimal(dbContext.SystemDocumentSets.AsNoTracking().Where(whereExp).Sum(field));
                      }
                      
                      return res;
@@ -1279,10 +1068,10 @@ namespace EntryDataDS.Business.Services
                 using (var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-                    if (!dbContext.EntryDataDetailsEx.Any()) return 0;
+                    if (!dbContext.SystemDocumentSets.Any()) return 0;
                     if (exp == "All" && navExp.Count == 0)
                     {
-                        return Convert.ToDecimal(dbContext.EntryDataDetailsEx
+                        return Convert.ToDecimal(dbContext.SystemDocumentSets
 										.AsNoTracking()
                                         .Sum(field)??0);
                     }
@@ -1290,15 +1079,12 @@ namespace EntryDataDS.Business.Services
                     {
                         switch (itm.Key)
                         {
-                            case "EntryDataDetails":
-                                return await SumWhere<EntryDataDetails>(dbContext, exp, itm.Value, "EntryDataDetailsEx", field, "SelectMany")
-											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "SystemDocumentSets":
-                                return await SumWhere<SystemDocumentSets>(dbContext, exp, itm.Value, "EntryDataDetailsEx", field, "SelectMany")
+                            case "EntryDataDetailsEx":
+                                return await SumWhere<EntryDataDetailsEx>(dbContext, exp, itm.Value, "SystemDocumentSets", field, "Select")
 											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }
-                    return Convert.ToDecimal(dbContext.EntryDataDetailsEx.Where(exp == "All" || exp == null ? "EntryDataDetailsId != null" : exp)
+                    return Convert.ToDecimal(dbContext.SystemDocumentSets.Where(exp == "All" || exp == null ? "Id != null" : exp)
 											.AsNoTracking()
                                             .Sum(field)??0);
                 }
@@ -1338,10 +1124,10 @@ namespace EntryDataDS.Business.Services
             return Convert.ToDecimal(dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
-                .SelectMany(navProp).OfType<EntryDataDetailsEx>()
-                .Where(exp == "All" || exp == null ? "EntryDataDetailsId != null" : exp)
+                .SelectMany(navProp).OfType<SystemDocumentSets>()
+                .Where(exp == "All" || exp == null ? "Id != null" : exp)
                 .Distinct()
-                .OrderBy("EntryDataDetailsId")
+                .OrderBy("Id")
                 .Sum(field));
 			}
 			catch (Exception)
@@ -1358,10 +1144,10 @@ namespace EntryDataDS.Business.Services
             return Convert.ToDecimal(dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
-                .Select(navProp).OfType<EntryDataDetailsEx>()
-                .Where(exp == "All" || exp == null ? "EntryDataDetailsId != null" : exp)
+                .Select(navProp).OfType<SystemDocumentSets>()
+                .Where(exp == "All" || exp == null ? "Id != null" : exp)
                 .Distinct()
-                .OrderBy("EntryDataDetailsId")
+                .OrderBy("Id")
                 .Sum(field));
 			}
 			catch (Exception)
@@ -1384,11 +1170,11 @@ namespace EntryDataDS.Business.Services
                      if (string.IsNullOrEmpty(whereExp) || whereExp == "None") return res;
                      if (whereExp == "All")
                      {
-                          res = Convert.ToString(dbContext.EntryDataDetailsEx.AsNoTracking().Min(field));
+                          res = Convert.ToString(dbContext.SystemDocumentSets.AsNoTracking().Min(field));
                      }
                      else
                      {
-                         res = Convert.ToString(dbContext.EntryDataDetailsEx.AsNoTracking().Where(whereExp).Min(field));
+                         res = Convert.ToString(dbContext.SystemDocumentSets.AsNoTracking().Where(whereExp).Min(field));
                      }
                      
                      return res;
@@ -1409,12 +1195,12 @@ namespace EntryDataDS.Business.Services
          }
 
 		 
-		private static IQueryable<EntryDataDetailsEx> AddIncludes(IEnumerable<string> includesLst, EntryDataDSContext dbContext)
+		private static IQueryable<SystemDocumentSets> AddIncludes(IEnumerable<string> includesLst, EntryDataDSContext dbContext)
        {
 		 try
 			{
 			   if (includesLst == null) includesLst = new List<string>();
-			   var set =(DbQuery<EntryDataDetailsEx>) dbContext.EntryDataDetailsEx; 
+			   var set =(DbQuery<SystemDocumentSets>) dbContext.SystemDocumentSets; 
 			   set = includesLst.Where(x => !string.IsNullOrEmpty(x))
                                 .Aggregate(set, (current, itm) => current.Include(itm));
 			   return set;
@@ -1425,7 +1211,7 @@ namespace EntryDataDS.Business.Services
 				throw;
 			}
        }
-	   private IQueryable<EntryDataDetailsEx> AddWheres(List<string> expLst, IQueryable<EntryDataDetailsEx> set)
+	   private IQueryable<SystemDocumentSets> AddWheres(List<string> expLst, IQueryable<SystemDocumentSets> set)
         {
             try
             {

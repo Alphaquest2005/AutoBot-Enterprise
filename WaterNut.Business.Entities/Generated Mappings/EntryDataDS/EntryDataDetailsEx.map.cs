@@ -51,6 +51,7 @@
               this.Property(t => t.VolumeLiters).HasColumnName("VolumeLiters");
               this.Property(t => t.PreviousCLineNumber).HasColumnName("PreviousCLineNumber");
               this.HasRequired(t => t.EntryDataDetails).WithOptional(t => (EntryDataDetailsEx)t.EntryDataDetailsEx);
+              this.HasRequired(t => t.SystemDocumentSets).WithMany(t =>(ICollection<EntryDataDetailsEx>) t.EntryDataDetailsEx).HasForeignKey(d => d.AsycudaDocumentSetId);
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);
     			this.Ignore(t => t.ModifiedProperties);

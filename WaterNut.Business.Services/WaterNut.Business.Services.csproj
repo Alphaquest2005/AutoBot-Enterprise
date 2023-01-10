@@ -704,6 +704,7 @@
     <Compile Include="Contracts\EntryDataDS\ISupplierItemDescriptionService.cs" />
     <Compile Include="Contracts\EntryDataDS\ISuppliersService.cs" />
     <Compile Include="Contracts\EntryDataDS\ISupportingDetailService.cs" />
+    <Compile Include="Contracts\EntryDataDS\ISystemDocumentSetsService.cs" />
     <Compile Include="Contracts\EntryDataDS\IVolumeUnitsService.cs" />
     <Compile Include="Contracts\EntryDataDS\IWarehouseInfoService.cs" />
     <Compile Include="Contracts\EntryDataDS\IxSalesDetailsService.cs" />
@@ -918,6 +919,7 @@
     <Compile Include="Services\EntryDataDS\ShipmentInvoiceBLManualMatchesService.cs" />
     <Compile Include="Services\EntryDataDS\SupplierItemDescriptionRegExService.cs" />
     <Compile Include="Services\EntryDataDS\SupplierItemDescriptionService.cs" />
+    <Compile Include="Services\EntryDataDS\SystemDocumentSetsService.cs" />
     <Compile Include="Utils\AutoMatchUtils.cs" />
     <Compile Include="Importers\ChainedDataExtractor.cs" />
     <Compile Include="Importers\CSVDataExtractor.cs" />

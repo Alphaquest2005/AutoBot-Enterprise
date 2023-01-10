@@ -526,10 +526,9 @@ namespace WaterNut.DataSpace
 
                 if (!IsValidDocument(currentAsycudaDocumentSet)) return;
 
-                var slstSource =
-                    (from s in await GetSelectedPODetails(entryDatalst.Distinct().ToList(),
-                            currentAsycudaDocumentSet.AsycudaDocumentSetId).ConfigureAwait(false)
-                        select s).ToList();
+                var slstSource = new List<EntryDataDetails>();
+                foreach (var s in (await GetSelectedPODetails(entryDatalst.Distinct().ToList(), currentAsycudaDocumentSet.AsycudaDocumentSetId).ConfigureAwait(false))) slstSource.Add(s);
+
                 ;
                 if (!IsValidEntryData(slstSource)) return;
 
@@ -2784,7 +2783,7 @@ namespace WaterNut.DataSpace
                                 .Include(x => x.EntryData.DocumentType)
                                 .Include(x => x.EntryData.Suppliers)
                                 .Where(x => x.EntryDataId == item
-                                            && x.EntryDataDetailsEx.AsycudaDocumentSetId == asycudaDocumentSetId
+                                            && ((x.EntryDataDetailsEx.AsycudaDocumentSetId == asycudaDocumentSetId && x.EntryDataDetailsEx.SystemDocumentSets == null) || (x.EntryDataDetailsEx.AsycudaDocumentSetId != asycudaDocumentSetId || x.EntryDataDetailsEx.SystemDocumentSets != null))
                                             && x.EntryData.EntryDataEx != null
                                 )
                                 .ToList().DistinctBy(x => x.EntryDataDetailsId);

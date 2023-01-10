@@ -492,6 +492,7 @@
     <Compile Include="Generated Business Entities\EntryDataDS\SupplierItemDescriptionRegEx.cs" />
     <Compile Include="Generated Business Entities\EntryDataDS\Suppliers.cs" />
     <Compile Include="Generated Business Entities\EntryDataDS\SupportingDetail.cs" />
+    <Compile Include="Generated Business Entities\EntryDataDS\SystemDocumentSets.cs" />
     <Compile Include="Generated Business Entities\EntryDataDS\VolumeUnits.cs" />
     <Compile Include="Generated Business Entities\EntryDataDS\WarehouseInfo.cs" />
     <Compile Include="Generated Business Entities\EntryDataDS\xSalesDetails.cs" />
@@ -916,6 +917,7 @@
     <Compile Include="Generated ChangeTracking Models\EntryDataDS\SupplierItemDescriptionRegEx.cs" />
     <Compile Include="Generated ChangeTracking Models\EntryDataDS\Suppliers.cs" />
     <Compile Include="Generated ChangeTracking Models\EntryDataDS\SupportingDetail.cs" />
+    <Compile Include="Generated ChangeTracking Models\EntryDataDS\SystemDocumentSets.cs" />
     <Compile Include="Generated ChangeTracking Models\EntryDataDS\VolumeUnits.cs" />
     <Compile Include="Generated ChangeTracking Models\EntryDataDS\WarehouseInfo.cs" />
     <Compile Include="Generated ChangeTracking Models\EntryDataDS\xSalesDetails.cs" />
@@ -1338,6 +1340,7 @@
     <Compile Include="Generated Constructors Models\EntryDataDS\SupplierItemDescriptionRegEx.cs" />
     <Compile Include="Generated Constructors Models\EntryDataDS\Suppliers.cs" />
     <Compile Include="Generated Constructors Models\EntryDataDS\SupportingDetail.cs" />
+    <Compile Include="Generated Constructors Models\EntryDataDS\SystemDocumentSets.cs" />
     <Compile Include="Generated Constructors Models\EntryDataDS\VolumeUnits.cs" />
     <Compile Include="Generated Constructors Models\EntryDataDS\WarehouseInfo.cs" />
     <Compile Include="Generated Constructors Models\EntryDataDS\xSalesDetails.cs" />
@@ -1760,6 +1763,7 @@
     <Compile Include="Generated IEntitiyWithKey Models\EntryDataDS\SupplierItemDescriptionRegEx.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\EntryDataDS\Suppliers.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\EntryDataDS\SupportingDetail.cs" />
+    <Compile Include="Generated IEntitiyWithKey Models\EntryDataDS\SystemDocumentSets.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\EntryDataDS\VolumeUnits.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\EntryDataDS\WarehouseInfo.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\EntryDataDS\xSalesDetails.cs" />
@@ -2182,6 +2186,7 @@
     <Compile Include="Generated IIdentitfiableEntity Models\EntryDataDS\SupplierItemDescriptionRegEx.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\EntryDataDS\Suppliers.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\EntryDataDS\SupportingDetail.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\EntryDataDS\SystemDocumentSets.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\EntryDataDS\VolumeUnits.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\EntryDataDS\WarehouseInfo.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\EntryDataDS\xSalesDetails.cs" />
@@ -2614,6 +2619,7 @@
     <Compile Include="Generated Mappings\EntryDataDS\SupplierItemDescriptionRegEx.map.cs" />
     <Compile Include="Generated Mappings\EntryDataDS\Suppliers.map.cs" />
     <Compile Include="Generated Mappings\EntryDataDS\SupportingDetail.map.cs" />
+    <Compile Include="Generated Mappings\EntryDataDS\SystemDocumentSets.map.cs" />
     <Compile Include="Generated Mappings\EntryDataDS\VolumeUnits.map.cs" />
     <Compile Include="Generated Mappings\EntryDataDS\WarehouseInfo.map.cs" />
     <Compile Include="Generated Mappings\EntryDataDS\xSalesDetails.map.cs" />

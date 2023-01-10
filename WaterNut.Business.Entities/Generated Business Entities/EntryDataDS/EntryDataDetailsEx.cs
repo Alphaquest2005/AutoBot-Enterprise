@@ -577,6 +577,8 @@ namespace EntryDataDS.Business.Entities
         Nullable<int> _previousclinenumber;
         [DataMember]
         public EntryDataDetails EntryDataDetails { get; set; }
+        [DataMember]
+        public SystemDocumentSets SystemDocumentSets { get; set; }
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

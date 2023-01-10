@@ -523,6 +523,7 @@
 ..\WaterNut.Business.Entities\Generated Business Entities\EntryDataDS\SupplierItemDescriptionRegEx.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\EntryDataDS\Suppliers.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\EntryDataDS\SupportingDetail.cs
+..\WaterNut.Business.Entities\Generated Business Entities\EntryDataDS\SystemDocumentSets.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\EntryDataDS\VolumeUnits.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\EntryDataDS\WarehouseInfo.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\EntryDataDS\xSalesDetails.cs
@@ -959,6 +960,7 @@
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\SupplierItemDescriptionRegEx.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\Suppliers.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\SupportingDetail.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\SystemDocumentSets.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\VolumeUnits.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\WarehouseInfo.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\xSalesDetails.map.cs
@@ -1404,6 +1406,7 @@
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\EntryDataDS\SupplierItemDescriptionRegEx.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\EntryDataDS\Suppliers.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\EntryDataDS\SupportingDetail.cs
+..\WaterNut.Business.Entities\Generated ChangeTracking Models\EntryDataDS\SystemDocumentSets.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\EntryDataDS\VolumeUnits.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\EntryDataDS\WarehouseInfo.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\EntryDataDS\xSalesDetails.cs
@@ -1826,6 +1829,7 @@
 ..\WaterNut.Business.Entities\Generated Constructors Models\EntryDataDS\SupplierItemDescriptionRegEx.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\EntryDataDS\Suppliers.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\EntryDataDS\SupportingDetail.cs
+..\WaterNut.Business.Entities\Generated Constructors Models\EntryDataDS\SystemDocumentSets.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\EntryDataDS\VolumeUnits.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\EntryDataDS\WarehouseInfo.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\EntryDataDS\xSalesDetails.cs
@@ -2248,6 +2252,7 @@
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\EntryDataDS\SupplierItemDescriptionRegEx.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\EntryDataDS\Suppliers.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\EntryDataDS\SupportingDetail.cs
+..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\EntryDataDS\SystemDocumentSets.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\EntryDataDS\VolumeUnits.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\EntryDataDS\WarehouseInfo.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\EntryDataDS\xSalesDetails.cs
@@ -2670,6 +2675,7 @@
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\EntryDataDS\SupplierItemDescriptionRegEx.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\EntryDataDS\Suppliers.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\EntryDataDS\SupportingDetail.cs
+..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\EntryDataDS\SystemDocumentSets.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\EntryDataDS\VolumeUnits.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\EntryDataDS\WarehouseInfo.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\EntryDataDS\xSalesDetails.cs
@@ -4360,6 +4366,7 @@
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\SupplierItemDescriptionRegEx.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\Suppliers.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\SupportingDetail.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\SystemDocumentSets.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\VolumeUnits.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\WarehouseInfo.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\xSalesDetails.map.cs
@@ -5017,6 +5024,7 @@
 ..\WaterNut.Business.Services\Contracts\EntryDataDS\ISupplierItemDescriptionService.cs
 ..\WaterNut.Business.Services\Contracts\EntryDataDS\ISuppliersService.cs
 ..\WaterNut.Business.Services\Contracts\EntryDataDS\ISupportingDetailService.cs
+..\WaterNut.Business.Services\Contracts\EntryDataDS\ISystemDocumentSetsService.cs
 ..\WaterNut.Business.Services\Contracts\EntryDataDS\IVolumeUnitsService.cs
 ..\WaterNut.Business.Services\Contracts\EntryDataDS\IWarehouseInfoService.cs
 ..\WaterNut.Business.Services\Contracts\EntryDataDS\IxSalesDetailsService.cs
@@ -5439,6 +5447,7 @@
 ..\WaterNut.Business.Services\Services\EntryDataDS\SupplierItemDescriptionService.cs
 ..\WaterNut.Business.Services\Services\EntryDataDS\SuppliersService.cs
 ..\WaterNut.Business.Services\Services\EntryDataDS\SupportingDetailService.cs
+..\WaterNut.Business.Services\Services\EntryDataDS\SystemDocumentSetsService.cs
 ..\WaterNut.Business.Services\Services\EntryDataDS\VolumeUnitsService.cs
 ..\WaterNut.Business.Services\Services\EntryDataDS\WarehouseInfoService.cs
 ..\WaterNut.Business.Services\Services\EntryDataDS\xSalesDetailsService.cs
