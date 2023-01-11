@@ -119,7 +119,8 @@ namespace WaterNut.DataSpace
                 templates
                     .OrderBy(x => !x.OcrInvoices.Name.ToUpper().Contains("Tropical".ToUpper()))
                     .ThenBy(x => x.OcrInvoices.Id)
-                    .ToList(); //.Where(tmp => IsInvoiceDocument(tmp.OcrInvoices, pdfTxt.ToString()));
+                    .Where(tmp => IsInvoiceDocument(tmp.OcrInvoices, pdfTxt.ToString()))
+                    .ToList(); //;
         }
 
         public static List<Invoice> GetTemplates(Expression<Func<Invoices, bool>> filter)
@@ -509,6 +510,7 @@ namespace WaterNut.DataSpace
             FileInfo fileInfo, string txtFile)
         {
             var body = $"Hey,\r\n\r\n {error}-'{fileInfo.Name}'.\r\n\r\n\r\n" +
+                       $"{(failedlst.Any() ? failedlst.FirstOrDefault()?.OCR_Lines.Parts.Invoices.Name + "\r\n\r\n\r\n" : "")}"+
                        $"{failedlst.Select(x => $"Line:{x.OCR_Lines.Name} - RegId: {x.OCR_Lines.RegularExpressions.Id} - Regex: {x.OCR_Lines.RegularExpressions.RegEx} - Fields: {x.FailedFields.SelectMany(z => z.ToList()).SelectMany(z => z.Value.ToList()).Select(z => $"{z.Key.fields.Key} - '{z.Key.fields.Field}'").DefaultIfEmpty(string.Empty).Aggregate((o, c) => o + "\r\n\r\n" + c)}").DefaultIfEmpty(string.Empty).Aggregate((o, c) => o + "\r\n" + c)}\r\n\r\n" +
                        "Thanks\r\n" +
                        "Thanks\r\n" +
