@@ -94,6 +94,7 @@ namespace AutoBot
                 {"ReDownloadPOFiles", (ft,fs) => EX9Utils.DownloadSalesFiles(10, "IM7", true)},
                 {"SubmitDiscrepanciesToCustoms", DISUtils.SubmitDiscrepanciesToCustoms},
                 {"ClearShipmentData", ShipmentUtils.ClearShipmentData},
+                {"ImportPOEntries", (ft,fs) => DocumentUtils.ImportPOEntries(false) },
 
 
 
