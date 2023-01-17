@@ -134,6 +134,7 @@ namespace AutoBot
                                                       RegexOptions.IgnoreCase) && z.LastWriteTime >= beforeImport))) continue;
 
 
+
                                 var emailFileTypes = msg.Key.Item2.EmailMapping.InfoFirst == true ? msg.Key.Item2.FileTypes.OrderByDescending(x => x.FileImporterInfos.EntryType == FileTypeManager.EntryTypes.Info).ToList() : msg.Key.Item2.FileTypes.OrderBy(x => x.FileImporterInfos.EntryType == FileTypeManager.EntryTypes.Info).ToList();
                                 foreach (var emailFileType in emailFileTypes)
                                 {
