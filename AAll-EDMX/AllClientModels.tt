@@ -1,57 +1,57 @@
 ﻿<#@ template language="C#" debug="false" hostspecific="true"#>
 <#@ output extension=".cs"#>
 <#@ include file="T4Toolbox.tt" #>
-<#@ include file="C:\Users\josep\OneDrive\AutoBot-Enterprise\Core.Common\T4 Library\T4\ClientModels.tt" #>
+<#@ include file="..\Core.Common\T4 Library\T4\ClientModels.tt" #>
 <#
 	
     CreateClientModels("WaterNut",
-                        @"C:\Users\josep\OneDrive\AutoBot-Enterprise\AllocationQS\AllocationQS.edmx",  
-					 @"C:\Users\josep\OneDrive\AutoBot-Enterprise\AllocationQS\AllocationQS.edmx",  
-                      @"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Client.Entities\WaterNut.Client.Entities.csproj",
-                           @"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Client.DTO\WaterNut.Client.DTO.csproj", false );   
+                        @"..\AllocationQS\AllocationQS.edmx",  
+					 @"..\AllocationQS\AllocationQS.edmx",  
+                      @"..\WaterNut.Client.Entities\WaterNut.Client.Entities.csproj",
+                           @"..\WaterNut.Client.DTO\WaterNut.Client.DTO.csproj", false );   
 
-	CreateClientModels("WaterNut",@"C:\Users\josep\OneDrive\AutoBot-Enterprise\CounterPointQS\CounterPointQS.edmx",  
-			@"C:\Users\josep\OneDrive\AutoBot-Enterprise\CoreEntities\CoreEntities.edmx",          
-             @"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Client.Entities\WaterNut.Client.Entities.csproj",
-                           @"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Client.DTO\WaterNut.Client.DTO.csproj", false );   
+	CreateClientModels("WaterNut",@"..\CounterPointQS\CounterPointQS.edmx",  
+			@"..\CoreEntities\CoreEntities.edmx",          
+             @"..\WaterNut.Client.Entities\WaterNut.Client.Entities.csproj",
+                           @"..\WaterNut.Client.DTO\WaterNut.Client.DTO.csproj", false );   
 
-	CreateClientModels("WaterNut",@"C:\Users\josep\OneDrive\AutoBot-Enterprise\CoreEntities\CoreEntities.edmx",   
-					@"C:\Users\josep\OneDrive\AutoBot-Enterprise\CoreEntities\CoreEntities.edmx",                
-                     @"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Client.Entities\WaterNut.Client.Entities.csproj",
-                           @"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Client.DTO\WaterNut.Client.DTO.csproj", false );   
-	CreateClientModels("WaterNut",@"C:\Users\josep\OneDrive\AutoBot-Enterprise\CoreEntities\OCR.edmx",   
-					@"C:\Users\josep\OneDrive\AutoBot-Enterprise\CoreEntities\CoreEntities.edmx",                
-                     @"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Client.Entities\WaterNut.Client.Entities.csproj",
-                           @"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Client.DTO\WaterNut.Client.DTO.csproj", false );   
+	CreateClientModels("WaterNut",@"..\CoreEntities\CoreEntities.edmx",   
+					@"..\CoreEntities\CoreEntities.edmx",                
+                     @"..\WaterNut.Client.Entities\WaterNut.Client.Entities.csproj",
+                           @"..\WaterNut.Client.DTO\WaterNut.Client.DTO.csproj", false );   
+	CreateClientModels("WaterNut",@"..\CoreEntities\OCR.edmx",   
+					@"..\CoreEntities\CoreEntities.edmx",                
+                     @"..\WaterNut.Client.Entities\WaterNut.Client.Entities.csproj",
+                           @"..\WaterNut.Client.DTO\WaterNut.Client.DTO.csproj", false );   
 	CreateClientModels("WaterNut",
-					 @"C:\Users\josep\OneDrive\AutoBot-Enterprise\EntryDataQS\EntryDataQS.edmx",    
-					 @"C:\Users\josep\OneDrive\AutoBot-Enterprise\CoreEntities\CoreEntities.edmx",                 
-                      @"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Client.Entities\WaterNut.Client.Entities.csproj",
-                           @"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Client.DTO\WaterNut.Client.DTO.csproj", false );   
-
-	CreateClientModels("WaterNut",
-					 @"C:\Users\josep\OneDrive\AutoBot-Enterprise\InventoryQS\InventoryQS.edmx",
-					@"C:\Users\josep\OneDrive\AutoBot-Enterprise\CoreEntities\CoreEntities.edmx",                    
-                      @"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Client.Entities\WaterNut.Client.Entities.csproj",
-                           @"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Client.DTO\WaterNut.Client.DTO.csproj", false );   
+					 @"..\EntryDataQS\EntryDataQS.edmx",    
+					 @"..\CoreEntities\CoreEntities.edmx",                 
+                      @"..\WaterNut.Client.Entities\WaterNut.Client.Entities.csproj",
+                           @"..\WaterNut.Client.DTO\WaterNut.Client.DTO.csproj", false );   
 
 	CreateClientModels("WaterNut",
-					 @"C:\Users\josep\OneDrive\AutoBot-Enterprise\PreviousDocumentQS\PreviousDocumentQS.edmx", 
-					@"C:\Users\josep\OneDrive\AutoBot-Enterprise\CoreEntities\CoreEntities.edmx",                   
-                      @"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Client.Entities\WaterNut.Client.Entities.csproj",
-                           @"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Client.DTO\WaterNut.Client.DTO.csproj", false );     
+					 @"..\InventoryQS\InventoryQS.edmx",
+					@"..\CoreEntities\CoreEntities.edmx",                    
+                      @"..\WaterNut.Client.Entities\WaterNut.Client.Entities.csproj",
+                           @"..\WaterNut.Client.DTO\WaterNut.Client.DTO.csproj", false );   
+
+	CreateClientModels("WaterNut",
+					 @"..\PreviousDocumentQS\PreviousDocumentQS.edmx", 
+					@"..\CoreEntities\CoreEntities.edmx",                   
+                      @"..\WaterNut.Client.Entities\WaterNut.Client.Entities.csproj",
+                           @"..\WaterNut.Client.DTO\WaterNut.Client.DTO.csproj", false );     
 
    CreateClientModels("WaterNut",
-				     @"C:\Users\josep\OneDrive\AutoBot-Enterprise\SalesDataQS\SalesDataQS.edmx", 
-					@"C:\Users\josep\OneDrive\AutoBot-Enterprise\CoreEntities\CoreEntities.edmx",                    
-                      @"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Client.Entities\WaterNut.Client.Entities.csproj",
-                           @"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Client.DTO\WaterNut.Client.DTO.csproj", false );
+				     @"..\SalesDataQS\SalesDataQS.edmx", 
+					@"..\CoreEntities\CoreEntities.edmx",                    
+                      @"..\WaterNut.Client.Entities\WaterNut.Client.Entities.csproj",
+                           @"..\WaterNut.Client.DTO\WaterNut.Client.DTO.csproj", false );
        
            CreateClientModels("WaterNut",
-				     @"C:\Users\josep\OneDrive\AutoBot-Enterprise\AdjustmentQS\AdjustmentQS.edmx", 
-					@"C:\Users\josep\OneDrive\AutoBot-Enterprise\CoreEntities\CoreEntities.edmx",                    
-                      @"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Client.Entities\WaterNut.Client.Entities.csproj",
-                           @"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Client.DTO\WaterNut.Client.DTO.csproj", false );
+				     @"..\AdjustmentQS\AdjustmentQS.edmx", 
+					@"..\CoreEntities\CoreEntities.edmx",                    
+                      @"..\WaterNut.Client.Entities\WaterNut.Client.Entities.csproj",
+                           @"..\WaterNut.Client.DTO\WaterNut.Client.DTO.csproj", false );
 
 
 
@@ -59,44 +59,44 @@
 
 //
 	//CreateClientModels("WaterNut",
-                     //@"C:\Users\josep\OneDrive\AutoBot-Enterprise\AllocationDS\AllocationDS.edmx",
-					//@"C:\Users\josep\OneDrive\AutoBot-Enterprise\AllocationDS\AllocationDS.edmx",
-                      //@"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Client.Entities\WaterNut.Client.Entities.csproj",
-                           //@"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Client.DTO\WaterNut.Client.DTO.csproj" );   
+                     //@"..\AllocationDS\AllocationDS.edmx",
+					//@"..\AllocationDS\AllocationDS.edmx",
+                      //@"..\WaterNut.Client.Entities\WaterNut.Client.Entities.csproj",
+                           //@"..\WaterNut.Client.DTO\WaterNut.Client.DTO.csproj" );   
 //
 	//CreateClientModels("WaterNut",
-                     //@"C:\Users\josep\OneDrive\AutoBot-Enterprise\DocumentDS\DocumentDS.edmx",
-					 //@"C:\Users\josep\OneDrive\AutoBot-Enterprise\DocumentDS\DocumentDS.edmx",
-                      //@"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Client.Entities\WaterNut.Client.Entities.csproj",
-                           //@"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Client.DTO\WaterNut.Client.DTO.csproj" );   
+                     //@"..\DocumentDS\DocumentDS.edmx",
+					 //@"..\DocumentDS\DocumentDS.edmx",
+                      //@"..\WaterNut.Client.Entities\WaterNut.Client.Entities.csproj",
+                           //@"..\WaterNut.Client.DTO\WaterNut.Client.DTO.csproj" );   
 //
 	//CreateClientModels("WaterNut",
-                     //@"C:\Users\josep\OneDrive\AutoBot-Enterprise\DocumentItemDS\DocumentItemDS.edmx",
-					 //@"C:\Users\josep\OneDrive\AutoBot-Enterprise\DocumentItemDS\DocumentItemDS.edmx",
-                     //@"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Client.Entities\WaterNut.Client.Entities.csproj",
-                           //@"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Client.DTO\WaterNut.Client.DTO.csproj" );   
+                     //@"..\DocumentItemDS\DocumentItemDS.edmx",
+					 //@"..\DocumentItemDS\DocumentItemDS.edmx",
+                     //@"..\WaterNut.Client.Entities\WaterNut.Client.Entities.csproj",
+                           //@"..\WaterNut.Client.DTO\WaterNut.Client.DTO.csproj" );   
 //
 	//CreateClientModels("WaterNut",
-                     //@"C:\Users\josep\OneDrive\AutoBot-Enterprise\EntryDataDS\EntryDataDS.edmx",
-					//@"C:\Users\josep\OneDrive\AutoBot-Enterprise\EntryDataDS\EntryDataDS.edmx",
-                      //@"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Client.Entities\WaterNut.Client.Entities.csproj",
-                           //@"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Client.DTO\WaterNut.Client.DTO.csproj" );   
+                     //@"..\EntryDataDS\EntryDataDS.edmx",
+					//@"..\EntryDataDS\EntryDataDS.edmx",
+                      //@"..\WaterNut.Client.Entities\WaterNut.Client.Entities.csproj",
+                           //@"..\WaterNut.Client.DTO\WaterNut.Client.DTO.csproj" );   
 //
 	//CreateClientModels("WaterNut",
-                     //@"C:\Users\josep\OneDrive\AutoBot-Enterprise\InventoryDS\InventoryDS.edmx",
-					//@"C:\Users\josep\OneDrive\AutoBot-Enterprise\InventoryDS\InventoryDS.edmx",
-                           //@"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Client.Entities\WaterNut.Client.Entities.csproj",
-                           //@"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Client.DTO\WaterNut.Client.DTO.csproj");   
+                     //@"..\InventoryDS\InventoryDS.edmx",
+					//@"..\InventoryDS\InventoryDS.edmx",
+                           //@"..\WaterNut.Client.Entities\WaterNut.Client.Entities.csproj",
+                           //@"..\WaterNut.Client.DTO\WaterNut.Client.DTO.csproj");   
 //
 	//CreateClientModels("WaterNut",
-                     //@"C:\Users\josep\OneDrive\AutoBot-Enterprise\PreviousDocumentDS\PreviousDocumentDS.edmx",
-					//@"C:\Users\josep\OneDrive\AutoBot-Enterprise\PreviousDocumentDS\PreviousDocumentDS.edmx",
-                      //@"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Client.Entities\WaterNut.Client.Entities.csproj",
-                           //@"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Client.DTO\WaterNut.Client.DTO.csproj" );     
+                     //@"..\PreviousDocumentDS\PreviousDocumentDS.edmx",
+					//@"..\PreviousDocumentDS\PreviousDocumentDS.edmx",
+                      //@"..\WaterNut.Client.Entities\WaterNut.Client.Entities.csproj",
+                           //@"..\WaterNut.Client.DTO\WaterNut.Client.DTO.csproj" );     
 //
     //CreateClientModels("WaterNut",
-                     //@"C:\Users\josep\OneDrive\AutoBot-Enterprise\QuickBooksDS\QuickBooksDS.edmx",
-					//@"C:\Users\josep\OneDrive\AutoBot-Enterprise\QuickBooksDS\QuickBooksDS.edmx",
-                      //@"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Client.Entities\WaterNut.Client.Entities.csproj",
-                           //@"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Client.DTO\WaterNut.Client.DTO.csproj" );  
+                     //@"..\QuickBooksDS\QuickBooksDS.edmx",
+					//@"..\QuickBooksDS\QuickBooksDS.edmx",
+                      //@"..\WaterNut.Client.Entities\WaterNut.Client.Entities.csproj",
+                           //@"..\WaterNut.Client.DTO\WaterNut.Client.DTO.csproj" );  
 #>

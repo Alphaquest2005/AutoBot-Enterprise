@@ -86,61 +86,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AllBusinessEntities.cs">
-      <DependentUpon>AllBusinessEntities.tt</DependentUpon>
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-    </Compile>
-    <Compile Include="AllBusinessMappings.cs">
-      <DependentUpon>AllBusinessMappings.tt</DependentUpon>
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-    </Compile>
-    <Compile Include="AllBusinessModels.cs">
-      <DependentUpon>AllBusinessModels.tt</DependentUpon>
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-    </Compile>
-    <Compile Include="AllClientEntities.cs">
-      <DependentUpon>AllClientEntities.tt</DependentUpon>
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-    </Compile>
-    <Compile Include="AllClientModels1.cs">
-      <DependentUpon>AllClientModels.tt</DependentUpon>
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-    </Compile>
-    <Compile Include="AllDomainInterface.cs">
-      <DependentUpon>AllDomainInterface.tt</DependentUpon>
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-    </Compile>
-    <Compile Include="AllMapping1.cs">
-      <DependentUpon>AllMapping.tt</DependentUpon>
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-    </Compile>
-    <Compile Include="AllObjectContext1.cs">
-      <DependentUpon>AllObjectContext.tt</DependentUpon>
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-    </Compile>
-    <Compile Include="AllRepository1.cs">
-      <DependentUpon>AllRepository.tt</DependentUpon>
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-    </Compile>
-    <Compile Include="AllServices.cs">
-      <DependentUpon>AllServices.tt</DependentUpon>
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-    </Compile>
-    <Compile Include="AllViewModels.cs">
-      <DependentUpon>AllViewModels.tt</DependentUpon>
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-    </Compile>
     <Compile Include="EF6\AllBusinessEntities1.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

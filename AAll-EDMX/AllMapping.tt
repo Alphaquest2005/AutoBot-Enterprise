@@ -1,7 +1,8 @@
 ﻿<#@ template language="C#" debug="false" hostspecific="true"#>
+<#= this.Host.ResolveParameterValue("-", "-", "projects") #>
 <#@ output extension=".cs"#>
 <#@ include file="T4Toolbox.tt" #>
-<#@ include file="C:\Users\josep\OneDrive\AutoBot-Enterprise\Core.Common\T4 Library\T4\DbContextMappings.tt" #>
+<#@ include file="..\Core.Common\T4 Library\T4\DbContextMappings.tt" #>
 <#
 	
     string[] strs = new string[] {  "AllocationDS","AllocationQS","CounterPointQS","CoreEntities", "EntryDataQS"
@@ -13,21 +14,21 @@
     foreach (var conTextname in strs)
     {
         DbContextMappingsTPL sv = new DbContextMappingsTPL(); 
-        sv.inputFile = @"C:\Users\josep\OneDrive\AutoBot-Enterprise\" + conTextname + @"\" + conTextname +".edmx";
-        sv.coreEdmx = string.Format(@"C:\Users\josep\OneDrive\AutoBot-Enterprise\{0}\{0}.edmx", conTextname);
-        sv.outputProject = @"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Business.Entities\WaterNut.Business.Entities.csproj"; 
-        sv.Output.Project = @"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Data\WaterNut.Data.csproj";
-        sv.Output.File = @"DbContextMappings\" + conTextname + ".Mappings.cs";
+        sv.inputFile = this.Host.ResolvePath(@"..\" + conTextname + @"\" + conTextname +".edmx");
+        sv.coreEdmx = this.Host.ResolvePath(string.Format(@"..\{0}\{0}.edmx", conTextname));
+        sv.outputProject = this.Host.ResolvePath(@"..\WaterNut.Business.Entities\WaterNut.Business.Entities.csproj"); 
+        sv.Output.Project = this.Host.ResolvePath(@"..\WaterNut.Data\WaterNut.Data.csproj");
+        sv.Output.File = this.Host.ResolvePath(@"..\WaterNut.Data\DbContextMappings\" + conTextname + ".Mappings.cs");
         sv.Render();
         
     }
     
     DbContextMappingsTPL ov = new DbContextMappingsTPL(); 
-        ov.inputFile = @"C:\Users\josep\OneDrive\AutoBot-Enterprise\CoreEntities\OCR.edmx";
-        ov.coreEdmx = @"C:\Users\josep\OneDrive\AutoBot-Enterprise\CoreEntities\OCR.edmx";
-        ov.outputProject = @"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Business.Entities\WaterNut.Business.Entities.csproj"; 
-        ov.Output.Project = @"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Data\WaterNut.Data.csproj";
-        ov.Output.File = @"DbContextMappings\OCR.Mappings.cs";
+        ov.inputFile = this.Host.ResolvePath(@"..\CoreEntities\OCR.edmx");
+        ov.coreEdmx = this.Host.ResolvePath(@"..\CoreEntities\OCR.edmx");
+        ov.outputProject = this.Host.ResolvePath(@"..\WaterNut.Business.Entities\WaterNut.Business.Entities.csproj"); 
+        ov.Output.Project = this.Host.ResolvePath(@"..\WaterNut.Data\WaterNut.Data.csproj");
+        ov.Output.File = this.Host.ResolvePath(@"..\WaterNut.Data\DbContextMappings\OCR.Mappings.cs");
         ov.Render();
 
 

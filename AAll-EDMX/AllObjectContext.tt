@@ -1,7 +1,8 @@
 ﻿<#@ template language="C#" debug="false" hostspecific="true"#>
+<#= this.Host.ResolveParameterValue("-", "-", "projects") #>
 <#@ output extension=".cs"#>
 <#@ include file="T4Toolbox.tt" #>
-<#@ include file="C:\Users\josep\OneDrive\AutoBot-Enterprise\Core.Common\T4 Library\T4\ObjectContexts.tt" #>
+<#@ include file="..\Core.Common\T4 Library\T4\ObjectContexts.tt" #>
 <#
     var clst = new List<string>()
     {
@@ -27,18 +28,18 @@
     {
 
         ObjectContextTPL sv = new ObjectContextTPL();
-        sv.inputFile = @"C:\Users\josep\OneDrive\AutoBot-Enterprise\" + conTextname + @"\" + conTextname + ".edmx";
-        sv.coreEdmx = @"C:\Users\josep\OneDrive\AutoBot-Enterprise\" + conTextname + @"\" + conTextname + @".edmx";
-        sv.Output.Project = @"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Data\WaterNut.Data.csproj";
-        sv.Output.File = @"ObjectContexts\" + conTextname + ".Context.cs";
+        sv.inputFile = this.Host.ResolvePath(@"..\" + conTextname + @"\" + conTextname + ".edmx");
+        sv.coreEdmx = this.Host.ResolvePath(@"..\" + conTextname + @"\" + conTextname + @".edmx");
+        sv.Output.Project = this.Host.ResolvePath(@"..\WaterNut.Data\WaterNut.Data.csproj");
+        sv.Output.File = this.Host.ResolvePath(@"..\WaterNut.Data\ObjectContexts\" + conTextname + ".Context.cs");
         sv.Render();
     }
 
     ObjectContextTPL ov = new ObjectContextTPL();
-        ov.inputFile = @"C:\Users\josep\OneDrive\AutoBot-Enterprise\CoreEntities\OCR.edmx";
-        ov.coreEdmx = @"C:\Users\josep\OneDrive\AutoBot-Enterprise\CoreEntities\OCR.edmx";
-        ov.Output.Project = @"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Data\WaterNut.Data.csproj";
-        ov.Output.File = @"ObjectContexts\OCR.Context.cs";
+        ov.inputFile = this.Host.ResolvePath(@"..\CoreEntities\OCR.edmx");
+        ov.coreEdmx = this.Host.ResolvePath(@"..\CoreEntities\OCR.edmx");
+        ov.Output.Project = this.Host.ResolvePath(@"..\WaterNut.Data\WaterNut.Data.csproj");
+        ov.Output.File = this.Host.ResolvePath(@"..\WaterNut.Data\ObjectContexts\OCR.Context.cs");
         ov.Render();
     
 #>

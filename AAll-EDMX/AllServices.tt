@@ -1,127 +1,127 @@
 ﻿<#@ template language="C#" debug="false" hostspecific="true"#>
 <#@ output extension=".cs"#>
 <#@ include file="T4Toolbox.tt" #>
-<#@ include file="C:\Users\josep\OneDrive\AutoBot-Enterprise\Core.Common\T4 Library\T4\Services.tt" #>
+<#@ include file="..\Core.Common\T4 Library\T4\Services.tt" #>
 <#
    
-    CreateServices("WaterNut", @"C:\Users\josep\OneDrive\AutoBot-Enterprise\AllocationQS\AllocationQS.edmx",
-						   @"C:\Users\josep\OneDrive\AutoBot-Enterprise\AllocationQS\AllocationQS.edmx",
-                           @"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Business.Services\WaterNut.Business.Services.csproj",
-                           @"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Business.Services\WaterNut.Business.Services.csproj",
-                           @"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Client.Contracts\WaterNut.Client.Contracts.csproj",
-                           @"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Client.Services\WaterNut.Client.Services.csproj");   
+    CreateServices("WaterNut", @"..\AllocationQS\AllocationQS.edmx",
+						   @"..\AllocationQS\AllocationQS.edmx",
+                           @"..\WaterNut.Business.Services\WaterNut.Business.Services.csproj",
+                           @"..\WaterNut.Business.Services\WaterNut.Business.Services.csproj",
+                           @"..\WaterNut.Client.Contracts\WaterNut.Client.Contracts.csproj",
+                           @"..\WaterNut.Client.Services\WaterNut.Client.Services.csproj");   
 
-		CreateServices("WaterNut", @"C:\Users\josep\OneDrive\AutoBot-Enterprise\CounterPointQS\CounterPointQS.edmx",            
-            @"C:\Users\josep\OneDrive\AutoBot-Enterprise\CoreEntities\CoreEntities.edmx",
-                           @"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Business.Services\WaterNut.Business.Services.csproj",
-                            @"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Business.Services\WaterNut.Business.Services.csproj",
-                           @"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Client.Contracts\WaterNut.Client.Contracts.csproj",
-                           @"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Client.Services\WaterNut.Client.Services.csproj");   
+		CreateServices("WaterNut", @"..\CounterPointQS\CounterPointQS.edmx",            
+            @"..\CoreEntities\CoreEntities.edmx",
+                           @"..\WaterNut.Business.Services\WaterNut.Business.Services.csproj",
+                            @"..\WaterNut.Business.Services\WaterNut.Business.Services.csproj",
+                           @"..\WaterNut.Client.Contracts\WaterNut.Client.Contracts.csproj",
+                           @"..\WaterNut.Client.Services\WaterNut.Client.Services.csproj");   
 
-		CreateServices("WaterNut",@"C:\Users\josep\OneDrive\AutoBot-Enterprise\CoreEntities\CoreEntities.edmx",                   
-                    @"C:\Users\josep\OneDrive\AutoBot-Enterprise\CoreEntities\CoreEntities.edmx",
-                           @"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Business.Services\WaterNut.Business.Services.csproj",
-                           @"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Business.Services\WaterNut.Business.Services.csproj",
-                           @"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Client.Contracts\WaterNut.Client.Contracts.csproj",
-                           @"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Client.Services\WaterNut.Client.Services.csproj");  
+		CreateServices("WaterNut",@"..\CoreEntities\CoreEntities.edmx",                   
+                    @"..\CoreEntities\CoreEntities.edmx",
+                           @"..\WaterNut.Business.Services\WaterNut.Business.Services.csproj",
+                           @"..\WaterNut.Business.Services\WaterNut.Business.Services.csproj",
+                           @"..\WaterNut.Client.Contracts\WaterNut.Client.Contracts.csproj",
+                           @"..\WaterNut.Client.Services\WaterNut.Client.Services.csproj");  
  
-    		CreateServices("WaterNut",@"C:\Users\josep\OneDrive\AutoBot-Enterprise\CoreEntities\OCR.edmx",                   
-                    @"C:\Users\josep\OneDrive\AutoBot-Enterprise\CoreEntities\CoreEntities.edmx",
-                           @"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Business.Services\WaterNut.Business.Services.csproj",
-                           @"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Business.Services\WaterNut.Business.Services.csproj",
-                           @"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Client.Contracts\WaterNut.Client.Contracts.csproj",
-                           @"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Client.Services\WaterNut.Client.Services.csproj"); 
+    		CreateServices("WaterNut",@"..\CoreEntities\OCR.edmx",                   
+                    @"..\CoreEntities\CoreEntities.edmx",
+                           @"..\WaterNut.Business.Services\WaterNut.Business.Services.csproj",
+                           @"..\WaterNut.Business.Services\WaterNut.Business.Services.csproj",
+                           @"..\WaterNut.Client.Contracts\WaterNut.Client.Contracts.csproj",
+                           @"..\WaterNut.Client.Services\WaterNut.Client.Services.csproj"); 
 
-	CreateServices("WaterNut",@"C:\Users\josep\OneDrive\AutoBot-Enterprise\EntryDataQS\EntryDataQS.edmx",                     
-                     @"C:\Users\josep\OneDrive\AutoBot-Enterprise\CoreEntities\CoreEntities.edmx",
-                           @"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Business.Services\WaterNut.Business.Services.csproj",
-                           @"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Business.Services\WaterNut.Business.Services.csproj",
-                           @"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Client.Contracts\WaterNut.Client.Contracts.csproj",
-                           @"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Client.Services\WaterNut.Client.Services.csproj");   
+	CreateServices("WaterNut",@"..\EntryDataQS\EntryDataQS.edmx",                     
+                     @"..\CoreEntities\CoreEntities.edmx",
+                           @"..\WaterNut.Business.Services\WaterNut.Business.Services.csproj",
+                           @"..\WaterNut.Business.Services\WaterNut.Business.Services.csproj",
+                           @"..\WaterNut.Client.Contracts\WaterNut.Client.Contracts.csproj",
+                           @"..\WaterNut.Client.Services\WaterNut.Client.Services.csproj");   
 
-	CreateServices("WaterNut",@"C:\Users\josep\OneDrive\AutoBot-Enterprise\InventoryQS\InventoryQS.edmx",                    
-                     @"C:\Users\josep\OneDrive\AutoBot-Enterprise\CoreEntities\CoreEntities.edmx",
-                           @"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Business.Services\WaterNut.Business.Services.csproj",
-                           @"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Business.Services\WaterNut.Business.Services.csproj",
-                           @"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Client.Contracts\WaterNut.Client.Contracts.csproj",
-                           @"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Client.Services\WaterNut.Client.Services.csproj" );   
+	CreateServices("WaterNut",@"..\InventoryQS\InventoryQS.edmx",                    
+                     @"..\CoreEntities\CoreEntities.edmx",
+                           @"..\WaterNut.Business.Services\WaterNut.Business.Services.csproj",
+                           @"..\WaterNut.Business.Services\WaterNut.Business.Services.csproj",
+                           @"..\WaterNut.Client.Contracts\WaterNut.Client.Contracts.csproj",
+                           @"..\WaterNut.Client.Services\WaterNut.Client.Services.csproj" );   
 
-	CreateServices("WaterNut",@"C:\Users\josep\OneDrive\AutoBot-Enterprise\PreviousDocumentQS\PreviousDocumentQS.edmx",                    
-                     @"C:\Users\josep\OneDrive\AutoBot-Enterprise\CoreEntities\CoreEntities.edmx",
-                           @"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Business.Services\WaterNut.Business.Services.csproj",
-                           @"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Business.Services\WaterNut.Business.Services.csproj",
-                           @"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Client.Contracts\WaterNut.Client.Contracts.csproj",
-                           @"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Client.Services\WaterNut.Client.Services.csproj" );     
+	CreateServices("WaterNut",@"..\PreviousDocumentQS\PreviousDocumentQS.edmx",                    
+                     @"..\CoreEntities\CoreEntities.edmx",
+                           @"..\WaterNut.Business.Services\WaterNut.Business.Services.csproj",
+                           @"..\WaterNut.Business.Services\WaterNut.Business.Services.csproj",
+                           @"..\WaterNut.Client.Contracts\WaterNut.Client.Contracts.csproj",
+                           @"..\WaterNut.Client.Services\WaterNut.Client.Services.csproj" );     
 
-   CreateServices("WaterNut",@"C:\Users\josep\OneDrive\AutoBot-Enterprise\SalesDataQS\SalesDataQS.edmx",                     
-                     @"C:\Users\josep\OneDrive\AutoBot-Enterprise\CoreEntities\CoreEntities.edmx",
-                           @"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Business.Services\WaterNut.Business.Services.csproj",
-                           @"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Business.Services\WaterNut.Business.Services.csproj",
-                           @"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Client.Contracts\WaterNut.Client.Contracts.csproj",
-                           @"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Client.Services\WaterNut.Client.Services.csproj" );
+   CreateServices("WaterNut",@"..\SalesDataQS\SalesDataQS.edmx",                     
+                     @"..\CoreEntities\CoreEntities.edmx",
+                           @"..\WaterNut.Business.Services\WaterNut.Business.Services.csproj",
+                           @"..\WaterNut.Business.Services\WaterNut.Business.Services.csproj",
+                           @"..\WaterNut.Client.Contracts\WaterNut.Client.Contracts.csproj",
+                           @"..\WaterNut.Client.Services\WaterNut.Client.Services.csproj" );
 
-   CreateServices("WaterNut",@"C:\Users\josep\OneDrive\AutoBot-Enterprise\AdjustmentQS\AdjustmentQS.edmx",                     
-                     @"C:\Users\josep\OneDrive\AutoBot-Enterprise\CoreEntities\CoreEntities.edmx",
-                           @"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Business.Services\WaterNut.Business.Services.csproj",
-                           @"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Business.Services\WaterNut.Business.Services.csproj",
-                           @"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Client.Contracts\WaterNut.Client.Contracts.csproj",
-                           @"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Client.Services\WaterNut.Client.Services.csproj" );
+   CreateServices("WaterNut",@"..\AdjustmentQS\AdjustmentQS.edmx",                     
+                     @"..\CoreEntities\CoreEntities.edmx",
+                           @"..\WaterNut.Business.Services\WaterNut.Business.Services.csproj",
+                           @"..\WaterNut.Business.Services\WaterNut.Business.Services.csproj",
+                           @"..\WaterNut.Client.Contracts\WaterNut.Client.Contracts.csproj",
+                           @"..\WaterNut.Client.Services\WaterNut.Client.Services.csproj" );
 
 
 //////////////////////////////////////////Data space///////////////////////////////////////
 
 
-	CreateServices("WaterNut",@"C:\Users\josep\OneDrive\AutoBot-Enterprise\AllocationDS\AllocationDS.edmx",
-                     @"C:\Users\josep\OneDrive\AutoBot-Enterprise\AllocationDS\AllocationDS.edmx",
-                           @"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Business.Services\WaterNut.Business.Services.csproj",
-                           @"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Business.Services\WaterNut.Business.Services.csproj",
+	CreateServices("WaterNut",@"..\AllocationDS\AllocationDS.edmx",
+                     @"..\AllocationDS\AllocationDS.edmx",
+                           @"..\WaterNut.Business.Services\WaterNut.Business.Services.csproj",
+                           @"..\WaterNut.Business.Services\WaterNut.Business.Services.csproj",
                            null, null);   
 
-	CreateServices("WaterNut",@"C:\Users\josep\OneDrive\AutoBot-Enterprise\DocumentDS\DocumentDS.edmx",
-                     @"C:\Users\josep\OneDrive\AutoBot-Enterprise\DocumentDS\DocumentDS.edmx",
-                           @"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Business.Services\WaterNut.Business.Services.csproj",
-                           @"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Business.Services\WaterNut.Business.Services.csproj",
+	CreateServices("WaterNut",@"..\DocumentDS\DocumentDS.edmx",
+                     @"..\DocumentDS\DocumentDS.edmx",
+                           @"..\WaterNut.Business.Services\WaterNut.Business.Services.csproj",
+                           @"..\WaterNut.Business.Services\WaterNut.Business.Services.csproj",
                            null, null);   
 
-	CreateServices("WaterNut",@"C:\Users\josep\OneDrive\AutoBot-Enterprise\DocumentItemDS\DocumentItemDS.edmx",
-                     @"C:\Users\josep\OneDrive\AutoBot-Enterprise\DocumentItemDS\DocumentItemDS.edmx",
-                           @"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Business.Services\WaterNut.Business.Services.csproj",
-                           @"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Business.Services\WaterNut.Business.Services.csproj",
+	CreateServices("WaterNut",@"..\DocumentItemDS\DocumentItemDS.edmx",
+                     @"..\DocumentItemDS\DocumentItemDS.edmx",
+                           @"..\WaterNut.Business.Services\WaterNut.Business.Services.csproj",
+                           @"..\WaterNut.Business.Services\WaterNut.Business.Services.csproj",
                            null, null );   
 
-	CreateServices("WaterNut",@"C:\Users\josep\OneDrive\AutoBot-Enterprise\EntryDataDS\EntryDataDS.edmx",
-                     @"C:\Users\josep\OneDrive\AutoBot-Enterprise\EntryDataDS\EntryDataDS.edmx",
-                           @"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Business.Services\WaterNut.Business.Services.csproj",
-                           @"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Business.Services\WaterNut.Business.Services.csproj",
+	CreateServices("WaterNut",@"..\EntryDataDS\EntryDataDS.edmx",
+                     @"..\EntryDataDS\EntryDataDS.edmx",
+                           @"..\WaterNut.Business.Services\WaterNut.Business.Services.csproj",
+                           @"..\WaterNut.Business.Services\WaterNut.Business.Services.csproj",
                            null, null);   
 
-	CreateServices("WaterNut",@"C:\Users\josep\OneDrive\AutoBot-Enterprise\InventoryDS\InventoryDS.edmx",
-                     @"C:\Users\josep\OneDrive\AutoBot-Enterprise\InventoryDS\InventoryDS.edmx",
-                           @"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Business.Services\WaterNut.Business.Services.csproj",
-                           @"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Business.Services\WaterNut.Business.Services.csproj",
+	CreateServices("WaterNut",@"..\InventoryDS\InventoryDS.edmx",
+                     @"..\InventoryDS\InventoryDS.edmx",
+                           @"..\WaterNut.Business.Services\WaterNut.Business.Services.csproj",
+                           @"..\WaterNut.Business.Services\WaterNut.Business.Services.csproj",
                            null, null );   
 
-	CreateServices("WaterNut",@"C:\Users\josep\OneDrive\AutoBot-Enterprise\PreviousDocumentDS\PreviousDocumentDS.edmx",
-                    @"C:\Users\josep\OneDrive\AutoBot-Enterprise\PreviousDocumentDS\PreviousDocumentDS.edmx",
-                           @"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Business.Services\WaterNut.Business.Services.csproj",
-                           @"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Business.Services\WaterNut.Business.Services.csproj",
+	CreateServices("WaterNut",@"..\PreviousDocumentDS\PreviousDocumentDS.edmx",
+                    @"..\PreviousDocumentDS\PreviousDocumentDS.edmx",
+                           @"..\WaterNut.Business.Services\WaterNut.Business.Services.csproj",
+                           @"..\WaterNut.Business.Services\WaterNut.Business.Services.csproj",
                            null, null );     
 
-    CreateServices("WaterNut",@"C:\Users\josep\OneDrive\AutoBot-Enterprise\QuickBooksDS\QuickBooksDS.edmx",
-                     @"C:\Users\josep\OneDrive\AutoBot-Enterprise\QuickBooksDS\QuickBooksDS.edmx",
-                           @"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Business.Services\WaterNut.Business.Services.csproj",
-                           @"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Business.Services\WaterNut.Business.Services.csproj",
+    CreateServices("WaterNut",@"..\QuickBooksDS\QuickBooksDS.edmx",
+                     @"..\QuickBooksDS\QuickBooksDS.edmx",
+                           @"..\WaterNut.Business.Services\WaterNut.Business.Services.csproj",
+                           @"..\WaterNut.Business.Services\WaterNut.Business.Services.csproj",
                            null, null );  
 
-    CreateServices("WaterNut",@"C:\Users\josep\OneDrive\AutoBot-Enterprise\ValuationDS\ValuationDS.edmx",
-                     @"C:\Users\josep\OneDrive\AutoBot-Enterprise\ValuationDS\ValuationDS.edmx",
-                           @"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Business.Services\WaterNut.Business.Services.csproj",
-                           @"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Business.Services\WaterNut.Business.Services.csproj",
+    CreateServices("WaterNut",@"..\ValuationDS\ValuationDS.edmx",
+                     @"..\ValuationDS\ValuationDS.edmx",
+                           @"..\WaterNut.Business.Services\WaterNut.Business.Services.csproj",
+                           @"..\WaterNut.Business.Services\WaterNut.Business.Services.csproj",
                            null, null); 
 
-    CreateServices("WaterNut",@"C:\Users\josep\OneDrive\AutoBot-Enterprise\LicenseDS\LicenseDS.edmx",
-                     @"C:\Users\josep\OneDrive\AutoBot-Enterprise\LicenseDS\LicenseDS.edmx",
-                           @"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Business.Services\WaterNut.Business.Services.csproj",
-                           @"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Business.Services\WaterNut.Business.Services.csproj",
+    CreateServices("WaterNut",@"..\LicenseDS\LicenseDS.edmx",
+                     @"..\LicenseDS\LicenseDS.edmx",
+                           @"..\WaterNut.Business.Services\WaterNut.Business.Services.csproj",
+                           @"..\WaterNut.Business.Services\WaterNut.Business.Services.csproj",
                            null, null); 
 #>
