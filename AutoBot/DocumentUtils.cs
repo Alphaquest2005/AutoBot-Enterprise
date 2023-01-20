@@ -122,7 +122,7 @@ namespace AutoBot
             return docSetDirectoryInfo;
         }
 
-        private static string GetDocSetDestinationFolder(int docSetId) => Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder, GetDocSetReference(docSetId));
+        private static string GetDocSetDestinationFolder(int docSetId) => BaseDataModel.GetDocSetDirectoryName(GetDocSetReference(docSetId));
 
         private static string GetDocSetReference(int docSetId) =>
             new DocumentDSContext().AsycudaDocumentSets.Where(x => x.AsycudaDocumentSetId == docSetId)

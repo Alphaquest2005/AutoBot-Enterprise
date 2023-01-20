@@ -49,8 +49,7 @@ namespace AutoBot
                 ctx.Database.CommandTimeout = 10;
 
                 var reference = declarant_Reference_Number;
-                var directory = Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder,
-                    reference);
+                var directory = BaseDataModel.GetDocSetDirectoryName(reference);
                 if (!Directory.Exists(directory)) return false;
 
                 var lastdbfile =
@@ -63,8 +62,8 @@ namespace AutoBot
                     x.FileImporterInfos.EntryType == FileTypeManager.EntryTypes.Lic && x.ApplicationSettingsId ==
                     BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId);
                 if (ft == null) return true;
-                //var desFolder = Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder, ctx.AsycudaDocumentSetExs.First(x => x.AsycudaDocumentSetId == asycudaDocumentSetId).Declarant_Reference_Number);
-                var desFolder = Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder, "Imports", "LIC");
+               
+                var desFolder = Path.Combine(BaseDataModel.GetDocSetDirectoryName("Imports"), "LIC");
                 if (!Directory.Exists(desFolder)) Directory.CreateDirectory(desFolder);
                 var csvFiles = new DirectoryInfo(desFolder).GetFiles()
                     .Where(x => Regex.IsMatch(x.FullName, ft.FilePattern, RegexOptions.IgnoreCase))
@@ -112,7 +111,7 @@ namespace AutoBot
                     BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId);
                 if (ft == null) return true;
               
-                var desFolder = Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder, "Imports", "LIC");
+                var desFolder = Path.Combine(BaseDataModel.GetDocSetDirectoryName("Imports"), "LIC");
                 if (!Directory.Exists(desFolder)) Directory.CreateDirectory(desFolder);
 
 
@@ -140,40 +139,6 @@ namespace AutoBot
             }
         }
 
-        //    Console.WriteLine("Import All Files in DataFolder");
-        //            var files = Directory.GetFiles(
-        //                Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder, "Imports"), "*.xml");
-        //    var res = new List<string>();
-        //    AsycudaDocumentSetEx docSet;
-        //            using (var ctx = new CoreEntitiesContext())
-        //            {
-        //                var ifiles = ctx.AsycudaDocuments
-        //                    .Where(x => x.ApplicationSettingsId ==
-        //                                BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId &&
-        //                                x.ImportComplete == true).Select(x => new
-        //                                {
-        //                                    Office = x.Customs_clearance_office_code,
-        //                                    x.CNumber,
-        //                                    Year = (x.RegistrationDate ?? DateTime.MinValue).Year.ToString()
-        //                                }).ToList();
-
-        //docSet = ctx.AsycudaDocumentSetExs.FirstOrDefault(x =>
-        //                    x.ApplicationSettingsId ==
-        //                    BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId &&
-        //                    x.Declarant_Reference_Number == "Imports");
-        //                foreach (var file in files)
-        //                {
-        //                    var f = Regex.Match(file, @"(?<Office>[A-Z]+)(\-(?<Year>\d{4}))?\-(?<CNumber>\d+).xml",
-        //                        RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture);
-        //                    if (f.Success == false) continue;
-        //                    var i = ifiles.FirstOrDefault(x =>
-        //                        x.CNumber == f.Groups["CNumber"].Value && x.Office == f.Groups["Office"].Value && (string.IsNullOrEmpty(f.Groups["Year"].ToString()) || x.Year == f.Groups["Year"].ToString()));
-        //                    if (i == null)
-        //                    {
-        //                        res.Add(file);
-        //                    }
-        //                }
-        //            }
 
         public static void DownLoadLicence(bool redownload, FileTypes ft)
         {
@@ -186,7 +151,6 @@ namespace AutoBot
 
                     ctx.Database.CommandTimeout = 10;
                     var pOs = ctx.TODO_LICToCreate
-                        //.Where(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)
                         .Where(x => x.AsycudaDocumentSetId == ft.AsycudaDocumentSetId)//ft.AsycudaDocumentSetId == 0 ||
                         .ToList();
 
@@ -320,8 +284,7 @@ namespace AutoBot
                             {
 
                                 var instrFile = Path.Combine(
-                                    BaseDataModel.Instance.CurrentApplicationSettings.DataFolder,
-                                    pO.Declarant_Reference_Number, "LIC-Instructions.txt");
+                                    BaseDataModel.GetDocSetDirectoryName(pO.Declarant_Reference_Number), "LIC-Instructions.txt");
                                 if (File.Exists(instrFile))
                                 {
                                     var resultsFile = Path.Combine(

@@ -105,7 +105,7 @@ namespace AutoBot
                         .Join(ctx.AsycudaDocumentSetExs.Where(x => x.Declarant_Reference_Number != "Imports"), x => x.Key, z => z.AsycudaDocumentSetId, (x, z) => new { x, z }).ToList();
                     foreach (var doc in lst)
                     {
-                        var directoryName = StringExtensions.UpdateToCurrentUser(Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder, doc.z.Declarant_Reference_Number)); ;
+                        var directoryName = StringExtensions.UpdateToCurrentUser(BaseDataModel.GetDocSetDirectoryName(doc.z.Declarant_Reference_Number)); ;
                         Console.WriteLine("Download PDF Files");
                         var lcont = 0;
                         while (ImportPDFComplete(directoryName, out lcont) == false)
@@ -175,9 +175,7 @@ namespace AutoBot
                 using (var ctx = new CoreEntitiesContext())
                 {
                     
-                    var directoryName = StringExtensions.UpdateToCurrentUser(
-                            Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder, "Imports"))//doc.z.Declarant_Reference_Number));
-                        ;
+                    var directoryName = StringExtensions.UpdateToCurrentUser(BaseDataModel.GetDocSetDirectoryName("Imports"));
                    
                     
                         

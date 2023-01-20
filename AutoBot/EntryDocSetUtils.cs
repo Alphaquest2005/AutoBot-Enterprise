@@ -137,8 +137,7 @@ namespace AutoBot
             try
             {
                 var docSet = BaseDataModel.CurrentSalesInfo(-1);
-                var directoryName = Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder,
-                    docSet.Item3.Declarant_Reference_Number);
+                var directoryName = BaseDataModel.GetDocSetDirectoryName(docSet.Item3.Declarant_Reference_Number);
                 var expFile = Path.Combine(directoryName, "ExpiredEntries.csv");
                 if (File.Exists(expFile)) File.Delete(expFile);
 
@@ -174,8 +173,7 @@ namespace AutoBot
             try
             {
                 var docSet = BaseDataModel.CurrentSalesInfo(-1);
-                var directoryName = Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder,
-                    docSet.Item3.Declarant_Reference_Number);
+                var directoryName = BaseDataModel.GetDocSetDirectoryName(docSet.Item3.Declarant_Reference_Number);
                 var expFile = Path.Combine(directoryName, "CancelledEntries.csv");
                 if (File.Exists(expFile)) File.Delete(expFile);
 
@@ -382,12 +380,9 @@ namespace AutoBot
             
 
             if (docReference == null) return;
-            var directoryName = Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder,
-                docReference);
-            var resultsFile = Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder,
-                docReference, "InstructionResults.txt");
-            var instrFile = Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder,
-                docReference, "Instructions.txt");
+            var directoryName = BaseDataModel.GetDocSetDirectoryName(docReference);
+            var resultsFile = Path.Combine(directoryName, "InstructionResults.txt");
+            var instrFile = Path.Combine(directoryName, "Instructions.txt");
 
             var lcont = 0;
             while (Utils.AssessComplete(instrFile, resultsFile, out lcont) == false)
@@ -407,8 +402,7 @@ namespace AutoBot
 
                 // var saleInfo = CurrentSalesInfo();
                 var docSet = BaseDataModel.Instance.GetAsycudaDocumentSet(fileType.AsycudaDocumentSetId).Result;
-                string directoryName = Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder,
-                    docSet.Declarant_Reference_Number);
+                string directoryName = BaseDataModel.GetDocSetDirectoryName(docSet.Declarant_Reference_Number);
 
                 var instFile = Path.Combine(directoryName, "Instructions.txt");
                 var resFile = Path.Combine(directoryName, "InstructionResults.txt");

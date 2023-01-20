@@ -552,10 +552,7 @@ namespace xlsxWriter
             return shipmentInvoicePoItemMisMatchesList;
         }
 
-        private static List<string> GetWords(string description)
-        {
-            return Regex.Matches(description, @"([A-Z]+)|([\d/]+)", RegexOptions.IgnoreCase | RegexOptions.Multiline).Cast<Match>().Select(match => match.Value.ToUpper()).ToList();
-        }
+        private static List<string> GetWords(string description) => Regex.Matches(description, @"([A-Z]+)|([\d/]+)", RegexOptions.IgnoreCase | RegexOptions.Multiline).Cast<Match>().Select(match => match.Value.ToUpper()).ToList();
 
         public static string CreateUnattachedShipmentWorkBook(
             (string Code, int RiderId, string BLNumber) client, UnAttachedWorkBookPkg summaryPkg)
@@ -564,8 +561,7 @@ namespace xlsxWriter
             {
 
 
-                var summaryWorkBook = Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder,
-                    "Imports",
+                var summaryWorkBook = Path.Combine(BaseDataModel.GetDocSetDirectoryName("Imports"),
                     $"Summary-{client.BLNumber}-{client.RiderId}.xlsx");
                 if (File.Exists(summaryWorkBook)) File.Delete(summaryWorkBook);
                 var workbook = new Workbook(summaryWorkBook, "Summary");

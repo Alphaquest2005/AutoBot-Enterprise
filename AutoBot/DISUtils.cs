@@ -720,12 +720,9 @@ namespace AutoBot
                 foreach (var doc in res)
                 {
                     if (doc.Declarant_Reference_Number == null) return;
-                    var directoryName = Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder,
-                        doc.Declarant_Reference_Number);
-                    var resultsFile = Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder,
-                        doc.Declarant_Reference_Number, "InstructionResults.txt");
-                    var instrFile = Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder,
-                        doc.Declarant_Reference_Number, "Instructions.txt");
+                    var directoryName = BaseDataModel.GetDocSetDirectoryName(doc.Declarant_Reference_Number);
+                    var resultsFile = Path.Combine(directoryName, "InstructionResults.txt");
+                    var instrFile = Path.Combine(directoryName, "Instructions.txt");
 
                     var lcont = 0;
                     while (Utils.AssessComplete(instrFile, resultsFile, out lcont) == false)
@@ -1273,8 +1270,7 @@ namespace AutoBot
                     foreach (var doc in lst)
                     {
 
-                        string directoryName = Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder,
-                            doc.Key.Declarant_Reference_Number);
+                        var directoryName = BaseDataModel.GetDocSetDirectoryName(doc.Key.Declarant_Reference_Number);
                         ExportDocSetSalesReportUtils.ExportLastDocSetSalesReport(doc.Key.AsycudaDocumentSetId,
                             directoryName).Wait();
                         BaseDataModel.Instance.ExportLastDocumentInDocSet(doc.Key.AsycudaDocumentSetId,

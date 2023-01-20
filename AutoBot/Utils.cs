@@ -453,7 +453,6 @@ namespace AutoBot
                 var timeoutCycles = 0;
                 while (!process.HasExited && process.Responding)
                 {
-                    //if(File.Exists(Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder, $"{docRef}/I")))
                     if (timeoutCycles > WaterNut.DataSpace.Utils._noOfCyclesBeforeHardExit) break;
                     //Console.WriteLine($"Waiting {timeoutCycles} Minutes");
                     Debug.WriteLine($"Waiting {timeoutCycles} Minutes");

@@ -11,6 +11,7 @@ using WaterNut.Business.Services.Utils;
 using WaterNut.DataSpace;
 using WaterNut.DataSpace.Asycuda;
 using FileTypes = CoreEntities.Business.Entities.FileTypes;
+using TODO_C71ToCreate = ValuationDS.Business.Entities.TODO_C71ToCreate;
 
 namespace AutoBot
 {
@@ -58,8 +59,7 @@ namespace AutoBot
                         x.FileImporterInfos.EntryType == FileTypeManager.EntryTypes.C71 && x.ApplicationSettingsId ==
                         BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId);
                     if (ft == null) return true;
-                    //var desFolder = Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder, ctx.AsycudaDocumentSetExs.First(x => x.AsycudaDocumentSetId == asycudaDocumentSetId).Declarant_Reference_Number);
-                    var desFolder = Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder, "Imports", FileTypeManager.EntryTypes.C71);
+                    var desFolder = Path.Combine(BaseDataModel.GetDocSetDirectoryName("Imports"), FileTypeManager.EntryTypes.C71);
 
                     if (!Directory.Exists(desFolder)) Directory.CreateDirectory(desFolder);
 
@@ -110,8 +110,7 @@ namespace AutoBot
                     foreach (var pO in pOs)
                     {
                         //if (pO.Item1.Declarant_Reference_Number != "30-15936") continue;
-                        var directoryName = Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder,
-                            pO.Declarant_Reference_Number);
+                        var directoryName = BaseDataModel.GetDocSetDirectoryName(pO.Declarant_Reference_Number);
                         var fileName = Path.Combine(directoryName, "C71.xml");
                         if (File.Exists(fileName) && (pO.TotalCIF.HasValue && Math.Abs(pO.TotalCIF.GetValueOrDefault() - pO.C71Total) <= 0.01)) continue;
                         var c71results = Path.Combine(directoryName, "C71-InstructionResults.txt");
@@ -160,6 +159,8 @@ namespace AutoBot
             }
         }
 
+      
+
 
         public static void DownLoadC71(FileTypes ft)
         {
@@ -180,7 +181,7 @@ namespace AutoBot
 
 
                     if (!lst.Any()) return;
-                    var directoryName = StringExtensions.UpdateToCurrentUser(Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder, "Imports", "C71"));
+                    var directoryName = StringExtensions.UpdateToCurrentUser(Path.Combine(BaseDataModel.GetDocSetDirectoryName("Imports"), "C71"));
 
                     Console.WriteLine("Download C71 Files");
                     var notries = 2;
@@ -330,13 +331,10 @@ namespace AutoBot
                 foreach (var doc in res)
                 {
 
-                    var directoryName = Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder,
-                        doc.Declarant_Reference_Number);
-                    var instrFile = Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder,
-                        doc.Declarant_Reference_Number, "C71-Instructions.txt");
+                    var directoryName = BaseDataModel.GetDocSetDirectoryName(doc.Declarant_Reference_Number);
+                    var instrFile = Path.Combine(directoryName, "C71-Instructions.txt");
                     if (!File.Exists(instrFile)) continue;
-                    var resultsFile = Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder,
-                        doc.Declarant_Reference_Number, "C71-InstructionResults.txt");
+                    var resultsFile = Path.Combine(directoryName, "C71-InstructionResults.txt");
                     var lcont = 0;
                     while (C71Utils.AssessC71Complete(instrFile, resultsFile, out lcont) == false)
                     {

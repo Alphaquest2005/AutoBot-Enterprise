@@ -68,8 +68,6 @@ namespace AutoBot
                 BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId &&
                 x.Declarant_Reference_Number == DocSetReference);
 
-        private static string[] GetFiles() =>
-            Directory.GetFiles(
-                Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder, "Imports"), "*.xml");
+        private static string[] GetFiles() => Directory.GetFiles(BaseDataModel.GetDocSetDirectoryName("Imports"), "*.xml");
     }
 }

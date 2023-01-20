@@ -115,8 +115,10 @@ namespace WaterNut.DataSpace
 
         public DataCache<Customs_Procedure> Customs_ProcedureCache => _customs_ProcedureCache;
 
-       
 
+        public static string GetDocSetDirectoryName(string docSetReference) =>
+            Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder,
+                docSetReference).Trim();
 
         public ApplicationSettings CurrentApplicationSettings { get; set; }
 

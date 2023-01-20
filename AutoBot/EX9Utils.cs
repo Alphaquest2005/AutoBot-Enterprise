@@ -64,12 +64,10 @@ namespace AutoBot
                 var saleInfo =  BaseDataModel.CurrentSalesInfo(months);
 
                 ExportDocSetSalesReportUtils.ExportDocSetSalesReport(saleInfo.DocSet.AsycudaDocumentSetId,
-                    Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder,
-                        saleInfo.DocSet.Declarant_Reference_Number)).Wait();
+                    BaseDataModel.GetDocSetDirectoryName(saleInfo.DocSet.Declarant_Reference_Number)).Wait();
 
                 BaseDataModel.Instance.ExportDocSet(saleInfo.DocSet.AsycudaDocumentSetId,
-                    Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder,
-                        saleInfo.DocSet.Declarant_Reference_Number), true).Wait();
+                    BaseDataModel.GetDocSetDirectoryName(saleInfo.DocSet.Declarant_Reference_Number), true).Wait();
 
 
             }
@@ -87,36 +85,21 @@ namespace AutoBot
         {
             while (docReference != null && Utils.AssessComplete(GetInstructionFile(docReference),
                        GetInstructionResultsFile(docReference), out var lcont) == false)
-                Utils.RunSiKuLi(GetDirectoryName(docReference), "AssessIM7",
+                Utils.RunSiKuLi(BaseDataModel.GetDocSetDirectoryName(docReference), "AssessIM7",
                     lcont.ToString()); //RunSiKuLi(directoryName, "SaveIM7", lcont.ToString());
         }
 
-        private static string GetDirectoryName(string docReference)
-        {
-            var directoryName = Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder,
-                docReference);
-            return directoryName;
-        }
+       
 
-        private static string GetInstructionResultsFile(string docReference)
-        {
-            var resultsFile = Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder,
-                docReference, "InstructionResults.txt");
-            return resultsFile;
-        }
+        private static string GetInstructionResultsFile(string docReference) => Path.Combine(BaseDataModel.GetDocSetDirectoryName(docReference), "InstructionResults.txt");
 
-        private static string GetInstructionFile(string docReference)
-        {
-            var instrFile = Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder,
-                docReference, "Instructions.txt");
-            return instrFile;
-        }
+        private static string GetInstructionFile(string docReference) => Path.Combine(BaseDataModel.GetDocSetDirectoryName(docReference), "Instructions.txt");
 
         public static void DownloadSalesFiles(int trytimes, string script, bool redownload = false)
         {
             try
             {
-                var directoryName = $@"{Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder, "Imports")}";
+                var directoryName = BaseDataModel.GetDocSetDirectoryName("Imports");
                 Console.WriteLine("Download Entries");
                 var lcont = 0;
 

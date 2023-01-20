@@ -29,13 +29,9 @@ namespace EmailDownloader
             try
             {
                 if(string.IsNullOrEmpty(client.Email)) return new Dictionary<Tuple<string, Email, string>, List<FileInfo>>();
-                            var imapClient = new ImapClient();
-                            imapClient.Connect("auto-brokerage.com", 993, SecureSocketOptions.SslOnConnect);
-                            imapClient.Authenticate(client.Email, client.Password);
-                            var dataFolder = client.DataFolder;
-                            imapClient.Inbox.Open(FolderAccess.ReadWrite);
-                            
-                            DownloadAttachment(imapClient, dataFolder, client.EmailMappings, client,ref res);
+                            var imapClient = GetImapClient(client);
+
+                            DownloadAttachment(imapClient, client.DataFolder, client.EmailMappings, client,ref res);
 
                             imapClient.Disconnect(true);
                             return res;
@@ -47,6 +43,25 @@ namespace EmailDownloader
                 return res;
             }
             
+        }
+
+        private static ImapClient GetImapClient(Client client)
+        {
+            try
+            {
+                var imapClient = new ImapClient();
+                var mailSettings = GetReadMailSettings(client.Email);
+                imapClient.Connect(mailSettings.Server, mailSettings.Port, mailSettings.Options);
+                imapClient.Authenticate(client.Email, client.Password);
+                imapClient.Inbox.Open(FolderAccess.ReadWrite);
+                return imapClient;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+
         }
 
         public static void SendEmail(Client client, string directory, string subject, string[] To, string body,
@@ -319,11 +334,7 @@ namespace EmailDownloader
         {
             try
             {
-                var imapClient = new ImapClient();
-                imapClient.Connect("auto-brokerage.com", 993, SecureSocketOptions.SslOnConnect);
-                imapClient.Authenticate(clientDetails.Email, clientDetails.Password);
-                var dataFolder = clientDetails.DataFolder;
-                imapClient.Inbox.Open(FolderAccess.ReadWrite);
+                var imapClient = GetImapClient(clientDetails);
 
                 var uID = new CoreEntitiesContext().Emails.FirstOrDefault(x => x.EmailId == emailId && x.MachineName == Environment.MachineName)?.EmailUniqueId;
                 if (uID == null) return false;
@@ -383,18 +394,42 @@ namespace EmailDownloader
 
         public static void SendEmail(Client clientDetails, MimeMessage message)
         {
-            using (var client = new SmtpClient())
+            try
             {
-                client.Connect("auto-brokerage.com", 465, true);
-                client.Authenticate(clientDetails.Email, clientDetails.Password);
+                var mailSettings = GetSendMailSettings(clientDetails.Email);
+                using (var client = new SmtpClient())
+                {
+                    client.Connect(mailSettings.Server, mailSettings.Port, mailSettings.Options);
+                    client.Authenticate(clientDetails.Email, clientDetails.Password);
 
-                client.Send(message);
+                    client.Send(message);
 
-                client.Disconnect(true);
+                    client.Disconnect(true);
+                }
             }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+               
+            }
+
         }
 
-       
+        private static List<MailSettings> _sendEmailSettings = new List<MailSettings>()
+            {
+                new MailSettings(){Name = "auto-brokerage.com",Server = "mail.auto-brokerage.com", Port = 465, Options = SecureSocketOptions.SslOnConnect},
+                new MailSettings(){Name = "outlook.com", Server = @"smtp-mail.outlook.com", Port = 587, Options = SecureSocketOptions.StartTls}
+            };
+
+        private static List<MailSettings> _readEmailSettings = new List<MailSettings>()
+        {
+            new MailSettings(){Name = "auto-brokerage.com",Server = "auto-brokerage.com", Port = 993, Options = SecureSocketOptions.SslOnConnect},
+            new MailSettings(){Name = "outlook.com", Server = @"outlook.office365.com", Port = 993, Options = SecureSocketOptions.Auto}
+        };
+
+        private static MailSettings GetSendMailSettings(string email) => _sendEmailSettings.First(x => email.ToUpper().Contains(x.Name.ToUpper()));
+        private static MailSettings GetReadMailSettings(string email) => _readEmailSettings.First(x => email.ToUpper().Contains(x.Name.ToUpper()));
+        
 
         private static void SaveAttachmentPart(string dataFolder,  MimeEntity a, List<FileInfo> lst)
         {
@@ -478,10 +513,7 @@ namespace EmailDownloader
 
         private static MimeMessage GetMsg(int uID, Client clientDetails)
         {
-            var imapClient = new ImapClient();
-            imapClient.Connect("auto-brokerage.com", 993, SecureSocketOptions.SslOnConnect);
-            imapClient.Authenticate(clientDetails.Email, clientDetails.Password);
-            imapClient.Inbox.Open(FolderAccess.ReadWrite);
+            var imapClient = GetImapClient(clientDetails);
             var msg = imapClient.Inbox.GetMessage(new UniqueId(Convert.ToUInt16(uID)));
             imapClient.Disconnect(true);
             return msg;
@@ -555,5 +587,13 @@ namespace EmailDownloader
                 throw;
             }
         }
+    }
+
+    internal class MailSettings
+    {
+        public string Server { get; set; }
+        public int Port { get; set; }
+        public SecureSocketOptions Options { get; set; }
+        public string Name { get; set; }
     }
 }

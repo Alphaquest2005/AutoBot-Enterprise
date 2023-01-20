@@ -225,7 +225,7 @@ namespace WaterNut.DataSpace
 
             var dirPath =
                 StringExtensions.UpdateToCurrentUser(
-                    Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder, docRef));
+                    BaseDataModel.GetDocSetDirectoryName(docRef));
             if (!Directory.Exists(dirPath)) Directory.CreateDirectory(dirPath);
             return (StartDate: startDate, EndDate: endDate, DocSet: docSet, DirPath: dirPath);
         }

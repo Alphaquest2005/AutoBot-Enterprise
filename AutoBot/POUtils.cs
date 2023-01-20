@@ -78,8 +78,7 @@ namespace AutoBot
                         $"AutoBot";
 
 
-                    var directory = Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder,
-                        docSet.Declarant_Reference_Number);
+                    var directory = BaseDataModel.GetDocSetDirectoryName(docSet.Declarant_Reference_Number);
 
                     var summaryFile = Path.Combine(directory, "POAssesErrors.csv");
                     if (File.Exists(summaryFile)) File.Delete(summaryFile);
@@ -115,9 +114,7 @@ namespace AutoBot
                 {
                     var docSet = ctx.AsycudaDocumentSets.First(x => x.AsycudaDocumentSetId == docSetId);
                      
-                    var dirPath = StringExtensions.UpdateToCurrentUser(Path.Combine(
-                        BaseDataModel.Instance.CurrentApplicationSettings.DataFolder,
-                        docSet.Declarant_Reference_Number));
+                    var dirPath = StringExtensions.UpdateToCurrentUser(BaseDataModel.GetDocSetDirectoryName(docSet.Declarant_Reference_Number));
                     return new List<Tuple<AsycudaDocumentSet, string>>()
                         { new Tuple<AsycudaDocumentSet, string>(docSet, dirPath) };
                 }
@@ -666,8 +663,7 @@ namespace AutoBot
 
                     foreach (var docSetId in res)
                     {
-                        var directoryName = Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder,
-                            docSetId.DocSet.ReferenceNumber);
+                        var directoryName = BaseDataModel.GetDocSetDirectoryName(docSetId.DocSet.ReferenceNumber);
                         if (!Directory.Exists(directoryName)) Directory.CreateDirectory(directoryName); //continue;
                         if (File.Exists(Path.Combine(directoryName, "Instructions.txt")))
                             File.Delete(Path.Combine(directoryName, "Instructions.txt"));
@@ -699,12 +695,9 @@ namespace AutoBot
                 }
 
                 if (docReference == null) return;
-                var directoryName = Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder,
-                    docReference);
-                var resultsFile = Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder,
-                    docReference, "InstructionResults.txt");
-                var instrFile = Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder,
-                    docReference, "Instructions.txt");
+                var directoryName = BaseDataModel.GetDocSetDirectoryName(docReference);
+                var resultsFile = Path.Combine(directoryName, "InstructionResults.txt");
+                var instrFile = Path.Combine(directoryName, "Instructions.txt");
 
                 var lcont = 0;
                 while (Utils.AssessComplete(instrFile, resultsFile, out lcont) == false)
@@ -740,8 +733,7 @@ namespace AutoBot
                 // if (poInfo.Item1 == null) return;
 
                 var reference = docSet.Declarant_Reference_Number;
-                var directory = Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder,
-                    reference);
+                var directory = BaseDataModel.GetDocSetDirectoryName(reference);
                 if (!Directory.Exists(directory)) return;
                 var sourcefiles = Directory.GetFiles(directory, "*.xml");
 
