@@ -417,13 +417,13 @@ namespace EmailDownloader
 
         private static List<MailSettings> _sendEmailSettings = new List<MailSettings>()
             {
-                new MailSettings(){Name = "auto-brokerage.com",Server = "mail.auto-brokerage.com", Port = 465, Options = SecureSocketOptions.SslOnConnect},
+                new MailSettings(){Name = "auto-brokerage.com",Server = "smtp.gmail.com", Port = 465, Options = SecureSocketOptions.SslOnConnect},
                 new MailSettings(){Name = "outlook.com", Server = @"smtp-mail.outlook.com", Port = 587, Options = SecureSocketOptions.StartTls}
             };
 
         private static List<MailSettings> _readEmailSettings = new List<MailSettings>()
         {
-            new MailSettings(){Name = "auto-brokerage.com",Server = "auto-brokerage.com", Port = 993, Options = SecureSocketOptions.SslOnConnect},
+            new MailSettings(){Name = "auto-brokerage.com",Server = "imap.gmail.com", Port = 993, Options = SecureSocketOptions.SslOnConnect},
             new MailSettings(){Name = "outlook.com", Server = @"outlook.office365.com", Port = 993, Options = SecureSocketOptions.Auto}
         };
 
