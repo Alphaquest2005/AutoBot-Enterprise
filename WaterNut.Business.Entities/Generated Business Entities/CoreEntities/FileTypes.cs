@@ -30,6 +30,7 @@ namespace CoreEntities.Business.Entities
             this.EmailFileTypes = new List<EmailFileTypes>();
             this.ImportActions = new List<ImportActions>();
             this.FileTypeReplaceRegex = new List<FileTypeReplaceRegex>();
+            this.AsycudaDocumentSetAttachments = new List<AsycudaDocumentSetAttachments>();
         }
 
         [DataMember]
@@ -356,6 +357,8 @@ namespace CoreEntities.Business.Entities
         public List<FileTypeReplaceRegex> FileTypeReplaceRegex { get; set; }
         [DataMember]
         public FileImporterInfo FileImporterInfos { get; set; }
+        [DataMember]
+        public List<AsycudaDocumentSetAttachments> AsycudaDocumentSetAttachments { get; set; }
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

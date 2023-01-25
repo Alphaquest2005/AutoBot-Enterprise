@@ -827,6 +827,23 @@ public Nullable<bool> ExportExpiredEntries
 		}
      
 
+       
+       
+                
+                [MaxLength(10, ErrorMessage = "AllowAdvanceWareHouse has a max length of 10 letters ")]
+public string AllowAdvanceWareHouse
+		{ 
+		    get { return this.applicationsettings.AllowAdvanceWareHouse; }
+			set
+			{
+			    if (value == this.applicationsettings.AllowAdvanceWareHouse) return;
+				this.applicationsettings.AllowAdvanceWareHouse = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("AllowAdvanceWareHouse");
+			}
+		}
+     
+
         ObservableCollection<AsycudaDocumentSetEx> _AsycudaDocumentSetEx = null;
         public  ObservableCollection<AsycudaDocumentSetEx> AsycudaDocumentSetEx
 		{

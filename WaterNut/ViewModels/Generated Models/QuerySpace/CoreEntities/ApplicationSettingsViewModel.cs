@@ -1031,6 +1031,24 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
         }	
 
  
+
+		private string _allowAdvanceWareHouseFilter;
+        public string AllowAdvanceWareHouseFilter
+        {
+            get
+            {
+                return _allowAdvanceWareHouseFilter;
+            }
+            set
+            {
+                _allowAdvanceWareHouseFilter = value;
+				NotifyPropertyChanged(x => AllowAdvanceWareHouseFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
 		internal bool DisableBaseFilterData = false;
         public virtual void FilterData()
 	    {
@@ -1266,6 +1284,10 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 
 									if(ExportExpiredEntriesFilter.HasValue)
 						res.Append(" && " + string.Format("ExportExpiredEntries == {0}",  ExportExpiredEntriesFilter));						
+ 
+
+									if(string.IsNullOrEmpty(AllowAdvanceWareHouseFilter) == false)
+						res.Append(" && " + string.Format("AllowAdvanceWareHouse.Contains(\"{0}\")",  AllowAdvanceWareHouseFilter));						
 			return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
@@ -1424,7 +1446,10 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     NotifyUnknownMessages = x.NotifyUnknownMessages ,
                     
  
-                    ExportExpiredEntries = x.ExportExpiredEntries 
+                    ExportExpiredEntries = x.ExportExpiredEntries ,
+                    
+ 
+                    AllowAdvanceWareHouse = x.AllowAdvanceWareHouse 
                     
                 }).ToList()
             };
@@ -1573,6 +1598,9 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     
  
                     public Nullable<bool> ExportExpiredEntries { get; set; } 
+                    
+ 
+                    public string AllowAdvanceWareHouse { get; set; } 
                     
         }
 

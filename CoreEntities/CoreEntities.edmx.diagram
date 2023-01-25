@@ -6,13 +6,13 @@
     <edmx:Diagrams>
       <Diagram DiagramId="854f53cbf00c44538b256d1947980b44" Name="Diagram1" ZoomLevel="63">
         <EntityTypeShape EntityType="WaterNutDBModel.ApplicationSettings" Width="1.5" PointX="0.5" PointY="1.125" IsExpanded="true" />
-        <EntityTypeShape EntityType="WaterNutDBModel.AsycudaDocument" Width="2.375" PointX="7.75" PointY="1.375" />
-        <EntityTypeShape EntityType="WaterNutDBModel.AsycudaDocumentItem" Width="2.375" PointX="11.25" PointY="1.5" />
+        <EntityTypeShape EntityType="WaterNutDBModel.AsycudaDocument" Width="2.375" PointX="9.75" PointY="1.375" />
+        <EntityTypeShape EntityType="WaterNutDBModel.AsycudaDocumentItem" Width="2.375" PointX="12.5" PointY="1.5" />
         <AssociationConnector Association="WaterNutDBModel.AsycudaDocumentAsycudaDocumentItem" />
         <EntityTypeShape EntityType="WaterNutDBModel.Customs_Procedure" Width="1.5" PointX="2.875" PointY="5.875" />
         <EntityTypeShape EntityType="WaterNutDBModel.Document_Type" Width="1.5" PointX="2.25" PointY="11.75" />
         <AssociationConnector Association="WaterNutDBModel.FK_Customs_Procedure_Document_Type" />
-        <EntityTypeShape EntityType="WaterNutDBModel.AsycudaDocumentSetEx" Width="2.375" PointX="4.875" PointY="1.5" />
+        <EntityTypeShape EntityType="WaterNutDBModel.AsycudaDocumentSetEx" Width="2.375" PointX="5.125" PointY="1.75" />
         <AssociationConnector Association="WaterNutDBModel.AsycudaDocumentSetExAsycudaDocument" />
         <EntityTypeShape EntityType="WaterNutDBModel.LicenceSummary" Width="2" PointX="2.375" PointY="1.875" />
         <AssociationConnector Association="WaterNutDBModel.AsycudaDocumentSetExLicenceSummary" />
@@ -42,7 +42,7 @@
         <EntityTypeShape EntityType="WaterNutDBModel.Attachments" Width="1.5" PointX="16.75" PointY="15.5" />
         <AssociationConnector Association="WaterNutDBModel.FK_AsycudaDocumentSet_Attachments_Attachments" />
         <AssociationConnector Association="WaterNutDBModel.AsycudaDocumentSetExAsycudaDocumentSet_Attachments" />
-        <EntityTypeShape EntityType="WaterNutDBModel.EmailMapping" Width="2.625" PointX="3.375" PointY="21.25" />
+        <EntityTypeShape EntityType="WaterNutDBModel.EmailMapping" Width="2.625" PointX="4.5" PointY="21.5" />
         <AssociationConnector Association="WaterNutDBModel.FK_EmailMapping_ApplicationSettings" />
         <EntityTypeShape EntityType="WaterNutDBModel.TODO_UnallocatedSales" Width="1.5" PointX="13.375" PointY="15.75" />
         <EntityTypeShape EntityType="WaterNutDBModel.Contacts" Width="1.5" PointX="5.625" PointY="18.25" />
@@ -162,6 +162,10 @@
         <AssociationConnector Association="WaterNutDBModel.FK_ParameterSetParameters_Parameters" />
         <AssociationConnector Association="WaterNutDBModel.FK_ParameterSetParameters_ParameterSet" />
         <AssociationConnector Association="WaterNutDBModel.FK_SessionSchedule_ParameterSet" />
+        <EntityTypeShape EntityType="WaterNutDBModel.AsycudaDocumentSetAttachments" Width="2.375" PointX="35.75" PointY="5.25" />
+        <AssociationConnector Association="WaterNutDBModel.FileTypesAsycudaDocumentSetAttachments" ManuallyRouted="false" >
+        </AssociationConnector>
+        <AssociationConnector Association="WaterNutDBModel.AsycudaDocumentSetExAsycudaDocumentSetAttachments" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

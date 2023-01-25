@@ -206,7 +206,8 @@ namespace CoreEntities.Client.Repositories
                      // LicenceSummary = new System.Collections.ObjectModel.ObservableCollection<LicenceSummary>(res.LicenceSummary.Select(y => new LicenceSummary(y))),    
                   // ApplicationSettings = (res.ApplicationSettings != null?new ApplicationSettings(res.ApplicationSettings): null),    
                      // AsycudaDocumentSet_Attachments = new System.Collections.ObjectModel.ObservableCollection<AsycudaDocumentSet_Attachments>(res.AsycudaDocumentSet_Attachments.Select(y => new AsycudaDocumentSet_Attachments(y))),    
-                     // AsycudaDocumentSetEntryDataEx = new System.Collections.ObjectModel.ObservableCollection<AsycudaDocumentSetEntryDataEx>(res.AsycudaDocumentSetEntryDataEx.Select(y => new AsycudaDocumentSetEntryDataEx(y)))    
+                     // AsycudaDocumentSetEntryDataEx = new System.Collections.ObjectModel.ObservableCollection<AsycudaDocumentSetEntryDataEx>(res.AsycudaDocumentSetEntryDataEx.Select(y => new AsycudaDocumentSetEntryDataEx(y))),    
+                     // AsycudaDocumentSetAttachments = new System.Collections.ObjectModel.ObservableCollection<AsycudaDocumentSetAttachments>(res.AsycudaDocumentSetAttachments.Select(y => new AsycudaDocumentSetAttachments(y)))    
                   };
                     }
                     else

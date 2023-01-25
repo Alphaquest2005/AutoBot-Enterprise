@@ -213,7 +213,8 @@ namespace CoreEntities.Client.Repositories
                      // EmailFileTypes = new System.Collections.ObjectModel.ObservableCollection<EmailFileTypes>(res.EmailFileTypes.Select(y => new EmailFileTypes(y))),    
                      // ImportActions = new System.Collections.ObjectModel.ObservableCollection<ImportActions>(res.ImportActions.Select(y => new ImportActions(y))),    
                      // FileTypeReplaceRegex = new System.Collections.ObjectModel.ObservableCollection<FileTypeReplaceRegex>(res.FileTypeReplaceRegex.Select(y => new FileTypeReplaceRegex(y))),    
-                  // FileImporterInfos = (res.FileImporterInfos != null?new FileImporterInfo(res.FileImporterInfos): null)    
+                  // FileImporterInfos = (res.FileImporterInfos != null?new FileImporterInfo(res.FileImporterInfos): null),    
+                     // AsycudaDocumentSetAttachments = new System.Collections.ObjectModel.ObservableCollection<AsycudaDocumentSetAttachments>(res.AsycudaDocumentSetAttachments.Select(y => new AsycudaDocumentSetAttachments(y)))    
                   };
                     }
                     else

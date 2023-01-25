@@ -75,7 +75,7 @@ public int FileTypeMappingId
        [RequiredValidationAttribute(ErrorMessage= "ReplacementRegex is required")]
        
                 
-                [MaxLength(50, ErrorMessage = "ReplacementRegex has a max length of 50 letters ")]
+                [MaxLength(1000, ErrorMessage = "ReplacementRegex has a max length of 1000 letters ")]
 public string ReplacementRegex
 		{ 
 		    get { return this.filetypemappingregexs.ReplacementRegex; }
@@ -92,7 +92,7 @@ public string ReplacementRegex
        
        
                 
-                [MaxLength(50, ErrorMessage = "ReplacementValue has a max length of 50 letters ")]
+                [MaxLength(1000, ErrorMessage = "ReplacementValue has a max length of 1000 letters ")]
 public string ReplacementValue
 		{ 
 		    get { return this.filetypemappingregexs.ReplacementValue; }

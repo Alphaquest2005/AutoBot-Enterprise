@@ -125,6 +125,7 @@
     <Compile Include="CoreEntities\AsycudaDocumentClient.cs" />
     <Compile Include="CoreEntities\AsycudaDocumentItemClient.cs" />
     <Compile Include="CoreEntities\AsycudaDocumentItemEntryDataDetailsClient.cs" />
+    <Compile Include="CoreEntities\AsycudaDocumentSetAttachmentsClient.cs" />
     <Compile Include="CoreEntities\AsycudaDocumentSetC71Client.cs" />
     <Compile Include="CoreEntities\AsycudaDocumentSetEntryDataExClient.cs" />
     <Compile Include="CoreEntities\AsycudaDocumentSetExClient.cs" />

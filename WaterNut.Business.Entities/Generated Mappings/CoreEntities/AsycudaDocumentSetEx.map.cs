@@ -52,6 +52,7 @@
               this.HasMany(t => t.LicenceSummary).WithRequired(t => (AsycudaDocumentSetEx)t.AsycudaDocumentSetEx);
               this.HasMany(t => t.AsycudaDocumentSet_Attachments).WithRequired(t => (AsycudaDocumentSetEx)t.AsycudaDocumentSetEx);
               this.HasMany(t => t.AsycudaDocumentSetEntryDataEx).WithRequired(t => (AsycudaDocumentSetEx)t.AsycudaDocumentSetEx);
+              this.HasMany(t => t.AsycudaDocumentSetAttachments).WithRequired(t => (AsycudaDocumentSetEx)t.AsycudaDocumentSetEx);
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);
     			this.Ignore(t => t.ModifiedProperties);

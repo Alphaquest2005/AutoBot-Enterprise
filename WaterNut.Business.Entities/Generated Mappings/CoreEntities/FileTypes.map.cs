@@ -45,6 +45,7 @@
               this.HasMany(t => t.EmailFileTypes).WithRequired(t => (FileTypes)t.FileTypes);
               this.HasMany(t => t.ImportActions).WithRequired(t => (FileTypes)t.FileTypes);
               this.HasMany(t => t.FileTypeReplaceRegex).WithRequired(t => (FileTypes)t.FileTypes);
+              this.HasMany(t => t.AsycudaDocumentSetAttachments).WithOptional(t => t.FileTypes).HasForeignKey(d => d.FileTypeId);
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);
     			this.Ignore(t => t.ModifiedProperties);

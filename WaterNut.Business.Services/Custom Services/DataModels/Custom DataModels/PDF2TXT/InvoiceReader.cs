@@ -373,10 +373,10 @@ namespace WaterNut.DataSpace
         {
             var existingAttachment = GetOrSaveDocSetAttachmentsList(asycudaDocumentSets, file, emailId, fileTypeId, fileInfo);
 
-            SaveErrorDetails(pdftxt, error, failedlst, existingAttachment);
+            SaveDbErrorDetails(pdftxt, error, failedlst, existingAttachment);
         }
 
-        private static void SaveErrorDetails(string pdftxt, string error, List<Line> failedlst, List<AsycudaDocumentSet_Attachments> existingAttachment)
+        private static void SaveDbErrorDetails(string pdftxt, string error, List<Line> failedlst, List<AsycudaDocumentSet_Attachments> existingAttachment)
         {
             using (var ctx = new OCRContext())
             {
@@ -464,7 +464,7 @@ namespace WaterNut.DataSpace
                     Attachments = new Attachments(true)
                     {
                         TrackingState = TrackingState.Added,
-                        EmailId = emailId.ToString(),
+                        EmailId = emailId,
                         FilePath = file
                     },
                     DocumentSpecific = true,

@@ -441,6 +441,7 @@
     <Compile Include="Contracts\CoreEntities\IAsycudaDocumentItemEntryDataDetailsService.cs" />
     <Compile Include="Contracts\CoreEntities\IAsycudaDocumentItemService.cs" />
     <Compile Include="Contracts\CoreEntities\IAsycudaDocumentService.cs" />
+    <Compile Include="Contracts\CoreEntities\IAsycudaDocumentSetAttachmentsService.cs" />
     <Compile Include="Contracts\CoreEntities\IAsycudaDocumentSetC71Service.cs" />
     <Compile Include="Contracts\CoreEntities\IAsycudaDocumentSetEntryDataExService.cs" />
     <Compile Include="Contracts\CoreEntities\IAsycudaDocumentSetExService.cs" />
@@ -911,6 +912,7 @@
     <Compile Include="Services\AllocationDS\xcuda_WeightService.cs" />
     <Compile Include="Services\AllocationDS\xcuda_Weight_itmService.cs" />
     <Compile Include="Services\AllocationDS\XSales_UnAllocatedService.cs" />
+    <Compile Include="Services\CoreEntities\AsycudaDocumentSetAttachmentsService.cs" />
     <Compile Include="Services\CoreEntities\EmailMappingActionsService.cs" />
     <Compile Include="Services\CoreEntities\ParameterSetParametersService.cs" />
     <Compile Include="Services\CoreEntities\ParameterSetService.cs" />
