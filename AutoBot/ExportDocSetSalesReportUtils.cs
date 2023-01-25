@@ -32,7 +32,7 @@ namespace AutoBot
                     {
                         var s = new ExportToCSV<EX9Utils.SaleReportLine, List<EX9Utils.SaleReportLine>>();
                         s.StartUp();
-                        doclst.ForEach(doc =>  CreateSalesReport(folder, exceptions, doc, s));
+                        doclst.Where(x => x != null).ForEach(doc =>  CreateSalesReport(folder, exceptions, doc, s));
 
                         s.ShutDown();
                     },
@@ -78,7 +78,7 @@ namespace AutoBot
                     new SalesDataService().GetSalesDocuments(
                             asycudaDocumentSetId)
                         .ConfigureAwait(false);
-            return doclst;
+            return doclst.Where(x => x != null).ToList();
         }
 
         public static async Task ExportLastDocSetSalesReport(int asycudaDocumentSetId, string folder)
