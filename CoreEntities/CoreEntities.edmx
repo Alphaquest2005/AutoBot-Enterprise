@@ -74,6 +74,7 @@
           <Property Name="AllowImportXSales" Type="nvarchar" MaxLength="10" />
           <Property Name="NotifyUnknownMessages" Type="bit" />
           <Property Name="ExportExpiredEntries" Type="bit" />
+          <Property Name="AllowAdvanceWareHouse" Type="nvarchar" MaxLength="10" />
         </EntityType>
         <EntityType Name="ApplicationSettings-Declarants">
           <Key>
@@ -305,8 +306,8 @@
           </Key>
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="FileTypeMappingId" Type="int" Nullable="false" />
-          <Property Name="ReplacementRegex" Type="nvarchar" MaxLength="50" Nullable="false" />
-          <Property Name="ReplacementValue" Type="nvarchar" MaxLength="50" />
+          <Property Name="ReplacementRegex" Type="nvarchar" MaxLength="1000" Nullable="false" />
+          <Property Name="ReplacementValue" Type="nvarchar" MaxLength="1000" />
         </EntityType>
         <EntityType Name="FileTypeMappings">
           <Key>
@@ -635,6 +636,23 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AsycudaDocumentItemEntryD
           <Property Name="CNumber" Type="nvarchar" MaxLength="20" />
           <Property Name="LineNumber" Type="int" Nullable="false" />
           <Property Name="CustomsOperation" Type="nvarchar" MaxLength="50" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AsycudaDocumentSetAttachments' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="AsycudaDocumentSetAttachments">
+          <Key>
+            
+            
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="AsycudaDocumentSetId" Type="int" Nullable="false" />
+          <Property Name="Declarant_Reference_Number" Type="nvarchar" MaxLength="50" />
+          <Property Name="Description" Type="nvarchar" MaxLength="50" />
+          <Property Name="FilePath" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="DocumentCode" Type="nvarchar" MaxLength="50" />
+          <Property Name="Reference" Type="nvarchar" MaxLength="255" />
+          <Property Name="Id" Type="int" Nullable="false" />
+          <Property Name="FileTypeId" Type="int" />
         </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AsycudaDocumentSetC71' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
@@ -2723,6 +2741,18 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
     [AsycudaDocumentItemEntryDataDetails].[CustomsOperation] AS [CustomsOperation]
     FROM [dbo].[AsycudaDocumentItemEntryDataDetails] AS [AsycudaDocumentItemEntryDataDetails]</DefiningQuery>
           </EntitySet>
+          <EntitySet Name="AsycudaDocumentSetAttachments" EntityType="Self.AsycudaDocumentSetAttachments" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [AsycudaDocumentSetAttachments].[AsycudaDocumentSetId] AS [AsycudaDocumentSetId], 
+    [AsycudaDocumentSetAttachments].[Declarant_Reference_Number] AS [Declarant_Reference_Number], 
+    [AsycudaDocumentSetAttachments].[Description] AS [Description], 
+    [AsycudaDocumentSetAttachments].[FilePath] AS [FilePath], 
+    [AsycudaDocumentSetAttachments].[DocumentCode] AS [DocumentCode], 
+    [AsycudaDocumentSetAttachments].[Reference] AS [Reference], 
+    [AsycudaDocumentSetAttachments].[Id] AS [Id], 
+    [AsycudaDocumentSetAttachments].[FileTypeId] AS [FileTypeId]
+    FROM [dbo].[AsycudaDocumentSetAttachments] AS [AsycudaDocumentSetAttachments]</DefiningQuery>
+          </EntitySet>
           <EntitySet Name="AsycudaDocumentSetC71" EntityType="Self.AsycudaDocumentSetC71" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
     [AsycudaDocumentSetC71].[Address] AS [Address], 
@@ -4200,6 +4230,15 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
             <End Role="ParameterSet" EntitySet="ParameterSet" />
             <End Role="SessionSchedule" EntitySet="SessionSchedule" />
           </AssociationSet>
+          <EntitySet Name="AsycudaDocumentSetAttachments" EntityType="WaterNutDBModel.AsycudaDocumentSetAttachments" />
+          <AssociationSet Name="FileTypesAsycudaDocumentSetAttachments" Association="WaterNutDBModel.FileTypesAsycudaDocumentSetAttachments">
+            <End Role="FileTypes" EntitySet="FileTypes" />
+            <End Role="AsycudaDocumentSetAttachments" EntitySet="AsycudaDocumentSetAttachments" />
+          </AssociationSet>
+          <AssociationSet Name="AsycudaDocumentSetExAsycudaDocumentSetAttachments" Association="WaterNutDBModel.AsycudaDocumentSetExAsycudaDocumentSetAttachments">
+            <End Role="AsycudaDocumentSetEx" EntitySet="AsycudaDocumentSetExs" />
+            <End Role="AsycudaDocumentSetAttachments" EntitySet="AsycudaDocumentSetAttachments" />
+          </AssociationSet>
           </EntityContainer>
         <EntityType Name="ApplicationSettings">
           <Key>
@@ -4260,7 +4299,8 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
           <Property Name="PreAllocateEx9s" Type="Boolean" />
           <Property Name="AllowImportXSales" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
           <Property Name="NotifyUnknownMessages" Type="Boolean" />
-          <Property Name="ExportExpiredEntries" Type="Boolean" /><a:MainEntityProperty xmlns:a="http://schemas.tempuri.com/MainEntityProperty">True</a:MainEntityProperty>
+          <Property Name="ExportExpiredEntries" Type="Boolean" />
+          <Property Name="AllowAdvanceWareHouse" Type="String" MaxLength="10" FixedLength="false" Unicode="true" /><a:MainEntityProperty xmlns:a="http://schemas.tempuri.com/MainEntityProperty">True</a:MainEntityProperty>
         </EntityType>
         <EntityType Name="AsycudaDocument">
           <Key>
@@ -4473,6 +4513,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
           <Property Name="CurrencyRate" Type="Double" Nullable="false" />
           <Property Name="FreightCurrencyRate" Type="Double" Nullable="false" />
           <Property Name="ExpectedEntries" Type="Int32" />
+          <NavigationProperty Name="AsycudaDocumentSetAttachments" Relationship="WaterNutDBModel.AsycudaDocumentSetExAsycudaDocumentSetAttachments" FromRole="AsycudaDocumentSetEx" ToRole="AsycudaDocumentSetAttachments" />
           <a:MainEntityProperty xmlns:a="http://schemas.tempuri.com/MainEntityProperty">True</a:MainEntityProperty>
         </EntityType>
         <Association Name="AsycudaDocumentSetExAsycudaDocument">
@@ -4759,6 +4800,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
           <NavigationProperty Name="FileImporterInfos" Relationship="WaterNutDBModel.FK_FileTypes_FileTypes_FileInfo1" FromRole="FileTypes" ToRole="FileTypes_FileImporterInfo" />
           <Property Name="Description" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="DocSetRefernece" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="AsycudaDocumentSetAttachments" Relationship="WaterNutDBModel.FileTypesAsycudaDocumentSetAttachments" FromRole="FileTypes" ToRole="AsycudaDocumentSetAttachments" />
         </EntityType>
         <Association Name="FK_FileTypes_ApplicationSettings">
           <End Type="WaterNutDBModel.ApplicationSettings" Role="ApplicationSettings" Multiplicity="1">
@@ -6375,8 +6417,8 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
           </Key>
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="FileTypeMappingId" Type="Int32" Nullable="false" />
-          <Property Name="ReplacementRegex" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="ReplacementValue" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ReplacementRegex" Type="String" Nullable="false" MaxLength="1000" FixedLength="false" Unicode="true" />
+          <Property Name="ReplacementValue" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="FileTypeMappings" Relationship="WaterNutDBModel.FK_FileTypeMappingRegExs_FileTypeMappings" FromRole="FileTypeMappingRegExs" ToRole="FileTypeMappings" />
         </EntityType>
         <Association Name="FK_FileTypeMappingRegExs_FileTypeMappings">
@@ -6810,6 +6852,45 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="AsycudaDocumentSetAttachments">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="AsycudaDocumentSetId" Type="Int32" Nullable="false" />
+          <Property Name="Declarant_Reference_Number" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Description" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="FilePath" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="DocumentCode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Reference" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Id" Type="Int32" Nullable="false" />
+          <Property Name="FileTypeId" Type="Int32" />
+          <NavigationProperty Name="FileTypes" Relationship="WaterNutDBModel.FileTypesAsycudaDocumentSetAttachments" FromRole="AsycudaDocumentSetAttachments" ToRole="FileTypes" />
+          <NavigationProperty Name="AsycudaDocumentSetEx" Relationship="WaterNutDBModel.AsycudaDocumentSetExAsycudaDocumentSetAttachments" FromRole="AsycudaDocumentSetAttachments" ToRole="AsycudaDocumentSetEx" />
+        </EntityType>
+        <Association Name="FileTypesAsycudaDocumentSetAttachments">
+          <End Type="WaterNutDBModel.FileTypes" Role="FileTypes" Multiplicity="0..1" />
+          <End Type="WaterNutDBModel.AsycudaDocumentSetAttachments" Role="AsycudaDocumentSetAttachments" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="FileTypes">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="AsycudaDocumentSetAttachments">
+              <PropertyRef Name="FileTypeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="AsycudaDocumentSetExAsycudaDocumentSetAttachments">
+          <End Type="WaterNutDBModel.AsycudaDocumentSetEx" Role="AsycudaDocumentSetEx" Multiplicity="1" />
+          <End Type="WaterNutDBModel.AsycudaDocumentSetAttachments" Role="AsycudaDocumentSetAttachments" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AsycudaDocumentSetEx">
+              <PropertyRef Name="AsycudaDocumentSetId" />
+            </Principal>
+            <Dependent Role="AsycudaDocumentSetAttachments">
+              <PropertyRef Name="AsycudaDocumentSetId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -6819,6 +6900,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
           <EntitySetMapping Name="ApplicationSettings">
             <EntityTypeMapping TypeName="WaterNutDBModel.ApplicationSettings">
               <MappingFragment StoreEntitySet="ApplicationSettings">
+                <ScalarProperty Name="AllowAdvanceWareHouse" ColumnName="AllowAdvanceWareHouse" />
                 <ScalarProperty Name="ExportExpiredEntries" ColumnName="ExportExpiredEntries" />
                 <ScalarProperty Name="NotifyUnknownMessages" ColumnName="NotifyUnknownMessages" />
                 <ScalarProperty Name="AllowImportXSales" ColumnName="AllowImportXSales" />
@@ -8563,6 +8645,20 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
                 <ScalarProperty Name="ParameterId" ColumnName="ParameterId" />
                 <ScalarProperty Name="ParameterSetId" ColumnName="ParameterSetId" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="AsycudaDocumentSetAttachments">
+            <EntityTypeMapping TypeName="WaterNutDBModel.AsycudaDocumentSetAttachments">
+              <MappingFragment StoreEntitySet="AsycudaDocumentSetAttachments">
+                <ScalarProperty Name="FileTypeId" ColumnName="FileTypeId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Reference" ColumnName="Reference" />
+                <ScalarProperty Name="DocumentCode" ColumnName="DocumentCode" />
+                <ScalarProperty Name="FilePath" ColumnName="FilePath" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="Declarant_Reference_Number" ColumnName="Declarant_Reference_Number" />
+                <ScalarProperty Name="AsycudaDocumentSetId" ColumnName="AsycudaDocumentSetId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

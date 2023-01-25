@@ -61,6 +61,7 @@
               this.Property(t => t.AllowImportXSales).HasColumnName("AllowImportXSales").HasMaxLength(10);
               this.Property(t => t.NotifyUnknownMessages).HasColumnName("NotifyUnknownMessages");
               this.Property(t => t.ExportExpiredEntries).HasColumnName("ExportExpiredEntries");
+              this.Property(t => t.AllowAdvanceWareHouse).HasColumnName("AllowAdvanceWareHouse").HasMaxLength(10);
               this.HasMany(t => t.AsycudaDocumentSetEx).WithRequired(t => (ApplicationSettings)t.ApplicationSettings);
               this.HasMany(t => t.AsycudaDocument).WithOptional(t => t.ApplicationSettings).HasForeignKey(d => d.ApplicationSettingsId);
               this.HasMany(t => t.AsycudaDocumentItem).WithOptional(t => t.ApplicationSettings).HasForeignKey(d => d.ApplicationSettingsId);

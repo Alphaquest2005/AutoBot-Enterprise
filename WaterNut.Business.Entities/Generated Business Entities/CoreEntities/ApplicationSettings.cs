@@ -753,6 +753,21 @@ namespace CoreEntities.Business.Entities
         }
         Nullable<bool> _exportexpiredentries;
         [DataMember]
+        public string AllowAdvanceWareHouse 
+        {
+            get
+            {
+                return _allowadvancewarehouse;
+            }
+            set
+            {
+                _allowadvancewarehouse = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _allowadvancewarehouse;
+        [DataMember]
         public List<AsycudaDocumentSetEx> AsycudaDocumentSetEx { get; set; }
         [DataMember]
         public List<AsycudaDocument> AsycudaDocument { get; set; }

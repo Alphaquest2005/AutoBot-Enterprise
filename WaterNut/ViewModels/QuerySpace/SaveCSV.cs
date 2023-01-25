@@ -41,7 +41,7 @@ namespace WaterNut.QuerySpace
             {
                 Title = "Import Entry Data",
                 DefaultExt = ".csv",
-                Filter = "CSV Files (.csv)|*.csv|TXT Files (.txt)|*.txt|XLSX Files (.xlsx)|*.xlsx",
+                Filter = "CSV Files (.csv)|*.csv|TXT Files (.txt)|*.txt|XLSX Files (.xlsx)|*.xlsx|PDF Files (.pdf)|*.pdf",
                 Multiselect = true
             };
             var result = od.ShowDialog();
@@ -84,6 +84,7 @@ namespace WaterNut.QuerySpace
                         fileTypes.ForEach(x => x.AsycudaDocumentSetId = asycudaDocumentSetId);
                         XLSXProcessor.Xlsx2csv(new FileInfo[]{ new FileInfo(f)}, fileTypes.FirstOrDefault(), overwrite);
                     }
+                   
 
                 }
 

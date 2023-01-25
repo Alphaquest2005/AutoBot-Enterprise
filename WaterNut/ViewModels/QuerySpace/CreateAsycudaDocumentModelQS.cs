@@ -366,9 +366,13 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 				{
 					"AsycudaDocuments"
 				}).ConfigureAwait(false);
-
-				//var docSet = CoreEntities.ViewModels.BaseViewModel.Instance.CurrentAsycudaDocumentSetEx;
-				docSet.BLNumber = this.BLNumber;
+               if (docSet == null)
+               {
+                   MessageBox.Show("Please Select DocumentSet");
+                   return;
+               }
+                //var docSet = CoreEntities.ViewModels.BaseViewModel.Instance.CurrentAsycudaDocumentSetEx;
+                docSet.BLNumber = this.BLNumber;
 				docSet.Country_of_origin_code = this.Country_of_origin_code;
 				docSet.Currency_Code = this.Currency_Code;
 				docSet.Description = this.Description;

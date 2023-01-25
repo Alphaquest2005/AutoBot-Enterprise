@@ -62,6 +62,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                         RegisterToReceiveMessages<string>(MessageToken.CurrentAsycudaDocumentItemIDChanged, OnCurrentAsycudaDocumentItemIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentAsycudaDocumentItemEntryDataDetailsIDChanged, OnCurrentAsycudaDocumentItemEntryDataDetailsIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentAsycudaDocumentSet_AttachmentsIDChanged, OnCurrentAsycudaDocumentSet_AttachmentsIDChanged);
+                        RegisterToReceiveMessages<string>(MessageToken.CurrentAsycudaDocumentSetAttachmentsIDChanged, OnCurrentAsycudaDocumentSetAttachmentsIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentAsycudaDocumentSetC71IDChanged, OnCurrentAsycudaDocumentSetC71IDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentAsycudaDocumentSetEntryDataExIDChanged, OnCurrentAsycudaDocumentSetEntryDataExIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentAsycudaDocumentSetExIDChanged, OnCurrentAsycudaDocumentSetExIDChanged);
@@ -166,6 +167,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                         RegisterToReceiveMessages<AsycudaDocumentItem>(MessageToken.CurrentAsycudaDocumentItemChanged, OnCurrentAsycudaDocumentItemChanged);
                         RegisterToReceiveMessages<AsycudaDocumentItemEntryDataDetails>(MessageToken.CurrentAsycudaDocumentItemEntryDataDetailsChanged, OnCurrentAsycudaDocumentItemEntryDataDetailsChanged);
                         RegisterToReceiveMessages<AsycudaDocumentSet_Attachments>(MessageToken.CurrentAsycudaDocumentSet_AttachmentsChanged, OnCurrentAsycudaDocumentSet_AttachmentsChanged);
+                        RegisterToReceiveMessages<AsycudaDocumentSetAttachments>(MessageToken.CurrentAsycudaDocumentSetAttachmentsChanged, OnCurrentAsycudaDocumentSetAttachmentsChanged);
                         RegisterToReceiveMessages<AsycudaDocumentSetC71>(MessageToken.CurrentAsycudaDocumentSetC71Changed, OnCurrentAsycudaDocumentSetC71Changed);
                         RegisterToReceiveMessages<AsycudaDocumentSetEntryDataEx>(MessageToken.CurrentAsycudaDocumentSetEntryDataExChanged, OnCurrentAsycudaDocumentSetEntryDataExChanged);
                         RegisterToReceiveMessages<AsycudaDocumentSetEx>(MessageToken.CurrentAsycudaDocumentSetExChanged, OnCurrentAsycudaDocumentSetExChanged);
@@ -517,6 +519,33 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                                     if (!string.IsNullOrEmpty(_currentAsycudaDocumentSet_AttachmentsID)) BeginSendMessage(MessageToken.CurrentAsycudaDocumentSet_AttachmentsIDChanged,
                                                      new NotificationEventArgs<string>(MessageToken.CurrentAsycudaDocumentSet_AttachmentsIDChanged, _currentAsycudaDocumentSet_AttachmentsID));
                                     NotifyPropertyChanged(x => this.CurrentAsycudaDocumentSet_AttachmentsID);  
+                                }
+                            }
+                        }
+                        internal async void OnCurrentAsycudaDocumentSetAttachmentsIDChanged(object sender, NotificationEventArgs<string> e)
+                        {
+                            using (AsycudaDocumentSetAttachmentsRepository ctx = new AsycudaDocumentSetAttachmentsRepository())
+                            {
+                                CurrentAsycudaDocumentSetAttachments = await ctx.GetAsycudaDocumentSetAttachments(e.Data).ConfigureAwait(continueOnCapturedContext: false);
+                            }
+                            NotifyPropertyChanged(m => CurrentAsycudaDocumentSetAttachments);
+                        }
+
+                        private  string _currentAsycudaDocumentSetAttachmentsID = "";
+                        public string CurrentAsycudaDocumentSetAttachmentsID
+                        {
+                            get
+                            {
+                                return _currentAsycudaDocumentSetAttachmentsID;
+                            }
+                            set
+                            {
+                                if (_currentAsycudaDocumentSetAttachmentsID != value)
+                                {
+                                    _currentAsycudaDocumentSetAttachmentsID = value;
+                                    if (!string.IsNullOrEmpty(_currentAsycudaDocumentSetAttachmentsID)) BeginSendMessage(MessageToken.CurrentAsycudaDocumentSetAttachmentsIDChanged,
+                                                     new NotificationEventArgs<string>(MessageToken.CurrentAsycudaDocumentSetAttachmentsIDChanged, _currentAsycudaDocumentSetAttachmentsID));
+                                    NotifyPropertyChanged(x => this.CurrentAsycudaDocumentSetAttachmentsID);  
                                 }
                             }
                         }
@@ -3479,6 +3508,56 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                      
        
 
+        internal void OnCurrentAsycudaDocumentSetAttachmentsChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<AsycudaDocumentSetAttachments> e)
+        {
+            //CurrentAsycudaDocumentSetAttachments = e.Data;
+            NotifyPropertyChanged(m => this.CurrentAsycudaDocumentSetAttachments);
+        }
+
+        private  AsycudaDocumentSetAttachments _currentAsycudaDocumentSetAttachments;
+        public AsycudaDocumentSetAttachments CurrentAsycudaDocumentSetAttachments
+        {
+            get
+            {
+                return _currentAsycudaDocumentSetAttachments;
+            }
+            set
+            {
+                if (_currentAsycudaDocumentSetAttachments != value)
+                {
+                    _currentAsycudaDocumentSetAttachments = value;
+                    BeginSendMessage(MessageToken.CurrentAsycudaDocumentSetAttachmentsChanged,
+                                                     new NotificationEventArgs<AsycudaDocumentSetAttachments>(MessageToken.CurrentAsycudaDocumentSetAttachmentsChanged, _currentAsycudaDocumentSetAttachments)); 
+                    NotifyPropertyChanged(x => this.CurrentAsycudaDocumentSetAttachments);    
+                    // all current navigation properties = null
+   
+                }
+            }
+        }
+
+		VirtualListItem<AsycudaDocumentSetAttachments> _vcurrentAsycudaDocumentSetAttachments;
+        public VirtualListItem<AsycudaDocumentSetAttachments> VCurrentAsycudaDocumentSetAttachments
+        {
+            get
+            {
+                return _vcurrentAsycudaDocumentSetAttachments;
+            }
+            set
+            {
+                if (_vcurrentAsycudaDocumentSetAttachments != value)
+                {
+                    _vcurrentAsycudaDocumentSetAttachments = value;
+					if(_vcurrentAsycudaDocumentSetAttachments != null) CurrentAsycudaDocumentSetAttachments = value.Data;
+                    NotifyPropertyChanged(x => this.VCurrentAsycudaDocumentSetAttachments);                    
+                }
+            }
+        }
+
+
+
+                     
+       
+
         internal void OnCurrentAsycudaDocumentSetC71Changed(object sender, SimpleMvvmToolkit.NotificationEventArgs<AsycudaDocumentSetC71> e)
         {
             //CurrentAsycudaDocumentSetC71 = e.Data;
@@ -3605,6 +3684,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                  CurrentLicenceSummary = null;
                  CurrentAsycudaDocumentSet_Attachments = null;
                  CurrentAsycudaDocumentSetEntryDataEx = null;
+                 CurrentAsycudaDocumentSetAttachments = null;
    
                 }
             }
@@ -4928,6 +5008,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                  CurrentEmailFileTypes = null;
                  CurrentImportActions = null;
                  CurrentFileTypeReplaceRegex = null;
+                 CurrentAsycudaDocumentSetAttachments = null;
    
                 }
             }

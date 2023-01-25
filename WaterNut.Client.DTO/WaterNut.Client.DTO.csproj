@@ -128,6 +128,7 @@
     <Compile Include="Generated Client Entities\CoreEntities\AsycudaDocumentBasicInfo.cs" />
     <Compile Include="Generated Client Entities\CoreEntities\AsycudaDocumentItem.cs" />
     <Compile Include="Generated Client Entities\CoreEntities\AsycudaDocumentItemEntryDataDetails.cs" />
+    <Compile Include="Generated Client Entities\CoreEntities\AsycudaDocumentSetAttachments.cs" />
     <Compile Include="Generated Client Entities\CoreEntities\AsycudaDocumentSetC71.cs" />
     <Compile Include="Generated Client Entities\CoreEntities\AsycudaDocumentSetEntryDataEx.cs" />
     <Compile Include="Generated Client Entities\CoreEntities\AsycudaDocumentSetEx.cs" />
@@ -301,6 +302,7 @@
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\AsycudaDocumentBasicInfo.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\AsycudaDocumentItem.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\AsycudaDocumentItemEntryDataDetails.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\AsycudaDocumentSetAttachments.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\AsycudaDocumentSetC71.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\AsycudaDocumentSetEntryDataEx.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\AsycudaDocumentSetEx.cs" />
@@ -474,6 +476,7 @@
     <Compile Include="Generated MyNavProp Models\CoreEntities\AsycudaDocumentBasicInfo.cs" />
     <Compile Include="Generated MyNavProp Models\CoreEntities\AsycudaDocumentItem.cs" />
     <Compile Include="Generated MyNavProp Models\CoreEntities\AsycudaDocumentItemEntryDataDetails.cs" />
+    <Compile Include="Generated MyNavProp Models\CoreEntities\AsycudaDocumentSetAttachments.cs" />
     <Compile Include="Generated MyNavProp Models\CoreEntities\AsycudaDocumentSetC71.cs" />
     <Compile Include="Generated MyNavProp Models\CoreEntities\AsycudaDocumentSetEntryDataEx.cs" />
     <Compile Include="Generated MyNavProp Models\CoreEntities\AsycudaDocumentSetEx.cs" />

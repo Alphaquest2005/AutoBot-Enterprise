@@ -469,6 +469,7 @@
     <Compile Include="ViewModels\Generated Models\QuerySpace\CoreEntities\AsycudaDocumentBasicInfoViewModel.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\CoreEntities\AsycudaDocumentItemEntryDataDetailsViewModel.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\CoreEntities\AsycudaDocumentItemViewModel.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\CoreEntities\AsycudaDocumentSetAttachmentsViewModel.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\CoreEntities\AsycudaDocumentSetC71ViewModel.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\CoreEntities\AsycudaDocumentSetEntryDataExViewModel.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\CoreEntities\AsycudaDocumentSetExViewModel.cs" />
@@ -656,6 +657,7 @@
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\AsycudaDocumentBasicInfoTotals.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\AsycudaDocumentItemEntryDataDetailsTotals.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\AsycudaDocumentItemTotals.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\AsycudaDocumentSetAttachmentsTotals.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\AsycudaDocumentSetC71Totals.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\AsycudaDocumentSetEntryDataExTotals.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\AsycudaDocumentSetExTotals.cs" />
@@ -829,6 +831,7 @@
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\AsycudaDocumentBasicInfoVirturalListLoader.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\AsycudaDocumentItemEntryDataDetailsVirturalListLoader.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\AsycudaDocumentItemVirturalListLoader.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\AsycudaDocumentSetAttachmentsVirturalListLoader.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\AsycudaDocumentSetC71VirturalListLoader.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\AsycudaDocumentSetEntryDataExVirturalListLoader.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\AsycudaDocumentSetExVirturalListLoader.cs" />
@@ -973,6 +976,7 @@
     <Compile Include="ViewModels\QuerySpace\AdjustmentOverDetailsModel.cs" />
     <Compile Include="ViewModels\QuerySpace\AdjustmentExModel.cs" />
     <Compile Include="ViewModels\QuerySpace\EntryDataContainersModelQS.cs" />
+    <Compile Include="ViewModels\QuerySpace\DocSetAttachmentModelQS.cs" />
     <Compile Include="ViewModels\QuerySpace\EntryDataModelQS.cs" />
     <Compile Include="Converters\NotBoolConverter.cs" />
     <Compile Include="Custom DataLayer Classes\CounterPointSales.cs" />
@@ -1045,6 +1049,9 @@
     </Compile>
     <Compile Include="Views\CreateAsycudaDocument.xaml.cs">
       <DependentUpon>CreateAsycudaDocument.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\DocSetAttachments.xaml.cs">
+      <DependentUpon>DocSetAttachments.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\EntryDataContainers.xaml.cs">
       <DependentUpon>EntryDataContainers.xaml</DependentUpon>
@@ -1173,6 +1180,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\CreateAsycudaDocument.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\DocSetAttachments.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

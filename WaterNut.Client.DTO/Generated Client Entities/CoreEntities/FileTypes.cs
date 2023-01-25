@@ -450,6 +450,19 @@ namespace CoreEntities.Client.DTO
         private FileImporterInfo _FileImporterInfos;
         private ChangeTrackingCollection<FileImporterInfo> FileImporterInfosChangeTracker { get; set; }
 
+        [DataMember]
+        public ChangeTrackingCollection<AsycudaDocumentSetAttachments> AsycudaDocumentSetAttachments
+		{
+		    get { return _AsycudaDocumentSetAttachments; }
+			set
+			{
+			    if (Equals(value, _AsycudaDocumentSetAttachments)) return;
+				_AsycudaDocumentSetAttachments = value;
+				NotifyPropertyChanged();//m => this.AsycudaDocumentSetAttachments
+			}
+		}
+        private ChangeTrackingCollection<AsycudaDocumentSetAttachments> _AsycudaDocumentSetAttachments = new ChangeTrackingCollection<AsycudaDocumentSetAttachments>();
+
    //     [DataMember]
    //     public TrackingState TrackingState { get; set; }
 

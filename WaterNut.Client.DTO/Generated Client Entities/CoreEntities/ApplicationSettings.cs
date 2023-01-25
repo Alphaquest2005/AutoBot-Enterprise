@@ -645,6 +645,19 @@ namespace CoreEntities.Client.DTO
 		}
         private Nullable<bool> _ExportExpiredEntries;
 
+        [DataMember]
+        public string AllowAdvanceWareHouse
+		{ 
+		    get { return _AllowAdvanceWareHouse; }
+			set
+			{
+			    if (value == _AllowAdvanceWareHouse) return;
+				_AllowAdvanceWareHouse = value;
+				NotifyPropertyChanged();//m => this.AllowAdvanceWareHouse
+			}
+		}
+        private string _AllowAdvanceWareHouse;
+
        
         [DataMember]
         public ChangeTrackingCollection<AsycudaDocumentSetEx> AsycudaDocumentSetEx

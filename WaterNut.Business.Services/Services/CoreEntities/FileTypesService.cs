@@ -301,6 +301,12 @@ namespace CoreEntities.Business.Services
                                         GetWhere<FileImporterInfo>(dbContext, exp, itm.Value, "FileTypes", "SelectMany", includesLst)
 										.ConfigureAwait(continueOnCapturedContext: false);
 
+                            case "AsycudaDocumentSetAttachments":
+                                return
+                                    await
+                                        GetWhere<AsycudaDocumentSetAttachments>(dbContext, exp, itm.Value, "FileTypes", "Select", includesLst)
+										.ConfigureAwait(continueOnCapturedContext: false);
+
                         }
 
                     }
@@ -818,6 +824,9 @@ namespace CoreEntities.Business.Services
                             case "FileImporterInfos":
                                 return await CountWhere<FileImporterInfo>(dbContext, exp, itm.Value, "FileTypes", "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "AsycudaDocumentSetAttachments":
+                                return await CountWhere<AsycudaDocumentSetAttachments>(dbContext, exp, itm.Value, "FileTypes", "Select")
+											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }
                     return dbContext.FileTypes.Where(exp == "All" || exp == null ? "Id != null" : exp)
@@ -990,6 +999,12 @@ namespace CoreEntities.Business.Services
                                 return
                                     await
                                         LoadRangeWhere<FileImporterInfo>(startIndex, count, dbContext, exp, itm.Value, "FileTypes", "SelectMany")
+													.ConfigureAwait(continueOnCapturedContext: false);
+
+                            case "AsycudaDocumentSetAttachments":
+                                return
+                                    await
+                                        LoadRangeWhere<AsycudaDocumentSetAttachments>(startIndex, count, dbContext, exp, itm.Value, "FileTypes", "Select")
 													.ConfigureAwait(continueOnCapturedContext: false);
 
                           
@@ -1206,6 +1221,7 @@ namespace CoreEntities.Business.Services
                                                     // .Include(x => x.EmailFileTypes)									  
                                                     // .Include(x => x.ImportActions)									  
                                                     // .Include(x => x.FileTypeReplaceRegex)									  
+                                                    // .Include(x => x.AsycudaDocumentSetAttachments)									  
                                       .AsNoTracking()
                                         .Where(x => x.ApplicationSettingsId.ToString() == ApplicationSettingsId.ToString())
 										.ToList();
@@ -1242,6 +1258,7 @@ namespace CoreEntities.Business.Services
                                                     // .Include(x => x.EmailFileTypes)									  
                                                     // .Include(x => x.ImportActions)									  
                                                     // .Include(x => x.FileTypeReplaceRegex)									  
+                                                    // .Include(x => x.AsycudaDocumentSetAttachments)									  
                                       .AsNoTracking()
                                         .Where(x => x.FileGroupId.ToString() == FileGroupId.ToString())
 										.ToList();
@@ -1278,6 +1295,7 @@ namespace CoreEntities.Business.Services
                                                     // .Include(x => x.EmailFileTypes)									  
                                                     // .Include(x => x.ImportActions)									  
                                                     // .Include(x => x.FileTypeReplaceRegex)									  
+                                                    // .Include(x => x.AsycudaDocumentSetAttachments)									  
                                       .AsNoTracking()
                                         .Where(x => x.ParentFileTypeId.ToString() == ParentFileTypeId.ToString())
 										.ToList();
@@ -1314,6 +1332,7 @@ namespace CoreEntities.Business.Services
                                                     // .Include(x => x.EmailFileTypes)									  
                                                     // .Include(x => x.ImportActions)									  
                                                     // .Include(x => x.FileTypeReplaceRegex)									  
+                                                    // .Include(x => x.AsycudaDocumentSetAttachments)									  
                                       .AsNoTracking()
                                         .Where(x => x.OldFileTypeId.ToString() == OldFileTypeId.ToString())
 										.ToList();
@@ -1350,6 +1369,7 @@ namespace CoreEntities.Business.Services
                                                     // .Include(x => x.EmailFileTypes)									  
                                                     // .Include(x => x.ImportActions)									  
                                                     // .Include(x => x.FileTypeReplaceRegex)									  
+                                                    // .Include(x => x.AsycudaDocumentSetAttachments)									  
                                       .AsNoTracking()
                                         .Where(x => x.FileInfoId.ToString() == FileInfoId.ToString())
 										.ToList();
@@ -1459,6 +1479,9 @@ namespace CoreEntities.Business.Services
 											.ConfigureAwait(continueOnCapturedContext: false);
                             case "FileImporterInfos":
                                 return await SumWhere<FileImporterInfo>(dbContext, exp, itm.Value, "FileTypes", field, "SelectMany")
+											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "AsycudaDocumentSetAttachments":
+                                return await SumWhere<AsycudaDocumentSetAttachments>(dbContext, exp, itm.Value, "FileTypes", field, "Select")
 											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }

@@ -26,6 +26,7 @@ namespace CoreEntities.Business.Entities
             this.LicenceSummary = new List<LicenceSummary>();
             this.AsycudaDocumentSet_Attachments = new List<AsycudaDocumentSet_Attachments>();
             this.AsycudaDocumentSetEntryDataEx = new List<AsycudaDocumentSetEntryDataEx>();
+            this.AsycudaDocumentSetAttachments = new List<AsycudaDocumentSetAttachments>();
         }
 
         [DataMember]
@@ -548,6 +549,8 @@ namespace CoreEntities.Business.Entities
         public List<AsycudaDocumentSet_Attachments> AsycudaDocumentSet_Attachments { get; set; }
         [DataMember]
         public List<AsycudaDocumentSetEntryDataEx> AsycudaDocumentSetEntryDataEx { get; set; }
+        [DataMember]
+        public List<AsycudaDocumentSetAttachments> AsycudaDocumentSetAttachments { get; set; }
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }
