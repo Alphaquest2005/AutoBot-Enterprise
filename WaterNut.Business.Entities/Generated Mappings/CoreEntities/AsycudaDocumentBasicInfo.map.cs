@@ -17,8 +17,8 @@
               this.Property(t => t.ASYCUDA_Id).HasColumnName("ASYCUDA_Id").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.None));
               this.Property(t => t.DocumentType).HasColumnName("DocumentType").HasMaxLength(40);
               this.Property(t => t.CNumber).HasColumnName("CNumber").HasMaxLength(20);
-              this.Property(t => t.Extended_customs_procedure).HasColumnName("Extended_customs_procedure").HasMaxLength(5);
-              this.Property(t => t.National_customs_procedure).HasColumnName("National_customs_procedure").HasMaxLength(5);
+              this.Property(t => t.Extended_customs_procedure).HasColumnName("Extended_customs_procedure").IsRequired().HasMaxLength(5);
+              this.Property(t => t.National_customs_procedure).HasColumnName("National_customs_procedure").IsRequired().HasMaxLength(5);
               this.Property(t => t.RegistrationDate).HasColumnName("RegistrationDate");
               this.Property(t => t.AssessmentDate).HasColumnName("AssessmentDate");
               this.Property(t => t.ExpiryDate).HasColumnName("ExpiryDate");
@@ -29,7 +29,7 @@
               this.Property(t => t.ApplicationSettingsId).HasColumnName("ApplicationSettingsId");
               this.Property(t => t.ImportComplete).HasColumnName("ImportComplete");
               this.Property(t => t.Customs_ProcedureId).HasColumnName("Customs_ProcedureId");
-              this.Property(t => t.CustomsProcedure).HasColumnName("CustomsProcedure").HasMaxLength(11);
+              this.Property(t => t.CustomsProcedure).HasColumnName("CustomsProcedure").IsRequired().HasMaxLength(11);
               this.Property(t => t.SourceFileName).HasColumnName("SourceFileName").HasMaxLength(500);
               this.Property(t => t.SubmitToCustoms).HasColumnName("SubmitToCustoms");
               this.Property(t => t.IsPaid).HasColumnName("IsPaid");

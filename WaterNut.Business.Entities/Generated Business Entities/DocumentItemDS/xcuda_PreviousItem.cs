@@ -86,7 +86,7 @@ namespace DocumentItemDS.Business.Entities
         }
         string _commodity_code;
         [DataMember]
-        public string Previous_item_number 
+        public Nullable<int> Previous_item_number 
         {
             get
             {
@@ -99,7 +99,7 @@ namespace DocumentItemDS.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        string _previous_item_number;
+        Nullable<int> _previous_item_number;
         [DataMember]
         public string Goods_origin 
         {
@@ -251,7 +251,7 @@ namespace DocumentItemDS.Business.Entities
         }
         double _previous_value;
         [DataMember]
-        public string Current_item_number 
+        public Nullable<int> Current_item_number 
         {
             get
             {
@@ -264,7 +264,7 @@ namespace DocumentItemDS.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        string _current_item_number;
+        Nullable<int> _current_item_number;
         [DataMember]
         public int PreviousItem_Id 
         {

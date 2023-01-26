@@ -862,13 +862,13 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     public string Reference { get; set; } 
                     
  
-                    public Nullable<bool> IsManuallyAssessed { get; set; } 
+                    public bool IsManuallyAssessed { get; set; } 
                     
  
-                    public Nullable<bool> Cancelled { get; set; } 
+                    public bool Cancelled { get; set; } 
                     
  
-                    public Nullable<bool> DoNotAllocate { get; set; } 
+                    public bool DoNotAllocate { get; set; } 
                     
  
                     public bool ImportComplete { get; set; } 
@@ -880,10 +880,10 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     public string SourceFileName { get; set; } 
                     
  
-                    public Nullable<bool> SubmitToCustoms { get; set; } 
+                    public bool SubmitToCustoms { get; set; } 
                     
  
-                    public Nullable<bool> IsPaid { get; set; } 
+                    public bool IsPaid { get; set; } 
                     
         }
 

@@ -17,7 +17,7 @@
               this.Property(t => t.Previous_Packages_number).HasColumnName("Previous_Packages_number").HasMaxLength(20);
               this.Property(t => t.Hs_code).HasColumnName("Hs_code").HasMaxLength(20);
               this.Property(t => t.Commodity_code).HasColumnName("Commodity_code").HasMaxLength(20);
-              this.Property(t => t.Previous_item_number).HasColumnName("Previous_item_number").HasMaxLength(20);
+              this.Property(t => t.Previous_item_number).HasColumnName("Previous_item_number");
               this.Property(t => t.Goods_origin).HasColumnName("Goods_origin").HasMaxLength(20);
               this.Property(t => t.Net_weight).HasColumnName("Net_weight");
               this.Property(t => t.Prev_net_weight).HasColumnName("Prev_net_weight");
@@ -28,7 +28,7 @@
               this.Property(t => t.Preveious_suplementary_quantity).HasColumnName("Preveious_suplementary_quantity");
               this.Property(t => t.Current_value).HasColumnName("Current_value");
               this.Property(t => t.Previous_value).HasColumnName("Previous_value");
-              this.Property(t => t.Current_item_number).HasColumnName("Current_item_number").HasMaxLength(20);
+              this.Property(t => t.Current_item_number).HasColumnName("Current_item_number");
               this.Property(t => t.PreviousItem_Id).HasColumnName("PreviousItem_Id").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.None));
               this.Property(t => t.ASYCUDA_Id).HasColumnName("ASYCUDA_Id");
               this.Property(t => t.QtyAllocated).HasColumnName("QtyAllocated");

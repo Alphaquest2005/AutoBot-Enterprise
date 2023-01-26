@@ -106,7 +106,7 @@ public string CNumber
 		}
      
 
-       
+       [RequiredValidationAttribute(ErrorMessage= "Extended_customs_procedure is required")]
        
                 
                 [MaxLength(5, ErrorMessage = "Extended_customs_procedure has a max length of 5 letters ")]
@@ -123,7 +123,7 @@ public string Extended_customs_procedure
 		}
      
 
-       
+       [RequiredValidationAttribute(ErrorMessage= "National_customs_procedure is required")]
        
                 
                 [MaxLength(5, ErrorMessage = "National_customs_procedure has a max length of 5 letters ")]
@@ -202,9 +202,9 @@ public string Reference
 		}
      
 
+       [RequiredValidationAttribute(ErrorMessage= "IsManuallyAssessed is required")]
        
-       
-public Nullable<bool> IsManuallyAssessed
+public bool IsManuallyAssessed
 		{ 
 		    get { return this.asycudadocumentbasicinfo.IsManuallyAssessed; }
 			set
@@ -217,9 +217,9 @@ public Nullable<bool> IsManuallyAssessed
 		}
      
 
+       [RequiredValidationAttribute(ErrorMessage= "Cancelled is required")]
        
-       
-public Nullable<bool> Cancelled
+public bool Cancelled
 		{ 
 		    get { return this.asycudadocumentbasicinfo.Cancelled; }
 			set
@@ -232,9 +232,9 @@ public Nullable<bool> Cancelled
 		}
      
 
+       [RequiredValidationAttribute(ErrorMessage= "DoNotAllocate is required")]
        
-       
-public Nullable<bool> DoNotAllocate
+public bool DoNotAllocate
 		{ 
 		    get { return this.asycudadocumentbasicinfo.DoNotAllocate; }
 			set
@@ -292,7 +292,7 @@ public int Customs_ProcedureId
 		}
      
 
-       
+       [RequiredValidationAttribute(ErrorMessage= "CustomsProcedure is required")]
        
                 
                 [MaxLength(11, ErrorMessage = "CustomsProcedure has a max length of 11 letters ")]
@@ -326,9 +326,9 @@ public string SourceFileName
 		}
      
 
+       [RequiredValidationAttribute(ErrorMessage= "SubmitToCustoms is required")]
        
-       
-public Nullable<bool> SubmitToCustoms
+public bool SubmitToCustoms
 		{ 
 		    get { return this.asycudadocumentbasicinfo.SubmitToCustoms; }
 			set
@@ -341,9 +341,9 @@ public Nullable<bool> SubmitToCustoms
 		}
      
 
+       [RequiredValidationAttribute(ErrorMessage= "IsPaid is required")]
        
-       
-public Nullable<bool> IsPaid
+public bool IsPaid
 		{ 
 		    get { return this.asycudadocumentbasicinfo.IsPaid; }
 			set

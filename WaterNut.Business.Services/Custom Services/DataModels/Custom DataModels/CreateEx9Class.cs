@@ -1696,7 +1696,7 @@ namespace WaterNut.DataSpace
                     if (cdoc.DocumentItems.Select(x => x.xcuda_PreviousItem).Count() == 1 || itmcount == 0)
                     {
                         pitm.Packages_number = "1"; //(i.Packages.Number_of_packages).ToString();
-                        pitm.Previous_Packages_number = pitm.Previous_item_number == "1" ? "1" : "0";
+                        pitm.Previous_Packages_number = pitm.Previous_item_number == 1 ? "1" : "0";
 
 
                         itm.xcuda_Attached_documents.Add(new xcuda_Attached_documents(true)
@@ -2139,8 +2139,8 @@ namespace WaterNut.DataSpace
 
                 pitm.Hs_code = pod.EX9Allocation.pTariffCode;
                 pitm.Commodity_code = pod.EX9Allocation.pPrecision1;
-                pitm.Current_item_number = (itmcount + 1).ToString(); // piggy back the previous item count
-                pitm.Previous_item_number = previousItem.LineNumber.ToString();
+                pitm.Current_item_number = (itmcount + 1); // piggy back the previous item count
+                pitm.Previous_item_number = previousItem.LineNumber;
 
 
                 SetWeights(pod, pitm, dfp, docPreviousItems);

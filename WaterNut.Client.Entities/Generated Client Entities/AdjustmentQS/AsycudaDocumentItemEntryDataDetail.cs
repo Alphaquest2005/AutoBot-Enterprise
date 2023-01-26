@@ -168,7 +168,7 @@ public int EntryData_Id
 		}
      
 
-       
+       [RequiredValidationAttribute(ErrorMessage= "CustomsProcedure is required")]
        
                 
                 [MaxLength(11, ErrorMessage = "CustomsProcedure has a max length of 11 letters ")]
@@ -243,6 +243,55 @@ public int AsycudaDocumentSetId
 				this.asycudadocumentitementrydatadetail.AsycudaDocumentSetId = value;
                 if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
 				NotifyPropertyChanged("AsycudaDocumentSetId");
+			}
+		}
+     
+
+       
+       
+                
+                [MaxLength(20, ErrorMessage = "CNumber has a max length of 20 letters ")]
+public string CNumber
+		{ 
+		    get { return this.asycudadocumentitementrydatadetail.CNumber; }
+			set
+			{
+			    if (value == this.asycudadocumentitementrydatadetail.CNumber) return;
+				this.asycudadocumentitementrydatadetail.CNumber = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("CNumber");
+			}
+		}
+     
+
+       [RequiredValidationAttribute(ErrorMessage= "LineNumber is required")]
+       [NumberValidationAttribute]
+public int LineNumber
+		{ 
+		    get { return this.asycudadocumentitementrydatadetail.LineNumber; }
+			set
+			{
+			    if (value == this.asycudadocumentitementrydatadetail.LineNumber) return;
+				this.asycudadocumentitementrydatadetail.LineNumber = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("LineNumber");
+			}
+		}
+     
+
+       
+       
+                
+                [MaxLength(50, ErrorMessage = "CustomsOperation has a max length of 50 letters ")]
+public string CustomsOperation
+		{ 
+		    get { return this.asycudadocumentitementrydatadetail.CustomsOperation; }
+			set
+			{
+			    if (value == this.asycudadocumentitementrydatadetail.CustomsOperation) return;
+				this.asycudadocumentitementrydatadetail.CustomsOperation = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("CustomsOperation");
 			}
 		}
      

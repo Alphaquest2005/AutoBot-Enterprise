@@ -152,7 +152,7 @@ namespace CoreEntities.Client.DTO
         private string _Reference;
 
         [DataMember]
-        public Nullable<bool> IsManuallyAssessed
+        public bool IsManuallyAssessed
 		{ 
 		    get { return _IsManuallyAssessed; }
 			set
@@ -162,10 +162,10 @@ namespace CoreEntities.Client.DTO
 				NotifyPropertyChanged();//m => this.IsManuallyAssessed
 			}
 		}
-        private Nullable<bool> _IsManuallyAssessed;
+        private bool _IsManuallyAssessed;
 
         [DataMember]
-        public Nullable<bool> Cancelled
+        public bool Cancelled
 		{ 
 		    get { return _Cancelled; }
 			set
@@ -175,10 +175,10 @@ namespace CoreEntities.Client.DTO
 				NotifyPropertyChanged();//m => this.Cancelled
 			}
 		}
-        private Nullable<bool> _Cancelled;
+        private bool _Cancelled;
 
         [DataMember]
-        public Nullable<bool> DoNotAllocate
+        public bool DoNotAllocate
 		{ 
 		    get { return _DoNotAllocate; }
 			set
@@ -188,7 +188,7 @@ namespace CoreEntities.Client.DTO
 				NotifyPropertyChanged();//m => this.DoNotAllocate
 			}
 		}
-        private Nullable<bool> _DoNotAllocate;
+        private bool _DoNotAllocate;
 
         [DataMember]
         public int ApplicationSettingsId
@@ -256,7 +256,7 @@ namespace CoreEntities.Client.DTO
         private string _SourceFileName;
 
         [DataMember]
-        public Nullable<bool> SubmitToCustoms
+        public bool SubmitToCustoms
 		{ 
 		    get { return _SubmitToCustoms; }
 			set
@@ -266,10 +266,10 @@ namespace CoreEntities.Client.DTO
 				NotifyPropertyChanged();//m => this.SubmitToCustoms
 			}
 		}
-        private Nullable<bool> _SubmitToCustoms;
+        private bool _SubmitToCustoms;
 
         [DataMember]
-        public Nullable<bool> IsPaid
+        public bool IsPaid
 		{ 
 		    get { return _IsPaid; }
 			set
@@ -279,7 +279,7 @@ namespace CoreEntities.Client.DTO
 				NotifyPropertyChanged();//m => this.IsPaid
 			}
 		}
-        private Nullable<bool> _IsPaid;
+        private bool _IsPaid;
 
        
    //     [DataMember]

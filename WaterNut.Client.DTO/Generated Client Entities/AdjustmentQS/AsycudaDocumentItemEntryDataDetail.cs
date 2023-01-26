@@ -190,6 +190,45 @@ namespace AdjustmentQS.Client.DTO
 		}
         private int _AsycudaDocumentSetId;
 
+        [DataMember]
+        public string CNumber
+		{ 
+		    get { return _CNumber; }
+			set
+			{
+			    if (value == _CNumber) return;
+				_CNumber = value;
+				NotifyPropertyChanged();//m => this.CNumber
+			}
+		}
+        private string _CNumber;
+
+        [DataMember]
+        public int LineNumber
+		{ 
+		    get { return _LineNumber; }
+			set
+			{
+			    if (value == _LineNumber) return;
+				_LineNumber = value;
+				NotifyPropertyChanged();//m => this.LineNumber
+			}
+		}
+        private int _LineNumber;
+
+        [DataMember]
+        public string CustomsOperation
+		{ 
+		    get { return _CustomsOperation; }
+			set
+			{
+			    if (value == _CustomsOperation) return;
+				_CustomsOperation = value;
+				NotifyPropertyChanged();//m => this.CustomsOperation
+			}
+		}
+        private string _CustomsOperation;
+
        
         [DataMember]
         public AdjustmentOver AdjustmentOver

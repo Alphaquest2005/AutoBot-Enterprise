@@ -1430,7 +1430,7 @@ namespace WaterNut.DataSpace
                 if (item.xcuda_PreviousItem != null)
                 {
                     item.xcuda_PreviousItem.ASYCUDA_Id = cdoc.Document.ASYCUDA_Id;
-                    item.xcuda_PreviousItem.Current_item_number = item.LineNumber.ToString();
+                    item.xcuda_PreviousItem.Current_item_number = item.LineNumber;
                 }
             }
 
@@ -2943,7 +2943,7 @@ namespace WaterNut.DataSpace
                 if (plst.Any() == false ) return; // || da.xcuda_Identification.xcuda_Type.DisplayName == "IM7"// im7s created from ex9 document can have previousitems... have to remove these
                 foreach (var itm in documentItems)
                 {
-                    var pplst = plst.Where(x => x.Previous_item_number == itm.LineNumber.ToString() &&
+                    var pplst = plst.Where(x => x.Previous_item_number == itm.LineNumber &&
                                                 x.Prev_decl_HS_spec == itm.ItemNumber);
 
                     foreach (var p in pplst)

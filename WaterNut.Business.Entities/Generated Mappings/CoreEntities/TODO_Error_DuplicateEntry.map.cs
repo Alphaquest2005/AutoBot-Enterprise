@@ -19,7 +19,7 @@
               this.Property(t => t.id).HasColumnName("id").HasMaxLength(10);
               this.Property(t => t.DocumentType).HasColumnName("DocumentType").HasMaxLength(40);
               this.Property(t => t.CNumber).HasColumnName("CNumber").HasMaxLength(20);
-              this.Property(t => t.Extended_customs_procedure).HasColumnName("Extended_customs_procedure").HasMaxLength(5);
+              this.Property(t => t.Extended_customs_procedure).HasColumnName("Extended_customs_procedure").IsRequired().HasMaxLength(5);
               this.Property(t => t.ApplicationSettingsId).HasColumnName("ApplicationSettingsId").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.None));
               this.Property(t => t.RegistrationDate).HasColumnName("RegistrationDate");
               this.Property(t => t.Reference).HasColumnName("Reference").HasMaxLength(30);

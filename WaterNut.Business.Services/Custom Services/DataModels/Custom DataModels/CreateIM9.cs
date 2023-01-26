@@ -406,8 +406,8 @@ namespace WaterNut.DataSpace
                     TrackingState = TrackingState.Added,
                     Hs_code = ditm.TariffCode,
                     Commodity_code = "00",
-                    Current_item_number = (itmcount + 1).ToString(), // piggy back the previous item count
-                    Previous_item_number = ditm.LineNumber.ToString(),
+                    Current_item_number = (itmcount + 1), // piggy back the previous item count
+                    Previous_item_number = ditm.LineNumber,
                     Previous_Packages_number = ditm.Number_of_packages.ToString(),
                     Suplementary_Quantity = Convert.ToDecimal(ditm.ItemQuantity - ditm.PiQuantity),
                     Preveious_suplementary_quantity = Convert.ToDouble(ditm.ItemQuantity),
@@ -477,7 +477,7 @@ namespace WaterNut.DataSpace
                 if (itmcount == 0) //cdoc.DocumentItems.Select(x => x.xcuda_PreviousItem).Count() == 1 ||
                 {
                     pitm.Packages_number = "1"; //(i.Packages.Number_of_packages).ToString();
-                    pitm.Previous_Packages_number = pitm.Previous_item_number == "1" ? "1" : "0";
+                    pitm.Previous_Packages_number = pitm.Previous_item_number == 1 ? "1" : "0";
                 }
                 else
                 {

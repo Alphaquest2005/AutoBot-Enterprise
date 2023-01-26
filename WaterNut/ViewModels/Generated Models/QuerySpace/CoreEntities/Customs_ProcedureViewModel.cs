@@ -620,31 +620,31 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     public string CustomsProcedure { get; set; } 
                     
  
-                    public Nullable<bool> IsObsolete { get; set; } 
+                    public bool IsObsolete { get; set; } 
                     
  
-                    public Nullable<bool> IsPaid { get; set; } 
+                    public bool IsPaid { get; set; } 
                     
  
-                    public Nullable<bool> Stock { get; set; } 
+                    public bool Stock { get; set; } 
                     
  
-                    public Nullable<bool> Discrepancy { get; set; } 
+                    public bool Discrepancy { get; set; } 
                     
  
-                    public Nullable<bool> Adjustment { get; set; } 
+                    public bool Adjustment { get; set; } 
                     
  
-                    public Nullable<bool> Sales { get; set; } 
+                    public bool Sales { get; set; } 
                     
  
-                    public Nullable<bool> SubmitToCustoms { get; set; } 
+                    public bool SubmitToCustoms { get; set; } 
                     
  
-                    public Nullable<bool> IsDefault { get; set; } 
+                    public bool IsDefault { get; set; } 
                     
  
-                    public Nullable<bool> ExportSupportingEntryData { get; set; } 
+                    public bool ExportSupportingEntryData { get; set; } 
                     
         }
 

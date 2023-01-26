@@ -1136,6 +1136,34 @@ namespace DocumentItemDS.Business.Services
                     throw new FaultException<ValidationFault>(fault);
             }
         }
+ 	        public async Task<IEnumerable<PreviousItemsEx>> GetPreviousItemsExByCustoms_ProcedureId(string Customs_ProcedureId, List<string> includesLst = null)
+        {
+            try
+            {
+                using ( var dbContext = new DocumentItemDSContext(){StartTracking = StartTracking})
+              {
+                var i = Convert.ToInt32(Customs_ProcedureId);
+                var set = AddIncludes(includesLst, dbContext);
+                IEnumerable<PreviousItemsEx> entities = set//dbContext.PreviousItemsEx
+                                      .AsNoTracking()
+                                        .Where(x => x.Customs_ProcedureId.ToString() == Customs_ProcedureId.ToString())
+										.ToList();
+                return entities;
+              }
+             }
+            catch (Exception updateEx)
+            {
+                System.Diagnostics.Debugger.Break();
+                //throw new FaultException(updateEx.Message);
+                    var fault = new ValidationFault
+                                {
+                                    Result = false,
+                                    Message = updateEx.Message,
+                                    Description = updateEx.StackTrace
+                                };
+                    throw new FaultException<ValidationFault>(fault);
+            }
+        }
  
 		public decimal SumField(string whereExp, string field)
          {

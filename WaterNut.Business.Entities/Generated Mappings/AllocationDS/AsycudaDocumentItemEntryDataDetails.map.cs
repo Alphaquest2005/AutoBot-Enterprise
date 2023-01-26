@@ -21,7 +21,7 @@
               this.Property(t => t.Quantity).HasColumnName("Quantity");
               this.Property(t => t.ImportComplete).HasColumnName("ImportComplete");
               this.Property(t => t.EntryData_Id).HasColumnName("EntryData_Id");
-              this.Property(t => t.CustomsProcedure).HasColumnName("CustomsProcedure").HasMaxLength(11);
+              this.Property(t => t.CustomsProcedure).HasColumnName("CustomsProcedure").IsRequired().HasMaxLength(11);
               this.Property(t => t.Asycuda_id).HasColumnName("Asycuda_id");
               this.Property(t => t.EntryDataType).HasColumnName("EntryDataType").HasMaxLength(50);
               this.Property(t => t.ApplicationSettingsId).HasColumnName("ApplicationSettingsId").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.None));

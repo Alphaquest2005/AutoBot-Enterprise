@@ -17,7 +17,7 @@
               this.Property(t => t.Previous_Packages_number).HasColumnName("Previous_Packages_number").HasMaxLength(20);
               this.Property(t => t.Hs_code).HasColumnName("Hs_code").HasMaxLength(20);
               this.Property(t => t.Commodity_code).HasColumnName("Commodity_code").HasMaxLength(20);
-              this.Property(t => t.Previous_item_number).HasColumnName("Previous_item_number").HasMaxLength(20);
+              this.Property(t => t.Previous_item_number).HasColumnName("Previous_item_number");
               this.Property(t => t.Goods_origin).HasColumnName("Goods_origin").HasMaxLength(20);
               this.Property(t => t.Net_weight).HasColumnName("Net_weight");
               this.Property(t => t.Prev_net_weight).HasColumnName("Prev_net_weight");
@@ -28,7 +28,7 @@
               this.Property(t => t.Preveious_suplementary_quantity).HasColumnName("Preveious_suplementary_quantity");
               this.Property(t => t.Current_value).HasColumnName("Current_value");
               this.Property(t => t.Previous_value).HasColumnName("Previous_value");
-              this.Property(t => t.Current_item_number).HasColumnName("Current_item_number").HasMaxLength(20);
+              this.Property(t => t.Current_item_number).HasColumnName("Current_item_number");
               this.Property(t => t.PreviousItem_Id).HasColumnName("PreviousItem_Id").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.None));
               this.Property(t => t.ASYCUDA_Id).HasColumnName("ASYCUDA_Id");
               this.Property(t => t.QtyAllocated).HasColumnName("QtyAllocated");
@@ -41,7 +41,7 @@
               this.Property(t => t.AssessmentDate).HasColumnName("AssessmentDate");
               this.Property(t => t.ItemNumber).HasColumnName("ItemNumber").HasMaxLength(20);
               this.Property(t => t.SalesFactor).HasColumnName("SalesFactor");
-              this.Property(t => t.DocumentType).HasColumnName("DocumentType").HasMaxLength(40);
+              this.Property(t => t.DocumentType).HasColumnName("DocumentType").HasMaxLength(20);
               this.Property(t => t.Prev_decl_HS_spec).HasColumnName("Prev_decl_HS_spec").HasMaxLength(20);
               this.Property(t => t.DutyFreePaid).HasColumnName("DutyFreePaid").IsRequired().IsUnicode(false).HasMaxLength(9);
               this.Property(t => t.pLineNumber).HasColumnName("pLineNumber");
@@ -49,6 +49,8 @@
               this.Property(t => t.TotalDutyLiablity).HasColumnName("TotalDutyLiablity");
               this.Property(t => t.DutyLiablity).HasColumnName("DutyLiablity");
               this.Property(t => t.Prev_reg_year).HasColumnName("Prev_reg_year");
+              this.Property(t => t.Customs_ProcedureId).HasColumnName("Customs_ProcedureId");
+              this.Property(t => t.CustomsProcedure).HasColumnName("CustomsProcedure").IsRequired().HasMaxLength(11);
               this.HasRequired(t => t.xcuda_PreviousItem).WithOptional(t => (PreviousItemsEx)t.Ex);
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);

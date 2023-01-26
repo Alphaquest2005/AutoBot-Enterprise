@@ -339,7 +339,7 @@ namespace WaterNut.DataSpace.Asycuda
                     }
 
                     pi.Commodity_code = ai.Prev_decl_HS_prec.Text.FirstOrDefault();
-                    pi.Current_item_number = ai.Prev_decl_current_item;
+                    pi.Current_item_number = Convert.ToInt32(ai.Prev_decl_current_item);
                     pi.Current_value = Convert.ToSingle(Math.Round(Convert.ToDouble(ai.Prev_decl_ref_value), 2));
                     pi.Goods_origin = ai.Prev_decl_country_origin.Text.FirstOrDefault();
                     pi.Hs_code = ai.Prev_decl_HS_code.Text.FirstOrDefault();
@@ -353,7 +353,7 @@ namespace WaterNut.DataSpace.Asycuda
                     pi.Prev_reg_ser = ai.Prev_decl_reg_serial.Text.FirstOrDefault();
                     if (!string.IsNullOrEmpty(ai.Prev_decl_supp_quantity_written_off))
                         pi.Preveious_suplementary_quantity = Convert.ToSingle(ai.Prev_decl_supp_quantity_written_off);
-                    pi.Previous_item_number = ai.Prev_decl_item_number;
+                    pi.Previous_item_number = Convert.ToInt32(ai.Prev_decl_item_number);
                     pi.Previous_Packages_number = ai.Prev_decl_number_packages_written_off;
 
                     if (ai.Prev_decl_ref_value_written_off != null)

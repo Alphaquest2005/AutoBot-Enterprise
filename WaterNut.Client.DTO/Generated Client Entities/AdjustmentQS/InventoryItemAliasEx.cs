@@ -86,6 +86,19 @@ namespace AdjustmentQS.Client.DTO
 		}
         private string _AliasName;
 
+        [DataMember]
+        public int AliasItemId
+		{ 
+		    get { return _AliasItemId; }
+			set
+			{
+			    if (value == _AliasItemId) return;
+				_AliasItemId = value;
+				NotifyPropertyChanged();//m => this.AliasItemId
+			}
+		}
+        private int _AliasItemId;
+
        
         [DataMember]
         public InventoryItemsEx InventoryItemsEx

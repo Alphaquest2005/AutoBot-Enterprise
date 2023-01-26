@@ -75,7 +75,7 @@ public int Customs_ProcedureId
 		}
      
 
-       
+       [RequiredValidationAttribute(ErrorMessage= "Extended_customs_procedure is required")]
        
                 
                 [MaxLength(5, ErrorMessage = "Extended_customs_procedure has a max length of 5 letters ")]
@@ -92,7 +92,7 @@ public string Extended_customs_procedure
 		}
      
 
-       
+       [RequiredValidationAttribute(ErrorMessage= "National_customs_procedure is required")]
        
                 
                 [MaxLength(5, ErrorMessage = "National_customs_procedure has a max length of 5 letters ")]
@@ -109,7 +109,7 @@ public string National_customs_procedure
 		}
      
 
-       
+       [RequiredValidationAttribute(ErrorMessage= "CustomsProcedure is required")]
        
                 
                 [MaxLength(11, ErrorMessage = "CustomsProcedure has a max length of 11 letters ")]
@@ -126,9 +126,9 @@ public string CustomsProcedure
 		}
      
 
+       [RequiredValidationAttribute(ErrorMessage= "IsObsolete is required")]
        
-       
-public Nullable<bool> IsObsolete
+public bool IsObsolete
 		{ 
 		    get { return this.customs_procedure.IsObsolete; }
 			set
@@ -141,9 +141,9 @@ public Nullable<bool> IsObsolete
 		}
      
 
+       [RequiredValidationAttribute(ErrorMessage= "IsPaid is required")]
        
-       
-public Nullable<bool> IsPaid
+public bool IsPaid
 		{ 
 		    get { return this.customs_procedure.IsPaid; }
 			set
@@ -171,9 +171,9 @@ public Nullable<int> BondTypeId
 		}
      
 
+       [RequiredValidationAttribute(ErrorMessage= "Stock is required")]
        
-       
-public Nullable<bool> Stock
+public bool Stock
 		{ 
 		    get { return this.customs_procedure.Stock; }
 			set
@@ -186,9 +186,9 @@ public Nullable<bool> Stock
 		}
      
 
+       [RequiredValidationAttribute(ErrorMessage= "Discrepancy is required")]
        
-       
-public Nullable<bool> Discrepancy
+public bool Discrepancy
 		{ 
 		    get { return this.customs_procedure.Discrepancy; }
 			set
@@ -201,9 +201,9 @@ public Nullable<bool> Discrepancy
 		}
      
 
+       [RequiredValidationAttribute(ErrorMessage= "Adjustment is required")]
        
-       
-public Nullable<bool> Adjustment
+public bool Adjustment
 		{ 
 		    get { return this.customs_procedure.Adjustment; }
 			set
@@ -216,9 +216,9 @@ public Nullable<bool> Adjustment
 		}
      
 
+       [RequiredValidationAttribute(ErrorMessage= "Sales is required")]
        
-       
-public Nullable<bool> Sales
+public bool Sales
 		{ 
 		    get { return this.customs_procedure.Sales; }
 			set
@@ -246,9 +246,9 @@ public int CustomsOperationId
 		}
      
 
+       [RequiredValidationAttribute(ErrorMessage= "SubmitToCustoms is required")]
        
-       
-public Nullable<bool> SubmitToCustoms
+public bool SubmitToCustoms
 		{ 
 		    get { return this.customs_procedure.SubmitToCustoms; }
 			set
@@ -261,9 +261,9 @@ public Nullable<bool> SubmitToCustoms
 		}
      
 
+       [RequiredValidationAttribute(ErrorMessage= "IsDefault is required")]
        
-       
-public Nullable<bool> IsDefault
+public bool IsDefault
 		{ 
 		    get { return this.customs_procedure.IsDefault; }
 			set
@@ -276,9 +276,9 @@ public Nullable<bool> IsDefault
 		}
      
 
+       [RequiredValidationAttribute(ErrorMessage= "ExportSupportingEntryData is required")]
        
-       
-public Nullable<bool> ExportSupportingEntryData
+public bool ExportSupportingEntryData
 		{ 
 		    get { return this.customs_procedure.ExportSupportingEntryData; }
 			set
