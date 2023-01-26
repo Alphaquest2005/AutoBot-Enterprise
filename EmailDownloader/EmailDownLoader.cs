@@ -491,15 +491,9 @@ namespace EmailDownloader
                     return true;
                 }
                 var msg = GetMsg(uID, clientDetails);
-                if (msg != null)
-                {
-                    ForwardMsg(msg, clientDetails,subject, body, contacts ,attachments);
-                }
-                else
-                {
-                    // msg not found
-                }
-
+                
+                ForwardMsg(msg, clientDetails,subject, body, contacts ,attachments);
+               
                 return true;
             }
             catch (Exception e)
@@ -514,9 +508,24 @@ namespace EmailDownloader
         private static MimeMessage GetMsg(int uID, Client clientDetails)
         {
             var imapClient = GetImapClient(clientDetails);
-            var msg = imapClient.Inbox.GetMessage(new UniqueId(Convert.ToUInt16(uID)));
+            var msg = GetMessageOrDefault(uID, imapClient);
             imapClient.Disconnect(true);
             return msg;
+        }
+
+        private static MimeMessage GetMessageOrDefault(int uID, ImapClient imapClient)
+        {
+            MimeMessage msg = new MimeMessage();
+            try
+            {
+                msg = imapClient.Inbox.GetMessage(new UniqueId(Convert.ToUInt16(uID)));
+            }
+            catch (Exception)
+            {
+            }
+            return msg;
+                
+               
         }
 
         private static void ForwardMsg(MimeMessage msg, Client clientDetails, string subject, string body,
@@ -527,8 +536,8 @@ namespace EmailDownloader
             message.From.Add(new MailboxAddress($"{clientDetails.CompanyName}-AutoBot", clientDetails.Email));
             if (!clientDetails.DevMode)
             {
-                message.ReplyTo.Add(new MailboxAddress(msg.From.First().Name,
-                    msg.From.Mailboxes.FirstOrDefault().Address));
+                message.ReplyTo.Add(new MailboxAddress(msg.From.FirstOrDefault()?.Name,
+                    msg.From.Mailboxes.FirstOrDefault()?.Address));
 
                 foreach (var recipent in contacts.Distinct())
                 {
@@ -549,7 +558,7 @@ namespace EmailDownloader
             {
                 TextBody = body
             };
-            builder.Attachments.Add(new MessagePart { Message = msg });
+            if (msg != new MimeMessage()) builder.Attachments.Add(new MessagePart { Message = msg });
             
 
             foreach (var attachment in attachments)

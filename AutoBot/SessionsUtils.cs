@@ -34,7 +34,7 @@ namespace AutoBot
                 {"CreateEx9",() => CreateEX9Utils.CreateEx9(false, -1) },
                 {"ExportEx9Entries", () => EX9Utils.ExportEx9Entries(-1) },
                 {"AssessEx9Entries", () => EX9Utils.AssessEx9Entries(-1) },
-                {"SubmitToCustoms", SubmitSalesXmlToCustomsUtils.SubmitSalesXMLToCustoms },
+                {"SubmitToCustoms", () => SubmitSalesXmlToCustomsUtils.SubmitSalesXMLToCustoms(-1) },
                 {"CleanupEntries", EntryDocSetUtils.CleanupEntries },
                 {"ClearAllocations", SalesUtils.ClearAllocations },
                 {"AssessDISEntries",() => DISUtils.AssessDISEntries("DIS") },
@@ -111,6 +111,7 @@ namespace AutoBot
                 {"ExportCurrentEx9Entries", () => EX9Utils.ExportEx9Entries(0) },
                 {"AssessCurrentEx9Entries", () => EX9Utils.AssessEx9Entries(0) },
                 {"ImportCurrentWarehouseErrors", () => ImportWarehouseErrorsUtils.ImportWarehouseErrors(0)},
+                {"SubmitToCustomsCurrent", () => SubmitSalesXmlToCustomsUtils.SubmitSalesXMLToCustoms(0) },
 
 
             };

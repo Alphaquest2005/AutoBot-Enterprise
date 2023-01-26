@@ -11,15 +11,15 @@ namespace AutoBot
 {
     public class SubmitSalesXmlToCustomsUtils
     {
-        public static void SubmitSalesXMLToCustoms()
+        public static void SubmitSalesXMLToCustoms(int months)
         {
             try
             {
                 Console.WriteLine("Submit XML To Customs");
 
                 // var saleInfo = CurrentSalesInfo();
-                var previousMonth = -1;
-                var salesinfo = BaseDataModel.CurrentSalesInfo(previousMonth);
+                
+                var salesinfo = BaseDataModel.CurrentSalesInfo(months);
 
                 GetSalesXmls(salesinfo).ForEach(emailIds =>  ProcessSalesData(salesinfo, emailIds));
             }
