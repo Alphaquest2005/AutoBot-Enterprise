@@ -272,6 +272,7 @@ namespace WaterNut.DataSpace
         {
             using (var ctx = new AllocationDSContext() { StartTracking = true })
             {
+                ctx.Database.CommandTimeout = 0;
                return  ctx.ExistingAllocations
                     .Where(x => x.ApplicationSettingsId ==
                                 BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)
