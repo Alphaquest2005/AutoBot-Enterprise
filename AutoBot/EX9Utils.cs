@@ -49,7 +49,7 @@ namespace AutoBot
             else // reimport and submit to customs
             {
                 PDFUtils.LinkPDFs();
-                SubmitSalesXmlToCustomsUtils.SubmitSalesXMLToCustoms();
+                SubmitSalesXmlToCustomsUtils.SubmitSalesXMLToCustoms(months);
                 EntryDocSetUtils.CleanupEntries();
                 Application.Exit();
             }

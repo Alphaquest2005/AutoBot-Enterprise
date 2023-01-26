@@ -29,7 +29,7 @@ namespace AutoBot
                 {"Xlsx2csv",(ft, fs) => XLSXProcessor.Xlsx2csv(fs, ft) },
                 {"SaveInfo",(ft, fs) => EmailTextProcessor.Execute(fs, ft) },
                 {"CleanupEntries",(ft, fs) => EntryDocSetUtils.CleanupEntries() },
-                {"SubmitToCustoms",(ft, fs) => SubmitSalesXmlToCustomsUtils.SubmitSalesXMLToCustoms() },
+                {"SubmitToCustoms",(ft, fs) => SubmitSalesXmlToCustomsUtils.SubmitSalesXMLToCustoms(-1) },
                 {"MapUnClassifiedItems", (ft, fs) => ShipmentUtils.MapUnClassifiedItems(ft,fs) },
                 {"UpdateSupplierInfo", (ft, fs) => ShipmentUtils.UpdateSupplierInfo(ft,fs) },
                 {"ImportPDF", (ft, fs) => PDFUtils.ImportPDF(fs,ft) },
