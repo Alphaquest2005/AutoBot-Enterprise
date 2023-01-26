@@ -305,6 +305,21 @@ namespace AllocationDS.Business.Entities
             }
         }
         int _inventoryitemid;
+        [DataMember]
+        public string CustomsProcedure 
+        {
+            get
+            {
+                return _customsprocedure;
+            }
+            set
+            {
+                _customsprocedure = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _customsprocedure;
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

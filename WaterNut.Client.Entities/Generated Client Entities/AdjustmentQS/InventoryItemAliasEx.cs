@@ -121,6 +121,21 @@ public string AliasName
 		}
      
 
+       [RequiredValidationAttribute(ErrorMessage= "AliasItem is required")]
+       
+public int AliasItemId
+		{ 
+		    get { return this.inventoryitemaliasex.AliasItemId; }
+			set
+			{
+			    if (value == this.inventoryitemaliasex.AliasItemId) return;
+				this.inventoryitemaliasex.AliasItemId = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("AliasItemId");
+			}
+		}
+     
+
        private InventoryItemsEx _InventoryItemsEx;
         public  InventoryItemsEx InventoryItemsEx
 		{

@@ -64,7 +64,7 @@ namespace WaterNut.DataSpace
                 if (rlst.ElementAt(i).xcuda_PreviousItem != null)
                 {
                     rlst.ElementAt(i).xcuda_PreviousItem.StartTracking();
-                    rlst.ElementAt(i).xcuda_PreviousItem.Current_item_number = (i + 1).ToString();
+                    rlst.ElementAt(i).xcuda_PreviousItem.Current_item_number = (i + 1);
                 }
             }
 

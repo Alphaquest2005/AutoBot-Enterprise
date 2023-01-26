@@ -140,7 +140,7 @@ public string CNumber
 		}
      
 
-       
+       [RequiredValidationAttribute(ErrorMessage= "Extended_customs_procedure is required")]
        
                 
                 [MaxLength(5, ErrorMessage = "Extended_customs_procedure has a max length of 5 letters ")]

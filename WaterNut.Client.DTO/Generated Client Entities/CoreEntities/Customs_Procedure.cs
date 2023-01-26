@@ -87,7 +87,7 @@ namespace CoreEntities.Client.DTO
         private string _CustomsProcedure;
 
         [DataMember]
-        public Nullable<bool> IsObsolete
+        public bool IsObsolete
 		{ 
 		    get { return _IsObsolete; }
 			set
@@ -97,10 +97,10 @@ namespace CoreEntities.Client.DTO
 				NotifyPropertyChanged();//m => this.IsObsolete
 			}
 		}
-        private Nullable<bool> _IsObsolete;
+        private bool _IsObsolete;
 
         [DataMember]
-        public Nullable<bool> IsPaid
+        public bool IsPaid
 		{ 
 		    get { return _IsPaid; }
 			set
@@ -110,7 +110,7 @@ namespace CoreEntities.Client.DTO
 				NotifyPropertyChanged();//m => this.IsPaid
 			}
 		}
-        private Nullable<bool> _IsPaid;
+        private bool _IsPaid;
 
         [DataMember]
         public Nullable<int> BondTypeId
@@ -126,7 +126,7 @@ namespace CoreEntities.Client.DTO
         private Nullable<int> _BondTypeId;
 
         [DataMember]
-        public Nullable<bool> Stock
+        public bool Stock
 		{ 
 		    get { return _Stock; }
 			set
@@ -136,10 +136,10 @@ namespace CoreEntities.Client.DTO
 				NotifyPropertyChanged();//m => this.Stock
 			}
 		}
-        private Nullable<bool> _Stock;
+        private bool _Stock;
 
         [DataMember]
-        public Nullable<bool> Discrepancy
+        public bool Discrepancy
 		{ 
 		    get { return _Discrepancy; }
 			set
@@ -149,10 +149,10 @@ namespace CoreEntities.Client.DTO
 				NotifyPropertyChanged();//m => this.Discrepancy
 			}
 		}
-        private Nullable<bool> _Discrepancy;
+        private bool _Discrepancy;
 
         [DataMember]
-        public Nullable<bool> Adjustment
+        public bool Adjustment
 		{ 
 		    get { return _Adjustment; }
 			set
@@ -162,10 +162,10 @@ namespace CoreEntities.Client.DTO
 				NotifyPropertyChanged();//m => this.Adjustment
 			}
 		}
-        private Nullable<bool> _Adjustment;
+        private bool _Adjustment;
 
         [DataMember]
-        public Nullable<bool> Sales
+        public bool Sales
 		{ 
 		    get { return _Sales; }
 			set
@@ -175,7 +175,7 @@ namespace CoreEntities.Client.DTO
 				NotifyPropertyChanged();//m => this.Sales
 			}
 		}
-        private Nullable<bool> _Sales;
+        private bool _Sales;
 
         [DataMember]
         public int CustomsOperationId
@@ -191,7 +191,7 @@ namespace CoreEntities.Client.DTO
         private int _CustomsOperationId;
 
         [DataMember]
-        public Nullable<bool> SubmitToCustoms
+        public bool SubmitToCustoms
 		{ 
 		    get { return _SubmitToCustoms; }
 			set
@@ -201,10 +201,10 @@ namespace CoreEntities.Client.DTO
 				NotifyPropertyChanged();//m => this.SubmitToCustoms
 			}
 		}
-        private Nullable<bool> _SubmitToCustoms;
+        private bool _SubmitToCustoms;
 
         [DataMember]
-        public Nullable<bool> IsDefault
+        public bool IsDefault
 		{ 
 		    get { return _IsDefault; }
 			set
@@ -214,10 +214,10 @@ namespace CoreEntities.Client.DTO
 				NotifyPropertyChanged();//m => this.IsDefault
 			}
 		}
-        private Nullable<bool> _IsDefault;
+        private bool _IsDefault;
 
         [DataMember]
-        public Nullable<bool> ExportSupportingEntryData
+        public bool ExportSupportingEntryData
 		{ 
 		    get { return _ExportSupportingEntryData; }
 			set
@@ -227,7 +227,7 @@ namespace CoreEntities.Client.DTO
 				NotifyPropertyChanged();//m => this.ExportSupportingEntryData
 			}
 		}
-        private Nullable<bool> _ExportSupportingEntryData;
+        private bool _ExportSupportingEntryData;
 
        
         [DataMember]

@@ -317,7 +317,7 @@ namespace WaterNut.QuerySpace.AllocationQS.ViewModels
             var cp = CoreEntities.ViewModels.BaseViewModel.Instance.CustomsProcedures.First(x =>
                 x.Customs_ProcedureId == doc.Customs_ProcedureId.GetValueOrDefault());
 
-            if (cp.ExportSupportingEntryData??false)
+            if (cp.ExportSupportingEntryData)
             {
                 if (cp.CustomsOperations.Name == "Exwarehouse")
                 {

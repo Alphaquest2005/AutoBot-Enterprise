@@ -514,7 +514,7 @@ public Nullable<double> VolumeLiters
        
        
                 
-                [MaxLength(4000, ErrorMessage = "EntryDataDetailsKey has a max length of 4000 letters ")]
+                [MaxLength(60, ErrorMessage = "EntryDataDetailsKey has a max length of 60 letters ")]
 public string EntryDataDetailsKey
 		{ 
 		    get { return this.entrydatadetail.EntryDataDetailsKey; }

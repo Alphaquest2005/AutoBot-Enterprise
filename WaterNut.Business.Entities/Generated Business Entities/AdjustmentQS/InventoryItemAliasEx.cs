@@ -96,6 +96,21 @@ namespace AdjustmentQS.Business.Entities
         }
         string _aliasname;
         [DataMember]
+        public int AliasItemId 
+        {
+            get
+            {
+                return _aliasitemid;
+            }
+            set
+            {
+                _aliasitemid = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        int _aliasitemid;
+        [DataMember]
         public InventoryItemsEx InventoryItemsEx { get; set; }
 
  //       [DataMember]

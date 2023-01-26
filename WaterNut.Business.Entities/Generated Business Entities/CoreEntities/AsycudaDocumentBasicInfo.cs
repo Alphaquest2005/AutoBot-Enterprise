@@ -171,7 +171,7 @@ namespace CoreEntities.Business.Entities
         }
         string _reference;
         [DataMember]
-        public Nullable<bool> IsManuallyAssessed 
+        public bool IsManuallyAssessed 
         {
             get
             {
@@ -184,9 +184,9 @@ namespace CoreEntities.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        Nullable<bool> _ismanuallyassessed;
+        bool _ismanuallyassessed;
         [DataMember]
-        public Nullable<bool> Cancelled 
+        public bool Cancelled 
         {
             get
             {
@@ -199,9 +199,9 @@ namespace CoreEntities.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        Nullable<bool> _cancelled;
+        bool _cancelled;
         [DataMember]
-        public Nullable<bool> DoNotAllocate 
+        public bool DoNotAllocate 
         {
             get
             {
@@ -214,7 +214,7 @@ namespace CoreEntities.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        Nullable<bool> _donotallocate;
+        bool _donotallocate;
         [DataMember]
         public int ApplicationSettingsId 
         {
@@ -291,7 +291,7 @@ namespace CoreEntities.Business.Entities
         }
         string _sourcefilename;
         [DataMember]
-        public Nullable<bool> SubmitToCustoms 
+        public bool SubmitToCustoms 
         {
             get
             {
@@ -304,9 +304,9 @@ namespace CoreEntities.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        Nullable<bool> _submittocustoms;
+        bool _submittocustoms;
         [DataMember]
-        public Nullable<bool> IsPaid 
+        public bool IsPaid 
         {
             get
             {
@@ -319,7 +319,7 @@ namespace CoreEntities.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        Nullable<bool> _ispaid;
+        bool _ispaid;
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

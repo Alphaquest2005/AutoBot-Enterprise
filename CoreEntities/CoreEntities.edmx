@@ -150,20 +150,20 @@
           </Key>
           <Property Name="Document_TypeId" Type="int" Nullable="false" />
           <Property Name="Customs_ProcedureId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="Extended_customs_procedure" Type="nvarchar" MaxLength="5" />
-          <Property Name="National_customs_procedure" Type="nvarchar" MaxLength="5" />
-          <Property Name="CustomsProcedure" Type="nvarchar" MaxLength="11" StoreGeneratedPattern="Computed" />
-          <Property Name="IsObsolete" Type="bit" />
-          <Property Name="IsPaid" Type="bit" />
+          <Property Name="Extended_customs_procedure" Type="nvarchar" MaxLength="5" Nullable="false" />
+          <Property Name="National_customs_procedure" Type="nvarchar" MaxLength="5" Nullable="false" />
+          <Property Name="CustomsProcedure" Type="nvarchar" MaxLength="11" StoreGeneratedPattern="Computed" Nullable="false" />
+          <Property Name="IsObsolete" Type="bit" Nullable="false" />
+          <Property Name="IsPaid" Type="bit" Nullable="false" />
           <Property Name="BondTypeId" Type="int" />
-          <Property Name="Stock" Type="bit" />
-          <Property Name="Discrepancy" Type="bit" />
-          <Property Name="Adjustment" Type="bit" />
-          <Property Name="Sales" Type="bit" />
+          <Property Name="Stock" Type="bit" Nullable="false" />
+          <Property Name="Discrepancy" Type="bit" Nullable="false" />
+          <Property Name="Adjustment" Type="bit" Nullable="false" />
+          <Property Name="Sales" Type="bit" Nullable="false" />
           <Property Name="CustomsOperationId" Type="int" Nullable="false" />
-          <Property Name="SubmitToCustoms" Type="bit" />
-          <Property Name="IsDefault" Type="bit" />
-          <Property Name="ExportSupportingEntryData" Type="bit" />
+          <Property Name="SubmitToCustoms" Type="bit" Nullable="false" />
+          <Property Name="IsDefault" Type="bit" Nullable="false" />
+          <Property Name="ExportSupportingEntryData" Type="bit" Nullable="false" />
         </EntityType>
         <EntityType Name="CustomsOperations">
           <Key>
@@ -526,27 +526,35 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AsycudaDocumentBasicInfo'
             
             
             
+            
+            
+            
+            
+            
+            
+            
+            
           </Key>
           <Property Name="AsycudaDocumentSetId" Type="int" Nullable="false" />
           <Property Name="ASYCUDA_Id" Type="int" Nullable="false" />
           <Property Name="DocumentType" Type="nvarchar" MaxLength="40" />
           <Property Name="CNumber" Type="nvarchar" MaxLength="20" />
-          <Property Name="Extended_customs_procedure" Type="nvarchar" MaxLength="5" />
-          <Property Name="National_customs_procedure" Type="nvarchar" MaxLength="5" />
+          <Property Name="Extended_customs_procedure" Type="nvarchar" MaxLength="5" Nullable="false" />
+          <Property Name="National_customs_procedure" Type="nvarchar" MaxLength="5" Nullable="false" />
           <Property Name="RegistrationDate" Type="datetime2" Precision="7" />
           <Property Name="AssessmentDate" Type="datetime2" Precision="7" />
           <Property Name="ExpiryDate" Type="datetime2" Precision="7" />
           <Property Name="Reference" Type="nvarchar" MaxLength="30" />
-          <Property Name="IsManuallyAssessed" Type="bit" />
-          <Property Name="Cancelled" Type="bit" />
-          <Property Name="DoNotAllocate" Type="bit" />
+          <Property Name="IsManuallyAssessed" Type="bit" Nullable="false" />
+          <Property Name="Cancelled" Type="bit" Nullable="false" />
+          <Property Name="DoNotAllocate" Type="bit" Nullable="false" />
           <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
           <Property Name="ImportComplete" Type="bit" Nullable="false" />
           <Property Name="Customs_ProcedureId" Type="int" Nullable="false" />
-          <Property Name="CustomsProcedure" Type="nvarchar" MaxLength="11" />
+          <Property Name="CustomsProcedure" Type="nvarchar" MaxLength="11" Nullable="false" />
           <Property Name="SourceFileName" Type="nvarchar" MaxLength="500" />
-          <Property Name="SubmitToCustoms" Type="bit" />
-          <Property Name="IsPaid" Type="bit" />
+          <Property Name="SubmitToCustoms" Type="bit" Nullable="false" />
+          <Property Name="IsPaid" Type="bit" Nullable="false" />
         </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AsycudaDocumentItem' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
@@ -616,6 +624,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AsycudaDocumentItemEntryD
             <PropertyRef Name="EntryData_Id" />
             <PropertyRef Name="Item_Id" />
             
+            
             <PropertyRef Name="ImportComplete" />
             <PropertyRef Name="Asycuda_id" />
             <PropertyRef Name="LineNumber" />
@@ -628,7 +637,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AsycudaDocumentItemEntryD
           <Property Name="ItemNumber" Type="nvarchar" MaxLength="20" Nullable="false" />
           <Property Name="key" Type="nvarchar" MaxLength="101" />
           <Property Name="DocumentType" Type="nvarchar" MaxLength="40" />
-          <Property Name="CustomsProcedure" Type="nvarchar" MaxLength="11" />
+          <Property Name="CustomsProcedure" Type="nvarchar" MaxLength="11" Nullable="false" />
           <Property Name="Quantity" Type="float" />
           <Property Name="ImportComplete" Type="bit" Nullable="false" />
           <Property Name="Asycuda_id" Type="int" Nullable="false" />
@@ -1210,6 +1219,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-Error-DuplicateEntry
           <Key>
             <PropertyRef Name="ASYCUDA_Id" />
             <PropertyRef Name="Type" />
+            
             <PropertyRef Name="ApplicationSettingsId" />
           </Key>
           <Property Name="ASYCUDA_Id" Type="int" Nullable="false" />
@@ -1218,7 +1228,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-Error-DuplicateEntry
           <Property Name="id" Type="nvarchar" MaxLength="10" />
           <Property Name="DocumentType" Type="nvarchar" MaxLength="40" />
           <Property Name="CNumber" Type="nvarchar" MaxLength="20" />
-          <Property Name="Extended_customs_procedure" Type="nvarchar" MaxLength="5" />
+          <Property Name="Extended_customs_procedure" Type="nvarchar" MaxLength="5" Nullable="false" />
           <Property Name="RegistrationDate" Type="datetime2" Precision="7" />
           <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
           <Property Name="Reference" Type="nvarchar" MaxLength="30" />
@@ -1681,6 +1691,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-SubmitAllXMLToCustom
             <PropertyRef Name="ASYCUDA_Id" />
             
             
+            
             <PropertyRef Name="ToBePaid" />
           </Key>
           <Property Name="Id" Type="int" Nullable="false" />
@@ -1693,7 +1704,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-SubmitAllXMLToCustom
           <Property Name="AssessmentDate" Type="datetime2" Precision="7" />
           <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
           <Property Name="EmailId" Type="nvarchar" MaxLength="255" />
-          <Property Name="CustomsProcedure" Type="nvarchar" MaxLength="11" />
+          <Property Name="CustomsProcedure" Type="nvarchar" MaxLength="11" Nullable="false" />
           <Property Name="FilePath" Type="nvarchar" MaxLength="255" />
           <Property Name="Status" Type="nvarchar" MaxLength="50" />
           <Property Name="SystemDocumentSetId" Type="int" />
@@ -1707,6 +1718,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-SubmitDiscrepanciesT
             <PropertyRef Name="ASYCUDA_Id" />
             
             
+            
             <PropertyRef Name="ToBePaid" />
           </Key>
           <Property Name="Id" Type="int" Nullable="false" />
@@ -1719,7 +1731,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-SubmitDiscrepanciesT
           <Property Name="AssessmentDate" Type="datetime2" Precision="7" />
           <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
           <Property Name="EmailId" Type="nvarchar" MaxLength="255" />
-          <Property Name="CustomsProcedure" Type="nvarchar" MaxLength="11" />
+          <Property Name="CustomsProcedure" Type="nvarchar" MaxLength="11" Nullable="false" />
           <Property Name="FilePath" Type="nvarchar" MaxLength="255" />
           <Property Name="Status" Type="nvarchar" MaxLength="50" />
           <Property Name="ToBePaid" Type="varchar" MaxLength="3" Nullable="false" />
@@ -1880,6 +1892,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-SubmitSalesToCustoms
             <PropertyRef Name="ASYCUDA_Id" />
             
             
+            
             <PropertyRef Name="ToBePaid" />
           </Key>
           <Property Name="Id" Type="int" Nullable="false" />
@@ -1892,7 +1905,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-SubmitSalesToCustoms
           <Property Name="AssessmentDate" Type="datetime2" Precision="7" />
           <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
           <Property Name="EmailId" Type="nvarchar" MaxLength="255" />
-          <Property Name="CustomsProcedure" Type="nvarchar" MaxLength="11" />
+          <Property Name="CustomsProcedure" Type="nvarchar" MaxLength="11" Nullable="false" />
           <Property Name="FilePath" Type="nvarchar" MaxLength="255" />
           <Property Name="Status" Type="nvarchar" MaxLength="50" />
           <Property Name="ToBePaid" Type="varchar" MaxLength="3" Nullable="false" />
@@ -1926,6 +1939,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-SubmitXMLToCustoms' 
             <PropertyRef Name="ASYCUDA_Id" />
             
             
+            
             <PropertyRef Name="ToBePaid" />
           </Key>
           <Property Name="Id" Type="int" Nullable="false" />
@@ -1938,7 +1952,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-SubmitXMLToCustoms' 
           <Property Name="AssessmentDate" Type="datetime2" Precision="7" />
           <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
           <Property Name="EmailId" Type="nvarchar" MaxLength="255" />
-          <Property Name="CustomsProcedure" Type="nvarchar" MaxLength="11" />
+          <Property Name="CustomsProcedure" Type="nvarchar" MaxLength="11" Nullable="false" />
           <Property Name="FilePath" Type="nvarchar" MaxLength="255" />
           <Property Name="Status" Type="nvarchar" MaxLength="50" />
           <Property Name="ToBePaid" Type="varchar" MaxLength="3" Nullable="false" />
@@ -4431,23 +4445,23 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
           </Key>
           <Property Name="Document_TypeId" Type="Int32" Nullable="false" />
           <Property Name="Customs_ProcedureId" Type="Int32" Nullable="false" p1:StoreGeneratedPattern="Identity" />
-          <Property Name="Extended_customs_procedure" Type="String" MaxLength="5" FixedLength="false" Unicode="true" />
-          <Property Name="National_customs_procedure" Type="String" MaxLength="5" FixedLength="false" Unicode="true" />
+          <Property Name="Extended_customs_procedure" Type="String" MaxLength="5" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="National_customs_procedure" Type="String" MaxLength="5" FixedLength="false" Unicode="true" Nullable="false" />
           <NavigationProperty Name="Document_Type" Relationship="WaterNutDBModel.FK_Customs_Procedure_Document_Type" FromRole="Customs_Procedure" ToRole="Document_Type" />
-          <Property Name="CustomsProcedure" Type="String" MaxLength="11" FixedLength="false" Unicode="true" annotation:StoreGeneratedPattern="Computed" />
-          <Property Name="IsObsolete" Type="Boolean" />
-          <Property Name="IsPaid" Type="Boolean" />
+          <Property Name="CustomsProcedure" Type="String" MaxLength="11" FixedLength="false" Unicode="true" annotation:StoreGeneratedPattern="Computed" Nullable="false" />
+          <Property Name="IsObsolete" Type="Boolean" Nullable="false" />
+          <Property Name="IsPaid" Type="Boolean" Nullable="false" />
           <Property Name="BondTypeId" Type="Int32" />
-          <Property Name="Stock" Type="Boolean" />
-          <Property Name="Discrepancy" Type="Boolean" />
-          <Property Name="Adjustment" Type="Boolean" />
-          <Property Name="Sales" Type="Boolean" />
+          <Property Name="Stock" Type="Boolean" Nullable="false" />
+          <Property Name="Discrepancy" Type="Boolean" Nullable="false" />
+          <Property Name="Adjustment" Type="Boolean" Nullable="false" />
+          <Property Name="Sales" Type="Boolean" Nullable="false" />
           <Property Name="CustomsOperationId" Type="Int32" Nullable="false" />
           <NavigationProperty Name="CustomsOperations" Relationship="WaterNutDBModel.FK_Customs_Procedure_CustomsOperations" FromRole="Customs_Procedure" ToRole="CustomsOperations" />
           <NavigationProperty Name="AsycudaDocument" Relationship="WaterNutDBModel.Customs_ProcedureAsycudaDocument" FromRole="Customs_Procedure" ToRole="AsycudaDocument" />
-          <Property Name="SubmitToCustoms" Type="Boolean" />
-          <Property Name="IsDefault" Type="Boolean" />
-          <Property Name="ExportSupportingEntryData" Type="Boolean" />
+          <Property Name="SubmitToCustoms" Type="Boolean" Nullable="false" />
+          <Property Name="IsDefault" Type="Boolean" Nullable="false" />
+          <Property Name="ExportSupportingEntryData" Type="Boolean" Nullable="false" />
         </EntityType>
         <EntityType Name="Document_Type">
           <Key>
@@ -4642,7 +4656,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
           <NavigationProperty Name="AsycudaDocumentItem" Relationship="WaterNutDBModel.AsycudaDocumentItemAsycudaDocumentItemEntryDataDetails" FromRole="AsycudaDocumentItemEntryDataDetails" ToRole="AsycudaDocumentItem" />
           <Property Name="ImportComplete" Type="Boolean" Nullable="false" />
           <Property Name="EntryData_Id" Type="Int32" Nullable="false" />
-          <Property Name="CustomsProcedure" Type="String" MaxLength="11" FixedLength="false" Unicode="true" />
+          <Property Name="CustomsProcedure" Type="String" MaxLength="11" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="Asycuda_id" Type="Int32" Nullable="false" />
           <Property Name="EntryDataType" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
@@ -5284,7 +5298,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
           <Property Name="ASYCUDA_Id" Type="Int32" Nullable="false" />
           <Property Name="FilePath" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="Status" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="CustomsProcedure" Type="String" MaxLength="11" FixedLength="false" Unicode="true" />
+          <Property Name="CustomsProcedure" Type="String" MaxLength="11" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="ToBePaid" Type="String" Nullable="false" MaxLength="3" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="TODO_DiscrepanciesToAssess">
@@ -5315,7 +5329,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
           <Property Name="EmailId" Type="String" MaxLength="255" Unicode="true" FixedLength="false" />
           <Property Name="FilePath" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="Status" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="CustomsProcedure" Type="String" MaxLength="11" FixedLength="false" Unicode="true" />
+          <Property Name="CustomsProcedure" Type="String" MaxLength="11" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="ToBePaid" Type="String" Nullable="false" MaxLength="3" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="AsycudaDocument_Attachments">
@@ -5353,7 +5367,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
           <Property Name="id" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
           <Property Name="DocumentType" Type="String" MaxLength="40" FixedLength="false" Unicode="true" />
           <Property Name="CNumber" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
-          <Property Name="Extended_customs_procedure" Type="String" MaxLength="5" FixedLength="false" Unicode="true" />
+          <Property Name="Extended_customs_procedure" Type="String" MaxLength="5" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
           <Property Name="RegistrationDate" Type="DateTime" Precision="7" />
           <Property Name="Reference" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
@@ -6117,7 +6131,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
           <Property Name="AssessmentDate" Type="DateTime" Precision="7" />
           <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
           <Property Name="EmailId" Type="String" MaxLength="255" Unicode="true" FixedLength="false" />
-          <Property Name="CustomsProcedure" Type="String" MaxLength="11" FixedLength="false" Unicode="true" />
+          <Property Name="CustomsProcedure" Type="String" MaxLength="11" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="FilePath" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="Status" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="SystemDocumentSetId" Type="Int32" />
@@ -6254,7 +6268,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
           <Property Name="AssessmentDate" Type="DateTime" Precision="7" />
           <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
           <Property Name="EmailId" Type="String" MaxLength="255" Unicode="true" FixedLength="false" />
-          <Property Name="CustomsProcedure" Type="String" MaxLength="11" FixedLength="false" Unicode="true" />
+          <Property Name="CustomsProcedure" Type="String" MaxLength="11" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="FilePath" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="Status" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="ToBePaid" Type="String" Nullable="false" MaxLength="3" FixedLength="false" Unicode="false" />
@@ -6295,22 +6309,22 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
           <Property Name="ASYCUDA_Id" Type="Int32" Nullable="false" />
           <Property Name="DocumentType" Type="String" MaxLength="40" FixedLength="false" Unicode="true" />
           <Property Name="CNumber" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
-          <Property Name="Extended_customs_procedure" Type="String" MaxLength="5" FixedLength="false" Unicode="true" />
-          <Property Name="National_customs_procedure" Type="String" MaxLength="5" FixedLength="false" Unicode="true" />
+          <Property Name="Extended_customs_procedure" Type="String" MaxLength="5" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="National_customs_procedure" Type="String" MaxLength="5" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="RegistrationDate" Type="DateTime" Precision="7" />
           <Property Name="AssessmentDate" Type="DateTime" Precision="7" />
           <Property Name="ExpiryDate" Type="DateTime" Precision="7" />
           <Property Name="Reference" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
-          <Property Name="IsManuallyAssessed" Type="Boolean" />
-          <Property Name="Cancelled" Type="Boolean" />
-          <Property Name="DoNotAllocate" Type="Boolean" />
+          <Property Name="IsManuallyAssessed" Type="Boolean" Nullable="false" />
+          <Property Name="Cancelled" Type="Boolean" Nullable="false" />
+          <Property Name="DoNotAllocate" Type="Boolean" Nullable="false" />
           <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
           <Property Name="ImportComplete" Type="Boolean" Nullable="false" />
           <Property Name="Customs_ProcedureId" Type="Int32" Nullable="false" />
-          <Property Name="CustomsProcedure" Type="String" MaxLength="11" FixedLength="false" Unicode="true" />
+          <Property Name="CustomsProcedure" Type="String" MaxLength="11" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="SourceFileName" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
-          <Property Name="SubmitToCustoms" Type="Boolean" />
-          <Property Name="IsPaid" Type="Boolean" />
+          <Property Name="SubmitToCustoms" Type="Boolean" Nullable="false" />
+          <Property Name="IsPaid" Type="Boolean" Nullable="false" />
         </EntityType>
         <EntityType Name="AsycudaItemBasicInfo">
           <Key>

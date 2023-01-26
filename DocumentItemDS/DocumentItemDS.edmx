@@ -216,7 +216,7 @@
           <Property Name="Previous_Packages_number" Type="nvarchar" MaxLength="20" />
           <Property Name="Hs_code" Type="nvarchar" MaxLength="20" />
           <Property Name="Commodity_code" Type="nvarchar" MaxLength="20" />
-          <Property Name="Previous_item_number" Type="nvarchar" MaxLength="20" />
+          <Property Name="Previous_item_number" Type="int" />
           <Property Name="Goods_origin" Type="nvarchar" MaxLength="20" />
           <Property Name="Net_weight" Type="decimal" Precision="9" Scale="2" Nullable="false" />
           <Property Name="Prev_net_weight" Type="decimal" Precision="9" Scale="2" Nullable="false" />
@@ -228,7 +228,7 @@
           <Property Name="Preveious_suplementary_quantity" Type="float" Nullable="false" />
           <Property Name="Current_value" Type="float" Nullable="false" />
           <Property Name="Previous_value" Type="float" Nullable="false" />
-          <Property Name="Current_item_number" Type="nvarchar" MaxLength="20" />
+          <Property Name="Current_item_number" Type="int" />
           <Property Name="PreviousItem_Id" Type="int" Nullable="false" />
           <Property Name="ASYCUDA_Id" Type="int" />
           <Property Name="QtyAllocated" Type="float" Nullable="false" />
@@ -315,22 +315,18 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.PreviousItemsEx' does not
             
             
             
+            
+            
             <PropertyRef Name="PreviousItem_Id" />
-            
-            
-            
-            
-            
-            
           </Key>
           <Property Name="Packages_number" Type="nvarchar" MaxLength="20" />
           <Property Name="Previous_Packages_number" Type="nvarchar" MaxLength="20" />
           <Property Name="Hs_code" Type="nvarchar" MaxLength="20" />
           <Property Name="Commodity_code" Type="nvarchar" MaxLength="20" />
-          <Property Name="Previous_item_number" Type="nvarchar" MaxLength="20" />
+          <Property Name="Previous_item_number" Type="int" />
           <Property Name="Goods_origin" Type="nvarchar" MaxLength="20" />
-          <Property Name="Net_weight" Type="decimal" Precision="9" Scale="2" />
-          <Property Name="Prev_net_weight" Type="decimal" Precision="9" Scale="2" />
+          <Property Name="Net_weight" Type="decimal" Precision="9" Scale="2" Nullable="false" />
+          <Property Name="Prev_net_weight" Type="decimal" Precision="9" Scale="2" Nullable="false" />
           <Property Name="Prev_reg_ser" Type="nvarchar" MaxLength="20" />
           <Property Name="Prev_reg_nbr" Type="nvarchar" MaxLength="20" />
           <Property Name="Prev_reg_year" Type="int" />
@@ -339,11 +335,11 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.PreviousItemsEx' does not
           <Property Name="Preveious_suplementary_quantity" Type="float" Nullable="false" />
           <Property Name="Current_value" Type="float" Nullable="false" />
           <Property Name="Previous_value" Type="float" Nullable="false" />
-          <Property Name="Current_item_number" Type="nvarchar" MaxLength="20" />
+          <Property Name="Current_item_number" Type="int" />
           <Property Name="PreviousItem_Id" Type="int" Nullable="false" />
           <Property Name="ASYCUDA_Id" Type="int" />
           <Property Name="QtyAllocated" Type="float" Nullable="false" />
-          <Property Name="PreviousDocumentItemId" Type="int" />
+          <Property Name="PreviousDocumentItemId" Type="int" Nullable="false" />
           <Property Name="RndCurrent_Value" Type="float" Nullable="false" />
           <Property Name="ReferenceNumber" Type="nvarchar" MaxLength="30" />
           <Property Name="CNumber" Type="nvarchar" MaxLength="20" />
@@ -352,13 +348,15 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.PreviousItemsEx' does not
           <Property Name="AssessmentDate" Type="datetime2" Precision="7" />
           <Property Name="Prev_decl_HS_spec" Type="nvarchar" MaxLength="20" />
           <Property Name="SalesFactor" Type="float" Nullable="false" />
-          <Property Name="DocumentType" Type="nvarchar" MaxLength="40" />
+          <Property Name="DocumentType" Type="nvarchar" MaxLength="20" />
           <Property Name="DutyFreePaid" Type="varchar" MaxLength="9" Nullable="false" />
           <Property Name="ItemNumber" Type="nvarchar" MaxLength="20" />
           <Property Name="pLineNumber" Type="int" />
           <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
-          <Property Name="TotalDutyLiablity" Type="float" />
-          <Property Name="DutyLiablity" Type="float" />
+          <Property Name="TotalDutyLiablity" Type="float" Nullable="false" />
+          <Property Name="DutyLiablity" Type="float" Nullable="false" />
+          <Property Name="Customs_ProcedureId" Type="int" Nullable="false" />
+          <Property Name="CustomsProcedure" Type="nvarchar" MaxLength="11" Nullable="false" />
         </EntityType>
         <Association Name="FK_EntryPreviousItems_xcuda_Item">
           <End Role="xcuda_Item" Type="Self.xcuda_Item" Multiplicity="1">
@@ -789,7 +787,9 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.PreviousItemsEx' does not
 [PreviousItemsEx].[pLineNumber] AS [pLineNumber], 
 [PreviousItemsEx].[ApplicationSettingsId] AS [ApplicationSettingsId], 
 [PreviousItemsEx].[TotalDutyLiablity] AS [TotalDutyLiablity], 
-[PreviousItemsEx].[DutyLiablity] AS [DutyLiablity]
+[PreviousItemsEx].[DutyLiablity] AS [DutyLiablity], 
+[PreviousItemsEx].[Customs_ProcedureId] AS [Customs_ProcedureId], 
+[PreviousItemsEx].[CustomsProcedure] AS [CustomsProcedure]
 FROM [dbo].[PreviousItemsEx] AS [PreviousItemsEx]</DefiningQuery>
           </EntitySet>
           <AssociationSet Name="FK_EntryPreviousItems_xcuda_Item" Association="Self.FK_EntryPreviousItems_xcuda_Item">
@@ -1250,7 +1250,7 @@ FROM [dbo].[PreviousItemsEx] AS [PreviousItemsEx]</DefiningQuery>
           <Property Name="Previous_Packages_number" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Name="Hs_code" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Name="Commodity_code" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
-          <Property Name="Previous_item_number" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="Previous_item_number" Type="Int32" />
           <Property Name="Goods_origin" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Name="Net_weight" Type="Decimal" Nullable="false" Precision="9" Scale="2" />
           <Property Name="Prev_net_weight" Type="Decimal" Nullable="false" Precision="9" Scale="2" />
@@ -1261,7 +1261,7 @@ FROM [dbo].[PreviousItemsEx] AS [PreviousItemsEx]</DefiningQuery>
           <Property Name="Preveious_suplementary_quantity" Type="Double" Nullable="false" />
           <Property Name="Current_value" Type="Double" Nullable="false" />
           <Property Name="Previous_value" Type="Double" Nullable="false" />
-          <Property Name="Current_item_number" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="Current_item_number" Type="Int32" />
           <Property Name="PreviousItem_Id" Type="Int32" Nullable="false" />
           <Property Name="ASYCUDA_Id" Type="Int32" />
           <Property Name="QtyAllocated" Type="Double" Nullable="false" />
@@ -1686,10 +1686,10 @@ FROM [dbo].[PreviousItemsEx] AS [PreviousItemsEx]</DefiningQuery>
           <Property Name="Previous_Packages_number" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Name="Hs_code" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Name="Commodity_code" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
-          <Property Name="Previous_item_number" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="Previous_item_number" Type="Int32" />
           <Property Name="Goods_origin" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
-          <Property Name="Net_weight" Type="Decimal" Precision="9" Scale="2" />
-          <Property Name="Prev_net_weight" Type="Decimal" Precision="9" Scale="2" />
+          <Property Name="Net_weight" Type="Decimal" Precision="9" Scale="2" Nullable="false" />
+          <Property Name="Prev_net_weight" Type="Decimal" Precision="9" Scale="2" Nullable="false" />
           <Property Name="Prev_reg_ser" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Name="Prev_reg_nbr" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Name="Prev_reg_cuo" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
@@ -1697,7 +1697,7 @@ FROM [dbo].[PreviousItemsEx] AS [PreviousItemsEx]</DefiningQuery>
           <Property Name="Preveious_suplementary_quantity" Type="Double" Nullable="false" />
           <Property Name="Current_value" Type="Double" Nullable="false" />
           <Property Name="Previous_value" Type="Double" Nullable="false" />
-          <Property Name="Current_item_number" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="Current_item_number" Type="Int32" />
           <Property Name="PreviousItem_Id" Type="Int32" Nullable="false" />
           <Property Name="ASYCUDA_Id" Type="Int32" />
           <Property Name="QtyAllocated" Type="Double" Nullable="false" />
@@ -1705,20 +1705,22 @@ FROM [dbo].[PreviousItemsEx] AS [PreviousItemsEx]</DefiningQuery>
           <NavigationProperty Name="xcuda_PreviousItem" Relationship="WaterNutDBModel.xcuda_PreviousItemPreviousItemsEx" FromRole="PreviousItemsEx" ToRole="xcuda_PreviousItem" />
           <Property Name="CNumber" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Name="RegistrationDate" Type="DateTime" Precision="7" />
-          <Property Name="PreviousDocumentItemId" Type="Int32" />
+          <Property Name="PreviousDocumentItemId" Type="Int32" Nullable="false" />
           <Property Name="AsycudaDocumentItemId" Type="Int32" Nullable="false" />
           <Property Name="ReferenceNumber" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
           <Property Name="AssessmentDate" Type="DateTime" Precision="7" />
           <Property Name="ItemNumber" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Name="SalesFactor" Type="Double" Nullable="false" />
-          <Property Name="DocumentType" Type="String" MaxLength="40" FixedLength="false" Unicode="true" />
+          <Property Name="DocumentType" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Name="Prev_decl_HS_spec" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Name="DutyFreePaid" Type="String" Nullable="false" MaxLength="9" FixedLength="false" Unicode="false" />
           <Property Name="pLineNumber" Type="Int32" />
           <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
-          <Property Name="TotalDutyLiablity" Type="Double" />
-          <Property Name="DutyLiablity" Type="Double" />
+          <Property Name="TotalDutyLiablity" Type="Double" Nullable="false" />
+          <Property Name="DutyLiablity" Type="Double" Nullable="false" />
           <Property Name="Prev_reg_year" Type="Int32" />
+          <Property Name="Customs_ProcedureId" Type="Int32" Nullable="false" />
+          <Property Name="CustomsProcedure" Type="String" Nullable="false" MaxLength="11" FixedLength="false" Unicode="true" />
         </EntityType>
         <Association Name="xcuda_PreviousItemPreviousItemsEx">
           <End Type="WaterNutDBModel.xcuda_PreviousItem" Role="xcuda_PreviousItem" Multiplicity="1" />
@@ -2140,6 +2142,8 @@ FROM [dbo].[PreviousItemsEx] AS [PreviousItemsEx]</DefiningQuery>
           <EntitySetMapping Name="PreviousItemsEx">
             <EntityTypeMapping TypeName="WaterNutDBModel.PreviousItemsEx">
               <MappingFragment StoreEntitySet="PreviousItemsEx">
+                <ScalarProperty Name="CustomsProcedure" ColumnName="CustomsProcedure" />
+                <ScalarProperty Name="Customs_ProcedureId" ColumnName="Customs_ProcedureId" />
                 <ScalarProperty Name="Prev_reg_year" ColumnName="Prev_reg_year" />
                 <ScalarProperty Name="DutyLiablity" ColumnName="DutyLiablity" />
                 <ScalarProperty Name="TotalDutyLiablity" ColumnName="TotalDutyLiablity" />

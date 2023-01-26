@@ -168,7 +168,7 @@ public int EntryData_Id
 		}
      
 
-       
+       [RequiredValidationAttribute(ErrorMessage= "CustomsProcedure is required")]
        
                 
                 [MaxLength(11, ErrorMessage = "CustomsProcedure has a max length of 11 letters ")]

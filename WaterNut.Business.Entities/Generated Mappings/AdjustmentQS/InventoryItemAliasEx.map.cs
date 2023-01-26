@@ -11,13 +11,14 @@
     {
         public InventoryItemAliasExMap()
         {                        
-              this.HasKey(t => t.AliasId);        
+              this.HasKey(t => new {t.AliasId, t.AliasItemId});        
               this.ToTable("InventoryItemAliasEx");
               this.Property(t => t.AliasId).HasColumnName("AliasId").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.None));
               this.Property(t => t.ApplicationSettingsId).HasColumnName("ApplicationSettingsId");
               this.Property(t => t.InventoryItemId).HasColumnName("InventoryItemId");
               this.Property(t => t.ItemNumber).HasColumnName("ItemNumber").IsRequired().HasMaxLength(20);
               this.Property(t => t.AliasName).HasColumnName("AliasName").IsRequired().HasMaxLength(20);
+              this.Property(t => t.AliasItemId).HasColumnName("AliasItemId").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.None));
               this.HasRequired(t => t.InventoryItemsEx).WithMany(t =>(ICollection<InventoryItemAliasEx>) t.InventoryItemAliasExes).HasForeignKey(d => d.InventoryItemId);
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);

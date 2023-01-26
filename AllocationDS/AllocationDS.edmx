@@ -33,20 +33,20 @@
           </Key>
           <Property Name="Document_TypeId" Type="int" Nullable="false" />
           <Property Name="Customs_ProcedureId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="Extended_customs_procedure" Type="nvarchar" MaxLength="5" />
-          <Property Name="National_customs_procedure" Type="nvarchar" MaxLength="5" />
-          <Property Name="CustomsProcedure" Type="nvarchar" MaxLength="11" StoreGeneratedPattern="Computed" />
-          <Property Name="IsObsolete" Type="bit" />
-          <Property Name="IsPaid" Type="bit" />
+          <Property Name="Extended_customs_procedure" Type="nvarchar" MaxLength="5" Nullable="false" />
+          <Property Name="National_customs_procedure" Type="nvarchar" MaxLength="5" Nullable="false" />
+          <Property Name="CustomsProcedure" Type="nvarchar" MaxLength="11" StoreGeneratedPattern="Computed" Nullable="false" />
+          <Property Name="IsObsolete" Type="bit" Nullable="false" />
+          <Property Name="IsPaid" Type="bit" Nullable="false" />
           <Property Name="BondTypeId" Type="int" />
-          <Property Name="Stock" Type="bit" />
-          <Property Name="Discrepancy" Type="bit" />
-          <Property Name="Adjustment" Type="bit" />
-          <Property Name="Sales" Type="bit" />
+          <Property Name="Stock" Type="bit" Nullable="false" />
+          <Property Name="Discrepancy" Type="bit" Nullable="false" />
+          <Property Name="Adjustment" Type="bit" Nullable="false" />
+          <Property Name="Sales" Type="bit" Nullable="false" />
           <Property Name="CustomsOperationId" Type="int" Nullable="false" />
-          <Property Name="SubmitToCustoms" Type="bit" />
-          <Property Name="IsDefault" Type="bit" />
-          <Property Name="ExportSupportingEntryData" Type="bit" />
+          <Property Name="SubmitToCustoms" Type="bit" Nullable="false" />
+          <Property Name="IsDefault" Type="bit" Nullable="false" />
+          <Property Name="ExportSupportingEntryData" Type="bit" Nullable="false" />
         </EntityType>
         <EntityType Name="CustomsOperations">
           <Key>
@@ -295,7 +295,7 @@
           <Property Name="Previous_Packages_number" Type="nvarchar" MaxLength="20" />
           <Property Name="Hs_code" Type="nvarchar" MaxLength="20" />
           <Property Name="Commodity_code" Type="nvarchar" MaxLength="20" />
-          <Property Name="Previous_item_number" Type="nvarchar" MaxLength="20" />
+          <Property Name="Previous_item_number" Type="int" />
           <Property Name="Goods_origin" Type="nvarchar" MaxLength="20" />
           <Property Name="Net_weight" Type="decimal" Precision="9" Scale="2" Nullable="false" />
           <Property Name="Prev_net_weight" Type="decimal" Precision="9" Scale="2" Nullable="false" />
@@ -307,7 +307,7 @@
           <Property Name="Preveious_suplementary_quantity" Type="float" Nullable="false" />
           <Property Name="Current_value" Type="float" Nullable="false" />
           <Property Name="Previous_value" Type="float" Nullable="false" />
-          <Property Name="Current_item_number" Type="nvarchar" MaxLength="20" />
+          <Property Name="Current_item_number" Type="int" />
           <Property Name="PreviousItem_Id" Type="int" Nullable="false" />
           <Property Name="ASYCUDA_Id" Type="int" />
           <Property Name="QtyAllocated" Type="float" Nullable="false" />
@@ -624,6 +624,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AsycudaDocumentItemEntryD
             
             
             
+            
           </Key>
           <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
           <Property Name="AsycudaDocumentSetId" Type="int" Nullable="false" />
@@ -633,7 +634,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AsycudaDocumentItemEntryD
           <Property Name="ItemNumber" Type="nvarchar" MaxLength="20" Nullable="false" />
           <Property Name="key" Type="nvarchar" MaxLength="101" />
           <Property Name="DocumentType" Type="nvarchar" MaxLength="40" />
-          <Property Name="CustomsProcedure" Type="nvarchar" MaxLength="11" />
+          <Property Name="CustomsProcedure" Type="nvarchar" MaxLength="11" Nullable="false" />
           <Property Name="Quantity" Type="float" />
           <Property Name="ImportComplete" Type="bit" Nullable="false" />
           <Property Name="Asycuda_id" Type="int" Nullable="false" />
@@ -863,13 +864,14 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ExistingAllocations' does
           <Key>
             <PropertyRef Name="EntryDataDetailsId" />
             <PropertyRef Name="xItemId" />
+            <PropertyRef Name="pItemId" />
             
             
             
             
             
             <PropertyRef Name="InventoryItemId" />
-            <PropertyRef Name="pItemId" />
+            <PropertyRef Name="CustomsProcedure" />
           </Key>
           <Property Name="xAsycudaId" Type="int" />
           <Property Name="EntryDataDetailsId" Type="int" Nullable="false" />
@@ -890,6 +892,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ExistingAllocations' does
           <Property Name="Suplementary_Quantity" Type="decimal" Precision="9" Scale="2" Nullable="false" />
           <Property Name="DutyFreePaid" Type="varchar" MaxLength="9" Nullable="false" />
           <Property Name="InventoryItemId" Type="int" Nullable="false" />
+          <Property Name="CustomsProcedure" Type="nvarchar" MaxLength="11" Nullable="false" />
         </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemAliasEx' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
@@ -995,6 +998,8 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.PreviousItemsEx' does not
             
             
             
+            
+            
             <PropertyRef Name="PreviousItem_Id" />
             
             
@@ -1002,15 +1007,20 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.PreviousItemsEx' does not
             
             
             
+            
+            
+            
+            <PropertyRef Name="Customs_ProcedureId" />
+            <PropertyRef Name="CustomsProcedure" />
           </Key>
           <Property Name="Packages_number" Type="nvarchar" MaxLength="20" />
           <Property Name="Previous_Packages_number" Type="nvarchar" MaxLength="20" />
           <Property Name="Hs_code" Type="nvarchar" MaxLength="20" />
           <Property Name="Commodity_code" Type="nvarchar" MaxLength="20" />
-          <Property Name="Previous_item_number" Type="nvarchar" MaxLength="20" />
+          <Property Name="Previous_item_number" Type="int" />
           <Property Name="Goods_origin" Type="nvarchar" MaxLength="20" />
-          <Property Name="Net_weight" Type="decimal" Precision="9" Scale="2" />
-          <Property Name="Prev_net_weight" Type="decimal" Precision="9" Scale="2" />
+          <Property Name="Net_weight" Type="decimal" Precision="9" Scale="2" Nullable="false" />
+          <Property Name="Prev_net_weight" Type="decimal" Precision="9" Scale="2" Nullable="false" />
           <Property Name="Prev_reg_ser" Type="nvarchar" MaxLength="20" />
           <Property Name="Prev_reg_nbr" Type="nvarchar" MaxLength="20" />
           <Property Name="Prev_reg_year" Type="int" />
@@ -1019,11 +1029,11 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.PreviousItemsEx' does not
           <Property Name="Preveious_suplementary_quantity" Type="float" Nullable="false" />
           <Property Name="Current_value" Type="float" Nullable="false" />
           <Property Name="Previous_value" Type="float" Nullable="false" />
-          <Property Name="Current_item_number" Type="nvarchar" MaxLength="20" />
+          <Property Name="Current_item_number" Type="int" />
           <Property Name="PreviousItem_Id" Type="int" Nullable="false" />
           <Property Name="ASYCUDA_Id" Type="int" />
           <Property Name="QtyAllocated" Type="float" Nullable="false" />
-          <Property Name="PreviousDocumentItemId" Type="int" />
+          <Property Name="PreviousDocumentItemId" Type="int" Nullable="false" />
           <Property Name="RndCurrent_Value" Type="float" Nullable="false" />
           <Property Name="ReferenceNumber" Type="nvarchar" MaxLength="30" />
           <Property Name="CNumber" Type="nvarchar" MaxLength="20" />
@@ -1032,13 +1042,15 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.PreviousItemsEx' does not
           <Property Name="AssessmentDate" Type="datetime2" Precision="7" />
           <Property Name="Prev_decl_HS_spec" Type="nvarchar" MaxLength="20" />
           <Property Name="SalesFactor" Type="float" Nullable="false" />
-          <Property Name="DocumentType" Type="nvarchar" MaxLength="40" />
+          <Property Name="DocumentType" Type="nvarchar" MaxLength="20" />
           <Property Name="DutyFreePaid" Type="varchar" MaxLength="9" Nullable="false" />
           <Property Name="ItemNumber" Type="nvarchar" MaxLength="20" />
           <Property Name="pLineNumber" Type="int" />
           <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
-          <Property Name="TotalDutyLiablity" Type="float" />
-          <Property Name="DutyLiablity" Type="float" />
+          <Property Name="TotalDutyLiablity" Type="float" Nullable="false" />
+          <Property Name="DutyLiablity" Type="float" Nullable="false" />
+          <Property Name="Customs_ProcedureId" Type="int" Nullable="false" />
+          <Property Name="CustomsProcedure" Type="nvarchar" MaxLength="11" Nullable="false" />
         </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.XSales-UnAllocated' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
@@ -1056,9 +1068,9 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.XSales-UnAllocated' does 
             
             <PropertyRef Name="EntryDataDetailsId" />
             <PropertyRef Name="xItemId" />
+            <PropertyRef Name="pItemId" />
             <PropertyRef Name="InventoryItemId" />
             <PropertyRef Name="PreviousDocumentInventoryItemId" />
-            <PropertyRef Name="pItemId" />
           </Key>
           <Property Name="Line" Type="int" Nullable="false" />
           <Property Name="Date" Type="datetime" Nullable="false" />
@@ -1835,7 +1847,8 @@ FROM [dbo].[EX9AsycudaSalesAllocations] AS [EX9AsycudaSalesAllocations]</Definin
 [ExistingAllocations].[xQuantity] AS [xQuantity], 
 [ExistingAllocations].[Suplementary_Quantity] AS [Suplementary_Quantity], 
 [ExistingAllocations].[DutyFreePaid] AS [DutyFreePaid], 
-[ExistingAllocations].[InventoryItemId] AS [InventoryItemId]
+[ExistingAllocations].[InventoryItemId] AS [InventoryItemId], 
+[ExistingAllocations].[CustomsProcedure] AS [CustomsProcedure]
 FROM [dbo].[ExistingAllocations] AS [ExistingAllocations]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="InventoryItemAliasEx" EntityType="Self.InventoryItemAliasEx" store:Type="Views" store:Schema="dbo">
@@ -1938,7 +1951,9 @@ FROM [dbo].[ItemSalesPiSummary] AS [ItemSalesPiSummary]</DefiningQuery>
 [PreviousItemsEx].[pLineNumber] AS [pLineNumber], 
 [PreviousItemsEx].[ApplicationSettingsId] AS [ApplicationSettingsId], 
 [PreviousItemsEx].[TotalDutyLiablity] AS [TotalDutyLiablity], 
-[PreviousItemsEx].[DutyLiablity] AS [DutyLiablity]
+[PreviousItemsEx].[DutyLiablity] AS [DutyLiablity], 
+[PreviousItemsEx].[Customs_ProcedureId] AS [Customs_ProcedureId], 
+[PreviousItemsEx].[CustomsProcedure] AS [CustomsProcedure]
 FROM [dbo].[PreviousItemsEx] AS [PreviousItemsEx]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="XSales-UnAllocated" EntityType="Self.XSales-UnAllocated" store:Type="Views" store:Schema="dbo">
@@ -2583,7 +2598,7 @@ FROM [dbo].[XSales-UnAllocated] AS [XSales-UnAllocated]</DefiningQuery>
           <Property Type="String" Name="Previous_Packages_number" MaxLength="20" FixedLength="false" Unicode="true"></Property>
           <Property Type="String" Name="Hs_code" MaxLength="20" FixedLength="false" Unicode="true"></Property>
           <Property Type="String" Name="Commodity_code" MaxLength="20" FixedLength="false" Unicode="true"></Property>
-          <Property Type="String" Name="Previous_item_number" MaxLength="20" FixedLength="false" Unicode="true"></Property>
+          <Property Type="Int32" Name="Previous_item_number"></Property>
           <Property Type="String" Name="Goods_origin" MaxLength="20" FixedLength="false" Unicode="true"></Property>
           <Property Type="Decimal" Name="Net_weight" Nullable="false" Precision="9" Scale="2"></Property>
           <Property Type="Decimal" Name="Prev_net_weight" Nullable="false" Precision="9" Scale="2"></Property>
@@ -2594,7 +2609,7 @@ FROM [dbo].[XSales-UnAllocated] AS [XSales-UnAllocated]</DefiningQuery>
           <Property Type="Double" Name="Preveious_suplementary_quantity" Nullable="false"></Property>
           <Property Type="Double" Name="Current_value" Nullable="false"></Property>
           <Property Type="Double" Name="Previous_value" Nullable="false"></Property>
-          <Property Type="String" Name="Current_item_number" MaxLength="20" FixedLength="false" Unicode="true"></Property>
+          <Property Type="Int32" Name="Current_item_number"></Property>
           <Property Type="Int32" Name="PreviousItem_Id" Nullable="false"></Property>
           <Property Type="Int32" Name="ASYCUDA_Id"></Property>
           <Property Type="Double" Name="QtyAllocated" Nullable="false"></Property>
@@ -3342,7 +3357,7 @@ FROM [dbo].[XSales-UnAllocated] AS [XSales-UnAllocated]</DefiningQuery>
           <Property Name="Quantity" Type="Double" />
           <Property Name="ImportComplete" Type="Boolean" Nullable="false" />
           <Property Name="EntryData_Id" Type="Int32" Nullable="false" />
-          <Property Name="CustomsProcedure" Type="String" MaxLength="11" FixedLength="false" Unicode="true" />
+          <Property Name="CustomsProcedure" Type="String" MaxLength="11" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="Asycuda_id" Type="Int32" Nullable="false" />
           <Property Name="EntryDataType" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
@@ -3415,15 +3430,17 @@ FROM [dbo].[XSales-UnAllocated] AS [XSales-UnAllocated]</DefiningQuery>
         <EntityType Name="PreviousItemsEx">
           <Key>
             <PropertyRef Name="PreviousItem_Id" />
+            <PropertyRef Name="Customs_ProcedureId" />
+            <PropertyRef Name="CustomsProcedure" />
           </Key>
           <Property Name="Packages_number" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Name="Previous_Packages_number" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Name="Hs_code" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Name="Commodity_code" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
-          <Property Name="Previous_item_number" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="Previous_item_number" Type="Int32" />
           <Property Name="Goods_origin" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
-          <Property Name="Net_weight" Type="Decimal" Precision="9" Scale="2" />
-          <Property Name="Prev_net_weight" Type="Decimal" Precision="9" Scale="2" />
+          <Property Name="Net_weight" Type="Decimal" Precision="9" Scale="2" Nullable="false" />
+          <Property Name="Prev_net_weight" Type="Decimal" Precision="9" Scale="2" Nullable="false" />
           <Property Name="Prev_reg_ser" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Name="Prev_reg_nbr" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Name="Prev_reg_cuo" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
@@ -3431,11 +3448,11 @@ FROM [dbo].[XSales-UnAllocated] AS [XSales-UnAllocated]</DefiningQuery>
           <Property Name="Preveious_suplementary_quantity" Type="Double" Nullable="false" />
           <Property Name="Current_value" Type="Double" Nullable="false" />
           <Property Name="Previous_value" Type="Double" Nullable="false" />
-          <Property Name="Current_item_number" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="Current_item_number" Type="Int32" />
           <Property Name="PreviousItem_Id" Type="Int32" Nullable="false" />
           <Property Name="ASYCUDA_Id" Type="Int32" />
           <Property Name="QtyAllocated" Type="Double" Nullable="false" />
-          <Property Name="PreviousDocumentItemId" Type="Int32" />
+          <Property Name="PreviousDocumentItemId" Type="Int32" Nullable="false" />
           <Property Name="RndCurrent_Value" Type="Double" Nullable="false" />
           <Property Name="ReferenceNumber" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
           <Property Name="CNumber" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
@@ -3444,14 +3461,16 @@ FROM [dbo].[XSales-UnAllocated] AS [XSales-UnAllocated]</DefiningQuery>
           <Property Name="AssessmentDate" Type="DateTime" Precision="7" />
           <Property Name="Prev_decl_HS_spec" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Name="SalesFactor" Type="Double" Nullable="false" />
-          <Property Name="DocumentType" Type="String" MaxLength="40" FixedLength="false" Unicode="true" />
+          <Property Name="DocumentType" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Name="DutyFreePaid" Type="String" Nullable="false" MaxLength="9" FixedLength="false" Unicode="false" />
           <Property Name="ItemNumber" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Name="pLineNumber" Type="Int32" />
           <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
-          <Property Name="TotalDutyLiablity" Type="Double" />
-          <Property Name="DutyLiablity" Type="Double" />
+          <Property Name="TotalDutyLiablity" Type="Double" Nullable="false" />
+          <Property Name="DutyLiablity" Type="Double" Nullable="false" />
           <Property Name="Prev_reg_year" Type="Int32" />
+          <Property Name="Customs_ProcedureId" Type="Int32" Nullable="false" />
+          <Property Name="CustomsProcedure" Type="String" Nullable="false" MaxLength="11" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="InventoryItem">
           <Key>
@@ -3699,22 +3718,22 @@ FROM [dbo].[XSales-UnAllocated] AS [XSales-UnAllocated]</DefiningQuery>
           </Key>
           <Property Name="Document_TypeId" Type="Int32" Nullable="false" />
           <Property Name="Customs_ProcedureId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Extended_customs_procedure" Type="String" MaxLength="5" FixedLength="false" Unicode="true" />
-          <Property Name="National_customs_procedure" Type="String" MaxLength="5" FixedLength="false" Unicode="true" />
-          <Property Name="CustomsProcedure" Type="String" MaxLength="11" FixedLength="false" Unicode="true" annotation:StoreGeneratedPattern="Computed" />
-          <Property Name="IsObsolete" Type="Boolean" />
-          <Property Name="IsPaid" Type="Boolean" />
+          <Property Name="Extended_customs_procedure" Type="String" MaxLength="5" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="National_customs_procedure" Type="String" MaxLength="5" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="CustomsProcedure" Type="String" MaxLength="11" FixedLength="false" Unicode="true" annotation:StoreGeneratedPattern="Computed" Nullable="false" />
+          <Property Name="IsObsolete" Type="Boolean" Nullable="false" />
+          <Property Name="IsPaid" Type="Boolean" Nullable="false" />
           <Property Name="BondTypeId" Type="Int32" />
-          <Property Name="Stock" Type="Boolean" />
-          <Property Name="Discrepancy" Type="Boolean" />
-          <Property Name="Adjustment" Type="Boolean" />
-          <Property Name="Sales" Type="Boolean" />
+          <Property Name="Stock" Type="Boolean" Nullable="false" />
+          <Property Name="Discrepancy" Type="Boolean" Nullable="false" />
+          <Property Name="Adjustment" Type="Boolean" Nullable="false" />
+          <Property Name="Sales" Type="Boolean" Nullable="false" />
           <Property Name="CustomsOperationId" Type="Int32" Nullable="false" />
           <NavigationProperty Name="AsycudaDocument" Relationship="WaterNutDBModel.Customs_ProcedureAsycudaDocument" FromRole="Customs_Procedure" ToRole="AsycudaDocument" />
-          <Property Name="SubmitToCustoms" Type="Boolean" />
+          <Property Name="SubmitToCustoms" Type="Boolean" Nullable="false" />
           <NavigationProperty Name="CustomsOperations" Relationship="WaterNutDBModel.FK_Customs_Procedure_CustomsOperations" FromRole="Customs_Procedure" ToRole="CustomsOperations" />
-          <Property Name="IsDefault" Type="Boolean" />
-          <Property Name="ExportSupportingEntryData" Type="Boolean" />
+          <Property Name="IsDefault" Type="Boolean" Nullable="false" />
+          <Property Name="ExportSupportingEntryData" Type="Boolean" Nullable="false" />
         </EntityType>
         <Association Name="Customs_ProcedureAsycudaDocument">
           <End Type="WaterNutDBModel.Customs_Procedure" Role="Customs_Procedure" Multiplicity="0..1" />
@@ -3873,6 +3892,7 @@ FROM [dbo].[XSales-UnAllocated] AS [XSales-UnAllocated]</DefiningQuery>
             <PropertyRef Name="xItemId" />
             <PropertyRef Name="pItemId" />
             <PropertyRef Name="InventoryItemId" />
+            <PropertyRef Name="CustomsProcedure" />
           </Key>
           <Property Name="xAsycudaId" Type="Int32" />
           <Property Name="EntryDataDetailsId" Type="Int32" Nullable="false" />
@@ -3893,6 +3913,7 @@ FROM [dbo].[XSales-UnAllocated] AS [XSales-UnAllocated]</DefiningQuery>
           <Property Name="Suplementary_Quantity" Type="Decimal" Nullable="false" Precision="9" Scale="2" />
           <Property Name="DutyFreePaid" Type="String" Nullable="false" MaxLength="9" FixedLength="false" Unicode="false" />
           <Property Name="InventoryItemId" Type="Int32" Nullable="false" />
+          <Property Name="CustomsProcedure" Type="String" Nullable="false" MaxLength="11" FixedLength="false" Unicode="true" />
         </EntityType>
         <Association Name="InventoryItemEntryDataDetails">
           <End Type="WaterNutDBModel.InventoryItem" Role="InventoryItem" Multiplicity="1" />
@@ -4683,6 +4704,8 @@ FROM [dbo].[XSales-UnAllocated] AS [XSales-UnAllocated]</DefiningQuery>
           <EntitySetMapping Name="PreviousItemsEx">
             <EntityTypeMapping TypeName="WaterNutDBModel.PreviousItemsEx">
               <MappingFragment StoreEntitySet="PreviousItemsEx">
+                <ScalarProperty Name="CustomsProcedure" ColumnName="CustomsProcedure" />
+                <ScalarProperty Name="Customs_ProcedureId" ColumnName="Customs_ProcedureId" />
                 <ScalarProperty Name="Prev_reg_year" ColumnName="Prev_reg_year" />
                 <ScalarProperty Name="DutyLiablity" ColumnName="DutyLiablity" />
                 <ScalarProperty Name="TotalDutyLiablity" ColumnName="TotalDutyLiablity" />
@@ -4883,6 +4906,7 @@ FROM [dbo].[XSales-UnAllocated] AS [XSales-UnAllocated]</DefiningQuery>
           <EntitySetMapping Name="ExistingAllocations">
             <EntityTypeMapping TypeName="WaterNutDBModel.ExistingAllocations">
               <MappingFragment StoreEntitySet="ExistingAllocations">
+                <ScalarProperty Name="CustomsProcedure" ColumnName="CustomsProcedure" />
                 <ScalarProperty Name="InventoryItemId" ColumnName="InventoryItemId" />
                 <ScalarProperty Name="DutyFreePaid" ColumnName="DutyFreePaid" />
                 <ScalarProperty Name="Suplementary_Quantity" ColumnName="Suplementary_Quantity" />
