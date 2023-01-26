@@ -72,7 +72,8 @@ namespace WaterNut.DataSpace
                 foreach (var tmp in possibleInvoices)//.Where(x => x.OcrInvoices.Id == 117)
                     try
                     {
-                        if(TryReadFile(file, emailId, fileType, pdfTxt, client, overWriteExisting, docSet, tmp, fileTypeId)) return true;
+
+                        if(TryReadFile(file, emailId, fileType, pdfTxt, client, overWriteExisting, docSet, tmp, fileTypeId, tmp == possibleInvoices.Last())) return true;
                     }
                     catch (Exception e)
                     {
@@ -159,7 +160,7 @@ namespace WaterNut.DataSpace
 
         public static bool TryReadFile(string file, string emailId, FileTypes fileType, StringBuilder pdftxt,
             Client client, bool overWriteExisting, List<AsycudaDocumentSet> docSet,
-            Invoice tmp, int fileTypeId)
+            Invoice tmp, int fileTypeId, bool isLastdoc)
         {
 
            // if (!IsInvoiceDocument(tmp.OcrInvoices, pdftxt.ToString())) return false;
@@ -178,7 +179,7 @@ namespace WaterNut.DataSpace
 
             if (csvLines.Count < 1 || !tmp.Success)
             {
-                return ErrorState(file, emailId, pdftxt, client, docSet, tmp, fileTypeId);
+                return ErrorState(file, emailId, pdftxt, client, docSet, tmp, fileTypeId, isLastdoc);
             }
             else
             {
@@ -202,8 +203,9 @@ namespace WaterNut.DataSpace
             return true;
         }
 
-        private static bool ErrorState(string file, string emailId, StringBuilder pdftxt, Client client, List<AsycudaDocumentSet> docSet,
-            Invoice tmp, int fileTypeId)
+        private static bool ErrorState(string file, string emailId, StringBuilder pdftxt, Client client,
+            List<AsycudaDocumentSet> docSet,
+            Invoice tmp, int fileTypeId, bool isLastdoc)
         {
             var failedlines = tmp.Lines.DistinctBy(x => x.OCR_Lines.Id).Where(z =>
                 z.FailedFields.Any() || (z.OCR_Lines.Fields.Any(f => f.IsRequired) && !z.Values.Any())).ToList();
@@ -221,17 +223,17 @@ namespace WaterNut.DataSpace
                 //        v.Values.Any(kv => kv == tmp.OcrInvoices.Name))))) ||
                 failedlines.Count >= allRequried.Count) return false;
 
-            //if (failedlines.Any() && failedlines.Count < tmp.Lines.Count &&
-            //    (tmp.Parts.First().WasStarted || !tmp.Parts.First().OCR_Part.Start.Any()) &&
-            //    tmp.Lines.SelectMany(x => x.Values.Values).Any())
-            //{
-            //    ReportUnImportedFile(docSet, file, emailId, fileTypeId, client, pdftxt.ToString(),
-            //        "Following fields failed to import",
-            //        failedlines);
-            //    {
-            //        return true;
-            //    }
-            //}
+            if (isLastdoc && failedlines.Any() && failedlines.Count < tmp.Lines.Count &&
+                (tmp.Parts.First().WasStarted || !tmp.Parts.First().OCR_Part.Start.Any()) &&
+                tmp.Lines.SelectMany(x => x.Values.Values).Any())
+            {
+                ReportUnImportedFile(docSet, file, emailId, fileTypeId, client, pdftxt.ToString(),
+                    "Following fields failed to import",
+                    failedlines);
+                
+                    return true;
+                
+            }
 
 
             return false;
