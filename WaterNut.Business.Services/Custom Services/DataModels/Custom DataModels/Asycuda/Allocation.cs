@@ -18,11 +18,13 @@ using EntryDataDS.Business.Entities;
 using MoreLinq;
 using sun.invoke.util;
 using TrackableEntities;
+using TrackableEntities.EF6;
 using CustomsOperations = CoreEntities.Business.Enums.CustomsOperations;
 using EntryDataDetails = AllocationDS.Business.Entities.EntryDataDetails;
 using InventoryItemAlias = AllocationDS.Business.Entities.InventoryItemAlias;
 using Sales = AllocationDS.Business.Entities.Sales;
 using SubItems = AllocationDS.Business.Entities.SubItems;
+using IEnumeratorToList =  Core.Common.Extensions.IEnumeratorToList;
 
 namespace WaterNut.DataSpace
 {
@@ -215,57 +217,156 @@ namespace WaterNut.DataSpace
 
             var itemGroups = Utils.CreateItemSet(rawSet);
 
-            Parallel.ForEach(itemGroups, new ParallelOptions() { MaxDegreeOfParallelism = Convert.ToInt32(Environment.ProcessorCount * BaseDataModel.Instance.ResourcePercentage) }, x =>
-            {
-                AllocateExistingEx9s(x.Value.SelectMany(z => z.Value.Select(v => (ExistingAllocations)v).ToList()).ToList());
-            });
+            var res = IEnumeratorToList.Partition(AddExtraData(itemGroups).ToList(),100).ToList();
 
+           // Parallel.ForEach(res, new ParallelOptions() { MaxDegreeOfParallelism = Convert.ToInt32(Environment.ProcessorCount * BaseDataModel.Instance.ResourcePercentage) }, x =>  AllocateExistingEx9s(x));
+		   res
+			   .AsParallel()
+               //.AsOrdered()
+               .WithDegreeOfParallelism(Convert.ToInt32(Environment.ProcessorCount *
+                                                        BaseDataModel.Instance.ResourcePercentage))
+               .ForEach(x => AllocateExistingEx9s(x.ToList()));
 			
         }
 
-        private static void AllocateExistingEx9s(List<ExistingAllocations> existingAllocations)
+        private Dictionary<int, (List<ExistingAllocations> ExistingAllocations,
+                                List<EntryDataDetails>EntryDataDetails,
+                                List<xcuda_Item> XcudaItems, List<AsycudaSalesAllocations> dbAllocations)> AddExtraData(
+            Dictionary<int, List<((string ItemNumber, int InventoryItemId) Key, List<object> Value)>> itemGroups)
         {
-            using (var ctx = new AllocationDSContext() { StartTracking = true })
+
+
+            var allEntryDataDetailsLst = AllEntryDataDetailsLst();
+            var allXcudaItems = AllXcudaItems();
+
+
+            //var res =
+            //    new Dictionary<int, (List<ExistingAllocations> ExistingAllocations, List<EntryDataDetails>
+            //        EntryDataDetails, List<xcuda_Item> XcudaItems, List<AsycudaSalesAllocations> dbAllocations)>();
+
+
+           var res = itemGroups
+               .AsParallel()
+               .AsOrdered()
+               .WithDegreeOfParallelism(Convert.ToInt32(Environment.ProcessorCount * BaseDataModel.Instance.ResourcePercentage))
+               .Select(set => new {set.Key, value = GetData(set, allEntryDataDetailsLst, allXcudaItems)})
+               .ToDictionary(x => x.Key, v => v.value);
+           
+
+            return res;
+
+        }
+
+        private static (List<ExistingAllocations> existingAllocations, List<EntryDataDetails> entryDataDetailsLst, List<xcuda_Item> xcudaItems, List<AsycudaSalesAllocations>) GetData(KeyValuePair<int, List<((string ItemNumber, int InventoryItemId) Key, List<object> Value)>> set,
+            List<EntryDataDetails> allEntryDataDetailsLst, List<xcuda_Item> allXcudaItems)
+        {
+            var existingAllocations = set.Value
+                .SelectMany(z => z.Value.Select(v => (ExistingAllocations) v).ToList()).ToList();
+            var elst = existingAllocations.Select(z => z.EntryDataDetailsId).ToList();
+            var entryDataDetailsLst =
+                allEntryDataDetailsLst.Where(x => elst.Contains(x.EntryDataDetailsId)).ToList();
+            var plst = existingAllocations.Select(z => z.pItemId).ToList();
+            var xcudaItems = allXcudaItems.Where(x => plst.Contains(x.Item_Id)).ToList();
+
+            var itm = (existingAllocations, entryDataDetailsLst, xcudaItems, new List<AsycudaSalesAllocations>());
+            return itm;
+        }
+
+        private static List<xcuda_Item> AllXcudaItems() =>
+            new AllocationDSContext()
             {
-                var cnt = 0;
-                foreach (var allocation in existingAllocations)
+                StartTracking = false, Configuration = {AutoDetectChangesEnabled = false, ValidateOnSaveEnabled = false}
+            }.xcuda_Item.AsNoTracking().ToList();
+
+        private static List<EntryDataDetails> AllEntryDataDetailsLst() =>
+            new AllocationDSContext()
+            {
+                StartTracking = false, Configuration = {AutoDetectChangesEnabled = false, ValidateOnSaveEnabled = false}
+            }.EntryDataDetails.AsNoTracking().ToList();
+
+        private static void AllocateExistingEx9s(
+            List<KeyValuePair<int, (List<ExistingAllocations> ExistingAllocations, List<EntryDataDetails> EntryDataDetails, List<xcuda_Item> XcudaItems, List<AsycudaSalesAllocations> dbAllocations)>> groupAllocations)
+        {
+            groupAllocations
+				.AsParallel()
+                //.AsOrdered()
+                .WithDegreeOfParallelism(Convert.ToInt32(Environment.ProcessorCount *
+                                                         BaseDataModel.Instance.ResourcePercentage))
+				.ForEach(AddAsycudaSalesAllocations);
+
+
+            SaveAllocations(groupAllocations);
+        }
+
+        private static void SaveAllocations(
+            IEnumerable<KeyValuePair<int, (List<ExistingAllocations> ExistingAllocations, List<EntryDataDetails>
+                    EntryDataDetails, List<xcuda_Item> XcudaItems, List<AsycudaSalesAllocations> dbAllocations)>>
+                groupAllocations)
+        {
+
+            groupAllocations
+                .AsParallel()
+                .WithDegreeOfParallelism(Convert.ToInt32(Environment.ProcessorCount *
+                                                         BaseDataModel.Instance.ResourcePercentage))
+                .ForEach(set =>
                 {
-                    var allo = new AsycudaSalesAllocations()
-                    {
-                        EntryDataDetailsId = allocation.EntryDataDetailsId,
-                        PreviousItem_Id = allocation.pItemId,
-                        xEntryItem_Id = allocation.xItemId,
-                        QtyAllocated = allocation.xQuantity ?? 0,
-                        TrackingState = TrackingState.Added
-                    };
-
-					if(allocation.EntryDataDetailsId == 0 && ctx.EntryDataDetails.Any(x => x.EntryData.EntryType == "Sales" || x.EntryData.EntryType == "ADJ" 
-                                                                                                        &&  (x.EntryData.EntryDataDate >=  BaseDataModel.Instance.CurrentApplicationSettings.OpeningStockDate && x.EntryData.EntryDataDate <= allocation.EntryDataDate)
-                                                                                                        && (allocation.ItemNumber.Contains(x.ItemNumber) || x.ItemNumber.Contains(allocation.ItemNumber))) ) continue;
-
-                    var entrydataDetails =
-                        ctx.EntryDataDetails.First(x => x.EntryDataDetailsId == allocation.EntryDataDetailsId);
-                    entrydataDetails.QtyAllocated += allocation.xQuantity ?? 0;
-
-                    var pitem = ctx.xcuda_Item.First(x => x.Item_Id == allocation.pItemId);
-
-                    if (allocation.DutyFreePaid == "Duty Free")
-                    {
-                        pitem.DFQtyAllocated += allocation.xQuantity ?? 0;
-                    }
-                    else
-                    {
-                        pitem.DPQtyAllocated += allocation.xQuantity ?? 0;
-                    }
+                    var tasks = new List<Task>();
+                    tasks.Add(Task.Run(()=>SaveData(set.Value.EntryDataDetails)));
+					tasks.Add(Task.Run(() => SaveData(set.Value.XcudaItems)));
+					tasks.Add(Task.Run(() => SaveData(set.Value.dbAllocations)));
+                    Task.WaitAll(tasks.ToArray());
+                });
 
 
-                    ctx.AsycudaSalesAllocations.Add(allo);
-                    cnt++;
-                    if (cnt % 10 == 0) ctx.SaveChanges();
+        }
+
+        private static void SaveData(IEnumerable<ITrackable> set)
+        {
+            var ctx = new AllocationDSContext()
+                {StartTracking = false, Configuration = {AutoDetectChangesEnabled = false, ValidateOnSaveEnabled = false}};
+            ctx.ApplyChanges(set);
+            ctx.SaveChanges();
+        }
+    
+
+        private static void AddAsycudaSalesAllocations(KeyValuePair<int, (List<ExistingAllocations> ExistingAllocations, List<EntryDataDetails> EntryDataDetails, List<xcuda_Item> XcudaItems, List<AsycudaSalesAllocations> dbAllocations)> set)
+        {
+            var newAllocations = new List<AsycudaSalesAllocations>();
+            foreach (var allocation in set.Value.ExistingAllocations)
+            {
+                var allo = new AsycudaSalesAllocations()
+                {
+                    EntryDataDetailsId = allocation.EntryDataDetailsId,
+                    PreviousItem_Id = allocation.pItemId,
+                    xEntryItem_Id = allocation.xItemId,
+                    QtyAllocated = allocation.xQuantity ?? 0,
+                    TrackingState = TrackingState.Added
+                };
+                /// ----- took this out because i changed query not to include sales
+                //if(allocation.EntryDataDetailsId == 0 && ctx.EntryDataDetails.Any(x => x.EntryData.EntryType == "Sales" || x.EntryData.EntryType == "ADJ" 
+                //                                                                                                   &&  (x.EntryData.EntryDataDate >=  BaseDataModel.Instance.CurrentApplicationSettings.OpeningStockDate && x.EntryData.EntryDataDate <= allocation.EntryDataDate)
+                //                                                                                                   && (allocation.ItemNumber.Contains(x.ItemNumber) || x.ItemNumber.Contains(allocation.ItemNumber))) ) continue;
+
+
+                set.Value.EntryDataDetails.First(x => x.EntryDataDetailsId == allocation.EntryDataDetailsId)
+                    .QtyAllocated += allocation.xQuantity ?? 0;
+
+
+                var pItem = set.Value.XcudaItems.First(x => x.Item_Id == allocation.pItemId);
+
+                if (allocation.DutyFreePaid == "Duty Free")
+                {
+                    pItem.DFQtyAllocated += allocation.xQuantity ?? 0;
+                }
+                else
+                {
+                    pItem.DPQtyAllocated += allocation.xQuantity ?? 0;
                 }
 
-                ctx.SaveChanges();
+                newAllocations.Add(allo);
             }
+
+            set.Value.dbAllocations.AddRange(newAllocations);
         }
 
         private static List<ExistingAllocations> GetExistingEx9s()
@@ -273,7 +374,7 @@ namespace WaterNut.DataSpace
             using (var ctx = new AllocationDSContext() { StartTracking = true })
             {
                 ctx.Database.CommandTimeout = 0;
-               return  ctx.ExistingAllocations
+               return  ctx.ExistingAllocations.AsNoTracking()
                     .Where(x => x.ApplicationSettingsId ==
                                 BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)
                     // .Where(x => x.EntryDataDetailsId == 1852995)

@@ -11,6 +11,7 @@ using EntryDataDS.Business.Entities;
 using MoreLinq.Extensions;
 using TrackableEntities;
 using FileTypes = CoreEntities.Business.Entities.FileTypes;
+using InventoryItemAlias = AllocationDS.Business.Entities.InventoryItemAlias;
 using MoreEnumerable = MoreLinq.MoreEnumerable;
 
 namespace WaterNut.DataSpace
@@ -99,10 +100,11 @@ namespace WaterNut.DataSpace
 
             var res = new Dictionary<int, List<((string ItemNumber, int InventoryItemId) Key, List<T> Value)>>();
             var set = 0;
-            using (var ctx = new AllocationDSContext())
-            {
-                var itemsList = items.ToList();
-             
+
+
+            var itemsList = items.ToList();
+             var inventoryItemAliases = new AllocationDSContext().InventoryItemAlias.AsNoTracking().ToList();
+
                 while (itemsList.Any())
                 {
                     set += 1;
@@ -110,7 +112,9 @@ namespace WaterNut.DataSpace
                     var inventoryItem = itemsList.First();
                     lst.Add(inventoryItem);
 
-                    var aliaslst = ctx.InventoryItemAlias.Where(x => x.InventoryItemId == inventoryItem.Key.InventoryItemId || x.AliasItemId == inventoryItem.Key.InventoryItemId)
+
+                    
+                    var aliaslst = inventoryItemAliases.Where(x => x.InventoryItemId == inventoryItem.Key.InventoryItemId || x.AliasItemId == inventoryItem.Key.InventoryItemId)
                         .ToList()
                         .Where(x => lst.All(z => z.Key.InventoryItemId != x.InventoryItemId))
                         .Where(x => itemsList.Any(z => z.Key.InventoryItemId == x.InventoryItemId))
@@ -132,7 +136,7 @@ namespace WaterNut.DataSpace
 
                 
                 return res ;
-            }
+            
         }
 
         public static List<ShipmentRiderDetails> CreatePackingList(ShipmentRider rawRider)
