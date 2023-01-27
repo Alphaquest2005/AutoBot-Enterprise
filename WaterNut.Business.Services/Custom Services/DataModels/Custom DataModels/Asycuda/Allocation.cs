@@ -24,7 +24,8 @@ using EntryDataDetails = AllocationDS.Business.Entities.EntryDataDetails;
 using InventoryItemAlias = AllocationDS.Business.Entities.InventoryItemAlias;
 using Sales = AllocationDS.Business.Entities.Sales;
 using SubItems = AllocationDS.Business.Entities.SubItems;
-using IEnumeratorToList =  Core.Common.Extensions.IEnumeratorToList;
+//using IEnumeratorToList =  Core.Common.Extensions.IEnumeratorToList;
+using Core.Common.Extensions;
 
 namespace WaterNut.DataSpace
 {
@@ -97,8 +98,6 @@ namespace WaterNut.DataSpace
                 ReallocateExistingEx9(); // to prevent changing allocations when im7 info changes
 
                
-
-
 				StatusModel.Timer("Auto Match Adjustments");
 				
 				await new AdjustmentShortService().AutoMatch(applicationSettings.ApplicationSettingsId, true).ConfigureAwait(false);
@@ -136,17 +135,16 @@ namespace WaterNut.DataSpace
                 .Select(x => (Key: x.Key, Value: x.Select(i => i.xSale).ToList()))
                 .ToList();
 
-           var itemGroups = Utils.CreateItemSet(xSalesByItemId);
+           var itemGroups = Utils.CreateItemSet(xSalesByItemId).Partition(100);
 
            
-           Parallel.ForEach(itemGroups, new ParallelOptions(){MaxDegreeOfParallelism = Convert.ToInt32(Environment.ProcessorCount * BaseDataModel.Instance.ResourcePercentage)}, x =>
-           {
-                 AllocateXSales(x.Value.SelectMany(z => z.Value.Select(v => v).ToList()).ToList());
-           });
+           itemGroups
+               .AsParallel()
+               .AsOrdered()
+               .WithDegreeOfParallelism(Convert.ToInt32(Environment.ProcessorCount * BaseDataModel.Instance.ResourcePercentage))
+               .ForEach( x => AllocateXSales(x.SelectMany(g => g.Value.SelectMany(z => z.Value.Select(v => v).ToList()).ToList()).ToList()));
 
-
-           
-		}
+        }
 
 
         private static void AllocateXSales(List<XSales_UnAllocated> unAllocatedxSales)
@@ -217,7 +215,7 @@ namespace WaterNut.DataSpace
 
             var itemGroups = Utils.CreateItemSet(rawSet);
 
-            var res = IEnumeratorToList.Partition(AddExtraData(itemGroups).ToList(),100).ToList();
+            var res = AddExtraData(itemGroups).ToList().Partition(100).ToList();
 
            // Parallel.ForEach(res, new ParallelOptions() { MaxDegreeOfParallelism = Convert.ToInt32(Environment.ProcessorCount * BaseDataModel.Instance.ResourcePercentage) }, x =>  AllocateExistingEx9s(x));
 		   res
@@ -931,7 +929,9 @@ namespace WaterNut.DataSpace
                 saleslst.AddRange(adjlst);
                 saleslst.AddRange(dislst);
 
-				var itmLst = CreateItemSetsWithItemNumbers(saleslst.OrderBy(x => x.Key.EntryDataDate).ToList(), asycudaEntries);
+
+                var sSales = saleslst.OrderBy(x => x.Key.EntryDataDate).ToList();
+                var itmLst = CreateItemSetsWithItemNumbers(sSales, asycudaEntries);
 
 				//var asycudaEntries = await GetAsycudaEntriesWithItemNumber(applicationSettingsId, null).ConfigureAwait(false);
 				////var testr = asycudaEntries.Where(x => x.EntriesList.Any(z => z.ItemNumber == "BM/FGCM150-50")).ToList();
@@ -960,87 +960,116 @@ namespace WaterNut.DataSpace
 		}
 
 
-		private static ConcurrentDictionary<(DateTime EntryDataDate, string EntryDataId, string ItemNumber, int InventoryItemId), ItemSet> CreateItemSetsWithItemNumbers(
-			IEnumerable<ItemSales> saleslst, IEnumerable<ItemEntries> asycudaEntries)
-		{
-			try
-			{
+        private static
+            ConcurrentDictionary<(DateTime EntryDataDate, string EntryDataId, string ItemNumber, int InventoryItemId),
+                ItemSet> CreateItemSetsWithItemNumbers(
+                IEnumerable<ItemSales> saleslst, IEnumerable<ItemEntries> asycudaEntries)
+        {
+            try
+            {
+
+                
+                var itmLst = CreateItemSets(saleslst, asycudaEntries);
+
+                var res = CreateItemSets(itmLst);
+
+                AddLumpAndAliasData(asycudaEntries, res);
+
+                return res;
+
+                //return
+                //    new ConcurrentDictionary<(DateTime EntryDataDate, string EntryDataId, string ItemNumber), ItemSet>(
+                //        res.Where(x => x.Value.EntriesList.Any(z => z.AsycudaDocument.CNumber == "44887")).ToList());//res.Where(x => x.Value.EntriesList.Any(z => z.AsycudaDocument.CNumber == "44887")).ToList();
+
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+
+        }
+
+        private static IEnumerable<ItemSet> CreateItemSets(IEnumerable<ItemSales> saleslst, IEnumerable<ItemEntries> asycudaEntries)
+        {
+            var itmLst = from s in saleslst
+                join a in asycudaEntries on s.Key.ItemNumber equals a.Key into j
+                from a in j.DefaultIfEmpty()
+                select new ItemSet
+                {
+                    Key = s.Key,
+                    SalesList = s.SalesList,
+                    EntriesList = a?.EntriesList ?? new List<xcuda_Item>()
+                };
+            return itmLst;
+        }
+
+        private static void AddLumpAndAliasData(IEnumerable<ItemEntries> asycudaEntries, ConcurrentDictionary<(DateTime EntryDataDate, string EntryDataId, string ItemNumber, int InventoryItemId), ItemSet> res)
+        {
+            var flatAsycudaEntries = asycudaEntries.SelectMany(x => x.EntriesList).ToList();
+            var lumpedItems = Instance.InventoryAliasCache.Data.Where(x => x.InventoryItem.LumpedItem != null)
+                .ToList();
+
+             res
+                 .AsParallel()
+                 .WithDegreeOfParallelism(Convert.ToInt32(Environment.ProcessorCount *
+                                                          BaseDataModel.Instance.ResourcePercentage))
+                 .ForEach(r => 
+            {
+                var alias = Instance.InventoryAliasCache.Data.Where(x => x.ItemNumber.ToUpper().Trim() == r.Key.ItemNumber)
+                    .Select(y => y.AliasName.ToUpper().Trim()).Distinct().ToList();
 
 
-				var flatAsycudaEntries = asycudaEntries.SelectMany(x => x.EntriesList).ToList();
+                var lumpedAlias = alias.Join(lumpedItems, x => x, y => y.AliasName,
+                    (x, y) => y.ItemNumber).Distinct().ToList();
+
+                if (alias.Any() || lumpedAlias.Any())
+                {
+                    //var te = asycudaEntries.Where(x => x.Key == "EVC/508").ToList();
+                    var ae = asycudaEntries.Where(x => alias.Contains(x.Key) || lumpedAlias.Contains(x.Key))
+                        .SelectMany(y => y.EntriesList).ToList();
+                    if (ae.Any()) r.Value.EntriesList.AddRange(ae);
+
+                    // Manual allocation
+                    foreach (var itm in r.Value.SalesList.Where(x => x.ManualAllocations != null))
+                    {
+                        var ritm = flatAsycudaEntries.FirstOrDefault(x => x.Item_Id == itm.ManualAllocations.Item_Id);
+                        if (ritm != null) r.Value.EntriesList.Add(ritm);
+                    }
+
+                    r.Value.EntriesList.AddRange(flatAsycudaEntries.Where(x =>
+                        x.PreviousInvoiceItemNumber == r.Key.ItemNumber));
+                }
+            });
+        }
+
+        private static ConcurrentDictionary<(DateTime EntryDataDate, string EntryDataId, string ItemNumber, int InventoryItemId), ItemSet> CreateItemSets(IEnumerable<ItemSet> itmLst)
+        {
+            var res =
+                new ConcurrentDictionary<(DateTime EntryDataDate, string EntryDataId, string ItemNumber, int InventoryItemId),
+                    ItemSet>();
+
+            itmLst //.Where(x => x.Key.ItemNumber == "TRC/1206-QC").ToList()//.Where(x => x.Key.ItemNumber.StartsWith("T")).ToList()//.Where(x => x.SalesList.Any(z => z.EntryDataId == "61091010")).ToList()
+                .AsParallel()
+                .WithDegreeOfParallelism(Convert.ToInt32(Environment.ProcessorCount *
+                                                         BaseDataModel.Instance.ResourcePercentage))
+                .ForEach(itm =>
+                {
+                    res.AddOrUpdate(itm.Key, itm, (key, value) =>
+                    {
+                        //value.EntriesList.AddRange(itm.EntriesList);  ------ causes Duplicated entries
+                        value.SalesList.AddRange(itm.SalesList);
+                        value.SalesList = value.SalesList.OrderBy(x => x.Sales.EntryDataDate).ThenBy(x => x.EntryDataId)
+                            .ToList();
+                        return value;
+                    });
+                });
+
+            return res;
+        }
 
 
-				var itmLst = from s in saleslst
-							 join a in asycudaEntries on s.Key.ItemNumber equals a.Key into j
-							 from a in j.DefaultIfEmpty()
-							 select new ItemSet
-							 {
-
-								 Key = s.Key,
-								 SalesList = s.SalesList,
-								 EntriesList = a?.EntriesList ?? new List<xcuda_Item>()
-							 };
-
-				var res = new ConcurrentDictionary<(DateTime EntryDataDate, string EntryDataId, string ItemNumber, int InventoryItemId), ItemSet>();
-				foreach (var itm in itmLst) //.Where(x => x.Key.ItemNumber == "TRC/1206-QC").ToList()//.Where(x => x.Key.ItemNumber.StartsWith("T")).ToList()//.Where(x => x.SalesList.Any(z => z.EntryDataId == "61091010")).ToList()
-				{
-
-					res.AddOrUpdate(itm.Key, itm, (key, value) =>
-					{
-						//value.EntriesList.AddRange(itm.EntriesList);  ------ causes Duplicated entries
-						value.SalesList.AddRange(itm.SalesList);
-						value.SalesList = value.SalesList.OrderBy(x => x.Sales.EntryDataDate).ThenBy(x => x.EntryDataId)
-							.ToList();
-						return value;
-					});
-				}
-
-				var lumpedItems = Instance.InventoryAliasCache.Data.Where(x => x.InventoryItem.LumpedItem != null)
-					.ToList();
-
-				foreach (var r in res) //
-				{
-					var alias = Instance.InventoryAliasCache.Data.Where(x => x.ItemNumber.ToUpper().Trim() == r.Key.ItemNumber)
-						.Select(y => y.AliasName.ToUpper().Trim()).Distinct().ToList();
-
-
-					var lumpedAlias = alias.Join(lumpedItems, x => x, y => y.AliasName,
-						(x, y) => y.ItemNumber).Distinct().ToList();
-
-					if (!alias.Any() && !lumpedAlias.Any()) continue;
-					//var te = asycudaEntries.Where(x => x.Key == "EVC/508").ToList();
-					var ae = asycudaEntries.Where(x => alias.Contains(x.Key) || lumpedAlias.Contains(x.Key))
-						.SelectMany(y => y.EntriesList).ToList();
-					if (ae.Any()) r.Value.EntriesList.AddRange(ae);
-
-					// Manual allocation
-					foreach (var itm in r.Value.SalesList.Where(x => x.ManualAllocations != null))
-					{
-						var ritm = flatAsycudaEntries.FirstOrDefault(x => x.Item_Id == itm.ManualAllocations.Item_Id);
-						if (ritm != null) r.Value.EntriesList.Add(ritm);
-					}
-
-					r.Value.EntriesList.AddRange(flatAsycudaEntries.Where(x => x.PreviousInvoiceItemNumber == r.Key.ItemNumber));
-
-				}
-
-				return res;
-
-				//return
-				//    new ConcurrentDictionary<(DateTime EntryDataDate, string EntryDataId, string ItemNumber), ItemSet>(
-				//        res.Where(x => x.Value.EntriesList.Any(z => z.AsycudaDocument.CNumber == "44887")).ToList());//res.Where(x => x.Value.EntriesList.Any(z => z.AsycudaDocument.CNumber == "44887")).ToList();
-
-			}
-			catch (Exception e)
-			{
-				Console.WriteLine(e);
-				throw;
-			}
-
-		}
-
-		
-		private static async Task<IEnumerable<ItemEntries>> GetAsycudaEntriesWithItemNumber(int applicationSettingsId, int? asycudaDocumentSetId)
+        private static async Task<IEnumerable<ItemEntries>> GetAsycudaEntriesWithItemNumber(int applicationSettingsId, int? asycudaDocumentSetId)
 		{
 			StatusModel.Timer("Getting Data - Asycuda Entries...");
 			//string itmnumber = "WMHP24-72";

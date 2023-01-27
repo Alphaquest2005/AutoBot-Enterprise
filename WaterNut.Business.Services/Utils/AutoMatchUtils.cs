@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using AdjustmentQS.Business.Entities;
 using AllocationDS.Business.Entities;
+using Core.Common.Extensions;
 using Core.Common.UI;
 using CoreEntities.Business.Entities;
 using EntryDataDS.Business.Entities;
@@ -82,38 +83,25 @@ namespace AdjustmentQS.Business.Services
                 _itemCache = null;
 
 
-                var lst = GetAllDiscrepancyDetails(applicationSettingsId, overwriteExisting);//.Where(x => x.EntryDataId == "Asycuda-C#33687-24").ToList();
-
-                
-                if (!lst.Any()) return;
-                AllocationsModel.Instance
-                    .ClearDocSetAllocations(lst.Select(x => $"'{x.ItemNumber}'").Aggregate((o, n) => $"{o},{n}"))
-                    .Wait();
-
-                AllocationsBaseModel.PrepareDataForAllocation(BaseDataModel.Instance.CurrentApplicationSettings);
+                var rawData = GetAllDiscrepancyDetails(applicationSettingsId, overwriteExisting);//.Where(x => x.EntryDataId == "Asycuda-C#33687-24").ToList();
+                 if (!rawData.Any()) return;
 
 
+                 var data = rawData.Select(x => (Item: (x.ItemNumber, x.InventoryItemId), xSale: x))
+                     .GroupBy(x => x.Item)
+                     .Select(x => (Key: x.Key, Value: x.Select(i => i.xSale).ToList()))
+                     .ToList();
 
-                await DoAutoMatch(applicationSettingsId, lst).ConfigureAwait(false);
+                 var itemGrps = Utils.CreateItemSet(data).Partition(100);
 
+               
 
-
-                new AdjustmentShortService().AutoMatchUtils
-                    .ProcessDISErrorsForAllocation(
-                        BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId,
-                        lst.Select(x => $"{x.EntryDataDetailsId}-{x.ItemNumber}")
-                            .Aggregate((o, n) => $"{o},{n}")).Wait();
-                ///// dont pre do discrepancies when allocating all sales... only for shipping discrepancies
-                //new AllocationsBaseModel()
-                //    .AllocateSalesByMatchingSalestoAsycudaEntriesOnItemNumber(
-                //        BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId, false,
-                //        lst.Select(x => $"{x.EntryDataDetailsId}-{x.ItemNumber}")
-                //            .Aggregate((o, n) => $"{o},{n}")).Wait();
-
-                //new AllocationsBaseModel()
-                //    .MarkErrors(BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId).Wait();
-
-
+                itemGrps.SelectMany(x => x.ToList())
+                    .AsParallel()
+                    .WithDegreeOfParallelism(Convert.ToInt32(Environment.ProcessorCount *
+                                                             BaseDataModel.Instance.ResourcePercentage))
+                    .ForEach(async lst => await AutoMatch(applicationSettingsId, lst).ConfigureAwait(false));
+                    
                 
 
             }
@@ -123,6 +111,29 @@ namespace AdjustmentQS.Business.Services
                 throw;
             }
 
+        }
+
+        private static async Task AutoMatch(int applicationSettingsId, KeyValuePair<int, List<((string ItemNumber, int InventoryItemId) Key, List<AdjustmentDetail> Value)>> lst)
+        {
+            AllocationsModel.Instance
+                .ClearDocSetAllocations(
+                    lst.Value.Select(x => $"'{x.Key.ItemNumber}'").Aggregate((o, n) => $"{o},{n}"))
+                .Wait();
+
+            AllocationsBaseModel.PrepareDataForAllocation(BaseDataModel.Instance
+                .CurrentApplicationSettings);
+
+
+            await DoAutoMatch(applicationSettingsId, lst.Value.SelectMany(v => v.Value).ToList()).ConfigureAwait(false);
+
+
+            new AdjustmentShortService().AutoMatchUtils
+                .ProcessDISErrorsForAllocation(
+                    BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId,
+                    lst.Value
+                        .SelectMany(g => g.Value)
+                        .Select(v => v).Select(x => $"{x.EntryDataDetailsId}-{x.ItemNumber}")
+                        .Aggregate((o, n) => $"{o},{n}")).Wait();
         }
 
         public async Task MatchToAsycudaItem(int entryDataDetailId, int itemId)
