@@ -445,7 +445,10 @@ namespace WaterNut.DataSpace
 
 		public async Task AllocateSalesByMatchingSalestoAsycudaEntriesOnItemNumber(
 			int applicationSettingsId, bool allocateToLastAdjustment, string lst)
-		{
+        {
+
+            var itemSetLst = CreateItemSets(applicationSettingsId, lst);
+
 			var itemSets = await MatchSalestoAsycudaEntriesOnItemNumber(applicationSettingsId, lst).ConfigureAwait(false);
 			StatusModel.StopStatusUpdate();
 
@@ -470,6 +473,23 @@ namespace WaterNut.DataSpace
 
 
 			
+        }
+
+        public List<((string, int InventoryItemId) Key, List<(string, int AliasItemId)> Alias)> CreateItemSets(int applicationSettingsId, string lst)
+        {
+            using (var ctx = new AllocationDSContext() { StartTracking = false })
+            {
+                return ctx.InventoryItems
+                    .AsNoTracking()
+                    .Include(x => x.InventoryItemAliasEx)
+                    .Where(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)
+                    .Where(x => string.IsNullOrEmpty(x.ItemNumber))
+                    .Where(x =>lst == null ||  lst.ToUpper().Trim().Contains(x.ItemNumber.ToUpper().Trim()))
+                    .ToList()
+                    .Select(x => (Key: (x.ItemNumber.ToUpper().Trim(), x.InventoryItemId) ,Alias :x.InventoryItemAliasEx.Select(a => (a.AliasName.ToUpper().Trim(), a.AliasItemId)).ToList()))
+                    .ToList();
+
+            }
         }
 
         private void AllocateSales(bool allocateToLastAdjustment, KeyValuePair<int, (List<int> Lst, KeyValuePair<int, List<((string ItemNumber, int InventoryItemId) Key, List<object> Value)>> group)> groupItemSets)
@@ -935,22 +955,6 @@ namespace WaterNut.DataSpace
 
                 var sSales = saleslst.OrderBy(x => x.Key.EntryDataDate).ToList();
                 var itmLst = CreateItemSetsWithItemNumbers(sSales, asycudaEntries);
-
-				//var asycudaEntries = await GetAsycudaEntriesWithItemNumber(applicationSettingsId, null).ConfigureAwait(false);
-				////var testr = asycudaEntries.Where(x => x.EntriesList.Any(z => z.ItemNumber == "BM/FGCM150-50")).ToList();
-
-				//var saleslst = await GetSaleslstWithItemNumber(applicationSettingsId, lst).ConfigureAwait(false);
-				////var test = saleslst.Where(x => x.SalesList.Any(z => z.ItemNumber == "BM/FGCM150-50")).ToList();
-
-				//var adjlst = await GetAdjustmentslstWithItemNumber(applicationSettingsId, lst).ConfigureAwait(false);
-				//saleslst.AddRange(adjlst);
-
-				//var dislst = await GetDiscrepancieslstWithItemNumber(applicationSettingsId, lst).ConfigureAwait(false);
-				//saleslst.AddRange(dislst);
-
-				//var itmLst = CreateItemSetsWithItemNumbers(saleslst.OrderBy(x => x.Key.EntryDataDate).ToList(), asycudaEntries);
-
-				//var test = itmLst.Where(x => x.Key.EntryDataId == "Asycuda-C#33687-19").ToList();
 
 				return itmLst;
 			}
