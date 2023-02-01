@@ -54,7 +54,7 @@ namespace WaterNut.Business.Services.Utils
                 .Select(item => CreateInventoryItem(inventorySource, item))
                 .ToList();
 
-            SaveInventoryItemsBulk(newInventoryItems);
+            SaveInventoryItems(newInventoryItems);
 
             return newInventoryItems;
         }
@@ -126,7 +126,7 @@ namespace WaterNut.Business.Services.Utils
             return new InventoryDataItem(item, i);
         }
 
-        public static void SaveInventoryItemsSlow(List<InventoryDataItem> processedInventoryItems)
+        public static void SaveInventoryItems(List<InventoryDataItem> processedInventoryItems)
         {
 
 
@@ -148,13 +148,6 @@ namespace WaterNut.Business.Services.Utils
 
         }
 
-        public static void SaveInventoryItemsBulk(List<InventoryDataItem> processedInventoryItems)
-        {
-            using (var ctx = new InventoryDSContext() { StartTracking = true })
-            {
-                ctx.BulkMerge(processedInventoryItems.Select(z => z.Item).ToList());
-                processedInventoryItems.ForEach(z => z.Item.AcceptChanges());
-            }
-        }
+      
     }
 }

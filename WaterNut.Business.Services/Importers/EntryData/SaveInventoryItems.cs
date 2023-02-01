@@ -8,7 +8,7 @@ namespace WaterNut.Business.Services.Importers.EntryData
     {
         public Result<List<InventoryDataItem>> Execute(List<InventoryDataItem> data)
         {
-            InventoryItemDataUtils.SaveInventoryItemsBulk(data);
+            InventoryItemDataUtils.SaveInventoryItems(data);
             return new Result<List<InventoryDataItem>>(data, true, "") ;
         }
     }
