@@ -80,7 +80,7 @@ namespace WaterNut.DataSpace
 			public List<xcuda_Item> EntriesList { get; set; }
 		}
 
-		internal class ItemSet
+        public class ItemSet
 		{
 			public (DateTime EntryDataDate, string EntryDataId, string ItemNumber, int InventoryItemId) Key { get; set; }
 			public List<EntryDataDetails> SalesList { get; set; }

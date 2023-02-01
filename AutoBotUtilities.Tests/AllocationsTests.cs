@@ -1,5 +1,6 @@
 using System.IO;
 using AllocationDS.Business.Entities;
+using AllocationQS.Business.Entities;
 using Core.Common.Utils;
 using EntryDataDS.Business.Entities;
 using WaterNut.Business.Services.Utils;
@@ -77,20 +78,27 @@ namespace AutoBotUtilities.Tests
 
         [Test]
         [Timeout(3 * 1000 * 60)]
-        [TestCase("TOH/MTSX018S")]
-        public void AllocatSales(string itemNumber)
+        [TestCase("TOH/MTSX018S", "2022-12-19", 101)]
+        public void AllocatSales(string itemNumber, string LastInvoiceDate, int NoOfAllocations )
         {
             try
             {
                 if (!Infrastructure.Utils.IsTestApplicationSettings()) Assert.IsTrue(true);
                 var timer = new System.Diagnostics.Stopwatch();
+                
+                if(Infrastructure.Utils.IsDevSqlServer()) AllocationsModel.Instance.ClearAllAllocations(BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId).Wait();
+
                 timer.Start();
                 _testClass.AllocateSales(BaseDataModel.Instance.CurrentApplicationSettings, false, itemNumber).Wait();
                 timer.Stop();
+                
                 Console.Write("AllocatSales1 in seconds: " + timer.Elapsed.Seconds);
-
+                var lastInvoiceDate = DateTime.Parse(LastInvoiceDate);
                 using (var ctx = new AllocationDSContext())
                 {
+                    var allocations = new AllocationQSContext().AsycudaSalesAndAdjustmentAllocationsExes.AsNoTracking()
+                        .Count(x => x.InvoiceDate <= lastInvoiceDate && x.ItemNumber == itemNumber);
+
                     var overallocatedSales = ctx.EntryDataDetails
                         .AsNoTracking()
                         .Where(x => x.ItemNumber == itemNumber)
@@ -101,8 +109,9 @@ namespace AutoBotUtilities.Tests
 
                     Assert.Multiple(() =>
                     {
-                        Assert.AreEqual(overallocatedSales, 0);
-                        Assert.AreEqual(unallocatedSales, 0);
+                        Assert.AreEqual(NoOfAllocations, allocations);
+                        Assert.AreEqual(0, overallocatedSales);
+                        Assert.AreEqual(0, unallocatedSales);
                     });
                 }
                 

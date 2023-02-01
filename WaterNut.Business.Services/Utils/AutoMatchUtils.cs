@@ -14,6 +14,7 @@ using MoreLinq;
 using TrackableEntities;
 using TrackableEntities.EF6;
 using WaterNut.DataSpace;
+using static WaterNut.DataSpace.AllocationsBaseModel;
 using AsycudaDocument = CoreEntities.Business.Entities.AsycudaDocument;
 using CustomsOperations = CoreEntities.Business.Enums.CustomsOperations;
 using xcuda_Item = AdjustmentQS.Business.Entities.xcuda_Item;
@@ -76,13 +77,18 @@ namespace AdjustmentQS.Business.Services
 
         }
 
-        public async Task AutoMatch(int applicationSettingsId, bool overwriteExisting, string lst = null)
+        public async Task AutoMatch(int applicationSettingsId, bool overwriteExisting, string lst)
+        {
+            var itemSets = BaseDataModel.GetItemSets(applicationSettingsId, lst);
+            await AutoMatch(applicationSettingsId, overwriteExisting, itemSets).ConfigureAwait(false);
+        }
+
+
+        public async Task AutoMatch( int applicationSettingsId, bool overwriteExisting, List<List<(string ItemNumber, int InventoryItemId)>> itemSets)
         {
             try
             {
                 _itemCache = null;
-
-                var itemSets = BaseDataModel.GetItemSets(applicationSettingsId, lst);
 
                 var rawData = itemSets
                     .AsParallel()
