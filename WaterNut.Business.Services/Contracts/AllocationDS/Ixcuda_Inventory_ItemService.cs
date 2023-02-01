@@ -13,61 +13,61 @@ using System.ServiceModel;
 using System.Threading.Tasks;
 
 using Core.Common.Contracts;
-using PreviousDocumentQS.Business.Entities;
+using AllocationDS.Business.Entities;
 using Core.Common.Business.Services;
 using WaterNut.Interfaces;
 
-namespace PreviousDocumentQS.Business.Services
+namespace AllocationDS.Business.Services
 {
     [ServiceContract (Namespace="http://www.insight-software.com/WaterNut")]
-    public partial interface IPreviousItemsExService : IBusinessService
+    public partial interface Ixcuda_Inventory_ItemService : IBusinessService
     {
         [OperationContract]
         [FaultContract(typeof(ValidationFault))]
-        Task<IEnumerable<PreviousItemsEx>> GetPreviousItemsExes(List<string> includesLst = null, bool tracking = true);
+        Task<IEnumerable<xcuda_Inventory_Item>> Getxcuda_Inventory_Item(List<string> includesLst = null, bool tracking = true);
 
         [OperationContract]
         [FaultContract(typeof(ValidationFault))]
-        Task<PreviousItemsEx> GetPreviousItemsExByKey(string id, List<string> includesLst = null, bool tracking = true);
+        Task<xcuda_Inventory_Item> Getxcuda_Inventory_ItemByKey(string id, List<string> includesLst = null, bool tracking = true);
 
 		[OperationContract]
         [FaultContract(typeof(ValidationFault))]
-        Task<IEnumerable<PreviousItemsEx>> GetPreviousItemsExesByExpression(string exp, List<string> includesLst = null, bool tracking = true);
+        Task<IEnumerable<xcuda_Inventory_Item>> Getxcuda_Inventory_ItemByExpression(string exp, List<string> includesLst = null, bool tracking = true);
 
 		[OperationContract]
         [FaultContract(typeof(ValidationFault))]
-        Task<IEnumerable<PreviousItemsEx>> GetPreviousItemsExesByExpressionLst(List<string> expLst, List<string> includesLst = null, bool tracking = true);
+        Task<IEnumerable<xcuda_Inventory_Item>> Getxcuda_Inventory_ItemByExpressionLst(List<string> expLst, List<string> includesLst = null, bool tracking = true);
 
 		[OperationContract]
         [FaultContract(typeof(ValidationFault))]
-		Task<IEnumerable<PreviousItemsEx>> GetPreviousItemsExesByExpressionNav(string exp,
+		Task<IEnumerable<xcuda_Inventory_Item>> Getxcuda_Inventory_ItemByExpressionNav(string exp,
             Dictionary<string, string> navExp, List<string> includesLst = null, bool tracking = true);
 
         [OperationContract]
         [FaultContract(typeof(ValidationFault))]
-        Task<IEnumerable<PreviousItemsEx>> GetPreviousItemsExesByBatch(string exp,
+        Task<IEnumerable<xcuda_Inventory_Item>> Getxcuda_Inventory_ItemByBatch(string exp,
             int totalrow, List<string> includesLst = null, bool tracking = true);
 
         [OperationContract]
         [FaultContract(typeof(ValidationFault))]
-        Task<IEnumerable<PreviousItemsEx>> GetPreviousItemsExesByBatchExpressionLst(List<string> exp,
+        Task<IEnumerable<xcuda_Inventory_Item>> Getxcuda_Inventory_ItemByBatchExpressionLst(List<string> exp,
             int totalrow, List<string> includesLst = null, bool tracking = true);
 
         [OperationContract]
         [FaultContract(typeof(ValidationFault))]
-        Task<PreviousItemsEx> UpdatePreviousItemsEx(PreviousItemsEx entity);
+        Task<xcuda_Inventory_Item> Updatexcuda_Inventory_Item(xcuda_Inventory_Item entity);
 
         [OperationContract]
         [FaultContract(typeof(ValidationFault))]
-        Task<PreviousItemsEx> CreatePreviousItemsEx(PreviousItemsEx entity);
+        Task<xcuda_Inventory_Item> Createxcuda_Inventory_Item(xcuda_Inventory_Item entity);
 
         [OperationContract]
         [FaultContract(typeof(ValidationFault))]
-        Task<bool> DeletePreviousItemsEx(string id);
+        Task<bool> Deletexcuda_Inventory_Item(string id);
 
         [OperationContract]
         [FaultContract(typeof(ValidationFault))]
-        Task<bool> RemoveSelectedPreviousItemsEx(IEnumerable<string> selectedPreviousItemsEx);
+        Task<bool> RemoveSelectedxcuda_Inventory_Item(IEnumerable<string> selectedxcuda_Inventory_Item);
 	
 		//Virtural list implementation
         [OperationContract]
@@ -84,13 +84,13 @@ namespace PreviousDocumentQS.Business.Services
 
         [OperationContract]
         [FaultContract(typeof(ValidationFault))]
-        Task<IEnumerable<PreviousItemsEx>> LoadRange(int startIndex, int count, string exp);
+        Task<IEnumerable<xcuda_Inventory_Item>> LoadRange(int startIndex, int count, string exp);
 
 
 
 		[OperationContract]
         [FaultContract(typeof(ValidationFault))]
-		Task<IEnumerable<PreviousItemsEx>> LoadRangeNav(int startIndex, int count, string exp,
+		Task<IEnumerable<xcuda_Inventory_Item>> LoadRangeNav(int startIndex, int count, string exp,
                                                                                  Dictionary<string, string> navExp, IEnumerable<string> includeLst = null);
 
 		[OperationContract]
@@ -107,19 +107,7 @@ namespace PreviousDocumentQS.Business.Services
 
 				[OperationContract]
         [FaultContract(typeof(ValidationFault))]
-        Task<IEnumerable<PreviousItemsEx>> GetPreviousItemsExByASYCUDA_Id(string ASYCUDA_Id, List<string> includesLst = null);
-  		[OperationContract]
-        [FaultContract(typeof(ValidationFault))]
-        Task<IEnumerable<PreviousItemsEx>> GetPreviousItemsExByPreviousDocumentItemId(string PreviousDocumentItemId, List<string> includesLst = null);
-  		[OperationContract]
-        [FaultContract(typeof(ValidationFault))]
-        Task<IEnumerable<PreviousItemsEx>> GetPreviousItemsExByAsycudaDocumentItemId(string AsycudaDocumentItemId, List<string> includesLst = null);
-  		[OperationContract]
-        [FaultContract(typeof(ValidationFault))]
-        Task<IEnumerable<PreviousItemsEx>> GetPreviousItemsExByApplicationSettingsId(string ApplicationSettingsId, List<string> includesLst = null);
-  		[OperationContract]
-        [FaultContract(typeof(ValidationFault))]
-        Task<IEnumerable<PreviousItemsEx>> GetPreviousItemsExByCustoms_ProcedureId(string Customs_ProcedureId, List<string> includesLst = null);
+        Task<IEnumerable<xcuda_Inventory_Item>> Getxcuda_Inventory_ItemByInventoryItemId(string InventoryItemId, List<string> includesLst = null);
   
 
 

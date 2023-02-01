@@ -370,6 +370,9 @@
     <Reference Include="UglyToad.PdfPig.Tokens, Version=0.1.7.0, Culture=neutral, PublicKeyToken=605d367334e74123, processorArchitecture=MSIL">
       <HintPath>..\packages\PdfPig.0.1.7\lib\net47\UglyToad.PdfPig.Tokens.dll</HintPath>
     </Reference>
+    <Reference Include="Z.EntityFramework.Extensions, Version=7.18.3.0, Culture=neutral, PublicKeyToken=59b66d028979105b, processorArchitecture=MSIL">
+      <HintPath>..\packages\Z.EntityFramework.Extensions.7.18.3\lib\net45\Z.EntityFramework.Extensions.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Asycuda\LicenseToDatabase.cs" />
@@ -431,6 +434,7 @@
     <Compile Include="Contracts\AllocationDS\IxBondAllocationsService.cs" />
     <Compile Include="Contracts\AllocationDS\Ixcuda_Goods_descriptionService.cs" />
     <Compile Include="Contracts\AllocationDS\Ixcuda_HScodeService.cs" />
+    <Compile Include="Contracts\AllocationDS\Ixcuda_Inventory_ItemService.cs" />
     <Compile Include="Contracts\AllocationDS\Ixcuda_ItemService.cs" />
     <Compile Include="Contracts\AllocationDS\Ixcuda_Item_InvoiceService.cs" />
     <Compile Include="Contracts\AllocationDS\Ixcuda_PreviousItemService.cs" />
@@ -913,6 +917,7 @@
     <Compile Include="Services\AllocationDS\xBondAllocationsService.cs" />
     <Compile Include="Services\AllocationDS\xcuda_Goods_descriptionService.cs" />
     <Compile Include="Services\AllocationDS\xcuda_HScodeService.cs" />
+    <Compile Include="Services\AllocationDS\xcuda_Inventory_ItemService.cs" />
     <Compile Include="Services\AllocationDS\xcuda_ItemService.cs" />
     <Compile Include="Services\AllocationDS\xcuda_Item_InvoiceService.cs" />
     <Compile Include="Services\AllocationDS\xcuda_PreviousItemService.cs" />

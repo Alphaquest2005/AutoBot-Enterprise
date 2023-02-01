@@ -33,7 +33,11 @@ namespace AdjustmentQS.Business.Services
 
         public async Task AutoMatch(int applicationSettingsId, bool overwriteExisting)
         {
-            await _autoMatchUtils.AutoMatch(applicationSettingsId, overwriteExisting).ConfigureAwait(false);
+            await _autoMatchUtils.AutoMatch(applicationSettingsId, overwriteExisting, null).ConfigureAwait(false);
+        }
+        public async Task AutoMatch(int applicationSettingsId, bool overwriteExisting, string lst = null)
+        {
+            await _autoMatchUtils.AutoMatch(applicationSettingsId, overwriteExisting, lst).ConfigureAwait(false);
         }
 
 

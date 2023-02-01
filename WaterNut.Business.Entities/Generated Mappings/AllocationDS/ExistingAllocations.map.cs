@@ -11,7 +11,7 @@
     {
         public ExistingAllocationsMap()
         {                        
-              this.HasKey(t => new {t.EntryDataDetailsId, t.xItemId, t.pItemId, t.InventoryItemId, t.CustomsProcedure});        
+              this.HasKey(t => new {t.EntryDataDetailsId, t.xItemId, t.pItemId, t.InventoryItemId, t.CustomsProcedure, t.SalesQuantity});        
               this.ToTable("ExistingAllocations");
               this.Property(t => t.xAsycudaId).HasColumnName("xAsycudaId");
               this.Property(t => t.EntryDataDetailsId).HasColumnName("EntryDataDetailsId").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.None));
@@ -33,6 +33,7 @@
               this.Property(t => t.DutyFreePaid).HasColumnName("DutyFreePaid").IsRequired().IsUnicode(false).HasMaxLength(9);
               this.Property(t => t.InventoryItemId).HasColumnName("InventoryItemId").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.None));
               this.Property(t => t.CustomsProcedure).HasColumnName("CustomsProcedure").IsRequired().HasMaxLength(11);
+              this.Property(t => t.SalesQuantity).HasColumnName("SalesQuantity");
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);
     			this.Ignore(t => t.ModifiedProperties);

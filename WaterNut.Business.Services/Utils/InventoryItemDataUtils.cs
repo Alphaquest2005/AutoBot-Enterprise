@@ -54,7 +54,7 @@ namespace WaterNut.Business.Services.Utils
                 .Select(item => CreateInventoryItem(inventorySource, item))
                 .ToList();
 
-            SaveInventoryItems(newInventoryItems);
+            SaveInventoryItemsBulk(newInventoryItems);
 
             return newInventoryItems;
         }
@@ -126,31 +126,35 @@ namespace WaterNut.Business.Services.Utils
             return new InventoryDataItem(item, i);
         }
 
-        public static void SaveInventoryItems(List<InventoryDataItem> processedInventoryItems)
+        public static void SaveInventoryItemsSlow(List<InventoryDataItem> processedInventoryItems)
         {
 
 
             foreach (var processedInventoryItem in processedInventoryItems.Where(x =>
                          x.Item.TrackingState != TrackingState.Unchanged))
             {
+
                 using (var ctx = new InventoryDSContext() {StartTracking = true})
                 {
-                    //try
-                    //{
+                   
                         var itm = processedInventoryItem.Item.ChangeTracker.GetChanges().FirstOrDefault();
                         ctx.ApplyChanges(itm);
                         ctx.SaveChanges();
                         itm.AcceptChanges();
                         processedInventoryItem.Item.Id = itm.Id;
-                    //}
-                    //catch (Exception e)
-                    //{
-                    //    Console.WriteLine(e);
-                    //    throw;
-                    //}
+                 
                 }
             }
 
+        }
+
+        public static void SaveInventoryItemsBulk(List<InventoryDataItem> processedInventoryItems)
+        {
+            using (var ctx = new InventoryDSContext() { StartTracking = true })
+            {
+                ctx.BulkMerge(processedInventoryItems.Select(z => z.Item).ToList());
+                processedInventoryItems.ForEach(z => z.Item.AcceptChanges());
+            }
         }
     }
 }

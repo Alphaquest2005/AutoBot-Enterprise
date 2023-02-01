@@ -8,7 +8,7 @@ namespace WaterNut.Business.Services.Importers.EntryData
     {
         public Result<List<RawEntryData>> Execute(List<RawEntryData> data)
         {
-            var validRawEntryData = RawEntryDataProcessor.GetValidRawEntryData(data);
+            var validRawEntryData = new RawEntryDataProcessor().GetValidRawEntryData(data);
             return new Result<List<RawEntryData>>(validRawEntryData,true,"");
         }
     }

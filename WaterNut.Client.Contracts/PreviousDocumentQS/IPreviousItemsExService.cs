@@ -91,6 +91,9 @@ namespace PreviousDocumentQS.Client.Contracts
   		[OperationContract]
 		Task<IEnumerable<PreviousItemsEx>> GetPreviousItemsExByApplicationSettingsId(string ApplicationSettingsId, List<string> includesLst = null);
         
+  		[OperationContract]
+		Task<IEnumerable<PreviousItemsEx>> GetPreviousItemsExByCustoms_ProcedureId(string Customs_ProcedureId, List<string> includesLst = null);
+        
   		
     }
 }

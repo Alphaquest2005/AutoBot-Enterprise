@@ -7,19 +7,15 @@
     using System.ComponentModel.DataAnnotations.Schema;
     using System.Collections.Generic;
     
-    public partial class xcuda_HScodeMap : EntityTypeConfiguration<xcuda_HScode>
+    public partial class xcuda_Inventory_ItemMap : EntityTypeConfiguration<xcuda_Inventory_Item>
     {
-        public xcuda_HScodeMap()
+        public xcuda_Inventory_ItemMap()
         {                        
               this.HasKey(t => t.Item_Id);        
-              this.ToTable("xcuda_HScode");
-              this.Property(t => t.Commodity_code).HasColumnName("Commodity_code").IsRequired().HasMaxLength(20);
-              this.Property(t => t.Precision_1).HasColumnName("Precision_1").HasMaxLength(255);
-              this.Property(t => t.Precision_4).HasColumnName("Precision_4").HasMaxLength(50);
+              this.ToTable("xcuda_Inventory_Item");
               this.Property(t => t.Item_Id).HasColumnName("Item_Id").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.None));
-              this.HasRequired(t => t.xcuda_Tarification).WithOptional(t => (xcuda_HScode)t.xcuda_HScode);
-              this.HasRequired(t => t.TariffCodes).WithMany(t =>(ICollection<xcuda_HScode>) t.xcuda_HScode).HasForeignKey(d => d.Commodity_code);
-              this.HasOptional(t => t.xcuda_Inventory_Item).WithRequired(t => (xcuda_HScode)t.xcuda_HScode);
+              this.Property(t => t.InventoryItemId).HasColumnName("InventoryItemId");
+              this.HasRequired(t => t.xcuda_HScode).WithOptional(t => (xcuda_Inventory_Item)t.xcuda_Inventory_Item);
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);
     			this.Ignore(t => t.ModifiedProperties);

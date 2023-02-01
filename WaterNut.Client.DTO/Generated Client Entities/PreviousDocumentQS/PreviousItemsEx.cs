@@ -74,7 +74,7 @@ namespace PreviousDocumentQS.Client.DTO
         private string _Commodity_code;
 
         [DataMember]
-        public string Previous_item_number
+        public Nullable<int> Previous_item_number
 		{ 
 		    get { return _Previous_item_number; }
 			set
@@ -84,7 +84,7 @@ namespace PreviousDocumentQS.Client.DTO
 				NotifyPropertyChanged();//m => this.Previous_item_number
 			}
 		}
-        private string _Previous_item_number;
+        private Nullable<int> _Previous_item_number;
 
         [DataMember]
         public string Goods_origin
@@ -100,7 +100,7 @@ namespace PreviousDocumentQS.Client.DTO
         private string _Goods_origin;
 
         [DataMember]
-        public Nullable<decimal> Net_weight
+        public decimal Net_weight
 		{ 
 		    get { return _Net_weight; }
 			set
@@ -110,10 +110,10 @@ namespace PreviousDocumentQS.Client.DTO
 				NotifyPropertyChanged();//m => this.Net_weight
 			}
 		}
-        private Nullable<decimal> _Net_weight;
+        private decimal _Net_weight;
 
         [DataMember]
-        public Nullable<decimal> Prev_net_weight
+        public decimal Prev_net_weight
 		{ 
 		    get { return _Prev_net_weight; }
 			set
@@ -123,7 +123,7 @@ namespace PreviousDocumentQS.Client.DTO
 				NotifyPropertyChanged();//m => this.Prev_net_weight
 			}
 		}
-        private Nullable<decimal> _Prev_net_weight;
+        private decimal _Prev_net_weight;
 
         [DataMember]
         public string Prev_reg_ser
@@ -217,7 +217,7 @@ namespace PreviousDocumentQS.Client.DTO
         private double _Previous_value;
 
         [DataMember]
-        public string Current_item_number
+        public Nullable<int> Current_item_number
 		{ 
 		    get { return _Current_item_number; }
 			set
@@ -227,7 +227,7 @@ namespace PreviousDocumentQS.Client.DTO
 				NotifyPropertyChanged();//m => this.Current_item_number
 			}
 		}
-        private string _Current_item_number;
+        private Nullable<int> _Current_item_number;
 
         [DataMember]
         public int PreviousItem_Id
@@ -269,7 +269,7 @@ namespace PreviousDocumentQS.Client.DTO
         private double _QtyAllocated;
 
         [DataMember]
-        public Nullable<int> PreviousDocumentItemId
+        public int PreviousDocumentItemId
 		{ 
 		    get { return _PreviousDocumentItemId; }
 			set
@@ -279,7 +279,7 @@ namespace PreviousDocumentQS.Client.DTO
 				NotifyPropertyChanged();//m => this.PreviousDocumentItemId
 			}
 		}
-        private Nullable<int> _PreviousDocumentItemId;
+        private int _PreviousDocumentItemId;
 
         [DataMember]
         public double RndCurrent_Value
@@ -451,7 +451,7 @@ namespace PreviousDocumentQS.Client.DTO
         private int _ApplicationSettingsId;
 
         [DataMember]
-        public Nullable<double> TotalDutyLiablity
+        public double TotalDutyLiablity
 		{ 
 		    get { return _TotalDutyLiablity; }
 			set
@@ -461,10 +461,10 @@ namespace PreviousDocumentQS.Client.DTO
 				NotifyPropertyChanged();//m => this.TotalDutyLiablity
 			}
 		}
-        private Nullable<double> _TotalDutyLiablity;
+        private double _TotalDutyLiablity;
 
         [DataMember]
-        public Nullable<double> DutyLiablity
+        public double DutyLiablity
 		{ 
 		    get { return _DutyLiablity; }
 			set
@@ -474,7 +474,7 @@ namespace PreviousDocumentQS.Client.DTO
 				NotifyPropertyChanged();//m => this.DutyLiablity
 			}
 		}
-        private Nullable<double> _DutyLiablity;
+        private double _DutyLiablity;
 
         [DataMember]
         public Nullable<int> Prev_reg_year
@@ -488,6 +488,32 @@ namespace PreviousDocumentQS.Client.DTO
 			}
 		}
         private Nullable<int> _Prev_reg_year;
+
+        [DataMember]
+        public int Customs_ProcedureId
+		{ 
+		    get { return _Customs_ProcedureId; }
+			set
+			{
+			    if (value == _Customs_ProcedureId) return;
+				_Customs_ProcedureId = value;
+				NotifyPropertyChanged();//m => this.Customs_ProcedureId
+			}
+		}
+        private int _Customs_ProcedureId;
+
+        [DataMember]
+        public string CustomsProcedure
+		{ 
+		    get { return _CustomsProcedure; }
+			set
+			{
+			    if (value == _CustomsProcedure) return;
+				_CustomsProcedure = value;
+				NotifyPropertyChanged();//m => this.CustomsProcedure
+			}
+		}
+        private string _CustomsProcedure;
 
        
         [DataMember]

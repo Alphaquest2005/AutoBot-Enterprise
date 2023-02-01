@@ -144,6 +144,46 @@ namespace PreviousDocumentQS.Client.Entities
             }
 
       }
+        public string Customs_ProcedureEntityName
+        {
+            get
+            {
+ 
+                if(this.Customs_Procedure == null) UpdateCustoms_Procedure();
+                return this.Customs_Procedure == null ? "" : this.Customs_Procedure.EntityName;
+            }
+            set
+            {
+                                if (string.IsNullOrEmpty(value)) return;
+                string[] vals = value.Split(',');
+               
+                    using (Customs_ProcedureClient ctx = new Customs_ProcedureClient())
+                    {
+                        var dto = ctx.GetCustoms_Procedure().Result.AsEnumerable().FirstOrDefault(x => x.EntityName == value);
+                        
+
+                        if ( dto == null)
+                        {
+                            this.Customs_Procedure = (Customs_Procedure)new Customs_Procedure().CreateEntityFromString(value);
+							
+							this.Customs_ProcedureId = Convert.ToInt32(this.Customs_Procedure.Customs_ProcedureId);
+                            this.TrackingState=TrackableEntities.TrackingState.Modified;
+                           NotifyPropertyChanged("AddCustoms_Procedure");
+                        }
+                        else
+                        {
+                            var obj = new Customs_Procedure(dto);
+                           if (this.Customs_Procedure == null || this.Customs_Procedure.EntityId != obj.EntityId) this.Customs_Procedure = obj;
+                           
+                        }
+                         
+
+
+                    }
+            
+            }
+
+      }
 
 
 

@@ -202,6 +202,7 @@
     <Compile Include="Generated Business Entities\AllocationDS\xBondAllocations.cs" />
     <Compile Include="Generated Business Entities\AllocationDS\xcuda_Goods_description.cs" />
     <Compile Include="Generated Business Entities\AllocationDS\xcuda_HScode.cs" />
+    <Compile Include="Generated Business Entities\AllocationDS\xcuda_Inventory_Item.cs" />
     <Compile Include="Generated Business Entities\AllocationDS\xcuda_Item.cs" />
     <Compile Include="Generated Business Entities\AllocationDS\xcuda_Item_Invoice.cs" />
     <Compile Include="Generated Business Entities\AllocationDS\xcuda_PreviousItem.cs" />
@@ -633,6 +634,7 @@
     <Compile Include="Generated ChangeTracking Models\AllocationDS\xBondAllocations.cs" />
     <Compile Include="Generated ChangeTracking Models\AllocationDS\xcuda_Goods_description.cs" />
     <Compile Include="Generated ChangeTracking Models\AllocationDS\xcuda_HScode.cs" />
+    <Compile Include="Generated ChangeTracking Models\AllocationDS\xcuda_Inventory_Item.cs" />
     <Compile Include="Generated ChangeTracking Models\AllocationDS\xcuda_Item.cs" />
     <Compile Include="Generated ChangeTracking Models\AllocationDS\xcuda_Item_Invoice.cs" />
     <Compile Include="Generated ChangeTracking Models\AllocationDS\xcuda_PreviousItem.cs" />
@@ -1057,6 +1059,7 @@
     <Compile Include="Generated Constructors Models\AllocationDS\xBondAllocations.cs" />
     <Compile Include="Generated Constructors Models\AllocationDS\xcuda_Goods_description.cs" />
     <Compile Include="Generated Constructors Models\AllocationDS\xcuda_HScode.cs" />
+    <Compile Include="Generated Constructors Models\AllocationDS\xcuda_Inventory_Item.cs" />
     <Compile Include="Generated Constructors Models\AllocationDS\xcuda_Item.cs" />
     <Compile Include="Generated Constructors Models\AllocationDS\xcuda_Item_Invoice.cs" />
     <Compile Include="Generated Constructors Models\AllocationDS\xcuda_PreviousItem.cs" />
@@ -1481,6 +1484,7 @@
     <Compile Include="Generated IEntitiyWithKey Models\AllocationDS\xBondAllocations.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\AllocationDS\xcuda_Goods_description.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\AllocationDS\xcuda_HScode.cs" />
+    <Compile Include="Generated IEntitiyWithKey Models\AllocationDS\xcuda_Inventory_Item.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\AllocationDS\xcuda_Item.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\AllocationDS\xcuda_Item_Invoice.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\AllocationDS\xcuda_PreviousItem.cs" />
@@ -1905,6 +1909,7 @@
     <Compile Include="Generated IIdentitfiableEntity Models\AllocationDS\xBondAllocations.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\AllocationDS\xcuda_Goods_description.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\AllocationDS\xcuda_HScode.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\AllocationDS\xcuda_Inventory_Item.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\AllocationDS\xcuda_Item.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\AllocationDS\xcuda_Item_Invoice.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\AllocationDS\xcuda_PreviousItem.cs" />
@@ -2339,6 +2344,7 @@
     <Compile Include="Generated Mappings\AllocationDS\xBondAllocations.map.cs" />
     <Compile Include="Generated Mappings\AllocationDS\xcuda_Goods_description.map.cs" />
     <Compile Include="Generated Mappings\AllocationDS\xcuda_HScode.map.cs" />
+    <Compile Include="Generated Mappings\AllocationDS\xcuda_Inventory_Item.map.cs" />
     <Compile Include="Generated Mappings\AllocationDS\xcuda_Item.map.cs" />
     <Compile Include="Generated Mappings\AllocationDS\xcuda_Item_Invoice.map.cs" />
     <Compile Include="Generated Mappings\AllocationDS\xcuda_PreviousItem.map.cs" />

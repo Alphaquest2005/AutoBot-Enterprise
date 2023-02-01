@@ -320,6 +320,21 @@ namespace AllocationDS.Business.Entities
             }
         }
         string _customsprocedure;
+        [DataMember]
+        public double SalesQuantity 
+        {
+            get
+            {
+                return _salesquantity;
+            }
+            set
+            {
+                _salesquantity = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        double _salesquantity;
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

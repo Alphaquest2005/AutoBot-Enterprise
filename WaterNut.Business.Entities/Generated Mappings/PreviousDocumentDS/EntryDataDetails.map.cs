@@ -30,8 +30,8 @@
               this.Property(t => t.Status).HasColumnName("Status").HasMaxLength(50);
               this.Property(t => t.InvoiceQty).HasColumnName("InvoiceQty");
               this.Property(t => t.ReceivedQty).HasColumnName("ReceivedQty");
-              this.Property(t => t.PreviousInvoiceNumber).HasColumnName("PreviousInvoiceNumber").HasMaxLength(50);
-              this.Property(t => t.CNumber).HasColumnName("CNumber").HasMaxLength(50);
+              this.Property(t => t.PreviousInvoiceNumber).HasColumnName("PreviousInvoiceNumber").HasMaxLength(255);
+              this.Property(t => t.CNumber).HasColumnName("CNumber").HasMaxLength(255);
               this.Property(t => t.Comment).HasColumnName("Comment").HasMaxLength(255);
               this.Property(t => t.EffectiveDate).HasColumnName("EffectiveDate");
               this.Property(t => t.IsReconciled).HasColumnName("IsReconciled");
@@ -43,7 +43,7 @@
               this.Property(t => t.FileLineNumber).HasColumnName("FileLineNumber");
               this.Property(t => t.UpgradeKey).HasColumnName("UpgradeKey");
               this.Property(t => t.VolumeLiters).HasColumnName("VolumeLiters");
-              this.Property(t => t.EntryDataDetailsKey).HasColumnName("EntryDataDetailsKey").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.Computed)).HasMaxLength(4000);
+              this.Property(t => t.EntryDataDetailsKey).HasColumnName("EntryDataDetailsKey").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.Computed)).HasMaxLength(60);
               this.Property(t => t.TotalValue).HasColumnName("TotalValue").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.Computed));
               this.Property(t => t.CLineNumber).HasColumnName("CLineNumber");
              // Tracking Properties

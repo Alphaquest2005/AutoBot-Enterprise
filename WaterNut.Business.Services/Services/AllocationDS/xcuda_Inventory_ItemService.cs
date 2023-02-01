@@ -32,19 +32,19 @@ using WaterNut.Interfaces;
 
 namespace AllocationDS.Business.Services
 {
-   [Export (typeof(Ixcuda_HScodeService))]
+   [Export (typeof(Ixcuda_Inventory_ItemService))]
    [Export(typeof(IBusinessService))]
    [PartCreationPolicy(CreationPolicy.NonShared)]
    [ServiceBehavior(InstanceContextMode = InstanceContextMode.PerCall,
                     ConcurrencyMode = ConcurrencyMode.Multiple)]
    
-    public partial class xcuda_HScodeService : Ixcuda_HScodeService, IDisposable
+    public partial class xcuda_Inventory_ItemService : Ixcuda_Inventory_ItemService, IDisposable
     {
         //private readonly AllocationDSContext dbContext;
 
         public bool StartTracking { get; set; }
 
-        public xcuda_HScodeService()
+        public xcuda_Inventory_ItemService()
         {
             try
             {
@@ -65,7 +65,7 @@ namespace AllocationDS.Business.Services
             }
         }
 
-        public async Task<IEnumerable<xcuda_HScode>> Getxcuda_HScode(List<string> includesLst = null, bool tracking = true)
+        public async Task<IEnumerable<xcuda_Inventory_Item>> Getxcuda_Inventory_Item(List<string> includesLst = null, bool tracking = true)
         {
             try
             {
@@ -75,7 +75,7 @@ namespace AllocationDS.Business.Services
                   using ( var dbContext = new AllocationDSContext(){StartTracking = StartTracking})
                   {
 				    var set = AddIncludes(includesLst, dbContext);
-                    IEnumerable<xcuda_HScode> entities = set.AsNoTracking().ToList();
+                    IEnumerable<xcuda_Inventory_Item> entities = set.AsNoTracking().ToList();
                            //scope.Complete();
                             if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
                             return entities;
@@ -97,7 +97,7 @@ namespace AllocationDS.Business.Services
         }
 
 
-        public async Task<xcuda_HScode> Getxcuda_HScodeByKey(string Item_Id, List<string> includesLst = null, bool tracking = true)
+        public async Task<xcuda_Inventory_Item> Getxcuda_Inventory_ItemByKey(string Item_Id, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
@@ -106,7 +106,7 @@ namespace AllocationDS.Business.Services
               {
                 var i = Convert.ToInt32(Item_Id);
 				var set = AddIncludes(includesLst, dbContext);
-                xcuda_HScode entity = set.AsNoTracking().SingleOrDefault(x => x.Item_Id == i);
+                xcuda_Inventory_Item entity = set.AsNoTracking().SingleOrDefault(x => x.Item_Id == i);
                 if(tracking && entity != null) entity.StartTracking();
                 return entity;
               }
@@ -126,14 +126,14 @@ namespace AllocationDS.Business.Services
         }
 
 
-		 public async Task<IEnumerable<xcuda_HScode>> Getxcuda_HScodeByExpression(string exp, List<string> includesLst = null, bool tracking = true)
+		 public async Task<IEnumerable<xcuda_Inventory_Item>> Getxcuda_Inventory_ItemByExpression(string exp, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
                 using (var dbContext = new AllocationDSContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-					if (string.IsNullOrEmpty(exp) || exp == "None") return new List<xcuda_HScode>();
+					if (string.IsNullOrEmpty(exp) || exp == "None") return new List<xcuda_Inventory_Item>();
 					var set = AddIncludes(includesLst, dbContext);
                     if (exp == "All")
                     {
@@ -167,14 +167,14 @@ namespace AllocationDS.Business.Services
             }
         }
 
-		 public async Task<IEnumerable<xcuda_HScode>> Getxcuda_HScodeByExpressionLst(List<string> expLst, List<string> includesLst = null, bool tracking = true)
+		 public async Task<IEnumerable<xcuda_Inventory_Item>> Getxcuda_Inventory_ItemByExpressionLst(List<string> expLst, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
                 using (var dbContext = new AllocationDSContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-					if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return new List<xcuda_HScode>();
+					if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return new List<xcuda_Inventory_Item>();
 					var set = AddIncludes(includesLst, dbContext);
                     if (expLst.FirstOrDefault() == "All")
                     {
@@ -207,7 +207,7 @@ namespace AllocationDS.Business.Services
             }
         }
 
-		public async Task<IEnumerable<xcuda_HScode>> Getxcuda_HScodeByExpressionNav(string exp,
+		public async Task<IEnumerable<xcuda_Inventory_Item>> Getxcuda_Inventory_ItemByExpressionNav(string exp,
 																							  Dictionary<string, string> navExp,
 																							  List<string> includesLst = null, bool tracking = true)
         {
@@ -216,7 +216,7 @@ namespace AllocationDS.Business.Services
                 using (var dbContext = new AllocationDSContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-                    if (string.IsNullOrEmpty(exp) || exp == "None") return new List<xcuda_HScode>();
+                    if (string.IsNullOrEmpty(exp) || exp == "None") return new List<xcuda_Inventory_Item>();
 
                     if (exp == "All" && navExp.Count == 0)
                     {
@@ -229,22 +229,10 @@ namespace AllocationDS.Business.Services
                     {
                         switch (itm.Key)
                         {
-                            case "xcuda_Tarification":
+                            case "xcuda_HScode":
                                 return
                                     await
-                                        GetWhere<xcuda_Tarification>(dbContext, exp, itm.Value, "xcuda_HScode", "SelectMany", includesLst)
-										.ConfigureAwait(continueOnCapturedContext: false);
-
-                            case "TariffCodes":
-                                return
-                                    await
-                                        GetWhere<TariffCodes>(dbContext, exp, itm.Value, "xcuda_HScode", "SelectMany", includesLst)
-										.ConfigureAwait(continueOnCapturedContext: false);
-
-                            case "xcuda_Inventory_Item":
-                                return
-                                    await
-                                        GetWhere<xcuda_Inventory_Item>(dbContext, exp, itm.Value, "xcuda_HScode", "SelectMany", includesLst)
+                                        GetWhere<xcuda_HScode>(dbContext, exp, itm.Value, "xcuda_Inventory_Item", "SelectMany", includesLst)
 										.ConfigureAwait(continueOnCapturedContext: false);
 
                         }
@@ -272,17 +260,17 @@ namespace AllocationDS.Business.Services
             }
         }
 
-        public async Task<IEnumerable<xcuda_HScode>> Getxcuda_HScodeByBatch(string exp,
+        public async Task<IEnumerable<xcuda_Inventory_Item>> Getxcuda_Inventory_ItemByBatch(string exp,
             int totalrow, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
 
-                var res = new ConcurrentQueue<List<xcuda_HScode>>();
+                var res = new ConcurrentQueue<List<xcuda_Inventory_Item>>();
 
 
 
-                if (string.IsNullOrEmpty(exp) || exp == "None") return new List<xcuda_HScode>();
+                if (string.IsNullOrEmpty(exp) || exp == "None") return new List<xcuda_Inventory_Item>();
 
 
                 var batchSize = 500;
@@ -303,7 +291,7 @@ namespace AllocationDS.Business.Services
                                 dbContext.Configuration.AutoDetectChangesEnabled = false;
                                 //dbContext.Configuration.LazyLoadingEnabled = true;
                                 var set = AddIncludes(includesLst, dbContext);
-                                IQueryable<xcuda_HScode> dset;
+                                IQueryable<xcuda_Inventory_Item> dset;
                                 if (exp == "All")
                                 {
                                     dset = set.OrderBy(x => x.Item_Id);
@@ -347,17 +335,17 @@ namespace AllocationDS.Business.Services
                 throw new FaultException<ValidationFault>(fault);
             }
         }
-        public async Task<IEnumerable<xcuda_HScode>> Getxcuda_HScodeByBatchExpressionLst(List<string> expLst,
+        public async Task<IEnumerable<xcuda_Inventory_Item>> Getxcuda_Inventory_ItemByBatchExpressionLst(List<string> expLst,
             int totalrow, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
 
-                var res = new ConcurrentQueue<List<xcuda_HScode>>();
+                var res = new ConcurrentQueue<List<xcuda_Inventory_Item>>();
 
 
 
-                if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return new List<xcuda_HScode>();
+                if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return new List<xcuda_Inventory_Item>();
 
 
                 var batchSize = 500;
@@ -378,7 +366,7 @@ namespace AllocationDS.Business.Services
                                 dbContext.Configuration.AutoDetectChangesEnabled = false;
                                 //dbContext.Configuration.LazyLoadingEnabled = true;
                                 var set = AddIncludes(includesLst, dbContext);
-                                IQueryable<xcuda_HScode> dset;
+                                IQueryable<xcuda_Inventory_Item> dset;
                                 if (expLst.FirstOrDefault() == "All")
                                 {
                                     dset = set.OrderBy(x => x.Item_Id);
@@ -423,13 +411,13 @@ namespace AllocationDS.Business.Services
         }
 
 
-        public async Task<xcuda_HScode> Updatexcuda_HScode(xcuda_HScode entity)
+        public async Task<xcuda_Inventory_Item> Updatexcuda_Inventory_Item(xcuda_Inventory_Item entity)
         { 
             using ( var dbContext = new AllocationDSContext(){StartTracking = StartTracking})
               {
                 try
                 {   
-                     var res = (xcuda_HScode) entity;
+                     var res = (xcuda_Inventory_Item) entity;
                     if(res.TrackingState == TrackingState.Unchanged) res.TrackingState = TrackingState.Modified;                              
                     
                     dbContext.ApplyChanges(res);
@@ -496,14 +484,14 @@ namespace AllocationDS.Business.Services
            return entity;
         }
 
-        public async Task<xcuda_HScode> Createxcuda_HScode(xcuda_HScode entity)
+        public async Task<xcuda_Inventory_Item> Createxcuda_Inventory_Item(xcuda_Inventory_Item entity)
         {
             try
             {
-                var res = (xcuda_HScode) entity;
+                var res = (xcuda_Inventory_Item) entity;
               using ( var dbContext = new AllocationDSContext(){StartTracking = StartTracking})
               {
-                dbContext.xcuda_HScode.Add(res);
+                dbContext.xcuda_Inventory_Item.Add(res);
                 dbContext.SaveChanges();
                 res.AcceptChanges();
                 return res;
@@ -523,20 +511,20 @@ namespace AllocationDS.Business.Services
             }
         }
 
-        public async Task<bool> Deletexcuda_HScode(string Item_Id)
+        public async Task<bool> Deletexcuda_Inventory_Item(string Item_Id)
         {
             try
             {
               using ( var dbContext = new AllocationDSContext(){StartTracking = StartTracking})
               {
                 var i = Convert.ToInt32(Item_Id);
-                xcuda_HScode entity = dbContext.xcuda_HScode
+                xcuda_Inventory_Item entity = dbContext.xcuda_Inventory_Item
 													.SingleOrDefault(x => x.Item_Id == i);
                 if (entity == null)
                     return false;
 
-                    dbContext.xcuda_HScode.Attach(entity);
-                    dbContext.xcuda_HScode.Remove(entity);
+                    dbContext.xcuda_Inventory_Item.Attach(entity);
+                    dbContext.xcuda_Inventory_Item.Remove(entity);
                     dbContext.SaveChanges();
                     return true;
               }
@@ -555,19 +543,19 @@ namespace AllocationDS.Business.Services
             }
         }
 
-        public async Task<bool> RemoveSelectedxcuda_HScode(IEnumerable<string> lst)
+        public async Task<bool> RemoveSelectedxcuda_Inventory_Item(IEnumerable<string> lst)
         {
             try
             {
-                StatusModel.StartStatusUpdate("Removing xcuda_HScode", lst.Count());
+                StatusModel.StartStatusUpdate("Removing xcuda_Inventory_Item", lst.Count());
                 var t = Task.Run(() =>
                 {
-                    using (var ctx = new xcuda_HScodeService())
+                    using (var ctx = new xcuda_Inventory_ItemService())
                     {
                         foreach (var item in lst.ToList())
                         {
 
-                            ctx.Deletexcuda_HScode(item).Wait();
+                            ctx.Deletexcuda_Inventory_Item(item).Wait();
                             StatusModel.StatusUpdate();
                         }
                     }
@@ -602,7 +590,7 @@ namespace AllocationDS.Business.Services
                 {
                     dbContext.Database.CommandTimeout = 0;
                     if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return 0;
-                    var set = (IQueryable<xcuda_HScode>)dbContext.xcuda_HScode; 
+                    var set = (IQueryable<xcuda_Inventory_Item>)dbContext.xcuda_Inventory_Item; 
                     if (expLst.FirstOrDefault() == "All")
                     {
                         return set.AsNoTracking().Count();
@@ -638,14 +626,14 @@ namespace AllocationDS.Business.Services
                     if (string.IsNullOrEmpty(exp) || exp == "None") return 0;
                     if (exp == "All")
                     {
-                        return dbContext.xcuda_HScode
+                        return dbContext.xcuda_Inventory_Item
                                     .AsNoTracking()
 									.Count();
                     }
                     else
                     {
                         
-                        return dbContext.xcuda_HScode
+                        return dbContext.xcuda_Inventory_Item
 									.AsNoTracking()
                                     .Where(exp)
 									.Count();
@@ -666,17 +654,17 @@ namespace AllocationDS.Business.Services
             }
         }
         
-        public async Task<IEnumerable<xcuda_HScode>> LoadRange(int startIndex, int count, string exp)
+        public async Task<IEnumerable<xcuda_Inventory_Item>> LoadRange(int startIndex, int count, string exp)
         {
             try
             {
                 using (var dbContext = new AllocationDSContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-                    if (string.IsNullOrEmpty(exp) || exp == "None") return new List<xcuda_HScode>();
+                    if (string.IsNullOrEmpty(exp) || exp == "None") return new List<xcuda_Inventory_Item>();
                     if (exp == "All")
                     {
-                        return dbContext.xcuda_HScode
+                        return dbContext.xcuda_Inventory_Item
 										.AsNoTracking()
                                         .OrderBy(y => y.Item_Id)
 										.Skip(startIndex)
@@ -686,7 +674,7 @@ namespace AllocationDS.Business.Services
                     else
                     {
                         
-                        return dbContext.xcuda_HScode
+                        return dbContext.xcuda_Inventory_Item
 										.AsNoTracking()
                                         .Where(exp)
 										.OrderBy(y => y.Item_Id)
@@ -720,7 +708,7 @@ namespace AllocationDS.Business.Services
                     dbContext.Database.CommandTimeout = 0;
                     if (exp == "All" && navExp.Count == 0)
                     {
-                        return dbContext.xcuda_HScode
+                        return dbContext.xcuda_Inventory_Item
 										.AsNoTracking()
                                         .Count();
                     }
@@ -728,18 +716,12 @@ namespace AllocationDS.Business.Services
                     {
                         switch (itm.Key)
                         {
-                            case "xcuda_Tarification":
-                                return await CountWhere<xcuda_Tarification>(dbContext, exp, itm.Value, "xcuda_HScode", "SelectMany")
-											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "TariffCodes":
-                                return await CountWhere<TariffCodes>(dbContext, exp, itm.Value, "xcuda_HScode", "SelectMany")
-											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "xcuda_Inventory_Item":
-                                return await CountWhere<xcuda_Inventory_Item>(dbContext, exp, itm.Value, "xcuda_HScode", "SelectMany")
+                            case "xcuda_HScode":
+                                return await CountWhere<xcuda_HScode>(dbContext, exp, itm.Value, "xcuda_Inventory_Item", "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }
-                    return dbContext.xcuda_HScode.Where(exp == "All" || exp == null ? "Item_Id != null" : exp)
+                    return dbContext.xcuda_Inventory_Item.Where(exp == "All" || exp == null ? "Item_Id != null" : exp)
 											.AsNoTracking()
                                             .Count();
                 }
@@ -780,7 +762,7 @@ namespace AllocationDS.Business.Services
             return dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
-                .SelectMany(navProp).OfType<xcuda_HScode>()
+                .SelectMany(navProp).OfType<xcuda_Inventory_Item>()
                 .Where(exp == "All" || exp == null ? "Item_Id != null" : exp)
                 .Distinct()
                 .OrderBy("Item_Id")
@@ -800,7 +782,7 @@ namespace AllocationDS.Business.Services
             return dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
-                .Select(navProp).OfType<xcuda_HScode>()
+                .Select(navProp).OfType<xcuda_Inventory_Item>()
                 .Where(exp == "All" || exp == null ? "Item_Id != null" : exp)
                 .Distinct()
                 .OrderBy("Item_Id")
@@ -813,7 +795,7 @@ namespace AllocationDS.Business.Services
 			}
         }
 
-		  public async Task<IEnumerable<xcuda_HScode>> LoadRangeNav(int startIndex, int count, string exp,
+		  public async Task<IEnumerable<xcuda_Inventory_Item>> LoadRangeNav(int startIndex, int count, string exp,
                                                                                  Dictionary<string, string> navExp, IEnumerable<string> includeLst = null)
         {
             try
@@ -821,7 +803,7 @@ namespace AllocationDS.Business.Services
                 using (var dbContext = new AllocationDSContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-                    if ((string.IsNullOrEmpty(exp) && navExp.Count == 0) || exp == "None") return new List<xcuda_HScode>();
+                    if ((string.IsNullOrEmpty(exp) && navExp.Count == 0) || exp == "None") return new List<xcuda_Inventory_Item>();
                     var set = AddIncludes(includeLst, dbContext);
 
                     if (exp == "All" && navExp.Count == 0)
@@ -839,22 +821,10 @@ namespace AllocationDS.Business.Services
                     {
                         switch (itm.Key)
                         {
-                            case "xcuda_Tarification":
+                            case "xcuda_HScode":
                                 return
                                     await
-                                        LoadRangeWhere<xcuda_Tarification>(startIndex, count, dbContext, exp, itm.Value, "xcuda_HScode", "SelectMany")
-													.ConfigureAwait(continueOnCapturedContext: false);
-
-                            case "TariffCodes":
-                                return
-                                    await
-                                        LoadRangeWhere<TariffCodes>(startIndex, count, dbContext, exp, itm.Value, "xcuda_HScode", "SelectMany")
-													.ConfigureAwait(continueOnCapturedContext: false);
-
-                            case "xcuda_Inventory_Item":
-                                return
-                                    await
-                                        LoadRangeWhere<xcuda_Inventory_Item>(startIndex, count, dbContext, exp, itm.Value, "xcuda_HScode", "SelectMany")
+                                        LoadRangeWhere<xcuda_HScode>(startIndex, count, dbContext, exp, itm.Value, "xcuda_Inventory_Item", "SelectMany")
 													.ConfigureAwait(continueOnCapturedContext: false);
 
                           
@@ -863,7 +833,7 @@ namespace AllocationDS.Business.Services
 						}
 
                     }
-                    return set//dbContext.xcuda_HScode
+                    return set//dbContext.xcuda_Inventory_Item
 								.AsNoTracking()
                                 .Where(exp == "All" || exp == null ? "Item_Id != null" : exp)
 								.OrderBy(y => y.Item_Id)
@@ -889,7 +859,7 @@ namespace AllocationDS.Business.Services
             }
         }
 
-		private static async Task<IEnumerable<xcuda_HScode>> LoadRangeWhere<T>(int startIndex, int count,
+		private static async Task<IEnumerable<xcuda_Inventory_Item>> LoadRangeWhere<T>(int startIndex, int count,
             AllocationDSContext dbContext, string exp, string navExp, string navProp, string rel, IEnumerable<string> includeLst = null) where T : class
         {
              switch (rel)
@@ -904,7 +874,7 @@ namespace AllocationDS.Business.Services
 		    }
         }
 
-		private static async Task<IEnumerable<xcuda_HScode>> LoadRangeSelectMany<T>(int startIndex, int count,
+		private static async Task<IEnumerable<xcuda_Inventory_Item>> LoadRangeSelectMany<T>(int startIndex, int count,
             AllocationDSContext dbContext, string exp, string navExp, string navProp, IEnumerable<string> includeLst = null) where T : class
         {
 			try
@@ -912,7 +882,7 @@ namespace AllocationDS.Business.Services
             var set = dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
-                .SelectMany(navProp).OfType<xcuda_HScode>();
+                .SelectMany(navProp).OfType<xcuda_Inventory_Item>();
     
             if (includeLst != null) set = includeLst.Aggregate(set, (current, itm) => current.Include(itm));            
 
@@ -932,7 +902,7 @@ namespace AllocationDS.Business.Services
 			}
         }
 
-		private static async Task<IEnumerable<xcuda_HScode>> LoadRangeSelect<T>(int startIndex, int count,
+		private static async Task<IEnumerable<xcuda_Inventory_Item>> LoadRangeSelect<T>(int startIndex, int count,
             AllocationDSContext dbContext, string exp, string navExp, string navProp, IEnumerable<string> includeLst = null) where T : class
         {
 			try
@@ -940,7 +910,7 @@ namespace AllocationDS.Business.Services
               var set = dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
-                .Select(navProp).OfType<xcuda_HScode>();
+                .Select(navProp).OfType<xcuda_Inventory_Item>();
 
                if (includeLst != null) set = includeLst.Aggregate(set, (current, itm) => current.Include(itm)); 
                 
@@ -960,7 +930,7 @@ namespace AllocationDS.Business.Services
 			}
         }
 
-        private static async Task<IEnumerable<xcuda_HScode>> GetWhere<T>(AllocationDSContext dbContext,
+        private static async Task<IEnumerable<xcuda_Inventory_Item>> GetWhere<T>(AllocationDSContext dbContext,
             string exp, string navExp, string navProp, string rel, List<string> includesLst = null) where T : class
         {
 			try
@@ -984,7 +954,7 @@ namespace AllocationDS.Business.Services
 			}
         }
 
-		private static async Task<IEnumerable<xcuda_HScode>> GetWhereSelectMany<T>(AllocationDSContext dbContext,
+		private static async Task<IEnumerable<xcuda_Inventory_Item>> GetWhereSelectMany<T>(AllocationDSContext dbContext,
             string exp, string navExp, string navProp, List<string> includesLst = null) where T : class
         {
 			try
@@ -995,16 +965,16 @@ namespace AllocationDS.Business.Services
 				return dbContext.Set<T>()
 							.AsNoTracking()
                             .Where(navExp)
-							.SelectMany(navProp).OfType<xcuda_HScode>()
+							.SelectMany(navProp).OfType<xcuda_Inventory_Item>()
 							.Where(exp == "All" || exp == null?"Item_Id != null":exp)
 							.Distinct()
 							.ToList();
 			}
 
-			var set = (DbQuery<xcuda_HScode>)dbContext.Set<T>()
+			var set = (DbQuery<xcuda_Inventory_Item>)dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
-                .SelectMany(navProp).OfType<xcuda_HScode>()
+                .SelectMany(navProp).OfType<xcuda_Inventory_Item>()
                 .Where(exp == "All" || exp == null?"Item_Id != null":exp)
                 .Distinct();
 
@@ -1019,7 +989,7 @@ namespace AllocationDS.Business.Services
 			}
         }
 
-		private static async Task<IEnumerable<xcuda_HScode>> GetWhereSelect<T>(AllocationDSContext dbContext,
+		private static async Task<IEnumerable<xcuda_Inventory_Item>> GetWhereSelect<T>(AllocationDSContext dbContext,
             string exp, string navExp, string navProp, List<string> includesLst = null) where T : class
         {
 			try
@@ -1030,16 +1000,16 @@ namespace AllocationDS.Business.Services
 				return dbContext.Set<T>()
 							.AsNoTracking()
                             .Where(navExp)
-							.Select(navProp).OfType<xcuda_HScode>()
+							.Select(navProp).OfType<xcuda_Inventory_Item>()
 							.Where(exp == "All" || exp == null?"Item_Id != null":exp)
 							.Distinct()
 							.ToList();
 			}
 
-			var set = (DbQuery<xcuda_HScode>)dbContext.Set<T>()
+			var set = (DbQuery<xcuda_Inventory_Item>)dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
-                .Select(navProp).OfType<xcuda_HScode>()
+                .Select(navProp).OfType<xcuda_Inventory_Item>()
                 .Where(exp == "All" || exp == null?"Item_Id != null":exp)
                 .Distinct();
 
@@ -1054,7 +1024,35 @@ namespace AllocationDS.Business.Services
 			}
         }
 
-		
+			        public async Task<IEnumerable<xcuda_Inventory_Item>> Getxcuda_Inventory_ItemByInventoryItemId(string InventoryItemId, List<string> includesLst = null)
+        {
+            try
+            {
+                using ( var dbContext = new AllocationDSContext(){StartTracking = StartTracking})
+              {
+                var i = Convert.ToInt32(InventoryItemId);
+                var set = AddIncludes(includesLst, dbContext);
+                IEnumerable<xcuda_Inventory_Item> entities = set//dbContext.xcuda_Inventory_Item
+                                      .AsNoTracking()
+                                        .Where(x => x.InventoryItemId.ToString() == InventoryItemId.ToString())
+										.ToList();
+                return entities;
+              }
+             }
+            catch (Exception updateEx)
+            {
+                System.Diagnostics.Debugger.Break();
+                //throw new FaultException(updateEx.Message);
+                    var fault = new ValidationFault
+                                {
+                                    Result = false,
+                                    Message = updateEx.Message,
+                                    Description = updateEx.StackTrace
+                                };
+                    throw new FaultException<ValidationFault>(fault);
+            }
+        }
+ 
 		public decimal SumField(string whereExp, string field)
          {
              try
@@ -1066,11 +1064,11 @@ namespace AllocationDS.Business.Services
                      if (string.IsNullOrEmpty(whereExp) || whereExp == "None") return 0;
                      if (whereExp == "All")
                      {
-                          res = Convert.ToDecimal(dbContext.xcuda_HScode.AsNoTracking().Sum(field));
+                          res = Convert.ToDecimal(dbContext.xcuda_Inventory_Item.AsNoTracking().Sum(field));
                      }
                      else
                      {
-                         res = Convert.ToDecimal(dbContext.xcuda_HScode.AsNoTracking().Where(whereExp).Sum(field));
+                         res = Convert.ToDecimal(dbContext.xcuda_Inventory_Item.AsNoTracking().Where(whereExp).Sum(field));
                      }
                      
                      return res;
@@ -1098,10 +1096,10 @@ namespace AllocationDS.Business.Services
                 using (var dbContext = new AllocationDSContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-                    if (!dbContext.xcuda_HScode.Any()) return 0;
+                    if (!dbContext.xcuda_Inventory_Item.Any()) return 0;
                     if (exp == "All" && navExp.Count == 0)
                     {
-                        return Convert.ToDecimal(dbContext.xcuda_HScode
+                        return Convert.ToDecimal(dbContext.xcuda_Inventory_Item
 										.AsNoTracking()
                                         .Sum(field)??0);
                     }
@@ -1109,18 +1107,12 @@ namespace AllocationDS.Business.Services
                     {
                         switch (itm.Key)
                         {
-                            case "xcuda_Tarification":
-                                return await SumWhere<xcuda_Tarification>(dbContext, exp, itm.Value, "xcuda_HScode", field, "SelectMany")
-											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "TariffCodes":
-                                return await SumWhere<TariffCodes>(dbContext, exp, itm.Value, "xcuda_HScode", field, "SelectMany")
-											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "xcuda_Inventory_Item":
-                                return await SumWhere<xcuda_Inventory_Item>(dbContext, exp, itm.Value, "xcuda_HScode", field, "SelectMany")
+                            case "xcuda_HScode":
+                                return await SumWhere<xcuda_HScode>(dbContext, exp, itm.Value, "xcuda_Inventory_Item", field, "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }
-                    return Convert.ToDecimal(dbContext.xcuda_HScode.Where(exp == "All" || exp == null ? "Item_Id != null" : exp)
+                    return Convert.ToDecimal(dbContext.xcuda_Inventory_Item.Where(exp == "All" || exp == null ? "Item_Id != null" : exp)
 											.AsNoTracking()
                                             .Sum(field)??0);
                 }
@@ -1160,7 +1152,7 @@ namespace AllocationDS.Business.Services
             return Convert.ToDecimal(dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
-                .SelectMany(navProp).OfType<xcuda_HScode>()
+                .SelectMany(navProp).OfType<xcuda_Inventory_Item>()
                 .Where(exp == "All" || exp == null ? "Item_Id != null" : exp)
                 .Distinct()
                 .OrderBy("Item_Id")
@@ -1180,7 +1172,7 @@ namespace AllocationDS.Business.Services
             return Convert.ToDecimal(dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
-                .Select(navProp).OfType<xcuda_HScode>()
+                .Select(navProp).OfType<xcuda_Inventory_Item>()
                 .Where(exp == "All" || exp == null ? "Item_Id != null" : exp)
                 .Distinct()
                 .OrderBy("Item_Id")
@@ -1206,11 +1198,11 @@ namespace AllocationDS.Business.Services
                      if (string.IsNullOrEmpty(whereExp) || whereExp == "None") return res;
                      if (whereExp == "All")
                      {
-                          res = Convert.ToString(dbContext.xcuda_HScode.AsNoTracking().Min(field));
+                          res = Convert.ToString(dbContext.xcuda_Inventory_Item.AsNoTracking().Min(field));
                      }
                      else
                      {
-                         res = Convert.ToString(dbContext.xcuda_HScode.AsNoTracking().Where(whereExp).Min(field));
+                         res = Convert.ToString(dbContext.xcuda_Inventory_Item.AsNoTracking().Where(whereExp).Min(field));
                      }
                      
                      return res;
@@ -1231,12 +1223,12 @@ namespace AllocationDS.Business.Services
          }
 
 		 
-		private static IQueryable<xcuda_HScode> AddIncludes(IEnumerable<string> includesLst, AllocationDSContext dbContext)
+		private static IQueryable<xcuda_Inventory_Item> AddIncludes(IEnumerable<string> includesLst, AllocationDSContext dbContext)
        {
 		 try
 			{
 			   if (includesLst == null) includesLst = new List<string>();
-			   var set =(DbQuery<xcuda_HScode>) dbContext.xcuda_HScode; 
+			   var set =(DbQuery<xcuda_Inventory_Item>) dbContext.xcuda_Inventory_Item; 
 			   set = includesLst.Where(x => !string.IsNullOrEmpty(x))
                                 .Aggregate(set, (current, itm) => current.Include(itm));
 			   return set;
@@ -1247,7 +1239,7 @@ namespace AllocationDS.Business.Services
 				throw;
 			}
        }
-	   private IQueryable<xcuda_HScode> AddWheres(List<string> expLst, IQueryable<xcuda_HScode> set)
+	   private IQueryable<xcuda_Inventory_Item> AddWheres(List<string> expLst, IQueryable<xcuda_Inventory_Item> set)
         {
             try
             {

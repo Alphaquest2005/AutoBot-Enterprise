@@ -76,14 +76,20 @@ namespace AdjustmentQS.Business.Services
 
         }
 
-        public async Task AutoMatch(int applicationSettingsId, bool overwriteExisting)
+        public async Task AutoMatch(int applicationSettingsId, bool overwriteExisting, string lst = null)
         {
             try
             {
                 _itemCache = null;
 
+                var itemSets = BaseDataModel.GetItemSets(applicationSettingsId, lst);
 
-                var rawData = GetAllDiscrepancyDetails(applicationSettingsId, overwriteExisting);//.Where(x => x.EntryDataId == "Asycuda-C#33687-24").ToList();
+                var rawData = itemSets
+                    .AsParallel()
+                    .Select(x => GetAllDiscrepancyDetails(x, overwriteExisting))
+                    .SelectMany(x => x.ToList())
+                    .ToList();//.Where(x => x.EntryDataId == "Asycuda-C#33687-24").ToList();
+
                  if (!rawData.Any()) return;
 
 
@@ -100,7 +106,7 @@ namespace AdjustmentQS.Business.Services
                     .AsParallel()
                     .WithDegreeOfParallelism(Convert.ToInt32(Environment.ProcessorCount *
                                                              BaseDataModel.Instance.ResourcePercentage))
-                    .ForEach(async lst => await AutoMatch(applicationSettingsId, lst).ConfigureAwait(false));
+                    .ForEach(async l => await AutoMatch(applicationSettingsId, l).ConfigureAwait(false));
                     
                 
 
@@ -113,6 +119,7 @@ namespace AdjustmentQS.Business.Services
 
         }
 
+       
         private static async Task AutoMatch(int applicationSettingsId, KeyValuePair<int, List<((string ItemNumber, int InventoryItemId) Key, List<AdjustmentDetail> Value)>> lst)
         {
             AllocationsModel.Instance
@@ -158,15 +165,17 @@ namespace AdjustmentQS.Business.Services
 
         }
 
-        private static List<AdjustmentDetail> GetAllDiscrepancyDetails(int applicationSettingsId, bool overwriteExisting)
+
+        private List<AdjustmentDetail> GetAllDiscrepancyDetails(List<(string ItemNumber, int InventoryItemId)> itemList, bool overwriteExisting)
         {
+       
             using (var ctx = new AdjustmentQSContext())
             {
                 ctx.Database.CommandTimeout = 10;
 
                 var lst = ctx.AdjustmentDetails.AsNoTracking()
                     .Include(x => x.AdjustmentEx)
-                    .Where(x => x.ApplicationSettingsId == applicationSettingsId)
+                    //.Where(x => x.ApplicationSettingsId == applicationSettingsId)
                     .Where(x => x.SystemDocumentSet != null)
                     .Where(x => x.Type == "DIS")
                     .Where(x => x.DoNotAllocate == null || x.DoNotAllocate != true)
@@ -175,6 +184,8 @@ namespace AdjustmentQS.Business.Services
                         : x.EffectiveDate == null) // take out other check cuz of existing entries 
                     .Where(x => !x.ShortAllocations.Any())
                     .OrderBy(x => x.EntryDataDetailsId)
+                    .Join(itemList.Select(z => z.InventoryItemId).ToList(), a => a.InventoryItemId, i => i, (a,i) => a)
+                    .AsEnumerable()
                     .DistinctBy(x => x.EntryDataDetailsId)
                     .ToList();
                 return lst;

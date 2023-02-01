@@ -81,7 +81,7 @@ namespace PreviousDocumentDS.Business.Entities
         }
         string _commodity_code;
         [DataMember]
-        public string Previous_item_number 
+        public Nullable<int> Previous_item_number 
         {
             get
             {
@@ -94,7 +94,7 @@ namespace PreviousDocumentDS.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        string _previous_item_number;
+        Nullable<int> _previous_item_number;
         [DataMember]
         public string Goods_origin 
         {
@@ -171,21 +171,6 @@ namespace PreviousDocumentDS.Business.Entities
         }
         string _prev_reg_nbr;
         [DataMember]
-        public Nullable<System.DateTime> Prev_reg_dat 
-        {
-            get
-            {
-                return _prev_reg_dat;
-            }
-            set
-            {
-                _prev_reg_dat = value;
-                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
-                NotifyPropertyChanged();
-            }
-        }
-        Nullable<System.DateTime> _prev_reg_dat;
-        [DataMember]
         public string Prev_reg_cuo 
         {
             get
@@ -261,7 +246,7 @@ namespace PreviousDocumentDS.Business.Entities
         }
         float _previous_value;
         [DataMember]
-        public string Current_item_number 
+        public Nullable<int> Current_item_number 
         {
             get
             {
@@ -274,7 +259,7 @@ namespace PreviousDocumentDS.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        string _current_item_number;
+        Nullable<int> _current_item_number;
         [DataMember]
         public int PreviousItem_Id 
         {
@@ -335,6 +320,21 @@ namespace PreviousDocumentDS.Business.Entities
             }
         }
         string _prev_decl_hs_spec;
+        [DataMember]
+        public Nullable<int> Prev_reg_year 
+        {
+            get
+            {
+                return _prev_reg_year;
+            }
+            set
+            {
+                _prev_reg_year = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<int> _prev_reg_year;
         [DataMember]
         public PreviousEntry PreviousEntry { get; set; }
 

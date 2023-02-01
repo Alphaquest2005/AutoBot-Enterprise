@@ -33,6 +33,10 @@ namespace PreviousDocumentQS.Client.Entities
             {
                 UpdateApplicationSettings();
             }
+           if (e.PropertyName == "Customs_ProcedureId")
+            {
+                UpdateCustoms_Procedure();
+            }
         }
 
         private void UpdateApplicationSettings()
@@ -63,6 +67,39 @@ namespace PreviousDocumentQS.Client.Entities
                     ApplicationSettingsId = _applicationSettings.ApplicationSettingsId;
 
                     NotifyPropertyChanged("ApplicationSettings");
+                }
+            }
+
+        }
+ 
+        private void UpdateCustoms_Procedure()
+        {
+            using (var ctx = new Customs_ProcedureClient())
+            {
+                var dto = ctx.GetCustoms_Procedure().Result.FirstOrDefault(x => x.Customs_ProcedureId == this.Customs_ProcedureId);
+                if(dto != null)Customs_Procedure = new Customs_Procedure(dto);
+            }
+        }        
+
+        Customs_Procedure _customs_Procedure = null;
+
+        public Customs_Procedure Customs_Procedure
+        {
+            get
+            {
+                if(_customs_Procedure != null) return _customs_Procedure;
+                UpdateCustoms_Procedure();
+                return _customs_Procedure;
+            }
+            set
+            {
+                if (value != null)
+                {
+                    _customs_Procedure = value;
+
+                    Customs_ProcedureId = _customs_Procedure.Customs_ProcedureId;
+
+                    NotifyPropertyChanged("Customs_Procedure");
                 }
             }
 

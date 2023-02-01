@@ -477,6 +477,34 @@ namespace PreviousDocumentQS.Client.Repositories
                 throw;
             }
         } 
+ 	 public async Task<IEnumerable<PreviousItemsEx>> GetPreviousItemsExByCustoms_ProcedureId(string Customs_ProcedureId, List<string> includesLst = null)
+        {
+             if (Customs_ProcedureId == "0") return null;
+            try
+            {
+                 using (PreviousItemsExClient t = new PreviousItemsExClient())
+                    {
+                        var res = await t.GetPreviousItemsExByCustoms_ProcedureId(Customs_ProcedureId, includesLst).ConfigureAwait(continueOnCapturedContext: false);
+                         if(res != null)
+                        {
+                            return res.Select(x => new PreviousItemsEx(x)).AsEnumerable();
+					    }                
+					    else
+					    {
+						    return null;
+					    }                    
+                    }
+            }
+            catch (FaultException<ValidationFault> e)
+            {
+                throw new Exception(e.Detail.Message, e.InnerException);
+            }
+            catch (Exception)
+            {
+                Debugger.Break();
+                throw;
+            }
+        } 
          
 		public decimal SumField(string whereExp, string sumExp)
         {

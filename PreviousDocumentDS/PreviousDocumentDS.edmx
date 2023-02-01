@@ -28,8 +28,8 @@
           <Property Name="Status" Type="nvarchar" MaxLength="50" />
           <Property Name="InvoiceQty" Type="float" />
           <Property Name="ReceivedQty" Type="float" />
-          <Property Name="PreviousInvoiceNumber" Type="nvarchar" MaxLength="50" />
-          <Property Name="CNumber" Type="nvarchar" MaxLength="50" />
+          <Property Name="PreviousInvoiceNumber" Type="nvarchar" MaxLength="255" />
+          <Property Name="CNumber" Type="nvarchar" MaxLength="255" />
           <Property Name="Comment" Type="nvarchar" MaxLength="255" />
           <Property Name="EffectiveDate" Type="datetime2" Precision="7" />
           <Property Name="IsReconciled" Type="bit" />
@@ -39,7 +39,7 @@
           <Property Name="FileLineNumber" Type="int" />
           <Property Name="UpgradeKey" Type="int" />
           <Property Name="VolumeLiters" Type="float" />
-          <Property Name="EntryDataDetailsKey" Type="nvarchar" MaxLength="4000" StoreGeneratedPattern="Computed" />
+          <Property Name="EntryDataDetailsKey" Type="nvarchar" MaxLength="60" StoreGeneratedPattern="Computed" />
           <Property Name="TotalValue" Type="float" StoreGeneratedPattern="Computed" Nullable="false" />
           <Property Name="CLineNumber" Type="int" />
         </EntityType>
@@ -99,19 +99,19 @@
           <Property Name="Previous_Packages_number" Type="nvarchar" MaxLength="20" />
           <Property Name="Hs_code" Type="nvarchar" MaxLength="20" />
           <Property Name="Commodity_code" Type="nvarchar" MaxLength="20" />
-          <Property Name="Previous_item_number" Type="nvarchar" MaxLength="20" />
+          <Property Name="Previous_item_number" Type="int" />
           <Property Name="Goods_origin" Type="nvarchar" MaxLength="20" />
           <Property Name="Net_weight" Type="decimal" Precision="9" Scale="2" Nullable="false" />
           <Property Name="Prev_net_weight" Type="decimal" Precision="9" Scale="2" Nullable="false" />
           <Property Name="Prev_reg_ser" Type="nvarchar" MaxLength="20" />
           <Property Name="Prev_reg_nbr" Type="nvarchar" MaxLength="20" />
-          <Property Name="Prev_reg_dat" Type="datetime2" Precision="7" />
+          <Property Name="Prev_reg_year" Type="int" />
           <Property Name="Prev_reg_cuo" Type="nvarchar" MaxLength="20" />
           <Property Name="Suplementary_Quantity" Type="decimal" Precision="9" Scale="2" Nullable="false" />
           <Property Name="Preveious_suplementary_quantity" Type="float" Nullable="false" />
           <Property Name="Current_value" Type="float" Nullable="false" />
           <Property Name="Previous_value" Type="float" Nullable="false" />
-          <Property Name="Current_item_number" Type="nvarchar" MaxLength="20" />
+          <Property Name="Current_item_number" Type="int" />
           <Property Name="PreviousItem_Id" Type="int" Nullable="false" />
           <Property Name="ASYCUDA_Id" Type="int" />
           <Property Name="QtyAllocated" Type="float" Nullable="false" />
@@ -324,24 +324,24 @@
           <Property Type="String" Name="Previous_Packages_number" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Type="String" Name="Hs_code" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Type="String" Name="Commodity_code" MaxLength="20" FixedLength="false" Unicode="true" />
-          <Property Type="String" Name="Previous_item_number" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Type="Int32" Name="Previous_item_number" />
           <Property Type="String" Name="Goods_origin" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Type="Decimal" Name="Net_weight" Nullable="false" Precision="9" Scale="2" />
           <Property Type="Decimal" Name="Prev_net_weight" Nullable="false" Precision="9" Scale="2" />
           <Property Type="String" Name="Prev_reg_ser" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Type="String" Name="Prev_reg_nbr" MaxLength="20" FixedLength="false" Unicode="true" />
-          <Property Type="DateTime" Name="Prev_reg_dat" Precision="7" />
           <Property Type="String" Name="Prev_reg_cuo" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Type="Decimal" Name="Suplementary_Quantity" Nullable="false" Precision="9" Scale="2" />
           <Property Type="Single" Name="Preveious_suplementary_quantity" Nullable="false" />
           <Property Type="Single" Name="Current_value" Nullable="false" />
           <Property Type="Single" Name="Previous_value" Nullable="false" />
-          <Property Type="String" Name="Current_item_number" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Type="Int32" Name="Current_item_number" />
           <Property Type="Int32" Name="PreviousItem_Id" Nullable="false" />
           <Property Type="Int32" Name="ASYCUDA_Id" />
           <Property Type="Single" Name="QtyAllocated" Nullable="false" />
           <NavigationProperty Name="PreviousEntry" Relationship="WaterNutDBModel.FK_xcuda_PreviousItem_xcuda_Item" FromRole="xcuda_PreviousItem" ToRole="xcuda_Item" />
           <Property Name="Prev_decl_HS_spec" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="Prev_reg_year" Type="Int32" />
         </EntityType>
         <EntityType Name="xcuda_Tarification">
           <Key>
@@ -445,8 +445,8 @@
           <Property Name="Status" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="InvoiceQty" Type="Double" />
           <Property Name="ReceivedQty" Type="Double" />
-          <Property Name="PreviousInvoiceNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="CNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="PreviousInvoiceNumber" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="CNumber" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="Comment" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="EffectiveDate" Type="DateTime" Precision="7" />
           <Property Name="IsReconciled" Type="Boolean" />
@@ -458,7 +458,7 @@
           <Property Name="FileLineNumber" Type="Int32" />
           <Property Name="UpgradeKey" Type="Int32" />
           <Property Name="VolumeLiters" Type="Double" />
-          <Property Name="EntryDataDetailsKey" Type="String" MaxLength="4000" FixedLength="false" Unicode="true" annotation:StoreGeneratedPattern="Computed" />
+          <Property Name="EntryDataDetailsKey" Type="String" MaxLength="60" FixedLength="false" Unicode="true" annotation:StoreGeneratedPattern="Computed" />
           <Property Name="TotalValue" Type="Double" Nullable="false" annotation:StoreGeneratedPattern="Computed" />
           <Property Name="CLineNumber" Type="Int32" />
         </EntityType>
@@ -536,6 +536,7 @@
           <EntitySetMapping Name="xcuda_PreviousItem">
             <EntityTypeMapping TypeName="WaterNutDBModel.xcuda_PreviousItem">
               <MappingFragment StoreEntitySet="xcuda_PreviousItem">
+                <ScalarProperty Name="Prev_reg_year" ColumnName="Prev_reg_year" />
                 <ScalarProperty Name="Prev_decl_HS_spec" ColumnName="Prev_decl_HS_spec" />
                 <ScalarProperty Name="QtyAllocated" ColumnName="QtyAllocated" />
                 <ScalarProperty Name="ASYCUDA_Id" ColumnName="ASYCUDA_Id" />
@@ -546,7 +547,6 @@
                 <ScalarProperty Name="Preveious_suplementary_quantity" ColumnName="Preveious_suplementary_quantity" />
                 <ScalarProperty Name="Suplementary_Quantity" ColumnName="Suplementary_Quantity" />
                 <ScalarProperty Name="Prev_reg_cuo" ColumnName="Prev_reg_cuo" />
-                <ScalarProperty Name="Prev_reg_dat" ColumnName="Prev_reg_dat" />
                 <ScalarProperty Name="Prev_reg_nbr" ColumnName="Prev_reg_nbr" />
                 <ScalarProperty Name="Prev_reg_ser" ColumnName="Prev_reg_ser" />
                 <ScalarProperty Name="Prev_net_weight" ColumnName="Prev_net_weight" />

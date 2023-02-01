@@ -18,53 +18,8 @@ namespace AllocationDS.Business.Entities
 
     //[JsonObject(IsReference = true)]
     [DataContract(IsReference = true, Namespace="http://www.insight-software.com/WaterNut")]
-    public partial class xcuda_HScode : BaseEntity<xcuda_HScode>, ITrackable 
+    public partial class xcuda_Inventory_Item : BaseEntity<xcuda_Inventory_Item>, ITrackable 
     {
-        [DataMember]
-        public string Commodity_code 
-        {
-            get
-            {
-                return _commodity_code;
-            }
-            set
-            {
-                _commodity_code = value;
-                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
-                NotifyPropertyChanged();
-            }
-        }
-        string _commodity_code;
-        [DataMember]
-        public string Precision_1 
-        {
-            get
-            {
-                return _precision_1;
-            }
-            set
-            {
-                _precision_1 = value;
-                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
-                NotifyPropertyChanged();
-            }
-        }
-        string _precision_1;
-        [DataMember]
-        public string Precision_4 
-        {
-            get
-            {
-                return _precision_4;
-            }
-            set
-            {
-                _precision_4 = value;
-                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
-                NotifyPropertyChanged();
-            }
-        }
-        string _precision_4;
         [DataMember]
         public int Item_Id 
         {
@@ -81,11 +36,22 @@ namespace AllocationDS.Business.Entities
         }
         int _item_id;
         [DataMember]
-        public xcuda_Tarification xcuda_Tarification { get; set; }
+        public int InventoryItemId 
+        {
+            get
+            {
+                return _inventoryitemid;
+            }
+            set
+            {
+                _inventoryitemid = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        int _inventoryitemid;
         [DataMember]
-        public TariffCodes TariffCodes { get; set; }
-        [DataMember]
-        public xcuda_Inventory_Item xcuda_Inventory_Item { get; set; }
+        public xcuda_HScode xcuda_HScode { get; set; }
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

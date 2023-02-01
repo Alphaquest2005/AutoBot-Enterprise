@@ -183,6 +183,7 @@
 ..\WaterNut.Business.Entities\Generated Business Entities\AllocationDS\xBondAllocations.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\AllocationDS\xcuda_Goods_description.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\AllocationDS\xcuda_HScode.cs
+..\WaterNut.Business.Entities\Generated Business Entities\AllocationDS\xcuda_Inventory_Item.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\AllocationDS\xcuda_Item.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\AllocationDS\xcuda_Item_Invoice.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\AllocationDS\xcuda_PreviousItem.cs
@@ -621,6 +622,7 @@
 ..\WaterNut.Business.Entities\Generated Mappings\AllocationDS\xBondAllocations.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\AllocationDS\xcuda_Goods_description.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\AllocationDS\xcuda_HScode.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\AllocationDS\xcuda_Inventory_Item.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\AllocationDS\xcuda_Item.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\AllocationDS\xcuda_Item_Invoice.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\AllocationDS\xcuda_PreviousItem.map.cs
@@ -1068,6 +1070,7 @@
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\AllocationDS\xBondAllocations.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\AllocationDS\xcuda_Goods_description.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\AllocationDS\xcuda_HScode.cs
+..\WaterNut.Business.Entities\Generated ChangeTracking Models\AllocationDS\xcuda_Inventory_Item.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\AllocationDS\xcuda_Item.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\AllocationDS\xcuda_Item_Invoice.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\AllocationDS\xcuda_PreviousItem.cs
@@ -1492,6 +1495,7 @@
 ..\WaterNut.Business.Entities\Generated Constructors Models\AllocationDS\xBondAllocations.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\AllocationDS\xcuda_Goods_description.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\AllocationDS\xcuda_HScode.cs
+..\WaterNut.Business.Entities\Generated Constructors Models\AllocationDS\xcuda_Inventory_Item.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\AllocationDS\xcuda_Item.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\AllocationDS\xcuda_Item_Invoice.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\AllocationDS\xcuda_PreviousItem.cs
@@ -1916,6 +1920,7 @@
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\AllocationDS\xBondAllocations.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\AllocationDS\xcuda_Goods_description.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\AllocationDS\xcuda_HScode.cs
+..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\AllocationDS\xcuda_Inventory_Item.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\AllocationDS\xcuda_Item.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\AllocationDS\xcuda_Item_Invoice.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\AllocationDS\xcuda_PreviousItem.cs
@@ -2340,6 +2345,7 @@
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\AllocationDS\xBondAllocations.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\AllocationDS\xcuda_Goods_description.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\AllocationDS\xcuda_HScode.cs
+..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\AllocationDS\xcuda_Inventory_Item.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\AllocationDS\xcuda_Item.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\AllocationDS\xcuda_Item_Invoice.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\AllocationDS\xcuda_PreviousItem.cs
@@ -4039,6 +4045,7 @@
 ..\WaterNut.Business.Entities\Generated Mappings\AllocationDS\xBondAllocations.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\AllocationDS\xcuda_Goods_description.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\AllocationDS\xcuda_HScode.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\AllocationDS\xcuda_Inventory_Item.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\AllocationDS\xcuda_Item.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\AllocationDS\xcuda_Item_Invoice.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\AllocationDS\xcuda_PreviousItem.map.cs
@@ -4699,6 +4706,7 @@
 ..\WaterNut.Business.Services\Contracts\AllocationDS\IxBondAllocationsService.cs
 ..\WaterNut.Business.Services\Contracts\AllocationDS\Ixcuda_Goods_descriptionService.cs
 ..\WaterNut.Business.Services\Contracts\AllocationDS\Ixcuda_HScodeService.cs
+..\WaterNut.Business.Services\Contracts\AllocationDS\Ixcuda_Inventory_ItemService.cs
 ..\WaterNut.Business.Services\Contracts\AllocationDS\Ixcuda_Item_InvoiceService.cs
 ..\WaterNut.Business.Services\Contracts\AllocationDS\Ixcuda_ItemService.cs
 ..\WaterNut.Business.Services\Contracts\AllocationDS\Ixcuda_PreviousItemService.cs
@@ -5123,6 +5131,7 @@
 ..\WaterNut.Business.Services\Services\AllocationDS\xBondAllocationsService.cs
 ..\WaterNut.Business.Services\Services\AllocationDS\xcuda_Goods_descriptionService.cs
 ..\WaterNut.Business.Services\Services\AllocationDS\xcuda_HScodeService.cs
+..\WaterNut.Business.Services\Services\AllocationDS\xcuda_Inventory_ItemService.cs
 ..\WaterNut.Business.Services\Services\AllocationDS\xcuda_Item_InvoiceService.cs
 ..\WaterNut.Business.Services\Services\AllocationDS\xcuda_ItemService.cs
 ..\WaterNut.Business.Services\Services\AllocationDS\xcuda_PreviousItemService.cs

@@ -58,7 +58,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             if (e.Data != null)
             {
                 CNumberFilter = e.Data.Prev_reg_nbr;
-                LineNumberFilter = e.Data.Current_item_number;
+                LineNumberFilter = e.Data.Current_item_number.ToString();
                 ViewCurrentDocumentOnly = false;
             }
         }
