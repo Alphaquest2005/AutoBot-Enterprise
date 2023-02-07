@@ -14,6 +14,7 @@ namespace WaterNut.Business.Services.Utils
 {
     public static class InventoryItemUtils
     {
+        static readonly object Identity = new object();
         private static List<InventoryItem> _inventoryCache;
 
         public static IInventoryItem GetInventoryItem(Func<IInventoryItem, bool> p)
@@ -33,18 +34,21 @@ namespace WaterNut.Business.Services.Utils
 
          private static List<InventoryItem> GetInventoryItemsCache(int applicationSettingsId, bool fresh)
          {
-             if(_inventoryCache == null || fresh)
-                 _inventoryCache = 
-              new InventoryDSContext().InventoryItems
-                     .Include("InventoryItemSources.InventorySource")
-                     .Include(x => x.InventoryItemAlias)
-                     .Where(x => x.ApplicationSettingsId == applicationSettingsId)
-                     .ToList() ;
+             lock (Identity)
+             {
+                 if (_inventoryCache == null || fresh)
+                     _inventoryCache =
+                         new InventoryDSContext().InventoryItems
+                             .Include("InventoryItemSources.InventorySource")
+                             .Include(x => x.InventoryItemAlias)
+                             .Where(x => x.ApplicationSettingsId == applicationSettingsId)
+                             .ToList();
 
-             return _inventoryCache;
+                 return _inventoryCache;
+             }
          }
 
-        public static List<InventoryItem> GetInventoryItems(int applicationSettingsId, bool fresh)
+         public static List<InventoryItem> GetInventoryItems(int applicationSettingsId, bool fresh)
         {
 
             return GetInventoryItemsCache(applicationSettingsId, fresh);

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using CoreEntities.Business.Entities;
+using WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModels.Asycuda.AllocatingSales;
 using WaterNut.DataSpace;
 
 namespace AutoBot
@@ -15,7 +16,7 @@ namespace AutoBot
 
             AllocationsModel.Instance.ClearAllAllocations(BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId).Wait();
 
-            AllocationsBaseModel.Instance.AllocateSales(BaseDataModel.Instance.CurrentApplicationSettings, false).Wait();
+            new AllocateSales().Execute(BaseDataModel.Instance.CurrentApplicationSettings, false).Wait();
 
             EmailSalesErrorsUtils.EmailSalesErrors();
             

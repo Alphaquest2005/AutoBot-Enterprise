@@ -36,6 +36,7 @@ using TrackableEntities;
 using TrackableEntities.EF6;
 using ValuationDS.Business.Entities;
 using WaterNut.Business.Entities;
+using WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModels.BaseDataModel.GettingItemSets;
 using WaterNut.Business.Services.Utils;
 using WaterNut.DataLayer;
 using WaterNut.DataSpace.Asycuda;
@@ -110,7 +111,12 @@ namespace WaterNut.DataSpace
         public static BaseDataModel Instance { get; }
 
 
-        
+        public static List<List<(string ItemNumber, int InventoryItemId)>> GetItemSets(string lst)
+        {
+            return isDBMem
+                ? new GetItemSets().Execute(lst)
+                : new GetItemSetsMem().Execute(lst);
+        }
 
 
         public DataCache<Customs_Procedure> Customs_ProcedureCache => _customs_ProcedureCache;
@@ -163,6 +169,7 @@ namespace WaterNut.DataSpace
         public List<SessionSchedule> CurrentSessionSchedule { get; set; } = new List<SessionSchedule>();
         public SessionActions CurrentSessionAction { get; set; }
 
+       
         public static Client GetClient()
         {
             return new Client
@@ -207,29 +214,6 @@ namespace WaterNut.DataSpace
         {
             var startDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1).AddMonths(months);
             return EntryDocSetUtils.CreateMonthYearAsycudaDocSet(startDate);
-        }
-
-        public static List<List<(string ItemNumber, int InventoryItemId)>> GetItemSets(int applicationSettingsId, string lst)
-        {
-            using (var ctx = new AllocationDSContext() { StartTracking = false })
-            {
-                return ctx.InventoryItems
-                    .AsNoTracking()
-                    .Include(x => x.InventoryItemAliasEx)
-                    .Where(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)
-                    .Where(x => !string.IsNullOrEmpty(x.ItemNumber))
-                    .Where(x => x.ItemNumber.Substring(3, 1) == "/")
-                    .Where(x => lst == null || lst.ToUpper().Trim().Contains(x.ItemNumber.ToUpper().Trim()))
-                    .ToList()
-                    .Select(x =>
-                    {
-                        var res = new List<(string ItemNumber, int InventoryItemId)> { (x.ItemNumber.ToUpper().Trim(), x.InventoryItemId) };
-                        res.AddRange(x.InventoryItemAliasEx.Select(a => (a.AliasName.ToUpper().Trim(), a.AliasItemId)).ToList());
-                        return res;
-                    })
-                    .ToList();
-
-            }
         }
 
 
@@ -712,7 +696,7 @@ namespace WaterNut.DataSpace
             cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.AutoUpdate = autoUpdate;
             if (autoAssess) cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.IsManuallyAssessed = true;
             AttachCustomProcedure(cdoc, currentAsycudaDocumentSet.Customs_Procedure);
-            var entryLineDatas = slst as IList<EntryLineData> ?? slst.ToList();
+            var entryLineDatas = slst as IList<BaseDataModel.EntryLineData> ?? slst.ToList();
             StatusModel.StartStatusUpdate("Adding Entries to New Asycuda Document", entryLineDatas.Count());
 
 
@@ -1315,7 +1299,7 @@ namespace WaterNut.DataSpace
         }
 
 
-        private IEnumerable<EntryLineData> CreateSingleEntryLineData(
+        private IEnumerable<BaseDataModel.EntryLineData> CreateSingleEntryLineData(
             IEnumerable<EntryDataDetails> slstSource)
         {
             var slst = slstSource
@@ -1368,7 +1352,7 @@ namespace WaterNut.DataSpace
         }
 
 
-        public IEnumerable<EntryLineData> CreateGroupEntryLineData(
+        public IEnumerable<BaseDataModel.EntryLineData> CreateGroupEntryLineData(
             IEnumerable<EntryDataDetails> slstSource)
         {
             var slst = from s in slstSource.AsEnumerable()
@@ -3699,6 +3683,13 @@ namespace WaterNut.DataSpace
         }
 
         private static HashSet<string> emailedMessagesList = new HashSet<string>();
+       
+        private static bool isDBMem = false;
+
+        public BaseDataModel()
+        {
+            
+        }
 
         public static void EmailExceptionHandler(Exception e, bool sendOnlyOnce = true )
         {

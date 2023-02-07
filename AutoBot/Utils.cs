@@ -151,18 +151,18 @@ namespace AutoBot
                 new AdjustmentShortService().AutoMatchUtils.AutoMatchItems(BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId, strLst).Wait();
 
 
-                new AdjustmentShortService().AutoMatchUtils
-                    .ProcessDISErrorsForAllocation(
+                new AdjustmentShortService().AutoMatchUtils.AutoMatchProcessor.ProcessDisErrorsForAllocation
+                    .Execute(
                         BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId,
                         strLst).Wait();
 
-                new AllocationsBaseModel()
+                new OldSalesAllocator()
                     .AllocateSalesByMatchingSalestoAsycudaEntriesOnItemNumber(
                         BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId, false,
                         strLst).Wait();
 
-                new AllocationsBaseModel()
-                    .MarkErrors(BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId).Wait();
+                new MarkErrors()
+                    .Execute(BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId).Wait();
 
             }
             catch (Exception e)

@@ -80,7 +80,19 @@ namespace AdjustmentQS.Client.Contracts
 		string MinField(string whereExp, string field);
 
 				[OperationContract]
+		Task<IEnumerable<AsycudaDocumentItemEntryDataDetail>> GetAsycudaDocumentItemEntryDataDetailByEntryDataDetailsId(string EntryDataDetailsId, List<string> includesLst = null);
+        
+  		[OperationContract]
+		Task<IEnumerable<AsycudaDocumentItemEntryDataDetail>> GetAsycudaDocumentItemEntryDataDetailByItem_Id(string Item_Id, List<string> includesLst = null);
+        
+  		[OperationContract]
 		Task<IEnumerable<AsycudaDocumentItemEntryDataDetail>> GetAsycudaDocumentItemEntryDataDetailByEntryData_Id(string EntryData_Id, List<string> includesLst = null);
+        
+  		[OperationContract]
+		Task<IEnumerable<AsycudaDocumentItemEntryDataDetail>> GetAsycudaDocumentItemEntryDataDetailByApplicationSettingsId(string ApplicationSettingsId, List<string> includesLst = null);
+        
+  		[OperationContract]
+		Task<IEnumerable<AsycudaDocumentItemEntryDataDetail>> GetAsycudaDocumentItemEntryDataDetailByAsycudaDocumentSetId(string AsycudaDocumentSetId, List<string> includesLst = null);
         
   		
     }

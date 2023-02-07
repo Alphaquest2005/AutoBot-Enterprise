@@ -335,6 +335,21 @@ namespace AllocationDS.Business.Entities
             }
         }
         double _salesquantity;
+        [DataMember]
+        public long Id 
+        {
+            get
+            {
+                return _id;
+            }
+            set
+            {
+                _id = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        long _id;
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

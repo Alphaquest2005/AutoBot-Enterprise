@@ -6,20 +6,26 @@ using DocumentDS.Business.Entities;
 using EntryDataDS.Business.Entities;
 using EntryDataDS.Business.Services;
 using TrackableEntities;
+using WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModels.SaveCSV.AddingToDocSet;
+using WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModels.SaveCSV.EntryDataCreating;
 
 namespace WaterNut.DataSpace
 {
     public class POCreator: IEntryDataCreator
     {
-        public async Task<EntryData> Create(List<AsycudaDocumentSet> docSet,
-            ((dynamic EntryDataId, dynamic EntryDataDate, int AsycudaDocumentSetId, int ApplicationSettingsId, dynamic
-                CustomerName, dynamic Tax, dynamic Supplier, dynamic Currency, string EmailId, int FileTypeId, dynamic
-                DocumentType, dynamic SupplierInvoiceNo, dynamic PreviousCNumber, dynamic FinancialInformation, dynamic Vendor,
-                dynamic PONumber, string SourceFile) EntryData, IEnumerable<EntryDataDetails> EntryDataDetails, IEnumerable<(double TotalWeight, double TotalFreight, double TotalInternalFreight, double TotalOtherCost, double TotalInsurance, double TotalDeductions, double InvoiceTotal, double TotalTax, int Packages, dynamic WarehouseNo)> f, IEnumerable<(dynamic ItemNumber, dynamic ItemAlias)> InventoryItems) item, int applicationSettingsId, string entryDataId)
+        public async Task<EntryData> CreateAndSave(List<AsycudaDocumentSet> docSet,
+            RawEntryDataValue item, int applicationSettingsId, string entryDataId)
         {
-            EntryData entryData;
+            dynamic EDpo = Create(docSet, item, applicationSettingsId, entryDataId);
+            EntryData entryData = await CreatePurchaseOrders(EDpo).ConfigureAwait(false);
+            return entryData;
+        }
+
+        public EntryData Create(List<AsycudaDocumentSet> docSet,
+            RawEntryDataValue item, int applicationSettingsId, string entryDataId)
+        {
             if (BaseDataModel.Instance.CurrentApplicationSettings.AssessIM7 == true &&
-                Math.Abs((double)item.f.Sum(x => x.InvoiceTotal)) < .001)
+                Math.Abs((double)item.Totals.Sum(x => x.InvoiceTotal)) < .001)
                 throw new ApplicationException(
                     $"{entryDataId} has no Invoice Total. Please check File.");
 
@@ -28,19 +34,19 @@ namespace WaterNut.DataSpace
             {
                 ApplicationSettingsId = applicationSettingsId,
                 EntryDataId = entryDataId,
-                EntryDataDate = (DateTime)(item.EntryData.EntryDataDate??DateTime.Now),
+                EntryDataDate = (DateTime)(item.EntryData.EntryDataDate ?? DateTime.Now),
                 PONumber = entryDataId,
                 EntryType = "PO",
                 SupplierCode = item.EntryData.Supplier,
                 TrackingState = TrackingState.Added,
-                TotalFreight = item.f.Sum(x => (double)x.TotalFreight),
-                TotalInternalFreight = item.f.Sum(x => (double)x.TotalInternalFreight),
-                TotalWeight = item.f.Sum(x => (double)x.TotalWeight),
-                TotalOtherCost = item.f.Sum(x => (double)x.TotalOtherCost),
-                TotalInsurance = item.f.Sum(x => (double)x.TotalInsurance),
-                TotalDeduction = item.f.Sum(x => (double)x.TotalDeductions),
-                InvoiceTotal = item.f.Sum(x => (double)x.InvoiceTotal),
-                Packages = item.f.Sum(x => (int)x.Packages),
+                TotalFreight = item.Totals.Sum(x => (double)x.TotalFreight),
+                TotalInternalFreight = item.Totals.Sum(x => (double)x.TotalInternalFreight),
+                TotalWeight = item.Totals.Sum(x => (double)x.TotalWeight),
+                TotalOtherCost = item.Totals.Sum(x => (double)x.TotalOtherCost),
+                TotalInsurance = item.Totals.Sum(x => (double)x.TotalInsurance),
+                TotalDeduction = item.Totals.Sum(x => (double)x.TotalDeductions),
+                InvoiceTotal = item.Totals.Sum(x => (double)x.InvoiceTotal),
+                Packages = item.Totals.Sum(x => (int)x.Packages),
 
                 EmailId = item.EntryData.EmailId,
                 FileTypeId = item.EntryData.FileTypeId,
@@ -58,7 +64,7 @@ namespace WaterNut.DataSpace
                     ? null
                     : item.EntryData.PreviousCNumber,
             };
-            foreach (var warehouseNo in item.f.Where(x => !string.IsNullOrEmpty(x.WarehouseNo)))
+            foreach (var warehouseNo in item.Totals.Where(x => !string.IsNullOrEmpty(x.WarehouseNo)))
             {
                 EDpo.WarehouseInfo.Add(new WarehouseInfo()
                 {
@@ -75,9 +81,8 @@ namespace WaterNut.DataSpace
                     DocumentType = item.EntryData.DocumentType,
                     TrackingState = TrackingState.Added
                 };
-            EntryDataDetailsCreator.AddToDocSet(docSet, EDpo);
-            entryData = await CreatePurchaseOrders(EDpo).ConfigureAwait(false);
-            return entryData;
+            new AddToDocSetSelector().Execute(docSet, EDpo);
+            return EDpo;
         }
 
         private async Task<PurchaseOrders> CreatePurchaseOrders(PurchaseOrders EDpo)

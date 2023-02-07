@@ -10,6 +10,7 @@ using MoreLinq.Extensions;
 using TrackableEntities;
 using TrackableEntities.Common;
 using TrackableEntities.EF6;
+using WaterNut.Business.Services.Utils.SavingInventoryItems;
 using WaterNut.DataSpace;
 
 namespace WaterNut.Business.Services.Utils
@@ -54,7 +55,7 @@ namespace WaterNut.Business.Services.Utils
                 .Select(item => CreateInventoryItem(inventorySource, item))
                 .ToList();
 
-            SaveInventoryItems(newInventoryItems);
+            new SaveInventoryItemsSelector().Execute(newInventoryItems);
 
             return newInventoryItems;
         }
@@ -125,29 +126,5 @@ namespace WaterNut.Business.Services.Utils
 
             return new InventoryDataItem(item, i);
         }
-
-        public static void SaveInventoryItems(List<InventoryDataItem> processedInventoryItems)
-        {
-
-
-            foreach (var processedInventoryItem in processedInventoryItems.Where(x =>
-                         x.Item.TrackingState != TrackingState.Unchanged))
-            {
-
-                using (var ctx = new InventoryDSContext() {StartTracking = true})
-                {
-                   
-                        var itm = processedInventoryItem.Item.ChangeTracker.GetChanges().FirstOrDefault();
-                        ctx.ApplyChanges(itm);
-                        ctx.SaveChanges();
-                        itm.AcceptChanges();
-                        processedInventoryItem.Item.Id = itm.Id;
-                 
-                }
-            }
-
-        }
-
-      
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Core.Common.Extensions;
+using WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModels.SaveCSV.RawEntryDataProcessing;
 using WaterNut.DataSpace;
 
 namespace WaterNut.Business.Services.Importers.EntryData
@@ -18,7 +19,7 @@ namespace WaterNut.Business.Services.Importers.EntryData
         {
             var dataFile = new DataFile(_importSettings.FileType, _importSettings.DocSet, _importSettings.OverWrite,
                 _importSettings.EmailId, _importSettings.DroppedFilePath, new List<dynamic>());
-            RawEntryDataProcessor.CreateEntryData(dataFile, data).Wait();
+            new RawEntryDataProcessor().CreateEntryData(dataFile, data).Wait();
             return new Result<List<RawEntryData>>(data, true, "") ;
         }
     }

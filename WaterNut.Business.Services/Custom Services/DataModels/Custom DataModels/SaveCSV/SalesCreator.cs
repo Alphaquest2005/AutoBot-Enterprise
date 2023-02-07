@@ -7,6 +7,8 @@ using DocumentDS.Business.Entities;
 using EntryDataDS.Business.Entities;
 using EntryDataDS.Business.Services;
 using TrackableEntities;
+using WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModels.SaveCSV.AddingToDocSet;
+using WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModels.SaveCSV.EntryDataCreating;
 
 
 namespace WaterNut.DataSpace
@@ -14,18 +16,18 @@ namespace WaterNut.DataSpace
     public class SalesCreator: IEntryDataCreator
     {
        
-        public async Task<EntryData> Create(List<AsycudaDocumentSet> docSet,
-            ((dynamic EntryDataId, dynamic EntryDataDate, int AsycudaDocumentSetId, int ApplicationSettingsId, dynamic
-                CustomerName, dynamic Tax, dynamic Supplier, dynamic Currency, string EmailId, int FileTypeId, dynamic
-                DocumentType, dynamic SupplierInvoiceNo, dynamic PreviousCNumber, dynamic FinancialInformation, dynamic
-                Vendor,
-                dynamic PONumber, string SourceFile) EntryData, IEnumerable<EntryDataDetails> EntryDataDetails,
-                IEnumerable<(double TotalWeight, double TotalFreight, double TotalInternalFreight, double TotalOtherCost
-                    , double TotalInsurance, double TotalDeductions, double InvoiceTotal, double TotalTax, int Packages,
-                    dynamic WarehouseNo)> f, IEnumerable<(dynamic ItemNumber, dynamic ItemAlias)> InventoryItems) item,
+        public async Task<EntryData> CreateAndSave(List<AsycudaDocumentSet> docSet,
+            RawEntryDataValue item,
             int applicationSettingsId, string entryDataId)
         {
-            EntryData entryData;
+            dynamic EDsale = Create(docSet, item, applicationSettingsId, entryDataId);
+             EntryData entryData = await SaveSales(EDsale).ConfigureAwait(false);
+            return entryData;
+        }
+
+        public EntryData Create(List<AsycudaDocumentSet> docSet,
+            RawEntryDataValue item, int applicationSettingsId, string entryDataId)
+        {
             var EDsale = new Sales(true)
             {
                 ApplicationSettingsId = applicationSettingsId,
@@ -40,7 +42,7 @@ namespace WaterNut.DataSpace
                 Currency = string.IsNullOrEmpty(item.EntryData.Currency)
                     ? null
                     : item.EntryData.Currency,
-                InvoiceTotal = item.f.Sum(x => (double)x.InvoiceTotal),
+                InvoiceTotal = item.Totals.Sum(x => (double)x.InvoiceTotal),
                 SourceFile = item.EntryData.SourceFile,
                 TrackingState = TrackingState.Added,
             };
@@ -52,14 +54,11 @@ namespace WaterNut.DataSpace
                 };
 
 
-            EntryDataDetailsCreator.AddToDocSet(docSet, EDsale);
-
-
-            entryData = await CreateSales(EDsale).ConfigureAwait(false);
-            return entryData;
+            new AddToDocSetSelector().Execute(docSet, EDsale);
+            return EDsale;
         }
 
-        private async Task<Sales> CreateSales(Sales EDsale)
+        private async Task<Sales> SaveSales(Sales EDsale)
         {
             using (var ctx = new SalesService())
             {

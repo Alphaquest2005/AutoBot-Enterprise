@@ -14,7 +14,7 @@
         <TestName>AutoBotUtilities.Tests.DoAutoMatchTest.CanDoAutoMatch</TestName>
       </NamedTestSelector>
       <NamedTestSelector>
-        <TestName>AutoBotUtilities.Tests.XlsxUtilsTests.CanImportXSLXSalesFile</TestName>
+        <TestName>AutoBotUtilities.Tests.AllocationsTests.AllocateSalesByMatchingSalestoAsycudaEntriesOnItemNumber</TestName>
       </NamedTestSelector>
     </IgnoredTests>
   </Settings>

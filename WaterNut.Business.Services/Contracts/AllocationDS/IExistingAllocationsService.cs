@@ -110,10 +110,22 @@ namespace AllocationDS.Business.Services
         Task<IEnumerable<ExistingAllocations>> GetExistingAllocationsByxAsycudaId(string xAsycudaId, List<string> includesLst = null);
   		[OperationContract]
         [FaultContract(typeof(ValidationFault))]
+        Task<IEnumerable<ExistingAllocations>> GetExistingAllocationsByEntryDataDetailsId(string EntryDataDetailsId, List<string> includesLst = null);
+  		[OperationContract]
+        [FaultContract(typeof(ValidationFault))]
+        Task<IEnumerable<ExistingAllocations>> GetExistingAllocationsByxItemId(string xItemId, List<string> includesLst = null);
+  		[OperationContract]
+        [FaultContract(typeof(ValidationFault))]
+        Task<IEnumerable<ExistingAllocations>> GetExistingAllocationsBypItemId(string pItemId, List<string> includesLst = null);
+  		[OperationContract]
+        [FaultContract(typeof(ValidationFault))]
         Task<IEnumerable<ExistingAllocations>> GetExistingAllocationsByApplicationSettingsId(string ApplicationSettingsId, List<string> includesLst = null);
   		[OperationContract]
         [FaultContract(typeof(ValidationFault))]
         Task<IEnumerable<ExistingAllocations>> GetExistingAllocationsByEntryDataId(string EntryDataId, List<string> includesLst = null);
+  		[OperationContract]
+        [FaultContract(typeof(ValidationFault))]
+        Task<IEnumerable<ExistingAllocations>> GetExistingAllocationsByInventoryItemId(string InventoryItemId, List<string> includesLst = null);
   
 
 

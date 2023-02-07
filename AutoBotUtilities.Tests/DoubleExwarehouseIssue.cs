@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using AdjustmentQS.Business.Entities;
 using AdjustmentQS.Business.Services;
 using NUnit.Framework;
+using WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModels.Asycuda.AllocatingSales;
 using WaterNut.Business.Services.Utils;
 using WaterNut.DataSpace;
 
@@ -34,7 +35,7 @@ namespace AutoBotUtilities.Tests
             Infrastructure.Utils.SetTestApplicationSettings(6);
             ImportTestFile();
             ImportTestIM7();
-            AllocationsBaseModel.Instance.AllocateSales(BaseDataModel.Instance.CurrentApplicationSettings, false)
+            new AllocateSales().Execute(BaseDataModel.Instance.CurrentApplicationSettings, false)
                 .Wait();
 
 

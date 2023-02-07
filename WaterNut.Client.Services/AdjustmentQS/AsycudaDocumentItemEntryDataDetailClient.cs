@@ -112,9 +112,29 @@ namespace AdjustmentQS.Client.Services
         {
             return await Channel.LoadRangeNav(startIndex,count,exp, navExp, includeLst).ConfigureAwait(false);
         }
-		public async Task<IEnumerable<AsycudaDocumentItemEntryDataDetail>> GetAsycudaDocumentItemEntryDataDetailByEntryData_Id(string EntryData_Id, List<string> includesLst = null)
+		public async Task<IEnumerable<AsycudaDocumentItemEntryDataDetail>> GetAsycudaDocumentItemEntryDataDetailByEntryDataDetailsId(string EntryDataDetailsId, List<string> includesLst = null)
+        {
+            return  await Channel.GetAsycudaDocumentItemEntryDataDetailByEntryDataDetailsId(EntryDataDetailsId, includesLst).ConfigureAwait(false);
+        }
+			 
+  		public async Task<IEnumerable<AsycudaDocumentItemEntryDataDetail>> GetAsycudaDocumentItemEntryDataDetailByItem_Id(string Item_Id, List<string> includesLst = null)
+        {
+            return  await Channel.GetAsycudaDocumentItemEntryDataDetailByItem_Id(Item_Id, includesLst).ConfigureAwait(false);
+        }
+			 
+  		public async Task<IEnumerable<AsycudaDocumentItemEntryDataDetail>> GetAsycudaDocumentItemEntryDataDetailByEntryData_Id(string EntryData_Id, List<string> includesLst = null)
         {
             return  await Channel.GetAsycudaDocumentItemEntryDataDetailByEntryData_Id(EntryData_Id, includesLst).ConfigureAwait(false);
+        }
+			 
+  		public async Task<IEnumerable<AsycudaDocumentItemEntryDataDetail>> GetAsycudaDocumentItemEntryDataDetailByApplicationSettingsId(string ApplicationSettingsId, List<string> includesLst = null)
+        {
+            return  await Channel.GetAsycudaDocumentItemEntryDataDetailByApplicationSettingsId(ApplicationSettingsId, includesLst).ConfigureAwait(false);
+        }
+			 
+  		public async Task<IEnumerable<AsycudaDocumentItemEntryDataDetail>> GetAsycudaDocumentItemEntryDataDetailByAsycudaDocumentSetId(string AsycudaDocumentSetId, List<string> includesLst = null)
+        {
+            return  await Channel.GetAsycudaDocumentItemEntryDataDetailByAsycudaDocumentSetId(AsycudaDocumentSetId, includesLst).ConfigureAwait(false);
         }
 			 
           public decimal SumField(string whereExp, string sumExp)

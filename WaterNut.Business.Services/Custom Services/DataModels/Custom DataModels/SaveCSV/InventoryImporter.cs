@@ -8,6 +8,7 @@ using CoreEntities.Business.Entities;
 using InventoryDS.Business.Entities;
 using MoreLinq;
 using TrackableEntities;
+using WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModels.SaveCSV.InventoryProcessing;
 using WaterNut.Business.Services.Utils;
 
 namespace WaterNut.DataSpace
@@ -28,7 +29,7 @@ namespace WaterNut.DataSpace
 
                 var inventorySource = InventorySourceFactory.GetInventorySource(dataFile.FileType);
 
-                InventoryProcessor.ProcessInventoryItemLst(dataFile.DocSet.First().ApplicationSettingsId, itmlst, inventorySource);
+                new InventoryProcessorSelector().Execute(dataFile.DocSet.First().ApplicationSettingsId, itmlst, inventorySource);
 
             }
             catch (Exception e)

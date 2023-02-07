@@ -106,6 +106,33 @@ namespace AllocationDS.Business.Entities
             }
         }
 
+        [IgnoreDataMember]
+        [NotMapped]
+        public double xRemainingBalance => ItemQuantity - (DFQtyAllocated + DPQtyAllocated);
+
+        [IgnoreDataMember]
+        [NotMapped]
+        public double PiQuantity
+        {
+            get
+            {
+                return EntryPreviousItems.Any()
+                    ? (double)EntryPreviousItems
+                        .Select(x => x.xcuda_PreviousItem)
+                        .Sum(x => x.Suplementary_Quantity)
+                    : 0;
+            }
+        }
+
+        public bool Equals(xcuda_Item other)
+        {
+            return other.Item_Id == Item_Id;
+        }
+
+        public override int GetHashCode()
+        {
+            return $"{Item_Id}".GetHashCode();
+        }
     }
 }
 

@@ -22,35 +22,29 @@ namespace WaterNut.DataSpace
         {
             var ed = data.Select(x => (dynamic)x)
                 .GroupBy(es => (es.EntryDataId, es.EntryDataDate, es.CustomerName))
-                .Select(g => (
-                    EntryData: (
+                .Select(g => new RawEntryDataValue()
+                {
+                    EntryData = new RawEntryDataValue.EntryDataValue(
                         g.Key.EntryDataId,
                         g.Key.EntryDataDate,
-                        AsycudaDocumentSetId:
-                        docSet.FirstOrDefault(x => x.SystemDocumentSet == null)?.AsycudaDocumentSetId ??
-                        docSet.First().AsycudaDocumentSetId,
-                        ApplicationSettingsId:
-                        docSet.FirstOrDefault(x => x.SystemDocumentSet == null)?.ApplicationSettingsId ??
-                        docSet.First().ApplicationSettingsId,
+                        docSet.FirstOrDefault(x => x.SystemDocumentSet == null)?.AsycudaDocumentSetId ?? docSet.First().AsycudaDocumentSetId,
+                        docSet.FirstOrDefault(x => x.SystemDocumentSet == null)?.ApplicationSettingsId ?? docSet.First().ApplicationSettingsId,
                         g.Key.CustomerName,
                         ((dynamic)g.FirstOrDefault())?.Tax,
-                        Supplier:
-                        string.IsNullOrEmpty(g.Max(x => ((dynamic)x).SupplierCode))
-                            ? null
-                            : g.Max(x => ((dynamic)x).SupplierCode?.ToUpper()),
+                        
+                        string.IsNullOrEmpty(g.Max(x => ((dynamic)x).SupplierCode)) ? null : g.Max(x => ((dynamic)x).SupplierCode?.ToUpper()),
                         ((dynamic)g.FirstOrDefault(x => ((dynamic)x).Currency != ""))?.Currency,
-                        EmailId: emailId,
-                        FileTypeId: fileType.Id,
+                        emailId,
+                        fileType.Id,
                         ((dynamic)g.FirstOrDefault(x => ((dynamic)x).DocumentType != ""))?.DocumentType,
                         ((dynamic)g.FirstOrDefault(x => ((dynamic)x).SupplierInvoiceNo != ""))?.SupplierInvoiceNo,
                         ((dynamic)g.FirstOrDefault(x => ((dynamic)x).PreviousCNumber != ""))?.PreviousCNumber,
-                        ((dynamic)g.FirstOrDefault(x => ((dynamic)x).FinancialInformation != ""))
-                        ?.FinancialInformation,
+                        ((dynamic)g.FirstOrDefault(x => ((dynamic)x).FinancialInformation != ""))?.FinancialInformation,
                         ((dynamic)g.FirstOrDefault(x => ((dynamic)x).Vendor != ""))?.Vendor,
                         ((dynamic)g.FirstOrDefault(x => ((dynamic)x).PONumber != ""))?.PONumber,
-                        SourceFile: droppedFilePath
+                         droppedFilePath
                     ),
-                    EntryDataDetails: g.Where(x => !string.IsNullOrEmpty(x.ItemNumber))
+                    EntryDataDetails = g.Where(x => !string.IsNullOrEmpty(x.ItemNumber))
                         .Select(x => new EntryDataDetails()
                         {
                             EntryDataId = x.EntryDataId,
@@ -78,21 +72,23 @@ namespace WaterNut.DataSpace
                                 Convert.ToDouble((double)(x.Gallons * DomainFactLibary.GalToLtrRate ??
                                                           Convert.ToDouble((double)(x.Liters ?? 0.0)))),
                         }).ToList(),
-                    f: g.Select(x => (
-                        TotalWeight: Convert.ToDouble((double)(x.TotalWeight ?? 0.0)),
-                        TotalFreight: Convert.ToDouble((double)(x.TotalFreight ?? 0.0)),
-                        TotalInternalFreight: Convert.ToDouble((double)(x.TotalInternalFreight ?? 0.0)),
-                        TotalOtherCost: Convert.ToDouble((double)(x.TotalOtherCost ?? 0.0)),
-                        TotalInsurance: Convert.ToDouble((double)(x.TotalInsurance ?? 0.0)),
-                        TotalDeductions: Convert.ToDouble((double)(x.TotalDeductions ?? 0.0)),
-                        InvoiceTotal: Convert.ToDouble((double)(x.InvoiceTotal ?? 0.0)),
-                        TotalTax: Convert.ToDouble((double)(x.TotalTax ?? 0.0)),
-                        Packages: Convert.ToInt32((int)(x.Packages ?? 0)),
+                    Totals = g.Select(x => new RawEntryDataValue.TotalsValue(
+                         Convert.ToDouble((double)(x.TotalWeight ?? 0.0)),
+                         Convert.ToDouble((double)(x.TotalFreight ?? 0.0)),
+                         Convert.ToDouble((double)(x.TotalInternalFreight ?? 0.0)),
+                         Convert.ToDouble((double)(x.TotalOtherCost ?? 0.0)),
+                         Convert.ToDouble((double)(x.TotalInsurance ?? 0.0)),
+                         Convert.ToDouble((double)(x.TotalDeductions ?? 0.0)),
+                         Convert.ToDouble((double)(x.InvoiceTotal ?? 0.0)),
+                         Convert.ToDouble((double)(x.TotalTax ?? 0.0)),
+                         Convert.ToInt32((int)(x.Packages ?? 0)),
                         x.WarehouseNo
                     )).Where(f => f.InvoiceTotal > 0).ToList(),
-                    InventoryItems: g.DistinctBy(x => (x.ItemNumber, x.ItemAlias))
-                        .Select(x => (x.ItemNumber, x.ItemAlias))
-                ))
+                    InventoryItems = g.DistinctBy(x =>(x.ItemNumber, x.ItemAlias))
+                                        .Select(x => new RawEntryDataValue.InventoryItemsValue(x.ItemNumber, x.ItemAlias))
+                                        .ToList()
+                }
+                )
                 .Select(x => new RawEntryData(x))
                 .ToList();
 

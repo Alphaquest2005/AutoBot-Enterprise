@@ -366,7 +366,63 @@ namespace AdjustmentQS.Client.Repositories
             }
         }
 
-	 public async Task<IEnumerable<AsycudaDocumentItemEntryDataDetail>> GetAsycudaDocumentItemEntryDataDetailByEntryData_Id(string EntryData_Id, List<string> includesLst = null)
+	 public async Task<IEnumerable<AsycudaDocumentItemEntryDataDetail>> GetAsycudaDocumentItemEntryDataDetailByEntryDataDetailsId(string EntryDataDetailsId, List<string> includesLst = null)
+        {
+             if (EntryDataDetailsId == "0") return null;
+            try
+            {
+                 using (AsycudaDocumentItemEntryDataDetailClient t = new AsycudaDocumentItemEntryDataDetailClient())
+                    {
+                        var res = await t.GetAsycudaDocumentItemEntryDataDetailByEntryDataDetailsId(EntryDataDetailsId, includesLst).ConfigureAwait(continueOnCapturedContext: false);
+                         if(res != null)
+                        {
+                            return res.Select(x => new AsycudaDocumentItemEntryDataDetail(x)).AsEnumerable();
+					    }                
+					    else
+					    {
+						    return null;
+					    }                    
+                    }
+            }
+            catch (FaultException<ValidationFault> e)
+            {
+                throw new Exception(e.Detail.Message, e.InnerException);
+            }
+            catch (Exception)
+            {
+                Debugger.Break();
+                throw;
+            }
+        } 
+ 	 public async Task<IEnumerable<AsycudaDocumentItemEntryDataDetail>> GetAsycudaDocumentItemEntryDataDetailByItem_Id(string Item_Id, List<string> includesLst = null)
+        {
+             if (Item_Id == "0") return null;
+            try
+            {
+                 using (AsycudaDocumentItemEntryDataDetailClient t = new AsycudaDocumentItemEntryDataDetailClient())
+                    {
+                        var res = await t.GetAsycudaDocumentItemEntryDataDetailByItem_Id(Item_Id, includesLst).ConfigureAwait(continueOnCapturedContext: false);
+                         if(res != null)
+                        {
+                            return res.Select(x => new AsycudaDocumentItemEntryDataDetail(x)).AsEnumerable();
+					    }                
+					    else
+					    {
+						    return null;
+					    }                    
+                    }
+            }
+            catch (FaultException<ValidationFault> e)
+            {
+                throw new Exception(e.Detail.Message, e.InnerException);
+            }
+            catch (Exception)
+            {
+                Debugger.Break();
+                throw;
+            }
+        } 
+ 	 public async Task<IEnumerable<AsycudaDocumentItemEntryDataDetail>> GetAsycudaDocumentItemEntryDataDetailByEntryData_Id(string EntryData_Id, List<string> includesLst = null)
         {
              if (EntryData_Id == "0") return null;
             try
@@ -374,6 +430,62 @@ namespace AdjustmentQS.Client.Repositories
                  using (AsycudaDocumentItemEntryDataDetailClient t = new AsycudaDocumentItemEntryDataDetailClient())
                     {
                         var res = await t.GetAsycudaDocumentItemEntryDataDetailByEntryData_Id(EntryData_Id, includesLst).ConfigureAwait(continueOnCapturedContext: false);
+                         if(res != null)
+                        {
+                            return res.Select(x => new AsycudaDocumentItemEntryDataDetail(x)).AsEnumerable();
+					    }                
+					    else
+					    {
+						    return null;
+					    }                    
+                    }
+            }
+            catch (FaultException<ValidationFault> e)
+            {
+                throw new Exception(e.Detail.Message, e.InnerException);
+            }
+            catch (Exception)
+            {
+                Debugger.Break();
+                throw;
+            }
+        } 
+ 	 public async Task<IEnumerable<AsycudaDocumentItemEntryDataDetail>> GetAsycudaDocumentItemEntryDataDetailByApplicationSettingsId(string ApplicationSettingsId, List<string> includesLst = null)
+        {
+             if (ApplicationSettingsId == "0") return null;
+            try
+            {
+                 using (AsycudaDocumentItemEntryDataDetailClient t = new AsycudaDocumentItemEntryDataDetailClient())
+                    {
+                        var res = await t.GetAsycudaDocumentItemEntryDataDetailByApplicationSettingsId(ApplicationSettingsId, includesLst).ConfigureAwait(continueOnCapturedContext: false);
+                         if(res != null)
+                        {
+                            return res.Select(x => new AsycudaDocumentItemEntryDataDetail(x)).AsEnumerable();
+					    }                
+					    else
+					    {
+						    return null;
+					    }                    
+                    }
+            }
+            catch (FaultException<ValidationFault> e)
+            {
+                throw new Exception(e.Detail.Message, e.InnerException);
+            }
+            catch (Exception)
+            {
+                Debugger.Break();
+                throw;
+            }
+        } 
+ 	 public async Task<IEnumerable<AsycudaDocumentItemEntryDataDetail>> GetAsycudaDocumentItemEntryDataDetailByAsycudaDocumentSetId(string AsycudaDocumentSetId, List<string> includesLst = null)
+        {
+             if (AsycudaDocumentSetId == "0") return null;
+            try
+            {
+                 using (AsycudaDocumentItemEntryDataDetailClient t = new AsycudaDocumentItemEntryDataDetailClient())
+                    {
+                        var res = await t.GetAsycudaDocumentItemEntryDataDetailByAsycudaDocumentSetId(AsycudaDocumentSetId, includesLst).ConfigureAwait(continueOnCapturedContext: false);
                          if(res != null)
                         {
                             return res.Select(x => new AsycudaDocumentItemEntryDataDetail(x)).AsEnumerable();
