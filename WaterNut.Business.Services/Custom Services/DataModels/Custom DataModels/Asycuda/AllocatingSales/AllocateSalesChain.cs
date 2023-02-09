@@ -17,24 +17,10 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
         {
             try
             {
-                SQLBlackBox.RunSqlBlackBox();
-
-                AllocationsBaseModel.PrepareDataForAllocation(applicationSettings);
-              
-                var itemSets = DataSpace.BaseDataModel.GetItemSets(lst).OrderByDescending(x => x.Count());
+                
+                var itemSets = DataSpace.BaseDataModel.GetItemSets(lst);
                
-                itemSets
-                    .AsParallel()
-                    .WithDegreeOfParallelism(Convert.ToInt32(Environment.ProcessorCount * DataSpace.BaseDataModel.Instance.ResourcePercentage))
-                    .ForAll( x =>
-                    {
-                         new ReAllocatedExistingXSales().Execute(x).Wait();
-                        new ReallocateExistingEx9().Execute(x).Wait();
-                        new AutoMatchSingleSetBasedProcessor().AutoMatch(applicationSettings.ApplicationSettingsId, true, x).Wait();
-                        new OldSalesAllocator().AllocateSalesByMatchingSalestoAsycudaEntriesOnItemNumber(allocateToLastAdjustment, x).Wait();
-                        new MarkErrors().Execute(x).Wait();
-
-                    });
+                Execute(applicationSettings, allocateToLastAdjustment, itemSets);
 
                 StatusModel.StopStatusUpdate();
             }
@@ -44,6 +30,28 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
                 throw ex;
             }
 
+        }
+
+        public void Execute(ApplicationSettings applicationSettings, bool allocateToLastAdjustment,
+            List<List<(string ItemNumber, int InventoryItemId)>> itemSets)
+        {
+            SQLBlackBox.RunSqlBlackBox();
+
+            AllocationsBaseModel.PrepareDataForAllocation(applicationSettings);
+
+            itemSets
+                .AsParallel()
+                .WithDegreeOfParallelism(Convert.ToInt32(Environment.ProcessorCount *
+                                                         DataSpace.BaseDataModel.Instance.ResourcePercentage))
+                .ForAll(x =>
+                {
+                    new ReAllocatedExistingXSales().Execute(x).Wait();
+                    new ReallocateExistingEx9().Execute(x).Wait();
+                    new AutoMatchSingleSetBasedProcessor().AutoMatch(applicationSettings.ApplicationSettingsId, true, x).Wait();
+                    new OldSalesAllocator()
+                        .AllocateSalesByMatchingSalestoAsycudaEntriesOnItemNumber(allocateToLastAdjustment, x).Wait();
+                    new MarkErrors().Execute(x).Wait();
+                });
         }
     }
 }

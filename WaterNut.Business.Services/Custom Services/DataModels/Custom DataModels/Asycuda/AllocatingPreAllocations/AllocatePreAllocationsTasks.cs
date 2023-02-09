@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AllocationDS.Business.Entities;
@@ -14,11 +15,14 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
         {
             List<AsycudaSalesAllocations> allocations = null;
 
-            var firstofoverExwarehoused = preAllocations
+            var overExWarehoused = preAllocations
                 .GroupBy(x => x.EntryDataDetailsId)
-                .Where(x => x.Count() > 1 && x.Sum(z => z.QtyAllocated) > x.First().SalesQuantity)
+                .Where(x => x.Count() > 1 && x.Sum(z => z.QtyAllocated) > x.First().SalesQuantity);
+            var firstofoverExwarehoused = overExWarehoused
                 .Select(x => x.First())
                 .ToList();
+
+            //var overExWarehousedAllocations = GetAllocationsFromOverExwarehoused(overExWarehoused);
 
             var splitrows = preAllocations
                 .GroupBy(x => x.EntryDataDetailsId)
@@ -84,6 +88,18 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
 
             return (allocations, entryDataDetails, pItems);
 
+        }
+
+        private List<PreAllocations> GetAllocationsFromOverExwarehoused(IEnumerable<IGrouping<int, PreAllocations>> overExWarehoused)
+        {
+            var res = new List<PreAllocations>();
+
+            foreach (var itm in overExWarehoused)
+            {
+                throw new NotImplementedException();
+            }
+
+            return res;
         }
     }
 }

@@ -2227,8 +2227,13 @@ namespace WaterNut.DataSpace
                 var customsProcedure = BaseDataModel.GetCustomsProcedure(dfp, DocumentType);
 
                 cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.Description = $"{DocumentType } {dfp} Entries";
-                
-            
+
+                cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.IsManuallyAssessed = false;
+                cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.AutoUpdate = false;
+                cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.DoNotAllocate = false;
+                cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.ImportComplete = false;
+                cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.Cancelled = false;
+
 
                 BaseDataModel.Instance.AttachCustomProcedure(cdoc, customsProcedure);
                 AllocationsModel.Instance.AddDutyFreePaidtoRef(cdoc, dfp, ads);

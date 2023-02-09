@@ -121,6 +121,7 @@ namespace AutoBotUtilities.Tests
         [Timeout(60 * 1000 * 60)]
         [TestCase("TOH/MTSX018S", "2022-12-19", 62)] 
         [TestCase("MTV/44311005", "2022-12-19", 62)]
+        [TestCase("SUA/408-1-1/2", "2022-12-19", 60)] // looking for negative qty allocated
         [TestCase(null, "2023-12-19", 101)]
         public void AllocatSales(string itemNumber, string LastInvoiceDate, int NoOfAllocations )
         {
@@ -128,11 +129,13 @@ namespace AutoBotUtilities.Tests
             {
                 if (!Infrastructure.Utils.IsTestApplicationSettings()) Assert.IsTrue(true);
                 var timer = new System.Diagnostics.Stopwatch();
-                
-                if(Infrastructure.Utils.IsDevSqlServer()) AllocationsModel.Instance.ClearAllAllocations(BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId).Wait();
+
+                var itemSets = BaseDataModel.GetItemSets(itemNumber);
+
+                AllocationsModel.Instance.ClearItemSetAllocations(itemSets).Wait();
 
                 timer.Start();
-                new AllocateSalesChain().Execute(BaseDataModel.Instance.CurrentApplicationSettings, false, itemNumber).Wait();
+                new AllocateSalesChain().Execute(BaseDataModel.Instance.CurrentApplicationSettings, false, itemSets);
                 timer.Stop();
                 
                 Console.Write("AllocatSalesChained in seconds: " + timer.Elapsed.TotalSeconds);
