@@ -20,8 +20,13 @@ namespace AutoBotUtilities.Tests.Infrastructure
         public static bool IsTestApplicationSettings()
         {
             return
-                System.Configuration.ConfigurationManager.ConnectionStrings["CoreEntities"].ConnectionString.Contains(@"JOEXPS\SQLDEVELOPER2019") 
+                IsDevSqlServer() 
                 && System.Configuration.ConfigurationManager.ConnectionStrings["CoreEntities"].ConnectionString.Contains(@"AutoBot-EnterpriseDB");
+        }
+
+        public static bool IsDevSqlServer()
+        {
+            return System.Configuration.ConfigurationManager.ConnectionStrings["CoreEntities"].ConnectionString.Contains(@"JOEXPS\SQLDEVELOPER2019");
         }
 
         public static string GetTestDirectory()

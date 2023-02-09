@@ -107,7 +107,16 @@ namespace AllocationDS.Business.Services
 
 				[OperationContract]
         [FaultContract(typeof(ValidationFault))]
+        Task<IEnumerable<AsycudaDocumentItemEntryDataDetails>> GetAsycudaDocumentItemEntryDataDetailsByEntryDataDetailsId(string EntryDataDetailsId, List<string> includesLst = null);
+  		[OperationContract]
+        [FaultContract(typeof(ValidationFault))]
+        Task<IEnumerable<AsycudaDocumentItemEntryDataDetails>> GetAsycudaDocumentItemEntryDataDetailsByItem_Id(string Item_Id, List<string> includesLst = null);
+  		[OperationContract]
+        [FaultContract(typeof(ValidationFault))]
         Task<IEnumerable<AsycudaDocumentItemEntryDataDetails>> GetAsycudaDocumentItemEntryDataDetailsByEntryData_Id(string EntryData_Id, List<string> includesLst = null);
+  		[OperationContract]
+        [FaultContract(typeof(ValidationFault))]
+        Task<IEnumerable<AsycudaDocumentItemEntryDataDetails>> GetAsycudaDocumentItemEntryDataDetailsByApplicationSettingsId(string ApplicationSettingsId, List<string> includesLst = null);
   		[OperationContract]
         [FaultContract(typeof(ValidationFault))]
         Task<IEnumerable<AsycudaDocumentItemEntryDataDetails>> GetAsycudaDocumentItemEntryDataDetailsByAsycudaDocumentSetId(string AsycudaDocumentSetId, List<string> includesLst = null);

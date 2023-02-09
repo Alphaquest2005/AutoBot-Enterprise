@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Linq;
+using System.Security.Policy;
 using System.Threading.Tasks;
 using AdjustmentQS.Business.Entities;
 using CoreEntities.Business.Entities;
+using WaterNut.Business.Services.Utils.MatchingToAsycudaItem;
 
 namespace AdjustmentQS.Business.Services
 {
@@ -31,11 +33,11 @@ namespace AdjustmentQS.Business.Services
             aItems = await AutoMatchUtils.GetAsycudaEntriesInCNumberReference(_adjustmentDetail.ApplicationSettingsId,
                     _adjustmentDetail.PreviousCNumber, _adjustmentDetail.ItemNumber)
                 .ConfigureAwait(false);
-            AutoMatchUtils.MatchToAsycudaItem(_adjustmentDetail,
+            new MatchToAsycudaItemSelector().Execute(_adjustmentDetail,
                 aItems.OrderBy(x => x.AsycudaDocument.AssessmentDate)
                     .ToList(), _entryDataDetail);
         }
-
+        
         public bool IsApplicable(AdjustmentDetail s, EntryDataDetail ed) => s.InvoiceQty > 0;
     }
 }

@@ -35,6 +35,27 @@ namespace PreviousDocumentQS.Client.DTO
             }
 
         }
+         Customs_Procedure _customs_Procedure = null;
+
+        public Customs_Procedure Customs_Procedure
+        {
+            get
+            {
+                return _customs_Procedure;
+            }
+            set
+            {
+                if (value != null)
+                {
+                    _customs_Procedure = value;
+
+                    Customs_ProcedureId = _customs_Procedure.Customs_ProcedureId;
+
+                    NotifyPropertyChanged("Customs_Procedure");
+                }
+            }
+
+        }
         
 
         

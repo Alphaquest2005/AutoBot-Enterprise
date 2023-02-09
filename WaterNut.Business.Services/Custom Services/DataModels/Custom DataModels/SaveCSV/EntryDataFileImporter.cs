@@ -39,6 +39,7 @@ namespace WaterNut.DataSpace
             {
                 ctx.Database.ExecuteSqlCommand(
                     $@"delete from EntryDataFiles where SourceFile = '{droppedFilePath}'");
+                var rows = new List<EntryDataFiles>();
                 foreach (var line in eslst)
                 {
                     var drow = new EntryDataFiles(true)
@@ -64,10 +65,10 @@ namespace WaterNut.DataSpace
                         Units = line.Units,
                         
                     };
-                    ctx.EntryDataFiles.Add(drow);
+                    rows.Add(drow);
                 }
 
-                ctx.SaveChanges();
+                ctx.BulkInsert(rows);
             }
         }
 

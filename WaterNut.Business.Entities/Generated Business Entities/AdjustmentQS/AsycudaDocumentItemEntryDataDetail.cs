@@ -261,6 +261,21 @@ namespace AdjustmentQS.Business.Entities
         }
         string _customsoperation;
         [DataMember]
+        public long Id 
+        {
+            get
+            {
+                return _id;
+            }
+            set
+            {
+                _id = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        long _id;
+        [DataMember]
         public AdjustmentOver AdjustmentOver { get; set; }
         [DataMember]
         public AdjustmentShort AdjustmentShort { get; set; }

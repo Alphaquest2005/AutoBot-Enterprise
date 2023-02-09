@@ -5,28 +5,33 @@ using System.Threading.Tasks;
 using DocumentDS.Business.Entities;
 using EntryDataDS.Business.Entities;
 using EntryDataDS.Business.Services;
+using WaterNut.DataSpace;
 
-namespace WaterNut.DataSpace
+namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModels.SaveCSV.ExistingEntryDataProcessing
 {
-    public class ExistingEntryDataProcessor
+    public class ExistingEntryDataProcessor : IExistingEntryDataProcessor
     {
         public async Task<(dynamic existingEntryData, List<EntryDataDetails> details)> GetExistingEntryData(
             List<AsycudaDocumentSet> docSet, bool overWriteExisting,
-            RawEntryData item)
+            RawEntryDataValue item)
         {
             List<EntryData> existingEntryDataList =
-                GetExistingEntryData(item.Item.EntryData.EntryDataId, item.Item.EntryData.ApplicationSettingsId);
+                GetExistingEntryData(item.EntryData.EntryDataId, item.EntryData.ApplicationSettingsId);
 
              return overWriteExisting
-                 ? await ExistingEntryData(item.Item, existingEntryDataList)
-                 : OverExistingEntryData(docSet, item.Item, existingEntryDataList);
+                 ? await ExistingEntryData(item, existingEntryDataList)
+                 : OverWriteExistingEntryData(docSet, item, existingEntryDataList);
         }
 
-        private static (dynamic existingEntryData, List<EntryDataDetails> details) OverExistingEntryData(List<AsycudaDocumentSet> docSet,
-            ((dynamic EntryDataId, dynamic EntryDataDate, int AsycudaDocumentSetId, int ApplicationSettingsId, dynamic
-                CustomerName, dynamic Tax, dynamic Supplier, dynamic Currency, string EmailId, int FileTypeId, dynamic
-                DocumentType, dynamic SupplierInvoiceNo, dynamic PreviousCNumber, dynamic FinancialInformation, dynamic Vendor,
-                dynamic PONumber, string SourceFile) EntryData, IEnumerable<EntryDataDetails> EntryDataDetails, IEnumerable<(double TotalWeight, double TotalFreight, double TotalInternalFreight, double TotalOtherCost, double TotalInsurance, double TotalDeductions, double InvoiceTotal, double TotalTax, int Packages, dynamic WarehouseNo)> f, IEnumerable<(dynamic ItemNumber, dynamic ItemAlias)> InventoryItems) item, List<EntryData> existingEntryDataList)
+        public List<(dynamic existingEntryData, List<EntryDataDetails> details)> GetExistingEntryData(List<AsycudaDocumentSet> docSet, bool overWriteExisting, List<RawEntryDataValue> itemList)
+        {
+            return itemList
+                .Select(item => GetExistingEntryData(docSet,overWriteExisting,item).Result)
+                .ToList();
+        }
+
+        private static (dynamic existingEntryData, List<EntryDataDetails> details) OverWriteExistingEntryData(List<AsycudaDocumentSet> docSet,
+            RawEntryDataValue item, List<EntryData> existingEntryDataList)
         {
             var existingEntryData = existingEntryDataList.FirstOrDefault();
             existingEntryData.EmailId = item.EntryData.EmailId;
@@ -35,10 +40,7 @@ namespace WaterNut.DataSpace
         }
 
         private async Task<(dynamic existingEntryData, List<EntryDataDetails> details)> ExistingEntryData(
-            ((dynamic EntryDataId, dynamic EntryDataDate, int AsycudaDocumentSetId, int ApplicationSettingsId, dynamic
-                CustomerName, dynamic Tax, dynamic Supplier, dynamic Currency, string EmailId, int FileTypeId, dynamic
-                DocumentType, dynamic SupplierInvoiceNo, dynamic PreviousCNumber, dynamic FinancialInformation, dynamic Vendor,
-                dynamic PONumber, string SourceFile) EntryData, IEnumerable<EntryDataDetails> EntryDataDetails, IEnumerable<(double TotalWeight, double TotalFreight, double TotalInternalFreight, double TotalOtherCost, double TotalInsurance, double TotalDeductions, double InvoiceTotal, double TotalTax, int Packages, dynamic WarehouseNo)> f, IEnumerable<(dynamic ItemNumber, dynamic ItemAlias)> InventoryItems) item, List<EntryData> existingEntryDataList)
+            RawEntryDataValue item, List<EntryData> existingEntryDataList)
         {
             await DeleteExistingEntryData(existingEntryDataList).ConfigureAwait(false);
             var details = item.EntryDataDetails.ToList();
@@ -141,5 +143,7 @@ namespace WaterNut.DataSpace
                 }
             }
         }
+
+       
     }
 }

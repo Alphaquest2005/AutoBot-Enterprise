@@ -47,7 +47,7 @@ namespace AutoBotUtilities.Tests
             var entryDataDetailsIdLst = lst.Select(x => x.EntryDataDetailsId).ToList();
 
 
-            var elapsed = Infrastructure.Utils.Time(async () => await AutoMatchUtils.DoAutoMatch(2, lst).ConfigureAwait(false));
+            var elapsed = Infrastructure.Utils.Time(async () => await AutoMatchProcessor.DoAutoMatch(2, lst).ConfigureAwait(false));
 
 
             var res = new AdjustmentQSContext().EntryDataDetails
@@ -81,7 +81,7 @@ namespace AutoBotUtilities.Tests
             var elapsedPrepareDataForAllocation = Infrastructure.Utils.Time(() => AllocationsBaseModel.PrepareDataForAllocation(BaseDataModel.Instance.CurrentApplicationSettings));
 
 
-            var elapsedAutoMatch = Infrastructure.Utils.Time(async () => await AutoMatchUtils.DoAutoMatch(2, lst).ConfigureAwait(false));
+            var elapsedAutoMatch = Infrastructure.Utils.Time(async () => await AutoMatchProcessor.DoAutoMatch(2, lst).ConfigureAwait(false));
 
 
          

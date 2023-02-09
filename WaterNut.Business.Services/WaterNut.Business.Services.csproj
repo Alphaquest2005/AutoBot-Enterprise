@@ -118,6 +118,9 @@
     <Reference Include="IKVM.Runtime">
       <HintPath>Custom Services\DataModels\Custom DataModels\PDF2TXT\IKVM.Runtime.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.Bcl.AsyncInterfaces, Version=7.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Bcl.AsyncInterfaces.7.0.0\lib\net462\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.Expression.Interactions">
       <HintPath>..\packages\SimpleMvvmToolkit.5.5.1.0\lib\net45\Microsoft.Expression.Interactions.dll</HintPath>
@@ -224,6 +227,12 @@
       <Private>True</Private>
       <Private>True</Private>
     </Reference>
+    <Reference Include="System.Linq.Async, Version=6.0.0.0, Culture=neutral, PublicKeyToken=94bc3704cddfc263, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Linq.Async.6.0.1\lib\net48\System.Linq.Async.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Linq.Async.Queryable, Version=6.0.0.0, Culture=neutral, PublicKeyToken=94bc3704cddfc263, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Linq.Async.Queryable.6.0.1\lib\net48\System.Linq.Async.Queryable.dll</HintPath>
+    </Reference>
     <Reference Include="System.Linq.Expressions, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Linq.Expressions.4.3.0\lib\net463\System.Linq.Expressions.dll</HintPath>
       <Private>True</Private>
@@ -304,6 +313,9 @@
       <Private>True</Private>
       <Private>True</Private>
     </Reference>
+    <Reference Include="System.Threading.Tasks.Extensions, Version=4.2.0.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Threading.Tasks.Extensions.4.5.4\lib\net461\System.Threading.Tasks.Extensions.dll</HintPath>
+    </Reference>
     <Reference Include="System.Transactions" />
     <Reference Include="System.Windows.Interactivity">
       <HintPath>..\packages\SimpleMvvmToolkit.5.5.1.0\lib\net45\System.Windows.Interactivity.dll</HintPath>
@@ -358,6 +370,9 @@
     <Reference Include="UglyToad.PdfPig.Tokens, Version=0.1.7.0, Culture=neutral, PublicKeyToken=605d367334e74123, processorArchitecture=MSIL">
       <HintPath>..\packages\PdfPig.0.1.7\lib\net47\UglyToad.PdfPig.Tokens.dll</HintPath>
     </Reference>
+    <Reference Include="Z.EntityFramework.Extensions, Version=7.18.3.0, Culture=neutral, PublicKeyToken=59b66d028979105b, processorArchitecture=MSIL">
+      <HintPath>..\packages\Z.EntityFramework.Extensions.7.18.3\lib\net45\Z.EntityFramework.Extensions.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Asycuda\LicenseToDatabase.cs" />
@@ -394,6 +409,7 @@
     <Compile Include="Contracts\AllocationDS\IAsycudaLkpLstService.cs" />
     <Compile Include="Contracts\AllocationDS\IAsycudaSalesAllocationsPIDataService.cs" />
     <Compile Include="Contracts\AllocationDS\IAsycudaSalesAllocationsService.cs" />
+    <Compile Include="Contracts\AllocationDS\IAsycudaSalesAllocations_XcudaItemsToAllocateService.cs" />
     <Compile Include="Contracts\AllocationDS\ICustomsOperationsService.cs" />
     <Compile Include="Contracts\AllocationDS\ICustoms_ProcedureService.cs" />
     <Compile Include="Contracts\AllocationDS\IEntryDataDetailsExService.cs" />
@@ -419,6 +435,7 @@
     <Compile Include="Contracts\AllocationDS\IxBondAllocationsService.cs" />
     <Compile Include="Contracts\AllocationDS\Ixcuda_Goods_descriptionService.cs" />
     <Compile Include="Contracts\AllocationDS\Ixcuda_HScodeService.cs" />
+    <Compile Include="Contracts\AllocationDS\Ixcuda_Inventory_ItemService.cs" />
     <Compile Include="Contracts\AllocationDS\Ixcuda_ItemService.cs" />
     <Compile Include="Contracts\AllocationDS\Ixcuda_Item_InvoiceService.cs" />
     <Compile Include="Contracts\AllocationDS\Ixcuda_PreviousItemService.cs" />
@@ -791,28 +808,99 @@
     <Compile Include="Custom Contracts\Custom Contracts\AdjustmentQS\IAdjustmentShortService.cs" />
     <Compile Include="Custom Services\AdjustmentQS\AdjustmentOverService.cs" />
     <Compile Include="Custom Services\AdjustmentQS\AdjustmentShortService.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\Asycuda\AllocatingSales\AllocateSalesChain.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\Asycuda\AllocatingSales\AllocateSales.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\Asycuda\AllocatingPreAllocations\AllocatePreAllocationsTasks.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\Asycuda\AllocatingPreAllocations\AllocatePreAllocations.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\Asycuda\AllocatingPreAllocations\IAllocatePreAllocationsProcessor.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\Asycuda\AllocatingSales\IAllocateSalesProcessor.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\Asycuda\CheckingExistingStock\CheckExistingStockFromMemory.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\Asycuda\CheckingExistingStock\CheckExistingStockDB.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\Asycuda\CheckingExistingStock\GetExistingStockTextProcessor.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\Asycuda\CheckingExistingStock\ICheckExistingStock.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\Asycuda\GeAsycudaEntriesWithItemNumber.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\Asycuda\GettingOverAllocatedAsycudEntries\GetOverAllocatedAsycudaEntriesMem.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\Asycuda\GettingOverAllocatedAsycudEntries\GetOverAllocatedAsycudaEntries.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\Asycuda\GettingEntryDataDetails\GetEntryDataDetailsMem.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\Asycuda\GettingExistingEx9s\GetExistingEx9Mem.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\Asycuda\GettingExistingEx9s\GetExistingEx9s.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\Asycuda\GettingEntryDataDetails\GetEntryDataDetailsOld.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\Asycuda\GettingEntryDataDetails\IGetEntryDataDetailsProcessor.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\Asycuda\GettingExistingEx9s\IGetExistingEx9Processor.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\Asycuda\GettingGetUOAllocations\GetUOAllocationsMem.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\Asycuda\GettingGetUOAllocations\IGetUOAllocationsProcessor.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\Asycuda\GettingOverAllocatedAsycudEntries\IGetOverAllocatedAsycudaEntriesProcessor.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\Asycuda\GettingPreviouslyAllocatedAsycudaItem\GetPreviousAllocatedAsycudaItemDB.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\Asycuda\GettingPreviouslyAllocatedAsycudaItem\GetPreviousAllocatedASycudaItemMemory.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\Asycuda\GettingPreviouslyAllocatedAsycudaItem\GetPreviousItemFromAllocationProcessor.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\Asycuda\GettingPreviouslyAllocatedAsycudaItem\IGetPreviousAllocatedAsycudaItem.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\Asycuda\GettingUnallocatedXSales\GetUnAllocatedxSalesMem.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\Asycuda\GettingUnallocatedXSales\IGetUnAllocatedxSalesProcessor.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\Asycuda\GettingUnderAllocatedAsycudaEntries\GetUnderAllocatedAsycudaItemsMem.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\Asycuda\GettingUnderAllocatedAsycudaEntries\IGetUnderAllocatedAsycudaItemsProcessor.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\Asycuda\GettingXcudaInventoryItems\GetXcudaInventoryItemsMem.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\Asycuda\GettingXcudaInventoryItems\IGetXcudaInventoryItemsProcessor.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\Asycuda\GettingXcudaItems\GetXcudaItemsMem.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\Asycuda\GettingXcudaItems\GetXcudaItemsDbQuery.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\Asycuda\GettingXcudaItems\GetXcudaItems.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\Asycuda\GettingXcudaItems\IGetXcudaItemsProcessor.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\Asycuda\GettingUnallocatedXSales\GetUnAllocatedxSales.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\Asycuda\GettingXcudaInventoryItems\GetXcudaInventoryItems.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\Asycuda\GettingGetUOAllocations\GetUOAllocations.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\Asycuda\GettingUnderAllocatedAsycudaEntries\GetUnderAllocatedAsycudaItems.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\Asycuda\ItemEntries.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\Asycuda\MarkErrors.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\Asycuda\OldSalesAllocator.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\Asycuda\ProcessPreAllocations.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\Asycuda\ReAllocatedExistingXSales.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\Asycuda\ReallocateExistingEx9.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\Asycuda\SalesAllocator.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\Asycuda\SavingAllocations\ISaveAllocationSQLProcessor.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\Asycuda\SavingAllocations\SaveAllocationBulk.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\Asycuda\SavingAllocations\SaveAllocationSQL.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\BaseDataModel\GettingItemSets\GetItemSetsMem.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\BaseDataModel\GettingItemSets\GetItemSets.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\BaseDataModel\GettingItemSets\IGetItemSetsProcessor.cs" />
     <Compile Include="Custom Services\DataModels\Custom DataModels\PDF2TXT\Invoice.cs" />
     <Compile Include="Custom Services\DataModels\Custom DataModels\PDF2TXT\InvoiceLine.cs" />
     <Compile Include="Custom Services\DataModels\Custom DataModels\PDF2TXT\Line.cs" />
     <Compile Include="Custom Services\DataModels\Custom DataModels\PDF2TXT\Part.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\AddingToDocSet\AddToDocSetSelector.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\AddingToDocSet\AddToDocSetMem.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\AddingToDocSet\IAddToDocSetProcessor.cs" />
     <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\ADJCreator.cs" />
     <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\BillOfLadenImporter.cs" />
     <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\CancelledEntriesImporter.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\CreatingEntryData\CreateEntryDataSelector.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\CreatingEntryData\CreateEntryDataSetBased.cs" />
     <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\CSVDataFileActions.cs" />
     <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\CSVShipmentImporter.cs" />
-    <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\EntryDataCreator.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\AddingToDocSet\AddToDocSet.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\EntryDataCreating\EntryDataCreator.cs" />
     <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\EntryDataDetailsCreator.cs" />
-    <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\ExistingEntryDataProcessor.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\ExistingEntryDataProcessing\ExistingEntryDataMem.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\ExistingEntryDataProcessing\ExistingEntryDataProcessor.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\ExistingEntryDataProcessing\IExistingEntryDataProcessor.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\ExistingEntryDataProcessing\IExistingEntryDataSetProcessor.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\GettingInventoryItem\GetInventoryItemSelector.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\GettingInventoryItem\GetInventoryItemMem.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\GettingInventoryItem\GetInventoryItem.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\GettingInventoryItem\IGetInventoryItemProcessor.cs" />
     <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\IEntryDataCreator.cs" />
     <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\InventoryAliasCodesProcessor.cs" />
     <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\InventoryCodesProcessor.cs" />
-    <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\InventoryItemsProcessor.cs" />
-    <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\InventoryProcessor.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\InventoryItemsAliasProcessor.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\InventoryProcessing\IInventoryProcessor.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\InventoryProcessing\InventoryProcessorSelector.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\InventoryProcessing\InventoryProcessorSet.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\InventoryProcessing\InventoryProcessor.cs" />
     <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\InventorySourceFactory.cs" />
     <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\InventorySourceProcessor.cs" />
     <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\InvoiceCreator.cs" />
     <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\IRawDataExtractor.cs" />
-    <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\NewEntryDataProcessor.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\NewEntryDataProcessing\INewEntryDataProcessor.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\NewEntryDataProcessing\NewEntryDataProcessorNoSave.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\NewEntryDataProcessing\NewEntryDataProcessor.cs" />
     <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\OPSCreator.cs" />
     <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\PDFDataFileActions.cs" />
     <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\DataFileProcessor.cs" />
@@ -830,8 +918,12 @@
     <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\PDFShipmentInvoiceImporter.cs" />
     <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\POCreator.cs" />
     <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\RawDataFile.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\RawEntryData.cs" />
     <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\RawEntryDataExtractor.cs" />
-    <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\RawEntryDataProcessor.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\CreatingEntryData\CreateEntryData.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\CreatingEntryData\ICreateEntryDataProcessor.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\RawEntryDataProcessing\RawEntryDataProcessor.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\RawRiderData.cs" />
     <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\RiderImporter.cs" />
     <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\RiderPdfImporter.cs" />
     <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\SalesCreator.cs" />
@@ -876,6 +968,7 @@
     <Compile Include="Services\AllocationDS\AsycudaLkpLstService.cs" />
     <Compile Include="Services\AllocationDS\AsycudaSalesAllocationsPIDataService.cs" />
     <Compile Include="Services\AllocationDS\AsycudaSalesAllocationsService.cs" />
+    <Compile Include="Services\AllocationDS\AsycudaSalesAllocations_XcudaItemsToAllocateService.cs" />
     <Compile Include="Services\AllocationDS\CustomsOperationsService.cs" />
     <Compile Include="Services\AllocationDS\Customs_ProcedureService.cs" />
     <Compile Include="Services\AllocationDS\EntryDataDetailsExService.cs" />
@@ -901,6 +994,7 @@
     <Compile Include="Services\AllocationDS\xBondAllocationsService.cs" />
     <Compile Include="Services\AllocationDS\xcuda_Goods_descriptionService.cs" />
     <Compile Include="Services\AllocationDS\xcuda_HScodeService.cs" />
+    <Compile Include="Services\AllocationDS\xcuda_Inventory_ItemService.cs" />
     <Compile Include="Services\AllocationDS\xcuda_ItemService.cs" />
     <Compile Include="Services\AllocationDS\xcuda_Item_InvoiceService.cs" />
     <Compile Include="Services\AllocationDS\xcuda_PreviousItemService.cs" />
@@ -922,6 +1016,9 @@
     <Compile Include="Services\EntryDataDS\SupplierItemDescriptionRegExService.cs" />
     <Compile Include="Services\EntryDataDS\SupplierItemDescriptionService.cs" />
     <Compile Include="Services\EntryDataDS\SystemDocumentSetsService.cs" />
+    <Compile Include="Utils\AutoMatching\AutoMatchProcessorSingleSetBased.cs" />
+    <Compile Include="Utils\AutoMatching\AutoMatchProcessorSetBased.cs" />
+    <Compile Include="Utils\AutoMatching\AutoMatchProcessor.cs" />
     <Compile Include="Utils\AutoMatchUtils.cs" />
     <Compile Include="Importers\ChainedDataExtractor.cs" />
     <Compile Include="Importers\CSVDataExtractor.cs" />
@@ -949,7 +1046,14 @@
     <Compile Include="Services\CoreEntities\FileImporterInfoService.cs" />
     <Compile Include="Utils\CSVUtils.cs" />
     <Compile Include="Utils\DomainFactLibary.cs" />
+    <Compile Include="Utils\GettingAllDiscrepancyItems\GetAllDiscrepancyDetailsMem.cs" />
+    <Compile Include="Utils\GettingAllDiscrepancyItems\GetAllDiscrepancyDetails.cs" />
+    <Compile Include="Utils\GettingAllDiscrepancyItems\IGetAllDiscrepancyDetailsProcessor.cs" />
     <Compile Include="Utils\InventoryData.cs" />
+    <Compile Include="Utils\MatchingToAsycudaItem\GetAsycudaDocumentEntryDataDetailMem.cs" />
+    <Compile Include="Utils\MatchingToAsycudaItem\GetAsycudaDocumentEntryDataDetail.cs" />
+    <Compile Include="Utils\MatchingToAsycudaItem\IMatchToAsycudaItemProcessor.cs" />
+    <Compile Include="Utils\MatchingToAsycudaItem\MatchToAsycudaItemBulkSave.cs" />
     <Compile Include="Utils\Matching\CNumberMatcher.cs" />
     <Compile Include="Utils\Matching\EffectiveDatefProcessor.cs" />
     <Compile Include="Utils\FileTypeManager.cs" />
@@ -1530,11 +1634,19 @@
     <Compile Include="Utils\InventoryDataItem.cs" />
     <Compile Include="Utils\InventoryItemDataUtils.cs" />
     <Compile Include="Utils\InventoryItemUtils.cs" />
+    <Compile Include="Utils\Matching\MatchToAsycudaItemSelector.cs" />
     <Compile Include="Utils\Matching\MissingCostProcessor.cs" />
     <Compile Include="Utils\Matching\OverCNumberMatcher.cs" />
     <Compile Include="Utils\Matching\PreviousInvoiceNumberMatcher.cs" />
     <Compile Include="Utils\Matching\ShortCNumberMatcher.cs" />
     <Compile Include="Utils\Matching\ShortPreviousNumberMatcher.cs" />
+    <Compile Include="Utils\MatchingToAsycudaItem\MatchToAsycudaItem.cs" />
+    <Compile Include="Utils\ProcessingDISErrorsForAllocations\ProcessDISErrorsForAllocationMem.cs" />
+    <Compile Include="Utils\ProcessingDISErrorsForAllocations\ProcessDISErrorsForAllocation.cs" />
+    <Compile Include="Utils\SavingInventoryItems\SaveInventoryItemsBulk.cs" />
+    <Compile Include="Utils\SavingInventoryItems\SaveInventoryItemSelector.cs" />
+    <Compile Include="Utils\SavingInventoryItems\SaveInventoryItems.cs" />
+    <Compile Include="Utils\SavingInventoryItems\SaveInventoryItemsProcessor.cs" />
     <Compile Include="Utils\SupplierData.cs" />
     <Compile Include="Utils\Utils.cs" />
   </ItemGroup>

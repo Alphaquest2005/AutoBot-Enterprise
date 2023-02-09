@@ -81,7 +81,7 @@ namespace PreviousDocumentQS.Business.Entities
         }
         string _commodity_code;
         [DataMember]
-        public string Previous_item_number 
+        public Nullable<int> Previous_item_number 
         {
             get
             {
@@ -94,7 +94,7 @@ namespace PreviousDocumentQS.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        string _previous_item_number;
+        Nullable<int> _previous_item_number;
         [DataMember]
         public string Goods_origin 
         {
@@ -111,7 +111,7 @@ namespace PreviousDocumentQS.Business.Entities
         }
         string _goods_origin;
         [DataMember]
-        public Nullable<decimal> Net_weight 
+        public decimal Net_weight 
         {
             get
             {
@@ -124,9 +124,9 @@ namespace PreviousDocumentQS.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        Nullable<decimal> _net_weight;
+        decimal _net_weight;
         [DataMember]
-        public Nullable<decimal> Prev_net_weight 
+        public decimal Prev_net_weight 
         {
             get
             {
@@ -139,7 +139,7 @@ namespace PreviousDocumentQS.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        Nullable<decimal> _prev_net_weight;
+        decimal _prev_net_weight;
         [DataMember]
         public string Prev_reg_ser 
         {
@@ -246,7 +246,7 @@ namespace PreviousDocumentQS.Business.Entities
         }
         double _previous_value;
         [DataMember]
-        public string Current_item_number 
+        public Nullable<int> Current_item_number 
         {
             get
             {
@@ -259,7 +259,7 @@ namespace PreviousDocumentQS.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        string _current_item_number;
+        Nullable<int> _current_item_number;
         [DataMember]
         public int PreviousItem_Id 
         {
@@ -306,7 +306,7 @@ namespace PreviousDocumentQS.Business.Entities
         }
         double _qtyallocated;
         [DataMember]
-        public Nullable<int> PreviousDocumentItemId 
+        public int PreviousDocumentItemId 
         {
             get
             {
@@ -319,7 +319,7 @@ namespace PreviousDocumentQS.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        Nullable<int> _previousdocumentitemid;
+        int _previousdocumentitemid;
         [DataMember]
         public double RndCurrent_Value 
         {
@@ -516,7 +516,7 @@ namespace PreviousDocumentQS.Business.Entities
         }
         int _applicationsettingsid;
         [DataMember]
-        public Nullable<double> TotalDutyLiablity 
+        public double TotalDutyLiablity 
         {
             get
             {
@@ -529,9 +529,9 @@ namespace PreviousDocumentQS.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        Nullable<double> _totaldutyliablity;
+        double _totaldutyliablity;
         [DataMember]
-        public Nullable<double> DutyLiablity 
+        public double DutyLiablity 
         {
             get
             {
@@ -544,7 +544,7 @@ namespace PreviousDocumentQS.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        Nullable<double> _dutyliablity;
+        double _dutyliablity;
         [DataMember]
         public Nullable<int> Prev_reg_year 
         {
@@ -560,6 +560,36 @@ namespace PreviousDocumentQS.Business.Entities
             }
         }
         Nullable<int> _prev_reg_year;
+        [DataMember]
+        public int Customs_ProcedureId 
+        {
+            get
+            {
+                return _customs_procedureid;
+            }
+            set
+            {
+                _customs_procedureid = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        int _customs_procedureid;
+        [DataMember]
+        public string CustomsProcedure 
+        {
+            get
+            {
+                return _customsprocedure;
+            }
+            set
+            {
+                _customsprocedure = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _customsprocedure;
         [DataMember]
         public PreviousDocumentItem PreviousDocumentItem { get; set; }
         [DataMember]

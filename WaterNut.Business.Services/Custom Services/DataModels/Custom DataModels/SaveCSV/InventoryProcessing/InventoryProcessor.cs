@@ -1,16 +1,16 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Core.Common.Utils;
 using InventoryDS.Business.Entities;
 using MoreLinq;
-using TrackableEntities;
 using WaterNut.Business.Services.Utils;
+using WaterNut.Business.Services.Utils.SavingInventoryItems;
+using WaterNut.DataSpace;
 
-namespace WaterNut.DataSpace
+namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModels.SaveCSV.InventoryProcessing
 {
-    public class InventoryProcessor
+    public class InventoryProcessor : IInventoryProcessor
     {
-        public static void ProcessInventoryItemLst(int applicationSettingsId,
+        public void Execute(int applicationSettingsId,
             List<InventoryData> inventoryDataList,
             InventorySource inventorySource)
         {
@@ -47,7 +47,7 @@ namespace WaterNut.DataSpace
                 .ForEach(x =>
                     x.Item.InventoryItemSources.Add(InventorySourceProcessor.CreateItemSource(inventorySource, x.Item)));
 
-            InventoryItemDataUtils.SaveInventoryItems(existingInventoryItem);
+           new SaveInventoryItemsSelector().Execute(existingInventoryItem);
             ///////////////
 
             existingInventoryItem.ForEach(x => x.Data.Data.ForEach(z => z.InventoryItemId = x.Item.Id));

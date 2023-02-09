@@ -1098,12 +1098,12 @@ namespace AutoBot
                 AllocationsBaseModel.PrepareDataForAllocation(BaseDataModel.Instance.CurrentApplicationSettings);
 
                 
-                new AdjustmentShortService().AutoMatchUtils
+                new AdjustmentShortService().AutoMatchUtils.AutoMatchProcessor
                     .AutoMatchDocSet(BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId,
                         fileType.AsycudaDocumentSetId).Wait();
 
-                new AdjustmentShortService().AutoMatchUtils
-                    .ProcessDISErrorsForAllocation(
+                new AdjustmentShortService().AutoMatchUtils.AutoMatchProcessor.ProcessDisErrorsForAllocation
+                    .Execute(
                         BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId,
                         lst.Select(x => $"{x.Key}-{x.Value}").Aggregate((o, n) => $"{o},{n}")).Wait();
 
@@ -1112,13 +1112,13 @@ namespace AutoBot
                 var shortlst = GetShorts(lst, fileType);
                 if (string.IsNullOrEmpty(shortlst)) return;
 
-                new AllocationsBaseModel()
+                new OldSalesAllocator()
                     .AllocateSalesByMatchingSalestoAsycudaEntriesOnItemNumber(
                         BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId, false,
                         shortlst).Wait();
 
-                new AllocationsBaseModel()
-                    .MarkErrors(BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId, shortlst)
+                new MarkErrors()
+                    .Execute(BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId, shortlst)
                     .Wait();
             }
             catch (Exception e)

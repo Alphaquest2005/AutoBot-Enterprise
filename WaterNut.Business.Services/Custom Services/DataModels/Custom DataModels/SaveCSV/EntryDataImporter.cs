@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModels.SaveCSV.RawEntryDataProcessing;
 
 namespace WaterNut.DataSpace
 {
@@ -25,9 +26,9 @@ namespace WaterNut.DataSpace
 
                 //}
 
-                var goodLst = RawEntryDataProcessor.GetValidRawEntryData(entryDataLst);
+                var goodLst = new RawEntryDataProcessor().GetValidRawEntryData(entryDataLst);
 
-                await RawEntryDataProcessor.CreateEntryData(dataFile, goodLst).ConfigureAwait(false); 
+                await new RawEntryDataProcessor().CreateEntryData(dataFile, goodLst).ConfigureAwait(false); 
 
             }
             catch (Exception)

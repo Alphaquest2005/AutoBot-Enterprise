@@ -111,10 +111,8 @@ public string Commodity_code
      
 
        
-       
-                
-                [MaxLength(20, ErrorMessage = "Previous_item_number has a max length of 20 letters ")]
-public string Previous_item_number
+       [NumberValidationAttribute]
+public Nullable<int> Previous_item_number
 		{ 
 		    get { return this.previousitemsex.Previous_item_number; }
 			set
@@ -144,9 +142,9 @@ public string Goods_origin
 		}
      
 
-       
+       [RequiredValidationAttribute(ErrorMessage= "Net_weight is required")]
        [NumberValidationAttribute]
-public Nullable<decimal> Net_weight
+public decimal Net_weight
 		{ 
 		    get { return this.previousitemsex.Net_weight; }
 			set
@@ -159,9 +157,9 @@ public Nullable<decimal> Net_weight
 		}
      
 
-       
+       [RequiredValidationAttribute(ErrorMessage= "Prev_net_weight is required")]
        [NumberValidationAttribute]
-public Nullable<decimal> Prev_net_weight
+public decimal Prev_net_weight
 		{ 
 		    get { return this.previousitemsex.Prev_net_weight; }
 			set
@@ -286,10 +284,8 @@ public double Previous_value
      
 
        
-       
-                
-                [MaxLength(20, ErrorMessage = "Current_item_number has a max length of 20 letters ")]
-public string Current_item_number
+       [NumberValidationAttribute]
+public Nullable<int> Current_item_number
 		{ 
 		    get { return this.previousitemsex.Current_item_number; }
 			set
@@ -347,9 +343,9 @@ public double QtyAllocated
 		}
      
 
+       [RequiredValidationAttribute(ErrorMessage= "PreviousDocumentItem is required")]
        
-       
-public Nullable<int> PreviousDocumentItemId
+public int PreviousDocumentItemId
 		{ 
 		    get { return this.previousitemsex.PreviousDocumentItemId; }
 			set
@@ -491,7 +487,7 @@ public double SalesFactor
        
        
                 
-                [MaxLength(40, ErrorMessage = "DocumentType has a max length of 40 letters ")]
+                [MaxLength(20, ErrorMessage = "DocumentType has a max length of 20 letters ")]
 public string DocumentType
 		{ 
 		    get { return this.previousitemsex.DocumentType; }
@@ -569,9 +565,9 @@ public int ApplicationSettingsId
 		}
      
 
-       
+       [RequiredValidationAttribute(ErrorMessage= "TotalDutyLiablity is required")]
        [NumberValidationAttribute]
-public Nullable<double> TotalDutyLiablity
+public double TotalDutyLiablity
 		{ 
 		    get { return this.previousitemsex.TotalDutyLiablity; }
 			set
@@ -584,9 +580,9 @@ public Nullable<double> TotalDutyLiablity
 		}
      
 
-       
+       [RequiredValidationAttribute(ErrorMessage= "DutyLiablity is required")]
        [NumberValidationAttribute]
-public Nullable<double> DutyLiablity
+public double DutyLiablity
 		{ 
 		    get { return this.previousitemsex.DutyLiablity; }
 			set
@@ -610,6 +606,38 @@ public Nullable<int> Prev_reg_year
 				this.previousitemsex.Prev_reg_year = value;
                 if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
 				NotifyPropertyChanged("Prev_reg_year");
+			}
+		}
+     
+
+       [RequiredValidationAttribute(ErrorMessage= "Customs_Procedure is required")]
+       
+public int Customs_ProcedureId
+		{ 
+		    get { return this.previousitemsex.Customs_ProcedureId; }
+			set
+			{
+			    if (value == this.previousitemsex.Customs_ProcedureId) return;
+				this.previousitemsex.Customs_ProcedureId = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("Customs_ProcedureId");
+			}
+		}
+     
+
+       [RequiredValidationAttribute(ErrorMessage= "CustomsProcedure is required")]
+       
+                
+                [MaxLength(11, ErrorMessage = "CustomsProcedure has a max length of 11 letters ")]
+public string CustomsProcedure
+		{ 
+		    get { return this.previousitemsex.CustomsProcedure; }
+			set
+			{
+			    if (value == this.previousitemsex.CustomsProcedure) return;
+				this.previousitemsex.CustomsProcedure = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("CustomsProcedure");
 			}
 		}
      

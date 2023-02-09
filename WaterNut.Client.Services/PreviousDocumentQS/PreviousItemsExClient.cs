@@ -132,6 +132,11 @@ namespace PreviousDocumentQS.Client.Services
             return  await Channel.GetPreviousItemsExByApplicationSettingsId(ApplicationSettingsId, includesLst).ConfigureAwait(false);
         }
 			 
+  		public async Task<IEnumerable<PreviousItemsEx>> GetPreviousItemsExByCustoms_ProcedureId(string Customs_ProcedureId, List<string> includesLst = null)
+        {
+            return  await Channel.GetPreviousItemsExByCustoms_ProcedureId(Customs_ProcedureId, includesLst).ConfigureAwait(false);
+        }
+			 
           public decimal SumField(string whereExp, string sumExp)
 		{
 			return Channel.SumField(whereExp,sumExp);

@@ -261,6 +261,21 @@ namespace AllocationDS.Business.Entities
         }
         string _customsoperation;
         [DataMember]
+        public long Id 
+        {
+            get
+            {
+                return _id;
+            }
+            set
+            {
+                _id = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        long _id;
+        [DataMember]
         public EntryDataDetails EntryDataDetails { get; set; }
         [DataMember]
         public AsycudaDocument AsycudaDocument { get; set; }

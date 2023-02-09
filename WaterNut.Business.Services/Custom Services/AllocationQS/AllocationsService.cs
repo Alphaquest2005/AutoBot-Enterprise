@@ -9,6 +9,8 @@ using System.Threading.Tasks;
 using AllocationDS.Business.Entities;
 using Core.Common.Contracts;
 using CoreEntities.Business.Entities;
+using WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModels.Asycuda.AllocatingSales;
+using WaterNut.DataSpace;
 using AsycudaDocument = AllocationDS.Business.Entities.AsycudaDocument;
 using ConcurrencyMode = System.ServiceModel.ConcurrencyMode;
 
@@ -96,7 +98,7 @@ namespace AllocationQS.Business.Services
         public async Task AllocateSales(ApplicationSettings applicationSettings, bool allocateToLastAdjustment)
         {
             await
-                WaterNut.DataSpace.AllocationsBaseModel.Instance.AllocateSales(applicationSettings, allocateToLastAdjustment)
+               new AllocateSales().Execute(applicationSettings, allocateToLastAdjustment)
                     .ConfigureAwait(false);
         }
 

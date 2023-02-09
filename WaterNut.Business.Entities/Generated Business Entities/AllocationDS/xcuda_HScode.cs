@@ -84,6 +84,8 @@ namespace AllocationDS.Business.Entities
         public xcuda_Tarification xcuda_Tarification { get; set; }
         [DataMember]
         public TariffCodes TariffCodes { get; set; }
+        [DataMember]
+        public xcuda_Inventory_Item xcuda_Inventory_Item { get; set; }
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

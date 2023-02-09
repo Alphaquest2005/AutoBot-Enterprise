@@ -21,11 +21,11 @@ namespace AdjustmentQS.Client.Entities
         {
             get
             {
-                return this.EntryDataDetailsId.ToString();//this.EntryDataDetailsId == null?"0":			
+                return this.Id.ToString();//this.Id == null?"0":			
             }
             set
             {
-                this.EntryDataDetailsId = Convert.ToInt32(value);
+                this.Id = Convert.ToInt64(value);
             }
         }
         public string AdjustmentOverEntityName
@@ -48,7 +48,7 @@ namespace AdjustmentQS.Client.Entities
                         {
                             this.AdjustmentOver = (AdjustmentOver)new AdjustmentOver().CreateEntityFromString(value);
 							
-							this.EntryDataDetailsId = Convert.ToInt32(this.AdjustmentOver.EntryDataDetailsId);
+							this.Id = Convert.ToInt64(this.AdjustmentOver.EntryDataDetailsId);
                             this.TrackingState=TrackableEntities.TrackingState.Modified;
                            NotifyPropertyChanged("AddAdjustmentOver");
                         }
@@ -86,7 +86,7 @@ namespace AdjustmentQS.Client.Entities
                         {
                             this.AdjustmentShort = (AdjustmentShort)new AdjustmentShort().CreateEntityFromString(value);
 							
-							this.EntryDataDetailsId = Convert.ToInt32(this.AdjustmentShort.EntryDataDetailsId);
+							this.Id = Convert.ToInt64(this.AdjustmentShort.EntryDataDetailsId);
                             this.TrackingState=TrackableEntities.TrackingState.Modified;
                            NotifyPropertyChanged("AddAdjustmentShort");
                         }
@@ -124,7 +124,7 @@ namespace AdjustmentQS.Client.Entities
                         {
                             this.AdjustmentDetail = (AdjustmentDetail)new AdjustmentDetail().CreateEntityFromString(value);
 							
-							this.EntryDataDetailsId = Convert.ToInt32(this.AdjustmentDetail.EntryDataDetailsId);
+							this.Id = Convert.ToInt64(this.AdjustmentDetail.EntryDataDetailsId);
                             this.TrackingState=TrackableEntities.TrackingState.Modified;
                            NotifyPropertyChanged("AddAdjustmentDetail");
                         }
@@ -132,6 +132,46 @@ namespace AdjustmentQS.Client.Entities
                         {
                             var obj = new AdjustmentDetail(dto);
                            if (this.AdjustmentDetail == null || this.AdjustmentDetail.EntityId != obj.EntityId) this.AdjustmentDetail = obj;
+                           
+                        }
+                         
+
+
+                    }
+            
+            }
+
+      }
+        public string ApplicationSettingsEntityName
+        {
+            get
+            {
+ 
+                if(this.ApplicationSettings == null) UpdateApplicationSettings();
+                return this.ApplicationSettings == null ? "" : this.ApplicationSettings.EntityName;
+            }
+            set
+            {
+                                if (string.IsNullOrEmpty(value)) return;
+                string[] vals = value.Split(',');
+               
+                    using (ApplicationSettingsClient ctx = new ApplicationSettingsClient())
+                    {
+                        var dto = ctx.GetApplicationSettings().Result.AsEnumerable().FirstOrDefault(x => x.EntityName == value);
+                        
+
+                        if ( dto == null)
+                        {
+                            this.ApplicationSettings = (ApplicationSettings)new ApplicationSettings().CreateEntityFromString(value);
+							
+							this.ApplicationSettingsId = Convert.ToInt32(this.ApplicationSettings.ApplicationSettingsId);
+                            this.TrackingState=TrackableEntities.TrackingState.Modified;
+                           NotifyPropertyChanged("AddApplicationSettings");
+                        }
+                        else
+                        {
+                            var obj = new ApplicationSettings(dto);
+                           if (this.ApplicationSettings == null || this.ApplicationSettings.EntityId != obj.EntityId) this.ApplicationSettings = obj;
                            
                         }
                          

@@ -155,8 +155,8 @@ namespace AutoBotUtilities.Tests
                 {
                     Assert.Multiple(() =>
                     {
-                        Assert.AreEqual(ctx.EntryData.Count(), 1);
-                        Assert.AreEqual(ctx.EntryDataDetails.Count(), 1);
+                        Assert.AreEqual(1, ctx.EntryData.Count());
+                        Assert.AreEqual(1, ctx.EntryDataDetails.Count());
                     });
                 }
 

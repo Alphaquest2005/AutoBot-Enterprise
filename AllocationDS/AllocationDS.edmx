@@ -246,6 +246,13 @@
           <Property Name="Precision_4" Type="nvarchar" MaxLength="50" />
           <Property Name="Item_Id" Type="int" Nullable="false" />
         </EntityType>
+        <EntityType Name="xcuda_Inventory_Item">
+          <Key>
+            <PropertyRef Name="Item_Id" />
+          </Key>
+          <Property Name="Item_Id" Type="int" Nullable="false" />
+          <Property Name="InventoryItemId" Type="int" Nullable="false" />
+        </EntityType>
         <EntityType Name="xcuda_Item">
           <Key>
             <PropertyRef Name="Item_Id" />
@@ -615,17 +622,14 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AsycudaDocument' does not
 warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AsycudaDocumentItemEntryDataDetails' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="AsycudaDocumentItemEntryDataDetails">
           <Key>
-            <PropertyRef Name="ApplicationSettingsId" />
-            
-            <PropertyRef Name="EntryDataDetailsId" />
-            
-            <PropertyRef Name="Item_Id" />
+            <PropertyRef Name="Id" />
             
             
             
             
             
           </Key>
+          <Property Name="Id" Type="bigint" Nullable="false" />
           <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
           <Property Name="AsycudaDocumentSetId" Type="int" Nullable="false" />
           <Property Name="EntryDataDetailsId" Type="int" Nullable="false" />
@@ -715,6 +719,19 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AsycudaSalesAllocationsPI
           <Property Name="xASYCUDA_Id" Type="int" Nullable="false" />
           <Property Name="xReferenceNumber" Type="nvarchar" MaxLength="30" />
           <Property Name="Id" Type="int" Nullable="false" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AsycudaSalesAllocations-XcudaItemsToAllocate' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="AsycudaSalesAllocations-XcudaItemsToAllocate">
+          <Key>
+            <PropertyRef Name="Item_Id" />
+            
+            <PropertyRef Name="AsycudaDocumentSetId" />
+          </Key>
+          <Property Name="Item_Id" Type="int" Nullable="false" />
+          <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
+          <Property Name="AsycudaDocumentSetId" Type="int" Nullable="false" />
+          <Property Name="AssessmentDate" Type="datetime2" Precision="7" />
         </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.EntryDataDetailsEx' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
@@ -861,18 +878,11 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.EX9AsycudaSalesAllocation
         <!--Errors Found During Generation:
 warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ExistingAllocations' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="ExistingAllocations">
+          
           <Key>
-            <PropertyRef Name="EntryDataDetailsId" />
-            <PropertyRef Name="xItemId" />
-            <PropertyRef Name="pItemId" />
-            
-            
-            
-            
-            
-            <PropertyRef Name="InventoryItemId" />
-            <PropertyRef Name="CustomsProcedure" />
+            <PropertyRef Name="Id" />
           </Key>
+          <Property Name="Id" Type="bigint" Nullable="false" />
           <Property Name="xAsycudaId" Type="int" />
           <Property Name="EntryDataDetailsId" Type="int" Nullable="false" />
           <Property Name="xItemId" Type="int" Nullable="false" />
@@ -889,6 +899,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ExistingAllocations' does
           <Property Name="ItemDescription" Type="nvarchar" MaxLength="255" Nullable="false" />
           <Property Name="DocumentType" Type="nvarchar" MaxLength="40" />
           <Property Name="xQuantity" Type="float" />
+          <Property Name="SalesQuantity" Type="float" Nullable="false" />
           <Property Name="Suplementary_Quantity" Type="decimal" Precision="9" Scale="2" Nullable="false" />
           <Property Name="DutyFreePaid" Type="varchar" MaxLength="9" Nullable="false" />
           <Property Name="InventoryItemId" Type="int" Nullable="false" />
@@ -1430,6 +1441,20 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.XSales-UnAllocated' does 
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_xcuda_Inventory_Item_xcuda_HScode1">
+          <End Role="xcuda_HScode" Type="Self.xcuda_HScode" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="xcuda_Inventory_Item" Type="Self.xcuda_Inventory_Item" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="xcuda_HScode">
+              <PropertyRef Name="Item_Id" />
+            </Principal>
+            <Dependent Role="xcuda_Inventory_Item">
+              <PropertyRef Name="Item_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_xcuda_PreviousItem_xcuda_Item">
           <End Role="xcuda_Item" Type="Self.xcuda_Item" Multiplicity="1">
             <OnDelete Action="Cascade" />
@@ -1465,6 +1490,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.XSales-UnAllocated' does 
           <EntitySet Name="xBondAllocations" EntityType="Self.xBondAllocations" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="xcuda_Goods_description" EntityType="Self.xcuda_Goods_description" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="xcuda_HScode" EntityType="Self.xcuda_HScode" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="xcuda_Inventory_Item" EntityType="Self.xcuda_Inventory_Item" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="xcuda_Item" EntityType="Self.xcuda_Item" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="xcuda_Item_Invoice" EntityType="Self.xcuda_Item_Invoice" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="xcuda_PreviousItem" EntityType="Self.xcuda_PreviousItem" Schema="dbo" store:Type="Tables" />
@@ -1646,6 +1672,7 @@ FROM [dbo].[AsycudaDocument] AS [AsycudaDocument]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="AsycudaDocumentItemEntryDataDetails" EntityType="Self.AsycudaDocumentItemEntryDataDetails" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
+[AsycudaDocumentItemEntryDataDetails].[Id] AS [Id], 
 [AsycudaDocumentItemEntryDataDetails].[ApplicationSettingsId] AS [ApplicationSettingsId], 
 [AsycudaDocumentItemEntryDataDetails].[AsycudaDocumentSetId] AS [AsycudaDocumentSetId], 
 [AsycudaDocumentItemEntryDataDetails].[EntryDataDetailsId] AS [EntryDataDetailsId], 
@@ -1717,6 +1744,14 @@ FROM [dbo].[AsycudaItemRemainingQuantities] AS [AsycudaItemRemainingQuantities]<
 [AsycudaSalesAllocationsPIData].[xReferenceNumber] AS [xReferenceNumber], 
 [AsycudaSalesAllocationsPIData].[Id] AS [Id]
 FROM [dbo].[AsycudaSalesAllocationsPIData] AS [AsycudaSalesAllocationsPIData]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="AsycudaSalesAllocations-XcudaItemsToAllocate" EntityType="Self.AsycudaSalesAllocations-XcudaItemsToAllocate" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+[AsycudaSalesAllocations-XcudaItemsToAllocate].[Item_Id] AS [Item_Id], 
+[AsycudaSalesAllocations-XcudaItemsToAllocate].[ApplicationSettingsId] AS [ApplicationSettingsId], 
+[AsycudaSalesAllocations-XcudaItemsToAllocate].[AsycudaDocumentSetId] AS [AsycudaDocumentSetId], 
+[AsycudaSalesAllocations-XcudaItemsToAllocate].[AssessmentDate] AS [AssessmentDate]
+FROM [dbo].[AsycudaSalesAllocations-XcudaItemsToAllocate] AS [AsycudaSalesAllocations-XcudaItemsToAllocate]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="EntryDataDetailsEx" EntityType="Self.EntryDataDetailsEx" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
@@ -1829,6 +1864,7 @@ FROM [dbo].[EX9AsycudaSalesAllocations] AS [EX9AsycudaSalesAllocations]</Definin
           </EntitySet>
           <EntitySet Name="ExistingAllocations" EntityType="Self.ExistingAllocations" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
+[ExistingAllocations].[Id] AS [Id], 
 [ExistingAllocations].[xAsycudaId] AS [xAsycudaId], 
 [ExistingAllocations].[EntryDataDetailsId] AS [EntryDataDetailsId], 
 [ExistingAllocations].[xItemId] AS [xItemId], 
@@ -1845,6 +1881,7 @@ FROM [dbo].[EX9AsycudaSalesAllocations] AS [EX9AsycudaSalesAllocations]</Definin
 [ExistingAllocations].[ItemDescription] AS [ItemDescription], 
 [ExistingAllocations].[DocumentType] AS [DocumentType], 
 [ExistingAllocations].[xQuantity] AS [xQuantity], 
+[ExistingAllocations].[SalesQuantity] AS [SalesQuantity], 
 [ExistingAllocations].[Suplementary_Quantity] AS [Suplementary_Quantity], 
 [ExistingAllocations].[DutyFreePaid] AS [DutyFreePaid], 
 [ExistingAllocations].[InventoryItemId] AS [InventoryItemId], 
@@ -2082,6 +2119,10 @@ FROM [dbo].[XSales-UnAllocated] AS [XSales-UnAllocated]</DefiningQuery>
           <AssociationSet Name="FK_xBondAllocations_xcuda_Item" Association="Self.FK_xBondAllocations_xcuda_Item">
             <End Role="xcuda_Item" EntitySet="xcuda_Item" />
             <End Role="xBondAllocations" EntitySet="xBondAllocations" />
+          </AssociationSet>
+          <AssociationSet Name="FK_xcuda_Inventory_Item_xcuda_HScode1" Association="Self.FK_xcuda_Inventory_Item_xcuda_HScode1">
+            <End Role="xcuda_HScode" EntitySet="xcuda_HScode" />
+            <End Role="xcuda_Inventory_Item" EntitySet="xcuda_Inventory_Item" />
           </AssociationSet>
           <AssociationSet Name="FK_xcuda_PreviousItem_xcuda_Item" Association="Self.FK_xcuda_PreviousItem_xcuda_Item">
             <End Role="xcuda_Item" EntitySet="xcuda_Item" />
@@ -2353,6 +2394,12 @@ FROM [dbo].[XSales-UnAllocated] AS [XSales-UnAllocated]</DefiningQuery>
             <End Role="AdjustmentShort_IM9Data" EntitySet="AdjustmentShort_IM9Data" />
           </AssociationSet>
           <EntitySet Name="AsycudaItemRemainingQuantities" EntityType="WaterNutDBModel.AsycudaItemRemainingQuantities" />
+          <EntitySet Name="xcuda_Inventory_Item" EntityType="WaterNutDBModel.xcuda_Inventory_Item" />
+          <AssociationSet Name="FK_xcuda_Inventory_Item_xcuda_HScode1" Association="WaterNutDBModel.FK_xcuda_Inventory_Item_xcuda_HScode1">
+            <End Role="xcuda_HScode" EntitySet="xcuda_HScode" />
+            <End Role="xcuda_Inventory_Item" EntitySet="xcuda_Inventory_Item" />
+          </AssociationSet>
+          <EntitySet Name="AsycudaSalesAllocations_XcudaItemsToAllocate" EntityType="WaterNutDBModel.AsycudaSalesAllocations_XcudaItemsToAllocate" />
           </EntityContainer>
         <EntityType Name="AsycudaSalesAllocations">
           <Key>
@@ -2810,6 +2857,7 @@ FROM [dbo].[XSales-UnAllocated] AS [XSales-UnAllocated]</DefiningQuery>
           <Property Name="Item_Id" Type="Int32" Nullable="false" />
           <NavigationProperty Name="xcuda_Tarification" Relationship="WaterNutDBModel.FK_Tarification_HScode" FromRole="xcuda_HScode" ToRole="xcuda_Tarification" />
           <NavigationProperty Name="TariffCodes" Relationship="WaterNutDBModel.TariffCodesxcuda_HScode" FromRole="xcuda_HScode" ToRole="TariffCodes" />
+          <NavigationProperty Name="xcuda_Inventory_Item" Relationship="WaterNutDBModel.FK_xcuda_Inventory_Item_xcuda_HScode1" FromRole="xcuda_HScode" ToRole="xcuda_Inventory_Item" />
         </EntityType>
         <EntityType Name="xcuda_Item_Invoice">
           <Key>
@@ -3344,9 +3392,7 @@ FROM [dbo].[XSales-UnAllocated] AS [XSales-UnAllocated]</DefiningQuery>
         </Association>
         <EntityType Name="AsycudaDocumentItemEntryDataDetails">
           <Key>
-            <PropertyRef Name="EntryDataDetailsId" />
-            <PropertyRef Name="Item_Id" />
-            <PropertyRef Name="ApplicationSettingsId" />
+            <PropertyRef Name="Id" />
           </Key>
           <Property Name="EntryDataDetailsId" Type="Int32" Nullable="false" />
           <Property Name="Item_Id" Type="Int32" Nullable="false" />
@@ -3367,6 +3413,7 @@ FROM [dbo].[XSales-UnAllocated] AS [XSales-UnAllocated]</DefiningQuery>
           <Property Name="CNumber" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Name="LineNumber" Type="Int32" Nullable="false" />
           <Property Name="CustomsOperation" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Id" Type="Int64" Nullable="false" />
         </EntityType>
         <Association Name="EntryDataDetailsAsycudaDocumentItemEntryDataDetails">
           <End Type="WaterNutDBModel.EntryDataDetails" Role="EntryDataDetails" Multiplicity="1" />
@@ -3888,11 +3935,7 @@ FROM [dbo].[XSales-UnAllocated] AS [XSales-UnAllocated]</DefiningQuery>
         </Association>
         <EntityType Name="ExistingAllocations">
           <Key>
-            <PropertyRef Name="EntryDataDetailsId" />
-            <PropertyRef Name="xItemId" />
-            <PropertyRef Name="pItemId" />
-            <PropertyRef Name="InventoryItemId" />
-            <PropertyRef Name="CustomsProcedure" />
+            <PropertyRef Name="Id" />
           </Key>
           <Property Name="xAsycudaId" Type="Int32" />
           <Property Name="EntryDataDetailsId" Type="Int32" Nullable="false" />
@@ -3914,6 +3957,8 @@ FROM [dbo].[XSales-UnAllocated] AS [XSales-UnAllocated]</DefiningQuery>
           <Property Name="DutyFreePaid" Type="String" Nullable="false" MaxLength="9" FixedLength="false" Unicode="false" />
           <Property Name="InventoryItemId" Type="Int32" Nullable="false" />
           <Property Name="CustomsProcedure" Type="String" Nullable="false" MaxLength="11" FixedLength="false" Unicode="true" />
+          <Property Name="SalesQuantity" Type="Double" Nullable="false" />
+          <Property Name="Id" Type="Int64" Nullable="false" />
         </EntityType>
         <Association Name="InventoryItemEntryDataDetails">
           <End Type="WaterNutDBModel.InventoryItem" Role="InventoryItem" Multiplicity="1" />
@@ -4064,6 +4109,38 @@ FROM [dbo].[XSales-UnAllocated] AS [XSales-UnAllocated]</DefiningQuery>
           <Property Name="RemainingBalance" Type="Double" Nullable="false" />
           <Property Name="xRemainingBalance" Type="Double" />
           <Property Name="ApplicationSettingsId" Type="Int32" />
+        </EntityType>
+        <EntityType Name="xcuda_Inventory_Item">
+          <Key>
+            <PropertyRef Name="Item_Id" />
+          </Key>
+          <Property Name="Item_Id" Type="Int32" Nullable="false" />
+          <Property Name="InventoryItemId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="xcuda_HScode" Relationship="WaterNutDBModel.FK_xcuda_Inventory_Item_xcuda_HScode1" FromRole="xcuda_Inventory_Item" ToRole="xcuda_HScode" />
+        </EntityType>
+        <Association Name="FK_xcuda_Inventory_Item_xcuda_HScode1">
+          <End Type="WaterNutDBModel.xcuda_HScode" Role="xcuda_HScode" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="WaterNutDBModel.xcuda_Inventory_Item" Role="xcuda_Inventory_Item" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="xcuda_HScode">
+              <PropertyRef Name="Item_Id" />
+            </Principal>
+            <Dependent Role="xcuda_Inventory_Item">
+              <PropertyRef Name="Item_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="AsycudaSalesAllocations_XcudaItemsToAllocate">
+          <Key>
+            <PropertyRef Name="Item_Id" />
+            <PropertyRef Name="AsycudaDocumentSetId" />
+          </Key>
+          <Property Name="Item_Id" Type="Int32" Nullable="false" />
+          <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
+          <Property Name="AsycudaDocumentSetId" Type="Int32" Nullable="false" />
+          <Property Name="AssessmentDate" Type="DateTime" Precision="7" />
         </EntityType>
         </Schema>
     </edmx:ConceptualModels>
@@ -4648,6 +4725,7 @@ FROM [dbo].[XSales-UnAllocated] AS [XSales-UnAllocated]</DefiningQuery>
           <EntitySetMapping Name="AsycudaDocumentItemEntryDataDetails">
             <EntityTypeMapping TypeName="WaterNutDBModel.AsycudaDocumentItemEntryDataDetails">
               <MappingFragment StoreEntitySet="AsycudaDocumentItemEntryDataDetails">
+                <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="CustomsOperation" ColumnName="CustomsOperation" />
                 <ScalarProperty Name="LineNumber" ColumnName="LineNumber" />
                 <ScalarProperty Name="CNumber" ColumnName="CNumber" />
@@ -4906,6 +4984,8 @@ FROM [dbo].[XSales-UnAllocated] AS [XSales-UnAllocated]</DefiningQuery>
           <EntitySetMapping Name="ExistingAllocations">
             <EntityTypeMapping TypeName="WaterNutDBModel.ExistingAllocations">
               <MappingFragment StoreEntitySet="ExistingAllocations">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="SalesQuantity" ColumnName="SalesQuantity" />
                 <ScalarProperty Name="CustomsProcedure" ColumnName="CustomsProcedure" />
                 <ScalarProperty Name="InventoryItemId" ColumnName="InventoryItemId" />
                 <ScalarProperty Name="DutyFreePaid" ColumnName="DutyFreePaid" />
@@ -5023,6 +5103,24 @@ FROM [dbo].[XSales-UnAllocated] AS [XSales-UnAllocated]</DefiningQuery>
                 <ScalarProperty Name="RegistrationDate" ColumnName="RegistrationDate" />
                 <ScalarProperty Name="LineNumber" ColumnName="LineNumber" />
                 <ScalarProperty Name="CNumber" ColumnName="CNumber" />
+                <ScalarProperty Name="Item_Id" ColumnName="Item_Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="xcuda_Inventory_Item">
+            <EntityTypeMapping TypeName="WaterNutDBModel.xcuda_Inventory_Item">
+              <MappingFragment StoreEntitySet="xcuda_Inventory_Item">
+                <ScalarProperty Name="InventoryItemId" ColumnName="InventoryItemId" />
+                <ScalarProperty Name="Item_Id" ColumnName="Item_Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="AsycudaSalesAllocations_XcudaItemsToAllocate">
+            <EntityTypeMapping TypeName="WaterNutDBModel.AsycudaSalesAllocations_XcudaItemsToAllocate">
+              <MappingFragment StoreEntitySet="AsycudaSalesAllocations-XcudaItemsToAllocate">
+                <ScalarProperty Name="AssessmentDate" ColumnName="AssessmentDate" />
+                <ScalarProperty Name="AsycudaDocumentSetId" ColumnName="AsycudaDocumentSetId" />
+                <ScalarProperty Name="ApplicationSettingsId" ColumnName="ApplicationSettingsId" />
                 <ScalarProperty Name="Item_Id" ColumnName="Item_Id" />
               </MappingFragment>
             </EntityTypeMapping>

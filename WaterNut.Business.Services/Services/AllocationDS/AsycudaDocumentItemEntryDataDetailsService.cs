@@ -97,16 +97,16 @@ namespace AllocationDS.Business.Services
         }
 
 
-        public async Task<AsycudaDocumentItemEntryDataDetails> GetAsycudaDocumentItemEntryDataDetailsByKey(string EntryDataDetailsId, List<string> includesLst = null, bool tracking = true)
+        public async Task<AsycudaDocumentItemEntryDataDetails> GetAsycudaDocumentItemEntryDataDetailsByKey(string Id, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
-			   if(string.IsNullOrEmpty(EntryDataDetailsId))return null; 
+			   if(string.IsNullOrEmpty(Id))return null; 
               using ( var dbContext = new AllocationDSContext(){StartTracking = StartTracking})
               {
-                var i = Convert.ToInt32(EntryDataDetailsId);
+                var i = Convert.ToInt32(Id);
 				var set = AddIncludes(includesLst, dbContext);
-                AsycudaDocumentItemEntryDataDetails entity = set.AsNoTracking().SingleOrDefault(x => x.EntryDataDetailsId == i);
+                AsycudaDocumentItemEntryDataDetails entity = set.AsNoTracking().SingleOrDefault(x => x.Id == i);
                 if(tracking && entity != null) entity.StartTracking();
                 return entity;
               }
@@ -306,11 +306,11 @@ namespace AllocationDS.Business.Services
                                 IQueryable<AsycudaDocumentItemEntryDataDetails> dset;
                                 if (exp == "All")
                                 {
-                                    dset = set.OrderBy(x => x.EntryDataDetailsId);
+                                    dset = set.OrderBy(x => x.Id);
                                 }
                                 else
                                 {
-                                    dset = set.OrderBy(x => x.EntryDataDetailsId).Where(exp);
+                                    dset = set.OrderBy(x => x.Id).Where(exp);
                                 }
 
                                 var lst = dset.AsNoTracking()
@@ -381,12 +381,12 @@ namespace AllocationDS.Business.Services
                                 IQueryable<AsycudaDocumentItemEntryDataDetails> dset;
                                 if (expLst.FirstOrDefault() == "All")
                                 {
-                                    dset = set.OrderBy(x => x.EntryDataDetailsId);
+                                    dset = set.OrderBy(x => x.Id);
                                 }
                                 else
                                 {
                                     set = AddWheres(expLst, set);
-                                    dset = set.OrderBy(x => x.EntryDataDetailsId);
+                                    dset = set.OrderBy(x => x.Id);
                                 }
 
                                 var lst = dset.AsNoTracking()
@@ -523,15 +523,15 @@ namespace AllocationDS.Business.Services
             }
         }
 
-        public async Task<bool> DeleteAsycudaDocumentItemEntryDataDetails(string EntryDataDetailsId)
+        public async Task<bool> DeleteAsycudaDocumentItemEntryDataDetails(string Id)
         {
             try
             {
               using ( var dbContext = new AllocationDSContext(){StartTracking = StartTracking})
               {
-                var i = Convert.ToInt32(EntryDataDetailsId);
+                var i = Convert.ToInt32(Id);
                 AsycudaDocumentItemEntryDataDetails entity = dbContext.AsycudaDocumentItemEntryDataDetails
-													.SingleOrDefault(x => x.EntryDataDetailsId == i);
+													.SingleOrDefault(x => x.Id == i);
                 if (entity == null)
                     return false;
 
@@ -678,7 +678,7 @@ namespace AllocationDS.Business.Services
                     {
                         return dbContext.AsycudaDocumentItemEntryDataDetails
 										.AsNoTracking()
-                                        .OrderBy(y => y.EntryDataDetailsId)
+                                        .OrderBy(y => y.Id)
 										.Skip(startIndex)
 										.Take(count)
 										.ToList();
@@ -689,7 +689,7 @@ namespace AllocationDS.Business.Services
                         return dbContext.AsycudaDocumentItemEntryDataDetails
 										.AsNoTracking()
                                         .Where(exp)
-										.OrderBy(y => y.EntryDataDetailsId)
+										.OrderBy(y => y.Id)
 										.Skip(startIndex)
 										.Take(count)
 										.ToList();
@@ -739,7 +739,7 @@ namespace AllocationDS.Business.Services
 											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }
-                    return dbContext.AsycudaDocumentItemEntryDataDetails.Where(exp == "All" || exp == null ? "EntryDataDetailsId != null" : exp)
+                    return dbContext.AsycudaDocumentItemEntryDataDetails.Where(exp == "All" || exp == null ? "Id != null" : exp)
 											.AsNoTracking()
                                             .Count();
                 }
@@ -781,9 +781,9 @@ namespace AllocationDS.Business.Services
 				.AsNoTracking()
                 .Where(navExp)
                 .SelectMany(navProp).OfType<AsycudaDocumentItemEntryDataDetails>()
-                .Where(exp == "All" || exp == null ? "EntryDataDetailsId != null" : exp)
+                .Where(exp == "All" || exp == null ? "Id != null" : exp)
                 .Distinct()
-                .OrderBy("EntryDataDetailsId")
+                .OrderBy("Id")
                 .Count();
 			}
 			catch (Exception)
@@ -801,9 +801,9 @@ namespace AllocationDS.Business.Services
 				.AsNoTracking()
                 .Where(navExp)
                 .Select(navProp).OfType<AsycudaDocumentItemEntryDataDetails>()
-                .Where(exp == "All" || exp == null ? "EntryDataDetailsId != null" : exp)
+                .Where(exp == "All" || exp == null ? "Id != null" : exp)
                 .Distinct()
-                .OrderBy("EntryDataDetailsId")
+                .OrderBy("Id")
                 .Count();
 			}
 			catch (Exception)
@@ -829,7 +829,7 @@ namespace AllocationDS.Business.Services
                        
                         return set
 									.AsNoTracking()
-                                    .OrderBy(y => y.EntryDataDetailsId)
+                                    .OrderBy(y => y.Id)
  
                                     .Skip(startIndex)
                                     .Take(count)
@@ -865,8 +865,8 @@ namespace AllocationDS.Business.Services
                     }
                     return set//dbContext.AsycudaDocumentItemEntryDataDetails
 								.AsNoTracking()
-                                .Where(exp == "All" || exp == null ? "EntryDataDetailsId != null" : exp)
-								.OrderBy(y => y.EntryDataDetailsId)
+                                .Where(exp == "All" || exp == null ? "Id != null" : exp)
+								.OrderBy(y => y.Id)
  
                                 .Skip(startIndex)
                                 .Take(count)
@@ -917,9 +917,9 @@ namespace AllocationDS.Business.Services
             if (includeLst != null) set = includeLst.Aggregate(set, (current, itm) => current.Include(itm));            
 
             return set
-                .Where(exp == "All" || exp == null ? "EntryDataDetailsId != null" : exp)
+                .Where(exp == "All" || exp == null ? "Id != null" : exp)
                 .Distinct()
-                .OrderBy(y => y.EntryDataDetailsId)
+                .OrderBy(y => y.Id)
  
                 .Skip(startIndex)
                 .Take(count)
@@ -945,9 +945,9 @@ namespace AllocationDS.Business.Services
                if (includeLst != null) set = includeLst.Aggregate(set, (current, itm) => current.Include(itm)); 
                 
                return set
-                .Where(exp == "All" || exp == null ? "EntryDataDetailsId != null" : exp)
+                .Where(exp == "All" || exp == null ? "Id != null" : exp)
                 .Distinct()
-                .OrderBy(y => y.EntryDataDetailsId)
+                .OrderBy(y => y.Id)
  
                 .Skip(startIndex)
                 .Take(count)
@@ -996,7 +996,7 @@ namespace AllocationDS.Business.Services
 							.AsNoTracking()
                             .Where(navExp)
 							.SelectMany(navProp).OfType<AsycudaDocumentItemEntryDataDetails>()
-							.Where(exp == "All" || exp == null?"EntryDataDetailsId != null":exp)
+							.Where(exp == "All" || exp == null?"Id != null":exp)
 							.Distinct()
 							.ToList();
 			}
@@ -1005,7 +1005,7 @@ namespace AllocationDS.Business.Services
 				.AsNoTracking()
                 .Where(navExp)
                 .SelectMany(navProp).OfType<AsycudaDocumentItemEntryDataDetails>()
-                .Where(exp == "All" || exp == null?"EntryDataDetailsId != null":exp)
+                .Where(exp == "All" || exp == null?"Id != null":exp)
                 .Distinct();
 
 			set = includesLst.Aggregate(set, (current, itm) => current.Include(itm));
@@ -1031,7 +1031,7 @@ namespace AllocationDS.Business.Services
 							.AsNoTracking()
                             .Where(navExp)
 							.Select(navProp).OfType<AsycudaDocumentItemEntryDataDetails>()
-							.Where(exp == "All" || exp == null?"EntryDataDetailsId != null":exp)
+							.Where(exp == "All" || exp == null?"Id != null":exp)
 							.Distinct()
 							.ToList();
 			}
@@ -1040,7 +1040,7 @@ namespace AllocationDS.Business.Services
 				.AsNoTracking()
                 .Where(navExp)
                 .Select(navProp).OfType<AsycudaDocumentItemEntryDataDetails>()
-                .Where(exp == "All" || exp == null?"EntryDataDetailsId != null":exp)
+                .Where(exp == "All" || exp == null?"Id != null":exp)
                 .Distinct();
 
 			set = includesLst.Aggregate(set, (current, itm) => current.Include(itm));
@@ -1054,7 +1054,63 @@ namespace AllocationDS.Business.Services
 			}
         }
 
-			        public async Task<IEnumerable<AsycudaDocumentItemEntryDataDetails>> GetAsycudaDocumentItemEntryDataDetailsByEntryData_Id(string EntryData_Id, List<string> includesLst = null)
+			        public async Task<IEnumerable<AsycudaDocumentItemEntryDataDetails>> GetAsycudaDocumentItemEntryDataDetailsByEntryDataDetailsId(string EntryDataDetailsId, List<string> includesLst = null)
+        {
+            try
+            {
+                using ( var dbContext = new AllocationDSContext(){StartTracking = StartTracking})
+              {
+                var i = Convert.ToInt32(EntryDataDetailsId);
+                var set = AddIncludes(includesLst, dbContext);
+                IEnumerable<AsycudaDocumentItemEntryDataDetails> entities = set//dbContext.AsycudaDocumentItemEntryDataDetails
+                                      .AsNoTracking()
+                                        .Where(x => x.EntryDataDetailsId.ToString() == EntryDataDetailsId.ToString())
+										.ToList();
+                return entities;
+              }
+             }
+            catch (Exception updateEx)
+            {
+                System.Diagnostics.Debugger.Break();
+                //throw new FaultException(updateEx.Message);
+                    var fault = new ValidationFault
+                                {
+                                    Result = false,
+                                    Message = updateEx.Message,
+                                    Description = updateEx.StackTrace
+                                };
+                    throw new FaultException<ValidationFault>(fault);
+            }
+        }
+ 	        public async Task<IEnumerable<AsycudaDocumentItemEntryDataDetails>> GetAsycudaDocumentItemEntryDataDetailsByItem_Id(string Item_Id, List<string> includesLst = null)
+        {
+            try
+            {
+                using ( var dbContext = new AllocationDSContext(){StartTracking = StartTracking})
+              {
+                var i = Convert.ToInt32(Item_Id);
+                var set = AddIncludes(includesLst, dbContext);
+                IEnumerable<AsycudaDocumentItemEntryDataDetails> entities = set//dbContext.AsycudaDocumentItemEntryDataDetails
+                                      .AsNoTracking()
+                                        .Where(x => x.Item_Id.ToString() == Item_Id.ToString())
+										.ToList();
+                return entities;
+              }
+             }
+            catch (Exception updateEx)
+            {
+                System.Diagnostics.Debugger.Break();
+                //throw new FaultException(updateEx.Message);
+                    var fault = new ValidationFault
+                                {
+                                    Result = false,
+                                    Message = updateEx.Message,
+                                    Description = updateEx.StackTrace
+                                };
+                    throw new FaultException<ValidationFault>(fault);
+            }
+        }
+ 	        public async Task<IEnumerable<AsycudaDocumentItemEntryDataDetails>> GetAsycudaDocumentItemEntryDataDetailsByEntryData_Id(string EntryData_Id, List<string> includesLst = null)
         {
             try
             {
@@ -1065,6 +1121,34 @@ namespace AllocationDS.Business.Services
                 IEnumerable<AsycudaDocumentItemEntryDataDetails> entities = set//dbContext.AsycudaDocumentItemEntryDataDetails
                                       .AsNoTracking()
                                         .Where(x => x.EntryData_Id.ToString() == EntryData_Id.ToString())
+										.ToList();
+                return entities;
+              }
+             }
+            catch (Exception updateEx)
+            {
+                System.Diagnostics.Debugger.Break();
+                //throw new FaultException(updateEx.Message);
+                    var fault = new ValidationFault
+                                {
+                                    Result = false,
+                                    Message = updateEx.Message,
+                                    Description = updateEx.StackTrace
+                                };
+                    throw new FaultException<ValidationFault>(fault);
+            }
+        }
+ 	        public async Task<IEnumerable<AsycudaDocumentItemEntryDataDetails>> GetAsycudaDocumentItemEntryDataDetailsByApplicationSettingsId(string ApplicationSettingsId, List<string> includesLst = null)
+        {
+            try
+            {
+                using ( var dbContext = new AllocationDSContext(){StartTracking = StartTracking})
+              {
+                var i = Convert.ToInt32(ApplicationSettingsId);
+                var set = AddIncludes(includesLst, dbContext);
+                IEnumerable<AsycudaDocumentItemEntryDataDetails> entities = set//dbContext.AsycudaDocumentItemEntryDataDetails
+                                      .AsNoTracking()
+                                        .Where(x => x.ApplicationSettingsId.ToString() == ApplicationSettingsId.ToString())
 										.ToList();
                 return entities;
               }
@@ -1176,7 +1260,7 @@ namespace AllocationDS.Business.Services
 											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }
-                    return Convert.ToDecimal(dbContext.AsycudaDocumentItemEntryDataDetails.Where(exp == "All" || exp == null ? "EntryDataDetailsId != null" : exp)
+                    return Convert.ToDecimal(dbContext.AsycudaDocumentItemEntryDataDetails.Where(exp == "All" || exp == null ? "Id != null" : exp)
 											.AsNoTracking()
                                             .Sum(field)??0);
                 }
@@ -1217,9 +1301,9 @@ namespace AllocationDS.Business.Services
 				.AsNoTracking()
                 .Where(navExp)
                 .SelectMany(navProp).OfType<AsycudaDocumentItemEntryDataDetails>()
-                .Where(exp == "All" || exp == null ? "EntryDataDetailsId != null" : exp)
+                .Where(exp == "All" || exp == null ? "Id != null" : exp)
                 .Distinct()
-                .OrderBy("EntryDataDetailsId")
+                .OrderBy("Id")
                 .Sum(field));
 			}
 			catch (Exception)
@@ -1237,9 +1321,9 @@ namespace AllocationDS.Business.Services
 				.AsNoTracking()
                 .Where(navExp)
                 .Select(navProp).OfType<AsycudaDocumentItemEntryDataDetails>()
-                .Where(exp == "All" || exp == null ? "EntryDataDetailsId != null" : exp)
+                .Where(exp == "All" || exp == null ? "Id != null" : exp)
                 .Distinct()
-                .OrderBy("EntryDataDetailsId")
+                .OrderBy("Id")
                 .Sum(field));
 			}
 			catch (Exception)

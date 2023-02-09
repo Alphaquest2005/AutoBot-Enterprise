@@ -61,6 +61,7 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
 			RegisterToReceiveMessages<AdjustmentDetail>(MessageToken.CurrentAdjustmentDetailChanged, OnCurrentAdjustmentDetailChanged);
 
  			// Recieve messages for Core Current Entities Changed
+                        RegisterToReceiveMessages<ApplicationSettings>(CoreEntities.MessageToken.CurrentApplicationSettingsChanged, OnCurrentApplicationSettingsChanged);
  
 
 			AsycudaDocumentItemEntryDataDetails = new VirtualList<AsycudaDocumentItemEntryDataDetail>(vloader);
@@ -154,6 +155,10 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
                    // {
                    //    if(AdjustmentDetails.Contains(CurrentAsycudaDocumentItemEntryDataDetail.AdjustmentDetail) == false) AdjustmentDetails.Add(CurrentAsycudaDocumentItemEntryDataDetail.AdjustmentDetail);
                     //}
+                    //if (e.PropertyName == "AddApplicationSettings")
+                   // {
+                   //    if(ApplicationSettings.Contains(CurrentAsycudaDocumentItemEntryDataDetail.ApplicationSettings) == false) ApplicationSettings.Add(CurrentAsycudaDocumentItemEntryDataDetail.ApplicationSettings);
+                    //}
                  } 
         internal virtual void OnAsycudaDocumentItemEntryDataDetailsChanged(object sender, NotificationEventArgs e)
         {
@@ -216,6 +221,20 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
 
   			// Core Current Entities Changed
 			// theorticall don't need this cuz i am inheriting from core entities baseview model so changes should flow up to here
+                internal virtual void OnCurrentApplicationSettingsChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<ApplicationSettings> e)
+				{
+				if (e.Data == null || e.Data.ApplicationSettingsId == null)
+                {
+                    vloader.FilterExpression = null;
+                }
+                else
+                {
+                    vloader.FilterExpression = string.Format("ApplicationSettingsId == {0}", e.Data.ApplicationSettingsId.ToString());
+                }
+					
+                    AsycudaDocumentItemEntryDataDetails.Refresh();
+					NotifyPropertyChanged(x => this.AsycudaDocumentItemEntryDataDetails);
+				}
   
 // Filtering Each Field except IDs
  	

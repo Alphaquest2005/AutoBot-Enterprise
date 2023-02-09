@@ -19,6 +19,7 @@
               this.Property(t => t.Item_Id).HasColumnName("Item_Id").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.None));
               this.HasRequired(t => t.xcuda_Tarification).WithOptional(t => (xcuda_HScode)t.xcuda_HScode);
               this.HasRequired(t => t.TariffCodes).WithMany(t =>(ICollection<xcuda_HScode>) t.xcuda_HScode).HasForeignKey(d => d.Commodity_code);
+              this.HasOptional(t => t.xcuda_Inventory_Item).WithRequired(t => (xcuda_HScode)t.xcuda_HScode);
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);
     			this.Ignore(t => t.ModifiedProperties);

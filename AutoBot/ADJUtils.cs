@@ -334,7 +334,7 @@ namespace AutoBot
                 var filterExpressionf = GetDutyFreeFilterExp(itemFilter);
 
                 new AdjustmentShortService().CreateIM9(filterExpressionf, false,
-                    doc.Key, "Duty Free", adjustmentType, entryDataDetailsIds, emailId).Wait();
+                    doc.Key, "Duty Free", adjustmentType, emailId).Wait();
             });
             return t2;
         }
@@ -372,7 +372,7 @@ namespace AutoBot
 
 
                 new AdjustmentShortService().CreateIM9(filterExpressionp, false,
-                    doc.Key, "Duty Paid", adjustmentType, entryDataDetailsIds, emailId).Wait();
+                    doc.Key, "Duty Paid", adjustmentType, emailId).Wait();
             });
             return t1;
         }

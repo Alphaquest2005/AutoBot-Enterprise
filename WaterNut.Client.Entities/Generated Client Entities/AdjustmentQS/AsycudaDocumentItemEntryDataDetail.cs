@@ -296,6 +296,21 @@ public string CustomsOperation
 		}
      
 
+       [RequiredValidationAttribute(ErrorMessage= " is required")]
+       
+public long Id
+		{ 
+		    get { return this.asycudadocumentitementrydatadetail.Id; }
+			set
+			{
+			    if (value == this.asycudadocumentitementrydatadetail.Id) return;
+				this.asycudadocumentitementrydatadetail.Id = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("Id");
+			}
+		}
+     
+
        private AdjustmentOver _AdjustmentOver;
         public  AdjustmentOver AdjustmentOver
 		{

@@ -27,52 +27,29 @@ namespace WaterNut.DataSpace
 
 
                         var supplierItemNumber = invItemCode.SupplierItemNumber.ToString();
-                        var invItem = ctx.InventoryItems.FirstOrDefault(x =>
-                            x.ApplicationSettingsId ==
-                            BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId &&
-                            x.ItemNumber == supplierItemNumber);
+                        var invItem = ctx.InventoryItems
+                            .FirstOrDefault(x => x.ApplicationSettingsId ==
+                                                 BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId &&
+                                                 x.ItemNumber == supplierItemNumber);
                         if (invItem == null)
                         {
-                            invItem = new InventoryItem(true)
-                            {
-                                ApplicationSettingsId = BaseDataModel.Instance.CurrentApplicationSettings
-                                    .ApplicationSettingsId,
-                                Description = invItemCode.SupplierItemDescription,
-                                ItemNumber = ((string) invItemCode.SupplierItemNumber).Truncate(20),
-                                InventoryItemSources = new List<InventoryItemSource>()
-                                {
-                                    new InventoryItemSource(true)
-                                    {
-                                        InventorySourceId = inventorySource.Id,
-                                        TrackingState = TrackingState.Added
-                                    }
-                                },
-                                TrackingState = TrackingState.Added
-                            };
+                            invItem = CreateInventoryItem(inventorySource, invItemCode);
                             ctx.InventoryItems.Add(invItem);
-                            ctx.SaveChanges();
+                           // ctx.SaveChanges();
                         }
 
                         if (i.InventoryItemAlias.FirstOrDefault(x => x.AliasName == supplierItemNumber) == null &&
                             supplierItemNumber.ToUpper() != i.ItemNumber.ToUpper() && !string.IsNullOrEmpty(i.ItemNumber))
                         {
-                            var inventoryItemAlia = new InventoryItemAlia(true)
-                            {
-                                InventoryItemId = i.Id,
-                                AliasName = ((string) supplierItemNumber).Truncate(20),
-                                AliasItemId = invItem.Id,
-                                AliasId = invItem.Id,
-                                TrackingState = TrackingState.Added
-                            };
+                            var inventoryItemAlia = CreateInventoryItemAlia(i, supplierItemNumber, invItem);
                             ctx.InventoryItemAlias.Add(inventoryItemAlia);
-                            ctx.SaveChanges();
+                           // ctx.SaveChanges();
 
                             i.InventoryItemAlias.Add(inventoryItemAlia);
                         }
-
                     }
 
-
+                    ctx.SaveChanges();
                 }
             }
             catch (Exception e)
@@ -80,6 +57,43 @@ namespace WaterNut.DataSpace
                 Console.WriteLine(e);
                 throw;
             }
+        }
+
+        private static InventoryItemAlia CreateInventoryItemAlia(InventoryItem i, string supplierItemNumber,
+            InventoryItem invItem)
+        {
+            var inventoryItemAlia = new InventoryItemAlia(true)
+            {
+                InventoryItemId = i.Id,
+                AliasName = ((string)supplierItemNumber).Truncate(20),
+                AliasItemId = invItem.Id,
+                AliasId = invItem.Id,
+                TrackingState = TrackingState.Added
+            };
+            return inventoryItemAlia;
+        }
+
+        private static InventoryItem CreateInventoryItem(InventorySource inventorySource,
+            (string SupplierItemNumber, string SupplierItemDescription) invItemCode)
+        {
+            InventoryItem invItem;
+            invItem = new InventoryItem(true)
+            {
+                ApplicationSettingsId = BaseDataModel.Instance.CurrentApplicationSettings
+                    .ApplicationSettingsId,
+                Description = invItemCode.SupplierItemDescription,
+                ItemNumber = ((string)invItemCode.SupplierItemNumber).Truncate(20),
+                InventoryItemSources = new List<InventoryItemSource>()
+                {
+                    new InventoryItemSource(true)
+                    {
+                        InventorySourceId = inventorySource.Id,
+                        TrackingState = TrackingState.Added
+                    }
+                },
+                TrackingState = TrackingState.Added
+            };
+            return invItem;
         }
 
         public static List<(string SupplierItemNumber, string SupplierItemDescription)> GetInventoryItemCodes(InventoryData item, InventoryItem i)

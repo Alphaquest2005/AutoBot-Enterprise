@@ -229,6 +229,19 @@ namespace AdjustmentQS.Client.DTO
 		}
         private string _CustomsOperation;
 
+        [DataMember]
+        public long Id
+		{ 
+		    get { return _Id; }
+			set
+			{
+			    if (value == _Id) return;
+				_Id = value;
+				NotifyPropertyChanged();//m => this.Id
+			}
+		}
+        private long _Id;
+
        
         [DataMember]
         public AdjustmentOver AdjustmentOver

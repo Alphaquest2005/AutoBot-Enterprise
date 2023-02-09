@@ -1,8 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AdjustmentQS.Business.Entities;
 using CoreEntities.Business.Entities;
+using WaterNut.Business.Services.Utils.MatchingToAsycudaItem;
 
 namespace AdjustmentQS.Business.Services
 {
@@ -10,11 +12,13 @@ namespace AdjustmentQS.Business.Services
     {
         private readonly AdjustmentDetail _adjustmentDetail;
         private readonly EntryDataDetail _entryDataDetail;
+        
 
         public ShortPreviousNumberMatcher(AdjustmentDetail adjustmentDetail, EntryDataDetail entryDataDetail)
         {
             _adjustmentDetail = adjustmentDetail;
             _entryDataDetail = entryDataDetail;
+          
         }  
         public async Task Execute()
         {
@@ -23,8 +27,9 @@ namespace AdjustmentQS.Business.Services
             aItem = await AutoMatchUtils.GetAsycudaEntriesWithInvoiceNumber(_adjustmentDetail.ApplicationSettingsId,
                     _adjustmentDetail.PreviousInvoiceNumber, _adjustmentDetail.EntryDataId, _adjustmentDetail.ItemNumber)
                 .ConfigureAwait(false);
-            if (aItem.Any()) AutoMatchUtils.MatchToAsycudaItem(_adjustmentDetail, aItem, _entryDataDetail);
+            if (aItem.Any()) new MatchToAsycudaItemSelector().Execute(_adjustmentDetail, aItem, _entryDataDetail);
         }
+
 
         public bool IsApplicable(AdjustmentDetail s, EntryDataDetail ed) => _adjustmentDetail.InvoiceQty > 0;
     }

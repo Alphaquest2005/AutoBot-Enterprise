@@ -60,6 +60,7 @@ namespace WaterNut.QuerySpace.PreviousDocumentQS.ViewModels
 
  			// Recieve messages for Core Current Entities Changed
                         RegisterToReceiveMessages<ApplicationSettings>(CoreEntities.MessageToken.CurrentApplicationSettingsChanged, OnCurrentApplicationSettingsChanged);
+                        RegisterToReceiveMessages<Customs_Procedure>(CoreEntities.MessageToken.CurrentCustoms_ProcedureChanged, OnCurrentCustoms_ProcedureChanged);
  
 
 			PreviousItemsExes = new VirtualList<PreviousItemsEx>(vloader);
@@ -153,6 +154,10 @@ namespace WaterNut.QuerySpace.PreviousDocumentQS.ViewModels
                    // {
                    //    if(ApplicationSettings.Contains(CurrentPreviousItemsEx.ApplicationSettings) == false) ApplicationSettings.Add(CurrentPreviousItemsEx.ApplicationSettings);
                     //}
+                    //if (e.PropertyName == "AddCustoms_Procedure")
+                   // {
+                   //    if(Customs_Procedure.Contains(CurrentPreviousItemsEx.Customs_Procedure) == false) Customs_Procedure.Add(CurrentPreviousItemsEx.Customs_Procedure);
+                    //}
                  } 
         internal virtual void OnPreviousItemsExesChanged(object sender, NotificationEventArgs e)
         {
@@ -207,6 +212,20 @@ namespace WaterNut.QuerySpace.PreviousDocumentQS.ViewModels
                 else
                 {
                     vloader.FilterExpression = string.Format("ApplicationSettingsId == {0}", e.Data.ApplicationSettingsId.ToString());
+                }
+					
+                    PreviousItemsExes.Refresh();
+					NotifyPropertyChanged(x => this.PreviousItemsExes);
+				}
+                internal virtual void OnCurrentCustoms_ProcedureChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<Customs_Procedure> e)
+				{
+				if (e.Data == null || e.Data.Customs_ProcedureId == null)
+                {
+                    vloader.FilterExpression = null;
+                }
+                else
+                {
+                    vloader.FilterExpression = string.Format("Customs_ProcedureId == {0}", e.Data.Customs_ProcedureId.ToString());
                 }
 					
                     PreviousItemsExes.Refresh();
@@ -340,8 +359,8 @@ namespace WaterNut.QuerySpace.PreviousDocumentQS.ViewModels
 
  
 
-		private string _previous_item_numberFilter;
-        public string Previous_item_numberFilter
+		private Int32? _previous_item_numberFilter;
+        public Int32? Previous_item_numberFilter
         {
             get
             {
@@ -538,8 +557,8 @@ namespace WaterNut.QuerySpace.PreviousDocumentQS.ViewModels
 
  
 
-		private string _current_item_numberFilter;
-        public string Current_item_numberFilter
+		private Int32? _current_item_numberFilter;
+        public Int32? Current_item_numberFilter
         {
             get
             {
@@ -889,6 +908,24 @@ namespace WaterNut.QuerySpace.PreviousDocumentQS.ViewModels
         }	
 
  
+
+		private string _customsProcedureFilter;
+        public string CustomsProcedureFilter
+        {
+            get
+            {
+                return _customsProcedureFilter;
+            }
+            set
+            {
+                _customsProcedureFilter = value;
+				NotifyPropertyChanged(x => CustomsProcedureFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
 		internal bool DisableBaseFilterData = false;
         public virtual void FilterData()
 	    {
@@ -935,9 +972,8 @@ namespace WaterNut.QuerySpace.PreviousDocumentQS.ViewModels
 						res.Append(" && " + string.Format("Commodity_code.Contains(\"{0}\")",  Commodity_codeFilter));						
  
 
-									if(string.IsNullOrEmpty(Previous_item_numberFilter) == false)
-						res.Append(" && " + string.Format("Previous_item_number.Contains(\"{0}\")",  Previous_item_numberFilter));						
- 
+					if(Previous_item_numberFilter.HasValue)
+						res.Append(" && " + string.Format("Previous_item_number == {0}",  Previous_item_numberFilter.ToString()));				 
 
 									if(string.IsNullOrEmpty(Goods_originFilter) == false)
 						res.Append(" && " + string.Format("Goods_origin.Contains(\"{0}\")",  Goods_originFilter));						
@@ -973,9 +1009,8 @@ namespace WaterNut.QuerySpace.PreviousDocumentQS.ViewModels
 					if(Previous_valueFilter.HasValue)
 						res.Append(" && " + string.Format("Previous_value == {0}",  Previous_valueFilter.ToString()));				 
 
-									if(string.IsNullOrEmpty(Current_item_numberFilter) == false)
-						res.Append(" && " + string.Format("Current_item_number.Contains(\"{0}\")",  Current_item_numberFilter));						
- 
+					if(Current_item_numberFilter.HasValue)
+						res.Append(" && " + string.Format("Current_item_number == {0}",  Current_item_numberFilter.ToString()));				 
 
 					if(QtyAllocatedFilter.HasValue)
 						res.Append(" && " + string.Format("QtyAllocated == {0}",  QtyAllocatedFilter.ToString()));				 
@@ -1078,7 +1113,11 @@ namespace WaterNut.QuerySpace.PreviousDocumentQS.ViewModels
 						res.Append(" && " + string.Format("DutyLiablity == {0}",  DutyLiablityFilter.ToString()));				 
 
 					if(Prev_reg_yearFilter.HasValue)
-						res.Append(" && " + string.Format("Prev_reg_year == {0}",  Prev_reg_yearFilter.ToString()));							return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
+						res.Append(" && " + string.Format("Prev_reg_year == {0}",  Prev_reg_yearFilter.ToString()));				 
+
+									if(string.IsNullOrEmpty(CustomsProcedureFilter) == false)
+						res.Append(" && " + string.Format("CustomsProcedure.Contains(\"{0}\")",  CustomsProcedureFilter));						
+			return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
 // Send to Excel Implementation
@@ -1191,7 +1230,10 @@ namespace WaterNut.QuerySpace.PreviousDocumentQS.ViewModels
                     DutyLiablity = x.DutyLiablity ,
                     
  
-                    Prev_reg_year = x.Prev_reg_year 
+                    Prev_reg_year = x.Prev_reg_year ,
+                    
+ 
+                    CustomsProcedure = x.CustomsProcedure 
                     
                 }).ToList()
             };
@@ -1216,16 +1258,16 @@ namespace WaterNut.QuerySpace.PreviousDocumentQS.ViewModels
                     public string Commodity_code { get; set; } 
                     
  
-                    public string Previous_item_number { get; set; } 
+                    public Nullable<int> Previous_item_number { get; set; } 
                     
  
                     public string Goods_origin { get; set; } 
                     
  
-                    public Nullable<decimal> Net_weight { get; set; } 
+                    public decimal Net_weight { get; set; } 
                     
  
-                    public Nullable<decimal> Prev_net_weight { get; set; } 
+                    public decimal Prev_net_weight { get; set; } 
                     
  
                     public string Prev_reg_ser { get; set; } 
@@ -1249,7 +1291,7 @@ namespace WaterNut.QuerySpace.PreviousDocumentQS.ViewModels
                     public double Previous_value { get; set; } 
                     
  
-                    public string Current_item_number { get; set; } 
+                    public Nullable<int> Current_item_number { get; set; } 
                     
  
                     public double QtyAllocated { get; set; } 
@@ -1288,13 +1330,16 @@ namespace WaterNut.QuerySpace.PreviousDocumentQS.ViewModels
                     public Nullable<int> pLineNumber { get; set; } 
                     
  
-                    public Nullable<double> TotalDutyLiablity { get; set; } 
+                    public double TotalDutyLiablity { get; set; } 
                     
  
-                    public Nullable<double> DutyLiablity { get; set; } 
+                    public double DutyLiablity { get; set; } 
                     
  
                     public Nullable<int> Prev_reg_year { get; set; } 
+                    
+ 
+                    public string CustomsProcedure { get; set; } 
                     
         }
 

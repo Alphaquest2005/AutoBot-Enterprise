@@ -11,12 +11,12 @@
     {
         public ExistingAllocationsMap()
         {                        
-              this.HasKey(t => new {t.EntryDataDetailsId, t.xItemId, t.pItemId, t.InventoryItemId, t.CustomsProcedure});        
+              this.HasKey(t => t.Id);        
               this.ToTable("ExistingAllocations");
               this.Property(t => t.xAsycudaId).HasColumnName("xAsycudaId");
-              this.Property(t => t.EntryDataDetailsId).HasColumnName("EntryDataDetailsId").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.None));
-              this.Property(t => t.xItemId).HasColumnName("xItemId").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.None));
-              this.Property(t => t.pItemId).HasColumnName("pItemId").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.None));
+              this.Property(t => t.EntryDataDetailsId).HasColumnName("EntryDataDetailsId");
+              this.Property(t => t.xItemId).HasColumnName("xItemId");
+              this.Property(t => t.pItemId).HasColumnName("pItemId");
               this.Property(t => t.pCnumber).HasColumnName("pCnumber").HasMaxLength(20);
               this.Property(t => t.pLineNumber).HasColumnName("pLineNumber");
               this.Property(t => t.Date).HasColumnName("Date");
@@ -31,8 +31,10 @@
               this.Property(t => t.xQuantity).HasColumnName("xQuantity");
               this.Property(t => t.Suplementary_Quantity).HasColumnName("Suplementary_Quantity");
               this.Property(t => t.DutyFreePaid).HasColumnName("DutyFreePaid").IsRequired().IsUnicode(false).HasMaxLength(9);
-              this.Property(t => t.InventoryItemId).HasColumnName("InventoryItemId").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.None));
+              this.Property(t => t.InventoryItemId).HasColumnName("InventoryItemId");
               this.Property(t => t.CustomsProcedure).HasColumnName("CustomsProcedure").IsRequired().HasMaxLength(11);
+              this.Property(t => t.SalesQuantity).HasColumnName("SalesQuantity");
+              this.Property(t => t.Id).HasColumnName("Id").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.None));
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);
     			this.Ignore(t => t.ModifiedProperties);

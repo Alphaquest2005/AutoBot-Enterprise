@@ -97,16 +97,16 @@ namespace AllocationDS.Business.Services
         }
 
 
-        public async Task<ExistingAllocations> GetExistingAllocationsByKey(string EntryDataDetailsId, List<string> includesLst = null, bool tracking = true)
+        public async Task<ExistingAllocations> GetExistingAllocationsByKey(string Id, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
-			   if(string.IsNullOrEmpty(EntryDataDetailsId))return null; 
+			   if(string.IsNullOrEmpty(Id))return null; 
               using ( var dbContext = new AllocationDSContext(){StartTracking = StartTracking})
               {
-                var i = Convert.ToInt32(EntryDataDetailsId);
+                var i = Convert.ToInt32(Id);
 				var set = AddIncludes(includesLst, dbContext);
-                ExistingAllocations entity = set.AsNoTracking().SingleOrDefault(x => x.EntryDataDetailsId == i);
+                ExistingAllocations entity = set.AsNoTracking().SingleOrDefault(x => x.Id == i);
                 if(tracking && entity != null) entity.StartTracking();
                 return entity;
               }
@@ -281,11 +281,11 @@ namespace AllocationDS.Business.Services
                                 IQueryable<ExistingAllocations> dset;
                                 if (exp == "All")
                                 {
-                                    dset = set.OrderBy(x => x.EntryDataDetailsId);
+                                    dset = set.OrderBy(x => x.Id);
                                 }
                                 else
                                 {
-                                    dset = set.OrderBy(x => x.EntryDataDetailsId).Where(exp);
+                                    dset = set.OrderBy(x => x.Id).Where(exp);
                                 }
 
                                 var lst = dset.AsNoTracking()
@@ -356,12 +356,12 @@ namespace AllocationDS.Business.Services
                                 IQueryable<ExistingAllocations> dset;
                                 if (expLst.FirstOrDefault() == "All")
                                 {
-                                    dset = set.OrderBy(x => x.EntryDataDetailsId);
+                                    dset = set.OrderBy(x => x.Id);
                                 }
                                 else
                                 {
                                     set = AddWheres(expLst, set);
-                                    dset = set.OrderBy(x => x.EntryDataDetailsId);
+                                    dset = set.OrderBy(x => x.Id);
                                 }
 
                                 var lst = dset.AsNoTracking()
@@ -498,15 +498,15 @@ namespace AllocationDS.Business.Services
             }
         }
 
-        public async Task<bool> DeleteExistingAllocations(string EntryDataDetailsId)
+        public async Task<bool> DeleteExistingAllocations(string Id)
         {
             try
             {
               using ( var dbContext = new AllocationDSContext(){StartTracking = StartTracking})
               {
-                var i = Convert.ToInt32(EntryDataDetailsId);
+                var i = Convert.ToInt32(Id);
                 ExistingAllocations entity = dbContext.ExistingAllocations
-													.SingleOrDefault(x => x.EntryDataDetailsId == i);
+													.SingleOrDefault(x => x.Id == i);
                 if (entity == null)
                     return false;
 
@@ -653,7 +653,7 @@ namespace AllocationDS.Business.Services
                     {
                         return dbContext.ExistingAllocations
 										.AsNoTracking()
-                                        .OrderBy(y => y.EntryDataDetailsId)
+                                        .OrderBy(y => y.Id)
 										.Skip(startIndex)
 										.Take(count)
 										.ToList();
@@ -664,7 +664,7 @@ namespace AllocationDS.Business.Services
                         return dbContext.ExistingAllocations
 										.AsNoTracking()
                                         .Where(exp)
-										.OrderBy(y => y.EntryDataDetailsId)
+										.OrderBy(y => y.Id)
 										.Skip(startIndex)
 										.Take(count)
 										.ToList();
@@ -699,7 +699,7 @@ namespace AllocationDS.Business.Services
 										.AsNoTracking()
                                         .Count();
                     }
-                    return dbContext.ExistingAllocations.Where(exp == "All" || exp == null ? "EntryDataDetailsId != null" : exp)
+                    return dbContext.ExistingAllocations.Where(exp == "All" || exp == null ? "Id != null" : exp)
 											.AsNoTracking()
                                             .Count();
                 }
@@ -741,9 +741,9 @@ namespace AllocationDS.Business.Services
 				.AsNoTracking()
                 .Where(navExp)
                 .SelectMany(navProp).OfType<ExistingAllocations>()
-                .Where(exp == "All" || exp == null ? "EntryDataDetailsId != null" : exp)
+                .Where(exp == "All" || exp == null ? "Id != null" : exp)
                 .Distinct()
-                .OrderBy("EntryDataDetailsId")
+                .OrderBy("Id")
                 .Count();
 			}
 			catch (Exception)
@@ -761,9 +761,9 @@ namespace AllocationDS.Business.Services
 				.AsNoTracking()
                 .Where(navExp)
                 .Select(navProp).OfType<ExistingAllocations>()
-                .Where(exp == "All" || exp == null ? "EntryDataDetailsId != null" : exp)
+                .Where(exp == "All" || exp == null ? "Id != null" : exp)
                 .Distinct()
-                .OrderBy("EntryDataDetailsId")
+                .OrderBy("Id")
                 .Count();
 			}
 			catch (Exception)
@@ -789,7 +789,7 @@ namespace AllocationDS.Business.Services
                        
                         return set
 									.AsNoTracking()
-                                    .OrderBy(y => y.EntryDataDetailsId)
+                                    .OrderBy(y => y.Id)
  
                                     .Skip(startIndex)
                                     .Take(count)
@@ -797,8 +797,8 @@ namespace AllocationDS.Business.Services
                     }
                     return set//dbContext.ExistingAllocations
 								.AsNoTracking()
-                                .Where(exp == "All" || exp == null ? "EntryDataDetailsId != null" : exp)
-								.OrderBy(y => y.EntryDataDetailsId)
+                                .Where(exp == "All" || exp == null ? "Id != null" : exp)
+								.OrderBy(y => y.Id)
  
                                 .Skip(startIndex)
                                 .Take(count)
@@ -849,9 +849,9 @@ namespace AllocationDS.Business.Services
             if (includeLst != null) set = includeLst.Aggregate(set, (current, itm) => current.Include(itm));            
 
             return set
-                .Where(exp == "All" || exp == null ? "EntryDataDetailsId != null" : exp)
+                .Where(exp == "All" || exp == null ? "Id != null" : exp)
                 .Distinct()
-                .OrderBy(y => y.EntryDataDetailsId)
+                .OrderBy(y => y.Id)
  
                 .Skip(startIndex)
                 .Take(count)
@@ -877,9 +877,9 @@ namespace AllocationDS.Business.Services
                if (includeLst != null) set = includeLst.Aggregate(set, (current, itm) => current.Include(itm)); 
                 
                return set
-                .Where(exp == "All" || exp == null ? "EntryDataDetailsId != null" : exp)
+                .Where(exp == "All" || exp == null ? "Id != null" : exp)
                 .Distinct()
-                .OrderBy(y => y.EntryDataDetailsId)
+                .OrderBy(y => y.Id)
  
                 .Skip(startIndex)
                 .Take(count)
@@ -928,7 +928,7 @@ namespace AllocationDS.Business.Services
 							.AsNoTracking()
                             .Where(navExp)
 							.SelectMany(navProp).OfType<ExistingAllocations>()
-							.Where(exp == "All" || exp == null?"EntryDataDetailsId != null":exp)
+							.Where(exp == "All" || exp == null?"Id != null":exp)
 							.Distinct()
 							.ToList();
 			}
@@ -937,7 +937,7 @@ namespace AllocationDS.Business.Services
 				.AsNoTracking()
                 .Where(navExp)
                 .SelectMany(navProp).OfType<ExistingAllocations>()
-                .Where(exp == "All" || exp == null?"EntryDataDetailsId != null":exp)
+                .Where(exp == "All" || exp == null?"Id != null":exp)
                 .Distinct();
 
 			set = includesLst.Aggregate(set, (current, itm) => current.Include(itm));
@@ -963,7 +963,7 @@ namespace AllocationDS.Business.Services
 							.AsNoTracking()
                             .Where(navExp)
 							.Select(navProp).OfType<ExistingAllocations>()
-							.Where(exp == "All" || exp == null?"EntryDataDetailsId != null":exp)
+							.Where(exp == "All" || exp == null?"Id != null":exp)
 							.Distinct()
 							.ToList();
 			}
@@ -972,7 +972,7 @@ namespace AllocationDS.Business.Services
 				.AsNoTracking()
                 .Where(navExp)
                 .Select(navProp).OfType<ExistingAllocations>()
-                .Where(exp == "All" || exp == null?"EntryDataDetailsId != null":exp)
+                .Where(exp == "All" || exp == null?"Id != null":exp)
                 .Distinct();
 
 			set = includesLst.Aggregate(set, (current, itm) => current.Include(itm));
@@ -997,6 +997,90 @@ namespace AllocationDS.Business.Services
                 IEnumerable<ExistingAllocations> entities = set//dbContext.ExistingAllocations
                                       .AsNoTracking()
                                         .Where(x => x.xAsycudaId.ToString() == xAsycudaId.ToString())
+										.ToList();
+                return entities;
+              }
+             }
+            catch (Exception updateEx)
+            {
+                System.Diagnostics.Debugger.Break();
+                //throw new FaultException(updateEx.Message);
+                    var fault = new ValidationFault
+                                {
+                                    Result = false,
+                                    Message = updateEx.Message,
+                                    Description = updateEx.StackTrace
+                                };
+                    throw new FaultException<ValidationFault>(fault);
+            }
+        }
+ 	        public async Task<IEnumerable<ExistingAllocations>> GetExistingAllocationsByEntryDataDetailsId(string EntryDataDetailsId, List<string> includesLst = null)
+        {
+            try
+            {
+                using ( var dbContext = new AllocationDSContext(){StartTracking = StartTracking})
+              {
+                var i = Convert.ToInt32(EntryDataDetailsId);
+                var set = AddIncludes(includesLst, dbContext);
+                IEnumerable<ExistingAllocations> entities = set//dbContext.ExistingAllocations
+                                      .AsNoTracking()
+                                        .Where(x => x.EntryDataDetailsId.ToString() == EntryDataDetailsId.ToString())
+										.ToList();
+                return entities;
+              }
+             }
+            catch (Exception updateEx)
+            {
+                System.Diagnostics.Debugger.Break();
+                //throw new FaultException(updateEx.Message);
+                    var fault = new ValidationFault
+                                {
+                                    Result = false,
+                                    Message = updateEx.Message,
+                                    Description = updateEx.StackTrace
+                                };
+                    throw new FaultException<ValidationFault>(fault);
+            }
+        }
+ 	        public async Task<IEnumerable<ExistingAllocations>> GetExistingAllocationsByxItemId(string xItemId, List<string> includesLst = null)
+        {
+            try
+            {
+                using ( var dbContext = new AllocationDSContext(){StartTracking = StartTracking})
+              {
+                var i = Convert.ToInt32(xItemId);
+                var set = AddIncludes(includesLst, dbContext);
+                IEnumerable<ExistingAllocations> entities = set//dbContext.ExistingAllocations
+                                      .AsNoTracking()
+                                        .Where(x => x.xItemId.ToString() == xItemId.ToString())
+										.ToList();
+                return entities;
+              }
+             }
+            catch (Exception updateEx)
+            {
+                System.Diagnostics.Debugger.Break();
+                //throw new FaultException(updateEx.Message);
+                    var fault = new ValidationFault
+                                {
+                                    Result = false,
+                                    Message = updateEx.Message,
+                                    Description = updateEx.StackTrace
+                                };
+                    throw new FaultException<ValidationFault>(fault);
+            }
+        }
+ 	        public async Task<IEnumerable<ExistingAllocations>> GetExistingAllocationsBypItemId(string pItemId, List<string> includesLst = null)
+        {
+            try
+            {
+                using ( var dbContext = new AllocationDSContext(){StartTracking = StartTracking})
+              {
+                var i = Convert.ToInt32(pItemId);
+                var set = AddIncludes(includesLst, dbContext);
+                IEnumerable<ExistingAllocations> entities = set//dbContext.ExistingAllocations
+                                      .AsNoTracking()
+                                        .Where(x => x.pItemId.ToString() == pItemId.ToString())
 										.ToList();
                 return entities;
               }
@@ -1070,6 +1154,34 @@ namespace AllocationDS.Business.Services
                     throw new FaultException<ValidationFault>(fault);
             }
         }
+ 	        public async Task<IEnumerable<ExistingAllocations>> GetExistingAllocationsByInventoryItemId(string InventoryItemId, List<string> includesLst = null)
+        {
+            try
+            {
+                using ( var dbContext = new AllocationDSContext(){StartTracking = StartTracking})
+              {
+                var i = Convert.ToInt32(InventoryItemId);
+                var set = AddIncludes(includesLst, dbContext);
+                IEnumerable<ExistingAllocations> entities = set//dbContext.ExistingAllocations
+                                      .AsNoTracking()
+                                        .Where(x => x.InventoryItemId.ToString() == InventoryItemId.ToString())
+										.ToList();
+                return entities;
+              }
+             }
+            catch (Exception updateEx)
+            {
+                System.Diagnostics.Debugger.Break();
+                //throw new FaultException(updateEx.Message);
+                    var fault = new ValidationFault
+                                {
+                                    Result = false,
+                                    Message = updateEx.Message,
+                                    Description = updateEx.StackTrace
+                                };
+                    throw new FaultException<ValidationFault>(fault);
+            }
+        }
  
 		public decimal SumField(string whereExp, string field)
          {
@@ -1121,7 +1233,7 @@ namespace AllocationDS.Business.Services
 										.AsNoTracking()
                                         .Sum(field)??0);
                     }
-                    return Convert.ToDecimal(dbContext.ExistingAllocations.Where(exp == "All" || exp == null ? "EntryDataDetailsId != null" : exp)
+                    return Convert.ToDecimal(dbContext.ExistingAllocations.Where(exp == "All" || exp == null ? "Id != null" : exp)
 											.AsNoTracking()
                                             .Sum(field)??0);
                 }
@@ -1162,9 +1274,9 @@ namespace AllocationDS.Business.Services
 				.AsNoTracking()
                 .Where(navExp)
                 .SelectMany(navProp).OfType<ExistingAllocations>()
-                .Where(exp == "All" || exp == null ? "EntryDataDetailsId != null" : exp)
+                .Where(exp == "All" || exp == null ? "Id != null" : exp)
                 .Distinct()
-                .OrderBy("EntryDataDetailsId")
+                .OrderBy("Id")
                 .Sum(field));
 			}
 			catch (Exception)
@@ -1182,9 +1294,9 @@ namespace AllocationDS.Business.Services
 				.AsNoTracking()
                 .Where(navExp)
                 .Select(navProp).OfType<ExistingAllocations>()
-                .Where(exp == "All" || exp == null ? "EntryDataDetailsId != null" : exp)
+                .Where(exp == "All" || exp == null ? "Id != null" : exp)
                 .Distinct()
-                .OrderBy("EntryDataDetailsId")
+                .OrderBy("Id")
                 .Sum(field));
 			}
 			catch (Exception)
