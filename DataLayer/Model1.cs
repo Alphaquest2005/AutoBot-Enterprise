@@ -3642,6 +3642,30 @@ namespace WaterNut.DataLayer
         private Nullable<global::System.Int32> _ExpectedEntries;
         partial void OnExpectedEntriesChanging(Nullable<global::System.Int32> value);
         partial void OnExpectedEntriesChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
+        [DataMemberAttribute()]
+        public global::System.String PackageType
+        {
+            get
+            {
+                return _PackageType;
+            }
+            set
+            {
+                OnPackageTypeChanging(value);
+                ReportPropertyChanging("PackageType");
+                _PackageType = StructuralObject.SetValidValue(value, true);
+                ReportPropertyChanged("PackageType");
+                OnPackageTypeChanged();
+            }
+        }
+        private global::System.String _PackageType;
+        partial void OnPackageTypeChanging(global::System.String value);
+        partial void OnPackageTypeChanged();
 
         #endregion
 
@@ -4258,13 +4282,37 @@ namespace WaterNut.DataLayer
         /// </summary>
         /// <param name="document_TypeId">Initial value of the Document_TypeId property.</param>
         /// <param name="customs_ProcedureId">Initial value of the Customs_ProcedureId property.</param>
+        /// <param name="extended_customs_procedure">Initial value of the Extended_customs_procedure property.</param>
+        /// <param name="national_customs_procedure">Initial value of the National_customs_procedure property.</param>
+        /// <param name="customsProcedure">Initial value of the CustomsProcedure property.</param>
+        /// <param name="isObsolete">Initial value of the IsObsolete property.</param>
+        /// <param name="isPaid">Initial value of the IsPaid property.</param>
+        /// <param name="stock">Initial value of the Stock property.</param>
+        /// <param name="discrepancy">Initial value of the Discrepancy property.</param>
+        /// <param name="adjustment">Initial value of the Adjustment property.</param>
+        /// <param name="sales">Initial value of the Sales property.</param>
         /// <param name="customsOperationId">Initial value of the CustomsOperationId property.</param>
-        public static Customs_Procedure CreateCustoms_Procedure(global::System.Int32 document_TypeId, global::System.Int32 customs_ProcedureId, global::System.Int32 customsOperationId)
+        /// <param name="submitToCustoms">Initial value of the SubmitToCustoms property.</param>
+        /// <param name="isDefault">Initial value of the IsDefault property.</param>
+        /// <param name="exportSupportingEntryData">Initial value of the ExportSupportingEntryData property.</param>
+        public static Customs_Procedure CreateCustoms_Procedure(global::System.Int32 document_TypeId, global::System.Int32 customs_ProcedureId, global::System.String extended_customs_procedure, global::System.String national_customs_procedure, global::System.String customsProcedure, global::System.Boolean isObsolete, global::System.Boolean isPaid, global::System.Boolean stock, global::System.Boolean discrepancy, global::System.Boolean adjustment, global::System.Boolean sales, global::System.Int32 customsOperationId, global::System.Boolean submitToCustoms, global::System.Boolean isDefault, global::System.Boolean exportSupportingEntryData)
         {
             Customs_Procedure customs_Procedure = new Customs_Procedure();
             customs_Procedure.Document_TypeId = document_TypeId;
             customs_Procedure.Customs_ProcedureId = customs_ProcedureId;
+            customs_Procedure.Extended_customs_procedure = extended_customs_procedure;
+            customs_Procedure.National_customs_procedure = national_customs_procedure;
+            customs_Procedure.CustomsProcedure = customsProcedure;
+            customs_Procedure.IsObsolete = isObsolete;
+            customs_Procedure.IsPaid = isPaid;
+            customs_Procedure.Stock = stock;
+            customs_Procedure.Discrepancy = discrepancy;
+            customs_Procedure.Adjustment = adjustment;
+            customs_Procedure.Sales = sales;
             customs_Procedure.CustomsOperationId = customsOperationId;
+            customs_Procedure.SubmitToCustoms = submitToCustoms;
+            customs_Procedure.IsDefault = isDefault;
+            customs_Procedure.ExportSupportingEntryData = exportSupportingEntryData;
             return customs_Procedure;
         }
 
@@ -4326,7 +4374,7 @@ namespace WaterNut.DataLayer
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
         [DataMemberAttribute()]
         public global::System.String Extended_customs_procedure
         {
@@ -4338,7 +4386,7 @@ namespace WaterNut.DataLayer
             {
                 OnExtended_customs_procedureChanging(value);
                 ReportPropertyChanging("Extended_customs_procedure");
-                _Extended_customs_procedure = StructuralObject.SetValidValue(value, true);
+                _Extended_customs_procedure = StructuralObject.SetValidValue(value, false);
                 ReportPropertyChanged("Extended_customs_procedure");
                 OnExtended_customs_procedureChanged();
             }
@@ -4350,7 +4398,7 @@ namespace WaterNut.DataLayer
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
         [DataMemberAttribute()]
         public global::System.String National_customs_procedure
         {
@@ -4362,7 +4410,7 @@ namespace WaterNut.DataLayer
             {
                 OnNational_customs_procedureChanging(value);
                 ReportPropertyChanging("National_customs_procedure");
-                _National_customs_procedure = StructuralObject.SetValidValue(value, true);
+                _National_customs_procedure = StructuralObject.SetValidValue(value, false);
                 ReportPropertyChanged("National_customs_procedure");
                 OnNational_customs_procedureChanged();
             }
@@ -4374,7 +4422,7 @@ namespace WaterNut.DataLayer
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
         [DataMemberAttribute()]
         public global::System.String CustomsProcedure
         {
@@ -4398,9 +4446,9 @@ namespace WaterNut.DataLayer
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
         [DataMemberAttribute()]
-        public Nullable<global::System.Boolean> IsObsolete
+        public global::System.Boolean IsObsolete
         {
             get
             {
@@ -4415,16 +4463,16 @@ namespace WaterNut.DataLayer
                 OnIsObsoleteChanged();
             }
         }
-        private Nullable<global::System.Boolean> _IsObsolete;
-        partial void OnIsObsoleteChanging(Nullable<global::System.Boolean> value);
+        private global::System.Boolean _IsObsolete;
+        partial void OnIsObsoleteChanging(global::System.Boolean value);
         partial void OnIsObsoleteChanged();
     
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
         [DataMemberAttribute()]
-        public Nullable<global::System.Boolean> IsPaid
+        public global::System.Boolean IsPaid
         {
             get
             {
@@ -4439,8 +4487,8 @@ namespace WaterNut.DataLayer
                 OnIsPaidChanged();
             }
         }
-        private Nullable<global::System.Boolean> _IsPaid;
-        partial void OnIsPaidChanging(Nullable<global::System.Boolean> value);
+        private global::System.Boolean _IsPaid;
+        partial void OnIsPaidChanging(global::System.Boolean value);
         partial void OnIsPaidChanged();
     
         /// <summary>
@@ -4470,9 +4518,9 @@ namespace WaterNut.DataLayer
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
         [DataMemberAttribute()]
-        public Nullable<global::System.Boolean> Stock
+        public global::System.Boolean Stock
         {
             get
             {
@@ -4487,16 +4535,16 @@ namespace WaterNut.DataLayer
                 OnStockChanged();
             }
         }
-        private Nullable<global::System.Boolean> _Stock;
-        partial void OnStockChanging(Nullable<global::System.Boolean> value);
+        private global::System.Boolean _Stock;
+        partial void OnStockChanging(global::System.Boolean value);
         partial void OnStockChanged();
     
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
         [DataMemberAttribute()]
-        public Nullable<global::System.Boolean> Discrepancy
+        public global::System.Boolean Discrepancy
         {
             get
             {
@@ -4511,16 +4559,16 @@ namespace WaterNut.DataLayer
                 OnDiscrepancyChanged();
             }
         }
-        private Nullable<global::System.Boolean> _Discrepancy;
-        partial void OnDiscrepancyChanging(Nullable<global::System.Boolean> value);
+        private global::System.Boolean _Discrepancy;
+        partial void OnDiscrepancyChanging(global::System.Boolean value);
         partial void OnDiscrepancyChanged();
     
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
         [DataMemberAttribute()]
-        public Nullable<global::System.Boolean> Adjustment
+        public global::System.Boolean Adjustment
         {
             get
             {
@@ -4535,16 +4583,16 @@ namespace WaterNut.DataLayer
                 OnAdjustmentChanged();
             }
         }
-        private Nullable<global::System.Boolean> _Adjustment;
-        partial void OnAdjustmentChanging(Nullable<global::System.Boolean> value);
+        private global::System.Boolean _Adjustment;
+        partial void OnAdjustmentChanging(global::System.Boolean value);
         partial void OnAdjustmentChanged();
     
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
         [DataMemberAttribute()]
-        public Nullable<global::System.Boolean> Sales
+        public global::System.Boolean Sales
         {
             get
             {
@@ -4559,8 +4607,8 @@ namespace WaterNut.DataLayer
                 OnSalesChanged();
             }
         }
-        private Nullable<global::System.Boolean> _Sales;
-        partial void OnSalesChanging(Nullable<global::System.Boolean> value);
+        private global::System.Boolean _Sales;
+        partial void OnSalesChanging(global::System.Boolean value);
         partial void OnSalesChanged();
     
         /// <summary>
@@ -4590,9 +4638,9 @@ namespace WaterNut.DataLayer
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
         [DataMemberAttribute()]
-        public Nullable<global::System.Boolean> SubmitToCustoms
+        public global::System.Boolean SubmitToCustoms
         {
             get
             {
@@ -4607,16 +4655,16 @@ namespace WaterNut.DataLayer
                 OnSubmitToCustomsChanged();
             }
         }
-        private Nullable<global::System.Boolean> _SubmitToCustoms;
-        partial void OnSubmitToCustomsChanging(Nullable<global::System.Boolean> value);
+        private global::System.Boolean _SubmitToCustoms;
+        partial void OnSubmitToCustomsChanging(global::System.Boolean value);
         partial void OnSubmitToCustomsChanged();
     
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
         [DataMemberAttribute()]
-        public Nullable<global::System.Boolean> IsDefault
+        public global::System.Boolean IsDefault
         {
             get
             {
@@ -4631,16 +4679,16 @@ namespace WaterNut.DataLayer
                 OnIsDefaultChanged();
             }
         }
-        private Nullable<global::System.Boolean> _IsDefault;
-        partial void OnIsDefaultChanging(Nullable<global::System.Boolean> value);
+        private global::System.Boolean _IsDefault;
+        partial void OnIsDefaultChanging(global::System.Boolean value);
         partial void OnIsDefaultChanged();
     
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
         [DataMemberAttribute()]
-        public Nullable<global::System.Boolean> ExportSupportingEntryData
+        public global::System.Boolean ExportSupportingEntryData
         {
             get
             {
@@ -4655,8 +4703,8 @@ namespace WaterNut.DataLayer
                 OnExportSupportingEntryDataChanged();
             }
         }
-        private Nullable<global::System.Boolean> _ExportSupportingEntryData;
-        partial void OnExportSupportingEntryDataChanging(Nullable<global::System.Boolean> value);
+        private global::System.Boolean _ExportSupportingEntryData;
+        partial void OnExportSupportingEntryDataChanging(global::System.Boolean value);
         partial void OnExportSupportingEntryDataChanged();
 
         #endregion
@@ -6416,10 +6464,12 @@ namespace WaterNut.DataLayer
         /// Create a new PackageTypes object.
         /// </summary>
         /// <param name="packageType">Initial value of the PackageType property.</param>
-        public static PackageTypes CreatePackageTypes(global::System.String packageType)
+        /// <param name="packageDescription">Initial value of the PackageDescription property.</param>
+        public static PackageTypes CreatePackageTypes(global::System.String packageType, global::System.String packageDescription)
         {
             PackageTypes packageTypes = new PackageTypes();
             packageTypes.PackageType = packageType;
+            packageTypes.PackageDescription = packageDescription;
             return packageTypes;
         }
 
@@ -6430,7 +6480,7 @@ namespace WaterNut.DataLayer
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty=true, IsNullable=false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
         [DataMemberAttribute()]
         public global::System.String PackageType
         {
@@ -6440,14 +6490,11 @@ namespace WaterNut.DataLayer
             }
             set
             {
-                if (_PackageType != value)
-                {
-                    OnPackageTypeChanging(value);
-                    ReportPropertyChanging("PackageType");
-                    _PackageType = StructuralObject.SetValidValue(value, false);
-                    ReportPropertyChanged("PackageType");
-                    OnPackageTypeChanged();
-                }
+                OnPackageTypeChanging(value);
+                ReportPropertyChanging("PackageType");
+                _PackageType = StructuralObject.SetValidValue(value, false);
+                ReportPropertyChanged("PackageType");
+                OnPackageTypeChanged();
             }
         }
         private global::System.String _PackageType;
@@ -6457,7 +6504,7 @@ namespace WaterNut.DataLayer
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=true, IsNullable=false)]
         [DataMemberAttribute()]
         public global::System.String PackageDescription
         {
@@ -6467,11 +6514,14 @@ namespace WaterNut.DataLayer
             }
             set
             {
-                OnPackageDescriptionChanging(value);
-                ReportPropertyChanging("PackageDescription");
-                _PackageDescription = StructuralObject.SetValidValue(value, true);
-                ReportPropertyChanged("PackageDescription");
-                OnPackageDescriptionChanged();
+                if (_PackageDescription != value)
+                {
+                    OnPackageDescriptionChanging(value);
+                    ReportPropertyChanging("PackageDescription");
+                    _PackageDescription = StructuralObject.SetValidValue(value, false);
+                    ReportPropertyChanged("PackageDescription");
+                    OnPackageDescriptionChanged();
+                }
             }
         }
         private global::System.String _PackageDescription;
@@ -8381,13 +8431,21 @@ namespace WaterNut.DataLayer
         /// </summary>
         /// <param name="aSYCUDA_Id">Initial value of the ASYCUDA_Id property.</param>
         /// <param name="asycudaDocumentSetId">Initial value of the AsycudaDocumentSetId property.</param>
+        /// <param name="isManuallyAssessed">Initial value of the IsManuallyAssessed property.</param>
+        /// <param name="autoUpdate">Initial value of the AutoUpdate property.</param>
+        /// <param name="doNotAllocate">Initial value of the DoNotAllocate property.</param>
         /// <param name="importComplete">Initial value of the ImportComplete property.</param>
-        public static xcuda_ASYCUDA_ExtendedProperties Createxcuda_ASYCUDA_ExtendedProperties(global::System.Int32 aSYCUDA_Id, global::System.Int32 asycudaDocumentSetId, global::System.Boolean importComplete)
+        /// <param name="cancelled">Initial value of the Cancelled property.</param>
+        public static xcuda_ASYCUDA_ExtendedProperties Createxcuda_ASYCUDA_ExtendedProperties(global::System.Int32 aSYCUDA_Id, global::System.Int32 asycudaDocumentSetId, global::System.Boolean isManuallyAssessed, global::System.Boolean autoUpdate, global::System.Boolean doNotAllocate, global::System.Boolean importComplete, global::System.Boolean cancelled)
         {
             xcuda_ASYCUDA_ExtendedProperties xcuda_ASYCUDA_ExtendedProperties = new xcuda_ASYCUDA_ExtendedProperties();
             xcuda_ASYCUDA_ExtendedProperties.ASYCUDA_Id = aSYCUDA_Id;
             xcuda_ASYCUDA_ExtendedProperties.AsycudaDocumentSetId = asycudaDocumentSetId;
+            xcuda_ASYCUDA_ExtendedProperties.IsManuallyAssessed = isManuallyAssessed;
+            xcuda_ASYCUDA_ExtendedProperties.AutoUpdate = autoUpdate;
+            xcuda_ASYCUDA_ExtendedProperties.DoNotAllocate = doNotAllocate;
             xcuda_ASYCUDA_ExtendedProperties.ImportComplete = importComplete;
+            xcuda_ASYCUDA_ExtendedProperties.Cancelled = cancelled;
             return xcuda_ASYCUDA_ExtendedProperties;
         }
 
@@ -8473,9 +8531,9 @@ namespace WaterNut.DataLayer
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
         [DataMemberAttribute()]
-        public Nullable<global::System.Boolean> IsManuallyAssessed
+        public global::System.Boolean IsManuallyAssessed
         {
             get
             {
@@ -8490,8 +8548,8 @@ namespace WaterNut.DataLayer
                 OnIsManuallyAssessedChanged();
             }
         }
-        private Nullable<global::System.Boolean> _IsManuallyAssessed;
-        partial void OnIsManuallyAssessedChanging(Nullable<global::System.Boolean> value);
+        private global::System.Boolean _IsManuallyAssessed;
+        partial void OnIsManuallyAssessedChanging(global::System.Boolean value);
         partial void OnIsManuallyAssessedChanged();
     
         /// <summary>
@@ -8665,9 +8723,9 @@ namespace WaterNut.DataLayer
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
         [DataMemberAttribute()]
-        public Nullable<global::System.Boolean> AutoUpdate
+        public global::System.Boolean AutoUpdate
         {
             get
             {
@@ -8682,8 +8740,8 @@ namespace WaterNut.DataLayer
                 OnAutoUpdateChanged();
             }
         }
-        private Nullable<global::System.Boolean> _AutoUpdate;
-        partial void OnAutoUpdateChanging(Nullable<global::System.Boolean> value);
+        private global::System.Boolean _AutoUpdate;
+        partial void OnAutoUpdateChanging(global::System.Boolean value);
         partial void OnAutoUpdateChanged();
     
         /// <summary>
@@ -8713,9 +8771,9 @@ namespace WaterNut.DataLayer
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
         [DataMemberAttribute()]
-        public Nullable<global::System.Boolean> DoNotAllocate
+        public global::System.Boolean DoNotAllocate
         {
             get
             {
@@ -8730,8 +8788,8 @@ namespace WaterNut.DataLayer
                 OnDoNotAllocateChanged();
             }
         }
-        private Nullable<global::System.Boolean> _DoNotAllocate;
-        partial void OnDoNotAllocateChanging(Nullable<global::System.Boolean> value);
+        private global::System.Boolean _DoNotAllocate;
+        partial void OnDoNotAllocateChanging(global::System.Boolean value);
         partial void OnDoNotAllocateChanged();
     
         /// <summary>
@@ -8809,9 +8867,9 @@ namespace WaterNut.DataLayer
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
         [DataMemberAttribute()]
-        public Nullable<global::System.Boolean> Cancelled
+        public global::System.Boolean Cancelled
         {
             get
             {
@@ -8826,8 +8884,8 @@ namespace WaterNut.DataLayer
                 OnCancelledChanged();
             }
         }
-        private Nullable<global::System.Boolean> _Cancelled;
-        partial void OnCancelledChanging(Nullable<global::System.Boolean> value);
+        private global::System.Boolean _Cancelled;
+        partial void OnCancelledChanging(global::System.Boolean value);
         partial void OnCancelledChanged();
     
         /// <summary>
@@ -18760,7 +18818,7 @@ namespace WaterNut.DataLayer
         /// </summary>
         [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
-        public global::System.String Previous_item_number
+        public Nullable<global::System.Int32> Previous_item_number
         {
             get
             {
@@ -18770,13 +18828,13 @@ namespace WaterNut.DataLayer
             {
                 OnPrevious_item_numberChanging(value);
                 ReportPropertyChanging("Previous_item_number");
-                _Previous_item_number = StructuralObject.SetValidValue(value, true);
+                _Previous_item_number = StructuralObject.SetValidValue(value);
                 ReportPropertyChanged("Previous_item_number");
                 OnPrevious_item_numberChanged();
             }
         }
-        private global::System.String _Previous_item_number;
-        partial void OnPrevious_item_numberChanging(global::System.String value);
+        private Nullable<global::System.Int32> _Previous_item_number;
+        partial void OnPrevious_item_numberChanging(Nullable<global::System.Int32> value);
         partial void OnPrevious_item_numberChanged();
     
         /// <summary>
@@ -19024,7 +19082,7 @@ namespace WaterNut.DataLayer
         /// </summary>
         [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
-        public global::System.String Current_item_number
+        public Nullable<global::System.Int32> Current_item_number
         {
             get
             {
@@ -19034,13 +19092,13 @@ namespace WaterNut.DataLayer
             {
                 OnCurrent_item_numberChanging(value);
                 ReportPropertyChanging("Current_item_number");
-                _Current_item_number = StructuralObject.SetValidValue(value, true);
+                _Current_item_number = StructuralObject.SetValidValue(value);
                 ReportPropertyChanged("Current_item_number");
                 OnCurrent_item_numberChanged();
             }
         }
-        private global::System.String _Current_item_number;
-        partial void OnCurrent_item_numberChanging(global::System.String value);
+        private Nullable<global::System.Int32> _Current_item_number;
+        partial void OnCurrent_item_numberChanging(Nullable<global::System.Int32> value);
         partial void OnCurrent_item_numberChanged();
     
         /// <summary>
@@ -24183,10 +24241,12 @@ namespace WaterNut.DataLayer
         /// <summary>
         /// Create a new xcuda_Warehouse object.
         /// </summary>
+        /// <param name="delay">Initial value of the Delay property.</param>
         /// <param name="warehouse_Id">Initial value of the Warehouse_Id property.</param>
-        public static xcuda_Warehouse Createxcuda_Warehouse(global::System.Int32 warehouse_Id)
+        public static xcuda_Warehouse Createxcuda_Warehouse(global::System.Int32 delay, global::System.Int32 warehouse_Id)
         {
             xcuda_Warehouse xcuda_Warehouse = new xcuda_Warehouse();
+            xcuda_Warehouse.Delay = delay;
             xcuda_Warehouse.Warehouse_Id = warehouse_Id;
             return xcuda_Warehouse;
         }
@@ -24222,9 +24282,9 @@ namespace WaterNut.DataLayer
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
         [DataMemberAttribute()]
-        public global::System.String Delay
+        public global::System.Int32 Delay
         {
             get
             {
@@ -24234,13 +24294,13 @@ namespace WaterNut.DataLayer
             {
                 OnDelayChanging(value);
                 ReportPropertyChanging("Delay");
-                _Delay = StructuralObject.SetValidValue(value, true);
+                _Delay = StructuralObject.SetValidValue(value);
                 ReportPropertyChanged("Delay");
                 OnDelayChanged();
             }
         }
-        private global::System.String _Delay;
-        partial void OnDelayChanging(global::System.String value);
+        private global::System.Int32 _Delay;
+        partial void OnDelayChanging(global::System.Int32 value);
         partial void OnDelayChanged();
     
         /// <summary>

@@ -33,6 +33,7 @@
           <Property Name="Office" Type="nvarchar" MaxLength="50" />
           <Property Name="UpgradeKey" Type="int" />
           <Property Name="ExpectedEntries" Type="int" />
+          <Property Name="PackageType" Type="nvarchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="Attachments">
           <Key>
@@ -65,20 +66,20 @@
           </Key>
           <Property Name="Document_TypeId" Type="int" Nullable="false" />
           <Property Name="Customs_ProcedureId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="Extended_customs_procedure" Type="nvarchar" MaxLength="5" />
-          <Property Name="National_customs_procedure" Type="nvarchar" MaxLength="5" />
-          <Property Name="CustomsProcedure" Type="nvarchar" MaxLength="11" StoreGeneratedPattern="Computed" />
-          <Property Name="IsObsolete" Type="bit" />
-          <Property Name="IsPaid" Type="bit" />
+          <Property Name="Extended_customs_procedure" Type="nvarchar" MaxLength="5" Nullable="false" />
+          <Property Name="National_customs_procedure" Type="nvarchar" MaxLength="5" Nullable="false" />
+          <Property Name="CustomsProcedure" Type="nvarchar" MaxLength="11" StoreGeneratedPattern="Computed" Nullable="false" />
+          <Property Name="IsObsolete" Type="bit" Nullable="false" />
+          <Property Name="IsPaid" Type="bit" Nullable="false" />
           <Property Name="BondTypeId" Type="int" />
-          <Property Name="Stock" Type="bit" />
-          <Property Name="Discrepancy" Type="bit" />
-          <Property Name="Adjustment" Type="bit" />
-          <Property Name="Sales" Type="bit" />
+          <Property Name="Stock" Type="bit" Nullable="false" />
+          <Property Name="Discrepancy" Type="bit" Nullable="false" />
+          <Property Name="Adjustment" Type="bit" Nullable="false" />
+          <Property Name="Sales" Type="bit" Nullable="false" />
           <Property Name="CustomsOperationId" Type="int" Nullable="false" />
-          <Property Name="SubmitToCustoms" Type="bit" />
-          <Property Name="IsDefault" Type="bit" />
-          <Property Name="ExportSupportingEntryData" Type="bit" />
+          <Property Name="SubmitToCustoms" Type="bit" Nullable="false" />
+          <Property Name="IsDefault" Type="bit" Nullable="false" />
+          <Property Name="ExportSupportingEntryData" Type="bit" Nullable="false" />
         </EntityType>
         <EntityType Name="Document_Type">
           <Key>
@@ -146,10 +147,10 @@
         </EntityType>
         <EntityType Name="PackageTypes">
           <Key>
-            <PropertyRef Name="PackageType" />
+            <PropertyRef Name="PackageDescription" />
           </Key>
           <Property Name="PackageType" Type="nvarchar" MaxLength="4" Nullable="false" />
-          <Property Name="PackageDescription" Type="nvarchar" MaxLength="50" />
+          <Property Name="PackageDescription" Type="nvarchar" MaxLength="50" Nullable="false" />
         </EntityType>
         <EntityType Name="TariffCategory">
           <Key>
@@ -227,7 +228,7 @@
           <Property Name="ASYCUDA_Id" Type="int" Nullable="false" />
           <Property Name="AsycudaDocumentSetId" Type="int" Nullable="false" />
           <Property Name="FileNumber" Type="int" />
-          <Property Name="IsManuallyAssessed" Type="bit" />
+          <Property Name="IsManuallyAssessed" Type="bit" Nullable="false" />
           <Property Name="CNumber" Type="nvarchar" MaxLength="50" />
           <Property Name="RegistrationDate" Type="datetime2" Precision="7" />
           <Property Name="ReferenceNumber" Type="nvarchar" MaxLength="50" />
@@ -235,13 +236,13 @@
           <Property Name="Description" Type="nvarchar" MaxLength="255" />
           <Property Name="ExportTemplateId" Type="int" />
           <Property Name="BLNumber" Type="nvarchar" MaxLength="50" />
-          <Property Name="AutoUpdate" Type="bit" />
+          <Property Name="AutoUpdate" Type="bit" Nullable="false" />
           <Property Name="EffectiveRegistrationDate" Type="datetime2" Precision="7" />
           <Property Name="ApportionMethod" Type="int" />
-          <Property Name="DoNotAllocate" Type="bit" />
+          <Property Name="DoNotAllocate" Type="bit" Nullable="false" />
           <Property Name="ImportComplete" Type="bit" Nullable="false" />
           <Property Name="DocumentLines" Type="int" />
-          <Property Name="Cancelled" Type="bit" />
+          <Property Name="Cancelled" Type="bit" Nullable="false" />
           <Property Name="TotalWeight" Type="float" />
           <Property Name="TotalFreight" Type="float" />
           <Property Name="TotalInternalFreight" Type="float" />
@@ -698,7 +699,7 @@
           <Property Name="Previous_Packages_number" Type="nvarchar" MaxLength="20" />
           <Property Name="Hs_code" Type="nvarchar" MaxLength="20" />
           <Property Name="Commodity_code" Type="nvarchar" MaxLength="20" />
-          <Property Name="Previous_item_number" Type="nvarchar" MaxLength="20" />
+          <Property Name="Previous_item_number" Type="int" />
           <Property Name="Goods_origin" Type="nvarchar" MaxLength="20" />
           <Property Name="Net_weight" Type="decimal" Precision="9" Scale="2" Nullable="false" />
           <Property Name="Prev_net_weight" Type="decimal" Precision="9" Scale="2" Nullable="false" />
@@ -710,7 +711,7 @@
           <Property Name="Preveious_suplementary_quantity" Type="float" Nullable="false" />
           <Property Name="Current_value" Type="float" Nullable="false" />
           <Property Name="Previous_value" Type="float" Nullable="false" />
-          <Property Name="Current_item_number" Type="nvarchar" MaxLength="20" />
+          <Property Name="Current_item_number" Type="int" />
           <Property Name="PreviousItem_Id" Type="int" Nullable="false" />
           <Property Name="ASYCUDA_Id" Type="int" />
           <Property Name="QtyAllocated" Type="float" Nullable="false" />
@@ -921,7 +922,7 @@
             <PropertyRef Name="Warehouse_Id" />
           </Key>
           <Property Name="Identification" Type="nvarchar" MaxLength="20" />
-          <Property Name="Delay" Type="nvarchar" MaxLength="4" />
+          <Property Name="Delay" Type="int" Nullable="false" />
           <Property Name="ASYCUDA_Id" Type="int" />
           <Property Name="Warehouse_Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
         </EntityType>
@@ -3615,6 +3616,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does no
           <Property Name="Office" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="UpgradeKey" Type="Int32" />
           <Property Name="ExpectedEntries" Type="Int32" />
+          <Property Name="PackageType" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="Customs_Procedure">
           <Key>
@@ -3622,23 +3624,23 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does no
           </Key>
           <Property Name="Document_TypeId" Type="Int32" Nullable="false" />
           <Property Name="Customs_ProcedureId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Extended_customs_procedure" Type="String" MaxLength="5" FixedLength="false" Unicode="true" />
-          <Property Name="National_customs_procedure" Type="String" MaxLength="5" FixedLength="false" Unicode="true" />
+          <Property Name="Extended_customs_procedure" Type="String" MaxLength="5" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="National_customs_procedure" Type="String" MaxLength="5" FixedLength="false" Unicode="true" Nullable="false" />
           <NavigationProperty Name="AsycudaDocumentSet" Relationship="WaterNutDB.DataLayer.FK_AsycudaDocumentSet_Customs_Procedure" FromRole="Customs_Procedure" ToRole="AsycudaDocumentSet" />
           <NavigationProperty Name="Document_Type" Relationship="WaterNutDB.DataLayer.FK_Customs_Procedure_Document_Type" FromRole="Customs_Procedure" ToRole="Document_Type" />
           <NavigationProperty Name="xcuda_ASYCUDA_ExtendedProperties" Relationship="WaterNutDB.DataLayer.FK_xcuda_ASYCUDA_ExtendedProperties_Customs_Procedure" FromRole="Customs_Procedure" ToRole="xcuda_ASYCUDA_ExtendedProperties" />
-          <Property Name="CustomsProcedure" Type="String" MaxLength="11" FixedLength="false" Unicode="true" annotation:StoreGeneratedPattern="Computed" />
-          <Property Name="IsObsolete" Type="Boolean" />
-          <Property Name="IsPaid" Type="Boolean" />
+          <Property Name="CustomsProcedure" Type="String" MaxLength="11" FixedLength="false" Unicode="true" annotation:StoreGeneratedPattern="Computed" Nullable="false" />
+          <Property Name="IsObsolete" Type="Boolean" Nullable="false" />
+          <Property Name="IsPaid" Type="Boolean" Nullable="false" />
           <Property Name="BondTypeId" Type="Int32" />
-          <Property Name="Stock" Type="Boolean" />
-          <Property Name="Discrepancy" Type="Boolean" />
-          <Property Name="Adjustment" Type="Boolean" />
-          <Property Name="Sales" Type="Boolean" />
+          <Property Name="Stock" Type="Boolean" Nullable="false" />
+          <Property Name="Discrepancy" Type="Boolean" Nullable="false" />
+          <Property Name="Adjustment" Type="Boolean" Nullable="false" />
+          <Property Name="Sales" Type="Boolean" Nullable="false" />
           <Property Name="CustomsOperationId" Type="Int32" Nullable="false" />
-          <Property Name="SubmitToCustoms" Type="Boolean" />
-          <Property Name="IsDefault" Type="Boolean" />
-          <Property Name="ExportSupportingEntryData" Type="Boolean" />
+          <Property Name="SubmitToCustoms" Type="Boolean" Nullable="false" />
+          <Property Name="IsDefault" Type="Boolean" Nullable="false" />
+          <Property Name="ExportSupportingEntryData" Type="Boolean" Nullable="false" />
         </EntityType>
         <EntityType Name="Document_Type">
           <Key>
@@ -3779,7 +3781,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does no
           <Property Name="ASYCUDA_Id" Type="Int32" Nullable="false" />
           <Property Name="AsycudaDocumentSetId" Type="Int32" Nullable="false" />
           <Property Name="FileNumber" Type="Int32" />
-          <Property Name="IsManuallyAssessed" Type="Boolean" />
+          <Property Name="IsManuallyAssessed" Type="Boolean" Nullable="false" />
           <Property Name="CNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="RegistrationDate" Type="DateTime" Precision="7" />
           <Property Name="ReferenceNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
@@ -3787,9 +3789,9 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does no
           <Property Name="Description" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="ExportTemplateId" Type="Int32" />
           <Property Name="BLNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="AutoUpdate" Type="Boolean" />
+          <Property Name="AutoUpdate" Type="Boolean" Nullable="false" />
           <Property Name="EffectiveRegistrationDate" Type="DateTime" Precision="7" />
-          <Property Name="DoNotAllocate" Type="Boolean" />
+          <Property Name="DoNotAllocate" Type="Boolean" Nullable="false" />
           <NavigationProperty Name="AsycudaDocumentSet" Relationship="WaterNutDB.DataLayer.FK_xcuda_ASYCUDA_ExtendedProperties_AsycudaDocumentSet" FromRole="xcuda_ASYCUDA_ExtendedProperties" ToRole="AsycudaDocumentSet" />
           <NavigationProperty Name="Customs_Procedure" Relationship="WaterNutDB.DataLayer.FK_xcuda_ASYCUDA_ExtendedProperties_Customs_Procedure" FromRole="xcuda_ASYCUDA_ExtendedProperties" ToRole="Customs_Procedure" />
           <NavigationProperty Name="ExportTemplate" Relationship="WaterNutDB.DataLayer.FK_xcuda_ASYCUDA_ExtendedProperties_ExportTemplate" FromRole="xcuda_ASYCUDA_ExtendedProperties" ToRole="ExportTemplate" />
@@ -3797,7 +3799,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does no
           <Property Name="ApportionMethod" Type="Int32" />
           <Property Name="ImportComplete" Type="Boolean" Nullable="false" />
           <Property Name="DocumentLines" Type="Int32" />
-          <Property Name="Cancelled" Type="Boolean" />
+          <Property Name="Cancelled" Type="Boolean" Nullable="false" />
           <Property Name="TotalWeight" Type="Double" />
           <Property Name="TotalFreight" Type="Double" />
           <Property Name="TotalInternalFreight" Type="Double" />
@@ -4120,7 +4122,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does no
           <Property Name="Previous_Packages_number" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Name="Hs_code" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Name="Commodity_code" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
-          <Property Name="Previous_item_number" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="Previous_item_number" Type="Int32" />
           <Property Name="Goods_origin" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Name="Net_weight" Type="Decimal" Nullable="false" Precision="9" Scale="2" />
           <Property Name="Prev_net_weight" Type="Decimal" Nullable="false" Precision="9" Scale="2" />
@@ -4131,7 +4133,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does no
           <Property Name="Preveious_suplementary_quantity" Type="Double" Nullable="false" />
           <Property Name="Current_value" Type="Double" Nullable="false" />
           <Property Name="Previous_value" Type="Double" Nullable="false" />
-          <Property Name="Current_item_number" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="Current_item_number" Type="Int32" />
           <Property Name="PreviousItem_Id" Type="Int32" Nullable="false" />
           <Property Name="ASYCUDA_Id" Type="Int32" />
           <Property Name="QtyAllocated" Type="Double" Nullable="false" />
@@ -4350,7 +4352,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does no
             <PropertyRef Name="Warehouse_Id" />
           </Key>
           <Property Name="Identification" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
-          <Property Name="Delay" Type="String" MaxLength="4" FixedLength="false" Unicode="true" />
+          <Property Name="Delay" Type="Int32" Nullable="false" />
           <Property Name="ASYCUDA_Id" Type="Int32" />
           <Property Name="Warehouse_Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <NavigationProperty Name="xcuda_ASYCUDA" Relationship="WaterNutDB.DataLayer.FK_ASYCUDA_Warehouse" FromRole="xcuda_Warehouse" ToRole="xcuda_ASYCUDA" />
@@ -5393,10 +5395,10 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does no
         </Association>
         <EntityType Name="PackageTypes">
           <Key>
-            <PropertyRef Name="PackageType" />
+            <PropertyRef Name="PackageDescription" />
           </Key>
           <Property Name="PackageType" Type="String" Nullable="false" MaxLength="4" FixedLength="false" Unicode="true" />
-          <Property Name="PackageDescription" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="PackageDescription" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
         </EntityType>
         <EntityType Name="xcuda_Inventory_Item">
           <Key>
@@ -5736,6 +5738,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does no
           <EntitySetMapping Name="AsycudaDocumentSet">
             <EntityTypeMapping TypeName="WaterNutDB.DataLayer.AsycudaDocumentSet">
               <MappingFragment StoreEntitySet="AsycudaDocumentSet">
+                <ScalarProperty Name="PackageType" ColumnName="PackageType" />
                 <ScalarProperty Name="ExpectedEntries" ColumnName="ExpectedEntries" />
                 <ScalarProperty Name="UpgradeKey" ColumnName="UpgradeKey" />
                 <ScalarProperty Name="Office" ColumnName="Office" />

@@ -348,7 +348,7 @@ namespace Asycuda421
                         Prev_decl_reg_year = item.Prev_reg_year.ToString(),
                         Prev_decl_reg_serial = new ASYCUDAPrev_declPrev_decl_reg_serial(){Text = new ObservableCollection<string>(){ item.Prev_reg_ser } } ,
                         Prev_decl_reg_number = item.Prev_reg_nbr,
-                        Prev_decl_item_number = item.Previous_item_number,
+                        Prev_decl_item_number = item.Previous_item_number.GetValueOrDefault().ToString(),
                         Prev_decl_HS_code = new ASYCUDAPrev_declPrev_decl_HS_code() {Text = new ObservableCollection<string>() {item.Hs_code}} ,
                         Prev_decl_HS_prec = new ASYCUDAPrev_declPrev_decl_HS_prec() {Text = new ObservableCollection<string>(){ item.Commodity_code } } ,
                         Prev_decl_country_origin = new ASYCUDAPrev_declPrev_decl_country_origin() {Text = new ObservableCollection<string>() {item.Goods_origin}} ,

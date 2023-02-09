@@ -32,7 +32,7 @@ namespace WaterNut.DataLayer
         partial void OnLineNumberChanged()
         {
             if(xcuda_PreviousItem != null)
-            xcuda_PreviousItem.Current_item_number = LineNumber.ToString();
+            xcuda_PreviousItem.Current_item_number = LineNumber;
         }
 
         public void SetupProperties()
