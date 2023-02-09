@@ -128,7 +128,19 @@ namespace WaterNut.Business.Services.Utils.AutoMatching
         }
 
 
-        private void SaveEntryDataDetails(List<EntryDataDetail> matches) => new AdjustmentQSContext().BulkMerge(matches);
+        private void SaveEntryDataDetails(List<EntryDataDetail> matches)
+        {
+            try
+            {
+                new AdjustmentQSContext().BulkMerge(matches);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+
+        }
 
         public List<AdjustmentDetail> GetAllDiscrepancyDetails(bool overwriteExisting, List<(string ItemNumber, int InventoryItemId)> x)
         {

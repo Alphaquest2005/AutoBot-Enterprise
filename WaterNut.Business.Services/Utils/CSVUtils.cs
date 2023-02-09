@@ -7,6 +7,7 @@ using System.Data.Entity.Core.Objects.DataClasses;
 using System.Data.OleDb;
 using System.IO;
 using System.Linq;
+using System.Runtime.Remoting.Messaging;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -16,6 +17,7 @@ using Core.Common.Converters;
 using Core.Common.Data.Contracts;
 using Core.Common.Extensions;
 using CoreEntities.Business.Entities;
+using MoreLinq;
 using SimpleMvvmToolkit.ModelExtensions;
 using TrackableEntities;
 using TrackableEntities.Client;
@@ -215,7 +217,7 @@ namespace WaterNut.Business.Services.Utils
 
                 ImportRows(file, fileType, dic, dRows, header, table);
 
-
+                
                 ImportFile(file, fileType, overwrite, table);
             }
             catch (Exception e)
@@ -227,7 +229,8 @@ namespace WaterNut.Business.Services.Utils
 
         }
 
-        private static bool GetDataRows(FileInfo file, FileTypes fileType, out ConcurrentDictionary<int, string> table, out List<DataRow> dRows,
+        private static bool GetDataRows(FileInfo file, FileTypes fileType, out ConcurrentDictionary<int, string> table,
+            out List<DataRow> dRows,
             out DataRow header)
         {
             table = new ConcurrentDictionary<int, string>();
@@ -247,19 +250,21 @@ namespace WaterNut.Business.Services.Utils
 
             dt.Columns.Add("LineNumber", typeof(string));
 
-            LoadDataRows(fileType, dRows, dt);
-
-            RemoveDuplicateHeaders(fileType, dRows);
-
-            header = dRows[0];
+            header = dt.Rows[0];
             header["LineNumber"] = "LineNumber".ToUpper();
+            if (CheckMissingMappings(file, fileType, header)) return true;
+            // remove unmapped columns so that non mapped columns don't interfere with replicated rows
+            RemoveUnmappedColumns(fileType, header, dt);
 
-            RemoveUnmappedColumns(header, dt);
+            ReNameColumns(header);
 
+            LoadDataRows(fileType, dRows, dt);
+            
+            RemoveDuplicateHeaders(fileType, dRows);
+            
             AddLineNumbers(dRows);
 
-            
-            return CheckMissingMappings(file, fileType, header);
+            return false;
         }
 
         private static bool CheckMissingMappings(FileInfo file, FileTypes fileType, DataRow header)
@@ -274,10 +279,10 @@ namespace WaterNut.Business.Services.Utils
                 .ToList(); // !headerlst  (item.OriginalName.ToUpper())
             if (missingMaps.Any())
             {
-                EmailDownloader.EmailDownloader.SendEmail(BaseDataModel.GetClient(), null, $"Bug Found",
-                    new[] {"Joseph@auto-brokerage.com"},
-                    $"Required Field - '{missingMaps.Select(x => x.Key).Aggregate((o, n) => o + "," + n)}' in File: {file.Name} dose not exists.",
-                    Array.Empty<string>());
+                //EmailDownloader.EmailDownloader.SendEmail(BaseDataModel.GetClient(), null, $"Bug Found",
+                //    new[] {"Joseph@auto-brokerage.com"},
+                //    $"Required Field - '{missingMaps.Select(x => x.Key).Aggregate((o, n) => o + "," + n)}' in File: {file.Name} dose not exists.",
+                //    Array.Empty<string>());
                 return true;
             }
 
@@ -292,21 +297,27 @@ namespace WaterNut.Business.Services.Utils
             }
         }
 
-        private static void RemoveUnmappedColumns(DataRow header, DataTable dt)
+        private static void RemoveUnmappedColumns(FileTypes fileTypes, DataRow header, DataTable dt)
         {
             List<DataColumn> deleteColumns = new List<DataColumn>();
             for (int i = 0; i < header.ItemArray.Length - 1; i++)
             {
-                if (string.IsNullOrEmpty(header[i].ToString()))
-                {
-                    deleteColumns.Add(dt.Columns[i]);
-                    continue;
-                }
+                if (string.IsNullOrEmpty(header[i].ToString())) deleteColumns.Add(dt.Columns[i]);
 
-                header[i] = header[i].ToString().ToUpper().Trim();
+                if (fileTypes.FileTypeMappings.All(x =>
+                        x.OriginalName.ToUpper().Trim() != header[i].ToString().ToUpper().Trim()))
+                    deleteColumns.Add(dt.Columns[i]);
             }
 
-            deleteColumns.ForEach(x => dt.Columns.Remove(x));
+            deleteColumns.DistinctBy(x => x.ColumnName).ForEach(x => dt.Columns.Remove(x));
+        }
+
+        private static void ReNameColumns(DataRow header)
+        {
+            for (int i = 0; i < header.ItemArray.Length - 1; i++)
+            {
+                header[i] = header[i].ToString().ToUpper().Trim();
+            }
         }
 
         private static void RemoveDuplicateHeaders(FileTypes fileType, List<DataRow> dRows)
@@ -329,6 +340,8 @@ namespace WaterNut.Business.Services.Utils
             var headerRow = Enumerable.ToList<object>(dt.Rows[0].ItemArray);
             int drow_no = 0;
             DataRow currentReplicatedHeading = null;
+
+        
             while (drow_no < dt.Rows.Count)
             {
                 if (fileType.ReplicateHeaderRow == true)
@@ -355,8 +368,15 @@ namespace WaterNut.Business.Services.Utils
             List<object> headerRow, DataRow currentReplicatedHeading)
         {
             
-            if (fileType.FileTypeMappings.Where(x => x.Required).All(x =>
-                    !string.IsNullOrEmpty(dt.Rows[drow_no][headerRow.IndexOf(x.OriginalName)].ToString())))
+            if (((fileType.FileTypeMappings.Any(x => x.Required) 
+                  && fileType.FileTypeMappings.Where(x => x.Required).All(x => headerRow.IndexOf(x.OriginalName.ToUpper().Trim()) > -1 
+                                                                                && !string.IsNullOrEmpty(dt.Rows[drow_no][headerRow.IndexOf(x.OriginalName.ToUpper().Trim())].ToString())))
+                 ||
+                 (fileType.FileTypeMappings.All(x => !x.Required)
+                  && fileType.FileTypeMappings.Count(x => headerRow.IndexOf(x.OriginalName.ToUpper().Trim()) > -1 
+                                                                               && !string.IsNullOrEmpty(dt.Rows[drow_no][headerRow.IndexOf(x.OriginalName.ToUpper().Trim())].ToString())) == headerRow.Count()-1) //-1 for linenumber
+                 )
+                 )
             {
                 if (Enumerable.Count<object>(dt.Rows[drow_no].ItemArray, x => !string.IsNullOrEmpty(x.ToString())) >=
                     (fileType.FileTypeMappings.Any()
@@ -369,8 +389,8 @@ namespace WaterNut.Business.Services.Utils
             }
             else
             {
-                if (Enumerable.Count<object>(dt.Rows[drow_no].ItemArray, x => !string.IsNullOrEmpty(x.ToString())) >=
-                    (fileType.FileTypeMappings.Any() ? fileType.FileTypeMappings.Count(x => x.Required) : 1))
+                if (currentReplicatedHeading != null && Enumerable.Count<object>(dt.Rows[drow_no].ItemArray, x => !string.IsNullOrEmpty(x.ToString())) >=
+                    (fileType.FileTypeMappings.Any(x => x.Required) ? fileType.FileTypeMappings.Count(x => x.Required) : 1))
                 {
                     var row = dt.NewRow();
                     foreach (DataColumn col in dt.Columns)

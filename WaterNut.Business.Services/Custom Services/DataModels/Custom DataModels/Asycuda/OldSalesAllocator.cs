@@ -12,6 +12,7 @@ using WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModels.As
 using WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModels.Asycuda.GettingXcudaItems;
 using WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModels.Asycuda.SavingAllocations;
 using WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModels.BaseDataModel.GettingItemSets;
+using static sun.security.jca.GetInstance;
 
 namespace WaterNut.DataSpace
 {
@@ -49,14 +50,24 @@ namespace WaterNut.DataSpace
         public async Task AllocateSalesByMatchingSalestoAsycudaEntriesOnItemNumber(bool allocateToLastAdjustment,
             List<(string ItemNumber, int InventoryItemId)> itemSetLst)
         {
-            
-           var itemSets = await MatchSalestoAsycudaEntriesOnItemNumber(itemSetLst).ConfigureAwait(false);
-            StatusModel.StopStatusUpdate();
+            try
+            {
+                var itemSets = await MatchSalestoAsycudaEntriesOnItemNumber(itemSetLst).ConfigureAwait(false);
+                StatusModel.StopStatusUpdate();
 
-            var alloLst = await new SalesAllocator(itemSets.asycudaItems).AllocateSales(allocateToLastAdjustment, itemSets.itmLst.Values.Select(x => x).ToList()).ConfigureAwait(false);
-              
+                var alloLst = await new SalesAllocator(itemSets.asycudaItems)
+                    .AllocateSales(allocateToLastAdjustment, itemSets.itmLst.Values.Select(x => x).ToList())
+                    .ConfigureAwait(false);
 
-            SaveAllocations(alloLst);
+
+                SaveAllocations(alloLst);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+
         }
 
         private static void SaveAllocations(List<(List<EntryDataDetails> Sales, List<xcuda_Item> asycudaItems)> alloLst)
@@ -195,7 +206,9 @@ namespace WaterNut.DataSpace
 
         private static Dictionary<(string, string), InventoryItemAlias> GetInventoryItemAliases()
         {
-            return AllocationsBaseModel.Instance.InventoryAliasCache.Data.ToDictionary(k => (k.ItemNumber.ToUpper().Trim(), k.AliasName.ToUpper().Trim()), v => v);
+           // var duplicates = AllocationsBaseModel.Instance.InventoryAliasCache.Data.GroupBy(k => (k.ItemNumber.ToUpper(), k.AliasName.ToUpper())).Where(x => x.Count() > 1).ToList();
+           /// took out the trim in case of spaces lots of other comparisons include the space 
+            return AllocationsBaseModel.Instance.InventoryAliasCache.Data.ToDictionary(k => (k.ItemNumber.ToUpper(), k.AliasName.ToUpper()), v => v);
         }
 
         private static IEnumerable<InventoryItemAlias> GetLumpedItems()

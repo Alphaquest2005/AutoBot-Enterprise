@@ -14,9 +14,11 @@ using CoreEntities.Business.Entities;
 using DocumentDS.Business.Entities;
 using EntryDataDS.Business.Entities;
 using ExcelDataReader;
+using MoreLinq;
 using TrackableEntities;
 using WaterNut.Business.Services.Utils;
 using WaterNut.DataSpace;
+using Z.BulkOperations.Internal.InformationSchema;
 //using EntryDataDS.Business.Entities;
 using EntryDocSetUtils = WaterNut.DataSpace.EntryDocSetUtils;
 using FileTypes = CoreEntities.Business.Entities.FileTypes;
@@ -266,9 +268,11 @@ namespace WaterNut.Business.Services.Importers
                     a.Append("\n");
                     table.GetOrAdd(Convert.ToInt32(row["LineNumber"]), a.ToString());
                 });
-
-            var aggregate = table.OrderBy(x => x.Key).Select(x => x.Value).Aggregate((a, x) => a + x);
-            return aggregate;
+            var res = new StringBuilder();
+            //var aggregate = table.OrderBy(x => x.Key).Select(x => x.Value).Aggregate((a, x) => res.Append(x));
+            //return aggregate;
+            table.OrderBy(x => x.Key).Select(x => x.Value).ForEach(x => res.Append(x));
+            return res.ToString();
         }
 
         public static List<dynamic> DataRowToBetterExpando(FileTypes fileType, List<DataRow> rows, DataTable dataTable)
@@ -281,6 +285,9 @@ namespace WaterNut.Business.Services.Importers
                 var headers = new List<string>();
                 //Parallel.ForEach(rows, new ParallelOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount * 1 },
                 //  row =>
+
+                Importers.ValidateFileType.Execute(fileType);
+
                 foreach (var row in rows)
                 {
                     IDictionary<string, object> a = new BetterExpando();

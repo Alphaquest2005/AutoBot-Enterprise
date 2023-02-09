@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using InventoryDS.Business.Entities;
 using TrackableEntities;
 using TrackableEntities.Common;
@@ -25,9 +26,18 @@ namespace WaterNut.DataSpace
 
         public List<InventoryItemSource> SaveInventoryItemSource(List<InventoryItemSource> inventoryItemSource)
         {
-            new InventoryDSContext().BulkMerge(inventoryItemSource);
-            inventoryItemSource.ForEach(x => x.AcceptChanges());
-            return inventoryItemSource;
+            try
+            {
+                new InventoryDSContext().BulkMerge(inventoryItemSource);
+                inventoryItemSource.ForEach(x => x.AcceptChanges());
+                return inventoryItemSource;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+
         }
 
         public static InventoryItemSource CreateInventoryItemSource(InventorySource inventorySource, InventoryItem i)

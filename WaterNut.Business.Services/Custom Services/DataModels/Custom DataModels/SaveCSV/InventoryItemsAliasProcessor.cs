@@ -13,22 +13,39 @@ namespace WaterNut.DataSpace
 
         public void UpdateInventoryItems(List<RawEntryData> items)
         {
-            
-            var inventoryItms = items.SelectMany(GetInventoryItemWithAlias).ToList();
-
-            using (var ctx = new InventoryDSContext() { StartTracking = true })
+            try
             {
-                ctx.BulkMerge(inventoryItms, operation => operation.IncludeGraph = true);
+                var inventoryItms = items.SelectMany(GetInventoryItemWithAlias).ToList();
+
+                using (var ctx = new InventoryDSContext() { StartTracking = true })
+                {
+                    ctx.BulkMerge(inventoryItms, operation => operation.IncludeGraph = true);
+                }
             }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+
         }
+
         public void UpdateInventoryItems(
             RawEntryData item)
         {
-           var inventoryItms = GetInventoryItemWithAlias(item);
-
-            using (var ctx = new InventoryDSContext() { StartTracking = true })
+            try
             {
-                ctx.BulkMerge(inventoryItms, operation => operation.IncludeGraph = true);
+                var inventoryItms = GetInventoryItemWithAlias(item);
+
+                using (var ctx = new InventoryDSContext() { StartTracking = true })
+                {
+                    ctx.BulkMerge(inventoryItms, operation => operation.IncludeGraph = true);
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
             }
         }
 

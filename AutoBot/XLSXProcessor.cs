@@ -12,7 +12,7 @@ namespace AutoBotUtilities
 {
     public static class XLSXProcessor
     {
-        public static void Xlsx2csv(FileInfo[] files, FileTypes fileType, bool? overwrite = null )
+        public static void Xlsx2csv(FileInfo[] files, List<FileTypes> fileTypes, bool? overwrite = null )
         {
             try
             {
@@ -26,19 +26,21 @@ namespace AutoBotUtilities
 
                     var mainTable = result.Tables[0];
                     var rows = XLSXUtils.FixupDataSet(mainTable);
-                    var fileText = XLSXUtils.GetText(fileType, rows, result.Tables[0]);
 
-                    if (ProcessUnknownFileType(fileType, file, rows)) continue;
+                    foreach (var fileType in fileTypes)
+                    {
+                        var fileText = XLSXUtils.GetText(fileType, rows, result.Tables[0]);
 
-                    // all xlsx suppose to have child filetypes
-                    if (!fileType.ChildFileTypes.Any())
-                        throw new ApplicationException("XLSX Filetypes supposed to have children");
-                    
-                    var output = XLSXUtils.CreateCSVFile(file, fileText);
+                        if (ProcessUnknownFileType(fileType, file, rows)) continue;
 
-                   
+                        // all xlsx suppose to have child filetypes
+                        if (!fileType.ChildFileTypes.Any())
+                            throw new ApplicationException("XLSX Filetypes supposed to have children");
 
-                    XLSXUtils.FixCSVFile(fileType, overwrite, output);
+                        var output = XLSXUtils.CreateCSVFile(file, fileText);
+
+                        XLSXUtils.FixCSVFile(fileType, overwrite, output);
+                    }
                 }
 
             }

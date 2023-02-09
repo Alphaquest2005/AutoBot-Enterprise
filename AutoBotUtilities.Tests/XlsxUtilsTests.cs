@@ -138,7 +138,7 @@ namespace AutoBotUtilities.Tests
             }
         }
         [Test]
-        public void CanImportXSLXUnknownFile()
+        public void CanImportXSLXUnknownFile_Discrepancy()
         {
             try
             {
@@ -169,7 +169,37 @@ namespace AutoBotUtilities.Tests
             }
         }
 
+        [Test]
+        public void CanImportXSLXUnknownFile_Sales()
+        {
+            try
+            {
+                if (!Infrastructure.Utils.IsTestApplicationSettings()) Assert.IsTrue(true);
+                var testFile = Infrastructure.Utils.GetTestSalesFile(new List<string>() { "July-Sept 2020.xlsx" });
+                var fileTypes = FileTypeManager.GetImportableFileType(FileTypeManager.EntryTypes.Sales, FileTypeManager.FileFormats.Xlsx, testFile);
+                foreach (var fileType in fileTypes)
+                {
+                    new FileTypeImporter(fileType).Import(testFile);
 
+                }
+
+                using (var ctx = new EntryDataDSContext())
+                {
+                    Assert.Multiple(() =>
+                    {
+                        Assert.AreEqual(6961, ctx.EntryData.Where(x => x.SourceFile == testFile).Count());
+                        Assert.AreEqual(17958, ctx.EntryDataDetails.Count(x => x.EntryData.SourceFile == testFile));
+                    });
+                }
+
+                //Assert.IsTrue(true);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                Assert.IsTrue(false);
+            }
+        }
 
     }
 

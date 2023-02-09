@@ -26,7 +26,7 @@ namespace AutoBot
                 {"AssessPOEntry",(ft, fs) => POUtils.AssessPOEntry(ft.DocReference, ft.AsycudaDocumentSetId)},
                 {"EmailPOEntries",(ft, fs) => POUtils.EmailPOEntries(ft.AsycudaDocumentSetId) },
                 {"DownloadSalesFiles",(ft, fs) => EX9Utils.DownloadSalesFiles(10, "IM7History",false) },
-                {"Xlsx2csv",(ft, fs) => XLSXProcessor.Xlsx2csv(fs, ft) },
+                {"Xlsx2csv",(ft, fs) => XLSXProcessor.Xlsx2csv(fs, new List<FileTypes>(){ft}) },
                 {"SaveInfo",(ft, fs) => EmailTextProcessor.Execute(fs, ft) },
                 {"CleanupEntries",(ft, fs) => EntryDocSetUtils.CleanupEntries() },
                 {"SubmitToCustoms",(ft, fs) => SubmitSalesXmlToCustomsUtils.SubmitSalesXMLToCustoms(-1) },

@@ -24,9 +24,10 @@ namespace WaterNut.DataSpace
 
         private  void SaveAllocations((List<AsycudaSalesAllocations> allocations, List<EntryDataDetails> entryDataDetails, List<xcuda_Item> pItems) allocations)
         {
-            new SaveAllocationSQL().SaveAllocations(allocations.allocations);
-            new SaveAllocationSQL().SaveEntryDataDetails(allocations.entryDataDetails);
-            new SaveAllocationSQL().SaveXcudaItems(allocations.pItems);
+            //new SaveAllocationSQL().SaveAllocations(allocations.allocations);
+            //new SaveAllocationSQL().SaveEntryDataDetails(allocations.entryDataDetails);
+            //new SaveAllocationSQL().SaveXcudaItems(allocations.pItems);
+            new SaveAllocationSQL().SaveAllocations(allocations);
         }
     }
 }

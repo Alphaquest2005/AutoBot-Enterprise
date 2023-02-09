@@ -808,6 +808,9 @@
     <Compile Include="Custom Contracts\Custom Contracts\AdjustmentQS\IAdjustmentShortService.cs" />
     <Compile Include="Custom Services\AdjustmentQS\AdjustmentOverService.cs" />
     <Compile Include="Custom Services\AdjustmentQS\AdjustmentShortService.cs" />
+    <Compile Include="Custom Services\AdjustmentQS\GettingEx9AllocationsList\getEx9AllocationsRefactored.cs" />
+    <Compile Include="Custom Services\AdjustmentQS\GettingEx9AllocationsList\getEx9AllocationsList.cs" />
+    <Compile Include="Custom Services\AdjustmentQS\GettingEx9AllocationsList\IgetEx9AllocationsListProcessor.cs" />
     <Compile Include="Custom Services\DataModels\Custom DataModels\Asycuda\AllocatingSales\AllocateSalesChain.cs" />
     <Compile Include="Custom Services\DataModels\Custom DataModels\Asycuda\AllocatingSales\AllocateSales.cs" />
     <Compile Include="Custom Services\DataModels\Custom DataModels\Asycuda\AllocatingPreAllocations\AllocatePreAllocationsTasks.cs" />
@@ -953,6 +956,7 @@
     <Compile Include="Importers\IDataSetProcessor.cs" />
     <Compile Include="Importers\ImportSettings.cs" />
     <Compile Include="Importers\MisMatchesProcessor.cs" />
+    <Compile Include="Importers\ValidateFileType.cs" />
     <Compile Include="Importers\XlsxEntryDataProcessor.cs" />
     <Compile Include="Importers\XLSXUtils.cs" />
     <Compile Include="Services\AllocationDS\AdjustmentShortAllocationsService.cs" />

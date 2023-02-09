@@ -14,10 +14,11 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
             ConcurrentDictionary<(string ItemNumber, int InventoryItemId),
                 List<(string ItemNumber, int InventoryItemId)>> _itemSets = null;
 
-        static GetItemSetsMem()
+        public GetItemSetsMem()
         {
             lock (Identity)
             {
+                if(_itemSets == null)
                 using (var ctx = new AllocationDSContext() { StartTracking = false })
                 {
                     var lst = ctx.InventoryItems
@@ -26,7 +27,7 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
                         .Where(x => x.ApplicationSettingsId == DataSpace.BaseDataModel.Instance
                             .CurrentApplicationSettings.ApplicationSettingsId)
                         .Where(x => !string.IsNullOrEmpty(x.ItemNumber))
-                        .Where(x => x.ItemNumber.Substring(3, 1) == "/")
+                        ///.Where(x => x.ItemNumber.Substring(3, 1) == "/")
                         .ToList()
                         .GroupBy(x => (ItemNumber: x.ItemNumber.ToUpper().Trim(), x.InventoryItemId))
                         .Select(g =>
@@ -47,6 +48,7 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
                         new ConcurrentDictionary<(string ItemNumber, int InventoryItemId),
                             List<(string ItemNumber, int InventoryItemId)>>(lst);
                 }
+                
             }
         }
 
@@ -54,7 +56,7 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
 
         public List<List<(string ItemNumber, int InventoryItemId)>> Execute(string lst)
         {
-            if (lst == null)
+            if (string.IsNullOrEmpty(lst))
             {
                 return _itemSets
                     .Select(x => x.Value)

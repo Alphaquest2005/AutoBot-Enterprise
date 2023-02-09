@@ -27,7 +27,7 @@ namespace WaterNut.DataSpace
             EntryData entryData;
             dynamic EDadj = Create(docSet, item, applicationSettingsId, entryDataId);
             entryData = await CreateAdjustments(EDadj).ConfigureAwait(false);
-            new AddToDocSetSelector().Execute(docSet, EDadj);
+            
             return entryData;
         }
 
@@ -63,7 +63,8 @@ namespace WaterNut.DataSpace
                     DocumentType = item.EntryData.DocumentType,
                     TrackingState = TrackingState.Added
                 };
-            
+
+            new AddToDocSetSelector().Execute(docSet, EDadj);
             return EDadj;
         }
 

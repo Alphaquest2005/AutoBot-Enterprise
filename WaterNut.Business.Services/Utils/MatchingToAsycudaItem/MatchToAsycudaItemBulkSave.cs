@@ -28,7 +28,7 @@ namespace WaterNut.Business.Services.Utils.MatchingToAsycudaItem
             /// took PiQuantity out because then entries can exist already and this just preventing it from relinking
             /// 
 
-            ed.EffectiveDate = alst.FirstOrDefault().AsycudaDocument.AssessmentDate;
+            ed.EffectiveDate = alst.FirstOrDefault()?.AsycudaDocument.AssessmentDate;
             minEffectiveDate = ed.EffectiveDate;
             if (alst.Select(x => x.ItemQuantity.GetValueOrDefault() - x.DFQtyAllocated.GetValueOrDefault()).Sum() <
                 remainingShortQty)
@@ -58,7 +58,7 @@ namespace WaterNut.Business.Services.Utils.MatchingToAsycudaItem
             }
 
 
-            if (remainingShortQty < 0)
+            if (remainingShortQty < 0 && alst.Any())
             {
                 ed.AdjustmentOversAllocations.Add(new AdjustmentOversAllocation(true)
                 {
@@ -149,7 +149,10 @@ namespace WaterNut.Business.Services.Utils.MatchingToAsycudaItem
 
         private static void SaveAsycudaSalesAllocation(AsycudaSalesAllocation osa)
         {
-            new AdjustmentQSContext().BulkUpdate(new List<AsycudaSalesAllocation>() { osa });
+            if (osa.AllocationId == 0)
+                new AdjustmentQSContext().BulkInsert(new List<AsycudaSalesAllocation>() { osa });
+            else
+                new AdjustmentQSContext().BulkMerge(new List<AsycudaSalesAllocation>() { osa });
             //using (var ctx = new AdjustmentQSContext() { StartTracking = false })
             //{
             //    ctx.Database.CommandTimeout = 10;

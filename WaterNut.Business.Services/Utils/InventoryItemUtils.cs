@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Core.Common.Data;
 using CoreEntities.Business.Entities;
 using InventoryDS.Business.Entities;
+using MoreLinq;
 using WaterNut.DataSpace;
 using WaterNut.Interfaces;
 
@@ -58,6 +59,7 @@ namespace WaterNut.Business.Services.Utils
         public static List<InventoryItem> GetInventoryItems(List<string> itemNumbers) =>
             itemNumbers.Select(itemNumber => GetInventoryItemsCache(BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId, false).FirstOrDefault(x => x.ItemNumber == itemNumber && x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId))
                 .Where(x => x != null)
+                .DistinctBy(x => x.Id)
                 .ToList();
 
         public static InventorySource GetInventorySource(FileTypes fileType)

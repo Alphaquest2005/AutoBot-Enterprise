@@ -1,4 +1,5 @@
-﻿using System.Collections.Concurrent;
+﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using InventoryDS.Business.Entities;
@@ -31,9 +32,17 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
 
         private InventoryItem SaveInventoryItems(InventoryItem itm)
         {
-            new InventoryDSContext().BulkMerge(new List<InventoryItem>(){itm});
-            itm.AcceptChanges();
-            return itm;
+            try
+            {
+                new InventoryDSContext().BulkMerge(new List<InventoryItem>() { itm });
+                itm.AcceptChanges();
+                return itm;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
         }
 
         private InventoryItem CreateInventoryItem(string itemNumber) =>

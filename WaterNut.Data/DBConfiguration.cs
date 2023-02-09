@@ -17,7 +17,7 @@ namespace WaterNut.Data
             try
             {
                 SetExecutionStrategy("System.Data.SqlClient",
-                    () => new DBExecutionStrategy(5, new TimeSpan(0, 0, 0, 5)));
+                    () => new DBExecutionStrategy(25, new TimeSpan(0, 0, 0, 5)));
 
             }
             catch (Exception e)

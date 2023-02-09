@@ -5,6 +5,7 @@ using AllocationDS.Business.Entities;
 using AllocationQS.Business.Entities;
 using Core.Common.Utils;
 using EntryDataDS.Business.Entities;
+using WaterNut.Business.Services.Custom_Services.AdjustmentQS.GettingEx9AllocationsList;
 using WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModels.Asycuda.AllocatingSales;
 using WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModels.Asycuda.GettingEntryDataDetails;
 using WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModels.Asycuda.GettingXcudaItems;
@@ -485,6 +486,30 @@ namespace AutoBotUtilities.Tests
                 Assert.IsTrue(false);
             }
         }
+
+        [Test]
+        //[Timeout(3 * 1000 * 60)]
+        public void getEx9AllocationsRefactored()
+        {
+            try
+            {
+                if (!Infrastructure.Utils.IsTestApplicationSettings()) Assert.IsTrue(true);
+                var timer = new System.Diagnostics.Stopwatch();
+                timer.Start();
+                var lst = new getEx9AllocationsRefactored().Execute("TOH/MTSX018S");
+                timer.Stop();
+                Console.Write("getEx9AllocationsRefactored in seconds: " + timer.Elapsed.TotalSeconds);
+                Assert.That(lst.Any(), Is.True);
+
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                Assert.IsTrue(false);
+            }
+        }
+
+     
 
     }
 }

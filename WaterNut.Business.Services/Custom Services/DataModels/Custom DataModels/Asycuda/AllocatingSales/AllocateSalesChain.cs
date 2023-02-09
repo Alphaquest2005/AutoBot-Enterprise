@@ -21,7 +21,7 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
 
                 AllocationsBaseModel.PrepareDataForAllocation(applicationSettings);
               
-                var itemSets = DataSpace.BaseDataModel.GetItemSets(lst);
+                var itemSets = DataSpace.BaseDataModel.GetItemSets(lst).OrderByDescending(x => x.Count());
                
                 itemSets
                     .AsParallel()

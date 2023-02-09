@@ -118,6 +118,7 @@ namespace WaterNut.DataSpace
                 {"pLineNumber", "PreviousDocumentItem.LineNumber"},
                 {"PreviousItem_Id == 0", "PreviousItem_Id == null"},
                 {"(ApplicationSettingsId", "(EntryDataDetails.EntryData.ApplicationSettingsId"},
+                
             };
 
 

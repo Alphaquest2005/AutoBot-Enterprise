@@ -97,9 +97,10 @@ namespace AdjustmentQS.Business.Services
 
                 itemGrps.SelectMany(x => x.ToList())
                     .AsParallel()
-                    .WithDegreeOfParallelism(Convert.ToInt32(Environment.ProcessorCount *
-                                                             BaseDataModel.Instance.ResourcePercentage))
-                    .ForAll(async l => await AutoMatch(applicationSettingsId, l).ConfigureAwait(false));
+                    .WithDegreeOfParallelism(1)
+                    //.WithDegreeOfParallelism(Convert.ToInt32(Environment.ProcessorCount *
+                    //                                         BaseDataModel.Instance.ResourcePercentage))
+                    .ForAll(l => AutoMatch(applicationSettingsId, l).Wait());
 
             }
             catch (Exception e)
@@ -213,9 +214,10 @@ namespace AdjustmentQS.Business.Services
                 if (!lst.Any()) return;
                 StatusModel.StartStatusUpdate("Matching Shorts To Asycuda Entries", lst.Count());
 
-                var edLst = ParallelEnumerable.Select<AdjustmentDetail, EntryDataDetail>(lst
+                var edLst = lst
+                    //ParallelEnumerable.Select<AdjustmentDetail, EntryDataDetail>(lst
                         .Where(x => !string.IsNullOrEmpty(x.ItemNumber))
-                        .AsParallel(), s =>  AutoMatchItemNumber(s).Result)
+                    .Select(s =>  AutoMatchItemNumber(s).Result)
                     .ToList();
                
 

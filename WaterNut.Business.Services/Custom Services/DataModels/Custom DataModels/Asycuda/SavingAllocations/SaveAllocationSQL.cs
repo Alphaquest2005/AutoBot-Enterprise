@@ -11,26 +11,77 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
 {
     public class SaveAllocationSQL : ISaveAllocationSQLProcessor
     {
+        //public void SaveAllocations(List<List<KeyValuePair<int, (List<ExistingAllocations> ExistingAllocations, List<EntryDataDetails> EntryDataDetails, List<xcuda_Item> XcudaItems, List<AsycudaSalesAllocations> dbAllocations)>>> alloLst)
+        //{
+        //    var allocations = alloLst.SelectMany(x => x.Select(z => z.Value.dbAllocations.ToList()).ToList()).SelectMany(x => x.ToList());
+        //    SaveAllocations(allocations);
+
+        //    var entryDataDetails = alloLst.SelectMany(x => x.Select(z => z.Value.EntryDataDetails.ToList()).ToList()).SelectMany(x => x.ToList());
+        //    SaveEntryDataDetails(entryDataDetails);
+
+        //    var xCudaItems = alloLst.SelectMany(x => x.Select(z => z.Value.XcudaItems.ToList()).ToList()).SelectMany(x => x.ToList());
+        //    SaveXcudaItems(xCudaItems);
+        //}
+
         public void SaveAllocations(List<List<KeyValuePair<int, (List<ExistingAllocations> ExistingAllocations, List<EntryDataDetails> EntryDataDetails, List<xcuda_Item> XcudaItems, List<AsycudaSalesAllocations> dbAllocations)>>> alloLst)
         {
+            var sql = "";
             var allocations = alloLst.SelectMany(x => x.Select(z => z.Value.dbAllocations.ToList()).ToList()).SelectMany(x => x.ToList());
-            SaveAllocations(allocations);
-
+            sql += allocations.Select(a => SaveAllocationSql(a)).DefaultIfEmpty("").Aggregate((o, n) => $"{o}\r\n{n}");
+            
             var entryDataDetails = alloLst.SelectMany(x => x.Select(z => z.Value.EntryDataDetails.ToList()).ToList()).SelectMany(x => x.ToList());
-            SaveEntryDataDetails(entryDataDetails);
-
+            sql += entryDataDetails
+                .Select(a => SaveEntryDataDetailsSql(a)).DefaultIfEmpty("").Aggregate((o, n) => $"{o}\r\n{n}");
+            
             var xCudaItems = alloLst.SelectMany(x => x.Select(z => z.Value.XcudaItems.ToList()).ToList()).SelectMany(x => x.ToList());
-            SaveXcudaItems(xCudaItems);
+            sql += xCudaItems.Select(a => SaveAsycudaItemSql(a)).DefaultIfEmpty("").Aggregate((o, n) => $"{o}\r\n{n}");
+
+            SaveSql(sql);
         }
+
+        //public void SaveAllocations(List<(List<EntryDataDetails> Sales, List<xcuda_Item> asycudaItems)> alloLst)
+        //{
+
+        //    SaveAllocations(alloLst.SelectMany(z => z.Sales.Select(s => s.AsycudaSalesAllocations.ToList())).SelectMany(x => x.ToList()).ToList());
+        //    SaveEntryDataDetails(alloLst.SelectMany(e => e.Sales.ToList()));
+        //    SaveXcudaItems(alloLst.SelectMany(e => e.asycudaItems.ToList()));
+        //}
 
         public void SaveAllocations(List<(List<EntryDataDetails> Sales, List<xcuda_Item> asycudaItems)> alloLst)
         {
-            SaveAllocations(alloLst.SelectMany(z => z.Sales.Select(s => s.AsycudaSalesAllocations.ToList())).SelectMany(x => x.ToList()).ToList());
-            SaveEntryDataDetails(alloLst.SelectMany(e => e.Sales.ToList()));
-            SaveXcudaItems(alloLst.SelectMany(e => e.asycudaItems.ToList()));
+            var sql = "";
+            // Allocations
+            sql += alloLst
+                    .SelectMany(z => z.Sales.Select(s => s.AsycudaSalesAllocations.ToList()))
+                    .SelectMany(x => x.ToList())
+                    .ToList()
+                    .Select(a => SaveAllocationSql(a)).DefaultIfEmpty("").Aggregate((o, n) => $"{o}\r\n{n}");
+
+            sql += alloLst.SelectMany(e => e.Sales.ToList()).DistinctBy(a => a.EntryDataDetailsId)
+                .Select(a => SaveEntryDataDetailsSql(a)).DefaultIfEmpty("").Aggregate((o, n) => $"{o}\r\n{n}");
+
+            sql += alloLst.SelectMany(e => e.asycudaItems.ToList()).DistinctBy(a => a.Item_Id)
+                .Select(a => SaveAsycudaItemSql(a)).DefaultIfEmpty("").Aggregate((o, n) => $"{o}\r\n{n}");
+
+            SaveSql(sql);
         }
 
-       
+        public void SaveAllocations((List<AsycudaSalesAllocations> allocations, List<EntryDataDetails> entryDataDetails, List<xcuda_Item> pItems) alloLst)
+        {
+            var sql = "";
+            sql += alloLst.allocations
+                .Select(a => SaveAllocationSql(a)).DefaultIfEmpty("").Aggregate((o, n) => $"{o}\r\n{n}");
+
+            sql += alloLst.entryDataDetails
+                .Select(a => SaveEntryDataDetailsSql(a)).DefaultIfEmpty("").Aggregate((o, n) => $"{o}\r\n{n}");
+
+            sql += alloLst.pItems
+                .Select(a => SaveAsycudaItemSql(a)).DefaultIfEmpty("").Aggregate((o, n) => $"{o}\r\n{n}");
+
+            SaveSql(sql);
+        }
+
+
         public  void SaveXcudaItems(IEnumerable<xcuda_Item> xCudaItems)
         {
             //xCudaItems
@@ -92,7 +143,7 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
                 {
                     try
                     {
-                       new AllocationDSContext {StartTracking = false}.Database.ExecuteSqlCommand(TransactionalBehavior.EnsureTransaction, sql);
+                       new AllocationDSContext {StartTracking = false}.Database.ExecuteSqlCommand(TransactionalBehavior.DoNotEnsureTransaction, sql);
                        break;
                     }
                     catch (SqlException e) // This example is for SQL Server, change the exception type/logic if you're using another DBMS
@@ -145,6 +196,7 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
 															where	item_id = {cAsycudaItm.Item_Id};";
           
         }
+
 
        
     }
