@@ -471,6 +471,11 @@ namespace WaterNut.DataSpace
 
 
             cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.Description = ads.Description;
+            cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.IsManuallyAssessed = false;
+            cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.AutoUpdate = false;
+            cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.DoNotAllocate = false;
+            cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.ImportComplete = false;
+            cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.Cancelled = false;
 
 
             using (var ctx = new DocumentDSContext())
