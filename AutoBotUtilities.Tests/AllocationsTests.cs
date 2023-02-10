@@ -131,8 +131,10 @@ namespace AutoBotUtilities.Tests
                 var timer = new System.Diagnostics.Stopwatch();
 
                 var itemSets = BaseDataModel.GetItemSets(itemNumber);
-
-                AllocationsModel.Instance.ClearItemSetAllocations(itemSets).Wait();
+                if(string.IsNullOrEmpty(itemNumber) )
+                    AllocationsModel.Instance.ClearAllAllocations(BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId).Wait();
+                else
+                    AllocationsModel.Instance.ClearItemSetAllocations(itemSets).Wait();
 
                 timer.Start();
                 new AllocateSalesChain().Execute(BaseDataModel.Instance.CurrentApplicationSettings, false, itemSets);
