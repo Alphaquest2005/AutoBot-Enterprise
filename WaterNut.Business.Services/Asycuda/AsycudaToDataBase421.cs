@@ -200,6 +200,12 @@ namespace WaterNut.DataSpace.Asycuda
             da.Document.xcuda_ASYCUDA_ExtendedProperties.AsycudaDocumentSet = ads;
             //await BaseDataModel.Instance.SaveDocumentCT(da).ConfigureAwait(false);
 
+            da.Document.xcuda_ASYCUDA_ExtendedProperties.IsManuallyAssessed = false;
+            da.Document.xcuda_ASYCUDA_ExtendedProperties.AutoUpdate = false;
+            da.Document.xcuda_ASYCUDA_ExtendedProperties.DoNotAllocate = false;
+            da.Document.xcuda_ASYCUDA_ExtendedProperties.ImportComplete = false;
+            da.Document.xcuda_ASYCUDA_ExtendedProperties.Cancelled = false;
+
             return da;
         }
 
