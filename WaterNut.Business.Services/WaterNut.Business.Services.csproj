@@ -864,6 +864,7 @@
     <Compile Include="Custom Services\DataModels\Custom DataModels\BaseDataModel\GettingItemSets\GetItemSetsMem.cs" />
     <Compile Include="Custom Services\DataModels\Custom DataModels\BaseDataModel\GettingItemSets\GetItemSets.cs" />
     <Compile Include="Custom Services\DataModels\Custom DataModels\BaseDataModel\GettingItemSets\IGetItemSetsProcessor.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\GetEx9AsycudaSalesAllocations.cs" />
     <Compile Include="Custom Services\DataModels\Custom DataModels\PDF2TXT\Invoice.cs" />
     <Compile Include="Custom Services\DataModels\Custom DataModels\PDF2TXT\InvoiceLine.cs" />
     <Compile Include="Custom Services\DataModels\Custom DataModels\PDF2TXT\Line.cs" />

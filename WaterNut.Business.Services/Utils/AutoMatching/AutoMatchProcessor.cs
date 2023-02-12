@@ -97,9 +97,9 @@ namespace AdjustmentQS.Business.Services
 
                 itemGrps.SelectMany(x => x.ToList())
                     .AsParallel()
-                    .WithDegreeOfParallelism(1)
-                    //.WithDegreeOfParallelism(Convert.ToInt32(Environment.ProcessorCount *
-                    //                                         BaseDataModel.Instance.ResourcePercentage))
+                    //.WithDegreeOfParallelism(1)
+                    .WithDegreeOfParallelism(Convert.ToInt32(Environment.ProcessorCount *
+                                                             BaseDataModel.Instance.ResourcePercentage))
                     .ForAll(l => AutoMatch(applicationSettingsId, l).Wait());
 
             }

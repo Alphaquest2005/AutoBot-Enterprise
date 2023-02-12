@@ -340,7 +340,7 @@ namespace WaterNut.DataSpace
 
                 return sb.ToString();
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 //Console.WriteLine(e);
                 //throw;

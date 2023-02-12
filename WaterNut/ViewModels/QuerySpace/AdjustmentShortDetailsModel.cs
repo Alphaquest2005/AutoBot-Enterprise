@@ -57,7 +57,7 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
             {
 
                 vloader.FilterExpression = $"EntryDataId == \"{e.Data.InvoiceNo.ToString()}\" " +
-                                           $"&& AsycudaDocumentSetId == \"{CoreEntities.ViewModels.BaseViewModel.Instance?.CurrentAsycudaDocumentSetEx.AsycudaDocumentSetId}\"";
+                                           $"&& AsycudaDocumentSetId == \"{CoreEntities.ViewModels.BaseViewModel.Instance?.CurrentAsycudaDocumentSetEx?.AsycudaDocumentSetId}\"";
             }
 
             AdjustmentShorts.Refresh();

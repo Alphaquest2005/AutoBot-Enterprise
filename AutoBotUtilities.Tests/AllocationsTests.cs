@@ -31,7 +31,7 @@ namespace AutoBotUtilities.Tests
         [SetUp]
         public void SetUp()
         {
-            Infrastructure.Utils.SetTestApplicationSettings(2);
+            Infrastructure.Utils.SetTestApplicationSettings(BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId);
             Infrastructure.Utils.ClearDataBase();
             _testClass = new AllocationsBaseModel();
         }
