@@ -2905,7 +2905,7 @@ namespace WaterNut.DataSpace
                 i.xcuda_ASYCUDA_ExtendedProperties.EffectiveRegistrationDate =
                     asycudaDocument.EffectiveRegistrationDate;
             if (i.xcuda_ASYCUDA_ExtendedProperties.DoNotAllocate != asycudaDocument.DoNotAllocate)
-                i.xcuda_ASYCUDA_ExtendedProperties.DoNotAllocate = asycudaDocument.DoNotAllocate;
+                i.xcuda_ASYCUDA_ExtendedProperties.DoNotAllocate = asycudaDocument.DoNotAllocate ?? false;
             if (i.xcuda_ASYCUDA_ExtendedProperties.ModifiedProperties != null)
             {
                await Save_xcuda_ASYCUDA(i).ConfigureAwait(false);

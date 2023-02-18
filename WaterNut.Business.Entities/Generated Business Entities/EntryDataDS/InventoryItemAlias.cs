@@ -51,21 +51,6 @@ namespace EntryDataDS.Business.Entities
         }
         int _inventoryitemid;
         [DataMember]
-        public string AliasName 
-        {
-            get
-            {
-                return _aliasname;
-            }
-            set
-            {
-                _aliasname = value;
-                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
-                NotifyPropertyChanged();
-            }
-        }
-        string _aliasname;
-        [DataMember]
         public int AliasItemId 
         {
             get

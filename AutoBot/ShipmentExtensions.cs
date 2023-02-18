@@ -1129,19 +1129,30 @@ namespace AutoBotUtilities
                             TrackingState = TrackingState.Added
                         });
 
+                        var bl = masterShipment.ShipmentAttachedBL.FirstOrDefault(x =>
+                            x.ShipmentBL.EmailId == masterShipment.EmailId)?.ShipmentBL;
+                        if (bl != null)
+                            attachments.Add(new Attachments
+                            {
+                                FilePath = bl.SourceFile,
+                                DocumentCode = "BL10",
+                                Reference = bl.BLNumber,
+                                TrackingState = TrackingState.Added
+                            });
+
                         var shipment = new Shipment
                         {
                             ShipmentName = client.Key.Code.Split(' ').FirstOrDefault(),
-                            ManifestNumber = manifests.LastOrDefault()?.RegistrationNumber,
-                            BLNumber = manifests.LastOrDefault()?.WayBill,
-                            WeightKG = client.Sum(x => x.GrossWeightKg),
+                            ManifestNumber = manifests.LastOrDefault()?.RegistrationNumber ,
+                            BLNumber = manifests.LastOrDefault()?.WayBill ?? bl?.BLNumber,
+                            WeightKG = bl?.WeightKG ?? client.Sum(x => x.GrossWeightKg) ,
                             Currency = "USD", //invoices.Select(x => x.Currency).FirstOrDefault() ??
                             ExpectedEntries = invoices.Count(x =>
                                 (x.ShipmentRiderInvoice.FirstOrDefault()
                                     ?.Packages ?? 0) > 0),
                             TotalInvoices = invoices.Select(x => x.Id).Count(),
                             FreightCurrency = freightInvoices.LastOrDefault()?.Currency ?? "USD",
-                            Freight = freightInvoices.LastOrDefault()?.InvoiceTotal,
+                            Freight =  bl?.Freight ?? freightInvoices.LastOrDefault()?.InvoiceTotal,
                             Origin = "US",
                             Packages = client.Sum(x => x.Pieces),
                             Location = manifests.LastOrDefault()?.LocationOfGoods,
@@ -1273,20 +1284,31 @@ namespace AutoBotUtilities
                     TrackingState = TrackingState.Added
                 }));
 
+                var bl = masterShipment.ShipmentAttachedBL.FirstOrDefault(x =>
+                    x.ShipmentBL.EmailId == masterShipment.EmailId)?.ShipmentBL;
+                if(bl != null)
+                    attachments.Add(new Attachments
+                    {
+                        FilePath = bl.SourceFile,
+                        DocumentCode = "BL10",
+                        Reference = bl.BLNumber,
+                        TrackingState = TrackingState.Added
+                    });
+
 
                 var shipment = new Shipment
                 {
                     ShipmentName = "NextShipment",
                     ManifestNumber = manifests.LastOrDefault()?.RegistrationNumber,
-                    BLNumber = manifests.LastOrDefault()?.WayBill,
-                    WeightKG = manifests.LastOrDefault()?.GrossWeightKG,
+                    BLNumber = manifests.LastOrDefault()?.WayBill?? bl?.BLNumber,
+                    WeightKG = manifests.LastOrDefault()?.GrossWeightKG ?? bl?.WeightKG,
                     Currency = invoices.Select(x => x.Currency).FirstOrDefault() ?? "USD", //
                     ExpectedEntries = invoices.Count(),
                     TotalInvoices = invoices.Select(x => x.Id).Count(),
                     FreightCurrency = freightInvoices.LastOrDefault()?.Currency ?? "USD",
-                    Freight = freightInvoices.LastOrDefault()?.InvoiceTotal,
+                    Freight = freightInvoices.LastOrDefault()?.InvoiceTotal ?? bl?.Freight,
                     Origin = "US",
-                    Packages = 0,
+                    Packages = bl?.PackagesNo ?? 0,
                     Location = manifests.LastOrDefault()?.LocationOfGoods,
                     Office = manifests.LastOrDefault()?.CustomsOffice,
                     TrackingState = TrackingState.Added

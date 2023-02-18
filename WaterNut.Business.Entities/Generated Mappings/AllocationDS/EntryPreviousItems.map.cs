@@ -18,6 +18,7 @@
               this.Property(t => t.EntryPreviousItemId).HasColumnName("EntryPreviousItemId").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.Identity));
               this.HasRequired(t => t.xcuda_Item).WithMany(t =>(ICollection<EntryPreviousItems>) t.EntryPreviousItems).HasForeignKey(d => d.Item_Id);
               this.HasRequired(t => t.xcuda_PreviousItem).WithMany(t =>(ICollection<EntryPreviousItems>) t.EntryPreviousItems).HasForeignKey(d => d.PreviousItem_Id);
+              this.HasRequired(t => t.PreviousItemsEx).WithMany(t =>(ICollection<EntryPreviousItems>) t.EntryPreviousItems).HasForeignKey(d => d.PreviousItem_Id);
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);
     			this.Ignore(t => t.ModifiedProperties);

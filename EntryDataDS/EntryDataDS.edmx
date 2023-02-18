@@ -220,7 +220,6 @@
           </Key>
           <Property Name="AliasId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="InventoryItemId" Type="int" Nullable="false" />
-          <Property Name="AliasName" Type="nvarchar" MaxLength="20" Nullable="false" />
           <Property Name="AliasItemId" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="InventoryItems">
@@ -1129,6 +1128,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ShipmentPOs' does not hav
             
             
             
+            <PropertyRef Name="EmailDate" />
           </Key>
           <Property Name="EntryData_Id" Type="int" Nullable="false" />
           <Property Name="InvoiceNo" Type="nvarchar" MaxLength="50" Nullable="false" />
@@ -1140,6 +1140,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ShipmentPOs' does not hav
           <Property Name="EmailId" Type="nvarchar" MaxLength="255" />
           <Property Name="SourceFile" Type="nvarchar(max)" />
           <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
+          <Property Name="EmailDate" Type="datetime" Nullable="false" />
         </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ShipmentRiderBLs' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
@@ -2266,7 +2267,8 @@ FROM [dbo].[ShipmentMIS-POs] AS [ShipmentMIS-POs]</DefiningQuery>
 [ShipmentPOs].[SupplierCode] AS [SupplierCode], 
 [ShipmentPOs].[EmailId] AS [EmailId], 
 [ShipmentPOs].[SourceFile] AS [SourceFile], 
-[ShipmentPOs].[ApplicationSettingsId] AS [ApplicationSettingsId]
+[ShipmentPOs].[ApplicationSettingsId] AS [ApplicationSettingsId], 
+[ShipmentPOs].[EmailDate] AS [EmailDate]
 FROM [dbo].[ShipmentPOs] AS [ShipmentPOs]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="ShipmentRiderBLs" EntityType="Self.ShipmentRiderBLs" store:Type="Views" store:Schema="dbo">
@@ -4560,7 +4562,6 @@ FROM [dbo].[ShipmentRiderManifests] AS [ShipmentRiderManifests]</DefiningQuery>
           </Key>
           <Property Name="AliasId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="InventoryItemId" Type="Int32" Nullable="false" />
-          <Property Name="AliasName" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Name="AliasItemId" Type="Int32" Nullable="false" />
           <NavigationProperty Name="InventoryItem" Relationship="WaterNutDBModel.FK_InventoryItemAlias_InventoryItems" FromRole="InventoryItemAlias" ToRole="InventoryItems" />
           <NavigationProperty Name="AliasItem" Relationship="WaterNutDBModel.FK_InventoryItemAlias_InventoryItems1" FromRole="InventoryItemAlias" ToRole="InventoryItems" />
@@ -4745,6 +4746,7 @@ FROM [dbo].[ShipmentRiderManifests] AS [ShipmentRiderManifests]</DefiningQuery>
         <EntityType Name="ShipmentPOs">
           <Key>
             <PropertyRef Name="EntryData_Id" />
+            <PropertyRef Name="EmailDate" />
           </Key>
           <Property Name="EntryData_Id" Type="Int32" Nullable="false" />
           <Property Name="InvoiceNo" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
@@ -4756,6 +4758,7 @@ FROM [dbo].[ShipmentRiderManifests] AS [ShipmentRiderManifests]</DefiningQuery>
           <Property Name="SourceFile" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
           <Property Name="EmailId" Type="String" MaxLength="255" Unicode="true" FixedLength="false" />
+          <Property Name="EmailDate" Type="DateTime" Nullable="false" Precision="3" />
         </EntityType>
         <EntityType Name="ShipmentErrors_RepeatInvoices">
           <Key>
@@ -5927,7 +5930,6 @@ FROM [dbo].[ShipmentRiderManifests] AS [ShipmentRiderManifests]</DefiningQuery>
             <EntityTypeMapping TypeName="WaterNutDBModel.InventoryItemAlias">
               <MappingFragment StoreEntitySet="InventoryItemAlias">
                 <ScalarProperty Name="AliasItemId" ColumnName="AliasItemId" />
-                <ScalarProperty Name="AliasName" ColumnName="AliasName" />
                 <ScalarProperty Name="InventoryItemId" ColumnName="InventoryItemId" />
                 <ScalarProperty Name="AliasId" ColumnName="AliasId" />
               </MappingFragment>
@@ -6018,6 +6020,7 @@ FROM [dbo].[ShipmentRiderManifests] AS [ShipmentRiderManifests]</DefiningQuery>
           <EntitySetMapping Name="ShipmentPOs">
             <EntityTypeMapping TypeName="WaterNutDBModel.ShipmentPOs">
               <MappingFragment StoreEntitySet="ShipmentPOs">
+                <ScalarProperty Name="EmailDate" ColumnName="EmailDate" />
                 <ScalarProperty Name="EmailId" ColumnName="EmailId" />
                 <ScalarProperty Name="ApplicationSettingsId" ColumnName="ApplicationSettingsId" />
                 <ScalarProperty Name="SourceFile" ColumnName="SourceFile" />

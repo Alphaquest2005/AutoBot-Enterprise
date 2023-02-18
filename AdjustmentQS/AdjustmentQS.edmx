@@ -388,6 +388,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AdjustmentShorts' does no
         <!--Errors Found During Generation:
 warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AsycudaDocumentItemEntryDataDetails' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="AsycudaDocumentItemEntryDataDetails">
+          
           <Key>
             <PropertyRef Name="Id" />
           </Key>

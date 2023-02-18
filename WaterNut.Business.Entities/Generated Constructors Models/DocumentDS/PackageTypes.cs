@@ -5,9 +5,9 @@
 
 		namespace DocumentDS.Business.Entities
 {
-    public partial class PackageType
+    public partial class PackageTypes
     {
-       public PackageType()
+       public PackageTypes()
         {
             CustomClassStartUp();
             MyNavPropStartUp();
@@ -17,7 +17,7 @@
             TrackableStartUp();
         }
 
-      public PackageType(bool start) : this()
+      public PackageTypes(bool start) : this()
        {
           if(start) StartTracking();
        }

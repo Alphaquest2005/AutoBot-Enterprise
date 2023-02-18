@@ -169,7 +169,7 @@ namespace DocumentDS.Business.Entities
      
         public DbSet<Container> Containers { get; set; }
      
-        public DbSet<PackageType> PackageTypes { get; set; }
+        public DbSet<PackageTypes> PackageTypes1 { get; set; }
      
         public DbSet<SystemDocumentSet> SystemDocumentSets { get; set; }
      
@@ -303,7 +303,7 @@ namespace DocumentDS.Business.Entities
          
             modelBuilder.Configurations.Add(new ContainerMap());
          
-            modelBuilder.Configurations.Add(new PackageTypeMap());
+            modelBuilder.Configurations.Add(new PackageTypesMap());
          
             modelBuilder.Configurations.Add(new SystemDocumentSetMap());
          

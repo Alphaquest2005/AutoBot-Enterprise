@@ -32,7 +32,7 @@ namespace AdjustmentQS.Business.Services
                             .Where(x => x.SystemDocumentSet != null)
                             .Where(x => x.Type == "DIS")
                             .Where(x => x.DoNotAllocate == null || x.DoNotAllocate != true)
-
+                            .Where(x => x.QtyAllocated != x.Quantity)
                             .Where(x => !x.ShortAllocations.Any())
                             .OrderBy(x => x.EntryDataDetailsId)
                             .DistinctBy(x => x.EntryDataDetailsId)
@@ -52,6 +52,7 @@ namespace AdjustmentQS.Business.Services
                             //.Where(x => x.ApplicationSettingsId == applicationSettingsId)
                             .Where(x => x.AdjustmentEx != null)
                             .Where(x => x.AdjustmentEx.Type == "DIS")
+                            .Where(x => x.QtyAllocated != x.Quantity)
                             .Where(x => x.DoNotAllocate == null || x.DoNotAllocate != true)
                             .ToDictionary(x => (x.EntryDataDetailsId, x.InventoryItemId), x => x);
                         _entryDataDetails =

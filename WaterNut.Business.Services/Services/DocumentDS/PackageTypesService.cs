@@ -32,19 +32,19 @@ using WaterNut.Interfaces;
 
 namespace DocumentDS.Business.Services
 {
-   [Export (typeof(IPackageTypeService))]
+   [Export (typeof(IPackageTypesService))]
    [Export(typeof(IBusinessService))]
    [PartCreationPolicy(CreationPolicy.NonShared)]
    [ServiceBehavior(InstanceContextMode = InstanceContextMode.PerCall,
                     ConcurrencyMode = ConcurrencyMode.Multiple)]
    
-    public partial class PackageTypeService : IPackageTypeService, IDisposable
+    public partial class PackageTypesService : IPackageTypesService, IDisposable
     {
         //private readonly DocumentDSContext dbContext;
 
         public bool StartTracking { get; set; }
 
-        public PackageTypeService()
+        public PackageTypesService()
         {
             try
             {
@@ -65,7 +65,7 @@ namespace DocumentDS.Business.Services
             }
         }
 
-        public async Task<IEnumerable<PackageType>> GetPackageTypes(List<string> includesLst = null, bool tracking = true)
+        public async Task<IEnumerable<PackageTypes>> GetPackageTypes1(List<string> includesLst = null, bool tracking = true)
         {
             try
             {
@@ -75,7 +75,7 @@ namespace DocumentDS.Business.Services
                   using ( var dbContext = new DocumentDSContext(){StartTracking = StartTracking})
                   {
 				    var set = AddIncludes(includesLst, dbContext);
-                    IEnumerable<PackageType> entities = set.AsNoTracking().ToList();
+                    IEnumerable<PackageTypes> entities = set.AsNoTracking().ToList();
                            //scope.Complete();
                             if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
                             return entities;
@@ -97,16 +97,16 @@ namespace DocumentDS.Business.Services
         }
 
 
-        public async Task<PackageType> GetPackageTypeByKey(string PackageType1, List<string> includesLst = null, bool tracking = true)
+        public async Task<PackageTypes> GetPackageTypesByKey(string PackageDescription, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
-			   if(string.IsNullOrEmpty(PackageType1))return null; 
+			   if(string.IsNullOrEmpty(PackageDescription))return null; 
               using ( var dbContext = new DocumentDSContext(){StartTracking = StartTracking})
               {
-                var i = PackageType1;
+                var i = PackageDescription;
 				var set = AddIncludes(includesLst, dbContext);
-                PackageType entity = set.AsNoTracking().SingleOrDefault(x => x.PackageType1 == i);
+                PackageTypes entity = set.AsNoTracking().SingleOrDefault(x => x.PackageDescription == i);
                 if(tracking && entity != null) entity.StartTracking();
                 return entity;
               }
@@ -126,14 +126,14 @@ namespace DocumentDS.Business.Services
         }
 
 
-		 public async Task<IEnumerable<PackageType>> GetPackageTypesByExpression(string exp, List<string> includesLst = null, bool tracking = true)
+		 public async Task<IEnumerable<PackageTypes>> GetPackageTypes1ByExpression(string exp, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
                 using (var dbContext = new DocumentDSContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-					if (string.IsNullOrEmpty(exp) || exp == "None") return new List<PackageType>();
+					if (string.IsNullOrEmpty(exp) || exp == "None") return new List<PackageTypes>();
 					var set = AddIncludes(includesLst, dbContext);
                     if (exp == "All")
                     {
@@ -167,14 +167,14 @@ namespace DocumentDS.Business.Services
             }
         }
 
-		 public async Task<IEnumerable<PackageType>> GetPackageTypesByExpressionLst(List<string> expLst, List<string> includesLst = null, bool tracking = true)
+		 public async Task<IEnumerable<PackageTypes>> GetPackageTypes1ByExpressionLst(List<string> expLst, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
                 using (var dbContext = new DocumentDSContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-					if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return new List<PackageType>();
+					if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return new List<PackageTypes>();
 					var set = AddIncludes(includesLst, dbContext);
                     if (expLst.FirstOrDefault() == "All")
                     {
@@ -207,7 +207,7 @@ namespace DocumentDS.Business.Services
             }
         }
 
-		public async Task<IEnumerable<PackageType>> GetPackageTypesByExpressionNav(string exp,
+		public async Task<IEnumerable<PackageTypes>> GetPackageTypes1ByExpressionNav(string exp,
 																							  Dictionary<string, string> navExp,
 																							  List<string> includesLst = null, bool tracking = true)
         {
@@ -216,7 +216,7 @@ namespace DocumentDS.Business.Services
                 using (var dbContext = new DocumentDSContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-                    if (string.IsNullOrEmpty(exp) || exp == "None") return new List<PackageType>();
+                    if (string.IsNullOrEmpty(exp) || exp == "None") return new List<PackageTypes>();
 
                     if (exp == "All" && navExp.Count == 0)
                     {
@@ -247,17 +247,17 @@ namespace DocumentDS.Business.Services
             }
         }
 
-        public async Task<IEnumerable<PackageType>> GetPackageTypesByBatch(string exp,
+        public async Task<IEnumerable<PackageTypes>> GetPackageTypes1ByBatch(string exp,
             int totalrow, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
 
-                var res = new ConcurrentQueue<List<PackageType>>();
+                var res = new ConcurrentQueue<List<PackageTypes>>();
 
 
 
-                if (string.IsNullOrEmpty(exp) || exp == "None") return new List<PackageType>();
+                if (string.IsNullOrEmpty(exp) || exp == "None") return new List<PackageTypes>();
 
 
                 var batchSize = 500;
@@ -278,14 +278,14 @@ namespace DocumentDS.Business.Services
                                 dbContext.Configuration.AutoDetectChangesEnabled = false;
                                 //dbContext.Configuration.LazyLoadingEnabled = true;
                                 var set = AddIncludes(includesLst, dbContext);
-                                IQueryable<PackageType> dset;
+                                IQueryable<PackageTypes> dset;
                                 if (exp == "All")
                                 {
-                                    dset = set.OrderBy(x => x.PackageType1);
+                                    dset = set.OrderBy(x => x.PackageDescription);
                                 }
                                 else
                                 {
-                                    dset = set.OrderBy(x => x.PackageType1).Where(exp);
+                                    dset = set.OrderBy(x => x.PackageDescription).Where(exp);
                                 }
 
                                 var lst = dset.AsNoTracking()
@@ -322,17 +322,17 @@ namespace DocumentDS.Business.Services
                 throw new FaultException<ValidationFault>(fault);
             }
         }
-        public async Task<IEnumerable<PackageType>> GetPackageTypesByBatchExpressionLst(List<string> expLst,
+        public async Task<IEnumerable<PackageTypes>> GetPackageTypes1ByBatchExpressionLst(List<string> expLst,
             int totalrow, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
 
-                var res = new ConcurrentQueue<List<PackageType>>();
+                var res = new ConcurrentQueue<List<PackageTypes>>();
 
 
 
-                if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return new List<PackageType>();
+                if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return new List<PackageTypes>();
 
 
                 var batchSize = 500;
@@ -353,15 +353,15 @@ namespace DocumentDS.Business.Services
                                 dbContext.Configuration.AutoDetectChangesEnabled = false;
                                 //dbContext.Configuration.LazyLoadingEnabled = true;
                                 var set = AddIncludes(includesLst, dbContext);
-                                IQueryable<PackageType> dset;
+                                IQueryable<PackageTypes> dset;
                                 if (expLst.FirstOrDefault() == "All")
                                 {
-                                    dset = set.OrderBy(x => x.PackageType1);
+                                    dset = set.OrderBy(x => x.PackageDescription);
                                 }
                                 else
                                 {
                                     set = AddWheres(expLst, set);
-                                    dset = set.OrderBy(x => x.PackageType1);
+                                    dset = set.OrderBy(x => x.PackageDescription);
                                 }
 
                                 var lst = dset.AsNoTracking()
@@ -398,13 +398,13 @@ namespace DocumentDS.Business.Services
         }
 
 
-        public async Task<PackageType> UpdatePackageType(PackageType entity)
+        public async Task<PackageTypes> UpdatePackageTypes(PackageTypes entity)
         { 
             using ( var dbContext = new DocumentDSContext(){StartTracking = StartTracking})
               {
                 try
                 {   
-                     var res = (PackageType) entity;
+                     var res = (PackageTypes) entity;
                     if(res.TrackingState == TrackingState.Unchanged) res.TrackingState = TrackingState.Modified;                              
                     
                     dbContext.ApplyChanges(res);
@@ -471,14 +471,14 @@ namespace DocumentDS.Business.Services
            return entity;
         }
 
-        public async Task<PackageType> CreatePackageType(PackageType entity)
+        public async Task<PackageTypes> CreatePackageTypes(PackageTypes entity)
         {
             try
             {
-                var res = (PackageType) entity;
+                var res = (PackageTypes) entity;
               using ( var dbContext = new DocumentDSContext(){StartTracking = StartTracking})
               {
-                dbContext.PackageTypes.Add(res);
+                dbContext.PackageTypes1.Add(res);
                 dbContext.SaveChanges();
                 res.AcceptChanges();
                 return res;
@@ -498,20 +498,20 @@ namespace DocumentDS.Business.Services
             }
         }
 
-        public async Task<bool> DeletePackageType(string PackageType1)
+        public async Task<bool> DeletePackageTypes(string PackageDescription)
         {
             try
             {
               using ( var dbContext = new DocumentDSContext(){StartTracking = StartTracking})
               {
-                var i = PackageType1;
-                PackageType entity = dbContext.PackageTypes
-													.SingleOrDefault(x => x.PackageType1 == i);
+                var i = PackageDescription;
+                PackageTypes entity = dbContext.PackageTypes1
+													.SingleOrDefault(x => x.PackageDescription == i);
                 if (entity == null)
                     return false;
 
-                    dbContext.PackageTypes.Attach(entity);
-                    dbContext.PackageTypes.Remove(entity);
+                    dbContext.PackageTypes1.Attach(entity);
+                    dbContext.PackageTypes1.Remove(entity);
                     dbContext.SaveChanges();
                     return true;
               }
@@ -530,19 +530,19 @@ namespace DocumentDS.Business.Services
             }
         }
 
-        public async Task<bool> RemoveSelectedPackageType(IEnumerable<string> lst)
+        public async Task<bool> RemoveSelectedPackageTypes(IEnumerable<string> lst)
         {
             try
             {
-                StatusModel.StartStatusUpdate("Removing PackageType", lst.Count());
+                StatusModel.StartStatusUpdate("Removing PackageTypes", lst.Count());
                 var t = Task.Run(() =>
                 {
-                    using (var ctx = new PackageTypeService())
+                    using (var ctx = new PackageTypesService())
                     {
                         foreach (var item in lst.ToList())
                         {
 
-                            ctx.DeletePackageType(item).Wait();
+                            ctx.DeletePackageTypes(item).Wait();
                             StatusModel.StatusUpdate();
                         }
                     }
@@ -577,7 +577,7 @@ namespace DocumentDS.Business.Services
                 {
                     dbContext.Database.CommandTimeout = 0;
                     if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return 0;
-                    var set = (IQueryable<PackageType>)dbContext.PackageTypes; 
+                    var set = (IQueryable<PackageTypes>)dbContext.PackageTypes1; 
                     if (expLst.FirstOrDefault() == "All")
                     {
                         return set.AsNoTracking().Count();
@@ -613,14 +613,14 @@ namespace DocumentDS.Business.Services
                     if (string.IsNullOrEmpty(exp) || exp == "None") return 0;
                     if (exp == "All")
                     {
-                        return dbContext.PackageTypes
+                        return dbContext.PackageTypes1
                                     .AsNoTracking()
 									.Count();
                     }
                     else
                     {
                         
-                        return dbContext.PackageTypes
+                        return dbContext.PackageTypes1
 									.AsNoTracking()
                                     .Where(exp)
 									.Count();
@@ -641,19 +641,19 @@ namespace DocumentDS.Business.Services
             }
         }
         
-        public async Task<IEnumerable<PackageType>> LoadRange(int startIndex, int count, string exp)
+        public async Task<IEnumerable<PackageTypes>> LoadRange(int startIndex, int count, string exp)
         {
             try
             {
                 using (var dbContext = new DocumentDSContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-                    if (string.IsNullOrEmpty(exp) || exp == "None") return new List<PackageType>();
+                    if (string.IsNullOrEmpty(exp) || exp == "None") return new List<PackageTypes>();
                     if (exp == "All")
                     {
-                        return dbContext.PackageTypes
+                        return dbContext.PackageTypes1
 										.AsNoTracking()
-                                        .OrderBy(y => y.PackageType1)
+                                        .OrderBy(y => y.PackageDescription)
 										.Skip(startIndex)
 										.Take(count)
 										.ToList();
@@ -661,10 +661,10 @@ namespace DocumentDS.Business.Services
                     else
                     {
                         
-                        return dbContext.PackageTypes
+                        return dbContext.PackageTypes1
 										.AsNoTracking()
                                         .Where(exp)
-										.OrderBy(y => y.PackageType1)
+										.OrderBy(y => y.PackageDescription)
 										.Skip(startIndex)
 										.Take(count)
 										.ToList();
@@ -695,11 +695,11 @@ namespace DocumentDS.Business.Services
                     dbContext.Database.CommandTimeout = 0;
                     if (exp == "All" && navExp.Count == 0)
                     {
-                        return dbContext.PackageTypes
+                        return dbContext.PackageTypes1
 										.AsNoTracking()
                                         .Count();
                     }
-                    return dbContext.PackageTypes.Where(exp == "All" || exp == null ? "PackageType1 != null" : exp)
+                    return dbContext.PackageTypes1.Where(exp == "All" || exp == null ? "PackageDescription != null" : exp)
 											.AsNoTracking()
                                             .Count();
                 }
@@ -740,10 +740,10 @@ namespace DocumentDS.Business.Services
             return dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
-                .SelectMany(navProp).OfType<PackageType>()
-                .Where(exp == "All" || exp == null ? "PackageType1 != null" : exp)
+                .SelectMany(navProp).OfType<PackageTypes>()
+                .Where(exp == "All" || exp == null ? "PackageDescription != null" : exp)
                 .Distinct()
-                .OrderBy("PackageType1")
+                .OrderBy("PackageDescription")
                 .Count();
 			}
 			catch (Exception)
@@ -760,10 +760,10 @@ namespace DocumentDS.Business.Services
             return dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
-                .Select(navProp).OfType<PackageType>()
-                .Where(exp == "All" || exp == null ? "PackageType1 != null" : exp)
+                .Select(navProp).OfType<PackageTypes>()
+                .Where(exp == "All" || exp == null ? "PackageDescription != null" : exp)
                 .Distinct()
-                .OrderBy("PackageType1")
+                .OrderBy("PackageDescription")
                 .Count();
 			}
 			catch (Exception)
@@ -773,7 +773,7 @@ namespace DocumentDS.Business.Services
 			}
         }
 
-		  public async Task<IEnumerable<PackageType>> LoadRangeNav(int startIndex, int count, string exp,
+		  public async Task<IEnumerable<PackageTypes>> LoadRangeNav(int startIndex, int count, string exp,
                                                                                  Dictionary<string, string> navExp, IEnumerable<string> includeLst = null)
         {
             try
@@ -781,7 +781,7 @@ namespace DocumentDS.Business.Services
                 using (var dbContext = new DocumentDSContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-                    if ((string.IsNullOrEmpty(exp) && navExp.Count == 0) || exp == "None") return new List<PackageType>();
+                    if ((string.IsNullOrEmpty(exp) && navExp.Count == 0) || exp == "None") return new List<PackageTypes>();
                     var set = AddIncludes(includeLst, dbContext);
 
                     if (exp == "All" && navExp.Count == 0)
@@ -789,16 +789,16 @@ namespace DocumentDS.Business.Services
                        
                         return set
 									.AsNoTracking()
-                                    .OrderBy(y => y.PackageType1)
+                                    .OrderBy(y => y.PackageDescription)
  
                                     .Skip(startIndex)
                                     .Take(count)
 									.ToList();
                     }
-                    return set//dbContext.PackageTypes
+                    return set//dbContext.PackageTypes1
 								.AsNoTracking()
-                                .Where(exp == "All" || exp == null ? "PackageType1 != null" : exp)
-								.OrderBy(y => y.PackageType1)
+                                .Where(exp == "All" || exp == null ? "PackageDescription != null" : exp)
+								.OrderBy(y => y.PackageDescription)
  
                                 .Skip(startIndex)
                                 .Take(count)
@@ -821,7 +821,7 @@ namespace DocumentDS.Business.Services
             }
         }
 
-		private static async Task<IEnumerable<PackageType>> LoadRangeWhere<T>(int startIndex, int count,
+		private static async Task<IEnumerable<PackageTypes>> LoadRangeWhere<T>(int startIndex, int count,
             DocumentDSContext dbContext, string exp, string navExp, string navProp, string rel, IEnumerable<string> includeLst = null) where T : class
         {
              switch (rel)
@@ -836,7 +836,7 @@ namespace DocumentDS.Business.Services
 		    }
         }
 
-		private static async Task<IEnumerable<PackageType>> LoadRangeSelectMany<T>(int startIndex, int count,
+		private static async Task<IEnumerable<PackageTypes>> LoadRangeSelectMany<T>(int startIndex, int count,
             DocumentDSContext dbContext, string exp, string navExp, string navProp, IEnumerable<string> includeLst = null) where T : class
         {
 			try
@@ -844,14 +844,14 @@ namespace DocumentDS.Business.Services
             var set = dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
-                .SelectMany(navProp).OfType<PackageType>();
+                .SelectMany(navProp).OfType<PackageTypes>();
     
             if (includeLst != null) set = includeLst.Aggregate(set, (current, itm) => current.Include(itm));            
 
             return set
-                .Where(exp == "All" || exp == null ? "PackageType1 != null" : exp)
+                .Where(exp == "All" || exp == null ? "PackageDescription != null" : exp)
                 .Distinct()
-                .OrderBy(y => y.PackageType1)
+                .OrderBy(y => y.PackageDescription)
  
                 .Skip(startIndex)
                 .Take(count)
@@ -864,7 +864,7 @@ namespace DocumentDS.Business.Services
 			}
         }
 
-		private static async Task<IEnumerable<PackageType>> LoadRangeSelect<T>(int startIndex, int count,
+		private static async Task<IEnumerable<PackageTypes>> LoadRangeSelect<T>(int startIndex, int count,
             DocumentDSContext dbContext, string exp, string navExp, string navProp, IEnumerable<string> includeLst = null) where T : class
         {
 			try
@@ -872,14 +872,14 @@ namespace DocumentDS.Business.Services
               var set = dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
-                .Select(navProp).OfType<PackageType>();
+                .Select(navProp).OfType<PackageTypes>();
 
                if (includeLst != null) set = includeLst.Aggregate(set, (current, itm) => current.Include(itm)); 
                 
                return set
-                .Where(exp == "All" || exp == null ? "PackageType1 != null" : exp)
+                .Where(exp == "All" || exp == null ? "PackageDescription != null" : exp)
                 .Distinct()
-                .OrderBy(y => y.PackageType1)
+                .OrderBy(y => y.PackageDescription)
  
                 .Skip(startIndex)
                 .Take(count)
@@ -892,7 +892,7 @@ namespace DocumentDS.Business.Services
 			}
         }
 
-        private static async Task<IEnumerable<PackageType>> GetWhere<T>(DocumentDSContext dbContext,
+        private static async Task<IEnumerable<PackageTypes>> GetWhere<T>(DocumentDSContext dbContext,
             string exp, string navExp, string navProp, string rel, List<string> includesLst = null) where T : class
         {
 			try
@@ -916,7 +916,7 @@ namespace DocumentDS.Business.Services
 			}
         }
 
-		private static async Task<IEnumerable<PackageType>> GetWhereSelectMany<T>(DocumentDSContext dbContext,
+		private static async Task<IEnumerable<PackageTypes>> GetWhereSelectMany<T>(DocumentDSContext dbContext,
             string exp, string navExp, string navProp, List<string> includesLst = null) where T : class
         {
 			try
@@ -927,17 +927,17 @@ namespace DocumentDS.Business.Services
 				return dbContext.Set<T>()
 							.AsNoTracking()
                             .Where(navExp)
-							.SelectMany(navProp).OfType<PackageType>()
-							.Where(exp == "All" || exp == null?"PackageType1 != null":exp)
+							.SelectMany(navProp).OfType<PackageTypes>()
+							.Where(exp == "All" || exp == null?"PackageDescription != null":exp)
 							.Distinct()
 							.ToList();
 			}
 
-			var set = (DbQuery<PackageType>)dbContext.Set<T>()
+			var set = (DbQuery<PackageTypes>)dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
-                .SelectMany(navProp).OfType<PackageType>()
-                .Where(exp == "All" || exp == null?"PackageType1 != null":exp)
+                .SelectMany(navProp).OfType<PackageTypes>()
+                .Where(exp == "All" || exp == null?"PackageDescription != null":exp)
                 .Distinct();
 
 			set = includesLst.Aggregate(set, (current, itm) => current.Include(itm));
@@ -951,7 +951,7 @@ namespace DocumentDS.Business.Services
 			}
         }
 
-		private static async Task<IEnumerable<PackageType>> GetWhereSelect<T>(DocumentDSContext dbContext,
+		private static async Task<IEnumerable<PackageTypes>> GetWhereSelect<T>(DocumentDSContext dbContext,
             string exp, string navExp, string navProp, List<string> includesLst = null) where T : class
         {
 			try
@@ -962,17 +962,17 @@ namespace DocumentDS.Business.Services
 				return dbContext.Set<T>()
 							.AsNoTracking()
                             .Where(navExp)
-							.Select(navProp).OfType<PackageType>()
-							.Where(exp == "All" || exp == null?"PackageType1 != null":exp)
+							.Select(navProp).OfType<PackageTypes>()
+							.Where(exp == "All" || exp == null?"PackageDescription != null":exp)
 							.Distinct()
 							.ToList();
 			}
 
-			var set = (DbQuery<PackageType>)dbContext.Set<T>()
+			var set = (DbQuery<PackageTypes>)dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
-                .Select(navProp).OfType<PackageType>()
-                .Where(exp == "All" || exp == null?"PackageType1 != null":exp)
+                .Select(navProp).OfType<PackageTypes>()
+                .Where(exp == "All" || exp == null?"PackageDescription != null":exp)
                 .Distinct();
 
 			set = includesLst.Aggregate(set, (current, itm) => current.Include(itm));
@@ -998,11 +998,11 @@ namespace DocumentDS.Business.Services
                      if (string.IsNullOrEmpty(whereExp) || whereExp == "None") return 0;
                      if (whereExp == "All")
                      {
-                          res = Convert.ToDecimal(dbContext.PackageTypes.AsNoTracking().Sum(field));
+                          res = Convert.ToDecimal(dbContext.PackageTypes1.AsNoTracking().Sum(field));
                      }
                      else
                      {
-                         res = Convert.ToDecimal(dbContext.PackageTypes.AsNoTracking().Where(whereExp).Sum(field));
+                         res = Convert.ToDecimal(dbContext.PackageTypes1.AsNoTracking().Where(whereExp).Sum(field));
                      }
                      
                      return res;
@@ -1030,14 +1030,14 @@ namespace DocumentDS.Business.Services
                 using (var dbContext = new DocumentDSContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-                    if (!dbContext.PackageTypes.Any()) return 0;
+                    if (!dbContext.PackageTypes1.Any()) return 0;
                     if (exp == "All" && navExp.Count == 0)
                     {
-                        return Convert.ToDecimal(dbContext.PackageTypes
+                        return Convert.ToDecimal(dbContext.PackageTypes1
 										.AsNoTracking()
                                         .Sum(field)??0);
                     }
-                    return Convert.ToDecimal(dbContext.PackageTypes.Where(exp == "All" || exp == null ? "PackageType1 != null" : exp)
+                    return Convert.ToDecimal(dbContext.PackageTypes1.Where(exp == "All" || exp == null ? "PackageDescription != null" : exp)
 											.AsNoTracking()
                                             .Sum(field)??0);
                 }
@@ -1077,10 +1077,10 @@ namespace DocumentDS.Business.Services
             return Convert.ToDecimal(dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
-                .SelectMany(navProp).OfType<PackageType>()
-                .Where(exp == "All" || exp == null ? "PackageType1 != null" : exp)
+                .SelectMany(navProp).OfType<PackageTypes>()
+                .Where(exp == "All" || exp == null ? "PackageDescription != null" : exp)
                 .Distinct()
-                .OrderBy("PackageType1")
+                .OrderBy("PackageDescription")
                 .Sum(field));
 			}
 			catch (Exception)
@@ -1097,10 +1097,10 @@ namespace DocumentDS.Business.Services
             return Convert.ToDecimal(dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
-                .Select(navProp).OfType<PackageType>()
-                .Where(exp == "All" || exp == null ? "PackageType1 != null" : exp)
+                .Select(navProp).OfType<PackageTypes>()
+                .Where(exp == "All" || exp == null ? "PackageDescription != null" : exp)
                 .Distinct()
-                .OrderBy("PackageType1")
+                .OrderBy("PackageDescription")
                 .Sum(field));
 			}
 			catch (Exception)
@@ -1123,11 +1123,11 @@ namespace DocumentDS.Business.Services
                      if (string.IsNullOrEmpty(whereExp) || whereExp == "None") return res;
                      if (whereExp == "All")
                      {
-                          res = Convert.ToString(dbContext.PackageTypes.AsNoTracking().Min(field));
+                          res = Convert.ToString(dbContext.PackageTypes1.AsNoTracking().Min(field));
                      }
                      else
                      {
-                         res = Convert.ToString(dbContext.PackageTypes.AsNoTracking().Where(whereExp).Min(field));
+                         res = Convert.ToString(dbContext.PackageTypes1.AsNoTracking().Where(whereExp).Min(field));
                      }
                      
                      return res;
@@ -1148,12 +1148,12 @@ namespace DocumentDS.Business.Services
          }
 
 		 
-		private static IQueryable<PackageType> AddIncludes(IEnumerable<string> includesLst, DocumentDSContext dbContext)
+		private static IQueryable<PackageTypes> AddIncludes(IEnumerable<string> includesLst, DocumentDSContext dbContext)
        {
 		 try
 			{
 			   if (includesLst == null) includesLst = new List<string>();
-			   var set =(DbQuery<PackageType>) dbContext.PackageTypes; 
+			   var set =(DbQuery<PackageTypes>) dbContext.PackageTypes1; 
 			   set = includesLst.Where(x => !string.IsNullOrEmpty(x))
                                 .Aggregate(set, (current, itm) => current.Include(itm));
 			   return set;
@@ -1164,7 +1164,7 @@ namespace DocumentDS.Business.Services
 				throw;
 			}
        }
-	   private IQueryable<PackageType> AddWheres(List<string> expLst, IQueryable<PackageType> set)
+	   private IQueryable<PackageTypes> AddWheres(List<string> expLst, IQueryable<PackageTypes> set)
         {
             try
             {

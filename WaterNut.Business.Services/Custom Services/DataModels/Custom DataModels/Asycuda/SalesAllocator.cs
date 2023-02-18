@@ -75,7 +75,8 @@ namespace WaterNut.DataSpace
 
             var count = itemSetsValues.Count();
             var res = new List<(List<EntryDataDetails> Sales, List<xcuda_Item> asycudaItems)>();
-            foreach (var itm in itemSetsValues.OrderBy(x => x.Key.EntryDataDate))
+            var orderedLst = itemSetsValues.OrderBy(x => x.Key.EntryDataDate);
+            foreach (var itm in orderedLst)
                 try
                 {
                     t += 1;
@@ -412,8 +413,8 @@ namespace WaterNut.DataSpace
                 //	.Select(x => x.xcuda_PreviousItem)
                 //	.Sum(x => x.Suplementary_Quantity);
                 var nonDFPQty = cAsycudaItm.EntryPreviousItems.Any() ? (double)cAsycudaItm.EntryPreviousItems
-                    .Select(x => x.xcuda_PreviousItem)
-                    .Where(x => x.DutyFreePaid != saleItem.DutyFreePaid || (x.xcuda_Item.EntryDataType ?? "Sales") != saleItem.Sales.EntryDataType)
+                    .Select(x => x.PreviousItemsEx)
+                    .Where(x => x.DutyFreePaid != saleItem.DutyFreePaid || (x.EntryDataType ?? "Sales") != saleItem.Sales.EntryDataType)
                     .Sum(x => x.Suplementary_Quantity) : (saleItem.DutyFreePaid == "Duty Free" ? cAsycudaItm.DPQtyAllocated : cAsycudaItm.DFQtyAllocated);
 
 

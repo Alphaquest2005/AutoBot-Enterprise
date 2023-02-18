@@ -36,7 +36,7 @@ namespace DocumentDS.Business.Entities
         }
         string _identification;
         [DataMember]
-        public string Delay 
+        public int Delay 
         {
             get
             {
@@ -49,7 +49,7 @@ namespace DocumentDS.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        string _delay;
+        int _delay;
         [DataMember]
         public Nullable<int> ASYCUDA_Id 
         {

@@ -47,13 +47,28 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
                         .WhereBulkContains(res, x => x.Item_Id)
                         .Include("AsycudaDocument.Customs_Procedure")
                         .Include("xcuda_Tarification.xcuda_HScode.xcuda_Inventory_Item")
-                        .Include("EntryPreviousItems.xcuda_PreviousItem.xcuda_Item.AsycudaDocument")
+                        //.Include("EntryPreviousItems.xcuda_PreviousItem.xcuda_Item.AsycudaDocument")
                         .Include("xcuda_Tarification.xcuda_Supplementary_unit")
                         .Include("SubItems")
-                        .Include("EntryPreviousItems.xcuda_PreviousItem")
-                        .ToDictionary(x => x.Item_Id, x => x);
-                    
-                    _asycudaItems = new ConcurrentDictionary<int, xcuda_Item>(lst);
+                        //.Include("EntryPreviousItems.xcuda_PreviousItem")
+                        //.Include("EntryPreviousItems.PreviousItemEx")
+                        .ToList();
+
+                    var elst = ctx.EntryPreviousItems.AsNoTracking()
+                        .WhereBulkContains(res, x => x.Item_Id)
+                        .Include("xcuda_PreviousItem.xcuda_Item.AsycudaDocument")
+                        .Include("PreviousItemsEx")
+                        .ToList();
+
+                    var aelst = lst.GroupJoin(elst, x => x.Item_Id, z => z.Item_Id,
+                        (a, e) => new {a,e})
+                        .Select(x =>
+                        {
+                             x.a.EntryPreviousItems = x.e.ToList();
+                             return x.a;
+                        }).ToList();
+
+                    _asycudaItems = new ConcurrentDictionary<int, xcuda_Item>(aelst.ToDictionary(x => x.Item_Id, x => x));
                 }
 
               

@@ -20,54 +20,54 @@ using WaterNut.Interfaces;
 namespace DocumentDS.Business.Services
 {
     [ServiceContract (Namespace="http://www.insight-software.com/WaterNut")]
-    public partial interface IPackageTypeService : IBusinessService
+    public partial interface IPackageTypesService : IBusinessService
     {
         [OperationContract]
         [FaultContract(typeof(ValidationFault))]
-        Task<IEnumerable<PackageType>> GetPackageTypes(List<string> includesLst = null, bool tracking = true);
+        Task<IEnumerable<PackageTypes>> GetPackageTypes1(List<string> includesLst = null, bool tracking = true);
 
         [OperationContract]
         [FaultContract(typeof(ValidationFault))]
-        Task<PackageType> GetPackageTypeByKey(string id, List<string> includesLst = null, bool tracking = true);
+        Task<PackageTypes> GetPackageTypesByKey(string id, List<string> includesLst = null, bool tracking = true);
 
 		[OperationContract]
         [FaultContract(typeof(ValidationFault))]
-        Task<IEnumerable<PackageType>> GetPackageTypesByExpression(string exp, List<string> includesLst = null, bool tracking = true);
+        Task<IEnumerable<PackageTypes>> GetPackageTypes1ByExpression(string exp, List<string> includesLst = null, bool tracking = true);
 
 		[OperationContract]
         [FaultContract(typeof(ValidationFault))]
-        Task<IEnumerable<PackageType>> GetPackageTypesByExpressionLst(List<string> expLst, List<string> includesLst = null, bool tracking = true);
+        Task<IEnumerable<PackageTypes>> GetPackageTypes1ByExpressionLst(List<string> expLst, List<string> includesLst = null, bool tracking = true);
 
 		[OperationContract]
         [FaultContract(typeof(ValidationFault))]
-		Task<IEnumerable<PackageType>> GetPackageTypesByExpressionNav(string exp,
+		Task<IEnumerable<PackageTypes>> GetPackageTypes1ByExpressionNav(string exp,
             Dictionary<string, string> navExp, List<string> includesLst = null, bool tracking = true);
 
         [OperationContract]
         [FaultContract(typeof(ValidationFault))]
-        Task<IEnumerable<PackageType>> GetPackageTypesByBatch(string exp,
+        Task<IEnumerable<PackageTypes>> GetPackageTypes1ByBatch(string exp,
             int totalrow, List<string> includesLst = null, bool tracking = true);
 
         [OperationContract]
         [FaultContract(typeof(ValidationFault))]
-        Task<IEnumerable<PackageType>> GetPackageTypesByBatchExpressionLst(List<string> exp,
+        Task<IEnumerable<PackageTypes>> GetPackageTypes1ByBatchExpressionLst(List<string> exp,
             int totalrow, List<string> includesLst = null, bool tracking = true);
 
         [OperationContract]
         [FaultContract(typeof(ValidationFault))]
-        Task<PackageType> UpdatePackageType(PackageType entity);
+        Task<PackageTypes> UpdatePackageTypes(PackageTypes entity);
 
         [OperationContract]
         [FaultContract(typeof(ValidationFault))]
-        Task<PackageType> CreatePackageType(PackageType entity);
+        Task<PackageTypes> CreatePackageTypes(PackageTypes entity);
 
         [OperationContract]
         [FaultContract(typeof(ValidationFault))]
-        Task<bool> DeletePackageType(string id);
+        Task<bool> DeletePackageTypes(string id);
 
         [OperationContract]
         [FaultContract(typeof(ValidationFault))]
-        Task<bool> RemoveSelectedPackageType(IEnumerable<string> selectedPackageType);
+        Task<bool> RemoveSelectedPackageTypes(IEnumerable<string> selectedPackageTypes);
 	
 		//Virtural list implementation
         [OperationContract]
@@ -84,13 +84,13 @@ namespace DocumentDS.Business.Services
 
         [OperationContract]
         [FaultContract(typeof(ValidationFault))]
-        Task<IEnumerable<PackageType>> LoadRange(int startIndex, int count, string exp);
+        Task<IEnumerable<PackageTypes>> LoadRange(int startIndex, int count, string exp);
 
 
 
 		[OperationContract]
         [FaultContract(typeof(ValidationFault))]
-		Task<IEnumerable<PackageType>> LoadRangeNav(int startIndex, int count, string exp,
+		Task<IEnumerable<PackageTypes>> LoadRangeNav(int startIndex, int count, string exp,
                                                                                  Dictionary<string, string> navExp, IEnumerable<string> includeLst = null);
 
 		[OperationContract]

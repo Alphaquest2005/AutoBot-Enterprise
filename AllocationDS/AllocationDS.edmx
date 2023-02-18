@@ -621,13 +621,9 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AsycudaDocument' does not
         <!--Errors Found During Generation:
 warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AsycudaDocumentItemEntryDataDetails' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="AsycudaDocumentItemEntryDataDetails">
+          
           <Key>
             <PropertyRef Name="Id" />
-            
-            
-            
-            
-            
           </Key>
           <Property Name="Id" Type="bigint" Nullable="false" />
           <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
@@ -1021,8 +1017,8 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.PreviousItemsEx' does not
             
             
             
-            <PropertyRef Name="Customs_ProcedureId" />
-            <PropertyRef Name="CustomsProcedure" />
+            
+            
           </Key>
           <Property Name="Packages_number" Type="nvarchar" MaxLength="20" />
           <Property Name="Previous_Packages_number" Type="nvarchar" MaxLength="20" />
@@ -1062,6 +1058,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.PreviousItemsEx' does not
           <Property Name="DutyLiablity" Type="float" Nullable="false" />
           <Property Name="Customs_ProcedureId" Type="int" Nullable="false" />
           <Property Name="CustomsProcedure" Type="nvarchar" MaxLength="11" Nullable="false" />
+          <Property Name="EntryDataType" Type="nvarchar" MaxLength="50" />
         </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.XSales-UnAllocated' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
@@ -1990,7 +1987,8 @@ FROM [dbo].[ItemSalesPiSummary] AS [ItemSalesPiSummary]</DefiningQuery>
 [PreviousItemsEx].[TotalDutyLiablity] AS [TotalDutyLiablity], 
 [PreviousItemsEx].[DutyLiablity] AS [DutyLiablity], 
 [PreviousItemsEx].[Customs_ProcedureId] AS [Customs_ProcedureId], 
-[PreviousItemsEx].[CustomsProcedure] AS [CustomsProcedure]
+[PreviousItemsEx].[CustomsProcedure] AS [CustomsProcedure], 
+[PreviousItemsEx].[EntryDataType] AS [EntryDataType]
 FROM [dbo].[PreviousItemsEx] AS [PreviousItemsEx]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="XSales-UnAllocated" EntityType="Self.XSales-UnAllocated" store:Type="Views" store:Schema="dbo">
@@ -2400,6 +2398,10 @@ FROM [dbo].[XSales-UnAllocated] AS [XSales-UnAllocated]</DefiningQuery>
             <End Role="xcuda_Inventory_Item" EntitySet="xcuda_Inventory_Item" />
           </AssociationSet>
           <EntitySet Name="AsycudaSalesAllocations_XcudaItemsToAllocate" EntityType="WaterNutDBModel.AsycudaSalesAllocations_XcudaItemsToAllocate" />
+          <AssociationSet Name="PreviousItemsExEntryPreviousItems" Association="WaterNutDBModel.PreviousItemsExEntryPreviousItems">
+            <End Role="PreviousItemsEx" EntitySet="PreviousItemsEx" />
+            <End Role="EntryPreviousItems" EntitySet="EntryPreviousItems" />
+          </AssociationSet>
           </EntityContainer>
         <EntityType Name="AsycudaSalesAllocations">
           <Key>
@@ -3219,6 +3221,7 @@ FROM [dbo].[XSales-UnAllocated] AS [XSales-UnAllocated]</DefiningQuery>
           <Property Name="EntryPreviousItemId" Type="Int32" Nullable="false" p1:StoreGeneratedPattern="Identity" />
           <NavigationProperty Name="xcuda_Item" Relationship="WaterNutDBModel.FK_EntryPreviousItems_xcuda_Item" FromRole="EntryPreviousItems" ToRole="xcuda_Item" />
           <NavigationProperty Name="xcuda_PreviousItem" Relationship="WaterNutDBModel.xcuda_PreviousItemEntryPreviousItems" FromRole="EntryPreviousItems" ToRole="xcuda_PreviousItem" />
+          <NavigationProperty Name="PreviousItemsEx" Relationship="WaterNutDBModel.PreviousItemsExEntryPreviousItems" FromRole="EntryPreviousItems" ToRole="PreviousItemsEx" />
         </EntityType>
         <Association Name="FK_EntryPreviousItems_xcuda_Item">
           <End Type="WaterNutDBModel.xcuda_Item" Role="xcuda_Item" Multiplicity="1">
@@ -3477,8 +3480,6 @@ FROM [dbo].[XSales-UnAllocated] AS [XSales-UnAllocated]</DefiningQuery>
         <EntityType Name="PreviousItemsEx">
           <Key>
             <PropertyRef Name="PreviousItem_Id" />
-            <PropertyRef Name="Customs_ProcedureId" />
-            <PropertyRef Name="CustomsProcedure" />
           </Key>
           <Property Name="Packages_number" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Name="Previous_Packages_number" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
@@ -3518,6 +3519,8 @@ FROM [dbo].[XSales-UnAllocated] AS [XSales-UnAllocated]</DefiningQuery>
           <Property Name="Prev_reg_year" Type="Int32" />
           <Property Name="Customs_ProcedureId" Type="Int32" Nullable="false" />
           <Property Name="CustomsProcedure" Type="String" Nullable="false" MaxLength="11" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="EntryPreviousItems" Relationship="WaterNutDBModel.PreviousItemsExEntryPreviousItems" FromRole="PreviousItemsEx" ToRole="EntryPreviousItems" />
+          <Property Name="EntryDataType" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="InventoryItem">
           <Key>
@@ -4142,6 +4145,18 @@ FROM [dbo].[XSales-UnAllocated] AS [XSales-UnAllocated]</DefiningQuery>
           <Property Name="AsycudaDocumentSetId" Type="Int32" Nullable="false" />
           <Property Name="AssessmentDate" Type="DateTime" Precision="7" />
         </EntityType>
+        <Association Name="PreviousItemsExEntryPreviousItems">
+          <End Type="WaterNutDBModel.PreviousItemsEx" Role="PreviousItemsEx" Multiplicity="1" />
+          <End Type="WaterNutDBModel.EntryPreviousItems" Role="EntryPreviousItems" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PreviousItemsEx">
+              <PropertyRef Name="PreviousItem_Id" />
+            </Principal>
+            <Dependent Role="EntryPreviousItems">
+              <PropertyRef Name="PreviousItem_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -4782,6 +4797,7 @@ FROM [dbo].[XSales-UnAllocated] AS [XSales-UnAllocated]</DefiningQuery>
           <EntitySetMapping Name="PreviousItemsEx">
             <EntityTypeMapping TypeName="WaterNutDBModel.PreviousItemsEx">
               <MappingFragment StoreEntitySet="PreviousItemsEx">
+                <ScalarProperty Name="EntryDataType" ColumnName="EntryDataType" />
                 <ScalarProperty Name="CustomsProcedure" ColumnName="CustomsProcedure" />
                 <ScalarProperty Name="Customs_ProcedureId" ColumnName="Customs_ProcedureId" />
                 <ScalarProperty Name="Prev_reg_year" ColumnName="Prev_reg_year" />

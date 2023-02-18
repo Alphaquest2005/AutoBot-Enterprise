@@ -18,23 +18,23 @@ namespace DocumentDS.Business.Entities
 
     //[JsonObject(IsReference = true)]
     [DataContract(IsReference = true, Namespace="http://www.insight-software.com/WaterNut")]
-    public partial class PackageType : BaseEntity<PackageType>, ITrackable 
+    public partial class PackageTypes : BaseEntity<PackageTypes>, ITrackable 
     {
         [DataMember]
-        public string PackageType1 
+        public string PackageType 
         {
             get
             {
-                return _packagetype1;
+                return _packagetype;
             }
             set
             {
-                _packagetype1 = value;
+                _packagetype = value;
                 //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
                 NotifyPropertyChanged();
             }
         }
-        string _packagetype1;
+        string _packagetype;
         [DataMember]
         public string PackageDescription 
         {

@@ -170,6 +170,21 @@ namespace EntryDataDS.Business.Entities
             }
         }
         string _emailid;
+        [DataMember]
+        public System.DateTime EmailDate 
+        {
+            get
+            {
+                return _emaildate;
+            }
+            set
+            {
+                _emaildate = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        System.DateTime _emaildate;
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

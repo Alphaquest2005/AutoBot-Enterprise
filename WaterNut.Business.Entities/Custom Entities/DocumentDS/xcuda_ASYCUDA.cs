@@ -21,7 +21,7 @@ namespace DocumentDS.Business.Entities
     {
         [IgnoreDataMember]
         [NotMapped]
-        public bool? DoNotAllocate
+        public bool DoNotAllocate
         {
             get { return this.xcuda_ASYCUDA_ExtendedProperties.DoNotAllocate; }
             set { this.xcuda_ASYCUDA_ExtendedProperties.DoNotAllocate = value; }

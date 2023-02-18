@@ -35,7 +35,7 @@ namespace AdjustmentQS.Business.Services
                 var po = await new EntryDataDSContext().EntryData.OfType<PurchaseOrders>()
                     .FirstOrDefaultAsync(x =>
                         x.EntryDataId == ed.EntryDataId && x.ApplicationSettingsId == s.ApplicationSettingsId).ConfigureAwait(false); // || ed.PreviousInvoiceNumber.EndsWith(x.EntryDataId) Contains too random
-                ed.EffectiveDate = po?.EntryDataDate;
+                ed.EffectiveDate = po?.EntryDataDate ?? s.InvoiceDate;
             }
             else
             {

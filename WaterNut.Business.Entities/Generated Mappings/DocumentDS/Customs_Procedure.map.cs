@@ -15,9 +15,9 @@
               this.ToTable("Customs_Procedure");
               this.Property(t => t.Document_TypeId).HasColumnName("Document_TypeId");
               this.Property(t => t.Customs_ProcedureId).HasColumnName("Customs_ProcedureId").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.Identity));
-              this.Property(t => t.Extended_customs_procedure).HasColumnName("Extended_customs_procedure").HasMaxLength(5);
-              this.Property(t => t.National_customs_procedure).HasColumnName("National_customs_procedure").HasMaxLength(5);
-              this.Property(t => t.CustomsProcedure).HasColumnName("CustomsProcedure").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.Computed)).HasMaxLength(11);
+              this.Property(t => t.Extended_customs_procedure).HasColumnName("Extended_customs_procedure").IsRequired().HasMaxLength(5);
+              this.Property(t => t.National_customs_procedure).HasColumnName("National_customs_procedure").IsRequired().HasMaxLength(5);
+              this.Property(t => t.CustomsProcedure).HasColumnName("CustomsProcedure").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.Computed)).IsRequired().HasMaxLength(11);
               this.Property(t => t.IsObsolete).HasColumnName("IsObsolete");
               this.Property(t => t.IsPaid).HasColumnName("IsPaid");
               this.Property(t => t.BondTypeId).HasColumnName("BondTypeId");

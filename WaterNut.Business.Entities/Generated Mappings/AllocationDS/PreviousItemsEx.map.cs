@@ -11,7 +11,7 @@
     {
         public PreviousItemsExMap()
         {                        
-              this.HasKey(t => new {t.PreviousItem_Id, t.Customs_ProcedureId, t.CustomsProcedure});        
+              this.HasKey(t => t.PreviousItem_Id);        
               this.ToTable("PreviousItemsEx");
               this.Property(t => t.Packages_number).HasColumnName("Packages_number").HasMaxLength(20);
               this.Property(t => t.Previous_Packages_number).HasColumnName("Previous_Packages_number").HasMaxLength(20);
@@ -49,8 +49,10 @@
               this.Property(t => t.TotalDutyLiablity).HasColumnName("TotalDutyLiablity");
               this.Property(t => t.DutyLiablity).HasColumnName("DutyLiablity");
               this.Property(t => t.Prev_reg_year).HasColumnName("Prev_reg_year");
-              this.Property(t => t.Customs_ProcedureId).HasColumnName("Customs_ProcedureId").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.None));
+              this.Property(t => t.Customs_ProcedureId).HasColumnName("Customs_ProcedureId");
               this.Property(t => t.CustomsProcedure).HasColumnName("CustomsProcedure").IsRequired().HasMaxLength(11);
+              this.Property(t => t.EntryDataType).HasColumnName("EntryDataType").HasMaxLength(50);
+              this.HasMany(t => t.EntryPreviousItems).WithRequired(t => (PreviousItemsEx)t.PreviousItemsEx);
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);
     			this.Ignore(t => t.ModifiedProperties);

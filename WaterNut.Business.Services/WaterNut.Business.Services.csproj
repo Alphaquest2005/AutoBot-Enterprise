@@ -569,7 +569,7 @@
     <Compile Include="Contracts\DocumentDS\IDocument_TypeService.cs" />
     <Compile Include="Contracts\DocumentDS\IExportTemplateService.cs" />
     <Compile Include="Contracts\DocumentDS\IFileTypeService.cs" />
-    <Compile Include="Contracts\DocumentDS\IPackageTypeService.cs" />
+    <Compile Include="Contracts\DocumentDS\IPackageTypesService.cs" />
     <Compile Include="Contracts\DocumentDS\ISystemDocumentSetService.cs" />
     <Compile Include="Contracts\DocumentDS\Ixcuda_AssessmentService.cs" />
     <Compile Include="Contracts\DocumentDS\Ixcuda_Assessment_noticeService.cs" />
@@ -1016,6 +1016,7 @@
     <Compile Include="Services\CoreEntities\ParameterSetParametersService.cs" />
     <Compile Include="Services\CoreEntities\ParameterSetService.cs" />
     <Compile Include="Services\CoreEntities\ParametersService.cs" />
+    <Compile Include="Services\DocumentDS\PackageTypesService.cs" />
     <Compile Include="Services\EntryDataDS\ShipmentBLInvoiceService.cs" />
     <Compile Include="Services\EntryDataDS\ShipmentInvoiceBLManualMatchesService.cs" />
     <Compile Include="Services\EntryDataDS\SupplierItemDescriptionRegExService.cs" />
@@ -1405,7 +1406,6 @@
     <Compile Include="Services\DocumentDS\Document_TypeService.cs" />
     <Compile Include="Services\DocumentDS\ExportTemplateService.cs" />
     <Compile Include="Services\DocumentDS\FileTypeService.cs" />
-    <Compile Include="Services\DocumentDS\PackageTypeService.cs" />
     <Compile Include="Services\DocumentDS\SystemDocumentSetService.cs" />
     <Compile Include="Services\DocumentDS\xcuda_AssessmentService.cs" />
     <Compile Include="Services\DocumentDS\xcuda_Assessment_noticeService.cs" />
@@ -1646,6 +1646,7 @@
     <Compile Include="Utils\Matching\ShortCNumberMatcher.cs" />
     <Compile Include="Utils\Matching\ShortPreviousNumberMatcher.cs" />
     <Compile Include="Utils\MatchingToAsycudaItem\MatchToAsycudaItem.cs" />
+    <Compile Include="Utils\ProcessingDISErrorsForAllocations\ProcessDISErrorsForAllocationNoDB.cs" />
     <Compile Include="Utils\ProcessingDISErrorsForAllocations\ProcessDISErrorsForAllocationMem.cs" />
     <Compile Include="Utils\ProcessingDISErrorsForAllocations\ProcessDISErrorsForAllocation.cs" />
     <Compile Include="Utils\SavingInventoryItems\SaveInventoryItemsBulk.cs" />

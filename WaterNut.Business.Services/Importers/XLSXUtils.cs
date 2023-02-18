@@ -198,7 +198,6 @@ namespace WaterNut.Business.Services.Importers
                         {
                             InventoryItem = poItm,
                             AliasItem = invItm,
-                            AliasName = invItm.ItemNumber,
                             TrackingState = TrackingState.Added
                         });
                     }
@@ -210,7 +209,6 @@ namespace WaterNut.Business.Services.Importers
                         {
                             InventoryItem = invItm,
                             AliasItem = poItm,
-                            AliasName = poItm.ItemNumber,
                             TrackingState = TrackingState.Added
                         });
                     }

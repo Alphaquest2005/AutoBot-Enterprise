@@ -219,7 +219,7 @@ namespace WaterNut.DataSpace
 
 
                             UPDATE EntryDataDetails
-                            SET         QtyAllocated = 0, Status = NULL--, EffectiveDate = NULL
+                            SET         QtyAllocated = 0, Status = NULL, comment = null , EffectiveDate = NULL
                             FROM    EntryDataDetails INNER JOIN
                                              EntryData ON EntryDataDetails.EntryData_Id = EntryData.EntryData_Id
                             WHERE (EntryData.ApplicationSettingsId = {appSettingsId})
@@ -350,7 +350,7 @@ namespace WaterNut.DataSpace
 
 
                             UPDATE EntryDataDetails
-                            SET         QtyAllocated = 0, Status = NULL--, EffectiveDate = NULL
+                            SET         QtyAllocated = 0, Status = NULL , comment = null , EffectiveDate = NULL
                             FROM    EntryDataDetails INNER JOIN
                                              EntryData ON EntryDataDetails.EntryDataId = EntryData.EntryDataId 
                             WHERE (EntryDataDetails.InventoryItemId in ({lst}))
@@ -453,21 +453,21 @@ namespace WaterNut.DataSpace
                         AllocationStatus = sa.Status,
                         PiQuantity = prevEntry == null
                             ? 0
-                            : Convert.ToDouble(sa.PreviousDocumentItem.EntryPreviousItems.Select(p => p.xcuda_PreviousItem)
+                            : Convert.ToDouble(sa.PreviousDocumentItem.EntryPreviousItems.Select(p => p.PreviousItemsEx)
                                 .Sum(x => x.Suplementary_Quantity)),
                         DutyFreePi =
                             (double) (prevEntry == null ||
-                                      sa.PreviousDocumentItem.EntryPreviousItems.Select(p => p.xcuda_PreviousItem).Any() ==
+                                      sa.PreviousDocumentItem.EntryPreviousItems.Select(p => p.PreviousItemsEx).Any() ==
                                       false
                                 ? 0
-                                : sa.PreviousDocumentItem.EntryPreviousItems.Select(p => p.xcuda_PreviousItem)
+                                : sa.PreviousDocumentItem.EntryPreviousItems.Select(p => p.PreviousItemsEx)
                                     .Where(x => x.DutyFreePaid == "Duty Free").Sum(x => x.Suplementary_Quantity)),
                         DutyPaidPi =
                             (double) (prevEntry == null ||
-                                      sa.PreviousDocumentItem.EntryPreviousItems.Select(p => p.xcuda_PreviousItem).Any() ==
+                                      sa.PreviousDocumentItem.EntryPreviousItems.Select(p => p.PreviousItemsEx).Any() ==
                                       false
                                 ? 0
-                                : sa.PreviousDocumentItem.EntryPreviousItems.Select(p => p.xcuda_PreviousItem)
+                                : sa.PreviousDocumentItem.EntryPreviousItems.Select(p => p.PreviousItemsEx)
                                     .Where(x => x.DutyFreePaid == "Duty Paid").Sum(x => x.Suplementary_Quantity)),
                         DFQtyAllocated = prevEntry == null ? 0 : Convert.ToDouble(sa.PreviousDocumentItem.DFQtyAllocated),
                         DPQtyAllocated = prevEntry == null ? 0 : Convert.ToDouble(sa.PreviousDocumentItem.DPQtyAllocated),

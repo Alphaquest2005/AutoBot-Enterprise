@@ -162,7 +162,9 @@ namespace WaterNut.DataSpace
 			// update nonstock entrydetails status
 			using (var ctx = new EntryDataDSContext())
 			{
-				ctx.Database.ExecuteSqlCommand($@"UPDATE EntryDataDetails
+               
+
+                ctx.Database.ExecuteSqlCommand($@"UPDATE EntryDataDetails
 						SET         Status = N'Non Stock', DoNotAllocate = 1
 						FROM    EntryData INNER JOIN
 										 EntryDataDetails ON EntryData.EntryDataId = EntryDataDetails.EntryDataId INNER JOIN

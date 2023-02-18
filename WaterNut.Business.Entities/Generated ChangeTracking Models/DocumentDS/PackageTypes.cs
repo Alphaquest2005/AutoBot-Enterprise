@@ -10,19 +10,19 @@ using TrackableEntities.Client;
 
 		namespace DocumentDS.Business.Entities
 {
-    public partial class PackageType
+    public partial class PackageTypes
     {
        
          partial void TrackableStartUp()
          {
-           // _changeTracker = new ChangeTrackingCollection<PackageType>(this);
+           // _changeTracker = new ChangeTrackingCollection<PackageTypes>(this);
          }
 
-        ChangeTrackingCollection<PackageType> _changeTracker;
+        ChangeTrackingCollection<PackageTypes> _changeTracker;
 
         [NotMapped]
         [IgnoreDataMember]
-        public new ChangeTrackingCollection<PackageType> ChangeTracker
+        public new ChangeTrackingCollection<PackageTypes> ChangeTracker
         {
             get
             {
@@ -32,7 +32,7 @@ using TrackableEntities.Client;
 
          public new void StartTracking()
         {
-            _changeTracker = new ChangeTrackingCollection<PackageType>(this);
+            _changeTracker = new ChangeTrackingCollection<PackageTypes>(this);
         }
    
     }

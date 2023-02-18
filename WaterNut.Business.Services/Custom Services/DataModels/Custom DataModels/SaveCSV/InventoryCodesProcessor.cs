@@ -38,7 +38,7 @@ namespace WaterNut.DataSpace
                            // ctx.SaveChanges();
                         }
 
-                        if (i.InventoryItemAlias.FirstOrDefault(x => x.AliasName == supplierItemNumber) == null &&
+                        if (i.InventoryItemAlias.FirstOrDefault(x => x.AliasItem.ItemNumber == supplierItemNumber) == null &&
                             supplierItemNumber.ToUpper() != i.ItemNumber.ToUpper() && !string.IsNullOrEmpty(i.ItemNumber))
                         {
                             var inventoryItemAlia = CreateInventoryItemAlia(i, supplierItemNumber, invItem);
@@ -65,7 +65,7 @@ namespace WaterNut.DataSpace
             var inventoryItemAlia = new InventoryItemAlia(true)
             {
                 InventoryItemId = i.Id,
-                AliasName = ((string)supplierItemNumber).Truncate(20),
+                //AliasName = ((string)supplierItemNumber).Truncate(20),
                 AliasItemId = invItem.Id,
                 AliasId = invItem.Id,
                 TrackingState = TrackingState.Added

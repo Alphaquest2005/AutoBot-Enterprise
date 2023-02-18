@@ -1385,7 +1385,7 @@ private void Update_TarrifCodes(ASYCUDAItem ai)
                 da.Document.xcuda_Warehouse.Add(w);
             }
             w.Identification = a.Warehouse.Identification.Text.FirstOrDefault();
-            w.Delay = a.Warehouse.Delay;
+            w.Delay = Convert.ToInt32(a.Warehouse.Delay == "" ? "0" : a.Warehouse.Delay);
             //await DBaseDataModel.Instance.Savexcuda_Warehouse(w).ConfigureAwait(false);
         }
 

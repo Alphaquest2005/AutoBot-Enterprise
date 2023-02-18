@@ -66,7 +66,7 @@ namespace DocumentDS.Business.Entities
         }
         Nullable<int> _filenumber;
         [DataMember]
-        public Nullable<bool> IsManuallyAssessed 
+        public bool IsManuallyAssessed 
         {
             get
             {
@@ -79,7 +79,7 @@ namespace DocumentDS.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        Nullable<bool> _ismanuallyassessed;
+        bool _ismanuallyassessed;
         [DataMember]
         public string CNumber 
         {
@@ -186,7 +186,7 @@ namespace DocumentDS.Business.Entities
         }
         string _blnumber;
         [DataMember]
-        public Nullable<bool> AutoUpdate 
+        public bool AutoUpdate 
         {
             get
             {
@@ -199,7 +199,7 @@ namespace DocumentDS.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        Nullable<bool> _autoupdate;
+        bool _autoupdate;
         [DataMember]
         public Nullable<System.DateTime> EffectiveRegistrationDate 
         {
@@ -231,7 +231,7 @@ namespace DocumentDS.Business.Entities
         }
         Nullable<int> _apportionmethod;
         [DataMember]
-        public Nullable<bool> DoNotAllocate 
+        public bool DoNotAllocate 
         {
             get
             {
@@ -244,7 +244,7 @@ namespace DocumentDS.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        Nullable<bool> _donotallocate;
+        bool _donotallocate;
         [DataMember]
         public bool ImportComplete 
         {
@@ -276,7 +276,7 @@ namespace DocumentDS.Business.Entities
         }
         Nullable<int> _documentlines;
         [DataMember]
-        public Nullable<bool> Cancelled 
+        public bool Cancelled 
         {
             get
             {
@@ -289,7 +289,7 @@ namespace DocumentDS.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        Nullable<bool> _cancelled;
+        bool _cancelled;
         [DataMember]
         public Nullable<double> TotalWeight 
         {

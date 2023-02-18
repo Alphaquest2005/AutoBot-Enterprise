@@ -10,7 +10,7 @@ using System;
 
 namespace DocumentDS.Business.Entities
 {
-    public partial class PackageType: IIdentifiableEntity
+    public partial class PackageTypes: IIdentifiableEntity
     {
        
        #region IIdentifiable Entities
@@ -18,11 +18,11 @@ namespace DocumentDS.Business.Entities
         {
             get
             {
-                return this.PackageType1.ToString();  // this.PackageType1 == null?"0":
+                return this.PackageDescription.ToString();  // this.PackageDescription == null?"0":
             }
             set
             {
-                this.PackageType1 = Convert.ToString(value);
+                this.PackageDescription = Convert.ToString(value);
             }
         }
 

@@ -122,7 +122,12 @@ namespace AutoBotUtilities.Tests
         [TestCase("TOH/MTSX018S", "2022-12-19", 62)] 
         [TestCase("MTV/44311005", "2022-12-19", 62)]
         [TestCase("SUA/408-1-1/2", "2022-12-19", 60)] // looking for negative qty allocated
-        [TestCase(null, "2023-12-19", 101)]
+        [TestCase("OUR/RASH-GRE", "2022-12-19", 60)] // non stock entrydatadetails
+        [TestCase("TOH/MTS009_8L", "2022-12-19", 60)] // Overage Adjustment not allocating - decided to leave it so
+        [TestCase("CRB/SSMX-240/0", "2022-12-19", 60)] // discrepancy with overage not allocating 
+        [TestCase("INT/YBC106/3GL", "2022-12-19", 60)] // discrepancy with overage not allocating 
+        [TestCase("SE H/R1-S1", "2022-12-19", 60)] // DIS with alias name not allocating 
+        [TestCase(null, "2023-12-19", 101)] 
         public void AllocatSales(string itemNumber, string LastInvoiceDate, int NoOfAllocations )
         {
             try
@@ -136,11 +141,13 @@ namespace AutoBotUtilities.Tests
                 else
                     AllocationsModel.Instance.ClearItemSetAllocations(itemSets).Wait();
 
+                
+
                 timer.Start();
-                new AllocateSalesChain().Execute(BaseDataModel.Instance.CurrentApplicationSettings, false, itemSets);
+                new AllocateSales().Execute(BaseDataModel.Instance.CurrentApplicationSettings, false, itemSets);
                 timer.Stop();
                 
-                Console.Write("AllocatSalesChained in seconds: " + timer.Elapsed.TotalSeconds);
+                Console.Write("AllocatSales in seconds: " + timer.Elapsed.TotalSeconds);
                 Assert.IsTrue(true);
                 //var lastInvoiceDate = DateTime.Parse(LastInvoiceDate)+TimeSpan.FromHours(12);
                 //using (var ctx = new AllocationDSContext())
@@ -179,6 +186,73 @@ namespace AutoBotUtilities.Tests
                 Assert.IsTrue(false);
             }
         }
+
+
+        [TestCase("TOH/MTS009_8L", "2023-2-11", 7)] // Overage Adjustment not allocating - decided to leave it so
+      public void AllocatSalesTOH_MTS009_8L(string itemNumber, string LastInvoiceDate, int NoOfAllocations)
+        {
+            try
+            {
+                if (!Infrastructure.Utils.IsTestApplicationSettings()) Assert.IsTrue(true);
+                var timer = new System.Diagnostics.Stopwatch();
+
+                var itemSets = BaseDataModel.GetItemSets(itemNumber);
+                if (string.IsNullOrEmpty(itemNumber))
+                    AllocationsModel.Instance.ClearAllAllocations(BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId).Wait();
+                else
+                    AllocationsModel.Instance.ClearItemSetAllocations(itemSets).Wait();
+
+
+
+                timer.Start();
+                new AllocateSales().Execute(BaseDataModel.Instance.CurrentApplicationSettings, false, itemSets);
+                timer.Stop();
+
+                Console.Write("AllocatSales in seconds: " + timer.Elapsed.TotalSeconds);
+                Assert.IsTrue(true);
+                var lastInvoiceDate = DateTime.Parse(LastInvoiceDate) + TimeSpan.FromHours(12);
+                using (var ctx = new AllocationDSContext())
+                {
+                    var allocations = new AllocationQSContext().AsycudaSalesAndAdjustmentAllocationsExes.AsNoTracking()
+                        .Count(x => x.InvoiceDate <= lastInvoiceDate && x.ItemNumber == itemNumber);
+
+                    var errallocations = new AllocationQSContext().AsycudaSalesAndAdjustmentAllocationsExes.AsNoTracking()
+                        .Count(x => x.InvoiceDate <= lastInvoiceDate && x.ItemNumber == itemNumber && x.Status != null);
+
+                    //var duplicateAllocations = new AllocationQSContext().AsycudaSalesAndAdjustmentAllocationsExes.AsNoTracking()
+                    //    .Where(x => x.InvoiceDate <= lastInvoiceDate && x.ItemNumber == itemNumber)
+                    //    .GroupBy(x => new{ x.EntryDataDetailsId, x.SalesQuantity})
+                    //    .Where(x => x.Sum(z => z.QtyAllocated) > x.Key.SalesQuantity)
+
+                    var overallocatedSales = ctx.EntryDataDetails
+                        .AsNoTracking()
+                        .Where(x => x.ItemNumber == itemNumber)
+                        .Count(x => x.QtyAllocated > x.Quantity);
+                    var unallocatedSales = ctx.EntryDataDetails.AsNoTracking()
+                        .Where(x => x.EntryData.EntryType != "PO" && x.EntryData.EntryType != "OPS")
+                        .Where(x => x.ItemNumber == itemNumber)
+                        .Count(x => x.QtyAllocated == 0);
+
+
+                    Assert.Multiple(() =>
+                    {
+                        Assert.AreEqual(NoOfAllocations, allocations);
+                        Assert.AreEqual(0, overallocatedSales);
+                        Assert.AreEqual(0, unallocatedSales);
+                        Assert.AreEqual(1, errallocations);
+                    });
+                }
+
+
+
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                Assert.IsTrue(false);
+            }
+        }
+
 
 
         [Test]

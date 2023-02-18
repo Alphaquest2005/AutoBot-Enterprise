@@ -102,7 +102,7 @@ namespace DocumentDS.Business.Entities
         }
         string _customsprocedure;
         [DataMember]
-        public Nullable<bool> IsObsolete 
+        public bool IsObsolete 
         {
             get
             {
@@ -115,9 +115,9 @@ namespace DocumentDS.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        Nullable<bool> _isobsolete;
+        bool _isobsolete;
         [DataMember]
-        public Nullable<bool> IsPaid 
+        public bool IsPaid 
         {
             get
             {
@@ -130,7 +130,7 @@ namespace DocumentDS.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        Nullable<bool> _ispaid;
+        bool _ispaid;
         [DataMember]
         public Nullable<int> BondTypeId 
         {
@@ -147,7 +147,7 @@ namespace DocumentDS.Business.Entities
         }
         Nullable<int> _bondtypeid;
         [DataMember]
-        public Nullable<bool> Stock 
+        public bool Stock 
         {
             get
             {
@@ -160,9 +160,9 @@ namespace DocumentDS.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        Nullable<bool> _stock;
+        bool _stock;
         [DataMember]
-        public Nullable<bool> Discrepancy 
+        public bool Discrepancy 
         {
             get
             {
@@ -175,9 +175,9 @@ namespace DocumentDS.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        Nullable<bool> _discrepancy;
+        bool _discrepancy;
         [DataMember]
-        public Nullable<bool> Adjustment 
+        public bool Adjustment 
         {
             get
             {
@@ -190,9 +190,9 @@ namespace DocumentDS.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        Nullable<bool> _adjustment;
+        bool _adjustment;
         [DataMember]
-        public Nullable<bool> Sales 
+        public bool Sales 
         {
             get
             {
@@ -205,7 +205,7 @@ namespace DocumentDS.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        Nullable<bool> _sales;
+        bool _sales;
         [DataMember]
         public int CustomsOperationId 
         {
@@ -222,7 +222,7 @@ namespace DocumentDS.Business.Entities
         }
         int _customsoperationid;
         [DataMember]
-        public Nullable<bool> SubmitToCustoms 
+        public bool SubmitToCustoms 
         {
             get
             {
@@ -235,9 +235,9 @@ namespace DocumentDS.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        Nullable<bool> _submittocustoms;
+        bool _submittocustoms;
         [DataMember]
-        public Nullable<bool> IsDefault 
+        public bool IsDefault 
         {
             get
             {
@@ -250,9 +250,9 @@ namespace DocumentDS.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        Nullable<bool> _isdefault;
+        bool _isdefault;
         [DataMember]
-        public Nullable<bool> ExportSupportingEntryData 
+        public bool ExportSupportingEntryData 
         {
             get
             {
@@ -265,7 +265,7 @@ namespace DocumentDS.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        Nullable<bool> _exportsupportingentrydata;
+        bool _exportsupportingentrydata;
         [DataMember]
         public List<AsycudaDocumentSet> AsycudaDocumentSets { get; set; }
         [DataMember]

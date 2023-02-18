@@ -11,7 +11,7 @@ namespace WaterNut.Business.Services.Utils.ProcessingDISErrorsForAllocations
 {
     public class ProcessDISErrorsForAllocation 
     {
-        public async Task Execute(int applicationSettingsId, string res)
+        public async Task<List<EntryDataDetail>> Execute(int applicationSettingsId, string res)
         {
             try
             {
@@ -29,7 +29,7 @@ namespace WaterNut.Business.Services.Utils.ProcessingDISErrorsForAllocations
                         .ToList();
 
                     // looking for 'INT/YBA473/3GL'
-                    Execute(lst, ctx);
+                    return Execute(lst, ctx);
                 }
             }
             catch (Exception)
@@ -39,9 +39,10 @@ namespace WaterNut.Business.Services.Utils.ProcessingDISErrorsForAllocations
 
         }
 
-        private static void Execute(List<TODO_PreDiscrepancyErrors> lst, AdjustmentQSContext ctx)
+        private static List<EntryDataDetail> Execute(List<TODO_PreDiscrepancyErrors> lst, AdjustmentQSContext ctx)
         {
             StatusModel.StartStatusUpdate("Preparing Discrepancy Errors for Re-Allocation", lst.Count());
+            var edlst = new List<EntryDataDetail>();
             foreach (var s in lst.Where(x =>  x.IsReconciled != true))//x.ReceivedQty > x.InvoiceQty &&
             {
                 var ed = ctx.EntryDataDetails.Include(x => x.AdjustmentEx).First(x => x.EntryDataDetailsId == s.EntryDataDetailsId);
@@ -51,9 +52,11 @@ namespace WaterNut.Business.Services.Utils.ProcessingDISErrorsForAllocations
                 ed.Status = null;
                 ctx.Database.ExecuteSqlCommand(
                     $"delete from AsycudaSalesAllocations where EntryDataDetailsId = {ed.EntryDataDetailsId}");
+                edlst.Add(ed);
             }
 
             ctx.SaveChanges();
+            return edlst;
         }
     }
 }

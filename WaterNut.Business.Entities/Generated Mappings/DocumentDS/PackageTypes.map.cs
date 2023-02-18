@@ -7,14 +7,14 @@
     using System.ComponentModel.DataAnnotations.Schema;
     using System.Collections.Generic;
     
-    public partial class PackageTypeMap : EntityTypeConfiguration<PackageType>
+    public partial class PackageTypesMap : EntityTypeConfiguration<PackageTypes>
     {
-        public PackageTypeMap()
+        public PackageTypesMap()
         {                        
-              this.HasKey(t => t.PackageType1);        
+              this.HasKey(t => t.PackageDescription);        
               this.ToTable("PackageTypes");
-              this.Property(t => t.PackageType1).HasColumnName("PackageType").IsRequired().HasMaxLength(4);
-              this.Property(t => t.PackageDescription).HasColumnName("PackageDescription").HasMaxLength(50);
+              this.Property(t => t.PackageType).HasColumnName("PackageType").IsRequired().HasMaxLength(4);
+              this.Property(t => t.PackageDescription).HasColumnName("PackageDescription").IsRequired().HasMaxLength(50);
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);
     			this.Ignore(t => t.ModifiedProperties);

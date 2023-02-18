@@ -241,6 +241,12 @@ namespace AllocationDS.Business.Services
                                         GetWhere<xcuda_PreviousItem>(dbContext, exp, itm.Value, "EntryPreviousItems", "SelectMany", includesLst)
 										.ConfigureAwait(continueOnCapturedContext: false);
 
+                            case "PreviousItemsEx":
+                                return
+                                    await
+                                        GetWhere<PreviousItemsEx>(dbContext, exp, itm.Value, "EntryPreviousItems", "SelectMany", includesLst)
+										.ConfigureAwait(continueOnCapturedContext: false);
+
                         }
 
                     }
@@ -728,6 +734,9 @@ namespace AllocationDS.Business.Services
                             case "xcuda_PreviousItem":
                                 return await CountWhere<xcuda_PreviousItem>(dbContext, exp, itm.Value, "EntryPreviousItems", "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "PreviousItemsEx":
+                                return await CountWhere<PreviousItemsEx>(dbContext, exp, itm.Value, "EntryPreviousItems", "SelectMany")
+											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }
                     return dbContext.EntryPreviousItems.Where(exp == "All" || exp == null ? "EntryPreviousItemId != null" : exp)
@@ -840,6 +849,12 @@ namespace AllocationDS.Business.Services
                                 return
                                     await
                                         LoadRangeWhere<xcuda_PreviousItem>(startIndex, count, dbContext, exp, itm.Value, "EntryPreviousItems", "SelectMany")
+													.ConfigureAwait(continueOnCapturedContext: false);
+
+                            case "PreviousItemsEx":
+                                return
+                                    await
+                                        LoadRangeWhere<PreviousItemsEx>(startIndex, count, dbContext, exp, itm.Value, "EntryPreviousItems", "SelectMany")
 													.ConfigureAwait(continueOnCapturedContext: false);
 
                           
@@ -1155,6 +1170,9 @@ namespace AllocationDS.Business.Services
 											.ConfigureAwait(continueOnCapturedContext: false);
                             case "xcuda_PreviousItem":
                                 return await SumWhere<xcuda_PreviousItem>(dbContext, exp, itm.Value, "EntryPreviousItems", field, "SelectMany")
+											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "PreviousItemsEx":
+                                return await SumWhere<PreviousItemsEx>(dbContext, exp, itm.Value, "EntryPreviousItems", field, "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }

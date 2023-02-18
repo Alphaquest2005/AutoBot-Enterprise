@@ -225,6 +225,19 @@ namespace AllocationDS.Business.Services
                         if(tracking) aentities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
                         return aentities; 
                     }
+                    foreach (var itm in navExp)
+                    {
+                        switch (itm.Key)
+                        {
+                            case "EntryPreviousItems":
+                                return
+                                    await
+                                        GetWhere<EntryPreviousItems>(dbContext, exp, itm.Value, "PreviousItemsEx", "Select", includesLst)
+										.ConfigureAwait(continueOnCapturedContext: false);
+
+                        }
+
+                    }
 					var set = AddIncludes(includesLst, dbContext);
                     var entities = set.AsNoTracking().Where(exp)
 									.ToList();
@@ -699,6 +712,15 @@ namespace AllocationDS.Business.Services
 										.AsNoTracking()
                                         .Count();
                     }
+                    foreach (var itm in navExp)
+                    {
+                        switch (itm.Key)
+                        {
+                            case "EntryPreviousItems":
+                                return await CountWhere<EntryPreviousItems>(dbContext, exp, itm.Value, "PreviousItemsEx", "Select")
+											.ConfigureAwait(continueOnCapturedContext: false);
+						}
+                    }
                     return dbContext.PreviousItemsEx.Where(exp == "All" || exp == null ? "PreviousItem_Id != null" : exp)
 											.AsNoTracking()
                                             .Count();
@@ -794,6 +816,22 @@ namespace AllocationDS.Business.Services
                                     .Skip(startIndex)
                                     .Take(count)
 									.ToList();
+                    }
+                    foreach (var itm in navExp)
+                    {
+                        switch (itm.Key)
+                        {
+                            case "EntryPreviousItems":
+                                return
+                                    await
+                                        LoadRangeWhere<EntryPreviousItems>(startIndex, count, dbContext, exp, itm.Value, "PreviousItemsEx", "Select")
+													.ConfigureAwait(continueOnCapturedContext: false);
+
+                          
+							default:
+                                throw new ArgumentException("No Navigation property found for " + itm.Key);
+						}
+
                     }
                     return set//dbContext.PreviousItemsEx
 								.AsNoTracking()
@@ -995,6 +1033,7 @@ namespace AllocationDS.Business.Services
                 var i = Convert.ToInt32(ASYCUDA_Id);
                 var set = AddIncludes(includesLst, dbContext);
                 IEnumerable<PreviousItemsEx> entities = set//dbContext.PreviousItemsEx
+                                                    // .Include(x => x.EntryPreviousItems)									  
                                       .AsNoTracking()
                                         .Where(x => x.ASYCUDA_Id.ToString() == ASYCUDA_Id.ToString())
 										.ToList();
@@ -1023,6 +1062,7 @@ namespace AllocationDS.Business.Services
                 var i = Convert.ToInt32(PreviousDocumentItemId);
                 var set = AddIncludes(includesLst, dbContext);
                 IEnumerable<PreviousItemsEx> entities = set//dbContext.PreviousItemsEx
+                                                    // .Include(x => x.EntryPreviousItems)									  
                                       .AsNoTracking()
                                         .Where(x => x.PreviousDocumentItemId.ToString() == PreviousDocumentItemId.ToString())
 										.ToList();
@@ -1051,6 +1091,7 @@ namespace AllocationDS.Business.Services
                 var i = Convert.ToInt32(AsycudaDocumentItemId);
                 var set = AddIncludes(includesLst, dbContext);
                 IEnumerable<PreviousItemsEx> entities = set//dbContext.PreviousItemsEx
+                                                    // .Include(x => x.EntryPreviousItems)									  
                                       .AsNoTracking()
                                         .Where(x => x.AsycudaDocumentItemId.ToString() == AsycudaDocumentItemId.ToString())
 										.ToList();
@@ -1079,8 +1120,38 @@ namespace AllocationDS.Business.Services
                 var i = Convert.ToInt32(ApplicationSettingsId);
                 var set = AddIncludes(includesLst, dbContext);
                 IEnumerable<PreviousItemsEx> entities = set//dbContext.PreviousItemsEx
+                                                    // .Include(x => x.EntryPreviousItems)									  
                                       .AsNoTracking()
                                         .Where(x => x.ApplicationSettingsId.ToString() == ApplicationSettingsId.ToString())
+										.ToList();
+                return entities;
+              }
+             }
+            catch (Exception updateEx)
+            {
+                System.Diagnostics.Debugger.Break();
+                //throw new FaultException(updateEx.Message);
+                    var fault = new ValidationFault
+                                {
+                                    Result = false,
+                                    Message = updateEx.Message,
+                                    Description = updateEx.StackTrace
+                                };
+                    throw new FaultException<ValidationFault>(fault);
+            }
+        }
+ 	        public async Task<IEnumerable<PreviousItemsEx>> GetPreviousItemsExByCustoms_ProcedureId(string Customs_ProcedureId, List<string> includesLst = null)
+        {
+            try
+            {
+                using ( var dbContext = new AllocationDSContext(){StartTracking = StartTracking})
+              {
+                var i = Convert.ToInt32(Customs_ProcedureId);
+                var set = AddIncludes(includesLst, dbContext);
+                IEnumerable<PreviousItemsEx> entities = set//dbContext.PreviousItemsEx
+                                                    // .Include(x => x.EntryPreviousItems)									  
+                                      .AsNoTracking()
+                                        .Where(x => x.Customs_ProcedureId.ToString() == Customs_ProcedureId.ToString())
 										.ToList();
                 return entities;
               }
@@ -1148,6 +1219,15 @@ namespace AllocationDS.Business.Services
                         return Convert.ToDecimal(dbContext.PreviousItemsEx
 										.AsNoTracking()
                                         .Sum(field)??0);
+                    }
+                    foreach (var itm in navExp)
+                    {
+                        switch (itm.Key)
+                        {
+                            case "EntryPreviousItems":
+                                return await SumWhere<EntryPreviousItems>(dbContext, exp, itm.Value, "PreviousItemsEx", field, "Select")
+											.ConfigureAwait(continueOnCapturedContext: false);
+						}
                     }
                     return Convert.ToDecimal(dbContext.PreviousItemsEx.Where(exp == "All" || exp == null ? "PreviousItem_Id != null" : exp)
 											.AsNoTracking()

@@ -12,7 +12,7 @@ using Newtonsoft.Json;
 
 namespace DocumentDS.Business.Entities
 {
-    public partial class PackageType: IEntityWithKey
+    public partial class PackageTypes: IEntityWithKey
     {
     #region "IEntityWithKey Implementation"
 

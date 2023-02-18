@@ -20,6 +20,11 @@ namespace AllocationDS.Business.Entities
     [DataContract(IsReference = true, Namespace="http://www.insight-software.com/WaterNut")]
     public partial class PreviousItemsEx : BaseEntity<PreviousItemsEx>, ITrackable 
     {
+        partial void AutoGenStartUp() //PreviousItemsEx()
+        {
+            this.EntryPreviousItems = new List<EntryPreviousItems>();
+        }
+
         [DataMember]
         public string Packages_number 
         {
@@ -590,6 +595,23 @@ namespace AllocationDS.Business.Entities
             }
         }
         string _customsprocedure;
+        [DataMember]
+        public string EntryDataType 
+        {
+            get
+            {
+                return _entrydatatype;
+            }
+            set
+            {
+                _entrydatatype = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _entrydatatype;
+        [DataMember]
+        public List<EntryPreviousItems> EntryPreviousItems { get; set; }
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

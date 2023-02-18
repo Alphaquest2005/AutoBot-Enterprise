@@ -9,7 +9,7 @@ using AllocationDS.Business.Entities;
 using Core.Common.Extensions;
 using Core.Common.UI;
 using CoreEntities.Business.Entities;
-using MoreLinq;
+using MoreLinq.Extensions;
 using TrackableEntities.EF6;
 using WaterNut.Business.Services.Utils.ProcessingDISErrorsForAllocations;
 using WaterNut.DataSpace;
@@ -45,8 +45,12 @@ namespace WaterNut.Business.Services.Utils.AutoMatching
                 var matches = await DoAutoMatch(applicationSettingsId, rawData).ConfigureAwait(false);
 
                 SaveEntryDataDetails(matches.DistinctBy(x => x.EntryDataDetailsId).ToList());
-                
-                await ProcessDISErrorsForAllocation(rawData).ConfigureAwait(false);
+
+                var processedErrors = await ProcessDISErrorsForAllocation(rawData).ConfigureAwait(false);
+
+                var noDataErrors = await ProcessNoDataDISForAllocation(matches.Where(x => Math.Abs(x.QtyAllocated - x.Quantity) > 0).ExceptBy(processedErrors,x => x.EntryDataDetailsId).ToList()).ConfigureAwait(false);
+
+                SaveEntryDataDetails(noDataErrors.DistinctBy(x => x.EntryDataDetailsId).ToList());
 
             }
             catch (Exception e)
@@ -133,6 +137,18 @@ namespace WaterNut.Business.Services.Utils.AutoMatching
         {
             try
             {
+                var overAllocations = matches.SelectMany(x => x.AdjustmentOversAllocations).ToList();
+                if (overAllocations.Any())
+                {
+                    new AdjustmentQSContext().BulkMerge(overAllocations);
+                }
+
+                var shortAllocations = matches.SelectMany(x => x.AsycudaSalesAllocations).ToList();
+                if (shortAllocations.Any())
+                {
+                    new AdjustmentQSContext().BulkMerge(shortAllocations);
+                }
+
                 new AdjustmentQSContext().BulkMerge(matches);
             }
             catch (Exception e)
@@ -151,15 +167,35 @@ namespace WaterNut.Business.Services.Utils.AutoMatching
         }
 
        
-        private async Task ProcessDISErrorsForAllocation(List<AdjustmentDetail> lst)
+        private async Task<List<EntryDataDetail>> ProcessDISErrorsForAllocation(List<AdjustmentDetail> lst)
         {
-          var errors = await  new ProcessDISErrorsForAllocationMem().Execute(
-                    BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId,
-                    lst
-                        .Select(v => v).Select(x => $"{x.EntryDataDetailsId}")
-                        .Aggregate((o, n) => $"{o},{n}")).ConfigureAwait(false);
-            SaveEntryDataDetails(errors);
-            await DeleteAllocationsForEntryDataDetails(errors).ConfigureAwait(false);
+            var errors = await new ProcessDISErrorsForAllocation().Execute(
+                      BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId,
+                      lst
+                          .Select(v => v).Select(x => $"{x.EntryDataDetailsId}")
+                          .Aggregate((o, n) => $"{o},{n}")).ConfigureAwait(false);
+
+
+            //var errors = await  new ProcessDISErrorsForAllocationMem().Execute(
+            //          BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId,
+            //          lst
+            //              .Select(v => v).Select(x => $"{x.EntryDataDetailsId}")
+            //              .Aggregate((o, n) => $"{o},{n}")).ConfigureAwait(false);
+            //  SaveEntryDataDetails(errors);
+            //  await DeleteAllocationsForEntryDataDetails(errors).ConfigureAwait(false);
+            return errors;
+        }
+
+        private async Task<List<EntryDataDetail>> ProcessNoDataDISForAllocation(List<EntryDataDetail> lst)
+        {
+            if(!lst.Any() ) return lst;
+            var errors = await new ProcessDISErrorsForAllocationNoDB().Execute(
+                BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId,
+                lst
+                    .Select(v => v).Select(x => $"{x.EntryDataDetailsId}")
+                    .Aggregate((o, n) => $"{o},{n}")).ConfigureAwait(false);
+
+            return errors;
         }
 
         private async Task DeleteAllocationsForEntryDataDetails(List<EntryDataDetail> errors)

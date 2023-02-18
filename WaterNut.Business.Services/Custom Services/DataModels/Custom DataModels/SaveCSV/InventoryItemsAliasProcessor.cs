@@ -58,7 +58,7 @@ namespace WaterNut.DataSpace
                 var inventoryItem = new GetInventoryItemSelector().Execute((string)e.ItemNumber);
 
                 if (inventoryItem.InventoryItemAlias.FirstOrDefault(x =>
-                        x.AliasName == e.ItemAlias) ==
+                        x.AliasItem.ItemNumber == e.ItemAlias) ==
                     null)
                 {
                     CreateItemAlias(e, inventoryItem);
@@ -81,7 +81,6 @@ namespace WaterNut.DataSpace
             inventoryItem.InventoryItemAlias.Add(new InventoryItemAlia(true)
             {
                 InventoryItemId = inventoryItem.Id,
-                AliasName = aliasName,
                 AliasItemId = aliasItm.Id,
             });
         }

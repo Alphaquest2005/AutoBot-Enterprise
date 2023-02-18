@@ -164,6 +164,7 @@ namespace WaterNut.DataSpace
                         (await CreateAllocationDataBlocks(currentFilter + exPro, errors, dateFilter).ConfigureAwait(false))
                         .Where(x => x.Allocations.Count > 0);
 
+                    Debug.WriteLine($"*********************Create EX9 For {startDate.Date.ToShortDateString()}");
 
                     foreach (var dfp in dutylst)
                     {
@@ -967,12 +968,12 @@ namespace WaterNut.DataSpace
                                 .SelectMany(i => i.InventoryItemAlias)
                                 .ToList();
                             
-                            var aliasNames = alias.Select(a => a.AliasName).ToList();
+                            var aliasNames = alias.Select(a => a.AliasItem.ItemNumber).ToList();
 
-                            var aliasAlias = InventoryDataCache.Where(z => z.InventoryItemAlias.Any(a => aliasNames.Contains(a.AliasName)) ).SelectMany(z => z.InventoryItemAlias).ToList();
+                            var aliasAlias = InventoryDataCache.Where(z => z.InventoryItemAlias.Any(a => aliasNames.Contains(a.AliasItem.ItemNumber)) ).SelectMany(z => z.InventoryItemAlias).ToList();
                             //.Where(c => alias.Select(z => z.AliasItemId).ToList().Any(z => z == c.Id))
                             //.SelectMany(i => i.InventoryItemAlias);
-                            var aaNames = aliasAlias.Select(a => a.AliasName).ToList();
+                            var aaNames = aliasAlias.Select(a => a.AliasItem.ItemNumber).ToList();
 
                             
 
@@ -2149,7 +2150,7 @@ namespace WaterNut.DataSpace
 
                 var ra = plst.Sum(x => x.Suplementary_Quantity) + docSetPreviousItems.Sum(x => x.Suplementary_Quantity);
 
-                var iw = ((pw - (decimal) rw) / (decimal) (pod.EX9Allocation.pQuantity - ra)) * Convert.ToDecimal(pod.Quantity);
+                var iw = (decimal)(pod.EX9Allocation.pQuantity - ra) == (decimal)0.0 ? 0 :  ((pw - (decimal) rw) / (decimal) (pod.EX9Allocation.pQuantity - ra)) * Convert.ToDecimal(pod.Quantity);
 
                 //var iw = Convert.ToDouble((Math.Round(pod.EX9Allocation.Net_weight_itm,2)
                 //                           / pod.EX9Allocation.pQuantity) * Convert.ToDouble(pod.Quantity));

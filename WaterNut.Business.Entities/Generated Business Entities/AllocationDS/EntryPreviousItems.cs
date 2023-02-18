@@ -69,6 +69,8 @@ namespace AllocationDS.Business.Entities
         public xcuda_Item xcuda_Item { get; set; }
         [DataMember]
         public xcuda_PreviousItem xcuda_PreviousItem { get; set; }
+        [DataMember]
+        public PreviousItemsEx PreviousItemsEx { get; set; }
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

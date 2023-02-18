@@ -13,11 +13,13 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
     public class AllocateSalesChain : IAllocateSalesProcessor
     {
         
-        public async Task Execute(ApplicationSettings applicationSettings, bool allocateToLastAdjustment, string lst= null)
+        public async Task Execute(ApplicationSettings applicationSettings, bool allocateToLastAdjustment, string lst)
         {
             try
             {
-                
+                if (lst == null)
+                    throw new ApplicationException(
+                        "this method cannot function properly on all items unless the caching issue is addressed");
                 var itemSets = DataSpace.BaseDataModel.GetItemSets(lst);
                
                 Execute(applicationSettings, allocateToLastAdjustment, itemSets);
@@ -32,7 +34,7 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
 
         }
 
-        public void Execute(ApplicationSettings applicationSettings, bool allocateToLastAdjustment,
+        private void Execute(ApplicationSettings applicationSettings, bool allocateToLastAdjustment,
             List<List<(string ItemNumber, int InventoryItemId)>> itemSets)
         {
             SQLBlackBox.RunSqlBlackBox();
@@ -43,6 +45,8 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
                 .AsParallel()
                 .WithDegreeOfParallelism(Convert.ToInt32(Environment.ProcessorCount *
                                                          DataSpace.BaseDataModel.Instance.ResourcePercentage))
+
+                // chained implementation can only work with discrepancies of when memory data is loaded its is outdated
                 .ForAll(x =>
                 {
                     new ReAllocatedExistingXSales().Execute(x).Wait();

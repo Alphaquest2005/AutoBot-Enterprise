@@ -341,7 +341,7 @@
     <Compile Include="Generated Business Entities\DocumentDS\Enums\CustomsOperation.cs" />
     <Compile Include="Generated Business Entities\DocumentDS\ExportTemplate.cs" />
     <Compile Include="Generated Business Entities\DocumentDS\FileType.cs" />
-    <Compile Include="Generated Business Entities\DocumentDS\PackageType.cs" />
+    <Compile Include="Generated Business Entities\DocumentDS\PackageTypes.cs" />
     <Compile Include="Generated Business Entities\DocumentDS\SystemDocumentSet.cs" />
     <Compile Include="Generated Business Entities\DocumentDS\xcuda_Assessment.cs" />
     <Compile Include="Generated Business Entities\DocumentDS\xcuda_Assessment_notice.cs" />
@@ -770,7 +770,7 @@
     <Compile Include="Generated ChangeTracking Models\DocumentDS\Document_Type.cs" />
     <Compile Include="Generated ChangeTracking Models\DocumentDS\ExportTemplate.cs" />
     <Compile Include="Generated ChangeTracking Models\DocumentDS\FileType.cs" />
-    <Compile Include="Generated ChangeTracking Models\DocumentDS\PackageType.cs" />
+    <Compile Include="Generated ChangeTracking Models\DocumentDS\PackageTypes.cs" />
     <Compile Include="Generated ChangeTracking Models\DocumentDS\SystemDocumentSet.cs" />
     <Compile Include="Generated ChangeTracking Models\DocumentDS\xcuda_Assessment.cs" />
     <Compile Include="Generated ChangeTracking Models\DocumentDS\xcuda_Assessment_notice.cs" />
@@ -1196,7 +1196,7 @@
     <Compile Include="Generated Constructors Models\DocumentDS\Document_Type.cs" />
     <Compile Include="Generated Constructors Models\DocumentDS\ExportTemplate.cs" />
     <Compile Include="Generated Constructors Models\DocumentDS\FileType.cs" />
-    <Compile Include="Generated Constructors Models\DocumentDS\PackageType.cs" />
+    <Compile Include="Generated Constructors Models\DocumentDS\PackageTypes.cs" />
     <Compile Include="Generated Constructors Models\DocumentDS\SystemDocumentSet.cs" />
     <Compile Include="Generated Constructors Models\DocumentDS\xcuda_Assessment.cs" />
     <Compile Include="Generated Constructors Models\DocumentDS\xcuda_Assessment_notice.cs" />
@@ -1622,7 +1622,7 @@
     <Compile Include="Generated IEntitiyWithKey Models\DocumentDS\Document_Type.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\DocumentDS\ExportTemplate.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\DocumentDS\FileType.cs" />
-    <Compile Include="Generated IEntitiyWithKey Models\DocumentDS\PackageType.cs" />
+    <Compile Include="Generated IEntitiyWithKey Models\DocumentDS\PackageTypes.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\DocumentDS\SystemDocumentSet.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\DocumentDS\xcuda_Assessment.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\DocumentDS\xcuda_Assessment_notice.cs" />
@@ -2048,7 +2048,7 @@
     <Compile Include="Generated IIdentitfiableEntity Models\DocumentDS\Document_Type.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\DocumentDS\ExportTemplate.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\DocumentDS\FileType.cs" />
-    <Compile Include="Generated IIdentitfiableEntity Models\DocumentDS\PackageType.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\DocumentDS\PackageTypes.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\DocumentDS\SystemDocumentSet.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\DocumentDS\xcuda_Assessment.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\DocumentDS\xcuda_Assessment_notice.cs" />
@@ -2484,7 +2484,7 @@
     <Compile Include="Generated Mappings\DocumentDS\Document_Type.map.cs" />
     <Compile Include="Generated Mappings\DocumentDS\ExportTemplate.map.cs" />
     <Compile Include="Generated Mappings\DocumentDS\FileType.map.cs" />
-    <Compile Include="Generated Mappings\DocumentDS\PackageType.map.cs" />
+    <Compile Include="Generated Mappings\DocumentDS\PackageTypes.map.cs" />
     <Compile Include="Generated Mappings\DocumentDS\SystemDocumentSet.map.cs" />
     <Compile Include="Generated Mappings\DocumentDS\xcuda_Assessment.map.cs" />
     <Compile Include="Generated Mappings\DocumentDS\xcuda_Assessment_notice.map.cs" />

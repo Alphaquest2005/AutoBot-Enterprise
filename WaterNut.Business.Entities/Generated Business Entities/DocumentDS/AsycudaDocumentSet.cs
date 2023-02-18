@@ -388,6 +388,21 @@ namespace DocumentDS.Business.Entities
         }
         Nullable<int> _expectedentries;
         [DataMember]
+        public string PackageType 
+        {
+            get
+            {
+                return _packagetype;
+            }
+            set
+            {
+                _packagetype = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _packagetype;
+        [DataMember]
         public Customs_Procedure Customs_Procedure { get; set; }
         [DataMember]
         public List<AsycudaDocumentSetEntryData> AsycudaDocumentSetEntryDatas { get; set; }

@@ -14,7 +14,7 @@
               this.HasKey(t => t.Warehouse_Id);        
               this.ToTable("xcuda_Warehouse");
               this.Property(t => t.Identification).HasColumnName("Identification").HasMaxLength(20);
-              this.Property(t => t.Delay).HasColumnName("Delay").HasMaxLength(4);
+              this.Property(t => t.Delay).HasColumnName("Delay");
               this.Property(t => t.ASYCUDA_Id).HasColumnName("ASYCUDA_Id");
               this.Property(t => t.Warehouse_Id).HasColumnName("Warehouse_Id").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.Identity));
               this.HasOptional(t => t.xcuda_ASYCUDA).WithMany(t =>(ICollection<xcuda_Warehouse>) t.xcuda_Warehouse).HasForeignKey(d => d.ASYCUDA_Id);

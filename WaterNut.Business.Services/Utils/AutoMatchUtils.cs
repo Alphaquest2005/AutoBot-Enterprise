@@ -51,6 +51,7 @@ namespace AdjustmentQS.Business.Services
             if (asycudaDocument != null)
             {
                 ed.EffectiveDate = asycudaDocument.AssessmentDate;
+                ed.QtyAllocated = ed.Quantity;
                 ed.AdjustmentOversAllocations.Add(new AdjustmentOversAllocation(true)
                 {
                     EntryDataDetailsId = ed.EntryDataDetailsId,

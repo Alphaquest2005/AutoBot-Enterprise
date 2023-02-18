@@ -318,7 +318,7 @@
 ..\WaterNut.Business.Entities\Generated Business Entities\DocumentDS\Document_Type.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\DocumentDS\ExportTemplate.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\DocumentDS\FileType.cs
-..\WaterNut.Business.Entities\Generated Business Entities\DocumentDS\PackageType.cs
+..\WaterNut.Business.Entities\Generated Business Entities\DocumentDS\PackageTypes.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\DocumentDS\SystemDocumentSet.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\DocumentDS\xcuda_Assessment.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\DocumentDS\xcuda_Assessment_notice.cs
@@ -758,7 +758,7 @@
 ..\WaterNut.Business.Entities\Generated Mappings\DocumentDS\Document_Type.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\DocumentDS\ExportTemplate.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\DocumentDS\FileType.map.cs
-..\WaterNut.Business.Entities\Generated Mappings\DocumentDS\PackageType.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentDS\PackageTypes.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\DocumentDS\SystemDocumentSet.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\DocumentDS\xcuda_Assessment.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\DocumentDS\xcuda_Assessment_notice.map.cs
@@ -1207,7 +1207,7 @@
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\DocumentDS\Document_Type.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\DocumentDS\ExportTemplate.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\DocumentDS\FileType.cs
-..\WaterNut.Business.Entities\Generated ChangeTracking Models\DocumentDS\PackageType.cs
+..\WaterNut.Business.Entities\Generated ChangeTracking Models\DocumentDS\PackageTypes.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\DocumentDS\SystemDocumentSet.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\DocumentDS\xcuda_Assessment.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\DocumentDS\xcuda_Assessment_notice.cs
@@ -1633,7 +1633,7 @@
 ..\WaterNut.Business.Entities\Generated Constructors Models\DocumentDS\Document_Type.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\DocumentDS\ExportTemplate.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\DocumentDS\FileType.cs
-..\WaterNut.Business.Entities\Generated Constructors Models\DocumentDS\PackageType.cs
+..\WaterNut.Business.Entities\Generated Constructors Models\DocumentDS\PackageTypes.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\DocumentDS\SystemDocumentSet.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\DocumentDS\xcuda_Assessment.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\DocumentDS\xcuda_Assessment_notice.cs
@@ -2059,7 +2059,7 @@
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\DocumentDS\Document_Type.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\DocumentDS\ExportTemplate.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\DocumentDS\FileType.cs
-..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\DocumentDS\PackageType.cs
+..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\DocumentDS\PackageTypes.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\DocumentDS\SystemDocumentSet.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\DocumentDS\xcuda_Assessment.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\DocumentDS\xcuda_Assessment_notice.cs
@@ -2485,7 +2485,7 @@
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\DocumentDS\Document_Type.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\DocumentDS\ExportTemplate.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\DocumentDS\FileType.cs
-..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\DocumentDS\PackageType.cs
+..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\DocumentDS\PackageTypes.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\DocumentDS\SystemDocumentSet.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\DocumentDS\xcuda_Assessment.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\DocumentDS\xcuda_Assessment_notice.cs
@@ -4186,7 +4186,7 @@
 ..\WaterNut.Business.Entities\Generated Mappings\DocumentDS\Document_Type.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\DocumentDS\ExportTemplate.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\DocumentDS\FileType.map.cs
-..\WaterNut.Business.Entities\Generated Mappings\DocumentDS\PackageType.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\DocumentDS\PackageTypes.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\DocumentDS\SystemDocumentSet.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\DocumentDS\xcuda_Assessment.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\DocumentDS\xcuda_Assessment_notice.map.cs
@@ -4848,7 +4848,7 @@
 ..\WaterNut.Business.Services\Contracts\DocumentDS\IDocument_TypeService.cs
 ..\WaterNut.Business.Services\Contracts\DocumentDS\IExportTemplateService.cs
 ..\WaterNut.Business.Services\Contracts\DocumentDS\IFileTypeService.cs
-..\WaterNut.Business.Services\Contracts\DocumentDS\IPackageTypeService.cs
+..\WaterNut.Business.Services\Contracts\DocumentDS\IPackageTypesService.cs
 ..\WaterNut.Business.Services\Contracts\DocumentDS\ISystemDocumentSetService.cs
 ..\WaterNut.Business.Services\Contracts\DocumentDS\Ixcuda_Assessment_noticeService.cs
 ..\WaterNut.Business.Services\Contracts\DocumentDS\Ixcuda_AssessmentService.cs
@@ -5274,7 +5274,7 @@
 ..\WaterNut.Business.Services\Services\DocumentDS\Document_TypeService.cs
 ..\WaterNut.Business.Services\Services\DocumentDS\ExportTemplateService.cs
 ..\WaterNut.Business.Services\Services\DocumentDS\FileTypeService.cs
-..\WaterNut.Business.Services\Services\DocumentDS\PackageTypeService.cs
+..\WaterNut.Business.Services\Services\DocumentDS\PackageTypesService.cs
 ..\WaterNut.Business.Services\Services\DocumentDS\SystemDocumentSetService.cs
 ..\WaterNut.Business.Services\Services\DocumentDS\xcuda_Assessment_noticeService.cs
 ..\WaterNut.Business.Services\Services\DocumentDS\xcuda_AssessmentService.cs
