@@ -106,7 +106,7 @@ namespace WaterNut.Business.Services.Custom_Services.AdjustmentQS.GettingEx9Allo
                                     .Where(y => (y.xcuda_Item.AsycudaDocument.CNumber != null ||
                                                  y.xcuda_Item.AsycudaDocument.IsManuallyAssessed == true) &&
                                                 y.xcuda_Item.AsycudaDocument.Cancelled != true)
-                                    .Select(z => new previousItems()
+                                    .Select(z => new PreviousItems()
                                     {
                                         PreviousItem_Id = z.PreviousItem_Id,
                                         DutyFreePaid =

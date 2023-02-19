@@ -1966,7 +1966,7 @@ namespace WaterNut.DataSpace
         public class MyPodData
         {
             public List<AsycudaSalesAllocations> Allocations { get; set; }
-            public CreateEx9Class.AlloEntryLineData EntlnData { get; set; }
+            public AlloEntryLineData EntlnData { get; set; }
             public List<string> AllNames { get; set; }
         }
 

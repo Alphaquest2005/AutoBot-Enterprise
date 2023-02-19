@@ -14,7 +14,6 @@ using DocumentDS.Business.Services;
 using TrackableEntities;
 using WaterNut.Business.Entities;
 using WaterNut.Interfaces;
-using EntryDataDetails = AllocationDS.Business.Entities.EntryDataDetails;
 using xBondAllocations = DocumentItemDS.Business.Entities.xBondAllocations;
 using xcuda_Weight = DocumentDS.Business.Entities.xcuda_Weight;
 using xcuda_Weight_itm = DocumentItemDS.Business.Entities.xcuda_Weight_itm;
@@ -28,6 +27,7 @@ using DocumentItemDS.Business.Entities;
 using EntryDataDS.Business.Entities;
 using java.security;
 using MoreLinq;
+
 using PreviousDocumentQS.Business.Entities;
 using TrackableEntities.EF6;
 using WaterNut.Business.Services.Utils;
@@ -40,12 +40,14 @@ using InventoryItem = InventoryDS.Business.Entities.InventoryItem;
 using xcuda_PreviousItem = DocumentItemDS.Business.Entities.xcuda_PreviousItem;
 using xcuda_Supplementary_unit = DocumentItemDS.Business.Entities.xcuda_Supplementary_unit;
 
+
 //using xcuda_Item = AllocationDS.Business.Entities.xcuda_Item;
 //using xcuda_PreviousItem = AllocationDS.Business.Entities.xcuda_PreviousItem;
 
 namespace WaterNut.DataSpace
 {
-    public class CreateEx9Class
+    
+    public partial class CreateEx9Class
     {
         private static readonly CreateEx9Class _instance;
 
@@ -67,7 +69,7 @@ namespace WaterNut.DataSpace
 
         public bool Process7100 { get; set; }
 
-
+       
         public async Task<List<DocumentCT>> CreateEx9(string filterExpression, bool perIM7, bool process7100, bool applyCurrentChecks,
             AsycudaDocumentSet docSet, string documentType, string ex9BucketType, bool isGrouped,
             bool checkQtyAllocatedGreaterThanPiQuantity, bool checkForMultipleMonths, bool applyEx9Bucket, bool applyHistoricChecks,  bool perInvoice, bool autoAssess, bool overPIcheck, bool universalPIcheck, bool itemPIcheck)
@@ -90,7 +92,7 @@ namespace WaterNut.DataSpace
         }
 
         public static List<PiSummary> DocSetPi = new List<PiSummary>();
-
+        
         private async Task<List<DocumentCT>> ProcessEx9(AsycudaDocumentSet docSet, string filterExp, string documentType,
             string ex9BucketType, bool isGrouped,
             bool checkQtyAllocatedGreaterThanPiQuantity, bool checkForMultipleMonths, bool applyEx9Bucket,
@@ -132,7 +134,7 @@ namespace WaterNut.DataSpace
                 while (startDate < realEndDate)
                 {
                      
-                    docPreviousItems = new Dictionary<int, List<previousItems>>();// moved here because the reloaded month data already has data 
+                    docPreviousItems = new Dictionary<int, List<PreviousItems>>();// moved here because the reloaded month data already has data 
 
                     DateTime firstOfNextMonth = new DateTime(startDate.Year, startDate.Month, 1).AddMonths(1);
                     DateTime endDate = checkForMultipleMonths ? firstOfNextMonth.AddDays(-1).AddHours(23) : realEndDate;
@@ -184,7 +186,7 @@ namespace WaterNut.DataSpace
                                 //DocSetPi.Clear();// move this to top because the data is cached now
 
                                 var res = entrytype.Where(x => x.DutyFreePaid == dfp);
-                                List<CreateEx9Class.ItemSalesPiSummary> itemSalesPiSummarylst;
+                                List<ItemSalesPiSummary> itemSalesPiSummarylst;
                                 itemSalesPiSummarylst = GetItemSalesPiSummary(docSet.ApplicationSettingsId, startDate,
                                     endDate,
                                     dfp, entrytype.Key); //res.SelectMany(x => x.Allocations).Select(z => z.AllocationId).ToList(), 
@@ -220,7 +222,7 @@ namespace WaterNut.DataSpace
         }
 
 
-        public List<CreateEx9Class.ItemSalesPiSummary> GetItemSalesPiSummary(int applicationSettingsId, DateTime startDate,
+        public List<ItemSalesPiSummary> GetItemSalesPiSummary(int applicationSettingsId, DateTime startDate,
             DateTime endDate, string dfp, string entryDataType)
         {
             try
@@ -239,11 +241,11 @@ namespace WaterNut.DataSpace
             }
         }
         private static List<SummaryData> _universalData = null;
-        private static List<CreateEx9Class.ItemSalesPiSummary> universalDataSummary = null;
-        private static List<CreateEx9Class.ItemSalesPiSummary> allSalesSummary = null;
+        private static List<ItemSalesPiSummary> universalDataSummary = null;
+        private static List<ItemSalesPiSummary> allSalesSummary = null;
         private static List<SummaryData> allSales = null;
         public static bool freashStart = true;
-        private static List<CreateEx9Class.ItemSalesPiSummary> GetPiSummary(int applicationSettingsId, DateTime startDate,
+        private static List<ItemSalesPiSummary> GetPiSummary(int applicationSettingsId, DateTime startDate,
             DateTime endDate, string dfp,
             AllocationDSContext ctx, string entryType)
         {
@@ -251,7 +253,7 @@ namespace WaterNut.DataSpace
             {
 
 
-                var res = new List<CreateEx9Class.ItemSalesPiSummary>();
+                var res = new List<ItemSalesPiSummary>();
 
                 SummaryInititalization(applicationSettingsId, ctx, entryType, startDate, endDate);
 
@@ -281,7 +283,7 @@ namespace WaterNut.DataSpace
                         EntryType = g.Summary.Type ?? g.Summary.EntryDataType
 
                     })
-                    .Select(x => new CreateEx9Class.ItemSalesPiSummary
+                    .Select(x => new ItemSalesPiSummary
                     {
                         PreviousItem_Id = (int) x.Key.PreviousItem_Id,
                         ItemNumber = x.First().Summary.ItemNumber,
@@ -312,7 +314,7 @@ namespace WaterNut.DataSpace
                         EntryType = g.Summary.Type ?? g.Summary.EntryDataType
 
                     })
-                    .Select(x => new CreateEx9Class.ItemSalesPiSummary
+                    .Select(x => new ItemSalesPiSummary
                     {
                         PreviousItem_Id = (int) x.Key.PreviousItem_Id,
                         ItemNumber = x.First().Summary.ItemNumber,
@@ -364,7 +366,7 @@ namespace WaterNut.DataSpace
                         g.Summary.pLineNumber,
                         // ItemNumber = g.ItemNumber, /// took out all itemnumber because the pos can have different itemnumbers in entrydatadetails... c#14280 - 64
                     })
-                    .Select(x => new CreateEx9Class.ItemSalesPiSummary
+                    .Select(x => new ItemSalesPiSummary
                     {
                         PreviousItem_Id = (int) x.Key.PreviousItem_Id,
                         ItemNumber = x.First().Summary.ItemNumber,
@@ -395,7 +397,7 @@ namespace WaterNut.DataSpace
                         
                         // ItemNumber = g.ItemNumber,
                     })
-                    .Select(x => new CreateEx9Class.ItemSalesPiSummary
+                    .Select(x => new ItemSalesPiSummary
                     {
                         PreviousItem_Id = (int) x.Key.PreviousItem_Id,
                         ItemNumber = x.First().Summary.ItemNumber,
@@ -421,28 +423,10 @@ namespace WaterNut.DataSpace
             }
         }
 
-        public class ItemSalesPiSummary
-        {
-            public string ItemNumber { get; set; }
-            public double? QtyAllocated { get; set; }
-            public double PiQuantity { get; set; }
-            public string pCNumber { get; set; }
-            public int pLineNumber { get; set; }
-            //public DateTime? pRegistrationDate { get; set; }
-            public string DutyFreePaid { get; set; }
-            public string Type { get; set; }
-            public int PreviousItem_Id { get; set; }
-            public double pQtyAllocated { get; set; }
-            public string EntryDataType { get; set; }
-            public DateTime StartDate { get; set; }
-            public DateTime EndDate { get; set; }
-        }
-
-        
 
         public async Task<List<DocumentCT>> CreateDutyFreePaidDocument(string dfp,
             IEnumerable<AllocationDataBlock> slst,
-            AsycudaDocumentSet docSet, string documentType, bool isGrouped, List<CreateEx9Class.ItemSalesPiSummary> itemSalesPiSummaryLst,
+            AsycudaDocumentSet docSet, string documentType, bool isGrouped, List<ItemSalesPiSummary> itemSalesPiSummaryLst,
             bool checkQtyAllocatedGreaterThanPiQuantity, bool checkForMultipleMonths, 
             bool applyEx9Bucket, string ex9BucketType, bool applyHistoricChecks, bool applyCurrentChecks,
             bool autoAssess, bool perInvoice, bool overPIcheck, bool universalPIcheck, bool itemPIcheck, string prefix = null)
@@ -558,7 +542,7 @@ namespace WaterNut.DataSpace
 
 
                         var newItms = await
-                            CreateEx9EntryAsync(mypod, cdoc, itmcount, dfp, monthyear.MonthYear, documentType,
+                            CreateEx9EntryAsync(mypod, cdoc, itmcount, dfp, documentType,
                                     itemSalesPiSummaryLst, checkQtyAllocatedGreaterThanPiQuantity, applyEx9Bucket, ex9BucketType, applyHistoricChecks, applyCurrentChecks, overPIcheck, universalPIcheck, itemPIcheck)
                                 .ConfigureAwait(false);
 
@@ -609,7 +593,7 @@ namespace WaterNut.DataSpace
 
 
 
-
+        
         private async Task SaveDocumentCT(DocumentCT cdoc)
         {
             try
@@ -652,7 +636,7 @@ namespace WaterNut.DataSpace
 
 
 
-
+        
         private async Task<IEnumerable<AllocationDataBlock>> CreateAllocationDataBlocks(string filterExpression,
             List<string> errors,
             string dateFilter)
@@ -660,7 +644,8 @@ namespace WaterNut.DataSpace
             try
             {
                 StatusModel.Timer("Getting ExBond Data");
-                var slstSource = GetEX9Data(filterExpression, dateFilter).Where(x => !errors.Contains(x.ItemNumber)).ToList();
+                var ex9Data = await GetEX9Data(filterExpression, dateFilter).ConfigureAwait(false);
+                var slstSource = ex9Data.Where(x => !errors.Contains(x.ItemNumber)).ToList();
                 StatusModel.StartStatusUpdate("Creating xBond Entries", slstSource.Count());
                 IEnumerable<AllocationDataBlock> slst;
                 slst = CreateWholeAllocationDataBlocks(slstSource);
@@ -672,8 +657,8 @@ namespace WaterNut.DataSpace
                 throw;
             }
         }
-
-        private List<EX9Allocations> GetEX9Data(string FilterExpression, string dateFilter)
+        
+        private async Task<List<EX9Allocations>> GetEX9Data(string FilterExpression, string dateFilter)
         {
             try
             {
@@ -696,7 +681,7 @@ namespace WaterNut.DataSpace
                                     $"&& (CustomsOperationId == {(int) CustomsOperations.Warehouse})";
                 var res = new List<EX9Allocations>();
 
-                CreateEx9Class._ex9AsycudaSalesAllocations = new GetEx9AsycudaSalesAllocations().Execute(dateFilter);
+                CreateEx9Class._ex9AsycudaSalesAllocations = await new GetEx9AsycudaSalesAllocations().Execute(dateFilter).ConfigureAwait(false);
                 var tres = CreateEx9Class._ex9AsycudaSalesAllocations.AsQueryable();
 
 
@@ -733,70 +718,72 @@ namespace WaterNut.DataSpace
 
         public static EX9Allocations CreateEx9Allocations(EX9AsycudaSalesAllocations x)
         {
-            var allocations = new EX9Allocations();
-            allocations.Type = x.Type;
-            allocations.AllocationId = x.AllocationId;
-            allocations.EntryData_Id = (int) x.EntryData_Id;
-            allocations.DutyFreePaid = x.DutyFreePaid;
-            allocations.EntryDataDetailsId = x.EntryDataDetailsId;
-            allocations.InvoiceDate = (DateTime) (x.EffectiveDate == null || x.EffectiveDate == DateTime.MinValue
-                ? x.InvoiceDate
-                : x.EffectiveDate.Value);
-            allocations.EffectiveDate = x.EffectiveDate;
-            allocations.InvoiceNo = x.InvoiceNo;
-            allocations.SourceFile = x.SourceFile;
-            allocations.ItemDescription = x.ItemDescription;
-            allocations.ItemNumber = x.ItemNumber;
-            allocations.pCNumber = x.pCNumber;
-            allocations.pItemCost = x.pItemCost;
-            allocations.Status = x.Status;
-            allocations.EntryDataDetails = x.EntryDataDetails;
-            allocations.PreviousItem_Id = x.PreviousItem_Id;
-            allocations.QtyAllocated = x.QtyAllocated;
-            allocations.SalesFactor = x.SalesFactor;
-            allocations.SalesQtyAllocated = x.SalesQtyAllocated;
-            allocations.SalesQuantity = x.SalesQuantity;
-            allocations.pItemNumber = x.pItemNumber;
-            allocations.pItemDescription = x.Commercial_Description;
-            allocations.pTariffCode = x.pTariffCode;
-            allocations.pPrecision1 = x.pPrecision1;
-            allocations.DFQtyAllocated = x.DFQtyAllocated;
-            allocations.DPQtyAllocated = x.DPQtyAllocated;
-            allocations.pLineNumber = x.pLineNumber;
-            allocations.LineNumber = x.SalesLineNumber;
-            allocations.Comment = x.Comment;
-            allocations.Customs_clearance_office_code = x.Customs_clearance_office_code;
-            allocations.pQuantity = x.pQuantity;
-            allocations.pRegistrationDate = x.pRegistrationDate;
-            allocations.pAssessmentDate = x.AssessmentDate;
-            allocations.pExpiryDate = (DateTime) x.pExpiryDate.GetValueOrDefault();
-            allocations.Country_of_origin_code = x.Country_of_origin_code;
-            allocations.Total_CIF_itm = x.Total_CIF_itm;
-            allocations.Net_weight_itm = x.Net_weight_itm;
-            allocations.InventoryItemId = x.InventoryItemId ?? 0;
-            allocations.PIData = x.AsycudaSalesAllocationsPIData;
-            allocations.previousItems = x?.PreviousDocumentItem.EntryPreviousItems
-                .Select(y => y.xcuda_PreviousItem)
-                .Where(y => (y.xcuda_Item.AsycudaDocument.CNumber != null ||
-                             y.xcuda_Item.AsycudaDocument.IsManuallyAssessed == true)
-                            && y.xcuda_Item.AsycudaDocument.Cancelled != true)
-                .Select(z => new previousItems()
-                {
-                    PreviousItem_Id = z.PreviousItem_Id,
-                    DutyFreePaid =
-                        z.xcuda_Item.AsycudaDocument.Customs_Procedure.CustomsOperationId ==
-                        (int) CustomsOperations.Exwarehouse &&
-                        z.xcuda_Item.AsycudaDocument.Customs_Procedure.IsPaid == true
-                            ? "Duty Paid"
-                            : "Duty Free",
-                    Net_weight = (double) z.Net_weight,
-                    Suplementary_Quantity = (double) z.Suplementary_Quantity
-                }).ToList();
-            allocations.TariffSupUnitLkps = x.PreviousDocumentItem?.xcuda_Tarification.xcuda_HScode.TariffCodes == null
-                ? new List<TariffSupUnitLkps>()
-                : x.PreviousDocumentItem?.xcuda_Tarification.xcuda_HScode.TariffCodes.TariffCategory
-                    ?.TariffCategoryCodeSuppUnit?.Select(z => z.TariffSupUnitLkps)
-                    .ToList(); //.Select(x => (ITariffSupUnitLkp)x)
+            var allocations = new EX9Allocations
+            {
+                Type = x.Type,
+                AllocationId = x.AllocationId,
+                EntryData_Id = (int) x.EntryData_Id,
+                DutyFreePaid = x.DutyFreePaid,
+                EntryDataDetailsId = x.EntryDataDetailsId,
+                InvoiceDate = (DateTime) (x.EffectiveDate == null || x.EffectiveDate == DateTime.MinValue
+                    ? x.InvoiceDate
+                    : x.EffectiveDate.Value),
+                EffectiveDate = x.EffectiveDate,
+                InvoiceNo = x.InvoiceNo,
+                SourceFile = x.SourceFile,
+                ItemDescription = x.ItemDescription,
+                ItemNumber = x.ItemNumber,
+                pCNumber = x.pCNumber,
+                pItemCost = x.pItemCost,
+                Status = x.Status,
+                EntryDataDetails = x.EntryDataDetails,
+                PreviousItem_Id = x.PreviousItem_Id,
+                QtyAllocated = x.QtyAllocated,
+                SalesFactor = x.SalesFactor,
+                SalesQtyAllocated = x.SalesQtyAllocated,
+                SalesQuantity = x.SalesQuantity,
+                pItemNumber = x.pItemNumber,
+                pItemDescription = x.Commercial_Description,
+                pTariffCode = x.pTariffCode,
+                pPrecision1 = x.pPrecision1,
+                DFQtyAllocated = x.DFQtyAllocated,
+                DPQtyAllocated = x.DPQtyAllocated,
+                pLineNumber = x.pLineNumber,
+                LineNumber = x.SalesLineNumber,
+                Comment = x.Comment,
+                Customs_clearance_office_code = x.Customs_clearance_office_code,
+                pQuantity = x.pQuantity,
+                pRegistrationDate = x.pRegistrationDate,
+                pAssessmentDate = x.AssessmentDate,
+                pExpiryDate = (DateTime) x.pExpiryDate.GetValueOrDefault(),
+                Country_of_origin_code = x.Country_of_origin_code,
+                Total_CIF_itm = x.Total_CIF_itm,
+                Net_weight_itm = x.Net_weight_itm,
+                InventoryItemId = x.InventoryItemId ?? 0,
+                PIData = x.AsycudaSalesAllocationsPIData,
+                previousItems = x?.PreviousDocumentItem.EntryPreviousItems
+                    .Select(y => y.xcuda_PreviousItem)
+                    .Where(y => (y.xcuda_Item.AsycudaDocument.CNumber != null ||
+                                 y.xcuda_Item.AsycudaDocument.IsManuallyAssessed == true)
+                                && y.xcuda_Item.AsycudaDocument.Cancelled != true)
+                    .Select(z => new PreviousItems()
+                    {
+                        PreviousItem_Id = z.PreviousItem_Id,
+                        DutyFreePaid =
+                            z.xcuda_Item.AsycudaDocument.Customs_Procedure.CustomsOperationId ==
+                            (int) CustomsOperations.Exwarehouse &&
+                            z.xcuda_Item.AsycudaDocument.Customs_Procedure.IsPaid == true
+                                ? "Duty Paid"
+                                : "Duty Free",
+                        Net_weight = (double) z.Net_weight,
+                        Suplementary_Quantity = (double) z.Suplementary_Quantity
+                    }).ToList(),
+                TariffSupUnitLkps = x.PreviousDocumentItem?.xcuda_Tarification.xcuda_HScode.TariffCodes == null
+                    ? new List<TariffSupUnitLkps>()
+                    : x.PreviousDocumentItem?.xcuda_Tarification.xcuda_HScode.TariffCodes.TariffCategory
+                        ?.TariffCategoryCodeSuppUnit?.Select(z => z.TariffSupUnitLkps)
+                        .ToList() //.Select(x => (ITariffSupUnitLkp)x)
+            };
             return allocations;
         }
 
@@ -985,7 +972,7 @@ namespace WaterNut.DataSpace
                         })
                         .Distinct()
                         .ToList(),
-                    EntlnData = new CreateEx9Class.AlloEntryLineData
+                    EntlnData = new AlloEntryLineData
                     {
                         ItemNumber = s.LastOrDefault()?.ItemNumber,
                         ItemDescription = s.LastOrDefault()?.ItemDescription,
@@ -1011,7 +998,7 @@ namespace WaterNut.DataSpace
                         InternalFreight = s.LastOrDefault()?.InternalFreight ?? 0.0,
                         Freight = s.LastOrDefault()?.Freight ?? 0.0,
                         Weight = s.LastOrDefault()?.Weight ?? 0.0,
-                        pDocumentItem = new CreateEx9Class.pDocumentItem()
+                        pDocumentItem = new pDocumentItem()
                         {
                             DFQtyAllocated = s.LastOrDefault()?.DFQtyAllocated??0,
                             DPQtyAllocated = s.LastOrDefault()?.DPQtyAllocated??0,
@@ -1025,7 +1012,7 @@ namespace WaterNut.DataSpace
                             ExpiryDate = s.LastOrDefault()?.pExpiryDate??DateTime.MinValue,
                             previousItems = s.LastOrDefault().previousItems
                         },
-                        EX9Allocation = new CreateEx9Class.EX9Allocation()
+                        EX9Allocation = new EX9Allocation()
                         {
                             SalesFactor = s.LastOrDefault()?.SalesFactor ?? 0.0,
                             Net_weight_itm = s.LastOrDefault()?.Net_weight_itm??0.0,
@@ -1061,7 +1048,7 @@ namespace WaterNut.DataSpace
                 var xSalesByItemId = monthyear.Allocations
                     .OrderBy(x => x.AllocationId).Select(x => (Item: (x.ItemNumber, x.InventoryItemId), xSale: x))
                     .GroupBy(x => x.Item)
-                    .Select(x => (Key: x.Key, Value: x.Select(i => i.xSale).ToList()))
+                    .Select(x => (x.Key, Value: x.Select(i => i.xSale).ToList()))
                     .ToList();
 
                 var groupedlst = Utils.CreateItemSet<EX9Allocations>(xSalesByItemId);
@@ -1115,7 +1102,7 @@ namespace WaterNut.DataSpace
                     }
 
                     if (nlst.Any() && nlst.Sum(x => x.QtyAllocated) < 0)
-                        updateXStatus(
+                        UpdateXStatus(
                             nlst.Select(x => new AsycudaSalesAllocations()
                             {
                                 AllocationId = x.AllocationId, EntryDataDetailsId = x.EntryDataDetailsId,
@@ -1154,8 +1141,7 @@ namespace WaterNut.DataSpace
         }
 
         public async Task<int> CreateEx9EntryAsync(BaseDataModel.MyPodData mypod, DocumentCT cdoc, int itmcount, string dfp,
-            string montyear,
-            string documentType, List<CreateEx9Class.ItemSalesPiSummary> itemSalesPiSummaryLst,
+            string documentType, List<ItemSalesPiSummary> itemSalesPiSummaryLst,
             bool checkQtyAllocatedGreaterThanPiQuantity,
             bool applyEx9Bucket, string ex9BucketType, bool applyHistoricChecks, bool applyCurrentChecks,
             bool overPIcheck, bool universalPIcheck, bool itemPIcheck)
@@ -1163,11 +1149,11 @@ namespace WaterNut.DataSpace
             try
             {
                 // clear all xstatus so know what happened
-                updateXStatus(mypod.Allocations,null);
+                UpdateXStatus(mypod.Allocations,null);
 
                 if (mypod.EntlnData.pDocumentItem.ExpiryDate <= DateTime.Now && (BaseDataModel.Instance.CurrentApplicationSettings.ExportExpiredEntries??true) == false)
                 {
-                    updateXStatus(mypod.Allocations,
+                    UpdateXStatus(mypod.Allocations,
                         $@"Expired Entry: '{
                                 mypod.EntlnData.pDocumentItem.ExpiryDate.ToShortDateString()}'");
                     return 0;
@@ -1198,12 +1184,12 @@ namespace WaterNut.DataSpace
                 //////////////////////////////////////////////////////////////////////////
                 ///     Sales Cap/ Sales Bucket historic
 
-                List<CreateEx9Class.ItemSalesPiSummary> salesPiAll = new List<CreateEx9Class.ItemSalesPiSummary>();
-                List<CreateEx9Class.ItemSalesPiSummary> universalData = new List<CreateEx9Class.ItemSalesPiSummary>(); ;
-                List<CreateEx9Class.ItemSalesPiSummary> salesPiHistoric;
-                List<CreateEx9Class.ItemSalesPiSummary> salesPiCurrent;
-                List<CreateEx9Class.ItemSalesPiSummary> itemSalesPiHistoric = new List<CreateEx9Class.ItemSalesPiSummary>();
-                List<CreateEx9Class.ItemSalesPiSummary> itemSalesPiCurrent = new List<CreateEx9Class.ItemSalesPiSummary>();
+                List<ItemSalesPiSummary> salesPiAll = new List<ItemSalesPiSummary>();
+                List<ItemSalesPiSummary> universalData = new List<ItemSalesPiSummary>(); ;
+                List<ItemSalesPiSummary> salesPiHistoric;
+                List<ItemSalesPiSummary> salesPiCurrent;
+                List<ItemSalesPiSummary> itemSalesPiHistoric = new List<ItemSalesPiSummary>();
+                List<ItemSalesPiSummary> itemSalesPiCurrent = new List<ItemSalesPiSummary>();
 
                 universalData = itemSalesPiSummaryLst.Where(x => (mypod.AllNames.Contains(x.ItemNumber) || x.PreviousItem_Id == mypod.EntlnData.PreviousDocumentItemId)
                                                               && x.Type == "Universal").ToList();
@@ -1304,8 +1290,7 @@ namespace WaterNut.DataSpace
                 if (applyEx9Bucket)
                     if (ex9BucketType == "Current")
                     {
-                        await Ex9Bucket(mypod, dfp, docPi, salesPiCurrent.Any() ? salesPiCurrent : salesPiAll)
-                            .ConfigureAwait(false);
+                         Ex9Bucket(mypod, dfp, docPi, salesPiCurrent.Any() ? salesPiCurrent : salesPiAll);
                     }
                     else
                     {
@@ -1338,7 +1323,7 @@ namespace WaterNut.DataSpace
                         var availibleQty = Math.Round(totalSalesAll, 2) - (Math.Round(totalPiAll, 2)+ docPi);
                         if (availibleQty <= 0)
                         {
-                            updateXStatus(mypod.Allocations,
+                            UpdateXStatus(mypod.Allocations,
                                 $@"Failed All Sales Check:: Total All Sales:{Math.Round(totalSalesAll, 2)}
                                             Total All PI: {totalPiAll}
                                             xQuantity:{mypod.EntlnData.Quantity}");
@@ -1355,7 +1340,7 @@ namespace WaterNut.DataSpace
                         var availibleQty = Math.Round(universalSalesAll, 2) - (Math.Round(universalPiAll, 2)+ docPi);
                         if (availibleQty <= 0)
                         {
-                            updateXStatus(mypod.Allocations,
+                            UpdateXStatus(mypod.Allocations,
                                 $@"Failed universal Sales Check:: Universal Sales:{Math.Round(universalSalesAll, 2)}
                                             Universal PI: {universalPiAll}
                                             xQuantity:{mypod.EntlnData.Quantity}");
@@ -1370,7 +1355,7 @@ namespace WaterNut.DataSpace
                 Debug.WriteLine($"EX9Bucket Quantity {mypod.EntlnData.ItemNumber} - {mypod.EntlnData.Quantity}");
                 if (mypod.EntlnData.Quantity <= 0)
                 {
-                    updateXStatus(mypod.Allocations,
+                    UpdateXStatus(mypod.Allocations,
                         $@"Failed Ex9Bucket set Qty to Zero:: preQty: {preEx9Bucket}");
                     return 0;
                 }
@@ -1391,7 +1376,7 @@ namespace WaterNut.DataSpace
                 double qty = mypod.EntlnData.Quantity;
                 if ((qty - Math.Round(qtyAllocated, 2))  > 0.0001)
                 {
-                    updateXStatus(mypod.Allocations,
+                    UpdateXStatus(mypod.Allocations,
                         $@"Failed Quantity vs QtyAllocated:: Qty: {qty} QtyAllocated: {qtyAllocated}");
                     return 0;
                 }
@@ -1405,7 +1390,7 @@ namespace WaterNut.DataSpace
 
                 if (totalSalesAll == 0)// && mypod.Allocations.FirstOrDefault()?.Status != "Short Shipped"
                 {
-                    updateXStatus(mypod.Allocations,
+                    UpdateXStatus(mypod.Allocations,
                         $@"No Sales Found");
                     return 0; // no sales found
                 }
@@ -1419,7 +1404,7 @@ namespace WaterNut.DataSpace
 
                     if (totalSalesHistoric == 0)// && mypod.Allocations.FirstOrDefault()?.Status != "Short Shipped"
                     {
-                        updateXStatus(mypod.Allocations,
+                        UpdateXStatus(mypod.Allocations,
                             $@"No Historical Sales Found");
                         return 0; // no sales found
                     }
@@ -1438,7 +1423,7 @@ namespace WaterNut.DataSpace
                         if (availibleQty != 0) Ex9Bucket(mypod, availibleQty, totalSalesHistoric, totalPiHistoric, "Historic");
                         if (mypod.EntlnData.Quantity == 0)
                         {
-                            updateXStatus(mypod.Allocations,
+                            UpdateXStatus(mypod.Allocations,
                                 $@"Failed Historical Check:: Total Historic Sales:{Math.Round(totalSalesHistoric, 2)}
                                    Total Historic PI: {totalPiHistoric}
                                    xQuantity:{mypod.EntlnData.Quantity}");
@@ -1456,7 +1441,7 @@ namespace WaterNut.DataSpace
 
                     if (totalSalesCurrent == 0)// && mypod.Allocations.FirstOrDefault()?.Status != "Short Shipped"
                     {
-                        updateXStatus(mypod.Allocations,
+                        UpdateXStatus(mypod.Allocations,
                             $@"No Current Sales Found");
                         return 0;
                     }
@@ -1467,7 +1452,7 @@ namespace WaterNut.DataSpace
                     if (Math.Round(totalSalesCurrent, 2) <
                         Math.Round((totalPiCurrent + mypod.EntlnData.Quantity) * salesFactor, 2))
                     {
-                        updateXStatus(mypod.Allocations,
+                        UpdateXStatus(mypod.Allocations,
                             $@"Failed Current Check:: Total Current Sales:{Math.Round(totalSalesCurrent, 2)}
                                Total Current PI: {totalPiCurrent}
                                xQuantity:{mypod.EntlnData.Quantity}");
@@ -1479,7 +1464,7 @@ namespace WaterNut.DataSpace
                 if (mypod.EntlnData.pDocumentItem.ItemQuantity <
                        Math.Round((totalPiAll + docPi + mypod.EntlnData.Quantity), 2))
                 {
-                    updateXStatus(mypod.Allocations,
+                    UpdateXStatus(mypod.Allocations,
                         $@"Failed ItemQuantity < totalPiAll & xQuantity:{
                             mypod.EntlnData.pDocumentItem.ItemQuantity
                         }
@@ -1505,7 +1490,7 @@ namespace WaterNut.DataSpace
                         Ex9Bucket(mypod, availibleQty, itemSalesHistoric, itemPiHistoric, "Historic");
                         if (mypod.EntlnData.Quantity == 0)
                         {
-                            updateXStatus(mypod.Allocations,
+                            UpdateXStatus(mypod.Allocations,
                                 $@"Failed Item Historical Check:: Item Historic Sales:{Math.Round(itemSalesHistoric, 2)}
                                    Item Historic PI: {itemPiHistoric}
                                    xQuantity:{mypod.EntlnData.Quantity}");
@@ -1527,7 +1512,7 @@ namespace WaterNut.DataSpace
                         Ex9Bucket(mypod, availibleQty, itemSalesHistoric, itemPiHistoric, "Historic");
                         if (mypod.EntlnData.Quantity == 0)
                         {
-                            updateXStatus(mypod.Allocations,
+                            UpdateXStatus(mypod.Allocations,
                                 $@"Failed ItemQuantity < ItemPIHistoric & xQuantity:{mypod.EntlnData.pDocumentItem.ItemQuantity}
                                Item Historic PI: {itemPiHistoric}
                                xQuantity:{mypod.EntlnData.Quantity}");
@@ -1554,7 +1539,7 @@ namespace WaterNut.DataSpace
                             Ex9Bucket(mypod, availibleQty, itemSalesHistoric, itemPiHistoric, "Historic");
                         if (mypod.EntlnData.Quantity <= 0 || availibleQty <= 0)
                         {
-                            updateXStatus(mypod.Allocations,
+                            UpdateXStatus(mypod.Allocations,
                                 $@"Failed Existing xSales already taken out..:{mypod.Allocations.SelectMany(x => x.EntryDataDetails.AsycudaDocumentItemEntryDataDetails.Select(n => $"c#{n.CNumber}|{n.LineNumber}").ToList()).DefaultIfEmpty("").Aggregate((o,n) => $"{o}, {n}")}");
                             return 0;
                         }
@@ -1574,10 +1559,10 @@ namespace WaterNut.DataSpace
 
                     global::DocumentItemDS.Business.Entities.xcuda_PreviousItem pitm = CreatePreviousItem(
                         lineData,
-                        itmcount + i, dfp, docPreviousItems);
+                        itmcount + i);
                     if (Math.Round(pitm.Net_weight, 2) < (decimal) 0.01)
                     {
-                        updateXStatus(mypod.Allocations,
+                        UpdateXStatus(mypod.Allocations,
                             $@"Failed PiNetWeight < 0.01 :: PiNetWeight:{Math.Round(pitm.Net_weight, 2)}");
                         return 0;
                     }
@@ -1624,7 +1609,7 @@ namespace WaterNut.DataSpace
 
                     itm.ItemQuantity = (double) pitm.Suplementary_Quantity; // taking the previous item quantity because thats governing thing when exwarehousing. c#36689 51 9/1/2021
 
-                    var previousItems = new previousItems()
+                    var previousItems = new PreviousItems()
                     {
                         DutyFreePaid = dfp, Net_weight = (double) pitm.Net_weight,
                         PreviousItem_Id = pitm.PreviousItem_Id,
@@ -1637,7 +1622,7 @@ namespace WaterNut.DataSpace
                     else
                     {
                         docPreviousItems.Add(lineData.PreviousDocumentItemId,
-                            new List<previousItems>() {previousItems});
+                            new List<PreviousItems>() {previousItems});
                     }
 
                     
@@ -1806,7 +1791,7 @@ namespace WaterNut.DataSpace
 
         }
 
-
+        
         private void Ex9Bucket(BaseDataModel.MyPodData mypod, double availibleQty, double totalSalesAll, double totalPiAll,
             string type)
         {
@@ -1822,7 +1807,7 @@ namespace WaterNut.DataSpace
                     //{
                     if (i <= 0  && remainingSalesQty <= 0)//&& rejects.Any()
                     {
-                        updateXStatus(rejects,
+                        UpdateXStatus(rejects,
                             $@"Failed All Sales Check:: {type} Sales:{Math.Round(totalSalesAll, 2)}
                                             {type} PI: {totalPiAll}
                                             xQuantity:{mypod.EntlnData.Quantity}");
@@ -1858,7 +1843,7 @@ namespace WaterNut.DataSpace
                     //}
                 }
 
-                updateXStatus( rejects,
+                UpdateXStatus( rejects,
                                             $@"Failed All Sales Check:: {type} Sales:{Math.Round(totalSalesAll, 2)}
                                             {type} PI: {totalPiAll}
                                             xQuantity:{mypod.EntlnData.Quantity}");
@@ -1873,7 +1858,7 @@ namespace WaterNut.DataSpace
 
         }
 
-        private void updateXStatus(List<AsycudaSalesAllocations> allocations, string xstatus)
+        private void UpdateXStatus(List<AsycudaSalesAllocations> allocations, string xstatus)
         {
             using (var ctx = new AllocationDSContext(){StartTracking = true})
             {
@@ -1888,7 +1873,7 @@ namespace WaterNut.DataSpace
             }
         }
 
-        private static Dictionary<int, List<previousItems>> docPreviousItems = new Dictionary<int, List<previousItems>>();
+        private static Dictionary<int, List<PreviousItems>> docPreviousItems = new Dictionary<int, List<PreviousItems>>();
 
 
         
@@ -1909,10 +1894,10 @@ namespace WaterNut.DataSpace
             return itmcnt;
         }
 
+
+
         
-
-
-        private  async Task Ex9Bucket(BaseDataModel.MyPodData mypod, string dfp,  double docPi, List<CreateEx9Class.ItemSalesPiSummary> itemSalesPiSummaryLst)
+        private  void Ex9Bucket(BaseDataModel.MyPodData mypod, string dfp,  double docPi, List<ItemSalesPiSummary> itemSalesPiSummaryLst)
         {
             // prevent over draw down of pqty == quantity allocated
             try
@@ -1952,12 +1937,12 @@ namespace WaterNut.DataSpace
                     || (Math.Abs(remainingQtyToBeTakenOut) <= 0)
                     || allocationSales < allocationPi)
                 {
-                    updateXStatus(mypod.Allocations,
+                    UpdateXStatus(mypod.Allocations,
                         $@"Failed Ex9 Bucket :: PI Quantity: {allocationPi}");
                     allocations.Clear();
                     entryLine.EntryDataDetails.Clear();
                     entryLine.Quantity = 0;
-                    return;
+                    return ;
                 }
                 //if (dutyFreePaidAllocated - (alreadyTakenOutDFPQty + entryLine.Quantity) < 0)
                 //{
@@ -2025,7 +2010,7 @@ namespace WaterNut.DataSpace
 
                                 if (Math.Abs(allocation.QtyAllocated) < 0.001) //&& saleAllocationsLst.Count > 1
                                 {
-                                    updateXStatus(new List<AsycudaSalesAllocations>() {allocation},
+                                    UpdateXStatus(new List<AsycudaSalesAllocations>() {allocation},
                                         $@"Failed Ex9 Bucket");
                                     allocations.Remove(allocation);
 
@@ -2086,8 +2071,7 @@ namespace WaterNut.DataSpace
         }
 
 
-        private xcuda_PreviousItem CreatePreviousItem(CreateEx9Class.AlloEntryLineData pod, int itmcount, string dfp,
-            Dictionary<int, List<previousItems>> previousItems)
+        private xcuda_PreviousItem CreatePreviousItem(AlloEntryLineData pod, int itmcount)
         {
 
             try
@@ -2105,7 +2089,7 @@ namespace WaterNut.DataSpace
                 pitm.Previous_item_number = previousItem.LineNumber;
 
 
-                SetWeights(pod, pitm, dfp, docPreviousItems);
+                SetWeights(pod, pitm, docPreviousItems);
 
 
                 pitm.Previous_Packages_number = "0";
@@ -2134,13 +2118,13 @@ namespace WaterNut.DataSpace
             }
         }
 
-        private void SetWeights(CreateEx9Class.AlloEntryLineData pod, xcuda_PreviousItem pitm, string dfp,
-            Dictionary<int, List<previousItems>> previousItems)
+        private void SetWeights(AlloEntryLineData pod, xcuda_PreviousItem pitm,
+            Dictionary<int, List<PreviousItems>> previousItems)
         {
             try
             {
                 var previousItem = pod.pDocumentItem;
-                var docSetPreviousItems = previousItems.Keys.Contains(pod.PreviousDocumentItemId)? previousItems[pod.PreviousDocumentItemId] : new List<previousItems>();
+                var docSetPreviousItems = previousItems.Keys.Contains(pod.PreviousDocumentItemId)? previousItems[pod.PreviousDocumentItemId] : new List<PreviousItems>();
                 if (previousItem == null) return;
                 var plst = previousItem.previousItems.DistinctBy(x => x.PreviousItem_Id);
                 var pw = Convert.ToDecimal(Math.Round(pod.EX9Allocation.Net_weight_itm,2));
@@ -2240,174 +2224,5 @@ namespace WaterNut.DataSpace
                 throw;
             }
         }
-
-      
-
-
-        public class AlloEntryLineData: BaseDataModel.IEntryLineData //: AllocationsModel.AlloEntryLineData
-        {
-            public double Cost { get; set; }
-            public List<EntryDataDetailSummary> EntryDataDetails { get; set; }
-            public double Weight { get; set; }
-            public double InternalFreight { get; set; }
-            public double Freight { get; set; }
-            public List<ITariffSupUnitLkp> TariffSupUnitLkps { get; set; }
-            public string ItemDescription { get; set; }
-            public string ItemNumber { get; set; }
-            public int PreviousDocumentItemId { get; set; }
-            public double Quantity { get; set; }
-            public string TariffCode { get; set; }
-            public CreateEx9Class.pDocumentItem pDocumentItem { get; set; }
-            public CreateEx9Class.EX9Allocation EX9Allocation { get; set; }
-            public int? FileTypeId { get; set; }
-            public string EmailId { get; set; }
-        }
-
-        public class pDocumentItem
-        {
-            public int LineNumber { get; set; }
-            public double DPQtyAllocated { get; set; }
-            public List<previousItems> previousItems { get; set; }
-            public double DFQtyAllocated { get; set; }
-
-            public double QtyAllocated => DFQtyAllocated + DPQtyAllocated;
-            public DateTime AssessmentDate { get; set; }
-            public double ItemQuantity { get; set; }
-            public string ItemNumber { get; set; }
-            public int xcuda_ItemId { get; set; }
-            public string Description { get; set; }
-            public DateTime ExpiryDate { get; set; }
-        }
-
-        public class EX9Allocation
-        {
-            public string pPrecision1;
-            public string pTariffCode { get; set; }
-            public double pQuantity { get; set; }
-            public string Country_of_origin_code { get; set; }
-            public double Total_CIF_itm { get; set; }
-            public string pCNumber { get; set; }
-            public DateTime pRegistrationDate { get; set; }
-            public string Customs_clearance_office_code { get; set; }
-            public double Net_weight_itm { get; set; }
-            public double pQtyAllocated { get; set; }
-            public double SalesFactor { get; set; }
-        }
-
-        public class SalesSummary
-        {
-            public string ItemNumber { get; set; }
-            public string DutyFreePaid { get; set; }
-            public double TotalQuantity { get; set; }
-            public double TotalQtyAllocated { get; set; }
-            public string Type { get; set; }
-        }
     }
-
-    internal class SummaryData
-    {
-        public ItemSalesAsycudaPiSummary Summary { get; set; }
-        public IEnumerable<AsycudaItemPiQuantityData> pIData { get; set; }
-    }
-
-    internal class x7100SalesPi
-    {
-        public string ItemNumber { get; set; }
-        public double ItemQuantity { get; set; }
-        public double PiQuantity { get; set; }
-        public double DPQtyAllocated { get; set; }
-        public double DPPi { get; set; }
-        public double DFQtyAllocated { get; set; }
-        public double DFPi { get; set; }
-    }
-
-    public class PiSummary
-    {
-        public string ItemNumber { get; set; }
-        public string DutyFreePaid { get; set; }
-        public double TotalQuantity { get; set; }
-        public string Type
-        { get; set; }
-
-        public string pCNumber { get; set; }
-        public string pLineNumber { get; set; }
-        public string pOffice { get; set; }
-        public double pItemQuantity { get; set; }
-        public DateTime pAssessmentDate { get; set; }
-        public int PreviousItem_Id { get; set; }
-    }
-
-    public class previousItems
-    {
-        public string DutyFreePaid { get; set; }
-        public double Suplementary_Quantity { get; set; }
-        public double Net_weight { get; set; }
-        public int PreviousItem_Id { get; set; }
-    }
-
-
-    public class EX9Allocations
-    {
-        public string pItemDescription;
-        public string pTariffCode { get; set; }
-        public string DutyFreePaid { get; set; }
-        public string pCNumber { get; set; }
-        public DateTime InvoiceDate { get; set; }
-        public int? PreviousItem_Id { get; set; }
-        public double SalesQuantity { get; set; }
-        public int AllocationId { get; set; }
-        public int? EntryDataDetailsId { get; set; }
-        public string Status { get; set; }
-        public string InvoiceNo { get; set; }
-        public string ItemNumber { get; set; }
-        public string pItemNumber { get; set; }
-        public string ItemDescription { get; set; }
-        public double? pItemCost { get; set; }
-        public double QtyAllocated { get; set; }
-        public double SalesQtyAllocated { get; set; }
-        public double DFQtyAllocated { get; set; }
-        public double DPQtyAllocated { get; set; }
-        public int? LineNumber { get; set; }
-        public List<previousItems> previousItems { get; set; }
-        public string Country_of_origin_code { get; set; }
-        public string Customs_clearance_office_code { get; set; }
-        public double? pQuantity { get; set; }
-        public DateTime pRegistrationDate { get; set; }
-        public double Net_weight_itm { get; set; }
-        public double Total_CIF_itm { get; set; }
-        public double Freight { get; set; }
-        public double InternalFreight { get; set; }
-        public double Weight { get; set; }
-        public List<TariffSupUnitLkps> TariffSupUnitLkps { get; set; }
-        public double SalesFactor { get; set; }
-        public DateTime pAssessmentDate { get; set; }
-        public DateTime? EffectiveDate { get; set; }
-        public int pLineNumber { get; set; }
-        public string Currency { get; set; }
-        public int? FileTypeId { get; set; }
-        public string EmailId { get; set; }
-        public int EntryData_Id { get; set; }
-        public string Comment { get; set; }
-        public string Type { get; set; }
-        public int InventoryItemId { get; set; }
-        public string pPrecision1 { get; set; }
-        public List<AsycudaSalesAllocationsPIData> PIData { get; set; }
-        public DateTime pExpiryDate { get; set; }
-        public EntryDataDetails EntryDataDetails { get; set; }
-        public string SourceFile
-        { get; set; }
-    }
-
-    public class AllocationDataBlock
-    {
-        public string MonthYear { get; set; }
-        public string DutyFreePaid { get; set; }
-        public List<EX9Allocations> Allocations { get; set; }
-        public string CNumber { get; set; }
-        public string Type { get; set; }
-    }
-
-
-
-    
 }
