@@ -1,50 +1,39 @@
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Diagnostics;
 using System.Globalization;
+using System.IO;
 using System.Linq;
-using System.Linq.Dynamic;
 using System.Threading.Tasks;
 using AllocationDS.Business.Entities;
-using AllocationDS.Business.Services;
 using Core.Common.UI;
 using DocumentDS.Business.Entities;
-using DocumentDS.Business.Services;
+using DocumentItemDS.Business.Entities;
+using MoreLinq;
 using TrackableEntities;
 using WaterNut.Business.Entities;
+using WaterNut.Business.Services.Utils;
+using WaterNut.DataSpace;
 using WaterNut.Interfaces;
 using xBondAllocations = DocumentItemDS.Business.Entities.xBondAllocations;
 using xcuda_Weight = DocumentDS.Business.Entities.xcuda_Weight;
 using xcuda_Weight_itm = DocumentItemDS.Business.Entities.xcuda_Weight_itm;
-using System.Data.Entity;
-using System.IO;
-using System.Linq.Expressions;
-using System.Text.RegularExpressions;
-using AllocationQS.Business.Entities;
-using CoreEntities.Business.Enums;
-using DocumentItemDS.Business.Entities;
-using EntryDataDS.Business.Entities;
-using java.security;
-using MoreLinq;
-
-using PreviousDocumentQS.Business.Entities;
-using TrackableEntities.EF6;
-using WaterNut.Business.Services.Utils;
 using CustomsOperations = CoreEntities.Business.Enums.CustomsOperations;
-using Customs_Procedure = DocumentDS.Business.Entities.Customs_Procedure;
 using EntryPreviousItems = DocumentItemDS.Business.Entities.EntryPreviousItems;
 using xcuda_Item = DocumentItemDS.Business.Entities.xcuda_Item;
 using Attachments = DocumentItemDS.Business.Entities.Attachments;
 using InventoryItem = InventoryDS.Business.Entities.InventoryItem;
+using ItemSalesPiSummary = WaterNut.DataSpace.ItemSalesPiSummary;
 using xcuda_PreviousItem = DocumentItemDS.Business.Entities.xcuda_PreviousItem;
-using xcuda_Supplementary_unit = DocumentItemDS.Business.Entities.xcuda_Supplementary_unit;
+using WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModels.CreatingEx9.GettingEx9DataByDateRange;
+using WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModels.CreatingEx9.GettingEx9SalesAllocations;
 
 
 //using xcuda_Item = AllocationDS.Business.Entities.xcuda_Item;
 //using xcuda_PreviousItem = AllocationDS.Business.Entities.xcuda_PreviousItem;
 
-namespace WaterNut.DataSpace
+namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModels.CreatingEx9
 {
     
     public partial class CreateEx9Class
@@ -61,7 +50,7 @@ namespace WaterNut.DataSpace
             get { return _instance; }
         }
 
-        
+        private bool isDBMem = true;
 
 
         public bool PerIM7 { get; set; }
@@ -92,7 +81,8 @@ namespace WaterNut.DataSpace
         }
 
         public static List<PiSummary> DocSetPi = new List<PiSummary>();
-        
+
+        public static List<EX9AsycudaSalesAllocations> _ex9AsycudaSalesAllocations = null;
         private async Task<List<DocumentCT>> ProcessEx9(AsycudaDocumentSet docSet, string filterExp, string documentType,
             string ex9BucketType, bool isGrouped,
             bool checkQtyAllocatedGreaterThanPiQuantity, bool checkForMultipleMonths, bool applyEx9Bucket,
@@ -109,7 +99,7 @@ namespace WaterNut.DataSpace
                 freashStart = true;
                 _ex9AsycudaSalesAllocations = null;
                 InventoryDataCache =
-                    InventoryItemUtils.GetInventoryItems(BaseDataModel.Instance.CurrentApplicationSettings
+                    InventoryItemUtils.GetInventoryItems(DataSpace.BaseDataModel.Instance.CurrentApplicationSettings
                         .ApplicationSettingsId, true);
                 var docs = new List<DocumentCT>();
                 //docPreviousItems = new Dictionary<int, List<previousItems>>();
@@ -130,6 +120,15 @@ namespace WaterNut.DataSpace
                         filterExp.Substring(filterExp.IndexOf("InvoiceDate <= ") + "InvoiceDate <= ".Length + 1, 19),
                         CultureInfo.CurrentCulture);
                 DateTime startDate = realStartDate;
+                var exPro =
+                                        " && (PreviousDocumentItem != null && PreviousDocumentItem.AsycudaDocument.Customs_Procedure.CustomsOperations.Name == \"Warehouse\" )" +
+                                        " && (PreviousDocumentItem != null && PreviousDocumentItem.AsycudaDocument.Cancelled == null || PreviousDocumentItem.AsycudaDocument.Cancelled == false)" +
+                                        "&& (PreviousDocumentItem != null && PreviousDocumentItem.xWarehouseError == null)"
+                                       //+ " && Type == \"ADJ\""
+                                       ;
+                var rdateFilter = $@"InvoiceDate >= ""{realStartDate:MM/dd/yyyy}"" && InvoiceDate <= ""{realEndDate.AddHours(23):MM/dd/yyyy HH:mm:ss}""";
+
+                if (isDBMem == false) PrepareEx9MemData(filterExp + exPro,rdateFilter);
 
                 while (startDate < realEndDate)
                 {
@@ -156,12 +155,7 @@ namespace WaterNut.DataSpace
                     //        .Select(x => x.ItemNumber).Distinct().ToList();
                     //}
 
-                    var exPro =
-                        " && (PreviousDocumentItem != null && PreviousDocumentItem.AsycudaDocument.Customs_Procedure.CustomsOperations.Name == \"Warehouse\" )" +
-                        " && (PreviousDocumentItem != null && PreviousDocumentItem.AsycudaDocument.Cancelled == null || PreviousDocumentItem.AsycudaDocument.Cancelled == false)" +
-                        "&& (PreviousDocumentItem != null && PreviousDocumentItem.xWarehouseError == null)"
-                       //+ " && Type == \"ADJ\""
-                       ;
+                    
                     var slst =
                         (await CreateAllocationDataBlocks(currentFilter + exPro, errors, dateFilter).ConfigureAwait(false))
                         .Where(x => x.Allocations.Count > 0);
@@ -171,7 +165,7 @@ namespace WaterNut.DataSpace
                     foreach (var dfp in dutylst)
                     {
                         var cp =
-                            BaseDataModel.Instance.Customs_Procedures
+                            DataSpace.BaseDataModel.Instance.Customs_Procedures
                                 .Where(x => x.CustomsOperationId == (int)CustomsOperations.Exwarehouse && x.Sales == true && x.IsPaid == (dfp == "Duty Paid"))
                                 .OrderByDescending(x => x.IsDefault == true)
                                 .First();
@@ -210,7 +204,7 @@ namespace WaterNut.DataSpace
 
                     startDate = checkForMultipleMonths ? new DateTime(startDate.Year, startDate.Month, 1).AddMonths(1): realEndDate;
                 }
-                BaseDataModel.RenameDuplicateDocuments(docSet.AsycudaDocumentSetId);
+                DataSpace.BaseDataModel.RenameDuplicateDocuments(docSet.AsycudaDocumentSetId);
                 StatusModel.StopStatusUpdate();
                 return docs;
             }
@@ -219,6 +213,11 @@ namespace WaterNut.DataSpace
                 Console.WriteLine(e);
                 throw;
             }
+        }
+
+        private void PrepareEx9MemData(string filterExp, string rdateFilter)
+        {
+            var x = new GetEx9AsycudaSalesAllocationsMem(filterExp, rdateFilter);
         }
 
 
@@ -437,7 +436,7 @@ namespace WaterNut.DataSpace
                // applyEx9Bucket = false;
                 //applyCurrentChecks = false;
                 if(InventoryDataCache == null) InventoryDataCache =
-                    InventoryItemUtils.GetInventoryItems(BaseDataModel.Instance.CurrentApplicationSettings
+                    InventoryItemUtils.GetInventoryItems(DataSpace.BaseDataModel.Instance.CurrentApplicationSettings
                         .ApplicationSettingsId, false);
 
                 var itmcount = 0;
@@ -457,7 +456,7 @@ namespace WaterNut.DataSpace
 
                 StatusModel.StatusUpdate($"Creating xBond Entries - {dfp}");
 
-                var cdoc = await BaseDataModel.Instance.CreateDocumentCt(docSet).ConfigureAwait(false);
+                var cdoc = await DataSpace.BaseDataModel.Instance.CreateDocumentCt(docSet).ConfigureAwait(false);
                 Ex9InitializeCdoc(dfp, cdoc, docSet, documentType, prefix);
                 var effectiveAssessmentDate =
                     slst.SelectMany(x =>x.Allocations).Select(x =>
@@ -481,24 +480,24 @@ namespace WaterNut.DataSpace
 
 
                         if (!(mypod.EntlnData.Quantity > 0)) continue;
-                        if (BaseDataModel.Instance.MaxLineCount(itmcount)
-                            || BaseDataModel.Instance.InvoicePerEntry(perInvoice, prevEntryId, mypod.EntlnData.EntryDataDetails[0].EntryDataId)
+                        if (DataSpace.BaseDataModel.Instance.MaxLineCount(itmcount)
+                            || DataSpace.BaseDataModel.Instance.InvoicePerEntry(perInvoice, prevEntryId, mypod.EntlnData.EntryDataDetails[0].EntryDataId)
                             || (cdoc.Document == null || itmcount == 0)
-                            || BaseDataModel.Instance.IsPerIM7(PerIM7,prevIM7, monthyear.CNumber))
+                            || DataSpace.BaseDataModel.Instance.IsPerIM7(PerIM7,prevIM7, monthyear.CNumber))
                         {
                             if (itmcount != 0)
                             {
                                 if (cdoc.Document != null)
                                 {
 
-                                    BaseDataModel.SaveAttachments(docSet, cdoc);
+                                    DataSpace.BaseDataModel.SaveAttachments(docSet, cdoc);
                                     AttachSupplier(cdoc);
                                     await SaveDocumentCT(cdoc).ConfigureAwait(false);
                                     docList.Add(cdoc);
                                     //}
                                     //else
                                     //{
-                                    cdoc = await BaseDataModel.Instance.CreateDocumentCt(docSet).ConfigureAwait(false);
+                                    cdoc = await DataSpace.BaseDataModel.Instance.CreateDocumentCt(docSet).ConfigureAwait(false);
 
                                     effectiveAssessmentDate =
                                         monthyear.Allocations.Select(x =>
@@ -557,7 +556,7 @@ namespace WaterNut.DataSpace
                     }
 
                 }
-                BaseDataModel.SaveAttachments(docSet, cdoc);
+                DataSpace.BaseDataModel.SaveAttachments(docSet, cdoc);
                 AttachSupplier(cdoc);
                 await SaveDocumentCT(cdoc).ConfigureAwait(false);
                 if (cdoc.Document.ASYCUDA_Id == 0)
@@ -623,7 +622,7 @@ namespace WaterNut.DataSpace
                     }
 
 
-                    await BaseDataModel.Instance.SaveDocumentCT(cdoc).ConfigureAwait(false);
+                    await DataSpace.BaseDataModel.Instance.SaveDocumentCT(cdoc).ConfigureAwait(false);
                 }
 
             }
@@ -644,7 +643,7 @@ namespace WaterNut.DataSpace
             try
             {
                 StatusModel.Timer("Getting ExBond Data");
-                var ex9Data = await GetEX9Data(filterExpression, dateFilter).ConfigureAwait(false);
+                var ex9Data = await new GetEx9Data().Execute(filterExpression, dateFilter).ConfigureAwait(false);
                 var slstSource = ex9Data.Where(x => !errors.Contains(x.ItemNumber)).ToList();
                 StatusModel.StartStatusUpdate("Creating xBond Entries", slstSource.Count());
                 IEnumerable<AllocationDataBlock> slst;
@@ -657,137 +656,6 @@ namespace WaterNut.DataSpace
                 throw;
             }
         }
-        
-        private async Task<List<EX9Allocations>> GetEX9Data(string FilterExpression, string dateFilter)
-        {
-            try
-            {
-
-                if((BaseDataModel.Instance.CurrentApplicationSettings.ExportExpiredEntries ?? true))
-                FilterExpression =
-                    FilterExpression.Replace(
-                        $"&& (pExpiryDate >= \"{ DateTime.Now.Date.ToShortDateString()}\" || pExpiryDate == null)",
-                        "");
-                FilterExpression =
-                    FilterExpression.Replace("TariffCode.Contains", "TariffCode != null && TariffCode.Contains");
-
-                FilterExpression += "&& DoNotAllocateSales != true " +
-                                    "&& DoNotAllocatePreviousEntry != true " +
-                                    "&& DoNotEX != true " +
-                                    "&& Status == null " + // force no error execution
-                                    //"&& AllocationErrors == null" +
-                                    "&& WarehouseError == null " +
-
-                                    $"&& (CustomsOperationId == {(int) CustomsOperations.Warehouse})";
-                var res = new List<EX9Allocations>();
-
-                CreateEx9Class._ex9AsycudaSalesAllocations = await new GetEx9AsycudaSalesAllocations().Execute(dateFilter).ConfigureAwait(false);
-                var tres = CreateEx9Class._ex9AsycudaSalesAllocations.AsQueryable();
-
-
-
-               var rres = tres
-                    .Where(FilterExpression)
-                    .ToList();
-                foreach (var x in rres)
-                {
-                        try
-                        {
-                            var allocations = CreateEx9Allocations(x);
-                            res.Add(allocations);
-                        }
-                        catch (Exception e)
-                        {
-                            Console.WriteLine(e);
-                            throw;
-                        }
-                }
-
-             
-
-
-
-                return res.OrderBy(x => x.AllocationId).ToList();
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-                throw;
-            }
-        }
-
-        public static EX9Allocations CreateEx9Allocations(EX9AsycudaSalesAllocations x)
-        {
-            var allocations = new EX9Allocations
-            {
-                Type = x.Type,
-                AllocationId = x.AllocationId,
-                EntryData_Id = (int) x.EntryData_Id,
-                DutyFreePaid = x.DutyFreePaid,
-                EntryDataDetailsId = x.EntryDataDetailsId,
-                InvoiceDate = (DateTime) (x.EffectiveDate == null || x.EffectiveDate == DateTime.MinValue
-                    ? x.InvoiceDate
-                    : x.EffectiveDate.Value),
-                EffectiveDate = x.EffectiveDate,
-                InvoiceNo = x.InvoiceNo,
-                SourceFile = x.SourceFile,
-                ItemDescription = x.ItemDescription,
-                ItemNumber = x.ItemNumber,
-                pCNumber = x.pCNumber,
-                pItemCost = x.pItemCost,
-                Status = x.Status,
-                EntryDataDetails = x.EntryDataDetails,
-                PreviousItem_Id = x.PreviousItem_Id,
-                QtyAllocated = x.QtyAllocated,
-                SalesFactor = x.SalesFactor,
-                SalesQtyAllocated = x.SalesQtyAllocated,
-                SalesQuantity = x.SalesQuantity,
-                pItemNumber = x.pItemNumber,
-                pItemDescription = x.Commercial_Description,
-                pTariffCode = x.pTariffCode,
-                pPrecision1 = x.pPrecision1,
-                DFQtyAllocated = x.DFQtyAllocated,
-                DPQtyAllocated = x.DPQtyAllocated,
-                pLineNumber = x.pLineNumber,
-                LineNumber = x.SalesLineNumber,
-                Comment = x.Comment,
-                Customs_clearance_office_code = x.Customs_clearance_office_code,
-                pQuantity = x.pQuantity,
-                pRegistrationDate = x.pRegistrationDate,
-                pAssessmentDate = x.AssessmentDate,
-                pExpiryDate = (DateTime) x.pExpiryDate.GetValueOrDefault(),
-                Country_of_origin_code = x.Country_of_origin_code,
-                Total_CIF_itm = x.Total_CIF_itm,
-                Net_weight_itm = x.Net_weight_itm,
-                InventoryItemId = x.InventoryItemId ?? 0,
-                PIData = x.AsycudaSalesAllocationsPIData,
-                previousItems = x?.PreviousDocumentItem.EntryPreviousItems
-                    .Select(y => y.xcuda_PreviousItem)
-                    .Where(y => (y.xcuda_Item.AsycudaDocument.CNumber != null ||
-                                 y.xcuda_Item.AsycudaDocument.IsManuallyAssessed == true)
-                                && y.xcuda_Item.AsycudaDocument.Cancelled != true)
-                    .Select(z => new PreviousItems()
-                    {
-                        PreviousItem_Id = z.PreviousItem_Id,
-                        DutyFreePaid =
-                            z.xcuda_Item.AsycudaDocument.Customs_Procedure.CustomsOperationId ==
-                            (int) CustomsOperations.Exwarehouse &&
-                            z.xcuda_Item.AsycudaDocument.Customs_Procedure.IsPaid == true
-                                ? "Duty Paid"
-                                : "Duty Free",
-                        Net_weight = (double) z.Net_weight,
-                        Suplementary_Quantity = (double) z.Suplementary_Quantity
-                    }).ToList(),
-                TariffSupUnitLkps = x.PreviousDocumentItem?.xcuda_Tarification.xcuda_HScode.TariffCodes == null
-                    ? new List<TariffSupUnitLkps>()
-                    : x.PreviousDocumentItem?.xcuda_Tarification.xcuda_HScode.TariffCodes.TariffCategory
-                        ?.TariffCategoryCodeSuppUnit?.Select(z => z.TariffSupUnitLkps)
-                        .ToList() //.Select(x => (ITariffSupUnitLkp)x)
-            };
-            return allocations;
-        }
-
-        public static List<EX9AsycudaSalesAllocations> _ex9AsycudaSalesAllocations = null;
 
 
         private IEnumerable<AllocationDataBlock> CreateWholeAllocationDataBlocks(
@@ -868,11 +736,11 @@ namespace WaterNut.DataSpace
 
 
 
-        private IEnumerable<BaseDataModel.MyPodData> PrepareAllocationsData(AllocationDataBlock monthyear, bool isGrouped)
+        private IEnumerable<DataSpace.BaseDataModel.MyPodData> PrepareAllocationsData(AllocationDataBlock monthyear, bool isGrouped)
         {
             try
             {
-                List<BaseDataModel.MyPodData> elst;
+                List<DataSpace.BaseDataModel.MyPodData> elst;
                 //if (BaseDataModel.Instance.CurrentApplicationSettings.GroupEX9 == true)
                 //{
                 elst = isGrouped 
@@ -896,7 +764,7 @@ namespace WaterNut.DataSpace
 
         
 
-        private List<BaseDataModel.MyPodData> GroupAllocationsByPreviousItem(AllocationDataBlock monthyear)
+        private List<DataSpace.BaseDataModel.MyPodData> GroupAllocationsByPreviousItem(AllocationDataBlock monthyear)
         {
             try
             {
@@ -916,12 +784,12 @@ namespace WaterNut.DataSpace
             }
         }
 
-        private static BaseDataModel.MyPodData CreateMyPodData(List<EX9Allocations> s)
+        private static DataSpace.BaseDataModel.MyPodData CreateMyPodData(List<EX9Allocations> s)
         {
             try
             {
 
-                return new BaseDataModel.MyPodData
+                return new DataSpace.BaseDataModel.MyPodData
                 {
                     Allocations = s.OrderByDescending(x => x.AllocationId).Select(x =>
                         new AsycudaSalesAllocations()
@@ -1041,7 +909,7 @@ namespace WaterNut.DataSpace
 
         public static List<InventoryItem> InventoryDataCache { get; private set; }
 
-        private List<BaseDataModel.MyPodData> SingleAllocationPerPreviousItem(AllocationDataBlock monthyear)
+        private List<DataSpace.BaseDataModel.MyPodData> SingleAllocationPerPreviousItem(AllocationDataBlock monthyear)
         {
             try
             {
@@ -1051,7 +919,7 @@ namespace WaterNut.DataSpace
                     .Select(x => (x.Key, Value: x.Select(i => i.xSale).ToList()))
                     .ToList();
 
-                var groupedlst = Utils.CreateItemSet<EX9Allocations>(xSalesByItemId);
+                var groupedlst = DataSpace.Utils.CreateItemSet<EX9Allocations>(xSalesByItemId);
 
                 //var groupedlst = monthyear.Allocations
                 //    .OrderBy(x => x.AllocationId)
@@ -1126,7 +994,7 @@ namespace WaterNut.DataSpace
         {
             try
             {
-                if (BaseDataModel.Instance.CurrentApplicationSettings.InvoicePerEntry == true)
+                if (DataSpace.BaseDataModel.Instance.CurrentApplicationSettings.InvoicePerEntry == true)
                 {
                     cdoc.Document.xcuda_Declarant.Number = entryDataId;
 
@@ -1140,7 +1008,7 @@ namespace WaterNut.DataSpace
 
         }
 
-        public async Task<int> CreateEx9EntryAsync(BaseDataModel.MyPodData mypod, DocumentCT cdoc, int itmcount, string dfp,
+        public async Task<int> CreateEx9EntryAsync(DataSpace.BaseDataModel.MyPodData mypod, DocumentCT cdoc, int itmcount, string dfp,
             string documentType, List<ItemSalesPiSummary> itemSalesPiSummaryLst,
             bool checkQtyAllocatedGreaterThanPiQuantity,
             bool applyEx9Bucket, string ex9BucketType, bool applyHistoricChecks, bool applyCurrentChecks,
@@ -1151,7 +1019,7 @@ namespace WaterNut.DataSpace
                 // clear all xstatus so know what happened
                 UpdateXStatus(mypod.Allocations,null);
 
-                if (mypod.EntlnData.pDocumentItem.ExpiryDate <= DateTime.Now && (BaseDataModel.Instance.CurrentApplicationSettings.ExportExpiredEntries??true) == false)
+                if (mypod.EntlnData.pDocumentItem.ExpiryDate <= DateTime.Now && (DataSpace.BaseDataModel.Instance.CurrentApplicationSettings.ExportExpiredEntries??true) == false)
                 {
                     UpdateXStatus(mypod.Allocations,
                         $@"Expired Entry: '{
@@ -1571,13 +1439,13 @@ namespace WaterNut.DataSpace
 
 
                     global::DocumentItemDS.Business.Entities.xcuda_Item itm =
-                        BaseDataModel.Instance.CreateItemFromEntryDataDetail(lineData, cdoc);
+                        DataSpace.BaseDataModel.Instance.CreateItemFromEntryDataDetail(lineData, cdoc);
                     itm.EmailId = lineData.EmailId;
                     itm.xcuda_Valuation_item.Total_CIF_itm = pitm.Current_value;
                     itm.xcuda_Tarification.xcuda_HScode.Precision_4 = lineData.pDocumentItem.ItemNumber;
                     itm.xcuda_Tarification.xcuda_HScode.Precision_1 = lineData.EX9Allocation.pPrecision1;
                     itm.xcuda_Goods_description.Commercial_Description =
-                        BaseDataModel.Instance.CleanText(lineData.pDocumentItem.Description);
+                        DataSpace.BaseDataModel.Instance.CleanText(lineData.pDocumentItem.Description);
                     itm.IsAssessed = false;
                     itm.SalesFactor = lineData.EX9Allocation.SalesFactor;
                     //TODO:Refactor this dup code
@@ -1649,7 +1517,7 @@ namespace WaterNut.DataSpace
                         itm.xcuda_Attached_documents.Add(new xcuda_Attached_documents(true)
                         {
                             Attached_document_code =
-                                BaseDataModel.Instance.ExportTemplates.FirstOrDefault(x =>
+                                DataSpace.BaseDataModel.Instance.ExportTemplates.FirstOrDefault(x =>
                                     x.Customs_Procedure == cdoc.Document.xcuda_ASYCUDA_ExtendedProperties
                                         .Customs_Procedure.CustomsProcedure)?.AttachedDocumentCode ?? "DFS1",
                             Attached_document_date = DateTime.Today.Date.ToShortDateString(),
@@ -1661,11 +1529,11 @@ namespace WaterNut.DataSpace
                                     Attachments = new Attachments(true)
                                     {
                                         FilePath = Path.Combine(
-                                            BaseDataModel.Instance.CurrentApplicationSettings.DataFolder == null
+                                            DataSpace.BaseDataModel.Instance.CurrentApplicationSettings.DataFolder == null
                                                 ? cdoc.Document.ReferenceNumber + ".csv.pdf"
-                                                : $"{BaseDataModel.Instance.CurrentApplicationSettings.DataFolder}\\{cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.AsycudaDocumentSet.Declarant_Reference_Number}\\{cdoc.Document.ReferenceNumber}.csv.pdf"),
+                                                : $"{DataSpace.BaseDataModel.Instance.CurrentApplicationSettings.DataFolder}\\{cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.AsycudaDocumentSet.Declarant_Reference_Number}\\{cdoc.Document.ReferenceNumber}.csv.pdf"),
                                         TrackingState = TrackingState.Added,
-                                        DocumentCode = BaseDataModel.Instance.ExportTemplates.FirstOrDefault(x =>
+                                        DocumentCode = DataSpace.BaseDataModel.Instance.ExportTemplates.FirstOrDefault(x =>
                                             x.Customs_Procedure == cdoc.Document.xcuda_ASYCUDA_ExtendedProperties
                                                 .Customs_Procedure.CustomsProcedure)?.AttachedDocumentCode ?? "DFS1",
                                         EmailId = lineData.EmailId?.ToString(),
@@ -1772,7 +1640,7 @@ namespace WaterNut.DataSpace
                         pLineNumber = mypod.EntlnData.pDocumentItem.LineNumber.ToString()
                     });
 
-                    BaseDataModel.Instance.ProcessItemTariff(mypod.EntlnData, cdoc.Document, itm);
+                    DataSpace.BaseDataModel.Instance.ProcessItemTariff(mypod.EntlnData, cdoc.Document, itm);
 
                     itmsCreated += 1;
 
@@ -1792,7 +1660,7 @@ namespace WaterNut.DataSpace
         }
 
         
-        private void Ex9Bucket(BaseDataModel.MyPodData mypod, double availibleQty, double totalSalesAll, double totalPiAll,
+        private void Ex9Bucket(DataSpace.BaseDataModel.MyPodData mypod, double availibleQty, double totalSalesAll, double totalPiAll,
             string type)
         {
             try
@@ -1874,9 +1742,8 @@ namespace WaterNut.DataSpace
         }
 
         private static Dictionary<int, List<PreviousItems>> docPreviousItems = new Dictionary<int, List<PreviousItems>>();
+       
 
-
-        
 
         private int AddFreeText(int itmcnt, xcuda_Item itm, string entryDataId, int lineNumber, string comment,
             string itemCode)
@@ -1890,14 +1757,14 @@ namespace WaterNut.DataSpace
             if(!string.IsNullOrEmpty(comment)) itm.Free_text_2 = $"{comment}";
             itmcnt += 1;
 
-            BaseDataModel.LimitFreeText(itm);
+            DataSpace.BaseDataModel.LimitFreeText(itm);
             return itmcnt;
         }
 
 
 
         
-        private  void Ex9Bucket(BaseDataModel.MyPodData mypod, string dfp,  double docPi, List<ItemSalesPiSummary> itemSalesPiSummaryLst)
+        private  void Ex9Bucket(DataSpace.BaseDataModel.MyPodData mypod, string dfp,  double docPi, List<ItemSalesPiSummary> itemSalesPiSummaryLst)
         {
             // prevent over draw down of pqty == quantity allocated
             try
@@ -2169,8 +2036,8 @@ namespace WaterNut.DataSpace
             {
 
                 cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.AutoUpdate = false;
-                BaseDataModel.Instance.IntCdoc(cdoc, ads, prefix);
-                var customsProcedure = BaseDataModel.GetCustomsProcedure(dfp, DocumentType);
+                DataSpace.BaseDataModel.Instance.IntCdoc(cdoc, ads, prefix);
+                var customsProcedure = DataSpace.BaseDataModel.GetCustomsProcedure(dfp, DocumentType);
 
                 cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.Description = $"{DocumentType } {dfp} Entries";
 
@@ -2181,7 +2048,7 @@ namespace WaterNut.DataSpace
                 cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.Cancelled = false;
 
 
-                BaseDataModel.Instance.AttachCustomProcedure(cdoc, customsProcedure);
+                DataSpace.BaseDataModel.Instance.AttachCustomProcedure(cdoc, customsProcedure);
                 AllocationsModel.Instance.AddDutyFreePaidtoRef(cdoc, dfp, ads);
                 using (var ctx = new DocumentDSContext())
                 {

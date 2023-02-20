@@ -1,14 +1,13 @@
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
-using System.Linq;
 using System.Linq.Dynamic;
 using System.Threading.Tasks;
 using AllocationDS.Business.Entities;
 
-namespace WaterNut.DataSpace
+namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModels.CreatingEx9.GettingEx9SalesAllocations
 {
-    public class GetEx9AsycudaSalesAllocations
+    public class GetEx9AsycudaSalesAllocations : IGetEx9AsycudaSalesAllocations
     {
         public async Task<List<EX9AsycudaSalesAllocations>> Execute(string filterExpression)
         {

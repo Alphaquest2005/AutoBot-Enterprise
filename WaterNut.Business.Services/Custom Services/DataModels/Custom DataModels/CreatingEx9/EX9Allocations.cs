@@ -1,8 +1,9 @@
 using System;
 using System.Collections.Generic;
 using AllocationDS.Business.Entities;
+using WaterNut.DataSpace;
 
-namespace WaterNut.DataSpace
+namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModels.CreatingEx9
 {
     public class EX9Allocations
     {
