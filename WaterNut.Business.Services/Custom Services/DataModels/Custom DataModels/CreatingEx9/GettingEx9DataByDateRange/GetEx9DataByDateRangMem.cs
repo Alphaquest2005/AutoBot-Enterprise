@@ -7,10 +7,17 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
 {
     public class GetEx9DataByDateRangeMem : IGetEx9DataByDateRange
     {
-        
+        private GetEx9AsycudaSalesAllocationsMem _getEx9AsycudaSalesAllocationsMem;
+
+        public GetEx9DataByDateRangeMem(string filterExp, string rdateFilter)
+        {
+            _getEx9AsycudaSalesAllocationsMem = new GetEx9AsycudaSalesAllocationsMem(filterExp, rdateFilter);
+        }
+
         public async Task<List<EX9AsycudaSalesAllocations>> Execute(string dateFilter)
         {
-            return await new GetEx9AsycudaSalesAllocationsMem().Execute(dateFilter).ConfigureAwait(false);
+            
+            return await _getEx9AsycudaSalesAllocationsMem.Execute(dateFilter).ConfigureAwait(false);
         }
     }
 }

@@ -1,9 +1,11 @@
+using System.Data.Entity;
 using System.IO;
 using Core.Common.Utils;
 using EntryDataDS.Business.Entities;
 using WaterNut.Business.Services.Utils;
 using WaterNut.DataSpace;
 using WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModels.Asycuda.AllocatingSales;
+using WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModels.CreatingEx9;
 using WaterNut.Business.Services.Utils;
 
 namespace AutoBotUtilities.Tests
@@ -15,6 +17,7 @@ namespace AutoBotUtilities.Tests
     using System.Collections.Generic;
     using System.Linq;
     using DocumentDS.Business.Entities;
+    using WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModels.CreatingEx9.GettingEx9SalesAllocations;
 
     [TestFixture]
     public class CreateEX9Tests
@@ -40,52 +43,24 @@ namespace AutoBotUtilities.Tests
 
        
         [Test]
-        [TestCase( "2/1/2023", "SEH/1277G")]
-        public void CanCreateEx9(DateTime startDate, string itemNumber)
+        [TestCase("2/1/2023","2/28/2023", "SEH/1277G", 1, 2, 5)]
+        [TestCase("9/1/2018", "2/28/2023", "SEH/1277G", 1, 2, 5)]
+        public void CanCreateEx9(DateTime startDate, DateTime endDate, string itemNumber, int docCount, int lineCount,int totalQuantiy)
         {
             try
             {
                 if (!Infrastructure.Utils.IsTestApplicationSettings()) Assert.IsTrue(true);
 
-                var saleInfo =  EntryDocSetUtils.CreateMonthYearAsycudaDocSet(startDate);
-
-                var docset = BaseDataModel.Instance.GetAsycudaDocumentSet(saleInfo.Item3.AsycudaDocumentSetId).Result;
-                BaseDataModel.Instance.ClearAsycudaDocumentSet(docset.AsycudaDocumentSetId).Wait();
-                BaseDataModel.Instance.UpdateAsycudaDocumentSetLastNumber(docset.AsycudaDocumentSetId, 0);
-
-                var filterExpression =
-                    $"(ApplicationSettingsId == \"{BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId}\")" +
-                    $"&& ({(string.IsNullOrEmpty(itemNumber) ? "ItemNumber != null" : $"ItemNumber.Contains(\"{itemNumber}\")")})" +
-                    $"&& (InvoiceDate >= \"{saleInfo.Item1:MM/01/yyyy}\" " +
-                    $" && InvoiceDate <= \"{saleInfo.Item2:MM/dd/yyyy HH:mm:ss}\")" +
-                    //  $"&& (AllocationErrors == null)" +// || (AllocationErrors.EntryDataDate  >= \"{saleInfo.Item1:MM/01/yyyy}\" &&  AllocationErrors.EntryDataDate <= \"{saleInfo.Item2:MM/dd/yyyy HH:mm:ss}\"))" +
-                    "&& ( TaxAmount == 0 ||  TaxAmount != 0)" +
-                    "&& PreviousItem_Id != null" +
-                    "&& (xBond_Item_Id == 0 )" +
-                    "&& (QtyAllocated != null && EntryDataDetailsId != null)" +
-                    "&& (PiQuantity < pQtyAllocated)" +
-                    "&& (Status == null || Status == \"\")" +
-                    (BaseDataModel.Instance.CurrentApplicationSettings.AllowNonXEntries == "Visible"
-                        ? $"&& (Invalid != true && (pExpiryDate >= \"{DateTime.Now.ToShortDateString()}\" || pExpiryDate == null) && (Status == null || Status == \"\"))"
-                        : "") +
-                    ($" && pRegistrationDate >= \"{BaseDataModel.Instance.CurrentApplicationSettings.OpeningStockDate}\"");
-
+                var testData = SetupTest(startDate,endDate, itemNumber);
 
                 var timer = new System.Diagnostics.Stopwatch();
                 timer.Start();
-                var res = AllocationsModel.Instance.CreateEX9Class.CreateEx9(filterExpression, false, false, true, docset, "Sales", "Historic", true, true, true, true, true, false, true, true, true, true).Result;
+                var res = AllocationsModel.Instance.CreateEx9.Execute(testData.filterExpression, false, false, true, testData.docset, "Sales", "Historic", true, true, true, true, true, false, true, true, true, true).Result;
                 timer.Stop();
                 Console.Write($"CreateEx9 for {startDate} in seconds: {timer.Elapsed.TotalSeconds}");
 
-                using (var ctx = new EntryDataDSContext())
-                {
-                    //Assert.Multiple(() =>
-                    //{
-                    //    Assert.AreEqual(ctx.xSalesFiles.Count(), 1);
-                    //    Assert.AreEqual(ctx.xSalesDetails.Count(), 1);
-                    //});
-                }
-                Assert.IsTrue(true);
+                AssertTest(docCount, lineCount, totalQuantiy, testData.docset);
+                
             }
             catch (Exception e)
             {
@@ -95,9 +70,111 @@ namespace AutoBotUtilities.Tests
         }
 
 
+        [Test]
+        [TestCase("2/1/2023", "2/28/2023", "SEH/1277G", 1, 2, 5)]
+        [TestCase("9/1/2018", "2/28/2023", "SEH/1277G", 1, 2, 5)]
+        public void CanCreateEx9Mem(DateTime startDate, DateTime endDate, string itemNumber, int docCount, int lineCount,
+            int totalQuantiy)
+        {
+            try
+            {
+                if (!Infrastructure.Utils.IsTestApplicationSettings()) Assert.IsTrue(true);
+
+                var testData = SetupTest(startDate,endDate, itemNumber);
 
 
+                var timer = new System.Diagnostics.Stopwatch();
+                timer.Start();
+                var res = new CreateEx9Mem().Execute(testData.filterExpression, false, false, true, testData.docset, "Sales", "Historic", true, true, true, true, true, false, true, true, true, true).Result;
+                timer.Stop();
+                Console.Write($"CreateEx9 for {startDate} in seconds: {timer.Elapsed.TotalSeconds}");
 
-      
+                AssertTest(docCount, lineCount, totalQuantiy, testData.docset);
+
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                Assert.IsTrue(false);
+            }
+        }
+
+        [Test]
+        [TestCase("2/1/2023", "2/28/2023", "SEH/1277G", 1, 2, 5)]
+        [TestCase("9/1/2018", "2/28/2023", "SEH/1277G", 1, 2, 5)]
+        public void CanGetEx9AsycudaSalesAllocationsMem(DateTime startDate, DateTime endDate, string itemNumber, int docCount, int lineCount,
+            int totalQuantiy)
+        {
+            try
+            {
+                if (!Infrastructure.Utils.IsTestApplicationSettings()) Assert.IsTrue(true);
+
+                var testData = SetupTest(startDate, endDate, itemNumber);
+
+
+                var timer = new System.Diagnostics.Stopwatch();
+                var realStartDate = new CreateEx9Mem().GetWholeRangeFilter(testData.filterExpression, out var realEndDate,  out var exPro, out var rdateFilter, out var realFilterExp);
+                timer.Start();
+                var res = new GetEx9AsycudaSalesAllocationsMem(realFilterExp, rdateFilter);
+                timer.Stop();
+                Console.Write($"CreateEx9 for {startDate} in seconds: {timer.Elapsed.TotalSeconds}");
+
+                Assert.IsTrue(true);
+
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                Assert.IsTrue(false);
+            }
+        }
+
+        private static (AsycudaDocumentSet docset, string filterExpression) SetupTest(DateTime startDate, DateTime endDate, string itemNumber)
+        {
+            var saleInfo = EntryDocSetUtils.CreateMonthYearAsycudaDocSet(startDate);
+
+            var docset = BaseDataModel.Instance.GetAsycudaDocumentSet(saleInfo.Item3.AsycudaDocumentSetId).Result;
+            BaseDataModel.Instance.ClearAsycudaDocumentSet(docset.AsycudaDocumentSetId).Wait();
+            BaseDataModel.Instance.UpdateAsycudaDocumentSetLastNumber(docset.AsycudaDocumentSetId, 0);
+
+            var filterExpression = GetFilterExpression(itemNumber, startDate, endDate);
+            return (docset, filterExpression);
+        }
+
+        private static void AssertTest(int docCount, int lineCount, int totalQuantiy, AsycudaDocumentSet docset)
+        {
+            using (var ctx = new CoreEntitiesContext())
+            {
+                var docs = ctx.AsycudaDocuments.Include(x => x.AsycudaDocumentItems)
+                    .Where(x => x.AsycudaDocumentSetId == docset.AsycudaDocumentSetId)
+                    .ToList();
+                Assert.Multiple(() =>
+                {
+                    Assert.AreEqual(docCount, docs.Count);
+                    Assert.AreEqual(lineCount, docs.Sum(x => x.Lines));
+                    Assert.AreEqual(totalQuantiy, docs.Sum(x => x.AsycudaDocumentItems.Sum(z => z.ItemQuantity)));
+                });
+            }
+        }
+        private static string GetFilterExpression(string itemNumber, DateTime startDate, DateTime endDate)
+        {
+            var filterExpression =
+                $"(ApplicationSettingsId == \"{BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId}\")" +
+                $"&& ({(string.IsNullOrEmpty(itemNumber) ? "ItemNumber != null" : $"ItemNumber.Contains(\"{itemNumber}\")")})" +
+                $"&& (InvoiceDate >= \"{startDate:MM/01/yyyy}\" " +
+                $" && InvoiceDate <= \"{endDate:MM/dd/yyyy HH:mm:ss}\")" +
+                //  $"&& (AllocationErrors == null)" +// || (AllocationErrors.EntryDataDate  >= \"{saleInfo.Item1:MM/01/yyyy}\" &&  AllocationErrors.EntryDataDate <= \"{saleInfo.Item2:MM/dd/yyyy HH:mm:ss}\"))" +
+                "&& ( TaxAmount == 0 ||  TaxAmount != 0)" +
+                "&& PreviousItem_Id != null" +
+                "&& (xBond_Item_Id == 0 )" +
+                "&& (QtyAllocated != null && EntryDataDetailsId != null)" +
+                "&& (PiQuantity < pQtyAllocated)" +
+                "&& (Status == null || Status == \"\")" +
+                (BaseDataModel.Instance.CurrentApplicationSettings.AllowNonXEntries == "Visible"
+                    ? $"&& (Invalid != true && (pExpiryDate >= \"{DateTime.Now.ToShortDateString()}\" || pExpiryDate == null) && (Status == null || Status == \"\"))"
+                    : "") +
+                ($" && pRegistrationDate >= \"{BaseDataModel.Instance.CurrentApplicationSettings.OpeningStockDate}\"");
+            return filterExpression;
+        }
     }
 }

@@ -57,7 +57,7 @@ namespace AdjustmentQS.Business.Services
         {
             try
             {
-                CreateEx9Class.DocSetPi.Clear();
+                CreateEx9.DocSetPi.Clear();
                 var docSet =
                     await BaseDataModel.Instance.GetAsycudaDocumentSet(asycudaDocumentSetId)
                         .ConfigureAwait(false);
@@ -88,13 +88,13 @@ namespace AdjustmentQS.Business.Services
 
 
                     var itemPiSummarylst =
-                        CreateEx9Class.Instance.GetItemSalesPiSummary(docSet.ApplicationSettingsId, startDate,
+                        CreateEx9.Instance.GetItemSalesPiSummary(docSet.ApplicationSettingsId, startDate,
                             endDate, dutyFreePaid, adjustmentType);
                     List<DocumentCT> doclst;
                     if (adjustmentType == "DIS")
                     {
 
-                        doclst = await CreateEx9Class.Instance.CreateDutyFreePaidDocument(dutyFreePaid,
+                        doclst = await CreateEx9.Instance.CreateDutyFreePaidDocument(dutyFreePaid,
                                 slst, docSet, adjustmentType, false, itemPiSummarylst, false,
                                 false, false, "Current", false, false, true, perInvoice, false, false, false, "S") //ex9bucket = false because sales affect current the piquantity
                             .ConfigureAwait(
@@ -102,7 +102,7 @@ namespace AdjustmentQS.Business.Services
                     }
                     else
                     {
-                        doclst = await CreateEx9Class.Instance.CreateDutyFreePaidDocument(dutyFreePaid,
+                        doclst = await CreateEx9.Instance.CreateDutyFreePaidDocument(dutyFreePaid,
                                  slst, docSet, adjustmentType, false, itemPiSummarylst, true,
                                  false, false, "Historic", true, true, true, perInvoice, false, true, true, "S")
                              .ConfigureAwait(
@@ -392,7 +392,7 @@ namespace AdjustmentQS.Business.Services
 
         public async Task CreateIM9(string filterExpression, bool perInvoice, bool process7100, int asycudaDocumentSetId, string ex9Type, string dutyFreePaid)
         {
-            CreateEx9Class.freashStart = true;
+            CreateEx9.freashStart = true;
             await CreateIM9(filterExpression, perInvoice, asycudaDocumentSetId, dutyFreePaid,
                 ex9Type, null).ConfigureAwait(false);
         }

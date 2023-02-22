@@ -10,22 +10,22 @@ using CustomsOperations = CoreEntities.Business.Enums.CustomsOperations;
 
 namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModels.CreatingEx9
 {
-    public class GetEx9Data
+    public class GetEx9DataMem
     {
-       static GetEx9Data()
+        private readonly GetEx9DataByDateRangeMem _getEx9DataByDateRangeMem;
+
+        public GetEx9DataMem(string filterExp, string rdateFilter)
         {
+            _getEx9DataByDateRangeMem = new GetEx9DataByDateRangeMem(filterExp, rdateFilter);
         }
 
-        public GetEx9Data()
-        {
-        }
 
         public async Task<List<EX9Allocations>> Execute(string filterExpression, string dateFilter)
         {
             try
             {
-               
-                var data = await LoadEx9Data(dateFilter);
+                
+                var data = await _getEx9DataByDateRangeMem.Execute(dateFilter).ConfigureAwait(false);
 
                 return CreateEx9Allocations(filterExpression, data.AsQueryable());
             }
@@ -36,11 +36,7 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
             }
         }
 
-        private static async Task<List<EX9AsycudaSalesAllocations>> LoadEx9Data(string dateFilter)
-        {
-           return await GetEx9DataByDateRange.Execute(dateFilter).ConfigureAwait(false);
-
-        }
+      
 
         private List<EX9Allocations> CreateEx9Allocations(string filterExpression, IQueryable<EX9AsycudaSalesAllocations> tres)
         {

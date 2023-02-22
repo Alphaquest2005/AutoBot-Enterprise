@@ -879,8 +879,10 @@
     <Compile Include="Custom Services\DataModels\Custom DataModels\BaseDataModel\GettingItemSets\GetItemSetsMem.cs" />
     <Compile Include="Custom Services\DataModels\Custom DataModels\BaseDataModel\GettingItemSets\GetItemSets.cs" />
     <Compile Include="Custom Services\DataModels\Custom DataModels\BaseDataModel\GettingItemSets\IGetItemSetsProcessor.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\CreatingEx9\CreateEx9Mem.cs" />
     <Compile Include="Custom Services\DataModels\Custom DataModels\CreatingEx9\EX9Allocation.cs" />
     <Compile Include="Custom Services\DataModels\Custom DataModels\CreatingEx9\EX9Allocations.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\CreatingEx9\GetEx9DataMem.cs" />
     <Compile Include="Custom Services\DataModels\Custom DataModels\CreatingEx9\GettingEx9SalesAllocations\GetEx9AsycudaSalesAllocationsMem.cs" />
     <Compile Include="Custom Services\DataModels\Custom DataModels\CreatingEx9\GettingEx9SalesAllocations\GetEx9AsycudaSalesAllocations.cs" />
     <Compile Include="Custom Services\DataModels\Custom DataModels\CreatingEx9\GetEx9Data.cs" />
@@ -888,6 +890,7 @@
     <Compile Include="Custom Services\DataModels\Custom DataModels\CreatingEx9\GettingEx9DataByDateRange\GetEx9DataByDateRange.cs" />
     <Compile Include="Custom Services\DataModels\Custom DataModels\CreatingEx9\GettingEx9DataByDateRange\IGetEx9DataByDateRange.cs" />
     <Compile Include="Custom Services\DataModels\Custom DataModels\CreatingEx9\GettingEx9SalesAllocations\IGetEx9AsycudaSalesAllocations.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\CreatingEx9\ICreateEx9.cs" />
     <Compile Include="Custom Services\DataModels\Custom DataModels\ItemSalesPiSummary.cs" />
     <Compile Include="Custom Services\DataModels\Custom DataModels\PDF2TXT\Invoice.cs" />
     <Compile Include="Custom Services\DataModels\Custom DataModels\PDF2TXT\InvoiceLine.cs" />
@@ -1129,7 +1132,7 @@
     <Compile Include="Custom Services\DataModels\Custom DataModels\CPSalesModelDS.cs" />
     <Compile Include="Custom Services\DataModels\Custom DataModels\CreateAsycudaDocumentModelDS.cs" />
     <Compile Include="Custom Services\DataModels\Custom DataModels\CreateErrOPS.cs" />
-    <Compile Include="Custom Services\DataModels\Custom DataModels\CreatingEx9\CreateEx9Class.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\CreatingEx9\CreateEx9.cs" />
     <Compile Include="Custom Services\DataModels\Custom DataModels\CreateIM9.cs" />
     <Compile Include="Custom Services\DataModels\Custom DataModels\CreateIncompOPSClass.cs" />
     <Compile Include="Custom Services\DataModels\Custom DataModels\CreateOPSClass.cs" />

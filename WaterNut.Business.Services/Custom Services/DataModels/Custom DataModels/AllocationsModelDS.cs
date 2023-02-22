@@ -34,7 +34,7 @@ namespace WaterNut.DataSpace
 
    
 
-        public CreateEx9Class CreateEX9Class => CreateEx9Class.Instance;
+        public CreateEx9 CreateEx9 => CreateEx9.Instance;
 
         public CreateOPSClass CreateOpsClassClass { get; } = new CreateOPSClass();
 

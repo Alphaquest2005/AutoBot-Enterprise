@@ -36,16 +36,16 @@ using WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModels.Cr
 namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModels.CreatingEx9
 {
     
-    public partial class CreateEx9Class
+    public partial class CreateEx9 : ICreateEx9
     {
-        private static readonly CreateEx9Class _instance;
+        private static readonly CreateEx9 _instance;
 
-        static CreateEx9Class()
+        static CreateEx9()
         {
-            _instance = new CreateEx9Class();
+            _instance = new CreateEx9();
         }
 
-        public static CreateEx9Class Instance
+        public static CreateEx9 Instance
         {
             get { return _instance; }
         }
@@ -59,7 +59,7 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
         public bool Process7100 { get; set; }
 
        
-        public async Task<List<DocumentCT>> CreateEx9(string filterExpression, bool perIM7, bool process7100, bool applyCurrentChecks,
+        public async Task<List<DocumentCT>> Execute(string filterExpression, bool perIM7, bool process7100, bool applyCurrentChecks,
             AsycudaDocumentSet docSet, string documentType, string ex9BucketType, bool isGrouped,
             bool checkQtyAllocatedGreaterThanPiQuantity, bool checkForMultipleMonths, bool applyEx9Bucket, bool applyHistoricChecks,  bool perInvoice, bool autoAssess, bool overPIcheck, bool universalPIcheck, bool itemPIcheck)
         {
@@ -144,16 +144,9 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
                             $@"InvoiceDate <= ""{endDate:MM/dd/yyyy HH:mm:ss}""");
 
                     var dateFilter = $@"InvoiceDate >= ""{startDate:MM/dd/yyyy}"" && InvoiceDate <= ""{endDate:MM/dd/yyyy HH:mm:ss}""";
-                    //  var salesSummary = GetSalesSummary(startDate, endDate);
+                   
                     List<string> errors = new List<string>();
-                    //using (var ctx = new AllocationDSContext())
-                    //{
-
-                    //    errors = ctx.AllocationErrors
-                    //        .Where(x => x.EntryDataDate >= startDate && x.EntryDataDate <= endDate 
-                    //                    && x.ApplicationSettingsId == docSet.ApplicationSettingsId)
-                    //        .Select(x => x.ItemNumber).Distinct().ToList();
-                    //}
+                    
 
                     
                     var slst =
@@ -907,7 +900,7 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
             }
         }
 
-        public static List<InventoryItem> InventoryDataCache { get; private set; }
+        private static List<InventoryItem> InventoryDataCache { get;  set; }
 
         private List<DataSpace.BaseDataModel.MyPodData> SingleAllocationPerPreviousItem(AllocationDataBlock monthyear)
         {
@@ -1008,7 +1001,7 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
 
         }
 
-        public async Task<int> CreateEx9EntryAsync(DataSpace.BaseDataModel.MyPodData mypod, DocumentCT cdoc, int itmcount, string dfp,
+        private async Task<int> CreateEx9EntryAsync(DataSpace.BaseDataModel.MyPodData mypod, DocumentCT cdoc, int itmcount, string dfp,
             string documentType, List<ItemSalesPiSummary> itemSalesPiSummaryLst,
             bool checkQtyAllocatedGreaterThanPiQuantity,
             bool applyEx9Bucket, string ex9BucketType, bool applyHistoricChecks, bool applyCurrentChecks,
@@ -2030,7 +2023,7 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
             }
         }
 
-        public void Ex9InitializeCdoc(string dfp, DocumentCT cdoc, AsycudaDocumentSet ads, string DocumentType,string prefix = null)
+        private void Ex9InitializeCdoc(string dfp, DocumentCT cdoc, AsycudaDocumentSet ads, string DocumentType,string prefix = null)
         {
             try
             {

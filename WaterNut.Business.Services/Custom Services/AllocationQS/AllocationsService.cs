@@ -34,7 +34,7 @@ namespace AllocationQS.Business.Services
             var docset =
                 await WaterNut.DataSpace.BaseDataModel.Instance.GetAsycudaDocumentSet(AsycudaDocumentSetId)
                     .ConfigureAwait(false);
-           await CreateEx9Class.Instance.CreateEx9(filterExpression, perIM7, process7100, applyCurrentChecks, docset, documentType, ex9BucketType, isGrouped, checkQtyAllocatedGreaterThanPiQuantity, checkForMultipleMonths,
+           await WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModels.CreatingEx9.CreateEx9.Instance.Execute(filterExpression, perIM7, process7100, applyCurrentChecks, docset, documentType, ex9BucketType, isGrouped, checkQtyAllocatedGreaterThanPiQuantity, checkForMultipleMonths,
                     applyEx9Bucket, applyHistoricChecks, perInvoice, autoAssess, overPIcheck, universalPIcheck, itemPIcheck).ConfigureAwait(false);
         }
 

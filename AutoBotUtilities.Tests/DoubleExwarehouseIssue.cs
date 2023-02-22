@@ -65,7 +65,7 @@ namespace AutoBotUtilities.Tests
 
 
 
-            var res =  AllocationsModel.Instance.CreateEX9Class.CreateEx9(filterExpression, false, false, true, docset, "Sales", "Historic", true, true, true, true, true, false, true, true, true, true).Result;
+            var res =  AllocationsModel.Instance.CreateEx9.Execute(filterExpression, false, false, true, docset, "Sales", "Historic", true, true, true, true, true, false, true, true, true, true).Result;
 
             Assert.IsEmpty(res);
 
