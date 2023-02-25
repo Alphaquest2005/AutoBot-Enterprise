@@ -16,419 +16,50 @@ using WaterNut.Business.Entities;
 using WaterNut.Business.Services.Utils;
 using WaterNut.DataSpace;
 using WaterNut.Interfaces;
-using xBondAllocations = DocumentItemDS.Business.Entities.xBondAllocations;
-using xcuda_Weight = DocumentDS.Business.Entities.xcuda_Weight;
-using xcuda_Weight_itm = DocumentItemDS.Business.Entities.xcuda_Weight_itm;
-using CustomsOperations = CoreEntities.Business.Enums.CustomsOperations;
 using EntryPreviousItems = DocumentItemDS.Business.Entities.EntryPreviousItems;
-using xcuda_Item = DocumentItemDS.Business.Entities.xcuda_Item;
-using Attachments = DocumentItemDS.Business.Entities.Attachments;
 using InventoryItem = InventoryDS.Business.Entities.InventoryItem;
 using ItemSalesPiSummary = WaterNut.DataSpace.ItemSalesPiSummary;
+using xBondAllocations = DocumentItemDS.Business.Entities.xBondAllocations;
+using xcuda_Item = DocumentItemDS.Business.Entities.xcuda_Item;
 using xcuda_PreviousItem = DocumentItemDS.Business.Entities.xcuda_PreviousItem;
-using WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModels.CreatingEx9.GettingEx9DataByDateRange;
-using WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModels.CreatingEx9.GettingEx9SalesAllocations;
-
-
-//using xcuda_Item = AllocationDS.Business.Entities.xcuda_Item;
-//using xcuda_PreviousItem = AllocationDS.Business.Entities.xcuda_PreviousItem;
+using xcuda_Weight = DocumentDS.Business.Entities.xcuda_Weight;
+using xcuda_Weight_itm = DocumentItemDS.Business.Entities.xcuda_Weight_itm;
 
 namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModels.CreatingEx9
 {
-    
-    public partial class CreateEx9 : ICreateEx9
+    public class CreateDutyFreePaidDocument
     {
-        private static readonly CreateEx9 _instance;
+        
+        private readonly List<PiSummary> DocSetPi = new List<PiSummary>();
+        private Dictionary<(int PreviousItemId, string CNumber), xcuda_Exporter> _exporters = null;
 
-        static CreateEx9()
+        static CreateDutyFreePaidDocument()
         {
-            _instance = new CreateEx9();
         }
 
-        public static CreateEx9 Instance
-        {
-            get { return _instance; }
-        }
+      
 
-        private bool isDBMem = true;
-
-
-        bool PerIM7 { get; set; }
-
-
-        bool Process7100 { get; set; }
+        private static List<InventoryItem> InventoryDataCache { get;  set; }
 
        
-        public async Task<List<DocumentCT>> Execute(string filterExpression, bool perIM7, bool process7100, bool applyCurrentChecks,
-            AsycudaDocumentSet docSet, string documentType, string ex9BucketType, bool isGrouped,
-            bool checkQtyAllocatedGreaterThanPiQuantity, bool checkForMultipleMonths, bool applyEx9Bucket, bool applyHistoricChecks,  bool perInvoice, bool autoAssess, bool overPIcheck, bool universalPIcheck, bool itemPIcheck)
-        {
-            // Make CurrentChecks always on
-           
-            try
-            {
-                PerIM7 = perIM7;
-                Process7100 = process7100;
-                
-                return await ProcessEx9(docSet, filterExpression, documentType, ex9BucketType, isGrouped, checkQtyAllocatedGreaterThanPiQuantity, checkForMultipleMonths, applyEx9Bucket, applyHistoricChecks, applyCurrentChecks, perInvoice, autoAssess, overPIcheck, universalPIcheck, itemPIcheck).ConfigureAwait(continueOnCapturedContext: false);
 
-            }
-            catch (Exception)
-            {
-
-                throw;
-            }
-        }
-
-        private static List<PiSummary> DocSetPi = new List<PiSummary>();
-
-        private static List<EX9AsycudaSalesAllocations> _ex9AsycudaSalesAllocations = null;
-        private async Task<List<DocumentCT>> ProcessEx9(AsycudaDocumentSet docSet, string filterExp, string documentType,
-            string ex9BucketType, bool isGrouped,
-            bool checkQtyAllocatedGreaterThanPiQuantity, bool checkForMultipleMonths, bool applyEx9Bucket,
-            bool applyHistoricChecks, bool applyCurrentChecks, bool perInvoice, bool autoAssess, bool overPIcheck,
-            bool universalPIcheck, bool itemPIcheck)
-        {
-            try
-            {
-                SQLBlackBox.RunSqlBlackBox();
-
-                DocSetPi.Clear();
-                
-                //DocSetPi.Clear();// moved here because data is cached wont update automatically
-                freashStart = true;
-                _ex9AsycudaSalesAllocations = null;
-                InventoryDataCache =
-                    InventoryItemUtils.GetInventoryItems(DataSpace.BaseDataModel.Instance.CurrentApplicationSettings
-                        .ApplicationSettingsId, true);
-                var docs = new List<DocumentCT>();
-                //docPreviousItems = new Dictionary<int, List<previousItems>>();
-                //var dutylst = CreateDutyList(slst);
-                var dutylst = new List<string>() {"Duty Paid", "Duty Free"};
-                if (!filterExp.Contains("InvoiceDate"))
-                {
-                    throw new ApplicationException("Filter string dose not contain 'Invoice Date'");
-
-                }
-
-                var realStartDate =
-                    DateTime.Parse(
-                        filterExp.Substring(filterExp.IndexOf("InvoiceDate >= ") + "InvoiceDate >= ".Length + 1, 10),
-                        CultureInfo.CurrentCulture);
-                var realEndDate =
-                    DateTime.Parse(
-                        filterExp.Substring(filterExp.IndexOf("InvoiceDate <= ") + "InvoiceDate <= ".Length + 1, 19),
-                        CultureInfo.CurrentCulture);
-                DateTime startDate = realStartDate;
-                var exPro =
-                                        " && (PreviousDocumentItem != null && PreviousDocumentItem.AsycudaDocument.Customs_Procedure.CustomsOperations.Name == \"Warehouse\" )" +
-                                        " && (PreviousDocumentItem != null && PreviousDocumentItem.AsycudaDocument.Cancelled == null || PreviousDocumentItem.AsycudaDocument.Cancelled == false)" +
-                                        "&& (PreviousDocumentItem != null && PreviousDocumentItem.xWarehouseError == null)"
-                                       //+ " && Type == \"ADJ\""
-                                       ;
-                var rdateFilter = $@"InvoiceDate >= ""{realStartDate:MM/dd/yyyy}"" && InvoiceDate <= ""{realEndDate.AddHours(23):MM/dd/yyyy HH:mm:ss}""";
-
-                if (isDBMem == false) PrepareEx9MemData(filterExp + exPro,rdateFilter);
-
-                while (startDate < realEndDate)
-                {
-                     
-                    docPreviousItems = new Dictionary<int, List<PreviousItems>>();// moved here because the reloaded month data already has data 
-
-                    DateTime firstOfNextMonth = new DateTime(startDate.Year, startDate.Month, 1).AddMonths(1);
-                    DateTime endDate = checkForMultipleMonths ? firstOfNextMonth.AddDays(-1).AddHours(23) : realEndDate;
-
-                    var currentFilter = filterExp.Replace($@"InvoiceDate >= ""{realStartDate:MM/dd/yyyy}""",
-                            $@"InvoiceDate >= ""{startDate:MM/dd/yyyy}""")
-                        .Replace($@"InvoiceDate <= ""{realEndDate:MM/dd/yyyy HH:mm:ss}""",
-                            $@"InvoiceDate <= ""{endDate:MM/dd/yyyy HH:mm:ss}""");
-
-                    var dateFilter = $@"InvoiceDate >= ""{startDate:MM/dd/yyyy}"" && InvoiceDate <= ""{endDate:MM/dd/yyyy HH:mm:ss}""";
-                   
-                    List<string> errors = new List<string>();
-                    
-
-                    
-                    var slst =
-                        (await CreateAllocationDataBlocks(currentFilter + exPro, errors, dateFilter).ConfigureAwait(false))
-                        .Where(x => x.Allocations.Count > 0);
-
-                    Debug.WriteLine($"*********************Create EX9 For {startDate.Date.ToShortDateString()}");
-
-                    foreach (var dfp in dutylst)
-                    {
-                        var cp =
-                            DataSpace.BaseDataModel.Instance.Customs_Procedures
-                                .Where(x => x.CustomsOperationId == (int)CustomsOperations.Exwarehouse && x.Sales == true && x.IsPaid == (dfp == "Duty Paid"))
-                                .OrderByDescending(x => x.IsDefault == true)
-                                .First();
-
-                        docSet.Customs_Procedure = cp;
-
-                        if (slst != null && slst.ToList().Any())
-                        {
-                            var types = slst.GroupBy(x => x.Type).ToList();
-                            foreach (var entrytype in types)
-                            {
-                                //DocSetPi.Clear();// move this to top because the data is cached now
-
-                                var res = entrytype.Where(x => x.DutyFreePaid == dfp);
-                                List<ItemSalesPiSummary> itemSalesPiSummarylst;
-                                itemSalesPiSummarylst = GetItemSalesPiSummary(docSet.ApplicationSettingsId, startDate,
-                                    endDate,
-                                    dfp, entrytype.Key); //res.SelectMany(x => x.Allocations).Select(z => z.AllocationId).ToList(), 
-                               var genDocs =  await CreateDutyFreePaidDocument(dfp, res, docSet, documentType, isGrouped,
-                                        itemSalesPiSummarylst.Where(x =>
-                                                x.DutyFreePaid == dfp || x.DutyFreePaid == "All" ||
-                                                x.DutyFreePaid == "Universal")
-                                            .ToList(), checkQtyAllocatedGreaterThanPiQuantity, checkForMultipleMonths,
-                                        applyEx9Bucket, ex9BucketType, applyHistoricChecks, applyCurrentChecks,
-                                        autoAssess, perInvoice, overPIcheck, universalPIcheck, itemPIcheck,new Dictionary<int, List<PreviousItems>>())
-                                    .ConfigureAwait(false);
-                                docs.AddRange(genDocs);
-
-                               
-                            }
-                        }
-
-                      
-
-                    }
-
-                    startDate = checkForMultipleMonths ? new DateTime(startDate.Year, startDate.Month, 1).AddMonths(1): realEndDate;
-                }
-                DataSpace.BaseDataModel.RenameDuplicateDocuments(docSet.AsycudaDocumentSetId);
-                StatusModel.StopStatusUpdate();
-                return docs;
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-                throw;
-            }
-        }
-
-        private void PrepareEx9MemData(string filterExp, string rdateFilter)
-        {
-            var x = new GetEx9AsycudaSalesAllocationsMem(filterExp, rdateFilter);
-        }
-
-
-        public List<ItemSalesPiSummary> GetItemSalesPiSummary(int applicationSettingsId, DateTime startDate,
-            DateTime endDate, string dfp, string entryDataType)
-        {
-            try
-            {
-
-                using (var ctx = new AllocationDSContext())
-                {
-                    ctx.Database.CommandTimeout = 0;
-                    return GetPiSummary(applicationSettingsId, startDate, endDate, dfp, ctx, entryDataType);
-                }
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-                throw;
-            }
-        }
-        private static List<SummaryData> _universalData = null;
-        private static List<ItemSalesPiSummary> universalDataSummary = null;
-        private static List<ItemSalesPiSummary> allSalesSummary = null;
-        private static List<SummaryData> allSales = null;
-        private static bool freashStart = true;
-        private static List<ItemSalesPiSummary> GetPiSummary(int applicationSettingsId, DateTime startDate,
-            DateTime endDate, string dfp,
-            AllocationDSContext ctx, string entryType)
-        {
-            try
-            {
-
-
-                var res = new List<ItemSalesPiSummary>();
-
-                SummaryInititalization(applicationSettingsId, ctx, entryType, startDate, endDate);
-
-               // var testres = allSales.Where(x => x.Summary.PreviousItem_Id == 782698).ToList();
-                //var testlistQtyAllocated = testres.Select(x => x.Summary.QtyAllocated).ToList();
-                //var testQtyAllocated = testres.Sum(x => x.Summary.QtyAllocated);
-                res.AddRange(universalDataSummary);
-                res.AddRange(allSalesSummary);
-
-
-                var allHistoricSales = allSales
-                    .Where(x => (x.Summary.Type ?? x.Summary.EntryDataType) == entryType)// || x.Summary.Type == null
-                    .Where(x => x.Summary.EntryDataDate <= endDate)
-                    .Where(x => x.Summary.DutyFreePaid == dfp).ToList();
-
-                var test = allSales.Where(x => x.Summary.PreviousItem_Id == 16758);
-                var test2 = allHistoricSales.Where(x => x.Summary.PreviousItem_Id == 16758);
-
-                res.AddRange(allHistoricSales
-                    .GroupBy(g => new
-                    {
-                        g.Summary.PreviousItem_Id,
-                        g.Summary.pCNumber,
-                        g.Summary.pLineNumber,
-                        //  ItemNumber = g.ItemNumber,
-                        g.Summary.DutyFreePaid,
-                        EntryType = g.Summary.Type ?? g.Summary.EntryDataType
-
-                    })
-                    .Select(x => new ItemSalesPiSummary
-                    {
-                        PreviousItem_Id = (int) x.Key.PreviousItem_Id,
-                        ItemNumber = x.First().Summary.ItemNumber,
-                        QtyAllocated = x.Select(z => z.Summary.QtyAllocated).DefaultIfEmpty(0).Sum(),
-                        pQtyAllocated = x.Select(z => z.Summary.pQtyAllocated).Distinct().DefaultIfEmpty(0).Sum(),
-                        PiQuantity =
-                            (double) x.DistinctBy(q => q.Summary.PreviousItem_Id)
-                                .SelectMany(z => z.pIData.Where(zz => zz.AssessmentDate <= endDate && zz.EntryDataType == entryType).Select(zz => zz.PiQuantity))
-                                .DefaultIfEmpty(0)
-                                .Sum(), // x.Select(z => z.Summary.PiQuantity).DefaultIfEmpty(0).Sum(),
-                        pCNumber = x.Key.pCNumber,
-                        pLineNumber = (int) x.Key.pLineNumber,
-                        DutyFreePaid = x.Key.DutyFreePaid,
-                        Type = "Historic",
-                        EntryDataType = x.Key.EntryType,
-                        EndDate = endDate
-                    }).ToList());
-
-                res.AddRange(allHistoricSales
-                    .Where(x => x.Summary.EntryDataDate >= startDate /*&& x.Summary.EntryDataDate <= endDate*/)
-                    .GroupBy(g => new
-                    {
-                        g.Summary.PreviousItem_Id,
-                        g.Summary.pCNumber,
-                        g.Summary.pLineNumber,
-                        //ItemNumber = g.ItemNumber,
-                        g.Summary.DutyFreePaid,
-                        EntryType = g.Summary.Type ?? g.Summary.EntryDataType
-
-                    })
-                    .Select(x => new ItemSalesPiSummary
-                    {
-                        PreviousItem_Id = (int) x.Key.PreviousItem_Id,
-                        ItemNumber = x.First().Summary.ItemNumber,
-                        QtyAllocated = x.Select(z => z.Summary.QtyAllocated).DefaultIfEmpty(0).Sum(),
-                        pQtyAllocated = x.Select(z => z.Summary.pQtyAllocated).Distinct().DefaultIfEmpty(0).Sum(),
-                        PiQuantity =
-                            (double) x.DistinctBy(q => q.Summary.PreviousItem_Id)
-                                .SelectMany(z => z.pIData.Where(zz => zz.AssessmentDate >= startDate && zz.AssessmentDate <= endDate && zz.EntryDataType == entryType).Select(zz => zz.PiQuantity))
-                                .DefaultIfEmpty(0)
-                                .Sum(), // x.Select(z => z.Summary.PiQuantity).DefaultIfEmpty(0).Sum(),
-                        pCNumber = x.Key.pCNumber,
-                        pLineNumber = (int) x.Key.pLineNumber,
-                        DutyFreePaid = x.Key.DutyFreePaid,
-                        Type = "Current",
-                        EntryDataType = entryType,
-                        StartDate = startDate,
-                        EndDate = endDate
-                    }).ToList());
-                return res;
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-                throw;
-            }
-        }
-
-        private static void SummaryInititalization(int applicationSettingsId, AllocationDSContext ctx, string entryType,
-            DateTime startDate, DateTime endDate)
-        {
-            if (_universalData == null || freashStart)
-            {
-                _universalData = ctx.ItemSalesAsycudaPiSummary
-                    .GroupJoin(ctx.AsycudaItemPiQuantityData,
-                        pis => new {PreviousItem_Id = (int) pis.PreviousItem_Id, pis.DutyFreePaid},
-                        pid => new {PreviousItem_Id = pid.Item_Id, pid.DutyFreePaid},
-                        (pis, pid) => new SummaryData {Summary = pis, pIData = pid})
-                    //.Where(x => x.ItemNumber == "14479" || x.ItemNumber == "014479")
-                    .Where(x => x.Summary.ApplicationSettingsId == applicationSettingsId)
-                    .ToList();
-
-               var test = _universalData.Where(x => x.Summary.PreviousItem_Id == 1178474);
-
-                universalDataSummary = _universalData
-                    .GroupBy(g => new
-                    {
-                        g.Summary.PreviousItem_Id,
-                        g.Summary.pCNumber,
-                        g.Summary.pLineNumber,
-                        // ItemNumber = g.ItemNumber, /// took out all itemnumber because the pos can have different itemnumbers in entrydatadetails... c#14280 - 64
-                    })
-                    .Select(x => new ItemSalesPiSummary
-                    {
-                        PreviousItem_Id = (int) x.Key.PreviousItem_Id,
-                        ItemNumber = x.First().Summary.ItemNumber,
-                        QtyAllocated = (double) x.DistinctBy(q => q.Summary.Id).Select(z => z.Summary.QtyAllocated)
-                            .DefaultIfEmpty(0).Sum(),
-                        pQtyAllocated = x.DistinctBy(q => new {q.Summary.DutyFreePaid, q.Summary.pQtyAllocated})
-                            .Select(z => z.Summary.pQtyAllocated).DefaultIfEmpty(0).Sum(),
-                        PiQuantity =
-                            (double) x.DistinctBy(q => q.Summary.PreviousItem_Id)
-                                .SelectMany(z => z.pIData.Select(zz => zz.PiQuantity))
-                                .DefaultIfEmpty(0).Sum(),
-                        pCNumber = x.Key.pCNumber,
-                        pLineNumber = (int) x.Key.pLineNumber,
-                        DutyFreePaid = "Universal",
-                        Type = "Universal",
-                        EntryDataType = "Universal",
-                        StartDate = startDate,
-                        EndDate = endDate
-                    }).ToList();
-                allSales = _universalData;
-                allSalesSummary = allSales
-                    .GroupBy(g => new
-                    {
-                        g.Summary.PreviousItem_Id,
-                        g.Summary.pCNumber,
-                        g.Summary.pLineNumber,
-                       // entryType = g.Summary.Type??"Sales",
-                        
-                        // ItemNumber = g.ItemNumber,
-                    })
-                    .Select(x => new ItemSalesPiSummary
-                    {
-                        PreviousItem_Id = (int) x.Key.PreviousItem_Id,
-                        ItemNumber = x.First().Summary.ItemNumber,
-                        QtyAllocated = (double) x.DistinctBy(q => q.Summary.Id).Select(z => z.Summary.QtyAllocated)
-                            .DefaultIfEmpty(0).Sum(),
-                        pQtyAllocated = x.DistinctBy(q => new {q.Summary.DutyFreePaid, q.Summary.pQtyAllocated})
-                            
-                            .Select(z => z.Summary.pQtyAllocated).DefaultIfEmpty(0).Sum(),
-                        PiQuantity =
-                            (double) x.DistinctBy(q => new { q.Summary.DutyFreePaid, q.Summary.PreviousItem_Id})
-                                .SelectMany(z => z.pIData.Select(zz => zz.PiQuantity))
-                                .DefaultIfEmpty(0)
-                                .Sum(), //x.DistinctBy(q => q.Summary.Id).Select(z => z.Summary.PiQuantity).DefaultIfEmpty(0).Sum(),
-                        pCNumber = x.Key.pCNumber,
-                        pLineNumber = (int) x.Key.pLineNumber,
-                        DutyFreePaid = "All",
-                        Type = "All",
-                        EntryDataType = entryType,//x.Key.entryType,
-                        StartDate = startDate,
-                        EndDate = endDate
-                    }).ToList();
-                freashStart = false;
-            }
-        }
-
-
-        public async Task<List<DocumentCT>> CreateDutyFreePaidDocument(string dfp,
+     
+        public async Task<List<DocumentCT>> Execute(string dfp,
             IEnumerable<AllocationDataBlock> slst,
             AsycudaDocumentSet docSet, string documentType, bool isGrouped,
             List<ItemSalesPiSummary> itemSalesPiSummaryLst,
             bool checkQtyAllocatedGreaterThanPiQuantity, bool checkForMultipleMonths,
             bool applyEx9Bucket, string ex9BucketType, bool applyHistoricChecks, bool applyCurrentChecks,
             bool autoAssess, bool perInvoice, bool overPIcheck, bool universalPIcheck, bool itemPIcheck,
-            Dictionary<int, List<PreviousItems>> dud, string prefix = null)//just to stay compliant with interface but still want old functionality
+            Dictionary<int, List<PreviousItems>> docPreviousItems, bool PerIM7, string prefix = null)
         {
             try
             {
-               // applyHistoricChecks = false;
-               // applyEx9Bucket = false;
+                DocSetPi.Clear();
+
+                var sql = "";
+                // applyHistoricChecks = false;
+                // applyEx9Bucket = false;
                 //applyCurrentChecks = false;
                 if(InventoryDataCache == null) InventoryDataCache =
                     InventoryItemUtils.GetInventoryItems(DataSpace.BaseDataModel.Instance.CurrentApplicationSettings
@@ -455,15 +86,15 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
                 Ex9InitializeCdoc(dfp, cdoc, docSet, documentType, prefix);
                 var effectiveAssessmentDate =
                     slst.SelectMany(x =>x.Allocations).Select(x =>
-                                            x.EffectiveDate == DateTime.MinValue || x.EffectiveDate == null
-                                                ? x.InvoiceDate
-                                                : x.EffectiveDate).Min();
+                        x.EffectiveDate == DateTime.MinValue || x.EffectiveDate == null
+                            ? x.InvoiceDate
+                            : x.EffectiveDate).Min();
                 foreach (var monthyear in slst) //.Where(x => x.DutyFreePaid == dfp)
                 {
 
                     var prevEntryId = "";
                     var prevIM7 = "";
-                    var elst = PrepareAllocationsData(monthyear, isGrouped);
+                    var elst = PrepareAllocationsData(monthyear, isGrouped, sql);
 
                     if (perInvoice) elst = elst.OrderBy(x => x.EntlnData.EntryDataDetails.First().EntryDataId);
                     
@@ -487,7 +118,7 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
 
                                     DataSpace.BaseDataModel.SaveAttachments(docSet, cdoc);
                                     AttachSupplier(cdoc);
-                                    await SaveDocumentCT(cdoc).ConfigureAwait(false);
+                                    //await SaveDocumentCT(cdoc).ConfigureAwait(false);
                                     docList.Add(cdoc);
                                     //}
                                     //else
@@ -537,7 +168,7 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
 
                         var newItms = await
                             CreateEx9EntryAsync(mypod, cdoc, itmcount, dfp, documentType,
-                                    itemSalesPiSummaryLst, checkQtyAllocatedGreaterThanPiQuantity, applyEx9Bucket, ex9BucketType, applyHistoricChecks, applyCurrentChecks, overPIcheck, universalPIcheck, itemPIcheck)
+                                    itemSalesPiSummaryLst, checkQtyAllocatedGreaterThanPiQuantity, applyEx9Bucket, ex9BucketType, applyHistoricChecks, applyCurrentChecks, overPIcheck, universalPIcheck, itemPIcheck, docPreviousItems, sql)
                                 .ConfigureAwait(false);
 
                         itmcount += newItms;
@@ -553,14 +184,16 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
                 }
                 DataSpace.BaseDataModel.SaveAttachments(docSet, cdoc);
                 AttachSupplier(cdoc);
-                await SaveDocumentCT(cdoc).ConfigureAwait(false);
-                if (cdoc.Document.ASYCUDA_Id == 0)
+                //await SaveDocumentCT(cdoc).ConfigureAwait(false);
+                if (!cdoc.DocumentItems.Any())
                 {
                     //clean up
                     docSet.xcuda_ASYCUDA_ExtendedProperties.Remove(cdoc.Document.xcuda_ASYCUDA_ExtendedProperties);
                     cdoc.Document = null;
                 }
 
+                await SaveDocumentCT(cdoc).ConfigureAwait(false);
+                SaveSql(sql);
                 if(cdoc.Document != null) docList.Add(cdoc);
                 return docList;
             }
@@ -571,23 +204,37 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
             }
         }
 
+        private static void SaveSql(string sql)
+        {
+            if (string.IsNullOrEmpty(sql)) return;
+            using (var ctx = new AllocationDSContext())
+            {
+                ctx.Database.CommandTimeout = 0;
+                ctx.Database
+                    .ExecuteSqlCommand(TransactionalBehavior.EnsureTransaction, sql);
+            }
+        }
+
         private void AttachSupplier(DocumentCT cdoc)
         {
             var firstItm = cdoc.DocumentItems.FirstOrDefault();
             if (firstItm == null) return;
-            using (var ctx = new DocumentDSContext())
+            
+            var exporter = Enumerable.FirstOrDefault<KeyValuePair<(int PreviousItemId, string CNumber), xcuda_Exporter>>(GetExporters(), x => x.Key.CNumber == firstItm.xcuda_PreviousItem.Prev_reg_nbr).Value;
+            if(exporter != null)
             {
-                var exporter = ctx.xcuda_Exporter.FirstOrDefault(x => x.xcuda_Traders.xcuda_ASYCUDA.xcuda_Identification.xcuda_Registration.Number == firstItm.xcuda_PreviousItem.Prev_reg_nbr);
-                if(exporter != null)
-                {
-                    cdoc.Document.xcuda_Traders.xcuda_Exporter.Exporter_name = exporter.Exporter_name;
-                }
+                cdoc.Document.xcuda_Traders.xcuda_Exporter.Exporter_name = exporter.Exporter_name;
             }
+            
         }
 
+        private Dictionary<(int PreviousItemId, string CNumber), xcuda_Exporter> GetExporters()
+        {
+            if(_exporters != null) return _exporters;
+            _exporters = new DocumentDSContext().xcuda_Exporter.Select(x => new { PreviousItemId = x.Traders_Id, CNumber = x.xcuda_Traders.xcuda_ASYCUDA.xcuda_Identification.xcuda_Registration.Number, value = x}).ToDictionary(x => (x.PreviousItemId,x.CNumber), x => x.value);
+            return _exporters;
+        }
 
-
-        
         private async Task SaveDocumentCT(DocumentCT cdoc)
         {
             try
@@ -628,110 +275,8 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
             }
         }
 
-
-
-        
-        private async Task<IEnumerable<AllocationDataBlock>> CreateAllocationDataBlocks(string filterExpression,
-            List<string> errors,
-            string dateFilter)
-        {
-            try
-            {
-                StatusModel.Timer("Getting ExBond Data");
-                var ex9Data = await new GetEx9Data().Execute(filterExpression, dateFilter).ConfigureAwait(false);
-                var slstSource = ex9Data.Where(x => !errors.Contains(x.ItemNumber)).ToList();
-                StatusModel.StartStatusUpdate("Creating xBond Entries", slstSource.Count());
-                IEnumerable<AllocationDataBlock> slst;
-                slst = CreateWholeAllocationDataBlocks(slstSource);
-                return slst;
-            }
-            catch (Exception)
-            {
-
-                throw;
-            }
-        }
-
-
-        private IEnumerable<AllocationDataBlock> CreateWholeAllocationDataBlocks(
-            IEnumerable<EX9Allocations> slstSource)
-        {
-            IEnumerable<AllocationDataBlock> slst;
-            if (PerIM7 == true)
-            {
-                slst = CreateWholeIM7AllocationDataBlocks(slstSource);
-            }
-            else
-            {
-                slst = CreateWholeNonIM7AllocationDataBlocks(slstSource);
-            }
-            return slst;
-        }
-
-        private IEnumerable<AllocationDataBlock> CreateWholeNonIM7AllocationDataBlocks(
-            IEnumerable<EX9Allocations> slstSource)
-        {
-            try
-            {
-
-                IEnumerable<AllocationDataBlock> slst;
-                var source = slstSource.OrderBy(x => x.pTariffCode).ToList();
-
-                slst = from s in source
-                    group s by new {s.DutyFreePaid, s.Type, MonthYear = "NoMTY"}
-                    into g
-                    select new AllocationDataBlock
-                    {
-                        Type = g.Key.Type,
-                        MonthYear = g.Key.MonthYear,
-                        DutyFreePaid = g.Key.DutyFreePaid,
-                        Allocations = g.ToList(),
-                    };
-                return slst;
-            }
-            catch (Exception)
-            {
-
-                throw;
-            }
-        }
-
-        private IEnumerable<AllocationDataBlock> CreateWholeIM7AllocationDataBlocks(
-            IEnumerable<EX9Allocations> slstSource)
-        {
-            try
-            {
-                IEnumerable<AllocationDataBlock> slst;
-                slst = from s in slstSource.OrderBy(x => x.pTariffCode)
-                    group s by
-                        new
-                        {
-                            s.DutyFreePaid,
-                            s.Type,
-                            MonthYear = "NoMTY",
-                            CNumber = s.pCNumber
-                        }
-                    into g
-                    select new AllocationDataBlock
-                    {
-                        Type = g.Key.Type,
-                        MonthYear = g.Key.MonthYear,
-                        DutyFreePaid = g.Key.DutyFreePaid,
-                        Allocations = g.ToList(),
-                        CNumber = g.Key.CNumber
-                    };
-                return slst;
-            }
-            catch (Exception)
-            {
-
-                throw;
-            }
-        }
-
-
-
-        private IEnumerable<DataSpace.BaseDataModel.MyPodData> PrepareAllocationsData(AllocationDataBlock monthyear, bool isGrouped)
+        private IEnumerable<DataSpace.BaseDataModel.MyPodData> PrepareAllocationsData(AllocationDataBlock monthyear,
+            bool isGrouped, string sql)
         {
             try
             {
@@ -740,52 +285,51 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
                 //{
                 elst = isGrouped 
                     ? GroupAllocationsByPreviousItem(monthyear) 
-                    : SingleAllocationPerPreviousItem(monthyear);
+                    : SingleAllocationPerPreviousItem(monthyear, sql);
                 //}
                 //else
                 //{
-                    //elst = GroupAllocations(monthyear);
+                //elst = GroupAllocations(monthyear);
                 //}
 
                 return elst.ToList();
 
             }
-            catch (Exception)
+            catch (Exception ex)
             {
 
-                throw;
+                throw ex;
             }
         }
-
-        
 
         private List<DataSpace.BaseDataModel.MyPodData> GroupAllocationsByPreviousItem(AllocationDataBlock monthyear)
         {
             try
             {
                 var elst = monthyear.Allocations
-                              .OrderBy(x => x.pTariffCode)
-                              .GroupBy(x =>  x.PreviousItem_Id)
-                              .Select(s => CreateMyPodData(s.ToList())).ToList();
+                    .OrderBy(x => x.pTariffCode)
+                    .GroupBy(x =>  x.PreviousItem_Id)
+                    .Select(s => CreateMyPodData(s.ToList(), monthyear.Filter)).ToList();
                
 
 
                 return elst;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
 
-                throw;
+                throw ex;
             }
         }
 
-        private static DataSpace.BaseDataModel.MyPodData CreateMyPodData(List<EX9Allocations> s)
+        private DataSpace.BaseDataModel.MyPodData CreateMyPodData(List<EX9Allocations> s, (string currentFilter, string dateFilter, DateTime startDate, DateTime endDate) filter)
         {
             try
             {
 
                 return new DataSpace.BaseDataModel.MyPodData
                 {
+                    Filter = filter,
                     Allocations = s.OrderByDescending(x => x.AllocationId).Select(x =>
                         new AsycudaSalesAllocations()
                         {
@@ -813,14 +357,13 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
                         }).ToList(),
                     AllNames = s.SelectMany(x =>
                         {
-                            var alias = InventoryDataCache
-                                .Where(c => c.Id == x.InventoryItemId)
+                            var alias = Enumerable.Where<InventoryItem>(InventoryDataCache, c => c.Id == x.InventoryItemId)
                                 .SelectMany(i => i.InventoryItemAlias)
                                 .ToList();
                             
                             var aliasNames = alias.Select(a => a.AliasItem.ItemNumber).ToList();
 
-                            var aliasAlias = InventoryDataCache.Where(z => z.InventoryItemAlias.Any(a => aliasNames.Contains(a.AliasItem.ItemNumber)) ).SelectMany(z => z.InventoryItemAlias).ToList();
+                            var aliasAlias = Enumerable.Where<InventoryItem>(InventoryDataCache, z => z.InventoryItemAlias.Any(a => aliasNames.Contains(a.AliasItem.ItemNumber)) ).SelectMany(z => z.InventoryItemAlias).ToList();
                             //.Where(c => alias.Select(z => z.AliasItemId).ToList().Any(z => z == c.Id))
                             //.SelectMany(i => i.InventoryItemAlias);
                             var aaNames = aliasAlias.Select(a => a.AliasItem.ItemNumber).ToList();
@@ -902,9 +445,7 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
             }
         }
 
-        private static List<InventoryItem> InventoryDataCache { get;  set; }
-
-        private List<DataSpace.BaseDataModel.MyPodData> SingleAllocationPerPreviousItem(AllocationDataBlock monthyear)
+        private List<DataSpace.BaseDataModel.MyPodData> SingleAllocationPerPreviousItem(AllocationDataBlock monthyear, string sql)
         {
             try
             {
@@ -921,59 +462,9 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
                 //    .GroupBy(x => x.PreviousItem_Id)
                 //    .ToList();
 
-                var elst = new List<List<EX9Allocations>>();
+                var elst = SplitToLines(sql, groupedlst);
 
-                foreach (var group in groupedlst)
-                {
-                    var lst = group.Value.SelectMany(z => z.Value.Select(v => v).ToList()).ToList();
-                    var nlst = new List<EX9Allocations>();
-                    while (lst.Any())
-                    {
-                        // focus on returns ignore weight for now
-
-                        var itm = lst.First();
-                        if (itm.QtyAllocated > 0)
-                        {
-                            if (nlst.Sum(x => x.QtyAllocated) + itm.QtyAllocated > 0)
-                            {
-                                nlst = new List<EX9Allocations> { itm };
-                                lst.RemoveAt(0);
-                            }
-                            else
-                            {
-                                nlst.Add(itm);
-                                lst.RemoveAt(0);
-                            }
-
-                        }
-                        else
-                        {
-                            if (nlst.Sum(x => x.QtyAllocated) + itm.QtyAllocated > 0)
-                            {
-                                if (nlst.Any() && nlst.Sum(x => x.QtyAllocated) > 0) elst.Add(nlst);
-                                nlst = new List<EX9Allocations> { itm };
-                                lst.RemoveAt(0);
-                            }
-                            else
-                            {
-                                nlst.Add(itm);
-                                lst.RemoveAt(0);
-                            }
-                        }
-
-                        if (nlst.Any() && nlst.Sum(x => x.QtyAllocated) > 0) elst.Add(nlst);
-                    }
-
-                    if (nlst.Any() && nlst.Sum(x => x.QtyAllocated) < 0)
-                        UpdateXStatus(
-                            nlst.Select(x => new AsycudaSalesAllocations()
-                            {
-                                AllocationId = x.AllocationId, EntryDataDetailsId = x.EntryDataDetailsId,
-                                PreviousItem_Id = x.PreviousItem_Id
-                            }).ToList(), $"Set < 0: {nlst.Sum(x => x.QtyAllocated)}");
-                }
-
-                var res = elst.Select(CreateMyPodData).ToList();
+                var res = elst.Select(list => CreateMyPodData(list, monthyear.Filter)).ToList();
 
               
                 return res;
@@ -983,6 +474,62 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
 
                 throw;
             }
+        }
+
+        private List<List<EX9Allocations>> SplitToLines(string sql, Dictionary<int, List<((string ItemNumber, int InventoryItemId) Key, List<EX9Allocations> Value)>> groupedlst)
+        {
+            var elst = new List<List<EX9Allocations>>();
+
+            foreach (var group in groupedlst)
+            {
+                var lst = group.Value.SelectMany(z => z.Value.Select(v => v).ToList()).ToList();
+                var nlst = new List<EX9Allocations>();
+                while (lst.Any())
+                {
+                    // focus on returns ignore weight for now
+
+                    var itm = lst.First();
+                    if (itm.QtyAllocated > 0)
+                    {
+                        if (nlst.Sum(x => x.QtyAllocated) + itm.QtyAllocated > 0)
+                        {
+                            nlst = new List<EX9Allocations> { itm };
+                            lst.RemoveAt(0);
+                        }
+                        else
+                        {
+                            nlst.Add(itm);
+                            lst.RemoveAt(0);
+                        }
+                    }
+                    else
+                    {
+                        if (nlst.Sum(x => x.QtyAllocated) + itm.QtyAllocated > 0)
+                        {
+                            if (nlst.Any() && nlst.Sum(x => x.QtyAllocated) > 0) elst.Add(nlst);
+                            nlst = new List<EX9Allocations> { itm };
+                            lst.RemoveAt(0);
+                        }
+                        else
+                        {
+                            nlst.Add(itm);
+                            lst.RemoveAt(0);
+                        }
+                    }
+
+                    if (nlst.Any() && nlst.Sum(x => x.QtyAllocated) > 0) elst.Add(nlst);
+                }
+
+                if (nlst.Any() && nlst.Sum(x => x.QtyAllocated) < 0)
+                    UpdateXStatus(
+                        nlst.Select(x => new AsycudaSalesAllocations()
+                        {
+                            AllocationId = x.AllocationId, EntryDataDetailsId = x.EntryDataDetailsId,
+                            PreviousItem_Id = x.PreviousItem_Id
+                        }).ToList(), $"Set < 0: {nlst.Sum(x => x.QtyAllocated)}", sql);
+            }
+
+            return elst;
         }
 
         private void InsertEntryIdintoRefNum(DocumentCT cdoc, string entryDataId)
@@ -1003,22 +550,24 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
 
         }
 
-        private async Task<int> CreateEx9EntryAsync(DataSpace.BaseDataModel.MyPodData mypod, DocumentCT cdoc, int itmcount, string dfp,
+        private async Task<int> CreateEx9EntryAsync(DataSpace.BaseDataModel.MyPodData mypod, DocumentCT cdoc,
+            int itmcount, string dfp,
             string documentType, List<ItemSalesPiSummary> itemSalesPiSummaryLst,
             bool checkQtyAllocatedGreaterThanPiQuantity,
             bool applyEx9Bucket, string ex9BucketType, bool applyHistoricChecks, bool applyCurrentChecks,
-            bool overPIcheck, bool universalPIcheck, bool itemPIcheck)
+            bool overPIcheck, bool universalPIcheck, bool itemPIcheck,
+            Dictionary<int, List<PreviousItems>> docPreviousItems, string sql)
         {
             try
             {
                 // clear all xstatus so know what happened
-                UpdateXStatus(mypod.Allocations,null);
+                UpdateXStatus(mypod.Allocations,null, sql);
 
                 if (mypod.EntlnData.pDocumentItem.ExpiryDate <= DateTime.Now && (DataSpace.BaseDataModel.Instance.CurrentApplicationSettings.ExportExpiredEntries??true) == false)
                 {
                     UpdateXStatus(mypod.Allocations,
                         $@"Expired Entry: '{
-                                mypod.EntlnData.pDocumentItem.ExpiryDate.ToShortDateString()}'");
+                            mypod.EntlnData.pDocumentItem.ExpiryDate.ToShortDateString()}'", sql);
                     return 0;
                 }
 
@@ -1055,11 +604,11 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
                 List<ItemSalesPiSummary> itemSalesPiCurrent = new List<ItemSalesPiSummary>();
 
                 universalData = itemSalesPiSummaryLst.Where(x => (mypod.AllNames.Contains(x.ItemNumber) || x.PreviousItem_Id == mypod.EntlnData.PreviousDocumentItemId)
-                                                              && x.Type == "Universal").ToList();
+                                                                 && x.Type == "Universal").ToList();
 
                 salesPiAll = itemSalesPiSummaryLst.Where(x => x.PreviousItem_Id == mypod.EntlnData.PreviousDocumentItemId
                                                               //--------took out the name and line because the id more precise especially with item aliases - rouge - "14479 vs 014479"
-                                                               // x.ItemNumber == mypod.EntlnData.ItemNumber &&
+                                                              // x.ItemNumber == mypod.EntlnData.ItemNumber &&
                                                               // x.pCNumber == mypod.EntlnData.EX9Allocation
                                                               //    .pCNumber // donot disable this because previous month pi are not included
                                                               //&& x.pLineNumber == mypod.EntlnData.pDocumentItem
@@ -1115,13 +664,6 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
                     .Select(x => x.TotalQuantity)
                     .DefaultIfEmpty(0).Sum();
 
-                var itemNumberDocPi = docSetPiLst
-                    .Where(x => x.Type == entryType)
-                    .Where(x => x.ItemNumber == mypod.EntlnData.ItemNumber)
-                    .Where(x => x.DutyFreePaid == dfp)//c#17227 line 40 -Appid = 7
-                    .Select(x => x.TotalQuantity)
-                    .DefaultIfEmpty(0).Sum();
-
                 // var universalSalesAll = (double)universalData.GroupBy(x => x.PreviousItem_Id).Select(x => x.FirstOrDefault()?.pQtyAllocated).DefaultIfEmpty(0.0).Sum();
 
                 var previousItemUniversalData = universalData.GroupBy(x => x.PreviousItem_Id).ToList();
@@ -1130,7 +672,7 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
                 var universalPiAll = (double) previousItemUniversalData.Select(x => x.FirstOrDefault(q => q.PiQuantity > 0)?.PiQuantity)
                     .DefaultIfEmpty(0.0).Sum();
 
-               // var totalSalesAll = (double)salesPiAll.GroupBy(x => x.PreviousItem_Id).SelectMany(x => x.Select(z => z.QtyAllocated)).DefaultIfEmpty(0.0).Sum();
+                // var totalSalesAll = (double)salesPiAll.GroupBy(x => x.PreviousItem_Id).SelectMany(x => x.Select(z => z.QtyAllocated)).DefaultIfEmpty(0.0).Sum();
                 var totalSalesAll = (double) salesPiAll.GroupBy(x => x.PreviousItem_Id).Select(x => x.FirstOrDefault(q => q.pQtyAllocated > 0)?.pQtyAllocated).DefaultIfEmpty(0.0).Sum();
                 var totalPiAll = (double) salesPiAll.GroupBy(x => x.PreviousItem_Id).Select(x => x.FirstOrDefault(q => q.PiQuantity > 0)?.PiQuantity)
                     .DefaultIfEmpty(0.0).Sum();
@@ -1143,33 +685,22 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
                     .DefaultIfEmpty(0.0).Sum();
 
                 var itemPiHistoric = itemSalesPiHistoric.GroupBy(x => x.PreviousItem_Id)
-                   .Select(x => x.First().PiQuantity).DefaultIfEmpty(0).Sum();
+                    .Select(x => x.First().PiQuantity).DefaultIfEmpty(0).Sum();
 
                 var itemSalesHistoric = (double)itemSalesPiHistoric.Select(x => x.QtyAllocated).DefaultIfEmpty(0.0).Sum();
 
               
-
+                if(mypod.Filter.startDate == DateTime.Parse("1/1/2022") && mypod.EntlnData.PreviousDocumentItemId == 362441) Debugger.Break();
                 var preEx9Bucket = mypod.EntlnData.Quantity;
                 if (applyEx9Bucket)
                     if (ex9BucketType == "Current")
                     {
-                         Ex9Bucket(mypod, dfp, docPi, salesPiCurrent.Any() ? salesPiCurrent : salesPiAll);
+                        Ex9Bucket(mypod, dfp, docPi, salesPiCurrent.Any() ? salesPiCurrent : salesPiAll, docPreviousItems, sql);
                     }
                     else
                     {
-                        //await Ex9Bucket(mypod, dfp, docPi,
-                        //    salesPiHistoric //i assume once you not doing historic checks especially for adjustments just use the specific item history
-                        //).ConfigureAwait(false); //historic = 'HCLAMP/060'
-
-                        //await Ex9Bucket(mypod, dfp, docPi,
-                        //    salesPiCurrent //i assume once you not doing historic checks especially for adjustments just use the specific item history
-                        //).ConfigureAwait(false); //historic = 'HCLAMP/060'
-
-                        Ex9Bucket(mypod, mypod.EntlnData.Quantity, totalSalesHistoric, totalPiHistoric, "Historic");
-                        Ex9Bucket(mypod, mypod.EntlnData.Quantity, totalSalesCurrent, totalPiCurrent, "Current");
-
-
-
+                        Ex9Bucket(mypod, mypod.EntlnData.Quantity, totalSalesHistoric, totalPiHistoric, "Historic", sql);
+                        Ex9Bucket(mypod, mypod.EntlnData.Quantity, totalSalesCurrent, totalPiCurrent, "Current", sql);
                     }
 
                 var salesFactor = Math.Abs(mypod.EntlnData.EX9Allocation.SalesFactor) < 0.0001
@@ -1189,11 +720,11 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
                             UpdateXStatus(mypod.Allocations,
                                 $@"Failed All Sales Check:: Total All Sales:{Math.Round(totalSalesAll, 2)}
                                             Total All PI: {totalPiAll}
-                                            xQuantity:{mypod.EntlnData.Quantity}");
+                                            xQuantity:{mypod.EntlnData.Quantity}", sql);
                             return 0;
                         }
 
-                        Ex9Bucket(mypod, availibleQty, totalSalesAll, totalPiAll, "Total");
+                        Ex9Bucket(mypod, availibleQty, totalSalesAll, totalPiAll, "Total", sql);
                     }
 
                 if (universalPIcheck)
@@ -1206,11 +737,11 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
                             UpdateXStatus(mypod.Allocations,
                                 $@"Failed universal Sales Check:: Universal Sales:{Math.Round(universalSalesAll, 2)}
                                             Universal PI: {universalPiAll}
-                                            xQuantity:{mypod.EntlnData.Quantity}");
+                                            xQuantity:{mypod.EntlnData.Quantity}", sql);
                             return 0;
                         }
 
-                        Ex9Bucket(mypod, availibleQty, universalSalesAll, universalPiAll, "Universal");
+                        Ex9Bucket(mypod, availibleQty, universalSalesAll, universalPiAll, "Universal", sql);
 
                     }
 
@@ -1219,7 +750,7 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
                 if (mypod.EntlnData.Quantity <= 0)
                 {
                     UpdateXStatus(mypod.Allocations,
-                        $@"Failed Ex9Bucket set Qty to Zero:: preQty: {preEx9Bucket}");
+                        $@"Failed Ex9Bucket set Qty to Zero:: preQty: {preEx9Bucket}", sql);
                     return 0;
                 }
 
@@ -1240,7 +771,7 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
                 if ((qty - Math.Round(qtyAllocated, 2))  > 0.0001)
                 {
                     UpdateXStatus(mypod.Allocations,
-                        $@"Failed Quantity vs QtyAllocated:: Qty: {qty} QtyAllocated: {qtyAllocated}");
+                        $@"Failed Quantity vs QtyAllocated:: Qty: {qty} QtyAllocated: {qtyAllocated}", sql);
                     return 0;
                 }
                 //////////////////////////////////////////////////////////////////////////
@@ -1254,7 +785,7 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
                 if (totalSalesAll == 0)// && mypod.Allocations.FirstOrDefault()?.Status != "Short Shipped"
                 {
                     UpdateXStatus(mypod.Allocations,
-                        $@"No Sales Found");
+                        $@"No Sales Found", sql);
                     return 0; // no sales found
                 }
 
@@ -1268,7 +799,7 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
                     if (totalSalesHistoric == 0)// && mypod.Allocations.FirstOrDefault()?.Status != "Short Shipped"
                     {
                         UpdateXStatus(mypod.Allocations,
-                            $@"No Historical Sales Found");
+                            $@"No Historical Sales Found", sql);
                         return 0; // no sales found
                     }
 
@@ -1283,13 +814,13 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
                         //       xQuantity:{mypod.EntlnData.Quantity}");
                         //return 0;
                         var availibleQty = totalSalesHistoric - (totalPiHistoric + docDFPpi);
-                        if (availibleQty != 0) Ex9Bucket(mypod, availibleQty, totalSalesHistoric, totalPiHistoric, "Historic");
+                        if (availibleQty != 0) Ex9Bucket(mypod, availibleQty, totalSalesHistoric, totalPiHistoric, "Historic", sql);
                         if (mypod.EntlnData.Quantity == 0)
                         {
                             UpdateXStatus(mypod.Allocations,
                                 $@"Failed Historical Check:: Total Historic Sales:{Math.Round(totalSalesHistoric, 2)}
                                    Total Historic PI: {totalPiHistoric}
-                                   xQuantity:{mypod.EntlnData.Quantity}");
+                                   xQuantity:{mypod.EntlnData.Quantity}", sql);
                             return 0;
                         }
                     }
@@ -1305,7 +836,7 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
                     if (totalSalesCurrent == 0)// && mypod.Allocations.FirstOrDefault()?.Status != "Short Shipped"
                     {
                         UpdateXStatus(mypod.Allocations,
-                            $@"No Current Sales Found");
+                            $@"No Current Sales Found", sql);
                         return 0;
                     }
 
@@ -1318,21 +849,21 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
                         UpdateXStatus(mypod.Allocations,
                             $@"Failed Current Check:: Total Current Sales:{Math.Round(totalSalesCurrent, 2)}
                                Total Current PI: {totalPiCurrent}
-                               xQuantity:{mypod.EntlnData.Quantity}");
+                               xQuantity:{mypod.EntlnData.Quantity}", sql);
                         return 0;
                     }
                 }
 
                 // mandatory check to prevent overtaking
                 if (mypod.EntlnData.pDocumentItem.ItemQuantity <
-                       Math.Round((totalPiAll + docPi + mypod.EntlnData.Quantity), 2))
+                    Math.Round((totalPiAll + docPi + mypod.EntlnData.Quantity), 2))
                 {
                     UpdateXStatus(mypod.Allocations,
                         $@"Failed ItemQuantity < totalPiAll & xQuantity:{
                             mypod.EntlnData.pDocumentItem.ItemQuantity
                         }
                                totalPiAll PI: {totalPiAll}
-                               xQuantity:{mypod.EntlnData.Quantity}");
+                               xQuantity:{mypod.EntlnData.Quantity}", sql);
                     return 0;
                 }
 
@@ -1350,19 +881,19 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
                         //       xQuantity:{mypod.EntlnData.Quantity}");
                         //return 0;
                         var availibleQty = itemSalesHistoric - (itemPiHistoric + itemDocPi);
-                        Ex9Bucket(mypod, availibleQty, itemSalesHistoric, itemPiHistoric, "Historic");
+                        Ex9Bucket(mypod, availibleQty, itemSalesHistoric, itemPiHistoric, "Historic", sql);
                         if (mypod.EntlnData.Quantity == 0)
                         {
                             UpdateXStatus(mypod.Allocations,
                                 $@"Failed Item Historical Check:: Item Historic Sales:{Math.Round(itemSalesHistoric, 2)}
                                    Item Historic PI: {itemPiHistoric}
-                                   xQuantity:{mypod.EntlnData.Quantity}");
+                                   xQuantity:{mypod.EntlnData.Quantity}", sql);
                             return 0;
                         }
                     }
 
                    
-                     ////////////////////////////////////////////////////////////////////////
+                    ////////////////////////////////////////////////////////////////////////
                     //// Cap to prevent over creation of ex9 vs Item Quantity espectially if creating Duty paid and Duty Free at same time
 
                     if (mypod.EntlnData.pDocumentItem.ItemQuantity <
@@ -1372,13 +903,13 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
                         var availibleQty = mypod.EntlnData.pDocumentItem.ItemQuantity - (itemPiHistoric + itemDocPi);
                         /// pass item quantity to ex9 bucket
                         Debugger.Break();
-                        Ex9Bucket(mypod, availibleQty, itemSalesHistoric, itemPiHistoric, "Historic");
+                        Ex9Bucket(mypod, availibleQty, itemSalesHistoric, itemPiHistoric, "Historic", sql);
                         if (mypod.EntlnData.Quantity == 0)
                         {
                             UpdateXStatus(mypod.Allocations,
                                 $@"Failed ItemQuantity < ItemPIHistoric & xQuantity:{mypod.EntlnData.pDocumentItem.ItemQuantity}
                                Item Historic PI: {itemPiHistoric}
-                               xQuantity:{mypod.EntlnData.Quantity}");
+                               xQuantity:{mypod.EntlnData.Quantity}", sql);
                             return 0;
                         }
                     }
@@ -1389,26 +920,26 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
                 }
                 
                 ////////////////////////////////////////////////////////////////////////
-                    //// Sales dependent check to prevent sales overexwarehouse even when Allocations changed. all other checks are previous document dependent
-                            var xSalesPi = mypod.Allocations
-                        .Select(x => new {e = x.EntryDataDetails.Quantity,pi = x.EntryDataDetails.AsycudaDocumentItemEntryDataDetails.Where(z => z.CustomsOperation == "Exwarehouse").Sum(z => z.Quantity)?? 0}).Sum(x => x.e - x.pi) ;
-                    ///// the DONT FORGET WE TAKING JUST REMAINING SALES SO IT WILL BE ZERO EVEN IF ITS ALREADY DOUBLE EX-WAREHOUSED
-                    if (xSalesPi < Math.Round(mypod.EntlnData.Quantity, 2))//take out docpi its throwing it ouff   //itemDocPi + 
-                    {
+                //// Sales dependent check to prevent sales overexwarehouse even when Allocations changed. all other checks are previous document dependent
+                var xSalesPi = mypod.Allocations
+                    .Select(x => new {e = x.EntryDataDetails.Quantity,pi = x.EntryDataDetails.AsycudaDocumentItemEntryDataDetails.Where(z => z.CustomsOperation == "Exwarehouse").Sum(z => z.Quantity)?? 0}).Sum(x => x.e - x.pi) ;
+                ///// the DONT FORGET WE TAKING JUST REMAINING SALES SO IT WILL BE ZERO EVEN IF ITS ALREADY DOUBLE EX-WAREHOUSED
+                if (xSalesPi < Math.Round(mypod.EntlnData.Quantity, 2))//take out docpi its throwing it ouff   //itemDocPi + 
+                {
 
-                        var availibleQty = xSalesPi - Math.Round( mypod.EntlnData.Quantity, 2);//take out docpi its throwing it ouff   //itemDocPi + 
+                    var availibleQty = xSalesPi - Math.Round( mypod.EntlnData.Quantity, 2);//take out docpi its throwing it ouff   //itemDocPi + 
                     /// pass item quantity to ex9 bucket
                     if (availibleQty >= 0)
-                            Ex9Bucket(mypod, availibleQty, itemSalesHistoric, itemPiHistoric, "Historic");
-                        if (mypod.EntlnData.Quantity <= 0 || availibleQty <= 0)
-                        {
-                            UpdateXStatus(mypod.Allocations,
-                                $@"Failed Existing xSales already taken out..:{mypod.Allocations.SelectMany(x => x.EntryDataDetails.AsycudaDocumentItemEntryDataDetails.Select(n => $"c#{n.CNumber}|{n.LineNumber}").ToList()).DefaultIfEmpty("").Aggregate((o,n) => $"{o}, {n}")}");
-                            return 0;
-                        }
+                        Ex9Bucket(mypod, availibleQty, itemSalesHistoric, itemPiHistoric, "Historic", sql);
+                    if (mypod.EntlnData.Quantity <= 0 || availibleQty <= 0)
+                    {
+                        UpdateXStatus(mypod.Allocations,
+                            $@"Failed Existing xSales already taken out..:{mypod.Allocations.SelectMany(x => x.EntryDataDetails.AsycudaDocumentItemEntryDataDetails.Select(n => $"c#{n.CNumber}|{n.LineNumber}").ToList()).DefaultIfEmpty("").Aggregate((o,n) => $"{o}, {n}")}", sql);
+                        return 0;
                     }
+                }
 
-                    if (mypod.EntlnData.Quantity <= 0) return 0;
+                if (mypod.EntlnData.Quantity <= 0) return 0;
                 //////////////////// can't delump allocations because of returns and 1kg weights issue too much items wont be able to exwarehouse
                 var itmsToBeCreated = 1;
                 var itmsCreated = 0;
@@ -1422,11 +953,11 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
 
                     global::DocumentItemDS.Business.Entities.xcuda_PreviousItem pitm = CreatePreviousItem(
                         lineData,
-                        itmcount + i);
+                        itmcount + i, docPreviousItems);
                     if (Math.Round(pitm.Net_weight, 2) < (decimal) 0.01)
                     {
                         UpdateXStatus(mypod.Allocations,
-                            $@"Failed PiNetWeight < 0.01 :: PiNetWeight:{Math.Round(pitm.Net_weight, 2)}");
+                            $@"Failed PiNetWeight < 0.01 :: PiNetWeight:{Math.Round(pitm.Net_weight, 2)}", sql);
                         return 0;
                     }
 
@@ -1654,9 +1185,9 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
 
         }
 
-        
-        private void Ex9Bucket(DataSpace.BaseDataModel.MyPodData mypod, double availibleQty, double totalSalesAll, double totalPiAll,
-            string type)
+        private void Ex9Bucket(DataSpace.BaseDataModel.MyPodData mypod, double availibleQty, double totalSalesAll,
+            double totalPiAll,
+            string type, string sql)
         {
             try
             {
@@ -1673,7 +1204,7 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
                         UpdateXStatus(rejects,
                             $@"Failed All Sales Check:: {type} Sales:{Math.Round(totalSalesAll, 2)}
                                             {type} PI: {totalPiAll}
-                                            xQuantity:{mypod.EntlnData.Quantity}");
+                                            xQuantity:{mypod.EntlnData.Quantity}", sql);
                         mypod.EntlnData.Quantity = mypod.Allocations.Sum(x => x.QtyAllocated); 
                         return;
                     }
@@ -1707,9 +1238,9 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
                 }
 
                 UpdateXStatus( rejects,
-                                            $@"Failed All Sales Check:: {type} Sales:{Math.Round(totalSalesAll, 2)}
+                    $@"Failed All Sales Check:: {type} Sales:{Math.Round(totalSalesAll, 2)}
                                             {type} PI: {totalPiAll}
-                                            xQuantity:{mypod.EntlnData.Quantity}");
+                                            xQuantity:{mypod.EntlnData.Quantity}", sql);
                 mypod.EntlnData.Quantity = mypod.Allocations.Sum(x => x.QtyAllocated);
                
             }
@@ -1721,24 +1252,25 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
 
         }
 
-        private void UpdateXStatus(List<AsycudaSalesAllocations> allocations, string xstatus)
+        private void UpdateXStatus(List<AsycudaSalesAllocations> allocations, string xstatus, string sql)
         {
-            using (var ctx = new AllocationDSContext(){StartTracking = true})
+            foreach (var a in allocations)
             {
-                foreach (var a in allocations)
+                a.xStatus = xstatus;
+                if (a.AllocationId == 0)
                 {
-                    var res = ctx.AsycudaSalesAllocations.First(x => x.AllocationId == a.AllocationId);
-                    res.xStatus = xstatus;
-                    //ctx.ApplyChanges(res);
+                    sql +=
+                        $@"Insert into AsycudaSalesAllocations(QtyAllocated, EntryDataDetailsId, PreviousItem_Id, EANumber, SANumber,Status, xStatus)
+                                           Values ({a.QtyAllocated},{a.EntryDataDetailsId},{a.PreviousItem_Id},{a.EANumber},{a.SANumber},'{a.Status}','{a.xStatus}');\r\n";
                 }
-
-                ctx.SaveChanges();
+                else
+                {
+                    sql += $"Update AsycudaSalesAllocations Set xStatus = \'{xstatus}\' where allocationId = {a.AllocationId} ;\r\n";
+                }
+                
             }
+
         }
-
-        private static Dictionary<int, List<PreviousItems>> docPreviousItems = new Dictionary<int, List<PreviousItems>>();
-       
-
 
         private int AddFreeText(int itmcnt, xcuda_Item itm, string entryDataId, int lineNumber, string comment,
             string itemCode)
@@ -1756,10 +1288,7 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
             return itmcnt;
         }
 
-
-
-        
-        private  void Ex9Bucket(DataSpace.BaseDataModel.MyPodData mypod, string dfp,  double docPi, List<ItemSalesPiSummary> itemSalesPiSummaryLst)
+        private  void Ex9Bucket(DataSpace.BaseDataModel.MyPodData mypod, string dfp,  double docPi, List<ItemSalesPiSummary> itemSalesPiSummaryLst, Dictionary<int, List<PreviousItems>> docPreviousItems, string sql)
         {
             // prevent over draw down of pqty == quantity allocated
             try
@@ -1774,11 +1303,11 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
                 if (asycudaLine == null) throw new ApplicationException("Allocation Previous Document is Null");
                 //var itemAllocated = (dfp == "Duty Free" ? asycudaLine.DFQtyAllocated : asycudaLine.DPQtyAllocated);
                 //var allocationsAllocated = allocations.Sum(x => x.QtyAllocated);
-               // var totalSalesQtyAllocatedHistoric = salesSummary.Select(x => x.TotalQtyAllocated).DefaultIfEmpty(0).Sum() / salesFactor; // down to run levels
-               var allocationSales = itemSalesPiSummaryLst.Select(x => x.QtyAllocated).DefaultIfEmpty(0).Sum() >
-                                     entryLine.EntryDataDetails.Sum(x => x.QtyAllocated)
-                   ? itemSalesPiSummaryLst.Select(x => x.QtyAllocated).DefaultIfEmpty(0).Sum() 
-                   : entryLine.EntryDataDetails.Sum(x => x.QtyAllocated);/// Can't use just sales data because of partial exwarehouse the pi quantity will over ride it better to use total quantity '322035' columbian emeralds // itemSalesPiSummaryLst.First().Type == "Historic" ? itemSalesPiSummaryLst.Select(x => x.QtyAllocated).DefaultIfEmpty(0).Sum() :  entryLine.EntryDataDetails.Sum(x => x.QtyAllocated); //itemSalesPiSummaryLst.Select(x => x.QtyAllocated).DefaultIfEmpty(0).Sum();//switch to QtyAllocated - 'CLC/124075' -- rouge 'WAM03600'
+                // var totalSalesQtyAllocatedHistoric = salesSummary.Select(x => x.TotalQtyAllocated).DefaultIfEmpty(0).Sum() / salesFactor; // down to run levels
+                var allocationSales = itemSalesPiSummaryLst.Select(x => x.QtyAllocated).DefaultIfEmpty(0).Sum() >
+                                      entryLine.EntryDataDetails.Sum(x => x.QtyAllocated)
+                    ? itemSalesPiSummaryLst.Select(x => x.QtyAllocated).DefaultIfEmpty(0).Sum() 
+                    : entryLine.EntryDataDetails.Sum(x => x.QtyAllocated);/// Can't use just sales data because of partial exwarehouse the pi quantity will over ride it better to use total quantity '322035' columbian emeralds // itemSalesPiSummaryLst.First().Type == "Historic" ? itemSalesPiSummaryLst.Select(x => x.QtyAllocated).DefaultIfEmpty(0).Sum() :  entryLine.EntryDataDetails.Sum(x => x.QtyAllocated); //itemSalesPiSummaryLst.Select(x => x.QtyAllocated).DefaultIfEmpty(0).Sum();//switch to QtyAllocated - 'CLC/124075' -- rouge 'WAM03600'
 
                 var allocationPi = itemSalesPiSummaryLst.GroupBy(x => x.PreviousItem_Id).Select(x => x.First().PiQuantity).DefaultIfEmpty(0).Sum();
             
@@ -1800,7 +1329,7 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
                     || allocationSales < allocationPi)
                 {
                     UpdateXStatus(mypod.Allocations,
-                        $@"Failed Ex9 Bucket :: PI Quantity: {allocationPi}");
+                        $@"Failed Ex9 Bucket :: PI Quantity: {allocationPi}", sql);
                     allocations.Clear();
                     entryLine.EntryDataDetails.Clear();
                     entryLine.Quantity = 0;
@@ -1811,114 +1340,95 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
                 
                    
                     
-                    if (remainingQtyToBeTakenOut + alreadyTakenOutTotalQuantity + docPi>= asycudaTotalQuantity) remainingQtyToBeTakenOut = asycudaTotalQuantity - alreadyTakenOutTotalQuantity - docPi;
-                    var salesLst = entryLine.EntryDataDetails.OrderBy(x => x.EntryDataDate).ThenBy(x => x.EntryDataDetailsId).ToList();
+                if (remainingQtyToBeTakenOut + alreadyTakenOutTotalQuantity + docPi>= asycudaTotalQuantity) remainingQtyToBeTakenOut = asycudaTotalQuantity - alreadyTakenOutTotalQuantity - docPi;
+                var salesLst = entryLine.EntryDataDetails.OrderBy(x => x.EntryDataDate).ThenBy(x => x.EntryDataDetailsId).ToList();
 
-                    var totalAllocatedQty = allocations.Sum(x => x.QtyAllocated) / salesFactor;
+                var totalAllocatedQty = allocations.Sum(x => x.QtyAllocated) / salesFactor;
                    
-                        if (remainingQtyToBeTakenOut == totalAllocatedQty) return;
-                        if (entryLine.Quantity <= 0.001) return;
-                        if (Math.Abs(remainingQtyToBeTakenOut) < 0.001) return;
-                        if (salesLst.Any() == false) return;
+                if (remainingQtyToBeTakenOut == totalAllocatedQty) return;
+                if (entryLine.Quantity <= 0.001) return;
+                if (Math.Abs(remainingQtyToBeTakenOut) < 0.001) return;
+                if (salesLst.Any() == false) return;
 
 
-                        var startAllocationItemIndex = 0;
-                        var currentSalesItemIndex = 0;
-                        var saleItm = salesLst.ElementAt(currentSalesItemIndex);
+                var startAllocationItemIndex = 0;
+                var currentSalesItemIndex = 0;
+                var saleItm = salesLst.ElementAt(currentSalesItemIndex);
 
 
 
-                        for (var s = currentSalesItemIndex; s < salesLst.Count(); s++)
+                for (var s = currentSalesItemIndex; s < salesLst.Count(); s++)
+                {
+                    var currentAllocationItemIndex = startAllocationItemIndex;
+                    if (currentSalesItemIndex != s)
+                    {
+                        currentSalesItemIndex = s;
+                        saleItm = salesLst.ElementAt(currentSalesItemIndex);
+                    }
+
+
+
+                    if (saleItm == null) break;
+                    var saleAllocationsLst = allocations
+                        .Where(x => x.EntryDataDetailsId == saleItm.EntryDataDetailsId)
+                        .OrderBy(x => x.AllocationId).ToList();
+
+                    if (!saleAllocationsLst.Any()) break;
+
+                    var allocation = saleAllocationsLst.ElementAt(currentAllocationItemIndex);
+
+                    for (var i = currentAllocationItemIndex; i < saleAllocationsLst.Count(); i++)
+                    {
+
+                        if (currentAllocationItemIndex != i ||
+                            saleAllocationsLst.ElementAt(currentAllocationItemIndex).AllocationId !=
+                            allocation.AllocationId)
                         {
-                            var currentAllocationItemIndex = startAllocationItemIndex;
-                            if (currentSalesItemIndex != s)
-                            {
-                                currentSalesItemIndex = s;
-                                saleItm = salesLst.ElementAt(currentSalesItemIndex);
-                            }
-
-
-
-                            if (saleItm == null) break;
-                            var saleAllocationsLst = allocations
-                                .Where(x => x.EntryDataDetailsId == saleItm.EntryDataDetailsId)
-                                .OrderBy(x => x.AllocationId).ToList();
-
-                            if (!saleAllocationsLst.Any()) break;
-
-                            var allocation = saleAllocationsLst.ElementAt(currentAllocationItemIndex);
-
-                            for (var i = currentAllocationItemIndex; i < saleAllocationsLst.Count(); i++)
-                            {
-
-                                if (currentAllocationItemIndex != i ||
-                                    saleAllocationsLst.ElementAt(currentAllocationItemIndex).AllocationId !=
-                                    allocation.AllocationId)
-                                {
-                                    if (i < 0) i = 0;
-                                    currentAllocationItemIndex = i;
-                                    allocation = saleAllocationsLst.ElementAt(currentAllocationItemIndex);
-
-                                }
-
-                                var piData = allocation.PIData.Sum(x => x.xQuantity) ?? 0;
-                                //var takeOut = piData;//CalculateTakeOut(totalAllocatedQty, remainingQtyToBeTakenOut, allocation.QtyAllocated, piData,  salesFactor);
-
-                                totalAllocatedQty -= piData;
-                                entryLine.Quantity -= piData;
-                                allocation.QtyAllocated -= piData * salesFactor;
-                                saleItm.QtyAllocated -= piData * salesFactor;
-
-
-                                if (Math.Abs(allocation.QtyAllocated) < 0.001) //&& saleAllocationsLst.Count > 1
-                                {
-                                    UpdateXStatus(new List<AsycudaSalesAllocations>() {allocation},
-                                        $@"Failed Ex9 Bucket");
-                                    allocations.Remove(allocation);
-
-                                    if (totalAllocatedQty < 0) continue;
-                                }
-                                else
-                                {
-                                    if (piData > 0)
-                                    {
-
-
-                                        var sql = "";
-
-                                        // Create New allocation
-                                        sql +=
-                                            $@"Insert into AsycudaSalesAllocations(QtyAllocated, EntryDataDetailsId, PreviousItem_Id, EANumber, SANumber)
-                                           Values ({piData * salesFactor},{allocation.EntryDataDetailsId},{
-                                               allocation.PreviousItem_Id
-                                           },{allocation.EANumber + 1},{allocation.SANumber + 1})";
-                                        // update existing allocation
-                                        sql += $@" UPDATE       AsycudaSalesAllocations
-                                                            SET                QtyAllocated =  QtyAllocated{(piData >= 0 ? $"-{piData * salesFactor}" : $"+{piData * -1 * salesFactor}")}
-                                                            where	AllocationId = {allocation.AllocationId}";
-                                        using (var ctx = new AllocationDSContext())
-                                        {
-                                            ctx.Database.CommandTimeout = 0;
-                                            ctx.Database
-                                                .ExecuteSqlCommand(TransactionalBehavior.EnsureTransaction, sql);
-                                        }
-                                    }
-                                }
-
-
-                            }
-
-                            if (Math.Abs(saleItm.QtyAllocated) < 0.001)
-                            {
-                                entryLine.EntryDataDetails.Remove(saleItm);
-                                // salesLst.RemoveAt(0);
-                            }
-
+                            if (i < 0) i = 0;
+                            currentAllocationItemIndex = i;
+                            allocation = saleAllocationsLst.ElementAt(currentAllocationItemIndex);
 
                         }
 
+                        var piData = allocation.PIData.Sum(x => x.xQuantity) ?? 0;
+                        //var takeOut = piData;//CalculateTakeOut(totalAllocatedQty, remainingQtyToBeTakenOut, allocation.QtyAllocated, piData,  salesFactor);
 
-                        // entryLine.Quantity = remainingQtyToBeTakenOut;
+                        totalAllocatedQty -= piData;
+                        entryLine.Quantity -= piData;
+                        allocation.QtyAllocated -= piData * salesFactor;
+                        saleItm.QtyAllocated -= piData * salesFactor;
+
+
+                        if (Math.Abs(allocation.QtyAllocated) < 0.001) //&& saleAllocationsLst.Count > 1
+                        {
+                            UpdateXStatus(new List<AsycudaSalesAllocations>() {allocation},
+                                $@"Failed Ex9 Bucket", sql);
+                            allocations.Remove(allocation);
+
+                            if (totalAllocatedQty < 0) continue;
+                        }
+                        else
+                        {
+                            if (piData > 0)
+                            {
+                                UpdatePIData(piData, salesFactor, allocation, sql);
+                            }
+                        }
+
+
+                    }
+
+                    if (Math.Abs(saleItm.QtyAllocated) < 0.001)
+                    {
+                        entryLine.EntryDataDetails.Remove(saleItm);
+                        // salesLst.RemoveAt(0);
+                    }
+
+
+                }
+
+
+                // entryLine.Quantity = remainingQtyToBeTakenOut;
                    
                 //}
                 //if (entryLine.Quantity + alreadyTakenOutTotalQuantity > asycudaTotalQuantity) entryLine.Quantity = asycudaTotalQuantity - alreadyTakenOutTotalQuantity;
@@ -1932,8 +1442,26 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
 
         }
 
+        private  void UpdatePIData(double piData, double salesFactor, AsycudaSalesAllocations allocation,string sql)
+        {
+            // Create New allocation
+            if (allocation.AllocationId == 0)
+            {
+                sql +=
+                    $@"Insert into AsycudaSalesAllocations(QtyAllocated, EntryDataDetailsId, PreviousItem_Id, EANumber, SANumber)
+                                           Values ({piData * salesFactor},{allocation.EntryDataDetailsId},{allocation.PreviousItem_Id},{allocation.EANumber + 1},{allocation.SANumber + 1})";
+            }
+            else
+                // update existing allocation
+            {
+                sql += $@" UPDATE       AsycudaSalesAllocations
+                                                            SET                QtyAllocated =  QtyAllocated{(piData >= 0 ? $"-{piData * salesFactor}" : $"+{piData * -1 * salesFactor}")}
+                                                            where	AllocationId = {allocation.AllocationId} ; \r\n";
+            }
+        }
 
-        private xcuda_PreviousItem CreatePreviousItem(AlloEntryLineData pod, int itmcount)
+        private xcuda_PreviousItem CreatePreviousItem(AlloEntryLineData pod, int itmcount,
+            Dictionary<int, List<PreviousItems>> docPreviousItems)
         {
 
             try
@@ -1992,7 +1520,7 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
                 var pw = Convert.ToDecimal(Math.Round(pod.EX9Allocation.Net_weight_itm,2));
 
                 var rw = (decimal)(plst.ToList().Sum(x => Math.Round(x.Net_weight, 2)) +
-                         docSetPreviousItems.Sum(x => x.Net_weight));
+                                   docSetPreviousItems.Sum(x => x.Net_weight));
 
                 var ra = plst.Sum(x => x.Suplementary_Quantity) + docSetPreviousItems.Sum(x => x.Suplementary_Quantity);
 
@@ -2045,56 +1573,48 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
 
                 DataSpace.BaseDataModel.Instance.AttachCustomProcedure(cdoc, customsProcedure);
                 AllocationsModel.Instance.AddDutyFreePaidtoRef(cdoc, dfp, ads);
-                using (var ctx = new DocumentDSContext())
+                
+
+
+                ExportTemplate Exp = DataSpace.BaseDataModel.Instance.ExportTemplates
+                    .Where(x => x.ApplicationSettingsId ==
+                                cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.AsycudaDocumentSet
+                                    .ApplicationSettingsId)
+                    .First(x =>
+                        x.Customs_Procedure == cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.Customs_Procedure
+                            .CustomsProcedure);
+               
+
+                cdoc.Document.xcuda_General_information.xcuda_Country.xcuda_Destination.Destination_country_code =
+                    Exp.Destination_country_code;
+                cdoc.Document.xcuda_General_information.xcuda_Country.xcuda_Export.Export_country_region =
+                    Exp.Trading_country;
+                //if(string.IsNullOrEmpty(ads.Currency_Code)) --- only use template
+                cdoc.Document.xcuda_Valuation.xcuda_Gs_Invoice.Currency_code = Exp.Gs_Invoice_Currency_code;
+                if (string.IsNullOrEmpty(ads.Country_of_origin_code))
                 {
+                    cdoc.Document.xcuda_General_information.xcuda_Country.Trading_country = Exp.Trading_country;
+                    cdoc.Document.xcuda_General_information.xcuda_Country.Country_first_destination = Exp.Country_first_destination;
 
-
-                    ExportTemplate Exp = ctx.ExportTemplates
-                            .Where(x => x.ApplicationSettingsId ==
-                                        cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.AsycudaDocumentSet
-                                            .ApplicationSettingsId)
-                            .First(x =>
-                                x.Customs_Procedure == cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.Customs_Procedure.CustomsProcedure);
-                    cdoc.Document.xcuda_General_information.xcuda_Country.xcuda_Destination.Destination_country_code =
-                        Exp.Destination_country_code;
-                    cdoc.Document.xcuda_General_information.xcuda_Country.xcuda_Export.Export_country_region =
-                        Exp.Trading_country;
-                    //if(string.IsNullOrEmpty(ads.Currency_Code)) --- only use template
-                        cdoc.Document.xcuda_Valuation.xcuda_Gs_Invoice.Currency_code = Exp.Gs_Invoice_Currency_code;
-                    if (string.IsNullOrEmpty(ads.Country_of_origin_code))
-                    {
-                        cdoc.Document.xcuda_General_information.xcuda_Country.Trading_country = Exp.Trading_country;
-                            cdoc.Document.xcuda_General_information.xcuda_Country.Country_first_destination = Exp.Country_first_destination;
-
-                        cdoc.Document.xcuda_General_information.xcuda_Country.xcuda_Export.Export_country_code = Exp.Export_country_code;
-                    }
-
-                    cdoc.Document.xcuda_Traders.xcuda_Exporter.Exporter_code = Exp.Exporter_code;
-                    cdoc.Document.xcuda_Traders.xcuda_Exporter.Exporter_name = Exp.Exporter_name;
-                    cdoc.Document.xcuda_Traders.xcuda_Consignee.Consignee_name = Exp.Consignee_name;
-                    cdoc.Document.xcuda_Traders.xcuda_Consignee.Consignee_code = Exp.Consignee_code;
-
-
-
-                    //cdoc.Document.xcuda_Valuation.xcuda_Gs_Invoice.Currency_rate = Convert.ToSingle(ads.Exchange_Rate);
-
+                    cdoc.Document.xcuda_General_information.xcuda_Country.xcuda_Export.Export_country_code = Exp.Export_country_code;
                 }
+
+                cdoc.Document.xcuda_Traders.xcuda_Exporter.Exporter_code = Exp.Exporter_code;
+                cdoc.Document.xcuda_Traders.xcuda_Exporter.Exporter_name = Exp.Exporter_name;
+                cdoc.Document.xcuda_Traders.xcuda_Consignee.Consignee_name = Exp.Consignee_name;
+                cdoc.Document.xcuda_Traders.xcuda_Consignee.Consignee_code = Exp.Consignee_code;
+
+
+
+                //cdoc.Document.xcuda_Valuation.xcuda_Gs_Invoice.Currency_rate = Convert.ToSingle(ads.Exchange_Rate);
+
+                
             }
             catch (Exception)
             {
 
                 throw;
             }
-        }
-
-        public void DocSetPiClear()
-        {
-            DocSetPi.Clear();
-        }
-
-        public void SetfreashStart(bool val)
-        {
-            freashStart = val;
         }
     }
 }

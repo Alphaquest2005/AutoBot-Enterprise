@@ -879,6 +879,8 @@
     <Compile Include="Custom Services\DataModels\Custom DataModels\BaseDataModel\GettingItemSets\GetItemSetsMem.cs" />
     <Compile Include="Custom Services\DataModels\Custom DataModels\BaseDataModel\GettingItemSets\GetItemSets.cs" />
     <Compile Include="Custom Services\DataModels\Custom DataModels\BaseDataModel\GettingItemSets\IGetItemSetsProcessor.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\CreatingEx9\CreateAllocationDataBlocks.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\CreatingEx9\CreateDutyFreePaidDocument.cs" />
     <Compile Include="Custom Services\DataModels\Custom DataModels\CreatingEx9\CreateEx9Mem.cs" />
     <Compile Include="Custom Services\DataModels\Custom DataModels\CreatingEx9\EX9Allocation.cs" />
     <Compile Include="Custom Services\DataModels\Custom DataModels\CreatingEx9\EX9Allocations.cs" />

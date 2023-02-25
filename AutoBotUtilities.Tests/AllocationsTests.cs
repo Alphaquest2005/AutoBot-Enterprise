@@ -127,6 +127,7 @@ namespace AutoBotUtilities.Tests
         [TestCase("CRB/SSMX-240/0", "2022-12-19", 60)] // discrepancy with overage not allocating 
         [TestCase("INT/YBC106/3GL", "2022-12-19", 60)] // discrepancy with overage not allocating 
         [TestCase("SE H/R1-S1", "2022-12-19", 60)] // DIS with alias name not allocating 
+        [TestCase("FSP/906020", "2022-12-19", 60)] // null ex9asycudasales allocations 
         [TestCase(null, "2023-12-19", 101)] 
         public void AllocatSales(string itemNumber, string LastInvoiceDate, int NoOfAllocations )
         {

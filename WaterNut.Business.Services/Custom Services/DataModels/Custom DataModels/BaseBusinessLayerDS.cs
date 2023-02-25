@@ -578,7 +578,7 @@ namespace WaterNut.DataSpace
                 docSet.Customs_ProcedureId = cp.Customs_ProcedureId;
 
                 var slstSource =
-                    (from s in await GetSelectedPODetails(entryDatalst.Distinct().ToList(), docSetId)
+                    (from s in await GetSelectedPODetails(entryDatalst.Distinct().ToList())
                             .ConfigureAwait(false)
                         select s).ToList();
 
@@ -1968,6 +1968,7 @@ namespace WaterNut.DataSpace
             public List<AsycudaSalesAllocations> Allocations { get; set; }
             public AlloEntryLineData EntlnData { get; set; }
             public List<string> AllNames { get; set; }
+            public (string currentFilter, string dateFilter, DateTime startDate, DateTime endDate) Filter { get; set; }
         }
 
         public async Task RemoveItem(int id)
@@ -2722,7 +2723,7 @@ namespace WaterNut.DataSpace
         }
 
 
-        public async Task<IEnumerable<EntryDataDetails>> GetSelectedPODetails(List<int> lst, int asycudaDocumentSetId)
+        public async Task<IEnumerable<EntryDataDetails>> GetSelectedPODetails(List<int> lst)
         {
             try
             {
@@ -3687,9 +3688,9 @@ namespace WaterNut.DataSpace
             public double InternalFreight { get; set; }
         }
 
-        private static HashSet<string> emailedMessagesList = new HashSet<string>();
+        private static readonly HashSet<string> EmailedMessagesList = new HashSet<string>();
        
-        private static bool isDBMem = false;
+        private static readonly bool isDBMem = false;
 
         public BaseDataModel()
         {
@@ -3708,12 +3709,12 @@ namespace WaterNut.DataSpace
                     lastexception = true;
 
 
-                    if (sendOnlyOnce == false || !emailedMessagesList.Contains(exp.Message))
+                    if (sendOnlyOnce == false || !EmailedMessagesList.Contains(exp.Message))
                     {
                         EmailDownloader.EmailDownloader.SendEmail(BaseDataModel.GetClient(), null, $"Bug Found",
                             new[] {"Joseph@auto-brokerage.com"}, $"{exp.Message}\r\n{exp.StackTrace}",
                             Array.Empty<string>());
-                        emailedMessagesList.Add(exp.Message);
+                        EmailedMessagesList.Add(exp.Message);
                     }
 
                 }

@@ -34,18 +34,10 @@ namespace WaterNut.DataSpace
 
    
 
-        public CreateEx9 CreateEx9 => CreateEx9.Instance;
+        public CreateEx9Mem CreateEx9 => CreateEx9Mem.Instance;
+        
 
-        public CreateOPSClass CreateOpsClassClass { get; } = new CreateOPSClass();
-
-
-        //TODO: Refactor this
-        private string CleanText(string p)
-        {
-            p = Regex.Replace(p, @"[\-0]+", "");
-            return p;
-        }
-
+      
 
         public void AddDutyFreePaidtoRef(DocumentCT cdoc, string dfp, AsycudaDocumentSet docSet)
         {

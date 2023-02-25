@@ -42,56 +42,116 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
             }
         }
 
-        private Task AddPreviousItem(List<EX9AsycudaSalesAllocations> lst)
+        private void AddPreviousItem(List<EX9AsycudaSalesAllocations> lst)
         {
             var plst = lst.Select(x => x.PreviousItem_Id).Distinct().ToList();
 
             var pItemLst = new AllocationDSContext().xcuda_Item.WhereBulkContains(plst, x => x.Item_Id).ToList();
-            var docLst = pItemLst.Select(x => x.ASYCUDA_Id).Distinct().ToList();
 
             var entryPreviousItemsTask = Task.Run(() =>
                     new AllocationDSContext().EntryPreviousItems.WhereBulkContains(plst).ToList())
-                .ContinueWith(x =>
-                {
-                    var prevIds = x.Result.Select((q => q.PreviousItem_Id)).Distinct()
-                        .ToList();
-                    var pitms = GetXcudaPreviousItems(prevIds);
-                    x.Result.Join(pitms, i => i.PreviousItem_Id, a => a.PreviousItem_Id, (i, a) =>
-                    {
-                        i.xcuda_PreviousItem = a;
-                        return i;
-                    });
-                    return x.Result;
-                })
+                .ContinueWith(x => AddXcudaPreviousItems(x.Result))
                 .ContinueWith(x => pItemLst.GroupJoin(x.Result, i => i.Item_Id, a => a.Item_Id,
                     (i, a) =>
                     {
                         i.EntryPreviousItems = a.ToList();
                         return i;
                     }));
-            var tarificationTask = Task.Run(() =>
-                new AllocationDSContext().xcuda_Tarification.WhereBulkContains(plst, x => x.Item_Id).ToList()).ContinueWith(x => pItemLst.Join(x.Result, i => i.Item_Id, a => a.Item_Id,
-                (i, a) =>
-                {
-                    i.xcuda_Tarification = a;
-                    return i;
-                }));
+            var tarificationTask = Task.Run(() => GetXcudaTarifications(plst))
 
-            var DocumentsTask = Task.Run(() =>
-                new AllocationDSContext().AsycudaDocument.WhereBulkContains(docLst).ToList()).ContinueWith(x => pItemLst.Join(x.Result, i => i.ASYCUDA_Id, a => a.ASYCUDA_Id,
-                (i, a) =>
-                {
-                    i.AsycudaDocument = a;
-                    return i;
-                }));
+                .ContinueWith(x => AddTarifications(pItemLst, x));
 
-            return Task.WhenAll(entryPreviousItemsTask, tarificationTask, DocumentsTask);
+            var documentsTask = Task.Run(() => AddAsycudaDocuments(pItemLst));
+
+            Task.WaitAll(entryPreviousItemsTask, tarificationTask, documentsTask);
+
+            lst.Join(pItemLst, a => a.PreviousItem_Id, p => p.Item_Id, (a, p) => (a, p))
+                .ForEach(x =>
+                {
+                    x.a.PreviousDocumentItem = x.p;
+                });
+
 
             //.Include(
             //    "PreviousDocumentItem.EntryPreviousItems.xcuda_PreviousItem.xcuda_Item.AsycudaDocument.Customs_Procedure")
             //.Include("PreviousDocumentItem.AsycudaDocument.Customs_Procedure.CustomsOperations")
             //.Include(
             //    "PreviousDocumentItem.xcuda_Tarification.xcuda_HScode.TariffCodes.TariffCategory.TariffCategoryCodeSuppUnit.TariffSupUnitLkps")
+        }
+
+        private static List<xcuda_Item> AddTarifications(List<xcuda_Item> pItemLst, Task<List<xcuda_Tarification>> tarifcations)
+        {
+             pItemLst.Join(tarifcations.Result, i => i.Item_Id, a => a.Item_Id,
+                (i, a) => (i,a))
+                .ForEach(x => x.i.xcuda_Tarification = x.a);
+             return pItemLst;
+        }
+
+        private List<xcuda_Tarification> GetXcudaTarifications(List<int> plst)
+        {
+            var xcudaTarificationTask = Task.Run(() => new AllocationDSContext().xcuda_Tarification.WhereBulkContains(plst, x => x.Item_Id).ToList());
+
+            var hsCodesTask = Task.Run(() => GetHsCodes(plst));
+
+            Task.WaitAll(xcudaTarificationTask, hsCodesTask);
+            var xcudaTarifications = xcudaTarificationTask.Result;
+            var hsCodes = hsCodesTask.Result;
+
+            xcudaTarifications.Join(hsCodes, t => t.Item_Id, h => h.Item_Id, (t,h) => (t,h))
+                .ForEach(x => x.t.xcuda_HScode = x.h);
+
+            return xcudaTarifications;
+        }
+
+        private List<xcuda_HScode> GetHsCodes(List<int> plst)
+        {
+            var xcudaHScodes = new AllocationDSContext().xcuda_HScode.WhereBulkContains(plst, x => x.Item_Id).ToList();
+            return AddTariffCodes(xcudaHScodes);
+            
+        }
+
+        private static List<xcuda_HScode> AddTariffCodes(List<xcuda_HScode> xcudaHScodes)
+        {
+            var tariffCodeLst = xcudaHScodes.Select(x => x.TariffCodes).Distinct().ToList();
+            var tariffCodes = new AllocationDSContext().TariffCodes.WhereBulkContains(tariffCodeLst).ToList();
+            AddTariffCategorys(tariffCodes);
+
+
+           xcudaHScodes.Join(tariffCodes, h => h.Commodity_code, t => t.TariffCode, (h, t) => (h, t))
+               .ForEach(x => x.h.TariffCodes = x.t);
+
+           return xcudaHScodes;
+        }
+
+        private static void AddTariffCategorys(List<TariffCodes> TariffCodes)
+        {
+            var tarifCatLst = TariffCodes.Select(x => x.TariffCategoryCode).Distinct().ToList();
+            var tariffCategorys = new AllocationDSContext().TariffCategory.WhereBulkContains(tarifCatLst, x => x.TariffCodes)
+                .Distinct().ToList();
+            AddTarifCategoryCodeSuppUnits(tariffCategorys);
+
+            TariffCodes.Join(tariffCategorys, t => t.TariffCategoryCode, c => c.TariffCategoryCode, (t, c) => (t,c))
+                .ForEach(x => x.t.TariffCategory = x.c);
+        }
+
+        private static void AddTarifCategoryCodeSuppUnits(List<TariffCategory> tariffCategorys)
+        {
+            var tcLst  = tariffCategorys.Select(x => x.TariffCategoryCode).ToList();
+            var tarifSuplst = new AllocationDSContext().TariffCategoryCodeSuppUnit.Include(z => z.TariffSupUnitLkps)
+                .WhereBulkContains(tcLst, x => x.TariffCategory).ToList();
+
+            tariffCategorys.GroupJoin(tarifSuplst, c => c.TariffCategoryCode, s => s.TariffCategoryCode, (c, s) => (c,s))
+                .ForEach(x => x.c.TariffCategoryCodeSuppUnit = x.s.ToList());
+        }
+
+        private static List<EntryPreviousItems> AddXcudaPreviousItems(List<EntryPreviousItems> entryPreviousItems)
+        {
+            var prevIds = entryPreviousItems.Select((q => q.PreviousItem_Id)).Distinct()
+                .ToList();
+            var pitms = GetXcudaPreviousItems(prevIds);
+            entryPreviousItems.Join(pitms, i => i.PreviousItem_Id, a => a.PreviousItem_Id, (i, a) =>(i,a))
+                .ForEach(x => x.i.xcuda_PreviousItem = x.a);
+            return entryPreviousItems;
         }
 
         private static List<xcuda_PreviousItem> GetXcudaPreviousItems(List<int> prevIds)
@@ -131,7 +191,7 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
 
         private static List<AsycudaDocument> GetAsycudaDocuments(List<xcuda_Item> x)
         {
-            var docLst = x.Select(d => d.ASYCUDA_Id).ToList();
+            var docLst = x.Select(d => d.ASYCUDA_Id).Distinct().ToList();
 
             var docs = new AllocationDSContext().AsycudaDocument.WhereBulkContains(docLst).ToList();
 
@@ -142,19 +202,16 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
         {
             var cps = GetCustomsProcedures(docs);
 
-            var rdos = docs.Join(cps, d => d.CustomsProcedure, c => c.CustomsProcedure, (a, c) =>
-            {
-                a.Customs_Procedure = c;
-                return a;
-            }).ToList();
-            return rdos;
+           docs.Join(cps, d => d.CustomsProcedure, c => c.CustomsProcedure, (a, c) => (a,c))
+               .ForEach(x => x.a.Customs_Procedure = x.c);
+            return docs;
         }
 
         private static List<Customs_Procedure> GetCustomsProcedures(List<AsycudaDocument> docs)
         {
-            var cpList = docs.Select(c => c.CustomsProcedure).ToList();
+            var cpList = docs.Select(c => c.CustomsProcedure).Distinct().ToList();
 
-            var cps = new AllocationDSContext().Customs_Procedure.WhereBulkContains(cpList).ToList();
+            var cps = new AllocationDSContext().Customs_Procedure.Include(x => x.CustomsOperations).WhereBulkContains(cpList, x => x.CustomsProcedure).ToList();
             return cps;
         }
 
@@ -186,15 +243,11 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
             var entryDataData = entryDataTask.Result;
             var itemEntryData = itemEntryDataTask.Result;
 
+             entryDataData.GroupJoin(itemEntryData, a => a.EntryDataDetailsId,
+                    p => p.EntryDataDetailsId, (a, p) => (a, p))
+                .ForEach(x => x.a.AsycudaDocumentItemEntryDataDetails = x.p.ToList());
 
-
-            lst.Join(entryDataData.GroupJoin(itemEntryData, a => a.EntryDataDetailsId,
-                        p => p.EntryDataDetailsId, (a, p) => (a, p))
-                    .Select(x =>
-                    {
-                        x.a.AsycudaDocumentItemEntryDataDetails = x.p.ToList();
-                        return x.a;
-                    }), a => a.EntryDataDetailsId, e => e.EntryDataDetailsId, (a, e) => (a, e))
+            lst.Join(entryDataData, a => a.EntryDataDetailsId, e => e.EntryDataDetailsId, (a, e) => (a, e))
                 .ForEach(x => { x.a.EntryDataDetails = x.e; });
            
         }

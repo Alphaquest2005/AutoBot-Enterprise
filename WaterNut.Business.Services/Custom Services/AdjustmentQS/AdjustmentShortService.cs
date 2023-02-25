@@ -57,7 +57,7 @@ namespace AdjustmentQS.Business.Services
         {
             try
             {
-                CreateEx9.DocSetPi.Clear();
+               // AllocationsModel.Instance.CreateEx9.DocSetPiClear();
                 var docSet =
                     await BaseDataModel.Instance.GetAsycudaDocumentSet(asycudaDocumentSetId)
                         .ConfigureAwait(false);
@@ -88,23 +88,24 @@ namespace AdjustmentQS.Business.Services
 
 
                     var itemPiSummarylst =
-                        CreateEx9.Instance.GetItemSalesPiSummary(docSet.ApplicationSettingsId, startDate,
+                        AllocationsModel.Instance.CreateEx9.GetItemSalesPiSummary(startDate,
                             endDate, dutyFreePaid, adjustmentType);
                     List<DocumentCT> doclst;
+                    Dictionary<int, List<PreviousItems>> docPreviousItems = new Dictionary<int, List<PreviousItems>>();
                     if (adjustmentType == "DIS")
                     {
 
-                        doclst = await CreateEx9.Instance.CreateDutyFreePaidDocument(dutyFreePaid,
+                        doclst = await new CreateDutyFreePaidDocument().Execute(dutyFreePaid,
                                 slst, docSet, adjustmentType, false, itemPiSummarylst, false,
-                                false, false, "Current", false, false, true, perInvoice, false, false, false, "S") //ex9bucket = false because sales affect current the piquantity
+                                false, false, "Current", false, false, true, perInvoice, false, false, false,docPreviousItems, false,"S") //ex9bucket = false because sales affect current the piquantity
                             .ConfigureAwait(
                                 false);
                     }
                     else
                     {
-                        doclst = await CreateEx9.Instance.CreateDutyFreePaidDocument(dutyFreePaid,
+                        doclst = await new CreateDutyFreePaidDocument().Execute(dutyFreePaid,
                                  slst, docSet, adjustmentType, false, itemPiSummarylst, true,
-                                 false, false, "Historic", true, true, true, perInvoice, false, true, true, "S")
+                                 false, false, "Historic", true, true, true, perInvoice, false, true, true, docPreviousItems, false, "S")
                              .ConfigureAwait(
                                  false);
                     }
@@ -392,7 +393,7 @@ namespace AdjustmentQS.Business.Services
 
         public async Task CreateIM9(string filterExpression, bool perInvoice, bool process7100, int asycudaDocumentSetId, string ex9Type, string dutyFreePaid)
         {
-            CreateEx9.freashStart = true;
+            //AllocationsModel.Instance.CreateEx9.SetfreashStart(true);
             await CreateIM9(filterExpression, perInvoice, asycudaDocumentSetId, dutyFreePaid,
                 ex9Type, null).ConfigureAwait(false);
         }

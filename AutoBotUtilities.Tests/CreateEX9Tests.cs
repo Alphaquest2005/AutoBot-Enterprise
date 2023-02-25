@@ -22,14 +22,14 @@ namespace AutoBotUtilities.Tests
     [TestFixture]
     public class CreateEX9Tests
     {
-        private CreateEX9Tests _testClass;
+       
 
         [SetUp]
         public void SetUp()
         {
             Infrastructure.Utils.SetTestApplicationSettings(2);
             Infrastructure.Utils.ClearDataBase();
-            _testClass = new CreateEX9Tests();
+            
         }
 
         [Test]
@@ -72,7 +72,11 @@ namespace AutoBotUtilities.Tests
 
         [Test]
         [TestCase("2/1/2023", "2/28/2023", "SEH/1277G", 1, 2, 5)]
-        [TestCase("9/1/2018", "2/28/2023", "SEH/1277G", 1, 2, 5)]
+        [TestCase("9/1/2018", "2/28/2023", "SEH/1277G", 3, 4, 37)]
+        [TestCase("9/1/2018", "2/28/2023", "", 3, 4, 37)] // over exwarehousing
+        [TestCase("1/1/2022", "1/31/2022", "HCLAMP/HD20-4043", 3, 4, 37)] // over exwarehousing
+        [TestCase("9/1/2018", "2/28/2023", "HCLAMP/HD20-4043", 3, 4, 37)] // over exwarehousing
+        [TestCase("1/1/2022", "1/31/2022", "", 3, 4, 37)] // over exwarehousing
         public void CanCreateEx9Mem(DateTime startDate, DateTime endDate, string itemNumber, int docCount, int lineCount,
             int totalQuantiy)
         {
@@ -102,6 +106,8 @@ namespace AutoBotUtilities.Tests
         [Test]
         [TestCase("2/1/2023", "2/28/2023", "SEH/1277G", 1, 2, 5)]
         [TestCase("9/1/2018", "2/28/2023", "SEH/1277G", 1, 2, 5)]
+
+
         public void CanGetEx9AsycudaSalesAllocationsMem(DateTime startDate, DateTime endDate, string itemNumber, int docCount, int lineCount,
             int totalQuantiy)
         {
@@ -129,6 +135,45 @@ namespace AutoBotUtilities.Tests
             }
         }
 
+        [Test]
+        [TestCase("9/1/2018", "2/28/2023", "HCLAMP/HD20-4043", 11)]
+
+        public void CanGetEx9AsycudaSalesAllocationsMem(DateTime startDate, DateTime endDate, string itemNumber, int previousItemsCount)
+        {
+            try
+            {
+                if (!Infrastructure.Utils.IsTestApplicationSettings()) Assert.IsTrue(true);
+
+                var testData = SetupTest(startDate, endDate, itemNumber);
+
+
+                var timer = new System.Diagnostics.Stopwatch();
+                var realStartDate = new CreateEx9Mem().GetWholeRangeFilter(testData.filterExpression, out var realEndDate, out var exPro, out var rdateFilter, out var realFilterExp);
+                timer.Start();
+                var res = new GetEx9DataMem(realFilterExp, rdateFilter);
+                var sDate = DateTime.Parse("1/1/2022");
+                var eDate = DateTime.Parse("1/31/2022").AddHours(23);
+                var currentFilterExpression = GetFilterExpression(itemNumber, sDate, eDate);
+                var lst = new CreateAllocationDataBlocks().Execute(currentFilterExpression,new List<string>(),(currentFilterExpression,rdateFilter,sDate,eDate), res, false ).Result;
+
+                timer.Stop();
+                Console.Write($"CreateEx9 for {startDate} in seconds: {timer.Elapsed.TotalSeconds}");
+
+                Assert.Multiple(() =>
+                {
+                    Assert.AreEqual(previousItemsCount, lst.Sum(x => x.Allocations.Sum(z => z.previousItems.Count)));
+                });
+
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                Assert.IsTrue(false);
+            }
+        }
+
+
+
         private static (AsycudaDocumentSet docset, string filterExpression) SetupTest(DateTime startDate, DateTime endDate, string itemNumber)
         {
             var saleInfo = EntryDocSetUtils.CreateMonthYearAsycudaDocSet(startDate);
@@ -138,6 +183,20 @@ namespace AutoBotUtilities.Tests
             BaseDataModel.Instance.UpdateAsycudaDocumentSetLastNumber(docset.AsycudaDocumentSetId, 0);
 
             var filterExpression = GetFilterExpression(itemNumber, startDate, endDate);
+            return (docset, filterExpression);
+        }
+
+        private static (AsycudaDocumentSet docset, string filterExpression) SetupItemSetTest(DateTime startDate, DateTime endDate, string itemNumber)
+        {
+            var saleInfo = EntryDocSetUtils.CreateMonthYearAsycudaDocSet(startDate);
+            var itemSets = BaseDataModel.GetItemSets(itemNumber);
+            var itemNumbers = itemSets.SelectMany(x => x.Select(z => z.ItemNumber)).DefaultIfEmpty("")
+                .Aggregate((o, n) => $"{o},{n}");
+            var docset = BaseDataModel.Instance.GetAsycudaDocumentSet(saleInfo.Item3.AsycudaDocumentSetId).Result;
+            BaseDataModel.Instance.ClearAsycudaDocumentSet(docset.AsycudaDocumentSetId).Wait();
+            BaseDataModel.Instance.UpdateAsycudaDocumentSetLastNumber(docset.AsycudaDocumentSetId, 0);
+
+            var filterExpression = GetFilterExpression(itemNumbers, startDate, endDate);
             return (docset, filterExpression);
         }
 
@@ -156,11 +215,11 @@ namespace AutoBotUtilities.Tests
                 });
             }
         }
-        private static string GetFilterExpression(string itemNumber, DateTime startDate, DateTime endDate)
+        private static string GetFilterExpression(string itemNumbers, DateTime startDate, DateTime endDate)
         {
             var filterExpression =
                 $"(ApplicationSettingsId == \"{BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId}\")" +
-                $"&& ({(string.IsNullOrEmpty(itemNumber) ? "ItemNumber != null" : $"ItemNumber.Contains(\"{itemNumber}\")")})" +
+                $"&& ({(string.IsNullOrEmpty(itemNumbers) ? "ItemNumber != null" : $"\"{itemNumbers}\".Contains(ItemNumber)")})" +
                 $"&& (InvoiceDate >= \"{startDate:MM/01/yyyy}\" " +
                 $" && InvoiceDate <= \"{endDate:MM/dd/yyyy HH:mm:ss}\")" +
                 //  $"&& (AllocationErrors == null)" +// || (AllocationErrors.EntryDataDate  >= \"{saleInfo.Item1:MM/01/yyyy}\" &&  AllocationErrors.EntryDataDate <= \"{saleInfo.Item2:MM/dd/yyyy HH:mm:ss}\"))" +
