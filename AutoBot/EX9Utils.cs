@@ -208,7 +208,7 @@ namespace AutoBot
 
 
 
-                AllocationsModel.Instance.CreateEX9Class.CreateEx9(filterExpression, false, false, false, docset, "Sales", "Historic", true, true, true, false, false, false, true, true, true, false).Wait();
+                AllocationsModel.Instance.CreateEx9.Execute(filterExpression, false, false, false, docset, "Sales", "Historic", true, true, true, false, false, false, true, true, true, false).Wait();
                 //await CreateDutyFreePaidDocument(dfp, res, docSet, "Sales", true,
                 //        itemSalesPiSummarylst.Where(x => x.DutyFreePaid == dfp || x.DutyFreePaid == "All")
                 //            .ToList(), true, true, true, "Historic", true, ApplyCurrentChecks,

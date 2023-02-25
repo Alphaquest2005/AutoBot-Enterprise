@@ -33,7 +33,7 @@ namespace AutoBot
                 var filterExpression = CreateFilterExpression(saleInfo);
 
 
-                return AllocationsModel.Instance.CreateEX9Class.CreateEx9(filterExpression, false, false, true, docSet, "Sales", "Historic", BaseDataModel.Instance.CurrentApplicationSettings.GroupEX9.GetValueOrDefault(), true, true, true, true, false, true, true, true, true).Result;
+                return AllocationsModel.Instance.CreateEx9.Execute(filterExpression, false, false, true, docSet, "Sales", "Historic", BaseDataModel.Instance.CurrentApplicationSettings.GroupEX9.GetValueOrDefault(), true, true, true, true, false, true, true, true, true).Result;
                 
 
             }

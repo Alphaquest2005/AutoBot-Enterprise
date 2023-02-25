@@ -281,7 +281,7 @@ namespace AutoBot
             {
                 try
                 {
-                    CreateEx9Class.freashStart = true;
+                    //AllocationsModel.Instance.CreateEx9.SetfreashStart(true);
                     // do duty Paid
                     var itemFilter =
                         $" && ({Enumerable.Select<TODO_AdjustmentsToXML, string>(doc, x => $"EntryDataDetailsId == {x.EntryDataDetailsId}").Distinct().Aggregate((old, current) => old + " || " + current)})";
