@@ -787,7 +787,7 @@ namespace AutoBot
             catch (Exception ex)
             {
                 EmailDownloader.EmailDownloader.SendEmail(BaseDataModel.GetClient(), null, $"Bug Found",
-                    new[] { "Joseph@auto-brokerage.com" }, $"{ex.Message}\r\n{ex.StackTrace}",
+                     EmailDownloader.EmailDownloader.GetContacts("Developer"), $"{ex.Message}\r\n{ex.StackTrace}",
                     Array.Empty<string>());
                 throw;
             }

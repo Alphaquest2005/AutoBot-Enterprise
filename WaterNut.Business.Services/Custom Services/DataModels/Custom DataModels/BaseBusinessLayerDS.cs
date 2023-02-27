@@ -1555,7 +1555,7 @@ namespace WaterNut.DataSpace
                         //throw new ApplicationException("Weight Used Exceed Total Weight!");
                         if(!string.IsNullOrEmpty(BaseDataModel.GetClient().Email))
                             EmailDownloader.EmailDownloader.SendEmail(BaseDataModel.GetClient(), null, $"Bug Found",
-                            new[] { "Joseph@auto-brokerage.com" }, $"Weight Used Exceed Total Weight! - DocSet:{asycudaDocumentSet?.Declarant_Reference_Number} TotalWeight:{totalWeight}",
+                             EmailDownloader.EmailDownloader.GetContacts("Developer"), $"Weight Used Exceed Total Weight! - DocSet:{asycudaDocumentSet?.Declarant_Reference_Number} TotalWeight:{totalWeight}",
                             Array.Empty<string>());
                         weightmsgSent = true;
                     }

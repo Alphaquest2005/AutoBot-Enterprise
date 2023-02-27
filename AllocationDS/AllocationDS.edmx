@@ -652,8 +652,6 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AsycudaItemPiQuantityData
             
             
             <PropertyRef Name="pLineNumber" />
-            
-            <PropertyRef Name="xLineNumber" />
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Item_Id" Type="int" Nullable="false" />
@@ -3456,7 +3454,6 @@ FROM [dbo].[XSales-UnAllocated] AS [XSales-UnAllocated]</DefiningQuery>
           <Key>
             <PropertyRef Name="Id" />
             <PropertyRef Name="pLineNumber" />
-            <PropertyRef Name="xLineNumber" />
           </Key>
           <Property Name="Item_Id" Type="Int32" Nullable="false" />
           <Property Name="PiQuantity" Type="Double" />

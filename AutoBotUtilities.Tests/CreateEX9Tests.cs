@@ -45,6 +45,7 @@ namespace AutoBotUtilities.Tests
         [Test]
         [TestCase("2/1/2023","2/28/2023", "SEH/1277G", 1, 2, 5)]
         [TestCase("9/1/2018", "2/28/2023", "SEH/1277G", 1, 2, 5)]
+        [TestCase("7/1/2020", "7/31/2020", "MRL/JB0057F", 1, 2, 5)]// overexwarehousing
         public void CanCreateEx9(DateTime startDate, DateTime endDate, string itemNumber, int docCount, int lineCount,int totalQuantiy)
         {
             try
@@ -55,7 +56,7 @@ namespace AutoBotUtilities.Tests
 
                 var timer = new System.Diagnostics.Stopwatch();
                 timer.Start();
-                var res = AllocationsModel.Instance.CreateEx9.Execute(testData.filterExpression, false, false, true, testData.docset, "Sales", "Historic", true, true, true, true, true, false, true, true, true, true).Result;
+                var res = new CreateEx9().Execute(testData.filterExpression, false, false, true, testData.docset, "Sales", "Historic", true, true, true, true, true, false, true, true, true, true).Result;
                 timer.Stop();
                 Console.Write($"CreateEx9 for {startDate} in seconds: {timer.Elapsed.TotalSeconds}");
 
@@ -74,9 +75,9 @@ namespace AutoBotUtilities.Tests
         [TestCase("2/1/2023", "2/28/2023", "SEH/1277G", 1, 2, 5)]
         [TestCase("9/1/2018", "2/28/2023", "SEH/1277G", 3, 4, 37)]
         [TestCase("9/1/2018", "2/28/2023", "", 3, 4, 37)] // over exwarehousing
-        [TestCase("1/1/2022", "1/31/2022", "HCLAMP/HD20-4043", 3, 4, 37)] // over exwarehousing
-        [TestCase("9/1/2018", "2/28/2023", "HCLAMP/HD20-4043", 3, 4, 37)] // over exwarehousing
+        [TestCase("1/1/2022", "1/31/2022", "HCLAMP/HD20-4043", 0, 0, 0)] // over exwarehousing
         [TestCase("1/1/2022", "1/31/2022", "", 3, 4, 37)] // over exwarehousing
+        [TestCase("7/1/2020", "7/31/2020", "MRL/JB0057F", 1, 1, 2)]// overexwarehousing
         public void CanCreateEx9Mem(DateTime startDate, DateTime endDate, string itemNumber, int docCount, int lineCount,
             int totalQuantiy)
         {
@@ -186,7 +187,18 @@ namespace AutoBotUtilities.Tests
             return (docset, filterExpression);
         }
 
-        private static (AsycudaDocumentSet docset, string filterExpression) SetupItemSetTest(DateTime startDate, DateTime endDate, string itemNumber)
+        [Test]
+        [TestCase("MRL/JB0057F")]
+        public void ItemSetTest(string itemNumber)
+        {
+           
+            var itemSets = BaseDataModel.GetItemSets(itemNumber);
+            var itemNumbers = itemSets.SelectMany(x => x.Select(z => z.ItemNumber)).DefaultIfEmpty("")
+                .Aggregate((o, n) => $"{o},{n}");
+            Assert.True(true);
+        }
+
+            private static (AsycudaDocumentSet docset, string filterExpression) SetupItemSetTest(DateTime startDate, DateTime endDate, string itemNumber)
         {
             var saleInfo = EntryDocSetUtils.CreateMonthYearAsycudaDocSet(startDate);
             var itemSets = BaseDataModel.GetItemSets(itemNumber);

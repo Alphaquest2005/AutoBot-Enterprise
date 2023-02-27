@@ -328,7 +328,7 @@ namespace AutoBot
             catch (Exception e)
             {
                 EmailDownloader.EmailDownloader.SendEmail(Utils.Client, null, $"Bug Found",
-                    new[] { "Joseph@auto-brokerage.com" }, $"{e.Message}\r\n{e.StackTrace}", Array.Empty<string>());
+                     EmailDownloader.EmailDownloader.GetContacts("Developer"), $"{e.Message}\r\n{e.StackTrace}", Array.Empty<string>());
 
 
 

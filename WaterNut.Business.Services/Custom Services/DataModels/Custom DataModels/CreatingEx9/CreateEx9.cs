@@ -348,7 +348,7 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
                     .Where(x => x.Summary.ApplicationSettingsId == applicationSettingsId)
                     .ToList();
 
-               var test = _universalData.Where(x => x.Summary.PreviousItem_Id == 1178474);
+              // var test = _universalData.Where(x => x.Summary.PreviousItem_Id == 1178474);
 
                 universalDataSummary = _universalData
                     .GroupBy(g => new
@@ -1690,6 +1690,7 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
                     if (nr >= availibleQty)
                     {
                         //ssa.QtyAllocated = availibleQty; this increased the qty because its referenced in next line below.
+                        // this code is a bug because if its last one it has to set to available qty. - fixed in createEx9mem 
                         mypod.EntlnData.Quantity = mypod.Allocations.Sum(x => x.QtyAllocated); ;
                         break;
                     }

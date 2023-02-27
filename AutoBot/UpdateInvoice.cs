@@ -578,7 +578,7 @@ namespace AutoBot
                        
 
                         EmailDownloader.EmailDownloader.SendEmail(Utils.Client,null, "Invoice Template Not found!",
-                            new[] { "Joseph@auto-brokerage.com" }, body, res1);
+                             EmailDownloader.EmailDownloader.GetContacts("Developer"), body, res1);
 
                         fileTypes.ProcessNextStep.Add("Kill");
 

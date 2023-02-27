@@ -521,11 +521,11 @@ namespace WaterNut.DataSpace
                        $"\r\n" +
                        CommandsTxt
                 ;
-            EmailDownloader.EmailDownloader.SendEmail( client, null, "Invoice Template Not found!", new[] {"Joseph@auto-brokerage.com"}, body, new[] {file, txtFile});
+            EmailDownloader.EmailDownloader.SendEmail( client, null, "Invoice Template Not found!", EmailDownloader.EmailDownloader.GetContacts("Developer"), body, new[] {file, txtFile});
             return body;
         }
 
-
+        
 
 
         private static void SeeWhatSticks(string pdftext)

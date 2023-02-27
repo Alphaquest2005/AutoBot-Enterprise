@@ -150,7 +150,7 @@ namespace AutoBotUtilities
             catch (Exception e)
             {
                 EmailDownloader.EmailDownloader.ForwardMsg(fileType.EmailId,BaseDataModel.GetClient(), $"Bug Found",
-                    $"{e.Message}\r\n{e.StackTrace}",new[] { "Joseph@auto-brokerage.com" },
+                    $"{e.Message}\r\n{e.StackTrace}", EmailDownloader.EmailDownloader.GetContacts("Developer"),
                     Array.Empty<string>());
             }
         }
@@ -178,7 +178,7 @@ namespace AutoBotUtilities
             catch (Exception e)
             {
                 EmailDownloader.EmailDownloader.ForwardMsg(fileType.EmailId, BaseDataModel.GetClient(), $"Bug Found",
-                    $"{e.Message}\r\n{e.StackTrace}", new[] { "Joseph@auto-brokerage.com" },
+                    $"{e.Message}\r\n{e.StackTrace}", EmailDownloader.EmailDownloader.GetContacts("Developer"),
                     Array.Empty<string>());
             }
         }
@@ -232,7 +232,7 @@ namespace AutoBotUtilities
             catch (Exception e)
             {
                 EmailDownloader.EmailDownloader.SendEmail(BaseDataModel.GetClient(), null, $"Bug Found",
-                    new[] { "Joseph@auto-brokerage.com" }, $"{e.Message}\r\n{e.StackTrace}",
+                     EmailDownloader.EmailDownloader.GetContacts("Developer"), $"{e.Message}\r\n{e.StackTrace}",
                     Array.Empty<string>());
             }
         }

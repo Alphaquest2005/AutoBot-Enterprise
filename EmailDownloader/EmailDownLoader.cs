@@ -22,6 +22,9 @@ namespace EmailDownloader
         private const int SizeinMB = 1048576;
         private const int AsycudaMaxFileSize = 4;
 
+
+        public static string[] GetContacts(string role) => new CoreEntitiesContext().Contacts.Where(x => x.Role == role).Select(x => x.EmailAddress).ToArray();
+
         public static bool ReturnOnlyUnknownMails { get; set; } = false;
         public static Dictionary<Tuple<string, Email, string>, List<FileInfo>> CheckEmails(Client client)
         {
@@ -94,11 +97,11 @@ namespace EmailDownloader
                 {
                     message.To.Add(MailboxAddress.Parse(recipent));
                 }
-                message.Cc.Add(new MailboxAddress("Joseph Bartholomew", "Joseph@auto-brokerage.com"));
+               // message.Cc.Add(new MailboxAddress("Joseph Bartholomew", "Joseph@auto-brokerage.com"));
             }
             else
             {
-                message.To.Add(new MailboxAddress("Joseph Bartholomew", "Joseph@auto-brokerage.com"));
+               // message.To.Add(new MailboxAddress("Joseph Bartholomew", "Joseph@auto-brokerage.com"));
             }
 
 
@@ -371,11 +374,11 @@ namespace EmailDownloader
                     msg.From.Mailboxes.FirstOrDefault().Address));
 
                 message.To.Add(new MailboxAddress(msg.From.First().Name, msg.From.Mailboxes.FirstOrDefault().Address));
-                message.Cc.Add(new MailboxAddress("Joseph Bartholomew", "Joseph@auto-brokerage.com"));
+               // message.Cc.Add(new MailboxAddress("Joseph Bartholomew", "Joseph@auto-brokerage.com"));
             }
             else
             {
-                message.To.Add(new MailboxAddress("Joseph Bartholomew", "Joseph@auto-brokerage.com"));
+               // message.To.Add(new MailboxAddress("Joseph Bartholomew", "Joseph@auto-brokerage.com"));
             }
 
             message.Subject = "FWD: " + msg.Subject;
@@ -544,11 +547,11 @@ namespace EmailDownloader
                     message.To.Add(MailboxAddress.Parse(recipent));
                 }
 
-                message.Cc.Add(new MailboxAddress("Joseph Bartholomew", "Joseph@auto-brokerage.com"));
+               // message.Cc.Add(new MailboxAddress("Joseph Bartholomew", "Joseph@auto-brokerage.com"));
             }
             else
             {
-                message.To.Add(new MailboxAddress("Joseph Bartholomew", "Joseph@auto-brokerage.com"));
+               // message.To.Add(new MailboxAddress("Joseph Bartholomew", "Joseph@auto-brokerage.com"));
             }
 
             message.Subject = subject;

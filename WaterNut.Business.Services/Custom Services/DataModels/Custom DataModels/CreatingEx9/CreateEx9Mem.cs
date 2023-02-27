@@ -117,10 +117,10 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
             filters
                 .AsParallel()
                 .AsOrdered()
-                .WithDegreeOfParallelism(Convert.ToInt32(Environment.ProcessorCount *
-                                                         DataSpace.BaseDataModel.Instance.ResourcePercentage))
+                //.WithDegreeOfParallelism(Convert.ToInt32(Environment.ProcessorCount *
+                //                                         DataSpace.BaseDataModel.Instance.ResourcePercentage))
 
-                //.WithDegreeOfParallelism(1)
+                .WithDegreeOfParallelism(1)
                 .ForAll(async filter => await CreateDutyFreePaidEntries(docSet, documentType, ex9BucketType, isGrouped,
                     checkQtyAllocatedGreaterThanPiQuantity, checkForMultipleMonths, applyEx9Bucket, applyHistoricChecks,
                     applyCurrentChecks, perInvoice, autoAssess, overPIcheck, universalPIcheck, itemPIcheck, filter,
@@ -299,7 +299,7 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
             DateTime endDate, string dfp, string entryDataType) =>
             GetPiSummary(startDate, endDate, dfp, entryDataType);
 
-        private static ConcurrentDictionary<(int, int, string DutyFreePaid, DateTime? EntryDataDate), SummaryData> _universalData = null;
+        private static ConcurrentDictionary<(int Id, int PreviousItem_Id, string DutyFreePaid, DateTime? EntryDataDate), SummaryData> _universalData = null;
         private static List<ItemSalesPiSummary> universalDataSummary = null;
         private static List<ItemSalesPiSummary> allSalesSummary = null;
         private static List<SummaryData> allSales = null;
@@ -314,7 +314,7 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
                 var res = new List<ItemSalesPiSummary>();
                 lock (Identity)
                 {
-                    SummaryInititalization(entryType, startDate, endDate);
+                    //SummaryInititalization(entryType, startDate, endDate);
                 }
                 
 
@@ -403,42 +403,44 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
             }
         }
 
-        private void SummaryInititalization(string entryType,
-            DateTime startDate, DateTime endDate)
+        private void SummaryInititalization()
+        //(string entryType, DateTime startDate, DateTime endDate)
         {
             
             //var test = _universalData.Where(x => x.Summary.PreviousItem_Id == 1178474);
             var uData = _universalData
-                .Where(x => x.Key.EntryDataDate >= startDate
-                            && x.Key.EntryDataDate <= endDate)
+                //.Where(x => x.Key.EntryDataDate >= startDate
+                //            && x.Key.EntryDataDate <= endDate)
+                //.Where(x => x.Key.PreviousItem_Id == 265928)
+                .Where(x => "MRL/JB0057F', 'MRL/JBO057F".Contains(x.Value.Summary.ItemNumber))
                 .Select(x => x.Value).ToList();
-                    universalDataSummary = uData
-                        .GroupBy(g => new
-                        {
-                            g.Summary.PreviousItem_Id,
-                            g.Summary.pCNumber,
-                            g.Summary.pLineNumber,
-                            // ItemNumber = g.ItemNumber, /// took out all itemnumber because the pos can have different itemnumbers in entrydatadetails... c#14280 - 64
-                        })
-                        .Select(x => new ItemSalesPiSummary
+
+            var universalDataSummary1 = uData
+                .GroupBy(g => new
+                {
+                    g.Summary.PreviousItem_Id,
+                    g.Summary.pCNumber,
+                    g.Summary.pLineNumber,
+                    // ItemNumber = g.ItemNumber, /// took out all itemnumber because the pos can have different itemnumbers in entrydatadetails... c#14280 - 64
+                });
+                   universalDataSummary = universalDataSummary1.Select(x => new ItemSalesPiSummary
                         {
                             PreviousItem_Id = (int)x.Key.PreviousItem_Id,
                             ItemNumber = x.First().Summary.ItemNumber,
-                            QtyAllocated = (double)x.DistinctBy(q => q.Summary.Id).Select(z => z.Summary.QtyAllocated)
-                                .DefaultIfEmpty(0).Sum(),
-                            pQtyAllocated = x.DistinctBy(q => new { q.Summary.DutyFreePaid, q.Summary.pQtyAllocated })
-                                .Select(z => z.Summary.pQtyAllocated).DefaultIfEmpty(0).Sum(),
-                            PiQuantity =
-                                (double)x.DistinctBy(q => q.Summary.PreviousItem_Id)
-                                    .SelectMany(z => z.pIData.Select(zz => zz.PiQuantity))
-                                    .DefaultIfEmpty(0).Sum(),
+                            
+                        QtyAllocated = (double)x.DistinctBy(q => q.Summary.Id).Select(z => z.Summary.QtyAllocated).DefaultIfEmpty(0).Sum(),
+
+                       pQtyAllocated = x.DistinctBy(q => new { q.Summary.DutyFreePaid, q.Summary.PreviousItem_Id }).Select(z => z.Summary.pQtyAllocated).DefaultIfEmpty(0).Sum(),
+                       
+                       PiQuantity = (double)x.DistinctBy(q => new { q.Summary.DutyFreePaid, q.Summary.PreviousItem_Id}).SelectMany(z => z.pIData.Select(zz => zz.PiQuantity)).DefaultIfEmpty(0).Sum(),
+                       
                             pCNumber = x.Key.pCNumber,
                             pLineNumber = (int)x.Key.pLineNumber,
                             DutyFreePaid = "Universal",
                             Type = "Universal",
-                            EntryDataType = "Universal",
-                            StartDate = startDate,
-                            EndDate = endDate
+                            //EntryDataType = "Universal",
+                            //StartDate = startDate,
+                            //EndDate = endDate
                         }).ToList();
                     allSales = uData;
                     allSalesSummary = allSales
@@ -469,9 +471,9 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
                             pLineNumber = (int)x.Key.pLineNumber,
                             DutyFreePaid = "All",
                             Type = "All",
-                            EntryDataType = entryType, //x.Key.entryType,
-                            StartDate = startDate,
-                            EndDate = endDate
+                            //EntryDataType = entryType, //x.Key.entryType,
+                            //StartDate = startDate,
+                            //EndDate = endDate
                         }).ToList();
                     
                 
@@ -484,6 +486,7 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
             {
                 if (_universalData != null && !freashStart) return;
                 _universalData = new ConcurrentDictionary<(int Id, int PreviousItem_Id, string DutyFreePaid, DateTime? EntryDataDate), SummaryData>(GetUniversalData(applicationSettingsId));
+                SummaryInititalization();
                 freashStart = false;
             }
         }

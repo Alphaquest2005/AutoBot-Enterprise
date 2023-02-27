@@ -49,6 +49,7 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
 
             var rres = tres
                 .Where(filterExpression)
+                .Where(x => x.AllocationId == 36652618)
                 .ToList();
             foreach (var x in rres)
             {

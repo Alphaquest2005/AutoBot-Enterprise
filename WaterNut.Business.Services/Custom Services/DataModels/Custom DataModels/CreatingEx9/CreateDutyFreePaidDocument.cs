@@ -648,7 +648,7 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
                 salesPiHistoric.ForEach(x =>
                     Debug.WriteLine(
                         $"Sales vs Pi History: {x.QtyAllocated} of {x.pQtyAllocated} - {x.PiQuantity} | C#{x.pCNumber}-{x.pLineNumber}"));
-                var entryType = salesPiAll.FirstOrDefault()?.EntryDataType?? documentType;
+                var entryType = salesPiHistoric.FirstOrDefault()?.EntryDataType ?? documentType;//salesPiAll.FirstOrDefault()?.EntryDataType?? documentType;
 
                 var docSetPiLst = DocSetPi
                     .Where(x => x.PreviousItem_Id == mypod.EntlnData.PreviousDocumentItemId)
@@ -1220,7 +1220,7 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
                     }
                     if (nr >= availibleQty)
                     {
-                        //ssa.QtyAllocated = availibleQty; this increased the qty because its referenced in next line below.
+                        if(mypod.Allocations.Count == 1) ssa.QtyAllocated = availibleQty; //renable with condition to fix [TestCase("7/1/2020", "7/31/2020", "MRL/JB0057F", 1, 1, 2)]// overexwarehousing --- //this increased the qty because its referenced in next line below.
                         mypod.EntlnData.Quantity = mypod.Allocations.Sum(x => x.QtyAllocated); ;
                         break;
                     }

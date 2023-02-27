@@ -584,7 +584,7 @@ namespace WaterNut.Business.Services.Utils
                     else
                     {
                         //EmailDownloader.EmailDownloader.SendEmail(Utils.Client, null, $"Bug Found",
-                        //    new[] { "Joseph@auto-brokerage.com" }, $"Required Field - '{mapping.OriginalName}' on Line:{ row_no} in File: { file.Name} has no Value.", Array.Empty<string>());
+                        //     EmailDownloader.EmailDownloader.GetContacts("Developer"), $"Required Field - '{mapping.OriginalName}' on Line:{ row_no} in File: { file.Name} has no Value.", Array.Empty<string>());
                         errLst.Add($"Required Field - '{mapping.OriginalName}' on Line:{row_no} in File: {file.Name} has no Value.");
                         return val;
                     }
@@ -596,7 +596,7 @@ namespace WaterNut.Business.Services.Utils
                     if (val.ToCharArray().All(x => !char.IsDigit(x)))
                     {
                         //EmailDownloader.EmailDownloader.SendEmail(Utils.Client, null, $"Bug Found",
-                        //    new[] { "Joseph@auto-brokerage.com" }, $"Required Field - '{mapping.OriginalName}' on Line:{ row_no} in File: { file.Name} has no Value.", Array.Empty<string>());
+                        //     EmailDownloader.EmailDownloader.GetContacts("Developer"), $"Required Field - '{mapping.OriginalName}' on Line:{ row_no} in File: { file.Name} has no Value.", Array.Empty<string>());
                         errLst.Add($"Required Field - '{mapping.OriginalName}' on Line:{row_no} in File: {file.Name} has Value ='{val}' cannot be converted to Number.");
                         return val;
                         //val = "";
@@ -608,7 +608,7 @@ namespace WaterNut.Business.Services.Utils
                     if (DateTime.TryParse(val, out var tmp) == false)
                     {
                         //EmailDownloader.EmailDownloader.SendEmail(Utils.Client, null, $"Bug Found",
-                        //    new[] { "Joseph@auto-brokerage.com" }, $"Required Field - '{mapping.OriginalName}' on Line:{ row_no} in File: { file.Name} has no Value.", Array.Empty<string>());
+                        //     EmailDownloader.EmailDownloader.GetContacts("Developer"), $"Required Field - '{mapping.OriginalName}' on Line:{ row_no} in File: { file.Name} has no Value.", Array.Empty<string>());
                         errLst.Add($"Required Field - '{mapping.OriginalName}' on Line:{row_no} in File: {file.Name} has Value ='{val}' cannot be converted to date.");
                         return val;
                         //  val = "";
@@ -618,7 +618,7 @@ namespace WaterNut.Business.Services.Utils
                 EmailDownloader.EmailDownloader.ForwardMsg(fileType.EmailId,
                     BaseDataModel.GetClient(), $"Bug Found",
                     errLst.Aggregate((o,n) => o + "\r\n" + n),
-                    new[] { "Joseph@auto-brokerage.com" }, Array.Empty<string>()
+                     EmailDownloader.EmailDownloader.GetContacts("Developer"), Array.Empty<string>()
                 );
 
             return val;
@@ -686,7 +686,7 @@ namespace WaterNut.Business.Services.Utils
                     EmailDownloader.EmailDownloader.ForwardMsg(fileType.EmailId,
                         BaseDataModel.GetClient(), $"Bug Found",
                         $"Required Field - '{mapping.OriginalName}' on Line:{row_no} in File: {file.Name} dose not exists.",
-                        new[] { "Joseph@auto-brokerage.com" }, Array.Empty<string>()
+                         EmailDownloader.EmailDownloader.GetContacts("Developer"), Array.Empty<string>()
                     );
                     mappingMailSent = true;
                     return mappingMailSent;
