@@ -62,6 +62,7 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
 
  			// Recieve messages for Core Current Entities Changed
                         RegisterToReceiveMessages<ApplicationSettings>(CoreEntities.MessageToken.CurrentApplicationSettingsChanged, OnCurrentApplicationSettingsChanged);
+                        RegisterToReceiveMessages<AsycudaDocumentSet>(CoreEntities.MessageToken.CurrentAsycudaDocumentSetChanged, OnCurrentAsycudaDocumentSetChanged);
  
 
 			AsycudaDocumentItemEntryDataDetails = new VirtualList<AsycudaDocumentItemEntryDataDetail>(vloader);
@@ -159,6 +160,10 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
                    // {
                    //    if(ApplicationSettings.Contains(CurrentAsycudaDocumentItemEntryDataDetail.ApplicationSettings) == false) ApplicationSettings.Add(CurrentAsycudaDocumentItemEntryDataDetail.ApplicationSettings);
                     //}
+                    //if (e.PropertyName == "AddAsycudaDocumentSet")
+                   // {
+                   //    if(AsycudaDocumentSet.Contains(CurrentAsycudaDocumentItemEntryDataDetail.AsycudaDocumentSet) == false) AsycudaDocumentSet.Add(CurrentAsycudaDocumentItemEntryDataDetail.AsycudaDocumentSet);
+                    //}
                  } 
         internal virtual void OnAsycudaDocumentItemEntryDataDetailsChanged(object sender, NotificationEventArgs e)
         {
@@ -230,6 +235,20 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
                 else
                 {
                     vloader.FilterExpression = string.Format("ApplicationSettingsId == {0}", e.Data.ApplicationSettingsId.ToString());
+                }
+					
+                    AsycudaDocumentItemEntryDataDetails.Refresh();
+					NotifyPropertyChanged(x => this.AsycudaDocumentItemEntryDataDetails);
+				}
+                internal virtual void OnCurrentAsycudaDocumentSetChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<AsycudaDocumentSet> e)
+				{
+				if (e.Data == null || e.Data.AsycudaDocumentSetId == null)
+                {
+                    vloader.FilterExpression = null;
+                }
+                else
+                {
+                    vloader.FilterExpression = string.Format("AsycudaDocumentSetId == {0}", e.Data.AsycudaDocumentSetId.ToString());
                 }
 					
                     AsycudaDocumentItemEntryDataDetails.Refresh();

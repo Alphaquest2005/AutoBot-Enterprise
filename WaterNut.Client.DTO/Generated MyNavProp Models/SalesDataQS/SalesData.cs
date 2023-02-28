@@ -14,7 +14,28 @@ namespace SalesDataQS.Client.DTO
     {
        #region MyNavProp Entities
 
-        AsycudaDocument _asycudaDocument = null;
+        AsycudaDocumentSet _asycudaDocumentSet = null;
+
+        public AsycudaDocumentSet AsycudaDocumentSet
+        {
+            get
+            {
+                return _asycudaDocumentSet;
+            }
+            set
+            {
+                if (value != null)
+                {
+                    _asycudaDocumentSet = value;
+
+                    AsycudaDocumentSetId = _asycudaDocumentSet.AsycudaDocumentSetId;
+
+                    NotifyPropertyChanged("AsycudaDocumentSet");
+                }
+            }
+
+        }
+         AsycudaDocument _asycudaDocument = null;
 
         public AsycudaDocument AsycudaDocument
         {

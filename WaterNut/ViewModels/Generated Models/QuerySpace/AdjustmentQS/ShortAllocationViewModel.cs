@@ -60,6 +60,7 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
 
  			// Recieve messages for Core Current Entities Changed
                         RegisterToReceiveMessages<ApplicationSettings>(CoreEntities.MessageToken.CurrentApplicationSettingsChanged, OnCurrentApplicationSettingsChanged);
+                        RegisterToReceiveMessages<AsycudaDocumentSet>(CoreEntities.MessageToken.CurrentAsycudaDocumentSetChanged, OnCurrentAsycudaDocumentSetChanged);
  
 
 			ShortAllocations = new VirtualList<ShortAllocation>(vloader);
@@ -153,6 +154,10 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
                    // {
                    //    if(ApplicationSettings.Contains(CurrentShortAllocation.ApplicationSettings) == false) ApplicationSettings.Add(CurrentShortAllocation.ApplicationSettings);
                     //}
+                    //if (e.PropertyName == "AddAsycudaDocumentSet")
+                   // {
+                   //    if(AsycudaDocumentSet.Contains(CurrentShortAllocation.AsycudaDocumentSet) == false) AsycudaDocumentSet.Add(CurrentShortAllocation.AsycudaDocumentSet);
+                    //}
                  } 
         internal virtual void OnShortAllocationsChanged(object sender, NotificationEventArgs e)
         {
@@ -207,6 +212,20 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
                 else
                 {
                     vloader.FilterExpression = string.Format("ApplicationSettingsId == {0}", e.Data.ApplicationSettingsId.ToString());
+                }
+					
+                    ShortAllocations.Refresh();
+					NotifyPropertyChanged(x => this.ShortAllocations);
+				}
+                internal virtual void OnCurrentAsycudaDocumentSetChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<AsycudaDocumentSet> e)
+				{
+				if (e.Data == null || e.Data.AsycudaDocumentSetId == null)
+                {
+                    vloader.FilterExpression = null;
+                }
+                else
+                {
+                    vloader.FilterExpression = string.Format("AsycudaDocumentSetId == {0}", e.Data.AsycudaDocumentSetId.ToString());
                 }
 					
                     ShortAllocations.Refresh();

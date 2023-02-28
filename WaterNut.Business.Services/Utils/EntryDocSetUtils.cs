@@ -10,6 +10,7 @@ using DocumentDS.Business.Entities;
 using DocumentItemDS.Business.Entities;
 using TrackableEntities;
 using TrackableEntities.EF6;
+using AsycudaDocumentSet = DocumentDS.Business.Entities.AsycudaDocumentSet;
 using CustomsOperations = CoreEntities.Business.Enums.CustomsOperations;
 
 namespace WaterNut.DataSpace

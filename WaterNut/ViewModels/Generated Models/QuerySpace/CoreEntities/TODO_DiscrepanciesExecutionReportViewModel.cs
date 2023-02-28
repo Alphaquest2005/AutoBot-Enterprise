@@ -138,6 +138,10 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                    // {
                    //    if(ApplicationSettings.Contains(CurrentTODO_DiscrepanciesExecutionReport.ApplicationSettings) == false) ApplicationSettings.Add(CurrentTODO_DiscrepanciesExecutionReport.ApplicationSettings);
                     //}
+                    //if (e.PropertyName == "AddAsycudaDocumentSet")
+                   // {
+                   //    if(AsycudaDocumentSet.Contains(CurrentTODO_DiscrepanciesExecutionReport.AsycudaDocumentSet) == false) AsycudaDocumentSet.Add(CurrentTODO_DiscrepanciesExecutionReport.AsycudaDocumentSet);
+                    //}
                  } 
         internal virtual void OnTODO_DiscrepanciesExecutionReportChanged(object sender, NotificationEventArgs e)
         {
@@ -158,6 +162,20 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                 else
                 {
                     vloader.FilterExpression = string.Format("ApplicationSettingsId == {0}", e.Data.ApplicationSettingsId.ToString());
+                }
+					
+                    TODO_DiscrepanciesExecutionReport.Refresh();
+					NotifyPropertyChanged(x => this.TODO_DiscrepanciesExecutionReport);
+				}
+                internal virtual void OnCurrentAsycudaDocumentSetChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<AsycudaDocumentSet> e)
+				{
+				if (e.Data == null || e.Data.AsycudaDocumentSetId == null)
+                {
+                    vloader.FilterExpression = null;
+                }
+                else
+                {
+                    vloader.FilterExpression = string.Format("AsycudaDocumentSetId == {0}", e.Data.AsycudaDocumentSetId.ToString());
                 }
 					
                     TODO_DiscrepanciesExecutionReport.Refresh();

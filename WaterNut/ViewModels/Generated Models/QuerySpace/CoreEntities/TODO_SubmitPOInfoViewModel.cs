@@ -138,6 +138,10 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                    // {
                    //    if(ApplicationSettings.Contains(CurrentTODO_SubmitPOInfo.ApplicationSettings) == false) ApplicationSettings.Add(CurrentTODO_SubmitPOInfo.ApplicationSettings);
                     //}
+                    //if (e.PropertyName == "AddAsycudaDocumentSet")
+                   // {
+                   //    if(AsycudaDocumentSet.Contains(CurrentTODO_SubmitPOInfo.AsycudaDocumentSet) == false) AsycudaDocumentSet.Add(CurrentTODO_SubmitPOInfo.AsycudaDocumentSet);
+                    //}
                  } 
         internal virtual void OnTODO_SubmitPOInfoChanged(object sender, NotificationEventArgs e)
         {
@@ -158,6 +162,20 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                 else
                 {
                     vloader.FilterExpression = string.Format("ApplicationSettingsId == {0}", e.Data.ApplicationSettingsId.ToString());
+                }
+					
+                    TODO_SubmitPOInfo.Refresh();
+					NotifyPropertyChanged(x => this.TODO_SubmitPOInfo);
+				}
+                internal virtual void OnCurrentAsycudaDocumentSetChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<AsycudaDocumentSet> e)
+				{
+				if (e.Data == null || e.Data.AsycudaDocumentSetId == null)
+                {
+                    vloader.FilterExpression = null;
+                }
+                else
+                {
+                    vloader.FilterExpression = string.Format("AsycudaDocumentSetId == {0}", e.Data.AsycudaDocumentSetId.ToString());
                 }
 					
                     TODO_SubmitPOInfo.Refresh();

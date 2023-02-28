@@ -226,6 +226,7 @@
     <Compile Include="Generated Business Entities\CoreEntities\AsycudaDocumentBasicInfo.cs" />
     <Compile Include="Generated Business Entities\CoreEntities\AsycudaDocumentItem.cs" />
     <Compile Include="Generated Business Entities\CoreEntities\AsycudaDocumentItemEntryDataDetails.cs" />
+    <Compile Include="Generated Business Entities\CoreEntities\AsycudaDocumentSet.cs" />
     <Compile Include="Generated Business Entities\CoreEntities\AsycudaDocumentSetAttachments.cs" />
     <Compile Include="Generated Business Entities\CoreEntities\AsycudaDocumentSetC71.cs" />
     <Compile Include="Generated Business Entities\CoreEntities\AsycudaDocumentSetEntryDataEx.cs" />
@@ -659,6 +660,7 @@
     <Compile Include="Generated ChangeTracking Models\CoreEntities\AsycudaDocumentBasicInfo.cs" />
     <Compile Include="Generated ChangeTracking Models\CoreEntities\AsycudaDocumentItem.cs" />
     <Compile Include="Generated ChangeTracking Models\CoreEntities\AsycudaDocumentItemEntryDataDetails.cs" />
+    <Compile Include="Generated ChangeTracking Models\CoreEntities\AsycudaDocumentSet.cs" />
     <Compile Include="Generated ChangeTracking Models\CoreEntities\AsycudaDocumentSetAttachments.cs" />
     <Compile Include="Generated ChangeTracking Models\CoreEntities\AsycudaDocumentSetC71.cs" />
     <Compile Include="Generated ChangeTracking Models\CoreEntities\AsycudaDocumentSetEntryDataEx.cs" />
@@ -1085,6 +1087,7 @@
     <Compile Include="Generated Constructors Models\CoreEntities\AsycudaDocumentBasicInfo.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\AsycudaDocumentItem.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\AsycudaDocumentItemEntryDataDetails.cs" />
+    <Compile Include="Generated Constructors Models\CoreEntities\AsycudaDocumentSet.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\AsycudaDocumentSetAttachments.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\AsycudaDocumentSetC71.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\AsycudaDocumentSetEntryDataEx.cs" />
@@ -1511,6 +1514,7 @@
     <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\AsycudaDocumentBasicInfo.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\AsycudaDocumentItem.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\AsycudaDocumentItemEntryDataDetails.cs" />
+    <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\AsycudaDocumentSet.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\AsycudaDocumentSetAttachments.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\AsycudaDocumentSetC71.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\AsycudaDocumentSetEntryDataEx.cs" />
@@ -1937,6 +1941,7 @@
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\AsycudaDocumentBasicInfo.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\AsycudaDocumentItem.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\AsycudaDocumentItemEntryDataDetails.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\AsycudaDocumentSet.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\AsycudaDocumentSetAttachments.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\AsycudaDocumentSetC71.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\AsycudaDocumentSetEntryDataEx.cs" />
@@ -2373,6 +2378,7 @@
     <Compile Include="Generated Mappings\CoreEntities\AsycudaDocumentBasicInfo.map.cs" />
     <Compile Include="Generated Mappings\CoreEntities\AsycudaDocumentItem.map.cs" />
     <Compile Include="Generated Mappings\CoreEntities\AsycudaDocumentItemEntryDataDetails.map.cs" />
+    <Compile Include="Generated Mappings\CoreEntities\AsycudaDocumentSet.map.cs" />
     <Compile Include="Generated Mappings\CoreEntities\AsycudaDocumentSetAttachments.map.cs" />
     <Compile Include="Generated Mappings\CoreEntities\AsycudaDocumentSetC71.map.cs" />
     <Compile Include="Generated Mappings\CoreEntities\AsycudaDocumentSetEntryDataEx.map.cs" />

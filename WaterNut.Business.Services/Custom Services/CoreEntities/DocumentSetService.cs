@@ -14,6 +14,7 @@ using DocumentDS.Business.Services;
 using Omu.ValueInjecter;
 using WaterNut.Business.Services.Utils;
 using WaterNut.DataSpace;
+using AsycudaDocumentSet = DocumentDS.Business.Entities.AsycudaDocumentSet;
 
 
 namespace CoreEntities.Business.Services

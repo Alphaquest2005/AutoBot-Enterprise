@@ -140,6 +140,8 @@ namespace CoreEntities.Business.Entities
         public List<AttachmentLog> AttachmentLog { get; set; }
         [DataMember]
         public Emails Emails { get; set; }
+        [DataMember]
+        public AsycudaDocumentSet AsycudaDocumentSet { get; set; }
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

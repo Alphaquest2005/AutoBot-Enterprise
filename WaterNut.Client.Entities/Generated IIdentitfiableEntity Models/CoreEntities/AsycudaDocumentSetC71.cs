@@ -28,6 +28,44 @@ namespace CoreEntities.Client.Entities
                 this.Value_declaration_form_Id = Convert.ToInt32(value);
             }
         }
+        public string AsycudaDocumentSetEntityName
+        {
+            get
+            {
+                return this.AsycudaDocumentSet == null ? "" : this.AsycudaDocumentSet.EntityName;
+            }
+            set
+            {
+                                if (string.IsNullOrEmpty(value)) return;
+                string[] vals = value.Split(',');
+               
+                    using (AsycudaDocumentSetClient ctx = new AsycudaDocumentSetClient())
+                    {
+                        var dto = ctx.GetAsycudaDocumentSet().Result.AsEnumerable().FirstOrDefault(x => x.EntityName == value);
+                        
+
+                        if ( dto == null)
+                        {
+                            this.AsycudaDocumentSet = (AsycudaDocumentSet)new AsycudaDocumentSet().CreateEntityFromString(value);
+							
+							this.AsycudaDocumentSetId = Convert.ToInt32(this.AsycudaDocumentSet.AsycudaDocumentSetId);
+                            this.TrackingState=TrackableEntities.TrackingState.Modified;
+                           NotifyPropertyChanged("AddAsycudaDocumentSet");
+                        }
+                        else
+                        {
+                            var obj = new AsycudaDocumentSet(dto);
+                           if (this.AsycudaDocumentSet == null || this.AsycudaDocumentSet.EntityId != obj.EntityId) this.AsycudaDocumentSet = obj;
+                           
+                        }
+                         
+
+
+                    }
+            
+            }
+
+      }
 
 
 

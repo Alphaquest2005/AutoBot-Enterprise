@@ -14,7 +14,28 @@ namespace AdjustmentQS.Client.DTO
     {
        #region MyNavProp Entities
 
-        ApplicationSettings _applicationSettings = null;
+        AsycudaDocumentSet _asycudaDocumentSet = null;
+
+        public AsycudaDocumentSet AsycudaDocumentSet
+        {
+            get
+            {
+                return _asycudaDocumentSet;
+            }
+            set
+            {
+                if (value != null)
+                {
+                    _asycudaDocumentSet = value;
+
+                    AsycudaDocumentSetId = _asycudaDocumentSet.AsycudaDocumentSetId;
+
+                    NotifyPropertyChanged("AsycudaDocumentSet");
+                }
+            }
+
+        }
+         ApplicationSettings _applicationSettings = null;
 
         public ApplicationSettings ApplicationSettings
         {

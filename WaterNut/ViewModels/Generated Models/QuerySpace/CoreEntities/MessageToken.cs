@@ -58,6 +58,12 @@ namespace WaterNut.QuerySpace.CoreEntities
 			public const string AsycudaDocumentItemEntryDataDetailsDeleted = "AsycudaDocumentItemEntryDataDetailsDeleted";
 			public const string AsycudaDocumentItemEntryDataDetailsCreated = "AsycudaDocumentItemEntryDataDetailsCreated";
 			public const string AsycudaDocumentItemEntryDataDetailsUpdated = "AsycudaDocumentItemEntryDataDetailsUpdated";
+			public const string AsycudaDocumentSetFilterExpressionChanged = "AsycudaDocumentSetFilterExpressionChanged";
+			public const string SelectedAsycudaDocumentSetChanged = "SelectedAsycudaDocumentSetChanged";
+            public const string AsycudaDocumentSetChanged = "AsycudaDocumentSetChanged";
+			public const string AsycudaDocumentSetDeleted = "AsycudaDocumentSetDeleted";
+			public const string AsycudaDocumentSetCreated = "AsycudaDocumentSetCreated";
+			public const string AsycudaDocumentSetUpdated = "AsycudaDocumentSetUpdated";
 			public const string AsycudaDocumentSet_AttachmentsFilterExpressionChanged = "AsycudaDocumentSet_AttachmentsFilterExpressionChanged";
 			public const string SelectedAsycudaDocumentSet_AttachmentsChanged = "SelectedAsycudaDocumentSet_AttachmentsChanged";
             public const string AsycudaDocumentSet_AttachmentsChanged = "AsycudaDocumentSet_AttachmentsChanged";
@@ -632,6 +638,7 @@ namespace WaterNut.QuerySpace.CoreEntities
           // public const string AsycudaDocumentBasicInfoChanged = "AsycudaDocumentBasicInfoChanged";
           // public const string AsycudaDocumentItemChanged = "AsycudaDocumentItemChanged";
           // public const string AsycudaDocumentItemEntryDataDetailsChanged = "AsycudaDocumentItemEntryDataDetailsChanged";
+          // public const string AsycudaDocumentSetChanged = "AsycudaDocumentSetChanged";
           // public const string AsycudaDocumentSet_AttachmentsChanged = "AsycudaDocumentSet_AttachmentsChanged";
           // public const string AsycudaDocumentSetAttachmentsChanged = "AsycudaDocumentSetAttachmentsChanged";
           // public const string AsycudaDocumentSetC71Changed = "AsycudaDocumentSetC71Changed";
@@ -744,6 +751,8 @@ namespace WaterNut.QuerySpace.CoreEntities
            public const string CurrentAsycudaDocumentItemChanged = "CurrentAsycudaDocumentItemChanged";
    
            public const string CurrentAsycudaDocumentItemEntryDataDetailsChanged = "CurrentAsycudaDocumentItemEntryDataDetailsChanged";
+   
+           public const string CurrentAsycudaDocumentSetChanged = "CurrentAsycudaDocumentSetChanged";
    
            public const string CurrentAsycudaDocumentSet_AttachmentsChanged = "CurrentAsycudaDocumentSet_AttachmentsChanged";
    
@@ -950,6 +959,8 @@ namespace WaterNut.QuerySpace.CoreEntities
            public const string CurrentAsycudaDocumentItemIDChanged = "OnCurrentAsycudaDocumentItemIDChanged";
    
            public const string CurrentAsycudaDocumentItemEntryDataDetailsIDChanged = "OnCurrentAsycudaDocumentItemEntryDataDetailsIDChanged";
+   
+           public const string CurrentAsycudaDocumentSetIDChanged = "OnCurrentAsycudaDocumentSetIDChanged";
    
            public const string CurrentAsycudaDocumentSet_AttachmentsIDChanged = "OnCurrentAsycudaDocumentSet_AttachmentsIDChanged";
    

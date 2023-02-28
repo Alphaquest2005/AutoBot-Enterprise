@@ -35,6 +35,27 @@ namespace AdjustmentQS.Client.DTO
             }
 
         }
+         AsycudaDocumentSet _asycudaDocumentSet = null;
+
+        public AsycudaDocumentSet AsycudaDocumentSet
+        {
+            get
+            {
+                return _asycudaDocumentSet;
+            }
+            set
+            {
+                if (value != null)
+                {
+                    _asycudaDocumentSet = value;
+
+                    AsycudaDocumentSetId = _asycudaDocumentSet.AsycudaDocumentSetId;
+
+                    NotifyPropertyChanged("AsycudaDocumentSet");
+                }
+            }
+
+        }
         
 
         

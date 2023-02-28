@@ -296,6 +296,21 @@ public string CustomsOperation
 		}
      
 
+       
+       
+public Nullable<long> Id
+		{ 
+		    get { return this.asycudadocumentitementrydatadetails.Id; }
+			set
+			{
+			    if (value == this.asycudadocumentitementrydatadetails.Id) return;
+				this.asycudadocumentitementrydatadetails.Id = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("Id");
+			}
+		}
+     
+
        private AsycudaDocumentItem _AsycudaDocumentItem;
         public  AsycudaDocumentItem AsycudaDocumentItem
 		{

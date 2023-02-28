@@ -166,6 +166,11 @@
         <AssociationConnector Association="WaterNutDBModel.FileTypesAsycudaDocumentSetAttachments" ManuallyRouted="false" >
         </AssociationConnector>
         <AssociationConnector Association="WaterNutDBModel.AsycudaDocumentSetExAsycudaDocumentSetAttachments" />
+        <EntityTypeShape EntityType="WaterNutDBModel.AsycudaDocumentSet" Width="2" PointX="7.75" PointY="1.5" />
+        <AssociationConnector Association="WaterNutDBModel.FK_ActionDocSetLogs_AsycudaDocumentSet" />
+        <AssociationConnector Association="WaterNutDBModel.FK_AsycudaDocumentSet_ApplicationSettings" />
+        <AssociationConnector Association="WaterNutDBModel.FK_AsycudaDocumentSet_Attachments_AsycudaDocumentSet" />
+        <AssociationConnector Association="WaterNutDBModel.FK_AsycudaDocumentSet_Customs_Procedure" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

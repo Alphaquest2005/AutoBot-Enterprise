@@ -175,7 +175,7 @@ namespace AutoBotUtilities.Tests
 
 
 
-        private static (AsycudaDocumentSet docset, string filterExpression) SetupTest(DateTime startDate, DateTime endDate, string itemNumber)
+        private static (DocumentDS.Business.Entities.AsycudaDocumentSet docset, string filterExpression) SetupTest(DateTime startDate, DateTime endDate, string itemNumber)
         {
             var saleInfo = EntryDocSetUtils.CreateMonthYearAsycudaDocSet(startDate);
 
@@ -198,7 +198,7 @@ namespace AutoBotUtilities.Tests
             Assert.True(true);
         }
 
-            private static (AsycudaDocumentSet docset, string filterExpression) SetupItemSetTest(DateTime startDate, DateTime endDate, string itemNumber)
+            private static (DocumentDS.Business.Entities.AsycudaDocumentSet docset, string filterExpression) SetupItemSetTest(DateTime startDate, DateTime endDate, string itemNumber)
         {
             var saleInfo = EntryDocSetUtils.CreateMonthYearAsycudaDocSet(startDate);
             var itemSets = BaseDataModel.GetItemSets(itemNumber);
@@ -212,7 +212,7 @@ namespace AutoBotUtilities.Tests
             return (docset, filterExpression);
         }
 
-        private static void AssertTest(int docCount, int lineCount, int totalQuantiy, AsycudaDocumentSet docset)
+        private static void AssertTest(int docCount, int lineCount, int totalQuantiy, DocumentDS.Business.Entities.AsycudaDocumentSet docset)
         {
             using (var ctx = new CoreEntitiesContext())
             {

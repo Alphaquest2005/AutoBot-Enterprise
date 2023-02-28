@@ -206,7 +206,8 @@ namespace CoreEntities.Client.Repositories
                   // AsycudaDocumentSetEx = (res.AsycudaDocumentSetEx != null?new AsycudaDocumentSetEx(res.AsycudaDocumentSetEx): null),    
                   // FileTypes = (res.FileTypes != null?new FileTypes(res.FileTypes): null),    
                      // AttachmentLog = new System.Collections.ObjectModel.ObservableCollection<AttachmentLog>(res.AttachmentLog.Select(y => new AttachmentLog(y))),    
-                  // Emails = (res.Emails != null?new Emails(res.Emails): null)    
+                  // Emails = (res.Emails != null?new Emails(res.Emails): null),    
+                  // AsycudaDocumentSet = (res.AsycudaDocumentSet != null?new AsycudaDocumentSet(res.AsycudaDocumentSet): null)    
                   };
                     }
                     else

@@ -10,6 +10,7 @@ using EmailDownloader;
 using TrackableEntities.Client;
 using WaterNut.Business.Services.Utils;
 using WaterNut.DataSpace;
+using AsycudaDocumentSet = DocumentDS.Business.Entities.AsycudaDocumentSet;
 
 namespace EntryDataQS.Business.Services
 {

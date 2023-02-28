@@ -134,6 +134,10 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 
             void CurrentAsycudaDocumentBasicInfo__propertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
                 {
+                    //if (e.PropertyName == "AddAsycudaDocumentSet")
+                   // {
+                   //    if(AsycudaDocumentSet.Contains(CurrentAsycudaDocumentBasicInfo.AsycudaDocumentSet) == false) AsycudaDocumentSet.Add(CurrentAsycudaDocumentBasicInfo.AsycudaDocumentSet);
+                    //}
                     //if (e.PropertyName == "AddApplicationSettings")
                    // {
                    //    if(ApplicationSettings.Contains(CurrentAsycudaDocumentBasicInfo.ApplicationSettings) == false) ApplicationSettings.Add(CurrentAsycudaDocumentBasicInfo.ApplicationSettings);
@@ -153,6 +157,20 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
  
   			// Core Current Entities Changed
 			// theorticall don't need this cuz i am inheriting from core entities baseview model so changes should flow up to here
+                internal virtual void OnCurrentAsycudaDocumentSetChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<AsycudaDocumentSet> e)
+				{
+				if (e.Data == null || e.Data.AsycudaDocumentSetId == null)
+                {
+                    vloader.FilterExpression = null;
+                }
+                else
+                {
+                    vloader.FilterExpression = string.Format("AsycudaDocumentSetId == {0}", e.Data.AsycudaDocumentSetId.ToString());
+                }
+					
+                    AsycudaDocumentBasicInfo.Refresh();
+					NotifyPropertyChanged(x => this.AsycudaDocumentBasicInfo);
+				}
                 internal virtual void OnCurrentApplicationSettingsChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<ApplicationSettings> e)
 				{
 				if (e.Data == null || e.Data.ApplicationSettingsId == null)

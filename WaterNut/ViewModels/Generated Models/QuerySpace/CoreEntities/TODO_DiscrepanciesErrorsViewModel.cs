@@ -134,6 +134,10 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 
             void CurrentTODO_DiscrepanciesErrors__propertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
                 {
+                    //if (e.PropertyName == "AddAsycudaDocumentSet")
+                   // {
+                   //    if(AsycudaDocumentSet.Contains(CurrentTODO_DiscrepanciesErrors.AsycudaDocumentSet) == false) AsycudaDocumentSet.Add(CurrentTODO_DiscrepanciesErrors.AsycudaDocumentSet);
+                    //}
                  } 
         internal virtual void OnTODO_DiscrepanciesErrorsChanged(object sender, NotificationEventArgs e)
         {
@@ -145,6 +149,20 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
  
   			// Core Current Entities Changed
 			// theorticall don't need this cuz i am inheriting from core entities baseview model so changes should flow up to here
+                internal virtual void OnCurrentAsycudaDocumentSetChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<AsycudaDocumentSet> e)
+				{
+				if (e.Data == null || e.Data.AsycudaDocumentSetId == null)
+                {
+                    vloader.FilterExpression = null;
+                }
+                else
+                {
+                    vloader.FilterExpression = string.Format("AsycudaDocumentSetId == {0}", e.Data.AsycudaDocumentSetId.ToString());
+                }
+					
+                    TODO_DiscrepanciesErrors.Refresh();
+					NotifyPropertyChanged(x => this.TODO_DiscrepanciesErrors);
+				}
   
 // Filtering Each Field except IDs
 		public void ViewAll()

@@ -59,6 +59,8 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 			RegisterToReceiveMessages<FileTypes>(MessageToken.CurrentFileTypesChanged, OnCurrentFileTypesChanged);
  
 			RegisterToReceiveMessages<Emails>(MessageToken.CurrentEmailsChanged, OnCurrentEmailsChanged);
+ 
+			RegisterToReceiveMessages<AsycudaDocumentSet>(MessageToken.CurrentAsycudaDocumentSetChanged, OnCurrentAsycudaDocumentSetChanged);
 
  			// Recieve messages for Core Current Entities Changed
  
@@ -158,6 +160,10 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                    // {
                    //    if(Emails.Contains(CurrentAsycudaDocumentSet_Attachments.Emails) == false) Emails.Add(CurrentAsycudaDocumentSet_Attachments.Emails);
                     //}
+                    //if (e.PropertyName == "AddAsycudaDocumentSet")
+                   // {
+                   //    if(AsycudaDocumentSet.Contains(CurrentAsycudaDocumentSet_Attachments.AsycudaDocumentSet) == false) AsycudaDocumentSet.Add(CurrentAsycudaDocumentSet_Attachments.AsycudaDocumentSet);
+                    //}
                  } 
         internal virtual void OnAsycudaDocumentSet_AttachmentsChanged(object sender, NotificationEventArgs e)
         {
@@ -243,6 +249,25 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                                           
                 BaseViewModel.Instance.CurrentAsycudaDocumentSet_Attachments = null;
 			}
+	
+		 internal virtual void OnCurrentAsycudaDocumentSetChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<AsycudaDocumentSet> e)
+			{
+			if(ViewCurrentAsycudaDocumentSet == false) return;
+			if (e.Data == null || e.Data.AsycudaDocumentSetId == null)
+                {
+                    vloader.FilterExpression = "None";
+                }
+                else
+                {
+				vloader.FilterExpression = string.Format("AsycudaDocumentSetId == {0}", e.Data.AsycudaDocumentSetId.ToString());
+                 }
+
+				AsycudaDocumentSet_Attachments.Refresh();
+				NotifyPropertyChanged(x => this.AsycudaDocumentSet_Attachments);
+                // SendMessage(MessageToken.AsycudaDocumentSet_AttachmentsChanged, new NotificationEventArgs(MessageToken.AsycudaDocumentSet_AttachmentsChanged));
+                                          
+                BaseViewModel.Instance.CurrentAsycudaDocumentSet_Attachments = null;
+			}
 
   			// Core Current Entities Changed
 			// theorticall don't need this cuz i am inheriting from core entities baseview model so changes should flow up to here
@@ -305,6 +330,21 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
              {
                  _viewCurrentEmails = value;
                  NotifyPropertyChanged(x => x.ViewCurrentEmails);
+                FilterData();
+             }
+         }
+ 	
+		 bool _viewCurrentAsycudaDocumentSet = false;
+         public bool ViewCurrentAsycudaDocumentSet
+         {
+             get
+             {
+                 return _viewCurrentAsycudaDocumentSet;
+             }
+             set
+             {
+                 _viewCurrentAsycudaDocumentSet = value;
+                 NotifyPropertyChanged(x => x.ViewCurrentAsycudaDocumentSet);
                 FilterData();
              }
          }

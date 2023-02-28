@@ -203,6 +203,19 @@ namespace CoreEntities.Client.DTO
 		}
         private Nullable<int> _ApplicationSettingsId;
 
+        [DataMember]
+        public string EntryDataType
+		{ 
+		    get { return _EntryDataType; }
+			set
+			{
+			    if (value == _EntryDataType) return;
+				_EntryDataType = value;
+				NotifyPropertyChanged();//m => this.EntryDataType
+			}
+		}
+        private string _EntryDataType;
+
        
    //     [DataMember]
    //     public TrackingState TrackingState { get; set; }

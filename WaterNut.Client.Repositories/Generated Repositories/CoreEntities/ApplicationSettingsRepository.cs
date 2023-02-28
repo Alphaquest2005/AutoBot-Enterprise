@@ -209,7 +209,8 @@ namespace CoreEntities.Client.Repositories
                      // FileTypes = new System.Collections.ObjectModel.ObservableCollection<FileTypes>(res.FileTypes.Select(y => new FileTypes(y))),    
                      // InfoMapping = new System.Collections.ObjectModel.ObservableCollection<InfoMapping>(res.InfoMapping.Select(y => new InfoMapping(y))),    
                      // EmailMapping = new System.Collections.ObjectModel.ObservableCollection<EmailMapping>(res.EmailMapping.Select(y => new EmailMapping(y))),    
-                     // Declarants = new System.Collections.ObjectModel.ObservableCollection<Declarant>(res.Declarants.Select(y => new Declarant(y)))    
+                     // Declarants = new System.Collections.ObjectModel.ObservableCollection<Declarant>(res.Declarants.Select(y => new Declarant(y))),    
+                     // AsycudaDocumentSet = new System.Collections.ObjectModel.ObservableCollection<AsycudaDocumentSet>(res.AsycudaDocumentSet.Select(y => new AsycudaDocumentSet(y)))    
                   };
                     }
                     else

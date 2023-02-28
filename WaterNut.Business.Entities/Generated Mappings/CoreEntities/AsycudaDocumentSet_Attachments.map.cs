@@ -24,6 +24,7 @@
               this.HasRequired(t => t.AsycudaDocumentSetEx).WithMany(t =>(ICollection<AsycudaDocumentSet_Attachments>) t.AsycudaDocumentSet_Attachments).HasForeignKey(d => d.AsycudaDocumentSetId);
               this.HasOptional(t => t.FileTypes).WithMany(t =>(ICollection<AsycudaDocumentSet_Attachments>) t.AsycudaDocumentSet_Attachments).HasForeignKey(d => d.FileTypeId);
               this.HasOptional(t => t.Emails).WithMany(t =>(ICollection<AsycudaDocumentSet_Attachments>) t.AsycudaDocumentSet_Attachments).HasForeignKey(d => d.EmailId);
+              this.HasRequired(t => t.AsycudaDocumentSet).WithMany(t =>(ICollection<AsycudaDocumentSet_Attachments>) t.AsycudaDocumentSet_Attachments).HasForeignKey(d => d.AsycudaDocumentSetId);
               this.HasMany(t => t.AttachmentLog).WithRequired(t => (AsycudaDocumentSet_Attachments)t.AsycudaDocumentSet_Attachments);
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);

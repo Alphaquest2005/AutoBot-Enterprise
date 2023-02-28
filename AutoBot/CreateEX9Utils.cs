@@ -5,6 +5,7 @@ using CoreEntities.Business.Entities;
 using DocumentDS.Business.Entities;
 using WaterNut.Business.Entities;
 using WaterNut.DataSpace;
+using AsycudaDocumentSet = DocumentDS.Business.Entities.AsycudaDocumentSet;
 using CustomsOperations = CoreEntities.Business.Enums.CustomsOperations;
 
 namespace AutoBot

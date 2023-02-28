@@ -16,6 +16,7 @@ using TrackableEntities;
 using TrackableEntities.EF6;
 using ValuationDS.Business.Entities;
 using WaterNut.Business.Services.Utils;
+using AsycudaDocumentSet = DocumentDS.Business.Entities.AsycudaDocumentSet;
 using AsycudaDocumentSet_Attachments = CoreEntities.Business.Entities.AsycudaDocumentSet_Attachments;
 
 

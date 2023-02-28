@@ -53,6 +53,8 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 
  
 			RegisterToReceiveMessages<Actions>(MessageToken.CurrentActionsChanged, OnCurrentActionsChanged);
+ 
+			RegisterToReceiveMessages<AsycudaDocumentSet>(MessageToken.CurrentAsycudaDocumentSetChanged, OnCurrentAsycudaDocumentSetChanged);
 
  			// Recieve messages for Core Current Entities Changed
  
@@ -140,6 +142,10 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                    // {
                    //    if(Actions.Contains(CurrentActionDocSetLogs.Actions) == false) Actions.Add(CurrentActionDocSetLogs.Actions);
                     //}
+                    //if (e.PropertyName == "AddAsycudaDocumentSet")
+                   // {
+                   //    if(AsycudaDocumentSet.Contains(CurrentActionDocSetLogs.AsycudaDocumentSet) == false) AsycudaDocumentSet.Add(CurrentActionDocSetLogs.AsycudaDocumentSet);
+                    //}
                  } 
         internal virtual void OnActionDocSetLogsChanged(object sender, NotificationEventArgs e)
         {
@@ -167,6 +173,25 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                                           
                 BaseViewModel.Instance.CurrentActionDocSetLogs = null;
 			}
+	
+		 internal virtual void OnCurrentAsycudaDocumentSetChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<AsycudaDocumentSet> e)
+			{
+			if(ViewCurrentAsycudaDocumentSet == false) return;
+			if (e.Data == null || e.Data.AsycudaDocumentSetId == null)
+                {
+                    vloader.FilterExpression = "None";
+                }
+                else
+                {
+				vloader.FilterExpression = string.Format("AsycudaDocumentSetId == {0}", e.Data.AsycudaDocumentSetId.ToString());
+                 }
+
+				ActionDocSetLogs.Refresh();
+				NotifyPropertyChanged(x => this.ActionDocSetLogs);
+                // SendMessage(MessageToken.ActionDocSetLogsChanged, new NotificationEventArgs(MessageToken.ActionDocSetLogsChanged));
+                                          
+                BaseViewModel.Instance.CurrentActionDocSetLogs = null;
+			}
 
   			// Core Current Entities Changed
 			// theorticall don't need this cuz i am inheriting from core entities baseview model so changes should flow up to here
@@ -184,6 +209,21 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
              {
                  _viewCurrentActions = value;
                  NotifyPropertyChanged(x => x.ViewCurrentActions);
+                FilterData();
+             }
+         }
+ 	
+		 bool _viewCurrentAsycudaDocumentSet = false;
+         public bool ViewCurrentAsycudaDocumentSet
+         {
+             get
+             {
+                 return _viewCurrentAsycudaDocumentSet;
+             }
+             set
+             {
+                 _viewCurrentAsycudaDocumentSet = value;
+                 NotifyPropertyChanged(x => x.ViewCurrentAsycudaDocumentSet);
                 FilterData();
              }
          }

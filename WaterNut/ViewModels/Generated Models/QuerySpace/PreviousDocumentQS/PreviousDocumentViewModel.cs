@@ -55,6 +55,7 @@ namespace WaterNut.QuerySpace.PreviousDocumentQS.ViewModels
 
 
  			// Recieve messages for Core Current Entities Changed
+                        RegisterToReceiveMessages<AsycudaDocumentSet>(CoreEntities.MessageToken.CurrentAsycudaDocumentSetChanged, OnCurrentAsycudaDocumentSetChanged);
                         RegisterToReceiveMessages<ApplicationSettings>(CoreEntities.MessageToken.CurrentApplicationSettingsChanged, OnCurrentApplicationSettingsChanged);
  
 
@@ -137,6 +138,10 @@ namespace WaterNut.QuerySpace.PreviousDocumentQS.ViewModels
 
             void CurrentPreviousDocument__propertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
                 {
+                    //if (e.PropertyName == "AddAsycudaDocumentSet")
+                   // {
+                   //    if(AsycudaDocumentSet.Contains(CurrentPreviousDocument.AsycudaDocumentSet) == false) AsycudaDocumentSet.Add(CurrentPreviousDocument.AsycudaDocumentSet);
+                    //}
                     //if (e.PropertyName == "AddApplicationSettings")
                    // {
                    //    if(ApplicationSettings.Contains(CurrentPreviousDocument.ApplicationSettings) == false) ApplicationSettings.Add(CurrentPreviousDocument.ApplicationSettings);
@@ -152,6 +157,20 @@ namespace WaterNut.QuerySpace.PreviousDocumentQS.ViewModels
  
   			// Core Current Entities Changed
 			// theorticall don't need this cuz i am inheriting from core entities baseview model so changes should flow up to here
+                internal virtual void OnCurrentAsycudaDocumentSetChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<AsycudaDocumentSet> e)
+				{
+				if (e.Data == null || e.Data.AsycudaDocumentSetId == null)
+                {
+                    vloader.FilterExpression = null;
+                }
+                else
+                {
+                    vloader.FilterExpression = string.Format("AsycudaDocumentSetId == {0}", e.Data.AsycudaDocumentSetId.ToString());
+                }
+					
+                    PreviousDocuments.Refresh();
+					NotifyPropertyChanged(x => this.PreviousDocuments);
+				}
                 internal virtual void OnCurrentApplicationSettingsChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<ApplicationSettings> e)
 				{
 				if (e.Data == null || e.Data.ApplicationSettingsId == null)

@@ -763,6 +763,19 @@ namespace CoreEntities.Client.DTO
 		}
         private ChangeTrackingCollection<Declarant> _Declarants = new ChangeTrackingCollection<Declarant>();
 
+        [DataMember]
+        public ChangeTrackingCollection<AsycudaDocumentSet> AsycudaDocumentSet
+		{
+		    get { return _AsycudaDocumentSet; }
+			set
+			{
+			    if (Equals(value, _AsycudaDocumentSet)) return;
+				_AsycudaDocumentSet = value;
+				NotifyPropertyChanged();//m => this.AsycudaDocumentSet
+			}
+		}
+        private ChangeTrackingCollection<AsycudaDocumentSet> _AsycudaDocumentSet = new ChangeTrackingCollection<AsycudaDocumentSet>();
+
    //     [DataMember]
    //     public TrackingState TrackingState { get; set; }
 

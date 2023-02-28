@@ -12,6 +12,7 @@ using MoreLinq;
 using MoreLinq.Extensions;
 using WaterNut.Business.Services.Importers;
 using WaterNut.Business.Services.Utils;
+using AsycudaDocumentSet = DocumentDS.Business.Entities.AsycudaDocumentSet;
 
 
 namespace WaterNut.DataSpace

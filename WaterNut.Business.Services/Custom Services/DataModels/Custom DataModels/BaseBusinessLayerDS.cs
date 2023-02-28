@@ -48,6 +48,7 @@ using AsycudaDocument_Attachments = DocumentDS.Business.Entities.AsycudaDocument
 using AsycudaDocumentEntryData = DocumentDS.Business.Entities.AsycudaDocumentEntryData;
 using AsycudaDocumentSet = DocumentDS.Business.Entities.AsycudaDocumentSet;
 using AsycudaDocumentSet_Attachments = DocumentDS.Business.Entities.AsycudaDocumentSet_Attachments;
+using AsycudaDocumentSetService = DocumentDS.Business.Services.AsycudaDocumentSetService;
 using Attachments = CoreEntities.Business.Entities.Attachments;
 using Customs_Procedure = DocumentDS.Business.Entities.Customs_Procedure;
 using CustomsOperations = CoreEntities.Business.Enums.CustomsOperations;

@@ -277,6 +277,12 @@ namespace CoreEntities.Business.Services
                                         GetWhere<Declarant>(dbContext, exp, itm.Value, "ApplicationSettings", "Select", includesLst)
 										.ConfigureAwait(continueOnCapturedContext: false);
 
+                            case "AsycudaDocumentSet":
+                                return
+                                    await
+                                        GetWhere<AsycudaDocumentSet>(dbContext, exp, itm.Value, "ApplicationSettings", "Select", includesLst)
+										.ConfigureAwait(continueOnCapturedContext: false);
+
                         }
 
                     }
@@ -782,6 +788,9 @@ namespace CoreEntities.Business.Services
                             case "Declarants":
                                 return await CountWhere<Declarant>(dbContext, exp, itm.Value, "ApplicationSettings", "Select")
 											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "AsycudaDocumentSet":
+                                return await CountWhere<AsycudaDocumentSet>(dbContext, exp, itm.Value, "ApplicationSettings", "Select")
+											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }
                     return dbContext.ApplicationSettings.Where(exp == "All" || exp == null ? "ApplicationSettingsId != null" : exp)
@@ -930,6 +939,12 @@ namespace CoreEntities.Business.Services
                                 return
                                     await
                                         LoadRangeWhere<Declarant>(startIndex, count, dbContext, exp, itm.Value, "ApplicationSettings", "Select")
+													.ConfigureAwait(continueOnCapturedContext: false);
+
+                            case "AsycudaDocumentSet":
+                                return
+                                    await
+                                        LoadRangeWhere<AsycudaDocumentSet>(startIndex, count, dbContext, exp, itm.Value, "ApplicationSettings", "Select")
 													.ConfigureAwait(continueOnCapturedContext: false);
 
                           
@@ -1146,6 +1161,7 @@ namespace CoreEntities.Business.Services
                                                     // .Include(x => x.InfoMapping)									  
                                                     // .Include(x => x.EmailMapping)									  
                                                     // .Include(x => x.Declarants)									  
+                                                    // .Include(x => x.AsycudaDocumentSet)									  
                                       .AsNoTracking()
                                         .Where(x => x.BondTypeId.ToString() == BondTypeId.ToString())
 										.ToList();
@@ -1243,6 +1259,9 @@ namespace CoreEntities.Business.Services
 											.ConfigureAwait(continueOnCapturedContext: false);
                             case "Declarants":
                                 return await SumWhere<Declarant>(dbContext, exp, itm.Value, "ApplicationSettings", field, "Select")
+											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "AsycudaDocumentSet":
+                                return await SumWhere<AsycudaDocumentSet>(dbContext, exp, itm.Value, "ApplicationSettings", field, "Select")
 											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }

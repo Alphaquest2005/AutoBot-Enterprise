@@ -10,6 +10,7 @@ using Core.Common.Converters;
 using CoreEntities.Business.Entities;
 using DocumentDS.Business.Entities;
 using WaterNut.DataSpace;
+using AsycudaDocumentSet = DocumentDS.Business.Entities.AsycudaDocumentSet;
 
 namespace AutoBot
 {

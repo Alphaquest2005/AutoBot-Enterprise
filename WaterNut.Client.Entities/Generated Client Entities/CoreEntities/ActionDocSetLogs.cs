@@ -140,6 +140,59 @@ public int Id
 		}
         
 
+       private AsycudaDocumentSet _AsycudaDocumentSet;
+        public  AsycudaDocumentSet AsycudaDocumentSet
+		{
+		    get
+               { 
+                  if (this.actiondocsetlogs != null)
+                   {
+                       if (_AsycudaDocumentSet != null)
+                       {
+                           if (this.actiondocsetlogs.AsycudaDocumentSet !=
+                               _AsycudaDocumentSet.DTO)
+                           {
+                                if (this.actiondocsetlogs.AsycudaDocumentSet  != null)
+                               _AsycudaDocumentSet = new AsycudaDocumentSet(this.actiondocsetlogs.AsycudaDocumentSet);
+                           }
+                       }
+                       else
+                       {
+                             if (this.actiondocsetlogs.AsycudaDocumentSet  != null)
+                           _AsycudaDocumentSet = new AsycudaDocumentSet(this.actiondocsetlogs.AsycudaDocumentSet);
+                       }
+                   }
+
+
+             //       if (_AsycudaDocumentSet != null) return _AsycudaDocumentSet;
+                       
+             //       var i = new AsycudaDocumentSet(){TrackingState = TrackingState.Added};
+			//		//if (this.actiondocsetlogs.AsycudaDocumentSet == null) Debugger.Break();
+			//		if (this.actiondocsetlogs.AsycudaDocumentSet != null)
+            //        {
+            //           i. = this.actiondocsetlogs.AsycudaDocumentSet;
+            //        }
+            //        else
+            //        {
+            //            this.actiondocsetlogs.AsycudaDocumentSet = i.;
+             //       }
+                           
+            //        _AsycudaDocumentSet = i;
+                     
+                    return _AsycudaDocumentSet;
+               }
+			set
+			{
+			    if (value == _AsycudaDocumentSet) return;
+                _AsycudaDocumentSet = value;
+                if(value != null)
+                     this.actiondocsetlogs.AsycudaDocumentSet = value.DTO;
+				if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+                NotifyPropertyChanged("AsycudaDocumentSet");
+			}
+		}
+        
+
 
         ChangeTrackingCollection<DTO.ActionDocSetLogs> _changeTracker;    
         public ChangeTrackingCollection<DTO.ActionDocSetLogs> ChangeTracker

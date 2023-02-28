@@ -202,7 +202,8 @@ namespace CoreEntities.Client.Repositories
                         {
                             return new ActionDocSetLogs(res)
                     {
-                  // Actions = (res.Actions != null?new Actions(res.Actions): null)    
+                  // Actions = (res.Actions != null?new Actions(res.Actions): null),    
+                  // AsycudaDocumentSet = (res.AsycudaDocumentSet != null?new AsycudaDocumentSet(res.AsycudaDocumentSet): null)    
                   };
                     }
                     else

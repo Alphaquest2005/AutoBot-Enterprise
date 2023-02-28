@@ -59,6 +59,7 @@ namespace WaterNut.QuerySpace.EntryDataQS.ViewModels
 			RegisterToReceiveMessages<EntryDataEx>(MessageToken.CurrentEntryDataExChanged, OnCurrentEntryDataExChanged);
 
  			// Recieve messages for Core Current Entities Changed
+                        RegisterToReceiveMessages<AsycudaDocumentSet>(CoreEntities.MessageToken.CurrentAsycudaDocumentSetChanged, OnCurrentAsycudaDocumentSetChanged);
                         RegisterToReceiveMessages<ApplicationSettings>(CoreEntities.MessageToken.CurrentApplicationSettingsChanged, OnCurrentApplicationSettingsChanged);
  
 
@@ -149,6 +150,10 @@ namespace WaterNut.QuerySpace.EntryDataQS.ViewModels
                    // {
                    //    if(EntryDataEx.Contains(CurrentEntryDataDetailsEx.EntryDataEx) == false) EntryDataEx.Add(CurrentEntryDataDetailsEx.EntryDataEx);
                     //}
+                    //if (e.PropertyName == "AddAsycudaDocumentSet")
+                   // {
+                   //    if(AsycudaDocumentSet.Contains(CurrentEntryDataDetailsEx.AsycudaDocumentSet) == false) AsycudaDocumentSet.Add(CurrentEntryDataDetailsEx.AsycudaDocumentSet);
+                    //}
                     //if (e.PropertyName == "AddApplicationSettings")
                    // {
                    //    if(ApplicationSettings.Contains(CurrentEntryDataDetailsEx.ApplicationSettings) == false) ApplicationSettings.Add(CurrentEntryDataDetailsEx.ApplicationSettings);
@@ -198,6 +203,20 @@ namespace WaterNut.QuerySpace.EntryDataQS.ViewModels
 
   			// Core Current Entities Changed
 			// theorticall don't need this cuz i am inheriting from core entities baseview model so changes should flow up to here
+                internal virtual void OnCurrentAsycudaDocumentSetChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<AsycudaDocumentSet> e)
+				{
+				if (e.Data == null || e.Data.AsycudaDocumentSetId == null)
+                {
+                    vloader.FilterExpression = null;
+                }
+                else
+                {
+                    vloader.FilterExpression = string.Format("AsycudaDocumentSetId == {0}", e.Data.AsycudaDocumentSetId.ToString());
+                }
+					
+                    EntryDataDetailsExes.Refresh();
+					NotifyPropertyChanged(x => this.EntryDataDetailsExes);
+				}
                 internal virtual void OnCurrentApplicationSettingsChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<ApplicationSettings> e)
 				{
 				if (e.Data == null || e.Data.ApplicationSettingsId == null)

@@ -8,6 +8,7 @@ using CoreEntities.Business.Enums;
 using DocumentDS.Business.Entities;
 using WaterNut.Business.Entities;
 using WaterNut.Interfaces;
+using AsycudaDocumentSet = DocumentDS.Business.Entities.AsycudaDocumentSet;
 using CustomsOperations = CoreEntities.Business.Enums.CustomsOperations;
 using Customs_Procedure = DocumentDS.Business.Entities.Customs_Procedure;
 using Document_Type = DocumentDS.Business.Entities.Document_Type;

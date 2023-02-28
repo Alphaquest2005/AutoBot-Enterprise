@@ -10,6 +10,7 @@ using EmailDownloader;
 using EntryDataDS.Business.Entities;
 using MoreLinq.Extensions;
 using TrackableEntities;
+using AsycudaDocumentSet = DocumentDS.Business.Entities.AsycudaDocumentSet;
 using FileTypes = CoreEntities.Business.Entities.FileTypes;
 using InventoryItemAlias = AllocationDS.Business.Entities.InventoryItemAlias;
 using MoreEnumerable = MoreLinq.MoreEnumerable;

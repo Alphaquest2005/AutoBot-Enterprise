@@ -59,6 +59,7 @@ namespace WaterNut.QuerySpace.EntryDataQS.ViewModels
 			RegisterToReceiveMessages<EntryData>(MessageToken.CurrentEntryDataChanged, OnCurrentEntryDataChanged);
 
  			// Recieve messages for Core Current Entities Changed
+                        RegisterToReceiveMessages<AsycudaDocumentSet>(CoreEntities.MessageToken.CurrentAsycudaDocumentSetChanged, OnCurrentAsycudaDocumentSetChanged);
  
 
 			AsycudaDocumentSetEntryDatas = new VirtualList<AsycudaDocumentSetEntryData>(vloader);
@@ -148,6 +149,10 @@ namespace WaterNut.QuerySpace.EntryDataQS.ViewModels
                    // {
                    //    if(EntryDatas.Contains(CurrentAsycudaDocumentSetEntryData.EntryData) == false) EntryDatas.Add(CurrentAsycudaDocumentSetEntryData.EntryData);
                     //}
+                    //if (e.PropertyName == "AddAsycudaDocumentSet")
+                   // {
+                   //    if(AsycudaDocumentSet.Contains(CurrentAsycudaDocumentSetEntryData.AsycudaDocumentSet) == false) AsycudaDocumentSet.Add(CurrentAsycudaDocumentSetEntryData.AsycudaDocumentSet);
+                    //}
                  } 
         internal virtual void OnAsycudaDocumentSetEntryDatasChanged(object sender, NotificationEventArgs e)
         {
@@ -193,6 +198,20 @@ namespace WaterNut.QuerySpace.EntryDataQS.ViewModels
 
   			// Core Current Entities Changed
 			// theorticall don't need this cuz i am inheriting from core entities baseview model so changes should flow up to here
+                internal virtual void OnCurrentAsycudaDocumentSetChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<AsycudaDocumentSet> e)
+				{
+				if (e.Data == null || e.Data.AsycudaDocumentSetId == null)
+                {
+                    vloader.FilterExpression = null;
+                }
+                else
+                {
+                    vloader.FilterExpression = string.Format("AsycudaDocumentSetId == {0}", e.Data.AsycudaDocumentSetId.ToString());
+                }
+					
+                    AsycudaDocumentSetEntryDatas.Refresh();
+					NotifyPropertyChanged(x => this.AsycudaDocumentSetEntryDatas);
+				}
   
 // Filtering Each Field except IDs
  	

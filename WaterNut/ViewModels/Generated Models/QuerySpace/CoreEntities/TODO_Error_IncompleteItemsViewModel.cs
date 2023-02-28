@@ -138,6 +138,10 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                    // {
                    //    if(ApplicationSettings.Contains(CurrentTODO_Error_IncompleteItems.ApplicationSettings) == false) ApplicationSettings.Add(CurrentTODO_Error_IncompleteItems.ApplicationSettings);
                     //}
+                    //if (e.PropertyName == "AddAsycudaDocumentSet")
+                   // {
+                   //    if(AsycudaDocumentSet.Contains(CurrentTODO_Error_IncompleteItems.AsycudaDocumentSet) == false) AsycudaDocumentSet.Add(CurrentTODO_Error_IncompleteItems.AsycudaDocumentSet);
+                    //}
                  } 
         internal virtual void OnTODO_Error_IncompleteItemsChanged(object sender, NotificationEventArgs e)
         {
@@ -158,6 +162,20 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                 else
                 {
                     vloader.FilterExpression = string.Format("ApplicationSettingsId == {0}", e.Data.ApplicationSettingsId.ToString());
+                }
+					
+                    TODO_Error_IncompleteItems.Refresh();
+					NotifyPropertyChanged(x => this.TODO_Error_IncompleteItems);
+				}
+                internal virtual void OnCurrentAsycudaDocumentSetChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<AsycudaDocumentSet> e)
+				{
+				if (e.Data == null || e.Data.AsycudaDocumentSetId == null)
+                {
+                    vloader.FilterExpression = null;
+                }
+                else
+                {
+                    vloader.FilterExpression = string.Format("AsycudaDocumentSetId == {0}", e.Data.AsycudaDocumentSetId.ToString());
                 }
 					
                     TODO_Error_IncompleteItems.Refresh();

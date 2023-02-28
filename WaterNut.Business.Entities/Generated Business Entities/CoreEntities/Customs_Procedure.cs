@@ -23,6 +23,7 @@ namespace CoreEntities.Business.Entities
         partial void AutoGenStartUp() //Customs_Procedure()
         {
             this.AsycudaDocument = new List<AsycudaDocument>();
+            this.AsycudaDocumentSet = new List<AsycudaDocumentSet>();
         }
 
         [DataMember]
@@ -271,6 +272,8 @@ namespace CoreEntities.Business.Entities
         public CustomsOperations CustomsOperations { get; set; }
         [DataMember]
         public List<AsycudaDocument> AsycudaDocument { get; set; }
+        [DataMember]
+        public List<AsycudaDocumentSet> AsycudaDocumentSet { get; set; }
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

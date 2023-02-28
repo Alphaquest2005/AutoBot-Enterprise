@@ -17,6 +17,7 @@
               this.Property(t => t.AsycudaDocumentSetId).HasColumnName("AsycudaDocumentSetId");
               this.Property(t => t.Id).HasColumnName("Id").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.Identity));
               this.HasRequired(t => t.Actions).WithMany(t =>(ICollection<ActionDocSetLogs>) t.ActionDocSetLogs).HasForeignKey(d => d.ActonId);
+              this.HasRequired(t => t.AsycudaDocumentSet).WithMany(t =>(ICollection<ActionDocSetLogs>) t.ActionDocSetLogs).HasForeignKey(d => d.AsycudaDocumentSetId);
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);
     			this.Ignore(t => t.ModifiedProperties);

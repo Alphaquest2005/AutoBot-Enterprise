@@ -93,6 +93,36 @@
           <Property Name="AttachmentId" Type="int" Nullable="false" />
           <Property Name="AsycudaDocumentId" Type="int" Nullable="false" />
         </EntityType>
+        <EntityType Name="AsycudaDocumentSet">
+          <Key>
+            <PropertyRef Name="AsycudaDocumentSetId" />
+          </Key>
+          <Property Name="AsycudaDocumentSetId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
+          <Property Name="Declarant_Reference_Number" Type="nvarchar" MaxLength="50" />
+          <Property Name="Exchange_Rate" Type="float" Nullable="false" />
+          <Property Name="Customs_ProcedureId" Type="int" />
+          <Property Name="Country_of_origin_code" Type="nvarchar" MaxLength="3" />
+          <Property Name="Currency_Code" Type="nvarchar" MaxLength="3" Nullable="false" />
+          <Property Name="Description" Type="nvarchar" MaxLength="255" />
+          <Property Name="Manifest_Number" Type="nvarchar" MaxLength="50" />
+          <Property Name="BLNumber" Type="nvarchar" MaxLength="50" />
+          <Property Name="EntryTimeStamp" Type="datetime2" Precision="7" />
+          <Property Name="StartingFileCount" Type="int" />
+          <Property Name="ApportionMethod" Type="nvarchar" MaxLength="50" />
+          <Property Name="TotalWeight" Type="float" />
+          <Property Name="TotalFreight" Type="float" />
+          <Property Name="TotalPackages" Type="int" />
+          <Property Name="LastFileNumber" Type="int" />
+          <Property Name="TotalInvoices" Type="int" />
+          <Property Name="MaxLines" Type="int" />
+          <Property Name="LocationOfGoods" Type="nvarchar" MaxLength="50" />
+          <Property Name="FreightCurrencyCode" Type="nvarchar" MaxLength="3" Nullable="false" />
+          <Property Name="Office" Type="nvarchar" MaxLength="50" />
+          <Property Name="UpgradeKey" Type="int" />
+          <Property Name="ExpectedEntries" Type="int" />
+          <Property Name="PackageType" Type="nvarchar" MaxLength="50" />
+        </EntityType>
         <EntityType Name="AsycudaDocumentSet_Attachments">
           <Key>
             <PropertyRef Name="Id" />
@@ -629,6 +659,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AsycudaDocumentItemEntryD
             <PropertyRef Name="Asycuda_id" />
             <PropertyRef Name="LineNumber" />
           </Key>
+          <Property Name="Id" Type="bigint" />
           <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
           <Property Name="AsycudaDocumentSetId" Type="int" Nullable="false" />
           <Property Name="EntryDataDetailsId" Type="int" Nullable="false" />
@@ -778,6 +809,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AsycudaItemBasicInfo' doe
           <Property Name="RegistrationDate" Type="datetime2" Precision="7" />
           <Property Name="AsycudaDocumentSetId" Type="int" />
           <Property Name="ApplicationSettingsId" Type="int" />
+          <Property Name="EntryDataType" Type="nvarchar" MaxLength="50" />
         </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemAliasEx' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
@@ -977,10 +1009,11 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-CreateDiscrepancyEnt
 warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-CreateEx9' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="TODO-CreateEx9">
           <Key>
+            
             <PropertyRef Name="ApplicationSettingsId" />
             <PropertyRef Name="PreviousItem_Id" />
           </Key>
-          <Property Name="ItemNumber" Type="nvarchar" MaxLength="20" />
+          <Property Name="ItemNumber" Type="nvarchar" MaxLength="20" Nullable="false" />
           <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
           <Property Name="QtyAllocated" Type="float" />
           <Property Name="pQuantity" Type="float" />
@@ -2061,6 +2094,20 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_ActionDocSetLogs_AsycudaDocumentSet">
+          <End Role="AsycudaDocumentSet" Type="Self.AsycudaDocumentSet" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="ActionDocSetLogs" Type="Self.ActionDocSetLogs" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AsycudaDocumentSet">
+              <PropertyRef Name="AsycudaDocumentSetId" />
+            </Principal>
+            <Dependent Role="ActionDocSetLogs">
+              <PropertyRef Name="AsycudaDocumentSetId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_ApplicationSettings-Declarants_ApplicationSettings">
           <End Role="ApplicationSettings" Type="Self.ApplicationSettings" Multiplicity="1">
             <OnDelete Action="Cascade" />
@@ -2086,6 +2133,32 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
             </Principal>
             <Dependent Role="AsycudaDocument_Attachments">
               <PropertyRef Name="AttachmentId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_AsycudaDocumentSet_ApplicationSettings">
+          <End Role="ApplicationSettings" Type="Self.ApplicationSettings" Multiplicity="1" />
+          <End Role="AsycudaDocumentSet" Type="Self.AsycudaDocumentSet" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ApplicationSettings">
+              <PropertyRef Name="ApplicationSettingsId" />
+            </Principal>
+            <Dependent Role="AsycudaDocumentSet">
+              <PropertyRef Name="ApplicationSettingsId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_AsycudaDocumentSet_Attachments_AsycudaDocumentSet">
+          <End Role="AsycudaDocumentSet" Type="Self.AsycudaDocumentSet" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="AsycudaDocumentSet_Attachments" Type="Self.AsycudaDocumentSet_Attachments" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AsycudaDocumentSet">
+              <PropertyRef Name="AsycudaDocumentSetId" />
+            </Principal>
+            <Dependent Role="AsycudaDocumentSet_Attachments">
+              <PropertyRef Name="AsycudaDocumentSetId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -2128,6 +2201,18 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
             </Principal>
             <Dependent Role="AsycudaDocumentSet_Attachments">
               <PropertyRef Name="FileTypeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_AsycudaDocumentSet_Customs_Procedure">
+          <End Role="Customs_Procedure" Type="Self.Customs_Procedure" Multiplicity="0..1" />
+          <End Role="AsycudaDocumentSet" Type="Self.AsycudaDocumentSet" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Customs_Procedure">
+              <PropertyRef Name="Customs_ProcedureId" />
+            </Principal>
+            <Dependent Role="AsycudaDocumentSet">
+              <PropertyRef Name="Customs_ProcedureId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -2578,6 +2663,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
           <EntitySet Name="ApplicationSettings" EntityType="Self.ApplicationSettings" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ApplicationSettings-Declarants" EntityType="Self.ApplicationSettings-Declarants" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="AsycudaDocument_Attachments" EntityType="Self.AsycudaDocument_Attachments" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="AsycudaDocumentSet" EntityType="Self.AsycudaDocumentSet" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="AsycudaDocumentSet_Attachments" EntityType="Self.AsycudaDocumentSet_Attachments" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="AttachmentLog" EntityType="Self.AttachmentLog" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Attachments" EntityType="Self.Attachments" Schema="dbo" store:Type="Tables" />
@@ -2737,6 +2823,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
           </EntitySet>
           <EntitySet Name="AsycudaDocumentItemEntryDataDetails" EntityType="Self.AsycudaDocumentItemEntryDataDetails" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
+    [AsycudaDocumentItemEntryDataDetails].[Id] AS [Id], 
     [AsycudaDocumentItemEntryDataDetails].[ApplicationSettingsId] AS [ApplicationSettingsId], 
     [AsycudaDocumentItemEntryDataDetails].[AsycudaDocumentSetId] AS [AsycudaDocumentSetId], 
     [AsycudaDocumentItemEntryDataDetails].[EntryDataDetailsId] AS [EntryDataDetailsId], 
@@ -2848,7 +2935,8 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
     [AsycudaItemBasicInfo].[CNumber] AS [CNumber], 
     [AsycudaItemBasicInfo].[RegistrationDate] AS [RegistrationDate], 
     [AsycudaItemBasicInfo].[AsycudaDocumentSetId] AS [AsycudaDocumentSetId], 
-    [AsycudaItemBasicInfo].[ApplicationSettingsId] AS [ApplicationSettingsId]
+    [AsycudaItemBasicInfo].[ApplicationSettingsId] AS [ApplicationSettingsId], 
+    [AsycudaItemBasicInfo].[EntryDataType] AS [EntryDataType]
     FROM [dbo].[AsycudaItemBasicInfo] AS [AsycudaItemBasicInfo]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="InventoryItemAliasEx" EntityType="Self.InventoryItemAliasEx" store:Type="Views" store:Schema="dbo">
@@ -3762,6 +3850,10 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
             <End Role="Actions" EntitySet="Actions" />
             <End Role="ActionDocSetLogs" EntitySet="ActionDocSetLogs" />
           </AssociationSet>
+          <AssociationSet Name="FK_ActionDocSetLogs_AsycudaDocumentSet" Association="Self.FK_ActionDocSetLogs_AsycudaDocumentSet">
+            <End Role="AsycudaDocumentSet" EntitySet="AsycudaDocumentSet" />
+            <End Role="ActionDocSetLogs" EntitySet="ActionDocSetLogs" />
+          </AssociationSet>
           <AssociationSet Name="FK_ApplicationSettings-Declarants_ApplicationSettings" Association="Self.FK_ApplicationSettings-Declarants_ApplicationSettings">
             <End Role="ApplicationSettings" EntitySet="ApplicationSettings" />
             <End Role="ApplicationSettings-Declarants" EntitySet="ApplicationSettings-Declarants" />
@@ -3769,6 +3861,14 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
           <AssociationSet Name="FK_AsycudaDocument_Attachments_Attachments" Association="Self.FK_AsycudaDocument_Attachments_Attachments">
             <End Role="Attachments" EntitySet="Attachments" />
             <End Role="AsycudaDocument_Attachments" EntitySet="AsycudaDocument_Attachments" />
+          </AssociationSet>
+          <AssociationSet Name="FK_AsycudaDocumentSet_ApplicationSettings" Association="Self.FK_AsycudaDocumentSet_ApplicationSettings">
+            <End Role="ApplicationSettings" EntitySet="ApplicationSettings" />
+            <End Role="AsycudaDocumentSet" EntitySet="AsycudaDocumentSet" />
+          </AssociationSet>
+          <AssociationSet Name="FK_AsycudaDocumentSet_Attachments_AsycudaDocumentSet" Association="Self.FK_AsycudaDocumentSet_Attachments_AsycudaDocumentSet">
+            <End Role="AsycudaDocumentSet" EntitySet="AsycudaDocumentSet" />
+            <End Role="AsycudaDocumentSet_Attachments" EntitySet="AsycudaDocumentSet_Attachments" />
           </AssociationSet>
           <AssociationSet Name="FK_AsycudaDocumentSet_Attachments_Attachments" Association="Self.FK_AsycudaDocumentSet_Attachments_Attachments">
             <End Role="Attachments" EntitySet="Attachments" />
@@ -3781,6 +3881,10 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
           <AssociationSet Name="FK_AsycudaDocumentSet_Attachments_FileTypes" Association="Self.FK_AsycudaDocumentSet_Attachments_FileTypes">
             <End Role="FileTypes" EntitySet="FileTypes" />
             <End Role="AsycudaDocumentSet_Attachments" EntitySet="AsycudaDocumentSet_Attachments" />
+          </AssociationSet>
+          <AssociationSet Name="FK_AsycudaDocumentSet_Customs_Procedure" Association="Self.FK_AsycudaDocumentSet_Customs_Procedure">
+            <End Role="Customs_Procedure" EntitySet="Customs_Procedure" />
+            <End Role="AsycudaDocumentSet" EntitySet="AsycudaDocumentSet" />
           </AssociationSet>
           <AssociationSet Name="FK_AttachmentLog_AsycudaDocumentSet_Attachments" Association="Self.FK_AttachmentLog_AsycudaDocumentSet_Attachments">
             <End Role="AsycudaDocumentSet_Attachments" EntitySet="AsycudaDocumentSet_Attachments" />
@@ -4253,6 +4357,23 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
             <End Role="AsycudaDocumentSetEx" EntitySet="AsycudaDocumentSetExs" />
             <End Role="AsycudaDocumentSetAttachments" EntitySet="AsycudaDocumentSetAttachments" />
           </AssociationSet>
+          <EntitySet Name="AsycudaDocumentSet" EntityType="WaterNutDBModel.AsycudaDocumentSet" />
+          <AssociationSet Name="FK_ActionDocSetLogs_AsycudaDocumentSet" Association="WaterNutDBModel.FK_ActionDocSetLogs_AsycudaDocumentSet">
+            <End Role="AsycudaDocumentSet" EntitySet="AsycudaDocumentSet" />
+            <End Role="ActionDocSetLogs" EntitySet="ActionDocSetLogs" />
+          </AssociationSet>
+          <AssociationSet Name="FK_AsycudaDocumentSet_ApplicationSettings" Association="WaterNutDBModel.FK_AsycudaDocumentSet_ApplicationSettings">
+            <End Role="ApplicationSettings" EntitySet="ApplicationSettings" />
+            <End Role="AsycudaDocumentSet" EntitySet="AsycudaDocumentSet" />
+          </AssociationSet>
+          <AssociationSet Name="FK_AsycudaDocumentSet_Attachments_AsycudaDocumentSet" Association="WaterNutDBModel.FK_AsycudaDocumentSet_Attachments_AsycudaDocumentSet">
+            <End Role="AsycudaDocumentSet" EntitySet="AsycudaDocumentSet" />
+            <End Role="AsycudaDocumentSet_Attachments" EntitySet="AsycudaDocumentSet_Attachments" />
+          </AssociationSet>
+          <AssociationSet Name="FK_AsycudaDocumentSet_Customs_Procedure" Association="WaterNutDBModel.FK_AsycudaDocumentSet_Customs_Procedure">
+            <End Role="Customs_Procedure" EntitySet="Customs_Procedure" />
+            <End Role="AsycudaDocumentSet" EntitySet="AsycudaDocumentSet" />
+          </AssociationSet>
           </EntityContainer>
         <EntityType Name="ApplicationSettings">
           <Key>
@@ -4314,7 +4435,8 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
           <Property Name="AllowImportXSales" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
           <Property Name="NotifyUnknownMessages" Type="Boolean" />
           <Property Name="ExportExpiredEntries" Type="Boolean" />
-          <Property Name="AllowAdvanceWareHouse" Type="String" MaxLength="10" FixedLength="false" Unicode="true" /><a:MainEntityProperty xmlns:a="http://schemas.tempuri.com/MainEntityProperty">True</a:MainEntityProperty>
+          <Property Name="AllowAdvanceWareHouse" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="AsycudaDocumentSet" Relationship="WaterNutDBModel.FK_AsycudaDocumentSet_ApplicationSettings" FromRole="ApplicationSettings" ToRole="AsycudaDocumentSet" /><a:MainEntityProperty xmlns:a="http://schemas.tempuri.com/MainEntityProperty">True</a:MainEntityProperty>
         </EntityType>
         <EntityType Name="AsycudaDocument">
           <Key>
@@ -4462,6 +4584,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
           <Property Name="SubmitToCustoms" Type="Boolean" Nullable="false" />
           <Property Name="IsDefault" Type="Boolean" Nullable="false" />
           <Property Name="ExportSupportingEntryData" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="AsycudaDocumentSet" Relationship="WaterNutDBModel.FK_AsycudaDocumentSet_Customs_Procedure" FromRole="Customs_Procedure" ToRole="AsycudaDocumentSet" />
         </EntityType>
         <EntityType Name="Document_Type">
           <Key>
@@ -4664,6 +4787,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
           <Property Name="CNumber" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Name="LineNumber" Type="Int32" Nullable="false" />
           <Property Name="CustomsOperation" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Id" Type="Int64" />
         </EntityType>
         <Association Name="AsycudaDocumentItemAsycudaDocumentItemEntryDataDetails">
           <End Type="WaterNutDBModel.AsycudaDocumentItem" Role="AsycudaDocumentItem" Multiplicity="1" />
@@ -4874,6 +4998,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
           <NavigationProperty Name="AttachmentLog" Relationship="WaterNutDBModel.FK_AttachmentLog_AsycudaDocumentSet_Attachments" FromRole="AsycudaDocumentSet_Attachments" ToRole="AttachmentLog" />
           <Property Name="EmailId" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="Emails" Relationship="WaterNutDBModel.FK_AsycudaDocumentSet_Attachments_Emails1" FromRole="AsycudaDocumentSet_Attachments" ToRole="Emails" />
+          <NavigationProperty Name="AsycudaDocumentSet" Relationship="WaterNutDBModel.FK_AsycudaDocumentSet_Attachments_AsycudaDocumentSet" FromRole="AsycudaDocumentSet_Attachments" ToRole="AsycudaDocumentSet" />
         </EntityType>
         <EntityType Name="InfoMapping">
           <Key>
@@ -5706,7 +5831,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
             <PropertyRef Name="ApplicationSettingsId" />
             <PropertyRef Name="PreviousItem_Id" />
           </Key>
-          <Property Name="ItemNumber" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="ItemNumber" Type="String" MaxLength="20" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
           <Property Name="QtyAllocated" Type="Double" />
           <Property Name="pQuantity" Type="Double" />
@@ -5986,6 +6111,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
           <Property Name="AsycudaDocumentSetId" Type="Int32" Nullable="false" />
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <NavigationProperty Name="Actions" Relationship="WaterNutDBModel.FK_ActionDocSetLogs_Actions" FromRole="ActionDocSetLogs" ToRole="Actions" />
+          <NavigationProperty Name="AsycudaDocumentSet" Relationship="WaterNutDBModel.FK_ActionDocSetLogs_AsycudaDocumentSet" FromRole="ActionDocSetLogs" ToRole="AsycudaDocumentSet" />
         </EntityType>
         <Association Name="FK_ActionDocSetLogs_Actions">
           <End Type="WaterNutDBModel.Actions" Role="Actions" Multiplicity="1">
@@ -6345,6 +6471,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
           <Property Name="Commercial_Description" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
           <Property Name="TariffCode" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Name="ApplicationSettingsId" Type="Int32" />
+          <Property Name="EntryDataType" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="TODO_SubmitEntryCIF">
           <Key>
@@ -6905,6 +7032,92 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="AsycudaDocumentSet">
+          <Key>
+            <PropertyRef Name="AsycudaDocumentSetId" />
+          </Key>
+          <Property Name="AsycudaDocumentSetId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
+          <Property Name="Declarant_Reference_Number" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Exchange_Rate" Type="Double" Nullable="false" />
+          <Property Name="Customs_ProcedureId" Type="Int32" />
+          <Property Name="Country_of_origin_code" Type="String" MaxLength="3" FixedLength="false" Unicode="true" />
+          <Property Name="Currency_Code" Type="String" Nullable="false" MaxLength="3" FixedLength="false" Unicode="true" />
+          <Property Name="Description" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Manifest_Number" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="BLNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="EntryTimeStamp" Type="DateTime" Precision="7" />
+          <Property Name="StartingFileCount" Type="Int32" />
+          <Property Name="ApportionMethod" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="TotalWeight" Type="Double" />
+          <Property Name="TotalFreight" Type="Double" />
+          <Property Name="TotalPackages" Type="Int32" />
+          <Property Name="LastFileNumber" Type="Int32" />
+          <Property Name="TotalInvoices" Type="Int32" />
+          <Property Name="MaxLines" Type="Int32" />
+          <Property Name="LocationOfGoods" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="FreightCurrencyCode" Type="String" Nullable="false" MaxLength="3" FixedLength="false" Unicode="true" />
+          <Property Name="Office" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="UpgradeKey" Type="Int32" />
+          <Property Name="ExpectedEntries" Type="Int32" />
+          <Property Name="PackageType" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="ActionDocSetLogs" Relationship="WaterNutDBModel.FK_ActionDocSetLogs_AsycudaDocumentSet" FromRole="AsycudaDocumentSet" ToRole="ActionDocSetLogs" />
+          <NavigationProperty Name="ApplicationSettings" Relationship="WaterNutDBModel.FK_AsycudaDocumentSet_ApplicationSettings" FromRole="AsycudaDocumentSet" ToRole="ApplicationSettings" />
+          <NavigationProperty Name="AsycudaDocumentSet_Attachments" Relationship="WaterNutDBModel.FK_AsycudaDocumentSet_Attachments_AsycudaDocumentSet" FromRole="AsycudaDocumentSet" ToRole="AsycudaDocumentSet_Attachments" />
+          <NavigationProperty Name="Customs_Procedure" Relationship="WaterNutDBModel.FK_AsycudaDocumentSet_Customs_Procedure" FromRole="AsycudaDocumentSet" ToRole="Customs_Procedure" />
+        </EntityType>
+        <Association Name="FK_ActionDocSetLogs_AsycudaDocumentSet">
+          <End Type="WaterNutDBModel.AsycudaDocumentSet" Role="AsycudaDocumentSet" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="WaterNutDBModel.ActionDocSetLogs" Role="ActionDocSetLogs" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AsycudaDocumentSet">
+              <PropertyRef Name="AsycudaDocumentSetId" />
+            </Principal>
+            <Dependent Role="ActionDocSetLogs">
+              <PropertyRef Name="AsycudaDocumentSetId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_AsycudaDocumentSet_ApplicationSettings">
+          <End Type="WaterNutDBModel.ApplicationSettings" Role="ApplicationSettings" Multiplicity="1" />
+          <End Type="WaterNutDBModel.AsycudaDocumentSet" Role="AsycudaDocumentSet" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ApplicationSettings">
+              <PropertyRef Name="ApplicationSettingsId" />
+            </Principal>
+            <Dependent Role="AsycudaDocumentSet">
+              <PropertyRef Name="ApplicationSettingsId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_AsycudaDocumentSet_Attachments_AsycudaDocumentSet">
+          <End Type="WaterNutDBModel.AsycudaDocumentSet" Role="AsycudaDocumentSet" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="WaterNutDBModel.AsycudaDocumentSet_Attachments" Role="AsycudaDocumentSet_Attachments" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AsycudaDocumentSet">
+              <PropertyRef Name="AsycudaDocumentSetId" />
+            </Principal>
+            <Dependent Role="AsycudaDocumentSet_Attachments">
+              <PropertyRef Name="AsycudaDocumentSetId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_AsycudaDocumentSet_Customs_Procedure">
+          <End Type="WaterNutDBModel.Customs_Procedure" Role="Customs_Procedure" Multiplicity="0..1" />
+          <End Type="WaterNutDBModel.AsycudaDocumentSet" Role="AsycudaDocumentSet" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Customs_Procedure">
+              <PropertyRef Name="Customs_ProcedureId" />
+            </Principal>
+            <Dependent Role="AsycudaDocumentSet">
+              <PropertyRef Name="Customs_ProcedureId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -7187,6 +7400,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
           <EntitySetMapping Name="AsycudaDocumentItemEntryDataDetails">
             <EntityTypeMapping TypeName="WaterNutDBModel.AsycudaDocumentItemEntryDataDetails">
               <MappingFragment StoreEntitySet="AsycudaDocumentItemEntryDataDetails">
+                <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="CustomsOperation" ColumnName="CustomsOperation" />
                 <ScalarProperty Name="LineNumber" ColumnName="LineNumber" />
                 <ScalarProperty Name="CNumber" ColumnName="CNumber" />
@@ -8329,6 +8543,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
           <EntitySetMapping Name="AsycudaItemBasicInfo">
             <EntityTypeMapping TypeName="WaterNutDBModel.AsycudaItemBasicInfo">
               <MappingFragment StoreEntitySet="AsycudaItemBasicInfo">
+                <ScalarProperty Name="EntryDataType" ColumnName="EntryDataType" />
                 <ScalarProperty Name="ApplicationSettingsId" ColumnName="ApplicationSettingsId" />
                 <ScalarProperty Name="TariffCode" ColumnName="TariffCode" />
                 <ScalarProperty Name="Commercial_Description" ColumnName="Commercial_Description" />
@@ -8672,6 +8887,37 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
                 <ScalarProperty Name="FilePath" ColumnName="FilePath" />
                 <ScalarProperty Name="Description" ColumnName="Description" />
                 <ScalarProperty Name="Declarant_Reference_Number" ColumnName="Declarant_Reference_Number" />
+                <ScalarProperty Name="AsycudaDocumentSetId" ColumnName="AsycudaDocumentSetId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="AsycudaDocumentSet">
+            <EntityTypeMapping TypeName="WaterNutDBModel.AsycudaDocumentSet">
+              <MappingFragment StoreEntitySet="AsycudaDocumentSet">
+                <ScalarProperty Name="PackageType" ColumnName="PackageType" />
+                <ScalarProperty Name="ExpectedEntries" ColumnName="ExpectedEntries" />
+                <ScalarProperty Name="UpgradeKey" ColumnName="UpgradeKey" />
+                <ScalarProperty Name="Office" ColumnName="Office" />
+                <ScalarProperty Name="FreightCurrencyCode" ColumnName="FreightCurrencyCode" />
+                <ScalarProperty Name="LocationOfGoods" ColumnName="LocationOfGoods" />
+                <ScalarProperty Name="MaxLines" ColumnName="MaxLines" />
+                <ScalarProperty Name="TotalInvoices" ColumnName="TotalInvoices" />
+                <ScalarProperty Name="LastFileNumber" ColumnName="LastFileNumber" />
+                <ScalarProperty Name="TotalPackages" ColumnName="TotalPackages" />
+                <ScalarProperty Name="TotalFreight" ColumnName="TotalFreight" />
+                <ScalarProperty Name="TotalWeight" ColumnName="TotalWeight" />
+                <ScalarProperty Name="ApportionMethod" ColumnName="ApportionMethod" />
+                <ScalarProperty Name="StartingFileCount" ColumnName="StartingFileCount" />
+                <ScalarProperty Name="EntryTimeStamp" ColumnName="EntryTimeStamp" />
+                <ScalarProperty Name="BLNumber" ColumnName="BLNumber" />
+                <ScalarProperty Name="Manifest_Number" ColumnName="Manifest_Number" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="Currency_Code" ColumnName="Currency_Code" />
+                <ScalarProperty Name="Country_of_origin_code" ColumnName="Country_of_origin_code" />
+                <ScalarProperty Name="Customs_ProcedureId" ColumnName="Customs_ProcedureId" />
+                <ScalarProperty Name="Exchange_Rate" ColumnName="Exchange_Rate" />
+                <ScalarProperty Name="Declarant_Reference_Number" ColumnName="Declarant_Reference_Number" />
+                <ScalarProperty Name="ApplicationSettingsId" ColumnName="ApplicationSettingsId" />
                 <ScalarProperty Name="AsycudaDocumentSetId" ColumnName="AsycudaDocumentSetId" />
               </MappingFragment>
             </EntityTypeMapping>

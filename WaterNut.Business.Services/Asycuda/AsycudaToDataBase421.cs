@@ -21,6 +21,7 @@ using TrackableEntities.EF6;
 using WaterNut.Business.Entities;
 using WaterNut.Business.Services.Utils;
 using WaterNut.Interfaces;
+using AsycudaDocumentSet = DocumentDS.Business.Entities.AsycudaDocumentSet;
 using AsycudaDocumentSet_Attachments = CoreEntities.Business.Entities.AsycudaDocumentSet_Attachments;
 using Customs_Procedure = DocumentDS.Business.Entities.Customs_Procedure;
 using xcuda_Item = DocumentItemDS.Business.Entities.xcuda_Item;

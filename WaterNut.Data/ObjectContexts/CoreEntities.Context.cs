@@ -251,6 +251,8 @@ namespace CoreEntities.Business.Entities
      
         public DbSet<AsycudaDocumentSetAttachments> AsycudaDocumentSetAttachments { get; set; }
      
+        public DbSet<AsycudaDocumentSet> AsycudaDocumentSet { get; set; }
+     
 
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
@@ -458,6 +460,8 @@ namespace CoreEntities.Business.Entities
             modelBuilder.Configurations.Add(new ParameterSetParametersMap());
          
             modelBuilder.Configurations.Add(new AsycudaDocumentSetAttachmentsMap());
+         
+            modelBuilder.Configurations.Add(new AsycudaDocumentSetMap());
          
 			OnModelCreatingExtentsion(modelBuilder);
 

@@ -208,6 +208,7 @@
 ..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\AsycudaDocumentBasicInfo.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\AsycudaDocumentItem.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\AsycudaDocumentItemEntryDataDetails.cs
+..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\AsycudaDocumentSet.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\AsycudaDocumentSet_Attachments.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\AsycudaDocumentSetAttachments.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\AsycudaDocumentSetC71.cs
@@ -648,6 +649,7 @@
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\AsycudaDocumentBasicInfo.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\AsycudaDocumentItem.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\AsycudaDocumentItemEntryDataDetails.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\AsycudaDocumentSet.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\AsycudaDocumentSet_Attachments.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\AsycudaDocumentSetAttachments.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\AsycudaDocumentSetC71.map.cs
@@ -1097,6 +1099,7 @@
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\CoreEntities\AsycudaDocumentBasicInfo.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\CoreEntities\AsycudaDocumentItem.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\CoreEntities\AsycudaDocumentItemEntryDataDetails.cs
+..\WaterNut.Business.Entities\Generated ChangeTracking Models\CoreEntities\AsycudaDocumentSet.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\CoreEntities\AsycudaDocumentSet_Attachments.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\CoreEntities\AsycudaDocumentSetAttachments.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\CoreEntities\AsycudaDocumentSetC71.cs
@@ -1523,6 +1526,7 @@
 ..\WaterNut.Business.Entities\Generated Constructors Models\CoreEntities\AsycudaDocumentBasicInfo.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\CoreEntities\AsycudaDocumentItem.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\CoreEntities\AsycudaDocumentItemEntryDataDetails.cs
+..\WaterNut.Business.Entities\Generated Constructors Models\CoreEntities\AsycudaDocumentSet.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\CoreEntities\AsycudaDocumentSet_Attachments.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\CoreEntities\AsycudaDocumentSetAttachments.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\CoreEntities\AsycudaDocumentSetC71.cs
@@ -1949,6 +1953,7 @@
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\CoreEntities\AsycudaDocumentBasicInfo.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\CoreEntities\AsycudaDocumentItem.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\CoreEntities\AsycudaDocumentItemEntryDataDetails.cs
+..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\CoreEntities\AsycudaDocumentSet.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\CoreEntities\AsycudaDocumentSet_Attachments.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\CoreEntities\AsycudaDocumentSetAttachments.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\CoreEntities\AsycudaDocumentSetC71.cs
@@ -2375,6 +2380,7 @@
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\CoreEntities\AsycudaDocumentBasicInfo.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\CoreEntities\AsycudaDocumentItem.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\CoreEntities\AsycudaDocumentItemEntryDataDetails.cs
+..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\CoreEntities\AsycudaDocumentSet.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\CoreEntities\AsycudaDocumentSet_Attachments.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\CoreEntities\AsycudaDocumentSetAttachments.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\CoreEntities\AsycudaDocumentSetC71.cs
@@ -2756,6 +2762,7 @@
 ..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\AsycudaDocumentBasicInfo.cs
 ..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\AsycudaDocumentItem.cs
 ..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\AsycudaDocumentItemEntryDataDetails.cs
+..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\AsycudaDocumentSet.cs
 ..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\AsycudaDocumentSet_Attachments.cs
 ..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\AsycudaDocumentSetAttachments.cs
 ..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\AsycudaDocumentSetC71.cs
@@ -2930,6 +2937,7 @@
 ..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\AsycudaDocumentBasicInfo.cs
 ..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\AsycudaDocumentItem.cs
 ..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\AsycudaDocumentItemEntryDataDetails.cs
+..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\AsycudaDocumentSet.cs
 ..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\AsycudaDocumentSet_Attachments.cs
 ..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\AsycudaDocumentSetAttachments.cs
 ..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\AsycudaDocumentSetC71.cs
@@ -3114,6 +3122,7 @@
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\CoreEntities\AsycudaDocumentBasicInfo.cs
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\CoreEntities\AsycudaDocumentItem.cs
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\CoreEntities\AsycudaDocumentItemEntryDataDetails.cs
+..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\CoreEntities\AsycudaDocumentSet.cs
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\CoreEntities\AsycudaDocumentSet_Attachments.cs
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\CoreEntities\AsycudaDocumentSetAttachments.cs
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\CoreEntities\AsycudaDocumentSetC71.cs
@@ -3288,6 +3297,7 @@
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\CoreEntities\AsycudaDocumentBasicInfo.cs
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\CoreEntities\AsycudaDocumentItem.cs
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\CoreEntities\AsycudaDocumentItemEntryDataDetails.cs
+..\WaterNut.Client.DTO\Generated MyNavProp Models\CoreEntities\AsycudaDocumentSet.cs
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\CoreEntities\AsycudaDocumentSet_Attachments.cs
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\CoreEntities\AsycudaDocumentSetAttachments.cs
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\CoreEntities\AsycudaDocumentSetC71.cs
@@ -3462,6 +3472,7 @@
 ..\WaterNut.Client.Entities\Generated Constructors Models\CoreEntities\AsycudaDocumentBasicInfo.cs
 ..\WaterNut.Client.Entities\Generated Constructors Models\CoreEntities\AsycudaDocumentItem.cs
 ..\WaterNut.Client.Entities\Generated Constructors Models\CoreEntities\AsycudaDocumentItemEntryDataDetails.cs
+..\WaterNut.Client.Entities\Generated Constructors Models\CoreEntities\AsycudaDocumentSet.cs
 ..\WaterNut.Client.Entities\Generated Constructors Models\CoreEntities\AsycudaDocumentSet_Attachments.cs
 ..\WaterNut.Client.Entities\Generated Constructors Models\CoreEntities\AsycudaDocumentSetAttachments.cs
 ..\WaterNut.Client.Entities\Generated Constructors Models\CoreEntities\AsycudaDocumentSetC71.cs
@@ -3636,6 +3647,7 @@
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\CoreEntities\AsycudaDocumentBasicInfo.cs
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\CoreEntities\AsycudaDocumentItem.cs
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\CoreEntities\AsycudaDocumentItemEntryDataDetails.cs
+..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\CoreEntities\AsycudaDocumentSet.cs
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\CoreEntities\AsycudaDocumentSet_Attachments.cs
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\CoreEntities\AsycudaDocumentSetAttachments.cs
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\CoreEntities\AsycudaDocumentSetC71.cs
@@ -3810,6 +3822,7 @@
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\CoreEntities\AsycudaDocumentBasicInfo.cs
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\CoreEntities\AsycudaDocumentItem.cs
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\CoreEntities\AsycudaDocumentItemEntryDataDetails.cs
+..\WaterNut.Client.Entities\Generated MyNavProp Models\CoreEntities\AsycudaDocumentSet.cs
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\CoreEntities\AsycudaDocumentSet_Attachments.cs
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\CoreEntities\AsycudaDocumentSetAttachments.cs
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\CoreEntities\AsycudaDocumentSetC71.cs
@@ -4076,6 +4089,7 @@
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\AsycudaDocumentBasicInfo.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\AsycudaDocumentItem.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\AsycudaDocumentItemEntryDataDetails.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\AsycudaDocumentSet.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\AsycudaDocumentSet_Attachments.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\AsycudaDocumentSetAttachments.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\AsycudaDocumentSetC71.map.cs
@@ -4505,6 +4519,7 @@
 ..\WaterNut.Client.Repositories\Generated Repositories\CoreEntities\AsycudaDocumentSetC71Repository.cs
 ..\WaterNut.Client.Repositories\Generated Repositories\CoreEntities\AsycudaDocumentSetEntryDataExRepository.cs
 ..\WaterNut.Client.Repositories\Generated Repositories\CoreEntities\AsycudaDocumentSetExRepository.cs
+..\WaterNut.Client.Repositories\Generated Repositories\CoreEntities\AsycudaDocumentSetRepository.cs
 ..\WaterNut.Client.Repositories\Generated Repositories\CoreEntities\AsycudaItemBasicInfoRepository.cs
 ..\WaterNut.Client.Repositories\Generated Repositories\CoreEntities\AttachmentLogRepository.cs
 ..\WaterNut.Client.Repositories\Generated Repositories\CoreEntities\AttachmentsRepository.cs
@@ -4743,6 +4758,7 @@
 ..\WaterNut.Business.Services\Contracts\CoreEntities\IAsycudaDocumentSetC71Service.cs
 ..\WaterNut.Business.Services\Contracts\CoreEntities\IAsycudaDocumentSetEntryDataExService.cs
 ..\WaterNut.Business.Services\Contracts\CoreEntities\IAsycudaDocumentSetExService.cs
+..\WaterNut.Business.Services\Contracts\CoreEntities\IAsycudaDocumentSetService.cs
 ..\WaterNut.Business.Services\Contracts\CoreEntities\IAsycudaItemBasicInfoService.cs
 ..\WaterNut.Business.Services\Contracts\CoreEntities\IAttachmentLogService.cs
 ..\WaterNut.Business.Services\Contracts\CoreEntities\IAttachmentsService.cs
@@ -5169,6 +5185,7 @@
 ..\WaterNut.Business.Services\Services\CoreEntities\AsycudaDocumentSetC71Service.cs
 ..\WaterNut.Business.Services\Services\CoreEntities\AsycudaDocumentSetEntryDataExService.cs
 ..\WaterNut.Business.Services\Services\CoreEntities\AsycudaDocumentSetExService.cs
+..\WaterNut.Business.Services\Services\CoreEntities\AsycudaDocumentSetService.cs
 ..\WaterNut.Business.Services\Services\CoreEntities\AsycudaItemBasicInfoService.cs
 ..\WaterNut.Business.Services\Services\CoreEntities\AttachmentLogService.cs
 ..\WaterNut.Business.Services\Services\CoreEntities\AttachmentsService.cs
@@ -5544,6 +5561,7 @@
 ..\WaterNut.Client.Contracts\CoreEntities\IAsycudaDocumentSetC71Service.cs
 ..\WaterNut.Client.Contracts\CoreEntities\IAsycudaDocumentSetEntryDataExService.cs
 ..\WaterNut.Client.Contracts\CoreEntities\IAsycudaDocumentSetExService.cs
+..\WaterNut.Client.Contracts\CoreEntities\IAsycudaDocumentSetService.cs
 ..\WaterNut.Client.Contracts\CoreEntities\IAsycudaItemBasicInfoService.cs
 ..\WaterNut.Client.Contracts\CoreEntities\IAttachmentLogService.cs
 ..\WaterNut.Client.Contracts\CoreEntities\IAttachmentsService.cs
@@ -5716,6 +5734,7 @@
 ..\WaterNut.Client.Services\CoreEntities\AsycudaDocumentSet_AttachmentsClient.cs
 ..\WaterNut.Client.Services\CoreEntities\AsycudaDocumentSetAttachmentsClient.cs
 ..\WaterNut.Client.Services\CoreEntities\AsycudaDocumentSetC71Client.cs
+..\WaterNut.Client.Services\CoreEntities\AsycudaDocumentSetClient.cs
 ..\WaterNut.Client.Services\CoreEntities\AsycudaDocumentSetEntryDataExClient.cs
 ..\WaterNut.Client.Services\CoreEntities\AsycudaDocumentSetExClient.cs
 ..\WaterNut.Client.Services\CoreEntities\AsycudaItemBasicInfoClient.cs
@@ -5904,6 +5923,7 @@
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\AsycudaDocumentSetC71ViewModel.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\AsycudaDocumentSetEntryDataExViewModel.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\AsycudaDocumentSetExViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\AsycudaDocumentSetViewModel.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\AsycudaDocumentViewModel.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\AsycudaItemBasicInfoViewModel.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\AttachmentLogViewModel.cs
@@ -6082,6 +6102,7 @@
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\AsycudaDocumentSetC71Totals.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\AsycudaDocumentSetEntryDataExTotals.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\AsycudaDocumentSetExTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\AsycudaDocumentSetTotals.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\AsycudaDocumentTotals.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\AsycudaItemBasicInfoTotals.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\AttachmentLogTotals.cs
@@ -6246,6 +6267,7 @@
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\AsycudaDocumentSetC71VirturalListLoader.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\AsycudaDocumentSetEntryDataExVirturalListLoader.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\AsycudaDocumentSetExVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\AsycudaDocumentSetVirturalListLoader.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\AsycudaDocumentVirturalListLoader.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\AsycudaItemBasicInfoVirturalListLoader.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\AttachmentLogVirturalListLoader.cs

@@ -165,6 +165,7 @@
     <Compile Include="Generated Repositories\CoreEntities\AsycudaDocumentSetC71Repository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\AsycudaDocumentSetEntryDataExRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\AsycudaDocumentSetExRepository.cs" />
+    <Compile Include="Generated Repositories\CoreEntities\AsycudaDocumentSetRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\AsycudaDocumentSet_AttachmentsRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\AsycudaDocument_AttachmentsRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\AsycudaItemBasicInfoRepository.cs" />

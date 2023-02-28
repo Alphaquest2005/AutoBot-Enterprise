@@ -8,6 +8,7 @@ using System.IO;
 using System.Linq;
 using WaterNut.Business.Services.Utils;
 using WaterNut.DataSpace;
+using AsycudaDocumentSet = DocumentDS.Business.Entities.AsycudaDocumentSet;
 using FileTypes = CoreEntities.Business.Entities.FileTypes;
 
 namespace AutoBotUtilities.Tests.Infrastructure

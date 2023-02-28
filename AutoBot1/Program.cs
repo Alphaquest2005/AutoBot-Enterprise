@@ -217,7 +217,7 @@ namespace AutoBot
                                         else
                                         {
                                             processedFileTypes.Add(new Tuple<FileTypes, FileInfo[], int>(fileType,
-                                                csvFiles, ndocSet?.AsycudaDocumentSetId ?? ctx.AsycudaDocumentSetExs.Where(x =>
+                                                csvFiles, ndocSet?.AsycudaDocumentSetId ?? ctx.AsycudaDocumentSet.Where(x =>
                                                         x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)
                                                     .OrderByDescending(x => x.AsycudaDocumentSetId)
                                                     .FirstOrDefault().AsycudaDocumentSetId));

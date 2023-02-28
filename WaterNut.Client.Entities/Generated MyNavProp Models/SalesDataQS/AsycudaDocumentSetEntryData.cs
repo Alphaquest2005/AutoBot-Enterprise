@@ -29,8 +29,45 @@ namespace SalesDataQS.Client.Entities
 
         void UpdateMyNavProp(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
+           if (e.PropertyName == "AsycudaDocumentSetId")
+            {
+                UpdateAsycudaDocumentSet();
+            }
         }
-       
+
+        private void UpdateAsycudaDocumentSet()
+        {
+            using (var ctx = new AsycudaDocumentSetClient())
+            {
+                var dto = ctx.GetAsycudaDocumentSet().Result.FirstOrDefault(x => x.AsycudaDocumentSetId == this.AsycudaDocumentSetId);
+                if(dto != null)AsycudaDocumentSet = new AsycudaDocumentSet(dto);
+            }
+        }        
+
+        AsycudaDocumentSet _asycudaDocumentSet = null;
+
+        public AsycudaDocumentSet AsycudaDocumentSet
+        {
+            get
+            {
+                if(_asycudaDocumentSet != null) return _asycudaDocumentSet;
+                UpdateAsycudaDocumentSet();
+                return _asycudaDocumentSet;
+            }
+            set
+            {
+                if (value != null)
+                {
+                    _asycudaDocumentSet = value;
+
+                    AsycudaDocumentSetId = _asycudaDocumentSet.AsycudaDocumentSetId;
+
+                    NotifyPropertyChanged("AsycudaDocumentSet");
+                }
+            }
+
+        }
+        
 
          #endregion
  

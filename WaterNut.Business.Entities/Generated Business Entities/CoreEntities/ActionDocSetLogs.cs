@@ -67,6 +67,8 @@ namespace CoreEntities.Business.Entities
         int _id;
         [DataMember]
         public Actions Actions { get; set; }
+        [DataMember]
+        public AsycudaDocumentSet AsycudaDocumentSet { get; set; }
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

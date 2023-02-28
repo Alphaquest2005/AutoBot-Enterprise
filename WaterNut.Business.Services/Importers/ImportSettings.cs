@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using CoreEntities.Business.Entities;
 using DocumentDS.Business.Entities;
+using AsycudaDocumentSet = DocumentDS.Business.Entities.AsycudaDocumentSet;
 
 namespace WaterNut.Business.Services.Importers
 {

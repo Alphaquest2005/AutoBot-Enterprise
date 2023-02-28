@@ -70,6 +70,7 @@
               this.HasMany(t => t.InfoMapping).WithRequired(t => (ApplicationSettings)t.ApplicationSettings);
               this.HasMany(t => t.EmailMapping).WithRequired(t => (ApplicationSettings)t.ApplicationSettings);
               this.HasMany(t => t.Declarants).WithRequired(t => (ApplicationSettings)t.ApplicationSettings);
+              this.HasMany(t => t.AsycudaDocumentSet).WithRequired(t => (ApplicationSettings)t.ApplicationSettings);
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);
     			this.Ignore(t => t.ModifiedProperties);

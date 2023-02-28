@@ -79,7 +79,10 @@ namespace CoreEntities.Client.Contracts
 		[OperationContract]
 		string MinField(string whereExp, string field);
 
-				
+				[OperationContract]
+		Task<IEnumerable<AsycudaDocumentItemEntryDataDetails>> GetAsycudaDocumentItemEntryDataDetailsById(string Id, List<string> includesLst = null);
+        
+  		
     }
 }
 

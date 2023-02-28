@@ -6,6 +6,7 @@ using DocumentDS.Business.Entities;
 using MoreLinq;
 using TrackableEntities;
 using WaterNut.DataSpace;
+using AsycudaDocumentSet = DocumentDS.Business.Entities.AsycudaDocumentSet;
 
 namespace AutoBot
 {

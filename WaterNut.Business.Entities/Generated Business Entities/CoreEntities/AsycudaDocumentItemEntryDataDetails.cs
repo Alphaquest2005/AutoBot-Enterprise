@@ -261,6 +261,21 @@ namespace CoreEntities.Business.Entities
         }
         string _customsoperation;
         [DataMember]
+        public Nullable<long> Id 
+        {
+            get
+            {
+                return _id;
+            }
+            set
+            {
+                _id = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<long> _id;
+        [DataMember]
         public AsycudaDocumentItem AsycudaDocumentItem { get; set; }
 
  //       [DataMember]

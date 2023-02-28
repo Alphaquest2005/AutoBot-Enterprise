@@ -190,6 +190,22 @@ namespace CoreEntities.Client.DTO
         private Emails _Emails;
         private ChangeTrackingCollection<Emails> EmailsChangeTracker { get; set; }
 
+        [DataMember]
+        public AsycudaDocumentSet AsycudaDocumentSet
+		{
+		    get { return _AsycudaDocumentSet; }
+			set
+			{
+			    if (value == _AsycudaDocumentSet) return;
+				_AsycudaDocumentSet = value;
+                AsycudaDocumentSetChangeTracker = _AsycudaDocumentSet == null ? null
+                    : new ChangeTrackingCollection<AsycudaDocumentSet> { _AsycudaDocumentSet };
+				NotifyPropertyChanged();//m => this.AsycudaDocumentSet
+			}
+		}
+        private AsycudaDocumentSet _AsycudaDocumentSet;
+        private ChangeTrackingCollection<AsycudaDocumentSet> AsycudaDocumentSetChangeTracker { get; set; }
+
    //     [DataMember]
    //     public TrackingState TrackingState { get; set; }
 

@@ -5,6 +5,7 @@ using CoreEntities.Business.Entities;
 using DocumentDS.Business.Entities;
 using WaterNut.Business.Services.Utils;
 using WaterNut.DataSpace;
+using AsycudaDocumentSet = DocumentDS.Business.Entities.AsycudaDocumentSet;
 
 namespace WaterNut.Business.Services.Importers.EntryData
 {

@@ -30,6 +30,7 @@ namespace CoreEntities.Business.Entities
             this.InfoMapping = new List<InfoMapping>();
             this.EmailMapping = new List<EmailMapping>();
             this.Declarants = new List<Declarant>();
+            this.AsycudaDocumentSet = new List<AsycudaDocumentSet>();
         }
 
         [DataMember]
@@ -783,6 +784,8 @@ namespace CoreEntities.Business.Entities
         public List<EmailMapping> EmailMapping { get; set; }
         [DataMember]
         public List<Declarant> Declarants { get; set; }
+        [DataMember]
+        public List<AsycudaDocumentSet> AsycudaDocumentSet { get; set; }
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

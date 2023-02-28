@@ -8,6 +8,7 @@ using InventoryDS.Business.Entities;
 using MoreLinq;
 using MoreLinq.Extensions;
 using WaterNut.Business.Services.Utils;
+using AsycudaDocumentSet = DocumentDS.Business.Entities.AsycudaDocumentSet;
 
 namespace WaterNut.Business.Services.Importers.EntryData
 {

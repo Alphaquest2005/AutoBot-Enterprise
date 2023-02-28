@@ -38,6 +38,7 @@ using Attachments = CoreEntities.Business.Entities.Attachments;
 using FileTypes = CoreEntities.Business.Entities.FileTypes;
 using Invoices = OCR.Business.Entities.Invoices;
 using org.apache.pdfbox.pdmodel.font;
+using AsycudaDocumentSet = DocumentDS.Business.Entities.AsycudaDocumentSet;
 
 namespace WaterNut.DataSpace
 {

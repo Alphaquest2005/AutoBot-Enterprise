@@ -1276,6 +1276,60 @@ public string AllowAdvanceWareHouse
             }
         }
 
+        ObservableCollection<AsycudaDocumentSet> _AsycudaDocumentSet = null;
+        public  ObservableCollection<AsycudaDocumentSet> AsycudaDocumentSet
+		{
+            
+		    get 
+				{ 
+					if(_AsycudaDocumentSet != null) return _AsycudaDocumentSet;
+					//if (this.applicationsettings.AsycudaDocumentSet == null) Debugger.Break();
+					if(this.applicationsettings.AsycudaDocumentSet != null)
+					{
+						_AsycudaDocumentSet = new ObservableCollection<AsycudaDocumentSet>(this.applicationsettings.AsycudaDocumentSet.Select(x => new AsycudaDocumentSet(x)));
+					}
+					
+						_AsycudaDocumentSet.CollectionChanged += AsycudaDocumentSet_CollectionChanged; 
+					
+					return _AsycudaDocumentSet; 
+				}
+			set
+			{
+			    if (Equals(value, _AsycudaDocumentSet)) return;
+				if (value != null)
+					this.applicationsettings.AsycudaDocumentSet = new ChangeTrackingCollection<DTO.AsycudaDocumentSet>(value.Select(x => x.DTO).ToList());
+                _AsycudaDocumentSet = value;
+				if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				if (_AsycudaDocumentSet != null)
+				_AsycudaDocumentSet.CollectionChanged += AsycudaDocumentSet_CollectionChanged;               
+				NotifyPropertyChanged("AsycudaDocumentSet");
+			}
+		}
+        
+        void AsycudaDocumentSet_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            switch (e.Action)
+            {
+                case NotifyCollectionChangedAction.Add:
+                    foreach (AsycudaDocumentSet itm in e.NewItems)
+                    {
+                        if (itm != null)
+                        applicationsettings.AsycudaDocumentSet.Add(itm.DTO);
+                    }
+                    if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+                    break;
+                case NotifyCollectionChangedAction.Remove:
+                    foreach (AsycudaDocumentSet itm in e.OldItems)
+                    {
+                        if (itm != null)
+                        applicationsettings.AsycudaDocumentSet.Remove(itm.DTO);
+                    }
+					if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+                    break;
+                
+            }
+        }
+
 
         ChangeTrackingCollection<DTO.ApplicationSettings> _changeTracker;    
         public ChangeTrackingCollection<DTO.ApplicationSettings> ChangeTracker

@@ -260,6 +260,23 @@ public Nullable<int> ApplicationSettingsId
 		}
      
 
+       
+       
+                
+                [MaxLength(50, ErrorMessage = "EntryDataType has a max length of 50 letters ")]
+public string EntryDataType
+		{ 
+		    get { return this.asycudaitembasicinfo.EntryDataType; }
+			set
+			{
+			    if (value == this.asycudaitembasicinfo.EntryDataType) return;
+				this.asycudaitembasicinfo.EntryDataType = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("EntryDataType");
+			}
+		}
+     
+
 
         ChangeTrackingCollection<DTO.AsycudaItemBasicInfo> _changeTracker;    
         public ChangeTrackingCollection<DTO.AsycudaItemBasicInfo> ChangeTracker

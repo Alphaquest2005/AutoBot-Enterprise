@@ -134,6 +134,10 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 
             void CurrentAsycudaItemBasicInfo__propertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
                 {
+                    //if (e.PropertyName == "AddAsycudaDocumentSet")
+                   // {
+                   //    if(AsycudaDocumentSet.Contains(CurrentAsycudaItemBasicInfo.AsycudaDocumentSet) == false) AsycudaDocumentSet.Add(CurrentAsycudaItemBasicInfo.AsycudaDocumentSet);
+                    //}
                     //if (e.PropertyName == "AddApplicationSettings")
                    // {
                    //    if(ApplicationSettings.Contains(CurrentAsycudaItemBasicInfo.ApplicationSettings) == false) ApplicationSettings.Add(CurrentAsycudaItemBasicInfo.ApplicationSettings);
@@ -149,6 +153,20 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
  
   			// Core Current Entities Changed
 			// theorticall don't need this cuz i am inheriting from core entities baseview model so changes should flow up to here
+                internal virtual void OnCurrentAsycudaDocumentSetChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<AsycudaDocumentSet> e)
+				{
+				if (e.Data == null || e.Data.AsycudaDocumentSetId == null)
+                {
+                    vloader.FilterExpression = null;
+                }
+                else
+                {
+                    vloader.FilterExpression = string.Format("AsycudaDocumentSetId == {0}", e.Data.AsycudaDocumentSetId.ToString());
+                }
+					
+                    AsycudaItemBasicInfo.Refresh();
+					NotifyPropertyChanged(x => this.AsycudaItemBasicInfo);
+				}
                 internal virtual void OnCurrentApplicationSettingsChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<ApplicationSettings> e)
 				{
 				if (e.Data == null || e.Data.ApplicationSettingsId == null)
@@ -400,6 +418,24 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
         }	
 
  
+
+		private string _entryDataTypeFilter;
+        public string EntryDataTypeFilter
+        {
+            get
+            {
+                return _entryDataTypeFilter;
+            }
+            set
+            {
+                _entryDataTypeFilter = value;
+				NotifyPropertyChanged(x => EntryDataTypeFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
 		internal bool DisableBaseFilterData = false;
         public virtual void FilterData()
 	    {
@@ -489,6 +525,10 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 
 									if(string.IsNullOrEmpty(TariffCodeFilter) == false)
 						res.Append(" && " + string.Format("TariffCode.Contains(\"{0}\")",  TariffCodeFilter));						
+ 
+
+									if(string.IsNullOrEmpty(EntryDataTypeFilter) == false)
+						res.Append(" && " + string.Format("EntryDataType.Contains(\"{0}\")",  EntryDataTypeFilter));						
 			return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
@@ -539,7 +579,10 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     Commercial_Description = x.Commercial_Description ,
                     
  
-                    TariffCode = x.TariffCode 
+                    TariffCode = x.TariffCode ,
+                    
+ 
+                    EntryDataType = x.EntryDataType 
                     
                 }).ToList()
             };
@@ -580,6 +623,9 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     
  
                     public string TariffCode { get; set; } 
+                    
+ 
+                    public string EntryDataType { get; set; } 
                     
         }
 

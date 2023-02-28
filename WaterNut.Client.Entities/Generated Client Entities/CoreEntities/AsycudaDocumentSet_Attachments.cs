@@ -418,6 +418,59 @@ public string EmailId
 		}
         
 
+       private AsycudaDocumentSet _AsycudaDocumentSet;
+        public  AsycudaDocumentSet AsycudaDocumentSet
+		{
+		    get
+               { 
+                  if (this.asycudadocumentset_attachments != null)
+                   {
+                       if (_AsycudaDocumentSet != null)
+                       {
+                           if (this.asycudadocumentset_attachments.AsycudaDocumentSet !=
+                               _AsycudaDocumentSet.DTO)
+                           {
+                                if (this.asycudadocumentset_attachments.AsycudaDocumentSet  != null)
+                               _AsycudaDocumentSet = new AsycudaDocumentSet(this.asycudadocumentset_attachments.AsycudaDocumentSet);
+                           }
+                       }
+                       else
+                       {
+                             if (this.asycudadocumentset_attachments.AsycudaDocumentSet  != null)
+                           _AsycudaDocumentSet = new AsycudaDocumentSet(this.asycudadocumentset_attachments.AsycudaDocumentSet);
+                       }
+                   }
+
+
+             //       if (_AsycudaDocumentSet != null) return _AsycudaDocumentSet;
+                       
+             //       var i = new AsycudaDocumentSet(){TrackingState = TrackingState.Added};
+			//		//if (this.asycudadocumentset_attachments.AsycudaDocumentSet == null) Debugger.Break();
+			//		if (this.asycudadocumentset_attachments.AsycudaDocumentSet != null)
+            //        {
+            //           i. = this.asycudadocumentset_attachments.AsycudaDocumentSet;
+            //        }
+            //        else
+            //        {
+            //            this.asycudadocumentset_attachments.AsycudaDocumentSet = i.;
+             //       }
+                           
+            //        _AsycudaDocumentSet = i;
+                     
+                    return _AsycudaDocumentSet;
+               }
+			set
+			{
+			    if (value == _AsycudaDocumentSet) return;
+                _AsycudaDocumentSet = value;
+                if(value != null)
+                     this.asycudadocumentset_attachments.AsycudaDocumentSet = value.DTO;
+				if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+                NotifyPropertyChanged("AsycudaDocumentSet");
+			}
+		}
+        
+
 
         ChangeTrackingCollection<DTO.AsycudaDocumentSet_Attachments> _changeTracker;    
         public ChangeTrackingCollection<DTO.AsycudaDocumentSet_Attachments> ChangeTracker

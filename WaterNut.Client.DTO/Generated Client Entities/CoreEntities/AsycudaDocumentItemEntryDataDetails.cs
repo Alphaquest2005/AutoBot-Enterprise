@@ -229,6 +229,19 @@ namespace CoreEntities.Client.DTO
 		}
         private string _CustomsOperation;
 
+        [DataMember]
+        public Nullable<long> Id
+		{ 
+		    get { return _Id; }
+			set
+			{
+			    if (value == _Id) return;
+				_Id = value;
+				NotifyPropertyChanged();//m => this.Id
+			}
+		}
+        private Nullable<long> _Id;
+
        
         [DataMember]
         public AsycudaDocumentItem AsycudaDocumentItem
