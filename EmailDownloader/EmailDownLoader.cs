@@ -193,7 +193,7 @@ namespace EmailDownloader
                             {
 
                                 SendEmail(client, null, $"Bug Found",
-                                    new[] {"Joseph@auto-brokerage.com"},
+                                    GetContacts("Developer"),
                                     $"Subject not configured for Regex: '{msg.Subject}'", Array.Empty<string>());
                             }
 

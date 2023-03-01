@@ -3714,7 +3714,7 @@ namespace WaterNut.DataSpace
                     if (sendOnlyOnce == false || !EmailedMessagesList.Contains(exp.Message))
                     {
                         EmailDownloader.EmailDownloader.SendEmail(BaseDataModel.GetClient(), null, $"Bug Found",
-                            new[] {"Joseph@auto-brokerage.com"}, $"{exp.Message}\r\n{exp.StackTrace}",
+                            EmailDownloader.EmailDownloader.GetContacts("Developer"), $"{exp.Message}\r\n{exp.StackTrace}",
                             Array.Empty<string>());
                         EmailedMessagesList.Add(exp.Message);
                     }
