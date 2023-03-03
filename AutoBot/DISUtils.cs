@@ -1141,7 +1141,7 @@ namespace AutoBot
                 .Where(x => ualst.Any(z =>
                     z.EntryDataDetailsId == x.Key &&
                     z.InvoiceQty.GetValueOrDefault() > z.ReceivedQty.GetValueOrDefault()))
-                .Select(x => $"{x.Key}-{x.Value}").DefaultIfEmpty("").Aggregate((o, n) => $"{o},{n}");
+                .Select(x => $"{x.Value}").DefaultIfEmpty("").Aggregate((o, n) => $"{o},{n}");
             return shortlst;
         }
 

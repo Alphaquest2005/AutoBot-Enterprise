@@ -103,13 +103,7 @@ namespace AutoBot
                 Console.WriteLine("Download Entries");
                 var lcont = 0;
 
-                for (int i = 0; i < trytimes; i++)
-                {
-                    if (Utils.ImportComplete(directoryName, redownload, out lcont))
-                        break; //ImportComplete(directoryName,false, out lcont);
-                    Utils.RunSiKuLi(directoryName, script, lcont.ToString());
-                    if (Utils.ImportComplete(directoryName, redownload, out lcont)) break;
-                }
+                Utils.RetryImport(trytimes, script, redownload, directoryName);
 
             }
             catch (Exception e)
@@ -118,6 +112,8 @@ namespace AutoBot
                 throw;
             }
         }
+
+        
 
         public class SaleReportLine
         {

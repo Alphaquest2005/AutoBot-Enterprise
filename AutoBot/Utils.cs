@@ -309,7 +309,7 @@ namespace AutoBot
                     foreach (var line in lines)
                     {
                         var p = line.Split('\t');
-                        if (lcont >= res.Length) return false;
+                        if (lcont + 1 >= res.Length) return false;
                         if (string.IsNullOrEmpty(res[lcont])) return false;
                         rcount += 1;
                         var isSuccess = false;
@@ -414,7 +414,40 @@ namespace AutoBot
             }
 
         }
+        public static void RetryImport(int trytimes, string script, bool redownload, string directoryName)
+        {
+            int lcont;
+            for (int i = 0; i < trytimes; i++)
+            {
+                if (Utils.ImportComplete(directoryName, redownload, out lcont))
+                    break; //ImportComplete(directoryName,false, out lcont);
+                Utils.RunSiKuLi(directoryName, script, lcont.ToString());
+                if (Utils.ImportComplete(directoryName, redownload, out lcont)) break;
+            }
+        }
 
+        public static void RetryAssess(string instrFile, string resultsFile, string directoryName, int trytimes)
+        {
+            var lcont = 0;
+            for (int i = 0; i < trytimes; i++)
+            {
+                if (Utils.AssessComplete(instrFile, resultsFile, out lcont) == true) break;
+            
+                // RunSiKuLi(asycudaDocumentSetId, "AssessIM7", lcont.ToString());
+                Utils.RunSiKuLi(directoryName, "AssessIM7", lcont.ToString()); //SaveIM7
+                if(Utils.AssessComplete(instrFile, resultsFile, out lcont) == true) break;
+            }
+        }
+
+        public static void Assess(string instrFile, string resultsFile, string directoryName)
+        {
+            var lcont = 0;
+            while (Utils.AssessComplete(instrFile, resultsFile, out lcont) == false)
+            {
+                // RunSiKuLi(asycudaDocumentSetId, "AssessIM7", lcont.ToString());
+                Utils.RunSiKuLi(directoryName, "AssessIM7", lcont.ToString()); //SaveIM7
+            }
+        }
 
         public static void RunSiKuLi(string directoryName, string scriptName, string lastCNumber = "")
         {

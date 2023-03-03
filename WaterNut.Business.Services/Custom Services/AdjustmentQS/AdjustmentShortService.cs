@@ -64,7 +64,7 @@ namespace AdjustmentQS.Business.Services
 
                 var cp =
                     BaseDataModel.Instance.Customs_Procedures
-                        .Single(x => x.CustomsOperationId == (int)CustomsOperations.Exwarehouse && x.Discrepancy == true);
+                        .Single(x => x.CustomsOperationId == (int)CustomsOperations.Exwarehouse && x.Discrepancy == true && x.IsPaid == (dutyFreePaid == "Duty Paid"));
 
                 docSet.Customs_Procedure = cp;
 

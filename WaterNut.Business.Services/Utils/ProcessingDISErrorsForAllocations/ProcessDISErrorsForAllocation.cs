@@ -46,7 +46,7 @@ namespace WaterNut.Business.Services.Utils.ProcessingDISErrorsForAllocations
             foreach (var s in lst.Where(x =>  x.IsReconciled != true))//x.ReceivedQty > x.InvoiceQty &&
             {
                 var ed = ctx.EntryDataDetails.Include(x => x.AdjustmentEx).First(x => x.EntryDataDetailsId == s.EntryDataDetailsId);
-                ed.EffectiveDate = ed.AdjustmentEx.InvoiceDate;// BaseDataModel.CurrentSalesInfo().Item2; reset to invoicedate because this just wrong duh make sense
+                if(ed.EffectiveDate == null) ed.EffectiveDate = ed.AdjustmentEx.InvoiceDate;// BaseDataModel.CurrentSalesInfo().Item2; reset to invoicedate because this just wrong duh make sense
                 ed.QtyAllocated = 0;
                 ed.Comment = $@"DISERROR:{s.Status}";
                 ed.Status = null;

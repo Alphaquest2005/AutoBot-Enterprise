@@ -78,8 +78,6 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
             {
                 var res = lst.ToUpper().Trim().Split(',').ToList();
 
-                var t = _itemSets.Where(z => z.Key.InventoryItemId == 1706).ToList();
-
                 return _itemSets
                     .Join(res, x => x.Key.ItemNumber, i => i, (x, i) => x)
                     .Select(x => x.Value)

@@ -385,13 +385,10 @@ namespace AutoBot
             var resultsFile = Path.Combine(directoryName, "InstructionResults.txt");
             var instrFile = Path.Combine(directoryName, "Instructions.txt");
 
-            var lcont = 0;
-            while (Utils.AssessComplete(instrFile, resultsFile, out lcont) == false)
-            {
-                // RunSiKuLi(asycudaDocumentSetId, "AssessIM7", lcont.ToString());
-                Utils.RunSiKuLi(directoryName, "AssessIM7", lcont.ToString());//SaveIM7
-            }
+            Utils.RetryAssess(instrFile, resultsFile, directoryName, 3);
         }
+
+       
 
         public static void ClearDocSetEntries(FileTypes fileType)
         {
@@ -531,7 +528,7 @@ namespace AutoBot
             {
                 var res = dtx.AsycudaDocumentSet_Attachments.Where(x =>
                     x.AsycudaDocumentSet.SystemDocumentSet == null
-                    && x.AsycudaDocumentSetId == asycudaDocumentSetId && emailId == null || x.EmailId != emailId);
+                    && x.AsycudaDocumentSetId == asycudaDocumentSetId && emailId == null || x.EmailId != emailId).ToList();
                 if (res.Any())
                 {
                     dtx.AsycudaDocumentSet_Attachments.RemoveRange(res);

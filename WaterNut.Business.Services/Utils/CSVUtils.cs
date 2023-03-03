@@ -250,9 +250,15 @@ namespace WaterNut.Business.Services.Utils
 
             dt.Columns.Add("LineNumber", typeof(string));
 
+            if (GotoHeader(file, fileType, dt))
+            {
+                header = null;
+                return true;
+            }
+
             header = dt.Rows[0];
             header["LineNumber"] = "LineNumber".ToUpper();
-            if (CheckMissingMappings(file, fileType, header)) return true;
+            
             // remove unmapped columns so that non mapped columns don't interfere with replicated rows
             RemoveUnmappedColumns(fileType, header, dt);
 
@@ -267,7 +273,25 @@ namespace WaterNut.Business.Services.Utils
             return false;
         }
 
-        private static bool CheckMissingMappings(FileInfo file, FileTypes fileType, DataRow header)
+        private static bool GotoHeader(FileInfo file, FileTypes fileType, DataTable dt)
+        {
+            while (dt.Rows.Count > 0)
+            {
+                if (IsMissingMappings(file, fileType, dt.Rows[0]))
+                {
+                    dt.Rows.RemoveAt(0);
+                }
+                else
+                {
+                    break;
+                }
+            }
+
+            if (dt.Rows.Count == 0) return true;
+            return false;
+        }
+
+        private static bool IsMissingMappings(FileInfo file, FileTypes fileType, DataRow header)
         {
             var headerlst = header.ItemArray.ToList();
 

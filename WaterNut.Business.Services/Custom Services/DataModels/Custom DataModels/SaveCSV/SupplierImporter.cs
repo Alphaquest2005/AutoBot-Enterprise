@@ -15,7 +15,7 @@ namespace WaterNut.DataSpace
         public static List<SupplierData> GetSupplierData(DataFile dataFile)
         {
             var itmlst = dataFile.Data
-                .GroupBy(x => (x.SupplierCode, x.SupplierName, x.SupplierAddress, x.CountryCode ))
+                .GroupBy(x => (SupplierCode:x.SupplierCode ?? x.Vendor, x.SupplierName, x.SupplierAddress, x.CountryCode ))
                 .Select(x => new SupplierData(x.Key, x.ToList()))
                 .ToList();
             return itmlst;

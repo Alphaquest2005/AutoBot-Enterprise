@@ -32,7 +32,7 @@ namespace WaterNut.DataSpace
                         g.Key.CustomerName,
                         ((dynamic)g.FirstOrDefault())?.Tax,
                         
-                        string.IsNullOrEmpty(g.Max(x => ((dynamic)x).SupplierCode)) ? null : g.Max(x => ((dynamic)x).SupplierCode?.ToUpper()),
+                        string.IsNullOrEmpty(g.Max(x => ((dynamic)x).SupplierCode)) ? g.Max(x => ((dynamic)x).Vendor?.ToUpper()) : g.Max(x => ((dynamic)x).SupplierCode?.ToUpper()),
                         ((dynamic)g.FirstOrDefault(x => ((dynamic)x).Currency != ""))?.Currency,
                         emailId,
                         fileType.Id,
