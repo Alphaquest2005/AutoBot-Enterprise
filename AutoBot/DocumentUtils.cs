@@ -25,7 +25,7 @@ namespace AutoBot
 
                 if (ImportEntries(overwriteExisting, fileTypes, DateTime.Today.AddHours(-12))) return;
 
-                ImportAllAsycudaDocumentsInDataFolderUtils.ImportAllAsycudaDocumentsInDataFolder(overwriteExisting);
+                //ImportAllAsycudaDocumentsInDataFolderUtils.ImportAllAsycudaDocumentsInDataFolder(overwriteExisting);
 
                 EntryDocSetUtils.RemoveDuplicateEntries();
                 EntryDocSetUtils.FixIncompleteEntries();
@@ -71,7 +71,7 @@ namespace AutoBot
 
                 if (ImportEntries(overwriteExisting, fileTypes)) return;
 
-                ImportAllAsycudaDocumentsInDataFolderUtils.ImportAllAsycudaDocumentsInDataFolder(overwriteExisting);
+                //ImportAllAsycudaDocumentsInDataFolderUtils.ImportAllAsycudaDocumentsInDataFolder(overwriteExisting);
 
                 EntryDocSetUtils.RemoveDuplicateEntries();
                 EntryDocSetUtils.FixIncompleteEntries();
