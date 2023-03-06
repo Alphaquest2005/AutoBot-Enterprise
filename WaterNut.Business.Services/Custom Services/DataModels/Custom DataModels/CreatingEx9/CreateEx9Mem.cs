@@ -314,6 +314,7 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
                 var res = new List<ItemSalesPiSummary>();
                 lock (Identity)
                 {
+                    if (_universalData == null) { InitializeUniversalData(DataSpace.BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId);}
                     //SummaryInititalization(entryType, startDate, endDate);
                 }
                 

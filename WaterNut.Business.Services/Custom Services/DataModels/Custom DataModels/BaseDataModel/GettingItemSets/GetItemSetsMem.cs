@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using AllocationDS.Business.Entities;
+using MoreLinq;
 using static WaterNut.DataSpace.AllocationsBaseModel;
 
 namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModels.BaseDataModel.GettingItemSets
@@ -68,6 +69,7 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
 
         public List<List<(string ItemNumber, int InventoryItemId)>> Execute(string lst)
         {
+
             if (string.IsNullOrEmpty(lst))
             {
                return _itemSets
@@ -77,11 +79,26 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
             else
             {
                 var res = lst.ToUpper().Trim().Split(',').ToList();
+                var returnItems = new List<List<(string ItemNumber, int InventoryItemId)>>();
+                foreach (var itm in res)
+                {
+                    var items = _itemSets
+                        //.Join(res, x => x.Key.ItemNumber, i => i, (x, i) => x)
+                        .Where(x => x.Key.ItemNumber == itm)
+                        .SelectMany(x => x.Value)
+                        .ToList();
+                    var reverseAlias = _itemSets
+                        .Where(x => x.Key.ItemNumber != itm)
+                        .Where(x => x.Value.Any(z => z.ItemNumber == itm))
+                        .SelectMany(x => x.Value)
+                        .ToList();
+                    var comb = items.Union(reverseAlias);
+                    returnItems.Add(comb.ToList());
+                }
 
-                return _itemSets
-                    .Join(res, x => x.Key.ItemNumber, i => i, (x, i) => x)
-                    .Select(x => x.Value)
-                    .ToList();
+                return returnItems;
+
+
             }
 
         }

@@ -28,11 +28,16 @@ namespace AdjustmentQS.Business.Services
                     _adjustmentDetail.ItemNumber)
                 .ConfigureAwait(false);
 
+            if (!aItems.Any())
+            {
+                aItems = await AutoMatchUtils.GetAsycudaEntriesInCNumberReference(
+                        _adjustmentDetail.ApplicationSettingsId,
+                        _adjustmentDetail.PreviousCNumber, _adjustmentDetail.ItemNumber)
+                    .ConfigureAwait(false);
+            }
+
             if (!aItems.Any()) return;
 
-            aItems = await AutoMatchUtils.GetAsycudaEntriesInCNumberReference(_adjustmentDetail.ApplicationSettingsId,
-                    _adjustmentDetail.PreviousCNumber, _adjustmentDetail.ItemNumber)
-                .ConfigureAwait(false);
             new MatchToAsycudaItemSelector().Execute(_adjustmentDetail,
                 aItems.OrderBy(x => x.AsycudaDocument.AssessmentDate)
                     .ToList(), _entryDataDetail);

@@ -179,12 +179,15 @@ namespace AdjustmentQS.Business.Services
                                                                                                    && x.ItemNumber == itemNumber && Enumerable.Any<string>(clst, z => z == x.AsycudaDocument.CNumber)
                                                                                                    && x.LineNumber == (previousCLineNumber == null ? x.LineNumber : previousCLineNumber.Value.ToString()));
                 var res = aItem.ToList();
-                var alias = Enumerable.Where<InventoryItemAliasX>(ItemAliasCache, x => x.ItemNumber.ToUpper().Trim() == itemNumber).Select(y => y.AliasName.ToUpper().Trim()).ToList();
+                var alias = GetAlias(itemNumber);
+
+                var reverseAlias = GetReverseAlias(itemNumber);
+                 alias.AddRange(reverseAlias);
 
                 if (!alias.Any()) return res;
 
                 var ae = Enumerable.Where<AsycudaDocumentItem>(Services.AutoMatchProcessor.AsycudaDocumentItemCache, x => x.AsycudaDocument.CNumber != null
-                                                                                                && x.AsycudaDocument.DocumentType == "IM7"
+                                                                                                && x.AsycudaDocument.CustomsOperationId == (int)CustomsOperations.Warehouse
                                                                                                 && x.AsycudaDocument.ImportComplete == true
                                                                                                 && alias.Contains(x.ItemNumber) && cNumber.Contains(x.AsycudaDocument.CNumber)).ToList();
                 if (ae.Any()) res.AddRange(ae);
@@ -200,6 +203,16 @@ namespace AdjustmentQS.Business.Services
             }
 
 
+        }
+
+
+        private static List<string> GetAlias(string itemNumber) => ItemAliasCache.Where(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId && x.ItemNumber.ToUpper().Trim() == itemNumber).Select(y => y.AliasName.ToUpper().Trim()).ToList();
+
+        private static List<string> GetReverseAlias(string itemNumber)
+        {
+            return Enumerable
+                .Where<InventoryItemAliasX>(ItemAliasCache, x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId && x.AliasName.ToUpper().Trim() == itemNumber)
+                .Select(y => y.ItemNumber.ToUpper().Trim()).ToList();
         }
 
         public static async Task<List<AsycudaDocumentItem>> GetAsycudaEntriesInCNumberReference(int applicationSettingsId,
@@ -223,15 +236,20 @@ namespace AdjustmentQS.Business.Services
                                 && x.AsycudaDocument.ImportComplete == true
                                 && x.AsycudaDocument.ReferenceNumber.Contains(docref));
                 var res = aItem.ToList();
-                var alias = ItemAliasCache.Where(x => x.ApplicationSettingsId == applicationSettingsId && x.ItemNumber.ToUpper().Trim() == itemNumber).Select(y => y.AliasName.ToUpper().Trim()).ToList();
+                var alias = GetAlias(itemNumber);
+
+                var reverseAlias = GetReverseAlias(itemNumber);
+                alias.AddRange(reverseAlias);
+
 
                 if (!alias.Any()) return res;
 
                 var ae = Services.AutoMatchProcessor.AsycudaDocumentItemCache
                     .Where(x => alias.Contains(x.ItemNumber)
-                                && x.AsycudaDocument.DocumentType == "IM7"
+                                && x.AsycudaDocument.CustomsOperationId == (int)CustomsOperations.Warehouse
                                 && x.AsycudaDocument.ImportComplete == true
                                 && x.AsycudaDocument.ReferenceNumber.Contains(docref)).ToList();
+
                 if (ae.Any()) res.AddRange(ae);
 
 
@@ -246,6 +264,8 @@ namespace AdjustmentQS.Business.Services
 
 
         }
+
+        
 
         private static List<string> GetCNumbersFromString(string cNumber)
         {

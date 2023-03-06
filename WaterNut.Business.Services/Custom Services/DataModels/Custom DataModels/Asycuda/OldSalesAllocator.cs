@@ -160,7 +160,15 @@ namespace WaterNut.DataSpace
 
          
             var aliasLst = aliasCache.GroupJoin(res, a => a.Key.ItemNumber, r => r.Key.ItemNumber,
-                (a, r) => (Alias: a, Item: r)).ToList();
+                (a, r) => (Alias: a, Item: r)).Where(x => x.Item.Any()).ToList();
+
+            var raliasLst = aliasCache.GroupJoin(res, a => a.Value.AliasName, r => r.Key.ItemNumber,
+                (a, r) => (Alias: a, Item: r)).Where(x => x.Item.Any()).ToList();
+
+      
+
+
+            aliasLst.AddRange(raliasLst);
 
             var lumpedAliasLst = aliasLst.Join(lumpedItems, x => x.Alias.Key.AliasName, y => y.AliasName,
                 (x, y) => x).Distinct().ToList();
@@ -227,6 +235,14 @@ namespace WaterNut.DataSpace
                 var res = itemsCache.Where(i => i.Key == itemSet.Alias.Key.AliasName)
                     .SelectMany(y => y.Value)
                     .ToList();
+
+                var res1 = itemsCache.Where(i => i.Key == itemSet.Alias.Key.ItemNumber)
+                    .SelectMany(y => y.Value)
+                    .ToList();
+
+                
+
+                res.AddRange(res1);
 
                 if (res.Any()) itemSet.Item.ForEach(i => i.Value.EntriesList.AddRange(res));
             }

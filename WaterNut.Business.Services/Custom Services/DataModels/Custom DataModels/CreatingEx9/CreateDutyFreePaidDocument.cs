@@ -782,7 +782,7 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
                
 
 
-                if (totalSalesAll == 0)// && mypod.Allocations.FirstOrDefault()?.Status != "Short Shipped"
+                if (documentType == "Sales" && totalSalesAll == 0)// && mypod.Allocations.FirstOrDefault()?.Status != "Short Shipped"
                 {
                     UpdateXStatus(mypod.Allocations,
                         $@"No Sales Found", sql);
