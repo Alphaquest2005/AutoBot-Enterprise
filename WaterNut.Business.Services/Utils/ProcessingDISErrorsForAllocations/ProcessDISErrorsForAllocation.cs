@@ -18,7 +18,7 @@ namespace WaterNut.Business.Services.Utils.ProcessingDISErrorsForAllocations
                 // get Discrepancy Allocation Errors && Discrepancies that can't be Exwarehoused
                 using (var ctx = new AdjustmentQSContext() { StartTracking = true })
                 {
-                    ctx.Database.CommandTimeout = 60;
+                    ctx.Database.CommandTimeout = 0;
 
                     var lst = ctx.TODO_PreDiscrepancyErrors.ToList()
                         .OrderBy(x => x.EntryDataDetailsId)
