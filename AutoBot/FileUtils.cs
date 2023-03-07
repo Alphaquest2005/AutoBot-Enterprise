@@ -95,6 +95,8 @@ namespace AutoBot
                 {"SubmitDiscrepanciesToCustoms", DISUtils.SubmitDiscrepanciesToCustoms},
                 {"ClearShipmentData", ShipmentUtils.ClearShipmentData},
                 {"ImportPOEntries", (ft,fs) => DocumentUtils.ImportPOEntries(false) },
+                {"ImportAllAsycudaDocumentsInDataFolder", (ft,fs) => ImportAllAsycudaDocumentsInDataFolderUtils.ImportAllAsycudaDocumentsInDataFolder(false) },
+                
 
 
 
