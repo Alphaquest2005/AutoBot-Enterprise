@@ -539,8 +539,8 @@ namespace EmailDownloader
             message.From.Add(new MailboxAddress($"{clientDetails.CompanyName}-AutoBot", clientDetails.Email));
             if (!clientDetails.DevMode)
             {
-                message.ReplyTo.Add(new MailboxAddress(msg.From.FirstOrDefault()?.Name,
-                    msg.From.Mailboxes.FirstOrDefault()?.Address));
+                message.ReplyTo.Add(new MailboxAddress(msg.From?.FirstOrDefault()?.Name ?? "No Sender Found",
+                    msg.From?.Mailboxes?.FirstOrDefault()?.Address ?? GetContacts("Developer").FirstOrDefault()));
 
                 foreach (var recipent in contacts.Distinct())
                 {

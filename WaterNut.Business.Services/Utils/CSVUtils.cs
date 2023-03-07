@@ -17,6 +17,7 @@ using Core.Common.Converters;
 using Core.Common.Data.Contracts;
 using Core.Common.Extensions;
 using CoreEntities.Business.Entities;
+using java.security;
 using MoreLinq;
 using SimpleMvvmToolkit.ModelExtensions;
 using TrackableEntities;
@@ -236,10 +237,9 @@ namespace WaterNut.Business.Services.Utils
             table = new ConcurrentDictionary<int, string>();
             dRows = new List<DataRow>();
 
-            if (fileType.FileTypeMappings.Count == 0 && fileType.ReplicateHeaderRow == false)
-            {
-                throw new ApplicationException($"Missing File Type Mappings for {fileType.FilePattern}");
-            }
+            HasFileMappings(fileType);
+
+            HasDuplicateFileMappings(fileType);
 
             var dfile = new FileInfo(
                 $@"{file.DirectoryName}\{file.Name.Replace(".csv", "")}-Fixed{file.Extension}");
@@ -271,6 +271,24 @@ namespace WaterNut.Business.Services.Utils
             AddLineNumbers(dRows);
 
             return false;
+        }
+
+        private static void HasFileMappings(FileTypes fileType)
+        {
+            if (fileType.FileTypeMappings.Count == 0 && fileType.ReplicateHeaderRow == false)
+            {
+                throw new ApplicationException($"Missing File Type Mappings for {fileType.FilePattern}");
+            }
+        }
+
+        private static void HasDuplicateFileMappings(FileTypes fileType)
+        {
+            var duplicateMappings = fileType.FileTypeMappings.GroupBy(x => x.OriginalName).Where(x => x.Count() > 1).ToList();
+            if (duplicateMappings.Any())
+            {
+                throw new ApplicationException(
+                    $"Duplicate Mappings for {fileType.FilePattern}:Id-{fileType.Id} -- '{duplicateMappings.Select(x => x.Key).Aggregate((o, n) => $"{o},{n}")}'");
+            }
         }
 
         private static bool GotoHeader(FileInfo file, FileTypes fileType, DataTable dt)

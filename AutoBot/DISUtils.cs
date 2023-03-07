@@ -72,7 +72,7 @@ namespace AutoBot
                 var emailId = ft.EmailId;
                 var lst = GetSubmitEntryData(ft);
                 var toBeProcessed =
-                    Enumerable.Where<IGrouping<string, TODO_SubmitDiscrepanciesToCustoms>>(lst, x => x.Key == emailId || ft.Data.Any(z => x.Any(q => q.CNumber == z.Value )));
+                    Enumerable.Where<IGrouping<string, TODO_SubmitDiscrepanciesToCustoms>>(lst, x => (emailId.Contains("Submit") || x.Key == emailId) || ft.Data.Any(z => x.Any(q => q.CNumber == z.Value )));
                 SubmitDiscrepanciesToCustoms(toBeProcessed);
 
                
