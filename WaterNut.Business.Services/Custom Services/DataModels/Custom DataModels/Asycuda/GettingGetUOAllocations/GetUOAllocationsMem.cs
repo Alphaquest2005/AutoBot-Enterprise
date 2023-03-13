@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using AllocationDS.Business.Entities;
+using MoreLinq;
 
 namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModels.Asycuda.GettingGetUOAllocations
 {
@@ -50,6 +51,7 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
             return _allocations
                 .Join(itemList, a => a.Key, i => i, (a,i) => a)
                 .Select(x => x.Value)
+                .DistinctBy(x => x.Key.Item_Id)
                 .ToList();
         }
 

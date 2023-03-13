@@ -66,7 +66,7 @@ namespace CoreEntities.Business.Services
             ct.Document.xcuda_General_information.xcuda_Country.Country_first_destination =
                 entity.Country_first_destination;
 
-            await WaterNut.DataSpace.BaseDataModel.Instance.SaveDocumentCT(ct).ConfigureAwait(false);
+            await WaterNut.DataSpace.BaseDataModel.Instance.SaveDocumentCt.Execute(ct).ConfigureAwait(false);
         }
 
         public async Task DeleteDocument(int asycudaDocumentId)

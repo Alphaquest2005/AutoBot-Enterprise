@@ -968,7 +968,12 @@
     <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\SupplierImporter.cs" />
     <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\SupplierProcessor.cs" />
     <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\ValidateEntryDataProcessor.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\SavingDocumentCT\ISaveDocumentCT.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\SavingDocumentCT\PreProcessDocumentItems.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\SavingDocumentCT\SaveDocumentCTBulk.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\SavingDocumentCT\SaveDocumentCT.cs" />
     <Compile Include="Custom Services\DataModels\Custom DataModels\SummaryData.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\SavingDocumentCT\CleanAsycudaDocument.cs" />
     <Compile Include="GlobalAspects.cs" />
     <Compile Include="Importers\EntryData\ChainedProcessor.cs" />
     <Compile Include="Importers\EntryData\ChainedProcessorConstruction.cs" />

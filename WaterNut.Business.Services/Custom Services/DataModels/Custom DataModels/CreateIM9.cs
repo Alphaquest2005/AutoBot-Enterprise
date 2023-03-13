@@ -352,7 +352,7 @@ namespace WaterNut.DataSpace
                 int itmcount;
                 if (cdoc != null && cdoc.Document != null && cdoc.DocumentItems.Any())
                 {
-                    await BaseDataModel.Instance.SaveDocumentCT(cdoc).ConfigureAwait(false);
+                    await BaseDataModel.Instance.SaveDocumentCt.Execute(cdoc).ConfigureAwait(false);
                     itmcount = 0;
                 }
 

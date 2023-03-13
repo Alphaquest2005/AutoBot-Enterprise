@@ -22,7 +22,7 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
                 if (_eX9AsycudaSalesAllocations != null) return;
                 try
                 {
-                    var lst = GetEx9AsycudaSalesAllocationsList(rdateFilter).Where(x => x.AllocationId == 36652618).ToList();
+                    var lst = GetEx9AsycudaSalesAllocationsList(rdateFilter).ToList();//.Where(x => x.AllocationId == 36652618)
 
                     var piDataTask = AddPiData(lst);
 

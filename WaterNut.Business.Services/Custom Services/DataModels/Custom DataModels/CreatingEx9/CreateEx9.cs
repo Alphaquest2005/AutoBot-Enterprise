@@ -261,8 +261,7 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
                     .Where(x => x.Summary.EntryDataDate <= endDate)
                     .Where(x => x.Summary.DutyFreePaid == dfp).ToList();
 
-                var test = allSales.Where(x => x.Summary.PreviousItem_Id == 16758);
-                var test2 = allHistoricSales.Where(x => x.Summary.PreviousItem_Id == 16758);
+               
 
                 res.AddRange(allHistoricSales
                     .GroupBy(g => new
@@ -280,7 +279,7 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
                         PreviousItem_Id = (int) x.Key.PreviousItem_Id,
                         ItemNumber = x.First().Summary.ItemNumber,
                         QtyAllocated = x.Select(z => z.Summary.QtyAllocated).DefaultIfEmpty(0).Sum(),
-                        pQtyAllocated = x.Select(z => z.Summary.pQtyAllocated).Distinct().DefaultIfEmpty(0).Sum(),
+                        //pQtyAllocated = x.Select(z => z.Summary.pQtyAllocated).Distinct().DefaultIfEmpty(0).Sum(),
                         PiQuantity =
                             (double) x.DistinctBy(q => q.Summary.PreviousItem_Id)
                                 .SelectMany(z => z.pIData.Where(zz => zz.AssessmentDate <= endDate && zz.EntryDataType == entryType).Select(zz => zz.PiQuantity))
@@ -311,7 +310,7 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
                         PreviousItem_Id = (int) x.Key.PreviousItem_Id,
                         ItemNumber = x.First().Summary.ItemNumber,
                         QtyAllocated = x.Select(z => z.Summary.QtyAllocated).DefaultIfEmpty(0).Sum(),
-                        pQtyAllocated = x.Select(z => z.Summary.pQtyAllocated).Distinct().DefaultIfEmpty(0).Sum(),
+                        //pQtyAllocated = x.Select(z => z.Summary.pQtyAllocated).Distinct().DefaultIfEmpty(0).Sum(),
                         PiQuantity =
                             (double) x.DistinctBy(q => q.Summary.PreviousItem_Id)
                                 .SelectMany(z => z.pIData.Where(zz => zz.AssessmentDate >= startDate && zz.AssessmentDate <= endDate && zz.EntryDataType == entryType).Select(zz => zz.PiQuantity))
@@ -364,8 +363,8 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
                         ItemNumber = x.First().Summary.ItemNumber,
                         QtyAllocated = (double) x.DistinctBy(q => q.Summary.Id).Select(z => z.Summary.QtyAllocated)
                             .DefaultIfEmpty(0).Sum(),
-                        pQtyAllocated = x.DistinctBy(q => new {q.Summary.DutyFreePaid, q.Summary.pQtyAllocated})
-                            .Select(z => z.Summary.pQtyAllocated).DefaultIfEmpty(0).Sum(),
+                        //pQtyAllocated = x.DistinctBy(q => new {q.Summary.DutyFreePaid, q.Summary.pQtyAllocated})
+                        //    .Select(z => z.Summary.pQtyAllocated).DefaultIfEmpty(0).Sum(),
                         PiQuantity =
                             (double) x.DistinctBy(q => q.Summary.PreviousItem_Id)
                                 .SelectMany(z => z.pIData.Select(zz => zz.PiQuantity))
@@ -395,9 +394,9 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
                         ItemNumber = x.First().Summary.ItemNumber,
                         QtyAllocated = (double) x.DistinctBy(q => q.Summary.Id).Select(z => z.Summary.QtyAllocated)
                             .DefaultIfEmpty(0).Sum(),
-                        pQtyAllocated = x.DistinctBy(q => new {q.Summary.DutyFreePaid, q.Summary.pQtyAllocated})
+                        //pQtyAllocated = x.DistinctBy(q => new {q.Summary.DutyFreePaid, q.Summary.pQtyAllocated})
                             
-                            .Select(z => z.Summary.pQtyAllocated).DefaultIfEmpty(0).Sum(),
+                        //    .Select(z => z.Summary.pQtyAllocated).DefaultIfEmpty(0).Sum(),
                         PiQuantity =
                             (double) x.DistinctBy(q => new { q.Summary.DutyFreePaid, q.Summary.PreviousItem_Id})
                                 .SelectMany(z => z.pIData.Select(zz => zz.PiQuantity))
@@ -617,7 +616,7 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
                     }
 
 
-                    await DataSpace.BaseDataModel.Instance.SaveDocumentCT(cdoc).ConfigureAwait(false);
+                    await DataSpace.BaseDataModel.Instance.SaveDocumentCt.Execute(cdoc).ConfigureAwait(false);
                 }
 
             }
@@ -1098,7 +1097,7 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
                     $"Create EX9 For {mypod.EntlnData.ItemNumber}:{mypod.EntlnData.EntryDataDetails.First().EntryDataDate:MMM-yy} - {mypod.EntlnData.Quantity} | C#{mypod.EntlnData.EX9Allocation.pCNumber}-{mypod.EntlnData.pDocumentItem.LineNumber}");
                 salesPiHistoric.ForEach(x =>
                     Debug.WriteLine(
-                        $"Sales vs Pi History: {x.QtyAllocated} of {x.pQtyAllocated} - {x.PiQuantity} | C#{x.pCNumber}-{x.pLineNumber}"));
+                        $"Sales vs Pi History: {x.QtyAllocated} of {/*x.pQtyAllocated*/""} - {x.PiQuantity} | C#{x.pCNumber}-{x.pLineNumber}"));
                 var entryType = salesPiAll.FirstOrDefault()?.EntryDataType?? documentType;
 
                 var docSetPiLst = DocSetPi
@@ -1126,12 +1125,12 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
 
                 var previousItemUniversalData = universalData.GroupBy(x => x.PreviousItem_Id).ToList();
 
-                var universalSalesAll = (double) previousItemUniversalData.Select(x => x.FirstOrDefault(q => q.pQtyAllocated > 0)?.pQtyAllocated).DefaultIfEmpty(0.0).Sum();
+                var universalSalesAll = (double) previousItemUniversalData.SelectMany(x => x.Select(q => q.QtyAllocated)).DefaultIfEmpty(0.0).Sum();
                 var universalPiAll = (double) previousItemUniversalData.Select(x => x.FirstOrDefault(q => q.PiQuantity > 0)?.PiQuantity)
                     .DefaultIfEmpty(0.0).Sum();
 
                // var totalSalesAll = (double)salesPiAll.GroupBy(x => x.PreviousItem_Id).SelectMany(x => x.Select(z => z.QtyAllocated)).DefaultIfEmpty(0.0).Sum();
-                var totalSalesAll = (double) salesPiAll.GroupBy(x => x.PreviousItem_Id).Select(x => x.FirstOrDefault(q => q.pQtyAllocated > 0)?.pQtyAllocated).DefaultIfEmpty(0.0).Sum();
+                var totalSalesAll = (double) salesPiAll.GroupBy(x => x.PreviousItem_Id).SelectMany(x => x.Select(q => q.QtyAllocated)).DefaultIfEmpty(0.0).Sum();
                 var totalPiAll = (double) salesPiAll.GroupBy(x => x.PreviousItem_Id).Select(x => x.FirstOrDefault(q => q.PiQuantity > 0)?.PiQuantity)
                     .DefaultIfEmpty(0.0).Sum();
                 var totalSalesHistoric = (double)salesPiHistoric.GroupBy(x => x.PreviousItem_Id).SelectMany(x => x.Select(z => z.QtyAllocated)).DefaultIfEmpty(0.0).Sum();

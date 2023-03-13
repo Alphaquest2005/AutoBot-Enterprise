@@ -171,7 +171,12 @@ namespace WaterNut.DataSpace
         public List<SessionSchedule> CurrentSessionSchedule { get; set; } = new List<SessionSchedule>();
         public SessionActions CurrentSessionAction { get; set; }
 
-       
+        public ISaveDocumentCT SaveDocumentCt
+        {
+            get { return _saveDocumentCt; }
+        }
+
+
         public static Client GetClient()
         {
             return new Client
@@ -766,7 +771,7 @@ namespace WaterNut.DataSpace
 
                                 LinkPreviousDocuments(pod, cdoc);
 
-                                await SaveDocumentCT(cdoc).ConfigureAwait(false);
+                                await SaveDocumentCt.Execute(cdoc).ConfigureAwait(false);
                                 docList.Add(cdoc);
                                 cdoc = new DocumentCT {Document = CreateNewAsycudaDocument(currentAsycudaDocumentSet)};
 
@@ -858,7 +863,7 @@ namespace WaterNut.DataSpace
                     {
                         SetEffectiveAssessmentDate(cdoc);
                         LinkPreviousDocuments(pod, cdoc);
-                        await SaveDocumentCT(cdoc).ConfigureAwait(false);
+                        await SaveDocumentCt.Execute(cdoc).ConfigureAwait(false);
                         docList.Add(cdoc);
                         cdoc = new DocumentCT {Document = CreateNewAsycudaDocument(currentAsycudaDocumentSet)};
                         var cp = currentAsycudaDocumentSet.Customs_Procedure;
@@ -880,7 +885,7 @@ namespace WaterNut.DataSpace
             if (cdoc.DocumentItems.Any())
             {
                 SetEffectiveAssessmentDate(cdoc);
-                await SaveDocumentCT(cdoc).ConfigureAwait(false);
+                await SaveDocumentCt.Execute(cdoc).ConfigureAwait(false);
                 docList.Add(cdoc);
             }
 
@@ -1425,56 +1430,6 @@ namespace WaterNut.DataSpace
             {
                 return await ctx.GetAsycudaDocumentItemByKey(p.ToString()).ConfigureAwait(false);
             }
-        }
-
-        public async Task SaveDocumentCT(DocumentCT cdoc)
-        {
-            if (cdoc == null) return;
-
-            using (var ctx = new xcuda_ASYCUDAService())
-            {
-                cdoc.Document = await ctx.CleanAndUpdateXcuda_ASYCUDA(cdoc.Document).ConfigureAwait(false);
-            }
-
-
-            foreach (var item in cdoc.DocumentItems)
-            {
-                item.ASYCUDA_Id = cdoc.Document.ASYCUDA_Id;
-                item.LineNumber = cdoc.DocumentItems.IndexOf(item) + 1;
-                if (item.xcuda_PreviousItem != null)
-                {
-                    item.xcuda_PreviousItem.ASYCUDA_Id = cdoc.Document.ASYCUDA_Id;
-                    item.xcuda_PreviousItem.Current_item_number = item.LineNumber;
-                }
-            }
-
-            //Parallel.ForEach(cdoc.DocumentItems, new ParallelOptions(){MaxDegreeOfParallelism = Environment.ProcessorCount * 2}, item =>
-            //{
-
-            using (var ctx = new xcuda_ItemService())
-            {
-                foreach (var t in cdoc.DocumentItems)
-                {
-                    var exceptions = new ConcurrentQueue<Exception>();
-                    //cdoc.DocumentItems.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll((t) =>
-                    //{
-                    try
-                    {
-                        if (t.ChangeTracker != null)
-                            ctx.Updatexcuda_Item(t.ChangeTracker.FirstOrDefault()).Wait(); //.ChangeTracker.GetChanges().FirstOrDefault()
-                    }
-                    catch (Exception ex)
-                    {
-                        exceptions.Enqueue(ex);
-                    }
-
-                    //});
-                    if (exceptions.Count > 0) throw new AggregateException(exceptions);
-                    //    await ctx.Updatexcuda_Item(cdoc.DocumentItems).ConfigureAwait(false);
-                }
-            }
-
-            //});
         }
 
         public async Task CalculateDocumentSetFreight(int asycudaDocumentSetId)
@@ -3693,10 +3648,11 @@ namespace WaterNut.DataSpace
         private static readonly HashSet<string> EmailedMessagesList = new HashSet<string>();
        
         private static readonly bool isDBMem = false;
+        private readonly ISaveDocumentCT _saveDocumentCt;
 
         public BaseDataModel()
         {
-            
+            _saveDocumentCt = new SaveDocumentCTBulk();
         }
 
         public static void EmailExceptionHandler(Exception e, bool sendOnlyOnce = true )

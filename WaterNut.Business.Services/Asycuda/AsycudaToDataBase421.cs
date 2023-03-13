@@ -140,7 +140,7 @@ namespace WaterNut.DataSpace.Asycuda
                 //DBaseDataModel.Instance.Savexcuda_ASYCUDA_ExtendedProperties(
                 //    da.Document.xcuda_ASYCUDA_ExtendedProperties).ConfigureAwait(false);
 
-                await BaseDataModel.Instance.SaveDocumentCT(da).ConfigureAwait(false);
+                await BaseDataModel.Instance.SaveDocumentCt.Execute(da).ConfigureAwait(false);
                 using (var ctx = new CoreEntitiesContext())
                 {
 

@@ -136,7 +136,7 @@ namespace WaterNut.DataSpace
                 itmcount += 1;
                 if (itmcount % BaseDataModel.Instance.CurrentApplicationSettings.MaxEntryLines == 0)
                 {
-                    await BaseDataModel.Instance.SaveDocumentCT(cdoc).ConfigureAwait(false);
+                    await BaseDataModel.Instance.SaveDocumentCt.Execute(cdoc).ConfigureAwait(false);
                     //dup new file
                     cdoc = new DocumentCT
                     {
@@ -151,7 +151,7 @@ namespace WaterNut.DataSpace
 
             StatusModel.Timer("Saving to Database...");
 
-            await BaseDataModel.Instance.SaveDocumentCT(cdoc).ConfigureAwait(false);
+            await BaseDataModel.Instance.SaveDocumentCt.Execute(cdoc).ConfigureAwait(false);
 
             StatusModel.StopStatusUpdate();
 

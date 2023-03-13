@@ -128,6 +128,7 @@ namespace AutoBotUtilities.Tests
         [TestCase("INT/YBC106/3GL", "2022-12-19", 60)] // discrepancy with overage not allocating 
         [TestCase("SE H/R1-S1", "2022-12-19", 60)] // DIS with alias name not allocating 
         [TestCase("FSP/906020", "2022-12-19", 60)] // null ex9asycudasales allocations 
+        [TestCase("ECL/80040", "3/1/2023", 60)] // cancelled document item
         [TestCase(null, "2023-12-19", 101)] 
         public void AllocatSales(string itemNumber, string LastInvoiceDate, int NoOfAllocations )
         {
@@ -188,7 +189,62 @@ namespace AutoBotUtilities.Tests
             }
         }
 
+        [Test]
+        [Timeout(60 * 1000 * 60)]
+        [TestCase("ECL/80040", "40967")] // null ex9asycudasales allocations 
+       
+        public void AllocateSaleToCancelledItem(string itemNumber, string pCnumber)
+        {
+            try
+            {
+                if (!Infrastructure.Utils.IsTestApplicationSettings()) Assert.IsTrue(true);
+                var timer = new System.Diagnostics.Stopwatch();
 
+                var itemSets = BaseDataModel.GetItemSets(itemNumber);
+                if (string.IsNullOrEmpty(itemNumber))
+                    AllocationsModel.Instance.ClearAllAllocations(BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId).Wait();
+                else
+                    AllocationsModel.Instance.ClearItemSetAllocations(itemSets).Wait();
+
+
+
+                timer.Start();
+                new AllocateSales().Execute(BaseDataModel.Instance.CurrentApplicationSettings, false, itemSets);
+                timer.Stop();
+
+                Console.Write("AllocatSales in seconds: " + timer.Elapsed.TotalSeconds);
+                Assert.IsTrue(true);
+                //var lastInvoiceDate = DateTime.Parse(LastInvoiceDate)+TimeSpan.FromHours(12);
+                using (var ctx = new AllocationDSContext())
+                {
+                    var allocations = new AllocationQSContext().AsycudaSalesAndAdjustmentAllocationsExes.AsNoTracking()
+                        .Count(x => x.pCNumber == pCnumber && x.ItemNumber == itemNumber);
+                    var isCancelled =
+                        ctx.AsycudaDocument.FirstOrDefault(x => x.CNumber == pCnumber && x.Cancelled == true);
+
+
+
+
+
+                    Assert.Multiple(() =>
+                    {
+                        Assert.AreEqual(0, allocations);
+                        Assert.IsNotNull(isCancelled);
+                        
+                    });
+                }
+
+
+
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                Assert.IsTrue(false);
+            }
+        }
+
+        [Test]
         [TestCase("TOH/MTS009_8L", "2023-2-11", 7)] // Overage Adjustment not allocating - decided to leave it so
       public void AllocatSalesTOH_MTS009_8L(string itemNumber, string LastInvoiceDate, int NoOfAllocations)
         {
@@ -254,7 +310,56 @@ namespace AutoBotUtilities.Tests
             }
         }
 
+      [Test]
+        [TestCase("CAM/CMMP83RZ", "2023-2-28", 67)] // Overage Adjustment not allocating - decided to leave it so
+        public void MarkNegetiveAllocations(string itemNumber, string LastInvoiceDate, int NoOfAllocations)
+        {
+            try
+            {
+                if (!Infrastructure.Utils.IsTestApplicationSettings()) Assert.IsTrue(true);
+                var timer = new System.Diagnostics.Stopwatch();
 
+                var itemSets = BaseDataModel.GetItemSets(itemNumber);
+                if (string.IsNullOrEmpty(itemNumber))
+                    AllocationsModel.Instance.ClearAllAllocations(BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId).Wait();
+                else
+                    AllocationsModel.Instance.ClearItemSetAllocations(itemSets).Wait();
+
+
+
+                timer.Start();
+                new AllocateSales().Execute(BaseDataModel.Instance.CurrentApplicationSettings, false, itemSets);
+                timer.Stop();
+
+                Console.Write("AllocatSales in seconds: " + timer.Elapsed.TotalSeconds);
+                Assert.IsTrue(true);
+                var lastInvoiceDate = DateTime.Parse(LastInvoiceDate) + TimeSpan.FromHours(12);
+                using (var ctx = new AllocationDSContext())
+                {
+                    var allocations = new AllocationQSContext().AsycudaSalesAndAdjustmentAllocationsExes.AsNoTracking()
+                        .Where(x => x.InvoiceDate <= lastInvoiceDate && x.ItemNumber == itemNumber).ToList();
+
+                    var qtyallocated = allocations.Sum(x => x.SalesQtyAllocated);
+                    var salesQty = allocations.Sum(x => x.SalesQuantity);
+
+
+                    Assert.Multiple(() =>
+                    {
+                        Assert.AreEqual(NoOfAllocations, allocations.Count);
+                        Assert.AreEqual(qtyallocated, salesQty);
+                       
+                    });
+                }
+
+
+
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                Assert.IsTrue(false);
+            }
+        }
 
         [Test]
         [Timeout(60 * 1000 * 60)]
@@ -554,7 +659,7 @@ namespace AutoBotUtilities.Tests
                 if (!Infrastructure.Utils.IsTestApplicationSettings()) Assert.IsTrue(true);
                 var timer = new System.Diagnostics.Stopwatch();
                 timer.Start();
-                var lst = BaseDataModel.GetItemSets("TOH/MTSX018S");
+                var lst = BaseDataModel.GetItemSets("CAM/CMMP83RZ");
                 timer.Stop();
                 Console.Write("GetItemSets in seconds: " + timer.Elapsed.TotalSeconds);
                 Assert.That(lst.Any(), Is.True);

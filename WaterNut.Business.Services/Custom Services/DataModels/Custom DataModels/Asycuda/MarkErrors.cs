@@ -180,16 +180,16 @@ namespace WaterNut.DataSpace
             }
         }
 
-        private static string CreateUnderAllocatedSql(IGrouping<xcuda_Item, AsycudaSalesAllocations> lst)
+        private static string CreateUnderAllocatedSql(IGrouping<xcuda_Item, AsycudaSalesAllocations> data)
         {
             var sql = "";
-
+            var lst = data.DistinctBy(x => x.AllocationId).ToList();
             if (lst.Sum(x => x.QtyAllocated) >= 0) return sql;
             foreach (var allo in lst)
             {
-                var tot = lst.Key.QtyAllocated * -1;
+                var tot = data.Key.QtyAllocated * -1;
                 var r = tot > (allo.QtyAllocated * -1) ? allo.QtyAllocated * -1 : tot;
-                if (lst.Key.QtyAllocated >= 0) return sql;
+                if (data.Key.QtyAllocated >= 0) return sql;
                 allo.QtyAllocated += r;
                 sql += $@" UPDATE       AsycudaSalesAllocations
 															SET                QtyAllocated =  QtyAllocated{(r >= 0 ? $"+{r}" : $"-{r * -1}")}
@@ -203,7 +203,7 @@ namespace WaterNut.DataSpace
                 if (allo.EntryDataDetails.EntryDataDetailsEx.DutyFreePaid == "Duty Free")
                 {
                     allo.PreviousDocumentItem.DFQtyAllocated += r;
-                    lst.Key.DFQtyAllocated += r;
+                    data.Key.DFQtyAllocated += r;
 
                     /////// is the same thing
 
@@ -214,7 +214,7 @@ namespace WaterNut.DataSpace
                 else
                 {
                     allo.PreviousDocumentItem.DPQtyAllocated += r;
-                    lst.Key.DPQtyAllocated += r;
+                    data.Key.DPQtyAllocated += r;
 
 
                     sql += $@" UPDATE       xcuda_Item
@@ -230,12 +230,21 @@ namespace WaterNut.DataSpace
                     sql += $@"  Update AsycudaSalesAllocations
 														Set Status = '{allo.Status}', QtyAllocated = (QtyAllocated{(r >= 0 ? $"-{r}" : $"+{r * -1}")})
 														Where AllocationId = {allo.AllocationId}";
+
+                    allo.EntryDataDetails.QtyAllocated -= r;
+                    sql += $@" UPDATE       EntryDataDetails
+															SET                QtyAllocated =  QtyAllocated{(r >= 0 ? $"-{r}" : $"+{r * -1}")}
+															where	EntryDataDetailsId = {allo.EntryDataDetails.EntryDataDetailsId}";
                 }
                 else
                 {
                     sql += $@" INSERT INTO AsycudaSalesAllocations
 														 (EntryDataDetailsId, PreviousItem_Id, QtyAllocated,Status, EANumber, SANumber)
 														VALUES        ({allo.EntryDataDetailsId},{allo.PreviousItem_Id},{r},'Under Allocated by {r}',0,0)";
+                    allo.EntryDataDetails.QtyAllocated -= r;
+                    sql += $@" UPDATE       EntryDataDetails
+															SET                QtyAllocated =  QtyAllocated{(r >= 0 ? $"-{r}" : $"+{r * -1}")}
+															where	EntryDataDetailsId = {allo.EntryDataDetails.EntryDataDetailsId}";
                     //ctx.ApplyChanges(nallo);
                     break;
                 }
