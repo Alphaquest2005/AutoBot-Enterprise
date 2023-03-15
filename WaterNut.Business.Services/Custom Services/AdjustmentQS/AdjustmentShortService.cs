@@ -71,7 +71,7 @@ namespace AdjustmentQS.Business.Services
 
                 var exPro =
                     $" && PreviousDocumentItem.AsycudaDocument.ApplicationSettingsId = {docSet.ApplicationSettingsId}" +
-                    $" && EntryDataDetails.EntryDataDetailsEx.AsycudaDocumentSetId == {docSet.AsycudaDocumentSetId}" +
+               //     $" && EntryDataDetails.EntryDataDetailsEx.AsycudaDocumentSetId == {docSet.AsycudaDocumentSetId}" +
                     $" && (PreviousDocumentItem.AsycudaDocument.CustomsOperationId == {(int)CustomsOperations.Warehouse})";
                 var slst =
                     (await CreateAllocationDataBlocks(perInvoice, filterExpression + exPro, adjustmentType).ConfigureAwait(false))

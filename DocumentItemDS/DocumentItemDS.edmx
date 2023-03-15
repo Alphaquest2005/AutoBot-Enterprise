@@ -193,7 +193,7 @@
           </Key>
           <Property Name="Number_of_packages" Type="float" Nullable="false" />
           <Property Name="Kind_of_packages_code" Type="nvarchar" MaxLength="20" />
-          <Property Name="Kind_of_packages_name" Type="nvarchar" MaxLength="20" />
+          <Property Name="Kind_of_packages_name" Type="nvarchar" MaxLength="30" />
           <Property Name="Packages_Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Item_Id" Type="int" />
           <Property Name="Marks1_of_packages" Type="nvarchar" MaxLength="40" />
@@ -368,6 +368,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.PreviousItemsEx' does not
           <Property Name="DutyLiablity" Type="float" Nullable="false" />
           <Property Name="Customs_ProcedureId" Type="int" Nullable="false" />
           <Property Name="CustomsProcedure" Type="nvarchar" MaxLength="11" Nullable="false" />
+          <Property Name="EntryDataType" Type="nvarchar" MaxLength="50" />
         </EntityType>
         <Association Name="FK_EntryPreviousItems_xcuda_Item">
           <End Role="xcuda_Item" Type="Self.xcuda_Item" Multiplicity="1">
@@ -800,7 +801,8 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.PreviousItemsEx' does not
 [PreviousItemsEx].[TotalDutyLiablity] AS [TotalDutyLiablity], 
 [PreviousItemsEx].[DutyLiablity] AS [DutyLiablity], 
 [PreviousItemsEx].[Customs_ProcedureId] AS [Customs_ProcedureId], 
-[PreviousItemsEx].[CustomsProcedure] AS [CustomsProcedure]
+[PreviousItemsEx].[CustomsProcedure] AS [CustomsProcedure], 
+[PreviousItemsEx].[EntryDataType] AS [EntryDataType]
 FROM [dbo].[PreviousItemsEx] AS [PreviousItemsEx]</DefiningQuery>
           </EntitySet>
           <AssociationSet Name="FK_EntryPreviousItems_xcuda_Item" Association="Self.FK_EntryPreviousItems_xcuda_Item">
@@ -1236,7 +1238,7 @@ FROM [dbo].[PreviousItemsEx] AS [PreviousItemsEx]</DefiningQuery>
           </Key>
           <Property Name="Number_of_packages" Type="Double" Nullable="false" />
           <Property Name="Kind_of_packages_code" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
-          <Property Name="Kind_of_packages_name" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="Kind_of_packages_name" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
           <Property Name="Packages_Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Item_Id" Type="Int32" />
           <Property Name="Marks1_of_packages" Type="String" MaxLength="40" FixedLength="false" Unicode="true" />
@@ -1732,6 +1734,7 @@ FROM [dbo].[PreviousItemsEx] AS [PreviousItemsEx]</DefiningQuery>
           <Property Name="Prev_reg_year" Type="Int32" />
           <Property Name="Customs_ProcedureId" Type="Int32" Nullable="false" />
           <Property Name="CustomsProcedure" Type="String" Nullable="false" MaxLength="11" FixedLength="false" Unicode="true" />
+          <Property Name="EntryDataType" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
         </EntityType>
         <Association Name="xcuda_PreviousItemPreviousItemsEx">
           <End Type="WaterNutDBModel.xcuda_PreviousItem" Role="xcuda_PreviousItem" Multiplicity="1" />
@@ -2153,6 +2156,7 @@ FROM [dbo].[PreviousItemsEx] AS [PreviousItemsEx]</DefiningQuery>
           <EntitySetMapping Name="PreviousItemsEx">
             <EntityTypeMapping TypeName="WaterNutDBModel.PreviousItemsEx">
               <MappingFragment StoreEntitySet="PreviousItemsEx">
+                <ScalarProperty Name="EntryDataType" ColumnName="EntryDataType" />
                 <ScalarProperty Name="CustomsProcedure" ColumnName="CustomsProcedure" />
                 <ScalarProperty Name="Customs_ProcedureId" ColumnName="Customs_ProcedureId" />
                 <ScalarProperty Name="Prev_reg_year" ColumnName="Prev_reg_year" />

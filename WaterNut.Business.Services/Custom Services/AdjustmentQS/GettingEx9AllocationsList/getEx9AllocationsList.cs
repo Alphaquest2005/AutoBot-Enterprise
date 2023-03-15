@@ -4,6 +4,7 @@ using System.Data.Entity;
 using System.Linq;
 using System.Linq.Dynamic;
 using AllocationDS.Business.Entities;
+using MoreLinq.Extensions;
 using WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModels.CreatingEx9;
 using WaterNut.DataSpace;
 
@@ -87,6 +88,7 @@ namespace WaterNut.Business.Services.Custom_Services.AdjustmentQS.GettingEx9Allo
                                 LineNumber = (int)c.EntryDataDetails.LineNumber,
                                 Comment = c.EntryDataDetails.Comment,
                                 pLineNumber = c.PreviousDocumentItem.LineNumber,
+                                Type = c.EntryDataDetails.Adjustments.Type,
                                 // Currency don't matter for im9 or exwarehouse
                                 Customs_clearance_office_code =
                                     c.PreviousDocumentItem.AsycudaDocument.Customs_clearance_office_code,
