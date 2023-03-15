@@ -591,6 +591,21 @@ namespace DocumentItemDS.Business.Entities
         }
         string _customsprocedure;
         [DataMember]
+        public string EntryDataType 
+        {
+            get
+            {
+                return _entrydatatype;
+            }
+            set
+            {
+                _entrydatatype = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _entrydatatype;
+        [DataMember]
         public xcuda_PreviousItem xcuda_PreviousItem { get; set; }
 
  //       [DataMember]

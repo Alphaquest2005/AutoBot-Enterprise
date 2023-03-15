@@ -44,27 +44,34 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
 
         private void AddPreviousItem(List<EX9AsycudaSalesAllocations> lst)
         {
-            var plst = lst.Select(x => x.PreviousItem_Id).Distinct().ToList();
+            try
+            {
+                var plst = lst.Select(x => x.PreviousItem_Id).Distinct().ToList();
 
-            var pItemLst = new AllocationDSContext().xcuda_Item.WhereBulkContains(plst, x => x.Item_Id).ToList();
+                var pItemLst = new AllocationDSContext().xcuda_Item.WhereBulkContains(plst, x => x.Item_Id).ToList();
 
-            var entryPreviousItemsTask = Task.Run(() =>
-                    new AllocationDSContext().EntryPreviousItems.WhereBulkContains(plst, p => p.Item_Id).ToList())
-                .ContinueWith(x => AddXcudaPreviousItems(x.Result))
-                .ContinueWith(x => pItemLst.GroupJoin(x.Result, i => i.Item_Id, a => a.Item_Id,
-                    (i, a) => (i,a))
-                    .ForEach(z => z.i.EntryPreviousItems = z.a.ToList()));
-            var tarificationTask = Task.Run(() => GetXcudaTarifications(plst))
+                var entryPreviousItemsTask = Task.Run(() =>
+                        new AllocationDSContext().EntryPreviousItems.WhereBulkContains(plst, p => p.Item_Id).ToList())
+                    .ContinueWith(x => AddXcudaPreviousItems(x.Result))
+                    .ContinueWith(x => pItemLst.GroupJoin(x.Result, i => i.Item_Id, a => a.Item_Id,
+                            (i, a) => (i, a))
+                        .ForEach(z => z.i.EntryPreviousItems = z.a.ToList()));
+                var tarificationTask = Task.Run(() => GetXcudaTarifications(plst))
 
-                .ContinueWith(x => AddTarifications(pItemLst, x));
+                    .ContinueWith(x => AddTarifications(pItemLst, x));
 
-            var documentsTask = Task.Run(() => AddAsycudaDocuments(pItemLst));
+                var documentsTask = Task.Run(() => AddAsycudaDocuments(pItemLst));
 
-            Task.WaitAll(entryPreviousItemsTask, tarificationTask, documentsTask);
+                Task.WaitAll(entryPreviousItemsTask, tarificationTask, documentsTask);
 
-            lst.Join(pItemLst, a => a.PreviousItem_Id, p => p.Item_Id, (a, p) => (a, p))
-                .ForEach(x => x.a.PreviousDocumentItem = x.p);
-
+                lst.Join(pItemLst, a => a.PreviousItem_Id, p => p.Item_Id, (a, p) => (a, p))
+                    .ForEach(x => x.a.PreviousDocumentItem = x.p);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
 
             //.Include(
             //    "PreviousDocumentItem.EntryPreviousItems.xcuda_PreviousItem.xcuda_Item.AsycudaDocument.Customs_Procedure")
@@ -205,37 +212,54 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
 
         private static Task AddPiData(List<EX9AsycudaSalesAllocations> lst)
         {
-            var allocationIdLst = lst.Select(x => x.AllocationId).Distinct().ToList();
+            try
+            {
+                var allocationIdLst = lst.Select(x => x.AllocationId).Distinct().ToList();
 
 
-            var piDataTask = Task.Run(() => new AllocationDSContext().AsycudaSalesAllocationsPIData
-                .WhereBulkContains(allocationIdLst, x => x.AllocationId).ToList())
-                .ContinueWith((t) => lst.GroupJoin(t.Result, a => a.AllocationId, p => p.AllocationId, (a, p) => (a, p))
-                .ForEach(x => x.a.AsycudaSalesAllocationsPIData = x.p.ToList()));
-            return piDataTask;
+                var piDataTask = Task.Run(() => new AllocationDSContext().AsycudaSalesAllocationsPIData
+                        .WhereBulkContains(allocationIdLst, x => x.AllocationId).ToList())
+                    .ContinueWith((t) => lst
+                        .GroupJoin(t.Result, a => a.AllocationId, p => p.AllocationId, (a, p) => (a, p))
+                        .ForEach(x => x.a.AsycudaSalesAllocationsPIData = x.p.ToList()));
+                return piDataTask;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
         }
 
         private static void AddEntryDataDetails(List<EX9AsycudaSalesAllocations> lst)
         {
-            var entryDataDetailsLst = lst.Select(x => x.EntryDataDetailsId).Distinct().ToList();
-            var entryDataTask = Task.Run(() => new AllocationDSContext().EntryDataDetails
-                .WhereBulkContains(entryDataDetailsLst, x => x.EntryDataDetailsId).ToList());
+            try
+            {
+                var entryDataDetailsLst = lst.Select(x => x.EntryDataDetailsId).Distinct().ToList();
+                var entryDataTask = Task.Run(() => new AllocationDSContext().EntryDataDetails
+                    .WhereBulkContains(entryDataDetailsLst, x => x.EntryDataDetailsId).ToList());
 
-            var itemEntryDataTask = Task.Run(() => new AllocationDSContext().AsycudaDocumentItemEntryDataDetails
-                .WhereBulkContains(entryDataDetailsLst, x => x.EntryDataDetailsId).ToList());
+                var itemEntryDataTask = Task.Run(() => new AllocationDSContext().AsycudaDocumentItemEntryDataDetails
+                    .WhereBulkContains(entryDataDetailsLst, x => x.EntryDataDetailsId).ToList());
 
-            Task.WaitAll(entryDataTask, itemEntryDataTask);
+                Task.WaitAll(entryDataTask, itemEntryDataTask);
 
-            var entryDataData = entryDataTask.Result;
-            var itemEntryData = itemEntryDataTask.Result;
+                var entryDataData = entryDataTask.Result;
+                var itemEntryData = itemEntryDataTask.Result;
 
-             entryDataData.GroupJoin(itemEntryData, a => a.EntryDataDetailsId,
-                    p => p.EntryDataDetailsId, (a, p) => (a, p))
-                .ForEach(x => x.a.AsycudaDocumentItemEntryDataDetails = x.p.ToList());
+                entryDataData.GroupJoin(itemEntryData, a => a.EntryDataDetailsId,
+                        p => p.EntryDataDetailsId, (a, p) => (a, p))
+                    .ForEach(x => x.a.AsycudaDocumentItemEntryDataDetails = x.p.ToList());
 
-            lst.Join(entryDataData, a => a.EntryDataDetailsId, e => e.EntryDataDetailsId, (a, e) => (a, e))
-                .ForEach(x => { x.a.EntryDataDetails = x.e; });
-           
+                lst.Join(entryDataData, a => a.EntryDataDetailsId, e => e.EntryDataDetailsId, (a, e) => (a, e))
+                    .ForEach(x => { x.a.EntryDataDetails = x.e; });
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+
         }
 
         private static List<EX9AsycudaSalesAllocations> GetEx9AsycudaSalesAllocationsList(string rdateFilter)

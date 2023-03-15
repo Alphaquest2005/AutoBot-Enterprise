@@ -70,7 +70,7 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
 
              
 
-                if (checkForMultipleMonths)
+                 if (checkForMultipleMonths)
                     if (slst.ToList().SelectMany(x => x.Allocations).Select(x => x.InvoiceDate.Month).Distinct()
                             .Count() > 1)
                     {
@@ -520,7 +520,7 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
                     }
                     else
                     {
-                        if (nlst.Sum(x => x.QtyAllocated) + itm.QtyAllocated > 0)
+                        if (nlst.Sum(x => x.QtyAllocated) + itm.QtyAllocated > 0 && itm.QtyAllocated > 0)
                         {
                             if (nlst.Any() && nlst.Sum(x => x.QtyAllocated) > 0) elst.Add(nlst);
                             nlst = new List<EX9Allocations> { itm };
@@ -533,7 +533,7 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
                         }
                     }
 
-                    if (nlst.Any() && nlst.Sum(x => x.QtyAllocated) > 0) elst.Add(nlst);
+                    if (nlst.Any() && nlst.Sum(x => x.QtyAllocated) > 0 && (lst.Any() && lst.First().QtyAllocated > 0) || !lst.Any()) elst.Add(nlst);
                 }
 
                 if (nlst.Any() && nlst.Sum(x => x.QtyAllocated) < 0)
