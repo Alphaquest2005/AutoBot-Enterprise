@@ -283,11 +283,11 @@ namespace WaterNut.Business.Services.Utils
 
         private static void HasDuplicateFileMappings(FileTypes fileType)
         {
-            var duplicateMappings = fileType.FileTypeMappings.GroupBy(x => x.OriginalName).Where(x => x.Count() > 1).ToList();
+            var duplicateMappings = fileType.FileTypeMappings.GroupBy(x => new {x.OriginalName, x.DestinationName}).Where(x => x.Count() > 1).ToList();
             if (duplicateMappings.Any())
             {
                 throw new ApplicationException(
-                    $"Duplicate Mappings for {fileType.FilePattern}:Id-{fileType.Id} -- '{duplicateMappings.Select(x => x.Key).Aggregate((o, n) => $"{o},{n}")}'");
+                    $"Duplicate Mappings for {fileType.FilePattern}:Id-{fileType.Id} -- '{duplicateMappings.Select(x => $"{x.Key.OriginalName}|{x.Key.DestinationName}" ).Aggregate((o, n) => $"{o},{n}")}'");
             }
         }
 
