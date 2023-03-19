@@ -810,16 +810,8 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
                 
 
 
-                if (applyHistoricChecks)
+                if (applyHistoricChecks && totalSalesHistoric + totalPiHistoric > 0)// if sales + pi is zero this is first sale so can't do historic checks
                 {
-
-                    if (totalSalesHistoric == 0)// && mypod.Allocations.FirstOrDefault()?.Status != "Short Shipped"
-                    {
-                        UpdateXStatus(mypod.Allocations,
-                            $@"No Historical Sales Found", sql);
-                        return 0; // no sales found
-                    }
-
 
                     var docDFPpi = DocSetPi.Where(x => x.DutyFreePaid == dfp && x.PreviousItem_Id == mypod.EntlnData.PreviousDocumentItemId).Sum(x => x.TotalQuantity);
                     if (Math.Round(totalSalesHistoric, 2) <
@@ -832,7 +824,7 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
                         //return 0;
                         var availibleQty = totalSalesHistoric - (totalPiHistoric + docDFPpi);
                         if (availibleQty != 0) Ex9Bucket(mypod, availibleQty, totalSalesHistoric, totalPiHistoric, "Historic", sql);
-                        if (mypod.EntlnData.Quantity == 0)
+                        if (mypod.EntlnData.Quantity == 0 || availibleQty == 0)
                         {
                             UpdateXStatus(mypod.Allocations,
                                 $@"Failed Historical Check:: Total Historic Sales:{Math.Round(totalSalesHistoric, 2)}
@@ -892,7 +884,7 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
 
                 //// item sales vs item pi, prevents early exwarehouse when its just one totalsales vs totalpi
                 //if(documentType != "DIS")
-                if (itemPIcheck)
+                if (itemPIcheck && itemSalesHistoric + itemPiHistoric > 0) // need to investigate this same reason as totalsaleshistory
                 {
                     /// re-enabled for EX9ALL because its over taking - Appid = 6, INV: 29916-5803 
                     if (Math.Round(itemSalesHistoric, 2) <

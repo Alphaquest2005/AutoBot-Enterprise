@@ -241,9 +241,9 @@ namespace WaterNut.DataSpace
                     sql += $@" INSERT INTO AsycudaSalesAllocations
 														 (EntryDataDetailsId, PreviousItem_Id, QtyAllocated,Status, EANumber, SANumber)
 														VALUES        ({allo.EntryDataDetailsId},{allo.PreviousItem_Id},{r},'Under Allocated by {r}',0,0)";
-                    allo.EntryDataDetails.QtyAllocated -= r;
+                    //allo.EntryDataDetails.QtyAllocated -= r;
                     sql += $@" UPDATE       EntryDataDetails
-															SET                QtyAllocated =  QtyAllocated{(r >= 0 ? $"-{r}" : $"+{r * -1}")}
+															SET                QtyAllocated =  QtyAllocated{(r >= 0 ? $"+{r}" : $"+{r * -1}")}
 															where	EntryDataDetailsId = {allo.EntryDataDetails.EntryDataDetailsId}";
                     //ctx.ApplyChanges(nallo);
                     break;

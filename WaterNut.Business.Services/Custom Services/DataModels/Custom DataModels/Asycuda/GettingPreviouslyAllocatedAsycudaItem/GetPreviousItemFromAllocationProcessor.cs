@@ -11,9 +11,7 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
             int previousI;
             if (lastAllocation == null)
             {
-                //if (asycudaEntries.Sum(x => x.AsycudaSalesAllocations.Count()) != 0)
-                //await AddExceptionAllocation(saleitm, "Returned More than Sold")
-                //	.ConfigureAwait(false);
+                // because its single now add 2 to get over the count forward
                 return i;
             }
             // refreash all items from cache and set currentindex to last previous item
