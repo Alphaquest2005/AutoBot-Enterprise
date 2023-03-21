@@ -707,7 +707,7 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
                 var itemSalesHistoric = (double)itemSalesPiHistoric.Select(x => x.QtyAllocated).DefaultIfEmpty(0.0).Sum();
 
               
-                if(mypod.Filter.startDate == DateTime.Parse("1/1/2022") && mypod.EntlnData.PreviousDocumentItemId == 362441) Debugger.Break();
+                //if(mypod.Filter.startDate == DateTime.Parse("1/1/2022") && mypod.EntlnData.PreviousDocumentItemId == 362441) Debugger.Break();
                 var preEx9Bucket = mypod.EntlnData.Quantity;
                 if (applyEx9Bucket)
                     if (ex9BucketType == "Current")
