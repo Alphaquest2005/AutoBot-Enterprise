@@ -218,9 +218,16 @@ namespace WaterNut.DataSpace
 
                         if (cAsycudaItm.AsycudaDocument.CustomsOperationId == (int)CustomsOperations.Warehouse && (cAsycudaItm.AsycudaDocument.AssessmentDate > saleitm.Sales.EntryDataDate))
                         {
+                            if (saleitm.Quantity < 0 && i > 2)
+                            {
+                                // if return step back to previous item
+                                i -= 2;
+                                continue;
+                            }
                             await AddExceptionAllocation(saleitm, cAsycudaItm , "Early Sales").ConfigureAwait(false);
                             break;
                         }
+                       
 
                         if (saleitmQtyToallocate < 0 && Enumerable.Where<AsycudaSalesAllocations>(cAsycudaItm.AsycudaSalesAllocations, x => x.DutyFreePaid == saleitm.DutyFreePaid).Sum(x => x.QtyAllocated) == 0)
                         {
@@ -236,7 +243,9 @@ namespace WaterNut.DataSpace
                             (CurrentAsycudaItemIndex != asycudaEntries.Count - 1 && asycudaEntries[i + 1].AsycudaDocument.AssessmentDate <= saleitm.Sales.EntryDataDate))
                         {
                             if (saleitmQtyToallocate > 0) continue;
-                        }
+                        } 
+                        
+                       
 
                         if (cAsycudaItm.QtyAllocated == 0 && saleitmQtyToallocate < 0 && CurrentSalesItemIndex > 0)
                         {
