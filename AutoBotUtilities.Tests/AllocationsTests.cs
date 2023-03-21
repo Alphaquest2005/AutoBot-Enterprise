@@ -191,6 +191,61 @@ namespace AutoBotUtilities.Tests
 
         [Test]
         [Timeout(60 * 1000 * 60)]
+        [TestCase("CRB/SF-MD3/120-370", "50797")] // null ex9asycudasales allocations 
+
+        public void ReturnNotBringingDownQtyAllocated(string itemNumber, string pCnumber)
+        {
+            try
+            {
+                if (!Infrastructure.Utils.IsTestApplicationSettings()) Assert.IsTrue(true);
+                var timer = new System.Diagnostics.Stopwatch();
+
+                var itemSets = BaseDataModel.GetItemSets(itemNumber);
+                if (string.IsNullOrEmpty(itemNumber))
+                    AllocationsModel.Instance.ClearAllAllocations(BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId).Wait();
+                else
+                    AllocationsModel.Instance.ClearItemSetAllocations(itemSets).Wait();
+
+
+
+                timer.Start();
+                new AllocateSales().Execute(BaseDataModel.Instance.CurrentApplicationSettings, false, itemSets);
+                timer.Stop();
+
+                Console.Write("AllocatSales in seconds: " + timer.Elapsed.TotalSeconds);
+                Assert.IsTrue(true);
+                //var lastInvoiceDate = DateTime.Parse(LastInvoiceDate)+TimeSpan.FromHours(12);
+                using (var ctx = new AllocationDSContext())
+                {
+                    var allocations = new AllocationQSContext().AsycudaSalesAndAdjustmentAllocationsExes.AsNoTracking()
+                        .Count(x => x.pCNumber == pCnumber && x.ItemNumber == itemNumber);
+                    var isCancelled =
+                        ctx.AsycudaDocument.FirstOrDefault(x => x.CNumber == pCnumber && x.Cancelled == true);
+
+
+
+
+
+                    Assert.Multiple(() =>
+                    {
+                        Assert.AreEqual(0, allocations);
+                        Assert.IsNotNull(isCancelled);
+
+                    });
+                }
+
+
+
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                Assert.IsTrue(false);
+            }
+        }
+
+        [Test]
+        [Timeout(60 * 1000 * 60)]
         [TestCase("ECL/80040", "40967")] // null ex9asycudasales allocations 
        
         public void AllocateSaleToCancelledItem(string itemNumber, string pCnumber)
