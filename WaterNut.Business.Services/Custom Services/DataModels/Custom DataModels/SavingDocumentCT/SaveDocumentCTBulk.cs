@@ -33,9 +33,11 @@ namespace WaterNut.DataSpace
                 }
 
                 DataSpace.PreProcessDocumentItems.Execute(cdoc);
-
-                new DocumentItemDSContext().BulkUpdate(cdoc.DocumentItems.Where(x => x.Item_Id != 0).ToList(), x => x.IncludeGraph = true);
-                new DocumentItemDSContext().BulkInsert(cdoc.DocumentItems.Where(x => x.Item_Id == 0).ToList(), x => x.IncludeGraph = true);
+                var newitems = cdoc.DocumentItems.Where(x => x.Item_Id == 0).ToList();
+                var olditems = cdoc.DocumentItems.Where(x => x.Item_Id != 0).ToList();
+               
+                new DocumentItemDSContext().BulkInsert(newitems, x => x.IncludeGraph = true);
+                new DocumentItemDSContext().BulkUpdate(olditems, x => x.IncludeGraph = true);
                 
             }
             catch (Exception e)
