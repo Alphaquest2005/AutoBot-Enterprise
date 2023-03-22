@@ -112,7 +112,7 @@ namespace AutoBot
                 {"AssessCurrentEx9Entries", () => EX9Utils.AssessEx9Entries(0) },
                 {"ImportCurrentWarehouseErrors", () => ImportWarehouseErrorsUtils.ImportWarehouseErrors(0)},
                 {"SubmitToCustomsCurrent", () => SubmitSalesXmlToCustomsUtils.SubmitSalesXMLToCustoms(0) },
-
+                {"ImportAllZeroItemsInDataFolder", () => ImportAllAsycudaDocumentsInDataFolderUtils.ImportAllZeroItemsInDataFolder(false)},
 
             };
 

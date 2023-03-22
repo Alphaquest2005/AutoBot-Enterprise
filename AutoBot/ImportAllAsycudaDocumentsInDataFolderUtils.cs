@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using CoreEntities.Business.Entities;
+using DocumentDS.Business.Entities;
 using WaterNut.DataSpace;
 
 namespace AutoBot
@@ -17,6 +18,25 @@ namespace AutoBot
                 Console.WriteLine("Import All Asycuda Documents in DataFolder");
 
                 BaseDataModel.Instance.ImportDocuments(GetAsycudaDocumentSetEx("Imports").AsycudaDocumentSetId, GetImportFileList(), true, true, true, overwriteExisting, true)
+                    .Wait();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+        }
+
+        public static void ImportAllZeroItemsInDataFolder(bool overwriteExisting)
+        {
+            try
+            {
+                Console.WriteLine("Import All Asycuda Documents in DataFolder");
+                var zeroitems = new CoreEntitiesContext().AsycudaDocuments.Where(x => x.Lines == null || x.Lines == 0)
+                    .Select(x => x.SourceFileName).ToList();
+               
+
+                BaseDataModel.Instance.ImportDocuments(GetAsycudaDocumentSetEx("Imports").AsycudaDocumentSetId, zeroitems, true, true, true, overwriteExisting, true)
                     .Wait();
             }
             catch (Exception e)
