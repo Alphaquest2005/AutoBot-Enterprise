@@ -128,7 +128,7 @@ namespace WaterNut.DataSpace.Asycuda
                 if (LinkPi) await BaseDataModel.Instance.LinkExistingPreviousItems(da.Document, da.DocumentItems, false).ConfigureAwait(false);
 
                
-                if (da.Document.xcuda_Identification.xcuda_Type.DisplayName != "IM7")
+                if (da.Document.xcuda_ASYCUDA_ExtendedProperties.Customs_Procedure.CustomsOperationId == 3)
                      await SavePreviousItem().ConfigureAwait(false);
 
                 await Save_Suppliers_Documents().ConfigureAwait(false);
