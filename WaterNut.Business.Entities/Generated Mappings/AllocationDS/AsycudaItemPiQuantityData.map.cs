@@ -11,7 +11,7 @@
     {
         public AsycudaItemPiQuantityDataMap()
         {                        
-              this.HasKey(t => new {t.Id, t.pLineNumber});        
+              this.HasKey(t => new {t.Id, t.pLineNumber, t.CustomsProcedure});        
               this.ToTable("AsycudaItemPiQuantityData");
               this.Property(t => t.Item_Id).HasColumnName("Item_Id");
               this.Property(t => t.PiQuantity).HasColumnName("PiQuantity");
@@ -31,6 +31,7 @@
               this.Property(t => t.pReference).HasColumnName("pReference").HasMaxLength(30);
               this.Property(t => t.EntryDataType).HasColumnName("EntryDataType").IsRequired().HasMaxLength(50);
               this.Property(t => t.xLineNumber).HasColumnName("xLineNumber");
+              this.Property(t => t.CustomsProcedure).HasColumnName("CustomsProcedure").IsRequired().HasMaxLength(11);
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);
     			this.Ignore(t => t.ModifiedProperties);

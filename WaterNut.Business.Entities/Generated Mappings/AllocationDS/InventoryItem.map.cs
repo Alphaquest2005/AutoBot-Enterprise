@@ -23,11 +23,12 @@
               this.Property(t => t.ApplicationSettingsId).HasColumnName("ApplicationSettingsId");
               this.Property(t => t.InventoryItemId).HasColumnName("InventoryItemId").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.None));
               this.HasOptional(t => t.TariffCodes).WithMany(t =>(ICollection<InventoryItem>) t.InventoryItemsEx).HasForeignKey(d => d.TariffCode);
-              this.HasMany(t => t.EX9AsycudaSalesAllocations).WithOptional(t => t.InventoryItemsEx).HasForeignKey(d => d.InventoryItemId);
+              this.HasMany(t => t.EX9AsycudaSalesAllocations).WithRequired(t => (InventoryItem)t.InventoryItemsEx);
               this.HasMany(t => t.EntryDataDetailsEx).WithRequired(t => (InventoryItem)t.InventoryItemsEx);
               this.HasMany(t => t.InventoryItemAliasEx).WithRequired(t => (InventoryItem)t.InventoryItem);
               this.HasOptional(t => t.LumpedItem).WithRequired(t => (InventoryItem)t.InventoryItem);
               this.HasMany(t => t.EntryDataDetails).WithRequired(t => (InventoryItem)t.InventoryItem);
+              this.HasMany(t => t.InventoryItemAliasEx_NoReverseMappings).WithRequired(t => (InventoryItem)t.InventoryItem);
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);
     			this.Ignore(t => t.ModifiedProperties);

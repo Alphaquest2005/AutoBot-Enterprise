@@ -14,7 +14,7 @@
               this.HasKey(t => t.Id);        
               this.ToTable("ItemSalesAsycudaPiSummary");
               this.Property(t => t.PreviousItem_Id).HasColumnName("PreviousItem_Id");
-              this.Property(t => t.ItemNumber).HasColumnName("ItemNumber").HasMaxLength(50);
+              this.Property(t => t.ItemNumber).HasColumnName("ItemNumber").IsRequired().HasMaxLength(20);
               this.Property(t => t.QtyAllocated).HasColumnName("QtyAllocated");
               this.Property(t => t.PiQuantity).HasColumnName("PiQuantity");
               this.Property(t => t.pCNumber).HasColumnName("pCNumber").HasMaxLength(20);

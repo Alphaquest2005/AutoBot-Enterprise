@@ -84,7 +84,18 @@ namespace AutoBotUtilities.Tests
             try
             {
                 if (!Infrastructure.Utils.IsTestApplicationSettings()) Assert.IsTrue(true);
-                Assert.That(BaseDataModel.GetItemSets(null).Any(), Is.True);
+                var itemSets = BaseDataModel.GetItemSets(null);
+                var list = itemSets.Where(x => x.Any(z => z.ItemNumber == "MMM/62556752301")).ToList();
+                Assert.Multiple(() =>
+                {
+                    Assert.That(itemSets.Any(), Is.True);
+                    
+                    Assert.AreEqual(1, list.Count());
+
+
+                });
+               
+                
 
             }
             catch (Exception e)
@@ -179,6 +190,56 @@ namespace AutoBotUtilities.Tests
                 //    });
                 //}
                 
+
+
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                Assert.IsTrue(false);
+            }
+        }
+
+        [Test]
+        [Timeout(60 * 1000 * 60)]
+        [TestCase("MMM/62556752301, 7000046623, 7100060280", "TR/026176")] // null ex9asycudasales allocations 
+
+        public void doubleAllocation (string itemNumber, string invoiceNo)
+        {
+            try
+            {
+                if (!Infrastructure.Utils.IsTestApplicationSettings()) Assert.IsTrue(true);
+                var timer = new System.Diagnostics.Stopwatch();
+
+                var itemSets = BaseDataModel.GetItemSets(itemNumber);
+                if (string.IsNullOrEmpty(itemNumber))
+                    AllocationsModel.Instance.ClearAllAllocations(BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId).Wait();
+                else
+                    AllocationsModel.Instance.ClearItemSetAllocations(itemSets).Wait();
+
+
+
+                timer.Start();
+                new AllocateSales().Execute(BaseDataModel.Instance.CurrentApplicationSettings, false, itemSets);
+                timer.Stop();
+
+                Console.Write("AllocatSales in seconds: " + timer.Elapsed.TotalSeconds);
+                Assert.IsTrue(true);
+                //var lastInvoiceDate = DateTime.Parse(LastInvoiceDate)+TimeSpan.FromHours(12);
+                using (var ctx = new AllocationDSContext())
+                {
+                    var allocations = new AllocationQSContext().AsycudaSalesAndAdjustmentAllocationsExes.AsNoTracking()
+                        .Count(x => x.InvoiceNo == invoiceNo && x.ItemNumber == itemNumber);
+
+
+                    Assert.Multiple(() =>
+                    {
+                        Assert.AreEqual(1, allocations);
+                        
+
+                    });
+                }
+
 
 
             }

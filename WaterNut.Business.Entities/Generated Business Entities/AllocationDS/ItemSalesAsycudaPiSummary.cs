@@ -66,7 +66,7 @@ namespace AllocationDS.Business.Entities
         }
         Nullable<double> _qtyallocated;
         [DataMember]
-        public double PiQuantity 
+        public Nullable<double> PiQuantity 
         {
             get
             {
@@ -79,7 +79,7 @@ namespace AllocationDS.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        double _piquantity;
+        Nullable<double> _piquantity;
         [DataMember]
         public string pCNumber 
         {
@@ -141,7 +141,7 @@ namespace AllocationDS.Business.Entities
         }
         string _type;
         [DataMember]
-        public double pQtyAllocated 
+        public Nullable<double> pQtyAllocated 
         {
             get
             {
@@ -154,7 +154,7 @@ namespace AllocationDS.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        double _pqtyallocated;
+        Nullable<double> _pqtyallocated;
         [DataMember]
         public string MonthYear 
         {
@@ -231,7 +231,7 @@ namespace AllocationDS.Business.Entities
         }
         int _id;
         [DataMember]
-        public double SalesQty 
+        public Nullable<double> SalesQty 
         {
             get
             {
@@ -244,7 +244,7 @@ namespace AllocationDS.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        double _salesqty;
+        Nullable<double> _salesqty;
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

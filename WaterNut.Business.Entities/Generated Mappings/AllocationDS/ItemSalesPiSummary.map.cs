@@ -11,7 +11,7 @@
     {
         public ItemSalesPiSummaryMap()
         {                        
-              this.HasKey(t => new {t.PreviousItem_Id, t.Type, t.EntryDataDate, t.AllocationId, t.SalesQty, t.SalesAllocatedQty});        
+              this.HasKey(t => new {t.PreviousItem_Id, t.Type, t.EntryDataDate, t.AllocationId, t.SalesQty, t.SalesAllocatedQty, t.EntryDataDetailsId});        
               this.ToTable("ItemSalesPiSummary");
               this.Property(t => t.PreviousItem_Id).HasColumnName("PreviousItem_Id").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.None));
               this.Property(t => t.DutyFreePaid).HasColumnName("DutyFreePaid").HasMaxLength(50);
@@ -30,6 +30,7 @@
               this.Property(t => t.SalesQty).HasColumnName("SalesQty");
               this.Property(t => t.SalesAllocatedQty).HasColumnName("SalesAllocatedQty");
               this.Property(t => t.xEntryItem_Id).HasColumnName("xEntryItem_Id");
+              this.Property(t => t.EntryDataDetailsId).HasColumnName("EntryDataDetailsId").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.None));
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);
     			this.Ignore(t => t.ModifiedProperties);

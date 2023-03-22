@@ -235,6 +235,12 @@ namespace DocumentDS.Business.Services
                                         GetWhere<AsycudaDocumentSet>(dbContext, exp, itm.Value, "Customs_Procedure", "Select", includesLst)
 										.ConfigureAwait(continueOnCapturedContext: false);
 
+                            case "CustomsOperation":
+                                return
+                                    await
+                                        GetWhere<CustomsOperation>(dbContext, exp, itm.Value, "Customs_Procedure", "SelectMany", includesLst)
+										.ConfigureAwait(continueOnCapturedContext: false);
+
                             case "Document_Type":
                                 return
                                     await
@@ -245,12 +251,6 @@ namespace DocumentDS.Business.Services
                                 return
                                     await
                                         GetWhere<xcuda_ASYCUDA_ExtendedProperties>(dbContext, exp, itm.Value, "Customs_Procedure", "Select", includesLst)
-										.ConfigureAwait(continueOnCapturedContext: false);
-
-                            case "CustomsOperation":
-                                return
-                                    await
-                                        GetWhere<CustomsOperation>(dbContext, exp, itm.Value, "Customs_Procedure", "SelectMany", includesLst)
 										.ConfigureAwait(continueOnCapturedContext: false);
 
                         }
@@ -737,14 +737,14 @@ namespace DocumentDS.Business.Services
                             case "AsycudaDocumentSets":
                                 return await CountWhere<AsycudaDocumentSet>(dbContext, exp, itm.Value, "Customs_Procedure", "Select")
 											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "CustomsOperation":
+                                return await CountWhere<CustomsOperation>(dbContext, exp, itm.Value, "Customs_Procedure", "SelectMany")
+											.ConfigureAwait(continueOnCapturedContext: false);
                             case "Document_Type":
                                 return await CountWhere<Document_Type>(dbContext, exp, itm.Value, "Customs_Procedure", "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
                             case "xcuda_ASYCUDA_ExtendedProperties":
                                 return await CountWhere<xcuda_ASYCUDA_ExtendedProperties>(dbContext, exp, itm.Value, "Customs_Procedure", "Select")
-											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "CustomsOperation":
-                                return await CountWhere<CustomsOperation>(dbContext, exp, itm.Value, "Customs_Procedure", "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }
@@ -854,6 +854,12 @@ namespace DocumentDS.Business.Services
                                         LoadRangeWhere<AsycudaDocumentSet>(startIndex, count, dbContext, exp, itm.Value, "Customs_Procedure", "Select")
 													.ConfigureAwait(continueOnCapturedContext: false);
 
+                            case "CustomsOperation":
+                                return
+                                    await
+                                        LoadRangeWhere<CustomsOperation>(startIndex, count, dbContext, exp, itm.Value, "Customs_Procedure", "SelectMany")
+													.ConfigureAwait(continueOnCapturedContext: false);
+
                             case "Document_Type":
                                 return
                                     await
@@ -864,12 +870,6 @@ namespace DocumentDS.Business.Services
                                 return
                                     await
                                         LoadRangeWhere<xcuda_ASYCUDA_ExtendedProperties>(startIndex, count, dbContext, exp, itm.Value, "Customs_Procedure", "Select")
-													.ConfigureAwait(continueOnCapturedContext: false);
-
-                            case "CustomsOperation":
-                                return
-                                    await
-                                        LoadRangeWhere<CustomsOperation>(startIndex, count, dbContext, exp, itm.Value, "Customs_Procedure", "SelectMany")
 													.ConfigureAwait(continueOnCapturedContext: false);
 
                           
@@ -1217,14 +1217,14 @@ namespace DocumentDS.Business.Services
                             case "AsycudaDocumentSets":
                                 return await SumWhere<AsycudaDocumentSet>(dbContext, exp, itm.Value, "Customs_Procedure", field, "Select")
 											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "CustomsOperation":
+                                return await SumWhere<CustomsOperation>(dbContext, exp, itm.Value, "Customs_Procedure", field, "SelectMany")
+											.ConfigureAwait(continueOnCapturedContext: false);
                             case "Document_Type":
                                 return await SumWhere<Document_Type>(dbContext, exp, itm.Value, "Customs_Procedure", field, "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
                             case "xcuda_ASYCUDA_ExtendedProperties":
                                 return await SumWhere<xcuda_ASYCUDA_ExtendedProperties>(dbContext, exp, itm.Value, "Customs_Procedure", field, "Select")
-											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "CustomsOperation":
-                                return await SumWhere<CustomsOperation>(dbContext, exp, itm.Value, "Customs_Procedure", field, "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }

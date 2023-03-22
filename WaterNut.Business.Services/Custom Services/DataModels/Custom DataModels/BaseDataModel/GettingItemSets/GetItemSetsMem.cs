@@ -4,6 +4,7 @@ using System.Data.Entity;
 using System.Linq;
 using AllocationDS.Business.Entities;
 using MoreLinq;
+using static sun.awt.SunHints;
 using static WaterNut.DataSpace.AllocationsBaseModel;
 
 namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModels.BaseDataModel.GettingItemSets
@@ -25,7 +26,7 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
                     {
                         var groups = ctx.InventoryItems
                             .AsNoTracking()
-                            .Include(x => x.InventoryItemAliasEx)
+                            .Include(x => x.InventoryItemAliasEx_NoReverseMappings)
                             .Where(x => x.ApplicationSettingsId == DataSpace.BaseDataModel.Instance
                                 .CurrentApplicationSettings.ApplicationSettingsId)
                             .Where(x => !string.IsNullOrEmpty(x.ItemNumber))
@@ -33,7 +34,8 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
                             .ToList()
                             .GroupBy(x => (ItemNumber: x.ItemNumber.ToUpper().Trim(), x.InventoryItemId)).ToList();
 
-                        var t = groups.Where(z => z.Key.ItemNumber == "CRB/HIF-SR290BL").ToList();
+                        //var dupitemsets1 = groups.Where(x => x.Any(z => z.ItemNumber == "MMM/62556752301")).ToList();
+                        //var t = groups.Where(z => z.Key.ItemNumber == "MMM/62556752301").ToList();
 
                         var lst1 = groups.Select(g =>
                         {
@@ -43,28 +45,55 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
                                 {
                                     var res = new List<(string ItemNumber, int InventoryItemId)>
                                         { (x.ItemNumber.ToUpper().Trim(), x.InventoryItemId) };
-                                    res.AddRange(x.InventoryItemAliasEx
+                                    res.AddRange(x.InventoryItemAliasEx_NoReverseMappings
                                         .Select(a => (a.AliasName.ToUpper().Trim(), a.AliasItemId)).ToList());
                                     return res;
                                 })));
-                        }).ToList();
+                        }).OrderBy(x => x.Key.InventoryItemId).ToList();
 
-                         var t2 = lst1.Where(z => z.Key.ItemNumber == "CRB/HIF-SR290BL").ToList();
+                        //var dupitemsets2 = lst1.Where(x => x.Value.Any(z => z.ItemNumber == "MMM/62556752301")).ToList();
+                        //var t2 = lst1.Where(z => z.Key.ItemNumber == "MMM/62556752301").ToList();
 
+                        var clst = GroupLst(lst1);
 
-                        var lst = lst1
+                        var lst = clst
                             .Where(x => x.Value.All(z => z.InventoryItemId >= x.Key.InventoryItemId))
                             .ToDictionary(x => x.Key, x => x.Value);
                         _itemSets =
                             new Dictionary<(string ItemNumber, int InventoryItemId),
                                 List<(string ItemNumber, int InventoryItemId)>>(lst);
 
-                        var t3 = _itemSets.Where(z => z.Key.ItemNumber == "CRB/HIF-SR290BL").ToList();
+                        //var dupitemsets3 = _itemSets.Where(x => x.Value.Any(z => z.ItemNumber == "MMM/62556752301")).ToList();
+                        //var t3 = _itemSets.Where(z => z.Key.ItemNumber == "MMM/62556752301").ToList();
                     }
 
             }
         }
 
+        private List<KeyValuePair<(string ItemNumber, int InventoryItemId), List<(string ItemNumber, int InventoryItemId)>>> GroupLst(List<KeyValuePair<(string ItemNumber, int InventoryItemId), List<(string ItemNumber, int InventoryItemId)>>> lst1)
+        {
+            var res = new List<KeyValuePair<(string ItemNumber, int InventoryItemId), List<(string ItemNumber, int InventoryItemId)>>>();
+           // var numlst = new List<int>() { 10436, 57399, 54940, 48631, 48630 };
+            var slut = lst1
+                //.Where(x => x.Value.Any(z => z.ItemNumber == "MMM/62556752301"))
+               // .Where(x => x.Value.Any(z =>numlst.Contains(z.InventoryItemId)))
+                .ToList();
+            while (slut.Any())
+            {
+                var itm = slut.First();
+                var others = slut.Skip(1)
+                    .Where(x => x.Value.Any(z => z.InventoryItemId == itm.Key.InventoryItemId) || x.Value
+                        .Select(q => q.InventoryItemId).Intersect(itm.Value.Select(q => q.InventoryItemId)).Any())
+                    .ToList();
+                var resValue = itm.Value.ToList();
+                resValue.AddRange(others.SelectMany(x => x.Value).ToList().Except(resValue).ToList());
+               res.Add(new KeyValuePair<(string ItemNumber, int InventoryItemId), List<(string ItemNumber, int InventoryItemId)>>(itm.Key, resValue));
+               slut.Remove(itm);
+               slut = slut.Except(others).ToList();
+
+            }
+            return (res.Count == lst1.Count ? res : GroupLst(res));
+        }
 
 
         public List<List<(string ItemNumber, int InventoryItemId)>> Execute(string lst)

@@ -235,12 +235,6 @@ namespace DocumentDS.Business.Services
                                         GetWhere<AsycudaDocumentSet>(dbContext, exp, itm.Value, "xcuda_ASYCUDA_ExtendedProperties", "SelectMany", includesLst)
 										.ConfigureAwait(continueOnCapturedContext: false);
 
-                            case "Customs_Procedure":
-                                return
-                                    await
-                                        GetWhere<Customs_Procedure>(dbContext, exp, itm.Value, "xcuda_ASYCUDA_ExtendedProperties", "SelectMany", includesLst)
-										.ConfigureAwait(continueOnCapturedContext: false);
-
                             case "ExportTemplate":
                                 return
                                     await
@@ -251,6 +245,12 @@ namespace DocumentDS.Business.Services
                                 return
                                     await
                                         GetWhere<xcuda_ASYCUDA>(dbContext, exp, itm.Value, "xcuda_ASYCUDA_ExtendedProperties", "SelectMany", includesLst)
+										.ConfigureAwait(continueOnCapturedContext: false);
+
+                            case "Customs_Procedure":
+                                return
+                                    await
+                                        GetWhere<Customs_Procedure>(dbContext, exp, itm.Value, "xcuda_ASYCUDA_ExtendedProperties", "SelectMany", includesLst)
 										.ConfigureAwait(continueOnCapturedContext: false);
 
                         }
@@ -737,14 +737,14 @@ namespace DocumentDS.Business.Services
                             case "AsycudaDocumentSet":
                                 return await CountWhere<AsycudaDocumentSet>(dbContext, exp, itm.Value, "xcuda_ASYCUDA_ExtendedProperties", "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "Customs_Procedure":
-                                return await CountWhere<Customs_Procedure>(dbContext, exp, itm.Value, "xcuda_ASYCUDA_ExtendedProperties", "SelectMany")
-											.ConfigureAwait(continueOnCapturedContext: false);
                             case "ExportTemplate":
                                 return await CountWhere<ExportTemplate>(dbContext, exp, itm.Value, "xcuda_ASYCUDA_ExtendedProperties", "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
                             case "xcuda_ASYCUDA":
                                 return await CountWhere<xcuda_ASYCUDA>(dbContext, exp, itm.Value, "xcuda_ASYCUDA_ExtendedProperties", "SelectMany")
+											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "Customs_Procedure":
+                                return await CountWhere<Customs_Procedure>(dbContext, exp, itm.Value, "xcuda_ASYCUDA_ExtendedProperties", "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }
@@ -854,12 +854,6 @@ namespace DocumentDS.Business.Services
                                         LoadRangeWhere<AsycudaDocumentSet>(startIndex, count, dbContext, exp, itm.Value, "xcuda_ASYCUDA_ExtendedProperties", "SelectMany")
 													.ConfigureAwait(continueOnCapturedContext: false);
 
-                            case "Customs_Procedure":
-                                return
-                                    await
-                                        LoadRangeWhere<Customs_Procedure>(startIndex, count, dbContext, exp, itm.Value, "xcuda_ASYCUDA_ExtendedProperties", "SelectMany")
-													.ConfigureAwait(continueOnCapturedContext: false);
-
                             case "ExportTemplate":
                                 return
                                     await
@@ -870,6 +864,12 @@ namespace DocumentDS.Business.Services
                                 return
                                     await
                                         LoadRangeWhere<xcuda_ASYCUDA>(startIndex, count, dbContext, exp, itm.Value, "xcuda_ASYCUDA_ExtendedProperties", "SelectMany")
+													.ConfigureAwait(continueOnCapturedContext: false);
+
+                            case "Customs_Procedure":
+                                return
+                                    await
+                                        LoadRangeWhere<Customs_Procedure>(startIndex, count, dbContext, exp, itm.Value, "xcuda_ASYCUDA_ExtendedProperties", "SelectMany")
 													.ConfigureAwait(continueOnCapturedContext: false);
 
                           
@@ -1211,14 +1211,14 @@ namespace DocumentDS.Business.Services
                             case "AsycudaDocumentSet":
                                 return await SumWhere<AsycudaDocumentSet>(dbContext, exp, itm.Value, "xcuda_ASYCUDA_ExtendedProperties", field, "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "Customs_Procedure":
-                                return await SumWhere<Customs_Procedure>(dbContext, exp, itm.Value, "xcuda_ASYCUDA_ExtendedProperties", field, "SelectMany")
-											.ConfigureAwait(continueOnCapturedContext: false);
                             case "ExportTemplate":
                                 return await SumWhere<ExportTemplate>(dbContext, exp, itm.Value, "xcuda_ASYCUDA_ExtendedProperties", field, "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
                             case "xcuda_ASYCUDA":
                                 return await SumWhere<xcuda_ASYCUDA>(dbContext, exp, itm.Value, "xcuda_ASYCUDA_ExtendedProperties", field, "SelectMany")
+											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "Customs_Procedure":
+                                return await SumWhere<Customs_Procedure>(dbContext, exp, itm.Value, "xcuda_ASYCUDA_ExtendedProperties", field, "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }

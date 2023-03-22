@@ -145,6 +145,8 @@ namespace AllocationDS.Business.Entities
      
         public DbSet<AsycudaSalesAllocations_XcudaItemsToAllocate> AsycudaSalesAllocations_XcudaItemsToAllocate { get; set; }
      
+        public DbSet<InventoryItemAliasEx_NoReverseMappings> InventoryItemAliasEx_NoReverseMappings { get; set; }
+     
 
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
@@ -246,6 +248,8 @@ namespace AllocationDS.Business.Entities
             modelBuilder.Configurations.Add(new xcuda_Inventory_ItemMap());
          
             modelBuilder.Configurations.Add(new AsycudaSalesAllocations_XcudaItemsToAllocateMap());
+         
+            modelBuilder.Configurations.Add(new InventoryItemAliasEx_NoReverseMappingsMap());
          
             modelBuilder.Configurations.Add(new AdjustmentsMap());
       

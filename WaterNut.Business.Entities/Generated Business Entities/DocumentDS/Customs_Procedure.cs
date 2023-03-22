@@ -269,11 +269,11 @@ namespace DocumentDS.Business.Entities
         [DataMember]
         public List<AsycudaDocumentSet> AsycudaDocumentSets { get; set; }
         [DataMember]
+        public CustomsOperation CustomsOperation { get; set; }
+        [DataMember]
         public Document_Type Document_Type { get; set; }
         [DataMember]
         public List<xcuda_ASYCUDA_ExtendedProperties> xcuda_ASYCUDA_ExtendedProperties { get; set; }
-        [DataMember]
-        public CustomsOperation CustomsOperation { get; set; }
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

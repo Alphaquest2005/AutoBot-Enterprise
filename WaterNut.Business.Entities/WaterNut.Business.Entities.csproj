@@ -188,6 +188,7 @@
     <Compile Include="Generated Business Entities\AllocationDS\ExistingAllocations.cs" />
     <Compile Include="Generated Business Entities\AllocationDS\InventoryItem.cs" />
     <Compile Include="Generated Business Entities\AllocationDS\InventoryItemAlias.cs" />
+    <Compile Include="Generated Business Entities\AllocationDS\InventoryItemAliasEx_NoReverseMappings.cs" />
     <Compile Include="Generated Business Entities\AllocationDS\ItemSalesAsycudaPiSummary.cs" />
     <Compile Include="Generated Business Entities\AllocationDS\ItemSalesPiSummary.cs" />
     <Compile Include="Generated Business Entities\AllocationDS\LumpedItem.cs" />
@@ -622,6 +623,7 @@
     <Compile Include="Generated ChangeTracking Models\AllocationDS\ExistingAllocations.cs" />
     <Compile Include="Generated ChangeTracking Models\AllocationDS\InventoryItem.cs" />
     <Compile Include="Generated ChangeTracking Models\AllocationDS\InventoryItemAlias.cs" />
+    <Compile Include="Generated ChangeTracking Models\AllocationDS\InventoryItemAliasEx_NoReverseMappings.cs" />
     <Compile Include="Generated ChangeTracking Models\AllocationDS\ItemSalesAsycudaPiSummary.cs" />
     <Compile Include="Generated ChangeTracking Models\AllocationDS\ItemSalesPiSummary.cs" />
     <Compile Include="Generated ChangeTracking Models\AllocationDS\LumpedItem.cs" />
@@ -1049,6 +1051,7 @@
     <Compile Include="Generated Constructors Models\AllocationDS\ExistingAllocations.cs" />
     <Compile Include="Generated Constructors Models\AllocationDS\InventoryItem.cs" />
     <Compile Include="Generated Constructors Models\AllocationDS\InventoryItemAlias.cs" />
+    <Compile Include="Generated Constructors Models\AllocationDS\InventoryItemAliasEx_NoReverseMappings.cs" />
     <Compile Include="Generated Constructors Models\AllocationDS\ItemSalesAsycudaPiSummary.cs" />
     <Compile Include="Generated Constructors Models\AllocationDS\ItemSalesPiSummary.cs" />
     <Compile Include="Generated Constructors Models\AllocationDS\LumpedItem.cs" />
@@ -1476,6 +1479,7 @@
     <Compile Include="Generated IEntitiyWithKey Models\AllocationDS\ExistingAllocations.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\AllocationDS\InventoryItem.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\AllocationDS\InventoryItemAlias.cs" />
+    <Compile Include="Generated IEntitiyWithKey Models\AllocationDS\InventoryItemAliasEx_NoReverseMappings.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\AllocationDS\ItemSalesAsycudaPiSummary.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\AllocationDS\ItemSalesPiSummary.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\AllocationDS\LumpedItem.cs" />
@@ -1903,6 +1907,7 @@
     <Compile Include="Generated IIdentitfiableEntity Models\AllocationDS\ExistingAllocations.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\AllocationDS\InventoryItem.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\AllocationDS\InventoryItemAlias.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\AllocationDS\InventoryItemAliasEx_NoReverseMappings.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\AllocationDS\ItemSalesAsycudaPiSummary.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\AllocationDS\ItemSalesPiSummary.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\AllocationDS\LumpedItem.cs" />
@@ -2340,6 +2345,7 @@
     <Compile Include="Generated Mappings\AllocationDS\ExistingAllocations.map.cs" />
     <Compile Include="Generated Mappings\AllocationDS\InventoryItem.map.cs" />
     <Compile Include="Generated Mappings\AllocationDS\InventoryItemAlias.map.cs" />
+    <Compile Include="Generated Mappings\AllocationDS\InventoryItemAliasEx_NoReverseMappings.map.cs" />
     <Compile Include="Generated Mappings\AllocationDS\ItemSalesAsycudaPiSummary.map.cs" />
     <Compile Include="Generated Mappings\AllocationDS\ItemSalesPiSummary.map.cs" />
     <Compile Include="Generated Mappings\AllocationDS\LumpedItem.map.cs" />

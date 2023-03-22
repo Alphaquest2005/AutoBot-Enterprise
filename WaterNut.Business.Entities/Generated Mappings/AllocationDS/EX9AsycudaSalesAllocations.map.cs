@@ -22,9 +22,9 @@
               this.Property(t => t.InvoiceDate).HasColumnName("InvoiceDate");
               this.Property(t => t.SalesQuantity).HasColumnName("SalesQuantity");
               this.Property(t => t.SalesQtyAllocated).HasColumnName("SalesQtyAllocated");
-              this.Property(t => t.InvoiceNo).HasColumnName("InvoiceNo").HasMaxLength(50);
-              this.Property(t => t.ItemNumber).HasColumnName("ItemNumber").HasMaxLength(20);
-              this.Property(t => t.ItemDescription).HasColumnName("ItemDescription").HasMaxLength(255);
+              this.Property(t => t.InvoiceNo).HasColumnName("InvoiceNo").IsRequired().HasMaxLength(50);
+              this.Property(t => t.ItemNumber).HasColumnName("ItemNumber").IsRequired().HasMaxLength(20);
+              this.Property(t => t.ItemDescription).HasColumnName("ItemDescription").IsRequired().HasMaxLength(255);
               this.Property(t => t.EntryDataDetailsId).HasColumnName("EntryDataDetailsId");
               this.Property(t => t.DutyFreePaid).HasColumnName("DutyFreePaid").HasMaxLength(50);
               this.Property(t => t.pCNumber).HasColumnName("pCNumber").HasMaxLength(20);
@@ -78,9 +78,9 @@
               this.Property(t => t.pPrecision1).HasColumnName("pPrecision1").HasMaxLength(255);
               this.Property(t => t.SourceFile).HasColumnName("SourceFile");
               this.HasRequired(t => t.PreviousDocumentItem).WithMany(t =>(ICollection<EX9AsycudaSalesAllocations>) t.EX9AsycudaSalesAllocations).HasForeignKey(d => d.PreviousItem_Id);
-              this.HasOptional(t => t.InventoryItemsEx).WithMany(t =>(ICollection<EX9AsycudaSalesAllocations>) t.EX9AsycudaSalesAllocations).HasForeignKey(d => d.InventoryItemId);
+              this.HasRequired(t => t.InventoryItemsEx).WithMany(t =>(ICollection<EX9AsycudaSalesAllocations>) t.EX9AsycudaSalesAllocations).HasForeignKey(d => d.InventoryItemId);
               this.HasRequired(t => t.AsycudaSalesAllocations).WithOptional(t => (EX9AsycudaSalesAllocations)t.EX9AsycudaSalesAllocations);
-              this.HasOptional(t => t.EntryDataDetails).WithMany(t =>(ICollection<EX9AsycudaSalesAllocations>) t.EX9AsycudaSalesAllocations).HasForeignKey(d => d.EntryDataDetailsId);
+              this.HasRequired(t => t.EntryDataDetails).WithMany(t =>(ICollection<EX9AsycudaSalesAllocations>) t.EX9AsycudaSalesAllocations).HasForeignKey(d => d.EntryDataDetailsId);
               this.HasMany(t => t.AsycudaSalesAllocationsPIData).WithRequired(t => (EX9AsycudaSalesAllocations)t.EX9AsycudaSalesAllocations);
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);

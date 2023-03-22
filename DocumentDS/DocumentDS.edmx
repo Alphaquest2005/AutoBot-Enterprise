@@ -1927,7 +1927,6 @@ FROM [dbo].[xcuda_ASYCUDAEx] AS [xcuda_ASYCUDAEx]</DefiningQuery>
       <Schema Namespace="WaterNutDBModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
         <EntityContainer Name="DocumentDS" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="AsycudaDocumentSets" EntityType="WaterNutDBModel.AsycudaDocumentSet" />
-          <EntitySet Name="Customs_Procedure" EntityType="WaterNutDBModel.Customs_Procedure" />
           <EntitySet Name="Document_Type" EntityType="WaterNutDBModel.Document_Type" />
           <EntitySet Name="ExportTemplates" EntityType="WaterNutDBModel.ExportTemplate" />
           <EntitySet Name="xcuda_Assessment" EntityType="WaterNutDBModel.xcuda_Assessment" />
@@ -1978,14 +1977,6 @@ FROM [dbo].[xcuda_ASYCUDAEx] AS [xcuda_ASYCUDAEx]</DefiningQuery>
           <EntitySet Name="xcuda_Valuation" EntityType="WaterNutDBModel.xcuda_Valuation" />
           <EntitySet Name="xcuda_Warehouse" EntityType="WaterNutDBModel.xcuda_Warehouse" />
           <EntitySet Name="xcuda_Weight" EntityType="WaterNutDBModel.xcuda_Weight" />
-          <AssociationSet Name="FK_AsycudaDocumentSet_Customs_Procedure" Association="WaterNutDBModel.FK_AsycudaDocumentSet_Customs_Procedure">
-            <End Role="Customs_Procedure" EntitySet="Customs_Procedure" />
-            <End Role="AsycudaDocumentSet" EntitySet="AsycudaDocumentSets" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Customs_Procedure_Document_Type" Association="WaterNutDBModel.FK_Customs_Procedure_Document_Type">
-            <End Role="Document_Type" EntitySet="Document_Type" />
-            <End Role="Customs_Procedure" EntitySet="Customs_Procedure" />
-          </AssociationSet>
           <AssociationSet Name="FK_ASYCUDA_Assessment_notice" Association="WaterNutDBModel.FK_ASYCUDA_Assessment_notice">
             <End Role="xcuda_ASYCUDA" EntitySet="xcuda_ASYCUDA" />
             <End Role="xcuda_Assessment_notice" EntitySet="xcuda_Assessment_notice" />
@@ -2174,10 +2165,6 @@ FROM [dbo].[xcuda_ASYCUDAEx] AS [xcuda_ASYCUDAEx]</DefiningQuery>
             <End Role="AsycudaDocumentSet" EntitySet="AsycudaDocumentSets" />
             <End Role="xcuda_ASYCUDA_ExtendedProperties" EntitySet="xcuda_ASYCUDA_ExtendedProperties" />
           </AssociationSet>
-          <AssociationSet Name="FK_xcuda_ASYCUDA_ExtendedProperties_Customs_Procedure" Association="WaterNutDBModel.FK_xcuda_ASYCUDA_ExtendedProperties_Customs_Procedure">
-            <End Role="Customs_Procedure" EntitySet="Customs_Procedure" />
-            <End Role="xcuda_ASYCUDA_ExtendedProperties" EntitySet="xcuda_ASYCUDA_ExtendedProperties" />
-          </AssociationSet>
           <AssociationSet Name="FK_xcuda_ASYCUDA_ExtendedProperties_ExportTemplate" Association="WaterNutDBModel.FK_xcuda_ASYCUDA_ExtendedProperties_ExportTemplate">
             <End Role="ExportTemplate" EntitySet="ExportTemplates" />
             <End Role="xcuda_ASYCUDA_ExtendedProperties" EntitySet="xcuda_ASYCUDA_ExtendedProperties" />
@@ -2222,10 +2209,6 @@ FROM [dbo].[xcuda_ASYCUDAEx] AS [xcuda_ASYCUDAEx]</DefiningQuery>
             <End Role="FileType1" EntitySet="FileTypes" />
           </AssociationSet>
           <EntitySet Name="CustomsOperations" EntityType="WaterNutDBModel.CustomsOperation" />
-          <AssociationSet Name="FK_Customs_Procedure_CustomsOperations" Association="WaterNutDBModel.FK_Customs_Procedure_CustomsOperations">
-            <End Role="CustomsOperation" EntitySet="CustomsOperations" />
-            <End Role="Customs_Procedure" EntitySet="Customs_Procedure" />
-          </AssociationSet>
           <EntitySet Name="xcuda_Identification" EntityType="WaterNutDBModel.xcuda_Identification" />
           <AssociationSet Name="FK_Identification_Assessment" Association="WaterNutDBModel.FK_Identification_Assessment">
             <End Role="xcuda_Identification" EntitySet="xcuda_Identification" />
@@ -2255,6 +2238,23 @@ FROM [dbo].[xcuda_ASYCUDAEx] AS [xcuda_ASYCUDAEx]</DefiningQuery>
             <End Role="xcuda_ASYCUDA" EntitySet="xcuda_ASYCUDA" />
             <End Role="xcuda_ASYCUDA_ExtendedProperties" EntitySet="xcuda_ASYCUDA_ExtendedProperties" />
           </AssociationSet>
+          <EntitySet Name="Customs_Procedure" EntityType="WaterNutDBModel.Customs_Procedure" />
+          <AssociationSet Name="FK_AsycudaDocumentSet_Customs_Procedure" Association="WaterNutDBModel.FK_AsycudaDocumentSet_Customs_Procedure">
+            <End Role="Customs_Procedure" EntitySet="Customs_Procedure" />
+            <End Role="AsycudaDocumentSet" EntitySet="AsycudaDocumentSets" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Customs_Procedure_CustomsOperations" Association="WaterNutDBModel.FK_Customs_Procedure_CustomsOperations">
+            <End Role="CustomsOperation" EntitySet="CustomsOperations" />
+            <End Role="Customs_Procedure" EntitySet="Customs_Procedure" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Customs_Procedure_Document_Type" Association="WaterNutDBModel.FK_Customs_Procedure_Document_Type">
+            <End Role="Document_Type" EntitySet="Document_Type" />
+            <End Role="Customs_Procedure" EntitySet="Customs_Procedure" />
+          </AssociationSet>
+          <AssociationSet Name="FK_xcuda_ASYCUDA_ExtendedProperties_Customs_Procedure" Association="WaterNutDBModel.FK_xcuda_ASYCUDA_ExtendedProperties_Customs_Procedure">
+            <End Role="Customs_Procedure" EntitySet="Customs_Procedure" />
+            <End Role="xcuda_ASYCUDA_ExtendedProperties" EntitySet="xcuda_ASYCUDA_ExtendedProperties" />
+          </AssociationSet>
         </EntityContainer>
         <EntityType Name="AsycudaDocumentSet">
           <Key>
@@ -2271,7 +2271,6 @@ FROM [dbo].[xcuda_ASYCUDAEx] AS [xcuda_ASYCUDAEx]</DefiningQuery>
           <Property Name="BLNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="EntryTimeStamp" Type="DateTime" Precision="7" />
           <Property Name="StartingFileCount" Type="Int32" />
-          <NavigationProperty Name="Customs_Procedure" Relationship="WaterNutDBModel.FK_AsycudaDocumentSet_Customs_Procedure" FromRole="AsycudaDocumentSet" ToRole="Customs_Procedure" />
           <Property Name="ApportionMethod" Type="String" MaxLength="50" Unicode="true" FixedLength="false" />
           <Property Name="TotalWeight" Type="Double" />
           <Property Name="TotalFreight" Type="Double" />
@@ -2291,31 +2290,7 @@ FROM [dbo].[xcuda_ASYCUDAEx] AS [xcuda_ASYCUDAEx]</DefiningQuery>
           <Property Name="UpgradeKey" Type="Int32" />
           <Property Name="ExpectedEntries" Type="Int32" />
           <Property Name="PackageType" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-        </EntityType>
-        <EntityType Name="Customs_Procedure">
-          <Key>
-            <PropertyRef Name="Customs_ProcedureId" />
-          </Key>
-          <Property Name="Document_TypeId" Type="Int32" Nullable="false" />
-          <Property Name="Customs_ProcedureId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Extended_customs_procedure" Type="String" MaxLength="5" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="National_customs_procedure" Type="String" MaxLength="5" FixedLength="false" Unicode="true" Nullable="false" />
-          <NavigationProperty Name="AsycudaDocumentSets" Relationship="WaterNutDBModel.FK_AsycudaDocumentSet_Customs_Procedure" FromRole="Customs_Procedure" ToRole="AsycudaDocumentSet" />
-          <NavigationProperty Name="Document_Type" Relationship="WaterNutDBModel.FK_Customs_Procedure_Document_Type" FromRole="Customs_Procedure" ToRole="Document_Type" />
-          <NavigationProperty Name="xcuda_ASYCUDA_ExtendedProperties" Relationship="WaterNutDBModel.FK_xcuda_ASYCUDA_ExtendedProperties_Customs_Procedure" FromRole="Customs_Procedure" ToRole="xcuda_ASYCUDA_ExtendedProperties" />
-          <Property Name="CustomsProcedure" Type="String" MaxLength="11" FixedLength="false" Unicode="true" annotation:StoreGeneratedPattern="Computed" Nullable="false" />
-          <Property Name="IsObsolete" Type="Boolean" Nullable="false" />
-          <Property Name="IsPaid" Type="Boolean" Nullable="false" />
-          <Property Name="BondTypeId" Type="Int32" />
-          <Property Name="Stock" Type="Boolean" Nullable="false" />
-          <Property Name="Discrepancy" Type="Boolean" Nullable="false" />
-          <Property Name="Adjustment" Type="Boolean" Nullable="false" />
-          <Property Name="Sales" Type="Boolean" Nullable="false" />
-          <Property Name="CustomsOperationId" Type="Int32" Nullable="false" />
-          <NavigationProperty Name="CustomsOperation" Relationship="WaterNutDBModel.FK_Customs_Procedure_CustomsOperations" FromRole="Customs_Procedure" ToRole="CustomsOperation" />
-          <Property Name="SubmitToCustoms" Type="Boolean" Nullable="false" />
-          <Property Name="IsDefault" Type="Boolean" Nullable="false" />
-          <Property Name="ExportSupportingEntryData" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="Customs_Procedure" Relationship="WaterNutDBModel.FK_AsycudaDocumentSet_Customs_Procedure" FromRole="AsycudaDocumentSet" ToRole="Customs_Procedure" />
         </EntityType>
         <EntityType Name="Document_Type">
           <Key>
@@ -2900,30 +2875,6 @@ FROM [dbo].[xcuda_ASYCUDAEx] AS [xcuda_ASYCUDAEx]</DefiningQuery>
           <Property Name="Valuation_Id" Type="Int32" Nullable="false" />
           <NavigationProperty Name="xcuda_Valuation" Relationship="WaterNutDBModel.FK_xcuda_Weight_xcuda_Valuation" FromRole="xcuda_Weight" ToRole="xcuda_Valuation" />
         </EntityType>
-        <Association Name="FK_AsycudaDocumentSet_Customs_Procedure">
-          <End Type="WaterNutDBModel.Customs_Procedure" Role="Customs_Procedure" Multiplicity="0..1" />
-          <End Type="WaterNutDBModel.AsycudaDocumentSet" Role="AsycudaDocumentSet" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Customs_Procedure">
-              <PropertyRef Name="Customs_ProcedureId" />
-            </Principal>
-            <Dependent Role="AsycudaDocumentSet">
-              <PropertyRef Name="Customs_ProcedureId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_Customs_Procedure_Document_Type">
-          <End Type="WaterNutDBModel.Document_Type" Role="Document_Type" Multiplicity="1" />
-          <End Type="WaterNutDBModel.Customs_Procedure" Role="Customs_Procedure" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Document_Type">
-              <PropertyRef Name="Document_TypeId" />
-            </Principal>
-            <Dependent Role="Customs_Procedure">
-              <PropertyRef Name="Document_TypeId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK_ASYCUDA_Assessment_notice">
           <End Type="WaterNutDBModel.xcuda_ASYCUDA" Role="xcuda_ASYCUDA" Multiplicity="0..1">
             <OnDelete Action="Cascade" />
@@ -3605,11 +3556,11 @@ FROM [dbo].[xcuda_ASYCUDAEx] AS [xcuda_ASYCUDAEx]</DefiningQuery>
           <Property Name="TotalInternalFreight" Type="Double" />
           <Property Name="TotalPackages" Type="Int32" />
           <NavigationProperty Name="AsycudaDocumentSet" Relationship="WaterNutDBModel.FK_xcuda_ASYCUDA_ExtendedProperties_AsycudaDocumentSet" FromRole="xcuda_ASYCUDA_ExtendedProperties" ToRole="AsycudaDocumentSet" />
-          <NavigationProperty Name="Customs_Procedure" Relationship="WaterNutDBModel.FK_xcuda_ASYCUDA_ExtendedProperties_Customs_Procedure" FromRole="xcuda_ASYCUDA_ExtendedProperties" ToRole="Customs_Procedure" />
           <NavigationProperty Name="ExportTemplate" Relationship="WaterNutDBModel.FK_xcuda_ASYCUDA_ExtendedProperties_ExportTemplate" FromRole="xcuda_ASYCUDA_ExtendedProperties" ToRole="ExportTemplate" />
           <Property Name="EffectiveExpiryDate" Type="DateTime" Precision="7" />
           <Property Name="SourceFileName" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="xcuda_ASYCUDA" Relationship="WaterNutDBModel.xcuda_ASYCUDAxcuda_ASYCUDA_ExtendedProperties" FromRole="xcuda_ASYCUDA_ExtendedProperties" ToRole="xcuda_ASYCUDA" />
+          <NavigationProperty Name="Customs_Procedure" Relationship="WaterNutDBModel.FK_xcuda_ASYCUDA_ExtendedProperties_Customs_Procedure" FromRole="xcuda_ASYCUDA_ExtendedProperties" ToRole="Customs_Procedure" />
         </EntityType>
         <Association Name="FK_xcuda_ASYCUDA_ExtendedProperties_AsycudaDocumentSet">
           <End Type="WaterNutDBModel.AsycudaDocumentSet" Role="AsycudaDocumentSet" Multiplicity="1">
@@ -3622,18 +3573,6 @@ FROM [dbo].[xcuda_ASYCUDAEx] AS [xcuda_ASYCUDAEx]</DefiningQuery>
             </Principal>
             <Dependent Role="xcuda_ASYCUDA_ExtendedProperties">
               <PropertyRef Name="AsycudaDocumentSetId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_xcuda_ASYCUDA_ExtendedProperties_Customs_Procedure">
-          <End Type="WaterNutDBModel.Customs_Procedure" Role="Customs_Procedure" Multiplicity="0..1" />
-          <End Type="WaterNutDBModel.xcuda_ASYCUDA_ExtendedProperties" Role="xcuda_ASYCUDA_ExtendedProperties" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Customs_Procedure">
-              <PropertyRef Name="Customs_ProcedureId" />
-            </Principal>
-            <Dependent Role="xcuda_ASYCUDA_ExtendedProperties">
-              <PropertyRef Name="Customs_ProcedureId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -3858,18 +3797,6 @@ FROM [dbo].[xcuda_ASYCUDAEx] AS [xcuda_ASYCUDAEx]</DefiningQuery>
           <Property Name="Name" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="Customs_Procedure" Relationship="WaterNutDBModel.FK_Customs_Procedure_CustomsOperations" FromRole="CustomsOperation" ToRole="Customs_Procedure" />
         </EntityType>
-        <Association Name="FK_Customs_Procedure_CustomsOperations">
-          <End Type="WaterNutDBModel.CustomsOperation" Role="CustomsOperation" Multiplicity="1" />
-          <End Type="WaterNutDBModel.Customs_Procedure" Role="Customs_Procedure" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="CustomsOperation">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="Customs_Procedure">
-              <PropertyRef Name="CustomsOperationId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <EntityType Name="xcuda_Identification">
           <Key>
             <PropertyRef Name="ASYCUDA_Id" />
@@ -3979,6 +3906,79 @@ FROM [dbo].[xcuda_ASYCUDAEx] AS [xcuda_ASYCUDAEx]</DefiningQuery>
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="Customs_Procedure">
+          <Key>
+            <PropertyRef Name="Customs_ProcedureId" />
+          </Key>
+          <Property Name="Document_TypeId" Type="Int32" Nullable="false" />
+          <Property Name="Customs_ProcedureId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Extended_customs_procedure" Type="String" Nullable="false" MaxLength="5" FixedLength="false" Unicode="true" />
+          <Property Name="National_customs_procedure" Type="String" Nullable="false" MaxLength="5" FixedLength="false" Unicode="true" />
+          <Property Name="CustomsProcedure" Type="String" Nullable="false" MaxLength="11" FixedLength="false" Unicode="true" annotation:StoreGeneratedPattern="Computed" />
+          <Property Name="IsObsolete" Type="Boolean" Nullable="false" />
+          <Property Name="IsPaid" Type="Boolean" Nullable="false" />
+          <Property Name="BondTypeId" Type="Int32" />
+          <Property Name="Stock" Type="Boolean" Nullable="false" />
+          <Property Name="Discrepancy" Type="Boolean" Nullable="false" />
+          <Property Name="Adjustment" Type="Boolean" Nullable="false" />
+          <Property Name="Sales" Type="Boolean" Nullable="false" />
+          <Property Name="CustomsOperationId" Type="Int32" Nullable="false" />
+          <Property Name="SubmitToCustoms" Type="Boolean" Nullable="false" />
+          <Property Name="IsDefault" Type="Boolean" Nullable="false" />
+          <Property Name="ExportSupportingEntryData" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="AsycudaDocumentSets" Relationship="WaterNutDBModel.FK_AsycudaDocumentSet_Customs_Procedure" FromRole="Customs_Procedure" ToRole="AsycudaDocumentSet" />
+          <NavigationProperty Name="CustomsOperation" Relationship="WaterNutDBModel.FK_Customs_Procedure_CustomsOperations" FromRole="Customs_Procedure" ToRole="CustomsOperation" />
+          <NavigationProperty Name="Document_Type" Relationship="WaterNutDBModel.FK_Customs_Procedure_Document_Type" FromRole="Customs_Procedure" ToRole="Document_Type" />
+          <NavigationProperty Name="xcuda_ASYCUDA_ExtendedProperties" Relationship="WaterNutDBModel.FK_xcuda_ASYCUDA_ExtendedProperties_Customs_Procedure" FromRole="Customs_Procedure" ToRole="xcuda_ASYCUDA_ExtendedProperties" />
+        </EntityType>
+        <Association Name="FK_AsycudaDocumentSet_Customs_Procedure">
+          <End Type="WaterNutDBModel.Customs_Procedure" Role="Customs_Procedure" Multiplicity="0..1" />
+          <End Type="WaterNutDBModel.AsycudaDocumentSet" Role="AsycudaDocumentSet" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Customs_Procedure">
+              <PropertyRef Name="Customs_ProcedureId" />
+            </Principal>
+            <Dependent Role="AsycudaDocumentSet">
+              <PropertyRef Name="Customs_ProcedureId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Customs_Procedure_CustomsOperations">
+          <End Type="WaterNutDBModel.CustomsOperation" Role="CustomsOperation" Multiplicity="1" />
+          <End Type="WaterNutDBModel.Customs_Procedure" Role="Customs_Procedure" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CustomsOperation">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Customs_Procedure">
+              <PropertyRef Name="CustomsOperationId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Customs_Procedure_Document_Type">
+          <End Type="WaterNutDBModel.Document_Type" Role="Document_Type" Multiplicity="1" />
+          <End Type="WaterNutDBModel.Customs_Procedure" Role="Customs_Procedure" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Document_Type">
+              <PropertyRef Name="Document_TypeId" />
+            </Principal>
+            <Dependent Role="Customs_Procedure">
+              <PropertyRef Name="Document_TypeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_xcuda_ASYCUDA_ExtendedProperties_Customs_Procedure">
+          <End Type="WaterNutDBModel.Customs_Procedure" Role="Customs_Procedure" Multiplicity="0..1" />
+          <End Type="WaterNutDBModel.xcuda_ASYCUDA_ExtendedProperties" Role="xcuda_ASYCUDA_ExtendedProperties" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Customs_Procedure">
+              <PropertyRef Name="Customs_ProcedureId" />
+            </Principal>
+            <Dependent Role="xcuda_ASYCUDA_ExtendedProperties">
+              <PropertyRef Name="Customs_ProcedureId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -4013,28 +4013,6 @@ FROM [dbo].[xcuda_ASYCUDAEx] AS [xcuda_ASYCUDAEx]</DefiningQuery>
                 <ScalarProperty Name="Exchange_Rate" ColumnName="Exchange_Rate" />
                 <ScalarProperty Name="Declarant_Reference_Number" ColumnName="Declarant_Reference_Number" />
                 <ScalarProperty Name="AsycudaDocumentSetId" ColumnName="AsycudaDocumentSetId" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="Customs_Procedure">
-            <EntityTypeMapping TypeName="WaterNutDBModel.Customs_Procedure">
-              <MappingFragment StoreEntitySet="Customs_Procedure">
-                <ScalarProperty Name="ExportSupportingEntryData" ColumnName="ExportSupportingEntryData" />
-                <ScalarProperty Name="IsDefault" ColumnName="IsDefault" />
-                <ScalarProperty Name="SubmitToCustoms" ColumnName="SubmitToCustoms" />
-                <ScalarProperty Name="CustomsOperationId" ColumnName="CustomsOperationId" />
-                <ScalarProperty Name="Sales" ColumnName="Sales" />
-                <ScalarProperty Name="Adjustment" ColumnName="Adjustment" />
-                <ScalarProperty Name="Discrepancy" ColumnName="Discrepancy" />
-                <ScalarProperty Name="Stock" ColumnName="Stock" />
-                <ScalarProperty Name="BondTypeId" ColumnName="BondTypeId" />
-                <ScalarProperty Name="IsPaid" ColumnName="IsPaid" />
-                <ScalarProperty Name="IsObsolete" ColumnName="IsObsolete" />
-                <ScalarProperty Name="CustomsProcedure" ColumnName="CustomsProcedure" />
-                <ScalarProperty Name="National_customs_procedure" ColumnName="National_customs_procedure" />
-                <ScalarProperty Name="Extended_customs_procedure" ColumnName="Extended_customs_procedure" />
-                <ScalarProperty Name="Customs_ProcedureId" ColumnName="Customs_ProcedureId" />
-                <ScalarProperty Name="Document_TypeId" ColumnName="Document_TypeId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -4733,6 +4711,28 @@ FROM [dbo].[xcuda_ASYCUDAEx] AS [xcuda_ASYCUDAEx]</DefiningQuery>
               <MappingFragment StoreEntitySet="xcuda_Identification">
                 <ScalarProperty Name="Manifest_reference_number" ColumnName="Manifest_reference_number" />
                 <ScalarProperty Name="ASYCUDA_Id" ColumnName="ASYCUDA_Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Customs_Procedure">
+            <EntityTypeMapping TypeName="WaterNutDBModel.Customs_Procedure">
+              <MappingFragment StoreEntitySet="Customs_Procedure">
+                <ScalarProperty Name="ExportSupportingEntryData" ColumnName="ExportSupportingEntryData" />
+                <ScalarProperty Name="IsDefault" ColumnName="IsDefault" />
+                <ScalarProperty Name="SubmitToCustoms" ColumnName="SubmitToCustoms" />
+                <ScalarProperty Name="CustomsOperationId" ColumnName="CustomsOperationId" />
+                <ScalarProperty Name="Sales" ColumnName="Sales" />
+                <ScalarProperty Name="Adjustment" ColumnName="Adjustment" />
+                <ScalarProperty Name="Discrepancy" ColumnName="Discrepancy" />
+                <ScalarProperty Name="Stock" ColumnName="Stock" />
+                <ScalarProperty Name="BondTypeId" ColumnName="BondTypeId" />
+                <ScalarProperty Name="IsPaid" ColumnName="IsPaid" />
+                <ScalarProperty Name="IsObsolete" ColumnName="IsObsolete" />
+                <ScalarProperty Name="CustomsProcedure" ColumnName="CustomsProcedure" />
+                <ScalarProperty Name="National_customs_procedure" ColumnName="National_customs_procedure" />
+                <ScalarProperty Name="Extended_customs_procedure" ColumnName="Extended_customs_procedure" />
+                <ScalarProperty Name="Customs_ProcedureId" ColumnName="Customs_ProcedureId" />
+                <ScalarProperty Name="Document_TypeId" ColumnName="Document_TypeId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

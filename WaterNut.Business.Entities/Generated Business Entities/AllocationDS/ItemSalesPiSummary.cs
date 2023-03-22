@@ -51,7 +51,7 @@ namespace AllocationDS.Business.Entities
         }
         string _dutyfreepaid;
         [DataMember]
-        public int pLineNumber 
+        public Nullable<int> pLineNumber 
         {
             get
             {
@@ -64,9 +64,9 @@ namespace AllocationDS.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        int _plinenumber;
+        Nullable<int> _plinenumber;
         [DataMember]
-        public double pQtyAllocated 
+        public Nullable<double> pQtyAllocated 
         {
             get
             {
@@ -79,7 +79,7 @@ namespace AllocationDS.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        double _pqtyallocated;
+        Nullable<double> _pqtyallocated;
         [DataMember]
         public string pCNumber 
         {
@@ -275,6 +275,21 @@ namespace AllocationDS.Business.Entities
             }
         }
         Nullable<int> _xentryitem_id;
+        [DataMember]
+        public int EntryDataDetailsId 
+        {
+            get
+            {
+                return _entrydatadetailsid;
+            }
+            set
+            {
+                _entrydatadetailsid = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        int _entrydatadetailsid;
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

@@ -26,6 +26,7 @@ namespace AllocationDS.Business.Entities
             this.EntryDataDetailsEx = new List<EntryDataDetailsEx>();
             this.InventoryItemAliasEx = new List<InventoryItemAlias>();
             this.EntryDataDetails = new List<EntryDataDetails>();
+            this.InventoryItemAliasEx_NoReverseMappings = new List<InventoryItemAliasEx_NoReverseMappings>();
         }
 
         [DataMember]
@@ -175,6 +176,8 @@ namespace AllocationDS.Business.Entities
         public LumpedItem LumpedItem { get; set; }
         [DataMember]
         public List<EntryDataDetails> EntryDataDetails { get; set; }
+        [DataMember]
+        public List<InventoryItemAliasEx_NoReverseMappings> InventoryItemAliasEx_NoReverseMappings { get; set; }
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

@@ -383,11 +383,11 @@ namespace DocumentDS.Business.Entities
         [DataMember]
         public AsycudaDocumentSet AsycudaDocumentSet { get; set; }
         [DataMember]
-        public Customs_Procedure Customs_Procedure { get; set; }
-        [DataMember]
         public ExportTemplate ExportTemplate { get; set; }
         [DataMember]
         public xcuda_ASYCUDA xcuda_ASYCUDA { get; set; }
+        [DataMember]
+        public Customs_Procedure Customs_Procedure { get; set; }
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

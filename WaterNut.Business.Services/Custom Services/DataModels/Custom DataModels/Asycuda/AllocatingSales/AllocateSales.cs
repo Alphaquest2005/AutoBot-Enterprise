@@ -31,7 +31,7 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
             try
             {
                 List<List<(string ItemNumber, int InventoryItemId)>> itemSets = DataSpace.BaseDataModel.GetItemSets(lst);
-
+                var dupitemsets = itemSets.Where(x => x.Any(z => z.ItemNumber == "MMM/62556752301")).ToList();
                 Execute(applicationSettings, allocateToLastAdjustment, itemSets);
             }
             catch (Exception ex)
@@ -47,6 +47,8 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
             SQLBlackBox.RunSqlBlackBox();
 
             AllocationsBaseModel.PrepareDataForAllocation(applicationSettings);
+
+            var dupitemsets = itemSets.Where(x => x.Any(z => z.ItemNumber == "MMM/62556752301")).ToList();
 
             itemSets
                 .AsParallel()

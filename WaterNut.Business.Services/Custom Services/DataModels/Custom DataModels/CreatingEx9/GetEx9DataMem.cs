@@ -126,7 +126,7 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
                 Country_of_origin_code = x.Country_of_origin_code,
                 Total_CIF_itm = x.Total_CIF_itm,
                 Net_weight_itm = x.Net_weight_itm,
-                InventoryItemId = x.InventoryItemId ?? 0,
+                InventoryItemId = x.InventoryItemId ,
                 PIData = x.AsycudaSalesAllocationsPIData,
                 previousItems = x?.PreviousDocumentItem.EntryPreviousItems
                     .Select(y => y.xcuda_PreviousItem)

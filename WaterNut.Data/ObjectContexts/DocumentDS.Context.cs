@@ -49,8 +49,6 @@ namespace DocumentDS.Business.Entities
 
         public DbSet<AsycudaDocumentSet> AsycudaDocumentSets { get; set; }
      
-        public DbSet<Customs_Procedure> Customs_Procedure { get; set; }
-     
         public DbSet<Document_Type> Document_Type { get; set; }
      
         public DbSet<ExportTemplate> ExportTemplates { get; set; }
@@ -177,13 +175,13 @@ namespace DocumentDS.Business.Entities
      
         public DbSet<xcuda_Identification> xcuda_Identification { get; set; }
      
+        public DbSet<Customs_Procedure> Customs_Procedure { get; set; }
+     
 
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             modelBuilder.Configurations.Add(new AsycudaDocumentSetMap());
-         
-            modelBuilder.Configurations.Add(new Customs_ProcedureMap());
          
             modelBuilder.Configurations.Add(new Document_TypeMap());
          
@@ -310,6 +308,8 @@ namespace DocumentDS.Business.Entities
             modelBuilder.Configurations.Add(new CustomsOperationMap());
          
             modelBuilder.Configurations.Add(new xcuda_IdentificationMap());
+         
+            modelBuilder.Configurations.Add(new Customs_ProcedureMap());
          
 			OnModelCreatingExtentsion(modelBuilder);
 
