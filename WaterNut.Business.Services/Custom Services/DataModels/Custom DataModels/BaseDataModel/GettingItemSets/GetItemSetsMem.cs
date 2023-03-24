@@ -73,10 +73,10 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
         private List<KeyValuePair<(string ItemNumber, int InventoryItemId), List<(string ItemNumber, int InventoryItemId)>>> GroupLst(List<KeyValuePair<(string ItemNumber, int InventoryItemId), List<(string ItemNumber, int InventoryItemId)>>> lst1)
         {
             var res = new List<KeyValuePair<(string ItemNumber, int InventoryItemId), List<(string ItemNumber, int InventoryItemId)>>>();
-           // var numlst = new List<int>() { 10436, 57399, 54940, 48631, 48630 };
+            // var numlst = new List<int>() { 10436, 57399, 54940, 48631, 48630 };
             var slut = lst1
                 //.Where(x => x.Value.Any(z => z.ItemNumber == "MMM/62556752301"))
-               // .Where(x => x.Value.Any(z =>numlst.Contains(z.InventoryItemId)))
+                // .Where(x => x.Value.Any(z =>numlst.Contains(z.InventoryItemId)))
                 .ToList();
             while (slut.Any())
             {
@@ -87,13 +87,59 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
                     .ToList();
                 var resValue = itm.Value.ToList();
                 resValue.AddRange(others.SelectMany(x => x.Value).ToList().Except(resValue).ToList());
-               res.Add(new KeyValuePair<(string ItemNumber, int InventoryItemId), List<(string ItemNumber, int InventoryItemId)>>(itm.Key, resValue));
-               slut.Remove(itm);
-               slut = slut.Except(others).ToList();
+                res.Add(new KeyValuePair<(string ItemNumber, int InventoryItemId), List<(string ItemNumber, int InventoryItemId)>>(itm.Key, resValue));
+                slut.Remove(itm);
+                slut = slut.Except(others).ToList();
 
             }
-            return (res.Count == lst1.Count ? res : GroupLst(res));
+
+            var rres = res.Where(x => x.Value.Any()).ToList();
+
+            return (res.Count == lst1.Count ? rres : GroupLst(rres));
         }
+
+        //private Dictionary<(string ItemNumber, int InventoryItemId), List<(string ItemNumber, int InventoryItemId)>> GroupLst(List<KeyValuePair<(string ItemNumber, int InventoryItemId), List<(string ItemNumber, int InventoryItemId)>>> inputList)
+        //{
+        //    var resultList = new Dictionary<(string ItemNumber, int InventoryItemId), List<(string ItemNumber, int InventoryItemId)>>();
+        //    var toProcessList = new List<KeyValuePair<(string ItemNumber, int InventoryItemId), List<(string ItemNumber, int InventoryItemId)>>>(inputList);
+        //    var processedList = new HashSet<(string ItemNumber, int InventoryItemId)>();
+        //    //var numList = new HashSet<int>() { 10436, 57399, 54940, 48631, 48630 };
+
+        //    while (toProcessList.Any())
+        //    {
+        //        var item = toProcessList.First();
+        //        var others = toProcessList.Skip(1)
+        //            .Where(x => x.Value.Any(z => z.InventoryItemId == item.Key.InventoryItemId
+        //            //|| numList.Contains(z.InventoryItemId))
+        //            || x.Value.Select(q => q.InventoryItemId).Intersect(item.Value.Select(q => q.InventoryItemId)).Any()))
+        //            .ToList();
+        //        var resultValue = item.Value.ToList();
+        //        resultValue.AddRange(others.SelectMany(x => x.Value).ToList().Except(resultValue).ToList());
+        //        resultList.Add(item.Key, resultValue);
+        //        processedList.Add(item.Key);
+        //        toProcessList = toProcessList.Skip(1).Except(others).ToList();
+        //    }
+
+        //    // Remove empty values
+        //    resultList = resultList.Where(x => x.Value.Any()).ToDictionary(x => x.Key, x => x.Value);
+
+        //    // Process remaining items
+        //    if (processedList.Count < inputList.Count)
+        //    {
+        //        var remainingItems = inputList.Where(x => !processedList.Contains(x.Key)).ToList();
+        //        var remainingResult = GroupLst(remainingItems);
+        //        foreach (var item in remainingResult)
+        //        {
+        //            if (!resultList.ContainsKey(item.Key))
+        //            {
+        //                resultList.Add(item.Key, item.Value);
+        //            }
+        //        }
+        //    }
+
+        //    return resultList;
+        //}
+
 
 
         public List<List<(string ItemNumber, int InventoryItemId)>> Execute(string lst)
@@ -125,7 +171,7 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
                     returnItems.Add(comb.ToList());
                 }
 
-                return returnItems;
+                return returnItems.Where(x => x.Any()).ToList();
 
 
             }

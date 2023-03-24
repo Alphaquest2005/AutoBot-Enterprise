@@ -68,7 +68,7 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
             //new AdjustmentShortService().AutoMatch(applicationSettings.ApplicationSettingsId, true, itemSets)
             //    .Wait();
 
-            itemSets
+                itemSets
                 .AsParallel()
                 .WithDegreeOfParallelism(Convert.ToInt32(Environment.ProcessorCount *
                                                          DataSpace.BaseDataModel.Instance.ResourcePercentage))

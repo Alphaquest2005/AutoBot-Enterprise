@@ -229,12 +229,12 @@ namespace AutoBotUtilities.Tests
                 using (var ctx = new AllocationDSContext())
                 {
                     var allocations = new AllocationQSContext().AsycudaSalesAndAdjustmentAllocationsExes.AsNoTracking()
-                        .Count(x => x.InvoiceNo == invoiceNo && x.ItemNumber == itemNumber);
+                        .Count(x => x.InvoiceNo == invoiceNo && itemNumber.Contains(x.ItemNumber));
 
 
                     Assert.Multiple(() =>
                     {
-                        Assert.AreEqual(1, allocations);
+                        Assert.AreEqual(2, allocations);
                         
 
                     });

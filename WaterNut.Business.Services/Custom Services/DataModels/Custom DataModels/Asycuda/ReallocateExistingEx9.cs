@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace WaterNut.DataSpace
@@ -15,6 +16,7 @@ namespace WaterNut.DataSpace
 
         public async Task Execute(List<(string ItemNumber, int InventoryItemId)> itemSetLst)
         {
+            
             if (BaseDataModel.Instance.CurrentApplicationSettings.PreAllocateEx9s == true)
                 await new ProcessPreAllocations().Execute(GetExistingEx9s(itemSetLst)).ConfigureAwait(false);
         }
