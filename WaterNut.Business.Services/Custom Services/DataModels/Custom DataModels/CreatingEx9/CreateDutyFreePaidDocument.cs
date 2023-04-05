@@ -30,7 +30,7 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
     public class CreateDutyFreePaidDocument
     {
         
-        private readonly List<PiSummary> DocSetPi = new List<PiSummary>();
+        private static readonly List<PiSummary> DocSetPi = new List<PiSummary>();
         private Dictionary<(int PreviousItemId, string CNumber), xcuda_Exporter> _exporters = null;
 
         static CreateDutyFreePaidDocument()
@@ -55,7 +55,7 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
         {
             try
             {
-                DocSetPi.Clear();
+               // ClearDocSetPi(); // move this out for now so it spans mulitple periods
 
                 var sql = "";
                 // applyHistoricChecks = false;
@@ -213,6 +213,11 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
 
                 throw;
             }
+        }
+
+        public static void ClearDocSetPi()
+        {
+            DocSetPi.Clear();
         }
 
         private static void SaveSql(string sql)
@@ -812,6 +817,7 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
 
                 if (applyHistoricChecks && totalSalesHistoric + totalPiHistoric > 0)// if sales + pi is zero this is first sale so can't do historic checks
                 {
+                    
 
                     var docDFPpi = DocSetPi.Where(x => x.DutyFreePaid == dfp && x.PreviousItem_Id == mypod.EntlnData.PreviousDocumentItemId).Sum(x => x.TotalQuantity);
                     if (Math.Round(totalSalesHistoric, 2) <
@@ -870,7 +876,7 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
 
                     var availibleQty = mypod.EntlnData.pDocumentItem.ItemQuantity - (totalPiAll + docPi);
                     if (availibleQty != 0) Ex9Bucket(mypod, availibleQty, mypod.EntlnData.pDocumentItem.ItemQuantity, totalPiAll + docPi, "Historic", sql);
-                    if (mypod.EntlnData.Quantity == 0)
+                    if (mypod.EntlnData.Quantity == 0 || availibleQty == 0)
                     {
                         UpdateXStatus(mypod.Allocations,
                             $@"Failed ItemQuantity < totalPiAll & xQuantity:{mypod.EntlnData.pDocumentItem.ItemQuantity}

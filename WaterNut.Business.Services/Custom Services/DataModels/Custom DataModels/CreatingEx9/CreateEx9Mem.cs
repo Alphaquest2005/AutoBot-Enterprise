@@ -113,8 +113,8 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
              var getEx9DataMem = ex9DataMemTask.Result;
 
              var filters = filterTask.Result;
-
-            filters
+             CreateDutyFreePaidDocument.ClearDocSetPi();
+                filters
                 .AsParallel()
                 .AsOrdered()
                 //.WithDegreeOfParallelism(Convert.ToInt32(Environment.ProcessorCount *
@@ -329,7 +329,8 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
 
                 var allHistoricSales = allSales
                     .Where(x => (x.Summary.Type ?? x.Summary.EntryDataType) == entryType)// || x.Summary.Type == null
-                    .Where(x => x.Summary.EntryDataDate <= endDate)
+                    .Where(x => x.Summary.EntryDataDate <= endDate 
+                                && x.Summary.EntryDataDate >= DataSpace.BaseDataModel.Instance.CurrentApplicationSettings.OpeningStockDate)
                     .Where(x => x.Summary.DutyFreePaid == dfp).ToList();
 
                 //var test = allSales.Where(x => x.Summary.PreviousItem_Id == 16758);

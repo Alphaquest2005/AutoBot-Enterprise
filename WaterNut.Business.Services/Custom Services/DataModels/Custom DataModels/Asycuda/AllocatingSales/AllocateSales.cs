@@ -48,7 +48,7 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
 
             AllocationsBaseModel.PrepareDataForAllocation(applicationSettings);
 
-            var dupitemsets = itemSets.Where(x => x.Any(z => z.ItemNumber == "MMM/62556752301")).ToList();
+            //var dupitemsets = itemSets.Where(x => x.Any(z => z.ItemNumber == "MMM/62556752301")).ToList();
 
             itemSets
                 .AsParallel()

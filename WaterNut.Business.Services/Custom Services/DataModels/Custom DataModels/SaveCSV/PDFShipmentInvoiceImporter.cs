@@ -21,8 +21,9 @@ namespace WaterNut.DataSpace
             {
                 var file = new DataFile(dataFile.FileType, dataFile.DocSet,dataFile.OverWriteExisting, dataFile.EmailId, dataFile.DroppedFilePath,
                     Enumerable.SelectMany<dynamic, object>(dataFile.Data, x =>
-                        ((List<IDictionary<string, object>>)x).Select(z => z["InvoiceDetails"])).SelectMany(x =>
-                        ((List<IDictionary<string, object>>)x).Select(z => (dynamic)z)).ToList());
+                        ((List<IDictionary<string, object>>)x).Select(z => z["InvoiceDetails"]))
+                        .Where(x => x != null)
+                        .SelectMany(x => ((List<IDictionary<string, object>>)x).Select(z => (dynamic)z)).ToList());
 
                 await _inventoryImporter.ImportInventory( file).ConfigureAwait(false);
 
