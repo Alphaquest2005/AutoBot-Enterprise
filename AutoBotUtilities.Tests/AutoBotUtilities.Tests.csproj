@@ -76,7 +76,7 @@
     <PackageReference Include="BouncyCastle" Version="1.8.9" />
     <PackageReference Include="BouncyCastle.Crypto.dll" Version="1.8.1" />
     <PackageReference Include="EntityFramework" Version="6.4.4" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="NSubstitute" Version="5.0.0" />
     <PackageReference Include="NUnit" Version="3.13.3" />
     <PackageReference Include="PdfPig" Version="0.1.7" />

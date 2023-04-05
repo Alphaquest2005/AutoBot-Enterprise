@@ -144,6 +144,7 @@ namespace WaterNut.DataSpace
             foreach (var grp in lstData.GroupBy(x => x.InvoiceNo))
             {
                 var rinvoice = grp.FirstOrDefault(x => grp.Count() <= 1 || x.InvoiceNo == x.PONumber);
+                if(rinvoice == null) continue;
                 foreach (var invoice in grp.Where(x => grp.Count() > 1 && x.InvoiceNo != x.PONumber))
                 {
                     rinvoice.InvoiceDetails.AddRange(invoice.InvoiceDetails);
