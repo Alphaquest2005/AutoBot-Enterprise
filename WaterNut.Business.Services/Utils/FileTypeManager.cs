@@ -219,7 +219,9 @@ namespace WaterNut.Business.Services.Utils
                 {
                     "ADJ-Reference",
                     (dt, drow, header) =>
-                        $"ADJ-{DateTime.Parse(drow["Date".ToUpper()].ToString()):MMM-yy}"// can't think how to replicate and don't think its a problem //  $"ADJ-{DateTime.Parse(drow[Array.LastIndexOf(header.ItemArray, "Date".ToUpper())].ToString()):MMM-yy}"
+                        drow.Keys.Contains("Date".ToUpper()) 
+                            ? $"ADJ-{DateTime.Parse(drow["Date".ToUpper()].ToString()):MMM-yy}"// can't think how to replicate and don't think its a problem //  $"ADJ-{DateTime.Parse(drow[Array.LastIndexOf(header.ItemArray, "Date".ToUpper())].ToString()):MMM-yy}"
+                            :null
                 }, //adjReference
                 {
                     "Quantity",
@@ -232,21 +234,29 @@ namespace WaterNut.Business.Services.Utils
                 { "ZeroCost", (x, drow, header) => "0" },
                 {
                     "ABS-Added",
-                    (dt, drow, header) => Math.Abs(Convert.ToDouble(dt["{Added}"].ToString().Replace("\"", "")))
+                    (dt, drow, header) =>
+                        drow.Keys.Contains("{Added}".ToUpper())
+                        ? Math.Abs(Convert.ToDouble(dt["{Added}"].ToString().Replace("\"", "")))
                         .ToString(CultureInfo.CurrentCulture)
+                        :null
                 },
                 {
                     "ABS-Removed",
-                    (dt, drow, header) => Math.Abs(Convert.ToDouble(dt["{Removed}"].ToString().Replace("\"", "")))
+                    (dt, drow, header) =>
+                        drow.Keys.Contains("{Removed}".ToUpper())
+                        ? Math.Abs(Convert.ToDouble(dt["{Removed}"].ToString().Replace("\"", "")))
                         .ToString(CultureInfo.CurrentCulture)
+                        :null
                 },
                 {
                     "ADJ-Quantity",
                     (dt, drow, header) =>
-                        Convert.ToString(
+                        drow.Keys.Contains("{Added}".ToUpper()) && drow.Keys.Contains("{Removed}".ToUpper())
+                        ? Convert.ToString(
                             Math.Abs((Math.Abs(Convert.ToDouble(dt["{Added}"].ToString().Replace("\"", ""))) -
                                       Math.Abs(Convert.ToDouble(dt["{Removed}"].ToString().Replace("\"", ""))))),
                             CultureInfo.CurrentCulture)
+                        :null
                 },
                 {
                     "Cost2USD",

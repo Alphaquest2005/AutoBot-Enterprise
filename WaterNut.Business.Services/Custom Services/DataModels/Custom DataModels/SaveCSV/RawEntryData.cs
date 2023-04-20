@@ -30,6 +30,7 @@ namespace WaterNut.DataSpace
         {
             public dynamic EntryDataId { get; }
             public dynamic EntryDataDate { get; }
+            public dynamic EffectiveDate { get; }
             public int AsycudaDocumentSetId { get; }
             public int ApplicationSettingsId { get; }
             public dynamic CustomerName { get; }
@@ -46,7 +47,7 @@ namespace WaterNut.DataSpace
             public dynamic PoNumber { get; }
             public string SourceFile { get; }
 
-            public EntryDataValue(dynamic entryDataId, dynamic entryDataDate, int asycudaDocumentSetId,
+            public EntryDataValue(dynamic entryDataId, dynamic entryDataDate, dynamic effectiveDate, int asycudaDocumentSetId,
                 int applicationSettingsId, dynamic customerName, dynamic tax, dynamic supplier, dynamic currency,
                 string emailId, int fileTypeId,
                 dynamic documentType, dynamic supplierInvoiceNo, dynamic previousCNumber, dynamic financialInformation,
@@ -54,6 +55,7 @@ namespace WaterNut.DataSpace
             {
                 EntryDataId = entryDataId;
                 EntryDataDate = entryDataDate;
+                EffectiveDate = effectiveDate;
                 AsycudaDocumentSetId = asycudaDocumentSetId;
                 ApplicationSettingsId = applicationSettingsId;
                 CustomerName = customerName;

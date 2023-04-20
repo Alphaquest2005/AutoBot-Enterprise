@@ -64,6 +64,7 @@
           <Property Name="EntryData_Id" Type="int" Nullable="false" />
           <Property Name="Tax" Type="float" />
           <Property Name="Vendor" Type="nvarchar" MaxLength="50" />
+          <Property Name="EffectiveDate" Type="datetime" />
         </EntityType>
         <EntityType Name="EntryData_DocumentType">
           <Key>
@@ -3157,6 +3158,7 @@ FROM [dbo].[ShipmentRiderManifests] AS [ShipmentRiderManifests]</DefiningQuery>
           <Property Name="Type" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="Tax" Type="Double" />
           <Property Name="Vendor" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="EffectiveDate" Type="DateTime" Precision="3" />
         </EntityType>
         <EntityType Name="FileTypes">
           <Key>
@@ -5133,6 +5135,7 @@ FROM [dbo].[ShipmentRiderManifests] AS [ShipmentRiderManifests]</DefiningQuery>
             </EntityTypeMapping>
             <EntityTypeMapping TypeName="IsTypeOf(WaterNutDBModel.Adjustments)">
               <MappingFragment StoreEntitySet="EntryData_Adjustments">
+                <ScalarProperty Name="EffectiveDate" ColumnName="EffectiveDate" />
                 <ScalarProperty Name="Vendor" ColumnName="Vendor" />
                 <ScalarProperty Name="Tax" ColumnName="Tax" />
                 <ScalarProperty Name="EntryData_Id" ColumnName="EntryData_Id" />

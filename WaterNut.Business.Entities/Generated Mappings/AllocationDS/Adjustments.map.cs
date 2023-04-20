@@ -17,6 +17,7 @@
               this.Property(t => t.Type).HasColumnName("Type").HasMaxLength(50);
               this.Property(t => t.Tax).HasColumnName("Tax");
               this.Property(t => t.Vendor).HasColumnName("Vendor").HasMaxLength(50);
+              this.Property(t => t.EffectiveDate).HasColumnName("EffectiveDate");
               this.HasMany(t => t.EntryDataDetails).WithRequired(t => (Adjustments)t.Adjustments);
              // Nav Property Names
                   

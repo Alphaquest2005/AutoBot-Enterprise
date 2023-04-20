@@ -365,8 +365,17 @@ namespace WaterNut.DataSpace
             
             StatusModel.Timer("Getting Data - Adjustments Entries...");
 
-            return  UpdateAdjList(CreateADJItemSalesList(GetAdjustmentsData(itemSetLst)));
+            return  UpdateAdjList(CreateADJItemSalesList(UpdateEffectiveDate(GetAdjustmentsData(itemSetLst))));
 			
+        }
+
+        private static List<EntryDataDetails> UpdateEffectiveDate(List<EntryDataDetails> entryDataDetailsList)
+        {
+            entryDataDetailsList.ForEach(x =>
+            {
+                if (x.EffectiveDate == null) x.EffectiveDate = x.Adjustments.EffectiveDate;
+            });
+            return entryDataDetailsList;
         }
 
         private static List<AllocationsBaseModel.ItemSales> UpdateAdjList(List<AllocationsBaseModel.ItemSales> adjlst)
@@ -376,7 +385,7 @@ namespace WaterNut.DataSpace
                 x.Sales = new Sales
                 {
                     EntryDataId = x.Adjustments.EntryDataId,
-                    EntryDataDate = Convert.ToDateTime(x.EffectiveDate),
+                    EntryDataDate = Convert.ToDateTime(x.Adjustments.EffectiveDate ?? x.EffectiveDate ?? x.Adjustments.EntryDataDate),
                     INVNumber = x.Adjustments.EntryDataId,
                     Tax = x.Adjustments.Tax,
                     EntryDataType = "ADJ"
@@ -392,7 +401,7 @@ namespace WaterNut.DataSpace
             adjlst = (salesData
                 //.Where(x => lst == null || lst.Contains(x.ItemNumber))
                 .Where(x => x.Adjustments.Type == "ADJ")
-                .GroupBy(d => (EntryDataDate: d.EffectiveDate ?? d.Adjustments.EntryDataDate, d.EntryDataId,
+                .GroupBy(d => (EntryDataDate: d.EffectiveDate ?? d.Adjustments.EffectiveDate ?? d.Adjustments.EntryDataDate, d.EntryDataId,
                     ItemNumber: d.ItemNumber.ToUpper().Trim(), d.InventoryItemId))
                 .Select(g => new AllocationsBaseModel.ItemSales
                 {

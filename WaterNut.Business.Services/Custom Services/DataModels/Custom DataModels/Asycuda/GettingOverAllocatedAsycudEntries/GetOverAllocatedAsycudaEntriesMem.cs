@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using AllocationDS.Business.Entities;
+using MoreLinq;
 using CustomsOperations = CoreEntities.Business.Enums.CustomsOperations;
 
 namespace WaterNut.DataSpace
@@ -27,10 +28,13 @@ namespace WaterNut.DataSpace
                             .Include(x => x.xcuda_Tarification.xcuda_Supplementary_unit)
                             .Include(x => x.SubItems)
                             .Include(x => x.xcuda_Goods_description)
-                            .Where(x => (x.DFQtyAllocated + x.DPQtyAllocated) > x.xcuda_Tarification.xcuda_Supplementary_unit
+                            .Where(x => (x.DFQtyAllocated + x.DPQtyAllocated) > x.xcuda_Tarification
+                                .xcuda_Supplementary_unit
                                 .FirstOrDefault(z => z.IsFirstRow == true).Suppplementary_unit_quantity)
-                            .Where(x => (x.AsycudaDocument.CNumber != null || x.AsycudaDocument.IsManuallyAssessed == true) &&
-                                        (x.AsycudaDocument.Customs_Procedure.CustomsOperationId == (int)CustomsOperations.Import
+                            .Where(x => (x.AsycudaDocument.CNumber != null ||
+                                         x.AsycudaDocument.IsManuallyAssessed == true) &&
+                                        (x.AsycudaDocument.Customs_Procedure.CustomsOperationId ==
+                                         (int)CustomsOperations.Import
                                          || x.AsycudaDocument.Customs_Procedure.CustomsOperationId ==
                                          (int)CustomsOperations.Warehouse)
                                         //&& x.AsycudaDocument.Customs_Procedure.Sales == true 
@@ -38,10 +42,10 @@ namespace WaterNut.DataSpace
                             .Where(x => x.AsycudaDocument.AssessmentDate >=
                                         (BaseDataModel.Instance.CurrentApplicationSettings.OpeningStockDate))
                             .AsNoTracking()
-                            
-                            .ToDictionary(x=>x.Item_Id, x => x);
-                        _imAsycudaEntries =
-                            new ConcurrentDictionary<int, xcuda_Item>(lst);
+                            .ToDictionary(x => x.Item_Id, x => x);
+                    
+
+                        _imAsycudaEntries = new ConcurrentDictionary<int, xcuda_Item>(lst);
                     }
                 }
             }

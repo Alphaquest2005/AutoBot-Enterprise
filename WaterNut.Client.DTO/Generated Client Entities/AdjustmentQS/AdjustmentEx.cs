@@ -190,6 +190,19 @@ namespace AdjustmentQS.Client.DTO
 		}
         private int _EntryData_Id;
 
+        [DataMember]
+        public Nullable<System.DateTime> EffectiveDate
+		{ 
+		    get { return _EffectiveDate; }
+			set
+			{
+			    if (value == _EffectiveDate) return;
+				_EffectiveDate = value;
+				NotifyPropertyChanged();//m => this.EffectiveDate
+			}
+		}
+        private Nullable<System.DateTime> _EffectiveDate;
+
        
         [DataMember]
         public ChangeTrackingCollection<AsycudaDocumentSetEntryData> AsycudaDocumentSets

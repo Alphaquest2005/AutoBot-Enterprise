@@ -27,6 +27,7 @@ namespace WaterNut.DataSpace
                     EntryData = new RawEntryDataValue.EntryDataValue(
                         g.Key.EntryDataId,
                         g.Key.EntryDataDate,
+                        ((dynamic)g.FirstOrDefault())?.EffectiveDate,
                         docSet.FirstOrDefault(x => x.SystemDocumentSet == null)?.AsycudaDocumentSetId ?? docSet.First().AsycudaDocumentSetId,
                         docSet.FirstOrDefault(x => x.SystemDocumentSet == null)?.ApplicationSettingsId ?? docSet.First().ApplicationSettingsId,
                         g.Key.CustomerName,

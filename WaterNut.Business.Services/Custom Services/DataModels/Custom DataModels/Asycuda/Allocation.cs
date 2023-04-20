@@ -195,16 +195,22 @@ namespace WaterNut.DataSpace
 													DELETE FROM CTE WHERE RN > 1
 
 													delete from entrydata where entrydata_id not in (select distinct Entrydata_id from entrydatadetails)");
-
-				//ctx.Database.ExecuteSqlCommand($@"WITH CTE AS(
-				//SELECT EntryDataDetails.EntryDataId, FileLineNumber,ItemNumber, Quantity, InvoiceQty, ReceivedQty,
-				//RN = ROW_NUMBER()OVER(PARTITION BY EntryDataDetails.EntryDataId, FileLineNumber, ItemNumber, Quantity, InvoiceQty, ReceivedQty  ORDER BY EntryDataDetails.EntryDataId, FileLineNumber, ItemNumber, Quantity, InvoiceQty, ReceivedQty)
-				//FROM EntryDataDetails
-				//	)
-				//DELETE FROM CTE WHERE RN > 1
-
-				//delete from entrydata where entrydata_id not in (select distinct Entrydata_id from entrydatadetails)");
-			}
+                for (int i = 0; i < 3; i++)
+                {
+                    try
+                    {
+                       ctx.Database.ExecuteSqlCommand("EXEc [dbo].[FixItemIssues]");
+                    }
+                    catch (SqlException ex)
+                    {
+                        // Handle the exception here
+                    }
+                   
+                    
+                }
+               
+    
+            }
 		}
 
 

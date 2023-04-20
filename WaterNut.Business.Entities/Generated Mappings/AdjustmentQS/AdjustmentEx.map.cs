@@ -26,6 +26,7 @@
               this.Property(t => t.InvoiceTotal).HasColumnName("InvoiceTotal");
               this.Property(t => t.ImportedTotal).HasColumnName("ImportedTotal");
               this.Property(t => t.EntryData_Id).HasColumnName("EntryData_Id").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.None));
+              this.Property(t => t.EffectiveDate).HasColumnName("EffectiveDate");
               this.HasMany(t => t.AsycudaDocumentSets).WithRequired(t => (AdjustmentEx)t.AdjustmentEx);
               this.HasMany(t => t.AsycudaDocuments).WithRequired(t => (AdjustmentEx)t.AdjustmentEx);
               this.HasMany(t => t.AdjustmentOvers).WithRequired(t => (AdjustmentEx)t.AdjustmentEx);

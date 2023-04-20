@@ -250,6 +250,21 @@ public int EntryData_Id
 		}
      
 
+       
+       
+public Nullable<System.DateTime> EffectiveDate
+		{ 
+		    get { return this.adjustmentex.EffectiveDate; }
+			set
+			{
+			    if (value == this.adjustmentex.EffectiveDate) return;
+				this.adjustmentex.EffectiveDate = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("EffectiveDate");
+			}
+		}
+     
+
         ObservableCollection<AsycudaDocumentSetEntryData> _AsycudaDocumentSets = null;
         public  ObservableCollection<AsycudaDocumentSetEntryData> AsycudaDocumentSets
 		{

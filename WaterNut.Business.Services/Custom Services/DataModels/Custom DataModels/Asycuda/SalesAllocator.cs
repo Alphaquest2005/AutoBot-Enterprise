@@ -75,7 +75,7 @@ namespace WaterNut.DataSpace
 
             var count = itemSetsValues.Count();
             var res = new List<(List<EntryDataDetails> Sales, List<xcuda_Item> asycudaItems)>();
-            var orderedLst = itemSetsValues.OrderBy(x => x.Key.EntryDataDate);
+            var orderedLst = itemSetsValues.OrderBy(x => x.Key.EntryDataDate).ToList();
             foreach (var itm in orderedLst)
                 try
                 {
@@ -85,7 +85,8 @@ namespace WaterNut.DataSpace
                     var sales = SortEntryDataDetailsList(itm);
                     var asycudaItems = SortAsycudaItems(itm);
 
-                    await AllocateSalestoAsycudaByKey(sales, asycudaItems, t, count, allocateToLastAdjustment).ConfigureAwait(false);
+                    await AllocateSalestoAsycudaByKey(sales, asycudaItems, t, count, allocateToLastAdjustment, orderedLst).ConfigureAwait(false);
+
                     res.Add((sales, asycudaItems));
 
                 }
@@ -126,7 +127,8 @@ namespace WaterNut.DataSpace
         }
 
         private async Task AllocateSalestoAsycudaByKey(List<EntryDataDetails> saleslst, List<xcuda_Item> asycudaEntries,
-            double currentSetNo, int setNo, bool allocateToLastAdjustment)
+            double currentSetNo, int setNo, bool allocateToLastAdjustment,
+            List<AllocationsBaseModel.ItemSet> salesSet)
         {
             try
             {
@@ -231,7 +233,7 @@ namespace WaterNut.DataSpace
 
                         if (saleitmQtyToallocate < 0 && Enumerable.Where<AsycudaSalesAllocations>(cAsycudaItm.AsycudaSalesAllocations, x => x.DutyFreePaid == saleitm.DutyFreePaid).Sum(x => x.QtyAllocated) == 0)
                         {
-                            var previousI = GetPreviousAllocatedAsycudaItem(asycudaEntries, saleslst, saleitm, i);
+                            var previousI = GetPreviousAllocatedAsycudaItem(asycudaEntries, saleslst, saleitm, i,salesSet);
                             if (previousI != i && previousI != i - 1)
                             {
                                 i = previousI;
@@ -278,7 +280,7 @@ namespace WaterNut.DataSpace
                                     if (i == 0)
                                     {
                                         if (CurrentSalesItemIndex == 0 && saleslst.Count == 1)
-                                            i = GetPreviousAllocatedAsycudaItem(asycudaEntries,saleslst, saleitm, i);
+                                            i = GetPreviousAllocatedAsycudaItem(asycudaEntries,saleslst, saleitm, i, salesSet);
 
                                     }
                                     else
@@ -335,11 +337,12 @@ namespace WaterNut.DataSpace
         }
 
         private int GetPreviousAllocatedAsycudaItem(List<xcuda_Item> asycudaEntries,
-            List<EntryDataDetails> salesItems, EntryDataDetails saleitm, int i)
+            List<EntryDataDetails> salesItems, EntryDataDetails saleitm, int i,
+            List<AllocationsBaseModel.ItemSet> salesSet)
         {
             return isDBMem == true
                 ? new GetPreviousAllocatedAsycudaItemDB().Execute(asycudaEntries, saleitm, i)
-                : new GetPreviousAllocatedASycudaItemMemory(salesItems).Execute(asycudaEntries, saleitm, i);
+                : new GetPreviousAllocatedASycudaItemMemory(salesSet.SelectMany(x => x.SalesList).ToList()).Execute(asycudaEntries, saleitm, i);
         }
 
        

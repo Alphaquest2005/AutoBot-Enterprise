@@ -281,7 +281,7 @@ namespace WaterNut.Business.Services.Utils.AutoMatching
             {
                 ctx.Database.CommandTimeout = 10;
                 minEffectiveDate = edLst.Min(x => x.EffectiveDate)
-                                   ?? edLst.Where(x => x.AdjustmentEx != null).Min(x => x.AdjustmentEx.InvoiceDate);
+                                   ?? edLst.Where(x => x.AdjustmentEx != null).Min(x => x.AdjustmentEx.EffectiveDate ?? x.AdjustmentEx.InvoiceDate);
 
                 foreach (var ed in edLst.Where(x => x.EffectiveDate == null))
                 {

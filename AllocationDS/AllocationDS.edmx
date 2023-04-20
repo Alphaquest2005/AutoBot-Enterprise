@@ -88,6 +88,7 @@
           <Property Name="EntryData_Id" Type="int" Nullable="false" />
           <Property Name="Tax" Type="float" />
           <Property Name="Vendor" Type="nvarchar" MaxLength="50" />
+          <Property Name="EffectiveDate" Type="datetime" />
         </EntityType>
         <EntityType Name="EntryData_Sales">
           <Key>
@@ -935,7 +936,11 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemAliasEx-NoRe
         <EntityType Name="InventoryItemAliasEx-NoReverseMappings">
           <Key>
             <PropertyRef Name="AliasId" />
+            
+            
+            
             <PropertyRef Name="AliasName" />
+            
           </Key>
           <Property Name="AliasId" Type="int" Nullable="false" />
           <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
@@ -3422,6 +3427,7 @@ FROM [dbo].[XSales-UnAllocated] AS [XSales-UnAllocated]</DefiningQuery>
           <Property Name="Type" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="Tax" Type="Double" />
           <Property Name="Vendor" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="EffectiveDate" Type="DateTime" Precision="3" />
         </EntityType>
         <Association Name="EntryData_AdjustmentsEntryDataDetails">
           <End Type="WaterNutDBModel.Adjustments" Role="EntryData_Adjustments" Multiplicity="1" />
@@ -4401,6 +4407,7 @@ FROM [dbo].[XSales-UnAllocated] AS [XSales-UnAllocated]</DefiningQuery>
             </EntityTypeMapping>
             <EntityTypeMapping TypeName="IsTypeOf(WaterNutDBModel.Adjustments)">
               <MappingFragment StoreEntitySet="EntryData_Adjustments">
+                <ScalarProperty Name="EffectiveDate" ColumnName="EffectiveDate" />
                 <ScalarProperty Name="Vendor" ColumnName="Vendor" />
                 <ScalarProperty Name="Tax" ColumnName="Tax" />
                 <ScalarProperty Name="EntryData_Id" ColumnName="EntryData_Id" />

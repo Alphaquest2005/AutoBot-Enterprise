@@ -191,6 +191,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AdjustmentEx' does not ha
           </Key>
           <Property Name="EntryData_Id" Type="int" Nullable="false" />
           <Property Name="InvoiceDate" Type="datetime2" Precision="7" Nullable="false" />
+          <Property Name="EffectiveDate" Type="datetime" />
           <Property Name="Type" Type="nvarchar" MaxLength="50" />
           <Property Name="DutyFreePaid" Type="varchar" MaxLength="9" Nullable="false" />
           <Property Name="ImportedTotal" Type="float" />
@@ -664,6 +665,7 @@ FROM [dbo].[AdjustmentDetails] AS [AdjustmentDetails]</DefiningQuery>
             <DefiningQuery>SELECT 
 [AdjustmentEx].[EntryData_Id] AS [EntryData_Id], 
 [AdjustmentEx].[InvoiceDate] AS [InvoiceDate], 
+[AdjustmentEx].[EffectiveDate] AS [EffectiveDate], 
 [AdjustmentEx].[Type] AS [Type], 
 [AdjustmentEx].[DutyFreePaid] AS [DutyFreePaid], 
 [AdjustmentEx].[ImportedTotal] AS [ImportedTotal], 
@@ -1127,6 +1129,7 @@ FROM [dbo].[TODO-PreDiscrepancyErrors] AS [TODO-PreDiscrepancyErrors]</DefiningQ
           <Property Name="ImportedTotal" Type="Double" />
           <Property Name="EntryData_Id" Type="Int32" Nullable="false" />
           <NavigationProperty Name="EntryDataDetails" Relationship="Model.AdjustmentExEntryDataDetail" FromRole="AdjustmentEx" ToRole="EntryDataDetail" />
+          <Property Name="EffectiveDate" Type="DateTime" Precision="3" />
         </EntityType>
         <Association Name="AdjustmentExAsycudaDocumentSetEntryData">
           <End Type="Model.AdjustmentEx" Role="AdjustmentEx" Multiplicity="1" />
@@ -1869,6 +1872,7 @@ FROM [dbo].[TODO-PreDiscrepancyErrors] AS [TODO-PreDiscrepancyErrors]</DefiningQ
           <EntitySetMapping Name="AdjustmentExes">
             <EntityTypeMapping TypeName="Model.AdjustmentEx">
               <MappingFragment StoreEntitySet="AdjustmentEx">
+                <ScalarProperty Name="EffectiveDate" ColumnName="EffectiveDate" />
                 <ScalarProperty Name="EntryData_Id" ColumnName="EntryData_Id" />
                 <ScalarProperty Name="ImportedTotal" ColumnName="ImportedTotal" />
                 <ScalarProperty Name="InvoiceTotal" ColumnName="InvoiceTotal" />

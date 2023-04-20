@@ -140,6 +140,8 @@ namespace AutoBotUtilities.Tests
         [TestCase("SE H/R1-S1", "2022-12-19", 60)] // DIS with alias name not allocating 
         [TestCase("FSP/906020", "2022-12-19", 60)] // null ex9asycudasales allocations 
         [TestCase("ECL/80040", "3/1/2023", 60)] // cancelled document item
+        [TestCase("CHAIN/10G-28", "3/1/2023", 60)] // early sales error that don't make sense in adjustments
+        [TestCase("INT/YBA470GL", "3/1/2023", 60)] // over allocation issue
         [TestCase(null, "2023-12-19", 101)] 
         public void AllocatSales(string itemNumber, string LastInvoiceDate, int NoOfAllocations )
         {
@@ -199,6 +201,56 @@ namespace AutoBotUtilities.Tests
                 Assert.IsTrue(false);
             }
         }
+
+
+        [Test]
+        [Timeout(60 * 1000 * 60)]
+        [TestCase("Audit", "2023-12-19", 101)]
+        public void AllocatSalesByInvoiceNo(string invoiceNo, string LastInvoiceDate, int NoOfAllocations)
+        {
+            try
+            {
+                if (!Infrastructure.Utils.IsTestApplicationSettings()) Assert.IsTrue(true);
+                var timer = new System.Diagnostics.Stopwatch();
+
+                var itemNumbers = GetItemNumbers(invoiceNo);
+                
+
+                var itemSets = BaseDataModel.GetItemSets(itemNumbers);
+                if (string.IsNullOrEmpty(itemNumbers))
+                    AllocationsModel.Instance.ClearAllAllocations(BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId).Wait();
+                else
+                    AllocationsModel.Instance.ClearItemSetAllocations(itemSets).Wait();
+
+
+
+                timer.Start();
+                new AllocateSales().Execute(BaseDataModel.Instance.CurrentApplicationSettings, false, itemSets);
+                timer.Stop();
+
+                Console.Write("AllocatSales in seconds: " + timer.Elapsed.TotalSeconds);
+                Assert.IsTrue(true);
+
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                Assert.IsTrue(false);
+            }
+        }
+
+        private string GetItemNumbers(string invoiceNo)
+        {
+            using (var ctx = new AllocationDSContext())
+            {
+                var itemNumbersList = ctx.EntryDataDetails
+                    .AsNoTracking()
+                    .Where(x => x.EntryDataId.StartsWith(invoiceNo))
+                    .Select(x => x.ItemNumber).ToList();
+               return string.Join(",", itemNumbersList);
+            }
+        }
+
 
         [Test]
         [Timeout(60 * 1000 * 60)]
@@ -621,6 +673,7 @@ namespace AutoBotUtilities.Tests
         [Timeout(60 * 1000 * 60)]
         [TestCase("TOH/MTSX018S", "2022-12-19", 62)]
         [TestCase(null, "2023-12-19", 101)]
+        [TestCase("INT/YBA470GL", "3/1/2023", 60)]
         public async Task MarkErrors(string itemNumber, string LastInvoiceDate, int NoOfAllocations)
         {
             try

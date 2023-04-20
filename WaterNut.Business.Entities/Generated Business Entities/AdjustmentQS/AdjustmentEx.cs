@@ -226,6 +226,21 @@ namespace AdjustmentQS.Business.Entities
         }
         int _entrydata_id;
         [DataMember]
+        public Nullable<System.DateTime> EffectiveDate 
+        {
+            get
+            {
+                return _effectivedate;
+            }
+            set
+            {
+                _effectivedate = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<System.DateTime> _effectivedate;
+        [DataMember]
         public List<AsycudaDocumentSetEntryData> AsycudaDocumentSets { get; set; }
         [DataMember]
         public List<AsycudaDocumentEntryData> AsycudaDocuments { get; set; }

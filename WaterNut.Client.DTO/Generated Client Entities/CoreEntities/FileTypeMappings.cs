@@ -112,6 +112,19 @@ namespace CoreEntities.Client.DTO
 		}
         private string _Comments;
 
+        [DataMember]
+        public bool ReplaceOnlyNulls
+		{ 
+		    get { return _ReplaceOnlyNulls; }
+			set
+			{
+			    if (value == _ReplaceOnlyNulls) return;
+				_ReplaceOnlyNulls = value;
+				NotifyPropertyChanged();//m => this.ReplaceOnlyNulls
+			}
+		}
+        private bool _ReplaceOnlyNulls;
+
        
         [DataMember]
         public FileTypes FileTypes

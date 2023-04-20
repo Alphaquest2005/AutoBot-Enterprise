@@ -40,6 +40,7 @@ namespace WaterNut.DataSpace
                 EntryDataId = entryDataId,
                 EntryType = EntryDataType,
                 EntryDataDate = (DateTime)item.EntryData.EntryDataDate,
+                EffectiveDate = (DateTime)item.EntryData.EffectiveDate,
                 TrackingState = TrackingState.Added,
                 SupplierCode = item.EntryData.Supplier,
                 TotalFreight = item.Totals.Sum(x => (double)x.TotalFreight),

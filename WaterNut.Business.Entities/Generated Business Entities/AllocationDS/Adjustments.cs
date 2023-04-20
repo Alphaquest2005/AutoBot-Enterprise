@@ -71,6 +71,21 @@ namespace AllocationDS.Business.Entities
         }
         string _vendor;
         [DataMember]
+        public Nullable<System.DateTime> EffectiveDate 
+        {
+            get
+            {
+                return _effectivedate;
+            }
+            set
+            {
+                _effectivedate = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<System.DateTime> _effectivedate;
+        [DataMember]
         public List<EntryDataDetails> EntryDataDetails { get; set; }
 
  //       [DataMember]

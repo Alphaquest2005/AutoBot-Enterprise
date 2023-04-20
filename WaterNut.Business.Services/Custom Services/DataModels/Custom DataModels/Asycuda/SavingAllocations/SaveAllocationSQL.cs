@@ -52,7 +52,8 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
             var sql = "";
             // Allocations
             sql += alloLst
-                    .SelectMany(z => z.Sales.Select(s => s.AsycudaSalesAllocations.ToList()))
+                    .SelectMany(z => z.Sales.Select(s => s.AsycudaSalesAllocations.Where(a => a.AllocationId == 0)// to prevent re-saving existing allocations
+                        .ToList()))
                     .SelectMany(x => x.ToList())
                     .ToList()
                     .Select(a => SaveAllocationSql(a)).DefaultIfEmpty("").Aggregate((o, n) => $"{o}\r\n{n}");
@@ -182,7 +183,7 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
         private  string SaveEntryDataDetailsSql(EntryDataDetails saleitm)
         {
             return $@"UPDATE       EntryDataDetails
-															SET                QtyAllocated = {saleitm.QtyAllocated}
+															SET                QtyAllocated = {saleitm.QtyAllocated}{(saleitm.EffectiveDate == null? "" : $",EffectiveDate = \'{saleitm.EffectiveDate}\'")}
 															where	EntryDataDetailsId = {saleitm.EntryDataDetailsId} ;";
 
         }

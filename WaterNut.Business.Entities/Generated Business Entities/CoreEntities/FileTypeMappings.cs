@@ -131,6 +131,21 @@ namespace CoreEntities.Business.Entities
         }
         string _comments;
         [DataMember]
+        public bool ReplaceOnlyNulls 
+        {
+            get
+            {
+                return _replaceonlynulls;
+            }
+            set
+            {
+                _replaceonlynulls = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        bool _replaceonlynulls;
+        [DataMember]
         public FileTypes FileTypes { get; set; }
         [DataMember]
         public List<FileTypeMappingRegExs> FileTypeMappingRegExs { get; set; }

@@ -300,6 +300,24 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
         }	
 
  
+
+		private Boolean? _replaceOnlyNullsFilter;
+        public Boolean? ReplaceOnlyNullsFilter
+        {
+            get
+            {
+                return _replaceOnlyNullsFilter;
+            }
+            set
+            {
+                _replaceOnlyNullsFilter = value;
+				NotifyPropertyChanged(x => ReplaceOnlyNullsFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
 		internal bool DisableBaseFilterData = false;
         public virtual void FilterData()
 	    {
@@ -348,6 +366,10 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 
 									if(string.IsNullOrEmpty(CommentsFilter) == false)
 						res.Append(" && " + string.Format("Comments.Contains(\"{0}\")",  CommentsFilter));						
+ 
+
+									if(ReplaceOnlyNullsFilter.HasValue)
+						res.Append(" && " + string.Format("ReplaceOnlyNulls == {0}",  ReplaceOnlyNullsFilter));						
 			return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
@@ -383,7 +405,10 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     Required = x.Required ,
                     
  
-                    Comments = x.Comments 
+                    Comments = x.Comments ,
+                    
+ 
+                    ReplaceOnlyNulls = x.ReplaceOnlyNulls 
                     
                 }).ToList()
             };
@@ -409,6 +434,9 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     
  
                     public string Comments { get; set; } 
+                    
+ 
+                    public bool ReplaceOnlyNulls { get; set; } 
                     
         }
 

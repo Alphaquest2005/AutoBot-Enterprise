@@ -594,7 +594,13 @@ namespace WaterNut.Business.Services.Utils
                 else
                 {
                     if (val == "{NULL}" && !string.IsNullOrEmpty(row[mapping.DestinationName])) return row; //don't overwrite good value
-                    row[mapping.DestinationName] = StringToCSVCell(val);
+
+                    if (mapping.ReplaceOnlyNulls == true)
+                    {
+                        if(string.IsNullOrEmpty(row[mapping.DestinationName])) row[mapping.DestinationName] = StringToCSVCell(val);
+                    }
+                    else 
+                        row[mapping.DestinationName] = StringToCSVCell(val);
                 }
             }
             else

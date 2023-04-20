@@ -1,11 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
-  <!-- EF Runtime content -->
-  <edmx:Runtime>
-    <!-- SSDL content -->
-    <edmx:StorageModels>
-    <Schema Namespace="WaterNutDBModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2008" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
-        <EntityType Name="ActionDocSetLogs">
+	<!-- EF Runtime content -->
+	<edmx:Runtime>
+		<!-- SSDL content -->
+		<edmx:StorageModels>
+			<Schema Namespace="WaterNutDBModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2008" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+				<EntityType Name="ActionDocSetLogs">
           <Key>
             <PropertyRef Name="Id" />
           </Key>
@@ -350,6 +350,7 @@
           <Property Name="DataType" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="Required" Type="bit" Nullable="false" />
           <Property Name="Comments" Type="nvarchar" MaxLength="255" />
+          <Property Name="ReplaceOnlyNulls" Type="bit" Nullable="false" />
         </EntityType>
         <EntityType Name="FileTypeReplaceRegex">
           <Key>
@@ -4967,6 +4968,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
           <Property Name="Required" Type="Boolean" Nullable="false" />
           <NavigationProperty Name="FileTypeMappingRegExs" Relationship="WaterNutDBModel.FK_FileTypeMappingRegExs_FileTypeMappings" FromRole="FileTypeMappings" ToRole="FileTypeMappingRegExs" />
           <Property Name="Comments" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="ReplaceOnlyNulls" Type="Boolean" Nullable="false" />
         </EntityType>
         <Association Name="FK_FileTypeMappings_FileTypes">
           <End Type="WaterNutDBModel.FileTypes" Role="FileTypes" Multiplicity="1">
@@ -7476,6 +7478,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
           <EntitySetMapping Name="FileTypeMappings">
             <EntityTypeMapping TypeName="WaterNutDBModel.FileTypeMappings">
               <MappingFragment StoreEntitySet="FileTypeMappings">
+                <ScalarProperty Name="ReplaceOnlyNulls" ColumnName="ReplaceOnlyNulls" />
                 <ScalarProperty Name="Comments" ColumnName="Comments" />
                 <ScalarProperty Name="Required" ColumnName="Required" />
                 <ScalarProperty Name="DataType" ColumnName="DataType" />

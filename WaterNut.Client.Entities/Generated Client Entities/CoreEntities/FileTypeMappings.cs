@@ -158,6 +158,21 @@ public string Comments
 		}
      
 
+       [RequiredValidationAttribute(ErrorMessage= "ReplaceOnlyNulls is required")]
+       
+public bool ReplaceOnlyNulls
+		{ 
+		    get { return this.filetypemappings.ReplaceOnlyNulls; }
+			set
+			{
+			    if (value == this.filetypemappings.ReplaceOnlyNulls) return;
+				this.filetypemappings.ReplaceOnlyNulls = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("ReplaceOnlyNulls");
+			}
+		}
+     
+
        private FileTypes _FileTypes;
         public  FileTypes FileTypes
 		{

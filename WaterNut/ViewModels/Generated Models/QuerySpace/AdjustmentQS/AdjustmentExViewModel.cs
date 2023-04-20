@@ -403,6 +403,56 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
         }	
 
  
+		private DateTime? _startEffectiveDateFilter = DateTime.Parse(string.Format("{0}/1/{1}", DateTime.Now.Month ,DateTime.Now.Year));
+        public DateTime? StartEffectiveDateFilter
+        {
+            get
+            {
+                return _startEffectiveDateFilter;
+            }
+            set
+            {
+                _startEffectiveDateFilter = value;
+				NotifyPropertyChanged(x => StartEffectiveDateFilter);
+                FilterData();
+                
+            }
+        }	
+
+		private DateTime? _endEffectiveDateFilter = DateTime.Parse(string.Format("{1}/{0}/{2}", DateTime.DaysInMonth( DateTime.Now.Year,DateTime.Now.Month), DateTime.Now.Month, DateTime.Now.Year));
+        public DateTime? EndEffectiveDateFilter
+        {
+            get
+            {
+                return _endEffectiveDateFilter;
+            }
+            set
+            {
+                _endEffectiveDateFilter = value;
+				NotifyPropertyChanged(x => EndEffectiveDateFilter);
+                FilterData();
+                
+            }
+        }
+ 
+
+		private DateTime? _effectiveDateFilter;
+        public DateTime? EffectiveDateFilter
+        {
+            get
+            {
+                return _effectiveDateFilter;
+            }
+            set
+            {
+                _effectiveDateFilter = value;
+				NotifyPropertyChanged(x => EffectiveDateFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
 		internal bool DisableBaseFilterData = false;
         public virtual void FilterData()
 	    {
@@ -492,7 +542,36 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
 						res.Append(" && " + string.Format("InvoiceTotal == {0}",  InvoiceTotalFilter.ToString()));				 
 
 					if(ImportedTotalFilter.HasValue)
-						res.Append(" && " + string.Format("ImportedTotal == {0}",  ImportedTotalFilter.ToString()));							return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
+						res.Append(" && " + string.Format("ImportedTotal == {0}",  ImportedTotalFilter.ToString()));				 
+
+ 
+
+				if (Convert.ToDateTime(StartEffectiveDateFilter).Date != DateTime.MinValue &&
+		        Convert.ToDateTime(EndEffectiveDateFilter).Date != DateTime.MinValue) res.Append(" && (");
+
+					if (Convert.ToDateTime(StartEffectiveDateFilter).Date != DateTime.MinValue)
+						{
+							if(StartEffectiveDateFilter.HasValue)
+								res.Append(
+                                            (Convert.ToDateTime(EndEffectiveDateFilter).Date != DateTime.MinValue?"":" && ") +
+                                            string.Format("EffectiveDate >= \"{0}\"",  Convert.ToDateTime(StartEffectiveDateFilter).Date.ToString("MM/dd/yyyy")));
+						}
+
+					if (Convert.ToDateTime(EndEffectiveDateFilter).Date != DateTime.MinValue)
+						{
+							if(EndEffectiveDateFilter.HasValue)
+								res.Append(" && " + string.Format("EffectiveDate <= \"{0}\"",  Convert.ToDateTime(EndEffectiveDateFilter).Date.AddHours(23).ToString("MM/dd/yyyy HH:mm:ss")));
+						}
+
+				if (Convert.ToDateTime(StartEffectiveDateFilter).Date != DateTime.MinValue &&
+		        Convert.ToDateTime(EndEffectiveDateFilter).Date != DateTime.MinValue) res.Append(" )");
+
+					if (Convert.ToDateTime(_effectiveDateFilter).Date != DateTime.MinValue)
+						{
+							if(EffectiveDateFilter.HasValue)
+								res.Append(" && " + string.Format("EffectiveDate == \"{0}\"",  Convert.ToDateTime(EffectiveDateFilter).Date.ToString("MM/dd/yyyy")));
+						}
+							return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
 // Send to Excel Implementation
@@ -542,7 +621,10 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
                     InvoiceTotal = x.InvoiceTotal ,
                     
  
-                    ImportedTotal = x.ImportedTotal 
+                    ImportedTotal = x.ImportedTotal ,
+                    
+ 
+                    EffectiveDate = x.EffectiveDate 
                     
                 }).ToList()
             };
@@ -583,6 +665,9 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
                     
  
                     public Nullable<double> ImportedTotal { get; set; } 
+                    
+ 
+                    public Nullable<System.DateTime> EffectiveDate { get; set; } 
                     
         }
 
