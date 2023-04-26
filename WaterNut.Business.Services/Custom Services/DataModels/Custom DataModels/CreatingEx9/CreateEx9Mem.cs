@@ -140,7 +140,7 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
         }
         List<string> RequiredEx9Filters = new List<string>()
         {
-            "&& (PiQuantity < pQtyAllocated)",
+          //  "&& (PiQuantity < pQtyAllocated)",
             "&& ( TaxAmount == 0 ||  TaxAmount != 0)",
             "&& (Status == null || Status == \"\")"
         };

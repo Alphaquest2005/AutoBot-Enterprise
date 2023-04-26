@@ -195,7 +195,7 @@ namespace WaterNut.DataSpace
 													DELETE FROM CTE WHERE RN > 1
 
 													delete from entrydata where entrydata_id not in (select distinct Entrydata_id from entrydatadetails)");
-                for (int i = 0; i < 3; i++)
+                for (int i = 0; i < 4; i++)
                 {
                     try
                     {

@@ -76,6 +76,7 @@ namespace WaterNut.DataSpace
             var count = itemSetsValues.Count();
             var res = new List<(List<EntryDataDetails> Sales, List<xcuda_Item> asycudaItems)>();
             var orderedLst = itemSetsValues.OrderBy(x => x.Key.EntryDataDate).ToList();
+            var salesLst = orderedLst.SelectMany(x => x.SalesList).OrderBy(x => x.Sales.EntryDataDate).ThenBy(x => x.EntryDataDetailsId).ToList();
             foreach (var itm in orderedLst)
                 try
                 {
@@ -85,7 +86,7 @@ namespace WaterNut.DataSpace
                     var sales = SortEntryDataDetailsList(itm);
                     var asycudaItems = SortAsycudaItems(itm);
 
-                    await AllocateSalestoAsycudaByKey(sales, asycudaItems, t, count, allocateToLastAdjustment, orderedLst).ConfigureAwait(false);
+                    await AllocateSalestoAsycudaByKey(sales, asycudaItems, t, count, allocateToLastAdjustment, orderedLst,salesLst).ConfigureAwait(false);
 
                     res.Add((sales, asycudaItems));
 
@@ -128,7 +129,7 @@ namespace WaterNut.DataSpace
 
         private async Task AllocateSalestoAsycudaByKey(List<EntryDataDetails> saleslst, List<xcuda_Item> asycudaEntries,
             double currentSetNo, int setNo, bool allocateToLastAdjustment,
-            List<AllocationsBaseModel.ItemSet> salesSet)
+            List<AllocationsBaseModel.ItemSet> salesSet, List<EntryDataDetails> salesLst)
         {
             try
             {
@@ -177,6 +178,14 @@ namespace WaterNut.DataSpace
                     // StatusModel.Refresh();
 
                     var saleitmQtyToallocate = saleitm.Quantity - saleitm.QtyAllocated;
+                  
+                    var salesItemIndex = salesLst.IndexOf(saleitm);
+                    //var prevSalesQty = salesLst.Where(x => salesLst.IndexOf(x) <= salesItemIndex).Sum(x => x.Quantity);
+                    //var nextSalesQty = salesLst.Where(x => salesLst.IndexOf(x) > salesItemIndex).Sum(x => x.Quantity);
+                    //var nextAllQty = asycudaEntries.Where(x => asycudaEntries.IndexOf(x) > CurrentAsycudaItemIndex).Sum(x => x.ItemQuantity);
+                    var nextSalesQty = salesLst.ElementAt(salesItemIndex + 1>= salesLst.Count ? salesItemIndex: salesItemIndex+1).Quantity;
+
+
                     if (saleitmQtyToallocate > 0 && CurrentAsycudaItemIndex == asycudaEntries.Count())
                     {
                         // over allocate to handle out of stock in case returns deal with it
@@ -188,7 +197,7 @@ namespace WaterNut.DataSpace
                     if (cAsycudaItm.AsycudaDocument.CustomsOperationId == (int)CustomsOperations.Warehouse &&
                         (cAsycudaItm.AsycudaDocument.AssessmentDate > saleitm.Sales.EntryDataDate))
                     {
-                        if (CurrentAsycudaItemIndex == 0)
+                        if (CurrentAsycudaItemIndex == 0 &&  (nextSalesQty > 0 || (nextSalesQty < 0 && nextSalesQty * -1 < saleitmQtyToallocate)))
                         {
                             await AddExceptionAllocation(saleitm, cAsycudaItm, "Early Sales" ).ConfigureAwait(false);
                             continue;
@@ -226,7 +235,7 @@ namespace WaterNut.DataSpace
                                 i -= 2;
                                 continue;
                             }
-                            await AddExceptionAllocation(saleitm, cAsycudaItm , "Early Sales").ConfigureAwait(false);
+                            if(nextSalesQty > 0 || (nextSalesQty < 0 && nextSalesQty * -1 < saleitmQtyToallocate)) await AddExceptionAllocation(saleitm, cAsycudaItm , "Early Sales").ConfigureAwait(false);
                             break;
                         }
                        
