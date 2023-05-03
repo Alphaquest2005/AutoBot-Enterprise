@@ -5,7 +5,7 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
 {
     public class GetInventoryItem : IGetInventoryItemProcessor
     {
-        public InventoryItem Execute( string itemNumber)
+        public InventoryItem Execute(string itemNumber, string description)
         {
             return new InventoryDSContext().InventoryItems
                 .Include("InventoryItemAlias")

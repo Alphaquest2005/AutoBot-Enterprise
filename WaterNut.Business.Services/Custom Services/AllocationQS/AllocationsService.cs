@@ -14,6 +14,7 @@ using WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModels.Cr
 using WaterNut.DataSpace;
 using AsycudaDocument = AllocationDS.Business.Entities.AsycudaDocument;
 using ConcurrencyMode = System.ServiceModel.ConcurrencyMode;
+using WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModels;
 
 
 namespace AllocationQS.Business.Services
@@ -28,14 +29,16 @@ namespace AllocationQS.Business.Services
        
        
 
-        public async Task CreateEx9(string filterExpression, bool perIM7, bool process7100, bool applyCurrentChecks,
+        public async Task CreateEx9(string filterExpression, bool perIM7, bool stressTest, bool process7100, bool applyCurrentChecks,
             int AsycudaDocumentSetId, string documentType, string ex9BucketType, bool isGrouped, bool checkQtyAllocatedGreaterThanPiQuantity, bool checkForMultipleMonths, bool applyEx9Bucket, bool applyHistoricChecks, bool perInvoice, bool autoAssess, bool overPIcheck, bool universalPIcheck, bool itemPIcheck)
         {
             var docset =
                 await WaterNut.DataSpace.BaseDataModel.Instance.GetAsycudaDocumentSet(AsycudaDocumentSetId)
                     .ConfigureAwait(false);
-            await AllocationsModel.Instance.CreateEx9.Execute(filterExpression, perIM7, process7100, applyCurrentChecks, docset, documentType, ex9BucketType, isGrouped, checkQtyAllocatedGreaterThanPiQuantity, checkForMultipleMonths,
+           var docs =  await AllocationsModel.Instance.CreateEx9.Execute(filterExpression, perIM7, process7100, applyCurrentChecks, docset, documentType, ex9BucketType, isGrouped, checkQtyAllocatedGreaterThanPiQuantity, checkForMultipleMonths,
                     applyEx9Bucket, applyHistoricChecks, perInvoice, autoAssess, overPIcheck, universalPIcheck, itemPIcheck).ConfigureAwait(false);
+            
+           if (stressTest) await new BondStressTest().Execute(docs).ConfigureAwait(false);
         }
 
         public async Task CreateOPS(string filterExpression, int AsycudaDocumentSetId, bool perInvoice)

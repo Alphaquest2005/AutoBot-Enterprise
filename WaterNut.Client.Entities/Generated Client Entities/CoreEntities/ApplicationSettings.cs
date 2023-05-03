@@ -844,6 +844,21 @@ public string AllowAdvanceWareHouse
 		}
      
 
+       
+       
+public Nullable<bool> AllowStressTest
+		{ 
+		    get { return this.applicationsettings.AllowStressTest; }
+			set
+			{
+			    if (value == this.applicationsettings.AllowStressTest) return;
+				this.applicationsettings.AllowStressTest = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("AllowStressTest");
+			}
+		}
+     
+
         ObservableCollection<AsycudaDocumentSetEx> _AsycudaDocumentSetEx = null;
         public  ObservableCollection<AsycudaDocumentSetEx> AsycudaDocumentSetEx
 		{

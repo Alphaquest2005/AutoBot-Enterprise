@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using InventoryDS.Business.Entities;
 using TrackableEntities.Common;
@@ -14,7 +15,7 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
 
         static readonly object Identity = new object();
 
-        public GetInventoryItemMem()
+         static GetInventoryItemMem()
         {
             lock (Identity)
             {
@@ -25,15 +26,16 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
               _inventoryItems = new ConcurrentDictionary<(int Id, string ItemNumber), InventoryItem>(lst);
             }
         }
-        public InventoryItem Execute( string itemNumber) =>
+        public InventoryItem Execute(string itemNumber, string description) =>
             ////this list says updated by adding new items to db
             _inventoryItems.FirstOrDefault(x => x.Key.ItemNumber == itemNumber).Value 
-            ?? AddInventoryItem(SaveInventoryItems(CreateInventoryItem(itemNumber)));
+            ?? AddInventoryItem(SaveInventoryItems(CreateInventoryItem(itemNumber, description)));
 
         private InventoryItem SaveInventoryItems(InventoryItem itm)
         {
             try
             {
+                if(string.IsNullOrEmpty(itm.Description) || string.IsNullOrEmpty(itm.ItemNumber)) return itm;
                 new InventoryDSContext().BulkMerge(new List<InventoryItem>() { itm });
                 itm.AcceptChanges();
                 return itm;
@@ -45,10 +47,11 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
             }
         }
 
-        private InventoryItem CreateInventoryItem(string itemNumber) =>
+        private InventoryItem CreateInventoryItem(string itemNumber, string description) =>
             new InventoryItem()
             {
                 ItemNumber = itemNumber,
+                Description = description,
                 ApplicationSettingsId =
                     DataSpace.BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId
             };

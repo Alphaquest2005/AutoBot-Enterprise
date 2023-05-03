@@ -12,7 +12,7 @@ namespace AllocationQS.Business.Services
     {
 
         [OperationContract][FaultContract(typeof(ValidationFault))]
-        Task CreateEx9(string filterExpression, bool perIM7, bool process7100, bool applyCurrentChecks,
+        Task CreateEx9(string filterExpression, bool perIM7, bool stressTest, bool process7100, bool applyCurrentChecks,
             int AsycudaDocumentSetId, string documentType, string ex9BucketType, bool isGrouped,
             bool checkQtyAllocatedGreaterThanPiQuantity, bool checkForMultipleMonths, bool applyEx9Bucket,
             bool applyHistoricChecks, bool perInvoice, bool autoAssess, bool overPIcheck, bool universalPIcheck,

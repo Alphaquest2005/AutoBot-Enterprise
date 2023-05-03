@@ -7,11 +7,11 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
     {
         private bool isDBMem = false;
 
-        public InventoryItem Execute( string itemNumber)
+        public InventoryItem Execute(string itemNumber, string description)
         {
             return isDBMem
-                ? new GetInventoryItem().Execute(itemNumber)
-                : new GetInventoryItemMem().Execute(itemNumber);
+                ? new GetInventoryItem().Execute(itemNumber, description)
+                : new GetInventoryItemMem().Execute(itemNumber, description);
         }
     }
 }

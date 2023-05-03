@@ -1049,6 +1049,24 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
         }	
 
  
+
+		private Boolean? _allowStressTestFilter;
+        public Boolean? AllowStressTestFilter
+        {
+            get
+            {
+                return _allowStressTestFilter;
+            }
+            set
+            {
+                _allowStressTestFilter = value;
+				NotifyPropertyChanged(x => AllowStressTestFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
 		internal bool DisableBaseFilterData = false;
         public virtual void FilterData()
 	    {
@@ -1288,6 +1306,10 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 
 									if(string.IsNullOrEmpty(AllowAdvanceWareHouseFilter) == false)
 						res.Append(" && " + string.Format("AllowAdvanceWareHouse.Contains(\"{0}\")",  AllowAdvanceWareHouseFilter));						
+ 
+
+									if(AllowStressTestFilter.HasValue)
+						res.Append(" && " + string.Format("AllowStressTest == {0}",  AllowStressTestFilter));						
 			return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
@@ -1449,7 +1471,10 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     ExportExpiredEntries = x.ExportExpiredEntries ,
                     
  
-                    AllowAdvanceWareHouse = x.AllowAdvanceWareHouse 
+                    AllowAdvanceWareHouse = x.AllowAdvanceWareHouse ,
+                    
+ 
+                    AllowStressTest = x.AllowStressTest 
                     
                 }).ToList()
             };
@@ -1601,6 +1626,9 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     
  
                     public string AllowAdvanceWareHouse { get; set; } 
+                    
+ 
+                    public Nullable<bool> AllowStressTest { get; set; } 
                     
         }
 

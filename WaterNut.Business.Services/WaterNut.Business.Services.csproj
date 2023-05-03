@@ -370,8 +370,8 @@
     <Reference Include="UglyToad.PdfPig.Tokens, Version=0.1.7.0, Culture=neutral, PublicKeyToken=605d367334e74123, processorArchitecture=MSIL">
       <HintPath>..\packages\PdfPig.0.1.7\lib\net47\UglyToad.PdfPig.Tokens.dll</HintPath>
     </Reference>
-    <Reference Include="Z.EntityFramework.Extensions, Version=7.20.2.0, Culture=neutral, PublicKeyToken=59b66d028979105b, processorArchitecture=MSIL">
-      <HintPath>..\packages\Z.EntityFramework.Extensions.7.20.2\lib\net45\Z.EntityFramework.Extensions.dll</HintPath>
+    <Reference Include="Z.EntityFramework.Extensions, Version=7.21.0.0, Culture=neutral, PublicKeyToken=59b66d028979105b, processorArchitecture=MSIL">
+      <HintPath>..\packages\Z.EntityFramework.Extensions.7.21.0\lib\net45\Z.EntityFramework.Extensions.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -868,6 +868,7 @@
     <Compile Include="Custom Services\DataModels\Custom DataModels\BaseDataModel\GettingItemSets\GetItemSetsMem.cs" />
     <Compile Include="Custom Services\DataModels\Custom DataModels\BaseDataModel\GettingItemSets\GetItemSets.cs" />
     <Compile Include="Custom Services\DataModels\Custom DataModels\BaseDataModel\GettingItemSets\IGetItemSetsProcessor.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\BondStessTest.cs" />
     <Compile Include="Custom Services\DataModels\Custom DataModels\CreatingEx9\CreateAllocationDataBlocks.cs" />
     <Compile Include="Custom Services\DataModels\Custom DataModels\CreatingEx9\CreateDutyFreePaidDocument.cs" />
     <Compile Include="Custom Services\DataModels\Custom DataModels\CreatingEx9\CreateEx9Mem.cs" />

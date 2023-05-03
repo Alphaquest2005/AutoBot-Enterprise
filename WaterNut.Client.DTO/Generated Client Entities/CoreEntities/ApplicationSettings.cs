@@ -658,6 +658,19 @@ namespace CoreEntities.Client.DTO
 		}
         private string _AllowAdvanceWareHouse;
 
+        [DataMember]
+        public Nullable<bool> AllowStressTest
+		{ 
+		    get { return _AllowStressTest; }
+			set
+			{
+			    if (value == _AllowStressTest) return;
+				_AllowStressTest = value;
+				NotifyPropertyChanged();//m => this.AllowStressTest
+			}
+		}
+        private Nullable<bool> _AllowStressTest;
+
        
         [DataMember]
         public ChangeTrackingCollection<AsycudaDocumentSetEx> AsycudaDocumentSetEx

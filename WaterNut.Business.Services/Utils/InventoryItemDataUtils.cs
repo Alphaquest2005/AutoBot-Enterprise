@@ -105,7 +105,7 @@ namespace WaterNut.Business.Services.Utils
             var i = new InventoryItem(true)
             {
                 ApplicationSettingsId = BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId,
-                Description = item.Key.ItemDescription, // quicker trust database than file
+                Description = ((string)item.Key.ItemDescription).Truncate(255), // quicker trust database than file
                 ItemNumber = ((string) item.Key.ItemNumber).Truncate(20),
                 InventoryItemSources = new List<InventoryItemSource>()
                 {
@@ -121,7 +121,7 @@ namespace WaterNut.Business.Services.Utils
             if (string.IsNullOrEmpty(item.Key.ItemDescription))
                 foreach (var line in item.Data)
                 {
-                    line.ItemDescription = i.Description;
+                    line.ItemDescription = i.Description.Truncate(255);
                 }
 
             return new InventoryDataItem(item, i);

@@ -51,7 +51,7 @@ namespace WaterNut.DataSpace
                             EntryDataId = x.EntryDataId,
                             //Can't set entrydata_id here cuz this is from data
                             ItemNumber = ((string)x.ItemNumber.ToUpper()).Truncate(20),
-                            ItemDescription = x.ItemDescription,
+                            ItemDescription = ((string)x.ItemDescription).Truncate(255),
                             Cost = x.Cost ?? 0,
                             TotalCost = Convert.ToDouble((double)(x.TotalCost ?? 0.0)),
                             Quantity = Convert.ToDouble((double)(x.Quantity ?? 0.0)),
@@ -86,7 +86,7 @@ namespace WaterNut.DataSpace
                         x.WarehouseNo
                     )).Where(f => f.InvoiceTotal > 0).ToList(),
                     InventoryItems = g.DistinctBy(x =>(x.ItemNumber, x.ItemAlias))
-                                        .Select(x => new RawEntryDataValue.InventoryItemsValue(x.ItemNumber, x.ItemAlias))
+                                        .Select(x => new RawEntryDataValue.InventoryItemsValue(x.ItemNumber, x.ItemAlias, ((string)x.ItemDescription).Truncate(255)))
                                         .ToList()
                 }
                 )

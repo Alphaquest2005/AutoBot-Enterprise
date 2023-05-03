@@ -4,6 +4,6 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
 {
     public interface IGetInventoryItemProcessor
     {
-        InventoryItem Execute( string itemNumber);
+        InventoryItem Execute(string itemNumber, string description);
     }
 }

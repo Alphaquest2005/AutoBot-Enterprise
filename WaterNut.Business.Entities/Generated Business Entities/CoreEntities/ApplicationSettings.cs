@@ -769,6 +769,21 @@ namespace CoreEntities.Business.Entities
         }
         string _allowadvancewarehouse;
         [DataMember]
+        public Nullable<bool> AllowStressTest 
+        {
+            get
+            {
+                return _allowstresstest;
+            }
+            set
+            {
+                _allowstresstest = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<bool> _allowstresstest;
+        [DataMember]
         public List<AsycudaDocumentSetEx> AsycudaDocumentSetEx { get; set; }
         [DataMember]
         public List<AsycudaDocument> AsycudaDocument { get; set; }

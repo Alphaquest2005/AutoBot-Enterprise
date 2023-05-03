@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Core.Common.Utils;
 using EntryDataDS.Business.Entities;
 
 namespace WaterNut.DataSpace
@@ -78,11 +79,13 @@ namespace WaterNut.DataSpace
         {
             public dynamic ItemNumber { get; }
             public dynamic ItemAlias { get; }
+            public dynamic Description { get; set; }
 
-            public InventoryItemsValue(dynamic itemNumber, dynamic itemAlias)
+            public InventoryItemsValue(dynamic itemNumber, dynamic itemAlias, dynamic description)
             {
-                ItemNumber = itemNumber;
-                ItemAlias = itemAlias;
+                ItemNumber = ((string)itemNumber).Truncate(20);
+                ItemAlias = ((string)itemAlias).Truncate(20);
+                Description = ((string)description).Truncate(255);
             }
         }
         public class TotalsValue

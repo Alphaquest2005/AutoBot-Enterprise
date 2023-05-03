@@ -5,7 +5,7 @@
 		<!-- SSDL content -->
 		<edmx:StorageModels>
 			<Schema Namespace="WaterNutDBModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2008" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
-				<EntityType Name="ActionDocSetLogs">
+        <EntityType Name="ActionDocSetLogs">
           <Key>
             <PropertyRef Name="Id" />
           </Key>
@@ -75,6 +75,7 @@
           <Property Name="NotifyUnknownMessages" Type="bit" />
           <Property Name="ExportExpiredEntries" Type="bit" />
           <Property Name="AllowAdvanceWareHouse" Type="nvarchar" MaxLength="10" />
+          <Property Name="AllowStressTest" Type="bit" />
         </EntityType>
         <EntityType Name="ApplicationSettings-Declarants">
           <Key>
@@ -2703,1149 +2704,1149 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
           <EntitySet Name="xcuda_Supplementary_unit" EntityType="Self.xcuda_Supplementary_unit" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="AsycudaDocument" EntityType="Self.AsycudaDocument" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
-    [AsycudaDocument].[ASYCUDA_Id] AS [ASYCUDA_Id], 
-    [AsycudaDocument].[id] AS [id], 
-    [AsycudaDocument].[CNumber] AS [CNumber], 
-    [AsycudaDocument].[RegistrationDate] AS [RegistrationDate], 
-    [AsycudaDocument].[IsManuallyAssessed] AS [IsManuallyAssessed], 
-    [AsycudaDocument].[ReferenceNumber] AS [ReferenceNumber], 
-    [AsycudaDocument].[EffectiveRegistrationDate] AS [EffectiveRegistrationDate], 
-    [AsycudaDocument].[AsycudaDocumentSetId] AS [AsycudaDocumentSetId], 
-    [AsycudaDocument].[DoNotAllocate] AS [DoNotAllocate], 
-    [AsycudaDocument].[AutoUpdate] AS [AutoUpdate], 
-    [AsycudaDocument].[BLNumber] AS [BLNumber], 
-    [AsycudaDocument].[Description] AS [Description], 
-    [AsycudaDocument].[Type_of_declaration] AS [Type_of_declaration], 
-    [AsycudaDocument].[Declaration_gen_procedure_code] AS [Declaration_gen_procedure_code], 
-    [AsycudaDocument].[Extended_customs_procedure] AS [Extended_customs_procedure], 
-    [AsycudaDocument].[DocumentType] AS [DocumentType], 
-    [AsycudaDocument].[Document_TypeId] AS [Document_TypeId], 
-    [AsycudaDocument].[Customs_ProcedureId] AS [Customs_ProcedureId], 
-    [AsycudaDocument].[CustomsOperationId] AS [CustomsOperationId], 
-    [AsycudaDocument].[CustomsProcedure] AS [CustomsProcedure], 
-    [AsycudaDocument].[Country_first_destination] AS [Country_first_destination], 
-    [AsycudaDocument].[Currency_code] AS [Currency_code], 
-    [AsycudaDocument].[Currency_rate] AS [Currency_rate], 
-    [AsycudaDocument].[Manifest_reference_number] AS [Manifest_reference_number], 
-    [AsycudaDocument].[Customs_clearance_office_code] AS [Customs_clearance_office_code], 
-    [AsycudaDocument].[Lines] AS [Lines], 
-    [AsycudaDocument].[ImportComplete] AS [ImportComplete], 
-    [AsycudaDocument].[Cancelled] AS [Cancelled], 
-    [AsycudaDocument].[TotalCIF] AS [TotalCIF], 
-    [AsycudaDocument].[TotalGrossWeight] AS [TotalGrossWeight], 
-    [AsycudaDocument].[AssessmentDate] AS [AssessmentDate], 
-    [AsycudaDocument].[TotalFreight] AS [TotalFreight], 
-    [AsycudaDocument].[ExpiryDate] AS [ExpiryDate], 
-    [AsycudaDocument].[ApplicationSettingsId] AS [ApplicationSettingsId], 
-    [AsycudaDocument].[SourceFileName] AS [SourceFileName], 
-    [AsycudaDocument].[IsPaid] AS [IsPaid], 
-    [AsycudaDocument].[SubmitToCustoms] AS [SubmitToCustoms], 
-    [AsycudaDocument].[TotalDeduction] AS [TotalDeduction], 
-    [AsycudaDocument].[TotalOtherCost] AS [TotalOtherCost], 
-    [AsycudaDocument].[TotalInternalFreight] AS [TotalInternalFreight], 
-    [AsycudaDocument].[TotalInsurance] AS [TotalInsurance]
-    FROM [dbo].[AsycudaDocument] AS [AsycudaDocument]</DefiningQuery>
+[AsycudaDocument].[ASYCUDA_Id] AS [ASYCUDA_Id], 
+[AsycudaDocument].[id] AS [id], 
+[AsycudaDocument].[CNumber] AS [CNumber], 
+[AsycudaDocument].[RegistrationDate] AS [RegistrationDate], 
+[AsycudaDocument].[IsManuallyAssessed] AS [IsManuallyAssessed], 
+[AsycudaDocument].[ReferenceNumber] AS [ReferenceNumber], 
+[AsycudaDocument].[EffectiveRegistrationDate] AS [EffectiveRegistrationDate], 
+[AsycudaDocument].[AsycudaDocumentSetId] AS [AsycudaDocumentSetId], 
+[AsycudaDocument].[DoNotAllocate] AS [DoNotAllocate], 
+[AsycudaDocument].[AutoUpdate] AS [AutoUpdate], 
+[AsycudaDocument].[BLNumber] AS [BLNumber], 
+[AsycudaDocument].[Description] AS [Description], 
+[AsycudaDocument].[Type_of_declaration] AS [Type_of_declaration], 
+[AsycudaDocument].[Declaration_gen_procedure_code] AS [Declaration_gen_procedure_code], 
+[AsycudaDocument].[Extended_customs_procedure] AS [Extended_customs_procedure], 
+[AsycudaDocument].[DocumentType] AS [DocumentType], 
+[AsycudaDocument].[Document_TypeId] AS [Document_TypeId], 
+[AsycudaDocument].[Customs_ProcedureId] AS [Customs_ProcedureId], 
+[AsycudaDocument].[CustomsOperationId] AS [CustomsOperationId], 
+[AsycudaDocument].[CustomsProcedure] AS [CustomsProcedure], 
+[AsycudaDocument].[Country_first_destination] AS [Country_first_destination], 
+[AsycudaDocument].[Currency_code] AS [Currency_code], 
+[AsycudaDocument].[Currency_rate] AS [Currency_rate], 
+[AsycudaDocument].[Manifest_reference_number] AS [Manifest_reference_number], 
+[AsycudaDocument].[Customs_clearance_office_code] AS [Customs_clearance_office_code], 
+[AsycudaDocument].[Lines] AS [Lines], 
+[AsycudaDocument].[ImportComplete] AS [ImportComplete], 
+[AsycudaDocument].[Cancelled] AS [Cancelled], 
+[AsycudaDocument].[TotalCIF] AS [TotalCIF], 
+[AsycudaDocument].[TotalGrossWeight] AS [TotalGrossWeight], 
+[AsycudaDocument].[AssessmentDate] AS [AssessmentDate], 
+[AsycudaDocument].[TotalFreight] AS [TotalFreight], 
+[AsycudaDocument].[ExpiryDate] AS [ExpiryDate], 
+[AsycudaDocument].[ApplicationSettingsId] AS [ApplicationSettingsId], 
+[AsycudaDocument].[SourceFileName] AS [SourceFileName], 
+[AsycudaDocument].[IsPaid] AS [IsPaid], 
+[AsycudaDocument].[SubmitToCustoms] AS [SubmitToCustoms], 
+[AsycudaDocument].[TotalDeduction] AS [TotalDeduction], 
+[AsycudaDocument].[TotalOtherCost] AS [TotalOtherCost], 
+[AsycudaDocument].[TotalInternalFreight] AS [TotalInternalFreight], 
+[AsycudaDocument].[TotalInsurance] AS [TotalInsurance]
+FROM [dbo].[AsycudaDocument] AS [AsycudaDocument]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="AsycudaDocumentBasicInfo" EntityType="Self.AsycudaDocumentBasicInfo" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
-    [AsycudaDocumentBasicInfo].[AsycudaDocumentSetId] AS [AsycudaDocumentSetId], 
-    [AsycudaDocumentBasicInfo].[ASYCUDA_Id] AS [ASYCUDA_Id], 
-    [AsycudaDocumentBasicInfo].[DocumentType] AS [DocumentType], 
-    [AsycudaDocumentBasicInfo].[CNumber] AS [CNumber], 
-    [AsycudaDocumentBasicInfo].[Extended_customs_procedure] AS [Extended_customs_procedure], 
-    [AsycudaDocumentBasicInfo].[National_customs_procedure] AS [National_customs_procedure], 
-    [AsycudaDocumentBasicInfo].[RegistrationDate] AS [RegistrationDate], 
-    [AsycudaDocumentBasicInfo].[AssessmentDate] AS [AssessmentDate], 
-    [AsycudaDocumentBasicInfo].[ExpiryDate] AS [ExpiryDate], 
-    [AsycudaDocumentBasicInfo].[Reference] AS [Reference], 
-    [AsycudaDocumentBasicInfo].[IsManuallyAssessed] AS [IsManuallyAssessed], 
-    [AsycudaDocumentBasicInfo].[Cancelled] AS [Cancelled], 
-    [AsycudaDocumentBasicInfo].[DoNotAllocate] AS [DoNotAllocate], 
-    [AsycudaDocumentBasicInfo].[ApplicationSettingsId] AS [ApplicationSettingsId], 
-    [AsycudaDocumentBasicInfo].[ImportComplete] AS [ImportComplete], 
-    [AsycudaDocumentBasicInfo].[Customs_ProcedureId] AS [Customs_ProcedureId], 
-    [AsycudaDocumentBasicInfo].[CustomsProcedure] AS [CustomsProcedure], 
-    [AsycudaDocumentBasicInfo].[SourceFileName] AS [SourceFileName], 
-    [AsycudaDocumentBasicInfo].[SubmitToCustoms] AS [SubmitToCustoms], 
-    [AsycudaDocumentBasicInfo].[IsPaid] AS [IsPaid]
-    FROM [dbo].[AsycudaDocumentBasicInfo] AS [AsycudaDocumentBasicInfo]</DefiningQuery>
+[AsycudaDocumentBasicInfo].[AsycudaDocumentSetId] AS [AsycudaDocumentSetId], 
+[AsycudaDocumentBasicInfo].[ASYCUDA_Id] AS [ASYCUDA_Id], 
+[AsycudaDocumentBasicInfo].[DocumentType] AS [DocumentType], 
+[AsycudaDocumentBasicInfo].[CNumber] AS [CNumber], 
+[AsycudaDocumentBasicInfo].[Extended_customs_procedure] AS [Extended_customs_procedure], 
+[AsycudaDocumentBasicInfo].[National_customs_procedure] AS [National_customs_procedure], 
+[AsycudaDocumentBasicInfo].[RegistrationDate] AS [RegistrationDate], 
+[AsycudaDocumentBasicInfo].[AssessmentDate] AS [AssessmentDate], 
+[AsycudaDocumentBasicInfo].[ExpiryDate] AS [ExpiryDate], 
+[AsycudaDocumentBasicInfo].[Reference] AS [Reference], 
+[AsycudaDocumentBasicInfo].[IsManuallyAssessed] AS [IsManuallyAssessed], 
+[AsycudaDocumentBasicInfo].[Cancelled] AS [Cancelled], 
+[AsycudaDocumentBasicInfo].[DoNotAllocate] AS [DoNotAllocate], 
+[AsycudaDocumentBasicInfo].[ApplicationSettingsId] AS [ApplicationSettingsId], 
+[AsycudaDocumentBasicInfo].[ImportComplete] AS [ImportComplete], 
+[AsycudaDocumentBasicInfo].[Customs_ProcedureId] AS [Customs_ProcedureId], 
+[AsycudaDocumentBasicInfo].[CustomsProcedure] AS [CustomsProcedure], 
+[AsycudaDocumentBasicInfo].[SourceFileName] AS [SourceFileName], 
+[AsycudaDocumentBasicInfo].[SubmitToCustoms] AS [SubmitToCustoms], 
+[AsycudaDocumentBasicInfo].[IsPaid] AS [IsPaid]
+FROM [dbo].[AsycudaDocumentBasicInfo] AS [AsycudaDocumentBasicInfo]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="AsycudaDocumentItem" EntityType="Self.AsycudaDocumentItem" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
-    [AsycudaDocumentItem].[Item_Id] AS [Item_Id], 
-    [AsycudaDocumentItem].[AsycudaDocumentId] AS [AsycudaDocumentId], 
-    [AsycudaDocumentItem].[EntryDataDetailsId] AS [EntryDataDetailsId], 
-    [AsycudaDocumentItem].[LineNumber] AS [LineNumber], 
-    [AsycudaDocumentItem].[IsAssessed] AS [IsAssessed], 
-    [AsycudaDocumentItem].[DoNotAllocate] AS [DoNotAllocate], 
-    [AsycudaDocumentItem].[DoNotEX] AS [DoNotEX], 
-    [AsycudaDocumentItem].[AttributeOnlyAllocation] AS [AttributeOnlyAllocation], 
-    [AsycudaDocumentItem].[Description_of_goods] AS [Description_of_goods], 
-    [AsycudaDocumentItem].[Commercial_Description] AS [Commercial_Description], 
-    [AsycudaDocumentItem].[Gross_weight_itm] AS [Gross_weight_itm], 
-    [AsycudaDocumentItem].[Net_weight_itm] AS [Net_weight_itm], 
-    [AsycudaDocumentItem].[Item_price] AS [Item_price], 
-    [AsycudaDocumentItem].[ItemQuantity] AS [ItemQuantity], 
-    [AsycudaDocumentItem].[Suppplementary_unit_code] AS [Suppplementary_unit_code], 
-    [AsycudaDocumentItem].[ItemNumber] AS [ItemNumber], 
-    [AsycudaDocumentItem].[TariffCode] AS [TariffCode], 
-    [AsycudaDocumentItem].[TariffCodeLicenseRequired] AS [TariffCodeLicenseRequired], 
-    [AsycudaDocumentItem].[TariffCategoryLicenseRequired] AS [TariffCategoryLicenseRequired], 
-    [AsycudaDocumentItem].[TariffCodeDescription] AS [TariffCodeDescription], 
-    [AsycudaDocumentItem].[DutyLiability] AS [DutyLiability], 
-    [AsycudaDocumentItem].[Total_CIF_itm] AS [Total_CIF_itm], 
-    [AsycudaDocumentItem].[Freight] AS [Freight], 
-    [AsycudaDocumentItem].[Statistical_value] AS [Statistical_value], 
-    [AsycudaDocumentItem].[DPQtyAllocated] AS [DPQtyAllocated], 
-    [AsycudaDocumentItem].[DFQtyAllocated] AS [DFQtyAllocated], 
-    [AsycudaDocumentItem].[ImportComplete] AS [ImportComplete], 
-    [AsycudaDocumentItem].[CNumber] AS [CNumber], 
-    [AsycudaDocumentItem].[RegistrationDate] AS [RegistrationDate], 
-    [AsycudaDocumentItem].[Number_of_packages] AS [Number_of_packages], 
-    [AsycudaDocumentItem].[Country_of_origin_code] AS [Country_of_origin_code], 
-    [AsycudaDocumentItem].[PiWeight] AS [PiWeight], 
-    [AsycudaDocumentItem].[Currency_rate] AS [Currency_rate], 
-    [AsycudaDocumentItem].[Currency_code] AS [Currency_code], 
-    [AsycudaDocumentItem].[InvalidHSCode] AS [InvalidHSCode], 
-    [AsycudaDocumentItem].[WarehouseError] AS [WarehouseError], 
-    [AsycudaDocumentItem].[PiQuantity] AS [PiQuantity], 
-    [AsycudaDocumentItem].[SalesFactor] AS [SalesFactor], 
-    [AsycudaDocumentItem].[ReferenceNumber] AS [ReferenceNumber], 
-    [AsycudaDocumentItem].[PreviousInvoiceNumber] AS [PreviousInvoiceNumber], 
-    [AsycudaDocumentItem].[PreviousInvoiceLineNumber] AS [PreviousInvoiceLineNumber], 
-    [AsycudaDocumentItem].[PreviousInvoiceItemNumber] AS [PreviousInvoiceItemNumber], 
-    [AsycudaDocumentItem].[ApplicationSettingsId] AS [ApplicationSettingsId], 
-    [AsycudaDocumentItem].[Cancelled] AS [Cancelled], 
-    [AsycudaDocumentItem].[ExpiryDate] AS [ExpiryDate], 
-    [AsycudaDocumentItem].[InventoryItemId] AS [InventoryItemId], 
-    [AsycudaDocumentItem].[CustomsProcedure] AS [CustomsProcedure], 
-    [AsycudaDocumentItem].[AssessmentDate] AS [AssessmentDate]
-    FROM [dbo].[AsycudaDocumentItem] AS [AsycudaDocumentItem]</DefiningQuery>
+[AsycudaDocumentItem].[Item_Id] AS [Item_Id], 
+[AsycudaDocumentItem].[AsycudaDocumentId] AS [AsycudaDocumentId], 
+[AsycudaDocumentItem].[EntryDataDetailsId] AS [EntryDataDetailsId], 
+[AsycudaDocumentItem].[LineNumber] AS [LineNumber], 
+[AsycudaDocumentItem].[IsAssessed] AS [IsAssessed], 
+[AsycudaDocumentItem].[DoNotAllocate] AS [DoNotAllocate], 
+[AsycudaDocumentItem].[DoNotEX] AS [DoNotEX], 
+[AsycudaDocumentItem].[AttributeOnlyAllocation] AS [AttributeOnlyAllocation], 
+[AsycudaDocumentItem].[Description_of_goods] AS [Description_of_goods], 
+[AsycudaDocumentItem].[Commercial_Description] AS [Commercial_Description], 
+[AsycudaDocumentItem].[Gross_weight_itm] AS [Gross_weight_itm], 
+[AsycudaDocumentItem].[Net_weight_itm] AS [Net_weight_itm], 
+[AsycudaDocumentItem].[Item_price] AS [Item_price], 
+[AsycudaDocumentItem].[ItemQuantity] AS [ItemQuantity], 
+[AsycudaDocumentItem].[Suppplementary_unit_code] AS [Suppplementary_unit_code], 
+[AsycudaDocumentItem].[ItemNumber] AS [ItemNumber], 
+[AsycudaDocumentItem].[TariffCode] AS [TariffCode], 
+[AsycudaDocumentItem].[TariffCodeLicenseRequired] AS [TariffCodeLicenseRequired], 
+[AsycudaDocumentItem].[TariffCategoryLicenseRequired] AS [TariffCategoryLicenseRequired], 
+[AsycudaDocumentItem].[TariffCodeDescription] AS [TariffCodeDescription], 
+[AsycudaDocumentItem].[DutyLiability] AS [DutyLiability], 
+[AsycudaDocumentItem].[Total_CIF_itm] AS [Total_CIF_itm], 
+[AsycudaDocumentItem].[Freight] AS [Freight], 
+[AsycudaDocumentItem].[Statistical_value] AS [Statistical_value], 
+[AsycudaDocumentItem].[DPQtyAllocated] AS [DPQtyAllocated], 
+[AsycudaDocumentItem].[DFQtyAllocated] AS [DFQtyAllocated], 
+[AsycudaDocumentItem].[ImportComplete] AS [ImportComplete], 
+[AsycudaDocumentItem].[CNumber] AS [CNumber], 
+[AsycudaDocumentItem].[RegistrationDate] AS [RegistrationDate], 
+[AsycudaDocumentItem].[Number_of_packages] AS [Number_of_packages], 
+[AsycudaDocumentItem].[Country_of_origin_code] AS [Country_of_origin_code], 
+[AsycudaDocumentItem].[PiWeight] AS [PiWeight], 
+[AsycudaDocumentItem].[Currency_rate] AS [Currency_rate], 
+[AsycudaDocumentItem].[Currency_code] AS [Currency_code], 
+[AsycudaDocumentItem].[InvalidHSCode] AS [InvalidHSCode], 
+[AsycudaDocumentItem].[WarehouseError] AS [WarehouseError], 
+[AsycudaDocumentItem].[PiQuantity] AS [PiQuantity], 
+[AsycudaDocumentItem].[SalesFactor] AS [SalesFactor], 
+[AsycudaDocumentItem].[ReferenceNumber] AS [ReferenceNumber], 
+[AsycudaDocumentItem].[PreviousInvoiceNumber] AS [PreviousInvoiceNumber], 
+[AsycudaDocumentItem].[PreviousInvoiceLineNumber] AS [PreviousInvoiceLineNumber], 
+[AsycudaDocumentItem].[PreviousInvoiceItemNumber] AS [PreviousInvoiceItemNumber], 
+[AsycudaDocumentItem].[ApplicationSettingsId] AS [ApplicationSettingsId], 
+[AsycudaDocumentItem].[Cancelled] AS [Cancelled], 
+[AsycudaDocumentItem].[ExpiryDate] AS [ExpiryDate], 
+[AsycudaDocumentItem].[InventoryItemId] AS [InventoryItemId], 
+[AsycudaDocumentItem].[CustomsProcedure] AS [CustomsProcedure], 
+[AsycudaDocumentItem].[AssessmentDate] AS [AssessmentDate]
+FROM [dbo].[AsycudaDocumentItem] AS [AsycudaDocumentItem]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="AsycudaDocumentItemEntryDataDetails" EntityType="Self.AsycudaDocumentItemEntryDataDetails" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
-    [AsycudaDocumentItemEntryDataDetails].[Id] AS [Id], 
-    [AsycudaDocumentItemEntryDataDetails].[ApplicationSettingsId] AS [ApplicationSettingsId], 
-    [AsycudaDocumentItemEntryDataDetails].[AsycudaDocumentSetId] AS [AsycudaDocumentSetId], 
-    [AsycudaDocumentItemEntryDataDetails].[EntryDataDetailsId] AS [EntryDataDetailsId], 
-    [AsycudaDocumentItemEntryDataDetails].[EntryData_Id] AS [EntryData_Id], 
-    [AsycudaDocumentItemEntryDataDetails].[Item_Id] AS [Item_Id], 
-    [AsycudaDocumentItemEntryDataDetails].[ItemNumber] AS [ItemNumber], 
-    [AsycudaDocumentItemEntryDataDetails].[key] AS [key], 
-    [AsycudaDocumentItemEntryDataDetails].[DocumentType] AS [DocumentType], 
-    [AsycudaDocumentItemEntryDataDetails].[CustomsProcedure] AS [CustomsProcedure], 
-    [AsycudaDocumentItemEntryDataDetails].[Quantity] AS [Quantity], 
-    [AsycudaDocumentItemEntryDataDetails].[ImportComplete] AS [ImportComplete], 
-    [AsycudaDocumentItemEntryDataDetails].[Asycuda_id] AS [Asycuda_id], 
-    [AsycudaDocumentItemEntryDataDetails].[EntryDataType] AS [EntryDataType], 
-    [AsycudaDocumentItemEntryDataDetails].[CNumber] AS [CNumber], 
-    [AsycudaDocumentItemEntryDataDetails].[LineNumber] AS [LineNumber], 
-    [AsycudaDocumentItemEntryDataDetails].[CustomsOperation] AS [CustomsOperation]
-    FROM [dbo].[AsycudaDocumentItemEntryDataDetails] AS [AsycudaDocumentItemEntryDataDetails]</DefiningQuery>
+[AsycudaDocumentItemEntryDataDetails].[Id] AS [Id], 
+[AsycudaDocumentItemEntryDataDetails].[ApplicationSettingsId] AS [ApplicationSettingsId], 
+[AsycudaDocumentItemEntryDataDetails].[AsycudaDocumentSetId] AS [AsycudaDocumentSetId], 
+[AsycudaDocumentItemEntryDataDetails].[EntryDataDetailsId] AS [EntryDataDetailsId], 
+[AsycudaDocumentItemEntryDataDetails].[EntryData_Id] AS [EntryData_Id], 
+[AsycudaDocumentItemEntryDataDetails].[Item_Id] AS [Item_Id], 
+[AsycudaDocumentItemEntryDataDetails].[ItemNumber] AS [ItemNumber], 
+[AsycudaDocumentItemEntryDataDetails].[key] AS [key], 
+[AsycudaDocumentItemEntryDataDetails].[DocumentType] AS [DocumentType], 
+[AsycudaDocumentItemEntryDataDetails].[CustomsProcedure] AS [CustomsProcedure], 
+[AsycudaDocumentItemEntryDataDetails].[Quantity] AS [Quantity], 
+[AsycudaDocumentItemEntryDataDetails].[ImportComplete] AS [ImportComplete], 
+[AsycudaDocumentItemEntryDataDetails].[Asycuda_id] AS [Asycuda_id], 
+[AsycudaDocumentItemEntryDataDetails].[EntryDataType] AS [EntryDataType], 
+[AsycudaDocumentItemEntryDataDetails].[CNumber] AS [CNumber], 
+[AsycudaDocumentItemEntryDataDetails].[LineNumber] AS [LineNumber], 
+[AsycudaDocumentItemEntryDataDetails].[CustomsOperation] AS [CustomsOperation]
+FROM [dbo].[AsycudaDocumentItemEntryDataDetails] AS [AsycudaDocumentItemEntryDataDetails]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="AsycudaDocumentSetAttachments" EntityType="Self.AsycudaDocumentSetAttachments" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
-    [AsycudaDocumentSetAttachments].[AsycudaDocumentSetId] AS [AsycudaDocumentSetId], 
-    [AsycudaDocumentSetAttachments].[Declarant_Reference_Number] AS [Declarant_Reference_Number], 
-    [AsycudaDocumentSetAttachments].[Description] AS [Description], 
-    [AsycudaDocumentSetAttachments].[FilePath] AS [FilePath], 
-    [AsycudaDocumentSetAttachments].[DocumentCode] AS [DocumentCode], 
-    [AsycudaDocumentSetAttachments].[Reference] AS [Reference], 
-    [AsycudaDocumentSetAttachments].[Id] AS [Id], 
-    [AsycudaDocumentSetAttachments].[FileTypeId] AS [FileTypeId]
-    FROM [dbo].[AsycudaDocumentSetAttachments] AS [AsycudaDocumentSetAttachments]</DefiningQuery>
+[AsycudaDocumentSetAttachments].[AsycudaDocumentSetId] AS [AsycudaDocumentSetId], 
+[AsycudaDocumentSetAttachments].[Declarant_Reference_Number] AS [Declarant_Reference_Number], 
+[AsycudaDocumentSetAttachments].[Description] AS [Description], 
+[AsycudaDocumentSetAttachments].[FilePath] AS [FilePath], 
+[AsycudaDocumentSetAttachments].[DocumentCode] AS [DocumentCode], 
+[AsycudaDocumentSetAttachments].[Reference] AS [Reference], 
+[AsycudaDocumentSetAttachments].[Id] AS [Id], 
+[AsycudaDocumentSetAttachments].[FileTypeId] AS [FileTypeId]
+FROM [dbo].[AsycudaDocumentSetAttachments] AS [AsycudaDocumentSetAttachments]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="AsycudaDocumentSetC71" EntityType="Self.AsycudaDocumentSetC71" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
-    [AsycudaDocumentSetC71].[Address] AS [Address], 
-    [AsycudaDocumentSetC71].[Value_declaration_form_Id] AS [Value_declaration_form_Id], 
-    [AsycudaDocumentSetC71].[Total] AS [Total], 
-    [AsycudaDocumentSetC71].[AsycudaDocumentSetId] AS [AsycudaDocumentSetId], 
-    [AsycudaDocumentSetC71].[FilePath] AS [FilePath], 
-    [AsycudaDocumentSetC71].[AttachmentId] AS [AttachmentId], 
-    [AsycudaDocumentSetC71].[RegNumber] AS [RegNumber]
-    FROM [dbo].[AsycudaDocumentSetC71] AS [AsycudaDocumentSetC71]</DefiningQuery>
+[AsycudaDocumentSetC71].[Address] AS [Address], 
+[AsycudaDocumentSetC71].[Value_declaration_form_Id] AS [Value_declaration_form_Id], 
+[AsycudaDocumentSetC71].[Total] AS [Total], 
+[AsycudaDocumentSetC71].[AsycudaDocumentSetId] AS [AsycudaDocumentSetId], 
+[AsycudaDocumentSetC71].[FilePath] AS [FilePath], 
+[AsycudaDocumentSetC71].[AttachmentId] AS [AttachmentId], 
+[AsycudaDocumentSetC71].[RegNumber] AS [RegNumber]
+FROM [dbo].[AsycudaDocumentSetC71] AS [AsycudaDocumentSetC71]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="AsycudaDocumentSetEntryDataDetails" EntityType="Self.AsycudaDocumentSetEntryDataDetails" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
-    [AsycudaDocumentSetEntryDataDetails].[AsycudaDocumentSetId] AS [AsycudaDocumentSetId], 
-    [AsycudaDocumentSetEntryDataDetails].[EntryDataDetailsId] AS [EntryDataDetailsId], 
-    [AsycudaDocumentSetEntryDataDetails].[Id] AS [Id]
-    FROM [dbo].[AsycudaDocumentSetEntryDataDetails] AS [AsycudaDocumentSetEntryDataDetails]</DefiningQuery>
+[AsycudaDocumentSetEntryDataDetails].[AsycudaDocumentSetId] AS [AsycudaDocumentSetId], 
+[AsycudaDocumentSetEntryDataDetails].[EntryDataDetailsId] AS [EntryDataDetailsId], 
+[AsycudaDocumentSetEntryDataDetails].[Id] AS [Id]
+FROM [dbo].[AsycudaDocumentSetEntryDataDetails] AS [AsycudaDocumentSetEntryDataDetails]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="AsycudaDocumentSetEntryDataEx" EntityType="Self.AsycudaDocumentSetEntryDataEx" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
-    [AsycudaDocumentSetEntryDataEx].[AsycudaDocumentSetId] AS [AsycudaDocumentSetId], 
-    [AsycudaDocumentSetEntryDataEx].[EntryData_Id] AS [EntryData_Id], 
-    [AsycudaDocumentSetEntryDataEx].[EntryDataId] AS [EntryDataId], 
-    [AsycudaDocumentSetEntryDataEx].[EntryDataDate] AS [EntryDataDate], 
-    [AsycudaDocumentSetEntryDataEx].[InvoiceTotal] AS [InvoiceTotal], 
-    [AsycudaDocumentSetEntryDataEx].[SourceFile] AS [SourceFile]
-    FROM [dbo].[AsycudaDocumentSetEntryDataEx] AS [AsycudaDocumentSetEntryDataEx]</DefiningQuery>
+[AsycudaDocumentSetEntryDataEx].[AsycudaDocumentSetId] AS [AsycudaDocumentSetId], 
+[AsycudaDocumentSetEntryDataEx].[EntryData_Id] AS [EntryData_Id], 
+[AsycudaDocumentSetEntryDataEx].[EntryDataId] AS [EntryDataId], 
+[AsycudaDocumentSetEntryDataEx].[EntryDataDate] AS [EntryDataDate], 
+[AsycudaDocumentSetEntryDataEx].[InvoiceTotal] AS [InvoiceTotal], 
+[AsycudaDocumentSetEntryDataEx].[SourceFile] AS [SourceFile]
+FROM [dbo].[AsycudaDocumentSetEntryDataEx] AS [AsycudaDocumentSetEntryDataEx]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="AsycudaDocumentSetEx" EntityType="Self.AsycudaDocumentSetEx" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
-    [AsycudaDocumentSetEx].[AsycudaDocumentSetId] AS [AsycudaDocumentSetId], 
-    [AsycudaDocumentSetEx].[Declarant_Reference_Number] AS [Declarant_Reference_Number], 
-    [AsycudaDocumentSetEx].[Exchange_Rate] AS [Exchange_Rate], 
-    [AsycudaDocumentSetEx].[Customs_ProcedureId] AS [Customs_ProcedureId], 
-    [AsycudaDocumentSetEx].[Country_of_origin_code] AS [Country_of_origin_code], 
-    [AsycudaDocumentSetEx].[Currency_Code] AS [Currency_Code], 
-    [AsycudaDocumentSetEx].[Document_TypeId] AS [Document_TypeId], 
-    [AsycudaDocumentSetEx].[Description] AS [Description], 
-    [AsycudaDocumentSetEx].[Manifest_Number] AS [Manifest_Number], 
-    [AsycudaDocumentSetEx].[BLNumber] AS [BLNumber], 
-    [AsycudaDocumentSetEx].[EntryTimeStamp] AS [EntryTimeStamp], 
-    [AsycudaDocumentSetEx].[StartingFileCount] AS [StartingFileCount], 
-    [AsycudaDocumentSetEx].[ApportionMethod] AS [ApportionMethod], 
-    [AsycudaDocumentSetEx].[DocumentsCount] AS [DocumentsCount], 
-    [AsycudaDocumentSetEx].[ExpectedEntries] AS [ExpectedEntries], 
-    [AsycudaDocumentSetEx].[TotalCIF] AS [TotalCIF], 
-    [AsycudaDocumentSetEx].[TotalWeight] AS [TotalWeight], 
-    [AsycudaDocumentSetEx].[TotalFreight] AS [TotalFreight], 
-    [AsycudaDocumentSetEx].[ApplicationSettingsId] AS [ApplicationSettingsId], 
-    [AsycudaDocumentSetEx].[TotalPackages] AS [TotalPackages], 
-    [AsycudaDocumentSetEx].[LastFileNumber] AS [LastFileNumber], 
-    [AsycudaDocumentSetEx].[TotalInvoices] AS [TotalInvoices], 
-    [AsycudaDocumentSetEx].[ClassifiedLines] AS [ClassifiedLines], 
-    [AsycudaDocumentSetEx].[TotalLines] AS [TotalLines], 
-    [AsycudaDocumentSetEx].[MaxLines] AS [MaxLines], 
-    [AsycudaDocumentSetEx].[LocationOfGoods] AS [LocationOfGoods], 
-    [AsycudaDocumentSetEx].[LicenseLines] AS [LicenseLines], 
-    [AsycudaDocumentSetEx].[QtyLicensesRequired] AS [QtyLicensesRequired], 
-    [AsycudaDocumentSetEx].[InvoiceTotal] AS [InvoiceTotal], 
-    [AsycudaDocumentSetEx].[FreightCurrencyCode] AS [FreightCurrencyCode], 
-    [AsycudaDocumentSetEx].[ImportedInvoices] AS [ImportedInvoices], 
-    [AsycudaDocumentSetEx].[EntryPackages] AS [EntryPackages], 
-    [AsycudaDocumentSetEx].[CurrencyRate] AS [CurrencyRate], 
-    [AsycudaDocumentSetEx].[FreightCurrencyRate] AS [FreightCurrencyRate]
-    FROM [dbo].[AsycudaDocumentSetEx] AS [AsycudaDocumentSetEx]</DefiningQuery>
+[AsycudaDocumentSetEx].[AsycudaDocumentSetId] AS [AsycudaDocumentSetId], 
+[AsycudaDocumentSetEx].[Declarant_Reference_Number] AS [Declarant_Reference_Number], 
+[AsycudaDocumentSetEx].[Exchange_Rate] AS [Exchange_Rate], 
+[AsycudaDocumentSetEx].[Customs_ProcedureId] AS [Customs_ProcedureId], 
+[AsycudaDocumentSetEx].[Country_of_origin_code] AS [Country_of_origin_code], 
+[AsycudaDocumentSetEx].[Currency_Code] AS [Currency_Code], 
+[AsycudaDocumentSetEx].[Document_TypeId] AS [Document_TypeId], 
+[AsycudaDocumentSetEx].[Description] AS [Description], 
+[AsycudaDocumentSetEx].[Manifest_Number] AS [Manifest_Number], 
+[AsycudaDocumentSetEx].[BLNumber] AS [BLNumber], 
+[AsycudaDocumentSetEx].[EntryTimeStamp] AS [EntryTimeStamp], 
+[AsycudaDocumentSetEx].[StartingFileCount] AS [StartingFileCount], 
+[AsycudaDocumentSetEx].[ApportionMethod] AS [ApportionMethod], 
+[AsycudaDocumentSetEx].[DocumentsCount] AS [DocumentsCount], 
+[AsycudaDocumentSetEx].[ExpectedEntries] AS [ExpectedEntries], 
+[AsycudaDocumentSetEx].[TotalCIF] AS [TotalCIF], 
+[AsycudaDocumentSetEx].[TotalWeight] AS [TotalWeight], 
+[AsycudaDocumentSetEx].[TotalFreight] AS [TotalFreight], 
+[AsycudaDocumentSetEx].[ApplicationSettingsId] AS [ApplicationSettingsId], 
+[AsycudaDocumentSetEx].[TotalPackages] AS [TotalPackages], 
+[AsycudaDocumentSetEx].[LastFileNumber] AS [LastFileNumber], 
+[AsycudaDocumentSetEx].[TotalInvoices] AS [TotalInvoices], 
+[AsycudaDocumentSetEx].[ClassifiedLines] AS [ClassifiedLines], 
+[AsycudaDocumentSetEx].[TotalLines] AS [TotalLines], 
+[AsycudaDocumentSetEx].[MaxLines] AS [MaxLines], 
+[AsycudaDocumentSetEx].[LocationOfGoods] AS [LocationOfGoods], 
+[AsycudaDocumentSetEx].[LicenseLines] AS [LicenseLines], 
+[AsycudaDocumentSetEx].[QtyLicensesRequired] AS [QtyLicensesRequired], 
+[AsycudaDocumentSetEx].[InvoiceTotal] AS [InvoiceTotal], 
+[AsycudaDocumentSetEx].[FreightCurrencyCode] AS [FreightCurrencyCode], 
+[AsycudaDocumentSetEx].[ImportedInvoices] AS [ImportedInvoices], 
+[AsycudaDocumentSetEx].[EntryPackages] AS [EntryPackages], 
+[AsycudaDocumentSetEx].[CurrencyRate] AS [CurrencyRate], 
+[AsycudaDocumentSetEx].[FreightCurrencyRate] AS [FreightCurrencyRate]
+FROM [dbo].[AsycudaDocumentSetEx] AS [AsycudaDocumentSetEx]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="AsycudaItemBasicInfo" EntityType="Self.AsycudaItemBasicInfo" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
-    [AsycudaItemBasicInfo].[ASYCUDA_Id] AS [ASYCUDA_Id], 
-    [AsycudaItemBasicInfo].[Item_Id] AS [Item_Id], 
-    [AsycudaItemBasicInfo].[ItemNumber] AS [ItemNumber], 
-    [AsycudaItemBasicInfo].[Commercial_Description] AS [Commercial_Description], 
-    [AsycudaItemBasicInfo].[TariffCode] AS [TariffCode], 
-    [AsycudaItemBasicInfo].[ItemQuantity] AS [ItemQuantity], 
-    [AsycudaItemBasicInfo].[DPQtyAllocated] AS [DPQtyAllocated], 
-    [AsycudaItemBasicInfo].[DFQtyAllocated] AS [DFQtyAllocated], 
-    [AsycudaItemBasicInfo].[IsAssessed] AS [IsAssessed], 
-    [AsycudaItemBasicInfo].[LineNumber] AS [LineNumber], 
-    [AsycudaItemBasicInfo].[CNumber] AS [CNumber], 
-    [AsycudaItemBasicInfo].[RegistrationDate] AS [RegistrationDate], 
-    [AsycudaItemBasicInfo].[AsycudaDocumentSetId] AS [AsycudaDocumentSetId], 
-    [AsycudaItemBasicInfo].[ApplicationSettingsId] AS [ApplicationSettingsId], 
-    [AsycudaItemBasicInfo].[EntryDataType] AS [EntryDataType]
-    FROM [dbo].[AsycudaItemBasicInfo] AS [AsycudaItemBasicInfo]</DefiningQuery>
+[AsycudaItemBasicInfo].[ASYCUDA_Id] AS [ASYCUDA_Id], 
+[AsycudaItemBasicInfo].[Item_Id] AS [Item_Id], 
+[AsycudaItemBasicInfo].[ItemNumber] AS [ItemNumber], 
+[AsycudaItemBasicInfo].[Commercial_Description] AS [Commercial_Description], 
+[AsycudaItemBasicInfo].[TariffCode] AS [TariffCode], 
+[AsycudaItemBasicInfo].[ItemQuantity] AS [ItemQuantity], 
+[AsycudaItemBasicInfo].[DPQtyAllocated] AS [DPQtyAllocated], 
+[AsycudaItemBasicInfo].[DFQtyAllocated] AS [DFQtyAllocated], 
+[AsycudaItemBasicInfo].[IsAssessed] AS [IsAssessed], 
+[AsycudaItemBasicInfo].[LineNumber] AS [LineNumber], 
+[AsycudaItemBasicInfo].[CNumber] AS [CNumber], 
+[AsycudaItemBasicInfo].[RegistrationDate] AS [RegistrationDate], 
+[AsycudaItemBasicInfo].[AsycudaDocumentSetId] AS [AsycudaDocumentSetId], 
+[AsycudaItemBasicInfo].[ApplicationSettingsId] AS [ApplicationSettingsId], 
+[AsycudaItemBasicInfo].[EntryDataType] AS [EntryDataType]
+FROM [dbo].[AsycudaItemBasicInfo] AS [AsycudaItemBasicInfo]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="InventoryItemAliasEx" EntityType="Self.InventoryItemAliasEx" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
-    [InventoryItemAliasEx].[AliasId] AS [AliasId], 
-    [InventoryItemAliasEx].[ApplicationSettingsId] AS [ApplicationSettingsId], 
-    [InventoryItemAliasEx].[InventoryItemId] AS [InventoryItemId], 
-    [InventoryItemAliasEx].[ItemNumber] AS [ItemNumber], 
-    [InventoryItemAliasEx].[AliasName] AS [AliasName], 
-    [InventoryItemAliasEx].[AliasItemId] AS [AliasItemId]
-    FROM [dbo].[InventoryItemAliasEx] AS [InventoryItemAliasEx]</DefiningQuery>
+[InventoryItemAliasEx].[AliasId] AS [AliasId], 
+[InventoryItemAliasEx].[ApplicationSettingsId] AS [ApplicationSettingsId], 
+[InventoryItemAliasEx].[InventoryItemId] AS [InventoryItemId], 
+[InventoryItemAliasEx].[ItemNumber] AS [ItemNumber], 
+[InventoryItemAliasEx].[AliasName] AS [AliasName], 
+[InventoryItemAliasEx].[AliasItemId] AS [AliasItemId]
+FROM [dbo].[InventoryItemAliasEx] AS [InventoryItemAliasEx]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="InventoryItemsEx" EntityType="Self.InventoryItemsEx" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
-    [InventoryItemsEx].[InventoryItemId] AS [InventoryItemId], 
-    [InventoryItemsEx].[ItemNumber] AS [ItemNumber], 
-    [InventoryItemsEx].[Description] AS [Description], 
-    [InventoryItemsEx].[Category] AS [Category], 
-    [InventoryItemsEx].[TariffCode] AS [TariffCode], 
-    [InventoryItemsEx].[EntryTimeStamp] AS [EntryTimeStamp], 
-    [InventoryItemsEx].[SuppUnitCode2] AS [SuppUnitCode2], 
-    [InventoryItemsEx].[SuppQty] AS [SuppQty], 
-    [InventoryItemsEx].[ApplicationSettingsId] AS [ApplicationSettingsId]
-    FROM [dbo].[InventoryItemsEx] AS [InventoryItemsEx]</DefiningQuery>
+[InventoryItemsEx].[InventoryItemId] AS [InventoryItemId], 
+[InventoryItemsEx].[ItemNumber] AS [ItemNumber], 
+[InventoryItemsEx].[Description] AS [Description], 
+[InventoryItemsEx].[Category] AS [Category], 
+[InventoryItemsEx].[TariffCode] AS [TariffCode], 
+[InventoryItemsEx].[EntryTimeStamp] AS [EntryTimeStamp], 
+[InventoryItemsEx].[SuppUnitCode2] AS [SuppUnitCode2], 
+[InventoryItemsEx].[SuppQty] AS [SuppQty], 
+[InventoryItemsEx].[ApplicationSettingsId] AS [ApplicationSettingsId]
+FROM [dbo].[InventoryItemsEx] AS [InventoryItemsEx]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="LicenceSummary" EntityType="Self.LicenceSummary" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
-    [LicenceSummary].[TariffCode] AS [TariffCode], 
-    [LicenceSummary].[Quantity] AS [Quantity], 
-    [LicenceSummary].[Total] AS [Total], 
-    [LicenceSummary].[TariffCodeDescription] AS [TariffCodeDescription], 
-    [LicenceSummary].[ApplicationSettingsId] AS [ApplicationSettingsId], 
-    [LicenceSummary].[AsycudaDocumentSetId] AS [AsycudaDocumentSetId], 
-    [LicenceSummary].[RowNumber] AS [RowNumber]
-    FROM [dbo].[LicenceSummary] AS [LicenceSummary]</DefiningQuery>
+[LicenceSummary].[TariffCode] AS [TariffCode], 
+[LicenceSummary].[Quantity] AS [Quantity], 
+[LicenceSummary].[Total] AS [Total], 
+[LicenceSummary].[TariffCodeDescription] AS [TariffCodeDescription], 
+[LicenceSummary].[ApplicationSettingsId] AS [ApplicationSettingsId], 
+[LicenceSummary].[AsycudaDocumentSetId] AS [AsycudaDocumentSetId], 
+[LicenceSummary].[RowNumber] AS [RowNumber]
+FROM [dbo].[LicenceSummary] AS [LicenceSummary]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="TODO-AdjustmentsAlreadyXMLed" EntityType="Self.TODO-AdjustmentsAlreadyXMLed" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
-    [TODO-AdjustmentsAlreadyXMLed].[EntryDataDetailsId] AS [EntryDataDetailsId], 
-    [TODO-AdjustmentsAlreadyXMLed].[EntryData_Id] AS [EntryData_Id], 
-    [TODO-AdjustmentsAlreadyXMLed].[ApplicationSettingsId] AS [ApplicationSettingsId], 
-    [TODO-AdjustmentsAlreadyXMLed].[AsycudaDocumentSetId] AS [AsycudaDocumentSetId], 
-    [TODO-AdjustmentsAlreadyXMLed].[IsClassified] AS [IsClassified], 
-    [TODO-AdjustmentsAlreadyXMLed].[AdjustmentType] AS [AdjustmentType], 
-    [TODO-AdjustmentsAlreadyXMLed].[InvoiceNo] AS [InvoiceNo], 
-    [TODO-AdjustmentsAlreadyXMLed].[InvoiceQty] AS [InvoiceQty], 
-    [TODO-AdjustmentsAlreadyXMLed].[ReceivedQty] AS [ReceivedQty], 
-    [TODO-AdjustmentsAlreadyXMLed].[InvoiceDate] AS [InvoiceDate], 
-    [TODO-AdjustmentsAlreadyXMLed].[ItemNumber] AS [ItemNumber], 
-    [TODO-AdjustmentsAlreadyXMLed].[Status] AS [Status], 
-    [TODO-AdjustmentsAlreadyXMLed].[PreviousCNumber] AS [PreviousCNumber], 
-    [TODO-AdjustmentsAlreadyXMLed].[Declarant_Reference_Number] AS [Declarant_Reference_Number], 
-    [TODO-AdjustmentsAlreadyXMLed].[pCNumber] AS [pCNumber], 
-    [TODO-AdjustmentsAlreadyXMLed].[pLineNumber] AS [pLineNumber], 
-    [TODO-AdjustmentsAlreadyXMLed].[RegistrationDate] AS [RegistrationDate], 
-    [TODO-AdjustmentsAlreadyXMLed].[ReferenceNumber] AS [ReferenceNumber], 
-    [TODO-AdjustmentsAlreadyXMLed].[DocumentType] AS [DocumentType], 
-    [TODO-AdjustmentsAlreadyXMLed].[Type] AS [Type], 
-    [TODO-AdjustmentsAlreadyXMLed].[EffectiveDate] AS [EffectiveDate], 
-    [TODO-AdjustmentsAlreadyXMLed].[ItemDescription] AS [ItemDescription], 
-    [TODO-AdjustmentsAlreadyXMLed].[EmailId] AS [EmailId], 
-    [TODO-AdjustmentsAlreadyXMLed].[FileTypeId] AS [FileTypeId], 
-    [TODO-AdjustmentsAlreadyXMLed].[Quantity] AS [Quantity], 
-    [TODO-AdjustmentsAlreadyXMLed].[Cost] AS [Cost], 
-    [TODO-AdjustmentsAlreadyXMLed].[Subject] AS [Subject], 
-    [TODO-AdjustmentsAlreadyXMLed].[EmailDate] AS [EmailDate], 
-    [TODO-AdjustmentsAlreadyXMLed].[LineNumber] AS [LineNumber], 
-    [TODO-AdjustmentsAlreadyXMLed].[PreviousInvoiceNumber] AS [PreviousInvoiceNumber], 
-    [TODO-AdjustmentsAlreadyXMLed].[Comment] AS [Comment], 
-    [TODO-AdjustmentsAlreadyXMLed].[DutyFreePaid] AS [DutyFreePaid]
-    FROM [dbo].[TODO-AdjustmentsAlreadyXMLed] AS [TODO-AdjustmentsAlreadyXMLed]</DefiningQuery>
+[TODO-AdjustmentsAlreadyXMLed].[EntryDataDetailsId] AS [EntryDataDetailsId], 
+[TODO-AdjustmentsAlreadyXMLed].[EntryData_Id] AS [EntryData_Id], 
+[TODO-AdjustmentsAlreadyXMLed].[ApplicationSettingsId] AS [ApplicationSettingsId], 
+[TODO-AdjustmentsAlreadyXMLed].[AsycudaDocumentSetId] AS [AsycudaDocumentSetId], 
+[TODO-AdjustmentsAlreadyXMLed].[IsClassified] AS [IsClassified], 
+[TODO-AdjustmentsAlreadyXMLed].[AdjustmentType] AS [AdjustmentType], 
+[TODO-AdjustmentsAlreadyXMLed].[InvoiceNo] AS [InvoiceNo], 
+[TODO-AdjustmentsAlreadyXMLed].[InvoiceQty] AS [InvoiceQty], 
+[TODO-AdjustmentsAlreadyXMLed].[ReceivedQty] AS [ReceivedQty], 
+[TODO-AdjustmentsAlreadyXMLed].[InvoiceDate] AS [InvoiceDate], 
+[TODO-AdjustmentsAlreadyXMLed].[ItemNumber] AS [ItemNumber], 
+[TODO-AdjustmentsAlreadyXMLed].[Status] AS [Status], 
+[TODO-AdjustmentsAlreadyXMLed].[PreviousCNumber] AS [PreviousCNumber], 
+[TODO-AdjustmentsAlreadyXMLed].[Declarant_Reference_Number] AS [Declarant_Reference_Number], 
+[TODO-AdjustmentsAlreadyXMLed].[pCNumber] AS [pCNumber], 
+[TODO-AdjustmentsAlreadyXMLed].[pLineNumber] AS [pLineNumber], 
+[TODO-AdjustmentsAlreadyXMLed].[RegistrationDate] AS [RegistrationDate], 
+[TODO-AdjustmentsAlreadyXMLed].[ReferenceNumber] AS [ReferenceNumber], 
+[TODO-AdjustmentsAlreadyXMLed].[DocumentType] AS [DocumentType], 
+[TODO-AdjustmentsAlreadyXMLed].[Type] AS [Type], 
+[TODO-AdjustmentsAlreadyXMLed].[EffectiveDate] AS [EffectiveDate], 
+[TODO-AdjustmentsAlreadyXMLed].[ItemDescription] AS [ItemDescription], 
+[TODO-AdjustmentsAlreadyXMLed].[EmailId] AS [EmailId], 
+[TODO-AdjustmentsAlreadyXMLed].[FileTypeId] AS [FileTypeId], 
+[TODO-AdjustmentsAlreadyXMLed].[Quantity] AS [Quantity], 
+[TODO-AdjustmentsAlreadyXMLed].[Cost] AS [Cost], 
+[TODO-AdjustmentsAlreadyXMLed].[Subject] AS [Subject], 
+[TODO-AdjustmentsAlreadyXMLed].[EmailDate] AS [EmailDate], 
+[TODO-AdjustmentsAlreadyXMLed].[LineNumber] AS [LineNumber], 
+[TODO-AdjustmentsAlreadyXMLed].[PreviousInvoiceNumber] AS [PreviousInvoiceNumber], 
+[TODO-AdjustmentsAlreadyXMLed].[Comment] AS [Comment], 
+[TODO-AdjustmentsAlreadyXMLed].[DutyFreePaid] AS [DutyFreePaid]
+FROM [dbo].[TODO-AdjustmentsAlreadyXMLed] AS [TODO-AdjustmentsAlreadyXMLed]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="TODO-AssessDiscrepancyEntries" EntityType="Self.TODO-AssessDiscrepancyEntries" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
-    [TODO-AssessDiscrepancyEntries].[ApplicationSettingsId] AS [ApplicationSettingsId], 
-    [TODO-AssessDiscrepancyEntries].[AsycudaDocumentSetId] AS [AsycudaDocumentSetId], 
-    [TODO-AssessDiscrepancyEntries].[AdjustmentType] AS [AdjustmentType], 
-    [TODO-AssessDiscrepancyEntries].[InvoiceNo] AS [InvoiceNo], 
-    [TODO-AssessDiscrepancyEntries].[InvoiceDate] AS [InvoiceDate], 
-    [TODO-AssessDiscrepancyEntries].[Declarant_Reference_Number] AS [Declarant_Reference_Number]
-    FROM [dbo].[TODO-AssessDiscrepancyEntries] AS [TODO-AssessDiscrepancyEntries]</DefiningQuery>
+[TODO-AssessDiscrepancyEntries].[ApplicationSettingsId] AS [ApplicationSettingsId], 
+[TODO-AssessDiscrepancyEntries].[AsycudaDocumentSetId] AS [AsycudaDocumentSetId], 
+[TODO-AssessDiscrepancyEntries].[AdjustmentType] AS [AdjustmentType], 
+[TODO-AssessDiscrepancyEntries].[InvoiceNo] AS [InvoiceNo], 
+[TODO-AssessDiscrepancyEntries].[InvoiceDate] AS [InvoiceDate], 
+[TODO-AssessDiscrepancyEntries].[Declarant_Reference_Number] AS [Declarant_Reference_Number]
+FROM [dbo].[TODO-AssessDiscrepancyEntries] AS [TODO-AssessDiscrepancyEntries]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="TODO-C71ToCreate" EntityType="Self.TODO-C71ToCreate" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
-    [TODO-C71ToCreate].[AsycudaDocumentSetId] AS [AsycudaDocumentSetId], 
-    [TODO-C71ToCreate].[ApplicationSettingsId] AS [ApplicationSettingsId], 
-    [TODO-C71ToCreate].[Country_of_origin_code] AS [Country_of_origin_code], 
-    [TODO-C71ToCreate].[Currency_Code] AS [Currency_Code], 
-    [TODO-C71ToCreate].[Manifest_Number] AS [Manifest_Number], 
-    [TODO-C71ToCreate].[BLNumber] AS [BLNumber], 
-    [TODO-C71ToCreate].[Type_of_declaration] AS [Type_of_declaration], 
-    [TODO-C71ToCreate].[Declaration_gen_procedure_code] AS [Declaration_gen_procedure_code], 
-    [TODO-C71ToCreate].[Declarant_Reference_Number] AS [Declarant_Reference_Number], 
-    [TODO-C71ToCreate].[TotalInvoices] AS [TotalInvoices], 
-    [TODO-C71ToCreate].[DocumentsCount] AS [DocumentsCount], 
-    [TODO-C71ToCreate].[ExpectedEntries] AS [ExpectedEntries], 
-    [TODO-C71ToCreate].[InvoiceTotal] AS [InvoiceTotal], 
-    [TODO-C71ToCreate].[LicenseLines] AS [LicenseLines], 
-    [TODO-C71ToCreate].[TotalCIF] AS [TotalCIF], 
-    [TODO-C71ToCreate].[C71Total] AS [C71Total], 
-    [TODO-C71ToCreate].[Rate] AS [Rate], 
-    [TODO-C71ToCreate].[GeneratedC71Total] AS [GeneratedC71Total], 
-    [TODO-C71ToCreate].[Address] AS [Address], 
-    [TODO-C71ToCreate].[Value_declaration_form_Id] AS [Value_declaration_form_Id], 
-    [TODO-C71ToCreate].[RegisteredID] AS [RegisteredID]
-    FROM [dbo].[TODO-C71ToCreate] AS [TODO-C71ToCreate]</DefiningQuery>
+[TODO-C71ToCreate].[AsycudaDocumentSetId] AS [AsycudaDocumentSetId], 
+[TODO-C71ToCreate].[ApplicationSettingsId] AS [ApplicationSettingsId], 
+[TODO-C71ToCreate].[Country_of_origin_code] AS [Country_of_origin_code], 
+[TODO-C71ToCreate].[Currency_Code] AS [Currency_Code], 
+[TODO-C71ToCreate].[Manifest_Number] AS [Manifest_Number], 
+[TODO-C71ToCreate].[BLNumber] AS [BLNumber], 
+[TODO-C71ToCreate].[Type_of_declaration] AS [Type_of_declaration], 
+[TODO-C71ToCreate].[Declaration_gen_procedure_code] AS [Declaration_gen_procedure_code], 
+[TODO-C71ToCreate].[Declarant_Reference_Number] AS [Declarant_Reference_Number], 
+[TODO-C71ToCreate].[TotalInvoices] AS [TotalInvoices], 
+[TODO-C71ToCreate].[DocumentsCount] AS [DocumentsCount], 
+[TODO-C71ToCreate].[ExpectedEntries] AS [ExpectedEntries], 
+[TODO-C71ToCreate].[InvoiceTotal] AS [InvoiceTotal], 
+[TODO-C71ToCreate].[LicenseLines] AS [LicenseLines], 
+[TODO-C71ToCreate].[TotalCIF] AS [TotalCIF], 
+[TODO-C71ToCreate].[C71Total] AS [C71Total], 
+[TODO-C71ToCreate].[Rate] AS [Rate], 
+[TODO-C71ToCreate].[GeneratedC71Total] AS [GeneratedC71Total], 
+[TODO-C71ToCreate].[Address] AS [Address], 
+[TODO-C71ToCreate].[Value_declaration_form_Id] AS [Value_declaration_form_Id], 
+[TODO-C71ToCreate].[RegisteredID] AS [RegisteredID]
+FROM [dbo].[TODO-C71ToCreate] AS [TODO-C71ToCreate]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="TODO-C71ToXML" EntityType="Self.TODO-C71ToXML" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
-    [TODO-C71ToXML].[Code] AS [Code], 
-    [TODO-C71ToXML].[ASYCUDA_Id] AS [ASYCUDA_Id], 
-    [TODO-C71ToXML].[ApplicationSettingsId] AS [ApplicationSettingsId], 
-    [TODO-C71ToXML].[InvoiceTotal] AS [InvoiceTotal], 
-    [TODO-C71ToXML].[Type] AS [Type], 
-    [TODO-C71ToXML].[InvoiceDate] AS [InvoiceDate], 
-    [TODO-C71ToXML].[InvoiceNo] AS [InvoiceNo], 
-    [TODO-C71ToXML].[Currency] AS [Currency], 
-    [TODO-C71ToXML].[SupplierCode] AS [SupplierCode], 
-    [TODO-C71ToXML].[AsycudaDocumentSetId] AS [AsycudaDocumentSetId], 
-    [TODO-C71ToXML].[CurrencyRate] AS [CurrencyRate]
-    FROM [dbo].[TODO-C71ToXML] AS [TODO-C71ToXML]</DefiningQuery>
+[TODO-C71ToXML].[Code] AS [Code], 
+[TODO-C71ToXML].[ASYCUDA_Id] AS [ASYCUDA_Id], 
+[TODO-C71ToXML].[ApplicationSettingsId] AS [ApplicationSettingsId], 
+[TODO-C71ToXML].[InvoiceTotal] AS [InvoiceTotal], 
+[TODO-C71ToXML].[Type] AS [Type], 
+[TODO-C71ToXML].[InvoiceDate] AS [InvoiceDate], 
+[TODO-C71ToXML].[InvoiceNo] AS [InvoiceNo], 
+[TODO-C71ToXML].[Currency] AS [Currency], 
+[TODO-C71ToXML].[SupplierCode] AS [SupplierCode], 
+[TODO-C71ToXML].[AsycudaDocumentSetId] AS [AsycudaDocumentSetId], 
+[TODO-C71ToXML].[CurrencyRate] AS [CurrencyRate]
+FROM [dbo].[TODO-C71ToXML] AS [TODO-C71ToXML]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="TODO-CreateDiscrepancyEntries" EntityType="Self.TODO-CreateDiscrepancyEntries" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
-    [TODO-CreateDiscrepancyEntries].[ApplicationSettingsId] AS [ApplicationSettingsId], 
-    [TODO-CreateDiscrepancyEntries].[AsycudaDocumentSetId] AS [AsycudaDocumentSetId], 
-    [TODO-CreateDiscrepancyEntries].[AdjustmentType] AS [AdjustmentType], 
-    [TODO-CreateDiscrepancyEntries].[InvoiceNo] AS [InvoiceNo], 
-    [TODO-CreateDiscrepancyEntries].[InvoiceDate] AS [InvoiceDate], 
-    [TODO-CreateDiscrepancyEntries].[Declarant_Reference_Number] AS [Declarant_Reference_Number]
-    FROM [dbo].[TODO-CreateDiscrepancyEntries] AS [TODO-CreateDiscrepancyEntries]</DefiningQuery>
+[TODO-CreateDiscrepancyEntries].[ApplicationSettingsId] AS [ApplicationSettingsId], 
+[TODO-CreateDiscrepancyEntries].[AsycudaDocumentSetId] AS [AsycudaDocumentSetId], 
+[TODO-CreateDiscrepancyEntries].[AdjustmentType] AS [AdjustmentType], 
+[TODO-CreateDiscrepancyEntries].[InvoiceNo] AS [InvoiceNo], 
+[TODO-CreateDiscrepancyEntries].[InvoiceDate] AS [InvoiceDate], 
+[TODO-CreateDiscrepancyEntries].[Declarant_Reference_Number] AS [Declarant_Reference_Number]
+FROM [dbo].[TODO-CreateDiscrepancyEntries] AS [TODO-CreateDiscrepancyEntries]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="TODO-CreateEx9" EntityType="Self.TODO-CreateEx9" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
-    [TODO-CreateEx9].[ItemNumber] AS [ItemNumber], 
-    [TODO-CreateEx9].[ApplicationSettingsId] AS [ApplicationSettingsId], 
-    [TODO-CreateEx9].[QtyAllocated] AS [QtyAllocated], 
-    [TODO-CreateEx9].[pQuantity] AS [pQuantity], 
-    [TODO-CreateEx9].[PreviousItem_Id] AS [PreviousItem_Id]
-    FROM [dbo].[TODO-CreateEx9] AS [TODO-CreateEx9]</DefiningQuery>
+[TODO-CreateEx9].[ItemNumber] AS [ItemNumber], 
+[TODO-CreateEx9].[ApplicationSettingsId] AS [ApplicationSettingsId], 
+[TODO-CreateEx9].[QtyAllocated] AS [QtyAllocated], 
+[TODO-CreateEx9].[pQuantity] AS [pQuantity], 
+[TODO-CreateEx9].[PreviousItem_Id] AS [PreviousItem_Id]
+FROM [dbo].[TODO-CreateEx9] AS [TODO-CreateEx9]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="TODO-DeleteDocumentSet" EntityType="Self.TODO-DeleteDocumentSet" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
-    [TODO-DeleteDocumentSet].[AsycudaDocumentSetId] AS [AsycudaDocumentSetId], 
-    [TODO-DeleteDocumentSet].[Declarant_Reference_Number] AS [Declarant_Reference_Number], 
-    [TODO-DeleteDocumentSet].[ApplicationSettingsId] AS [ApplicationSettingsId]
-    FROM [dbo].[TODO-DeleteDocumentSet] AS [TODO-DeleteDocumentSet]</DefiningQuery>
+[TODO-DeleteDocumentSet].[AsycudaDocumentSetId] AS [AsycudaDocumentSetId], 
+[TODO-DeleteDocumentSet].[Declarant_Reference_Number] AS [Declarant_Reference_Number], 
+[TODO-DeleteDocumentSet].[ApplicationSettingsId] AS [ApplicationSettingsId]
+FROM [dbo].[TODO-DeleteDocumentSet] AS [TODO-DeleteDocumentSet]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="TODO-DiscrepanciesAlreadyXMLed" EntityType="Self.TODO-DiscrepanciesAlreadyXMLed" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
-    [TODO-DiscrepanciesAlreadyXMLed].[EntryDataDetailsId] AS [EntryDataDetailsId], 
-    [TODO-DiscrepanciesAlreadyXMLed].[EntryData_Id] AS [EntryData_Id], 
-    [TODO-DiscrepanciesAlreadyXMLed].[ApplicationSettingsId] AS [ApplicationSettingsId], 
-    [TODO-DiscrepanciesAlreadyXMLed].[AsycudaDocumentSetId] AS [AsycudaDocumentSetId], 
-    [TODO-DiscrepanciesAlreadyXMLed].[IsClassified] AS [IsClassified], 
-    [TODO-DiscrepanciesAlreadyXMLed].[AdjustmentType] AS [AdjustmentType], 
-    [TODO-DiscrepanciesAlreadyXMLed].[InvoiceNo] AS [InvoiceNo], 
-    [TODO-DiscrepanciesAlreadyXMLed].[InvoiceQty] AS [InvoiceQty], 
-    [TODO-DiscrepanciesAlreadyXMLed].[ReceivedQty] AS [ReceivedQty], 
-    [TODO-DiscrepanciesAlreadyXMLed].[InvoiceDate] AS [InvoiceDate], 
-    [TODO-DiscrepanciesAlreadyXMLed].[ItemNumber] AS [ItemNumber], 
-    [TODO-DiscrepanciesAlreadyXMLed].[Status] AS [Status], 
-    [TODO-DiscrepanciesAlreadyXMLed].[PreviousCNumber] AS [PreviousCNumber], 
-    [TODO-DiscrepanciesAlreadyXMLed].[Declarant_Reference_Number] AS [Declarant_Reference_Number], 
-    [TODO-DiscrepanciesAlreadyXMLed].[pCNumber] AS [pCNumber], 
-    [TODO-DiscrepanciesAlreadyXMLed].[pLineNumber] AS [pLineNumber], 
-    [TODO-DiscrepanciesAlreadyXMLed].[RegistrationDate] AS [RegistrationDate], 
-    [TODO-DiscrepanciesAlreadyXMLed].[ReferenceNumber] AS [ReferenceNumber], 
-    [TODO-DiscrepanciesAlreadyXMLed].[DocumentType] AS [DocumentType], 
-    [TODO-DiscrepanciesAlreadyXMLed].[Type] AS [Type], 
-    [TODO-DiscrepanciesAlreadyXMLed].[EffectiveDate] AS [EffectiveDate], 
-    [TODO-DiscrepanciesAlreadyXMLed].[ItemDescription] AS [ItemDescription], 
-    [TODO-DiscrepanciesAlreadyXMLed].[EmailId] AS [EmailId], 
-    [TODO-DiscrepanciesAlreadyXMLed].[FileTypeId] AS [FileTypeId], 
-    [TODO-DiscrepanciesAlreadyXMLed].[Quantity] AS [Quantity], 
-    [TODO-DiscrepanciesAlreadyXMLed].[Cost] AS [Cost], 
-    [TODO-DiscrepanciesAlreadyXMLed].[Subject] AS [Subject], 
-    [TODO-DiscrepanciesAlreadyXMLed].[EmailDate] AS [EmailDate], 
-    [TODO-DiscrepanciesAlreadyXMLed].[LineNumber] AS [LineNumber], 
-    [TODO-DiscrepanciesAlreadyXMLed].[PreviousInvoiceNumber] AS [PreviousInvoiceNumber], 
-    [TODO-DiscrepanciesAlreadyXMLed].[Comment] AS [Comment], 
-    [TODO-DiscrepanciesAlreadyXMLed].[DutyFreePaid] AS [DutyFreePaid]
-    FROM [dbo].[TODO-DiscrepanciesAlreadyXMLed] AS [TODO-DiscrepanciesAlreadyXMLed]</DefiningQuery>
+[TODO-DiscrepanciesAlreadyXMLed].[EntryDataDetailsId] AS [EntryDataDetailsId], 
+[TODO-DiscrepanciesAlreadyXMLed].[EntryData_Id] AS [EntryData_Id], 
+[TODO-DiscrepanciesAlreadyXMLed].[ApplicationSettingsId] AS [ApplicationSettingsId], 
+[TODO-DiscrepanciesAlreadyXMLed].[AsycudaDocumentSetId] AS [AsycudaDocumentSetId], 
+[TODO-DiscrepanciesAlreadyXMLed].[IsClassified] AS [IsClassified], 
+[TODO-DiscrepanciesAlreadyXMLed].[AdjustmentType] AS [AdjustmentType], 
+[TODO-DiscrepanciesAlreadyXMLed].[InvoiceNo] AS [InvoiceNo], 
+[TODO-DiscrepanciesAlreadyXMLed].[InvoiceQty] AS [InvoiceQty], 
+[TODO-DiscrepanciesAlreadyXMLed].[ReceivedQty] AS [ReceivedQty], 
+[TODO-DiscrepanciesAlreadyXMLed].[InvoiceDate] AS [InvoiceDate], 
+[TODO-DiscrepanciesAlreadyXMLed].[ItemNumber] AS [ItemNumber], 
+[TODO-DiscrepanciesAlreadyXMLed].[Status] AS [Status], 
+[TODO-DiscrepanciesAlreadyXMLed].[PreviousCNumber] AS [PreviousCNumber], 
+[TODO-DiscrepanciesAlreadyXMLed].[Declarant_Reference_Number] AS [Declarant_Reference_Number], 
+[TODO-DiscrepanciesAlreadyXMLed].[pCNumber] AS [pCNumber], 
+[TODO-DiscrepanciesAlreadyXMLed].[pLineNumber] AS [pLineNumber], 
+[TODO-DiscrepanciesAlreadyXMLed].[RegistrationDate] AS [RegistrationDate], 
+[TODO-DiscrepanciesAlreadyXMLed].[ReferenceNumber] AS [ReferenceNumber], 
+[TODO-DiscrepanciesAlreadyXMLed].[DocumentType] AS [DocumentType], 
+[TODO-DiscrepanciesAlreadyXMLed].[Type] AS [Type], 
+[TODO-DiscrepanciesAlreadyXMLed].[EffectiveDate] AS [EffectiveDate], 
+[TODO-DiscrepanciesAlreadyXMLed].[ItemDescription] AS [ItemDescription], 
+[TODO-DiscrepanciesAlreadyXMLed].[EmailId] AS [EmailId], 
+[TODO-DiscrepanciesAlreadyXMLed].[FileTypeId] AS [FileTypeId], 
+[TODO-DiscrepanciesAlreadyXMLed].[Quantity] AS [Quantity], 
+[TODO-DiscrepanciesAlreadyXMLed].[Cost] AS [Cost], 
+[TODO-DiscrepanciesAlreadyXMLed].[Subject] AS [Subject], 
+[TODO-DiscrepanciesAlreadyXMLed].[EmailDate] AS [EmailDate], 
+[TODO-DiscrepanciesAlreadyXMLed].[LineNumber] AS [LineNumber], 
+[TODO-DiscrepanciesAlreadyXMLed].[PreviousInvoiceNumber] AS [PreviousInvoiceNumber], 
+[TODO-DiscrepanciesAlreadyXMLed].[Comment] AS [Comment], 
+[TODO-DiscrepanciesAlreadyXMLed].[DutyFreePaid] AS [DutyFreePaid]
+FROM [dbo].[TODO-DiscrepanciesAlreadyXMLed] AS [TODO-DiscrepanciesAlreadyXMLed]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="TODO-DiscrepanciesErrors" EntityType="Self.TODO-DiscrepanciesErrors" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
-    [TODO-DiscrepanciesErrors].[Entrydatadetailsid] AS [Entrydatadetailsid], 
-    [TODO-DiscrepanciesErrors].[AsycudaDocumentSetId] AS [AsycudaDocumentSetId], 
-    [TODO-DiscrepanciesErrors].[Type] AS [Type], 
-    [TODO-DiscrepanciesErrors].[InvoiceDate] AS [InvoiceDate], 
-    [TODO-DiscrepanciesErrors].[EffectiveDate] AS [EffectiveDate], 
-    [TODO-DiscrepanciesErrors].[InvoiceNo] AS [InvoiceNo], 
-    [TODO-DiscrepanciesErrors].[LineNumber] AS [LineNumber], 
-    [TODO-DiscrepanciesErrors].[ItemNumber] AS [ItemNumber], 
-    [TODO-DiscrepanciesErrors].[ItemDescription] AS [ItemDescription], 
-    [TODO-DiscrepanciesErrors].[InvoiceQty] AS [InvoiceQty], 
-    [TODO-DiscrepanciesErrors].[ReceivedQty] AS [ReceivedQty], 
-    [TODO-DiscrepanciesErrors].[Quantity] AS [Quantity], 
-    [TODO-DiscrepanciesErrors].[Cost] AS [Cost], 
-    [TODO-DiscrepanciesErrors].[PreviousCNumber] AS [PreviousCNumber], 
-    [TODO-DiscrepanciesErrors].[PreviousInvoiceNumber] AS [PreviousInvoiceNumber], 
-    [TODO-DiscrepanciesErrors].[Comment] AS [Comment], 
-    [TODO-DiscrepanciesErrors].[Status] AS [Status], 
-    [TODO-DiscrepanciesErrors].[DutyFreePaid] AS [DutyFreePaid], 
-    [TODO-DiscrepanciesErrors].[Subject] AS [Subject], 
-    [TODO-DiscrepanciesErrors].[EmailDate] AS [EmailDate], 
-    [TODO-DiscrepanciesErrors].[EmailId] AS [EmailId], 
-    [TODO-DiscrepanciesErrors].[ApplicationSettingsId] AS [ApplicationSettingsId]
-    FROM [dbo].[TODO-DiscrepanciesErrors] AS [TODO-DiscrepanciesErrors]</DefiningQuery>
+[TODO-DiscrepanciesErrors].[Entrydatadetailsid] AS [Entrydatadetailsid], 
+[TODO-DiscrepanciesErrors].[AsycudaDocumentSetId] AS [AsycudaDocumentSetId], 
+[TODO-DiscrepanciesErrors].[Type] AS [Type], 
+[TODO-DiscrepanciesErrors].[InvoiceDate] AS [InvoiceDate], 
+[TODO-DiscrepanciesErrors].[EffectiveDate] AS [EffectiveDate], 
+[TODO-DiscrepanciesErrors].[InvoiceNo] AS [InvoiceNo], 
+[TODO-DiscrepanciesErrors].[LineNumber] AS [LineNumber], 
+[TODO-DiscrepanciesErrors].[ItemNumber] AS [ItemNumber], 
+[TODO-DiscrepanciesErrors].[ItemDescription] AS [ItemDescription], 
+[TODO-DiscrepanciesErrors].[InvoiceQty] AS [InvoiceQty], 
+[TODO-DiscrepanciesErrors].[ReceivedQty] AS [ReceivedQty], 
+[TODO-DiscrepanciesErrors].[Quantity] AS [Quantity], 
+[TODO-DiscrepanciesErrors].[Cost] AS [Cost], 
+[TODO-DiscrepanciesErrors].[PreviousCNumber] AS [PreviousCNumber], 
+[TODO-DiscrepanciesErrors].[PreviousInvoiceNumber] AS [PreviousInvoiceNumber], 
+[TODO-DiscrepanciesErrors].[Comment] AS [Comment], 
+[TODO-DiscrepanciesErrors].[Status] AS [Status], 
+[TODO-DiscrepanciesErrors].[DutyFreePaid] AS [DutyFreePaid], 
+[TODO-DiscrepanciesErrors].[Subject] AS [Subject], 
+[TODO-DiscrepanciesErrors].[EmailDate] AS [EmailDate], 
+[TODO-DiscrepanciesErrors].[EmailId] AS [EmailId], 
+[TODO-DiscrepanciesErrors].[ApplicationSettingsId] AS [ApplicationSettingsId]
+FROM [dbo].[TODO-DiscrepanciesErrors] AS [TODO-DiscrepanciesErrors]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="TODO-DiscrepanciesExecutionReport" EntityType="Self.TODO-DiscrepanciesExecutionReport" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
-    [TODO-DiscrepanciesExecutionReport].[Id] AS [Id], 
-    [TODO-DiscrepanciesExecutionReport].[EntryDataDetailsId] AS [EntryDataDetailsId], 
-    [TODO-DiscrepanciesExecutionReport].[ApplicationSettingsId] AS [ApplicationSettingsId], 
-    [TODO-DiscrepanciesExecutionReport].[AsycudaDocumentSetId] AS [AsycudaDocumentSetId], 
-    [TODO-DiscrepanciesExecutionReport].[IsClassified] AS [IsClassified], 
-    [TODO-DiscrepanciesExecutionReport].[AdjustmentType] AS [AdjustmentType], 
-    [TODO-DiscrepanciesExecutionReport].[InvoiceNo] AS [InvoiceNo], 
-    [TODO-DiscrepanciesExecutionReport].[InvoiceQty] AS [InvoiceQty], 
-    [TODO-DiscrepanciesExecutionReport].[ReceivedQty] AS [ReceivedQty], 
-    [TODO-DiscrepanciesExecutionReport].[InvoiceDate] AS [InvoiceDate], 
-    [TODO-DiscrepanciesExecutionReport].[ItemNumber] AS [ItemNumber], 
-    [TODO-DiscrepanciesExecutionReport].[Status] AS [Status], 
-    [TODO-DiscrepanciesExecutionReport].[CNumber] AS [CNumber], 
-    [TODO-DiscrepanciesExecutionReport].[Declarant_Reference_Number] AS [Declarant_Reference_Number], 
-    [TODO-DiscrepanciesExecutionReport].[EmailId] AS [EmailId], 
-    [TODO-DiscrepanciesExecutionReport].[xCNumber] AS [xCNumber], 
-    [TODO-DiscrepanciesExecutionReport].[xLineNumber] AS [xLineNumber], 
-    [TODO-DiscrepanciesExecutionReport].[DocumentType] AS [DocumentType], 
-    [TODO-DiscrepanciesExecutionReport].[CustomsProcedure] AS [CustomsProcedure], 
-    [TODO-DiscrepanciesExecutionReport].[xRegistrationDate] AS [xRegistrationDate], 
-    [TODO-DiscrepanciesExecutionReport].[ASYCUDA_Id] AS [ASYCUDA_Id]
-    FROM [dbo].[TODO-DiscrepanciesExecutionReport] AS [TODO-DiscrepanciesExecutionReport]</DefiningQuery>
+[TODO-DiscrepanciesExecutionReport].[Id] AS [Id], 
+[TODO-DiscrepanciesExecutionReport].[EntryDataDetailsId] AS [EntryDataDetailsId], 
+[TODO-DiscrepanciesExecutionReport].[ApplicationSettingsId] AS [ApplicationSettingsId], 
+[TODO-DiscrepanciesExecutionReport].[AsycudaDocumentSetId] AS [AsycudaDocumentSetId], 
+[TODO-DiscrepanciesExecutionReport].[IsClassified] AS [IsClassified], 
+[TODO-DiscrepanciesExecutionReport].[AdjustmentType] AS [AdjustmentType], 
+[TODO-DiscrepanciesExecutionReport].[InvoiceNo] AS [InvoiceNo], 
+[TODO-DiscrepanciesExecutionReport].[InvoiceQty] AS [InvoiceQty], 
+[TODO-DiscrepanciesExecutionReport].[ReceivedQty] AS [ReceivedQty], 
+[TODO-DiscrepanciesExecutionReport].[InvoiceDate] AS [InvoiceDate], 
+[TODO-DiscrepanciesExecutionReport].[ItemNumber] AS [ItemNumber], 
+[TODO-DiscrepanciesExecutionReport].[Status] AS [Status], 
+[TODO-DiscrepanciesExecutionReport].[CNumber] AS [CNumber], 
+[TODO-DiscrepanciesExecutionReport].[Declarant_Reference_Number] AS [Declarant_Reference_Number], 
+[TODO-DiscrepanciesExecutionReport].[EmailId] AS [EmailId], 
+[TODO-DiscrepanciesExecutionReport].[xCNumber] AS [xCNumber], 
+[TODO-DiscrepanciesExecutionReport].[xLineNumber] AS [xLineNumber], 
+[TODO-DiscrepanciesExecutionReport].[DocumentType] AS [DocumentType], 
+[TODO-DiscrepanciesExecutionReport].[CustomsProcedure] AS [CustomsProcedure], 
+[TODO-DiscrepanciesExecutionReport].[xRegistrationDate] AS [xRegistrationDate], 
+[TODO-DiscrepanciesExecutionReport].[ASYCUDA_Id] AS [ASYCUDA_Id]
+FROM [dbo].[TODO-DiscrepanciesExecutionReport] AS [TODO-DiscrepanciesExecutionReport]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="TODO-DiscrepanciesToAssess" EntityType="Self.TODO-DiscrepanciesToAssess" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
-    [TODO-DiscrepanciesToAssess].[Declarant_Reference_Number] AS [Declarant_Reference_Number], 
-    [TODO-DiscrepanciesToAssess].[DocumentsCount] AS [DocumentsCount], 
-    [TODO-DiscrepanciesToAssess].[Type] AS [Type], 
-    [TODO-DiscrepanciesToAssess].[CNumber] AS [CNumber], 
-    [TODO-DiscrepanciesToAssess].[AsycudaDocumentSetId] AS [AsycudaDocumentSetId]
-    FROM [dbo].[TODO-DiscrepanciesToAssess] AS [TODO-DiscrepanciesToAssess]</DefiningQuery>
+[TODO-DiscrepanciesToAssess].[Declarant_Reference_Number] AS [Declarant_Reference_Number], 
+[TODO-DiscrepanciesToAssess].[DocumentsCount] AS [DocumentsCount], 
+[TODO-DiscrepanciesToAssess].[Type] AS [Type], 
+[TODO-DiscrepanciesToAssess].[CNumber] AS [CNumber], 
+[TODO-DiscrepanciesToAssess].[AsycudaDocumentSetId] AS [AsycudaDocumentSetId]
+FROM [dbo].[TODO-DiscrepanciesToAssess] AS [TODO-DiscrepanciesToAssess]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="TODO-DiscrepancyPreExecutionReport" EntityType="Self.TODO-DiscrepancyPreExecutionReport" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
-    [TODO-DiscrepancyPreExecutionReport].[EntryDataDetailsId] AS [EntryDataDetailsId], 
-    [TODO-DiscrepancyPreExecutionReport].[EntryDataId] AS [EntryDataId], 
-    [TODO-DiscrepancyPreExecutionReport].[LineNumber] AS [LineNumber], 
-    [TODO-DiscrepancyPreExecutionReport].[ItemNumber] AS [ItemNumber], 
-    [TODO-DiscrepancyPreExecutionReport].[Quantity] AS [Quantity], 
-    [TODO-DiscrepancyPreExecutionReport].[Units] AS [Units], 
-    [TODO-DiscrepancyPreExecutionReport].[ItemDescription] AS [ItemDescription], 
-    [TODO-DiscrepancyPreExecutionReport].[Cost] AS [Cost], 
-    [TODO-DiscrepancyPreExecutionReport].[QtyAllocated] AS [QtyAllocated], 
-    [TODO-DiscrepancyPreExecutionReport].[UnitWeight] AS [UnitWeight], 
-    [TODO-DiscrepancyPreExecutionReport].[DoNotAllocate] AS [DoNotAllocate], 
-    [TODO-DiscrepancyPreExecutionReport].[TariffCode] AS [TariffCode], 
-    [TODO-DiscrepancyPreExecutionReport].[CNumber] AS [CNumber], 
-    [TODO-DiscrepancyPreExecutionReport].[CLineNumber] AS [CLineNumber], 
-    [TODO-DiscrepancyPreExecutionReport].[AsycudaDocumentSetId] AS [AsycudaDocumentSetId], 
-    [TODO-DiscrepancyPreExecutionReport].[InvoiceQty] AS [InvoiceQty], 
-    [TODO-DiscrepancyPreExecutionReport].[ReceivedQty] AS [ReceivedQty], 
-    [TODO-DiscrepancyPreExecutionReport].[PreviousInvoiceNumber] AS [PreviousInvoiceNumber], 
-    [TODO-DiscrepancyPreExecutionReport].[PreviousCNumber] AS [PreviousCNumber], 
-    [TODO-DiscrepancyPreExecutionReport].[Comment] AS [Comment], 
-    [TODO-DiscrepancyPreExecutionReport].[Status] AS [Status], 
-    [TODO-DiscrepancyPreExecutionReport].[EffectiveDate] AS [EffectiveDate], 
-    [TODO-DiscrepancyPreExecutionReport].[Currency] AS [Currency], 
-    [TODO-DiscrepancyPreExecutionReport].[ApplicationSettingsId] AS [ApplicationSettingsId], 
-    [TODO-DiscrepancyPreExecutionReport].[Type] AS [Type], 
-    [TODO-DiscrepancyPreExecutionReport].[Declarant_Reference_Number] AS [Declarant_Reference_Number], 
-    [TODO-DiscrepancyPreExecutionReport].[InvoiceDate] AS [InvoiceDate], 
-    [TODO-DiscrepancyPreExecutionReport].[Subject] AS [Subject], 
-    [TODO-DiscrepancyPreExecutionReport].[EmailDate] AS [EmailDate], 
-    [TODO-DiscrepancyPreExecutionReport].[DutyFreePaid] AS [DutyFreePaid], 
-    [TODO-DiscrepancyPreExecutionReport].[DocumentType] AS [DocumentType], 
-    [TODO-DiscrepancyPreExecutionReport].[Reference] AS [Reference]
-    FROM [dbo].[TODO-DiscrepancyPreExecutionReport] AS [TODO-DiscrepancyPreExecutionReport]</DefiningQuery>
+[TODO-DiscrepancyPreExecutionReport].[EntryDataDetailsId] AS [EntryDataDetailsId], 
+[TODO-DiscrepancyPreExecutionReport].[EntryDataId] AS [EntryDataId], 
+[TODO-DiscrepancyPreExecutionReport].[LineNumber] AS [LineNumber], 
+[TODO-DiscrepancyPreExecutionReport].[ItemNumber] AS [ItemNumber], 
+[TODO-DiscrepancyPreExecutionReport].[Quantity] AS [Quantity], 
+[TODO-DiscrepancyPreExecutionReport].[Units] AS [Units], 
+[TODO-DiscrepancyPreExecutionReport].[ItemDescription] AS [ItemDescription], 
+[TODO-DiscrepancyPreExecutionReport].[Cost] AS [Cost], 
+[TODO-DiscrepancyPreExecutionReport].[QtyAllocated] AS [QtyAllocated], 
+[TODO-DiscrepancyPreExecutionReport].[UnitWeight] AS [UnitWeight], 
+[TODO-DiscrepancyPreExecutionReport].[DoNotAllocate] AS [DoNotAllocate], 
+[TODO-DiscrepancyPreExecutionReport].[TariffCode] AS [TariffCode], 
+[TODO-DiscrepancyPreExecutionReport].[CNumber] AS [CNumber], 
+[TODO-DiscrepancyPreExecutionReport].[CLineNumber] AS [CLineNumber], 
+[TODO-DiscrepancyPreExecutionReport].[AsycudaDocumentSetId] AS [AsycudaDocumentSetId], 
+[TODO-DiscrepancyPreExecutionReport].[InvoiceQty] AS [InvoiceQty], 
+[TODO-DiscrepancyPreExecutionReport].[ReceivedQty] AS [ReceivedQty], 
+[TODO-DiscrepancyPreExecutionReport].[PreviousInvoiceNumber] AS [PreviousInvoiceNumber], 
+[TODO-DiscrepancyPreExecutionReport].[PreviousCNumber] AS [PreviousCNumber], 
+[TODO-DiscrepancyPreExecutionReport].[Comment] AS [Comment], 
+[TODO-DiscrepancyPreExecutionReport].[Status] AS [Status], 
+[TODO-DiscrepancyPreExecutionReport].[EffectiveDate] AS [EffectiveDate], 
+[TODO-DiscrepancyPreExecutionReport].[Currency] AS [Currency], 
+[TODO-DiscrepancyPreExecutionReport].[ApplicationSettingsId] AS [ApplicationSettingsId], 
+[TODO-DiscrepancyPreExecutionReport].[Type] AS [Type], 
+[TODO-DiscrepancyPreExecutionReport].[Declarant_Reference_Number] AS [Declarant_Reference_Number], 
+[TODO-DiscrepancyPreExecutionReport].[InvoiceDate] AS [InvoiceDate], 
+[TODO-DiscrepancyPreExecutionReport].[Subject] AS [Subject], 
+[TODO-DiscrepancyPreExecutionReport].[EmailDate] AS [EmailDate], 
+[TODO-DiscrepancyPreExecutionReport].[DutyFreePaid] AS [DutyFreePaid], 
+[TODO-DiscrepancyPreExecutionReport].[DocumentType] AS [DocumentType], 
+[TODO-DiscrepancyPreExecutionReport].[Reference] AS [Reference]
+FROM [dbo].[TODO-DiscrepancyPreExecutionReport] AS [TODO-DiscrepancyPreExecutionReport]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="TODO-DocumentsToDelete" EntityType="Self.TODO-DocumentsToDelete" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
-    [TODO-DocumentsToDelete].[ASYCUDA_Id] AS [ASYCUDA_Id], 
-    [TODO-DocumentsToDelete].[DocumentType] AS [DocumentType], 
-    [TODO-DocumentsToDelete].[Reference] AS [Reference], 
-    [TODO-DocumentsToDelete].[ApplicationSettingsId] AS [ApplicationSettingsId], 
-    [TODO-DocumentsToDelete].[AsycudaDocumentSetId] AS [AsycudaDocumentSetId]
-    FROM [dbo].[TODO-DocumentsToDelete] AS [TODO-DocumentsToDelete]</DefiningQuery>
+[TODO-DocumentsToDelete].[ASYCUDA_Id] AS [ASYCUDA_Id], 
+[TODO-DocumentsToDelete].[DocumentType] AS [DocumentType], 
+[TODO-DocumentsToDelete].[Reference] AS [Reference], 
+[TODO-DocumentsToDelete].[ApplicationSettingsId] AS [ApplicationSettingsId], 
+[TODO-DocumentsToDelete].[AsycudaDocumentSetId] AS [AsycudaDocumentSetId]
+FROM [dbo].[TODO-DocumentsToDelete] AS [TODO-DocumentsToDelete]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="TODO-EntriesExpiringNextMonth" EntityType="Self.TODO-EntriesExpiringNextMonth" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
-    [TODO-EntriesExpiringNextMonth].[ASYCUDA_Id] AS [ASYCUDA_Id], 
-    [TODO-EntriesExpiringNextMonth].[ExpiryDate] AS [ExpiryDate], 
-    [TODO-EntriesExpiringNextMonth].[Type] AS [Type], 
-    [TODO-EntriesExpiringNextMonth].[DocumentType] AS [DocumentType], 
-    [TODO-EntriesExpiringNextMonth].[CNumber] AS [CNumber], 
-    [TODO-EntriesExpiringNextMonth].[RegistrationDate] AS [RegistrationDate], 
-    [TODO-EntriesExpiringNextMonth].[Reference] AS [Reference], 
-    [TODO-EntriesExpiringNextMonth].[ApplicationSettingsId] AS [ApplicationSettingsId]
-    FROM [dbo].[TODO-EntriesExpiringNextMonth] AS [TODO-EntriesExpiringNextMonth]</DefiningQuery>
+[TODO-EntriesExpiringNextMonth].[ASYCUDA_Id] AS [ASYCUDA_Id], 
+[TODO-EntriesExpiringNextMonth].[ExpiryDate] AS [ExpiryDate], 
+[TODO-EntriesExpiringNextMonth].[Type] AS [Type], 
+[TODO-EntriesExpiringNextMonth].[DocumentType] AS [DocumentType], 
+[TODO-EntriesExpiringNextMonth].[CNumber] AS [CNumber], 
+[TODO-EntriesExpiringNextMonth].[RegistrationDate] AS [RegistrationDate], 
+[TODO-EntriesExpiringNextMonth].[Reference] AS [Reference], 
+[TODO-EntriesExpiringNextMonth].[ApplicationSettingsId] AS [ApplicationSettingsId]
+FROM [dbo].[TODO-EntriesExpiringNextMonth] AS [TODO-EntriesExpiringNextMonth]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="TODO-Error-DuplicateEntry" EntityType="Self.TODO-Error-DuplicateEntry" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
-    [TODO-Error-DuplicateEntry].[ASYCUDA_Id] AS [ASYCUDA_Id], 
-    [TODO-Error-DuplicateEntry].[Type] AS [Type], 
-    [TODO-Error-DuplicateEntry].[Lines] AS [Lines], 
-    [TODO-Error-DuplicateEntry].[id] AS [id], 
-    [TODO-Error-DuplicateEntry].[DocumentType] AS [DocumentType], 
-    [TODO-Error-DuplicateEntry].[CNumber] AS [CNumber], 
-    [TODO-Error-DuplicateEntry].[Extended_customs_procedure] AS [Extended_customs_procedure], 
-    [TODO-Error-DuplicateEntry].[RegistrationDate] AS [RegistrationDate], 
-    [TODO-Error-DuplicateEntry].[ApplicationSettingsId] AS [ApplicationSettingsId], 
-    [TODO-Error-DuplicateEntry].[Reference] AS [Reference]
-    FROM [dbo].[TODO-Error-DuplicateEntry] AS [TODO-Error-DuplicateEntry]</DefiningQuery>
+[TODO-Error-DuplicateEntry].[ASYCUDA_Id] AS [ASYCUDA_Id], 
+[TODO-Error-DuplicateEntry].[Type] AS [Type], 
+[TODO-Error-DuplicateEntry].[Lines] AS [Lines], 
+[TODO-Error-DuplicateEntry].[id] AS [id], 
+[TODO-Error-DuplicateEntry].[DocumentType] AS [DocumentType], 
+[TODO-Error-DuplicateEntry].[CNumber] AS [CNumber], 
+[TODO-Error-DuplicateEntry].[Extended_customs_procedure] AS [Extended_customs_procedure], 
+[TODO-Error-DuplicateEntry].[RegistrationDate] AS [RegistrationDate], 
+[TODO-Error-DuplicateEntry].[ApplicationSettingsId] AS [ApplicationSettingsId], 
+[TODO-Error-DuplicateEntry].[Reference] AS [Reference]
+FROM [dbo].[TODO-Error-DuplicateEntry] AS [TODO-Error-DuplicateEntry]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="TODO-Error-IncompleteImport" EntityType="Self.TODO-Error-IncompleteImport" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
-    [TODO-Error-IncompleteImport].[ASYCUDA_Id] AS [ASYCUDA_Id], 
-    [TODO-Error-IncompleteImport].[ImportComplete] AS [ImportComplete], 
-    [TODO-Error-IncompleteImport].[Type] AS [Type], 
-    [TODO-Error-IncompleteImport].[ExpectedLines] AS [ExpectedLines], 
-    [TODO-Error-IncompleteImport].[ImportedLines] AS [ImportedLines], 
-    [TODO-Error-IncompleteImport].[CNumber] AS [CNumber], 
-    [TODO-Error-IncompleteImport].[RegistrationDate] AS [RegistrationDate], 
-    [TODO-Error-IncompleteImport].[ReferenceNumber] AS [ReferenceNumber], 
-    [TODO-Error-IncompleteImport].[ApplicationSettingsId] AS [ApplicationSettingsId], 
-    [TODO-Error-IncompleteImport].[DocumentType] AS [DocumentType]
-    FROM [dbo].[TODO-Error-IncompleteImport] AS [TODO-Error-IncompleteImport]</DefiningQuery>
+[TODO-Error-IncompleteImport].[ASYCUDA_Id] AS [ASYCUDA_Id], 
+[TODO-Error-IncompleteImport].[ImportComplete] AS [ImportComplete], 
+[TODO-Error-IncompleteImport].[Type] AS [Type], 
+[TODO-Error-IncompleteImport].[ExpectedLines] AS [ExpectedLines], 
+[TODO-Error-IncompleteImport].[ImportedLines] AS [ImportedLines], 
+[TODO-Error-IncompleteImport].[CNumber] AS [CNumber], 
+[TODO-Error-IncompleteImport].[RegistrationDate] AS [RegistrationDate], 
+[TODO-Error-IncompleteImport].[ReferenceNumber] AS [ReferenceNumber], 
+[TODO-Error-IncompleteImport].[ApplicationSettingsId] AS [ApplicationSettingsId], 
+[TODO-Error-IncompleteImport].[DocumentType] AS [DocumentType]
+FROM [dbo].[TODO-Error-IncompleteImport] AS [TODO-Error-IncompleteImport]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="TODO-Error-IncompleteItems" EntityType="Self.TODO-Error-IncompleteItems" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
-    [TODO-Error-IncompleteItems].[Item_Id] AS [Item_Id], 
-    [TODO-Error-IncompleteItems].[Error] AS [Error], 
-    [TODO-Error-IncompleteItems].[CNumber] AS [CNumber], 
-    [TODO-Error-IncompleteItems].[RegistrationDate] AS [RegistrationDate], 
-    [TODO-Error-IncompleteItems].[ApplicationSettingsId] AS [ApplicationSettingsId], 
-    [TODO-Error-IncompleteItems].[LineNumber] AS [LineNumber], 
-    [TODO-Error-IncompleteItems].[ASYCUDA_Id] AS [ASYCUDA_Id], 
-    [TODO-Error-IncompleteItems].[SourceFileName] AS [SourceFileName], 
-    [TODO-Error-IncompleteItems].[AsycudaDocumentSetId] AS [AsycudaDocumentSetId]
-    FROM [dbo].[TODO-Error-IncompleteItems] AS [TODO-Error-IncompleteItems]</DefiningQuery>
+[TODO-Error-IncompleteItems].[Item_Id] AS [Item_Id], 
+[TODO-Error-IncompleteItems].[Error] AS [Error], 
+[TODO-Error-IncompleteItems].[CNumber] AS [CNumber], 
+[TODO-Error-IncompleteItems].[RegistrationDate] AS [RegistrationDate], 
+[TODO-Error-IncompleteItems].[ApplicationSettingsId] AS [ApplicationSettingsId], 
+[TODO-Error-IncompleteItems].[LineNumber] AS [LineNumber], 
+[TODO-Error-IncompleteItems].[ASYCUDA_Id] AS [ASYCUDA_Id], 
+[TODO-Error-IncompleteItems].[SourceFileName] AS [SourceFileName], 
+[TODO-Error-IncompleteItems].[AsycudaDocumentSetId] AS [AsycudaDocumentSetId]
+FROM [dbo].[TODO-Error-IncompleteItems] AS [TODO-Error-IncompleteItems]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="TODO-ERRReport-Allocations" EntityType="Self.TODO-ERRReport-Allocations" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
-    [TODO-ERRReport-Allocations].[ApplicationSettingsId] AS [ApplicationSettingsId], 
-    [TODO-ERRReport-Allocations].[CNumber] AS [CNumber], 
-    [TODO-ERRReport-Allocations].[Reference] AS [Reference], 
-    [TODO-ERRReport-Allocations].[RegistrationDate] AS [RegistrationDate], 
-    [TODO-ERRReport-Allocations].[DocumentType] AS [DocumentType], 
-    [TODO-ERRReport-Allocations].[LineNumber] AS [LineNumber], 
-    [TODO-ERRReport-Allocations].[ItemNumber] AS [ItemNumber], 
-    [TODO-ERRReport-Allocations].[Description] AS [Description], 
-    [TODO-ERRReport-Allocations].[InvoiceNo] AS [InvoiceNo], 
-    [TODO-ERRReport-Allocations].[InvoiceDate] AS [InvoiceDate], 
-    [TODO-ERRReport-Allocations].[Error] AS [Error], 
-    [TODO-ERRReport-Allocations].[Info] AS [Info]
-    FROM [dbo].[TODO-ERRReport-Allocations] AS [TODO-ERRReport-Allocations]</DefiningQuery>
+[TODO-ERRReport-Allocations].[ApplicationSettingsId] AS [ApplicationSettingsId], 
+[TODO-ERRReport-Allocations].[CNumber] AS [CNumber], 
+[TODO-ERRReport-Allocations].[Reference] AS [Reference], 
+[TODO-ERRReport-Allocations].[RegistrationDate] AS [RegistrationDate], 
+[TODO-ERRReport-Allocations].[DocumentType] AS [DocumentType], 
+[TODO-ERRReport-Allocations].[LineNumber] AS [LineNumber], 
+[TODO-ERRReport-Allocations].[ItemNumber] AS [ItemNumber], 
+[TODO-ERRReport-Allocations].[Description] AS [Description], 
+[TODO-ERRReport-Allocations].[InvoiceNo] AS [InvoiceNo], 
+[TODO-ERRReport-Allocations].[InvoiceDate] AS [InvoiceDate], 
+[TODO-ERRReport-Allocations].[Error] AS [Error], 
+[TODO-ERRReport-Allocations].[Info] AS [Info]
+FROM [dbo].[TODO-ERRReport-Allocations] AS [TODO-ERRReport-Allocations]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="TODO-ERRReport-AsycudaEntries" EntityType="Self.TODO-ERRReport-AsycudaEntries" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
-    [TODO-ERRReport-AsycudaEntries].[ApplicationSettingsId] AS [ApplicationSettingsId], 
-    [TODO-ERRReport-AsycudaEntries].[CNumber] AS [CNumber], 
-    [TODO-ERRReport-AsycudaEntries].[Reference] AS [Reference], 
-    [TODO-ERRReport-AsycudaEntries].[RegistrationDate] AS [RegistrationDate], 
-    [TODO-ERRReport-AsycudaEntries].[DocumentType] AS [DocumentType], 
-    [TODO-ERRReport-AsycudaEntries].[Error] AS [Error], 
-    [TODO-ERRReport-AsycudaEntries].[Info] AS [Info]
-    FROM [dbo].[TODO-ERRReport-AsycudaEntries] AS [TODO-ERRReport-AsycudaEntries]</DefiningQuery>
+[TODO-ERRReport-AsycudaEntries].[ApplicationSettingsId] AS [ApplicationSettingsId], 
+[TODO-ERRReport-AsycudaEntries].[CNumber] AS [CNumber], 
+[TODO-ERRReport-AsycudaEntries].[Reference] AS [Reference], 
+[TODO-ERRReport-AsycudaEntries].[RegistrationDate] AS [RegistrationDate], 
+[TODO-ERRReport-AsycudaEntries].[DocumentType] AS [DocumentType], 
+[TODO-ERRReport-AsycudaEntries].[Error] AS [Error], 
+[TODO-ERRReport-AsycudaEntries].[Info] AS [Info]
+FROM [dbo].[TODO-ERRReport-AsycudaEntries] AS [TODO-ERRReport-AsycudaEntries]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="TODO-ERRReport-AsycudaLines" EntityType="Self.TODO-ERRReport-AsycudaLines" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
-    [TODO-ERRReport-AsycudaLines].[ApplicationSettingsId] AS [ApplicationSettingsId], 
-    [TODO-ERRReport-AsycudaLines].[CNumber] AS [CNumber], 
-    [TODO-ERRReport-AsycudaLines].[Reference] AS [Reference], 
-    [TODO-ERRReport-AsycudaLines].[RegistrationDate] AS [RegistrationDate], 
-    [TODO-ERRReport-AsycudaLines].[DocumentType] AS [DocumentType], 
-    [TODO-ERRReport-AsycudaLines].[LineNumber] AS [LineNumber], 
-    [TODO-ERRReport-AsycudaLines].[ItemNumber] AS [ItemNumber], 
-    [TODO-ERRReport-AsycudaLines].[Description] AS [Description], 
-    [TODO-ERRReport-AsycudaLines].[Error] AS [Error], 
-    [TODO-ERRReport-AsycudaLines].[Info] AS [Info]
-    FROM [dbo].[TODO-ERRReport-AsycudaLines] AS [TODO-ERRReport-AsycudaLines]</DefiningQuery>
+[TODO-ERRReport-AsycudaLines].[ApplicationSettingsId] AS [ApplicationSettingsId], 
+[TODO-ERRReport-AsycudaLines].[CNumber] AS [CNumber], 
+[TODO-ERRReport-AsycudaLines].[Reference] AS [Reference], 
+[TODO-ERRReport-AsycudaLines].[RegistrationDate] AS [RegistrationDate], 
+[TODO-ERRReport-AsycudaLines].[DocumentType] AS [DocumentType], 
+[TODO-ERRReport-AsycudaLines].[LineNumber] AS [LineNumber], 
+[TODO-ERRReport-AsycudaLines].[ItemNumber] AS [ItemNumber], 
+[TODO-ERRReport-AsycudaLines].[Description] AS [Description], 
+[TODO-ERRReport-AsycudaLines].[Error] AS [Error], 
+[TODO-ERRReport-AsycudaLines].[Info] AS [Info]
+FROM [dbo].[TODO-ERRReport-AsycudaLines] AS [TODO-ERRReport-AsycudaLines]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="TODO-ERRReport-ByItemNumber" EntityType="Self.TODO-ERRReport-ByItemNumber" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
-    [TODO-ERRReport-ByItemNumber].[ApplicationSettingsId] AS [ApplicationSettingsId], 
-    [TODO-ERRReport-ByItemNumber].[CNumber] AS [CNumber], 
-    [TODO-ERRReport-ByItemNumber].[Reference] AS [Reference], 
-    [TODO-ERRReport-ByItemNumber].[RegistrationDate] AS [RegistrationDate], 
-    [TODO-ERRReport-ByItemNumber].[DocumentType] AS [DocumentType], 
-    [TODO-ERRReport-ByItemNumber].[LineNumber] AS [LineNumber], 
-    [TODO-ERRReport-ByItemNumber].[ItemNumber] AS [ItemNumber], 
-    [TODO-ERRReport-ByItemNumber].[Description] AS [Description], 
-    [TODO-ERRReport-ByItemNumber].[Error] AS [Error], 
-    [TODO-ERRReport-ByItemNumber].[Info] AS [Info]
-    FROM [dbo].[TODO-ERRReport-ByItemNumber] AS [TODO-ERRReport-ByItemNumber]</DefiningQuery>
+[TODO-ERRReport-ByItemNumber].[ApplicationSettingsId] AS [ApplicationSettingsId], 
+[TODO-ERRReport-ByItemNumber].[CNumber] AS [CNumber], 
+[TODO-ERRReport-ByItemNumber].[Reference] AS [Reference], 
+[TODO-ERRReport-ByItemNumber].[RegistrationDate] AS [RegistrationDate], 
+[TODO-ERRReport-ByItemNumber].[DocumentType] AS [DocumentType], 
+[TODO-ERRReport-ByItemNumber].[LineNumber] AS [LineNumber], 
+[TODO-ERRReport-ByItemNumber].[ItemNumber] AS [ItemNumber], 
+[TODO-ERRReport-ByItemNumber].[Description] AS [Description], 
+[TODO-ERRReport-ByItemNumber].[Error] AS [Error], 
+[TODO-ERRReport-ByItemNumber].[Info] AS [Info]
+FROM [dbo].[TODO-ERRReport-ByItemNumber] AS [TODO-ERRReport-ByItemNumber]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="TODO-ERRReport-EntryDataDetails" EntityType="Self.TODO-ERRReport-EntryDataDetails" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
-    [TODO-ERRReport-EntryDataDetails].[ApplicationSettingsId] AS [ApplicationSettingsId], 
-    [TODO-ERRReport-EntryDataDetails].[InvoiceNo] AS [InvoiceNo], 
-    [TODO-ERRReport-EntryDataDetails].[InvoiceDate] AS [InvoiceDate], 
-    [TODO-ERRReport-EntryDataDetails].[Type] AS [Type], 
-    [TODO-ERRReport-EntryDataDetails].[LineNumber] AS [LineNumber], 
-    [TODO-ERRReport-EntryDataDetails].[ItemNumber] AS [ItemNumber], 
-    [TODO-ERRReport-EntryDataDetails].[ItemDescription] AS [ItemDescription], 
-    [TODO-ERRReport-EntryDataDetails].[Error] AS [Error], 
-    [TODO-ERRReport-EntryDataDetails].[Info] AS [Info]
-    FROM [dbo].[TODO-ERRReport-EntryDataDetails] AS [TODO-ERRReport-EntryDataDetails]</DefiningQuery>
+[TODO-ERRReport-EntryDataDetails].[ApplicationSettingsId] AS [ApplicationSettingsId], 
+[TODO-ERRReport-EntryDataDetails].[InvoiceNo] AS [InvoiceNo], 
+[TODO-ERRReport-EntryDataDetails].[InvoiceDate] AS [InvoiceDate], 
+[TODO-ERRReport-EntryDataDetails].[Type] AS [Type], 
+[TODO-ERRReport-EntryDataDetails].[LineNumber] AS [LineNumber], 
+[TODO-ERRReport-EntryDataDetails].[ItemNumber] AS [ItemNumber], 
+[TODO-ERRReport-EntryDataDetails].[ItemDescription] AS [ItemDescription], 
+[TODO-ERRReport-EntryDataDetails].[Error] AS [Error], 
+[TODO-ERRReport-EntryDataDetails].[Info] AS [Info]
+FROM [dbo].[TODO-ERRReport-EntryDataDetails] AS [TODO-ERRReport-EntryDataDetails]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="TODO-ERRReport-SubmitWarehouseErrors" EntityType="Self.TODO-ERRReport-SubmitWarehouseErrors" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
-    [TODO-ERRReport-SubmitWarehouseErrors].[ApplicationSettingsId] AS [ApplicationSettingsId], 
-    [TODO-ERRReport-SubmitWarehouseErrors].[CNumber] AS [CNumber], 
-    [TODO-ERRReport-SubmitWarehouseErrors].[Reference] AS [Reference], 
-    [TODO-ERRReport-SubmitWarehouseErrors].[RegistrationDate] AS [RegistrationDate], 
-    [TODO-ERRReport-SubmitWarehouseErrors].[DocumentType] AS [DocumentType], 
-    [TODO-ERRReport-SubmitWarehouseErrors].[LineNumber] AS [LineNumber], 
-    [TODO-ERRReport-SubmitWarehouseErrors].[ItemNumber] AS [ItemNumber], 
-    [TODO-ERRReport-SubmitWarehouseErrors].[Description] AS [Description], 
-    [TODO-ERRReport-SubmitWarehouseErrors].[Error] AS [Error], 
-    [TODO-ERRReport-SubmitWarehouseErrors].[Info] AS [Info]
-    FROM [dbo].[TODO-ERRReport-SubmitWarehouseErrors] AS [TODO-ERRReport-SubmitWarehouseErrors]</DefiningQuery>
+[TODO-ERRReport-SubmitWarehouseErrors].[ApplicationSettingsId] AS [ApplicationSettingsId], 
+[TODO-ERRReport-SubmitWarehouseErrors].[CNumber] AS [CNumber], 
+[TODO-ERRReport-SubmitWarehouseErrors].[Reference] AS [Reference], 
+[TODO-ERRReport-SubmitWarehouseErrors].[RegistrationDate] AS [RegistrationDate], 
+[TODO-ERRReport-SubmitWarehouseErrors].[DocumentType] AS [DocumentType], 
+[TODO-ERRReport-SubmitWarehouseErrors].[LineNumber] AS [LineNumber], 
+[TODO-ERRReport-SubmitWarehouseErrors].[ItemNumber] AS [ItemNumber], 
+[TODO-ERRReport-SubmitWarehouseErrors].[Description] AS [Description], 
+[TODO-ERRReport-SubmitWarehouseErrors].[Error] AS [Error], 
+[TODO-ERRReport-SubmitWarehouseErrors].[Info] AS [Info]
+FROM [dbo].[TODO-ERRReport-SubmitWarehouseErrors] AS [TODO-ERRReport-SubmitWarehouseErrors]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="TODO-ERRReport-UnmappedItems" EntityType="Self.TODO-ERRReport-UnmappedItems" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
-    [TODO-ERRReport-UnmappedItems].[ApplicationSettingsId] AS [ApplicationSettingsId], 
-    [TODO-ERRReport-UnmappedItems].[CNumber] AS [CNumber], 
-    [TODO-ERRReport-UnmappedItems].[Reference] AS [Reference], 
-    [TODO-ERRReport-UnmappedItems].[RegistrationDate] AS [RegistrationDate], 
-    [TODO-ERRReport-UnmappedItems].[DocumentType] AS [DocumentType], 
-    [TODO-ERRReport-UnmappedItems].[LineNumber] AS [LineNumber], 
-    [TODO-ERRReport-UnmappedItems].[ItemNumber] AS [ItemNumber], 
-    [TODO-ERRReport-UnmappedItems].[Description] AS [Description], 
-    [TODO-ERRReport-UnmappedItems].[Error] AS [Error], 
-    [TODO-ERRReport-UnmappedItems].[Info] AS [Info]
-    FROM [dbo].[TODO-ERRReport-UnmappedItems] AS [TODO-ERRReport-UnmappedItems]</DefiningQuery>
+[TODO-ERRReport-UnmappedItems].[ApplicationSettingsId] AS [ApplicationSettingsId], 
+[TODO-ERRReport-UnmappedItems].[CNumber] AS [CNumber], 
+[TODO-ERRReport-UnmappedItems].[Reference] AS [Reference], 
+[TODO-ERRReport-UnmappedItems].[RegistrationDate] AS [RegistrationDate], 
+[TODO-ERRReport-UnmappedItems].[DocumentType] AS [DocumentType], 
+[TODO-ERRReport-UnmappedItems].[LineNumber] AS [LineNumber], 
+[TODO-ERRReport-UnmappedItems].[ItemNumber] AS [ItemNumber], 
+[TODO-ERRReport-UnmappedItems].[Description] AS [Description], 
+[TODO-ERRReport-UnmappedItems].[Error] AS [Error], 
+[TODO-ERRReport-UnmappedItems].[Info] AS [Info]
+FROM [dbo].[TODO-ERRReport-UnmappedItems] AS [TODO-ERRReport-UnmappedItems]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="TODO-ImportCompleteEntries" EntityType="Self.TODO-ImportCompleteEntries" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
-    [TODO-ImportCompleteEntries].[AsycudaDocumentSetId] AS [AsycudaDocumentSetId], 
-    [TODO-ImportCompleteEntries].[ApplicationSettingsId] AS [ApplicationSettingsId], 
-    [TODO-ImportCompleteEntries].[EntryDataId] AS [EntryDataId], 
-    [TODO-ImportCompleteEntries].[EntryData_Id] AS [EntryData_Id], 
-    [TODO-ImportCompleteEntries].[EmailId] AS [EmailId], 
-    [TODO-ImportCompleteEntries].[FileTypeId] AS [FileTypeId], 
-    [TODO-ImportCompleteEntries].[NewAsycuda_Id] AS [NewAsycuda_Id], 
-    [TODO-ImportCompleteEntries].[AssessedAsycuda_Id] AS [AssessedAsycuda_Id]
-    FROM [dbo].[TODO-ImportCompleteEntries] AS [TODO-ImportCompleteEntries]</DefiningQuery>
+[TODO-ImportCompleteEntries].[AsycudaDocumentSetId] AS [AsycudaDocumentSetId], 
+[TODO-ImportCompleteEntries].[ApplicationSettingsId] AS [ApplicationSettingsId], 
+[TODO-ImportCompleteEntries].[EntryDataId] AS [EntryDataId], 
+[TODO-ImportCompleteEntries].[EntryData_Id] AS [EntryData_Id], 
+[TODO-ImportCompleteEntries].[EmailId] AS [EmailId], 
+[TODO-ImportCompleteEntries].[FileTypeId] AS [FileTypeId], 
+[TODO-ImportCompleteEntries].[NewAsycuda_Id] AS [NewAsycuda_Id], 
+[TODO-ImportCompleteEntries].[AssessedAsycuda_Id] AS [AssessedAsycuda_Id]
+FROM [dbo].[TODO-ImportCompleteEntries] AS [TODO-ImportCompleteEntries]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="TODO-LicenceAvailableQty" EntityType="Self.TODO-LicenceAvailableQty" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
-    [TODO-LicenceAvailableQty].[RegistrationNumber] AS [RegistrationNumber], 
-    [TODO-LicenceAvailableQty].[ApplicationSettingsId] AS [ApplicationSettingsId], 
-    [TODO-LicenceAvailableQty].[TariffCode] AS [TariffCode], 
-    [TODO-LicenceAvailableQty].[Origin] AS [Origin], 
-    [TODO-LicenceAvailableQty].[Quantity_to_approve] AS [Quantity_to_approve], 
-    [TODO-LicenceAvailableQty].[Application_date] AS [Application_date], 
-    [TODO-LicenceAvailableQty].[Importation_date] AS [Importation_date], 
-    [TODO-LicenceAvailableQty].[Key] AS [Key], 
-    [TODO-LicenceAvailableQty].[Balance] AS [Balance], 
-    [TODO-LicenceAvailableQty].[LicenseId] AS [LicenseId], 
-    [TODO-LicenceAvailableQty].[SourceFile] AS [SourceFile], 
-    [TODO-LicenceAvailableQty].[DocumentReference] AS [DocumentReference], 
-    [TODO-LicenceAvailableQty].[SegmentId] AS [SegmentId]
-    FROM [dbo].[TODO-LicenceAvailableQty] AS [TODO-LicenceAvailableQty]</DefiningQuery>
+[TODO-LicenceAvailableQty].[RegistrationNumber] AS [RegistrationNumber], 
+[TODO-LicenceAvailableQty].[ApplicationSettingsId] AS [ApplicationSettingsId], 
+[TODO-LicenceAvailableQty].[TariffCode] AS [TariffCode], 
+[TODO-LicenceAvailableQty].[Origin] AS [Origin], 
+[TODO-LicenceAvailableQty].[Quantity_to_approve] AS [Quantity_to_approve], 
+[TODO-LicenceAvailableQty].[Application_date] AS [Application_date], 
+[TODO-LicenceAvailableQty].[Importation_date] AS [Importation_date], 
+[TODO-LicenceAvailableQty].[Key] AS [Key], 
+[TODO-LicenceAvailableQty].[Balance] AS [Balance], 
+[TODO-LicenceAvailableQty].[LicenseId] AS [LicenseId], 
+[TODO-LicenceAvailableQty].[SourceFile] AS [SourceFile], 
+[TODO-LicenceAvailableQty].[DocumentReference] AS [DocumentReference], 
+[TODO-LicenceAvailableQty].[SegmentId] AS [SegmentId]
+FROM [dbo].[TODO-LicenceAvailableQty] AS [TODO-LicenceAvailableQty]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="TODO-LicenseToXML" EntityType="Self.TODO-LicenseToXML" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
-    [TODO-LicenseToXML].[TariffCode] AS [TariffCode], 
-    [TODO-LicenseToXML].[TariffCategoryCode] AS [TariffCategoryCode], 
-    [TODO-LicenseToXML].[Quantity] AS [Quantity], 
-    [TODO-LicenseToXML].[VolumeLiters] AS [VolumeLiters], 
-    [TODO-LicenseToXML].[LicenseDescription] AS [LicenseDescription], 
-    [TODO-LicenseToXML].[AsycudaDocumentSetId] AS [AsycudaDocumentSetId], 
-    [TODO-LicenseToXML].[ApplicationSettingsId] AS [ApplicationSettingsId], 
-    [TODO-LicenseToXML].[Declarant_Reference_Number] AS [Declarant_Reference_Number], 
-    [TODO-LicenseToXML].[Country_of_origin_code] AS [Country_of_origin_code], 
-    [TODO-LicenseToXML].[UOM] AS [UOM], 
-    [TODO-LicenseToXML].[EntryDataId] AS [EntryDataId], 
-    [TODO-LicenseToXML].[SourceFile] AS [SourceFile], 
-    [TODO-LicenseToXML].[EmailId] AS [EmailId], 
-    [TODO-LicenseToXML].[ItemNumber] AS [ItemNumber], 
-    [TODO-LicenseToXML].[ItemDescription] AS [ItemDescription], 
-    [TODO-LicenseToXML].[LineNumber] AS [LineNumber]
-    FROM [dbo].[TODO-LicenseToXML] AS [TODO-LicenseToXML]</DefiningQuery>
+[TODO-LicenseToXML].[TariffCode] AS [TariffCode], 
+[TODO-LicenseToXML].[TariffCategoryCode] AS [TariffCategoryCode], 
+[TODO-LicenseToXML].[Quantity] AS [Quantity], 
+[TODO-LicenseToXML].[VolumeLiters] AS [VolumeLiters], 
+[TODO-LicenseToXML].[LicenseDescription] AS [LicenseDescription], 
+[TODO-LicenseToXML].[AsycudaDocumentSetId] AS [AsycudaDocumentSetId], 
+[TODO-LicenseToXML].[ApplicationSettingsId] AS [ApplicationSettingsId], 
+[TODO-LicenseToXML].[Declarant_Reference_Number] AS [Declarant_Reference_Number], 
+[TODO-LicenseToXML].[Country_of_origin_code] AS [Country_of_origin_code], 
+[TODO-LicenseToXML].[UOM] AS [UOM], 
+[TODO-LicenseToXML].[EntryDataId] AS [EntryDataId], 
+[TODO-LicenseToXML].[SourceFile] AS [SourceFile], 
+[TODO-LicenseToXML].[EmailId] AS [EmailId], 
+[TODO-LicenseToXML].[ItemNumber] AS [ItemNumber], 
+[TODO-LicenseToXML].[ItemDescription] AS [ItemDescription], 
+[TODO-LicenseToXML].[LineNumber] AS [LineNumber]
+FROM [dbo].[TODO-LicenseToXML] AS [TODO-LicenseToXML]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="TODO-LICToAssess" EntityType="Self.TODO-LICToAssess" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
-    [TODO-LICToAssess].[AsycudaDocumentSetId] AS [AsycudaDocumentSetId], 
-    [TODO-LICToAssess].[ApplicationSettingsId] AS [ApplicationSettingsId], 
-    [TODO-LICToAssess].[Country_of_origin_code] AS [Country_of_origin_code], 
-    [TODO-LICToAssess].[Currency_Code] AS [Currency_Code], 
-    [TODO-LICToAssess].[Manifest_Number] AS [Manifest_Number], 
-    [TODO-LICToAssess].[BLNumber] AS [BLNumber], 
-    [TODO-LICToAssess].[Type_of_declaration] AS [Type_of_declaration], 
-    [TODO-LICToAssess].[Declaration_gen_procedure_code] AS [Declaration_gen_procedure_code], 
-    [TODO-LICToAssess].[Declarant_Reference_Number] AS [Declarant_Reference_Number], 
-    [TODO-LICToAssess].[TotalInvoices] AS [TotalInvoices], 
-    [TODO-LICToAssess].[DocumentsCount] AS [DocumentsCount], 
-    [TODO-LICToAssess].[InvoiceTotal] AS [InvoiceTotal], 
-    [TODO-LICToAssess].[LicenseLines] AS [LicenseLines], 
-    [TODO-LICToAssess].[TotalCIF] AS [TotalCIF], 
-    [TODO-LICToAssess].[QtyLicensesRequired] AS [QtyLicensesRequired]
-    FROM [dbo].[TODO-LICToAssess] AS [TODO-LICToAssess]</DefiningQuery>
+[TODO-LICToAssess].[AsycudaDocumentSetId] AS [AsycudaDocumentSetId], 
+[TODO-LICToAssess].[ApplicationSettingsId] AS [ApplicationSettingsId], 
+[TODO-LICToAssess].[Country_of_origin_code] AS [Country_of_origin_code], 
+[TODO-LICToAssess].[Currency_Code] AS [Currency_Code], 
+[TODO-LICToAssess].[Manifest_Number] AS [Manifest_Number], 
+[TODO-LICToAssess].[BLNumber] AS [BLNumber], 
+[TODO-LICToAssess].[Type_of_declaration] AS [Type_of_declaration], 
+[TODO-LICToAssess].[Declaration_gen_procedure_code] AS [Declaration_gen_procedure_code], 
+[TODO-LICToAssess].[Declarant_Reference_Number] AS [Declarant_Reference_Number], 
+[TODO-LICToAssess].[TotalInvoices] AS [TotalInvoices], 
+[TODO-LICToAssess].[DocumentsCount] AS [DocumentsCount], 
+[TODO-LICToAssess].[InvoiceTotal] AS [InvoiceTotal], 
+[TODO-LICToAssess].[LicenseLines] AS [LicenseLines], 
+[TODO-LICToAssess].[TotalCIF] AS [TotalCIF], 
+[TODO-LICToAssess].[QtyLicensesRequired] AS [QtyLicensesRequired]
+FROM [dbo].[TODO-LICToAssess] AS [TODO-LICToAssess]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="TODO-LICToCreate" EntityType="Self.TODO-LICToCreate" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
-    [TODO-LICToCreate].[AsycudaDocumentSetId] AS [AsycudaDocumentSetId], 
-    [TODO-LICToCreate].[ApplicationSettingsId] AS [ApplicationSettingsId], 
-    [TODO-LICToCreate].[Country_of_origin_code] AS [Country_of_origin_code], 
-    [TODO-LICToCreate].[Currency_Code] AS [Currency_Code], 
-    [TODO-LICToCreate].[Manifest_Number] AS [Manifest_Number], 
-    [TODO-LICToCreate].[BLNumber] AS [BLNumber], 
-    [TODO-LICToCreate].[Type_of_declaration] AS [Type_of_declaration], 
-    [TODO-LICToCreate].[Declaration_gen_procedure_code] AS [Declaration_gen_procedure_code], 
-    [TODO-LICToCreate].[Declarant_Reference_Number] AS [Declarant_Reference_Number], 
-    [TODO-LICToCreate].[TotalInvoices] AS [TotalInvoices], 
-    [TODO-LICToCreate].[DocumentsCount] AS [DocumentsCount], 
-    [TODO-LICToCreate].[InvoiceTotal] AS [InvoiceTotal], 
-    [TODO-LICToCreate].[LicenseLines] AS [LicenseLines], 
-    [TODO-LICToCreate].[TotalCIF] AS [TotalCIF], 
-    [TODO-LICToCreate].[QtyLicensesRequired] AS [QtyLicensesRequired]
-    FROM [dbo].[TODO-LICToCreate] AS [TODO-LICToCreate]</DefiningQuery>
+[TODO-LICToCreate].[AsycudaDocumentSetId] AS [AsycudaDocumentSetId], 
+[TODO-LICToCreate].[ApplicationSettingsId] AS [ApplicationSettingsId], 
+[TODO-LICToCreate].[Country_of_origin_code] AS [Country_of_origin_code], 
+[TODO-LICToCreate].[Currency_Code] AS [Currency_Code], 
+[TODO-LICToCreate].[Manifest_Number] AS [Manifest_Number], 
+[TODO-LICToCreate].[BLNumber] AS [BLNumber], 
+[TODO-LICToCreate].[Type_of_declaration] AS [Type_of_declaration], 
+[TODO-LICToCreate].[Declaration_gen_procedure_code] AS [Declaration_gen_procedure_code], 
+[TODO-LICToCreate].[Declarant_Reference_Number] AS [Declarant_Reference_Number], 
+[TODO-LICToCreate].[TotalInvoices] AS [TotalInvoices], 
+[TODO-LICToCreate].[DocumentsCount] AS [DocumentsCount], 
+[TODO-LICToCreate].[InvoiceTotal] AS [InvoiceTotal], 
+[TODO-LICToCreate].[LicenseLines] AS [LicenseLines], 
+[TODO-LICToCreate].[TotalCIF] AS [TotalCIF], 
+[TODO-LICToCreate].[QtyLicensesRequired] AS [QtyLicensesRequired]
+FROM [dbo].[TODO-LICToCreate] AS [TODO-LICToCreate]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="TODO-PODocSet" EntityType="Self.TODO-PODocSet" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
-    [TODO-PODocSet].[AsycudaDocumentSetId] AS [AsycudaDocumentSetId], 
-    [TODO-PODocSet].[ApplicationSettingsId] AS [ApplicationSettingsId], 
-    [TODO-PODocSet].[Country_of_origin_code] AS [Country_of_origin_code], 
-    [TODO-PODocSet].[Currency_Code] AS [Currency_Code], 
-    [TODO-PODocSet].[Manifest_Number] AS [Manifest_Number], 
-    [TODO-PODocSet].[BLNumber] AS [BLNumber], 
-    [TODO-PODocSet].[Type_of_declaration] AS [Type_of_declaration], 
-    [TODO-PODocSet].[Declaration_gen_procedure_code] AS [Declaration_gen_procedure_code], 
-    [TODO-PODocSet].[Declarant_Reference_Number] AS [Declarant_Reference_Number], 
-    [TODO-PODocSet].[TotalInvoices] AS [TotalInvoices], 
-    [TODO-PODocSet].[DocumentsCount] AS [DocumentsCount], 
-    [TODO-PODocSet].[ExpectedEntries] AS [ExpectedEntries], 
-    [TODO-PODocSet].[InvoiceTotal] AS [InvoiceTotal], 
-    [TODO-PODocSet].[LicenseLines] AS [LicenseLines], 
-    [TODO-PODocSet].[QtyLicensesRequired] AS [QtyLicensesRequired], 
-    [TODO-PODocSet].[TotalCIF] AS [TotalCIF], 
-    [TODO-PODocSet].[TotalFreight] AS [TotalFreight], 
-    [TODO-PODocSet].[ClassifiedLines] AS [ClassifiedLines], 
-    [TODO-PODocSet].[TotalLines] AS [TotalLines], 
-    [TODO-PODocSet].[TotalPackages] AS [TotalPackages], 
-    [TODO-PODocSet].[TotalWeight] AS [TotalWeight], 
-    [TODO-PODocSet].[EntryPackages] AS [EntryPackages], 
-    [TODO-PODocSet].[FreightCurrencyCode] AS [FreightCurrencyCode], 
-    [TODO-PODocSet].[CurrencyRate] AS [CurrencyRate], 
-    [TODO-PODocSet].[FreightCurrencyRate] AS [FreightCurrencyRate]
-    FROM [dbo].[TODO-PODocSet] AS [TODO-PODocSet]</DefiningQuery>
+[TODO-PODocSet].[AsycudaDocumentSetId] AS [AsycudaDocumentSetId], 
+[TODO-PODocSet].[ApplicationSettingsId] AS [ApplicationSettingsId], 
+[TODO-PODocSet].[Country_of_origin_code] AS [Country_of_origin_code], 
+[TODO-PODocSet].[Currency_Code] AS [Currency_Code], 
+[TODO-PODocSet].[Manifest_Number] AS [Manifest_Number], 
+[TODO-PODocSet].[BLNumber] AS [BLNumber], 
+[TODO-PODocSet].[Type_of_declaration] AS [Type_of_declaration], 
+[TODO-PODocSet].[Declaration_gen_procedure_code] AS [Declaration_gen_procedure_code], 
+[TODO-PODocSet].[Declarant_Reference_Number] AS [Declarant_Reference_Number], 
+[TODO-PODocSet].[TotalInvoices] AS [TotalInvoices], 
+[TODO-PODocSet].[DocumentsCount] AS [DocumentsCount], 
+[TODO-PODocSet].[ExpectedEntries] AS [ExpectedEntries], 
+[TODO-PODocSet].[InvoiceTotal] AS [InvoiceTotal], 
+[TODO-PODocSet].[LicenseLines] AS [LicenseLines], 
+[TODO-PODocSet].[QtyLicensesRequired] AS [QtyLicensesRequired], 
+[TODO-PODocSet].[TotalCIF] AS [TotalCIF], 
+[TODO-PODocSet].[TotalFreight] AS [TotalFreight], 
+[TODO-PODocSet].[ClassifiedLines] AS [ClassifiedLines], 
+[TODO-PODocSet].[TotalLines] AS [TotalLines], 
+[TODO-PODocSet].[TotalPackages] AS [TotalPackages], 
+[TODO-PODocSet].[TotalWeight] AS [TotalWeight], 
+[TODO-PODocSet].[EntryPackages] AS [EntryPackages], 
+[TODO-PODocSet].[FreightCurrencyCode] AS [FreightCurrencyCode], 
+[TODO-PODocSet].[CurrencyRate] AS [CurrencyRate], 
+[TODO-PODocSet].[FreightCurrencyRate] AS [FreightCurrencyRate]
+FROM [dbo].[TODO-PODocSet] AS [TODO-PODocSet]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="TODO-PODocSetToAssess" EntityType="Self.TODO-PODocSetToAssess" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
-    [TODO-PODocSetToAssess].[AsycudaDocumentSetId] AS [AsycudaDocumentSetId], 
-    [TODO-PODocSetToAssess].[ApplicationSettingsId] AS [ApplicationSettingsId], 
-    [TODO-PODocSetToAssess].[Country_of_origin_code] AS [Country_of_origin_code], 
-    [TODO-PODocSetToAssess].[Currency_Code] AS [Currency_Code], 
-    [TODO-PODocSetToAssess].[Manifest_Number] AS [Manifest_Number], 
-    [TODO-PODocSetToAssess].[BLNumber] AS [BLNumber], 
-    [TODO-PODocSetToAssess].[Type_of_declaration] AS [Type_of_declaration], 
-    [TODO-PODocSetToAssess].[Declaration_gen_procedure_code] AS [Declaration_gen_procedure_code], 
-    [TODO-PODocSetToAssess].[Declarant_Reference_Number] AS [Declarant_Reference_Number], 
-    [TODO-PODocSetToAssess].[TotalInvoices] AS [TotalInvoices], 
-    [TODO-PODocSetToAssess].[DocumentsCount] AS [DocumentsCount], 
-    [TODO-PODocSetToAssess].[InvoiceTotal] AS [InvoiceTotal], 
-    [TODO-PODocSetToAssess].[LicenseLines] AS [LicenseLines], 
-    [TODO-PODocSetToAssess].[TotalCIF] AS [TotalCIF], 
-    [TODO-PODocSetToAssess].[EntryDataInvoiceTotal] AS [EntryDataInvoiceTotal], 
-    [TODO-PODocSetToAssess].[NeedC71] AS [NeedC71], 
-    [TODO-PODocSetToAssess].[NeedLicense] AS [NeedLicense], 
-    [TODO-PODocSetToAssess].[HasC71] AS [HasC71], 
-    [TODO-PODocSetToAssess].[HasLicense] AS [HasLicense], 
-    [TODO-PODocSetToAssess].[TotalFreight] AS [TotalFreight], 
-    [TODO-PODocSetToAssess].[GeneratedFreight] AS [GeneratedFreight], 
-    [TODO-PODocSetToAssess].[ClassifiedLines] AS [ClassifiedLines], 
-    [TODO-PODocSetToAssess].[TotalLines] AS [TotalLines], 
-    [TODO-PODocSetToAssess].[GeneratedLines] AS [GeneratedLines], 
-    [TODO-PODocSetToAssess].[DocumentAttachments] AS [DocumentAttachments], 
-    [TODO-PODocSetToAssess].[AttachedDocuments] AS [AttachedDocuments]
-    FROM [dbo].[TODO-PODocSetToAssess] AS [TODO-PODocSetToAssess]</DefiningQuery>
+[TODO-PODocSetToAssess].[AsycudaDocumentSetId] AS [AsycudaDocumentSetId], 
+[TODO-PODocSetToAssess].[ApplicationSettingsId] AS [ApplicationSettingsId], 
+[TODO-PODocSetToAssess].[Country_of_origin_code] AS [Country_of_origin_code], 
+[TODO-PODocSetToAssess].[Currency_Code] AS [Currency_Code], 
+[TODO-PODocSetToAssess].[Manifest_Number] AS [Manifest_Number], 
+[TODO-PODocSetToAssess].[BLNumber] AS [BLNumber], 
+[TODO-PODocSetToAssess].[Type_of_declaration] AS [Type_of_declaration], 
+[TODO-PODocSetToAssess].[Declaration_gen_procedure_code] AS [Declaration_gen_procedure_code], 
+[TODO-PODocSetToAssess].[Declarant_Reference_Number] AS [Declarant_Reference_Number], 
+[TODO-PODocSetToAssess].[TotalInvoices] AS [TotalInvoices], 
+[TODO-PODocSetToAssess].[DocumentsCount] AS [DocumentsCount], 
+[TODO-PODocSetToAssess].[InvoiceTotal] AS [InvoiceTotal], 
+[TODO-PODocSetToAssess].[LicenseLines] AS [LicenseLines], 
+[TODO-PODocSetToAssess].[TotalCIF] AS [TotalCIF], 
+[TODO-PODocSetToAssess].[EntryDataInvoiceTotal] AS [EntryDataInvoiceTotal], 
+[TODO-PODocSetToAssess].[NeedC71] AS [NeedC71], 
+[TODO-PODocSetToAssess].[NeedLicense] AS [NeedLicense], 
+[TODO-PODocSetToAssess].[HasC71] AS [HasC71], 
+[TODO-PODocSetToAssess].[HasLicense] AS [HasLicense], 
+[TODO-PODocSetToAssess].[TotalFreight] AS [TotalFreight], 
+[TODO-PODocSetToAssess].[GeneratedFreight] AS [GeneratedFreight], 
+[TODO-PODocSetToAssess].[ClassifiedLines] AS [ClassifiedLines], 
+[TODO-PODocSetToAssess].[TotalLines] AS [TotalLines], 
+[TODO-PODocSetToAssess].[GeneratedLines] AS [GeneratedLines], 
+[TODO-PODocSetToAssess].[DocumentAttachments] AS [DocumentAttachments], 
+[TODO-PODocSetToAssess].[AttachedDocuments] AS [AttachedDocuments]
+FROM [dbo].[TODO-PODocSetToAssess] AS [TODO-PODocSetToAssess]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="TODO-PODocSetToAssessErrors" EntityType="Self.TODO-PODocSetToAssessErrors" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
-    [TODO-PODocSetToAssessErrors].[AsycudaDocumentSetId] AS [AsycudaDocumentSetId], 
-    [TODO-PODocSetToAssessErrors].[ApplicationSettingsId] AS [ApplicationSettingsId], 
-    [TODO-PODocSetToAssessErrors].[Country_of_origin_code] AS [Country_of_origin_code], 
-    [TODO-PODocSetToAssessErrors].[Currency_Code] AS [Currency_Code], 
-    [TODO-PODocSetToAssessErrors].[Manifest_Number] AS [Manifest_Number], 
-    [TODO-PODocSetToAssessErrors].[BLNumber] AS [BLNumber], 
-    [TODO-PODocSetToAssessErrors].[Type_of_declaration] AS [Type_of_declaration], 
-    [TODO-PODocSetToAssessErrors].[Declaration_gen_procedure_code] AS [Declaration_gen_procedure_code], 
-    [TODO-PODocSetToAssessErrors].[Declarant_Reference_Number] AS [Declarant_Reference_Number], 
-    [TODO-PODocSetToAssessErrors].[TotalInvoices] AS [TotalInvoices], 
-    [TODO-PODocSetToAssessErrors].[DocumentsCount] AS [DocumentsCount], 
-    [TODO-PODocSetToAssessErrors].[InvoiceTotal] AS [InvoiceTotal], 
-    [TODO-PODocSetToAssessErrors].[LicenseLines] AS [LicenseLines], 
-    [TODO-PODocSetToAssessErrors].[TotalCIF] AS [TotalCIF], 
-    [TODO-PODocSetToAssessErrors].[SpecifiedCIF] AS [SpecifiedCIF], 
-    [TODO-PODocSetToAssessErrors].[GeneratedCIF] AS [GeneratedCIF], 
-    [TODO-PODocSetToAssessErrors].[NeedC71] AS [NeedC71], 
-    [TODO-PODocSetToAssessErrors].[NeedLicense] AS [NeedLicense], 
-    [TODO-PODocSetToAssessErrors].[HasC71] AS [HasC71], 
-    [TODO-PODocSetToAssessErrors].[HasLicense] AS [HasLicense], 
-    [TODO-PODocSetToAssessErrors].[TotalFreight] AS [TotalFreight], 
-    [TODO-PODocSetToAssessErrors].[ClassifiedLines] AS [ClassifiedLines], 
-    [TODO-PODocSetToAssessErrors].[TotalLines] AS [TotalLines], 
-    [TODO-PODocSetToAssessErrors].[TotalWeight] AS [TotalWeight], 
-    [TODO-PODocSetToAssessErrors].[SpecifiedFreight] AS [SpecifiedFreight], 
-    [TODO-PODocSetToAssessErrors].[GeneratedFreight] AS [GeneratedFreight], 
-    [TODO-PODocSetToAssessErrors].[ExpectedAttachments] AS [ExpectedAttachments], 
-    [TODO-PODocSetToAssessErrors].[GeneratedAttachments] AS [GeneratedAttachments], 
-    [TODO-PODocSetToAssessErrors].[GeneratedLines] AS [GeneratedLines], 
-    [TODO-PODocSetToAssessErrors].[EntryPackages] AS [EntryPackages], 
-    [TODO-PODocSetToAssessErrors].[GeneratedPackages] AS [GeneratedPackages], 
-    [TODO-PODocSetToAssessErrors].[Status] AS [Status]
-    FROM [dbo].[TODO-PODocSetToAssessErrors] AS [TODO-PODocSetToAssessErrors]</DefiningQuery>
+[TODO-PODocSetToAssessErrors].[AsycudaDocumentSetId] AS [AsycudaDocumentSetId], 
+[TODO-PODocSetToAssessErrors].[ApplicationSettingsId] AS [ApplicationSettingsId], 
+[TODO-PODocSetToAssessErrors].[Country_of_origin_code] AS [Country_of_origin_code], 
+[TODO-PODocSetToAssessErrors].[Currency_Code] AS [Currency_Code], 
+[TODO-PODocSetToAssessErrors].[Manifest_Number] AS [Manifest_Number], 
+[TODO-PODocSetToAssessErrors].[BLNumber] AS [BLNumber], 
+[TODO-PODocSetToAssessErrors].[Type_of_declaration] AS [Type_of_declaration], 
+[TODO-PODocSetToAssessErrors].[Declaration_gen_procedure_code] AS [Declaration_gen_procedure_code], 
+[TODO-PODocSetToAssessErrors].[Declarant_Reference_Number] AS [Declarant_Reference_Number], 
+[TODO-PODocSetToAssessErrors].[TotalInvoices] AS [TotalInvoices], 
+[TODO-PODocSetToAssessErrors].[DocumentsCount] AS [DocumentsCount], 
+[TODO-PODocSetToAssessErrors].[InvoiceTotal] AS [InvoiceTotal], 
+[TODO-PODocSetToAssessErrors].[LicenseLines] AS [LicenseLines], 
+[TODO-PODocSetToAssessErrors].[TotalCIF] AS [TotalCIF], 
+[TODO-PODocSetToAssessErrors].[SpecifiedCIF] AS [SpecifiedCIF], 
+[TODO-PODocSetToAssessErrors].[GeneratedCIF] AS [GeneratedCIF], 
+[TODO-PODocSetToAssessErrors].[NeedC71] AS [NeedC71], 
+[TODO-PODocSetToAssessErrors].[NeedLicense] AS [NeedLicense], 
+[TODO-PODocSetToAssessErrors].[HasC71] AS [HasC71], 
+[TODO-PODocSetToAssessErrors].[HasLicense] AS [HasLicense], 
+[TODO-PODocSetToAssessErrors].[TotalFreight] AS [TotalFreight], 
+[TODO-PODocSetToAssessErrors].[ClassifiedLines] AS [ClassifiedLines], 
+[TODO-PODocSetToAssessErrors].[TotalLines] AS [TotalLines], 
+[TODO-PODocSetToAssessErrors].[TotalWeight] AS [TotalWeight], 
+[TODO-PODocSetToAssessErrors].[SpecifiedFreight] AS [SpecifiedFreight], 
+[TODO-PODocSetToAssessErrors].[GeneratedFreight] AS [GeneratedFreight], 
+[TODO-PODocSetToAssessErrors].[ExpectedAttachments] AS [ExpectedAttachments], 
+[TODO-PODocSetToAssessErrors].[GeneratedAttachments] AS [GeneratedAttachments], 
+[TODO-PODocSetToAssessErrors].[GeneratedLines] AS [GeneratedLines], 
+[TODO-PODocSetToAssessErrors].[EntryPackages] AS [EntryPackages], 
+[TODO-PODocSetToAssessErrors].[GeneratedPackages] AS [GeneratedPackages], 
+[TODO-PODocSetToAssessErrors].[Status] AS [Status]
+FROM [dbo].[TODO-PODocSetToAssessErrors] AS [TODO-PODocSetToAssessErrors]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="TODO-PODocSetToExport" EntityType="Self.TODO-PODocSetToExport" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
-    [TODO-PODocSetToExport].[AsycudaDocumentSetId] AS [AsycudaDocumentSetId], 
-    [TODO-PODocSetToExport].[ApplicationSettingsId] AS [ApplicationSettingsId], 
-    [TODO-PODocSetToExport].[Country_of_origin_code] AS [Country_of_origin_code], 
-    [TODO-PODocSetToExport].[Currency_Code] AS [Currency_Code], 
-    [TODO-PODocSetToExport].[FreightCurrencyCode] AS [FreightCurrencyCode], 
-    [TODO-PODocSetToExport].[Manifest_Number] AS [Manifest_Number], 
-    [TODO-PODocSetToExport].[BLNumber] AS [BLNumber], 
-    [TODO-PODocSetToExport].[Type_of_declaration] AS [Type_of_declaration], 
-    [TODO-PODocSetToExport].[Declaration_gen_procedure_code] AS [Declaration_gen_procedure_code], 
-    [TODO-PODocSetToExport].[Declarant_Reference_Number] AS [Declarant_Reference_Number], 
-    [TODO-PODocSetToExport].[TotalInvoices] AS [TotalInvoices], 
-    [TODO-PODocSetToExport].[DocumentsCount] AS [DocumentsCount], 
-    [TODO-PODocSetToExport].[ExpectedEntries] AS [ExpectedEntries], 
-    [TODO-PODocSetToExport].[InvoiceTotal] AS [InvoiceTotal], 
-    [TODO-PODocSetToExport].[LicenseLines] AS [LicenseLines], 
-    [TODO-PODocSetToExport].[TotalCIF] AS [TotalCIF], 
-    [TODO-PODocSetToExport].[NeedC71] AS [NeedC71], 
-    [TODO-PODocSetToExport].[NeedLicense] AS [NeedLicense], 
-    [TODO-PODocSetToExport].[HasC71] AS [HasC71], 
-    [TODO-PODocSetToExport].[HasLicense] AS [HasLicense], 
-    [TODO-PODocSetToExport].[TotalFreight] AS [TotalFreight], 
-    [TODO-PODocSetToExport].[ClassifiedLines] AS [ClassifiedLines], 
-    [TODO-PODocSetToExport].[TotalLines] AS [TotalLines], 
-    [TODO-PODocSetToExport].[EntryPackages] AS [EntryPackages], 
-    [TODO-PODocSetToExport].[TotalWeight] AS [TotalWeight], 
-    [TODO-PODocSetToExport].[TotalPackages] AS [TotalPackages]
-    FROM [dbo].[TODO-PODocSetToExport] AS [TODO-PODocSetToExport]</DefiningQuery>
+[TODO-PODocSetToExport].[AsycudaDocumentSetId] AS [AsycudaDocumentSetId], 
+[TODO-PODocSetToExport].[ApplicationSettingsId] AS [ApplicationSettingsId], 
+[TODO-PODocSetToExport].[Country_of_origin_code] AS [Country_of_origin_code], 
+[TODO-PODocSetToExport].[Currency_Code] AS [Currency_Code], 
+[TODO-PODocSetToExport].[FreightCurrencyCode] AS [FreightCurrencyCode], 
+[TODO-PODocSetToExport].[Manifest_Number] AS [Manifest_Number], 
+[TODO-PODocSetToExport].[BLNumber] AS [BLNumber], 
+[TODO-PODocSetToExport].[Type_of_declaration] AS [Type_of_declaration], 
+[TODO-PODocSetToExport].[Declaration_gen_procedure_code] AS [Declaration_gen_procedure_code], 
+[TODO-PODocSetToExport].[Declarant_Reference_Number] AS [Declarant_Reference_Number], 
+[TODO-PODocSetToExport].[TotalInvoices] AS [TotalInvoices], 
+[TODO-PODocSetToExport].[DocumentsCount] AS [DocumentsCount], 
+[TODO-PODocSetToExport].[ExpectedEntries] AS [ExpectedEntries], 
+[TODO-PODocSetToExport].[InvoiceTotal] AS [InvoiceTotal], 
+[TODO-PODocSetToExport].[LicenseLines] AS [LicenseLines], 
+[TODO-PODocSetToExport].[TotalCIF] AS [TotalCIF], 
+[TODO-PODocSetToExport].[NeedC71] AS [NeedC71], 
+[TODO-PODocSetToExport].[NeedLicense] AS [NeedLicense], 
+[TODO-PODocSetToExport].[HasC71] AS [HasC71], 
+[TODO-PODocSetToExport].[HasLicense] AS [HasLicense], 
+[TODO-PODocSetToExport].[TotalFreight] AS [TotalFreight], 
+[TODO-PODocSetToExport].[ClassifiedLines] AS [ClassifiedLines], 
+[TODO-PODocSetToExport].[TotalLines] AS [TotalLines], 
+[TODO-PODocSetToExport].[EntryPackages] AS [EntryPackages], 
+[TODO-PODocSetToExport].[TotalWeight] AS [TotalWeight], 
+[TODO-PODocSetToExport].[TotalPackages] AS [TotalPackages]
+FROM [dbo].[TODO-PODocSetToExport] AS [TODO-PODocSetToExport]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="ToDo-POToXML" EntityType="Self.ToDo-POToXML" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
-    [ToDo-POToXML].[EntryDataDetailsId] AS [EntryDataDetailsId], 
-    [ToDo-POToXML].[ApplicationSettingsId] AS [ApplicationSettingsId], 
-    [ToDo-POToXML].[AsycudaDocumentSetId] AS [AsycudaDocumentSetId], 
-    [ToDo-POToXML].[IsClassified] AS [IsClassified]
-    FROM [dbo].[ToDo-POToXML] AS [ToDo-POToXML]</DefiningQuery>
+[ToDo-POToXML].[EntryDataDetailsId] AS [EntryDataDetailsId], 
+[ToDo-POToXML].[ApplicationSettingsId] AS [ApplicationSettingsId], 
+[ToDo-POToXML].[AsycudaDocumentSetId] AS [AsycudaDocumentSetId], 
+[ToDo-POToXML].[IsClassified] AS [IsClassified]
+FROM [dbo].[ToDo-POToXML] AS [ToDo-POToXML]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="TODO-SubmitAllXMLToCustoms" EntityType="Self.TODO-SubmitAllXMLToCustoms" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
-    [TODO-SubmitAllXMLToCustoms].[Id] AS [Id], 
-    [TODO-SubmitAllXMLToCustoms].[CNumber] AS [CNumber], 
-    [TODO-SubmitAllXMLToCustoms].[ASYCUDA_Id] AS [ASYCUDA_Id], 
-    [TODO-SubmitAllXMLToCustoms].[RegistrationDate] AS [RegistrationDate], 
-    [TODO-SubmitAllXMLToCustoms].[ReferenceNumber] AS [ReferenceNumber], 
-    [TODO-SubmitAllXMLToCustoms].[AsycudaDocumentSetId] AS [AsycudaDocumentSetId], 
-    [TODO-SubmitAllXMLToCustoms].[DocumentType] AS [DocumentType], 
-    [TODO-SubmitAllXMLToCustoms].[AssessmentDate] AS [AssessmentDate], 
-    [TODO-SubmitAllXMLToCustoms].[ApplicationSettingsId] AS [ApplicationSettingsId], 
-    [TODO-SubmitAllXMLToCustoms].[EmailId] AS [EmailId], 
-    [TODO-SubmitAllXMLToCustoms].[CustomsProcedure] AS [CustomsProcedure], 
-    [TODO-SubmitAllXMLToCustoms].[FilePath] AS [FilePath], 
-    [TODO-SubmitAllXMLToCustoms].[Status] AS [Status], 
-    [TODO-SubmitAllXMLToCustoms].[SystemDocumentSetId] AS [SystemDocumentSetId], 
-    [TODO-SubmitAllXMLToCustoms].[ToBePaid] AS [ToBePaid]
-    FROM [dbo].[TODO-SubmitAllXMLToCustoms] AS [TODO-SubmitAllXMLToCustoms]</DefiningQuery>
+[TODO-SubmitAllXMLToCustoms].[Id] AS [Id], 
+[TODO-SubmitAllXMLToCustoms].[CNumber] AS [CNumber], 
+[TODO-SubmitAllXMLToCustoms].[ASYCUDA_Id] AS [ASYCUDA_Id], 
+[TODO-SubmitAllXMLToCustoms].[RegistrationDate] AS [RegistrationDate], 
+[TODO-SubmitAllXMLToCustoms].[ReferenceNumber] AS [ReferenceNumber], 
+[TODO-SubmitAllXMLToCustoms].[AsycudaDocumentSetId] AS [AsycudaDocumentSetId], 
+[TODO-SubmitAllXMLToCustoms].[DocumentType] AS [DocumentType], 
+[TODO-SubmitAllXMLToCustoms].[AssessmentDate] AS [AssessmentDate], 
+[TODO-SubmitAllXMLToCustoms].[ApplicationSettingsId] AS [ApplicationSettingsId], 
+[TODO-SubmitAllXMLToCustoms].[EmailId] AS [EmailId], 
+[TODO-SubmitAllXMLToCustoms].[CustomsProcedure] AS [CustomsProcedure], 
+[TODO-SubmitAllXMLToCustoms].[FilePath] AS [FilePath], 
+[TODO-SubmitAllXMLToCustoms].[Status] AS [Status], 
+[TODO-SubmitAllXMLToCustoms].[SystemDocumentSetId] AS [SystemDocumentSetId], 
+[TODO-SubmitAllXMLToCustoms].[ToBePaid] AS [ToBePaid]
+FROM [dbo].[TODO-SubmitAllXMLToCustoms] AS [TODO-SubmitAllXMLToCustoms]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="TODO-SubmitDiscrepanciesToCustoms" EntityType="Self.TODO-SubmitDiscrepanciesToCustoms" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
-    [TODO-SubmitDiscrepanciesToCustoms].[Id] AS [Id], 
-    [TODO-SubmitDiscrepanciesToCustoms].[CNumber] AS [CNumber], 
-    [TODO-SubmitDiscrepanciesToCustoms].[ASYCUDA_Id] AS [ASYCUDA_Id], 
-    [TODO-SubmitDiscrepanciesToCustoms].[RegistrationDate] AS [RegistrationDate], 
-    [TODO-SubmitDiscrepanciesToCustoms].[ReferenceNumber] AS [ReferenceNumber], 
-    [TODO-SubmitDiscrepanciesToCustoms].[AsycudaDocumentSetId] AS [AsycudaDocumentSetId], 
-    [TODO-SubmitDiscrepanciesToCustoms].[DocumentType] AS [DocumentType], 
-    [TODO-SubmitDiscrepanciesToCustoms].[AssessmentDate] AS [AssessmentDate], 
-    [TODO-SubmitDiscrepanciesToCustoms].[ApplicationSettingsId] AS [ApplicationSettingsId], 
-    [TODO-SubmitDiscrepanciesToCustoms].[EmailId] AS [EmailId], 
-    [TODO-SubmitDiscrepanciesToCustoms].[CustomsProcedure] AS [CustomsProcedure], 
-    [TODO-SubmitDiscrepanciesToCustoms].[FilePath] AS [FilePath], 
-    [TODO-SubmitDiscrepanciesToCustoms].[Status] AS [Status], 
-    [TODO-SubmitDiscrepanciesToCustoms].[ToBePaid] AS [ToBePaid]
-    FROM [dbo].[TODO-SubmitDiscrepanciesToCustoms] AS [TODO-SubmitDiscrepanciesToCustoms]</DefiningQuery>
+[TODO-SubmitDiscrepanciesToCustoms].[Id] AS [Id], 
+[TODO-SubmitDiscrepanciesToCustoms].[CNumber] AS [CNumber], 
+[TODO-SubmitDiscrepanciesToCustoms].[ASYCUDA_Id] AS [ASYCUDA_Id], 
+[TODO-SubmitDiscrepanciesToCustoms].[RegistrationDate] AS [RegistrationDate], 
+[TODO-SubmitDiscrepanciesToCustoms].[ReferenceNumber] AS [ReferenceNumber], 
+[TODO-SubmitDiscrepanciesToCustoms].[AsycudaDocumentSetId] AS [AsycudaDocumentSetId], 
+[TODO-SubmitDiscrepanciesToCustoms].[DocumentType] AS [DocumentType], 
+[TODO-SubmitDiscrepanciesToCustoms].[AssessmentDate] AS [AssessmentDate], 
+[TODO-SubmitDiscrepanciesToCustoms].[ApplicationSettingsId] AS [ApplicationSettingsId], 
+[TODO-SubmitDiscrepanciesToCustoms].[EmailId] AS [EmailId], 
+[TODO-SubmitDiscrepanciesToCustoms].[CustomsProcedure] AS [CustomsProcedure], 
+[TODO-SubmitDiscrepanciesToCustoms].[FilePath] AS [FilePath], 
+[TODO-SubmitDiscrepanciesToCustoms].[Status] AS [Status], 
+[TODO-SubmitDiscrepanciesToCustoms].[ToBePaid] AS [ToBePaid]
+FROM [dbo].[TODO-SubmitDiscrepanciesToCustoms] AS [TODO-SubmitDiscrepanciesToCustoms]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="TODO-SubmitDocSetWithIncompleteInvoices" EntityType="Self.TODO-SubmitDocSetWithIncompleteInvoices" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
-    [TODO-SubmitDocSetWithIncompleteInvoices].[AsycudaDocumentSetId] AS [AsycudaDocumentSetId], 
-    [TODO-SubmitDocSetWithIncompleteInvoices].[Declarant_Reference_Number] AS [Declarant_Reference_Number], 
-    [TODO-SubmitDocSetWithIncompleteInvoices].[TotalInvoices] AS [TotalInvoices], 
-    [TODO-SubmitDocSetWithIncompleteInvoices].[ImportedInvoices] AS [ImportedInvoices], 
-    [TODO-SubmitDocSetWithIncompleteInvoices].[InvoiceDate] AS [InvoiceDate], 
-    [TODO-SubmitDocSetWithIncompleteInvoices].[InvoiceNo] AS [InvoiceNo], 
-    [TODO-SubmitDocSetWithIncompleteInvoices].[InvoiceTotal] AS [InvoiceTotal], 
-    [TODO-SubmitDocSetWithIncompleteInvoices].[ApplicationSettingsId] AS [ApplicationSettingsId], 
-    [TODO-SubmitDocSetWithIncompleteInvoices].[EmailId] AS [EmailId]
-    FROM [dbo].[TODO-SubmitDocSetWithIncompleteInvoices] AS [TODO-SubmitDocSetWithIncompleteInvoices]</DefiningQuery>
+[TODO-SubmitDocSetWithIncompleteInvoices].[AsycudaDocumentSetId] AS [AsycudaDocumentSetId], 
+[TODO-SubmitDocSetWithIncompleteInvoices].[Declarant_Reference_Number] AS [Declarant_Reference_Number], 
+[TODO-SubmitDocSetWithIncompleteInvoices].[TotalInvoices] AS [TotalInvoices], 
+[TODO-SubmitDocSetWithIncompleteInvoices].[ImportedInvoices] AS [ImportedInvoices], 
+[TODO-SubmitDocSetWithIncompleteInvoices].[InvoiceDate] AS [InvoiceDate], 
+[TODO-SubmitDocSetWithIncompleteInvoices].[InvoiceNo] AS [InvoiceNo], 
+[TODO-SubmitDocSetWithIncompleteInvoices].[InvoiceTotal] AS [InvoiceTotal], 
+[TODO-SubmitDocSetWithIncompleteInvoices].[ApplicationSettingsId] AS [ApplicationSettingsId], 
+[TODO-SubmitDocSetWithIncompleteInvoices].[EmailId] AS [EmailId]
+FROM [dbo].[TODO-SubmitDocSetWithIncompleteInvoices] AS [TODO-SubmitDocSetWithIncompleteInvoices]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="TODO-SubmitEntryCIF" EntityType="Self.TODO-SubmitEntryCIF" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
-    [TODO-SubmitEntryCIF].[Type] AS [Type], 
-    [TODO-SubmitEntryCIF].[InvoiceNo] AS [InvoiceNo], 
-    [TODO-SubmitEntryCIF].[SupplierInvoiceNo] AS [SupplierInvoiceNo], 
-    [TODO-SubmitEntryCIF].[InvoiceTotal] AS [InvoiceTotal], 
-    [TODO-SubmitEntryCIF].[WarehouseNo] AS [WarehouseNo], 
-    [TODO-SubmitEntryCIF].[Packages] AS [Packages], 
-    [TODO-SubmitEntryCIF].[Declarant_Reference_Number] AS [Declarant_Reference_Number], 
-    [TODO-SubmitEntryCIF].[TotalPackages] AS [TotalPackages], 
-    [TODO-SubmitEntryCIF].[AsycudaDocumentSetId] AS [AsycudaDocumentSetId], 
-    [TODO-SubmitEntryCIF].[ApplicationSettingsId] AS [ApplicationSettingsId]
-    FROM [dbo].[TODO-SubmitEntryCIF] AS [TODO-SubmitEntryCIF]</DefiningQuery>
+[TODO-SubmitEntryCIF].[Type] AS [Type], 
+[TODO-SubmitEntryCIF].[InvoiceNo] AS [InvoiceNo], 
+[TODO-SubmitEntryCIF].[SupplierInvoiceNo] AS [SupplierInvoiceNo], 
+[TODO-SubmitEntryCIF].[InvoiceTotal] AS [InvoiceTotal], 
+[TODO-SubmitEntryCIF].[WarehouseNo] AS [WarehouseNo], 
+[TODO-SubmitEntryCIF].[Packages] AS [Packages], 
+[TODO-SubmitEntryCIF].[Declarant_Reference_Number] AS [Declarant_Reference_Number], 
+[TODO-SubmitEntryCIF].[TotalPackages] AS [TotalPackages], 
+[TODO-SubmitEntryCIF].[AsycudaDocumentSetId] AS [AsycudaDocumentSetId], 
+[TODO-SubmitEntryCIF].[ApplicationSettingsId] AS [ApplicationSettingsId]
+FROM [dbo].[TODO-SubmitEntryCIF] AS [TODO-SubmitEntryCIF]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="TODO-SubmitInadequatePackages" EntityType="Self.TODO-SubmitInadequatePackages" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
-    [TODO-SubmitInadequatePackages].[Declarant_Reference_Number] AS [Declarant_Reference_Number], 
-    [TODO-SubmitInadequatePackages].[MaxEntryLines] AS [MaxEntryLines], 
-    [TODO-SubmitInadequatePackages].[ApplicationSettingsId] AS [ApplicationSettingsId], 
-    [TODO-SubmitInadequatePackages].[TotalPackages] AS [TotalPackages], 
-    [TODO-SubmitInadequatePackages].[TotalLines] AS [TotalLines], 
-    [TODO-SubmitInadequatePackages].[RequiredPackages] AS [RequiredPackages], 
-    [TODO-SubmitInadequatePackages].[AsycudaDocumentSetId] AS [AsycudaDocumentSetId]
-    FROM [dbo].[TODO-SubmitInadequatePackages] AS [TODO-SubmitInadequatePackages]</DefiningQuery>
+[TODO-SubmitInadequatePackages].[Declarant_Reference_Number] AS [Declarant_Reference_Number], 
+[TODO-SubmitInadequatePackages].[MaxEntryLines] AS [MaxEntryLines], 
+[TODO-SubmitInadequatePackages].[ApplicationSettingsId] AS [ApplicationSettingsId], 
+[TODO-SubmitInadequatePackages].[TotalPackages] AS [TotalPackages], 
+[TODO-SubmitInadequatePackages].[TotalLines] AS [TotalLines], 
+[TODO-SubmitInadequatePackages].[RequiredPackages] AS [RequiredPackages], 
+[TODO-SubmitInadequatePackages].[AsycudaDocumentSetId] AS [AsycudaDocumentSetId]
+FROM [dbo].[TODO-SubmitInadequatePackages] AS [TODO-SubmitInadequatePackages]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="TODO-SubmitIncompleteEntryData" EntityType="Self.TODO-SubmitIncompleteEntryData" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
-    [TODO-SubmitIncompleteEntryData].[InvoiceDate] AS [InvoiceDate], 
-    [TODO-SubmitIncompleteEntryData].[Type] AS [Type], 
-    [TODO-SubmitIncompleteEntryData].[ImportedTotal] AS [ImportedTotal], 
-    [TODO-SubmitIncompleteEntryData].[InvoiceNo] AS [InvoiceNo], 
-    [TODO-SubmitIncompleteEntryData].[ImportedLines] AS [ImportedLines], 
-    [TODO-SubmitIncompleteEntryData].[TotalLines] AS [TotalLines], 
-    [TODO-SubmitIncompleteEntryData].[Currency] AS [Currency], 
-    [TODO-SubmitIncompleteEntryData].[ApplicationSettingsId] AS [ApplicationSettingsId], 
-    [TODO-SubmitIncompleteEntryData].[DutyFreePaid] AS [DutyFreePaid], 
-    [TODO-SubmitIncompleteEntryData].[EmailId] AS [EmailId], 
-    [TODO-SubmitIncompleteEntryData].[FileTypeId] AS [FileTypeId], 
-    [TODO-SubmitIncompleteEntryData].[SupplierCode] AS [SupplierCode], 
-    [TODO-SubmitIncompleteEntryData].[ExpectedTotal] AS [ExpectedTotal], 
-    [TODO-SubmitIncompleteEntryData].[InvoiceTotal] AS [InvoiceTotal], 
-    [TODO-SubmitIncompleteEntryData].[AsycudaDocumentSetId] AS [AsycudaDocumentSetId]
-    FROM [dbo].[TODO-SubmitIncompleteEntryData] AS [TODO-SubmitIncompleteEntryData]</DefiningQuery>
+[TODO-SubmitIncompleteEntryData].[InvoiceDate] AS [InvoiceDate], 
+[TODO-SubmitIncompleteEntryData].[Type] AS [Type], 
+[TODO-SubmitIncompleteEntryData].[ImportedTotal] AS [ImportedTotal], 
+[TODO-SubmitIncompleteEntryData].[InvoiceNo] AS [InvoiceNo], 
+[TODO-SubmitIncompleteEntryData].[ImportedLines] AS [ImportedLines], 
+[TODO-SubmitIncompleteEntryData].[TotalLines] AS [TotalLines], 
+[TODO-SubmitIncompleteEntryData].[Currency] AS [Currency], 
+[TODO-SubmitIncompleteEntryData].[ApplicationSettingsId] AS [ApplicationSettingsId], 
+[TODO-SubmitIncompleteEntryData].[DutyFreePaid] AS [DutyFreePaid], 
+[TODO-SubmitIncompleteEntryData].[EmailId] AS [EmailId], 
+[TODO-SubmitIncompleteEntryData].[FileTypeId] AS [FileTypeId], 
+[TODO-SubmitIncompleteEntryData].[SupplierCode] AS [SupplierCode], 
+[TODO-SubmitIncompleteEntryData].[ExpectedTotal] AS [ExpectedTotal], 
+[TODO-SubmitIncompleteEntryData].[InvoiceTotal] AS [InvoiceTotal], 
+[TODO-SubmitIncompleteEntryData].[AsycudaDocumentSetId] AS [AsycudaDocumentSetId]
+FROM [dbo].[TODO-SubmitIncompleteEntryData] AS [TODO-SubmitIncompleteEntryData]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="TODO-SubmitIncompleteSupplierInfo" EntityType="Self.TODO-SubmitIncompleteSupplierInfo" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
-    [TODO-SubmitIncompleteSupplierInfo].[SupplierCode] AS [SupplierCode], 
-    [TODO-SubmitIncompleteSupplierInfo].[CountryCode] AS [CountryCode], 
-    [TODO-SubmitIncompleteSupplierInfo].[SupplierName] AS [SupplierName], 
-    [TODO-SubmitIncompleteSupplierInfo].[Street] AS [Street], 
-    [TODO-SubmitIncompleteSupplierInfo].[EntryDataId] AS [EntryDataId], 
-    [TODO-SubmitIncompleteSupplierInfo].[AsycudaDocumentSetId] AS [AsycudaDocumentSetId], 
-    [TODO-SubmitIncompleteSupplierInfo].[ApplicationSettingsId] AS [ApplicationSettingsId]
-    FROM [dbo].[TODO-SubmitIncompleteSupplierInfo] AS [TODO-SubmitIncompleteSupplierInfo]</DefiningQuery>
+[TODO-SubmitIncompleteSupplierInfo].[SupplierCode] AS [SupplierCode], 
+[TODO-SubmitIncompleteSupplierInfo].[CountryCode] AS [CountryCode], 
+[TODO-SubmitIncompleteSupplierInfo].[SupplierName] AS [SupplierName], 
+[TODO-SubmitIncompleteSupplierInfo].[Street] AS [Street], 
+[TODO-SubmitIncompleteSupplierInfo].[EntryDataId] AS [EntryDataId], 
+[TODO-SubmitIncompleteSupplierInfo].[AsycudaDocumentSetId] AS [AsycudaDocumentSetId], 
+[TODO-SubmitIncompleteSupplierInfo].[ApplicationSettingsId] AS [ApplicationSettingsId]
+FROM [dbo].[TODO-SubmitIncompleteSupplierInfo] AS [TODO-SubmitIncompleteSupplierInfo]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="TODO-SubmitMissingInvoicePDFs" EntityType="Self.TODO-SubmitMissingInvoicePDFs" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
-    [TODO-SubmitMissingInvoicePDFs].[InvoiceNo] AS [InvoiceNo], 
-    [TODO-SubmitMissingInvoicePDFs].[SourceFile] AS [SourceFile], 
-    [TODO-SubmitMissingInvoicePDFs].[AsycudaDocumentSetId] AS [AsycudaDocumentSetId], 
-    [TODO-SubmitMissingInvoicePDFs].[ApplicationSettingsId] AS [ApplicationSettingsId], 
-    [TODO-SubmitMissingInvoicePDFs].[Declarant_Reference_Number] AS [Declarant_Reference_Number], 
-    [TODO-SubmitMissingInvoicePDFs].[EmailId] AS [EmailId]
-    FROM [dbo].[TODO-SubmitMissingInvoicePDFs] AS [TODO-SubmitMissingInvoicePDFs]</DefiningQuery>
+[TODO-SubmitMissingInvoicePDFs].[InvoiceNo] AS [InvoiceNo], 
+[TODO-SubmitMissingInvoicePDFs].[SourceFile] AS [SourceFile], 
+[TODO-SubmitMissingInvoicePDFs].[AsycudaDocumentSetId] AS [AsycudaDocumentSetId], 
+[TODO-SubmitMissingInvoicePDFs].[ApplicationSettingsId] AS [ApplicationSettingsId], 
+[TODO-SubmitMissingInvoicePDFs].[Declarant_Reference_Number] AS [Declarant_Reference_Number], 
+[TODO-SubmitMissingInvoicePDFs].[EmailId] AS [EmailId]
+FROM [dbo].[TODO-SubmitMissingInvoicePDFs] AS [TODO-SubmitMissingInvoicePDFs]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="TODO-SubmitPOInfo" EntityType="Self.TODO-SubmitPOInfo" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
-    [TODO-SubmitPOInfo].[Id] AS [Id], 
-    [TODO-SubmitPOInfo].[Number] AS [Number], 
-    [TODO-SubmitPOInfo].[Date] AS [Date], 
-    [TODO-SubmitPOInfo].[PONumber] AS [PONumber], 
-    [TODO-SubmitPOInfo].[SupplierInvoiceNo] AS [SupplierInvoiceNo], 
-    [TODO-SubmitPOInfo].[ApplicationSettingsId] AS [ApplicationSettingsId], 
-    [TODO-SubmitPOInfo].[EmailId] AS [EmailId], 
-    [TODO-SubmitPOInfo].[FileTypeId] AS [FileTypeId], 
-    [TODO-SubmitPOInfo].[ASYCUDA_Id] AS [ASYCUDA_Id], 
-    [TODO-SubmitPOInfo].[Status] AS [Status], 
-    [TODO-SubmitPOInfo].[CustomsProcedure] AS [CustomsProcedure], 
-    [TODO-SubmitPOInfo].[DocumentType] AS [DocumentType], 
-    [TODO-SubmitPOInfo].[CNumber] AS [CNumber], 
-    [TODO-SubmitPOInfo].[Reference] AS [Reference], 
-    [TODO-SubmitPOInfo].[Totals_taxes] AS [Totals_taxes], 
-    [TODO-SubmitPOInfo].[Total_CIF] AS [Total_CIF], 
-    [TODO-SubmitPOInfo].[WarehouseNo] AS [WarehouseNo], 
-    [TODO-SubmitPOInfo].[BillingLine] AS [BillingLine], 
-    [TODO-SubmitPOInfo].[IsSubmitted] AS [IsSubmitted], 
-    [TODO-SubmitPOInfo].[Marks2_of_packages] AS [Marks2_of_packages], 
-    [TODO-SubmitPOInfo].[AsycudaDocumentSetId] AS [AsycudaDocumentSetId], 
-    [TODO-SubmitPOInfo].[EntryData_Id] AS [EntryData_Id]
-    FROM [dbo].[TODO-SubmitPOInfo] AS [TODO-SubmitPOInfo]</DefiningQuery>
+[TODO-SubmitPOInfo].[Id] AS [Id], 
+[TODO-SubmitPOInfo].[Number] AS [Number], 
+[TODO-SubmitPOInfo].[Date] AS [Date], 
+[TODO-SubmitPOInfo].[PONumber] AS [PONumber], 
+[TODO-SubmitPOInfo].[SupplierInvoiceNo] AS [SupplierInvoiceNo], 
+[TODO-SubmitPOInfo].[ApplicationSettingsId] AS [ApplicationSettingsId], 
+[TODO-SubmitPOInfo].[EmailId] AS [EmailId], 
+[TODO-SubmitPOInfo].[FileTypeId] AS [FileTypeId], 
+[TODO-SubmitPOInfo].[ASYCUDA_Id] AS [ASYCUDA_Id], 
+[TODO-SubmitPOInfo].[Status] AS [Status], 
+[TODO-SubmitPOInfo].[CustomsProcedure] AS [CustomsProcedure], 
+[TODO-SubmitPOInfo].[DocumentType] AS [DocumentType], 
+[TODO-SubmitPOInfo].[CNumber] AS [CNumber], 
+[TODO-SubmitPOInfo].[Reference] AS [Reference], 
+[TODO-SubmitPOInfo].[Totals_taxes] AS [Totals_taxes], 
+[TODO-SubmitPOInfo].[Total_CIF] AS [Total_CIF], 
+[TODO-SubmitPOInfo].[WarehouseNo] AS [WarehouseNo], 
+[TODO-SubmitPOInfo].[BillingLine] AS [BillingLine], 
+[TODO-SubmitPOInfo].[IsSubmitted] AS [IsSubmitted], 
+[TODO-SubmitPOInfo].[Marks2_of_packages] AS [Marks2_of_packages], 
+[TODO-SubmitPOInfo].[AsycudaDocumentSetId] AS [AsycudaDocumentSetId], 
+[TODO-SubmitPOInfo].[EntryData_Id] AS [EntryData_Id]
+FROM [dbo].[TODO-SubmitPOInfo] AS [TODO-SubmitPOInfo]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="TODO-SubmitSalesToCustoms" EntityType="Self.TODO-SubmitSalesToCustoms" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
-    [TODO-SubmitSalesToCustoms].[Id] AS [Id], 
-    [TODO-SubmitSalesToCustoms].[CNumber] AS [CNumber], 
-    [TODO-SubmitSalesToCustoms].[ASYCUDA_Id] AS [ASYCUDA_Id], 
-    [TODO-SubmitSalesToCustoms].[RegistrationDate] AS [RegistrationDate], 
-    [TODO-SubmitSalesToCustoms].[ReferenceNumber] AS [ReferenceNumber], 
-    [TODO-SubmitSalesToCustoms].[AsycudaDocumentSetId] AS [AsycudaDocumentSetId], 
-    [TODO-SubmitSalesToCustoms].[DocumentType] AS [DocumentType], 
-    [TODO-SubmitSalesToCustoms].[AssessmentDate] AS [AssessmentDate], 
-    [TODO-SubmitSalesToCustoms].[ApplicationSettingsId] AS [ApplicationSettingsId], 
-    [TODO-SubmitSalesToCustoms].[EmailId] AS [EmailId], 
-    [TODO-SubmitSalesToCustoms].[CustomsProcedure] AS [CustomsProcedure], 
-    [TODO-SubmitSalesToCustoms].[FilePath] AS [FilePath], 
-    [TODO-SubmitSalesToCustoms].[Status] AS [Status], 
-    [TODO-SubmitSalesToCustoms].[ToBePaid] AS [ToBePaid]
-    FROM [dbo].[TODO-SubmitSalesToCustoms] AS [TODO-SubmitSalesToCustoms]</DefiningQuery>
+[TODO-SubmitSalesToCustoms].[Id] AS [Id], 
+[TODO-SubmitSalesToCustoms].[CNumber] AS [CNumber], 
+[TODO-SubmitSalesToCustoms].[ASYCUDA_Id] AS [ASYCUDA_Id], 
+[TODO-SubmitSalesToCustoms].[RegistrationDate] AS [RegistrationDate], 
+[TODO-SubmitSalesToCustoms].[ReferenceNumber] AS [ReferenceNumber], 
+[TODO-SubmitSalesToCustoms].[AsycudaDocumentSetId] AS [AsycudaDocumentSetId], 
+[TODO-SubmitSalesToCustoms].[DocumentType] AS [DocumentType], 
+[TODO-SubmitSalesToCustoms].[AssessmentDate] AS [AssessmentDate], 
+[TODO-SubmitSalesToCustoms].[ApplicationSettingsId] AS [ApplicationSettingsId], 
+[TODO-SubmitSalesToCustoms].[EmailId] AS [EmailId], 
+[TODO-SubmitSalesToCustoms].[CustomsProcedure] AS [CustomsProcedure], 
+[TODO-SubmitSalesToCustoms].[FilePath] AS [FilePath], 
+[TODO-SubmitSalesToCustoms].[Status] AS [Status], 
+[TODO-SubmitSalesToCustoms].[ToBePaid] AS [ToBePaid]
+FROM [dbo].[TODO-SubmitSalesToCustoms] AS [TODO-SubmitSalesToCustoms]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="TODO-SubmitUnclassifiedItems" EntityType="Self.TODO-SubmitUnclassifiedItems" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
-    [TODO-SubmitUnclassifiedItems].[InvoiceNo] AS [InvoiceNo], 
-    [TODO-SubmitUnclassifiedItems].[LineNumber] AS [LineNumber], 
-    [TODO-SubmitUnclassifiedItems].[ItemNumber] AS [ItemNumber], 
-    [TODO-SubmitUnclassifiedItems].[ItemDescription] AS [ItemDescription], 
-    [TODO-SubmitUnclassifiedItems].[TariffCode] AS [TariffCode], 
-    [TODO-SubmitUnclassifiedItems].[EmailId] AS [EmailId], 
-    [TODO-SubmitUnclassifiedItems].[Type] AS [Type], 
-    [TODO-SubmitUnclassifiedItems].[AsycudaDocumentSetId] AS [AsycudaDocumentSetId], 
-    [TODO-SubmitUnclassifiedItems].[Declarant_Reference_Number] AS [Declarant_Reference_Number], 
-    [TODO-SubmitUnclassifiedItems].[ApplicationSettingsId] AS [ApplicationSettingsId]
-    FROM [dbo].[TODO-SubmitUnclassifiedItems] AS [TODO-SubmitUnclassifiedItems]</DefiningQuery>
+[TODO-SubmitUnclassifiedItems].[InvoiceNo] AS [InvoiceNo], 
+[TODO-SubmitUnclassifiedItems].[LineNumber] AS [LineNumber], 
+[TODO-SubmitUnclassifiedItems].[ItemNumber] AS [ItemNumber], 
+[TODO-SubmitUnclassifiedItems].[ItemDescription] AS [ItemDescription], 
+[TODO-SubmitUnclassifiedItems].[TariffCode] AS [TariffCode], 
+[TODO-SubmitUnclassifiedItems].[EmailId] AS [EmailId], 
+[TODO-SubmitUnclassifiedItems].[Type] AS [Type], 
+[TODO-SubmitUnclassifiedItems].[AsycudaDocumentSetId] AS [AsycudaDocumentSetId], 
+[TODO-SubmitUnclassifiedItems].[Declarant_Reference_Number] AS [Declarant_Reference_Number], 
+[TODO-SubmitUnclassifiedItems].[ApplicationSettingsId] AS [ApplicationSettingsId]
+FROM [dbo].[TODO-SubmitUnclassifiedItems] AS [TODO-SubmitUnclassifiedItems]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="TODO-SubmitXMLToCustoms" EntityType="Self.TODO-SubmitXMLToCustoms" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
-    [TODO-SubmitXMLToCustoms].[Id] AS [Id], 
-    [TODO-SubmitXMLToCustoms].[CNumber] AS [CNumber], 
-    [TODO-SubmitXMLToCustoms].[ASYCUDA_Id] AS [ASYCUDA_Id], 
-    [TODO-SubmitXMLToCustoms].[RegistrationDate] AS [RegistrationDate], 
-    [TODO-SubmitXMLToCustoms].[ReferenceNumber] AS [ReferenceNumber], 
-    [TODO-SubmitXMLToCustoms].[AsycudaDocumentSetId] AS [AsycudaDocumentSetId], 
-    [TODO-SubmitXMLToCustoms].[DocumentType] AS [DocumentType], 
-    [TODO-SubmitXMLToCustoms].[AssessmentDate] AS [AssessmentDate], 
-    [TODO-SubmitXMLToCustoms].[ApplicationSettingsId] AS [ApplicationSettingsId], 
-    [TODO-SubmitXMLToCustoms].[EmailId] AS [EmailId], 
-    [TODO-SubmitXMLToCustoms].[CustomsProcedure] AS [CustomsProcedure], 
-    [TODO-SubmitXMLToCustoms].[FilePath] AS [FilePath], 
-    [TODO-SubmitXMLToCustoms].[Status] AS [Status], 
-    [TODO-SubmitXMLToCustoms].[ToBePaid] AS [ToBePaid]
-    FROM [dbo].[TODO-SubmitXMLToCustoms] AS [TODO-SubmitXMLToCustoms]</DefiningQuery>
+[TODO-SubmitXMLToCustoms].[Id] AS [Id], 
+[TODO-SubmitXMLToCustoms].[CNumber] AS [CNumber], 
+[TODO-SubmitXMLToCustoms].[ASYCUDA_Id] AS [ASYCUDA_Id], 
+[TODO-SubmitXMLToCustoms].[RegistrationDate] AS [RegistrationDate], 
+[TODO-SubmitXMLToCustoms].[ReferenceNumber] AS [ReferenceNumber], 
+[TODO-SubmitXMLToCustoms].[AsycudaDocumentSetId] AS [AsycudaDocumentSetId], 
+[TODO-SubmitXMLToCustoms].[DocumentType] AS [DocumentType], 
+[TODO-SubmitXMLToCustoms].[AssessmentDate] AS [AssessmentDate], 
+[TODO-SubmitXMLToCustoms].[ApplicationSettingsId] AS [ApplicationSettingsId], 
+[TODO-SubmitXMLToCustoms].[EmailId] AS [EmailId], 
+[TODO-SubmitXMLToCustoms].[CustomsProcedure] AS [CustomsProcedure], 
+[TODO-SubmitXMLToCustoms].[FilePath] AS [FilePath], 
+[TODO-SubmitXMLToCustoms].[Status] AS [Status], 
+[TODO-SubmitXMLToCustoms].[ToBePaid] AS [ToBePaid]
+FROM [dbo].[TODO-SubmitXMLToCustoms] AS [TODO-SubmitXMLToCustoms]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="TODO-TotalAdjustmentsToProcess" EntityType="Self.TODO-TotalAdjustmentsToProcess" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
-    [TODO-TotalAdjustmentsToProcess].[EntryDataDetailsId] AS [EntryDataDetailsId], 
-    [TODO-TotalAdjustmentsToProcess].[EntryDataId] AS [EntryDataId], 
-    [TODO-TotalAdjustmentsToProcess].[LineNumber] AS [LineNumber], 
-    [TODO-TotalAdjustmentsToProcess].[ItemNumber] AS [ItemNumber], 
-    [TODO-TotalAdjustmentsToProcess].[Quantity] AS [Quantity], 
-    [TODO-TotalAdjustmentsToProcess].[Units] AS [Units], 
-    [TODO-TotalAdjustmentsToProcess].[ItemDescription] AS [ItemDescription], 
-    [TODO-TotalAdjustmentsToProcess].[Cost] AS [Cost], 
-    [TODO-TotalAdjustmentsToProcess].[QtyAllocated] AS [QtyAllocated], 
-    [TODO-TotalAdjustmentsToProcess].[UnitWeight] AS [UnitWeight], 
-    [TODO-TotalAdjustmentsToProcess].[DoNotAllocate] AS [DoNotAllocate], 
-    [TODO-TotalAdjustmentsToProcess].[TariffCode] AS [TariffCode], 
-    [TODO-TotalAdjustmentsToProcess].[CNumber] AS [CNumber], 
-    [TODO-TotalAdjustmentsToProcess].[CLineNumber] AS [CLineNumber], 
-    [TODO-TotalAdjustmentsToProcess].[AsycudaDocumentSetId] AS [AsycudaDocumentSetId], 
-    [TODO-TotalAdjustmentsToProcess].[InvoiceQty] AS [InvoiceQty], 
-    [TODO-TotalAdjustmentsToProcess].[ReceivedQty] AS [ReceivedQty], 
-    [TODO-TotalAdjustmentsToProcess].[PreviousInvoiceNumber] AS [PreviousInvoiceNumber], 
-    [TODO-TotalAdjustmentsToProcess].[PreviousCNumber] AS [PreviousCNumber], 
-    [TODO-TotalAdjustmentsToProcess].[Comment] AS [Comment], 
-    [TODO-TotalAdjustmentsToProcess].[Status] AS [Status], 
-    [TODO-TotalAdjustmentsToProcess].[EffectiveDate] AS [EffectiveDate], 
-    [TODO-TotalAdjustmentsToProcess].[Currency] AS [Currency], 
-    [TODO-TotalAdjustmentsToProcess].[ApplicationSettingsId] AS [ApplicationSettingsId], 
-    [TODO-TotalAdjustmentsToProcess].[Type] AS [Type], 
-    [TODO-TotalAdjustmentsToProcess].[Declarant_Reference_Number] AS [Declarant_Reference_Number], 
-    [TODO-TotalAdjustmentsToProcess].[InvoiceDate] AS [InvoiceDate], 
-    [TODO-TotalAdjustmentsToProcess].[Subject] AS [Subject], 
-    [TODO-TotalAdjustmentsToProcess].[EmailDate] AS [EmailDate], 
-    [TODO-TotalAdjustmentsToProcess].[DutyFreePaid] AS [DutyFreePaid]
-    FROM [dbo].[TODO-TotalAdjustmentsToProcess] AS [TODO-TotalAdjustmentsToProcess]</DefiningQuery>
+[TODO-TotalAdjustmentsToProcess].[EntryDataDetailsId] AS [EntryDataDetailsId], 
+[TODO-TotalAdjustmentsToProcess].[EntryDataId] AS [EntryDataId], 
+[TODO-TotalAdjustmentsToProcess].[LineNumber] AS [LineNumber], 
+[TODO-TotalAdjustmentsToProcess].[ItemNumber] AS [ItemNumber], 
+[TODO-TotalAdjustmentsToProcess].[Quantity] AS [Quantity], 
+[TODO-TotalAdjustmentsToProcess].[Units] AS [Units], 
+[TODO-TotalAdjustmentsToProcess].[ItemDescription] AS [ItemDescription], 
+[TODO-TotalAdjustmentsToProcess].[Cost] AS [Cost], 
+[TODO-TotalAdjustmentsToProcess].[QtyAllocated] AS [QtyAllocated], 
+[TODO-TotalAdjustmentsToProcess].[UnitWeight] AS [UnitWeight], 
+[TODO-TotalAdjustmentsToProcess].[DoNotAllocate] AS [DoNotAllocate], 
+[TODO-TotalAdjustmentsToProcess].[TariffCode] AS [TariffCode], 
+[TODO-TotalAdjustmentsToProcess].[CNumber] AS [CNumber], 
+[TODO-TotalAdjustmentsToProcess].[CLineNumber] AS [CLineNumber], 
+[TODO-TotalAdjustmentsToProcess].[AsycudaDocumentSetId] AS [AsycudaDocumentSetId], 
+[TODO-TotalAdjustmentsToProcess].[InvoiceQty] AS [InvoiceQty], 
+[TODO-TotalAdjustmentsToProcess].[ReceivedQty] AS [ReceivedQty], 
+[TODO-TotalAdjustmentsToProcess].[PreviousInvoiceNumber] AS [PreviousInvoiceNumber], 
+[TODO-TotalAdjustmentsToProcess].[PreviousCNumber] AS [PreviousCNumber], 
+[TODO-TotalAdjustmentsToProcess].[Comment] AS [Comment], 
+[TODO-TotalAdjustmentsToProcess].[Status] AS [Status], 
+[TODO-TotalAdjustmentsToProcess].[EffectiveDate] AS [EffectiveDate], 
+[TODO-TotalAdjustmentsToProcess].[Currency] AS [Currency], 
+[TODO-TotalAdjustmentsToProcess].[ApplicationSettingsId] AS [ApplicationSettingsId], 
+[TODO-TotalAdjustmentsToProcess].[Type] AS [Type], 
+[TODO-TotalAdjustmentsToProcess].[Declarant_Reference_Number] AS [Declarant_Reference_Number], 
+[TODO-TotalAdjustmentsToProcess].[InvoiceDate] AS [InvoiceDate], 
+[TODO-TotalAdjustmentsToProcess].[Subject] AS [Subject], 
+[TODO-TotalAdjustmentsToProcess].[EmailDate] AS [EmailDate], 
+[TODO-TotalAdjustmentsToProcess].[DutyFreePaid] AS [DutyFreePaid]
+FROM [dbo].[TODO-TotalAdjustmentsToProcess] AS [TODO-TotalAdjustmentsToProcess]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="TODO-UnallocatedSales" EntityType="Self.TODO-UnallocatedSales" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
-    [TODO-UnallocatedSales].[EntryDataId] AS [EntryDataId], 
-    [TODO-UnallocatedSales].[ItemNumber] AS [ItemNumber], 
-    [TODO-UnallocatedSales].[DoNotAllocate] AS [DoNotAllocate], 
-    [TODO-UnallocatedSales].[ApplicationSettingsId] AS [ApplicationSettingsId], 
-    [TODO-UnallocatedSales].[EntryDataDate] AS [EntryDataDate], 
-    [TODO-UnallocatedSales].[Quantity] AS [Quantity], 
-    [TODO-UnallocatedSales].[QtyAllocated] AS [QtyAllocated], 
-    [TODO-UnallocatedSales].[Cost] AS [Cost]
-    FROM [dbo].[TODO-UnallocatedSales] AS [TODO-UnallocatedSales]</DefiningQuery>
+[TODO-UnallocatedSales].[EntryDataId] AS [EntryDataId], 
+[TODO-UnallocatedSales].[ItemNumber] AS [ItemNumber], 
+[TODO-UnallocatedSales].[DoNotAllocate] AS [DoNotAllocate], 
+[TODO-UnallocatedSales].[ApplicationSettingsId] AS [ApplicationSettingsId], 
+[TODO-UnallocatedSales].[EntryDataDate] AS [EntryDataDate], 
+[TODO-UnallocatedSales].[Quantity] AS [Quantity], 
+[TODO-UnallocatedSales].[QtyAllocated] AS [QtyAllocated], 
+[TODO-UnallocatedSales].[Cost] AS [Cost]
+FROM [dbo].[TODO-UnallocatedSales] AS [TODO-UnallocatedSales]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="TODO-UnallocatedShorts" EntityType="Self.TODO-UnallocatedShorts" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
-    [TODO-UnallocatedShorts].[EntryDataId] AS [EntryDataId], 
-    [TODO-UnallocatedShorts].[ItemNumber] AS [ItemNumber], 
-    [TODO-UnallocatedShorts].[DoNotAllocate] AS [DoNotAllocate], 
-    [TODO-UnallocatedShorts].[ApplicationSettingsId] AS [ApplicationSettingsId], 
-    [TODO-UnallocatedShorts].[EffectiveDate] AS [EffectiveDate], 
-    [TODO-UnallocatedShorts].[Quantity] AS [Quantity], 
-    [TODO-UnallocatedShorts].[QtyAllocated] AS [QtyAllocated], 
-    [TODO-UnallocatedShorts].[Cost] AS [Cost], 
-    [TODO-UnallocatedShorts].[Type] AS [Type], 
-    [TODO-UnallocatedShorts].[Status] AS [Status]
-    FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
+[TODO-UnallocatedShorts].[EntryDataId] AS [EntryDataId], 
+[TODO-UnallocatedShorts].[ItemNumber] AS [ItemNumber], 
+[TODO-UnallocatedShorts].[DoNotAllocate] AS [DoNotAllocate], 
+[TODO-UnallocatedShorts].[ApplicationSettingsId] AS [ApplicationSettingsId], 
+[TODO-UnallocatedShorts].[EffectiveDate] AS [EffectiveDate], 
+[TODO-UnallocatedShorts].[Quantity] AS [Quantity], 
+[TODO-UnallocatedShorts].[QtyAllocated] AS [QtyAllocated], 
+[TODO-UnallocatedShorts].[Cost] AS [Cost], 
+[TODO-UnallocatedShorts].[Type] AS [Type], 
+[TODO-UnallocatedShorts].[Status] AS [Status]
+FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
           </EntitySet>
           <AssociationSet Name="FK_ActionDocSetLogs_Actions" Association="Self.FK_ActionDocSetLogs_Actions">
             <End Role="Actions" EntitySet="Actions" />
@@ -4437,7 +4438,8 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
           <Property Name="NotifyUnknownMessages" Type="Boolean" />
           <Property Name="ExportExpiredEntries" Type="Boolean" />
           <Property Name="AllowAdvanceWareHouse" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="AsycudaDocumentSet" Relationship="WaterNutDBModel.FK_AsycudaDocumentSet_ApplicationSettings" FromRole="ApplicationSettings" ToRole="AsycudaDocumentSet" /><a:MainEntityProperty xmlns:a="http://schemas.tempuri.com/MainEntityProperty">True</a:MainEntityProperty>
+          <NavigationProperty Name="AsycudaDocumentSet" Relationship="WaterNutDBModel.FK_AsycudaDocumentSet_ApplicationSettings" FromRole="ApplicationSettings" ToRole="AsycudaDocumentSet" />
+          <Property Name="AllowStressTest" Type="Boolean" /><a:MainEntityProperty xmlns:a="http://schemas.tempuri.com/MainEntityProperty">True</a:MainEntityProperty>
         </EntityType>
         <EntityType Name="AsycudaDocument">
           <Key>
@@ -7129,6 +7131,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
           <EntitySetMapping Name="ApplicationSettings">
             <EntityTypeMapping TypeName="WaterNutDBModel.ApplicationSettings">
               <MappingFragment StoreEntitySet="ApplicationSettings">
+                <ScalarProperty Name="AllowStressTest" ColumnName="AllowStressTest" />
                 <ScalarProperty Name="AllowAdvanceWareHouse" ColumnName="AllowAdvanceWareHouse" />
                 <ScalarProperty Name="ExportExpiredEntries" ColumnName="ExportExpiredEntries" />
                 <ScalarProperty Name="NotifyUnknownMessages" ColumnName="NotifyUnknownMessages" />
@@ -8942,7 +8945,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
         <DesignerProperty Name="EnablePluralization" Value="False" />
         <DesignerProperty Name="IncludeForeignKeysInModel" Value="True" />
         <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
-        <DesignerProperty Name="UseLegacyProvider" Value="False" />
+        <DesignerProperty Name="UseLegacyProvider" Value="True" />
       </DesignerInfoPropertySet>
     </Options>
     <!-- Diagram content (shape and connector positions) -->

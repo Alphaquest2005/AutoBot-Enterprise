@@ -32,12 +32,12 @@ namespace AllocationQS.Client.Repositories
                 }
         }
 
-        public async Task CreateEx9(string filterExpression, bool perIM7, bool process7100, bool applyCurrentChecks, int asycudaDocumentSetId, string documentType, string ex9BucketType, bool isGrouped, bool checkQtyAllocatedGreaterThanPiQuantity, bool checkForMultipleMonths, bool applyEx9Bucket, bool applyHistoricChecks, bool perInvoice, bool autoAssess, bool overPIcheck, bool universalPIcheck, bool itemPIcheck)
+        public async Task CreateEx9(string filterExpression, bool perIM7, bool stressTest, bool process7100, bool applyCurrentChecks, int asycudaDocumentSetId, string documentType, string ex9BucketType, bool isGrouped, bool checkQtyAllocatedGreaterThanPiQuantity, bool checkForMultipleMonths, bool applyEx9Bucket, bool applyHistoricChecks, bool perInvoice, bool autoAssess, bool overPIcheck, bool universalPIcheck, bool itemPIcheck)
         {
             using (var t = new AllocationsClient())
             {
                 
-                await t.CreateEx9(filterExpression, perIM7, process7100, applyCurrentChecks, asycudaDocumentSetId, documentType, ex9BucketType, isGrouped,
+                await t.CreateEx9(filterExpression, perIM7, stressTest, process7100, applyCurrentChecks, asycudaDocumentSetId, documentType, ex9BucketType, isGrouped,
                     checkQtyAllocatedGreaterThanPiQuantity, checkForMultipleMonths, applyEx9Bucket,
                     applyHistoricChecks, perInvoice, autoAssess, overPIcheck, universalPIcheck, itemPIcheck).ConfigureAwait(false);
             }
