@@ -142,7 +142,11 @@ namespace AutoBotUtilities.Tests
         [TestCase("ECL/80040", "3/1/2023", 60)] // cancelled document item
         [TestCase("CHAIN/10G-28", "3/1/2023", 60)] // early sales error that don't make sense in adjustments
         [TestCase("INT/YBC106GL", "3/1/2023", 60)] // don't mark early sales if returns in future
-        [TestCase(null, "2023-12-19", 101)] 
+        [TestCase(null, "2023-12-19", 101)]
+
+        /////////////////////// sandals
+        [TestCase("0756-1474", "3/1/2023", 60)]
+
         public void AllocatSales(string itemNumber, string LastInvoiceDate, int NoOfAllocations )
         {
             try
