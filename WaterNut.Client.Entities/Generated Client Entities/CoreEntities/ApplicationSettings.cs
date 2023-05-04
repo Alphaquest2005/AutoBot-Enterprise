@@ -859,6 +859,21 @@ public Nullable<bool> AllowStressTest
 		}
      
 
+       
+       
+public Nullable<System.DateTime> AllocationsOpeningStockDate
+		{ 
+		    get { return this.applicationsettings.AllocationsOpeningStockDate; }
+			set
+			{
+			    if (value == this.applicationsettings.AllocationsOpeningStockDate) return;
+				this.applicationsettings.AllocationsOpeningStockDate = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("AllocationsOpeningStockDate");
+			}
+		}
+     
+
         ObservableCollection<AsycudaDocumentSetEx> _AsycudaDocumentSetEx = null;
         public  ObservableCollection<AsycudaDocumentSetEx> AsycudaDocumentSetEx
 		{

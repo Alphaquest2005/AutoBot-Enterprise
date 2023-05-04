@@ -19,6 +19,9 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
                     {
                         _preAllocations = ctx.XSales_UnAllocated
                             .AsNoTracking()
+                            .Where(x => x.Date >=
+                                        (WaterNut.DataSpace.BaseDataModel.Instance.CurrentApplicationSettings.AllocationsOpeningStockDate
+                                         ?? WaterNut.DataSpace.BaseDataModel.Instance.CurrentApplicationSettings.OpeningStockDate))
                             .ToList()
                             .Select(x => new PreAllocations()
                             {

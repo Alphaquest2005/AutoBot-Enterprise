@@ -23,6 +23,9 @@ namespace WaterNut.DataSpace
                 {
                     ctx.Database.CommandTimeout = 0;
                     var res = ctx.ExistingAllocations.AsNoTracking()
+                        .Where(x => x.Date >=
+                                    (WaterNut.DataSpace.BaseDataModel.Instance.CurrentApplicationSettings.AllocationsOpeningStockDate
+                                     ?? WaterNut.DataSpace.BaseDataModel.Instance.CurrentApplicationSettings.OpeningStockDate))
                         .ToList()
                         .Select(x => new PreAllocations()
                         {
