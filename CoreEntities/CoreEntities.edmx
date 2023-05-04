@@ -76,6 +76,7 @@
           <Property Name="ExportExpiredEntries" Type="bit" />
           <Property Name="AllowAdvanceWareHouse" Type="nvarchar" MaxLength="10" />
           <Property Name="AllowStressTest" Type="bit" />
+          <Property Name="AllocationsOpeningStockDate" Type="datetime2" Precision="7" />
         </EntityType>
         <EntityType Name="ApplicationSettings-Declarants">
           <Key>
@@ -4439,7 +4440,8 @@ FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
           <Property Name="ExportExpiredEntries" Type="Boolean" />
           <Property Name="AllowAdvanceWareHouse" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="AsycudaDocumentSet" Relationship="WaterNutDBModel.FK_AsycudaDocumentSet_ApplicationSettings" FromRole="ApplicationSettings" ToRole="AsycudaDocumentSet" />
-          <Property Name="AllowStressTest" Type="Boolean" /><a:MainEntityProperty xmlns:a="http://schemas.tempuri.com/MainEntityProperty">True</a:MainEntityProperty>
+          <Property Name="AllowStressTest" Type="Boolean" />
+          <Property Name="AllocationsOpeningStockDate" Type="DateTime" Precision="7" /><a:MainEntityProperty xmlns:a="http://schemas.tempuri.com/MainEntityProperty">True</a:MainEntityProperty>
         </EntityType>
         <EntityType Name="AsycudaDocument">
           <Key>
@@ -7131,6 +7133,7 @@ FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
           <EntitySetMapping Name="ApplicationSettings">
             <EntityTypeMapping TypeName="WaterNutDBModel.ApplicationSettings">
               <MappingFragment StoreEntitySet="ApplicationSettings">
+                <ScalarProperty Name="AllocationsOpeningStockDate" ColumnName="AllocationsOpeningStockDate" />
                 <ScalarProperty Name="AllowStressTest" ColumnName="AllowStressTest" />
                 <ScalarProperty Name="AllowAdvanceWareHouse" ColumnName="AllowAdvanceWareHouse" />
                 <ScalarProperty Name="ExportExpiredEntries" ColumnName="ExportExpiredEntries" />

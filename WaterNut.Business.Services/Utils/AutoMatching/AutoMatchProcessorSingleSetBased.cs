@@ -268,7 +268,7 @@ namespace WaterNut.Business.Services.Utils.AutoMatching
         private static EntryDataDetail GetEntryDataDetail(AdjustmentDetail s)
         {
             var ed = new GetAllDiscrepancyDetailsMem().Execute(s.EntryDataDetailsId);
-
+            
             ed.Comment = null;
             ed.EffectiveDate = null;
             return ed;

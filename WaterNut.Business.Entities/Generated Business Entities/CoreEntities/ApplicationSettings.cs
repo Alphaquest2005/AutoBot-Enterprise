@@ -784,6 +784,21 @@ namespace CoreEntities.Business.Entities
         }
         Nullable<bool> _allowstresstest;
         [DataMember]
+        public Nullable<System.DateTime> AllocationsOpeningStockDate 
+        {
+            get
+            {
+                return _allocationsopeningstockdate;
+            }
+            set
+            {
+                _allocationsopeningstockdate = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<System.DateTime> _allocationsopeningstockdate;
+        [DataMember]
         public List<AsycudaDocumentSetEx> AsycudaDocumentSetEx { get; set; }
         [DataMember]
         public List<AsycudaDocument> AsycudaDocument { get; set; }

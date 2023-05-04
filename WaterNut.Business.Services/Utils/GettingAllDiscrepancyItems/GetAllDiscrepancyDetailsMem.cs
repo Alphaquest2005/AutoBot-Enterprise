@@ -28,6 +28,9 @@ namespace AdjustmentQS.Business.Services
 
                         var lst = ctx.AdjustmentDetails.AsNoTracking()
                             .Include(x => x.AdjustmentEx)
+                            .Where(x => (x.EffectiveDate ?? x.AdjustmentEx.InvoiceDate) >=
+                                        (WaterNut.DataSpace.BaseDataModel.Instance.CurrentApplicationSettings.AllocationsOpeningStockDate
+                                         ?? WaterNut.DataSpace.BaseDataModel.Instance.CurrentApplicationSettings.OpeningStockDate))
                             //.Where(x => x.ApplicationSettingsId == applicationSettingsId)
                             .Where(x => x.SystemDocumentSet != null)
                             .Where(x => x.Type == "DIS")
@@ -49,12 +52,15 @@ namespace AdjustmentQS.Business.Services
 
                         var lst = ctx.EntryDataDetails.AsNoTracking()
                             .Include(x => x.AdjustmentEx)
-                            //.Where(x => x.ApplicationSettingsId == applicationSettingsId)
-                            .Where(x => x.AdjustmentEx != null)
-                            .Where(x => x.AdjustmentEx.Type == "DIS")
-                            .Where(x => x.QtyAllocated != x.Quantity)
-                            .Where(x => x.DoNotAllocate == null || x.DoNotAllocate != true)
-                            .ToDictionary(x => (x.EntryDataDetailsId, x.InventoryItemId), x => x);
+                            .Where(x => (x.EffectiveDate ?? x.AdjustmentEx.InvoiceDate) >=
+                                        (WaterNut.DataSpace.BaseDataModel.Instance.CurrentApplicationSettings.AllocationsOpeningStockDate
+                                         ?? WaterNut.DataSpace.BaseDataModel.Instance.CurrentApplicationSettings.OpeningStockDate))
+                                        //.Where(x => x.ApplicationSettingsId == applicationSettingsId)
+                                        .Where(x => x.AdjustmentEx != null)
+                                        .Where(x => x.AdjustmentEx.Type == "DIS")
+                                        .Where(x => x.QtyAllocated != x.Quantity)
+                                        .Where(x => x.DoNotAllocate == null || x.DoNotAllocate != true)
+                                        .ToDictionary(x => (x.EntryDataDetailsId, x.InventoryItemId), x => x);
                         _entryDataDetails =
                             new ConcurrentDictionary<(int EntryDataDetailsId, int InventoryItemId), EntryDataDetail>(lst);
                     }

@@ -1067,6 +1067,56 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
         }	
 
  
+		private DateTime? _startAllocationsOpeningStockDateFilter = DateTime.Parse(string.Format("{0}/1/{1}", DateTime.Now.Month ,DateTime.Now.Year));
+        public DateTime? StartAllocationsOpeningStockDateFilter
+        {
+            get
+            {
+                return _startAllocationsOpeningStockDateFilter;
+            }
+            set
+            {
+                _startAllocationsOpeningStockDateFilter = value;
+				NotifyPropertyChanged(x => StartAllocationsOpeningStockDateFilter);
+                FilterData();
+                
+            }
+        }	
+
+		private DateTime? _endAllocationsOpeningStockDateFilter = DateTime.Parse(string.Format("{1}/{0}/{2}", DateTime.DaysInMonth( DateTime.Now.Year,DateTime.Now.Month), DateTime.Now.Month, DateTime.Now.Year));
+        public DateTime? EndAllocationsOpeningStockDateFilter
+        {
+            get
+            {
+                return _endAllocationsOpeningStockDateFilter;
+            }
+            set
+            {
+                _endAllocationsOpeningStockDateFilter = value;
+				NotifyPropertyChanged(x => EndAllocationsOpeningStockDateFilter);
+                FilterData();
+                
+            }
+        }
+ 
+
+		private DateTime? _allocationsOpeningStockDateFilter;
+        public DateTime? AllocationsOpeningStockDateFilter
+        {
+            get
+            {
+                return _allocationsOpeningStockDateFilter;
+            }
+            set
+            {
+                _allocationsOpeningStockDateFilter = value;
+				NotifyPropertyChanged(x => AllocationsOpeningStockDateFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
 		internal bool DisableBaseFilterData = false;
         public virtual void FilterData()
 	    {
@@ -1310,7 +1360,36 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 
 									if(AllowStressTestFilter.HasValue)
 						res.Append(" && " + string.Format("AllowStressTest == {0}",  AllowStressTestFilter));						
-			return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
+ 
+
+ 
+
+				if (Convert.ToDateTime(StartAllocationsOpeningStockDateFilter).Date != DateTime.MinValue &&
+		        Convert.ToDateTime(EndAllocationsOpeningStockDateFilter).Date != DateTime.MinValue) res.Append(" && (");
+
+					if (Convert.ToDateTime(StartAllocationsOpeningStockDateFilter).Date != DateTime.MinValue)
+						{
+							if(StartAllocationsOpeningStockDateFilter.HasValue)
+								res.Append(
+                                            (Convert.ToDateTime(EndAllocationsOpeningStockDateFilter).Date != DateTime.MinValue?"":" && ") +
+                                            string.Format("AllocationsOpeningStockDate >= \"{0}\"",  Convert.ToDateTime(StartAllocationsOpeningStockDateFilter).Date.ToString("MM/dd/yyyy")));
+						}
+
+					if (Convert.ToDateTime(EndAllocationsOpeningStockDateFilter).Date != DateTime.MinValue)
+						{
+							if(EndAllocationsOpeningStockDateFilter.HasValue)
+								res.Append(" && " + string.Format("AllocationsOpeningStockDate <= \"{0}\"",  Convert.ToDateTime(EndAllocationsOpeningStockDateFilter).Date.AddHours(23).ToString("MM/dd/yyyy HH:mm:ss")));
+						}
+
+				if (Convert.ToDateTime(StartAllocationsOpeningStockDateFilter).Date != DateTime.MinValue &&
+		        Convert.ToDateTime(EndAllocationsOpeningStockDateFilter).Date != DateTime.MinValue) res.Append(" )");
+
+					if (Convert.ToDateTime(_allocationsOpeningStockDateFilter).Date != DateTime.MinValue)
+						{
+							if(AllocationsOpeningStockDateFilter.HasValue)
+								res.Append(" && " + string.Format("AllocationsOpeningStockDate == \"{0}\"",  Convert.ToDateTime(AllocationsOpeningStockDateFilter).Date.ToString("MM/dd/yyyy")));
+						}
+							return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
 // Send to Excel Implementation
@@ -1474,7 +1553,10 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     AllowAdvanceWareHouse = x.AllowAdvanceWareHouse ,
                     
  
-                    AllowStressTest = x.AllowStressTest 
+                    AllowStressTest = x.AllowStressTest ,
+                    
+ 
+                    AllocationsOpeningStockDate = x.AllocationsOpeningStockDate 
                     
                 }).ToList()
             };
@@ -1629,6 +1711,9 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     
  
                     public Nullable<bool> AllowStressTest { get; set; } 
+                    
+ 
+                    public Nullable<System.DateTime> AllocationsOpeningStockDate { get; set; } 
                     
         }
 

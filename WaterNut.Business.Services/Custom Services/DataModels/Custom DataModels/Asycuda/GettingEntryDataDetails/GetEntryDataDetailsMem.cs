@@ -31,7 +31,8 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
                             .Include(x => x.AsycudaSalesAllocations)
                             .Include(x => x.ManualAllocations)
                             .Where(x => x.EntryData.EntryDataDate >=
-                                        WaterNut.DataSpace.BaseDataModel.Instance.CurrentApplicationSettings.OpeningStockDate
+                                        (WaterNut.DataSpace.BaseDataModel.Instance.CurrentApplicationSettings.AllocationsOpeningStockDate 
+                                            ?? WaterNut.DataSpace.BaseDataModel.Instance.CurrentApplicationSettings.OpeningStockDate)
                                         && x.EntryData.ApplicationSettingsId ==
                                         WaterNut.DataSpace.BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId
                                         && x.Quantity != x.QtyAllocated

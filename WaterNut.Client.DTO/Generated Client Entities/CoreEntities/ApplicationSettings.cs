@@ -671,6 +671,19 @@ namespace CoreEntities.Client.DTO
 		}
         private Nullable<bool> _AllowStressTest;
 
+        [DataMember]
+        public Nullable<System.DateTime> AllocationsOpeningStockDate
+		{ 
+		    get { return _AllocationsOpeningStockDate; }
+			set
+			{
+			    if (value == _AllocationsOpeningStockDate) return;
+				_AllocationsOpeningStockDate = value;
+				NotifyPropertyChanged();//m => this.AllocationsOpeningStockDate
+			}
+		}
+        private Nullable<System.DateTime> _AllocationsOpeningStockDate;
+
        
         [DataMember]
         public ChangeTrackingCollection<AsycudaDocumentSetEx> AsycudaDocumentSetEx
