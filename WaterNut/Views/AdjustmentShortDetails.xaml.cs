@@ -71,7 +71,7 @@ namespace WaterNut.Views
 
 	    private async void AllocateAdjustments(object sender, MouseButtonEventArgs e)
 	    {
-	        await AllocationsModel.Instance.AllocateSales(true).ConfigureAwait(false);
+	        await AllocationsModel.Instance.AllocateSales(true, false).ConfigureAwait(false);
         }
 
 	    private async void CreateIM4(object sender, MouseButtonEventArgs e)

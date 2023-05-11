@@ -221,7 +221,7 @@ namespace WaterNut
 
         private async void AllocateSales(object sender, MouseButtonEventArgs e)
         {
-            await AllocationsModel.Instance.AllocateSales(false).ConfigureAwait(false);
+            await AllocationsModel.Instance.AllocateSales(false, false).ConfigureAwait(false);
         }
 
         private void ViewSalesData(object sender, MouseButtonEventArgs e)

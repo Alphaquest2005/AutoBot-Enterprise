@@ -99,10 +99,11 @@ namespace AllocationQS.Business.Services
         //            .ConfigureAwait(false);
         //}
 
-        public async Task AllocateSales(ApplicationSettings applicationSettings, bool allocateToLastAdjustment)
+        public async Task AllocateSales(ApplicationSettings applicationSettings, bool allocateToLastAdjustment,
+            bool onlyNewAllocations)
         {
             await
-               new AllocateSales().Execute(applicationSettings, allocateToLastAdjustment)
+               new AllocateSales().Execute(applicationSettings, allocateToLastAdjustment, onlyNewAllocations)
                     .ConfigureAwait(false);
         }
 

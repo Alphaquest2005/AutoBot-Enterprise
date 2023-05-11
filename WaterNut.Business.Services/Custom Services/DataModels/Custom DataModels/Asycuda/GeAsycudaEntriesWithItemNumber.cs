@@ -24,9 +24,10 @@ namespace WaterNut.DataSpace
 
 
                 var lst = GetXcudaItems(asycudaDocumentSetId, itemList);
+               
 
-                // var res2 = lst.Where(x => x.ItemNumber == "PRM/84101");
-                var asycudaItems =
+                    // var res2 = lst.Where(x => x.ItemNumber == "PRM/84101");
+                    var asycudaItems =
                     new ConcurrentDictionary<int, xcuda_Item>(
                         Enumerable.ToDictionary<xcuda_Item, int, xcuda_Item>(lst, x => x.Item_Id, x => x));
                 asycudaEntries = Enumerable.Where<xcuda_Item>(lst, x => x != null)

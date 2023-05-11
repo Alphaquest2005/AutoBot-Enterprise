@@ -123,7 +123,11 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
                                    // await SaveDocumentCT(cdoc).ConfigureAwait(false);
                                     //SaveSql(sql);
                                     //sql = "";
-                                    docTasks.Add(Task.Run(async () => await SaveDocumentCT(cdoc).ConfigureAwait(false)));
+                                    docTasks.Add(Task.Run(async () =>
+                                    {
+                                        await SaveDocumentCT(cdoc).ConfigureAwait(false);
+                                        SaveSql(sql);
+                                    }));
 
                                     docList.Add(cdoc);
                                     //}
@@ -174,11 +178,11 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
 
                         var newItms = await
                             CreateEx9EntryAsync(mypod, cdoc, itmcount, dfp, documentType,
-                                    itemSalesPiSummaryLst, checkQtyAllocatedGreaterThanPiQuantity, applyEx9Bucket, ex9BucketType, applyHistoricChecks, applyCurrentChecks, overPIcheck, universalPIcheck, itemPIcheck, docPreviousItems, sql)
+                                    itemSalesPiSummaryLst, checkQtyAllocatedGreaterThanPiQuantity, applyEx9Bucket, ex9BucketType, applyHistoricChecks, applyCurrentChecks, overPIcheck, universalPIcheck, itemPIcheck, docPreviousItems)
                                 .ConfigureAwait(false);
 
-                        itmcount += newItms;
-
+                        itmcount += newItms.itmCount;
+                        sql += newItms.sql;
 
                         prevEntryId = mypod.EntlnData.EntryDataDetails.Count() > 0
                             ? mypod.EntlnData.EntryDataDetails[0].EntryDataId
@@ -201,7 +205,11 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
                 //await SaveDocumentCT(cdoc).ConfigureAwait(false);
                 //SaveSql(sql);
 
-                docTasks.Add(Task.Run(async () => await SaveDocumentCT(cdoc).ConfigureAwait(false)));
+                docTasks.Add(Task.Run(async () =>
+                {
+                    await SaveDocumentCT(cdoc).ConfigureAwait(false);
+                    SaveSql(sql);
+                }));
 
                 if (cdoc.Document != null) docList.Add(cdoc);
 
@@ -548,7 +556,7 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
                         {
                             AllocationId = x.AllocationId, EntryDataDetailsId = x.EntryDataDetailsId,
                             PreviousItem_Id = x.PreviousItem_Id
-                        }).ToList(), $"Set < 0: {nlst.Sum(x => x.QtyAllocated)}", sql);
+                        }).ToList(), $"Set < 0: {nlst.Sum(x => x.QtyAllocated)}",ref sql);
             }
 
             return elst;
@@ -572,25 +580,26 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
 
         }
 
-        private async Task<int> CreateEx9EntryAsync(DataSpace.BaseDataModel.MyPodData mypod, DocumentCT cdoc,
+        private async Task<(int itmCount,string sql)> CreateEx9EntryAsync(DataSpace.BaseDataModel.MyPodData mypod, DocumentCT cdoc,
             int itmcount, string dfp,
             string documentType, List<ItemSalesPiSummary> itemSalesPiSummaryLst,
             bool checkQtyAllocatedGreaterThanPiQuantity,
             bool applyEx9Bucket, string ex9BucketType, bool applyHistoricChecks, bool applyCurrentChecks,
             bool overPIcheck, bool universalPIcheck, bool itemPIcheck,
-            Dictionary<int, List<PreviousItems>> docPreviousItems, string sql)
+            Dictionary<int, List<PreviousItems>> docPreviousItems)
         {
             try
             {
+                string sql = "";
                 // clear all xstatus so know what happened
-                UpdateXStatus(mypod.Allocations,null, sql);
+                //sql += UpdateXStatus(mypod.Allocations,null);
 
                 if (mypod.EntlnData.pDocumentItem.ExpiryDate <= DateTime.Now && (DataSpace.BaseDataModel.Instance.CurrentApplicationSettings.ExportExpiredEntries??true) == false)
                 {
-                    UpdateXStatus(mypod.Allocations,
+                     UpdateXStatus(mypod.Allocations,
                         $@"Expired Entry: '{
-                            mypod.EntlnData.pDocumentItem.ExpiryDate.ToShortDateString()}'", sql);
-                    return 0;
+                            mypod.EntlnData.pDocumentItem.ExpiryDate.ToShortDateString()}'",ref sql);
+                    return (0,sql);
                 }
 
 
@@ -718,12 +727,12 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
                 if (applyEx9Bucket)
                     if (ex9BucketType == "Current")
                     {
-                        Ex9Bucket(mypod, dfp, docPi, salesPiCurrent.Any() ? salesPiCurrent : salesPiAll, docPreviousItems, sql);
+                        Ex9Bucket(mypod, dfp, docPi, salesPiCurrent.Any() ? salesPiCurrent : salesPiAll, docPreviousItems, ref sql);
                     }
                     else
                     {
-                        Ex9Bucket(mypod, mypod.EntlnData.Quantity, totalSalesHistoric, totalPiHistoric, "Historic", sql);
-                        Ex9Bucket(mypod, mypod.EntlnData.Quantity, totalSalesCurrent, totalPiCurrent, "Current", sql);
+                        Ex9Bucket(mypod, mypod.EntlnData.Quantity, totalSalesHistoric, totalPiHistoric, "Historic", ref sql);
+                        Ex9Bucket(mypod, mypod.EntlnData.Quantity, totalSalesCurrent, totalPiCurrent, "Current", ref sql);
                     }
 
                 var salesFactor = Math.Abs(mypod.EntlnData.EX9Allocation.SalesFactor) < 0.0001
@@ -743,11 +752,11 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
                             UpdateXStatus(mypod.Allocations,
                                 $@"Failed All Sales Check:: Total All Sales:{Math.Round(totalSalesAll, 2)}
                                             Total All PI: {totalPiAll}
-                                            xQuantity:{mypod.EntlnData.Quantity}", sql);
-                            return 0;
+                                            xQuantity:{mypod.EntlnData.Quantity}", ref sql);
+                            return (0, sql);
                         }
 
-                        Ex9Bucket(mypod, availibleQty, totalSalesAll, totalPiAll, "Total", sql);
+                        Ex9Bucket(mypod, availibleQty, totalSalesAll, totalPiAll, "Total",ref sql);
                     }
 
                 if (universalPIcheck)
@@ -757,14 +766,14 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
                         var availibleQty = Math.Round(universalSalesAll, 2) - (Math.Round(universalPiAll, 2)+ docPi);
                         if (availibleQty <= 0)
                         {
-                            UpdateXStatus(mypod.Allocations,
+                           UpdateXStatus(mypod.Allocations,
                                 $@"Failed universal Sales Check:: Universal Sales:{Math.Round(universalSalesAll, 2)}
                                             Universal PI: {universalPiAll}
-                                            xQuantity:{mypod.EntlnData.Quantity}", sql);
-                            return 0;
+                                            xQuantity:{mypod.EntlnData.Quantity}", ref sql);
+                            return (0, sql);
                         }
 
-                        Ex9Bucket(mypod, availibleQty, universalSalesAll, universalPiAll, "Universal", sql);
+                        Ex9Bucket(mypod, availibleQty, universalSalesAll, universalPiAll, "Universal",ref sql);
 
                     }
 
@@ -773,8 +782,8 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
                 if (mypod.EntlnData.Quantity <= 0)
                 {
                     UpdateXStatus(mypod.Allocations,
-                        $@"Failed Ex9Bucket set Qty to Zero:: preQty: {preEx9Bucket}", sql);
-                    return 0;
+                        $@"Failed Ex9Bucket set Qty to Zero:: preQty: {preEx9Bucket}",ref sql);
+                    return (0, sql);
                 }
 
                 ////////////////////////----------------- Cap to prevent xQuantity > Sales Quantity
@@ -794,8 +803,8 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
                 if ((qty - Math.Round(qtyAllocated, 2))  > 0.0001)
                 {
                     UpdateXStatus(mypod.Allocations,
-                        $@"Failed Quantity vs QtyAllocated:: Qty: {qty} QtyAllocated: {qtyAllocated}", sql);
-                    return 0;
+                        $@"Failed Quantity vs QtyAllocated:: Qty: {qty} QtyAllocated: {qtyAllocated}",ref sql);
+                    return (0, sql);
                 }
                 //////////////////////////////////////////////////////////////////////////
                 ///     Sales Cap/ Sales Bucket historic
@@ -808,8 +817,8 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
                 if (documentType == "Sales" && totalSalesAll == 0 && universalPIcheck )// && mypod.Allocations.FirstOrDefault()?.Status != "Short Shipped"
                 {
                     UpdateXStatus(mypod.Allocations,
-                        $@"No Sales Found", sql);
-                    return 0; // no sales found
+                        $@"No Sales Found",ref sql);
+                    return (0, sql); // no sales found
                 }
 
 
@@ -830,14 +839,14 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
                         //       xQuantity:{mypod.EntlnData.Quantity}");
                         //return 0;
                         var availibleQty = totalSalesHistoric - (totalPiHistoric + docDFPpi);
-                        if (availibleQty != 0) Ex9Bucket(mypod, availibleQty, totalSalesHistoric, totalPiHistoric, "Historic", sql);
+                        if (availibleQty != 0) Ex9Bucket(mypod, availibleQty, totalSalesHistoric, totalPiHistoric, "Historic",ref sql);
                         if (mypod.EntlnData.Quantity == 0 || availibleQty == 0)
                         {
                             UpdateXStatus(mypod.Allocations,
                                 $@"Failed Historical Check:: Total Historic Sales:{Math.Round(totalSalesHistoric, 2)}
                                    Total Historic PI: {totalPiHistoric}
-                                   xQuantity:{mypod.EntlnData.Quantity}", sql);
-                            return 0;
+                                   xQuantity:{mypod.EntlnData.Quantity}",ref sql);
+                            return (0, sql);
                         }
                     }
                 }
@@ -852,8 +861,8 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
                     if (totalSalesCurrent == 0)// && mypod.Allocations.FirstOrDefault()?.Status != "Short Shipped"
                     {
                         UpdateXStatus(mypod.Allocations,
-                            $@"No Current Sales Found", sql);
-                        return 0;
+                            $@"No Current Sales Found",ref sql);
+                        return (0, sql);
                     }
 
                     // no sales found
@@ -865,8 +874,8 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
                         UpdateXStatus(mypod.Allocations,
                             $@"Failed Current Check:: Total Current Sales:{Math.Round(totalSalesCurrent, 2)}
                                Total Current PI: {totalPiCurrent}
-                               xQuantity:{mypod.EntlnData.Quantity}", sql);
-                        return 0;
+                               xQuantity:{mypod.EntlnData.Quantity}",ref sql);
+                        return (0, sql);
                     }
                 }
 
@@ -876,14 +885,14 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
                 {
 
                     var availibleQty = mypod.EntlnData.pDocumentItem.ItemQuantity - (totalPiAll + docPi);
-                    if (availibleQty != 0) Ex9Bucket(mypod, availibleQty, mypod.EntlnData.pDocumentItem.ItemQuantity, totalPiAll + docPi, "Historic", sql);
+                    if (availibleQty != 0) Ex9Bucket(mypod, availibleQty, mypod.EntlnData.pDocumentItem.ItemQuantity, totalPiAll + docPi, "Historic",ref sql);
                     if (mypod.EntlnData.Quantity == 0 || availibleQty == 0)
                     {
                         UpdateXStatus(mypod.Allocations,
                             $@"Failed ItemQuantity < totalPiAll & xQuantity:{mypod.EntlnData.pDocumentItem.ItemQuantity}
                                totalPiAll PI: {totalPiAll}
-                               xQuantity:{mypod.EntlnData.Quantity}", sql);
-                        return 0;
+                               xQuantity:{mypod.EntlnData.Quantity}",ref sql);
+                        return (0, sql);
                     }
 
                    
@@ -903,14 +912,14 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
                         //       xQuantity:{mypod.EntlnData.Quantity}");
                         //return 0;
                         var availibleQty = itemSalesHistoric - (itemPiHistoric + itemDocPi);
-                        Ex9Bucket(mypod, availibleQty, itemSalesHistoric, itemPiHistoric, "Historic", sql);
+                        Ex9Bucket(mypod, availibleQty, itemSalesHistoric, itemPiHistoric, "Historic",ref sql);
                         if (mypod.EntlnData.Quantity == 0)
                         {
                             UpdateXStatus(mypod.Allocations,
                                 $@"Failed Item Historical Check:: Item Historic Sales:{Math.Round(itemSalesHistoric, 2)}
                                    Item Historic PI: {itemPiHistoric}
-                                   xQuantity:{mypod.EntlnData.Quantity}", sql);
-                            return 0;
+                                   xQuantity:{mypod.EntlnData.Quantity}",ref sql);
+                            return (0,sql);
                         }
                     }
 
@@ -925,14 +934,14 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
                         var availibleQty = mypod.EntlnData.pDocumentItem.ItemQuantity - (itemPiHistoric + itemDocPi);
                         /// pass item quantity to ex9 bucket
                         //Debugger.Break();
-                        Ex9Bucket(mypod, availibleQty, mypod.EntlnData.pDocumentItem.ItemQuantity, itemPiHistoric + itemDocPi , "Historic", sql);
+                        Ex9Bucket(mypod, availibleQty, mypod.EntlnData.pDocumentItem.ItemQuantity, itemPiHistoric + itemDocPi , "Historic", ref sql);
                         if (mypod.EntlnData.Quantity == 0)
                         {
                             UpdateXStatus(mypod.Allocations,
                                 $@"Failed ItemQuantity < ItemPIHistoric & xQuantity:{mypod.EntlnData.pDocumentItem.ItemQuantity}
                                Item Historic PI: {itemPiHistoric}
-                               xQuantity:{mypod.EntlnData.Quantity}", sql);
-                            return 0;
+                               xQuantity:{mypod.EntlnData.Quantity}",ref sql);
+                            return (0,sql);
                         }
                     }
 
@@ -952,21 +961,21 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
                     var availibleQty = xSalesPi - Math.Round( mypod.EntlnData.Quantity, 2);//take out docpi its throwing it ouff   //itemDocPi + 
                     /// pass item quantity to ex9 bucket
                     if (availibleQty >= 0)
-                        Ex9Bucket(mypod, availibleQty, itemSalesHistoric, itemPiHistoric, "Historic", sql);
+                        Ex9Bucket(mypod, availibleQty, itemSalesHistoric, itemPiHistoric, "Historic", ref sql);
                     if (mypod.EntlnData.Quantity <= 0 || availibleQty <= 0)
                     {
                         UpdateXStatus(mypod.Allocations,
-                            $@"Failed Existing xSales already taken out..:{mypod.Allocations.SelectMany(x => x.EntryDataDetails.AsycudaDocumentItemEntryDataDetails.Select(n => $"c#{n.CNumber}|{n.LineNumber}").ToList()).DefaultIfEmpty("").Aggregate((o,n) => $"{o}, {n}")}", sql);
-                        return 0;
+                            $@"Failed Existing xSales already taken out..:{mypod.Allocations.SelectMany(x => x.EntryDataDetails.AsycudaDocumentItemEntryDataDetails.Select(n => $"c#{n.CNumber}|{n.LineNumber}").ToList()).DefaultIfEmpty("").Aggregate((o,n) => $"{o}, {n}")}", ref sql);
+                        return (0,sql);
                     }
                 }
 
-                if (mypod.EntlnData.Quantity <= 0) return 0;
+                if (mypod.EntlnData.Quantity <= 0) return (0,sql);
                 //////////////////// can't delump allocations because of returns and 1kg weights issue too much items wont be able to exwarehouse
-                CreateEx9Item(mypod, cdoc, itmcount, dfp, docPreviousItems, sql, entryType, out var itmsCreated); 
+                CreateEx9Item(mypod, cdoc, itmcount, dfp, docPreviousItems,ref sql, entryType, out var itmsCreated); 
 
 
-                return itmsCreated;
+                return (itmsCreated,sql);
             }
             catch (Exception Ex)
             {
@@ -977,7 +986,7 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
         }
 
         private bool CreateEx9Item(DataSpace.BaseDataModel.MyPodData mypod, DocumentCT cdoc, int itmcount, string dfp, Dictionary<int, List<PreviousItems>> docPreviousItems,
-            string sql, string entryType, out int itmsCreated)
+           ref string sql, string entryType, out int itmsCreated)
         {
             var itmsToBeCreated = 1;
             itmsCreated = 0;
@@ -994,7 +1003,7 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
                 if (Math.Round(pitm.Net_weight, 2) < (decimal)0.01)
                 {
                     UpdateXStatus(mypod.Allocations,
-                        $@"Failed PiNetWeight < 0.01 :: PiNetWeight:{Math.Round(pitm.Net_weight, 2)}", sql);
+                        $@"Failed PiNetWeight < 0.01 :: PiNetWeight:{Math.Round(pitm.Net_weight, 2)}",ref sql);
                     {
                         itmsCreated = 0;
                         return true;
@@ -1201,7 +1210,7 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
 
         private void Ex9Bucket(DataSpace.BaseDataModel.MyPodData mypod, double availibleQty, double totalSalesAll,
             double totalPiAll,
-            string type, string sql)
+            string type, ref string sql)
         {
             try
             {
@@ -1215,10 +1224,10 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
                     //{
                     if (i <= 0  && remainingSalesQty <= 0)//&& rejects.Any()
                     {
-                        UpdateXStatus(rejects,
+                         UpdateXStatus(rejects,
                             $@"Failed All Sales Check:: {type} Sales:{Math.Round(totalSalesAll, 2)}
                                             {type} PI: {totalPiAll}
-                                            xQuantity:{mypod.EntlnData.Quantity}", sql);
+                                            xQuantity:{mypod.EntlnData.Quantity}", ref sql);
                         mypod.EntlnData.Quantity = mypod.Allocations.Sum(x => x.QtyAllocated); 
                         return;
                     }
@@ -1254,7 +1263,7 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
                 UpdateXStatus( rejects,
                     $@"Failed All Sales Check:: {type} Sales:{Math.Round(totalSalesAll, 2)}
                                             {type} PI: {totalPiAll}
-                                            xQuantity:{mypod.EntlnData.Quantity}", sql);
+                                            xQuantity:{mypod.EntlnData.Quantity}", ref sql);
                 mypod.EntlnData.Quantity = mypod.Allocations.Sum(x => x.QtyAllocated);
                
             }
@@ -1266,8 +1275,9 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
 
         }
 
-        private void UpdateXStatus(List<AsycudaSalesAllocations> allocations, string xstatus, string sql)
+        private void UpdateXStatus(List<AsycudaSalesAllocations> allocations, string xstatus,ref string sql )
         {
+            
             foreach (var a in allocations)
             {
                 a.xStatus = xstatus;
@@ -1302,7 +1312,7 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
             return itmcnt;
         }
 
-        private  void Ex9Bucket(DataSpace.BaseDataModel.MyPodData mypod, string dfp,  double docPi, List<ItemSalesPiSummary> itemSalesPiSummaryLst, Dictionary<int, List<PreviousItems>> docPreviousItems, string sql)
+        private  void Ex9Bucket(DataSpace.BaseDataModel.MyPodData mypod, string dfp,  double docPi, List<ItemSalesPiSummary> itemSalesPiSummaryLst, Dictionary<int, List<PreviousItems>> docPreviousItems, ref string sql)
         {
             // prevent over draw down of pqty == quantity allocated
             try
@@ -1343,7 +1353,7 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
                     || allocationSales < allocationPi)
                 {
                     UpdateXStatus(mypod.Allocations,
-                        $@"Failed Ex9 Bucket :: PI Quantity: {allocationPi}", sql);
+                        $@"Failed Ex9 Bucket :: PI Quantity: {allocationPi}", ref sql);
                     allocations.Clear();
                     entryLine.EntryDataDetails.Clear();
                     entryLine.Quantity = 0;
@@ -1415,8 +1425,8 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
 
                         if (Math.Abs(allocation.QtyAllocated) < 0.001) //&& saleAllocationsLst.Count > 1
                         {
-                            UpdateXStatus(new List<AsycudaSalesAllocations>() {allocation},
-                                $@"Failed Ex9 Bucket", sql);
+                             UpdateXStatus(new List<AsycudaSalesAllocations>() {allocation},
+                                $@"Failed Ex9 Bucket",ref sql);
                             allocations.Remove(allocation);
 
                             if (totalAllocatedQty < 0) continue;

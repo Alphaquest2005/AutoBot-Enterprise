@@ -16,7 +16,7 @@ namespace AutoBot
 
             AllocationsModel.Instance.ClearAllAllocations(BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId).Wait();
 
-            new AllocateSales().Execute(BaseDataModel.Instance.CurrentApplicationSettings, false).Wait();
+            new AllocateSales().Execute(BaseDataModel.Instance.CurrentApplicationSettings, false, false).Wait();
 
             EmailSalesErrorsUtils.EmailSalesErrors();
             

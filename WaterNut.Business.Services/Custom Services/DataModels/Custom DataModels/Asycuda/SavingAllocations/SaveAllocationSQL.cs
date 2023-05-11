@@ -56,6 +56,7 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
                         .ToList()))
                     .SelectMany(x => x.ToList())
                     .ToList()
+                    .DistinctBy(x => new {x.EntryDataDetailsId, x.PreviousItem_Id, x.QtyAllocated, x.Status})
                     .Select(a => SaveAllocationSql(a)).DefaultIfEmpty("").Aggregate((o, n) => $"{o}\r\n{n}");
 
             sql += alloLst.SelectMany(e => e.Sales.ToList()).DistinctBy(a => a.EntryDataDetailsId)

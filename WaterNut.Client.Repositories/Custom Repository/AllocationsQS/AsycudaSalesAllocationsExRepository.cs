@@ -85,11 +85,12 @@ namespace AllocationQS.Client.Repositories
             }
         }
 
-        public async Task AllocateSales(ApplicationSettings applicationSettings, bool allocateToLastAdjustment)
+        public async Task AllocateSales(ApplicationSettings applicationSettings, bool allocateToLastAdjustment,
+            bool onlyNewAllocations)
         {
             using (var t = new AllocationsClient())
             {
-                await t.AllocateSales(applicationSettings.DTO, allocateToLastAdjustment).ConfigureAwait(false);
+                await t.AllocateSales(applicationSettings.DTO, allocateToLastAdjustment, onlyNewAllocations).ConfigureAwait(false);
             }
         }
 

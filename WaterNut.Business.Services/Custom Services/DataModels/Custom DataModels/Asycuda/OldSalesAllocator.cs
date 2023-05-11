@@ -35,19 +35,19 @@ namespace WaterNut.DataSpace
 
    
 
-        public async Task AllocateSalesByMatchingSalestoAsycudaEntriesOnItemNumber(
-            int applicationSettingsId, bool allocateToLastAdjustment, string lst)
+        public async Task AllocateSalesByMatchingSalestoAsycudaEntriesOnItemNumber(int applicationSettingsId,
+            bool allocateToLastAdjustment, bool onlyNewAllocations, string lst)
         {
             var itemSets = BaseDataModel.GetItemSets(lst);
             itemSets.AsParallel()
                 .WithDegreeOfParallelism(Convert.ToInt32(Environment.ProcessorCount *
                                                          BaseDataModel.Instance.ResourcePercentage))
                 .ForAll(async x =>
-                    await AllocateSalesByMatchingSalestoAsycudaEntriesOnItemNumber(allocateToLastAdjustment,x).ConfigureAwait(false));
+                    await AllocateSalesByMatchingSalestoAsycudaEntriesOnItemNumber(allocateToLastAdjustment, onlyNewAllocations,x).ConfigureAwait(false));
 
         }
 
-        public async Task AllocateSalesByMatchingSalestoAsycudaEntriesOnItemNumber(bool allocateToLastAdjustment,
+        public async Task AllocateSalesByMatchingSalestoAsycudaEntriesOnItemNumber(bool allocateToLastAdjustment, bool onlyNewAllocations,
             List<(string ItemNumber, int InventoryItemId)> itemSetLst)
         {
             try
@@ -56,7 +56,7 @@ namespace WaterNut.DataSpace
                 StatusModel.StopStatusUpdate();
 
                 var alloLst = await new SalesAllocator(itemSets.asycudaItems)
-                    .AllocateSales(allocateToLastAdjustment, itemSets.itmLst.Values.Select(x => x).ToList())
+                    .AllocateSales(allocateToLastAdjustment, onlyNewAllocations, itemSets.itmLst.Values.Select(x => x).ToList())
                     .ConfigureAwait(false);
 
 
@@ -92,6 +92,8 @@ namespace WaterNut.DataSpace
                 Task.WaitAll(asycudaEntriesTask, saleslstTask, adjlstTask, dislstTask);
 
                 var asycudaEntries = asycudaEntriesTask.Result;
+               
+                
                 var saleslst = saleslstTask.Result;
                 var adjlst = adjlstTask.Result;
                 var dislst = dislstTask.Result;

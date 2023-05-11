@@ -31,7 +31,7 @@ namespace AllocationQS.Client.Contracts
         [OperationContract]
         Task CreateIncompOPS(string filterExpression, int AsycudaDocumentSetId);
         [OperationContract]
-        Task AllocateSales(ApplicationSettings applicationSettings, bool allocateToLastAdjustment);
+        Task AllocateSales(ApplicationSettings applicationSettings, bool allocateToLastAdjustment, bool onlyNewAllocations);
 
         [OperationContract]
         Task ReBuildSalesReports();

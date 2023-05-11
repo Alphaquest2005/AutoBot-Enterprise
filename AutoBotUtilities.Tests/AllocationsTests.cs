@@ -115,7 +115,7 @@ namespace AutoBotUtilities.Tests
                 if (!Infrastructure.Utils.IsTestApplicationSettings()) Assert.IsTrue(true);
                 var timer = new System.Diagnostics.Stopwatch();
                 timer.Start();
-                 new OldSalesAllocator().AllocateSalesByMatchingSalestoAsycudaEntriesOnItemNumber(2, false, "TOH/MTSX018S").Wait();
+                 new OldSalesAllocator().AllocateSalesByMatchingSalestoAsycudaEntriesOnItemNumber(2, false, false, "TOH/MTSX018S").Wait();
                 timer.Stop();
                 Console.Write("AllocatSales1 in seconds: " + timer.Elapsed.Seconds);
 
@@ -143,7 +143,13 @@ namespace AutoBotUtilities.Tests
         [TestCase("CHAIN/10G-28", "3/1/2023", 60)] // early sales error that don't make sense in adjustments
         [TestCase("INT/YBC106GL", "3/1/2023", 60)] // don't mark early sales if returns in future
         [TestCase(null, "2023-12-19", 101)]
-
+        [TestCase("SFL/SFCPA1-G500-01", "3/1/2023", 60)]// effective assessment date = '01/01/0001' not allocating
+        [TestCase("TOH/369-60111-0", "3/1/2023", 60)]// 7500 entry in 2 '01/01/0001' not allocating
+        [TestCase("CRB/ED-BTE18AURL-E_W", "3/1/2023", 60)]//  not allocating
+        [TestCase("MAG/CO10-106", "3/1/2023", 60)]//1 marked as under allocated - left as is because discrepancy executed after cut off date
+        [TestCase("DAI-JB4U15-3000DG-", "3/1/2023", 60)] // overallocated don't make sense
+        [TestCase("ANR/ROC020", "3/1/2023", 60)] // overallocated don't make sense
+        
         /////////////////////// sandals
         [TestCase("0756-1474", "3/1/2023", 60)]
 
@@ -163,7 +169,7 @@ namespace AutoBotUtilities.Tests
                 
 
                 timer.Start();
-                new AllocateSales().Execute(BaseDataModel.Instance.CurrentApplicationSettings, false, itemSets);
+                new AllocateSales().Execute(BaseDataModel.Instance.CurrentApplicationSettings, false, false, itemSets);
                 timer.Stop();
                 
                 Console.Write("AllocatSales in seconds: " + timer.Elapsed.TotalSeconds);
@@ -207,6 +213,70 @@ namespace AutoBotUtilities.Tests
         }
 
 
+        [TestCase("ANR/ROC020", "3/1/2023", 60)] //P2O Shorts allocating to already exwarehoused
+        [TestCase( null, "3/1/2023", 60)] //P2O Shorts allocating to already exwarehoused
+        [TestCase("BLS/9004E", "3/1/2023", 60)] //P2O Shorts allocating to already exwarehoused
+        
+        public void AllocatSalesOnlyNewAllocations(string itemNumber, string LastInvoiceDate, int NoOfAllocations)
+        {
+            try
+            {
+                if (!Infrastructure.Utils.IsTestApplicationSettings()) Assert.IsTrue(true);
+                var timer = new System.Diagnostics.Stopwatch();
+
+                var itemSets = BaseDataModel.GetItemSets(itemNumber);
+                if (string.IsNullOrEmpty(itemNumber))
+                    AllocationsModel.Instance.ClearAllAllocations(BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId).Wait();
+                else
+                    AllocationsModel.Instance.ClearItemSetAllocations(itemSets).Wait();
+
+
+
+                timer.Start();
+                new AllocateSales().Execute(BaseDataModel.Instance.CurrentApplicationSettings, false, true, itemSets);
+                timer.Stop();
+
+                Console.Write("AllocatSales in seconds: " + timer.Elapsed.TotalSeconds);
+                Assert.IsTrue(true);
+                //var lastInvoiceDate = DateTime.Parse(LastInvoiceDate)+TimeSpan.FromHours(12);
+                //using (var ctx = new AllocationDSContext())
+                //{
+                //    var allocations = new AllocationQSContext().AsycudaSalesAndAdjustmentAllocationsExes.AsNoTracking()
+                //        .Count(x => x.InvoiceDate <= lastInvoiceDate && x.ItemNumber == itemNumber);
+
+                //    //var duplicateAllocations = new AllocationQSContext().AsycudaSalesAndAdjustmentAllocationsExes.AsNoTracking()
+                //    //    .Where(x => x.InvoiceDate <= lastInvoiceDate && x.ItemNumber == itemNumber)
+                //    //    .GroupBy(x => new{ x.EntryDataDetailsId, x.SalesQuantity})
+                //    //    .Where(x => x.Sum(z => z.QtyAllocated) > x.Key.SalesQuantity)
+
+                //    var overallocatedSales = ctx.EntryDataDetails
+                //        .AsNoTracking()
+                //        .Where(x => x.ItemNumber == itemNumber)
+                //        .Count(x => x.QtyAllocated > x.Quantity);
+                //    var unallocatedSales = ctx.EntryDataDetails.AsNoTracking()
+                //        .Where(x => x.ItemNumber == itemNumber)
+                //        .Count(x => x.QtyAllocated == 0);
+
+
+                //    Assert.Multiple(() =>
+                //    {
+                //        Assert.AreEqual(NoOfAllocations, allocations);
+                //        Assert.AreEqual(0, overallocatedSales);
+                //        Assert.AreEqual(0, unallocatedSales);
+                //    });
+                //}
+
+
+
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                Assert.IsTrue(false);
+            }
+        }
+
+
         [Test]
         [Timeout(60 * 1000 * 60)]
         [TestCase("Audit", "2023-12-19", 101)]
@@ -229,7 +299,7 @@ namespace AutoBotUtilities.Tests
 
 
                 timer.Start();
-                new AllocateSales().Execute(BaseDataModel.Instance.CurrentApplicationSettings, false, itemSets);
+                new AllocateSales().Execute(BaseDataModel.Instance.CurrentApplicationSettings, false, false, itemSets);
                 timer.Stop();
 
                 Console.Write("AllocatSales in seconds: " + timer.Elapsed.TotalSeconds);
@@ -276,7 +346,7 @@ namespace AutoBotUtilities.Tests
 
 
                 timer.Start();
-                new AllocateSales().Execute(BaseDataModel.Instance.CurrentApplicationSettings, false, itemSets);
+                new AllocateSales().Execute(BaseDataModel.Instance.CurrentApplicationSettings, false, false, itemSets);
                 timer.Stop();
 
                 Console.Write("AllocatSales in seconds: " + timer.Elapsed.TotalSeconds);
@@ -326,7 +396,7 @@ namespace AutoBotUtilities.Tests
 
 
                 timer.Start();
-                new AllocateSales().Execute(BaseDataModel.Instance.CurrentApplicationSettings, false, itemSets);
+                new AllocateSales().Execute(BaseDataModel.Instance.CurrentApplicationSettings, false, false, itemSets);
                 timer.Stop();
 
                 Console.Write("AllocatSales in seconds: " + timer.Elapsed.TotalSeconds);
@@ -381,7 +451,7 @@ namespace AutoBotUtilities.Tests
 
 
                 timer.Start();
-                new AllocateSales().Execute(BaseDataModel.Instance.CurrentApplicationSettings, false, itemSets);
+                new AllocateSales().Execute(BaseDataModel.Instance.CurrentApplicationSettings, false, false, itemSets);
                 timer.Stop();
 
                 Console.Write("AllocatSales in seconds: " + timer.Elapsed.TotalSeconds);
@@ -434,7 +504,7 @@ namespace AutoBotUtilities.Tests
 
 
                 timer.Start();
-                new AllocateSales().Execute(BaseDataModel.Instance.CurrentApplicationSettings, false, itemSets);
+                new AllocateSales().Execute(BaseDataModel.Instance.CurrentApplicationSettings, false, false, itemSets);
                 timer.Stop();
 
                 Console.Write("AllocatSales in seconds: " + timer.Elapsed.TotalSeconds);
@@ -500,7 +570,7 @@ namespace AutoBotUtilities.Tests
 
 
                 timer.Start();
-                new AllocateSales().Execute(BaseDataModel.Instance.CurrentApplicationSettings, false, itemSets);
+                new AllocateSales().Execute(BaseDataModel.Instance.CurrentApplicationSettings, false, false, itemSets);
                 timer.Stop();
 
                 Console.Write("AllocatSales in seconds: " + timer.Elapsed.TotalSeconds);
@@ -629,7 +699,7 @@ namespace AutoBotUtilities.Tests
                 itemSets
                     .AsParallel()
                     .WithDegreeOfParallelism(Convert.ToInt32(Environment.ProcessorCount * BaseDataModel.Instance.ResourcePercentage))
-                    .ForAll(async x => await new OldSalesAllocator().AllocateSalesByMatchingSalestoAsycudaEntriesOnItemNumber(false, x).ConfigureAwait(false)); // to prevent changing allocations when im7 info changes
+                    .ForAll(async x => await new OldSalesAllocator().AllocateSalesByMatchingSalestoAsycudaEntriesOnItemNumber(false, false, x).ConfigureAwait(false)); // to prevent changing allocations when im7 info changes
                      // .ForEach(async x => await new OldSalesAllocator().AllocateSalesByMatchingSalestoAsycudaEntriesOnItemNumber(false, x).ConfigureAwait(false)); // to prevent changing allocations when im7 info changes
 
                 timer.Stop();

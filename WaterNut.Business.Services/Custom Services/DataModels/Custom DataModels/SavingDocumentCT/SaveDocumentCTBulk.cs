@@ -38,7 +38,7 @@ namespace WaterNut.DataSpace
 
                 new DocumentItemDSContext().BulkMerge(newitems, x => x.IncludeGraph = true);
                 //new DocumentItemDSContext().BulkUpdate(olditems, x => x.IncludeGraph = true);
-                // new DocumentItemDSContext().BulkInsert(newitems, x => x.IncludeGraph = true);
+                //new DocumentItemDSContext().BulkInsert(newitems, x => x.IncludeGraph = true);
             }
             catch (Exception e)
             {

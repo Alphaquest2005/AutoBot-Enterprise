@@ -13,7 +13,8 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
     public class AllocateSalesChain : IAllocateSalesProcessor
     {
         
-        public async Task Execute(ApplicationSettings applicationSettings, bool allocateToLastAdjustment, string lst)
+        public async Task Execute(ApplicationSettings applicationSettings, bool allocateToLastAdjustment,
+            bool onlyNewAllocations, string lst)
         {
             try
             {
@@ -22,7 +23,7 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
                         "this method cannot function properly on all items unless the caching issue is addressed");
                 var itemSets = DataSpace.BaseDataModel.GetItemSets(lst);
                
-                Execute(applicationSettings, allocateToLastAdjustment, itemSets);
+                Execute(applicationSettings, allocateToLastAdjustment, onlyNewAllocations, itemSets);
 
                 StatusModel.StopStatusUpdate();
             }
@@ -34,7 +35,7 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
 
         }
 
-        private void Execute(ApplicationSettings applicationSettings, bool allocateToLastAdjustment,
+        private void Execute(ApplicationSettings applicationSettings, bool allocateToLastAdjustment, bool onlyNewAllocations,
             List<List<(string ItemNumber, int InventoryItemId)>> itemSets)
         {
             SQLBlackBox.RunSqlBlackBox();
@@ -53,7 +54,7 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
                     new ReallocateExistingEx9().Execute(x).Wait();
                     new AutoMatchSingleSetBasedProcessor().AutoMatch(applicationSettings.ApplicationSettingsId, true, x).Wait();
                     new OldSalesAllocator()
-                        .AllocateSalesByMatchingSalestoAsycudaEntriesOnItemNumber(allocateToLastAdjustment, x).Wait();
+                        .AllocateSalesByMatchingSalestoAsycudaEntriesOnItemNumber(allocateToLastAdjustment, onlyNewAllocations, x).Wait();
                     new MarkErrors().Execute(x).Wait();
                 });
         }

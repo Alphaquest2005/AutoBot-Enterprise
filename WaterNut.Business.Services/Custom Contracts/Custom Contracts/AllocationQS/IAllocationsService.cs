@@ -31,7 +31,8 @@ namespace AllocationQS.Business.Services
         //[OperationContract][FaultContract(typeof(ValidationFault))]
         //Task CreateIncompOPS(string filterExpression, int AsycudaDocumentSetId);
         [OperationContract][FaultContract(typeof(ValidationFault))]
-        Task AllocateSales(ApplicationSettings applicationSettings, bool allocateToLastAdjustment);
+        Task AllocateSales(ApplicationSettings applicationSettings, bool allocateToLastAdjustment,
+            bool onlyNewAllocations);
 
         [OperationContract][FaultContract(typeof(ValidationFault))]
          Task ReBuildSalesReports();

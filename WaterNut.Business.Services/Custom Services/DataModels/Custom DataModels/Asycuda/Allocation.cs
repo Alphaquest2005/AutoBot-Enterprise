@@ -161,8 +161,11 @@ namespace WaterNut.DataSpace
 
 			// update nonstock entrydetails status
 			using (var ctx = new EntryDataDSContext())
-			{
-               
+            {
+                ctx.Database.ExecuteSqlCommand(
+                    $@"update xcuda_item
+                        set xWarehouseError = null
+                        where xWarehouseError is not null");
 
                 ctx.Database.ExecuteSqlCommand($@"UPDATE EntryDataDetails
 						SET         Status = N'Non Stock', DoNotAllocate = 1

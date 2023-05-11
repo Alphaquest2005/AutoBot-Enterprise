@@ -805,7 +805,7 @@ namespace WaterNut.QuerySpace.AllocationQS.ViewModels
 
         }
 
-        public async Task AllocateSales(bool allocateToLastAdjustment)
+        public async Task AllocateSales(bool allocateToLastAdjustment, bool onlyNewAllocations)
         {
             StatusModel.Timer("Allocating Sales");
 
@@ -823,7 +823,7 @@ namespace WaterNut.QuerySpace.AllocationQS.ViewModels
             }
 
             await AsycudaSalesAllocationsExRepository.Instance.AllocateSales(
-                CoreEntities.ViewModels.BaseViewModel.Instance.CurrentApplicationSettings, allocateToLastAdjustment).ConfigureAwait(false);
+                CoreEntities.ViewModels.BaseViewModel.Instance.CurrentApplicationSettings, allocateToLastAdjustment, onlyNewAllocations).ConfigureAwait(false);
 
             MessageBus.Default.BeginNotify(MessageToken.AsycudaSalesAllocationsExsChanged, null,
                         new NotificationEventArgs(MessageToken.AsycudaSalesAllocationsExsChanged));

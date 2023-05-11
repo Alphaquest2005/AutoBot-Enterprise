@@ -34,6 +34,7 @@ using MoreLinq.Extensions;
 using Omu.ValueInjecter;
 using TrackableEntities;
 using TrackableEntities.EF6;
+using UglyToad.PdfPig.Graphics.Operations.SpecialGraphicsState;
 using ValuationDS.Business.Entities;
 using WaterNut.Business.Entities;
 using WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModels.BaseDataModel.GettingItemSets;
@@ -767,7 +768,7 @@ namespace WaterNut.DataSpace
                                 perInvoice && combineEntryDataInSameFile == false)
                             {
                                 SetEffectiveAssessmentDate(cdoc);
-
+                                
 
                                 LinkPreviousDocuments(pod, cdoc);
 
@@ -785,9 +786,11 @@ namespace WaterNut.DataSpace
                                     cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.IsManuallyAssessed = true;
                                 AttachCustomProcedure(cdoc, cp);
                                 itmcount = 0;
+                                
                             }
                             else
                             {
+                                AttachDocSetDocumentsToDocuments(currentAsycudaDocumentSet, pod, cdoc);
                                 SetPackages(ref remainingPackages, ref possibleEntries, pod, cdoc);
                             }
 
@@ -827,7 +830,11 @@ namespace WaterNut.DataSpace
                 itmcount += 1;
 
                 if (itmcount == 1 && cdoc.DocumentItems.Any() && !cdoc.DocumentItems.First().xcuda_Packages.Any())
+                {
                     SetPackages(ref remainingPackages, ref possibleEntries, pod, cdoc);
+                    AttachDocSetDocumentsToDocuments(currentAsycudaDocumentSet, pod, cdoc);
+                }
+
 
                 if (oldentryData.EntryDataId != pod.EntryData.EntryDataId)
                 {
@@ -861,6 +868,7 @@ namespace WaterNut.DataSpace
                 if (itmcount % (currentAsycudaDocumentSet.MaxLines ?? CurrentApplicationSettings.MaxEntryLines) == 0)
                     if (cdoc.DocumentItems.Any())
                     {
+                        AttachDocSetDocumentsToDocuments(currentAsycudaDocumentSet, pod, cdoc);
                         SetEffectiveAssessmentDate(cdoc);
                         LinkPreviousDocuments(pod, cdoc);
                         await SaveDocumentCt.Execute(cdoc).ConfigureAwait(false);
@@ -884,6 +892,7 @@ namespace WaterNut.DataSpace
             StatusModel.Timer("Saving To Database");
             if (cdoc.DocumentItems.Any())
             {
+                AttachDocSetDocumentsToDocuments(currentAsycudaDocumentSet, entryLineDatas.Last(), cdoc);
                 SetEffectiveAssessmentDate(cdoc);
                 await SaveDocumentCt.Execute(cdoc).ConfigureAwait(false);
                 docList.Add(cdoc);
@@ -957,7 +966,8 @@ namespace WaterNut.DataSpace
             }
         }
 
-        private void AttachDocSetDocumentsToDocuments(AsycudaDocumentSet currentAsycudaDocumentSet, BaseDataModel.EntryLineData pod,
+        private void AttachDocSetDocumentsToDocuments(AsycudaDocumentSet currentAsycudaDocumentSet,
+            BaseDataModel.EntryLineData pod,
             DocumentCT cdoc)
         {
             var alst = currentAsycudaDocumentSet.AsycudaDocumentSet_Attachments
@@ -967,14 +977,85 @@ namespace WaterNut.DataSpace
                 .Select(x => x.Attachment)
                 .DistinctBy(x => x.Id)
                 .ToList();
-            if (!(pod.EntryData is PurchaseOrders p)) return;
-            if (p.PreviousCNumber != null)
+            if ((pod.EntryData is PurchaseOrders p))
             {
-                AddPreviousDocument(currentAsycudaDocumentSet, cdoc, p, alst);
+                if (p.PreviousCNumber != null)
+                {
+                    AddPreviousDocument(currentAsycudaDocumentSet, cdoc, p, alst);
+                }
+
+                AttachToDocument(alst.GroupBy(x => new FileInfo(x.FilePath).Name).Select(x => x.Last()).ToList(),
+                    cdoc.Document, cdoc.DocumentItems);
             }
 
-            AttachToDocument(alst.GroupBy(x => new FileInfo(x.FilePath).Name).Select(x => x.Last()).ToList(),
-                cdoc.Document, cdoc.DocumentItems);
+            if ((pod.EntryData is Adjustments a))
+            {
+                var itm = cdoc.DocumentItems.FirstOrDefault();
+                if (itm != null && !itm.xcuda_Attached_documents.Any())
+                {
+                    var file = new FileInfo(a.SourceFile);
+                    itm.xcuda_Attached_documents.Add(new xcuda_Attached_documents(true)
+                    {
+
+                        Attached_document_code =
+                            DataSpace.BaseDataModel.Instance.ExportTemplates.FirstOrDefault(x =>
+                                x.Customs_Procedure == cdoc.Document.xcuda_ASYCUDA_ExtendedProperties
+                                    .Customs_Procedure.CustomsProcedure)?.AttachedDocumentCode ?? "IV05",
+                        Attached_document_date = DateTime.Today.Date.ToShortDateString(),
+                        Attached_document_reference = file.Name,
+                        xcuda_Attachments = new List<xcuda_Attachments>()
+                        {
+                            new xcuda_Attachments(true)
+                            {
+                                Attachments = new global::DocumentItemDS.Business.Entities.Attachments(true)
+                                {
+                                    FilePath = Path.Combine(file.FullName + ".pdf"),
+                                    TrackingState = TrackingState.Added,
+                                    DocumentCode = DataSpace.BaseDataModel.Instance.ExportTemplates.FirstOrDefault(x =>
+                                        x.Customs_Procedure == cdoc.Document.xcuda_ASYCUDA_ExtendedProperties
+                                            .Customs_Procedure.CustomsProcedure)?.AttachedDocumentCode ?? "IV05",
+                                    EmailId = a.EmailId,
+                                    Reference = file.Name,
+                                },
+
+                                TrackingState = TrackingState.Added
+                            }
+                        },
+                        TrackingState = TrackingState.Added
+                    });
+
+                    itm.xcuda_Attached_documents.Add(new xcuda_Attached_documents(true)
+                    {
+                        Attached_document_code =
+                            DataSpace.BaseDataModel.Instance.ExportTemplates.FirstOrDefault(x =>
+                                x.Customs_Procedure == cdoc.Document.xcuda_ASYCUDA_ExtendedProperties
+                                    .Customs_Procedure.CustomsProcedure)?.AttachedDocumentCode ?? "IV05",
+                        Attached_document_date = DateTime.Today.Date.ToShortDateString(),
+                        Attached_document_reference = cdoc.Document.ReferenceNumber,
+                        xcuda_Attachments = new List<xcuda_Attachments>()
+                        {
+                            new xcuda_Attachments(true)
+                            {
+                                Attachments = new global::DocumentItemDS.Business.Entities.Attachments(true)
+                                {
+                                    FilePath =
+                                        (DataSpace.BaseDataModel.Instance.CurrentApplicationSettings.DataFolder == null
+                                            ? cdoc.Document.ReferenceNumber + ".csv.pdf"
+                                            : $"{DataSpace.BaseDataModel.Instance.CurrentApplicationSettings.DataFolder}\\{cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.AsycudaDocumentSet.Declarant_Reference_Number}\\{cdoc.Document.ReferenceNumber}.csv.pdf"),
+                                    TrackingState = TrackingState.Added,
+                                    DocumentCode = DataSpace.BaseDataModel.Instance.ExportTemplates.FirstOrDefault(x =>
+                                        x.Customs_Procedure == cdoc.Document.xcuda_ASYCUDA_ExtendedProperties
+                                            .Customs_Procedure.CustomsProcedure)?.AttachedDocumentCode ?? "IV05",
+                                    EmailId = a.EmailId,
+                                    Reference = file.Name,
+                                },
+                                TrackingState = TrackingState.Added
+                            }
+                        },
+                        TrackingState = TrackingState.Added
+                    });
+                }
+            }
         }
 
         private static void AddPreviousDocument(AsycudaDocumentSet currentAsycudaDocumentSet, DocumentCT cdoc, PurchaseOrders p,

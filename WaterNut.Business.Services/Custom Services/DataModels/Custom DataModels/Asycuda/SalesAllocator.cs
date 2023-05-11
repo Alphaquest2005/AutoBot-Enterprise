@@ -34,7 +34,7 @@ namespace WaterNut.DataSpace
             var res = groupItemSets.Value.group.Value.Select(v => v.Value.Select(z => ((KeyValuePair<(DateTime EntryDataDate, string EntryDataId, string ItemNumber, int InventoryItemId), AllocationsBaseModel.ItemSet >)z).Value).ToList())
                 .AsParallel()
                 .WithDegreeOfParallelism(Convert.ToInt32(Environment.ProcessorCount *
-                                                         BaseDataModel.Instance.ResourcePercentage)).Select(async x => await AllocateSales(allocateToLastAdjustment, x).ConfigureAwait(false))
+                                                         BaseDataModel.Instance.ResourcePercentage)).Select(async x => await AllocateSales(allocateToLastAdjustment, false, x).ConfigureAwait(false))
                 .ToList();
 
             var alloLst = res.SelectMany(x => x.Result)
@@ -66,7 +66,8 @@ namespace WaterNut.DataSpace
 
         }
 
-        public async Task<List<(List<EntryDataDetails> Sales, List<xcuda_Item> asycudaItems)>> AllocateSales(bool allocateToLastAdjustment, List<AllocationsBaseModel.ItemSet> itemSets)
+        public async Task<List<(List<EntryDataDetails> Sales, List<xcuda_Item> asycudaItems)>> AllocateSales(
+            bool allocateToLastAdjustment, bool onlyNewAllocations, List<AllocationsBaseModel.ItemSet> itemSets)
         {
             StatusModel.StartStatusUpdate("Allocating Item Sales", itemSets.Count());
             var t = 0;
@@ -86,7 +87,7 @@ namespace WaterNut.DataSpace
                     var sales = SortEntryDataDetailsList(itm);
                     var asycudaItems = SortAsycudaItems(itm);
 
-                    await AllocateSalestoAsycudaByKey(sales, asycudaItems, t, count, allocateToLastAdjustment, orderedLst,salesLst).ConfigureAwait(false);
+                    await AllocateSalestoAsycudaByKey(sales, asycudaItems, t, count, allocateToLastAdjustment, onlyNewAllocations, orderedLst,salesLst).ConfigureAwait(false);
 
                     res.Add((sales, asycudaItems));
 
@@ -128,7 +129,7 @@ namespace WaterNut.DataSpace
         }
 
         private async Task AllocateSalestoAsycudaByKey(List<EntryDataDetails> saleslst, List<xcuda_Item> asycudaEntries,
-            double currentSetNo, int setNo, bool allocateToLastAdjustment,
+            double currentSetNo, int setNo, bool allocateToLastAdjustment, bool onlyNewAllocations,
             List<AllocationsBaseModel.ItemSet> salesSet, List<EntryDataDetails> salesLst)
         {
             try
@@ -267,6 +268,11 @@ namespace WaterNut.DataSpace
                             }
                             i -= 2;
 
+                        }
+                        else if (onlyNewAllocations && cAsycudaItm.ItemQuantity <= cAsycudaItm.PiQuantity)
+                        {
+                            CurrentAsycudaItemIndex += 1;
+                            continue;
                         }
                         else
                         {

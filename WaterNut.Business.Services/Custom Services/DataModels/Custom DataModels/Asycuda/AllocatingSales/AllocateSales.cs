@@ -26,13 +26,14 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
 
      
 
-        public async Task Execute(ApplicationSettings applicationSettings, bool allocateToLastAdjustment, string lst= null)
+        public async Task Execute(ApplicationSettings applicationSettings, bool allocateToLastAdjustment,
+            bool onlyNewAllocations, string lst = null)
         {
             try
             {
                 List<List<(string ItemNumber, int InventoryItemId)>> itemSets = DataSpace.BaseDataModel.GetItemSets(lst);
                 //var dupitemsets = itemSets.Where(x => x.Any(z => z.ItemNumber == "MMM/62556752301")).ToList();
-                Execute(applicationSettings, allocateToLastAdjustment, itemSets);
+                Execute(applicationSettings, allocateToLastAdjustment, onlyNewAllocations, itemSets);
             }
             catch (Exception ex)
             {
@@ -42,7 +43,8 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
 
         }
 
-        public void Execute(ApplicationSettings applicationSettings, bool allocateToLastAdjustment, List<List<(string ItemNumber, int InventoryItemId)>> itemSets)
+        public void Execute(ApplicationSettings applicationSettings, bool allocateToLastAdjustment, bool onlyNewAllocations,
+            List<List<(string ItemNumber, int InventoryItemId)>> itemSets)
         {
             SQLBlackBox.RunSqlBlackBox();
 
@@ -83,7 +85,7 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
                 // .WithDegreeOfParallelism(1)
                 .ForAll(x =>
                     new OldSalesAllocator()
-                        .AllocateSalesByMatchingSalestoAsycudaEntriesOnItemNumber(allocateToLastAdjustment, x).Wait());
+                        .AllocateSalesByMatchingSalestoAsycudaEntriesOnItemNumber(allocateToLastAdjustment, onlyNewAllocations, x).Wait());
 
 
             itemSets

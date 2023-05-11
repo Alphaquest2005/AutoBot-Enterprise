@@ -158,8 +158,7 @@ namespace AutoBot
 
                 new OldSalesAllocator()
                     .AllocateSalesByMatchingSalestoAsycudaEntriesOnItemNumber(
-                        BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId, false,
-                        strLst).Wait();
+                        BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId, false, false, strLst).Wait();
 
                 new MarkErrors()
                     .Execute(BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId).Wait();

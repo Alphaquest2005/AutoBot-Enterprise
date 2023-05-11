@@ -35,7 +35,7 @@ namespace AutoBotUtilities.Tests
             Infrastructure.Utils.SetTestApplicationSettings(6);
             ImportTestFile();
             ImportTestIM7();
-            new AllocateSales().Execute(BaseDataModel.Instance.CurrentApplicationSettings, false)
+            new AllocateSales().Execute(BaseDataModel.Instance.CurrentApplicationSettings, false, false)
                 .Wait();
 
 

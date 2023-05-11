@@ -65,9 +65,9 @@ namespace AllocationQS.Client.Services
         }
 
         public async Task AllocateSales(ApplicationSettings applicationSettings,
-            bool allocateToLastAdjustment)
+            bool allocateToLastAdjustment, bool onlyNewAllocations)
         {
-            await Channel.AllocateSales(applicationSettings, allocateToLastAdjustment).ConfigureAwait(false);
+            await Channel.AllocateSales(applicationSettings, allocateToLastAdjustment, onlyNewAllocations).ConfigureAwait(false);
         }
 
         public async Task ReBuildSalesReports()
