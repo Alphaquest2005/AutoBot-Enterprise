@@ -979,6 +979,14 @@ namespace WaterNut.DataSpace
                 .ToList();
             if ((pod.EntryData is PurchaseOrders p))
             {
+                 var ialst = currentAsycudaDocumentSet.AsycudaDocumentSet_Attachments
+                    .Where(x => x.Attachment.FilePath.Contains(p.SupplierInvoiceNo) &&
+                                (x.FileType.DocumentCode == "IV05" || x.FileType.DocumentCode == "DO02")
+                    )
+                    .Select(x => x.Attachment)
+                    .DistinctBy(x => x.Id)
+                    .ToList();
+                 alst.AddRange(ialst);
                 if (p.PreviousCNumber != null)
                 {
                     AddPreviousDocument(currentAsycudaDocumentSet, cdoc, p, alst);
