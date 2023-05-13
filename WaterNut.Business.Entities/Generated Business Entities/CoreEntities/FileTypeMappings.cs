@@ -146,6 +146,21 @@ namespace CoreEntities.Business.Entities
         }
         bool _replaceonlynulls;
         [DataMember]
+        public bool ReplicateColumnValues 
+        {
+            get
+            {
+                return _replicatecolumnvalues;
+            }
+            set
+            {
+                _replicatecolumnvalues = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        bool _replicatecolumnvalues;
+        [DataMember]
         public FileTypes FileTypes { get; set; }
         [DataMember]
         public List<FileTypeMappingRegExs> FileTypeMappingRegExs { get; set; }

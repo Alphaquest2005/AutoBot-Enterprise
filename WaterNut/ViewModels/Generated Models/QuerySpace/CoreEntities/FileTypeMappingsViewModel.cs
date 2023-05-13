@@ -318,6 +318,24 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
         }	
 
  
+
+		private Boolean? _replicateColumnValuesFilter;
+        public Boolean? ReplicateColumnValuesFilter
+        {
+            get
+            {
+                return _replicateColumnValuesFilter;
+            }
+            set
+            {
+                _replicateColumnValuesFilter = value;
+				NotifyPropertyChanged(x => ReplicateColumnValuesFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
 		internal bool DisableBaseFilterData = false;
         public virtual void FilterData()
 	    {
@@ -370,6 +388,10 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 
 									if(ReplaceOnlyNullsFilter.HasValue)
 						res.Append(" && " + string.Format("ReplaceOnlyNulls == {0}",  ReplaceOnlyNullsFilter));						
+ 
+
+									if(ReplicateColumnValuesFilter.HasValue)
+						res.Append(" && " + string.Format("ReplicateColumnValues == {0}",  ReplicateColumnValuesFilter));						
 			return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
@@ -408,7 +430,10 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     Comments = x.Comments ,
                     
  
-                    ReplaceOnlyNulls = x.ReplaceOnlyNulls 
+                    ReplaceOnlyNulls = x.ReplaceOnlyNulls ,
+                    
+ 
+                    ReplicateColumnValues = x.ReplicateColumnValues 
                     
                 }).ToList()
             };
@@ -437,6 +462,9 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     
  
                     public bool ReplaceOnlyNulls { get; set; } 
+                    
+ 
+                    public bool ReplicateColumnValues { get; set; } 
                     
         }
 

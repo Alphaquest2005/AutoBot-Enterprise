@@ -173,6 +173,21 @@ public bool ReplaceOnlyNulls
 		}
      
 
+       [RequiredValidationAttribute(ErrorMessage= "ReplicateColumnValues is required")]
+       
+public bool ReplicateColumnValues
+		{ 
+		    get { return this.filetypemappings.ReplicateColumnValues; }
+			set
+			{
+			    if (value == this.filetypemappings.ReplicateColumnValues) return;
+				this.filetypemappings.ReplicateColumnValues = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("ReplicateColumnValues");
+			}
+		}
+     
+
        private FileTypes _FileTypes;
         public  FileTypes FileTypes
 		{
