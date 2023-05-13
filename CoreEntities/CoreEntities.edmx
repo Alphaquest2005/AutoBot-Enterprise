@@ -353,6 +353,7 @@
           <Property Name="Required" Type="bit" Nullable="false" />
           <Property Name="Comments" Type="nvarchar" MaxLength="255" />
           <Property Name="ReplaceOnlyNulls" Type="bit" Nullable="false" />
+          <Property Name="ReplicateColumnValues" Type="bit" Nullable="false" />
         </EntityType>
         <EntityType Name="FileTypeReplaceRegex">
           <Key>
@@ -4973,6 +4974,7 @@ FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
           <NavigationProperty Name="FileTypeMappingRegExs" Relationship="WaterNutDBModel.FK_FileTypeMappingRegExs_FileTypeMappings" FromRole="FileTypeMappings" ToRole="FileTypeMappingRegExs" />
           <Property Name="Comments" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="ReplaceOnlyNulls" Type="Boolean" Nullable="false" />
+          <Property Name="ReplicateColumnValues" Type="Boolean" Nullable="false" />
         </EntityType>
         <Association Name="FK_FileTypeMappings_FileTypes">
           <End Type="WaterNutDBModel.FileTypes" Role="FileTypes" Multiplicity="1">
@@ -7484,6 +7486,7 @@ FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
           <EntitySetMapping Name="FileTypeMappings">
             <EntityTypeMapping TypeName="WaterNutDBModel.FileTypeMappings">
               <MappingFragment StoreEntitySet="FileTypeMappings">
+                <ScalarProperty Name="ReplicateColumnValues" ColumnName="ReplicateColumnValues" />
                 <ScalarProperty Name="ReplaceOnlyNulls" ColumnName="ReplaceOnlyNulls" />
                 <ScalarProperty Name="Comments" ColumnName="Comments" />
                 <ScalarProperty Name="Required" ColumnName="Required" />

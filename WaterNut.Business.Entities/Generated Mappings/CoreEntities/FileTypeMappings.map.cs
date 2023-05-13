@@ -21,6 +21,7 @@
               this.Property(t => t.Required).HasColumnName("Required");
               this.Property(t => t.Comments).HasColumnName("Comments").HasMaxLength(255);
               this.Property(t => t.ReplaceOnlyNulls).HasColumnName("ReplaceOnlyNulls");
+              this.Property(t => t.ReplicateColumnValues).HasColumnName("ReplicateColumnValues");
               this.HasRequired(t => t.FileTypes).WithMany(t =>(ICollection<FileTypeMappings>) t.FileTypeMappings).HasForeignKey(d => d.FileTypeId);
               this.HasMany(t => t.FileTypeMappingRegExs).WithRequired(t => (FileTypeMappings)t.FileTypeMappings);
              // Tracking Properties

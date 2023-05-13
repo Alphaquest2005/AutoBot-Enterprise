@@ -125,6 +125,19 @@ namespace CoreEntities.Client.DTO
 		}
         private bool _ReplaceOnlyNulls;
 
+        [DataMember]
+        public bool ReplicateColumnValues
+		{ 
+		    get { return _ReplicateColumnValues; }
+			set
+			{
+			    if (value == _ReplicateColumnValues) return;
+				_ReplicateColumnValues = value;
+				NotifyPropertyChanged();//m => this.ReplicateColumnValues
+			}
+		}
+        private bool _ReplicateColumnValues;
+
        
         [DataMember]
         public FileTypes FileTypes

@@ -73,7 +73,11 @@ namespace xlsxWriter
                                 || (!shipmentInvoice.ShipmentInvoicePOs.Any() && x.InvoiceNo == shipmentInvoice.InvoiceNo)))
                             .ToList();
 
-                        var isCombined = !packingLst.Any() ||  packingLst.FirstOrDefault(x => x.InvoiceNo == shipmentInvoice.InvoiceNo).Packages == 0;
+                        var isCombined = !packingLst.Any() 
+                                         ||  packingLst.FirstOrDefault(x => x.InvoiceNo == shipmentInvoice.InvoiceNo).Packages == 0 
+                                         || (shipmentInvoice.ShipmentInvoicePOs.Count == 1 
+                                                && shipmentInvoice.ShipmentInvoicePOs.First().PurchaseOrders.ShipmentInvoicePOs.Count > 1 && shipmentInvoices.Count > 1
+                                                && parent != null);
 
 
                         
@@ -110,8 +114,9 @@ namespace xlsxWriter
                         {
                             foreach (var pO in shipmentInvoice.ShipmentInvoicePOs)
                             {
-                                pdfFilePath = Path.Combine(pdfFile.DirectoryName,
-                                    $"{pO.PurchaseOrders.PONumber.Replace("/", "-")}.pdf");
+                                pdfFilePath = !isCombined || shipmentInvoice.ShipmentInvoicePOs.First().PurchaseOrders.ShipmentInvoicePOs.Count == 1 
+                                            ? Path.Combine(pdfFile.DirectoryName, $"{pO.PurchaseOrders.PONumber.Replace("/", "-")}.pdf")
+                                            : Path.Combine(pdfFile.DirectoryName, $"{shipmentInvoice.InvoiceNo.Replace("/", "-")}.pdf");
 
 
                                 WritePOToFile(pO, workbook, header, doRider, packingLst, invoiceRow,
@@ -119,7 +124,22 @@ namespace xlsxWriter
 
 
                                 if (pdfFile.FullName != pdfFilePath)
-                                    File.Copy(pdfFile.FullName, pdfFilePath, true);
+                                {
+                                    //compare pdfFile and pdfFilePath ignore case
+                                    if (String.Compare(pdfFile.FullName, pdfFilePath, StringComparison.OrdinalIgnoreCase) == 0)
+                                    {
+                                        File.Move(pdfFile.FullName, pdfFile.FullName + "1");
+                                        File.Move(pdfFile.FullName +"1", pdfFilePath);
+                                    }
+                                    else
+                                    {
+                                         File.Copy(pdfFile.FullName, pdfFilePath, true);
+                                    }
+
+
+                                   
+                                }
+                                    
                                 csvs.Add((pO.PurchaseOrders.PONumber, pdfFilePath));
                             }
 
@@ -250,6 +270,7 @@ namespace xlsxWriter
             foreach (var itm in pO.PurchaseOrders.EntryDataDetails
                 .OrderBy(x =>
                     x.INVItems.FirstOrDefault()?.InvoiceDetails?.FileLineNumber ?? x.FileLineNumber)
+                .Where(x => x.INVItems.Any(z => packageDetails.Any(p => p.InvoiceNo == z.InvoiceNo)))
                 .Where(x => x.INVItems.Any() || (!x.INVItems.Any() &&
                                              pO.POMISMatches.All(m => m.POItemCode != x.ItemNumber &&
                                                                       m.PODescription != x.ItemDescription /* m.PODetailsId != x.EntryDataDetailsId ---- Took this out because it Allowed the grouped po items to still show*/))))
@@ -455,6 +476,10 @@ namespace xlsxWriter
 
             var rematched = ReMatchOnItemDescription(shipmentInvoicePoItemMisMatchesList);
 
+            var filteredMatches = rematched
+                .Where(x => //(x.PODetailsId == null || x.PODetailsId != null)  &&
+                            x.InvoiceNo == null ||(x.InvoiceNo != null && x.InvoiceNo == shipmentInvoice.InvoiceNo)).ToList();
+
             var header =
                 "PONumber,POItemCode,PODescription,POCost,POQuantity,POTotalCost,PODetailsId,InvoiceNo,INVItemCode,INVDescription,INVCost,INVQuantity,INVSalesFactor,INVTotalCost,INVDetailsId"
                     .Split(',').ToList();
@@ -471,7 +496,7 @@ namespace xlsxWriter
 
             var i = workbook.CurrentWorksheet.GetLastRowNumber() + 1;
             var startRow = i;
-            foreach (var mis in rematched)
+            foreach (var mis in filteredMatches)
             {
                 SetValue(workbook, i, header.IndexOf("PONumber"), mis.PONumber);
                 SetValue(workbook, i, header.IndexOf("InvoiceNo"), mis.InvoiceNo);
