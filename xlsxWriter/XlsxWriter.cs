@@ -128,8 +128,8 @@ namespace xlsxWriter
                                     //compare pdfFile and pdfFilePath ignore case
                                     if (String.Compare(pdfFile.FullName, pdfFilePath, StringComparison.OrdinalIgnoreCase) == 0)
                                     {
-                                        File.Copy(pdfFile.FullName, pdfFile.FullName + "1", true);
-                                        File.Copy(pdfFile.FullName +"1", pdfFilePath, true);
+                                        File.Move(pdfFile.FullName, pdfFile.FullName + "1");
+                                        File.Move(pdfFile.FullName +"1", pdfFilePath);
                                     }
                                     else
                                     {
