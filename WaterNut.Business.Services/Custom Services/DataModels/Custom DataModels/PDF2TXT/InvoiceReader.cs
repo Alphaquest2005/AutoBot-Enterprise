@@ -69,7 +69,7 @@ namespace WaterNut.DataSpace
                 //Get Template
                 var templates = GetTemplates(x => true);
 
-                var possibleInvoices = GetPossibleInvoices(templates, pdfTxt);
+                var possibleInvoices = GetPossibleInvoices(templates, pdfTxt).ToList();
                 foreach (var tmp in possibleInvoices)//.Where(x => x.OcrInvoices.Id == 117)
                     try
                     {
