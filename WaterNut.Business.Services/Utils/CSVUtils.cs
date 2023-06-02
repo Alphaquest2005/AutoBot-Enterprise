@@ -270,7 +270,25 @@ namespace WaterNut.Business.Services.Utils
             
             AddLineNumbers(dRows);
 
+            ReplicateColumns(dRows, fileType);
+
             return false;
+        }
+
+        private static void ReplicateColumns(List<DataRow> dRows, FileTypes fileType)
+        {
+            var rcols = fileType.FileTypeMappings.Where(x => x.ReplicateColumnValues == true).ToList();
+            if (!rcols.Any()) return;
+            foreach (var row in dRows)
+            {
+                foreach (var mapping in rcols)
+                {
+
+                }
+            }
+
+
+
         }
 
         private static void HasFileMappings(FileTypes fileType)
