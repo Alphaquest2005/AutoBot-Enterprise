@@ -100,8 +100,12 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
              _ex9AsycudaSalesAllocations = null;
           
              var docs = new List<DocumentCT>();
+             var docPreviousItems =
+                 new Dictionary<int,
+                     List<PreviousItems>>(); // moved here because the reloaded month data already has data 
+             // move higher because i need data entire run
 
-             var checkedFilterExpression = EnsureEx9Filters(filterExp);
+                var checkedFilterExpression = EnsureEx9Filters(filterExp);
                
 
              var realStartDate = GetWholeRangeFilter(checkedFilterExpression, out var realEndDate,  out var exPro, out var rdateFilter, out var realFilterExp);
@@ -124,7 +128,7 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
                 .ForAll(async filter => await CreateDutyFreePaidEntries(docSet, documentType, ex9BucketType, isGrouped,
                     checkQtyAllocatedGreaterThanPiQuantity, checkForMultipleMonths, applyEx9Bucket, applyHistoricChecks,
                     applyCurrentChecks, perInvoice, autoAssess, overPIcheck, universalPIcheck, itemPIcheck, filter,
-                    exPro, getEx9DataMem, docs).ConfigureAwait(false));
+                    exPro, getEx9DataMem, docs, docPreviousItems).ConfigureAwait(false));
 
 
 
@@ -151,16 +155,21 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
                 .Aggregate(filterExp, (o, n) => $"{o} {n}");
         }
 
-        private async Task CreateDutyFreePaidEntries(AsycudaDocumentSet docSet, string documentType, string ex9BucketType,
-            bool isGrouped, bool checkQtyAllocatedGreaterThanPiQuantity, bool checkForMultipleMonths, bool applyEx9Bucket,
+        private async Task CreateDutyFreePaidEntries(AsycudaDocumentSet docSet, string documentType,
+            string ex9BucketType,
+            bool isGrouped, bool checkQtyAllocatedGreaterThanPiQuantity, bool checkForMultipleMonths,
+            bool applyEx9Bucket,
             bool applyHistoricChecks, bool applyCurrentChecks, bool perInvoice, bool autoAssess, bool overPIcheck,
-            bool universalPIcheck, bool itemPIcheck, (string currentFilter, string dateFilter, DateTime startDate, DateTime endDate) filter,
-            string exPro, GetEx9DataMem getEx9DataMem,  List<DocumentCT> docs)
+            bool universalPIcheck, bool itemPIcheck,
+            (string currentFilter, string dateFilter, DateTime startDate, DateTime endDate) filter,
+            string exPro, GetEx9DataMem getEx9DataMem, List<DocumentCT> docs,
+            Dictionary<int, List<PreviousItems>> docPreviousItems)
         {
             List<string> errors = new List<string>();
-            var docPreviousItems =
-                new Dictionary<int,
-                    List<PreviousItems>>(); // moved here because the reloaded month data already has data 
+            //var docPreviousItems =
+            //    new Dictionary<int,
+            //        List<PreviousItems>>(); // moved here because the reloaded month data already has data 
+            //// move higher because i need data entire run
             var allocationDataBlocks =
                 (await new CreateAllocationDataBlocks().Execute(filter.currentFilter + exPro, errors, filter, getEx9DataMem, PerIM7)
                     .ConfigureAwait(false))

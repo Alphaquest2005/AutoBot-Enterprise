@@ -1564,7 +1564,7 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
                 }
                 else
                 {
-                    pitm.Net_weight = Convert.ToDecimal(Math.Round(iw, 2, MidpointRounding.ToEven));
+                    pitm.Net_weight = Convert.ToDecimal(Math.Truncate(iw * 100) / 100);
                 }
 
                 pitm.Prev_net_weight = pw; //Convert.ToDouble((pw/pod.EX9Allocation.SalesFactor) - rw);

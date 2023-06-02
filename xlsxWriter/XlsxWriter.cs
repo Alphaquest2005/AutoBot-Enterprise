@@ -120,7 +120,7 @@ namespace xlsxWriter
 
 
                                 WritePOToFile(pO, workbook, header, doRider, packingLst, invoiceRow,
-                                    (shipmentInvoice.ShipmentInvoicePOs.Count > 1));
+                                    (shipmentInvoice.ShipmentInvoicePOs.Count > 1));//
 
 
                                 if (pdfFile.FullName != pdfFilePath)
@@ -253,8 +253,9 @@ namespace xlsxWriter
             var i = workbook.CurrentWorksheet
                 .GetLastRowNumber(); //== 1? 1: workbook.CurrentWorksheet.GetLastRowNumber() + 1;
             if (combineedFile
-                && workbook.CurrentWorksheet.HasCell(header.First(x => x.Key.Column == nameof(pO.PurchaseOrders.PONumber)).Key.Index, i)
-                && !string.IsNullOrEmpty(workbook.CurrentWorksheet.GetCell(header.First(x => x.Key.Column == nameof(pO.PurchaseOrders.PONumber)).Key.Index, i).Value.ToString()))
+                //&& workbook.CurrentWorksheet.HasCell(header.First(x => x.Key.Column == nameof(pO.PurchaseOrders.PONumber)).Key.Index, i)
+                //&& !string.IsNullOrEmpty(workbook.CurrentWorksheet.GetCell(header.First(x => x.Key.Column == nameof(pO.PurchaseOrders.PONumber)).Key.Index, i).Value.ToString())
+                && i > 1)
             {
                 i += 1;
             }
@@ -476,6 +477,8 @@ namespace xlsxWriter
 
             var rematched = ReMatchOnItemDescription(shipmentInvoicePoItemMisMatchesList);
 
+            //rematched = ReMatchOnPrice(rematched);
+
             var filteredMatches = rematched
                 .Where(x => //(x.PODetailsId == null || x.PODetailsId != null)  &&
                             x.InvoiceNo == null ||(x.InvoiceNo != null && x.InvoiceNo == shipmentInvoice.InvoiceNo)).ToList();
@@ -525,6 +528,50 @@ namespace xlsxWriter
 
             SetFormula(workbook, i + 2, header.IndexOf("INVTotalCost"),
                 $"=Sum({GetOrAddCell(workbook, header, startRow, "INVTotalCost").CellAddress}:{GetOrAddCell(workbook, header, i, "INVTotalCost").CellAddress})");
+        }
+
+        private static List<ShipmentInvoicePOItemMISMatches> ReMatchOnPrice(List<ShipmentInvoicePOItemMISMatches> shipmentInvoicePoItemMisMatchesList)
+        {
+            var POItems = shipmentInvoicePoItemMisMatchesList
+                                                .Where(x => !string.IsNullOrEmpty(x.PONumber) && string.IsNullOrEmpty(x.InvoiceNo))
+                                                .Select(x => (x.PONumber, x.POItemCode, x.PODescription, x.POCost, x.POQuantity, x.POTotalCost, x.PODetailsId, WordLst: GetWords(x.PODescription)))
+                                                .ToList();
+
+            var INVItems = shipmentInvoicePoItemMisMatchesList
+                                                    .Where(x => string.IsNullOrEmpty(x.PONumber) && !string.IsNullOrEmpty(x.InvoiceNo))
+                                                    .Select(x => (x.InvoiceNo, x.INVItemCode, x.INVDescription, x.INVCost, x.INVQuantity, x.INVTotalCost, x.INVDetailsId, WordLst: GetWords(x.INVDescription)))
+                                                    .ToList();
+            foreach (var poItem in POItems)
+            {
+                var match = INVItems.Select(x => new { itm = x, matches = poItem.WordLst.Intersect(x.WordLst).ToList() })
+                    .Where(x => x.matches.Count >= 1)
+                    .OrderBy(x => Math.Abs(poItem.POCost.GetValueOrDefault() - x.itm.INVCost.GetValueOrDefault()))
+                    .OrderBy(x => Math.Abs(poItem.POQuantity.GetValueOrDefault() - x.itm.INVQuantity.GetValueOrDefault()))
+                    //.OrderBy(x => Math.Abs(poItem.POTotalCost.GetValueOrDefault() - x.itm.INVTotalCost.GetValueOrDefault()))
+                    .ThenByDescending(x => x.matches.Count).ToList();
+                if (!match.Any()) continue;
+
+                var po = shipmentInvoicePoItemMisMatchesList.First(x => x.PODetailsId == poItem.PODetailsId);
+                var inv = shipmentInvoicePoItemMisMatchesList.First(x => x.INVDetailsId == match.First().itm.INVDetailsId);
+
+                if (shipmentInvoicePoItemMisMatchesList.Any(x => x.INVDetailsId == inv.INVDetailsId && x.PODetailsId == po.PODetailsId)) continue;
+
+
+                po.InvoiceNo = inv.InvoiceNo;
+                po.INVTotalCost = inv.INVTotalCost;
+                po.INVQuantity = inv.INVQuantity;
+                po.INVDetailsId = inv.INVDetailsId;
+                po.INVItemCode = inv.INVItemCode;
+                po.INVDescription = inv.INVDescription;
+                po.INVCost = inv.INVCost;
+                po.INVSalesFactor = po.POQuantity / inv.INVQuantity;
+                INVItems.Remove(match.First().itm);
+                shipmentInvoicePoItemMisMatchesList.Remove(inv);
+
+            }
+
+
+            return shipmentInvoicePoItemMisMatchesList;
         }
 
         private static List<ShipmentInvoicePOItemMISMatches> misMatches = null;
