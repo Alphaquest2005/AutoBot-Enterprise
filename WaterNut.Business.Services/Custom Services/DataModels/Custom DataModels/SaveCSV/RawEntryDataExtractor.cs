@@ -21,7 +21,7 @@ namespace WaterNut.DataSpace
         public static List<RawEntryData> CreateRawEntryData(List<dynamic> data, List<AsycudaDocumentSet> docSet, string emailId, FileTypes fileType, string droppedFilePath)
         {
             var ed = data.Select(x => (dynamic)x)
-                .GroupBy(es => (es.EntryDataId, es.EntryDataDate, es.CustomerName))
+                .GroupBy(es => (es.EntryDataId, es.EntryDataDate, es.SupplierInvoiceNo, es.CustomerName))
                 .Select(g => new RawEntryDataValue()
                 {
                     EntryData = new RawEntryDataValue.EntryDataValue(

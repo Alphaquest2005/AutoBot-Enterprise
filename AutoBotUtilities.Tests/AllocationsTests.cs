@@ -149,7 +149,8 @@ namespace AutoBotUtilities.Tests
         [TestCase("MAG/CO10-106", "3/1/2023", 60)]//1 marked as under allocated - left as is because discrepancy executed after cut off date
         [TestCase("DAI-JB4U15-3000DG-", "3/1/2023", 60)] // overallocated don't make sense
         [TestCase("ANR/ROC020", "3/1/2023", 60)] // overallocated don't make sense
-        
+        [TestCase("PVH/2322410", "3/1/2023", 60)] 
+
         /////////////////////// sandals
         [TestCase("0756-1474", "3/1/2023", 60)]
 

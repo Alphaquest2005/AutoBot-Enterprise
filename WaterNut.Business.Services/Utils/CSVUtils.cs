@@ -270,20 +270,26 @@ namespace WaterNut.Business.Services.Utils
             
             AddLineNumbers(dRows);
 
-            ReplicateColumns(dRows, fileType);
+            ReplicateColumns(dRows,header, fileType);
 
             return false;
         }
 
-        private static void ReplicateColumns(List<DataRow> dRows, FileTypes fileType)
+        private static void ReplicateColumns(List<DataRow> dRows, DataRow header, FileTypes fileType)
         {
-            var rcols = fileType.FileTypeMappings.Where(x => x.ReplicateColumnValues == true).ToList();
+            var rcols = fileType.FileTypeMappings.Where(x => x.ReplicateColumnValues).ToList();
             if (!rcols.Any()) return;
+            var preValues = new Dictionary<int, dynamic>();
             foreach (var row in dRows)
             {
+                if(row == header) continue;
                 foreach (var mapping in rcols)
                 {
-
+                    var mappingOriginalName = header.ItemArray.Select(x => x.ToString().ToUpper()).ToList().IndexOf(mapping.OriginalName.ToUpper());
+                    if(mappingOriginalName == -1) continue;
+                    if(!preValues.ContainsKey(mapping.Id)) preValues.Add(mapping.Id, row[mappingOriginalName]);
+                    if (!string.IsNullOrEmpty(row[mappingOriginalName].ToString()) && row[mappingOriginalName] != preValues[mapping.Id]) preValues[mapping.Id] = row[mappingOriginalName];
+                        row[mappingOriginalName] = preValues[mapping.Id];
                 }
             }
 
