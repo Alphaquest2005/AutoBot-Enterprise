@@ -93,6 +93,7 @@ namespace AdjustmentQS.Business.Services
                                 EntryDataDate = (DateTime) x.InvoiceDate,
                                 EmailId = x.EmailId,
                                 Vendor = x.Vendor,
+                               // SourceFile = x.SourceFile,
                                 FileTypeId = x.FileTypeId
                             },
                             InventoryItemEx = new InventoryItemsEx
