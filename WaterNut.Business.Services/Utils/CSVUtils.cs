@@ -534,7 +534,7 @@ namespace WaterNut.Business.Services.Utils
         {
             string output = $@"{file.DirectoryName}\{file.Name.Replace(".csv", "")}-Fixed{file.Extension}";
             StreamWriter csv = new StreamWriter(output, false);
-            csv.Write(table.OrderBy(x => x.Key).Select(x => x.Value).Aggregate((a, x) => a + x));
+            csv.Write(table.OrderBy(x => x.Key).Select(x => x.Value).DefaultIfEmpty("").Aggregate((a, x) => a + x));
             csv.Close();
             return output;
         }
