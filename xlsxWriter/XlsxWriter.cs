@@ -602,7 +602,7 @@ namespace xlsxWriter
                 if (!match.Any()) continue;
 
                 var po = shipmentInvoicePoItemMisMatchesList.First(x => x.PODetailsId == poItem.PODetailsId);
-                var inv = shipmentInvoicePoItemMisMatchesList.First(x => x.INVDetailsId == match.First().itm.INVDetailsId);
+                var inv = shipmentInvoicePoItemMisMatchesList.First(x => x.INVDetailsId == match.OrderByDescending(z => z.matches.Count()).First().itm.INVDetailsId);
 
                 if(shipmentInvoicePoItemMisMatchesList.Any(x => x.INVDetailsId == inv.INVDetailsId && x.PODetailsId == po.PODetailsId)) continue;
 
