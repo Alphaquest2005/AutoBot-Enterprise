@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using MoreLinq.Extensions;
 
 namespace WaterNut.DataSpace
 {
@@ -17,5 +19,9 @@ namespace WaterNut.DataSpace
         public int xcuda_ItemId { get; set; }
         public string Description { get; set; }
         public DateTime ExpiryDate { get; set; }
+
+        public double PiQuantity =>
+            this.previousItems.DistinctBy(x => x.PreviousItem_Id).DefaultIfEmpty(new PreviousItems())
+                .Sum(xx => xx.Suplementary_Quantity);
     }
 }

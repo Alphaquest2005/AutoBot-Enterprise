@@ -98,6 +98,7 @@ namespace WaterNut.Business.Services.Importers
 
                        if(oldInvoiceNo != InvoiceNo && !addrow) row[poHeaderRow.IndexOf("Supplier Invoice#")] = InvoiceNo;
                         row[poHeaderRow.IndexOf("PO Number")] = misMatch[misHeaderRow.IndexOf("PONumber")];
+                        row[poHeaderRow.IndexOf("Supplier Invoice#")] = misMatch[misHeaderRow.IndexOf("InvoiceNo")];
                         row[poHeaderRow.IndexOf("Date")] = poTemplateRow[poHeaderRow.IndexOf("Date")];
                         row[poHeaderRow.IndexOf("PO Item Number")] = poItemCode;
                         row[poHeaderRow.IndexOf("Supplier Item Number")] = invItemCode;

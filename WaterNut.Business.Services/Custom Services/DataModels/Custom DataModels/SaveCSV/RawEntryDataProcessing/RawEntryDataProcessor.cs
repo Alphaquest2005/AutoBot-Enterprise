@@ -24,7 +24,7 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
             var goodLst = entryDataLst
                 .Where(x => x.Item.EntryDataDetails.Any())
                 .Where(x => x.Item.EntryData.EntryDataId != null && (allowNullEntryDataDate || x.Item.EntryData.EntryDataDate != null))
-                .DistinctBy(x => x.Item.EntryData.EntryDataId)
+                .DistinctBy(x => new { x.Item.EntryData.EntryDataId, x.Item.EntryData.SupplierInvoiceNo})
                 .ToList();
             return goodLst;
         }

@@ -127,10 +127,10 @@ namespace WaterNut.QuerySpace.AllocationQS.ViewModels
         {
             try
             {
-                using (var ctx = new AsycudaSalesAllocationsExRepository())
+                using (var ctx = new AsycudaSalesAndAdjustmentAllocationsExRepository())
                 {
                     var alst =
-                        (await ctx.GetAsycudaSalesAllocationsExsByExpression(
+                        (await ctx.GetAsycudaSalesAndAdjustmentAllocationsExesByExpression(
                                 $"xASYCUDA_Id == {ASYCUDA_Id} " + "&& EntryDataDetailsId != null " +
                                 "&& PreviousItem_Id != null" + "&& pRegistrationDate != null")
                             .ConfigureAwait(false)).ToList();

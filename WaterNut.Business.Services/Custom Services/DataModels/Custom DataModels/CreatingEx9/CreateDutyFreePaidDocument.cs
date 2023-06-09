@@ -596,6 +596,7 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
 
                 if (mypod.EntlnData.pDocumentItem.ExpiryDate <= DateTime.Now && (DataSpace.BaseDataModel.Instance.CurrentApplicationSettings.ExportExpiredEntries??true) == false)
                 {
+                    if(Math.Abs(mypod.EntlnData.pDocumentItem.ItemQuantity - mypod.EntlnData.pDocumentItem.PiQuantity) > 0)
                      UpdateXStatus(mypod.Allocations,
                         $@"Expired Entry: '{
                             mypod.EntlnData.pDocumentItem.ExpiryDate.ToShortDateString()}'",ref sql);
@@ -1285,11 +1286,11 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
                 {
                     sql +=
                         $@"Insert into AsycudaSalesAllocations(QtyAllocated, EntryDataDetailsId, PreviousItem_Id, EANumber, SANumber,Status, xStatus)
-                                           Values ({a.QtyAllocated},{a.EntryDataDetailsId},{a.PreviousItem_Id},{a.EANumber},{a.SANumber},'{a.Status}','{a.xStatus}');\r\n";
+                                           Values ({a.QtyAllocated},{a.EntryDataDetailsId},{a.PreviousItem_Id},{a.EANumber},{a.SANumber},'{a.Status}','{a.xStatus.Replace("'", "''")}');\r\n";
                 }
                 else
                 {
-                    sql += $"Update AsycudaSalesAllocations Set xStatus = \'{xstatus}\' where allocationId = {a.AllocationId} ;\r\n";
+                    sql += $"Update AsycudaSalesAllocations Set xStatus = \'{xstatus.Replace("'", "''")}\' where allocationId = {a.AllocationId} ;\r\n";
                 }
                 
             }
