@@ -25,6 +25,7 @@ namespace WaterNut.DataSpace
             {
                 var itms = eslst.Cast<List<IDictionary<string, object>>>().SelectMany(x => x.ToList()).ToList();
                 var lstdata = itms.Select(x => (IDictionary<string, object>)x)
+                    .Where(x => x != null && x.Any())
                     .Select(x =>
                     {
                         var invoice = new ShipmentInvoice();
@@ -116,8 +117,21 @@ namespace WaterNut.DataSpace
                             invoice.SourceFile = invoice.SourceFile.Replace($"{invoicePOs[lst.First().InvoiceNo]}",
                                 invoicePOs[invoice.InvoiceNo]);
                         }
+                        //Todo: figure out how to merge the invoice details
+                        //if (overWriteExisting)
+                        //{
+                            var existing = ctx.ShipmentInvoice.FirstOrDefault(x => x.InvoiceNo == invoice.InvoiceNo);
+                            if (existing != null)
+                            {
+                                ctx.ShipmentInvoice.Remove(existing);
+                            }
+                            ctx.ShipmentInvoice.Add(invoice);
+                        //}
+                        //else
+                        //{
 
-                        ctx.ShipmentInvoice.Add(invoice);
+                        //}
+                        
                         
                         ctx.SaveChanges();
 

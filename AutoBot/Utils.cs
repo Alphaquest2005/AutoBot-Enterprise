@@ -448,7 +448,7 @@ namespace AutoBot
             }
         }
 
-        public static void RunSiKuLi(string directoryName, string scriptName, string lastCNumber = "")
+        public static void RunSiKuLi(string directoryName, string scriptName, string lastCNumber = "", int sMonths = 0, int sYears = 0, int eMonths = 0, int eYears = 0)
         {
             try
             {
@@ -465,9 +465,9 @@ namespace AutoBot
                     FileName = "java.exe",
                     Arguments = $@"-jar C:\Users\{Environment.UserName}\OneDrive\Clients\AutoBot\sikulixide-2.0.5.jar -r C:\Users\{Environment.UserName
                     }\OneDrive\Clients\AutoBot\Scripts\{scriptName}.sikuli --args {
-                        BaseDataModel.Instance.CurrentApplicationSettings.AsycudaLogin} {BaseDataModel.Instance.CurrentApplicationSettings.AsycudaPassword} {
+                        BaseDataModel.Instance.CurrentApplicationSettings.AsycudaLogin} {BaseDataModel.Instance.CurrentApplicationSettings.AsycudaPassword} ""{directoryName + "\\"}"" {
                         (string.IsNullOrEmpty(lastCNumber) ? "" : lastCNumber + " ")
-                    } ""{directoryName + "\\"}",
+                    }{(sMonths + sYears + eMonths + eYears == 0 ? "" : $"{sMonths} {sYears} {eMonths} {eYears}")}",
                     UseShellExecute = false
                 };
                 process.StartInfo = startInfo;
@@ -800,6 +800,18 @@ namespace AutoBot
         public static List<FileTypes> GetFileType(string entryType, string format, string fileName)
         {
             return FileTypeManager.GetImportableFileType(entryType, format, fileName);
+        }
+
+        public static void RetryImport(int trytimes, string script, bool redownload, string directoryName, int sMonth, int sYear, int eMonth, int eYear)
+        {
+            int lcont;
+            for (int i = 0; i < trytimes; i++)
+            {
+                if (Utils.ImportComplete(directoryName, redownload, out lcont))
+                    break; //ImportComplete(directoryName,false, out lcont);
+                Utils.RunSiKuLi(directoryName, script, lcont.ToString(), sMonth, sYear, eMonth, eYear);
+                if (Utils.ImportComplete(directoryName, redownload, out lcont)) break;
+            }
         }
     }
 }

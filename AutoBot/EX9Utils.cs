@@ -113,7 +113,44 @@ namespace AutoBot
             }
         }
 
-        
+
+        public static void DownloadHistoryWithInvoices(int trytimes, string script, bool redownload = false)
+        {
+            try
+            {
+                var directoryName = BaseDataModel.GetDocSetDirectoryName("Old Imports");
+                Console.WriteLine("Download History With Invoices");
+                var lcont = 0;
+
+                var startDate = BaseDataModel.Instance.CurrentApplicationSettings.OpeningStockDate;
+                var endDate = DateTime.Now;
+                var months = (endDate.Year - startDate.Year) * 12 + endDate.Month - startDate.Month;
+                foreach (var month in Enumerable.Range(1, months))
+                {
+                    var sDate = endDate.AddMonths(-(month));
+                    var eDate = endDate.AddMonths(-(month - 1));
+
+                    var sMonth = DateTime.Now.Month  - sDate.Month  ;
+                    var sYear = DateTime.Now.Year - sDate.Year;
+
+                    var eMonth = DateTime.Now.Month - eDate.Month ;
+                    var eYear = DateTime.Now.Year - eDate.Year;
+
+
+                    Utils.RetryImport(trytimes, script, redownload, directoryName, sMonth, sYear, eMonth, eYear);
+
+                }
+                
+
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+        }
+
+
 
         public class SaleReportLine
         {

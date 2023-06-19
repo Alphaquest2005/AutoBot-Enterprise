@@ -1084,8 +1084,7 @@ namespace AutoBotUtilities
                         var invocieAttachments = invoices
                             .GroupBy(x => x.ShipmentRiderInvoice.FirstOrDefault()?.WarehouseCode ?? "")
                             .Select(shipmentInvoice =>
-                                XlsxWriter.CreateCSV(shipmentInvoice.Key,
-                                    shipmentInvoice
+                                XlsxWriter.CreateCSV(shipmentInvoice
                                         .OrderBy(z => z.SupplierCode)
                                         //.OrderByDescending(z => z.ShipmentRiderInvoice.FirstOrDefault()?.Packages ?? 0)
                                         .OrderBy(r => r.ShipmentRiderInvoice.FirstOrDefault(q => q.InvoiceNo == r.InvoiceNo)?.RiderLineID ??0)

@@ -208,13 +208,15 @@ namespace AutoBotUtilities
 
 
             var invoiceAttachments = invoices
-                .GroupBy(x => x.ShipmentRiderInvoice.FirstOrDefault()?.WarehouseCode ?? "")
-                .Select(shipmentInvoice =>
-                    XlsxWriter.CreateCSV(shipmentInvoice.Key,
-                        shipmentInvoice.OrderByDescending(z =>
+                .GroupBy(x => new { WarehouseCode = x.ShipmentRiderInvoice.FirstOrDefault()?.WarehouseCode ?? "" })
+                .Select(grp => 
+                    grp
+                        .GroupBy(x => new { PONumber = x.ShipmentRiderInvoice.FirstOrDefault()?.ShipmentInvoice.ShipmentInvoicePOs.FirstOrDefault()?.EntryData_Id ?? 0 })
+                        .Select(shipmentInvoice => 
+                    XlsxWriter.CreateCSV(shipmentInvoice.OrderByDescending(z =>
                             z.ShipmentRiderInvoice.FirstOrDefault()?.Packages ?? 0).ToList(),
-                        client.Key.RiderId, packingDetails))
-                .SelectMany(x => x.ToList())
+                        client.Key.RiderId, packingDetails)))
+                .SelectMany(x => x.SelectMany(z => z.ToList()))
                 .ToList();
 
             var attachments = AddAttachments(bl, summaryFile, invoiceAttachments, manifests, freightInvoices);

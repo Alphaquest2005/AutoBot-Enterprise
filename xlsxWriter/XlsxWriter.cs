@@ -29,10 +29,10 @@ namespace xlsxWriter
             List<(string WarehouseCode, int Packages, string InvoiceNo)> packingDetails)
         {
             var riderId = new CoreEntitiesContext().Emails.FirstOrDefault(x => x.EmailId == emailId && x.MachineName == Environment.MachineName)?.EmailUniqueId ?? 0;
-            return CreateCSV(shipmentInvoiceKey, shipmentInvoices, riderId,packingDetails);
+            return CreateCSV(shipmentInvoices, riderId,packingDetails);
         }
 
-        public static List<(string reference, string filepath)> CreateCSV(string shipmentInvoiceKey,
+        public static List<(string reference, string filepath)> CreateCSV(
             List<ShipmentInvoice> shipmentInvoices, int riderId,
             List<(string WarehouseCode, int Packages, string InvoiceNo)> packingDetails)
         {
@@ -268,13 +268,14 @@ namespace xlsxWriter
 
 
             var starti = i;
-            foreach (var itm in pO.PurchaseOrders.EntryDataDetails
+            var goodDetails = pO.PurchaseOrders.EntryDataDetails
                 .OrderBy(x =>
                     x.INVItems.FirstOrDefault()?.InvoiceDetails?.FileLineNumber ?? x.FileLineNumber)
                 .Where(x => x.INVItems.Any(z => packageDetails.Any(p => p.InvoiceNo == z.InvoiceNo)))
                 .Where(x => x.INVItems.Any() || (!x.INVItems.Any() &&
-                                             pO.POMISMatches.All(m => m.POItemCode != x.ItemNumber &&
-                                                                      m.PODescription != x.ItemDescription /* m.PODetailsId != x.EntryDataDetailsId ---- Took this out because it Allowed the grouped po items to still show*/))))
+                                                 pO.POMISMatches.All(m => m.POItemCode != x.ItemNumber &&
+                                                                          m.PODescription != x.ItemDescription /* m.PODetailsId != x.EntryDataDetailsId ---- Took this out because it Allowed the grouped po items to still show*/)));
+            foreach (var itm in goodDetails)
             {
                 var pOItem = itm.INVItems.OrderByDescending(x => x.RankNo).FirstOrDefault();
 
@@ -451,9 +452,9 @@ namespace xlsxWriter
 
 
             var preMisMatchesList = shipmentInvoicePoItemMisMatchesEnumerable
-                .Where(x => x != null && ((x.INVId == shipmentInvoice.Id && (x.ShipmentInvoicePOs == null || (x.ShipmentInvoicePOs != null && x.ShipmentInvoicePOs.ShipmentInvoice.InvoiceDetails.Any(z => !z.POItems.Any() && (x.INVDetailsId == null || z.Id == x.INVDetailsId))))))
+                .Where(x => x != null && ((x.INVId == shipmentInvoice.Id && (x.ShipmentInvoicePOs == null || (x.ShipmentInvoicePOs != null && x.ShipmentInvoicePOs.ShipmentInvoice.InvoiceDetails.Any(z => /*!z.POItems.Any() &&*/ (x.INVDetailsId == null || z.Id == x.INVDetailsId))))))
                             ||
-                             (pOs.Contains(x.POId ?? 0) && (x.ShipmentInvoicePOs == null || (x.ShipmentInvoicePOs != null && x.ShipmentInvoicePOs.PurchaseOrders.EntryDataDetails.Any(z => !z.INVItems.Any() && (x.PODetailsId == null || z.EntryDataDetailsId == x.PODetailsId))))
+                             (pOs.Contains(x.POId ?? 0) && (x.ShipmentInvoicePOs == null || (x.ShipmentInvoicePOs != null && x.ShipmentInvoicePOs.PurchaseOrders.EntryDataDetails.Any(z => /*!z.INVItems.Any() &&*/ (x.PODetailsId == null || z.EntryDataDetailsId == x.PODetailsId))))
                                  /* ------put back because it suggest bad matches be imported ..*/)).ToList();
 
             var shipmentInvoicePoItemMisMatchesList = preMisMatchesList.Where(x =>
@@ -583,7 +584,7 @@ namespace xlsxWriter
         private static List<ShipmentInvoicePOItemMISMatches> ReMatchOnItemDescription(List<ShipmentInvoicePOItemMISMatches> shipmentInvoicePoItemMisMatchesList)
         {
             var POItems = shipmentInvoicePoItemMisMatchesList
-                                                .Where(x => !string.IsNullOrEmpty(x.PONumber) && string.IsNullOrEmpty(x.InvoiceNo))
+                                                .Where(x => !string.IsNullOrEmpty(x.PONumber) /*&& string.IsNullOrEmpty(x.InvoiceNo)*/)
                                                 .Select(x => (x.PONumber, x.POItemCode, x.PODescription, x.POCost, x.POQuantity, x.POTotalCost, x.PODetailsId, WordLst: GetWords(x.PODescription)))
                                                 .ToList();
 
