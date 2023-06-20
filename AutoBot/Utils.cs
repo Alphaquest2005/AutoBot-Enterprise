@@ -465,8 +465,8 @@ namespace AutoBot
                     FileName = "java.exe",
                     Arguments = $@"-jar C:\Users\{Environment.UserName}\OneDrive\Clients\AutoBot\sikulixide-2.0.5.jar -r C:\Users\{Environment.UserName
                     }\OneDrive\Clients\AutoBot\Scripts\{scriptName}.sikuli --args {
-                        BaseDataModel.Instance.CurrentApplicationSettings.AsycudaLogin} {BaseDataModel.Instance.CurrentApplicationSettings.AsycudaPassword} ""{directoryName + "\\"}"" {
-                        (string.IsNullOrEmpty(lastCNumber) ? "" : lastCNumber + " ")
+                        BaseDataModel.Instance.CurrentApplicationSettings.AsycudaLogin} {BaseDataModel.Instance.CurrentApplicationSettings.AsycudaPassword} ""{directoryName + "\\\\"}"" {
+                        (string.IsNullOrEmpty(lastCNumber) ? "" : lastCNumber + "")
                     }{(sMonths + sYears + eMonths + eYears == 0 ? "" : $"{sMonths} {sYears} {eMonths} {eYears}")}",
                     UseShellExecute = false
                 };
@@ -485,6 +485,9 @@ namespace AutoBot
                 var timeoutCycles = 0;
                 while (!process.HasExited && process.Responding)
                 {
+                    if (timeoutCycles > 1 && !Process.GetProcesses().Where(x =>
+                                x.MainWindowTitle.Contains("ASYCUDA") || x.MainWindowTitle.Contains("Acrobat Reader"))
+                            .ToList().Any()) break;
                     if (timeoutCycles > WaterNut.DataSpace.Utils._noOfCyclesBeforeHardExit) break;
                     //Console.WriteLine($"Waiting {timeoutCycles} Minutes");
                     Debug.WriteLine($"Waiting {timeoutCycles} Minutes");
