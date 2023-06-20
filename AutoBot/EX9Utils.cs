@@ -132,10 +132,10 @@ namespace AutoBot
                     var sDate = endDate.AddMonths(-(month));
                     var eDate = endDate.AddMonths(-(month-1));
 
-                    var sMonth = DateTime.Now.Month  - sDate.Month  ;
+                    var sMonth = GetMonths(DateTime.Now.Month,sDate.Month)  ;
                     var sYear = DateTime.Now.Year - sDate.Year;
 
-                    var eMonth = DateTime.Now.Month - eDate.Month ;
+                    var eMonth = GetMonths(DateTime.Now.Month, eDate.Month); //DateTime.Now.Month - eDate.Month ;
                     var eYear = DateTime.Now.Year - eDate.Year;
 
 
@@ -152,6 +152,23 @@ namespace AutoBot
             }
         }
 
+        private static int GetMonths(int nowMonth, int sDateMonth)
+        {
+            int currentMonth = nowMonth; // June
+            int targetMonth = sDateMonth; // July
+            int monthsBetween = 0;
+
+            while (currentMonth != targetMonth)
+            {
+                currentMonth--;
+                if (currentMonth == 0)
+                {
+                    currentMonth = 12;
+                }
+                monthsBetween++;
+            }
+            return monthsBetween;
+        }
 
 
         public class SaleReportLine
