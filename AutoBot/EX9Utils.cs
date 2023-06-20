@@ -127,8 +127,10 @@ namespace AutoBot
                 var months = (endDate.Year - startDate.Year) * 12 + endDate.Month - startDate.Month;
                 foreach (var month in Enumerable.Range(1, months).OrderByDescending(x => x))
                 {
+                    var overviewFile = Path.Combine(directoryName, "OverView.txt");
+                    if(File.Exists(overviewFile)) File.Delete(overviewFile);
                     var sDate = endDate.AddMonths(-(month));
-                    var eDate = endDate.AddMonths(-(month-2));
+                    var eDate = endDate.AddMonths(-(month-1));
 
                     var sMonth = DateTime.Now.Month  - sDate.Month  ;
                     var sYear = DateTime.Now.Year - sDate.Year;
