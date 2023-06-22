@@ -418,10 +418,10 @@ namespace AutoBot
             int lcont;
             for (int i = 0; i < trytimes; i++)
             {
-                if (Utils.ImportComplete(directoryName, redownload, out lcont))
+                if (Utils.ImportComplete(directoryName, redownload, out lcont, DateTime.Now.Year))
                     break; //ImportComplete(directoryName,false, out lcont);
                 Utils.RunSiKuLi(directoryName, script, lcont.ToString());
-                if (Utils.ImportComplete(directoryName, redownload, out lcont)) break;
+                if (Utils.ImportComplete(directoryName, redownload, out lcont, DateTime.Now.Year)) break;
             }
         }
 
@@ -467,7 +467,7 @@ namespace AutoBot
                     }\OneDrive\Clients\AutoBot\Scripts\{scriptName}.sikuli --args {
                         BaseDataModel.Instance.CurrentApplicationSettings.AsycudaLogin} {BaseDataModel.Instance.CurrentApplicationSettings.AsycudaPassword} ""{directoryName + "\\\\"}"" {
                         (string.IsNullOrEmpty(lastCNumber) ? "" : lastCNumber + "")
-                    }{(sMonths + sYears + eMonths + eYears == 0 ? "" : $"{sMonths} {sYears} {eMonths} {eYears}")}",
+                    }{(sMonths + sYears + eMonths + eYears == 0 ? "" : $" {sMonths} {sYears} {eMonths} {eYears}")}",
                     UseShellExecute = false
                 };
                 process.StartInfo = startInfo;
@@ -510,7 +510,7 @@ namespace AutoBot
             }
         }
 
-        public static bool ImportComplete(string directoryName, bool redownload, out int lcont)
+        public static bool ImportComplete(string directoryName, bool redownload, out int lcont, int startYear, bool retryOnblankFile = false)
         {
             try
             {
@@ -526,10 +526,10 @@ namespace AutoBot
                 if (File.GetLastWriteTime(overviewFile) <= DateTime.Now.AddHours(-1)) return false;
                 var readAllText = File.ReadAllText(overviewFile);
 
-                if (readAllText == "No Files Found") return true;
+                if (readAllText == "No Files Found") return !retryOnblankFile;
 
                 var lines = readAllText
-                    .Split(new[] { $"\r\n{DateTime.Now.Year}\t" }, StringSplitOptions.RemoveEmptyEntries);
+                    .Split(new[] { $"\r\n{startYear}\t" }, StringSplitOptions.RemoveEmptyEntries);
                 if (lines.Length == 0)
                 {
 
@@ -548,7 +548,7 @@ namespace AutoBot
                     //    ? line.Replace($"{DateTime.Now.Year}\t", "").Split('\t')
                     //    : line.Split('\t');
                     var p = line.Split('\t').ToList();
-                    if (p[0] == DateTime.Now.Year.ToString())
+                    if (p[0] == startYear.ToString())
                     {
                             p.RemoveAt(0);
                     }
@@ -805,15 +805,16 @@ namespace AutoBot
             return FileTypeManager.GetImportableFileType(entryType, format, fileName);
         }
 
-        public static void RetryImport(int trytimes, string script, bool redownload, string directoryName, int sMonth, int sYear, int eMonth, int eYear)
+        public static void RetryImport(int trytimes, string script, bool redownload, string directoryName, int sMonth,
+            int sYear, int eMonth, int eYear, int startYear, bool retryOnblankFile = false)
         {
             int lcont;
             for (int i = 0; i < trytimes; i++)
             {
-                if (Utils.ImportComplete(directoryName, redownload, out lcont))
+                if (Utils.ImportComplete(directoryName, redownload, out lcont, startYear, retryOnblankFile))
                     break; //ImportComplete(directoryName,false, out lcont);
                 Utils.RunSiKuLi(directoryName, script, lcont.ToString(), sMonth, sYear, eMonth, eYear);
-                if (Utils.ImportComplete(directoryName, redownload, out lcont)) break;
+                if (Utils.ImportComplete(directoryName, redownload, out lcont, startYear, retryOnblankFile)) break;
             }
         }
     }

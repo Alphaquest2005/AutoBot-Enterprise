@@ -122,7 +122,7 @@ namespace AutoBot
                 Console.WriteLine("Download History With Invoices");
                 var lcont = 0;
 
-                var startDate = DateTime.Parse("1/3/2015");//BaseDataModel.Instance.CurrentApplicationSettings.OpeningStockDate;
+                var startDate = DateTime.Parse("1/1/2015");//BaseDataModel.Instance.CurrentApplicationSettings.OpeningStockDate;
                 var endDate = DateTime.Now;
                 var months = (endDate.Year - startDate.Year) * 12 + endDate.Month - startDate.Month;
                 foreach (var month in Enumerable.Range(1, months).OrderByDescending(x => x))
@@ -130,7 +130,7 @@ namespace AutoBot
                     var overviewFile = Path.Combine(directoryName, "OverView.txt");
                     if(File.Exists(overviewFile)) File.Delete(overviewFile);
                     var sDate = endDate.AddMonths(-(month));
-                    var eDate = endDate.AddMonths(-(month-1));
+                    var eDate = endDate.AddMonths(-(month));
 
                     var sMonth = GetMonths(DateTime.Now.Month,sDate.Month)  ;
                     var sYear = DateTime.Now.Year - sDate.Year;
@@ -139,7 +139,7 @@ namespace AutoBot
                     var eYear = DateTime.Now.Year - eDate.Year;
 
 
-                    Utils.RetryImport(trytimes, script, redownload, directoryName, sMonth, sYear, eMonth, eYear);
+                    Utils.RetryImport(trytimes, script, redownload, directoryName, sMonth, sYear, eMonth, eYear, sDate.Year, true);
 
                 }
                 
