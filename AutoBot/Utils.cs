@@ -448,6 +448,7 @@ namespace AutoBot
             }
         }
 
+        private static int oldProcessId = 0;
         public static void RunSiKuLi(string directoryName, string scriptName, string lastCNumber = "", int sMonths = 0, int sYears = 0, int eMonths = 0, int eYears = 0)
         {
             try
@@ -480,18 +481,33 @@ namespace AutoBot
                     Thread.Sleep(1000 * 60);
                 }
 
-                foreach (var process1 in Process.GetProcesses().Where(x => x.MainWindowTitle.Contains("SikulixIDE"))
-                           .ToList())
+                foreach (var process1 in Process.GetProcesses().Where(x => x.ProcessName.Contains("java"))
+                             .ToList())
                 {
                     process1.Kill();
                 }
 
+                if (oldProcessId != 0)
+                {
+                    try
+                    {
+                        var oldProcess = Process.GetProcessById(oldProcessId);
+                        oldProcess.Kill();
+                    }
+                    catch (Exception e)
+                    {
+
+                    }
+
+                }
+
 
                 process.Start();
+                oldProcessId = process.Id;
                 var timeoutCycles = 0;
                 while (!process.HasExited && process.Responding)
                 {
-                    var rmo = Process.GetProcesses().Select(x => x.MainModule.FileName).ToList();
+                    //var rmo = Process.GetProcesses().Select(x => x).ToList();
                     if (timeoutCycles > 1 && !Process.GetProcesses().Where(x =>
                                 x.MainWindowTitle.Contains("ASYCUDA") || x.MainWindowTitle.Contains("Acrobat Reader"))
                             .ToList().Any()) break;

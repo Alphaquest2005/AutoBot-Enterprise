@@ -123,9 +123,9 @@ namespace AutoBot
                 var lcont = 0;
 
                 var startDate = DateTime.Parse("1/1/2015");//BaseDataModel.Instance.CurrentApplicationSettings.OpeningStockDate;
-                var endDate = DateTime.Parse("12/31/2021");//DateTime.Now;
+                var endDate = DateTime.Now;
                 var months = (endDate.Year - startDate.Year) * 12 + endDate.Month - startDate.Month;
-                foreach (var month in Enumerable.Range(1, months))
+                foreach (var month in Enumerable.Range(1, months).OrderByDescending(x => x))
                 {
                     var overviewFile = Path.Combine(directoryName, "OverView.txt");
                     if(File.Exists(overviewFile)) File.Delete(overviewFile);
