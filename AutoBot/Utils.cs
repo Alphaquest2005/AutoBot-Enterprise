@@ -480,11 +480,18 @@ namespace AutoBot
                     Thread.Sleep(1000 * 60);
                 }
 
+                foreach (var process1 in Process.GetProcesses().Where(x => x.MainWindowTitle.Contains("SikulixIDE"))
+                           .ToList())
+                {
+                    process1.Kill();
+                }
+
 
                 process.Start();
                 var timeoutCycles = 0;
                 while (!process.HasExited && process.Responding)
                 {
+                    var rmo = Process.GetProcesses().Select(x => x.MainModule.FileName).ToList();
                     if (timeoutCycles > 1 && !Process.GetProcesses().Where(x =>
                                 x.MainWindowTitle.Contains("ASYCUDA") || x.MainWindowTitle.Contains("Acrobat Reader"))
                             .ToList().Any()) break;
