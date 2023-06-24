@@ -538,72 +538,77 @@ namespace AutoBot
             try
             {
 
-            lcont = 0;
+                lcont = 0;
 
-            var desFolder = directoryName + (directoryName.EndsWith(@"\") ? "" : "\\");
-            var overviewFile = Path.Combine(desFolder, "OverView.txt");
-            if (File.Exists(overviewFile) || File.GetLastWriteTime(overviewFile) <= DateTime.Now.AddHours(-2))
-            {
-
-
-                if (File.GetLastWriteTime(overviewFile) <= DateTime.Now.AddHours(-1)) return false;
-                var readAllText = File.ReadAllText(overviewFile);
-
-                if (readAllText == "No Files Found") return !retryOnblankFile;
-
-                var lines = readAllText
-                    .Split(new[] { $"\r\n{startYear}\t" }, StringSplitOptions.RemoveEmptyEntries);
-                if (lines.Length == 0)
+                var desFolder = directoryName + (directoryName.EndsWith(@"\") ? "" : "\\");
+                var overviewFile = Path.Combine(desFolder, "OverView.txt");
+                if (File.Exists(overviewFile) || File.GetLastWriteTime(overviewFile) <= DateTime.Now.AddHours(-2))
                 {
 
-                    return false;
-                }
 
+                    if (File.GetLastWriteTime(overviewFile) <= DateTime.Now.AddHours(-1)) return false;
+                    var readAllText = File.ReadAllText(overviewFile);
 
+                    if (readAllText == "No Files Found") return !retryOnblankFile;
 
-                var existingfiles = 0;
-
-                foreach (var line in lines)
-                {
-                    lcont += 1;
-
-                    //var p = line.StartsWith($"{DateTime.Now.Year}\t")
-                    //    ? line.Replace($"{DateTime.Now.Year}\t", "").Split('\t')
-                    //    : line.Split('\t');
-                    var p = line.Split('\t').ToList();
-                    if (p[0] == startYear.ToString())
+                    var lines = readAllText
+                        .Split(new[] {$"\r\n{startYear}\t"}, StringSplitOptions.RemoveEmptyEntries);
+                    if (lines.Length == 0)
                     {
+
+                        return false;
+                    }
+
+
+
+                    var existingfiles = 0;
+
+                    foreach (var line in lines)
+                    {
+                        lcont += 1;
+
+                        //var p = line.StartsWith($"{DateTime.Now.Year}\t")
+                        //    ? line.Replace($"{DateTime.Now.Year}\t", "").Split('\t')
+                        //    : line.Split('\t');
+                        var p = line.Split('\t').ToList();
+                        if (p[0] == startYear.ToString())
+                        {
                             p.RemoveAt(0);
+                        }
+
+
+                        if (p.Count < 8) continue;
+                        if (!DateTime.TryParse(p[6], out var regDate)) continue;
+
+                        var fileName = Path.Combine(desFolder, $"{p[7] + p[8]}-{p[0]}-{regDate.Year}-{p[5]}.xml");
+                        if (File.Exists(fileName))
+                        {
+                            existingfiles += 1;
+                            continue;
+                        }
+
+                        return false;
                     }
 
+                    if (redownload && (DateTime.Now - new FileInfo(overviewFile).LastWriteTime).Minutes > 5)
+                        return false;
+                    return existingfiles != 0;
+                }
+                else
+                {
 
-                    if (p.Count < 8) continue;
-                    if(!DateTime.TryParse(p[6], out var regDate)) continue;
-
-                    var fileName = Path.Combine(desFolder, $"{p[7] + p[8]}-{p[0]}-{regDate.Year}-{p[5]}.xml");
-                    if (File.Exists(fileName))
-                    {
-                        existingfiles += 1;
-                        continue;
-                    }
                     return false;
                 }
 
-                if (redownload && (DateTime.Now - new FileInfo(overviewFile).LastWriteTime).Minutes > 5) return false;
-                return existingfiles != 0;
             }
-            else
+            catch (Exception exception)
             {
-
+                Console.WriteLine(exception.Message);
+                lcont = 0;
                 return false;
+                //throw;
             }
-
-            }
-            catch (Exception)
-            {
-
-                throw;
-            }
+           
         }
 
      
