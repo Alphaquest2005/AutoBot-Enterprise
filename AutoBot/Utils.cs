@@ -520,7 +520,10 @@ namespace AutoBot
 
                 if (!process.HasExited) process.Kill();
 
-                foreach (var process1 in Process.GetProcesses().Where(x => x.MainWindowTitle.Contains("ASYCUDA") || x.MainWindowTitle.Contains("Acrobat Reader"))
+                foreach (var process1 in Process.GetProcesses().Where(x => x.MainWindowTitle.Contains("ASYCUDA") 
+                                                                           || x.MainWindowTitle.Contains("Acrobat Reader")
+                                                                           || x.MainWindowTitle.Contains("Photo")
+                                                                           )
                              .ToList())
                 {
                     process1.Kill();
