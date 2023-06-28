@@ -481,7 +481,7 @@ namespace AutoBot
                     Thread.Sleep(1000 * 60);
                 }
 
-                foreach (var process1 in Process.GetProcesses().Where(x => x.ProcessName.Contains("java"))
+                foreach (var process1 in Process.GetProcesses().Where(x => x.ProcessName.Contains("java") || x.ProcessName.Contains("Photo"))
                              .ToList())
                 {
                     process1.Kill();
@@ -509,7 +509,7 @@ namespace AutoBot
                 {
                     //var rmo = Process.GetProcesses().Select(x => x).ToList();
                     if (timeoutCycles > 1 && !Process.GetProcesses().Where(x =>
-                                x.MainWindowTitle.Contains("ASYCUDA") || x.MainWindowTitle.Contains("Acrobat Reader"))
+                                x.MainWindowTitle.Contains("ASYCUDA"))
                             .ToList().Any()) break;
                     if (timeoutCycles > WaterNut.DataSpace.Utils._noOfCyclesBeforeHardExit) break;
                     //Console.WriteLine($"Waiting {timeoutCycles} Minutes");
