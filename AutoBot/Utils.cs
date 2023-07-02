@@ -418,10 +418,10 @@ namespace AutoBot
             int lcont;
             for (int i = 0; i < trytimes; i++)
             {
-                if (Utils.ImportComplete(directoryName, redownload, out lcont))
+                if (Utils.ImportComplete(directoryName, redownload, out lcont, DateTime.Now.Year))
                     break; //ImportComplete(directoryName,false, out lcont);
                 Utils.RunSiKuLi(directoryName, script, lcont.ToString());
-                if (Utils.ImportComplete(directoryName, redownload, out lcont)) break;
+                if (Utils.ImportComplete(directoryName, redownload, out lcont, DateTime.Now.Year)) break;
             }
         }
 
@@ -448,6 +448,7 @@ namespace AutoBot
             }
         }
 
+        private static int oldProcessId = 0;
         public static void RunSiKuLi(string directoryName, string scriptName, string lastCNumber = "", int sMonths = 0, int sYears = 0, int eMonths = 0, int eYears = 0)
         {
             try
@@ -467,7 +468,7 @@ namespace AutoBot
                     }\OneDrive\Clients\AutoBot\Scripts\{scriptName}.sikuli --args {
                         BaseDataModel.Instance.CurrentApplicationSettings.AsycudaLogin} {BaseDataModel.Instance.CurrentApplicationSettings.AsycudaPassword} ""{directoryName + "\\\\"}"" {
                         (string.IsNullOrEmpty(lastCNumber) ? "" : lastCNumber + "")
-                    }{(sMonths + sYears + eMonths + eYears == 0 ? "" : $"{sMonths} {sYears} {eMonths} {eYears}")}",
+                    }{(sMonths + sYears + eMonths + eYears == 0 ? "" : $" {sMonths} {sYears} {eMonths} {eYears}")}",
                     UseShellExecute = false
                 };
                 process.StartInfo = startInfo;
@@ -480,13 +481,35 @@ namespace AutoBot
                     Thread.Sleep(1000 * 60);
                 }
 
+                foreach (var process1 in Process.GetProcesses().Where(x => x.ProcessName.Contains("java"))
+                             .ToList())
+                {
+                    process1.Kill();
+                }
+
+                if (oldProcessId != 0)
+                {
+                    try
+                    {
+                        var oldProcess = Process.GetProcessById(oldProcessId);
+                        oldProcess.Kill();
+                    }
+                    catch (Exception e)
+                    {
+
+                    }
+
+                }
+
 
                 process.Start();
+                oldProcessId = process.Id;
                 var timeoutCycles = 0;
                 while (!process.HasExited && process.Responding)
                 {
+                    //var rmo = Process.GetProcesses().Select(x => x).ToList();
                     if (timeoutCycles > 1 && !Process.GetProcesses().Where(x =>
-                                x.MainWindowTitle.Contains("ASYCUDA") || x.MainWindowTitle.Contains("Acrobat Reader"))
+                                x.MainWindowTitle.Contains("ASYCUDA"))
                             .ToList().Any()) break;
                     if (timeoutCycles > WaterNut.DataSpace.Utils._noOfCyclesBeforeHardExit) break;
                     //Console.WriteLine($"Waiting {timeoutCycles} Minutes");
@@ -497,7 +520,10 @@ namespace AutoBot
 
                 if (!process.HasExited) process.Kill();
 
-                foreach (var process1 in Process.GetProcesses().Where(x => x.MainWindowTitle.Contains("ASYCUDA") || x.MainWindowTitle.Contains("Acrobat Reader"))
+                foreach (var process1 in Process.GetProcesses().Where(x => x.MainWindowTitle.Contains("ASYCUDA") 
+                                                                           || x.MainWindowTitle.Contains("Acrobat Reader")
+                                                                           || x.MainWindowTitle.Contains("Photo")
+                                                                           )
                              .ToList())
                 {
                     process1.Kill();
@@ -510,77 +536,82 @@ namespace AutoBot
             }
         }
 
-        public static bool ImportComplete(string directoryName, bool redownload, out int lcont)
+        public static bool ImportComplete(string directoryName, bool redownload, out int lcont, int startYear, bool retryOnblankFile = false)
         {
             try
             {
 
-            lcont = 0;
+                lcont = 0;
 
-            var desFolder = directoryName + (directoryName.EndsWith(@"\") ? "" : "\\");
-            var overviewFile = Path.Combine(desFolder, "OverView.txt");
-            if (File.Exists(overviewFile) || File.GetLastWriteTime(overviewFile) <= DateTime.Now.AddHours(-2))
-            {
-
-
-                if (File.GetLastWriteTime(overviewFile) <= DateTime.Now.AddHours(-1)) return false;
-                var readAllText = File.ReadAllText(overviewFile);
-
-                if (readAllText == "No Files Found") return true;
-
-                var lines = readAllText
-                    .Split(new[] { $"\r\n{DateTime.Now.Year}\t" }, StringSplitOptions.RemoveEmptyEntries);
-                if (lines.Length == 0)
+                var desFolder = directoryName + (directoryName.EndsWith(@"\") ? "" : "\\");
+                var overviewFile = Path.Combine(desFolder, "OverView.txt");
+                if (File.Exists(overviewFile) || File.GetLastWriteTime(overviewFile) <= DateTime.Now.AddHours(-2))
                 {
 
-                    return false;
-                }
 
+                    if (File.GetLastWriteTime(overviewFile) <= DateTime.Now.AddHours(-1)) return false;
+                    var readAllText = File.ReadAllText(overviewFile);
 
+                    if (readAllText == "No Files Found") return !retryOnblankFile;
 
-                var existingfiles = 0;
-
-                foreach (var line in lines)
-                {
-                    lcont += 1;
-
-                    //var p = line.StartsWith($"{DateTime.Now.Year}\t")
-                    //    ? line.Replace($"{DateTime.Now.Year}\t", "").Split('\t')
-                    //    : line.Split('\t');
-                    var p = line.Split('\t').ToList();
-                    if (p[0] == DateTime.Now.Year.ToString())
+                    var lines = readAllText
+                        .Split(new[] {$"\r\n{startYear}\t"}, StringSplitOptions.RemoveEmptyEntries);
+                    if (lines.Length == 0)
                     {
+
+                        return false;
+                    }
+
+
+
+                    var existingfiles = 0;
+
+                    foreach (var line in lines)
+                    {
+                        lcont += 1;
+
+                        //var p = line.StartsWith($"{DateTime.Now.Year}\t")
+                        //    ? line.Replace($"{DateTime.Now.Year}\t", "").Split('\t')
+                        //    : line.Split('\t');
+                        var p = line.Split('\t').ToList();
+                        if (p[0] == startYear.ToString())
+                        {
                             p.RemoveAt(0);
+                        }
+
+
+                        if (p.Count < 8) continue;
+                        if (!DateTime.TryParse(p[6], out var regDate)) continue;
+
+                        var fileName = Path.Combine(desFolder, $"{p[7] + p[8]}-{p[0]}-{regDate.Year}-{p[5]}.xml");
+                        if (File.Exists(fileName))
+                        {
+                            existingfiles += 1;
+                            continue;
+                        }
+
+                        return false;
                     }
 
+                    if (redownload && (DateTime.Now - new FileInfo(overviewFile).LastWriteTime).Minutes > 5)
+                        return false;
+                    return existingfiles != 0;
+                }
+                else
+                {
 
-                    if (p.Count < 8) continue;
-                    if(!DateTime.TryParse(p[6], out var regDate)) continue;
-
-                    var fileName = Path.Combine(desFolder, $"{p[7] + p[8]}-{p[0]}-{regDate.Year}-{p[5]}.xml");
-                    if (File.Exists(fileName))
-                    {
-                        existingfiles += 1;
-                        continue;
-                    }
                     return false;
                 }
 
-                if (redownload && (DateTime.Now - new FileInfo(overviewFile).LastWriteTime).Minutes > 5) return false;
-                return existingfiles != 0;
             }
-            else
+            catch (Exception exception)
             {
-
+                Console.WriteLine(exception.Message);
+                lcont = 0;
                 return false;
+                //throw;
             }
-
-            }
-            catch (Exception)
-            {
-
-                throw;
-            }
+           
         }
 
      
@@ -805,15 +836,16 @@ namespace AutoBot
             return FileTypeManager.GetImportableFileType(entryType, format, fileName);
         }
 
-        public static void RetryImport(int trytimes, string script, bool redownload, string directoryName, int sMonth, int sYear, int eMonth, int eYear)
+        public static void RetryImport(int trytimes, string script, bool redownload, string directoryName, int sMonth,
+            int sYear, int eMonth, int eYear, int startYear, bool retryOnblankFile = false)
         {
             int lcont;
             for (int i = 0; i < trytimes; i++)
             {
-                if (Utils.ImportComplete(directoryName, redownload, out lcont))
+                if (Utils.ImportComplete(directoryName, redownload, out lcont, startYear, retryOnblankFile))
                     break; //ImportComplete(directoryName,false, out lcont);
                 Utils.RunSiKuLi(directoryName, script, lcont.ToString(), sMonth, sYear, eMonth, eYear);
-                if (Utils.ImportComplete(directoryName, redownload, out lcont)) break;
+                if (Utils.ImportComplete(directoryName, redownload, out lcont, startYear, retryOnblankFile)) break;
             }
         }
     }

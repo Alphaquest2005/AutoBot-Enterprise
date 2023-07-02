@@ -20,7 +20,7 @@ namespace WaterNut.DataSpace
     public static class  Utils
     {
         public const int maxRowsToFindHeader = 10;
-        public const int _noOfCyclesBeforeHardExit = 60;
+        public const int _noOfCyclesBeforeHardExit = 30;
         public static int _oneMegaByte = 1000000;
         public static StringComparer ignoreCase = StringComparer.OrdinalIgnoreCase;
 
