@@ -67,12 +67,12 @@ namespace AutoBot
             }
         }
 
-        public static void ImportPDF(FileInfo[] csvFiles, FileTypes fileType)
+        public static void ImportPDF(FileInfo[] pdfFiles, FileTypes fileType)
             //(int? fileTypeId, int? emailId, bool overWriteExisting, List<AsycudaDocumentSet> docSet, string fileType)
         {
             Console.WriteLine("Importing PDF " + fileType.FileImporterInfos.EntryType);
             var failedFiles = new List<string>();
-            foreach (var file in csvFiles.Where(x => x.Extension.ToLower() == ".pdf"))
+            foreach (var file in pdfFiles.Where(x => x.Extension.ToLower() == ".pdf"))
             {
                 string emailId = null;
                 int? fileTypeId = 0;
@@ -232,6 +232,18 @@ namespace AutoBot
             {
                 Console.WriteLine(e);
                 throw;
+            }
+        }
+
+        public static void ConvertPNG2PDF()
+        {
+            var directoryName = BaseDataModel.GetDocSetDirectoryName("Old Imports");
+            Console.WriteLine("Convert PNG 2 PDF");
+            var pngFiles = new DirectoryInfo(directoryName).GetFiles($"*.png");
+                //.Where(x => x.LastWriteTime.ToString("d") == DateTime.Today.ToString("d")).ToArray();
+            foreach (var pngFile in pngFiles)
+            {
+
             }
         }
     }
