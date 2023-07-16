@@ -114,7 +114,8 @@ namespace AutoBot
                 {"SubmitToCustomsCurrent", () => SubmitSalesXmlToCustomsUtils.SubmitSalesXMLToCustoms(0) },
                 {"ImportAllZeroItemsInDataFolder", () => ImportAllAsycudaDocumentsInDataFolderUtils.ImportAllZeroItemsInDataFolder(false)},
 
-                {"DownloadHistoryWithInvoices", () => EX9Utils.DownloadHistoryWithInvoices(10, "IM7History-Invoices", false)}
+                {"DownloadHistoryWithInvoices", () => EX9Utils.DownloadHistoryWithInvoices(10, "IM7History-Invoices", false)},
+                {"ConvertPNG2PDF", () => PDFUtils.ConvertPNG2PDF()}
 
             };
 
