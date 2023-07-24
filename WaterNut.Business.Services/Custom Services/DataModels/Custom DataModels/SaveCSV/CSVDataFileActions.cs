@@ -18,6 +18,8 @@ namespace WaterNut.DataSpace
             {FileTypeManager.EntryTypes.Adj, async (dataFile) => await new EntryDataProcessor().Process(dataFile).ConfigureAwait(false)},
             {FileTypeManager.EntryTypes.Ops, async (dataFile) => await new EntryDataProcessor().Process(dataFile).ConfigureAwait(false)},
 
+            {FileTypeManager.EntryTypes.ItemHistory, (dataFile) => new SaveItemHistory().Process(dataFile)},
+
         };
     }
 }

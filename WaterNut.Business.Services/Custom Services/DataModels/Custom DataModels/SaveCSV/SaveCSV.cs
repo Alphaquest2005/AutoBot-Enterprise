@@ -71,6 +71,8 @@ namespace WaterNut.DataSpace
             {FileTypeManager.EntryTypes.ExpiredEntries, new SaveCsvEntryData()},
             {FileTypeManager.EntryTypes.CancelledEntries, new SaveCsvEntryData()},
 
+            {FileTypeManager.EntryTypes.ItemHistory, new SaveCsvEntryData()},
+
         };
 
 

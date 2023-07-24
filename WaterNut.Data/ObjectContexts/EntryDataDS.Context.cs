@@ -191,6 +191,8 @@ namespace EntryDataDS.Business.Entities
      
         public DbSet<SystemDocumentSets> SystemDocumentSets { get; set; }
      
+        public DbSet<ItemHistory> ItemHistory { get; set; }
+     
 
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
@@ -338,6 +340,8 @@ namespace EntryDataDS.Business.Entities
             modelBuilder.Configurations.Add(new ShipmentInvoicePOItemMISMatchesMap());
          
             modelBuilder.Configurations.Add(new SystemDocumentSetsMap());
+         
+            modelBuilder.Configurations.Add(new ItemHistoryMap());
          
             modelBuilder.Configurations.Add(new AdjustmentsMap());
       

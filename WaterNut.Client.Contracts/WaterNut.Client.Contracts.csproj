@@ -150,6 +150,7 @@
     <Compile Include="CoreEntities\IFileTypeContactsService.cs" />
     <Compile Include="CoreEntities\IFileTypeMappingRegExsService.cs" />
     <Compile Include="CoreEntities\IFileTypeMappingsService.cs" />
+    <Compile Include="CoreEntities\IFileTypeMappingsValuesService.cs" />
     <Compile Include="CoreEntities\IFileTypeReplaceRegexService.cs" />
     <Compile Include="CoreEntities\IFileTypesService.cs" />
     <Compile Include="CoreEntities\IImportActionsService.cs" />

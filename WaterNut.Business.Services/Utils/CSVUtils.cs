@@ -339,9 +339,10 @@ namespace WaterNut.Business.Services.Utils
 
             var missingMaps = fileType.FileTypeMappings.Where(x => x.Required && !x.OriginalName.Contains("{"))
                 .GroupBy(x => x.DestinationName)
-                .Where(item => item.All(z =>
-                    !headerlst.Any(q =>
-                        String.Equals(q.ToString(), z.OriginalName, StringComparison.CurrentCultureIgnoreCase))))
+                .Where(item =>
+                    item.All(z => !headerlst.Any(q => z.OriginalName.ToUpper().Trim().Contains(q.ToString().ToUpper().Trim())))
+                    //item.All(z => !headerlst.Any(q => String.Equals(q.ToString(), z.OriginalName, StringComparison.CurrentCultureIgnoreCase)))
+                    )
                 .ToList(); // !headerlst  (item.OriginalName.ToUpper())
             if (missingMaps.Any())
             {
@@ -371,7 +372,7 @@ namespace WaterNut.Business.Services.Utils
                 if (string.IsNullOrEmpty(header[i].ToString())) deleteColumns.Add(dt.Columns[i]);
 
                 if (fileTypes.FileTypeMappings.All(x =>
-                        x.OriginalName.ToUpper().Trim() != header[i].ToString().ToUpper().Trim()))
+                        x.OriginalName.ToUpper().Trim() != header[i].ToString().ToUpper().Trim() && !x.OriginalName.ToUpper().Trim().Contains(header[i].ToString().ToUpper().Trim())) )
                     deleteColumns.Add(dt.Columns[i]);
             }
 
@@ -435,7 +436,7 @@ namespace WaterNut.Business.Services.Utils
         {
             
             if (((fileType.FileTypeMappings.Any(x => x.Required) 
-                  && fileType.FileTypeMappings.Where(x => x.Required).All(x => headerRow.IndexOf(x.OriginalName.ToUpper().Trim()) > -1 
+                  && fileType.FileTypeMappings.Where(x => x.Required).All(x => (headerRow.IndexOf(x.OriginalName.ToUpper().Trim()) > -1  )
                                                                                 && !string.IsNullOrEmpty(dt.Rows[drow_no][headerRow.IndexOf(x.OriginalName.ToUpper().Trim())].ToString())))
                  ||
                  (fileType.FileTypeMappings.All(x => !x.Required)
@@ -570,21 +571,26 @@ namespace WaterNut.Business.Services.Utils
             DataRow header, int row_no, DataRow drow, ref Dictionary<string, string> row)
         {
             var fileTypeMappingsByOriginalName = OrderFileTypeMappingsByOriginalName(fileType).ToList();
-            var fileTypeMappings = fileTypeMappingsByOriginalName.Where(x => header.ItemArray.Select(z => z.ToString().ToUpper()).Contains(x.OriginalName.ToUpper()) || x.OriginalName.StartsWith("{")).ToList();
+            var fileTypeMappings = fileTypeMappingsByOriginalName.Where(x =>!x.OriginalName.Split('+',',').Select(z => z.ToUpper().Trim()).Except(header.ItemArray.Select(z => z.ToString().ToUpper())).Any() || x.OriginalName.StartsWith("{") || x.FileTypeMappingValues.Any()).ToList();
             foreach (var mapping in fileTypeMappings)
             {
-                var maps = mapping.OriginalName.Split('+');
+                var maps = mapping.OriginalName.Split('+',',').Select(x => x.Trim()).ToArray();
                 string val = null;
                 foreach (var map in maps)
                 {
                     mappingMailSent =
                         CheckingRequiredFields(file, fileType, dic, header, map, mapping, mappingMailSent, row_no);
 
-                    if (GetRawValue(dic, row_no, mapping, maps, map, row, drow, header, ref val))
-                        continue;
-                    else
-                        break;
+                    if(GetRawValue(dic, row_no, mapping, maps, map, row, drow, header, ref val) && row_no == 0) break;
+
+
                 }
+                if(drow != header)
+                    foreach (var mValue in mapping.FileTypeMappingValues)
+                    {
+                        val = mValue.Value;
+                    }
+
                 if (val == null || string.IsNullOrEmpty(val)) continue;
                 foreach (var regEx in mapping.FileTypeMappingRegExs)
                 {
@@ -701,7 +707,7 @@ namespace WaterNut.Business.Services.Utils
         {
             if (row_no == 0)
             {
-                val += mapping.DestinationName;
+                val = mapping.DestinationName;
                 if (maps.Length > 1) return false;
             }
             else

@@ -91,6 +91,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                         RegisterToReceiveMessages<string>(MessageToken.CurrentFileTypeContactsIDChanged, OnCurrentFileTypeContactsIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentFileTypeMappingRegExsIDChanged, OnCurrentFileTypeMappingRegExsIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentFileTypeMappingsIDChanged, OnCurrentFileTypeMappingsIDChanged);
+                        RegisterToReceiveMessages<string>(MessageToken.CurrentFileTypeMappingsValuesIDChanged, OnCurrentFileTypeMappingsValuesIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentFileTypeReplaceRegexIDChanged, OnCurrentFileTypeReplaceRegexIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentFileTypesIDChanged, OnCurrentFileTypesIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentImportActionsIDChanged, OnCurrentImportActionsIDChanged);
@@ -197,6 +198,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                         RegisterToReceiveMessages<FileTypeContacts>(MessageToken.CurrentFileTypeContactsChanged, OnCurrentFileTypeContactsChanged);
                         RegisterToReceiveMessages<FileTypeMappingRegExs>(MessageToken.CurrentFileTypeMappingRegExsChanged, OnCurrentFileTypeMappingRegExsChanged);
                         RegisterToReceiveMessages<FileTypeMappings>(MessageToken.CurrentFileTypeMappingsChanged, OnCurrentFileTypeMappingsChanged);
+                        RegisterToReceiveMessages<FileTypeMappingsValues>(MessageToken.CurrentFileTypeMappingsValuesChanged, OnCurrentFileTypeMappingsValuesChanged);
                         RegisterToReceiveMessages<FileTypeReplaceRegex>(MessageToken.CurrentFileTypeReplaceRegexChanged, OnCurrentFileTypeReplaceRegexChanged);
                         RegisterToReceiveMessages<FileTypes>(MessageToken.CurrentFileTypesChanged, OnCurrentFileTypesChanged);
                         RegisterToReceiveMessages<ImportActions>(MessageToken.CurrentImportActionsChanged, OnCurrentImportActionsChanged);
@@ -1304,6 +1306,33 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                                     if (!string.IsNullOrEmpty(_currentFileTypeMappingsID)) BeginSendMessage(MessageToken.CurrentFileTypeMappingsIDChanged,
                                                      new NotificationEventArgs<string>(MessageToken.CurrentFileTypeMappingsIDChanged, _currentFileTypeMappingsID));
                                     NotifyPropertyChanged(x => this.CurrentFileTypeMappingsID);  
+                                }
+                            }
+                        }
+                        internal async void OnCurrentFileTypeMappingsValuesIDChanged(object sender, NotificationEventArgs<string> e)
+                        {
+                            using (FileTypeMappingsValuesRepository ctx = new FileTypeMappingsValuesRepository())
+                            {
+                                CurrentFileTypeMappingsValues = await ctx.GetFileTypeMappingsValues(e.Data).ConfigureAwait(continueOnCapturedContext: false);
+                            }
+                            NotifyPropertyChanged(m => CurrentFileTypeMappingsValues);
+                        }
+
+                        private  string _currentFileTypeMappingsValuesID = "";
+                        public string CurrentFileTypeMappingsValuesID
+                        {
+                            get
+                            {
+                                return _currentFileTypeMappingsValuesID;
+                            }
+                            set
+                            {
+                                if (_currentFileTypeMappingsValuesID != value)
+                                {
+                                    _currentFileTypeMappingsValuesID = value;
+                                    if (!string.IsNullOrEmpty(_currentFileTypeMappingsValuesID)) BeginSendMessage(MessageToken.CurrentFileTypeMappingsValuesIDChanged,
+                                                     new NotificationEventArgs<string>(MessageToken.CurrentFileTypeMappingsValuesIDChanged, _currentFileTypeMappingsValuesID));
+                                    NotifyPropertyChanged(x => this.CurrentFileTypeMappingsValuesID);  
                                 }
                             }
                         }
@@ -4984,6 +5013,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     NotifyPropertyChanged(x => this.CurrentFileTypeMappings);    
                     // all current navigation properties = null
                  CurrentFileTypeMappingRegExs = null;
+                 CurrentFileTypeMappingsValues = null;
    
                 }
             }
@@ -5003,6 +5033,56 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     _vcurrentFileTypeMappings = value;
 					if(_vcurrentFileTypeMappings != null) CurrentFileTypeMappings = value.Data;
                     NotifyPropertyChanged(x => this.VCurrentFileTypeMappings);                    
+                }
+            }
+        }
+
+
+
+                     
+       
+
+        internal void OnCurrentFileTypeMappingsValuesChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<FileTypeMappingsValues> e)
+        {
+            //CurrentFileTypeMappingsValues = e.Data;
+            NotifyPropertyChanged(m => this.CurrentFileTypeMappingsValues);
+        }
+
+        private  FileTypeMappingsValues _currentFileTypeMappingsValues;
+        public FileTypeMappingsValues CurrentFileTypeMappingsValues
+        {
+            get
+            {
+                return _currentFileTypeMappingsValues;
+            }
+            set
+            {
+                if (_currentFileTypeMappingsValues != value)
+                {
+                    _currentFileTypeMappingsValues = value;
+                    BeginSendMessage(MessageToken.CurrentFileTypeMappingsValuesChanged,
+                                                     new NotificationEventArgs<FileTypeMappingsValues>(MessageToken.CurrentFileTypeMappingsValuesChanged, _currentFileTypeMappingsValues)); 
+                    NotifyPropertyChanged(x => this.CurrentFileTypeMappingsValues);    
+                    // all current navigation properties = null
+   
+                }
+            }
+        }
+
+		VirtualListItem<FileTypeMappingsValues> _vcurrentFileTypeMappingsValues;
+        public VirtualListItem<FileTypeMappingsValues> VCurrentFileTypeMappingsValues
+        {
+            get
+            {
+                return _vcurrentFileTypeMappingsValues;
+            }
+            set
+            {
+                if (_vcurrentFileTypeMappingsValues != value)
+                {
+                    _vcurrentFileTypeMappingsValues = value;
+					if(_vcurrentFileTypeMappingsValues != null) CurrentFileTypeMappingsValues = value.Data;
+                    NotifyPropertyChanged(x => this.VCurrentFileTypeMappingsValues);                    
                 }
             }
         }

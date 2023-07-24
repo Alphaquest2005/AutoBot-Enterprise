@@ -151,6 +151,8 @@ namespace AutoBotUtilities.Tests
         [TestCase("ANR/ROC020", "3/1/2023", 60)] // overallocated don't make sense
         [TestCase("PVH/2322410", "3/1/2023", 60)] //"MJM/RM454-04T"
         [TestCase("MJM/RM454-04T", "3/1/2023", 60)]//not allocating
+        [TestCase("GAR/010-02093-03", "3/1/2023", 60)]//not allocating audit
+
 
         /////////////////////// sandals
         [TestCase("0756-1474", "3/1/2023", 60)]

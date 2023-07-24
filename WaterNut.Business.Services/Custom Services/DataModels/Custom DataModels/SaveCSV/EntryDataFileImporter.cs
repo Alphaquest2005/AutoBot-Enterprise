@@ -63,7 +63,7 @@ namespace WaterNut.DataSpace
                         TaxAmount = line.Tax,
                         TotalCost = line.TotalCost,
                         Units = line.Units,
-                        
+
                     };
                     rows.Add(drow);
                 }

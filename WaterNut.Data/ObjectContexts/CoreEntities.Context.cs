@@ -253,6 +253,8 @@ namespace CoreEntities.Business.Entities
      
         public DbSet<AsycudaDocumentSet> AsycudaDocumentSet { get; set; }
      
+        public DbSet<FileTypeMappingsValues> FileTypeMappingsValues { get; set; }
+     
 
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
@@ -462,6 +464,8 @@ namespace CoreEntities.Business.Entities
             modelBuilder.Configurations.Add(new AsycudaDocumentSetAttachmentsMap());
          
             modelBuilder.Configurations.Add(new AsycudaDocumentSetMap());
+         
+            modelBuilder.Configurations.Add(new FileTypeMappingsValuesMap());
          
 			OnModelCreatingExtentsion(modelBuilder);
 

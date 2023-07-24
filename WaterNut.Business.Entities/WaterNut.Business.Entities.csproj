@@ -261,6 +261,7 @@
     <Compile Include="Generated Business Entities\CoreEntities\FileTypeContacts.cs" />
     <Compile Include="Generated Business Entities\CoreEntities\FileTypeMappingRegExs.cs" />
     <Compile Include="Generated Business Entities\CoreEntities\FileTypeMappings.cs" />
+    <Compile Include="Generated Business Entities\CoreEntities\FileTypeMappingsValues.cs" />
     <Compile Include="Generated Business Entities\CoreEntities\FileTypeReplaceRegex.cs" />
     <Compile Include="Generated Business Entities\CoreEntities\FileTypes.cs" />
     <Compile Include="Generated Business Entities\CoreEntities\ImportActions.cs" />
@@ -448,6 +449,7 @@
     <Compile Include="Generated Business Entities\EntryDataDS\InvoiceDetailsVolume.cs" />
     <Compile Include="Generated Business Entities\EntryDataDS\InvoiceExtraInfo.cs" />
     <Compile Include="Generated Business Entities\EntryDataDS\Invoices.cs" />
+    <Compile Include="Generated Business Entities\EntryDataDS\ItemHistory.cs" />
     <Compile Include="Generated Business Entities\EntryDataDS\OpeningStock.cs" />
     <Compile Include="Generated Business Entities\EntryDataDS\PackageTypes.cs" />
     <Compile Include="Generated Business Entities\EntryDataDS\PurchaseOrders.cs" />
@@ -693,6 +695,7 @@
     <Compile Include="Generated ChangeTracking Models\CoreEntities\FileTypeContacts.cs" />
     <Compile Include="Generated ChangeTracking Models\CoreEntities\FileTypeMappingRegExs.cs" />
     <Compile Include="Generated ChangeTracking Models\CoreEntities\FileTypeMappings.cs" />
+    <Compile Include="Generated ChangeTracking Models\CoreEntities\FileTypeMappingsValues.cs" />
     <Compile Include="Generated ChangeTracking Models\CoreEntities\FileTypeReplaceRegex.cs" />
     <Compile Include="Generated ChangeTracking Models\CoreEntities\FileTypes.cs" />
     <Compile Include="Generated ChangeTracking Models\CoreEntities\ImportActions.cs" />
@@ -878,6 +881,7 @@
     <Compile Include="Generated ChangeTracking Models\EntryDataDS\InvoiceDetailsVolume.cs" />
     <Compile Include="Generated ChangeTracking Models\EntryDataDS\InvoiceExtraInfo.cs" />
     <Compile Include="Generated ChangeTracking Models\EntryDataDS\Invoices.cs" />
+    <Compile Include="Generated ChangeTracking Models\EntryDataDS\ItemHistory.cs" />
     <Compile Include="Generated ChangeTracking Models\EntryDataDS\OpeningStock.cs" />
     <Compile Include="Generated ChangeTracking Models\EntryDataDS\PackageTypes.cs" />
     <Compile Include="Generated ChangeTracking Models\EntryDataDS\PurchaseOrders.cs" />
@@ -1121,6 +1125,7 @@
     <Compile Include="Generated Constructors Models\CoreEntities\FileTypeContacts.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\FileTypeMappingRegExs.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\FileTypeMappings.cs" />
+    <Compile Include="Generated Constructors Models\CoreEntities\FileTypeMappingsValues.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\FileTypeReplaceRegex.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\FileTypes.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\ImportActions.cs" />
@@ -1306,6 +1311,7 @@
     <Compile Include="Generated Constructors Models\EntryDataDS\InvoiceDetailsVolume.cs" />
     <Compile Include="Generated Constructors Models\EntryDataDS\InvoiceExtraInfo.cs" />
     <Compile Include="Generated Constructors Models\EntryDataDS\Invoices.cs" />
+    <Compile Include="Generated Constructors Models\EntryDataDS\ItemHistory.cs" />
     <Compile Include="Generated Constructors Models\EntryDataDS\OpeningStock.cs" />
     <Compile Include="Generated Constructors Models\EntryDataDS\PackageTypes.cs" />
     <Compile Include="Generated Constructors Models\EntryDataDS\PurchaseOrders.cs" />
@@ -1549,6 +1555,7 @@
     <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\FileTypeContacts.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\FileTypeMappingRegExs.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\FileTypeMappings.cs" />
+    <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\FileTypeMappingsValues.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\FileTypeReplaceRegex.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\FileTypes.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\ImportActions.cs" />
@@ -1734,6 +1741,7 @@
     <Compile Include="Generated IEntitiyWithKey Models\EntryDataDS\InvoiceDetailsVolume.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\EntryDataDS\InvoiceExtraInfo.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\EntryDataDS\Invoices.cs" />
+    <Compile Include="Generated IEntitiyWithKey Models\EntryDataDS\ItemHistory.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\EntryDataDS\OpeningStock.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\EntryDataDS\PackageTypes.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\EntryDataDS\PurchaseOrders.cs" />
@@ -1977,6 +1985,7 @@
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\FileTypeContacts.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\FileTypeMappingRegExs.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\FileTypeMappings.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\FileTypeMappingsValues.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\FileTypeReplaceRegex.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\FileTypes.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\ImportActions.cs" />
@@ -2162,6 +2171,7 @@
     <Compile Include="Generated IIdentitfiableEntity Models\EntryDataDS\InvoiceDetailsVolume.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\EntryDataDS\InvoiceExtraInfo.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\EntryDataDS\Invoices.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\EntryDataDS\ItemHistory.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\EntryDataDS\OpeningStock.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\EntryDataDS\PackageTypes.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\EntryDataDS\PurchaseOrders.cs" />
@@ -2415,6 +2425,7 @@
     <Compile Include="Generated Mappings\CoreEntities\FileTypeContacts.map.cs" />
     <Compile Include="Generated Mappings\CoreEntities\FileTypeMappingRegExs.map.cs" />
     <Compile Include="Generated Mappings\CoreEntities\FileTypeMappings.map.cs" />
+    <Compile Include="Generated Mappings\CoreEntities\FileTypeMappingsValues.map.cs" />
     <Compile Include="Generated Mappings\CoreEntities\FileTypeReplaceRegex.map.cs" />
     <Compile Include="Generated Mappings\CoreEntities\FileTypes.map.cs" />
     <Compile Include="Generated Mappings\CoreEntities\ImportActions.map.cs" />
@@ -2600,6 +2611,7 @@
     <Compile Include="Generated Mappings\EntryDataDS\InvoiceDetailsVolume.map.cs" />
     <Compile Include="Generated Mappings\EntryDataDS\InvoiceExtraInfo.map.cs" />
     <Compile Include="Generated Mappings\EntryDataDS\Invoices.map.cs" />
+    <Compile Include="Generated Mappings\EntryDataDS\ItemHistory.map.cs" />
     <Compile Include="Generated Mappings\EntryDataDS\OpeningStock.map.cs" />
     <Compile Include="Generated Mappings\EntryDataDS\PackageTypes.map.cs" />
     <Compile Include="Generated Mappings\EntryDataDS\PurchaseOrders.map.cs" />

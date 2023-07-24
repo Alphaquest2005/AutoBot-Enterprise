@@ -214,6 +214,10 @@ namespace WaterNut.Views
 	        await AdjustmentExModel.Instance.Import("DIS").ConfigureAwait(false);
 	    }
 
-	    
-	}
+
+        private async void Import(object sender, MouseButtonEventArgs e)
+        {
+            await AdjustmentExModel.Instance.Import("Unknown").ConfigureAwait(false);
+        }
+    }
 }

@@ -192,6 +192,7 @@
     <Compile Include="Generated Repositories\CoreEntities\FileTypeContactsRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\FileTypeMappingRegExsRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\FileTypeMappingsRepository.cs" />
+    <Compile Include="Generated Repositories\CoreEntities\FileTypeMappingsValuesRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\FileTypeReplaceRegexRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\FileTypesRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\ImportActionsRepository.cs" />

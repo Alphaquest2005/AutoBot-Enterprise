@@ -23,6 +23,7 @@ namespace CoreEntities.Business.Entities
         partial void AutoGenStartUp() //FileTypeMappings()
         {
             this.FileTypeMappingRegExs = new List<FileTypeMappingRegExs>();
+            this.FileTypeMappingValues = new List<FileTypeMappingsValues>();
         }
 
         [DataMember]
@@ -164,6 +165,8 @@ namespace CoreEntities.Business.Entities
         public FileTypes FileTypes { get; set; }
         [DataMember]
         public List<FileTypeMappingRegExs> FileTypeMappingRegExs { get; set; }
+        [DataMember]
+        public List<FileTypeMappingsValues> FileTypeMappingValues { get; set; }
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

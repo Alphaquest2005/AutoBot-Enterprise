@@ -171,6 +171,8 @@
         <AssociationConnector Association="WaterNutDBModel.FK_AsycudaDocumentSet_ApplicationSettings" />
         <AssociationConnector Association="WaterNutDBModel.FK_AsycudaDocumentSet_Attachments_AsycudaDocumentSet" />
         <AssociationConnector Association="WaterNutDBModel.FK_AsycudaDocumentSet_Customs_Procedure" />
+        <EntityTypeShape EntityType="WaterNutDBModel.FileTypeMappingsValues" Width="2.375" PointX="8.625" PointY="40" />
+        <AssociationConnector Association="WaterNutDBModel.FK_FileTypeMappingsValues_FileTypeMappings" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

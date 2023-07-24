@@ -241,6 +241,12 @@ namespace CoreEntities.Business.Services
                                         GetWhere<FileTypeMappingRegExs>(dbContext, exp, itm.Value, "FileTypeMappings", "Select", includesLst)
 										.ConfigureAwait(continueOnCapturedContext: false);
 
+                            case "FileTypeMappingValues":
+                                return
+                                    await
+                                        GetWhere<FileTypeMappingsValues>(dbContext, exp, itm.Value, "FileTypeMappings", "Select", includesLst)
+										.ConfigureAwait(continueOnCapturedContext: false);
+
                         }
 
                     }
@@ -728,6 +734,9 @@ namespace CoreEntities.Business.Services
                             case "FileTypeMappingRegExs":
                                 return await CountWhere<FileTypeMappingRegExs>(dbContext, exp, itm.Value, "FileTypeMappings", "Select")
 											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "FileTypeMappingValues":
+                                return await CountWhere<FileTypeMappingsValues>(dbContext, exp, itm.Value, "FileTypeMappings", "Select")
+											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }
                     return dbContext.FileTypeMappings.Where(exp == "All" || exp == null ? "Id != null" : exp)
@@ -840,6 +849,12 @@ namespace CoreEntities.Business.Services
                                 return
                                     await
                                         LoadRangeWhere<FileTypeMappingRegExs>(startIndex, count, dbContext, exp, itm.Value, "FileTypeMappings", "Select")
+													.ConfigureAwait(continueOnCapturedContext: false);
+
+                            case "FileTypeMappingValues":
+                                return
+                                    await
+                                        LoadRangeWhere<FileTypeMappingsValues>(startIndex, count, dbContext, exp, itm.Value, "FileTypeMappings", "Select")
 													.ConfigureAwait(continueOnCapturedContext: false);
 
                           
@@ -1049,6 +1064,7 @@ namespace CoreEntities.Business.Services
                 var set = AddIncludes(includesLst, dbContext);
                 IEnumerable<FileTypeMappings> entities = set//dbContext.FileTypeMappings
                                                     // .Include(x => x.FileTypeMappingRegExs)									  
+                                                    // .Include(x => x.FileTypeMappingValues)									  
                                       .AsNoTracking()
                                         .Where(x => x.FileTypeId.ToString() == FileTypeId.ToString())
 										.ToList();
@@ -1128,6 +1144,9 @@ namespace CoreEntities.Business.Services
 											.ConfigureAwait(continueOnCapturedContext: false);
                             case "FileTypeMappingRegExs":
                                 return await SumWhere<FileTypeMappingRegExs>(dbContext, exp, itm.Value, "FileTypeMappings", field, "Select")
+											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "FileTypeMappingValues":
+                                return await SumWhere<FileTypeMappingsValues>(dbContext, exp, itm.Value, "FileTypeMappings", field, "Select")
 											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }

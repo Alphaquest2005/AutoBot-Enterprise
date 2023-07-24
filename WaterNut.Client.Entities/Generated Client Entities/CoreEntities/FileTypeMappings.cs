@@ -295,6 +295,60 @@ public bool ReplicateColumnValues
             }
         }
 
+        ObservableCollection<FileTypeMappingsValues> _FileTypeMappingValues = null;
+        public  ObservableCollection<FileTypeMappingsValues> FileTypeMappingValues
+		{
+            
+		    get 
+				{ 
+					if(_FileTypeMappingValues != null) return _FileTypeMappingValues;
+					//if (this.filetypemappings.FileTypeMappingValues == null) Debugger.Break();
+					if(this.filetypemappings.FileTypeMappingValues != null)
+					{
+						_FileTypeMappingValues = new ObservableCollection<FileTypeMappingsValues>(this.filetypemappings.FileTypeMappingValues.Select(x => new FileTypeMappingsValues(x)));
+					}
+					
+						_FileTypeMappingValues.CollectionChanged += FileTypeMappingValues_CollectionChanged; 
+					
+					return _FileTypeMappingValues; 
+				}
+			set
+			{
+			    if (Equals(value, _FileTypeMappingValues)) return;
+				if (value != null)
+					this.filetypemappings.FileTypeMappingValues = new ChangeTrackingCollection<DTO.FileTypeMappingsValues>(value.Select(x => x.DTO).ToList());
+                _FileTypeMappingValues = value;
+				if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				if (_FileTypeMappingValues != null)
+				_FileTypeMappingValues.CollectionChanged += FileTypeMappingValues_CollectionChanged;               
+				NotifyPropertyChanged("FileTypeMappingValues");
+			}
+		}
+        
+        void FileTypeMappingValues_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            switch (e.Action)
+            {
+                case NotifyCollectionChangedAction.Add:
+                    foreach (FileTypeMappingsValues itm in e.NewItems)
+                    {
+                        if (itm != null)
+                        filetypemappings.FileTypeMappingValues.Add(itm.DTO);
+                    }
+                    if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+                    break;
+                case NotifyCollectionChangedAction.Remove:
+                    foreach (FileTypeMappingsValues itm in e.OldItems)
+                    {
+                        if (itm != null)
+                        filetypemappings.FileTypeMappingValues.Remove(itm.DTO);
+                    }
+					if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+                    break;
+                
+            }
+        }
+
 
         ChangeTrackingCollection<DTO.FileTypeMappings> _changeTracker;    
         public ChangeTrackingCollection<DTO.FileTypeMappings> ChangeTracker

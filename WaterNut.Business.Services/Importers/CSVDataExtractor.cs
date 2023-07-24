@@ -30,9 +30,6 @@ namespace WaterNut.Business.Services.Importers
            
 
             var mapping = GetMappings(_header.ToArray(), _fileType) ;
-                
-
-
             var eslst = GetCSVDataSummayList(_lines.ToArray(), mapping, _header.ToArray(), _fileType);
             return eslst;
         }
@@ -163,13 +160,15 @@ namespace WaterNut.Business.Services.Importers
                         }
 
                         if (ImportActions.ContainsKey(key.DestinationName))
-                        {// come up with a better solution cuz of duplicate keys
+                        {
+                            // come up with a better solution cuz of duplicate keys
                             ImportActions[key.DestinationName].Invoke(res,
                                 map
                                     //////// turn on for Filetype 125 itemnumber
                                     /// /// Turn off because- the mapping should only contains items in heading. see mapping code
                                     //.Where(x => headings.Contains(x.Key.OriginalName) )//|| headings.Contains(x.Key.DestinationName)
                                     .ToDictionary(x => x.Key.DestinationName, x => x.Value), splits);
+                            GetMappingValue(res, key);
                         }
                         else
                         {
@@ -220,6 +219,16 @@ namespace WaterNut.Business.Services.Importers
             }
 
             return null;
+        }
+
+        private static void GetMappingValue(dynamic res, FileTypeMappings key)
+        {
+            if(!((IDictionary<string, object>)res).ContainsKey(key.DestinationName)) return;
+            var val = ((IDictionary<string, object>)res)[key.DestinationName].ToString();
+            if(string.IsNullOrEmpty(val)) return;
+            val = FileTypeManager.ApplyFileMapRegEx(key, val.ToString());
+           
+            ((IDictionary<string, object>)res)[key.DestinationName] = FileTypeManager.MappingValueToType(key, val);
         }
 
         private object GetMappingValue(FileTypeMappings key, string[] splits, int index)

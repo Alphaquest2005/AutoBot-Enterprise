@@ -14,7 +14,7 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
         public async Task Execute(DataFile dataFile, List<RawEntryData> goodLst)
         {
 
-
+            if (!goodLst.Any()) return;
 
             try
             { 

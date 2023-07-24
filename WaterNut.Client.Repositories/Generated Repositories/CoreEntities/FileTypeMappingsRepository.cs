@@ -203,7 +203,8 @@ namespace CoreEntities.Client.Repositories
                             return new FileTypeMappings(res)
                     {
                   // FileTypes = (res.FileTypes != null?new FileTypes(res.FileTypes): null),    
-                     // FileTypeMappingRegExs = new System.Collections.ObjectModel.ObservableCollection<FileTypeMappingRegExs>(res.FileTypeMappingRegExs.Select(y => new FileTypeMappingRegExs(y)))    
+                     // FileTypeMappingRegExs = new System.Collections.ObjectModel.ObservableCollection<FileTypeMappingRegExs>(res.FileTypeMappingRegExs.Select(y => new FileTypeMappingRegExs(y))),    
+                     // FileTypeMappingValues = new System.Collections.ObjectModel.ObservableCollection<FileTypeMappingsValues>(res.FileTypeMappingValues.Select(y => new FileTypeMappingsValues(y)))    
                   };
                     }
                     else

@@ -64,6 +64,7 @@
         <AssociationConnector Association="WaterNutDBModel.FK_InventoryItemAlias_InventoryItems1" />
         <EntityTypeShape EntityType="WaterNutDBModel.SystemDocumentSets" Width="1.5" PointX="19.125" PointY="7.75" />
         <AssociationConnector Association="WaterNutDBModel.SystemDocumentSetsEntryDataDetailsEx" />
+        <EntityTypeShape EntityType="WaterNutDBModel.ItemHistory" Width="1.5" PointX="0.75" PointY="17.75" />
         </Diagram>
       <Diagram DiagramId="e6a676be76e44b88a3a806984a620f91" Name="Shipments" ZoomLevel="82" >
         <EntityTypeShape EntityType="WaterNutDBModel.ShipmentAttachedBL" Width="2.5" PointX="6.625" PointY="6.25" />

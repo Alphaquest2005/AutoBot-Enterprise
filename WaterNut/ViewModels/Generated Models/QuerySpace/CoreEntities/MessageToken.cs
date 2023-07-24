@@ -238,6 +238,12 @@ namespace WaterNut.QuerySpace.CoreEntities
 			public const string FileTypeMappingsDeleted = "FileTypeMappingsDeleted";
 			public const string FileTypeMappingsCreated = "FileTypeMappingsCreated";
 			public const string FileTypeMappingsUpdated = "FileTypeMappingsUpdated";
+			public const string FileTypeMappingsValuesFilterExpressionChanged = "FileTypeMappingsValuesFilterExpressionChanged";
+			public const string SelectedFileTypeMappingsValuesChanged = "SelectedFileTypeMappingsValuesChanged";
+            public const string FileTypeMappingsValuesChanged = "FileTypeMappingsValuesChanged";
+			public const string FileTypeMappingsValuesDeleted = "FileTypeMappingsValuesDeleted";
+			public const string FileTypeMappingsValuesCreated = "FileTypeMappingsValuesCreated";
+			public const string FileTypeMappingsValuesUpdated = "FileTypeMappingsValuesUpdated";
 			public const string FileTypeReplaceRegexFilterExpressionChanged = "FileTypeReplaceRegexFilterExpressionChanged";
 			public const string SelectedFileTypeReplaceRegexChanged = "SelectedFileTypeReplaceRegexChanged";
             public const string FileTypeReplaceRegexChanged = "FileTypeReplaceRegexChanged";
@@ -668,6 +674,7 @@ namespace WaterNut.QuerySpace.CoreEntities
           // public const string FileTypeContactsChanged = "FileTypeContactsChanged";
           // public const string FileTypeMappingRegExsChanged = "FileTypeMappingRegExsChanged";
           // public const string FileTypeMappingsChanged = "FileTypeMappingsChanged";
+          // public const string FileTypeMappingsValuesChanged = "FileTypeMappingsValuesChanged";
           // public const string FileTypeReplaceRegexChanged = "FileTypeReplaceRegexChanged";
           // public const string FileTypesChanged = "FileTypesChanged";
           // public const string ImportActionsChanged = "ImportActionsChanged";
@@ -811,6 +818,8 @@ namespace WaterNut.QuerySpace.CoreEntities
            public const string CurrentFileTypeMappingRegExsChanged = "CurrentFileTypeMappingRegExsChanged";
    
            public const string CurrentFileTypeMappingsChanged = "CurrentFileTypeMappingsChanged";
+   
+           public const string CurrentFileTypeMappingsValuesChanged = "CurrentFileTypeMappingsValuesChanged";
    
            public const string CurrentFileTypeReplaceRegexChanged = "CurrentFileTypeReplaceRegexChanged";
    
@@ -1019,6 +1028,8 @@ namespace WaterNut.QuerySpace.CoreEntities
            public const string CurrentFileTypeMappingRegExsIDChanged = "OnCurrentFileTypeMappingRegExsIDChanged";
    
            public const string CurrentFileTypeMappingsIDChanged = "OnCurrentFileTypeMappingsIDChanged";
+   
+           public const string CurrentFileTypeMappingsValuesIDChanged = "OnCurrentFileTypeMappingsValuesIDChanged";
    
            public const string CurrentFileTypeReplaceRegexIDChanged = "OnCurrentFileTypeReplaceRegexIDChanged";
    

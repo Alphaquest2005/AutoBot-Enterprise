@@ -24,6 +24,7 @@
               this.Property(t => t.ReplicateColumnValues).HasColumnName("ReplicateColumnValues");
               this.HasRequired(t => t.FileTypes).WithMany(t =>(ICollection<FileTypeMappings>) t.FileTypeMappings).HasForeignKey(d => d.FileTypeId);
               this.HasMany(t => t.FileTypeMappingRegExs).WithRequired(t => (FileTypeMappings)t.FileTypeMappings);
+              this.HasMany(t => t.FileTypeMappingValues).WithRequired(t => (FileTypeMappings)t.FileTypeMappings);
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);
     			this.Ignore(t => t.ModifiedProperties);

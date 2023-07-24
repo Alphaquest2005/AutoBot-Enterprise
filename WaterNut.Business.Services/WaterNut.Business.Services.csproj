@@ -490,6 +490,7 @@
     <Compile Include="Contracts\CoreEntities\IFileTypeContactsService.cs" />
     <Compile Include="Contracts\CoreEntities\IFileTypeMappingRegExsService.cs" />
     <Compile Include="Contracts\CoreEntities\IFileTypeMappingsService.cs" />
+    <Compile Include="Contracts\CoreEntities\IFileTypeMappingsValuesService.cs" />
     <Compile Include="Contracts\CoreEntities\IFileTypeReplaceRegexService.cs" />
     <Compile Include="Contracts\CoreEntities\IFileTypesService.cs" />
     <Compile Include="Contracts\CoreEntities\IImportActionsService.cs" />
@@ -675,6 +676,7 @@
     <Compile Include="Contracts\EntryDataDS\IInvoiceDetailsVolumeService.cs" />
     <Compile Include="Contracts\EntryDataDS\IInvoiceExtraInfoService.cs" />
     <Compile Include="Contracts\EntryDataDS\IInvoicesService.cs" />
+    <Compile Include="Contracts\EntryDataDS\IItemHistoryService.cs" />
     <Compile Include="Contracts\EntryDataDS\IOpeningStockService.cs" />
     <Compile Include="Contracts\EntryDataDS\IPackageTypesService.cs" />
     <Compile Include="Contracts\EntryDataDS\IPurchaseOrdersService.cs" />
@@ -953,6 +955,7 @@
     <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\RiderImporter.cs" />
     <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\RiderPdfImporter.cs" />
     <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\SalesCreator.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\SaveItemHistory.cs" />
     <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\ShipmentInvoiceImporter.cs" />
     <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\SupplierImporter.cs" />
     <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\SupplierProcessor.cs" />
@@ -1043,10 +1046,12 @@
     <Compile Include="Services\CoreEntities\AsycudaDocumentSetAttachmentsService.cs" />
     <Compile Include="Services\CoreEntities\AsycudaDocumentSetService.cs" />
     <Compile Include="Services\CoreEntities\EmailMappingActionsService.cs" />
+    <Compile Include="Services\CoreEntities\FileTypeMappingsValuesService.cs" />
     <Compile Include="Services\CoreEntities\ParameterSetParametersService.cs" />
     <Compile Include="Services\CoreEntities\ParameterSetService.cs" />
     <Compile Include="Services\CoreEntities\ParametersService.cs" />
     <Compile Include="Services\DocumentDS\PackageTypesService.cs" />
+    <Compile Include="Services\EntryDataDS\ItemHistoryService.cs" />
     <Compile Include="Services\EntryDataDS\ShipmentBLInvoiceService.cs" />
     <Compile Include="Services\EntryDataDS\ShipmentInvoiceBLManualMatchesService.cs" />
     <Compile Include="Services\EntryDataDS\SupplierItemDescriptionRegExService.cs" />

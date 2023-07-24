@@ -34,6 +34,7 @@ namespace WaterNut.Business.Services.Utils
                            // .Include("AsycudaDocumentSetEx")
                             .Include("ChildFileTypes")
                             .Include("FileTypeMappings.FileTypeMappingRegExs")
+                            .Include("FileTypeMappings.FileTypeMappingValues")
                             .Include(x => x.FileImporterInfos)
                             .Include(x => x.ImportActions)
                             .Include(x => x.FileTypeReplaceRegex)
@@ -129,6 +130,7 @@ namespace WaterNut.Business.Services.Utils
             public const string POTemplate = "POTemplate";
             public const string Info = "Info";
             public const string xSales = "xSales";
+            public const string ItemHistory = "ItemHistory";
         }
 
 
