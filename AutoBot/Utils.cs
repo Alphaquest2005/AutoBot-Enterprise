@@ -481,7 +481,7 @@ namespace AutoBot
                     Thread.Sleep(1000 * 60);
                 }
 
-                foreach (var process1 in Process.GetProcesses().Where(x => x.ProcessName.Contains("java"))
+                foreach (var process1 in Process.GetProcesses().Where(x => x.ProcessName.Contains("java") || x.ProcessName.Contains("Photo"))
                              .ToList())
                 {
                     process1.Kill();

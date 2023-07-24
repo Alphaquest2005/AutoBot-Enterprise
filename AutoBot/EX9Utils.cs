@@ -118,12 +118,12 @@ namespace AutoBot
         {
             try
             {
-                var directoryName = BaseDataModel.GetDocSetDirectoryName("Old Imports");
+                var directoryName = BaseDataModel.GetDocSetDirectoryName("Imports");
                 Console.WriteLine("Download History With Invoices");
                 var lcont = 0;
 
-                var startDate = DateTime.Parse("1/1/2015");//BaseDataModel.Instance.CurrentApplicationSettings.OpeningStockDate;
-                var endDate =  DateTime.Parse("12/31/2021");//DateTime.Now;
+                var startDate = DateTime.Parse("1/1/2018");//BaseDataModel.Instance.CurrentApplicationSettings.OpeningStockDate;
+                var endDate =  DateTime.Now;
                 var months = (endDate.Year - startDate.Year) * 12 + endDate.Month - startDate.Month;
                 foreach (var month in Enumerable.Range(1, months))
                 {
