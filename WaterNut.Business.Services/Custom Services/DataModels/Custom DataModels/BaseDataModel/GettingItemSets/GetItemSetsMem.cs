@@ -51,8 +51,8 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
                                 })));
                         }).OrderBy(x => x.Key.InventoryItemId).ToList();
 
-                        //var dupitemsets2 = lst1.Where(x => x.Value.Any(z => z.ItemNumber == "MMM/62556752301")).ToList();
-                        //var t2 = lst1.Where(z => z.Key.ItemNumber == "MMM/62556752301").ToList();
+                      //  var dupitemsets2 = lst1.Where(x => x.Value.Any(z => z.ItemNumber == "AB/320000500002-BOND")).ToList();
+                      //  var t2 = lst1.Where(z => z.Key.ItemNumber == "AB/320000600065").ToList();
 
                         var clst = GroupLst(lst1);
 
