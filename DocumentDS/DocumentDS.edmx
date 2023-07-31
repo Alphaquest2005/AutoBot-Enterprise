@@ -117,6 +117,14 @@
           <Property Name="IsDefault" Type="bit" Nullable="false" />
           <Property Name="ExportSupportingEntryData" Type="bit" Nullable="false" />
         </EntityType>
+        <EntityType Name="Customs_ProcedureInOut">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="WarehouseCustomsProcedureId" Type="int" Nullable="false" />
+          <Property Name="ExwarehouseCustomsProcedureId" Type="int" Nullable="false" />
+        </EntityType>
         <EntityType Name="CustomsOperations">
           <Key>
             <PropertyRef Name="Id" />
@@ -1037,6 +1045,30 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.xcuda_ASYCUDAEx' does not
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_Customs_ProcedureInOut_Customs_Procedure">
+          <End Role="Customs_Procedure" Type="Self.Customs_Procedure" Multiplicity="1" />
+          <End Role="Customs_ProcedureInOut" Type="Self.Customs_ProcedureInOut" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Customs_Procedure">
+              <PropertyRef Name="Customs_ProcedureId" />
+            </Principal>
+            <Dependent Role="Customs_ProcedureInOut">
+              <PropertyRef Name="WarehouseCustomsProcedureId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Customs_ProcedureInOut_Customs_Procedure1">
+          <End Role="Customs_Procedure" Type="Self.Customs_Procedure" Multiplicity="1" />
+          <End Role="Customs_ProcedureInOut" Type="Self.Customs_ProcedureInOut" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Customs_Procedure">
+              <PropertyRef Name="Customs_ProcedureId" />
+            </Principal>
+            <Dependent Role="Customs_ProcedureInOut">
+              <PropertyRef Name="ExwarehouseCustomsProcedureId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_FileTypes_FileTypes">
           <End Role="FileTypes" Type="Self.FileTypes" Multiplicity="0..1" />
           <End Role="FileTypes1" Type="Self.FileTypes" Multiplicity="*" />
@@ -1598,6 +1630,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.xcuda_ASYCUDAEx' does not
           <EntitySet Name="Attachments" EntityType="Self.Attachments" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Container" EntityType="Self.Container" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Customs_Procedure" EntityType="Self.Customs_Procedure" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Customs_ProcedureInOut" EntityType="Self.Customs_ProcedureInOut" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CustomsOperations" EntityType="Self.CustomsOperations" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Document_Type" EntityType="Self.Document_Type" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ExportTemplate" EntityType="Self.ExportTemplate" Schema="dbo" store:Type="Tables" />
@@ -1759,6 +1792,14 @@ FROM [dbo].[xcuda_ASYCUDAEx] AS [xcuda_ASYCUDAEx]</DefiningQuery>
           <AssociationSet Name="FK_Customs_Procedure_Document_Type" Association="Self.FK_Customs_Procedure_Document_Type">
             <End Role="Document_Type" EntitySet="Document_Type" />
             <End Role="Customs_Procedure" EntitySet="Customs_Procedure" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Customs_ProcedureInOut_Customs_Procedure" Association="Self.FK_Customs_ProcedureInOut_Customs_Procedure">
+            <End Role="Customs_Procedure" EntitySet="Customs_Procedure" />
+            <End Role="Customs_ProcedureInOut" EntitySet="Customs_ProcedureInOut" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Customs_ProcedureInOut_Customs_Procedure1" Association="Self.FK_Customs_ProcedureInOut_Customs_Procedure1">
+            <End Role="Customs_Procedure" EntitySet="Customs_Procedure" />
+            <End Role="Customs_ProcedureInOut" EntitySet="Customs_ProcedureInOut" />
           </AssociationSet>
           <AssociationSet Name="FK_FileTypes_FileTypes" Association="Self.FK_FileTypes_FileTypes">
             <End Role="FileTypes" EntitySet="FileTypes" />
@@ -2254,6 +2295,15 @@ FROM [dbo].[xcuda_ASYCUDAEx] AS [xcuda_ASYCUDAEx]</DefiningQuery>
           <AssociationSet Name="FK_xcuda_ASYCUDA_ExtendedProperties_Customs_Procedure" Association="WaterNutDBModel.FK_xcuda_ASYCUDA_ExtendedProperties_Customs_Procedure">
             <End Role="Customs_Procedure" EntitySet="Customs_Procedure" />
             <End Role="xcuda_ASYCUDA_ExtendedProperties" EntitySet="xcuda_ASYCUDA_ExtendedProperties" />
+          </AssociationSet>
+          <EntitySet Name="Customs_ProcedureInOut" EntityType="WaterNutDBModel.Customs_ProcedureInOut" />
+          <AssociationSet Name="FK_Customs_ProcedureInOut_Customs_Procedure" Association="WaterNutDBModel.FK_Customs_ProcedureInOut_Customs_Procedure">
+            <End Role="Customs_Procedure" EntitySet="Customs_Procedure" />
+            <End Role="Customs_ProcedureInOut" EntitySet="Customs_ProcedureInOut" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Customs_ProcedureInOut_Customs_Procedure1" Association="WaterNutDBModel.FK_Customs_ProcedureInOut_Customs_Procedure1">
+            <End Role="Customs_Procedure" EntitySet="Customs_Procedure" />
+            <End Role="Customs_ProcedureInOut" EntitySet="Customs_ProcedureInOut" />
           </AssociationSet>
         </EntityContainer>
         <EntityType Name="AsycudaDocumentSet">
@@ -3930,6 +3980,8 @@ FROM [dbo].[xcuda_ASYCUDAEx] AS [xcuda_ASYCUDAEx]</DefiningQuery>
           <NavigationProperty Name="CustomsOperation" Relationship="WaterNutDBModel.FK_Customs_Procedure_CustomsOperations" FromRole="Customs_Procedure" ToRole="CustomsOperation" />
           <NavigationProperty Name="Document_Type" Relationship="WaterNutDBModel.FK_Customs_Procedure_Document_Type" FromRole="Customs_Procedure" ToRole="Document_Type" />
           <NavigationProperty Name="xcuda_ASYCUDA_ExtendedProperties" Relationship="WaterNutDBModel.FK_xcuda_ASYCUDA_ExtendedProperties_Customs_Procedure" FromRole="Customs_Procedure" ToRole="xcuda_ASYCUDA_ExtendedProperties" />
+          <NavigationProperty Name="InCustomsProcedure" Relationship="WaterNutDBModel.FK_Customs_ProcedureInOut_Customs_Procedure" FromRole="Customs_Procedure" ToRole="Customs_ProcedureInOut" />
+          <NavigationProperty Name="OutCustomsProcedure" Relationship="WaterNutDBModel.FK_Customs_ProcedureInOut_Customs_Procedure1" FromRole="Customs_Procedure" ToRole="Customs_ProcedureInOut" />
         </EntityType>
         <Association Name="FK_AsycudaDocumentSet_Customs_Procedure">
           <End Type="WaterNutDBModel.Customs_Procedure" Role="Customs_Procedure" Multiplicity="0..1" />
@@ -3976,6 +4028,40 @@ FROM [dbo].[xcuda_ASYCUDAEx] AS [xcuda_ASYCUDAEx]</DefiningQuery>
             </Principal>
             <Dependent Role="xcuda_ASYCUDA_ExtendedProperties">
               <PropertyRef Name="Customs_ProcedureId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="Customs_ProcedureInOut">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="WarehouseCustomsProcedureId" Type="Int32" Nullable="false" />
+          <Property Name="ExwarehouseCustomsProcedureId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="InCustomsProcedure" Relationship="WaterNutDBModel.FK_Customs_ProcedureInOut_Customs_Procedure" FromRole="Customs_ProcedureInOut" ToRole="Customs_Procedure" />
+          <NavigationProperty Name="OutCustomsProcedure" Relationship="WaterNutDBModel.FK_Customs_ProcedureInOut_Customs_Procedure1" FromRole="Customs_ProcedureInOut" ToRole="Customs_Procedure" />
+        </EntityType>
+        <Association Name="FK_Customs_ProcedureInOut_Customs_Procedure">
+          <End Type="WaterNutDBModel.Customs_Procedure" Role="Customs_Procedure" Multiplicity="1" />
+          <End Type="WaterNutDBModel.Customs_ProcedureInOut" Role="Customs_ProcedureInOut" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Customs_Procedure">
+              <PropertyRef Name="Customs_ProcedureId" />
+            </Principal>
+            <Dependent Role="Customs_ProcedureInOut">
+              <PropertyRef Name="WarehouseCustomsProcedureId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Customs_ProcedureInOut_Customs_Procedure1">
+          <End Type="WaterNutDBModel.Customs_Procedure" Role="Customs_Procedure" Multiplicity="1" />
+          <End Type="WaterNutDBModel.Customs_ProcedureInOut" Role="Customs_ProcedureInOut" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Customs_Procedure">
+              <PropertyRef Name="Customs_ProcedureId" />
+            </Principal>
+            <Dependent Role="Customs_ProcedureInOut">
+              <PropertyRef Name="ExwarehouseCustomsProcedureId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -4733,6 +4819,15 @@ FROM [dbo].[xcuda_ASYCUDAEx] AS [xcuda_ASYCUDAEx]</DefiningQuery>
                 <ScalarProperty Name="Extended_customs_procedure" ColumnName="Extended_customs_procedure" />
                 <ScalarProperty Name="Customs_ProcedureId" ColumnName="Customs_ProcedureId" />
                 <ScalarProperty Name="Document_TypeId" ColumnName="Document_TypeId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Customs_ProcedureInOut">
+            <EntityTypeMapping TypeName="WaterNutDBModel.Customs_ProcedureInOut">
+              <MappingFragment StoreEntitySet="Customs_ProcedureInOut">
+                <ScalarProperty Name="ExwarehouseCustomsProcedureId" ColumnName="ExwarehouseCustomsProcedureId" />
+                <ScalarProperty Name="WarehouseCustomsProcedureId" ColumnName="WarehouseCustomsProcedureId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

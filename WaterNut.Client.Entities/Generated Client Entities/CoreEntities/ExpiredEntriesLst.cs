@@ -42,21 +42,6 @@ namespace CoreEntities.Client.Entities
                 expiredentrieslst = value;
             }
         }
-       [RequiredValidationAttribute(ErrorMessage= " is required")]
-       
-public int Id
-		{ 
-		    get { return this.expiredentrieslst.Id; }
-			set
-			{
-			    if (value == this.expiredentrieslst.Id) return;
-				this.expiredentrieslst.Id = value;
-                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
-				NotifyPropertyChanged("Id");
-			}
-		}
-     
-
        [RequiredValidationAttribute(ErrorMessage= "Office is required")]
        
                 

@@ -155,6 +155,7 @@ namespace WaterNut.DataSpace
                         _customs_Procedures = ctx.Customs_Procedure
                             .Include(x => x.CustomsOperation)
                             .Include(x => x.Document_Type)
+                            .Include("InCustomsProcedure.InCustomsProcedure.OutCustomsProcedure")
                             .Where(x => x.BondTypeId == CurrentApplicationSettings.BondTypeId
                                         && x.IsObsolete != true).ToList();
                     }
@@ -486,9 +487,8 @@ namespace WaterNut.DataSpace
             cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.Cancelled = false;
 
 
-            using (var ctx = new DocumentDSContext())
-            {
-                var Exp = ctx.ExportTemplates
+           
+                var Exp = BaseDataModel.Instance.ExportTemplates
                     .Where(x => x.ApplicationSettingsId ==
                                 cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.AsycudaDocumentSet
                                     .ApplicationSettingsId)
@@ -536,7 +536,7 @@ namespace WaterNut.DataSpace
 
                 cdoc.Document.xcuda_Traders.xcuda_Consignee.Consignee_name = Exp.Consignee_name;
                 cdoc.Document.xcuda_Traders.xcuda_Consignee.Consignee_code = Exp.Consignee_code;
-            }
+            
         }
 
 

@@ -177,6 +177,8 @@ namespace DocumentDS.Business.Entities
      
         public DbSet<Customs_Procedure> Customs_Procedure { get; set; }
      
+        public DbSet<Customs_ProcedureInOut> Customs_ProcedureInOut { get; set; }
+     
 
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
@@ -310,6 +312,8 @@ namespace DocumentDS.Business.Entities
             modelBuilder.Configurations.Add(new xcuda_IdentificationMap());
          
             modelBuilder.Configurations.Add(new Customs_ProcedureMap());
+         
+            modelBuilder.Configurations.Add(new Customs_ProcedureInOutMap());
          
 			OnModelCreatingExtentsion(modelBuilder);
 

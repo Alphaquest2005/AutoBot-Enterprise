@@ -505,6 +505,114 @@ public bool ExportSupportingEntryData
             }
         }
 
+        ObservableCollection<Customs_ProcedureInOut> _Customs_ProcedureInOut = null;
+        public  ObservableCollection<Customs_ProcedureInOut> Customs_ProcedureInOut
+		{
+            
+		    get 
+				{ 
+					if(_Customs_ProcedureInOut != null) return _Customs_ProcedureInOut;
+					//if (this.customs_procedure.Customs_ProcedureInOut == null) Debugger.Break();
+					if(this.customs_procedure.Customs_ProcedureInOut != null)
+					{
+						_Customs_ProcedureInOut = new ObservableCollection<Customs_ProcedureInOut>(this.customs_procedure.Customs_ProcedureInOut.Select(x => new Customs_ProcedureInOut(x)));
+					}
+					
+						_Customs_ProcedureInOut.CollectionChanged += Customs_ProcedureInOut_CollectionChanged; 
+					
+					return _Customs_ProcedureInOut; 
+				}
+			set
+			{
+			    if (Equals(value, _Customs_ProcedureInOut)) return;
+				if (value != null)
+					this.customs_procedure.Customs_ProcedureInOut = new ChangeTrackingCollection<DTO.Customs_ProcedureInOut>(value.Select(x => x.DTO).ToList());
+                _Customs_ProcedureInOut = value;
+				if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				if (_Customs_ProcedureInOut != null)
+				_Customs_ProcedureInOut.CollectionChanged += Customs_ProcedureInOut_CollectionChanged;               
+				NotifyPropertyChanged("Customs_ProcedureInOut");
+			}
+		}
+        
+        void Customs_ProcedureInOut_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            switch (e.Action)
+            {
+                case NotifyCollectionChangedAction.Add:
+                    foreach (Customs_ProcedureInOut itm in e.NewItems)
+                    {
+                        if (itm != null)
+                        customs_procedure.Customs_ProcedureInOut.Add(itm.DTO);
+                    }
+                    if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+                    break;
+                case NotifyCollectionChangedAction.Remove:
+                    foreach (Customs_ProcedureInOut itm in e.OldItems)
+                    {
+                        if (itm != null)
+                        customs_procedure.Customs_ProcedureInOut.Remove(itm.DTO);
+                    }
+					if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+                    break;
+                
+            }
+        }
+
+        ObservableCollection<Customs_ProcedureInOut> _OutCustomsProcedure = null;
+        public  ObservableCollection<Customs_ProcedureInOut> OutCustomsProcedure
+		{
+            
+		    get 
+				{ 
+					if(_OutCustomsProcedure != null) return _OutCustomsProcedure;
+					//if (this.customs_procedure.OutCustomsProcedure == null) Debugger.Break();
+					if(this.customs_procedure.OutCustomsProcedure != null)
+					{
+						_OutCustomsProcedure = new ObservableCollection<Customs_ProcedureInOut>(this.customs_procedure.OutCustomsProcedure.Select(x => new Customs_ProcedureInOut(x)));
+					}
+					
+						_OutCustomsProcedure.CollectionChanged += OutCustomsProcedure_CollectionChanged; 
+					
+					return _OutCustomsProcedure; 
+				}
+			set
+			{
+			    if (Equals(value, _OutCustomsProcedure)) return;
+				if (value != null)
+					this.customs_procedure.OutCustomsProcedure = new ChangeTrackingCollection<DTO.Customs_ProcedureInOut>(value.Select(x => x.DTO).ToList());
+                _OutCustomsProcedure = value;
+				if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				if (_OutCustomsProcedure != null)
+				_OutCustomsProcedure.CollectionChanged += OutCustomsProcedure_CollectionChanged;               
+				NotifyPropertyChanged("OutCustomsProcedure");
+			}
+		}
+        
+        void OutCustomsProcedure_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            switch (e.Action)
+            {
+                case NotifyCollectionChangedAction.Add:
+                    foreach (Customs_ProcedureInOut itm in e.NewItems)
+                    {
+                        if (itm != null)
+                        customs_procedure.OutCustomsProcedure.Add(itm.DTO);
+                    }
+                    if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+                    break;
+                case NotifyCollectionChangedAction.Remove:
+                    foreach (Customs_ProcedureInOut itm in e.OldItems)
+                    {
+                        if (itm != null)
+                        customs_procedure.OutCustomsProcedure.Remove(itm.DTO);
+                    }
+					if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+                    break;
+                
+            }
+        }
+
 
         ChangeTrackingCollection<DTO.Customs_Procedure> _changeTracker;    
         public ChangeTrackingCollection<DTO.Customs_Procedure> ChangeTracker

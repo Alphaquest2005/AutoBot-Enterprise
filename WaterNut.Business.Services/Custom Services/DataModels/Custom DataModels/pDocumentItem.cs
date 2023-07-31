@@ -23,5 +23,7 @@ namespace WaterNut.DataSpace
         public double PiQuantity =>
             this.previousItems.DistinctBy(x => x.PreviousItem_Id).DefaultIfEmpty(new PreviousItems())
                 .Sum(xx => xx.Suplementary_Quantity);
+
+        public string CustomsProcedure { get; set; }
     }
 }

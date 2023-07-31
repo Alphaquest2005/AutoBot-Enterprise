@@ -153,6 +153,9 @@ namespace AutoBotUtilities.Tests
         [TestCase("MJM/RM454-04T", "3/1/2023", 60)]//not allocating
         [TestCase("GAR/010-02093-03", "3/1/2023", 60)]//not allocating audit
         [TestCase("AB/320000600065-BOND", "3/1/2023", 60)]//not allocating audit
+        [TestCase("CRB/HIF-SR270BL", "3/1/2023", 60)]
+        [TestCase("WAL/5002010004", "3/1/2023", 60)]
+        [TestCase("CRB/HIF-SR290", "3/1/2023", 60)]
 
 
         /////////////////////// sandals

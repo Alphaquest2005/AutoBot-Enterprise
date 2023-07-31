@@ -986,6 +986,21 @@ namespace AllocationDS.Business.Entities
         }
         string _sourcefile;
         [DataMember]
+        public string CustomsProcedure 
+        {
+            get
+            {
+                return _customsprocedure;
+            }
+            set
+            {
+                _customsprocedure = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _customsprocedure;
+        [DataMember]
         public xcuda_Item PreviousDocumentItem { get; set; }
         [DataMember]
         public InventoryItem InventoryItemsEx { get; set; }

@@ -73,6 +73,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                         RegisterToReceiveMessages<string>(MessageToken.CurrentCancelledEntriesLstIDChanged, OnCurrentCancelledEntriesLstIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentContactsIDChanged, OnCurrentContactsIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentCustoms_ProcedureIDChanged, OnCurrentCustoms_ProcedureIDChanged);
+                        RegisterToReceiveMessages<string>(MessageToken.CurrentCustoms_ProcedureInOutIDChanged, OnCurrentCustoms_ProcedureInOutIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentCustomsOperationsIDChanged, OnCurrentCustomsOperationsIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentDeclarantIDChanged, OnCurrentDeclarantIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentDocument_TypeIDChanged, OnCurrentDocument_TypeIDChanged);
@@ -180,6 +181,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                         RegisterToReceiveMessages<CancelledEntriesLst>(MessageToken.CurrentCancelledEntriesLstChanged, OnCurrentCancelledEntriesLstChanged);
                         RegisterToReceiveMessages<Contacts>(MessageToken.CurrentContactsChanged, OnCurrentContactsChanged);
                         RegisterToReceiveMessages<Customs_Procedure>(MessageToken.CurrentCustoms_ProcedureChanged, OnCurrentCustoms_ProcedureChanged);
+                        RegisterToReceiveMessages<Customs_ProcedureInOut>(MessageToken.CurrentCustoms_ProcedureInOutChanged, OnCurrentCustoms_ProcedureInOutChanged);
                         RegisterToReceiveMessages<CustomsOperations>(MessageToken.CurrentCustomsOperationsChanged, OnCurrentCustomsOperationsChanged);
                         RegisterToReceiveMessages<Declarant>(MessageToken.CurrentDeclarantChanged, OnCurrentDeclarantChanged);
                         RegisterToReceiveMessages<Document_Type>(MessageToken.CurrentDocument_TypeChanged, OnCurrentDocument_TypeChanged);
@@ -820,6 +822,33 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                                     if (!string.IsNullOrEmpty(_currentCustoms_ProcedureID)) BeginSendMessage(MessageToken.CurrentCustoms_ProcedureIDChanged,
                                                      new NotificationEventArgs<string>(MessageToken.CurrentCustoms_ProcedureIDChanged, _currentCustoms_ProcedureID));
                                     NotifyPropertyChanged(x => this.CurrentCustoms_ProcedureID);  
+                                }
+                            }
+                        }
+                        internal async void OnCurrentCustoms_ProcedureInOutIDChanged(object sender, NotificationEventArgs<string> e)
+                        {
+                            using (Customs_ProcedureInOutRepository ctx = new Customs_ProcedureInOutRepository())
+                            {
+                                CurrentCustoms_ProcedureInOut = await ctx.GetCustoms_ProcedureInOut(e.Data).ConfigureAwait(continueOnCapturedContext: false);
+                            }
+                            NotifyPropertyChanged(m => CurrentCustoms_ProcedureInOut);
+                        }
+
+                        private  string _currentCustoms_ProcedureInOutID = "";
+                        public string CurrentCustoms_ProcedureInOutID
+                        {
+                            get
+                            {
+                                return _currentCustoms_ProcedureInOutID;
+                            }
+                            set
+                            {
+                                if (_currentCustoms_ProcedureInOutID != value)
+                                {
+                                    _currentCustoms_ProcedureInOutID = value;
+                                    if (!string.IsNullOrEmpty(_currentCustoms_ProcedureInOutID)) BeginSendMessage(MessageToken.CurrentCustoms_ProcedureInOutIDChanged,
+                                                     new NotificationEventArgs<string>(MessageToken.CurrentCustoms_ProcedureInOutIDChanged, _currentCustoms_ProcedureInOutID));
+                                    NotifyPropertyChanged(x => this.CurrentCustoms_ProcedureInOutID);  
                                 }
                             }
                         }
@@ -4102,6 +4131,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     // all current navigation properties = null
                  CurrentAsycudaDocument = null;
                  CurrentAsycudaDocumentSet = null;
+                 CurrentCustoms_ProcedureInOut = null;
    
                 }
             }
@@ -4121,6 +4151,56 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     _vcurrentCustoms_Procedure = value;
 					if(_vcurrentCustoms_Procedure != null) CurrentCustoms_Procedure = value.Data;
                     NotifyPropertyChanged(x => this.VCurrentCustoms_Procedure);                    
+                }
+            }
+        }
+
+
+
+                     
+       
+
+        internal void OnCurrentCustoms_ProcedureInOutChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<Customs_ProcedureInOut> e)
+        {
+            //CurrentCustoms_ProcedureInOut = e.Data;
+            NotifyPropertyChanged(m => this.CurrentCustoms_ProcedureInOut);
+        }
+
+        private  Customs_ProcedureInOut _currentCustoms_ProcedureInOut;
+        public Customs_ProcedureInOut CurrentCustoms_ProcedureInOut
+        {
+            get
+            {
+                return _currentCustoms_ProcedureInOut;
+            }
+            set
+            {
+                if (_currentCustoms_ProcedureInOut != value)
+                {
+                    _currentCustoms_ProcedureInOut = value;
+                    BeginSendMessage(MessageToken.CurrentCustoms_ProcedureInOutChanged,
+                                                     new NotificationEventArgs<Customs_ProcedureInOut>(MessageToken.CurrentCustoms_ProcedureInOutChanged, _currentCustoms_ProcedureInOut)); 
+                    NotifyPropertyChanged(x => this.CurrentCustoms_ProcedureInOut);    
+                    // all current navigation properties = null
+   
+                }
+            }
+        }
+
+		VirtualListItem<Customs_ProcedureInOut> _vcurrentCustoms_ProcedureInOut;
+        public VirtualListItem<Customs_ProcedureInOut> VCurrentCustoms_ProcedureInOut
+        {
+            get
+            {
+                return _vcurrentCustoms_ProcedureInOut;
+            }
+            set
+            {
+                if (_vcurrentCustoms_ProcedureInOut != value)
+                {
+                    _vcurrentCustoms_ProcedureInOut = value;
+					if(_vcurrentCustoms_ProcedureInOut != null) CurrentCustoms_ProcedureInOut = value.Data;
+                    NotifyPropertyChanged(x => this.VCurrentCustoms_ProcedureInOut);                    
                 }
             }
         }

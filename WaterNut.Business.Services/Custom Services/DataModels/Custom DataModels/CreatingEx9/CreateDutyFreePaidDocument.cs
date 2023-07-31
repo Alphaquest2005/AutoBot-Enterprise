@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Diagnostics;
@@ -52,7 +53,7 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
             bool checkQtyAllocatedGreaterThanPiQuantity, bool checkForMultipleMonths,
             bool applyEx9Bucket, string ex9BucketType, bool applyHistoricChecks, bool applyCurrentChecks,
             bool autoAssess, bool perInvoice, bool overPIcheck, bool universalPIcheck, bool itemPIcheck,
-            Dictionary<int, List<PreviousItems>> docPreviousItems, bool PerIM7, string prefix = null)
+            ConcurrentDictionary<int, List<PreviousItems>> docPreviousItems, bool PerIM7, string prefix = null)
         {
             try
             {
@@ -369,18 +370,6 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
                             Status = x.Status,
                             QtyAllocated = x.QtyAllocated,
                             PIData = x.PIData,
-                            //EntryDataDetails = new EntryDataDetails()
-                            //{
-                            //    EntryDataDetailsId = x.EntryDataDetailsId.GetValueOrDefault(),
-                            //    EntryData_Id = x.EntryData_Id,
-                            //    EntryDataId = x.InvoiceNo,
-                            //    Quantity = x.SalesQuantity,
-                            //    QtyAllocated = x.SalesQtyAllocated,
-                            //    EffectiveDate = x.EffectiveDate,
-                            //    LineNumber = x.LineNumber,
-                            //    Comment = x.Comment,
-                            //    AsycudaDocumentItemEntryDataDetails = x.EntryDataDetails.AsycudaDocumentItemEntryDataDetails
-                            //},
                             EntryDataDetails = x.EntryDataDetails,
 
 
@@ -441,7 +430,7 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
                             ItemQuantity = s.LastOrDefault()?.pQuantity.GetValueOrDefault()??0,
                             LineNumber = s.LastOrDefault()?.pLineNumber??0,
                             ItemNumber = s.LastOrDefault()?.pItemNumber,
-
+                            CustomsProcedure = s.LastOrDefault()?.CustomsProcedure,
                             Description = s.LastOrDefault()?.pItemDescription,
                             xcuda_ItemId = s.LastOrDefault()?.PreviousItem_Id.GetValueOrDefault()??0,
                             AssessmentDate = s.LastOrDefault()?.pAssessmentDate??DateTime.MinValue,
@@ -586,7 +575,7 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
             bool checkQtyAllocatedGreaterThanPiQuantity,
             bool applyEx9Bucket, string ex9BucketType, bool applyHistoricChecks, bool applyCurrentChecks,
             bool overPIcheck, bool universalPIcheck, bool itemPIcheck,
-            Dictionary<int, List<PreviousItems>> docPreviousItems)
+            ConcurrentDictionary<int, List<PreviousItems>> docPreviousItems)
         {
             try
             {
@@ -986,7 +975,7 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
 
         }
 
-        private bool CreateEx9Item(DataSpace.BaseDataModel.MyPodData mypod, DocumentCT cdoc, int itmcount, string dfp, Dictionary<int, List<PreviousItems>> docPreviousItems,
+        private bool CreateEx9Item(DataSpace.BaseDataModel.MyPodData mypod, DocumentCT cdoc, int itmcount, string dfp, ConcurrentDictionary<int, List<PreviousItems>> docPreviousItems,
            ref string sql, string entryType, out int itmsCreated)
         {
             var itmsToBeCreated = 1;
@@ -995,215 +984,321 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
 
             for (int i = 0; i < itmsToBeCreated; i++)
             {
-                var lineData =
-                    mypod.EntlnData; ///itmsToBeCreated == 1 ? mypod.EntlnData : CreateLineData(mypod, i);
+                var lineData = mypod.EntlnData;
 
-                global::DocumentItemDS.Business.Entities.xcuda_PreviousItem pitm = CreatePreviousItem(
-                    lineData,
-                    itmcount + i, docPreviousItems);
-                if (Math.Round(pitm.Net_weight, 2) < (decimal)0.01)
-                {
-                    UpdateXStatus(mypod.Allocations,
-                        $@"Failed PiNetWeight < 0.01 :: PiNetWeight:{Math.Round(pitm.Net_weight, 2)}",ref sql);
-                    {
-                        itmsCreated = 0;
-                        return true;
-                    }
-                }
+                var pitm = CreatePreviousItem(lineData, itmcount + i, docPreviousItems);
+
+                if (IsPiWeightLessthanMinimum(mypod, ref sql, ref itmsCreated, pitm)) return true;
 
                 pitm.ASYCUDA_Id = cdoc.Document.ASYCUDA_Id;
 
+                var itm = DataSpace.BaseDataModel.Instance.CreateItemFromEntryDataDetail(lineData, cdoc);
 
-                global::DocumentItemDS.Business.Entities.xcuda_Item itm =
-                    DataSpace.BaseDataModel.Instance.CreateItemFromEntryDataDetail(lineData, cdoc);
-                itm.EmailId = lineData.EmailId;
-                itm.xcuda_Valuation_item.Total_CIF_itm = pitm.Current_value;
-                itm.xcuda_Tarification.xcuda_HScode.Precision_4 = lineData.pDocumentItem.ItemNumber;
-                itm.xcuda_Tarification.xcuda_HScode.Precision_1 = lineData.EX9Allocation.pPrecision1;
-                itm.xcuda_Goods_description.Commercial_Description =
-                    DataSpace.BaseDataModel.Instance.CleanText(lineData.pDocumentItem.Description);
-                itm.IsAssessed = false;
-                itm.SalesFactor = lineData.EX9Allocation.SalesFactor;
-                //TODO:Refactor this dup code
-                if (mypod.Allocations != null)
-                {
-                    var itmcnt = 1;
-                    foreach (
-                        var allo in (mypod.Allocations as List<AsycudaSalesAllocations>)) //.Distinct()
-                    {
-                        itm.xBondAllocations.Add(new xBondAllocations(true)
-                        {
-                            AllocationId = allo.AllocationId,
-                            xcuda_Item = itm,
-                            TrackingState = TrackingState.Added
-                        });
-
-                        itmcnt = AddFreeText(itmcnt, itm, allo.EntryDataDetails.EntryDataId,
-                            allo.EntryDataDetails.LineNumber.GetValueOrDefault(), allo.EntryDataDetails.Comment,
-                            mypod.EntlnData.ItemNumber);
-                    }
-                }
+                SwitchCustomsProcedureBasedonIM7(cdoc, lineData, itm);
+                   
 
 
-                itm.xcuda_PreviousItem = pitm;
-                pitm.xcuda_Item = itm;
+                ProcessAllocations(mypod, itm);
+                SetBasicInfofromPreviousItem(itm, lineData, pitm);
 
-                itm.ItemQuantity =
-                    (double)pitm
-                        .Suplementary_Quantity; // taking the previous item quantity because thats governing thing when exwarehousing. c#36689 51 9/1/2021
-
-                var previousItems = new PreviousItems()
-                {
-                    DutyFreePaid = dfp, Net_weight = (double)pitm.Net_weight,
-                    PreviousItem_Id = pitm.PreviousItem_Id,
-                    Suplementary_Quantity = (double)pitm.Suplementary_Quantity
-                };
-                if (docPreviousItems.ContainsKey(lineData.PreviousDocumentItemId))
-                {
-                    docPreviousItems[lineData.PreviousDocumentItemId].Add(previousItems);
-                }
-                else
-                {
-                    docPreviousItems.Add(lineData.PreviousDocumentItemId,
-                        new List<PreviousItems>() { previousItems });
-                }
+                var previousItems = CreatePreviousItems(dfp, pitm);
+                UpdateDocPreviousItems(docPreviousItems, lineData, previousItems);
 
 
-                var ep = new EntryPreviousItems(true)
-                {
-                    Item_Id = lineData.PreviousDocumentItemId,
-                    PreviousItem_Id = pitm.PreviousItem_Id,
-                    TrackingState = TrackingState.Added
-                };
-                pitm.xcuda_Items.Add(ep);
+                CreateEntryPreviousItems(lineData, pitm);
 
 
-                if (cdoc.DocumentItems.Select(x => x.xcuda_PreviousItem).Count() == 1 || itmcount == 0)
-                {
-                    pitm.Packages_number = "1"; //(i.Packages.Number_of_packages).ToString();
-                    pitm.Previous_Packages_number = pitm.Previous_item_number == 1 ? "1" : "0";
+                SetPackageInfo(mypod, cdoc, itmcount, pitm, itm, lineData);
+
+                UpdatePackageInfoFromPreviousItem(pitm, itm);
 
 
-                    itm.xcuda_Attached_documents.Add(new xcuda_Attached_documents(true)
-                    {
-                        Attached_document_code =
-                            DataSpace.BaseDataModel.Instance.ExportTemplates.FirstOrDefault(x =>
-                                x.Customs_Procedure == cdoc.Document.xcuda_ASYCUDA_ExtendedProperties
-                                    .Customs_Procedure.CustomsProcedure)?.AttachedDocumentCode ?? "DFS1",
-                        Attached_document_date = DateTime.Today.Date.ToShortDateString(),
-                        Attached_document_reference = cdoc.Document.ReferenceNumber,
-                        xcuda_Attachments = new List<xcuda_Attachments>()
-                        {
-                            new xcuda_Attachments(true)
-                            {
-                                Attachments = new Attachments(true)
-                                {
-                                    FilePath = Path.Combine(
-                                        DataSpace.BaseDataModel.Instance.CurrentApplicationSettings.DataFolder == null
-                                            ? cdoc.Document.ReferenceNumber + ".csv.pdf"
-                                            : $"{DataSpace.BaseDataModel.Instance.CurrentApplicationSettings.DataFolder}\\{cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.AsycudaDocumentSet.Declarant_Reference_Number}\\{cdoc.Document.ReferenceNumber}.csv.pdf"),
-                                    TrackingState = TrackingState.Added,
-                                    DocumentCode = DataSpace.BaseDataModel.Instance.ExportTemplates.FirstOrDefault(x =>
-                                        x.Customs_Procedure == cdoc.Document.xcuda_ASYCUDA_ExtendedProperties
-                                            .Customs_Procedure.CustomsProcedure)?.AttachedDocumentCode ?? "DFS1",
-                                    EmailId = lineData.EmailId?.ToString(),
-                                    Reference = cdoc.Document.ReferenceNumber,
-                                },
-
-                                TrackingState = TrackingState.Added
-                            }
-                        },
-                        TrackingState = TrackingState.Added
-                    });
-
-                    var sourceFile = new FileInfo(mypod.EntlnData.EntryDataDetails[0].SourceFile);
-                    var sourceFilePdf = sourceFile.FullName.Replace(sourceFile.Extension, ".pdf");
-                    sourceFilePdf = sourceFilePdf.Replace("-Fixed", "");
-                    if (File.Exists(sourceFilePdf))
-                        itm.xcuda_Attached_documents.Add(new xcuda_Attached_documents(true)
-                        {
-                            Attached_document_code = "IV05",
-                            Attached_document_date = DateTime.Today.Date.ToShortDateString(),
-                            Attached_document_reference = cdoc.Document.ReferenceNumber + ".pdf",
-                            xcuda_Attachments = new List<xcuda_Attachments>()
-                            {
-                                new xcuda_Attachments(true)
-                                {
-                                    Attachments = new Attachments(true)
-                                    {
-                                        FilePath = sourceFilePdf,
-                                        TrackingState = TrackingState.Added,
-                                        DocumentCode = @"IV05",
-                                        EmailId = lineData.EmailId?.ToString(),
-                                        Reference = cdoc.Document.ReferenceNumber,
-                                    },
-
-                                    TrackingState = TrackingState.Added
-                                }
-                            },
-                            TrackingState = TrackingState.Added
-                        });
-                }
-                else
-                {
-                    if (pitm.Packages_number == null)
-                    {
-                        pitm.Packages_number = (0).ToString(CultureInfo.InvariantCulture);
-                        pitm.Previous_Packages_number = (0).ToString(CultureInfo.InvariantCulture);
-                    }
-                }
-
-                if (pitm.Previous_Packages_number != null && pitm.Previous_Packages_number != "0")
-                {
-                    var pkg = itm.xcuda_Packages.FirstOrDefault();
-                    if (pkg == null)
-                    {
-                        pkg = new xcuda_Packages(true)
-                        {
-                            Item_Id = itm.Item_Id,
-                            Marks1_of_packages = "Marks",
-                            TrackingState = TrackingState.Added
-                        };
-                        itm.xcuda_Packages.Add(pkg);
-                    }
-
-                    pkg.Number_of_packages =
-                        Convert.ToDouble(pitm.Previous_Packages_number);
-                }
+                
 
 
-                itm.xcuda_Tarification.xcuda_HScode.Commodity_code = pitm.Hs_code;
-                itm.xcuda_Goods_description.Country_of_origin_code = pitm.Goods_origin;
-
-
-                itm.xcuda_Valuation_item.xcuda_Weight_itm = new xcuda_Weight_itm(true)
-                {
-                    TrackingState = TrackingState.Added,
-                    Gross_weight_itm = (double)pitm.Net_weight,
-                    Net_weight_itm = (double)pitm.Net_weight
-                };
+                CreateWeightItm(itm, pitm);
                 // adjusting because not using real statistical value when calculating
-                itm.xcuda_Valuation_item.xcuda_Item_Invoice.Amount_foreign_currency =
-                    Convert.ToDouble(Math.Round((pitm.Current_value * (double)pitm.Suplementary_Quantity), 2));
-                itm.xcuda_Valuation_item.xcuda_Item_Invoice.Amount_national_currency =
-                    Convert.ToDouble(Math.Round(pitm.Current_value * (double)pitm.Suplementary_Quantity, 2));
-                itm.xcuda_Valuation_item.xcuda_Item_Invoice.Currency_code = "XCD";
-                itm.xcuda_Valuation_item.xcuda_Item_Invoice.Currency_rate = 1;
+                SetValuationItm(itm, pitm);
 
-                DocSetPi.Add(new PiSummary()
-                {
-                    ItemNumber = mypod.EntlnData.ItemNumber,
-                    PreviousItem_Id = mypod.EntlnData.PreviousDocumentItemId,
-                    DutyFreePaid = dfp,
-                    Type = entryType,
-                    TotalQuantity = mypod.EntlnData.Quantity,
-                    pCNumber = mypod.EntlnData.EX9Allocation.pCNumber,
-                    pLineNumber = mypod.EntlnData.pDocumentItem.LineNumber.ToString()
-                });
+                UpdateDocSetPi(mypod, dfp, entryType);
 
                 DataSpace.BaseDataModel.Instance.ProcessItemTariff(mypod.EntlnData, cdoc.Document, itm);
 
                 itmsCreated += 1;
+            }
+
+            return false;
+        }
+
+        private static void SwitchCustomsProcedureBasedonIM7(DocumentCT cdoc, AlloEntryLineData lineData, xcuda_Item itm)
+        {
+            if (!lineData.pDocumentItem.CustomsProcedure.StartsWith(cdoc.Document.xcuda_ASYCUDA_ExtendedProperties
+                    .Customs_Procedure.CustomsProcedure.Substring(2, 2)))
+            {
+                var altCustomProcedure = cdoc.Document.xcuda_ASYCUDA_ExtendedProperties
+                    .Customs_Procedure.InCustomsProcedure.FirstOrDefault(x =>
+                        x.InCustomsProcedure.CustomsProcedure == cdoc.Document.xcuda_ASYCUDA_ExtendedProperties
+                            .Customs_Procedure.CustomsProcedure)
+                    ?.OutCustomsProcedure;
+                if (altCustomProcedure != null)
+                {
+                    itm.xcuda_Tarification.National_customs_procedure = altCustomProcedure
+                        .National_customs_procedure;
+                    itm.xcuda_Tarification.Extended_customs_procedure = altCustomProcedure
+                        .Extended_customs_procedure;
+                }
+                else
+                {
+                    throw new ApplicationException(
+                        $"Customs Procedure '{lineData.pDocumentItem.CustomsProcedure}' not found in '{cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.Customs_Procedure.CustomsProcedure}'");
+                }
+            }
+        }
+
+        private static void SetBasicInfofromPreviousItem(xcuda_Item itm, AlloEntryLineData lineData, xcuda_PreviousItem pitm)
+        {
+            itm.EmailId = lineData.EmailId;
+            itm.xcuda_Valuation_item.Total_CIF_itm = pitm.Current_value;
+            itm.xcuda_Tarification.xcuda_HScode.Precision_4 = lineData.pDocumentItem.ItemNumber;
+            itm.xcuda_Tarification.xcuda_HScode.Precision_1 = lineData.EX9Allocation.pPrecision1;
+            itm.xcuda_Goods_description.Commercial_Description =
+                DataSpace.BaseDataModel.Instance.CleanText(lineData.pDocumentItem.Description);
+            itm.IsAssessed = false;
+            itm.SalesFactor = lineData.EX9Allocation.SalesFactor;
+
+
+            itm.xcuda_PreviousItem = pitm;
+            pitm.xcuda_Item = itm;
+
+            itm.ItemQuantity =
+                (double)pitm
+                    .Suplementary_Quantity; // taking the previous item quantity because thats governing thing when exwarehousing. c#36689 51 9/1/2021
+            itm.xcuda_Tarification.xcuda_HScode.Commodity_code = pitm.Hs_code;
+            itm.xcuda_Goods_description.Country_of_origin_code = pitm.Goods_origin;
+        }
+
+        private static void SetValuationItm(xcuda_Item itm, xcuda_PreviousItem pitm)
+        {
+            itm.xcuda_Valuation_item.xcuda_Item_Invoice.Amount_foreign_currency =
+                Convert.ToDouble(Math.Round((pitm.Current_value * (double)pitm.Suplementary_Quantity), 2));
+            itm.xcuda_Valuation_item.xcuda_Item_Invoice.Amount_national_currency =
+                Convert.ToDouble(Math.Round(pitm.Current_value * (double)pitm.Suplementary_Quantity, 2));
+            itm.xcuda_Valuation_item.xcuda_Item_Invoice.Currency_code = "XCD";
+            itm.xcuda_Valuation_item.xcuda_Item_Invoice.Currency_rate = 1;
+        }
+
+        private static void UpdateDocSetPi(DataSpace.BaseDataModel.MyPodData mypod, string dfp, string entryType)
+        {
+            DocSetPi.Add(new PiSummary()
+            {
+                ItemNumber = mypod.EntlnData.ItemNumber,
+                PreviousItem_Id = mypod.EntlnData.PreviousDocumentItemId,
+                DutyFreePaid = dfp,
+                Type = entryType,
+                TotalQuantity = mypod.EntlnData.Quantity,
+                pCNumber = mypod.EntlnData.EX9Allocation.pCNumber,
+                pLineNumber = mypod.EntlnData.pDocumentItem.LineNumber.ToString()
+            });
+        }
+
+        private static void CreateWeightItm(xcuda_Item itm, xcuda_PreviousItem pitm)
+        {
+            itm.xcuda_Valuation_item.xcuda_Weight_itm = new xcuda_Weight_itm(true)
+            {
+                TrackingState = TrackingState.Added,
+                Gross_weight_itm = (double)pitm.Net_weight,
+                Net_weight_itm = (double)pitm.Net_weight
+            };
+        }
+
+        private static void UpdatePackageInfoFromPreviousItem(xcuda_PreviousItem pitm, xcuda_Item itm)
+        {
+            if (pitm.Previous_Packages_number != null && pitm.Previous_Packages_number != "0")
+            {
+                var pkg = itm.xcuda_Packages.FirstOrDefault();
+                if (pkg == null)
+                {
+                    pkg = new xcuda_Packages(true)
+                    {
+                        Item_Id = itm.Item_Id,
+                        Marks1_of_packages = "Marks",
+                        TrackingState = TrackingState.Added
+                    };
+                    itm.xcuda_Packages.Add(pkg);
+                }
+
+                pkg.Number_of_packages =
+                    Convert.ToDouble(pitm.Previous_Packages_number);
+            }
+        }
+
+        private static void SetPackageInfo(DataSpace.BaseDataModel.MyPodData mypod, DocumentCT cdoc, int itmcount, xcuda_PreviousItem pitm,
+            xcuda_Item itm, AlloEntryLineData lineData)
+        {
+            if (cdoc.DocumentItems.Select(x => x.xcuda_PreviousItem).Count() == 1 || itmcount == 0)
+            {
+                pitm.Packages_number = "1"; //(i.Packages.Number_of_packages).ToString();
+                pitm.Previous_Packages_number = pitm.Previous_item_number == 1 ? "1" : "0";
+
+
+                CreateXcudaAttachements(cdoc, itm, lineData);
+
+                AddSourceFileAttachment(mypod, cdoc, itm, lineData);
+            }
+            else
+            {
+                SetOtherPackageInfo(pitm);
+            }
+        }
+
+        private static void SetOtherPackageInfo(xcuda_PreviousItem pitm)
+        {
+            if (pitm.Packages_number == null)
+            {
+                pitm.Packages_number = (0).ToString(CultureInfo.InvariantCulture);
+                pitm.Previous_Packages_number = (0).ToString(CultureInfo.InvariantCulture);
+            }
+        }
+
+        private static void AddSourceFileAttachment(DataSpace.BaseDataModel.MyPodData mypod, DocumentCT cdoc, xcuda_Item itm,
+            AlloEntryLineData lineData)
+        {
+            var sourceFile = new FileInfo(mypod.EntlnData.EntryDataDetails[0].SourceFile);
+            var sourceFilePdf = sourceFile.FullName.Replace(sourceFile.Extension, ".pdf");
+            sourceFilePdf = sourceFilePdf.Replace("-Fixed", "");
+            if (File.Exists(sourceFilePdf))
+                itm.xcuda_Attached_documents.Add(new xcuda_Attached_documents(true)
+                {
+                    Attached_document_code = "IV05",
+                    Attached_document_date = DateTime.Today.Date.ToShortDateString(),
+                    Attached_document_reference = cdoc.Document.ReferenceNumber + ".pdf",
+                    xcuda_Attachments = new List<xcuda_Attachments>()
+                    {
+                        new xcuda_Attachments(true)
+                        {
+                            Attachments = new Attachments(true)
+                            {
+                                FilePath = sourceFilePdf,
+                                TrackingState = TrackingState.Added,
+                                DocumentCode = @"IV05",
+                                EmailId = lineData.EmailId?.ToString(),
+                                Reference = cdoc.Document.ReferenceNumber,
+                            },
+
+                            TrackingState = TrackingState.Added
+                        }
+                    },
+                    TrackingState = TrackingState.Added
+                });
+        }
+
+        private static void CreateXcudaAttachements(DocumentCT cdoc, xcuda_Item itm, AlloEntryLineData lineData)
+        {
+            itm.xcuda_Attached_documents.Add(new xcuda_Attached_documents(true)
+            {
+                Attached_document_code =
+                    DataSpace.BaseDataModel.Instance.ExportTemplates.FirstOrDefault(x =>
+                        x.Customs_Procedure == cdoc.Document.xcuda_ASYCUDA_ExtendedProperties
+                            .Customs_Procedure.CustomsProcedure)?.AttachedDocumentCode ?? "DFS1",
+                Attached_document_date = DateTime.Today.Date.ToShortDateString(),
+                Attached_document_reference = cdoc.Document.ReferenceNumber,
+                xcuda_Attachments = new List<xcuda_Attachments>()
+                {
+                    new xcuda_Attachments(true)
+                    {
+                        Attachments = new Attachments(true)
+                        {
+                            FilePath = Path.Combine(
+                                DataSpace.BaseDataModel.Instance.CurrentApplicationSettings.DataFolder == null
+                                    ? cdoc.Document.ReferenceNumber + ".csv.pdf"
+                                    : $"{DataSpace.BaseDataModel.Instance.CurrentApplicationSettings.DataFolder}\\{cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.AsycudaDocumentSet.Declarant_Reference_Number}\\{cdoc.Document.ReferenceNumber}.csv.pdf"),
+                            TrackingState = TrackingState.Added,
+                            DocumentCode = DataSpace.BaseDataModel.Instance.ExportTemplates.FirstOrDefault(x =>
+                                x.Customs_Procedure == cdoc.Document.xcuda_ASYCUDA_ExtendedProperties
+                                    .Customs_Procedure.CustomsProcedure)?.AttachedDocumentCode ?? "DFS1",
+                            EmailId = lineData.EmailId?.ToString(),
+                            Reference = cdoc.Document.ReferenceNumber,
+                        },
+
+                        TrackingState = TrackingState.Added
+                    }
+                },
+                TrackingState = TrackingState.Added
+            });
+        }
+
+        private static void CreateEntryPreviousItems(AlloEntryLineData lineData, xcuda_PreviousItem pitm)
+        {
+            var ep = new EntryPreviousItems(true)
+            {
+                Item_Id = lineData.PreviousDocumentItemId,
+                PreviousItem_Id = pitm.PreviousItem_Id,
+                TrackingState = TrackingState.Added
+            };
+            pitm.xcuda_Items.Add(ep);
+        }
+
+        private static void UpdateDocPreviousItems(ConcurrentDictionary<int, List<PreviousItems>> docPreviousItems, AlloEntryLineData lineData,
+            PreviousItems previousItems)
+        {
+            //if (docPreviousItems.ContainsKey(lineData.PreviousDocumentItemId))
+            //{
+            //    docPreviousItems[lineData.PreviousDocumentItemId].Add(previousItems);
+            //}
+            //else
+            //{
+                docPreviousItems.AddOrUpdate(lineData.PreviousDocumentItemId,new List<PreviousItems>(){previousItems}, (k, o) =>
+                {
+                    o.Add(previousItems);
+                    return o ;
+                });
+            //}
+        }
+
+        private static PreviousItems CreatePreviousItems(string dfp, xcuda_PreviousItem pitm)
+        {
+            var previousItems = new PreviousItems()
+            {
+                DutyFreePaid = dfp, Net_weight = (double)pitm.Net_weight,
+                PreviousItem_Id = pitm.PreviousItem_Id,
+                Suplementary_Quantity = (double)pitm.Suplementary_Quantity
+            };
+            return previousItems;
+        }
+
+        private void ProcessAllocations(DataSpace.BaseDataModel.MyPodData mypod, xcuda_Item itm)
+        {
+            //TODO:Refactor this dup code
+            if (mypod.Allocations != null)
+            {
+                var itmcnt = 1;
+                foreach (
+                    var allo in (mypod.Allocations as List<AsycudaSalesAllocations>)) //.Distinct()
+                {
+                    itm.xBondAllocations.Add(new xBondAllocations(true)
+                    {
+                        AllocationId = allo.AllocationId,
+                        xcuda_Item = itm,
+                        TrackingState = TrackingState.Added
+                    });
+
+                    itmcnt = AddFreeText(itmcnt, itm, allo.EntryDataDetails.EntryDataId,
+                        allo.EntryDataDetails.LineNumber.GetValueOrDefault(), allo.EntryDataDetails.Comment,
+                        mypod.EntlnData.ItemNumber);
+                }
+            }
+        }
+
+        private bool IsPiWeightLessthanMinimum(DataSpace.BaseDataModel.MyPodData mypod, ref string sql, ref int itmsCreated, xcuda_PreviousItem pitm)
+        {
+            if (Math.Round(pitm.Net_weight, 2) < (decimal)0.01)
+            {
+                UpdateXStatus(mypod.Allocations,
+                    $@"Failed PiNetWeight < 0.01 :: PiNetWeight:{Math.Round(pitm.Net_weight, 2)}", ref sql);
+                {
+                    itmsCreated = 0;
+                    return true;
+                }
             }
 
             return false;
@@ -1313,7 +1408,7 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
             return itmcnt;
         }
 
-        private  void Ex9Bucket(DataSpace.BaseDataModel.MyPodData mypod, string dfp,  double docPi, List<ItemSalesPiSummary> itemSalesPiSummaryLst, Dictionary<int, List<PreviousItems>> docPreviousItems, ref string sql)
+        private  void Ex9Bucket(DataSpace.BaseDataModel.MyPodData mypod, string dfp,  double docPi, List<ItemSalesPiSummary> itemSalesPiSummaryLst, ConcurrentDictionary<int, List<PreviousItems>> docPreviousItems, ref string sql)
         {
             // prevent over draw down of pqty == quantity allocated
             try
@@ -1486,7 +1581,7 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
         }
 
         private xcuda_PreviousItem CreatePreviousItem(AlloEntryLineData pod, int itmcount,
-            Dictionary<int, List<PreviousItems>> docPreviousItems)
+            ConcurrentDictionary<int, List<PreviousItems>> docPreviousItems)
         {
 
             try
@@ -1534,7 +1629,7 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
         }
 
         private void SetWeights(AlloEntryLineData pod, xcuda_PreviousItem pitm,
-            Dictionary<int, List<PreviousItems>> previousItems)
+            ConcurrentDictionary<int, List<PreviousItems>> previousItems)
         {
             try
             {

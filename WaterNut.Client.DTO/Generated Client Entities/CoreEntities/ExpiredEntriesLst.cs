@@ -22,19 +22,6 @@ namespace CoreEntities.Client.DTO
     public partial class ExpiredEntriesLst : BaseEntity<ExpiredEntriesLst>, ITrackable, IEquatable<ExpiredEntriesLst>
     {
         [DataMember]
-        public int Id
-		{ 
-		    get { return _Id; }
-			set
-			{
-			    if (value == _Id) return;
-				_Id = value;
-				NotifyPropertyChanged();//m => this.Id
-			}
-		}
-        private int _Id;
-
-        [DataMember]
         public string Office
 		{ 
 		    get { return _Office; }

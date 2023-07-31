@@ -122,6 +122,7 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
                 pQuantity = x.pQuantity,
                 pRegistrationDate = x.pRegistrationDate,
                 pAssessmentDate = x.AssessmentDate,
+                CustomsProcedure = x.CustomsProcedure,
                 pExpiryDate = (DateTime) x.pExpiryDate.GetValueOrDefault(),
                 Country_of_origin_code = x.Country_of_origin_code,
                 Total_CIF_itm = x.Total_CIF_itm,

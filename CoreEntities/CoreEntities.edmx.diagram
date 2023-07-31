@@ -132,7 +132,7 @@
         <EntityTypeShape EntityType="WaterNutDBModel.TODO_LICToCreate" Width="1.5" PointX="33.375" PointY="0.75" />
         <EntityTypeShape EntityType="WaterNutDBModel.FileTypeMappingRegExs" Width="1.5" PointX="7.25" PointY="33.625" />
         <AssociationConnector Association="WaterNutDBModel.FK_FileTypeMappingRegExs_FileTypeMappings" />
-        <EntityTypeShape EntityType="WaterNutDBModel.ExpiredEntriesLst" Width="1.5" PointX="17.375" PointY="19.75" />
+        <EntityTypeShape EntityType="WaterNutDBModel.ExpiredEntriesLst" Width="1.75" PointX="17.125" PointY="19.75" />
         <EntityTypeShape EntityType="WaterNutDBModel.TODO_DiscrepanciesExecutionReport" Width="1.5" PointX="0.75" PointY="33.75" />
         <EntityTypeShape EntityType="WaterNutDBModel.TODO_LicenceAvailableQty" Width="2.375" PointX="30.5" PointY="20.75" />
         <EntityTypeShape EntityType="WaterNutDBModel.TODO_AssessDiscrepancyEntries" Width="1.5" PointX="28.375" PointY="20.75" />
@@ -173,6 +173,9 @@
         <AssociationConnector Association="WaterNutDBModel.FK_AsycudaDocumentSet_Customs_Procedure" />
         <EntityTypeShape EntityType="WaterNutDBModel.FileTypeMappingsValues" Width="2.375" PointX="8.625" PointY="40" />
         <AssociationConnector Association="WaterNutDBModel.FK_FileTypeMappingsValues_FileTypeMappings" />
+        <EntityTypeShape EntityType="WaterNutDBModel.Customs_ProcedureInOut" Width="2.375" PointX="5.125" PointY="46.625" />
+        <AssociationConnector Association="WaterNutDBModel.FK_Customs_ProcedureInOut_Customs_Procedure" />
+        <AssociationConnector Association="WaterNutDBModel.FK_Customs_ProcedureInOut_Customs_Procedure1" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

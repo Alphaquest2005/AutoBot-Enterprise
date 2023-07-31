@@ -31,6 +31,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -39,6 +40,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
     <DebugSymbols>true</DebugSymbols>
@@ -48,6 +50,7 @@
     <PlatformTarget>x64</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
     <OutputPath>bin\x64\Release\</OutputPath>
@@ -57,6 +60,7 @@
     <PlatformTarget>x64</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
     <DebugSymbols>true</DebugSymbols>
@@ -66,6 +70,7 @@
     <PlatformTarget>x86</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
     <OutputPath>bin\x86\Release\</OutputPath>
@@ -75,6 +80,7 @@
     <PlatformTarget>x86</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
@@ -142,6 +148,7 @@
     <Compile Include="Generated Client Entities\CoreEntities\Contacts.cs" />
     <Compile Include="Generated Client Entities\CoreEntities\CustomsOperations.cs" />
     <Compile Include="Generated Client Entities\CoreEntities\Customs_Procedure.cs" />
+    <Compile Include="Generated Client Entities\CoreEntities\Customs_ProcedureInOut.cs" />
     <Compile Include="Generated Client Entities\CoreEntities\Declarant.cs" />
     <Compile Include="Generated Client Entities\CoreEntities\Document_Type.cs" />
     <Compile Include="Generated Client Entities\CoreEntities\EmailAttachments.cs" />
@@ -318,6 +325,7 @@
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\Contacts.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\CustomsOperations.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\Customs_Procedure.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\Customs_ProcedureInOut.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\Declarant.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\Document_Type.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\EmailAttachments.cs" />
@@ -494,6 +502,7 @@
     <Compile Include="Generated MyNavProp Models\CoreEntities\Contacts.cs" />
     <Compile Include="Generated MyNavProp Models\CoreEntities\CustomsOperations.cs" />
     <Compile Include="Generated MyNavProp Models\CoreEntities\Customs_Procedure.cs" />
+    <Compile Include="Generated MyNavProp Models\CoreEntities\Customs_ProcedureInOut.cs" />
     <Compile Include="Generated MyNavProp Models\CoreEntities\Declarant.cs" />
     <Compile Include="Generated MyNavProp Models\CoreEntities\Document_Type.cs" />
     <Compile Include="Generated MyNavProp Models\CoreEntities\EmailAttachments.cs" />

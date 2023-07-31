@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
@@ -91,7 +92,7 @@ namespace AdjustmentQS.Business.Services
                         AllocationsModel.Instance.CreateEx9.GetItemSalesPiSummary(startDate,
                             endDate, dutyFreePaid, adjustmentType);
                     List<DocumentCT> doclst;
-                    Dictionary<int, List<PreviousItems>> docPreviousItems = new Dictionary<int, List<PreviousItems>>();
+                    ConcurrentDictionary<int, List<PreviousItems>> docPreviousItems = new ConcurrentDictionary<int, List<PreviousItems>>();
                     if (adjustmentType == "DIS")
                     {
 

@@ -205,7 +205,9 @@ namespace CoreEntities.Client.Repositories
                   // Document_Type = (res.Document_Type != null?new Document_Type(res.Document_Type): null),    
                   // CustomsOperations = (res.CustomsOperations != null?new CustomsOperations(res.CustomsOperations): null),    
                      // AsycudaDocument = new System.Collections.ObjectModel.ObservableCollection<AsycudaDocument>(res.AsycudaDocument.Select(y => new AsycudaDocument(y))),    
-                     // AsycudaDocumentSet = new System.Collections.ObjectModel.ObservableCollection<AsycudaDocumentSet>(res.AsycudaDocumentSet.Select(y => new AsycudaDocumentSet(y)))    
+                     // AsycudaDocumentSet = new System.Collections.ObjectModel.ObservableCollection<AsycudaDocumentSet>(res.AsycudaDocumentSet.Select(y => new AsycudaDocumentSet(y))),    
+                     // Customs_ProcedureInOut = new System.Collections.ObjectModel.ObservableCollection<Customs_ProcedureInOut>(res.Customs_ProcedureInOut.Select(y => new Customs_ProcedureInOut(y))),    
+                     // OutCustomsProcedure = new System.Collections.ObjectModel.ObservableCollection<Customs_ProcedureInOut>(res.OutCustomsProcedure.Select(y => new Customs_ProcedureInOut(y)))    
                   };
                     }
                     else

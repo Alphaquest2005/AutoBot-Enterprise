@@ -288,6 +288,32 @@ namespace CoreEntities.Client.DTO
 		}
         private ChangeTrackingCollection<AsycudaDocumentSet> _AsycudaDocumentSet = new ChangeTrackingCollection<AsycudaDocumentSet>();
 
+        [DataMember]
+        public ChangeTrackingCollection<Customs_ProcedureInOut> Customs_ProcedureInOut
+		{
+		    get { return _Customs_ProcedureInOut; }
+			set
+			{
+			    if (Equals(value, _Customs_ProcedureInOut)) return;
+				_Customs_ProcedureInOut = value;
+				NotifyPropertyChanged();//m => this.Customs_ProcedureInOut
+			}
+		}
+        private ChangeTrackingCollection<Customs_ProcedureInOut> _Customs_ProcedureInOut = new ChangeTrackingCollection<Customs_ProcedureInOut>();
+
+        [DataMember]
+        public ChangeTrackingCollection<Customs_ProcedureInOut> OutCustomsProcedure
+		{
+		    get { return _OutCustomsProcedure; }
+			set
+			{
+			    if (Equals(value, _OutCustomsProcedure)) return;
+				_OutCustomsProcedure = value;
+				NotifyPropertyChanged();//m => this.OutCustomsProcedure
+			}
+		}
+        private ChangeTrackingCollection<Customs_ProcedureInOut> _OutCustomsProcedure = new ChangeTrackingCollection<Customs_ProcedureInOut>();
+
    //     [DataMember]
    //     public TrackingState TrackingState { get; set; }
 

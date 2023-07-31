@@ -24,6 +24,8 @@ namespace CoreEntities.Business.Entities
         {
             this.AsycudaDocument = new List<AsycudaDocument>();
             this.AsycudaDocumentSet = new List<AsycudaDocumentSet>();
+            this.Customs_ProcedureInOut = new List<Customs_ProcedureInOut>();
+            this.OutCustomsProcedure = new List<Customs_ProcedureInOut>();
         }
 
         [DataMember]
@@ -274,6 +276,10 @@ namespace CoreEntities.Business.Entities
         public List<AsycudaDocument> AsycudaDocument { get; set; }
         [DataMember]
         public List<AsycudaDocumentSet> AsycudaDocumentSet { get; set; }
+        [DataMember]
+        public List<Customs_ProcedureInOut> Customs_ProcedureInOut { get; set; }
+        [DataMember]
+        public List<Customs_ProcedureInOut> OutCustomsProcedure { get; set; }
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

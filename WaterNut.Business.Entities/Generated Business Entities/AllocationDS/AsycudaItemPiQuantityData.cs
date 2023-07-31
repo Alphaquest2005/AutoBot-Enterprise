@@ -305,6 +305,21 @@ namespace AllocationDS.Business.Entities
             }
         }
         string _customsprocedure;
+        [DataMember]
+        public Nullable<System.DateTime> RegistrationDate 
+        {
+            get
+            {
+                return _registrationdate;
+            }
+            set
+            {
+                _registrationdate = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<System.DateTime> _registrationdate;
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

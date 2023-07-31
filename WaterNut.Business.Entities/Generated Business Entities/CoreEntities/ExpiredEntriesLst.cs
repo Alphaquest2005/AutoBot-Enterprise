@@ -21,21 +21,6 @@ namespace CoreEntities.Business.Entities
     public partial class ExpiredEntriesLst : BaseEntity<ExpiredEntriesLst>, ITrackable 
     {
         [DataMember]
-        public int Id 
-        {
-            get
-            {
-                return _id;
-            }
-            set
-            {
-                _id = value;
-                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
-                NotifyPropertyChanged();
-            }
-        }
-        int _id;
-        [DataMember]
         public string Office 
         {
             get

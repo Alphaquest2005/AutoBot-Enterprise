@@ -21,11 +21,11 @@ namespace CoreEntities.Client.Entities
         {
             get
             {
-                return this.Id.ToString();//this.Id == null?"0":			
+                return this.Office.ToString();//this.Office == null?"0":			
             }
             set
             {
-                this.Id = Convert.ToInt32(value);
+                this.Office = Convert.ToString(value);
             }
         }
         public string ApplicationSettingsEntityName

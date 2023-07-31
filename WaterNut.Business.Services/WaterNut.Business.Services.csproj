@@ -36,6 +36,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -44,6 +45,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
     <DebugSymbols>true</DebugSymbols>
@@ -53,6 +55,7 @@
     <PlatformTarget>x64</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
     <OutputPath>bin\x64\Release\</OutputPath>
@@ -62,6 +65,7 @@
     <PlatformTarget>x64</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
     <DebugSymbols>true</DebugSymbols>
@@ -71,6 +75,7 @@
     <PlatformTarget>x86</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
     <OutputPath>bin\x86\Release\</OutputPath>
@@ -80,6 +85,7 @@
     <PlatformTarget>x86</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="BouncyCastle.Crypto, Version=1.9.0.0, Culture=neutral, PublicKeyToken=0e99375e54769942, processorArchitecture=MSIL">
@@ -120,6 +126,9 @@
     </Reference>
     <Reference Include="Microsoft.Bcl.AsyncInterfaces, Version=7.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Bcl.AsyncInterfaces.7.0.0\lib\net462\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.ConcurrencyVisualizer.Markers">
+      <HintPath>..\..\..\..\..\program files\microsoft visual studio\2022\enterprise\common7\ide\extensions\rf2nfg00.o0t\SDK\Managed\4.0\Microsoft.ConcurrencyVisualizer.Markers.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.Expression.Interactions">
@@ -472,6 +481,7 @@
     <Compile Include="Contracts\CoreEntities\ICancelledEntriesLstService.cs" />
     <Compile Include="Contracts\CoreEntities\IContactsService.cs" />
     <Compile Include="Contracts\CoreEntities\ICustomsOperationsService.cs" />
+    <Compile Include="Contracts\CoreEntities\ICustoms_ProcedureInOutService.cs" />
     <Compile Include="Contracts\CoreEntities\ICustoms_ProcedureService.cs" />
     <Compile Include="Contracts\CoreEntities\IDeclarantService.cs" />
     <Compile Include="Contracts\CoreEntities\IDocument_TypeService.cs" />
@@ -568,6 +578,7 @@
     <Compile Include="Contracts\DocumentDS\IAttachmentService.cs" />
     <Compile Include="Contracts\DocumentDS\IContainerService.cs" />
     <Compile Include="Contracts\DocumentDS\ICustomsOperationService.cs" />
+    <Compile Include="Contracts\DocumentDS\ICustoms_ProcedureInOutService.cs" />
     <Compile Include="Contracts\DocumentDS\ICustoms_ProcedureService.cs" />
     <Compile Include="Contracts\DocumentDS\IDocument_TypeService.cs" />
     <Compile Include="Contracts\DocumentDS\IExportTemplateService.cs" />
@@ -1045,11 +1056,13 @@
     <Compile Include="Services\AllocationDS\XSales_UnAllocatedService.cs" />
     <Compile Include="Services\CoreEntities\AsycudaDocumentSetAttachmentsService.cs" />
     <Compile Include="Services\CoreEntities\AsycudaDocumentSetService.cs" />
+    <Compile Include="Services\CoreEntities\Customs_ProcedureInOutService.cs" />
     <Compile Include="Services\CoreEntities\EmailMappingActionsService.cs" />
     <Compile Include="Services\CoreEntities\FileTypeMappingsValuesService.cs" />
     <Compile Include="Services\CoreEntities\ParameterSetParametersService.cs" />
     <Compile Include="Services\CoreEntities\ParameterSetService.cs" />
     <Compile Include="Services\CoreEntities\ParametersService.cs" />
+    <Compile Include="Services\DocumentDS\Customs_ProcedureInOutService.cs" />
     <Compile Include="Services\DocumentDS\PackageTypesService.cs" />
     <Compile Include="Services\EntryDataDS\ItemHistoryService.cs" />
     <Compile Include="Services\EntryDataDS\ShipmentBLInvoiceService.cs" />

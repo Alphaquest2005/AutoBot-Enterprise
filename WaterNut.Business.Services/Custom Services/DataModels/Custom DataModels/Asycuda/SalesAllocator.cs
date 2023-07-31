@@ -222,7 +222,7 @@ namespace WaterNut.DataSpace
                         var asycudaItmQtyToAllocate = GetAsycudaItmQtyToAllocate(cAsycudaItm, saleitm, out var subitm);
 
 
-                        if (asycudaItmQtyToAllocate == 0 && saleitmQtyToallocate > 0)
+                        if (asycudaItmQtyToAllocate == 0 && (saleitmQtyToallocate + nextSalesQty) > 0)
                         {
                             CurrentAsycudaItemIndex += 1;
                             continue;
@@ -237,6 +237,7 @@ namespace WaterNut.DataSpace
                                 continue;
                             }
                             if(nextSalesQty > 0 || (nextSalesQty < 0 && nextSalesQty * -1 < saleitmQtyToallocate)) await AddExceptionAllocation(saleitm, cAsycudaItm , "Early Sales").ConfigureAwait(false);
+
                             break;
                         }
                        
@@ -335,7 +336,8 @@ namespace WaterNut.DataSpace
 
                     if (saleitm.AsycudaSalesAllocations.Count == 0)
                     {
-                        await AddExceptionAllocation(saleitm, "Over Sold").ConfigureAwait(false);
+                        //await AddExceptionAllocation(saleitm, "Over Sold").ConfigureAwait(false); -- take this out let over allocated deal with real oversold issues
+                        await AddExceptionAllocation(saleitm, null).ConfigureAwait(false); // removed the oversold status so it still logs the allocations
                         //Debugger.Break();
                     }
 

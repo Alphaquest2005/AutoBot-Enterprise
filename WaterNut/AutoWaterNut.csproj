@@ -53,6 +53,7 @@
     <WarningLevel>4</WarningLevel>
     <RunCodeAnalysis>false</RunCodeAnalysis>
     <CodeAnalysisRuleSet>..\..\DisposableRules.ruleset</CodeAnalysisRuleSet>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -62,6 +63,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <PropertyGroup>
     <StartupObject>WaterNut.App</StartupObject>
@@ -81,6 +83,7 @@
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>..\..\DisposableRules.ruleset</CodeAnalysisRuleSet>
     <Prefer32Bit>true</Prefer32Bit>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
     <OutputPath>bin\x64\Release\</OutputPath>
@@ -91,6 +94,7 @@
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <Prefer32Bit>true</Prefer32Bit>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
     <DebugSymbols>true</DebugSymbols>
@@ -101,6 +105,7 @@
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>..\..\DisposableRules.ruleset</CodeAnalysisRuleSet>
     <Prefer32Bit>true</Prefer32Bit>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
     <OutputPath>bin\x86\Release\</OutputPath>
@@ -111,6 +116,7 @@
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <Prefer32Bit>true</Prefer32Bit>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="BouncyCastle.Crypto, Version=1.9.0.0, Culture=neutral, PublicKeyToken=0e99375e54769942, processorArchitecture=MSIL">
@@ -484,6 +490,7 @@
     <Compile Include="ViewModels\Generated Models\QuerySpace\CoreEntities\CancelledEntriesLstViewModel.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\CoreEntities\ContactsViewModel.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\CoreEntities\CustomsOperationsViewModel.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\CoreEntities\Customs_ProcedureInOutViewModel.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\CoreEntities\Customs_ProcedureViewModel.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\CoreEntities\DeclarantViewModel.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\CoreEntities\Document_TypeViewModel.cs" />
@@ -673,6 +680,7 @@
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\CancelledEntriesLstTotals.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\ContactsTotals.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\CustomsOperationsTotals.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\Customs_ProcedureInOutTotals.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\Customs_ProcedureTotals.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\DeclarantTotals.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\Document_TypeTotals.cs" />
@@ -849,6 +857,7 @@
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\CancelledEntriesLstVirturalListLoader.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\ContactsVirturalListLoader.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\CustomsOperationsVirturalListLoader.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\Customs_ProcedureInOutVirturalListLoader.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\Customs_ProcedureVirturalListLoader.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\DeclarantVirturalListLoader.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\Document_TypeVirturalListLoader.cs" />

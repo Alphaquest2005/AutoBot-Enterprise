@@ -24,6 +24,8 @@ namespace DocumentDS.Business.Entities
         {
             this.AsycudaDocumentSets = new List<AsycudaDocumentSet>();
             this.xcuda_ASYCUDA_ExtendedProperties = new List<xcuda_ASYCUDA_ExtendedProperties>();
+            this.InCustomsProcedure = new List<Customs_ProcedureInOut>();
+            this.OutCustomsProcedure = new List<Customs_ProcedureInOut>();
         }
 
         [DataMember]
@@ -274,6 +276,10 @@ namespace DocumentDS.Business.Entities
         public Document_Type Document_Type { get; set; }
         [DataMember]
         public List<xcuda_ASYCUDA_ExtendedProperties> xcuda_ASYCUDA_ExtendedProperties { get; set; }
+        [DataMember]
+        public List<Customs_ProcedureInOut> InCustomsProcedure { get; set; }
+        [DataMember]
+        public List<Customs_ProcedureInOut> OutCustomsProcedure { get; set; }
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

@@ -97,16 +97,16 @@ namespace CoreEntities.Business.Services
         }
 
 
-        public async Task<ExpiredEntriesLst> GetExpiredEntriesLstByKey(string Id, List<string> includesLst = null, bool tracking = true)
+        public async Task<ExpiredEntriesLst> GetExpiredEntriesLstByKey(string Office, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
-			   if(string.IsNullOrEmpty(Id))return null; 
+			   if(string.IsNullOrEmpty(Office))return null; 
               using ( var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
               {
-                var i = Convert.ToInt32(Id);
+                var i = Office;
 				var set = AddIncludes(includesLst, dbContext);
-                ExpiredEntriesLst entity = set.AsNoTracking().SingleOrDefault(x => x.Id == i);
+                ExpiredEntriesLst entity = set.AsNoTracking().SingleOrDefault(x => x.Office == i);
                 if(tracking && entity != null) entity.StartTracking();
                 return entity;
               }
@@ -281,11 +281,11 @@ namespace CoreEntities.Business.Services
                                 IQueryable<ExpiredEntriesLst> dset;
                                 if (exp == "All")
                                 {
-                                    dset = set.OrderBy(x => x.Id);
+                                    dset = set.OrderBy(x => x.Office);
                                 }
                                 else
                                 {
-                                    dset = set.OrderBy(x => x.Id).Where(exp);
+                                    dset = set.OrderBy(x => x.Office).Where(exp);
                                 }
 
                                 var lst = dset.AsNoTracking()
@@ -356,12 +356,12 @@ namespace CoreEntities.Business.Services
                                 IQueryable<ExpiredEntriesLst> dset;
                                 if (expLst.FirstOrDefault() == "All")
                                 {
-                                    dset = set.OrderBy(x => x.Id);
+                                    dset = set.OrderBy(x => x.Office);
                                 }
                                 else
                                 {
                                     set = AddWheres(expLst, set);
-                                    dset = set.OrderBy(x => x.Id);
+                                    dset = set.OrderBy(x => x.Office);
                                 }
 
                                 var lst = dset.AsNoTracking()
@@ -498,15 +498,15 @@ namespace CoreEntities.Business.Services
             }
         }
 
-        public async Task<bool> DeleteExpiredEntriesLst(string Id)
+        public async Task<bool> DeleteExpiredEntriesLst(string Office)
         {
             try
             {
               using ( var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
               {
-                var i = Convert.ToInt32(Id);
+                var i = Office;
                 ExpiredEntriesLst entity = dbContext.ExpiredEntriesLst
-													.SingleOrDefault(x => x.Id == i);
+													.SingleOrDefault(x => x.Office == i);
                 if (entity == null)
                     return false;
 
@@ -653,7 +653,7 @@ namespace CoreEntities.Business.Services
                     {
                         return dbContext.ExpiredEntriesLst
 										.AsNoTracking()
-                                        .OrderBy(y => y.Id)
+                                        .OrderBy(y => y.Office)
 										.Skip(startIndex)
 										.Take(count)
 										.ToList();
@@ -664,7 +664,7 @@ namespace CoreEntities.Business.Services
                         return dbContext.ExpiredEntriesLst
 										.AsNoTracking()
                                         .Where(exp)
-										.OrderBy(y => y.Id)
+										.OrderBy(y => y.Office)
 										.Skip(startIndex)
 										.Take(count)
 										.ToList();
@@ -699,7 +699,7 @@ namespace CoreEntities.Business.Services
 										.AsNoTracking()
                                         .Count();
                     }
-                    return dbContext.ExpiredEntriesLst.Where(exp == "All" || exp == null ? "Id != null" : exp)
+                    return dbContext.ExpiredEntriesLst.Where(exp == "All" || exp == null ? "Office != null" : exp)
 											.AsNoTracking()
                                             .Count();
                 }
@@ -741,9 +741,9 @@ namespace CoreEntities.Business.Services
 				.AsNoTracking()
                 .Where(navExp)
                 .SelectMany(navProp).OfType<ExpiredEntriesLst>()
-                .Where(exp == "All" || exp == null ? "Id != null" : exp)
+                .Where(exp == "All" || exp == null ? "Office != null" : exp)
                 .Distinct()
-                .OrderBy("Id")
+                .OrderBy("Office")
                 .Count();
 			}
 			catch (Exception)
@@ -761,9 +761,9 @@ namespace CoreEntities.Business.Services
 				.AsNoTracking()
                 .Where(navExp)
                 .Select(navProp).OfType<ExpiredEntriesLst>()
-                .Where(exp == "All" || exp == null ? "Id != null" : exp)
+                .Where(exp == "All" || exp == null ? "Office != null" : exp)
                 .Distinct()
-                .OrderBy("Id")
+                .OrderBy("Office")
                 .Count();
 			}
 			catch (Exception)
@@ -789,7 +789,7 @@ namespace CoreEntities.Business.Services
                        
                         return set
 									.AsNoTracking()
-                                    .OrderBy(y => y.Id)
+                                    .OrderBy(y => y.Office)
  
                                     .Skip(startIndex)
                                     .Take(count)
@@ -797,8 +797,8 @@ namespace CoreEntities.Business.Services
                     }
                     return set//dbContext.ExpiredEntriesLst
 								.AsNoTracking()
-                                .Where(exp == "All" || exp == null ? "Id != null" : exp)
-								.OrderBy(y => y.Id)
+                                .Where(exp == "All" || exp == null ? "Office != null" : exp)
+								.OrderBy(y => y.Office)
  
                                 .Skip(startIndex)
                                 .Take(count)
@@ -849,9 +849,9 @@ namespace CoreEntities.Business.Services
             if (includeLst != null) set = includeLst.Aggregate(set, (current, itm) => current.Include(itm));            
 
             return set
-                .Where(exp == "All" || exp == null ? "Id != null" : exp)
+                .Where(exp == "All" || exp == null ? "Office != null" : exp)
                 .Distinct()
-                .OrderBy(y => y.Id)
+                .OrderBy(y => y.Office)
  
                 .Skip(startIndex)
                 .Take(count)
@@ -877,9 +877,9 @@ namespace CoreEntities.Business.Services
                if (includeLst != null) set = includeLst.Aggregate(set, (current, itm) => current.Include(itm)); 
                 
                return set
-                .Where(exp == "All" || exp == null ? "Id != null" : exp)
+                .Where(exp == "All" || exp == null ? "Office != null" : exp)
                 .Distinct()
-                .OrderBy(y => y.Id)
+                .OrderBy(y => y.Office)
  
                 .Skip(startIndex)
                 .Take(count)
@@ -928,7 +928,7 @@ namespace CoreEntities.Business.Services
 							.AsNoTracking()
                             .Where(navExp)
 							.SelectMany(navProp).OfType<ExpiredEntriesLst>()
-							.Where(exp == "All" || exp == null?"Id != null":exp)
+							.Where(exp == "All" || exp == null?"Office != null":exp)
 							.Distinct()
 							.ToList();
 			}
@@ -937,7 +937,7 @@ namespace CoreEntities.Business.Services
 				.AsNoTracking()
                 .Where(navExp)
                 .SelectMany(navProp).OfType<ExpiredEntriesLst>()
-                .Where(exp == "All" || exp == null?"Id != null":exp)
+                .Where(exp == "All" || exp == null?"Office != null":exp)
                 .Distinct();
 
 			set = includesLst.Aggregate(set, (current, itm) => current.Include(itm));
@@ -963,7 +963,7 @@ namespace CoreEntities.Business.Services
 							.AsNoTracking()
                             .Where(navExp)
 							.Select(navProp).OfType<ExpiredEntriesLst>()
-							.Where(exp == "All" || exp == null?"Id != null":exp)
+							.Where(exp == "All" || exp == null?"Office != null":exp)
 							.Distinct()
 							.ToList();
 			}
@@ -972,7 +972,7 @@ namespace CoreEntities.Business.Services
 				.AsNoTracking()
                 .Where(navExp)
                 .Select(navProp).OfType<ExpiredEntriesLst>()
-                .Where(exp == "All" || exp == null?"Id != null":exp)
+                .Where(exp == "All" || exp == null?"Office != null":exp)
                 .Distinct();
 
 			set = includesLst.Aggregate(set, (current, itm) => current.Include(itm));
@@ -1065,7 +1065,7 @@ namespace CoreEntities.Business.Services
 										.AsNoTracking()
                                         .Sum(field)??0);
                     }
-                    return Convert.ToDecimal(dbContext.ExpiredEntriesLst.Where(exp == "All" || exp == null ? "Id != null" : exp)
+                    return Convert.ToDecimal(dbContext.ExpiredEntriesLst.Where(exp == "All" || exp == null ? "Office != null" : exp)
 											.AsNoTracking()
                                             .Sum(field)??0);
                 }
@@ -1106,9 +1106,9 @@ namespace CoreEntities.Business.Services
 				.AsNoTracking()
                 .Where(navExp)
                 .SelectMany(navProp).OfType<ExpiredEntriesLst>()
-                .Where(exp == "All" || exp == null ? "Id != null" : exp)
+                .Where(exp == "All" || exp == null ? "Office != null" : exp)
                 .Distinct()
-                .OrderBy("Id")
+                .OrderBy("Office")
                 .Sum(field));
 			}
 			catch (Exception)
@@ -1126,9 +1126,9 @@ namespace CoreEntities.Business.Services
 				.AsNoTracking()
                 .Where(navExp)
                 .Select(navProp).OfType<ExpiredEntriesLst>()
-                .Where(exp == "All" || exp == null ? "Id != null" : exp)
+                .Where(exp == "All" || exp == null ? "Office != null" : exp)
                 .Distinct()
-                .OrderBy("Id")
+                .OrderBy("Office")
                 .Sum(field));
 			}
 			catch (Exception)

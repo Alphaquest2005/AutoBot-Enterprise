@@ -101,7 +101,7 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
           
              var docs = new List<DocumentCT>();
              var docPreviousItems =
-                 new Dictionary<int,
+                 new ConcurrentDictionary<int,
                      List<PreviousItems>>(); // moved here because the reloaded month data already has data 
              // move higher because i need data entire run
 
@@ -121,10 +121,10 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
                 filters
                 .AsParallel()
                 .AsOrdered()
-                //.WithDegreeOfParallelism(Convert.ToInt32(Environment.ProcessorCount *
-                //                                         DataSpace.BaseDataModel.Instance.ResourcePercentage))
+                .WithDegreeOfParallelism(Convert.ToInt32(Environment.ProcessorCount *
+                                                         DataSpace.BaseDataModel.Instance.ResourcePercentage))
 
-                .WithDegreeOfParallelism(1)
+                //.WithDegreeOfParallelism(1)
                 .ForAll(async filter => await CreateDutyFreePaidEntries(docSet, documentType, ex9BucketType, isGrouped,
                     checkQtyAllocatedGreaterThanPiQuantity, checkForMultipleMonths, applyEx9Bucket, applyHistoricChecks,
                     applyCurrentChecks, perInvoice, autoAssess, overPIcheck, universalPIcheck, itemPIcheck, filter,
@@ -163,7 +163,7 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
             bool universalPIcheck, bool itemPIcheck,
             (string currentFilter, string dateFilter, DateTime startDate, DateTime endDate) filter,
             string exPro, GetEx9DataMem getEx9DataMem, List<DocumentCT> docs,
-            Dictionary<int, List<PreviousItems>> docPreviousItems)
+            ConcurrentDictionary<int, List<PreviousItems>> docPreviousItems)
         {
             List<string> errors = new List<string>();
             //var docPreviousItems =
@@ -176,13 +176,11 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
                 .Where(x => x.Allocations.Count > 0).ToList();
 
             if (allocationDataBlocks.ToList().Any())
-            {
                 await CreateDutyFreePaidEntires(docSet, documentType, ex9BucketType, isGrouped,
                     checkQtyAllocatedGreaterThanPiQuantity, checkForMultipleMonths, applyEx9Bucket,
                     applyHistoricChecks, applyCurrentChecks, perInvoice, autoAssess, overPIcheck,
                     universalPIcheck, itemPIcheck, allocationDataBlocks, filter, docs,
                     docPreviousItems).ConfigureAwait(false);
-            }
         }
 
         private List<(string currentFilter, string dateFilter, DateTime startDate, DateTime endDate)> CreateFilters(string filterExp, bool checkForMultipleMonths, DateTime startDate, DateTime realEndDate,
@@ -213,20 +211,25 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
             bool applyEx9Bucket,
             bool applyHistoricChecks, bool applyCurrentChecks, bool perInvoice, bool autoAssess, bool overPIcheck,
             bool universalPIcheck, bool itemPIcheck, List<AllocationDataBlock> allocationDataBlocks,
-            (string currentFilter, string dateFilter, DateTime startDate, DateTime endDate) filter, List<DocumentCT> docs, Dictionary<int, List<PreviousItems>> docPreviousItems)
+            (string currentFilter, string dateFilter, DateTime startDate, DateTime endDate) filter, List<DocumentCT> docs, ConcurrentDictionary<int, List<PreviousItems>> docPreviousItems)
         {
             var dutylst = new List<string>() { "Duty Paid", "Duty Free" };
             Debug.WriteLine($"*********************Create EX9 For {filter.startDate.Date.ToShortDateString()}");
+            dutylst
+                .AsParallel()
+                .WithDegreeOfParallelism(Convert.ToInt32(Environment.ProcessorCount *
+                                                         DataSpace.BaseDataModel.Instance.ResourcePercentage))
+                .ForAll(async dfp =>
 
-            foreach (var dfp in dutylst)
-            {
-                docSet.Customs_Procedure = GetCustomsProcedure(dfp);
+                {
+                    docSet.Customs_Procedure = GetCustomsProcedure(dfp);
 
-                await CreateDutyFreePaidEntries(docSet, documentType, ex9BucketType, isGrouped,
-                    checkQtyAllocatedGreaterThanPiQuantity, checkForMultipleMonths, applyEx9Bucket,
-                    applyHistoricChecks, applyCurrentChecks, perInvoice, autoAssess, overPIcheck,
-                    universalPIcheck, itemPIcheck, allocationDataBlocks, dfp, filter, docs, docPreviousItems).ConfigureAwait(false);
-            }
+                    await CreateDutyFreePaidEntries(docSet, documentType, ex9BucketType, isGrouped,
+                            checkQtyAllocatedGreaterThanPiQuantity, checkForMultipleMonths, applyEx9Bucket,
+                            applyHistoricChecks, applyCurrentChecks, perInvoice, autoAssess, overPIcheck,
+                            universalPIcheck, itemPIcheck, allocationDataBlocks, dfp, filter, docs, docPreviousItems)
+                        .ConfigureAwait(false);
+                });
         }
 
         public DateTime GetWholeRangeFilter(string filterExp, out DateTime realEndDate, 
@@ -258,23 +261,31 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
             bool applyHistoricChecks, bool applyCurrentChecks, bool perInvoice, bool autoAssess, bool overPIcheck,
             bool universalPIcheck, bool itemPIcheck, List<AllocationDataBlock> allocationDataBlocks, string dfp,
             (string currentFilter, string dateFilter, DateTime startDate, DateTime endDate) filter, List<DocumentCT> docs,
-            Dictionary<int, List<PreviousItems>> docPreviousItems)
+            ConcurrentDictionary<int, List<PreviousItems>> docPreviousItems)
         {
             var entryTypes = allocationDataBlocks.GroupBy(x => x.Type).ToList();
-            foreach (var entryType in entryTypes)
-            {
-                var res = entryType.Where(x => x.DutyFreePaid == dfp);
-                var itemSalesPiSummarylst = GetItemSalesPiSummary(filter.startDate, filter.endDate, dfp, entryType.Key);
-                var genDocs = await new CreateDutyFreePaidDocument().Execute(dfp, res, docSet, documentType, isGrouped,
-                        itemSalesPiSummarylst.Where(x =>
-                                x.DutyFreePaid == dfp || x.DutyFreePaid == "All" ||
-                                x.DutyFreePaid == "Universal")
-                            .ToList(), checkQtyAllocatedGreaterThanPiQuantity, checkForMultipleMonths,
-                        applyEx9Bucket, ex9BucketType, applyHistoricChecks, applyCurrentChecks,
-                        autoAssess, perInvoice, overPIcheck, universalPIcheck, itemPIcheck,docPreviousItems,PerIM7)
-                    .ConfigureAwait(false);
-                docs.AddRange(genDocs);
-            }
+            entryTypes
+                .AsParallel()
+                .WithDegreeOfParallelism(Convert.ToInt32(Environment.ProcessorCount *
+                                                         DataSpace.BaseDataModel.Instance.ResourcePercentage))
+                .ForAll(async entryType =>
+
+                {
+                    var res = entryType.Where(x => x.DutyFreePaid == dfp);
+                    var itemSalesPiSummarylst =
+                        GetItemSalesPiSummary(filter.startDate, filter.endDate, dfp, entryType.Key);
+                    var genDocs = await new CreateDutyFreePaidDocument().Execute(dfp, res, docSet, documentType,
+                            isGrouped,
+                            itemSalesPiSummarylst.Where(x =>
+                                    x.DutyFreePaid == dfp || x.DutyFreePaid == "All" ||
+                                    x.DutyFreePaid == "Universal")
+                                .ToList(), checkQtyAllocatedGreaterThanPiQuantity, checkForMultipleMonths,
+                            applyEx9Bucket, ex9BucketType, applyHistoricChecks, applyCurrentChecks,
+                            autoAssess, perInvoice, overPIcheck, universalPIcheck, itemPIcheck, docPreviousItems,
+                            PerIM7)
+                        .ConfigureAwait(false);
+                    docs.AddRange(genDocs);
+                });
 
         }
 

@@ -55,5 +55,7 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
         public EntryDataDetails EntryDataDetails { get; set; }
         public string SourceFile
         { get; set; }
+
+        public string CustomsProcedure { get; set; }
     }
 }

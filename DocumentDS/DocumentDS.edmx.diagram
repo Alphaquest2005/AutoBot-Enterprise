@@ -136,6 +136,9 @@
         <AssociationConnector Association="WaterNutDBModel.FK_Customs_Procedure_CustomsOperations" />
         <AssociationConnector Association="WaterNutDBModel.FK_Customs_Procedure_Document_Type" />
         <AssociationConnector Association="WaterNutDBModel.FK_xcuda_ASYCUDA_ExtendedProperties_Customs_Procedure" />
+        <EntityTypeShape EntityType="WaterNutDBModel.Customs_ProcedureInOut" Width="4.875" PointX="18" PointY="76.25" />
+        <AssociationConnector Association="WaterNutDBModel.FK_Customs_ProcedureInOut_Customs_Procedure" />
+        <AssociationConnector Association="WaterNutDBModel.FK_Customs_ProcedureInOut_Customs_Procedure1" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

@@ -32,6 +32,7 @@
               this.Property(t => t.EntryDataType).HasColumnName("EntryDataType").IsRequired().HasMaxLength(50);
               this.Property(t => t.xLineNumber).HasColumnName("xLineNumber");
               this.Property(t => t.CustomsProcedure).HasColumnName("CustomsProcedure").IsRequired().HasMaxLength(11);
+              this.Property(t => t.RegistrationDate).HasColumnName("RegistrationDate");
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);
     			this.Ignore(t => t.ModifiedProperties);

@@ -77,6 +77,7 @@
               this.Property(t => t.Type).HasColumnName("Type").IsRequired().IsUnicode(false).HasMaxLength(5);
               this.Property(t => t.pPrecision1).HasColumnName("pPrecision1").HasMaxLength(255);
               this.Property(t => t.SourceFile).HasColumnName("SourceFile");
+              this.Property(t => t.CustomsProcedure).HasColumnName("CustomsProcedure").HasMaxLength(11);
               this.HasRequired(t => t.PreviousDocumentItem).WithMany(t =>(ICollection<EX9AsycudaSalesAllocations>) t.EX9AsycudaSalesAllocations).HasForeignKey(d => d.PreviousItem_Id);
               this.HasRequired(t => t.InventoryItemsEx).WithMany(t =>(ICollection<EX9AsycudaSalesAllocations>) t.EX9AsycudaSalesAllocations).HasForeignKey(d => d.InventoryItemId);
               this.HasRequired(t => t.AsycudaSalesAllocations).WithOptional(t => (EX9AsycudaSalesAllocations)t.EX9AsycudaSalesAllocations);

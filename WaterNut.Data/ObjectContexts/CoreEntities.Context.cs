@@ -255,6 +255,8 @@ namespace CoreEntities.Business.Entities
      
         public DbSet<FileTypeMappingsValues> FileTypeMappingsValues { get; set; }
      
+        public DbSet<Customs_ProcedureInOut> Customs_ProcedureInOut { get; set; }
+     
 
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
@@ -466,6 +468,8 @@ namespace CoreEntities.Business.Entities
             modelBuilder.Configurations.Add(new AsycudaDocumentSetMap());
          
             modelBuilder.Configurations.Add(new FileTypeMappingsValuesMap());
+         
+            modelBuilder.Configurations.Add(new Customs_ProcedureInOutMap());
          
 			OnModelCreatingExtentsion(modelBuilder);
 

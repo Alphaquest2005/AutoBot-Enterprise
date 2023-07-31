@@ -197,6 +197,14 @@
           <Property Name="IsDefault" Type="bit" Nullable="false" />
           <Property Name="ExportSupportingEntryData" Type="bit" Nullable="false" />
         </EntityType>
+        <EntityType Name="Customs_ProcedureInOut">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="WarehouseCustomsProcedureId" Type="int" Nullable="false" />
+          <Property Name="ExwarehouseCustomsProcedureId" Type="int" Nullable="false" />
+        </EntityType>
         <EntityType Name="CustomsOperations">
           <Key>
             <PropertyRef Name="Id" />
@@ -289,9 +297,10 @@
         </EntityType>
         <EntityType Name="ExpiredEntriesLst">
           <Key>
-            <PropertyRef Name="Id" />
+            <PropertyRef Name="Office" />
+            <PropertyRef Name="RegistrationNumber" />
+            <PropertyRef Name="RegistrationDate" />
           </Key>
-          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Office" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="GeneralProcedure" Type="nvarchar" MaxLength="1" Nullable="false" />
           <Property Name="RegistrationSerial" Type="nvarchar" MaxLength="1" Nullable="false" />
@@ -2266,6 +2275,30 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_Customs_ProcedureInOut_Customs_Procedure">
+          <End Role="Customs_Procedure" Type="Self.Customs_Procedure" Multiplicity="1" />
+          <End Role="Customs_ProcedureInOut" Type="Self.Customs_ProcedureInOut" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Customs_Procedure">
+              <PropertyRef Name="Customs_ProcedureId" />
+            </Principal>
+            <Dependent Role="Customs_ProcedureInOut">
+              <PropertyRef Name="WarehouseCustomsProcedureId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Customs_ProcedureInOut_Customs_Procedure1">
+          <End Role="Customs_Procedure" Type="Self.Customs_Procedure" Multiplicity="1" />
+          <End Role="Customs_ProcedureInOut" Type="Self.Customs_ProcedureInOut" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Customs_Procedure">
+              <PropertyRef Name="Customs_ProcedureId" />
+            </Principal>
+            <Dependent Role="Customs_ProcedureInOut">
+              <PropertyRef Name="ExwarehouseCustomsProcedureId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_EmailAttachments_Attachments">
           <End Role="Attachments" Type="Self.Attachments" Multiplicity="1">
             <OnDelete Action="Cascade" />
@@ -2696,6 +2729,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
           <EntitySet Name="CancelledEntriesLst" EntityType="Self.CancelledEntriesLst" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Contacts" EntityType="Self.Contacts" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Customs_Procedure" EntityType="Self.Customs_Procedure" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Customs_ProcedureInOut" EntityType="Self.Customs_ProcedureInOut" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CustomsOperations" EntityType="Self.CustomsOperations" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Document_Type" EntityType="Self.Document_Type" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="EmailAttachments" EntityType="Self.EmailAttachments" Schema="dbo" store:Type="Tables" />
@@ -3925,6 +3959,14 @@ FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
             <End Role="Document_Type" EntitySet="Document_Type" />
             <End Role="Customs_Procedure" EntitySet="Customs_Procedure" />
           </AssociationSet>
+          <AssociationSet Name="FK_Customs_ProcedureInOut_Customs_Procedure" Association="Self.FK_Customs_ProcedureInOut_Customs_Procedure">
+            <End Role="Customs_Procedure" EntitySet="Customs_Procedure" />
+            <End Role="Customs_ProcedureInOut" EntitySet="Customs_ProcedureInOut" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Customs_ProcedureInOut_Customs_Procedure1" Association="Self.FK_Customs_ProcedureInOut_Customs_Procedure1">
+            <End Role="Customs_Procedure" EntitySet="Customs_Procedure" />
+            <End Role="Customs_ProcedureInOut" EntitySet="Customs_ProcedureInOut" />
+          </AssociationSet>
           <AssociationSet Name="FK_EmailAttachments_Attachments" Association="Self.FK_EmailAttachments_Attachments">
             <End Role="Attachments" EntitySet="Attachments" />
             <End Role="EmailAttachments" EntitySet="EmailAttachments" />
@@ -4410,6 +4452,15 @@ FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
             <End Role="FileTypeMappings" EntitySet="FileTypeMappings" />
             <End Role="FileTypeMappingsValues" EntitySet="FileTypeMappingsValues" />
           </AssociationSet>
+          <EntitySet Name="Customs_ProcedureInOut" EntityType="WaterNutDBModel.Customs_ProcedureInOut" />
+          <AssociationSet Name="FK_Customs_ProcedureInOut_Customs_Procedure" Association="WaterNutDBModel.FK_Customs_ProcedureInOut_Customs_Procedure">
+            <End Role="Customs_Procedure" EntitySet="Customs_Procedure" />
+            <End Role="Customs_ProcedureInOut" EntitySet="Customs_ProcedureInOut" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Customs_ProcedureInOut_Customs_Procedure1" Association="WaterNutDBModel.FK_Customs_ProcedureInOut_Customs_Procedure1">
+            <End Role="Customs_Procedure" EntitySet="Customs_Procedure" />
+            <End Role="Customs_ProcedureInOut" EntitySet="Customs_ProcedureInOut" />
+          </AssociationSet>
           </EntityContainer>
         <EntityType Name="ApplicationSettings">
           <Key>
@@ -4623,6 +4674,8 @@ FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
           <Property Name="IsDefault" Type="Boolean" Nullable="false" />
           <Property Name="ExportSupportingEntryData" Type="Boolean" Nullable="false" />
           <NavigationProperty Name="AsycudaDocumentSet" Relationship="WaterNutDBModel.FK_AsycudaDocumentSet_Customs_Procedure" FromRole="Customs_Procedure" ToRole="AsycudaDocumentSet" />
+          <NavigationProperty Name="Customs_ProcedureInOut" Relationship="WaterNutDBModel.FK_Customs_ProcedureInOut_Customs_Procedure" FromRole="Customs_Procedure" ToRole="Customs_ProcedureInOut" />
+          <NavigationProperty Name="OutCustomsProcedure" Relationship="WaterNutDBModel.FK_Customs_ProcedureInOut_Customs_Procedure1" FromRole="Customs_Procedure" ToRole="Customs_ProcedureInOut" />
         </EntityType>
         <EntityType Name="Document_Type">
           <Key>
@@ -6619,9 +6672,10 @@ FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
         </Association>
         <EntityType Name="ExpiredEntriesLst">
           <Key>
-            <PropertyRef Name="Id" />
+            <PropertyRef Name="Office" />
+            <PropertyRef Name="RegistrationDate" />
+            <PropertyRef Name="RegistrationNumber" />
           </Key>
-          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Office" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="RegistrationSerial" Type="String" Nullable="false" MaxLength="1" FixedLength="false" Unicode="true" />
           <Property Name="RegistrationNumber" Type="String" Nullable="false" MaxLength="8" FixedLength="false" Unicode="true" />
@@ -7179,6 +7233,40 @@ FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
             </Principal>
             <Dependent Role="FileTypeMappingsValues">
               <PropertyRef Name="FileTypeMappingId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="Customs_ProcedureInOut">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="WarehouseCustomsProcedureId" Type="Int32" Nullable="false" />
+          <Property Name="ExwarehouseCustomsProcedureId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="InCustomsProcedure" Relationship="WaterNutDBModel.FK_Customs_ProcedureInOut_Customs_Procedure" FromRole="Customs_ProcedureInOut" ToRole="Customs_Procedure" />
+          <NavigationProperty Name="OutCustomsProcedure" Relationship="WaterNutDBModel.FK_Customs_ProcedureInOut_Customs_Procedure1" FromRole="Customs_ProcedureInOut" ToRole="Customs_Procedure" />
+        </EntityType>
+        <Association Name="FK_Customs_ProcedureInOut_Customs_Procedure">
+          <End Type="WaterNutDBModel.Customs_Procedure" Role="Customs_Procedure" Multiplicity="1" />
+          <End Type="WaterNutDBModel.Customs_ProcedureInOut" Role="Customs_ProcedureInOut" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Customs_Procedure">
+              <PropertyRef Name="Customs_ProcedureId" />
+            </Principal>
+            <Dependent Role="Customs_ProcedureInOut">
+              <PropertyRef Name="WarehouseCustomsProcedureId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Customs_ProcedureInOut_Customs_Procedure1">
+          <End Type="WaterNutDBModel.Customs_Procedure" Role="Customs_Procedure" Multiplicity="1" />
+          <End Type="WaterNutDBModel.Customs_ProcedureInOut" Role="Customs_ProcedureInOut" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Customs_Procedure">
+              <PropertyRef Name="Customs_ProcedureId" />
+            </Principal>
+            <Dependent Role="Customs_ProcedureInOut">
+              <PropertyRef Name="ExwarehouseCustomsProcedureId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -8728,7 +8816,6 @@ FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
                 <ScalarProperty Name="RegistrationNumber" ColumnName="RegistrationNumber" />
                 <ScalarProperty Name="RegistrationSerial" ColumnName="RegistrationSerial" />
                 <ScalarProperty Name="Office" ColumnName="Office" />
-                <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -8995,6 +9082,15 @@ FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
               <MappingFragment StoreEntitySet="FileTypeMappingsValues">
                 <ScalarProperty Name="Value" ColumnName="Value" />
                 <ScalarProperty Name="FileTypeMappingId" ColumnName="FileTypeMappingId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Customs_ProcedureInOut">
+            <EntityTypeMapping TypeName="WaterNutDBModel.Customs_ProcedureInOut">
+              <MappingFragment StoreEntitySet="Customs_ProcedureInOut">
+                <ScalarProperty Name="ExwarehouseCustomsProcedureId" ColumnName="ExwarehouseCustomsProcedureId" />
+                <ScalarProperty Name="WarehouseCustomsProcedureId" ColumnName="WarehouseCustomsProcedureId" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>

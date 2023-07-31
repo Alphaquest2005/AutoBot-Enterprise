@@ -33,6 +33,8 @@
               this.HasRequired(t => t.CustomsOperations).WithMany(t =>(ICollection<Customs_Procedure>) t.Customs_Procedure).HasForeignKey(d => d.CustomsOperationId);
               this.HasMany(t => t.AsycudaDocument).WithOptional(t => t.Customs_Procedure).HasForeignKey(d => d.Customs_ProcedureId);
               this.HasMany(t => t.AsycudaDocumentSet).WithOptional(t => t.Customs_Procedure).HasForeignKey(d => d.Customs_ProcedureId);
+              this.HasMany(t => t.Customs_ProcedureInOut).WithRequired(t => (Customs_Procedure)t.InCustomsProcedure);
+              this.HasMany(t => t.OutCustomsProcedure).WithRequired(t => (Customs_Procedure)t.OutCustomsProcedure);
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);
     			this.Ignore(t => t.ModifiedProperties);

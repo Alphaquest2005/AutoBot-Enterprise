@@ -34,7 +34,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <LangVersion>9</LangVersion>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -43,7 +43,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <LangVersion>9</LangVersion>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
     <DebugSymbols>true</DebugSymbols>
@@ -53,7 +53,7 @@
     <PlatformTarget>x64</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-    <LangVersion>9</LangVersion>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
     <OutputPath>bin\x64\Release\</OutputPath>
@@ -63,7 +63,7 @@
     <PlatformTarget>x64</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-    <LangVersion>9</LangVersion>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
     <DebugSymbols>true</DebugSymbols>
@@ -73,7 +73,7 @@
     <PlatformTarget>x86</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-    <LangVersion>9</LangVersion>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
     <OutputPath>bin\x86\Release\</OutputPath>
@@ -83,7 +83,7 @@
     <PlatformTarget>x86</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-    <LangVersion>9</LangVersion>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
@@ -241,6 +241,7 @@
     <Compile Include="Generated Business Entities\CoreEntities\Contacts.cs" />
     <Compile Include="Generated Business Entities\CoreEntities\CustomsOperations.cs" />
     <Compile Include="Generated Business Entities\CoreEntities\Customs_Procedure.cs" />
+    <Compile Include="Generated Business Entities\CoreEntities\Customs_ProcedureInOut.cs" />
     <Compile Include="Generated Business Entities\CoreEntities\Declarant.cs" />
     <Compile Include="Generated Business Entities\CoreEntities\Document_Type.cs" />
     <Compile Include="Generated Business Entities\CoreEntities\EmailAttachments.cs" />
@@ -340,6 +341,7 @@
     <Compile Include="Generated Business Entities\DocumentDS\Container.cs" />
     <Compile Include="Generated Business Entities\DocumentDS\CustomsOperation.cs" />
     <Compile Include="Generated Business Entities\DocumentDS\Customs_Procedure.cs" />
+    <Compile Include="Generated Business Entities\DocumentDS\Customs_ProcedureInOut.cs" />
     <Compile Include="Generated Business Entities\DocumentDS\Document_Type.cs" />
     <Compile Include="Generated Business Entities\DocumentDS\Enums\CustomsOperation.cs" />
     <Compile Include="Generated Business Entities\DocumentDS\ExportTemplate.cs" />
@@ -678,6 +680,7 @@
     <Compile Include="Generated ChangeTracking Models\CoreEntities\Contacts.cs" />
     <Compile Include="Generated ChangeTracking Models\CoreEntities\CustomsOperations.cs" />
     <Compile Include="Generated ChangeTracking Models\CoreEntities\Customs_Procedure.cs" />
+    <Compile Include="Generated ChangeTracking Models\CoreEntities\Customs_ProcedureInOut.cs" />
     <Compile Include="Generated ChangeTracking Models\CoreEntities\Declarant.cs" />
     <Compile Include="Generated ChangeTracking Models\CoreEntities\Document_Type.cs" />
     <Compile Include="Generated ChangeTracking Models\CoreEntities\EmailAttachments.cs" />
@@ -774,6 +777,7 @@
     <Compile Include="Generated ChangeTracking Models\DocumentDS\Container.cs" />
     <Compile Include="Generated ChangeTracking Models\DocumentDS\CustomsOperation.cs" />
     <Compile Include="Generated ChangeTracking Models\DocumentDS\Customs_Procedure.cs" />
+    <Compile Include="Generated ChangeTracking Models\DocumentDS\Customs_ProcedureInOut.cs" />
     <Compile Include="Generated ChangeTracking Models\DocumentDS\Document_Type.cs" />
     <Compile Include="Generated ChangeTracking Models\DocumentDS\ExportTemplate.cs" />
     <Compile Include="Generated ChangeTracking Models\DocumentDS\FileType.cs" />
@@ -1108,6 +1112,7 @@
     <Compile Include="Generated Constructors Models\CoreEntities\Contacts.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\CustomsOperations.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\Customs_Procedure.cs" />
+    <Compile Include="Generated Constructors Models\CoreEntities\Customs_ProcedureInOut.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\Declarant.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\Document_Type.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\EmailAttachments.cs" />
@@ -1204,6 +1209,7 @@
     <Compile Include="Generated Constructors Models\DocumentDS\Container.cs" />
     <Compile Include="Generated Constructors Models\DocumentDS\CustomsOperation.cs" />
     <Compile Include="Generated Constructors Models\DocumentDS\Customs_Procedure.cs" />
+    <Compile Include="Generated Constructors Models\DocumentDS\Customs_ProcedureInOut.cs" />
     <Compile Include="Generated Constructors Models\DocumentDS\Document_Type.cs" />
     <Compile Include="Generated Constructors Models\DocumentDS\ExportTemplate.cs" />
     <Compile Include="Generated Constructors Models\DocumentDS\FileType.cs" />
@@ -1538,6 +1544,7 @@
     <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\Contacts.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\CustomsOperations.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\Customs_Procedure.cs" />
+    <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\Customs_ProcedureInOut.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\Declarant.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\Document_Type.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\EmailAttachments.cs" />
@@ -1634,6 +1641,7 @@
     <Compile Include="Generated IEntitiyWithKey Models\DocumentDS\Container.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\DocumentDS\CustomsOperation.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\DocumentDS\Customs_Procedure.cs" />
+    <Compile Include="Generated IEntitiyWithKey Models\DocumentDS\Customs_ProcedureInOut.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\DocumentDS\Document_Type.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\DocumentDS\ExportTemplate.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\DocumentDS\FileType.cs" />
@@ -1968,6 +1976,7 @@
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\Contacts.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\CustomsOperations.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\Customs_Procedure.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\Customs_ProcedureInOut.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\Declarant.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\Document_Type.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\EmailAttachments.cs" />
@@ -2064,6 +2073,7 @@
     <Compile Include="Generated IIdentitfiableEntity Models\DocumentDS\Container.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\DocumentDS\CustomsOperation.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\DocumentDS\Customs_Procedure.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\DocumentDS\Customs_ProcedureInOut.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\DocumentDS\Document_Type.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\DocumentDS\ExportTemplate.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\DocumentDS\FileType.cs" />
@@ -2408,6 +2418,7 @@
     <Compile Include="Generated Mappings\CoreEntities\Contacts.map.cs" />
     <Compile Include="Generated Mappings\CoreEntities\CustomsOperations.map.cs" />
     <Compile Include="Generated Mappings\CoreEntities\Customs_Procedure.map.cs" />
+    <Compile Include="Generated Mappings\CoreEntities\Customs_ProcedureInOut.map.cs" />
     <Compile Include="Generated Mappings\CoreEntities\Declarant.map.cs" />
     <Compile Include="Generated Mappings\CoreEntities\Document_Type.map.cs" />
     <Compile Include="Generated Mappings\CoreEntities\EmailAttachments.map.cs" />
@@ -2504,6 +2515,7 @@
     <Compile Include="Generated Mappings\DocumentDS\Container.map.cs" />
     <Compile Include="Generated Mappings\DocumentDS\CustomsOperation.map.cs" />
     <Compile Include="Generated Mappings\DocumentDS\Customs_Procedure.map.cs" />
+    <Compile Include="Generated Mappings\DocumentDS\Customs_ProcedureInOut.map.cs" />
     <Compile Include="Generated Mappings\DocumentDS\Document_Type.map.cs" />
     <Compile Include="Generated Mappings\DocumentDS\ExportTemplate.map.cs" />
     <Compile Include="Generated Mappings\DocumentDS\FileType.map.cs" />
