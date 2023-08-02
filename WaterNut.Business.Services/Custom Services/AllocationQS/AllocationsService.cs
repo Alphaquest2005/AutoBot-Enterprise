@@ -80,7 +80,7 @@ namespace AllocationQS.Business.Services
 
        public async Task ClearAllAllocations(int appSettings)
        {
-           await WaterNut.DataSpace.AllocationsModel.Instance.ClearAllAllocations(appSettings).ConfigureAwait(false);
+           await AllocationsModel.Instance.ClearAllAllocations(appSettings).ConfigureAwait(false);
 
        }
 

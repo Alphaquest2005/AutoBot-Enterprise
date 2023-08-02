@@ -14,7 +14,7 @@ namespace AutoBot
            
             if (BaseDataModel.Instance.CurrentApplicationSettings.AssessEX == true && !HasUnallocatedSales()) return;
 
-            AllocationsModel.Instance.ClearAllAllocations(BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId).Wait();
+            //AllocationsModel.Instance.ClearAllAllocations(BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId).Wait();
 
             new AllocateSales().Execute(BaseDataModel.Instance.CurrentApplicationSettings, false, false).Wait();
 

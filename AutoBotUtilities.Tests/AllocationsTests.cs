@@ -157,6 +157,7 @@ namespace AutoBotUtilities.Tests
         [TestCase("WAL/5002010004", "3/1/2023", 60)]
         [TestCase("CRB/HIF-SR290BL", "3/1/2023", 60)] 
         [TestCase("POL/3248AG", "3/1/2023", 60)]
+        [TestCase("XMN/LNK-PL-RGW", "3/1/2023", 60)] // infinite loop 
 
 
         /////////////////////// sandals
