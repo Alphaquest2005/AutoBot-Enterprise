@@ -222,7 +222,7 @@ namespace WaterNut.DataSpace
                         var asycudaItmQtyToAllocate = GetAsycudaItmQtyToAllocate(cAsycudaItm, saleitm, out var subitm);
 
 
-                        if (asycudaItmQtyToAllocate == 0 && (saleitmQtyToallocate + nextSalesQty) > 0)
+                        if (asycudaItmQtyToAllocate == 0 && (saleitmQtyToallocate + nextSalesQty) > 0 && nextSalesQty < 0)
                         {
                             CurrentAsycudaItemIndex += 1;
                             continue;
