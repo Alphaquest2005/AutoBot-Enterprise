@@ -224,7 +224,7 @@ namespace WaterNut.Business.Services.Utils
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                throw e;
+                //throw e;
             }
 
 
@@ -422,8 +422,7 @@ namespace WaterNut.Business.Services.Utils
 
         private static void ProcessHeaderRows(FileTypes fileType, List<DataRow> dRows, DataTable dt, int drow_no)
         {
-            if (Enumerable.Count<object>(dt.Rows[drow_no].ItemArray, x => !string.IsNullOrEmpty(x.ToString())) >=
-                fileType.FileTypeMappings.Count(x => x.Required))
+            if (dt.Rows[drow_no].ItemArray.Intersect(fileType.FileTypeMappings.Where(x => x.Required).Select(z => z.OriginalName)).Any())
             {
                 //dt.Rows[drow_no]["LineNumber"] = drow_no;// give value to prevent upper from bugging later
                 dRows.Add(dt.Rows[drow_no]);
