@@ -34,16 +34,28 @@ namespace WaterNut.DataSpace
         {
             var lstHistories = dataFile.Data
                 .Select(x => ((IDictionary<string, dynamic>)x))
-                .Select(x => new ItemHistory()
+                .Select(x =>
                 {
-                    TransactionId = x[nameof(ItemHistory.TransactionId)]?.ToString().Trim(),
-                    Date = DateTime.Parse(x[nameof(ItemHistory.Date)]?.ToString().Trim()),
-                    ItemNumber = x[nameof(ItemHistory.ItemNumber)]?.ToString().Trim(),
-                    ItemDescription = x[nameof(ItemHistory.ItemDescription)]?.ToString().Trim(),
-                    Quantity = Convert.ToInt32(x[nameof(ItemHistory.Quantity)]?.ToString().Trim()),
-                    Cost = Convert.ToDouble(x[nameof(ItemHistory.Cost)]?.ToString().Trim()),
-                    Comments = x[nameof(ItemHistory.Comments)]?.ToString().Trim(),
-                    TransactionType = x[nameof(ItemHistory.TransactionType)]?.ToString().Trim(),
+                    try
+                    {
+                        return new ItemHistory()
+                        {
+                            TransactionId = x[nameof(ItemHistory.TransactionId)]?.ToString().Trim(),
+                            Date = DateTime.Parse(x[nameof(ItemHistory.Date)]?.ToString().Trim()),
+                            ItemNumber = x[nameof(ItemHistory.ItemNumber)]?.ToString().Trim(),
+                            ItemDescription = x[nameof(ItemHistory.ItemDescription)]?.ToString().Trim(),
+                            Quantity = Convert.ToDouble((string)x[nameof(ItemHistory.Quantity)]?.ToString().Trim()),
+                            Cost = Convert.ToDouble((string)x[nameof(ItemHistory.Cost)]?.ToString().Trim()),
+                            Comments = x[nameof(ItemHistory.Comments)]?.ToString().Trim(),
+                            TransactionType = x[nameof(ItemHistory.TransactionType)]?.ToString().Trim(),
+                        };
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine(e);
+                        return null;
+                    }
+                   
                 }).ToList();
             return lstHistories;
         }
@@ -83,10 +95,10 @@ namespace WaterNut.DataSpace
 
         private void DeleteData(List<ItemHistory> lstHistories)
         {
-            var existingHistory = lstHistories.Select(x => x.TransactionId).ToList();
+            //var existingHistory = lstHistories.Select(x => x.TransactionId).ToList();
             using (var ctx = new EntryDataDSContext())
             {
-                ctx.ItemHistory.RemoveRange(ctx.ItemHistory.Where(x => existingHistory.Contains(x.TransactionId)));
+                ctx.ItemHistory.BulkDelete(lstHistories);
                
                 ctx.SaveChanges();
             }

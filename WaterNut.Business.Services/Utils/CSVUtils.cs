@@ -422,7 +422,14 @@ namespace WaterNut.Business.Services.Utils
 
         private static void ProcessHeaderRows(FileTypes fileType, List<DataRow> dRows, DataTable dt, int drow_no)
         {
-            if (dt.Rows[drow_no].ItemArray.Intersect(fileType.FileTypeMappings.Where(x => x.Required).Select(z => z.OriginalName)).Any())
+            var lst = dt.Rows[drow_no].ItemArray
+                .Select(x => x.ToString().ToUpper().Trim())
+                .Intersect(fileType.FileTypeMappings
+                                    .Where(x => x.Required)
+                                    .Select(z => z.OriginalName.ToUpper().Trim()))
+                .ToList();
+            if (Enumerable.Count<object>(dt.Rows[drow_no].ItemArray, x => !string.IsNullOrEmpty(x.ToString())) >= lst.Count)
+            //if (dt.Rows[drow_no].ItemArray.Select(x => x.ToString().ToUpper().Trim()).Intersect(fileType.FileTypeMappings.Where(x => x.Required).Select(z => z.OriginalName.ToUpper().Trim())).Any())
             {
                 //dt.Rows[drow_no]["LineNumber"] = drow_no;// give value to prevent upper from bugging later
                 dRows.Add(dt.Rows[drow_no]);

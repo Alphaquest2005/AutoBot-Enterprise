@@ -229,9 +229,9 @@ namespace WaterNut.Business.Services.Utils
                     "Quantity",
                     (dt, drow, header) => dt.ContainsKey("Received Quantity") && dt.ContainsKey("Invoice Quantity")
                         ? Convert.ToString(
-                            Math.Abs(Convert.ToDouble(dt["Received Quantity"].ToString().Replace("\"", "")) -
-                                     Convert.ToDouble(dt["Invoice Quantity"].ToString().Replace("\"", ""))), CultureInfo.CurrentCulture)
-                        : Convert.ToDouble(dt["Quantity"].ToString().Replace("\"", "")).ToString(CultureInfo.CurrentCulture)
+                            Math.Abs(Convert.ToDouble(dt["Received Quantity"]?.ToString().Replace("\"", "")) -
+                                     Convert.ToDouble(dt["Invoice Quantity"]?.ToString().Replace("\"", ""))), CultureInfo.CurrentCulture)
+                        : Convert.ToDouble(dt["Quantity"] ?.ToString().Replace("\"", "")).ToString(CultureInfo.CurrentCulture)
                 },
                 { "ZeroCost", (x, drow, header) => "0" },
                 {
@@ -268,7 +268,7 @@ namespace WaterNut.Business.Services.Utils
                 },
                 {
                     "COST TTD",
-                    (dt, drow, header) => dt.ContainsKey("Cost") && Convert.ToDouble(dt["Cost"].ToString().Replace("\"", "")) > 0
+                    (dt, drow, header) => dt.ContainsKey("Cost") &&  dt["Cost"].ToString().Replace("\"", "") != "{NULL}" && Convert.ToDouble(dt["Cost"].ToString().Replace("\"", "")) > 0
                         ? "TTD"
                         : "{NULL}"
                 },
