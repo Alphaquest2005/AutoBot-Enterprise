@@ -2,12 +2,12 @@
 <#@ output extension=".cs"#>
 <#@ include file="EF.Utility.CS.ttinclude" once="true"#>
 <#@ include file="T4Toolbox.tt" #>
-<#@ include file="C:\Users\josep\OneDrive\AutoBot-Enterprise\Core.Common\T4 Library\T4\Utilities\Utils.tt" once="true"#>	
-<#@ include file="C:\Users\josep\OneDrive\AutoBot-Enterprise\Core.Common\T4 Library\T4\Models\Business\IIdentifiableEntityTemplate.tt" once="true"#>	
-<#@ include file="C:\Users\josep\OneDrive\AutoBot-Enterprise\Core.Common\T4 Library\T4\Models\Business\MyNavPropTemplate.tt" once="true"#>	
-<#@ include file="C:\Users\josep\OneDrive\AutoBot-Enterprise\Core.Common\T4 Library\T4\Models\Business\EntityConstructorTemplate.tt" once="true"#>	
-<#@ include file="C:\Users\josep\OneDrive\AutoBot-Enterprise\Core.Common\T4 Library\T4\Models\Business\EntityTrackableTemplate.tt" once="true"#>	
-<#@ include file="C:\Users\josep\OneDrive\AutoBot-Enterprise\Core.Common\T4 Library\T4\Models\Business\IEntityWithKeyTemplate.tt" once="true"#>
+<#@ include file="D:\OneDrive\AutoBot-Enterprise\Core.Common\T4 Library\T4\Utilities\Utils.tt" once="true"#>	
+<#@ include file="D:\OneDrive\AutoBot-Enterprise\Core.Common\T4 Library\T4\Models\Business\IIdentifiableEntityTemplate.tt" once="true"#>	
+<#@ include file="D:\OneDrive\AutoBot-Enterprise\Core.Common\T4 Library\T4\Models\Business\MyNavPropTemplate.tt" once="true"#>	
+<#@ include file="D:\OneDrive\AutoBot-Enterprise\Core.Common\T4 Library\T4\Models\Business\EntityConstructorTemplate.tt" once="true"#>	
+<#@ include file="D:\OneDrive\AutoBot-Enterprise\Core.Common\T4 Library\T4\Models\Business\EntityTrackableTemplate.tt" once="true"#>	
+<#@ include file="D:\OneDrive\AutoBot-Enterprise\Core.Common\T4 Library\T4\Models\Business\IEntityWithKeyTemplate.tt" once="true"#>
 
 
 <#+ 

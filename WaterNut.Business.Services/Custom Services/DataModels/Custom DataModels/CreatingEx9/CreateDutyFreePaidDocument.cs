@@ -32,7 +32,7 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
     public class CreateDutyFreePaidDocument
     {
         
-        private static readonly List<PiSummary> DocSetPi = new List<PiSummary>();
+        private static readonly ConcurrentBag<PiSummary> DocSetPi = new ConcurrentBag<PiSummary>();
         private Dictionary<(int PreviousItemId, string CNumber), xcuda_Exporter> _exporters = null;
 
         static CreateDutyFreePaidDocument()

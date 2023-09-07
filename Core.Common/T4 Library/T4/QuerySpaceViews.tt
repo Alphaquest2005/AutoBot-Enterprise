@@ -1,15 +1,15 @@
 ﻿<#@ output extension=".cs"#>
 <#@ include file="EF.Utility.CS.ttinclude" once="true"#>
 <#@ include file="T4Toolbox.tt" #>
-<#@ include file="C:\Users\josep\OneDrive\AutoBot-Enterprise\Core.Common\T4 Library\T4\Utilities\Utils.tt" once="true"#>	
-<#@ include file="C:\Users\josep\OneDrive\AutoBot-Enterprise\Core.Common\T4 Library\T4\Views\QuerySpace\EntityGridListViewCS.tt" once="true"#>		
-<#@ include file="C:\Users\josep\OneDrive\AutoBot-Enterprise\Core.Common\T4 Library\T4\Views\QuerySpace\EntityGridListView.tt" once="true"#>
-<#@ include file="C:\Users\josep\OneDrive\AutoBot-Enterprise\Core.Common\T4 Library\T4\Views\QuerySpace\SummaryView.tt" once="true"#>		
-<#@ include file="C:\Users\josep\OneDrive\AutoBot-Enterprise\Core.Common\T4 Library\T4\Views\QuerySpace\SummaryViewCS.tt" once="true"#>	
-<#@ include file="C:\Users\josep\OneDrive\AutoBot-Enterprise\Core.Common\T4 Library\T4\Views\QuerySpace\SummaryDetailsView.tt" once="true"#>		
-<#@ include file="C:\Users\josep\OneDrive\AutoBot-Enterprise\Core.Common\T4 Library\T4\Views\QuerySpace\SummaryDetailsViewCS.tt" once="true"#>	
-<#@ include file="C:\Users\josep\OneDrive\AutoBot-Enterprise\Core.Common\T4 Library\T4\Views\QuerySpace\SummaryListView.tt" once="true"#>		
-<#@ include file="C:\Users\josep\OneDrive\AutoBot-Enterprise\Core.Common\T4 Library\T4\Views\QuerySpace\SummaryListViewCS.tt" once="true"#>	
+<#@ include file="D:\OneDrive\AutoBot-Enterprise\Core.Common\T4 Library\T4\Utilities\Utils.tt" once="true"#>	
+<#@ include file="D:\OneDrive\AutoBot-Enterprise\Core.Common\T4 Library\T4\Views\QuerySpace\EntityGridListViewCS.tt" once="true"#>		
+<#@ include file="D:\OneDrive\AutoBot-Enterprise\Core.Common\T4 Library\T4\Views\QuerySpace\EntityGridListView.tt" once="true"#>
+<#@ include file="D:\OneDrive\AutoBot-Enterprise\Core.Common\T4 Library\T4\Views\QuerySpace\SummaryView.tt" once="true"#>		
+<#@ include file="D:\OneDrive\AutoBot-Enterprise\Core.Common\T4 Library\T4\Views\QuerySpace\SummaryViewCS.tt" once="true"#>	
+<#@ include file="D:\OneDrive\AutoBot-Enterprise\Core.Common\T4 Library\T4\Views\QuerySpace\SummaryDetailsView.tt" once="true"#>		
+<#@ include file="D:\OneDrive\AutoBot-Enterprise\Core.Common\T4 Library\T4\Views\QuerySpace\SummaryDetailsViewCS.tt" once="true"#>	
+<#@ include file="D:\OneDrive\AutoBot-Enterprise\Core.Common\T4 Library\T4\Views\QuerySpace\SummaryListView.tt" once="true"#>		
+<#@ include file="D:\OneDrive\AutoBot-Enterprise\Core.Common\T4 Library\T4\Views\QuerySpace\SummaryListViewCS.tt" once="true"#>	
 				
 <#+ 
   // Note: You can call this method from the outside of the template,

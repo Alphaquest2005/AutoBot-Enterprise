@@ -65,13 +65,13 @@ namespace WaterNut.DataSpace
             using (var ctx = new EntryDataDSContext())
             {
                 ctx.ItemHistory.AddRange(entities);
-                ctx.SaveChanges();
+                ctx.BulkSaveChanges();
             }
         }
 
         private static List<ItemHistory> GetItemHistories(DataFile dataFile, List<ItemHistory> lstHistories)
         {
-            var entities = lstHistories.Select(history => new ItemHistory()
+            var entities = lstHistories.Where(x => x != null).Select(history => new ItemHistory()
             {
                 ApplicationSettingsId = BaseDataModel.Instance.CurrentApplicationSettings
                     .ApplicationSettingsId,
@@ -98,7 +98,8 @@ namespace WaterNut.DataSpace
             //var existingHistory = lstHistories.Select(x => x.TransactionId).ToList();
             using (var ctx = new EntryDataDSContext())
             {
-                ctx.ItemHistory.BulkDelete(lstHistories);
+                var lst = ctx.ItemHistory.WhereBulkContains(lstHistories, x => x.TransactionId);
+                ctx.ItemHistory.BulkDelete(lst);
                
                 ctx.SaveChanges();
             }

@@ -2,12 +2,12 @@
 <#@ output extension=".cs"#>
 <#@ include file="T4Toolbox.tt" #>
 <#@ include file="EF.Utility.CS.ttinclude" #>
-<#@ assembly name="C:\Users\josep\OneDrive\AutoBot-Enterprise\Core.Common\Microsoft.Data.Entity.Design.DatabaseGeneration.dll"#>
+<#@ assembly name="D:\OneDrive\AutoBot-Enterprise\Core.Common\Microsoft.Data.Entity.Design.DatabaseGeneration.dll"#>
 <#@ import namespace="Microsoft.Data.Entity.Design.DatabaseGeneration"#>
-<#@ include file="C:\Users\josep\OneDrive\AutoBot-Enterprise\Core.Common\T4 Library\T4\Utilities\Utils.tt" once="true"#>	
-<#@ include file="C:\Users\josep\OneDrive\AutoBot-Enterprise\Core.Common\T4 Library\T4\Entities\Client\ClientEntityTemplate.tt" #>
-<#@ include file="C:\Users\josep\OneDrive\AutoBot-Enterprise\Core.Common\T4 Library\T4\Entities\Client\ClientEntityTemplateDTO.tt" #>
-<#@ include file="C:\Users\josep\OneDrive\AutoBot-Enterprise\Core.Common\T4 Library\T4\Entities\Business\EF6\BusinessEnumTemplate.tt" once="true"#>
+<#@ include file="D:\OneDrive\AutoBot-Enterprise\Core.Common\T4 Library\T4\Utilities\Utils.tt" once="true"#>	
+<#@ include file="D:\OneDrive\AutoBot-Enterprise\Core.Common\T4 Library\T4\Entities\Client\ClientEntityTemplate.tt" #>
+<#@ include file="D:\OneDrive\AutoBot-Enterprise\Core.Common\T4 Library\T4\Entities\Client\ClientEntityTemplateDTO.tt" #>
+<#@ include file="D:\OneDrive\AutoBot-Enterprise\Core.Common\T4 Library\T4\Entities\Business\EF6\BusinessEnumTemplate.tt" once="true"#>
 
 <#+ 
   // Note: You can call this method from the outside of the template,

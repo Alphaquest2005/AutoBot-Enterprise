@@ -1,14 +1,14 @@
 ﻿<#@ include file="EF.Utility.CS.ttinclude"#>
-<#@ assembly name="C:\Users\josep\OneDrive\AutoBot-Enterprise\Core.Common\EntityFramework.dll"#>
+<#@ assembly name="D:\OneDrive\AutoBot-Enterprise\Core.Common\EntityFramework.dll"#>
 
-<#@ assembly name="C:\Users\josep\OneDrive\AutoBot-Enterprise\Core.Common\Microsoft.Data.Entity.Design.DatabaseGeneration.dll"#>
+<#@ assembly name="D:\OneDrive\AutoBot-Enterprise\Core.Common\Microsoft.Data.Entity.Design.DatabaseGeneration.dll"#>
 <#@ import namespace="Microsoft.Data.Entity.Design.DatabaseGeneration"#>
 <#@ import namespace="System.Text"#>
 <#@ import namespace="System.Linq"#>
 <#@ output extension=".cs"#>
-<#@ include file="C:\Users\josep\OneDrive\AutoBot-Enterprise\Core.Common\T4 Library\T4\Utilities\Utils.tt" once="true"#>	
-<#@ include file="C:\Users\josep\OneDrive\AutoBot-Enterprise\Core.Common\T4 Library\T4\Entities\Business\EF6\BusinessEntityMappingsTemplate.tt"#>
-<#@ include file="C:\Users\josep\OneDrive\AutoBot-Enterprise\Core.Common\T4 Library\T4\Entities\Business\EF6\BusinessEnumTemplate.tt" once="true"#>
+<#@ include file="D:\OneDrive\AutoBot-Enterprise\Core.Common\T4 Library\T4\Utilities\Utils.tt" once="true"#>	
+<#@ include file="D:\OneDrive\AutoBot-Enterprise\Core.Common\T4 Library\T4\Entities\Business\EF6\BusinessEntityMappingsTemplate.tt"#>
+<#@ include file="D:\OneDrive\AutoBot-Enterprise\Core.Common\T4 Library\T4\Entities\Business\EF6\BusinessEnumTemplate.tt" once="true"#>
 
 <#+ 
     

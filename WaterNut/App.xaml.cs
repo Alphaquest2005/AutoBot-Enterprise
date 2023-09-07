@@ -36,7 +36,7 @@ namespace WaterNut
             try
             {
                 CultureInfo.DefaultThreadCurrentCulture = new CultureInfo("en-US");
-
+                
                 splash.Show(TimeSpan.FromSeconds(0));
                 Current.ShutdownMode = ShutdownMode.OnExplicitShutdown;
                 Current.Exit += Current_Exit;

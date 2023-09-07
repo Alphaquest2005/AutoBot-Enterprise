@@ -2,7 +2,7 @@
 <#@ import namespace="Core.Common.Data.Contracts" #>
 <#@ import namespace="System.Collections.Generic" #>
 <#@ import namespace="System.Data.Metadata.Edm" #>
-<#@ assembly name="C:\Users\josep\OneDrive\AutoBot-Enterprise\Core.Common\Core.Common.Data\bin\Debug\Core.Common.Data.dll" #>
+<#@ assembly name="D:\OneDrive\AutoBot-Enterprise\Core.Common\Core.Common.Data\bin\Debug\Core.Common.Data.dll" #>
 <#@ assembly name="System.Data.Entity, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" #>
 
 <#+ 

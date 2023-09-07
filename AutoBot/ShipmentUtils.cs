@@ -142,7 +142,7 @@ namespace AutoBot
 
         public static void CreateInstructions()
         {
-            var dir = new DirectoryInfo(@"C:\Users\josep\OneDrive\Clients\Rouge\2019\October");
+            var dir = new DirectoryInfo(@"D:\OneDrive\Clients\Rouge\2019\October");
             var files = dir.GetFiles().Where(x => Regex.IsMatch(x.Name, @".*(P|F)\d+.xml"));
             if (File.Exists(Path.Combine(dir.FullName, "Instructions.txt")))
             {

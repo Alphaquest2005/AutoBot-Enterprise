@@ -1349,7 +1349,7 @@ namespace AutoBotUtilities
 
                 var riderInvoices = rawInvoices
                         .DistinctBy(x =>
-                        x.InvoiceNo) //because it dropping invoices in email id 'C:\Users\josep\OneDrive\Clients\Portage\Emails\Shipments\679\Amazon-com - Order 112-5376880-7024208.pdf'
+                        x.InvoiceNo) //because it dropping invoices in email id 'D:\OneDrive\Clients\Portage\Emails\Shipments\679\Amazon-com - Order 112-5376880-7024208.pdf'
                     .Where(x => client != null && client.Select(q => q.Id).Any(q => x.ShipmentRiderInvoice.Any(z => z.RiderLineID == q))) // 
                     .ToList(); 
                 
@@ -1362,7 +1362,7 @@ namespace AutoBotUtilities
 
                 var blInvoices = rawInvoices
                     .DistinctBy(x =>
-                        x.InvoiceNo) //because it dropping invoices in email id 'C:\Users\josep\OneDrive\Clients\Portage\Emails\Shipments\679\Amazon-com - Order 112-5376880-7024208.pdf'
+                        x.InvoiceNo) //because it dropping invoices in email id 'D:\OneDrive\Clients\Portage\Emails\Shipments\679\Amazon-com - Order 112-5376880-7024208.pdf'
                     .Where(x =>  shipmentBlDetailsList.SelectMany(q => q.ShipmentBLInvoice)
                         .Any(q => x.ShipmentBLInvoice.Any(z => z.InvoiceId == q.InvoiceId))) // 
                     .ToList();

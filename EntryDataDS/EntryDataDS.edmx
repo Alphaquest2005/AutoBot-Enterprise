@@ -269,7 +269,7 @@
           <Property Name="TransactionId" Type="nvarchar" MaxLength="255" />
           <Property Name="TransactionType" Type="nvarchar" MaxLength="50" />
           <Property Name="ItemNumber" Type="nvarchar" MaxLength="50" />
-          <Property Name="ItemDescription" Type="nvarchar" MaxLength="50" />
+          <Property Name="ItemDescription" Type="nvarchar" MaxLength="255" />
           <Property Name="Date" Type="datetime" />
           <Property Name="Quantity" Type="float" />
           <Property Name="Cost" Type="float" />
@@ -5111,7 +5111,7 @@ FROM [dbo].[ShipmentRiderManifests] AS [ShipmentRiderManifests]</DefiningQuery>
           <Property Name="TransactionId" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="TransactionType" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="ItemNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="ItemDescription" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ItemDescription" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="Date" Type="DateTime" Precision="3" />
           <Property Name="Quantity" Type="Double" />
           <Property Name="Cost" Type="Double" />

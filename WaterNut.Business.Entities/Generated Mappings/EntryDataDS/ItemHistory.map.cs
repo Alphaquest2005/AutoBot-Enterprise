@@ -21,7 +21,7 @@
               this.Property(t => t.TransactionId).HasColumnName("TransactionId").HasMaxLength(255);
               this.Property(t => t.TransactionType).HasColumnName("TransactionType").HasMaxLength(50);
               this.Property(t => t.ItemNumber).HasColumnName("ItemNumber").HasMaxLength(50);
-              this.Property(t => t.ItemDescription).HasColumnName("ItemDescription").HasMaxLength(50);
+              this.Property(t => t.ItemDescription).HasColumnName("ItemDescription").HasMaxLength(255);
               this.Property(t => t.Date).HasColumnName("Date");
               this.Property(t => t.Quantity).HasColumnName("Quantity");
               this.Property(t => t.Cost).HasColumnName("Cost");

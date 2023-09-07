@@ -264,6 +264,7 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
             ConcurrentDictionary<int, List<PreviousItems>> docPreviousItems)
         {
             var entryTypes = allocationDataBlocks.GroupBy(x => x.Type).ToList();
+            var docBag = new ConcurrentBag<List<DocumentCT>>();
             entryTypes
                 .AsParallel()
                 .WithDegreeOfParallelism(Convert.ToInt32(Environment.ProcessorCount *
@@ -284,8 +285,9 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
                             autoAssess, perInvoice, overPIcheck, universalPIcheck, itemPIcheck, docPreviousItems,
                             PerIM7)
                         .ConfigureAwait(false);
-                    docs.AddRange(genDocs);
+                    docBag.Add(genDocs);
                 });
+            docs.AddRange(docBag.SelectMany(x => x));
 
         }
 

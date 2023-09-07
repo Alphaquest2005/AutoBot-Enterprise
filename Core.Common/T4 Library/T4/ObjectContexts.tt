@@ -1,6 +1,6 @@
 ﻿
 <#@ include file="EF.Utility.CS.ttinclude"#>
-<#@ include file="C:\Users\josep\OneDrive\AutoBot-Enterprise\Core.Common\T4 Library\T4\Utilities\Utils.tt" once="true"#>	
+<#@ include file="D:\OneDrive\AutoBot-Enterprise\Core.Common\T4 Library\T4\Utilities\Utils.tt" once="true"#>	
 <#@ output extension=".cs"#>
 <#+ 
 public class ObjectContextTPL : CSharpTemplate

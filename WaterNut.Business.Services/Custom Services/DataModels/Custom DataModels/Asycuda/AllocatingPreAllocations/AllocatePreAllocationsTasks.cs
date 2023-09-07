@@ -74,12 +74,12 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
             var task3 = Task.Run(() =>
             {
                 pItems = res
-                    .GroupBy(x => (x.PItemId, x.DutyFreePaid))
+                    .GroupBy(x => (x.PItemId))//, x.DutyFreePaid
                     .Select(x => new xcuda_Item()
                     {
-                        Item_Id = x.Key.PItemId,
-                        DFQtyAllocated = x.Key.DutyFreePaid == "Duty Free" ? x.Sum(z => z.QtyAllocated) : 0,
-                        DPQtyAllocated = x.Key.DutyFreePaid == "Duty Paid" ? x.Sum(z => z.QtyAllocated) : 0,
+                        Item_Id = x.Key,
+                        DFQtyAllocated = x.Where(z => z.DutyFreePaid == "Duty Free").Sum(z => z.QtyAllocated),
+                        DPQtyAllocated = x.Where(z => z.DutyFreePaid == "Duty Paid").Sum(z => z.QtyAllocated),//x.Key.DutyFreePaid == "Duty Paid" ? x.Sum(z => z.QtyAllocated) : 0,
                     })
                     .ToList();
             });

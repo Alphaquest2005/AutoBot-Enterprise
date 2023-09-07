@@ -65,19 +65,19 @@ namespace WaterNut.QuerySpace
 
                 foreach (var f in od.FileNames)
                 {
-                    if (f.EndsWith(".csv"))
+                    if (f.ToLower().Trim().EndsWith(".csv"))
                     {
                         await
                             EntryDataExRepository.Instance.SaveCSV(f, fileType, asycudaDocumentSetId, overwrite)
                                 .ConfigureAwait(false);
                     }
-                    if (f.EndsWith(".pdf"))
+                    if (f.ToLower().Trim().EndsWith(".pdf"))
                     {
                         await
                             EntryDataExRepository.Instance.SavePDF(f, fileType, asycudaDocumentSetId, overwrite)
                                 .ConfigureAwait(false);
                     }
-                    if (f.EndsWith(".xlsx"))
+                    if (f.ToLower().Trim().EndsWith(".xlsx"))
                     {
                         var fileTypes = FileTypeManager.GetImportableFileType(fileType,
                             FileTypeManager.FileFormats.Xlsx, f);

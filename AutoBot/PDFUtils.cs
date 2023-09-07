@@ -31,7 +31,7 @@ namespace AutoBot
 
                     .FirstOrDefault(x => x.Id == 17);
                 var files = new FileInfo[]
-                    {new FileInfo(@"C:\Users\josep\OneDrive\Clients\Budget Marine\Emails\30-16170\7006359.pdf")};
+                    {new FileInfo(@"D:\OneDrive\Clients\Budget Marine\Emails\30-16170\7006359.pdf")};
                 ImportPDF(files, fileType);
             }
         }

@@ -2,11 +2,11 @@
 <#@ output extension=".cs"#>
 <#@ include file="EF.Utility.CS.ttinclude" once="true"#>
 <#@ include file="T4Toolbox.tt" #>
-<#@ include file="C:\Users\josep\OneDrive\AutoBot-Enterprise\Core.Common\T4 Library\T4\Utilities\Utils.tt" once="true"#>	
-<#@ include file="C:\Users\josep\OneDrive\AutoBot-Enterprise\Core.Common\T4 Library\T4\Services\ServiceContractTemplate.tt" once="true"#>		
-<#@ include file="C:\Users\josep\OneDrive\AutoBot-Enterprise\Core.Common\T4 Library\T4\Services\ServiceTemplate.tt" once="true"#>
-<#@ include file="C:\Users\josep\OneDrive\AutoBot-Enterprise\Core.Common\T4 Library\T4\Services\ClientServiceContractTemplate.tt" once="true"#>		
-<#@ include file="C:\Users\josep\OneDrive\AutoBot-Enterprise\Core.Common\T4 Library\T4\Services\ClientServiceTemplate.tt" once="true"#>
+<#@ include file="D:\OneDrive\AutoBot-Enterprise\Core.Common\T4 Library\T4\Utilities\Utils.tt" once="true"#>	
+<#@ include file="D:\OneDrive\AutoBot-Enterprise\Core.Common\T4 Library\T4\Services\ServiceContractTemplate.tt" once="true"#>		
+<#@ include file="D:\OneDrive\AutoBot-Enterprise\Core.Common\T4 Library\T4\Services\ServiceTemplate.tt" once="true"#>
+<#@ include file="D:\OneDrive\AutoBot-Enterprise\Core.Common\T4 Library\T4\Services\ClientServiceContractTemplate.tt" once="true"#>		
+<#@ include file="D:\OneDrive\AutoBot-Enterprise\Core.Common\T4 Library\T4\Services\ClientServiceTemplate.tt" once="true"#>
 
 				
 <#+ 

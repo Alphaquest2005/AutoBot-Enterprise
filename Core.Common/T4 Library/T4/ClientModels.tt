@@ -2,14 +2,14 @@
 <#@ output extension=".cs"#>
 <#@ include file="T4Toolbox.tt" #>
 <#@ include file="EF.Utility.CS.ttinclude" once="true"#>
-<#@ include file="C:\Users\josep\OneDrive\AutoBot-Enterprise\Core.Common\T4 Library\T4\Utilities\Utils.tt" once="true"#>	
-<#@ include file="C:\Users\josep\OneDrive\AutoBot-Enterprise\Core.Common\T4 Library\T4\Models\Client\IIdentifiableEntityTemplate.tt" once="true"#>
-<#@ include file="C:\Users\josep\OneDrive\AutoBot-Enterprise\Core.Common\T4 Library\T4\Models\Client\CreateEntityFromStringTemplate.tt" once="true"#>
-<#@ include file="C:\Users\josep\OneDrive\AutoBot-Enterprise\Core.Common\T4 Library\T4\Models\Client\DTOCreateEntityFromStringTemplate.tt" once="true"#>
-<#@ include file="C:\Users\josep\OneDrive\AutoBot-Enterprise\Core.Common\T4 Library\T4\Models\Client\DTOIIdentifiableEntityTemplate.tt" once="true"#>
-<#@ include file="C:\Users\josep\OneDrive\AutoBot-Enterprise\Core.Common\T4 Library\T4\Models\Client\MyNavPropTemplate.tt" once="true"#>
-<#@ include file="C:\Users\josep\OneDrive\AutoBot-Enterprise\Core.Common\T4 Library\T4\Models\Client\DTOMyNavPropTemplate.tt" once="true"#>
-<#@ include file="C:\Users\josep\OneDrive\AutoBot-Enterprise\Core.Common\T4 Library\T4\Models\Client\EntityConstructorTemplate.tt" once="true"#>
+<#@ include file="D:\OneDrive\AutoBot-Enterprise\Core.Common\T4 Library\T4\Utilities\Utils.tt" once="true"#>	
+<#@ include file="D:\OneDrive\AutoBot-Enterprise\Core.Common\T4 Library\T4\Models\Client\IIdentifiableEntityTemplate.tt" once="true"#>
+<#@ include file="D:\OneDrive\AutoBot-Enterprise\Core.Common\T4 Library\T4\Models\Client\CreateEntityFromStringTemplate.tt" once="true"#>
+<#@ include file="D:\OneDrive\AutoBot-Enterprise\Core.Common\T4 Library\T4\Models\Client\DTOCreateEntityFromStringTemplate.tt" once="true"#>
+<#@ include file="D:\OneDrive\AutoBot-Enterprise\Core.Common\T4 Library\T4\Models\Client\DTOIIdentifiableEntityTemplate.tt" once="true"#>
+<#@ include file="D:\OneDrive\AutoBot-Enterprise\Core.Common\T4 Library\T4\Models\Client\MyNavPropTemplate.tt" once="true"#>
+<#@ include file="D:\OneDrive\AutoBot-Enterprise\Core.Common\T4 Library\T4\Models\Client\DTOMyNavPropTemplate.tt" once="true"#>
+<#@ include file="D:\OneDrive\AutoBot-Enterprise\Core.Common\T4 Library\T4\Models\Client\EntityConstructorTemplate.tt" once="true"#>
 <#+ 
   // Note: You can call this method from the outside of the template,
   //       please add parameters as needed.	

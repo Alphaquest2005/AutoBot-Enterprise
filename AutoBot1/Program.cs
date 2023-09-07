@@ -34,6 +34,8 @@ namespace AutoBot
         {
             try
             {
+                
+
                 var beforeImport = DateTime.Now;
                 Console.WriteLine($"{beforeImport}");
                 using (var ctx = new CoreEntitiesContext() { })

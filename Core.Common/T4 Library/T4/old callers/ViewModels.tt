@@ -2,12 +2,12 @@
 <#@ output extension=".cs"#>
 <#@ include file="EF.Utility.CS.ttinclude" once="true"#>
 <#@ include file="T4Toolbox.tt" #>
-<#@ include file="C:\Users\josep\OneDrive\AutoBot-Enterprise\Core.Common\T4 Library\T4\ViewModels\SummaryListViewModel.tt" once="true"#>		
-<#@ include file="C:\Users\josep\OneDrive\AutoBot-Enterprise\Core.Common\T4 Library\T4\ViewModels\EntityViewModel.tt" once="true"#>	
-<#@ include file="C:\Users\josep\OneDrive\AutoBot-Enterprise\Core.Common\T4 Library\T4\ViewModels\BaseViewModel.tt" once="true"#>
-<#@ include file="C:\Users\josep\OneDrive\AutoBot-Enterprise\Core.Common\T4 Library\T4\ViewModels\MessageTokenModel.tt" once="true"#>
-<#@ include file="C:\Users\josep\OneDrive\AutoBot-Enterprise\Core.Common\T4 Library\T4\ViewModels\VirturalListLoader.tt" once="true"#>
-<#@ include file="C:\Users\josep\OneDrive\AutoBot-Enterprise\Core.Common\T4 Library\T4\ViewModels\Totals.tt" once="true"#>							
+<#@ include file="D:\OneDrive\AutoBot-Enterprise\Core.Common\T4 Library\T4\ViewModels\SummaryListViewModel.tt" once="true"#>		
+<#@ include file="D:\OneDrive\AutoBot-Enterprise\Core.Common\T4 Library\T4\ViewModels\EntityViewModel.tt" once="true"#>	
+<#@ include file="D:\OneDrive\AutoBot-Enterprise\Core.Common\T4 Library\T4\ViewModels\BaseViewModel.tt" once="true"#>
+<#@ include file="D:\OneDrive\AutoBot-Enterprise\Core.Common\T4 Library\T4\ViewModels\MessageTokenModel.tt" once="true"#>
+<#@ include file="D:\OneDrive\AutoBot-Enterprise\Core.Common\T4 Library\T4\ViewModels\VirturalListLoader.tt" once="true"#>
+<#@ include file="D:\OneDrive\AutoBot-Enterprise\Core.Common\T4 Library\T4\ViewModels\Totals.tt" once="true"#>							
 <#+ 
   // Note: You can call this method from the outside of the template,
   //       please add parameters as needed.	

@@ -263,6 +263,8 @@ namespace WaterNut.Business.Services.Utils
             RemoveUnmappedColumns(fileType, header, dt);
 
             ReNameColumns(header);
+            
+            ReplicateColumns(dt.AsEnumerable().ToList(), header, fileType);
 
             LoadDataRows(fileType, dRows, dt);
             
@@ -270,7 +272,7 @@ namespace WaterNut.Business.Services.Utils
             
             AddLineNumbers(dRows);
 
-            ReplicateColumns(dRows,header, fileType);
+            
 
             return false;
         }
@@ -414,15 +416,16 @@ namespace WaterNut.Business.Services.Utils
                 if (fileType.ReplicateHeaderRow == true)
                     currentReplicatedHeading = ProcessReplicatedHeaderRows(fileType, dRows, dt, drow_no, headerRow, currentReplicatedHeading);
                 else
-                    ProcessHeaderRows(fileType, dRows, dt, drow_no);
+                    ProcessHeaderRows(fileType, dRows, dt, drow_no, headerRow);
 
                 drow_no++;
             }
         }
 
-        private static void ProcessHeaderRows(FileTypes fileType, List<DataRow> dRows, DataTable dt, int drow_no)
+        private static void ProcessHeaderRows(FileTypes fileType, List<DataRow> dRows, DataTable dt, int drow_no,
+            List<object> headerRow)
         {
-            var lst = dt.Rows[drow_no].ItemArray
+            var lst = headerRow
                 .Select(x => x.ToString().ToUpper().Trim())
                 .Intersect(fileType.FileTypeMappings
                                     .Where(x => x.Required)
@@ -440,9 +443,21 @@ namespace WaterNut.Business.Services.Utils
             int drow_no,
             List<object> headerRow, DataRow currentReplicatedHeading)
         {
-            
-            if (((fileType.FileTypeMappings.Any(x => x.Required) 
-                  && fileType.FileTypeMappings.Where(x => x.Required).All(x => (headerRow.IndexOf(x.OriginalName.ToUpper().Trim()) > -1  )
+            var rlst = headerRow
+                .Select(x => x.ToString().ToUpper().Trim())
+                .Intersect(fileType.FileTypeMappings
+                    .Where(x => x.Required)
+                    .Select(z => z.OriginalName.ToUpper().Trim()))
+                .ToList();
+            var nlst = headerRow
+                .Select(x => x.ToString().ToUpper().Trim())
+                .Intersect(fileType.FileTypeMappings
+                    .Where(x => !x.Required)
+                    .Select(z => z.OriginalName.ToUpper().Trim()))
+                .ToList();
+
+            if (((fileType.FileTypeMappings.Any(x => x.Required) && rlst.Any()
+                  && fileType.FileTypeMappings.Where(x => rlst.Contains(x.OriginalName.ToUpper().Trim()) && x.Required).All(x => (headerRow.IndexOf(x.OriginalName.ToUpper().Trim()) > -1  )
                                                                                 && !string.IsNullOrEmpty(dt.Rows[drow_no][headerRow.IndexOf(x.OriginalName.ToUpper().Trim())].ToString())))
                  ||
                  (fileType.FileTypeMappings.All(x => !x.Required)
@@ -463,7 +478,7 @@ namespace WaterNut.Business.Services.Utils
             else
             {
                 if (currentReplicatedHeading != null && Enumerable.Count<object>(dt.Rows[drow_no].ItemArray, x => !string.IsNullOrEmpty(x.ToString())) >=
-                    (fileType.FileTypeMappings.Any(x => x.Required) ? fileType.FileTypeMappings.Count(x => x.Required) : 1))
+                    (fileType.FileTypeMappings.Any(x => x.Required) ? nlst.Count() : 1))
                 {
                     var row = dt.NewRow();
                     foreach (DataColumn col in dt.Columns)
@@ -520,7 +535,7 @@ namespace WaterNut.Business.Services.Utils
                     }
 
 
-                    AddRowToTable(fileType, row, table, row_no);
+                    AddRowToTable(fileType, row, table, row_no, header);
                 });
         }
 
@@ -546,12 +561,24 @@ namespace WaterNut.Business.Services.Utils
             return output;
         }
 
-        private static void AddRowToTable(FileTypes fileType, Dictionary<string, string> row, ConcurrentDictionary<int, string> table, int row_no)
+        private static void AddRowToTable(FileTypes fileType, Dictionary<string, string> row,
+            ConcurrentDictionary<int, string> table, int row_no, DataRow header)
         {
-            if (row.Count > 0 
-                && row.Count(x => !string.IsNullOrEmpty(x.Value) && fileType.FileTypeMappings.Any(z => z.Required == true && z.DestinationName == x.Key)) 
-                >= MoreEnumerable.DistinctBy(fileType.FileTypeMappings, x => x.DestinationName).Count(x => x.Required == true))
-            {
+            var lst = header.ItemArray
+                .Select(x => x.ToString().ToUpper().Trim())
+                .Intersect(fileType.FileTypeMappings
+                    .Where(x => x.Required)
+                    .Select(z => z.OriginalName.ToUpper().Trim()))
+                .ToList();
+
+
+            if (row.Count <= 0
+                || row.Count(x =>
+                    !string.IsNullOrEmpty(x.Value) &&
+                    fileType.FileTypeMappings.Any(z => z.Required == true && z.DestinationName == x.Key))
+                < MoreEnumerable.DistinctBy(fileType.FileTypeMappings, x => x.DestinationName)
+                    .Count(x => x.Required == true && lst.Contains(x.OriginalName))) return;
+            
                 var value = fileType.FileTypeMappings.Any()
                     ? fileType.FileTypeMappings.OrderBy(x => x.Id).Select(x => x.DestinationName).Where(x => !x.StartsWith("{"))
                         .Distinct()
@@ -559,7 +586,7 @@ namespace WaterNut.Business.Services.Utils
                         .Aggregate((a, x) => a + "," + x) + "\n"
                     : row.Values.Aggregate((a, x) => a + "," + x) + "\n";
                 table.GetOrAdd(row_no, value);
-            }
+            
         }
 
         private static void UpdateRowFromFile(DataRow header, DataRow drow, Dictionary<string, string> row)
@@ -577,7 +604,13 @@ namespace WaterNut.Business.Services.Utils
             DataRow header, int row_no, DataRow drow, ref Dictionary<string, string> row)
         {
             var fileTypeMappingsByOriginalName = OrderFileTypeMappingsByOriginalName(fileType).ToList();
-            var fileTypeMappings = fileTypeMappingsByOriginalName.Where(x =>!x.OriginalName.Split('+',',').Select(z => z.ToUpper().Trim()).Except(header.ItemArray.Select(z => z.ToString().ToUpper())).Any() || x.OriginalName.StartsWith("{") || x.FileTypeMappingValues.Any()).ToList();
+            var fileTypeMappings = fileTypeMappingsByOriginalName
+                                        .Where(x =>!x.OriginalName.Split('+',',')
+                                            .Select(z => z.ToUpper().Trim())
+                                            .Except(header.ItemArray.Select(z => z.ToString().ToUpper())).Any() 
+                                                            || x.OriginalName.StartsWith("{") 
+                                                            || x.FileTypeMappingValues.Any())
+                                        .ToList();
             foreach (var mapping in fileTypeMappings)
             {
                 var maps = mapping.OriginalName.Split('+',',').Select(x => x.Trim()).ToArray();

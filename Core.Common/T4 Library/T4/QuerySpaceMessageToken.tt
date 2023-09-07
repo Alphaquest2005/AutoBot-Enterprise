@@ -2,8 +2,8 @@
 <#@ output extension=".cs"#>
 <#@ include file="EF.Utility.CS.ttinclude" once="true"#>
 <#@ include file="T4Toolbox.tt" #>
-<#@ include file="C:\Users\josep\OneDrive\AutoBot-Enterprise\Core.Common\T4 Library\T4\Utilities\Utils.tt" once="true"#>	
-<#@ include file="C:\Users\josep\OneDrive\AutoBot-Enterprise\Core.Common\T4 Library\T4\ViewModels\QuerySpace\MessageTokenModel.tt" once="true"#>
+<#@ include file="D:\OneDrive\AutoBot-Enterprise\Core.Common\T4 Library\T4\Utilities\Utils.tt" once="true"#>	
+<#@ include file="D:\OneDrive\AutoBot-Enterprise\Core.Common\T4 Library\T4\ViewModels\QuerySpace\MessageTokenModel.tt" once="true"#>
 
 <#+ 
   // Note: You can call this method from the outside of the template,

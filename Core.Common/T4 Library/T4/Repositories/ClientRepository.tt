@@ -1,6 +1,6 @@
 ﻿
 <#@ output extension=".cs"#>
-<#@ include file="C:\Users\josep\OneDrive\AutoBot-Enterprise\Core.Common\T4 Library\T4\Repositories\ClientEntityRepositoryTemplate.tt"#>
+<#@ include file="D:\OneDrive\AutoBot-Enterprise\Core.Common\T4 Library\T4\Repositories\ClientEntityRepositoryTemplate.tt"#>
 <#@ assembly name="System.Data.Entity, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" #>
 <#@ import namespace="System.Data.Metadata.Edm" #>
 <#+ 

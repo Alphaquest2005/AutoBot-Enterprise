@@ -47,7 +47,7 @@ namespace AutoBotUtilities.Tests
 
                 var fileNames = new System.Collections.Generic.List<string>()
                 {
-                    @"C:\Users\josep\OneDrive\Clients\Columbian\Emails\Imports\IM4-GDSGO-17482.xml"
+                    @"D:\OneDrive\Clients\Columbian\Emails\Imports\IM4-GDSGO-17482.xml"
                 };
 
                 Infrastructure.Utils.ImportDocuments(docSet, fileNames);

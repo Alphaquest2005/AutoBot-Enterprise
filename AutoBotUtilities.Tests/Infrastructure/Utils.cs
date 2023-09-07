@@ -27,7 +27,7 @@ namespace AutoBotUtilities.Tests.Infrastructure
 
         public static bool IsDevSqlServer()
         {
-            return System.Configuration.ConfigurationManager.ConnectionStrings["CoreEntities"].ConnectionString.Contains(@"JOEXPS\SQLDEVELOPER2019");
+            return System.Configuration.ConfigurationManager.ConnectionStrings["CoreEntities"].ConnectionString.Contains(@"MINIJOE\SQLDEVELOPER2022");
         }
 
         public static string GetTestDirectory()

@@ -92,11 +92,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="EF6\AllBusinessEntities1.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>AllBusinessEntities.tt</DependentUpon>
-    </Compile>
     <Compile Include="EF6\AllBusinessMappings1.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
