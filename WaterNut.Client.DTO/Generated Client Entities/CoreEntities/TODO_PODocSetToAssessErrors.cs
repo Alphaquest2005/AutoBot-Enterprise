@@ -321,7 +321,7 @@ namespace CoreEntities.Client.DTO
         private string _Status;
 
         [DataMember]
-        public Nullable<double> TotalWeight
+        public Nullable<decimal> TotalWeight
 		{ 
 		    get { return _TotalWeight; }
 			set
@@ -331,7 +331,7 @@ namespace CoreEntities.Client.DTO
 				NotifyPropertyChanged();//m => this.TotalWeight
 			}
 		}
-        private Nullable<double> _TotalWeight;
+        private Nullable<decimal> _TotalWeight;
 
         [DataMember]
         public Nullable<int> ExpectedAttachments

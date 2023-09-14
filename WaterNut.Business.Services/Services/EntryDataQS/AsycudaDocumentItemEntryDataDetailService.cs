@@ -986,7 +986,35 @@ namespace EntryDataQS.Business.Services
 			}
         }
 
-		
+			        public async Task<IEnumerable<AsycudaDocumentItemEntryDataDetail>> GetAsycudaDocumentItemEntryDataDetailById(string Id, List<string> includesLst = null)
+        {
+            try
+            {
+                using ( var dbContext = new EntryDataQSContext(){StartTracking = StartTracking})
+              {
+                var i = Convert.ToInt32(Id);
+                var set = AddIncludes(includesLst, dbContext);
+                IEnumerable<AsycudaDocumentItemEntryDataDetail> entities = set//dbContext.AsycudaDocumentItemEntryDataDetails
+                                      .AsNoTracking()
+                                        .Where(x => x.Id.ToString() == Id.ToString())
+										.ToList();
+                return entities;
+              }
+             }
+            catch (Exception updateEx)
+            {
+                System.Diagnostics.Debugger.Break();
+                //throw new FaultException(updateEx.Message);
+                    var fault = new ValidationFault
+                                {
+                                    Result = false,
+                                    Message = updateEx.Message,
+                                    Description = updateEx.StackTrace
+                                };
+                    throw new FaultException<ValidationFault>(fault);
+            }
+        }
+ 
 		public decimal SumField(string whereExp, string field)
          {
              try

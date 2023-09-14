@@ -373,7 +373,7 @@ namespace CoreEntities.Client.DTO
         private Nullable<double> _TotalCIF;
 
         [DataMember]
-        public Nullable<double> TotalGrossWeight
+        public Nullable<decimal> TotalGrossWeight
 		{ 
 		    get { return _TotalGrossWeight; }
 			set
@@ -383,7 +383,7 @@ namespace CoreEntities.Client.DTO
 				NotifyPropertyChanged();//m => this.TotalGrossWeight
 			}
 		}
-        private Nullable<double> _TotalGrossWeight;
+        private Nullable<decimal> _TotalGrossWeight;
 
         [DataMember]
         public Nullable<System.DateTime> AssessmentDate

@@ -167,6 +167,23 @@ public Nullable<bool> IsActive
 		}
      
 
+       
+       
+                
+                [MaxLength(255, ErrorMessage = "Comments has a max length of 255 letters ")]
+public string Comments
+		{ 
+		    get { return this.lines.Comments; }
+			set
+			{
+			    if (value == this.lines.Comments) return;
+				this.lines.Comments = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("Comments");
+			}
+		}
+     
+
        private Parts _Parts;
         public  Parts Parts
 		{

@@ -432,7 +432,7 @@ namespace AllocationDS.Business.Entities
         }
         Nullable<double> _totalcif;
         [DataMember]
-        public Nullable<double> TotalGrossWeight 
+        public Nullable<decimal> TotalGrossWeight 
         {
             get
             {
@@ -445,7 +445,7 @@ namespace AllocationDS.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        Nullable<double> _totalgrossweight;
+        Nullable<decimal> _totalgrossweight;
         [DataMember]
         public Nullable<System.DateTime> AssessmentDate 
         {

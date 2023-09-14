@@ -167,7 +167,7 @@ namespace WaterNut.DataSpace
                                     PiQuantity = (double) x.EntryPreviousItems.Select(y => y.xcuda_PreviousItem)
                                         .Where(y => y.xcuda_Item.AsycudaDocument.CNumber != null || y.xcuda_Item.AsycudaDocument.IsManuallyAssessed == true)
                                         .Select(z => z.Suplementary_Quantity).DefaultIfEmpty(0).Sum(),
-                                    PiWeight = (double) x.EntryPreviousItems.Select(y => y.xcuda_PreviousItem)
+                                    PiWeight =  x.EntryPreviousItems.Select(y => y.xcuda_PreviousItem)
                                         .Where(y => y.xcuda_Item.AsycudaDocument.CNumber != null || y.xcuda_Item.AsycudaDocument.IsManuallyAssessed == true)
                                         .Select(z => z.Net_weight).DefaultIfEmpty(0).Sum(),
                                     ItemQuantity = (double)x.xcuda_Tarification.xcuda_Supplementary_unit.FirstOrDefault().Suppplementary_unit_quantity,
@@ -231,7 +231,7 @@ namespace WaterNut.DataSpace
                                 PiQuantity = (double) x.EntryPreviousItems.Select(y => y.xcuda_PreviousItem)
                                     .Where(y => y.xcuda_Item.AsycudaDocument.CNumber != null /*|| y.xcuda_Item.AsycudaDocument.IsManuallyAssessed == true*/)// only assessed items allowed especially now as i preassessing entries
                                     .Select(z => z.Suplementary_Quantity).DefaultIfEmpty(0).Sum(),
-                                PiWeight = (double) x.EntryPreviousItems.Select(y => y.xcuda_PreviousItem)
+                                PiWeight =  x.EntryPreviousItems.Select(y => y.xcuda_PreviousItem)
                                     .Where(y => y.xcuda_Item.AsycudaDocument.CNumber != null /*|| y.xcuda_Item.AsycudaDocument.IsManuallyAssessed == true*/)
                                     .Select(z => z.Net_weight).DefaultIfEmpty(0).Sum(),
                                 ItemQuantity = (double) x.xcuda_Tarification.xcuda_Supplementary_unit.FirstOrDefault(z => z.IsFirstRow == true)
@@ -303,7 +303,7 @@ namespace WaterNut.DataSpace
                                    PiQuantity = (double) x.EntryPreviousItems.Select(y => y.xcuda_PreviousItem)
                                        .Where(y => y.xcuda_Item.AsycudaDocument.CNumber != null)
                                        .Select(z => z.Suplementary_Quantity).DefaultIfEmpty(0).Sum(),
-                                   PiWeight = (double) x.EntryPreviousItems.Select(y => y.xcuda_PreviousItem)
+                                   PiWeight = x.EntryPreviousItems.Select(y => y.xcuda_PreviousItem)
                                        .Where(y => y.xcuda_Item.AsycudaDocument.CNumber != null )
                                        .Select(z => z.Net_weight).DefaultIfEmpty(0).Sum(),
                                    ItemQuantity = (double)x.xcuda_Tarification.xcuda_Supplementary_unit.FirstOrDefault().Suppplementary_unit_quantity,
@@ -416,7 +416,7 @@ namespace WaterNut.DataSpace
                     //////////////////////////todo///////////////////////////
 
 
-                    Net_weight = Convert.ToDecimal(ditm.Net_weight - ditm.PiWeight),
+                    Net_weight = ditm.Net_weight - ditm.PiWeight,
                     Goods_origin = ditm.Country_of_origin_code,
                     Previous_value =
                         Convert.ToDouble((ditm.Total_CIF_itm / ditm.ItemQuantity)),
@@ -457,8 +457,8 @@ namespace WaterNut.DataSpace
                 {
                     TrackingState = TrackingState.Added,
                     //TODO: Check the weight when creating was making weight zero
-                    Gross_weight_itm = (double) pitm.Net_weight,
-                    Net_weight_itm = (double) pitm.Net_weight
+                    Gross_weight_itm = pitm.Net_weight,
+                    Net_weight_itm =  pitm.Net_weight
                 };
 
                 // adjusting because not using real statistical value when calculating
@@ -525,14 +525,14 @@ namespace WaterNut.DataSpace
         public double PiQuantity { get; set; }
         public string TariffCode { get; set; }
         public int Number_of_packages { get; set; }
-        public double Net_weight { get; set; }
+        public decimal Net_weight { get; set; }
         public string CNumber { get; set; }
         public string Customs_clearance_office_code { get; set; }
         public string Commercial_Description { get; set; }
         public double Item_price { get; set; }
         public string Suppplementary_unit_code { get; set; }
         public int ItemId { get; set; }
-        public double PiWeight { get; set; }
+        public decimal PiWeight { get; set; }
         public string Country_of_origin_code { get; set; }
         public double Total_CIF_itm { get; set; }
         public double SalesFactor { get; set; }

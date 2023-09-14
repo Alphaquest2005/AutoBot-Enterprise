@@ -611,7 +611,6 @@
     <Compile Include="ViewModels\Generated Models\QuerySpace\OCR\InvoicesViewModel.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\OCR\LinesViewModel.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\OCR\MessageToken.cs" />
-    <Compile Include="ViewModels\Generated Models\QuerySpace\OCR\OCRFileTypesViewModel.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\OCR\OCR_FailedFieldsViewModel.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\OCR\OCR_FailedLinesViewModel.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\OCR\OCR_FieldMappingsViewModel.cs" />
@@ -968,7 +967,6 @@
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\OCR\InvoiceRegExVirturalListLoader.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\OCR\InvoicesVirturalListLoader.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\OCR\LinesVirturalListLoader.cs" />
-    <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\OCR\OCRFileTypesVirturalListLoader.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\OCR\OCR_FailedFieldsVirturalListLoader.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\OCR\OCR_FailedLinesVirturalListLoader.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\OCR\OCR_FieldMappingsVirturalListLoader.cs" />

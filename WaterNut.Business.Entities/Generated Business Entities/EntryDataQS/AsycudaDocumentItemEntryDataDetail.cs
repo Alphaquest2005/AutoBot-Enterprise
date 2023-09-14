@@ -215,6 +215,66 @@ namespace EntryDataQS.Business.Entities
             }
         }
         string _entrydatatype;
+        [DataMember]
+        public Nullable<long> Id 
+        {
+            get
+            {
+                return _id;
+            }
+            set
+            {
+                _id = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<long> _id;
+        [DataMember]
+        public string CNumber 
+        {
+            get
+            {
+                return _cnumber;
+            }
+            set
+            {
+                _cnumber = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _cnumber;
+        [DataMember]
+        public int LineNumber 
+        {
+            get
+            {
+                return _linenumber;
+            }
+            set
+            {
+                _linenumber = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        int _linenumber;
+        [DataMember]
+        public string CustomsOperation 
+        {
+            get
+            {
+                return _customsoperation;
+            }
+            set
+            {
+                _customsoperation = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _customsoperation;
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

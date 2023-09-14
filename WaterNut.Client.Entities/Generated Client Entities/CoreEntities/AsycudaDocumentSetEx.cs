@@ -301,7 +301,7 @@ public Nullable<double> TotalFreight
 
        
        [NumberValidationAttribute]
-public Nullable<double> TotalWeight
+public Nullable<decimal> TotalWeight
 		{ 
 		    get { return this.asycudadocumentsetex.TotalWeight; }
 			set

@@ -366,7 +366,7 @@ namespace CoreEntities.Business.Entities
         }
         string _status;
         [DataMember]
-        public Nullable<double> TotalWeight 
+        public Nullable<decimal> TotalWeight 
         {
             get
             {
@@ -379,7 +379,7 @@ namespace CoreEntities.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        Nullable<double> _totalweight;
+        Nullable<decimal> _totalweight;
         [DataMember]
         public Nullable<int> ExpectedAttachments 
         {

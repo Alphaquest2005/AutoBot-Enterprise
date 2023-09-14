@@ -528,6 +528,19 @@ namespace AdjustmentQS.Client.DTO
 		}
         private string _Vendor;
 
+        [DataMember]
+        public string SourceFile
+		{ 
+		    get { return _SourceFile; }
+			set
+			{
+			    if (value == _SourceFile) return;
+				_SourceFile = value;
+				NotifyPropertyChanged();//m => this.SourceFile
+			}
+		}
+        private string _SourceFile;
+
        
         [DataMember]
         public AdjustmentEx AdjustmentEx

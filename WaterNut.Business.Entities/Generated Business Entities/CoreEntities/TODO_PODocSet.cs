@@ -306,7 +306,7 @@ namespace CoreEntities.Business.Entities
         }
         Nullable<int> _totalpackages;
         [DataMember]
-        public Nullable<double> TotalWeight 
+        public Nullable<decimal> TotalWeight 
         {
             get
             {
@@ -319,7 +319,7 @@ namespace CoreEntities.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        Nullable<double> _totalweight;
+        Nullable<decimal> _totalweight;
         [DataMember]
         public Nullable<int> EntryPackages 
         {

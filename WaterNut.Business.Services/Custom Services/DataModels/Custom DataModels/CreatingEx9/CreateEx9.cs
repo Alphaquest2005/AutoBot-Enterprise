@@ -877,7 +877,7 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
                         EX9Allocation = new EX9Allocation()
                         {
                             SalesFactor = s.LastOrDefault()?.SalesFactor ?? 0.0,
-                            Net_weight_itm = s.LastOrDefault()?.Net_weight_itm??0.0,
+                            Net_weight_itm = s.LastOrDefault()?.Net_weight_itm??0.0m,
                             pQuantity = s.LastOrDefault()?.pQuantity.GetValueOrDefault() ?? 0.0,
                             pCNumber = s.LastOrDefault()?.pCNumber,
                             Customs_clearance_office_code = s.LastOrDefault()?.Customs_clearance_office_code,
@@ -1612,8 +1612,8 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
                     itm.xcuda_Valuation_item.xcuda_Weight_itm = new xcuda_Weight_itm(true)
                     {
                         TrackingState = TrackingState.Added,
-                        Gross_weight_itm = (double) pitm.Net_weight,
-                        Net_weight_itm = (double) pitm.Net_weight
+                        Gross_weight_itm = pitm.Net_weight,
+                        Net_weight_itm =  pitm.Net_weight
                     };
                     // adjusting because not using real statistical value when calculating
                     itm.xcuda_Valuation_item.xcuda_Item_Invoice.Amount_foreign_currency =

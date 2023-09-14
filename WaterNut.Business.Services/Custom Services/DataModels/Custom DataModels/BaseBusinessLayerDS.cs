@@ -97,9 +97,9 @@ namespace WaterNut.DataSpace
         
 
         private IEnumerable<ExportTemplate> _exportTemplates;
-        private static readonly double _minimumPossibleAsycudaWeight = .01;
-        private static double _runningMiniumWeight = 0.0;
-        private static readonly double WeightAsycudaNormallyOffBy = 0.5;
+        private static readonly decimal _minimumPossibleAsycudaWeight = 0.0m;
+        private static decimal _runningMiniumWeight = 0.0m;
+        private static readonly decimal WeightAsycudaNormallyOffBy = 0.5m;
 
         static BaseDataModel()
         {
@@ -1527,7 +1527,7 @@ namespace WaterNut.DataSpace
             double totalfob = 0;
             double totalItemQuantity = 0;
             double totalFreight = 0;
-            double totalWeight = 0;
+            decimal totalWeight = 0;
             List<int> doclst = null;
             var CIFValues = new Dictionary<int, double>();
             var ItemQuantities = new Dictionary<int, double>();
@@ -1541,7 +1541,7 @@ namespace WaterNut.DataSpace
                 {
                     if (asycudaDocumentSet.TotalFreight != null)
                         totalFreight = asycudaDocumentSet.TotalFreight.Value;
-                    if (asycudaDocumentSet.TotalWeight != null) totalWeight = asycudaDocumentSet.TotalWeight.Value;
+                    if (asycudaDocumentSet.TotalWeight != null) totalWeight = (decimal)asycudaDocumentSet.TotalWeight.Value;
                     if (totalWeight <= 0 && asycudaDocumentSet.Documents.Count() > 0)
                         throw new ApplicationException(
                             $"DocSet:{asycudaDocumentSet.Declarant_Reference_Number} Weight is Zero");
@@ -1584,8 +1584,8 @@ namespace WaterNut.DataSpace
             totalWeight -= WeightAsycudaNormallyOffBy;
 
             var freightRate = totalFreight != 0 ? totalFreight / totalfob : 0;
-            var weightRate = totalWeight != 0 ? totalWeight / totalItemQuantity : 0;
-            double weightUsed = 0;
+            var weightRate = totalWeight != 0 ? totalWeight / (decimal)totalItemQuantity : 0;
+            decimal weightUsed = 0;
 
             using (var ctx = new DocumentDSContext {StartTracking = true})
             {
@@ -1617,7 +1617,7 @@ namespace WaterNut.DataSpace
                     {
                         if (cif.Value != 0) UpdateFreight(ctx, cif, cif.Value * freightRate, currency);
                         if (totalItems.Value != 0)
-                            weightUsed += UpdateWeight(ctx, totalItems, totalItems.Value * weightRate);
+                            weightUsed += UpdateWeight(ctx, totalItems, (decimal)(totalItems.Value * (double)weightRate));
                     }
                 }
 
@@ -1647,7 +1647,7 @@ namespace WaterNut.DataSpace
             xcuda_Gs_external_freight.Currency_code = currency;
         }
 
-        private static double UpdateWeight(DocumentDSContext ctx, KeyValuePair<int, double> doc, double weightRate)
+        private static decimal UpdateWeight(DocumentDSContext ctx, KeyValuePair<int, double> doc, decimal weightRate)
         {
             try
             {
@@ -1667,9 +1667,9 @@ namespace WaterNut.DataSpace
                     val.xcuda_Weight = xcuda_Weight;
                 }
 
-                xcuda_Weight.Gross_weight = weightRate < _minimumPossibleAsycudaWeight ? _minimumPossibleAsycudaWeight : weightRate;
+                xcuda_Weight.Gross_weight = (double)(weightRate < _minimumPossibleAsycudaWeight ? _minimumPossibleAsycudaWeight : weightRate);
 
-                double weightUsed = 0;
+                decimal weightUsed = 0;
                 using (var ictx = new DocumentItemDSContext {StartTracking = true})
                 {
                     var lst = ictx.xcuda_Weight_itm
@@ -1684,8 +1684,8 @@ namespace WaterNut.DataSpace
                             .Unordered_xcuda_Supplementary_unit.First(x => x.IsFirstRow == true)
                             .Suppplementary_unit_quantity.GetValueOrDefault();
 
-                        var calWgt = weightRate * (itmQuantity / doc.Value);
-                        var minWgt = itmQuantity * _minimumPossibleAsycudaWeight;
+                        var calWgt = weightRate * (decimal)(itmQuantity / doc.Value);
+                        var minWgt = ((decimal)itmQuantity) * _minimumPossibleAsycudaWeight;
 
                         if (calWgt - _runningMiniumWeight < minWgt)
                         {
@@ -1787,13 +1787,9 @@ namespace WaterNut.DataSpace
                 case "WeightEqualQuantity":
                     if (itm.xcuda_Valuation_item.xcuda_Weight_itm != null)
                     {
-                        itm.xcuda_Valuation_item.xcuda_Weight_itm.Net_weight_itm =
-                            Convert.ToSingle(
-                                Math.Round(pod.Quantity, 4));
+                        itm.xcuda_Valuation_item.xcuda_Weight_itm.Net_weight_itm = (decimal)Math.Round(pod.Quantity, 4);
 
-                        itm.xcuda_Valuation_item.xcuda_Weight_itm.Gross_weight_itm =
-                            Convert.ToSingle(
-                                Math.Round(pod.Quantity, 4));
+                        itm.xcuda_Valuation_item.xcuda_Weight_itm.Gross_weight_itm = (decimal)Math.Round(pod.Quantity, 4);
                     }
 
                     break;
@@ -1803,24 +1799,18 @@ namespace WaterNut.DataSpace
                         itm.xcuda_Valuation_item.xcuda_Weight_itm = new xcuda_Weight_itm(true)
                         {
                             TrackingState = TrackingState.Added,
-                            Gross_weight_itm = (float) pod.Quantity *
-                                               Convert.ToSingle(.1),
-                            Net_weight_itm = (float) pod.Quantity *
-                                             Convert.ToSingle(.1),
+                            Gross_weight_itm =  (decimal)(pod.Quantity * .1),
+                            Net_weight_itm = (decimal)(pod.Quantity * .1),
                             xcuda_Valuation_item = itm.xcuda_Valuation_item
                         };
                     }
 
                     if (pod.Weight != 0)
                         if (itm.xcuda_Valuation_item.xcuda_Weight_itm != null)
-                            itm.xcuda_Valuation_item.xcuda_Weight_itm.Gross_weight_itm =
-                                Convert.ToSingle(
-                                    Math.Round(pod.Weight, 4));
+                            itm.xcuda_Valuation_item.xcuda_Weight_itm.Gross_weight_itm = (decimal)Math.Round(pod.Weight, 4);
                     if (pod.Weight != 0)
                         if (itm.xcuda_Valuation_item.xcuda_Weight_itm != null)
-                            itm.xcuda_Valuation_item.xcuda_Weight_itm.Net_weight_itm =
-                                Convert.ToSingle(
-                                    Math.Round(pod.Weight, 4));
+                            itm.xcuda_Valuation_item.xcuda_Weight_itm.Net_weight_itm = (decimal)Math.Round(pod.Weight, 4);
                     break;
                 case "MinimumWeight":
                     SetMinWeight(pod, itm);
@@ -1936,10 +1926,8 @@ namespace WaterNut.DataSpace
             itm.xcuda_Valuation_item.xcuda_Weight_itm = new xcuda_Weight_itm(true)
             {
                 TrackingState = TrackingState.Added,
-                Gross_weight_itm = (float) pod.Quantity *
-                                   Convert.ToSingle(_minimumPossibleAsycudaWeight),
-                Net_weight_itm = (float) pod.Quantity *
-                                 Convert.ToSingle(_minimumPossibleAsycudaWeight),
+                Gross_weight_itm =  (decimal)(pod.Quantity * (double)_minimumPossibleAsycudaWeight),
+                Net_weight_itm = (decimal)(pod.Quantity * (double)_minimumPossibleAsycudaWeight),
                 xcuda_Valuation_item = itm.xcuda_Valuation_item
 
             };
@@ -3238,7 +3226,7 @@ namespace WaterNut.DataSpace
                 c.Packages_number = firstItem.Number_of_packages?.ToString(CultureInfo.InvariantCulture);
                 c.Packages_type = "PK";
                 c.Item_Number = firstItem.LineNumber;
-                c.Packages_weight = firstItem.Gross_weight_itm;
+                c.Packages_weight = (double)firstItem.Gross_weight_itm;
                 res.Add(c);
             }
 

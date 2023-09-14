@@ -515,6 +515,19 @@ namespace PreviousDocumentQS.Client.DTO
 		}
         private string _CustomsProcedure;
 
+        [DataMember]
+        public string EntryDataType
+		{ 
+		    get { return _EntryDataType; }
+			set
+			{
+			    if (value == _EntryDataType) return;
+				_EntryDataType = value;
+				NotifyPropertyChanged();//m => this.EntryDataType
+			}
+		}
+        private string _EntryDataType;
+
        
         [DataMember]
         public PreviousDocumentItem PreviousDocumentItem

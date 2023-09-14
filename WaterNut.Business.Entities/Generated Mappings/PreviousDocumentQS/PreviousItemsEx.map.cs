@@ -51,6 +51,7 @@
               this.Property(t => t.Prev_reg_year).HasColumnName("Prev_reg_year");
               this.Property(t => t.Customs_ProcedureId).HasColumnName("Customs_ProcedureId");
               this.Property(t => t.CustomsProcedure).HasColumnName("CustomsProcedure").IsRequired().HasMaxLength(11);
+              this.Property(t => t.EntryDataType).HasColumnName("EntryDataType").HasMaxLength(50);
               this.HasRequired(t => t.PreviousDocumentItem).WithMany(t =>(ICollection<PreviousItemsEx>) t.PreviousItemsExes).HasForeignKey(d => d.PreviousDocumentItemId);
               this.HasRequired(t => t.AsycudaDocumentItem).WithMany(t =>(ICollection<PreviousItemsEx>) t.PreviousItemsExes1).HasForeignKey(d => d.AsycudaDocumentItemId);
              // Tracking Properties

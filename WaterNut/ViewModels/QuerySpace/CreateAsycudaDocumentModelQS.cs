@@ -217,8 +217,8 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 	        }
 	    }
 
-        public double _TotalWeight;
-		public double TotalWeight
+        public decimal _TotalWeight;
+		public decimal TotalWeight
 		{
 			get
 			{ return _TotalWeight; }

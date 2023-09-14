@@ -84,6 +84,17 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.PreviousItemsEx' does not
             
             
             <PropertyRef Name="PreviousItem_Id" />
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
           </Key>
           <Property Name="Packages_number" Type="nvarchar" MaxLength="20" />
           <Property Name="Previous_Packages_number" Type="nvarchar" MaxLength="20" />
@@ -123,6 +134,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.PreviousItemsEx' does not
           <Property Name="DutyLiablity" Type="float" Nullable="false" />
           <Property Name="Customs_ProcedureId" Type="int" Nullable="false" />
           <Property Name="CustomsProcedure" Type="nvarchar" MaxLength="11" Nullable="false" />
+          <Property Name="EntryDataType" Type="nvarchar" MaxLength="50" />
         </EntityType>
         <EntityContainer Name="WaterNutDBModelStoreContainer">
           <EntitySet Name="PreviousDocument" EntityType="Self.PreviousDocument" store:Type="Views" store:Schema="dbo">
@@ -221,7 +233,8 @@ FROM [dbo].[PreviousDocumentItem] AS [PreviousDocumentItem]</DefiningQuery>
 [PreviousItemsEx].[TotalDutyLiablity] AS [TotalDutyLiablity], 
 [PreviousItemsEx].[DutyLiablity] AS [DutyLiablity], 
 [PreviousItemsEx].[Customs_ProcedureId] AS [Customs_ProcedureId], 
-[PreviousItemsEx].[CustomsProcedure] AS [CustomsProcedure]
+[PreviousItemsEx].[CustomsProcedure] AS [CustomsProcedure], 
+[PreviousItemsEx].[EntryDataType] AS [EntryDataType]
 FROM [dbo].[PreviousItemsEx] AS [PreviousItemsEx]</DefiningQuery>
           </EntitySet>
         </EntityContainer>
@@ -364,6 +377,7 @@ FROM [dbo].[PreviousItemsEx] AS [PreviousItemsEx]</DefiningQuery>
           <Property Name="Prev_reg_year" Type="Int32" />
           <Property Name="Customs_ProcedureId" Type="Int32" Nullable="false" />
           <Property Name="CustomsProcedure" Type="String" Nullable="false" MaxLength="11" FixedLength="false" Unicode="true" />
+          <Property Name="EntryDataType" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
         </EntityType>
         <Association Name="PreviousDocumentItemPreviousItemsEx">
           <End Type="WaterNutDBModel.PreviousDocumentItem" Role="PreviousDocumentItem" Multiplicity="1" />
@@ -458,6 +472,7 @@ FROM [dbo].[PreviousItemsEx] AS [PreviousItemsEx]</DefiningQuery>
           <EntitySetMapping Name="PreviousItemsExes">
             <EntityTypeMapping TypeName="WaterNutDBModel.PreviousItemsEx">
               <MappingFragment StoreEntitySet="PreviousItemsEx">
+                <ScalarProperty Name="EntryDataType" ColumnName="EntryDataType" />
                 <ScalarProperty Name="CustomsProcedure" ColumnName="CustomsProcedure" />
                 <ScalarProperty Name="Customs_ProcedureId" ColumnName="Customs_ProcedureId" />
                 <ScalarProperty Name="Prev_reg_year" ColumnName="Prev_reg_year" />

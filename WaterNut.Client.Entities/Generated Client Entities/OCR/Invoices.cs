@@ -230,60 +230,6 @@ public bool IsActive
             }
         }
 
-        ObservableCollection<OCRFileTypes> _FileTypes = null;
-        public  ObservableCollection<OCRFileTypes> FileTypes
-		{
-            
-		    get 
-				{ 
-					if(_FileTypes != null) return _FileTypes;
-					//if (this.invoices.FileTypes == null) Debugger.Break();
-					if(this.invoices.FileTypes != null)
-					{
-						_FileTypes = new ObservableCollection<OCRFileTypes>(this.invoices.FileTypes.Select(x => new OCRFileTypes(x)));
-					}
-					
-						_FileTypes.CollectionChanged += FileTypes_CollectionChanged; 
-					
-					return _FileTypes; 
-				}
-			set
-			{
-			    if (Equals(value, _FileTypes)) return;
-				if (value != null)
-					this.invoices.FileTypes = new ChangeTrackingCollection<DTO.OCRFileTypes>(value.Select(x => x.DTO).ToList());
-                _FileTypes = value;
-				if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
-				if (_FileTypes != null)
-				_FileTypes.CollectionChanged += FileTypes_CollectionChanged;               
-				NotifyPropertyChanged("FileTypes");
-			}
-		}
-        
-        void FileTypes_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
-        {
-            switch (e.Action)
-            {
-                case NotifyCollectionChangedAction.Add:
-                    foreach (OCRFileTypes itm in e.NewItems)
-                    {
-                        if (itm != null)
-                        invoices.FileTypes.Add(itm.DTO);
-                    }
-                    if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
-                    break;
-                case NotifyCollectionChangedAction.Remove:
-                    foreach (OCRFileTypes itm in e.OldItems)
-                    {
-                        if (itm != null)
-                        invoices.FileTypes.Remove(itm.DTO);
-                    }
-					if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
-                    break;
-                
-            }
-        }
-
         ObservableCollection<InvoiceIdentificatonRegEx> _InvoiceIdentificatonRegEx = null;
         public  ObservableCollection<InvoiceIdentificatonRegEx> InvoiceIdentificatonRegEx
 		{

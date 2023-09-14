@@ -389,8 +389,8 @@
           <Key>
             <PropertyRef Name="Valuation_item_Id" />
           </Key>
-          <Property Name="Gross_weight_itm" Type="float" Nullable="false" />
-          <Property Name="Net_weight_itm" Type="float" Nullable="false" />
+          <Property Name="Gross_weight_itm" Type="decimal" Precision="18" Scale="2" Nullable="false" />
+          <Property Name="Net_weight_itm" Type="decimal" Precision="18" Scale="2" Nullable="false" />
           <Property Name="Valuation_item_Id" Type="int" Nullable="false" />
         </EntityType>
         <!--Errors Found During Generation:
@@ -528,7 +528,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AdjustmentShort-IM9Data' 
           <Property Name="InventoryItemId" Type="int" Nullable="false" />
           <Property Name="xBond_Item_Id" Type="int" Nullable="false" />
           <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
-          <Property Name="Net_weight_itm" Type="float" Nullable="false" />
+          <Property Name="Net_weight_itm" Type="decimal" Precision="18" Scale="2" Nullable="false" />
           <Property Name="SourceFile" Type="nvarchar(max)" />
         </EntityType>
         <!--Errors Found During Generation:
@@ -606,7 +606,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AsycudaDocument' does not
           <Property Name="ImportComplete" Type="bit" />
           <Property Name="Cancelled" Type="bit" />
           <Property Name="TotalCIF" Type="float" />
-          <Property Name="TotalGrossWeight" Type="float" />
+          <Property Name="TotalGrossWeight" Type="decimal" Precision="38" Scale="2" />
           <Property Name="AssessmentDate" Type="datetime2" Precision="7" />
           <Property Name="TotalFreight" Type="float" />
           <Property Name="ExpiryDate" Type="datetime2" Precision="7" />
@@ -852,8 +852,8 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.EX9AsycudaSalesAllocation
           <Property Name="SANumber" Type="int" Nullable="false" />
           <Property Name="Commercial_Description" Type="varchar" MaxLength="255" />
           <Property Name="Country_of_origin_code" Type="varchar" MaxLength="50" />
-          <Property Name="Gross_weight_itm" Type="float" Nullable="false" />
-          <Property Name="Net_weight_itm" Type="float" Nullable="false" />
+          <Property Name="Gross_weight_itm" Type="decimal" Precision="18" Scale="2" Nullable="false" />
+          <Property Name="Net_weight_itm" Type="decimal" Precision="18" Scale="2" Nullable="false" />
           <Property Name="Customs_clearance_office_code" Type="nvarchar" MaxLength="20" />
           <Property Name="pItemCost" Type="float" />
           <Property Name="TariffCode" Type="nvarchar" MaxLength="50" />
@@ -2765,7 +2765,7 @@ FROM [dbo].[XSales-UnAllocated] AS [XSales-UnAllocated]</DefiningQuery>
           <Property Name="ImportComplete" Type="Boolean" />
           <Property Name="Cancelled" Type="Boolean" />
           <Property Name="TotalCIF" Type="Double" />
-          <Property Name="TotalGrossWeight" Type="Double" />
+          <Property Name="TotalGrossWeight" Type="Decimal" />
           <Property Name="AssessmentDate" Type="DateTime" Precision="7" />
           <Property Name="TotalFreight" Type="Double" />
           <Property Name="ExpiryDate" Type="DateTime" Precision="7" />
@@ -3113,8 +3113,8 @@ FROM [dbo].[XSales-UnAllocated] AS [XSales-UnAllocated]</DefiningQuery>
           <Key>
             <PropertyRef Name="Valuation_item_Id" />
           </Key>
-          <Property Name="Gross_weight_itm" Type="Double" Nullable="false" />
-          <Property Name="Net_weight_itm" Type="Double" Nullable="false" />
+          <Property Name="Gross_weight_itm" Type="Decimal" Nullable="false" />
+          <Property Name="Net_weight_itm" Type="Decimal" Nullable="false" />
           <Property Name="Valuation_item_Id" Type="Int32" Nullable="false" />
           <NavigationProperty Name="xcuda_Valuation_item" Relationship="WaterNutDBModel.FK_Valuation_item_Weight_itm" FromRole="xcuda_Weight_itm" ToRole="xcuda_Valuation_item" />
         </EntityType>
@@ -3213,8 +3213,8 @@ FROM [dbo].[XSales-UnAllocated] AS [XSales-UnAllocated]</DefiningQuery>
           <Property Name="SANumber" Type="Int32" Nullable="false" />
           <Property Name="Commercial_Description" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
           <Property Name="Country_of_origin_code" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="Gross_weight_itm" Type="Double" Nullable="false" />
-          <Property Name="Net_weight_itm" Type="Double" Nullable="false" />
+          <Property Name="Gross_weight_itm" Type="Decimal" Nullable="false" />
+          <Property Name="Net_weight_itm" Type="Decimal" Nullable="false" Precision="2" />
           <Property Name="pTariffCode" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Name="pItemNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="pItemCost" Type="Double" />
@@ -4112,7 +4112,7 @@ FROM [dbo].[XSales-UnAllocated] AS [XSales-UnAllocated]</DefiningQuery>
           <NavigationProperty Name="EntryDataDetails" Relationship="WaterNutDBModel.EntryDataDetailsAdjustmentShort_IM9Data" FromRole="AdjustmentShort_IM9Data" ToRole="EntryDataDetails" />
           <Property Name="xBond_Item_Id" Type="Int32" Nullable="false" />
           <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
-          <Property Name="Net_weight_itm" Type="Double" Nullable="false" />
+          <Property Name="Net_weight_itm" Type="Decimal" Nullable="false" />
           <Property Name="SourceFile" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
         </EntityType>
         <Association Name="xcuda_ItemAdjustmentShort_IM9Data">

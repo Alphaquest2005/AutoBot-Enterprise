@@ -388,7 +388,7 @@ public Nullable<int> EntryPackages
 
        
        [NumberValidationAttribute]
-public Nullable<double> TotalWeight
+public Nullable<decimal> TotalWeight
 		{ 
 		    get { return this.todo_podocsettoexport.TotalWeight; }
 			set

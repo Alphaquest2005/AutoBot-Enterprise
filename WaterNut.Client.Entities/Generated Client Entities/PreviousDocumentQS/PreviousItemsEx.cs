@@ -642,6 +642,23 @@ public string CustomsProcedure
 		}
      
 
+       
+       
+                
+                [MaxLength(50, ErrorMessage = "EntryDataType has a max length of 50 letters ")]
+public string EntryDataType
+		{ 
+		    get { return this.previousitemsex.EntryDataType; }
+			set
+			{
+			    if (value == this.previousitemsex.EntryDataType) return;
+				this.previousitemsex.EntryDataType = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("EntryDataType");
+			}
+		}
+     
+
        private PreviousDocumentItem _PreviousDocumentItem;
         public  PreviousDocumentItem PreviousDocumentItem
 		{

@@ -405,7 +405,7 @@ public string Status
 
        
        [NumberValidationAttribute]
-public Nullable<double> TotalWeight
+public Nullable<decimal> TotalWeight
 		{ 
 		    get { return this.todo_podocsettoassesserrors.TotalWeight; }
 			set

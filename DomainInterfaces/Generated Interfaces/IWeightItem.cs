@@ -16,8 +16,8 @@ namespace WaterNut.Interfaces
 
 		public partial interface IWeightItem //CoreEntities|AsycudaDocumentItem
 		{
-		Double Gross_weight {get;set;}
-				Double Net_weight {get;set;}
+		Decimal Gross_weight {get;set;}
+				Decimal Net_weight {get;set;}
 		
 		
 		

@@ -669,7 +669,7 @@
           </Key>
           <Property Name="Number_of_packages" Type="float" Nullable="false" />
           <Property Name="Kind_of_packages_code" Type="nvarchar" MaxLength="20" />
-          <Property Name="Kind_of_packages_name" Type="nvarchar" MaxLength="20" />
+          <Property Name="Kind_of_packages_name" Type="nvarchar" MaxLength="30" />
           <Property Name="Packages_Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Item_Id" Type="int" />
           <Property Name="Marks1_of_packages" Type="nvarchar" MaxLength="40" />
@@ -937,8 +937,8 @@
           <Key>
             <PropertyRef Name="Valuation_item_Id" />
           </Key>
-          <Property Name="Gross_weight_itm" Type="float" Nullable="false" />
-          <Property Name="Net_weight_itm" Type="float" Nullable="false" />
+          <Property Name="Gross_weight_itm" Type="decimal" Precision="18" Scale="2" Nullable="false" />
+          <Property Name="Net_weight_itm" Type="decimal" Precision="18" Scale="2" Nullable="false" />
           <Property Name="Valuation_item_Id" Type="int" Nullable="false" />
         </EntityType>
         <!--Errors Found During Generation:
@@ -3247,8 +3247,8 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does no
           <Key>
             <PropertyRef Name="Valuation_item_Id" />
           </Key>
-          <Property Type="Single" Name="Gross_weight_itm" Nullable="false" />
-          <Property Type="Single" Name="Net_weight_itm" Nullable="false" />
+          <Property Type="Decimal" Name="Gross_weight_itm" Nullable="false" Precision="18" Scale="2" />
+          <Property Type="Decimal" Name="Net_weight_itm" Nullable="false" Precision="18" Scale="2" />
           <Property Type="Int32" Name="Valuation_item_Id" Nullable="false" />
           <NavigationProperty Name="xcuda_Valuation_item" Relationship="WaterNutDB.DataLayer.FK_Valuation_item_Weight_itm" FromRole="xcuda_Weight_itm" ToRole="xcuda_Valuation_item" />
         </EntityType>
@@ -4089,7 +4089,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does no
           </Key>
           <Property Name="Number_of_packages" Type="Double" Nullable="false" />
           <Property Name="Kind_of_packages_code" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
-          <Property Name="Kind_of_packages_name" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="Kind_of_packages_name" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
           <Property Name="Packages_Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Item_Id" Type="Int32" />
           <Property Name="Marks1_of_packages" Type="String" MaxLength="40" FixedLength="false" Unicode="true" />

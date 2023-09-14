@@ -303,8 +303,8 @@
           <Key>
             <PropertyRef Name="Valuation_item_Id" />
           </Key>
-          <Property Name="Gross_weight_itm" Type="float" Nullable="false" />
-          <Property Name="Net_weight_itm" Type="float" Nullable="false" />
+          <Property Name="Gross_weight_itm" Type="decimal" Precision="18" Scale="2" Nullable="false" />
+          <Property Name="Net_weight_itm" Type="decimal" Precision="18" Scale="2" Nullable="false" />
           <Property Name="Valuation_item_Id" Type="int" Nullable="false" />
         </EntityType>
         <!--Errors Found During Generation:
@@ -1360,8 +1360,8 @@ FROM [dbo].[PreviousItemsEx] AS [PreviousItemsEx]</DefiningQuery>
           <Key>
             <PropertyRef Name="Valuation_item_Id" />
           </Key>
-          <Property Name="Gross_weight_itm" Type="Double" Nullable="false"><a:ImplementsProperty xmlns:a="http://schemas.tempuri.com/ImplementsProperty">IWeightItem.Gross_weight</a:ImplementsProperty></Property>
-          <Property Name="Net_weight_itm" Type="Double" Nullable="false"><a:ImplementsProperty xmlns:a="http://schemas.tempuri.com/ImplementsProperty">IWeightItem.Net_weight</a:ImplementsProperty></Property>
+          <Property Name="Gross_weight_itm" Type="Decimal" Nullable="false"><a:ImplementsProperty xmlns:a="http://schemas.tempuri.com/ImplementsProperty">IWeightItem.Gross_weight</a:ImplementsProperty></Property>
+          <Property Name="Net_weight_itm" Type="Decimal" Nullable="false"><a:ImplementsProperty xmlns:a="http://schemas.tempuri.com/ImplementsProperty">IWeightItem.Net_weight</a:ImplementsProperty></Property>
           <Property Name="Valuation_item_Id" Type="Int32" Nullable="false" />
           <NavigationProperty Name="xcuda_Valuation_item" Relationship="WaterNutDBModel.FK_Valuation_item_Weight_itm" FromRole="xcuda_Weight_itm" ToRole="xcuda_Valuation_item" /><a:DomainInterfaceProperty xmlns:a="http://schemas.tempuri.com/DomainInterfaceProperty"></a:DomainInterfaceProperty>
         </EntityType>

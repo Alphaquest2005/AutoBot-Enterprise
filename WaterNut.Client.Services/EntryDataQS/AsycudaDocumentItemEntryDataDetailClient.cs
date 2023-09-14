@@ -112,7 +112,12 @@ namespace EntryDataQS.Client.Services
         {
             return await Channel.LoadRangeNav(startIndex,count,exp, navExp, includeLst).ConfigureAwait(false);
         }
-        public decimal SumField(string whereExp, string sumExp)
+		public async Task<IEnumerable<AsycudaDocumentItemEntryDataDetail>> GetAsycudaDocumentItemEntryDataDetailById(string Id, List<string> includesLst = null)
+        {
+            return  await Channel.GetAsycudaDocumentItemEntryDataDetailById(Id, includesLst).ConfigureAwait(false);
+        }
+			 
+          public decimal SumField(string whereExp, string sumExp)
 		{
 			return Channel.SumField(whereExp,sumExp);
 		}

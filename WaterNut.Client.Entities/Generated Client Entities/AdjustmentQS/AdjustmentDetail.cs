@@ -662,6 +662,23 @@ public string Vendor
 		}
      
 
+       
+       
+                
+                
+public string SourceFile
+		{ 
+		    get { return this.adjustmentdetail.SourceFile; }
+			set
+			{
+			    if (value == this.adjustmentdetail.SourceFile) return;
+				this.adjustmentdetail.SourceFile = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("SourceFile");
+			}
+		}
+     
+
        private AdjustmentEx _AdjustmentEx;
         public  AdjustmentEx AdjustmentEx
 		{

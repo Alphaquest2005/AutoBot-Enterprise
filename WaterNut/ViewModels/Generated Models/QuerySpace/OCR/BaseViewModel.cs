@@ -67,7 +67,6 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
                         RegisterToReceiveMessages<string>(MessageToken.CurrentOCR_FieldMappingsIDChanged, OnCurrentOCR_FieldMappingsIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentOCR_FieldValueIDChanged, OnCurrentOCR_FieldValueIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentOCR_PartLineFieldsIDChanged, OnCurrentOCR_PartLineFieldsIDChanged);
-                        RegisterToReceiveMessages<string>(MessageToken.CurrentOCRFileTypesIDChanged, OnCurrentOCRFileTypesIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentPartsIDChanged, OnCurrentPartsIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentPartTypesIDChanged, OnCurrentPartTypesIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentRecuringPartIDChanged, OnCurrentRecuringPartIDChanged);
@@ -90,7 +89,6 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
                         RegisterToReceiveMessages<OCR_FieldMappings>(MessageToken.CurrentOCR_FieldMappingsChanged, OnCurrentOCR_FieldMappingsChanged);
                         RegisterToReceiveMessages<OCR_FieldValue>(MessageToken.CurrentOCR_FieldValueChanged, OnCurrentOCR_FieldValueChanged);
                         RegisterToReceiveMessages<OCR_PartLineFields>(MessageToken.CurrentOCR_PartLineFieldsChanged, OnCurrentOCR_PartLineFieldsChanged);
-                        RegisterToReceiveMessages<OCRFileTypes>(MessageToken.CurrentOCRFileTypesChanged, OnCurrentOCRFileTypesChanged);
                         RegisterToReceiveMessages<Parts>(MessageToken.CurrentPartsChanged, OnCurrentPartsChanged);
                         RegisterToReceiveMessages<PartTypes>(MessageToken.CurrentPartTypesChanged, OnCurrentPartTypesChanged);
                         RegisterToReceiveMessages<RecuringPart>(MessageToken.CurrentRecuringPartChanged, OnCurrentRecuringPartChanged);
@@ -493,15 +491,7 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
                                 }
                             }
                         }
-                        internal async void OnCurrentOCRFileTypesIDChanged(object sender, NotificationEventArgs<string> e)
-                        {
-                            using (OCRFileTypesRepository ctx = new OCRFileTypesRepository())
-                            {
-                                CurrentOCRFileTypes = await ctx.GetOCRFileTypes(e.Data).ConfigureAwait(continueOnCapturedContext: false);
-                            }
-                            NotifyPropertyChanged(m => CurrentOCRFileTypes);
-                        }
-
+                 
                         private  string _currentOCRFileTypesID = "";
                         public string CurrentOCRFileTypesID
                         {
@@ -1040,7 +1030,7 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
                     // all current navigation properties = null
                  CurrentParts = null;
                  CurrentInvoiceRegEx = null;
-                 CurrentOCRFileTypes = null;
+                
                  CurrentInvoiceIdentificatonRegEx = null;
    
                 }
@@ -1373,52 +1363,6 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
 
                      
        
-
-        internal void OnCurrentOCRFileTypesChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<OCRFileTypes> e)
-        {
-            //CurrentOCRFileTypes = e.Data;
-            NotifyPropertyChanged(m => this.CurrentOCRFileTypes);
-        }
-
-        private  OCRFileTypes _currentOCRFileTypes;
-        public OCRFileTypes CurrentOCRFileTypes
-        {
-            get
-            {
-                return _currentOCRFileTypes;
-            }
-            set
-            {
-                if (_currentOCRFileTypes != value)
-                {
-                    _currentOCRFileTypes = value;
-                    BeginSendMessage(MessageToken.CurrentOCRFileTypesChanged,
-                                                     new NotificationEventArgs<OCRFileTypes>(MessageToken.CurrentOCRFileTypesChanged, _currentOCRFileTypes)); 
-                    NotifyPropertyChanged(x => this.CurrentOCRFileTypes);    
-                    // all current navigation properties = null
-   
-                }
-            }
-        }
-
-		VirtualListItem<OCRFileTypes> _vcurrentOCRFileTypes;
-        public VirtualListItem<OCRFileTypes> VCurrentOCRFileTypes
-        {
-            get
-            {
-                return _vcurrentOCRFileTypes;
-            }
-            set
-            {
-                if (_vcurrentOCRFileTypes != value)
-                {
-                    _vcurrentOCRFileTypes = value;
-					if(_vcurrentOCRFileTypes != null) CurrentOCRFileTypes = value.Data;
-                    NotifyPropertyChanged(x => this.VCurrentOCRFileTypes);                    
-                }
-            }
-        }
-
 
 
                      

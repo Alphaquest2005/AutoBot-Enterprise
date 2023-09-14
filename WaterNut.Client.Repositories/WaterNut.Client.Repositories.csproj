@@ -301,7 +301,6 @@
     <Compile Include="Generated Repositories\OCR\InvoiceRegExRepository.cs" />
     <Compile Include="Generated Repositories\OCR\InvoicesRepository.cs" />
     <Compile Include="Generated Repositories\OCR\LinesRepository.cs" />
-    <Compile Include="Generated Repositories\OCR\OCRFileTypesRepository.cs" />
     <Compile Include="Generated Repositories\OCR\OCR_FailedFieldsRepository.cs" />
     <Compile Include="Generated Repositories\OCR\OCR_FailedLinesRepository.cs" />
     <Compile Include="Generated Repositories\OCR\OCR_FieldMappingsRepository.cs" />

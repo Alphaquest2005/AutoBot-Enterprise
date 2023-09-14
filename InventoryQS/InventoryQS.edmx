@@ -90,8 +90,8 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.EntryDataDetailsEx' does 
           <Property Name="InvoiceQty" Type="float" />
           <Property Name="ReceivedQty" Type="float" />
           <Property Name="Status" Type="nvarchar" MaxLength="50" />
-          <Property Name="PreviousInvoiceNumber" Type="nvarchar" MaxLength="50" />
-          <Property Name="PreviousCNumber" Type="nvarchar" MaxLength="50" />
+          <Property Name="PreviousInvoiceNumber" Type="nvarchar" MaxLength="255" />
+          <Property Name="PreviousCNumber" Type="nvarchar" MaxLength="255" />
           <Property Name="PreviousCLineNumber" Type="int" />
           <Property Name="Comment" Type="nvarchar" MaxLength="255" />
           <Property Name="EffectiveDate" Type="datetime2" Precision="7" />
@@ -377,8 +377,8 @@ FROM [dbo].[InventoryItemsEx] AS [InventoryItemsEx]</DefiningQuery>
           <Property Name="InvoiceQty" Type="Double" />
           <Property Name="ReceivedQty" Type="Double" />
           <Property Name="Status" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="PreviousInvoiceNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="PreviousCNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="PreviousInvoiceNumber" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="PreviousCNumber" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="Comment" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="EffectiveDate" Type="DateTime" Precision="7" />
           <Property Name="IsReconciled" Type="Boolean" />
@@ -386,7 +386,7 @@ FROM [dbo].[InventoryItemsEx] AS [InventoryItemsEx]</DefiningQuery>
           <Property Name="LastCost" Type="Double" />
           <Property Name="TaxAmount" Type="Double" />
           <Property Name="EntryData_Id" Type="Int32" Nullable="false" />
-          <Property Name="EmailId" Type="String" />
+          <Property Name="EmailId" Type="String" MaxLength="255" Unicode="true" FixedLength="false" />
           <Property Name="FileTypeId" Type="Int32" />
           <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="FileLineNumber" Type="Int32" />

@@ -71,8 +71,6 @@ namespace OCR.Business.Entities
      
         public DbSet<FieldFormatRegEx> OCR_FieldFormatRegEx { get; set; }
      
-        public DbSet<OCRFileTypes> OCRInvoicesFileTypes { get; set; }
-     
         public DbSet<InvoiceIdentificatonRegEx> InvoiceIdentificatonRegEx { get; set; }
      
         public DbSet<ImportErrors> ImportErrors { get; set; }
@@ -114,8 +112,6 @@ namespace OCR.Business.Entities
             modelBuilder.Configurations.Add(new InvoiceRegExMap());
          
             modelBuilder.Configurations.Add(new FieldFormatRegExMap());
-         
-            modelBuilder.Configurations.Add(new OCRFileTypesMap());
          
             modelBuilder.Configurations.Add(new InvoiceIdentificatonRegExMap());
          

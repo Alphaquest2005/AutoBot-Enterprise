@@ -178,6 +178,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AdjustmentDetails' does n
           <Property Name="InventoryItemId" Type="int" Nullable="false" />
           <Property Name="TaxAmount" Type="float" />
           <Property Name="Vendor" Type="nvarchar" MaxLength="50" />
+          <Property Name="SourceFile" Type="nvarchar(max)" />
         </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AdjustmentEx' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
@@ -503,6 +504,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-AdjustmentOversToXML
           <Property Name="EmailDate" Type="datetime" />
           <Property Name="AlreadyExecuted" Type="int" Nullable="false" />
           <Property Name="Vendor" Type="nvarchar" MaxLength="50" />
+          <Property Name="SourceFile" Type="nvarchar(max)" />
         </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-PreDiscrepancyErrors' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
@@ -658,7 +660,8 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-PreDiscrepancyErrors
 [AdjustmentDetails].[EmailDate] AS [EmailDate], 
 [AdjustmentDetails].[InventoryItemId] AS [InventoryItemId], 
 [AdjustmentDetails].[TaxAmount] AS [TaxAmount], 
-[AdjustmentDetails].[Vendor] AS [Vendor]
+[AdjustmentDetails].[Vendor] AS [Vendor], 
+[AdjustmentDetails].[SourceFile] AS [SourceFile]
 FROM [dbo].[AdjustmentDetails] AS [AdjustmentDetails]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="AdjustmentEx" EntityType="Self.AdjustmentEx" store:Type="Views" store:Schema="dbo">
@@ -901,7 +904,8 @@ FROM [dbo].[InventoryItemsEx] AS [InventoryItemsEx]</DefiningQuery>
 [TODO-AdjustmentOversToXML].[Subject] AS [Subject], 
 [TODO-AdjustmentOversToXML].[EmailDate] AS [EmailDate], 
 [TODO-AdjustmentOversToXML].[AlreadyExecuted] AS [AlreadyExecuted], 
-[TODO-AdjustmentOversToXML].[Vendor] AS [Vendor]
+[TODO-AdjustmentOversToXML].[Vendor] AS [Vendor], 
+[TODO-AdjustmentOversToXML].[SourceFile] AS [SourceFile]
 FROM [dbo].[TODO-AdjustmentOversToXML] AS [TODO-AdjustmentOversToXML]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="TODO-PreDiscrepancyErrors" EntityType="Self.TODO-PreDiscrepancyErrors" store:Type="Views" store:Schema="dbo">
@@ -1488,6 +1492,7 @@ FROM [dbo].[TODO-PreDiscrepancyErrors] AS [TODO-PreDiscrepancyErrors]</DefiningQ
           <Property Name="Status" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="PreviousCLineNumber" Type="Int32" />
           <Property Name="Vendor" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="SourceFile" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
         </EntityType>
         <Association Name="AdjustmentExAdjustmentDetail">
           <End Type="Model.AdjustmentEx" Role="AdjustmentEx" Multiplicity="1" />
@@ -1815,6 +1820,7 @@ FROM [dbo].[TODO-PreDiscrepancyErrors] AS [TODO-PreDiscrepancyErrors]</DefiningQ
           <Property Name="EmailDate" Type="DateTime" Precision="3" />
           <Property Name="AlreadyExecuted" Type="Int32" Nullable="false" />
           <Property Name="Vendor" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="SourceFile" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
         </EntityType>
         <Association Name="AdjustmentExEntryDataDetail">
           <End Type="Model.AdjustmentEx" Role="AdjustmentEx" Multiplicity="1" />
@@ -2103,6 +2109,7 @@ FROM [dbo].[TODO-PreDiscrepancyErrors] AS [TODO-PreDiscrepancyErrors]</DefiningQ
           <EntitySetMapping Name="AdjustmentDetails">
             <EntityTypeMapping TypeName="Model.AdjustmentDetail">
               <MappingFragment StoreEntitySet="AdjustmentDetails">
+                <ScalarProperty Name="SourceFile" ColumnName="SourceFile" />
                 <ScalarProperty Name="Vendor" ColumnName="Vendor" />
                 <ScalarProperty Name="PreviousCLineNumber" ColumnName="PreviousCLineNumber" />
                 <ScalarProperty Name="Status" ColumnName="Status" />
@@ -2268,6 +2275,7 @@ FROM [dbo].[TODO-PreDiscrepancyErrors] AS [TODO-PreDiscrepancyErrors]</DefiningQ
           <EntitySetMapping Name="TODO_AdjustmentOversToXML">
             <EntityTypeMapping TypeName="Model.TODO_AdjustmentOversToXML">
               <MappingFragment StoreEntitySet="TODO-AdjustmentOversToXML">
+                <ScalarProperty Name="SourceFile" ColumnName="SourceFile" />
                 <ScalarProperty Name="Vendor" ColumnName="Vendor" />
                 <ScalarProperty Name="AlreadyExecuted" ColumnName="AlreadyExecuted" />
                 <ScalarProperty Name="EmailDate" ColumnName="EmailDate" />

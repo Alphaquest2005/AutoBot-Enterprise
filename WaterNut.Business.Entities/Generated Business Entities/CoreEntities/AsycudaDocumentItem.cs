@@ -179,7 +179,7 @@ namespace CoreEntities.Business.Entities
         }
         string _commercial_description;
         [DataMember]
-        public double Gross_weight_itm 
+        public decimal Gross_weight_itm 
         {
             get
             {
@@ -192,9 +192,9 @@ namespace CoreEntities.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        double _gross_weight_itm;
+        decimal _gross_weight_itm;
         [DataMember]
-        public double Net_weight_itm 
+        public decimal Net_weight_itm 
         {
             get
             {
@@ -207,7 +207,7 @@ namespace CoreEntities.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        double _net_weight_itm;
+        decimal _net_weight_itm;
         [DataMember]
         public Nullable<double> Item_price 
         {

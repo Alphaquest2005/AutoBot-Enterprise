@@ -19,11 +19,11 @@ namespace EntryDataQS.Client.DTO
         {
             get
             {
-               return this.PackageCode.ToString(); // this.PackageCode == null?"0":                        
+               return this.PackageDescription.ToString(); // this.PackageDescription == null?"0":                        
             }
             set
             {
-                this.PackageCode = Convert.ToString(value);
+                this.PackageDescription = Convert.ToString(value);
             }
         }
 

@@ -12,7 +12,7 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
         public string pCNumber { get; set; }
         public DateTime pRegistrationDate { get; set; }
         public string Customs_clearance_office_code { get; set; }
-        public double Net_weight_itm { get; set; }
+        public decimal Net_weight_itm { get; set; }
         public double pQtyAllocated { get; set; }
         public double SalesFactor { get; set; }
     }

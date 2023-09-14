@@ -1532,7 +1532,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     public Nullable<double> TotalCIF { get; set; } 
                     
  
-                    public Nullable<double> TotalGrossWeight { get; set; } 
+                    public decimal? TotalGrossWeight { get; set; } 
                     
  
                     public Nullable<System.DateTime> AssessmentDate { get; set; } 

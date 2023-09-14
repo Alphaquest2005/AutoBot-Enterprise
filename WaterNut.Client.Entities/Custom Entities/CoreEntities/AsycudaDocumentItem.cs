@@ -30,7 +30,7 @@ namespace CoreEntities.Client.Entities
                }
            }
 
-           public double Weight
+           public decimal Weight
            {
                get { return Gross_weight; }
                set

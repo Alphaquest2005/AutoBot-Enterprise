@@ -56,10 +56,10 @@
         </EntityType>
         <EntityType Name="PackageTypes">
           <Key>
-            <PropertyRef Name="PackageType" />
+            <PropertyRef Name="PackageDescription" />
           </Key>
           <Property Name="PackageType" Type="nvarchar" MaxLength="4" Nullable="false" />
-          <Property Name="PackageDescription" Type="nvarchar" MaxLength="50" />
+          <Property Name="PackageDescription" Type="nvarchar" MaxLength="50" Nullable="false" />
         </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AsycudaDocumentEntryDataLine' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
@@ -83,7 +83,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AsycudaDocumentEntryDataL
           <Property Name="ItemDescription" Type="nvarchar" MaxLength="255" Nullable="false" />
           <Property Name="Quantity" Type="float" Nullable="false" />
           <Property Name="Cost" Type="float" Nullable="false" />
-          <Property Name="PreviousInvoiceNumber" Type="nvarchar" MaxLength="50" />
+          <Property Name="PreviousInvoiceNumber" Type="nvarchar" MaxLength="255" />
           <Property Name="EntryDataDetailsKey" Type="nvarchar" MaxLength="4000" />
           <Property Name="LineNumber" Type="int" />
           <Property Name="Comment" Type="nvarchar" MaxLength="255" />
@@ -100,9 +100,12 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AsycudaDocumentItemEntryD
             <PropertyRef Name="EntryData_Id" />
             <PropertyRef Name="Item_Id" />
             
+            
             <PropertyRef Name="ImportComplete" />
             <PropertyRef Name="Asycuda_id" />
+            <PropertyRef Name="LineNumber" />
           </Key>
+          <Property Name="Id" Type="bigint" />
           <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
           <Property Name="AsycudaDocumentSetId" Type="int" Nullable="false" />
           <Property Name="EntryDataDetailsId" Type="int" Nullable="false" />
@@ -111,11 +114,14 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AsycudaDocumentItemEntryD
           <Property Name="ItemNumber" Type="nvarchar" MaxLength="20" Nullable="false" />
           <Property Name="key" Type="nvarchar" MaxLength="101" />
           <Property Name="DocumentType" Type="nvarchar" MaxLength="40" />
-          <Property Name="CustomsProcedure" Type="nvarchar" MaxLength="11" />
+          <Property Name="CustomsProcedure" Type="nvarchar" MaxLength="11" Nullable="false" />
           <Property Name="Quantity" Type="float" />
           <Property Name="ImportComplete" Type="bit" Nullable="false" />
           <Property Name="Asycuda_id" Type="int" Nullable="false" />
           <Property Name="EntryDataType" Type="nvarchar" MaxLength="50" />
+          <Property Name="CNumber" Type="nvarchar" MaxLength="20" />
+          <Property Name="LineNumber" Type="int" Nullable="false" />
+          <Property Name="CustomsOperation" Type="nvarchar" MaxLength="50" />
         </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AsycudaDocumentSetEntryDataDetails' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
@@ -168,8 +174,8 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.EntryDataDetailsEx' does 
           <Property Name="InvoiceQty" Type="float" />
           <Property Name="ReceivedQty" Type="float" />
           <Property Name="Status" Type="nvarchar" MaxLength="50" />
-          <Property Name="PreviousInvoiceNumber" Type="nvarchar" MaxLength="50" />
-          <Property Name="PreviousCNumber" Type="nvarchar" MaxLength="50" />
+          <Property Name="PreviousInvoiceNumber" Type="nvarchar" MaxLength="255" />
+          <Property Name="PreviousCNumber" Type="nvarchar" MaxLength="255" />
           <Property Name="PreviousCLineNumber" Type="int" />
           <Property Name="Comment" Type="nvarchar" MaxLength="255" />
           <Property Name="EffectiveDate" Type="datetime2" Precision="7" />
@@ -300,6 +306,7 @@ FROM [dbo].[AsycudaDocumentEntryDataLine] AS [AsycudaDocumentEntryDataLine]</Def
           </EntitySet>
           <EntitySet Name="AsycudaDocumentItemEntryDataDetails" EntityType="Self.AsycudaDocumentItemEntryDataDetails" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
+[AsycudaDocumentItemEntryDataDetails].[Id] AS [Id], 
 [AsycudaDocumentItemEntryDataDetails].[ApplicationSettingsId] AS [ApplicationSettingsId], 
 [AsycudaDocumentItemEntryDataDetails].[AsycudaDocumentSetId] AS [AsycudaDocumentSetId], 
 [AsycudaDocumentItemEntryDataDetails].[EntryDataDetailsId] AS [EntryDataDetailsId], 
@@ -312,7 +319,10 @@ FROM [dbo].[AsycudaDocumentEntryDataLine] AS [AsycudaDocumentEntryDataLine]</Def
 [AsycudaDocumentItemEntryDataDetails].[Quantity] AS [Quantity], 
 [AsycudaDocumentItemEntryDataDetails].[ImportComplete] AS [ImportComplete], 
 [AsycudaDocumentItemEntryDataDetails].[Asycuda_id] AS [Asycuda_id], 
-[AsycudaDocumentItemEntryDataDetails].[EntryDataType] AS [EntryDataType]
+[AsycudaDocumentItemEntryDataDetails].[EntryDataType] AS [EntryDataType], 
+[AsycudaDocumentItemEntryDataDetails].[CNumber] AS [CNumber], 
+[AsycudaDocumentItemEntryDataDetails].[LineNumber] AS [LineNumber], 
+[AsycudaDocumentItemEntryDataDetails].[CustomsOperation] AS [CustomsOperation]
 FROM [dbo].[AsycudaDocumentItemEntryDataDetails] AS [AsycudaDocumentItemEntryDataDetails]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="AsycudaDocumentSetEntryDataDetails" EntityType="Self.AsycudaDocumentSetEntryDataDetails" store:Type="Views" store:Schema="dbo">
@@ -555,8 +565,8 @@ FROM [dbo].[InventoryItemsEx] AS [InventoryItemsEx]</DefiningQuery>
           <Property Name="InvoiceQty" Type="Double" />
           <Property Name="ReceivedQty" Type="Double" />
           <Property Name="Status" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="PreviousInvoiceNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="PreviousCNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="PreviousInvoiceNumber" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="PreviousCNumber" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="Comment" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="EffectiveDate" Type="DateTime" Precision="7" />
           <Property Name="IsReconciled" Type="Boolean" />
@@ -643,10 +653,10 @@ FROM [dbo].[InventoryItemsEx] AS [InventoryItemsEx]</DefiningQuery>
         </Association>
         <EntityType Name="PackageType">
           <Key>
-            <PropertyRef Name="PackageCode" />
+            <PropertyRef Name="PackageDescription" />
           </Key>
           <Property Name="PackageCode" Type="String" Nullable="false" MaxLength="4" FixedLength="false" Unicode="true" />
-          <Property Name="PackageDescription" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="PackageDescription" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
         </EntityType>
         <EntityType Name="EmptyFullCode">
           <Key>
@@ -720,6 +730,7 @@ FROM [dbo].[InventoryItemsEx] AS [InventoryItemsEx]</DefiningQuery>
             <PropertyRef Name="ApplicationSettingsId" />
             <PropertyRef Name="AsycudaDocumentSetId" />
             <PropertyRef Name="Asycuda_id" />
+            <PropertyRef Name="LineNumber" />
           </Key>
           <Property Name="EntryDataDetailsId" Type="Int32" Nullable="false" />
           <Property Name="Item_Id" Type="Int32" Nullable="false" />
@@ -731,9 +742,13 @@ FROM [dbo].[InventoryItemsEx] AS [InventoryItemsEx]</DefiningQuery>
           <Property Name="EntryData_Id" Type="Int32" Nullable="false" />
           <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
           <Property Name="AsycudaDocumentSetId" Type="Int32" Nullable="false" />
-          <Property Name="CustomsProcedure" Type="String" MaxLength="11" FixedLength="false" Unicode="true" />
+          <Property Name="CustomsProcedure" Type="String" MaxLength="11" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="Asycuda_id" Type="Int32" Nullable="false" />
           <Property Name="EntryDataType" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Id" Type="Int64" />
+          <Property Name="CNumber" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="LineNumber" Type="Int32" Nullable="false" />
+          <Property Name="CustomsOperation" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="AsycudaDocumentEntryDataLine">
           <Key>
@@ -754,7 +769,7 @@ FROM [dbo].[InventoryItemsEx] AS [InventoryItemsEx]</DefiningQuery>
           <Property Name="ItemNumber" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Name="Quantity" Type="Double" Nullable="false" />
           <Property Name="Cost" Type="Double" Nullable="false" />
-          <Property Name="PreviousInvoiceNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="PreviousInvoiceNumber" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="EntryDataDetailsKey" Type="String" MaxLength="4000" FixedLength="false" Unicode="true" />
           <Property Name="LineNumber" Type="Int32" />
           <Property Name="Comment" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
@@ -932,6 +947,10 @@ FROM [dbo].[InventoryItemsEx] AS [InventoryItemsEx]</DefiningQuery>
           <EntitySetMapping Name="AsycudaDocumentItemEntryDataDetails">
             <EntityTypeMapping TypeName="WaterNutEntities.AsycudaDocumentItemEntryDataDetail">
               <MappingFragment StoreEntitySet="AsycudaDocumentItemEntryDataDetails">
+                <ScalarProperty Name="CustomsOperation" ColumnName="CustomsOperation" />
+                <ScalarProperty Name="LineNumber" ColumnName="LineNumber" />
+                <ScalarProperty Name="CNumber" ColumnName="CNumber" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="EntryDataType" ColumnName="EntryDataType" />
                 <ScalarProperty Name="Asycuda_id" ColumnName="Asycuda_id" />
                 <ScalarProperty Name="CustomsProcedure" ColumnName="CustomsProcedure" />

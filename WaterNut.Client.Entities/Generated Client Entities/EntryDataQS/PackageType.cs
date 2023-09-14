@@ -59,7 +59,7 @@ public string PackageCode
 		}
      
 
-       
+       [RequiredValidationAttribute(ErrorMessage= "PackageDescription is required")]
        
                 
                 [MaxLength(50, ErrorMessage = "PackageDescription has a max length of 50 letters ")]

@@ -125,6 +125,19 @@ namespace OCR.Client.DTO
 		}
         private Nullable<bool> _IsActive;
 
+        [DataMember]
+        public string Comments
+		{ 
+		    get { return _Comments; }
+			set
+			{
+			    if (value == _Comments) return;
+				_Comments = value;
+				NotifyPropertyChanged();//m => this.Comments
+			}
+		}
+        private string _Comments;
+
        
         [DataMember]
         public Parts Parts

@@ -612,6 +612,21 @@ namespace AdjustmentQS.Business.Entities
         }
         string _vendor;
         [DataMember]
+        public string SourceFile 
+        {
+            get
+            {
+                return _sourcefile;
+            }
+            set
+            {
+                _sourcefile = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _sourcefile;
+        [DataMember]
         public AdjustmentEx AdjustmentEx { get; set; }
         [DataMember]
         public AdjustmentShort AdjustmentShorts { get; set; }

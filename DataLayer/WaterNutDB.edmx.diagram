@@ -151,6 +151,8 @@
         <EntityTypeShape EntityType="WaterNutDB.DataLayer.InventoryItems" Width="1.5" PointX="5.75" PointY="12.625" />
         <AssociationConnector Association="WaterNutDB.DataLayer.FK_InventoryItems_TariffCodes" />
         <AssociationConnector Association="WaterNutDB.DataLayer.InventoryItemsxcuda_Inventory_Item" />
+        <EntityTypeShape EntityType="WaterNutDB.DataLayer.xcuda_Weight_itm" Width="3.875" PointX="8.875" PointY="31" />
+        <AssociationConnector Association="WaterNutDB.DataLayer.FK_Valuation_item_Weight_itm" />
         </Diagram>
       <Diagram DiagramId="b567f2678d3d49a3818d4cb1141ba6eb" Name="WaterNut" ZoomLevel="74" >
         </Diagram>

@@ -566,7 +566,7 @@ namespace AllocationDS.Business.Entities
         }
         int _applicationsettingsid;
         [DataMember]
-        public double Net_weight_itm 
+        public decimal Net_weight_itm 
         {
             get
             {
@@ -579,7 +579,7 @@ namespace AllocationDS.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        double _net_weight_itm;
+        decimal _net_weight_itm;
         [DataMember]
         public string SourceFile 
         {

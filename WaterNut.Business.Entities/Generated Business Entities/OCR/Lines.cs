@@ -148,6 +148,21 @@ namespace OCR.Business.Entities
         }
         Nullable<bool> _isactive;
         [DataMember]
+        public string Comments 
+        {
+            get
+            {
+                return _comments;
+            }
+            set
+            {
+                _comments = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _comments;
+        [DataMember]
         public Parts Parts { get; set; }
         [DataMember]
         public RegularExpressions RegularExpressions { get; set; }

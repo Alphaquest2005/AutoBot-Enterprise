@@ -1603,10 +1603,10 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     public string Commercial_Description { get; set; } 
                     
  
-                    public double Gross_weight_itm { get; set; } 
+                    public decimal Gross_weight_itm { get; set; } 
                     
  
-                    public double Net_weight_itm { get; set; } 
+                    public decimal Net_weight_itm { get; set; } 
                     
  
                     public Nullable<double> Item_price { get; set; } 

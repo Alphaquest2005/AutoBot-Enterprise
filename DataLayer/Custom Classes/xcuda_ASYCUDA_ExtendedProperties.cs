@@ -56,7 +56,7 @@ namespace WaterNut.DataLayer
           for (var i = 0; i < xlist.Count(); i++)
           {
               var x = xlist.ElementAt(i);
-              Single w = 0;
+              decimal w = 0;
 
               
 

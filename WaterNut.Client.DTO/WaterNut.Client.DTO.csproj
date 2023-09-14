@@ -262,7 +262,6 @@
     <Compile Include="Generated Client Entities\OCR\InvoiceRegEx.cs" />
     <Compile Include="Generated Client Entities\OCR\Invoices.cs" />
     <Compile Include="Generated Client Entities\OCR\Lines.cs" />
-    <Compile Include="Generated Client Entities\OCR\OCRFileTypes.cs" />
     <Compile Include="Generated Client Entities\OCR\OCR_FailedFields.cs" />
     <Compile Include="Generated Client Entities\OCR\OCR_FailedLines.cs" />
     <Compile Include="Generated Client Entities\OCR\OCR_FieldMappings.cs" />
@@ -439,7 +438,6 @@
     <Compile Include="Generated IIdentitfiableEntity Models\OCR\InvoiceRegEx.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\OCR\Invoices.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\OCR\Lines.cs" />
-    <Compile Include="Generated IIdentitfiableEntity Models\OCR\OCRFileTypes.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\OCR\OCR_FailedFields.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\OCR\OCR_FailedLines.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\OCR\OCR_FieldMappings.cs" />
@@ -616,7 +614,6 @@
     <Compile Include="Generated MyNavProp Models\OCR\InvoiceRegEx.cs" />
     <Compile Include="Generated MyNavProp Models\OCR\Invoices.cs" />
     <Compile Include="Generated MyNavProp Models\OCR\Lines.cs" />
-    <Compile Include="Generated MyNavProp Models\OCR\OCRFileTypes.cs" />
     <Compile Include="Generated MyNavProp Models\OCR\OCR_FailedFields.cs" />
     <Compile Include="Generated MyNavProp Models\OCR\OCR_FailedLines.cs" />
     <Compile Include="Generated MyNavProp Models\OCR\OCR_FieldMappings.cs" />

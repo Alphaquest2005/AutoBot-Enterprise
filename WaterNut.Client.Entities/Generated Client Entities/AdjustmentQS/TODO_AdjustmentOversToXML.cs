@@ -584,6 +584,23 @@ public string Vendor
 		}
      
 
+       
+       
+                
+                
+public string SourceFile
+		{ 
+		    get { return this.todo_adjustmentoverstoxml.SourceFile; }
+			set
+			{
+			    if (value == this.todo_adjustmentoverstoxml.SourceFile) return;
+				this.todo_adjustmentoverstoxml.SourceFile = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("SourceFile");
+			}
+		}
+     
+
 
         ChangeTrackingCollection<DTO.TODO_AdjustmentOversToXML> _changeTracker;    
         public ChangeTrackingCollection<DTO.TODO_AdjustmentOversToXML> ChangeTracker

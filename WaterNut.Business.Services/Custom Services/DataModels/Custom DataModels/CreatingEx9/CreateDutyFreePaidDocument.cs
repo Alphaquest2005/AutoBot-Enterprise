@@ -91,7 +91,7 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
                         x.EffectiveDate == DateTime.MinValue || x.EffectiveDate == null
                             ? x.InvoiceDate
                             : x.EffectiveDate).Min();
-                var docTasks = new List<Task>();
+               // var docTasks = new List<Task>();
                 foreach (var monthyear in slst) //.Where(x => x.DutyFreePaid == dfp)
                 {
 
@@ -124,11 +124,11 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
                                    // await SaveDocumentCT(cdoc).ConfigureAwait(false);
                                     //SaveSql(sql);
                                     //sql = "";
-                                    docTasks.Add(Task.Run(async () =>
-                                    {
+                                    //docTasks.Add(Task.Run(async () =>
+                                    //{
                                         await SaveDocumentCT(cdoc).ConfigureAwait(false);
                                         SaveSql(sql);
-                                    }));
+                                    //}));
 
                                     docList.Add(cdoc);
                                     //}
@@ -176,7 +176,7 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
                             itmcount = 0;
                         }
 
-
+                        var t = cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.Customs_Procedure.Customs_ProcedureId;
                         var newItms = await
                             CreateEx9EntryAsync(mypod, cdoc, itmcount, dfp, documentType,
                                     itemSalesPiSummaryLst, checkQtyAllocatedGreaterThanPiQuantity, applyEx9Bucket, ex9BucketType, applyHistoricChecks, applyCurrentChecks, overPIcheck, universalPIcheck, itemPIcheck, docPreviousItems)
@@ -206,15 +206,15 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
                 //await SaveDocumentCT(cdoc).ConfigureAwait(false);
                 //SaveSql(sql);
 
-                docTasks.Add(Task.Run(async () =>
-                {
+                //docTasks.Add(Task.Run(async () =>
+                //{
                     await SaveDocumentCT(cdoc).ConfigureAwait(false);
                     SaveSql(sql);
-                }));
+                //}));
 
                 if (cdoc.Document != null) docList.Add(cdoc);
 
-                Task.WaitAll(docTasks.ToArray());
+               // Task.WaitAll(docTasks.ToArray());
 
                 return docList;
             }
@@ -440,7 +440,7 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
                         EX9Allocation = new EX9Allocation()
                         {
                             SalesFactor = s.LastOrDefault()?.SalesFactor ?? 0.0,
-                            Net_weight_itm = s.LastOrDefault()?.Net_weight_itm??0.0,
+                            Net_weight_itm = s.LastOrDefault()?.Net_weight_itm??0.0m,
                             pQuantity = s.LastOrDefault()?.pQuantity.GetValueOrDefault() ?? 0.0,
                             pCNumber = s.LastOrDefault()?.pCNumber,
                             Customs_clearance_office_code = s.LastOrDefault()?.Customs_clearance_office_code,
@@ -1106,8 +1106,8 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
             itm.xcuda_Valuation_item.xcuda_Weight_itm = new xcuda_Weight_itm(true)
             {
                 TrackingState = TrackingState.Added,
-                Gross_weight_itm = (double)pitm.Net_weight,
-                Net_weight_itm = (double)pitm.Net_weight
+                Gross_weight_itm = pitm.Net_weight,
+                Net_weight_itm = pitm.Net_weight
             };
         }
 

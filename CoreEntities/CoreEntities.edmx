@@ -555,7 +555,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AsycudaDocument' does not
           <Property Name="ImportComplete" Type="bit" />
           <Property Name="Cancelled" Type="bit" />
           <Property Name="TotalCIF" Type="float" />
-          <Property Name="TotalGrossWeight" Type="float" />
+          <Property Name="TotalGrossWeight" Type="decimal" Precision="38" Scale="2" />
           <Property Name="AssessmentDate" Type="datetime2" Precision="7" />
           <Property Name="TotalFreight" Type="float" />
           <Property Name="ExpiryDate" Type="datetime2" Precision="7" />
@@ -626,8 +626,8 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AsycudaDocumentItem' does
           <Property Name="AttributeOnlyAllocation" Type="bit" />
           <Property Name="Description_of_goods" Type="varchar" MaxLength="255" />
           <Property Name="Commercial_Description" Type="varchar" MaxLength="255" />
-          <Property Name="Gross_weight_itm" Type="float" Nullable="false" />
-          <Property Name="Net_weight_itm" Type="float" Nullable="false" />
+          <Property Name="Gross_weight_itm" Type="decimal" Precision="18" Scale="2" Nullable="false" />
+          <Property Name="Net_weight_itm" Type="decimal" Precision="18" Scale="2" Nullable="false" />
           <Property Name="Item_price" Type="float" />
           <Property Name="ItemQuantity" Type="float" />
           <Property Name="Suppplementary_unit_code" Type="nvarchar" MaxLength="4" />
@@ -787,7 +787,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AsycudaDocumentSetEx' doe
           <Property Name="DocumentsCount" Type="int" />
           <Property Name="ExpectedEntries" Type="int" />
           <Property Name="TotalCIF" Type="float" />
-          <Property Name="TotalWeight" Type="float" />
+          <Property Name="TotalWeight" Type="decimal" Precision="38" Scale="2" />
           <Property Name="TotalFreight" Type="float" />
           <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
           <Property Name="TotalPackages" Type="int" />
@@ -1599,7 +1599,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-PODocSet' does not h
           <Property Name="ClassifiedLines" Type="int" />
           <Property Name="TotalLines" Type="int" />
           <Property Name="TotalPackages" Type="int" />
-          <Property Name="TotalWeight" Type="float" />
+          <Property Name="TotalWeight" Type="decimal" Precision="38" Scale="2" />
           <Property Name="EntryPackages" Type="int" />
           <Property Name="FreightCurrencyCode" Type="nvarchar" MaxLength="3" Nullable="false" />
           <Property Name="CurrencyRate" Type="float" Nullable="false" />
@@ -1676,7 +1676,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-PODocSetToAssessErro
           <Property Name="TotalFreight" Type="float" />
           <Property Name="ClassifiedLines" Type="int" />
           <Property Name="TotalLines" Type="int" />
-          <Property Name="TotalWeight" Type="float" />
+          <Property Name="TotalWeight" Type="decimal" Precision="38" Scale="2" />
           <Property Name="SpecifiedFreight" Type="float" />
           <Property Name="GeneratedFreight" Type="float" />
           <Property Name="ExpectedAttachments" Type="int" />
@@ -1721,7 +1721,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-PODocSetToExport' do
           <Property Name="ClassifiedLines" Type="int" />
           <Property Name="TotalLines" Type="int" />
           <Property Name="EntryPackages" Type="int" />
-          <Property Name="TotalWeight" Type="float" />
+          <Property Name="TotalWeight" Type="decimal" Precision="38" Scale="2" />
           <Property Name="TotalPackages" Type="int" />
         </EntityType>
         <!--Errors Found During Generation:
@@ -4560,7 +4560,7 @@ FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
           <Property Name="ImportComplete" Type="Boolean" />
           <Property Name="Cancelled" Type="Boolean" />
           <Property Name="TotalCIF" Type="Double" />
-          <Property Name="TotalGrossWeight" Type="Double" />
+          <Property Name="TotalGrossWeight" Type="Decimal" />
           <Property Name="AssessmentDate" Type="DateTime" Precision="7" />
           <Property Name="TotalFreight" Type="Double" />
           <Property Name="ExpiryDate" Type="DateTime" Precision="7" />
@@ -4592,8 +4592,8 @@ FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
           <Property Type="Boolean" Name="AttributeOnlyAllocation"><a:ImplementsProperty xmlns:a="http://schemas.tempuri.com/ImplementsProperty">IDocumentItem.AttributeOnlyAllocation</a:ImplementsProperty></Property>
           <Property Type="String" Name="Description_of_goods" MaxLength="255" FixedLength="false" Unicode="false"><a:ImplementsProperty xmlns:a="http://schemas.tempuri.com/ImplementsProperty">desc</a:ImplementsProperty></Property>
           <Property Type="String" Name="Commercial_Description" MaxLength="255" FixedLength="false" Unicode="false" />
-          <Property Type="Double" Name="Gross_weight_itm" Nullable="false"><a:ImplementsProperty xmlns:a="http://schemas.tempuri.com/ImplementsProperty">IWeightItem.Gross_weight</a:ImplementsProperty></Property>
-          <Property Type="Double" Name="Net_weight_itm" Nullable="false"><a:ImplementsProperty xmlns:a="http://schemas.tempuri.com/ImplementsProperty">IWeightItem.Net_weight</a:ImplementsProperty></Property>
+          <Property Type="Decimal" Name="Gross_weight_itm" Nullable="false"><a:ImplementsProperty xmlns:a="http://schemas.tempuri.com/ImplementsProperty">IWeightItem.Gross_weight</a:ImplementsProperty></Property>
+          <Property Type="Decimal" Name="Net_weight_itm" Nullable="false"><a:ImplementsProperty xmlns:a="http://schemas.tempuri.com/ImplementsProperty">IWeightItem.Net_weight</a:ImplementsProperty></Property>
           <Property Type="Double" Name="Item_price" />
           <Property Type="Double" Name="ItemQuantity" />
           <Property Type="String" Name="Suppplementary_unit_code" MaxLength="4" FixedLength="false" Unicode="true" />
@@ -4720,7 +4720,7 @@ FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
           <Property Name="ApportionMethod" Type="String" MaxLength="50" Unicode="true" FixedLength="false" />
           <Property Name="TotalCIF" Type="Double" />
           <Property Name="TotalFreight" Type="Double" />
-          <Property Name="TotalWeight" Type="Double" />
+          <Property Name="TotalWeight" Type="Decimal" />
           <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
           <NavigationProperty Name="ApplicationSettings" Relationship="WaterNutDBModel.ApplicationSettingsAsycudaDocumentSetEx" FromRole="AsycudaDocumentSetEx" ToRole="ApplicationSettings" />
           <NavigationProperty Name="AsycudaDocumentSet_Attachments" Relationship="WaterNutDBModel.AsycudaDocumentSetExAsycudaDocumentSet_Attachments" FromRole="AsycudaDocumentSetEx" ToRole="AsycudaDocumentSet_Attachments" />
@@ -5829,7 +5829,7 @@ FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
           <Property Name="ClassifiedLines" Type="Int32" />
           <Property Name="TotalLines" Type="Int32" />
           <Property Name="TotalPackages" Type="Int32" />
-          <Property Name="TotalWeight" Type="Double" />
+          <Property Name="TotalWeight" Type="Decimal" />
           <Property Name="EntryPackages" Type="Int32" />
           <Property Name="FreightCurrencyCode" Type="String" Nullable="false" MaxLength="3" FixedLength="false" Unicode="true" />
           <Property Name="CurrencyRate" Type="Double" Nullable="false" />
@@ -5915,7 +5915,7 @@ FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
           <Property Name="ClassifiedLines" Type="Int32" />
           <Property Name="TotalLines" Type="Int32" />
           <Property Name="EntryPackages" Type="Int32" />
-          <Property Name="TotalWeight" Type="Double" />
+          <Property Name="TotalWeight" Type="Decimal" />
           <Property Name="FreightCurrencyCode" Type="String" Nullable="false" MaxLength="3" FixedLength="false" Unicode="true" />
           <Property Name="ExpectedEntries" Type="Int32" />
           <Property Name="TotalPackages" Type="Int32" />
@@ -6415,7 +6415,7 @@ FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
           <Property Name="TotalLines" Type="Int32" />
           <Property Name="GeneratedLines" Type="Int32" />
           <Property Name="Status" Type="String" Nullable="false" MaxLength="137" FixedLength="false" Unicode="true" />
-          <Property Name="TotalWeight" Type="Double" />
+          <Property Name="TotalWeight" Type="Decimal" />
           <Property Name="ExpectedAttachments" Type="Int32" />
           <Property Name="EntryPackages" Type="Int32" />
           <Property Name="GeneratedPackages" Type="Double" />

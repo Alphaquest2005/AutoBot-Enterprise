@@ -343,7 +343,7 @@ public Nullable<int> TotalPackages
 
        
        [NumberValidationAttribute]
-public Nullable<double> TotalWeight
+public Nullable<decimal> TotalWeight
 		{ 
 		    get { return this.todo_podocset.TotalWeight; }
 			set

@@ -875,7 +875,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     public Nullable<int> EntryPackages { get; set; } 
                     
  
-                    public Nullable<double> TotalWeight { get; set; } 
+                    public decimal? TotalWeight { get; set; } 
                     
  
                     public string FreightCurrencyCode { get; set; } 

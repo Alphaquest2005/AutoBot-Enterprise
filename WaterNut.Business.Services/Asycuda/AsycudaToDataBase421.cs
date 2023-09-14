@@ -936,10 +936,10 @@ private void Update_TarrifCodes(ASYCUDAItem ai)
                 vi.xcuda_Weight_itm = wi;
             }
             if (ai.Valuation_item.Weight_itm.Gross_weight_itm != "")
-                wi.Gross_weight_itm = Convert.ToSingle(ai.Valuation_item.Weight_itm.Gross_weight_itm);
+                wi.Gross_weight_itm = Convert.ToDecimal(ai.Valuation_item.Weight_itm.Gross_weight_itm);
 
             if (ai.Valuation_item.Weight_itm.Net_weight_itm != "")
-                wi.Net_weight_itm = Convert.ToSingle(ai.Valuation_item.Weight_itm.Net_weight_itm);
+                wi.Net_weight_itm = Convert.ToDecimal(ai.Valuation_item.Weight_itm.Net_weight_itm);
 
         }
 

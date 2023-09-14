@@ -24540,7 +24540,7 @@ namespace WaterNut.DataLayer
         /// <param name="gross_weight_itm">Initial value of the Gross_weight_itm property.</param>
         /// <param name="net_weight_itm">Initial value of the Net_weight_itm property.</param>
         /// <param name="valuation_item_Id">Initial value of the Valuation_item_Id property.</param>
-        public static xcuda_Weight_itm Createxcuda_Weight_itm(global::System.Single gross_weight_itm, global::System.Single net_weight_itm, global::System.Int32 valuation_item_Id)
+        public static xcuda_Weight_itm Createxcuda_Weight_itm(global::System.Decimal gross_weight_itm, global::System.Decimal net_weight_itm, global::System.Int32 valuation_item_Id)
         {
             xcuda_Weight_itm xcuda_Weight_itm = new xcuda_Weight_itm();
             xcuda_Weight_itm.Gross_weight_itm = gross_weight_itm;
@@ -24558,7 +24558,7 @@ namespace WaterNut.DataLayer
         /// </summary>
         [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
         [DataMemberAttribute()]
-        public global::System.Single Gross_weight_itm
+        public global::System.Decimal Gross_weight_itm
         {
             get
             {
@@ -24573,8 +24573,8 @@ namespace WaterNut.DataLayer
                 OnGross_weight_itmChanged();
             }
         }
-        private global::System.Single _Gross_weight_itm;
-        partial void OnGross_weight_itmChanging(global::System.Single value);
+        private global::System.Decimal _Gross_weight_itm;
+        partial void OnGross_weight_itmChanging(global::System.Decimal value);
         partial void OnGross_weight_itmChanged();
     
         /// <summary>
@@ -24582,7 +24582,7 @@ namespace WaterNut.DataLayer
         /// </summary>
         [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
         [DataMemberAttribute()]
-        public global::System.Single Net_weight_itm
+        public global::System.Decimal Net_weight_itm
         {
             get
             {
@@ -24597,8 +24597,8 @@ namespace WaterNut.DataLayer
                 OnNet_weight_itmChanged();
             }
         }
-        private global::System.Single _Net_weight_itm;
-        partial void OnNet_weight_itmChanging(global::System.Single value);
+        private global::System.Decimal _Net_weight_itm;
+        partial void OnNet_weight_itmChanging(global::System.Decimal value);
         partial void OnNet_weight_itmChanged();
     
         /// <summary>

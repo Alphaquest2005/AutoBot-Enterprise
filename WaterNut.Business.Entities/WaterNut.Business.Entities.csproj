@@ -548,7 +548,6 @@
     <Compile Include="Generated Business Entities\OCR\InvoiceRegEx.cs" />
     <Compile Include="Generated Business Entities\OCR\Invoices.cs" />
     <Compile Include="Generated Business Entities\OCR\Lines.cs" />
-    <Compile Include="Generated Business Entities\OCR\OCRFileTypes.cs" />
     <Compile Include="Generated Business Entities\OCR\OCR_FailedFields.cs" />
     <Compile Include="Generated Business Entities\OCR\OCR_FailedLines.cs" />
     <Compile Include="Generated Business Entities\OCR\OCR_FieldMappings.cs" />
@@ -980,7 +979,6 @@
     <Compile Include="Generated ChangeTracking Models\OCR\InvoiceRegEx.cs" />
     <Compile Include="Generated ChangeTracking Models\OCR\Invoices.cs" />
     <Compile Include="Generated ChangeTracking Models\OCR\Lines.cs" />
-    <Compile Include="Generated ChangeTracking Models\OCR\OCRFileTypes.cs" />
     <Compile Include="Generated ChangeTracking Models\OCR\OCR_FailedFields.cs" />
     <Compile Include="Generated ChangeTracking Models\OCR\OCR_FailedLines.cs" />
     <Compile Include="Generated ChangeTracking Models\OCR\OCR_FieldMappings.cs" />
@@ -1412,7 +1410,6 @@
     <Compile Include="Generated Constructors Models\OCR\InvoiceRegEx.cs" />
     <Compile Include="Generated Constructors Models\OCR\Invoices.cs" />
     <Compile Include="Generated Constructors Models\OCR\Lines.cs" />
-    <Compile Include="Generated Constructors Models\OCR\OCRFileTypes.cs" />
     <Compile Include="Generated Constructors Models\OCR\OCR_FailedFields.cs" />
     <Compile Include="Generated Constructors Models\OCR\OCR_FailedLines.cs" />
     <Compile Include="Generated Constructors Models\OCR\OCR_FieldMappings.cs" />
@@ -1844,7 +1841,6 @@
     <Compile Include="Generated IEntitiyWithKey Models\OCR\InvoiceRegEx.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\OCR\Invoices.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\OCR\Lines.cs" />
-    <Compile Include="Generated IEntitiyWithKey Models\OCR\OCRFileTypes.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\OCR\OCR_FailedFields.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\OCR\OCR_FailedLines.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\OCR\OCR_FieldMappings.cs" />
@@ -2276,7 +2272,6 @@
     <Compile Include="Generated IIdentitfiableEntity Models\OCR\InvoiceRegEx.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\OCR\Invoices.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\OCR\Lines.cs" />
-    <Compile Include="Generated IIdentitfiableEntity Models\OCR\OCRFileTypes.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\OCR\OCR_FailedFields.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\OCR\OCR_FailedLines.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\OCR\OCR_FieldMappings.cs" />
@@ -2718,7 +2713,6 @@
     <Compile Include="Generated Mappings\OCR\InvoiceRegEx.map.cs" />
     <Compile Include="Generated Mappings\OCR\Invoices.map.cs" />
     <Compile Include="Generated Mappings\OCR\Lines.map.cs" />
-    <Compile Include="Generated Mappings\OCR\OCRFileTypes.map.cs" />
     <Compile Include="Generated Mappings\OCR\OCR_FailedFields.map.cs" />
     <Compile Include="Generated Mappings\OCR\OCR_FailedLines.map.cs" />
     <Compile Include="Generated Mappings\OCR\OCR_FieldMappings.map.cs" />

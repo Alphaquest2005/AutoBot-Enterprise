@@ -203,7 +203,7 @@ public string Commercial_Description
 
        [RequiredValidationAttribute(ErrorMessage= "Gross_weight_itm is required")]
        [NumberValidationAttribute]
-public double Gross_weight_itm
+public decimal Gross_weight_itm
 		{ 
 		    get { return this.asycudadocumentitem.Gross_weight_itm; }
 			set
@@ -218,7 +218,7 @@ public double Gross_weight_itm
 
        [RequiredValidationAttribute(ErrorMessage= "Net_weight_itm is required")]
        [NumberValidationAttribute]
-public double Net_weight_itm
+public decimal Net_weight_itm
 		{ 
 		    get { return this.asycudadocumentitem.Net_weight_itm; }
 			set

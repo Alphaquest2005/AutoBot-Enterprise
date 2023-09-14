@@ -115,10 +115,10 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AsycudaSalesAllocationsEx
             
             
             
-            <PropertyRef Name="AsycudaDocumentSetId" />
             
             
             <PropertyRef Name="Type" />
+            <PropertyRef Name="AsycudaDocumentSetId" />
             
             
           </Key>

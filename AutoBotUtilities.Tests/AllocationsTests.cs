@@ -159,12 +159,15 @@ namespace AutoBotUtilities.Tests
         [TestCase("POL/3248AG", "3/1/2023", 60)]
         [TestCase("XMN/LNK-PL-RGW", "3/1/2023", 60)] // infinite loop 
         [TestCase("21SHTZZV971ZZZZ", "3/1/2023", 60)] //qty allocated under reported 
+        
 
 
 
 
         /////////////////////// sandals
         [TestCase("0756-1474", "3/1/2023", 60)]
+        [TestCase("14001-0214SMNVY", "3/1/2023", 60)]  // return not allocated
+        [TestCase("18130-05GTUR", "3/1/2023", 60)] //infinite loop
 
         public void AllocatSales(string itemNumber, string LastInvoiceDate, int NoOfAllocations )
         {

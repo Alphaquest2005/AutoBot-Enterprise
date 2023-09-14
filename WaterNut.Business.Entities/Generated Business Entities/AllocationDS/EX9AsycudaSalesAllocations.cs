@@ -506,7 +506,7 @@ namespace AllocationDS.Business.Entities
         }
         string _country_of_origin_code;
         [DataMember]
-        public double Gross_weight_itm 
+        public decimal Gross_weight_itm 
         {
             get
             {
@@ -519,9 +519,9 @@ namespace AllocationDS.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        double _gross_weight_itm;
+        decimal _gross_weight_itm;
         [DataMember]
-        public double Net_weight_itm 
+        public decimal Net_weight_itm 
         {
             get
             {
@@ -534,7 +534,7 @@ namespace AllocationDS.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        double _net_weight_itm;
+        decimal _net_weight_itm;
         [DataMember]
         public string pTariffCode 
         {

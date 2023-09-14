@@ -33,7 +33,7 @@ namespace AllocationQS.Business.Services
                     var pitm = itm?.xcuda_PreviousItem;
                     if (pitm == null) continue;
 
-                    itm.Net_weight = (double)pitm.Prev_net_weight;
+                    itm.Net_weight = pitm.Prev_net_weight;
                     itm.Gross_weight = itm.Net_weight;
                     itm.ItemQuantity = pitm.Preveious_suplementary_quantity - 1;
                     pitm.Suplementary_Quantity = (decimal)(pitm.Preveious_suplementary_quantity - 1);

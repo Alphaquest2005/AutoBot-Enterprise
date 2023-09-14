@@ -152,7 +152,7 @@ namespace CoreEntities.Client.DTO
         private string _Commercial_Description;
 
         [DataMember]
-        public double Gross_weight_itm
+        public decimal Gross_weight_itm
 		{ 
 		    get { return _Gross_weight_itm; }
 			set
@@ -162,10 +162,10 @@ namespace CoreEntities.Client.DTO
 				NotifyPropertyChanged();//m => this.Gross_weight_itm
 			}
 		}
-        private double _Gross_weight_itm;
+        private decimal _Gross_weight_itm;
 
         [DataMember]
-        public double Net_weight_itm
+        public decimal Net_weight_itm
 		{ 
 		    get { return _Net_weight_itm; }
 			set
@@ -175,7 +175,7 @@ namespace CoreEntities.Client.DTO
 				NotifyPropertyChanged();//m => this.Net_weight_itm
 			}
 		}
-        private double _Net_weight_itm;
+        private decimal _Net_weight_itm;
 
         [DataMember]
         public Nullable<double> Item_price

@@ -478,7 +478,7 @@ public Nullable<double> TotalCIF
 
        
        [NumberValidationAttribute]
-public Nullable<double> TotalGrossWeight
+public Nullable<decimal> TotalGrossWeight
 		{ 
 		    get { return this.asycudadocument.TotalGrossWeight; }
 			set

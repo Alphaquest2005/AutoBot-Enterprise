@@ -268,7 +268,6 @@
     <Compile Include="OCR\IInvoiceRegExService.cs" />
     <Compile Include="OCR\IInvoicesService.cs" />
     <Compile Include="OCR\ILinesService.cs" />
-    <Compile Include="OCR\IOCRFileTypesService.cs" />
     <Compile Include="OCR\IOCR_FailedFieldsService.cs" />
     <Compile Include="OCR\IOCR_FailedLinesService.cs" />
     <Compile Include="OCR\IOCR_FieldMappingsService.cs" />

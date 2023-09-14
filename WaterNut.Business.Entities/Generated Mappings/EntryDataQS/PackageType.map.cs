@@ -11,10 +11,10 @@
     {
         public PackageTypeMap()
         {                        
-              this.HasKey(t => t.PackageCode);        
+              this.HasKey(t => t.PackageDescription);        
               this.ToTable("PackageTypes");
               this.Property(t => t.PackageCode).HasColumnName("PackageType").IsRequired().HasMaxLength(4);
-              this.Property(t => t.PackageDescription).HasColumnName("PackageDescription").HasMaxLength(50);
+              this.Property(t => t.PackageDescription).HasColumnName("PackageDescription").IsRequired().HasMaxLength(50);
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);
     			this.Ignore(t => t.ModifiedProperties);

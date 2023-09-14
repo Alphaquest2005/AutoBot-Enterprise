@@ -79,7 +79,10 @@ namespace EntryDataQS.Client.Contracts
 		[OperationContract]
 		string MinField(string whereExp, string field);
 
-				
+				[OperationContract]
+		Task<IEnumerable<AsycudaDocumentItemEntryDataDetail>> GetAsycudaDocumentItemEntryDataDetailById(string Id, List<string> includesLst = null);
+        
+  		
     }
 }
 

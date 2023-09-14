@@ -19,14 +19,14 @@ namespace DocumentItemDS.Business.Entities
 		{  // please don't expect properties here, they are implict, only multilayer will appear here
                  [IgnoreDataMember]
                  [NotMapped]
-                 public Double Gross_weight 
+                 public Decimal Gross_weight 
                 {
                     get{ return this.xcuda_Valuation_item.xcuda_Weight_itm.Gross_weight_itm; }                
                     set { this.xcuda_Valuation_item.xcuda_Weight_itm.Gross_weight_itm = value;}
                 }
                                  [IgnoreDataMember]
                  [NotMapped]
-                 public Double Net_weight 
+                 public Decimal Net_weight 
                 {
                     get{ return this.xcuda_Valuation_item.xcuda_Weight_itm.Net_weight_itm; }                
                     set { this.xcuda_Valuation_item.xcuda_Weight_itm.Net_weight_itm = value;}
