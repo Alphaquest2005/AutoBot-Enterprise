@@ -199,7 +199,7 @@ namespace WaterNut.DataSpace
             {
                 new Attachment()
                 {
-                    FilePath = $"{cdoc.Document.ReferenceNumber}.csv.pdf",
+                    FilePath = $"{cdoc.Document.ReferenceNumber}.pdf",
                     DocumentCode = exportTemplate.AttachedDocumentCode,
                     Reference = cdoc.Document.ReferenceNumber,
                     TrackingState = TrackingState.Added,

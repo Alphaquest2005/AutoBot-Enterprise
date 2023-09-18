@@ -181,7 +181,7 @@ namespace WaterNut.DataSpace
                     var saleitmQtyToallocate = saleitm.Quantity - saleitm.QtyAllocated;
                   
                     var salesItemIndex = salesLst.IndexOf(saleitm);
-                    //var prevSalesQty = salesLst.Where(x => salesLst.IndexOf(x) <= salesItemIndex).Sum(x => x.Quantity);
+                    var prevSalesQty = salesLst.ElementAt(salesItemIndex - 1>= salesLst.Count || salesItemIndex == 0 ? salesItemIndex: salesItemIndex-1).Quantity;
                     //var nextSalesQty = salesLst.Where(x => salesLst.IndexOf(x) > salesItemIndex).Sum(x => x.Quantity);
                     //var nextAllQty = asycudaEntries.Where(x => asycudaEntries.IndexOf(x) > CurrentAsycudaItemIndex).Sum(x => x.ItemQuantity);
                     var nextSalesQty = salesLst.ElementAt(salesItemIndex + 1>= salesLst.Count ? salesItemIndex: salesItemIndex+1).Quantity;
@@ -236,19 +236,30 @@ namespace WaterNut.DataSpace
                                 i -= 2;
                                 continue;
                             }
-                            if(nextSalesQty > 0 || (nextSalesQty < 0 && nextSalesQty * -1 < saleitmQtyToallocate)) await AddExceptionAllocation(saleitm, cAsycudaItm , "Early Sales").ConfigureAwait(false);
 
-                            break;
+                            if (nextSalesQty > 0 || (nextSalesQty < 0 && nextSalesQty * -1 <= saleitmQtyToallocate))
+                            {
+                                await AddExceptionAllocation(saleitm, cAsycudaItm , "Early Sales").ConfigureAwait(false);
+                                break;
+                            }
+
+                           
                         }
                        
 
-                        if (saleitmQtyToallocate < 0 && Enumerable.Where<AsycudaSalesAllocations>(cAsycudaItm.AsycudaSalesAllocations, x => x.DutyFreePaid == saleitm.DutyFreePaid).Sum(x => x.QtyAllocated) == 0)
+                        if (saleitmQtyToallocate < 0 
+                            && saleitmQtyToallocate + nextSalesQty >0
+                            && Enumerable.Where<AsycudaSalesAllocations>(cAsycudaItm.AsycudaSalesAllocations, x => x.DutyFreePaid == saleitm.DutyFreePaid).Sum(x => x.QtyAllocated) == 0)
                         {
                             var previousI = GetPreviousAllocatedAsycudaItem(asycudaEntries, saleslst, saleitm, i,salesSet);
                             if (previousI != i && previousI != i - 1)
                             {
-                                i = previousI;
-                                continue;
+                                if (previousI <= i) 
+                                {
+                                    i = previousI;
+                                    continue;
+                                }
+
                             }
                         }
                         
@@ -277,8 +288,9 @@ namespace WaterNut.DataSpace
                         }
                         else
                         {
-                            if ((asycudaItmQtyToAllocate > 0 && asycudaItmQtyToAllocate >= saleitmQtyToallocate) ||
-                                CurrentAsycudaItemIndex == asycudaEntries.Count - 1)
+                            if ((asycudaItmQtyToAllocate > 0 && asycudaItmQtyToAllocate >= saleitmQtyToallocate) 
+                                || (saleitmQtyToallocate + nextSalesQty == 0 || saleitmQtyToallocate + prevSalesQty == 0)
+                                || CurrentAsycudaItemIndex == asycudaEntries.Count - 1)
                             {
                                 var ramt = await AllocateSaleItem(cAsycudaItm, saleitm, saleitmQtyToallocate, subitm)
                                     .ConfigureAwait(false);

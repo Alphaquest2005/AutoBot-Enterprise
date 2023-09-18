@@ -11,6 +11,7 @@ using System.Threading.Tasks.Schedulers;
 using System.Windows;
 using System.Windows.Controls;
 using AllocationQS.Client.Repositories;
+using AutoBot;
 using Core.Common.Converters;
 using Core.Common.UI;
 using CoreEntities.Client.Entities;
@@ -270,43 +271,46 @@ namespace WaterNut.QuerySpace.AllocationQS.ViewModels
             if (doclst == null || !doclst.ToList().Any()) return;
             StatusModel.StartStatusUpdate("Exporting Files", doclst.Count());
 
-            var exceptions = new ConcurrentQueue<Exception>();
+            //var exceptions = new ConcurrentQueue<Exception>();
 
-            using (var sta = new StaTaskScheduler(numberOfThreads: 1))
-            {
+            await ExportDocSetSalesReportUtils.ExportDocSetSalesReport(asycudaDocumentSetId, folder).ConfigureAwait(false);
 
-                await Task.Factory.StartNew(() =>
-                {
-                    var s = new ExportToCSV<SaleReportLine, List<SaleReportLine>>();
-                    s.StartUp();
-                    foreach (var doc in doclst)
-                    {
-                        try
-                        {
-                            var data = GetDocumentSalesReport(doc.ASYCUDA_Id).Result;
-                            if (data != null)
-                            {
-                                string path = Path.Combine(folder,
-                                    !string.IsNullOrEmpty(doc.CNumber) ? doc.CNumber : doc.ReferenceNumber + ".csv.pdf");
-                                s.dataToPrint = data.ToList();
-                                s.SaveReport(path);
-                            }
-                            else
-                            {
-                                File.Create(Path.Combine(folder, doc.CNumber ?? doc.ReferenceNumber + ".csv.pdf"));
-                            }
-                            StatusModel.StatusUpdate();
-                        }
-                        catch (Exception ex)
-                        {
-                            exceptions.Enqueue(ex);
-                        }
-                    }
-                    s.ShutDown();
-                },
-                    CancellationToken.None, TaskCreationOptions.None, sta).ConfigureAwait(false);
-            }
-            if (exceptions.Count > 0) throw new AggregateException(exceptions);
+
+            //using (var sta = new StaTaskScheduler(numberOfThreads: 1))
+            //{
+
+            //    await Task.Factory.StartNew(() =>
+            //    {
+            //        var s = new ExportToCSV<SaleReportLine, List<SaleReportLine>>();
+            //        s.StartUp();
+            //        foreach (var doc in doclst)
+            //        {
+            //            try
+            //            {
+            //                var data = GetDocumentSalesReport(doc.ASYCUDA_Id).Result;
+            //                if (data != null)
+            //                {
+            //                    string path = Path.Combine(folder,
+            //                        !string.IsNullOrEmpty(doc.CNumber) ? doc.CNumber : doc.ReferenceNumber + ".csv");
+            //                    s.dataToPrint = data.ToList();
+            //                    s.SaveReport(path);
+            //                }
+            //                else
+            //                {
+            //                    File.Create(Path.Combine(folder, doc.CNumber ?? doc.ReferenceNumber + ".pdf"));
+            //                }
+            //                StatusModel.StatusUpdate();
+            //            }
+            //            catch (Exception ex)
+            //            {
+            //                exceptions.Enqueue(ex);
+            //            }
+            //        }
+            //        s.ShutDown();
+            //    },
+            //        CancellationToken.None, TaskCreationOptions.None, sta).ConfigureAwait(false);
+            //}
+           // if (exceptions.Count > 0) throw new AggregateException(exceptions);
         }
 
         public async Task Send2Excel(string folder, AsycudaDocument doc)
@@ -321,11 +325,13 @@ namespace WaterNut.QuerySpace.AllocationQS.ViewModels
             {
                 if (cp.CustomsOperations.Name == "Exwarehouse")
                 {
-                    await ExportSalesFile( folder, doc).ConfigureAwait(false);
+                    //await ExportSalesFile( folder, doc).ConfigureAwait(false);
+                    ExportDocSetSalesReportUtils.CreateSalesReport(folder, doc.ASYCUDA_Id);    
                 }
                 else
                 {
                     await ExportEntryData(folder, doc).ConfigureAwait(false);
+                    
                 }
             }
             
@@ -352,11 +358,13 @@ namespace WaterNut.QuerySpace.AllocationQS.ViewModels
 
                                 s.dataToPrint = data.ToList();
                                 s.SaveReport(path);
+                                new PDFCreator<EntryDataLine>().CreatePDF(s.dataToPrint, folder);
                             }
                             else
                             {
                                 s.dataToPrint = new List<EntryDataLine>();
                                 File.Create(Path.Combine(folder, doc.CNumber ?? doc.ReferenceNumber + ".csv"));
+                                new PDFCreator<EntryDataLine>().CreatePDF(s.dataToPrint, folder);
                             }
 
                             StatusModel.StatusUpdate();
@@ -415,45 +423,45 @@ namespace WaterNut.QuerySpace.AllocationQS.ViewModels
 
         }
 
-        private static async Task ExportSalesFile(string folder, AsycudaDocument doc)
-        {
-            using (var sta = new StaTaskScheduler(numberOfThreads: 1))
-            {
-                await Task.Factory.StartNew(() =>
-                    {
-                        var s = new ExportToCSV<SaleReportLine, List<SaleReportLine>>();
-                        s.StartUp();
+        //private static async Task ExportSalesFile(string folder, AsycudaDocument doc)
+        //{
+        //    using (var sta = new StaTaskScheduler(numberOfThreads: 1))
+        //    {
+        //        await Task.Factory.StartNew(() =>
+        //            {
+        //                var s = new ExportToCSV<SaleReportLine, List<SaleReportLine>>();
+        //                s.StartUp();
 
-                        try
-                        {
-                            folder = Path.GetDirectoryName(folder);
-                            var data = GetDocumentSalesReport(doc.ASYCUDA_Id).Result;
-                            if (data != null)
-                            {
-                                string path = Path.Combine(folder,
-                                    !string.IsNullOrEmpty(doc.CNumber) ? doc.CNumber : doc.ReferenceNumber + ".csv");
+        //                try
+        //                {
+        //                    folder = Path.GetDirectoryName(folder);
+        //                    var data = GetDocumentSalesReport(doc.ASYCUDA_Id).Result;
+        //                    if (data != null)
+        //                    {
+        //                        string path = Path.Combine(folder,
+        //                            !string.IsNullOrEmpty(doc.CNumber) ? doc.CNumber : doc.ReferenceNumber + ".csv");
 
-                                s.dataToPrint = data.ToList();
-                                s.SaveReport(path);
-                            }
-                            else
-                            {
-                                s.dataToPrint = new List<SaleReportLine>();
-                                File.Create(Path.Combine(folder, doc.CNumber ?? doc.ReferenceNumber + ".csv"));
-                            }
+        //                        s.dataToPrint = data.ToList();
+        //                        s.SaveReport(path);
+        //                    }
+        //                    else
+        //                    {
+        //                        s.dataToPrint = new List<SaleReportLine>();
+        //                        File.Create(Path.Combine(folder, doc.CNumber ?? doc.ReferenceNumber + ".csv"));
+        //                    }
 
-                            StatusModel.StatusUpdate();
-                        }
-                        catch (Exception ex)
-                        {
-                            throw ex;
-                        }
+        //                    StatusModel.StatusUpdate();
+        //                }
+        //                catch (Exception ex)
+        //                {
+        //                    throw ex;
+        //                }
 
-                        s.ShutDown();
-                    },
-                    CancellationToken.None, TaskCreationOptions.None, sta).ConfigureAwait(false);
-            }
-        }
+        //                s.ShutDown();
+        //            },
+        //            CancellationToken.None, TaskCreationOptions.None, sta).ConfigureAwait(false);
+        //    }
+        //}
     }
     public class EntryDataLine
     {

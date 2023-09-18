@@ -124,14 +124,14 @@
     <Reference Include="MoreLinq, Version=3.4.2.0, Culture=neutral, PublicKeyToken=384d532d7e88985d, processorArchitecture=MSIL">
       <HintPath>..\packages\morelinq.3.4.2\lib\net462\MoreLinq.dll</HintPath>
     </Reference>
-    <Reference Include="NanoXLSX, Version=2.2.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\NanoXLSX.2.2.0\lib\net45\NanoXLSX.dll</HintPath>
+    <Reference Include="NanoXLSX, Version=2.3.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\NanoXLSX.2.3.0\lib\net45\NanoXLSX.dll</HintPath>
     </Reference>
     <Reference Include="pdfbox-1.8.9">
       <HintPath>..\WaterNut.Business.Services\Custom Services\DataModels\Custom DataModels\PDF2TXT\pdfbox-1.8.9.dll</HintPath>
     </Reference>
-    <Reference Include="PicoXLSX, Version=3.1.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\PicoXLSX.3.1.0\lib\net45\PicoXLSX.dll</HintPath>
+    <Reference Include="PicoXLSX, Version=3.2.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\PicoXLSX.3.2.0\lib\net45\PicoXLSX.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.AppContext, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">

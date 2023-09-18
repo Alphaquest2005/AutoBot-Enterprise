@@ -1048,8 +1048,8 @@ namespace WaterNut.DataSpace
                                 {
                                     FilePath =
                                         (DataSpace.BaseDataModel.Instance.CurrentApplicationSettings.DataFolder == null
-                                            ? cdoc.Document.ReferenceNumber + ".csv.pdf"
-                                            : $"{DataSpace.BaseDataModel.Instance.CurrentApplicationSettings.DataFolder}\\{cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.AsycudaDocumentSet.Declarant_Reference_Number}\\{cdoc.Document.ReferenceNumber}.csv.pdf"),
+                                            ? cdoc.Document.ReferenceNumber + ".pdf"
+                                            : $"{DataSpace.BaseDataModel.Instance.CurrentApplicationSettings.DataFolder}\\{cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.AsycudaDocumentSet.Declarant_Reference_Number}\\{cdoc.Document.ReferenceNumber}.pdf"),
                                     TrackingState = TrackingState.Added,
                                     DocumentCode = DataSpace.BaseDataModel.Instance.ExportTemplates.FirstOrDefault(x =>
                                         x.Customs_Procedure == cdoc.Document.xcuda_ASYCUDA_ExtendedProperties
@@ -2612,6 +2612,24 @@ namespace WaterNut.DataSpace
             }
         }
 
+        public async Task<AsycudaDocument> GetAsycudaDocument(int asycudaId)
+        {
+            using (var ctx = new CoreEntities.Business.Services.AsycudaDocumentService())
+            {
+                return await ctx.GetAsycudaDocumentByKey(asycudaId.ToString(),
+                        new List<string>
+                        {
+                            //"xcuda_ASYCUDA_ExtendedProperties",
+                            //"xcuda_ASYCUDA_ExtendedProperties.xcuda_ASYCUDA",
+                            //"xcuda_ASYCUDA_ExtendedProperties.xcuda_ASYCUDA.xcuda_Declarant",
+                            //"AsycudaDocumentSet_Attachments.Attachment",
+                            //"AsycudaDocumentSet_Attachments.FileType",
+                            //"Customs_Procedure.Document_Type"
+                        })
+                    .ConfigureAwait(false);
+            }
+        }
+
 
         public static void SaveAttachments(AsycudaDocumentSet docSet, DocumentCT cdoc)
         {
@@ -3758,6 +3776,8 @@ namespace WaterNut.DataSpace
                 exp = exp.InnerException;
             }
         }
+
+        
     }
 
     internal class LicenceDocItem

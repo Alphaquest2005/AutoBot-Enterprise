@@ -37,7 +37,7 @@ namespace AutoBot
                     Line = Convert.ToInt32(s.xLineNumber),
                     Date = Convert.ToDateTime(s.InvoiceDate),
                     InvoiceNo = s.InvoiceNo,
-                    CustomerName = s.CustomerName.StartsWith("- ") ? s.CustomerName.Substring("- ".Length) : s.CustomerName,
+                    CustomerName = string.IsNullOrEmpty(s.CustomerName) ? null : s.CustomerName.StartsWith("- ") ? s.CustomerName.Substring("- ".Length) : s.CustomerName,
                     ItemNumber = s.ItemNumber,
                     ItemDescription = s.ItemDescription,
                     TariffCode = s.TariffCode,

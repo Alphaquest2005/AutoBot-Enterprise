@@ -174,7 +174,8 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     try
                     {
                         await AsycudaDocumentSetExRepository.Instance.ExportDocument(f, BaseViewModel.Instance.CurrentAsycudaDocument.ASYCUDA_Id).ConfigureAwait(false);
-                        await SalesReportModel.Instance.Send2Excel(f, BaseViewModel.Instance.CurrentAsycudaDocument).ConfigureAwait(false);
+                        var folder = Path.GetDirectoryName(f);
+                        await SalesReportModel.Instance.Send2Excel(folder, BaseViewModel.Instance.CurrentAsycudaDocument).ConfigureAwait(false);
                     }
                     catch (Exception)
                     {

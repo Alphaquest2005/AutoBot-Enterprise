@@ -57,6 +57,7 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
                 .Where(x => saleitm.DutyFreePaid == "Duty Free"
                     ? x?.PreviousDocumentItem?.DFQtyAllocated > 0
                     : x?.PreviousDocumentItem?.DPQtyAllocated > 0)
+                .Where(x => x.EntryDataDetails.Sales.EntryDataDate <= saleitm.Sales.EntryDataDate)
                 .OrderByDescending(x => x.AllocationId).ThenByDescending(x => x.EntryDataDetails.Sales.EntryDataDate).ThenByDescending(x => x.EntryDataDetailsId)
                 .FirstOrDefault();
             return GetPreviousItemFromAllocationProcessor.GetPreviousItemFromAllocation(asycudaEntries, i, lastAllocation);

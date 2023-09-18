@@ -18,7 +18,7 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
             //and continue
 
             var lastIndex = asycudaEntries.FindLastIndex(x =>
-                x.Item_Id == lastAllocation.PreviousItem_Id);
+                x.Item_Id == lastAllocation.PreviousItem_Id && lastAllocation.DutyFreePaid == "Duty Free" ? x.DFQtyAllocated > 0 : x.DPQtyAllocated > 0);
             previousI = lastIndex == 0 ? lastIndex :lastIndex - 1;
             return previousI;
         }

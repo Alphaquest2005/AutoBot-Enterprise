@@ -85,12 +85,13 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
                 StatusModel.StatusUpdate($"Creating xBond Entries - {dfp}");
 
                 var cdoc = await DataSpace.BaseDataModel.Instance.CreateDocumentCt(docSet).ConfigureAwait(false);
-                Ex9InitializeCdoc(dfp, cdoc, docSet, documentType, prefix);
+                
                 var effectiveAssessmentDate =
                     slst.SelectMany(x =>x.Allocations).Select(x =>
                         x.EffectiveDate == DateTime.MinValue || x.EffectiveDate == null
                             ? x.InvoiceDate
                             : x.EffectiveDate).Min();
+                Ex9InitializeCdoc(dfp, cdoc, docSet, documentType, effectiveAssessmentDate, docList, prefix);
                // var docTasks = new List<Task>();
                 foreach (var monthyear in slst) //.Where(x => x.DutyFreePaid == dfp)
                 {
@@ -144,7 +145,7 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
                                 }
                             }
 
-                            Ex9InitializeCdoc(dfp, cdoc, docSet, documentType, prefix);
+                            Ex9InitializeCdoc(dfp, cdoc, docSet, documentType, effectiveAssessmentDate, docList, prefix);
                             if (PerIM7)
                                 cdoc.Document.xcuda_Declarant.Number =
                                     cdoc.Document.xcuda_Declarant.Number.Replace(
@@ -1210,8 +1211,8 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
                         {
                             FilePath = Path.Combine(
                                 DataSpace.BaseDataModel.Instance.CurrentApplicationSettings.DataFolder == null
-                                    ? cdoc.Document.ReferenceNumber + ".csv.pdf"
-                                    : $"{DataSpace.BaseDataModel.Instance.CurrentApplicationSettings.DataFolder}\\{cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.AsycudaDocumentSet.Declarant_Reference_Number}\\{cdoc.Document.ReferenceNumber}.csv.pdf"),
+                                    ? cdoc.Document.ReferenceNumber + ".pdf"
+                                    : $"{DataSpace.BaseDataModel.Instance.CurrentApplicationSettings.DataFolder}\\{cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.AsycudaDocumentSet.Declarant_Reference_Number}\\{cdoc.Document.ReferenceNumber}.pdf"),
                             TrackingState = TrackingState.Added,
                             DocumentCode = DataSpace.BaseDataModel.Instance.ExportTemplates.FirstOrDefault(x =>
                                 x.Customs_Procedure == cdoc.Document.xcuda_ASYCUDA_ExtendedProperties
@@ -1634,7 +1635,7 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
             try
             {
                 var previousItem = pod.pDocumentItem;
-                var docSetPreviousItems = previousItems.Keys.Contains(pod.PreviousDocumentItemId)? previousItems[pod.PreviousDocumentItemId] : new List<PreviousItems>();
+                var docSetPreviousItems = new ConcurrentBag<PreviousItems>( previousItems.Keys.Contains(pod.PreviousDocumentItemId)? previousItems[pod.PreviousDocumentItemId].ToList() : new List<PreviousItems>());
                 if (previousItem == null) return;
                 var plst = previousItem.previousItems.DistinctBy(x => x.PreviousItem_Id);
                 var pw = Convert.ToDecimal(Math.Round(pod.EX9Allocation.Net_weight_itm,2));
@@ -1673,7 +1674,8 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
             }
         }
 
-        private void Ex9InitializeCdoc(string dfp, DocumentCT cdoc, AsycudaDocumentSet ads, string DocumentType,string prefix = null)
+        private void Ex9InitializeCdoc(string dfp, DocumentCT cdoc, AsycudaDocumentSet ads, string DocumentType,
+            DateTime? effectiveAssessmentDate, List<DocumentCT> docList, string prefix = null)
         {
             try
             {
@@ -1692,7 +1694,7 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
 
 
                 DataSpace.BaseDataModel.Instance.AttachCustomProcedure(cdoc, customsProcedure);
-                AllocationsModel.Instance.AddDutyFreePaidtoRef(cdoc, dfp, ads);
+                AllocationsModel.Instance.AddDutyFreePaidtoRef(cdoc, dfp, ads, effectiveAssessmentDate, docList);
                 
 
 

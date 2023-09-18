@@ -39,20 +39,17 @@ namespace WaterNut.DataSpace
 
       
 
-        public void AddDutyFreePaidtoRef(DocumentCT cdoc, string dfp, AsycudaDocumentSet docSet)
+        public void AddDutyFreePaidtoRef(DocumentCT cdoc, string dfp, AsycudaDocumentSet docSet,
+            DateTime? effectiveAssessmentDate, List<DocumentCT> docList)
         {
             switch (dfp)
             {
                 case "Duty Free":
 
-                    cdoc.Document.xcuda_Declarant.Number = docSet.Declarant_Reference_Number
-                                                           + "-F" + //+ "-DF"
-                                                           cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.FileNumber;
+                    cdoc.Document.xcuda_Declarant.Number = $"{docSet.Declarant_Reference_Number}-{effectiveAssessmentDate.GetValueOrDefault():MMM-yy}-F{docList.Count}";//cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.FileNumber
                     break;
                 case "Duty Paid":
-                    cdoc.Document.xcuda_Declarant.Number = docSet.Declarant_Reference_Number
-                                                           + "-P" + // + "-DP"
-                                                           cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.FileNumber;
+                    cdoc.Document.xcuda_Declarant.Number = $"{docSet.Declarant_Reference_Number}-{effectiveAssessmentDate.GetValueOrDefault():MMM-yy}-P{docList.Count}";//cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.FileNumber
                     break;
             }
         }
