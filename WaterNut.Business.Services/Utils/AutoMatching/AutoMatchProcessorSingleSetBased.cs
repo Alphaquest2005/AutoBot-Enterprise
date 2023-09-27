@@ -219,10 +219,12 @@ namespace WaterNut.Business.Services.Utils.AutoMatching
                 var edLst = ParallelEnumerable.Select(lst
                         .Where(x => !string.IsNullOrEmpty(x.ItemNumber))
                         .AsParallel(), s => AutoMatchItemNumber(s).Result)
+                    .Where(x => x != null)
                     .ToList();
+                   
 
 
-                SetMinimumEffectDate(edLst);
+                if(edLst.Any()) SetMinimumEffectDate(edLst);
                 return edLst;
             }
             catch (Exception e)
@@ -238,7 +240,7 @@ namespace WaterNut.Business.Services.Utils.AutoMatching
             {
 
                 var ed = GetEntryDataDetail(s);
-
+                if(ed == null) return null;
                 var processors = new List<IAutoMatchProcessor>()
                 {
                     new PreviousInvoiceNumberMatcher(s, ed),
@@ -268,7 +270,7 @@ namespace WaterNut.Business.Services.Utils.AutoMatching
         private static EntryDataDetail GetEntryDataDetail(AdjustmentDetail s)
         {
             var ed = new GetAllDiscrepancyDetailsMem().Execute(s.EntryDataDetailsId);
-            
+            if (ed == null) return null;
             ed.Comment = null;
             ed.EffectiveDate = null;
             return ed;
