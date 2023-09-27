@@ -98,8 +98,7 @@ namespace WaterNut.DataSpace
                         var prop = GetXcudaAsycudaExtendedProperties(doc, docSetAsycudaDocumentSetId);
                         var declarant = ctx.xcuda_Declarant.First(x => x.ASYCUDA_Id == doc.ASYCUDA_Id);
                         var oldRef = declarant.Number;
-                        //var letter = oldRef.Substring(oldRef.IndexOf(prop.FileNumber.ToString()) - 1, 1);
-                        var newRef = Regex.Replace(declarant.Number, @"\d+(?=[^\d]*$)", docSet.LastFileNumber.ToString());
+                        var newRef = GetNewReference(docSet, declarant, ctx);
                         declarant.Number = newRef;
                         declarant.TrackingState = TrackingState.Modified;
                         prop.FileNumber = docSet.LastFileNumber;
@@ -116,6 +115,22 @@ namespace WaterNut.DataSpace
                 Console.WriteLine(e);
                 throw;
             }
+        }
+
+        private static string GetNewReference(AsycudaDocumentSet docSet, xcuda_Declarant declarant, DocumentDSContext ctx)
+        {
+            var newNum = Convert.ToInt32(Regex.Match(declarant.Number, @"\d+(?=[^\d]*$)"));
+
+            string newRef;
+            while (true)
+            {
+                newNum += 1;
+                newRef = Regex.Replace(declarant.Number, @"\d+(?=[^\d]*$)", newNum.ToString());
+                if (!ctx.xcuda_Declarant.Any(x => x.Number == newRef)) break;
+            }
+
+            newRef = Regex.Replace(declarant.Number, @"\d+(?=[^\d]*$)", docSet.LastFileNumber.ToString());
+            return newRef;
         }
 
         private static xcuda_ASYCUDA_ExtendedProperties GetXcudaAsycudaExtendedProperties(xcuda_ASYCUDA doc,
