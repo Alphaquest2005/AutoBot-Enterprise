@@ -4,6 +4,7 @@ using System.Data.Entity;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.ComTypes;
+using System.Text.RegularExpressions;
 using Core.Common.Utils;
 using CoreEntities.Business.Entities;
 using DocumentDS.Business.Entities;
@@ -98,8 +99,7 @@ namespace WaterNut.DataSpace
                         var declarant = ctx.xcuda_Declarant.First(x => x.ASYCUDA_Id == doc.ASYCUDA_Id);
                         var oldRef = declarant.Number;
                         //var letter = oldRef.Substring(oldRef.IndexOf(prop.FileNumber.ToString()) - 1, 1);
-                        var newRef = declarant.Number?.Replace(prop.FileNumber.ToString(),
-                            docSet.LastFileNumber.ToString());
+                        var newRef = Regex.Replace(declarant.Number, @"\d+(?=[^\d]*$)", docSet.LastFileNumber.ToString());
                         declarant.Number = newRef;
                         declarant.TrackingState = TrackingState.Modified;
                         prop.FileNumber = docSet.LastFileNumber;
