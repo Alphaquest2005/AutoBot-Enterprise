@@ -1088,8 +1088,8 @@ private void Update_TarrifCodes(ASYCUDAItem ai)
             if (ai.Tarification.Attached_doc_item.Text.Count > 0)
                 t.Attached_doc_item = ai.Tarification.Attached_doc_item.Text[0];
             
-            await SaveCustomsProcedure(t).ConfigureAwait(false);
-
+           var cp =  await SaveCustomsProcedure(t).ConfigureAwait(false);
+            
             await Save_HScode(t, di,ai).ConfigureAwait(false);
 
             //await DIBaseDataModel.Instance.Savexcuda_Tarification(t).ConfigureAwait(false);
@@ -1108,7 +1108,7 @@ private void Update_TarrifCodes(ASYCUDAItem ai)
             {
                 var scp = BaseDataModel.Instance.Customs_ProcedureCache.Data.FirstOrDefault(x => x.Extended_customs_procedure == t.Extended_customs_procedure
                                                            && x.National_customs_procedure == t.National_customs_procedure);
-
+                
                 cp = new Customs_Procedure(true)
                 {
                     Extended_customs_procedure = t.Extended_customs_procedure,
