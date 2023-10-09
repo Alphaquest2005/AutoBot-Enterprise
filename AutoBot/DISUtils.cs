@@ -146,11 +146,34 @@ namespace AutoBot
 
                     var res = cnumberList.Any() 
                         ? GetSubmitEntryDataPerCNumber(cplst, cnumberList) 
-                        : GetSubmitEntryDataPerDocSet(ft, cplst);
+                        : GetSubmitEntryDataPerDocSet(ft.AsycudaDocumentSetId, cplst);
 
                     var lst = CreateDISEntryDataFromSubmitData(res);
                     return lst;
                 
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+        }
+
+        public static IEnumerable<IGrouping<string, TODO_SubmitDiscrepanciesToCustoms>> GetSubmitEntryData()
+        {
+            try
+            {
+
+                var saleInfo = BaseDataModel.CurrentSalesInfo(0);
+
+                var cplst = BaseDataModel.Instance.Customs_Procedures
+                    .Where(x => x.CustomsOperation.Name == "Exwarehouse" || (x.CustomsOperation.Name == "Warehouse" && x.Stock == true)).Select(x => x.CustomsProcedure).ToList();
+
+                var res =  GetSubmitEntryDataPerDocSet(saleInfo.DocSet.AsycudaDocumentSetId, cplst);
+
+                var lst = CreateDISEntryDataFromSubmitData(res);
+                return lst;
+
             }
             catch (Exception e)
             {
@@ -181,14 +204,14 @@ namespace AutoBot
             return lst;
         }
 
-        private static List<TODO_SubmitAllXMLToCustoms> GetSubmitEntryDataPerDocSet(FileTypes ft, List<string> cplst)
+        private static List<TODO_SubmitAllXMLToCustoms> GetSubmitEntryDataPerDocSet(int asycudaDocumentSetId, List<string> cplst)
         {
             using (var ctx = new CoreEntitiesContext())
             {
                 
                 ctx.Database.CommandTimeout = _tripleLongDatabaseCommandTimeout;
                 List<TODO_SubmitAllXMLToCustoms> res;
-                var docSet = BaseDataModel.Instance.GetAsycudaDocumentSet(ft.AsycudaDocumentSetId).Result;
+                var docSet = BaseDataModel.Instance.GetAsycudaDocumentSet(asycudaDocumentSetId).Result;
                 res = ctx.TODO_SubmitAllXMLToCustoms.Where(x =>
                         x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings
                             .ApplicationSettingsId && cplst.Any(z => z == x.CustomsProcedure))

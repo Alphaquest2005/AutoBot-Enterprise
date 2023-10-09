@@ -179,5 +179,7 @@ namespace AutoBot
                 .Select(x => x.EmailAddress)
                 .Distinct()
                 .ToArray();
+
+        public static void ReSubmitSalesToCustoms() => SubmitSalesToCustoms(DISUtils.GetSubmitEntryData());
     }
 }

@@ -23,6 +23,8 @@ using CustomsOperations = CoreEntities.Business.Enums.CustomsOperations;
 using xlsxWriter;
 using FileTypes = CoreEntities.Business.Entities.FileTypes;
 
+
+
 namespace AutoBot
 {
 
@@ -34,7 +36,8 @@ namespace AutoBot
         {
             try
             {
-                
+                Z.EntityFramework.Extensions.LicenseManager.AddLicense("7242;101-Joseph-Bartholomew", "09748212-b8b0-15fc-e099-d4e670e6d713");
+
 
                 var beforeImport = DateTime.Now;
                 Console.WriteLine($"{beforeImport}");

@@ -35,6 +35,7 @@ namespace WaterNut
 
             try
             {
+                Z.EntityFramework.Extensions.LicenseManager.AddLicense("7242;101-Joseph-Bartholomew", "09748212-b8b0-15fc-e099-d4e670e6d713");
                 CultureInfo.DefaultThreadCurrentCulture = new CultureInfo("en-US");
                 
                 splash.Show(TimeSpan.FromSeconds(0));

@@ -92,16 +92,16 @@ namespace WaterNut.DataSpace
                 using (var ctx = new DocumentDSContext { StartTracking = true })
                 {
                     foreach (var g in lst)
-                    foreach (var doc in g)
+                    foreach (var doc in g.Where(x => x.xcuda_ASYCUDA_ExtendedProperties.ImportComplete == false).ToList())
                     {
-                        AppendDocSetLastFileNumber(docSet);
+                        //AppendDocSetLastFileNumber(docSet);
                         var prop = GetXcudaAsycudaExtendedProperties(doc, docSetAsycudaDocumentSetId);
                         var declarant = ctx.xcuda_Declarant.First(x => x.ASYCUDA_Id == doc.ASYCUDA_Id);
                         var oldRef = declarant.Number;
                         var newRef = GetNewReference(docSet, declarant, ctx);
                         declarant.Number = newRef;
                         declarant.TrackingState = TrackingState.Modified;
-                        prop.FileNumber = docSet.LastFileNumber;
+                        //prop.FileNumber = docSet.LastFileNumber;
                         ctx.SaveChanges();
                         ctx.ApplyChanges(docSet);
                         ctx.SaveChanges();
@@ -119,7 +119,7 @@ namespace WaterNut.DataSpace
 
         private static string GetNewReference(AsycudaDocumentSet docSet, xcuda_Declarant declarant, DocumentDSContext ctx)
         {
-            var newNum = Convert.ToInt32(Regex.Match(declarant.Number, @"\d+(?=[^\d]*$)"));
+            var newNum = Convert.ToInt32(Regex.Match(declarant.Number, @"\d+(?=[^\d]*$)").Value);
 
             string newRef;
             while (true)
@@ -129,7 +129,7 @@ namespace WaterNut.DataSpace
                 if (!ctx.xcuda_Declarant.Any(x => x.Number == newRef)) break;
             }
 
-            newRef = Regex.Replace(declarant.Number, @"\d+(?=[^\d]*$)", docSet.LastFileNumber.ToString());
+            //newRef = Regex.Replace(declarant.Number, @"\d+(?=[^\d]*$)", docSet.LastFileNumber.ToString());
             return newRef;
         }
 

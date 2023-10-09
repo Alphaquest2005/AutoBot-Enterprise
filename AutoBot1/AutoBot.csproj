@@ -390,6 +390,9 @@
       <HintPath>..\packages\PdfPig.0.1.8\lib\net47\UglyToad.PdfPig.Tokens.dll</HintPath>
     </Reference>
     <Reference Include="WindowsBase" />
+    <Reference Include="Z.EntityFramework.Extensions, Version=7.100.0.0, Culture=neutral, PublicKeyToken=59b66d028979105b, processorArchitecture=MSIL">
+      <HintPath>..\packages\Z.EntityFramework.Extensions.7.100.0\lib\net45\Z.EntityFramework.Extensions.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Asycuda421.designer.cs" />
