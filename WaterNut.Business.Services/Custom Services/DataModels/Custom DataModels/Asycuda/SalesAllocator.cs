@@ -82,7 +82,7 @@ namespace WaterNut.DataSpace
                 try
                 {
                     t += 1;
-                    // Debug.WriteLine($"Processing {itm.Key} - {t} with {itm.SalesList.Count} Sales: {0} of {itm.SalesList.Count}");
+                     Console.WriteLine($"Processing {itm.Key} - {t} with {itm.SalesList.Count} Sales: {0} of {itm.SalesList.Count}");
                     //StatusModel.Refresh();
                     var sales = SortEntryDataDetailsList(itm);
                     var asycudaItems = SortAsycudaItems(itm);

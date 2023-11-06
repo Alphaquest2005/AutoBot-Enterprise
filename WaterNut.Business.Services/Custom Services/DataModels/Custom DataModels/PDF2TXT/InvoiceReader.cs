@@ -180,10 +180,11 @@ namespace WaterNut.DataSpace
 
             if (csvLines.Count < 1 || !tmp.Success)
             {
-                return ErrorState(file, emailId, pdftxt, client, docSet, tmp, fileTypeId, isLastdoc);
+                return ErrorState(file, emailId, formattedPdfTxt, client, docSet, tmp, fileTypeId, isLastdoc);
             }
             else
             {
+                WriteTextFile(file, formattedPdfTxt);
                 return ImportSuccessState(file, emailId, fileType, overWriteExisting, docSet, tmp, csvLines);
             }
 
@@ -204,7 +205,7 @@ namespace WaterNut.DataSpace
             return true;
         }
 
-        private static bool ErrorState(string file, string emailId, StringBuilder pdftxt, Client client,
+        private static bool ErrorState(string file, string emailId, string pdftxt, Client client,
             List<AsycudaDocumentSet> docSet,
             Invoice tmp, int fileTypeId, bool isLastdoc)
         {
@@ -361,14 +362,20 @@ namespace WaterNut.DataSpace
         {
             var fileInfo = new FileInfo(file);
             
-            var txtFile = file + ".txt";
-            //if (File.Exists(txtFile)) return;
-            File.WriteAllText(txtFile, pdftxt);
+            var txtFile = WriteTextFile(file, pdftxt);
             var body = CreateEmail(file, client, error, failedlst, fileInfo, txtFile);
             CreateTestCase(file, failedlst, txtFile, body);
 
 
             SaveImportError(asycudaDocumentSets, file, emailId, fileTypeId, pdftxt, error, failedlst, fileInfo);
+        }
+
+        private static string WriteTextFile(string file, string pdftxt)
+        {
+            var txtFile = file + ".txt";
+            //if (File.Exists(txtFile)) return;
+            File.WriteAllText(txtFile, pdftxt);
+            return txtFile;
         }
 
         private static void SaveImportError(List<AsycudaDocumentSet> asycudaDocumentSets, string file, string emailId, int fileTypeId, string pdftxt,

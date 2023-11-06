@@ -236,36 +236,48 @@ namespace WaterNut.DataSpace
             return res;
         }
 
-        private void ImportByDataType(KeyValuePair<(Fields fields, int instance), string> field, IDictionary<string, object> ditm, KeyValuePair<(int lineNumber, string section), Dictionary<(Fields fields, int instance), string>> value)
+        private void ImportByDataType(KeyValuePair<(Fields fields, int instance), string> field,
+            IDictionary<string, object> ditm,
+            KeyValuePair<(int lineNumber, string section), Dictionary<(Fields fields, int instance), string>> value)
         {
-            switch (field.Key.fields.DataType)
+            try
             {
-                case "String":
-                    ditm[field.Key.fields.Field] =
-                        (ditm[field.Key.fields.Field] + " " + GetValueByKey(value, field.Key.fields.Key)).Trim();
-                    break;
-                case "Number":
-                case "Numeric":
 
-                    if (field.Key.fields.AppendValues == true)
-                    {
-                        var val = GetValueByKey(value, field.Key.fields.Key);
-                        if (ditm[field.Key.fields.Field].ToString() !=  val.ToString())
+
+                switch (field.Key.fields.DataType)
+                {
+                    case "String":      
+                        ditm[field.Key.fields.Field] =
+                            (ditm[field.Key.fields.Field] + " " + GetValueByKey(value, field.Key.fields.Key)).Trim();
+                        break;
+                    case "Number":
+                    case "Numeric":
+
+                        if (field.Key.fields.AppendValues == true)
+                        {
+                            var val = GetValueByKey(value, field.Key.fields.Key);
+                            if (ditm[field.Key.fields.Field].ToString() != val.ToString())
+                                ditm[field.Key.fields.Field] =
+                                    Convert.ToDouble(ditm[field.Key.fields.Field] ?? "0") +
+                                    Convert.ToDouble(GetValueByKey(value, field.Key.fields.Key));
+                        }
+                        else
+                        {
                             ditm[field.Key.fields.Field] =
                                 Convert.ToDouble(ditm[field.Key.fields.Field] ?? "0") +
                                 Convert.ToDouble(GetValueByKey(value, field.Key.fields.Key));
-                    }
-                    else
-                    {
-                        ditm[field.Key.fields.Field] =
-                            Convert.ToDouble(ditm[field.Key.fields.Field] ?? "0") +
-                            Convert.ToDouble(GetValueByKey(value, field.Key.fields.Key));
-                    }
-                    
-                    break;
-                default:
-                    ditm[field.Key.fields.Field] = GetValueByKey(value, field.Key.fields.Key);
-                    break;
+                        }
+
+                        break;
+                    default:
+                        ditm[field.Key.fields.Field] = GetValueByKey(value, field.Key.fields.Key);
+                        break;
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
             }
         }
 
@@ -309,40 +321,55 @@ namespace WaterNut.DataSpace
 
         private static dynamic GetValue(KeyValuePair<(Fields fields, int instance), string> f)
         {
-            if (f.Key.fields == null) return null;
-            switch (f.Key.fields.DataType)
+            try
             {
-                case "String":
-                    return f.Value;
-                case "Numeric":
-                case "Number":
-                    var val = f.Value.Replace("$", "");
-                    if (val == "") val = "0";
-                    if (double.TryParse(val, out double num))
-                        return num;
-                    else
+
+
+                if (f.Key.fields == null) return null;
+                switch (f.Key.fields.DataType)
+                {
+                    case "String":
+                        return f.Value;
+                    case "Numeric":
+                    case "Number":
+                        var val = f.Value.Replace("$", "");
+                        if (val == "") val = "0";
+                        if (double.TryParse(val, out double num))
+                            return num;
+                        else
+                            throw new ApplicationException(
+                                $"{f.Key.fields.Field} can not convert to {f.Key.fields.DataType} for Value:{f.Value}");
+
+                    case "Date":
+                        if (DateTime.TryParse(f.Value, out DateTime date))
+                            return date;
+                        else
+                            //throw new ApplicationException(
+                            //    $"{f.Key.Field} can not convert to {f.Key.DataType} for Value:{f.Value}");
+                            return DateTime.MinValue;
+                    case "English Date":
+                        var formatStrings = new List<string>()
+                        {
+                            "dd/MM/yyyy", "dd/M/yyyy", "d/MM/yyyy", "d/M/yyyy", "M/yyyy", "MMMM d, yyyy", "dd.MM.yyyy"
+                        };
+                        foreach (String formatString in formatStrings)
+                        {
+                            if (DateTime.TryParseExact(f.Value, formatString, CultureInfo.InvariantCulture,
+                                    DateTimeStyles.None,
+                                    out DateTime edate))
+                                return edate;
+                        }
+
                         throw new ApplicationException(
                             $"{f.Key.fields.Field} can not convert to {f.Key.fields.DataType} for Value:{f.Value}");
-
-                case "Date":
-                    if (DateTime.TryParse(f.Value, out DateTime date))
-                        return date;
-                    else
-                        //throw new ApplicationException(
-                        //    $"{f.Key.Field} can not convert to {f.Key.DataType} for Value:{f.Value}");
-                        return DateTime.MinValue;
-                case "English Date":
-                    var formatStrings = new List<string>() { "dd/MM/yyyy", "dd/M/yyyy", "d/MM/yyyy", "d/M/yyyy","M/yyyy", "MMMM d, yyyy", "dd.MM.yyyy" };
-                    foreach (String formatString in formatStrings)
-                    {
-                        if (DateTime.TryParseExact(f.Value, formatString, CultureInfo.InvariantCulture, DateTimeStyles.None,
-                                out DateTime edate))
-                            return edate;
-                    }
-                    throw new ApplicationException(
-                        $"{f.Key.fields.Field} can not convert to {f.Key.fields.DataType} for Value:{f.Value}");
-                default:
-                    return f.Value;
+                    default:
+                        return f.Value;
+                }
+            }
+            catch (Exception e)
+            {
+                    Console.WriteLine(e);
+                throw;
             }
         }
 

@@ -113,7 +113,7 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
 
         private static List<xcuda_HScode> AddTariffCodes(List<xcuda_HScode> xcudaHScodes)
         {
-            var tariffCodeLst = xcudaHScodes.Select(x => x.TariffCodes).Distinct().ToList();
+            var tariffCodeLst = xcudaHScodes.Select(x => x.Commodity_code).Distinct().ToList();
             var tariffCodes = new AllocationDSContext().TariffCodes.WhereBulkContains(tariffCodeLst, t => t.TariffCode).ToList();
             AddTariffCategorys(tariffCodes);
 
@@ -127,7 +127,7 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
         private static void AddTariffCategorys(List<TariffCodes> TariffCodes)
         {
             var tarifCatLst = TariffCodes.Select(x => x.TariffCategoryCode).Distinct().ToList();
-            var tariffCategorys = new AllocationDSContext().TariffCategory.WhereBulkContains(tarifCatLst, x => x.TariffCodes)
+            var tariffCategorys = new AllocationDSContext().TariffCategory.WhereBulkContains(tarifCatLst, x => x.TariffCategoryCode)
                 .Distinct().ToList();
             AddTarifCategoryCodeSuppUnits(tariffCategorys);
 
@@ -139,7 +139,7 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
         {
             var tcLst  = tariffCategorys.Select(x => x.TariffCategoryCode).ToList();
             var tarifSuplst = new AllocationDSContext().TariffCategoryCodeSuppUnit.Include(z => z.TariffSupUnitLkps)
-                .WhereBulkContains(tcLst, x => x.TariffCategory).ToList();
+                .WhereBulkContains(tcLst, x => x.TariffCategoryCode).ToList();
 
             tariffCategorys.GroupJoin(tarifSuplst, c => c.TariffCategoryCode, s => s.TariffCategoryCode, (c, s) => (c,s))
                 .ForEach(x => x.c.TariffCategoryCodeSuppUnit = x.s.ToList());

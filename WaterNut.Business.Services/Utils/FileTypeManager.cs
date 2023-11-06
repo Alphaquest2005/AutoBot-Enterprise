@@ -24,8 +24,8 @@ namespace WaterNut.Business.Services.Utils
         {
             try
             {
-                if (_fileTypes == null || BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId !=
-                    _fileTypes.First().ApplicationSettingsId)
+                if (_fileTypes == null|| (_fileTypes.Any() && BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId !=
+                    _fileTypes.First().ApplicationSettingsId))
                     using (var ctx = new CoreEntitiesContext())
                     {
                         _fileTypes = ctx.FileTypes

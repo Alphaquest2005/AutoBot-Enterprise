@@ -82,7 +82,7 @@ namespace CoreEntities.Business.Services
                 //docset.TotalFreight = asycudaDocumentSetEx.TotalFreight;
                 //docset.TotalInvoices = asycudaDocumentSetEx.TotalInvoices;
                 //docset.TotalPackages = asycudaDocumentSetEx.TotalPackages;
-                //docset.TotalWeight = asycudaDocumentSetEx.TotalWeight;
+                docset.TotalWeight = (double?)asycudaDocumentSetEx.TotalWeight;
                 
                 await WaterNut.DataSpace.DocumentDS.DataModels.BaseDataModel.Instance.SaveAsycudaDocumentSet(docset)
                     .ConfigureAwait(false);

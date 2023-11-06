@@ -171,6 +171,10 @@ namespace AutoBotUtilities.Tests
         [TestCase("0532-1168", "3/1/2023", 60)]
         [TestCase("14002-85LGMUL", "3/1/2023", 60)]
 
+        ////////// IWW
+        
+        [TestCase("MM07722", "3/1/2023", 60)]
+
         public void AllocatSales(string itemNumber, string LastInvoiceDate, int NoOfAllocations )
         {
             try

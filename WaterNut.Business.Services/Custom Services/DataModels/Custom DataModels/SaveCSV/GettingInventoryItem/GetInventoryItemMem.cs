@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using InventoryDS.Business.Entities;
+using MoreLinq.Extensions;
 using TrackableEntities.Common;
 using WaterNut.DataSpace;
 
@@ -22,6 +23,7 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
               var lst = new InventoryDSContext().InventoryItems
                   .Include("InventoryItemAlias")
                   .Where(x => x.ApplicationSettingsId == DataSpace.BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)
+                  .Where(x => !string.IsNullOrEmpty(x.Description))
                   .ToDictionary(x => (x.Id, x.ItemNumber), x => x);
               _inventoryItems = new ConcurrentDictionary<(int Id, string ItemNumber), InventoryItem>(lst);
             }

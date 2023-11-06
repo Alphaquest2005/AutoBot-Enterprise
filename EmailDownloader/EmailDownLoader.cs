@@ -52,6 +52,7 @@ namespace EmailDownloader
         {
             try
             {
+                
                 var imapClient = new ImapClient();
                 var mailSettings = GetReadMailSettings(client.Email);
                 imapClient.Connect(mailSettings.Server, mailSettings.Port, mailSettings.Options);
@@ -72,7 +73,7 @@ namespace EmailDownloader
         {
             try
             {
-                
+                if (client.Email == null) return;
                 MimeMessage msg = CreateMessage(client, subject, To, body, attachments);
                 SendEmail(client, msg);
                 if(directory != null)
@@ -91,18 +92,18 @@ namespace EmailDownloader
         {
             var message = new MimeMessage();
             message.From.Add(new MailboxAddress($"{client.CompanyName}-AutoBot", client.Email));
-            if (!client.DevMode)
-            {
+           // if (!client.DevMode)
+            //{
                 foreach (var recipent in to)
                 {
                     message.To.Add(MailboxAddress.Parse(recipent));
                 }
                // message.Cc.Add(new MailboxAddress("Joseph Bartholomew", "Joseph@auto-brokerage.com"));
-            }
-            else
-            {
+            //}
+            //else
+           // {
                // message.To.Add(new MailboxAddress("Joseph Bartholomew", "Joseph@auto-brokerage.com"));
-            }
+           // }
 
 
             message.Subject = subject;
@@ -337,6 +338,7 @@ namespace EmailDownloader
         {
             try
             {
+                if(clientDetails.Email == null) return false;
                 var imapClient = GetImapClient(clientDetails);
 
                 var uID = new CoreEntitiesContext().Emails.FirstOrDefault(x => x.EmailId == emailId && x.MachineName == Environment.MachineName)?.EmailUniqueId;
@@ -366,6 +368,7 @@ namespace EmailDownloader
         private static void SendBackMsg(MimeMessage msg, Client clientDetails, string errtxt)
         {
             // construct a new message
+            if (clientDetails.Email == null) return;
             var message = new MimeMessage();
             message.From.Add(new MailboxAddress($"{clientDetails.CompanyName}-AutoBot", clientDetails.Email));
             if (!clientDetails.DevMode)
@@ -399,6 +402,7 @@ namespace EmailDownloader
         {
             try
             {
+                if (clientDetails.Email == null) return ;
                 var mailSettings = GetSendMailSettings(clientDetails.Email);
                 using (var client = new SmtpClient())
                 {
@@ -485,7 +489,7 @@ namespace EmailDownloader
         {
             try
             {
-
+                if (clientDetails.Email == null) return false;
                 var uID = new CoreEntitiesContext().Emails.FirstOrDefault(x => x.EmailId == emailId && x.MachineName == Environment.MachineName)?.EmailUniqueId??0;
                 if (uID == 0)
                 {
@@ -534,6 +538,7 @@ namespace EmailDownloader
         private static void ForwardMsg(MimeMessage msg, Client clientDetails, string subject, string body,
             string[] contacts, string[] attachments)
         {
+            if (clientDetails.Email == null) return ;
             // construct a new message
             var message = new MimeMessage();
             message.From.Add(new MailboxAddress($"{clientDetails.CompanyName}-AutoBot", clientDetails.Email));
@@ -580,6 +585,7 @@ namespace EmailDownloader
         {
             try
             {
+                if (client.Email == null) return false;
                 var msg = GetMsg(uID, client);
                 if (msg != null)
                 {
