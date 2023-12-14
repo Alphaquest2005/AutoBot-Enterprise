@@ -1164,6 +1164,8 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
         private static void AddSourceFileAttachment(DataSpace.BaseDataModel.MyPodData mypod, DocumentCT cdoc, xcuda_Item itm,
             AlloEntryLineData lineData)
         {
+            var sFile = mypod.EntlnData.EntryDataDetails[0].SourceFile;
+            if (sFile == null) return;
             var sourceFile = new FileInfo(mypod.EntlnData.EntryDataDetails[0].SourceFile);
             var sourceFilePdf = sourceFile.FullName.Replace(sourceFile.Extension, ".pdf");
             sourceFilePdf = sourceFilePdf.Replace("-Fixed", "");
@@ -1330,19 +1332,29 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
                     }
                     var ssa = mypod.Allocations.ElementAt(i-1);
                     var piData = ssa.PIData.Sum(x => x.xQuantity) ?? 0;
+                    
                     var nr = mypod.Allocations.Take(i).Sum(x => x.QtyAllocated - (x.PIData.Sum(z => z.xQuantity) ?? 0));
+                    //if (piData == 0 && totalPiAll > 0) // put this becase Iww - pCnumber 43681-129 && xCnumber 56932-128... exout in 2022 but no pi data considered now have to double check if another check could fix this total pi check
+                    //{
+                       // piData = totalPiAll;
+                       // nr -= totalPiAll;// need to also update this figure
+                        
+                    //}
 
-                    if (nr < availibleQty && (nr + (ssa.QtyAllocated- piData)) >= availibleQty)
+                    if (nr >= availibleQty && !(piData == 0 && totalPiAll > 0) )//put back in creating more problems than solutions // took out check because 'NR05034' pcnumber =8928 plinenumber = 44 not exwarhoseing because of this check
+                    {
+                        //if(mypod.Allocations.Count == 1) ssa.QtyAllocated = availibleQty; //renable with condition to fix [TestCase("7/1/2020", "7/31/2020", "MRL/JB0057F", 1, 1, 2)]// overexwarehousing --- //this increased the qty because its referenced in next line below.
+                        ssa.QtyAllocated = availibleQty; // disabled above to remove check to fix "GC42000" pcnumber = 63698 and plinenumber = 3
+                        mypod.EntlnData.Quantity = mypod.Allocations.Sum(x => x.QtyAllocated); ;
+                        break;
+                    }
+
+                    if ((nr < availibleQty && (nr + (ssa.QtyAllocated- piData)) >= availibleQty)
+                        || (nr >= availibleQty && Math.Abs(rejects.Sum(x => x.QtyAllocated) - totalPiAll) <= 0))
                     {
                         ssa.QtyAllocated = availibleQty - nr;
                         mypod.EntlnData.Quantity = mypod.Allocations.Sum(x => x.QtyAllocated);
                         break;//put back break because its finished reducing allocations and need to exit --- gonna bug somewhere can't remember
-                    }
-                    if (nr >= availibleQty)
-                    {
-                        if(mypod.Allocations.Count == 1) ssa.QtyAllocated = availibleQty; //renable with condition to fix [TestCase("7/1/2020", "7/31/2020", "MRL/JB0057F", 1, 1, 2)]// overexwarehousing --- //this increased the qty because its referenced in next line below.
-                        mypod.EntlnData.Quantity = mypod.Allocations.Sum(x => x.QtyAllocated); ;
-                        break;
                     }
                     else
                     {

@@ -174,6 +174,10 @@ namespace AutoBotUtilities.Tests
         ////////// IWW
         
         [TestCase("MM07722", "3/1/2023", 60)]
+        [TestCase("ML33451", "3/1/2023", 60)] // not marking overallocations
+
+        ////////////Rouge
+        [TestCase("82453688", "3/1/2023", 60)] // not allocating
 
         public void AllocatSales(string itemNumber, string LastInvoiceDate, int NoOfAllocations )
         {

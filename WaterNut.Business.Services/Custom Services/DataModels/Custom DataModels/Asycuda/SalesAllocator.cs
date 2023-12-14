@@ -248,7 +248,7 @@ namespace WaterNut.DataSpace
                        
 
                         if (saleitmQtyToallocate < 0 
-                            && saleitmQtyToallocate + nextSalesQty >0
+                            && ((saleitmQtyToallocate + prevSalesQty == 0 && CurrentAsycudaItemIndex != 0) || saleitmQtyToallocate + nextSalesQty >0)
                             && Enumerable.Where<AsycudaSalesAllocations>(cAsycudaItm.AsycudaSalesAllocations, x => x.DutyFreePaid == saleitm.DutyFreePaid).Sum(x => x.QtyAllocated) == 0)
                         {
                             var previousI = GetPreviousAllocatedAsycudaItem(asycudaEntries, saleslst, saleitm, i,salesSet);

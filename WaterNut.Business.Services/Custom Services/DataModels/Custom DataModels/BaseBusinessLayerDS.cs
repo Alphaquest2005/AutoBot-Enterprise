@@ -2412,7 +2412,7 @@ namespace WaterNut.DataSpace
 
             catch (Exception Ex)
             {
-                if (!noMessages && (bool) !Ex?.InnerException?.Message.StartsWith("Please Import pCNumber"))
+               // if (!noMessages && (bool) !Ex?.InnerException?.Message.StartsWith("Please Import pCNumber"))
                     exceptions.Enqueue(
                         new ApplicationException(
                             $"Could not import file - '{f}. Error:{(Ex.InnerException ?? Ex).Message} Stacktrace:{(Ex.InnerException ?? Ex).StackTrace}"));

@@ -217,6 +217,7 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
             Debug.WriteLine($"*********************Create EX9 For {filter.startDate.Date.ToShortDateString()}");
             dutylst
                 .AsParallel()
+                .AsOrdered()
                 .WithDegreeOfParallelism(Convert.ToInt32(Environment.ProcessorCount *
                                                          DataSpace.BaseDataModel.Instance.ResourcePercentage))
                 .ForAll(async dfp =>
@@ -227,7 +228,7 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
                     await CreateDutyFreePaidEntries(docSet, documentType, ex9BucketType, isGrouped,
                             checkQtyAllocatedGreaterThanPiQuantity, checkForMultipleMonths, applyEx9Bucket,
                             applyHistoricChecks, applyCurrentChecks, perInvoice, autoAssess, overPIcheck,
-                            universalPIcheck, itemPIcheck, allocationDataBlocks, dfp, filter, docs, docPreviousItems)
+                            universalPIcheck, itemPIcheck, allocationDataBlocks.Where(x => x.DutyFreePaid == dfp).ToList(), dfp, filter, docs, docPreviousItems)
                         .ConfigureAwait(false);
                 });
         }
