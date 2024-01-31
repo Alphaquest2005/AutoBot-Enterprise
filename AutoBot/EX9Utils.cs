@@ -122,7 +122,7 @@ namespace AutoBot
                 Console.WriteLine("Download History With Invoices");
                 var lcont = 0;
 
-                var startDate = DateTime.Parse("1/1/2018");//BaseDataModel.Instance.CurrentApplicationSettings.OpeningStockDate;
+                var startDate = DateTime.Parse("9/1/2023");//BaseDataModel.Instance.CurrentApplicationSettings.OpeningStockDate;
                 var endDate =  DateTime.Now;
                 var months = (endDate.Year - startDate.Year) * 12 + endDate.Month - startDate.Month;
                 foreach (var month in Enumerable.Range(1, months))
