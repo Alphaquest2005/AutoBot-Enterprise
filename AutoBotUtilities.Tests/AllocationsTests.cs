@@ -175,9 +175,14 @@ namespace AutoBotUtilities.Tests
         
         [TestCase("MM07722", "3/1/2023", 60)]
         [TestCase("ML33451", "3/1/2023", 60)] // not marking overallocations
+        [TestCase("SA00363", "3/1/2023", 60)] // not marking overallocations
 
         ////////////Rouge
         [TestCase("82453688", "3/1/2023", 60)] // not allocating
+        [TestCase("F050101", "3/1/2023", 60)] // not allocating 
+        [TestCase("68400", "3/1/2023", 60)] 
+        [TestCase("004211", "3/1/2023", 60)]
+        [TestCase("65100000000", "3/1/2023", 60)]// over allocation issue
 
         public void AllocatSales(string itemNumber, string LastInvoiceDate, int NoOfAllocations )
         {

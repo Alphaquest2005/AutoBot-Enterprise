@@ -1344,14 +1344,37 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
                     if (nr >= availibleQty && !(piData == 0 && totalPiAll > 0) )//put back in creating more problems than solutions // took out check because 'NR05034' pcnumber =8928 plinenumber = 44 not exwarhoseing because of this check
                     {
                         //if(mypod.Allocations.Count == 1) ssa.QtyAllocated = availibleQty; //renable with condition to fix [TestCase("7/1/2020", "7/31/2020", "MRL/JB0057F", 1, 1, 2)]// overexwarehousing --- //this increased the qty because its referenced in next line below.
-                        ssa.QtyAllocated = availibleQty; // disabled above to remove check to fix "GC42000" pcnumber = 63698 and plinenumber = 3
+                        //ssa.QtyAllocated = availibleQty; // took out because over allocating in multiple allocations...
+                                                //// disabled above to remove check to fix "GC42000" pcnumber = 63698 and plinenumber = 3
+                        
+                        mypod.EntlnData.Quantity = mypod.Allocations.Sum(x => x.QtyAllocated); ;
+                        break;
+                    }
+
+                    if (nr == availibleQty // put this because i can't figure out what is best solution
+                        && (piData == 0 && totalPiAll > 0))// this condition negates one on top
+                    {
+                        //if(mypod.Allocations.Count == 1) ssa.QtyAllocated = availibleQty; //renable with condition to fix [TestCase("7/1/2020", "7/31/2020", "MRL/JB0057F", 1, 1, 2)]// overexwarehousing --- //this increased the qty because its referenced in next line below.
+                        //foreach (var allocation in mypod.Allocations)
+                        //{
+                        //    ssa.QtyAllocated = availibleQty;
+                        //}
+                        //ssa.QtyAllocated = availibleQty; // disabled above to remove check to fix "GC42000" pcnumber = 63698 and plinenumber = 3
                         mypod.EntlnData.Quantity = mypod.Allocations.Sum(x => x.QtyAllocated); ;
                         break;
                     }
 
                     if ((nr < availibleQty && (nr + (ssa.QtyAllocated- piData)) >= availibleQty)
-                        || (nr >= availibleQty && Math.Abs(rejects.Sum(x => x.QtyAllocated) - totalPiAll) <= 0))
+                        || (nr >= availibleQty && Math.Abs(rejects.Sum(x => x.QtyAllocated) - totalPiAll)  <= 0))//Math.Abs(rejects.Sum(x => x.QtyAllocated) - totalPiAll) <= 0 cuz always false
                     {
+                        //if (availibleQty - nr <= 0)
+                        //{
+                        //    Debugger
+                        //        .Break(); // find out why this is lest than zero cuz i changed the line above to remove abs
+                        //    throw new ApplicationException(
+                        //        "availibleQty - nr <= 0- find out why this is lest than zero cuz i changed the line above to remove abs");
+                        //}
+
                         ssa.QtyAllocated = availibleQty - nr;
                         mypod.EntlnData.Quantity = mypod.Allocations.Sum(x => x.QtyAllocated);
                         break;//put back break because its finished reducing allocations and need to exit --- gonna bug somewhere can't remember
@@ -1362,11 +1385,7 @@ namespace WaterNut.Business.Services.Custom_Services.DataModels.Custom_DataModel
                         rejects.Add(ssa);
                         mypod.EntlnData.Quantity = mypod.Allocations.Sum(x => x.QtyAllocated);
                     }
-                    //}
-                    //else
-                    //{
-
-                    //}
+                   
                 }
 
                 UpdateXStatus( rejects,
