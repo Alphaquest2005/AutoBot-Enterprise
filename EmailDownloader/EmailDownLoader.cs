@@ -63,7 +63,8 @@ namespace EmailDownloader
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                throw;
+                //throw;
+                return null;
             }
 
         }
